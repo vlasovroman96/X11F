@@ -1,4 +1,4 @@
-module mipointer;
+module mi.mipointer;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -51,9 +51,9 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import   X11.X;
-import   X11.Xmd;
-import   X11.Xproto;
+import   deimos.X11.X;
+import   deimos.X11.Xmd;
+import   deimos.X11.Xproto;
 
 import   dix.cursor_priv;
 import   dix.dix_priv;
@@ -64,15 +64,15 @@ import   include.extinit;
 import   mi.mi_priv;
 import   mi.mipointer_priv;
 
-import   misc;
-import   windowstr;
-import   pixmapstr;
-import   scrnintstr;
-import   mipointrst;
-import   cursorstr;
+import   include.misc;
+import include.windowstr;
+import   include.pixmapstr;
+import   include.scrnintstr;
+import   include.mipointrst;
+import   include.cursorstr;
 import include.dixstruct;
-import   inputstr;
-import   eventstr;
+import   include.inputstr;
+import   include.eventstr;
 
 struct _MiPointerRec {
     ScreenPtr pScreen;          /* current screen */

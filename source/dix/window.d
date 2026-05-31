@@ -142,7 +142,7 @@ import include.servermd;
 import include.globals;
 import composite.compint;
 import include.privates;
-import xace;
+import Xext.xace;
 
 import deimos.X11.Xatom;          /* must come after server includes */
 

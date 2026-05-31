@@ -4,7 +4,7 @@ extern(C): __gshared:
 
  
 public import xf86str;
-public import mipointer;
+public import mi.mipointer;
 
 struct _xf86CursorInfoRec {
     ScrnInfoPtr pScrn;

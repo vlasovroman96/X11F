@@ -13,7 +13,7 @@ import core.stdc.stdio;
 import core.stdc.string;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.XResproto;
+// import deimos.X11.extensions.XResproto;
 
 import dix.client_priv;
 import dix.dix_priv;

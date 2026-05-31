@@ -30,7 +30,7 @@ import dix.request_priv;
 import dix.selection_priv;
 
 import xfixesint;
-import xace;
+import Xext.xace;
 
 private RESTYPE SelectionClientType, SelectionWindowType;
 private Bool SelectionCallbackRegistered = FALSE;

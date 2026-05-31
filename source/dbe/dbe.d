@@ -54,7 +54,7 @@ import include.gcstruct;
 import include.dixstruct;
 import dbestruct;
 import midbe;
-import xace;
+import Xext.xace;
 
 /* GLOBALS */
 Bool noDbeExtension = FALSE;

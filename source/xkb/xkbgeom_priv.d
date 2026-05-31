@@ -30,7 +30,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
  
 public import deimos.X11.Xdefs;
 
-public import xkbstr;
+public import include.xkbsrv;
 
 struct _XkbProperty {
     char* name;

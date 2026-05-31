@@ -64,7 +64,7 @@ enum CONFIG_MITSHM = 1;
 
 /* Internal define for Xinerama */
 enum PANORAMIX = 1;
-enum XINERAMA = 1;
+// enum XINERAMA = 1;
 
 /* Support Present extension */
 enum PRESENT = 1;

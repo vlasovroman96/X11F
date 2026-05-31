@@ -67,7 +67,7 @@ import include.propertyst;
 import include.dixstruct;
 import dispatch;
 import swaprep;
-import xace;
+import Xext.xace;
 
 /*****************************************************************
  * Property Stuff

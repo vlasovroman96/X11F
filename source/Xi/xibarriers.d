@@ -55,17 +55,17 @@ import mi.mi_priv;
 import os.bug_priv;
 import Xi.handlers;
 
-import xibarriers;
+import Xi.xibarriers;
 import include.scrnintstr;
 import include.cursorstr;
 import include.servermd;
-import mipointer;
+import mi.mipointer;
 import include.inputstr;
 import include.windowstr;
-import xace;
+import Xext.xace;
 import include.list;
-import exglobals;
-import eventstr;
+import Xi.exglobals;
+import include.eventstr;
 
 RESTYPE PointerBarrierType;
 

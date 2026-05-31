@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import mi;
+public import include.mi;
 public import include.regionstr;
 
 /* information about dashes */

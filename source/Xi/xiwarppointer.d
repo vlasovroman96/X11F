@@ -37,7 +37,7 @@ import build.dix_config;
 import deimos.X11.X;              /* for inputstr.h    */
 import deimos.X11.Xproto;         /* Request macro     */
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.cursor_priv;
 import dix.dix_priv;
@@ -51,8 +51,8 @@ import include.windowstr;          /* window structure  */
 import include.scrnintstr;         /* screen structure  */
 import include.extnsionst;
 import include.exevents;
-import exglobals;
-import mipointer;          /* for miPointerUpdateSprite */
+import Xi.exglobals;
+import mi.mipointer;          /* for miPointerUpdateSprite */
 
 /***********************************************************************
  *

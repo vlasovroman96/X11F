@@ -10,7 +10,7 @@ public import core.stdc.stdio;
 public import deimos.X11.X;
 public import deimos.X11.Xdefs;
 
-public import xkbstr;
+public import include.xkbsrv;
 
 alias XkbFileAddOnFunc = void function(FILE* file, XkbDescPtr result, Bool topLevel, Bool showImplicit, int fileSection, void* priv);
 

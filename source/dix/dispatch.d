@@ -144,9 +144,9 @@ import dispatch;
 import swaprep;
 import swapreq;
 import include.privates;
-import xace;
+import Xext.xace;
 import include.inputstr;
-import xkbsrv;
+import include.xkbsrv;
 import xfixesint;
 import dixstruct_priv;
 

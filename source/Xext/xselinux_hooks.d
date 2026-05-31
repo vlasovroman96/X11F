@@ -31,9 +31,9 @@ import core.stdc.errno;
 import core.sys.posix.sys.socket;
 import core.stdc.stdio;
 import core.stdc.stdarg;
-import libaudit;
+// import libaudit;
 import deimos.X11.Xatom;
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 
 import dix.client_priv;
 import dix.devices_priv;
@@ -56,7 +56,7 @@ import include.propertyst;
 import include.extnsionst;
 import xacestr;
 version = _XSELINUX_NEED_FLASK_MAP;
-import xselinuxint;
+import Xext.xselinuxint;
 
 /* structure passed to auditing callback */
 struct SELinuxAuditRec {

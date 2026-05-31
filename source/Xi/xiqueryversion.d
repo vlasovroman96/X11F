@@ -36,7 +36,7 @@ import build.dix_config;
 
 import deimos.X11.Xmd;
 import deimos.X11.X;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -45,7 +45,7 @@ import os.fmt;
 import Xi.handlers;
 
 import include.inputstr;
-import exglobals;
+import Xi.exglobals;
 import include.misc;
 
 extern XExtensionVersion XIVersion;     /* defined in getvers.c */

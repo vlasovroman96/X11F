@@ -32,7 +32,7 @@ in this Software without prior written authorization from The Open Group.
 */
 
  
-public import mipointer;
+public import mi.mipointer;
 public import include.scrnintstr;
 
 struct _MiPointerScreenRec {

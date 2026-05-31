@@ -37,7 +37,7 @@ import os.bug_priv;
 import os.osdep;
 
 import swaprep;
-import mipointer;
+import mi.mipointer;
 import include.clang;
 
 /* xFixed is just `int`, so better check whether it's really 32bit */

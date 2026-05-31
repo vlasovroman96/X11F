@@ -44,8 +44,8 @@ import os.log_priv;
 
 import include.inputstr;
 import include.scrnintstr;
-import eventstr;
-import exglobals;
+import include.eventstr;
+import Xi.exglobals;
 import include.windowstr;
 
 enum TOUCH_HISTORY_SIZE = 100;

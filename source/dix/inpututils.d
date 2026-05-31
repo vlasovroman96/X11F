@@ -35,12 +35,12 @@ import dix.inpututils_priv;
 import dix.screenint_priv;
 import os.bug_priv;
 
-import exglobals;
+import Xi.exglobals;
 import include.misc;
 import include.inputstr;
-import xkbsrv;
-import xkbstr;
-import eventstr;
+import include.xkbsrv;
+import include.xkbsrv;
+import include.eventstr;
 import include.scrnintstr;
 import optionstr;
 

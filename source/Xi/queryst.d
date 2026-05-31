@@ -38,7 +38,7 @@ from The Open Group.
 import build.dix_config;
 
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -49,8 +49,8 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
-import xkbsrv;
-import xkbstr;
+import include.xkbsrv;
+import include.xkbsrv;
 
 /***********************************************************************
  *

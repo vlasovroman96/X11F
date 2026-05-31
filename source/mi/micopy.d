@@ -25,7 +25,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import mi;
+import include.mi;
 import include.scrnintstr;
 import include.gcstruct;
 import include.pixmap;

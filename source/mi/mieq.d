@@ -55,13 +55,13 @@ import   mi.mipointer_priv;
 import   os.bug_priv;
 import   os.screensaver;
 
-import   misc;
-import   windowstr;
-import   pixmapstr;
-import   inputstr;
+import   include.misc;
+import include.windowstr;
+import   include.pixmapstr;
+import   include.cursorstr;
 import   mipointer;
-import   scrnintstr;
-import   eventstr;
+import   include.scrnintstr;
+import   include.eventstr;
 
 version (DPMSExtension) {
 import dpmsproc;

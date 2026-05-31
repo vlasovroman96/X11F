@@ -49,7 +49,7 @@ import glxserver;
 import glxutil;
 import glxext;
 import include.protocol_versions;
-import compositeext;
+import include.compositeext;
 
 private DevPrivateKeyRec glxScreenPrivateKeyRec;
 

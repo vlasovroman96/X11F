@@ -61,7 +61,7 @@ import include.gcstruct;
 import include.resource;
 import include.dix;
 import include.cursorstr;
-import opaque;
+import include.opaque;
 import include.servermd;
 
 /*

@@ -41,7 +41,7 @@ import xkb.xkbsrv_priv;
 import include.inputstr;
 import include.scrnintstr;
 import include.windowstr;
-import xkbsrv;
+import include.xkbsrv;
 
 /*#define FALLING_TONE	1*/
 /*#define RISING_TONE	1*/

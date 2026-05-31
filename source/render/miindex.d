@@ -33,7 +33,7 @@ import include.scrnintstr;
 import include.gcstruct;
 import include.pixmapstr;
 import include.windowstr;
-import mi;
+import include.mi;
 import include.picturestr;
 
 enum NUM_CUBE_LEVELS =	4;

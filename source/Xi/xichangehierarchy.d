@@ -38,8 +38,8 @@ import build.dix_config;
 import deimos.X11.X;              /* for inputstr.h    */
 import deimos.X11.Xproto;         /* Request macro     */
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2proto;
-import deimos.X11.extensions.geproto;
+// import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.geproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -53,13 +53,13 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import include.scrnintstr;         /* screen structure  */
 import include.extnsionst;
-import exglobals;
+import Xi.exglobals;
 import include.misc;
-import xace;
-import xiquerydevice;      /* for GetDeviceUse */
-import xkbsrv;
+import Xext.xace;
+import Xi.xiquerydevice;      /* for GetDeviceUse */
+import include.xkbsrv;
 import xichangehierarchy;
-import xibarriers;
+import Xi.xibarriers;
 
 /**
  * Send the current state of the device hierarchy to all clients.

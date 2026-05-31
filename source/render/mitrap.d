@@ -33,7 +33,7 @@ import include.gcstruct;
 import include.pixmapstr;
 import include.windowstr;
 import include.servermd;
-import mi;
+import include.mi;
 import include.picturestr;
 
 private xFixed miLineFixedX(xLineFixed* l, xFixed y, Bool ceil)

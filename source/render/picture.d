@@ -47,7 +47,7 @@ import include.gcstruct;
 import include.servermd;
 import render.picturestr_priv;
 import render.glyphstr_priv;
-import xace;
+import Xext.xace;
 version (XINERAMA) {
 import panoramiXsrv;
 } /* XINERAMA */

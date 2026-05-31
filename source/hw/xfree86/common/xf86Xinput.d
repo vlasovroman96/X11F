@@ -70,14 +70,14 @@ import xf86Config;
 import xf86Xinput_priv;
 import XIstubs;
 import xf86Optrec;
-import mipointer;
+import mi.mipointer;
 import loaderProcs;
 import os_support.linux.systemd_logind;
 import seatd_libseat;
 
 import include.exevents;           /* AddInputDevice */
-import exglobals;
-import eventstr;
+import Xi.exglobals;
+import include.eventstr;
 import optionstr;
 import xf86Module_priv;
 import xf86Opt_priv;
@@ -101,17 +101,17 @@ version (HAVE_SYS_MKDEV_H) {
 import sys.mkdev;          /* for major() & minor() on Solaris */
 }
 
-import mi;
+import include.mi;
 
 import ptrveloc;           /* dix pointer acceleration */
-import xserver_properties;
+import include.xserver_properties;
 
 version (XFreeXDGA) {
 import dgaproc;
 import dgaproc_priv;
 }
 
-import xkbsrv;
+import include.xkbsrv;
 
 /* Valuator verification macro */
 enum string XI_VERIFY_VALUATORS(string num_valuators) = `

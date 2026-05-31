@@ -40,8 +40,8 @@ import include.inputstr;
 import include.scrnintstr;
 import include.windowstr;
 import include.exevents;
-import xkbsrv;
-import xserver_properties;
+import include.xkbsrv;
+import include.xserver_properties;
 import syncsrv;
 import test.tests_common;
 

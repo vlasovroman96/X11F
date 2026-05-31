@@ -185,7 +185,7 @@ import os.osdep;
 
 import include.dixstruct;
 
-import xace;
+import Xext.xace;
 
 version (XDMCP) {
 import xdmcp;

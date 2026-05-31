@@ -101,7 +101,7 @@ import include.dixstruct;
 import include.pixmapstr;
 import include.gcstruct;
 import include.scrnintstr;
-import xace;
+import Xext.xace;
 
 /*
  * CompareTimeStamps returns -1, 0, or +1 depending on if the first

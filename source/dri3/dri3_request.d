@@ -34,7 +34,7 @@ import os.client_priv;
 
 import dri3_priv;
 import syncsrv;
-import xace;
+import Xext.xace;
 import include.protocol_versions;
 import drm_fourcc;
 import randrstr_priv;

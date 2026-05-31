@@ -40,7 +40,7 @@ public import include.pixmap;
 public import include.windowstr;
 public import include.window;
 public import xf86str;
-public import mipointer;
+public import mi.mipointer;
 public import mipointrst;
 public import include.picturestr;
 

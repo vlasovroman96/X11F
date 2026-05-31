@@ -33,8 +33,8 @@ import build.dix_config;
 
 import deimos.X11.Xatom;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -46,19 +46,20 @@ import Xi.handlers;
 
 import include.dix;
 import include.inputstr;
-import exglobals;
+import Xi.exglobals;
 import swaprep;
-import xiproperty;
-import xserver_properties;
+import Xi.xiproperty;
+import include.xserver_properties;
 import include.clang;
 
 /**
  * Properties used or alloced from inside the server.
  */
-struct dev_properties {
+struct dev_properties_ {
     Atom type;
     const(char)* name;
-}private dev_properties[128] dev_properties = [
+}
+private dev_properties_[128] dev_properties = [
     {0, XI_PROP_ENABLED},
     {0, XI_PROP_XTEST_DEVICE},
     {0, XATOM_FLOAT},

@@ -56,7 +56,7 @@ SOFTWARE.
 import build.dix_config;
 
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.dixgrabs_priv;
@@ -65,7 +65,7 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
-import exglobals;
+import Xi.exglobals;
 
 enum AllModifiersMask = ( 
 	ShiftMask | LockMask | ControlMask | Mod1Mask | Mod2Mask | 

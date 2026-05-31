@@ -106,10 +106,10 @@ import os.fmt;
 import os.log_priv;
 import os.osdep;
 
-import opaque;
+import include.opaque;
 
 version (XF86BIGFONT) {
-import xf86bigfontsrv;
+import Xext.xf86bigfontsrv;
 }
 
 version (__clang__) {

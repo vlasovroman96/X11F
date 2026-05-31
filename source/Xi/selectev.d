@@ -57,7 +57,7 @@ import build.dix_config;
 
 import deimos.X11.extensions.XI;
 import deimos.X11.extensions.XI2;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -66,7 +66,7 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
-import exglobals;
+import Xi.exglobals;
 import grabdev;
 
 private int HandleDevicePresenceMask(ClientPtr client, WindowPtr win, XEventClass* cls, CARD16* count)

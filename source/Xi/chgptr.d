@@ -56,7 +56,7 @@ SOFTWARE.
 import build.dix_config;
 
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// // import deimos.X11.extensions.XIproto;
 
 import dix.request_priv;
 import Xi.handlers;
@@ -66,7 +66,7 @@ import XIstubs;
 import include.windowstr;          /* window structure  */
 import include.scrnintstr;         /* screen structure  */
 import include.exevents;
-import exglobals;
+import Xi.exglobals;
 import chgptr;
 
 /***********************************************************************

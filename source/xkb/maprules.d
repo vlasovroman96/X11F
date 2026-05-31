@@ -51,8 +51,8 @@ import include.misc;
 import include.inputstr;
 import include.dix;
 import include.os;
-import xkbstr;
-import xkbsrv;
+import include.xkbsrv;
+import include.xkbsrv;
 
 
 enum XkbRF_PendingMatch =      (1L<<1);

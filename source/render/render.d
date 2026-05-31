@@ -57,7 +57,7 @@ import include.servermd;
 import picturestr_priv;
 import glyphstr_priv;
 import include.cursorstr;
-import xace;
+import Xext.xace;
 import include.protocol_versions;
 
 Bool noRenderExtension = FALSE;

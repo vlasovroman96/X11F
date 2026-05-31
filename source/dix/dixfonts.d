@@ -79,13 +79,13 @@ import include.resource;
 import include.dixstruct;
 import include.cursorstr;
 import include.misc;
-import opaque;
+import include.opaque;
 import dixfontstr;
 import include.dixfont;
-import xace;
+import Xext.xace;
 
 version (XF86BIGFONT) {
-import xf86bigfontsrv;
+import Xext.xf86bigfontsrv;
 }
 
 enum XLFDMAXFONTNAMELEN =      256;

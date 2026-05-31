@@ -31,9 +31,9 @@ import core.stdc.string;
 
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.Xv;
-import deimos.X11.extensions.Xvproto;
-import deimos.X11.extensions.shmproto;
+// import deimos.X11.extensions.Xv;
+// import deimos.X11.extensions.Xvproto;
+// import deimos.X11.extensions.shmproto;
 
 import dix.dix_priv;
 import dix.rpcbuf_priv;
@@ -53,9 +53,9 @@ import include.pixmapstr;
 import include.gcstruct;
 import include.dixstruct;
 import include.resource;
-import opaque;
+import include.opaque;
 
-import xvdisp;
+import Xext.xvdisp;
 
 version (XINERAMA) {
 c_ulong XvXRTPort;

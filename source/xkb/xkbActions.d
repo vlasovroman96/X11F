@@ -50,8 +50,8 @@ import xkb.xkbsrv_priv;
 import include.misc;
 import include.inputstr;
 import include.exevents;
-import eventstr;
-import mipointer;
+import include.eventstr;
+import mi.mipointer;
 
 enum EXTENSION_EVENT_BASE = 64;
 

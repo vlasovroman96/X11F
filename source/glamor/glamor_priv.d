@@ -34,7 +34,7 @@ import core.stdc.config: c_long, c_ulong;
 public import os.bug_priv;
 
 public import include.glamor;
-public import xvdix;
+public import include.xvdix;
 
 static if (XSYNC) {
 public import include.misyncshm;

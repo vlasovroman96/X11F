@@ -35,7 +35,7 @@ import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.keysym;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -44,7 +44,7 @@ import os.log_priv;
 import xkb.xkbsrv_priv;
 
 import include.inputstr;
-import exglobals;
+import Xi.exglobals;
 import include.windowstr;
 
 /***====================================================================***/

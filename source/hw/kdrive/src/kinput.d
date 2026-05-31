@@ -56,12 +56,12 @@ import mi.mi_priv;
 import mi.mipointer_priv;
 import os.cmdline;
 
-import xkbsrv;
+import include.xkbsrv;
 import XIstubs;            /* even though we don't use stubs.  cute, no? */
 import include.exevents;
-import exglobals;
-import eventstr;
-import xserver_properties;
+import Xi.exglobals;
+import include.eventstr;
+import include.xserver_properties;
 import optionstr;
 
 static if (HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {

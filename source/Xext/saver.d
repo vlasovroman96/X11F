@@ -61,7 +61,7 @@ import include.dixstruct;
 import include.resource;
 import include.gcstruct;
 import include.cursorstr;
-import xace;
+import Xext.xace;
 import include.inputstr;
 version (DPMSExtension) {
 import deimos.X11.extensions.dpmsconst;

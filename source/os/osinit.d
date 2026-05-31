@@ -74,7 +74,7 @@ import os.serverlock;
 
 import include.misc;
 import include.os;
-import opaque;
+import include.opaque;
 import include.dixstruct;
 import dixstruct_priv;
 

@@ -57,7 +57,7 @@ enum PSZ = 8;
 import include.fb;
 import include.gcstruct;
 import include.input;
-import mipointer;
+import mi.mipointer;
 import micmap;
 import core.sys.posix.sys.types;
 version (HAVE_MMAP) {

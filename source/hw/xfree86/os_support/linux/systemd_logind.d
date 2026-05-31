@@ -1,4 +1,4 @@
-module systemd_logind;
+module hw.xfree86.os_support.linux.systemd_logind;
 @nogc nothrow:
 extern(C): __gshared:
 /*

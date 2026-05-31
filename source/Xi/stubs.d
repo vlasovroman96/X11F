@@ -63,9 +63,9 @@ import deimos.X11.X;
 import deimos.X11.Xproto;
 import include.inputstr;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 import XIstubs;
-import xace;
+import Xext.xace;
 
 /****************************************************************************
  *

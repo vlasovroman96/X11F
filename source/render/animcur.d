@@ -48,10 +48,10 @@ import include.scrnintstr;
 import include.dixstruct;
 import include.cursorstr;
 import dixfontstr;
-import opaque;
+import include.opaque;
 import picturestr_priv;
 import include.inputstr;
-import xace;
+import Xext.xace;
 
 struct AnimCurElt {
     CursorPtr pCursor;          /* cursor to show */

@@ -46,7 +46,7 @@ import xkb.xkbtext_priv;
 import include.misc;
 import include.inputstr;
 import include.dix;
-import xkbstr;
+import include.xkbsrv;
 import xkbgeom_priv;
 
 enum	VMOD_HIDE_VALUE =	0;

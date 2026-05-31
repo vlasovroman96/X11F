@@ -41,7 +41,7 @@ import core.stdc.math;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.keysym;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.input_priv;
 import dix.inpututils_priv;
@@ -49,7 +49,7 @@ import os.log_priv;
 import xkb.xkbsrv_priv;
 
 import include.inputstr;
-import eventstr;
+import include.eventstr;
 
 int XkbDfltRepeatDelay = 660;
 int XkbDfltRepeatInterval = 40;

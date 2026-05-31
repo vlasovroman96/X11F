@@ -1,4 +1,4 @@
-module xkbsrv_priv;
+module xkb.xkbsrv_priv;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -17,8 +17,8 @@ public import include.dix;
 public import include.input;
 public import include.misc;
 public import include.privates;
-public import xkbsrv;
-public import xkbstr;
+public import include.xkbsrv;
+public import include.xkbsrv;
 
 enum _BEEP_NONE =              0;
 enum _BEEP_FEATURE_ON =        1;

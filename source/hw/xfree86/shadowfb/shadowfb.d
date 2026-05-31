@@ -20,7 +20,7 @@ import dix.screen_hooks_priv;
 import include.misc;
 import include.pixmapstr;
 import include.input;
-import mi;
+import include.mi;
 import include.scrnintstr;
 import include.windowstr;
 import include.gcstruct;

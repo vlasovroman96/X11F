@@ -14,7 +14,7 @@ public import deimos.X11.X;
 public import deimos.X11.Xdefs;
 public import deimos.X11.keysymdef;
 
-public import xkbstr;
+public import include.xkbsrv;
 
 /*
  * return mask bits for _XkbKSCheckCase()

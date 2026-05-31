@@ -26,7 +26,7 @@ extern(C): __gshared:
  */
 
  
-public import deimos.X11.fonts.font;
+// public import deimos.X11.fonts.font;
 
 extern void XF86BigfontFreeFontShm(FontPtr);
 extern void XF86BigfontCleanup();

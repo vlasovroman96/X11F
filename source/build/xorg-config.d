@@ -11,7 +11,7 @@ extern(C): __gshared:
 
  
 public import build.dix_config;
-public import build.xkb_config;
+// public import build.xkb_config;
 
 /* Building Xorg server. */
 /* #undef XORGSERVER */

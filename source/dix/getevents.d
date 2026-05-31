@@ -41,8 +41,8 @@ import deimos.X11.keysym;
 import deimos.X11.Xproto;
 import deimos.X11.extensions.XI;
 import deimos.X11.extensions.XI2;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XKBproto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XKBproto;
 
 import dix.input_priv;
 import dix.inpututils_priv;
@@ -61,12 +61,12 @@ import include.scrnintstr;
 import include.cursorstr;
 import include.dixstruct;
 import include.globals;
-import mipointer;
-import eventstr;
+import mi.mipointer;
+import include.eventstr;
 import eventconvert;
 import include.windowstr;
-import xkbsrv;
-import exglobals;
+import include.xkbsrv;
+import Xi.exglobals;
 import include.extnsionst;
 
 /* Number of motion history events to store. */

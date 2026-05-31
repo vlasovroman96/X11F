@@ -28,14 +28,14 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-enum XkbFreeKeyboard =			SrvXkbFreeKeyboard;
+enum SrvXkbFreeKeyboard = XkbFreeKeyboard;			
 
 public import deimos.X11.Xdefs;
-public import deimos.X11.extensions.XKBproto;
+// public // import deimos.X11.extensions.XKBproto;
 
 public import include.xlibre_ptrtypes;
-public import xkbstr;
-public import xkbrules;
+public import include.xkbstr;
+public import include.xkbrules;
 public import include.inputstr;
 public import include.events;
 
@@ -245,7 +245,7 @@ extern _X_EXPORT XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
 
 extern _X_EXPORT XkbCopyDeviceKeymap(DeviceIntPtr, DeviceIntPtr);
 
-public import xkbstr;
-public import xkbrules;
+public import include.xkbsrv;
+public import include.xkbrules;
 
                           /* _XKBSRV_H_ */

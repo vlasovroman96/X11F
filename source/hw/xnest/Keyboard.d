@@ -45,7 +45,7 @@ import Screen;
 import Keyboard;
 import Args;
 import include.events;
-import xkbsrv;
+import include.xkbsrv;
 
 DeviceIntPtr xnestKeyboardDevice = null;
 

@@ -6,11 +6,11 @@ import build.dix_config;
 
 import core.stdc.string;
 import deimos.X11.X;
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.XvMC;
-import deimos.X11.extensions.Xvproto;
-import deimos.X11.extensions.XvMCproto;
+// import deimos.X11.extensions.XvMC;
+// import deimos.X11.extensions.Xvproto;
+// import deimos.X11.extensions.XvMCproto;
 
 import dix.dix_priv;
 import dix.request_priv;

@@ -11,7 +11,7 @@ public import core.stdc.stdio;
 public import deimos.X11.X;
 public import deimos.X11.Xdefs;
 
-public import xkbstr;
+public import include.xkbsrv;
 
 /* XKB error codes */
 enum _XkbErrMissingNames =		1;

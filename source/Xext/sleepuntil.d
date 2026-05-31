@@ -1,4 +1,4 @@
-module sleepuntil;
+module Xext.sleepuntil;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -33,7 +33,7 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import sleepuntil;
+import Xext.sleepuntil;
 import deimos.X11.X;
 import deimos.X11.Xmd;
 import include.misc;

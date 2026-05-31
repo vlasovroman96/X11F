@@ -53,7 +53,7 @@ import deimos.X11.Xprotostr;
 import include.pixmapstr;
 import include.gcstruct;
 import include.windowstr;
-import mi;
+import include.mi;
 
 void miPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, xPoint* pptInit)
 {

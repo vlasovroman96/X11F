@@ -42,13 +42,13 @@ import   dix.gc_priv;
 import   dix.screen_hooks_priv;
 import   dix.screenint_priv;
 
-import   misc;
+import   include.misc;
 import   input;
-import   cursorstr;
-import   windowstr;
+import   include.cursorstr;
+import include.windowstr;
 import   regionstr;
 import include.dixstruct;
-import   scrnintstr;
+import   include.scrnintstr;
 import   servermd;
 import   mipointer;
 import   misprite;

@@ -57,7 +57,7 @@ import build.dix_config;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// // import deimos.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.input_priv;

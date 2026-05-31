@@ -1,4 +1,4 @@
-module mipointer_priv;
+module mi.mipointer_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11

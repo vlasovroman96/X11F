@@ -40,7 +40,7 @@ import dix.dix_priv;
 import include.extinit;
 
 import extension_string;
-import opaque;
+import include.opaque;
 
 enum string SET_BIT(string m,string b) = `(` ~ m ~ `[ (` ~ b ~ `) / 8 ] |=  (1U << ((` ~ b ~ `) % 8)))`;
 enum string CLR_BIT(string m,string b) = `(` ~ m ~ `[ (` ~ b ~ `) / 8 ] &= ~(1U << ((` ~ b ~ `) % 8)))`;

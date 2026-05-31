@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-// public import deimos.X11.extensions.XIproto;
+// public // import deimos.X11.extensions.XIproto;
 
 public import include.misc;
 public import include.window;

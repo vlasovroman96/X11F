@@ -42,7 +42,7 @@ import os.log_priv;
 import os.ossock;
 
 import include.inputstr;
-import opaque;
+import include.opaque;
 import os.osdep;
 
 static if (INPUTTHREAD) {

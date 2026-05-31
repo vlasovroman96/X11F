@@ -59,9 +59,9 @@ import build.dix_config;
 import core.stdc.assert_;
 
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
-import deimos.X11.extensions.geproto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.geproto;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -73,15 +73,15 @@ import Xext.geext_priv;
 import include.inputstr;
 import include.gcstruct;           /* pointer for extnsionst.h */
 import include.extnsionst;         /* extension entry   */
-import exglobals;
+import Xi.exglobals;
 import swaprep;
 import include.privates;
 import include.protocol_versions;
 
 /* modules local to Xi */
 import Xi.handlers;
-import xibarriers;
-import xiproperty;
+import Xi.xibarriers;
+import Xi.xiproperty;
 
 /* Masks for XI events have to be aligned with core event (partially anyway).
  * If DeviceButtonMotionMask is != ButtonMotionMask, event delivery
@@ -108,10 +108,12 @@ const(Mask) XIAllMasks = (1L << 20) - 1;
 
 int ExtEventIndex;
 
-struct dev_type {
+struct dev_type_ {
     Atom type;
     const(char)* name;
-}private dev_type[18] dev_type = [
+}
+
+private dev_type_[18] dev_type = [
     {0, XI_KEYBOARD},
     {0, XI_MOUSE},
     {0, XI_TABLET},

@@ -29,7 +29,7 @@ public import include.extnsionst;
 public import include.window;
 public import include.input;
 public import include.property;
-public import xace;
+public import Xext.xace;
 
 /* XACE_RESOURCE_ACCESS */
 struct XaceResourceAccessRec {

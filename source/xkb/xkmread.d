@@ -44,7 +44,7 @@ import xkb.xkbsrv_priv;
 
 import include.misc;
 import include.inputstr;
-import xkbstr;
+import include.xkbsrv;
 import xkbgeom_priv;
 
 private Atom XkbInternAtom(char* str, Bool only_if_exists)

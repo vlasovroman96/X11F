@@ -37,7 +37,7 @@ import build.dix_config;
 import deimos.X11.X;              /* for inputstr.h    */
 import deimos.X11.Xproto;         /* Request macro     */
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.eventconvert;
@@ -55,9 +55,9 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import include.extnsionst;
-import exglobals;
+import Xi.exglobals;
 import include.scrnintstr;
-import xkbsrv;
+import include.xkbsrv;
 
 /***********************************************************************
  *

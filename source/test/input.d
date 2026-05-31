@@ -34,7 +34,7 @@ import build.dix_config;
 import core.stdc.stdint;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 import deimos.X11.Xatom;
 
 import dix.dix_priv;
@@ -50,8 +50,8 @@ import include.misc;
 import include.resource;
 import include.windowstr;
 import include.inputstr;
-import exglobals;
-import eventstr;
+import Xi.exglobals;
+import include.eventstr;
 // import assert;
 
 import test.tests_common;

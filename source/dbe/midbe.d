@@ -45,13 +45,13 @@ import include.pixmapstr;
 import include.extnsionst;
 import include.dixstruct;
 import include.resource;
-import opaque;
+import include.opaque;
 import dbestruct;
 import include.regionstr;
 import include.gcstruct;
 import include.inputstr;
 import midbe;
-import xace;
+import Xext.xace;
 
 import core.stdc.stdio;
 

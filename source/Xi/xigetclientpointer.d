@@ -31,7 +31,7 @@ import build.dix_config;
 import deimos.X11.X;              /* for inputstr.h    */
 import deimos.X11.Xproto;         /* Request macro     */
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -42,7 +42,7 @@ import include.windowstr;          /* window structure  */
 import include.scrnintstr;         /* screen structure  */
 import include.extnsionst;
 import include.exevents;
-import exglobals;
+import Xi.exglobals;
 
 /***********************************************************************
  * This procedure allows a client to query another client's client pointer

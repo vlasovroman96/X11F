@@ -58,7 +58,7 @@ import build.dix_config;
 import deimos.X11.X;              /* for inputstr.h    */
 import deimos.X11.Xproto;         /* Request macro     */
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -71,8 +71,8 @@ import include.inputstr;           /* DeviceIntPtr      */
 import XIstubs;
 import include.extnsionst;
 import include.exevents;
-import xkbsrv;
-import xkbstr;
+import include.xkbsrv;
+import include.xkbsrv;
 
 enum VPC =        20              /* Max # valuators per chunk */;
 

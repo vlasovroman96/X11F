@@ -67,7 +67,7 @@ import include.scrnintstr;
 import include.dixstruct;
 import include.privates;
 import include.dix;
-import xace;
+import Xext.xace;
 
 extern FontPtr defaultFont;
 

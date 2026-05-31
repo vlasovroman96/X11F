@@ -1,4 +1,4 @@
-module exevents_priv;
+module dix.exevents_priv;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -8,7 +8,7 @@ import core.stdc.config: c_long, c_ulong;
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import deimos.X11.extensions.XIproto;
+// public // import deimos.X11.extensions.XIproto;
 public import include.exevents;
 
 /**

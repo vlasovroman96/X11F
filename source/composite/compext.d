@@ -53,7 +53,7 @@ import miext.extinit_priv;
 import Xext.panoramiXsrv;
 
 import composite.compint;
-import xace;
+import Xext.xace;
 import include.protocol_versions;
 
 private CARD8 CompositeReqCode;

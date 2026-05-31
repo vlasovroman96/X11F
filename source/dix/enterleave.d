@@ -31,8 +31,8 @@ import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.extensions.XI2;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.eventconvert;
@@ -47,9 +47,9 @@ import os.bug_priv;
 import include.inputstr;
 import include.windowstr;
 import include.scrnintstr;
-import exglobals;
+import Xi.exglobals;
 import enterleave;
-import xkbsrv;
+import include.xkbsrv;
 
 /**
  * @file

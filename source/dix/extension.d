@@ -64,7 +64,7 @@ import include.gcstruct;
 import include.scrnintstr;
 import dispatch;
 import include.privates;
-import xace;
+import Xext.xace;
 
 enum LAST_ERROR = 255;
 

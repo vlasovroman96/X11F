@@ -1,4 +1,4 @@
-module xkbrules_priv;
+module xkb.xkbrules_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11

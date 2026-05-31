@@ -59,7 +59,7 @@ import indirect_table;
 import indirect_util;
 import include.protocol_versions;
 import include.glxvndabi;
-import xace;
+import Xext.xace;
 
 private char[4] GLXServerVendorName = "SGI";
 

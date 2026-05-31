@@ -86,7 +86,7 @@ import os.osdep;
 import os.ossock;
 
 import include.os;
-import opaque;
+import include.opaque;
 import include.dixstruct;
 import include.misc;
 

@@ -58,7 +58,7 @@ import deimos.X11.Xproto;
 import deimos.X11.Xatom;
 import deimos.X11.extensions.XI;
 import deimos.X11.extensions.XI2;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -86,11 +86,11 @@ import ptrveloc;
 import include.privates;
 import dispatch;
 import swaprep;
-import mipointer;
-import eventstr;
-import exglobals;
-import xiquerydevice;      /* for SizeDeviceClasses */
-import xiproperty;
+import mi.mipointer;
+import include.eventstr;
+import Xi.exglobals;
+import Xi.xiquerydevice;      /* for SizeDeviceClasses */
+import Xi.xiproperty;
 import enterleave;         /* for EnterWindow() */
 import include.xserver_properties;
 import xichangehierarchy;  /* For XISendDeviceHierarchyEvent */

@@ -54,7 +54,7 @@ import include.extinit;
 import os.osdep;
 
 import composite.compint;
-import compositeext;
+import include.compositeext;
 
 Bool noCompositeExtension = FALSE;
 

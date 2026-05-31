@@ -53,7 +53,7 @@ import deimos.X11.Xprotostr;
 import include.regionstr;
 import include.gcstruct;
 import include.pixmap;
-import mi;
+import include.mi;
 
 /*****************************************************************
  * miPolySegment

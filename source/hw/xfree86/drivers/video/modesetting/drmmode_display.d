@@ -45,7 +45,7 @@ import present.present_priv;
 import include.inputstr;
 import xf86str;
 import X11.Xatom;
-import mi;
+import include.mi;
 import micmap;
 import xf86cmap;
 import xf86DDC_priv;

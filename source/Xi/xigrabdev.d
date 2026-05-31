@@ -35,7 +35,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import deimos.X11.extensions.XI2;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -46,7 +46,7 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
-import exglobals;          /* BadDevice */
+import Xi.exglobals;          /* BadDevice */
 
 int ProcXIGrabDevice(ClientPtr client)
 {

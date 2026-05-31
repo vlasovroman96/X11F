@@ -38,7 +38,7 @@ import build.dix_config;
 
 import   deimos.X11.X;
 // import   deimos.X11.Xauth;
-import   misc;
+import   include.misc;
 import os.osdep;
 import include.dixstruct;
 import   core.sys.posix.sys.types;

@@ -80,7 +80,7 @@ import include.dixfontstr;
 import include.extnsionst;
 import include.protocol_versions;
 
-import xf86bigfontsrv;
+import Xext.xf86bigfontsrv;
 
 Bool noXFree86BigfontExtension = FALSE;
 

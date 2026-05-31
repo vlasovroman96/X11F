@@ -42,9 +42,9 @@ import mi.mi_priv;
 
 import include.scrnintstr;
 import include.inputstr;
-import mipointer;
-import xkbsrv;
-import xserver_properties;
+import mi.mipointer;
+import include.xkbsrv;
+import include.xserver_properties;
 import include.exevents;
 
 void ProcessInputEvents()

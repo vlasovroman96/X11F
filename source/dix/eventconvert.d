@@ -35,8 +35,8 @@ import build.dix_config;
 
 import core.stdc.stdint;
 import deimos.X11.X;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
 import deimos.X11.extensions.XI;
 import deimos.X11.extensions.XI2;
 
@@ -49,10 +49,10 @@ import dix.inpututils_priv;
 import include.dix;
 import include.inputstr;
 import include.misc;
-import eventstr;
-import exglobals;
-import xiquerydevice;
-import xkbsrv;
+import include.eventstr;
+import Xi.exglobals;
+import Xi.xiquerydevice;
+import include.xkbsrv;
 
 
 

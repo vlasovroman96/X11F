@@ -1,4 +1,4 @@
-module exglobals;
+module Xi.exglobals;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

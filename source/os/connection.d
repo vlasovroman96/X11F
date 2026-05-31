@@ -113,7 +113,7 @@ import os.probes_priv;
 import include.misc;               /* for typedef of pointer */
 import dixstruct_priv;
 import include.globals;
-import xace;
+import Xext.xace;
 
 version (HAVE_GETPEERUCRED) {
 import ucred;

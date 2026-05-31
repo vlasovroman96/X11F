@@ -17,8 +17,8 @@ import include.pixmapstr;
 import include.windowstr;
 import xf86str;
 import include.cursorstr;
-import mi;
-import mipointer;
+import include.mi;
+import mi.mipointer;
 import xf86CursorPriv;
 import include.servermd;
 

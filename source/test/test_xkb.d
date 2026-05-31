@@ -43,7 +43,7 @@ import xkb.xkbsrv_priv;
 
 import include.misc;
 import include.inputstr;
-import opaque;
+import include.opaque;
 import include.property;
 import xkb.xkbgeom_priv;
 import deimos.X11.extensions.XKMformat;

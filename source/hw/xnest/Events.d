@@ -43,7 +43,7 @@ import XNWindow;
 import include.events;
 import Keyboard;
 import Pointer;
-import mipointer;
+import mi.mipointer;
 
 CARD32 lastEventTime = 0;
 

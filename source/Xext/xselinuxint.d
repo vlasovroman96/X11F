@@ -21,16 +21,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************/
 
  
-public import selinux.selinux;
-public import selinux.avc;
+// public import selinux.selinux;
+// public import selinux.avc;
 
 public import include.globals;
-public import dixaccess;
+public import include.dixaccess;
 public import include.dixstruct;
 public import include.privates;
 public import include.resource;
 public import include.inputstr;
-public import xselinux;
+// public import xselinux;
 
 /*
  * Types

@@ -38,7 +38,7 @@ import ptrveloc;
 import deimos.X11.Xatom;
 import include.os;
 
-import xserver_properties;
+import include.xserver_properties;
 
 /*****************************************************************************
  * Predictable pointer acceleration

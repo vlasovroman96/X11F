@@ -1,4 +1,4 @@
-module inpututils_priv;
+module dix.inpututils_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -26,8 +26,8 @@ extern(C): __gshared:
  */
  
 public import include.input;
-public import eventstr;
-public import deimos.X11.extensions.XI2proto;
+public import include.eventstr;
+// public // import deimos.X11.extensions.XI2proto;
 
 extern Mask[MAXEVENTS][MAXDEVICES] event_filters;
 

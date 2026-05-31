@@ -24,7 +24,7 @@ import include.input;
 import include.misc;
 import include.scrnintstr;
 import include.servermd;
-import mipointer;
+import mi.mipointer;
 
 import xnest_xcb;
 
@@ -34,7 +34,7 @@ import Screen;
 import Pointer;
 import Args;
 
-import xserver_properties;
+import include.xserver_properties;
 import include.exevents;           /* For XIGetKnownProperty */
 
 DeviceIntPtr xnestPointerDevice = null;

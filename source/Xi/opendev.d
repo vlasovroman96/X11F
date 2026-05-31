@@ -56,7 +56,7 @@ SOFTWARE.
 import build.dix_config;
 
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -67,7 +67,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import XIstubs;
 import include.windowstr;          /* window structure  */
-import exglobals;
+import Xi.exglobals;
 import include.exevents;
 
 extern CARD8[1] event_base;

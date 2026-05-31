@@ -36,9 +36,9 @@ import build.dix_config;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.Xatom;
-import deimos.X11.extensions.xtestproto;
+// import deimos.X11.extensions.xtestproto;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// // import deimos.X11.extensions.XIproto;
 
 import dix.input_priv;
 import dix.dix_priv;
@@ -62,13 +62,13 @@ import include.extnsionst;
 import include.windowstr;
 import include.inputstr;
 import include.scrnintstr;
-import sleepuntil;
-import xkbsrv;
-import xkbstr;
-import exglobals;
-import mipointer;
-import xserver_properties;
-import eventstr;
+import Xext.sleepuntil;
+import include.xkbsrv;
+import include.xkbsrv;
+import Xi.exglobals;
+import mi.mipointer;
+import include.xserver_properties;
+import include.eventstr;
 
 Bool noTestExtensions = FALSE;
 

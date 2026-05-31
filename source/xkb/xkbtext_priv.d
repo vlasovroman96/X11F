@@ -8,7 +8,7 @@ extern(C): __gshared:
  
 public import deimos.X11.X;
 
-public import xkbstr;
+public import include.xkbsrv;
 
 enum XkbXKMFile =      0;
 enum XkbCFile =        1;

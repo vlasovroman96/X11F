@@ -84,7 +84,7 @@ import xf86Config;
 import xf86_os_support;
 import xf86_OSlib;
 import xf86cmap;
-import mipointer;
+import mi.mipointer;
 import xf86Extensions;
 import xf86Xinput;
 import xf86InPriv;
@@ -92,7 +92,7 @@ import include.xf86Crtc;
 import include.picturestr;
 import xf86Bus;
 import include.globals;
-import xserver_properties;
+import include.xserver_properties;
 
 version (DPMSExtension) {
 import X11.extensions.dpmsconst;

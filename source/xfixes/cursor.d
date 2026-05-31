@@ -59,12 +59,12 @@ import xfixesint;
 import include.scrnintstr;
 import include.cursorstr;
 import include.servermd;
-import mipointer;
+import mi.mipointer;
 import include.inputstr;
 import include.windowstr;
-import xace;
+import Xext.xace;
 import include.list;
-import xibarriers;
+import Xi.xibarriers;
 
 private RESTYPE CursorClientType;
 private RESTYPE CursorHideCountType;

@@ -53,7 +53,7 @@ import include.gcstruct;
 import include.scrnintstr;
 import include.pixmapstr;
 import include.regionstr;
-import mi;
+import include.mi;
 import include.servermd;
 
 enum NPT = 128;

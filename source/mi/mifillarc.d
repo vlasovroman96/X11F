@@ -37,7 +37,7 @@ import deimos.X11.Xprotostr;
 import include.regionstr;
 import include.gcstruct;
 import include.pixmapstr;
-import mi;
+import include.mi;
 import mifillarc;
 
 enum QUADRANT = (90 * 64);

@@ -44,18 +44,18 @@ import   dix.dix_priv;
 import   dix.screen_hooks_priv;
 import   mi.mipointer_priv;
 
-import   misc;
-import   pixmapstr;
+import   include.misc;
+import   include.pixmapstr;
 import   input;
 import   mi;
-import   cursorstr;
-import   scrnintstr;
-import   windowstr;
+import   include.cursorstr;
+import   include.scrnintstr;
+import include.windowstr;
 import   gcstruct;
 import   mipointer;
 import   misprite;
 import   dixfontstr;
-import   inputstr;
+import   include.cursorstr;
 import   damage;
 
 struct _MiCursorInfoRec {

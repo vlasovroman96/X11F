@@ -52,7 +52,7 @@ import include.extinit;
 import Xext.panoramiXsrv;
 
 import composite.compint;
-import xace;
+import Xext.xace;
 
 /*
  * Delete the given overlay client list element from its screen list.

@@ -82,9 +82,9 @@ import dgaproc_priv;
 
 import include.inputstr;
 import xf86Xinput_priv;
-import mipointer;
-import xkbsrv;
-import xkbstr;
+import mi.mipointer;
+import include.xkbsrv;
+import include.xkbsrv;
 
 version (DPMSExtension) {
 import X11.extensions.dpmsconst;

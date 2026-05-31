@@ -69,7 +69,7 @@ import os.serverlock;
 import os.osdep;
 
 import include.os;
-import opaque;
+import include.opaque;
 
 /*
  * Explicit support for a server lock file like the ones used for UUCP.

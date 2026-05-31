@@ -37,7 +37,7 @@ import include.globals;
 import xf86_priv;
 import xf86str;
 import xf86Priv;
-import mipointer;
+import mi.mipointer;
 import include.randrstr;
 import include.inputstr;
 

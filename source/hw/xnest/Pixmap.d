@@ -27,7 +27,7 @@ import include.scrnintstr;
 import include.gc;
 import include.servermd;
 import include.privates;
-import mi;
+import include.mi;
 
 import xnest_xcb;
 

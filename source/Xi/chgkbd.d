@@ -56,7 +56,7 @@ SOFTWARE.
 import build.dix_config;
 
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// // import deimos.X11.extensions.XIproto;
 
 import dix.request_priv;
 import Xi.handlers;
@@ -65,7 +65,7 @@ import include.inputstr;           /* DeviceIntPtr      */
 import XIstubs;
 import include.globals;
 import include.exevents;
-import exglobals;
+import Xi.exglobals;
 import chgptr;
 
 /***********************************************************************

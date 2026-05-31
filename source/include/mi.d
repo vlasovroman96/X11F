@@ -49,16 +49,16 @@ SOFTWARE.
 
  
 public import deimos.X11.X;
-public import deimos.X11.fonts.font;
+// public import deimos.X11.fonts.font;
 
 public import include.regionstr;
-public import validate;
+public import include.validate;
 public import include.window;
 public import include.gc;
 public import include.input;
 public import include.cursor;
 public import include.privates;
-public import colormap;
+public import include.colormap;
 public import include.events;
 
 enum MiBits =	CARD32;

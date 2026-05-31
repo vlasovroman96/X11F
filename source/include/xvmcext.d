@@ -3,8 +3,8 @@ module include.xvmcext;
 extern(C): __gshared:
 
  
-public import deimos.X11.extensions.Xv;
-public import xvdix;
+// public import deimos.X11.extensions.Xv;
+public import include.xvdix;
 
 struct XvMCImageIDList {
     int num_xvimages;

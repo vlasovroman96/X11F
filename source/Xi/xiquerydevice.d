@@ -35,7 +35,7 @@ import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.Xatom;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -48,12 +48,12 @@ import os.fmt;
 import Xi.handlers;
 
 import include.inputstr;
-import xkbstr;
-import xkbsrv;
-import xserver_properties;
-import exglobals;
+import include.xkbsrv;
+import include.xkbsrv;
+import include.xserver_properties;
+import Xi.exglobals;
 import include.privates;
-import xiquerydevice;
+import Xi.xiquerydevice;
 
 static Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr d);
 static int

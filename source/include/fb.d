@@ -35,11 +35,11 @@ public import include.pixmapstr;
 public import include.regionstr;
 public import include.gcstruct;
 public import colormap;
-public import miscstruct;
+public import include.miscstruct;
 public import include.servermd;
 public import include.windowstr;
 public import include.privates;
-public import mi;
+public import include.mi;
 public import migc;
 public import include.picturestr;
 

@@ -85,11 +85,11 @@ import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.geproto;
+// import deimos.X11.extensions.geproto;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
-import deimos.X11.extensions.XKBproto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XKBproto;
 
 import dix.cursor_priv;
 import dix.devices_priv;
@@ -109,14 +109,14 @@ import xkb.xkbsrv_priv;
 
 import include.inputstr;
 import include.windowstr;
-import miscstruct;
+import include.miscstruct;
 import include.extnsionst;
-import exglobals;
-import eventstr;
+import Xi.exglobals;
+import include.eventstr;
 import include.scrnintstr;
-import xace;
-import xiquerydevice;      /* For List*Info */
-import eventstr;
+import Xext.xace;
+import Xi.xiquerydevice;      /* For List*Info */
+import include.eventstr;
 
 enum string WID(string w) = `((` ~ w ~ `) ? ((` ~ w ~ `).drawable.id) : 0)`;
 enum AllModifiersMask = ( 

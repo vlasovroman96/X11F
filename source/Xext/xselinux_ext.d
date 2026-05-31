@@ -32,7 +32,7 @@ import include.inputstr;
 import include.windowstr;
 import include.propertyst;
 import include.extnsionst;
-import xselinuxint;
+import Xext.xselinuxint;
 
 enum CTX_DEV = offsetof(SELinuxSubjectRec, dev_create_sid);
 enum CTX_WIN = offsetof(SELinuxSubjectRec, win_create_sid);

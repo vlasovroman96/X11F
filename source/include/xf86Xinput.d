@@ -59,7 +59,7 @@ public import xf86;
 public import xf86str;
 public import include.inputstr;
 public import deimos.X11.extensions.XI;
-public import deimos.X11.extensions.XIproto;
+public // import deimos.X11.extensions.XIproto;
 
 /* Input device flags */
 enum XI86_ALWAYS_CORE =	0x04    /* device always controls the pointer */;

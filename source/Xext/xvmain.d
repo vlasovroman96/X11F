@@ -82,8 +82,8 @@ import build.dix_config;
 import core.stdc.string;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.Xv;
-import deimos.X11.extensions.Xvproto;
+// import deimos.X11.extensions.Xv;
+// import deimos.X11.extensions.Xvproto;
 
 import dix.dix_priv;
 import dix.screen_hooks_priv;
@@ -101,9 +101,9 @@ import include.gcstruct;
 import include.extnsionst;
 import include.dixstruct;
 import include.resource;
-import opaque;
+import include.opaque;
 import include.input;
-import xvdisp;
+import Xext.xvdisp;
 
 enum string SCREEN_PROLOGUE(string pScreen, string field) = `((` ~ pScreen ~ `).` ~ field ~ ` = (cast(XvScreenPtr) 
     dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, &XvScreenKeyRec)).` ~ field ~ `)`;

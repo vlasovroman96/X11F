@@ -47,7 +47,7 @@ import include.glamor;
 }
 import ephyr_glamor;
 import include.glx_extinit;
-import xkbsrv;
+import include.xkbsrv;
 
 extern Bool ephyr_glamor;
 

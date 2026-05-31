@@ -47,7 +47,7 @@ import Color;
 import XNCursor;
 import include.events;
 import Init;
-import mipointer;
+import mi.mipointer;
 import Args;
 import mipointrst;
 

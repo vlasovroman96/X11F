@@ -34,7 +34,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  
 public import deimos.X11.Xdefs;
-public import deimos.X11.extensions.XKB;
+// public import deimos.X11.extensions.XKB;
 
 enum string	XkbCharToInt(string v) = `(cast(int) ((` ~ v ~ `) & 0x80 ? ((` ~ v ~ `) | (~0xff)) : ((` ~ v ~ `) & 0x7f)))`;
 enum string	XkbIntTo2Chars(string i, string h, string l) = `((` ~ h ~ `) = (` ~ i ~ ` >> 8) & 0xff, (` ~ l ~ `) = (` ~ i ~ `) & 0xff)`;

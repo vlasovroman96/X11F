@@ -53,7 +53,7 @@ import validate;
 import include.resource;
 import include.gcstruct;
 import include.dixstruct;
-import xvdix;
+import include.xvdix;
 import xf86xvpriv;
 
 /* XvAdaptorRec fields */

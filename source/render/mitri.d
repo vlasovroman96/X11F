@@ -32,7 +32,7 @@ import include.scrnintstr;
 import include.gcstruct;
 import include.pixmapstr;
 import include.windowstr;
-import mi;
+import include.mi;
 import include.picturestr;
 
 void miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds)

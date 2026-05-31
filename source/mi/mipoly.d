@@ -57,7 +57,7 @@ import deimos.X11.X;
 import include.windowstr;
 import include.gcstruct;
 import include.pixmapstr;
-import mi;
+import include.mi;
 import miscanfill;
 import mipoly;
 import include.regionstr;

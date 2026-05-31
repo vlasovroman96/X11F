@@ -38,7 +38,7 @@ import dix.input_priv;
 import mi.mipointer_priv;
 
 import include.cursor;
-import mipointer;
+import mi.mipointer;
 import include.scrnintstr;
 import include.globals;
 

@@ -45,8 +45,8 @@ import xkb.xkbout_priv;
 import include.misc;
 import include.inputstr;
 import include.dix;
-import xkbstr;
-import xkbsrv;
+import include.xkbsrv;
+import include.xkbsrv;
 import xkbgeom_priv;
 
 uint _XkbKSCheckCase(KeySym ks)

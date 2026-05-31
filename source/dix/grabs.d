@@ -70,7 +70,7 @@ import include.misc;
 import include.windowstr;
 import include.inputstr;
 import include.cursorstr;
-import exglobals;
+import Xi.exglobals;
 
 enum MasksPerDetailMask = 8;    /* 256 keycodes and 256 possible;
                                    modifier combinations; modifier MASKWORD(buf, i); */

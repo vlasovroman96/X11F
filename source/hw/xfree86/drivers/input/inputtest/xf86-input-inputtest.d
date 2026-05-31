@@ -40,10 +40,10 @@ import include.xorgVersion;
 
 import include.exevents;
 import include.input;
-import xkbsrv;
+import include.xkbsrv;
 import xf86;
 import xf86Xinput_priv;
-import xserver_properties;
+import include.xserver_properties;
 import include.os;
 
 import xf86_input_inputtest_protocol;

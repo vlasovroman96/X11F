@@ -77,7 +77,7 @@ import include.pixmapstr;
 import include.gcstruct;
 import include.extnsionst;
 import include.servermd;
-import xace;
+import Xext.xace;
 import include.protocol_versions;
 
 /* Needed for Solaris cross-zone shared memory extension */

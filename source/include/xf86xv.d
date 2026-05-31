@@ -31,7 +31,7 @@ extern(C): __gshared:
 
  
 public import include.xlibre_ptrtypes;
-public import xvdix;
+public import include.xvdix;
 public import xf86str;
 
 enum VIDEO_OVERLAID_IMAGES =			0x00000004;

@@ -73,7 +73,7 @@ import include.scrnintstr;
 import include.resource;
 import include.windowstr;
 import include.privates;
-import xace;
+import Xext.xace;
 
 enum REDMAP = 0;
 enum GREENMAP = 1;

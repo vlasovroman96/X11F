@@ -109,18 +109,18 @@ import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.extensions.ge;
-import deimos.X11.extensions.XKBproto;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XKBproto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
 import deimos.X11.extensions.XI;
 import deimos.X11.extensions.XI2;
 import deimos.X11.Xproto;
 import deimos.X11.extensions.ge;
 import deimos.X11.extensions.XI;
 import deimos.X11.extensions.XI2;
-import deimos.X11.extensions.XKBproto;
-import deimos.X11.extensions.XIproto;
-import deimos.X11.extensions.XI2proto;
+// import deimos.X11.extensions.XKBproto;
+// import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XI2proto;
 
 import dix.cursor_priv;
 import dix.devices_priv;
@@ -154,14 +154,14 @@ import include.scrnintstr;
 import include.cursorstr;
 import include.dixstruct;
 import include.globals;
-import xace;
-import exglobals;
+import Xext.xace;
+import Xi.exglobals;
 import include.extnsionst;
 import dispatch;
 import dixstruct_priv;
-import eventstr;
+import include.eventstr;
 import enterleave;
-import mi;
+import include.mi;
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `
         ((` ~ c ~ `).xkbClientFlags&XkbPCF_DetectableAutoRepeatMask)`;

@@ -33,7 +33,7 @@ import include.scrnintstr;
 import include.gcstruct;
 import include.pixmapstr;
 import include.windowstr;
-import mi;
+import include.mi;
 import include.picturestr;
 
 private void miColorRects(PicturePtr pDst, PicturePtr pClipPict, xRenderColor* color, int nRect, xRectangle* rects, int xoff, int yoff)

@@ -141,13 +141,13 @@ import include.misc;
 import include.os;
 import include.resource;
 import include.dixstruct;
-import opaque;
+import include.opaque;
 import include.windowstr;
 import include.dixfont;
 import colormap;
 import include.inputstr;
 import include.cursor;
-import xace;
+import Xext.xace;
 import core.stdc.assert_;
 import include.gcstruct;
 

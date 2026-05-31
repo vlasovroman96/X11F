@@ -34,7 +34,7 @@ import deimos.X11.X;
 import deimos.X11.Xproto;
 import include.misc;
 import include.inputstr;
-import xkbsrv;
+import include.xkbsrv;
 import xkbgeom_priv;
 
 /***====================================================================***/
