@@ -3,7 +3,7 @@ module xorgHelper;
 extern(C): __gshared:
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import include.xorgVersion;
 
@@ -15,7 +15,7 @@ import include.propertyst;
 import include.gcstruct;
 import loaderProcs;
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 
 CARD32 xorgGetVersion()
 {

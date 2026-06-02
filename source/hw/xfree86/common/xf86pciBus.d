@@ -42,7 +42,7 @@ import core.sys.posix.dirent;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import include.pciaccess;
-import X11.X;
+import deimos.X11.X;
 
 import os.log_priv;
 import os.osdep;
@@ -51,7 +51,7 @@ import xf86_pci_priv;
 import include.os;
 import Pci;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 
 /* Bus-specific headers */
 import xf86Bus;

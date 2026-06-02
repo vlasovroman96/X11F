@@ -16,9 +16,9 @@ is" without express or implied warranty.
 */
 import build.xorg_config;
 
-import X11.X;
-import X11.Xdefs;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xdefs;
+import deimos.X11.Xproto;
 
 import dix.cursor_priv;
 import dix.inpututils_priv;

@@ -58,7 +58,7 @@ import loaderProcs;
 version (HAVE_DLFCN_H) {
 
 import core.sys.posix.dlfcn;
-import X11.Xos;
+import deimos.X11.Xos;
 import xf86Module;
 
 } else {

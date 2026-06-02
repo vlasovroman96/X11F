@@ -33,12 +33,12 @@ extern(C): __gshared:
  * authorization from the copyright holder(s) and author(s).
  */
 
-import kdrive_config;
-import kdrive;
+import config.kdrive_config;
+import hw.kdrive.src.kdrive;
 import linux.keyboard;
 import linux.kd;
 version = XK_PUBLISHING;
-import X11.keysym;
+import deimos.X11.keysym;
 import core.sys.posix.termios;
 import core.sys.posix.sys.ioctl;
 

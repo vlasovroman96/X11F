@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import dix.input_priv;
 import dix.screen_hooks_priv;
@@ -35,8 +35,8 @@ import include.xf86DDC;
 import include.os;
 import include.globals;
 import xf86_priv;
-import xf86str;
-import xf86Priv;
+import include.xf86str;
+import include.xf86Priv;
 import mi.mipointer;
 import include.randrstr;
 import include.inputstr;

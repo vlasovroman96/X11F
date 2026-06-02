@@ -3,7 +3,7 @@ module timercheck;
 extern(C): __gshared:
 import dix_config;
 
-import X11.Xfuncproto;
+//import deimos.X11.Xfuncproto;
 
 import os.osdep;
 

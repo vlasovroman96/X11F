@@ -27,7 +27,7 @@ extern(C): __gshared:
  *      Adam Jackson <ajax@redhat.com>
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import xcb.render;
 import xcb.xcb_renderutil;

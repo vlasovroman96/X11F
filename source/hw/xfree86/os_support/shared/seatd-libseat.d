@@ -44,7 +44,7 @@ import xf86platformBus;
 }
 import xf86Xinput;
 import xf86Xinput_priv;
-import xf86Priv;
+import include.xf86Priv;
 import include.globals;
 
 import config.hotplug_priv;

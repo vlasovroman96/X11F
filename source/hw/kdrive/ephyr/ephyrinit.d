@@ -27,7 +27,7 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import dix.dix_priv;
 import dix.settings_priv;

@@ -16,7 +16,7 @@ import os.log_priv;
 
 import include.os;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
 import xf86_OSproc;
 

@@ -31,11 +31,11 @@ extern(C): __gshared:
 /* Stubs for the OS-support layer power-management functions. */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import include.os;
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
 import xf86_OSproc;
 

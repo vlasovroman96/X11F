@@ -6,9 +6,9 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import X11.Xdefs;
+public import deimos.X11.Xdefs;
 
-public import xf86str;
+public import include.xf86str;
 
 version (XSERVER_LIBPCIACCESS) {
 

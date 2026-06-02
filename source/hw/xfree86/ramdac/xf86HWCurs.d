@@ -4,7 +4,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.string;
-import X11.X;
+import deimos.X11.X;
 
 import dix.colormap_priv;
 import randr.randrstr_priv;
@@ -15,7 +15,7 @@ import xf86_OSproc;
 import include.scrnintstr;
 import include.pixmapstr;
 import include.windowstr;
-import xf86str;
+import include.xf86str;
 import include.cursorstr;
 import include.mi;
 import mi.mipointer;

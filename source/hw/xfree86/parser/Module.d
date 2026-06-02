@@ -58,7 +58,7 @@ import build.xorg_config;
 
 import core.stdc.assert_;
 
-import xf86Parser;
+import include.xf86Parser;
 import xf86tokens;
 import Configint;
 

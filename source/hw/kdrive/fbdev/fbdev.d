@@ -24,7 +24,7 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import core.sys.posix.sys.ioctl;
 import core.stdc.errno;

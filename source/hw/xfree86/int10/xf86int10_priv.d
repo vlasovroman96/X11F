@@ -11,8 +11,8 @@ import core.stdc.config: c_long, c_ulong;
  *   execute BIOS int 10h calls in x86 real mode environment
  */
  
-public import X11.Xmd;
-public import X11.Xdefs;
+// public //import deimos.X11.Xmd;
+public import deimos.X11.Xdefs;
 public import xf86Pci;
 public import xf86int10;
 

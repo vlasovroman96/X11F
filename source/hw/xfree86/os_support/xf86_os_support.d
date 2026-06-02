@@ -9,7 +9,7 @@ extern(C): __gshared:
 /* prototypes for the os-support layer of xfree86 DDX */
 
  
-public import X11.Xdefs;
+public import deimos.X11.Xdefs;
 
 public import include.os;
 public import dix.dix_priv;

@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 public import os.osdep;
-public import xf86;
+public import include.xf86;
 
 extern Bool xf86DoConfigure;
 extern Bool xf86DoConfigurePass1;

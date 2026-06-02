@@ -16,8 +16,8 @@ is" without express or implied warranty.
 */
 import build.xorg_config;
 
-import X11.X;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 import include.screenint;
 import include.inputstr;
 import include.input;

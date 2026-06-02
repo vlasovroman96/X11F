@@ -9,8 +9,13 @@
 	"dependencies": {
 		"libx11" : "~master"
 	},
-	"targetType": "staticLibrary",
+	"targetType": "executable",
 	"dflags": [
-        "-verrors=5"
-    ]
+        "-verrors=5",
+		"-P-I/usr/include/dbus-1.0",
+		"-P-I/usr/lib/dbus-1.0/include"
+    ],
+	"importPaths": [
+		"source"
+	]
 }

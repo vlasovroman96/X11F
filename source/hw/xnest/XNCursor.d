@@ -16,7 +16,7 @@ is" without express or implied warranty.
 */
 
  
-public import X11.Xdefs;
+public import deimos.X11.Xdefs;
 
 public import mipointrst;
 

@@ -3,13 +3,13 @@ module lnx_apm;
 extern(C): __gshared:
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import os.log_priv;
 
 import include.os;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
 import xf86_OSproc;
 

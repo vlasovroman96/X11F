@@ -29,14 +29,14 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 import include.input;
 import include.scrnintstr;
 
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 
 /*
  * This file contains the common part of the video memory mapping functions

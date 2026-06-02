@@ -3,7 +3,7 @@ module include.shadowfb;
 extern(C): __gshared:
 
  
-public import xf86str;
+public import include.xf86str;
 
 /*
  * User defined callback function.  Passed a pointer to the ScrnInfo struct,

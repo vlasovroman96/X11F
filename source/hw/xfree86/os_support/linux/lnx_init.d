@@ -28,8 +28,8 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-import X11.X;
-import X11.Xmd;
+import deimos.X11.X;
+//import deimos.X11.Xmd;
 
 import os.cmdline;
 import os.osdep;
@@ -37,9 +37,9 @@ import os.osdep;
 import compiler;
 import linux;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 
 import seatd_libseat;
 

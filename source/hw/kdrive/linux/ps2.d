@@ -24,13 +24,13 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
-import X11.X;
-import X11.Xproto;
+import config.kdrive_config;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 import os.xserver_poll;
 import include.inputstr;
 import include.scrnintstr;
-import kdrive;
+import hw.kdrive.src.kdrive;
 
 private int Ps2ReadBytes(int fd, char* buf, int len, int min)
 {

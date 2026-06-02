@@ -35,7 +35,7 @@ import dix.screen_hooks_priv;
 
 import exa_priv;
 
-import xf86str;
+import include.xf86str;
 import xf86;
 
 struct _ExaXorgScreenPrivRec {

@@ -19,7 +19,7 @@ public import include.misc;
 public import include.input;
 public import include.scrnintstr;
 
-public import xf86str;
+public import include.xf86str;
 public import xf86Pci;
 
 public import xf86DDC;

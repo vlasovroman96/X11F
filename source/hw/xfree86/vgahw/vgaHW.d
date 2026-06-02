@@ -17,7 +17,7 @@ import core.stdc.stdlib;
 import core.stdc.string;
 import core.sys.posix.unistd;
 
-import X11.X;
+import deimos.X11.X;
 
 import include.vgaHW;
 import os.log_priv;
@@ -26,7 +26,7 @@ import include.misc;
 import xf86_priv;
 import xf86_OSproc;
 import xf86Opt_priv;
-import xf86Priv;
+import include.xf86Priv;
 import compiler;
 import xf86cmap;
 import Pci;

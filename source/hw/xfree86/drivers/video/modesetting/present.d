@@ -42,7 +42,7 @@ import include.present;
 import xf86;
 import include.xf86Crtc;
 import include.xf86drm;
-import xf86str;
+import include.xf86str;
 
 import driver;
 import drmmode_display;

@@ -25,14 +25,14 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import os.osdep;
 
 import xf86;
 import xf86Priv;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 
 import seatd_libseat;
 

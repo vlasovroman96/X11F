@@ -63,7 +63,7 @@ import core.stdc.config: c_long, c_ulong;
  
 public import core.stdc.stdio;
 public import core.stdc.string;
-public import xf86Optionstr;
+public import include.xf86Optionstr;
 
 // public import deimos.X11.Xfuncproto;
 

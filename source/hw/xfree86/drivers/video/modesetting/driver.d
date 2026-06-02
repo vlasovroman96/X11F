@@ -46,8 +46,8 @@ import core.stdc.errno;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
-import X11.extensions.randr;
-import X11.extensions.Xv;
+import deimos.X11.extensions.randr;
+import deimos.X11.extensions.Xv;
 
 import config.hotplug_priv;
 import dix.dix_priv;
@@ -56,7 +56,7 @@ import include.xorgVersion;
 import mi.mi_priv;
 
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_OSproc;
 import compiler;
 import xf86Pci;

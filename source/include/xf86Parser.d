@@ -62,11 +62,11 @@ import core.stdc.config: c_long, c_ulong;
  */
  
 public import deimos.X11.Xdefs;
-public import xf86Optrec;
+public import include.xf86Optrec;
 public import include.list;
 
 public import core.sys.posix.sys.types;
-public import regex;
+public import externs.regex;
 
 version = HAVE_PARSER_DECLS;
 

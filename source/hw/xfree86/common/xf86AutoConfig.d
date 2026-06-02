@@ -44,9 +44,9 @@ import xf86Parser_priv;
 import xf86tokens;
 import xf86Config;
 import xf86MatchDrivers;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 import xf86platformBus_priv;
 import xf86pciBus;
 version (__sparc__) {

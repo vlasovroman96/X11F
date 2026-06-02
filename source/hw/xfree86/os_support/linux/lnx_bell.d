@@ -31,7 +31,7 @@ import build.xorg_config;
 import core.sys.posix.sys.ioctl;
 import linux.kd;
 
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
 
 void xf86OSRingBell(int loudness, int pitch, int duration)

@@ -123,7 +123,7 @@ cat > sdksyms.c << EOF
 #include "xf86Privstr.h"
 #include "xf86cmap.h"
 #include "xf86fbman.h"
-#include "xf86str.h"
+#include "include.xf86str.h"
 #include "xf86Xinput.h"
 #include "xisb.h"
 #ifdef XV

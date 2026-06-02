@@ -1,5 +1,6 @@
 
-// #define _IMPORTC_
+// #ifndef _IMPORTC_
+// __module externs.x11.X
 #include <X11/Xfuncs.h>
 #include <X11/extensions/XI2proto.h>
 #include <X11/extensions/dpmsproto.h>
@@ -8,9 +9,7 @@
 #include <X11/Xarch.h>
 #include <X11/extensions/ge.h>
 #include <X11/extensions/geproto.h>
-
-// #endif
-
+// #ifdef
 
 
 

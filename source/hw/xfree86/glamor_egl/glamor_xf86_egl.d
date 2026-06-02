@@ -10,7 +10,7 @@ import dix_config;
 
 version = GLAMOR_FOR_XORG;
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 
 import include.glamor;
 import glamor_egl;

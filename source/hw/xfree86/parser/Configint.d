@@ -66,7 +66,7 @@ public import core.stdc.stdio;
 public import core.stdc.string;
 public import core.stdc.stdarg;
 public import core.stdc.stddef;
-public import xf86Parser;
+public import include.xf86Parser;
 
 enum ParserNumType { PARSE_DECIMAL, PARSE_OCTAL, PARSE_HEX }
 alias PARSE_DECIMAL = ParserNumType.PARSE_DECIMAL;

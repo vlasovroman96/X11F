@@ -37,9 +37,9 @@ import dix_config;
 
 version (XF86VIDMODE) {
 
-import X11.X;
-import X11.Xproto;
-import X11.extensions.xf86vmproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.extensions.xf86vmproto;
 
 import dix.dix_priv;
 import dix.request_priv;

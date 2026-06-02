@@ -24,14 +24,14 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 import core.stdc.errno;
 import linux.input;
-import X11.X;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 import include.inputstr;
 import include.scrnintstr;
-import kdrive;
+import hw.kdrive.src.kdrive;
 import evdev;
 
 enum NUM_EVENTS =  128;

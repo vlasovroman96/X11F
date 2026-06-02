@@ -6,8 +6,8 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import X11.Xdefs;
-public import X11.extensions.render;
+public import deimos.X11.Xdefs;
+public import deimos.X11.extensions.render;
 
 public import include.randrstr;
 public import xf86RandR12;

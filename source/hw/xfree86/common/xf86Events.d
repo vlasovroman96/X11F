@@ -54,12 +54,12 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-import X11.X;
-import X11.Xproto;
-import X11.Xatom;
-import X11.extensions.XI;
-import X11.extensions.XIproto;
-import X11.keysym;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.Xatom;
+//import deimos.X11.extensions.XI;
+import deimos.X11.extensions.XIproto;
+import deimos.X11.keysym;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -70,9 +70,9 @@ import os.log_priv;
 
 import include.misc;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 import xf86platformBus_priv;
 
 version (XFreeXDGA) {
@@ -87,7 +87,7 @@ import include.xkbsrv;
 import include.xkbsrv;
 
 version (DPMSExtension) {
-import X11.extensions.dpmsconst;
+import deimos.X11.extensions.dpmsconst;
 import dpmsproc;
 }
 

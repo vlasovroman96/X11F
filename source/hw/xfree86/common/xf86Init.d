@@ -48,12 +48,12 @@ enum HAS_UTSNAME = 1;
 import core.sys.posix.sys.utsname;
 }
 
-import X11.X;
-import X11.Xmd;
-import X11.Xproto;
-import X11.Xatom;
-import X11.extensions.XI;
-import X11.extensions.XIproto;
+import deimos.X11.X;
+//import deimos.X11.Xmd;
+import deimos.X11.Xproto;
+import deimos.X11.Xatom;
+//import deimos.X11.extensions.XI;
+import deimos.X11.extensions.XIproto;
 
 import config.dbus_core;
 import config.hotplug_priv;
@@ -79,10 +79,10 @@ import loaderProcs;
 
 import xf86Module_priv;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86Config;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 import xf86cmap;
 import mi.mipointer;
 import xf86Extensions;
@@ -95,7 +95,7 @@ import include.globals;
 import include.xserver_properties;
 
 version (DPMSExtension) {
-import X11.extensions.dpmsconst;
+import deimos.X11.extensions.dpmsconst;
 import dpmsproc;
 }
 

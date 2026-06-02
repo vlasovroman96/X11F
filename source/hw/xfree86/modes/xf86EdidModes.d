@@ -34,7 +34,7 @@ import build.xorg_config;
 
 import xf86;
 import xf86DDC_priv;
-import X11.Xatom;
+import deimos.X11.Xatom;
 import include.property;
 import include.propertyst;
 import include.xf86Crtc;

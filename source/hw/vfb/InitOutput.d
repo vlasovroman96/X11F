@@ -33,12 +33,12 @@ from The Open Group.
 import dix_config;
 
 version (Windows) {
-import X11.Xwinsock;
+import deimos.X11.Xwinsock;
 }
 import core.stdc.stdio;
-import X11.X;
-import X11.Xproto;
-import X11.Xos;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.Xos;
 
 import dix.colormap_priv;
 import dix.dix_priv;
@@ -70,7 +70,7 @@ import core.stdc.errno;
 version (Windows) {} else {
 import sys.param;
 }
-import X11.XWDFile;
+import deimos.X11.XWDFile;
 version (CONFIG_MITSHM) {
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;

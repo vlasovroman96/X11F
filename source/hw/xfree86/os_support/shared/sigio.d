@@ -62,15 +62,15 @@ import build.xorg_config;
 
 import core.stdc.errno;
 import core.sys.posix.sys.stat;
-import X11.X;
+import deimos.X11.X;
 
 import os.osdep;
 import os.xserver_poll;
 
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 import include.inputstr;
 
 version (HAVE_STROPTS_H) {

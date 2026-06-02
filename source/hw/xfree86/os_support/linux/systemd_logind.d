@@ -27,7 +27,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import dbus.dbus;
+import externs.dbus;
 import core.stdc.string;
 import core.sys.posix.sys.types;
 import core.sys.posix.unistd;
@@ -41,7 +41,7 @@ import xf86_os_support;
 import xf86_priv;
 import xf86platformBus_priv;
 import xf86Xinput_priv;
-import xf86Priv;
+import include.xf86Priv;
 import include.globals;
 
 import systemd_logind;

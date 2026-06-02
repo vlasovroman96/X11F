@@ -3,7 +3,7 @@ module include.xf86Cursor;
 extern(C): __gshared:
 
  
-public import xf86str;
+public import include.xf86str;
 public import mi.mipointer;
 
 struct _xf86CursorInfoRec {

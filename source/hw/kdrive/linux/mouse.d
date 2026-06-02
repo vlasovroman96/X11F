@@ -24,15 +24,15 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 import core.stdc.errno;
 import core.sys.posix.termios;
-import X11.X;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 import os.xserver_poll;
 import include.inputstr;
 import include.scrnintstr;
-import kdrive;
+import hw.kdrive.src.kdrive;
 
 enum KBUFIO_SIZE = 256;
 enum MOUSE_TIMEOUT =	100;

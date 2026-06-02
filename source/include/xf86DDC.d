@@ -15,7 +15,7 @@ extern(C): __gshared:
  
 public import edid;
 public import xf86i2c;
-public import xf86str;
+public import include.xf86str;
 
 /* speed up / slow down */
 enum xf86ddcSpeed {

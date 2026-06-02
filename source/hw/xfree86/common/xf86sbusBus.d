@@ -28,11 +28,11 @@ import build.xorg_config;
 import core.stdc.ctype;
 import core.stdc.stdio;
 import core.sys.posix.unistd;
-import X11.X;
+import deimos.X11.X;
 import include.os;
 import xf86_priv;
-import xf86Priv;
-import xf86_OSlib;
+import include.xf86Priv;
+import include.xf86_OSlib;
 import xf86cmap;
 
 import xf86Bus;

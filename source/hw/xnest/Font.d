@@ -17,13 +17,13 @@ is" without express or implied warranty.
 import build.xorg_config;
 
 import core.stdc.stddef;
-import X11.X;
-import X11.Xatom;
-import X11.Xdefs;
-import X11.Xproto;
-import X11.fonts.font;
-import X11.fonts.fontstruct;
-import X11.fonts.libxfont2;
+import deimos.X11.X;
+import deimos.X11.Xatom;
+import deimos.X11.Xdefs;
+import deimos.X11.Xproto;
+import deimos.X11.fonts.font;
+import deimos.X11.fonts.fontstruct;
+import deimos.X11.fonts.libxfont2;
 
 import dix.dix_priv;
 

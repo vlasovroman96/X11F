@@ -56,7 +56,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import xf86Parser;
+import include.xf86Parser;
 import xf86tokens;
 import Configint;
 

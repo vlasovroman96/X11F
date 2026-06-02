@@ -57,7 +57,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-import xf86Parser;
+import include.xf86Parser;
 import xf86tokens;
 import Configint;
 import Xprintf;

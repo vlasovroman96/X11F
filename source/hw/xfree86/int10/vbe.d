@@ -15,7 +15,7 @@ import build.xorg_config;
 
 import core.stdc.string;
 
-import X11.extensions.dpmsconst;
+import deimos.X11.extensions.dpmsconst;
 
 import xf86;
 import xf86Modes;

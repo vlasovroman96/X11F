@@ -29,14 +29,14 @@ extern(C): __gshared:
  *    Dodji Seketeli <dodji@openedhand.com>
  */
 
-import kdrive_config;
+import config.kdrive_config;
 import core.stdc.string;
-import X11.extensions.Xv;
+import deimos.X11.extensions.Xv;
 import xcb.xcb;
 import xcb.xcb_aux;
 import xcb.xv;
 import ephyrlog;
-import kdrive;
+import hw.kdrive.src.kdrive;
 import kxv;
 import ephyr;
 import hostx;

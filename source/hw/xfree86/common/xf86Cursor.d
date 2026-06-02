@@ -30,9 +30,9 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-import X11.X;
-import X11.Xmd;
-import X11.extensions.XIproto;
+import deimos.X11.X;
+//import deimos.X11.Xmd;
+import deimos.X11.extensions.XIproto;
 
 import dix.input_priv;
 import mi.mipointer_priv;
@@ -43,7 +43,7 @@ import include.scrnintstr;
 import include.globals;
 
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86_OSproc;
 
 import xf86Xinput;

@@ -42,11 +42,11 @@ import xselinux;
 }
 
 version (XFreeXDGA) {
-import X11.extensions.xf86dgaproto;
+import deimos.X11.extensions.xf86dgaproto;
 }
 
 version (XF86VIDMODE) {
-import X11.extensions.xf86vmproto;
+import deimos.X11.extensions.xf86vmproto;
 import vidmodestr;
 }
 

@@ -4,7 +4,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import xf86_os_support;
-import xf86_OSlib;
+import include.xf86_OSlib;
 
 void xf86OpenConsole()
 {

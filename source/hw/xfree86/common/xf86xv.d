@@ -33,10 +33,10 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-import X11.X;
-import X11.Xproto;
-import X11.extensions.Xv;
-import X11.extensions.Xvproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.extensions.Xv;
+import deimos.X11.extensions.Xvproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;

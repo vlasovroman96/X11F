@@ -39,7 +39,7 @@ private template HasVersion(string versionId) {
  */
 
  
-public import xf86str;
+public import include.xf86str;
 
 enum XF86_GlxVisuals {
     XF86_GlxVisualsMinimal,

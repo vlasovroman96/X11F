@@ -2,7 +2,7 @@ module include.vidmodestr;
 @nogc nothrow:
 extern(C): __gshared:
  
-public import displaymode;
+public import include.displaymode;
 
 enum VidModeSelectMode {
     VIDMODE_H_DISPLAY,

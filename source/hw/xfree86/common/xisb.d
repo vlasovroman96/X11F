@@ -36,7 +36,7 @@ import build.xorg_config;
 import include.misc;
 import xf86;
 import xf86_OSproc;
-import xf86_OSlib;
+import include.xf86_OSlib;
 import xf86Xinput;
 import xisb;
 

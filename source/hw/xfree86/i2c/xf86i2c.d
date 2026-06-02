@@ -20,9 +20,9 @@ import include.misc;
 import xf86;
 import xf86_OSproc;
 
-import X11.X;
-import X11.Xos;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xos;
+import deimos.X11.Xproto;
 import include.scrnintstr;
 import include.regionstr;
 import include.windowstr;

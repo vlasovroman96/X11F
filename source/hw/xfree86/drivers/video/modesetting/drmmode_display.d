@@ -43,8 +43,8 @@ import os.fmt;
 import present.present_priv;
 
 import include.inputstr;
-import xf86str;
-import X11.Xatom;
+import include.xf86str;
+import deimos.X11.Xatom;
 import include.mi;
 import micmap;
 import xf86cmap;
@@ -58,7 +58,7 @@ import drmmode_bo;
 
 import include.cursorstr;
 
-import X11.extensions.dpmsconst;
+import deimos.X11.extensions.dpmsconst;
 
 import driver;
 

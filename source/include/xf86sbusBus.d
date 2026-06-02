@@ -26,7 +26,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-public import xf86str;
+public import include.xf86str;
 
 enum SBUS_DEVICE_CG3 =		0x0003;
 enum SBUS_DEVICE_CG6 =		0x0005;

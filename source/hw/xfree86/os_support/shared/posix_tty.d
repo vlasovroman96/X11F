@@ -57,15 +57,15 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-import X11.X;
+import deimos.X11.X;
 
 import os.log_priv;
 import os.xserver_poll;
 
 import xf86;
 import xf86Opt_priv;
-import xf86Priv;
-import xf86_OSlib;
+import include.xf86Priv;
+import include.xf86_OSlib;
 
 private int GetBaud(int baudrate)
 {

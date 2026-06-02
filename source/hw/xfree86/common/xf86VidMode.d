@@ -38,18 +38,18 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import dix.screenint_priv;
 import os.log_priv;
 
 import include.os;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 
 version (XF86VIDMODE) {
 import vidmodestr;
-import xf86Privstr;
+import include.xf86Privstr;
 import xf86Extensions;
 import xf86cmap;
 

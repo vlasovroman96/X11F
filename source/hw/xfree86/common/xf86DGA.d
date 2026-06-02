@@ -43,9 +43,9 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import core.stdc.string;
-import X11.X;
-import X11.Xproto;
-import X11.extensions.xf86dgaproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.extensions.xf86dgaproto;
 
 import dix.colormap_priv;
 import dix.dix_priv;
@@ -57,8 +57,8 @@ import include.extinit;
 import mi.mi_priv;
 
 import xf86;
-import xf86str;
-import xf86Priv;
+import include.xf86str;
+import include.xf86Priv;
 import dgaproc;
 import dgaproc_priv;
 import include.pixmapstr;

@@ -24,8 +24,8 @@ extern(C): __gshared:
  * Author:  Keith Packard, SuSE, Inc.
  */
 
-import kdrive_config;
-import kdrive;
+import config.kdrive_config;
+import hw.kdrive.src.kdrive;
 import include.clang;
 
 enum MONITOR_TIMING_DEFAULT = 9;

@@ -3,7 +3,7 @@ module clientexception;
 extern(C): __gshared:
 import dix_config;
 
-import X11.Xfuncproto;
+//import deimos.X11.Xfuncproto;
 
 import dix.dix_priv;
 

@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.extensions.render;
+import deimos.X11.extensions.render;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -36,7 +36,7 @@ import xf86;
 import include.os;
 import include.globals;
 import xf86Modes;
-import xf86Priv;
+import include.xf86Priv;
 import mi.mipointer;
 import include.windowstr;
 import include.inputstr;

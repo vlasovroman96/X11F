@@ -3,7 +3,7 @@ module include.fbdevhw;
 extern(C): __gshared:
 
  
-public import xf86str;
+public import include.xf86str;
 
 enum FBDEVHW_PACKED_PIXELS =		0       /* Packed Pixels        */;
 enum FBDEVHW_INTERLEAVED_PLANES =	2       /* Interleaved planes   */;

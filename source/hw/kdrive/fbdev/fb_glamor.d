@@ -6,9 +6,9 @@ extern(C): __gshared:
  * Copyright © 2026 stefan11111 <stefan11111@shitposting.expert>
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
-import X11.Xfuncproto;
+//import deimos.X11.Xfuncproto;
 
 import include.scrnintstr;
 

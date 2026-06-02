@@ -3,10 +3,10 @@ module hw.cfree86.compat.xf86Helper;
 extern(C): __gshared:
 import dix_config;
 
-import X11.Xfuncproto;
+//import deimos.X11.Xfuncproto;
 
 
-import xf86Priv;
+import include.xf86Priv;
 import xf86Bus;
 
 

@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import xf86Opt;
+public import include.xf86Opt;
 
 void xf86OptionListReport(XF86OptionPtr parm);
 void xf86MarkOptionUsed(XF86OptionPtr option);

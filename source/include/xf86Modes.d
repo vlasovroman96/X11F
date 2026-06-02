@@ -36,7 +36,7 @@ public import core.stdc.stdio;
 public import xf86;
 public import xorgVersion;
 public import edid;
-public import xf86Parser;
+public import include.xf86Parser;
 
 extern _X_EXPORT xf86ModeHSync(const(DisplayModeRec)* mode);
 extern _X_EXPORT xf86ModeVRefresh(const(DisplayModeRec)* mode);

@@ -23,8 +23,8 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
-import kdrive;
+import config.kdrive_config;
+import hw.kdrive.src.kdrive;
 
 Bool KdShadowFbAlloc(KdScreenInfo* screen, Bool rotate)
 {

@@ -33,13 +33,13 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 import include.os;
 import include.windowstr;
 import include.propertyst;
 import xf86_priv;
-import xf86Priv;
-import xf86Parser;
+import include.xf86Priv;
+import include.xf86Parser;
 import xf86Xinput;
 import xf86InPriv;
 import xf86Config;

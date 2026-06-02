@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2026 stefan11111 <stefan11111@shitposting.expert>
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import core.stdc.stdio;
 import core.stdc.stdint;
@@ -15,7 +15,7 @@ import core.stdc.string;
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
 
-import kdrive;
+import hw.kdrive.src.kdrive;
 import evdev;
 
 enum EVDEV_FMT = "/dev/input/event%d";

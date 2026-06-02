@@ -26,10 +26,10 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import xcb.xcb_keysyms;
-import X11.keysym;
+import deimos.X11.keysym;
 
 import fb.fb_priv;
 import mi.mipointer_priv;

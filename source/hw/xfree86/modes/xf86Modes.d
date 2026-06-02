@@ -29,12 +29,12 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import libxcvt.libxcvt;
+import externs.libxcvt;
 
 import xf86_priv;
 import xf86Config;
 import xf86Modes;
-import xf86Priv;
+import include.xf86Priv;
 
 /**
  * Calculates the horizontal sync rate of a mode.

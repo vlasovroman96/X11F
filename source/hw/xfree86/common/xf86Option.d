@@ -38,13 +38,13 @@ import build.xorg_config;
 
 import core.stdc.stdlib;
 import core.stdc.ctype;
-import X11.X;
+import deimos.X11.X;
 import include.os;
 import xf86;
 import xf86Opt_priv;
 import xf86Xinput;
-import xf86Optrec;
-import xf86Parser;
+import include.xf86Optrec;
+import include.xf86Parser;
 import xf86platformBus_priv;
 import optionstr;
 

@@ -28,7 +28,7 @@ extern(C): __gshared:
  *
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import ephyr;
 import exa_priv;

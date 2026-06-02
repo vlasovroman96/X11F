@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-// public import stdbool;
+// // public import stdbool;
 public import deimos.X11.Xdefs;
 public import deimos.X11.Xmd;
 

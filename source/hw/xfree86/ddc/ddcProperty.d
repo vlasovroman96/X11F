@@ -29,8 +29,8 @@ import dix.dix_priv;
 
 import xf86_priv;
 import xf86DDC_priv;
-import xf86Priv;
-import X11.Xatom;
+import include.xf86Priv;
+import deimos.X11.Xatom;
 import include.property;
 import include.propertyst;
 import core.stdc.string;

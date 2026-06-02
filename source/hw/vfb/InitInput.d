@@ -31,10 +31,10 @@ from The Open Group.
 
 import dix_config;
 
-import X11.X;
-import X11.Xproto;
-import X11.Xos;
-import X11.keysym;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.Xos;
+import deimos.X11.keysym;
 
 import dix.dix_priv;
 import dix.input_priv;

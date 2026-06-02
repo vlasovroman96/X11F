@@ -43,9 +43,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import build.xorg_config;
 
 import core.stdc.string;
-import X11.X;
-import X11.Xproto;
-import X11.dri.xf86driproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.dri.xf86driproto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -61,7 +61,7 @@ import include.cursorstr;
 import include.scrnintstr;
 import include.servermd;
 import swaprep;
-import xf86str;
+import include.xf86str;
 import dri_priv;
 import include.xf86drm;
 import protocol_versions;

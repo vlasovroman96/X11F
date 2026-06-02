@@ -32,10 +32,10 @@ import dix_config;
 import build.xorg_config;
 
 import core.stdc.stdio;
-import X11.X;
-import X11.Xproto;
-import X11.keysym;
-import X11.extensions.XI;
+import deimos.X11.X;
+import deimos.X11.Xproto;
+import deimos.X11.keysym;
+//import deimos.X11.extensions.XI;
 
 import hw.xfree86.common.action_priv;
 import xkb.xkbsrv_priv;

@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import dbus.dbus;
+import externs.dbus;
 import core.sys.posix.sys.select;
 
 import os.log_priv;

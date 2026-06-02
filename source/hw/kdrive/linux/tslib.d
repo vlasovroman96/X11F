@@ -34,13 +34,13 @@ import core.stdc.config: c_long, c_ulong;
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
-import X11.X;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 import include.inputstr;
 import include.scrnintstr;
-import kdrive;
+import hw.kdrive.src.kdrive;
 import core.sys.posix.sys.ioctl;
 import tslib;
 import core.sys.posix.dirent;

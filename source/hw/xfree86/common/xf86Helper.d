@@ -43,7 +43,7 @@ private template HasVersion(string versionId) {
 import build.xorg_config;
 
 import core.sys.posix.sys.stat;
-import X11.X;
+import deimos.X11.X;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -61,8 +61,8 @@ import include.propertyst;
 import include.gcstruct;
 import loaderProcs;
 import xf86_priv;
-import xf86Priv;
-import xf86_OSlib;
+import include.xf86Priv;
+import include.xf86_OSlib;
 import micmap;
 import xf86Bus;
 import xf86Xinput_priv;

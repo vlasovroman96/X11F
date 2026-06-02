@@ -85,7 +85,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 
 import include.edid;
 import include.extinit;
@@ -97,7 +97,7 @@ import include.os;
 import include.servermd;
 import include.globals;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 
 private void printModeRejectMessage(int index, DisplayModePtr p, int status)
 {

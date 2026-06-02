@@ -32,7 +32,7 @@ import build.xorg_config;
 import X1.X;
 
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86Xinput_priv;
 import xf86_OSproc;
 

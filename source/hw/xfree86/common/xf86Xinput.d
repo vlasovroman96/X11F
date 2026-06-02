@@ -52,11 +52,11 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import core.stdc.string;             /* InputClassMatches */
-import X11.Xfuncproto;
-import X11.Xmd;
-import X11.extensions.XI;
-import X11.extensions.XIproto;
-import X11.Xatom;
+// //import deimos.X11.Xfuncproto;
+//import deimos.X11.Xmd;
+//import deimos.X11.extensions.XI;
+// import deimos.X11.extensions.XIproto;
+import deimos.X11.Xatom;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -65,11 +65,11 @@ import dix.ptrveloc_priv;
 import dix.screenint_priv;
 
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86Config;
 import xf86Xinput_priv;
 import XIstubs;
-import xf86Optrec;
+import include.xf86Optrec;
 import mi.mipointer;
 import loaderProcs;
 import os_support.linux.systemd_logind;

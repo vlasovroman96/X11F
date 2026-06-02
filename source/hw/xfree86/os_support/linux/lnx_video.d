@@ -35,15 +35,15 @@ import build.xorg_config;
 import core.stdc.errno;
 import core.stdc.string;
 import core.sys.posix.sys.mman;
-import X11.X;
+import deimos.X11.X;
 
 import include.input;
 import include.scrnintstr;
 
 import xf86;
 import xf86_os_support;
-import xf86Priv;
-import xf86_OSlib;
+import include.xf86Priv;
+import include.xf86_OSlib;
 
 private Bool ExtendedEnabled = FALSE;
 

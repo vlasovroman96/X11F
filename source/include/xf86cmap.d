@@ -31,7 +31,7 @@ extern(C): __gshared:
 
  
 public import include.xlibre_ptrtypes;
-public import xf86str;
+public import include.xf86str;
 
 enum CMAP_PALETTED_TRUECOLOR =		0x0000001;
 enum CMAP_RELOAD_ON_MODE_SWITCH =	0x0000002;

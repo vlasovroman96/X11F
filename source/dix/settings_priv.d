@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import stdbool;
+// public import stdbool;
 
 /* This file holds global DIX *settings*, which might be needed by other
  * parts, e.g. OS layer or DDX'es.

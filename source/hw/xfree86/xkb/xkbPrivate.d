@@ -4,7 +4,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.stdio;
-import X11.X;
+import deimos.X11.X;
 
 import hw.xfree86.common.action_priv;
 import xkb.xkbsrv_priv;

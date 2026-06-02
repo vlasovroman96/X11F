@@ -24,15 +24,16 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
-import kdrive;
+import config.kdrive_config;
+import hw.kdrive.src.kdrive;
 import core.stdc.errno;
-import linux.vt;
-import linux.kd;
+import externs.linux.vt;
+import externs.linux.kd;
+// import core.sys.linux.
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.ioctl;
-import X11.keysym;
-import linux.apm_bios;
+import deimos.X11.keysym;
+import externs.linux.apm_bios;
 
 import os.osdep;
 import os.ddx_priv;

@@ -36,10 +36,10 @@ import build.xorg_config;
 import core.stdc.ctype;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
-import X11.X;
+import deimos.X11.X;
 import include.os;
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 
 import xf86Bus;
 import xf86_OSproc;

@@ -23,7 +23,7 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 import fbdev;
 
 import os.cmdline;

@@ -33,8 +33,8 @@ import include.misc;
 import xf86;
 import xf86_OSproc;
 
-import X11.X;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;

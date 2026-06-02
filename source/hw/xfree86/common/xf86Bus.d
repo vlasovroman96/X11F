@@ -40,14 +40,14 @@ import build.xorg_config;
 import core.stdc.ctype;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
-import X11.X;
+import deimos.X11.X;
 
 import config.hotplug_priv;
 import os.osdep;
 
 import include.os;
 import xf86_priv;
-import xf86Priv;
+import include.xf86Priv;
 
 /* Bus-specific headers */
 

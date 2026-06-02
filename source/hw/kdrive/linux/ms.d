@@ -25,15 +25,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import kdrive_config;
+import config.kdrive_config;
 import core.stdc.errno;
 import core.sys.posix.termios;
 import os.xserver_poll;
-import X11.X;
-import X11.Xproto;
+import deimos.X11.X;
+import deimos.X11.Xproto;
 import include.inputstr;
 import include.scrnintstr;
-import kdrive;
+import hw.kdrive.src.kdrive;
 
 private int MsReadBytes(int fd, char* buf, int len, int min)
 {

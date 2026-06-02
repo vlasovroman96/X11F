@@ -33,7 +33,7 @@ extern(C): __gshared:
 /* exported functions are/were used by the X Server */
 
  
-public import X11.Xfuncproto;
+public //import deimos.X11.Xfuncproto;
 
 /* Device.c */
 XF86ConfDevicePtr xf86parseDeviceSection();

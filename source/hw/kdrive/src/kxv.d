@@ -39,16 +39,16 @@ of the copyright holder.
 
 */
 
-import kdrive_config;
+import config.kdrive_config;
 
-import X11.extensions.Xv;
-import X11.extensions.Xvproto;
+import deimos.X11.extensions.Xv;
+import deimos.X11.extensions.Xvproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;
 import Xext.xvdix_priv;
 
-import kdrive;
+import hw.kdrive.src.kdrive;
 import include.scrnintstr;
 import include.regionstr;
 import include.windowstr;

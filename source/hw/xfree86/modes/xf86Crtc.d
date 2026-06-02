@@ -40,11 +40,11 @@ import xf86Config;
 import include.xf86Crtc;
 import xf86Modes;
 import xf86Opt_priv;
-import xf86Priv;
+import include.xf86Priv;
 import xf86RandR12_priv;
-import X11.extensions.render;
-import X11.extensions.dpmsconst;
-import X11.Xatom;
+import deimos.X11.extensions.render;
+import deimos.X11.extensions.dpmsconst;
+import deimos.X11.Xatom;
 import include.picturestr;
 
 version (XV) {

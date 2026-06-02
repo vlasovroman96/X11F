@@ -29,22 +29,22 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 import xkb_config;
-import kdrive;
+import hw.kdrive.src.kdrive;
 import include.inputstr;
 
 version = XK_PUBLISHING;
-import X11.keysym;
+import deimos.X11.keysym;
 static if (HAVE_X11_XF86KEYSYM_H) {
-import X11.XF86keysym;
+import deimos.X11.XF86keysym;
 }
 import core.stdc.stdio;
 import core.stdc.signal;
 import sys.file;           /* needed for FNONBLOCK & FASYNC */
 
-import X11.extensions.XI;
-import X11.extensions.XIproto;
+//import deimos.X11.extensions.XI;
+import deimos.X11.extensions.XIproto;
 
 import config.hotplug_priv;
 import dix.dix_priv;

@@ -8,7 +8,7 @@ import core.sys.posix.fcntl;
 import core.sys.posix.unistd;
 import core.sys.posix.sys.wait;
 import core.stdc.signal;
-import xf86_OSlib;
+import include.xf86_OSlib;
 import xf86;
 
 enum MODPROBE_PATH_FILE =      "/proc/sys/kernel/modprobe";

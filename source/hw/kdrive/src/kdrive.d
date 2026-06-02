@@ -1,4 +1,4 @@
-module kdrive;
+module hw.kdrive.src.kdrive;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -28,7 +28,7 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import core.stdc.stdio;
 
@@ -41,7 +41,7 @@ import os.cmdline;
 import os.ddx_priv;
 import os.osdep;
 
-import kdrive;
+import hw.kdrive.src.kdrive;
 import include.dixstruct;
 import include.privates;
 
@@ -65,7 +65,7 @@ import execinfo;
 
 /* This stub can be safely removed once we can
  * split input and GPU parts in hotplug.h et al. */
-import xfree86.os_support.linux.systemd_logind;
+import hw.xfree86.os_support.linux.systemd_logind;
 
 struct KdDepths {
     CARD8 depth;

@@ -45,10 +45,10 @@ public import include.misc;
 public import include.input;
 public import include.scrnintstr;
 public import include.pixmapstr;
-public import colormapst;
-public import xf86Module;
-public import xf86Opt;
-public import displaymode;
+public import include.colormapst;
+public import include.xf86Module;
+public import include.xf86Opt;
+public import include.displaymode;
 
 /**
  * Integer type that is of the size of the addressable memory (machine size).
@@ -243,9 +243,9 @@ alias xorgHWFlags = CARD32;
  * The driver list struct.  This contains the information required for each
  * driver before a ScrnInfoRec has been allocated.
  */
-struct _DriverRec;
+// struct _DriverRec;
 
-struct _SymTabRec;
+// struct _SymTabRec;
 struct _PciChipsets;
 
 struct pci_device;
@@ -279,7 +279,7 @@ enum HaveDriverFuncs = 1;
 
 /*
  * These are the private bus types.  New types can be added here.  Types
- * required for the public interface should be added to xf86str.h, with
+ * required for the public interface should be added to include.xf86str.h, with
  * function prototypes added to xf86.h.
  */
 

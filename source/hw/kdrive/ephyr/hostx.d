@@ -27,7 +27,7 @@ import core.stdc.config: c_long, c_ulong;
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
 import core.stdc.stdlib;
 import core.stdc.stdio;
@@ -46,15 +46,15 @@ import core.sys.posix.sys.time;
 // GL might pull in Xlib.h (why ?), which is definining a type "GC", that's
 // conflicting with Xserver's "GC" type.
 enum GC = XlibGC;
-import X11.Xlib;
-import X11.Xutil;
+import deimos.X11.Xlib;
+import deimos.X11.Xutil;
 import dix.input_priv;
 
 import hostx;
 
 version = X_INCLUDE_STRING_H;
-import X11.Xos_r;
-import X11.keysym;
+import deimos.X11.Xos_r;
+import deimos.X11.keysym;
 import xcb.xcb;
 import xcb.xproto;
 import xcb.xcb_icccm;

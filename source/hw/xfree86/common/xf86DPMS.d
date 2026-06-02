@@ -32,15 +32,15 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X11.X;
+import deimos.X11.X;
 import include.os;
 import include.globals;
 import include.windowstr;
 import xf86;
-import xf86Priv;
+import include.xf86Priv;
 import xf86Opt_priv;
 version (DPMSExtension) {
-import X11.extensions.dpmsconst;
+import deimos.X11.extensions.dpmsconst;
 import dpmsproc;
 }
 import xf86VGAarbiter_priv;

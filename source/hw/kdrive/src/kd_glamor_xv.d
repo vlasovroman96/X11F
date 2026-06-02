@@ -24,13 +24,13 @@ extern(C): __gshared:
  * IN THE SOFTWARE.
  */
 
-import kdrive_config;
+import config.kdrive_config;
 
-import kdrive;
+import hw.kdrive.src.kdrive;
 import kxv;
 import glamor_priv;
 
-import X11.extensions.Xv;
+import deimos.X11.extensions.Xv;
 import include.fourcc;
 
 enum NUM_FORMATS = 4;
