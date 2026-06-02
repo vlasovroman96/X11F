@@ -24,12 +24,12 @@ import os.log_priv;
 
 import include.misc;
 import xf86_priv;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 import xf86Opt_priv;
 import include.xf86Priv;
 import compiler;
 import xf86cmap;
-import Pci;
+import hw.xfree86.os_support.bus.Pci;
 
 enum SAVE_FONT1 = 1;
 

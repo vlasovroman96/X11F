@@ -56,7 +56,7 @@ import dix.screen_hooks_priv;
 import include.extinit;
 import mi.mi_priv;
 
-import xf86;
+import include.xf86;
 import include.xf86str;
 import include.xf86Priv;
 import dgaproc;
@@ -75,7 +75,7 @@ import include.dixstruct;
 import include.extnsionst;
 import include.cursorstr;
 import include.scrnintstr;
-import swaprep;
+import dix.swaprep;
 import dgaproc;
 import protocol_versions;
 

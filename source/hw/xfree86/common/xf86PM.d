@@ -34,7 +34,7 @@ import X1.X;
 import xf86_priv;
 import include.xf86Priv;
 import xf86Xinput_priv;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs = null;
 pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs = null;

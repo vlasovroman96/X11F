@@ -60,7 +60,7 @@ import xf86Parser_priv;
 import xf86tokens;
 import Configint;
 import core.stdc.string;
-import optionstr;
+import include.optionstr;
 
 /* Needed for auto server layout */
 extern int xf86CheckBoolOption(void* optlist, const(char)* name, int deflt);

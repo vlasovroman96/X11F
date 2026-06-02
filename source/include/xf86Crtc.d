@@ -25,11 +25,11 @@ import core.stdc.config: c_long, c_ulong;
  * OF THIS SOFTWARE.
  */
  
-public import edid;
+public import include.edid;
 public import include.randrstr;
 public import xf86Modes;
 public import xf86Cursor;
-public import xf86i2c;
+public import include.xf86i2c;
 public import include.damage;
 public import include.picturestr;
 

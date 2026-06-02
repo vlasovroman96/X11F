@@ -54,7 +54,7 @@ import build.xorg_config;
 import include.dix;
 import include.os;
 import loaderProcs;
-import xf86Module;
+import include.xf86Module;
 import loader;
 import xf86Module_priv;
 

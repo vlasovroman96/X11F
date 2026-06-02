@@ -40,7 +40,7 @@ import xf86VGAarbiter_priv;
 import xf86VGAarbiterPriv;
 import xf86Bus;
 import include.xf86Priv;
-import include.pciaccess;
+import externs.pciaccess;
 
 private GCFuncs VGAarbiterGCFuncs = {
     VGAarbiterValidateGC, VGAarbiterChangeGC, VGAarbiterCopyGC,

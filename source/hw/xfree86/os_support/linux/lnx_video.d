@@ -40,7 +40,7 @@ import deimos.X11.X;
 import include.input;
 import include.scrnintstr;
 
-import xf86;
+import include.xf86;
 import xf86_os_support;
 import include.xf86Priv;
 import include.xf86_OSlib;

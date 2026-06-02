@@ -32,7 +32,7 @@ import deimos.X11.fonts.libxfont2;
 
 import glamor_priv;
 import glamor_font;
-import dixfontstr;
+import include.dixfontstr;
 
 private int glamor_font_private_index;
 private int glamor_font_screen_count;

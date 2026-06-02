@@ -6,8 +6,8 @@ import build.xorg_config;
 import core.stdc.errno;
 import core.stdc.string;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import xf86Pci;
 import compiler;
 version = _INT10_PRIVATE;

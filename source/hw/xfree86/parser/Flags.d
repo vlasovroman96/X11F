@@ -63,7 +63,7 @@ import xf86tokens;
 import Configint;
 //import deimos.X11.Xfuncproto;
 import Xprintf;
-import optionstr;
+import include.optionstr;
 
 
 private const(xf86ConfigSymTabRec)[16] ServerFlagsTab = [

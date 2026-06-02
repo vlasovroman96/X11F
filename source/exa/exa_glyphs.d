@@ -51,7 +51,7 @@ import core.stdc.stdlib;
 import include.mipict;
 
 import exa_priv;
-import glyphstr_priv;
+import render.glyphstr_priv;
 
 static if (DEBUG_GLYPH_CACHE) {
 enum string DBG_GLYPH_CACHE(string a) = `ErrorF a = void;`;

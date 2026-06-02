@@ -38,11 +38,11 @@ import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import deimos.X11.X;
 import include.os;
-import xf86;
+import include.xf86;
 import include.xf86Priv;
 
 import xf86Bus;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 int xf86ClaimFbSlot(DriverPtr drvp, int chipset, GDevPtr dev, Bool active)
 {

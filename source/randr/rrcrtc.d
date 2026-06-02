@@ -36,7 +36,7 @@ import randr.rrdispatch_priv;
 import os.bug_priv;
 import os.osdep;
 
-import swaprep;
+import dix.swaprep;
 import mi.mipointer;
 import include.clang;
 

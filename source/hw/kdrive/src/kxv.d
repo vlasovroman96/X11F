@@ -53,7 +53,7 @@ import include.scrnintstr;
 import include.regionstr;
 import include.windowstr;
 import include.pixmapstr;
-import validate;
+import include.validate;
 import include.resource;
 import include.gcstruct;
 import include.dixstruct;

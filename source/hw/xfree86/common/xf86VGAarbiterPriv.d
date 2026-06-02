@@ -29,8 +29,8 @@ import core.stdc.config: c_long, c_ulong;
  */
  
 public import include.misc;
-public import xf86;
-public import xf86_OSproc;
+public import include.xf86;
+public import include.xf86_OSproc;;
 public import deimos.X11.X;
 public import include.scrnintstr;
 public import include.screenint;

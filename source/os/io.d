@@ -61,7 +61,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-import dixstruct_priv;
+import dix.dixstruct_priv;
 
 version (Windows) {
 import deimos.X11.Xwinsock;

@@ -55,7 +55,7 @@ import include.pixmapstr;
 import include.extnsionst;
 import include.servermd;
 import picturestr_priv;
-import glyphstr_priv;
+import render.glyphstr_priv;
 import include.cursorstr;
 import Xext.xace;
 import include.protocol_versions;

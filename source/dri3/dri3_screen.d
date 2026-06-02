@@ -30,7 +30,7 @@ import core.sys.posix.unistd;
 
 import include.syncsdk;
 
-import dri3_priv;
+import dri3.dri3_priv;
 import include.misync;
 import include.misyncshm;
 import include.randrstr;

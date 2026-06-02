@@ -62,7 +62,7 @@ import include.misc;
 import include.resource;
 import include.gcstruct;
 import include.pixmapstr;
-import dixfontstr;
+import include.dixfontstr;
 import include.scrnintstr;
 import include.dixstruct;
 import include.privates;

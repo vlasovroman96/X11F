@@ -40,7 +40,7 @@ import GL.glxtokens;
 import include.windowstr;
 import include.os;
 
-import xf86;
+import include.xf86;
 import dri2;
 
 import GL.glxtokens;

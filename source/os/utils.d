@@ -130,9 +130,9 @@ import Xext.xf86bigfontsrv; /* XF86BigfontCleanup() */
 import xkb.xkbsrv_priv;
 
 import include.dixstruct;
-import picture;
+import include.picture;
 import miinitext;
-import dixstruct_priv;
+import dix.dixstruct_priv;
 import dpmsproc;
 
 version = X_INCLUDE_NETDB_H;

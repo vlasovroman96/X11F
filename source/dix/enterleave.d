@@ -48,7 +48,7 @@ import include.inputstr;
 import include.windowstr;
 import include.scrnintstr;
 import Xi.exglobals;
-import enterleave;
+// import dix.enterleave;
 import include.xkbsrv;
 
 /**

@@ -41,7 +41,7 @@ import core.stdc.ctype;
 import core.sys.posix.dirent;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
-import include.pciaccess;
+import externs.pciaccess;
 import deimos.X11.X;
 
 import os.log_priv;
@@ -49,14 +49,14 @@ import os.osdep;
 
 import xf86_pci_priv;
 import include.os;
-import Pci;
+import hw.xfree86.os_support.bus.Pci;
 import xf86_priv;
 import include.xf86Priv;
 
 /* Bus-specific headers */
 import xf86Bus;
 
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 enum PCI_VENDOR_GENERIC =		0x00FF;
 

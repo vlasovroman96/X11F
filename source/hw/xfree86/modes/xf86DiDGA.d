@@ -27,8 +27,8 @@ import build.xorg_config;
 
 import include.xf86DDC;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import dgaproc;
 import dgaproc_priv;
 import include.xf86Crtc;

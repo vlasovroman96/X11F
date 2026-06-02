@@ -17,8 +17,8 @@ import core.stdc.string;
 import os.osdep;
 
 import include.misc;
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 
 import deimos.X11.X;
 import deimos.X11.Xos;
@@ -27,12 +27,12 @@ import include.scrnintstr;
 import include.regionstr;
 import include.windowstr;
 import include.pixmapstr;
-import validate;
+import include.validate;
 import include.resource;
 import include.gcstruct;
 import include.dixstruct;
 
-import xf86i2c;
+import include.xf86i2c;
 
 //#define I2C_TIMEOUT(x)	/*(x)*/ /* Report timeouts */
 //#define I2C_TRACE(x)    /*(x)*/ /* Report progress */

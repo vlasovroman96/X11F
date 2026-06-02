@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import libudev;
+import externs.libudev;
 import core.stdc.ctype;
 import core.sys.posix.unistd;
 

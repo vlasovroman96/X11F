@@ -36,7 +36,7 @@ import deimos.X11.extensions.dpmsconst;
 
 import include.xf86DDC;
 
-import xf86;
+import include.xf86;
 import include.xf86Crtc;
 import xf86Modes;
 import xf86RandR12;

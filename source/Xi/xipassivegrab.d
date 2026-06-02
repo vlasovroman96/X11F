@@ -47,7 +47,7 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
-import swaprep;
+import dix.swaprep;
 import Xi.exglobals;          /* BadDevice */
 import include.misc;
 

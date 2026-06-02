@@ -37,7 +37,7 @@ import include.misc;
 import include.scrnintstr;
 import include.os;
 import include.regionstr;
-import validate;
+import include.validate;
 import include.windowstr;
 import include.input;
 import include.resource;
@@ -46,7 +46,7 @@ import include.dixstruct;
 import include.gcstruct;
 import include.servermd;
 import include.picturestr;
-import glyphstr_priv;
+import render.glyphstr_priv;
 
 /*
  * From Knuth -- a good choice for hash/rehash values is p, p-2 where

@@ -34,7 +34,7 @@ import Xprintf;
 import glamor_priv;
 import glamor_transform;
 import glamor_transfer;
-import glyphstr_priv;
+import render.glyphstr_priv;
 
 enum DEFAULT_ATLAS_DIM =       1024;
 

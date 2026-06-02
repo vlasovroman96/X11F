@@ -74,7 +74,7 @@ import os.screensaver;
 
 import include.misc;
 import os.osdep;
-import dixstruct_priv;
+import dix.dixstruct_priv;
 import include.globals;
 version (DPMSExtension) {
 import dpmsproc;

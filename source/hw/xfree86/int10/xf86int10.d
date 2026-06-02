@@ -9,12 +9,12 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-import xf86;
+import include.xf86;
 import compiler;
 version = _INT10_PRIVATE;
 import xf86int10_priv;
 import int10Defines;
-import Pci;
+import hw.xfree86.os_support.bus.Pci;
 
 enum REG = pInt;
 

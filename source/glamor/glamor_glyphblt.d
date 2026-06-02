@@ -33,7 +33,7 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor_priv;
-import dixfontstr;
+import include.dixfontstr;
 import glamor_transform;
 
 private const(glamor_facet) glamor_facet_poly_glyph_blt = {

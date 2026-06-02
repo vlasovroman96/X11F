@@ -43,7 +43,7 @@ import core.stdc.time;
 import dix.dix_priv;
 
 import include.list;
-import xf86;
+import include.xf86;
 import driver;
 import dri2;
 

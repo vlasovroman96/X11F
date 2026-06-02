@@ -34,10 +34,10 @@ import build.xorg_config;
 import deimos.X11.X;
 
 import include.os;
-import xf86;
+import include.xf86;
 import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 PMClose xf86OSPMOpen()
 {

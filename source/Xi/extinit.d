@@ -74,7 +74,7 @@ import include.inputstr;
 import include.gcstruct;           /* pointer for extnsionst.h */
 import include.extnsionst;         /* extension entry   */
 import Xi.exglobals;
-import swaprep;
+import dix.swaprep;
 import include.privates;
 import include.protocol_versions;
 

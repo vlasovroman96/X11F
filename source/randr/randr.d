@@ -1,4 +1,4 @@
-module randr;
+module randr.randr;
 @nogc nothrow:
 extern(C): __gshared:
 /*

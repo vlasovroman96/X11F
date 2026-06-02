@@ -111,7 +111,7 @@ import os.osdep;
 import os.probes_priv;
 
 import include.misc;               /* for typedef of pointer */
-import dixstruct_priv;
+import dix.dixstruct_priv;
 import include.globals;
 import Xext.xace;
 

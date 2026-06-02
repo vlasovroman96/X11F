@@ -1,4 +1,4 @@
-module reqhandlers_priv;
+module dix.reqhandlers_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11

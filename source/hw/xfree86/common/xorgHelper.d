@@ -14,7 +14,7 @@ import include.windowstr;
 import include.propertyst;
 import include.gcstruct;
 import loaderProcs;
-import xf86;
+import include.xf86;
 import include.xf86Priv;
 
 CARD32 xorgGetVersion()

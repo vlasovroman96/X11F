@@ -36,7 +36,7 @@
 #include "xf86_OSlib.h"
 
 #include "xf86sbusBus_priv.h"
-#include "xf86Sbus_priv.h"
+#include "hw.xfree86.os_support.bus.xf86Sbus_priv.h"
 
 static int promRootNode;
 

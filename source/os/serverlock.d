@@ -59,7 +59,7 @@ import build.dix_config;
 
 import core.stdc.errno;
 import core.sys.posix.fcntl;
-import stdbool;
+// import stdbool;
 import core.stdc.string;
 import core.sys.posix.sys.stat;
 import core.sys.posix.unistd;

@@ -55,7 +55,7 @@ extern(C): __gshared:
 // public import deimos.X11.Xfuncproto;
 
 public import include.xlibre_ptrtypes;
-public import xf86;
+public import include.xf86;
 public import include.xf86str;
 public import include.inputstr;
 public import deimos.X11.extensions.XI;

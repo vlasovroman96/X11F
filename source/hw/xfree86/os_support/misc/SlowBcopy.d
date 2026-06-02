@@ -18,7 +18,7 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import deimos.X11.X;
-import xf86;
+import include.xf86;
 import include.xf86Priv;
 import include.xf86_OSlib;
 import compiler;

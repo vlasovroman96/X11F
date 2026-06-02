@@ -29,7 +29,7 @@ import deimos.X11.X;
 
 import os.osdep;
 
-import xf86;
+import include.xf86;
 import xf86Priv;
 import xf86_os_support;
 import include.xf86_OSlib;

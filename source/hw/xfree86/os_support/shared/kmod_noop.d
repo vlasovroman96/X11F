@@ -29,7 +29,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 int xf86LoadKernelModule(const(char)* pathname)
 {

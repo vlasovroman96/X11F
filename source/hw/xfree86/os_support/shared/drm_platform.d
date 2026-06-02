@@ -14,7 +14,7 @@ import core.stdc.string;
 import config.hotplug_priv;
 
 /* Linux platform device support */
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 import xf86_priv;
 import xf86_os_support;

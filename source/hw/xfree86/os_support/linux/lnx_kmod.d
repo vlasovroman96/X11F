@@ -9,7 +9,7 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.wait;
 import core.stdc.signal;
 import include.xf86_OSlib;
-import xf86;
+import include.xf86;
 
 enum MODPROBE_PATH_FILE =      "/proc/sys/kernel/modprobe";
 enum MAX_PATH =                1024;

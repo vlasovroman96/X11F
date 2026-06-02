@@ -43,8 +43,8 @@ import include.misc;
 import include.scrnintstr;
 import include.resource;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import include.xf86str;
 import micmap;
 import xf86RandR12_priv;

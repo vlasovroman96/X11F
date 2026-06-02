@@ -29,7 +29,7 @@ import build.dix_config;
 
 import core.stdc.assert_;
 
-import xf86;
+import include.xf86;
 import include.xf86Parser;
 
 import test.tests_common;

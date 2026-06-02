@@ -72,13 +72,13 @@ import XIstubs;
 import include.xf86Optrec;
 import mi.mipointer;
 import loaderProcs;
-import os_support.linux.systemd_logind;
+import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
 
 import include.exevents;           /* AddInputDevice */
 import Xi.exglobals;
 import include.eventstr;
-import optionstr;
+import include.optionstr;
 import xf86Module_priv;
 import xf86Opt_priv;
 

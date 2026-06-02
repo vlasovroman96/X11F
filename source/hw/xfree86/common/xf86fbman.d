@@ -39,7 +39,7 @@ import deimos.X11.X;
 import os.log_priv;
 
 import include.misc;
-import xf86;
+import include.xf86;
 import include.scrnintstr;
 import include.regionstr;
 import xf86fbman;

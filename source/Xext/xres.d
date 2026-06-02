@@ -29,7 +29,7 @@ import include.misc;
 import include.os;
 import include.dixstruct;
 import include.extnsionst;
-import swaprep;
+import dix.swaprep;
 import include.pixmapstr;
 import include.windowstr;
 import include.gcstruct;

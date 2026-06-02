@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 version (XSERVER_LIBPCIACCESS) {
-public import include.pciaccess;
+public import externs.pciaccess;
 } else {
 struct pci_device;;
 }

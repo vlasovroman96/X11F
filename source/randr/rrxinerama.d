@@ -81,7 +81,7 @@ import dix.screenint_priv;
 import include.extinit;
 import randr.randrstr_priv;
 
-import swaprep;
+import dix.swaprep;
 import include.protocol_versions;
 
 /* Xinerama is not multi-screen capable; just report about screen 0 */

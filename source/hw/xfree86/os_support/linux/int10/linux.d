@@ -8,8 +8,8 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import xf86Pci;
 import compiler;
 version = _INT10_PRIVATE;

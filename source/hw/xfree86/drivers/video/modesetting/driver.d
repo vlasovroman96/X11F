@@ -55,16 +55,16 @@ import include.edid;
 import include.xorgVersion;
 import mi.mi_priv;
 
-import xf86;
+import include.xf86;
 import include.xf86Priv;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 import compiler;
 import xf86Pci;
 import mi.mipointer;
 import mipointrst;
 import micmap;
 import include.fb;
-import xf86i2c;
+import include.xf86i2c;
 import include.xf86Crtc;
 import include.miscstruct;
 import include.dixstruct;
@@ -74,7 +74,7 @@ version (XSERVER_PLATFORM_BUS) {
 import xf86platformBus_priv;
 }
 version (XSERVER_LIBPCIACCESS) {
-import include.pciaccess;
+import externs.pciaccess;
 }
 
 version (SEATD_LIBSEAT) {

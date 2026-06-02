@@ -40,13 +40,13 @@ import core.stdc.stdlib;
 import core.stdc.ctype;
 import deimos.X11.X;
 import include.os;
-import xf86;
+import include.xf86;
 import xf86Opt_priv;
 import xf86Xinput;
 import include.xf86Optrec;
 import include.xf86Parser;
 import xf86platformBus_priv;
-import optionstr;
+import include.optionstr;
 
 
 

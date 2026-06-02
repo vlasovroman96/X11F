@@ -46,7 +46,7 @@ import include.misc;
 import include.os;
 import include.dixstruct;
 import include.extnsionst;
-import swaprep;
+import dix.swaprep;
 
 private int ProcXCMiscGetVersion(ClientPtr client)
 {

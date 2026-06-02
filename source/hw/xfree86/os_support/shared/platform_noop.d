@@ -7,9 +7,9 @@ import config.hotplug_priv;
 
 version (XSERVER_PLATFORM_BUS) {
 /* noop platform device support */
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
-import xf86;
+import include.xf86;
 import xf86_os_support;
 import xf86platformBus_priv;
 

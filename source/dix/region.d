@@ -81,8 +81,8 @@ Equipment Corporation.
 import build.dix_config;
 
 import include.regionstr;
-import deimos.X11.Xprotostr;
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xprotostr;
+// import deimos.X11.Xfuncproto;
 import include.gc;
 import pixman;
 

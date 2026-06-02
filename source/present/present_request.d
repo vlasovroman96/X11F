@@ -29,7 +29,7 @@ import dix.request_priv;
 import dri3.dri3_priv;
 import present.present_priv;
 
-import randrstr_priv;
+import randr.randrstr_priv;
 import include.protocol_versions;
 
 private int proc_present_query_version(ClientPtr client)

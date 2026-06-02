@@ -33,7 +33,7 @@ import dix_config;
 import core.stdc.errno;
 import core.sys.posix.unistd;
 
-import xf86;
+import include.xf86;
 import include.xf86Crtc;
 import driver;
 import drmmode_display;

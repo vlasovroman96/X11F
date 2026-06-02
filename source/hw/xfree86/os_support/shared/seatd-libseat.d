@@ -36,7 +36,7 @@ import core.stdc.errno;
 import libseat;
 
 import include.os;
-import xf86;
+import include.xf86;
 import xf86_priv;
 version (XSERVER_PLATFORM_BUS) {
 import xf86platformBus_priv;

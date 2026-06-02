@@ -12,14 +12,14 @@ import core.stdc.errno;
 import core.stdc.string;
 import core.sys.posix.unistd;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import xf86Bus;
 import compiler;
 version = _INT10_PRIVATE;
 import xf86int10_priv;
 import int10Defines;
-import Pci;
+import hw.xfree86.os_support.bus.Pci;
 
 enum string ALLOC_ENTRIES(string x) = `((V_RAM / ` ~ x ~ `) - 1)`;
 

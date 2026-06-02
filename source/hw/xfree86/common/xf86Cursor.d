@@ -32,7 +32,7 @@ import build.xorg_config;
 
 import deimos.X11.X;
 //import deimos.X11.Xmd;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import dix.input_priv;
 import mi.mipointer_priv;
@@ -44,7 +44,7 @@ import include.globals;
 
 import xf86_priv;
 import include.xf86Priv;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 import xf86Xinput;
 

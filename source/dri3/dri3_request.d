@@ -32,13 +32,13 @@ import dix.screenint_priv;
 import include.syncsdk;
 import os.client_priv;
 
-import dri3_priv;
+import dri3.dri3_priv;
 import syncsrv;
 import Xext.xace;
 import include.protocol_versions;
 import drm_fourcc;
-import randrstr_priv;
-import dixstruct_priv;
+import randr.randrstr_priv;
+import dix.dixstruct_priv;
 
 private Bool dri3_screen_can_one_point_one(ScreenPtr screen)
 {

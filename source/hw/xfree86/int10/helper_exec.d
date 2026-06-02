@@ -25,20 +25,20 @@ import deimos.X11.Xos;
 
 import os.osdep;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import xf86Bus;
 import compiler;
 version = _INT10_PRIVATE;
 import int10Defines;
 import xf86int10_priv;
-import Pci;
+import hw.xfree86.os_support.bus.Pci;
 version (_X86EMU) {
 import x86emu.x86emui;
 } else {
 enum string DEBUG_IO_TRACE() = `0`;
 }
-import include.pciaccess;
+import externs.pciaccess;
 
 
 

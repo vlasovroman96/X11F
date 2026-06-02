@@ -63,7 +63,7 @@ import include.dixstruct;
 import include.globals;
 import mi.mipointer;
 import include.eventstr;
-import eventconvert;
+import dix.eventconvert;
 import include.windowstr;
 import include.xkbsrv;
 import Xi.exglobals;

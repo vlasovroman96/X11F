@@ -33,7 +33,7 @@ import build.xorg_config;
 version (XSERVER_PLATFORM_BUS) {
 import core.stdc.errno;
 
-import include.pciaccess;
+import externs.pciaccess;
 import core.sys.posix.fcntl;
 import core.sys.posix.unistd;
 
@@ -49,12 +49,12 @@ import xf86_pci_priv;
 import loaderProcs;
 import xf86_priv;
 import xf86_os_support;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 import xf86Opt_priv;
 import include.xf86Priv;
 import include.xf86str;
 import xf86Bus;
-import Pci;
+import hw.xfree86.os_support.bus.Pci;
 import xf86platformBus_priv;
 import xf86Xinput_priv;
 import xf86Config;

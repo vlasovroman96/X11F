@@ -23,9 +23,9 @@ version (HAVE_SYS_MKDEV_H) {
 import sys.mkdev;          /* for minor() on Solaris */
 }
 
-import xf86;
+import include.xf86;
 import xf86Modes;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 /* pci stuff */
 import xf86Pci;

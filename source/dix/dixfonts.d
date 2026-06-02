@@ -58,9 +58,9 @@ import core.stdc.stddef;
 import deimos.X11.X;
 import deimos.X11.Xmd;
 import deimos.X11.Xproto;
-import deimos.X11.fonts.font;
-import deimos.X11.fonts.fontstruct;
-import deimos.X11.fonts.libxfont2;
+// import deimos.X11.fonts.font;
+// import deimos.X11.fonts.fontstruct;
+// import deimos.X11.fonts.libxfont2;
 
 import dix.dix_priv;
 import dix.gc_priv;
@@ -80,7 +80,7 @@ import include.dixstruct;
 import include.cursorstr;
 import include.misc;
 import include.opaque;
-import dixfontstr;
+import include.dixfontstr;
 import include.dixfont;
 import Xext.xace;
 

@@ -62,7 +62,7 @@ import deimos.X11.X;
 import os.log_priv;
 import os.xserver_poll;
 
-import xf86;
+import include.xf86;
 import xf86Opt_priv;
 import include.xf86Priv;
 import include.xf86_OSlib;

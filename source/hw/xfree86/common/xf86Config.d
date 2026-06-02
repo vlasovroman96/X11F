@@ -78,7 +78,7 @@ import xf86Xinput;
 import loaderProcs;
 import xf86Xinput_priv;
 
-import picture;
+import include.picture;
 version (DPMSExtension) {
 import dpmsproc;
 }

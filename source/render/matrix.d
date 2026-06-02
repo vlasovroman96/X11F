@@ -29,7 +29,7 @@ import include.misc;
 import include.scrnintstr;
 import include.os;
 import include.regionstr;
-import validate;
+import include.validate;
 import include.windowstr;
 import include.input;
 import include.resource;

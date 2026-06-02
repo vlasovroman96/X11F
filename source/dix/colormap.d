@@ -52,10 +52,10 @@ import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import stdbool;
+// import stdbool;
 import core.stdc.stdio;
 import core.stdc.string;
-import strings;
+import externs.strings;
 
 import include.extinit;
 import dix.colormap_priv;

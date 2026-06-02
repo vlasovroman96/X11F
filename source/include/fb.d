@@ -34,7 +34,7 @@ public import include.pixmap;
 public import include.pixmapstr;
 public import include.regionstr;
 public import include.gcstruct;
-public import colormap;
+public import include.colormap;
 public import include.miscstruct;
 public import include.servermd;
 public import include.windowstr;
@@ -106,7 +106,7 @@ enum string FbStipMoveLsb(string x,string s,string n) = `(` ~ x ~ `)`;
 enum FbPatternOffsetBits =	(sizeof (FbBits) - 1);
 }
 
-public import micoord;
+public import include.micoord;
 
 enum string FbStipLeft(string x,string n) = `` ~ FbScrLeft!(x,n) ~ ``;
 enum string FbStipRight(string x,string n) = `` ~ FbScrRight!(x,n) ~ ``;

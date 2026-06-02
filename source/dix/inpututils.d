@@ -42,7 +42,7 @@ import include.xkbsrv;
 import include.xkbsrv;
 import include.eventstr;
 import include.scrnintstr;
-import optionstr;
+import include.optionstr;
 
 /* Check if a button map change is okay with the device.
  * Returns -1 for BadValue, as it collides with MappingBusy. */

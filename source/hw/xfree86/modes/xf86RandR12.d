@@ -32,7 +32,7 @@ import dix.screenint_priv;
 import include.extinit;
 import include.xf86DDC;
 
-import xf86;
+import include.xf86;
 import include.os;
 import include.globals;
 import xf86Modes;
@@ -40,7 +40,7 @@ import include.xf86Priv;
 import mi.mipointer;
 import include.windowstr;
 import include.inputstr;
-import randrstr_priv;
+import randr.randrstr_priv;
 
 import xf86cmap;
 import include.xf86Crtc;

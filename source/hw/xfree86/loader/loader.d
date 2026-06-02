@@ -59,7 +59,7 @@ version (HAVE_DLFCN_H) {
 
 import core.sys.posix.dlfcn;
 import deimos.X11.Xos;
-import xf86Module;
+import include.xf86Module;
 
 } else {
 static assert(0, "i have no dynamic linker and i must scream");

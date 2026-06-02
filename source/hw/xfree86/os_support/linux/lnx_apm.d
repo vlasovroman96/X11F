@@ -11,7 +11,7 @@ import include.os;
 import xf86_priv;
 import include.xf86Priv;
 import xf86_os_support;
-import xf86_OSproc;
+import include.xf86_OSproc;;
 
 version (HAVE_ACPI) {
 extern PMClose lnxACPIOpen();

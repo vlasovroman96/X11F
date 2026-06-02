@@ -39,7 +39,7 @@ import core.stdc.time;
 
 import include.present;
 
-import xf86;
+import include.xf86;
 import include.xf86Crtc;
 import include.xf86drm;
 import include.xf86str;

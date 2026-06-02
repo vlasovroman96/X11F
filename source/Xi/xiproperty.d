@@ -47,7 +47,7 @@ import Xi.handlers;
 import include.dix;
 import include.inputstr;
 import Xi.exglobals;
-import swaprep;
+import dix.swaprep;
 import Xi.xiproperty;
 import include.xserver_properties;
 import include.clang;

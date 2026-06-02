@@ -35,8 +35,8 @@ import core.stdc.string;
 import edid_priv;
 
 import include.misc;
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import xf86DDC_priv;
 
 enum EXT_TAG =   0x00;

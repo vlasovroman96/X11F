@@ -39,7 +39,7 @@ import build.xorg_config;
 
 import os.osdep;
 
-import xf86;
+import include.xf86;
 import xf86Parser_priv;
 import xf86tokens;
 import xf86Config;
@@ -50,7 +50,7 @@ import include.xf86_OSlib;
 import xf86platformBus_priv;
 import xf86pciBus;
 version (__sparc__) {
-import xf86sbusBus_priv;
+import hw.xfree86.common.xf86sbusBus_priv;;
 }
 
 version (__sun) {

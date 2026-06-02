@@ -33,7 +33,7 @@ import randr.randrstr_priv;
 import randr.rrdispatch_priv;
 import os.client_priv;
 
-import swaprep;
+import dix.swaprep;
 
 RESTYPE RRLeaseType;
 

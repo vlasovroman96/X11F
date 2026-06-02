@@ -3,7 +3,7 @@ module fbdevhwstub;
 extern(C): __gshared:
 import build.xorg_config;
 
-import xf86;
+import include.xf86;
 import xf86cmap;
 import include.fbdevhw;
 

@@ -8,7 +8,7 @@ import dix.cursor_priv;
 import dix.screen_hooks_priv;
 import mi.mipointer_priv;
 
-import xf86;
+import include.xf86;
 import xf86CursorPriv;
 import include.cursorstr;
 

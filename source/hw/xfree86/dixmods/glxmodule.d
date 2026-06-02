@@ -34,10 +34,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 import build.xorg_config;
 
-import xf86Module;
+import include.xf86Module;
 import include.xf86Priv;
-import xf86;
-import colormap;
+import include.xf86;
+import include.colormap;
 import micmap;
 import include.globals;
 import glxserver;

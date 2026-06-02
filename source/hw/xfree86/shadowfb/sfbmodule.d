@@ -3,7 +3,7 @@ module hw.xfree86.shadowfb.sfbmodule;
 extern(C): __gshared:
 import build.xorg_config;
 
-import xf86Module;
+import include.xf86Module;
 
 private XF86ModuleVersionInfo VersRec = {
     modname: "shadowfb",

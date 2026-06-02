@@ -10,8 +10,8 @@ import dix.colormap_priv;
 import randr.randrstr_priv;
 
 import include.misc;
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import include.scrnintstr;
 import include.pixmapstr;
 import include.windowstr;

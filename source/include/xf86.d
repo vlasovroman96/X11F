@@ -61,7 +61,7 @@ pragma(inline, true) private _X_DEPRECATED xf86UnblockSIGIO(int wasset) { input_
 
 /* PCI related */
 version (XSERVER_LIBPCIACCESS) {
-public import include.pciaccess;
+public import externs.pciaccess;
 extern _X_EXPORT xf86CheckPciSlot(const(pci_device)*);
 extern _X_EXPORT xf86ClaimPciSlot(pci_device*, DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
 extern _X_EXPORT xf86UnclaimPciSlot(pci_device*, GDevPtr dev);

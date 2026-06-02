@@ -33,8 +33,8 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 import exa_priv;
-import deimos.X11.fonts.fontstruct;
-import dixfontstr;
+// import deimos.X11.fonts.fontstruct;
+import include.dixfontstr;
 import include.exa;
 
 private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr ppt, int* pwidth, int fSorted)

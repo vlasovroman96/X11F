@@ -71,7 +71,7 @@ enum GLAMOR_COMPAT_DEFINES_FS =
     "out vec4 frag_color;\n"~
     "#endif\n";
 
-public import glyphstr;
+public import include.glyphstr;
 
 public import glamor_debug;
 public import glamor_context;

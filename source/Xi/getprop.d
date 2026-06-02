@@ -66,7 +66,7 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structs    */
-import swaprep;
+import dix.swaprep;
 import getprop;
 
 extern XExtEventInfo[1] EventInfo;

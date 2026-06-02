@@ -62,7 +62,7 @@ import include.dixstruct;
 import include.extnsionst;
 import include.gcstruct;
 import include.scrnintstr;
-import dispatch;
+import dix.dispatch;
 import include.privates;
 import Xext.xace;
 

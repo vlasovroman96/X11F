@@ -36,7 +36,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
  
-public import include.pciaccess;
+public import externs.pciaccess;
 
 public import include.scrnintstr;
 public import include.xf86dri;

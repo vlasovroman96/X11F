@@ -27,8 +27,10 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.sys.posix.sys.time;
+static if(HasVersion!"OpenBSD") {
 import dev.wscons.wsconsio;
 import dev.wscons.wsksymdef;
+}
 
 import core.sys.posix.sys.ioctl;
 import core.stdc.errno;

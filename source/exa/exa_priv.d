@@ -47,7 +47,7 @@ public import include.dix;
 public import include.fb;
 public import include.fboverlay;
 public import include.fbpict;
-public import glyphstr;
+public import include.glyphstr;
 public import include.damage;
 
 enum DEBUG_TRACE_FALL =	0;

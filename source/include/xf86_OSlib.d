@@ -1,4 +1,4 @@
-module include.include.xf86_OSlib;
+module include.xf86_OSlib;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -78,7 +78,7 @@ private template HasVersion(string versionId) {
  */
 
  
-public import deimos.X11.Xos;
+// public import deimos.X11.Xos;
 // public import deimos.X11.Xfuncproto;
 
 public import core.stdc.stdio;
@@ -240,6 +240,6 @@ enum MAP_FAILED = cast(void *)-1;
 
 enum string SYSCALL(string call) = `while(((` ~ call ~ `) == -1) && (errno == EINTR)) {}`;
 
-public import xf86_OSproc;
+public import include.xf86_OSproc;;
 
                           /* _XF86_OSLIB_H */

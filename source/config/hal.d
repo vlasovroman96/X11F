@@ -1,4 +1,4 @@
-module config.hal;
+module config.libhal;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -31,8 +31,8 @@ import build.dix_config;
 
 import core.stdc.string;
 import core.sys.posix.sys.select;
-import dbus.dbus;
-import hal.libhal;
+import externs.dbus;
+import externs.libhal;
 
 import config.hotplug_priv;
 import config.dbus_core;

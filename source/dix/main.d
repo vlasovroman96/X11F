@@ -77,15 +77,15 @@ Equipment Corporation.
 ******************************************************************/
 
 import build.dix_config;
-import versio_config;
+import config.version_config;
 
 import pixman;
 import deimos.X11.X;
-import deimos.X11.Xos;            /* for unistd.h  */
-import deimos.X11.Xproto;
-import deimos.X11.fonts.font;
-import deimos.X11.fonts.fontstruct;
-import deimos.X11.fonts.libxfont2;
+// import deimos.X11.Xos;            /* for unistd.h  */
+// import deimos.X11.Xproto;
+// import deimos.X11.fonts.font;
+// import deimos.X11.fonts.fontstruct;
+// import deimos.X11.fonts.libxfont2;
 
 import config.hotplug_priv;
 import dix.atom_priv;

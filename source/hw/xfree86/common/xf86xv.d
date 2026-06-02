@@ -43,13 +43,13 @@ import include.extinit;
 import Xext.xvdix_priv;
 
 import include.misc;
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import include.scrnintstr;
 import include.regionstr;
 import include.windowstr;
 import include.pixmapstr;
-import validate;
+import include.validate;
 import include.resource;
 import include.gcstruct;
 import include.dixstruct;

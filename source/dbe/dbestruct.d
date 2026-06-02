@@ -35,7 +35,7 @@ extern(C): __gshared:
 
  
 public import deimos.X11.Xmd;
-public import deimos.X11.extensions.dbeproto;
+// public import deimos.X11.extensions.dbeproto;
 
 public import include.windowstr;
 public import include.privates;

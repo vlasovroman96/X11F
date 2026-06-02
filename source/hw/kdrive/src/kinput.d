@@ -62,7 +62,7 @@ import include.exevents;
 import Xi.exglobals;
 import include.eventstr;
 import include.xserver_properties;
-import optionstr;
+import include.optionstr;
 
 static if (HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {
 import config.hotplug_priv;

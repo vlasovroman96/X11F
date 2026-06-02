@@ -37,14 +37,14 @@ import config.hotplug_priv;
 
 import include.os;
 import linux;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import xf86_priv;
 import xf86platformBus_priv;
 import xf86Xinput_priv;
 import include.xf86Priv;
 import include.globals;
 
-import systemd_logind;
+// import systemd_logind;
 
 struct systemd_logind_info {
     DBusConnection* conn;

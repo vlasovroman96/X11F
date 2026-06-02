@@ -31,9 +31,9 @@ extern(C): __gshared:
  */
 import dix_config;
 
-import xf86;
+import include.xf86;
 version = GLAMOR_FOR_XORG;
-import xf86Module;
+import include.xf86Module;
 import include.glamor;
 
 private XF86ModuleVersionInfo VersRec = {

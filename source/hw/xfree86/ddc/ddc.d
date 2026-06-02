@@ -18,8 +18,8 @@ import include.xf86DDC;
 import os.osdep;
 
 import include.misc;
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import core.stdc.string;
 import edid_priv;
 

@@ -64,7 +64,7 @@ import dix.rpcbuf_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import swaprep;
+import dix.swaprep;
 import include.xkbsrv;
 import include.xkbsrv;
 

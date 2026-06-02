@@ -58,9 +58,9 @@ import dix.reqhandlers_priv;
 import include.windowstr;
 import include.extnsionst;
 import include.dixstruct;
-import dixstruct_priv;
-import dispatch;
-import swaprep;
+import dix.dixstruct_priv;
+import dix.dispatch;
+import dix.swaprep;
 import swapreq;
 
 private int ProcBadRequest(ClientPtr client)

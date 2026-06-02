@@ -1,4 +1,4 @@
-module dri3_priv;
+module dri3.dri3_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -31,7 +31,7 @@ public import include.list;
 public import include.windowstr;
 public import include.dixstruct;
 public import include.randrstr;
-public import dri3;
+public import dri3.dri3;
 
 extern DevPrivateKeyRec dri3_screen_private_key;
 
@@ -44,7 +44,7 @@ struct dri3_dmabuf_format {
 }alias dri3_dmabuf_format_rec = dri3_dmabuf_format;
 alias dri3_dmabuf_format_ptr = dri3_dmabuf_format*;
 
-struct dri3_screen_priv {
+struct dri3_screen_priv_ {
     ConfigNotifyProcPtr ConfigNotify;
 
     Bool formats_cached;
@@ -52,8 +52,8 @@ struct dri3_screen_priv {
     dri3_dmabuf_format_ptr formats;
 
     const(dri3_screen_info_rec)* info;
-}alias dri3_screen_priv_rec = dri3_screen_priv;
-alias dri3_screen_priv_ptr = dri3_screen_priv*;
+}alias dri3_screen_priv_rec = dri3_screen_priv_;
+alias dri3_screen_priv_ptr = dri3_screen_priv_*;
 
 enum string wrap(string priv,string real_,string mem,string func) = `{
     ` ~ priv ~ `.` ~ mem ~ ` = ` ~ real_ ~ `.` ~ mem ~ `; 

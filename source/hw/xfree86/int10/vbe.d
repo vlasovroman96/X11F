@@ -17,7 +17,7 @@ import core.stdc.string;
 
 import deimos.X11.extensions.dpmsconst;
 
-import xf86;
+import include.xf86;
 import xf86Modes;
 import vbe;
 import xf86Bus;

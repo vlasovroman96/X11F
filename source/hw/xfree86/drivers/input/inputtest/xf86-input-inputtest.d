@@ -41,7 +41,7 @@ import include.xorgVersion;
 import include.exevents;
 import include.input;
 import include.xkbsrv;
-import xf86;
+import include.xf86;
 import xf86Xinput_priv;
 import include.xserver_properties;
 import include.os;

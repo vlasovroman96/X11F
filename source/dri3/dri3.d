@@ -1,4 +1,4 @@
-module dri3;
+module dri3.dri3;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -28,8 +28,8 @@ import dix.screen_hooks_priv;
 import dix.screenint_priv;
 import miext.extinit_priv;
 
-import dri3_priv;
-import drm_fourcc;
+import dri3.dri3_priv;
+import externs.drm_fourcc;
 
 private int dri3_request;
 DevPrivateKeyRec dri3_screen_private_key;

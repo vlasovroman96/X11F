@@ -76,7 +76,7 @@ import include.misc;
 import include.os;
 import include.opaque;
 import include.dixstruct;
-import dixstruct_priv;
+import dix.dixstruct_priv;
 
 static if (!HasVersion!"Windows") {
 import core.sys.posix.sys.resource;

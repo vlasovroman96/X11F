@@ -53,14 +53,14 @@ import dix.screenint_priv;
 import include.dristruct;
 import include.sarea;
 
-import xf86;
+import include.xf86;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;
 import include.cursorstr;
 import include.scrnintstr;
 import include.servermd;
-import swaprep;
+import dix.swaprep;
 import include.xf86str;
 import dri_priv;
 import include.xf86drm;

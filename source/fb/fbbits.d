@@ -28,6 +28,8 @@ import build.dix_config;
 import include.fb;
 import miline;
 import mizerarc;
+import fb.fbbitsh;
+
 
 enum BRESSOLID =   fbBresSolid8;
 enum BRESDASH =    fbBresDash8;

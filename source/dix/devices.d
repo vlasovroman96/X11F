@@ -52,7 +52,7 @@ import build.dix_config;
 
 import core.stdc.math;
 import pixman;
-import stdbool;
+// import stdbool;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.Xatom;
@@ -84,14 +84,14 @@ import include.cursorstr;
 import include.dixstruct;
 import ptrveloc;
 import include.privates;
-import dispatch;
-import swaprep;
+import dix.dispatch;
+import dix.swaprep;
 import mi.mipointer;
 import include.eventstr;
 import Xi.exglobals;
 import Xi.xiquerydevice;      /* for SizeDeviceClasses */
 import Xi.xiproperty;
-import enterleave;         /* for EnterWindow() */
+import dix.enterleave;         /* for EnterWindow() */
 import include.xserver_properties;
 import xichangehierarchy;  /* For XISendDeviceHierarchyEvent */
 import syncsrv;

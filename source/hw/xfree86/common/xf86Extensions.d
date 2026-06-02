@@ -32,10 +32,10 @@ import include.globals;
 
 import xf86_priv;
 import xf86Config;
-import xf86Module;
+import include.xf86Module;
 import xf86Extensions;
 import xf86Opt_priv;
-import optionstr;
+import include.optionstr;
 
 version (XSELINUX) {
 import xselinux;

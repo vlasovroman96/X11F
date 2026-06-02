@@ -48,7 +48,7 @@ import xf86DDC_priv;
 import xf86pciBus;
 static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__OpenBSD__") {
 import xf86Bus;
-import xf86Sbus_priv;
+import hw.xfree86.os_support.bus.xf86Sbus_priv;
 }
 import include.misc;
 import loaderProcs;

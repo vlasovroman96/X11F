@@ -36,7 +36,7 @@ import dix.screen_hooks_priv;
 import exa_priv;
 
 import include.xf86str;
-import xf86;
+import include.xf86;
 
 struct _ExaXorgScreenPrivRec {
     xf86EnableDisableFBAccessProc* SavedEnableDisableFBAccess;

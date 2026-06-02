@@ -28,7 +28,7 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor_priv;
-import dixfontstr;
+import include.dixfontstr;
 import glamor_transform;
 import servermd;
 import deimos.X11.X;

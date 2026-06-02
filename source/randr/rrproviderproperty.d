@@ -31,7 +31,7 @@ import randr.randrstr_priv;
 import randr.rrdispatch_priv;
 
 import include.propertyst;
-import swaprep;
+import dix.swaprep;
 
 private int DeliverPropertyEvent(WindowPtr pWin, void* value)
 {

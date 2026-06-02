@@ -43,7 +43,7 @@ import indirect_dispatch;
 import GL.gl;
 import include.pixmapstr;
 import include.windowstr;
-import dixfontstr;
+import include.dixfontstr;
 
 /*
 ** Make a single GL bitmap from a single X glyph

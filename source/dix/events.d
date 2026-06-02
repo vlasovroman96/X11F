@@ -108,16 +108,16 @@ Equipment Corporation.
 import build.dix_config;
 
 import deimos.X11.X;
-import deimos.X11.extensions.ge;
+// import deimos.X11.extensions.ge;
 // import deimos.X11.extensions.XKBproto;
 // import deimos.X11.extensions.XIproto;
 // import deimos.X11.extensions.XI2proto;
-import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2;
-import deimos.X11.Xproto;
-import deimos.X11.extensions.ge;
-import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2;
+// import deimos.X11.extensions.XI;
+// import deimos.X11.extensions.XI2;
+// import deimos.X11.Xproto;
+// import deimos.X11.extensions.ge;
+// import deimos.X11.extensions.XI;
+// import deimos.X11.extensions.XI2;
 // import deimos.X11.extensions.XKBproto;
 // import deimos.X11.extensions.XIproto;
 // import deimos.X11.extensions.XI2proto;
@@ -157,10 +157,10 @@ import include.globals;
 import Xext.xace;
 import Xi.exglobals;
 import include.extnsionst;
-import dispatch;
-import dixstruct_priv;
+import dix.dispatch;
+import dix.dixstruct_priv;
 import include.eventstr;
-import enterleave;
+import dix.enterleave;
 import include.mi;
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `

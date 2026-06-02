@@ -45,7 +45,7 @@ public import include.extnsionst;
 public import include.servermd;
 public import rrtransform;
 public import deimos.X11.extensions.randr;
-public import deimos.X11.extensions.randrproto;
+// public import deimos.X11.extensions.randrproto;
 public import deimos.X11.extensions.render;      /* we share subpixel order information */
 public import include.picturestr;
 // public import deimos.X11.Xfuncproto;

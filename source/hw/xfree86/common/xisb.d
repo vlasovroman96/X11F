@@ -34,8 +34,8 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import include.misc;
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import include.xf86_OSlib;
 import xf86Xinput;
 import xisb;

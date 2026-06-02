@@ -12,8 +12,8 @@ import build.xorg_config;
 import core.stdc.string;
 import core.stdc.stdlib;
 
-import xf86;
-import xf86_OSproc;
+import include.xf86;
+import include.xf86_OSproc;;
 import compiler;
 import xf86Pci;
 version = _INT10_PRIVATE;

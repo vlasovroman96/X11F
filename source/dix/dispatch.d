@@ -101,11 +101,11 @@ Equipment Corporation.
  */
 
 import build.dix_config;
-import version_config;
+import config.version_config;
 
 import core.stdc.stddef;
-import deimos.X11.fonts.fontstruct;
-import deimos.X11.fonts.libxfont2;
+// import deimos.X11.fonts.fontstruct;
+// import deimos.X11.fonts.libxfont2;
 
 import dix.client_priv;
 import dix.colormap_priv;
@@ -133,22 +133,22 @@ import os.probes_priv;
 import os.screensaver;
 
 import include.windowstr;
-import dixfontstr;
+import include.dixfontstr;
 import include.gcstruct;
 import include.cursorstr;
 import include.scrnintstr;
 import include.servermd;
 import include.extnsionst;
 import include.dixfont;
-import dispatch;
-import swaprep;
+import dix.dispatch;
+import dix.swaprep;
 import swapreq;
 import include.privates;
 import Xext.xace;
 import include.inputstr;
 import include.xkbsrv;
 import xfixesint;
-import dixstruct_priv;
+import dix.dixstruct_priv;
 
 enum mskcnt = ((MAXCLIENTS + 31) / 32);
 enum string BITMASK(string i) = `(1U << ((` ~ i ~ `) & 31))`;

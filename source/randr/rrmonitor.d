@@ -30,7 +30,7 @@ import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
 
-import swaprep;
+import dix.swaprep;
 
 private Atom RRMonitorCrtcName(RRCrtcPtr crtc)
 {

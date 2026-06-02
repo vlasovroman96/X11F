@@ -52,10 +52,10 @@ import include.xf86Priv;
 /* Bus-specific headers */
 
 import xf86Bus;
-import xf86sbusBus_priv;
+import hw.xfree86.common.xf86sbusBus_priv;;
 import xf86platformBus_priv;
 
-import xf86_OSproc;
+import include.xf86_OSproc;;
 import xf86VGAarbiter_priv;
 
 /* Entity data */

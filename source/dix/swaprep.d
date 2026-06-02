@@ -1,4 +1,4 @@
-module swaprep;
+module dix.swaprep;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -59,7 +59,7 @@ import dix.dix_priv;
 import include.misc;
 import include.dixstruct;
 import include.scrnintstr;
-import swaprep;
+import dix.swaprep;
 import include.globals;
 
 
