@@ -32,11 +32,11 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-import deimos.X11.Xfuncs;
+// import deimos.X11.Xfuncs;
 import deimos.X11.X;
 import deimos.X11.keysym;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.extensions.XKMformat;
 
 import xkb.xkbfmisc_priv;
 import xkb.xkbout_priv;
@@ -47,7 +47,7 @@ import include.misc;
 import include.inputstr;
 import include.dix;
 import include.xkbsrv;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 enum	VMOD_HIDE_VALUE =	0;
 enum	VMOD_SHOW_VALUE =	1;

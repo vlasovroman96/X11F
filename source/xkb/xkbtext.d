@@ -33,10 +33,10 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.extensions.XKMformat;
 
 import xkb.xkbtext_priv;
 
@@ -45,15 +45,16 @@ import include.inputstr;
 import include.dix;
 import include.xkbsrv;
 import include.xkbsrv;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 /***====================================================================***/
 
 enum NUM_BUFFER =      8;
-struct textBuffer {
+struct textBuffer_t {
     int size;
     char* buffer;
-}private textBuffer[NUM_BUFFER] textBuffer;
+}
+private textBuffer_t[NUM_BUFFER] textBuffer;
 private int textBufferIndex;
 
 private char* tbGetBuffer(uint size)

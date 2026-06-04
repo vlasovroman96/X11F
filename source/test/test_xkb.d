@@ -46,7 +46,7 @@ import include.inputstr;
 import include.opaque;
 import include.property;
 import xkb.xkbgeom_priv;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.extensions.XKMformat;
 import core.stdc.assert_;
 
 import test.tests_common;

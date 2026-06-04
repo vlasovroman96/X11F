@@ -35,11 +35,11 @@ import core.stdc.stdio;
 import core.stdc.stdlib;
 import core.stdc.ctype;
 import deimos.X11.X;
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 import deimos.X11.Xproto;
 import deimos.X11.keysym;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XKM;
+// import deimos.X11.extensions.XKM;
 
 import dix.dix_priv;
 import os.log_priv;

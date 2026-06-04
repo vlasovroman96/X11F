@@ -70,7 +70,7 @@ import include.os;
 import include.misc;
 import include.inputstr;
 import include.eventstr;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 /***====================================================================***/
 

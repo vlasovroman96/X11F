@@ -35,12 +35,12 @@ import core.stdc.stdlib;
 
 version = X_INCLUDE_STRING_H;
 version = XOS_USE_NO_LOCKING;
-import deimos.X11.Xos_r;
+// import deimos.X11.Xos_r;
 
 import deimos.X11.Xproto;
 import deimos.X11.X;
-import deimos.X11.Xos;
-import deimos.X11.Xfuncs;
+// import deimos.X11.Xos;
+// import deimos.X11.Xfuncs;
 import deimos.X11.Xatom;
 import deimos.X11.keysym;
 

@@ -34,7 +34,7 @@ import core.stdc.stdio;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.extensions.XKMformat;
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -4320,7 +4320,7 @@ int ProcXkbSetNames(ClientPtr client)
     return Success;
 }
 
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 enum string	XkbSizeCountedString(string s) = `((` ~ s ~ `)?((((2+strlen(` ~ s ~ `))+3)/4)*4):4)`;
 

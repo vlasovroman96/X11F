@@ -30,12 +30,12 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.stdio;
-import deimos.X11.Xos;
-import deimos.X11.Xfuncs;
+// import deimos.X11.Xos;
+// import deimos.X11.Xfuncs;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.keysym;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.extensions.XKMformat;
 
 import os.log_priv;
 import xkb.xkbfile_priv;
@@ -45,7 +45,7 @@ import xkb.xkbsrv_priv;
 import include.misc;
 import include.inputstr;
 import include.xkbsrv;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 private Atom XkbInternAtom(char* str, Bool only_if_exists)
 {

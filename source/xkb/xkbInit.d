@@ -45,7 +45,7 @@ import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.keysym;
 import deimos.X11.Xatom;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.extensions.XKMformat;
 
 import dix.screenint_priv;
 import os.bug_priv;
@@ -58,7 +58,7 @@ import include.inputstr;
 import include.opaque;
 import include.property;
 import include.scrnintstr;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 enum      _XKB_RF_NAMES_PROP_ATOM =         "_XKB_RULES_NAMES";
 
@@ -300,7 +300,7 @@ private Bool XkbCompareUsedRMLVO(XkbRMLVOSet* rmlvo)
 
 /***====================================================================***/
 
-import xkbDflts;
+import xkb.xkbDflts;
 
 private Bool XkbInitKeyTypes(XkbDescPtr xkb)
 {

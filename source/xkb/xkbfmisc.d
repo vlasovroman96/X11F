@@ -32,9 +32,9 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-import deimos.X11.Xos;
-import deimos.X11.Xfuncs;
-import deimos.X11.extensions.XKMformat;
+// import deimos.X11.Xos;
+// import deimos.X11.Xfuncs;
+// import deimos.X11.extensions.XKMformat;
 import deimos.X11.X;
 import deimos.X11.keysym;
 import deimos.X11.Xproto;
@@ -47,7 +47,7 @@ import include.inputstr;
 import include.dix;
 import include.xkbsrv;
 import include.xkbsrv;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
 uint _XkbKSCheckCase(KeySym ks)
 {

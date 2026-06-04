@@ -38,7 +38,7 @@ import xkb.xkbsrv_priv;
 
 import include.misc;
 import include.inputstr;
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 import include.os;
 
 import xkb.xkbsrv_priv;
