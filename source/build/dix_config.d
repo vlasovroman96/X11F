@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
 
 //#pragma once
-
+import externs.x11.Xmd;
 /* Define to 1 if `struct sockaddr_in' has a `sin_len' member */
 enum BUILD_GLX_DRI = 1;
 
