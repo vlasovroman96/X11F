@@ -56,16 +56,17 @@ public import deimos.X11.Xproto;
 /*
  *  callback manager stuff
  */
-
+struct _CallbackList;
 alias CallbackListPtr = _CallbackList*;
+enum _X_EXPORT = "";
 
 alias CallbackProcPtr = void function(CallbackListPtr*, void*, void*);
 
-extern _X_EXPORT AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+extern void AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
 
-extern _X_EXPORT DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+extern void DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
 
-extern _X_EXPORT _CallCallbacks(CallbackListPtr* pcbl, void* call_data);
+extern void _CallCallbacks(CallbackListPtr* pcbl, void* call_data);
 
 pragma(inline, true) private void CallCallbacks(CallbackListPtr* pcbl, void* call_data)
 {
