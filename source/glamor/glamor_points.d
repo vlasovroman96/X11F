@@ -32,7 +32,7 @@ import build.dix_config;
 
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import glamor_transform;
 
 private const(glamor_facet) glamor_facet_point = {

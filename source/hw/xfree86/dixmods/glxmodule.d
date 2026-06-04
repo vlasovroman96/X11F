@@ -43,7 +43,7 @@ import include.globals;
 import glxserver;
 import include.glx_extinit;
 
-private MODULESETUPPROTO glxSetup;
+// private MODULESETUPPROTO glxSetup;
 
 private XF86ModuleVersionInfo VersRec = {
     modname: "glx",

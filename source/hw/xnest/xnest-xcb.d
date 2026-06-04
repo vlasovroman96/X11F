@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 // public import stdbool;
-public import xcb.xcb;
+public import externs.xcb.xcb;
 
 public import include.list;
 

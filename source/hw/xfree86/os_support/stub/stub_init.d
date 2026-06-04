@@ -3,7 +3,7 @@ module stub_init;
 extern(C): __gshared:
 import build.xorg_config;
 
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 
 void xf86OpenConsole()

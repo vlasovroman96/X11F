@@ -107,8 +107,8 @@ import ptrveloc;           /* dix pointer acceleration */
 import include.xserver_properties;
 
 version (XFreeXDGA) {
-import dgaproc;
-import dgaproc_priv;
+import include.dgaproc;
+import hw.xfree86.common.dgaproc_priv;
 }
 
 import include.xkbsrv;

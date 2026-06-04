@@ -48,7 +48,7 @@ import os_support.linux.systemd_logind;
 import xf86_pci_priv;
 import loaderProcs;
 import xf86_priv;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSproc;;
 import xf86Opt_priv;
 import include.xf86Priv;

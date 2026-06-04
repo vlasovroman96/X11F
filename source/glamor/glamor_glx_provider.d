@@ -39,12 +39,12 @@ import dix.dix_priv;
 
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-import epoxy.egl;
+import externs.epoxygl;
 import glxserver;
 import glxutil;
 import composite.compint;
-import deimos.X11.extensions.composite;
-import glamor_priv;
+// import deimos.X11.extensions.composite;
+import glamor.glamor_priv;
 import include.glamor;
 
 /* Can't get these from <GL/glx.h> since it pulls in client headers */

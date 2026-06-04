@@ -97,7 +97,7 @@
 
 /*
  * This file has the private Pci definitions.  The public ones are imported
- * from xf86Pci.h.  Drivers should not use this file.
+ * from include.xf86Pci.h.  Drivers should not use this file.
  */
 
 #ifndef _PCI_H
@@ -107,7 +107,7 @@
 
 #include <X11/Xdefs.h>
 
-#include "xf86Pci.h"
+#include "include.xf86Pci.h"
 
 /*
  * Global Definitions

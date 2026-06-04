@@ -30,8 +30,8 @@ import core.stdc.stdio;
 import include.mipict;
 import os.bug_priv;
 
-import Xprintf;
-import glamor_priv;
+import include.Xprintf;
+import glamor.glamor_priv;
 import glamor_transform;
 import glamor_transfer;
 import render.glyphstr_priv;

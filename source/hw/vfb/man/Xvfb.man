@@ -90,7 +90,7 @@ render device node for glamor to use to enable DRI3.
 This option specifies how to adjust the pixelization of thin lines.
 The value \fIn\fP is a bitmask of octants in which to prefer an axial
 step when the Bresenham error term is exactly zero.  See the file
-Xserver/mi/miline.h for more information.  This option is probably only useful
+Xserver/mi/include.miline.h for more information.  This option is probably only useful
 to server developers to experiment with the range of line pixelization
 possible with the fb code.
 .TP 4

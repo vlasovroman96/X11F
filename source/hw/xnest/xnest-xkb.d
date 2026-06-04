@@ -6,8 +6,8 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import xcb.xcb;
-public import xcb.xkb;
+public import externs.xcb.xcb;
+public import externs.xcb.xkb;
 
 xcb_xkb_get_kbd_by_name_cookie_t xcb_xkb_get_kbd_by_name_2(xcb_connection_t* c, xcb_xkb_device_spec_t deviceSpec, ushort need, ushort want, ubyte load, uint data_len, const(ubyte)* data);
 

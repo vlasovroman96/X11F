@@ -42,7 +42,7 @@ import include.windowstr;
 import include.exevents;
 import include.xkbsrv;
 import include.xserver_properties;
-import syncsrv;
+import Xext.syncsrv;
 import test.tests_common;
 
 /**

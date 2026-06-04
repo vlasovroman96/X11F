@@ -64,7 +64,7 @@ public import include.xlibre_ptrtypes;
 
 public import include.scrnintstr;
 public import include.extnsionst;
-public import GL.glxproto;
+public import externs.glxproto;
 
 /*!
  * Current version of the ABI.

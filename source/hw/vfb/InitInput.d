@@ -29,11 +29,11 @@ from The Open Group.
 
 */
 
-import dix_config;
+import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 import deimos.X11.keysym;
 
 import dix.dix_priv;

@@ -339,7 +339,7 @@
 65024	65783	1778774584728298506	hw/xfree86/ddc/libxorg_ddc.a.p/ddcProperty.c.o	47f09e7ef9dcbbf6
 65872	66263	1778774585576273950	hw/xfree86/loader/libxorg_loader.a.p/loader.c.o	ad9f353fb2104a45
 64649	68882	1778774584353026285	hw/xfree86/ddc/libxorg_ddc.a.p/interpret_edid.c.o	9ef9b919382c2315
-65164	71030	1778774584868301612	hw/xfree86/dri/libxorg_dri.a.p/xf86dri.c.o	d6792f9f0b312ef5
+65164	71030	1778774584868301612	hw/xfree86/dri/libxorg_dri.a.p/hw.xfree86.dri.xf86dri.c.o	d6792f9f0b312ef5
 64783	71034	1778774584487025813	hw/xfree86/ddc/libxorg_ddc.a.p/print_edid.c.o	9b326397aaf27b6f
 65781	71035	1778774585485022295	hw/xfree86/i2c/libxorg_i2c.a.p/xf86i2c.c.o	37a3cb27c2e34430
 65039	71042	1778774584743024910	hw/xfree86/dri/libxorg_dri.a.p/dri.c.o	74b978fc37020aea

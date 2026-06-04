@@ -40,14 +40,14 @@ import core.stdc.config: c_long, c_ulong;
  *
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.errno;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
 import deimos.X11.extensions.randr;
-import deimos.X11.extensions.Xv;
+// import deimos.X11.extensions.Xv;
 
 import config.hotplug_priv;
 import dix.dix_priv;
@@ -58,10 +58,10 @@ import mi.mi_priv;
 import include.xf86;
 import include.xf86Priv;
 import include.xf86_OSproc;;
-import compiler;
-import xf86Pci;
+import include.compiler;
+import include.xf86Pci;
 import mi.mipointer;
-import mipointrst;
+import include.mipointrst;
 import micmap;
 import include.fb;
 import include.xf86i2c;
@@ -179,7 +179,7 @@ int ms_entity_index = -1;
 
 private DevPrivateKeyRec asyncFlipPrivateKeyRec;
 
-private MODULESETUPPROTO Setup;
+// private MODULESETUPPROTO Setup;
 
 private XF86ModuleVersionInfo VersRec = {
     modname: "modesetting",

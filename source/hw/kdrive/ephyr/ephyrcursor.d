@@ -29,8 +29,8 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
-import xcb.render;
-import xcb.xcb_renderutil;
+import externs.xcb.xcb_render;
+import externs.xcb.xcb_renderutil;
 
 import mi.mipointer_priv;
 

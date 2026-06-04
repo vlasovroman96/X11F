@@ -20,7 +20,7 @@ import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
 
-import xcb.xcb;
+import externs.xcb.xcb;
 
 import dix.colormap_priv;
 import os.osdep;
@@ -40,7 +40,7 @@ import Color;
 import XNWindow;
 import Args;
 
-import xcb.xcb_icccm;
+import externs.xcb.xcb_icccm;
 
 DevPrivateKeyRec xnestColormapPrivateKeyRec;
 

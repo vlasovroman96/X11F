@@ -1,4 +1,4 @@
-module fbbits;
+module fb.fbbits;;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -25,45 +25,47 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import include.fb;
-import miline;
-import mizerarc;
-import fb.fbbitsh;
+mixin template Iteration8() {
+    enum BRESSOLID   = fbBresSolid8;
+    enum BRESDASH    = fbBresDash8;
+    enum DOTS        = fbDots8;
+    enum ARC         = fbArc8;
+    enum GLYPH       = fbGlyph8;
+    enum POLYLINE    = fbPolyline8;
+    enum POLYSEGMENT = fbPolySegment8;
+    alias BITS  = BYTE;
+    alias BITS2 = CARD16;
+    alias BITS4 = CARD32;
+	mixin(import("fbbits.d"));
+}
+
+mixin template Iteration16() {
+    enum BRESSOLID   = fbBresSolid16;
+    enum BRESDASH    = fbBresDash16;
+    enum DOTS        = fbDots16;
+    enum ARC         = fbArc16;
+    enum GLYPH       = fbGlyph16;
+    enum POLYLINE    = fbPolyline16;
+    enum POLYSEGMENT = fbPolySegment16;
+    alias BITS  = CARD16;
+    alias BITS2 = CARD32;
+	mixin(import("fbbits.d"));
+}
+
+mixin template Iteration32() {
+    enum BRESSOLID   = fbBresSolid32;
+    enum BRESDASH    = fbBresDash32;
+    enum DOTS        = fbDots32;
+    enum ARC         = fbArc32;
+    enum GLYPH       = fbGlyph32;
+    enum POLYLINE    = fbPolyline32;
+    enum POLYSEGMENT = fbPolySegment32;
+    alias BITS  = CARD32;
+
+	mixin(import("fbbits.d"));
+}
 
 
-enum BRESSOLID =   fbBresSolid8;
-enum BRESDASH =    fbBresDash8;
-enum DOTS =	    fbDots8;
-enum ARC =	    fbArc8;
-enum GLYPH =	    fbGlyph8;
-enum POLYLINE =    fbPolyline8;
-enum POLYSEGMENT = fbPolySegment8;
-enum BITS =	    BYTE;
-enum BITS2 =	    CARD16;
-enum BITS4 =	    CARD32;
-
-import fbbits;
-
-enum BRESSOLID =   fbBresSolid16;
-enum BRESDASH =    fbBresDash16;
-enum DOTS =	    fbDots16;
-enum ARC =	    fbArc16;
-enum GLYPH =	    fbGlyph16;
-enum POLYLINE =    fbPolyline16;
-enum POLYSEGMENT = fbPolySegment16;
-enum BITS =	    CARD16;
-enum BITS2 =	    CARD32;
-
-import fbbits;
-
-enum BRESSOLID =   fbBresSolid32;
-enum BRESDASH =    fbBresDash32;
-enum DOTS =	    fbDots32;
-enum ARC =	    fbArc32;
-enum GLYPH =	    fbGlyph32;
-enum POLYLINE =    fbPolyline32;
-enum POLYSEGMENT = fbPolySegment32;
-enum BITS =	    CARD32;
-
-import fbbits;
-
+mixin Iteration8 i8;
+mixin Iteration16 i16;
+mixin Iteration32 i32;

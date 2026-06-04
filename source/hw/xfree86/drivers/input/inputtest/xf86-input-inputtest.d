@@ -32,7 +32,7 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.socket;
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.un;
-import stdbool;
+// import stdbool;
 
 import deimos.X11.Xatom;
 
@@ -46,7 +46,7 @@ import xf86Xinput_priv;
 import include.xserver_properties;
 import include.os;
 
-import xf86_input_inputtest_protocol;
+import hw.xfree86.drivers.input.inputtest.xf86_input_inputtest_protocol;
 
 enum MAX_POINTER_NUM_AXES = 5 /* x, y, hscroll, vscroll, [pressure] */;
 enum MAX_TOUCH_NUM_AXES = 5 /* x, y, hscroll, vscroll, pressure */;

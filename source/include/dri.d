@@ -39,7 +39,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 public import externs.pciaccess;
 
 public import include.scrnintstr;
-public import include.xf86dri;
+public import hw.xfree86.dri.xf86dri;
 
 /* Prototypes for DRI functions */
 
@@ -100,7 +100,7 @@ alias DRIWrappedFuncsPtr = DRIWrappedFuncsRec*;
 
 /*
  * Prior to Xorg 6.8.99.8, the DRIInfoRec structure was implicitly versioned
- * by the XF86DRI_*_VERSION defines in xf86dristr.h.  These numbers were also
+ * by the XF86DRI_*_VERSION defines in hw.xfree86.dri.xf86dristr.h.  These numbers were also
  * being used to version the XFree86-DRI protocol.  Bugs #3066 and #3163
  * showed that this was inadequate.  The DRIInfoRec structure is now versioned
  * by the DRIINFO_*_VERSION defines in this file. - ajax, 2005-05-18.

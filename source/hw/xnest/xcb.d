@@ -1,4 +1,4 @@
-module xcb;
+module hw.xnest.xcb;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -8,14 +8,14 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import stdbool;
-import xcb.xcb;
-import xcb.xcb_aux;
-import xcb.xcb_icccm;
+import externs.xcb.xcb;
+import externs.xcb.xcb_aux;
+import externs.xcb.xcb_icccm;
 
 import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
-import xcb.xkb;
+import externs.xcb.xkb;
 
 import include.gc;
 import include.servermd;

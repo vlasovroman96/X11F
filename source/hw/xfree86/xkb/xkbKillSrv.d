@@ -27,7 +27,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix_config;
+import build.dix_config;
 
 import build.xorg_config;
 

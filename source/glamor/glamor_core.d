@@ -40,7 +40,7 @@ import core.stdc.stdlib;
 
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 Bool glamor_get_drawable_location(const(DrawablePtr) drawable)
 {

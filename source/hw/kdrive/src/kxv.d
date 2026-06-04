@@ -41,8 +41,8 @@ of the copyright holder.
 
 import config.kdrive_config;
 
-import deimos.X11.extensions.Xv;
-import deimos.X11.extensions.Xvproto;
+// import deimos.X11.extensions.Xv;
+// import deimos.X11.extensions.Xvproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;

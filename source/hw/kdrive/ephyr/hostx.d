@@ -53,24 +53,24 @@ import dix.input_priv;
 import hostx;
 
 version = X_INCLUDE_STRING_H;
-import deimos.X11.Xos_r;
+// import deimos.X11.Xos_r;
 import deimos.X11.keysym;
-import xcb.xcb;
-import xcb.xproto;
-import xcb.xcb_icccm;
-import xcb.xcb_aux;
-import xcb.shm;
-import xcb.xcb_image;
-import xcb.shape;
-import xcb.xcb_keysyms;
-import xcb.randr;
-import xcb.xkb;
+import externs.xcb.xcb;
+import externs.xcb.xproto;
+import externs.xcb.xcb_icccm;
+import externs.xcb.xcb_aux;
+import externs.xcb.shm;
+import externs.xcb.xcb_image;
+import externs.xcb.shape;
+import externs.xcb.xcb_keysyms;
+import externs.xcb.xcb_randr;
+import externs.xcb.xcb_xkb;
 version (GLAMOR) {
-import xcb.glx;
+import externs.xcb.glx;
 import epoxy.common;
-import epoxy.gl;
+import externs.epoxygl;
 import glamor_glx_provider;
-import ephyr_glamor;
+import hw.kdrive.ephyr.ephyr_glamor;
 import glamor.glamor_priv;
 
 version (XV) {

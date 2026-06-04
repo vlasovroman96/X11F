@@ -1,7 +1,7 @@
 module geeventinit;
 @nogc nothrow:
 extern(C): __gshared:
-import dix_config;
+import build.dix_config;
 
 //import deimos.X11.Xfuncproto;
 import deimos.X11.Xproto;

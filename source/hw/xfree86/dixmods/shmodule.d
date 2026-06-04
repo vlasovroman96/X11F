@@ -25,17 +25,17 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import include.xf86Module;
-import    X11.X;
-import    scrnintstr;
-import    windowstr;
-import    X11.fonts.font;
-import    dixfontstr;
-import    X11.fonts.fontstruct;
-import    mi;
-import    regionstr;
-import    globals;
-import    gcstruct;
-import shadow;
+import    deimos.X11.X;
+import    include.scrnintstr;
+import    include.windowstr;
+// import    deimos.X11.fonts.font;
+import    include.dixfontstr;
+// import    deimos.X11.fonts.fontstruct;
+import    include.mi;
+import    include.regionstr;
+import    include.globals;
+import    include.gcstruct;
+import include.shadow;
 
 private XF86ModuleVersionInfo VersRec = {
     modname: "shadow",

@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import GL.glxtokens;
+import externs.glxtokens;
 
 import dix.dix_priv;
 

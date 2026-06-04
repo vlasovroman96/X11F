@@ -26,16 +26,16 @@ extern(C): __gshared:
  * SOFTWARE.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.ctype;
 import core.stdc.stdint;
 import core.stdc.errno;
 import core.sys.posix.dlfcn;
 import core.sys.posix.sys.time;
-import GL.gl;
-import GL.glxtokens;
-import GL.internal.dri_interface;
+import externs.gl;
+import externs.glxtokens;
+import externs.internal.dri_interface;
 
 import miext.extinit_priv;
 

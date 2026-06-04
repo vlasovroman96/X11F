@@ -56,7 +56,7 @@ import include.gcstruct;
 import include.windowstr;
 import include.pixmap;
 import include.mi;
-import miline;
+import include.miline;
 
 /* Draw lineSolid, fillStyle-independent zero width lines.
  *

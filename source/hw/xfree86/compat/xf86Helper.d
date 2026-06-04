@@ -1,7 +1,7 @@
 module hw.cfree86.compat.xf86Helper;
 @nogc nothrow:
 extern(C): __gshared:
-import dix_config;
+import build.dix_config;
 
 //import deimos.X11.Xfuncproto;
 

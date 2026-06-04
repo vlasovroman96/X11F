@@ -1,6 +1,6 @@
 srcs_xorg_dri = [
     'dri.c',
-    'xf86dri.c',
+    'hw.xfree86.dri.xf86dri.c',
 ]
 
 xorg_dri = static_library('xorg_dri',

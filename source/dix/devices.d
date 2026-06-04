@@ -94,7 +94,7 @@ import Xi.xiproperty;
 import dix.enterleave;         /* for EnterWindow() */
 import include.xserver_properties;
 import xichangehierarchy;  /* For XISendDeviceHierarchyEvent */
-import syncsrv;
+import Xext.syncsrv;
 
 /** @file
  * This file handles input device-related stuff.

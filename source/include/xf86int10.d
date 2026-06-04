@@ -11,7 +11,7 @@ extern(C): __gshared:
  
 public import deimos.X11.Xmd;
 public import deimos.X11.Xdefs;
-public import xf86Pci;
+public import include.xf86Pci;
 
 enum string SEG_ADDR(string x) = `(((` ~ x ~ `) >> 4) & 0x00F000)`;
 enum string SEG_OFF(string x) = `((` ~ x ~ `) & 0x0FFFF)`;

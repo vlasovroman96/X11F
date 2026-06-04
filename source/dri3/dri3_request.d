@@ -33,7 +33,7 @@ import include.syncsdk;
 import os.client_priv;
 
 import dri3.dri3_priv;
-import syncsrv;
+import Xext.syncsrv;
 import Xext.xace;
 import include.protocol_versions;
 import drm_fourcc;

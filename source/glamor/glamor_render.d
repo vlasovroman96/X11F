@@ -41,7 +41,7 @@ import core.stdc.assert_;
 import include.mipict;
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import include.fbpict;
 version (none) {
 //#define DEBUGF(str, ...)  do {} while(0)

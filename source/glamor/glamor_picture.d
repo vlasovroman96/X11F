@@ -45,7 +45,7 @@ import core.stdc.stdlib;
 
 import include.mipict;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 private void byte_swap_swizzle(GLenum* swizzle)
 {

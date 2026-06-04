@@ -13,7 +13,16 @@
 	"dflags": [
         "-verrors=5",
 		"-P-I/usr/include/dbus-1.0",
-		"-P-I/usr/lib/dbus-1.0/include"
+		"-P-I/usr/lib/dbus-1.0/include",
+		"-P-Isource/Xext/dri2",
+		"-P=-I/usr/include/libdrm",
+		"-P-Isource",
+		"-P-I/usr/include/linux",
+		"-P=-D__int128=long long",
+        "-P=-D__attribute__(x)=",
+		"-P=-D_STRUCT_TIMEVAL",
+        "-P=-D_LINUX_TIME_H",
+		"-P=-D__alignof__=sizeof"
     ],
 	"importPaths": [
 		"source"

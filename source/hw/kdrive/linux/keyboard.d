@@ -1,4 +1,4 @@
-module keyboard;
+module hw.kdrive.linux.keyboard;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -35,8 +35,8 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 import hw.kdrive.src.kdrive;
-import linux.keyboard;
-import linux.kd;
+import externs.linux.keyboard;
+import externs.linux.kd;
 version = XK_PUBLISHING;
 import deimos.X11.keysym;
 import core.sys.posix.termios;

@@ -45,7 +45,7 @@ import build.xorg_config;
 import core.stdc.string;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.xf86dgaproto;
+// import deimos.X11.extensions.xf86dgaproto;
 
 import dix.colormap_priv;
 import dix.dix_priv;
@@ -59,8 +59,8 @@ import mi.mi_priv;
 import include.xf86;
 import include.xf86str;
 import include.xf86Priv;
-import dgaproc;
-import dgaproc_priv;
+import include.dgaproc;
+import hw.xfree86.common.dgaproc_priv;
 import include.pixmapstr;
 import include.inputstr;
 import include.globals;
@@ -76,8 +76,8 @@ import include.extnsionst;
 import include.cursorstr;
 import include.scrnintstr;
 import dix.swaprep;
-import dgaproc;
-import protocol_versions;
+import include.dgaproc;
+import include.protocol_versions;
 
 private DevPrivateKeyRec DGAScreenKeyRec;
 

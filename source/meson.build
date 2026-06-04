@@ -110,7 +110,7 @@ compositeproto_dep = dependency('compositeproto', version: '>= 0.4', fallback: [
 recordproto_dep = dependency('recordproto', version: '>= 1.13.99.1', fallback: ['xorgproto', 'ext_xorgproto'])
 scrnsaverproto_dep = dependency('scrnsaverproto', version: '>= 1.1', fallback: ['xorgproto', 'ext_xorgproto'])
 resourceproto_dep = dependency('resourceproto', version: '>= 1.2.0', fallback: ['xorgproto', 'ext_xorgproto'])
-xf86driproto_dep = dependency('xf86driproto', version: '>= 2.1.0', fallback: ['xorgproto', 'ext_xorgproto'], required: get_option('dri1') == 'true')
+hw.xfree86.dri.xf86driproto_dep = dependency('hw.xfree86.dri.xf86driproto', version: '>= 2.1.0', fallback: ['xorgproto', 'ext_xorgproto'], required: get_option('dri1') == 'true')
 dri2proto_dep = dependency('dri2proto', version: '>= 2.8', fallback: ['xorgproto', 'ext_xorgproto'], required: get_option('dri2') == 'true')
 dri3proto_dep = dependency('dri3proto', version: '>= 1.4', fallback: ['xorgproto', 'ext_xorgproto'], required: get_option('dri3') == 'true')
 xineramaproto_dep = dependency('xineramaproto', fallback: ['xorgproto', 'ext_xorgproto'])
@@ -509,7 +509,7 @@ endif
 libdrm_dep = dependency('libdrm', version: libdrm_req, required: false)
 
 if get_option('dri1') == 'auto'
-    build_dri1 = xf86driproto_dep.found() and libdrm_dep.found()
+    build_dri1 = hw.xfree86.dri.xf86driproto_dep.found() and libdrm_dep.found()
 else
     build_dri1 = get_option('dri1') == 'true'
 endif
@@ -645,7 +645,7 @@ common_dep = [
     recordproto_dep,
     scrnsaverproto_dep,
     resourceproto_dep,
-    xf86driproto_dep,
+    hw.xfree86.dri.xf86driproto_dep,
     dri2proto_dep,
     dri3proto_dep,
     xineramaproto_dep,

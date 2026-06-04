@@ -1,4 +1,4 @@
-module present_priv;
+module present.present_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -35,11 +35,11 @@ public import include.misc;
 public import include.list;
 public import include.windowstr;
 public import include.dixstruct;
-public import syncsrv;
-public import xfixes;
+public import Xext.syncsrv;
+public import xfixes.xfixes;
 public import include.randrstr;
 public import core.stdc.inttypes;
-public import dri3;
+public import dri3.dri3;
 
 version (none) {
 enum string DebugPresent(string x) = `ErrorF x = void;`;
@@ -103,10 +103,10 @@ version (DRI3) {
 } /* DRI3 */
 }
 
-alias present_screen_priv_rec = present_screen_priv;
-alias present_screen_priv_ptr = present_screen_priv*;
-alias present_window_priv_rec = present_window_priv;
-alias present_window_priv_ptr = present_window_priv*;
+alias present_screen_priv_rec = present_screen_priv_t;
+alias present_screen_priv_ptr = present_screen_priv_t*;
+alias present_window_priv_rec = present_window_priv_t;
+alias present_window_priv_ptr = present_window_priv_t*;
 
 /*
  * Mode hooks
@@ -129,7 +129,7 @@ alias present_priv_re_execute_ptr = void function(present_vblank_ptr vblank);
 alias present_priv_abort_vblank_ptr = void function(ScreenPtr screen, WindowPtr window, RRCrtcPtr crtc, ulong event_id, ulong msc);
 alias present_priv_flip_destroy_ptr = void function(ScreenPtr screen);
 
-struct present_screen_priv {
+struct present_screen_priv_t {
     ScreenPtr pScreen;
     ConfigNotifyProcPtr ConfigNotify;
     ClipNotifyProcPtr ClipNotify;
@@ -196,7 +196,7 @@ struct present_event_rec {
     int mask;
 }
 
-struct present_window_priv {
+struct present_window_priv_t {
     WindowPtr window;
     present_event_ptr events;
     RRCrtcPtr crtc;        /* Last reported CRTC from get_ust_msc */
@@ -364,7 +364,7 @@ void present_vblank_destroy(present_vblank_ptr vblank);
 
 alias present_complete_notify_proc = void function(WindowPtr window, CARD8 kind, CARD8 mode, CARD32 serial, ulong ust, ulong msc);
 
-/* only for in-tree GLX module */ void present_register_complete_notify(present_complete_notify_proc proc);
+/* only for in-tree GLX module present.*/ void present_register_complete_notify(present_complete_notify_proc proc);
 
 /* only for in-tree modesetting */ Bool present_can_window_flip(WindowPtr window);
 

@@ -76,7 +76,7 @@ import include.extnsionst;
 import include.dixstruct;
 import include.pixmapstr;
 import include.resource;
-import syncsrv;
+import Xext.syncsrv;
 import include.protocol_versions;
 import include.inputstr;
 // import include.misync_priv;

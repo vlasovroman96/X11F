@@ -43,7 +43,7 @@ import include.misc;
 import include.scrnintstr;
 import include.pixmapstr;
 import include.dix;
-import miline;
+import include.miline;
 
 /* We use this structure to propagate some information from miScreenInit to
  * miCreateScreenResources.  miScreenInit allocates the structure, fills it

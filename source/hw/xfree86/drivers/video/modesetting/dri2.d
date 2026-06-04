@@ -35,7 +35,7 @@ extern(C): __gshared:
  * This doesn't implement pageflipping yet.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.errno;
 import core.stdc.time;
@@ -44,8 +44,8 @@ import dix.dix_priv;
 
 import include.list;
 import include.xf86;
-import driver;
-import dri2;
+// import driver;
+// import dri2;
 
 version (GLAMOR) {
 

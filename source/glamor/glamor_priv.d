@@ -1,4 +1,4 @@
-module glamor_priv;
+module glamor.glamor_priv;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -41,11 +41,11 @@ public import include.misyncshm;
 public import include.misyncstr;
 }
 
-public import epoxy.gl;
+public import externs.epoxygl;
 version (GLAMOR_HAS_GBM) {
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-public import epoxy.egl;
+public import externs.epoxygl;
 }
 
 enum GLAMOR_DEFAULT_PRECISION = 
@@ -79,7 +79,7 @@ public import glamor_program;
 
 public import include.list;
 
-struct glamor_pixmap_private;
+// struct glamor_pixmap_private;
 
 struct glamor_composite_shader {
     GLuint prog;
@@ -204,8 +204,8 @@ alias SHADER_GRADIENT_CONICAL = gradient_shader.SHADER_GRADIENT_CONICAL;
 alias SHADER_GRADIENT_COUNT = gradient_shader.SHADER_GRADIENT_COUNT;
 
 
-struct glamor_screen_private;
-struct glamor_pixmap_private;
+// struct glamor_screen_private;
+// struct glamor_pixmap_private;
 
 enum GLAMOR_COMPOSITE_VBO_VERT_CNT = (64*1024);
 

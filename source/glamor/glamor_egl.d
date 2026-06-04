@@ -49,7 +49,7 @@ import sys.mkdev;          /* for major() & minor() on Solaris */
 }
 
 version (WITH_LIBDRM) {
-import include.xf86drm;
+import include.externs.xf86drm;
 import drm_fourcc;
 }
 
@@ -68,7 +68,7 @@ import glamor_egl;
 import glamor_egl_ext;
 import glamor_egl_priv;
 import glamor_glx_provider;
-import dri3;
+import dri3.dri3;
 
 /**
  * EGLDeviceEXT's are internally stored as a globals.

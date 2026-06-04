@@ -60,7 +60,7 @@ import build.xorg_config;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-import Xprintf;
+import include.Xprintf;
 
 
 private const(xf86ConfigSymTabRec)[19] PointerTab = [

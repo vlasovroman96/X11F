@@ -350,7 +350,7 @@ enum string FbEvenTile(string w) = `((` ~ w ~ `) <= FB_UNIT && ` ~ FbPowerOfTwo!
 extern int fbPolyArc(DrawablePtr pDrawable, GCPtr pGC, int narcs, xArc* parcs);
 
 /*
- * fbbits.c
+ * fb.fbbits;.c
  */
 
 extern int fbBresSolid8(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);

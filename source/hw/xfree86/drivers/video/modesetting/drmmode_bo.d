@@ -9,16 +9,16 @@ extern(C): __gshared:
 import core.stdc.stddef;
 import core.stdc.stdint;
 
-import dix_config;
+import build.dix_config;
 
 import include.dix; /* ARRAY_SIZE() */
 
 import dix.dix_priv;
 
-import drm_fourcc;
-import drm_mode;
+import externs.drm_fourcc;
+import externs.drm_mode;
 
-import include.xf86drm;
+import externs.xf86drm;
 import include.xf86Crtc;
 
 import driver;

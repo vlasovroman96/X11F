@@ -28,7 +28,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import stdbool;
+// import stdbool;
 import core.stdc.stdint;
 import core.stdc.string;
 

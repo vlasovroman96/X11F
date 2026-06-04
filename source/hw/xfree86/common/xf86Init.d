@@ -53,7 +53,7 @@ import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.Xatom;
 //import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import config.dbus_core;
 import config.hotplug_priv;
@@ -71,7 +71,7 @@ import randr.randrstr_priv;
 import include.servermd;
 import include.windowstr;
 import include.scrnintstr;
-import os_support.linux.systemd_logind;
+import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
 
 import xf86VGAarbiter_priv;
@@ -81,7 +81,7 @@ import xf86Module_priv;
 import xf86_priv;
 import include.xf86Priv;
 import xf86Config;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 import xf86cmap;
 import mi.mipointer;
@@ -100,8 +100,8 @@ import dpmsproc;
 }
 
 version (linux) {
-import linux.major;
-import sys.sysmacros;
+import externs.linux.major;
+import externs.sys.sysmacros;
 }
 
 Bool xf86DoShowOptions = FALSE;

@@ -33,9 +33,9 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import GL.gl;
+import externs.gl;
 import glxserver;
-import GL.glxproto;
+import externs.glxproto;
 import unpack;
 import indirect_size;
 import indirect_reqsize;

@@ -1,4 +1,4 @@
-module ephyr_glamor;
+module hw.kdrive.ephyr.ephyr_glamor;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -28,21 +28,21 @@ extern(C): __gshared:
  *
  * Glamor support and EGL setup.
  */
-import dix_config;
+import build.dix_config;
 
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
 
 import core.stdc.stdlib;
 import core.stdc.stdint;
-import xcb.xcb;
-import xcb.xcb_aux;
+import externs.xcb.xcb;
+import externs.xcb.xcb_aux;
 import pixman;
 import glamor_context;
 import glamor_egl;
-import glamor_priv;
+import glamor.glamor_priv;
 import ephyr;
-import ephyr_glamor;
+import hw.kdrive.ephyr.ephyr_glamor;
 import include.os;
 
 /* until we need geometry shaders GL3.1 should suffice. */

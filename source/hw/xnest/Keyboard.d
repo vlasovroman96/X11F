@@ -27,7 +27,7 @@ import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
 import deimos.X11.keysym;
 import deimos.X11.extensions.XKB;
-import xcb.xkb;
+import externs.xcb.xkb;
 
 import os.osdep;
 

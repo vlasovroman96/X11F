@@ -40,7 +40,7 @@ import include.dixstruct;
 import include.extnsionst;
 import include.glx_extinit;
 
-import GL.glxproto;
+import externs.glxproto;
 import vndservervendor;
 
 import dix.callback_priv;

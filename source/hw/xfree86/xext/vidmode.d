@@ -33,7 +33,7 @@ from Kaleb S. KEITHLEY
 */
 /* THIS IS NOT AN X CONSORTIUM STANDARD OR AN X PROJECT TEAM SPECIFICATION */
 
-import dix_config;
+import build.dix_config;
 
 version (XF86VIDMODE) {
 
@@ -55,7 +55,7 @@ import include.scrnintstr;
 import include.servermd;
 import vidmodestr;
 import include.globals;
-import protocol_versions;
+import include.protocol_versions;
 
 private int VidModeErrorBase;
 private int VidModeAllowNonLocal;

@@ -24,13 +24,13 @@ import core.stdc.config: c_long, c_ulong;
  * OF THIS SOFTWARE.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.errno;
 
 import os.xserver_poll;
 
-import include.xf86drm;
+import externs.xf86drm;
 
 import driver;
 import drmmode_bo;

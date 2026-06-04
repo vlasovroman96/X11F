@@ -1,0 +1,1 @@
+#include <xcb/shm.h>

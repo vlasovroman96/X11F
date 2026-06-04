@@ -52,8 +52,8 @@ import include.xf86Crtc;
 
 version (XFreeXDGA) {
 import deimos.X11.extensions.xf86dgaproto;
-import dgaproc;
-import dgaproc_priv;
+import include.dgaproc;
+import hw.xfree86.common.dgaproc_priv;
 }
 
 import xf86cmap;

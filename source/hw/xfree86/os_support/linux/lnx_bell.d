@@ -32,7 +32,7 @@ import core.sys.posix.sys.ioctl;
 import linux.kd;
 
 import include.xf86Priv;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 
 void xf86OSRingBell(int loudness, int pitch, int duration)
 {

@@ -34,7 +34,7 @@ import build.dix_config;
 
 import core.stdc.stdlib;
 
-import glamor_priv;
+import glamor.glamor_priv;
 /**
  * Sets the offsets to add to coordinates to make them address the same bits in
  * the backing drawable. These coordinates are nonzero only for redirected

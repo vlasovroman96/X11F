@@ -2,7 +2,7 @@ module ones;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
-import dix_config;
+import build.dix_config;
 
 //import deimos.X11.Xfuncproto;
 

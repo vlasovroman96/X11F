@@ -23,7 +23,7 @@ extern(C): __gshared:
  * OF THIS SOFTWARE.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.assert_;
 import core.stdc.errno;
@@ -41,7 +41,7 @@ import include.present;
 
 import include.xf86;
 import include.xf86Crtc;
-import include.xf86drm;
+import externs.xf86drm;
 import include.xf86str;
 
 import driver;

@@ -26,7 +26,7 @@ import core.stdc.config: c_long, c_ulong;
 
 import config.kdrive_config;
 import core.stdc.errno;
-import linux.input;
+import externs.linux.input;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import include.inputstr;

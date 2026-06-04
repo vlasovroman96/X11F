@@ -481,7 +481,7 @@ if build_xorg_sdk
             'micoord.h',
             'migc.h',
             'mi.h',
-            'miline.h',
+            'include.miline.h',
             'mioverlay.h',
             'mipointer.h',
             'mipointrst.h',

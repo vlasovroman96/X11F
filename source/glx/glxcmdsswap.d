@@ -39,7 +39,7 @@ import dix.dix_priv;
 
 import glxserver;
 import glxutil;
-import GL.glxtokens;
+import externs.glxtokens;
 import unpack;
 import include.pixmapstr;
 import include.windowstr;

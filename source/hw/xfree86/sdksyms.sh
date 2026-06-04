@@ -180,7 +180,7 @@ cat > sdksyms.c << EOF
 
 /* mi/Makefile.am */
 #include "micmap.h"
-#include "miline.h"
+#include "include.miline.h"
 #include "mipointer.h"
 #include "mi.h"
 #include "migc.h"

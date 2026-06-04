@@ -44,7 +44,7 @@ import hw.kdrive.src.kdrive;
 import core.sys.posix.sys.ioctl;
 import tslib;
 import core.sys.posix.dirent;
-import linux.input;
+import externs.linux.input;
 
 struct TslibPrivate {
     int fd;

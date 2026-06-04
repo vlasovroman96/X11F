@@ -30,7 +30,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
 import config.kdrive_config;
-import xkb_config;
+import config.xkb_config;
 import hw.kdrive.src.kdrive;
 import include.inputstr;
 
@@ -41,10 +41,10 @@ import deimos.X11.XF86keysym;
 }
 import core.stdc.stdio;
 import core.stdc.signal;
-import sys.file;           /* needed for FNONBLOCK & FASYNC */
+import core.sys.posix.fcntl;           /* needed for FNONBLOCK & FASYNC */
 
 //import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 
 import config.hotplug_priv;
 import dix.dix_priv;

@@ -29,7 +29,7 @@ extern(C): __gshared:
  * Authors:
  *    Zhigang Gong <zhigang.gong@gmail.com>
  */
-import dix_config;
+import build.dix_config;
 
 import include.xf86;
 version = GLAMOR_FOR_XORG;

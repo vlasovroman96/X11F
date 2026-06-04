@@ -26,7 +26,7 @@ import build.dix_config;
 
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import glamor_program;
 import glamor_transform;
 

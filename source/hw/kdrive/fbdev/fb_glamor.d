@@ -22,7 +22,7 @@ import kxv;
 }
 
 version (WITH_LIBDRM) {
-import include.xf86drm;
+import include.externs.xf86drm;
 }
 
 import core.stdc.errno;

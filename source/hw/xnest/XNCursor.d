@@ -18,7 +18,7 @@ is" without express or implied warranty.
  
 public import deimos.X11.Xdefs;
 
-public import mipointrst;
+public import include.mipointrst;
 
 struct _XnestCursorFuncRec {
     miPointerSpriteFuncPtr spriteFuncs;

@@ -5,7 +5,7 @@ extern(C): __gshared:
 public import build.xorg_config;
 
 public import xf86Cursor;
-public import mipointrst;
+public import include.mipointrst;
 
 struct _Xf86CursorScreenRec {
     Bool SWCursor;

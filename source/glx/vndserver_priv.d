@@ -31,7 +31,7 @@ extern(C): __gshared:
  */
  
 public import include.glxvndabi;
-public import vndserver;
+public import include.vndserver;
 
 struct GlxScreenPriv {
     GlxServerVendor* vendor;

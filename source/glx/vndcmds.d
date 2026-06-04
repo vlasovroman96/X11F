@@ -93,7 +93,7 @@ private GlxServerDispatchProc GetVendorDispatchFunc(CARD8 opcode, CARD32 vendorC
 }
 
 /* Include the trivial dispatch handlers */
-import vnd_dispatch_stubs;
+import glx.vnd_dispatch_stubs;
 
 private int dispatch_GLXQueryVersion(ClientPtr client)
 {

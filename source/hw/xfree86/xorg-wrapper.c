@@ -45,7 +45,7 @@
 #include <unistd.h>
 #ifdef WITH_LIBDRM
 #include <drm.h>
-#include <xf86drm.h> /* For DRM_DEV_NAME */
+#include <externs.xf86drm.h> /* For DRM_DEV_NAME */
 #endif
 
 #include "misc.h"

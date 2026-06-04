@@ -1,4 +1,4 @@
-module xf86dri;
+module hw.xfree86.dri.xf86dri;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -45,7 +45,7 @@ import build.xorg_config;
 import core.stdc.string;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.dri.xf86driproto;
+// import deimos.X11.driproto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -63,8 +63,8 @@ import include.servermd;
 import dix.swaprep;
 import include.xf86str;
 import dri_priv;
-import include.xf86drm;
-import protocol_versions;
+import externs.xf86drm;
+import include.protocol_versions;
 import xf86Extensions;
 
 private int DRIErrorBase;

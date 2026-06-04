@@ -1,7 +1,7 @@
 srcs_fb = [
 	'fballpriv.c',
 	'fbarc.c',
-	'fbbits.c',
+	'fb.fbbits;.c',
 	'fbblt.c',
 	'fbbltone.c',
 	'fbcmap_mi.c',

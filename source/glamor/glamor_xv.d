@@ -41,11 +41,11 @@ import core.stdc.assert_;
 import dix.dix_priv;
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import glamor_transform;
 import glamor_transfer;
 
-import deimos.X11.extensions.Xv;
+// import deimos.X11.extensions.Xv;
 import include.fourcc;
 /* Reference color space transform data */
 struct REF_TRANSFORM {

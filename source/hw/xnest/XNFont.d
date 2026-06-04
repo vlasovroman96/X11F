@@ -18,7 +18,7 @@ is" without express or implied warranty.
  
 public import deimos.X11.Xdefs;
 
-public import xcb.xcb;
+public import externs.xcb.xcb;
 
 extern int xnestFontPrivateIndex;
 

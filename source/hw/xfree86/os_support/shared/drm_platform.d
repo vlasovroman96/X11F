@@ -5,7 +5,7 @@ import build.xorg_config;
 
 version (XSERVER_PLATFORM_BUS) {
 
-import include.xf86drm;
+import include.externs.xf86drm;
 import core.sys.posix.fcntl;
 import core.sys.posix.unistd;
 import core.stdc.errno;
@@ -17,7 +17,7 @@ import config.hotplug_priv;
 import include.xf86_OSproc;;
 
 import xf86_priv;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import xf86platformBus_priv;
 import xf86Bus;
 

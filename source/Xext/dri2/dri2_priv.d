@@ -1,13 +1,14 @@
+module Xext.dri2.dri2_priv;
+@nogc nothrow:
+extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
  *
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
-#ifndef _XSERVER_DRI2_PRIV_H_
-#define _XSERVER_DRI2_PRIV_H_
-
-#include "dri2.h"
+ 
+public import Xext.dri2.dri2;
 
 extern CARD8 dri2_major;        /* version of DRI2 supported by DDX */
 extern CARD8 dri2_minor;
 
-#endif /* _XSERVER_DRI2_PRIV_H_ */
+ /* _XSERVER_DRI2_PRIV_H_ */

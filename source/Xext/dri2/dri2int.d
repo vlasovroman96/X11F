@@ -1,3 +1,6 @@
+module Xext.dri2.dri2int;
+@nogc nothrow:
+extern(C): __gshared:
 /*
  * Copyright © 2011 Daniel Stone
  *
@@ -23,11 +26,9 @@
  * Author: Daniel Stone <daniel@fooishbar.org>
  */
 
-#ifndef XSERVER_XFREE86_DRI2INT_H
-#define XSERVER_XFREE86_DRI2INT_H
+ 
+// public import X11.Xdefs;
 
-#include <X11/Xdefs.h>
+extern Bool DRI2ModuleSetup();
 
-extern Bool DRI2ModuleSetup(void);
-
-#endif /* XSERVER_XFREE86_DRI2INT_H */
+ /* XSERVER_XFREE86_DRI2INT_H */

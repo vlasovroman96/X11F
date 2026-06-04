@@ -41,7 +41,7 @@ import include.input;
 import include.scrnintstr;
 
 import include.xf86;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86Priv;
 import include.xf86_OSlib;
 

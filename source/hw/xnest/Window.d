@@ -17,9 +17,9 @@ is" without express or implied warranty.
 */
 import build.xorg_config;
 
-import xcb.xcb;
-import xcb.shape;
-import xcb.xcb_aux;
+import externs.xcb.xcb;
+import externs.xcb.shape;
+import externs.xcb.xcb_aux;
 
 import deimos.X11.X;
 import deimos.X11.Xdefs;

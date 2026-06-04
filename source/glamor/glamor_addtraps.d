@@ -32,7 +32,7 @@ import build.dix_config;
 
 import include.fbpict;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 void glamor_add_traps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {

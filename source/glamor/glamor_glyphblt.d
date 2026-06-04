@@ -32,7 +32,7 @@ import build.dix_config;
 
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import include.dixfontstr;
 import glamor_transform;
 

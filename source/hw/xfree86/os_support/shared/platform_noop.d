@@ -10,7 +10,7 @@ version (XSERVER_PLATFORM_BUS) {
 import include.xf86_OSproc;;
 
 import include.xf86;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import xf86platformBus_priv;
 
 Bool xf86PlatformDeviceCheckBusID(xf86_platform_device* device, const(char)* busid)

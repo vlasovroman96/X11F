@@ -41,7 +41,7 @@ public import include.windowstr;
 public import include.window;
 public import include.xf86str;
 public import mi.mipointer;
-public import mipointrst;
+public import include.mipointrst;
 public import include.picturestr;
 
 enum string WRAP_SCREEN(string x,string y) = `{pScreenPriv.` ~ x ~ ` = pScreen.` ~ x ~ `; pScreen.` ~ x ~ ` = ` ~ y ~ `;}`;

@@ -37,10 +37,10 @@ extern(C): __gshared:
  * device-dependent XV interfaces.
  */
 
-import dix_config;
+import build.dix_config;
 
 version = GLAMOR_FOR_XORG;
-import glamor_priv;
+import glamor.glamor_priv;
 
 import deimos.X11.extensions.Xv;
 import include.fourcc;

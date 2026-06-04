@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2026 stefan11111 <stefan11111@shitposting.expert>
  */
 
-import dix_config;
+import build.dix_config;
 
 version = GLAMOR_FOR_XORG;
 import include.xf86;

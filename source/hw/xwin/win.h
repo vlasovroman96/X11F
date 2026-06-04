@@ -158,7 +158,7 @@
 #include "mipointer.h"
 #include "X11/keysym.h"
 #include "micoord.h"
-#include "miline.h"
+#include "include.miline.h"
 #include "shadow.h"
 #include "fb.h"
 

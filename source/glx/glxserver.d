@@ -43,9 +43,9 @@ public import include.extnsionst;
 public import include.resource;
 public import include.scrnintstr;
 
-public import GL.gl;
-public import GL.glext;
-public import GL.glxproto;
+public import externs.gl;
+public import externs.glext;
+public import externs.glxproto;
 
 enum GLX_CONTEXT_OPENGL_NO_ERROR_ARB = 0x31B3;
 

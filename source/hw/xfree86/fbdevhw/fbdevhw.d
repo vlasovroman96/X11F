@@ -10,7 +10,7 @@ import core.stdc.stdio;
 import core.stdc.stdlib;
 import core.stdc.string;
 import core.sys.posix.unistd;
-import glob;
+import externs.glob;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.mman;
@@ -28,7 +28,7 @@ import xf86Modes;
 import include.xf86_OSproc;;
 
 /* pci stuff */
-import xf86Pci;
+import include.xf86Pci;
 
 import xf86cmap;
 

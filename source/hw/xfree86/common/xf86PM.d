@@ -29,7 +29,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import X1.X;
+import deimos.X11.X;
 
 import xf86_priv;
 import include.xf86Priv;

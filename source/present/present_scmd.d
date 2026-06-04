@@ -1,4 +1,4 @@
-module present_scmd;
+module present.present_scmd;
 @nogc nothrow:
 extern(C): __gshared:
 /*

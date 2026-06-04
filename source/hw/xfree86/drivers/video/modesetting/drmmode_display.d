@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
  *
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.errno;
 import core.sys.posix.sys.ioctl;
@@ -52,13 +52,13 @@ import xf86DDC_priv;
 import drm_fourcc;
 import drm_mode;
 
-import include.xf86drm;
+import externs.xf86drm;
 import include.xf86Crtc;
 import drmmode_bo;
 
 import include.cursorstr;
 
-import deimos.X11.extensions.dpmsconst;
+// import deimos.X11.extensions.dpmsconst;
 
 import driver;
 

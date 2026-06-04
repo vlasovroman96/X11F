@@ -9,7 +9,7 @@ import core.stdc.stdint; /* For INT16_MAX */
 
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 
 

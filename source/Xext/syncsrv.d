@@ -1,4 +1,4 @@
-module syncsrv;
+module Xext.syncsrv;
 @nogc nothrow:
 extern(C): __gshared:
 /*

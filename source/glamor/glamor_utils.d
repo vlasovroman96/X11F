@@ -25,7 +25,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.dix_config;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 void glamor_solid_boxes(DrawablePtr drawable, BoxPtr box, int nbox, c_ulong fg_pixel)
 {

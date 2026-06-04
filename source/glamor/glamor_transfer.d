@@ -28,7 +28,7 @@ import core.stdc.assert_;
 
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import glamor_transfer;
 
 /*

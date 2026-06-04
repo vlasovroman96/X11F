@@ -50,7 +50,7 @@ import core.sys.posix.unistd;
 import deimos.X11.X;
 //import deimos.X11.Xfuncproto;
 import deimos.X11.Xproto;
-import deimos.X11.dri.xf86driproto;
+// import deimos.X11.dri.hw.xfree86.dri.xf86driproto;
 
 import dix.dix_priv;
 import dix.screen_hooks_priv;
@@ -60,7 +60,7 @@ import include.extinit;
 import include.sarea;
 
 import include.xf86;
-import include.xf86drm;
+import externs.xf86drm;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;
@@ -73,7 +73,7 @@ import include.xf86str;
 import dri_priv;
 import include.mi;
 import mi.mipointer;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSproc;;
 import include.inputstr;
 import xf86VGAarbiter_priv;
@@ -94,7 +94,7 @@ private RESTYPE DRIDrawablePrivResType;
 private RESTYPE DRIContextPrivResType;
 
 
-drmServerInfo DRIDRMServerInfo;
+// drmServerInfo DRIDRMServerInfo;
 
                                 /* Wrapper just like xf86DrvMsg, but
                                    without the verbosity level checking.

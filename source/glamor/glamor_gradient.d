@@ -34,7 +34,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 enum LINEAR_SMALL_STOPS = (6 + 2);
 enum LINEAR_LARGE_STOPS = (16 + 2);

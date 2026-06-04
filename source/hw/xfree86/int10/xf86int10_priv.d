@@ -13,7 +13,7 @@ import core.stdc.config: c_long, c_ulong;
  
 // public //import deimos.X11.Xmd;
 public import deimos.X11.Xdefs;
-public import xf86Pci;
+public import include.xf86Pci;
 public import xf86int10;
 
 version (_INT10_PRIVATE) {

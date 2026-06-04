@@ -17,14 +17,14 @@ is" without express or implied warranty.
 */
 import build.xorg_config;
 
-import xcb.xcb;
-import xcb.xcb_aux;
+import externs.xcb.xcb;
+import externs.xcb.xcb_aux;
 
 import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
 
-import xcb.xcb_icccm;
+import externs.xcb.xcb_icccm;
 
 import mi.mi_priv;
 import mi.mipointer_priv;
@@ -49,7 +49,7 @@ import include.events;
 import Init;
 import mi.mipointer;
 import Args;
-import mipointrst;
+import include.mipointrst;
 
 xcb_window_t[MAXSCREENS] xnestDefaultWindows;
 xcb_window_t[MAXSCREENS] xnestScreenSaverWindows;

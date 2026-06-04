@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import glamor_transform;
 import glamor_transfer;
 

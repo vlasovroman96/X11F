@@ -31,10 +31,10 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 import core.stdc.string;
-import deimos.X11.extensions.Xv;
-import xcb.xcb;
-import xcb.xcb_aux;
-import xcb.xv;
+// import deimos.X11.extensions.Xv;
+import externs.xcb.xcb;
+import externs.xcb.xcb_aux;
+import externs.xcb.xv;
 import ephyrlog;
 import hw.kdrive.src.kdrive;
 import kxv;

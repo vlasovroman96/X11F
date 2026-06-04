@@ -35,8 +35,8 @@ import build.xorg_config;
 
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.extensions.Xv;
-import deimos.X11.extensions.Xvproto;
+// import deimos.X11.extensions.Xv;
+// import deimos.X11.extensions.Xvproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;

@@ -58,7 +58,7 @@ import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.Xatom;
 //import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XIproto;
+// import deimos.X11.extensions.XIproto;
 import deimos.X11.keysym;
 
 import dix.dix_priv;
@@ -71,13 +71,13 @@ import os.log_priv;
 import include.misc;
 import xf86_priv;
 import include.xf86Priv;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 import xf86platformBus_priv;
 
 version (XFreeXDGA) {
-import dgaproc;
-import dgaproc_priv;
+import include.dgaproc;
+import hw.xfree86.common.dgaproc_priv;
 }
 
 import include.inputstr;
@@ -91,7 +91,7 @@ import deimos.X11.extensions.dpmsconst;
 import dpmsproc;
 }
 
-import os_support.linux.systemd_logind;
+import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
 
 

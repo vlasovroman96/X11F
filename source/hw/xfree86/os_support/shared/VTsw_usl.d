@@ -31,7 +31,7 @@ import os.osdep;
 
 import include.xf86;
 import xf86Priv;
-import xf86_os_support;
+import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 
 import seatd_libseat;

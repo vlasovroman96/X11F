@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
-import xcb.xcb_keysyms;
+import externs.xcb.xcb_keysyms;
 import deimos.X11.keysym;
 
 import fb.fb_priv;
@@ -45,7 +45,7 @@ import ephyrlog;
 version (GLAMOR) {
 import include.glamor;
 }
-import ephyr_glamor;
+import hw.kdrive.ephyr.ephyr_glamor;
 import include.glx_extinit;
 import include.xkbsrv;
 

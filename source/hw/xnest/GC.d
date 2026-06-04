@@ -24,8 +24,8 @@ import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
 
-import xcb.xcb;
-import xcb.xcb_aux;
+import externs.xcb.xcb;
+import externs.xcb.xcb_aux;
 
 import include.regionstr;
 

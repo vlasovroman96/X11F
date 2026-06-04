@@ -28,9 +28,9 @@ import build.dix_config;
 import core.stdc.stdlib;
 
 import fb.fb_priv;
-import fb.fbbits;
+import fb.fbbits;;
 
-import miline;
+import include.miline;
 
 enum string fbBresShiftMask(string mask,string dir,string bpp) = `((` ~ bpp ~ ` == FB_STIP_UNIT) ? 0 : 
 					((` ~ dir ~ ` < 0) ? FbStipLeft(` ~ mask ~ `,` ~ bpp ~ `) : 

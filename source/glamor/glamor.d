@@ -1,4 +1,4 @@
-module glamor;
+module glamor.glamor;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -43,7 +43,7 @@ import dix.screen_hooks_priv;
 import include.mipict;
 import os.bug_priv;
 
-import glamor_priv;
+import glamor.glamor_priv;
 import glamor_egl_priv;
 
 DevPrivateKeyRec glamor_screen_private_key;

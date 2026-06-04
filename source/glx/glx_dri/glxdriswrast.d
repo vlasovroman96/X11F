@@ -32,7 +32,7 @@ import core.stdc.config: c_long, c_ulong;
  * SOFTWARE.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.stdint;
 import core.stdc.stdio;
@@ -41,9 +41,9 @@ import core.stdc.errno;
 import core.sys.posix.sys.time;
 import core.sys.posix.dlfcn;
 
-import GL.gl;
-import GL.internal.dri_interface;
-import GL.glxtokens;
+import externs.gl;
+import externs.internal.dri_interface;
+import externs.glxtokens;
 
 import include.scrnintstr;
 import include.pixmapstr;

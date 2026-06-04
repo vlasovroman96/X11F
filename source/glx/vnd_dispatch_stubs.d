@@ -1,4 +1,4 @@
-module vnd_dispatch_stubs;
+module glx.vnd_dispatch_stubs;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -12,7 +12,7 @@ import dix.dix_priv;
 import dix.screenint_priv;
 
 import include.dix;
-import vndserver;
+import include.vndserver;
 
 // HACK: The opcode in old glxproto.h has a typo in it.
 static if (!HasVersion!"X_GLXCreateContextAttribsARB") {

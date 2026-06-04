@@ -31,7 +31,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import glamor_priv;
+import glamor.glamor_priv;
 
 /** Default size of the VBO, in bytes.
  *

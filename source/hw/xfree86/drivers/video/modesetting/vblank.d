@@ -28,7 +28,7 @@ extern(C): __gshared:
  * Support for tracking the DRM's vblank events.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.errno;
 import core.sys.posix.unistd;

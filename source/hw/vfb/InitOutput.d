@@ -30,7 +30,7 @@ from The Open Group.
 
 */
 
-import dix_config;
+import build.dix_config;
 
 version (Windows) {
 import deimos.X11.Xwinsock;
@@ -38,7 +38,7 @@ import deimos.X11.Xwinsock;
 import core.stdc.stdio;
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 
 import dix.colormap_priv;
 import dix.dix_priv;
@@ -68,15 +68,15 @@ enum MAP_FILE = 0;
 import core.sys.posix.sys.stat;
 import core.stdc.errno;
 version (Windows) {} else {
-import sys.param;
+import externs.sys.param;
 }
-import deimos.X11.XWDFile;
+// import deimos.X11.XWDFile;
 version (CONFIG_MITSHM) {
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;
 } /* CONFIG-MITSHM */
 import include.dix;
-import miline;
+import include.miline;
 import include.glx_extinit;
 import include.randrstr;
 

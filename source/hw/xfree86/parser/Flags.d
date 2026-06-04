@@ -62,7 +62,7 @@ import include.xf86Parser;
 import xf86tokens;
 import Configint;
 //import deimos.X11.Xfuncproto;
-import Xprintf;
+import include.Xprintf;
 import include.optionstr;
 
 

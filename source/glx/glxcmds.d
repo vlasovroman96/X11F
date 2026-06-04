@@ -36,8 +36,8 @@ import build.dix_config;
 
 import core.stdc.string;
 import core.stdc.assert_;
-import GL.glxtokens;
-import deimos.X11.extensions.presenttokens;
+import externs.glxtokens;
+// import deimos.X11.extensions.presenttokens;
 
 import dix.dix_priv;
 import dix.resource_priv;
@@ -2324,7 +2324,7 @@ int __glXDisp_ClientInfo(__GLXclientState* cl, GLbyte* pc)
     return Success;
 }
 
-import GL.glxtokens;
+import externs.glxtokens;
 
 void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 msc, CARD32 sbc)
 {

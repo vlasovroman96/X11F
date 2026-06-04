@@ -25,7 +25,7 @@ import core.stdc.config: c_long, c_ulong;
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import dix_config;
+import build.dix_config;
 
 import core.stdc.stdint;
 import core.stdc.stdio;
@@ -33,17 +33,17 @@ import core.stdc.string;
 import core.stdc.errno;
 import core.sys.posix.dlfcn;
 
-import GL.gl;
-import GL.internal.dri_interface;
-import GL.glxtokens;
+import externs.gl;
+import externs.internal.dri_interface;
+import externs.glxtokens;
 
 import include.windowstr;
 import include.os;
 
 import include.xf86;
-import dri2;
+import Xext.dri2.dri2;
 
-import GL.glxtokens;
+import externs.glxtokens;
 import glxserver;
 import glxutil;
 import glxdricommon;
