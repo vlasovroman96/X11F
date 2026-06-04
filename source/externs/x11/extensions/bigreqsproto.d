@@ -2,6 +2,7 @@ module deimos.X11.extensions.bigreqsproto;
 
 // #ifndef _BIGREQSPROTO_H_
 // enum _BIGREQSPROTO_H_ =
+import deimos.X11.Xmd;
 enum X_BigReqEnable	= 0;
 
 enum XBigReqNumberEvents =	0;
