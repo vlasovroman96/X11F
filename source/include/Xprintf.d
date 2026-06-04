@@ -42,7 +42,7 @@ enum _X_RESTRICT_KYWD =  restrict;
 } else static if (HasVersion!"__GNUC__" && !HasVersion!"__STRICT_ANSI__") {    /* gcc w/C89+extensions */
 enum _X_RESTRICT_KYWD = __restrict__;
 } else {
-version = _X_RESTRICT_KYWD;
+// version = _X_RESTRICT_KYWD;
 }
 }
 
@@ -55,8 +55,8 @@ version = _X_RESTRICT_KYWD;
  * argument.   The return value is the size of the allocated buffer, or -1
  * on failure.
  */
-extern _X_EXPORT XNFasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, ...);
+extern void XNFasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, ...);
 // _X_ATTRIBUTE_PRINTF(2, 3);
-// extern _X_EXPORT _X_ATTRIBUTE_VPRINTF();
+// extern void _X_ATTRIBUTE_VPRINTF();
 
                           /* XPRINTF_H */

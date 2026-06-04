@@ -73,7 +73,7 @@ public import include.misc;
  * part of public SDK / driver API
  */
 version (_X_ATTRIBUTE_NONNULL_ARG) {} else {
-enum string = `__attribute__((nonnull(__VA_ARGS__)))`;
+enum string_ = `__attribute__((nonnull(__VA_ARGS__)))`;
 }
 
 version (_X_ATTRIBUTE_VPRINTF) {} else {
@@ -92,7 +92,7 @@ enum SCREEN_SAVER_CYCLE =  3;
 
 enum MAX_REQUEST_SIZE = 65535;
 
-
+struct _NewClientRec;
 alias NewClientPtr = _NewClientRec*;
 
 version (xnfalloc) {} else {
@@ -107,30 +107,31 @@ enum string xnfstrdup(string s) = `XNFstrdup(` ~ s ~ `)`;
 public import core.stdc.stdio;
 public import core.stdc.stdarg;
 
-extern _X_EXPORT ReadFdFromClient(ClientPtr client);
+extern void ReadFdFromClient(ClientPtr client);
 
-extern _X_EXPORT WriteToClient(ClientPtr, int, const(void)*);
+extern void WriteToClient(ClientPtr, int, const(void)*);
 
 alias NotifyFdProcPtr = void function(int fd, int ready, void* data);
 
 public import include.fd_notify;
 
-extern _X_EXPORT SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
+extern void SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
 
 pragma(inline, true) private void RemoveNotifyFd(int fd)
 {
     cast(void) SetNotifyFd(fd, null, X_NOTIFY_NONE, null);
 }
 
-extern _X_EXPORT IgnoreClient(ClientPtr);
+extern void IgnoreClient(ClientPtr);
 
-extern _X_EXPORT AttendClient(ClientPtr);
+extern void AttendClient(ClientPtr);
 
-extern _X_EXPORT GetTimeInMillis();
-extern _X_EXPORT GetTimeInMicros();
+extern void GetTimeInMillis();
+extern void GetTimeInMicros();
 
-extern _X_EXPORT AdjustWaitForDelay(void* waitTime, int newdelay);
+extern void AdjustWaitForDelay(void* waitTime, int newdelay);
 
+struct _OsTimerRec;
 alias OsTimerPtr = _OsTimerRec*;
 
 alias OsTimerCallback = CARD32 function(OsTimerPtr timer, CARD32 time, void* arg);
@@ -138,64 +139,64 @@ alias OsTimerCallback = CARD32 function(OsTimerPtr timer, CARD32 time, void* arg
 enum TimerAbsolute = (1<<0);
 enum TimerForceOld = (1<<1);
 
-extern _X_EXPORT TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
+extern void TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
 
-extern _X_EXPORT TimerCancel(OsTimerPtr);
-extern _X_EXPORT TimerFree(OsTimerPtr);
+extern void TimerCancel(OsTimerPtr);
+extern void TimerFree(OsTimerPtr);
 
-extern _X_EXPORT GiveUp(int);
+extern void GiveUp(int);
 
 /*
  * This function malloc(3)s buffer, terminating the server if there is not
  * enough memory.
  */
-extern _X_EXPORT* XNFalloc(c_ulong);
+extern void* XNFalloc(c_ulong);
 
 /*
  * This function calloc(3)s buffer, terminating the server if there is not
  * enough memory.
  */
-extern _X_EXPORT* XNFcalloc(c_ulong);
+extern void* XNFcalloc(c_ulong);
 
 /*
  * This function calloc(3)s buffer, terminating the server if there is not
  * enough memory or the arguments overflow when multiplied
  */
-extern _X_EXPORT* XNFcallocarray(size_t nmemb, size_t size);
+extern void* XNFcallocarray(size_t nmemb, size_t size);
 
 /*
  * This function realloc(3)s passed buffer, terminating the server if there is
  * not enough memory.
  */
-extern _X_EXPORT* XNFrealloc(void*, c_ulong);
+extern void* XNFrealloc(void*, c_ulong);
 
 /*
  * This function strdup(3)s passed string. The only difference from the library
  * function that it is safe to pass NULL, as NULL will be returned.
  */
-extern _X_EXPORT* Xstrdup(const(char)* s);
+extern void* Xstrdup(const(char)* s);
 
 /*
  * This function strdup(3)s passed string, terminating the server if there is
  * not enough memory. If NULL is passed to this function, NULL is returned.
  */
-extern _X_EXPORT* XNFstrdup(const(char)* s);
+extern void* XNFstrdup(const(char)* s);
 
 /* Include new X*asprintf API */
 public import include.Xprintf;
 
 alias OsSigWrapperPtr = int function(int);
 
-extern _X_EXPORT OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
+extern void OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
 
-extern _X_EXPORT PrivsElevated();
+extern void PrivsElevated();
 
-extern _X_EXPORT GetClientFd(ClientPtr);
+extern void GetClientFd(ClientPtr);
 
 /* stuff for FlushCallback */
 extern CallbackListPtr FlushCallback;
 
-extern _X_EXPORT TimeSinceLastInputEvent();
+extern void TimeSinceLastInputEvent();
 
 /* Function fallbacks provided by AC_REPLACE_FUNCS in configure.ac */
 
@@ -203,27 +204,27 @@ version (HAVE_REALLOCARRAY) {
 
 enum reallocarray = xreallocarray;
 } else {
-extern _X_EXPORT* reallocarray(void* optr, size_t nmemb, size_t size);
+extern void* reallocarray(void* optr, size_t nmemb, size_t size);
 }
 
 version (HAVE_STRCASESTR) {
 enum strcasestr = xstrcasestr;
 
 } else {
-extern _X_EXPORT* xstrcasestr(const(char)* s, const(char)* find);
+extern void* xstrcasestr(const(char)* s, const(char)* find);
 }
 
 version (HAVE_STRLCPY) {} else {
-extern _X_EXPORT strlcpy(char* dst, const(char)* src, size_t siz);
-extern _X_EXPORT strlcat(char* dst, const(char)* src, size_t siz);
+extern void strlcpy(char* dst, const(char)* src, size_t siz);
+extern void strlcat(char* dst, const(char)* src, size_t siz);
 }
 
 version (HAVE_STRNDUP) {} else {
-extern _X_EXPORT* strndup(const(char)* str, size_t n);
+extern void* strndup(const(char)* str, size_t n);
 }
 
 version (HAVE_TIMINGSAFE_MEMCMP) {} else {
-extern _X_EXPORT timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
+extern void timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
 }
 
 /* Flags for log messages. */
@@ -255,17 +256,17 @@ alias X_DEBUG = MessageType.X_DEBUG;
 alias X_UNKNOWN = MessageType.X_UNKNOWN;
 
 
-extern _X_EXPORT _X_ATTRIBUTE_PRINTF();
-extern _X_EXPORT _X_ATTRIBUTE_PRINTF();
-extern _X_EXPORT _X_ATTRIBUTE_PRINTF();
+extern void _X_ATTRIBUTE_PRINTF();
+extern void _X_ATTRIBUTE_PRINTF();
+extern void _X_ATTRIBUTE_PRINTF();
 
-extern _X_EXPORT LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...);
+extern void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...);
 
-// extern _X_EXPORT _X_NORETURN;
+// extern void _X_NORETURN;
 
-extern _X_EXPORT _X_ATTRIBUTE_PRINTF();
+extern void _X_ATTRIBUTE_PRINTF();
 
-extern _X_EXPORT xorg_backtrace();
+extern void xorg_backtrace();
 
 /* should not be used anymore, just for backwards compat with drivers */
 // enum string LogVMessageVerbSigSafe(...) = `LogVMessageVerb(__VA_ARGS__)`;
@@ -279,7 +280,7 @@ extern _X_EXPORT xorg_backtrace();
 
    @todo revise after next stable release
 */
-pragma(inline, true) private _X_DEPRECATED System(const(char)* cmdline)
+pragma(inline, true) private auto System(const(char)* cmdline)
 {
     return system(cmdline);
 }

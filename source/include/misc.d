@@ -84,10 +84,13 @@ enum MISC_H = 1;
 public import deimos.X11.Xmd;
 public import deimos.X11.X;
 public import deimos.X11.Xdefs;
+public import deimos.X11.Xprotostr;
 
 public import core.stdc.stddef;
 public import core.stdc.stdint;
 public import core.sys.posix.pthread;
+import externs.pixman;
+public import include.scrintstr;
 
 enum MAXSCREENS =	16;
 
@@ -279,12 +282,13 @@ enum string cpswaps(string src, string dst) = `do {
 		(` ~ dst ~ `) = bswap_16((` ~ src ~ `)); 
 	} while (0)`;
 
-extern _X_EXPORT SwapShorts(short* list, c_ulong count);
+extern void SwapShorts(short* list, c_ulong count);
 
 alias DDXPointPtr = _xPoint*;
 alias BoxPtr = pixman_box16*;
 alias xEventPtr = _xEvent*;
 alias xRectanglePtr = _xRectangle*;
+struct _GrabRec;
 alias GrabPtr = _GrabRec*;
 
 alias x_server_generation_t = c_ulong;
