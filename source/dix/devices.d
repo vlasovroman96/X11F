@@ -52,7 +52,7 @@ import build.dix_config;
 
 import core.stdc.math;
 import pixman;
-// import stdbool;
+// //import stdbool;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import deimos.X11.Xatom;

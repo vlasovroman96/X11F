@@ -87,13 +87,13 @@ import core.sys.posix.sys.stat;
 version (Windows) {} else {
 import core.sys.posix.sys.socket;
 
-import netinet.in_;
-import arpa.inet;
+import externs.netinet.in_;
+import externs.arpa.inet;
 version (CSRG_BASED) {
 import sys.param;
 }
-import netinet.tcp;
-import arpa.inet;
+import externs.netinet.tcp;
+import externs.arpa.inet;
 }
 version (Windows) {} else {
 import core.sys.posix.sys.uio;
@@ -127,7 +127,7 @@ import systemd.sd_daemon;
 }
 
 version (XDMCP) {
-import xdmcp;
+import os.xdmcp;
 }
 
 enum MAX_CONNECTIONS = (1<<16);

@@ -22,10 +22,10 @@ public import include.scrnintstr;
 public import include.xf86str;
 public import include.xf86Pci;
 
-public import xf86DDC;
+public import include.xf86DDC;
 
 public import include.globals;
-public import deimos.X11.extensions.dpmsconst;
+// public import deimos.X11.extensions.dpmsconst;
 
 extern _X_EXPORT vgaHWGetIndex();
 

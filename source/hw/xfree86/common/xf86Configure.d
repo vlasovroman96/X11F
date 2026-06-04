@@ -51,7 +51,7 @@ import xf86Bus;
 import hw.xfree86.os_support.bus.xf86Sbus_priv;
 }
 import include.misc;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 import xf86Parser_priv;
 
 struct _DevToConfig {

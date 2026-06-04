@@ -19,7 +19,7 @@ import build.xorg_config;
 
 import core.stdc.stdint;
 
-import deimos.X11.fonts.fontstruct;
+// import deimos.X11.fonts.fontstruct;
 import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
@@ -33,7 +33,7 @@ import include.gcstruct;
 import include.windowstr;
 import include.pixmapstr;
 import include.scrnintstr;
-import mistruct;
+import include.mistruct;
 
 import xnest_xcb;
 

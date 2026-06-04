@@ -1,4 +1,4 @@
-module ddxCtrls;
+module xkb.ddxCtrls;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

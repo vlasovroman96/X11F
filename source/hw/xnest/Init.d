@@ -20,8 +20,8 @@ import core.stdc.stddef;
 import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
-import deimos.X11.fonts.fontstruct;
-import deimos.X11.fonts.libxfont2;
+// import deimos.X11.fonts.fontstruct;
+// import deimos.X11.fonts.libxfont2;
 
 import dix.screenint_priv;
 import mi.mi_priv;
@@ -52,7 +52,7 @@ import Drawable;
 import XNGC;
 import XNFont;
 version (DPMSExtension) {
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 Bool xnestDoFullGeneration = TRUE;

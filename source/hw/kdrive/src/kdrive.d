@@ -56,7 +56,7 @@ import kxv;
 }
 
 version (DPMSExtension) {
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 version (HAVE_EXECINFO_H) {

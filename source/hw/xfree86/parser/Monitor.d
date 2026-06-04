@@ -113,7 +113,7 @@ private const(xf86ConfigSymTabRec)[10] ModeTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeModeLineList;
+alias CLEANUP = xf86freeModeLineList;
 
 private void xf86freeModeLineList(XF86ConfModeLinePtr ptr)
 {
@@ -396,7 +396,7 @@ version (DEBUG) {
     return ptr;
 }
 
-enum CLEANUP = xf86freeMonitorList;
+alias CLEANUP = xf86freeMonitorList;
 
 XF86ConfMonitorPtr xf86parseMonitorSection()
 {

@@ -52,8 +52,8 @@ import build.xorg_config;
 
 import core.stdc.string;
 import include.os;
-import loader;
-import loaderProcs;
+// import hw.xfree86.loader.loader;
+import hw.xfree86.loader.loaderProcs;
 
 version (HAVE_DLFCN_H) {
 

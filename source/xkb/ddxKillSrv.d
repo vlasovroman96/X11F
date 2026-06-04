@@ -1,4 +1,4 @@
-module ddxKillSrv;
+module xkb.ddxKillSrv;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

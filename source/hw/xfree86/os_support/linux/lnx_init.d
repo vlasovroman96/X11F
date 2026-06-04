@@ -34,7 +34,7 @@ import deimos.X11.X;
 import os.cmdline;
 import os.osdep;
 
-import compiler;
+import include.compiler;
 import linux;
 import xf86_priv;
 import include.xf86Priv;

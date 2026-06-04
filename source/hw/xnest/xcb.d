@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import stdbool;
+// //import stdbool;
 import externs.xcb.xcb;
 import externs.xcb.xcb_aux;
 import externs.xcb.xcb_icccm;
@@ -15,7 +15,7 @@ import externs.xcb.xcb_icccm;
 import deimos.X11.X;
 import deimos.X11.Xdefs;
 import deimos.X11.Xproto;
-import externs.xcb.xkb;
+import externs.xcb.xcb_xkb;
 
 import include.gc;
 import include.servermd;

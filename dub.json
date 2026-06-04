@@ -17,6 +17,7 @@
 		"-P-Isource/Xext/dri2",
 		"-P=-I/usr/include/libdrm",
 		"-P-Isource",
+		"-P-Isource/hw/xfree86/x86emu",
 		"-P-I/usr/include/linux",
 		"-P=-D__int128=long long",
         "-P=-D__attribute__(x)=",

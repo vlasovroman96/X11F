@@ -13,7 +13,7 @@ import include.xf86_OSproc;;
 import include.xf86Pci;
 version = _INT10_PRIVATE;
 import xf86int10_priv;
-import int10Defines;
+import hw.xfree86.os_support.int10Defines;
 import x86emu;
 
 enum M = _X86EMU_env;

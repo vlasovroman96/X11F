@@ -62,7 +62,7 @@ import core.stdc.stdio;
 version (Windows) {
 import deimos.X11.Xwinsock;
 }
-import deimos.X11.Xos;            /* for strings, fcntl, time */
+// import deimos.X11.Xos;            /* for strings, fcntl, time */
 import deimos.X11.X;
 
 import dix.dix_priv;
@@ -77,7 +77,7 @@ import os.osdep;
 import dix.dixstruct_priv;
 import include.globals;
 version (DPMSExtension) {
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 version (Windows) {

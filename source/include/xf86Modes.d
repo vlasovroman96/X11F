@@ -34,7 +34,7 @@ public import core.stdc.string;
 public import core.stdc.stdio;
 
 public import include.xf86;
-public import xorgVersion;
+public import include.xorgVersion;
 public import include.edid;
 public import include.xf86Parser;
 

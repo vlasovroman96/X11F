@@ -88,7 +88,7 @@ import include.xkbsrv;
 
 version (DPMSExtension) {
 import deimos.X11.extensions.dpmsconst;
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 import hw.xfree86.os_support.linux.systemd_logind;

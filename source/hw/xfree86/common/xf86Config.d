@@ -75,12 +75,12 @@ import include.globals;
 import include.extension;
 import xf86pciBus;
 import xf86Xinput;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 import xf86Xinput_priv;
 
 import include.picture;
 version (DPMSExtension) {
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 /*

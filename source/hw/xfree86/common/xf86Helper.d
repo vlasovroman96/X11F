@@ -59,7 +59,7 @@ import include.pixmapstr;
 import include.windowstr;
 import include.propertyst;
 import include.gcstruct;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 import xf86_priv;
 import include.xf86Priv;
 import include.xf86_OSlib;

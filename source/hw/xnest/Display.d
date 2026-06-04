@@ -38,8 +38,8 @@ import Display;
 import Init;
 import Args;
 
-import ic;
-import screensav;
+import hw.xnest.icon;
+import hw.xnest.screensaver;
 
 Colormap* xnestDefaultColormaps;
 int xnestNumPixmapFormats;

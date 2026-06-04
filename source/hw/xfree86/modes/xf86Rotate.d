@@ -30,7 +30,7 @@ import core.stdc.string;
 import core.stdc.stdio;
 import deimos.X11.Xatom;
 import deimos.X11.extensions.render;
-import deimos.X11.extensions.dpmsconst;
+// import deimos.X11.extensions.dpmsconst;
 
 import dix.dix_priv;
 import include.xf86DDC;

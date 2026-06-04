@@ -1,4 +1,4 @@
-module hw.xfree86.xkb.xkbKillSrv;
+module xkb.hw.xfree86.xkb.xkbKillSrv;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

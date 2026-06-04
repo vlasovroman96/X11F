@@ -1,4 +1,4 @@
-module rrtransform;
+module randr.rrtransform;
 @nogc nothrow:
 extern(C): __gshared:
 /*

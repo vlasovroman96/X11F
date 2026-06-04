@@ -31,7 +31,7 @@ extern(C): __gshared:
 
  
 public import include.xlibre_ptrtypes;
-public import xvmcext;
+public import include.xvmcext;
 public import xf86xv;
 
 struct XF86MCImageIDList {

@@ -87,8 +87,8 @@ public import core.stdc.errno;
 
 version (Windows) {} else {
 public import core.sys.posix.sys.socket;
-public import netinet.in_;
-public import arpa.inet;
+public import externs.netinet.in_;
+public import externs.arpa.inet;
 enum string ESET(string val) = `errno = ` ~ val ~ ``;
 enum string EGET() = `errno`;
 

@@ -1,7 +1,7 @@
 module stub_video;
 @nogc nothrow:
 extern(C): __gshared:
-import xor_config;
+import build.xorg_config;
 
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;

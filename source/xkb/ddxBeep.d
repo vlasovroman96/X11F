@@ -1,4 +1,4 @@
-module ddxBeep;
+module xkb.ddxBeep;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

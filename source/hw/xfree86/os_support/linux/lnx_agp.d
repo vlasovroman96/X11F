@@ -25,8 +25,8 @@ import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 
 version (linux) {
-import c_asm.ioctl;
-import linux.agpgart;
+import externs.c_asm.ioctl;
+import externs.linux.agpgart;
 } 
 static if (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__" || HasVersion!"__NetBSD__" || HasVersion!"__OpenBSD__" || HasVersion!"__DragonFly__") {
 import core.sys.posix.sys.ioctl;

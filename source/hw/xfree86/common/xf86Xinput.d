@@ -71,7 +71,7 @@ import xf86Xinput_priv;
 import XIstubs;
 import include.xf86Optrec;
 import mi.mipointer;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
 

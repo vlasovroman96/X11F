@@ -93,7 +93,7 @@ import deimos.X11.Xwinsock;
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import os.Xtrans;
-import deimos.X11.Xauth;
+// import deimos.X11.Xauth;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 import include.misc;
@@ -113,7 +113,7 @@ version (NO_LOCAL_CLIENT_CRED) {} else {
 import core.sys.posix.pwd;
 }
 
-import netinet.in_;
+import externs.netinet.in_;
 
 version (HAVE_GETPEERUCRED) {
 import ucred;
@@ -136,7 +136,7 @@ import core.sys.posix.sys.utsname;
 version (__GNU__) {
 import core.sys.posix.netdb;
 } else {                           /*!__GNU__ */
-import net.if_;
+import externs.net.if_;
 } /*__GNU__ */
 
 version (SVR4) {
@@ -168,7 +168,7 @@ version = USE_SIOCGLIFCONF;
 }
 } /* HAVE_GETIFADDRS */
 
-import arpa.inet;
+import externs.arpa.inet;
 
 }                          /* WIN32 */
 
@@ -177,7 +177,7 @@ import core.sys.posix.libgen;
 }
 
 version = X_INCLUDE_NETDB_H;
-import deimos.X11.Xos_r;
+// import deimos.X11.Xos_r;
 
 import os.auth;
 import os.client_priv;
@@ -188,7 +188,7 @@ import include.dixstruct;
 import Xext.xace;
 
 version (XDMCP) {
-import xdmcp;
+import os.xdmcp;
 }
 
 Bool defeatAccessControl = FALSE;

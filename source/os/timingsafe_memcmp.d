@@ -20,7 +20,7 @@ extern(C): __gshared:
 import build.dix_config;
 import core.stdc.limits;
 import core.stdc.string;
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 import include.os;
 
 int timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len)

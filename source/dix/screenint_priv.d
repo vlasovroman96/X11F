@@ -7,7 +7,7 @@ extern(C): __gshared:
  * Copyright © 1987, 1998 The Open Group
  */
  
-// // public import stdbool;
+// // public //import stdbool;
 public import deimos.X11.Xdefs;
 
 public import include.callback;

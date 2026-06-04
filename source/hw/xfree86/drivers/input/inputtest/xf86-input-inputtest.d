@@ -32,7 +32,7 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.socket;
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.un;
-// import stdbool;
+// //import stdbool;
 
 import deimos.X11.Xatom;
 

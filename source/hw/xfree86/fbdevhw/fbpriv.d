@@ -9,7 +9,7 @@ extern(C): __gshared:
  
 public import build.xorg_config;
 
-public import c_asm.types;
+public import externs.c_asm.types;
 
 /* Definitions of frame buffers						*/
 

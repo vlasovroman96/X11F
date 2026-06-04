@@ -50,7 +50,7 @@ import include.os;
 import os.osdep;
 
 version (XDMCP) {
-import xdmcp;
+import os.xdmcp;
 }
 
 import os.xdmauth;

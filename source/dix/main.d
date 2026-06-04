@@ -126,7 +126,7 @@ import include.exevents;
 
 version (DPMSExtension) {
 import deimos.X11.extensions.dpmsconst;
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 extern void Dispatch();

@@ -1,4 +1,4 @@
-module xkbPrivate;
+module xkb.xkbPrivate;
 @nogc nothrow:
 extern(C): __gshared:
 import build.xorg_config;

@@ -7,7 +7,7 @@ import core.stdc.assert_;
 import core.stdc.stddef;  /* for offsetof() */
 
 import externs.xcb.xcbext;
-import externs.xcb.xkb;
+import externs.xcb.xcb_xkb;
 import externs.xcb.xproto;
 
 import xnest_xkb;

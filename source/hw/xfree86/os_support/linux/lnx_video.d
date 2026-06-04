@@ -49,7 +49,7 @@ private Bool ExtendedEnabled = FALSE;
 
 version (__ia64__) {
 
-import compiler;
+import include.compiler;
 import sys.io;
 
 } 

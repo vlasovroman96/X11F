@@ -38,12 +38,12 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import   X11.X;
-import   X11.Xmd;
-import   X11.Xproto;
-import   X11.extensions.XI;
-import   X11.extensions.XIproto;
-import   X11.extensions.geproto;
+import   deimos.X11.X;
+import   deimos.X11.Xmd;
+import   deimos.X11.Xproto;
+import   deimos.X11.extensions.XI;
+// import   deimos.X11.extensions.XIproto;
+// import   deimos.X11.extensions.geproto;
 
 import   dix.cursor_priv;
 import   dix.dix_priv;
@@ -59,12 +59,12 @@ import   include.misc;
 import include.windowstr;
 import   include.pixmapstr;
 import   include.cursorstr;
-import   mipointer;
+import   mi.mipointer;
 import   include.scrnintstr;
 import   include.eventstr;
 
 version (DPMSExtension) {
-import dpmsproc;
+import Xext.dpmsproc;
 import deimos.X11.extensions.dpmsconst;
 }
 

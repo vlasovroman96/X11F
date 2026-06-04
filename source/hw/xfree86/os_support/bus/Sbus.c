@@ -32,7 +32,7 @@
 #include <sys/utsname.h>
 #endif
 #include "xf86.h"
-#include "xf86Priv.h"
+#include "include.xf86Priv.h"
 #include "xf86_OSlib.h"
 
 #include "xf86sbusBus_priv.h"

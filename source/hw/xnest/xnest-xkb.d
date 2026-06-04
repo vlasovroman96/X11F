@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 public import externs.xcb.xcb;
-public import externs.xcb.xkb;
+public import externs.xcb.xcb_xkb;
 
 xcb_xkb_get_kbd_by_name_cookie_t xcb_xkb_get_kbd_by_name_2(xcb_connection_t* c, xcb_xkb_device_spec_t deviceSpec, ushort need, ushort want, ubyte load, uint data_len, const(ubyte)* data);
 

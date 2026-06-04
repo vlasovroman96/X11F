@@ -9,7 +9,7 @@ import dix.screen_hooks_priv;
 import mi.mipointer_priv;
 
 import include.xf86;
-import xf86CursorPriv;
+import hw.xfree86.ramdac.xf86CursorPriv;
 import include.cursorstr;
 
 /* FIXME: This was added with the ABI change of the miPointerSpriteFuncs for

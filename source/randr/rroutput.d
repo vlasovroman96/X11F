@@ -1,4 +1,4 @@
-module rroutput;
+module randr.rroutput;
 @nogc nothrow:
 extern(C): __gshared:
 /*

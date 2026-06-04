@@ -83,7 +83,7 @@ private void xf86freeVendorSubList(XF86ConfVendSubPtr ptr)
     }
 }
 
-enum CLEANUP = xf86freeVendorSubList;
+alias CLEANUP = xf86freeVendorSubList;
 
 private XF86ConfVendSubPtr xf86parseVendorSubSection()
 {
@@ -135,7 +135,7 @@ private const(xf86ConfigSymTabRec)[6] VendorTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeVendorList;
+alias CLEANUP = xf86freeVendorList;
 
 XF86ConfVendorPtr xf86parseVendorSection()
 {

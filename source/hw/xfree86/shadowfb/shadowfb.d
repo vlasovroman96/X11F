@@ -12,8 +12,8 @@ import build.xorg_config;
 
 import deimos.X11.X;
 import deimos.X11.Xproto;
-import deimos.X11.fonts.font;
-import deimos.X11.fonts.fontstruct;
+// import deimos.X11.fonts.font;
+// import deimos.X11.fonts.fontstruct;
 
 import dix.screen_hooks_priv;
 

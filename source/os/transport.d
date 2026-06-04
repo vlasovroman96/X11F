@@ -52,12 +52,12 @@ from The Open Group.
 import build.dix_config;
 
 import core.stdc.stdlib;
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 
 version = XTRANS_TRANSPORT_C;  /* used to flag Xtransint.h that it's being used
 			       here, not just #included in another file */
 
-import Xtransint;
+import os.Xtransint;
 
 version (__clang__) {
 // #pragma clang diagnostic push
@@ -65,9 +65,9 @@ version (__clang__) {
 // #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 }
 
-import Xtranssock;
-import Xtrans;
-import Xtransutil;
+import os.Xtranssock;
+import os.Xtrans;
+import os.Xtransutil;
 
 version (__clang__) {
 // #pragma clang diagnostic pop

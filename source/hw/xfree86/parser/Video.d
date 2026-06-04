@@ -68,7 +68,7 @@ private const(xf86ConfigSymTabRec)[5] VideoPortTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeVideoPortList;
+alias CLEANUP = xf86freeVideoPortList;
 
 private void xf86freeVideoPortList(XF86ConfVideoPortPtr ptr)
 {
@@ -138,7 +138,7 @@ private const(xf86ConfigSymTabRec)[10] VideoAdaptorTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeVideoAdaptorList;
+alias CLEANUP = xf86freeVideoAdaptorList;
 
 XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection()
 {

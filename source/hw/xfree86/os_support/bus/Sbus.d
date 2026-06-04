@@ -24,7 +24,7 @@ import core.stdc.config: c_long, c_ulong;
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-import xorg_config;
+import build.xorg_config;
 
 import core.sys.posix.fcntl;
 import core.stdc.stdio;
@@ -36,8 +36,8 @@ version (__sun) {
 import core.sys.posix.sys.utsname;
 }
 import include.xf86;
-import xf86Priv;
-import xf86_OSlib;
+import include.xf86Priv;
+import include.xf86_OSlib;
 
 import hw.xfree86.common.xf86sbusBus_priv;;
 import hw.xfree86.os_support.bus.xf86Sbus_priv;

@@ -53,14 +53,14 @@ import build.xorg_config;
 
 import include.dix;
 import include.os;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 import include.xf86Module;
-import loader;
+import hw.xfree86.loader.loader;
 import xf86Module_priv;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.types;
-import regex;
+import externs.regex;
 import core.sys.posix.dirent;
 import core.stdc.limits;
 

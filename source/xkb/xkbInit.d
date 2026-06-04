@@ -1,4 +1,4 @@
-module xkbInit;
+module xkb.xkbInit;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -34,7 +34,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 import build.dix_config;
 
-import xkb_config;
+import config.xkb_config;
 
 import core.stdc.stdio;
 import core.stdc.stdlib;

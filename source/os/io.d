@@ -66,7 +66,7 @@ import dix.dixstruct_priv;
 version (Windows) {
 import deimos.X11.Xwinsock;
 }
-import stdbool;
+// //import stdbool;
 import core.stdc.stdio;
 import core.stdc.string;
 import os.Xtrans;

@@ -62,7 +62,7 @@ import core.stdc.stdio;
 version (_XOPEN_SOURCE) {
 import core.stdc.math;
 } else {
-version = _XOPEN_SOURCE;           /* to get prototype for hypot on some systems */
+// version = _XOPEN_SOURCE;           /* to get prototype for hypot on some systems */
 import core.stdc.math;
 }
 import deimos.X11.X;

@@ -27,7 +27,7 @@ import xf86_priv;
 import include.xf86_OSproc;;
 import xf86Opt_priv;
 import include.xf86Priv;
-import compiler;
+import include.compiler;
 import xf86cmap;
 import hw.xfree86.os_support.bus.Pci;
 

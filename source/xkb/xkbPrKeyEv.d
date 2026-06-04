@@ -1,4 +1,4 @@
-module xkbPrKeyEv;
+module xkb.xkbPrKeyEv;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

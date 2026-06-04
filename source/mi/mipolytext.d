@@ -58,14 +58,14 @@ SOFTWARE.
 
 import build.dix_config;
 
-import	X11.X;
-import	X11.Xmd;
-import	X11.Xproto;
-import	misc;
-import	gcstruct;
-import	X11.fonts.fontstruct;
-import	dixfontstr;
-import	mi;
+import	deimos.X11.X;
+import	deimos.X11.Xmd;
+import	deimos.X11.Xproto;
+// import	deimos.X11.fonts.fontstruct;
+import	include.misc;
+import	include.gcstruct;
+import	include.dixfontstr;
+import	include.mi;
 
 int miPolyText8(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, char* chars)
 {

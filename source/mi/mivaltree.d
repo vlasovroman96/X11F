@@ -93,17 +93,17 @@ Equipment Corporation.
   */
 import build.dix_config;
 
-import    X11.X;
+import    deimos.X11.X;
 
 import dix.window_priv;
 import mi.mi_priv;
 
-import    scrnintstr;
-import    validate;
-import    windowstr;
-import    regionstr;
-import    globals;
-import    compint;
+import    include.scrnintstr;
+import    include.validate;
+import    include.windowstr;
+import    include.regionstr;
+import    include.globals;
+import    composite.compint;
 
 /*
  * Compute the visibility of a shaped window

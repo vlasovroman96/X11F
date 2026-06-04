@@ -1,4 +1,4 @@
-module xkbAccessX;
+module xkb.xkbAccessX;
 @nogc nothrow:
 extern(C): __gshared:
 

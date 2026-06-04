@@ -31,7 +31,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import stdbool;
+//import stdbool;
 
 import dix.screen_hooks_priv;
 import dix.screenint_priv;

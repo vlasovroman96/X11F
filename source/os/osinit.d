@@ -57,7 +57,7 @@ import core.stdc.errno;
 import core.stdc.stdio;
 import core.stdc.signal;
 import deimos.X11.X;
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 version (HAVE_DLFCN_H) {
 import core.sys.posix.dlfcn;
 }

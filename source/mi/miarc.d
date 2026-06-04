@@ -55,7 +55,7 @@ import build.dix_config;
 import core.stdc.math;
 import deimos.X11.X;
 import deimos.X11.Xprotostr;
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 
 import mi.mi_priv;
 

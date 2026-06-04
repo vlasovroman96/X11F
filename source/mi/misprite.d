@@ -1,4 +1,4 @@
-module misprite;
+module mi.misprite;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -34,10 +34,10 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import   X11.X;
-import   X11.Xproto;
-import   X11.fonts.font;
-import   X11.fonts.fontstruct;
+import   deimos.X11.X;
+import   deimos.X11.Xproto;
+// import   deimos.X11.fonts.font;
+// import   deimos.X11.fonts.fontstruct;
 
 import   dix.colormap_priv;
 import   dix.dix_priv;
@@ -47,16 +47,16 @@ import   mi.mipointer_priv;
 import   include.misc;
 import   include.pixmapstr;
 import   input;
-import   mi;
+import   include.mi;
 import   include.cursorstr;
 import   include.scrnintstr;
 import include.windowstr;
-import   gcstruct;
-import   mipointer;
-import   misprite;
-import   dixfontstr;
+import   include.gcstruct;
+import   mi.mipointer;
+import   mi.misprite;
+import   include.dixfontstr;
 import   include.cursorstr;
-import   damage;
+import   include.damage;
 
 struct _MiCursorInfoRec {
     CursorPtr pCursor;

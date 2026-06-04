@@ -38,7 +38,7 @@ import test.tests_common;
 
 /* Ensure we're testing our functions, even on platforms with libc versions */
 import core.stdc.string;
-enum strndup = my_strndup;
+alias strndup = my_strndup;
 char* strndup(const(char)* str, size_t n);
 
 // import os.strndup;

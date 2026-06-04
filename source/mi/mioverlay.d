@@ -6,7 +6,7 @@ import build.dix_config;
 
 import deimos.X11.X;
 import deimos.X11.Xmd;
-import deimos.X11.extensions.shapeproto;
+// import deimos.X11.extensions.shapeproto;
 
 import dix.cursor_priv;
 import dix.dix_priv;

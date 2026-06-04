@@ -27,7 +27,7 @@ extern(C): __gshared:
 /* Test relies on assert() */
 import build.dix_config;
 
-import xkb_config;
+import config.xkb_config;
 
 import core.stdc.stdio;
 import core.stdc.stdlib;

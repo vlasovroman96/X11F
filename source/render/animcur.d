@@ -49,7 +49,7 @@ import include.dixstruct;
 import include.cursorstr;
 import include.dixfontstr;
 import include.opaque;
-import picturestr_priv;
+import render.picturestr_priv;
 import include.inputstr;
 import Xext.xace;
 

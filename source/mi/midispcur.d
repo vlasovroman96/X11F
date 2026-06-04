@@ -35,7 +35,7 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import   X11.X;
+import   deimos.X11.X;
 
 import   dix.dix_priv;
 import   dix.gc_priv;
@@ -46,14 +46,14 @@ import   include.misc;
 import   input;
 import   include.cursorstr;
 import include.windowstr;
-import   regionstr;
+import include.regionstr;
 import include.dixstruct;
 import   include.scrnintstr;
-import   servermd;
-import   mipointer;
-import   misprite;
-import   gcstruct;
-import   picturestr;
+import   include.servermd;
+import   include.mipointer;
+import   mi.misprite;
+import   include.gcstruct;
+import   include.picturestr;
 import include.inputstr;
 
 /* per-screen private data */

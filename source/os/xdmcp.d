@@ -27,12 +27,12 @@ import deimos.X11.Xwinsock;
 import os.Xtrans;
 }
 
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 
 static if (!HasVersion!"Windows") {
 import sys.param;
 import core.sys.posix.sys.socket;
-import netinet.in_;
+import externs.netinet.in_;
 import core.sys.posix.netdb;
 }
 
@@ -48,7 +48,7 @@ import os.ossock;
 
 import include.misc;
 import os.osdep;
-import xdmcp;
+import os.xdmcp;
 import os.xdmauth;
 import include.input;
 import include.dixstruct;

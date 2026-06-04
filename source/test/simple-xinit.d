@@ -26,11 +26,11 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 
 import core.stdc.errno;
 import core.stdc.signal;
-import stdbool;
+//import stdbool;
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import core.stdc.string;

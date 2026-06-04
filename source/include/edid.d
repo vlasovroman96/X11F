@@ -14,7 +14,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-// public import stdbool;
+// public //import stdbool;
 public import core.stdc.stdint;
 public import deimos.X11.Xmd;
 // public import deimos.X11.Xfuncproto;

@@ -1,4 +1,4 @@
-module xkbActions;
+module xkb.xkbActions;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

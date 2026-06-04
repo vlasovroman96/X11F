@@ -1,4 +1,4 @@
-module rrxinerama;
+module randr.rrxinerama;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -73,7 +73,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import deimos.X11.Xmd;
-import deimos.X11.extensions.panoramiXproto;
+//import deimos.X11.extensions.panoramiXproto;
 
 import dix.dix_priv;
 import dix.request_priv;

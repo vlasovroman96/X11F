@@ -29,7 +29,7 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import core.sys.posix.sys.ioctl;
-import linux.kd;
+import externs.linux.kd;
 
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;

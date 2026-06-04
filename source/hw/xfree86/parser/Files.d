@@ -57,7 +57,7 @@ import build.xorg_config;
 
 import core.stdc.assert_;
 
-import deimos.X11.Xos;
+// import deimos.X11.Xos;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;

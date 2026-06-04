@@ -11,7 +11,7 @@ import build.xorg_config;
 import include.xf86;
 import include.xf86_OSproc;;
 import include.xf86Pci;
-import compiler;
+import include.compiler;
 version = _INT10_PRIVATE;
 import xf86int10;
 version (__sparc__) {

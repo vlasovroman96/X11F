@@ -56,7 +56,7 @@ BEGIN {
 	print ""
 	print "#include \"xf86.h\""
 	print "#include \"xf86Config.h\""
-	print "#include \"xf86Priv.h\""
+	print "#include \"include.xf86Priv.h\""
 	print "#include \"xf86_OSlib.h\""
 	print ""
 	print "#include \"globals.h\""

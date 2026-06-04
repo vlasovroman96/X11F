@@ -1933,7 +1933,7 @@ Once it has stabilised, the data structures and variables accessible to
 video drivers will be documented here.  In the meantime, those things
 defined in the <filename>xf86.h</filename> and <filename>xf86str.h</filename>
 files are visible to video drivers.  Things defined in
-<filename>xf86Priv.h</filename> and <filename>xf86Privstr.h</filename> are NOT
+<filename>include.xf86Priv.h</filename> and <filename>include.xf86Privstr.h</filename> are NOT
 intended to be visible to video drivers, and it is an error for a driver
 to include those files.
       </para>
@@ -3192,8 +3192,8 @@ wrapping of ANSI C/libc functions.
 All modules must NOT include any system include files, or the following:
 
 	<literallayout><filename>
-    "xf86Priv.h"
-    "xf86Privstr.h"
+    "include.xf86Priv.h"
+    "include.xf86Privstr.h"
     "xf86_OSlib.h"
     "Xos.h"
 	  </filename></literallayout>
@@ -7453,8 +7453,8 @@ visible symbols.
   Drivers must NOT include the following:
 
 	<literallayout><filename>
-    "xf86Priv.h"
-    "xf86Privstr.h"
+    "include.xf86Priv.h"
+    "include.xf86Privstr.h"
     "xf86_libc.h"
     "xf86_OSlib.h"
     "Xos.h"</filename>

@@ -38,7 +38,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import deimos.X11.Xfuncproto;
+// import deimos.X11.Xfuncproto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -48,7 +48,7 @@ import pseudoramiX;
 import include.extnsionst;
 import include.dixstruct;
 import include.window;
-import deimos.X11.extensions.panoramiXproto;
+//import deimos.X11.extensions.panoramiXproto;
 import include.globals;
 
 enum TRACE = LogMessageVerb(X_NONE, 10, "TRACE " ~ __FILE__ ~":%s", __func__);

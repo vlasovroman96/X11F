@@ -9,7 +9,7 @@ extern(C): __gshared:
  * (not part of SDK, not available to external modules).
  */
  
-// // public import stdbool;
+// // public //import stdbool;
 
 public import include.dix;
 

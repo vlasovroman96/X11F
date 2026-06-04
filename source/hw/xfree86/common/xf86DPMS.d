@@ -41,7 +41,7 @@ import include.xf86Priv;
 import xf86Opt_priv;
 version (DPMSExtension) {
 import deimos.X11.extensions.dpmsconst;
-import dpmsproc;
+import Xext.dpmsproc;
 }
 import xf86VGAarbiter_priv;
 

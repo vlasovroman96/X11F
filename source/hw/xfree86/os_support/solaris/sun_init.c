@@ -29,7 +29,7 @@
 #include "../../../../os/cmdline.h"
 
 #include "xf86_priv.h"
-#include "xf86Priv.h"
+#include "include.xf86Priv.h"
 #include "xf86_os_support.h"
 #include "xf86_OSlib.h"
 #ifdef HAVE_SYS_KD_H

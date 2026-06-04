@@ -42,7 +42,7 @@ enum AccelProfileSmoothLimited = 7;
 enum AccelProfileLAST = AccelProfileSmoothLimited;
 
 /* fwd */
-struct _DeviceVelocityRec;
+// struct _DeviceVelocityRec;
 
 /**
  * profile

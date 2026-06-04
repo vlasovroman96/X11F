@@ -30,7 +30,7 @@
 #include <X11/X.h>
 
 #include "xf86.h"
-#include "xf86Priv.h"
+#include "include.xf86Priv.h"
 
 #ifndef __NetBSD__
 #include <sys/sysctl.h>

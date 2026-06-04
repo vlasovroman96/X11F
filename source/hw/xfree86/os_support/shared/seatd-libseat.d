@@ -33,7 +33,7 @@ import core.stdc.string;
 import core.sys.posix.sys.types;
 import core.sys.posix.unistd;
 import core.stdc.errno;
-import libseat;
+import externs.libseat;
 
 import include.os;
 import include.xf86;

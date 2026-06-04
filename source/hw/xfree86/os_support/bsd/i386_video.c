@@ -30,7 +30,7 @@
 
 #include "xf86.h"
 #include "xf86_os_support.h"
-#include "xf86Priv.h"
+#include "include.xf86Priv.h"
 #include "xf86_OSlib.h"
 
 #if defined(USE_I386_IOPL) || defined(USE_AMD64_IOPL)

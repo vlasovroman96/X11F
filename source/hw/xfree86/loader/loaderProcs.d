@@ -1,4 +1,4 @@
-module loaderProcs;
+module hw.xfree86.loader.loaderProcs;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;

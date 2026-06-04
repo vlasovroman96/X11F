@@ -13,7 +13,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-// import stdbool;
+// //import stdbool;
 import core.stdc.stddef;
 
 import dix.settings_priv;

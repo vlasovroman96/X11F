@@ -49,7 +49,7 @@ import include.xf86Priv;
 
 version (XF86VIDMODE) {
 import vidmodestr;
-import include.xf86Privstr;
+import include.include.xf86Privstr;
 import xf86Extensions;
 import xf86cmap;
 

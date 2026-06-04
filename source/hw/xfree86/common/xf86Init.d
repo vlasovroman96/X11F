@@ -75,7 +75,7 @@ import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
 
 import xf86VGAarbiter_priv;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 
 import xf86Module_priv;
 import xf86_priv;
@@ -96,7 +96,7 @@ import include.xserver_properties;
 
 version (DPMSExtension) {
 import deimos.X11.extensions.dpmsconst;
-import dpmsproc;
+import Xext.dpmsproc;
 }
 
 version (linux) {

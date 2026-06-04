@@ -14,11 +14,11 @@ import core.stdc.stdlib;
 
 import include.xf86;
 import include.xf86_OSproc;;
-import compiler;
+import include.compiler;
 import include.xf86Pci;
 version = _INT10_PRIVATE;
 version (none) {
-import int10Defines;
+import hw.xfree86.os_support.int10Defines;
 }
 import xf86int10_priv;
 

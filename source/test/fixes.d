@@ -31,7 +31,7 @@ import core.stdc.stdio;
 import core.stdc.stdlib;
 import deimos.X11.X;
 import xfixesint;
-import deimos.X11.extensions.xfixeswire;
+// import deimos.X11.extensions.xfixeswire;
 
 import test.tests_common;
 

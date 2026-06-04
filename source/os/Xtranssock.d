@@ -90,8 +90,8 @@ version (Windows) {} else {
 version (UNIXCONN) {
 import core.sys.posix.sys.un;
 import core.sys.posix.sys.socket;
-import netinet.in_;
-import arpa.inet;
+import externs.netinet.in_;
+import externs.arpa.inet;
 }
 
 version (UNIXCONN) {
@@ -108,7 +108,7 @@ static if (HasVersion!"__NetBSD__" || HasVersion!"__OpenBSD__" || HasVersion!"__
 import sys.param;
 import machine.endian;
 } /* __NetBSD__ || __OpenBSD__ || __FreeBSD__ || __DragonFly__ */
-import netinet.tcp;
+import externs.netinet.tcp;
 } /* !NO_TCP_H */
 
 import core.sys.posix.sys.ioctl;

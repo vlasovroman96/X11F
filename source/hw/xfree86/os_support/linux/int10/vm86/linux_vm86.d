@@ -9,14 +9,14 @@ import core.stdc.string;
 import include.xf86;
 import include.xf86_OSproc;;
 import include.xf86Pci;
-import compiler;
+import include.compiler;
 version = _INT10_PRIVATE;
 import xf86int10;
 
 enum REG = pInt;
 
 version (_VM86_LINUX) {
-import int10Defines;
+import hw.xfree86.os_support.int10Defines;
 
 
 private vm86_struct vm86_s;

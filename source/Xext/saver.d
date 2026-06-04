@@ -32,7 +32,7 @@ in this Software without prior written authorization from the X Consortium.
 
 import build.dix_config;
 
-// import stdbool;
+// //import stdbool;
 import core.stdc.stdio;
 import deimos.X11.X;
 import deimos.X11.Xproto;
@@ -65,7 +65,7 @@ import Xext.xace;
 import include.inputstr;
 version (DPMSExtension) {
 import deimos.X11.extensions.dpmsconst;
-import dpmsproc;
+import Xext.dpmsproc;
 }
 import include.protocol_versions;
 

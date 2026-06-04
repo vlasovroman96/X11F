@@ -1,4 +1,4 @@
-module xkbout_priv;
+module xkb.xkbout_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11

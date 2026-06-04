@@ -1,4 +1,4 @@
-module XKBMAlloc;
+module xkb.XKBMAlloc;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

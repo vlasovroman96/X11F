@@ -33,7 +33,7 @@ import core.stdc.stdio;
 import deimos.X11.X;
 import deimos.X11.Xproto;
 // import deimos.X11.Xarch;
-// import deimos.X11.extensions.panoramiXproto;
+// //import deimos.X11.extensions.panoramiXproto;
 
 import dix.dix_priv;
 import dix.request_priv;

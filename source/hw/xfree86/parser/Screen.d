@@ -101,7 +101,7 @@ private void xf86freeDisplayList(XF86ConfDisplayPtr ptr)
     }
 }
 
-enum CLEANUP = xf86freeDisplayList;
+alias CLEANUP = xf86freeDisplayList;
 
 private XF86ConfDisplayPtr xf86parseDisplaySubSection()
 {
@@ -239,7 +239,7 @@ private const(xf86ConfigSymTabRec)[18] ScreenTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeScreenList;
+alias CLEANUP = xf86freeScreenList;
 XF86ConfScreenPtr xf86parseScreenSection()
 {
     int has_ident = FALSE;

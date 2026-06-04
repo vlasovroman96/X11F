@@ -1,4 +1,4 @@
-module maprules;
+module xkb.maprules;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

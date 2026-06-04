@@ -43,7 +43,7 @@ public import include.windowstr;
 public import include.pixmapstr;
 public import include.extnsionst;
 public import include.servermd;
-public import rrtransform;
+public import randr.rrtransform;
 public import deimos.X11.extensions.randr;
 // public import deimos.X11.extensions.randrproto;
 public import deimos.X11.extensions.render;      /* we share subpixel order information */

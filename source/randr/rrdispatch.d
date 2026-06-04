@@ -1,4 +1,4 @@
-module rrdispatch;
+module randr.rrdispatch;
 @nogc nothrow:
 extern(C): __gshared:
 /*

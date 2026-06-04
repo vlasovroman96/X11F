@@ -46,7 +46,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// import stdbool;
+// //import stdbool;
 
 import dix.resource_priv;
 import os.bug_priv;

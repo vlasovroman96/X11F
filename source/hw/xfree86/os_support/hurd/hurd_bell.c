@@ -26,7 +26,7 @@
 
 #include "xf86.h"
 #include "xf86_os_support.h"
-#include "xf86Priv.h"
+#include "include.xf86Priv.h"
 
 void
 xf86OSRingBell(int loudness, int pitch, int duration)

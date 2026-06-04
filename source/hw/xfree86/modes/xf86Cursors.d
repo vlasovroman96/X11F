@@ -29,10 +29,10 @@ import core.stdc.stddef;
 import core.stdc.string;
 import core.stdc.stdio;
 
-import deimos.X11.Xarch;
+// import deimos.X11.Xarch;
 import deimos.X11.Xatom;
 import deimos.X11.extensions.render;
-import deimos.X11.extensions.dpmsconst;
+// import deimos.X11.extensions.dpmsconst;
 
 import include.xf86DDC;
 
@@ -40,7 +40,7 @@ import include.xf86;
 import include.xf86Crtc;
 import xf86Modes;
 import xf86RandR12;
-import xf86CursorPriv;
+import hw.xfree86.ramdac.xf86CursorPriv;
 import include.picturestr;
 import include.cursorstr;
 import include.inputstr;

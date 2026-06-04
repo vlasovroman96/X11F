@@ -1,4 +1,4 @@
-module xkmread;
+module xkb.xkmread;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
