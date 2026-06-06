@@ -24,7 +24,9 @@ extern(C): __gshared:
  */
  
 public import deimos.X11.Xdefs;
+import include.regionstr;
 import include.screenint;
+
 struct _Damage;
 alias DamagePtr = _Damage*;
 
@@ -41,8 +43,8 @@ alias DamageReportBoundingBox = DamageReportLevel.DamageReportBoundingBox;
 alias DamageReportNonEmpty = DamageReportLevel.DamageReportNonEmpty;
 alias DamageReportNone = DamageReportLevel.DamageReportNone;
 
-struct _Region;
-alias RegionPtr = _Region*;
+// struct _Region;
+// alias RegionPtr = _Region*;
 alias DamageReportFunc = void function(DamagePtr pDamage, RegionPtr pRegion, void* closure);
 alias DamageDestroyFunc = void function(DamagePtr pDamage, void* closure);
 
