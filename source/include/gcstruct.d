@@ -57,6 +57,9 @@ public import include.regionstr;
 public import include.screenint;
 public import include.privates;
 
+import externs.x11.fonts.font;
+import externs.x11.fonts.fontstruct;
+
 version (_XTYPEDEF_CHARINFOPTR) {} else {
 alias CharInfoPtr = _CharInfo*;  /* also in fonts/include/font.h */
 // version = _XTYPEDEF_CHARINFOPTR;
