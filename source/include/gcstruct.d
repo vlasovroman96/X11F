@@ -130,7 +130,7 @@ struct GCOps {
 /* there is padding in the bit fields because the Sun compiler doesn't
  * force alignment to 32-bit boundaries.  losers.
  */
-struct GCRec {
+struct _GC {
     ScreenPtr pScreen;
     ubyte depth;
     ubyte alu;
@@ -173,4 +173,5 @@ struct GCRec {
     RegionPtr pCompositeClip;
 }
 
+alias GCRec = _GC;
                           /* GCSTRUCT_H */
