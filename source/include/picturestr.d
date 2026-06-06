@@ -39,6 +39,8 @@ public import include.glyphstr;
 public import include.resource;
 public import include.privates;
 
+alias XFixed = deimos.X11.extensions.Xrender.XFixed;
+
 struct _DirectFormat {
     CARD16 red, redMask;
     CARD16 green, greenMask;
