@@ -78,7 +78,7 @@ alias GCInterestPtr = _GCInterest*;
 alias GCPtr = _GC*;
 alias GCOpsPtr = _GCOps*;
 
-extern _X_EXPORT ValidateGC(DrawablePtr, GCPtr);
+extern void ValidateGC(DrawablePtr, GCPtr);
 
 union _ChangeGCVal {
     CARD32 val;
@@ -86,10 +86,10 @@ union _ChangeGCVal {
 }alias ChangeGCVal = _ChangeGCVal;
 alias ChangeGCValPtr = ChangeGCVal*;
 
-extern _X_EXPORT ChangeGC(ClientPtr, GCPtr, BITS32, ChangeGCValPtr);
+extern void ChangeGC(ClientPtr, GCPtr, BITS32, ChangeGCValPtr);
 
-extern _X_EXPORT GetScratchGC(uint, ScreenPtr);
+extern void GetScratchGC(uint, ScreenPtr);
 
-extern _X_EXPORT FreeScratchGC(GCPtr);
+extern void FreeScratchGC(GCPtr);
 
                           /* GC_H */
