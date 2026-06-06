@@ -88,7 +88,7 @@ struct _Pixmap {
     PixmapPtr primary_pixmap;    /* pointer to primary copy of pixmap for pixmap sharing */
 }
 
-struct PixmapDirtyUpdateRec {
+struct _PixmapDirtyUpdate {
     DrawablePtr src;            /* Root window / shared pixmap */
     PixmapPtr secondary_dst;    /* Shared / scanout pixmap */
     int x, y;
@@ -99,6 +99,9 @@ struct PixmapDirtyUpdateRec {
     PictTransform transform;
     pixman_f_transform f_transform, f_inverse;
 }
+
+alias PixmapDirtyUpdateRec = _PixmapDirtyUpdate;
+alias PixmapDirtyUpdatePtr = PixmapDirtyUpdateRec*;
 
 pragma(inline, true) private void PixmapRegionInit(RegionPtr region, PixmapPtr pixmap)
 {
