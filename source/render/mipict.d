@@ -366,7 +366,7 @@ Bool miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMa
     return TRUE;
 }
 
-void miRenderColorToPixel(PictFormatPtr format, xRenderColor* color, CARD32* pixel)
+void miRenderColorToPixel(PictFormatPtr format, XRenderColor* color, CARD32* pixel)
 {
     CARD32 r = void, g = void, b = void, a = void;
     miIndexedPtr pIndexed = void;
@@ -443,7 +443,7 @@ Bool miIsSolidAlpha(PicturePtr pSrc)
     }
 }
 
-void miRenderPixelToColor(PictFormatPtr format, CARD32 pixel, xRenderColor* color)
+void miRenderPixelToColor(PictFormatPtr format, CARD32 pixel, XRenderColor* color)
 {
     CARD32 r = void, g = void, b = void, a = void;
     miIndexedPtr pIndexed = void;

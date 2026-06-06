@@ -13,6 +13,7 @@
 	"dflags": [
         "-verrors=5",
 		"-P-I/usr/include/dbus-1.0",
+		"-P-I/usr/include/pixman-1",
 		"-P-I/usr/lib/dbus-1.0/include",
 		"-P-Isource/Xext/dri2",
 		"-P=-I/usr/include/libdrm",

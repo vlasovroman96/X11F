@@ -65,13 +65,13 @@ extern _X_EXPORT miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
 extern _X_EXPORT miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs);
 
-extern _X_EXPORT miRenderColorToPixel(PictFormatPtr pPict, xRenderColor* color, CARD32* pixel);
+extern _X_EXPORT miRenderColorToPixel(PictFormatPtr pPict, XRenderColor* color, CARD32* pixel);
 
-extern _X_EXPORT miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, xRenderColor* color);
+extern _X_EXPORT miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, XRenderColor* color);
 
 extern _X_EXPORT miIsSolidAlpha(PicturePtr pSrc);
 
-extern _X_EXPORT miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
+extern _X_EXPORT miCompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
 
 extern _X_EXPORT miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box);
 

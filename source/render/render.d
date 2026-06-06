@@ -390,8 +390,8 @@ private int ProcRenderQueryPictIndexValues(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     for (int i = 0; i < pFormat.index.nvalues; i++) {
-        /* write xIndexValue */
-        xIndexValue* iv = &(pFormat.index.pValues[i]);
+        /* write XIndexValue */
+        XIndexValue* iv = &(pFormat.index.pValues[i]);
         x_rpcbuf_write_CARD32(&rpcbuf, iv.pixel);
         x_rpcbuf_write_CARD16(&rpcbuf, iv.red);
         x_rpcbuf_write_CARD16(&rpcbuf, iv.green);
@@ -1686,14 +1686,14 @@ private int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLine
     int len = void;
     int error = 0;
     xFixed* stops = void;
-    xRenderColor* colors = void;
+    XRenderColor* colors = void;
 
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
     len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
-    if (stuff.nStops > UINT32_MAX / (((xFixed) + xRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((xFixed) + XRenderColor.sizeof).sizeof))
         return BadLength;
-    if (len != stuff.nStops * (((xFixed) + xRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((xFixed) + XRenderColor.sizeof).sizeof))
         return BadLength;
 
     stops = cast(xFixed*) (stuff + 1);
@@ -1720,14 +1720,14 @@ private int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadi
     int len = void;
     int error = 0;
     xFixed* stops = void;
-    xRenderColor* colors = void;
+    XRenderColor* colors = void;
 
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
     len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
-    if (stuff.nStops > UINT32_MAX / (((xFixed) + xRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((xFixed) + XRenderColor.sizeof).sizeof))
         return BadLength;
-    if (len != stuff.nStops * (((xFixed) + xRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((xFixed) + XRenderColor.sizeof).sizeof))
         return BadLength;
 
     stops = cast(xFixed*) (stuff + 1);
@@ -1755,14 +1755,14 @@ private int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateCon
     int len = void;
     int error = 0;
     xFixed* stops = void;
-    xRenderColor* colors = void;
+    XRenderColor* colors = void;
 
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
     len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
-    if (stuff.nStops > UINT32_MAX / (((xFixed) + xRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((xFixed) + XRenderColor.sizeof).sizeof))
         return BadLength;
-    if (len != stuff.nStops * (((xFixed) + xRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((xFixed) + XRenderColor.sizeof).sizeof))
         return BadLength;
 
     stops = cast(xFixed*) (stuff + 1);
@@ -2878,9 +2878,9 @@ private int ProcRenderCreateLinearGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
-        if (stuff.nStops > UINT32_MAX / (((xFixed) + xRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((xFixed) + XRenderColor.sizeof).sizeof))
             return BadLength;
-        if (len != stuff.nStops * (((xFixed) + xRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((xFixed) + XRenderColor.sizeof).sizeof))
             return BadLength;
 
         swapStops(stuff + 1, stuff.nStops);
@@ -2910,9 +2910,9 @@ private int ProcRenderCreateRadialGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
-        if (stuff.nStops > UINT32_MAX / (((xFixed) + xRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((xFixed) + XRenderColor.sizeof).sizeof))
             return BadLength;
-        if (len != stuff.nStops * (((xFixed) + xRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((xFixed) + XRenderColor.sizeof).sizeof))
             return BadLength;
 
         swapStops(stuff + 1, stuff.nStops);
@@ -2939,9 +2939,9 @@ private int ProcRenderCreateConicalGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
-        if (stuff.nStops > UINT32_MAX / (((xFixed) + xRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((xFixed) + XRenderColor.sizeof).sizeof))
             return BadLength;
-        if (len != stuff.nStops * (((xFixed) + xRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((xFixed) + XRenderColor.sizeof).sizeof))
             return BadLength;
 
         swapStops(stuff + 1, stuff.nStops);

@@ -870,7 +870,7 @@ private void VGAarbiterGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFo
     PICTURE_EPILOGUE(Glyphs, VGAarbiterGlyphs);
 }
 
-private void VGAarbiterCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects)
+private void VGAarbiterCompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);

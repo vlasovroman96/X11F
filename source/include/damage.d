@@ -23,9 +23,9 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
  
-// public import deimos.X11.Xfuncproto;
-
-alias DamagePtr = _damage*;
+public import deimos.X11.Xdefs;
+struct _Damage;
+alias DamagePtr = _Damage*;
 
 enum DamageReportLevel {
     DamageReportRawRegion,
@@ -40,10 +40,13 @@ alias DamageReportBoundingBox = DamageReportLevel.DamageReportBoundingBox;
 alias DamageReportNonEmpty = DamageReportLevel.DamageReportNonEmpty;
 alias DamageReportNone = DamageReportLevel.DamageReportNone;
 
-
+struct _Region;
+alias RegionPtr = _Region*;
 alias DamageReportFunc = void function(DamagePtr pDamage, RegionPtr pRegion, void* closure);
 alias DamageDestroyFunc = void function(DamagePtr pDamage, void* closure);
 
+struct _Drawable;
+alias DrawablePtr = _Drawable*;
 alias DamageScreenCreateFunc = void function(DamagePtr);
 alias DamageScreenRegisterFunc = void function(DrawablePtr, DamagePtr);
 alias DamageScreenUnregisterFunc = void function(DrawablePtr, DamagePtr);
@@ -77,6 +80,8 @@ extern int miDamageRegister(DrawablePtr, DamagePtr);
 extern int miDamageUnregister(DrawablePtr, DamagePtr);
 extern int miDamageDestroy(DamagePtr);
 
+struct _Screen;
+alias ScreenPtr = _Screen*;
 extern int DamageSetup(ScreenPtr pScreen);
 
 extern int DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDestroy, DamageReportLevel damageLevel, Bool isInternal, ScreenPtr pScreen, void* closure);

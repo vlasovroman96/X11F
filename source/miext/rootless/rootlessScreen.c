@@ -413,7 +413,7 @@ RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst,
 }
 
 static void
-RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor *color,
+RootlessCompositeRects(CARD8 op, PicturePtr pDst, XRenderColor *color,
                        int nRect, xRectangle *rects)
 {
     ScreenPtr pScreen = pDst->pDrawable->pScreen;

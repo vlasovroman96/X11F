@@ -75,7 +75,7 @@ struct DrawableRec {
  * PIXMAP -- device dependent
  */
 
-struct PixmapRec {
+struct _Pixmap {
     DrawableRec drawable;
     PrivateRec* devPrivates;
     int refcnt;

@@ -24,7 +24,7 @@ public import include.misc;
 /*****************************************************************
  * STUFF FOR PRIVATES
  *****************************************************************/
-
+struct _Private;
 alias PrivateRec = _Private;
 alias PrivatePtr = _Private*;
 

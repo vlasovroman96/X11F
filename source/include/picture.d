@@ -27,8 +27,9 @@ extern(C): __gshared:
 
  
 public import include.privates;
+import include.picturestr;
 
-public import pixman;
+public import externs.pixman;
 
 alias DirectFormatPtr = _DirectFormat*;
 alias PictFormatPtr = _PictFormat*;

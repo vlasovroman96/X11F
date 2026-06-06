@@ -50,7 +50,7 @@ alias EntryPtr = _CMEntry*;
  * only needs one cell table, we arbitrarily pick red.  We keep track
  * of that table with freeRed, numPixelsRed, and clientPixelsRed */
 
-struct ColormapRec {
+struct _ColormapRec {
     VisualPtr pVisual;
     short class_;                /* PseudoColor or DirectColor */
     XID mid;                    /* client's name for colormap */

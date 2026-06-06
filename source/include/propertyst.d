@@ -55,7 +55,7 @@ public import include.privates;
  *   PROPERTY -- property element
  */
 
-struct PropertyRec {
+struct _Property {
     _Property* next;
     ATOM propertyName;
     ATOM type;                  /* ignored by server */

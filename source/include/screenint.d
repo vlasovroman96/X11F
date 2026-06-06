@@ -49,14 +49,16 @@ SOFTWARE.
 
  
 public import include.misc;
+import include.scrintstr;
+import dix.colormap_priv;
 
 alias PixmapFormatPtr = _PixmapFormat*;
 alias VisualPtr = _Visual*;
 alias DepthPtr = _Depth*;
 alias ScreenPtr = _Screen*;
 
-extern _X_EXPORT AttachOutputGPU(ScreenPtr pScreen, ScreenPtr newScreen);
-extern _X_EXPORT DetachOutputGPU(ScreenPtr output);
+extern void AttachOutputGPU(ScreenPtr pScreen, ScreenPtr newScreen);
+extern void DetachOutputGPU(ScreenPtr output);
 
 alias ColormapPtr = _ColormapRec*;
 

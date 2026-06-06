@@ -27,12 +27,13 @@ import core.stdc.config: c_long, c_ulong;
 
  
 public import externs.x11.X;
+import deimos.X11.extensions.Xrender;
 public import include.scrnintstr;
 public import include.glyphstr;
 public import include.resource;
 public import include.privates;
 
-struct DirectFormatRec {
+struct _DirectFormat {
     CARD16 red, redMask;
     CARD16 green, greenMask;
     CARD16 blue, blueMask;
@@ -43,18 +44,20 @@ struct IndexFormatRec {
     VisualID vid;
     ColormapPtr pColormap;
     int nvalues;
-    xIndexValue* pValues;
+    XIndexValue* pValues;
     void* devPrivate;
 }
 
-struct PictFormatRec {
+struct _PictFormat {
     CARD32 id;
     CARD32 format;              /* except bpp */
     ubyte type;
     ubyte depth;
-    DirectFormatRec direct;
+    _DirectFormat direct;
     IndexFormatRec index;
 }
+
+alias DirectFormatRec = _PictFormat;
 
 alias PictVector = pixman_vector;
 alias PictVectorPtr = pixman_vector*;
@@ -69,13 +72,13 @@ enum SourcePictTypeConical = 3;
 struct _PictSolidFill {
     uint type;
     CARD32 color;
-    xRenderColor fullcolor;
+    XRenderColor fullcolor;
 }alias PictSolidFill = _PictSolidFill;
 alias PictSolidFillPtr = _PictSolidFill*;
 
 struct _PictGradientStop {
     xFixed x;
-    xRenderColor color;
+    XRenderColor color;
 }alias PictGradientStop = _PictGradientStop;
 alias PictGradientStopPtr = _PictGradientStop*;
 
@@ -130,7 +133,7 @@ union _SourcePict {
 }alias SourcePict = _SourcePict;
 alias SourcePictPtr = _SourcePict*;
 
-struct PictureRec {
+struct _Picture {
     DrawablePtr pDrawable;
     PictFormatPtr pFormat;
     pixman_format_code_t format;     /* PIXMAN_FORMAT */
@@ -212,7 +215,7 @@ alias CompositeProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pMa
 
 alias GlyphsProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlists, GlyphListPtr lists, GlyphPtr* glyphs);
 
-alias CompositeRectsProcPtr = void function(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
+alias CompositeRectsProcPtr = void function(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
 
 alias RasterizeTrapezoidProcPtr = void function(PicturePtr pMask, xTrapezoid* trap, int x_off, int y_off);
 
@@ -362,7 +365,7 @@ extern int CompositePicture(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Picture
 
 extern int CompositeGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr lists, GlyphPtr* glyphs);
 
-extern int CompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
+extern int CompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
 
 extern int CompositeTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps);
 
@@ -374,13 +377,13 @@ extern int CompositeTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictForma
 
 extern int AddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntraps, xTrap* traps);
 
-extern int CreateSolidPicture(Picture pid, xRenderColor* color, int* error);
+extern int CreateSolidPicture(Picture pid, XRenderColor* color, int* error);
 
-extern int CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed* p2, int nStops, xFixed* stops, xRenderColor* colors, int* error);
+extern int CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed* p2, int nStops, xFixed* stops, XRenderColor* colors, int* error);
 
-extern int CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFixed* outer, xFixed innerRadius, xFixed outerRadius, int nStops, xFixed* stops, xRenderColor* colors, int* error);
+extern int CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFixed* outer, xFixed innerRadius, xFixed outerRadius, int nStops, xFixed* stops, XRenderColor* colors, int* error);
 
-extern int CreateConicalGradientPicture(Picture pid, xPointFixed* center, xFixed angle, int nStops, xFixed* stops, xRenderColor* colors, int* error);
+extern int CreateConicalGradientPicture(Picture pid, xPointFixed* center, xFixed angle, int nStops, xFixed* stops, XRenderColor* colors, int* error);
 
 /*
  * matrix.c

@@ -69,7 +69,7 @@ enum NullRegion = cast(RegionPtr)0;
 alias RegDataRec = pixman_region16_data;
 alias RegDataPtr = pixman_region16_data*;
 
-extern _X_EXPORT RegionEmptyBox;
+extern BoxRec RegionEmptyBox;
 extern RegDataRec RegionEmptyData;
 extern RegDataRec RegionBrokenData;
 pragma(inline, true) private Bool RegionNil(RegionPtr reg)
@@ -196,13 +196,13 @@ pragma(inline, true) private void RegionNull(RegionPtr _pReg)
     (_pReg).data = &RegionEmptyData;
 }
 
-extern _X_EXPORT InitRegions();
+extern void InitRegions();
 
-extern _X_EXPORT RegionCreate(BoxPtr, int);
+extern void RegionCreate(BoxPtr, int);
 
-extern _X_EXPORT RegionDestroy(RegionPtr);
+extern void RegionDestroy(RegionPtr);
 
-extern _X_EXPORT RegionDuplicate(RegionPtr);
+extern void RegionDuplicate(RegionPtr);
 
 pragma(inline, true) private Bool RegionCopy(RegionPtr dst, RegionPtr src)
 {
@@ -219,11 +219,11 @@ pragma(inline, true) private Bool RegionUnion(RegionPtr newReg, RegionPtr reg1, 
     return pixman_region_union(newReg, reg1, reg2);
 }
 
-extern _X_EXPORT RegionAppend(RegionPtr, RegionPtr);
+extern void RegionAppend(RegionPtr, RegionPtr);
 
-extern _X_EXPORT RegionValidate(RegionPtr, Bool*);
+extern void RegionValidate(RegionPtr, Bool*);
 
-extern _X_EXPORT RegionFromRects(int, xRectanglePtr, int);
+extern void RegionFromRects(int, xRectanglePtr, int);
 
 /*-
  *-----------------------------------------------------------------------
@@ -279,7 +279,7 @@ pragma(inline, true) private void RegionTranslate(RegionPtr pReg, int x, int y)
     pixman_region_translate(pReg, x, y);
 }
 
-extern _X_EXPORT RegionBreak(RegionPtr);
+extern void RegionBreak(RegionPtr);
 
 pragma(inline, true) private Bool RegionContainsPoint(RegionPtr pReg, int x, int y, BoxPtr box)
 {
@@ -291,20 +291,20 @@ pragma(inline, true) private Bool RegionEqual(RegionPtr reg1, RegionPtr reg2)
     return pixman_region_equal(reg1, reg2);
 }
 
-extern _X_EXPORT RegionRectAlloc(RegionPtr, int);
+extern void RegionRectAlloc(RegionPtr, int);
 
 version (DEBUG) {
-extern _X_EXPORT RegionIsValid(RegionPtr);
+extern void RegionIsValid(RegionPtr);
 }
 
-extern _X_EXPORT RegionPrint(RegionPtr);
+extern void RegionPrint(RegionPtr);
 
 version = INCLUDE_LEGACY_REGION_DEFINES;
 version (INCLUDE_LEGACY_REGION_DEFINES) {
 
-enum REGION_NIL =				RegionNil;
-enum REGION_NUM_RECTS =			RegionNumRects;
-enum REGION_RECTS =				RegionRects;
+alias REGION_NIL =				RegionNil;
+alias REGION_NUM_RECTS =			RegionNumRects;
+alias REGION_RECTS =				RegionRects;
 enum string REGION_CREATE(string pScreen, string r, string s) = `RegionCreate(` ~ r ~ `,` ~ s ~ `)`;
 enum string REGION_COPY(string pScreen, string d, string r) = `RegionCopy(` ~ d ~ `, ` ~ r ~ `)`;
 enum string REGION_DESTROY(string pScreen, string r) = `RegionDestroy(` ~ r ~ `)`;

@@ -27,7 +27,10 @@ extern(C): __gshared:
 
  
 public import externs.x11.X;
+import deimos.X11.extensions.Xrender;
 
+
+alias xGlyphInfo = XGlyphInfo;
 public import include.picture;
 public import include.screenint;
 
@@ -57,7 +60,7 @@ struct _GlyphList {
 alias GlyphListPtr = _GlyphList*;
 
 enum GLYPH_HAS_GLYPH_PICTURE_ACCESSOR = 1 /* used for api compat */;
-extern _X_EXPORT GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen);
-extern _X_EXPORT SetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen, PicturePtr picture);
+extern void GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen);
+extern void SetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen, PicturePtr picture);
 
                           /* _GLYPHSTR_H_ */

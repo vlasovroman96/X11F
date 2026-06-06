@@ -53,6 +53,7 @@ public import include.misc;
 public import include.screenint;
 public import include.regionstr;
 public import deimos.X11.extensions.randr;
+import include.pixmapstr;
 /* types for Drawable */
 enum DRAWABLE_WINDOW = 0;
 enum DRAWABLE_PIXMAP = 1;

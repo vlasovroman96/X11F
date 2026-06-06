@@ -763,7 +763,7 @@ PicturePtr CreatePicture(Picture pid, DrawablePtr pDrawable, PictFormatPtr pForm
     return pPicture;
 }
 
-private CARD32 xRenderColorToCard32(xRenderColor c)
+private CARD32 XRenderColorToCard32(xRenderColor c)
 {
     return
         (cast(uint)c.alpha >> 8 << 24) |
@@ -772,7 +772,7 @@ private CARD32 xRenderColorToCard32(xRenderColor c)
         (cast(uint)c.blue >> 8);
 }
 
-private void initGradient(SourcePictPtr pGradient, int stopCount, xFixed* stopPoints, xRenderColor* stopColors, int* error)
+private void initGradient(SourcePictPtr pGradient, int stopCount, xFixed* stopPoints, XRenderColor* stopColors, int* error)
 {
     int i = void;
     xFixed dpos = void;
@@ -823,7 +823,7 @@ private PicturePtr createSourcePicture()
     return pPicture;
 }
 
-PicturePtr CreateSolidPicture(Picture pid, xRenderColor* color, int* error)
+PicturePtr CreateSolidPicture(Picture pid, XRenderColor* color, int* error)
 {
     PicturePtr pPicture = void;
 
@@ -841,12 +841,12 @@ PicturePtr CreateSolidPicture(Picture pid, xRenderColor* color, int* error)
         return 0;
     }
     pPicture.pSourcePict.type = SourcePictTypeSolidFill;
-    pPicture.pSourcePict.solidFill.color = xRenderColorToCard32(*color);
+    pPicture.pSourcePict.solidFill.color = XRenderColorToCard32(*color);
     memcpy(&pPicture.pSourcePict.solidFill.fullcolor, color, typeof(*color).sizeof);
     return pPicture;
 }
 
-PicturePtr CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed* p2, int nStops, xFixed* stops, xRenderColor* colors, int* error)
+PicturePtr CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed* p2, int nStops, xFixed* stops, XRenderColor* colors, int* error)
 {
     PicturePtr pPicture = void;
 
@@ -882,7 +882,7 @@ PicturePtr CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed
     return pPicture;
 }
 
-PicturePtr CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFixed* outer, xFixed innerRadius, xFixed outerRadius, int nStops, xFixed* stops, xRenderColor* colors, int* error)
+PicturePtr CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFixed* outer, xFixed innerRadius, xFixed outerRadius, int nStops, xFixed* stops, XRenderColor* colors, int* error)
 {
     PicturePtr pPicture = void;
     PictRadialGradient* radial = void;
@@ -924,7 +924,7 @@ PicturePtr CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFi
     return pPicture;
 }
 
-PicturePtr CreateConicalGradientPicture(Picture pid, xPointFixed* center, xFixed angle, int nStops, xFixed* stops, xRenderColor* colors, int* error)
+PicturePtr CreateConicalGradientPicture(Picture pid, xPointFixed* center, xFixed angle, int nStops, xFixed* stops, XRenderColor* colors, int* error)
 {
     PicturePtr pPicture = void;
 
@@ -1489,7 +1489,7 @@ void CompositePicture(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pD
                       xSrc, ySrc, xMask, yMask, xDst, yDst, width, height);
 }
 
-void CompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects)
+void CompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects)
 {
     PictureScreenPtr ps = GetPictureScreen(pDst.pDrawable.pScreen);
 
