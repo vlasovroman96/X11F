@@ -24,6 +24,7 @@ extern(C): __gshared:
  */
  
 public import deimos.X11.Xdefs;
+import include.screenint;
 struct _Damage;
 alias DamagePtr = _Damage*;
 
@@ -80,8 +81,8 @@ extern int miDamageRegister(DrawablePtr, DamagePtr);
 extern int miDamageUnregister(DrawablePtr, DamagePtr);
 extern int miDamageDestroy(DamagePtr);
 
-struct _Screen;
-alias ScreenPtr = _Screen*;
+// struct _Screen;
+// alias ScreenPtr = _Screen*;
 extern int DamageSetup(ScreenPtr pScreen);
 
 extern int DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDestroy, DamageReportLevel damageLevel, Bool isInternal, ScreenPtr pScreen, void* closure);
