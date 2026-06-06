@@ -93,7 +93,7 @@ struct GCFuncs {
  * graphics operations invoked through a GC
  */
 
-struct GCOps {
+struct _GCOps {
     void function(DrawablePtr, GCPtr, int, DDXPointPtr, int*, int) FillSpans;
 
     void function(DrawablePtr, GCPtr, char*, DDXPointPtr, int*, int, int) SetSpans;
@@ -175,7 +175,7 @@ struct _GC {
     uint stateChanges; /* masked with GC_<kind> */
     uint serialNumber;
     const(GCFuncs)* funcs;
-    const(GCOps)* ops;
+    const(_GCOps)* ops;
     PrivateRec* devPrivates;
     RegionPtr pCompositeClip;
 }
