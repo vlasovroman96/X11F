@@ -57,14 +57,15 @@ public import include.regionstr;
 public import include.screenint;
 public import include.privates;
 
-import externs.x11.fonts.font;
-import externs.x11.fonts.fontstruct;
+import legacyXf = externs.x11.fonts.font;
+import legacyXfs = externs.x11.fonts.fontstruct;
 
 alias xSegment = deimos.X11.Xprotostr.xSegment;
 alias xRectangle = deimos.X11.Xprotostr.xRectangle;
+alias xArc = deimos.X11.Xprotostr.xArc;
 
 version (_XTYPEDEF_CHARINFOPTR) {} else {
-alias CharInfoPtr = _CharInfo*;  /* also in fonts/include/font.h */
+alias CharInfoPtr = legacyXfs._CharInfo*;  /* also in fonts/include/font.h */
 // version = _XTYPEDEF_CHARINFOPTR;
 }
 
