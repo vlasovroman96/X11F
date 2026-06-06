@@ -645,7 +645,7 @@ _X_EXPORT RRClientKnowsRates(ClientPtr pClient);
 /*
  * Set filter on transform structure
  */
-_X_EXPORT RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, xFixed* params, int nparams, int width, int height);
+_X_EXPORT RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* params, int nparams, int width, int height);
 
 /*
  * Set whether transforms are allowed on a CRTC

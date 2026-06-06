@@ -53,20 +53,20 @@ Bool RRTransformEqual(RRTransformPtr a, RRTransformPtr b)
         return FALSE;
     if (a.nparams != b.nparams)
         return FALSE;
-    if (memcmp(a.params, b.params, a.nparams * xFixed.sizeof) != 0)
+    if (memcmp(a.params, b.params, a.nparams * XFixed.sizeof) != 0)
         return FALSE;
     return TRUE;
 }
 
-Bool RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, xFixed* params, int nparams, int width, int height)
+Bool RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* params, int nparams, int width, int height)
 {
-    xFixed* new_params = void;
+    XFixed* new_params = void;
 
     if (nparams) {
-        new_params = cast(xFixed*) calloc(nparams, xFixed.sizeof);
+        new_params = cast(XFixed*) calloc(nparams, XFixed.sizeof);
         if (!new_params)
             return FALSE;
-        memcpy(new_params, params, nparams * xFixed.sizeof);
+        memcpy(new_params, params, nparams * XFixed.sizeof);
     }
     else
         new_params = null;
@@ -103,7 +103,7 @@ Bool RRTransformCopy(RRTransformPtr dst, RRTransformPtr src)
     return TRUE;
 }
 
-enum string F(string x) = `IntToxFixed(` ~ x ~ `)`;
+enum string F(string x) = `IntToXFixed(` ~ x ~ `)`;
 
 private void RRTransformRescale(pixman_f_transform* f_transform, double limit)
 {
@@ -147,8 +147,8 @@ Bool RRTransformCompute(int x, int y, int width, int height, Rotation rotation, 
     if (rotation != RR_Rotate_0) {
         double f_rot_cos = void, f_rot_sin = void, f_rot_dx = void, f_rot_dy = void;
         double f_scale_x = void, f_scale_y = void, f_scale_dx = void, f_scale_dy = void;
-        xFixed rot_cos = void, rot_sin = void, rot_dx = void, rot_dy = void;
-        xFixed scale_x = void, scale_y = void, scale_dx = void, scale_dy = void;
+        XFixed rot_cos = void, rot_sin = void, rot_dx = void, rot_dy = void;
+        XFixed scale_x = void, scale_y = void, scale_dx = void, scale_dy = void;
 
         /* rotation */
         switch (rotation & 0xf) {

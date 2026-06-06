@@ -213,7 +213,7 @@ private int miChangePictureTransform(PicturePtr pPicture, PictTransform* transfo
     return Success;
 }
 
-private int miChangePictureFilter(PicturePtr pPicture, int filter, xFixed* params, int nparams)
+private int miChangePictureFilter(PicturePtr pPicture, int filter, XFixed* params, int nparams)
 {
     return Success;
 }
@@ -473,13 +473,13 @@ void miRenderPixelToColor(PictFormatPtr format, CARD32 pixel, XRenderColor* colo
     default: break;}
 }
 
-private void miTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, xPointFixed* points)
+private void miTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, XPointFixed* points)
 {
-    xTriangle* tris = void, tri = void;
+    XTriangle* tris = void, tri = void;
     int ntri = void;
 
     ntri = npoints - 2;
-    tris = cast(xTriangle*) calloc(ntri, xTriangle.sizeof);
+    tris = cast(XTriangle*) calloc(ntri, XTriangle.sizeof);
     if (!tris)
         return;
 
@@ -492,14 +492,14 @@ private void miTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPt
     free(tris);
 }
 
-private void miTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, xPointFixed* points)
+private void miTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, XPointFixed* points)
 {
-    xTriangle* tris = void, tri = void;
-    xPointFixed* first = void;
+    XTriangle* tris = void, tri = void;
+    XPointFixed* first = void;
     int ntri = void;
 
     ntri = npoints - 2;
-    tris = cast(xTriangle*) calloc(ntri, xTriangle.sizeof);
+    tris = cast(XTriangle*) calloc(ntri, XTriangle.sizeof);
     if (!tris)
         return;
 

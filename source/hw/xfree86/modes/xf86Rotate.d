@@ -342,7 +342,7 @@ Bool xf86CrtcRotate(xf86CrtcPtr crtc)
     ScreenPtr pScreen = xf86ScrnToScreen(pScrn);
     PictTransform crtc_to_fb = void;
     pixman_f_transform f_crtc_to_fb = void, f_fb_to_crtc = void;
-    xFixed* new_params = null;
+    XFixed* new_params = null;
     int new_nparams = 0;
     PictFilterPtr new_filter = null;
     int new_width = 0;
@@ -445,10 +445,10 @@ Bool xf86CrtcRotate(xf86CrtcPtr crtc)
 version (RANDR_12_INTERFACE) {
         if (transform) {
             if (transform.nparams) {
-                new_params = cast(xFixed*) calloc(transform.nparams, xFixed.sizeof);
+                new_params = cast(XFixed*) calloc(transform.nparams, XFixed.sizeof);
                 if (new_params) {
                     memcpy(new_params, transform.params,
-                           transform.nparams * xFixed.sizeof);
+                           transform.nparams * XFixed.sizeof);
                     new_nparams = transform.nparams;
                     new_filter = transform.filter;
                 }

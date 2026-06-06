@@ -336,7 +336,7 @@ version (RANDR_12_INTERFACE) {
     pixman_f_transform f_crtc_to_framebuffer;      /* ABI 2 */
     pixman_f_transform f_framebuffer_to_crtc;      /* ABI 2 */
     PictFilterPtr filter;       /* ABI 2 */
-    xFixed* params;             /* ABI 2 */
+    XFixed* params;             /* ABI 2 */
     int nparams;                /* ABI 2 */
     int filter_width;           /* ABI 2 */
     int filter_height;          /* ABI 2 */

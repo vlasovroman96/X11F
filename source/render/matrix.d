@@ -39,7 +39,7 @@ import include.gcstruct;
 import include.servermd;
 import include.picturestr;
 
-void PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform* render)
+void PictTransform_from_XRenderTransform(PictTransformPtr pict, XRenderTransform* render)
 {
     pict.matrix[0][0] = render.matrix11;
     pict.matrix[0][1] = render.matrix12;
@@ -54,7 +54,7 @@ void PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform
     pict.matrix[2][2] = render.matrix33;
 }
 
-void xRenderTransform_from_PictTransform(xRenderTransform* render, PictTransformPtr pict)
+void XRenderTransform_from_PictTransform(XRenderTransform* render, PictTransformPtr pict)
 {
     render.matrix11 = pict.matrix[0][0];
     render.matrix12 = pict.matrix[0][1];

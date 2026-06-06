@@ -247,18 +247,18 @@ PictFilterPtr PictureFindFilter(ScreenPtr pScreen, char* name, int len)
     return 0;
 }
 
-private Bool convolutionFilterValidateParams(ScreenPtr pScreen, int filter, xFixed* params, int nparams, int* width, int* height)
+private Bool convolutionFilterValidateParams(ScreenPtr pScreen, int filter, XFixed* params, int nparams, int* width, int* height)
 {
     int w = void, h = void;
 
     if (nparams < 3)
         return FALSE;
 
-    if (xFixedFrac(params[0]) || xFixedFrac(params[1]))
+    if (XFixedFrac(params[0]) || XFixedFrac(params[1]))
         return FALSE;
 
-    w = xFixedToInt(params[0]);
-    h = xFixedToInt(params[1]);
+    w = XFixedToInt(params[0]);
+    h = XFixedToInt(params[1]);
 
     nparams -= 2;
     if (w * h > nparams)
@@ -305,7 +305,7 @@ void PictureResetFilters(ScreenPtr pScreen)
         PictureFreeFilterIds();
 }
 
-int SetPictureFilter(PicturePtr pPicture, char* name, int len, xFixed* params, int nparams)
+int SetPictureFilter(PicturePtr pPicture, char* name, int len, XFixed* params, int nparams)
 {
     PictFilterPtr pFilter = void;
     ScreenPtr pScreen = void;
@@ -336,7 +336,7 @@ int SetPictureFilter(PicturePtr pPicture, char* name, int len, xFixed* params, i
     return SetPicturePictFilter(pPicture, pFilter, params, nparams);
 }
 
-int SetPicturePictFilter(PicturePtr pPicture, PictFilterPtr pFilter, xFixed* params, int nparams)
+int SetPicturePictFilter(PicturePtr pPicture, PictFilterPtr pFilter, XFixed* params, int nparams)
 {
     ScreenPtr pScreen = void;
     int i = void;
@@ -357,7 +357,7 @@ int SetPicturePictFilter(PicturePtr pPicture, PictFilterPtr pFilter, xFixed* par
         return BadMatch;
 
     if (nparams != pPicture.filter_nparams) {
-        xFixed* new_params = cast(xFixed*) calloc(nparams, xFixed.sizeof);
+        XFixed* new_params = cast(XFixed*) calloc(nparams, XFixed.sizeof);
 
         if (!new_params && nparams)
             return BadAlloc;

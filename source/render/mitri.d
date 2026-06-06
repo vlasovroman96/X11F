@@ -35,19 +35,19 @@ import include.windowstr;
 import include.mi;
 import include.picturestr;
 
-void miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds)
+void miPointFixedBounds(int npoint, XPointFixed* points, BoxPtr bounds)
 {
-    bounds.x1 = xFixedToInt(points.x);
-    bounds.x2 = xFixedToInt(xFixedCeil(points.x));
-    bounds.y1 = xFixedToInt(points.y);
-    bounds.y2 = xFixedToInt(xFixedCeil(points.y));
+    bounds.x1 = XFixedToInt(points.x);
+    bounds.x2 = XFixedToInt(XFixedCeil(points.x));
+    bounds.y1 = XFixedToInt(points.y);
+    bounds.y2 = XFixedToInt(XFixedCeil(points.y));
     points++;
     npoint--;
     while (npoint-- > 0) {
-        INT16 x1 = xFixedToInt(points.x);
-        INT16 x2 = xFixedToInt(xFixedCeil(points.x));
-        INT16 y1 = xFixedToInt(points.y);
-        INT16 y2 = xFixedToInt(xFixedCeil(points.y));
+        INT16 x1 = XFixedToInt(points.x);
+        INT16 x2 = XFixedToInt(XFixedCeil(points.x));
+        INT16 y1 = XFixedToInt(points.y);
+        INT16 y2 = XFixedToInt(XFixedCeil(points.y));
 
         if (x1 < bounds.x1)
             bounds.x1 = x1;
@@ -61,7 +61,7 @@ void miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds)
     }
 }
 
-void miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds)
+void miTriangleBounds(int ntri, XTriangle* tris, BoxPtr bounds)
 {
-    miPointFixedBounds(ntri * 3, cast(xPointFixed*) tris, bounds);
+    miPointFixedBounds(ntri * 3, cast(XPointFixed*) tris, bounds);
 }

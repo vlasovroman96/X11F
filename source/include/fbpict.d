@@ -31,6 +31,6 @@ extern _X_EXPORT fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pictur
 
 /* fbtrap.c */
 
-extern _X_EXPORT fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, xTrap* traps);
+extern _X_EXPORT fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, XTrap* traps);
 
                           /* _FBPICT_H_ */

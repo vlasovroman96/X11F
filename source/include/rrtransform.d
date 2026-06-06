@@ -35,7 +35,7 @@ struct _rrTransform {
     pixman_f_transform f_transform;
     pixman_f_transform f_inverse;
     PictFilterPtr filter;
-    xFixed* params;
+    XFixed* params;
     int nparams;
     int width;
     int height;

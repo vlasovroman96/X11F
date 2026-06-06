@@ -96,7 +96,7 @@ enum string REQUEST_FIXED_SIZE(string req, string n) = `
 
 alias TimeStampPtr = _TimeStamp*;
 
-extern ClientPtr[1] ClientPtr;
+extern ClientPtr[1] clients;
 extern ClientPtr serverClient;
 extern int currentMaxClients;
 

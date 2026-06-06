@@ -73,11 +73,11 @@ extern _X_EXPORT miIsSolidAlpha(PicturePtr pSrc);
 
 extern _X_EXPORT miCompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
 
-extern _X_EXPORT miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box);
+extern _X_EXPORT miTrapezoidBounds(int ntrap, XTrapezoid* traps, BoxPtr box);
 
-extern _X_EXPORT miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds);
+extern _X_EXPORT miPointFixedBounds(int npoint, XPointFixed* points, BoxPtr bounds);
 
-extern _X_EXPORT miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds);
+extern _X_EXPORT miTriangleBounds(int ntri, XTriangle* tris, BoxPtr bounds);
 
 extern _X_EXPORT miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
 

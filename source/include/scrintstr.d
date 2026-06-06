@@ -63,6 +63,7 @@ import include.pixmap;
 import include.misc;
 
 import deimos.X11.X;
+import deimos.X11.extensions.Xrender;
 import include.validate;
 
 struct _PixmapFormat {
@@ -278,9 +279,9 @@ alias UninstallColormapProcPtr = void function(ColormapPtr /*pColormap */ );
 alias ListInstalledColormapsProcPtr = void function(ScreenPtr /*pScreen */ ,
                                               XID * /*pmaps */ );
 
-alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
-                                    int /*ndef */ ,
-                                    xColorItem * /*pdef */ );
+// alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
+//                                     int /*ndef */ ,
+//                                     xColorItem * /*pdef */ );
 
 alias ResolveColorProcPtr = void function(ubyte * /*pred */ ,
                                      ubyte * /*pgreen */ ,

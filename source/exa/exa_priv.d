@@ -384,7 +384,7 @@ void ExaCheckGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint fo
 
 void ExaCheckGetSpans(DrawablePtr pDrawable, int wMax, DDXPointPtr ppt, int* pwidth, int nspans, char* pdstStart);
 
-void ExaCheckAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps);
+void ExaCheckAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, XTrap* traps);
 
 /* exa_accel.c */
 
@@ -501,9 +501,9 @@ void exaComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, 
 
 void exaCompositeRects(CARD8 op, PicturePtr Src, PicturePtr pMask, PicturePtr pDst, int nrect, ExaCompositeRectPtr rects);
 
-void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps);
+void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, XTrapezoid* traps);
 
-void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, xTriangle* tris);
+void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, XTriangle* tris);
 
 /* exa_glyph.c */
 void exaGlyphsInit(ScreenPtr pScreen);

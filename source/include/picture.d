@@ -162,39 +162,39 @@ extern int RenderErrBase;
 
 /* Fixed point updates from Carl Worth, USC, Information Sciences Institute */
 
-alias xFixed_32_32 = pixman_fixed_32_32_t;
+alias XFixed_32_32 = pixman_fixed_32_32_t;
 
-alias xFixed_48_16 = pixman_fixed_48_16_t;
+alias XFixed_48_16 = pixman_fixed_48_16_t;
 
 enum MAX_FIXED_48_16 =		pixman_max_fixed_48_16;
 enum MIN_FIXED_48_16 =		pixman_min_fixed_48_16;
 
-alias xFixed_1_31 = pixman_fixed_1_31_t;
-alias xFixed_1_16 = pixman_fixed_1_16_t;
-alias xFixed_16_16 = pixman_fixed_16_16_t;
+alias XFixed_1_31 = pixman_fixed_1_31_t;
+alias XFixed_1_16 = pixman_fixed_1_16_t;
+alias XFixed_16_16 = pixman_fixed_16_16_t;
 
 /*
- * An unadorned "xFixed" is the same as xFixed_16_16,
+ * An unadorned "XFixed" is the same as XFixed_16_16,
  * (since it's quite common in the code)
  */
-alias xFixed = pixman_fixed_t;
+alias XFixed = pixman_fixed_t;
 
 enum XFIXED_BITS =	16;
 
-enum string xFixedToInt(string f) = `pixman_fixed_to_int(` ~ f ~ `)`;
-enum string IntToxFixed(string i) = `pixman_int_to_fixed(` ~ i ~ `)`;
-enum xFixedE =		pixman_fixed_e;
-enum xFixed1 =		pixman_fixed_1;
-enum xFixed1MinusE =	pixman_fixed_1_minus_e;
-enum string xFixedFrac(string f) = `pixman_fixed_frac(` ~ f ~ `)`;
-enum string xFixedFloor(string f) = `pixman_fixed_floor(` ~ f ~ `)`;
-enum string xFixedCeil(string f) = `pixman_fixed_ceil(` ~ f ~ `)`;
+enum string XFixedToInt(string f) = `pixman_fixed_to_int(` ~ f ~ `)`;
+enum string IntToXFixed(string i) = `pixman_int_to_fixed(` ~ i ~ `)`;
+enum XFixedE =		pixman_fixed_e;
+enum XFixed1 =		pixman_fixed_1;
+enum XFixed1MinusE =	pixman_fixed_1_minus_e;
+enum string XFixedFrac(string f) = `pixman_fixed_frac(` ~ f ~ `)`;
+enum string XFixedFloor(string f) = `pixman_fixed_floor(` ~ f ~ `)`;
+enum string XFixedCeil(string f) = `pixman_fixed_ceil(` ~ f ~ `)`;
 
-enum string xFixedFraction(string f) = `pixman_fixed_fraction(` ~ f ~ `)`;
-enum string xFixedMod2(string f) = `pixman_fixed_mod2(` ~ f ~ `)`;
+enum string XFixedFraction(string f) = `pixman_fixed_fraction(` ~ f ~ `)`;
+enum string XFixedMod2(string f) = `pixman_fixed_mod2(` ~ f ~ `)`;
 
 /* whether 't' is a well defined not obviously empty trapezoid */
-enum string xTrapezoidValid(string t) = `((` ~ t ~ `).left.p1.y != (` ~ t ~ `).left.p2.y && 
+enum string XTrapezoidValid(string t) = `((` ~ t ~ `).left.p1.y != (` ~ t ~ `).left.p2.y && 
 			     (` ~ t ~ `).right.p1.y != (` ~ t ~ `).right.p2.y && 
 			     ((` ~ t ~ `).bottom > (` ~ t ~ `).top))`;
 
