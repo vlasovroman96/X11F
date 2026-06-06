@@ -72,6 +72,7 @@ enum MAX_SERIAL_NUM =     (1L<<28);
 enum NEXT_SERIAL_NUMBER = ((++globalSerialNumber) > MAX_SERIAL_NUM ? 
 	    (globalSerialNumber  = 1): globalSerialNumber);
 
+struct _GCInterest;
 alias GCInterestPtr = _GCInterest*;
 alias GCPtr = _GC*;
 alias GCOpsPtr = _GCOps*;
