@@ -247,7 +247,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
         return FALSE;
 
     pFormat.index.nvalues = num;
-    pFormat.index.pValues = calloc(num, XIndexValue.sizeof);
+    pFormat.index.pValues = calloc(num, xIndexValue.sizeof);
     if (!pFormat.index.pValues) {
         free(pIndexed);
         return FALSE;

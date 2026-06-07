@@ -38,7 +38,7 @@ import os.osdep;
 
 import dix.swaprep;
 import mi.mipointer;
-import include.clang;
+ 
 
 /* XFixed is just `int`, so better check whether it's really 32bit */
 static assert(XFixed.sizeof, CARD32.sizeof);
@@ -1700,7 +1700,7 @@ int ProcRRSetCrtcTransform(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.crtc);
         SwapLongs(cast(CARD32*) &stuff.transform,
-                  bytes_to_int32(XRenderTransform.sizeof));
+                  bytes_to_int32(xRenderTransform.sizeof));
         swaps(&stuff.nbytesFilter);
         char* filter = cast(char*) (stuff + 1);
         CARD32* params = cast(CARD32*) (filter + pad_to_int32(stuff.nbytesFilter));
@@ -1724,7 +1724,7 @@ int ProcRRSetCrtcTransform(ClientPtr client)
     if (RRCrtcIsLeased(crtc))
         return BadAccess;
 
-    PictTransform_from_XRenderTransform(&transform, &stuff.transform);
+    PictTransform_from_xRenderTransform(&transform, &stuff.transform);
     pixman_f_transform_from_pixman_transform(&f_transform, &transform);
     if (!pixman_f_transform_invert(&f_inverse, &f_transform))
         return BadMatch;
@@ -1762,8 +1762,8 @@ int ProcRRGetCrtcTransform(ClientPtr client)
         hasTransforms: crtc.transforms,
     };
 
-    XRenderTransform_from_PictTransform(&reply.pendingTransform, &pending.transform);
-    XRenderTransform_from_PictTransform(&reply.currentTransform, &current.transform);
+    xRenderTransform_from_PictTransform(&reply.pendingTransform, &pending.transform);
+    xRenderTransform_from_PictTransform(&reply.currentTransform, &current.transform);
 
     if (pending.filter) {
         reply.pendingNbytesFilter = strlen(pending.filter.name);
@@ -1780,8 +1780,8 @@ int ProcRRGetCrtcTransform(ClientPtr client)
     }
 
     if (client.swapped) {
-        SwapLongs(cast(CARD32*) &reply.pendingTransform, bytes_to_int32(XRenderTransform.sizeof));
-        SwapLongs(cast(CARD32*) &reply.currentTransform, bytes_to_int32(XRenderTransform.sizeof));
+        SwapLongs(cast(CARD32*) &reply.pendingTransform, bytes_to_int32(xRenderTransform.sizeof));
+        SwapLongs(cast(CARD32*) &reply.currentTransform, bytes_to_int32(xRenderTransform.sizeof));
         swaps(&reply.pendingNbytesFilter);
         swaps(&reply.currentNbytesFilter);
         swaps(&reply.pendingNparamsFilter);

@@ -335,7 +335,7 @@ RootlessGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst,
 static void
 RootlessTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst,
                    PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc,
-                   int ntrap, XTrapezoid *traps)
+                   int ntrap, xTrapezoid *traps)
 {
     ScreenPtr pScreen = pDst->pDrawable->pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);
@@ -375,7 +375,7 @@ RootlessTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst,
 static void
 RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst,
                   PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc,
-                  int ntri, XTriangle *tris)
+                  int ntri, xTriangle *tris)
 {
     ScreenPtr pScreen = pDst->pDrawable->pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);
@@ -413,7 +413,7 @@ RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst,
 }
 
 static void
-RootlessCompositeRects(CARD8 op, PicturePtr pDst, XRenderColor *color,
+RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor *color,
                        int nRect, xRectangle *rects)
 {
     ScreenPtr pScreen = pDst->pDrawable->pScreen;

@@ -36,7 +36,7 @@ extern char* xf86KeyboardName;
 
 extern rgb xf86Weight;
 
-extern _X_EXPORT xf86FlipPixels;
+extern void  xf86FlipPixels;
 
 extern Gamma xf86Gamma;
 
@@ -83,7 +83,7 @@ Bool xf86LoadModules(const(char)** list, void** optlist);
 Bool xf86HasTTYs();
 
 /* xf86Mode.c */
-const(_X_EXPORT)* xf86ModeStatusToString(ModeStatus status);
+const(void )* xf86ModeStatusToString(ModeStatus status);
 
 ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int flags);
 

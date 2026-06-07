@@ -161,7 +161,7 @@ struct _Window {
     PropertyPtr properties;     /* default: NULL */
 }
 
-extern _X_EXPORT[1] DontPropagateMasks;
+extern void [1] DontPropagateMasks;
 
 enum string wBorderWidth(string w) = `(cast(int) (` ~ w ~ `).borderWidth)`;
 

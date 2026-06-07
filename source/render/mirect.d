@@ -36,7 +36,7 @@ import include.windowstr;
 import include.mi;
 import include.picturestr;
 
-private void miColorRects(PicturePtr pDst, PicturePtr pClipPict, XRenderColor* color, int nRect, xRectangle* rects, int xoff, int yoff)
+private void miColorRects(PicturePtr pDst, PicturePtr pClipPict, xRenderColor* color, int nRect, xRectangle* rects, int xoff, int yoff)
 {
     CARD32 pixel = void;
     GCPtr pGC = void;
@@ -85,7 +85,7 @@ private void miColorRects(PicturePtr pDst, PicturePtr pClipPict, XRenderColor* c
     FreeScratchGC(pGC);
 }
 
-void miCompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects)
+void miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects)
 {
     if (color.alpha == 0xffff) {
         if (op == PictOpOver)

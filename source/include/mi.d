@@ -60,6 +60,8 @@ public import include.cursor;
 public import include.privates;
 public import include.colormap;
 public import include.events;
+import include.mistruct;
+import externs.X11.fonts.fontstruct;
 
 enum MiBits =	CARD32;
 
@@ -70,7 +72,7 @@ enum ODD_DASH =	~0;
 
 /* miarc.c */
 
-extern _X_EXPORT miPolyArc(DrawablePtr, GCPtr, int, xArc*);
+extern void  miPolyArc(DrawablePtr, GCPtr, int, xArc*);
 
 /* micopy.c  */
 
@@ -78,9 +80,9 @@ enum string miGetCompositeClip(string pGC) = `((` ~ pGC ~ `).pCompositeClip)`;
 
 alias miCopyProc = void function(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pDstBox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure);
 
-extern _X_EXPORT miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, RegionPtr pDstRegion, int dx, int dy, miCopyProc copyProc, Pixel bitPlane, void* closure);
+extern void  miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, RegionPtr pDstRegion, int dx, int dy, miCopyProc copyProc, Pixel bitPlane, void* closure);
 
-extern _X_EXPORT miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut, miCopyProc copyProc, Pixel bitplane, void* closure);
+extern void  miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut, miCopyProc copyProc, Pixel bitplane, void* closure);
 
 /* mieq.c */
 
@@ -90,66 +92,66 @@ alias DevicePtr = _DeviceRec*;
 
 /* miexpose.c */
 
-extern _X_EXPORT miHandleExposures(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int);
+extern void  miHandleExposures(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int);
 
-extern _X_EXPORT miClearDrawable(DrawablePtr, GCPtr);
+extern void  miClearDrawable(DrawablePtr, GCPtr);
 
 /* miglblt.c */
 
-extern _X_EXPORT miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase);
+extern void  miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase);
 
-extern _X_EXPORT miImageGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase);
+extern void  miImageGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase);
 
 /* mipoly.c */
 
-extern _X_EXPORT miFillPolygon(DrawablePtr, GCPtr, int, int, int, DDXPointPtr);
+extern void  miFillPolygon(DrawablePtr, GCPtr, int, int, int, DDXPointPtr);
 
 /* mipolypnt.c */
 
-extern _X_EXPORT miPolyPoint(DrawablePtr, GCPtr, int, int, xPoint*);
+extern void  miPolyPoint(DrawablePtr, GCPtr, int, int, xPoint*);
 
 /* mipolyrect.c */
 
-extern _X_EXPORT miPolyRectangle(DrawablePtr, GCPtr, int, xRectangle*);
+extern void  miPolyRectangle(DrawablePtr, GCPtr, int, xRectangle*);
 
 /* mipolyseg.c */
 
-extern _X_EXPORT miPolySegment(DrawablePtr, GCPtr, int, xSegment*);
+extern void  miPolySegment(DrawablePtr, GCPtr, int, xSegment*);
 
 /* mipolytext.c */
 
-extern _X_EXPORT miPolyText8(DrawablePtr, GCPtr, int, int, int, char*);
+extern void  miPolyText8(DrawablePtr, GCPtr, int, int, int, char*);
 
-extern _X_EXPORT miPolyText16(DrawablePtr, GCPtr, int, int, int, ushort*);
+extern void  miPolyText16(DrawablePtr, GCPtr, int, int, int, ushort*);
 
-extern _X_EXPORT miImageText8(DrawablePtr, GCPtr, int, int, int, char*);
+extern void  miImageText8(DrawablePtr, GCPtr, int, int, int, char*);
 
-extern _X_EXPORT miImageText16(DrawablePtr, GCPtr, int, int, int, ushort*);
+extern void  miImageText16(DrawablePtr, GCPtr, int, int, int, ushort*);
 
 /* mipushpxl.c */
 
-extern _X_EXPORT miPushPixels(GCPtr, PixmapPtr, DrawablePtr, int, int, int, int);
+extern void  miPushPixels(GCPtr, PixmapPtr, DrawablePtr, int, int, int, int);
 
 /* miscrinit.c */
-extern _X_EXPORT miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
+extern void  miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
 
-extern _X_EXPORT miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int rootDepth, int numDepths, DepthPtr depths, VisualID rootVisual, int numVisuals, VisualPtr visuals);
+extern void  miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int rootDepth, int numDepths, DepthPtr depths, VisualID rootVisual, int numVisuals, VisualPtr visuals);
 
 /* mivaltree.c */
 
-extern _X_EXPORT miWideLine(DrawablePtr, GCPtr, int, int, DDXPointPtr);
+extern void  miWideLine(DrawablePtr, GCPtr, int, int, DDXPointPtr);
 
-extern _X_EXPORT miWideDash(DrawablePtr, GCPtr, int, int, DDXPointPtr);
+extern void  miWideDash(DrawablePtr, GCPtr, int, int, DDXPointPtr);
 
-extern _X_EXPORT miPolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr pPts);
+extern void  miPolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr pPts);
 
 /* mizerarc.c */
 
-extern _X_EXPORT miZeroPolyArc(DrawablePtr, GCPtr, int, xArc*);
+extern void  miZeroPolyArc(DrawablePtr, GCPtr, int, xArc*);
 
-_X_EXPORT miZeroLine(DrawablePtr dst, GCPtr gc, int mode, int nptInit, xPoint* pptInit);
-_X_EXPORT miZeroDashLine(DrawablePtr dst, GCPtr pgc, int mode, int nptInit, xPoint* pptInit);
+void  miZeroLine(DrawablePtr dst, GCPtr gc, int mode, int nptInit, xPoint* pptInit);
+void  miZeroDashLine(DrawablePtr dst, GCPtr pgc, int mode, int nptInit, xPoint* pptInit);
 
-extern _X_EXPORT miPolyFillArc(DrawablePtr, GCPtr, int, xArc*);
+extern void  miPolyFillArc(DrawablePtr, GCPtr, int, xArc*);
 
                           /* MI_H */

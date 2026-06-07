@@ -40,6 +40,6 @@ struct _syncFdScreenFuncs {
 }alias SyncFdScreenFuncsRec = _syncFdScreenFuncs;
 alias SyncFdScreenFuncsPtr = _syncFdScreenFuncs*;
 
-extern _X_EXPORT miSyncFdScreenInit(ScreenPtr pScreen, const(SyncFdScreenFuncsRec)* funcs);
+extern void  miSyncFdScreenInit(ScreenPtr pScreen, const(SyncFdScreenFuncsRec)* funcs);
 
  /* _MISYNCFD_H_ */

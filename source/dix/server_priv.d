@@ -25,6 +25,6 @@ pragma(inline, true) private int dixCallServerAccessCallback(ClientPtr client, M
 }
 
 /* NVidia v.390 proprietary driver needs this */
-extern _X_EXPORT* ConnectionInfo;
+extern void * ConnectionInfo;
 
  /* _XSERVER_DIX_SERVER_PRIV_H */

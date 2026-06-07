@@ -69,25 +69,25 @@ alias RemoveAreaCallbackProcPtr = void function(FBAreaPtr);
 alias MoveLinearCallbackProcPtr = void function(FBLinearPtr, FBLinearPtr);
 alias RemoveLinearCallbackProcPtr = void function(FBLinearPtr);
 
-extern _X_EXPORT xf86InitFBManager(ScreenPtr pScreen, BoxPtr FullBox);
+extern void  xf86InitFBManager(ScreenPtr pScreen, BoxPtr FullBox);
 
-extern _X_EXPORT xf86InitFBManagerLinear(ScreenPtr pScreen, int offset, int size);
+extern void  xf86InitFBManagerLinear(ScreenPtr pScreen, int offset, int size);
 
-extern _X_EXPORT xf86AllocateOffscreenArea(ScreenPtr pScreen, int w, int h, int granularity, MoveAreaCallbackProcPtr moveCB, RemoveAreaCallbackProcPtr removeCB, void* privData);
+extern void  xf86AllocateOffscreenArea(ScreenPtr pScreen, int w, int h, int granularity, MoveAreaCallbackProcPtr moveCB, RemoveAreaCallbackProcPtr removeCB, void* privData);
 
-extern _X_EXPORT xf86AllocateOffscreenLinear(ScreenPtr pScreen, int length, int granularity, MoveLinearCallbackProcPtr moveCB, RemoveLinearCallbackProcPtr removeCB, void* privData);
+extern void  xf86AllocateOffscreenLinear(ScreenPtr pScreen, int length, int granularity, MoveLinearCallbackProcPtr moveCB, RemoveLinearCallbackProcPtr removeCB, void* privData);
 
-extern _X_EXPORT xf86FreeOffscreenArea(FBAreaPtr area);
-extern _X_EXPORT xf86FreeOffscreenLinear(FBLinearPtr area);
+extern void  xf86FreeOffscreenArea(FBAreaPtr area);
+extern void  xf86FreeOffscreenLinear(FBLinearPtr area);
 
-extern _X_EXPORT xf86ResizeOffscreenArea(FBAreaPtr resize, int w, int h);
+extern void  xf86ResizeOffscreenArea(FBAreaPtr resize, int w, int h);
 
-extern _X_EXPORT xf86ResizeOffscreenLinear(FBLinearPtr resize, int size);
+extern void  xf86ResizeOffscreenLinear(FBLinearPtr resize, int size);
 
-extern _X_EXPORT xf86PurgeUnlockedOffscreenAreas(ScreenPtr pScreen);
+extern void  xf86PurgeUnlockedOffscreenAreas(ScreenPtr pScreen);
 
-extern _X_EXPORT xf86QueryLargestOffscreenArea(ScreenPtr pScreen, int* width, int* height, int granularity, int preferences, int priority);
+extern void  xf86QueryLargestOffscreenArea(ScreenPtr pScreen, int* width, int* height, int granularity, int preferences, int priority);
 
-extern _X_EXPORT xf86QueryLargestOffscreenLinear(ScreenPtr pScreen, int* size, int granularity, int priority);
+extern void  xf86QueryLargestOffscreenLinear(ScreenPtr pScreen, int* size, int granularity, int priority);
 
                           /* _XF86FBMAN_H */

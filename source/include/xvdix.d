@@ -176,8 +176,8 @@ struct _XvScreenRec {
 }alias XvScreenRec = _XvScreenRec;
 alias XvScreenPtr = XvScreenRec*;
 
-extern _X_EXPORT XvScreenInit(ScreenPtr);
+extern void  XvScreenInit(ScreenPtr);
 extern DevPrivateKey XvGetScreenKey(void);
-extern _X_EXPORT unsigned; c_long XvGetRTPort();
+extern void  unsigned; c_long XvGetRTPort();
 
                           /* XVDIX_H */

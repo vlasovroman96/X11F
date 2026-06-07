@@ -41,7 +41,7 @@ public import xf86Xinput;
  * @warning this function returns <0 in case of error (for example -2)
  * @return file descriptior or <0
  *
- * @warning _X_EXPORT is only for internal consuption (currently for modesetting only, because its `open_hw` function calls open directly)
+ * @warning void  is only for internal consuption (currently for modesetting only, because its `open_hw` function calls open directly)
  *
  * @note XXX: maybe in future Xlibre public api could gain function for opening device nodes by path?
  **/

@@ -366,7 +366,7 @@ Bool miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMa
     return TRUE;
 }
 
-void miRenderColorToPixel(PictFormatPtr format, XRenderColor* color, CARD32* pixel)
+void miRenderColorToPixel(PictFormatPtr format, xRenderColor* color, CARD32* pixel)
 {
     CARD32 r = void, g = void, b = void, a = void;
     miIndexedPtr pIndexed = void;
@@ -443,7 +443,7 @@ Bool miIsSolidAlpha(PicturePtr pSrc)
     }
 }
 
-void miRenderPixelToColor(PictFormatPtr format, CARD32 pixel, XRenderColor* color)
+void miRenderPixelToColor(PictFormatPtr format, CARD32 pixel, xRenderColor* color)
 {
     CARD32 r = void, g = void, b = void, a = void;
     miIndexedPtr pIndexed = void;
@@ -473,13 +473,13 @@ void miRenderPixelToColor(PictFormatPtr format, CARD32 pixel, XRenderColor* colo
     default: break;}
 }
 
-private void miTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, XPointFixed* points)
+private void miTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, xPointFixed* points)
 {
-    XTriangle* tris = void, tri = void;
+    xTriangle* tris = void, tri = void;
     int ntri = void;
 
     ntri = npoints - 2;
-    tris = cast(XTriangle*) calloc(ntri, XTriangle.sizeof);
+    tris = cast(xTriangle*) calloc(ntri, xTriangle.sizeof);
     if (!tris)
         return;
 
@@ -492,14 +492,14 @@ private void miTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPt
     free(tris);
 }
 
-private void miTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, XPointFixed* points)
+private void miTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, xPointFixed* points)
 {
-    XTriangle* tris = void, tri = void;
-    XPointFixed* first = void;
+    xTriangle* tris = void, tri = void;
+    xPointFixed* first = void;
     int ntri = void;
 
     ntri = npoints - 2;
-    tris = cast(XTriangle*) calloc(ntri, XTriangle.sizeof);
+    tris = cast(xTriangle*) calloc(ntri, xTriangle.sizeof);
     if (!tris)
         return;
 

@@ -45,10 +45,10 @@ alias vbeInfoPtr = vbeInfoRec*;
 enum string VBE_VERSION_MAJOR(string x) = `*(cast(CARD8*)(&` ~ x ~ `) + 1)`;
 enum string VBE_VERSION_MINOR(string x) = `cast(CARD8)(` ~ x ~ `)`;
 
-extern _X_EXPORT VBEInit(xf86Int10InfoPtr pInt, int entityIndex);
-extern _X_EXPORT VBEExtendedInit(xf86Int10InfoPtr pInt, int entityIndex, int Flags);
-extern _X_EXPORT vbeFree(vbeInfoPtr pVbe);
-extern _X_EXPORT vbeDoEDID(vbeInfoPtr pVbe, void* pDDCModule);
+extern void  VBEInit(xf86Int10InfoPtr pInt, int entityIndex);
+extern void  VBEExtendedInit(xf86Int10InfoPtr pInt, int entityIndex, int Flags);
+extern void  vbeFree(vbeInfoPtr pVbe);
+extern void  vbeDoEDID(vbeInfoPtr pVbe, void* pDDCModule);
 
 // #pragma pack(1)
 
@@ -110,8 +110,8 @@ struct _VbeInfoBlock {
 };
 
 /* Return Super VGA Information */
-extern _X_EXPORT* VBEGetVBEInfo(vbeInfoPtr pVbe);
-extern _X_EXPORT VBEFreeVBEInfo(VbeInfoBlock* block);
+extern void * VBEGetVBEInfo(vbeInfoPtr pVbe);
+extern void  VBEFreeVBEInfo(VbeInfoBlock* block);
 
 /*
  * INT 1

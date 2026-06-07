@@ -11,12 +11,12 @@ extern(C): __gshared:
 public import include.fbpict;
 public import include.picture;
 
-void fbRasterizeTrapezoid(PicturePtr alpha, XTrapezoid* trap, int x_off, int y_off);
+void fbRasterizeTrapezoid(PicturePtr alpha, xTrapezoid* trap, int x_off, int y_off);
 
-void fbAddTriangles(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntri, XTriangle* tris);
+void fbAddTriangles(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntri, xTriangle* tris);
 
-void fbTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, XTrapezoid* traps);
+void fbTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps);
 
-_X_EXPORT fbTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntris, XTriangle* tris);
+void  fbTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntris, xTriangle* tris);
 
  /* XORG_FBPICT_PRIV_H */

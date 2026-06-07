@@ -47,7 +47,7 @@ import dix.screensaver_priv;
 import dix.selection_priv;
 import dix.server_priv;
 import os.client_priv;
-// import include.clang;
+//  
 
 import include.inputstr;
 import include.scrnintstr;

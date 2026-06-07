@@ -251,7 +251,7 @@ struct GlxServerExports {
     Bool function(ClientPtr client, ScreenPtr screen, GlxServerVendor* vendor) setClientScreenVendor;
 }
 
-extern const(_X_EXPORT) GlxServerExports;
+extern const(void ) GlxServerExports;
 
 /**
  * Functions exported by the vendor library to libglvnd.

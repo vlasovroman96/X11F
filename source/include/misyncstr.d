@@ -30,6 +30,8 @@ public import include.xlibre_ptrtypes;
 public import include.dix;
 public import include.misync;
 public import include.scrnintstr;
+import Xext.syncsrv;
+
 // //public import externs.X11.extensions.syncconst;
 
 /* Sync object types */
@@ -51,6 +53,8 @@ struct _SyncCounter {
     _SysCounterInfo* pSysCounterInfo; /* NULL if not a system counter */
 }
 
+alias SyncCounter = _SyncCounter;
+
 struct _SyncFence {
     SyncObject sync;            /* Common sync object data */
     ScreenPtr pScreen;          /* Screen of this fence object */
@@ -70,7 +74,7 @@ struct _SyncTrigger {
     void function(_SyncTrigger* pTrigger) CounterDestroyed;
 }
 
-struct SyncTriggerList {
+struct _SyncTriggerList {
     SyncTrigger* pTrigger;
     _SyncTriggerList* next;
 }

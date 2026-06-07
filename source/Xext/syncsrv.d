@@ -55,6 +55,7 @@ PERFORMANCE OF THIS SOFTWARE.
 public import include.list;
 public import include.misync;
 public import include.misyncstr;
+import externs.X11.extensions.syncconst;
 
 /*
  * The System Counter interface
@@ -75,8 +76,8 @@ alias XSyncCounterUnrestricted = SyncCounterType.XSyncCounterUnrestricted;
 alias SyncSystemCounterQueryValue = void function(void* counter, long* value_return);
 alias SyncSystemCounterBracketValues = void function(void* counter, long* pbracket_less, long* pbracket_greater);
 
-struct SysCounterInfo {
-    SyncCounter* pCounter;
+struct _SysCounterInfo {
+    _SyncCounter* pCounter;
     char* name;
     long resolution;
     long bracket_greater;
@@ -88,37 +89,37 @@ struct SysCounterInfo {
     xorg_list entry;
 }
 
-struct SyncAlarmClientList {
+struct _SyncAlarmClientList {
     ClientPtr client;
     XID delete_id;
     _SyncAlarmClientList* next;
 }
 
-struct SyncAlarm {
+struct _SyncAlarm {
     SyncTrigger trigger;
     ClientPtr client;
     XSyncAlarm alarm_id;
     long delta;
     int events;
     int state;
-    SyncAlarmClientList* pEventClients;
+    _SyncAlarmClientList* pEventClients;
 }
 
-struct SyncAwaitHeader {
+struct _SyncAwaitHeader {
     ClientPtr client;
     CARD32 delete_id;
     int num_waitconditions;
 }
 
-struct SyncAwait {
+struct _SyncAwait {
     SyncTrigger trigger;
     long event_threshold;
-    SyncAwaitHeader* pHeader;
+    _SyncAwaitHeader* pHeader;
 }
 
 union SyncAwaitUnion {
-    SyncAwaitHeader header;
-    SyncAwait await;
+    _SyncAwaitHeader header;
+    _SyncAwait await;
 }
 
 extern SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial_value, long resolution, SyncCounterType counterType, SyncSystemCounterQueryValue QueryValue, SyncSystemCounterBracketValues BracketValues);

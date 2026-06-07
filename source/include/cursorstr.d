@@ -80,7 +80,7 @@ struct CursorRec {
     Atom name;
 }
 
-struct CursorMetricRec {
+struct _CursorMetric {
     ushort width, height, xhot, yhot;
 }
 

@@ -27,10 +27,10 @@ extern(C): __gshared:
 public import include.fb;
 
 /* fbpict.c */
-extern _X_EXPORT fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
+extern void  fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
 /* fbtrap.c */
 
-extern _X_EXPORT fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, XTrap* traps);
+extern void  fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, xTrap* traps);
 
                           /* _FBPICT_H_ */

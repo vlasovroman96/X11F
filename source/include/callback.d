@@ -58,7 +58,7 @@ SOFTWARE.
  */
 struct _CallbackList;
 alias CallbackListPtr = _CallbackList*;
-enum _X_EXPORT = "";
+// enum void  = "";
 
 alias CallbackProcPtr = void function(CallbackListPtr*, void*, void*);
 

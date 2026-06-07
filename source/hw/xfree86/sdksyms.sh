@@ -324,7 +324,7 @@ BEGIN {
 	# skip attribute, if any
 	while ($n ~ /^(__attribute__|__global)/ ||
 	    # skip modifiers, if any
-	    $n ~ /^\*?(unsigned|const|volatile|struct|_X_EXPORT)$/ ||
+	    $n ~ /^\*?(unsigned|const|volatile|struct|void )$/ ||
 	    # skip pointer
 	    $n ~ /^[a-zA-Z0-9_]*\*$/) {
 	    n++;
@@ -347,7 +347,7 @@ BEGIN {
 	}
 
 	# type specifier may not be set, as in
-	#   extern _X_EXPORT unsigned name(...)
+	#   extern void  unsigned name(...)
 	if ($n !~ /[^a-zA-Z0-9_]/)
 	    n++;
 
@@ -356,17 +356,17 @@ BEGIN {
 	    n--;
 
 	# match
-	#    extern _X_EXPORT type (* name[])(...)
+	#    extern void  type (* name[])(...)
 	if ($n ~ /^[^a-zA-Z0-9_]+$/)
 	    n++;
 
 	# match
-	#	extern _X_EXPORT const name *const ...
+	#	extern void  const name *const ...
 	if ($n ~ /^([^a-zA-Z0-9_]+)?const$/)
 	    n++;
 
 	# actual name may be in the next line, as in
-	#   extern _X_EXPORT type
+	#   extern void  type
 	# possibly ending with a *
 	#   name(...)
 	if ($n == "" || $n ~ /^\*+$/) {

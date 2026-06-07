@@ -56,7 +56,7 @@ public import include.extension;
 public import include.gc;
 public import include.privates;
 
-struct ExtensionEntry {
+struct _ExtensionEntry {
     int index;
     void function(_ExtensionEntry*) CloseDown;
     const(char)* name;           /* extension name */
@@ -81,7 +81,7 @@ extern EventSwapPtr[128] EventSwapVector;
 
 extern noreturn NotImplemented(xEvent*, xEvent*);
 
-extern int* AddExtension(const(char)*, int, int, int function(ClientPtr), int function(ClientPtr), void function(ExtensionEntry*), ushort function(ClientPtr));
+extern int* AddExtension(const(char)*, int, int, int function(ClientPtr), int function(ClientPtr), void function(_ExtensionEntry*), ushort function(ClientPtr));
 
 extern int* CheckExtension(const(char)* extname);
 extern int* GetExtensionEntry(int major);

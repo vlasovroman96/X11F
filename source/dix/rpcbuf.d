@@ -56,7 +56,7 @@ err:
     return FALSE;
 }
 
-_X_EXPORT x_rpcbuf_clear(x_rpcbuf_t* rpcbuf)
+void  x_rpcbuf_clear(x_rpcbuf_t* rpcbuf)
 {
     free(rpcbuf.buffer);
     memset(rpcbuf, 0, x_rpcbuf_t.sizeof);
@@ -83,7 +83,7 @@ void* x_rpcbuf_reserve(x_rpcbuf_t* rpcbuf, size_t needed)
     return pos;
 }
 
-_X_EXPORT* x_rpcbuf_reserve0(x_rpcbuf_t* rpcbuf, size_t needed)
+void * x_rpcbuf_reserve0(x_rpcbuf_t* rpcbuf, size_t needed)
 {
     void* buf = x_rpcbuf_reserve(rpcbuf, needed);
     if (!buf)
@@ -101,7 +101,7 @@ Bool x_rpcbuf_write_string_pad(x_rpcbuf_t* rpcbuf, const(char)* str)
     return __x_rpcbuf_write_bin_pad(rpcbuf, str, strlen(str));
 }
 
-_X_EXPORT x_rpcbuf_write_string_0t_pad(x_rpcbuf_t* rpcbuf, const(char)* str)
+void  x_rpcbuf_write_string_0t_pad(x_rpcbuf_t* rpcbuf, const(char)* str)
 {
     if (!str)
         return x_rpcbuf_write_CARD32(rpcbuf, 0);
@@ -134,7 +134,7 @@ Bool x_rpcbuf_write_CARD16(x_rpcbuf_t* rpcbuf, CARD16 value)
     return TRUE;
 }
 
-_X_EXPORT x_rpcbuf_write_CARD32(x_rpcbuf_t* rpcbuf, CARD32 value)
+void  x_rpcbuf_write_CARD32(x_rpcbuf_t* rpcbuf, CARD32 value)
 {
     CARD32* reserved = x_rpcbuf_reserve(rpcbuf, value.sizeof);
     if (!reserved)
@@ -162,7 +162,7 @@ Bool x_rpcbuf_write_CARD64(x_rpcbuf_t* rpcbuf, CARD64 value)
     return TRUE;
 }
 
-_X_EXPORT x_rpcbuf_write_CARD8s(x_rpcbuf_t* rpcbuf, const(CARD8)* values, size_t count)
+void  x_rpcbuf_write_CARD8s(x_rpcbuf_t* rpcbuf, const(CARD8)* values, size_t count)
 {
     if ((!values) || (!count))
         return TRUE;
@@ -193,7 +193,7 @@ Bool x_rpcbuf_write_CARD16s(x_rpcbuf_t* rpcbuf, const(CARD16)* values, size_t co
     return TRUE;
 }
 
-_X_EXPORT x_rpcbuf_write_CARD32s(x_rpcbuf_t* rpcbuf, const(CARD32)* values, size_t count)
+void  x_rpcbuf_write_CARD32s(x_rpcbuf_t* rpcbuf, const(CARD32)* values, size_t count)
 {
     if ((!values) || (!count))
         return TRUE;

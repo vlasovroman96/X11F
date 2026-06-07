@@ -1,4 +1,6 @@
 module include.xlibre_ptrtypes;
+
+public import externs.X11.Xdefs;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -12,14 +14,14 @@ extern(C): __gshared:
  * External drivers rarely have a reason for directly including it.
  */
  
-struct _Client;
+// struct _Client;
 // version (_XTYPEDEF_CLIENTPTR) {
 
-alias ClientPtr = _Client*;
+// alias ClientPtr = _Client*;
 // } else {
 // version = _XTYPEDEF_CLIENTPTR;
 // }
-alias ClientRec = _Client;
+// alias ClientRec = _Client;
 
 struct _ClientId;
 alias ClientIdPtr = _ClientId*;

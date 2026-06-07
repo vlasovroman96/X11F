@@ -194,7 +194,7 @@ enum string XFixedFraction(string f) = `pixman_fixed_fraction(` ~ f ~ `)`;
 enum string XFixedMod2(string f) = `pixman_fixed_mod2(` ~ f ~ `)`;
 
 /* whether 't' is a well defined not obviously empty trapezoid */
-enum string XTrapezoidValid(string t) = `((` ~ t ~ `).left.p1.y != (` ~ t ~ `).left.p2.y && 
+enum string xTrapezoidValid(string t) = `((` ~ t ~ `).left.p1.y != (` ~ t ~ `).left.p2.y && 
 			     (` ~ t ~ `).right.p1.y != (` ~ t ~ `).right.p2.y && 
 			     ((` ~ t ~ `).bottom > (` ~ t ~ `).top))`;
 

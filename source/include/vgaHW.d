@@ -27,7 +27,7 @@ public import include.xf86DDC;
 public import include.globals;
 // //public import externs.X11.extensions.dpmsconst;
 
-extern _X_EXPORT vgaHWGetIndex();
+extern void  vgaHWGetIndex();
 
 /*
  * access macro
@@ -179,34 +179,34 @@ enum string DACDelay(string hw) = `
 /* Function Prototypes */
 
 /* vgaHW.c */
-extern _X_EXPORT vgaHWSetStdFuncs(vgaHWPtr hwp);
-extern _X_EXPORT vgaHWSetMmioFuncs(vgaHWPtr hwp, CARD8* base, int offset);
-extern _X_EXPORT vgaHWProtect(ScrnInfoPtr pScrn, Bool on);
-extern _X_EXPORT vgaHWSaveScreen(ScreenPtr pScreen, int mode);
-extern _X_EXPORT vgaHWBlankScreen(ScrnInfoPtr pScrn, Bool on);
-extern _X_EXPORT vgaHWSeqReset(vgaHWPtr hwp, Bool start);
+extern void  vgaHWSetStdFuncs(vgaHWPtr hwp);
+extern void  vgaHWSetMmioFuncs(vgaHWPtr hwp, CARD8* base, int offset);
+extern void  vgaHWProtect(ScrnInfoPtr pScrn, Bool on);
+extern void  vgaHWSaveScreen(ScreenPtr pScreen, int mode);
+extern void  vgaHWBlankScreen(ScrnInfoPtr pScrn, Bool on);
+extern void  vgaHWSeqReset(vgaHWPtr hwp, Bool start);
  void vgaHWRestoreFonts(ScrnInfoPtr pScrnInfo, vgaRegPtr restore);
  void vgaHWRestore(ScrnInfoPtr pScrnInfo, vgaRegPtr restore, int flags);
  void vgaHWSaveFonts(ScrnInfoPtr pScrnInfo, vgaRegPtr save);
  void vgaHWSave(ScrnInfoPtr pScrnInfo, vgaRegPtr save, int flags);
-extern _X_EXPORT vgaHWInit(ScrnInfoPtr scrnp, DisplayModePtr mode);
-extern _X_EXPORT vgaHWCopyReg(vgaRegPtr dst, vgaRegPtr src);
-extern _X_EXPORT vgaHWGetHWRec(ScrnInfoPtr scrp);
-extern _X_EXPORT vgaHWFreeHWRec(ScrnInfoPtr scrp);
-extern _X_EXPORT vgaHWMapMem(ScrnInfoPtr scrp);
-extern _X_EXPORT vgaHWUnmapMem(ScrnInfoPtr scrp);
-extern _X_EXPORT vgaHWGetIOBase(vgaHWPtr hwp);
-extern _X_EXPORT vgaHWLock(vgaHWPtr hwp);
-extern _X_EXPORT vgaHWUnlock(vgaHWPtr hwp);
-extern _X_EXPORT vgaHWEnable(vgaHWPtr hwp);
-extern _X_EXPORT vgaHWDPMSSet(ScrnInfoPtr pScrn, int PowerManagementMode, int flags);
-extern _X_EXPORT vgaHWHandleColormaps(ScreenPtr pScreen);
-extern _X_EXPORT vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed);
-extern _X_EXPORT vgaHWHBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags);
-extern _X_EXPORT vgaHWVBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags);
-extern _X_EXPORT vgaHWAllocDefaultRegs(vgaRegPtr regp);
+extern void  vgaHWInit(ScrnInfoPtr scrnp, DisplayModePtr mode);
+extern void  vgaHWCopyReg(vgaRegPtr dst, vgaRegPtr src);
+extern void  vgaHWGetHWRec(ScrnInfoPtr scrp);
+extern void  vgaHWFreeHWRec(ScrnInfoPtr scrp);
+extern void  vgaHWMapMem(ScrnInfoPtr scrp);
+extern void  vgaHWUnmapMem(ScrnInfoPtr scrp);
+extern void  vgaHWGetIOBase(vgaHWPtr hwp);
+extern void  vgaHWLock(vgaHWPtr hwp);
+extern void  vgaHWUnlock(vgaHWPtr hwp);
+extern void  vgaHWEnable(vgaHWPtr hwp);
+extern void  vgaHWDPMSSet(ScrnInfoPtr pScrn, int PowerManagementMode, int flags);
+extern void  vgaHWHandleColormaps(ScreenPtr pScreen);
+extern void  vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed);
+extern void  vgaHWHBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags);
+extern void  vgaHWVBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags);
+extern void  vgaHWAllocDefaultRegs(vgaRegPtr regp);
 
 extern  DDC1SetSpeedProc vgaHWddc1SetSpeedWeak(void);
-extern _X_EXPORT xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) ClockFunc, void function(ScrnInfoPtr, Bool) ProtectRegs, void function(ScrnInfoPtr, Bool) BlankScreen, c_ulong vertsyncreg, int maskval, int knownclkindex, int knownclkvalue);
+extern void  xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) ClockFunc, void function(ScrnInfoPtr, Bool) ProtectRegs, void function(ScrnInfoPtr, Bool) BlankScreen, c_ulong vertsyncreg, int maskval, int knownclkindex, int knownclkvalue);
 
                           /* _VGAHW_H */

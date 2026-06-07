@@ -15,19 +15,19 @@ extern DevPrivateKeyRec micmapScrPrivateKeyRec;
 
 enum micmapScrPrivateKey = (&micmapScrPrivateKeyRec);
 
-extern _X_EXPORT miListInstalledColormaps(ScreenPtr pScreen, Colormap* pmaps);
-extern _X_EXPORT miInstallColormap(ColormapPtr pmap);
-extern _X_EXPORT miUninstallColormap(ColormapPtr pmap);
+extern void  miListInstalledColormaps(ScreenPtr pScreen, Colormap* pmaps);
+extern void  miInstallColormap(ColormapPtr pmap);
+extern void  miUninstallColormap(ColormapPtr pmap);
 
-extern _X_EXPORT miResolveColor(ushort*, ushort*, ushort*, VisualPtr);
-extern _X_EXPORT miInitializeColormap(ColormapPtr);
-extern _X_EXPORT miCreateDefColormap(ScreenPtr);
-extern _X_EXPORT miClearVisualTypes();
-extern _X_EXPORT miSetVisualTypes(int, int, int, int);
-extern _X_EXPORT miSetPixmapDepths();
-extern _X_EXPORT miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int preferredCVC, Pixel redMask, Pixel greenMask, Pixel blueMask);
-extern _X_EXPORT miGetDefaultVisualMask(int);
-extern _X_EXPORT miInitVisuals(VisualPtr*, DepthPtr*, int*, int*, int*, VisualID*, c_ulong, int, int);
+extern void  miResolveColor(ushort*, ushort*, ushort*, VisualPtr);
+extern void  miInitializeColormap(ColormapPtr);
+extern void  miCreateDefColormap(ScreenPtr);
+extern void  miClearVisualTypes();
+extern void  miSetVisualTypes(int, int, int, int);
+extern void  miSetPixmapDepths();
+extern void  miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int preferredCVC, Pixel redMask, Pixel greenMask, Pixel blueMask);
+extern void  miGetDefaultVisualMask(int);
+extern void  miInitVisuals(VisualPtr*, DepthPtr*, int*, int*, int*, VisualID*, c_ulong, int, int);
 
 enum MAX_PSEUDO_DEPTH =	10;
 

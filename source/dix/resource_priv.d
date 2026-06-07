@@ -11,6 +11,7 @@ extern(C): __gshared:
 public import include.callback;
 public import include.dix;
 public import include.resource;
+import dix.resource;
 
 enum string SameClient(string obj,string client) = `
         (CLIENT_BITS((` ~ obj ~ `).resource) == (` ~ client ~ `).clientAsMask)`;

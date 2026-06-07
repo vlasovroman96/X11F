@@ -35,7 +35,7 @@ import include.windowstr;
 import include.mi;
 import include.picturestr;
 
-void miPointFixedBounds(int npoint, XPointFixed* points, BoxPtr bounds)
+void miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds)
 {
     bounds.x1 = XFixedToInt(points.x);
     bounds.x2 = XFixedToInt(XFixedCeil(points.x));
@@ -61,7 +61,7 @@ void miPointFixedBounds(int npoint, XPointFixed* points, BoxPtr bounds)
     }
 }
 
-void miTriangleBounds(int ntri, XTriangle* tris, BoxPtr bounds)
+void miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds)
 {
-    miPointFixedBounds(ntri * 3, cast(XPointFixed*) tris, bounds);
+    miPointFixedBounds(ntri * 3, cast(xPointFixed*) tris, bounds);
 }

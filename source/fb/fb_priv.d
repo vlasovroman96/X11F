@@ -14,7 +14,7 @@ public import include.scrnintstr;
 enum string FbBitsStrideToStipStride(string s) = `(((` ~ s ~ `) << (FB_SHIFT - FB_STIP_SHIFT)))`;
 
 /* NVidia v.340 legacy driver needs this symbol */
-extern _X_EXPORT fbGetGCPrivateKey(GCPtr pGC);
+extern void  fbGetGCPrivateKey(GCPtr pGC);
 
 enum string fbGetGCPrivate(string pGC) = `(cast(FbGCPrivPtr)dixLookupPrivate(&(` ~ pGC ~ `).devPrivates, fbGetGCPrivateKey(` ~ pGC ~ `)))`;
 

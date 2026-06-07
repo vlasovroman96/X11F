@@ -50,7 +50,7 @@ import Xi.exglobals;
 import dix.swaprep;
 import Xi.xiproperty;
 import include.xserver_properties;
-import include.clang;
+ 
 
 /**
  * Properties used or alloced from inside the server.

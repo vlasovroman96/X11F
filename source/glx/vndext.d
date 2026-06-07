@@ -289,7 +289,7 @@ private void GlxFreeServerImports(GlxServerImports* imports)
     free(imports);
 }
 
-const(_X_EXPORT) GlxServerExports = {
+const(void ) GlxServerExports = {
     majorVersion: GLXSERVER_VENDOR_ABI_MAJOR_VERSION,
     minorVersion: GLXSERVER_VENDOR_ABI_MINOR_VERSION,
 

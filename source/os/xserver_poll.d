@@ -87,7 +87,10 @@ import core.sys.posix.unistd;			     /* standard Unix definitions */
 import core.sys.posix.sys.types;                       /* system types */
 import core.sys.posix.sys.time;                        /* time definitions */
 import core.stdc.assert_;                          /* assertion macros */
-import core.stdc.string;                          /* string functions */
+import core.stdc.string;
+import core.sys.posix.poll : pollfd;        // Даст структуру pollfd
+import core.sys.posix.sys.select : fd_set;  // Даст структуру fd_set
+import core.stdc.stddef;         // Даст тип size_t                          /* string functions */
 
 static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
 //import externs.X11.Xwinsock;

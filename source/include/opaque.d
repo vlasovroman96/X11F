@@ -34,6 +34,6 @@ from The Open Group.
 
 public import include.globals;
 
-extern _X_EXPORT bgNoneRoot;
+extern void  bgNoneRoot;
 
                           /* OPAQUE_H */

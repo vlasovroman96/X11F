@@ -38,8 +38,10 @@ public import include.scrnintstr;
 public import include.glyphstr;
 public import include.resource;
 public import include.privates;
+// public import include.scrintstr;
 
-alias XFixed = externs.X11.extensions.Xrender.XFixed;
+
+import externs.X11.extensions.renderproto;
 
 struct _DirectFormat {
     CARD16 red, redMask;
@@ -52,7 +54,7 @@ struct IndexFormatRec {
     VisualID vid;
     ColormapPtr pColormap;
     int nvalues;
-    XIndexValue* pValues;
+    xIndexValue* pValues;
     void* devPrivate;
 }
 
@@ -80,13 +82,13 @@ enum SourcePictTypeConical = 3;
 struct _PictSolidFill {
     uint type;
     CARD32 color;
-    XRenderColor fullcolor;
+    xRenderColor fullcolor;
 }alias PictSolidFill = _PictSolidFill;
 alias PictSolidFillPtr = _PictSolidFill*;
 
 struct _PictGradientStop {
     XFixed x;
-    XRenderColor color;
+    xRenderColor color;
 }alias PictGradientStop = _PictGradientStop;
 alias PictGradientStopPtr = _PictGradientStop*;
 
@@ -101,8 +103,8 @@ struct _PictLinearGradient {
     uint type;
     int nstops;
     PictGradientStopPtr stops;
-    XPointFixed p1;
-    XPointFixed p2;
+    xPointFixed p1;
+    xPointFixed p2;
 }alias PictLinearGradient = _PictLinearGradient;
 alias PictLinearGradientPtr = _PictLinearGradient*;
 
@@ -126,7 +128,7 @@ struct _PictConicalGradient {
     uint type;
     int nstops;
     PictGradientStopPtr stops;
-    XPointFixed center;
+    xPointFixed center;
     XFixed angle;
 }alias PictConicalGradient = _PictConicalGradient;
 alias PictConicalGradientPtr = _PictConicalGradient*;
@@ -223,17 +225,17 @@ alias CompositeProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pMa
 
 alias GlyphsProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlists, GlyphListPtr lists, GlyphPtr* glyphs);
 
-alias CompositeRectsProcPtr = void function(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
+alias CompositeRectsProcPtr = void function(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
 
-alias RasterizeTrapezoidProcPtr = void function(PicturePtr pMask, XTrapezoid* trap, int x_off, int y_off);
+alias RasterizeTrapezoidProcPtr = void function(PicturePtr pMask, xTrapezoid* trap, int x_off, int y_off);
 
-alias TrapezoidsProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, XTrapezoid* traps);
+alias TrapezoidsProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps);
 
-alias TrianglesProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, XTriangle* tris);
+alias TrianglesProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, xTriangle* tris);
 
-alias TriStripProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoint, XPointFixed* points);
+alias TriStripProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoint, xPointFixed* points);
 
-alias TriFanProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoint, XPointFixed* points);
+alias TriFanProcPtr = void function(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoint, xPointFixed* points);
 
 alias InitIndexedProcPtr = Bool function(ScreenPtr pScreen, PictFormatPtr pFormat);
 
@@ -241,9 +243,9 @@ alias CloseIndexedProcPtr = void function(ScreenPtr pScreen, PictFormatPtr pForm
 
 alias UpdateIndexedProcPtr = void function(ScreenPtr pScreen, PictFormatPtr pFormat, int ndef, xColorItem* pdef);
 
-alias AddTrapsProcPtr = void function(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, XTrap* traps);
+alias AddTrapsProcPtr = void function(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, xTrap* traps);
 
-alias AddTrianglesProcPtr = void function(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntri, XTriangle* tris);
+alias AddTrianglesProcPtr = void function(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntri, xTriangle* tris);
 
 alias RealizeGlyphProcPtr = Bool function(ScreenPtr pScreen, GlyphPtr glyph);
 
@@ -373,33 +375,33 @@ extern int CompositePicture(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Picture
 
 extern int CompositeGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr lists, GlyphPtr* glyphs);
 
-extern int CompositeRects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
+extern int CompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
 
-extern int CompositeTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, XTrapezoid* traps);
+extern int CompositeTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps);
 
-extern int CompositeTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntriangles, XTriangle* triangles);
+extern int CompositeTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntriangles, xTriangle* triangles);
 
-extern int CompositeTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, XPointFixed* points);
+extern int CompositeTriStrip(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, xPointFixed* points);
 
-extern int CompositeTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, XPointFixed* points);
+extern int CompositeTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int npoints, xPointFixed* points);
 
-extern int AddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntraps, XTrap* traps);
+extern int AddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntraps, xTrap* traps);
 
-extern int CreateSolidPicture(Picture pid, XRenderColor* color, int* error);
+extern int CreateSolidPicture(Picture pid, xRenderColor* color, int* error);
 
-extern int CreateLinearGradientPicture(Picture pid, XPointFixed* p1, XPointFixed* p2, int nStops, XFixed* stops, XRenderColor* colors, int* error);
+extern int CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed* p2, int nStops, XFixed* stops, xRenderColor* colors, int* error);
 
-extern int CreateRadialGradientPicture(Picture pid, XPointFixed* inner, XPointFixed* outer, XFixed innerRadius, XFixed outerRadius, int nStops, XFixed* stops, XRenderColor* colors, int* error);
+extern int CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFixed* outer, XFixed innerRadius, XFixed outerRadius, int nStops, XFixed* stops, xRenderColor* colors, int* error);
 
-extern int CreateConicalGradientPicture(Picture pid, XPointFixed* center, XFixed angle, int nStops, XFixed* stops, XRenderColor* colors, int* error);
+extern int CreateConicalGradientPicture(Picture pid, xPointFixed* center, XFixed angle, int nStops, XFixed* stops, xRenderColor* colors, int* error);
 
 /*
  * matrix.c
  */
 
-extern int PictTransform_from_XRenderTransform(PictTransformPtr pict, XRenderTransform* render);
+extern int PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform* render);
 
-extern int XRenderTransform_from_PictTransform(XRenderTransform* render, PictTransformPtr pict);
+extern int xRenderTransform_from_PictTransform(xRenderTransform* render, PictTransformPtr pict);
 
 extern int PictureTransformPoint(PictTransformPtr transform, PictVectorPtr vector);
 

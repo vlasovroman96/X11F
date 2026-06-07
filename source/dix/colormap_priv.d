@@ -83,7 +83,7 @@ int TellGainedMap(WindowPtr pwin, void* value);
 
 int CopyColormapAndFree(Colormap mid, ColormapPtr pSrc, int client);
 
-_X_EXPORT AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pixel* pPix, int client);
+void  AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pixel* pPix, int client);
 
 void FakeAllocColor(ColormapPtr pmap, xColorItem* item);
 

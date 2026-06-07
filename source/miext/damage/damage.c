@@ -577,7 +577,7 @@ damageGlyphs(CARD8 op,
 
 static void
 damageAddTraps(PicturePtr pPicture,
-               INT16 x_off, INT16 y_off, int ntrap, XTrap * traps)
+               INT16 x_off, INT16 y_off, int ntrap, xTrap * traps)
 {
     ScreenPtr pScreen = pPicture->pDrawable->pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);
@@ -588,7 +588,7 @@ damageAddTraps(PicturePtr pPicture,
         BoxRec box;
         int i;
         int x, y;
-        XTrap *t = traps;
+        xTrap *t = traps;
 
         box.x1 = 32767;
         box.y1 = 32767;

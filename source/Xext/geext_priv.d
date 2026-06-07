@@ -18,6 +18,6 @@ alias XorgGESwapProcPtr = void function(xGenericEvent* from, xGenericEvent* to);
  * @param extension base opcode
  * @param event swap handler function
  */
-_X_EXPORT GERegisterExtension(int extension, XorgGESwapProcPtr swap_handler);
+void  GERegisterExtension(int extension, XorgGESwapProcPtr swap_handler);
 
  /* _XORG_GEEXT_PRIV_H */

@@ -25,7 +25,7 @@ void dixCloseRegistry();
 void RegisterResourceName(RESTYPE type, const(char)* name);
 const(char)* LookupResourceName(RESTYPE rtype);
 
-void RegisterExtensionNames(ExtensionEntry* ext);
+void RegisterExtensionNames(_ExtensionEntry* ext);
 
 /*
  * Lookup functions.  The returned string must not be modified or freed.

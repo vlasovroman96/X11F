@@ -232,6 +232,6 @@ enum PCI_REG_USERCONFIG =		0x40;
 enum PCI_OPTION_REG =			0x40;
 
 /* Public PCI access functions */
-extern _X_EXPORT* DRICreatePCIBusID(const(pci_device)* dev);
+extern void * DRICreatePCIBusID(const(pci_device)* dev);
 
 }                          /* _XF86PCI_H */

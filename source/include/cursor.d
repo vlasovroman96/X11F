@@ -52,6 +52,7 @@ public import include.misc;
 public import include.screenint;
 public import include.window;
 public import include.privates;
+import include.cursorstr;
 
 enum NullCursor = cast(CursorPtr)null;
 
@@ -66,6 +67,6 @@ alias CursorPtr = _Cursor*;
 alias ConstCursorPtr = _Cursor*;
 alias CursorMetricPtr = _CursorMetric*;
 
-extern _X_EXPORT FreeCursor(void* pCurs, XID cid);
+extern void  FreeCursor(void* pCurs, XID cid);
 
                           /* CURSOR_H */

@@ -37,16 +37,16 @@ enum CMAP_PALETTED_TRUECOLOR =		0x0000001;
 enum CMAP_RELOAD_ON_MODE_SWITCH =	0x0000002;
 enum CMAP_LOAD_EVEN_IF_OFFSCREEN =	0x0000004;
 
-extern _X_EXPORT xf86HandleColormaps(ScreenPtr pScreen, int maxCol, int sigRGBbits, xf86LoadPaletteProc* loadPalette, xf86SetOverscanProc* setOverscan, uint flags);
+extern void  xf86HandleColormaps(ScreenPtr pScreen, int maxCol, int sigRGBbits, xf86LoadPaletteProc* loadPalette, xf86SetOverscanProc* setOverscan, uint flags);
 
-extern _X_EXPORT xf86ColormapAllocatePrivates(ScrnInfoPtr pScrn);
+extern void  xf86ColormapAllocatePrivates(ScrnInfoPtr pScrn);
 
-extern _X_EXPORT xf86ChangeGamma(ScreenPtr pScreen, Gamma newGamma);
+extern void  xf86ChangeGamma(ScreenPtr pScreen, Gamma newGamma);
 
-extern _X_EXPORT xf86ChangeGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green, ushort* blue);
+extern void  xf86ChangeGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green, ushort* blue);
 
-extern _X_EXPORT xf86GetGammaRampSize(ScreenPtr pScreen);
+extern void  xf86GetGammaRampSize(ScreenPtr pScreen);
 
-extern _X_EXPORT xf86GetGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green, ushort* blue);
+extern void  xf86GetGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green, ushort* blue);
 
                           /* _XF86CMAP_H */

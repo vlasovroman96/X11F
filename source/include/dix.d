@@ -100,10 +100,12 @@ extern ClientPtr[1] clients;
 extern ClientPtr serverClient;
 extern int currentMaxClients;
 
-struct TimeStamp {
+struct _TimeStamp {
     CARD32 months;              /* really ~49.7 days */
     CARD32 milliseconds;
 }
+
+alias TimeStamp = _TimeStamp;
 
 /* dispatch.c */
 extern int UpdateCurrentTime();

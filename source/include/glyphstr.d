@@ -27,7 +27,7 @@ extern(C): __gshared:
 
  
 public import externs.X11.X;
-import externs.X11.extensions.Xrender;
+import externs.X11.extensions.renderproto;
 
 
 // alias xGlyphInfo = XGlyphInfo;

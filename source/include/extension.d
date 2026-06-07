@@ -88,16 +88,16 @@ struct ExtensionModule {
     Bool* disablePtr;
 }
 
-extern _X_EXPORT unsigned; short StandardMinorOpcode(ClientPtr);
+extern ubyte StandardMinorOpcode(ClientPtr);
 
-extern _X_EXPORT EnableDisableExtension(const(char)* name, Bool enable);
+extern void  EnableDisableExtension(const(char)* name, Bool enable);
 
-extern _X_EXPORT EnableDisableExtensionError(const(char)* name, Bool enable);
+extern void  EnableDisableExtensionError(const(char)* name, Bool enable);
 
-extern _X_EXPORT InitExtensions(int argc, char** argv);
+extern void  InitExtensions(int argc, char** argv);
 
-extern _X_EXPORT CloseDownExtensions();
+extern void  CloseDownExtensions();
 
-extern _X_EXPORT LoadExtensionList(const(ExtensionModule)* ext, int listSize, Bool external);
+extern void  LoadExtensionList(const(ExtensionModule)* ext, int listSize, Bool external);
 
                           /* EXTENSION_H */

@@ -640,17 +640,19 @@ struct InputInfo {
     DeviceIntPtr all_master_devices;
 }
 
-extern _X_EXPORT inputInfo;
+extern InputInfo inputInfo;
 
 /* for keeping the events for devices grabbed synchronously */
-alias QdEventPtr = _QdEvent*;
-struct QdEventRec {
+struct _QdEvent {
     xorg_list next;
     DeviceIntPtr device;
     ScreenPtr pScreen;          /* what screen the pointer was on */
     c_ulong months;       /* milliseconds is in the event */
     InternalEvent* event;
 }
+
+alias QdEventPtr = _QdEvent*;
+alias QdEventRec = _QdEvent;
 
 /**
  * syncEvents is the global structure for queued events.

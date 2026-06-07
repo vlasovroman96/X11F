@@ -27,9 +27,9 @@ extern(C): __gshared:
  
 public import include.misync;
 
-extern _X_EXPORT SyncVerifyFence(SyncFence** ppFence, XID fid, ClientPtr client, Mask mode);
+extern void  SyncVerifyFence(SyncFence** ppFence, XID fid, ClientPtr client, Mask mode);
 
-extern _X_EXPORT* SyncCreate(ClientPtr client, XID id, ubyte type);
+extern void * SyncCreate(ClientPtr client, XID id, ubyte type);
 
 enum string VERIFY_SYNC_FENCE(string pFence, string fid, string client, string mode) = `
     do {								

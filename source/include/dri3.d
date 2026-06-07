@@ -88,6 +88,6 @@ struct dri3_screen_info {
 }alias dri3_screen_info_rec = dri3_screen_info;
 alias dri3_screen_info_ptr = dri3_screen_info*;
 
-extern _X_EXPORT dri3_screen_init(ScreenPtr screen, const(dri3_screen_info_rec)* info);
+extern void  dri3_screen_init(ScreenPtr screen, const(dri3_screen_info_rec)* info);
 
  /* _DRI3_H_ */

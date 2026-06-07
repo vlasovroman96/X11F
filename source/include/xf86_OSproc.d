@@ -97,23 +97,23 @@ enum XF86_M_DSR =		0x100   /* data set ready */;
 public import include.opaque;
 public import include.xf86Optionstr;
 
-extern _XFUNCPROTOBEGIN _X_EXPORT; Bool xf86EnableIO();
-extern _X_EXPORT xf86DisableIO();
+extern Bool xf86EnableIO();
+extern void  xf86DisableIO();
 
-extern _X_EXPORT xf86SlowBcopy(ubyte*, ubyte*, int);
-extern _X_EXPORT xf86OpenSerial(XF86OptionPtr options);
-extern _X_EXPORT xf86SetSerial(int fd, XF86OptionPtr options);
-extern _X_EXPORT xf86SetSerialSpeed(int fd, int speed);
-extern _X_EXPORT xf86ReadSerial(int fd, void* buf, int count);
-extern _X_EXPORT xf86WriteSerial(int fd, const(void)* buf, int count);
-extern _X_EXPORT xf86CloseSerial(int fd);
-extern _X_EXPORT xf86FlushInput(int fd);
-extern _X_EXPORT xf86WaitForInput(int fd, int timeout);
-extern _X_EXPORT xf86SetSerialModemState(int fd, int state);
-extern _X_EXPORT xf86GetSerialModemState(int fd);
-extern _X_EXPORT xf86SerialModemSetBits(int fd, int bits);
-extern _X_EXPORT xf86SerialModemClearBits(int fd, int bits);
-extern _X_EXPORT xf86LoadKernelModule(const(char)* pathname);
+extern void  xf86SlowBcopy(ubyte*, ubyte*, int);
+extern void  xf86OpenSerial(XF86OptionPtr options);
+extern void  xf86SetSerial(int fd, XF86OptionPtr options);
+extern void  xf86SetSerialSpeed(int fd, int speed);
+extern void  xf86ReadSerial(int fd, void* buf, int count);
+extern void  xf86WriteSerial(int fd, const(void)* buf, int count);
+extern void  xf86CloseSerial(int fd);
+extern void  xf86FlushInput(int fd);
+extern void  xf86WaitForInput(int fd, int timeout);
+extern void  xf86SetSerialModemState(int fd, int state);
+extern void  xf86GetSerialModemState(int fd);
+extern void  xf86SerialModemSetBits(int fd, int bits);
+extern void  xf86SerialModemClearBits(int fd, int bits);
+extern void  xf86LoadKernelModule(const(char)* pathname);
 
 /* AGP GART interface */
 
@@ -128,20 +128,20 @@ struct _AgpInfo {
 }alias AgpInfo = _AgpInfo;
 alias AgpInfoPtr = _AgpInfo*;
 
-extern _X_EXPORT xf86AgpGARTSupported();
-extern _X_EXPORT xf86GetAGPInfo(int screenNum);
-extern _X_EXPORT xf86AcquireGART(int screenNum);
-extern _X_EXPORT xf86ReleaseGART(int screenNum);
-extern _X_EXPORT xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical);
-extern _X_EXPORT xf86BindGARTMemory(int screenNum, int key, c_ulong offset);
-extern _X_EXPORT xf86UnbindGARTMemory(int screenNum, int key);
-extern _X_EXPORT xf86GARTCloseScreen(int screenNum);
+extern void  xf86AgpGARTSupported();
+extern void  xf86GetAGPInfo(int screenNum);
+extern void  xf86AcquireGART(int screenNum);
+extern void  xf86ReleaseGART(int screenNum);
+extern void  xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical);
+extern void  xf86BindGARTMemory(int screenNum, int key, c_ulong offset);
+extern void  xf86UnbindGARTMemory(int screenNum, int key);
+extern void  xf86GARTCloseScreen(int screenNum);
 
 /* These routines are in shared/sigio.c and are not loaded as part of the
    module.  These routines are small, and the code if very POSIX-signal (or
    OS-signal) specific, so it seemed better to provide more complex
    wrappers than to wrap each individual function called. */
-extern _X_EXPORT xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void*);
+extern void  xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void*);
 
 // _XFUNCPROTOEND
                           /* _XF86_OSPROC_H */

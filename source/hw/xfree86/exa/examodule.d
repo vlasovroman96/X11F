@@ -199,6 +199,6 @@ private XF86ModuleVersionInfo exaVersRec = {
     abiversion: ABI_VIDEODRV_VERSION,
 };
 
-_X_EXPORT XF86ModuleData = {
+void  XF86ModuleData = {
     vers: &exaVersRec
 };

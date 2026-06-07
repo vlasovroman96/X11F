@@ -126,9 +126,9 @@ alias XF86MCAdaptorPtr = XF86MCAdaptorRec*;
    an array of structures.
 */
 
-extern _X_EXPORT xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* adaptors);
+extern void  xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* adaptors);
 
 extern XF86MCAdaptorPtr xf86XvMCCreateAdaptorRec(void);
-extern _X_EXPORT xf86XvMCDestroyAdaptorRec(XF86MCAdaptorPtr adaptor);
+extern void  xf86XvMCDestroyAdaptorRec(XF86MCAdaptorPtr adaptor);
 
                           /* _XF86XVMC_H */

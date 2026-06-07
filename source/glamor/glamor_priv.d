@@ -689,10 +689,10 @@ Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mas
 
 void glamor_composite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
-void glamor_composite_rects(CARD8 op, PicturePtr pDst, XRenderColor* color, int nRect, xRectangle* rects);
+void glamor_composite_rects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
 
 /* glamor_trapezoid.c */
-void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr mask_format, INT16 x_src, INT16 y_src, int ntrap, XTrapezoid* traps);
+void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr mask_format, INT16 x_src, INT16 y_src, int ntrap, xTrapezoid* traps);
 
 /* glamor_gradient.c */
 Bool glamor_init_gradient_shader(ScreenPtr screen);
@@ -700,7 +700,7 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
 PicturePtr glamor_generate_radial_gradient_picture(ScreenPtr screen, PicturePtr src_picture, int x_source, int y_source, int width, int height, pixman_format_code_t format);
 
 /* glamor_triangles.c */
-void glamor_triangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntris, XTriangle* tris);
+void glamor_triangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntris, xTriangle* tris);
 
 /* glamor_pixmap.c */
 
@@ -737,7 +737,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
  **/
 Bool glamor_upload_picture_to_texture(PicturePtr picture);
 
-void glamor_add_traps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, XTrap* traps);
+void glamor_add_traps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps);
 
 /* glamor_text.c */
 int glamor_poly_text8(DrawablePtr pDrawable, GCPtr pGC, int x, int y, int count, char* chars);
@@ -790,7 +790,7 @@ void glamor_push_pixels(GCPtr pGC, PixmapPtr pBitmap, DrawablePtr pDrawable, int
 
 void glamor_poly_point(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ppt);
 
-void glamor_composite_rectangles(CARD8 op, PicturePtr dst, XRenderColor* color, int num_rects, xRectangle* rects);
+void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, int num_rects, xRectangle* rects);
 
 /* glamor_composite_glyphs.c */
 Bool glamor_composite_glyphs_init(ScreenPtr pScreen);

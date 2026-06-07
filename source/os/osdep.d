@@ -141,9 +141,9 @@ OsSigHandlerPtr OsSignal(int sig, OsSigHandlerPtr handler);
 
 void OsInit();
 
-_X_EXPORT OsBlockSignals();
+void  OsBlockSignals();
 
-_X_EXPORT OsReleaseSignals();
+void  OsReleaseSignals();
 
 void OsResetSignals();
 void OsAbort();

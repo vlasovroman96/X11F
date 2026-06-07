@@ -606,7 +606,7 @@ void ExaCheckGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr ma
     EXA_POST_FALLBACK(pScreen);
 }
 
-void ExaCheckAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, XTrap* traps)
+void ExaCheckAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {
     ScreenPtr pScreen = pPicture.pDrawable.pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);

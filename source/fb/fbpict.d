@@ -202,7 +202,7 @@ out_:
 private pixman_image_t* create_solid_fill_image(PicturePtr pict)
 {
     PictSolidFill* solid = &pict.pSourcePict.solidFill;
-    /* pixman_color_t and XRenderColor have the same layout */
+    /* pixman_color_t and xRenderColor have the same layout */
     pixman_color_t* color = cast(pixman_color_t*)&solid.fullcolor;
 
     return pixman_image_create_solid_fill(color);

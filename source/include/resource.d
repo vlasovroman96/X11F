@@ -63,6 +63,7 @@ public import externs.X11.X;
 public import externs.X11.Xfuncproto;
 public import externs.X11.Xmd;
 public import externs.X11.X;
+import externs.X11.Xdefs;
 // public import externs.X11.Xdefs;
 public import externs.X11.Xprotostr;
 import include.dixstruct;
@@ -117,7 +118,7 @@ enum RT_LASTPREDEF =	X11_RESTYPE_LASTPREDEF;
 enum RT_NONE =		X11_RESTYPE_NONE;
 
 
-extern uint ResourceClientBits();
+// extern uint ResourceClientBits();
 
 enum BAD_RESOURCE = 0xe0000000;
 

@@ -1055,7 +1055,7 @@ private PicturePtr exaCreateAlphaPicture(ScreenPtr pScreen, PicturePtr pDst, Pic
  * exaCreateAlphaPicture avoids this roundtrip by using ExaCheckPolyFillRect
  * to initialize the contents.
  */
-void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, XTrapezoid* traps)
+void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);
@@ -1082,7 +1082,7 @@ void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mas
 
         exaPrepareAccess(pPicture.pDrawable, EXA_PREPARE_DEST);
         for (; ntrap; ntrap--, traps++)
-            if (XTrapezoidValid(traps))
+            if (xTrapezoidValid(traps))
                 (*ps.RasterizeTrapezoid) (pPicture, traps, -bounds.x1, -bounds.y1);
         exaFinishAccess(pPicture.pDrawable, EXA_PREPARE_DEST);
 
@@ -1116,7 +1116,7 @@ void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mas
  * exaCreateAlphaPicture avoids this roundtrip by using ExaCheckPolyFillRect
  * to initialize the contents.
  */
-void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, XTriangle* tris)
+void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, xTriangle* tris)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     PictureScreenPtr ps = GetPictureScreen(pScreen);

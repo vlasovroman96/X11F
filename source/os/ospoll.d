@@ -68,6 +68,10 @@ import xserver_poll;
 enum POLL =            1;
 enum HAVE_OSPOLL =     1;
 }
+else {
+    enum POLL = false;
+}
+
 
 static if (POLLSET) {
 
@@ -89,6 +93,25 @@ struct ospoll {
 };
 
 }
+
+// Оригинальная структура триггера из Xorg
+struct ospoll_trigger 
+{
+    int[2] fds; // Пайп для отправки сигнала прерывания (fds[0] - чтение, fds[1] - запись)
+}
+alias ospoll_trigger_ptr = ospoll_trigger*;
+
+// --- Прототипы функций управления триггером (extern(C) для совместимости) ---
+extern (C):
+
+// Создание и инициализация триггера
+// bool ospoll_trigger_create(ospoll_index_ptr ospoll, ospoll_trigger_ptr trigger);
+
+// // Уничтожение триггера и закрытие дескрипторов
+// void ospoll_trigger_destroy(ospoll_trigger_ptr trigger);
+
+// // Сам вызов "взвода" триггера (запись байта в пайп), который прерывает epoll_wait
+// void ospoll_trigger(ospoll_trigger_ptr trigger);
 
 static if (EPOLL || PORT) {
 

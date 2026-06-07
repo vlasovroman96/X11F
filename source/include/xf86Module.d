@@ -165,14 +165,14 @@ enum string MODULE_VERSION_NUMERIC(string maj, string min, string patch) = `
 	((((` ~ maj ~ `) & 0xFF) << 24) | (((` ~ min ~ `) & 0xFF) << 16) | (` ~ patch ~ ` & 0xFFFF))`;
 
 /* Prototypes for Loader functions that are exported to modules */
-extern _X_EXPORT* LoadSubModule(void*, const(char)*, const(char)**, const(char)**, void*, const(XF86ModReqInfo)*, int*, int*);
-extern _X_EXPORT* LoaderSymbol(const(char)*);
-extern _X_EXPORT* LoaderSymbolFromModule(void*, const(char)*);
-extern _X_EXPORT LoaderErrorMsg(const(char)*, const(char)*, int, int);
+extern void * LoadSubModule(void*, const(char)*, const(char)**, const(char)**, void*, const(XF86ModReqInfo)*, int*, int*);
+extern void * LoaderSymbol(const(char)*);
+extern void * LoaderSymbolFromModule(void*, const(char)*);
+extern void  LoaderErrorMsg(const(char)*, const(char)*, int, int);
 
 /* deprecated, only kept for backwards compat w/ proprietary NVidia driver */
 // extern  Bool  _X_DEPRECATED;
-// extern _X_EXPORT _X_DEPRECATED;
+// extern void  _X_DEPRECATED;
 
 alias ModuleSetupProc = void* function(void*, void*, int*, int*);
 alias ModuleTearDownProc = void function(void*);
@@ -231,7 +231,7 @@ enum string XF86_MODULE_VERSION_VIDEO(string _name, string _major, string _minor
 
 enum string XF86_MODULE_DATA_INPUT(string _modname, string _setup, string _teardown, string _name, string _major, string _minor, string _patchlevel) = `
     ` ~ XF86_MODULE_VERSION_INPUT!(_name, _major, _minor, _patchlevel) ~ ` 
-    _X_EXPORT XF86ModuleData = { 
+    void  XF86ModuleData = { 
         vers: &modVersion, 
         setup: ` ~ _setup ~ `, 
         teardown: ` ~ _teardown ~ `, 
@@ -239,7 +239,7 @@ enum string XF86_MODULE_DATA_INPUT(string _modname, string _setup, string _teard
 
 enum string XF86_MODULE_DATA_VIDEO(string _modname, string _setup, string _teardown, string _name, string _major, string _minor, string _patchlevel) = `
     ` ~ XF86_MODULE_VERSION_VIDEO!(_name, _major, _minor, _patchlevel) ~ ` 
-    _X_EXPORT XF86ModuleData = { 
+    void  XF86ModuleData = { 
         vers: &modVersion, 
         setup: ` ~ _setup ~ `, 
         teardown: ` ~ _teardown ~ `, 

@@ -27,6 +27,6 @@ extern(C): __gshared:
 //public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 
-extern _X_EXPORT miSyncShmScreenInit(ScreenPtr pScreen);
+extern void  miSyncShmScreenInit(ScreenPtr pScreen);
 
  /* _MISYNCSHM_H_ */

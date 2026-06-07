@@ -390,8 +390,8 @@ private int ProcRenderQueryPictIndexValues(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     for (int i = 0; i < pFormat.index.nvalues; i++) {
-        /* write XIndexValue */
-        XIndexValue* iv = &(pFormat.index.pValues[i]);
+        /* write xIndexValue */
+        xIndexValue* iv = &(pFormat.index.pValues[i]);
         x_rpcbuf_write_CARD32(&rpcbuf, iv.pixel);
         x_rpcbuf_write_CARD16(&rpcbuf, iv.red);
         x_rpcbuf_write_CARD16(&rpcbuf, iv.green);
@@ -564,13 +564,13 @@ private int SingleRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* stuff
     else
         pFormat = 0;
     ntraps = (client.req_len << 2) - xRenderTrapezoidsReq.sizeof;
-    if (ntraps % XTrapezoid.sizeof)
+    if (ntraps % xTrapezoid.sizeof)
         return BadLength;
-    ntraps /= XTrapezoid.sizeof;
+    ntraps /= xTrapezoid.sizeof;
     if (ntraps)
         CompositeTrapezoids(stuff.op, pSrc, pDst, pFormat,
                             stuff.xSrc, stuff.ySrc,
-                            ntraps, cast(XTrapezoid*) &stuff[1]);
+                            ntraps, cast(xTrapezoid*) &stuff[1]);
     return Success;
 }
 
@@ -599,13 +599,13 @@ private int SingleRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuff)
     else
         pFormat = 0;
     ntris = (client.req_len << 2) - xRenderTrianglesReq.sizeof;
-    if (ntris % XTriangle.sizeof)
+    if (ntris % xTriangle.sizeof)
         return BadLength;
-    ntris /= XTriangle.sizeof;
+    ntris /= xTriangle.sizeof;
     if (ntris)
         CompositeTriangles(stuff.op, pSrc, pDst, pFormat,
                            stuff.xSrc, stuff.ySrc,
-                           ntris, cast(XTriangle*) &stuff[1]);
+                           ntris, cast(xTriangle*) &stuff[1]);
     return Success;
 }
 
@@ -640,7 +640,7 @@ private int SingleRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
     if (npoints >= 3)
         CompositeTriStrip(stuff.op, pSrc, pDst, pFormat,
                           stuff.xSrc, stuff.ySrc,
-                          npoints, cast(XPointFixed*) &stuff[1]);
+                          npoints, cast(xPointFixed*) &stuff[1]);
     return Success;
 }
 
@@ -675,7 +675,7 @@ private int SingleRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
     if (npoints >= 3)
         CompositeTriFan(stuff.op, pSrc, pDst, pFormat,
                         stuff.xSrc, stuff.ySrc,
-                        npoints, cast(XPointFixed*) &stuff[1]);
+                        npoints, cast(xPointFixed*) &stuff[1]);
     return Success;
 }
 
@@ -1651,12 +1651,12 @@ private int SingleRenderAddTraps(ClientPtr client, xRenderAddTrapsReq* stuff)
     if (!pPicture.pDrawable)
         return BadDrawable;
     ntraps = (client.req_len << 2) - xRenderAddTrapsReq.sizeof;
-    if (ntraps % XTrap.sizeof)
+    if (ntraps % xTrap.sizeof)
         return BadLength;
-    ntraps /= XTrap.sizeof;
+    ntraps /= xTrap.sizeof;
     if (ntraps)
         AddTraps(pPicture,
-                 stuff.xOff, stuff.yOff, ntraps, cast(XTrap*) &stuff[1]);
+                 stuff.xOff, stuff.yOff, ntraps, cast(xTrap*) &stuff[1]);
     return Success;
 }
 
@@ -1686,14 +1686,14 @@ private int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLine
     int len = void;
     int error = 0;
     XFixed* stops = void;
-    XRenderColor* colors = void;
+    xRenderColor* colors = void;
 
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
     len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
-    if (stuff.nStops > UINT32_MAX / (((XFixed) + XRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
-    if (len != stuff.nStops * (((XFixed) + XRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
 
     stops = cast(XFixed*) (stuff + 1);
@@ -1720,14 +1720,14 @@ private int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadi
     int len = void;
     int error = 0;
     XFixed* stops = void;
-    XRenderColor* colors = void;
+    xRenderColor* colors = void;
 
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
     len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
-    if (stuff.nStops > UINT32_MAX / (((XFixed) + XRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
-    if (len != stuff.nStops * (((XFixed) + XRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
 
     stops = cast(XFixed*) (stuff + 1);
@@ -1755,14 +1755,14 @@ private int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateCon
     int len = void;
     int error = 0;
     XFixed* stops = void;
-    XRenderColor* colors = void;
+    xRenderColor* colors = void;
 
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
     len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
-    if (stuff.nStops > UINT32_MAX / (((XFixed) + XRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
-    if (len != stuff.nStops * (((XFixed) + XRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
 
     stops = cast(XFixed*) (stuff + 1);
@@ -2139,8 +2139,8 @@ private int PanoramiXRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* st
                 int y_off = walkScreen.y;
 
                 if (x_off || y_off) {
-                    XTrapezoid* trap = cast(XTrapezoid*) (stuff + 1);
-                    int i = extra_len / XTrapezoid.sizeof;
+                    xTrapezoid* trap = cast(xTrapezoid*) (stuff + 1);
+                    int i = extra_len / xTrapezoid.sizeof;
 
                     while (i--) {
                         trap.top -= y_off;
@@ -2196,8 +2196,8 @@ private int PanoramiXRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuf
                 int y_off = walkScreen.y;
 
                 if (x_off || y_off) {
-                    XTriangle* tri = cast(XTriangle*) (stuff + 1);
-                    int i = extra_len / XTriangle.sizeof;
+                    xTriangle* tri = cast(xTriangle*) (stuff + 1);
+                    int i = extra_len / xTriangle.sizeof;
 
                     while (i--) {
                         tri.p1.x -= x_off;
@@ -2249,8 +2249,8 @@ private int PanoramiXRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
                 int y_off = walkScreen.y;
 
                 if (x_off || y_off) {
-                    XPointFixed* fixed = cast(XPointFixed*) (stuff + 1);
-                    int i = extra_len / XPointFixed.sizeof;
+                    xPointFixed* fixed = cast(xPointFixed*) (stuff + 1);
+                    int i = extra_len / xPointFixed.sizeof;
 
                     while (i--) {
                         fixed.x -= x_off;
@@ -2297,8 +2297,8 @@ private int PanoramiXRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
                 int y_off = walkScreen.y;
 
                 if (x_off || y_off) {
-                    XPointFixed* fixed = cast(XPointFixed*) (stuff + 1);
-                    int i = extra_len / XPointFixed.sizeof;
+                    xPointFixed* fixed = cast(xPointFixed*) (stuff + 1);
+                    int i = extra_len / xPointFixed.sizeof;
 
                     while (i--) {
                         fixed.x -= x_off;
@@ -2878,9 +2878,9 @@ private int ProcRenderCreateLinearGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
-        if (stuff.nStops > UINT32_MAX / (((XFixed) + XRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
-        if (len != stuff.nStops * (((XFixed) + XRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
 
         swapStops(stuff + 1, stuff.nStops);
@@ -2910,9 +2910,9 @@ private int ProcRenderCreateRadialGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
-        if (stuff.nStops > UINT32_MAX / (((XFixed) + XRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
-        if (len != stuff.nStops * (((XFixed) + XRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
 
         swapStops(stuff + 1, stuff.nStops);
@@ -2939,9 +2939,9 @@ private int ProcRenderCreateConicalGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
-        if (stuff.nStops > UINT32_MAX / (((XFixed) + XRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
-        if (len != stuff.nStops * (((XFixed) + XRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
 
         swapStops(stuff + 1, stuff.nStops);

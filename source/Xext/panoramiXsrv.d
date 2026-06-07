@@ -6,6 +6,9 @@ import core.stdc.config: c_long, c_ulong;
 public import build.dix_config;
 
 public import Xext.panoramiX;
+public import pixman;
+import include.regionstr;
+import externs.X11.Xproto;
 
 extern int PanoramiXNumScreens;
 extern int PanoramiXPixWidth;
@@ -22,7 +25,7 @@ Bool XineramaRegisterConnectionBlockCallback(void function() func);
 int XineramaDeleteResource(void*, XID);
 
 /* only exported for Nvidia legacy. This really shouldn't be used by drivers */
-extern _X_EXPORT XRC_DRAWABLE;
+extern void  XRC_DRAWABLE;
 
 extern RESTYPE XRT_WINDOW;
 extern RESTYPE XRT_PIXMAP;

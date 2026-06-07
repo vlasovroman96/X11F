@@ -68,7 +68,7 @@ extern HWEventQueuePtr[2] checkForInput;
 extern Bool party_like_its_1989;
 
 /* needed by libglx and libglamor (server modules) */
-extern _X_EXPORT enableIndirectGLX;
+extern void  enableIndirectGLX;
 
 /*
  * @brief callback right after one screen's root window has been initialized
@@ -490,7 +490,7 @@ XRetCode AlterSaveSetForClient(ClientPtr pClient, WindowPtr pWin, uint mode, Boo
  * @return 1 if event was delivered, 0 if not or -1 if grab was not set by the
  * client.
  */
-_X_EXPORT TryClientEvents(ClientPtr pClient, DeviceIntPtr device, xEventPtr pEvents, size_t count, Mask mask, Mask filter, GrabPtr grab);
+void  TryClientEvents(ClientPtr pClient, DeviceIntPtr device, xEventPtr pEvents, size_t count, Mask mask, Mask filter, GrabPtr grab);
 
 /**
  * @brief deliver event to a window and its immediate parent.

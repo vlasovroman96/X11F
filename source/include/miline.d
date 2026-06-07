@@ -75,7 +75,7 @@ enum OCTANT8 =		(1 << (0));
  * Jack E. Bresenham, IEEE CG&A, May 1987.
  */
 
-extern _X_EXPORT miSetZeroLineBias(ScreenPtr, uint);
+extern void  miSetZeroLineBias(ScreenPtr, uint);
 
 /*
  * Private definitions needed for drawing thin (zero width) lines
@@ -131,6 +131,6 @@ extern DevPrivateKeyRec miZeroLineScreenKeyRec;
 
 enum miZeroLineScreenKey = (&miZeroLineScreenKeyRec);
 
-extern _X_EXPORT miZeroClipLine(int, int, int, int, int*, int*, int*, int*, uint, uint, int*, int*, int, uint, int, int);
+extern void  miZeroClipLine(int, int, int, int, int*, int*, int*, int*, uint, uint, int*, int*, int, uint, int, int);
 
                           /* MILINE_H */

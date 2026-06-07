@@ -73,7 +73,7 @@ private PicturePtr glamor_create_mask_picture(ScreenPtr screen, PicturePtr dst, 
  * glamor_trapezoids will generate trapezoid mask accumulating in
  * system memory.
  */
-void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr mask_format, INT16 x_src, INT16 y_src, int ntrap, XTrapezoid* traps)
+void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr mask_format, INT16 x_src, INT16 y_src, int ntrap, xTrapezoid* traps)
 {
     ScreenPtr screen = dst.pDrawable.pScreen;
     BoxRec bounds = void;

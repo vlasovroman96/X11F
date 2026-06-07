@@ -67,20 +67,20 @@ public import include.xf86Optionstr;
 
 // //public import externs.X11.Xfuncproto;
 
-extern _X_EXPORT xf86addNewOption(XF86OptionPtr head, char* name, char* val);
-extern _X_EXPORT xf86optionListDup(XF86OptionPtr opt);
-extern _X_EXPORT xf86optionListFree(XF86OptionPtr opt);
-extern _X_EXPORT* xf86optionName(XF86OptionPtr opt);
-extern _X_EXPORT* xf86optionValue(XF86OptionPtr opt);
+extern void  xf86addNewOption(XF86OptionPtr head, char* name, char* val);
+extern void  xf86optionListDup(XF86OptionPtr opt);
+extern void  xf86optionListFree(XF86OptionPtr opt);
+extern void * xf86optionName(XF86OptionPtr opt);
+extern void * xf86optionValue(XF86OptionPtr opt);
 extern XF86OptionPtr xf86newOption(char_ *name, char_ *value);
-extern _X_EXPORT xf86nextOption(XF86OptionPtr list);
-extern _X_EXPORT xf86findOption(XF86OptionPtr list, const(char)* name);
-extern const(_X_EXPORT)* xf86findOptionValue(XF86OptionPtr list, const(char)* name);
-extern _X_EXPORT xf86optionListCreate(const(char)** options, int count, int used);
-extern _X_EXPORT xf86optionListMerge(XF86OptionPtr head, XF86OptionPtr tail);
-extern _X_EXPORT xf86nameCompare(const(char)* s1, const(char)* s2);
-extern _X_EXPORT* xf86uLongToString(c_ulong i);
-extern _X_EXPORT xf86parseOption(XF86OptionPtr head);
-extern _X_EXPORT xf86printOptionList(FILE* fp, XF86OptionPtr list, int tabs);
+extern void  xf86nextOption(XF86OptionPtr list);
+extern void  xf86findOption(XF86OptionPtr list, const(char)* name);
+extern const(void )* xf86findOptionValue(XF86OptionPtr list, const(char)* name);
+extern void  xf86optionListCreate(const(char)** options, int count, int used);
+extern void  xf86optionListMerge(XF86OptionPtr head, XF86OptionPtr tail);
+extern void  xf86nameCompare(const(char)* s1, const(char)* s2);
+extern void * xf86uLongToString(c_ulong i);
+extern void  xf86parseOption(XF86OptionPtr head);
+extern void  xf86printOptionList(FILE* fp, XF86OptionPtr list, int tabs);
 
                           /* _xf86Optrec_h_ */

@@ -58,7 +58,7 @@ private XF86ModuleVersionInfo VersRec = {
     abiversion: ABI_EXTENSION_VERSION,
 };
 
-_X_EXPORT XF86ModuleData = {
+void  XF86ModuleData = {
     vers: &VersRec,
     setup: glxSetup
 };

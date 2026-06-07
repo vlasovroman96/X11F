@@ -27,8 +27,11 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #ifndef _XKBGEOM_H_
 #define	_XKBGEOM_H_
 
-#include <X11/extensions/XKBstr.h>
-#include <X11/defines.h>
+// #include <X11/extensions/XKBstr.h>
+// #include <externs/X11/defines.h>
+#include <externs/X11/extensions/XKBstr.h>
+#include <externs/X11/Xdefs.h>
+#include <X11/Xfuncproto.h>
 
 typedef	struct _XkbProperty {
 	char	*name;
@@ -275,7 +278,7 @@ typedef struct _XkbGeometrySizes {
 	unsigned short	num_key_aliases;
 } XkbGeometrySizesRec,*XkbGeometrySizesPtr;
 
-_XFUNCPROTOBEGIN
+// _XFUNCPROTOBEGIN
 
 extern	XkbPropertyPtr
 XkbAddGeomProperty(
@@ -359,7 +362,6 @@ XkbAddGeomDoodad(
     XkbSectionPtr	/* section */,
     Atom		/* name */
 );
-
 
 extern void
 XkbFreeGeomKeyAliases(
@@ -614,6 +616,6 @@ XkbGetNamedGeometry(
     Atom			/* name */
 );
 
-_XFUNCPROTOEND
+// _XFUNCPROTOEND
 
 #endif /* _XKBSTR_H_ */

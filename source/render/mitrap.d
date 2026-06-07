@@ -47,7 +47,7 @@ private XFixed miLineFixedX(xLineFixed* l, XFixed y, Bool ceil)
     return l.p1.x + cast(XFixed) (ex / dy);
 }
 
-void miTrapezoidBounds(int ntrap, XTrapezoid* traps, BoxPtr box)
+void miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box)
 {
     box.y1 = MAXSHORT;
     box.y2 = MINSHORT;
@@ -56,7 +56,7 @@ void miTrapezoidBounds(int ntrap, XTrapezoid* traps, BoxPtr box)
     for (; ntrap; ntrap--, traps++) {
         INT16 x1 = void, y1 = void, x2 = void, y2 = void;
 
-        if (!XTrapezoidValid(traps))
+        if (!xTrapezoidValid(traps))
             continue;
         y1 = XFixedToInt(traps.top);
         if (y1 < box.y1)

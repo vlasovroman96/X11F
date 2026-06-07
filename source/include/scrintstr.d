@@ -56,14 +56,17 @@ SOFTWARE.
 // #include "dix.h"
 // #include "privates.h"
 // #include <X11/extensions/randr.h>
-import include.clang;
+//  
 import include.xlibre_ptrtypes;
 import include.screenint;
 import include.pixmap;
 import include.misc;
+import include.input;
+import include.cursor;
+
 
 //import externs.X11.X;
-//import externs.X11.extensions.Xrender;
+import externs.X11.extensions.randrproto;
 import include.validate;
 
 struct _PixmapFormat {
@@ -211,7 +214,7 @@ alias CreatePixmapProcPtr = Bool function(ScreenPtr /*pScreen */ ,
                                           int /*width */ ,
                                           int /*height */ ,
                                           int /*depth */ ,
-                                          unsigned /*usage_hint */ );
+                                          uint /*usage_hint */ );
 
 alias DestroyPixmapProcPtr = Bool function(PixmapPtr /*pPixmap */ );
 
@@ -279,9 +282,9 @@ alias UninstallColormapProcPtr = void function(ColormapPtr /*pColormap */ );
 alias ListInstalledColormapsProcPtr = void function(ScreenPtr /*pScreen */ ,
                                               XID * /*pmaps */ );
 
-// alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
-//                                     int /*ndef */ ,
-//                                     xColorItem * /*pdef */ );
+alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
+                                    int /*ndef */ ,
+                                    xColorItem * /*pdef */ );
 
 alias ResolveColorProcPtr = void function(ubyte * /*pred */ ,
                                      ubyte * /*pgreen */ ,

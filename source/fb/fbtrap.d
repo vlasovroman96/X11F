@@ -33,7 +33,7 @@ import include.fb;
 import include.picturestr;
 import include.damage;
 
-void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, XTrap* traps)
+void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {
     pixman_image_t* image = void;
     int dst_xoff = void, dst_yoff = void;
@@ -47,7 +47,7 @@ void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, XTrap*
     free_pixman_pict(pPicture, image);
 }
 
-void fbRasterizeTrapezoid(PicturePtr pPicture, XTrapezoid* trap, int x_off, int y_off)
+void fbRasterizeTrapezoid(PicturePtr pPicture, xTrapezoid* trap, int x_off, int y_off)
 {
     pixman_image_t* image = void;
     int dst_xoff = void, dst_yoff = void;
@@ -61,7 +61,7 @@ void fbRasterizeTrapezoid(PicturePtr pPicture, XTrapezoid* trap, int x_off, int 
     free_pixman_pict(pPicture, image);
 }
 
-void fbAddTriangles(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntri, XTriangle* tris)
+void fbAddTriangles(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntri, xTriangle* tris)
 {
     pixman_image_t* image = void;
     int dst_xoff = void, dst_yoff = void;
@@ -137,22 +137,22 @@ private void fbShapes(CompositeShapesFunc composite, pixman_op_t op, PicturePtr 
     free_pixman_pict(pDst, dst);
 }
 
-void fbTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, XTrapezoid* traps)
+void fbTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps)
 {
     xSrc -= (traps[0].left.p1.x >> 16);
     ySrc -= (traps[0].left.p1.y >> 16);
 
     fbShapes(cast(CompositeShapesFunc) pixman_composite_trapezoids,
              op, pSrc, pDst, maskFormat,
-             xSrc, ySrc, ntrap, XTrapezoid.sizeof, cast(const(ubyte)*) traps);
+             xSrc, ySrc, ntrap, xTrapezoid.sizeof, cast(const(ubyte)*) traps);
 }
 
-void fbTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntris, XTriangle* tris)
+void fbTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntris, xTriangle* tris)
 {
     xSrc -= (tris[0].p1.x >> 16);
     ySrc -= (tris[0].p1.y >> 16);
 
     fbShapes(cast(CompositeShapesFunc) pixman_composite_triangles,
              op, pSrc, pDst, maskFormat,
-             xSrc, ySrc, ntris, XTriangle.sizeof, cast(const(ubyte)*) tris);
+             xSrc, ySrc, ntris, xTriangle.sizeof, cast(const(ubyte)*) tris);
 }

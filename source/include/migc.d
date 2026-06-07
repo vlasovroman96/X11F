@@ -31,18 +31,18 @@ from The Open Group.
 */
 
  
-extern _X_EXPORT miChangeGC(GCPtr pGC, c_ulong mask);
+extern void  miChangeGC(GCPtr pGC, c_ulong mask);
 
-extern _X_EXPORT miDestroyGC(GCPtr pGC);
+extern void  miDestroyGC(GCPtr pGC);
 
-extern _X_EXPORT miDestroyClip(GCPtr pGC);
+extern void  miDestroyClip(GCPtr pGC);
 
-extern _X_EXPORT miChangeClip(GCPtr pGC, int type, void* pvalue, int nrects);
+extern void  miChangeClip(GCPtr pGC, int type, void* pvalue, int nrects);
 
-extern _X_EXPORT miCopyClip(GCPtr pgcDst, GCPtr pgcSrc);
+extern void  miCopyClip(GCPtr pgcDst, GCPtr pgcSrc);
 
-extern _X_EXPORT miCopyGC(GCPtr pGCSrc, c_ulong changes, GCPtr pGCDst);
+extern void  miCopyGC(GCPtr pGCSrc, c_ulong changes, GCPtr pGCDst);
 
-extern _X_EXPORT miComputeCompositeClip(GCPtr pGC, DrawablePtr pDrawable);
+extern void  miComputeCompositeClip(GCPtr pGC, DrawablePtr pDrawable);
 
 

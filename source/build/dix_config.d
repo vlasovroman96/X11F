@@ -117,6 +117,8 @@ enum HAVE_MMAP = 1;
 enum HAVE_PCI_DEVICE_IS_BOOT_DISPLAY = 1;
 
 enum HAVE_POLL = 1;
+enum HAVE_OSPOLL = 1;
+enum POLLSET = false;
 
 enum HAVE_POSIX_FALLOCATE = 1;
 
@@ -127,6 +129,15 @@ enum HAVE_REALLOCARRAY = 1;
 enum HAVE_SETEUID = 1;
 
 enum HAVE_SETITIMER = 1;
+
+// module build.dix_config;
+
+// Включаем нативный epoll для Linux
+enum bool EPOLL = true;
+
+// Отключаем специфичную для Solaris подсистему PORT
+enum bool PORT = false;
+
 
 /* Use libmd SHA1 functions */
 enum HAVE_SHA1_IN_LIBMD = 1;

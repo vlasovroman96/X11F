@@ -97,7 +97,7 @@ private Bool _pixman_region_init_clipped_rectangles(pixman_region16_t* region, u
     return ret;
 }
 
-void glamor_composite_rectangles(CARD8 op, PicturePtr dst, XRenderColor* color, int num_rects, xRectangle* rects)
+void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, int num_rects, xRectangle* rects)
 {
     PixmapPtr pixmap = void;
     glamor_pixmap_private* priv = void;

@@ -27,13 +27,13 @@ extern(C): __gshared:
 public import include.randrstr;
 //public import externs.X11.extensions._render;
 
-extern _X_EXPORT xf86RandR12Init(ScreenPtr pScreen);
-extern _X_EXPORT xf86RandR12SetRotations(ScreenPtr pScreen, Rotation rotation);
-extern _X_EXPORT xf86RandR12SetTransformSupport(ScreenPtr pScreen, Bool transforms);
-extern _X_EXPORT xf86RandR12SetConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize);
-extern _X_EXPORT xf86RandR12GetRotation(ScreenPtr pScreen);
-extern _X_EXPORT xf86RandR12GetOriginalVirtualSize(ScrnInfoPtr pScrn, int* x, int* y);
-extern _X_EXPORT xf86RandR12PreInit(ScrnInfoPtr pScrn);
-extern _X_EXPORT xf86RandR12TellChanged(ScreenPtr pScreen);
+extern void  xf86RandR12Init(ScreenPtr pScreen);
+extern void  xf86RandR12SetRotations(ScreenPtr pScreen, Rotation rotation);
+extern void  xf86RandR12SetTransformSupport(ScreenPtr pScreen, Bool transforms);
+extern void  xf86RandR12SetConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize);
+extern void  xf86RandR12GetRotation(ScreenPtr pScreen);
+extern void  xf86RandR12GetOriginalVirtualSize(ScrnInfoPtr pScrn, int* x, int* y);
+extern void  xf86RandR12PreInit(ScrnInfoPtr pScrn);
+extern void  xf86RandR12TellChanged(ScreenPtr pScreen);
 
                           /* _XF86_RANDR_H_ */

@@ -53,17 +53,17 @@ struct sbus_device {
 }alias sbusDevice = sbus_device;
 alias sbusDevicePtr = sbus_device*;
 
-extern _X_EXPORT xf86MatchSbusInstances(const(char)* driverName, int sbusDevId, GDevPtr* devList, int numDevs, DriverPtr drvp, int** foundEntities);
-extern _X_EXPORT xf86GetSbusInfoForEntity(int entityIndex);
-extern _X_EXPORT xf86SbusUseBuiltinMode(ScrnInfoPtr pScrn, sbusDevicePtr psdp);
-extern _X_EXPORT* xf86MapSbusMem(sbusDevicePtr psdp, c_ulong offset, c_ulong size);
-extern _X_EXPORT xf86UnmapSbusMem(sbusDevicePtr psdp, void* addr, c_ulong size);
-extern _X_EXPORT xf86SbusHideOsHwCursor(sbusDevicePtr psdp);
-extern _X_EXPORT xf86SbusSetOsHwCursorCmap(sbusDevicePtr psdp, int bg, int fg);
-extern _X_EXPORT xf86SbusHandleColormaps(ScreenPtr pScreen, sbusDevicePtr psdp);
+extern void  xf86MatchSbusInstances(const(char)* driverName, int sbusDevId, GDevPtr* devList, int numDevs, DriverPtr drvp, int** foundEntities);
+extern void  xf86GetSbusInfoForEntity(int entityIndex);
+extern void  xf86SbusUseBuiltinMode(ScrnInfoPtr pScrn, sbusDevicePtr psdp);
+extern void * xf86MapSbusMem(sbusDevicePtr psdp, c_ulong offset, c_ulong size);
+extern void  xf86UnmapSbusMem(sbusDevicePtr psdp, void* addr, c_ulong size);
+extern void  xf86SbusHideOsHwCursor(sbusDevicePtr psdp);
+extern void  xf86SbusSetOsHwCursorCmap(sbusDevicePtr psdp, int bg, int fg);
+extern void  xf86SbusHandleColormaps(ScreenPtr pScreen, sbusDevicePtr psdp);
 
-extern _X_EXPORT sparcPromInit();
-extern _X_EXPORT sparcPromClose();
-extern _X_EXPORT sparcPromGetBool(sbusPromNodePtr pnode, const(char)* prop);
+extern void  sparcPromInit();
+extern void  sparcPromClose();
+extern void  sparcPromGetBool(sbusPromNodePtr pnode, const(char)* prop);
 
                           /* _XF86_SBUSBUS_H */

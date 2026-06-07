@@ -57,8 +57,8 @@ public import include.regionstr;
 public import include.screenint;
 public import include.privates;
 
-// import legacyXf = externs.X11.fonts.font;
-// import legacyXfs = externs.X11.fonts.fontstruct;
+import legacyXf = externs.X11.fonts.font;
+import legacyXfs = externs.X11.fonts.fontstruct;
 
 // alias xSegment = externs.X11.Xprotostr.xSegment;
 // alias xRectangle = externs.X11.Xprotostr.xRectangle;

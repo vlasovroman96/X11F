@@ -85,7 +85,7 @@ struct PaddingInfo {
     int bytesPerPixel;          /* only set when notPower2 is TRUE */
     int bitsPerPixel;           /* bits per pixel */
 }
-extern _X_EXPORT[1] PixmapWidthPaddingInfo;
+extern void [1] PixmapWidthPaddingInfo;
 
 /* The only portable way to get the bpp from the depth is to look it up */
 enum string BitsPerPixel(string d) = `(PixmapWidthPaddingInfo[` ~ d ~ `].bitsPerPixel)`;

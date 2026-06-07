@@ -58,7 +58,8 @@ public import include.validate;
 //public import externs.X11.Xproto;
 public import include.dix;
 public import include.privates;
-//public import externs.X11.extensions._randr;
+public import externs.X11.extensions._randr;
+import include.scrnintstr;
 
 struct PixmapFormatRec {
     ubyte depth;
@@ -195,7 +196,7 @@ alias UninstallColormapProcPtr = void function(ColormapPtr);
 
 alias ListInstalledColormapsProcPtr = int function(ScreenPtr, XID*);
 
-alias StoreColorsProcPtr = void function(ColormapPtr, int, xColorItem*);
+// alias StoreColorsProcPtr = void function(ColormapPtr, int, xColorItem*);
 
 alias ResolveColorProcPtr = void function(ushort*, ushort*, ushort*, VisualPtr);
 

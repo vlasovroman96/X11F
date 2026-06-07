@@ -7,8 +7,8 @@ extern(C): __gshared:
 
 /* Global X server variables that are visible to mi, dix, os, and ddx */
 
-extern const(_X_EXPORT)* defaultFontPath;
-extern _X_EXPORT monitorResolution;
-extern _X_EXPORT defaultColorVisualClass;
+extern const(void )* defaultFontPath;
+extern void  monitorResolution;
+extern void  defaultColorVisualClass;
 
                           /* !_XSERV_GLOBAL_H_ */

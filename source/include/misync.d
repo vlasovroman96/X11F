@@ -41,8 +41,8 @@ struct _syncScreenFuncs {
 }alias SyncScreenFuncsRec = _syncScreenFuncs;
 alias SyncScreenFuncsPtr = _syncScreenFuncs*;
 
-extern _X_EXPORT miSyncScreenCreateFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered);
-extern _X_EXPORT miSyncScreenDestroyFence(ScreenPtr pScreen, SyncFence* pFence);
+extern void miSyncScreenCreateFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered);
+extern void miSyncScreenDestroyFence(ScreenPtr pScreen, SyncFence* pFence);
 
 alias SyncFenceSetTriggeredFunc = void function(SyncFence* pFence);
 alias SyncFenceResetFunc = void function(SyncFence* pFence);
@@ -59,13 +59,13 @@ struct _syncFenceFuncs {
 }alias SyncFenceFuncsRec = _syncFenceFuncs;
 alias SyncFenceFuncsPtr = _syncFenceFuncs*;
 
-extern _X_EXPORT miSyncInitFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered);
+extern void miSyncInitFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered);
 
-extern _X_EXPORT miSyncDestroyFence(SyncFence* pFence);
+extern void miSyncDestroyFence(SyncFence* pFence);
 
-extern _X_EXPORT miSyncTriggerFence(SyncFence* pFence);
+extern void miSyncTriggerFence(SyncFence* pFence);
 
-extern _X_EXPORT miSyncGetScreenFuncs(ScreenPtr pScreen);
-extern _X_EXPORT miSyncSetup(ScreenPtr pScreen);
+extern void miSyncGetScreenFuncs(ScreenPtr pScreen);
+extern void miSyncSetup(ScreenPtr pScreen);
 
                           /* _MISYNC_H_ */

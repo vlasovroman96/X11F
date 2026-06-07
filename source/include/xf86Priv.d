@@ -40,25 +40,25 @@ public import include.xlibre_ptrtypes;
 public import include.include.xf86Privstr;
 public import include.input;
 
-extern _X_EXPORT xf86FbBpp;
-extern _X_EXPORT xf86Depth;
+extern void  xf86FbBpp;
+extern void  xf86Depth;
 
 /* Other parameters */
 
-extern _X_EXPORT xf86InfoRec;
+extern void  xf86InfoRec;
 extern serverLayoutRec xf86ConfigLayout;
 
-extern _X_EXPORT* xf86DriverList;
-extern _X_EXPORT xf86NumScreens;
+extern void * xf86DriverList;
+extern void  xf86NumScreens;
 
 extern _ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
-extern _X_EXPORT xf86NumGPUScreens;
-extern _X_EXPORT xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
+extern void  xf86NumGPUScreens;
+extern void  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
 enum DEFAULT_DPI =		96;
 
 
 /* xf86Bus.c */
-extern _X_EXPORT xf86BusProbe();
-extern _X_EXPORT xf86AddDevToEntity(int entityIndex, GDevPtr dev);
+extern void  xf86BusProbe();
+extern void  xf86AddDevToEntity(int entityIndex, GDevPtr dev);
 
                           /* _XF86PRIV_H */
