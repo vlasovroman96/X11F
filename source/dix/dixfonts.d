@@ -55,12 +55,12 @@ Equipment Corporation.
 import build.dix_config;
 
 import core.stdc.stddef;
-import deimos.X11.X;
-import deimos.X11.Xmd;
-import deimos.X11.Xproto;
-// import deimos.X11.fonts.font;
-// import deimos.X11.fonts.fontstruct;
-// import deimos.X11.fonts.libxfont2;
+//import externs.x11.X;
+//import externs.x11.Xmd;
+//import externs.x11.Xproto;
+// //import externs.x11.fonts.font;
+// //import externs.x11.fonts.fontstruct;
+// //import externs.x11.fonts.libxfont2;
 
 import dix.dix_priv;
 import dix.gc_priv;

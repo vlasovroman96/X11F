@@ -10,10 +10,10 @@ extern(C): __gshared:
 */
 import build.xorg_config;
 
-import deimos.X11.X;
-import deimos.X11.Xproto;
-// import deimos.X11.fonts.font;
-// import deimos.X11.fonts.fontstruct;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+// //import externs.x11.fonts.font;
+// //import externs.x11.fonts.fontstruct;
 
 import dix.screen_hooks_priv;
 

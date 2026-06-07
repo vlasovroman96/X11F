@@ -18,15 +18,15 @@ is" without express or implied warranty.
 import build.xorg_config;
 
 version (Windows) {
-import deimos.X11.Xwinsock;
-import deimos.X11.Xwindows;
+//import externs.x11.Xwinsock;
+//import externs.x11.Xwindows;
 }
 
-import deimos.X11.X;
-import deimos.X11.Xdefs;
-import deimos.X11.Xproto;
-import deimos.X11.keysym;
-// import deimos.X11.extensions.XKB;
+//import externs.x11.X;
+//import externs.x11.Xdefs;
+//import externs.x11.Xproto;
+//import externs.x11.keysym;
+// //import externs.x11.extensions.XKB;
 import externs.xcb.xcb_xkb;
 
 import os.osdep;

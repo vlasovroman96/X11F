@@ -6,8 +6,8 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import deimos.X11.Xdefs;
-public import deimos.X11.Xproto;
+//public import externs.x11.Xdefs;
+//public import externs.x11.Xproto;
 
 public import dix.screenint_priv;
 public import include.colormap;

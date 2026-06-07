@@ -80,10 +80,10 @@ SOFTWARE.
 import build.dix_config;
 
 import core.stdc.string;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-// import deimos.X11.extensions.Xv;
-// import deimos.X11.extensions.Xvproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+// //import externs.x11.extensions.Xv;
+// //import externs.x11.extensions.Xvproto;
 
 import dix.dix_priv;
 import dix.screen_hooks_priv;

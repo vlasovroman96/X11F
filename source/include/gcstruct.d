@@ -49,7 +49,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import deimos.X11.Xprotostr;
+//public import externs.x11.Xprotostr;
 
 public import include.gc;
 public import include.pixmap;
@@ -57,12 +57,12 @@ public import include.regionstr;
 public import include.screenint;
 public import include.privates;
 
-import legacyXf = externs.x11.fonts.font;
-import legacyXfs = externs.x11.fonts.fontstruct;
+// import legacyXf = externs.x11.fonts.font;
+// import legacyXfs = externs.x11.fonts.fontstruct;
 
-alias xSegment = deimos.X11.Xprotostr.xSegment;
-alias xRectangle = deimos.X11.Xprotostr.xRectangle;
-alias xArc = deimos.X11.Xprotostr.xArc;
+// alias xSegment = externs.x11.Xprotostr.xSegment;
+// alias xRectangle = externs.x11.Xprotostr.xRectangle;
+// alias xArc = externs.x11.Xprotostr.xArc;
 
 version (_XTYPEDEF_CHARINFOPTR) {} else {
 alias CharInfoPtr = legacyXfs._CharInfo*;  /* also in fonts/include/font.h */

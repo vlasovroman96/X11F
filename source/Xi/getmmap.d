@@ -55,8 +55,8 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XIproto;     /* Request macro     */
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XIproto;     /* Request macro     */
 
 import dix.dix_priv;
 import dix.request_priv;

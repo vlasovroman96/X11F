@@ -50,8 +50,8 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.X;
-import deimos.X11.Xmd;
+//import externs.x11.X;
+//import externs.x11.Xmd;
 
 import dix.cursor_priv;
 import dix.dix_priv;

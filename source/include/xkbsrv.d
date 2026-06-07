@@ -28,10 +28,10 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-enum SrvXkbFreeKeyboard = XkbFreeKeyboard;			
+alias SrvXkbFreeKeyboard = XkbFreeKeyboard;			
 
-public import deimos.X11.Xdefs;
-// public // import deimos.X11.extensions.XKBproto;
+//public import externs.x11.Xdefs;
+// public // //import externs.x11.extensions.XKBproto;
 
 public import include.xlibre_ptrtypes;
 public import include.xkbstr;
@@ -195,7 +195,7 @@ alias xkbDeviceInfoPtr = xkbDeviceInfoRec*;
 
 alias	Status =		int;
 
-extern _X_EXPORT XkbFreeKeyboard(XkbDescPtr, uint, Bool);
+extern void XkbFreeKeyboard(XkbDescPtr, uint, Bool);
 
 /**
  * @brief get the current keysym map
@@ -214,9 +214,9 @@ extern _X_EXPORT XkbFreeKeyboard(XkbDescPtr, uint, Bool);
 extern KeySymsPtr XkbGetCoreMap(DeviceIntPtr  /* keybd */
     );
 
-extern _X_EXPORT XkbApplyMappingChange(DeviceIntPtr, KeySymsPtr, KeyCode, CARD8, CARD8*, ClientPtr);
+extern void XkbApplyMappingChange(DeviceIntPtr, KeySymsPtr, KeyCode, CARD8, CARD8*, ClientPtr);
 
-extern _X_EXPORT XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsPtr);
+extern void XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsPtr);
 
 /**
  * @brief Set global autorepeat / sync core protocol repeat flags
@@ -237,13 +237,13 @@ extern _X_EXPORT XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsP
  *              Used only if key == -1
  *
  */
-extern _X_EXPORT XkbSetRepeatKeys(DeviceIntPtr, int, int);
+extern void XkbSetRepeatKeys(DeviceIntPtr, int, int);
 
-extern _X_EXPORT XkbGetRulesDflts(XkbRMLVOSet*);
+extern void XkbGetRulesDflts(XkbRMLVOSet*);
 
-extern _X_EXPORT XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
+extern void XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
 
-extern _X_EXPORT XkbCopyDeviceKeymap(DeviceIntPtr, DeviceIntPtr);
+extern void XkbCopyDeviceKeymap(DeviceIntPtr, DeviceIntPtr);
 
 public import include.xkbsrv;
 public import include.xkbrules;

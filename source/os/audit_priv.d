@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 public import core.stdc.stdarg;
-// public import deimos.X11.Xfuncproto;
+// //public import externs.x11.Xfuncproto;
 
 public import include.os;
 

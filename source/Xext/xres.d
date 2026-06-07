@@ -11,9 +11,9 @@ import build.dix_config;
 import core.stdc.assert_;
 import core.stdc.stdio;
 import core.stdc.string;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-// import deimos.X11.extensions.XResproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+// //import externs.x11.extensions.XResproto;
 
 import dix.client_priv;
 import dix.dix_priv;

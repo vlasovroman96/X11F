@@ -28,9 +28,9 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// import deimos.X11.extensions.ge;
-// // import deimos.X11.extensions.geproto;
-import externs.x11.X;
+// //import externs.x11.extensions.ge;
+// // //import externs.x11.extensions.geproto;
+//import externs.x11.X;
 
 import dix.dix_priv;
 import dix.request_priv;

@@ -79,7 +79,7 @@ from the copyright holders.
 
 import core.stdc.ctype;
 version (XTHREADS) {
-import deimos.X11.Xthreads;
+//import externs.x11.Xthreads;
 }
 import core.sys.posix.sys.stat;
 
@@ -97,7 +97,7 @@ import externs.arpa.inet;
 version (UNIXCONN) {
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_NO_LOCKING;
-import deimos.X11.Xos_r;
+//import externs.x11.Xos_r;
 }
 
 version (NO_TCP_H) {} else {
@@ -120,9 +120,9 @@ import core.sys.posix.unistd;
 
 } version (Windows) { /* !WIN32 */
 
-import deimos.X11.Xwinsock;
-import deimos.X11.Xwindows;
-import deimos.X11.Xw32defs;
+//import externs.x11.Xwinsock;
+//import externs.x11.Xwindows;
+//import externs.x11.Xw32defs;
 
 import afunix;
 
@@ -131,7 +131,7 @@ enum EWOULDBLOCK = WSAEWOULDBLOCK;
 enum EINTR = WSAEINTR;
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_MTSAFE_NETDBAPI;
-import deimos.X11.Xos_r;
+//import externs.x11.Xos_r;
 import core.sys.posix.netinet.tcp;
 import build.dix_config;
 } /* WIN32 */

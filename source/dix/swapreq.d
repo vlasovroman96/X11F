@@ -50,9 +50,9 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.Xprotostr;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.Xprotostr;
 
 import dix.dix_priv;
 import dix.reqhandlers_priv;

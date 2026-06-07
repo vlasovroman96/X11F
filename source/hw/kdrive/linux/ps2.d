@@ -25,8 +25,8 @@ import core.stdc.config: c_long, c_ulong;
  */
 
 import config.kdrive_config;
-import deimos.X11.X;
-import deimos.X11.Xproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
 import os.xserver_poll;
 import include.inputstr;
 import include.scrnintstr;

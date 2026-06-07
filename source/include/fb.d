@@ -26,7 +26,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-public import deimos.X11.X;
+//public import externs.x11.X;
 public import pixman;
 
 public import include.scrnintstr;

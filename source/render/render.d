@@ -28,11 +28,11 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.stdint;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.extensions.render;
-// import deimos.X11.extensions.renderproto;
-// import deimos.X11.Xfuncproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.extensions._render;
+// //import externs.x11.extensions.renderproto;
+// //import externs.x11.Xfuncproto;
 
 import dix.colormap_priv;
 import dix.cursor_priv;

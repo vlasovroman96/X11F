@@ -29,9 +29,9 @@ import build.dix_config;
 
 import core.stdc.stdio;
 import core.stdc.stdlib;
-import deimos.X11.X;
+//import externs.x11.X;
 import xfixesint;
-// import deimos.X11.extensions.xfixeswire;
+// //import externs.x11.extensions.xfixeswire;
 
 import test.tests_common;
 

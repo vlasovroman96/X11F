@@ -53,26 +53,27 @@ public import include.xlibre_ptrtypes;
 
 public import include.misc;
 public import include.screenint;
-public import deimos.X11.Xmd;
-public import deimos.X11.Xproto;
+//public import externs.x11.Xmd;
+//public import externs.x11.Xproto;
 public import core.stdc.stdint;
 public import include.window;             /* for WindowPtr */
 public import include.xkbrules;
 public import include.events;
 public import include.list;
 public import include.os;
-public import deimos.X11.extensions.XI2;
+//public import externs.x11.extensions.XI2;
+import include.inputstr;
 
 enum DEFAULT_KEYBOARD_CLICK = 	0;
 enum DEFAULT_BELL =		50;
 enum DEFAULT_BELL_PITCH =	400;
 enum DEFAULT_BELL_DURATION =	100;
 enum DEFAULT_AUTOREPEAT =	TRUE;
-enum DEFAULT_AUTOREPEATS =	{
+enum DEFAULT_AUTOREPEATS =	[
         0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
 
 enum DEFAULT_LEDS =		0x0     /* all off */;
 enum DEFAULT_LEDS_MASK =	0xffffffff      /* 32 */;

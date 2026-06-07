@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-public import deimos.X11.X;
+//public import externs.x11.X;
 public import include.scrnintstr;
 public import include.misc;
 public import include.list;

@@ -29,10 +29,10 @@ import core.stdc.stddef;
 import core.stdc.string;
 import core.stdc.stdio;
 
-// import deimos.X11.Xarch;
-import deimos.X11.Xatom;
-import deimos.X11.extensions.render;
-// import deimos.X11.extensions.dpmsconst;
+// //import externs.x11.Xarch;
+//import externs.x11.Xatom;
+//import externs.x11.extensions._render;
+// //import externs.x11.extensions.dpmsconst;
 
 import include.xf86DDC;
 

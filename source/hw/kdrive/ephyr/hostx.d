@@ -46,15 +46,15 @@ import core.sys.posix.sys.time;
 // GL might pull in Xlib.h (why ?), which is definining a type "GC", that's
 // conflicting with Xserver's "GC" type.
 enum GC = XlibGC;
-import deimos.X11.Xlib;
-import deimos.X11.Xutil;
+//import externs.x11.Xlib;
+//import externs.x11.Xutil;
 import dix.input_priv;
 
 import hostx;
 
 version = X_INCLUDE_STRING_H;
-// import deimos.X11.Xos_r;
-import deimos.X11.keysym;
+// //import externs.x11.Xos_r;
+//import externs.x11.keysym;
 import externs.xcb.xcb;
 import externs.xcb.xproto;
 import externs.xcb.xcb_icccm;

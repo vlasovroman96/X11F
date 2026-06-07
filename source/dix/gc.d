@@ -51,9 +51,9 @@ SOFTWARE.
 import build.dix_config;
 
 import core.stdc.assert_;
-import deimos.X11.X;
-import deimos.X11.Xmd;
-import deimos.X11.Xproto;
+//import externs.x11.X;
+//import externs.x11.Xmd;
+//import externs.x11.Xproto;
 
 import dix.gc_priv;
 import os.osdep;

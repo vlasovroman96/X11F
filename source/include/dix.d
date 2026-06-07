@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import deimos.X11.extensions.XI;
+//public import externs.x11.extensions.XI;
 
 public import include.xlibre_ptrtypes;
 

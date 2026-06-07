@@ -30,7 +30,7 @@ from The Open Group.
 */
 
  
-public import deimos.X11.Xmd;
+//public import externs.x11.Xmd;
 
 public import include.globals;
 

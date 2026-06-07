@@ -28,7 +28,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-public import deimos.X11.Xdefs;
+//public import externs.x11.Xdefs;
 
 public import include.xkbsrv;
 

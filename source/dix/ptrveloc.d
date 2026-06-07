@@ -35,7 +35,7 @@ import dix.ptrveloc_priv;
 import os.bug_priv;
 
 import ptrveloc;
-import deimos.X11.Xatom;
+//import externs.x11.Xatom;
 import include.os;
 
 import include.xserver_properties;

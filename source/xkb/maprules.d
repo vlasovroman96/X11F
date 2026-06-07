@@ -35,14 +35,14 @@ import core.stdc.stdlib;
 
 version = X_INCLUDE_STRING_H;
 version = XOS_USE_NO_LOCKING;
-// import deimos.X11.Xos_r;
+// //import externs.x11.Xos_r;
 
-import deimos.X11.Xproto;
-import deimos.X11.X;
-// import deimos.X11.Xos;
-// import deimos.X11.Xfuncs;
-import deimos.X11.Xatom;
-import deimos.X11.keysym;
+//import externs.x11.Xproto;
+//import externs.x11.X;
+// //import externs.x11.Xos;
+// //import externs.x11.Xfuncs;
+//import externs.x11.Xatom;
+//import externs.x11.keysym;
 
 import os.log_priv;
 import xkb.xkbrules_priv;

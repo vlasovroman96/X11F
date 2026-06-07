@@ -80,12 +80,12 @@ import build.dix_config;
 import config.version_config;
 
 import pixman;
-import deimos.X11.X;
-// import deimos.X11.Xos;            /* for unistd.h  */
-// import deimos.X11.Xproto;
-// import deimos.X11.fonts.font;
-// import deimos.X11.fonts.fontstruct;
-// import deimos.X11.fonts.libxfont2;
+//import externs.x11.X;
+// //import externs.x11.Xos;            /* for unistd.h  */
+// //import externs.x11.Xproto;
+// //import externs.x11.fonts.font;
+// //import externs.x11.fonts.fontstruct;
+// //import externs.x11.fonts.libxfont2;
 
 import config.hotplug_priv;
 import dix.atom_priv;
@@ -125,7 +125,7 @@ import include.privates;
 import include.exevents;
 
 version (DPMSExtension) {
-import deimos.X11.extensions.dpmsconst;
+//import externs.x11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
 

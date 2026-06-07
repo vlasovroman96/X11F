@@ -57,7 +57,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-import deimos.X11.X;
+//import externs.x11.X;
 
 import os.log_priv;
 import os.xserver_poll;

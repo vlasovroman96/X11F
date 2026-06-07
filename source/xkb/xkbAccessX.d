@@ -38,10 +38,10 @@ import core.sys.posix.sys.time;
 }
 import core.stdc.stdio;
 import core.stdc.math;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.keysym;
-// import deimos.X11.extensions.XIproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.keysym;
+// //import externs.x11.extensions.XIproto;
 
 import dix.input_priv;
 import dix.inpututils_priv;

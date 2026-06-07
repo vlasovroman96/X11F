@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************/
 
  
-public import deimos.X11.Xmd;
+//public import externs.x11.Xmd;
 
 /* Extension info */
 enum SELINUX_EXTENSION_NAME =		"SELinux";

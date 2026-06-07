@@ -40,7 +40,7 @@ from The Open Group.
 import build.dix_config;
 
 import core.stdc.stdio;
-import deimos.X11.X;
+//import externs.x11.X;
 
 import os.auth;
 import os.io_priv;
@@ -61,8 +61,8 @@ version (HASXDMAUTH) {
 private Bool authFromXDMCP;
 
 version (XDMCP) {
-import deimos.X11.Xmd;
-import deimos.X11.Xdmcp;
+//import externs.x11.Xmd;
+//import externs.x11.Xdmcp;
 
 /* XDM-AUTHENTICATION-1 */
 

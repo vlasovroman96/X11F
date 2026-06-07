@@ -45,10 +45,10 @@ import core.sys.posix.sys.mman;
 import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-// import deimos.X11.extensions.shmproto;
-// import deimos.X11.Xfuncproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+// //import externs.x11.extensions.shmproto;
+// //import externs.x11.Xfuncproto;
 
 import dix.dix_priv;
 import dix.request_priv;

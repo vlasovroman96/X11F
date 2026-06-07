@@ -107,20 +107,20 @@ Equipment Corporation.
 
 import build.dix_config;
 
-import deimos.X11.X;
-// import deimos.X11.extensions.ge;
-// import deimos.X11.extensions.XKBproto;
-// import deimos.X11.extensions.XIproto;
-// import deimos.X11.extensions.XI2proto;
-// import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XI2;
-// import deimos.X11.Xproto;
-// import deimos.X11.extensions.ge;
-// import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XI2;
-// import deimos.X11.extensions.XKBproto;
-// import deimos.X11.extensions.XIproto;
-// import deimos.X11.extensions.XI2proto;
+//import externs.x11.X;
+// //import externs.x11.extensions.ge;
+// //import externs.x11.extensions.XKBproto;
+// //import externs.x11.extensions.XIproto;
+// //import externs.x11.extensions.XI2proto;
+// //import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XI2;
+// //import externs.x11.Xproto;
+// //import externs.x11.extensions.ge;
+// //import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XI2;
+// //import externs.x11.extensions.XKBproto;
+// //import externs.x11.extensions.XIproto;
+// //import externs.x11.extensions.XI2proto;
 
 import dix.cursor_priv;
 import dix.devices_priv;

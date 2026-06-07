@@ -54,7 +54,7 @@ import dix.cursor_priv;
 import dix.screenint_priv;
 
 import include.misc;
-// import deimos.X11.fonts.fontstruct;
+// //import externs.x11.fonts.fontstruct;
 import include.dixfontstr;
 import include.scrnintstr;
 import include.gcstruct;

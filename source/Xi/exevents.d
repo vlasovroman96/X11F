@@ -83,13 +83,13 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.X;
-import deimos.X11.Xproto;
-// import deimos.X11.extensions.geproto;
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XIproto;
-// import deimos.X11.extensions.XI2proto;
-// import deimos.X11.extensions.XKBproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+// //import externs.x11.extensions.geproto;
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XIproto;
+// //import externs.x11.extensions.XI2proto;
+// //import externs.x11.extensions.XKBproto;
 
 import dix.cursor_priv;
 import dix.devices_priv;

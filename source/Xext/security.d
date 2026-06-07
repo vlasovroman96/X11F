@@ -30,9 +30,9 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import deimos.X11.Xmd;
-// import deimos.X11.extensions.securproto;
-// import deimos.X11.Xfuncproto;
+//import externs.x11.Xmd;
+// //import externs.x11.extensions.securproto;
+// //import externs.x11.Xfuncproto;
 
 import dix.client_priv;
 import dix.devices_priv;

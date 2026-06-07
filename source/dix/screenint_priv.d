@@ -8,11 +8,12 @@ extern(C): __gshared:
  */
  
 // // public //import stdbool;
-public import deimos.X11.Xdefs;
+//public import externs.x11.Xdefs;
 
 public import include.callback;
 public import include.screenint;
 public import include.scrnintstr; /* for screenInfo */
+// import dix.scre
 
 alias ScreenInitProcPtr = Bool function(ScreenPtr pScreen, int argc, char** argv);
 
@@ -65,13 +66,11 @@ pragma(inline, true) private bool dixScreenExists(uint idx) {
  * @param __LAMBDA__ the code to be executed in each iteration step.
  */
 enum string DIX_FOR_EACH_SCREEN(string __LAMBDA__) = `
-    do { 
         for (uint walkScreenIdx = 0; walkScreenIdx < screenInfo.numScreens; walkScreenIdx++) { 
             ScreenPtr walkScreen = screenInfo.screens[walkScreenIdx]; 
             cast(void)walkScreen; 
             ` ~ __LAMBDA__ ~ `; 
-        } 
-    } while (0);`;
+        } `;
 
 /*
  * macro for looping over all screens (up to `screenInfo.numScreens`),
@@ -81,7 +80,6 @@ enum string DIX_FOR_EACH_SCREEN(string __LAMBDA__) = `
  */
 version (XINERAMA) {
 enum string DIX_FOR_EACH_SCREEN_XINERAMA(string __LAMBDA__) = `
-    do { 
         uint __num_screens = screenInfo.numScreens; 
         if (!noPanoramiXExtension) 
             __num_screens = 1; 
@@ -89,10 +87,9 @@ enum string DIX_FOR_EACH_SCREEN_XINERAMA(string __LAMBDA__) = `
             ScreenPtr walkScreen = screenInfo.screens[walkScreenIdx]; 
             cast(void)walkScreen; 
             ` ~ __LAMBDA__ ~ `; 
-        } 
-    } while (0);`;
+        } `;
 } else {
-enum DIX_FOR_EACH_SCREEN_XINERAMA = DIX_FOR_EACH_SCREEN;
+alias DIX_FOR_EACH_SCREEN_XINERAMA = DIX_FOR_EACH_SCREEN;
 }
 
 /*

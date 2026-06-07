@@ -31,7 +31,7 @@ import glamor.glamor_priv;
 import include.dixfontstr;
 import glamor_transform;
 import include.servermd;
-import deimos.X11.X;
+//import externs.x11.X;
 
 /*
  * Fill in the array of charinfo pointers for the provided characters. For

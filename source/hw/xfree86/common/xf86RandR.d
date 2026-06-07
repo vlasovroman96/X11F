@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-import deimos.X11.X;
+//import externs.x11.X;
 
 import dix.input_priv;
 import dix.screen_hooks_priv;

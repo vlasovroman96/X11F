@@ -30,8 +30,8 @@ import core.stdc.config: c_long, c_ulong;
  
 public import include.exa;
 
-public import deimos.X11.X;
-public import deimos.X11.Xproto;
+//public import externs.x11.X;
+//public import externs.x11.Xproto;
 
 public import include.shmint;
 

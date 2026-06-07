@@ -26,12 +26,12 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-public import externs.x11.X;
-public import externs.x11.extensions.renderproto;
+//public import externs.x11.X;
+//public import externs.x11.extensions.renderproto;
 ;
-import deimos.X11.Xutil;
-import deimos.X11.extensions.render;
-import deimos.X11.extensions.Xrender;
+//import externs.x11.Xutil;
+//import externs.x11.extensions._render;
+//import externs.x11.extensions.Xrender;
 
 
 public import include.scrnintstr;
@@ -39,7 +39,7 @@ public import include.glyphstr;
 public import include.resource;
 public import include.privates;
 
-alias XFixed = deimos.X11.extensions.Xrender.XFixed;
+alias XFixed = externs.x11.extensions.Xrender.XFixed;
 
 struct _DirectFormat {
     CARD16 red, redMask;

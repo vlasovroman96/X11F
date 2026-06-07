@@ -52,14 +52,14 @@ extern(C): __gshared:
  */
 
  
-// public import deimos.X11.Xfuncproto;
+// //public import externs.x11.Xfuncproto;
 
 public import include.xlibre_ptrtypes;
 public import include.xf86;
 public import include.xf86str;
 public import include.inputstr;
-public import deimos.X11.extensions.XI;
-public // import deimos.X11.extensions.XIproto;
+//public import externs.x11.extensions.XI;
+public // //import externs.x11.extensions.XIproto;
 
 /* Input device flags */
 enum XI86_ALWAYS_CORE =	0x04    /* device always controls the pointer */;

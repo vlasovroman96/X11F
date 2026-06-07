@@ -55,8 +55,8 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XIproto;
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XIproto;
 
 import include.inputstr;           /* DeviceIntPtr      */
 

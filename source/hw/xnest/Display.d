@@ -19,8 +19,8 @@ import build.xorg_config;
 import core.stdc.string;
 import core.stdc.errno;
 
-import deimos.X11.X;
-import deimos.X11.Xproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
 
 import os.client_priv;
 import os.osdep;

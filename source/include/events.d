@@ -24,7 +24,7 @@ extern(C): __gshared:
  * DEALINGS IN THE SOFTWARE.
  *
  */
-
+import include.eventstr;
  
 alias DeviceEvent = _DeviceEvent;
 alias DeviceChangedEvent = _DeviceChangedEvent;

@@ -36,8 +36,8 @@ from The Open Group.
 
 import build.dix_config;
 
-import   deimos.X11.X;
-// import   deimos.X11.Xauth;
+//import   externs.x11.X;
+// //import   externs.x11.Xauth;
 import   include.misc;
 import os.osdep;
 import include.dixstruct;

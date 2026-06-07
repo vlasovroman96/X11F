@@ -17,7 +17,7 @@ import core.stdc.stdlib;
 import core.stdc.string;
 import core.sys.posix.unistd;
 
-import deimos.X11.X;
+//import externs.x11.X;
 
 import include.vgaHW;
 import os.log_priv;

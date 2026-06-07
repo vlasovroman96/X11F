@@ -56,6 +56,18 @@ public import include.xlibre_ptrtypes;
 public import include.callback;
 public import include.misc;
 public import include.dixaccess;
+import include.dixstruct;
+public import externs.x11.Xprotostr;
+public import externs.x11.Xmd;
+public import externs.x11.X;
+public import externs.x11.Xfuncproto;
+public import externs.x11.Xmd;
+public import externs.x11.X;
+// public import externs.x11.Xdefs;
+public import externs.x11.Xprotostr;
+import include.dixstruct;
+// import 
+
 
 /*****************************************************************
  * STUFF FOR RESOURCES

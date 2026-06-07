@@ -9,8 +9,8 @@ extern(C): __gshared:
  */
 
  
-public import deimos.X11.Xmd;
-public import deimos.X11.Xdefs;
+//public import externs.x11.Xmd;
+//public import externs.x11.Xdefs;
 public import include.xf86Pci;
 
 enum string SEG_ADDR(string x) = `(((` ~ x ~ `) >> 4) & 0x00F000)`;

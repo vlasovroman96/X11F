@@ -34,7 +34,7 @@ extern(C): __gshared:
  */
 
  
-// public import deimos.X11.extensions.dri2tokens;
+// //public import externs.x11.extensions.dri2tokens;
 
 public import include.dix;
 

@@ -13,12 +13,12 @@ extern(C): __gshared:
  */
  
 struct _Client;
-version (_XTYPEDEF_CLIENTPTR) {
+// version (_XTYPEDEF_CLIENTPTR) {
 
 alias ClientPtr = _Client*;
-} else {
+// } else {
 // version = _XTYPEDEF_CLIENTPTR;
-}
+// }
 alias ClientRec = _Client;
 
 struct _ClientId;

@@ -38,12 +38,12 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import   deimos.X11.X;
-import   deimos.X11.Xmd;
-import   deimos.X11.Xproto;
-import   deimos.X11.extensions.XI;
-// import   deimos.X11.extensions.XIproto;
-// import   deimos.X11.extensions.geproto;
+//import   externs.x11.X;
+//import   externs.x11.Xmd;
+//import   externs.x11.Xproto;
+//import   externs.x11.extensions.XI;
+// //import   externs.x11.extensions.XIproto;
+// //import   externs.x11.extensions.geproto;
 
 import   dix.cursor_priv;
 import   dix.dix_priv;
@@ -65,7 +65,7 @@ import   include.eventstr;
 
 version (DPMSExtension) {
 import Xext.dpmsproc;
-import deimos.X11.extensions.dpmsconst;
+//import externs.x11.extensions.dpmsconst;
 }
 
 /* Maximum size should be initial size multiplied by a power of 2 */

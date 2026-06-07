@@ -29,7 +29,7 @@ import build.dix_config;
 
 import core.stdc.inttypes;
 import core.stdc.string;
-import deimos.X11.Xmd; // needs to be before glxproto.h
+//import externs.x11.Xmd; // needs to be before glxproto.h
 import externs.gl;
 import externs.glxproto;
 

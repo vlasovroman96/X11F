@@ -58,10 +58,10 @@ import build.dix_config;
 
 import core.stdc.assert_;
 
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XIproto;
-// import deimos.X11.extensions.XI2proto;
-// import deimos.X11.extensions.geproto;
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XIproto;
+// //import externs.x11.extensions.XI2proto;
+// //import externs.x11.extensions.geproto;
 
 import dix.dix_priv;
 import dix.input_priv;

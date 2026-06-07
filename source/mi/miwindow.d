@@ -49,8 +49,8 @@ SOFTWARE.
 ******************************************************************/
 import build.dix_config;
 
-import deimos.X11.X;
-// import deimos.X11.extensions.shapeconst;
+//import externs.x11.X;
+// //import externs.x11.extensions.shapeconst;
 
 import dix.cursor_priv;
 import dix.dix_priv;

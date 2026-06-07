@@ -53,7 +53,7 @@ SOFTWARE.
  */
 import build.dix_config;
 
-import deimos.X11.X;
+//import externs.x11.X;
 import include.windowstr;
 import include.gcstruct;
 import include.pixmapstr;

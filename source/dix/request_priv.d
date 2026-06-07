@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import deimos.X11.Xproto;
+//public import externs.x11.Xproto;
 
 public import dix.rpcbuf_priv; /* x_rpcbuf_t */
 public import include.dix;

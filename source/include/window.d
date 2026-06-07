@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import deimos.X11.Xproto;
+public import externs.x11.Xproto;
 
 public import include.xlibre_ptrtypes;
 public import include.misc;
@@ -89,32 +89,32 @@ alias ROOT_CLIP_INPUT_ONLY = RootClipMode.ROOT_CLIP_INPUT_ONLY;
 
 alias VisitWindowProcPtr = int function(WindowPtr pWin, void* data);
 
-extern _X_EXPORT TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
+extern void TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
 
-extern _X_EXPORT WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data);
+extern void WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data);
 
-extern _X_EXPORT CreateRootWindow(ScreenPtr);
+extern void CreateRootWindow(ScreenPtr);
 
-extern _X_EXPORT InitRootWindow(WindowPtr);
+extern void InitRootWindow(WindowPtr);
 
 alias RealChildHeadProc = WindowPtr function(WindowPtr pWin);
 
-extern _X_EXPORT RegisterRealChildHeadProc(RealChildHeadProc proc);
+extern void RegisterRealChildHeadProc(RealChildHeadProc proc);
 
-extern _X_EXPORT RealChildHead(WindowPtr);
+extern void RealChildHead(WindowPtr);
 
-extern _X_EXPORT DeleteWindow(void* pWin, XID wid);
+extern void DeleteWindow(void* pWin, XID wid);
 
-extern _X_EXPORT DestroySubwindows(WindowPtr, ClientPtr);
+extern void DestroySubwindows(WindowPtr, ClientPtr);
 
 /* Quartz support on Mac OS X uses the HIToolbox
    framework whose ChangeWindowAttributes function conflicts here. */
 version (OSX) {
 enum ChangeWindowAttributes = Darwin_X_ChangeWindowAttributes;
 }
-extern _X_EXPORT ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
+extern void ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
 
-extern _X_EXPORT ChangeWindowDeviceCursor(WindowPtr, _DeviceIntRec*, _Cursor*);
+extern void ChangeWindowDeviceCursor(WindowPtr, _DeviceIntRec*, _Cursor*);
 
 extern _Cursor* WindowGetDeviceCursor(WindowPtr, _DeviceIntRec*);
 
@@ -137,52 +137,52 @@ else {
                                              /* wa */ );
 }
 
-extern _X_EXPORT GravityTranslate(int, int, int, int, int, int, uint, int*, int*);
+extern void GravityTranslate(int, int, int, int, int, int, uint, int*, int*);
 
-extern _X_EXPORT ConfigureWindow(WindowPtr, Mask, XID*, ClientPtr);
+extern void ConfigureWindow(WindowPtr, Mask, XID*, ClientPtr);
 
-extern _X_EXPORT CirculateWindow(WindowPtr, int, ClientPtr);
+extern void CirculateWindow(WindowPtr, int, ClientPtr);
 
-extern _X_EXPORT ReparentWindow(WindowPtr, WindowPtr, int, int, ClientPtr);
+extern void ReparentWindow(WindowPtr, WindowPtr, int, int, ClientPtr);
 
-extern _X_EXPORT MapWindow(WindowPtr, ClientPtr);
+extern void MapWindow(WindowPtr, ClientPtr);
 
-extern _X_EXPORT MapSubwindows(WindowPtr, ClientPtr);
+extern void MapSubwindows(WindowPtr, ClientPtr);
 
-extern _X_EXPORT UnmapWindow(WindowPtr, Bool);
+extern void UnmapWindow(WindowPtr, Bool);
 
-extern _X_EXPORT UnmapSubwindows(WindowPtr);
+extern void UnmapSubwindows(WindowPtr);
 
-extern _X_EXPORT HandleSaveSet(ClientPtr);
+extern void HandleSaveSet(ClientPtr);
 
-extern _X_EXPORT PointInWindowIsVisible(WindowPtr, int, int);
+extern void PointInWindowIsVisible(WindowPtr, int, int);
 
-extern _X_EXPORT NotClippedByChildren(WindowPtr);
+extern void NotClippedByChildren(WindowPtr);
 
-extern _X_EXPORT SendVisibilityNotify(WindowPtr);
+extern void SendVisibilityNotify(WindowPtr);
 
-extern _X_EXPORT dixSaveScreens(ClientPtr client, int on, int mode);
+extern void dixSaveScreens(ClientPtr client, int on, int mode);
 
-extern _X_EXPORT SaveScreens(int on, int mode);
+extern void SaveScreens(int on, int mode);
 
-extern _X_EXPORT FindWindowWithOptional(WindowPtr);
+extern void FindWindowWithOptional(WindowPtr);
 
-extern _X_EXPORT CheckWindowOptionalNeed(WindowPtr);
+extern void CheckWindowOptionalNeed(WindowPtr);
 
-extern _X_EXPORT MoveWindowInStack(WindowPtr, WindowPtr);
+extern void MoveWindowInStack(WindowPtr, WindowPtr);
 
-extern _X_EXPORT SetWinSize(WindowPtr);
+extern void SetWinSize(WindowPtr);
 
-extern _X_EXPORT SetBorderSize(WindowPtr);
+extern void SetBorderSize(WindowPtr);
 
-extern _X_EXPORT ResizeChildrenWinSize(WindowPtr, int, int, int, int);
+extern void ResizeChildrenWinSize(WindowPtr, int, int, int, int);
 
-extern _X_EXPORT SendShapeNotify(WindowPtr, int);
+extern void SendShapeNotify(WindowPtr, int);
 
-extern _X_EXPORT CreateBoundingShape(WindowPtr);
+extern void CreateBoundingShape(WindowPtr);
 
-extern _X_EXPORT CreateClipShape(WindowPtr);
+extern void CreateClipShape(WindowPtr);
 
-extern _X_EXPORT SetRootClip(ScreenPtr pScreen, int enable);
+extern void SetRootClip(ScreenPtr pScreen, int enable);
 
-extern _X_EXPORT WindowGetVisual(WindowPtr);                         /* WINDOW_H */
+extern void WindowGetVisual(WindowPtr);                         /* WINDOW_H */

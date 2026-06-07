@@ -48,10 +48,10 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import deimos.X11.X;              /* for GContext, Mask */
-public import deimos.X11.Xdefs;          /* for Bool */
-public import deimos.X11.Xproto;
-// public import deimos.X11.Xfuncproto;
+//public import externs.x11.X;              /* for GContext, Mask */
+//public import externs.x11.Xdefs;          /* for Bool */
+//public import externs.x11.Xproto;
+// //public import externs.x11.Xfuncproto;
 
 /*
  *  callback manager stuff

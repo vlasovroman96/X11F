@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-// public import deimos.X11.extensions.dri3proto;
+// //public import externs.x11.extensions.dri3proto;
 public import include.randrstr;
 
 enum DRI3_SCREEN_INFO_VERSION =        4;

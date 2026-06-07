@@ -8,8 +8,8 @@ extern(C): __gshared:
  */
  
 public import core.stdc.stdio;
-public import deimos.X11.X;
-public import deimos.X11.Xdefs;
+//public import externs.x11.X;
+//public import externs.x11.Xdefs;
 
 public import include.xkbsrv;
 

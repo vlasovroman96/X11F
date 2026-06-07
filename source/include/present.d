@@ -24,9 +24,9 @@ extern(C): __gshared:
  */
 
  
-// public import deimos.X11.Xfuncproto;
-public import deimos.X11.Xmd;
-// public import deimos.X11.extensions.presentproto;
+// //public import externs.x11.Xfuncproto;
+//public import externs.x11.Xmd;
+// //public import externs.x11.extensions.presentproto;
 
 public import include.randrstr;
 

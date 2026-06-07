@@ -33,12 +33,12 @@ import std.conv;
 
 import build.dix_config;
 
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.Xatom;
-// import deimos.X11.extensions.xtestproto;
-import deimos.X11.extensions.XI;
-// // import deimos.X11.extensions.XIproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.Xatom;
+// //import externs.x11.extensions.xtestproto;
+//import externs.x11.extensions.XI;
+// // //import externs.x11.extensions.XIproto;
 
 import dix.input_priv;
 import dix.dix_priv;

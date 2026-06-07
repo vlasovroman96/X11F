@@ -58,7 +58,7 @@ import hw.xfree86.loader.loaderProcs;
 version (HAVE_DLFCN_H) {
 
 import core.sys.posix.dlfcn;
-import deimos.X11.Xos;
+//import externs.x11.Xos;
 import include.xf86Module;
 
 } else {

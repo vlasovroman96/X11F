@@ -24,8 +24,8 @@ extern(C): __gshared:
  */
 
  
-public import deimos.X11.X;
-public import deimos.X11.Xmd;
+//public import externs.x11.X;
+//public import externs.x11.Xmd;
 
 public import include.present;
 public import include.syncsdk;

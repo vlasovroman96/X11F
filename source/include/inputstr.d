@@ -49,7 +49,11 @@ SOFTWARE.
 ********************************************************/
 
  
-public import externs.x11.X;
+//public import externs.x11.X;
+//public import externs.x11.extensions.XI2proto;
+
+//public import externs.x11.extensions.XI2;
+// //public import externs.x11.extensions.XI2;
 
 public import pixman;
 public import include.input;
@@ -57,6 +61,9 @@ public import include.window;
 public import include.dixstruct;
 public import include.cursorstr;
 public import include.privates;
+import include.xkbsrv;
+
+alias CARD8 = externs.x11.Xmd.CARD8;
 
 enum string BitIsOn(string ptr, string bit) = `(!!((cast(const(BYTE)*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] & (1 << ((` ~ bit ~ `) & 7))))`;
 enum string SetBit(string ptr, string bit) = `((cast(BYTE*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] |= (1 << ((` ~ bit ~ `) & 7)))`;
@@ -101,7 +108,7 @@ alias SCROLL_TYPE_HORIZONTAL = ScrollType.SCROLL_TYPE_HORIZONTAL;
  *
  * Kludge: OtherClients and InputClients must be compatible, see code.
  */
-struct OtherClients {
+struct _OtherClients {
     OtherClientsPtr next;     /**< Pointer to the next mask */
     XID resource;                 /**< id for putting into resource manager */
     Mask mask;                /**< Core event mask */
@@ -114,7 +121,7 @@ struct OtherClients {
  * multiple client selected for events on the same window, these masks are in
  * a linked list.
  */
-struct InputClients {
+struct _InputClients {
     InputClientsPtr next;     /**< Pointer to the next mask */
     XID resource;                 /**< id for putting into resource manager */
     Mask[EMASKSIZE] mask;                /**< Actual XI event mask, deviceid is index */
@@ -135,7 +142,7 @@ struct InputClients {
  * Exception: for non-device events (Presence events), the MAXDEVICES
  * deviceid is used.
  */
-struct OtherInputMasks {
+struct _OtherInputMasks {
     /**
      * Bitwise OR of all masks by all clients and the window's parent's masks.
      */
@@ -159,10 +166,12 @@ struct OtherInputMasks {
  * keyboard/pointer device) going at once in the server.
  */
 
-struct DetailRec {     /* Grab details may be bit masks */
+struct _DetailRec {     /* Grab details may be bit masks */
     uint exact;
     Mask* pMask;
 }
+
+alias DetailRec = _DetailRec;
 
 union _GrabMask {
     Mask core;
@@ -207,7 +216,7 @@ struct GrabRec {
 /**
  * Sprite information for a device.
  */
-struct SpriteRec {
+struct _SpriteRec {
     CursorPtr current;
     BoxRec hotLimits;           /* logical constraints of hot spot */
     Bool confined;              /* confined to screen */
@@ -282,7 +291,7 @@ struct _ValuatorAccelerationRec {
 }alias ValuatorAccelerationRec = _ValuatorAccelerationRec;
 alias ValuatorAccelerationPtr = _ValuatorAccelerationRec*;
 
-struct ValuatorClassRec {
+struct _ValuatorClass {
     int sourceid;
     int numMotionEvents;
     int first_motion;
@@ -298,6 +307,8 @@ struct ValuatorClassRec {
     int h_scroll_axis;          /* horiz smooth-scrolling axis */
     int v_scroll_axis;          /* vert smooth-scrolling axis */
 }
+
+alias _ValuatorClassRec = _ValuatorClass;
 
 struct TouchListener {
     XID listener;           /* grabs/event selection IDs receiving
@@ -448,7 +459,7 @@ struct LedFeedbackClassRec {
     _XkbSrvLedInfo* xkb_sli;
 }
 
-struct ClassesRec {
+struct _ClassesRec {
     KeyClassPtr key;
     ValuatorClassPtr valuator;
     TouchClassPtr touch;

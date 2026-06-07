@@ -31,11 +31,11 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import build.dix_config;
 
 import core.stdc.stdio;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.keysym;
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XIproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.keysym;
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;

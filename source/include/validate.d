@@ -30,6 +30,7 @@ in this Software without prior written authorization from The Open Group.
  
 public import include.miscstruct;
 public import include.regionstr;
+import mi.mi_priv;
 
 enum VTKind { VTOther, VTStack, VTMove, VTUnmap, VTMap, VTBroken }
 alias VTOther = VTKind.VTOther;

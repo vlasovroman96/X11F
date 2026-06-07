@@ -27,10 +27,10 @@ extern(C): __gshared:
 
  
 public import externs.x11.X;
-import deimos.X11.extensions.Xrender;
+import externs.x11.extensions.Xrender;
 
 
-alias xGlyphInfo = XGlyphInfo;
+// alias xGlyphInfo = XGlyphInfo;
 public import include.picture;
 public import include.screenint;
 

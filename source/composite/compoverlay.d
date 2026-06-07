@@ -45,7 +45,7 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
-import deimos.X11.Xmd;
+//import externs.x11.Xmd;
 
 import dix.window_priv;
 import include.extinit;

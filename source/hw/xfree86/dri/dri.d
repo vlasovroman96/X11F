@@ -47,10 +47,10 @@ import core.stdc.string;
 import core.sys.posix.sys.ioctl;
 import core.sys.posix.sys.time;
 import core.sys.posix.unistd;
-import deimos.X11.X;
-//import deimos.X11.Xfuncproto;
-import deimos.X11.Xproto;
-// import deimos.X11.dri.hw.xfree86.dri.xf86driproto;
+//import externs.x11.X;
+////import externs.x11.Xfuncproto;
+//import externs.x11.Xproto;
+// //import externs.x11.dri.hw.xfree86.dri.xf86driproto;
 
 import dix.dix_priv;
 import dix.screen_hooks_priv;

@@ -4,7 +4,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import deimos.X11.X;
+//import externs.x11.X;
 
 import xkb.xkbsrv_priv;
 

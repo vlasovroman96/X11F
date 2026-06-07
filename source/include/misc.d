@@ -79,12 +79,13 @@ enum MISC_H = 1;
  *
  */
 
-// public import deimos.X11.Xosdefs;
-// // public import deimos.X11.Xfuncproto;
-public import deimos.X11.Xmd;
-public import deimos.X11.X;
-public import deimos.X11.Xdefs;
-public import deimos.X11.Xprotostr;
+// public import externs.x11.Xosdefs;
+public import externs.x11.Xfuncproto;
+public import externs.x11.Xmd;
+public import externs.x11.X;
+// public import externs.x11.Xdefs;
+public import externs.x11.Xprotostr;
+import include.dixstruct;
 
 public import core.stdc.stddef;
 public import core.stdc.stdint;
@@ -124,7 +125,7 @@ enum FALSE = 0;
 }
 
 public import include.os;                 /* for ALLOCATE_LOCAL and DEALLOCATE_LOCAL */
-public import externs.x11.X;         /* for bcopy, bzero, and bcmp */
+//public import externs.x11.X;         /* for bcopy, bzero, and bcmp */
 
 enum NullBox = cast(BoxPtr)0;
 

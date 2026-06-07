@@ -31,7 +31,7 @@ private template HasVersion(string versionId) {
  */
 import build.dix_config;
 
-// import deimos.X11.Xfuncproto;
+// //import externs.x11.Xfuncproto;
 import externs.gl;
 import indirect_size_get;
 import glxserver;

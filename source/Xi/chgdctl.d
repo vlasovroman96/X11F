@@ -55,8 +55,8 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.extensions.XI;
-// // import deimos.X11.extensions.XIproto;     /* control constants */
+//import externs.x11.extensions.XI;
+// // //import externs.x11.extensions.XIproto;     /* control constants */
 
 import dix.dix_priv;
 import dix.exevents_priv;

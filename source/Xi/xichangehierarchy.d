@@ -35,11 +35,11 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import deimos.X11.X;              /* for inputstr.h    */
-import deimos.X11.Xproto;         /* Request macro     */
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XI2proto;
-// import deimos.X11.extensions.geproto;
+//import externs.x11.X;              /* for inputstr.h    */
+//import externs.x11.Xproto;         /* Request macro     */
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XI2proto;
+// //import externs.x11.extensions.geproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;

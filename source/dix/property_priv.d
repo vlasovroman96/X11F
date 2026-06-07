@@ -53,7 +53,7 @@ SOFTWARE.
 
 ******************************************************************/
  
-public import deimos.X11.X;
+//public import externs.x11.X;
 
 public import include.dix;
 public import include.window;

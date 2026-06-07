@@ -34,11 +34,11 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.stdint;
-import deimos.X11.X;
-// import deimos.X11.extensions.XIproto;
-// import deimos.X11.extensions.XI2proto;
-import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2;
+//import externs.x11.X;
+// //import externs.x11.extensions.XIproto;
+// //import externs.x11.extensions.XI2proto;
+//import externs.x11.extensions.XI;
+//import externs.x11.extensions.XI2;
 
 import dix.dix_priv;
 import dix.eventconvert;

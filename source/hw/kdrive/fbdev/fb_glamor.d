@@ -8,7 +8,7 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
-//import deimos.X11.Xfuncproto;
+////import externs.x11.Xfuncproto;
 
 import include.scrnintstr;
 

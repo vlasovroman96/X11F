@@ -65,7 +65,7 @@ import core.stdc.math;
 // version = _XOPEN_SOURCE;           /* to get prototype for hypot on some systems */
 import core.stdc.math;
 }
-import deimos.X11.X;
+//import externs.x11.X;
 
 import mi.mi_priv;
 import os.osdep;

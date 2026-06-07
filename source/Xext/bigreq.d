@@ -31,9 +31,9 @@ from The Open Group.
 
 import build.dix_config;
 
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.extensions.bigreqsproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.extensions.bigreqsproto;
 
 import dix.dix_priv;
 import dix.request_priv;

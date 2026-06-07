@@ -10,9 +10,9 @@ extern(C): __gshared:
 version = XK_MISCELLANY;
 
 public import core.stdc.stdio;
-public import deimos.X11.X;
-public import deimos.X11.Xdefs;
-public import deimos.X11.keysymdef;
+//public import externs.x11.X;
+//public import externs.x11.Xdefs;
+//public import externs.x11.keysymdef;
 
 public import include.xkbsrv;
 

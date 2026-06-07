@@ -25,12 +25,12 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import include.xf86Module;
-import    deimos.X11.X;
+//import   externs.x11.X;
 import    include.scrnintstr;
 import    include.windowstr;
-// import    deimos.X11.fonts.font;
+// //import   externs.x11.fonts.font;
 import    include.dixfontstr;
-// import    deimos.X11.fonts.fontstruct;
+// //import   externs.x11.fonts.fontstruct;
 import    include.mi;
 import    include.regionstr;
 import    include.globals;

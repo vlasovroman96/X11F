@@ -17,7 +17,7 @@ is" without express or implied warranty.
 */
 
  
-public import deimos.X11.Xdefs;
+//public import externs.x11.Xdefs;
 public import externs.xcb.xcb;
 
 struct xnestPrivWin {

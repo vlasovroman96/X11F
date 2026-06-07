@@ -41,11 +41,11 @@ import core.stdc.stdlib;
 import core.stdc.ctype;
 import core.sys.posix.unistd;
 import core.stdc.math;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.keysym;
-import deimos.X11.Xatom;
-// import deimos.X11.extensions.XKMformat;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.keysym;
+//import externs.x11.Xatom;
+// //import externs.x11.extensions.XKMformat;
 
 import dix.screenint_priv;
 import os.bug_priv;

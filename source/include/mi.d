@@ -48,8 +48,8 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import deimos.X11.X;
-// public import deimos.X11.fonts.font;
+//public import externs.x11.X;
+// //public import externs.x11.fonts.font;
 
 public import include.regionstr;
 public import include.validate;

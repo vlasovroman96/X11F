@@ -46,8 +46,8 @@ import core.stdc.errno;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
-import deimos.X11.extensions.randr;
-// import deimos.X11.extensions.Xv;
+//import externs.x11.extensions._randr;
+// //import externs.x11.extensions.Xv;
 
 import config.hotplug_priv;
 import dix.dix_priv;

@@ -53,6 +53,8 @@ alias RegionRec = pixman_region16;
 alias RegionPtr = pixman_region16*;
 
 public import include.miscstruct;
+public import externs.x11.X;
+
 
 /* Return values from RectIn() */
 

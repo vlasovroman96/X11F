@@ -65,7 +65,7 @@ public import include.privates;
 // public import mi.mi;
 public import include.damage;
 public import xfixes.xfixes;
-// public import deimos.X11.extensions.compositeproto;
+// //public import externs.x11.extensions.compositeproto;
 public import include.compositeext;
 public import core.stdc.assert_;
 

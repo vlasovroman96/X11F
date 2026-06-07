@@ -48,8 +48,8 @@ SOFTWARE.
 ******************************************************************/
 import build.dix_config;
 
-import deimos.X11.X;
-import deimos.X11.Xprotostr;
+//import externs.x11.X;
+//import externs.x11.Xprotostr;
 import include.pixmapstr;
 import include.gcstruct;
 import include.windowstr;

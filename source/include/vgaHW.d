@@ -14,7 +14,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-public import deimos.X11.X;
+//public import externs.x11.X;
 public import include.misc;
 public import include.input;
 public import include.scrnintstr;
@@ -25,7 +25,7 @@ public import include.xf86Pci;
 public import include.xf86DDC;
 
 public import include.globals;
-// public import deimos.X11.extensions.dpmsconst;
+// //public import externs.x11.extensions.dpmsconst;
 
 extern _X_EXPORT vgaHWGetIndex();
 

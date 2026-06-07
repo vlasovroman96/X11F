@@ -30,12 +30,12 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.stdio;
-// import deimos.X11.Xos;
-// import deimos.X11.Xfuncs;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.keysym;
-// import deimos.X11.extensions.XKMformat;
+// //import externs.x11.Xos;
+// //import externs.x11.Xfuncs;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.keysym;
+// //import externs.x11.extensions.XKMformat;
 
 import os.log_priv;
 import xkb.xkbfile_priv;

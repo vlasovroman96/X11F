@@ -62,11 +62,11 @@ from The Open Group.
  */
 
 version (XTHREADS) {
-import deimos.X11.Xthreads;
+//import externs.x11.Xthreads;
 }
 version (Windows) {
-import deimos.X11.Xlibint;
-import deimos.X11.Xwinsock;
+//import externs.x11.Xlibint;
+//import externs.x11.Xwinsock;
 }
 
 import os.xhostname;

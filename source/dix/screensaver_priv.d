@@ -7,8 +7,8 @@ extern(C): __gshared:
  */
  
 // // public //import stdbool;
-public import deimos.X11.Xdefs;
-public import deimos.X11.Xmd;
+//public import externs.x11.Xdefs;
+//public import externs.x11.Xmd;
 
 public import include.callback;
 public import include.dix;

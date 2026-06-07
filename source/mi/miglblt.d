@@ -50,12 +50,12 @@ SOFTWARE.
 
 import build.dix_config;
 
-import	deimos.X11.X;
-import	deimos.X11.Xmd;
-import	deimos.X11.Xproto;
+//import   externs.x11.X;
+//import   externs.x11.Xmd;
+//import   externs.x11.Xproto;
 import	misc;
-// import	deimos.X11.fonts.fontstruct;
-// import        deimos.X11.fonts.libxfont2;
+// //import   externs.x11.fonts.fontstruct;
+// import        externs.x11.fonts.libxfont2;
 import	include.dixfontstr;
 import	include.gcstruct;
 import	include.windowstr;

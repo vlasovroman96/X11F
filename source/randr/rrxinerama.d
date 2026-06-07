@@ -72,8 +72,8 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import deimos.X11.Xmd;
-//import deimos.X11.extensions.panoramiXproto;
+//import externs.x11.Xmd;
+////import externs.x11.extensions.panoramiXproto;
 
 import dix.dix_priv;
 import dix.request_priv;

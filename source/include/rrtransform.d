@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-public import deimos.X11.extensions.randr;
+//public import externs.x11.extensions._randr;
 public import include.picturestr;
 
 alias RRTransformRec = _rrTransform;

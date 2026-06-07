@@ -45,7 +45,7 @@ import glamor.glamor_priv;
 import glamor_transform;
 import glamor_transfer;
 
-// import deimos.X11.extensions.Xv;
+// //import externs.x11.extensions.Xv;
 import include.fourcc;
 /* Reference color space transform data */
 struct REF_TRANSFORM {

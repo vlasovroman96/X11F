@@ -38,8 +38,8 @@ import build.dix_config;
 
 import core.stdc.stdio;
 import core.stdc.assert_;
-import deimos.X11.Xmd;
-// import deimos.X11.extensions.recordproto;
+//import externs.x11.Xmd;
+// //import externs.x11.extensions.recordproto;
 
 import dix.cursor_priv;
 import dix.dix_priv;

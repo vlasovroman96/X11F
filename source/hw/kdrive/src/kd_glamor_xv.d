@@ -30,7 +30,7 @@ import hw.kdrive.src.kdrive;
 import kxv;
 import glamor.glamor_priv;
 
-// import deimos.X11.extensions.Xv;
+// //import externs.x11.extensions.Xv;
 import include.fourcc;
 
 enum NUM_FORMATS = 4;

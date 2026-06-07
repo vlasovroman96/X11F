@@ -42,9 +42,9 @@ extern(C): __gshared:
  */
 
  
-// public import deimos.X11.Xfuncproto;
-public import deimos.X11.Xdefs;
-public import deimos.X11.Xmd;
+// //public import externs.x11.Xfuncproto;
+//public import externs.x11.Xdefs;
+//public import externs.x11.Xmd;
 
 enum NULL = cast(void *)null;
 

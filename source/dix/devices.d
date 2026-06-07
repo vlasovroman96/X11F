@@ -53,12 +53,12 @@ import build.dix_config;
 import core.stdc.math;
 import pixman;
 // //import stdbool;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-import deimos.X11.Xatom;
-import deimos.X11.extensions.XI;
-import deimos.X11.extensions.XI2;
-// import deimos.X11.extensions.XIproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+//import externs.x11.Xatom;
+//import externs.x11.extensions.XI;
+//import externs.x11.extensions.XI2;
+// //import externs.x11.extensions.XIproto;
 
 import dix.devices_priv;
 import dix.dix_priv;

@@ -30,8 +30,8 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.math;
-import deimos.X11.X;
-import deimos.X11.Xproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
 
 import include.misc;
 
@@ -51,7 +51,7 @@ import xf86RandR12_priv;
 import include.xf86Crtc;
 
 version (XFreeXDGA) {
-import deimos.X11.extensions.xf86dgaproto;
+//import externs.x11.extensions.xf86dgaproto;
 import include.dgaproc;
 import hw.xfree86.common.dgaproc_priv;
 }

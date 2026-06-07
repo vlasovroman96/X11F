@@ -28,8 +28,8 @@ import build.dix_config;
 
 import core.stdc.stdlib;
 import core.stdc.string;
-import deimos.X11.X;
-import deimos.X11.Xproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
 
 import dix.registry_priv;
 

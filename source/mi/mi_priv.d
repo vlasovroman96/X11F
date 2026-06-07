@@ -6,9 +6,9 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import deimos.X11.Xdefs;
-public import deimos.X11.Xproto;
-public import deimos.X11.Xprotostr;
+//public import externs.x11.Xdefs;
+//public import externs.x11.Xproto;
+//public import externs.x11.Xprotostr;
 
 public import dix.screenint_priv;
 public import include.callback;
@@ -81,7 +81,7 @@ WindowPtr miXYToWindow(ScreenPtr pScreen, SpritePtr pSprite, int x, int y);
 
 _X_EXPORT miExpandDirectColors(ColormapPtr, int, xColorItem*, xColorItem*);
 
-union MiValidateRec {
+union _MiValidateRec {
     struct BeforeValidate {
         xPoint oldAbsCorner;       /* old window position */
         RegionPtr borderVisible;        /* visible region of border, */
@@ -93,5 +93,7 @@ union MiValidateRec {
         RegionRec borderExposed;
     }AfterValidate after;
 }
+
+alias MiValidateRec = _MiValidate;
 
  /* _XSERVER_MI_PRIV_H */

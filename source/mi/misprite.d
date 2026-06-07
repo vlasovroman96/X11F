@@ -34,10 +34,10 @@ in this Software without prior written authorization from The Open Group.
 
 import build.dix_config;
 
-import   deimos.X11.X;
-import   deimos.X11.Xproto;
-// import   deimos.X11.fonts.font;
-// import   deimos.X11.fonts.fontstruct;
+//import   externs.x11.X;
+//import   externs.x11.Xproto;
+// //import   externs.x11.fonts.font;
+// //import   externs.x11.fonts.fontstruct;
 
 import   dix.colormap_priv;
 import   dix.dix_priv;

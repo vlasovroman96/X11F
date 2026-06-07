@@ -30,8 +30,8 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import build.dix_config;
 
 import core.stdc.stdio;
-import deimos.X11.X;
-import deimos.X11.Xproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
 import include.misc;
 import include.inputstr;
 import include.xkbsrv;

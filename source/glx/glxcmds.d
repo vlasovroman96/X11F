@@ -37,7 +37,7 @@ import build.dix_config;
 import core.stdc.string;
 import core.stdc.assert_;
 import externs.glxtokens;
-// import deimos.X11.extensions.presenttokens;
+// //import externs.x11.extensions.presenttokens;
 
 import dix.dix_priv;
 import dix.resource_priv;

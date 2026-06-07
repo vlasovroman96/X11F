@@ -144,7 +144,7 @@ import composite.compint;
 import include.privates;
 import Xext.xace;
 
-import deimos.X11.Xatom;          /* must come after server includes */
+//import externs.x11.Xatom;          /* must come after server includes */
 
 /******
  * Window stuff for server

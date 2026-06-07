@@ -34,9 +34,9 @@ import build.dix_config;
 
 // //import stdbool;
 import core.stdc.stdio;
-import deimos.X11.X;
-import deimos.X11.Xproto;
-// import deimos.X11.extensions.saverproto;
+//import externs.x11.X;
+//import externs.x11.Xproto;
+// //import externs.x11.extensions.saverproto;
 
 import dix.colormap_priv;
 import dix.cursor_priv;
@@ -64,7 +64,7 @@ import include.cursorstr;
 import Xext.xace;
 import include.inputstr;
 version (DPMSExtension) {
-import deimos.X11.extensions.dpmsconst;
+//import externs.x11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
 import include.protocol_versions;

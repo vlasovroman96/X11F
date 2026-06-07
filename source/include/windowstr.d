@@ -58,7 +58,7 @@ public import include.resource;           /* for ROOT_WINDOW_ID_BASE */
 public import include.dix;
 public import include.privates;
 public import include.miscstruct;
-public import deimos.X11.Xprotostr;
+//public import externs.x11.Xprotostr;
 public import include.opaque;
 
 

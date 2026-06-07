@@ -42,7 +42,7 @@ import core.sys.posix.dirent;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import externs.pciaccess;
-import deimos.X11.X;
+//import externs.x11.X;
 
 import os.log_priv;
 import os.osdep;

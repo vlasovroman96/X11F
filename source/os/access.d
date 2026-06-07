@@ -87,15 +87,15 @@ SOFTWARE.
 import build.dix_config;
 
 version (Windows) {
-import deimos.X11.Xwinsock;
+//import externs.x11.Xwinsock;
 }
 
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import os.Xtrans;
-// import deimos.X11.Xauth;
-import deimos.X11.X;
-import deimos.X11.Xproto;
+// //import externs.x11.Xauth;
+//import externs.x11.X;
+//import externs.x11.Xproto;
 import include.misc;
 import core.stdc.errno;
 import core.sys.posix.sys.types;
@@ -177,7 +177,7 @@ import core.sys.posix.libgen;
 }
 
 version = X_INCLUDE_NETDB_H;
-// import deimos.X11.Xos_r;
+// //import externs.x11.Xos_r;
 
 import os.auth;
 import os.client_priv;

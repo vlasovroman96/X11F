@@ -60,10 +60,10 @@ import build.dix_config;
 import core.stdc.errno;
 import core.stdc.stdio;
 version (Windows) {
-import deimos.X11.Xwinsock;
+//import externs.x11.Xwinsock;
 }
-// import deimos.X11.Xos;            /* for strings, fcntl, time */
-import deimos.X11.X;
+// //import externs.x11.Xos;            /* for strings, fcntl, time */
+//import externs.x11.X;
 
 import dix.dix_priv;
 import dix.screensaver_priv;
@@ -95,7 +95,7 @@ enum string GetErrno() = `errno`;
 }
 
 version (DPMSExtension) {
-import deimos.X11.extensions.dpmsconst;
+//import externs.x11.extensions.dpmsconst;
 }
 
 struct _OsTimerRec {

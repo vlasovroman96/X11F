@@ -32,12 +32,12 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-// import deimos.X11.Xos;
-// import deimos.X11.Xfuncs;
-// import deimos.X11.extensions.XKMformat;
-import deimos.X11.X;
-import deimos.X11.keysym;
-import deimos.X11.Xproto;
+// //import externs.x11.Xos;
+// //import externs.x11.Xfuncs;
+// //import externs.x11.extensions.XKMformat;
+//import externs.x11.X;
+//import externs.x11.keysym;
+//import externs.x11.Xproto;
 
 import xkb.xkbfmisc_priv;
 import xkb.xkbout_priv;

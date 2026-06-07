@@ -9,8 +9,8 @@ import core.stdc.config: c_long, c_ulong;
  */
  
 public import core.sys.posix.sys.types;
-public import deimos.X11.Xdefs;
-// public import deimos.X11.Xfuncproto;
+//public import externs.x11.Xdefs;
+// //public import externs.x11.Xfuncproto;
 
 public import include.callback;
 

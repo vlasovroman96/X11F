@@ -17,6 +17,7 @@
 		"-P-I/usr/lib/dbus-1.0/include",
 		"-P-Isource/Xext/dri2",
 		"-P=-I/usr/include/libdrm",
+		"-P=-I/usr/include/X11/fonts/",
 		"-P-Isource",
 		"-P-Isource/hw/xfree86/x86emu",
 		"-P-I/usr/include/linux",
@@ -24,7 +25,9 @@
         "-P=-D__attribute__(x)=",
 		"-P=-D_STRUCT_TIMEVAL",
         "-P=-D_LINUX_TIME_H",
-		"-P=-D__alignof__=sizeof"
+		"-P=-D__alignof__=sizeof",
+		"-P-I/usr/include",
+    	"-P-include", "-Pstddef.h"
     ],
 	"importPaths": [
 		"source"

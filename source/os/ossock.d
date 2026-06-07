@@ -12,7 +12,7 @@ import core.sys.posix.unistd;
 // //import stdbool;
 
 version (Windows) {
-import deimos.X11.Xwinsock;
+//import externs.x11.Xwinsock;
 } else {
 import core.sys.posix.sys.ioctl;
 }

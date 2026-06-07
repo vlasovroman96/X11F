@@ -7,8 +7,8 @@ extern(C): __gshared:
  */
 
  
-public import deimos.X11.Xdefs;
-public import deimos.X11.Xproto;
+//public import externs.x11.Xdefs;
+//public import externs.x11.Xproto;
 
 public import include.dixstruct;
 public import include.privates;

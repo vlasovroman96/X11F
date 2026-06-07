@@ -10,7 +10,7 @@ extern(C): __gshared:
 public import include.extinit;
 
 version (DRI2) {
-public import deimos.X11.extensions.dri2proto;
+//public import externs.x11.extensions.dri2proto;
 extern Bool noDRI2Extension;
 void DRI2ExtensionInit();
 }

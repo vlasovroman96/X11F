@@ -90,7 +90,7 @@ import core.stdc.assert_;                          /* assertion macros */
 import core.stdc.string;                          /* string functions */
 
 static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
-import deimos.X11.Xwinsock;
+//import externs.x11.Xwinsock;
 }
 
 import os.xserver_poll;

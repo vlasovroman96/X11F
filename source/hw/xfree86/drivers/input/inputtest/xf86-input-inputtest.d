@@ -34,7 +34,7 @@ import core.sys.posix.sys.stat;
 import core.sys.posix.sys.un;
 // //import stdbool;
 
-import deimos.X11.Xatom;
+//import externs.x11.Xatom;
 
 import include.xorgVersion;
 

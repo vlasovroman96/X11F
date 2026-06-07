@@ -32,7 +32,7 @@ import externs.linux.kd;
 // import core.sys.linux.
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.ioctl;
-import deimos.X11.keysym;
+//import externs.x11.keysym;
 import externs.linux.apm_bios;
 
 import os.osdep;

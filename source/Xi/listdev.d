@@ -55,10 +55,10 @@ SOFTWARE.
 
 import build.dix_config;
 
-import deimos.X11.X;              /* for inputstr.h    */
-import deimos.X11.Xproto;         /* Request macro     */
-import deimos.X11.extensions.XI;
-// import deimos.X11.extensions.XIproto;
+//import externs.x11.X;              /* for inputstr.h    */
+//import externs.x11.Xproto;         /* Request macro     */
+//import externs.x11.extensions.XI;
+// //import externs.x11.extensions.XIproto;
 
 import dix.devices_priv;
 import dix.dix_priv;

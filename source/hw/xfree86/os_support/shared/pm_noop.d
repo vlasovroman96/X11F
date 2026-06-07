@@ -31,7 +31,7 @@ extern(C): __gshared:
 /* Stubs for the OS-support layer power-management functions. */
 import build.xorg_config;
 
-import deimos.X11.X;
+//import externs.x11.X;
 
 import include.os;
 import include.xf86;

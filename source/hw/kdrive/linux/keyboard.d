@@ -38,7 +38,7 @@ import hw.kdrive.src.kdrive;
 import externs.linux.keyboard;
 import externs.linux.kd;
 version = XK_PUBLISHING;
-import deimos.X11.keysym;
+//import externs.x11.keysym;
 import core.sys.posix.termios;
 import core.sys.posix.sys.ioctl;
 

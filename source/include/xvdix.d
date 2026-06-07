@@ -56,7 +56,7 @@ SOFTWARE.
 */
 
 public import include.scrnintstr;
-// public import deimos.X11.extensions.Xvproto;
+// //public import externs.x11.extensions.Xvproto;
 
 struct _XvRationalRec {
     int numerator;
