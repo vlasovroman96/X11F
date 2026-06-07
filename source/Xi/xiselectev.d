@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// //import externs.x11.extensions.XI2proto;
+// //import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;

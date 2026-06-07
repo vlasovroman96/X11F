@@ -30,8 +30,8 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import build.dix_config;
 
 import core.stdc.stdio;
-//import externs.x11.X;
-//import externs.x11.Xproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 import core.stdc.string;
 
 import xkb.xkbsrv_priv;

@@ -41,7 +41,7 @@ import include.picturestr;
 
 void PictTransform_from_XRenderTransform(PictTransformPtr pict, XRenderTransform* render)
 {
-    pict.matrix[0][0] = render.matrix11;
+    pict.matrix[0][0] = render.matriX11;
     pict.matrix[0][1] = render.matrix12;
     pict.matrix[0][2] = render.matrix13;
 
@@ -56,7 +56,7 @@ void PictTransform_from_XRenderTransform(PictTransformPtr pict, XRenderTransform
 
 void XRenderTransform_from_PictTransform(XRenderTransform* render, PictTransformPtr pict)
 {
-    render.matrix11 = pict.matrix[0][0];
+    render.matriX11 = pict.matrix[0][0];
     render.matrix12 = pict.matrix[0][1];
     render.matrix13 = pict.matrix[0][2];
 

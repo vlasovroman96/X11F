@@ -102,7 +102,7 @@ def parse_match(node):
     return (match, value)
 
 def parse_options(node):
-    '''Parse the x11_* options and return InputClass entries'''
+    '''Parse the X11_* options and return InputClass entries'''
     driver = ''
     ignore = False
     options = []
@@ -123,11 +123,11 @@ def parse_options(node):
             continue
         assert tag in ('addset', 'merge', 'append', 'remove')
 
-        if tag == 'remove' and key == 'input.x11_driver':
+        if tag == 'remove' and key == 'input.X11_driver':
             ignore = True
-        elif key == 'input.x11_driver':
+        elif key == 'input.X11_driver':
             driver = value
-        elif key.startswith('input.x11_options.'):
+        elif key.startswith('input.X11_options.'):
             option = key.split('.', 2)[2]
             options.append((option, value))
 
@@ -139,7 +139,7 @@ def is_match_node(node):
         node.tagName == 'match'
 
 def parse_all_matches(node):
-    '''Parse a x11 match tag and any parents that don't supply their
+    '''Parse a X11 match tag and any parents that don't supply their
     own options'''
     matches = []
 
@@ -180,7 +180,7 @@ def print_section(matches, driver, ignore, options):
     print 'EndSection'
 
 def parse_fdi(fdi):
-    '''Parse x11 matches from fdi'''
+    '''Parse X11 matches from fdi'''
     # find all <match> leaf nodes
     num = 0
     for match_node in fdi.getElementsByTagName('match'):

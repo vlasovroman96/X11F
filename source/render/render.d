@@ -28,11 +28,11 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.stdint;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-//import externs.x11.extensions._render;
-// //import externs.x11.extensions.renderproto;
-// //import externs.x11.Xfuncproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.extensions._render;
+// //import externs.X11.extensions.renderproto;
+// //import externs.X11.Xfuncproto;
 
 import dix.colormap_priv;
 import dix.cursor_priv;
@@ -2786,7 +2786,7 @@ private int ProcRenderSetPictureTransform(ClientPtr client)
 
     if (client.swapped) {
         swapl(&stuff.picture);
-        swapl(&stuff.transform.matrix11);
+        swapl(&stuff.transform.matriX11);
         swapl(&stuff.transform.matrix12);
         swapl(&stuff.transform.matrix13);
         swapl(&stuff.transform.matrix21);

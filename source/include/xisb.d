@@ -30,7 +30,7 @@ extern(C): __gshared:
 
 	
 public import core.sys.posix.unistd;
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 /******************************************************************************
  *		Definitions

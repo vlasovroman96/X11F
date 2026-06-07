@@ -27,8 +27,8 @@ import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
 import core.stdc.stddef;
-// //import externs.x11.fonts.fontstruct; // libxfont2.h missed to include that
-// //import externs.x11.fonts.libxfont2;
+// //import externs.X11.fonts.fontstruct; // libxfont2.h missed to include that
+// //import externs.X11.fonts.libxfont2;
 
 import glamor.glamor_priv;
 import glamor_font;

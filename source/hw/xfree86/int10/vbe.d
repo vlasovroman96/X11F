@@ -15,7 +15,7 @@ import build.xorg_config;
 
 import core.stdc.string;
 
-// //import externs.x11.extensions.dpmsconst;
+// //import externs.X11.extensions.dpmsconst;
 
 import include.xf86;
 import xf86Modes;

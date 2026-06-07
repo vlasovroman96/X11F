@@ -32,8 +32,8 @@ from The Open Group.
 
 import build.dix_config;
 
-//import externs.x11.X;
-// //import externs.x11.extensions.shm;
+//import externs.X11.X;
+// //import externs.X11.extensions.shm;
 
 import include.shmint;
 import mi.mi_priv;

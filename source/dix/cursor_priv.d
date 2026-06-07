@@ -6,10 +6,10 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-// //public import externs.x11.fonts.font;
-//public import externs.x11.X;
-//public import externs.x11.Xdefs;
-//public import externs.x11.Xmd;
+// //public import externs.X11.fonts.font;
+//public import externs.X11.X;
+//public import externs.X11.Xdefs;
+//public import externs.X11.Xmd;
 
 public import dix.screenint_priv;
 public import include.cursor;

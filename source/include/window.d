@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import externs.x11.Xproto;
+public import externs.X11.Xproto;
 
 public import include.xlibre_ptrtypes;
 public import include.misc;

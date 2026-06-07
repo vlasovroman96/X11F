@@ -62,11 +62,11 @@ from The Open Group.
  */
 
 version (XTHREADS) {
-//import externs.x11.Xthreads;
+//import externs.X11.Xthreads;
 }
 version (Windows) {
-//import externs.x11.Xlibint;
-//import externs.x11.Xwinsock;
+//import externs.X11.Xlibint;
+//import externs.X11.Xwinsock;
 }
 
 import os.xhostname;

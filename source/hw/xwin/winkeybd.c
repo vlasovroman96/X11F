@@ -515,7 +515,7 @@ winCheckKeyPressed(WPARAM wParam, LPARAM lParam)
 {
     switch (wParam) {
     case VK_CONTROL:
-        if ((lParam & 0x1ff0000) == 0x11d0000 && g_winKeyState[KEY_RCtrl])
+        if ((lParam & 0x1ff0000) == 0X11d0000 && g_winKeyState[KEY_RCtrl])
             return TRUE;
         if ((lParam & 0x1ff0000) == 0x01d0000 && g_winKeyState[KEY_LCtrl])
             return TRUE;

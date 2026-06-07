@@ -90,8 +90,8 @@ import core.stdc.stdlib;             /* for calloc() */
 import core.stdc.string;             /* for strerror*() */
 import core.sys.posix.sys.stat;
 import core.stdc.time;
-// //import externs.x11.Xfuncproto;
-// //import externs.x11.Xos;
+// //import externs.X11.Xfuncproto;
+// //import externs.X11.Xos;
 
 version (CONFIG_SYSLOG) {
 import core.sys.posix.syslog;

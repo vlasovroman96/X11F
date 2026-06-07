@@ -43,7 +43,7 @@ version = _INDIRECT_SIZE_H_;
  * \author Ian Romanick <idr@us.ibm.com>
  */
 
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 // version (__GNUC__) {
 // enum PURE = __attribute__((pure));

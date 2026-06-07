@@ -31,7 +31,7 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 import core.stdc.string;
-// //import externs.x11.extensions.Xv;
+// //import externs.X11.extensions.Xv;
 import externs.xcb.xcb;
 import externs.xcb.xcb_aux;
 import externs.xcb.xv;

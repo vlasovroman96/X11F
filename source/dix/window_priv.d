@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2025 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.x11.X;
+//public import externs.X11.X;
 
 public import include.dix;
 public import include.window;

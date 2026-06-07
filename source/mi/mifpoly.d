@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 private _X_INLINE ICEIL(double x)
 {

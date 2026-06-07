@@ -63,8 +63,8 @@ import core.sys.posix.sys.types;
 import core.sys.posix.dirent;
 import core.sys.posix.unistd;
 import core.stdc.stdarg;
-//import externs.x11.Xdefs;
-////import externs.x11.Xfuncproto;
+//import externs.X11.Xdefs;
+////import externs.X11.Xfuncproto;
 import core.stdc.limits;
 
 import os.xhostname;

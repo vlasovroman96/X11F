@@ -38,8 +38,8 @@ Author:  Bob Scheifler, MIT X Consortium
 import build.dix_config;
 
 import core.stdc.math;
-//import externs.x11.X;
-//import externs.x11.Xprotostr;
+//import externs.X11.X;
+//import externs.X11.Xprotostr;
 
 import mi.mi_priv;
 

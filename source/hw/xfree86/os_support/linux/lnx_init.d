@@ -28,8 +28,8 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-//import externs.x11.X;
-////import externs.x11.Xmd;
+//import externs.X11.X;
+////import externs.X11.Xmd;
 
 import os.cmdline;
 import os.osdep;

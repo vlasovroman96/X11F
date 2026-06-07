@@ -82,7 +82,7 @@ void setup_int_vect(xf86Int10InfoPtr pInt)
     MEM_WW(pInt, 0x1f << 2, 0xfa6e);
 
     /* int 11 default location (Get Equipment Configuration) */
-    MEM_WW(pInt, 0x11 << 2, 0xf84d);
+    MEM_WW(pInt, 0X11 << 2, 0xf84d);
     /* int 12 default location (Get Conventional Memory Size) */
     MEM_WW(pInt, 0x12 << 2, 0xf841);
     /* int 15 default location (I/O System Extensions) */

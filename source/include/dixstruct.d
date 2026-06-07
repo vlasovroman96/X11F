@@ -25,7 +25,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.x11.Xmd;
+//public import externs.X11.Xmd;
 
 public import include.xlibre_ptrtypes;
 

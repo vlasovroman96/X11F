@@ -35,8 +35,8 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.x11.X;
-//import externs.x11.Xproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 import include.misc;
 import include.os;
 import include.windowstr;

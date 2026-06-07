@@ -4,7 +4,7 @@ extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
-////import externs.x11.Xfuncproto;
+////import externs.X11.Xfuncproto;
 
 /*
  * this is specifically for NVidia proprietary driver: they're again lagging

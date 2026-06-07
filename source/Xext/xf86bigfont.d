@@ -60,11 +60,11 @@ import core.sys.posix.sys.shm;
 import core.sys.posix.sys.stat;
 } /* CONFIG_MITSHM */
 
-//import externs.x11.X;
-//import externs.x11.Xproto;
-// //import externs.x11.extensions.xf86bigfproto;
-// //import externs.x11.fonts.fontstruct; // libxfont2.h missed to include that
-// //import externs.x11.fonts.libxfont2;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.extensions.xf86bigfproto;
+// //import externs.X11.fonts.fontstruct; // libxfont2.h missed to include that
+// //import externs.X11.fonts.libxfont2;
 
 import dix.dix_priv;
 import dix.request_priv;

@@ -49,7 +49,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.x11.keysym;
+//import externs.X11.keysym;
 
 import dix.dix_priv;
 import include.dix;
@@ -828,11 +828,11 @@ private const(BuiltinColor)[783] BuiltinColors = [
     { 255, 255, 255, "white"                  },
     { 245, 245, 245, "white smoke"            },
     { 245, 245, 245, "WhiteSmoke"             },
-    { 190, 190, 190, "x11 gray"               },
-    {   0, 255,   0, "x11 green"              },
-    { 190, 190, 190, "x11 grey"               },
-    { 176,  48,  96, "x11 maroon"             },
-    { 160,  32, 240, "x11 purple"             },
+    { 190, 190, 190, "X11 gray"               },
+    {   0, 255,   0, "X11 green"              },
+    { 190, 190, 190, "X11 grey"               },
+    { 176,  48,  96, "X11 maroon"             },
+    { 160,  32, 240, "X11 purple"             },
     { 190, 190, 190, "X11Gray"                },
     {   0, 255,   0, "X11Green"               },
     { 190, 190, 190, "X11Grey"                },

@@ -24,8 +24,8 @@ extern(C): __gshared:
  */
 
  
-//public import externs.x11.Xmd;
-// //public import externs.x11.extensions.shmproto;
+//public import externs.X11.Xmd;
+// //public import externs.X11.extensions.shmproto;
 
 public import include.screenint;
 public import include.pixmap;

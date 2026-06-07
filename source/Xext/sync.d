@@ -57,10 +57,10 @@ import build.dix_config;
 
 import core.stdc.string;
 import core.stdc.stdio;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-//import externs.x11.Xmd;
-// //import externs.x11.extensions.syncproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.Xmd;
+// //import externs.X11.extensions.syncproto;
 
 import dix.dix_priv;
 import dix.request_priv;

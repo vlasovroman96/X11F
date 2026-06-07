@@ -105,8 +105,8 @@ extern(C): __gshared:
 
 version (_XF86PCI_H) {} else {
 enum _XF86PCI_H = 1;
-// //public import externs.x11.Xarch;
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xarch;
+// //public import externs.X11.Xfuncproto;
 public import include.misc;
 public import externs.pciaccess;
 
@@ -159,7 +159,7 @@ enum PCI_CLASS_WIRELESS =		0x0d;
 enum PCI_CLASS_I2O =			0x0e;
 enum PCI_CLASS_SATELLITE =		0x0f;
 enum PCI_CLASS_CRYPT =			0x10;
-enum PCI_CLASS_DATA_ACQUISITION =	0x11;
+enum PCI_CLASS_DATA_ACQUISITION =	0X11;
 enum PCI_CLASS_UNDEFINED =		0xff;
 
 /* sub class */

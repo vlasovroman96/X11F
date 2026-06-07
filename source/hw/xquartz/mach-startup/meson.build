@@ -24,9 +24,9 @@ xquartz_defs = [
 ]
 
 # X11.bin
-x11appdir = join_paths(bundle_root, 'Contents/MacOS')
+X11appdir = join_paths(bundle_root, 'Contents/MacOS')
 
-x11_bin_deps = [
+X11_bin_deps = [
      meson.get_compiler('c').find_library('Xplugin'),
      dependency('Carbon', method: 'extraframework'),
      cocoa,
@@ -35,14 +35,14 @@ x11_bin_deps = [
 ]
 
 if build_glx
-    x11_bin_deps += [dependency('OpenGL', method: 'extraframework')]
+    X11_bin_deps += [dependency('OpenGL', method: 'extraframework')]
 endif
 
 if build_sparkle
-    x11_bin_deps += sparkle
+    X11_bin_deps += sparkle
 endif
 
-x11_bin_libs = [
+X11_bin_libs = [
     libXquartz,
     libXquartzXpr,
     libxpbproxy,
@@ -52,33 +52,33 @@ x11_bin_libs = [
 ]
 
 if build_glx
-   x11_bin_libs += [libcglcore, libxserver_glx, libglxvnd]
+   X11_bin_libs += [libcglcore, libxserver_glx, libglxvnd]
 endif
 
-x11_bin = executable('X11.bin',
+X11_bin = executable('X11.bin',
      [
       'bundle-main.c',
       mach_startup[1], # mach_startupServer.c
       mach_startup[3], # mach_startupUser.c
      ],
-     link_with: x11_bin_libs,
-     dependencies: [xproto_dep, x11_dep, x11_bin_deps, mach_startup_dep],
+     link_with: X11_bin_libs,
+     dependencies: [xproto_dep, X11_dep, X11_bin_deps, mach_startup_dep],
      include_directories: [inc, '..', top_dir_inc],
      c_args: xquartz_defs,
      link_args: ['-Objc'],
      install: true,
-     install_dir: x11appdir,
+     install_dir: X11appdir,
 )
 
 # X11 (Bundle trampoline)
-x11 = executable('X11',
+X11 = executable('X11',
      [
       'bundle_trampoline.c',
      ],
      c_args: xquartz_defs,
      link_args: ['-Objc'],
      install: true,
-     install_dir: x11appdir,
+     install_dir: X11appdir,
 )
 
 # Xquartz

@@ -38,8 +38,8 @@ import build.dix_config;
 
 import core.stdc.stdio;
 import core.stdc.assert_;
-//import externs.x11.Xmd;
-// //import externs.x11.extensions.recordproto;
+//import externs.X11.Xmd;
+// //import externs.X11.extensions.recordproto;
 
 import dix.cursor_priv;
 import dix.dix_priv;

@@ -54,7 +54,7 @@ public import include.screenint;
 public import include.regionstr;
 public import include.privates;
 public import include.damage;
-// //public import externs.x11.extensions._randr;
+// //public import externs.X11.extensions._randr;
 public import include.picturestr;
 
 struct DrawableRec {

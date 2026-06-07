@@ -43,9 +43,9 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import core.stdc.string;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-// //import externs.x11.extensions.xf86dgaproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.extensions.xf86dgaproto;
 
 import dix.colormap_priv;
 import dix.dix_priv;

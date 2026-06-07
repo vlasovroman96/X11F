@@ -75,7 +75,7 @@ SOFTWARE.
  */
 
  
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 public import include.xlibre_ptrtypes;
 public import include.dixstruct;

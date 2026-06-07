@@ -26,6 +26,8 @@ extern(C): __gshared:
  
 public import include.screenint;
 
+import include.misyncstr;
+
 alias SyncObject = _SyncObject;
 alias SyncFence = _SyncFence;
 alias SyncTrigger = _SyncTrigger;

@@ -58,10 +58,10 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import   externs.x11.X;
-//import   externs.x11.Xmd;
-//import   externs.x11.Xproto;
-// //import   externs.x11.fonts.fontstruct;
+//import   externs.X11.X;
+//import   externs.X11.Xmd;
+//import   externs.X11.Xproto;
+// //import   externs.X11.fonts.fontstruct;
 import	include.misc;
 import	include.gcstruct;
 import	include.dixfontstr;

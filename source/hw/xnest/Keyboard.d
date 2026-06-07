@@ -18,15 +18,15 @@ is" without express or implied warranty.
 import build.xorg_config;
 
 version (Windows) {
-//import externs.x11.Xwinsock;
-//import externs.x11.Xwindows;
+//import externs.X11.Xwinsock;
+//import externs.X11.Xwindows;
 }
 
-//import externs.x11.X;
-//import externs.x11.Xdefs;
-//import externs.x11.Xproto;
-//import externs.x11.keysym;
-// //import externs.x11.extensions.XKB;
+//import externs.X11.X;
+//import externs.X11.Xdefs;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+// //import externs.X11.extensions.XKB;
 import externs.xcb.xcb_xkb;
 
 import os.osdep;

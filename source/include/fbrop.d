@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 struct _mergeRopBits {
     FbBits ca1, cx1, ca2, cx2;

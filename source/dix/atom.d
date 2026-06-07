@@ -52,8 +52,8 @@ import build.dix_config;
 
 import core.stdc.stdio;
 import core.stdc.string;
-//import externs.x11.X;
-//import externs.x11.Xatom;
+//import externs.X11.X;
+//import externs.X11.Xatom;
 
 import dix.atom_priv;
 import dix.dix_priv;

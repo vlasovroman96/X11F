@@ -2896,7 +2896,7 @@ void (*x86emu_optab2[256]) (u8) = {
 /*  0x0e */ x86emuOp2_illegal_op,
 /*  0x0f */ x86emuOp2_illegal_op,
 /*  0x10 */ x86emuOp2_illegal_op,
-/*  0x11 */ x86emuOp2_illegal_op,
+/*  0X11 */ x86emuOp2_illegal_op,
 /*  0x12 */ x86emuOp2_illegal_op,
 /*  0x13 */ x86emuOp2_illegal_op,
 /*  0x14 */ x86emuOp2_illegal_op,

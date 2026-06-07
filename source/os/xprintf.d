@@ -61,7 +61,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// //import externs.x11.Xos;
+// //import externs.X11.Xos;
 import core.stdc.stdarg;
 import core.stdc.stdio;
 import core.stdc.errno;

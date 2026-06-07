@@ -43,7 +43,7 @@ import externs.epoxygl;
 import glxserver;
 import glxutil;
 import composite.compint;
-// //import externs.x11.extensions.composite;
+// //import externs.X11.extensions.composite;
 import glamor.glamor_priv;
 import include.glamor;
 

@@ -8,8 +8,8 @@ import core.stdc.config: c_long, c_ulong;
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.x11.Xdefs;
-//public import externs.x11.Xmd;
+//public import externs.X11.Xdefs;
+//public import externs.X11.Xmd;
 
 public import xkb.xkbrules_priv;
 

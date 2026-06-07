@@ -4,7 +4,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.string;
-//import externs.x11.X;
+//import externs.X11.X;
 
 import dix.colormap_priv;
 import randr.randrstr_priv;

@@ -2,8 +2,8 @@ module include.mioverlay;
 @nogc nothrow:
 extern(C): __gshared:
  
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 alias miOverlayTransFunc = void function(ScreenPtr, int, BoxPtr);
 alias miOverlayInOverlayFunc = Bool function(WindowPtr);

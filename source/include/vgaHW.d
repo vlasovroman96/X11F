@@ -14,7 +14,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-//public import externs.x11.X;
+//public import externs.X11.X;
 public import include.misc;
 public import include.input;
 public import include.scrnintstr;
@@ -25,7 +25,7 @@ public import include.xf86Pci;
 public import include.xf86DDC;
 
 public import include.globals;
-// //public import externs.x11.extensions.dpmsconst;
+// //public import externs.X11.extensions.dpmsconst;
 
 extern _X_EXPORT vgaHWGetIndex();
 
@@ -158,7 +158,7 @@ struct vgaHWRec {
 }
 
 /* Some macros that VGA drivers can use in their ChipProbe() function */
-enum OVERSCAN = 0x11           /* Index of OverScan register */;
+enum OVERSCAN = 0X11           /* Index of OverScan register */;
 
 /* Flags that define how overscan correction should take place */
 enum KGA_FIX_OVERSCAN =  1     /* overcan correction required */;

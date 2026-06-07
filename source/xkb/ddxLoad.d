@@ -34,12 +34,12 @@ import config.xkb_config;
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import core.stdc.ctype;
-//import externs.x11.X;
-// //import externs.x11.Xos;
-//import externs.x11.Xproto;
-//import externs.x11.keysym;
-//import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XKM;
+//import externs.X11.X;
+// //import externs.X11.Xos;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+//import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XKM;
 
 import dix.dix_priv;
 import os.log_priv;

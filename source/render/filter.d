@@ -26,7 +26,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 version =  XK_LATIN1;
-//import externs.x11.keysymdef;
+//import externs.X11.keysymdef;
 
 import dix.screenint_priv;
 

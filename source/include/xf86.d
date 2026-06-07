@@ -39,9 +39,9 @@ extern(C): __gshared:
 public import include.xlibre_ptrtypes;
 public import include.xf86str;
 public import include.xf86Opt;
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 public import core.stdc.stdarg;
-//public import externs.x11.extensions._randr;
+//public import externs.X11.extensions._randr;
 
 /* General parameters */
 extern _X_EXPORT xorgHWAccess;

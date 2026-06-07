@@ -42,7 +42,7 @@ import build.dix_config;
 version = GLAMOR_FOR_XORG;
 import glamor.glamor_priv;
 
-// //import externs.x11.extensions.Xv;
+// //import externs.X11.extensions.Xv;
 import include.fourcc;
 
 enum NUM_FORMATS = 4;

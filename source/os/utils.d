@@ -69,9 +69,9 @@ ulong GetTickCount(){}
 }
 
 static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
-//import externs.x11.Xwinsock;
+//import externs.X11.Xwinsock;
 }
-// //import externs.x11.Xos;
+// //import externs.X11.Xos;
 import core.stdc.stdio;
 import core.stdc.time;
 static if (!HasVersion!"Windows" || !HasVersion!"Windows") {
@@ -79,14 +79,14 @@ import core.sys.posix.sys.time;
 import core.sys.posix.sys.resource;
 }
 import include.misc;
-//import externs.x11.X;
+//import externs.X11.X;
 import os.Xtrans;
 
 import core.sys.posix.libgen;
 
 import include.input;
 import include.dixfont;
-// //import externs.x11.fonts.libxfont2;
+// //import externs.X11.fonts.libxfont2;
 import os.osdep;
 
 version (XDMCP) {
@@ -136,7 +136,7 @@ import dix.dixstruct_priv;
 import Xext.dpmsproc;
 
 version = X_INCLUDE_NETDB_H;
-// //import externs.x11.Xos_r;
+// //import externs.X11.Xos_r;
 
 import core.stdc.errno;
 import Xext.dpms;
@@ -1194,7 +1194,7 @@ int Fclose(void* iop)
 
 version (Windows) {
 
-//import externs.x11.Xwindows;
+//import externs.X11.Xwindows;
 
 const(char)* Win32TempDir()
 {

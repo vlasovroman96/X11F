@@ -27,8 +27,8 @@ SOFTWARE.
  
 public import include.servermd;
 public import include.dixfont;
-// //public import externs.x11.fonts.fontstruct;
-//public import externs.x11.Xproto;         /* for xQueryFontReply */
+// //public import externs.X11.fonts.fontstruct;
+//public import externs.X11.Xproto;         /* for xQueryFontReply */
 
 enum string FONTCHARSET(string font) = `(` ~ font ~ `)`;
 enum string FONTMAXBOUNDS(string font,string field) = `(` ~ font ~ `).info.maxbounds.` ~ field ~ ``;

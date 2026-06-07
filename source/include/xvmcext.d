@@ -3,7 +3,7 @@ module include.xvmcext;
 extern(C): __gshared:
 
  
-// //public import externs.x11.extensions.Xv;
+// //public import externs.X11.extensions.Xv;
 public import include.xvdix;
 
 struct XvMCImageIDList {

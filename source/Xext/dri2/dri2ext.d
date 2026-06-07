@@ -35,10 +35,10 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.x11.X;
-//import externs.x11.Xproto;
-// //import externs.x11.extensions.dri2proto;
-// //import externs.x11.extensions.xfixeswire;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.extensions.dri2proto;
+// //import externs.X11.extensions.xfixeswire;
 
 import dix.dix_priv;
 import dix.request_priv;

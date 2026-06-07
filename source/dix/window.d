@@ -144,7 +144,7 @@ import composite.compint;
 import include.privates;
 import Xext.xace;
 
-//import externs.x11.Xatom;          /* must come after server includes */
+//import externs.X11.Xatom;          /* must come after server includes */
 
 /******
  * Window stuff for server
@@ -158,8 +158,8 @@ import Xext.xace;
 
 Bool bgNoneRoot = FALSE;
 
-private const(ubyte)[4] _back_lsb = [ 0x88, 0x22, 0x44, 0x11 ];
-private const(ubyte)[4] _back_msb = [ 0x11, 0x44, 0x22, 0x88 ];
+private const(ubyte)[4] _back_lsb = [ 0x88, 0x22, 0x44, 0X11 ];
+private const(ubyte)[4] _back_msb = [ 0X11, 0x44, 0x22, 0x88 ];
 
 
 

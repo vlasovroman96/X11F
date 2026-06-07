@@ -30,8 +30,8 @@ import core.stdc.config: c_long, c_ulong;
  *	    Keith Packard, Intel Corporation
  */
  
-//public import externs.x11.X;
-//public import externs.x11.Xproto;
+//public import externs.X11.X;
+//public import externs.X11.Xproto;
 
 public import include.xlibre_ptrtypes;
 public import include.misc;
@@ -44,11 +44,11 @@ public import include.pixmapstr;
 public import include.extnsionst;
 public import include.servermd;
 public import randr.rrtransform;
-//public import externs.x11.extensions._randr;
-// //public import externs.x11.extensions.randrproto;
-//public import externs.x11.extensions._render;      /* we share subpixel order information */
+//public import externs.X11.extensions._randr;
+// //public import externs.X11.extensions.randrproto;
+//public import externs.X11.extensions._render;      /* we share subpixel order information */
 public import include.picturestr;
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 /* required for ABI compatibility for now */
 enum RANDR_10_INTERFACE = 1;

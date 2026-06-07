@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-//import externs.x11.extensions._render;
+//import externs.X11.extensions._render;
 
 import dix.dix_priv;
 import dix.input_priv;

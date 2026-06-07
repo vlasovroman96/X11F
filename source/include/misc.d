@@ -79,7 +79,7 @@ enum MISC_H = 1;
  *
  */
 
-// public import externs.x11.Xosdefs;
+// public import externs.X11.Xosdefs;
 public import externs.X11.Xfuncproto;
 public import externs.X11.Xmd;
 public import externs.X11.X;
@@ -125,7 +125,7 @@ enum FALSE = 0;
 }
 
 public import include.os;                 /* for ALLOCATE_LOCAL and DEALLOCATE_LOCAL */
-//public import externs.x11.X;         /* for bcopy, bzero, and bcmp */
+//public import externs.X11.X;         /* for bcopy, bzero, and bcmp */
 
 enum NullBox = cast(BoxPtr)0;
 

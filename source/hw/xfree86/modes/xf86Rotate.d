@@ -28,9 +28,9 @@ import build.xorg_config;
 import core.stdc.stddef;
 import core.stdc.string;
 import core.stdc.stdio;
-//import externs.x11.Xatom;
-//import externs.x11.extensions._render;
-// //import externs.x11.extensions.dpmsconst;
+//import externs.X11.Xatom;
+//import externs.X11.extensions._render;
+// //import externs.X11.extensions.dpmsconst;
 
 import dix.dix_priv;
 import include.xf86DDC;

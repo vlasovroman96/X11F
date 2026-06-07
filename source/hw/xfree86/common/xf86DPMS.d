@@ -32,7 +32,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-//import externs.x11.X;
+//import externs.X11.X;
 import include.os;
 import include.globals;
 import include.windowstr;
@@ -40,7 +40,7 @@ import include.xf86;
 import include.xf86Priv;
 import xf86Opt_priv;
 version (DPMSExtension) {
-//import externs.x11.extensions.dpmsconst;
+//import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
 import xf86VGAarbiter_priv;

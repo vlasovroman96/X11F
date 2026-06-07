@@ -61,7 +61,7 @@ import core.stdc.assert_;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-////import externs.x11.Xfuncproto;
+////import externs.X11.Xfuncproto;
 import include.Xprintf;
 import include.optionstr;
 

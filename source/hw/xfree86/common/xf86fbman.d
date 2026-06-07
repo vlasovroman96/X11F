@@ -30,11 +30,11 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-//import externs.x11.X;
+//import externs.X11.X;
 
 import dix.screen_hooks_priv;
 
-//import externs.x11.X;
+//import externs.X11.X;
 
 import os.log_priv;
 

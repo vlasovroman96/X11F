@@ -40,7 +40,7 @@ import build.xorg_config;
 import core.stdc.ctype;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
-//import externs.x11.X;
+//import externs.X11.X;
 
 import config.hotplug_priv;
 import os.osdep;

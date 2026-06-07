@@ -1,4 +1,4 @@
-File: .../x11/server/dix/BuiltInAtoms
+File: .../X11/server/dix/BuiltInAtoms
 
 This file is of a fixed format and is used to generate both the file
 include/XAtom.h and dix/initatoms.c. Neither of those files should be

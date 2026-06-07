@@ -198,7 +198,7 @@ private void bswap_test()
     const(ushort) expect_16 = 0xbbaa;
     const(uint) test_32 = 0xaabbccdd;
     const(uint) expect_32 = 0xddccbbaa;
-    const(ulong) test_64 = 0x11223344aabbccdduL;
+    const(ulong) test_64 = 0X11223344aabbccdduL;
     const(ulong) expect_64 = 0xddccbbaa44332211uL;
     ushort result_16 = void;
     uint result_32 = void;

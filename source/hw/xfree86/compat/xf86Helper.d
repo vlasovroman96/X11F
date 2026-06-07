@@ -3,7 +3,7 @@ module hw.cfree86.compat.xf86Helper;
 extern(C): __gshared:
 import build.dix_config;
 
-////import externs.x11.Xfuncproto;
+////import externs.X11.Xfuncproto;
 
 
 import include.xf86Priv;

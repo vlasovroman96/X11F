@@ -64,7 +64,7 @@
 /* default client window id */
 #define CLIENT_WINDOW_ID        0x100001
 /* invalid window ID. use for BadWindow checks. */
-#define INVALID_WINDOW_ID       0x111111
+#define INVALID_WINDOW_ID       0X111111
 /* initial fake sprite position */
 #define SPRITE_X                100
 #define SPRITE_Y                200

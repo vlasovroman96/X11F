@@ -50,7 +50,7 @@ SOFTWARE.
 version (CMAP_H) {} else {
 enum CMAP_H = 1;
 
-//public import externs.x11.Xproto;
+//public import externs.X11.Xproto;
 public import include.screenint;
 public import include.window;
 

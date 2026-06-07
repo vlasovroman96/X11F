@@ -43,7 +43,7 @@ private template HasVersion(string versionId) {
 import build.xorg_config;
 
 import core.sys.posix.sys.stat;
-//import externs.x11.X;
+//import externs.X11.X;
 
 import dix.dix_priv;
 import dix.input_priv;

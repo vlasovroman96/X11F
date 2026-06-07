@@ -41,8 +41,8 @@ of the copyright holder.
 
 import config.kdrive_config;
 
-// //import externs.x11.extensions.Xv;
-// //import externs.x11.extensions.Xvproto;
+// //import externs.X11.extensions.Xv;
+// //import externs.X11.extensions.Xvproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;

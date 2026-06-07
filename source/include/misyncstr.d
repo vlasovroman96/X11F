@@ -30,7 +30,7 @@ public import include.xlibre_ptrtypes;
 public import include.dix;
 public import include.misync;
 public import include.scrnintstr;
-// //public import externs.x11.extensions.syncconst;
+// //public import externs.X11.extensions.syncconst;
 
 /* Sync object types */
 enum SYNC_COUNTER =		0;
@@ -45,7 +45,7 @@ struct _SyncObject {
     Bool beingDestroyed;        /* in process of going away */
 }
 
-struct SyncCounter {
+struct _SyncCounter {
     SyncObject sync;            /* Common sync object data */
     long value;              /* counter value */
     _SysCounterInfo* pSysCounterInfo; /* NULL if not a system counter */

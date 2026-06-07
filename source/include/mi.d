@@ -48,8 +48,8 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.x11.X;
-// //public import externs.x11.fonts.font;
+//public import externs.X11.X;
+// //public import externs.X11.fonts.font;
 
 public import include.regionstr;
 public import include.validate;

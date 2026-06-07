@@ -7,7 +7,7 @@ extern(C): __gshared:
  * Copyright © 2000 Jakub Jelinek (jakub@redhat.com)
  */
  
-//public import externs.x11.Xdefs;
+//public import externs.X11.Xdefs;
 
 public import xf86sbusBus;
 

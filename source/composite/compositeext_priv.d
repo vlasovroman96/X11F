@@ -7,7 +7,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.x11.X;
+//public import externs.X11.X;
 
 public import include.screenint;
 

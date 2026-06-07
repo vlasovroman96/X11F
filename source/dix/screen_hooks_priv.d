@@ -21,8 +21,8 @@ extern(C): __gshared:
  * from generic logic)
  */
  
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 public import include.callback; /* CallbackListPtr */
 public import include.pixmap; /* PixmapPtr */

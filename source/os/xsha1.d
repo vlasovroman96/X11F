@@ -112,7 +112,7 @@ int x_sha1_final(void* ctx, ubyte* result)
 } else version (HAVE_SHA1_IN_CRYPTOAPI) {        /* Use CryptoAPI for SHA1 */
 
 version = WIN32_LEAN_AND_MEAN;
-//import externs.x11.Xwindows;
+//import externs.X11.Xwindows;
 import core.sys.windows.wincrypt;
 
 private HCRYPTPROV hProv;

@@ -123,7 +123,7 @@ Equipment Corporation.
 
 import build.dix_config;
 
-//import externs.x11.X;
+//import externs.X11.X;
 
 import dix.colormap_priv;
 import dix.dix_priv;

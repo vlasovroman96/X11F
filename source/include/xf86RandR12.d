@@ -25,7 +25,7 @@ extern(C): __gshared:
 
  
 public import include.randrstr;
-//public import externs.x11.extensions._render;
+//public import externs.X11.extensions._render;
 
 extern _X_EXPORT xf86RandR12Init(ScreenPtr pScreen);
 extern _X_EXPORT xf86RandR12SetRotations(ScreenPtr pScreen, Rotation rotation);

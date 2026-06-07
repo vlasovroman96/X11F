@@ -30,7 +30,7 @@ extern(C): __gshared:
  * Author: Daniel Stone <daniel@fooishbar.org>
  */
  
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 public import dix.settings_priv;
 

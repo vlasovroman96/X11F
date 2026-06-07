@@ -59,11 +59,11 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.x11.X;
-//import externs.x11.Xproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 import include.inputstr;
-//import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XIproto;
+//import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XIproto;
 import XIstubs;
 import Xext.xace;
 

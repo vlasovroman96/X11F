@@ -35,14 +35,14 @@ import core.stdc.stdlib;
 
 version = X_INCLUDE_STRING_H;
 version = XOS_USE_NO_LOCKING;
-// //import externs.x11.Xos_r;
+// //import externs.X11.Xos_r;
 
-//import externs.x11.Xproto;
-//import externs.x11.X;
-// //import externs.x11.Xos;
-// //import externs.x11.Xfuncs;
-//import externs.x11.Xatom;
-//import externs.x11.keysym;
+//import externs.X11.Xproto;
+//import externs.X11.X;
+// //import externs.X11.Xos;
+// //import externs.X11.Xfuncs;
+//import externs.X11.Xatom;
+//import externs.X11.keysym;
 
 import os.log_priv;
 import xkb.xkbrules_priv;

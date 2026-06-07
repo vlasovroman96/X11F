@@ -13,9 +13,9 @@ import core.stdc.config: c_long, c_ulong;
  *  Xserver's module API/ABI.
  */
 
-//public import externs.x11.Xdefs;
-// // //public import externs.x11.Xfuncproto;
-//public import externs.x11.extensions.XI;
+//public import externs.X11.Xdefs;
+// // //public import externs.X11.Xfuncproto;
+//public import externs.X11.extensions.XI;
 
 public import dix.input_priv;
 public import dix.resource_priv;

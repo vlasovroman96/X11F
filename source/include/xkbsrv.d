@@ -30,15 +30,16 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
  
 alias SrvXkbFreeKeyboard = XkbFreeKeyboard;			
 
-//public import externs.x11.Xdefs;
-// public // //import externs.x11.extensions.XKBproto;
+//public import externs.X11.Xdefs;
+// public // //import externs.X11.extensions.XKBproto;
 
 public import include.xlibre_ptrtypes;
-public import include.xkbstr;
-public import include.xkbrules;
+public import externs.X11.extensions.XKBstr;
+// public import include.xkbrules;
 public import include.inputstr;
-public import include.events;
-
+// public import include.events;
+import externs.X11.extensions.XKB;
+import include.input;
 struct _XkbInterest {
     DeviceIntPtr dev;
     ClientPtr client;

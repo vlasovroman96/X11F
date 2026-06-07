@@ -35,7 +35,7 @@ import build.xorg_config;
 import core.stdc.errno;
 import core.stdc.string;
 import core.sys.posix.sys.mman;
-//import externs.x11.X;
+//import externs.X11.X;
 
 import include.input;
 import include.scrnintstr;

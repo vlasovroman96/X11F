@@ -29,7 +29,7 @@ extern(C): __gshared:
 import config.kdrive_config;
 
 import externs.xcb.xcb_keysyms;
-//import externs.x11.keysym;
+//import externs.X11.keysym;
 
 import fb.fb_priv;
 import mi.mipointer_priv;

@@ -31,8 +31,8 @@ extern(C): __gshared:
  *
  */
  
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 /*
  * This is intended to be stored in the DisplayModeRec's private area.

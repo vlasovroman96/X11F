@@ -34,10 +34,10 @@ import core.stdc.stdlib;
 import core.stdc.ctype;
 import core.sys.posix.unistd;
 import core.stdc.math;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-//import externs.x11.keysym;
-//import externs.x11.Xatom;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+//import externs.X11.Xatom;
 
 import xkb.xkbsrv_priv;
 
@@ -46,7 +46,7 @@ import include.inputstr;
 import include.opaque;
 import include.property;
 import xkb.xkbgeom_priv;
-// //import externs.x11.extensions.XKMformat;
+// //import externs.X11.extensions.XKMformat;
 import core.stdc.assert_;
 
 import test.tests_common;

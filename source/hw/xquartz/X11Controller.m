@@ -314,7 +314,7 @@ extern char *bundle_id_prefix;
     if (self.check_for_updates_item)
         return;  // already did it...
 
-    NSMenu *menu = [self.x11_about_item menu];
+    NSMenu *menu = [self.X11_about_item menu];
 
     NSMenuItem * const check_for_updates_item =
         [menu insertItemWithTitle:NSLocalizedString(@"Check for X11 Updates...", @"Check for X11 Updates...")
@@ -809,7 +809,7 @@ extern char *bundle_id_prefix;
     DarwinSendDDXEvent(kXquartzQuit, 0);
 }
 
-- (IBAction) x11_help:sender
+- (IBAction) X11_help:sender
 {
     AHLookupAnchor(CFSTR("com.apple.machelp"), CFSTR("mchlp2276"));
 }
@@ -822,7 +822,7 @@ extern char *bundle_id_prefix;
     if (item == self.toggle_fullscreen_item)
         return !XQuartzIsRootless;
     else if (menu == [X11App windowsMenu] || menu == dock_menu
-             || (menu == [self.x11_about_item menu] && [item tag] == 42))
+             || (menu == [self.X11_about_item menu] && [item tag] == 42))
         return (AppleWMSelectedEvents() & AppleWMControllerNotifyMask) != 0;
     else
         return TRUE;

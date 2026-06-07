@@ -2,8 +2,8 @@ module include.globals;
 @nogc nothrow:
 extern(C): __gshared:
  
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 /* Global X server variables that are visible to mi, dix, os, and ddx */
 

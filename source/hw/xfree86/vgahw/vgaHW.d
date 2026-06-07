@@ -17,7 +17,7 @@ import core.stdc.stdlib;
 import core.stdc.string;
 import core.sys.posix.unistd;
 
-//import externs.x11.X;
+//import externs.X11.X;
 
 import include.vgaHW;
 import os.log_priv;
@@ -1622,13 +1622,13 @@ void vgaHWGetIOBase(vgaHWPtr hwp)
 void vgaHWLock(vgaHWPtr hwp)
 {
     /* Protect CRTC[0-7] */
-    hwp.writeCrtc(hwp, 0x11, hwp.readCrtc(hwp, 0x11) | 0x80);
+    hwp.writeCrtc(hwp, 0X11, hwp.readCrtc(hwp, 0X11) | 0x80);
 }
 
 void vgaHWUnlock(vgaHWPtr hwp)
 {
     /* Unprotect CRTC[0-7] */
-    hwp.writeCrtc(hwp, 0x11, hwp.readCrtc(hwp, 0x11) & ~0x80);
+    hwp.writeCrtc(hwp, 0X11, hwp.readCrtc(hwp, 0X11) & ~0x80);
 }
 
 void vgaHWEnable(vgaHWPtr hwp)
@@ -1748,9 +1748,9 @@ void vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed)
         hwp.writeCrtc(hwp, 0x15, BLANK_START);
         save.cr10 = hwp.readCrtc(hwp, 0x10);
         hwp.writeCrtc(hwp, 0x10, SYNC_START);
-        save.cr11 = hwp.readCrtc(hwp, 0x11);
+        save.cr11 = hwp.readCrtc(hwp, 0X11);
         /* unprotect group 1 registers; just in case ... */
-        hwp.writeCrtc(hwp, 0x11, ((save.cr11 & 0x70) | SYNC_END));
+        hwp.writeCrtc(hwp, 0X11, ((save.cr11 & 0x70) | SYNC_END));
         save.cr16 = hwp.readCrtc(hwp, 0x16);
         hwp.writeCrtc(hwp, 0x16, BLANK_END);
         save.cr06 = hwp.readCrtc(hwp, 0x06);
@@ -1774,7 +1774,7 @@ void vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed)
         hwp.writeCrtc(hwp, 0x09, ((save.cr09 & 0x20) | (tmp & 0xDF)));
         hwp.writeCrtc(hwp, 0x06, save.cr06);
         hwp.writeCrtc(hwp, 0x16, save.cr16);
-        hwp.writeCrtc(hwp, 0x11, save.cr11);
+        hwp.writeCrtc(hwp, 0X11, save.cr11);
         hwp.writeCrtc(hwp, 0x10, save.cr10);
         hwp.writeCrtc(hwp, 0x15, save.cr15);
         hwp.writeCrtc(hwp, 0x12, save.cr12);

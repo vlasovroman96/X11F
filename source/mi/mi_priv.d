@@ -6,9 +6,9 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.x11.Xdefs;
-//public import externs.x11.Xproto;
-//public import externs.x11.Xprotostr;
+//public import externs.X11.Xdefs;
+//public import externs.X11.Xproto;
+//public import externs.X11.Xprotostr;
 
 public import dix.screenint_priv;
 public import include.callback;

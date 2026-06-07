@@ -42,7 +42,7 @@ import core.sys.posix.dirent;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
 import externs.pciaccess;
-//import externs.x11.X;
+//import externs.X11.X;
 
 import os.log_priv;
 import os.osdep;
@@ -1057,7 +1057,7 @@ void xf86VideoPtrToDriverList(pci_device* dev, XF86MatchedDrivers* md)
         if (dev.device_id == 0x0104)
             driverList[0] = "cyrix";
         break;
-    case 0x1142:
+    case 0X1142:
         driverList[0] = "apm";
         break;
     case 0xedd8:
@@ -1139,7 +1139,7 @@ void xf86VideoPtrToDriverList(pci_device* dev, XF86MatchedDrivers* md)
 		case 0x7121:
 		case 0x7123:
 		case 0x7125:
-		case 0x1132:
+		case 0X1132:
 		case 0x3577:
 		case 0x2562:
 		case 0x3582:
@@ -1168,13 +1168,13 @@ static if (HasVersion!"linux" || HasVersion!"__NetBSD__") {
         driverList[idx++] = "nv";
         break;
     }
-    case 0x1106:
+    case 0X1106:
         driverList[0] = "openchrome";
         break;
     case 0x1b36:
         driverList[0] = "qxl";
         break;
-    case 0x1163:
+    case 0X1163:
         driverList[0] = "rendition";
         break;
     case 0x5333:

@@ -3,7 +3,7 @@ module log;
 extern(C): __gshared:
 import build.dix_config;
 
-////import externs.x11.Xfuncproto;
+////import externs.X11.Xfuncproto;
 
 import include.os;
 

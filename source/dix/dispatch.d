@@ -104,8 +104,8 @@ import build.dix_config;
 import config.version_config;
 
 import core.stdc.stddef;
-// //import externs.x11.fonts.fontstruct;
-// //import externs.x11.fonts.libxfont2;
+// //import externs.X11.fonts.fontstruct;
+// //import externs.X11.fonts.libxfont2;
 
 import dix.client_priv;
 import dix.colormap_priv;

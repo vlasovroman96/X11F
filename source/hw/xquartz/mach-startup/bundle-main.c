@@ -359,7 +359,7 @@ do_request_pid(mach_port_t port, int *my_pid)
 
 /*** Server Startup ***/
 kern_return_t
-do_start_x11_server(mach_port_t port, string_array_t argv,
+do_start_X11_server(mach_port_t port, string_array_t argv,
                     mach_msg_type_number_t argvCnt,
                     string_array_t envp,
                     mach_msg_type_number_t envpCnt)
@@ -381,7 +381,7 @@ do_start_x11_server(mach_port_t port, string_array_t argv,
         return KERN_FAILURE;
     }
 
-    ErrorF("X11.app: do_start_x11_server(): argc=%d\n", argvCnt);
+    ErrorF("X11.app: do_start_X11_server(): argc=%d\n", argvCnt);
     for (i = 0; i < argvCnt; i++) {
         _argv[i] = argv[i];
         ErrorF("\targv[%u] = %s\n", (unsigned)i, argv[i]);
@@ -443,9 +443,9 @@ startup_trigger(int argc, char **argv, char **envp)
             exit(EXIT_FAILURE);
         }
 
-        kr = start_x11_server(mp, newargv, argc, newenvp, envpc);
+        kr = start_X11_server(mp, newargv, argc, newenvp, envpc);
         if (kr != KERN_SUCCESS) {
-            ErrorF("start_x11_server: %s\n", mach_error_string(kr));
+            ErrorF("start_X11_server: %s\n", mach_error_string(kr));
             exit(EXIT_FAILURE);
         }
         exit(EXIT_SUCCESS);

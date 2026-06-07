@@ -84,7 +84,7 @@ QuartzModeEventHandler(int screenNum, XQuartzEvent *e, DeviceIntPtr dev);
 
 int darwin_all_modifier_flags = 0;  // last known modifier state
 int darwin_all_modifier_mask = 0;
-int darwin_x11_modifier_mask = 0;
+int darwin_X11_modifier_mask = 0;
 
 #define FD_ADD_MAX 128
 static int fd_add[FD_ADD_MAX];
@@ -158,7 +158,7 @@ DarwinPressModifierKey(int pressed, int key)
  *  Send events to update the modifier state.
  */
 
-static int darwin_x11_modifier_mask_list[] = {
+static int darwin_X11_modifier_mask_list[] = {
 #ifdef NX_DEVICELCMDKEYMASK
     NX_DEVICELCTLKEYMASK,   NX_DEVICERCTLKEYMASK,
     NX_DEVICELSHIFTKEYMASK, NX_DEVICERSHIFTKEYMASK,
@@ -189,7 +189,7 @@ DarwinUpdateModifiers(int pressed,                    // KeyPress or KeyRelease
         DarwinPressModifierKey(KeyRelease, NX_MODIFIERKEY_ALPHALOCK);
     }
 
-    for (f = darwin_x11_modifier_mask_list; *f; f++)
+    for (f = darwin_X11_modifier_mask_list; *f; f++)
         if (*f & flags && *f != NX_ALPHASHIFTMASK) {
             key = DarwinModifierNXMaskToNXKey(*f);
             if (key == -1)
@@ -360,11 +360,11 @@ void DarwinEQInit(void)
 {
     int *p;
 
-    for (p = darwin_x11_modifier_mask_list; *p; p++) {
-        darwin_x11_modifier_mask |= *p;
+    for (p = darwin_X11_modifier_mask_list; *p; p++) {
+        darwin_X11_modifier_mask |= *p;
     }
 
-    darwin_all_modifier_mask = darwin_x11_modifier_mask;
+    darwin_all_modifier_mask = darwin_X11_modifier_mask;
     for (p = darwin_all_modifier_mask_additions; *p; p++) {
         darwin_all_modifier_mask |= *p;
     }
@@ -603,10 +603,10 @@ DarwinUpdateModKeys(int flags)
 {
     DarwinUpdateModifiers(
         KeyRelease, darwin_all_modifier_flags & ~flags &
-        darwin_x11_modifier_mask);
+        darwin_X11_modifier_mask);
     DarwinUpdateModifiers(
         KeyPress, ~darwin_all_modifier_flags & flags &
-        darwin_x11_modifier_mask);
+        darwin_X11_modifier_mask);
     darwin_all_modifier_flags = flags;
 }
 

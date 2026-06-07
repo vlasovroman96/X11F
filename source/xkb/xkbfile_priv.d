@@ -8,8 +8,8 @@ extern(C): __gshared:
  */
  
 public import core.stdc.stdio;
-//public import externs.x11.X;
-//public import externs.x11.Xdefs;
+//public import externs.X11.X;
+//public import externs.X11.Xdefs;
 
 public import include.xkbsrv;
 

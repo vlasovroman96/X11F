@@ -31,7 +31,7 @@ private template HasVersion(string versionId) {
  
 public import core.stdc.stdio;
 public import core.stdc.stdarg;
-// //public import externs.x11.Xfuncproto;
+// //public import externs.X11.Xfuncproto;
 
 public import include.os;
 

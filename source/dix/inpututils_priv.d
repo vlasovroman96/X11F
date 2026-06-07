@@ -28,8 +28,8 @@ extern(C): __gshared:
 public import include.input;
 public import include.eventstr;
 import dix.inpututils_priv;
-import externs.x11.extensions.XI2proto;
-// public // //import externs.x11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
+// public // //import externs.X11.extensions.XI2proto;
 
 extern Mask[MAXEVENTS][MAXDEVICES] event_filters;
 

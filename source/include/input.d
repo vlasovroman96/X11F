@@ -53,8 +53,8 @@ public import include.xlibre_ptrtypes;
 
 public import include.misc;
 public import include.screenint;
-//public import externs.x11.Xmd;
-//public import externs.x11.Xproto;
+//public import externs.X11.Xmd;
+//public import externs.X11.Xproto;
 public import core.stdc.stdint;
 public import include.window;             /* for WindowPtr */
 public import include.xkbrules;
@@ -62,7 +62,7 @@ public import include.events;
 public import include.list;
 public import include.os;
 import dix.inpututils_priv;
-//public import externs.x11.extensions.XI2;
+//public import externs.X11.extensions.XI2;
 import include.inputstr;
 import dix.input_priv;
 import include.optionstr;

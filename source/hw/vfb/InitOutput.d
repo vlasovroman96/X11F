@@ -33,12 +33,12 @@ from The Open Group.
 import build.dix_config;
 
 version (Windows) {
-//import externs.x11.Xwinsock;
+//import externs.X11.Xwinsock;
 }
 import core.stdc.stdio;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-// //import externs.x11.Xos;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.Xos;
 
 import dix.colormap_priv;
 import dix.dix_priv;
@@ -70,7 +70,7 @@ import core.stdc.errno;
 version (Windows) {} else {
 import externs.sys.param;
 }
-// //import externs.x11.XWDFile;
+// //import externs.X11.XWDFile;
 version (CONFIG_MITSHM) {
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;

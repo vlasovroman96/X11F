@@ -21,7 +21,7 @@ import build.xorg_config;
 enum PRINT_PORT = 0;
 
 import core.sys.posix.unistd;
-// //import externs.x11.Xos;
+// //import externs.X11.Xos;
 
 import os.osdep;
 

@@ -149,7 +149,7 @@
                         <items>
                             <menuItem title="Справка X11" id="421">
                                 <connections>
-                                    <action selector="x11_help:" target="196" id="422"/>
+                                    <action selector="X11_help:" target="196" id="422"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -189,10 +189,10 @@
                 <outlet property="sync_text1" destination="300455" id="300470"/>
                 <outlet property="sync_text2" destination="300459" id="300471"/>
                 <outlet property="toggle_fullscreen_item" destination="544" id="549"/>
-                <outlet property="x11_about_item" destination="58" id="321"/>
+                <outlet property="X11_about_item" destination="58" id="321"/>
             </connections>
         </customObject>
-        <window title="Настройки X11" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="x11_prefs" animationBehavior="default" id="244" userLabel="PrefsPanel" customClass="NSPanel" colorLabel="IBBuiltInLabel-Red">
+        <window title="Настройки X11" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="X11_prefs" animationBehavior="default" id="244" userLabel="PrefsPanel" customClass="NSPanel" colorLabel="IBBuiltInLabel-Red">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="266" y="364.0390625" width="600" height="341"/>
@@ -619,7 +619,7 @@
                 </subviews>
             </view>
         </window>
-        <window title="Программное меню X11" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="x11_apps" animationBehavior="default" id="285" userLabel="EditPrograms" customClass="NSPanel" colorLabel="IBBuiltInLabel-Red">
+        <window title="Программное меню X11" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="X11_apps" animationBehavior="default" id="285" userLabel="EditPrograms" customClass="NSPanel" colorLabel="IBBuiltInLabel-Red">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="302" y="440" width="504" height="271"/>

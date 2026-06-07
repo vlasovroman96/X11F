@@ -28,8 +28,8 @@ in this Software without prior written authorization from The Open Group.
 ********************************************************/
 
  
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 struct miZeroArcPtRec {
     int x;

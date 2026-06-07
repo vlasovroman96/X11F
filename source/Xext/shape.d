@@ -30,9 +30,9 @@ in this Software without prior written authorization from The Open Group.
 import build.dix_config;
 
 import core.stdc.stdlib;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-// //import externs.x11.extensions.shapeproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.extensions.shapeproto;
 
 import dix.client_priv;
 import dix.dix_priv;

@@ -31,10 +31,10 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import build.dix_config;
 
 import core.stdc.stdio;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-//import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XKMformat;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XKMformat;
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -1003,7 +1003,7 @@ int ProcXkbSetControls(ClientPtr client)
                     client.errorValue = _XkbErrCode2(0x10, stuff.axTimeout);
                     return BadValue;
                 }
-                mixin(CHK_MASK_MATCH!(`0x11`, `stuff.axtCtrlsMask`,
+                mixin(CHK_MASK_MATCH!(`0X11`, `stuff.axtCtrlsMask`,
                                `stuff.axtCtrlsValues`));
                 mixin(CHK_MASK_LEGAL!(`0x12`, `stuff.axtCtrlsMask`,
                                `XkbAllBooleanCtrlsMask`));
@@ -1694,7 +1694,7 @@ private int CheckKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, in
 
     if (!(XkbKeySymsMask & req.present))
         return 1;
-    mixin(CHK_REQ_KEY_RANGE2!(`0x11`, `req.firstKeySym`, `req.nKeySyms`, `req`, `(*errorRtrn)`,
+    mixin(CHK_REQ_KEY_RANGE2!(`0X11`, `req.firstKeySym`, `req.nKeySyms`, `req`, `(*errorRtrn)`,
                        `0`));
     for (i = 0; i < req.nKeySyms; i++) {
         KeySym* pSyms = void;
@@ -3499,7 +3499,7 @@ int ProcXkbSetNamedIndicator(ClientPtr client)
     mixin(CHK_LED_DEVICE!(`dev`, `stuff.deviceSpec`, `client`, `DixSetAttrAccess`));
     mixin(CHK_ATOM_ONLY!(`stuff.indicator`));
     mixin(CHK_MASK_LEGAL!(`0x10`, `stuff.whichGroups`, `XkbIM_UseAnyGroup`));
-    mixin(CHK_MASK_LEGAL!(`0x11`, `stuff.whichMods`, `XkbIM_UseAnyMods`));
+    mixin(CHK_MASK_LEGAL!(`0X11`, `stuff.whichMods`, `XkbIM_UseAnyMods`));
 
     /* Dry-run for checks */
     rc = _XkbCreateIndicatorMap(dev, stuff.indicator,
@@ -5054,7 +5054,7 @@ private Status _CheckSetSections(XkbGeometryPtr geom, xkbSetGeometryReq* req, ch
                     return BadMatch;
                 }
                 if (key.color_ndx >= geom.num_colors) {
-                    client.errorValue = _XkbErrCode3(0x11, key.color_ndx,
+                    client.errorValue = _XkbErrCode3(0X11, key.color_ndx,
                                                       geom.num_colors);
                     return BadMatch;
                 }

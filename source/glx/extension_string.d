@@ -28,7 +28,7 @@ extern(C): __gshared:
 /**
  * \file extension_string.c
  * Routines to manage the GLX extension string and GLX version for AIGLX
- * drivers.  This code is loosely based on src/glx/x11/glxextensions.c from
+ * drivers.  This code is loosely based on src/glx/X11/glxextensions.c from
  * Mesa.
  *
  * \author Ian Romanick <idr@us.ibm.com>

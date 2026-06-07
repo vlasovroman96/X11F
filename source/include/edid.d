@@ -16,8 +16,8 @@ import core.stdc.config: c_long, c_ulong;
  
 // public //import stdbool;
 public import core.stdc.stdint;
-//public import externs.x11.Xmd;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xmd;
+// //public import externs.X11.Xfuncproto;
 
 enum STD_TIMINGS = 8;
 enum DET_TIMINGS = 4;
@@ -114,7 +114,7 @@ enum DS_EST_III = 0xF7;
 enum DS_DUMMY = 0x10;
 enum DS_UNKOWN = 0x100         /* type is an int */;
 enum DS_VENDOR = 0x101;
-enum DS_VENDOR_MAX = 0x110;
+enum DS_VENDOR_MAX = 0X110;
 
 /*
  * Display range limit Descriptor of EDID version1, reversion 4

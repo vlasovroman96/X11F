@@ -3,8 +3,8 @@ module geeventinit;
 extern(C): __gshared:
 import build.dix_config;
 
-////import externs.x11.Xfuncproto;
-//import externs.x11.Xproto;
+////import externs.X11.Xfuncproto;
+//import externs.X11.Xproto;
 
 import os.osdep;
 

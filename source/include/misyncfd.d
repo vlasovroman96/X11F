@@ -24,8 +24,8 @@ extern(C): __gshared:
  */
 
  
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 alias SyncScreenCreateFenceFromFdFunc = int function(ScreenPtr screen, SyncFence* fence, int fd, Bool initially_triggered);
 

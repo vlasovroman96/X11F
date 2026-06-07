@@ -49,11 +49,11 @@ SOFTWARE.
 ********************************************************/
 
  
-//public import externs.x11.X;
-//public import externs.x11.extensions.XI2proto;
+//public import externs.X11.X;
+//public import externs.X11.extensions.XI2proto;
 
-//public import externs.x11.extensions.XI2;
-// //public import externs.x11.extensions.XI2;
+public import externs.X11.extensions.XI2;
+// //public import externs.X11.extensions.XI2;
 
 public import pixman;
 public import include.input;
@@ -62,8 +62,9 @@ public import include.dixstruct;
 public import include.cursorstr;
 public import include.privates;
 import include.xkbsrv;
+import include.misyncstr;
 
-alias CARD8 = externs.x11.Xmd.CARD8;
+alias CARD8 = externs.X11.Xmd.CARD8;
 
 enum string BitIsOn(string ptr, string bit) = `(!!((cast(const(BYTE)*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] & (1 << ((` ~ bit ~ `) & 7))))`;
 enum string SetBit(string ptr, string bit) = `((cast(BYTE*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] |= (1 << ((` ~ bit ~ `) & 7)))`;
@@ -251,8 +252,10 @@ version (XINERAMA) {
      */
     ScreenPtr pEnqueueScreen;
     ScreenPtr pDequeueScreen;
-
 }
+
+alias SpriteRec = _SpriteRec;
+
 
 struct _KeyClassRec {
     int sourceid;
@@ -371,6 +374,8 @@ struct _GestureInfo {
     Bool has_listener;          /* true if listener has been setup already */
 }
 
+alias GestureInfoRec = _GestureInfo;
+
 struct _GestureClassRec {
     int sourceid;
     GestureInfoRec gesture;
@@ -419,7 +424,7 @@ alias StringFeedbackPtr = _StringFeedbackClassRec*;
 alias BellFeedbackPtr = _BellFeedbackClassRec*;
 alias LedFeedbackPtr = _LedFeedbackClassRec*;
 
-struct KbdFeedbackClassRec {
+struct _KbdFeedbackClassRec {
     BellProcPtr BellProc;
     KbdCtrlProcPtr CtrlProc;
     KeybdCtrl ctrl;
@@ -427,32 +432,32 @@ struct KbdFeedbackClassRec {
     _XkbSrvLedInfo* xkb_sli;
 }
 
-struct PtrFeedbackClassRec {
+struct _PtrFeedbackClassRec {
     PtrCtrlProcPtr CtrlProc;
     PtrCtrl ctrl;
     PtrFeedbackPtr next;
 }
 
-struct IntegerFeedbackClassRec {
+struct _IntegerFeedbackClassRec {
     IntegerCtrlProcPtr CtrlProc;
     IntegerCtrl ctrl;
     IntegerFeedbackPtr next;
 }
 
-struct StringFeedbackClassRec {
+struct _StringFeedbackClassRec {
     StringCtrlProcPtr CtrlProc;
     StringCtrl ctrl;
     StringFeedbackPtr next;
 }
 
-struct BellFeedbackClassRec {
+struct _BellFeedbackClassRec {
     BellProcPtr BellProc;
     BellCtrlProcPtr CtrlProc;
     BellCtrl ctrl;
     BellFeedbackPtr next;
 }
 
-struct LedFeedbackClassRec {
+struct _LedFeedbackClassRec {
     LedCtrlProcPtr CtrlProc;
     LedCtrl ctrl;
     LedFeedbackPtr next;
@@ -483,13 +488,14 @@ struct XIPropertyValueRec {
     void* data;                 /* private to client */
 }
 
-struct XIPropertyRec {
+struct _XIProperty {
     _XIProperty* next;
     Atom propertyName;
     BOOL deletable;             /* clients can delete this prop? */
     XIPropertyValueRec value;
 }
 
+alias XIPropertyRec = _XIProperty;
 alias XIPropertyPtr = XIPropertyRec*;
 alias XIPropertyValuePtr = XIPropertyValueRec*;
 

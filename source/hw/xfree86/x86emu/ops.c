@@ -1039,7 +1039,7 @@ x86emuOp_adc_byte_RM_R(u8 X86EMU_UNUSED(op1))
 
 /****************************************************************************
 REMARKS:
-Handles opcode 0x11
+Handles opcode 0X11
 ****************************************************************************/
 static void
 x86emuOp_adc_word_RM_R(u8 X86EMU_UNUSED(op1))
@@ -12154,7 +12154,7 @@ void (*x86emu_optab[256]) (u8) = {
 /*  0x0e */ x86emuOp_push_CS,
 /*  0x0f */ x86emuOp_two_byte,
 /*  0x10 */ x86emuOp_adc_byte_RM_R,
-/*  0x11 */ x86emuOp_adc_word_RM_R,
+/*  0X11 */ x86emuOp_adc_word_RM_R,
 /*  0x12 */ x86emuOp_adc_byte_R_RM,
 /*  0x13 */ x86emuOp_adc_word_R_RM,
 /*  0x14 */ x86emuOp_adc_byte_AL_IMM,

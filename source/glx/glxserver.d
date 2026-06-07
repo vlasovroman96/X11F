@@ -32,9 +32,9 @@ extern(C): __gshared:
  * Silicon Graphics, Inc.
  */
 
-//public import externs.x11.X;
-//public import externs.x11.Xproto;
-//public import externs.x11.Xmd;
+//public import externs.X11.X;
+//public import externs.X11.Xproto;
+//public import externs.X11.Xmd;
 public import include.misc;
 public import include.dixstruct;
 public import include.pixmapstr;

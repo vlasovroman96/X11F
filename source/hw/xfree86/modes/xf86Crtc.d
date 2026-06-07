@@ -42,9 +42,9 @@ import xf86Modes;
 import xf86Opt_priv;
 import include.xf86Priv;
 import xf86RandR12_priv;
-//import externs.x11.extensions._render;
-// //import externs.x11.extensions.dpmsconst;
-//import externs.x11.Xatom;
+//import externs.X11.extensions._render;
+// //import externs.X11.extensions.dpmsconst;
+//import externs.X11.Xatom;
 import include.picturestr;
 
 version (XV) {

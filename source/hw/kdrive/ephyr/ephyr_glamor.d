@@ -212,8 +212,8 @@ xcb_connection_t* ephyr_glamor_connect()
         return conn;
     }
 
-    if (epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_EXT_platform_x11") ||
-        epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_KHR_platform_x11")) {
+    if (epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_EXT_platform_X11") ||
+        epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_KHR_platform_X11")) {
         void* lib = null;
         xcb_connection_t* ret = null;
         void* function(void*) x_open_display = cast(void* function(void*)) (cast(void*) dlsym(RTLD_DEFAULT, "XOpenDisplay"));

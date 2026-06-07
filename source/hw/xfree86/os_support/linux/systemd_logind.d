@@ -440,7 +440,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
 
 private void connect_hook(DBusConnection* connection, void* data)
 {
-    const(char)* session_type = "x11";
+    const(char)* session_type = "X11";
     systemd_logind_info* info = data;
     DBusError error = void;
     DBusMessage* msg = null;

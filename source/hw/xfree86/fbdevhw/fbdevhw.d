@@ -35,7 +35,7 @@ import xf86cmap;
 import include.fbdevhw;
 import fbpriv;
 import include.globals;
-// //import externs.x11.extensions.dpmsconst;
+// //import externs.X11.extensions.dpmsconst;
 
 enum PAGE_MASK =               (~(getpagesize() - 1));
 

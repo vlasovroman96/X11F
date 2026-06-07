@@ -753,7 +753,7 @@ void
 X11ApplicationMain(int argc, char **argv, char **envp)
 {
 #ifdef DEBUG
-    while (access("/tmp/x11-block", F_OK) == 0) sleep(1);
+    while (access("/tmp/X11-block", F_OK) == 0) sleep(1);
 #endif
 
     @autoreleasepool {

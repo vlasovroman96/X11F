@@ -60,10 +60,10 @@ import build.dix_config;
 import core.stdc.errno;
 import core.stdc.stdio;
 version (Windows) {
-//import externs.x11.Xwinsock;
+//import externs.X11.Xwinsock;
 }
-// //import externs.x11.Xos;            /* for strings, fcntl, time */
-//import externs.x11.X;
+// //import externs.X11.Xos;            /* for strings, fcntl, time */
+//import externs.X11.X;
 
 import dix.dix_priv;
 import dix.screensaver_priv;
@@ -95,7 +95,7 @@ enum string GetErrno() = `errno`;
 }
 
 version (DPMSExtension) {
-//import externs.x11.extensions.dpmsconst;
+//import externs.X11.extensions.dpmsconst;
 }
 
 struct _OsTimerRec {

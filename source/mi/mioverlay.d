@@ -4,9 +4,9 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.x11.X;
-//import externs.x11.Xmd;
-// //import externs.x11.extensions.shapeproto;
+//import externs.X11.X;
+//import externs.X11.Xmd;
+// //import externs.X11.extensions.shapeproto;
 
 import dix.cursor_priv;
 import dix.dix_priv;

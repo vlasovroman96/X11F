@@ -33,9 +33,9 @@ import core.stdc.ctype;
 import core.stdc.stdio;
 import core.stdc.math;
 import core.stdc.ctype;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-//import externs.x11.keysym;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
 
 import dix.cursor_priv;
 import dix.dix_priv;

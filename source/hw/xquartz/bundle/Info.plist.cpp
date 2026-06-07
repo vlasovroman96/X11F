@@ -23,7 +23,7 @@
 	<key>CFBundleVersion</key>
 		<string>BUNDLE_VERSION</string>
 	<key>CFBundleSignature</key>
-		<string>x11a</string>
+		<string>X11a</string>
 	<key>CSResourcesFileMapped</key>
 		<true/>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>

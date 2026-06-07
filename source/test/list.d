@@ -27,7 +27,7 @@ extern(C): __gshared:
 /* Test relies on assert() */
 import build.dix_config;
 
-//import externs.x11.Xlib;
+//import externs.X11.Xlib;
 import include.list;
 import core.stdc.string;
 import core.stdc.assert_;

@@ -15,9 +15,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 version (PRIVATES_H) {} else {
 enum PRIVATES_H = 1;
 
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xosdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xosdefs;
+// //public import externs.X11.Xfuncproto;
 public import core.stdc.assert_;
 public import include.misc;
 

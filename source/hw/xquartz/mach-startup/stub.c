@@ -50,20 +50,20 @@
 
 #include "launchd_fd.h"
 
-static CFURLRef x11appURL;
-static FSRef x11_appRef;
-static pid_t x11app_pid = 0;
+static CFURLRef X11appURL;
+static FSRef X11_appRef;
+static pid_t X11app_pid = 0;
 aslclient aslc;
 
 static void
-set_x11_path(void)
+set_X11_path(void)
 {
     OSStatus osstatus = LSFindApplicationForInfo(kLSUnknownCreator, CFSTR(kX11AppBundleId),
-                                                 nil, &x11_appRef, &x11appURL);
+                                                 nil, &X11_appRef, &X11appURL);
 
     switch (osstatus) {
     case noErr:
-        if (x11appURL == NULL) {
+        if (X11appURL == NULL) {
             asl_log(aslc, NULL, ASL_LEVEL_ERR,
                     "Xquartz: Invalid response from LSFindApplicationForInfo(%s)",
                     kX11AppBundleId);
@@ -171,8 +171,8 @@ __attribute__((__noreturn__))
 static void
 signal_handler(int sig)
 {
-    if (x11app_pid)
-        kill(x11app_pid, sig);
+    if (X11app_pid)
+        kill(X11app_pid, sig);
     _exit(0);
 }
 
@@ -230,7 +230,7 @@ main(int argc, char **argv, char **envp)
         asl_log(aslc, NULL, ASL_LEVEL_WARNING,
                 "Xquartz: Unable to locate waiting server: %s",
                 server_bootstrap_name);
-        set_x11_path();
+        set_X11_path();
 
         char *listenOnlyArg = "--listenonly";
         CFStringRef silentLaunchArg = CFStringCreateWithCString(NULL, listenOnlyArg, kCFStringEncodingUTF8);
@@ -238,7 +238,7 @@ main(int argc, char **argv, char **envp)
         CFArrayRef passArgv = CFArrayCreate(NULL, (const void**) args, 1, NULL);
         LSApplicationParameters params = { 0, /* CFIndex version == 0 */
                                            kLSLaunchDefaults, /* LSLaunchFlags flags */
-                                           &x11_appRef, /* FSRef application */
+                                           &X11_appRef, /* FSRef application */
                                            NULL, /* void* asyncLaunchRefCon*/
                                            NULL, /* CFDictionaryRef environment */
                                            passArgv, /* CFArrayRef arguments */
@@ -267,7 +267,7 @@ main(int argc, char **argv, char **envp)
     }
 
     /* Get X11.app's pid */
-    request_pid(mp, &x11app_pid);
+    request_pid(mp, &X11app_pid);
 
     /* Handoff the $DISPLAY FD */
     if (launchd_fd != -1) {
@@ -324,13 +324,13 @@ main(int argc, char **argv, char **envp)
         strlcpy(newenvp[i], envp[i], STRING_T_SIZE);
     }
 
-    kr = start_x11_server(mp, newargv, argc, newenvp, envpc);
+    kr = start_X11_server(mp, newargv, argc, newenvp, envpc);
 
     free(newargv);
     free(newenvp);
 
     if (kr != KERN_SUCCESS) {
-        asl_log(aslc, NULL, ASL_LEVEL_ERR, "Xquartz: start_x11_server: %s",
+        asl_log(aslc, NULL, ASL_LEVEL_ERR, "Xquartz: start_X11_server: %s",
                 mach_error_string(kr));
         return EXIT_FAILURE;
     }

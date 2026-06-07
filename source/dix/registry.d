@@ -28,8 +28,8 @@ import build.dix_config;
 
 import core.stdc.stdlib;
 import core.stdc.string;
-//import externs.x11.X;
-//import externs.x11.Xproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 
 import dix.registry_priv;
 

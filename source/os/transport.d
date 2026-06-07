@@ -52,7 +52,7 @@ from The Open Group.
 import build.dix_config;
 
 import core.stdc.stdlib;
-// //import externs.x11.Xfuncproto;
+// //import externs.X11.Xfuncproto;
 
 version = XTRANS_TRANSPORT_C;  /* used to flag Xtransint.h that it's being used
 			       here, not just #included in another file */

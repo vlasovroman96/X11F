@@ -36,7 +36,7 @@ serverprefix do_;
 type string_t = c_string[1024];
 type string_array_t = array[] of string_t;
 
-routine start_x11_server(
+routine start_X11_server(
     port  : mach_port_t;
     argv  : string_array_t;
     envp  : string_array_t);

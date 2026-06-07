@@ -23,11 +23,11 @@ private template HasVersion(string versionId) {
 import build.dix_config;
 
 version (Windows) {
-//import externs.x11.Xwinsock;
+//import externs.X11.Xwinsock;
 import os.Xtrans;
 }
 
-// //import externs.x11.Xos;
+// //import externs.X11.Xos;
 
 static if (!HasVersion!"Windows") {
 import sys.param;
@@ -39,8 +39,8 @@ import core.sys.posix.netdb;
 import core.stdc.errno;
 import core.stdc.stdio;
 import core.stdc.stdlib;
-//import externs.x11.X;
-//import externs.x11.Xmd;
+//import externs.X11.X;
+//import externs.X11.Xmd;
 
 import dix.dix_priv;
 import os.auth;
@@ -59,10 +59,10 @@ version (XDMCP) {
 version (XDMCP_NO_IPV6) {
 }
 
-//import externs.x11.Xdmcp;
+//import externs.X11.Xdmcp;
 
 version = X_INCLUDE_NETDB_H;
-//import externs.x11.Xos_r;
+//import externs.X11.Xos_r;
 
 private const(char)* defaultDisplayClass = "MIT-unspecified";
 

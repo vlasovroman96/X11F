@@ -53,7 +53,7 @@ SOFTWARE.
 
 ******************************************************************/
  
-//public import externs.x11.X;
+//public import externs.X11.X;
 
 public import include.dix;
 public import include.window;

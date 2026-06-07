@@ -67,7 +67,7 @@
 @property (nonatomic, readwrite, strong) IBOutlet NSTextField *sync_text2;
 @property (nonatomic, readwrite, strong) IBOutlet NSPopUpButton *depth;
 
-@property (nonatomic, readwrite, strong) IBOutlet NSMenuItem *x11_about_item;
+@property (nonatomic, readwrite, strong) IBOutlet NSMenuItem *X11_about_item;
 @property (nonatomic, readwrite, strong) IBOutlet NSMenuItem *dock_window_separator;
 @property (nonatomic, readwrite, strong) IBOutlet NSMenuItem *apps_separator;
 @property (nonatomic, readwrite, strong) IBOutlet NSMenuItem *toggle_fullscreen_item;
@@ -107,7 +107,7 @@
 - (IBAction)prefs_changed:(id)sender;
 - (IBAction)prefs_show:(id)sender;
 - (IBAction)quit:(id)sender;
-- (IBAction)x11_help:(id)sender;
+- (IBAction)X11_help:(id)sender;
 
 @end
 

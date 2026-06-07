@@ -531,7 +531,7 @@ private int int42_handler(xf86Int10InfoPtr pInt)
         /* Ignored                                            */
         break;
 
-    case 0x11:
+    case 0X11:
         /* Font Control (subfunction in AL)                   */
         /* Enter:  Various                                    */
         /* Leave:  Various                                    */

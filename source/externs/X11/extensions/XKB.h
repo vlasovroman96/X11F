@@ -493,7 +493,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define	XkbSA_SetControls	0x0e
 #define	XkbSA_LockControls	0x0f
 #define	XkbSA_ActionMessage	0x10
-#define	XkbSA_RedirectKey	0x11
+#define	XkbSA_RedirectKey	0X11
 #define	XkbSA_DeviceBtn		0x12
 #define	XkbSA_LockDeviceBtn	0x13
 #define	XkbSA_DeviceValuator	0x14

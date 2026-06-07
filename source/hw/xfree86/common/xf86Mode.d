@@ -85,7 +85,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-//import externs.x11.X;
+//import externs.X11.X;
 
 import include.edid;
 import include.extinit;

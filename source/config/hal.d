@@ -43,7 +43,7 @@ import include.inputstr;
 import config.config_backends;
 import include.os;
 
-enum LIBHAL_PROP_KEY = "input.x11_options.";
+enum LIBHAL_PROP_KEY = "input.X11_options.";
 enum LIBHAL_XKB_PROP_KEY = "input.xkb.";
 
 struct config_hal_info {
@@ -140,7 +140,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 
     dbus_error_init(&error);
 
-    driver = get_prop_string(hal_ctx, udi, "input.x11_driver");
+    driver = get_prop_string(hal_ctx, udi, "input.X11_driver");
     if (!driver) {
         /* verbose, don't tell the user unless they _want_ to see it */
         LogMessageVerb(X_INFO, 7,
@@ -263,7 +263,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 
         if (psi_key) {
 
-            /* normal options first (input.x11_options.<propname>) */
+            /* normal options first (input.X11_options.<propname>) */
             if (!strncasecmp
                 (psi_key, LIBHAL_PROP_KEY, ((LIBHAL_PROP_KEY) - 1).sizeof)) {
                 char* tmp = void;
@@ -274,8 +274,8 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
                 if (tmp_val) {
 
                     /* xkb needs special handling. HAL specs include
-                     * input.xkb.xyz options, but the x11-input.fdi specifies
-                     * input.x11_options.Xkbxyz options. By default, we use
+                     * input.xkb.xyz options, but the X11-input.fdi specifies
+                     * input.X11_options.Xkbxyz options. By default, we use
                      * the former, unless the specific X11 ones are specified.
                      * Since we can't predict the order in which the keys
                      * arrive, we need to store them.

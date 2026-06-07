@@ -31,10 +31,10 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 
-//import externs.x11.Xatom;
-//import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XIproto;
-// //import externs.x11.extensions.XI2proto;
+//import externs.X11.Xatom;
+//import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XIproto;
+// //import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;

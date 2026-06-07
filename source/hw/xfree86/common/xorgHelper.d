@@ -3,7 +3,7 @@ module xorgHelper;
 extern(C): __gshared:
 import build.xorg_config;
 
-//import externs.x11.X;
+//import externs.X11.X;
 
 import include.xorgVersion;
 

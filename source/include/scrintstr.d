@@ -62,8 +62,8 @@ import include.screenint;
 import include.pixmap;
 import include.misc;
 
-//import externs.x11.X;
-//import externs.x11.extensions.Xrender;
+//import externs.X11.X;
+//import externs.X11.extensions.Xrender;
 import include.validate;
 
 struct _PixmapFormat {

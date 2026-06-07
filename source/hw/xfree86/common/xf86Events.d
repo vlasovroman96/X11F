@@ -54,12 +54,12 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-//import externs.x11.Xatom;
-////import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XIproto;
-//import externs.x11.keysym;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.Xatom;
+////import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XIproto;
+//import externs.X11.keysym;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -87,7 +87,7 @@ import include.xkbsrv;
 import include.xkbsrv;
 
 version (DPMSExtension) {
-//import externs.x11.extensions.dpmsconst;
+//import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
 

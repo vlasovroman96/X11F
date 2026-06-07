@@ -43,9 +43,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import build.xorg_config;
 
 import core.stdc.string;
-//import externs.x11.X;
-//import externs.x11.Xproto;
-// //import externs.x11.driproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.driproto;
 
 import dix.dix_priv;
 import dix.request_priv;

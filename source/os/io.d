@@ -64,19 +64,19 @@ import build.dix_config;
 import dix.dixstruct_priv;
 
 version (Windows) {
-//import externs.x11.Xwinsock;
+//import externs.X11.Xwinsock;
 }
 // //import stdbool;
 import core.stdc.stdio;
 import core.stdc.string;
 import os.Xtrans;
-//import externs.x11.Xmd;
+//import externs.X11.Xmd;
 import core.stdc.errno;
 static if (!HasVersion!"Windows") {
 import core.sys.posix.sys.uio;
 }
-//import externs.x11.X;
-//import externs.x11.Xproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 
 import dix.dix_priv;
 import os.bug_priv;
@@ -122,7 +122,7 @@ private OsCommPtr AvailableInput = cast(OsCommPtr) null;
 enum string get_req_len(string req,string cli) = `((` ~ cli ~ `).swapped ? 
 			      bswap_16((` ~ req ~ `).length) : (` ~ req ~ `).length)`;
 
-//import externs.x11.extensions.bigreqsproto;
+//import externs.X11.extensions.bigreqsproto;
 
 enum string get_big_req_len(string req,string cli) = `((` ~ cli ~ `).swapped ? 
 				  bswap_32((cast(xBigReq*)(` ~ req ~ `)).length) : 

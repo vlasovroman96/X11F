@@ -48,10 +48,10 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.x11.X;              /* for GContext, Mask */
-//public import externs.x11.Xdefs;          /* for Bool */
-//public import externs.x11.Xproto;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.X;              /* for GContext, Mask */
+//public import externs.X11.Xdefs;          /* for Bool */
+//public import externs.X11.Xproto;
+// //public import externs.X11.Xfuncproto;
 
 /*
  *  callback manager stuff

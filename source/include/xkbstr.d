@@ -33,12 +33,12 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-//public import externs.x11.Xdefs;
-//import externs.x11.X;
-import c.X11.extensions.XKB;
-import c.X11.extensions.XKBgeom;
+//public import externs.X11.Xdefs;
+//import externs.X11.X;
+import externs.X11.extensions.XKB;
+import externs.X11.extensions.XKBgeom;
 
-// //public import externs.x11.extensions.XKB;
+// //public import externs.X11.extensions.XKB;
 
 enum string	XkbCharToInt(string v) = `(cast(int) ((` ~ v ~ `) & 0x80 ? ((` ~ v ~ `) | (~0xff)) : ((` ~ v ~ `) & 0x7f)))`;
 enum string	XkbIntTo2Chars(string i, string h, string l) = `((` ~ h ~ `) = (` ~ i ~ ` >> 8) & 0xff, (` ~ l ~ `) = (` ~ i ~ `) & 0xff)`;

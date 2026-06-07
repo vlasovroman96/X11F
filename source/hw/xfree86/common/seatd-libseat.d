@@ -28,7 +28,7 @@ extern(C): __gshared:
  */
 
  
-//public import externs.x11.Xdefs;
+//public import externs.X11.Xdefs;
 
 version (SEATD_LIBSEAT) {
 public import xf86Xinput;

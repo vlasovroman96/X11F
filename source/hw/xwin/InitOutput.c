@@ -486,8 +486,8 @@ winFixupPaths(void)
 #endif                          /* READ_FONTDIRS */
 #ifdef RELOCATE_PROJECTROOT
     {
-        const char *libx11dir = PROJECTROOT "/lib/X11";
-        size_t libx11dir_len = strlen(libx11dir);
+        const char *libX11dir = PROJECTROOT "/lib/X11";
+        size_t libX11dir_len = strlen(libX11dir);
         char *newfp = NULL;
         size_t newfp_len = 0;
         const char *endptr, *ptr, *oldptr = defaultFontPath;
@@ -504,13 +504,13 @@ winFixupPaths(void)
             strncpy(newpath, oldptr, newsize);
             newpath[newsize] = 0;
 
-            if (strncmp(libx11dir, newpath, libx11dir_len) == 0) {
+            if (strncmp(libX11dir, newpath, libX11dir_len) == 0) {
                 char *compose;
 
-                newsize = newsize - libx11dir_len + basedirlen;
+                newsize = newsize - libX11dir_len + basedirlen;
                 compose = calloc(1, newsize + 1);
                 strcpy(compose, basedir);
-                strncat(compose, newpath + libx11dir_len, newsize - basedirlen);
+                strncat(compose, newpath + libX11dir_len, newsize - basedirlen);
                 compose[newsize] = 0;
                 free(newpath);
                 newpath = compose;

@@ -55,10 +55,10 @@ public import include.regionstr;
 public import include.colormap;
 public import include.cursor;
 public import include.validate;
-//public import externs.x11.Xproto;
+//public import externs.X11.Xproto;
 public import include.dix;
 public import include.privates;
-//public import externs.x11.extensions._randr;
+//public import externs.X11.extensions._randr;
 
 struct PixmapFormatRec {
     ubyte depth;

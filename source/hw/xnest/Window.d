@@ -21,9 +21,9 @@ import externs.xcb.xcb;
 import externs.xcb.shape;
 import externs.xcb.xcb_aux;
 
-//import externs.x11.X;
-//import externs.x11.Xdefs;
-//import externs.x11.Xproto;
+//import externs.X11.X;
+//import externs.X11.Xdefs;
+//import externs.X11.Xproto;
 
 import dix.window_priv;
 import include.regionstr;

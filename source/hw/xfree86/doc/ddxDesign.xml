@@ -6631,7 +6631,7 @@ programming the standard VGA registers, and for handling VGA colourmaps.
 		  <listitem><para>initialised with a default colourmap
 		    </para></listitem></varlistentry>
 		<varlistentry>
-		  <term><structfield>ModeReg.Attribute[0x11]</structfield></term>
+		  <term><structfield>ModeReg.Attribute[0X11]</structfield></term>
 		  <listitem><para>initialised with the default overscan index
 		    </para></listitem></varlistentry>
 		<varlistentry>

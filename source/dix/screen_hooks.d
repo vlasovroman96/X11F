@@ -8,7 +8,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.x11.Xdefs;
+//import externs.X11.Xdefs;
 
 import dix.dix_priv;
 import dix.screen_hooks_priv;

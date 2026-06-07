@@ -33,9 +33,9 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.x11.X;
-//import externs.x11.Xatom;
-// //import externs.x11.extensions.XI2proto;
+//import externs.X11.X;
+//import externs.X11.Xatom;
+// //import externs.X11.extensions.XI2proto;
 
 import dix.devices_priv;
 import dix.dix_priv;

@@ -61,7 +61,7 @@ import core.stdc.config: c_long, c_ulong;
  * file parser.
  */
  
-//public import externs.x11.Xdefs;
+//public import externs.X11.Xdefs;
 public import include.xf86Optrec;
 public import include.list;
 

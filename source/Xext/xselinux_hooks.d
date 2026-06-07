@@ -32,8 +32,8 @@ import core.sys.posix.sys.socket;
 import core.stdc.stdio;
 import core.stdc.stdarg;
 // import libaudit;
-//import externs.x11.Xatom;
-// //import externs.x11.Xfuncproto;
+//import externs.X11.Xatom;
+// //import externs.X11.Xfuncproto;
 
 import dix.client_priv;
 import dix.devices_priv;

@@ -52,11 +52,11 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import core.stdc.string;             /* InputClassMatches */
-// ////import externs.x11.Xfuncproto;
-////import externs.x11.Xmd;
-////import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XIproto;
-//import externs.x11.Xatom;
+// ////import externs.X11.Xfuncproto;
+////import externs.X11.Xmd;
+////import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XIproto;
+//import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.input_priv;

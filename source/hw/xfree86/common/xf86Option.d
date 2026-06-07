@@ -38,7 +38,7 @@ import build.xorg_config;
 
 import core.stdc.stdlib;
 import core.stdc.ctype;
-//import externs.x11.X;
+//import externs.X11.X;
 import include.os;
 import include.xf86;
 import xf86Opt_priv;

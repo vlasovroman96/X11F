@@ -7,7 +7,6 @@
 	"copyright": "Copyright © 2026, Роман",
 	"name": "x12",
 	"dependencies": {
-		"libx11" : "~master"
 	},
 	"targetType": "executable",
 	"dflags": [

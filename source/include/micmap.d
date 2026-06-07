@@ -3,9 +3,9 @@ module include.micmap;
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
  
-//public import externs.x11.X;
-//public import externs.x11.Xdefs;
-// //public import externs.x11.Xfuncproto;
+//public import externs.X11.X;
+//public import externs.X11.Xdefs;
+// //public import externs.X11.Xfuncproto;
 
 public import include.colormap;
 public import include.privates;

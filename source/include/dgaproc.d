@@ -4,7 +4,7 @@ extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
 
  
-//public import externs.x11.Xproto;
+//public import externs.X11.Xproto;
 public import include.pixmap;
 
 enum DGA_CONCURRENT_ACCESS =	0x00000001;

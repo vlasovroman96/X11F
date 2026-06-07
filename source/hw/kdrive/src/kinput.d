@@ -35,16 +35,16 @@ import hw.kdrive.src.kdrive;
 import include.inputstr;
 
 version = XK_PUBLISHING;
-//import externs.x11.keysym;
+//import externs.X11.keysym;
 static if (HAVE_X11_XF86KEYSYM_H) {
-//import externs.x11.XF86keysym;
+//import externs.X11.XF86keysym;
 }
 import core.stdc.stdio;
 import core.stdc.signal;
 import core.sys.posix.fcntl;           /* needed for FNONBLOCK & FASYNC */
 
-////import externs.x11.extensions.XI;
-// //import externs.x11.extensions.XIproto;
+////import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XIproto;
 
 import config.hotplug_priv;
 import dix.dix_priv;

@@ -56,14 +56,14 @@ enum _OSDEP_H_ = 1;
 
 public import build.dix_config;
 
-//public import externs.x11.Xdefs;
+//public import externs.X11.Xdefs;
 
 public import core.stdc.limits;
 public import core.stdc.signal;
 public import core.stdc.stddef;
-//public import externs.x11.X;
-//public import externs.x11.Xmd;
-//public import externs.x11.Xdefs;
+//public import externs.X11.X;
+//public import externs.X11.Xmd;
+//public import externs.X11.Xdefs;
 
 /*
  * return the least significant bit in x which is set
@@ -109,7 +109,7 @@ void TimerInit();
 Bool TimerForce(OsTimerPtr);
 
 static if (HasVersion!"Windows" && ! HasVersion!"Cygwin") {
-//public import externs.x11.Xwinsock;
+//public import externs.X11.Xwinsock;
 
 alias sigset_t = _sigset_t;
 

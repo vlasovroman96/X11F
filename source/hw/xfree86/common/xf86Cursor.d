@@ -30,9 +30,9 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-//import externs.x11.X;
-////import externs.x11.Xmd;
-// //import externs.x11.extensions.XIproto;
+//import externs.X11.X;
+////import externs.X11.Xmd;
+// //import externs.X11.extensions.XIproto;
 
 import dix.input_priv;
 import mi.mipointer_priv;

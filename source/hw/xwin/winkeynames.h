@@ -76,7 +76,7 @@
 #define KEY_BackSpace    /* Back Space            0x0e  */   14
 #define KEY_Tab          /* Tab                   0x0f  */   15
 #define KEY_Q            /* Q                     0x10  */   16
-#define KEY_W            /* W                     0x11  */   17
+#define KEY_W            /* W                     0X11  */   17
 #define KEY_E            /* E                     0x12  */   18
 #define KEY_R            /* R                     0x13  */   19
 #define KEY_T            /* T                     0x14  */   20

@@ -10,8 +10,8 @@ import std.system;
  */
 
 //#pragma once
-// //import externs.x11.Xarch;
-// //import externs.x11.Xmd;
+// //import externs.X11.Xarch;
+// //import externs.X11.Xmd;
 
 import std.system : Endian;
 enum X_LITTLE_ENDIAN = (std.system.endian == Endian.littleEndian);
