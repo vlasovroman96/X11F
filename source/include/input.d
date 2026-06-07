@@ -61,8 +61,11 @@ public import include.xkbrules;
 public import include.events;
 public import include.list;
 public import include.os;
+import dix.inpututils_priv;
 //public import externs.x11.extensions.XI2;
 import include.inputstr;
+import dix.input_priv;
+import include.optionstr;
 
 enum DEFAULT_KEYBOARD_CLICK = 	0;
 enum DEFAULT_BELL =		50;

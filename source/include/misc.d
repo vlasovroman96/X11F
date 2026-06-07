@@ -80,11 +80,11 @@ enum MISC_H = 1;
  */
 
 // public import externs.x11.Xosdefs;
-public import externs.x11.Xfuncproto;
-public import externs.x11.Xmd;
-public import externs.x11.X;
-// public import externs.x11.Xdefs;
-public import externs.x11.Xprotostr;
+public import externs.X11.Xfuncproto;
+public import externs.X11.Xmd;
+public import externs.X11.X;
+// public import externs.X11.Xdefs;
+public import externs.X11.Xprotostr;
 import include.dixstruct;
 
 public import core.stdc.stddef;

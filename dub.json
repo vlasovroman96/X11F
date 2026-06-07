@@ -26,8 +26,7 @@
 		"-P=-D_STRUCT_TIMEVAL",
         "-P=-D_LINUX_TIME_H",
 		"-P=-D__alignof__=sizeof",
-		"-P-I/usr/include",
-    	"-P-include", "-Pstddef.h"
+		"-P-Isource/externs"
     ],
 	"importPaths": [
 		"source"

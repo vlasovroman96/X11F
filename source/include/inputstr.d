@@ -321,7 +321,7 @@ struct TouchListener {
     GrabPtr grab;
 }
 
-struct TouchPointInfoRec {
+struct _TouchPointInfo {
     uint client_id;         /* touch ID as seen in client events */
     int sourceid;               /* Source device's ID for this touchpoint */
     Bool active;                /* whether or not the touch is active */
@@ -339,7 +339,7 @@ struct TouchPointInfoRec {
     size_t history_size;        /* Size of history in elements */
 }
 
-struct TouchClassRec {
+struct _TouchClassRec {
     int sourceid;
     TouchPointInfoPtr touches;
     ushort num_touches; /* number of allocated touches */
@@ -360,7 +360,7 @@ struct GestureListener {
     GrabPtr grab;
 }
 
-struct GestureInfoRec {
+struct _GestureInfo {
     int sourceid;               /* Source device's ID for this gesture */
     Bool active;                /* whether or not the gesture is active */
     ubyte type;               /* Gesture type: either ET_GesturePinchBegin or
@@ -371,7 +371,7 @@ struct GestureInfoRec {
     Bool has_listener;          /* true if listener has been setup already */
 }
 
-struct GestureClassRec {
+struct _GestureClassRec {
     int sourceid;
     GestureInfoRec gesture;
     ushort max_touches; /* maximum number of touches, may be 0 */

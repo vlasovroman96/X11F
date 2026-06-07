@@ -69,8 +69,8 @@ SOFTWARE.
 
 ******************************************************************/
 
-#include <X11/Xmd.h>
-#include <X11/Xprotostr.h>
+#include <../Xmd.h>
+#include <../Xprotostr.h>
 
 /*
  * Define constants for the sizes of the network packets.  The sz_ prefix is

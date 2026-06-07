@@ -57,7 +57,7 @@ public import include.cursor;
 public import include.input;
 public import include.inputstr;
 
-struct DDXTouchPointInfoRec {
+struct _DDXTouchPointInfo {
     uint client_id;         /* touch ID as seen in client events */
     Bool active;                /* whether or not the touch is active */
     uint ddx_id;            /* touch ID given by the DDX */
