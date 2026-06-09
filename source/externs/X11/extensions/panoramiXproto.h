@@ -28,6 +28,8 @@ Equipment Corporation.
 #ifndef _PANORAMIXPROTO_H_
 #define _PANORAMIXPROTO_H_
 
+#include <X11/Xmd.h>
+
 #define PANORAMIX_MAJOR_VERSION         1       /* current version number */
 #define PANORAMIX_MINOR_VERSION         1
 

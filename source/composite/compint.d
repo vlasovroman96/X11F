@@ -107,14 +107,14 @@ alias CompSubwindowsPtr = _CompSubwindows*;
 enum COMP_INCLUDE_RGB24_VISUAL = 0;
 
 
-alias CompOverlayClientPtr = _CompOverlayClientRec*;
 
-struct CompOverlayClientRec {
+struct _CompOverlayClientRec {
     CompOverlayClientPtr pNext;
     ClientPtr pClient;
     ScreenPtr pScreen;
     XID resource;
 }
+alias CompOverlayClientPtr = _CompOverlayClientRec*;
 
 struct CompImplicitRedirectException {
     XID parentVisual;

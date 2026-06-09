@@ -50,7 +50,9 @@ SOFTWARE.
 version (SERVERMD_H) {} else {
 enum SERVERMD_H = 1;
 
-//public import externs.X11.X;		/* for X_LITTLE_ENDIAN/X_BIG_ENDIAN */
+import build.dix_config;
+
+public import externs.X11.X;		/* for X_LITTLE_ENDIAN/X_BIG_ENDIAN */
 
 static if (X_BYTE_ORDER == X_LITTLE_ENDIAN) {
 enum IMAGE_BYTE_ORDER =        LSBFirst;

@@ -1,4 +1,4 @@
-module xacestr;
+module Xext.xacestr;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -74,7 +74,7 @@ struct XaceReceiveAccessRec {
 /* XACE_SELECTION_ACCESS */
 struct XaceSelectionAccessRec {
     ClientPtr client;
-    Selection** ppSel;
+    _Selection** ppSel;
     Mask access_mode;
     int status;
 }

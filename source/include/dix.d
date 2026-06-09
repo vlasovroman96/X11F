@@ -135,7 +135,7 @@ extern int dixLookupDrawable(DrawablePtr* result, XID id, ClientPtr client, Mask
 
 extern int dixLookupFontable(FontPtr* result, XID id, ClientPtr client, Mask access_mode);
 
-extern int NoopDDA();
+// extern int NoopDDA();
 
 alias ServerBlockHandlerProcPtr = void function(void* blockData, void* timeout);
 

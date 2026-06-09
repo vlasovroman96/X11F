@@ -27,10 +27,10 @@ extern(C): __gshared:
 public import include.misc;
 public import include.scrnintstr;
 
-extern void  CompositeRegisterAlternateVisuals(ScreenPtr pScreen, VisualID* vids, int nVisuals);
+extern bool CompositeRegisterAlternateVisuals(ScreenPtr pScreen, VisualID* vids, int nVisuals);
 
-extern void  compIsAlternateVisual(ScreenPtr pScreen, XID visual);
+extern bool compIsAlternateVisual(ScreenPtr pScreen, XID visual);
 
-extern void  CompositeClientWindowType;
+extern RESTYPE CompositeClientWindowType;
 
                           /* _COMPOSITEEXT_H_ */

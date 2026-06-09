@@ -32,7 +32,15 @@ import include.extnsionst;
 import include.pixmapstr;
 import include.regionstr;
 import include.gcstruct;
-import xacestr;
+import Xext.xacestr;
+// import externs.
+
+enum XACE_RESOURCE_ACCESS =		2;
+enum XACE_PROPERTY_ACCESS =		4;
+enum XACE_SEND_ACCESS =		5;
+enum XACE_RECEIVE_ACCESS =		6;
+enum XACE_SELECTION_ACCESS =		10;
+enum XACE_NUM_HOOKS =			13;
 
 CallbackListPtr[XACE_NUM_HOOKS] XaceHooks = 0;
 
@@ -45,7 +53,7 @@ int XaceHookPropertyAccess(ClientPtr client, WindowPtr pWin, PropertyPtr* ppProp
     return rec.status;
 }
 
-int XaceHookSelectionAccess(ClientPtr client, Selection** ppSel, Mask access_mode)
+int XaceHookSelectionAccess(ClientPtr client, _Selection** ppSel, Mask access_mode)
 {
     XaceSelectionAccessRec rec = { client, ppSel, access_mode, Success };
     CallCallbacks(&XaceHooks[XACE_SELECTION_ACCESS], &rec);

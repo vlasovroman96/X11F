@@ -117,19 +117,19 @@ alias GetImageProcPtr = void function(DrawablePtr, int, int, int, int, uint, c_u
 
 alias GetSpansProcPtr = void function(DrawablePtr, int, DDXPointPtr, int*, int, char*);
 
-alias SourceValidateProcPtr = void function(DrawablePtr, int, int, int, int, uint);
+// alias SourceValidateProcPtr = void function(DrawablePtr, int, int, int, int, uint);
 
-alias CreateWindowProcPtr = Bool function(WindowPtr);
+// alias CreateWindowProcPtr = Bool function(WindowPtr);
 
 alias DestroyWindowProcPtr = Bool function(WindowPtr);
 
 alias PositionWindowProcPtr = Bool function(WindowPtr, int, int);
 
-alias ChangeWindowAttributesProcPtr = Bool function(WindowPtr, c_ulong);
+// alias ChangeWindowAttributesProcPtr = Bool function(WindowPtr, c_ulong);
 
-alias RealizeWindowProcPtr = Bool function(WindowPtr);
+// alias RealizeWindowProcPtr = Bool function(WindowPtr);
 
-alias UnrealizeWindowProcPtr = Bool function(WindowPtr);
+// alias UnrealizeWindowProcPtr = Bool function(WindowPtr);
 
 alias RestackWindowProcPtr = void function(WindowPtr, WindowPtr);
 
@@ -141,11 +141,11 @@ alias WindowExposuresProcPtr = void function(WindowPtr, RegionPtr);
 
 alias PaintWindowProcPtr = void function(WindowPtr, RegionPtr, int);
 
-alias CopyWindowProcPtr = void function(WindowPtr, xPoint, RegionPtr);
+// alias CopyWindowProcPtr = void function(WindowPtr, xPoint, RegionPtr);
 
 alias ClearToBackgroundProcPtr = void function(WindowPtr, int, int, int, int, Bool);
 
-alias ClipNotifyProcPtr = void function(WindowPtr, int, int);
+// alias ClipNotifyProcPtr = void function(WindowPtr, int, int);
 
 alias SetWindowVRRModeProcPtr = void function(WindowPtr pWindow, WindowVRRMode mode);
 
@@ -184,13 +184,13 @@ alias CursorWarpedToProcPtr = void function(DeviceIntPtr, ScreenPtr, ClientPtr, 
 
 alias CursorConfinedToProcPtr = void function(DeviceIntPtr, ScreenPtr, WindowPtr);
 
-alias CreateGCProcPtr = Bool function(GCPtr);
+// alias CreateGCProcPtr = Bool function(GCPtr);
 
 alias CreateColormapProcPtr = Bool function(ColormapPtr);
 
 alias DestroyColormapProcPtr = void function(ColormapPtr);
 
-alias InstallColormapProcPtr = void function(ColormapPtr);
+// alias InstallColormapProcPtr = void function(ColormapPtr);
 
 alias UninstallColormapProcPtr = void function(ColormapPtr);
 
@@ -227,21 +227,21 @@ alias MarkWindowProcPtr = void function(WindowPtr);
 
 alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr, WindowPtr, WindowPtr*);
 
-alias ConfigNotifyProcPtr = int function(WindowPtr, int, int, int, int, int, WindowPtr);
+// alias ConfigNotifyProcPtr = int function(WindowPtr, int, int, int, int, int, WindowPtr);
 
-alias MoveWindowProcPtr = void function(WindowPtr, int, int, WindowPtr, VTKind);
+// alias MoveWindowProcPtr = void function(WindowPtr, int, int, WindowPtr, VTKind);
 
-alias ResizeWindowProcPtr = void function(WindowPtr, int, int, uint, uint, WindowPtr);
+// alias ResizeWindowProcPtr = void function(WindowPtr, int, int, uint, uint, WindowPtr);
 
 alias GetLayerWindowProcPtr = WindowPtr function(WindowPtr);
 
 alias HandleExposuresProcPtr = void function(WindowPtr);
 
-alias ReparentWindowProcPtr = void function(WindowPtr, WindowPtr);
+// alias ReparentWindowProcPtr = void function(WindowPtr, WindowPtr);
 
 alias SetShapeProcPtr = void function(WindowPtr, int);
 
-alias ChangeBorderWidthProcPtr = void function(WindowPtr, uint);
+// alias ChangeBorderWidthProcPtr = void function(WindowPtr, uint);
 
 alias MarkUnrealizedWindowProcPtr = void function(WindowPtr, WindowPtr, Bool);
 

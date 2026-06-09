@@ -9,7 +9,7 @@ import core.stdc.config: c_long, c_ulong;
  */
  
 public import core.sys.posix.sys.types;
-//public import externs.X11.Xdefs;
+public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 
 public import include.callback;

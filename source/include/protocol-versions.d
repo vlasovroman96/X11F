@@ -28,6 +28,8 @@ extern(C): __gshared:
 /**
  * This file specifies the server-supported protocol versions.
  */
+
+ import build.dix_config;
  
 /* Apple DRI */
 enum SERVER_APPLEDRI_MAJOR_VERSION =		1;

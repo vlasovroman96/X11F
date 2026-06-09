@@ -147,7 +147,7 @@ import include.privates;
 import Xext.xace;
 import include.inputstr;
 import include.xkbsrv;
-import xfixesint;
+import xfixes.xfixesint;
 import dix.dixstruct_priv;
 
 enum mskcnt = ((MAXCLIENTS + 31) / 32);

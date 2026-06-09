@@ -50,7 +50,7 @@ import build.dix_config;
 import dix.dix_priv;
 import dix.request_priv;
 
-import xfixesint;
+import xfixes.xfixesint;
 
 private DevPrivateKeyRec ClientDisconnectPrivateKeyRec;
 

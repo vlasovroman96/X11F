@@ -1,4 +1,4 @@
-module xfixesint;
+module xfixes.xfixesint;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -58,6 +58,7 @@ public import include.dixstruct;
 public import include.extnsionst;
 public import include.windowstr;
 public import xfixes.xfixes;
+import externs.X11.extensions.xfixesproto;
 
 extern int XFixesEventBase;
 extern int XFixesUseXinerama;

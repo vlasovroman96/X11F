@@ -29,7 +29,7 @@ import dix.dix_priv;
 import dix.request_priv;
 import dix.selection_priv;
 
-import xfixesint;
+import xfixes.xfixesint;
 import Xext.xace;
 
 private RESTYPE SelectionClientType, SelectionWindowType;

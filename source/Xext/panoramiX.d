@@ -33,7 +33,7 @@ import core.stdc.stdio;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 // //import externs.X11.Xarch;
-// ////import externs.X11.extensions.panoramiXproto;
+import externs.X11.extensions.panoramiXproto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -63,7 +63,7 @@ import include.globals;
 import include.servermd;
 import include.resource;
 import render.picturestr_priv;
-import xfixesint;
+import xfixes.xfixesint;
 import composite.compint;
 import include.protocol_versions;
 
@@ -178,7 +178,7 @@ private XineramaVisualsEqualProcPtr XineramaVisualsEqualPtr = &VisualsEqual;
 
 static int ProcPanoramiXDispatch(ClientPtr client);
 
-static void PanoramiXResetProc(ExtensionEntry *);
+static void PanoramiXResetProc(_ExtensionEntry *);
 
 /*
  *	External references for functions and data variables
@@ -213,8 +213,8 @@ static void XineramaDestroyClip(GCPtr);
 static void XineramaCopyClip(GCPtr, GCPtr);
 
 private const(GCFuncs) XineramaGCFuncs = {
-    XineramaValidateGC, XineramaChangeGC, XineramaCopyGC, XineramaDestroyGC,
-    XineramaChangeClip, XineramaDestroyClip, XineramaCopyClip
+    &XineramaValidateGC, &XineramaChangeGC, &XineramaCopyGC, &XineramaDestroyGC,
+    &XineramaChangeClip, &XineramaDestroyClip, &XineramaCopyClip
 };
 
 enum string Xinerama_GC_FUNC_PROLOGUE(string pGC) = `
@@ -425,10 +425,12 @@ PanoramiXRes* PanoramiXFindIDByScrnum(RESTYPE type, XID id, int screen)
                                        &XineramaFindIDByScrnum, &data);
 }
 
-struct XineramaConnectionCallbackList {
+struct _connect_callback_list {
     void function() func;
     _connect_callback_list* next;
 }
+
+alias XineramaConnectionCallbackList = _connect_callback_list;
 
 private XineramaConnectionCallbackList* ConnectionCallbackList = null;
 
@@ -924,7 +926,7 @@ VisualID PanoramiXTranslateVisualID(int screen, VisualID orig)
  *		Exit, deallocating as needed.
  */
 
-private void PanoramiXResetProc(ExtensionEntry* extEntry)
+private void PanoramiXResetProc(_ExtensionEntry* extEntry)
 {
     int i = void;
 

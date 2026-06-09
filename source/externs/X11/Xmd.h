@@ -90,6 +90,7 @@ SOFTWARE.
 # define _SIZEOF(x) sz_##x
 # define SIZEOF(x) _SIZEOF(x)
 
+typedef unsigned int RESTYPE; 
 /*
  * Bitfield suffixes for the protocol structure elements, if you
  * need them.  Note that bitfields are not guaranteed to be signed

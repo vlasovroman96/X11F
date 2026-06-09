@@ -13,7 +13,7 @@ extern(C): __gshared:
 public import include.dixstruct;
 public import include.privates;
 
-struct Selection {
+struct _Selection {
     Atom selection;
     TimeStamp lastTimeChanged;
     Window window;
@@ -62,12 +62,12 @@ struct _SelectionFilterParamRec {
 }alias SelectionFilterParamRec = _SelectionFilterParamRec;
 alias SelectionFilterParamPtr = SelectionFilterParamRec*;
 
-extern Selection* CurrentSelections;
+extern _Selection* CurrentSelections;
 
 extern CallbackListPtr SelectionCallback;
 extern CallbackListPtr SelectionFilterCallback;
 
-int dixLookupSelection(Selection** result, Atom name, ClientPtr client, Mask access_mode);
+int dixLookupSelection(_Selection** result, Atom name, ClientPtr client, Mask access_mode);
 
 void InitSelections();
 void DeleteWindowFromAnySelections(WindowPtr pWin);

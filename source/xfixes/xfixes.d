@@ -52,7 +52,12 @@ import dix.request_priv;
 import miext.extinit_priv;
 import os.fmt;
 
-import xfixesint;
+import xfixes.xfixesint;
+import externs.X11.extensions.xfixeswire;
+// import externs.X11.extensions.Xfixes;
+
+
+
 import include.protocol_versions;
 
 Bool noXFixesExtension = FALSE;

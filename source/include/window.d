@@ -89,11 +89,11 @@ alias ROOT_CLIP_INPUT_ONLY = RootClipMode.ROOT_CLIP_INPUT_ONLY;
 
 alias VisitWindowProcPtr = int function(WindowPtr pWin, void* data);
 
-extern void TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
+extern int TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
 
-extern void WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data);
+extern int WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data);
 
-extern void CreateRootWindow(ScreenPtr);
+extern bool CreateRootWindow(ScreenPtr);
 
 extern void InitRootWindow(WindowPtr);
 
@@ -101,20 +101,20 @@ alias RealChildHeadProc = WindowPtr function(WindowPtr pWin);
 
 extern void RegisterRealChildHeadProc(RealChildHeadProc proc);
 
-extern void RealChildHead(WindowPtr);
+extern WindowPtr RealChildHead(WindowPtr);
 
-extern void DeleteWindow(void* pWin, XID wid);
+extern int DeleteWindow(void* pWin, XID wid);
 
-extern void DestroySubwindows(WindowPtr, ClientPtr);
+extern int DestroySubwindows(WindowPtr, ClientPtr);
 
 /* Quartz support on Mac OS X uses the HIToolbox
    framework whose ChangeWindowAttributes function conflicts here. */
 version (OSX) {
 enum ChangeWindowAttributes = Darwin_X_ChangeWindowAttributes;
 }
-extern void ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
+extern int ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
 
-extern void ChangeWindowDeviceCursor(WindowPtr, _DeviceIntRec*, _Cursor*);
+extern int ChangeWindowDeviceCursor(WindowPtr, _DeviceIntRec*, _Cursor*);
 
 extern _Cursor* WindowGetDeviceCursor(WindowPtr, _DeviceIntRec*);
 
@@ -139,37 +139,37 @@ else {
 
 extern void GravityTranslate(int, int, int, int, int, int, uint, int*, int*);
 
-extern void ConfigureWindow(WindowPtr, Mask, XID*, ClientPtr);
+extern int ConfigureWindow(WindowPtr, Mask, XID*, ClientPtr);
 
-extern void CirculateWindow(WindowPtr, int, ClientPtr);
+extern int CirculateWindow(WindowPtr, int, ClientPtr);
 
-extern void ReparentWindow(WindowPtr, WindowPtr, int, int, ClientPtr);
+extern int ReparentWindow(WindowPtr, WindowPtr, int, int, ClientPtr);
 
-extern void MapWindow(WindowPtr, ClientPtr);
+extern int MapWindow(WindowPtr, ClientPtr);
 
 extern void MapSubwindows(WindowPtr, ClientPtr);
 
-extern void UnmapWindow(WindowPtr, Bool);
+extern int UnmapWindow(WindowPtr, Bool);
 
 extern void UnmapSubwindows(WindowPtr);
 
 extern void HandleSaveSet(ClientPtr);
 
-extern void PointInWindowIsVisible(WindowPtr, int, int);
+extern bool PointInWindowIsVisible(WindowPtr, int, int);
 
-extern void NotClippedByChildren(WindowPtr);
+extern RegionPtr NotClippedByChildren(WindowPtr);
 
 extern void SendVisibilityNotify(WindowPtr);
 
-extern void dixSaveScreens(ClientPtr client, int on, int mode);
+extern int dixSaveScreens(ClientPtr client, int on, int mode);
 
-extern void SaveScreens(int on, int mode);
+extern int SaveScreens(int on, int mode);
 
-extern void FindWindowWithOptional(WindowPtr);
+extern WindowPtr FindWindowWithOptional(WindowPtr);
 
 extern void CheckWindowOptionalNeed(WindowPtr);
 
-extern void MoveWindowInStack(WindowPtr, WindowPtr);
+extern WindowPtr MoveWindowInStack(WindowPtr, WindowPtr);
 
 extern void SetWinSize(WindowPtr);
 
@@ -179,10 +179,10 @@ extern void ResizeChildrenWinSize(WindowPtr, int, int, int, int);
 
 extern void SendShapeNotify(WindowPtr, int);
 
-extern void CreateBoundingShape(WindowPtr);
+extern RegionPtr CreateBoundingShape(WindowPtr);
 
-extern void CreateClipShape(WindowPtr);
+extern RegionPtr CreateClipShape(WindowPtr);
 
 extern void SetRootClip(ScreenPtr pScreen, int enable);
 
-extern void WindowGetVisual(WindowPtr);                         /* WINDOW_H */
+extern VisualPtr WindowGetVisual(WindowPtr);                         /* WINDOW_H */

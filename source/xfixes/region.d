@@ -33,7 +33,7 @@ import render.picturestr_priv;
 import Xext.panoramiX;
 import Xext.panoramiXsrv;
 
-import xfixesint;
+import xfixes.xfixesint;
 import include.scrnintstr;
 
 import include.regionstr;

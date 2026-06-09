@@ -134,9 +134,12 @@ import dix.resource_priv;
 import include.extinit;
 import os.osdep;
 import os.probes_priv;
+import os.osinit;
+
 import Xext.panoramiX;
 import Xext.panoramiXsrv;
 
+import dix.dixutils;
 import include.misc;
 import include.os;
 import include.resource;
@@ -429,63 +432,63 @@ private ResourceType* resourceTypes;
 
 private const(ResourceType)[11] predefTypes = [
     X11_RESTYPE_NONE & (RC_LASTPREDEF - 1): {
-                                       deleteFunc: cast(DeleteType) NoopDDA,
-                                       sizeFunc: GetDefaultBytes,
-                                       findSubResFunc: DefaultFindSubRes,
+                                       deleteFunc: cast(DeleteType) null,
+                                       sizeFunc: &GetDefaultBytes,
+                                       findSubResFunc: &DefaultFindSubRes,
                                        errorValue: BadValue,
                                        },
     X11_RESTYPE_WINDOW & (RC_LASTPREDEF - 1): {
-                                         deleteFunc: DeleteWindow,
-                                         sizeFunc: GetWindowBytes,
-                                         findSubResFunc: FindWindowSubRes,
+                                         deleteFunc: &DeleteWindow,
+                                         sizeFunc: &GetWindowBytes,
+                                         findSubResFunc: &FindWindowSubRes,
                                          errorValue: BadWindow,
                                          },
     X11_RESTYPE_PIXMAP & (RC_LASTPREDEF - 1): {
-                                         deleteFunc: dixDestroyPixmap,
-                                         sizeFunc: GetPixmapBytes,
-                                         findSubResFunc: DefaultFindSubRes,
+                                         deleteFunc: &dixDestroyPixmap,
+                                         sizeFunc: &GetPixmapBytes,
+                                         findSubResFunc: &DefaultFindSubRes,
                                          errorValue: BadPixmap,
                                          },
     X11_RESTYPE_GC & (RC_LASTPREDEF - 1): {
-                                     deleteFunc: FreeGC,
-                                     sizeFunc: GetGcBytes,
-                                     findSubResFunc: FindGCSubRes,
+                                     deleteFunc: &FreeGC,
+                                     sizeFunc: &GetGcBytes,
+                                     findSubResFunc: &FindGCSubRes,
                                      errorValue: BadGC,
                                      },
     X11_RESTYPE_FONT & (RC_LASTPREDEF - 1): {
-                                       deleteFunc: CloseFont,
-                                       sizeFunc: GetDefaultBytes,
-                                       findSubResFunc: DefaultFindSubRes,
+                                       deleteFunc: &CloseFont,
+                                       sizeFunc: &GetDefaultBytes,
+                                       findSubResFunc: &DefaultFindSubRes,
                                        errorValue: BadFont,
                                        },
     X11_RESTYPE_CURSOR & (RC_LASTPREDEF - 1): {
-                                         deleteFunc: FreeCursor,
-                                         sizeFunc: GetDefaultBytes,
-                                         findSubResFunc: DefaultFindSubRes,
+                                         deleteFunc: &FreeCursor,
+                                         sizeFunc: &GetDefaultBytes,
+                                         findSubResFunc: &DefaultFindSubRes,
                                          errorValue: BadCursor,
                                          },
     X11_RESTYPE_COLORMAP & (RC_LASTPREDEF - 1): {
-                                           deleteFunc: FreeColormap,
-                                           sizeFunc: GetDefaultBytes,
-                                           findSubResFunc: DefaultFindSubRes,
+                                           deleteFunc: &FreeColormap,
+                                           sizeFunc: &GetDefaultBytes,
+                                           findSubResFunc: &DefaultFindSubRes,
                                            errorValue: BadColor,
                                            },
     X11_RESTYPE_CMAPENTRY & (RC_LASTPREDEF - 1): {
-                                            deleteFunc: FreeClientPixels,
-                                            sizeFunc: GetDefaultBytes,
-                                            findSubResFunc: DefaultFindSubRes,
+                                            deleteFunc: &FreeClientPixels,
+                                            sizeFunc: &GetDefaultBytes,
+                                            findSubResFunc: &DefaultFindSubRes,
                                             errorValue: BadColor,
                                             },
     X11_RESTYPE_OTHERCLIENT & (RC_LASTPREDEF - 1): {
-                                              deleteFunc: OtherClientGone,
-                                              sizeFunc: GetDefaultBytes,
-                                              findSubResFunc: DefaultFindSubRes,
+                                              deleteFunc: &OtherClientGone,
+                                              sizeFunc: &GetDefaultBytes,
+                                              findSubResFunc: &DefaultFindSubRes,
                                               errorValue: BadValue,
                                               },
     X11_RESTYPE_PASSIVEGRAB & (RC_LASTPREDEF - 1): {
-                                              deleteFunc: DeletePassiveGrab,
-                                              sizeFunc: GetDefaultBytes,
-                                              findSubResFunc: DefaultFindSubRes,
+                                              deleteFunc: &DeletePassiveGrab,
+                                              sizeFunc: &GetDefaultBytes,
+                                              findSubResFunc: &DefaultFindSubRes,
                                               errorValue: BadValue,
                                               },
 ];

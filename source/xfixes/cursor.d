@@ -55,7 +55,7 @@ import dix.rpcbuf_priv;
 import dix.screen_hooks_priv;
 import dix.screenint_priv;
 
-import xfixesint;
+import xfixes.xfixesint;
 import include.scrnintstr;
 import include.cursorstr;
 import include.servermd;

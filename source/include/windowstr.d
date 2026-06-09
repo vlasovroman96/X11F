@@ -60,6 +60,9 @@ public import include.privates;
 public import include.miscstruct;
 //public import externs.X11.Xprotostr;
 public import include.opaque;
+public import include.inputstr;
+import mi.mi_priv;
+
 
 
 /* used as NULL-terminated list */

@@ -29,7 +29,7 @@ import dix.dix_priv;
 import dix.request_priv;
 import dix.resource_priv;
 
-import xfixesint;
+import xfixes.xfixesint;
 
 int ProcXFixesChangeSaveSet(ClientPtr client)
 {

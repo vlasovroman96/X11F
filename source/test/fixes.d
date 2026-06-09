@@ -30,7 +30,7 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.stdlib;
 //import externs.X11.X;
-import xfixesint;
+import xfixes.xfixesint;
 // //import externs.X11.extensions.xfixeswire;
 
 import test.tests_common;

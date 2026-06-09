@@ -53,7 +53,7 @@ import include.inputstr;
 import include.windowstr;
 import include.propertyst;
 import include.privates;
-import xacestr;
+import Xext.xacestr;
 import Xext.securitysrv;
 import include.protocol_versions;
 
