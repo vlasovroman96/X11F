@@ -614,7 +614,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
             case 'H':
                 if (!hostname) {
                     xhostname hn = void;
-                    if (xhostname(&hn))
+                    if (f_xhostname(&hn))
                         hostname = strdup(hn.name);
                 }
                 if (hostname)

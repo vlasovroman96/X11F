@@ -13,12 +13,14 @@ extern(C): __gshared:
 
 public import dix.screenint_priv;
 public import include.cursor;
+public import include.cursorstr;
+
 public import include.dix;
 public import include.input;
 public import include.window;
 
-enum CURSOR_BITS_SIZE = sizeof(CursorBits) + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR_BITS);
-enum CURSOR_REC_SIZE = sizeof(CursorRec) + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR);
+enum CURSOR_BITS_SIZE = CursorBits.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR_BITS);
+enum CURSOR_REC_SIZE = CursorRec.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR);
 
 extern CursorPtr rootCursor;
 

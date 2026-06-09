@@ -430,7 +430,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
         * see), whereas gethostname() kindly truncates it for me.
         */
         xhostname hn = void;
-        xhostname(&hn);
+        f_xhostname(&hn);
 
         hp = _XGethostbyname(hn.name, hparams);
         if (hp != null) {
@@ -1988,7 +1988,7 @@ void DefineSelf(int fd)
      * see), whereas gethostname() kindly truncates it for me.
      */
     xhostname hn = void;
-    xhostname(&hn);
+    f_xhostname(&hn);
 
     hp = _XGethostbyname(hn.name, hparams);
     enum string IPv6_STR = "        case AF_INET6:

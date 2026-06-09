@@ -27,7 +27,7 @@ enum RESOURCE_CLIENT_MASK =   ((((1u << ResourceClientBits())) - 1) << CLIENTOFF
 
 /* bits and fields within a resource id */
 enum RESOURCE_AND_CLIENT_COUNT =   29  /* 29 bits for XIDs */;
-enum CLIENTOFFSET =     (RESOURCE_AND_CLIENT_COUNT - ResourceClientBits());
+@property auto CLIENTOFFSET() =>     (RESOURCE_AND_CLIENT_COUNT - ResourceClientBits());
 
 /* extract the client mask from an XID */
 enum string CLIENT_BITS(string id) = `((` ~ id ~ `) & RESOURCE_CLIENT_MASK)`;

@@ -67,13 +67,13 @@ private int DPMSReqCode = 0;
 private RESTYPE ClientType, DPMSEventType;  /* resource types for event masks */
 private XID eventResource;
 
-alias DPMSEventPtr = _DPMSEvent*;
-struct DPMSEventRec {
+struct _DPMSEvent {
     DPMSEventPtr next;
     ClientPtr client;
     XID clientResource;
     uint mask;
 }
+alias DPMSEventPtr = _DPMSEvent*;
 
  /*ARGSUSED*/ private int DPMSFreeClient(void* data, XID id)
 {
@@ -469,14 +469,14 @@ private int ProcDPMSDispatch(ClientPtr client)
     }
 }
 
-private void DPMSCloseDownExtension(ExtensionEntry* e)
+private void DPMSCloseDownExtension(_ExtensionEntry* e)
 {
     DPMSSet(serverClient, DPMSModeOn);
 }
 
 void DPMSExtensionInit()
 {
-    ExtensionEntry* extEntry = void;
+    _ExtensionEntry* extEntry = void;
 
 enum string CONDITIONALLY_SET_DPMS_TIMEOUT(string _timeout_value_) = `
     if (` ~ _timeout_value_ ~ ` == -1) { /* not yet set from config */  

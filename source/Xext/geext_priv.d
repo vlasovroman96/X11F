@@ -2,12 +2,13 @@ module Xext.geext_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
+
  *
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
 
  
-//public import externs.X11.Xproto;
+public import externs.X11.Xproto;
 // //public import externs.X11.Xfuncproto;
 
 alias XorgGESwapProcPtr = void function(xGenericEvent* from, xGenericEvent* to);

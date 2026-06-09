@@ -56,7 +56,7 @@ mixin template XTYPE_SIZE_ASSERT(alias typename) {
 enum MAX_BIG_REQUEST_SIZE = 4194303;
 extern c_long maxBigRequestSize;
 
-extern char dispatchExceptionAtReset = 0;
+extern char dispatchExceptionAtReset;
 extern int terminateDelay;
 extern Bool touchEmulatePointer;
 
@@ -69,7 +69,7 @@ extern HWEventQueuePtr[2] checkForInput;
 extern Bool party_like_its_1989;
 
 /* needed by libglx and libglamor (server modules) */
-extern void  enableIndirectGLX;
+extern bool enableIndirectGLX;
 
 /*
  * @brief callback right after one screen's root window has been initialized
@@ -84,7 +84,7 @@ extern void  enableIndirectGLX;
  */
 extern CallbackListPtr PostInitRootWindowCallback;
 
-pragma(inline, true) private _X_NOTSAN InputCheckPending()
+pragma(inline, true) private bool InputCheckPending()
 {
     return (*checkForInput[0] != *checkForInput[1]);
 }
@@ -227,13 +227,13 @@ void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
 
 extern Bool whiteRoot;
 
-extern /*volatile*/ char isItTimeToYield = 0;
+extern /*volatile*/ char isItTimeToYield;
 
 /* bit values for dispatchException */
 enum DE_TERMINATE = 2;
 enum DE_PRIORITYCHANGE = 4     /* set when a client's priority changes */;
 
-extern /*volatile*/ char dispatchException = 0;
+extern /*volatile*/ char dispatchException;
 
 extern int ScreenSaverBlanking;
 extern int ScreenSaverAllowExposures;

@@ -766,7 +766,7 @@ version (INTERNAL_VS_EXTERNAL_PADDING) {} else {
 
     /* write xwd "window" name: Xvfb hostname:server.screen */
     xhostname hn = void;
-    xhostname(&hn);
+    f_xhostname(&hn);
     hn.name[XWD_WINDOW_NAME_LEN - 1] = 0;
     snprintf(cast(char*)(pXWDHeader + 1), XWD_WINDOW_NAME_LEN,
          "Xvfb %.40s:%.10s.%d", hn.name, display, pScreen.myNum);

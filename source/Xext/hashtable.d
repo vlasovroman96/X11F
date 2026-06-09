@@ -17,6 +17,21 @@ import include.resource;
 enum INITHASHSIZE = 6;
 enum MAXHASHSIZE = 11;
 
+/** @brief A hashing function.
+
+  @param[in/out] cdata  Opaque data that can be passed to HtInit that will
+                        eventually end up here
+  @param[in] ptr        The data to be hashed. The size of the data, if
+                        needed, can be configured via a record that can be
+                        passed via cdata.
+  @param[in] numBits    The number of bits this hash needs to have in the
+                        resulting hash
+
+  @return  A numBits-bit hash of the data
+*/
+alias HashFunc = uint function(void * cdata, const void * ptr, int numBits);
+alias HashCompareFunc = int function(void * cdata, const void * l, const void * r);
+
 struct HashTableRec {
     int keySize;
     int dataSize;
@@ -30,6 +45,8 @@ struct HashTableRec {
 
     void* cdata;
 }
+
+alias HashTable = HashTableRec*;
 
 struct _BucketRec {
     xorg_list l;

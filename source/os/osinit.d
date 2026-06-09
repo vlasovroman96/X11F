@@ -83,7 +83,7 @@ import core.sys.posix.sys.resource;
 }
 
 /* The actual user defined max number of clients */
-enum int LimitClients = DIX_LIMITCLIENTS;
+int LimitClients = DIX_LIMITCLIENTS;
 
 private OsSigWrapperPtr OsSigWrapper = null;
 

@@ -72,7 +72,7 @@ struct _damageScrPriv {
 alias DamageScrPrivPtr = _damageScrPriv*;
 
 struct _damageGCPriv {
-    const(GCOps)* ops;
+    const(_GCOps)* ops;
     const(GCFuncs)* funcs;
 }alias DamageGCPrivRec = _damageGCPriv;
 alias DamageGCPrivPtr = _damageGCPriv*;

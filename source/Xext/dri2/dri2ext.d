@@ -37,7 +37,7 @@ import build.dix_config;
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
-// //import externs.X11.extensions.dri2proto;
+import externs.X11.extensions.dri2proto;
 // //import externs.X11.extensions.xfixeswire;
 
 import dix.dix_priv;
@@ -52,6 +52,7 @@ import xfixes.xfixes;
 import Xext.dri2.dri2_priv;
 import Xext.dri2.dri2int;
 import include.protocol_versions;
+import include.dri2;
 
 /* For the static extension loader */
 Bool noDRI2Extension = FALSE;

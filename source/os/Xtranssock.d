@@ -102,10 +102,10 @@ version = XOS_USE_NO_LOCKING;
 
 version (NO_TCP_H) {} else {
 static if (HasVersion!"linux" || HasVersion!"__GLIBC__") {
-import sys.param;
+// import sys.param;
 } /* osf */
 static if (HasVersion!"__NetBSD__" || HasVersion!"__OpenBSD__" || HasVersion!"__FreeBSD__" || HasVersion!"__DragonFly__") {
-import sys.param;
+// import sys.param;
 import machine.endian;
 } /* __NetBSD__ || __OpenBSD__ || __FreeBSD__ || __DragonFly__ */
 import externs.netinet.tcp;
@@ -117,6 +117,7 @@ import core.sys.posix.sys.filio;
 }
 
 import core.sys.posix.unistd;
+import core.sys.posix.sys.socket;
 
 } version (Windows) { /* !WIN32 */
 
@@ -188,11 +189,28 @@ struct Sockettrans2dev {
  *  unix    UNIX Domain Sockets (same host only)
  *  local   Platform preferred local connection method
  */
-private Sockettrans2dev[] buildSocketTransports()
-{
-    Sockettrans2dev[] arr;
+private immutable Sockettrans2dev[] Sockettrans2devtab = () {
+    // Вычисляем точный размер внутри лямбды времени компиляции
+    enum size_t maxElements = () {
+        size_t count = 1; // inet
+        version(IPv6) {
+            count += 3;
+        } else {
+            count += 1;
+        }
+        version(UNIXCONN) {
+            count += 2;
+        }
+        return count;
+    }();
 
-    arr ~= Sockettrans2dev(
+    // Создаем массив фиксированной длины. 
+    // Так как это выполняется в CTFE, GC-аллокации здесь разрешены, 
+    // но в итоговый бинарник попадет чистая статическая таблица.
+    Sockettrans2dev[maxElements] arr;
+    size_t count = 0;
+
+    arr[count++] = Sockettrans2dev(
         "inet",
         AF_INET,
         SOCK_STREAM,
@@ -202,7 +220,7 @@ private Sockettrans2dev[] buildSocketTransports()
 
     version (IPv6)
     {
-        arr ~= Sockettrans2dev(
+        arr[count++] = Sockettrans2dev(
             "tcp",
             AF_INET6,
             SOCK_STREAM,
@@ -211,7 +229,7 @@ private Sockettrans2dev[] buildSocketTransports()
         );
 
         // IPv4 fallback
-        arr ~= Sockettrans2dev(
+        arr[count++] = Sockettrans2dev(
             "tcp",
             AF_INET,
             SOCK_STREAM,
@@ -219,7 +237,7 @@ private Sockettrans2dev[] buildSocketTransports()
             0
         );
 
-        arr ~= Sockettrans2dev(
+        arr[count++] = Sockettrans2dev(
             "inet6",
             AF_INET6,
             SOCK_STREAM,
@@ -229,7 +247,7 @@ private Sockettrans2dev[] buildSocketTransports()
     }
     else
     {
-        arr ~= Sockettrans2dev(
+        arr[count++] = Sockettrans2dev(
             "tcp",
             AF_INET,
             SOCK_STREAM,
@@ -240,7 +258,7 @@ private Sockettrans2dev[] buildSocketTransports()
 
     version (UNIXCONN)
     {
-        arr ~= Sockettrans2dev(
+        arr[count++] = Sockettrans2dev(
             "unix",
             AF_UNIX,
             SOCK_STREAM,
@@ -248,7 +266,7 @@ private Sockettrans2dev[] buildSocketTransports()
             0
         );
 
-        arr ~= Sockettrans2dev(
+        arr[count++] = Sockettrans2dev(
             "local",
             AF_UNIX,
             SOCK_STREAM,
@@ -257,13 +275,13 @@ private Sockettrans2dev[] buildSocketTransports()
         );
     }
 
-    return arr;
-}
+    // Возвращаем динамический срез. 
+    // Компилятор превратит его в immutable(Sockettrans2dev)[] в секции данных.
+    return arr.dup; 
+}();
 
-private immutable Sockettrans2dev[] Sockettrans2devtab =
-    buildSocketTransports();
 
-enum NUMSOCKETFAMILIES = (sizeof(Sockettrans2devtab)/sizeof(Sockettrans2dev));
+enum NUMSOCKETFAMILIES = Sockettrans2devtab.sizeof / Sockettrans2dev.sizeof;
 
 
 
@@ -321,6 +339,8 @@ private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
  * This function gets the local address of the socket and stores it in the
  * XtransConnInfo structure for the connection.
  */
+
+ import os.io_priv;
 
 private int _XSERVTransSocketINETGetAddr(XtransConnInfo ciptr)
 {

@@ -93,7 +93,7 @@ import include.misc;
 CallbackListPtr ReplyCallback = null;
 CallbackListPtr FlushCallback;
 
-struct ConnectionInput {
+struct _connectionInput {
     _connectionInput* next;
     char* buffer;               /* contains current client input */
     char* bufptr;               /* pointer to current start of data */
@@ -103,14 +103,18 @@ struct ConnectionInput {
     uint ignoreBytes;   /* bytes to ignore before the next request */
 }
 
-struct ConnectionOutput {
+alias ConnectionInput = _connectionInput;
+alias ConnectionInputPtr = _connectionInput*;
+
+struct _connectionOutput {
     _connectionOutput* next;
     ubyte* buf;
     int size;
     int count;
 }
 
-
+alias ConnectionOutput = _connectionOutConnectionOutput;
+alias ConnectionOutputPtr = _connectionOutConnectionOutput*;
 
 
 private Bool CriticalOutputPending;

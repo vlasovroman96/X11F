@@ -7,6 +7,9 @@ extern(C): __gshared:
  */
  
 public import Xext.dri2.dri2;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+
 
 extern CARD8 dri2_major;        /* version of DRI2 supported by DDX */
 extern CARD8 dri2_minor;

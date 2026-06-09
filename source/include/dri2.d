@@ -39,7 +39,7 @@ extern(C): __gshared:
 public import include.dix;
 
 /* Version 2 structure (with format at the end) */
-struct _DRI2BufferRec {
+struct _DRI2Buffer {
     uint attachment;
     uint name;
     uint pitch;
@@ -47,7 +47,7 @@ struct _DRI2BufferRec {
     uint flags;
     uint format;
     void* driverPrivate;
-}alias DRI2BufferRec = _DRI2BufferRec;
+}alias DRI2BufferRec = _DRI2Buffer;
 alias DRI2BufferPtr = DRI2BufferRec*;
 
 alias DRI2Buffer2Rec = DRI2BufferRec;

@@ -2,6 +2,8 @@ module os.Xtransint;
 @nogc nothrow:
 extern(C): __gshared:
 
+import build.dix_config;
+
 private template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
 }
@@ -103,6 +105,8 @@ enum string EGET() = `WSAGetLastError()`;
 
 public import core.stdc.stddef;
 
+alias ssize_t = core.sys.posix.sys.types.ssize_t;
+
 enum X_TCP_PORT =	6000;
 
 static if (XTRANS_SEND_FDS) {
@@ -131,10 +135,12 @@ struct _XtransConnInfo {
     _XtransConnFd* send_fds;
 }
 
+alias XtransConnInfo = _XtransConnInfo*;
+
 enum XTRANS_OPEN_COTS_CLIENT =       1;
 enum XTRANS_OPEN_COTS_SERVER =       2;
 
-struct Xtransport {
+struct _Xtransport {
     const(char)* TransName;
     int flags;
     const(char)** nolisten;
@@ -170,7 +176,7 @@ static if (XTRANS_SEND_FDS) {
     int function(XtransConnInfo) CloseForCloning;
 
 }
-
+alias Xtransport = _Xtransport;
 
 struct Xtransport_table {
     Xtransport* transport;

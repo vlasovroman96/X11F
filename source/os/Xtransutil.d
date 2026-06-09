@@ -197,7 +197,7 @@ version (UNIXCONN) {
 	 */
 
         xhostname hn = void;
-        xhostname(&hn);
+        f_xhostname(&hn);
         int len = strlen(hn.name);
 
 	if (len > 0) {

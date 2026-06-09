@@ -51,7 +51,7 @@ enum RESERVED_EXTENSIONS =                 38;
 
 struct ExtensionAccessCallbackParam {
     ClientPtr client;
-    ExtensionEntry* ext;
+    _ExtensionEntry* ext;
     Mask access_mode;
     int status;
 }

@@ -50,6 +50,9 @@ import include.dixstruct;
 import Xext.dri2.dri2_priv;
 import Xext.dri2.dri2int;
 import include.damage;
+import include.dri2;
+import externs.X11.extensions.dri2tokens;
+
 
 CARD8 dri2_major;               /* version of DRI2 supported by DDX */
 CARD8 dri2_minor;
@@ -75,6 +78,7 @@ pragma(inline, true) private DRI2ClientPtr dri2ClientPrivate(ClientPtr pClient) 
 private RESTYPE dri2DrawableRes;
 
 alias DRI2ScreenPtr = _DRI2Screen*;
+alias DRI2ScreenRec = _DRI2Screen;
 
 struct _DRI2Drawable {
     DRI2ScreenPtr dri2_screen;
@@ -100,7 +104,7 @@ struct _DRI2Drawable {
 }alias DRI2DrawableRec = _DRI2Drawable;
 alias DRI2DrawablePtr = _DRI2Drawable*;
 
-struct DRI2ScreenRec {
+struct _DRI2Screen {
     ScreenPtr pScreen;
     int refcnt;
     uint numDrivers;

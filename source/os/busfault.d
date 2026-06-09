@@ -38,6 +38,8 @@ import core.stdc.stdint;
 import core.sys.posix.sys.mman;
 import core.stdc.signal;
 
+alias busfault_notify_ptr = void function(void *context);
+
 struct busfault {
     xorg_list list;
 

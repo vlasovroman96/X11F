@@ -40,6 +40,7 @@ import Xext.damage.damageext_priv;
 import Xext.panoramiX;
 import Xext.panoramiXsrv;
 import xfixes.xfixes;
+import externs.X11.extensions.damageproto;
 
 import include.damagestr;
 import include.protocol_versions;

@@ -821,7 +821,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 }
 
         xhostname hn;
-        xhostname(&hn);
+        f_xhostname(&hn);
 
         char* hnameptr = null;
 version (HAVE_GETADDRINFO) {

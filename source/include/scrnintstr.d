@@ -217,7 +217,7 @@ alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap, int width, in
 
 alias GetWindowPixmapProcPtr = PixmapPtr function(WindowPtr);
 
-alias SetWindowPixmapProcPtr = void function(WindowPtr, PixmapPtr);
+// alias SetWindowPixmapProcPtr = void function(WindowPtr, PixmapPtr);
 
 alias GetScreenPixmapProcPtr = PixmapPtr function(ScreenPtr);
 
@@ -235,7 +235,7 @@ alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr, WindowPtr, WindowP
 
 alias GetLayerWindowProcPtr = WindowPtr function(WindowPtr);
 
-alias HandleExposuresProcPtr = void function(WindowPtr);
+// alias HandleExposuresProcPtr = void function(WindowPtr);
 
 // alias ReparentWindowProcPtr = void function(WindowPtr, WindowPtr);
 

@@ -7,17 +7,23 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import core.stdc.errno;
-import core.stdc.string;
-import core.sys.posix.unistd;
+// import core.stdc.errno;
+// import core.stdc.string;
+// import core.sys.posix.unistd;
 
-static if (WIN32) {
-import winsock;
-}
+// version(Windows) {
+// import winsock;
+// }
 
 import os.xhostname;
 
-int xhostname(xhostname* hn)
+enum XHOSTNAME_MAX = 2048;
+
+struct xhostname {
+    char[XHOSTNAME_MAX] name;
+};
+
+int f_xhostname(xhostname* hn)
 {
     /* being extra-paranoid here */
     memset(hn, 0, xhostname.sizeof);

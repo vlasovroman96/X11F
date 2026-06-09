@@ -113,7 +113,7 @@ private int ProcGEDispatch(ClientPtr client)
 }
 
 /* Reset extension. Called on server shutdown. */
-private void GEResetProc(ExtensionEntry* extEntry)
+private void GEResetProc(_ExtensionEntry* extEntry)
 {
     EventSwapVector[GenericEvent] = NotImplemented;
 }

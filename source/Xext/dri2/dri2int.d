@@ -27,7 +27,7 @@ extern(C): __gshared:
  */
 
  
-// public import X11.Xdefs;
+public import externs.X11.Xdefs;
 
 extern Bool DRI2ModuleSetup();
 

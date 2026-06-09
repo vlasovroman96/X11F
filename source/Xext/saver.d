@@ -63,6 +63,7 @@ import include.gcstruct;
 import include.cursorstr;
 import Xext.xace;
 import include.inputstr;
+import externs.X11.extensions.saverproto;
 version (DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
@@ -93,12 +94,15 @@ private ScreenSaverSuspensionPtr suspendingClients = null;
  * the client disconnects. count is the number of times the client has
  * requested the screensaver be suspended.
  */
-struct ScreenSaverSuspensionRec {
+struct _ScreenSaverSuspension {
     ScreenSaverSuspensionPtr next;
     ClientPtr pClient;
     XID clientResource;
     int count;
 }
+
+alias ScreenSaverSuspensionRec = _ScreenSaverSuspension;
+// alias ScreenSaverSuspensionPtr = _ScreenSaverSuspension*;
 
 static int ScreenSaverFreeSuspend(void *value, XID id);
 
@@ -114,13 +118,16 @@ private RESTYPE SaverEventType;  /* resource type for event masks */
 
 alias ScreenSaverEventPtr = _ScreenSaverEvent*;
 
-struct ScreenSaverEventRec {
+struct _ScreenSaverEvent {
     ScreenSaverEventPtr next;
     ClientPtr client;
     ScreenPtr pScreen;
     XID resource;
     CARD32 mask;
 }
+
+alias ScreenSaverEventRec = _ScreenSaverEvent;
+
 
 static int ScreenSaverFreeEvents(void * value, XID id);
 

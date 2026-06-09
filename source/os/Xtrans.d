@@ -82,10 +82,13 @@ enum TRANS_SOCKET_LOCAL_INDEX =	5;
 enum TRANS_SOCKET_INET_INDEX =		6;
 enum TRANS_SOCKET_TCP_INDEX =		7;
 enum TRANS_SOCKET_INET6_INDEX =	14;
+import os.Xtransint;
 
 static if (HasVersion!"IPv6" && !HasVersion!"AF_INET6") {
 static assert(0, "Cannot build IPv6 support without AF_INET6");
 }
+
+import os.Xtranssock;
 
 private Xtransport_table[] buildTransports()
 {
@@ -321,7 +324,7 @@ version (HAVE_LAUNCHD) {
     xhostname hn = void;
     if (_host_len == 0)
     {
-        xhostname(&hn);
+        f_xhostname(&hn);
         _host = hn.name;
     }
 

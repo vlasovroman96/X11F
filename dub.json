@@ -19,7 +19,6 @@
     "-P-I/usr/include/X11/fonts",
     "-P-Isource",
     "-P-Isource/hw/xfree86/x86emu",
-    "-P-I/usr/include/linux",
     "-P-Isource/externs",
 	"-P-D__int128=long long",
     "-P-D__attribute__(x)=",
