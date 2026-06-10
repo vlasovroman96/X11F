@@ -57,6 +57,7 @@ import include.opaque;
 import include.regionstr;
 import include.gcstruct;
 import include.protocol_versions;
+import externs.X11.extensions.shapeproto;
 
 Bool noShapeExtension = FALSE;
 
@@ -80,13 +81,15 @@ private int ShapeEventBase = 0;
  * entry from the per-window queue.
  */
 
-alias ShapeEventPtr = _ShapeEvent*;
 
-struct ShapeEventRec {
+
+
+struct _ShapeEvent {
     ShapeEventPtr next;
     ClientPtr client;
     WindowPtr window;
 }
+alias ShapeEventPtr = _ShapeEvent*;
 
 enum string  SHAPE_WINDOW_PRIVADDR(string pWin) = `(cast(ShapeEventPtr*) 
 dixLookupPrivateAddr(&(` ~ pWin ~ `).devPrivates, &ShapeWindowPrivateKeyRec))`;

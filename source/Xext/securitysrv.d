@@ -37,6 +37,8 @@ from The Open Group.
 public import include.input;              /* for DeviceIntPtr */
 public import include.pixmap;             /* for DrawablePtr */
 public import include.resource;           /* for RESTYPE */
+public import include.inputstr;              /* for DeviceIntPtr */
+
 
 /* resource type to pass in LookupIDByType for authorizations */
 extern RESTYPE SecurityAuthorizationResType;

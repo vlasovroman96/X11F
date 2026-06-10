@@ -70,6 +70,8 @@ struct _ExtensionEntry {
     PrivateRec* devPrivates;
 }
 
+alias ExtensionEntry = _ExtensionEntry;
+
 /*
  * The arguments may be different for extension event swapping functions.
  * Deal with this by casting when initializing the event's EventSwapVector[]

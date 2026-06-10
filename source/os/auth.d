@@ -55,6 +55,33 @@ version (XDMCP) {
 import os.xdmcp;
 }
 
+enum XAUTH_PROTO_MIT = "MIT-MAGIC-COOKIE-1";
+enum XAUTH_PROTO_XDM = "XDM-AUTHORIZATION-1";
+
+import externs.X11.X;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+
+alias AuthInitFunc = void function();
+
+// enum AuthAddCArgs = "ushort data, const char *data";
+alias AuthAddCFunc = XID function(ushort, const char*);
+
+// enum AuthCheckArgs = "ushort , const char *data, ClientPtr client, const char **reason";
+alias AuthCheckFunc = XID function(ushort, const char*, ClientPtr, const char**);
+
+enum AuthFromIDArgs = "XID, ushort *, char **";
+alias AuthFromIDFunc = int function(XID, ushort *, char **);
+
+enum AuthGenCArgs = "uint, const char *data, uint *_return, char **data_return";
+alias AuthGenCFunc = XID function(uint, const char *, uint *, char **);
+
+enum AuthRemCArgs = "ushort , const char *data";
+alias AuthRemCFunc = int function(ushort, const char *);
+
+enum AuthRstCArgs = "";
+alias AuthRstCFunc = int function();
+
 import os.xdmauth;
 import os.mitauth;
 
@@ -105,7 +132,7 @@ else
     ];
 }
 
-enum NUM_AUTHORIZATION =  ARRAY_SIZE(protocols);
+enum NUM_AUTHORIZATION =  ARRAY_SIZE!(protocols);
 
 /*
  * Initialize all classes of authorization by reading the

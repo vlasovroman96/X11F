@@ -7,8 +7,6 @@
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 #endif
 
-#define NULL ((void*)0)
-
 static const int i915_chip_ids[] = {
 #include "pci_ids/i915_pci_ids.h"
 };

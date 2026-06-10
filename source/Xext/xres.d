@@ -39,6 +39,7 @@ import include.misc;
 import hashtable;
 import include.picturestr;
 import composite.compint;
+import externs.X11.extensions.XResproto;
 
 Bool noResExtension = FALSE;
 

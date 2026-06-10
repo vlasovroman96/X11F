@@ -56,6 +56,7 @@ import include.privates;
 import Xext.xacestr;
 import Xext.securitysrv;
 import include.protocol_versions;
+import externs.X11.extensions.securproto;
 
 Bool noSecurityExtension = FALSE;
 
@@ -921,7 +922,7 @@ private void SecurityClientState(CallbackListPtr* pcbl, void* unused, void* call
  *	Performs any cleanup needed by Security at server shutdown time.
  */
 
-private void SecurityResetProc(ExtensionEntry* extEntry)
+private void SecurityResetProc(_ExtensionEntry* extEntry)
 {
     /* Unregister callbacks */
     DeleteCallback(&ClientStateCallback, &SecurityClientState, null);
@@ -949,7 +950,7 @@ private void SecurityResetProc(ExtensionEntry* extEntry)
 
 void SecurityExtensionInit()
 {
-    ExtensionEntry* extEntry = void;
+    _ExtensionEntry* extEntry = void;
     int ret = TRUE;
 
     SecurityAuthorizationResType =

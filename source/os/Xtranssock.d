@@ -77,21 +77,22 @@ from the copyright holders.
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import core.stdc.ctype;
+// import core.stdc.ctype;
 version (XTHREADS) {
-//import externs.X11.Xthreads;
+// import externs.X11.Xthreads;
 }
-import core.sys.posix.sys.stat;
+// import core.sys.posix.sys.stat;
 
-import os.ossock;
+// import os.ossock;
 
+import sock = core.sys.posix.sys.socket;
+import os.Xtransint;
 version (Windows) {} else {
 
 version (UNIXCONN) {
-import core.sys.posix.sys.un;
-import core.sys.posix.sys.socket;
-import externs.netinet.in_;
-import externs.arpa.inet;
+// import core.sys.posix.sys.un;
+// import externs.netinet.in_;
+// import externs.arpa.inet;
 }
 
 version (UNIXCONN) {
@@ -106,18 +107,18 @@ static if (HasVersion!"linux" || HasVersion!"__GLIBC__") {
 } /* osf */
 static if (HasVersion!"__NetBSD__" || HasVersion!"__OpenBSD__" || HasVersion!"__FreeBSD__" || HasVersion!"__DragonFly__") {
 // import sys.param;
-import machine.endian;
+// import machine.endian;
 } /* __NetBSD__ || __OpenBSD__ || __FreeBSD__ || __DragonFly__ */
-import externs.netinet.tcp;
+// import externs.netinet.tcp;
 } /* !NO_TCP_H */
 
-import core.sys.posix.sys.ioctl;
+// import core.sys.posix.sys.ioctl;
 static if (HasVersion!"SVR4" || HasVersion!"__SVR4") {
-import core.sys.posix.sys.filio;
+// import core.sys.posix.sys.filio;
 }
 
-import core.sys.posix.unistd;
-import core.sys.posix.sys.socket;
+// // import core.sys.posix.unistd;
+// import core.sys.posix.sys.socket;
 
 } version (Windows) { /* !WIN32 */
 
@@ -125,7 +126,7 @@ import core.sys.posix.sys.socket;
 //import externs.X11.Xwindows;
 //import externs.X11.Xw32defs;
 
-import afunix;
+// import afunix;
 
 enum EADDRINUSE = WSAEADDRINUSE;
 enum EWOULDBLOCK = WSAEWOULDBLOCK;
@@ -133,9 +134,9 @@ enum EINTR = WSAEINTR;
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_MTSAFE_NETDBAPI;
 //import externs.X11.Xos_r;
-import core.sys.posix.netinet.tcp;
-import build.dix_config;
+// import core.sys.posix.netinet.tcp;
 } /* WIN32 */
+import build.dix_config;
 
 static if (HasVersion!"SO_DONTLINGER" && HasVersion!"SO_LINGER") {
 }
@@ -213,8 +214,8 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
     arr[count++] = Sockettrans2dev(
         "inet",
         AF_INET,
-        SOCK_STREAM,
-        SOCK_DGRAM,
+        sock.SOCK_STREAM,
+        sock.SOCK_DGRAM,
         0
     );
 
@@ -223,8 +224,8 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
         arr[count++] = Sockettrans2dev(
             "tcp",
             AF_INET6,
-            SOCK_STREAM,
-            SOCK_DGRAM,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
             0
         );
 
@@ -232,16 +233,16 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
         arr[count++] = Sockettrans2dev(
             "tcp",
             AF_INET,
-            SOCK_STREAM,
-            SOCK_DGRAM,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
             0
         );
 
         arr[count++] = Sockettrans2dev(
             "inet6",
             AF_INET6,
-            SOCK_STREAM,
-            SOCK_DGRAM,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
             0
         );
     }
@@ -250,8 +251,8 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
         arr[count++] = Sockettrans2dev(
             "tcp",
             AF_INET,
-            SOCK_STREAM,
-            SOCK_DGRAM,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
             0
         );
     }
@@ -261,16 +262,16 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
         arr[count++] = Sockettrans2dev(
             "unix",
             AF_UNIX,
-            SOCK_STREAM,
-            SOCK_DGRAM,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
             0
         );
 
         arr[count++] = Sockettrans2dev(
             "local",
             AF_UNIX,
-            SOCK_STREAM,
-            SOCK_DGRAM,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
             0
         );
     }
@@ -345,9 +346,9 @@ private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
 private int _XSERVTransSocketINETGetAddr(XtransConnInfo ciptr)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
-    sockaddr_storage sockname = void;
+    sock.sockaddr_storage sockname = void;
 } else {
-    sockaddr_in sockname = void;
+    sock.sockaddr_in sockname = void;
 }
     void* socknamePtr = &sockname;
     SOCKLEN_T namelen = sockname.sizeof;
@@ -356,7 +357,7 @@ version (HAVE_STRUCT_SOCKADDR_STORAGE) {
 
     memset(socknamePtr, 0, namelen);
 
-    if (getsockname (ciptr.fd,cast(sockaddr*) socknamePtr,
+    if (getsockname (ciptr.fd,cast(sock.sockaddr*) socknamePtr,
 		     cast(void*)&namelen) < 0)
     {
 version (Windows) {
@@ -378,7 +379,7 @@ version (Windows) {
         return -1;
     }
 
-    ciptr.family = (cast(sockaddr*)socknamePtr).sa_family;
+    ciptr.family = (cast(sock.sockaddr*)socknamePtr).sa_family;
     ciptr.addrlen = namelen;
     memcpy (ciptr.addr, socknamePtr, ciptr.addrlen);
 
@@ -394,9 +395,9 @@ version (Windows) {
 private int _XSERVTransSocketINETGetPeerAddr(XtransConnInfo ciptr)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
-    sockaddr_storage sockname = void;
+    sock.sockaddr_storage sockname = void;
 } else {
-    sockaddr_in sockname = void;
+    sock.sockaddr_in sockname = void;
 }
     void* socknamePtr = &sockname;
     SOCKLEN_T namelen = sockname.sizeof;
@@ -405,7 +406,7 @@ version (HAVE_STRUCT_SOCKADDR_STORAGE) {
 
     prmsg (3,"SocketINETGetPeerAddr(%p)\n", cast(void*) ciptr);
 
-    if (getpeername (ciptr.fd, cast(sockaddr*) socknamePtr,
+    if (getpeername (ciptr.fd, cast(sock.sockaddr*) socknamePtr,
 		     cast(void*)&namelen) < 0)
     {
 version (Windows) {
@@ -516,7 +517,7 @@ version (SO_SNDBUF) {
 private XtransConnInfo _XSERVTransSocketReopen(int _X_UNUSED, int type, int fd, const(char)* port)
 {
     XtransConnInfo ciptr = void;
-    sockaddr* addr = void;
+    sock.sockaddr* addr = void;
     size_t addrlen = void;
 
     prmsg (3,"SocketReopen(%d,%d,%s)\n", type, fd, port);
@@ -549,8 +550,8 @@ version (SOCK_MAXADDRLEN) {
 
     ciptr.fd = fd;
 
-    addrlen = portlen + offsetof(sockaddr, sa_data);
-    if ((addr = cast(sockaddr*) calloc (1, addrlen)) == null) {
+    addrlen = portlen + offsetof(sock.sockaddr, sa_data);
+    if ((addr = cast(sock.sockaddr*) calloc (1, addrlen)) == null) {
 	prmsg (1, "SocketReopen: malloc(addr) failed\n");
 	free (ciptr);
 	return null;
@@ -713,7 +714,7 @@ private int _XSERVTransSocketSetOption(XtransConnInfo ciptr, int option, int arg
 version (UNIXCONN) {
 private int set_sun_path(const(char)* port, const(char)* upath, char* path, int abstract_)
 {
-    sockaddr_un s = void;
+    sock.sockaddr_un s = void;
     ssize_t maxlen = ((s.sun_path) - 1).sizeof;
     const(char)* at = "";
 
@@ -739,7 +740,7 @@ version (HAVE_ABSTRACT_SOCKETS) {
 
 private int _XSERVTransSocketCreateListener(
     XtransConnInfo ciptr,
-    sockaddr* sockname,
+    sock.sockaddr* sockname,
     int socknamelen,
     uint flags
 )
@@ -837,9 +838,9 @@ private int _XSERVTransSocketCreateListener(
 private int _XSERVTransSocketINETCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
-    sockaddr_storage sockname = void;
+    sock.sockaddr_storage sockname = void;
 } else {
-    sockaddr_in sockname = void;
+    sock.sockaddr_in sockname = void;
 }
     ushort sport = void;
     SOCKLEN_T namelen = sockname.sizeof;
@@ -907,22 +908,22 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
     memset(&sockname, 0, sockname.sizeof);
     if (Sockettrans2devtab[ciptr.index].family == AF_INET) {
-	namelen = sockaddr_in.sizeof;
+	namelen = sock.sockaddr_in.sizeof;
 version (BSD44SOCKETS) {
-	(cast(sockaddr_in*)&sockname).sin_len = namelen;
+	(cast(sock.sockaddr_in*)&sockname).sin_len = namelen;
 }
-	(cast(sockaddr_in*)&sockname).sin_family = AF_INET;
-	(cast(sockaddr_in*)&sockname).sin_port = htons(sport);
-	(cast(sockaddr_in*)&sockname).sin_addr.s_addr = htonl(INADDR_ANY);
+	(cast(sock.sockaddr_in*)&sockname).sin_family = AF_INET;
+	(cast(sock.sockaddr_in*)&sockname).sin_port = htons(sport);
+	(cast(sock.sockaddr_in*)&sockname).sin_addr.s_addr = htonl(INADDR_ANY);
     } else {
 version (IPv6) {
-	namelen = sockaddr_in6.sizeof;
+	namelen = sock.sockaddr_in6.sizeof;
 version (SIN6_LEN) {
-	(cast(sockaddr_in6*)&sockname).sin6_len = sockname.sizeof;
+	(cast(sock.sockaddr_in6*)&sockname).sin6_len = sockname.sizeof;
 }
-	(cast(sockaddr_in6*)&sockname).sin6_family = AF_INET6;
-	(cast(sockaddr_in6*)&sockname).sin6_port = htons(sport);
-	(cast(sockaddr_in6*)&sockname).sin6_addr = in6addr_any;
+	(cast(sock.sockaddr_in6*)&sockname).sin6_family = AF_INET6;
+	(cast(sock.sockaddr_in6*)&sockname).sin6_port = htons(sport);
+	(cast(sock.sockaddr_in6*)&sockname).sin6_addr = in6addr_any;
 } else {
         prmsg (1,
                "SocketINETCreateListener: unsupported address family %d\n",
@@ -932,7 +933,7 @@ version (SIN6_LEN) {
     }
 
     if ((status = _XSERVTransSocketCreateListener (ciptr,
-	cast(sockaddr*) &sockname, namelen, flags)) < 0)
+	cast(sock.sockaddr*) &sockname, namelen, flags)) < 0)
     {
 	prmsg (1,
     "SocketINETCreateListener: ...SocketCreateListener() failed\n");
@@ -953,7 +954,7 @@ version (UNIXCONN) {
 
 private int _XSERVTransSocketUNIXCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
 {
-    sockaddr_un sockname = void;
+    sock.sockaddr_un sockname = void;
     int namelen = void;
     int oldUmask = void;
     int status = void;
@@ -1005,18 +1006,18 @@ version (BSD44SOCKETS) {
 static if (HasVersion!"BSD44SOCKETS" || HasVersion!"SUN_LEN") {
     namelen = SUN_LEN(&sockname);
 } else {
-    namelen = strlen(sockname.sun_path) + offsetof(sockaddr_un, sun_path);
+    namelen = strlen(sockname.sun_path) + offsetof(sock.sockaddr_un, sun_path);
 }
 
     if (abstract_) {
 	sockname.sun_path[0] = '\0';
-	namelen = offsetof(sockaddr_un, sun_path) + 1 + strlen(&sockname.sun_path[1]);
+	namelen = offsetof(sock.sockaddr_un, sun_path) + 1 + strlen(&sockname.sun_path[1]);
     }
     else
 	unlink (sockname.sun_path);
 
     if ((status = _XSERVTransSocketCreateListener (ciptr,
-	cast(sockaddr*) &sockname, namelen, flags)) < 0)
+	cast(sock.sockaddr*) &sockname, namelen, flags)) < 0)
     {
 	prmsg (1,
     "SocketUNIXCreateListener: ...SocketCreateListener() failed\n");
@@ -1060,7 +1061,7 @@ private int _XSERVTransSocketUNIXResetListener(XtransConnInfo ciptr)
      * See if the unix domain socket has disappeared.  If it has, recreate it.
      */
 
-    sockaddr_un* unsock = cast(sockaddr_un*) ciptr.addr;
+    sock.sockaddr_un* unsock = cast(sock.sockaddr_un*) ciptr.addr;
     stat statb = void;
     int status = TRANS_RESET_NOOP;
     uint mode = void;
@@ -1100,14 +1101,14 @@ version (HAS_STICKY_DIR_BIT) {
 	ossock_close(ciptr.fd);
 	unlink (unsock.sun_path);
 
-	if ((ciptr.fd = socket (AF_UNIX, SOCK_STREAM, 0)) < 0)
+	if ((ciptr.fd = socket (AF_UNIX, sock.SOCK_STREAM, 0)) < 0)
 	{
 	    _XSERVTransFreeConnInfo (ciptr);
 	    cast(void) umask (oldUmask);
 	    return TRANS_RESET_FAILURE;
 	}
 
-	if (bind (ciptr.fd, cast(sockaddr*) unsock, ciptr.addrlen) < 0)
+	if (bind (ciptr.fd, cast(sock.sockaddr*) unsock, ciptr.addrlen) < 0)
 	{
 	    ossock_close(ciptr.fd);
 	    _XSERVTransFreeConnInfo (ciptr);
@@ -1138,7 +1139,7 @@ version (HAS_STICKY_DIR_BIT) {
 private XtransConnInfo _XSERVTransSocketINETAccept(XtransConnInfo ciptr)
 {
     XtransConnInfo newciptr = void;
-    sockaddr_in sockname = void;
+    sock.sockaddr_in sockname = void;
     SOCKLEN_T namelen = sockname.sizeof;
 
     prmsg (2, "SocketINETAccept(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
@@ -1150,7 +1151,7 @@ private XtransConnInfo _XSERVTransSocketINETAccept(XtransConnInfo ciptr)
     }
 
     if ((newciptr.fd = accept (ciptr.fd,
-	cast(sockaddr*) &sockname, cast(void*)&namelen)) < 0)
+	cast(sock.sockaddr*) &sockname, cast(void*)&namelen)) < 0)
     {
 version (Windows) {
 	errno = WSAGetLastError();
@@ -1203,7 +1204,7 @@ version (UNIXCONN) {
 private XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
 {
     XtransConnInfo newciptr = void;
-    sockaddr_un sockname = void;
+    sock.sockaddr_un sockname = void;
     SOCKLEN_T namelen = sockname.sizeof;
 
     prmsg (2, "SocketUNIXAccept(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
@@ -1215,7 +1216,7 @@ private XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
     }
 
     if ((newciptr.fd = accept (ciptr.fd,
-	cast(sockaddr*) &sockname, cast(void*)&namelen)) < 0)
+	cast(sock.sockaddr*) &sockname, cast(void*)&namelen)) < 0)
     {
 	prmsg (1, "SocketUNIXAccept: accept() failed\n");
 	free (newciptr);
@@ -1357,8 +1358,8 @@ private int _XSERVTransSocketSendFdInvalid(XtransConnInfo ciptr, int fd, int do_
 enum MAX_FDS =		128;
 
 union fd_pass {
-	cmsghdr cmsghdr;
-	char[CMSG_SPACE(MAX_FDS * int.sizeof)] buf;
+	sock.cmsghdr cmsghdr_;
+	char[sock.CMSG_SPACE(MAX_FDS * int.sizeof)] buf;
 };
 
 } /* XTRANS_SEND_FDS */
@@ -1491,7 +1492,7 @@ private int _XSERVTransSocketUNIXClose(XtransConnInfo ciptr)
      * it must be unlinked to completely close it
      */
 
-    sockaddr_un* sockname = cast(sockaddr_un*) ciptr.addr;
+    sock.sockaddr_un* sockname = cast(sock.sockaddr_un*) ciptr.addr;
     int ret = void;
 
     prmsg (2,"SocketUNIXClose(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
@@ -1544,7 +1545,7 @@ private const(char)*[3] tcp_nolisten = [
 	null
 ];
 
-private Xtransport _XSERVTransSocketTCPFuncs = {
+Xtransport _XSERVTransSocketTCPFuncs = {
 	/* Socket Interface */
 	"tcp",
         TRANS_ALIAS,
@@ -1566,7 +1567,7 @@ private Xtransport _XSERVTransSocketTCPFuncs = {
 	_XSERVTransSocketINETClose,
 };
 
-private Xtransport _XSERVTransSocketINETFuncs = {
+Xtransport _XSERVTransSocketINETFuncs = {
 	/* Socket Interface */
 	"inet",
 	0,

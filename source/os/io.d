@@ -113,8 +113,8 @@ struct _connectionOutput {
     int count;
 }
 
-alias ConnectionOutput = _connectionOutConnectionOutput;
-alias ConnectionOutputPtr = _connectionOutConnectionOutput*;
+alias ConnectionOutput = _connectionOutput;
+alias ConnectionOutputPtr = _connectionOutput*;
 
 
 private Bool CriticalOutputPending;

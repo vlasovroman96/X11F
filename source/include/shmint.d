@@ -30,12 +30,15 @@ extern(C): __gshared:
 public import include.screenint;
 public import include.pixmap;
 public import include.gc;
+import include.damage;
+import build.dix_config;
+
 
 enum string XSHM_PUT_IMAGE_ARGS = "
-    DrawablePtr,		/* dst */,
-    GCPtr,		/* pGC */,
+    DrawablePtr,		/* dst */
+    GCPtr,		/* pGC */
     int			/* depth */,
-    unsigned int	/* format */,
+    uint	/* format */,
     int			/* w */,
     int			/* h */,
     int			/* sx */,
@@ -44,7 +47,7 @@ enum string XSHM_PUT_IMAGE_ARGS = "
     int			/* sh */,
     int			/* dx */,
     int			/* dy */,
-    char *      ";                /* data */;
+    char *      ";                /* data */
 
 enum XSHM_CREATE_PIXMAP_ARGS = "
     ScreenPtr	/* pScreen */, 
@@ -54,8 +57,8 @@ enum XSHM_CREATE_PIXMAP_ARGS = "
     char *                      /* addr */";
 
 struct _ShmFuncs {
-    PixmapPtr function(mixin(XSHM_CREATE_PIXMAP_ARGS)) CreatePixmap;
-    void function(mixin(XSHM_PUT_IMAGE_ARGS)) PutImage;
+    mixin("PixmapPtr function(" ~ XSHM_CREATE_PIXMAP_ARGS ~ ") CreatePixmap;");
+    mixin("void function(" ~ XSHM_PUT_IMAGE_ARGS ~ ") PutImage;");
 }alias ShmFuncs = _ShmFuncs;
 alias ShmFuncsPtr = _ShmFuncs*;
 

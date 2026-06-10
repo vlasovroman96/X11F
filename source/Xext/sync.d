@@ -79,6 +79,8 @@ import include.resource;
 import Xext.syncsrv;
 import include.protocol_versions;
 import include.inputstr;
+import externs.X11.extensions.syncconst;
+import externs.X11.extensions.syncproto;
 // import include.misync_priv;
 
 /*
@@ -111,9 +113,9 @@ enum XSyncCAAllTrigger =
 
 static void SyncComputeBracketValues(SyncCounter *);
 
-static void SyncInitServerTime(void);
+static void SyncInitServerTime();
 
-static void SyncInitIdleTime(void);
+static void SyncInitIdleTime();
 
 pragma(inline, true) private void* SysCounterGetPrivate(SyncCounter* counter)
 {

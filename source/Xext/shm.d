@@ -79,6 +79,7 @@ import include.extnsionst;
 import include.servermd;
 import Xext.xace;
 import include.protocol_versions;
+import externs.X11.extensions.shmproto;
 
 /* Needed for Solaris cross-zone shared memory extension */
 version (HAVE_SHMCTL64) {
@@ -96,8 +97,8 @@ enum string SHMPERM_MODE(string p) = `` ~ p ~ `.ipcx_mode`;
 enum string SHMPERM_ZONEID(string p) = `` ~ p ~ `.ipcx_zoneid`;
 } else {
 enum string SHMSTAT(string id, string buf) = `shmctl(` ~ id ~ `, IPC_STAT, ` ~ buf ~ `)`;
-enum SHMSTAT_TYPE = shmid_ds;
-enum SHMPERM_TYPE = ipc_perm;
+alias SHMSTAT_TYPE = shmid_ds;
+alias SHMPERM_TYPE = ipc_perm;
 enum string SHM_PERM(string buf) = `` ~ buf ~ `.shm_perm`;
 enum string SHM_SEGSZ(string buf) = `` ~ buf ~ `.shm_segsz`;
 enum string SHMPERM_UID(string p) = `` ~ p ~ `.uid`;
@@ -114,7 +115,7 @@ struct ShmScrPrivateRec {
 
 Bool noMITShmExtension = FALSE;
 
-static PixmapPtr fbShmCreatePixmap(XSHM_CREATE_PIXMAP_ARGS);
+static mixin("PixmapPtr fbShmCreatePixmap("~XSHM_CREATE_PIXMAP_ARGS~");");
 static int ShmDetachSegment(void *value, XID shmseg);
 static void ShmResetProc(ExtensionEntry *extEntry);
 static void SShmCompletionEvent(xShmCompletionEvent *from,

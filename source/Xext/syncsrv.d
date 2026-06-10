@@ -105,6 +105,8 @@ struct _SyncAlarm {
     _SyncAlarmClientList* pEventClients;
 }
 
+alias SyncAlarm = _SyncAlarm;
+
 struct _SyncAwaitHeader {
     ClientPtr client;
     CARD32 delete_id;
@@ -116,6 +118,8 @@ struct _SyncAwait {
     long event_threshold;
     _SyncAwaitHeader* pHeader;
 }
+
+alias SyncAwait = _SyncAwait;
 
 union SyncAwaitUnion {
     _SyncAwaitHeader header;

@@ -12,7 +12,7 @@ public import include.dix; /* ClientPtr */
 import os.io;
 struct _XtransConnInfo;
 
-alias XtransConnInfo = _XtransConnInfo*;
+// alias XtransConnInfo = _XtransConnInfo*;
 
 alias ConnectionInputPtr = _connectionInput*;
 alias ConnectionOutputPtr = _connectionOutput*;

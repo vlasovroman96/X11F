@@ -1,4 +1,4 @@
-module xselinux;
+module Xext.xselinux;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************/
 
  
-//public import externs.X11.Xmd;
+public import externs.X11.Xmd;
 
 /* Extension info */
 enum SELINUX_EXTENSION_NAME =		"SELinux";

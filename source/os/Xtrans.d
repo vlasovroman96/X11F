@@ -64,6 +64,7 @@ import systemd.sd_daemon;
 
 import os.ossock;
 import os.xhostname;
+import os.Xtranssock;
 
 /*
  * The transport table contains a definition for every transport (protocol)
@@ -89,49 +90,64 @@ static assert(0, "Cannot build IPv6 support without AF_INET6");
 }
 
 import os.Xtranssock;
+enum XTRANS_MAX_ADDR_LEN =	128;	/* large enough to hold sun_path */
+struct Xtransaddr {
+    ubyte[XTRANS_MAX_ADDR_LEN]	addr;
+} 
 
-private Xtransport_table[] buildTransports()
-{
-    Xtransport_table[] arr;
+Xtransport_table[] Xtransport_tabletab = () {
+    enum size_t maxElements = () {
+        size_t count = 2; // TCP + INET
+        version(IPv6) {
+            count += 1;   // INET6
+        }
+        version(UNIXCONN) {
+            count += 2;   // LOCAL + UNIX
+        }
+        return count;
+    }();
 
-    arr ~= Xtransport_table(
+    Xtransport_table[maxElements] arr;
+    size_t count = 0;
+
+    arr[count++] = Xtransport_table(
         &_XSERVTransSocketTCPFuncs,
         TRANS_SOCKET_TCP_INDEX
     );
 
     version (IPv6)
     {
-        arr ~= Xtransport_table(
+        arr[count++] = Xtransport_table(
             &_XSERVTransSocketINET6Funcs,
             TRANS_SOCKET_INET6_INDEX
         );
     }
 
-    arr ~= Xtransport_table(
+    arr[count++] = Xtransport_table(
         &_XSERVTransSocketINETFuncs,
         TRANS_SOCKET_INET_INDEX
     );
 
     version (UNIXCONN)
     {
-        arr ~= Xtransport_table(
+        arr[count++] = Xtransport_table(
             &_XSERVTransSocketLocalFuncs,
             TRANS_SOCKET_LOCAL_INDEX
         );
 
-        arr ~= Xtransport_table(
+        arr[count++] = Xtransport_table(
             &_XSERVTransSocketUNIXFuncs,
             TRANS_SOCKET_UNIX_INDEX
         );
     }
 
-    return arr;
-}
+    return arr.dup;
+}();
 
-private immutable Xtransport_table[] Xtransports =
+Xtransport_table[] Xtransports =
     buildTransports();
 
-enum NUMTRANS =	(sizeof(Xtransports)/sizeof(Xtransport_table));
+enum NUMTRANS =	Xtransports.sizeof/Xtransport_table.sizeof;
 
 /*
  * These are a few utility function used by the public interface functions.
