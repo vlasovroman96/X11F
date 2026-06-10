@@ -33,13 +33,14 @@ import include.windowstr;
 import include.propertyst;
 import include.extnsionst;
 import Xext.xselinuxint;
+import Xext.xselinux;
 
-enum CTX_DEV = offsetof(SELinuxSubjectRec, dev_create_sid);
-enum CTX_WIN = offsetof(SELinuxSubjectRec, win_create_sid);
-enum CTX_PRP = offsetof(SELinuxSubjectRec, prp_create_sid);
-enum CTX_SEL = offsetof(SELinuxSubjectRec, sel_create_sid);
-enum USE_PRP = offsetof(SELinuxSubjectRec, prp_use_sid);
-enum USE_SEL = offsetof(SELinuxSubjectRec, sel_use_sid);
+enum CTX_DEV = SELinuxSubjectRec.dev_create_sid.offsetof;
+enum CTX_WIN = SELinuxSubjectRec.win_create_sid.offsetof;
+enum CTX_PRP = SELinuxSubjectRec.prp_create_sid.offsetof;
+enum CTX_SEL = SELinuxSubjectRec.sel_create_sid.offsetof;
+enum USE_PRP = SELinuxSubjectRec.prp_use_sid.offsetof;
+enum USE_SEL = SELinuxSubjectRec.sel_use_sid.offsetof;
 
 struct SELinuxListItemRec {
     char* octx;

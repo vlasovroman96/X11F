@@ -160,6 +160,7 @@ struct _OtherInputMasks {
     _XI2Mask* xi2mask;
 }
 
+alias OtherInputMasks = _OtherInputMasks;
 /*
  * The following structure gets used for both active and passive grabs. For
  * active grabs some of the fields (e.g. modifiers) are not used. However,

@@ -13,6 +13,7 @@ import core.stdc.config: c_long, c_ulong;
 public import include.pixmap;
 public import include.regionstr;
 public import include.xvdix;
+import externs.X11.extensions.Xv;
 
 enum string VALIDATE_XV_PORT(string portID, string pPort, string mode) = `
     {

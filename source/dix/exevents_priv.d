@@ -8,7 +8,7 @@ import core.stdc.config: c_long, c_ulong;
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-// public // //import externs.X11.extensions.XIproto;
+public import externs.X11.extensions.XIproto;
 public import include.exevents;
 
 /**

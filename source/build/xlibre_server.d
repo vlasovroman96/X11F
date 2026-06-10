@@ -16,7 +16,7 @@ extern(C): __gshared:
  * However, it should be kept in sync with this file.
  */
 
- 
+ import build.dix_config;
 version (HAVE_XORG_CONFIG_H) {
 static assert(0, "Include xorg-config.h when building the X server");
 }

@@ -39,26 +39,27 @@ extern(C): __gshared:
 public import include.xlibre_ptrtypes;
 public import include.xf86str;
 public import include.xf86Opt;
-// //public import externs.X11.Xfuncproto;
+public import externs.X11.Xfuncproto;
 public import core.stdc.stdarg;
 //public import externs.X11.extensions._randr;
+import include.xf86Xinput;
+import os.log;
 
 /* General parameters */
-extern void  xorgHWAccess;
+extern bool  xorgHWAccess;
 
 extern DevPrivateKeyRec xf86ScreenKeyRec;
 
 enum xf86ScreenKey = (&xf86ScreenKeyRec);
 
 extern ScrnInfoPtr *xf86Screens;      /* List of pointers to ScrnInfoRecs */
-extern ubyte[256] byte_reversed = 0;
+extern ubyte[256] byte_reversed;
 
 enum string XF86SCRNINFO(string p) = `xf86ScreenToScrn(` ~ p ~ `)`;
 
 /* Compatibility functions for pre-input-thread drivers */
-pragma(inline, true) private _X_DEPRECATED xf86BlockSIGIO() { input_lock(); return 0; }
-pragma(inline, true) private _X_DEPRECATED xf86UnblockSIGIO(int wasset) { input_unlock(); }
-
+pragma(inline, true) private int xf86BlockSIGIO() { input_lock(); return 0; }
+pragma(inline, true) private void xf86UnblockSIGIO(int wasset) { input_unlock(); }
 /* PCI related */
 version (XSERVER_LIBPCIACCESS) {
 public import externs.pciaccess;
@@ -198,7 +199,7 @@ enum XF86_SCRN_INTERFACE = 1 /* define for drivers to use in api compat */;
 enum XF86_ALLOCATE_GPU_SCREEN = 1;
 
 /* only for backwards (source) compatibility */
-enum xf86MsgVerb = LogMessageVerb;
+alias xf86MsgVerb = LogMessageVerb;
 enum string xf86Msg(string type, string arg) = `LogMessageVerb(` ~ type ~ `, 1, `~arg~`)`;
 
 /*

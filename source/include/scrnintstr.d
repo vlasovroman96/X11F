@@ -107,7 +107,7 @@ alias WINDOW_VRR_ENABLED = WindowVRRMode.WINDOW_VRR_ENABLED;
  *  or as a local variable) can easily do so and retain full type checking.
  */
 
-alias CloseScreenProcPtr = Bool function(ScreenPtr);
+// alias CloseScreenProcPtr = Bool function(ScreenPtr);
 
 alias QueryBestSizeProcPtr = void function(int, ushort*, ushort*, ScreenPtr);
 

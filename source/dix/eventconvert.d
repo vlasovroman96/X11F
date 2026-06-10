@@ -36,7 +36,7 @@ import build.dix_config;
 import core.stdc.stdint;
 //import externs.X11.X;
 // //import externs.X11.extensions.XIproto;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 //import externs.X11.extensions.XI;
 //import externs.X11.extensions.XI2;
 

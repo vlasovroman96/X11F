@@ -43,8 +43,8 @@ extern(C): __gshared:
 
  
 // //public import externs.X11.Xfuncproto;
-//public import externs.X11.Xdefs;
-//public import externs.X11.Xmd;
+public import externs.X11.Xdefs;
+public import externs.X11.Xmd;
 
 enum NULL = cast(void *)null;
 
@@ -60,10 +60,10 @@ enum ABI_CLASS_EXTENSION =	"X.Org Server Extension";
 
 enum ABI_MINOR_MASK =		0x0000FFFF;
 enum ABI_MAJOR_MASK =		0xFFFF0000;
-enum string GET_ABI_MINOR(string v) = `((` ~ v ~ `) & ABI_MINOR_MASK)`;
-enum string GET_ABI_MAJOR(string v) = `(((` ~ v ~ `) & ABI_MAJOR_MASK) >> 16)`;
-enum string SET_ABI_VERSION(string maj, string min) = `
-		((((` ~ maj ~ `) << 16) & ABI_MAJOR_MASK) | ((` ~ min ~ `) & ABI_MINOR_MASK))`;
+enum string GET_ABI_MINOR(alias v) = `((` ~ v.stringof ~ `) & ABI_MINOR_MASK)`;
+enum string GET_ABI_MAJOR(alias v) = `(((` ~ v.stringof ~ `) & ABI_MAJOR_MASK) >> 16)`;
+enum string SET_ABI_VERSION(alias maj, alias min) = `
+		((((` ~ maj.stringof ~ `) << 16) & ABI_MAJOR_MASK) | ((` ~ min.stringof ~ `) & ABI_MINOR_MASK))`;
 
 /*
  * ABI versions.  Each version has a major and minor revision.  Modules
@@ -73,20 +73,20 @@ enum string SET_ABI_VERSION(string maj, string min) = `
  * changed.  The minor revision mask is 0x0000FFFF and the major revision
  * mask is 0xFFFF0000.
  */
-enum ABI_ANSIC_VERSION =	SET_ABI_VERSION(1, 4);
+enum ABI_ANSIC_VERSION =	SET_ABI_VERSION!(1, 4);
 
 /* XXX This is a compile-time option that changes abi XXX */
 /* TODO: Remove this toggle in 26.0 */
 version (CONFIG_LEGACY_NVIDIA_PADDING) {
-enum ABI_VIDEODRV_VERSION =	SET_ABI_VERSION(28, 1);
+enum ABI_VIDEODRV_VERSION =	SET_ABI_VERSION!(28, 1);
 } else {
-enum ABI_VIDEODRV_VERSION =    SET_ABI_VERSION(28, 0);
+enum ABI_VIDEODRV_VERSION =    SET_ABI_VERSION!(28, 0);
 }
-enum ABI_XINPUT_VERSION =	SET_ABI_VERSION(26, 0);
-enum ABI_EXTENSION_VERSION =	SET_ABI_VERSION(11, 0);
+enum ABI_XINPUT_VERSION =	SET_ABI_VERSION!(26, 0);
+enum ABI_EXTENSION_VERSION =	SET_ABI_VERSION!(11, 0);
 
 /* hack to get both modern and ancient nvidia DDX drivers to work at the same time */
-enum ABI_NVIDIA_VERSION =      SET_ABI_VERSION(25, 2);
+enum ABI_NVIDIA_VERSION =      SET_ABI_VERSION!(25, 2);
 
 enum MODINFOSTRING1 =	0xef23fdc5;
 enum MODINFOSTRING2 =	0x10dc023a;

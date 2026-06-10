@@ -32,8 +32,8 @@ import os.xserver_poll;
 
 import externs.xf86drm;
 
-import driver;
-import drmmode_bo;
+import hw.xfree86.drivers.video.modesetting.driver;
+import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
 /*
  * Flush the DRM event queue when full; makes space for new events.

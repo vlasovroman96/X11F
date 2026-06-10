@@ -55,6 +55,8 @@ import Xext.panoramiXsrv;
 import composite.compint;
 import Xext.xace;
 import include.protocol_versions;
+import externs.X11.extensions.compositeproto;
+
 
 private CARD8 CompositeReqCode;
 private DevPrivateKeyRec CompositeClientPrivateKeyRec;

@@ -40,20 +40,20 @@ public import include.xlibre_ptrtypes;
 public import include.include.xf86Privstr;
 public import include.input;
 
-extern void  xf86FbBpp;
-extern void  xf86Depth;
+extern int xf86FbBpp;
+extern int  xf86Depth;
 
 /* Other parameters */
 
-extern void  xf86InfoRec;
+extern xf86InfoRec xf86Info;
 extern serverLayoutRec xf86ConfigLayout;
 
 extern void * xf86DriverList;
-extern void  xf86NumScreens;
+extern int  xf86NumScreens;
 
-extern _ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
-extern void  xf86NumGPUScreens;
-extern void  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
+extern ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
+extern int xf86NumGPUScreens;
+extern int  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
 enum DEFAULT_DPI =		96;
 
 

@@ -40,6 +40,8 @@ public import include.servermd;
 public import include.windowstr;
 public import include.privates;
 public import include.mi;
+public import include.mi;
+
 public import migc;
 public import include.picturestr;
 
@@ -64,6 +66,14 @@ enum string READ(string ptr) = `(*(` ~ ptr ~ `))`;
  */
 
 enum FB_SHIFT =    LOG2_BITMAP_PAD;
+static if (FB_SHIFT == 5) {
+alias FbBits = CARD32;
+} else {
+static assert(0, "Unsupported FB_SHIFT");
+}
+static if (LOG2_BITMAP_PAD == FB_SHIFT) {
+alias FbStip = FbBits;
+}
 
 
 enum FB_UNIT =	    (1 << FB_SHIFT);
@@ -78,15 +88,7 @@ enum FB_STIP_MASK =	(FB_STIP_UNIT - 1);
 enum FB_STIP_ALLONES =	((FbStip) -1);
 enum string FbFullMask(string n) = `((` ~ n ~ `) == FB_UNIT ? FB_ALLONES : (((cast(FbBits) 1) << ` ~ n ~ `) - 1))`;
 
-static if (FB_SHIFT == 5) {
-alias FbBits = CARD32;
-} else {
-static assert(0, "Unsupported FB_SHIFT");
-}
 
-static if (LOG2_BITMAP_PAD == FB_SHIFT) {
-alias FbStip = FbBits;
-}
 
 alias FbStride = int;
 
@@ -248,7 +250,7 @@ enum string fbFinishAccess(string pDraw) = `
 }
 
 extern DevPrivateKey
-fbGetScreenPrivateKey(void);
+fbGetScreenPrivateKey();
 
 /* private field of a screen */
 struct _FbScreenPrivRec {
@@ -571,7 +573,7 @@ extern int fbScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, in
 /*
  * fbseg.c
  */
-alias FbBres = FbBres(DrawablePtr pDrawable,
+alias FbBres_ = FbBres(DrawablePtr pDrawable,
                     GCPtr pGC,
                     int dashOffset,
                     int signdx,

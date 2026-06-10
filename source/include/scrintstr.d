@@ -74,7 +74,7 @@ struct _PixmapFormat {
     ubyte bitsPerPixel;
     ubyte scanlinePad;
 } 
-alias PixmapFormatRec = _PixmapFormat;
+// alias PixmapFormatRec = _PixmapFormat;
 
 struct _Visual {
     VisualID vid;
@@ -741,7 +741,7 @@ struct _ScreenInfo {
     int bitmapScanlinePad;
     int bitmapBitOrder;
     int numPixmapFormats;
-    PixmapFormatRec[MAXFORMATS] formats;
+    _PixmapFormat[MAXFORMATS] formats;
     int numScreens;
     ScreenPtr[MAXSCREENS] screens;
     int numGPUScreens;

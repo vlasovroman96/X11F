@@ -23,11 +23,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import build.dix_config;
 
-// import selinux.label;
+import externs.selinux.label;
 
 import dix.registry_priv;
 
 import Xext.xselinuxint;
+import Xext.xselinux_label;
+
 
 /* selection and property atom cache */
 struct SELinuxAtomRec {

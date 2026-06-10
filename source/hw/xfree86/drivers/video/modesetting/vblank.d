@@ -1,4 +1,4 @@
-module vblank;
+module hw.xfree86.drivers.video.modesetting.vblank;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -35,8 +35,8 @@ import core.sys.posix.unistd;
 
 import include.xf86;
 import include.xf86Crtc;
-import driver;
-import drmmode_display;
+import hw.xfree86.drivers.video.modesetting.driver;
+import hw.xfree86.drivers.video.modesetting.drmmode_display;
 
 /**
  * Tracking for outstanding events queued to the kernel.

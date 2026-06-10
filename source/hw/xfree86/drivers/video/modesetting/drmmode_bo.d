@@ -1,4 +1,4 @@
-module drmmode_bo;
+module hw.xfree86.drivers.video.modesetting.drmmode_bo;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -21,8 +21,8 @@ import externs.drm_mode;
 import externs.xf86drm;
 import include.xf86Crtc;
 
-import driver;
-import drmmode_bo;
+import hw.xfree86.drivers.video.modesetting.driver;
+import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
 struct bo_priv_t {
     void* map_data; /* Opaque ptr for the mapped region */

@@ -104,6 +104,7 @@ import include.resource;
 import include.opaque;
 import include.input;
 import Xext.xvdisp;
+import externs.X11.extensions.Xvproto;
 
 enum string SCREEN_PROLOGUE(string pScreen, string field) = `((` ~ pScreen ~ `).` ~ field ~ ` = (cast(XvScreenPtr) 
     dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, &XvScreenKeyRec)).` ~ field ~ `)`;

@@ -1,4 +1,4 @@
-module driver;
+module hw.xfree86.drivers.video.modesetting.driver;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -81,8 +81,8 @@ version (SEATD_LIBSEAT) {
 import seatd_libseat;
 }
 
-import driver;
-import drmmode_bo;
+import hw.xfree86.drivers.video.modesetting.driver;
+import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
 
 

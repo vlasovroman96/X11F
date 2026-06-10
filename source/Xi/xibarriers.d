@@ -66,8 +66,14 @@ import Xext.xace;
 import include.list;
 import Xi.exglobals;
 import include.eventstr;
+import externs.X11.extensions.xfixesproto;
 
 RESTYPE PointerBarrierType;
+
+struct PointerBarrier {
+    INT16 x1, x2, y1, y2;
+    CARD32 directions;
+};
 
 private DevPrivateKeyRec BarrierScreenPrivateKeyRec;
 

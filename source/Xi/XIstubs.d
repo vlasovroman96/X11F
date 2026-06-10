@@ -29,7 +29,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 version (XI_STUBS_H) {} else {
 enum XI_STUBS_H = 1;
 
-// public // //import externs.X11.extensions.XIproto;
+public import externs.X11.extensions.XIproto;
 
 public import include.dix;
 

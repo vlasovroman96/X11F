@@ -27,6 +27,11 @@ extern(C): __gshared:
 
  
 public import include.list;
+import include.input;
+import externs.X11.Xdefs;
+import externs.X11.Xmd;
+
+
 
 /*
  * All options are stored using this data type.
@@ -39,6 +44,6 @@ struct XF86OptionRec {
     const(char)* opt_comment;
 }
 
-alias XF86OptionPtr = _InputOption*;
+alias XF86OptionPtr = InputOption*;
 
 

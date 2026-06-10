@@ -44,8 +44,8 @@ import include.xf86Crtc;
 import externs.xf86drm;
 import include.xf86str;
 
-import driver;
-import drmmode_display;
+import hw.xfree86.drivers.video.modesetting.driver;
+import hw.xfree86.drivers.video.modesetting.drmmode_display;
 
 version (none) {
 enum string DebugPresent(string x) = `ErrorF x = void;`;

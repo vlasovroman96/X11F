@@ -55,7 +55,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.X11.extensions.XI;
+import externs.X11.extensions.XI;
 //import externs.X11.extensions.XI2;
 // //import externs.X11.extensions.XIproto;
 

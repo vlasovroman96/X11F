@@ -28,6 +28,7 @@ extern(C): __gshared:
  * the sale, use or other dealings in this Software without prior written
  * authorization from the copyright holder(s) and author(s).
  */
+ import build.dix_config;
 
  
 version (XORG_VERSION_CURRENT) {} else {
@@ -37,14 +38,14 @@ version (XORG_VERSION_CURRENT) {} else {
 enum string XORG_VERSION_NUMERIC(string major,string minor,string patch,string snap,string dummy) = `
 	(((` ~ major ~ `) * 10000000) + ((` ~ minor ~ `) * 100000) + ((` ~ patch ~ `) * 1000) + ` ~ snap ~ `)`;
 
-enum string XORG_GET_MAJOR_VERSION(string vers) = `((` ~ vers ~ `) / 10000000)`;
-enum string XORG_GET_MINOR_VERSION(string vers) = `(((` ~ vers ~ `) % 10000000) / 100000)`;
-enum string XORG_GET_PATCH_VERSION(string vers) = `(((` ~ vers ~ `) % 100000) / 1000)`;
-enum string XORG_GET_SNAP_VERSION(string vers) = `((` ~ vers ~ `) % 1000)`;
+enum string XORG_GET_MAJOR_VERSION(alias vers) = `((` ~ vers.stringof ~ `) / 10000000)`;
+enum string XORG_GET_MINOR_VERSION(alias vers) = `(((` ~ vers.stringof ~ `) % 10000000) / 100000)`;
+enum string XORG_GET_PATCH_VERSION(alias vers) = `(((` ~ vers.stringof ~ `) % 100000) / 1000)`;
+enum string XORG_GET_SNAP_VERSION(alias vers) = `((` ~ vers.stringof ~ `) % 1000)`;
 
-enum XORG_VERSION_MAJOR =	XORG_GET_MAJOR_VERSION(XORG_VERSION_CURRENT);
-enum XORG_VERSION_MINOR =	XORG_GET_MINOR_VERSION(XORG_VERSION_CURRENT);
-enum XORG_VERSION_PATCH =	XORG_GET_PATCH_VERSION(XORG_VERSION_CURRENT);
-enum XORG_VERSION_SNAP =	XORG_GET_SNAP_VERSION(XORG_VERSION_CURRENT);
+enum XORG_VERSION_MAJOR =	XORG_GET_MAJOR_VERSION!(XORG_VERSION_CURRENT);
+enum XORG_VERSION_MINOR =	XORG_GET_MINOR_VERSION!(XORG_VERSION_CURRENT);
+enum XORG_VERSION_PATCH =	XORG_GET_PATCH_VERSION!(XORG_VERSION_CURRENT);
+enum XORG_VERSION_SNAP =	XORG_GET_SNAP_VERSION!(XORG_VERSION_CURRENT);
 
 

@@ -59,7 +59,7 @@ public import include.xf86;
 public import include.xf86str;
 public import include.inputstr;
 //public import externs.X11.extensions.XI;
-public // //import externs.X11.extensions.XIproto;
+public import externs.X11.extensions.XIproto;
 
 /* Input device flags */
 enum XI86_ALWAYS_CORE =	0x04    /* device always controls the pointer */;
@@ -126,7 +126,7 @@ extern void  xf86PostTouchEvent(DeviceIntPtr dev, uint touchid, ushort type, uin
 extern void  xf86PostGesturePinchEvent(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
 extern void  xf86PostGestureSwipeEvent(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y);
 
-extern InputInfoPtr xf86FirstLocalDevice(void);
+extern InputInfoPtr xf86FirstLocalDevice();
 extern void  xf86ScaleAxis(int Cx, int to_max, int to_min, int from_max, int from_min);
 extern void  xf86ProcessCommonOptions(InputInfoPtr pInfo, XF86OptionPtr options);
 extern void  xf86InitValuatorAxisStruct(DeviceIntPtr dev, int axnum, Atom label, int minval, int maxval, int resolution, int min_res, int max_res, int mode);

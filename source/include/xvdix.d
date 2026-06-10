@@ -76,6 +76,13 @@ struct _XvGrabRec {
 }alias XvGrabRec = _XvGrabRec;
 alias XvGrabPtr = XvGrabRec*;
 
+struct _XvPortNotifyRec {
+    _XvPortNotifyRec *next;
+    ClientPtr client;
+    ulong id;
+}
+alias XvPortNotifyRec = _XvPortNotifyRec;
+
 alias XvPortNotifyPtr = _XvPortNotifyRec*;
 
 struct _XvEncodingRec {
@@ -177,7 +184,7 @@ struct _XvScreenRec {
 alias XvScreenPtr = XvScreenRec*;
 
 extern void  XvScreenInit(ScreenPtr);
-extern DevPrivateKey XvGetScreenKey(void);
-extern void  unsigned; c_long XvGetRTPort();
+extern DevPrivateKey XvGetScreenKey();
+extern ulong XvGetRTPort();
 
                           /* XVDIX_H */

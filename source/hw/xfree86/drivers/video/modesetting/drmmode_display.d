@@ -1,4 +1,4 @@
-module drmmode_display;
+module hw.xfree86.drivers.video.modesetting.drmmode_display;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -54,13 +54,13 @@ import drm_mode;
 
 import externs.xf86drm;
 import include.xf86Crtc;
-import drmmode_bo;
+import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
 import include.cursorstr;
 
 // //import externs.X11.extensions.dpmsconst;
 
-import driver;
+import hw.xfree86.drivers.video.modesetting.driver;
 
 enum string MIN(string a,string b) = `((` ~ a ~ `) < (` ~ b ~ `) ? (` ~ a ~ `) : (` ~ b ~ `))`;
 enum string MAX(string a,string b) = `((` ~ a ~ `) > (` ~ b ~ `) ? (` ~ a ~ `) : (` ~ b ~ `))`;

@@ -8,7 +8,7 @@ extern(C): __gshared:
  
 public import core.stdc.stdio;
 public import core.stdc.stdlib;
-//public import externs.X11.Xdefs;
+public import externs.X11.Xdefs;
 
 public import include.xkbrules;
 

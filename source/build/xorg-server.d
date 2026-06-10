@@ -184,6 +184,7 @@ enum XTRANS_SEND_FDS = 1;
 /* Ask fontsproto to make font path element names const */
 enum FONT_PATH_ELEMENT_NAME_CONST =    1;
 
+import build.dix_config;
 /* byte order */
 enum X_BYTE_ORDER = X_LITTLE_ENDIAN;
 

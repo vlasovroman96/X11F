@@ -60,7 +60,7 @@ import core.stdc.assert_;
 
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 // //import externs.X11.extensions.geproto;
 
 import dix.dix_priv;
@@ -82,6 +82,7 @@ import include.protocol_versions;
 import Xi.handlers;
 import Xi.xibarriers;
 import Xi.xiproperty;
+import externs.X11.extensions.XI;
 
 /* Masks for XI events have to be aligned with core event (partially anyway).
  * If DeviceButtonMotionMask is != ButtonMotionMask, event delivery

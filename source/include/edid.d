@@ -16,8 +16,8 @@ import core.stdc.config: c_long, c_ulong;
  
 // public //import stdbool;
 public import core.stdc.stdint;
-//public import externs.X11.Xmd;
-// //public import externs.X11.Xfuncproto;
+public import externs.X11.Xmd;
+public import externs.X11.Xdefs;
 
 enum STD_TIMINGS = 8;
 enum DET_TIMINGS = 4;
@@ -199,7 +199,7 @@ enum EDID_COMPLETE_RAWDATA =		0x01;
  */
 struct _Xf86Monitor {
     int scrnIndex;
-    vendor vendor;
+    vendor vendor_;
     edid_version ver;
     disp_features features;
     established_timings timings1;

@@ -19,6 +19,7 @@ public import include.misc;
 public import include.privates;
 public import include.xkbsrv;
 public import include.xkbsrv;
+import externs.X11.extensions.XKBproto;
 
 enum _BEEP_NONE =              0;
 enum _BEEP_FEATURE_ON =        1;

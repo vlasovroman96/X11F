@@ -45,8 +45,10 @@ enum string LEGAL_NEW_RESOURCE(string id,string client) = `
 import std.conv;
 /* static assert for protocol structure sizes */
 version (__size_assert) {} else {
+    import std.conv;
+    import std.string;
 enum __size_assert(alias what, size_t howmuch) = `
-  enum _size_wrong_ = char[( !!(` ~ what.stringof ~ `.sizeof == ` ~ howmuch.to!string ~ `) )*2-1];`;
+  enum _size_wrong_ = char[( !!(` ~ what.stringof ~ `.sizeof == ` ~ howmuch.stringof ~ `) )*2-1];`;
 }
 mixin template XTYPE_SIZE_ASSERT(alias typename) {
     mixin(__size_assert!(typename, typename.sizeof));
