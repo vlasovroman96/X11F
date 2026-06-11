@@ -36,7 +36,7 @@ extern char* xf86KeyboardName;
 
 extern rgb xf86Weight;
 
-extern void  xf86FlipPixels;
+extern Bool  xf86FlipPixels;
 
 extern Gamma xf86Gamma;
 

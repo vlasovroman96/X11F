@@ -7,9 +7,9 @@ extern(C): __gshared:
  * Copyright © 2000 Jakub Jelinek (jakub@redhat.com)
  */
  
-//public import externs.X11.Xdefs;
+public import externs.X11.Xdefs;
 
-public import xf86sbusBus;
+public import include.xf86sbusBus;
 
 struct sbus_devtable {
     int devId;

@@ -34,7 +34,7 @@ import dix.exevents_priv;
 import dix.ptrveloc_priv;
 import os.bug_priv;
 
-import ptrveloc;
+import include.ptrveloc;
 //import externs.X11.Xatom;
 import include.os;
 

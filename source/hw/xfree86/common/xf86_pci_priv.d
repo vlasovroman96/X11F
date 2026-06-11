@@ -6,10 +6,12 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-version (XSERVER_LIBPCIACCESS) {
+import build.dix_config;
+ 
+static if (XSERVER_LIBPCIACCESS) {
 public import externs.pciaccess;
 } else {
-struct pci_device;;
+// struct pci_device;;
 }
 
 /*
@@ -19,7 +21,7 @@ struct pci_device;;
  * callee code is already prepared for using it, but for the time being
  * we need a dummy - until the actual one is really there.
  */
-version (HAVE_PCI_DEVICE_IS_BOOT_DISPLAY) {} else {
+static if (HAVE_PCI_DEVICE_IS_BOOT_DISPLAY) {} else {
 pragma(inline, true) private int pci_device_is_boot_display(pci_device* dev)
 {
     return 0;

@@ -33,7 +33,8 @@ extern(C): __gshared:
 /* exported functions are/were used by the X Server */
 
  
-public ////import externs.X11.Xfuncproto;
+// public ////import externs.X11.Xfuncproto;
+import include.xf86Parser;
 
 /* Device.c */
 XF86ConfDevicePtr xf86parseDeviceSection();

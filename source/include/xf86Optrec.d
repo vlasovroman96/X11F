@@ -72,7 +72,7 @@ extern void  xf86optionListDup(XF86OptionPtr opt);
 extern void  xf86optionListFree(XF86OptionPtr opt);
 extern void * xf86optionName(XF86OptionPtr opt);
 extern void * xf86optionValue(XF86OptionPtr opt);
-extern XF86OptionPtr xf86newOption(char_ *name, char_ *value);
+extern XF86OptionPtr xf86newOption(char *name, ubyte *value);
 extern void  xf86nextOption(XF86OptionPtr list);
 extern void  xf86findOption(XF86OptionPtr list, const(char)* name);
 extern const(void )* xf86findOptionValue(XF86OptionPtr list, const(char)* name);

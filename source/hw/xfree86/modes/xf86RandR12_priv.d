@@ -11,6 +11,8 @@ extern(C): __gshared:
 
 public import include.randrstr;
 public import xf86RandR12;
+import include.colormapst;
+
 
 void xf86RandR12LoadPalette(ScrnInfoPtr pScrn, int numColors, int* indices, LOCO* colors, VisualPtr pVisual);
 Bool xf86RandR12InitGamma(ScrnInfoPtr pScrn, uint gammaSize);

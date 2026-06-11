@@ -78,14 +78,14 @@ alias FbStip = FbBits;
 
 enum FB_UNIT =	    (1 << FB_SHIFT);
 enum FB_MASK =	    (FB_UNIT - 1);
-enum FB_ALLONES =  ((FbBits) -1);
+enum FB_ALLONES =  (cast(FbBits) -1);
 static if (GLYPHPADBYTES != 4) {
 static assert(0, "GLYPHPADBYTES must be 4");
 }
 enum FB_STIP_SHIFT =	LOG2_BITMAP_PAD;
 enum FB_STIP_UNIT =	(1 << FB_STIP_SHIFT);
 enum FB_STIP_MASK =	(FB_STIP_UNIT - 1);
-enum FB_STIP_ALLONES =	((FbStip) -1);
+enum FB_STIP_ALLONES =	(cast(FbStip) -1);
 enum string FbFullMask(string n) = `((` ~ n ~ `) == FB_UNIT ? FB_ALLONES : (((cast(FbBits) 1) << ` ~ n ~ `) - 1))`;
 
 
@@ -573,7 +573,7 @@ extern int fbScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, in
 /*
  * fbseg.c
  */
-alias FbBres_ = FbBres(DrawablePtr pDrawable,
+extern void FbBres(DrawablePtr pDrawable,
                     GCPtr pGC,
                     int dashOffset,
                     int signdx,

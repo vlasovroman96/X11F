@@ -43,7 +43,8 @@ import include.xf86;
 import xf86Parser_priv;
 import xf86tokens;
 import xf86Config;
-import xf86MatchDrivers;
+import hw.xfree86.common.xf86MatchDrivers;
+
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;

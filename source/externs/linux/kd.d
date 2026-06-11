@@ -124,7 +124,7 @@ struct kbdiacr {
 }
 struct kbdiacrs {
         uint kb_cnt;    /* number of entries in following array */
-	kbdiacr[256] kbdiacr;    /* MAX_DIACR from keyboard.h */
+	kbdiacr[256] kbdiacr_;    /* MAX_DIACR from keyboard.h */
 }
 enum KDGKBDIACR =      0x4B4A  /* read kernel accent table */;
 enum KDSKBDIACR =      0x4B4B  /* write kernel accent table */;
@@ -134,7 +134,7 @@ struct kbdiacruc {
 }
 struct kbdiacrsuc {
         uint kb_cnt;    /* number of entries in following array */
-	kbdiacruc[256] kbdiacruc;    /* MAX_DIACR from keyboard.h */
+	kbdiacruc[256] kbdiacruc_;    /* MAX_DIACR from keyboard.h */
 }
 enum KDGKBDIACRUC =    0x4BFA  /* read kernel accent table - UCS */;
 enum KDSKBDIACRUC =    0x4BFB  /* write kernel accent table - UCS */;

@@ -49,6 +49,7 @@ import include.xf86str;
 import micmap;
 import xf86RandR12_priv;
 import include.xf86Crtc;
+import include.privates;
 
 version (XFreeXDGA) {
 //import externs.X11.extensions.xf86dgaproto;

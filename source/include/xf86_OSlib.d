@@ -127,8 +127,8 @@ public import core.stdc.errno;
 
 version (linux) {
 version = HAS_USL_VTS;
-public import sys.kd;
-public import sys.vt;
+public import externs.linux.kd;
+public import externs.linux.vt;
 enum LDGMAP = GIO_SCRNMAP;
 enum LDSMAP = PIO_SCRNMAP;
 enum LDNMAP = LDSMAP;

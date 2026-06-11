@@ -145,7 +145,7 @@ enum HAS_DIXREGISTERPRIVATEKEY =	1;
 /*
  * Check whether a private key has been registered
  */
-pragma(inline, true) private Bool dixPrivateKeyRegistered(DevPrivateKey key)
+pragma(inline, true) Bool dixPrivateKeyRegistered(DevPrivateKey key)
 {
     return key.initialized;
 }

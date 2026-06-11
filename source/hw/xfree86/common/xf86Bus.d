@@ -58,6 +58,19 @@ import xf86platformBus_priv;
 import include.xf86_OSproc;;
 import xf86VGAarbiter_priv;
 
+struct  EntityRec{
+    DriverPtr driver;
+    int chipset;
+    int entityProp;
+    Bool active;
+    Bool inUse;
+    BusRec bus;
+    DevUnion *entityPrivates;
+    int numInstances;
+    GDevPtr *devices;
+}
+alias EntityPtr = EntityRec;
+
 /* Entity data */
 EntityPtr* xf86Entities = null; /* Bus slots claimed by drivers */
 int xf86NumEntities = 0;

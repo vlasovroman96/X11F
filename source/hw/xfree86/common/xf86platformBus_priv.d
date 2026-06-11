@@ -7,6 +7,7 @@ extern(C): __gshared:
  */
  
 public import xf86platformBus;
+import include.xf86str;
 
 version (XSERVER_PLATFORM_BUS) {
 

@@ -41,6 +41,18 @@ import config.dbus_core;
 /* How often to attempt reconnecting when we get booted off the bus. */
 enum RECONNECT_DELAY = (10 * 1000)     /* in ms */;
 
+alias dbus_core_connect_hook = void function(DBusConnection * connection,
+                                               void *data);
+alias dbus_core_disconnect_hook = void function(void *data);
+
+struct dbus_core_hook {
+    dbus_core_connect_hook connect;
+    dbus_core_disconnect_hook disconnect;
+    void *data;
+
+    dbus_core_hook *next;
+};
+
 struct dbus_core_info {
     int fd;
     DBusConnection* connection;

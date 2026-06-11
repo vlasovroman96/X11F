@@ -10,7 +10,7 @@ import core.stdc.config: c_long, c_ulong;
  
 public import include.input;
 
-public import ptrveloc;
+public import include.ptrveloc;
 
 /* fwd */
 struct _DeviceVelocityRec;

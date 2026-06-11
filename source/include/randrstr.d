@@ -44,8 +44,11 @@ public import include.pixmapstr;
 public import include.extnsionst;
 public import include.servermd;
 public import randr.rrtransform;
+import include.rrtransform;
+import include.randrstr;
+
 //public import externs.X11.extensions._randr;
-// //public import externs.X11.extensions.randrproto;
+public import externs.X11.extensions.randrproto;
 //public import externs.X11.extensions._render;      /* we share subpixel order information */
 public import include.picturestr;
 // //public import externs.X11.Xfuncproto;
@@ -403,7 +406,7 @@ enum string SetRRScreen(string s,string p) = `dixSetPrivate(&(` ~ s ~ `).devPriv
 
 alias RREventPtr = _RREvent*;
 
-struct RREventRec {
+struct _RREvent {
     RREventPtr next;
     ClientPtr client;
     WindowPtr window;
@@ -579,9 +582,9 @@ enum PRIME_SYNC_PROP =         "PRIME Synchronization";
 
 /* *just* for backwards compat with legacy proprietary NVidia driver */
 
-extern void  RRCrtcType;      /* X resource type: Randr CRTC */
-extern void  RRModeType;      /* X resource type: Randr MODE */
-extern void  RROutputType;    /* X resource type: Randr OUTPUT */
+extern RESTYPE  RRCrtcType;      /* X resource type: Randr CRTC */
+extern RESTYPE  RRModeType;      /* X resource type: Randr MODE */
+extern RESTYPE  RROutputType;    /* X resource type: Randr OUTPUT */
 
 /*
  * Set non-desktop property on given output. This flag should be TRUE on

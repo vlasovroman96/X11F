@@ -39,6 +39,8 @@ import xf86Bus;
 
 import hw.xfree86.common.xf86sbusBus_priv;;
 import hw.xfree86.os_support.bus.xf86Sbus_priv;
+import include.xf86sbusBus;
+
 
 private int xf86nSbusInfo;
 

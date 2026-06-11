@@ -67,6 +67,17 @@ import execinfo;
  * split input and GPU parts in hotplug.h et al. */
 import hw.xfree86.os_support.linux.systemd_logind;
 
+struct _KdOsFuncs {
+    int function() Init;           /* only called when the X server is started */
+    void function() Enable;        /* called when screen is enabled */
+    void function() Disable;       /* called when screen is disabled */
+    Bool function(KeySym) SpecialKey;
+    void function() Fini;
+    void function() pollEvents;    /* called when driver shall poll for new events */
+    void function(int, int, int) Bell; /* if not NULL called instead of the keyboard driver's function */
+}
+alias KdOsFuncs = _KdOsFuncs;
+
 struct KdDepths {
     CARD8 depth;
     CARD8 bpp;
@@ -297,6 +308,29 @@ Rotation KdSubRotation(Rotation a, Rotation b)
         rotate /= (RR_Rotate_270 * RR_Rotate_90);
     return reflect | rotate;
 }
+
+struct _KdScreenInfo {
+    _KdScreenInfo *next;
+    KdCardInfo *card;
+    ScreenPtr pScreen;
+    void *driver;
+    Rotation randr;             /* rotation and reflection */
+    int x;
+    int y;
+    int width;
+    int height;
+    int rate;
+    int width_mm;
+    int height_mm;
+    int subpixel_order;
+    Bool dumb;
+    Bool softCursor;
+    int mynum;
+    xPoint origin;
+    KdFrameBuffer fb;
+} 
+alias KdScreenInfo = _KdScreenInfo;
+
 
 void KdParseScreen(KdScreenInfo* screen, const(char)* arg)
 {

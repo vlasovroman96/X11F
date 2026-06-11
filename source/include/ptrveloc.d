@@ -27,7 +27,7 @@ extern(C): __gshared:
 
  
 public import include.input;
-
+import dix.ptrveloc_priv;
 /* constants for acceleration profiles */
 
 enum AccelProfileNone = -1;

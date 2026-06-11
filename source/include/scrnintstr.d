@@ -186,9 +186,9 @@ alias CursorConfinedToProcPtr = void function(DeviceIntPtr, ScreenPtr, WindowPtr
 
 // alias CreateGCProcPtr = Bool function(GCPtr);
 
-alias CreateColormapProcPtr = Bool function(ColormapPtr);
+// alias CreateColormapProcPtr = Bool function(ColormapPtr);
 
-alias DestroyColormapProcPtr = void function(ColormapPtr);
+// alias DestroyColormapProcPtr = void function(ColormapPtr);
 
 // alias InstallColormapProcPtr = void function(ColormapPtr);
 
@@ -249,7 +249,7 @@ alias DeviceCursorInitializeProcPtr = Bool function(DeviceIntPtr, ScreenPtr);
 
 alias DeviceCursorCleanupProcPtr = void function(DeviceIntPtr, ScreenPtr);
 
-alias ConstrainCursorHarderProcPtr = void function(DeviceIntPtr, ScreenPtr, int, int*, int*);
+// alias ConstrainCursorHarderProcPtr = void function(DeviceIntPtr, ScreenPtr, int, int*, int*);
 
 
 alias SharePixmapBackingProcPtr = Bool function(PixmapPtr, ScreenPtr, void**);

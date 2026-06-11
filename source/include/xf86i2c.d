@@ -17,7 +17,7 @@ alias I2CDevPtr = _I2CDevRec*;
 
 /* I2C masters have to register themselves */
 
-struct I2CBusRec {
+struct _I2CBusRec {
     const(char)* BusName;
     int scrnIndex;
     ScrnInfoPtr pScrn;
@@ -50,12 +50,12 @@ struct I2CBusRec {
     Bool function(I2CDevPtr d, I2CByte* WriteBuffer, int nWrite, I2CByte* ReadBuffer, int nRead) I2CWriteRead;
 }
 
-enum CreateI2CBusRec =		xf86CreateI2CBusRec;
+alias CreateI2CBusRec =		xf86CreateI2CBusRec;
 extern void  xf86CreateI2CBusRec();
 
-enum DestroyI2CBusRec =	xf86DestroyI2CBusRec;
+alias DestroyI2CBusRec =	xf86DestroyI2CBusRec;
 extern void  xf86DestroyI2CBusRec(I2CBusPtr pI2CBus, Bool unalloc, Bool devs_too);
-enum I2CBusInit =		xf86I2CBusInit;
+alias I2CBusInit =		xf86I2CBusInit;
 extern void  xf86I2CBusInit(I2CBusPtr pI2CBus);
 
 extern void  xf86I2CFindBus(int scrnIndex, const(char)* name);
@@ -63,7 +63,7 @@ extern void  xf86I2CGetScreenBuses(int scrnIndex, I2CBusPtr** pppI2CBus);
 
 /* I2C slave devices */
 
-struct I2CDevRec {
+struct _I2CDevRec {
     const(char)* DevName;
 
     int BitTimeout;             /* usec */
@@ -77,20 +77,20 @@ struct I2CDevRec {
     DevUnion DriverPrivate;
 }
 
-enum CreateI2CDevRec =		xf86CreateI2CDevRec;
+alias CreateI2CDevRec =		xf86CreateI2CDevRec;
 extern void  xf86CreateI2CDevRec();
 extern void  xf86DestroyI2CDevRec(I2CDevPtr pI2CDev, Bool unalloc);
 
-enum I2CDevInit =		xf86I2CDevInit;
+alias I2CDevInit =		xf86I2CDevInit;
 extern void  xf86I2CDevInit(I2CDevPtr pI2CDev);
 extern void  xf86I2CFindDev(I2CBusPtr, I2CSlaveAddr);
 
 /* See descriptions of these functions in xf86i2c.c */
 
-enum I2CProbeAddress =		xf86I2CProbeAddress;
+alias I2CProbeAddress =		xf86I2CProbeAddress;
 extern void  xf86I2CProbeAddress(I2CBusPtr pI2CBus, I2CSlaveAddr);
 
-enum		I2C_WriteRead = xf86I2CWriteRead;
+alias		I2C_WriteRead = xf86I2CWriteRead;
 extern void  xf86I2CWriteRead(I2CDevPtr d, I2CByte* WriteBuffer, int nWrite, I2CByte* ReadBuffer, int nRead);
 enum string 	xf86I2CRead(string d, string rb, string nr) = `xf86I2CWriteRead(` ~ d ~ `, null, 0, ` ~ rb ~ `, ` ~ nr ~ `)`;
 

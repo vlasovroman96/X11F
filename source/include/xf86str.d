@@ -249,7 +249,7 @@ alias xorgHWFlags = CARD32;
 // struct _SymTabRec;
 struct _PciChipsets;
 
-struct pci_device;
+// struct pci_device;
 struct xf86_platform_device;
 
 struct _DriverRec {
