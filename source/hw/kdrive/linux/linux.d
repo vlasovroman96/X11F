@@ -29,7 +29,8 @@ import hw.kdrive.src.kdrive;
 import core.stdc.errno;
 import externs.linux.vt;
 import externs.linux.kd;
-// import core.sys.linux.
+// import core.sys.linux;
+import core.sys.linux.fcntl;
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.ioctl;
 //import externs.X11.keysym;
@@ -204,7 +205,8 @@ private void LinuxApmNotify(int fd, int mask, void* blockData)
 version (FNONBLOCK) {
 enum NOBLOCK = FNONBLOCK;
 } else {
-enum NOBLOCK = FNDELAY;
+// enum NOBLOCK = FNDELAY;
+enum NOBLOCK = O_NDELAY;
 }
 
 private void LinuxEnable()

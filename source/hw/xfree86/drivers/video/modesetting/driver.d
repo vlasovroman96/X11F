@@ -69,6 +69,7 @@ import include.xf86Crtc;
 import include.miscstruct;
 import include.dixstruct;
 import xf86xv;
+import externs.gbm;
 import build.xorg_config;
 version (XSERVER_PLATFORM_BUS) {
 import xf86platformBus_priv;
@@ -83,10 +84,43 @@ import seatd_libseat;
 
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
+// import hw.xfree86.drivers.video.modesetting
+import externs.libdrm;
+import include.shadow;
 
+struct drmModeClip;
+struct modesettingRec;
+alias modesettingPtr = modesettingRec*;
 
+// На случай, если WindowPtr также не определен в текущих импортах:
+struct WindowRec;
+alias WindowPtr = WindowRec*;
 
+enum {
+    OPTION_SW_CURSOR,
+    OPTION_CURSOR_SIZE,
+    OPTION_DEVICE_PATH,
+    OPTION_SHADOW_FB,
+    OPTION_ACCEL_METHOD,
+    OPTION_PAGEFLIP,
+    OPTION_ZAPHOD_HEADS,
+    OPTION_DOUBLE_SHADOW,
+    OPTION_ATOMIC,
+    OPTION_VARIABLE_REFRESH,
+    OPTION_USE_GAMMA_LUT,
+    OPTION_ASYNC_FLIP_SECONDARIES,
+    OPTION_TEARFREE,
+}
 
+struct modesettingEntRec
+{
+    int fd;
+    int fd_ref;
+    x_server_generation_t fd_wakeup_registered; /* server generation for which fd has been registered for wakeup handling */
+    int fd_wakeup_ref;
+    uint assigned_crtcs;
+} 
+alias modesettingEntPtr = modesettingEntRec*;
 
 private const(OptionInfoRec)* AvailableOptions(int chipid, int busid);
 

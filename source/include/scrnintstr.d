@@ -93,10 +93,10 @@ struct _ScreenSaverStuff {
 }alias ScreenSaverStuffRec = _ScreenSaverStuff;
 alias ScreenSaverStuffPtr = _ScreenSaverStuff*;
 
-enum WindowVRRMode {
-    WINDOW_VRR_DISABLED = 0,
-    WINDOW_VRR_ENABLED,
-}
+// enum WindowVRRMode {
+//     WINDOW_VRR_DISABLED = 0,
+//     WINDOW_VRR_ENABLED,
+// }
 alias WINDOW_VRR_DISABLED = WindowVRRMode.WINDOW_VRR_DISABLED;
 alias WINDOW_VRR_ENABLED = WindowVRRMode.WINDOW_VRR_ENABLED;
 
@@ -113,7 +113,7 @@ alias QueryBestSizeProcPtr = void function(int, ushort*, ushort*, ScreenPtr);
 
 alias SaveScreenProcPtr = Bool function(ScreenPtr, int);
 
-alias GetImageProcPtr = void function(DrawablePtr, int, int, int, int, uint, c_ulong, char*);
+// alias GetImageProcPtr = void function(DrawablePtr, int, int, int, int, uint, c_ulong, char*);
 
 alias GetSpansProcPtr = void function(DrawablePtr, int, DDXPointPtr, int*, int, char*);
 
@@ -135,9 +135,9 @@ alias RestackWindowProcPtr = void function(WindowPtr, WindowPtr);
 
 alias ValidateTreeProcPtr = int function(WindowPtr, WindowPtr, VTKind);
 
-alias PostValidateTreeProcPtr = void function(WindowPtr, WindowPtr, VTKind);
+// alias PostValidateTreeProcPtr = void function(WindowPtr, WindowPtr, VTKind);
 
-alias WindowExposuresProcPtr = void function(WindowPtr, RegionPtr);
+// alias WindowExposuresProcPtr = void function(WindowPtr, RegionPtr);
 
 alias PaintWindowProcPtr = void function(WindowPtr, RegionPtr, int);
 
@@ -202,7 +202,7 @@ alias ResolveColorProcPtr = void function(ushort*, ushort*, ushort*, VisualPtr);
 
 alias BitmapToRegionProcPtr = RegionPtr function(PixmapPtr);
 
-alias ScreenBlockHandlerProcPtr = void function(ScreenPtr pScreen, void* timeout);
+// alias ScreenBlockHandlerProcPtr = void function(ScreenPtr pScreen, void* timeout);
 
 /* result has three possible values:
  * < 0 - error
@@ -211,7 +211,7 @@ alias ScreenBlockHandlerProcPtr = void function(ScreenPtr pScreen, void* timeout
  */
 alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen, int result);
 
-alias CreateScreenResourcesProcPtr = Bool function(ScreenPtr);
+// alias CreateScreenResourcesProcPtr = Bool function(ScreenPtr);
 
 alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
 
@@ -599,22 +599,22 @@ pragma(inline, true) private RegionPtr BitmapToRegion(ScreenPtr _pScreen, Pixmap
     return (*(_pScreen).BitmapToRegion) (pPix);        /* no mi version?! */
 }
 
-struct ScreenInfo {
-    int imageByteOrder;
-    int bitmapScanlineUnit;
-    int bitmapScanlinePad;
-    int bitmapBitOrder;
-    int numPixmapFormats;
-    PixmapFormatRec[MAXFORMATS] formats;
-    int numScreens;
-    ScreenPtr[MAXSCREENS] screens;
-    int numGPUScreens;
-    ScreenPtr[MAXGPUSCREENS] gpuscreens;
-    int x;                      /* origin */
-    int y;                      /* origin */
-    int width;                  /* total width of all screens together */
-    int height;                 /* total height of all screens together */
-}
+// struct ScreenInfo {
+//     int imageByteOrder;
+//     int bitmapScanlineUnit;
+//     int bitmapScanlinePad;
+//     int bitmapBitOrder;
+//     int numPixmapFormats;
+//     PixmapFormatRec[MAXFORMATS] formats;
+//     int numScreens;
+//     ScreenPtr[MAXSCREENS] screens;
+//     int numGPUScreens;
+//     ScreenPtr[MAXGPUSCREENS] gpuscreens;
+//     int x;                      /* origin */
+//     int y;                      /* origin */
+//     int width;                  /* total width of all screens together */
+//     int height;                 /* total height of all screens together */
+// }
 
 extern ScreenInfo screenInfo;
 

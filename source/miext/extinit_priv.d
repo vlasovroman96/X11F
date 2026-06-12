@@ -16,7 +16,7 @@ void DRI2ExtensionInit();
 }
 
 /* required by: the 470 and 390 nvidia DDX drivers */
-extern export bool  noDamageExtension;
+extern Bool  noDamageExtension;
 
 extern Bool noDbeExtension;
 extern Bool noDPMSExtension;

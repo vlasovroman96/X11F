@@ -35,6 +35,7 @@ import xf86_priv;
 import xf86Config;
 import xf86Modes;
 import include.xf86Priv;
+import include.xf86Parser;
 
 /**
  * Calculates the horizontal sync rate of a mode.

@@ -149,7 +149,7 @@ extern int QueueWorkProc(Bool function(ClientPtr clientUnused, void* closure) fu
 
 /* atom.c */
 
-extern int MakeAtom(const(char)*, uint, Bool);
+extern ulong MakeAtom(const(char)*, uint, Bool);
 
 extern int ValidAtom(Atom);
 

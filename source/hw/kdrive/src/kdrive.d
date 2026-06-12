@@ -63,9 +63,54 @@ version (HAVE_EXECINFO_H) {
 import execinfo;
 }
 
+struct _KdCardFuncs {
+    Bool function(KdCardInfo *) cardinit;    /* detect and map device */
+    Bool function(KdScreenInfo *) scrinit;   /* initialize screen information */
+    Bool function(ScreenPtr) initScreen;     /* initialize ScreenRec */
+    Bool function(ScreenPtr pScreen) finishInitScreen;
+    Bool function(ScreenPtr) createRes;      /* create screen resources */
+    void function(KdCardInfo *) preserve;    /* save graphics card state */
+    Bool function(ScreenPtr) enable; /* set up for rendering */
+    Bool function(ScreenPtr, int) dpms;      /* set DPMS screen saver */
+    void function(ScreenPtr) disable;        /* turn off rendering */
+    void function(KdCardInfo *) restore;     /* restore graphics card state */
+    void function(KdScreenInfo *) scrfini;   /* close down screen */
+    void function(KdCardInfo *) cardfini;    /* close down */
+
+    Bool function(ScreenPtr) initCursor;     /* detect and map cursor */
+    void function(ScreenPtr) enableCursor;   /* enable cursor */
+    void function(ScreenPtr) disableCursor;  /* disable cursor */
+    void function(ScreenPtr) finiCursor;     /* close down */
+    void function(ScreenPtr, int, xColorItem *) recolorCursor;
+
+    Bool function(ScreenPtr) initAccel;
+    void function(ScreenPtr) enableAccel;
+    void function(ScreenPtr) disableAccel;
+    void function(ScreenPtr) finiAccel;
+
+    void function(ScreenPtr, int, xColorItem *) getColors;
+    void function(ScreenPtr, int, xColorItem *) putColors;
+
+    void function(ScreenPtr) closeScreen;    /* close ScreenRec */
+} 
+
+alias KdCardFuncs = _KdCardFuncs;
+
 /* This stub can be safely removed once we can
  * split input and GPU parts in hotplug.h et al. */
 import hw.xfree86.os_support.linux.systemd_logind;
+
+struct _KdCardInfo {
+    _KdCardFuncs *cfuncs;
+    void *closure;
+    void *driver;
+    _KdScreenInfo *screenList;
+    int selected;
+    int mynum;
+    _KdCardInfo *next;
+} 
+
+alias KdCardInfo = _KdCardInfo;
 
 struct _KdOsFuncs {
     int function() Init;           /* only called when the X server is started */
@@ -330,6 +375,19 @@ struct _KdScreenInfo {
     KdFrameBuffer fb;
 } 
 alias KdScreenInfo = _KdScreenInfo;
+
+struct _KdFrameBuffer {
+    CARD8 *frameBuffer;
+    int depth;
+    int bitsPerPixel;
+    int pixelStride;
+    int byteStride;
+    Bool shadow;
+    ulong visuals;
+    Pixel redMask, greenMask, blueMask;
+    void *closure;
+}
+alias KdFrameBuffer = _KdFrameBuffer;
 
 
 void KdParseScreen(KdScreenInfo* screen, const(char)* arg)

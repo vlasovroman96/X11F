@@ -43,6 +43,7 @@ import include.xkbsrv;
 import include.eventstr;
 import include.scrnintstr;
 import include.optionstr;
+import externs.X11.extensions.XI2proto;
 
 /* Check if a button map change is okay with the device.
  * Returns -1 for BadValue, as it collides with MappingBusy. */

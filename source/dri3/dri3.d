@@ -29,7 +29,8 @@ import dix.screenint_priv;
 import miext.extinit_priv;
 
 import dri3.dri3_priv;
-import externs.drm_fourcc;
+import externs.libdrm;
+import include.dri3;
 
 private int dri3_request;
 DevPrivateKeyRec dri3_screen_private_key;

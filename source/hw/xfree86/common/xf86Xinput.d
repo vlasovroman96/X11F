@@ -112,6 +112,7 @@ import hw.xfree86.common.dgaproc_priv;
 }
 
 import include.xkbsrv;
+import include.xf86Parser;
 
 /* Valuator verification macro */
 enum string XI_VERIFY_VALUATORS(string num_valuators) = `

@@ -42,6 +42,7 @@ import build.xorg_config;
 import core.stdc.stdlib;
 import core.stdc.errno;
 import core.sys.posix.sys.stat;
+import core.sys.linux.fcntl;
 
 static if (!HasVersion!"Windows") {
 enum HAS_UTSNAME = 1;

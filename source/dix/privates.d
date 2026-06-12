@@ -526,6 +526,10 @@ int dixPrivatesSize(DevPrivateType type)
     return global_keys[type].offset;
 }
 
+import dix.window;
+// import dix.pixmap;
+
+
 /* Table of devPrivates offsets */
 private const(int)[8] offsets = [
     -1,                                 /* X11_RESTYPE_NONE */

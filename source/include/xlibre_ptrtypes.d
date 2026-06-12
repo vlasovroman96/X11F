@@ -23,10 +23,12 @@ extern(C): __gshared:
 // }
 // alias ClientRec = _Client;
 
+public import dix.window_priv;
+
 struct _ClientId;
 alias ClientIdPtr = _ClientId*;
 
-struct _Window;
+// struct _Window;
 alias WindowPtr = _Window*;
 alias WindowRec = _Window;
 

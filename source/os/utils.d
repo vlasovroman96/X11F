@@ -1032,8 +1032,10 @@ static if (!HasVersion!"Windows") {
 struct pid {
     pid* next;
     FILE* fp;
-    int pid;
-}private pid* pidlist;
+    int id;
+}
+
+private pid* pidlist;
 
 void* Popen(const(char)* command, const(char)* type)
 {

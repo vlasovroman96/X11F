@@ -142,7 +142,19 @@ version(__CYGWIN__) {
 }
 /* Forward declarations */
 
+enum _ConfigStatus {
+    CONFIG_OK = 0,
+    CONFIG_PARSE_ERROR,
+    CONFIG_NOFILE
+}
+alias ConfigStatus = _ConfigStatus;
 
+struct _ModuleDefault {
+    const char *name;
+    Bool toLoad;
+    XF86OptionPtr load_opt;
+} 
+alias ModuleDefault = _ModuleDefault;
 
 
 

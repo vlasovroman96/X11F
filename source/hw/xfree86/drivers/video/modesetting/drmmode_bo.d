@@ -15,14 +15,19 @@ import include.dix; /* ARRAY_SIZE() */
 
 import dix.dix_priv;
 
-import externs.drm_fourcc;
-import externs.drm_mode;
+import externs.libdrm;
+// import externs.libdrm_mode;
+import externs.gbm;
 
 import externs.xf86drm;
 import include.xf86Crtc;
 
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
+
+struct _drmmode_rec;
+alias drmmode_ptr = _drmmode_rec*;
+
 
 struct bo_priv_t {
     void* map_data; /* Opaque ptr for the mapped region */

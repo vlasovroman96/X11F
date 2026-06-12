@@ -29,6 +29,7 @@ extern(C): __gshared:
 // //public import externs.X11.extensions.presentproto;
 
 public import include.randrstr;
+import present.present_priv;
 
 enum PresentFlipReason {
     PRESENT_FLIP_REASON_UNKNOWN,

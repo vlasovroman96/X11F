@@ -59,7 +59,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.X11.X;
+import externs.X11.Xdefs;
 //import externs.X11.Xproto;
 import include.inputstr;
 //import externs.X11.extensions.XI;

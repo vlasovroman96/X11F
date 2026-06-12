@@ -1,3 +1,10 @@
+module hw.xfree86.xorg_wrapper;
+@nogc nothrow:
+extern(C): __gshared:
+
+private template HasVersion(string versionId) {
+	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
+}
 /*
  * Copyright © 2014 Red Hat, Inc.
  *
@@ -23,48 +30,48 @@
  * Author: Hans de Goede <hdegoede@redhat.com>
  */
 
-#include "dix-config.h"
-#include "xorg-config.h"
+import build.dix_config;
+import build.xorg_config;
 
-#include <errno.h>
-#include <fcntl.h>
-#include <limits.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#ifdef HAVE_SYS_SYSMACROS_H
-#include <sys/sysmacros.h>
-#endif
-#include <sys/types.h>
-#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
-#include <sys/consio.h>
-#endif
-#include <unistd.h>
-#ifdef WITH_LIBDRM
-#include <drm.h>
-#include <externs.xf86drm.h> /* For DRM_DEV_NAME */
-#endif
+import core.stdc.errno;
+import core.sys.posix.fcntl;
+import core.stdc.limits;
+import core.stdc.stdint;
+import core.stdc.stdio;
+import core.stdc.stdlib;
+import core.stdc.string;
+import core.sys.posix.sys.ioctl;
+import core.sys.posix.sys.stat;
+version (HAVE_SYS_SYSMACROS_H) {
+// import sys/sysmacros;
+}
+import core.sys.posix.sys.types;
+static if (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__") {
+// import sys/consio;
+}
+import core.sys.posix.unistd;
+version (WITH_LIBDRM) {
+import drm;
+import externs.xf86drm; /* For DRM_DEV_NAME */
+}
 
-#include "misc.h"
+import misc;
 
-#define CONFIG_FILE SYSCONFDIR "/X11/Xwrapper.config"
+enum CONFIG_FILE = SYSCONFDIR~ "/X11/Xwrapper.config";
 
-static const char *progname;
+private const(char)* progname;
 
-enum { ROOT_ONLY, CONSOLE_ONLY, ANYBODY };
+enum { ROOT_ONLY, CONSOLE_ONLY, ANYBODY }
 
 /* KISS non locale / LANG parsing isspace version */
-static int is_space(char c)
+private int is_space(char c)
 {
     return c == ' ' || c == '\t' || c == '\n';
 }
 
-static char *strip(char *s)
+private char* strip(char* s)
 {
-    int i;
+    int i = void;
 
     /* Strip leading whitespace */
     while (s[0] && is_space(s[0]))
@@ -80,22 +87,22 @@ static char *strip(char *s)
     return s;
 }
 
-static void parse_config(int *allowed, int *needs_root_rights)
+private void parse_config(int* allowed, int* needs_root_rights)
 {
-    FILE *f;
-    char buf[1024];
-    char *stripped, *equals, *key, *value;
+    FILE* f = void;
+    char[1024] buf = void;
+    char* stripped = void, equals = void, key = void, value = void;
     int line = 0;
 
     f = fopen(CONFIG_FILE, "r");
     if (!f)
         return;
 
-    while (fgets(buf, sizeof(buf), f)) {
+    while (fgets(buf.ptr, buf.sizeof, f)) {
         line++;
 
         /* Skip comments and empty lines */
-        stripped = strip(buf);
+        stripped = strip(buf.ptr);
         if (stripped[0] == '#' || stripped[0] == 0)
             continue;
 
@@ -161,22 +168,22 @@ static void parse_config(int *allowed, int *needs_root_rights)
     fclose(f);
 }
 
-static int on_console(int fd)
+private int on_console(int fd)
 {
-#if defined(__linux__)
-    struct stat st;
-    int r;
+version (linux) {
+    stat st = void;
+    int r = void;
 
     r = fstat(fd, &st);
     if (r == 0 && S_ISCHR(st.st_mode) && major(st.st_rdev) == 4)
       return 1;
-#elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
-    int idx;
+} else static if (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__") {
+    int idx = void;
 
     if (ioctl(fd, VT_GETINDEX, &idx) != -1)
         return 1;
-#else
-#warning This program needs porting to your kernel.
+} else {
+//! #warning This program needs porting to your kernel.
     static int seen;
 
     if (!seen) {
@@ -184,23 +191,23 @@ static int on_console(int fd)
             progname);
         seen = 1;
     }
-#endif
+}
 
     return 0;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char** argv)
 {
-#ifdef WITH_LIBDRM
-    struct drm_mode_card_res res;
-#endif
-    char buf[PATH_MAX];
-    int i, r, fd;
+version (WITH_LIBDRM) {
+    drm_mode_card_res res = void;
+}
+    char[PATH_MAX] buf = void;
+    int i = void, r = void, fd = void;
     int kms_cards = 0;
     int total_cards = 0;
     int allowed = CONSOLE_ONLY;
     int needs_root_rights = -1;
-    char *const empty_envp[1] = { NULL, };
+    char*[1] empty_envp = [ null, ];
 
     progname = argv[0];
 
@@ -227,21 +234,21 @@ int main(int argc, char *argv[])
             break;
         case ANYBODY:
             break;
-        }
+        default: break;}
     }
 
-#ifdef WITH_LIBDRM
+version (WITH_LIBDRM) {
     /* Detect if we need root rights, except when overridden by the config */
     if (needs_root_rights == -1) {
         for (i = 0; i < 16; i++) {
-            snprintf(buf, sizeof(buf), DRM_DEV_NAME, DRM_DIR_NAME, i);
-            fd = open(buf, O_RDWR);
+            snprintf(buf.ptr, buf.sizeof, DRM_DEV_NAME, DRM_DIR_NAME, i);
+            fd = open(buf.ptr, O_RDWR);
             if (fd == -1)
                 continue;
 
             total_cards++;
 
-            memset(&res, 0, sizeof(struct drm_mode_card_res));
+            memset(&res, 0, drm_mode_card_res.sizeof);
             r = ioctl(fd, DRM_IOCTL_MODE_GETRESOURCES, &res);
             if (r == 0)
                 kms_cards++;
@@ -249,7 +256,7 @@ int main(int argc, char *argv[])
             close(fd);
         }
     }
-#endif
+}
 
     /* If we've found cards, and all cards support kms, drop root rights */
     if (needs_root_rights == 0 || (total_cards && kms_cards == total_cards)) {
@@ -268,21 +275,21 @@ int main(int argc, char *argv[])
         }
     }
 
-    snprintf(buf, sizeof(buf), "%s/Xorg", SUID_WRAPPER_DIR);
+    snprintf(buf.ptr, buf.sizeof, "%s/Xorg", SUID_WRAPPER_DIR);
 
     /* Check if the server is executable by our real uid */
-    if (access(buf, X_OK) != 0) {
+    if (access(buf.ptr, X_OK) != 0) {
         fprintf(stderr, "%s: Missing execute permissions for %s: %s\n",
-            progname, buf, strerror(errno));
+            progname, buf.ptr, strerror(errno));
         exit(1);
     }
 
     argv[0] = buf;
     if (getuid() == geteuid())
-        (void) execv(argv[0], argv);
+        cast(void) execv(argv[0], argv);
     else
-        (void) execve(argv[0], argv, empty_envp);
+        cast(void) execve(argv[0], argv, empty_envp.ptr);
     fprintf(stderr, "%s: Failed to execute %s: %s\n",
-        progname, buf, strerror(errno));
+        progname, buf.ptr, strerror(errno));
     exit(1);
 }

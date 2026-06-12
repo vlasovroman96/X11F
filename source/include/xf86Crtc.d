@@ -32,6 +32,11 @@ public import xf86Cursor;
 public import include.xf86i2c;
 public import include.damage;
 public import include.picturestr;
+import include.rrtransform;
+import include.xf86Parser;
+import include.xf86Cursor;
+import include.scrintstr;
+
 
 /* Compat definitions for older X Servers. */
 enum M_T_PREFERRED =	0x08;
@@ -806,11 +811,11 @@ version (RANDR_12_INTERFACE) {
 }alias xf86CrtcConfigRec = _xf86CrtcConfig;
 alias xf86CrtcConfigPtr = _xf86CrtcConfig*;
 
-extern void  xf86CrtcConfigPrivateIndex;
+extern int  xf86CrtcConfigPrivateIndex;
 
 enum string XF86_CRTC_CONFIG_PTR(string p) = `(cast(xf86CrtcConfigPtr) ((` ~ p ~ `).privates[xf86CrtcConfigPrivateIndex].ptr))`;
 
-private _X_INLINE xf86CompatOutput(ScrnInfoPtr pScrn)
+private auto xf86CompatOutput(ScrnInfoPtr pScrn)
 {
     xf86CrtcConfigPtr config = void;
 
@@ -822,7 +827,7 @@ private _X_INLINE xf86CompatOutput(ScrnInfoPtr pScrn)
     return config.output[config.compat_output];
 }
 
-private _X_INLINE xf86CompatCrtc(ScrnInfoPtr pScrn)
+private auto xf86CompatCrtc(ScrnInfoPtr pScrn)
 {
     xf86OutputPtr compat_output = xf86CompatOutput(pScrn);
 
@@ -831,7 +836,7 @@ private _X_INLINE xf86CompatCrtc(ScrnInfoPtr pScrn)
     return compat_output.crtc;
 }
 
-private _X_INLINE xf86CompatRRCrtc(ScrnInfoPtr pScrn)
+private auto xf86CompatRRCrtc(ScrnInfoPtr pScrn)
 {
     xf86CrtcPtr compat_crtc = xf86CompatCrtc(pScrn);
 
@@ -1001,7 +1006,7 @@ extern void  xf86_cursors_init(ScreenPtr screen, int max_width, int max_height, 
  * Superseded by xf86CursorResetCursor, which is getting called
  * automatically when necessary.
  */
-private _X_INLINE _X_DEPRECATED; void xf86_reload_cursors(ScreenPtr screen) {}
+private void xf86_reload_cursors(ScreenPtr screen) {}
 
 /**
  * Called from EnterVT to turn the cursors back on

@@ -78,7 +78,7 @@ import xf86xvpriv;
 
 
 
-enum PostValidateTreeUndefined = ((PostValidateTreeProcPtr)-1);
+enum PostValidateTreeUndefined = (cast(PostValidateTreeProcPtr)(-1));
 
 /* ScrnInfoRec functions */
 

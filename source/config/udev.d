@@ -64,7 +64,7 @@ enum string LOG_SYSATTR(string path, string attr, string val) = `
                    ~ "returned \"%s\"\n",                                 
                    (` ~ attr ~ `), (` ~ path ~ `), (` ~ val ~ `) ? (` ~ val ~ `) : "(null)")`;
 
-private udev_monitor* udev_monitor;
+private udev_monitor* udev_monitor_;
 
 version (CONFIG_UDEV_KMS) {
 

@@ -49,14 +49,15 @@ import include.mi;
 import micmap;
 import xf86cmap;
 import xf86DDC_priv;
-import drm_fourcc;
-import drm_mode;
+import externs.libdrm;
+import externs.libdrm;
 
 import externs.xf86drm;
 import include.xf86Crtc;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
 import include.cursorstr;
+import hw.xfree86.drivers.video.modesetting.drmmode_display;
 
 // //import externs.X11.extensions.dpmsconst;
 
@@ -576,7 +577,7 @@ private int crtc_add_dpms_props(drmModeAtomicReq* req, xf86CrtcPtr crtc, int new
         drmModeModeInfo kmode = void;
 
         drmmode_ConvertToKMode(crtc.scrn, &kmode, &crtc.mode);
-        ret |= drm_mode_ensure_blob(crtc, &kmode);
+        ret |= drm.drm_mode_ensure_blob(crtc, &kmode);
 
         ret |= crtc_add_prop(req, drmmode_crtc,
                              DRMMODE_CRTC_ACTIVE, 1);
@@ -2228,7 +2229,7 @@ private void drmmode_crtc_destroy(xf86CrtcPtr crtc)
 
     drmmode_prop_info_free(drmmode_crtc.props_plane, DRMMODE_PLANE__COUNT);
     xorg_list_for_each_entry_safe(iterator, next, &drmmode_crtc.mode_list, entry); {
-        drm_mode_destroy(crtc, iterator);
+        drm.drm_mode_destroy(crtc, iterator);
     }
 }
 
@@ -3238,7 +3239,7 @@ private void drmmode_output_create_resources(xf86OutputPtr output)
                 continue;
             p.atoms[0] = dixAddAtom(drmmode_prop.name);
             for (j = 1; j <= drmmode_prop.count_enums; j++) {
-                drm_mode_property_enum* e = &drmmode_prop.enums[j - 1];
+                drm.drm_mode_property_enum* e = &drmmode_prop.enums[j - 1];
                 p.atoms[j] = dixAddAtom(e.name);
             }
             err = RRConfigureOutputProperty(output.randr_output, p.atoms[0],

@@ -25,7 +25,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.assert_;
-import drm_fourcc;
+import externs.libdrm;
 import core.sys.posix.unistd;
 
 import include.syncsdk;

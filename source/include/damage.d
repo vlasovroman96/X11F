@@ -49,7 +49,7 @@ alias DamageReportFunc = void function(DamagePtr pDamage, RegionPtr pRegion, voi
 alias DamageDestroyFunc = void function(DamagePtr pDamage, void* closure);
 
 struct _Drawable;
-alias DrawablePtr = _Drawable*;
+// alias DrawablePtr = _Drawable*;
 alias DamageScreenCreateFunc = void function(DamagePtr);
 alias DamageScreenRegisterFunc = void function(DrawablePtr, DamagePtr);
 alias DamageScreenUnregisterFunc = void function(DrawablePtr, DamagePtr);

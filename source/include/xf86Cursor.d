@@ -68,7 +68,7 @@ pragma(inline, true) private Bool xf86DriverLoadCursorARGB(xf86CursorInfoPtr inf
 }
 
 extern void  xf86InitCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr);
-extern xf86CursorInfoPtr xf86CreateCursorInfoRec(void);
+extern xf86CursorInfoPtr xf86CreateCursorInfoRec();
 extern void  xf86DestroyCursorInfoRec(xf86CursorInfoPtr);
 extern void  xf86CursorResetCursor(ScreenPtr pScreen);
 extern void  xf86ForceHWCursor(ScreenPtr pScreen, Bool on);

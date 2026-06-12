@@ -36,7 +36,7 @@ import dri3.dri3_priv;
 import Xext.syncsrv;
 import Xext.xace;
 import include.protocol_versions;
-import drm_fourcc;
+import externs.libdrm;
 import randr.randrstr_priv;
 import dix.dixstruct_priv;
 

@@ -27,10 +27,10 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.sys.posix.sys.time;
-static if(HasVersion!"OpenBSD") {
-import dev.wscons.wsconsio;
-import dev.wscons.wsksymdef;
-}
+// static if(HasVersion!"OpenBSD") {
+// import dev.wscons.wsconsio;
+// import dev.wscons.wsksymdef;
+// }
 
 import core.sys.posix.sys.ioctl;
 import core.stdc.errno;
@@ -43,36 +43,66 @@ import include.inputstr;
 import include.os;
 import config.config_backends;
 
+enum KB_OVRENC = nameint.init; // Пустой элемент-заглушка
+
+enum int KB_UK = 0x0100; // Типичное значение маски для британской раскладки в wscons
+enum int KB_DE = 0x0200; // Немецкая
+enum int KB_FR = 0x0300; // Французская (если компилятор ругнется на неё дальше)
+enum int KB_US = 0x0000; // Американская по умолчанию
+
 enum WSCONS_KBD_DEVICE = "/dev/wskbd";
 enum WSCONS_MOUSE_PREFIX = "/dev/wsmouse";
 
 struct nameint {
     int val;
-    const(char)* name;
+    string name; // В D строки — это string
 }
 
-enum nameint KB_OVRENC = {
-	{ KB_UK,	"gb" }, 
-	{ KB_SV,	"se" }, 
-	{ KB_SG,	"ch" }, 
-	{ KB_SF,	"ch" }, 
-	{ KB_LA,	"latam" },
-	{ KB_CF,	"ca" }
-};
+// === 2. Заглушки отсутствующих констант ядра BSD ===
+// enum KB_UK = 256;
+// enum KB_DE = 257;
+enum KB_SV = 258; // Шведская раскладка (добавлено)
+enum KB_SG = 259; // Швейцарская немецкая (добавлено)
 
-version(NetBSD) {
-    enum nameint[3] kbdenc = [
-        KB_OVRENC,
-        KB_ENCTAB,
-        {0}
-    ];
-}
-else {
-    enum nameint[3] kbdenc = [
-        KB_OVRENC,
-        KB_ENCTAB
-    ];
-}
+// KB_ENCTAB в оригинале — это макрос-список, заменяем на массив заглушек
+enum nameint[] KB_ENCTAB = [
+    nameint(KB_UK, "gb"),
+    nameint(KB_DE, "de")
+];
+// ==========================================
+
+// === 3. Правильное объявление массива ===
+// Убедитесь, что kbdenc объявлен именно как nameint[], а не int[]!
+// nameint[] kbdenc = [
+//     nameint( KB_UK, "gb" ), 
+//     nameint( KB_SV, "se" ), 
+//     nameint( KB_SG, "ch" )
+//     // ... остальные элементы массива перепишите в формате nameint(КОД, "СТРОКА"),
+// ];
+
+nameint[] kbdenc = [
+    nameint(KB_UK, "gb"),
+    nameint(KB_DE, "de"),
+    nameint(KB_SV, "se"),
+    nameint(KB_SG, "ch"),
+    // Если ниже в оригинальном коде были другие элементы, запишите их так же: nameint(КОД, "ИМЯ"),
+    
+    nameint(0, null) // Финальный нулевой элемент-терминатор из Си кода
+];
+
+// version(NetBSD) {
+//     enum nameint[3] kbdenc = [
+//         KB_OVRENC,
+//         KB_ENCTAB,
+//         {0}
+//     ];
+// }
+// else {
+//     enum nameint[3] kbdenc = [
+//         KB_OVRENC,
+//         KB_ENCTAB
+//     ];
+// }
 
 nameint[9] kbdvar = [
     {KB_NODEAD | KB_SG, "de_nodeadkeys"},

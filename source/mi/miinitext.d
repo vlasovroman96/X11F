@@ -99,249 +99,59 @@ import include.globals;
 import miinitext;
 
 
-ExtensionModule[] list;
+private const ExtensionModule[] staticExtensions = () {
+    ExtensionModule[] result;
 
-private immutable ExtensionModule[] staticExtensions =
-{
+    result ~= ExtensionModule(&GEExtensionInit, "Generic Event Extension", null);
+    result ~= ExtensionModule(&ShapeExtensionInit, "SHAPE", &noShapeExtension);
 
-    list ~= ExtensionModule(
-        GEExtensionInit,
-        "Generic Event Extension",
-        null
-    );
-
-    list ~= ExtensionModule(
-        ShapeExtensionInit,
-        "SHAPE",
-        &noShapeExtension
-    );
-
-    version (CONFIG_MITSHM)
-    {
-        list ~= ExtensionModule(
-            ShmExtensionInit,
-            "MIT-SHM",
-            &noMITShmExtension
-        );
+    static if (is(typeof({ version (CONFIG_MITSHM) {} }))) {
+        version (CONFIG_MITSHM) result ~= ExtensionModule(&ShmExtensionInit, "MIT-SHM", &noMITShmExtension);
     }
 
-    list ~= ExtensionModule(
-        XInputExtensionInit,
-        "XInputExtension",
-        null
-    );
+    result ~= ExtensionModule(&XInputExtensionInit, "XInputExtension", null);
 
-    version (XTEST)
-    {
-        list ~= ExtensionModule(
-            XTestExtensionInit,
-            "XTEST",
-            &noTestExtensions
-        );
-    }
+    version (XTEST) result ~= ExtensionModule(&XTestExtensionInit, "XTEST", &noTestExtensions);
 
-    list ~= ExtensionModule(
-        BigReqExtensionInit,
-        "BIG-REQUESTS",
-        null
-    );
+    result ~= ExtensionModule(&BigReqExtensionInit, "BIG-REQUESTS", null);
+    result ~= ExtensionModule(&SyncExtensionInit, "SYNC", null);
+    result ~= ExtensionModule(&XkbExtensionInit, "XKEYBOARD", null);
+    result ~= ExtensionModule(&XCMiscExtensionInit, "XC-MISC", null);
 
-    list ~= ExtensionModule(
-        SyncExtensionInit,
-        "SYNC",
-        null
-    );
+    version (XCSECURITY) result ~= ExtensionModule(&SecurityExtensionInit, "SECURITY", &noSecurityExtension);
+    version (CONFIG_NAMESPACE) result ~= ExtensionModule(&NamespaceExtensionInit, "NAMESPACE", &noNamespaceExtension);
+    version (XINERAMA) result ~= ExtensionModule(&PanoramiXExtensionInit, "XINERAMA", &noPanoramiXExtension);
 
-    list ~= ExtensionModule(
-        XkbExtensionInit,
-        "XKEYBOARD",
-        null
-    );
+    result ~= ExtensionModule(&XFixesExtensionInit, "XFIXES", &noXFixesExtension);
 
-    list ~= ExtensionModule(
-        XCMiscExtensionInit,
-        "XC-MISC",
-        null
-    );
+    version (XF86BIGFONT) result ~= ExtensionModule(&XFree86BigfontExtensionInit, "XFree86-Bigfont", &noXFree86BigfontExtension);
 
-    version (XCSECURITY)
-    {
-        list ~= ExtensionModule(
-            SecurityExtensionInit,
-            "SECURITY",
-            &noSecurityExtension
-        );
-    }
+    result ~= ExtensionModule(&RenderExtensionInit, "RENDER", &noRenderExtension);
 
-    version (CONFIG_NAMESPACE)
-    {
-        list ~= ExtensionModule(
-            NamespaceExtensionInit,
-            "NAMESPACE",
-            &noNamespaceExtension
-        );
-    }
+    version (RANDR) result ~= ExtensionModule(&RRExtensionInit, "RANDR", &noRRExtension);
+    version (DISABLE_EXT_COMPOSITE) result ~= ExtensionModule(&CompositeExtensionInit, "COMPOSITE", &noCompositeExtension);
 
-    version (XINERAMA)
-    {
-        list ~= ExtensionModule(
-            PanoramiXExtensionInit,
-            "XINERAMA",
-            &noPanoramiXExtension
-        );
-    }
+    result ~= ExtensionModule(&DamageExtensionInit, "DAMAGE", &noDamageExtension);
 
-    list ~= ExtensionModule(
-        XFixesExtensionInit,
-        "XFIXES",
-        &noXFixesExtension
-    );
-
-    version (XF86BIGFONT)
-    {
-        list ~= ExtensionModule(
-            XFree86BigfontExtensionInit,
-            "XFree86-Bigfont",
-            &noXFree86BigfontExtension
-        );
-    }
-
-    list ~= ExtensionModule(
-        RenderExtensionInit,
-        "RENDER",
-        &noRenderExtension
-    );
-
-    version (RANDR)
-    {
-        list ~= ExtensionModule(
-            RRExtensionInit,
-            "RANDR",
-            &noRRExtension
-        );
-    }
-
-    version (DISABLE_EXT_COMPOSITE)
-    {
-        list ~= ExtensionModule(
-            CompositeExtensionInit,
-            "COMPOSITE",
-            &noCompositeExtension
-        );
-    }
-
-    list ~= ExtensionModule(
-        DamageExtensionInit,
-        "DAMAGE",
-        &noDamageExtension
-    );
-
-    version (SCREENSAVER)
-    {
-        list ~= ExtensionModule(
-            ScreenSaverExtensionInit,
-            "MIT-SCREEN-SAVER",
-            &noScreenSaverExtension
-        );
-    }
-
-    version (DBE)
-    {
-        list ~= ExtensionModule(
-            DbeExtensionInit,
-            "DOUBLE-BUFFER",
-            &noDbeExtension
-        );
-    }
-
-    version (XRECORD)
-    {
-        list ~= ExtensionModule(
-            RecordExtensionInit,
-            "RECORD",
-            &noTestExtensions
-        );
-    }
-
-    version (DPMSExtension)
-    {
-        list ~= ExtensionModule(
-            DPMSExtensionInit,
-            "DPMS",
-            &noDPMSExtension
-        );
-    }
-
-    version (PRESENT)
-    {
-        list ~= ExtensionModule(
-            present_extension_init,
-            "Present",
-            null
-        );
-    }
-
-    version (DRI2)
-    {
-        list ~= ExtensionModule(
-            DRI2ExtensionInit,
-            DRI2_NAME,
-            &noDRI2Extension
-        );
-    }
-
-    version (DRI3)
-    {
-        list ~= ExtensionModule(
-            dri3_extension_init,
-            "DRI3",
-            null
-        );
-    }
-
-    version (RES)
-    {
-        list ~= ExtensionModule(
-            ResExtensionInit,
-            "X-Resource",
-            &noResExtension
-        );
-    }
+    version (SCREENSAVER) result ~= ExtensionModule(&ScreenSaverExtensionInit, "MIT-SCREEN-SAVER", &noScreenSaverExtension);
+    version (DBE) result ~= ExtensionModule(&DbeExtensionInit, "DOUBLE-BUFFER", &noDbeExtension);
+    version (XRECORD) result ~= ExtensionModule(&RecordExtensionInit, "RECORD", &noTestExtensions);
+    version (DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);
+    version (PRESENT) result ~= ExtensionModule(&present_extension_init, "Present", null);
+    version (DRI2) result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
+    version (DRI3) result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);
+    version (RES) result ~= ExtensionModule(&ResExtensionInit, "X-Resource", &noResExtension);
 
     version (XV)
     {
-        list ~= ExtensionModule(
-            XvExtensionInit,
-            "XVideo",
-            &noXvExtension
-        );
-
-        list ~= ExtensionModule(
-            XvMCExtensionInit,
-            "XVideo-MotionCompensation",
-            &noXvExtension
-        );
+        result ~= ExtensionModule(&XvExtensionInit, "XVideo", &noXvExtension);
+        result ~= ExtensionModule(&XvMCExtensionInit, "XVideo-MotionCompensation", &noXvExtension);
     }
 
-    version (XSELINUX)
-    {
-        list ~= ExtensionModule(
-            SELinuxExtensionInit,
-            "SELinux",
-            &noSELinuxExtension
-        );
-    }
+    version (XSELINUX) result ~= ExtensionModule(&SELinuxExtensionInit, "SELinux", &noSELinuxExtension);
+    version (GLXEXT) result ~= ExtensionModule(&GlxExtensionInit, "GLX", &noGlxExtension);
 
-    version (GLXEXT)
-    {
-        list ~= ExtensionModule(
-            GlxExtensionInit,
-            "GLX",
-            &noGlxExtension
-        );
-    }
-
-    return list;
+    return result;
 }();
 
 void ListStaticExtensions()

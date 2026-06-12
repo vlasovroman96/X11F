@@ -54,7 +54,7 @@ import midbe;
 import Xext.xace;
 
 import core.stdc.stdio;
-
+import dix.screen_hooks_priv;
 /******************************************************************************
  *
  * DBE MI Procedure: miDbeGetVisualInfo

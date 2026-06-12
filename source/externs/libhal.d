@@ -1,11 +1,13 @@
 module externs.libhal;
 
+import externs.dbus;
 // Базовые типы данных для компиляции старого Си-интерфейса HAL
 struct LibHalContext;
 struct LibHalPropertySet;
 
+
 alias LibHalPropertyIterator = void*;
-alias DBusConnection = void*;
+// alias DBusConnection = void*;
 alias DBusError = void*;
 
 // Минимальные заглушки функций, если config/hal.d их вызывает напрямую

@@ -111,7 +111,7 @@ import build.dix_config;
 // //import externs.X11.extensions.ge;
 // //import externs.X11.extensions.XKBproto;
 // //import externs.X11.extensions.XIproto;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 // //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XI2;
 // //import externs.X11.Xproto;
@@ -214,7 +214,7 @@ enum ImplicitGrabMask = (1 << 7);
 
 enum string WID(string w) = `((` ~ w ~ `) ? ((` ~ w ~ `).drawable.id) : 0)`;
 
-enum XE_KBPTR = (xE.u.keyButtonPointer);
+auto XE_KBPTR(T)(T xE) { return xE.u.keyButtonPointer; }
 
 CallbackListPtr EventCallback;
 CallbackListPtr DeviceEventCallback;

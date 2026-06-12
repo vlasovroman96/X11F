@@ -60,7 +60,7 @@ import core.stdc.stddef;
 //import externs.X11.Xproto;
 // //import externs.X11.fonts.font;
 // //import externs.X11.fonts.fontstruct;
-// //import externs.X11.fonts.libxfont2;
+import externs.X11.fonts.libxfont2;
 
 import dix.dix_priv;
 import dix.gc_priv;
@@ -83,6 +83,7 @@ import include.opaque;
 import include.dixfontstr;
 import include.dixfont;
 import Xext.xace;
+import os.utils;
 
 version (XF86BIGFONT) {
 import Xext.xf86bigfontsrv;
@@ -2024,29 +2025,29 @@ private void verrorf(const(char)* f, va_list args)
 }
 
 private const(xfont2_client_funcs_rec) xfont2_client_funcs = {
-    c_version: XFONT2_CLIENT_FUNCS_VERSION,
-    client_auth_generation: _client_auth_generation,
-    client_signal: dixClientSignal,
-    delete_font_client_id: delete_font_client_id,
-    verrorf: verrorf,
-    find_old_font: find_old_font,
-    get_client_resolutions: get_client_resolutions,
-    get_default_point_size: get_default_point_size,
-    get_new_font_client_id: get_new_font_client_id,
-    get_time_in_millis: wrap_time_in_millis,
-    init_fs_handlers: _init_fs_handlers,
-    register_fpe_funcs: register_fpe_funcs,
-    remove_fs_handlers: _remove_fs_handlers,
-    get_server_client: get_server_client,
-    set_font_authorizations: set_font_authorizations,
-    store_font_client_font: store_font_Client_font,
-    make_atom: MakeAtom,
-    valid_atom: ValidAtom,
-    name_for_atom: NameForAtom,
-    get_server_generation: get_server_generation,
-    add_fs_fd: add_fs_fd,
-    remove_fs_fd: remove_fs_fd,
-    adjust_fs_wait_for_delay: adjust_fs_wait_for_delay,
+    XFONT2_CLIENT_FUNCS_VERSION,
+    client_auth_generation: &_client_auth_generation,
+    client_signal: &dixClientSignal,
+    delete_font_client_id: &delete_font_client_id,
+    verrorf: &verrorf,
+    find_old_font: &find_old_font,
+    get_client_resolutions: &get_client_resolutions,
+    get_default_point_size: &get_default_point_size,
+    get_new_font_client_id: &get_new_font_client_id,
+    get_time_in_millis: &wrap_time_in_millis,
+    init_fs_handlers: &_init_fs_handlers,
+    register_fpe_funcs: &register_fpe_funcs,
+    remove_fs_handlers: &_remove_fs_handlers,
+    get_server_client: &get_server_client,
+    set_font_authorizations: &set_font_authorizations,
+    store_font_client_font: &store_font_Client_font,
+    make_atom: &MakeAtom,
+    valid_atom: &ValidAtom,
+    name_for_atom: &NameForAtom,
+    get_server_generation: &get_server_generation,
+    add_fs_fd: &add_fs_fd,
+    remove_fs_fd: &remove_fs_fd,
+    adjust_fs_wait_for_delay: &adjust_fs_wait_for_delay,
 };
 
 xfont2_pattern_cache_ptr fontPatternCache;

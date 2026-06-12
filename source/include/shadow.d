@@ -31,6 +31,7 @@ public import include.picturestr;
 
 public import include.damage;
 public import include.damagestr;
+import include.shadow;
 alias shadowBufPtr = _shadowBuf*;
 
 alias ShadowUpdateProc = void function(ScreenPtr pScreen, shadowBufPtr pBuf);
@@ -41,7 +42,7 @@ enum SHADOW_WINDOW_WRITE = 4;
 
 alias ShadowWindowProc = void* function(ScreenPtr pScreen, CARD32 row, CARD32 offset, int mode, CARD32* size, void* closure);
 
-struct shadowBufRec {
+struct _shadowBuf {
     DamagePtr pDamage;
     ShadowUpdateProc update;
     ShadowWindowProc window;

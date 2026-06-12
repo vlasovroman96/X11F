@@ -29,8 +29,10 @@ extern(C): __gshared:
  */
 
  
-public import xf86xv;
+public import include.xf86xv;
 public import include.privates;
+import include.xf86str;
+import include.scrnintstr;
 
 /*** These are DDX layer privates ***/
 

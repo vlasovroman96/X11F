@@ -157,6 +157,7 @@ alias XI2 = InputLevel.XI2;
 alias Leds = c_ulong;
 alias OtherClientsPtr = _OtherClients*;
 alias InputClientsPtr = _InputClients*;
+alias InputClients = _InputClients;
 alias DeviceIntPtr = _DeviceIntRec*;
 alias ValuatorClassPtr = _ValuatorClassRec*;
 alias ClassesPtr = _ClassesRec*;

@@ -50,7 +50,7 @@ import sys.mkdev;          /* for major() & minor() on Solaris */
 
 version (WITH_LIBDRM) {
 import include.externs.xf86drm;
-import drm_fourcc;
+import drm.drm_fourcc;
 }
 
 version = EGL_DISPLAY_NO_X_MESA;
