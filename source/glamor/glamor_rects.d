@@ -37,14 +37,14 @@ private const(glamor_facet) glamor_facet_polyfillrect_130 = {
     vs_vars: "in vec2 primitive;\n"
                ~ "in vec2 size;\n",
     vs_exec: ("       vec2 pos = size * vec2(gl_VertexID&1, (gl_VertexID&2)>>1);\n"
-               ~ GLAMOR_POS(gl_Position, (primitive.xy + pos))),
+               ~ GLAMOR_POS!("gl_Position", "(primitive.xy + pos)")),
 };
 
 private const(glamor_facet) glamor_facet_polyfillrect_120 = {
     name: "poly_fill_rect",
     vs_vars: "attribute vec2 primitive;\n",
     vs_exec: ("        vec2 pos = vec2(0,0);\n"
-               ~ GLAMOR_POS(gl_Position, primitive.xy)),
+               ~ GLAMOR_POS!("gl_Position", "primitive.xy")),
 };
 
 private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect, xRectangle* prect)

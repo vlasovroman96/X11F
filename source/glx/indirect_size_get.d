@@ -1,4 +1,4 @@
-module indirect_size_get;
+module glx.indirect_size_get;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -33,10 +33,10 @@ import build.dix_config;
 
 // //import externs.X11.Xfuncproto;
 import externs.gl;
-import indirect_size_get;
-import glxserver;
-import indirect_util;
-import indirect_size;
+import glx.indirect_size_get;
+import glx.glxserver;
+import glx.indirect_util;
+import glx.indirect_size;
 
 // version (__GNUC__) {
 // enum PURE = __attribute__((pure));
@@ -51,14 +51,14 @@ version = FASTCALL;
 }
 
 version (HAVE_ALIAS) {
-enum string ALIAS2(string from,string to) = `\
-    _X_INTERNAL PURE FASTCALL GLint __gl ## from ## _size( GLenum e ) \
-        __attribute__ ((alias( # to )));`;
-enum string ALIAS(string from,string to) = `ALIAS2( from, __gl ## to ## _size )`;
+enum string ALIAS2(string from,string to) = `
+    GLint __gl`~ from ~ `_size( GLenum e ) 
+        __attribute__ ((alias(`~to~` )));`;
+enum string ALIAS(string from,string to) = `ALIAS2( from, __gl`~ to ~` _size )`;
 } else {
-enum string ALIAS(string from,string to) = `\
-    _X_INTERNAL PURE FASTCALL GLint __gl ## from ## _size( GLenum e ) \
-    { return __gl ## to ## _size( e ); }`;
+enum string ALIAS(string from,string to) = `
+    GLint __gl` ~ from ~ `size( GLenum e ) 
+    { return __gl` ~ to ~ `_size( e ); }`;
 }
 
 

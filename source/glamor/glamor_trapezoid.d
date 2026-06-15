@@ -38,6 +38,7 @@ import include.mipict;
 
 import glamor.glamor_priv;
 import include.fbpict;
+import externs.X11.extensions.renderproto;
 
 /**
  * Creates an appropriate picture for temp mask use.

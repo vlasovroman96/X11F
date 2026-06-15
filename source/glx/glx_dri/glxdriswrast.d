@@ -1,4 +1,4 @@
-module glxdriswrast;
+module glx.glxdriswrast;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -50,11 +50,12 @@ import include.pixmapstr;
 import include.gcstruct;
 import include.os;
 
-import glxserver;
-import glxutil;
-import glxdricommon;
+import glx.glxserver;
+import glx.glxutil;
+import glx.glx_dri.glxdricommon;
 
-import extension_string;
+import glx.extension_string;
+import glx.glxscreens_h;
 
 
 
@@ -306,9 +307,9 @@ private void swrastGetImage(__DRIdrawable* draw, int x, int y, int w, int h, cha
 
 private const(__DRIswrastLoaderExtension) swrastLoaderExtension = {
     {__DRI_SWRAST_LOADER, 1},
-    swrastGetDrawableInfo,
-    swrastPutImage,
-    swrastGetImage
+    &swrastGetDrawableInfo,
+    &swrastPutImage,
+    &swrastGetImage
 };
 
 private const(__DRIextension)*[2] loader_extensions = [

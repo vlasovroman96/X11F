@@ -1,4 +1,4 @@
-module swap_interval;
+module glx.swap_interval;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,14 +27,14 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import glxserver;
-import glxutil;
-import glxext;
+import glx.glxserver;
+import glx.glxutil;
+import glx.glxext;
 import include.misc;
-import singlesize;
-import unpack;
-import indirect_size_get;
-import indirect_dispatch;
+import glx.singlesize;
+import glx.unpack;
+import glx.indirect_size_get;
+import glx.indirect_dispatch;
 
 
 

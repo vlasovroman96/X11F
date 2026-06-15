@@ -1,4 +1,4 @@
-module clientinfo;
+module glx.clientinfo;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -26,9 +26,9 @@ extern(C): __gshared:
 import build.dix_config;
 
 import include.misc;
-import glxserver;
-import indirect_dispatch;
-import unpack;
+import glx.glxserver;
+import glx.indirect_dispatch;
+import glx.unpack;
 
 private int set_client_info(__GLXclientState* cl, xGLXSetClientInfoARBReq* req, uint bytes_per_version)
 {

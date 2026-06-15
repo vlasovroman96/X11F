@@ -1,4 +1,4 @@
-module vndcmds;
+module glx.vndcmds;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -34,9 +34,9 @@ import build.dix_config;
 
 import dix.request_priv;
 
-import hashtable;
-import vndserver_priv;
-import vndservervendor;
+import Xext.hashtable;
+import glx.vndserver_priv;
+import glx.vndservervendor;
 
 /**
  * The length of the dispatchFuncs array. Every opcode above this is a

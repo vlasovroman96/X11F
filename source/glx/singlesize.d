@@ -1,4 +1,4 @@
-module singlesize;
+module glx.singlesize;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -34,9 +34,9 @@ extern(C): __gshared:
 import build.dix_config;
 
 import externs.gl;
-import glxserver;
-import singlesize;
-import indirect_size_get;
+import glx.glxserver;
+import glx.singlesize;
+import glx.indirect_size_get;
 
 /*
 ** These routines compute the size of variable-size returned parameters.

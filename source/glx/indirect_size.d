@@ -1,4 +1,4 @@
-module indirect_size;
+module glx.indirect_size;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -32,8 +32,10 @@ private template HasVersion(string versionId) {
  * SOFTWARE.
  */
 
+ import externs.GL.gl_;
+
 static if (!HasVersion!"_INDIRECT_SIZE_H_") {
-version = _INDIRECT_SIZE_H_;
+// version = _INDIRECT_SIZE_H_;
 
 /**
  * \file

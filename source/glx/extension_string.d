@@ -1,4 +1,4 @@
-module extension_string;
+module glx.extension_string;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -39,82 +39,120 @@ import build.dix_config;
 import dix.dix_priv;
 import include.extinit;
 
-import extension_string;
+import glx.extension_string;
 import include.opaque;
 
-enum string SET_BIT(string m,string b) = `(` ~ m ~ `[ (` ~ b ~ `) / 8 ] |=  (1U << ((` ~ b ~ `) % 8)))`;
-enum string CLR_BIT(string m,string b) = `(` ~ m ~ `[ (` ~ b ~ `) / 8 ] &= ~(1U << ((` ~ b ~ `) % 8)))`;
-enum string IS_SET(string m,string b) = `((` ~ m ~ `[ (` ~ b ~ `) / 8 ] &   (1U << ((` ~ b ~ `) % 8))) != 0)`;
-enum string CONCAT(string a,string b) = `a ## b`;
-enum string GLX(string n) = `"GLX_" # n, 4 + sizeof( # n ) - 1, CONCAT(n,_bit)`;
-enum string VER(string a,string b) = `` ~ a ~ `, ` ~ b ~ ``;
-enum Y =  1;
-enum N =  0;
-enum string EXT_ENABLED(string bit,string supported) = `(` ~ IS_SET!(supported, bit) ~ `)`;
+import std.meta : AliasSeq;
+
+enum __GLX_EXT_BYTES = ((__NUM_GLX_EXTS + 7) / 8);
+
+enum {
+/*   GLX_ARB_get_proc_address is implemented on the client. */
+    ARB_context_flush_control_bit = 0,
+    ARB_create_context_bit,
+    ARB_create_context_no_error_bit,
+    ARB_create_context_profile_bit,
+    ARB_create_context_robustness_bit,
+    ARB_fbconfig_float_bit,
+    ARB_framebuffer_sRGB_bit,
+    ARB_multisample_bit,
+    EXT_create_context_es_profile_bit,
+    EXT_create_context_es2_profile_bit,
+    EXT_fbconfig_packed_float_bit,
+    EXT_get_drawable_type_bit,
+    EXT_import_context_bit,
+    EXT_libglvnd_bit,
+    EXT_no_config_context_bit,
+    EXT_stereo_tree_bit,
+    EXT_texture_from_pixmap_bit,
+    EXT_visual_info_bit,
+    EXT_visual_rating_bit,
+    MESA_copy_sub_buffer_bit,
+    OML_swap_method_bit,
+    SGI_make_current_read_bit,
+    SGI_swap_control_bit,
+    SGI_video_sync_bit,
+    SGIS_multisample_bit,
+    SGIX_fbconfig_bit,
+    SGIX_pbuffer_bit,
+    SGIX_visual_select_group_bit,
+    INTEL_swap_event_bit,
+    __NUM_GLX_EXTS,
+};
+
+alias EXT_framebuffer_sRGB_bit = ARB_framebuffer_sRGB_bit;
 
 struct extension_info {
     const(char*) name;
     uint name_len;
-
     ubyte bit;
-
-    /**
-     * This is the lowest version of GLX that "requires" this extension.
-     * For example, GLX 1.3 requires SGIX_fbconfig, SGIX_pbuffer, and
-     * SGI_make_current_read.  If the extension is not required by any known
-     * version of GLX, use 0, 0.
-     */
     ubyte version_major;
     ubyte version_minor;
-
-    /**
-     * Is driver support forced by the ABI?
-     */
     ubyte driver_support;
 }
+// 1. Превращаем функцию в шаблон времени компиляции
+// Переносим имя расширения 'n' в шаблонные аргументы. 
+// Благодаря этому 'n' гарантированно доступен для mixin во время сборки!
+extension_info GLX(string n)(ubyte major = 0, ubyte minor = 0, ubyte driver_support = 0)
+{
+    // Склеивание имени бита теперь работает идеально
+    enum ubyte bitValue = cast(ubyte) mixin(n ~ "_bit");
+    
+    // Используем статическую константу, чтобы строка выделилась в сегменте данных (ноль GC!)
+    enum string fullStr = "GLX_" ~ n ~ "\0";
 
-/**
- * List of known GLX Extensions.
- * The last Y/N switch informs whether the support of this extension is always enabled.
- */
+    return extension_info(
+        fullStr.ptr,                  // name: честный char* без аллокаций
+        cast(uint)(4 + n.length),     // name_len
+        bitValue,                     // bit
+        major,                        // version_major
+        minor,                        // version_minor
+        driver_support                // driver_support
+    );
+}
+
+// Константы для читаемости
+enum ubyte Y = 1;
+enum ubyte N = 0;
+
 private const(extension_info)[30] known_glx_extensions = [
-/*   GLX_ARB_get_proc_address is implemented on the client. */
     /* *INDENT-OFF* */
-    { mixin(GLX!(`ARB_context_flush_control`)),   mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_create_context`)),          mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_create_context_no_error`)), mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_create_context_profile`)),  mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_create_context_robustness`)), mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_fbconfig_float`)),          mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_framebuffer_sRGB`)),        mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`ARB_multisample`)),             mixin(VER!(`1`,`4`)), Y, },
+    // Теперь передаем имя через восклицательный знак: GLX!"ИМЯ"(аргументы)
+    GLX!"ARB_context_flush_control"(0, 0, N),
+    GLX!"ARB_create_context"(0, 0, N),
+    GLX!"ARB_create_context_no_error"(0, 0, N),
+    GLX!"ARB_create_context_profile"(0, 0, N),
+    GLX!"ARB_create_context_robustness"(0, 0, N),
+    GLX!"ARB_fbconfig_float"(0, 0, N),
+    GLX!"ARB_framebuffer_sRGB"(0, 0, N),
+    GLX!"ARB_multisample"(1, 4, Y),
 
-    { mixin(GLX!(`EXT_create_context_es_profile`)), mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_create_context_es2_profile`)), mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_fbconfig_packed_float`)),   mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_framebuffer_sRGB`)),        mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_get_drawable_type`)),       mixin(VER!(`0`,`0`)), Y, },
-    { mixin(GLX!(`EXT_import_context`)),          mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_libglvnd`)),                mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_no_config_context`)),       mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_stereo_tree`)),             mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_texture_from_pixmap`)),     mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`EXT_visual_info`)),             mixin(VER!(`0`,`0`)), Y, },
-    { mixin(GLX!(`EXT_visual_rating`)),           mixin(VER!(`0`,`0`)), Y, },
+    GLX!"EXT_create_context_es_profile"(0, 0, N),
+    GLX!"EXT_create_context_es2_profile"(0, 0, N),
+    GLX!"EXT_fbconfig_packed_float"(0, 0, N),
+    GLX!"EXT_framebuffer_sRGB"(0, 0, N),
+    GLX!"EXT_get_drawable_type"(0, 0, Y),
+    GLX!"EXT_import_context"(0, 0, N),
+    GLX!"EXT_libglvnd"(0, 0, N),
+    GLX!"EXT_no_config_context"(0, 0, N),
+    GLX!"EXT_stereo_tree"(0, 0, N),
+    GLX!"EXT_texture_from_pixmap"(0, 0, N),
+    GLX!"EXT_visual_info"(0, 0, Y),
+    GLX!"EXT_visual_rating"(0, 0, Y),
 
-    { mixin(GLX!(`MESA_copy_sub_buffer`)),        mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`OML_swap_method`)),             mixin(VER!(`0`,`0`)), Y, },
-    { mixin(GLX!(`SGI_make_current_read`)),       mixin(VER!(`1`,`3`)), Y, },
-    { mixin(GLX!(`SGI_swap_control`)),            mixin(VER!(`0`,`0`)), N, },
-    { mixin(GLX!(`SGIS_multisample`)),            mixin(VER!(`0`,`0`)), Y, },
-    { mixin(GLX!(`SGIX_fbconfig`)),               mixin(VER!(`1`,`3`)), Y, },
-    { mixin(GLX!(`SGIX_pbuffer`)),                mixin(VER!(`1`,`3`)), Y, },
-    { mixin(GLX!(`SGIX_visual_select_group`)),    mixin(VER!(`0`,`0`)), Y, },
-    { mixin(GLX!(`INTEL_swap_event`)),            mixin(VER!(`0`,`0`)), N, },
-    { null }
+    GLX!"MESA_copy_sub_buffer"(0, 0, N),
+    GLX!"OML_swap_method"(0, 0, Y),
+    GLX!"SGI_make_current_read"(1, 3, Y),
+    GLX!"SGI_swap_control"(0, 0, N),
+    GLX!"SGIS_multisample"(0, 0, Y),
+    GLX!"SGIX_fbconfig"(1, 3, Y),
+    GLX!"SGIX_pbuffer"(1, 3, Y),
+    GLX!"SGIX_visual_select_group"(0, 0, Y),
+    GLX!"INTEL_swap_event"(0, 0, N),
+    
+    extension_info(null, 0, 0, 0, 0, 0)
     /* *INDENT-ON* */
 ];
-
 /**
  * Create a GLX extension string for a set of enable bits.
  *

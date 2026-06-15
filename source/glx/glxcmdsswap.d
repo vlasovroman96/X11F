@@ -1,4 +1,4 @@
-module glxcmdsswap;
+module glx.glxcmdsswap;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -37,16 +37,16 @@ import core.stdc.string;
 
 import dix.dix_priv;
 
-import glxserver;
-import glxutil;
+import glx.glxserver;
+import glx.glxutil;
 import externs.glxtokens;
-import unpack;
+import glx.unpack;
 import include.pixmapstr;
 import include.windowstr;
-import glxext;
-import indirect_dispatch;
-import indirect_table;
-import indirect_util;
+import glx.glxext;
+import glx.indirect_dispatch;
+import glx.indirect_table;
+import glx.indirect_util;
 
 /************************************************************************/
 

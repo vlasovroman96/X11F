@@ -35,18 +35,20 @@ extern(C): __gshared:
    A list of some popular fourcc's are at: http://www.webartz.com/fourcc/
    For an explanation of fourcc <-> guid mappings see RFC2361.
 */
+import include.xf86xv;
+import externs.X11.extensions.Xv;
 
 version (_XF86_FOURCC_H_) {} else {
 enum _XF86_FOURCC_H_ = 1;
 
 enum FOURCC_YUY2 = 0x32595559;
-enum XVIMAGE_YUY2 = 
+enum XvImageRec XVIMAGE_YUY2 = 
    { 
 	FOURCC_YUY2, 
         XvYUV, 
 	LSBFirst, 
-	{'Y','U','Y','2', 
-	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+	['Y','U','Y','2', 
+	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
 	16, 
 	XvPacked, 
 	1, 
@@ -54,19 +56,19 @@ enum XVIMAGE_YUY2 =
 	8, 8, 8, 
 	1, 2, 2, 
 	1, 1, 1, 
-	{'Y','U','Y','V', 
-	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+	['Y','U','Y','V', 
+	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 	XvTopToBottom 
    };
 
 enum FOURCC_YV12 = 0x32315659;
-enum XVIMAGE_YV12 = 
+enum XvImageRec XVIMAGE_YV12 = 
    { 
 	FOURCC_YV12, 
         XvYUV, 
 	LSBFirst, 
-	{'Y','V','1','2', 
-	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+	['Y','V','1','2', 
+	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
 	12, 
 	XvPlanar, 
 	3, 
@@ -74,19 +76,19 @@ enum XVIMAGE_YV12 =
 	8, 8, 8, 
 	1, 2, 2, 
 	1, 2, 2, 
-	{'Y','V','U', 
-	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+	['Y','V','U', 
+	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 	XvTopToBottom 
    };
 
 enum FOURCC_I420 = 0x30323449;
-enum XVIMAGE_I420 = 
+enum XvImageRec XVIMAGE_I420 = 
    { 
 	FOURCC_I420, 
         XvYUV, 
 	LSBFirst, 
-	{'I','4','2','0', 
-	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+	['I','4','2','0', 
+	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
 	12, 
 	XvPlanar, 
 	3, 
@@ -94,19 +96,19 @@ enum XVIMAGE_I420 =
 	8, 8, 8, 
 	1, 2, 2, 
 	1, 2, 2, 
-	{'Y','U','V', 
-	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+	['Y','U','V', 
+	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 	XvTopToBottom 
    };
 
 enum FOURCC_UYVY = 0x59565955;
-enum XVIMAGE_UYVY = 
+enum XvImageRec XVIMAGE_UYVY = 
    { 
 	FOURCC_UYVY, 
         XvYUV, 
 	LSBFirst, 
-	{'U','Y','V','Y', 
-	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+	['U','Y','V','Y', 
+	  0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
 	16, 
 	XvPacked, 
 	1, 
@@ -114,19 +116,19 @@ enum XVIMAGE_UYVY =
 	8, 8, 8, 
 	1, 2, 2, 
 	1, 1, 1, 
-	{'U','Y','V','Y', 
-	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+	['U','Y','V','Y', 
+	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 	XvTopToBottom 
    };
 
 enum FOURCC_IA44 = 0x34344149;
-enum XVIMAGE_IA44 = 
+enum XvImageRec XVIMAGE_IA44 = 
    { 
         FOURCC_IA44, 
         XvYUV, 
         LSBFirst, 
-        {'I','A','4','4', 
-          0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+        ['I','A','4','4', 
+          0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
         8, 
         XvPacked, 
         1, 
@@ -134,19 +136,19 @@ enum XVIMAGE_IA44 =
         8, 8, 8, 
         1, 1, 1, 
         1, 1, 1, 
-        {'A','I', 
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+        ['A','I', 
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
         XvTopToBottom 
    };
 
 enum FOURCC_AI44 = 0x34344941;
-enum XVIMAGE_AI44 = 
+enum XvImageRec XVIMAGE_AI44 = 
    { 
         FOURCC_AI44, 
         XvYUV, 
         LSBFirst, 
-        {'A','I','4','4', 
-          0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+        ['A','I','4','4', 
+          0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
         8, 
         XvPacked, 
         1, 
@@ -154,19 +156,19 @@ enum XVIMAGE_AI44 =
         8, 8, 8, 
         1, 1, 1, 
         1, 1, 1, 
-        {'I','A', 
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+        ['I','A', 
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
         XvTopToBottom 
    };
 
 enum FOURCC_NV12 = 0x3231564e;
-enum XVIMAGE_NV12 = 
+enum XvImageRec XVIMAGE_NV12 = 
    { 
         FOURCC_NV12, 
         XvYUV, 
         LSBFirst, 
-        {'N','V','1','2', 
-          0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+        ['N','V','1','2', 
+          0x00,0x00,0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
         12, 
         XvPlanar, 
         2, 
@@ -174,19 +176,19 @@ enum XVIMAGE_NV12 =
         8, 8, 8, 
         1, 2, 2, 
         1, 2, 2, 
-        {'Y','U','V', 
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+        ['Y','U','V', 
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
         XvTopToBottom 
    };
 
 enum FOURCC_RGBA32 = 0x34325241;
-enum XVIMAGE_RGB32 = 
+enum XvImageRec XVIMAGE_RGB32 = 
    { 
         FOURCC_RGBA32, 
         XvRGB, 
 		LSBFirst, 
-		{'R','A','2','4', 
-		 0x00, 0x00, 0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+		['R','A','2','4', 
+		 0x00, 0x00, 0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
 		32, 
 		XvPacked, 
 		1, 
@@ -194,19 +196,19 @@ enum XVIMAGE_RGB32 =
 		0, 0, 0, 
 		0, 0, 0, 
 		0, 0, 0, 
-		{0,0,0,0, 
-		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+		[0,0,0,0, 
+		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 		0 
    };
 
 enum FOURCC_RGB565 = 0x36314752;
-enum XVIMAGE_RGB565 = 
+enum XvImageRec XVIMAGE_RGB565 = 
    { 
         FOURCC_RGB565, 
         XvRGB, 
 		LSBFirst, 
-		{'R','G','1','6', 
-		 0x00, 0x00, 0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71}, 
+		['R','G','1','6', 
+		 0x00, 0x00, 0x00,0x10,0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71], 
 		16, 
 		XvPacked, 
 		1, 
@@ -214,8 +216,8 @@ enum XVIMAGE_RGB565 =
 		0, 0, 0, 
 		0, 0, 0, 
 		0, 0, 0, 
-		{0,0,0,0, 
-		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, 
+		[0,0,0,0, 
+		 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 
 		0 
    };
 }                          /* _XF86_FOURCC_H_ */

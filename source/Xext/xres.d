@@ -36,7 +36,7 @@ import include.gcstruct;
 import include.protocol_versions;
 import include.list;
 import include.misc;
-import hashtable;
+import Xext.hashtable;
 import include.picturestr;
 import composite.compint;
 import externs.X11.extensions.XResproto;

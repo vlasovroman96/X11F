@@ -1,4 +1,4 @@
-module single2;
+module glx.single2;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -41,11 +41,11 @@ import dix.dix_priv;
 import dix.request_priv;
 import dix.rpcbuf_priv;
 
-import glxserver;
-import glxutil;
-import glxext;
-import indirect_dispatch;
-import unpack;
+import glx.glxserver;
+import glx.glxutil;
+import glx.glxext;
+import glx.indirect_dispatch;
+import glx.unpack;
 
 int __glXDisp_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
 {

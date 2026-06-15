@@ -1,4 +1,4 @@
-module hashtable;
+module Xext.hashtable;
 @nogc nothrow:
 extern(C): __gshared:
 import build.dix_config;
@@ -8,7 +8,7 @@ import core.stdc.stdlib;
 import dix.resource_priv;
 
 import include.misc;
-import hashtable;
+import Xext.hashtable;
 import include.list;
 
 /* HashResourceID */

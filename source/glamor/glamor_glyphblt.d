@@ -41,7 +41,7 @@ private const(glamor_facet) glamor_facet_poly_glyph_blt = {
     vs_vars: "in vec2 primitive;\n",
     vs_exec: ("       vec2 pos = vec2(0,0);\n"
                 ~ GLAMOR_DEFAULT_POINT_SIZE~
-                GLAMOR_POS(gl_Position, primitive)),
+                GLAMOR_POS!("gl_Position", "primitive")),
 };
 
 private Bool glamor_poly_glyph_blt_gl(DrawablePtr drawable, GCPtr gc, int start_x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyph_base)

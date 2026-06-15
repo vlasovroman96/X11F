@@ -1,4 +1,4 @@
-module glxdri2;
+module glx.glxdri2;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -44,11 +44,12 @@ import include.xf86;
 import Xext.dri2.dri2;
 
 import externs.glxtokens;
-import glxserver;
-import glxutil;
-import glxdricommon;
+import glx.glxserver;
+import glx.glxutil;
+import glx.glx_dri.glxdricommon;
 
-import extension_string;
+import glx.extension_string;
+import glx.glxscreens_h;
 
 
 
@@ -708,9 +709,9 @@ private void dri2FlushFrontBuffer(__DRIdrawable* driDrawable, void* loaderPrivat
 
 private const(__DRIdri2LoaderExtension) loaderExtension = {
     {__DRI_DRI2_LOADER, 3},
-    dri2GetBuffers,
-    dri2FlushFrontBuffer,
-    dri2GetBuffersWithFormat,
+    &dri2GetBuffers,
+    &dri2FlushFrontBuffer,
+    &dri2GetBuffersWithFormat,
 };
 
 private const(__DRIuseInvalidateExtension) dri2UseInvalidate = {

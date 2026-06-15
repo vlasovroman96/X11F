@@ -1,4 +1,4 @@
-module single2swap;
+module glx.single2swap;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -36,11 +36,11 @@ import build.dix_config;
 import dix.dix_priv;
 import dix.request_priv;
 
-import glxserver;
-import glxutil;
-import glxext;
-import indirect_dispatch;
-import unpack;
+import glx.glxserver;
+import glx.glxutil;
+import glx.glxext;
+import glx.indirect_dispatch;
+import glx.unpack;
 
 int __glXDispSwap_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
 {

@@ -1,4 +1,4 @@
-module createcontext;
+module glx.createcontext;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -29,9 +29,9 @@ import externs.glxtokens;
 
 import dix.dix_priv;
 
-import glxserver;
-import glxext;
-import indirect_dispatch;
+import glx.glxserver;
+import glx.glxext;
+import glx.indirect_dispatch;
 import include.opaque;
 
 enum ALL_VALID_FLAGS = 

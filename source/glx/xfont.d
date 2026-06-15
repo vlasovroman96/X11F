@@ -1,4 +1,4 @@
-module xfont;
+module glx.xfont;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -36,10 +36,10 @@ import build.dix_config;
 
 import dix.dix_priv;
 
-import glxserver;
-import glxutil;
-import unpack;
-import indirect_dispatch;
+import glx.glxserver;
+import glx.glxutil;
+import glx.unpack;
+import glx.indirect_dispatch;
 import externs.gl;
 import include.pixmapstr;
 import include.windowstr;

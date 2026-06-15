@@ -65,6 +65,7 @@ public import include.xlibre_ptrtypes;
 public import include.scrnintstr;
 public import include.extnsionst;
 public import externs.glxproto;
+import glx.vndservervendor;
 
 /*!
  * Current version of the ABI.
@@ -80,7 +81,7 @@ public import externs.glxproto;
 enum GLXSERVER_VENDOR_ABI_MAJOR_VERSION = 0;
 enum GLXSERVER_VENDOR_ABI_MINOR_VERSION = 1;
 
-version (none) {
+// version (none) {
 extern(C) {
 
 /**
@@ -251,7 +252,7 @@ struct GlxServerExports {
     Bool function(ClientPtr client, ScreenPtr screen, GlxServerVendor* vendor) setClientScreenVendor;
 }
 
-extern const(void ) GlxServerExports;
+// extern const(void ) GlxServerExports;
 
 /**
  * Functions exported by the vendor library to libglvnd.
@@ -310,6 +311,5 @@ struct GlxServerImportsRec {
 
 version (none) {
 }}
-}
 
  // GLXVENDORABI_H

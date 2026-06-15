@@ -40,7 +40,7 @@ import include.xf86;
 import include.colormap;
 import micmap;
 import include.globals;
-import glxserver;
+import glx.glxserver;
 import include.glx_extinit;
 
 // private MODULESETUPPROTO glxSetup;

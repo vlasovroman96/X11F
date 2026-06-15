@@ -1,4 +1,4 @@
-module vndext;
+module glx.vndext;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -31,7 +31,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import vndserver_priv;
+import glx.vndserver_priv;
 
 import core.stdc.string;
 import include.scrnintstr;
@@ -41,7 +41,7 @@ import include.extnsionst;
 import include.glx_extinit;
 
 import externs.glxproto;
-import vndservervendor;
+import glx.vndservervendor;
 
 import dix.callback_priv;
 import dix.dix_priv;

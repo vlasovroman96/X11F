@@ -1,4 +1,4 @@
-module unpack;
+module glx.unpack;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -119,11 +119,12 @@ enum string __GLX_SEND_UINT_ARRAY(string len) = `__GLX_SEND_INT_ARRAY(` ~ len ~ 
 ** Machine dependent optimizations abound here; these swapping macros can
 ** conceivably be replaced with routines that do the job faster.
 */
-enum __GLX_DECLARE_SWAP_VARIABLES = sw;
+enum __GLX_DECLARE_SWAP_VARIABLES = `GLByte sw`;
 
-enum __GLX_DECLARE_SWAP_ARRAY_VARIABLES = 
+enum __GLX_DECLARE_SWAP_ARRAY_VARIABLES = `
   	GLbyte *swapPC;	
   	GLbyte *swapEnd;
+	`;
 
 enum string __GLX_SWAP_DOUBLE(string pc) = `
   	sw = (cast(GLbyte*)(` ~ pc ~ `))[0]; 		

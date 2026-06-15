@@ -1,4 +1,4 @@
-module vndservermapping;
+module glx.vndservermapping;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -31,11 +31,11 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import vndserver_priv;
+import glx.vndserver_priv;
 
 import include.pixmapstr;
 
-import vndservervendor;
+import glx.vndservervendor;
 
 private ClientPtr requestClient = null;
 

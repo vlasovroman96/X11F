@@ -1,4 +1,4 @@
-module singlepixswap;
+module glx.singlepixswap;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -33,12 +33,12 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import glxserver;
-import glxext;
-import singlesize;
-import unpack;
-import indirect_dispatch;
-import indirect_size_get;
+import glx.glxserver;
+import glx.glxext;
+import glx.singlesize;
+import glx.unpack;
+import glx.indirect_dispatch;
+import glx.indirect_size_get;
 
 int __glXDispSwap_ReadPixels(__GLXclientState* cl, GLbyte* pc)
 {

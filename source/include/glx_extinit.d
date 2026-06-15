@@ -26,10 +26,11 @@ extern(C): __gshared:
  * in this Software without prior written authorization from the XFree86 Project.
  */
 
- 
+ import build.dix_config;
+ import glx.glxscreens_h;
 /* this is separate due to sdksyms pulling in extinit.h */
 /* XXX this comment no longer makes sense i think */
-version (GLXEXT) {
+// static if (GLXEXT) {
 
 
 
@@ -45,10 +46,10 @@ extern __GLXprovider __glXDRISWRastProvider;
 void GlxPushProvider(__GLXprovider* provider);
 
 
-} else { /* GLXEXT */
+// } else { /* GLXEXT */
 
 pragma(inline, true) private void xorgGlxCreateVendor() {}
 
-} /* GLEXT */
+// } /* GLEXT */
 
  /* GLX_EXT_INIT_H */

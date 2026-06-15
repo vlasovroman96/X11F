@@ -1,4 +1,4 @@
-module rensize;
+module glx.rensize;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -33,12 +33,13 @@ extern(C): __gshared:
 
 import build.dix_config;
 
+import externs.X11.Xmd;
 import externs.gl;
-import glxserver;
+import glx.glxserver;
 import externs.glxproto;
-import unpack;
-import indirect_size;
-import indirect_reqsize;
+import glx.unpack;
+import glx.indirect_size;
+import glx.indirect_reqsize;
 
 enum string SWAPL(string a) = `
   (((` ~ a ~ ` & 0xff000000U)>>24) | ((` ~ a ~ ` & 0xff0000U)>>8) | 

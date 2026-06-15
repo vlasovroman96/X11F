@@ -35,14 +35,14 @@ private const(glamor_facet) glamor_facet_fillspans_130 = {
     c_version: 130,
     vs_vars:  "in vec3 primitive;\n",
     vs_exec: ("       vec2 pos = vec2(primitive.z,1) * vec2(gl_VertexID&1, (gl_VertexID&2)>>1);\n"
-                ~GLAMOR_POS(gl_Position, (primitive.xy + pos))),
+                ~GLAMOR_POS!("gl_Position", "(primitive.xy + pos)")),
 };
 
 private const(glamor_facet) glamor_facet_fillspans_120 = {
     name: "fill_spans",
     vs_vars:  "attribute vec2 primitive;\n",
     vs_exec: ("       vec2 pos = vec2(0,0);\n"
-                ~GLAMOR_POS(gl_Position, primitive.xy)),
+                ~GLAMOR_POS!("gl_Position", "primitive.xy")),
 };
 
 private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPointPtr points, int* widths, int sorted)

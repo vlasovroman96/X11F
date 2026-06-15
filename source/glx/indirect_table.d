@@ -1,4 +1,4 @@
-module indirect_table;
+module glx.indirect_table;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -28,11 +28,66 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.inttypes;
-import glxserver;
-import glxext;
-import indirect_dispatch;
-import indirect_reqsize;
-import indirect_table;
+import glx.glxserver;
+import glx.glxext;
+import glx.indirect_dispatch;
+import glx.indirect_reqsize;
+import glx.indirect_table;
+
+struct __glXDispatchInfo {
+    /**
+     * Number of significant bits in the protocol opcode.  Opcodes with values
+     * larger than ((1 << bits) - 1) are invalid.
+     */
+    uint bits;
+
+    /**
+     */
+    const int_fast16_t *dispatch_tree;
+
+    /**
+     * Array of protocol decode and dispatch functions index by the opcode
+     * search tree (i.e., \c dispatch_tree).  The first element in each pair
+     * is the non-byte-swapped version, and the second element is the
+     * byte-swapped version.
+     */
+    const(void)*[2] dispatch_functions;
+
+    /**
+     * Pointer to size validation data.  This table is indexed with the same
+     * value as ::dispatch_functions.
+     *
+     * The first element in the pair is the size, in bytes, of the fixed-size
+     * portion of the protocol.
+     *
+     * For opcodes that have a variable-size portion, the second value is an
+     * index in \c size_func_table to calculate that size.  If there is no
+     * variable-size portion, this index will be ~0.
+     *
+     * \note
+     * If size checking is not to be performed on this type of protocol
+     * data, this pointer will be \c NULL.
+     */
+    const(int_fast16_t[2])* size_table;
+    /**
+     * Array of functions used to calculate the variable-size portion of
+     * protocol messages.  Indexed by the second element of the entries
+     * in \c ::size_table.
+     *
+     * \note
+     * If size checking is not to be performed on this type of protocol
+     * data, this pointer will be \c NULL.
+     */
+    const gl_proto_size_func *size_func_table;
+};
+
+enum EMPTY_LEAF = core.stdc.inttypes.INT_FAST16_MIN;
+
+/**
+ * Declare the index \c x as a leaf index.
+ */
+auto LEAF(T)(T x) => -x;
+/**
 
 /*****************************************************************/
 /* tree depth = 3 */
@@ -230,8 +285,8 @@ private const(void)*[2][112] Single_function_table = [
 
 const(__glXDispatchInfo) Single_dispatch_info = {
     8,
-    Single_dispatch_tree,
-    Single_function_table,
+    Single_dispatch_tree.ptr,
+    Single_function_table.ptr,
     null,
     null
 };
@@ -1326,83 +1381,86 @@ private const(int_fast16_t)[2][408] Render_size_table = [
     /* [407] =  4319 */ [12, ~0],
 ];
 
+import glx.rensize;
+
+
 private const(gl_proto_size_func)[68] Render_size_func_table = [
-    __glXCallListsReqSize,
-    __glXBitmapReqSize,
-    __glXFogfvReqSize,
-    __glXFogivReqSize,
-    __glXLightfvReqSize,
-    __glXLightivReqSize,
-    __glXLightModelfvReqSize,
-    __glXLightModelivReqSize,
-    __glXMaterialfvReqSize,
-    __glXMaterialivReqSize,
-    __glXPolygonStippleReqSize,
-    __glXTexParameterfvReqSize,
-    __glXTexParameterivReqSize,
-    __glXTexImage1DReqSize,
-    __glXTexImage2DReqSize,
-    __glXTexEnvfvReqSize,
-    __glXTexEnvivReqSize,
-    __glXTexGendvReqSize,
-    __glXTexGenfvReqSize,
-    __glXTexGenivReqSize,
-    __glXMap1dReqSize,
-    __glXMap1fReqSize,
-    __glXMap2dReqSize,
-    __glXMap2fReqSize,
-    __glXPixelMapfvReqSize,
-    __glXPixelMapuivReqSize,
-    __glXPixelMapusvReqSize,
-    __glXDrawPixelsReqSize,
-    __glXDrawArraysReqSize,
-    __glXColorSubTableReqSize,
-    __glXCompressedTexImage1DReqSize,
-    __glXCompressedTexImage2DReqSize,
-    __glXCompressedTexImage3DReqSize,
-    __glXCompressedTexSubImage1DReqSize,
-    __glXCompressedTexSubImage2DReqSize,
-    __glXCompressedTexSubImage3DReqSize,
-    __glXDrawBuffersReqSize,
-    __glXColorTableReqSize,
-    __glXColorTableParameterfvReqSize,
-    __glXColorTableParameterivReqSize,
-    __glXPointParameterfvReqSize,
-    __glXTexSubImage1DReqSize,
-    __glXTexSubImage2DReqSize,
-    __glXConvolutionFilter1DReqSize,
-    __glXConvolutionFilter2DReqSize,
-    __glXConvolutionParameterfvReqSize,
-    __glXConvolutionParameterivReqSize,
-    __glXSeparableFilter2DReqSize,
-    __glXTexImage3DReqSize,
-    __glXTexSubImage3DReqSize,
-    __glXPrioritizeTexturesReqSize,
-    __glXVertexAttribs1svNVReqSize,
-    __glXVertexAttribs2svNVReqSize,
-    __glXVertexAttribs3svNVReqSize,
-    __glXVertexAttribs4svNVReqSize,
-    __glXVertexAttribs1fvNVReqSize,
-    __glXVertexAttribs2fvNVReqSize,
-    __glXVertexAttribs3fvNVReqSize,
-    __glXVertexAttribs4fvNVReqSize,
-    __glXVertexAttribs1dvNVReqSize,
-    __glXVertexAttribs2dvNVReqSize,
-    __glXVertexAttribs3dvNVReqSize,
-    __glXVertexAttribs4dvNVReqSize,
-    __glXVertexAttribs4ubvNVReqSize,
-    __glXProgramStringARBReqSize,
-    __glXPointParameterivReqSize,
-    __glXDeleteFramebuffersReqSize,
-    __glXDeleteRenderbuffersReqSize,
+    &__glXCallListsReqSize,
+    &__glXBitmapReqSize,
+    &__glXFogfvReqSize,
+    &__glXFogivReqSize,
+    &__glXLightfvReqSize,
+    &__glXLightivReqSize,
+    &__glXLightModelfvReqSize,
+    &__glXLightModelivReqSize,
+    &__glXMaterialfvReqSize,
+    &__glXMaterialivReqSize,
+    &__glXPolygonStippleReqSize,
+    &__glXTexParameterfvReqSize,
+    &__glXTexParameterivReqSize,
+    &__glXTexImage1DReqSize,
+    &__glXTexImage2DReqSize,
+    &__glXTexEnvfvReqSize,
+    &__glXTexEnvivReqSize,
+    &__glXTexGendvReqSize,
+    &__glXTexGenfvReqSize,
+    &__glXTexGenivReqSize,
+    &__glXMap1dReqSize,
+    &__glXMap1fReqSize,
+    &__glXMap2dReqSize,
+    &__glXMap2fReqSize,
+    &__glXPixelMapfvReqSize,
+    &__glXPixelMapuivReqSize,
+    &__glXPixelMapusvReqSize,
+    &__glXDrawPixelsReqSize,
+    &__glXDrawArraysReqSize,
+    &__glXColorSubTableReqSize,
+    &__glXCompressedTexImage1DReqSize,
+    &__glXCompressedTexImage2DReqSize,
+    &__glXCompressedTexImage3DReqSize,
+    &__glXCompressedTexSubImage1DReqSize,
+    &__glXCompressedTexSubImage2DReqSize,
+    &__glXCompressedTexSubImage3DReqSize,
+    &__glXDrawBuffersReqSize,
+    &__glXColorTableReqSize,
+    &__glXColorTableParameterfvReqSize,
+    &__glXColorTableParameterivReqSize,
+    &__glXPointParameterfvReqSize,
+    &__glXTexSubImage1DReqSize,
+    &__glXTexSubImage2DReqSize,
+    &__glXConvolutionFilter1DReqSize,
+    &__glXConvolutionFilter2DReqSize,
+    &__glXConvolutionParameterfvReqSize,
+    &__glXConvolutionParameterivReqSize,
+    &__glXSeparableFilter2DReqSize,
+    &__glXTexImage3DReqSize,
+    &__glXTexSubImage3DReqSize,
+    &__glXPrioritizeTexturesReqSize,
+    &__glXVertexAttribs1svNVReqSize,
+    &__glXVertexAttribs2svNVReqSize,
+    &__glXVertexAttribs3svNVReqSize,
+    &__glXVertexAttribs4svNVReqSize,
+    &__glXVertexAttribs1fvNVReqSize,
+    &__glXVertexAttribs2fvNVReqSize,
+    &__glXVertexAttribs3fvNVReqSize,
+    &__glXVertexAttribs4fvNVReqSize,
+    &__glXVertexAttribs1dvNVReqSize,
+    &__glXVertexAttribs2dvNVReqSize,
+    &__glXVertexAttribs3dvNVReqSize,
+    &__glXVertexAttribs4dvNVReqSize,
+    &__glXVertexAttribs4ubvNVReqSize,
+    &__glXProgramStringARBReqSize,
+    &__glXPointParameterivReqSize,
+    &__glXDeleteFramebuffersReqSize,
+    &__glXDeleteRenderbuffersReqSize,
 ];
 
 const(__glXDispatchInfo) Render_dispatch_info = {
     13,
-    Render_dispatch_tree,
-    Render_function_table,
-    Render_size_table,
-    Render_size_func_table
+    Render_dispatch_tree.ptr,
+    Render_function_table.ptr,
+    Render_size_table.ptr,
+    Render_size_func_table.ptr
 };
 
 /*****************************************************************/
@@ -1805,8 +1863,8 @@ private const(void)*[2][104] VendorPriv_function_table = [
 
 const(__glXDispatchInfo) VendorPriv_dispatch_info = {
     17,
-    VendorPriv_dispatch_tree,
-    VendorPriv_function_table,
+    VendorPriv_dispatch_tree.ptr,
+    VendorPriv_function_table.ptr,
     null,
     null
 };

@@ -1,4 +1,4 @@
-module glxdrawable;
+module glx.glxdrawable;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -32,6 +32,12 @@ import core.stdc.config: c_long, c_ulong;
  * other dealings in this Software without prior written authorization from
  * Silicon Graphics, Inc.
  */
+
+import externs.GL.glx_;
+import externs.GL.gl_;
+import externs.X11.Xdefs;
+import include.pixmap;
+import glx.glxscreens_h;
 
 /* We just need to avoid clashing with DRAWABLE_{WINDOW,PIXMAP} */
 enum {

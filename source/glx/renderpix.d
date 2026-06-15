@@ -1,4 +1,4 @@
-module renderpix;
+module glx.renderpix;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -33,9 +33,9 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import glxserver;
-import unpack;
-import indirect_dispatch;
+import glx.glxserver;
+import glx.unpack;
+import glx.indirect_dispatch;
 
 void __glXDisp_SeparableFilter2D(GLbyte* pc)
 {

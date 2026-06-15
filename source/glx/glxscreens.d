@@ -1,4 +1,4 @@
-module glxscreens;
+module glx.glxscreens;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -45,11 +45,12 @@ import include.windowstr;
 import include.os;
 
 import include.privates;
-import glxserver;
-import glxutil;
-import glxext;
+import glx.glxserver;
+import glx.glxutil;
+import glx.glxext;
 import include.protocol_versions;
 import include.compositeext;
+import glx.glxscreens_h;
 
 private DevPrivateKeyRec glxScreenPrivateKeyRec;
 

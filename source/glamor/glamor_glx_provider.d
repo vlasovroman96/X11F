@@ -40,12 +40,13 @@ import dix.dix_priv;
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
 import externs.epoxygl;
-import glxserver;
-import glxutil;
+import glx.glxserver;
+import glx.glxutil;
 import composite.compint;
 // //import externs.X11.extensions.composite;
 import glamor.glamor_priv;
 import include.glamor;
+import glx.glxscreens_h;
 
 /* Can't get these from <GL/glx.h> since it pulls in client headers */
 enum GLX_RGBA_BIT =		0x00000001;

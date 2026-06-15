@@ -1,4 +1,4 @@
-module indirect_program;
+module glx.indirect_program;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -35,13 +35,13 @@ import build.dix_config;
 
 import dix.request_priv;
 
-import glxserver;
-import glxext;
+import glx.glxserver;
+import glx.glxext;
 import include.misc;
-import singlesize;
-import unpack;
-import indirect_size_get;
-import indirect_dispatch;
+import glx.singlesize;
+import glx.unpack;
+import glx.indirect_size_get;
+import glx.indirect_dispatch;
 
 /**
  * Handle both types of glGetProgramString calls.

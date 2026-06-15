@@ -32,21 +32,21 @@ import glamor.glamor_transform;
 import glamor.glamor_transfer;
 import glamor.glamor_prepare;
 
-private const(char)[43] dash_vs_vars = "in vec3 primitive;\n"
+enum dash_vs_vars = "in vec3 primitive;\n"
     ~ "out float dash_offset;\n";
 
-private const(char)[78] dash_vs_exec = "       dash_offset = primitive.z / dash_length;\n"
+enum dash_vs_exec = "       dash_offset = primitive.z / dash_length;\n"
     ~ "       vec2 pos = vec2(0,0);\n" ~
-    GLAMOR_POS(gl_Position, primitive.xy);
+    GLAMOR_POS!("gl_Position", "primitive.xy");
 
-private const(char)[23] dash_fs_vars = "in float dash_offset;\n";
+enum dash_fs_vars = "in float dash_offset;\n";
 
-private const(char)[116] on_off_fs_exec = "       float pattern = texture(dash, vec2(dash_offset, 0.5)).w;\n"
+enum  on_off_fs_exec = "       float pattern = texture(dash, vec2(dash_offset, 0.5)).w;\n"
     ~ "       if (pattern == 0.0)\n"
     ~ "               discard;\n";
 
 /* XXX deal with stippled double dashed lines once we have stippling support */
-private const(char)[168] double_fs_exec = "       float pattern = texture(dash, vec2(dash_offset, 0.5)).w;\n"
+enum  double_fs_exec = "       float pattern = texture(dash, vec2(dash_offset, 0.5)).w;\n"
     ~ "       if (pattern == 0.0)\n"
     ~ "               frag_color = bg;\n"
     ~ "       else\n"

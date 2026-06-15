@@ -1,4 +1,4 @@
-module indirect_reqsize;
+module glx.indirect_reqsize;
 @nogc nothrow:
 extern(C): __gshared:
 /* DO NOT EDIT - This file generated automatically by glX_proto_size.py (from Mesa) script */
@@ -31,20 +31,20 @@ import build.dix_config;
 
 import externs.gl;
 
-import glxserver;
-import indirect_size;
-import indirect_reqsize;
+import glx.glxserver;
+import glx.indirect_size;
+import glx.indirect_reqsize;
 import include.misc;
 
 version (HAVE_ALIAS) {
-enum string ALIAS2(string from,string to) = `\
-    GLint __glX ## from ## ReqSize( const GLbyte * pc, Bool swap, int reqlen ) \
+enum string ALIAS2(string from,string to) = `
+    GLint __glX` ~ from ~ `ReqSize( const GLbyte * pc, Bool swap, int reqlen ) 
         __attribute__ ((alias( # to )));`;
-enum string ALIAS(string from,string to) = `ALIAS2( from, __glX ## to ## ReqSize )`;
+enum string ALIAS(string from,string to) = `ALIAS2( from, __glX` ~ to ~ `ReqSize )`;
 } else {
-enum string ALIAS(string from,string to) = `\
-    GLint __glX ## from ## ReqSize( const GLbyte * pc, Bool swap, int reqlen ) \
-    { return __glX ## to ## ReqSize( pc, swap, reqlen ); }`;
+enum string ALIAS(string from,string to) = `
+    GLint __glX` ~ from ~ `ReqSize( const GLbyte * pc, Bool swap, int reqlen ) 
+    { return __glX` ~ to ~ `ReqSize( pc, swap, reqlen ); }`;
 }
 
 int __glXCallListsReqSize(const(GLbyte)* pc, Bool swap, int reqlen)

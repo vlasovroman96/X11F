@@ -1,4 +1,4 @@
-module glxext;
+module glx.glxext;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -39,18 +39,19 @@ import dix.dix_priv;
 import dix.screenint_priv;
 import os.client_priv;
 
-import glxserver;
+import glx.glxserver;
 import include.windowstr;
 import include.propertyst;
 import include.privates;
 import include.os;
 import include.glx_extinit;
-import unpack;
-import glxutil;
-import glxext;
-import indirect_table;
-import indirect_util;
+import glx.unpack;
+import glx.glxutil;
+import glx.glxext;
+import glx.indirect_table;
+import glx.indirect_util;
 import include.glxvndabi;
+import include.glx_extinit;
 
 /*
 ** X resources.

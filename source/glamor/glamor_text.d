@@ -223,18 +223,18 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
     return x;
 }
 
-private const(char)[56] vs_vars_text = "in vec4 primitive;\n"
+enum vs_vars_text = "in vec4 primitive;\n"
     ~ "in vec2 source;\n"
     ~ "out vec2 glyph_pos;\n";
 
-private const(char)[75] vs_exec_text = "       vec2 pos = primitive.zw * vec2(gl_VertexID&1, (gl_VertexID&2)>>1);\n"
-    ~GLAMOR_POS(gl_Position, (primitive.xy + pos))~
+enum vs_exec_text = "       vec2 pos = primitive.zw * vec2(gl_VertexID&1, (gl_VertexID&2)>>1);\n"
+    ~GLAMOR_POS!("gl_Position", "(primitive.xy + pos)")~
     "       glyph_pos = source + pos;\n";
 
-private const(char)[20] fs_vars_text = "in vec2 glyph_pos;\n";
+enum fs_vars_text = "in vec2 glyph_pos;\n";
 
 static if(BITMAP_BIT_ORDER == MSBFirst) {
-    private const(char)[48] fs_exec_text = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
+    enum fs_exec_text = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
     ~ "       uint x = uint(7) - uint(itile_texture.x & 7);\n"
     // ~ "       uint x = uint(itile_texture.x & 7);\n"
     ~ "       itile_texture.x >>= 3;\n"
@@ -244,7 +244,7 @@ static if(BITMAP_BIT_ORDER == MSBFirst) {
     ~ "               discard;\n";
 }
 else {
-    private const(char)[48] fs_exec_text = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
+    enum fs_exec_text = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
         ~ "       uint x = uint(itile_texture.x & 7);\n"
         ~ "       itile_texture.x >>= 3;\n"
         ~ "       uint texel = texelFetch(font, itile_texture, 0).x;\n"
@@ -254,7 +254,7 @@ else {
 }
 
 static if(BITMAP_BIT_ORDER == MSBFirst) {
-    private const(char)[48] fs_exec_te = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
+    enum fs_exec_te = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
     ~ "       uint x = uint(7) - uint(itile_texture.x & 7);\n"
     ~ "       itile_texture.x >>= 3;\n"
     ~ "       uint texel = texelFetch(font, itile_texture, 0).x;\n"
@@ -265,7 +265,7 @@ static if(BITMAP_BIT_ORDER == MSBFirst) {
     ~ "               frag_color = fg;\n";
 }
 else {
-    private const(char)[48] fs_exec_te = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
+    enum fs_exec_te = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
     ~ "       uint x = uint(itile_texture.x & 7);\n"
     ~ "       itile_texture.x >>= 3;\n"
     ~ "       uint texel = texelFetch(font, itile_texture, 0).x;\n"
@@ -371,7 +371,7 @@ private const(glamor_facet) glamor_facet_image_fill = {
     name: "solid",
     fs_exec: "       frag_color = fg;\n",
     locations: glamor_program_location_fg,
-    use: use_image_solid,
+    use: &use_image_solid,
 };
 
 private Bool glamor_te_text_use(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
@@ -391,7 +391,7 @@ private const(glamor_facet) glamor_facet_te_text = {
     fs_exec: fs_exec_te,
     locations: glamor_program_location_fg | glamor_program_location_bg | glamor_program_location_font,
     source_name: "source",
-    use: glamor_te_text_use,
+    use: &glamor_te_text_use,
 };
 
 private Bool glamor_image_text(DrawablePtr drawable, GCPtr gc, int x, int y, int count, char* chars, Bool sixteen)

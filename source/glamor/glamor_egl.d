@@ -87,8 +87,37 @@ import dri3.dri3;
 
 struct FreeDisplayList {
     EGLDisplay dpy;
-    _freeDisplayList* next;
+    FreeDisplayList* next;
 }
+
+struct glamor_egl_conf_t{
+    void* server_private; /* Data the X server might want to map to a screen */
+
+    /* Either Optional 1 or 2 must be non-NULL */
+
+    /* Optional 1 pointer to a screen */
+    ScreenPtr screen;
+
+    /* Optional 2 pointer to a server-allocated glamor_egl_priv_t, that the server maps to a screen */
+    glamor_egl_priv_t *glamor_egl_priv;
+
+    /* Optional 2 function that maps a glamor_egl_priv_t to each screen*/
+    glamor_egl_priv_t* function(ScreenPtr screen) GLAMOR_EGL_PRIV_PROC;
+
+    char *glvnd_vendor; /* glvnd vendor library or driver name */
+    int fd; /* /dev/dri/cardxx */
+
+    int auto_dri; /* If glamor should try to automatically enable DRI3 support */
+
+    int dmabuf_forced; /* If glamor should not use dynamic logic and only listen to the config below */
+    int dmabuf_capable; /* If glamor should use dmabufs when using direct rendering (dri) */
+
+    int llvmpipe_allowed; /* If glamor render accel should initialize on llvmpipe */
+    int force_glamor; /* If glamor should initialize even on softpipe/llvmpipe */
+
+    int es_disallowed; /* If using GLES contexts is forbidden */
+    int force_es; /* If glamor should only use GLES contexts */
+};
 
 FreeDisplayList* freeDisplayList = null;
 

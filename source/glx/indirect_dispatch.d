@@ -1,4 +1,4 @@
-module indirect_dispatch;
+module glx.indirect_dispatch;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -30,21 +30,35 @@ import build.dix_config;
 
 import core.stdc.inttypes;
 
-import glxserver;
-import indirect_size;
-import indirect_size_get;
-import indirect_dispatch;
-import indirect_util;
+import glx.glxserver;
+import glx.indirect_size;
+import glx.indirect_size_get;
+import glx.indirect_dispatch;
+import glx.indirect_util;
 import include.misc;
-import singlesize;
+import glx.singlesize;
 
 enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
 
-// struct __GLXpixel3DHeader {
-//     __GLX_PIXEL_3D_HDR;
-// }
+enum __GLX_PIXEL_3D_HDR =`	
+    BOOL	swapBytes;	
+    BOOL	lsbFirst;	
+    CARD8	reserved0;	
+    CARD8	reserved1;	
+    CARD32	rowLength;	
+    CARD32	imageHeight;	
+    CARD32	imageDepth;	
+    CARD32	skipRows;	
+    CARD32	skipImages;	
+    CARD32	skipVolumes;	
+    CARD32	skipPixels;	
+    CARD32	alignment1;`;
 
-alias _GLXpixel3DHeader = __GLX_PIXEL_3D_HDR;
+struct __GLXpixel3DHeader {
+    mixin(__GLX_PIXEL_3D_HDR);
+}
+
+// alias _GLXpixel3DHeader = __GLX_PIXEL_3D_HDR;
 
 extern GLboolean __glXErrorOccured();
 extern void __glXClearErrorOccured();

@@ -1,4 +1,4 @@
-module glxdricommon;
+module glx.glx_dri.glxdricommon;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -40,19 +40,26 @@ import externs.internal.dri_interface;
 import miext.extinit_priv;
 
 import include.os;
-import glxserver;
-import glxext;
-import glxcontext;
-import glxscreens;
-import glxdricommon;
+import glx.glxserver;
+import glx.glxext;
+import glx.glxcontext;
+import glx.glxscreens;
+import glx.glx_dri.glxdricommon;
+import glx.glxscreens_h;
+
+struct __GLXDRIconfig {
+    __GLXconfig config;
+    const __DRIconfig *driConfig;
+};
 
 enum string __ATTRIB(string attrib, string field) = `
-    { ` ~ attrib ~ `, __GLXconfig.field.offsetof }`;
+     _AttribMap(` ~ attrib ~ `, __GLXconfig.`~field~`.offsetof )`;
 
 struct _AttribMap {
     uint attrib, offset;
-}private const(_AttribMap)[39] attribMap = [
-mixin(__ATTRIB!(`__DRI_ATTRIB_BUFFER_SIZE`, `rgbBits`)),
+}
+private const(_AttribMap)[39] attribMap = [
+    mixin(__ATTRIB!(`__DRI_ATTRIB_BUFFER_SIZE`, `rgbBits`)),
         mixin(__ATTRIB!(`__DRI_ATTRIB_LEVEL`, `level`)),
         mixin(__ATTRIB!(`__DRI_ATTRIB_RED_SIZE`, `redBits`)),
         mixin(__ATTRIB!(`__DRI_ATTRIB_GREEN_SIZE`, `greenBits`)),
@@ -270,7 +277,7 @@ __GLXconfig* glxConvertConfigs(const(__DRIcoreExtension)* core, const(__DRIconfi
     return head.next;
 }
 
-private const(char)[$] dri_driver_path = DRI_DRIVER_PATH;
+enum dri_driver_path = DRI_DRIVER_PATH;
 
 /* Temporary define to allow building without a dri_interface.h from
  * updated Mesa.  Some day when we don't care about Mesa that old any

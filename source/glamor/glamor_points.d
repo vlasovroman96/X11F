@@ -38,8 +38,8 @@ import glamor.glamor_transform;
 private const(glamor_facet) glamor_facet_point = {
     name: "poly_point",
     vs_vars: "in vec2 primitive;\n",
-    vs_exec: (~GLAMOR_DEFAULT_POINT_SIZE~
-                GLAMOR_POS(gl_Position, primitive)),
+    vs_exec: (GLAMOR_DEFAULT_POINT_SIZE~
+                GLAMOR_POS!("gl_Position", "primitive")),
 };
 
 private Bool glamor_poly_point_gl(DrawablePtr drawable, GCPtr gc, int mode, int npt, DDXPointPtr ppt)

@@ -1,4 +1,4 @@
-module render2swap;
+module glx.render2swap;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -34,10 +34,10 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 
-import glxserver;
-import unpack;
-import indirect_size;
-import indirect_dispatch;
+import glx.glxserver;
+import glx.unpack;
+import glx.indirect_size;
+import glx.indirect_dispatch;
 
 void __glXDispSwap_Map1f(GLbyte* pc)
 {

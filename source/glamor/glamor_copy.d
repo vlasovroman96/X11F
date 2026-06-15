@@ -147,7 +147,7 @@ private const(glamor_facet) glamor_facet_copyplane = {
     "copy_plane",
     c_version: 130,
     vs_vars: "in vec2 primitive;\n",
-    vs_exec: (GLAMOR_POS("gl_Position", ("primitive.xy"))~
+    vs_exec: (GLAMOR_POS!("gl_Position", ("primitive.xy"))~
                 "       fill_pos = (fill_offset + primitive.xy) * fill_size_inv;\n"),
     fs_exec: ("       uvec4 bits = uvec4(round(texture(sampler, fill_pos) * bitmul));\n"
                 ~ "       if ((bits & bitplane) != uvec4(0,0,0,0))\n"
@@ -155,7 +155,7 @@ private const(glamor_facet) glamor_facet_copyplane = {
                 ~ "       else\n"
                 ~ "               frag_color = bg;\n"),
     locations: glamor_program_location_fillsamp|glamor_program_location_fillpos|glamor_program_location_fg|glamor_program_location_bg|glamor_program_location_bitplane,
-    use: use_copyplane,
+    use: &use_copyplane,
 };
 
 /*

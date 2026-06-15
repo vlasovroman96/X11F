@@ -1,4 +1,4 @@
-module glxcontext;
+module glx.glxcontext;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -32,6 +32,10 @@ import core.stdc.config: c_long, c_ulong;
  * other dealings in this Software without prior written authorization from
  * Silicon Graphics, Inc.
  */
+
+ import externs.X11.Xdefs;
+ import glx.glxserver;
+ import glx.glxscreens_h;
 
 struct __GLXcontext {
     void function(__GLXcontext* context) destroy;

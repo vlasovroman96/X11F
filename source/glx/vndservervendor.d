@@ -1,4 +1,4 @@
-module vndservervendor;
+module glx.vndservervendor;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -31,7 +31,18 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import vndservervendor;
+import glx.vndservervendor;
+import include.glxvndabi;
+
+/**
+ * Info related to a single vendor library.
+ */
+struct GlxServerVendorRec {
+    GlxServerImports glxvc;
+
+    xorg_list entry;
+};
+
 
 xorg_list GlxVendorList = { &GlxVendorList, &GlxVendorList };
 

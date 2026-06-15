@@ -1,4 +1,4 @@
-module glxutil;
+module glx.glxutil;
 @nogc nothrow:
 extern(C): __gshared:
  
@@ -31,6 +31,13 @@ extern(C): __gshared:
  * other dealings in this Software without prior written authorization from
  * Silicon Graphics, Inc.
  */
+
+import externs.GL.glx_;
+import externs.GL.gl_;
+import glx.glxdrawable;
+import glx.glxscreens_h;
+import glx.glxcontext;
+import glx.glxserver;
 
 extern GLboolean __glXDrawableInit(__GLXdrawable* drawable, __GLXscreen* screen, DrawablePtr pDraw, int type, XID drawID, __GLXconfig* config);
 extern void __glXDrawableRelease(__GLXdrawable* drawable);

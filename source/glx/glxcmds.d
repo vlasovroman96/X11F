@@ -1,4 +1,4 @@
-module glxcmds;
+module glx.glxcmds;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -48,18 +48,19 @@ import dix.window_priv;
 import os.bug_priv;
 import present.present_priv;
 
-import glxserver;
-import unpack;
+import glx.glxserver;
+import glx.unpack;
 import include.pixmapstr;
 import include.windowstr;
-import glxutil;
-import glxext;
-import indirect_dispatch;
-import indirect_table;
-import indirect_util;
+import glx.glxutil;
+import glx.glxext;
+import glx.indirect_dispatch;
+import glx.indirect_table;
+import glx.indirect_util;
 import include.protocol_versions;
 import include.glxvndabi;
 import Xext.xace;
+import glx.glxscreens_h;
 
 private char[4] GLXServerVendorName = "SGI";
 

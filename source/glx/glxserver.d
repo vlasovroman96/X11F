@@ -1,4 +1,4 @@
-module glxserver;
+module glx.glxserver;
 @nogc nothrow:
 extern(C): __gshared:
  
@@ -34,7 +34,8 @@ extern(C): __gshared:
 
 //public import externs.X11.X;
 //public import externs.X11.Xproto;
-//public import externs.X11.Xmd;
+import build.dix_config;
+public import externs.X11.Xmd;
 public import include.misc;
 public import include.dixstruct;
 public import include.pixmapstr;
@@ -60,10 +61,11 @@ alias __GLXclientState = __GLXclientStateRec;
 
 
 
-public import glxscreens;
-public import glxdrawable;
-public import glxcontext;
+public import glx.glxscreens;
+public import glx.glxdrawable;
+public import glx.glxcontext;
 public import include.glx_extinit;
+import glx.glxscreens_h;
 
 extern __GLXscreen* glxGetScreen(ScreenPtr pScreen);
 extern __GLXclientState* glxGetClient(ClientPtr pClient);
@@ -151,7 +153,7 @@ extern RESTYPE __glXDrawableRes;
  * Routines for computing the size of variably-sized rendering commands.
  */
 
-private _X_INLINE safe_add(int a, int b)
+private auto safe_add(int a, int b)
 {
     if (a < 0 || b < 0)
         return -1;
@@ -162,7 +164,7 @@ private _X_INLINE safe_add(int a, int b)
     return a + b;
 }
 
-private _X_INLINE safe_mul(int a, int b)
+private auto safe_mul(int a, int b)
 {
     if (a < 0 || b < 0)
         return -1;
@@ -176,7 +178,7 @@ private _X_INLINE safe_mul(int a, int b)
     return a * b;
 }
 
-private _X_INLINE safe_pad(int a)
+private auto safe_pad(int a)
 {
     int ret = void;
 

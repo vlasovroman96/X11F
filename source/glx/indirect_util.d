@@ -1,4 +1,4 @@
-module indirect_util;
+module glx.indirect_util;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -37,15 +37,19 @@ import dix.dix_priv;
 import dix.request_priv;
 import dix.rpcbuf_priv;
 
-import indirect_size;
-import indirect_size_get;
-import indirect_dispatch;
-import glxserver;
-import singlesize;
-import glxext;
-import indirect_table;
-import indirect_util;
+import glx.indirect_size;
+import glx.indirect_size_get;
+import glx.indirect_dispatch;
+import glx.glxserver;
+import glx.singlesize;
+import glx.glxext;
+import glx.indirect_table;
+import glx.indirect_util;
 import include.misc;
+
+import externs.GL.glx_;
+import externs.GL.gl_;
+
 
 enum string __GLX_PAD(string a) = `(((` ~ a ~ `)+3)&~3)`;
 

@@ -1,4 +1,4 @@
-module indirect_dispatch_swap;
+module glx.indirect_dispatch_swap;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -30,13 +30,13 @@ import build.dix_config;
 
 import core.stdc.inttypes;
 
-import glxserver;
-import indirect_size;
-import indirect_size_get;
-import indirect_dispatch;
-import indirect_util;
+import glx.glxserver;
+import glx.indirect_size;
+import glx.indirect_size_get;
+import glx.indirect_dispatch;
+import glx.indirect_util;
 import include.misc;
-import singlesize;
+import glx.singlesize;
 
 enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
 

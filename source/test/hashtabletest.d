@@ -7,7 +7,7 @@ import build.dix_config;
 import include.misc;
 import core.stdc.stdlib;
 import core.stdc.stdio;
-import hashtable;
+import Xext.hashtable;
 import include.resource;
 
 import test.tests_common;
