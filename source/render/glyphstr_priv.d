@@ -8,7 +8,7 @@ import core.stdc.config: c_long, c_ulong;
  * Copyright © 2000 SuSE, Inc.
  */
  
-//public import externs.X11.X;
+public import externs.X11.extensions.renderproto;
 public import include.glyphstr;
 public import render.picture;
 public import include.screenint;

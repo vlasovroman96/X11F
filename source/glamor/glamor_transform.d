@@ -1,4 +1,4 @@
-module glamor_transform;
+module glamor.glamor_transform;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -25,7 +25,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import glamor.glamor_priv;
-import glamor_transform;
+import glamor.glamor_transform;
 
 
 /*
@@ -36,6 +36,23 @@ import glamor_transform;
  * system coordinates will be returned in *p_off_x, *p_off_y so that
  * clipping computations can be adjusted as appropriate
  */
+
+enum GLAMOR_DECLARE_MATRIX  = "uniform vec4 v_matrix;\n";
+enum GLAMOR_X_POS(x) = x ~ " *v_matrix.x + v_matrix.y";
+enum GLAMOR_Y_POS(y)  = y ~ " *v_matrix.z + v_matrix.w";
+
+version(none) {
+enum GLAMOR_POS(string dst, string src) = 
+    "       "~ dst ~ ".x = "~ src ~ ".x * v_matrix.x + v_matrix.y;\n" ~
+    "       "~ dst ~ ".y = "~ src ~ ".y * v_matrix.z + v_matrix.w;\n" ~
+    "       "~ dst ~ ".z = 0.0;\n" ~
+    "       "~ dst ~ ".w = 1.0;\n";
+}
+else  {
+enum GLAMOR_POS(string dst, string src) = 
+    "       "~ dst ~ ".xy = "~ src ~ ".xy * v_matrix.xz + v_matrix.yw;\n"~
+    "       "~ dst ~ ".zw = vec2(0.0,1.0);\n";
+}
 
 Bool glamor_set_destination_drawable(DrawablePtr drawable, int box_index, Bool do_drawable_translate, Bool center_offset, GLint matrix_uniform_location, int* p_off_x, int* p_off_y)
 {

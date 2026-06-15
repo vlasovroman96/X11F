@@ -1,4 +1,4 @@
-module glamor_text;
+module glamor.glamor_text;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -29,7 +29,7 @@ import os.bug_priv;
 
 import glamor.glamor_priv;
 import include.dixfontstr;
-import glamor_transform;
+import glamor.glamor_transform;
 import include.servermd;
 //import externs.X11.X;
 

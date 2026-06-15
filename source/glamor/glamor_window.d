@@ -1,4 +1,4 @@
-module glamor_window;
+module glamor.glamor_window;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -51,7 +51,7 @@ private void glamor_fixup_window_pixmap(DrawablePtr pDrawable, PixmapPtr* ppPixm
  fail:
     GLAMOR_PANIC
         (" We can't fall back to fbFixupWindowPixmap, as the fb24_32ReformatTile"
-         ~ " is broken for glamor. \n");
+         ~ " is broken forimport glamor.glamor_ \n");
 }
 
 Bool glamor_change_window_attributes(WindowPtr pWin, c_ulong mask)

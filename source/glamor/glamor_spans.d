@@ -1,4 +1,4 @@
-module glamor_spans;
+module glamor.glamor_spans;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -25,8 +25,8 @@ extern(C): __gshared:
 import build.dix_config;
 
 import glamor.glamor_priv;
-import glamor_transform;
-import glamor_transfer;
+import glamor.glamor_transform;
+import glamor.glamor_transfer;
 
 glamor_program[4] fill_spans_progs;
 

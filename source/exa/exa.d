@@ -1,4 +1,4 @@
-module exa;
+module exa.exa;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -38,8 +38,8 @@ import core.stdc.stdlib;
 
 import dix.screen_hooks_priv;
 
-import exa_priv;
-import include.exa;
+import exa.exa_priv;
+import include.exa_i;
 
 DevPrivateKeyRec exaScreenPrivateKeyRec;
 
@@ -445,13 +445,13 @@ void exaDestroyPixmap(PixmapPtr pPixmap)
 
 
 const(GCFuncs) exaGCFuncs = {
-    exaValidateGC,
-    exaChangeGC,
-    exaCopyGC,
-    exaDestroyGC,
-    exaChangeClip,
-    exaDestroyClip,
-    exaCopyClip
+    &exaValidateGC,
+    &exaChangeGC,
+    &exaCopyGC,
+    &exaDestroyGC,
+    &exaChangeClip,
+    &exaDestroyClip,
+    &exaCopyClip
 };
 
 private void exaValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)

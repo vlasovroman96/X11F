@@ -1,4 +1,4 @@
-module glamor_egl;
+module glamor.glamor_egl;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -64,10 +64,10 @@ import glamor.glamor_priv;
 import os.bug_priv;
 
 import include.glamor;
-import glamor_egl;
-import glamor_egl_ext;
-import glamor_egl_priv;
-import glamor_glx_provider;
+import glamor.glamor_egl;
+import glamor.glamor_egl_ext;
+import glamor.glamor_egl_priv;
+import glamor.glamor_glx_provider;
 import dri3.dri3;
 
 /**

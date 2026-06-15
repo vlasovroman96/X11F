@@ -31,36 +31,36 @@ import core.stdc.stdlib;
 import fb.fb_priv;
 
 private const(GCFuncs) fbGCFuncs = {
-    fbValidateGC,
-    miChangeGC,
-    miCopyGC,
-    miDestroyGC,
-    miChangeClip,
-    miDestroyClip,
-    miCopyClip,
+    &fbValidateGC,
+    &miChangeGC,
+    &miCopyGC,
+    &miDestroyGC,
+    &miChangeClip,
+    &miDestroyClip,
+    &miCopyClip,
 };
 
 private const(GCOps) fbGCOps = {
-    fbFillSpans,
-    fbSetSpans,
-    fbPutImage,
-    fbCopyArea,
-    fbCopyPlane,
-    fbPolyPoint,
-    fbPolyLine,
-    fbPolySegment,
-    miPolyRectangle,
-    fbPolyArc,
-    miFillPolygon,
-    fbPolyFillRect,
-    miPolyFillArc,
-    miPolyText8,
-    miPolyText16,
-    miImageText8,
-    miImageText16,
-    fbImageGlyphBlt,
-    fbPolyGlyphBlt,
-    fbPushPixels
+    &fbFillSpans,
+    &fbSetSpans,
+    &fbPutImage,
+    &fbCopyArea,
+    &fbCopyPlane,
+    &fbPolyPoint,
+    &fbPolyLine,
+    &fbPolySegment,
+    &miPolyRectangle,
+    &fbPolyArc,
+    &miFillPolygon,
+    &fbPolyFillRect,
+    &miPolyFillArc,
+    &miPolyText8,
+    &miPolyText16,
+    &miImageText8,
+    &miImageText16,
+    &fbImageGlyphBlt,
+    &fbPolyGlyphBlt,
+    &fbPushPixels
 };
 
 Bool fbCreateGC(GCPtr pGC)

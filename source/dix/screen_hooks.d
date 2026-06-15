@@ -17,15 +17,19 @@ import include.os;
 import include.scrnintstr;
 import include.windowstr;
 
-enum string DECLARE_HOOK_PROC(string NAME, string FIELD, string TYPE) = `\
-    void dixScreenHook##NAME(ScreenPtr pScreen, TYPE func) \
-    { \
-        AddCallback(&pScreen->FIELD, (CallbackProcPtr)func, pScreen); \
-    } \
-    \
-    void dixScreenUnhook##NAME(ScreenPtr pScreen, TYPE func) \
-    { \
-        DeleteCallback(&pScreen->FIELD, (CallbackProcPtr)func, pScreen); \
+// mixin template DECLARE_HOOK_PROC(string NAME, alias FIELD, alias TYPE) {
+    
+// }
+
+enum string DECLARE_HOOK_PROC(string NAME, string FIELD, string TYPE) = `
+    void dixScreenHook`~NAME~`(ScreenPtr pScreen, `~TYPE~` func) 
+    { 
+        AddCallback(&pScreen.`~FIELD~`, cast(CallbackProcPtr)func, pScreen); 
+    } 
+    
+    void dixScreenUnhook`~NAME~`(ScreenPtr pScreen, `~TYPE~` func) 
+    { 
+        DeleteCallback(&pScreen.`~FIELD~`, cast(CallbackProcPtr)func, pScreen); 
     }`;
 
 mixin(DECLARE_HOOK_PROC!(`WindowDestroy`, `hookWindowDestroy`, `XorgScreenWindowDestroyProcPtr`));

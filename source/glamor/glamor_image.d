@@ -1,4 +1,4 @@
-module glamor_image;
+module glamor.glamor_image;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -26,8 +26,8 @@ import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
 import glamor.glamor_priv;
-import glamor_transfer;
-import glamor_transform;
+import glamor.glamor_transfer;
+import glamor.glamor_transform;
 
 /*
  * PutImage. Only does ZPixmap right now as other formats are quite a bit harder

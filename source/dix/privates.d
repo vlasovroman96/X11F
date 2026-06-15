@@ -527,7 +527,7 @@ int dixPrivatesSize(DevPrivateType type)
 }
 
 import dix.window;
-// import dix.pixmap;
+import include.pixmapstr;
 
 
 /* Table of devPrivates offsets */

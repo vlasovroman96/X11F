@@ -1,4 +1,4 @@
-module glamor_points;
+module glamor.glamor_points;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -33,7 +33,7 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_transform;
+import glamor.glamor_transform;
 
 private const(glamor_facet) glamor_facet_point = {
     name: "poly_point",

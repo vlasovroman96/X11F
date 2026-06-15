@@ -24,45 +24,47 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
+import include.wfbrename;
+import include.fb;
 
 mixin template Iteration8() {
-    enum BRESSOLID   = fbBresSolid8;
-    enum BRESDASH    = fbBresDash8;
-    enum DOTS        = fbDots8;
-    enum ARC         = fbArc8;
-    enum GLYPH       = fbGlyph8;
-    enum POLYLINE    = fbPolyline8;
-    enum POLYSEGMENT = fbPolySegment8;
+    alias BRESSOLID   = fbBresSolid8;
+    alias BRESDASH    = fbBresDash8;
+    alias DOTS        = fbDots8;
+    alias ARC         = fbArc8;
+    alias GLYPH       = fbGlyph8;
+    alias POLYLINE    = fbPolyline8;
+    alias POLYSEGMENT = fbPolySegment8;
     alias BITS  = BYTE;
     alias BITS2 = CARD16;
     alias BITS4 = CARD32;
-	mixin(import("fbbits.d"));
+	import fb.fbbits_h;
 }
 
 mixin template Iteration16() {
-    enum BRESSOLID   = fbBresSolid16;
-    enum BRESDASH    = fbBresDash16;
-    enum DOTS        = fbDots16;
-    enum ARC         = fbArc16;
-    enum GLYPH       = fbGlyph16;
-    enum POLYLINE    = fbPolyline16;
-    enum POLYSEGMENT = fbPolySegment16;
+	import fb.fbbits_h;
+    alias BRESSOLID   = fbBresSolid16;
+    alias BRESDASH    = fbBresDash16;
+    alias DOTS        = fbDots16;
+    alias ARC         = fbArc16;
+    alias GLYPH       = fbGlyph16;
+    alias POLYLINE    = fbPolyline16;
+    alias POLYSEGMENT = fbPolySegment16;
     alias BITS  = CARD16;
     alias BITS2 = CARD32;
-	mixin(import("fbbits.d"));
 }
 
 mixin template Iteration32() {
-    enum BRESSOLID   = fbBresSolid32;
-    enum BRESDASH    = fbBresDash32;
-    enum DOTS        = fbDots32;
-    enum ARC         = fbArc32;
-    enum GLYPH       = fbGlyph32;
-    enum POLYLINE    = fbPolyline32;
-    enum POLYSEGMENT = fbPolySegment32;
+    alias BRESSOLID   = fbBresSolid32;
+    alias BRESDASH    = fbBresDash32;
+    alias DOTS        = fbDots32;
+    alias ARC         = fbArc32;
+    alias GLYPH       = fbGlyph32;
+    alias POLYLINE    = fbPolyline32;
+    alias POLYSEGMENT = fbPolySegment32;
     alias BITS  = CARD32;
 
-	mixin(import("fbbits.d"));
+	import fb.fbbits_h;
 }
 
 

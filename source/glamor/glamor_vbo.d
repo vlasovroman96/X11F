@@ -1,4 +1,4 @@
-module glamor_vbo;
+module glamor.glamor_vbo;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,7 +27,7 @@ extern(C): __gshared:
 /**
  * @file glamor_vbo.c
  *
- * Helpers for managing streamed vertex buffers used in glamor.
+ * Helpers for managing streamed vertex buffers used inimport glamor.glamor_
  */
 import build.dix_config;
 

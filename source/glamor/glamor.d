@@ -1,4 +1,4 @@
-module glamor.glamor;
+module glamor.glamor_glamor;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -29,7 +29,7 @@ extern(C): __gshared:
  *    Chad Versace <chad.versace@linux.intel.com>
  */
 
-/** @file glamor.c
+/** @fileimport glamor.glamor_c
  * This file covers the initialization and teardown of glamor, and has various
  * functions not responsible for performing rendering.
  */
@@ -44,7 +44,7 @@ import include.mipict;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_egl_priv;
+import glamor.glamor_egl_priv;
 
 DevPrivateKeyRec glamor_screen_private_key;
 DevPrivateKeyRec glamor_pixmap_private_key;

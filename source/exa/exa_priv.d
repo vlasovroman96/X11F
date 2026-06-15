@@ -1,4 +1,4 @@
-module exa_priv;
+module exa.exa_priv;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,10 +28,10 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-public import include.exa;
+public import include.exa_i;
 
 //public import externs.X11.X;
-//public import externs.X11.Xproto;
+public import externs.X11.extensions.renderproto;
 
 public import include.shmint;
 
@@ -49,6 +49,8 @@ public import include.fboverlay;
 public import include.fbpict;
 public import include.glyphstr;
 public import include.damage;
+import include.exa_i;
+import include.gc;
 
 enum DEBUG_TRACE_FALL =	0;
 enum DEBUG_MIGRATE =		0;
@@ -186,6 +188,7 @@ struct _ExaScreenPrivRec {
     CARD32 nextDefragment;
     PixmapPtr deferred_mixed_pixmap;
 
+    import include.exa_i;
     /* Reference counting for accessed pixmaps */
     struct _Access {
         PixmapPtr pixmap;

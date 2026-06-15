@@ -31,7 +31,7 @@ extern(C): __gshared:
 import config.kdrive_config;
 
 import ephyr;
-import exa_priv;
+import exa.exa_priv;
 import include.fbpict;
 
 enum EPHYR_TRACE_DRAW = 0;

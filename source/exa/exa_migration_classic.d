@@ -33,8 +33,8 @@ import build.dix_config;
 
 import core.stdc.string;
 
-import exa_priv;
-import include.exa;
+import exa.exa_priv;
+import include.exa_i;
 
 static if (DEBUG_MIGRATE) {
 enum string DBG_MIGRATE(string a) = `ErrorF a = void;`;

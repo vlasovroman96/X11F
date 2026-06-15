@@ -27,6 +27,7 @@ extern(C): __gshared:
 
  
 public import include.picturestr;
+import externs.X11.extensions.renderproto;
 
 enum MI_MAX_INDEXED =	256     /* XXX depth must be <= 8 */;
 

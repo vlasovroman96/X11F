@@ -1,4 +1,4 @@
-module glamor_program;
+module glamor.glamor_program;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -24,9 +24,105 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
+import externs.X11.Xdefs;
+
 import glamor.glamor_priv;
-import glamor_transform;
-import glamor_program;
+import glamor.glamor_transform;
+// import glamor.glamor_program;
+
+alias glamor_program_location = int;
+
+enum : glamor_program_location{
+    glamor_program_location_none = 0,
+    glamor_program_location_fg = 1,
+    glamor_program_location_bg = 2,
+    glamor_program_location_fillsamp = 4,
+    glamor_program_location_fillpos = 8,
+    glamor_program_location_font = 16,
+    glamor_program_location_bitplane = 32,
+    glamor_program_location_dash = 64,
+    glamor_program_location_atlas = 128,
+} ;
+
+struct glamor_facet{
+    const char                          *name;
+    const int                           c_version;
+    char                                *vs_extensions;
+    const char                          *fs_extensions;
+    const char                          *vs_vars;
+    const char                          *vs_exec;
+    const char                          *fs_vars;
+    const char                          *fs_exec;
+    const glamor_program_location       locations;
+    const glamor_program_flag           flags;
+    const char                          *source_name;
+    glamor_use                          use;
+    glamor_use_render                   use_render;
+} ;
+
+struct _glamor_program {
+    GLint                       prog;
+    GLint                       failed;
+    GLint                       matrix_uniform;
+    GLint                       fg_uniform;
+    GLint                       bg_uniform;
+    GLint                       fill_size_inv_uniform;
+    GLint                       fill_offset_uniform;
+    GLint                       font_uniform;
+    GLint                       bitplane_uniform;
+    GLint                       bitmul_uniform;
+    GLint                       dash_uniform;
+    GLint                       dash_length_uniform;
+    GLint                       atlas_uniform;
+    glamor_program_location     locations;
+    glamor_program_flag         flags;
+    glamor_use                  prim_use;
+    glamor_use                  fill_use;
+    glamor_program_alpha        alpha;
+    glamor_use_render           prim_use_render;
+    glamor_use_render           fill_use_render;
+};
+
+alias glamor_program = _glamor_program;
+
+alias glamor_program_alpha = int;
+
+enum  : glamor_program_alpha{
+    glamor_program_alpha_normal,
+    glamor_program_alpha_ca_first,
+    glamor_program_alpha_ca_second,
+    glamor_program_alpha_dual_blend,
+    glamor_program_alpha_dual_blend_gles2,
+    glamor_program_alpha_count
+};
+
+struct glamor_program_fill{
+    glamor_program[4]      progs;
+} ;
+
+
+// alias glamor_program  = _glamor_program;
+
+alias glamor_use = Bool function (DrawablePtr drawable, GCPtr gc, glamor_program *prog, void *arg);
+
+alias glamor_use_render = Bool function (CARD8 op, PicturePtr src, PicturePtr dst, glamor_program *prog);
+
+enum glamor_program_flag{
+    glamor_program_flag_none = 0,
+} ;
+
+alias glamor_program_source = int;
+
+enum : glamor_program_source {
+    glamor_program_source_solid,
+    glamor_program_source_picture,
+    glamor_program_source_1x1_picture,
+    glamor_program_source_count,
+} ;
+
+struct glamor_program_render{
+    glamor_program[glamor_program_source_count][glamor_program_alpha_count]      progs;
+} ;
 
 private Bool use_solid(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
 {
@@ -37,7 +133,7 @@ const(glamor_facet) glamor_fill_solid = {
     name: "solid",
     fs_exec: "       frag_color = fg;\n",
     locations: glamor_program_location_fg,
-    use: use_solid,
+    use: &use_solid,
 };
 
 private Bool use_tile(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
@@ -50,7 +146,7 @@ private const(glamor_facet) glamor_fill_tile = {
     vs_exec:  "       fill_pos = (fill_offset + primitive.xy + pos) * fill_size_inv;\n",
     fs_exec:  "       frag_color = texture(sampler, fill_pos);\n",
     locations: glamor_program_location_fillsamp | glamor_program_location_fillpos,
-    use: use_tile,
+    use: &use_tile,
 };
 
 private Bool use_stipple(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
@@ -68,7 +164,7 @@ private const(glamor_facet) glamor_fill_stipple = {
                 ~ "               discard;\n"
                 ~ "       frag_color = fg;\n"),
     locations: glamor_program_location_fg | glamor_program_location_fillsamp | glamor_program_location_fillpos,
-    use: use_stipple,
+    use: &use_stipple,
 };
 
 private Bool use_opaque_stipple(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
@@ -88,7 +184,7 @@ private const(glamor_facet) glamor_fill_opaque_stipple = {
                 ~ "       else\n"
                 ~ "               frag_color = fg;\n"),
     locations: glamor_program_location_fg | glamor_program_location_bg | glamor_program_location_fillsamp | glamor_program_location_fillpos,
-    use: use_opaque_stipple
+    use: &use_opaque_stipple
 };
 
 private const(glamor_facet)*[4] glamor_facet_fill = [
@@ -185,7 +281,7 @@ private char* fs_location_vars(glamor_program_location locations)
     return vars;
 }
 
-private const(char)[35] vs_template = "%s"                                /* version */
+enum  vs_template = "%s"                                /* version */
     ~ "%s"                                /* exts */
     ~ "%s"                                /* in/out defines */
     ~ "%s"                                /* defines */
@@ -198,7 +294,7 @@ private const(char)[35] vs_template = "%s"                                /* ver
     ~ "%s"                                /* fill vs_exec */
     ~ "}\n";
 
-private const(char)[41] fs_template = "%s"                                /* version */
+enum  fs_template = "%s"                                /* version */
     ~ "%s"                                /* exts */
     ~ "%s"                                /* prim fs_extensions */
     ~ "%s"                                /* fill fs_extensions */
@@ -531,7 +627,7 @@ private const(glamor_facet) glamor_source_solid = {
     name: "render_solid",
     fs_exec: "       vec4 source = fg;\n",
     locations: glamor_program_location_fg,
-    use_render: use_source_solid,
+    use_render: &use_source_solid,
 };
 
 private Bool use_source_picture(CARD8 op, PicturePtr src, PicturePtr dst, glamor_program* prog)
@@ -550,7 +646,7 @@ private const(glamor_facet) glamor_source_picture = {
     vs_exec:  "       fill_pos = (fill_offset + primitive.xy + pos) * fill_size_inv;\n",
     fs_exec:  "       vec4 source = texture(sampler, fill_pos);\n",
     locations: glamor_program_location_fillsamp | glamor_program_location_fillpos,
-    use_render: use_source_picture,
+    use_render: &use_source_picture,
 };
 
 private Bool use_source_1x1_picture(CARD8 op, PicturePtr src, PicturePtr dst, glamor_program* prog)
@@ -565,7 +661,7 @@ private const(glamor_facet) glamor_source_1x1_picture = {
     name: "render_picture",
     fs_exec:  "       vec4 source = texture(sampler, vec2(0.5));\n",
     locations: glamor_program_location_fillsamp,
-    use_render: use_source_1x1_picture,
+    use_render: &use_source_1x1_picture,
 };
 
 private const(glamor_facet)*[glamor_program_source_count] glamor_facet_source = [

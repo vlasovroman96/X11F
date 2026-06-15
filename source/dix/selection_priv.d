@@ -23,6 +23,8 @@ struct _Selection {
     PrivateRec* devPrivates;
 }
 
+alias Selection = _Selection;
+
 enum SelectionCallbackKind {
     SelectionSetOwner,
     SelectionWindowDestroy,

@@ -48,6 +48,8 @@ import include.servermd;
 import render.picturestr_priv;
 import render.glyphstr_priv;
 import Xext.xace;
+import externs.X11.extensions.renderproto;
+import externs.X11.Xdefs;
 version (XINERAMA) {
 import panoramiXsrv;
 } /* XINERAMA */
@@ -151,7 +153,7 @@ private void addFormat(FormatInitRec* formats, int* nformat, CARD32 format, CARD
     ++*nformat;
 }
 
-enum string Mask(string n) = `((1 << (` ~ n ~ `)) - 1)`;
+// enum string Mask(string n) = `((1 << (` ~ n ~ `)) - 1)`;
 
 private PictFormatPtr PictureCreateDefaultFormats(ScreenPtr pScreen, int* nformatp)
 {

@@ -1,4 +1,4 @@
-module glamor_core;
+module glamor.glamor_core;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -32,7 +32,7 @@ import core.stdc.config: c_long, c_ulong;
 
 /** @file glamor_core.c
  *
- * This file covers core X rendering in glamor.
+ * This file covers core X rendering inimport glamor.glamor_
  */
 import build.dix_config;
 

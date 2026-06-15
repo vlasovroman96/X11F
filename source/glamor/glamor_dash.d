@@ -1,4 +1,4 @@
-module glamor_dash;
+module glamor.glamor_dash;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,10 +27,10 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_program;
-import glamor_transform;
-import glamor_transfer;
-import glamor_prepare;
+import glamor.glamor_program;
+import glamor.glamor_transform;
+import glamor.glamor_transfer;
+import glamor.glamor_prepare;
 
 private const(char)[43] dash_vs_vars = "in vec3 primitive;\n"
     ~ "out float dash_offset;\n";

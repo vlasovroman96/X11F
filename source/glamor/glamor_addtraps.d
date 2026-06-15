@@ -1,4 +1,4 @@
-module glamor_addtraps;
+module glamor.glamor_addtraps;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -33,6 +33,7 @@ import build.dix_config;
 import include.fbpict;
 
 import glamor.glamor_priv;
+import externs.X11.extensions.renderproto;
 
 void glamor_add_traps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {

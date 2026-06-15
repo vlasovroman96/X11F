@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.dix_config;
 
-import exa_priv;
+import exa.exa_priv;
 
 import core.stdc.limits;
 import core.stdc.assert_;

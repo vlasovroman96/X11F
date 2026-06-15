@@ -32,10 +32,10 @@ import core.stdc.config: c_long, c_ulong;
  */
 
 import build.dix_config;
-import exa_priv;
+import exa.exa_priv;
 // //import externs.X11.fonts.fontstruct;
 import include.dixfontstr;
-import include.exa;
+import include.exa_i;
 
 private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr ppt, int* pwidth, int fSorted)
 {
@@ -898,26 +898,26 @@ private void exaPolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nrect, xRecta
 }
 
 const(GCOps) exaOps = {
-    exaFillSpans,
-    ExaCheckSetSpans,
-    exaPutImage,
-    exaCopyArea,
-    ExaCheckCopyPlane,
-    exaPolyPoint,
-    exaPolylines,
-    exaPolySegment,
-    miPolyRectangle,
-    ExaCheckPolyArc,
-    miFillPolygon,
-    exaPolyFillRect,
-    miPolyFillArc,
-    miPolyText8,
-    miPolyText16,
-    miImageText8,
-    miImageText16,
-    ExaCheckImageGlyphBlt,
-    ExaCheckPolyGlyphBlt,
-    ExaCheckPushPixels,
+    &exaFillSpans,
+    &ExaCheckSetSpans,
+    &exaPutImage,
+    &exaCopyArea,
+    &ExaCheckCopyPlane,
+    &exaPolyPoint,
+    &exaPolylines,
+    &exaPolySegment,
+    &miPolyRectangle,
+    &ExaCheckPolyArc,
+    &miFillPolygon,
+    &exaPolyFillRect,
+    &miPolyFillArc,
+    &miPolyText8,
+    &miPolyText16,
+    &miImageText8,
+    &miImageText16,
+    &ExaCheckImageGlyphBlt,
+    &ExaCheckPolyGlyphBlt,
+    &ExaCheckPushPixels,
 };
 
 void exaCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)

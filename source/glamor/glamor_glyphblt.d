@@ -1,4 +1,4 @@
-module glamor_glyphblt;
+module glamor.glamor_glyphblt;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -34,7 +34,7 @@ import os.bug_priv;
 
 import glamor.glamor_priv;
 import include.dixfontstr;
-import glamor_transform;
+import glamor.glamor_transform;
 
 private const(glamor_facet) glamor_facet_poly_glyph_blt = {
     name: "poly_glyph_blt",

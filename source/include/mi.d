@@ -120,9 +120,9 @@ extern void  miPolySegment(DrawablePtr, GCPtr, int, xSegment*);
 
 /* mipolytext.c */
 
-extern void  miPolyText8(DrawablePtr, GCPtr, int, int, int, char*);
+extern int  miPolyText8(DrawablePtr, GCPtr, int, int, int, char*);
 
-extern void  miPolyText16(DrawablePtr, GCPtr, int, int, int, ushort*);
+extern int  miPolyText16(DrawablePtr, GCPtr, int, int, int, ushort*);
 
 extern void  miImageText8(DrawablePtr, GCPtr, int, int, int, char*);
 

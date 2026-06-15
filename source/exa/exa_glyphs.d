@@ -50,7 +50,7 @@ import core.stdc.stdlib;
 
 import include.mipict;
 
-import exa_priv;
+import exa.exa_priv;
 import render.glyphstr_priv;
 
 static if (DEBUG_GLYPH_CACHE) {

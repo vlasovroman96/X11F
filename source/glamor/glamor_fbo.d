@@ -1,4 +1,4 @@
-module glamor_fbo;
+module glamor.glamor_fbo;
 @nogc nothrow:
 extern(C): __gshared:
 /*

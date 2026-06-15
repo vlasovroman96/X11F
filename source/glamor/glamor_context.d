@@ -1,4 +1,4 @@
-module glamor_context;
+module glamor.glamor_context;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -25,13 +25,13 @@ extern(C): __gshared:
  */
 
  
-// public import externs.epoxygl;
+public import externs.epoxygl;
 
 /**
  * @file glamor_context.h
  *
  * This is the struct of state required for context switching in
- * glamor. Initially this was abstracted away from EGL, and
+ *import glamor.glamor_ Initially this was abstracted away from EGL, and
  * presumably it would need to be again if someone wanted to use
  * glamor with WGL/CGL.
  */

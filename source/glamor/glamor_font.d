@@ -1,4 +1,4 @@
-module glamor_font;
+module glamor.glamor_font;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -31,11 +31,25 @@ import core.stdc.stddef;
 // //import externs.X11.fonts.libxfont2;
 
 import glamor.glamor_priv;
-import glamor_font;
+import glamor.glamor_font;
 import include.dixfontstr;
 
 private int glamor_font_private_index;
 private int glamor_font_screen_count;
+
+struct glamor_font_t{
+    Bool        realized;
+    CharInfoPtr default_char;
+    CARD8       default_row;
+    CARD8       default_col;
+
+    GLuint      texture_id;
+    GLuint      row_width;
+    CARD16      glyph_width_bytes;
+    CARD16      glyph_width_pixels;
+    CARD16      glyph_height;
+
+} ;
 
 glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
 {

@@ -22,7 +22,8 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-
+//!HACKED 
+enum BITS = 32;
 /*
  * This file defines functions for drawing some primitives using
  * underlying datatypes instead of masks

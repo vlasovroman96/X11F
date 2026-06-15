@@ -1,4 +1,4 @@
-module glamor_xv;
+module glamor.glamor_xv;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -42,8 +42,8 @@ import dix.dix_priv;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_transform;
-import glamor_transfer;
+import glamor.glamor_transform;
+import glamor.glamor_transfer;
 
 // //import externs.X11.extensions.Xv;
 import include.fourcc;

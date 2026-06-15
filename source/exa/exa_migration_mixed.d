@@ -29,8 +29,8 @@ import build.dix_config;
 
 import core.stdc.string;
 
-import exa_priv;
-import include.exa;
+import exa.exa_priv;
+import include.exa_i;
 
 void exaCreateDriverPixmap_mixed(PixmapPtr pPixmap)
 {

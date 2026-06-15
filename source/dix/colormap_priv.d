@@ -72,6 +72,8 @@ struct _ColormapRec {
     PrivateRec* devPrivates;
 }
 
+alias ColormapRec = _ColormapRec;
+
 int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, ColormapPtr* ppcmap, int alloc, ClientPtr client);
 
 /* should only be called via resource type's destructor */

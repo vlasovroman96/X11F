@@ -1,0 +1,2615 @@
+'git --git-dir=/home/roman/X11F/.git describe --long --tags' failed with exit code 128: fatal: Имена не найдены, не могу ничего описать.
+Determined package version using GIT: x12 ~master
+Collecting dependencies for x12
+Add config x12 application
+Using configuration 'application' for x12
+Generating using build
+Creating build generator.
+Add config x12 application
+Using configuration 'application' for x12
+Configuring target x12 (executable /home/roman/X11F/ x12)
+deps: x12 -> 
+Configure dependencies of x12, deps:
+Configuring dependent x12, deps:
+    Starting Performing "$DFLAGS" build using /usr/bin/dmd for x86_64.
+    Building x12 ~master: building configuration [application]
+Not a darwin-derived platform, skipping frameworks...
+Not a darwin-derived platform, skipping frameworks...
+[cwd=/home/roman/X11F] /usr/bin/dmd -v -w -version=Have_x12 -Isource source/Xext/bigreq.d source/Xext/damage/damageext.d source/Xext/damage/damageext_priv.d source/Xext/dpms.d source/Xext/dpmsproc.d source/Xext/dri2/dri2.d source/Xext/dri2/dri2_priv.d source/Xext/dri2/dri2ext.d source/Xext/dri2/dri2int.d source/Xext/geext.d source/Xext/geext_priv.d source/Xext/hashtable.d source/Xext/panoramiX.d source/Xext/panoramiXh.d source/Xext/panoramiXprocs.d source/Xext/panoramiXsrv.d source/Xext/px.d source/Xext/saver.d source/Xext/security.d source/Xext/securitysrv.d source/Xext/shape.d source/Xext/shm.d source/Xext/shm_priv.d source/Xext/sleepuntil.d source/Xext/sync.d source/Xext/syncsrv.d source/Xext/xace.d source/Xext/xacestr.d source/Xext/xcmisc.d source/Xext/xf86bigfont.d source/Xext/xf86bigfontsrv.d source/Xext/xres.d source/Xext/xselinux.d source/Xext/xselinux_ext.d source/Xext/xselinux_hooks.d source/Xext/xselinux_label.d source/Xext/xselinuxint.d source/Xext/xtest.d source/Xext/xvdisp.d source/Xext/xvdix_priv.d source/Xext/xvmain.d source/Xext/xvmc.d source/Xi/XIstubs.d source/Xi/allowev.d source/Xi/chgdctl.d source/Xi/chgfctl.d source/Xi/chgkbd.d source/Xi/chgkmap.d source/Xi/chgprop.d source/Xi/chgptr.d source/Xi/closedev.d source/Xi/devbell.d source/Xi/exevents.d source/Xi/exglobals.d source/Xi/extinit.d source/Xi/getbmap.d source/Xi/getdctl.d source/Xi/getfctl.d source/Xi/getfocus.d source/Xi/getkmap.d source/Xi/getmmap.d source/Xi/getprop.d source/Xi/getselev.d source/Xi/getvers.d source/Xi/grabdev.d source/Xi/grabdevb.d source/Xi/grabdevk.d source/Xi/gtmotion.d source/Xi/handlers.d source/Xi/listdev.d source/Xi/opendev.d source/Xi/queryst.d source/Xi/selectev.d source/Xi/sendexev.d source/Xi/setbmap.d source/Xi/setdval.d source/Xi/setfocus.d source/Xi/setmmap.d source/Xi/setmode.d source/Xi/stubs.d source/Xi/ungrdev.d source/Xi/ungrdevb.d source/Xi/ungrdevk.d source/Xi/xiallowev.d source/Xi/xibarriers.d source/Xi/xichangecursor.d source/Xi/xichangehierarchy.d source/Xi/xigetclientpointer.d source/Xi/xigrabdev.d source/Xi/xipassivegrab.d source/Xi/xiproperty.d source/Xi/xiquerydevice.d source/Xi/xiquerypointer.d source/Xi/xiqueryversion.d source/Xi/xiselectev.d source/Xi/xisetclientpointer.d source/Xi/xisetdevfocus.d source/Xi/xiwarppointer.d source/build/dix_config.d source/build/xlibre_server.d source/build/xorg-config.d source/build/xorg-server.d source/composite/compalloc.d source/composite/compext.d source/composite/compinit.d source/composite/compint.d source/composite/compositeext_priv.d source/composite/compoverlay.d source/composite/compwindow.d source/config/config-backends.d source/config/config.d source/config/dbus-core.d source/config/hal.d source/config/hotplug_priv.d source/config/kdrive_config.d source/config/udev.d source/config/version_config.d source/config/wscons.d source/config/xkb_config.d source/dbe/dbe.d source/dbe/dbestruct.d source/dbe/midbe.d source/dix/atom.d source/dix/atom_priv.d source/dix/callback_priv.d source/dix/client.d source/dix/client_priv.d source/dix/color.d source/dix/colormap.d source/dix/colormap_priv.d source/dix/cursor.d source/dix/cursor_priv.d source/dix/devices.d source/dix/devices_priv.d source/dix/dispatch.d source/dix/display.d source/dix/dix_priv.d source/dix/dixfonts.d source/dix/dixgrabs_priv.d source/dix/dixstruct_priv.d source/dix/dixutils.d source/dix/enterleave.d source/dix/eventconvert.d source/dix/events.d source/dix/exevents_priv.d source/dix/extension.d source/dix/extension_priv.d source/dix/gc.d source/dix/gc_priv.d source/dix/gestures.d source/dix/getevents.d source/dix/globals.d source/dix/glyphcurs.d source/dix/grabs.d source/dix/input_priv.d source/dix/inpututils.d source/dix/inpututils_priv.d source/dix/lookup.d source/dix/main.d source/dix/pixmap.d source/dix/privates.d source/dix/property.d source/dix/property_priv.d source/dix/ptrveloc.d source/dix/ptrveloc_priv.d source/dix/region.d source/dix/registry.d source/dix/registry_priv.d source/dix/reqhandlers_priv.d source/dix/request_priv.d source/dix/resource.d source/dix/resource_priv.d source/dix/rpcbuf.d source/dix/rpcbuf_priv.d source/dix/screen.d source/dix/screen_hooks.d source/dix/screen_hooks_priv.d source/dix/screenint_priv.d source/dix/screensaver_priv.d source/dix/selection.d source/dix/selection_priv.d source/dix/server_priv.d source/dix/settings.d source/dix/settings_priv.d source/dix/stubmain.d source/dix/swaprep.d source/dix/swapreq.d source/dix/tables.d source/dix/touch.d source/dix/window.d source/dix/window_priv.d source/dri3/dri3.d source/dri3/dri3_priv.d source/dri3/dri3_request.d source/dri3/dri3_screen.d source/exa/exa.d source/exa/exa_accel.d source/exa/exa_classic.d source/exa/exa_driver.d source/exa/exa_glyphs.d source/exa/exa_migration_classic.d source/exa/exa_migration_mixed.d source/exa/exa_mixed.d source/exa/exa_offscreen.d source/exa/exa_priv.d source/exa/exa_render.d source/exa/exa_unaccel.d source/externs/libdrm.d source/externs/libhal.d source/externs/libxcvt.d source/externs/linux/apm_bios.d source/externs/linux/kd.d source/externs/linux/vt.d source/externs/regex.d source/fb/fb_priv.d source/fb/fballpriv.d source/fb/fbarc.d source/fb/fbbits.d source/fb/fbbitsh.d source/fb/fbblt.d source/fb/fbbltone.d source/fb/fbcmap_mi.d source/fb/fbcopy.d source/fb/fbfill.d source/fb/fbfillrect.d source/fb/fbfillsp.d source/fb/fbgc.d source/fb/fbgetsp.d source/fb/fbglyph.d source/fb/fbimage.d source/fb/fbline.d source/fb/fboverlay.d source/fb/fbpict.d source/fb/fbpict_priv.d source/fb/fbpixmap.d source/fb/fbpoint.d source/fb/fbpush.d source/fb/fbscreen.d source/fb/fbseg.d source/fb/fbsetsp.d source/fb/fbsolid.d source/fb/fbtile.d source/fb/fbtrap.d source/fb/fbutil.d source/fb/fbwindow.d source/glamor/glamor.d source/glamor/glamor_addtraps.d source/glamor/glamor_composite_glyphs.d source/glamor/glamor_compositerects.d source/glamor/glamor_context.d source/glamor/glamor_copy.d source/glamor/glamor_core.d source/glamor/glamor_dash.d source/glamor/glamor_debug.d source/glamor/glamor_egl.d source/glamor/glamor_egl_ext.d source/glamor/glamor_egl_priv.d source/glamor/glamor_fbo.d source/glamor/glamor_font.d source/glamor/glamor_glx_provider.d source/glamor/glamor_glyphblt.d source/glamor/glamor_gradient.d source/glamor/glamor_image.d source/glamor/glamor_largepixmap.d source/glamor/glamor_lines.d source/glamor/glamor_picture.d source/glamor/glamor_pixmap.d source/glamor/glamor_points.d source/glamor/glamor_prepare.d source/glamor/glamor_priv.d source/glamor/glamor_program.d source/glamor/glamor_rects.d source/glamor/glamor_render.d source/glamor/glamor_segs.d source/glamor/glamor_spans.d source/glamor/glamor_sync.d source/glamor/glamor_text.d source/glamor/glamor_transfer.d source/glamor/glamor_transform.d source/glamor/glamor_trapezoid.d source/glamor/glamor_triangles.d source/glamor/glamor_utils.d source/glamor/glamor_vbo.d source/glamor/glamor_window.d source/glamor/glamor_xv.d source/glx/clientinfo.d source/glx/createcontext.d source/glx/extension_string.d source/glx/glx_dri/glxdri2.d source/glx/glx_dri/glxdricommon.d source/glx/glx_dri/glxdriswrast.d source/glx/glxcmds.d source/glx/glxcmdsswap.d source/glx/glxcontext.d source/glx/glxdrawable.d source/glx/glxext.d source/glx/glxscreens.d source/glx/glxserver.d source/glx/glxutil.d source/glx/indirect_dispatch.d source/glx/indirect_dispatch_swap.d source/glx/indirect_program.d source/glx/indirect_reqsize.d source/glx/indirect_size.d source/glx/indirect_size_get.d source/glx/indirect_table.d source/glx/indirect_texture_compression.d source/glx/indirect_util.d source/glx/render2.d source/glx/render2swap.d source/glx/renderpix.d source/glx/renderpixswap.d source/glx/rensize.d source/glx/single2.d source/glx/single2swap.d source/glx/singlepix.d source/glx/singlepixswap.d source/glx/singlesize.d source/glx/swap_interval.d source/glx/unpack.d source/glx/vnd_dispatch_stubs.d source/glx/vndcmds.d source/glx/vndext.d source/glx/vndserver_priv.d source/glx/vndservermapping.d source/glx/vndservervendor.d source/glx/xfont.d source/hw/kdrive/ephyr/ephyr.d source/hw/kdrive/ephyr/ephyr_draw.d source/hw/kdrive/ephyr/ephyr_glamor.d source/hw/kdrive/ephyr/ephyrcursor.d source/hw/kdrive/ephyr/ephyrinit.d source/hw/kdrive/ephyr/ephyrlog.d source/hw/kdrive/ephyr/ephyrvideo.d source/hw/kdrive/ephyr/hostx.d source/hw/kdrive/fbdev/fb_glamor.d source/hw/kdrive/fbdev/fbdev.d source/hw/kdrive/fbdev/fbinit.d source/hw/kdrive/linux/evdev/evdev.d source/hw/kdrive/linux/evdev/evdev_autodetect.d source/hw/kdrive/linux/keyboard.d source/hw/kdrive/linux/linux.d source/hw/kdrive/linux/mouse.d source/hw/kdrive/linux/ms.d source/hw/kdrive/linux/ps2.d source/hw/kdrive/linux/tslib.d source/hw/kdrive/src/kcmap.d source/hw/kdrive/src/kd_glamor_xv.d source/hw/kdrive/src/kdrive.d source/hw/kdrive/src/kinfo.d source/hw/kdrive/src/kinput.d source/hw/kdrive/src/kmode.d source/hw/kdrive/src/kshadow.d source/hw/kdrive/src/kxv.d source/hw/stubs/ddxBeforeReset.d source/hw/vfb/InitInput.d source/hw/vfb/InitOutput.d source/hw/xfree86/common/action_priv.d source/hw/xfree86/common/dgaproc_priv.d source/hw/xfree86/common/seatd-libseat.d source/hw/xfree86/common/xf86AutoConfig.d source/hw/xfree86/common/xf86Bus.d source/hw/xfree86/common/xf86Config.d source/hw/xfree86/common/xf86Configure.d source/hw/xfree86/common/xf86Cursor.d source/hw/xfree86/common/xf86DGA.d source/hw/xfree86/common/xf86DPMS.d source/hw/xfree86/common/xf86Events.d source/hw/xfree86/common/xf86Extensions.d source/hw/xfree86/common/xf86Globals.d source/hw/xfree86/common/xf86Helper.d source/hw/xfree86/common/xf86InPriv.d source/hw/xfree86/common/xf86Init.d source/hw/xfree86/common/xf86MatchDrivers.d source/hw/xfree86/common/xf86Mode.d source/hw/xfree86/common/xf86Module_priv.d source/hw/xfree86/common/xf86Opt_priv.d source/hw/xfree86/common/xf86Option.d source/hw/xfree86/common/xf86PM.d source/hw/xfree86/common/xf86RandR.d source/hw/xfree86/common/xf86VGAarbiter.d source/hw/xfree86/common/xf86VGAarbiterPriv.d source/hw/xfree86/common/xf86VGAarbiter_priv.d source/hw/xfree86/common/xf86VidMode.d source/hw/xfree86/common/xf86Xinput.d source/hw/xfree86/common/xf86Xinput_priv.d source/hw/xfree86/common/xf86_pci_priv.d source/hw/xfree86/common/xf86_priv.d source/hw/xfree86/common/xf86cmap.d source/hw/xfree86/common/xf86fbBus.d source/hw/xfree86/common/xf86fbman.d source/hw/xfree86/common/xf86noBus.d source/hw/xfree86/common/xf86pciBus.d source/hw/xfree86/common/xf86platformBus.d source/hw/xfree86/common/xf86platformBus_priv.d source/hw/xfree86/common/xf86sbusBus.d source/hw/xfree86/common/xf86sbusBus_priv.d source/hw/xfree86/common/xf86xv.d source/hw/xfree86/common/xf86xvmc.d source/hw/xfree86/common/xf86xvpriv.d source/hw/xfree86/common/xisb.d source/hw/xfree86/common/xorgHelper.d source/hw/xfree86/compat/clientexception.d source/hw/xfree86/compat/geeventinit.d source/hw/xfree86/compat/log.d source/hw/xfree86/compat/nvidiabug.d source/hw/xfree86/compat/ones.d source/hw/xfree86/compat/timercheck.d source/hw/xfree86/compat/xf86Helper.d source/hw/xfree86/compat/xf86_compat.d source/hw/xfree86/ddc/ddc.d source/hw/xfree86/ddc/ddcProperty.d source/hw/xfree86/ddc/edid_priv.d source/hw/xfree86/ddc/interpret_edid.d source/hw/xfree86/ddc/print_edid.d source/hw/xfree86/ddc/xf86DDC_priv.d source/hw/xfree86/dixmods/fbmodule.d source/hw/xfree86/dixmods/glxmodule.d source/hw/xfree86/dixmods/shmodule.d source/hw/xfree86/dri/dri.d source/hw/xfree86/dri/dri_priv.d source/hw/xfree86/dri/xf86dri.d source/hw/xfree86/drivers/input/inputtest/xf86-input-inputtest-protocol.d source/hw/xfree86/drivers/input/inputtest/xf86-input-inputtest.d source/hw/xfree86/drivers/video/modesetting/dri2.d source/hw/xfree86/drivers/video/modesetting/driver.d source/hw/xfree86/drivers/video/modesetting/drmmode_bo.d source/hw/xfree86/drivers/video/modesetting/drmmode_display.d source/hw/xfree86/drivers/video/modesetting/pageflip.d source/hw/xfree86/drivers/video/modesetting/present.d source/hw/xfree86/drivers/video/modesetting/vblank.d source/hw/xfree86/exa/examodule.d source/hw/xfree86/fbdevhw/fbdevhw.d source/hw/xfree86/fbdevhw/fbdevhwstub.d source/hw/xfree86/fbdevhw/fbpriv.d source/hw/xfree86/glamor_egl/glamor_eglmodule.d source/hw/xfree86/glamor_egl/glamor_xf86_egl.d source/hw/xfree86/glamor_egl/glamor_xf86_xv.d source/hw/xfree86/i2c/xf86i2c.d source/hw/xfree86/int10/generic.d source/hw/xfree86/int10/helper_exec.d source/hw/xfree86/int10/helper_mem.d source/hw/xfree86/int10/stub.d source/hw/xfree86/int10/vbe.d source/hw/xfree86/int10/vbeModes.d source/hw/xfree86/int10/x86emu.d source/hw/xfree86/int10/xf86int10.d source/hw/xfree86/int10/xf86int10_priv.d source/hw/xfree86/int10/xf86int10module.d source/hw/xfree86/int10/xf86x86emu.d source/hw/xfree86/loader/loader.d source/hw/xfree86/loader/loaderProcs.d source/hw/xfree86/loader/loadmod.d source/hw/xfree86/loader/symbol-test.d source/hw/xfree86/modes/xf86Crtc.d source/hw/xfree86/modes/xf86Cursors.d source/hw/xfree86/modes/xf86DiDGA.d source/hw/xfree86/modes/xf86EdidModes.d source/hw/xfree86/modes/xf86Modes.d source/hw/xfree86/modes/xf86RandR12.d source/hw/xfree86/modes/xf86RandR12_priv.d source/hw/xfree86/modes/xf86Rotate.d source/hw/xfree86/modes/xf86gtf.d source/hw/xfree86/os_support/bus/Pci.d source/hw/xfree86/os_support/bus/Sbus.d source/hw/xfree86/os_support/bus/nobus.d source/hw/xfree86/os_support/bus/xf86Sbus_priv.d source/hw/xfree86/os_support/int10Defines.d source/hw/xfree86/os_support/linux/int10/linux.d source/hw/xfree86/os_support/linux/int10/vm86/linux_vm86.d source/hw/xfree86/os_support/linux/linux.d source/hw/xfree86/os_support/linux/lnx_acpi.d source/hw/xfree86/os_support/linux/lnx_agp.d source/hw/xfree86/os_support/linux/lnx_apm.d source/hw/xfree86/os_support/linux/lnx_bell.d source/hw/xfree86/os_support/linux/lnx_init.d source/hw/xfree86/os_support/linux/lnx_kmod.d source/hw/xfree86/os_support/linux/lnx_video.d source/hw/xfree86/os_support/linux/systemd_logind.d source/hw/xfree86/os_support/misc/SlowBcopy.d source/hw/xfree86/os_support/shared/VTsw_noop.d source/hw/xfree86/os_support/shared/VTsw_usl.d source/hw/xfree86/os_support/shared/agp_noop.d source/hw/xfree86/os_support/shared/drm_platform.d source/hw/xfree86/os_support/shared/ioperm_noop.d source/hw/xfree86/os_support/shared/kmod_noop.d source/hw/xfree86/os_support/shared/platform_noop.d source/hw/xfree86/os_support/shared/pm_noop.d source/hw/xfree86/os_support/shared/posix_tty.d source/hw/xfree86/os_support/shared/seatd-libseat.d source/hw/xfree86/os_support/shared/sigio.d source/hw/xfree86/os_support/shared/sigiostubs.d source/hw/xfree86/os_support/shared/vidmem.d source/hw/xfree86/os_support/stub/stub_bell.d source/hw/xfree86/os_support/stub/stub_init.d source/hw/xfree86/os_support/stub/stub_video.d source/hw/xfree86/os_support/xf86_os_support.d source/hw/xfree86/parser/Configint.d source/hw/xfree86/parser/DRI.d source/hw/xfree86/parser/Device.d source/hw/xfree86/parser/Extensions.d source/hw/xfree86/parser/Files.d source/hw/xfree86/parser/Flags.d source/hw/xfree86/parser/Input.d source/hw/xfree86/parser/InputClass.d source/hw/xfree86/parser/Layout.d source/hw/xfree86/parser/Module.d source/hw/xfree86/parser/Monitor.d source/hw/xfree86/parser/OutputClass.d source/hw/xfree86/parser/Pointer.d source/hw/xfree86/parser/Screen.d source/hw/xfree86/parser/Vendor.d source/hw/xfree86/parser/Video.d source/hw/xfree86/parser/configProcs.d source/hw/xfree86/parser/patterns.d source/hw/xfree86/parser/read.d source/hw/xfree86/parser/scan.d source/hw/xfree86/parser/write.d source/hw/xfree86/parser/xf86Parser_priv.d source/hw/xfree86/parser/xf86tokens.d source/hw/xfree86/ramdac/xf86CursorPriv.d source/hw/xfree86/ramdac/xf86CursorRD.d source/hw/xfree86/ramdac/xf86HWCurs.d source/hw/xfree86/shadowfb/sfbmodule.d source/hw/xfree86/shadowfb/shadowfb.d source/hw/xfree86/utils/gtf/gtf.d source/hw/xfree86/vgahw/vgaHW.d source/hw/xfree86/vgahw/vgaHWmodule.d source/hw/xfree86/xext/vidmode.d source/hw/xfree86/xkb/xkbKillSrv.d source/hw/xfree86/xkb/xkbPrivate.d source/hw/xfree86/xkb/xkbVT.d source/hw/xfree86/xorg-wrapper.d source/hw/xnest/Args.d source/hw/xnest/Color.d source/hw/xnest/Cursor.d source/hw/xnest/Display.d source/hw/xnest/Drawable.d source/hw/xnest/Events.d source/hw/xnest/Font.d source/hw/xnest/GC.d source/hw/xnest/GCOps.d source/hw/xnest/Handlers.d source/hw/xnest/Init.d source/hw/xnest/Keyboard.d source/hw/xnest/Pixmap.d source/hw/xnest/Pointer.d source/hw/xnest/Screen.d source/hw/xnest/Window.d source/hw/xnest/XNCursor.d source/hw/xnest/XNFont.d source/hw/xnest/XNGC.d source/hw/xnest/XNPixmap.d source/hw/xnest/XNWindow.d source/hw/xnest/xcb.d source/hw/xnest/xkb.d source/hw/xnest/xnest-xcb.d source/hw/xnest/xnest-xkb.d source/include/Xprintf.d source/include/callback.d source/include/client.d source/include/colormap.d source/include/colormapst.d source/include/compiler.d source/include/compositeext.d source/include/cursor.d source/include/cursorstr.d source/include/damage.d source/include/damagestr.d source/include/dgaproc.d source/include/displaymode.d source/include/dix.d source/include/dixaccess.d source/include/dixfont.d source/include/dixfontstr.d source/include/dixstruct.d source/include/dri.d source/include/dri2.d source/include/dri3.d source/include/dristruct.d source/include/edid.d source/include/events.d source/include/eventstr.d source/include/exa.d source/include/exevents.d source/include/extension.d source/include/extinit.d source/include/extnsionst.d source/include/fb.d source/include/fbdevhw.d source/include/fboverlay.d source/include/fbpict.d source/include/fbrop.d source/include/fd_notify.d source/include/fourcc.d source/include/gc.d source/include/gcstruct.d source/include/glamor.d source/include/globals.d source/include/glx_extinit.d source/include/glxvndabi.d source/include/glyphstr.d source/include/i2c_def.d source/include/input.d source/include/inputstr.d source/include/list.d source/include/mi.d source/include/micmap.d source/include/micoord.d source/include/migc.d source/include/miline.d source/include/mioverlay.d source/include/mipict.d source/include/mipointer.d source/include/mipointrst.d source/include/misc.d source/include/miscstruct.d source/include/mistruct.d source/include/misync.d source/include/misyncfd.d source/include/misyncshm.d source/include/misyncstr.d source/include/mizerarc.d source/include/opaque.d source/include/optionstr.d source/include/os.d source/include/picture.d source/include/picturestr.d source/include/pixmap.d source/include/pixmapstr.d source/include/present.d source/include/privates.d source/include/property.d source/include/propertyst.d source/include/protocol-versions.d source/include/ptrveloc.d source/include/randrstr.d source/include/region.d source/include/regionstr.d source/include/resource.d source/include/rgb.d source/include/rrtransform.d source/include/sarea.d source/include/screenint.d source/include/scrintstr.d source/include/scrnintstr.d source/include/servermd.d source/include/shadow.d source/include/shadowfb.d source/include/shmint.d source/include/syncsdk.d source/include/validate.d source/include/vbe.d source/include/vbeModes.d source/include/vgaHW.d source/include/vidmodestr.d source/include/vndserver.d source/include/wfbrename.d source/include/window.d source/include/windowstr.d source/include/xaarop.d source/include/xf86.d source/include/xf86Crtc.d source/include/xf86Cursor.d source/include/xf86DDC.d source/include/xf86Modes.d source/include/xf86Module.d source/include/xf86Opt.d source/include/xf86Optionstr.d source/include/xf86Optrec.d source/include/xf86Parser.d source/include/xf86Pci.d source/include/xf86Priv.d source/include/xf86Privstr.d source/include/xf86RandR12.d source/include/xf86Xinput.d source/include/xf86_OSlib.d source/include/xf86_OSproc.d source/include/xf86cmap.d source/include/xf86fbman.d source/include/xf86i2c.d source/include/xf86int10.d source/include/xf86platformBus.d source/include/xf86sbusBus.d source/include/xf86str.d source/include/xf86xv.d source/include/xf86xvmc.d source/include/xisb.d source/include/xkbrules.d source/include/xkbsrv.d source/include/xkbstr.d source/include/xlibre_ptrtypes.d source/include/xorgVersion.d source/include/xserver_properties.d source/include/xvdix.d source/include/xvmcext.d source/mi/mi_priv.d source/mi/miarc.d source/mi/micmap.d source/mi/micopy.d source/mi/midash.d source/mi/midispcur.d source/mi/mieq.d source/mi/miexpose.d source/mi/mifillarc.d source/mi/mifpoly.d source/mi/migc.d source/mi/miglblt.d source/mi/miinitext.d source/mi/mioverlay.d source/mi/mipointer.d source/mi/mipointer_priv.d source/mi/mipoly.d source/mi/mipolypnt.d source/mi/mipolyrect.d source/mi/mipolyseg.d source/mi/mipolytext.d source/mi/mipushpxl.d source/mi/miscanfill.d source/mi/miscrinit.d source/mi/misprite.d source/mi/mivaltree.d source/mi/miwideline.d source/mi/miwindow.d source/mi/mizerarc.d source/mi/mizerclip.d source/mi/mizerline.d source/miext/extinit_priv.d source/os/WaitFor.d source/os/Xtrans.d source/os/Xtransint.d source/os/Xtranssock.d source/os/Xtransutil.d source/os/access.d source/os/alloc.d source/os/audit_priv.d source/os/auth.d source/os/backtrace.d source/os/bug_priv.d source/os/busfault.d source/os/client.d source/os/client_priv.d source/os/cmdline.d source/os/connection.d source/os/ddx_priv.d source/os/fmt.d source/os/inputthread.d source/os/io.d source/os/io_priv.d source/os/log.d source/os/log_priv.d source/os/mathx_priv.d source/os/mitauth.d source/os/osdep.d source/os/osinit.d source/os/ospoll.d source/os/ossock.d source/os/probes_priv.d source/os/reallocarray.d source/os/screensaver.d source/os/serverlock.d source/os/strcasecmp.d source/os/strcasestr.d source/os/string.d source/os/strlcat.d source/os/strlcpy.d source/os/strndup.d source/os/timingsafe_memcmp.d source/os/transport.d source/os/utils.d source/os/xdmauth.d source/os/xdmcp.d source/os/xhostname.d source/os/xprintf.d source/os/xserver_poll.d source/os/xsha1.d source/present/present.d source/present/present_event.d source/present/present_execute.d source/present/present_fake.d source/present/present_fence.d source/present/present_notify.d source/present/present_priv.d source/present/present_request.d source/present/present_scmd.d source/present/present_screen.d source/present/present_vblank.d source/pseudoramiX/pseudoramiX.d source/randr/randr.d source/randr/randrstr_priv.d source/randr/rrcrtc.d source/randr/rrdispatch.d source/randr/rrdispatch_priv.d source/randr/rrinfo.d source/randr/rrlease.d source/randr/rrmode.d source/randr/rrmonitor.d source/randr/rroutput.d source/randr/rrpointer.d source/randr/rrproperty.d source/randr/rrprovider.d source/randr/rrproviderproperty.d source/randr/rrscreen.d source/randr/rrtransform.d source/randr/rrxinerama.d source/record/record.d source/record/set.d source/render/animcur.d source/render/filter.d source/render/glyph.d source/render/glyphstr_priv.d source/render/matrix.d source/render/miindex.d source/render/mipict.d source/render/mirect.d source/render/mitrap.d source/render/mitri.d source/render/picture.d source/render/picturestr_priv.d source/render/render.d source/test/fixes.d source/test/hashtabletest.d source/test/input.d source/test/list.d source/test/misc.d source/test/sha1.d source/test/signal-logging.d source/test/simple-xinit.d source/test/string.d source/test/test_xkb.d source/test/tests-common.d source/test/tests.d source/test/touch.d source/test/xfree86.d source/test/xtest.d source/xfixes/cursor.d source/xfixes/disconnect.d source/xfixes/region.d source/xfixes/saveset.d source/xfixes/select.d source/xfixes/xfixes.d source/xfixes/xfixesint.d source/xkb/XKBAlloc.d source/xkb/XKBGAlloc.d source/xkb/XKBMAlloc.d source/xkb/XKBMisc.d source/xkb/ddxBeep.d source/xkb/ddxCtrls.d source/xkb/ddxKillSrv.d source/xkb/ddxLEDs.d source/xkb/ddxLoad.d source/xkb/ddxPrivate.d source/xkb/ddxVT.d source/xkb/maprules.d source/xkb/xkb-procs.d source/xkb/xkb.d source/xkb/xkbAccessX.d source/xkb/xkbActions.d source/xkb/xkbDflts.d source/xkb/xkbEvents.d source/xkb/xkbInit.d source/xkb/xkbLEDs.d source/xkb/xkbPrKeyEv.d source/xkb/xkbUtils.d source/xkb/xkbfile_priv.d source/xkb/xkbfmisc.d source/xkb/xkbfmisc_priv.d source/xkb/xkbgeom_priv.d source/xkb/xkbout.d source/xkb/xkbout_priv.d source/xkb/xkbrules_priv.d source/xkb/xkbsrv_priv.d source/xkb/xkbtext.d source/xkb/xkbtext_priv.d source/xkb/xkmread.d -verrors=5 -P-I/usr/include/dbus-1.0 -P-I/usr/include/pixman-1 -P-I/usr/lib/dbus-1.0/include -P-Isource/Xext/dri2 -P-I/usr/include/libdrm -P-I/usr/include/X11/fonts -P-I/usr/include -P-Isource -P-Isource/hw/xfree86/x86emu -P-Isource/externs "-P-D__int128=long long" -P-D__attribute__(x)= -P-D__alignof__(x)=8 -P=-D__kernel_size_t=size_t -c -of/home/roman/.dub/cache/x12/~master/build/application-$DFLAGS-2iJfIKyNH7_5btW1kChHjQ/x12.o -vcolumns
+predefs  Have_x12 DigitalMars LittleEndian D_Version2 all D_SIMD Posix ELFv1 linux CRuntime_Glibc CppRuntime_GNU CppRuntime_Gcc D_InlineAsm_X86_64 X86_64 D_LP64 D_PIC assert D_PreConditions D_PostConditions D_Invariants D_ModuleInfo D_Exceptions D_TypeInfo D_HardFloat
+binary    /usr/bin/dmd
+version   v2.112.0
+config    /etc/dmd.conf
+DFLAGS    -I/usr/include/dlang/dmd -L-L/usr/lib -L--export-dynamic -fPIC
+parse     bigreq
+parse     damageext
+parse     damageext_priv
+parse     dpms
+parse     dpmsproc
+parse     dri2
+parse     dri2_priv
+parse     dri2ext
+parse     dri2int
+parse     geext
+parse     geext_priv
+parse     hashtable
+parse     panoramiX
+parse     panoramiXh
+parse     panoramiXprocs
+parse     panoramiXsrv
+parse     px
+parse     saver
+parse     security
+parse     securitysrv
+parse     shape
+parse     shm
+parse     shm_priv
+parse     sleepuntil
+parse     sync
+parse     syncsrv
+parse     xace
+parse     xacestr
+parse     xcmisc
+parse     xf86bigfont
+parse     xf86bigfontsrv
+parse     xres
+parse     xselinux
+parse     xselinux_ext
+parse     xselinux_hooks
+parse     xselinux_label
+parse     xselinuxint
+parse     xtest
+parse     xvdisp
+parse     xvdix_priv
+parse     xvmain
+parse     xvmc
+parse     XIstubs
+parse     allowev
+parse     chgdctl
+parse     chgfctl
+parse     chgkbd
+parse     chgkmap
+parse     chgprop
+parse     chgptr
+parse     closedev
+parse     devbell
+parse     exevents
+parse     exglobals
+parse     extinit
+parse     getbmap
+parse     getdctl
+parse     getfctl
+parse     getfocus
+parse     getkmap
+parse     getmmap
+parse     getprop
+parse     getselev
+parse     getvers
+parse     grabdev
+parse     grabdevb
+parse     grabdevk
+parse     gtmotion
+parse     handlers
+parse     listdev
+parse     opendev
+parse     queryst
+parse     selectev
+parse     sendexev
+parse     setbmap
+parse     setdval
+parse     setfocus
+parse     setmmap
+parse     setmode
+parse     stubs
+parse     ungrdev
+parse     ungrdevb
+parse     ungrdevk
+parse     xiallowev
+parse     xibarriers
+parse     xichangecursor
+parse     xichangehierarchy
+parse     xigetclientpointer
+parse     xigrabdev
+parse     xipassivegrab
+parse     xiproperty
+parse     xiquerydevice
+parse     xiquerypointer
+parse     xiqueryversion
+parse     xiselectev
+parse     xisetclientpointer
+parse     xisetdevfocus
+parse     xiwarppointer
+parse     dix_config
+parse     xlibre_server
+parse     xorg-config
+parse     xorg-server
+parse     compalloc
+parse     compext
+parse     compinit
+parse     compint
+parse     compositeext_priv
+parse     compoverlay
+parse     compwindow
+parse     config-backends
+parse     config
+parse     dbus-core
+parse     hal
+parse     hotplug_priv
+parse     kdrive_config
+parse     udev
+parse     version_config
+parse     wscons
+parse     xkb_config
+parse     dbe
+parse     dbestruct
+parse     midbe
+parse     atom
+parse     atom_priv
+parse     callback_priv
+parse     client
+parse     client_priv
+parse     color
+parse     colormap
+parse     colormap_priv
+parse     cursor
+parse     cursor_priv
+parse     devices
+parse     devices_priv
+parse     dispatch
+parse     display
+parse     dix_priv
+parse     dixfonts
+parse     dixgrabs_priv
+parse     dixstruct_priv
+parse     dixutils
+parse     enterleave
+parse     eventconvert
+parse     events
+parse     exevents_priv
+parse     extension
+parse     extension_priv
+parse     gc
+parse     gc_priv
+parse     gestures
+parse     getevents
+parse     globals
+parse     glyphcurs
+parse     grabs
+parse     input_priv
+parse     inpututils
+parse     inpututils_priv
+parse     lookup
+parse     main
+parse     pixmap
+parse     privates
+parse     property
+parse     property_priv
+parse     ptrveloc
+parse     ptrveloc_priv
+parse     region
+parse     registry
+parse     registry_priv
+parse     reqhandlers_priv
+parse     request_priv
+parse     resource
+parse     resource_priv
+parse     rpcbuf
+parse     rpcbuf_priv
+parse     screen
+parse     screen_hooks
+parse     screen_hooks_priv
+parse     screenint_priv
+parse     screensaver_priv
+parse     selection
+parse     selection_priv
+parse     server_priv
+parse     settings
+parse     settings_priv
+parse     stubmain
+parse     swaprep
+parse     swapreq
+parse     tables
+parse     touch
+parse     window
+parse     window_priv
+parse     dri3
+parse     dri3_priv
+parse     dri3_request
+parse     dri3_screen
+parse     exa
+parse     exa_accel
+parse     exa_classic
+parse     exa_driver
+parse     exa_glyphs
+parse     exa_migration_classic
+parse     exa_migration_mixed
+parse     exa_mixed
+parse     exa_offscreen
+parse     exa_priv
+parse     exa_render
+parse     exa_unaccel
+parse     libdrm
+parse     libhal
+parse     libxcvt
+parse     apm_bios
+parse     kd
+parse     vt
+parse     regex
+parse     fb_priv
+parse     fballpriv
+parse     fbarc
+parse     fbbits
+parse     fbbitsh
+parse     fbblt
+parse     fbbltone
+parse     fbcmap_mi
+parse     fbcopy
+parse     fbfill
+parse     fbfillrect
+parse     fbfillsp
+parse     fbgc
+parse     fbgetsp
+parse     fbglyph
+parse     fbimage
+parse     fbline
+parse     fboverlay
+parse     fbpict
+parse     fbpict_priv
+parse     fbpixmap
+parse     fbpoint
+parse     fbpush
+parse     fbscreen
+parse     fbseg
+parse     fbsetsp
+parse     fbsolid
+parse     fbtile
+parse     fbtrap
+parse     fbutil
+parse     fbwindow
+parse     glamor
+parse     glamor_addtraps
+parse     glamor_composite_glyphs
+parse     glamor_compositerects
+parse     glamor_context
+parse     glamor_copy
+parse     glamor_core
+parse     glamor_dash
+parse     glamor_debug
+parse     glamor_egl
+parse     glamor_egl_ext
+parse     glamor_egl_priv
+parse     glamor_fbo
+parse     glamor_font
+parse     glamor_glx_provider
+parse     glamor_glyphblt
+parse     glamor_gradient
+parse     glamor_image
+parse     glamor_largepixmap
+parse     glamor_lines
+parse     glamor_picture
+parse     glamor_pixmap
+parse     glamor_points
+parse     glamor_prepare
+parse     glamor_priv
+parse     glamor_program
+parse     glamor_rects
+parse     glamor_render
+parse     glamor_segs
+parse     glamor_spans
+parse     glamor_sync
+parse     glamor_text
+parse     glamor_transfer
+parse     glamor_transform
+parse     glamor_trapezoid
+parse     glamor_triangles
+parse     glamor_utils
+parse     glamor_vbo
+parse     glamor_window
+parse     glamor_xv
+parse     clientinfo
+parse     createcontext
+parse     extension_string
+parse     glxdri2
+parse     glxdricommon
+parse     glxdriswrast
+parse     glxcmds
+parse     glxcmdsswap
+parse     glxcontext
+parse     glxdrawable
+parse     glxext
+parse     glxscreens
+parse     glxserver
+parse     glxutil
+parse     indirect_dispatch
+parse     indirect_dispatch_swap
+parse     indirect_program
+parse     indirect_reqsize
+parse     indirect_size
+parse     indirect_size_get
+parse     indirect_table
+parse     indirect_texture_compression
+parse     indirect_util
+parse     render2
+parse     render2swap
+parse     renderpix
+parse     renderpixswap
+parse     rensize
+parse     single2
+parse     single2swap
+parse     singlepix
+parse     singlepixswap
+parse     singlesize
+parse     swap_interval
+parse     unpack
+parse     vnd_dispatch_stubs
+parse     vndcmds
+parse     vndext
+parse     vndserver_priv
+parse     vndservermapping
+parse     vndservervendor
+parse     xfont
+parse     ephyr
+parse     ephyr_draw
+parse     ephyr_glamor
+parse     ephyrcursor
+parse     ephyrinit
+parse     ephyrlog
+parse     ephyrvideo
+parse     hostx
+parse     fb_glamor
+parse     fbdev
+parse     fbinit
+parse     evdev
+parse     evdev_autodetect
+parse     keyboard
+parse     linux
+parse     mouse
+parse     ms
+parse     ps2
+parse     tslib
+parse     kcmap
+parse     kd_glamor_xv
+parse     kdrive
+parse     kinfo
+parse     kinput
+parse     kmode
+parse     kshadow
+parse     kxv
+parse     ddxBeforeReset
+parse     InitInput
+parse     InitOutput
+parse     action_priv
+parse     dgaproc_priv
+parse     seatd-libseat
+parse     xf86AutoConfig
+parse     xf86Bus
+parse     xf86Config
+parse     xf86Configure
+parse     xf86Cursor
+parse     xf86DGA
+parse     xf86DPMS
+parse     xf86Events
+parse     xf86Extensions
+parse     xf86Globals
+parse     xf86Helper
+parse     xf86InPriv
+parse     xf86Init
+parse     xf86MatchDrivers
+parse     xf86Mode
+parse     xf86Module_priv
+parse     xf86Opt_priv
+parse     xf86Option
+parse     xf86PM
+parse     xf86RandR
+parse     xf86VGAarbiter
+parse     xf86VGAarbiterPriv
+parse     xf86VGAarbiter_priv
+parse     xf86VidMode
+parse     xf86Xinput
+parse     xf86Xinput_priv
+parse     xf86_pci_priv
+parse     xf86_priv
+parse     xf86cmap
+parse     xf86fbBus
+parse     xf86fbman
+parse     xf86noBus
+parse     xf86pciBus
+parse     xf86platformBus
+parse     xf86platformBus_priv
+parse     xf86sbusBus
+parse     xf86sbusBus_priv
+parse     xf86xv
+parse     xf86xvmc
+parse     xf86xvpriv
+parse     xisb
+parse     xorgHelper
+parse     clientexception
+parse     geeventinit
+parse     log
+parse     nvidiabug
+parse     ones
+parse     timercheck
+parse     xf86Helper
+parse     xf86_compat
+parse     ddc
+parse     ddcProperty
+parse     edid_priv
+parse     interpret_edid
+parse     print_edid
+parse     xf86DDC_priv
+parse     fbmodule
+parse     glxmodule
+parse     shmodule
+parse     dri
+parse     dri_priv
+parse     xf86dri
+parse     xf86-input-inputtest-protocol
+parse     xf86-input-inputtest
+parse     dri2
+parse     driver
+parse     drmmode_bo
+parse     drmmode_display
+parse     pageflip
+parse     present
+parse     vblank
+parse     examodule
+parse     fbdevhw
+parse     fbdevhwstub
+parse     fbpriv
+parse     glamor_eglmodule
+parse     glamor_xf86_egl
+parse     glamor_xf86_xv
+parse     xf86i2c
+parse     generic
+parse     helper_exec
+parse     helper_mem
+parse     stub
+parse     vbe
+parse     vbeModes
+parse     x86emu
+parse     xf86int10
+parse     xf86int10_priv
+parse     xf86int10module
+parse     xf86x86emu
+parse     loader
+parse     loaderProcs
+parse     loadmod
+parse     symbol-test
+parse     xf86Crtc
+parse     xf86Cursors
+parse     xf86DiDGA
+parse     xf86EdidModes
+parse     xf86Modes
+parse     xf86RandR12
+parse     xf86RandR12_priv
+parse     xf86Rotate
+parse     xf86gtf
+parse     Pci
+parse     Sbus
+parse     nobus
+parse     xf86Sbus_priv
+parse     int10Defines
+parse     linux
+parse     linux_vm86
+parse     linux
+parse     lnx_acpi
+parse     lnx_agp
+parse     lnx_apm
+parse     lnx_bell
+parse     lnx_init
+parse     lnx_kmod
+parse     lnx_video
+parse     systemd_logind
+parse     SlowBcopy
+parse     VTsw_noop
+parse     VTsw_usl
+parse     agp_noop
+parse     drm_platform
+parse     ioperm_noop
+parse     kmod_noop
+parse     platform_noop
+parse     pm_noop
+parse     posix_tty
+parse     seatd-libseat
+parse     sigio
+parse     sigiostubs
+parse     vidmem
+parse     stub_bell
+parse     stub_init
+parse     stub_video
+parse     xf86_os_support
+parse     Configint
+parse     DRI
+parse     Device
+parse     Extensions
+parse     Files
+parse     Flags
+parse     Input
+parse     InputClass
+parse     Layout
+parse     Module
+parse     Monitor
+parse     OutputClass
+parse     Pointer
+parse     Screen
+parse     Vendor
+parse     Video
+parse     configProcs
+parse     patterns
+parse     read
+parse     scan
+parse     write
+parse     xf86Parser_priv
+parse     xf86tokens
+parse     xf86CursorPriv
+parse     xf86CursorRD
+parse     xf86HWCurs
+parse     sfbmodule
+parse     shadowfb
+parse     gtf
+parse     vgaHW
+parse     vgaHWmodule
+parse     vidmode
+parse     xkbKillSrv
+parse     xkbPrivate
+parse     xkbVT
+parse     xorg-wrapper
+parse     Args
+parse     Color
+parse     Cursor
+parse     Display
+parse     Drawable
+parse     Events
+parse     Font
+parse     GC
+parse     GCOps
+parse     Handlers
+parse     Init
+parse     Keyboard
+parse     Pixmap
+parse     Pointer
+parse     Screen
+parse     Window
+parse     XNCursor
+parse     XNFont
+parse     XNGC
+parse     XNPixmap
+parse     XNWindow
+parse     xcb
+parse     xkb
+parse     xnest-xcb
+parse     xnest-xkb
+parse     Xprintf
+parse     callback
+parse     client
+parse     colormap
+parse     colormapst
+parse     compiler
+parse     compositeext
+parse     cursor
+parse     cursorstr
+parse     damage
+parse     damagestr
+parse     dgaproc
+parse     displaymode
+parse     dix
+parse     dixaccess
+parse     dixfont
+parse     dixfontstr
+parse     dixstruct
+parse     dri
+parse     dri2
+parse     dri3
+parse     dristruct
+parse     edid
+parse     events
+parse     eventstr
+parse     exa
+parse     exevents
+parse     extension
+parse     extinit
+parse     extnsionst
+parse     fb
+parse     fbdevhw
+parse     fboverlay
+parse     fbpict
+parse     fbrop
+parse     fd_notify
+parse     fourcc
+parse     gc
+parse     gcstruct
+parse     glamor
+parse     globals
+parse     glx_extinit
+parse     glxvndabi
+parse     glyphstr
+parse     i2c_def
+parse     input
+parse     inputstr
+parse     list
+parse     mi
+parse     micmap
+parse     micoord
+parse     migc
+parse     miline
+parse     mioverlay
+parse     mipict
+parse     mipointer
+parse     mipointrst
+parse     misc
+parse     miscstruct
+parse     mistruct
+parse     misync
+parse     misyncfd
+parse     misyncshm
+parse     misyncstr
+parse     mizerarc
+parse     opaque
+parse     optionstr
+parse     os
+parse     picture
+parse     picturestr
+parse     pixmap
+parse     pixmapstr
+parse     present
+parse     privates
+parse     property
+parse     propertyst
+parse     protocol-versions
+parse     ptrveloc
+parse     randrstr
+parse     region
+parse     regionstr
+parse     resource
+parse     rgb
+parse     rrtransform
+parse     sarea
+parse     screenint
+parse     scrintstr
+parse     scrnintstr
+parse     servermd
+parse     shadow
+parse     shadowfb
+parse     shmint
+parse     syncsdk
+parse     validate
+parse     vbe
+parse     vbeModes
+parse     vgaHW
+parse     vidmodestr
+parse     vndserver
+parse     wfbrename
+parse     window
+parse     windowstr
+parse     xaarop
+parse     xf86
+parse     xf86Crtc
+parse     xf86Cursor
+parse     xf86DDC
+parse     xf86Modes
+parse     xf86Module
+parse     xf86Opt
+parse     xf86Optionstr
+parse     xf86Optrec
+parse     xf86Parser
+parse     xf86Pci
+parse     xf86Priv
+parse     xf86Privstr
+parse     xf86RandR12
+parse     xf86Xinput
+parse     xf86_OSlib
+parse     xf86_OSproc
+parse     xf86cmap
+parse     xf86fbman
+parse     xf86i2c
+parse     xf86int10
+parse     xf86platformBus
+parse     xf86sbusBus
+parse     xf86str
+parse     xf86xv
+parse     xf86xvmc
+parse     xisb
+parse     xkbrules
+parse     xkbsrv
+parse     xkbstr
+parse     xlibre_ptrtypes
+parse     xorgVersion
+parse     xserver_properties
+parse     xvdix
+parse     xvmcext
+parse     mi_priv
+parse     miarc
+parse     micmap
+parse     micopy
+parse     midash
+parse     midispcur
+parse     mieq
+parse     miexpose
+parse     mifillarc
+parse     mifpoly
+parse     migc
+parse     miglblt
+parse     miinitext
+parse     mioverlay
+parse     mipointer
+parse     mipointer_priv
+parse     mipoly
+parse     mipolypnt
+parse     mipolyrect
+parse     mipolyseg
+parse     mipolytext
+parse     mipushpxl
+parse     miscanfill
+parse     miscrinit
+parse     misprite
+parse     mivaltree
+parse     miwideline
+parse     miwindow
+parse     mizerarc
+parse     mizerclip
+parse     mizerline
+parse     extinit_priv
+parse     WaitFor
+parse     Xtrans
+parse     Xtransint
+parse     Xtranssock
+parse     Xtransutil
+parse     access
+parse     alloc
+parse     audit_priv
+parse     auth
+parse     backtrace
+parse     bug_priv
+parse     busfault
+parse     client
+parse     client_priv
+parse     cmdline
+parse     connection
+parse     ddx_priv
+parse     fmt
+parse     inputthread
+parse     io
+parse     io_priv
+parse     log
+parse     log_priv
+parse     mathx_priv
+parse     mitauth
+parse     osdep
+parse     osinit
+parse     ospoll
+parse     ossock
+parse     probes_priv
+parse     reallocarray
+parse     screensaver
+parse     serverlock
+parse     strcasecmp
+parse     strcasestr
+parse     string
+parse     strlcat
+parse     strlcpy
+parse     strndup
+parse     timingsafe_memcmp
+parse     transport
+parse     utils
+parse     xdmauth
+parse     xdmcp
+parse     xhostname
+parse     xprintf
+parse     xserver_poll
+parse     xsha1
+parse     present
+parse     present_event
+parse     present_execute
+parse     present_fake
+parse     present_fence
+parse     present_notify
+parse     present_priv
+parse     present_request
+parse     present_scmd
+parse     present_screen
+parse     present_vblank
+parse     pseudoramiX
+parse     randr
+parse     randrstr_priv
+parse     rrcrtc
+parse     rrdispatch
+parse     rrdispatch_priv
+parse     rrinfo
+parse     rrlease
+parse     rrmode
+parse     rrmonitor
+parse     rroutput
+parse     rrpointer
+parse     rrproperty
+parse     rrprovider
+parse     rrproviderproperty
+parse     rrscreen
+parse     rrtransform
+parse     rrxinerama
+parse     record
+parse     set
+parse     animcur
+parse     filter
+parse     glyph
+parse     glyphstr_priv
+parse     matrix
+parse     miindex
+parse     mipict
+parse     mirect
+parse     mitrap
+parse     mitri
+parse     picture
+parse     picturestr_priv
+parse     render
+parse     fixes
+parse     hashtabletest
+parse     input
+parse     list
+parse     misc
+parse     sha1
+parse     signal-logging
+parse     simple-xinit
+parse     string
+parse     test_xkb
+parse     tests-common
+parse     tests
+parse     touch
+parse     xfree86
+parse     xtest
+parse     cursor
+parse     disconnect
+parse     region
+parse     saveset
+parse     select
+parse     xfixes
+parse     xfixesint
+parse     XKBAlloc
+parse     XKBGAlloc
+parse     XKBMAlloc
+parse     XKBMisc
+parse     ddxBeep
+parse     ddxCtrls
+parse     ddxKillSrv
+parse     ddxLEDs
+parse     ddxLoad
+parse     ddxPrivate
+parse     ddxVT
+parse     maprules
+parse     xkb-procs
+parse     xkb
+parse     xkbAccessX
+parse     xkbActions
+parse     xkbDflts
+parse     xkbEvents
+parse     xkbInit
+parse     xkbLEDs
+parse     xkbPrKeyEv
+parse     xkbUtils
+parse     xkbfile_priv
+parse     xkbfmisc
+parse     xkbfmisc_priv
+parse     xkbgeom_priv
+parse     xkbout
+parse     xkbout_priv
+parse     xkbrules_priv
+parse     xkbsrv_priv
+parse     xkbtext
+parse     xkbtext_priv
+parse     xkmread
+importall bigreq
+import    object	(/usr/include/dlang/dmd/object.d)
+(imported from source/Xext/bigreq.d)
+import    core.attribute	(/usr/include/dlang/dmd/core/attribute.d)
+(imported from /usr/include/dlang/dmd/object.d(84,31))
+import    core.internal.newaa	(/usr/include/dlang/dmd/core/internal/newaa.d)
+(imported from /usr/include/dlang/dmd/object.d(2961,15))
+import    core.internal.util.math	(/usr/include/dlang/dmd/core/internal/util/math.d)
+(imported from /usr/include/dlang/dmd/core/internal/newaa.d(17,8))
+import    core.internal.traits	(/usr/include/dlang/dmd/core/internal/traits.d)
+(imported from /usr/include/dlang/dmd/core/internal/newaa.d(18,8))
+import    core.internal.hash	(/usr/include/dlang/dmd/core/internal/hash.d)
+(imported from /usr/include/dlang/dmd/object.d(3709,19))
+import    core.internal.array.capacity	(/usr/include/dlang/dmd/core/internal/array/capacity.d)
+(imported from /usr/include/dlang/dmd/object.d(3884,8))
+import    core.internal.entrypoint	(/usr/include/dlang/dmd/core/internal/entrypoint.d)
+(imported from /usr/include/dlang/dmd/object.d(4673,15))
+import    core.internal.array.appending	(/usr/include/dlang/dmd/core/internal/array/appending.d)
+(imported from /usr/include/dlang/dmd/object.d(4675,15))
+import    core.internal.array.comparison	(/usr/include/dlang/dmd/core/internal/array/comparison.d)
+(imported from /usr/include/dlang/dmd/object.d(4689,15))
+import    core.internal.array.equality	(/usr/include/dlang/dmd/core/internal/array/equality.d)
+(imported from /usr/include/dlang/dmd/object.d(4690,15))
+import    core.internal.array.casting	(/usr/include/dlang/dmd/core/internal/array/casting.d)
+(imported from /usr/include/dlang/dmd/object.d(4691,15))
+import    core.internal.array.concatenation	(/usr/include/dlang/dmd/core/internal/array/concatenation.d)
+(imported from /usr/include/dlang/dmd/object.d(4692,15))
+import    core.internal.array.construction	(/usr/include/dlang/dmd/core/internal/array/construction.d)
+(imported from /usr/include/dlang/dmd/object.d(4693,15))
+import    core.internal.array.arrayassign	(/usr/include/dlang/dmd/core/internal/array/arrayassign.d)
+(imported from /usr/include/dlang/dmd/object.d(4699,15))
+import    core.internal.cast_	(/usr/include/dlang/dmd/core/internal/cast_.d)
+(imported from /usr/include/dlang/dmd/object.d(4703,15))
+import    core.internal.dassert	(/usr/include/dlang/dmd/core/internal/dassert.d)
+(imported from /usr/include/dlang/dmd/object.d(4705,15))
+import    core.internal.destruction	(/usr/include/dlang/dmd/core/internal/destruction.d)
+(imported from /usr/include/dlang/dmd/object.d(4707,15))
+import    core.internal.moving	(/usr/include/dlang/dmd/core/internal/moving.d)
+(imported from /usr/include/dlang/dmd/object.d(4709,15))
+import    core.internal.postblit	(/usr/include/dlang/dmd/core/internal/postblit.d)
+(imported from /usr/include/dlang/dmd/object.d(4711,15))
+import    core.internal.switch_	(/usr/include/dlang/dmd/core/internal/switch_.d)
+(imported from /usr/include/dlang/dmd/object.d(4713,15))
+import    core.lifetime	(/usr/include/dlang/dmd/core/lifetime.d)
+(imported from /usr/include/dlang/dmd/object.d(4716,15))
+import    core.internal.attributes	(/usr/include/dlang/dmd/core/internal/attributes.d)
+(imported from /usr/include/dlang/dmd/core/lifetime.d(3,8))
+import    core.builtins	(/usr/include/dlang/dmd/core/builtins.d)
+(imported from /usr/include/dlang/dmd/object.d(4827,15))
+import    std.system	(/usr/include/dlang/dmd/std/system.d)
+(imported from source/build/dix_config.d(16,8))
+import    core.stdc.config	(/usr/include/dlang/dmd/core/stdc/config.d)
+(imported from source/dix/dix_priv.d(4,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/Xfuncproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.Xfuncproto	(source/externs/X11/Xfuncproto.h)
+(imported from source/include/misc.d(83,15))
+import    __importc_builtins	(/usr/include/dlang/dmd/__importc_builtins.di)
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/Xmd.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.Xmd	(source/externs/X11/Xmd.h)
+(imported from source/include/misc.d(84,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/X.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.X	(source/externs/X11/X.h)
+(imported from source/include/misc.d(85,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/Xprotostr.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.Xprotostr	(source/externs/X11/Xprotostr.h)
+(imported from source/include/misc.d(87,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/Xdefs.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.Xdefs	(source/externs/X11/Xdefs.h)
+(imported from source/include/xlibre_ptrtypes.d(3,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/pixman.c -include /usr/include/dlang/dmd/importc.h
+import    externs.pixman	(source/externs/pixman.c)
+(imported from source/include/miscstruct.d(56,15))
+import    core.stdc.assert_	(/usr/include/dlang/dmd/core/stdc/assert_.d)
+(imported from source/include/privates.d(21,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/Xproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.Xproto	(source/externs/X11/Xproto.h)
+(imported from source/include/window.d(51,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XI2.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XI2	(source/externs/X11/extensions/XI2.h)
+(imported from source/include/inputstr.d(55,15))
+import    core.stdc.stdint	(/usr/include/dlang/dmd/core/stdc/stdint.d)
+(imported from source/include/input.d(58,15))
+import    core.stdc.stddef	(/usr/include/dlang/dmd/core/stdc/stddef.d)
+(imported from /usr/include/dlang/dmd/core/stdc/stdint.d(18,8))
+import    core.stdc.signal	(/usr/include/dlang/dmd/core/stdc/signal.d)
+(imported from /usr/include/dlang/dmd/core/stdc/stdint.d(19,8))
+import    core.stdc.wchar_	(/usr/include/dlang/dmd/core/stdc/wchar_.d)
+(imported from /usr/include/dlang/dmd/core/stdc/stdint.d(20,8))
+import    core.atomic	(/usr/include/dlang/dmd/core/atomic.d)
+(imported from /usr/include/dlang/dmd/core/stdc/wchar_.d(20,8))
+import    core.internal.atomic	(/usr/include/dlang/dmd/core/internal/atomic.d)
+(imported from /usr/include/dlang/dmd/core/atomic.d(32,8))
+import    core.stdc.stdarg	(/usr/include/dlang/dmd/core/stdc/stdarg.d)
+(imported from /usr/include/dlang/dmd/core/stdc/wchar_.d(18,8))
+import    core.internal.vararg.sysv_x64	(/usr/include/dlang/dmd/core/internal/vararg/sysv_x64.d)
+(imported from /usr/include/dlang/dmd/core/stdc/stdarg.d(118,19))
+import    core.stdc.stdlib	(/usr/include/dlang/dmd/core/stdc/stdlib.d)
+(imported from /usr/include/dlang/dmd/core/stdc/stdarg.d(353,16))
+import    core.stdc.stdio	(/usr/include/dlang/dmd/core/stdc/stdio.d)
+(imported from /usr/include/dlang/dmd/core/stdc/wchar_.d(19,8))
+import    core.stdc.time	(/usr/include/dlang/dmd/core/stdc/time.d)
+(imported from /usr/include/dlang/dmd/core/stdc/wchar_.d(22,15))
+import    core.sys.posix.stdc.time	(/usr/include/dlang/dmd/core/sys/posix/stdc/time.d)
+(imported from /usr/include/dlang/dmd/core/stdc/time.d(19,19))
+import    core.sys.posix.sys.types	(/usr/include/dlang/dmd/core/sys/posix/sys/types.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/stdc/time.d(52,15))
+import    core.sys.posix.config	(/usr/include/dlang/dmd/core/sys/posix/config.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/types.d(18,8))
+import    core.stdc.string	(/usr/include/dlang/dmd/core/stdc/string.d)
+(imported from source/include/os.d(59,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XI2proto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XI2proto	(source/externs/X11/extensions/XI2proto.h)
+(imported from source/dix/inpututils_priv.d(31,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XKBstr.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XKBstr	(source/externs/X11/extensions/XKBstr.h)
+(imported from source/include/xkbsrv.d(37,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XKB.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XKB	(source/externs/X11/extensions/XKB.h)
+(imported from source/include/xkbsrv.d(41,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/syncconst.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.syncconst	(source/externs/X11/extensions/syncconst.h)
+(imported from source/Xext/syncsrv.d(58,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/fonts/fontstruct.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.fonts.fontstruct	(source/externs/X11/fonts/fontstruct.h)
+(imported from source/include/mi.d(64,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/_randr.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions._randr	(source/externs/X11/extensions/_randr.h)
+(imported from source/include/scrnintstr.d(61,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/renderproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.renderproto	(source/externs/X11/extensions/renderproto.h)
+(imported from source/include/glyphstr.d(30,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/randrproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.randrproto	(source/externs/X11/extensions/randrproto.h)
+(imported from source/include/scrintstr.d(69,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/fonts/font.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.fonts.font	(source/externs/X11/fonts/font.h)
+(imported from source/include/gcstruct.d(60,19))
+import    core.sys.posix.pthread	(/usr/include/dlang/dmd/core/sys/posix/pthread.d)
+(imported from source/include/misc.d(92,15))
+import    core.sys.posix.sched	(/usr/include/dlang/dmd/core/sys/posix/sched.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/pthread.d(19,15))
+import    core.sys.posix.time	(/usr/include/dlang/dmd/core/sys/posix/time.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sched.d(19,15))
+import    core.sys.posix.endian	(/usr/include/dlang/dmd/core/sys/posix/endian.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/time.d(19,8))
+import    core.bitop	(/usr/include/dlang/dmd/core/bitop.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/endian.d(15,8))
+import    core.sys.posix.signal	(/usr/include/dlang/dmd/core/sys/posix/signal.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/time.d(22,15))
+import    core.stdc.limits	(/usr/include/dlang/dmd/core/stdc/limits.d)
+(imported from source/include/misc.d(142,15))
+import    core.sys.posix.unistd	(/usr/include/dlang/dmd/core/sys/posix/unistd.d)
+(imported from source/os/ospoll.d(35,8))
+import    core.sys.posix.inttypes	(/usr/include/dlang/dmd/core/sys/posix/inttypes.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/unistd.d(19,15))
+import    core.stdc.inttypes	(/usr/include/dlang/dmd/core/stdc/inttypes.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/inttypes.d(18,15))
+import    core.sys.posix.poll	(/usr/include/dlang/dmd/core/sys/posix/poll.d)
+(imported from source/os/xserver_poll.d(91,8))
+import    core.sys.posix.sys.select	(/usr/include/dlang/dmd/core/sys/posix/sys/select.d)
+(imported from source/os/xserver_poll.d(92,8))
+import    core.sys.posix.sys.time	(/usr/include/dlang/dmd/core/sys/posix/sys/time.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/select.d(13,15))
+import    core.sys.linux.sys.time	(/usr/include/dlang/dmd/core/sys/linux/sys/time.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/time.d(30,31))
+import    core.sys.linux.config	(/usr/include/dlang/dmd/core/sys/linux/config.d)
+(imported from /usr/include/dlang/dmd/core/sys/linux/sys/time.d(16,8))
+import    core.stdc.errno	(/usr/include/dlang/dmd/core/stdc/errno.d)
+(imported from source/os/osinit.d(56,8))
+import    core.sys.posix.sys.mman	(/usr/include/dlang/dmd/core/sys/posix/sys/mman.d)
+(imported from source/os/busfault.d(38,8))
+import    core.sys.posix.fcntl	(/usr/include/dlang/dmd/core/sys/posix/fcntl.d)
+(imported from source/os/serverlock.d(61,8))
+import    core.sys.posix.sys.stat	(/usr/include/dlang/dmd/core/sys/posix/sys/stat.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/fcntl.d(20,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/panoramiXproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.panoramiXproto	(source/externs/X11/extensions/panoramiXproto.h)
+(imported from source/Xext/panoramiX.d(36,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/xfixeswire.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.xfixeswire	(source/externs/X11/extensions/xfixeswire.h)
+(imported from source/xfixes/xfixes.d(56,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/xfixesproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.xfixesproto	(source/externs/X11/extensions/xfixesproto.h)
+(imported from source/xfixes/xfixesint.d(61,8))
+import    std.conv	(/usr/include/dlang/dmd/std/conv.d)
+(imported from source/dix/dix_priv.d(45,8))
+import    std.ascii	(/usr/include/dlang/dmd/std/ascii.d)
+(imported from /usr/include/dlang/dmd/std/conv.d(54,15))
+import    std.typecons	(/usr/include/dlang/dmd/std/typecons.d)
+(imported from /usr/include/dlang/dmd/std/conv.d(59,8))
+import    std.format.spec	(/usr/include/dlang/dmd/std/format/spec.d)
+(imported from /usr/include/dlang/dmd/std/typecons.d(72,8))
+import    std.traits	(/usr/include/dlang/dmd/std/traits.d)
+(imported from /usr/include/dlang/dmd/std/format/spec.d(22,8))
+import    std.meta	(/usr/include/dlang/dmd/std/meta.d)
+(imported from /usr/include/dlang/dmd/std/traits.d(174,8))
+import    std.range.primitives	(/usr/include/dlang/dmd/std/range/primitives.d)
+(imported from /usr/include/dlang/dmd/std/meta.d(81,8))
+import    std.format.write	(/usr/include/dlang/dmd/std/format/write.d)
+(imported from /usr/include/dlang/dmd/std/typecons.d(73,8))
+import    std.format.internal.write	(/usr/include/dlang/dmd/std/format/internal/write.d)
+(imported from /usr/include/dlang/dmd/std/format/write.d(492,8))
+import    std.internal.attributes	(/usr/include/dlang/dmd/std/internal/attributes.d)
+(imported from /usr/include/dlang/dmd/std/typecons.d(77,8))
+import    std.range	(/usr/include/dlang/dmd/std/range/package.d)
+(imported from /usr/include/dlang/dmd/std/conv.d(57,8))
+import    std.array	(/usr/include/dlang/dmd/std/array.d)
+(imported from /usr/include/dlang/dmd/std/range/package.d(232,15))
+import    std.functional	(/usr/include/dlang/dmd/std/functional.d)
+(imported from /usr/include/dlang/dmd/std/array.d(84,8))
+import    std.range.interfaces	(/usr/include/dlang/dmd/std/range/interfaces.d)
+(imported from /usr/include/dlang/dmd/std/range/package.d(233,15))
+import    std.string	(/usr/include/dlang/dmd/std/string.d)
+(imported from source/dix/dix_priv.d(49,12))
+import    std.format	(/usr/include/dlang/dmd/std/format/package.d)
+(imported from /usr/include/dlang/dmd/std/string.d(174,15))
+import    std.exception	(/usr/include/dlang/dmd/std/exception.d)
+(imported from /usr/include/dlang/dmd/std/format/package.d(645,8))
+import    std.format.read	(/usr/include/dlang/dmd/std/format/read.d)
+(imported from /usr/include/dlang/dmd/std/format/package.d(641,15))
+import    std.format.internal.read	(/usr/include/dlang/dmd/std/format/internal/read.d)
+(imported from /usr/include/dlang/dmd/std/format/read.d(200,8))
+import    std.uni	(/usr/include/dlang/dmd/std/uni/package.d)
+(imported from /usr/include/dlang/dmd/std/string.d(176,15))
+import    std.internal.unicode_tables	(/usr/include/dlang/dmd/std/internal/unicode_tables.d)
+(imported from /usr/include/dlang/dmd/std/uni/package.d(716,8))
+import    std.algorithm.comparison	(/usr/include/dlang/dmd/std/algorithm/comparison.d)
+(imported from /usr/include/dlang/dmd/std/string.d(187,15))
+import    std.algorithm.searching	(/usr/include/dlang/dmd/std/algorithm/searching.d)
+(imported from /usr/include/dlang/dmd/std/string.d(188,15))
+importall c
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/damageproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.damageproto	(source/externs/X11/extensions/damageproto.h)
+(imported from source/Xext/damage/damageext.d(43,8))
+importall damageext_priv
+importall dpms
+importall dpmsproc
+importall dri2
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/dri2tokens.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.dri2tokens	(source/externs/X11/extensions/dri2tokens.h)
+(imported from source/Xext/dri2/dri2.d(54,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/Xext/dri2/pci_ids/pci_id_driver_map.h -include /usr/include/dlang/dmd/importc.h
+import    Xext.dri2.pci_ids.pci_id_driver_map	(source/Xext/dri2/pci_ids/pci_id_driver_map.h)
+(imported from source/Xext/dri2/dri2.d(1285,8))
+importall dri2_priv
+importall dri2ext
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/dri2proto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.dri2proto	(source/externs/X11/extensions/dri2proto.h)
+(imported from source/Xext/dri2/dri2ext.d(40,8))
+importall dri2int
+importall geext
+importall geext_priv
+importall hashtable
+importall panoramiX
+importall panoramiXh
+importall panoramiXprocs
+importall panoramiXsrv
+importall h
+importall saver
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/saverproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.saverproto	(source/externs/X11/extensions/saverproto.h)
+(imported from source/Xext/saver.d(66,8))
+importall security
+import    core.stdc.ctype	(/usr/include/dlang/dmd/core/stdc/ctype.d)
+(imported from source/os/Xtrans.d(58,8))
+import    core.sys.posix.sys.ioctl	(/usr/include/dlang/dmd/core/sys/posix/sys/ioctl.d)
+(imported from source/os/ossock.d(17,8))
+import    core.sys.posix.sys.ttycom	(/usr/include/dlang/dmd/core/sys/posix/sys/ttycom.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/ioctl.d(18,15))
+import    core.sys.posix.sys.ioccom	(/usr/include/dlang/dmd/core/sys/posix/sys/ioccom.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/ttycom.d(9,8))
+import    core.sys.posix.termios	(/usr/include/dlang/dmd/core/sys/posix/termios.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/ttycom.d(10,8))
+import    core.sys.posix.sys.socket	(/usr/include/dlang/dmd/core/sys/posix/sys/socket.d)
+(imported from source/os/Xtranssock.d(88,15))
+import    core.sys.posix.sys.uio	(/usr/include/dlang/dmd/core/sys/posix/sys/uio.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/sys/socket.d(19,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/netinet/in_.c -include /usr/include/dlang/dmd/importc.h
+import    externs.netinet.in_	(source/externs/netinet/in_.c)
+(imported from source/os/Xtransint.d(92,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/arpa/inet.c -include /usr/include/dlang/dmd/importc.h
+import    externs.arpa.inet	(source/externs/arpa/inet.c)
+(imported from source/os/Xtransint.d(93,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/securproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.securproto	(source/externs/X11/extensions/securproto.h)
+(imported from source/Xext/security.d(59,8))
+importall securitysrv
+importall shape
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/shapeproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.shapeproto	(source/externs/X11/extensions/shapeproto.h)
+(imported from source/Xext/shape.d(60,8))
+importall shm
+import    core.sys.posix.sys.ipc	(/usr/include/dlang/dmd/core/sys/posix/sys/ipc.d)
+(imported from source/Xext/shm.d(42,8))
+import    core.sys.posix.sys.shm	(/usr/include/dlang/dmd/core/sys/posix/sys/shm.d)
+(imported from source/Xext/shm.d(43,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/shmproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.shmproto	(source/externs/X11/extensions/shmproto.h)
+(imported from source/Xext/shm.d(82,8))
+importall shm_priv
+importall sleepuntil
+importall sync
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/syncproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.syncproto	(source/externs/X11/extensions/syncproto.h)
+(imported from source/Xext/sync.d(83,8))
+importall syncsrv
+importall xace
+importall xacestr
+importall xcmisc
+importall xf86bigfont
+importall xf86bigfontsrv
+importall xres
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XResproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XResproto	(source/externs/X11/extensions/XResproto.h)
+(imported from source/Xext/xres.d(42,8))
+importall xselinux
+importall xselinux_ext
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/selinux/selinux.c -include /usr/include/dlang/dmd/importc.h
+import    externs.selinux.selinux	(source/externs/selinux/selinux.c)
+(imported from source/Xext/xselinuxint.d(24,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/selinux/avc.c -include /usr/include/dlang/dmd/importc.h
+import    externs.selinux.avc	(source/externs/selinux/avc.c)
+(imported from source/Xext/xselinuxint.d(25,15))
+importall xselinux_hooks
+importall xselinux_label
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/selinux/label.c -include /usr/include/dlang/dmd/importc.h
+import    externs.selinux.label	(source/externs/selinux/label.c)
+(imported from source/Xext/xselinux_label.d(26,8))
+importall xselinuxint
+importall xtest
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XIproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XIproto	(source/externs/X11/extensions/XIproto.h)
+(imported from source/dix/exevents_priv.d(11,15))
+importall xvdisp
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/Xv.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.Xv	(source/externs/X11/extensions/Xv.h)
+(imported from source/Xext/xvdix_priv.d(16,8))
+importall xvdix_priv
+importall xvmain
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/Xvproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.Xvproto	(source/externs/X11/extensions/Xvproto.h)
+(imported from source/Xext/xvmain.d(107,8))
+importall xvmc
+importall XIstubs
+importall allowev
+importall chgdctl
+importall chgfctl
+importall chgkbd
+importall chgkmap
+importall chgprop
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XI.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XI	(source/externs/X11/extensions/XI.h)
+(imported from source/Xi/grabdev.d(58,8))
+importall chgptr
+importall closedev
+importall devbell
+importall exevents
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XKBproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XKBproto	(source/externs/X11/extensions/XKBproto.h)
+(imported from source/xkb/xkbsrv_priv.d(22,8))
+importall exglobals
+importall extinit
+importall getbmap
+importall getdctl
+importall getfctl
+importall getfocus
+importall getkmap
+importall getmmap
+importall getprop
+importall getselev
+importall getvers
+importall grabdev
+importall grabdevb
+importall grabdevk
+importall gtmotion
+importall handlers
+importall listdev
+importall opendev
+importall queryst
+importall selectev
+importall sendexev
+importall setbmap
+importall setdval
+importall setfocus
+importall setmmap
+importall setmode
+importall stubs
+importall ungrdev
+importall ungrdevb
+importall ungrdevk
+importall xiallowev
+importall xibarriers
+importall xichangecursor
+importall xichangehierarchy
+importall xigetclientpointer
+importall xigrabdev
+importall xipassivegrab
+importall xiproperty
+importall xiquerydevice
+importall xiquerypointer
+importall xiqueryversion
+importall xiselectev
+importall xisetclientpointer
+importall xisetdevfocus
+importall xiwarppointer
+importall dix_config
+importall xlibre_server
+importall xorg_config
+importall xorg_server
+importall compalloc
+importall compext
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/compositeproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.compositeproto	(source/externs/X11/extensions/compositeproto.h)
+(imported from source/composite/compext.d(58,8))
+importall compinit
+importall compint
+importall compositeext_priv
+importall compoverlay
+importall compwindow
+importall config_backends
+importall config
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/pciaccess.c -include /usr/include/dlang/dmd/importc.h
+import    externs.pciaccess	(source/externs/pciaccess.c)
+(imported from source/include/xf86str.d(52,8))
+import    core.volatile	(/usr/include/dlang/dmd/core/volatile.d)
+(imported from source/include/compiler.d(4,8))
+import    core.sys.posix.grp	(/usr/include/dlang/dmd/core/sys/posix/grp.d)
+(imported from source/hw/xfree86/common/xf86Config.d(55,8))
+import    std.stdio	(/usr/include/dlang/dmd/std/stdio.d)
+(imported from source/externs/regex.d(4,8))
+import    std.algorithm.mutation	(/usr/include/dlang/dmd/std/algorithm/mutation.d)
+(imported from /usr/include/dlang/dmd/std/stdio.d(111,8))
+import    core.sys.posix.stdio	(/usr/include/dlang/dmd/core/sys/posix/stdio.d)
+(imported from /usr/include/dlang/dmd/std/stdio.d(213,19))
+import    core.sys.posix.dirent	(/usr/include/dlang/dmd/core/sys/posix/dirent.d)
+(imported from source/hw/xfree86/common/xf86pciBus.d(41,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/dbus.c -include /usr/include/dlang/dmd/importc.h
+import    externs.dbus	(source/externs/dbus.c)
+(imported from source/hw/xfree86/os_support/linux/systemd_logind.d(30,8))
+import    core.sys.linux.fcntl	(/usr/include/dlang/dmd/core/sys/linux/fcntl.d)
+(imported from source/hw/kdrive/linux/linux.d(33,8))
+import    core.stdc.math	(/usr/include/dlang/dmd/core/stdc/math.d)
+(imported from source/dix/ptrveloc.d(31,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/gbm.c -include /usr/include/dlang/dmd/importc.h
+import    externs.gbm	(source/externs/gbm.c)
+(imported from source/hw/xfree86/drivers/video/modesetting/driver.d(72,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xf86drm.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xf86drm	(source/externs/xf86drm.c)
+(imported from source/hw/xfree86/drivers/video/modesetting/drmmode_bo.d(22,8))
+importall dbus_core
+importall libhal
+importall hotplug_priv
+importall kdrive_config
+importall udev
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/libudev.c -include /usr/include/dlang/dmd/importc.h
+import    externs.libudev	(source/externs/libudev.c)
+(imported from source/config/udev.d(31,8))
+importall version_config
+importall wscons
+importall xkb_config
+importall dbe
+importall dbestruct
+importall midbe
+importall atom
+importall atom_priv
+importall callback_priv
+importall client
+importall client_priv
+importall color
+importall colormap
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/strings.c -include /usr/include/dlang/dmd/importc.h
+import    externs.strings	(source/externs/strings.c)
+(imported from source/dix/colormap.d(58,8))
+importall colormap_priv
+importall cursor
+importall cursor_priv
+importall devices
+importall devices_priv
+importall dispatch
+importall display
+importall dix_priv
+importall dixfonts
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/fonts/libxfont2.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.fonts.libxfont2	(source/externs/X11/fonts/libxfont2.h)
+(imported from source/dix/dixfonts.d(63,8))
+import    core.sys.posix.libgen	(/usr/include/dlang/dmd/core/sys/posix/libgen.d)
+(imported from source/os/utils.d(85,8))
+import    core.sys.posix.sys.wait	(/usr/include/dlang/dmd/core/sys/posix/sys/wait.d)
+(imported from source/os/utils.d(99,8))
+import    core.sys.posix.netdb	(/usr/include/dlang/dmd/core/sys/posix/netdb.d)
+(imported from source/os/utils.d(110,8))
+import    core.sys.posix.netinet.in_	(/usr/include/dlang/dmd/core/sys/posix/netinet/in_.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/netdb.d(19,15))
+import    core.sys.posix.arpa.inet	(/usr/include/dlang/dmd/core/sys/posix/arpa/inet.d)
+(imported from /usr/include/dlang/dmd/core/sys/posix/netinet/in_.d(19,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/presentproto.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.presentproto	(source/externs/X11/extensions/presentproto.h)
+(imported from source/present/present_priv.d(45,8))
+importall dixgrabs_priv
+importall dixstruct_priv
+importall dixutils
+importall enterleave
+importall eventconvert
+importall events
+importall exevents_priv
+importall extension
+importall extension_priv
+importall gc
+importall gc_priv
+importall gestures
+importall getevents
+importall globals
+importall glyphcurs
+importall grabs
+importall input_priv
+importall inpututils
+importall inpututils_priv
+importall lookup
+importall main
+importall pixmap
+importall privates
+importall property
+importall property_priv
+importall ptrveloc
+importall ptrveloc_priv
+importall region
+importall registry
+importall registry_priv
+importall reqhandlers_priv
+importall request_priv
+importall resource
+importall resource_priv
+importall rpcbuf
+importall rpcbuf_priv
+importall screen
+importall screen_hooks
+importall screen_hooks_priv
+importall screenint_priv
+importall screensaver_priv
+importall selection
+importall selection_priv
+importall server_priv
+importall settings
+importall settings_priv
+importall stubmain
+importall swaprep
+importall swapreq
+importall tables
+importall touch
+importall window
+importall window_priv
+importall dri3
+importall dri3_priv
+importall dri3_request
+importall dri3_screen
+importall exa
+importall exa_accel
+importall exa_classic
+importall exa_driver
+importall exa_glyphs
+importall exa_migration_classic
+importall exa_migration_mixed
+importall exa_mixed
+importall exa_offscreen
+importall exa_priv
+importall exa_render
+importall exa_unaccel
+importall libdrm
+importall libhal
+importall libxcvt
+importall apm_bios
+importall kd
+importall vt
+importall regex
+importall fb_priv
+importall fballpriv
+importall fbarc
+importall fbbits
+importall fbbitsh
+importall fbblt
+importall fbbltone
+importall fbcmap_mi
+importall fbcopy
+importall fbfill
+importall fbfillrect
+importall fbfillsp
+importall fbgc
+importall fbgetsp
+importall fbglyph
+importall fbimage
+importall fbline
+importall fboverlay
+importall fbpict
+importall fbpict_priv
+importall fbpixmap
+importall fbpoint
+importall fbpush
+importall fbscreen
+importall fbseg
+importall fbsetsp
+importall fbsolid
+importall fbtile
+importall fbtrap
+importall fbutil
+importall fbwindow
+importall glamor
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/epoxygl.c -include /usr/include/dlang/dmd/importc.h
+import    externs.epoxygl	(source/externs/epoxygl.c)
+(imported from source/glamor/glamor_priv.d(44,15))
+importall glamor_addtraps
+importall glamor_composite_glyphs
+importall glamor_compositerects
+importall glamor_context
+importall glamor_copy
+importall glamor_core
+importall glamor_dash
+importall glamor_debug
+importall glamor_egl
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/gl.c -include /usr/include/dlang/dmd/importc.h
+import    externs.gl	(source/externs/gl.c)
+(imported from source/glx/glxserver.d(46,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/glext.c -include /usr/include/dlang/dmd/importc.h
+import    externs.glext	(source/externs/glext.c)
+(imported from source/glx/glxserver.d(47,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/glxproto.c -include /usr/include/dlang/dmd/importc.h
+import    externs.glxproto	(source/externs/glxproto.c)
+(imported from source/glx/glxserver.d(48,15))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/glxtokens.c -include /usr/include/dlang/dmd/importc.h
+import    externs.glxtokens	(source/externs/glxtokens.c)
+(imported from source/glx/glxscreens.d(39,8))
+importall glamor_egl_ext
+importall glamor_egl_priv
+importall glamor_fbo
+importall glamor_font
+importall glamor_glx_provider
+importall glamor_glyphblt
+importall glamor_gradient
+importall glamor_image
+importall glamor_largepixmap
+importall glamor_lines
+importall glamor_picture
+importall glamor_pixmap
+importall glamor_points
+importall glamor_prepare
+importall glamor_priv
+importall glamor_program
+importall glamor_rects
+importall glamor_render
+importall glamor_segs
+importall glamor_spans
+importall glamor_sync
+importall glamor_text
+importall glamor_transfer
+importall glamor_transform
+importall glamor_trapezoid
+importall glamor_triangles
+importall glamor_utils
+importall glamor_vbo
+importall glamor_window
+importall glamor_xv
+importall clientinfo
+importall createcontext
+importall extension_string
+importall glxdri2
+import    core.sys.posix.dlfcn	(/usr/include/dlang/dmd/core/sys/posix/dlfcn.d)
+(imported from source/glx/glx_dri/glxdri2.d(34,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/internal/dri_interface.c -include /usr/include/dlang/dmd/importc.h
+import    externs.internal.dri_interface	(source/externs/internal/dri_interface.c)
+(imported from source/glx/glx_dri/glxdri2.d(37,8))
+importall glxdricommon
+importall glxdriswrast
+importall glxcmds
+importall glxcmdsswap
+importall glxcontext
+importall glxdrawable
+importall glxext
+importall glxscreens
+importall glxserver
+importall glxutil
+importall indirect_dispatch
+importall indirect_dispatch_swap
+importall indirect_program
+importall indirect_reqsize
+importall indirect_size
+importall indirect_size_get
+importall indirect_table
+importall indirect_texture_compression
+importall indirect_util
+importall render2
+importall render2swap
+importall renderpix
+importall renderpixswap
+importall rensize
+importall single2
+importall single2swap
+importall singlepix
+importall singlepixswap
+importall singlesize
+importall swap_interval
+importall unpack
+importall vnd_dispatch_stubs
+importall vndcmds
+importall vndext
+importall vndserver_priv
+importall vndservermapping
+importall vndservervendor
+importall xfont
+importall ephyr
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_keysyms.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_keysyms	(source/externs/xcb/xcb_keysyms.c)
+(imported from source/hw/kdrive/ephyr/ephyr.d(31,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb	(source/externs/xcb/xcb.c)
+(imported from source/hw/kdrive/ephyr/ephyr_glamor.d(38,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_aux.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_aux	(source/externs/xcb/xcb_aux.c)
+(imported from source/hw/kdrive/ephyr/ephyr_glamor.d(39,8))
+importall ephyr_draw
+importall ephyr_glamor
+importall ephyrcursor
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_render.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_render	(source/externs/xcb/xcb_render.c)
+(imported from source/hw/kdrive/ephyr/ephyrcursor.d(32,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_renderutil.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_renderutil	(source/externs/xcb/xcb_renderutil.c)
+(imported from source/hw/kdrive/ephyr/ephyrcursor.d(33,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xproto.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xproto	(source/externs/xcb/xproto.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(59,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_icccm.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_icccm	(source/externs/xcb/xcb_icccm.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(60,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/shm.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.shm	(source/externs/xcb/shm.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(62,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_image.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_image	(source/externs/xcb/xcb_image.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(63,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/shape.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.shape	(source/externs/xcb/shape.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(64,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_randr.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_randr	(source/externs/xcb/xcb_randr.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(66,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcb_xkb.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcb_xkb	(source/externs/xcb/xcb_xkb.c)
+(imported from source/hw/kdrive/ephyr/hostx.d(67,8))
+importall ephyrinit
+importall ephyrlog
+importall ephyrvideo
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xv.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xv	(source/externs/xcb/xv.c)
+(imported from source/hw/kdrive/ephyr/ephyrvideo.d(37,8))
+importall hostx
+importall fb_glamor
+importall fbdev
+importall fbinit
+importall evdev
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/linux/input.c -include /usr/include/dlang/dmd/importc.h
+import    externs.linux.input	(source/externs/linux/input.c)
+(imported from source/hw/kdrive/linux/evdev/evdev.d(29,8))
+importall evdev_autodetect
+importall keyboard
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/linux/keyboard.c -include /usr/include/dlang/dmd/importc.h
+import    externs.linux.keyboard	(source/externs/linux/keyboard.c)
+(imported from source/hw/kdrive/linux/keyboard.d(38,8))
+importall linux
+importall mouse
+importall ms
+importall ps2
+importall tslib
+importall kcmap
+importall kd_glamor_xv
+importall kdrive
+importall kinfo
+importall kinput
+importall kmode
+importall kshadow
+importall kxv
+importall ddxBeforeReset
+importall InitInput
+importall InitOutput
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/sys/param.c -include /usr/include/dlang/dmd/importc.h
+import    externs.sys.param	(source/externs/sys/param.c)
+(imported from source/hw/vfb/InitOutput.d(71,8))
+importall action_priv
+importall dgaproc_priv
+importall seatd_libseat
+importall xf86AutoConfig
+importall xf86Bus
+importall xf86Config
+importall xf86Configure
+importall xf86Cursor
+importall xf86DGA
+importall xf86DPMS
+importall xf86Events
+importall xf86Extensions
+importall xf86Globals
+importall xf86Helper
+importall xf86InPriv
+importall xf86Init
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/linux/major.c -include /usr/include/dlang/dmd/importc.h
+import    externs.linux.major	(source/externs/linux/major.c)
+(imported from source/hw/xfree86/common/xf86Init.d(104,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/sys/sysmacros.c -include /usr/include/dlang/dmd/importc.h
+import    externs.sys.sysmacros	(source/externs/sys/sysmacros.c)
+(imported from source/hw/xfree86/common/xf86Init.d(105,8))
+importall xf86MatchDrivers
+importall xf86Mode
+importall xf86Module_priv
+importall xf86Opt_priv
+importall xf86Option
+importall xf86PM
+importall xf86RandR
+importall xf86VGAarbiter
+importall xf86VGAarbiterPriv
+importall xf86VGAarbiter_priv
+importall xf86VidMode
+importall xf86Xinput
+importall xf86Xinput_priv
+importall xf86_pci_priv
+importall xf86_priv
+importall xf86cmap
+importall xf86fbBus
+importall xf86fbman
+importall xf86noBus
+importall xf86pciBus
+importall xf86platformBus
+importall xf86platformBus_priv
+importall xf86sbusBus
+importall xf86sbusBus_priv
+importall xf86xv
+importall xf86xvmc
+importall xf86xvpriv
+importall xisb
+importall xorgHelper
+importall clientexception
+importall geeventinit
+importall log
+importall nvidiabug
+importall ones
+importall timercheck
+importall xf86Helper
+importall xf86_compat
+importall ddc
+importall ddcProperty
+importall edid_priv
+importall interpret_edid
+importall print_edid
+importall xf86DDC_priv
+importall fbmodule
+importall glxmodule
+importall shmodule
+importall dri
+importall dri_priv
+importall xf86dri
+importall xf86_input_inputtest_protocol
+importall xf86_input_inputtest
+import    core.sys.posix.sys.un	(/usr/include/dlang/dmd/core/sys/posix/sys/un.d)
+(imported from source/hw/xfree86/drivers/input/inputtest/xf86-input-inputtest.d(34,8))
+importall dri2
+importall driver
+importall drmmode_bo
+importall drmmode_display
+importall pageflip
+importall present
+importall vblank
+importall examodule
+importall fbdevhw
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/glob.c -include /usr/include/dlang/dmd/importc.h
+import    externs.glob	(source/externs/glob.c)
+(imported from source/hw/xfree86/fbdevhw/fbdevhw.d(13,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/c_asm/types.c -include /usr/include/dlang/dmd/importc.h
+import    externs.c_asm.types	(source/externs/c_asm/types.c)
+(imported from source/hw/xfree86/fbdevhw/fbpriv.d(12,15))
+importall fbdevhwstub
+importall fbpriv
+importall glamor_eglmodule
+importall glamor_xf86_egl
+importall glamor_xf86_xv
+importall xf86i2c
+importall generic
+importall helper_exec
+importall helper_mem
+importall stub
+importall vbe
+importall vbeModes
+importall x86emu
+importall xf86int10
+importall xf86int10_priv
+importall xf86int10module
+importall xf86x86emu
+importall loader
+importall loaderProcs
+importall loadmod
+importall symbol_test
+importall xf86Crtc
+importall xf86Cursors
+importall xf86DiDGA
+importall xf86EdidModes
+importall xf86Modes
+importall xf86RandR12
+importall xf86RandR12_priv
+importall xf86Rotate
+importall xf86gtf
+importall Pci
+importall c
+importall c
+importall xf86Sbus_priv
+importall int10Defines
+importall linux
+importall linux_vm86
+importall linux
+importall lnx_acpi
+importall lnx_agp
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/c_asm/ioctl.c -include /usr/include/dlang/dmd/importc.h
+import    externs.c_asm.ioctl	(source/externs/c_asm/ioctl.c)
+(imported from source/hw/xfree86/os_support/linux/lnx_agp.d(28,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/linux/agpgart.c -include /usr/include/dlang/dmd/importc.h
+import    externs.linux.agpgart	(source/externs/linux/agpgart.c)
+(imported from source/hw/xfree86/os_support/linux/lnx_agp.d(29,8))
+importall lnx_apm
+importall lnx_bell
+importall lnx_init
+importall lnx_kmod
+importall lnx_video
+importall systemd_logind
+importall SlowBcopy
+importall VTsw_noop
+importall VTsw_usl
+importall agp_noop
+importall drm_platform
+importall ioperm_noop
+importall kmod_noop
+importall platform_noop
+importall pm_noop
+importall posix_tty
+importall seatd_libseat
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/libseat.c -include /usr/include/dlang/dmd/importc.h
+import    externs.libseat	(source/externs/libseat.c)
+(imported from source/hw/xfree86/os_support/shared/seatd-libseat.d(36,8))
+importall sigio
+importall sigiostubs
+importall vidmem
+importall stub_bell
+importall stub_init
+importall stub_video
+importall xf86_os_support
+importall Configint
+importall DRI
+importall Device
+importall Extensions
+importall Files
+importall Flags
+importall Input
+importall InputClass
+importall Layout
+importall Module
+importall Monitor
+importall OutputClass
+importall Pointer
+importall Screen
+importall Vendor
+importall Video
+importall configProcs
+importall patterns
+importall read
+importall scan
+importall write
+importall xf86Parser_priv
+importall xf86tokens
+importall xf86CursorPriv
+importall xf86CursorRD
+importall xf86HWCurs
+importall sfbmodule
+importall shadowfb
+importall gtf
+importall vgaHW
+importall vgaHWmodule
+importall vidmode
+importall xkbKillSrv
+importall xkbPrivate
+importall xkbVT
+importall xorg_wrapper
+importall Args
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/hw/xnest/icon.c -include /usr/include/dlang/dmd/importc.h
+import    hw.xnest.icon	(source/hw/xnest/icon.c)
+(imported from source/hw/xnest/Display.d(41,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/hw/xnest/screensaver.c -include /usr/include/dlang/dmd/importc.h
+import    hw.xnest.screensaver	(source/hw/xnest/screensaver.c)
+(imported from source/hw/xnest/Display.d(42,8))
+importall Color
+importall Cursor
+importall Display
+importall Drawable
+importall Events
+importall Font
+importall GC
+importall GCOps
+importall Handlers
+importall Init
+importall Keyboard
+importall Pixmap
+importall Pointer
+importall Screen
+importall Window
+importall XNCursor
+importall XNFont
+importall XNGC
+importall XNPixmap
+importall XNWindow
+importall xcb
+importall xkb
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/xcb/xcbext.c -include /usr/include/dlang/dmd/importc.h
+import    externs.xcb.xcbext	(source/externs/xcb/xcbext.c)
+(imported from source/hw/xnest/xkb.d(9,8))
+importall xnest_xcb
+importall xnest_xkb
+importall Xprintf
+importall callback
+importall client
+importall colormap
+importall colormapst
+importall compiler
+importall compositeext
+importall cursor
+importall cursorstr
+importall damage
+importall damagestr
+importall dgaproc
+importall displaymode
+importall dix
+importall dixaccess
+importall dixfont
+importall dixfontstr
+importall dixstruct
+importall dri
+importall dri2
+importall dri3
+importall dristruct
+importall edid
+importall events
+importall eventstr
+importall exa
+importall exevents
+importall extension
+importall extinit
+importall extnsionst
+importall fb
+importall fbdevhw
+importall fboverlay
+importall fbpict
+importall fbrop
+importall fd_notify
+importall fourcc
+importall gc
+importall gcstruct
+importall glamor
+importall globals
+importall glx_extinit
+importall glxvndabi
+importall glyphstr
+importall i2c_def
+importall input
+importall inputstr
+importall list
+importall mi
+importall micmap
+importall micoord
+importall migc
+importall miline
+importall mioverlay
+importall mipict
+importall mipointer
+importall mipointrst
+importall misc
+importall miscstruct
+importall mistruct
+importall misync
+importall misyncfd
+importall misyncshm
+importall misyncstr
+importall mizerarc
+importall opaque
+importall optionstr
+importall os
+importall picture
+importall picturestr
+importall pixmap
+importall pixmapstr
+importall present
+importall privates
+importall property
+importall propertyst
+importall protocol_versions
+importall ptrveloc
+importall randrstr
+importall region
+importall regionstr
+importall resource
+importall rgb
+importall rrtransform
+importall sarea
+importall screenint
+importall scrintstr
+importall scrnintstr
+importall servermd
+importall shadow
+importall shadowfb
+importall shmint
+importall syncsdk
+importall validate
+importall vbe
+importall vbeModes
+importall vgaHW
+importall vidmodestr
+importall vndserver
+importall wfbrename
+importall window
+importall windowstr
+importall xaarop
+importall xf86
+importall xf86Crtc
+importall xf86Cursor
+importall xf86DDC
+importall xf86Modes
+importall xf86Module
+importall xf86Opt
+importall xf86Optionstr
+importall xf86Optrec
+importall xf86Parser
+importall xf86Pci
+importall xf86Priv
+importall xf86Privstr
+importall xf86RandR12
+importall xf86Xinput
+importall xf86_OSlib
+importall xf86_OSproc
+importall xf86cmap
+importall xf86fbman
+importall xf86i2c
+importall xf86int10
+importall xf86platformBus
+importall xf86sbusBus
+importall xf86str
+importall xf86xv
+importall xf86xvmc
+importall xisb
+importall xkbrules
+importall xkbsrv
+importall xkbstr
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/X11/extensions/XKBgeom.h -include /usr/include/dlang/dmd/importc.h
+import    externs.X11.extensions.XKBgeom	(source/externs/X11/extensions/XKBgeom.h)
+(imported from source/include/xkbstr.d(39,8))
+importall xlibre_ptrtypes
+importall xorgVersion
+importall xserver_properties
+importall xvdix
+importall xvmcext
+importall mi_priv
+importall miarc
+importall micmap
+importall micopy
+importall midash
+importall midispcur
+importall mieq
+importall miexpose
+importall mifillarc
+importall mifpoly
+importall migc
+importall miglblt
+importall miinitext
+importall mioverlay
+importall mipointer
+importall mipointer_priv
+importall mipoly
+importall mipolypnt
+importall mipolyrect
+importall mipolyseg
+importall mipolytext
+importall mipushpxl
+importall miscanfill
+importall miscrinit
+importall misprite
+importall mivaltree
+importall miwideline
+importall miwindow
+importall mizerarc
+importall mizerclip
+importall mizerline
+importall extinit_priv
+importall WaitFor
+importall Xtrans
+importall Xtransint
+importall Xtranssock
+importall Xtransutil
+importall access
+import    core.sys.posix.pwd	(/usr/include/dlang/dmd/core/sys/posix/pwd.d)
+(imported from source/os/access.d(113,8))
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/net/if_.c -include /usr/include/dlang/dmd/importc.h
+import    externs.net.if_	(source/externs/net/if_.c)
+(imported from source/os/access.d(139,8))
+importall alloc
+importall audit_priv
+importall auth
+importall backtrace
+importall bug_priv
+importall busfault
+importall client
+importall client_priv
+importall cmdline
+importall connection
+include   /usr/include/dlang/dmd/importc.h
+cpp -std=c11 -I/usr/include/dbus-1.0 -I/usr/include/pixman-1 -I/usr/lib/dbus-1.0/include -Isource/Xext/dri2 -I/usr/include/libdrm -I/usr/include/X11/fonts -I/usr/include -Isource -Isource/hw/xfree86/x86emu -Isource/externs -D__int128=long long -D__attribute__(x)= -D__alignof__(x)=8 -D__kernel_size_t=size_t -m64 -dD -Wno-builtin-macro-redefined source/externs/netinet/tcp.c -include /usr/include/dlang/dmd/importc.h
+import    externs.netinet.tcp	(source/externs/netinet/tcp.c)
+(imported from source/os/connection.d(95,8))
+importall ddx_priv
+importall fmt
+importall inputthread
+importall io
+importall io_priv
+importall log
+importall log_priv
+importall mathx_priv
+importall mitauth
+importall osdep
+importall osinit
+importall ospoll
+importall ossock
+importall probes_priv
+importall reallocarray
+importall screensaver
+importall serverlock
+importall strcasecmp
+importall strcasestr
+importall string
+importall strlcat
+importall strlcpy
+importall strndup
+importall timingsafe_memcmp
+importall transport
+importall utils
+importall xdmauth
+importall xdmcp
+importall xhostname
+importall xprintf
+importall xserver_poll
+importall xsha1
+importall present
+importall present_event
+importall present_execute
+importall present_fake
+importall present_fence
+importall present_notify
+importall present_priv
+importall present_request
+importall present_scmd
+importall present_screen
+importall present_vblank
+importall pseudoramiX
+importall randr
+importall randrstr_priv
+importall rrcrtc
+importall rrdispatch
+importall rrdispatch_priv
+importall rrinfo
+importall rrlease
+importall rrmode
+importall rrmonitor
+importall rroutput
+importall rrpointer
+importall rrproperty
+importall rrprovider
+importall rrproviderproperty
+importall rrscreen
+importall rrtransform
+importall rrxinerama
+importall record
+importall set
+importall animcur
+importall filter
+importall glyph
+importall glyphstr_priv
+importall matrix
+importall miindex
+importall mipict
+importall mirect
+importall mitrap
+importall mitri
+importall picture
+importall picturestr_priv
+importall render
+importall fixes
+importall hashtabletest
+importall input
+importall list
+importall misc
+importall sha1
+importall signal_logging
+importall simple_xinit
+importall string
+importall test_xkb
+importall tests_common
+importall tests
+importall touch
+importall xfree86
+importall xtest
+importall cursor
+importall disconnect
+importall region
+importall saveset
+importall select
+importall xfixes
+importall xfixesint
+importall XKBAlloc
+importall XKBGAlloc
+importall XKBMAlloc
+importall XKBMisc
+importall ddxBeep
+importall ddxCtrls
+importall ddxKillSrv
+importall ddxLEDs
+importall ddxLoad
+importall ddxPrivate
+importall ddxVT
+importall maprules
+importall xkb_procs
+importall xkb
+importall xkbAccessX
+importall xkbActions
+importall xkbDflts
+importall xkbEvents
+importall xkbInit
+importall xkbLEDs
+importall xkbPrKeyEv
+importall xkbUtils
+importall xkbfile_priv
+importall xkbfmisc
+importall xkbfmisc_priv
+importall xkbgeom_priv
+importall xkbout
+importall xkbout_priv
+importall xkbrules_priv
+importall xkbsrv_priv
+importall xkbtext
+importall xkbtext_priv
+importall xkmread
+semantic  bigreq
+import    core.sys.posix.sys.resource	(/usr/include/dlang/dmd/core/sys/posix/sys/resource.d)
+(imported from source/os/osinit.d(82,8))
+import    std.internal.unicode_grapheme	(/usr/include/dlang/dmd/std/internal/unicode_grapheme.d)
+(imported from /usr/include/dlang/dmd/std/uni/package.d(10870,16))
+import    std.math.algebraic	(/usr/include/dlang/dmd/std/math/algebraic.d)
+(imported from /usr/include/dlang/dmd/std/uni/package.d(1131,12))
+import    core.math	(/usr/include/dlang/dmd/core/math.d)
+(imported from /usr/include/dlang/dmd/std/math/algebraic.d(30,15))
+import    core.checkedint	(/usr/include/dlang/dmd/core/checkedint.d)
+(imported from /usr/include/dlang/dmd/core/internal/array/construction.d(371,12))
+import    core.exception	(/usr/include/dlang/dmd/core/exception.d)
+(imported from /usr/include/dlang/dmd/core/internal/array/construction.d(372,12))
+import    core.internal.array.utils	(/usr/include/dlang/dmd/core/internal/array/utils.d)
+(imported from /usr/include/dlang/dmd/core/internal/array/construction.d(374,12))
+import    core.memory	(/usr/include/dlang/dmd/core/memory.d)
+(imported from /usr/include/dlang/dmd/core/internal/array/utils.d(13,8))
+import    core.time	(/usr/include/dlang/dmd/core/time.d)
+(imported from /usr/include/dlang/dmd/core/memory.d(256,16))
+import    core.internal.string	(/usr/include/dlang/dmd/core/internal/string.d)
+(imported from /usr/include/dlang/dmd/core/time.d(69,8))
+import    core.internal.lifetime	(/usr/include/dlang/dmd/core/internal/lifetime.d)
+(imported from /usr/include/dlang/dmd/core/internal/array/capacity.d(238,12))
+import    core.internal.array.duplication	(/usr/include/dlang/dmd/core/internal/array/duplication.d)
+(imported from /usr/include/dlang/dmd/object.d(3860,12))
+import    core.internal.gc.blockmeta	(/usr/include/dlang/dmd/core/internal/gc/blockmeta.d)
+(imported from /usr/include/dlang/dmd/core/internal/array/appending.d(59,16))
+semantic  c
+semantic  damageext_priv
+semantic  dpms
+semantic  dpmsproc
+semantic  dri2
+semantic  dri2_priv
+semantic  dri2ext
+semantic  dri2int
+semantic  geext
+semantic  geext_priv
+semantic  hashtable
+semantic  panoramiX
+semantic  panoramiXh
+semantic  panoramiXprocs
+semantic  panoramiXsrv
+semantic  h
+semantic  saver
+semantic  security
+semantic  securitysrv
+semantic  shape
+semantic  shm
+semantic  shm_priv
+semantic  sleepuntil
+semantic  sync
+semantic  syncsrv
+semantic  xace
+semantic  xacestr
+semantic  xcmisc
+semantic  xf86bigfont
+semantic  xf86bigfontsrv
+semantic  xres
+semantic  xselinux
+semantic  xselinux_ext
+semantic  xselinux_hooks
+semantic  xselinux_label
+semantic  xselinuxint
+semantic  xtest
+semantic  xvdisp
+semantic  xvdix_priv
+semantic  xvmain
+semantic  xvmc
+semantic  XIstubs
+semantic  allowev
+semantic  chgdctl
+semantic  chgfctl
+semantic  chgkbd
+semantic  chgkmap
+semantic  chgprop
+semantic  chgptr
+semantic  closedev
+semantic  devbell
+semantic  exevents
+semantic  exglobals
+semantic  extinit
+semantic  getbmap
+semantic  getdctl
+semantic  getfctl
+semantic  getfocus
+semantic  getkmap
+semantic  getmmap
+semantic  getprop
+semantic  getselev
+semantic  getvers
+semantic  grabdev
+semantic  grabdevb
+semantic  grabdevk
+semantic  gtmotion
+semantic  handlers
+semantic  listdev
+semantic  opendev
+semantic  queryst
+semantic  selectev
+semantic  sendexev
+semantic  setbmap
+semantic  setdval
+semantic  setfocus
+semantic  setmmap
+semantic  setmode
+semantic  stubs
+semantic  ungrdev
+semantic  ungrdevb
+semantic  ungrdevk
+semantic  xiallowev
+semantic  xibarriers
+semantic  xichangecursor
+semantic  xichangehierarchy
+semantic  xigetclientpointer
+semantic  xigrabdev
+semantic  xipassivegrab
+semantic  xiproperty
+semantic  xiquerydevice
+semantic  xiquerypointer
+semantic  xiqueryversion
+semantic  xiselectev
+semantic  xisetclientpointer
+semantic  xisetdevfocus
+semantic  xiwarppointer
+semantic  dix_config
+semantic  xlibre_server
+semantic  xorg_config
+semantic  xorg_server
+semantic  compalloc
+semantic  compext
+semantic  compinit
+semantic  compint
+semantic  compositeext_priv
+semantic  compoverlay
+semantic  compwindow
+semantic  config_backends
+semantic  config
+source/hw/xfree86/common/xf86Config.d(132,1): Deprecation: `static` constructor can only be of D linkage
+static this() {
+^
+source/hw/xfree86/drivers/video/modesetting/driver.d(159,1): Deprecation: `static` constructor can only be of D linkage
+static this()
+^
+semantic  dbus_core
+semantic  libhal
+semantic  hotplug_priv
+semantic  kdrive_config
+semantic  udev
+semantic  version_config
+semantic  wscons
+semantic  xkb_config
+semantic  dbe
+semantic  dbestruct
+semantic  midbe
+semantic  atom
+semantic  atom_priv
+semantic  callback_priv
+semantic  client
+semantic  client_priv
+semantic  color
+semantic  colormap
+semantic  colormap_priv
+semantic  cursor
+semantic  cursor_priv
+semantic  devices
+semantic  devices_priv
+semantic  dispatch
+semantic  display
+semantic  dix_priv
+semantic  dixfonts
+semantic  dixgrabs_priv
+semantic  dixstruct_priv
+semantic  dixutils
+semantic  enterleave
+semantic  eventconvert
+semantic  events
+semantic  exevents_priv
+semantic  extension
+semantic  extension_priv
+semantic  gc
+semantic  gc_priv
+semantic  gestures
+semantic  getevents
+semantic  globals
+semantic  glyphcurs
+semantic  grabs
+semantic  input_priv
+semantic  inpututils
+semantic  inpututils_priv
+semantic  lookup
+semantic  main
+semantic  pixmap
+semantic  privates
+semantic  property
+semantic  property_priv
+semantic  ptrveloc
+semantic  ptrveloc_priv
+semantic  region
+semantic  registry
+semantic  registry_priv
+semantic  reqhandlers_priv
+semantic  request_priv
+semantic  resource
+semantic  resource_priv
+semantic  rpcbuf
+semantic  rpcbuf_priv
+semantic  screen
+semantic  screen_hooks
+semantic  screen_hooks_priv
+semantic  screenint_priv
+semantic  screensaver_priv
+semantic  selection
+semantic  selection_priv
+semantic  server_priv
+semantic  settings
+semantic  settings_priv
+semantic  stubmain
+semantic  swaprep
+semantic  swapreq
+semantic  tables
+semantic  touch
+semantic  window
+semantic  window_priv
+semantic  dri3
+semantic  dri3_priv
+semantic  dri3_request
+semantic  dri3_screen
+semantic  exa
+source/include/fbpict.d(34,81): Error: undefined identifier `xTrap`, did you mean variable `xTrue`?
+extern void  fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, xTrap* traps);
+                                                                                ^
+source/exa/exa_priv.d(155,5): Error: `ScreenWakeupHandlerProcPtr` matches conflicting symbols:
+    ScreenWakeupHandlerProcPtr SavedWakeupHandler;
+    ^
+source/include/scrintstr.d(304,1):        alias `include.scrintstr.ScreenWakeupHandlerProcPtr`
+alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen,
+^
+source/include/scrnintstr.d(212,1):        alias `include.scrnintstr.ScreenWakeupHandlerProcPtr`
+alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen, int result);
+^
+source/exa/exa_priv.d(155,5): Error: `ScreenWakeupHandlerProcPtr` matches conflicting symbols:
+    ScreenWakeupHandlerProcPtr SavedWakeupHandler;
+    ^
+source/include/scrnintstr.d(212,1):        alias `include.scrnintstr.ScreenWakeupHandlerProcPtr`
+alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen, int result);
+^
+source/include/scrintstr.d(304,1):        alias `include.scrintstr.ScreenWakeupHandlerProcPtr`
+alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen,
+^
+source/exa/exa_priv.d(155,5): Error: `ScreenWakeupHandlerProcPtr` matches conflicting symbols:
+    ScreenWakeupHandlerProcPtr SavedWakeupHandler;
+    ^
+source/include/scrnintstr.d(212,1):        alias `include.scrnintstr.ScreenWakeupHandlerProcPtr`
+alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen, int result);
+^
+source/include/scrintstr.d(304,1):        alias `include.scrintstr.ScreenWakeupHandlerProcPtr`
+alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen,
+^
+source/exa/exa_priv.d(158,5): Error: `GetSpansProcPtr` matches conflicting symbols:
+    GetSpansProcPtr SavedGetSpans;
+    ^
+error limit (5) reached, use `-verrors=0` to show all
+FAIL /home/roman/.dub/cache/x12/~master/build/application-$DFLAGS-2iJfIKyNH7_5btW1kChHjQ x12 executable
+Error /usr/bin/dmd failed with exit code 1.
+Full exception: dub.compilers.compiler.CompilerInvocationException@source/dub/compilers/compiler.d(170): /usr/bin/dmd failed with exit code 1.
+----------------
+??:? [0x5631be9d9efe]
+??:? [0x5631be9d9b62]
+??:? [0x5631be9ff0be]
+??:? [0x5631be9e194c]
+??:? [0x5631be94c10c]
+??:? [0x5631be93bd74]
+??:? [0x5631be943c9a]
+??:? [0x5631be90f3ab]
+??:? [0x5631be90807f]
+??:? [0x5631be90b250]
+??:? [0x5631be906522]
+??:? [0x5631be747db6]
+??:? [0x5631be96cba7]
+??:? [0x5631be96d061]
+??:? [0x5631be961f03]
+??:? [0x5631be9e165c]
+??:? [0x5631be9e1557]
+??:? [0x5631be9e13ac]
+??:? [0x7fad15c27c8d]
+??:? __libc_start_main [0x7fad15c27dca]
+??:? [0x5631be704db4]

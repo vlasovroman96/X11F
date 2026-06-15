@@ -148,14 +148,15 @@ version (__clang__) {
  *  rightShift = 8
  */
 
-enum LoadBits = {
+enum string LoadBits = q{
     if (leftShift) { 
-	bitsRight = (src < srcEnd ? READ(src++) : 0); 
-	bits = (FbStipLeft (bitsLeft, leftShift) | 
-		FbStipRight(bitsRight, rightShift)); 
-	bitsLeft = bitsRight; 
-    } else 
-	bits = (src < srcEnd ? READ(src++) : 0); 
+        bitsRight = (src < srcEnd ? READ(src++) : 0); 
+        bits = (FbStipLeft(bitsLeft, leftShift) | 
+                FbStipRight(bitsRight, rightShift)); 
+        bitsLeft = bitsRight; 
+    } else {
+        bits = (src < srcEnd ? READ(src++) : 0); 
+    }
 };
 
 void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride dstStride, int dstX, int dstBpp, int width, int height, FbBits fgand, FbBits fgxor, FbBits bgand, FbBits bgxor)

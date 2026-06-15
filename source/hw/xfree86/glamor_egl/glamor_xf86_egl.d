@@ -1,4 +1,4 @@
-module glamor_xf86_egl;
+module glamor.glamor_xf86_egl;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -13,8 +13,8 @@ import include.xf86;
 import include.xf86Priv;
 
 import include.glamor;
-import glamor_egl;
-import glamor_egl_priv;
+import glamor.glamor_egl;
+import glamor.glamor_egl_priv;
 
 enum {
     GLAMOREGLOPT_RENDERING_API,

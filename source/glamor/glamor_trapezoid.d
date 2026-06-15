@@ -1,4 +1,4 @@
-module glamor_trapezoid;
+module glamor.glamor_trapezoid;
 @nogc nothrow:
 extern(C): __gshared:
 /*

@@ -28,7 +28,7 @@ import build.dix_config;
 
 import include.mipict;
 
-import exa_priv;
+import exa.exa_priv;
 
 /*
  * These functions wrap the low-level fb rendering functions and

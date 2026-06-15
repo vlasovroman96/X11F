@@ -1,4 +1,4 @@
-module glamor_transfer;
+module glamor.glamor_transfer;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -29,7 +29,7 @@ import core.stdc.assert_;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_transfer;
+import glamor.glamor_transfer;
 
 /*
  * Write a region of bits into a drawable's backing pixmap

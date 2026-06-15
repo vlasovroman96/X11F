@@ -30,7 +30,7 @@ import core.stdc.stdlib;
 
 import include.mipict;
 
-import exa_priv;
+import exa.exa_priv;
 
 static if (DEBUG_TRACE_FALL) {
 private void exaCompositeFallbackPictDesc(PicturePtr pict, char* string, int n)

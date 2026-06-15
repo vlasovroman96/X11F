@@ -27,8 +27,9 @@ extern(C): __gshared:
 
  
 public import include.privates;
+import include.mi;
 
-extern DevPrivateKey fbOverlayGetScreenPrivateKey(void);
+extern DevPrivateKey fbOverlayGetScreenPrivateKey();
 
 enum FB_OVERLAY_MAX =	2;
 

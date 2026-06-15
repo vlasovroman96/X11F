@@ -1,4 +1,4 @@
-module glamor_largepixmap;
+module glamor.glamor_largepixmap;
 @nogc nothrow:
 extern(C): __gshared:
 import build.dix_config;

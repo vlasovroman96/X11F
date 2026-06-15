@@ -32,7 +32,9 @@ import core.stdc.config: c_long, c_ulong;
 // //public import externs.X11.Xfuncproto;
 
 public import os.bug_priv;
-
+import build.dix_config;
+import glamor.glamor_composite_glyphs;
+import  externs.X11.extensions.renderproto;
 public import include.glamor;
 public import include.xvdix;
 
@@ -73,9 +75,9 @@ enum GLAMOR_COMPAT_DEFINES_FS =
 
 public import include.glyphstr;
 
-public import glamor_debug;
-public import glamor_context;
-public import glamor_program;
+public import glamor.glamor_debug;
+public import glamor.glamor_context;
+public import glamor.glamor_program;
 
 public import include.list;
 
@@ -628,7 +630,7 @@ pragma(inline, true) private Bool glamor_pm_is_solid(int depth, c_ulong planemas
 
 extern int glamor_debug_level;
 
-/* glamor.c */
+/*import glamor.glamor_c */
 PixmapPtr glamor_get_drawable_pixmap(DrawablePtr drawable);
 
 glamor_pixmap_fbo* glamor_pixmap_detach_fbo(glamor_pixmap_private* pixmap_priv);
@@ -878,12 +880,12 @@ void glamor_copy_window(WindowPtr window, xPoint old_origin, RegionPtr src_regio
  */
 Bool glamor_destroy_pixmap(PixmapPtr pixmap);
 
-public import glamor_utils;
+public import glamor.glamor_utils;
 
 version (none) {
 enum MAX_FBO_SIZE = 32         /* For test purpose only. */;
 }
 
-public import glamor_font;
+public import glamor.glamor_font;
 
                           /* GLAMOR_PRIV_H */

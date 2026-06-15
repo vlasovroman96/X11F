@@ -5,7 +5,7 @@ if test "x$TRAVIS_BUILD_DIR" != "x"; then
     exit 77
 fi
 
-# Start a Xephyr server using glamor.  Since the test environment is
+# Start a Xephyr server usingimport glamor.glamor_  Since the test environment is
 # headless, we start an Xvfb first to host the Xephyr.
 export PIGLIT_RESULTS_DIR=$XSERVER_BUILDDIR/test/piglit-results/xephyr-glamor-gles2
 

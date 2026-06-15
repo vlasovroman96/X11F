@@ -1,4 +1,4 @@
-module glamor_prepare;
+module glamor.glamor_prepare;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,8 +27,8 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_prepare;
-import glamor_transfer;
+import glamor.glamor_prepare;
+import glamor.glamor_transfer;
 
 /*
  * Make a drawable ready to draw with fb by

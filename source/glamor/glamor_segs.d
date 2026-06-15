@@ -1,4 +1,4 @@
-module glamor_segs;
+module glamor.glamor_segs;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -25,9 +25,9 @@ extern(C): __gshared:
 import build.dix_config;
 
 import glamor.glamor_priv;
-import glamor_program;
-import glamor_transform;
-import glamor_prepare;
+import glamor.glamor_program;
+import glamor.glamor_transform;
+import glamor.glamor_prepare;
 
 private const(glamor_facet) glamor_facet_poly_segment = {
     name: "poly_segment",

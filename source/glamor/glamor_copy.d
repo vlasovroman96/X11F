@@ -1,4 +1,4 @@
-module glamor_copy;
+module glamor.glamor_copy;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,9 +28,9 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_transfer;
-import glamor_prepare;
-import glamor_transform;
+import glamor.glamor_transfer;
+import glamor.glamor_prepare;
+import glamor.glamor_transform;
 
 struct copy_args {
     DrawablePtr src_drawable;
@@ -56,11 +56,11 @@ private Bool use_copyarea(DrawablePtr drawable, GCPtr gc, glamor_program* prog, 
 private const(glamor_facet) glamor_facet_copyarea = {
     "copy_area",
     vs_vars: "in vec2 primitive;\n",
-    vs_exec: (GLAMOR_POS(gl_Position, primitive.xy)~
+    vs_exec: (GLAMOR_POS!("gl_Position", "primitive.xy")~
                 "       fill_pos = (fill_offset + primitive.xy) * fill_size_inv;\n"),
     fs_exec: "       frag_color = texture(sampler, fill_pos);\n",
     locations: glamor_program_location_fillsamp | glamor_program_location_fillpos,
-    use: use_copyarea,
+    use: &use_copyarea,
 };
 
 /*
@@ -147,7 +147,7 @@ private const(glamor_facet) glamor_facet_copyplane = {
     "copy_plane",
     c_version: 130,
     vs_vars: "in vec2 primitive;\n",
-    vs_exec: (GLAMOR_POS(gl_Position, (primitive.xy))~
+    vs_exec: (GLAMOR_POS("gl_Position", ("primitive.xy"))~
                 "       fill_pos = (fill_offset + primitive.xy) * fill_size_inv;\n"),
     fs_exec: ("       uvec4 bits = uvec4(round(texture(sampler, fill_pos) * bitmul));\n"
                 ~ "       if ((bits & bitplane) != uvec4(0,0,0,0))\n"

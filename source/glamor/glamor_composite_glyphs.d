@@ -1,4 +1,4 @@
-module glamor_composite_glyphs;
+module glamor.glamor_composite_glyphs;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -32,8 +32,8 @@ import os.bug_priv;
 
 import include.Xprintf;
 import glamor.glamor_priv;
-import glamor_transform;
-import glamor_transfer;
+import glamor.glamor_transform;
+import glamor.glamor_transfer;
 import render.glyphstr_priv;
 
 enum DEFAULT_ATLAS_DIM =       1024;
@@ -188,7 +188,7 @@ private const(glamor_facet) glamor_facet_composite_glyphs_es300 = {
                 ~ "in vec2 source;\n"
                 ~ "out vec2 glyph_pos;\n"),
     vs_exec: ("       vec2 pos = primitive.zw * vec2(gl_VertexID&1, (gl_VertexID&2)>>1);\n"
-                ~GLAMOR_POS(gl_Position, (primitive.xy + pos))~
+                ~GLAMOR_POS!("gl_Position"," (primitive.xy + pos)")~
                 "       glyph_pos = (source + pos) * ATLAS_DIM_INV;\n"),
     fs_vars: ("in vec2 glyph_pos;\n"
                 ~ "out vec4 color0;\n"
@@ -205,7 +205,7 @@ private const(glamor_facet) glamor_facet_composite_glyphs_130 = {
                 ~ "in vec2 source;\n"
                 ~ "out vec2 glyph_pos;\n"),
     vs_exec: ("       vec2 pos = primitive.zw * vec2(gl_VertexID&1, (gl_VertexID&2)>>1);\n"
-                ~GLAMOR_POS(gl_Position, (primitive.xy + pos))~
+                ~GLAMOR_POS!("gl_Position"," (primitive.xy + pos)")~
                 "       glyph_pos = (source + pos) * ATLAS_DIM_INV;\n"),
     fs_vars: ("in vec2 glyph_pos;\n"
                 ~ "out vec4 color0;\n"
@@ -221,7 +221,7 @@ private const(glamor_facet) glamor_facet_composite_glyphs_120 = {
                 ~ "attribute vec2 source;\n"
                 ~ "varying vec2 glyph_pos;\n"),
     vs_exec: ("       vec2 pos = vec2(0,0);\n"
-                ~GLAMOR_POS(gl_Position, primitive.xy)~
+                ~GLAMOR_POS!("gl_Position", "primitive.xy")~
                 "       glyph_pos = source.xy * ATLAS_DIM_INV;\n"),
     fs_vars: ("varying vec2 glyph_pos;\n"),
     fs_exec: ("       vec4 mask = texture2D(atlas, glyph_pos);\n"),
@@ -237,7 +237,7 @@ private const(glamor_facet) glamor_facet_composite_glyphs_gles2 = {
                 ~ "attribute vec2 source;\n"
                 ~ "varying vec2 glyph_pos;\n"),
     vs_exec: ("       vec2 pos = vec2(0,0);\n"
-                ~GLAMOR_POS(gl_Position, primitive.xy)~
+                ~GLAMOR_POS!("gl_Position", "primitive.xy")~
                 "       glyph_pos = source.xy * ATLAS_DIM_INV;\n"),
     fs_vars: ("varying vec2 glyph_pos;\n"),
     fs_exec: ("       vec4 mask = texture2D(atlas, glyph_pos);\n"),

@@ -1,4 +1,4 @@
-module glamor_sync;
+module glamor.glamor_sync;
 @nogc nothrow:
 extern(C): __gshared:
 /*

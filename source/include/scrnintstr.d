@@ -115,7 +115,7 @@ alias SaveScreenProcPtr = Bool function(ScreenPtr, int);
 
 // alias GetImageProcPtr = void function(DrawablePtr, int, int, int, int, uint, c_ulong, char*);
 
-alias GetSpansProcPtr = void function(DrawablePtr, int, DDXPointPtr, int*, int, char*);
+// alias GetSpansProcPtr = void function(DrawablePtr, int, DDXPointPtr, int*, int, char*);
 
 // alias SourceValidateProcPtr = void function(DrawablePtr, int, int, int, int, uint);
 
@@ -158,7 +158,7 @@ enum CREATE_PIXMAP_USAGE_GLYPH_PICTURE =               3;
 /* pixmap will be shared */
 enum CREATE_PIXMAP_USAGE_SHARED =                      4;
 
-alias CreatePixmapProcPtr = PixmapPtr function(ScreenPtr, int, int, int, uint);
+// alias CreatePixmapProcPtr = PixmapPtr function(ScreenPtr, int, int, int, uint);
 
 alias DestroyPixmapProcPtr = Bool function(PixmapPtr);
 
@@ -200,7 +200,7 @@ alias ListInstalledColormapsProcPtr = int function(ScreenPtr, XID*);
 
 alias ResolveColorProcPtr = void function(ushort*, ushort*, ushort*, VisualPtr);
 
-alias BitmapToRegionProcPtr = RegionPtr function(PixmapPtr);
+// alias BitmapToRegionProcPtr = RegionPtr function(PixmapPtr);
 
 // alias ScreenBlockHandlerProcPtr = void function(ScreenPtr pScreen, void* timeout);
 
@@ -209,11 +209,11 @@ alias BitmapToRegionProcPtr = RegionPtr function(PixmapPtr);
  * = 0 - timeout
  * > 0 - activity
  */
-alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen, int result);
+// alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen, int result);
 
 // alias CreateScreenResourcesProcPtr = Bool function(ScreenPtr);
 
-alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
+// alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
 
 alias GetWindowPixmapProcPtr = PixmapPtr function(WindowPtr);
 
@@ -252,9 +252,9 @@ alias DeviceCursorCleanupProcPtr = void function(DeviceIntPtr, ScreenPtr);
 // alias ConstrainCursorHarderProcPtr = void function(DeviceIntPtr, ScreenPtr, int, int*, int*);
 
 
-alias SharePixmapBackingProcPtr = Bool function(PixmapPtr, ScreenPtr, void**);
+// alias SharePixmapBackingProcPtr = Bool function(PixmapPtr, ScreenPtr, void**);
 
-alias SetSharedPixmapBackingProcPtr = Bool function(PixmapPtr, void*);
+// alias SetSharedPixmapBackingProcPtr = Bool function(PixmapPtr, void*);
 
 enum HAS_SYNC_SHARED_PIXMAP = 1;
 /* The SyncSharedPixmap hook has two purposes:

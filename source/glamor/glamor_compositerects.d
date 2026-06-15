@@ -1,4 +1,4 @@
-module glamor_compositerects;
+module glamor.glamor_compositerects;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -35,6 +35,8 @@ import include.mipict;
 
 import glamor.glamor_priv;
 import include.damage;
+import externs.X11.extensions.renderproto;
+
 
 /** @file glamor_compositerects.
  *

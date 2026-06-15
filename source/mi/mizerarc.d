@@ -46,7 +46,7 @@ import mi.mi_priv;
 import include.regionstr;
 import include.gcstruct;
 import include.pixmapstr;
-import mizerarc;
+import include.mizerarc;
 
 enum FULLCIRCLE = (360 * 64);
 enum OCTANT = (45 * 64);

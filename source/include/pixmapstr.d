@@ -88,6 +88,9 @@ struct _Pixmap {
     PixmapPtr primary_pixmap;    /* pointer to primary copy of pixmap for pixmap sharing */
 }
 
+alias PixmapRec = _Pixmap;
+
+
 struct _PixmapDirtyUpdate {
     DrawablePtr src;            /* Root window / shared pixmap */
     PixmapPtr secondary_dst;    /* Shared / scanout pixmap */

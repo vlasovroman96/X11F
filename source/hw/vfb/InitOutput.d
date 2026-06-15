@@ -82,7 +82,7 @@ import include.randrstr;
 
 version (GLAMOR) {
 import include.glamor;
-import glamor_egl;
+import glamor.glamor_egl;
 
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;

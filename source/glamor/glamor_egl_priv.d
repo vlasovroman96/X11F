@@ -1,4 +1,4 @@
-module glamor_egl_priv;
+module glamor.glamor_egl_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -17,7 +17,7 @@ public import externs.epoxygl;
 // public import externs.epoxygl;
 
 public import include.scrnintstr;
-public import glamor_egl_ext;
+public import glamor.glamor_egl_ext;
 
 version (GLAMOR_HAS_GBM) {
 public import gbm;

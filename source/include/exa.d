@@ -1,4 +1,4 @@
-module include.exa;
+module include.exa_i;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -683,6 +683,8 @@ enum EXA_NUM_PREPARE_INDICES =	6;
 }alias ExaDriverRec = _ExaDriver;
 alias ExaDriverPtr = _ExaDriver*;
 
+
+alias EXA_NUM_PREPARE_INDICES = _ExaDriver.EXA_NUM_PREPARE_INDICES;
 /** @name EXA driver flags
  * @{
  */
@@ -738,7 +740,7 @@ enum EXA_MIXED_PIXMAPS = (1 << 6);
 /** @} */
 
 /* in exa.c */
-extern ExaDriverPtr exaDriverAlloc(void);
+extern ExaDriverPtr exaDriverAlloc();
 
 extern int exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo);
 

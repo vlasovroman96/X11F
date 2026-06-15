@@ -77,6 +77,7 @@ struct _GCInterest;
 alias GCInterestPtr = _GCInterest*;
 alias GCPtr = _GC*;
 alias GCOpsPtr = _GCOps*;
+alias GCOps = _GCOps;
 
 extern void ValidateGC(DrawablePtr, GCPtr);
 

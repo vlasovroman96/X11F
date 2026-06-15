@@ -1,4 +1,4 @@
-module glamor_rects;
+module glamor.glamor_rects;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,8 +27,8 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_program;
-import glamor_transform;
+import glamor.glamor_program;
+import glamor.glamor_transform;
 
 private const(glamor_facet) glamor_facet_polyfillrect_130 = {
     name: "poly_fill_rect",

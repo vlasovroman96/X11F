@@ -40,7 +40,7 @@ version (GLAMOR_FOR_XORG) {
 public import xf86xv;
 }
 
-struct glamor_context;
+// struct glamor_context;
 struct gbm_bo;
 struct gbm_device;
 
@@ -93,7 +93,7 @@ enum GLAMOR_GL_CORE_VER_MINOR = 1;
  *      Disable the built-in DRI3 support
  *
  * This function initializes necessary internal data structure
- * for glamor. And before calling into this function, the OpenGL
+ * forimport glamor.glamor_ And before calling into this function, the OpenGL
  * environment should be ready. Should be called before any real
  * glamor rendering or texture allocation functions. And should
  * be called after the DDX's screen initialization or at the last

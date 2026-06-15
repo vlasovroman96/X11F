@@ -27,7 +27,7 @@ import build.dix_config;
 
 import fb.fb_priv;
 
-import mizerarc;
+import include.mizerarc;
 import core.stdc.limits;
 
 alias FbArc = void function(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);

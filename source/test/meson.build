@@ -66,7 +66,7 @@ rendercheck_blend = [
 rendercheck_a8 = [
     ['ca composite/Some/a8', '-t cacomposite -f a8r8g8b8,a8' + some_ops],
 ]
-#Exclude 15bpp for now due to GLES limitation (see glamor.c:470)
+#Exclude 15bpp for now due to GLES limitation (seeimport glamor.glamor_c:470)
 rendercheck_blend_gles2 = [
     ['blend/Clear', '-t blend -o clear' + gles2_working_formats],
     ['blend/Src', '-t blend -o src' + gles2_working_formats],

@@ -33,7 +33,7 @@ import core.stdc.string;
 
 import dix.screen_hooks_priv;
 
-import exa_priv;
+import exa.exa_priv;
 
 import include.xf86str;
 import include.xf86;

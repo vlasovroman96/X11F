@@ -1,4 +1,4 @@
-module glamor_lines;
+module glamor.glamor_lines;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,9 +27,9 @@ import build.dix_config;
 import os.bug_priv;
 
 import glamor.glamor_priv;
-import glamor_program;
-import glamor_transform;
-import glamor_prepare;
+import glamor.glamor_program;
+import glamor.glamor_transform;
+import glamor.glamor_prepare;
 
 private const(glamor_facet) glamor_facet_poly_lines = {
     name: "poly_lines",

@@ -38,8 +38,8 @@ import core.stdc.stdint;
 import externs.xcb.xcb;
 import externs.xcb.xcb_aux;
 import pixman;
-import glamor_context;
-import glamor_egl;
+import glamor.glamor_context;
+import glamor.glamor_egl;
 import glamor.glamor_priv;
 import ephyr;
 import hw.kdrive.ephyr.ephyr_glamor;
@@ -58,7 +58,7 @@ Bool ephyr_glamor_skip_present;
 /** @} */
 
 /**
- * Per-screen state for Xephyr with glamor.
+ * Per-screen state for Xephyr withimport glamor.glamor_
  */
 struct ephyr_glamor {
     EGLDisplay dpy;
@@ -165,10 +165,10 @@ private void ephyr_glamor_setup_texturing_shader(ephyr_glamor* glamor)
     fs = glamor_compile_glsl_prog(GL_FRAGMENT_SHADER, fs_source);
     prog = ephyr_glamor_build_glsl_prog(vs, fs);
 
-    glamor.texture_shader = prog;
-    glamor.texture_shader_position_loc = glGetAttribLocation(prog, "position");
+   glamor.glamor_texture_shader = prog;
+   glamor.glamor_texture_shader_position_loc = glGetAttribLocation(prog, "position");
     assert(glamor.texture_shader_position_loc != -1);
-    glamor.texture_shader_texcoord_loc = glGetAttribLocation(prog, "texcoord");
+   glamor.glamor_texture_shader_texcoord_loc = glGetAttribLocation(prog, "texcoord");
     assert(glamor.texture_shader_texcoord_loc != -1);
 }
 
@@ -251,7 +251,7 @@ out_:
 
 void ephyr_glamor_set_texture(ephyr_glamor* glamor, uint tex)
 {
-    glamor.tex = tex;
+   glamor.glamor_tex = tex;
 }
 
 private void ephyr_glamor_set_vertices(ephyr_glamor* glamor)
@@ -360,9 +360,9 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
     if (!eglMakeCurrent(glamor.dpy, egl_win, egl_win, ctx))
         FatalError("eglMakeCurrent failed\n");
 
-    glamor.ctx = ctx;
-    glamor.win = win;
-    glamor.egl_win = egl_win;
+   glamor.glamor_ctx = ctx;
+   glamor.glamor_win = win;
+   glamor.glamor_egl_win = egl_win;
     ephyr_glamor_setup_texturing_shader(glamor);
 
     glGenVertexArrays(1, &glamor.vao);
@@ -371,7 +371,7 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
 
     glGenBuffers(1, &glamor.vbo);
 
-    glBindBuffer(GL_ARRAY_BUFFER, glamor.vbo);
+    glBindBuffer(GL_ARRAY_BUFFER,glamor.glamor_vbo);
     glBufferData(GL_ARRAY_BUFFER, position.sizeof, position.ptr, GL_STATIC_DRAW);
 
     ephyr_glamor_set_vertices(glamor);
@@ -387,8 +387,8 @@ void ephyr_glamor_screen_fini(ephyr_glamor* glamor)
     eglMakeCurrent(glamor.dpy,
                    EGL_NO_SURFACE, EGL_NO_SURFACE,
                    EGL_NO_CONTEXT);
-    eglDestroyContext(glamor.dpy, glamor.ctx);
-    eglDestroySurface(glamor.dpy, glamor.egl_win);
+    eglDestroyContext(glamor.dpy,glamor.glamor_ctx);
+    eglDestroySurface(glamor.dpy,glamor.glamor_egl_win);
 
     free(glamor);
 }
@@ -398,6 +398,6 @@ void ephyr_glamor_set_window_size(ephyr_glamor* glamor, uint width, uint height)
     if (!glamor)
         return;
 
-    glamor.width = width;
-    glamor.height = height;
+   glamor.glamor_width = width;
+   glamor.glamor_height = height;
 }
