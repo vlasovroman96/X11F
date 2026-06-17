@@ -27,6 +27,7 @@ import core.stdc.config: c_long, c_ulong;
 import config.kdrive_config;
 import core.stdc.errno;
 import core.sys.posix.termios;
+import build.dix_config;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 import os.xserver_poll;
@@ -313,21 +314,21 @@ private Bool ps2Parse(KdPointerInfo* pi, ubyte* ev, int ne)
 
 private const(KmouseProt) ps2Prot = {
     "ps/2",
-    threeComplete, mouseValid, ps2Parse, ps2Init,
+    &threeComplete, &mouseValid, &ps2Parse, &ps2Init,
     0x08, 0x08, 0x00, 0x00,
     FALSE
 };
 
 private const(KmouseProt) imps2Prot = {
     "imps/2",
-    fourComplete, mouseValid, ps2Parse, ps2Init,
+    &fourComplete, &mouseValid, &ps2Parse, &ps2Init,
     0x08, 0x08, 0x00, 0x00,
     FALSE
 };
 
 private const(KmouseProt) exps2Prot = {
     "exps/2",
-    fourComplete, mouseValid, ps2Parse, ps2Init,
+    &fourComplete, &mouseValid, &ps2Parse, &ps2Init,
     0x08, 0x08, 0x00, 0x00,
     FALSE
 };
@@ -505,7 +506,7 @@ private Bool busParse(KdPointerInfo* pi, ubyte* ev, int ne)
 
 private const(KmouseProt) busProt = {
     "bus",
-    threeComplete, mouseValid, busParse, 0,
+    &threeComplete, &mouseValid, &busParse, null,
     0xf8, 0x00, 0x00, 0x00,
     FALSE
 };
@@ -538,7 +539,7 @@ private Bool msParse(KdPointerInfo* pi, ubyte* ev, int ne)
 
 private const(KmouseProt) msProt = {
     "ms",
-    threeComplete, mouseValid, msParse, 0,
+    &threeComplete, &mouseValid, &msParse, null,
     0xc0, 0x40, 0xc0, 0x00,
     TRUE,
     IGNPAR,
@@ -619,7 +620,7 @@ private Bool logiParse(KdPointerInfo* pi, ubyte* ev, int ne)
 
 private const(KmouseProt) logiProt = {
     "logitech",
-    logiComplete, logiValid, logiParse, 0,
+    &logiComplete, &logiValid, &logiParse, null,
     0xc0, 0x40, 0xc0, 0x00,
     TRUE,
     IGNPAR,
@@ -658,7 +659,7 @@ private Bool mscParse(KdPointerInfo* pi, ubyte* ev, int ne)
 
 private const(KmouseProt) mscProt = {
     "msc",
-    fiveComplete, mouseValid, mscParse, 0,
+    &fiveComplete, &mouseValid, &mscParse, null,
     0xf8, 0x80, 0x00, 0x00,
     TRUE,
     IGNPAR,
@@ -676,7 +677,7 @@ private const(KmouseProt)*[8] kmouseProts = [
     &ps2Prot, &imps2Prot, &exps2Prot, &busProt, &logiProt, &msProt, &mscProt,
 ];
 
-enum NUM_PROT =    (sizeof (kmouseProts) / sizeof (kmouseProts[0]));
+enum NUM_PROT =    kmouseProts.sizeof / kmouseProts[0].sizeof;
 
 private void MouseInitProtocol(Kmouse* km)
 {
@@ -860,7 +861,7 @@ const(char)*[7] kdefaultMouse = [
     "/dev/ttyS1",
 ];
 
-enum NUM_DEFAULT_MOUSE =    (sizeof (kdefaultMouse) / sizeof (kdefaultMouse[0]));
+enum NUM_DEFAULT_MOUSE =    kdefaultMouse.sizeof /  kdefaultMouse[0].sizeof;
 
 private Status MouseInit(KdPointerInfo* pi)
 {

@@ -47,7 +47,7 @@
 #include <glxscreens.h>
 #include <glxdrawable.h>
 #include <glxcontext.h>
-#include <glxext.h>
+// #include <glxext.h>
 #include <glxutil.h>
 
 #include "capabilities.h"

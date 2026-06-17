@@ -1,4 +1,4 @@
-module fbpriv;
+module hw.xfree86.fbdevhw.fbpriv;
 @nogc nothrow:
 extern(C): __gshared:
 /*

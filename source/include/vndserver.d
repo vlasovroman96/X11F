@@ -34,9 +34,9 @@ extern(C): __gshared:
 public import build.dix_config;
 public import include.glxvndabi;
 
-enum GLXContextID = CARD32;
-enum GLXDrawable = CARD32;
+alias GLXContextID = CARD32;
+alias GLXDrawable = CARD32;
  
-GlxServerExports *glvndGetExports(void);
+GlxServerExports *glvndGetExports();
 
  // VNDSERVER_H

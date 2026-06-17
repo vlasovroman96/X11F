@@ -43,7 +43,7 @@ import include.scrnintstr;
 import include.resource;
 import include.dixstruct;
 
-import xf86xvpriv;
+import hw.xfree86.common.xf86xvpriv;
 import xf86xvmc;
 
 struct _Xf86XvMCScreenRec {

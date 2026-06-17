@@ -1,4 +1,4 @@
-module fb_glamor;
+module hw.kdrive.fbdev.fb_glamor;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -15,10 +15,10 @@ import include.scrnintstr;
 import include.glamor;
 import glamor.glamor_egl;
 
-import fbdev;
+import hw.kdrive.fbdev.fbdev;
 
 version (XV) {
-import kxv;
+import hw.kdrive.src.kxv; 
 }
 
 version (WITH_LIBDRM) {

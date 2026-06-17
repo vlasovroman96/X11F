@@ -8,6 +8,9 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
+import externs.X11.Xdefs;
+
+
 import core.stdc.stdio;
 import core.stdc.stdint;
 import core.stdc.stdlib;

@@ -46,8 +46,17 @@ version (GLAMOR) {
 import include.glamor;
 }
 import hw.kdrive.ephyr.ephyr_glamor;
+import hw.kdrive.src.kdrive;
 import include.glx_extinit;
 import include.xkbsrv;
+import include.shadow;
+import include.exa_i;
+import externs.xcb.xcb_image;
+import hw.kdrive.ephyr.ephyr_glamor;
+struct EphyrPriv {
+    CARD8 *base;
+    int bytes_per_line;
+} ;
 
 extern Bool ephyr_glamor;
 
@@ -58,6 +67,55 @@ Bool ephyrNoXV = FALSE;
 
 private int mouseState = 0;
 private Rotation ephyrRandr = RR_Rotate_0;
+
+struct _ephyrFakexaPriv {
+    ExaDriverPtr exa;
+    Bool is_synced;
+
+    /* The following are arguments and other information from Prepare* calls
+     * which are stored for use in the inner calls.
+     */
+    int op;
+    PicturePtr pSrcPicture, pMaskPicture, pDstPicture;
+    void *[3]saved_ptrs;
+    PixmapPtr pDst, pSrc, pMask;
+    GCPtr pGC;
+} 
+
+alias EphyrFakexaPriv = _ephyrFakexaPriv;
+
+struct _ephyrScrPriv {
+    /* ephyr server info */
+    Rotation randr;
+    Bool shadow;
+    DamagePtr pDamage;
+    EphyrFakexaPriv *fakexa;
+
+    /* Host X window info */
+    xcb_window_t win;
+    xcb_window_t win_pre_existing;    /* Set via -parent option like xnest */
+    xcb_window_t peer_win;            /* Used for GL; should be at most one */
+    xcb_visualid_t vid;
+    xcb_image_t *ximg;
+    Bool win_explicit_position;
+    int win_x, win_y;
+    int win_width, win_height;
+    int server_depth;
+    const char *output;         /* Set via -output option */
+    ubyte *fb_data;     /* only used when host bpp != server bpp */
+    xcb_shm_segment_info_t shminfo;
+    size_t shmsize;
+
+    KdScreenInfo *screen;
+    int mynum;                  /* Screen number */
+    ulong[256] cmap;
+
+    ScreenBlockHandlerProcPtr   BlockHandler;
+
+    hw.kdrive.ephyr.ephyr_glamor.ephyr_glamor *glamor;
+} 
+
+alias EphyrScrPriv = _ephyrScrPriv;
 
 struct _EphyrInputPrivate {
     Bool enabled;

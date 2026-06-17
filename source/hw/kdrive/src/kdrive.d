@@ -52,7 +52,7 @@ import include.randrstr;
 import include.glx_extinit;
 
 version (XV) {
-import kxv;
+import hw.kdrive.src.kxv; 
 }
 
 version (DPMSExtension) {
@@ -63,6 +63,14 @@ version (HAVE_EXECINFO_H) {
 import execinfo;
 }
 
+
+enum KD_MAX_BUTTON =  32;
+
+enum KD_KEYBOARD = 1;
+enum KD_MOUSE = 2;
+enum KD_TOUCHSCREEN = 3;
+
+alias Status = int;
 struct _KdCardFuncs {
     Bool function(KdCardInfo *) cardinit;    /* detect and map device */
     Bool function(KdScreenInfo *) scrinit;   /* initialize screen information */
@@ -94,6 +102,33 @@ struct _KdCardFuncs {
     void function(ScreenPtr) closeScreen;    /* close ScreenRec */
 } 
 
+enum _KdSyncPolarity {
+    KdSyncNegative, KdSyncPositive
+} 
+
+alias KdSyncPolarity = _KdSyncPolarity;
+
+struct _KdMonitorTiming {
+    /* label */
+    int horizontal;
+    int vertical;
+    int rate;
+    /* pixel clock */
+    int clock;                  /* in KHz */
+    /* horizontal timing */
+    int hfp;                    /* front porch */
+    int hbp;                    /* back porch */
+    int hblank;                 /* blanking */
+    KdSyncPolarity hpol;        /* polarity */
+    /* vertical timing */
+    int vfp;                    /* front porch */
+    int vbp;                    /* back porch */
+    int vblank;                 /* blanking */
+    KdSyncPolarity vpol;        /* polarity */
+} 
+
+alias KdMonitorTiming = _KdMonitorTiming;
+
 alias KdCardFuncs = _KdCardFuncs;
 
 /* This stub can be safely removed once we can
@@ -108,7 +143,137 @@ struct _KdCardInfo {
     int selected;
     int mynum;
     _KdCardInfo *next;
+}
+
+struct _KdPointerDriver {
+    const char *name;
+    Status function (KdPointerInfo *) Init;
+    Status function (KdPointerInfo *) Enable;
+    void  function (KdPointerInfo *) Disable;
+    void  function (KdPointerInfo *) Fini;
+    _KdPointerDriver *next;
 } 
+
+alias KdPointerDriver = _KdPointerDriver;
+
+struct _KdKeyboardDriver {
+    const char *name;
+    Bool function(KdKeyboardInfo *) PreInit;
+    Bool function(KdKeyboardInfo *) Init;
+    Bool function(KdKeyboardInfo *)Enable;
+    void function(KdKeyboardInfo *, int)Leds;
+    void function(KdKeyboardInfo *, int, int, int)Bell;
+    void function(KdKeyboardInfo *)Disable;
+    void function(KdKeyboardInfo *)Fini;
+    _KdKeyboardDriver *next;
+} 
+alias KdKeyboardDriver = _KdKeyboardDriver;
+
+
+struct _KdKeyboardInfo {
+    _KdKeyboardInfo *next;
+    DeviceIntPtr dixdev;
+    void *closure;
+    char *name;
+    char *path;
+    int inputClass;
+    char *xkbRules;
+    char *xkbModel;
+    char *xkbLayout;
+    char *xkbVariant;
+    char *xkbOptions;
+    int LockLed;
+
+    int minScanCode;
+    int maxScanCode;
+
+    int leds;
+    int bellPitch;
+    int bellDuration;
+    InputOption *options;
+
+    KdKeyboardDriver *driver;
+    void *driverPrivate;
+};
+
+alias KdKeyboardInfo = _KdKeyboardInfo;
+
+alias KdPointerState = int; 
+
+enum : KdPointerState{
+    start,
+    button_1_pend,
+    button_1_down,
+    button_2_down,
+    button_3_pend,
+    button_3_down,
+    synth_2_down_13,
+    synth_2_down_3,
+    synth_2_down_1,
+    num_input_states
+} ;
+
+struct _KdScreenInfo {
+    _KdScreenInfo *next;
+    KdCardInfo *card;
+    ScreenPtr pScreen;
+    void *driver;
+    Rotation randr;             /* rotation and reflection */
+    int x;
+    int y;
+    int width;
+    int height;
+    int rate;
+    int width_mm;
+    int height_mm;
+    int subpixel_order;
+    Bool dumb;
+    Bool softCursor;
+    int mynum;
+    xPoint origin;
+    KdFrameBuffer fb;
+} 
+alias KdScreenInfo = _KdScreenInfo;
+
+struct _KdPointerInfo {
+    DeviceIntPtr dixdev;
+    char *name;
+    char *path;
+    char *protocol;
+    InputOption *options;
+    int inputClass;
+
+    CARD8[KD_MAX_BUTTON + 1] map;
+    int nButtons;
+    int nAxes;
+
+    Bool emulateMiddleButton;
+    ulong emulationTimeout;
+    int emulationDx, emulationDy;
+
+    Bool timeoutPending;
+    KdPointerState mouseState;
+    Bool eventHeld;
+    struct _heldEvent{
+        int type;
+        int x;
+        int y;
+        int z;
+        int flags;
+        int absrel;
+    } ;
+    _heldEvent heldEvent;
+    ubyte buttonState;
+    Bool transformCoordinates;
+    int pressureThreshold;
+
+    KdPointerDriver *driver;
+    void *driverPrivate;
+
+    _KdPointerInfo *next;
+};
+
+alias KdPointerInfo = _KdPointerInfo;
 
 alias KdCardInfo = _KdCardInfo;
 
@@ -354,27 +519,7 @@ Rotation KdSubRotation(Rotation a, Rotation b)
     return reflect | rotate;
 }
 
-struct _KdScreenInfo {
-    _KdScreenInfo *next;
-    KdCardInfo *card;
-    ScreenPtr pScreen;
-    void *driver;
-    Rotation randr;             /* rotation and reflection */
-    int x;
-    int y;
-    int width;
-    int height;
-    int rate;
-    int width_mm;
-    int height_mm;
-    int subpixel_order;
-    Bool dumb;
-    Bool softCursor;
-    int mynum;
-    xPoint origin;
-    KdFrameBuffer fb;
-} 
-alias KdScreenInfo = _KdScreenInfo;
+
 
 struct _KdFrameBuffer {
     CARD8 *frameBuffer;

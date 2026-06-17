@@ -1,4 +1,4 @@
-module fbdev;
+module hw.kdrive.fbdev.fbdev;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -32,7 +32,57 @@ import core.stdc.errno;
 import fb.fb_priv;
 import os.osdep;
 
-import fbdev;
+import hw.kdrive.fbdev.fbdev;
+import hw.kdrive.src.kdrive;
+import hw.xfree86.fbdevhw.fbpriv;
+
+struct _fbdevPriv {
+    fb_var_screeninfo var;
+    fb_fix_screeninfo fix;
+    ushort[256] red;
+    ushort[256] green;
+    ushort[256] blue;
+    int fd;
+    char *fb;
+    char *fb_base;
+} 
+
+struct _fbScreenConf {
+const char *fbdevDevicePath;
+Bool fbDisableShadow;
+bool fbNoAccel;
+
+char *fbdev_glvnd_provider;
+
+char *fbdev_dri_path;
+bool fbdev_auto_dri3;
+bool fbdev_drm_master;
+
+bool es_allowed;
+bool force_es;
+
+bool fbGlamorAllowed;
+bool fbForceGlamor;
+
+bool fbXVAllowed;
+} 
+
+alias FbScreenConf = _KdScreenInfo;
+
+
+alias FbdevPriv = _fbdevPriv;
+
+struct _fbdevScrPriv {
+    Rotation randr;
+    Bool shadow;
+version(GLAMOR) {
+// #ifdef GLAMOR
+    int dri_fd;
+// #endif
+}
+} 
+
+alias FbdevScrPriv = _fbdevScrPriv;
 
 private Bool fbdevInitialize(KdCardInfo* card, FbdevPriv* priv)
 {

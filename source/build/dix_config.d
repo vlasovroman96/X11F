@@ -282,3 +282,5 @@ enum _XTYPEDEF_POINTER = 1;
 
 enum __XSERVERNAME__ = "Xorg";
 
+enum NOTUSED = false;
+

@@ -32,6 +32,11 @@ enum MAXHASHSIZE = 11;
 alias HashFunc = uint function(void * cdata, const void * ptr, int numBits);
 alias HashCompareFunc = int function(void * cdata, const void * l, const void * r);
 
+struct HtGenericHashSetupRec{
+    int             keySize;
+} 
+alias HtGenericHashSetupPtr = HtGenericHashSetupRec*;
+
 struct HashTableRec {
     int keySize;
     int dataSize;

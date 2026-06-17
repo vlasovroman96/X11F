@@ -47,7 +47,7 @@ import include.os;
 import include.glx_extinit;
 import glx.unpack;
 import glx.glxutil;
-import glx.glxext;
+// import glx.glxext;
 import glx.indirect_table;
 import glx.indirect_util;
 import include.glxvndabi;

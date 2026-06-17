@@ -31,6 +31,18 @@ extern(C): __gshared:
  *
  * \author Ian Romanick <idr@us.ibm.com>
  */
+
+ extern(C)
+{
+    alias GLenum     = uint;
+    alias GLint      = int;
+    alias GLuint     = uint;
+    alias GLsizei    = int;
+    alias GLboolean  = ubyte;
+    alias GLbitfield = uint;
+    alias GLubyte    = ubyte;
+    alias GLchar     = char;
+}
 import build.dix_config;
 
 import dix.request_priv;

@@ -1,4 +1,4 @@
-module ephyrinit;
+module hw.kdrive.ephyr.ephyrinit;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -39,6 +39,8 @@ import os.osdep;
 import ephyr;
 import ephyrlog;
 import include.glx_extinit;
+import include.glx_extinit;
+import hw.kdrive.src.kdrive;
 
 extern Window EphyrPreExistingHostWin;
 extern Bool EphyrWantGrayScale;

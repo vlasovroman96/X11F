@@ -28,6 +28,9 @@ import core.stdc.config: c_long, c_ulong;
  */
 
 import config.kdrive_config;
+import hw.kdrive.src.kdrive;
+
+import externs.X11.extensions.XKBstr; 
 
 import core.stdc.stdlib;
 import core.stdc.stdio;
@@ -35,6 +38,7 @@ import core.sys.posix.unistd;
 import core.stdc.string;             /* for memset */
 import core.stdc.errno;
 import core.stdc.time;
+
 version (MITSHM) {
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;
@@ -45,7 +49,7 @@ import core.sys.posix.sys.time;
 // workaround for name clash between Xlib and Xserver:
 // GL might pull in Xlib.h (why ?), which is definining a type "GC", that's
 // conflicting with Xserver's "GC" type.
-enum GC = XlibGC;
+// enum GC = XlibGC;
 //import externs.X11.Xlib;
 //import externs.X11.Xutil;
 import dix.input_priv;
@@ -74,12 +78,40 @@ import hw.kdrive.ephyr.ephyr_glamor;
 import glamor.glamor_priv;
 
 version (XV) {
-import kxv;
+import hw.kdrive.src.kxv; 
 }
 
 }
 import ephyrlog;
 import ephyr;
+
+
+struct EphyrHostWindowAttributes{
+    int x, y;
+    int width, height;
+    int visualid;
+} ;
+
+struct EphyrBox{
+    int x, y, width, height;
+} ;
+
+struct EphyrRect{
+    short x1, y1, x2, y2;
+} ;
+
+struct EphyrHostVisualInfo{
+    VisualID visualid;
+    int screen;
+    int depth;
+    int class_;
+    ulong red_mask;
+    ulong green_mask;
+    ulong blue_mask;
+    int colormap_size;
+    int bits_per_rgb;
+} ;
+
 
 struct EphyrHostXVars {
     char* server_dpy_name;

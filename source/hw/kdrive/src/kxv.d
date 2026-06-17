@@ -1,4 +1,4 @@
-module kxv;
+module hw.kdrive.src.kxv;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -57,12 +57,55 @@ import include.validate;
 import include.resource;
 import include.gcstruct;
 import include.dixstruct;
-import kxv;
+import hw.kdrive.src.kxv;
 import include.fourcc;
+import include.xf86xv;
+import hw.xfree86.common.xf86xvpriv;
+
 
 /* XvAdaptorRec fields */
 
+struct KdVideoEncodingRec {
+    int id;
+    const char *name;
+    ushort width, height;
+    XvRationalRec rate;
+} 
+alias KdVideoEncodingPtr = KdVideoEncodingRec*;
 
+struct KdVideoFormatRec{
+    char depth;
+    short class_;
+} 
+alias KdVideoFormatPtr = KdVideoFormatRec*;
+
+struct KdVideoAdaptorRec{
+    uint type;
+    int flags;
+    const char *name;
+    int nEncodings;
+    KdVideoEncodingPtr pEncodings;
+    int nFormats;
+    KdVideoFormatPtr pFormats;
+    int nPorts;
+    DevUnion *pPortPrivates;
+    int nAttributes;
+    XvAttributePtr pAttributes;
+    int nImages;
+    XvImagePtr pImages;
+    PutVideoFuncPtr PutVideo;
+    PutStillFuncPtr PutStill;
+    GetVideoFuncPtr GetVideo;
+    GetStillFuncPtr GetStill;
+    StopVideoFuncPtr StopVideo;
+    SetPortAttributeFuncPtr SetPortAttribute;
+    GetPortAttributeFuncPtr GetPortAttribute;
+    QueryBestSizeFuncPtr QueryBestSize;
+    PutImageFuncPtr PutImage;
+    ReputImageFuncPtr ReputImage;
+    QueryImageAttributesFuncPtr QueryImageAttributes;
+} 
+alias KdVideoAdaptorPtr = KdVideoAdaptorRec*;
 
 
 

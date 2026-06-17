@@ -1,4 +1,4 @@
-module kd_glamor_xv;
+module hw.kdrive.src.kd_glamor_xv;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,7 +27,7 @@ extern(C): __gshared:
 import config.kdrive_config;
 
 import hw.kdrive.src.kdrive;
-import kxv;
+import hw.kdrive.src.kxv; 
 import glamor.glamor_priv;
 
 // //import externs.X11.extensions.Xv;

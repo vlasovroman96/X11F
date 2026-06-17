@@ -24,7 +24,9 @@ extern(C): __gshared:
  */
 
 import config.kdrive_config;
-import fbdev;
+import hw.kdrive.fbdev.fbdev;
+import hw.kdrive.src.kdrive;
+
 
 import os.cmdline;
 import os.ddx_priv;

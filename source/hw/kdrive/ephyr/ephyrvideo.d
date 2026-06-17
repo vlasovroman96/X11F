@@ -1,4 +1,4 @@
-module ephyrvideo;
+module hw.kdrive.ephyr.ephyrvideo;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -37,9 +37,10 @@ import externs.xcb.xcb_aux;
 import externs.xcb.xv;
 import ephyrlog;
 import hw.kdrive.src.kdrive;
-import kxv;
+import hw.kdrive.src.kxv;
 import ephyr;
 import hostx;
+import include.xvdix;
 
 struct _EphyrXVPriv {
     xcb_xv_query_adaptors_reply_t* host_adaptors;

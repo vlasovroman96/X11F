@@ -62,7 +62,7 @@ const(char)*[3] Ps2Names = [
     "/dev/input/mice",
 ];
 
-enum NUM_PS2_NAMES =	(sizeof (Ps2Names) / sizeof (Ps2Names[0]));
+enum NUM_PS2_NAMES =	Ps2Names.sizeof / Ps2Names[0].sizeof;
 
 private void Ps2Read(int ps2Port, void* closure)
 {

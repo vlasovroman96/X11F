@@ -54,7 +54,7 @@ import include.resource;
 import include.gcstruct;
 import include.dixstruct;
 import include.xvdix;
-import xf86xvpriv;
+import hw.xfree86.common.xf86xvpriv;
 
 /* XvAdaptorRec fields */
 
