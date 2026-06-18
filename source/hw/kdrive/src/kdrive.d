@@ -102,9 +102,18 @@ struct _KdCardFuncs {
     void function(ScreenPtr) closeScreen;    /* close ScreenRec */
 } 
 
-enum _KdSyncPolarity {
+alias _KdSyncPolarity = int;
+
+enum : _KdSyncPolarity {
     KdSyncNegative, KdSyncPositive
 } 
+
+struct _KdPointerMatrix {
+    int[3][2] matrix;
+} 
+alias KdPointerMatrix = _KdPointerMatrix;
+;
+
 
 alias KdSyncPolarity = _KdSyncPolarity;
 

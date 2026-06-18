@@ -25,6 +25,9 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 import hw.kdrive.src.kdrive;
+import externs.X11.Xdefs;
+import include.screenint;
+import include.shadow;
 
 Bool KdShadowFbAlloc(KdScreenInfo* screen, Bool rotate)
 {

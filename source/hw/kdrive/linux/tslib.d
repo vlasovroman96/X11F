@@ -1,4 +1,4 @@
-module tslib;
+module hw.kdrive.linux.tslib_;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -42,7 +42,7 @@ import include.inputstr;
 import include.scrnintstr;
 import hw.kdrive.src.kdrive;
 import core.sys.posix.sys.ioctl;
-import tslib;
+import externs.tslib;
 import core.sys.posix.dirent;
 import externs.linux.input;
 

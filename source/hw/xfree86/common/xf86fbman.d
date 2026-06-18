@@ -42,7 +42,7 @@ import include.misc;
 import include.xf86;
 import include.scrnintstr;
 import include.regionstr;
-import xf86fbman;
+import include.xf86fbman;
 
 struct _FBManagerFuncs {
     FBAreaPtr function(ScreenPtr pScreen, int w, int h, int granularity, MoveAreaCallbackProcPtr moveCB, RemoveAreaCallbackProcPtr removeCB, void* privData) AllocateOffscreenArea;

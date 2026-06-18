@@ -44,7 +44,7 @@ import include.resource;
 import include.dixstruct;
 
 import hw.xfree86.common.xf86xvpriv;
-import xf86xvmc;
+import include.xf86xvmc;
 
 struct _Xf86XvMCScreenRec {
     int num_adaptors;

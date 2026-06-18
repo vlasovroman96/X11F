@@ -34,11 +34,12 @@ import config.xkb_config;
 import hw.kdrive.src.kdrive;
 import include.inputstr;
 
+
 version = XK_PUBLISHING;
 //import externs.X11.keysym;
-static if (HAVE_X11_XF86KEYSYM_H) {
-//import externs.X11.XF86keysym;
-}
+// static if (HAVE_X11_XF86KEYSYM_H) {
+// //import externs.X11.XF86keysym;
+// }
 import core.stdc.stdio;
 import core.stdc.signal;
 import core.sys.posix.fcntl;           /* needed for FNONBLOCK & FASYNC */
@@ -128,7 +129,7 @@ extern const(char)* kdGlobalXkbOptions;
 version (FNONBLOCK) {
 enum NOBLOCK = FNONBLOCK;
 } else {
-enum NOBLOCK = FNDELAY;
+// enum NOBLOCK = FNDELAY;
 }
 
 void KdResetInputMachine()

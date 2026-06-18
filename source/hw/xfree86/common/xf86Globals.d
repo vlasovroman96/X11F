@@ -43,6 +43,7 @@ import include.xf86Parser;
 import xf86Xinput;
 import xf86InPriv;
 import xf86Config;
+import include.xf86Xinput;
 
 /* Globals that video drivers may access */
 

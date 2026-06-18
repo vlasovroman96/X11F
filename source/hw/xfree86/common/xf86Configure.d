@@ -53,6 +53,7 @@ import hw.xfree86.os_support.bus.xf86Sbus_priv;
 import include.misc;
 import hw.xfree86.loader.loaderProcs;
 import xf86Parser_priv;
+import externs.pciaccess;
 
 struct _DevToConfig {
     GDevRec GDev;

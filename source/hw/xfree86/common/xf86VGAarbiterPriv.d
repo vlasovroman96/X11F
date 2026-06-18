@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
 public import include.misc;
 public import include.xf86;
 public import include.xf86_OSproc;;
-//public import externs.X11.X;
+public import externs.X11.extensions.renderproto;
 public import include.scrnintstr;
 public import include.screenint;
 public import include.gcstruct;
@@ -43,6 +43,7 @@ public import include.xf86str;
 public import mi.mipointer;
 public import include.mipointrst;
 public import include.picturestr;
+import include.mipointer;
 
 enum string WRAP_SCREEN(string x,string y) = `{pScreenPriv.` ~ x ~ ` = pScreen.` ~ x ~ `; pScreen.` ~ x ~ ` = ` ~ y ~ `;}`;
 

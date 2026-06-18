@@ -70,7 +70,7 @@ import core.stdc.errno;
 version (Windows) {} else {
 import externs.sys.param;
 }
-// //import externs.X11.XWDFile;
+import externs.X11.XWDFile;
 version (CONFIG_MITSHM) {
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;

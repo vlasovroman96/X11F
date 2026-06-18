@@ -111,7 +111,7 @@ alias WINDOW_VRR_ENABLED = WindowVRRMode.WINDOW_VRR_ENABLED;
 
 alias QueryBestSizeProcPtr = void function(int, ushort*, ushort*, ScreenPtr);
 
-alias SaveScreenProcPtr = Bool function(ScreenPtr, int);
+// alias SaveScreenProcPtr = Bool function(ScreenPtr, int);
 
 // alias GetImageProcPtr = void function(DrawablePtr, int, int, int, int, uint, c_ulong, char*);
 
@@ -143,7 +143,7 @@ alias PaintWindowProcPtr = void function(WindowPtr, RegionPtr, int);
 
 // alias CopyWindowProcPtr = void function(WindowPtr, xPoint, RegionPtr);
 
-alias ClearToBackgroundProcPtr = void function(WindowPtr, int, int, int, int, Bool);
+// alias ClearToBackgroundProcPtr = void function(WindowPtr, int, int, int, int, Bool);
 
 // alias ClipNotifyProcPtr = void function(WindowPtr, int, int);
 
@@ -170,15 +170,15 @@ alias ConstrainCursorProcPtr = void function(DeviceIntPtr, ScreenPtr, BoxPtr);
 
 alias CursorLimitsProcPtr = void function(DeviceIntPtr, ScreenPtr, CursorPtr, BoxPtr, BoxPtr);
 
-alias DisplayCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
+// alias DisplayCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
 
-alias RealizeCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
+// alias RealizeCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
 
-alias UnrealizeCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
+// alias UnrealizeCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
 
-alias RecolorCursorProcPtr = void function(DeviceIntPtr, ScreenPtr, CursorPtr, Bool);
+// alias RecolorCursorProcPtr = void function(DeviceIntPtr, ScreenPtr, CursorPtr, Bool);
 
-alias SetCursorPositionProcPtr = Bool function(DeviceIntPtr, ScreenPtr, int, int, Bool);
+// alias SetCursorPositionProcPtr = Bool function(DeviceIntPtr, ScreenPtr, int, int, Bool);
 
 alias CursorWarpedToProcPtr = void function(DeviceIntPtr, ScreenPtr, ClientPtr, WindowPtr, SpritePtr, int, int);
 
@@ -192,7 +192,7 @@ alias CursorConfinedToProcPtr = void function(DeviceIntPtr, ScreenPtr, WindowPtr
 
 // alias InstallColormapProcPtr = void function(ColormapPtr);
 
-alias UninstallColormapProcPtr = void function(ColormapPtr);
+// alias UninstallColormapProcPtr = void function(ColormapPtr);
 
 alias ListInstalledColormapsProcPtr = int function(ScreenPtr, XID*);
 

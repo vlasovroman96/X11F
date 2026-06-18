@@ -78,6 +78,7 @@ import include.scrnintstr;
 import dix.swaprep;
 import include.dgaproc;
 import include.protocol_versions;
+import include.events;
 
 private DevPrivateKeyRec DGAScreenKeyRec;
 
@@ -98,11 +99,13 @@ private int DGAEventBase;
 enum string DGA_GET_SCREEN_PRIV(string pScreen) = `(cast(DGAScreenPtr) 
     dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, &DGAScreenKeyRec))`;
 
-struct FakedVisualList {
+struct _FakedVisualList {
     Bool free;
     VisualPtr pVisual;
     _FakedVisualList* next;
 }
+
+alias FakedVisualList = _FakedVisualList;
 
 struct _DGAScreenRec {
     ScrnInfoPtr pScrn;
