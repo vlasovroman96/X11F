@@ -53,13 +53,69 @@ import externs.libdrm;
 import externs.libdrm;
 
 import externs.xf86drm;
+import include.mipointer;
+// import externs.xf86drmMode;
+import externs.gbm;
+
 import include.xf86Crtc;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
 import include.cursorstr;
 import hw.xfree86.drivers.video.modesetting.drmmode_display;
+import include.randrstr; 
 
 // //import externs.X11.extensions.dpmsconst;
+
+alias uint32_t = core.stdc.stdint.uint32_t;
+alias uint64_t = core.stdc.stdint.uint64_t;
+alias uint16_t = core.stdc.stdint.uint16_t;
+
+alias drmmode_plane_property = int;
+
+enum :drmmode_plane_property {
+    DRMMODE_PLANE_TYPE = 0,
+    DRMMODE_PLANE_FB_ID,
+    DRMMODE_PLANE_IN_FORMATS,
+    DRMMODE_PLANE_IN_FORMATS_ASYNC,
+    DRMMODE_PLANE_CRTC_ID,
+    DRMMODE_PLANE_SRC_X,
+    DRMMODE_PLANE_SRC_Y,
+    DRMMODE_PLANE_SRC_W,
+    DRMMODE_PLANE_SRC_H,
+    DRMMODE_PLANE_CRTC_X,
+    DRMMODE_PLANE_CRTC_Y,
+    DRMMODE_PLANE_CRTC_W,
+    DRMMODE_PLANE_CRTC_H,
+    DRMMODE_PLANE_SIZE_HINTS,
+    DRMMODE_PLANE__COUNT
+};
+
+alias drmmode_plane_type = int;
+
+enum :drmmode_plane_type {
+    DRMMODE_PLANE_TYPE_PRIMARY = 0,
+    DRMMODE_PLANE_TYPE_CURSOR,
+    DRMMODE_PLANE_TYPE_OVERLAY,
+    DRMMODE_PLANE_TYPE__COUNT
+};
+
+alias drmmode_connector_property = int;
+
+enum :drmmode_connector_property {
+    DRMMODE_CONNECTOR_CRTC_ID,
+    DRMMODE_CONNECTOR__COUNT
+};
+
+alias drmmode_crtc_property = int;
+
+enum :drmmode_crtc_property {
+    DRMMODE_CRTC_ACTIVE,
+    DRMMODE_CRTC_MODE_ID,
+    DRMMODE_CRTC_GAMMA_LUT,
+    DRMMODE_CRTC_GAMMA_LUT_SIZE,
+    DRMMODE_CRTC_CTM,
+    DRMMODE_CRTC__COUNT
+};
 
 import hw.xfree86.drivers.video.modesetting.driver;
 
@@ -70,13 +126,179 @@ enum GBM_BO_USE_FRONT_RENDERING = 0;
 
 
 
+struct drmmode_cursor_dim_rec {
+    uint16_t width, height;
+}
+alias drmmode_cursor_dim_ptr = drmmode_cursor_dim_rec*;
+
+struct drmmode_cursor_rec{
+    uint16_t num_dimensions;
+
+    /* Sorted from smallest to largest. */
+    drmmode_cursor_dim_rec* dimensions;
+    gbm_bo *bo;
+} 
+alias drmmode_cursor_ptr = drmmode_cursor_rec*;
+
+struct drmmode_format_rec{
+    uint32_t format;
+    uint32_t num_modifiers;
+    uint64_t *modifiers;
+}
+
+alias drmmode_format_ptr = drmmode_format_rec*;
+
+struct drmmode_prop_info_rec{
+    const char *name;
+    uint32_t prop_id;
+    uint64_t value;
+    uint num_enum_values;
+    drmmode_prop_enum_info_rec *enum_values;
+} 
+
+alias drmmode_prop_info_ptr = drmmode_prop_info_rec*;
 
 
-private const(drm_color_ctm) ctm_identity = { {
-    1UL << 32, 0, 0,
+struct drmmode_prop_enum_info_rec{
+    const char *name;
+    Bool valid;
+    uint64_t value;
+} 
+alias drmmode_prop_enum_info_ptr = drmmode_prop_enum_info_rec*;
+
+struct drmmode_mode_rec{
+    drmModeModeInfo mode_info;
+    uint32_t blob_id;
+    xorg_list entry;
+} 
+alias drmmode_mode_ptr = drmmode_mode_rec*;
+
+
+struct drmmode_crtc_private_rec {
+    drmmode_ptr drmmode;
+    drmModeCrtcPtr mode_crtc;
+    uint32_t vblank_pipe;
+    int dpms_mode;
+    drmmode_cursor_rec cursor;
+    Bool cursor_up;
+
+    uint16_t[256] lut_r, lut_g, lut_b;
+
+    drmmode_prop_info_rec[DRMMODE_CRTC__COUNT] props;
+    drmmode_prop_info_rec[DRMMODE_PLANE__COUNT] props_plane;
+    uint32_t plane_id;
+    drmmode_mode_ptr current_mode;
+    uint32_t num_formats;
+    drmmode_format_rec *formats;
+    drmmode_format_rec *formats_async;
+
+    gbm_bo *rotate_bo;
+    uint rotate_fb_id;
+    drmmode_tearfree_rec tearfree;
+
+    PixmapPtr prime_pixmap;
+    PixmapPtr prime_pixmap_back;
+    uint prime_pixmap_x;
+
+    int src_x, src_y;
+
+    /**
+     * @{ MSC (vblank count) handling for the PRESENT extension.
+     *
+     * The kernel's vblank counters are 32 bits and apparently full of
+     * lies, and we need to give a reliable 64-bit msc for GL, so we
+     * have to track and convert to a userland-tracked 64-bit msc.
+     */
+    uint32_t msc_prev;
+    uint64_t msc_high;
+    /** @} */
+
+    uint64_t next_msc;
+
+    int cursor_width;
+    int cursor_height;
+
+    Bool need_modeset;
+    xorg_list mode_list;
+
+    Bool enable_flipping;
+    Bool flipping_active;
+
+    Bool vrr_enabled;
+    Bool use_gamma_lut;
+
+    /* For damage-like tracking of the cursor buffer */
+    uint32_t cursor_glyph_width;
+    uint32_t cursor_glyph_height;
+    int old_pitch;
+    int cursor_rotation;
+    int cursor_src_x;
+    int cursor_src_y;
+
+    Bool cursor_probed;
+    Bool cursor_dim_fallback_warned;
+
+    int* cursor_pitches;
+}
+
+alias drmmode_crtc_private_ptr = drmmode_crtc_private_rec*;
+
+struct drmmode_shadow_fb_rec{
+    gbm_bo *bo;
+    uint32_t fb_id;
+    PixmapPtr px;
+    RegionRec dmg;
+} 
+alias drmmode_shadow_fb_ptr = drmmode_shadow_fb_rec*;
+
+struct drmmode_tearfree_rec{
+    drmmode_shadow_fb_rec[2] buf;
+    xorg_list dri_flip_list;
+    uint32_t back_idx;
+    uint32_t flip_seq;
+} 
+alias drmmode_tearfree_ptr = drmmode_tearfree_rec*;
+
+struct drmmode_output_private_rec{
+    drmmode_ptr drmmode;
+    int output_id;
+    drmModeConnectorPtr mode_output;
+    drmModeEncoderPtr *mode_encoders;
+    drmModePropertyBlobPtr edid_blob;
+    drmModePropertyBlobPtr tile_blob;
+    int dpms_enum_id;
+    int dpms;
+    int num_props;
+    drmmode_prop_ptr props;
+    drmmode_prop_info_rec[DRMMODE_CONNECTOR__COUNT] props_connector;
+    int enc_mask;
+    int enc_clone_mask;
+    xf86CrtcPtr current_crtc;
+    Atom ctm_atom;
+    drm_color_ctm ctm;
+} 
+alias drmmode_output_private_ptr = drmmode_output_private_rec*;
+
+struct drmmode_prop_rec{
+    drmModePropertyPtr mode_prop;
+    uint64_t value;
+    int num_atoms;              /* if range prop, num_atoms == 1; if enum prop, num_atoms == num_enums + 1 */
+    Atom *atoms;
+} 
+alias drmmode_prop_ptr = drmmode_prop_rec*;
+
+struct _msSpritePriv {
+    CursorPtr cursor;
+    Bool sprite_visible;
+} 
+alias msSpritePrivRec = _msSpritePriv; 
+alias msSpritePrivPtr = msSpritePrivRec*;
+
+private const(drm_color_ctm) ctm_identity = {
+    [1UL << 32, 0, 0,
     0, 1UL << 32, 0,
-    0, 0, 1UL << 32
-} };
+    0, 0, 1UL << 32]
+ } ;
 
 private Bool ctm_is_identity(const(drm_color_ctm)* ctm)
 {
@@ -2234,20 +2456,20 @@ private void drmmode_crtc_destroy(xf86CrtcPtr crtc)
 }
 
 private const(xf86CrtcFuncsRec) drmmode_crtc_funcs = {
-    dpms: drmmode_crtc_dpms,
-    set_mode_major: drmmode_set_mode_major,
-    set_cursor_colors: drmmode_set_cursor_colors,
-    set_cursor_position: drmmode_set_cursor_position,
-    show_cursor_check: drmmode_show_cursor,
-    hide_cursor: drmmode_hide_cursor,
-    load_cursor_argb_check: drmmode_load_cursor_argb_check,
+    dpms: &drmmode_crtc_dpms,
+    set_mode_major: &drmmode_set_mode_major,
+    set_cursor_colors: &drmmode_set_cursor_colors,
+    set_cursor_position: &drmmode_set_cursor_position,
+    show_cursor_check: &drmmode_show_cursor,
+    hide_cursor: &drmmode_hide_cursor,
+    load_cursor_argb_check: &drmmode_load_cursor_argb_check,
 
-    gamma_set: drmmode_crtc_gamma_set,
-    destroy: drmmode_crtc_destroy,
-    set_scanout_pixmap: drmmode_set_scanout_pixmap,
-    shadow_allocate: drmmode_shadow_allocate,
-    shadow_create: drmmode_shadow_create,
-    shadow_destroy: drmmode_shadow_destroy,
+    gamma_set: &drmmode_crtc_gamma_set,
+    destroy: &drmmode_crtc_destroy,
+    set_scanout_pixmap: &drmmode_set_scanout_pixmap,
+    shadow_allocate: &drmmode_shadow_allocate,
+    shadow_create: &drmmode_shadow_create,
+    shadow_destroy: &drmmode_shadow_destroy,
 };
 
 private uint drmmode_crtc_vblank_pipe(int crtc_id)
@@ -3340,15 +3562,15 @@ private Bool drmmode_output_get_property(xf86OutputPtr output, Atom property)
 }
 
 private const(xf86OutputFuncsRec) drmmode_output_funcs = {
-    dpms: drmmode_output_dpms,
-    create_resources: drmmode_output_create_resources,
-    set_property: drmmode_output_set_property,
-    get_property: drmmode_output_get_property,
-    detect: drmmode_output_detect,
-    mode_valid: drmmode_output_mode_valid,
+    dpms: &drmmode_output_dpms,
+    create_resources: &drmmode_output_create_resources,
+    set_property: &drmmode_output_set_property,
+    get_property: &drmmode_output_get_property,
+    detect: &drmmode_output_detect,
+    mode_valid: &drmmode_output_mode_valid,
 
-    get_modes: drmmode_output_get_modes,
-    destroy: drmmode_output_destroy
+    get_modes: &drmmode_output_get_modes,
+    destroy: &drmmode_output_destroy
 };
 
 private int[7] subpixel_conv_table = [
@@ -3951,9 +4173,9 @@ private void drmmode_terminate_lease(RRLeasePtr lease)
 }
 
 private const(xf86CrtcConfigFuncsRec) drmmode_xf86crtc_config_funcs = {
-    resize: drmmode_xf86crtc_resize,
-    create_lease: drmmode_create_lease,
-    terminate_lease: drmmode_terminate_lease
+    resize: &drmmode_xf86crtc_resize,
+    create_lease: &drmmode_create_lease,
+    terminate_lease: &drmmode_terminate_lease
 };
 
 Bool drmmode_pre_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, int cpp)

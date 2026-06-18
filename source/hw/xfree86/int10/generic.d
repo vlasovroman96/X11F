@@ -20,12 +20,13 @@ version = _INT10_PRIVATE;
 import xf86int10_priv;
 import hw.xfree86.os_support.int10Defines;
 import hw.xfree86.os_support.bus.Pci;
+import include.xf86int10; 
 
 enum string ALLOC_ENTRIES(string x) = `((V_RAM / ` ~ x ~ `) - 1)`;
 
 import core.stdc.string;             /* needed for memmove */
 
-private __inline__ ldl_u(uint* p)
+auto ldl_u(uint* p)
 {
     uint ret = void;
 
@@ -33,7 +34,7 @@ private __inline__ ldl_u(uint* p)
     return ret;
 }
 
-private __inline__ ldw_u(ushort* p)
+auto ldw_u(ushort* p)
 {
     ushort ret = void;
 
@@ -41,14 +42,14 @@ private __inline__ ldw_u(ushort* p)
     return ret;
 }
 
-private __inline__ stl_u(uint val, uint* p)
+auto stl_u(uint val, uint* p)
 {
     uint tmp = val;
 
     memmove(p, &tmp, typeof(*p).sizeof);
 }
 
-private __inline__ stw_u(ushort val, ushort* p)
+auto stw_u(ushort val, ushort* p)
 {
     ushort tmp = val;
 
@@ -373,7 +374,7 @@ enum string V_ADDR(string addr) = `
 	  (` ~ SYS!(addr) ~ ` ? (cast(char*)` ~ INTPriv!(`pInt`) ~ `.sysMem) + (` ~ addr ~ ` - HIGH_BASE) 
 	   : ((cast(char*)(` ~ INTPriv!(`pInt`) ~ `.base) + ` ~ addr ~ `)))`;
 enum string VRAM_ADDR(string addr) = `(` ~ addr ~ ` - V_RAM)`;
-enum VRAM_BASE = (INTPriv(pInt).vRam);
+@property auto VRAM_BASE() => (INTPriv(pInt).vRam);
 
 enum string VRAM(string addr) = `((` ~ addr ~ ` >= V_RAM) && (` ~ addr ~ ` < (V_RAM + VRAM_SIZE)))`;
 enum string V_ADDR_RB(string addr) = `

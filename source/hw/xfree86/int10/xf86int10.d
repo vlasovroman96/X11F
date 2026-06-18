@@ -15,8 +15,9 @@ version = _INT10_PRIVATE;
 import xf86int10_priv;
 import hw.xfree86.os_support.int10Defines;
 import hw.xfree86.os_support.bus.Pci;
+import include.xf86int10;
 
-enum REG = pInt;
+// alias REG = pInt;
 
 xf86Int10InfoPtr Int10Current = null;
 

@@ -49,7 +49,8 @@ import hw.xfree86.drivers.video.modesetting.drmmode_display;
  * regen time, even though we don't close the drm fd and have no way
  * to actually drain the kernel events.
  */
-private xorg_list ms_drm_queue;
+//  alias ms_drm_queue = hw.xfree86.drivers.video.modesetting.driver.ms_drm_queue;
+private xorg_list ms_drm_queue_;
 private uint ms_drm_seq;
 
 private void box_intersect(BoxPtr dest, BoxPtr a, BoxPtr b)

@@ -39,6 +39,8 @@ import x86emu.x86emui;
 enum string DEBUG_IO_TRACE() = `0`;
 }
 import externs.pciaccess;
+import include.xf86int10;
+
 
 
 
@@ -51,7 +53,7 @@ version (_PC) {
 
 }
 
-enum REG = pInt;
+// enum REG = pInt;
 
 int setup_int(xf86Int10InfoPtr pInt)
 {

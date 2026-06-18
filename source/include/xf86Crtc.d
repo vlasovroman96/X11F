@@ -491,19 +491,19 @@ struct _xf86OutputFuncs {
      */
      DisplayModePtr function(xf86OutputPtr output) get_modes;
 
-version (RANDR_12_INTERFACE) {
+static if (RANDR_12_INTERFACE) {
     /**
      * Callback when an output's property has changed.
      */
     Bool function(xf86OutputPtr output, Atom property, RRPropertyValuePtr value) set_property;
 }
-version (RANDR_13_INTERFACE) {
+static if (RANDR_13_INTERFACE) {
     /**
      * Callback to get an updated property value
      */
     Bool function(xf86OutputPtr output, Atom property) get_property;
 }
-version (RANDR_GET_CRTC_INTERFACE) {
+static if (RANDR_GET_CRTC_INTERFACE) {
     /**
      * Callback to get current CRTC for a given output
      */

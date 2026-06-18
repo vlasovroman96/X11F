@@ -34,6 +34,9 @@ import externs.xf86drm;
 
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
+import include.screenint;
+import externs.X11.Xdefs;
+import include.xf86Crtc;
 
 /*
  * Flush the DRM event queue when full; makes space for new events.

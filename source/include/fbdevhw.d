@@ -4,6 +4,7 @@ extern(C): __gshared:
 
  
 public import include.xf86str;
+import externs.pciaccess;
 
 enum FBDEVHW_PACKED_PIXELS =		0       /* Packed Pixels        */;
 enum FBDEVHW_INTERLEAVED_PLANES =	2       /* Interleaved planes   */;
@@ -42,11 +43,11 @@ extern int fbdevHWDPMSSet(ScrnInfoPtr pScrn, int mode, int flags);
 
 extern int fbdevHWSaveScreen(ScreenPtr pScreen, int mode);
 
-extern xf86SwitchModeProc *fbdevHWSwitchModeWeak(void);
-extern xf86AdjustFrameProc *fbdevHWAdjustFrameWeak(void);
-extern xf86LeaveVTProc *fbdevHWLeaveVTWeak(void);
-extern xf86ValidModeProc *fbdevHWValidModeWeak(void);
-extern xf86DPMSSetProc *fbdevHWDPMSSetWeak(void);
-extern xf86LoadPaletteProc *fbdevHWLoadPaletteWeak(void);
+extern xf86SwitchModeProc *fbdevHWSwitchModeWeak();
+extern xf86AdjustFrameProc *fbdevHWAdjustFrameWeak();
+extern xf86LeaveVTProc *fbdevHWLeaveVTWeak();
+extern xf86ValidModeProc *fbdevHWValidModeWeak();
+extern xf86DPMSSetProc *fbdevHWDPMSSetWeak();
+extern xf86LoadPaletteProc *fbdevHWLoadPaletteWeak();
 
 

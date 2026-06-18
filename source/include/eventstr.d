@@ -247,7 +247,7 @@ struct _DeviceChangedEvent {
     }_Keys keys;
 }
 
-version (XFreeXDGA) {
+// version (XFreeXDGA) {
 /**
  * DGAEvent, used by DGA to intercept and emulate input events.
  */
@@ -264,7 +264,7 @@ struct _DGAEvent {
     int screen;           /**<  Screen number this event applies to */
     ushort state;       /**<  Core modifier/button state */
 }
-}
+// }
 
 /**
  * Raw event, contains the data as posted by the device.

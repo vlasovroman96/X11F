@@ -40,6 +40,7 @@ public import externs.pciaccess;
 
 public import include.scrnintstr;
 public import hw.xfree86.dri.xf86dri;
+import include.dristruct;
 
 /* Prototypes for DRI functions */
 
@@ -219,7 +220,7 @@ extern int DRIGetDrawableInfo(ScreenPtr pScreen, DrawablePtr pDrawable, uint* in
 
 extern int DRIGetDeviceInfo(ScreenPtr pScreen, drm_handle_t* hFrameBuffer, int* fbOrigin, int* fbSize, int* fbStride, int* devPrivateSize, void** pDevPrivate);
 
-extern DRIInfoPtr DRICreateInfoRec(void);
+extern DRIInfoPtr DRICreateInfoRec();
 
 extern int DRIDestroyInfoRec(DRIInfoPtr DRIInfo);
 

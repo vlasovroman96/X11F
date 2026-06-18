@@ -32,7 +32,7 @@ extern(C): __gshared:
  
 public import include.xlibre_ptrtypes;
 public import include.xvmcext;
-public import xf86xv;
+public import include.xf86xv;
 
 struct XF86MCImageIDList {
     int num_xvimages;
@@ -128,7 +128,7 @@ alias XF86MCAdaptorPtr = XF86MCAdaptorRec*;
 
 extern void  xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* adaptors);
 
-extern XF86MCAdaptorPtr xf86XvMCCreateAdaptorRec(void);
+extern XF86MCAdaptorPtr xf86XvMCCreateAdaptorRec();
 extern void  xf86XvMCDestroyAdaptorRec(XF86MCAdaptorPtr adaptor);
 
                           /* _XF86XVMC_H */

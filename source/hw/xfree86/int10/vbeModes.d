@@ -40,7 +40,7 @@ import core.stdc.string;
 import os.log_priv;
 
 import xf86_priv;
-import vbe;
+import include.vbe;
 import vbeModes;
 
 private int GetDepthFlag(vbeInfoPtr pVbe, int id)

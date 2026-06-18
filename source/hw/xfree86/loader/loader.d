@@ -55,6 +55,10 @@ import include.os;
 // import hw.xfree86.loader.loader;
 import hw.xfree86.loader.loaderProcs;
 
+version (Posix) {
+    version = HAVE_DLFCN_H;
+}
+
 version (HAVE_DLFCN_H) {
 
 import core.sys.posix.dlfcn;

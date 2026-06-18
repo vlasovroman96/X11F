@@ -1,4 +1,5 @@
-module xisb;
+module hw.xfree86.common.xisb;
+
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -37,8 +38,9 @@ import include.misc;
 import include.xf86;
 import include.xf86_OSproc;;
 import include.xf86_OSlib;
-import xf86Xinput;
-import xisb;
+import include.xf86Xinput;
+// import hw.xfree86.common.xisb;
+import include.xisb;
 
 XISBuffer* XisbNew(int fd, ssize_t size)
 {

@@ -75,7 +75,7 @@ extern void * xf86int10Addr(xf86Int10InfoPtr pInt, uint addr);
 /* x86 executor related functions */
 extern void  xf86ExecX86int10(xf86Int10InfoPtr pInt);
 
-version (_INT10_PRIVATE) {
+// version (_INT10_PRIVATE) {
 
 enum I_S_DEFAULT_INT_VECT = 0xFF065;
 enum SYS_SIZE = 0x100000;
@@ -132,5 +132,5 @@ extern void * xf86HandleInt10Options(ScrnInfoPtr pScrn, int entityIndex);
 extern void  xf86int10GetBiosLocationType(const(xf86Int10InfoPtr) pInt);
 extern void  xf86int10GetBiosSegment(xf86Int10InfoPtr pInt, void* base);
 
-}                          /* _INT10_PRIVATE */
+// }                          /* _INT10_PRIVATE */
                           /* _XF86INT10_H */

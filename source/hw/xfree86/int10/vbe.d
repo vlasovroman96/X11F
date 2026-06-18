@@ -21,6 +21,9 @@ import include.xf86;
 import xf86Modes;
 import vbe;
 import xf86Bus;
+import include.vbe;
+import include.xf86int10;
+
 
 enum string VERSION(string x) = `VBE_VERSION_MAJOR(` ~ x ~ `),VBE_VERSION_MINOR(` ~ x ~ `)`;
 

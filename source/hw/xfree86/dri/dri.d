@@ -80,6 +80,10 @@ import xf86VGAarbiter_priv;
 import xf86Extensions;
 import xf86Config;
 
+alias gid_t = core.sys.posix.sys.types.gid_t;
+alias mode_t = core.sys.posix.sys.types.mode_t;
+
+
 private int DRIEntPrivIndex = -1;
 private DevPrivateKeyRec DRIScreenPrivKeyRec;
 

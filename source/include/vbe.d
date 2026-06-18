@@ -13,8 +13,11 @@ extern(C): __gshared:
  */
 
  
-public import xf86int10;
+import include.xf86int10;
+// public import xf86int10;
 public import include.xf86DDC;
+// import include.xf86int10;
+
 
 enum ddc_lvl {
     DDC_UNCHECKED,

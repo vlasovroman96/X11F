@@ -6,6 +6,7 @@ import build.xorg_config;
 import include.xf86;
 import xf86cmap;
 import include.fbdevhw;
+import externs.pciaccess;
 
 /* Stubs for the static server on platforms that don't support fbdev */
 
