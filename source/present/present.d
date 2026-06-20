@@ -26,8 +26,10 @@ import build.dix_config;
 
 import present.present_priv;
 import randr.randrstr_priv;
+import present.present_fence;
 
 import include.gcstruct;
+import include.dri3;
 
 uint present_query_capabilities(RRCrtcPtr crtc)
 {
@@ -94,13 +96,13 @@ void present_copy_region(DrawablePtr drawable, PixmapPtr pixmap, RegionPtr updat
     FreeScratchGC(gc);
 }
 
-void present_pixmap_idle(PixmapPtr pixmap, WindowPtr window, CARD32 serial, present_fence* present_fence)
+void present_pixmap_idle(PixmapPtr pixmap, WindowPtr window, CARD32 serial, present_fence* present_fence_)
 {
-    if (present_fence)
-        present_fence_set_triggered(present_fence);
+    if (present_fence_)
+        present_fence_set_triggered(present_fence_);
     if (window) {
         DebugPresent(("\ti %08"~ PRIx32 ~ "\n", pixmap ? pixmap.drawable.id : 0));
-        present_send_idle_notify(window, serial, pixmap, present_fence);
+        present_send_idle_notify(window, serial, pixmap, present_fence_);
     }
 }
 
@@ -212,7 +214,7 @@ ulong present_get_target_msc(ulong target_msc_arg, ulong crtc_msc, ulong divisor
     return target_msc;
 }
 
-int present_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, DRI3* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong window_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies)
+int present_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong window_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies)
 {
     ScreenPtr screen = window.drawable.pScreen;
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);

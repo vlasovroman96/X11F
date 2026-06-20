@@ -250,16 +250,16 @@ int x_sha1_final(void* ctx, ubyte* result)
 
 } else {                           /* Use OpenSSL's libcrypto */
 
-import openssl.opensslv;
+import externs.openssl.opensslv;
 static if (OPENSSL_VERSION_MAJOR >= 3) {
-version = USE_EVP;
 }
+version = USE_EVP;
 
 version (USE_EVP) {
-import openssl.evp;
+import externs.openssl.evp;
 } else {
-import core.stdc.stddef;             /* buggy openssl/sha.h wants size_t */
-import openssl.sha;
+import core.stdc.stddef;             /* buggy externs.openssl/sha.h wants size_t */
+import externs.openssl.sha;
 }
 
 version (USE_EVP) {

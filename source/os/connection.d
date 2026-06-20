@@ -115,6 +115,8 @@ import dix.dixstruct_priv;
 import include.globals;
 import Xext.xace;
 
+alias sockaddr = core.sys.posix.sys.socket.sockaddr;
+
 version (HAVE_GETPEERUCRED) {
 import ucred;
 import zone;
@@ -136,6 +138,8 @@ enum OS_COMM_GRAB_IMPERVIOUS = 1;
 enum OS_COMM_IGNORED =         2;
 
 ospoll* server_poll;
+
+alias pid_t = core.sys.posix.sys.types.pid_t;
 
 Bool NewOutputPending;          /* not yet attempted to write some new output */
 Bool NoListenAll;               /* Don't establish any listening sockets */

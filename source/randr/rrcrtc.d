@@ -38,6 +38,7 @@ import os.osdep;
 
 import dix.swaprep;
 import mi.mipointer;
+import include.rrtransform;
  
 
 /* XFixed is just `int`, so better check whether it's really 32bit */

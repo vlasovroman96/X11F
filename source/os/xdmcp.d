@@ -30,7 +30,7 @@ import os.Xtrans;
 // //import externs.X11.Xos;
 
 static if (!HasVersion!"Windows") {
-import sys.param;
+import externs.sys.param;
 import core.sys.posix.sys.socket;
 import externs.netinet.in_;
 import core.sys.posix.netdb;

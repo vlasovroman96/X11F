@@ -27,6 +27,7 @@ import build.dix_config;
 import core.sys.posix.unistd;
 
 import present.present_priv;
+import include.dri3;
 
 void present_vblank_notify(present_vblank_ptr vblank, CARD8 kind, CARD8 mode, ulong ust, ulong crtc_msc)
 {
@@ -61,7 +62,7 @@ private Bool present_want_async_flip(uint options, uint capabilities)
  * If this function returns FALSE, present_vblank_destroy must be called to clean
  * up.
  */
-Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, DRI3* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc)
+Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc)
 {
     ScreenPtr screen = window.drawable.pScreen;
     present_window_priv_ptr window_priv = present_get_window_priv(window, TRUE);
@@ -163,7 +164,7 @@ no_mem:
     return FALSE;
 }
 
-present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, DRI3* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc)
+present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc)
 {
     present_vblank_ptr vblank = calloc(1, present_vblank_rec.sizeof);
 

@@ -27,6 +27,7 @@ import build.dix_config;
 import dix.dix_priv;
 import present.present_priv;
 import Xext.geext_priv;
+import present.present_fence;
 
 private RESTYPE present_event_type;
 

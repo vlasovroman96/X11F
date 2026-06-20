@@ -60,6 +60,29 @@ import core.stdc.string;
 import include.misc;
 import set;
 
+/* an interval of set members */
+struct  RecordSetInterval{
+    CARD16 first;
+    CARD16 last;
+};
+
+struct _RecordSetRec {
+    RecordSetOperations *ops;
+} ;
+
+alias RecordSetRec = _RecordSetRec;
+alias RecordSetPtr = RecordSetRec*;
+
+struct RecordSetOperations{
+    alias DestroySet = void function(RecordSetPtr pSet);
+    alias  IsMemberOfSet = c_ulong function (RecordSetPtr pSet, int possible_member);
+     alias IterateSet = RecordSetIteratePtr function(RecordSetPtr pSet,
+                                       RecordSetIteratePtr pIter,
+                                       RecordSetInterval * interval);
+} ;
+
+alias RecordSetIteratePtr = void*;
+
 /*
  * Ideally we would always use _Alignof(type) here, but that requires C11, so
  * we approximate this using sizeof(void*) for older C standards as that
@@ -96,7 +119,7 @@ struct _BitVectorSet {
     int maxMember;
     /* followed by the bit vector itself */
 }alias BitVectorSet = _BitVectorSet;
-alias BitVectorSetPtr = BitVectorSetPtr*;
+alias BitVectorSetPtr = _BitVectorSet*;
 
 enum BITS_PER_LONG = ulong.sizeof * 8;
 

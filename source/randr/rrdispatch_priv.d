@@ -9,6 +9,7 @@ extern(C): __gshared:
  */
  
 public import include.dix;
+import include.xlibre_ptrtypes;
 
 /* screen related dispatch */
 int ProcRRGetScreenSizeRange(ClientPtr client);

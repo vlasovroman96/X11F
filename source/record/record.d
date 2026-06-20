@@ -62,6 +62,7 @@ import include.inputstr;
 import include.scrnintstr;
 import include.globals;
 import include.cursor;
+import externs.X11.extensions.recordproto;
 
 import include.protocol_versions;
 

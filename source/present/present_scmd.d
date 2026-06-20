@@ -30,6 +30,7 @@ import randr.randrstr_priv;
 
 import include.misync;
 import include.misyncstr;
+import include.dri3;
 
 /*
  * Screen flip mode
@@ -690,7 +691,7 @@ private void present_scmd_update_window_crtc(WindowPtr window, RRCrtcPtr crtc, u
     window_priv.crtc = crtc;
 }
 
-private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, DRI3* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong target_window_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies)
+private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong target_window_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies)
 {
     ulong ust = 0;
     ulong target_msc = void;

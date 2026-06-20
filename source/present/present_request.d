@@ -31,6 +31,9 @@ import present.present_priv;
 
 import randr.randrstr_priv;
 import include.protocol_versions;
+import externs.X11.extensions.presentproto;
+import include.dri3;
+alias XSyncFence = CARD32;
 
 private int proc_present_query_version(ClientPtr client)
 {
@@ -80,7 +83,7 @@ enum string VERIFY_CRTC_OR_NONE(string crtc_ptr, string crtc_id, string client, 
         }                                                               
     } while (0)`;
 
-private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixmap req_pixmap, CARD32 req_serial, CARD32 req_valid, CARD32 req_update, INT16 req_x_off, INT16 req_y_off, CARD32 req_target_crtc, XSyncFence req_wait_fence, XSyncFence req_idle_fence, DRI3* acquire_syncobj, dri3_syncobj* release_syncobj, CARD64 req_acquire_point, CARD64 req_release_point, CARD32 req_options, CARD64 req_target_msc, CARD64 req_divisor, CARD64 req_remainder, size_t base_req_size, xPresentNotify* req_notifies)
+private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixmap req_pixmap, CARD32 req_serial, CARD32 req_valid, CARD32 req_update, INT16 req_x_off, INT16 req_y_off, CARD32 req_target_crtc, XSyncFence req_wait_fence, XSyncFence req_idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, CARD64 req_acquire_point, CARD64 req_release_point, CARD32 req_options, CARD64 req_target_msc, CARD64 req_divisor, CARD64 req_remainder, size_t base_req_size, xPresentNotify* req_notifies)
 {
     WindowPtr window = void;
     PixmapPtr pixmap = void;

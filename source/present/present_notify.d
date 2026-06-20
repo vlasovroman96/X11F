@@ -26,6 +26,7 @@ import build.dix_config;
 
 import dix.dix_priv;
 import present.present_priv;
+import externs.X11.extensions.presentproto;
 
 /*
  * Mark all pending notifies for 'window' as invalid when
