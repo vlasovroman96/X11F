@@ -62,6 +62,7 @@ import build.xorg_config;
 
 import core.stdc.errno;
 import core.sys.posix.sys.stat;
+import core.sys.posix.poll;
 //import externs.X11.X;
 
 import os.osdep;
@@ -72,6 +73,7 @@ import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 import include.inputstr;
+import os.ospoll;
 
 version (HAVE_STROPTS_H) {
 import stropts;

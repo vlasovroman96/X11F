@@ -13,7 +13,7 @@ import include.compiler;
 version = _INT10_PRIVATE;
 import xf86int10;
 
-enum REG = pInt;
+// enum REG = pInt;
 
 version (_VM86_LINUX) {
 import hw.xfree86.os_support.int10Defines;

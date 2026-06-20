@@ -47,7 +47,7 @@ private const(xf86ConfigSymTabRec)[4] ExtensionsTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeExtensions;
+alias CLEANUP = xf86freeExtensions;
 
 XF86ConfExtensionsPtr xf86parseExtensionsSection()
 {

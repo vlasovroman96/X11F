@@ -44,7 +44,7 @@ private const(xf86ConfigSymTabRec)[5] DRITab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeDRI;
+alias CLEANUP = xf86freeDRI;
 
 XF86ConfDRIPtr xf86parseDRISection()
 {

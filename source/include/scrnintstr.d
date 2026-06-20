@@ -109,7 +109,7 @@ alias WINDOW_VRR_ENABLED = WindowVRRMode.WINDOW_VRR_ENABLED;
 
 // alias CloseScreenProcPtr = Bool function(ScreenPtr);
 
-alias QueryBestSizeProcPtr = void function(int, ushort*, ushort*, ScreenPtr);
+// alias QueryBestSizeProcPtr = void function(int, ushort*, ushort*, ScreenPtr);
 
 // alias SaveScreenProcPtr = Bool function(ScreenPtr, int);
 

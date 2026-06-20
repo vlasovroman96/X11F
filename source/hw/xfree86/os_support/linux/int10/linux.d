@@ -30,6 +30,8 @@ import core.sys.posix.sys.shm;
 import core.sys.posix.unistd;
 import core.stdc.string;
 
+import include.xf86int10;
+
 private int counter = 0;
 private x_server_generation_t int10Generation = 0;
 

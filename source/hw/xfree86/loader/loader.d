@@ -73,6 +73,15 @@ version (XORG_NO_SDKSYMS) {} else {
 extern void*[1] xorg_symbols;
 }
 
+struct  ModuleVersions{
+    int xf86Version;
+    int ansicVersion;
+    int videodrvVersion;
+    int xinputVersion;
+    int extensionVersion;
+    int fontVersion;
+};
+
 void LoaderInit()
 {
 version (XORG_NO_SDKSYMS) {} else {

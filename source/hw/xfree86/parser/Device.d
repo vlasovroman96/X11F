@@ -87,7 +87,7 @@ private const(xf86ConfigSymTabRec)[24] DeviceTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeDeviceList;
+alias CLEANUP = xf86freeDeviceList;
 
 XF86ConfDevicePtr xf86parseDeviceSection()
 {

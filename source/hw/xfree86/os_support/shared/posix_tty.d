@@ -427,10 +427,11 @@ int xf86FlushInput(int fd)
     return 0;
 }
 
-struct states {
+struct State {
     int xf;
     int os;
 }
+
 private immutable State[] modemStates = () {
     State[] states;
     

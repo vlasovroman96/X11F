@@ -46,6 +46,7 @@ import xf86RandR12_priv;
 // //import externs.X11.extensions.dpmsconst;
 //import externs.X11.Xatom;
 import include.picturestr;
+import include.rrtransform;
 
 version (XV) {
 import xf86xv;

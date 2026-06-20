@@ -51,7 +51,7 @@ private int promP1275 = -1;
 
 enum MAX_PROP =	128;
 enum MAX_VAL =		(4096-128-4);
-private openpromio* promOpio;
+// private openpromio* promOpio;
 
 sbusDevicePtr* xf86SbusInfo = null;
 
