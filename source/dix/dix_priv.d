@@ -675,7 +675,7 @@ pragma(inline, true) private int xmitClientEvent(ClientPtr pClient, xEvent ev)
  */
 int dixAllocColor(ClientPtr client, Colormap cmap, CARD16* red, CARD16* green, CARD16* blue, CARD32* pixel);
 
-void ReplyNotSwappd(ClientPtr pClient, int size, void* pbuf);
+// void ReplyNotSwappd(ClientPtr pClient, int size, void* pbuf);
 
 /*
  * Byte swap a list of CARD32s

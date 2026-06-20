@@ -1,4 +1,4 @@
-module extension;
+module dix.extension;
 @nogc nothrow:
 extern(C): __gshared:
 /***********************************************************

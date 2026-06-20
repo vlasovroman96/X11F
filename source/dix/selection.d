@@ -1,4 +1,4 @@
-module selection;
+module dix.selection;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
