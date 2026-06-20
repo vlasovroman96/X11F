@@ -953,7 +953,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
 }
 
 __GLXprovider __glXDRI2Provider = {
-    __glXDRIscreenProbe,
+    &__glXDRIscreenProbe,
     "DRI2",
     null
 };

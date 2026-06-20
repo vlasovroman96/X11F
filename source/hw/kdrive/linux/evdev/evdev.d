@@ -476,18 +476,18 @@ private void EvdevKbdFini(KdKeyboardInfo* ki)
 
 KdPointerDriver LinuxEvdevMouseDriver = {
     name: "evdev",
-    Init: EvdevPtrInit,
-    Enable: EvdevPtrEnable,
-    Disable: EvdevPtrDisable,
-    Fini: EvdevPtrFini,
+    Init: &EvdevPtrInit,
+    Enable: &EvdevPtrEnable,
+    Disable: &EvdevPtrDisable,
+    Fini: &EvdevPtrFini,
 };
 
 KdKeyboardDriver LinuxEvdevKeyboardDriver = {
     name: "evdev",
-    Init: EvdevKbdInit,
-    Enable: EvdevKbdEnable,
-    Leds: EvdevKbdLeds,
-    Bell: EvdevKbdBell,
-    Disable: EvdevKbdDisable,
-    Fini: EvdevKbdFini,
+    Init: &EvdevKbdInit,
+    Enable: &EvdevKbdEnable,
+    Leds: &EvdevKbdLeds,
+    Bell: &EvdevKbdBell,
+    Disable: &EvdevKbdDisable,
+    Fini: &EvdevKbdFini,
 };

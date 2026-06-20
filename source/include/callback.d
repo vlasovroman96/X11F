@@ -56,8 +56,9 @@ SOFTWARE.
 /*
  *  callback manager stuff
  */
-struct _CallbackList;
-alias CallbackListPtr = _CallbackList*;
+ import dix.callback_priv;
+// struct CallbackListRec;
+alias CallbackListPtr = CallbackListRec*;
 // enum void  = "";
 
 alias CallbackProcPtr = void function(CallbackListPtr*, void*, void*);

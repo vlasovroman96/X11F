@@ -41,6 +41,8 @@ import ephyrlog;
 import include.glx_extinit;
 import include.glx_extinit;
 import hw.kdrive.src.kdrive;
+import hw.kdrive.src.kinfo;
+
 
 extern Window EphyrPreExistingHostWin;
 extern Bool EphyrWantGrayScale;
@@ -374,7 +376,7 @@ private int EphyrInit()
 }
 
 KdOsFuncs EphyrOsFuncs = {
-    Init: EphyrInit,
+    Init: &EphyrInit,
 };
 
 void OsVendorInit()
@@ -391,19 +393,19 @@ void OsVendorInit()
 }
 
 KdCardFuncs ephyrFuncs = {
-    cardinit: ephyrCardInit,
-    scrinit: ephyrScreenInitialize,
-    initScreen: ephyrInitScreen,
-    finishInitScreen: ephyrFinishInitScreen,
-    createRes: ephyrCreateResources,
+    cardinit: &ephyrCardInit,
+    scrinit: &ephyrScreenInitialize,
+    initScreen: &ephyrInitScreen,
+    finishInitScreen: &ephyrFinishInitScreen,
+    createRes: &ephyrCreateResources,
 
-    scrfini: ephyrScreenFini,
-    cardfini: ephyrCardFini,
+    scrfini: &ephyrScreenFini,
+    cardfini: &ephyrCardFini,
 
     /* no cursor or accel funcs here */
 
-    getColors: ephyrGetColors,
-    putColors: ephyrPutColors,
+    getColors: &ephyrGetColors,
+    putColors: &ephyrPutColors,
 
-    closeScreen: ephyrCloseScreen,
+    closeScreen: &ephyrCloseScreen,
 };

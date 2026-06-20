@@ -229,12 +229,12 @@ private void ephyrDeviceCursorCleanup(DeviceIntPtr dev, ScreenPtr screen)
 }
 
 miPointerSpriteFuncRec EphyrPointerSpriteFuncs = {
-    ephyrRealizeCursor,
-    ephyrUnrealizeCursor,
-    ephyrSetCursor,
-    ephyrMoveCursor,
-    ephyrDeviceCursorInitialize,
-    ephyrDeviceCursorCleanup
+    &ephyrRealizeCursor,
+    &ephyrUnrealizeCursor,
+    &ephyrSetCursor,
+    &ephyrMoveCursor,
+    &ephyrDeviceCursorInitialize,
+    &ephyrDeviceCursorCleanup
 };
 
 Bool ephyrCursorInit(ScreenPtr screen)

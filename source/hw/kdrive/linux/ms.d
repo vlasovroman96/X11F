@@ -163,8 +163,8 @@ private void MsFini(KdPointerInfo* pi)
 
 KdPointerDriver MsMouseDriver = {
     name: "ms",
-    Init: MsInit,
-    Enable: MsEnable,
-    Disable: MsDisable,
-    Fini: MsFini,
+    Init: &MsInit,
+    Enable: &MsEnable,
+    Disable: &MsDisable,
+    Fini: &MsFini,
 };

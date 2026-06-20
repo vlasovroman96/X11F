@@ -356,9 +356,9 @@ private void LinuxKeyboardLeds(KdKeyboardInfo* ki, int leds)
 
 KdKeyboardDriver LinuxKeyboardDriver = {
     name: "keyboard",
-    PreInit: LinuxKeyboardPreInit,
-    Init: LinuxKeyboardInit,
-    Enable: LinuxKeyboardEnable,
-    Leds: LinuxKeyboardLeds,
-    Disable: LinuxKeyboardDisable,
+    PreInit: &LinuxKeyboardPreInit,
+    Init: &LinuxKeyboardInit,
+    Enable: &LinuxKeyboardEnable,
+    Leds: &LinuxKeyboardLeds,
+    Disable: &LinuxKeyboardDisable,
 };

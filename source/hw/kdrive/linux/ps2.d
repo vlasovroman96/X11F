@@ -164,8 +164,8 @@ private void Ps2Fini(KdPointerInfo* pi)
 
 KdPointerDriver Ps2MouseDriver = {
     name: "ps2",
-    Init: Ps2Init,
-    Enable: Ps2Enable,
-    Disable: Ps2Disable,
-    Fini: Ps2Fini,
+    Init: &Ps2Init,
+    Enable: &Ps2Enable,
+    Disable: &Ps2Disable,
+    Fini: &Ps2Fini,
 };

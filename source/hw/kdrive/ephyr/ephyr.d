@@ -971,9 +971,9 @@ private void ephyrWarpCursor(DeviceIntPtr pDev, ScreenPtr pScreen, int x, int y)
 }
 
 miPointerScreenFuncRec ephyrPointerScreenFuncs = {
-    ephyrCursorOffScreen,
-    ephyrCrossScreen,
-    ephyrWarpCursor,
+    &ephyrCursorOffScreen,
+    &ephyrCrossScreen,
+    &ephyrWarpCursor,
 };
 
 private KdScreenInfo* screen_from_window(Window w)
@@ -1438,10 +1438,10 @@ private void MouseFini(KdPointerInfo* pi)
 
 KdPointerDriver EphyrMouseDriver = {
     name: "ephyr",
-    Init: MouseInit,
-    Enable: MouseEnable,
-    Disable: MouseDisable,
-    Fini: MouseFini,
+    Init: &MouseInit,
+    Enable: &MouseEnable,
+    Disable: &MouseDisable,
+    Fini: &MouseFini,
 };
 
 /* Keyboard */
@@ -1505,10 +1505,10 @@ private void EphyrKeyboardBell(KdKeyboardInfo* ki, int volume, int frequency, in
 
 KdKeyboardDriver EphyrKeyboardDriver = {
     name: "ephyr",
-    Init: EphyrKeyboardInit,
-    Enable: EphyrKeyboardEnable,
-    Leds: EphyrKeyboardLeds,
-    Bell: EphyrKeyboardBell,
-    Disable: EphyrKeyboardDisable,
-    Fini: EphyrKeyboardFini,
+    Init: &EphyrKeyboardInit,
+    Enable: &EphyrKeyboardEnable,
+    Leds: &EphyrKeyboardLeds,
+    Bell: &EphyrKeyboardBell,
+    Disable: &EphyrKeyboardDisable,
+    Fini: &EphyrKeyboardFini,
 };

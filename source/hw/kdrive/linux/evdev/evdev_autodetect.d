@@ -90,8 +90,8 @@ struct EventDevice {
     int is_read;
 }
 
-private EventDevice DefaultPtr = {0};
-private EventDevice DefaultKbd = {0};
+private EventDevice DefaultPtr;
+private EventDevice DefaultKbd;
 
 pragma(inline, true) private void ReadOptInfo(EvdevOptionalInfo* dst, const(char)* data)
 {

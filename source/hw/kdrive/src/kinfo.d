@@ -1,4 +1,4 @@
-module kinfo;
+module hw.kdrive.src.kinfo;
 @nogc nothrow:
 extern(C): __gshared:
 /*

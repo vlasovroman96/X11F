@@ -52,7 +52,7 @@ struct GlxVendorPrivDispatch {
     HashTable hh;
 }
 
-private GlxServerDispatchProc[OPCODE_ARRAY_LEN] dispatchFuncs = 0;
+private GlxServerDispatchProc[OPCODE_ARRAY_LEN] dispatchFuncs = null;
 private HashTable vendorPrivHash = null;
 private HtGenericHashSetupRec vendorPrivSetup = {
     keySize: CARD32.sizeof

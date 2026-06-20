@@ -45,6 +45,8 @@ import ephyr;
 import hw.kdrive.ephyr.ephyr_glamor;
 import include.os;
 
+enum EGL_NO_DISPLAY = cast(EGLDisplay)null;
+
 /* until we need geometry shaders GL3.1 should suffice. */
 /* Xephyr has its own copy of this for build reasons */
 enum GLAMOR_GL_CORE_VER_MAJOR = 3;

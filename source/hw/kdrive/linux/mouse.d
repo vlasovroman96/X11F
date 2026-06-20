@@ -949,8 +949,8 @@ private void MouseFini(KdPointerInfo* pi)
 
 KdPointerDriver LinuxMouseDriver = {
     name: "mouse",
-    Init: MouseInit,
-    Enable: MouseEnable,
-    Disable: MouseDisable,
-    Fini: MouseFini,
+    Init: &MouseInit,
+    Enable: &MouseEnable,
+    Disable: &MouseDisable,
+    Fini: &MouseFini,
 };

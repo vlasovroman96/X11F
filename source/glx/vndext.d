@@ -53,7 +53,11 @@ Bool noGlxExtension = FALSE;
 ExtensionEntry* GlxExtensionEntry;
 int GlxErrorBase = 0;
 private CallbackListRec vndInitCallbackList;
-private CallbackListPtr vndInitCallbackListPtr = &vndInitCallbackList;
+private CallbackListPtr vndInitCallbackListPtr;
+
+static this() {
+    vndInitCallbackListPtr = &vndInitCallbackList;
+} ;
 private DevPrivateKeyRec glvXGLVScreenPrivKey;
 private DevPrivateKeyRec glvXGLVClientPrivKey;
 
