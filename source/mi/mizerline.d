@@ -74,7 +74,7 @@ import include.miline;
  * Assumes that the point structure is {type x, y;} where type is
  * a signed type.
  */
-enum MAX_COORDINATE = ((1 << (((sizeof(xPoint) >> 1) << 3) - 1)) - 1);
+enum MAX_COORDINATE = ((1 << (((xPoint.sizeof >> 1) << 3) - 1)) - 1);
 
 enum string MI_OUTPUT_POINT(string xx, string yy) = `
 {

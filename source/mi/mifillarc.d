@@ -54,7 +54,40 @@ struct _miFillArc {
     int ym, yk, xm, xk;
 }
 
+
+
 alias miFillArcRec = _miFillArc;
+
+struct _miFillArcD {
+    int xorg, yorg;
+    int y;
+    int dx, dy;
+    double e;
+    double ym, yk, xm, xk;
+}
+
+alias miFillArcDRec = _miFillArcD;
+
+struct _miSliceEdge {
+    int x;
+    int stepx;
+    int deltax;
+    int e;
+    int dy;
+    int dx;
+}
+alias miSliceEdgeRec = _miSliceEdge;
+alias miSliceEdgePtr = miSliceEdgeRec;
+
+struct _miArcSlice {
+    miSliceEdgeRec edge1, edge2;
+    int min_top_y, max_top_y;
+    int min_bot_y, max_bot_y;
+    Bool edge1_top, edge2_top;
+    Bool flip_top, flip_bot;
+}
+
+alias miArcSliceRec = _miArcSlice;
 
 
 enum string Dsin(string d) = `sin(cast(double)` ~ d ~ `*(M_PI/11520.0))`;

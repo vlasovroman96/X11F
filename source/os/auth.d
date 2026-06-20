@@ -62,6 +62,17 @@ import externs.X11.X;
 import externs.X11.Xmd;
 import externs.X11.Xdefs;
 
+
+struct LocalClientCredRec{
+    int fieldsSet;              /* Bit mask of fields set */
+    int euid;                   /* Effective uid */
+    int egid;                   /* Primary effective group id */
+    int nSuppGids;              /* Number of supplementary group ids */
+    int *pSuppGids;             /* Array of supplementary group ids */
+    int pid;                    /* Process id */
+    int zoneid;                 /* Only set on Solaris 10 & later */
+} ;
+
 alias AuthInitFunc = void function();
 
 // enum AuthAddCArgs = "ushort data, const char *data";

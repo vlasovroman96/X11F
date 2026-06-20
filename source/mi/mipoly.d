@@ -62,6 +62,36 @@ import miscanfill;
 import mipoly;
 import include.regionstr;
 
+struct EdgeTable{
+    int ymax;                   /* ymax for the polygon     */
+    int ymin;                   /* ymin for the polygon     */
+    ScanLineList scanlines;     /* header node              */
+} ;
+
+struct _EdgeTableEntry {
+    int ymax;                   /* ycoord at which we exit this edge. */
+    BRESINFO bres;              /* Bresenham info to run the edge     */
+    _EdgeTableEntry *next;       /* next in the list     */
+    _EdgeTableEntry *back;       /* for insertion sort   */
+    _EdgeTableEntry *nextWETE;   /* for winding num rule */
+    int ClockWise;              /* flag for winding number rule       */
+}
+alias EdgeTableEntry = _EdgeTableEntry;
+
+struct _ScanLineList {
+    int scanline;               /* the scanline represented */
+    EdgeTableEntry *edgelist;   /* header node              */
+    _ScanLineList *next; /* next in the list       */
+} 
+alias ScanLineList = _ScanLineList;
+
+enum SLLSPERBLOCK = 25;
+
+struct _ScanLineListBlock {
+    ScanLineList[SLLSPERBLOCK] SLLs;
+    _ScanLineListBlock *next;
+} 
+alias ScanLineListBlock = _ScanLineListBlock;
 /*
  * Insert the given edge into the edge table.  First we must find the correct
  * bucket in the Edge table, then find the right slot in the bucket.  Finally,

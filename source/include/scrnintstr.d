@@ -67,23 +67,23 @@ struct PixmapFormatRec {
     ubyte scanlinePad;
 }
 
-struct VisualRec {
-    VisualID vid;
-    short class_;
-    short bitsPerRGBValue;
-    short ColormapEntries;
-    short nplanes;              /* = log2 (ColormapEntries). This does not
-                                 * imply that the screen has this many planes.
-                                 * it may have more or fewer */
-    c_ulong redMask, greenMask, blueMask;
-    int offsetRed, offsetGreen, offsetBlue;
-}
+// struct VisualRec {
+//     VisualID vid;
+//     short class_;
+//     short bitsPerRGBValue;
+//     short ColormapEntries;
+//     short nplanes;              /* = log2 (ColormapEntries). This does not
+//                                  * imply that the screen has this many planes.
+//                                  * it may have more or fewer */
+//     c_ulong redMask, greenMask, blueMask;
+//     int offsetRed, offsetGreen, offsetBlue;
+// }
 
-struct DepthRec {
-    ubyte depth;
-    short numVids;
-    VisualID* vids;             /* block of visual ids for this depth */
-}
+// struct DepthRec {
+//     ubyte depth;
+//     short numVids;
+//     VisualID* vids;             /* block of visual ids for this depth */
+// }
 
 struct _ScreenSaverStuff {
     WindowPtr pWindow;
@@ -121,7 +121,7 @@ alias WINDOW_VRR_ENABLED = WindowVRRMode.WINDOW_VRR_ENABLED;
 
 // alias CreateWindowProcPtr = Bool function(WindowPtr);
 
-alias DestroyWindowProcPtr = Bool function(WindowPtr);
+// alias DestroyWindowProcPtr = Bool function(WindowPtr);
 
 alias PositionWindowProcPtr = Bool function(WindowPtr, int, int);
 

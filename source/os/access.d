@@ -177,7 +177,7 @@ import core.sys.posix.libgen;
 }
 
 version = X_INCLUDE_NETDB_H;
-// //import externs.X11.Xos_r;
+// import externs.X11.Xos_r;
 
 import os.auth;
 import os.client_priv;
@@ -190,6 +190,8 @@ import Xext.xace;
 version (XDMCP) {
 import os.xdmcp;
 }
+
+alias sockaddr = core.sys.posix.sys.socket.sockaddr;
 
 Bool defeatAccessControl = FALSE;
 
@@ -211,13 +213,15 @@ enum string addrEqual(string fam, string address, string length, string host) = 
    checked in DisableLocalHost(), which is called to disable the default
    local host entries when stronger authentication is turned on. */
 
-struct HOST {
+struct _host {
     short family;
     short len;
     ubyte* addr;
     _host* next;
     int requested;
 }
+
+alias HOST = _host;
 
 enum string MakeHost(string h,string l) = `(` ~ h ~ `)=calloc(1, (*(` ~ h ~ `)+(` ~ l ~ `)).sizeof);
 			if (` ~ h ~ `) { 

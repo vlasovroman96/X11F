@@ -75,6 +75,51 @@ import include.gcstruct;
 import include.regionstr;
 import miwideline;
 
+struct _PolyEdge {
+    int height;                 /* number of scanlines to process */
+    int x;                      /* starting x coordinate */
+    int stepx;                  /* fixed integral dx */
+    int signdx;                 /* variable dx sign */
+    int e;                      /* initial error term */
+    int dy;
+    int dx;
+}
+
+alias PolyEdgeRec = _PolyEdge;
+alias PolyEdgePtr = PolyEdgeRec;
+
+enum SQSECANT = 108.856472512142;       /* 1/sin^2(11/2) - miter limit constant */
+
+/*
+ * types for general polygon routines
+ */
+
+struct _PolyVertex {
+    double x, y;
+} 
+alias PolyVertexRec = _PolyVertex;
+alias PolyVertexPtr = _PolyVertex*;
+
+struct _PolySlope {
+    int dx, dy;
+    double k;                   /* x0 * dy - y0 * dx */
+} 
+alias PolySlopeRec = _PolySlope;
+alias PolySlopePtr = _PolySlope*;
+
+/*
+ * Line face description for caps/joins
+ */
+
+struct _LineFace {
+    double xa, ya;
+    int dx, dy;
+    int x, y;
+    double k;
+} 
+alias LineFaceRec = _PolySlope;
+alias LineFacePtr = _PolySlope*;
+
 struct Spans {
     int count;                  /* number of spans                  */
     DDXPointPtr points;         /* pointer to list of start points  */

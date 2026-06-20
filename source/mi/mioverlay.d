@@ -25,6 +25,7 @@ import mioverlay;
 import migc;
 
 import include.globals;
+import include.mioverlay;
 
 struct _MiOverlayValDataRec {
     RegionRec exposed;

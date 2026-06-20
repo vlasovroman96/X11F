@@ -69,6 +69,8 @@ version (Windows) {
 //import externs.X11.Xwinsock;
 }
 
+import os.Xtrans;
+
 import os.xhostname;
 
 static if (HasVersion!"IPv6" && !HasVersion!"AF_INET6") {
