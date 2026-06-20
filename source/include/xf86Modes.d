@@ -40,7 +40,7 @@ public import include.xf86Parser;
 
 extern void  xf86ModeHSync(const(DisplayModeRec)* mode);
 extern void  xf86ModeVRefresh(const(DisplayModeRec)* mode);
-extern void  unsigned; int xf86ModeBandwidth(DisplayModePtr mode, int depth);
+extern uint xf86ModeBandwidth(DisplayModePtr mode, int depth);
 
 extern void  xf86ModeWidth(const(DisplayModeRec)* mode, Rotation rotation);
 
@@ -80,7 +80,7 @@ extern void  xf86ValidateModesUserConfig(ScrnInfoPtr pScrn, DisplayModePtr modeL
 
 extern void  xf86GetMonitorModes(ScrnInfoPtr pScrn, XF86ConfMonitorPtr conf_monitor);
 
-extern DisplayModePtr xf86GetDefaultModes(void);
+extern DisplayModePtr xf86GetDefaultModes();
 
 extern void  xf86SaveModeContents(DisplayModePtr intern, const(DisplayModeRec)* mode);
 

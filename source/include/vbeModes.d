@@ -33,6 +33,7 @@ extern(C): __gshared:
  
 //public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
+import include.vbe;
 
 /*
  * This is intended to be stored in the DisplayModeRec's private area.

@@ -50,7 +50,7 @@ SOFTWARE.
  
 // //public import externs.X11.Xfuncproto;
 
-private _X_INLINE ICEIL(double x)
+private auto ICEIL(double x)
 {
     int _cTmp = x;
 

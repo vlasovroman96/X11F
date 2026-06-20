@@ -46,6 +46,16 @@ enum QUADRANT3 = (270 * 64);
 
 enum M_PI =	3.14159265358979323846;
 
+struct _miFillArc {
+    int xorg, yorg;
+    int y;
+    int dx, dy;
+    int e;
+    int ym, yk, xm, xk;
+}
+
+alias miFillArcRec = _miFillArc;
+
 
 enum string Dsin(string d) = `sin(cast(double)` ~ d ~ `*(M_PI/11520.0))`;
 enum string Dcos(string d) = `cos(cast(double)` ~ d ~ `*(M_PI/11520.0))`;

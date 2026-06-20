@@ -24,7 +24,9 @@ extern(C): __gshared:
  *
  * Author: Dave Airlie <airlied@redhat.com>
  */
- 
+ import config.hotplug_priv;
+import externs.pciaccess;
+
 struct xf86_platform_device {
     OdevAttributes* attribs;
     /* for PCI devices */

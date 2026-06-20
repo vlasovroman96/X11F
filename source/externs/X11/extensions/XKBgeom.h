@@ -32,6 +32,12 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #include <externs/X11/extensions/XKBstr.h>
 #include <externs/X11/Xdefs.h>
 #include <X11/Xfuncproto.h>
+#include <X11/Xmd.h>
+#include <X11/X.h>
+typedef int Status; 
+
+struct _XDisplay;
+typedef _XDisplay Display;
 
 typedef	struct _XkbProperty {
 	char	*name;
