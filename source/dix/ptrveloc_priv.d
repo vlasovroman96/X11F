@@ -37,13 +37,13 @@ struct _PredictableAccelSchemeRec {
 }alias PredictableAccelSchemeRec = _PredictableAccelSchemeRec;
 alias PredictableAccelSchemePtr = _PredictableAccelSchemeRec*;
 
-void AccelerationDefaultCleanup(DeviceIntPtr dev);
+// void AccelerationDefaultCleanup(DeviceIntPtr dev);
 
 Bool InitPredictableAccelerationScheme(DeviceIntPtr dev, _ValuatorAccelerationRec* protoScheme);
 
-void acceleratePointerPredictable(DeviceIntPtr dev, ValuatorMask* val, CARD32 evtime);
+// void acceleratePointerPredictable(DeviceIntPtr dev, ValuatorMask* val, CARD32 evtime);
 
-void acceleratePointerLightweight(DeviceIntPtr dev, ValuatorMask* val, CARD32 evtime);
+// void acceleratePointerLightweight(DeviceIntPtr dev, ValuatorMask* val, CARD32 evtime);
 
 void InitTrackers(DeviceVelocityPtr vel, int ntracker);
 

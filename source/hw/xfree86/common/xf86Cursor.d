@@ -74,9 +74,9 @@ alias xf86ScreenLayoutPtr = xf86ScreenLayoutRec*;
 
 
 private miPointerScreenFuncRec xf86PointerScreenFuncs = {
-    xf86CursorOffScreen,
-    xf86CrossScreen,
-    xf86WarpCursor,
+    &xf86CursorOffScreen,
+    &xf86CrossScreen,
+    &xf86WarpCursor,
 };
 
 private xf86ScreenLayoutRec[MAXSCREENS] xf86ScreenLayout;

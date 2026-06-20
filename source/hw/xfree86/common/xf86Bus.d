@@ -76,7 +76,7 @@ EntityPtr* xf86Entities = null; /* Bus slots claimed by drivers */
 int xf86NumEntities = 0;
 private int xf86EntityPrivateCount = 0;
 
-BusRec primaryBus = { BUS_NONE, {0} };
+BusRec primaryBus = { BUS_NONE, {null} };
 
 /**
  * Call the driver's correct probe function.

@@ -70,7 +70,7 @@ import include.miscstruct;
 import include.dixstruct;
 import xf86xv;
 import externs.gbm;
-import build.xorg_config;
+// import build.xorg_config;
 version (XSERVER_PLATFORM_BUS) {
 import xf86platformBus_priv;
 }
@@ -256,10 +256,10 @@ private XF86ModuleVersionInfo VersRec = {
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
     _modinfo2_: MODINFOSTRING2,
-    xf86version: XORG_VERSION_CURRENT,
-    majorversion: XORG_VERSION_MAJOR,
-    minorversion: XORG_VERSION_MINOR,
-    patchlevel: XORG_VERSION_PATCH,
+    xf86version: mixin(XORG_VERSION_CURRENT),
+    majorversion: mixin(XORG_VERSION_MAJOR),
+    minorversion: mixin(XORG_VERSION_MINOR),
+    patchlevel: mixin(XORG_VERSION_PATCH),
     abiclass: ABI_CLASS_VIDEODRV,
     abiversion: ABI_VIDEODRV_VERSION,
     moduleclass: MOD_CLASS_VIDEODRV,
@@ -267,7 +267,7 @@ private XF86ModuleVersionInfo VersRec = {
 
 export XF86ModuleData modesettingModuleData = {
     vers: &VersRec,
-    setup: Setup
+    setup: &Setup
 };
 
 private void* Setup(void* module_, void* opts, int* errmaj, int* errmin)

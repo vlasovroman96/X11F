@@ -50,6 +50,45 @@ enum int KB_DE = 0x0200; // Немецкая
 enum int KB_FR = 0x0300; // Французская (если компилятор ругнется на неё дальше)
 enum int KB_US = 0x0000; // Американская по умолчанию
 
+enum KB_NODEAD       = 0x00010000; // Отключение dead accents
+enum KB_DECLK        = 0x00020000;
+enum KB_DVORAK       = 0x00040000;
+enum KB_METAESC      = 0x00080000;
+enum KB_SWAPCTRLCAPS = 0x00100000;
+
+enum KB_USER         = 0x0000;
+// enum KB_US           = 0x0100;
+// enum KB_DE           = 0x0200;
+// enum KB_FR           = 0x0300;
+enum KB_DK           = 0x0400;
+enum KB_IT           = 0x0500;
+enum KB_NO           = 0x0600;
+// enum KB_SV           = 0x0700;
+enum KB_FI           = 0x0800;
+// enum KB_UK           = 0x0900;
+enum KB_JP           = 0x0a0a;
+enum KB_SV_NODEAD    = KB_SV | KB_NODEAD;
+enum KB_SG           = 0x0d00; // Swiss German
+enum KB_SF           = 0x0e00; // Swiss French
+enum KB_CF = 0x0f00; // Canadian French
+
+// Типы клавиатур из системного заголовка wsconsio.h
+enum WSKBD_TYPE_PCXT      = 1;
+enum WSKBD_TYPE_PCAT      = 2;
+enum WSKBD_TYPE_USB       = 3;
+enum WSKBD_TYPE_HIL       = 4;
+enum WSKBD_TYPE_LK201     = 5;
+enum WSKBD_TYPE_SUN       = 6;
+enum WSKBD_TYPE_SUN5      = 7;
+enum WSKBD_TYPE_ADB       = 8;
+enum WSKBD_TYPE_NEXT      = 9;
+enum WSKBD_TYPE_GIO       = 10;
+enum WSKBD_TYPE_LK401     = 11;
+enum WSKBD_TYPE_MAPLE     = 12;
+
+// Целевая константа для Sharp Zaurus
+enum WSKBD_TYPE_ZAURUS    = 13; 
+
 enum WSCONS_KBD_DEVICE = "/dev/wskbd";
 enum WSCONS_MOUSE_PREFIX = "/dev/wsmouse";
 
@@ -62,7 +101,7 @@ struct nameint {
 // enum KB_UK = 256;
 // enum KB_DE = 257;
 enum KB_SV = 258; // Шведская раскладка (добавлено)
-enum KB_SG = 259; // Швейцарская немецкая (добавлено)
+// enum KB_SG = 259; // Швейцарская немецкая (добавлено)
 
 // KB_ENCTAB в оригинале — это макрос-список, заменяем на массив заглушек
 enum nameint[] KB_ENCTAB = [

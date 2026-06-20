@@ -25,7 +25,7 @@ enum string VALIDATE_XV_PORT(string portID, string pPort, string mode) = `
 
 /* Errors */
 
-enum _XvBadPort = (XvBadPort+XvErrorBase);
+auto _XvBadPort() => (XvBadPort+XvErrorBase);
 
 struct XvPortNotifyRec {
     _XvPortNotifyRec* next;

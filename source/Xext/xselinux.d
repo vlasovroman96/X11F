@@ -139,6 +139,9 @@ struct SELinuxListItemsReply {
     CARD32 pad6;
 }
 
+enum SELINUX_MODE_DEFAULT =    0;
+
+
 version (XSELINUX) {
 enum SELINUX_MODE_DEFAULT =    0;
 enum SELINUX_MODE_DISABLED =   1;

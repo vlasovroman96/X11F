@@ -637,8 +637,8 @@ private void disconnect_hook(void* data)
 }
 
 private dbus_core_hook core_hook = {
-    connect: connect_hook,
-    disconnect: disconnect_hook,
+    connect: &connect_hook,
+    disconnect: &disconnect_hook,
     data: &logind_info,
 };
 

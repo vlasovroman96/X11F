@@ -1347,9 +1347,9 @@ Bool InitValuatorClassDeviceStruct(DeviceIntPtr dev, int numAxes, Atom* labels, 
 /* global list of acceleration schemes */
 ValuatorAccelerationRec[4] pointerAccelerationScheme = [
     {PtrAccelNoOp, null, null, null, null},
-    {PtrAccelPredictable, acceleratePointerPredictable, null,
-     InitPredictableAccelerationScheme, AccelerationDefaultCleanup},
-    {PtrAccelLightweight, acceleratePointerLightweight, null, null, null},
+    {PtrAccelPredictable, &acceleratePointerPredictable, null,
+     &InitPredictableAccelerationScheme, &AccelerationDefaultCleanup},
+    {PtrAccelLightweight, &acceleratePointerLightweight, null, null, null},
     {-1, null, null, null, null}        /* terminator */
 ];
 

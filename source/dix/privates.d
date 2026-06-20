@@ -276,11 +276,11 @@ private Bool fixupDevices(FixupFunc fixup, uint bytes)
 }
 
 private Bool function(FixupFunc, uint)[PRIVATE_LAST] allocated_early = [
-    PRIVATE_SCREEN: fixupScreens,
-    PRIVATE_CLIENT: fixupServerClient,
-    PRIVATE_EXTENSION: fixupExtensions,
-    PRIVATE_COLORMAP: fixupDefaultColormaps,
-    PRIVATE_DEVICE: fixupDevices,
+    PRIVATE_SCREEN: &fixupScreens,
+    PRIVATE_CLIENT: &fixupServerClient,
+    PRIVATE_EXTENSION: &fixupExtensions,
+    PRIVATE_COLORMAP: &fixupDefaultColormaps,
+    PRIVATE_DEVICE: &fixupDevices,
 ];
 
 private void grow_private_set(DevPrivateSetPtr set, uint bytes)

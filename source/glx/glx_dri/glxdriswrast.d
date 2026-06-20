@@ -1,4 +1,4 @@
-module glx.glxdriswrast;
+module glx.glx_dri.glxdriswrast;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -452,7 +452,7 @@ static if (!HasVersion!"XQUARTZ" && !HasVersion!"Windows") {
 }
 
 __GLXprovider __glXDRISWRastProvider = {
-    __glXDRIscreenProbe,
+    &__glXDRIscreenProbe,
     "DRISWRAST",
     null
 };

@@ -52,6 +52,8 @@ import glx.indirect_table;
 import glx.indirect_util;
 import include.glxvndabi;
 import include.glx_extinit;
+import glx.glx_dri.glxdriswrast;
+
 
 /*
 ** X resources.
@@ -265,10 +267,11 @@ private void glxClientCallback(CallbackListPtr* list, void* closure, void* data)
 
 /************************************************************************/
 
-private __GLXprovider* __glXProviderStack = BUILD_GLX_DRI
+static if(BUILD_GLX_DRI)
+    private __GLXprovider* __glXProviderStack = 
                                            &__glXDRISWRastProvider;
-// ! #else
-                                        //    NULL;
+else
+    private __GLXprovider* __glXProviderStack = null;                                   //    NULL;
 // ! #endif
 
 void GlxPushProvider(__GLXprovider* provider)

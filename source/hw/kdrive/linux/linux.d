@@ -35,10 +35,13 @@ import core.sys.posix.sys.stat;
 import core.sys.posix.sys.ioctl;
 //import externs.X11.keysym;
 import externs.linux.apm_bios;
+import core.sys.posix.unistd;
 
 import os.osdep;
 import os.ddx_priv;
 import os.log_priv;
+import os.log;
+
 
 version (KDRIVE_MOUSE) {
 extern KdPointerDriver LinuxMouseDriver;
@@ -57,10 +60,15 @@ extern KdKeyboardDriver LinuxKeyboardDriver;
 }
 
 private int vtno;
-int LinuxConsoleFd;
-int LinuxApmFd = -1;
+static int LinuxConsoleFd = 0;
+static int LinuxApmFd = -1;
 private int activeVT;
 private Bool enabled;
+
+static this()
+{
+    LinuxConsoleFd = -1;
+}
 
 private void LinuxVTRequest(int sig)
 {
@@ -89,7 +97,7 @@ private int LinuxInit()
     char[11] vtname = void;
     vt_stat vts = void;
 
-    LinuxConsoleFd = -1;
+    // LinuxConsoleFd = -1;
     /* check if we're run with euid==0 */
     if (geteuid() != 0) {
         FatalError("LinuxInit: Server must be suid root\n");
@@ -356,12 +364,12 @@ private void LinuxBell(int volume, int pitch, int duration)
 }
 
 KdOsFuncs LinuxFuncs = {
-    Init: LinuxInit,
-    Enable: LinuxEnable,
-    SpecialKey: LinuxSpecialKey,
-    Disable: LinuxDisable,
-    Fini: LinuxFini,
-    Bell: LinuxBell,
+    Init: &LinuxInit,
+    Enable: &LinuxEnable,
+    SpecialKey: &LinuxSpecialKey,
+    Disable: &LinuxDisable,
+    Fini: &LinuxFini,
+    Bell: &LinuxBell,
 };
 
 void OsVendorInit()

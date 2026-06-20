@@ -916,7 +916,7 @@ extern void  xf86SetScrnInfoModes(ScrnInfoPtr pScrn);
 version (RANDR_13_INTERFACE) {
 alias ScreenInitRetType =	int;
 } else {
-enum ScreenInitRetType =	Bool;
+alias ScreenInitRetType =	Bool;
 }
 
 extern void  xf86CrtcScreenInit(ScreenPtr pScreen);

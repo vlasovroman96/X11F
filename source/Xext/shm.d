@@ -134,7 +134,7 @@ private DevPrivateKeyRec shmPixmapPrivateKeyRec;
 
 enum shmPixmapPrivateKey = (&shmPixmapPrivateKeyRec);
 private ShmFuncs miFuncs = { null, null };
-private ShmFuncs fbFuncs = { fbShmCreatePixmap, null };
+private ShmFuncs fbFuncs = { &fbShmCreatePixmap, null };
 
 enum string ShmGetScreenPriv(string s) = `(cast(ShmScrPrivateRec*)dixLookupPrivate(&(` ~ s ~ `).devPrivates, shmScrPrivateKey))`;
 

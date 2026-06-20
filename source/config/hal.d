@@ -637,8 +637,8 @@ private void connect_hook(DBusConnection* connection, void* data)
 private config_hal_info hal_info;
 
 private dbus_core_hook hook = {
-    connect: connect_hook,
-    disconnect: disconnect_hook,
+    connect: &connect_hook,
+    disconnect: &disconnect_hook,
     data: &hal_info,
 };
 
