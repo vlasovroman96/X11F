@@ -37,11 +37,12 @@ import include.mistruct;
 import include.gc;
 
 import xnest_xcb;
+import hw.xnest.GCOps;
 
 
 // import Display;
 // import XNGC;
-// import GCOps;
+// module hw.xnest.GCOps;
 // import Drawable;
 // import XNFont;
 // import Color;
@@ -49,36 +50,36 @@ import xnest_xcb;
 DevPrivateKeyRec xnestGCPrivateKeyRec;
 
 private GCFuncs xnestFuncs = {
-    xnestValidateGC,
-    xnestChangeGC,
-    xnestCopyGC,
-    xnestDestroyGC,
-    xnestChangeClip,
-    xnestDestroyClip,
-    xnestCopyClip,
+    &xnestValidateGC,
+    &xnestChangeGC,
+    &xnestCopyGC,
+    &xnestDestroyGC,
+    &xnestChangeClip,
+    &xnestDestroyClip,
+    &xnestCopyClip,
 };
 
 private GCOps xnestOps = {
-    xnestFillSpans,
-    xnestSetSpans,
-    xnestPutImage,
-    xnestCopyArea,
-    xnestCopyPlane,
-    xnestPolyPoint,
-    xnestPolylines,
-    xnestPolySegment,
-    xnestPolyRectangle,
-    xnestPolyArc,
-    xnestFillPolygon,
-    xnestPolyFillRect,
-    xnestPolyFillArc,
-    xnestPolyText8,
-    xnestPolyText16,
-    xnestImageText8,
-    xnestImageText16,
-    xnestImageGlyphBlt,
-    xnestPolyGlyphBlt,
-    xnestPushPixels
+    &xnestFillSpans,
+    &xnestSetSpans,
+    &xnestPutImage,
+    &xnestCopyArea,
+    &xnestCopyPlane,
+    &xnestPolyPoint,
+    &xnestPolylines,
+    &xnestPolySegment,
+    &xnestPolyRectangle,
+    &xnestPolyArc,
+    &xnestFillPolygon,
+    &xnestPolyFillRect,
+    &xnestPolyFillArc,
+    &xnestPolyText8,
+    &xnestPolyText16,
+    &xnestImageText8,
+    &xnestImageText16,
+    &xnestImageGlyphBlt,
+    &xnestPolyGlyphBlt,
+    &xnestPushPixels
 };
 
 Bool xnestCreateGC(GCPtr pGC)

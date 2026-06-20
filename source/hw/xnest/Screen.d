@@ -40,7 +40,7 @@ import xnest_xcb;
 import Display;
 import Screen;
 import XNGC;
-import GCOps;
+import hw.xnest.GCOps;
 import Drawable;
 import XNFont;
 import Color;
@@ -123,18 +123,18 @@ private void xnestCrossScreen(ScreenPtr pScreen, Bool entering)
 }
 
 private miPointerScreenFuncRec xnestPointerCursorFuncs = {
-    xnestCursorOffScreen,
-    xnestCrossScreen,
-    miPointerWarpCursor
+    &xnestCursorOffScreen,
+    &xnestCrossScreen,
+    &miPointerWarpCursor
 };
 
 private miPointerSpriteFuncRec xnestPointerSpriteFuncs = {
-    xnestRealizeCursor,
-    xnestUnrealizeCursor,
-    xnestSetCursor,
-    xnestMoveCursor,
-    xnestDeviceCursorInitialize,
-    xnestDeviceCursorCleanup
+    &xnestRealizeCursor,
+    &xnestUnrealizeCursor,
+    &xnestSetCursor,
+    &xnestMoveCursor,
+    &xnestDeviceCursorInitialize,
+    &xnestDeviceCursorCleanup
 };
 
 private DepthPtr add_depth(DepthPtr depths, int* numDepths, int nplanes)

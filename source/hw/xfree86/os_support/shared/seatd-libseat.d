@@ -118,8 +118,8 @@ private void disable_seat(libseat* seat, void* userdata)
  * Callbacks for handling the libseat events.
  */
 private libseat_seat_listener client_callbacks = {
-    enable_seat: enable_seat,
-    disable_seat: disable_seat,
+    enable_seat: &enable_seat,
+    disable_seat: &disable_seat,
 };
 
 /*

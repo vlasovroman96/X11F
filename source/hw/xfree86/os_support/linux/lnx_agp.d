@@ -41,6 +41,8 @@ enum AGP_PAGE_SIZE =		4096;
 enum AGPGART_MAJOR_VERSION =	0;
 enum AGPGART_MINOR_VERSION =	99;
 
+alias FALSE = include.misc.FALSE;
+
 private int gartFd = -1;
 private int acquiredScreen = -1;
 private Bool initDone = FALSE;

@@ -1,4 +1,4 @@
-module GCOps;
+module hw.xnest.GCOps;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -41,7 +41,7 @@ import Display;
 import Screen;
 import XNGC;
 import XNFont;
-import GCOps;
+import hw.xnest.GCOps;
 import Drawable;
 
 void xnestFillSpans(DrawablePtr pDrawable, GCPtr pGC, int nSpans, xPoint* pPoints, int* pWidths, int fSorted)

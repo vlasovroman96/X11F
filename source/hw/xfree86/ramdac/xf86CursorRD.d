@@ -34,12 +34,12 @@ DevScreenPrivateKeyRec xf86ScreenCursorBitsKeyRec;
 
 
 private miPointerSpriteFuncRec xf86CursorSpriteFuncs = {
-    xf86CursorRealizeCursor,
-    xf86CursorUnrealizeCursor,
-    xf86CursorSetCursor,
-    xf86CursorMoveCursor,
-    xf86DeviceCursorInitialize,
-    xf86DeviceCursorCleanup
+    &xf86CursorRealizeCursor,
+    &xf86CursorUnrealizeCursor,
+    &xf86CursorSetCursor,
+    &xf86CursorMoveCursor,
+    &xf86DeviceCursorInitialize,
+    &xf86DeviceCursorCleanup
 };
 
 /* Screen functions */

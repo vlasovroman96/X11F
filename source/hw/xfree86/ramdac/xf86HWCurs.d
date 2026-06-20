@@ -66,7 +66,7 @@ private CARD64 xf86CARD64ReverseBits(CARD64 w)
 
 } else {
 
-enum SCANLINE = CARD32;
+alias SCANLINE = CARD32;
 enum CUR_BITMAP_SCANLINE_PAD = BITMAP_SCANLINE_PAD;
 enum CUR_LOG2_BITMAP_PAD = LOG2_BITMAP_PAD;
 enum string REVERSE_BIT_ORDER(string w) = `xf86ReverseBitOrder(` ~ w ~ `)`;
