@@ -51,6 +51,26 @@ private int promP1275 = -1;
 
 enum MAX_PROP =	128;
 enum MAX_VAL =		(4096-128-4);
+
+// Константы типов фреймбуферов Sun Microsystems из системного fbio.h
+enum FBTYPE_SUN1BW          = 0;
+enum FBTYPE_SUN1COLOR       = 1;
+enum FBTYPE_SUN2BW          = 2;
+enum FBTYPE_SUN2COLOR       = 3;
+enum FBTYPE_SUN2GP          = 4;
+enum FBTYPE_SUN5COLOR       = 5;
+enum FBTYPE_SUN3COLOR       = 6;  // Первая целевая ошибка (cg3)
+enum FBTYPE_MEMCOLOR        = 7;
+enum FBTYPE_SUN4COLOR       = 8;
+enum FBTYPE_NOTSUN1         = 9;
+enum FBTYPE_NOTSUN2         = 10;
+enum FBTYPE_PCIMISC         = 11;
+enum FBTYPE_SUNFAST_COLOR   = 12; // Вторая целевая ошибка (cg6)
+enum FBTYPE_SUNROP_COLOR    = 13;
+enum FBTYPE_SUNFB_VIDEO     = 14;
+enum FBTYPE_MDICOLOR        = 28; // cg14
+enum FBTYPE_TCXCOLOR        = 29; // tcx
+enum FBTYPE_CREATOR         = 30;
 // private openpromio* promOpio;
 
 sbusDevicePtr* xf86SbusInfo = null;

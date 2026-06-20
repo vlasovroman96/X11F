@@ -145,11 +145,11 @@ private void xf86_dga_close_framebuffer(ScrnInfoPtr scrn)
 }
 
 private DGAFunctionRec xf86_dga_funcs = {
-    xf86_dga_open_framebuffer,
-    xf86_dga_close_framebuffer,
-    xf86_dga_set_mode,
-    xf86_dga_set_viewport,
-    xf86_dga_get_viewport,
+    &xf86_dga_open_framebuffer,
+    &xf86_dga_close_framebuffer,
+    &xf86_dga_set_mode,
+    &xf86_dga_set_viewport,
+    &xf86_dga_get_viewport,
     null,
     null,
     null,

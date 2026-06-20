@@ -43,12 +43,12 @@ private x_server_generation_t int10Generation = 0;
 
 
 int10MemRec linuxMem = {
-    read_b,
-    read_w,
-    read_l,
-    write_b,
-    write_w,
-    write_l
+    &read_b,
+    &read_w,
+    &read_l,
+    &write_b,
+    &write_w,
+    &write_l
 };
 
 struct linuxInt10Priv {
