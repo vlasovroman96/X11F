@@ -4,6 +4,9 @@ extern(C): __gshared:
  
 //public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
+import include.screenint;
+import include.xlibre_ptrtypes;
+
 
 alias miOverlayTransFunc = void function(ScreenPtr, int, BoxPtr);
 alias miOverlayInOverlayFunc = Bool function(WindowPtr);

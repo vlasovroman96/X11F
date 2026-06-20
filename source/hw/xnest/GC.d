@@ -34,16 +34,17 @@ import include.windowstr;
 import include.pixmapstr;
 import include.scrnintstr;
 import include.mistruct;
+import include.gc;
 
 import xnest_xcb;
 
 
-import Display;
-import XNGC;
-import GCOps;
-import Drawable;
-import XNFont;
-import Color;
+// import Display;
+// import XNGC;
+// import GCOps;
+// import Drawable;
+// import XNFont;
+// import Color;
 
 DevPrivateKeyRec xnestGCPrivateKeyRec;
 

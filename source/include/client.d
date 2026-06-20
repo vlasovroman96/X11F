@@ -26,6 +26,8 @@ extern(C): __gshared:
 
 /* Author: Rami Ylimäki <rami.ylimaki@vincit.fi> */
 
+import os.client_priv;
+
  
 struct _Client;
 alias ClientIdPtr = _ClientId*;

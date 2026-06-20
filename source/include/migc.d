@@ -29,7 +29,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-
+import include.gc;
  
 extern void  miChangeGC(GCPtr pGC, c_ulong mask);
 
