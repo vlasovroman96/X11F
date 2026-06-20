@@ -75,10 +75,10 @@ struct _AnimScrPriv {
 }alias AnimCurScreenRec = _AnimScrPriv;
 alias AnimCurScreenPtr = _AnimScrPriv*;
 
-private ubyte[4] empty;
+private enum ubyte[4] empty = [0, 0, 0, 0];
 
 private CursorBits animCursorBits = {
-    empty, empty, 2, 1, 1, 0, 0, 1
+    empty.ptr, empty.ptr, 2, 1, 1, 0, 0, 1
 };
 
 private DevPrivateKeyRec AnimCurScreenPrivateKeyRec;

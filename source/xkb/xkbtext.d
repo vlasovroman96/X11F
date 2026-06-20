@@ -1177,26 +1177,26 @@ private Bool CopyRedirectKeyArgs(XkbDescPtr xkb, XkbAction* action, char* buf, i
 alias actionCopy = Bool function(XkbDescPtr, XkbAction*, char*, int*);
 
 private actionCopy[XkbSA_NumActions] copyActionArgs = [
-    CopyNoActionArgs /* NoAction     */ ,
-    CopyModActionArgs /* SetMods      */ ,
-    CopyModActionArgs /* LatchMods    */ ,
-    CopyModActionArgs /* LockMods     */ ,
-    CopyGroupActionArgs /* SetGroup     */ ,
-    CopyGroupActionArgs /* LatchGroup   */ ,
-    CopyGroupActionArgs /* LockGroup    */ ,
-    CopyMovePtrArgs /* MovePtr      */ ,
-    CopyPtrBtnArgs /* PtrBtn       */ ,
-    CopyPtrBtnArgs /* LockPtrBtn   */ ,
-    CopySetPtrDfltArgs /* SetPtrDflt   */ ,
-    CopyISOLockArgs /* ISOLock      */ ,
-    CopyNoActionArgs /* Terminate    */ ,
-    CopySwitchScreenArgs /* SwitchScreen */ ,
-    CopySetLockControlsArgs /* SetControls  */ ,
-    CopySetLockControlsArgs /* LockControls */ ,
-    CopyActionMessageArgs /* ActionMessage */ ,
-    CopyRedirectKeyArgs /* RedirectKey  */ ,
-    CopyDeviceBtnArgs /* DeviceBtn    */ ,
-    CopyDeviceBtnArgs           /* LockDeviceBtn */
+    &CopyNoActionArgs /* NoAction     */ ,
+    &CopyModActionArgs /* SetMods      */ ,
+    &CopyModActionArgs /* LatchMods    */ ,
+    &CopyModActionArgs /* LockMods     */ ,
+    &CopyGroupActionArgs /* SetGroup     */ ,
+    &CopyGroupActionArgs /* LatchGroup   */ ,
+    &CopyGroupActionArgs /* LockGroup    */ ,
+    &CopyMovePtrArgs /* MovePtr      */ ,
+    &CopyPtrBtnArgs /* PtrBtn       */ ,
+    &CopyPtrBtnArgs /* LockPtrBtn   */ ,
+    &CopySetPtrDfltArgs /* SetPtrDflt   */ ,
+    &CopyISOLockArgs /* ISOLock      */ ,
+    &CopyNoActionArgs /* Terminate    */ ,
+    &CopySwitchScreenArgs /* SwitchScreen */ ,
+    &CopySetLockControlsArgs /* SetControls  */ ,
+    &CopySetLockControlsArgs /* LockControls */ ,
+    &CopyActionMessageArgs /* ActionMessage */ ,
+    &CopyRedirectKeyArgs /* RedirectKey  */ ,
+    &CopyDeviceBtnArgs /* DeviceBtn    */ ,
+    &CopyDeviceBtnArgs           /* LockDeviceBtn */
 ];
 
 enum	ACTION_SZ =	256;
