@@ -76,7 +76,7 @@ XID MitAddCookie(ushort data_length, const(char)* data)
     return new_.id;
 }
 
-XID MitCheckCookie(ushort data_length, const(char)* data, ClientPtr client, const(char)** reason)
+XID MitCheckCookie(ushort data_length, const(char)* data, ClientPtr client, const(char**) reason)
 {
     auth* auth = void;
 

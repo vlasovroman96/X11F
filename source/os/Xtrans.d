@@ -95,19 +95,24 @@ struct Xtransaddr {
     ubyte[XTRANS_MAX_ADDR_LEN]	addr;
 } 
 
-Xtransport_table[] Xtransport_tabletab = () {
-    enum size_t maxElements = () {
-        size_t count = 2; // TCP + INET
-        version(IPv6) {
-            count += 1;   // INET6
-        }
-        version(UNIXCONN) {
-            count += 2;   // LOCAL + UNIX
-        }
-        return count;
-    }();
+// 1. Объявляем глобальные динамические массивы (срез) без немедленного вызова функций
+Xtransport_table[] Xtransport_tabletab;
+Xtransport_table[] Xtransports;
 
-    Xtransport_table[maxElements] arr;
+// 2. Логику вычисления размера и заполнения переносим в статическую рантайм-инициализацию
+static this()
+{
+    // Считаем размер динамически при старте сервера
+    size_t maxElements = 2; // TCP + INET
+    version(IPv6) {
+        maxElements += 1;   // INET6
+    }
+    version(UNIXCONN) {
+        maxElements += 2;   // LOCAL + UNIX
+    }
+
+    // Выделяем память под массив в рантайме
+    auto arr = new Xtransport_table[maxElements];
     size_t count = 0;
 
     arr[count++] = Xtransport_table(
@@ -141,11 +146,11 @@ Xtransport_table[] Xtransport_tabletab = () {
         );
     }
 
-    return arr.dup;
-}();
+    // Заполняем глобальные переменные ссылками на созданный массив
+    Xtransport_tabletab = arr;
+    Xtransports = Xtransport_tabletab;
+}
 
-Xtransport_table[] Xtransports =
-    buildTransports();
 
 enum NUMTRANS =	Xtransports.sizeof/Xtransport_table.sizeof;
 

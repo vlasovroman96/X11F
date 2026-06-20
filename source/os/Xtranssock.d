@@ -1537,7 +1537,7 @@ private int _XSERVTransSocketINETClose(XtransConnInfo ciptr)
     return ossock_close(ciptr.fd);
 }
 
-private const(char)*[3] tcp_nolisten = [
+enum const(char)*[3] tcp_nolisten = [
 	"inet",
 // #ifdef IPv6
 	"inet6",
@@ -1549,22 +1549,22 @@ Xtransport _XSERVTransSocketTCPFuncs = {
 	/* Socket Interface */
 	"tcp",
         TRANS_ALIAS,
-	tcp_nolisten,
-	_XSERVTransSocketOpenCOTSServer,
-	_XSERVTransSocketReopenCOTSServer,
-	_XSERVTransSocketSetOption,
-	_XSERVTransSocketINETCreateListener,
+	tcp_nolisten.ptr,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketINETCreateListener,
 	null,		       			/* ResetListener */
-	_XSERVTransSocketINETAccept,
-	_XSERVTransSocketRead,
-	_XSERVTransSocketWrite,
+	&_XSERVTransSocketINETAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
 // #if XTRANS_SEND_FDS
-	_XSERVTransSocketSendFdInvalid,
-	_XSERVTransSocketRecvFdInvalid,
+	&_XSERVTransSocketSendFdInvalid,
+	&_XSERVTransSocketRecvFdInvalid,
 // #endif
-	_XSERVTransSocketDisconnect,
-	_XSERVTransSocketINETClose,
-	_XSERVTransSocketINETClose,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketINETClose,
+	&_XSERVTransSocketINETClose,
 };
 
 Xtransport _XSERVTransSocketINETFuncs = {
@@ -1572,21 +1572,21 @@ Xtransport _XSERVTransSocketINETFuncs = {
 	"inet",
 	0,
 	null,
-	_XSERVTransSocketOpenCOTSServer,
-	_XSERVTransSocketReopenCOTSServer,
-	_XSERVTransSocketSetOption,
-	_XSERVTransSocketINETCreateListener,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketINETCreateListener,
 	null,		       			/* ResetListener */
-	_XSERVTransSocketINETAccept,
-	_XSERVTransSocketRead,
-	_XSERVTransSocketWrite,
+	&_XSERVTransSocketINETAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
 // #if XTRANS_SEND_FDS
-	_XSERVTransSocketSendFdInvalid,
-	_XSERVTransSocketRecvFdInvalid,
+	&_XSERVTransSocketSendFdInvalid,
+	&_XSERVTransSocketRecvFdInvalid,
 // #endif
-	_XSERVTransSocketDisconnect,
-	_XSERVTransSocketINETClose,
-	_XSERVTransSocketINETClose,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketINETClose,
+	&_XSERVTransSocketINETClose,
 };
 
 version (IPv6) {
@@ -1595,21 +1595,21 @@ private Xtransport _XSERVTransSocketINET6Funcs = {
 	"inet6",
 	0,
 	null,
-	_XSERVTransSocketOpenCOTSServer,
-	_XSERVTransSocketReopenCOTSServer,
-	_XSERVTransSocketSetOption,
-	_XSERVTransSocketINETCreateListener,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketINETCreateListener,
 	null,					/* ResetListener */
-	_XSERVTransSocketINETAccept,
-	_XSERVTransSocketRead,
-	_XSERVTransSocketWrite,
+	&_XSERVTransSocketINETAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
 // #if XTRANS_SEND_FDS
-	_XSERVTransSocketSendFdInvalid,
-	_XSERVTransSocketRecvFdInvalid,
+	&_XSERVTransSocketSendFdInvalid,
+	&_XSERVTransSocketRecvFdInvalid,
 // #endif
-	_XSERVTransSocketDisconnect,
-	_XSERVTransSocketINETClose,
-	_XSERVTransSocketINETClose,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketINETClose,
+	&_XSERVTransSocketINETClose,
 };
 } /* IPv6 */
 
@@ -1623,21 +1623,21 @@ private Xtransport _XSERVTransSocketLocalFuncs = {
 	// 0,
 // #endif
 	null,
-	_XSERVTransSocketOpenCOTSServer,
-	_XSERVTransSocketReopenCOTSServer,
-	_XSERVTransSocketSetOption,
-	_XSERVTransSocketUNIXCreateListener,
-	_XSERVTransSocketUNIXResetListener,
-	_XSERVTransSocketUNIXAccept,
-	_XSERVTransSocketRead,
-	_XSERVTransSocketWrite,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketUNIXCreateListener,
+	&_XSERVTransSocketUNIXResetListener,
+	&_XSERVTransSocketUNIXAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
 // #if XTRANS_SEND_FDS
-	_XSERVTransSocketSendFd,
-	_XSERVTransSocketRecvFd,
+	&_XSERVTransSocketSendFd,
+	&_XSERVTransSocketRecvFd,
 // #endif
-	_XSERVTransSocketDisconnect,
-	_XSERVTransSocketUNIXClose,
-	_XSERVTransSocketUNIXCloseForCloning,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketUNIXClose,
+	&_XSERVTransSocketUNIXCloseForCloning,
 };
 
 private const(char)*[2] unix_nolisten = [ "local" , null ];

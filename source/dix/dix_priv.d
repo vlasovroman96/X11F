@@ -402,7 +402,7 @@ Bool ClientSleep(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
  */
 Bool dixClientSignal(ClientPtr pClient);
 
-enum CLIENT_SIGNAL_ANY = ((void *)-1);
+enum CLIENT_SIGNAL_ANY = (cast(void *)null);
 /*
  * @brief signal to all sleeping clients matching client, func, closure
  *

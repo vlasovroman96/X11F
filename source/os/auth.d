@@ -133,12 +133,12 @@ else
     private static protocol[1] protocols = [
         {
             name: XAUTH_PROTO_MIT,
-            Add: MitAddCookie,
-            Check: MitCheckCookie,
-            Reset: MitResetCookie,
-            FromID: MitFromID,
-            Remove: MitRemoveCookie,
-            Generate: MitGenerateCookie
+            Add: &MitAddCookie,
+            Check: &MitCheckCookie,
+            Reset: &MitResetCookie,
+            FromID: &MitFromID,
+            Remove: &MitRemoveCookie,
+            Generate: &MitGenerateCookie
         },
     ];
 }

@@ -23,17 +23,11 @@ enum string SameClient(string obj,string client) = `
 enum SERVER_BIT =           cast(Mask)0x40000000;       /* use illegal bit */;
 
 /* client field */
-enum RESOURCE_CLIENT_MASK =   ((((1u << ResourceClientBits())) - 1) << CLIENTOFFSET);
+@property uint RESOURCE_CLIENT_MASK() => ((((1u << ResourceClientBits())) - 1) << CLIENTOFFSET);
 
-/* bits and fields within a resource id */
-enum RESOURCE_AND_CLIENT_COUNT =   29  /* 29 bits for XIDs */;
-@property auto CLIENTOFFSET() =>     (RESOURCE_AND_CLIENT_COUNT - ResourceClientBits());
+@property auto CLIENTOFFSET() => (RESOURCE_AND_CLIENT_COUNT - ResourceClientBits());
 
-/* extract the client mask from an XID */
-enum string CLIENT_BITS(string id) = `((` ~ id ~ `) & RESOURCE_CLIENT_MASK)`;
-
-/* resource field */
-enum RESOURCE_ID_MASK =        ((1u << CLIENTOFFSET) - 1);
+@property uint RESOURCE_ID_MASK() => ((1u << CLIENTOFFSET) - 1);
 
 /*
  * @brief retrieve client that owns given window

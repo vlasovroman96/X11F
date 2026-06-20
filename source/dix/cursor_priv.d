@@ -19,8 +19,11 @@ public import include.dix;
 public import include.input;
 public import include.window;
 
-enum CURSOR_BITS_SIZE = CursorBits.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR_BITS);
-enum CURSOR_REC_SIZE = CursorRec.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR);
+@property size_t CURSOR_BITS_SIZE() 
+{
+    return CursorBits.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR_BITS);
+}
+@property size_t CURSOR_REC_SIZE() => CursorRec.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR);
 
 extern CursorPtr rootCursor;
 
