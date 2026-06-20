@@ -196,7 +196,7 @@ glamor_egl_priv_t* _glamor_egl_get_screen_private(ScreenPtr screen)
  * See: https://gitlab.freedesktop.org/xorg/xserver/-/merge_requests/309
  */
 
-glamor_egl_priv_t* function(ScreenPtr screen) glamor_egl_get_screen_= _glamor_egl_get_screen_private;
+glamor_egl_priv_t* function(ScreenPtr screen) glamor_egl_get_screen_= &_glamor_egl_get_screen_private;
 
 void glamor_egl_make_current(glamor_context* glamor_ctx)
 {

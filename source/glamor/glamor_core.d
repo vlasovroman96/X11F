@@ -266,13 +266,13 @@ private void glamor_destroy_gc(GCPtr gc)
 }
 
 private GCFuncs glamor_gc_funcs = {
-    glamor_validate_gc,
-    miChangeGC,
-    miCopyGC,
-    glamor_destroy_gc,
-    miChangeClip,
-    miDestroyClip,
-    miCopyClip
+    &glamor_validate_gc,
+    &miChangeGC,
+    &miCopyGC,
+    &glamor_destroy_gc,
+    &miChangeClip,
+    &miDestroyClip,
+    &miCopyClip
 };
 
 /**

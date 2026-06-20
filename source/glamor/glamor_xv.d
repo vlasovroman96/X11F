@@ -44,6 +44,7 @@ import os.bug_priv;
 import glamor.glamor_priv;
 import glamor.glamor_transform;
 import glamor.glamor_transfer;
+import externs.X11.extensions.Xv;
 
 // //import externs.X11.extensions.Xv;
 import include.fourcc;

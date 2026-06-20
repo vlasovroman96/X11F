@@ -420,7 +420,7 @@ private __GLXscreen* egl_screen_probe(ScreenPtr pScreen)
 }
 
 __GLXprovider glamor_provider = {
-    egl_screen_probe,
+    &egl_screen_probe,
     "glamor",
     null
 };

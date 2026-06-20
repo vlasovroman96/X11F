@@ -43,6 +43,7 @@ import os.bug_priv;
 
 import glamor.glamor_priv;
 import include.fbpict;
+import externs.X11.extensions.render_;
 version (none) {
 //#define DEBUGF(str, ...)  do {} while(0)
 enum string DEBUGF(string str) = `ErrorF(` ~ str ~ `, ##__VA_ARGS__)`;
