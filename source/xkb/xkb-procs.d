@@ -1,6 +1,8 @@
 module xkb.xkb_procs;
 @nogc nothrow:
 extern(C): __gshared:
+
+import include.xlibre_ptrtypes;
  
 extern int ProcXkbUseExtension(ClientPtr client);
 extern int ProcXkbSelectEvents(ClientPtr client);

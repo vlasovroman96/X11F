@@ -51,6 +51,8 @@ import include.inputstr;
 import include.extnsionst;
 import xkb.xkb_procs;
 import include.protocol_versions;
+import externs.X11.extensions.XKBproto;
+
 
 
 int XkbEventBase;

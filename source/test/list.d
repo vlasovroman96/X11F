@@ -34,6 +34,8 @@ import core.stdc.assert_;
 import core.stdc.stdlib;
 
 import test.tests_common;
+import test.tests;
+
 
 struct parent {
     int a;

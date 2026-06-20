@@ -46,6 +46,8 @@ import xkb.xkbsrv_priv;
 import include.inputstr;
 import Xi.exglobals;
 import include.windowstr;
+import externs.X11.extensions.XKBproto;
+
 
 /***====================================================================***/
 

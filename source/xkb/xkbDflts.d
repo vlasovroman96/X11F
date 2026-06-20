@@ -5,8 +5,10 @@ version (DEFAULT_H) {} else {
 enum DEFAULT_H = 1;
 
 public import dix.dix_priv;
+import externs.X11.extensions.XKBstr;
 
-enum DPYTYPE =	char *;
+
+alias  DPYTYPE =	char *;
 enum NUM_KEYS =	1;
 
 enum	vmod_NumLock =	0;
@@ -129,7 +131,7 @@ private XkbKeyTypeRec[9] dflt_types = [
      None, lnames_SHIFT_ALT}
 ];
 
-enum num_dflt_types = ARRAY_SIZE(dflt_types);
+enum num_dflt_types = ARRAY_SIZE!(dflt_types);
 
 private void initTypeNames(DPYTYPE dpy)
 {
@@ -442,7 +444,7 @@ private XkbSymInterpretRec[69] dfltSI = [
      {XkbSA_SetMods, {0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}}}
 ];
 
-enum num_dfltSI = ARRAY_SIZE(dfltSI);
+enum num_dfltSI = ARRAY_SIZE!(dfltSI);
 
 private XkbCompatMapRec compatMap = {
     dfltSI,

@@ -65,6 +65,9 @@ import include.windowstr;
 import Xext.xace;
 import include.list;
 import Xi.xibarriers;
+import externs.X11.extensions.xfixeswire;
+import externs.X11.extensions.xfixesproto;
+
 
 private RESTYPE CursorClientType;
 private RESTYPE CursorHideCountType;
@@ -93,13 +96,15 @@ enum string VERIFY_CURSOR(string pCursor, string cursor, string client, string a
 
 alias CursorEventPtr = _CursorEvent*;
 
-struct CursorEventRec {
+struct  _CursorEvent{
     CursorEventPtr next;
     CARD32 eventMask;
     ClientPtr pClient;
     WindowPtr pWindow;
     XID clientResource;
 }
+
+alias CursorEventRec = _CursorEvent;
 
 private CursorEventPtr cursorEvents;
 
@@ -111,13 +116,15 @@ private CursorEventPtr cursorEvents;
 
 alias CursorHideCountPtr = _CursorHideCountRec*;
 
-struct CursorHideCountRec {
+struct _CursorHideCountRec {
     CursorHideCountPtr pNext;
     ClientPtr pClient;
     ScreenPtr pScreen;
     int hideCount;
     XID resource;
 }
+
+alias CursorHideCountRec = _CursorHideCountRec;
 
 /*
  * Wrap DisplayCursor to catch cursor change events

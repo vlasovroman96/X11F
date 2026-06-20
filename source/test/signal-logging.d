@@ -38,6 +38,8 @@ import os.log_priv;
 import include.misc;
 
 import test.tests_common;
+import test.tests;
+
 
 struct number_format_test {
     ulong number;

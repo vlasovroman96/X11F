@@ -32,8 +32,11 @@ import core.stdc.stdlib;
 //import externs.X11.X;
 import xfixes.xfixesint;
 // //import externs.X11.extensions.xfixeswire;
+import Xi.xibarriers;
 
 import test.tests_common;
+import test.tests;
+
 
 private void _fixes_test_direction(PointerBarrier* barrier, int* d, int permitted)
 {

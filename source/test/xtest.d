@@ -44,6 +44,8 @@ import include.xkbsrv;
 import include.xserver_properties;
 import Xext.syncsrv;
 import test.tests_common;
+import test.tests;
+
 
 /**
  */

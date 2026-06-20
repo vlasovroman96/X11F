@@ -39,6 +39,8 @@ import include.gcstruct;
 import include.servermd;
 import include.picturestr;
 
+import externs.X11.extensions.renderproto;
+
 void PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform* render)
 {
     pict.matrix[0][0] = render.matriX11;

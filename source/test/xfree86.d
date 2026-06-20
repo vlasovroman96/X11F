@@ -33,6 +33,8 @@ import include.xf86;
 import include.xf86Parser;
 
 import test.tests_common;
+import test.tests;
+
 
 private void xfree86_option_list_duplicate()
 {

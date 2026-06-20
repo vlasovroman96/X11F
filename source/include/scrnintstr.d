@@ -168,7 +168,7 @@ alias UnrealizeFontProcPtr = Bool function(ScreenPtr, FontPtr);
 
 alias ConstrainCursorProcPtr = void function(DeviceIntPtr, ScreenPtr, BoxPtr);
 
-alias CursorLimitsProcPtr = void function(DeviceIntPtr, ScreenPtr, CursorPtr, BoxPtr, BoxPtr);
+// alias CursorLimitsProcPtr = void function(DeviceIntPtr, ScreenPtr, CursorPtr, BoxPtr, BoxPtr);
 
 // alias DisplayCursorProcPtr = Bool function(DeviceIntPtr, ScreenPtr, CursorPtr);
 

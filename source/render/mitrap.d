@@ -35,6 +35,8 @@ import include.windowstr;
 import include.servermd;
 import include.mi;
 import include.picturestr;
+import externs.X11.extensions.renderproto;
+
 
 private XFixed miLineFixedX(xLineFixed* l, XFixed y, Bool ceil)
 {

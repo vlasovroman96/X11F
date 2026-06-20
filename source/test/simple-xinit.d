@@ -55,7 +55,7 @@ private void kill_server(int server_pid)
     }
 }
 
-private _X_NORETURN usage(int argc, char** argv)
+private auto usage(int argc, char** argv)
 {
     fprintf(stderr, "%s <client command> -- <server command>\n", argv[0]);
     exit(1);

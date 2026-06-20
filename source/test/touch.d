@@ -36,6 +36,8 @@ import include.inputstr;
 // import assert;
 import include.scrnintstr;
 import test.tests_common;
+import test.tests;
+
 
 private void free_device(DeviceIntPtr dev)
 {

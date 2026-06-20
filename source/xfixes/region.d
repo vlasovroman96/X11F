@@ -39,6 +39,8 @@ import include.scrnintstr;
 import include.regionstr;
 import include.gcstruct;
 import include.window;
+import externs.X11.extensions.xfixesproto;
+
 
 RESTYPE RegionResType;
 

@@ -42,6 +42,8 @@ import xkb.xkbsrv_priv;
 
 import include.misc;
 import include.inputstr;
+import externs.X11.extensions.XKBproto;
+
 
         /*
          * unsigned

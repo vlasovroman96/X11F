@@ -50,6 +50,8 @@ import xkb.xkbsrv_priv;
 
 import include.inputstr;
 import include.eventstr;
+import externs.X11.extensions.XKBproto;
+
 
 int XkbDfltRepeatDelay = 660;
 int XkbDfltRepeatInterval = 40;

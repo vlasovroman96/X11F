@@ -31,6 +31,8 @@ import dix.selection_priv;
 
 import xfixes.xfixesint;
 import Xext.xace;
+import externs.X11.extensions.xfixesproto;
+
 
 private RESTYPE SelectionClientType, SelectionWindowType;
 private Bool SelectionCallbackRegistered = FALSE;
@@ -44,7 +46,7 @@ private Bool SelectionCallbackRegistered = FALSE;
 
 alias SelectionEventPtr = _SelectionEvent*;
 
-struct SelectionEventRec {
+struct _SelectionEvent {
     SelectionEventPtr next;
     Selection* selection;
     CARD32 eventMask;
@@ -52,6 +54,8 @@ struct SelectionEventRec {
     WindowPtr pWindow;
     XID clientResource;
 }
+
+alias SelectionEventRec = _SelectionEvent;
 
 private SelectionEventPtr selectionEvents;
 

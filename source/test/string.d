@@ -35,10 +35,12 @@ import build.dix_config;
 import core.stdc.assert_;
 import include.os;
 import test.tests_common;
+import test.tests;
+
 
 /* Ensure we're testing our functions, even on platforms with libc versions */
 import core.stdc.string;
-alias strndup = my_strndup;
+// alias strndup = my_strndup;
 char* strndup(const(char)* str, size_t n);
 
 // import os.strndup;

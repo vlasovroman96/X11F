@@ -11,6 +11,8 @@ import Xext.hashtable;
 import include.resource;
 
 import test.tests_common;
+import test.tests;
+
 
 private void print_xid(void* ptr, void* v)
 {

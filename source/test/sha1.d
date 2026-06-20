@@ -36,6 +36,8 @@ import core.stdc.assert_;
 import include.os;
 import os.xsha1;
 import test.tests_common;
+import test.tests;
+
 
 private void raw_to_hex(const(ubyte)* raw, size_t raw_size, ubyte* hex, size_t hex_size)
 {

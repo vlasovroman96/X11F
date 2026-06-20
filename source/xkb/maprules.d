@@ -218,10 +218,12 @@ struct RemapSpec {
     }_Remap[MAX_WORDS] remap;
 }
 
-struct FileSpec {
+struct _FileSpec {
     char*[MAX_WORDS] name;
     _FileSpec* pending;
 }
+// FileSpec
+alias FileSpec = _FileSpec;
 
 struct _XkbRF_MultiDefsRec {
     const(char)* model;

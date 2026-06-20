@@ -35,6 +35,8 @@ import include.pixmapstr;
 import include.windowstr;
 import include.mi;
 import include.picturestr;
+import externs.X11.extensions.renderproto;
+
 
 int miCreatePicture(PicturePtr pPicture)
 {

@@ -55,6 +55,8 @@ import include.eventstr;
 // import assert;
 
 import test.tests_common;
+import test.tests;
+
 
 /**
  * Init a device with axes.

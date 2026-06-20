@@ -50,6 +50,8 @@ import xkb.xkbgeom_priv;
 import core.stdc.assert_;
 
 import test.tests_common;
+import test.tests;
+
 
 /**
  * Initialize an empty XkbRMLVOSet.
