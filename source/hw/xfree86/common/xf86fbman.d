@@ -1011,15 +1011,15 @@ private Bool localQueryLargestOffscreenLinear(ScreenPtr pScreen, int* size, int 
 }
 
 private FBManagerFuncs xf86FBManFuncs = {
-    localAllocateOffscreenArea,
-    localFreeOffscreenArea,
-    localResizeOffscreenArea,
-    localQueryLargestOffscreenArea,
-    localAllocateOffscreenLinear,
-    localFreeOffscreenLinear,
-    localResizeOffscreenLinear,
-    localQueryLargestOffscreenLinear,
-    localPurgeUnlockedOffscreenAreas
+    &localAllocateOffscreenArea,
+    &localFreeOffscreenArea,
+    &localResizeOffscreenArea,
+    &localQueryLargestOffscreenArea,
+    &localAllocateOffscreenLinear,
+    &localFreeOffscreenLinear,
+    &localResizeOffscreenLinear,
+    &localQueryLargestOffscreenLinear,
+    &localPurgeUnlockedOffscreenAreas
 };
 
 private void xf86FBCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)

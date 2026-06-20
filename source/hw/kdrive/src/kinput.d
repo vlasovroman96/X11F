@@ -101,8 +101,8 @@ Bool kdOffScreen;
 c_ulong kdOffScreenTime;
 
 KdPointerMatrix kdPointerMatrix = {
-    {{1, 0, 0},
-     {0, 1, 0}}
+    [[1, 0, 0],
+    [0, 1, 0]]
 };
 
 enum KD_MAX_INPUT_FDS =    8;

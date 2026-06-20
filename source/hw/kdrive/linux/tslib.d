@@ -183,8 +183,8 @@ private void TslibFini(KdPointerInfo* pi)
 
 KdPointerDriver TsDriver = {
     name: "tslib",
-    Init: TslibInit,
-    Enable: TslibEnable,
-    Disable: TslibDisable,
-    Fini: TslibFini,
+    Init: &TslibInit,
+    Enable: &TslibEnable,
+    Disable: &TslibDisable,
+    Fini: &TslibFini,
 };

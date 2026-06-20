@@ -44,25 +44,25 @@ import externs.pciaccess;
 import include.mipointer;
 
 private GCFuncs VGAarbiterGCFuncs = {
-    VGAarbiterValidateGC, VGAarbiterChangeGC, VGAarbiterCopyGC,
-    VGAarbiterDestroyGC, VGAarbiterChangeClip, VGAarbiterDestroyClip,
-    VGAarbiterCopyClip
+    &VGAarbiterValidateGC, &VGAarbiterChangeGC, &VGAarbiterCopyGC,
+    &VGAarbiterDestroyGC, &VGAarbiterChangeClip, &VGAarbiterDestroyClip,
+    &VGAarbiterCopyClip
 };
 
 private GCOps VGAarbiterGCOps = {
-    VGAarbiterFillSpans, VGAarbiterSetSpans, VGAarbiterPutImage,
-    VGAarbiterCopyArea, VGAarbiterCopyPlane, VGAarbiterPolyPoint,
-    VGAarbiterPolylines, VGAarbiterPolySegment, VGAarbiterPolyRectangle,
-    VGAarbiterPolyArc, VGAarbiterFillPolygon, VGAarbiterPolyFillRect,
-    VGAarbiterPolyFillArc, VGAarbiterPolyText8, VGAarbiterPolyText16,
-    VGAarbiterImageText8, VGAarbiterImageText16, VGAarbiterImageGlyphBlt,
-    VGAarbiterPolyGlyphBlt, VGAarbiterPushPixels,
+    &VGAarbiterFillSpans, &VGAarbiterSetSpans, &VGAarbiterPutImage,
+    &VGAarbiterCopyArea, &VGAarbiterCopyPlane, &VGAarbiterPolyPoint,
+    &VGAarbiterPolylines, &VGAarbiterPolySegment, &VGAarbiterPolyRectangle,
+    &VGAarbiterPolyArc, &VGAarbiterFillPolygon, &VGAarbiterPolyFillRect,
+    &VGAarbiterPolyFillArc, &VGAarbiterPolyText8, &VGAarbiterPolyText16,
+    &VGAarbiterImageText8, &VGAarbiterImageText16, &VGAarbiterImageGlyphBlt,
+    &VGAarbiterPolyGlyphBlt, &VGAarbiterPushPixels,
 };
 
 private miPointerSpriteFuncRec VGAarbiterSpriteFuncs = {
-    VGAarbiterSpriteRealizeCursor, VGAarbiterSpriteUnrealizeCursor,
-    VGAarbiterSpriteSetCursor, VGAarbiterSpriteMoveCursor,
-    VGAarbiterDeviceCursorInitialize, VGAarbiterDeviceCursorCleanup
+    &VGAarbiterSpriteRealizeCursor, &VGAarbiterSpriteUnrealizeCursor,
+    &VGAarbiterSpriteSetCursor, &VGAarbiterSpriteMoveCursor,
+    &VGAarbiterDeviceCursorInitialize, &VGAarbiterDeviceCursorCleanup
 };
 
 private DevPrivateKeyRec VGAarbiterScreenKeyRec;

@@ -105,7 +105,10 @@ alias CMapColormapPtr = CMapColormapRec*;
 
 private DevPrivateKeyRec CMapScreenKeyRec;
 
-enum CMapScreenKeyRegistered = dixPrivateKeyRegistered(&CMapScreenKeyRec);
+@property bool DGAScreenKeyRegistered()
+{
+    return dixPrivateKeyRegistered(&DGAScreenKeyRec);
+}
 enum CMapScreenKey = (&CMapScreenKeyRec);
 private DevPrivateKeyRec CMapColormapKeyRec;
 

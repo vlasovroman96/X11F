@@ -82,7 +82,10 @@ import include.events;
 
 private DevPrivateKeyRec DGAScreenKeyRec;
 
-enum DGAScreenKeyRegistered = dixPrivateKeyRegistered(&DGAScreenKeyRec);
+// @property bool DGAScreenKeyRegistered()
+// {
+//     return dixPrivateKeyRegistered(&DGAScreenKeyRec);
+// }
 
 
 
@@ -1099,7 +1102,10 @@ private void DGAHandleEvent(int screen_num, InternalEvent* ev, DeviceIntPtr devi
 private DevPrivateKeyRec DGAScreenPrivateKeyRec;
 
 enum DGAScreenPrivateKey = (&DGAScreenPrivateKeyRec);
-enum DGAScreenPrivateKeyRegistered = (DGAScreenPrivateKeyRec.initialized);
+@property bool DGAScreenKeyRegistered()
+{
+    return dixPrivateKeyRegistered(&DGAScreenKeyRec);
+}
 private DevPrivateKeyRec DGAClientPrivateKeyRec;
 
 enum DGAClientPrivateKey = (&DGAClientPrivateKeyRec);

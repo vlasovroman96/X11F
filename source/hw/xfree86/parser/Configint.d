@@ -84,10 +84,10 @@ alias LexPtr = LexRec*;
 
 extern LexRec xf86_lex_val;
 
-enum TRUE = 1;
+// enum TRUE = 1;
 
 
-enum FALSE = 0;
+// enum FALSE = 0;
 
 
 public import configProcs;
