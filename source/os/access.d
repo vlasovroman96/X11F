@@ -399,125 +399,125 @@ void AccessUsingXdmcp()
  */
 
 static if(!HasVersion!"SIOCGIFCONF") {
-    void DefineSelf(int fd)
-    {
-        int len = void;
-        caddr_t addr = void;
-        int family = void;
-        HOST* host = void;
-        hostent* hp = void;
+    // void DefineSelf(int fd)
+    // {
+    //     int len = void;
+    //     caddr_t addr = void;
+    //     int family = void;
+    //     HOST* host = void;
+    //     hostent* hp = void;
 
-        union _Saddr {
-            sockaddr sa = void;
-            sockaddr_in in_ = void;
-            version (IPv6) {
-                    sockaddr_in6 in6 = void;
-            }
-        }
-        _Saddr saddr = void;
+    //     union _Saddr {
+    //         sockaddr sa = void;
+    //         sockaddr_in in_ = void;
+    //         version (IPv6) {
+    //                 sockaddr_in6 in6 = void;
+    //         }
+    //     }
+    //     _Saddr saddr = void;
 
-        sockaddr_in* inetaddr = void;
+    //     sockaddr_in* inetaddr = void;
 
-        version (IPv6) {
-            sockaddr_in6* inet6addr = void;
-        }
+    //     version (IPv6) {
+    //         sockaddr_in6* inet6addr = void;
+    //     }
         
-        sockaddr_in broad_addr = void;
+    //     sockaddr_in broad_addr = void;
 
-        version (XTHREADS_NEEDS_BYNAMEPARAMS) {
-            _Xgethostbynameparams hparams = void;
-        }
+    //     version (XTHREADS_NEEDS_BYNAMEPARAMS) {
+    //         _Xgethostbynameparams hparams = void;
+    //     }
 
-        /* Why not use gethostname()?  Well, at least on my system, I've had to
-        * make an ugly kernel patch to get a name longer than 8 characters, and
-        * uname() lets me access to the whole string (it smashes release, you
-        * see), whereas gethostname() kindly truncates it for me.
-        */
-        xhostname hn = void;
-        f_xhostname(&hn);
+    //     /* Why not use gethostname()?  Well, at least on my system, I've had to
+    //     * make an ugly kernel patch to get a name longer than 8 characters, and
+    //     * uname() lets me access to the whole string (it smashes release, you
+    //     * see), whereas gethostname() kindly truncates it for me.
+    //     */
+    //     xhostname hn = void;
+    //     f_xhostname(&hn);
 
-        hp = _XGethostbyname(hn.name, hparams);
-        if (hp != null) {
-            saddr.sa.sa_family = hp.h_addrtype;
-            switch (hp.h_addrtype) {
-            case AF_INET:
-                inetaddr = cast(sockaddr_in*) (&(saddr.sa));
-                memcpy(&(inetaddr.sin_addr), hp.h_addr, hp.h_length);
-                len = typeof(saddr.sa).sizeof;
-                break;
-            version (IPv6) {
-            case AF_INET6:
-                inet6addr = cast(sockaddr_in6*) (&(saddr.sa));
-                memcpy(&(inet6addr.sin6_addr), hp.h_addr, hp.h_length);
-                len = typeof(saddr.in6).sizeof;
-                break;
-            }
+    //     hp = _XGethostbyname(hn.name, hparams);
+    //     if (hp != null) {
+    //         saddr.sa.sa_family = hp.h_addrtype;
+    //         switch (hp.h_addrtype) {
+    //         case AF_INET:
+    //             inetaddr = cast(sockaddr_in*) (&(saddr.sa));
+    //             memcpy(&(inetaddr.sin_addr), hp.h_addr, hp.h_length);
+    //             len = typeof(saddr.sa).sizeof;
+    //             break;
+    //         version (IPv6) {
+    //         case AF_INET6:
+    //             inet6addr = cast(sockaddr_in6*) (&(saddr.sa));
+    //             memcpy(&(inet6addr.sin6_addr), hp.h_addr, hp.h_length);
+    //             len = typeof(saddr.in6).sizeof;
+    //             break;
+    //         }
 
-            default:
-                goto DefineLocalHost;
-            }
+    //         default:
+    //             goto DefineLocalHost;
+    //         }
 
-            family = ConvertAddr(&(saddr.sa), &len, cast(void**) &addr);
-            if (family != -1 && family != FamilyLocal) {
-                for (host = selfhosts;
-                    host && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
-                    host = host.next){}
-                if (!host) {
-                    /* add this host to the host list.      */
-                    mixin(MakeHost!(`host`, `len`));
-                        if (host) {
-                        host.family = family;
-                        host.len = len;
-                        memcpy(host.addr, addr, len);
-                        host.next = selfhosts;
-                        selfhosts = host;
-                    }
-                    version (XDMCP) {
-                    /*
-                    *  If this is an Internet Address, but not the localhost
-                    *  address (127.0.0.1), nor the bogus address (0.0.0.0),
-                    *  register it.
-                    */
-                        if (family == FamilyInternet &&
-                            !(len == 4 &&
-                            ((addr[0] == 127) ||
-                            (addr[0] == 0 && addr[1] == 0 &&
-                                addr[2] == 0 && addr[3] == 0)))
-                            ) {
-                            XdmcpRegisterConnection(family, cast(char*) addr, len);
-                            broad_addr = *inetaddr;
-                            (cast(sockaddr_in*) &broad_addr).sin_addr.s_addr =
-                                htonl(INADDR_BROADCAST);
-                            XdmcpRegisterBroadcastAddress(cast(sockaddr_in*)
-                                                        &broad_addr);
-                        }
-                        version (IPv6) {
-                            if (family == FamilyInternet6 &&
-                                    !(IN6_IS_ADDR_LOOPBACK(cast(in6_addr*) addr))) {
-                                XdmcpRegisterConnection(family, cast(char*) addr, len);
-                            }
-                        }
-                    }                                     /* XDMCP */
-                }
-            }
-        }
-    /*
-     * now add a host of family FamilyLocalHost...
-     */
-        DefineLocalHost:
-        for (host = selfhosts;
-            host && !mixin(addrEqual!(`FamilyLocalHost`, `""`, `0`, `host`)); host = host.next){}
-        if (!host) {
-            mixin(MakeHost!(`host`, `0`));
-            if (host) {
-                host.family = FamilyLocalHost;
-                host.len = 0;
-                /* Nothing to store in host->addr */
-                host.next = selfhosts;
-                selfhosts = host;
-            }
-        }
-    }
+    //         family = ConvertAddr(&(saddr.sa), &len, cast(void**) &addr);
+    //         if (family != -1 && family != FamilyLocal) {
+    //             for (host = selfhosts;
+    //                 host && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
+    //                 host = host.next){}
+    //             if (!host) {
+    //                 /* add this host to the host list.      */
+    //                 mixin(MakeHost!(`host`, `len`));
+    //                     if (host) {
+    //                     host.family = family;
+    //                     host.len = len;
+    //                     memcpy(host.addr, addr, len);
+    //                     host.next = selfhosts;
+    //                     selfhosts = host;
+    //                 }
+    //                 version (XDMCP) {
+    //                 /*
+    //                 *  If this is an Internet Address, but not the localhost
+    //                 *  address (127.0.0.1), nor the bogus address (0.0.0.0),
+    //                 *  register it.
+    //                 */
+    //                     if (family == FamilyInternet &&
+    //                         !(len == 4 &&
+    //                         ((addr[0] == 127) ||
+    //                         (addr[0] == 0 && addr[1] == 0 &&
+    //                             addr[2] == 0 && addr[3] == 0)))
+    //                         ) {
+    //                         XdmcpRegisterConnection(family, cast(char*) addr, len);
+    //                         broad_addr = *inetaddr;
+    //                         (cast(sockaddr_in*) &broad_addr).sin_addr.s_addr =
+    //                             htonl(INADDR_BROADCAST);
+    //                         XdmcpRegisterBroadcastAddress(cast(sockaddr_in*)
+    //                                                     &broad_addr);
+    //                     }
+    //                     version (IPv6) {
+    //                         if (family == FamilyInternet6 &&
+    //                                 !(IN6_IS_ADDR_LOOPBACK(cast(in6_addr*) addr))) {
+    //                             XdmcpRegisterConnection(family, cast(char*) addr, len);
+    //                         }
+    //                     }
+    //                 }                                     /* XDMCP */
+    //             }
+    //         }
+    //     }
+    // /*
+    //  * now add a host of family FamilyLocalHost...
+    //  */
+    //     DefineLocalHost:
+    //     for (host = selfhosts;
+    //         host && !mixin(addrEqual!(`FamilyLocalHost`, `""`, `0`, `host`)); host = host.next){}
+    //     if (!host) {
+    //         mixin(MakeHost!(`host`, `0`));
+    //         if (host) {
+    //             host.family = FamilyLocalHost;
+    //             host.len = 0;
+    //             /* Nothing to store in host->addr */
+    //             host.next = selfhosts;
+    //             selfhosts = host;
+    //         }
+    //     }
+    // }
 }//!version
  else {
     static if(HasVersion!"USE_SIOCGLIFCONF") {

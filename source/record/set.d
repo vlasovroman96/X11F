@@ -74,11 +74,11 @@ alias RecordSetRec = _RecordSetRec;
 alias RecordSetPtr = RecordSetRec*;
 
 struct RecordSetOperations{
-    alias DestroySet = void function(RecordSetPtr pSet);
-    alias  IsMemberOfSet = c_ulong function (RecordSetPtr pSet, int possible_member);
-     alias IterateSet = RecordSetIteratePtr function(RecordSetPtr pSet,
+    void function(RecordSetPtr pSet) DestroySet;
+    c_ulong function (RecordSetPtr pSet, int possible_member) IsMemberOfSet;
+    RecordSetIteratePtr function(RecordSetPtr pSet,
                                        RecordSetIteratePtr pIter,
-                                       RecordSetInterval * interval);
+                                       RecordSetInterval * interval) IterateSet;
 } ;
 
 alias RecordSetIteratePtr = void*;
@@ -200,11 +200,11 @@ private RecordSetIteratePtr BitVectorIterateSet(RecordSetPtr pSet, RecordSetIter
 }
 
 private RecordSetOperations BitVectorSetOperations = {
-    BitVectorDestroySet, BitVectorIsMemberOfSet, BitVectorIterateSet
+    &BitVectorDestroySet, &BitVectorIsMemberOfSet, &BitVectorIterateSet
 };
 
 private RecordSetOperations BitVectorNoFreeOperations = {
-    NoopDestroySet, BitVectorIsMemberOfSet, BitVectorIterateSet
+    &NoopDestroySet, &BitVectorIsMemberOfSet, &BitVectorIterateSet
 };
 
 private int BitVectorSetMemoryRequirements(RecordSetInterval* pIntervals, int nIntervals, int maxMember, int* alignment)
@@ -305,11 +305,11 @@ private RecordSetIteratePtr IntervalListIterateSet(RecordSetPtr pSet, RecordSetI
 }
 
 private RecordSetOperations IntervalListSetOperations = {
-    IntervalListDestroySet, IntervalListIsMemberOfSet, IntervalListIterateSet
+    &IntervalListDestroySet, &IntervalListIsMemberOfSet, &IntervalListIterateSet
 };
 
 private RecordSetOperations IntervalListNoFreeOperations = {
-    NoopDestroySet, IntervalListIsMemberOfSet, IntervalListIterateSet
+    &NoopDestroySet, &IntervalListIsMemberOfSet, &IntervalListIterateSet
 };
 
 private int IntervalListMemoryRequirements(RecordSetInterval* pIntervals, int nIntervals, int maxMember, int* alignment)
