@@ -48,7 +48,7 @@ version (__size_assert) {} else {
     import std.conv;
     import std.string;
 enum __size_assert(alias what, size_t howmuch) = `
-  enum _size_wrong_ = char[( !!(` ~ what.stringof ~ `.sizeof == ` ~ howmuch.stringof ~ `) )*2-1];`;
+  alias _size_wrong_ = char[(xPanoramiXQueryVersionReply.sizeof == 32) ? 1 : -1];`;
 }
 mixin template XTYPE_SIZE_ASSERT(alias typename) {
     mixin(__size_assert!(typename, typename.sizeof));

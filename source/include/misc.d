@@ -294,7 +294,7 @@ alias GrabPtr = _GrabRec*;
 
 alias x_server_generation_t = c_ulong;
 
-extern ulong globalSerialNumber;
+extern static ulong globalSerialNumber = 0;
 extern x_server_generation_t serverGeneration;
 
 }                          /* MISC_H */

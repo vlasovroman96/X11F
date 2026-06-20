@@ -42,7 +42,7 @@ enum XACE_RECEIVE_ACCESS =		6;
 enum XACE_SELECTION_ACCESS =		10;
 enum XACE_NUM_HOOKS =			13;
 
-CallbackListPtr[XACE_NUM_HOOKS] XaceHooks = 0;
+CallbackListPtr[XACE_NUM_HOOKS] XaceHooks = null;
 
 /* Special-cased hook functions.  Called by Xserver.
  */

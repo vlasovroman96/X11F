@@ -63,7 +63,7 @@ public import include.events;
 import include.mistruct;
 import externs.X11.fonts.fontstruct;
 
-enum MiBits =	CARD32;
+alias MiBits =	CARD32;
 
 alias miDashPtr = _miDash*;
 

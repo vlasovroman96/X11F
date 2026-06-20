@@ -613,8 +613,10 @@ private uint ilog2(int val)
 
 uint ResourceClientBits()
 {
-    static uint cache_ilog2 = 0;
-    static uint cache_limit = 0;
+    // Объявляем переменные без инициализации '= 0' (в D они всё равно занулятся по умолчанию)
+    // Но теперь компилятор не будет пытаться вычислить функцию в CTFE
+    static uint cache_ilog2;
+    static uint cache_limit;
 
     if (LimitClients != cache_limit) {
         cache_limit = LimitClients;

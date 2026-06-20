@@ -46,6 +46,9 @@ import include.misc;
 import include.inputstr;
 import include.xkbsrv;
 import xkb.xkbgeom_priv;
+import externs.X11.extensions.XKMformat;
+import externs.X11.extensions.XKB;
+
 
 private Atom XkbInternAtom(char* str, Bool only_if_exists)
 {

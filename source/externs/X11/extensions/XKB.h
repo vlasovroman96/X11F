@@ -497,7 +497,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define	XkbSA_DeviceBtn		0x12
 #define	XkbSA_LockDeviceBtn	0x13
 #define	XkbSA_DeviceValuator	0x14
-#define	XkbSA_LastAction	XkbSA_DeviceValuator
+#define XkbSA_LastAction 0x14
 #define	XkbSA_NumActions	(XkbSA_LastAction+1)
 
 #define	XkbSA_XFree86Private	0x86

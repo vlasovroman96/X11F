@@ -53,7 +53,8 @@ import xkb.xkb_procs;
 import include.protocol_versions;
 import externs.X11.extensions.XKBproto;
 
-
+public enum XkbSA_DeviceValuator = 0x14;
+public enum XkbSA_LastAction = 0x14;
 
 int XkbEventBase;
 private int XkbErrorBase;
