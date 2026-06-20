@@ -38,6 +38,12 @@ import include.scrnintstr;
 import include.dix;
 import include.dixstruct;
 import test.tests_common;
+// import externs.X11.Xmd;
+// import externs.X11.Xdefs;
+// import externs.X11.X;
+import include.xlibre_ptrtypes;
+import test.tests;
+
 
 private void dix_version_compare()
 {

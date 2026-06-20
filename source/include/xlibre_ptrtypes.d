@@ -21,7 +21,7 @@ extern(C): __gshared:
 // } else {
 // version = _XTYPEDEF_CLIENTPTR;
 // }
-// alias ClientRec = _Client;
+alias ClientRec = _Client;
 
 public import dix.window_priv;
 

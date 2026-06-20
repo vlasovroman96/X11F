@@ -582,7 +582,7 @@ version (DEBUG) {
     return ptr;
 }
 
-enum CLEANUP = xf86freeModesList;
+alias CLEANUP = xf86freeModesList;
 
 XF86ConfModesPtr xf86parseModesSection()
 {

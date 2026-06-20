@@ -75,7 +75,7 @@ private const(xf86ConfigSymTabRec)[9] FilesTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeFiles;
+alias CLEANUP = xf86freeFiles;
 
 XF86ConfFilesPtr xf86parseFilesSection(XF86ConfFilesPtr ptr)
 {

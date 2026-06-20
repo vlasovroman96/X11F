@@ -67,7 +67,7 @@ private const(xf86ConfigSymTabRec)[3] TopLevelTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeConfig;
+alias CLEANUP = xf86freeConfig;
 
 /*
  * This function resolves name references and reports errors if the named

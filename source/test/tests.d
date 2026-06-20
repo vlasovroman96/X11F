@@ -1,11 +1,13 @@
-module tests;
+module test.tests;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.string;
-import tests;
+import test.tests;
 import test.tests_common;
 
 int verbose = 0;
+
+alias testfunc_t = void function();
 
 int main(int argc, char** argv)
 {

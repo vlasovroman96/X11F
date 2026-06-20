@@ -68,7 +68,7 @@ private void xf86freeOutputClassList(XF86ConfOutputClassPtr ptr)
     }
 }
 
-enum CLEANUP = xf86freeOutputClassList;
+alias CLEANUP = xf86freeOutputClassList;
 
 XF86ConfOutputClassPtr xf86parseOutputClassSection()
 {

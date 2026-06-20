@@ -97,7 +97,7 @@ private void xf86freeInputClassList(XF86ConfInputClassPtr ptr)
     }
 }
 
-enum CLEANUP = xf86freeInputClassList;
+alias CLEANUP = xf86freeInputClassList;
 
 XF86ConfInputClassPtr xf86parseInputClassSection()
 {

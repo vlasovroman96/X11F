@@ -90,7 +90,7 @@ private const(xf86ConfigSymTabRec)[4] ZMapTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeInputList;
+alias CLEANUP = xf86freeInputList;
 
 XF86ConfInputPtr xf86parsePointerSection()
 {

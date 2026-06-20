@@ -30,6 +30,7 @@ import include.xf86str;
 import shadowfb;
 
 import include.picturestr;
+import include.shadowfb;
 
 
 

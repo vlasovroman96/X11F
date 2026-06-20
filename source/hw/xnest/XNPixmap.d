@@ -16,7 +16,8 @@ is" without express or implied warranty.
 */
 
  
-//public import externs.X11.Xdefs;
+public import externs.X11.Xdefs;
+import include.privates;
 
 extern DevPrivateKeyRec xnestPixmapPrivateKeyRec;
 

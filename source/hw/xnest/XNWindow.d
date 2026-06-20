@@ -19,6 +19,7 @@ is" without express or implied warranty.
  
 //public import externs.X11.Xdefs;
 public import externs.xcb.xcb;
+import include.regionstr;
 
 struct xnestPrivWin {
     xcb_window_t window;

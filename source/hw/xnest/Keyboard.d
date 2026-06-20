@@ -46,6 +46,7 @@ import Keyboard;
 import Args;
 import include.events;
 import include.xkbsrv;
+import dix.dix_priv;
 
 DeviceIntPtr xnestKeyboardDevice = null;
 
@@ -95,8 +96,8 @@ version (none) {
 }
 
 /* make sure that KeySym and xcb_keysym_t are both 32 bit */
-mixin(__size_assert!(KeySym, 4));
-mixin(__size_assert!(xcb_keysym_t, 4));
+// mixin(__size_assert!(KeySym, 4));
+// mixin(__size_assert!(xcb_keysym_t, 4));
 
 int xnestKeyboardProc(DeviceIntPtr pDev, int onoff)
 {

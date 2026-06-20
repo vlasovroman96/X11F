@@ -41,6 +41,9 @@ import Args;
 import hw.xnest.icon;
 import hw.xnest.screensaver;
 
+enum MAXDEPTH = 32;
+enum MAXVISUALSPERDEPTH = 256;
+
 Colormap* xnestDefaultColormaps;
 int xnestNumPixmapFormats;
 Drawable[MAXDEPTH + 1] xnestDefaultDrawables;

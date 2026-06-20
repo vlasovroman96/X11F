@@ -78,7 +78,7 @@ private const(xf86ConfigSymTabRec)[7] ModuleTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeModules;
+alias CLEANUP = xf86freeModules;
 
 private XF86LoadPtr xf86parseModuleSubSection(XF86LoadPtr head, char* name)
 {

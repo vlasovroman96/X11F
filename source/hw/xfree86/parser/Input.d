@@ -70,7 +70,7 @@ private const(xf86ConfigSymTabRec)[6] InputTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeInputList;
+alias CLEANUP = xf86freeInputList;
 
 XF86ConfInputPtr xf86parseInputSection()
 {

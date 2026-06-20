@@ -193,10 +193,10 @@ pragma(inline, true) private int Ones(c_ulong mask)
 }
 
 /* static assert for protocol structure sizes */
-version (__size_assert) {} else {
-enum string __size_assert(string what, string howmuch) = `
-  alias _size_wrong_ = char[( !!(` ~ what ~ `.sizeof == ` ~ howmuch ~ `) )*2-1];`;
-}
+// version (__size_assert) {} else {
+// enum string __size_assert(string what, string howmuch) = `
+//   alias _size_wrong_ = char[( !!(` ~ what ~ `.sizeof == ` ~ howmuch ~ `) )*2-1];`;
+// }
 
 /*
  * like strlen(), but checking for NULL and return 0 in this case

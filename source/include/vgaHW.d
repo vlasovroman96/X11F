@@ -93,6 +93,55 @@ struct _VgaRegRec {
 }alias vgaRegRec = _VgaRegRec;
 alias vgaRegPtr = vgaRegRec*;
 
+struct _vgaHWRec {
+    void *Base;               /* Address of "VGA" memory */
+    int MapSize;                /* Size of "VGA" memory */
+    c_ulong MapPhys;      /* phys location of VGA mem */
+    int IOBase;                 /* I/O Base address */
+    CARD8 *MMIOBase;            /* Pointer to MMIO start */
+    int MMIOOffset;             /* base + offset + vgareg
+                                   = mmioreg */
+    void *FontInfo1;          /* save area for fonts in
+                                   plane 2 */
+    void *FontInfo2;          /* save area for fonts in
+                                   plane 3 */
+    void *TextInfo;           /* save area for text */
+    vgaRegRec SavedReg;         /* saved registers */
+    vgaRegRec ModeReg;          /* register settings for
+                                   current mode */
+    Bool ShowOverscan;
+    Bool paletteEnabled;
+    Bool cmapSaved;
+    ScrnInfoPtr pScrn;
+    vgaHWWriteIndexProcPtr writeCrtc;
+    vgaHWReadIndexProcPtr readCrtc;
+    vgaHWWriteIndexProcPtr writeGr;
+    vgaHWReadIndexProcPtr readGr;
+    vgaHWReadProcPtr readST00;
+    vgaHWReadProcPtr readST01;
+    vgaHWReadProcPtr readFCR;
+    vgaHWWriteProcPtr writeFCR;
+    vgaHWWriteIndexProcPtr writeAttr;
+    vgaHWReadIndexProcPtr readAttr;
+    vgaHWWriteIndexProcPtr writeSeq;
+    vgaHWReadIndexProcPtr readSeq;
+    vgaHWWriteProcPtr writeMiscOut;
+    vgaHWReadProcPtr readMiscOut;
+    vgaHWMiscProcPtr enablePalette;
+    vgaHWMiscProcPtr disablePalette;
+    vgaHWWriteProcPtr writeDacMask;
+    vgaHWReadProcPtr readDacMask;
+    vgaHWWriteProcPtr writeDacWriteAddr;
+    vgaHWWriteProcPtr writeDacReadAddr;
+    vgaHWWriteProcPtr writeDacData;
+    vgaHWReadProcPtr readDacData;
+    void *ddc;
+    pci_io_handle *io;
+    vgaHWReadProcPtr readEnable;
+    vgaHWWriteProcPtr writeEnable;
+    pci_device *dev;
+};
+
 alias vgaHWPtr = _vgaHWRec*;
 
 alias vgaHWWriteIndexProcPtr = void function(vgaHWPtr hwp, CARD8 indx, CARD8 value);
@@ -206,7 +255,7 @@ extern void  vgaHWHBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint
 extern void  vgaHWVBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags);
 extern void  vgaHWAllocDefaultRegs(vgaRegPtr regp);
 
-extern  DDC1SetSpeedProc vgaHWddc1SetSpeedWeak(void);
+extern  DDC1SetSpeedProc vgaHWddc1SetSpeedWeak();
 extern void  xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) ClockFunc, void function(ScrnInfoPtr, Bool) ProtectRegs, void function(ScrnInfoPtr, Bool) BlankScreen, c_ulong vertsyncreg, int maskval, int knownclkindex, int knownclkvalue);
 
                           /* _VGAHW_H */

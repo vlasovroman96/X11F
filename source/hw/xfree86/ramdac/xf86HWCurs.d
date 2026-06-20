@@ -531,40 +531,40 @@ private ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr infoPtr, CursorPtr pCu
     return mem;
 }
 
-enum string _RealizeCursorInterleave(string x) = `\
-static unsigned char * \
-RealizeCursorInterleave##x(xf86CursorInfoPtr infoPtr, CursorPtr pCurs) \
-{ \
-    CARD##x *DstS, *DstM; \
-    CARD##x *pntr; \
-    void *mem, *mem2; \
-    int size = (infoPtr->MaxWidth * infoPtr->MaxHeight) / 4; /* XXX bytes per pixel? XXX */ \
-\
-    /* Realize the cursor without interleaving */ \
-    if (!(mem2 = RealizeCursorInterleave0(infoPtr, pCurs))) \
-        return NULL; \
-\
-    if (!(mem = calloc((size + sizeof(CARD##x) - 1) / sizeof(CARD##x), sizeof(CARD##x)))) { \
-        free(mem2); \
-        return NULL; \
-    } \
-\
-    /* x bit interleave */ \
-    size /= sizeof(CARD##x); /* Array size of the hw cursor */ \
-    size /= 2; /* Half of the array size */ \
-    DstS = mem2; \
-    DstM = DstS + size; \
-    pntr = mem; \
-    for (int i = 0; i < size; i++) { \
-        *pntr++ = *DstS++; \
-        *pntr++ = *DstM++; \
-    } \
-\
-    /* Free the uninterleaved cursor */ \
-    free(mem2); \
-\
-    return mem; \
-} \
+enum string _RealizeCursorInterleave(string x) = `
+static char * 
+RealizeCursorInterleave`~x~`(xf86CursorInfoPtr infoPtr, CursorPtr pCurs) 
+{ 
+    CARD`~x~` *DstS, DstM; 
+    CARD`~x~` *pntr; 
+    void *mem, mem2; 
+    int size = (infoPtr.MaxWidth * infoPtr.MaxHeight) / 4; /* XXX bytes per pixel? XXX */ 
+
+    /* Realize the cursor without interleaving */ 
+    if (!(mem2 = RealizeCursorInterleave0(infoPtr, pCurs))) 
+        return NULL; 
+
+    if (!(mem = calloc((size + sizeof(CARD`~x~`) - 1) / sizeof(CARD`~x~`), sizeof(CARD`~x~`)))) { 
+        free(mem2); 
+        return NULL; 
+    } 
+
+    /* x bit interleave */ 
+    size /= sizeof(CARD`~x~`); /* Array size of the hw cursor */ 
+    size /= 2; /* Half of the array size */ 
+    DstS = mem2; 
+    DstM = DstS + size; 
+    pntr = mem; 
+    for (int i = 0; i < size; i++) { 
+        *pntr++ = *DstS++; 
+        *pntr++ = *DstM++; 
+    } 
+
+    /* Free the uninterleaved cursor */ 
+    free(mem2); 
+
+    return mem; 
+} 
 `;
 
 mixin(_RealizeCursorInterleave!(`8`));

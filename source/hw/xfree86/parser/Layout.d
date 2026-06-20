@@ -87,7 +87,7 @@ private const(xf86ConfigSymTabRec)[8] AdjTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeLayoutList;
+alias CLEANUP = xf86freeLayoutList;
 
 XF86ConfLayoutPtr xf86parseLayoutSection()
 {

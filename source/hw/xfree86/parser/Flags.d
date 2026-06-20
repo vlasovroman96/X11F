@@ -84,7 +84,7 @@ private const(xf86ConfigSymTabRec)[16] ServerFlagsTab = [
     {-1, ""},
 ];
 
-enum CLEANUP = xf86freeFlags;
+alias CLEANUP = xf86freeFlags;
 
 XF86ConfFlagsPtr xf86parseFlagsSection(XF86ConfFlagsPtr ptr)
 {
