@@ -1071,9 +1071,9 @@ private void uninit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
 InputDriverRec driver = {
     driverVersion: 1,
     driverName: "inputtest",
-    PreInit: pre_init,
-    UnInit: uninit,
-    c_module: null,
+    PreInit: &pre_init,
+    UnInit: &uninit,
+    module_: null,
     default_options: null,
     capabilities: 0
 };
@@ -1083,10 +1083,10 @@ private XF86ModuleVersionInfo version_info = {
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
     _modinfo2_: MODINFOSTRING2,
-    xf86version: XORG_VERSION_CURRENT,
-    majorversion: XORG_VERSION_MAJOR,
-    minorversion: XORG_VERSION_MINOR,
-    patchlevel: XORG_VERSION_PATCH,
+    xf86version: mixin(XORG_VERSION_CURRENT),
+    majorversion: mixin(XORG_VERSION_MAJOR),
+    minorversion: mixin(XORG_VERSION_MINOR),
+    patchlevel: mixin(XORG_VERSION_PATCH),
     abiclass: ABI_CLASS_XINPUT,
     abiversion: ABI_XINPUT_VERSION,
     moduleclass: MOD_CLASS_XINPUT,

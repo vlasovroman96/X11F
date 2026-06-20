@@ -117,7 +117,7 @@ extern void  xf86SetSerialModemState(int fd, int state);
 extern void  xf86GetSerialModemState(int fd);
 extern void  xf86SerialModemSetBits(int fd, int bits);
 extern void  xf86SerialModemClearBits(int fd, int bits);
-extern void  xf86LoadKernelModule(const(char)* pathname);
+// extern void  xf86LoadKernelModule(const(char)* pathname);
 
 /* AGP GART interface */
 

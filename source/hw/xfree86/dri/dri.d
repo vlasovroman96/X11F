@@ -79,6 +79,8 @@ import include.inputstr;
 import xf86VGAarbiter_priv;
 import xf86Extensions;
 import xf86Config;
+import hw.xfree86.os_support.linux.lnx_kmod;
+
 
 alias gid_t = core.sys.posix.sys.types.gid_t;
 alias mode_t = core.sys.posix.sys.types.mode_t;
@@ -810,9 +812,9 @@ private void dri_drm_get_perms(gid_t* group, mode_t* mode)
 }
 
 drmServerInfo DRIDRMServerInfo = {
-    dri_drm_debug_print,
-    xf86LoadKernelModule,
-    dri_drm_get_perms,
+    &dri_drm_debug_print,
+    &xf86LoadKernelModule,
+    &dri_drm_get_perms,
 };
 
 Bool DRIExtensionInit()

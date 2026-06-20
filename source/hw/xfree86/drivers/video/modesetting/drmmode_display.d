@@ -5103,10 +5103,10 @@ private void drmmode_sprite_device_cursor_cleanup(DeviceIntPtr pDev, ScreenPtr p
 }
 
 miPointerSpriteFuncRec drmmode_sprite_funcs = {
-    RealizeCursor: drmmode_sprite_realize_realize_cursor,
-    UnrealizeCursor: drmmode_sprite_realize_unrealize_cursor,
-    SetCursor: drmmode_sprite_set_cursor,
-    MoveCursor: drmmode_sprite_move_cursor,
-    DeviceCursorInitialize: drmmode_sprite_device_cursor_initialize,
-    DeviceCursorCleanup: drmmode_sprite_device_cursor_cleanup,
+    RealizeCursor: &drmmode_sprite_realize_realize_cursor,
+    UnrealizeCursor: &drmmode_sprite_realize_unrealize_cursor,
+    SetCursor: &drmmode_sprite_set_cursor,
+    MoveCursor: &drmmode_sprite_move_cursor,
+    DeviceCursorInitialize: &drmmode_sprite_device_cursor_initialize,
+    DeviceCursorCleanup: &drmmode_sprite_device_cursor_cleanup,
 };

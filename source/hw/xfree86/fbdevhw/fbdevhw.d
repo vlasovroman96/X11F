@@ -37,9 +37,12 @@ import hw.xfree86.fbdevhw.fbpriv;
 import include.globals;
 // //import externs.X11.extensions.dpmsconst;
 
-auto getpagesize() => cast(int)sysconf(_SC_PAGESIZE);
+int getpagesize() {
+    return cast(int)sysconf(_SC_PAGESIZE);
+} 
+    
 
-enum PAGE_MASK =               (~(getpagesize() - 1));
+auto PAGE_MASK() =>               (~(getpagesize() - 1));
 
 private XF86ModuleVersionInfo fbdevHWVersRec = {
     modname: "fbdevhw",

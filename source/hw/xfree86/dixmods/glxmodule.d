@@ -60,7 +60,7 @@ private XF86ModuleVersionInfo VersRec = {
 
 XF86ModuleData glxModuleData = {
     vers: &VersRec,
-    setup: glxSetup
+    setup: &glxSetup
 };
 
 private void* glxSetup(void* module_, void* opts, int* errmaj, int* errmin)

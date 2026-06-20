@@ -81,12 +81,12 @@ struct genericInt10Priv {
 enum string INTPriv(string x) = `(cast(genericInt10Priv*)` ~ x ~ `.private_)`;
 
 int10MemRec genericMem = {
-    read_b,
-    read_w,
-    read_l,
-    write_b,
-    write_w,
-    write_l
+    &read_b,
+    &read_w,
+    &read_l,
+    &write_b,
+    &write_w,
+    &write_l
 };
 
 

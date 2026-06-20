@@ -64,6 +64,8 @@ import externs.regex;
 import core.sys.posix.dirent;
 import core.stdc.limits;
 
+enum XORG_MODULE_ABI_TAG = "xlibre-25";
+
 struct _pattern {
     const(char)* pattern;
     regex_t rex;

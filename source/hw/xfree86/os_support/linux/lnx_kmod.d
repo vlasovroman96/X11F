@@ -1,4 +1,4 @@
-module lnx_kmod;
+module hw.xfree86.os_support.linux.lnx_kmod;
 @nogc nothrow:
 extern(C): __gshared:
 import build.xorg_config;
