@@ -12,9 +12,9 @@ public import dix.screenint_priv;
 public import include.input;
 public import include.mipointer;
 
-void miPointerWarpCursor(DeviceIntPtr pDev, ScreenPtr pScreen, int x, int y);
-void miPointerSetScreen(DeviceIntPtr pDev, int screen_num, int x, int y);
-void miPointerUpdateSprite(DeviceIntPtr pDev);
+// void miPointerWarpCursor(DeviceIntPtr pDev, ScreenPtr pScreen, int x, int y);
+// void miPointerSetScreen(DeviceIntPtr pDev, int screen_num, int x, int y);
+// void miPointerUpdateSprite(DeviceIntPtr pDev);
 
  /* Invalidate current sprite, forcing reload on next
   * sprite setting (window crossing, grab action, etc)

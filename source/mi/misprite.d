@@ -215,12 +215,12 @@ enum string SCREEN_EPILOGUE(string pPriv, string pScreen, string field) = `\
 
 
 miPointerSpriteFuncRec miSpritePointerFuncs = {
-    miSpriteRealizeCursor,
-    miSpriteUnrealizeCursor,
-    miSpriteSetCursor,
-    miSpriteMoveCursor,
-    miSpriteDeviceCursorInitialize,
-    miSpriteDeviceCursorCleanup,
+    &miSpriteRealizeCursor,
+    &miSpriteUnrealizeCursor,
+    &miSpriteSetCursor,
+    &miSpriteMoveCursor,
+    &miSpriteDeviceCursorInitialize,
+    &miSpriteDeviceCursorCleanup,
 };
 
 /*

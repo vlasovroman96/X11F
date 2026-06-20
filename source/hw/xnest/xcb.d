@@ -26,7 +26,7 @@ import xnest_xkb;
 import XNGC;
 import Display;
 
-xnest_upstream_info xnestUpstreamInfo = { 0 };
+xnest_upstream_info xnestUpstreamInfo = { null };
 xnest_visual_t* xnestVisualMap;
 int xnestNumVisualMap;
 
