@@ -45,6 +45,8 @@ import externs.X11.extensions.damageproto;
 import include.damagestr;
 import include.protocol_versions;
 import dix.dixstruct_priv;
+import include.privates;
+import miext.damage.damage_;
 
 struct _DamageClient {
     CARD32 major_version;
@@ -138,17 +140,17 @@ private void DamageExtNotify(DamageExtPtr pDamageExt, BoxPtr pBoxes, int nBoxes)
     damageGetGeometry(pDrawable, &x, &y, &w, &h);
 
     UpdateCurrentTimeIf();
-    xDamageNotifyEvent ev = xDamageNotifyEvent(
-        type = DamageEventBase + XDamageNotify,
-        level = pDamageExt.level,
-        drawable = pDamageExt.drawable,
-        damage = pDamageExt.id,
-        timestamp = currentTime.milliseconds,
-        geometry =x = x,
-        geometry =y = y,
-    );
-    ev.geometry.width = w,
-    ev.geometry.height = h;
+    xDamageNotifyEvent ev;
+        ev.type = cast(ubyte)DamageEventBase + cast(ubyte)XDamageNotify,
+        ev.level = pDamageExt.level,
+        ev.drawable = cast(uint) pDamageExt.drawable,
+        ev.damage = cast(uint)pDamageExt.id,
+        ev.timestamp = currentTime.milliseconds,
+        ev.geometry.x = cast(ushort)x,
+        ev.geometry.y = cast(ushort)y;
+
+    ev.geometry.width = cast(ushort)w,
+    ev.geometry.height = cast(ushort)h;
     if (pBoxes) {
         for (i = 0; i < nBoxes; i++) {
             ev.level = pDamageExt.level;
@@ -156,16 +158,16 @@ private void DamageExtNotify(DamageExtPtr pDamageExt, BoxPtr pBoxes, int nBoxes)
                 ev.level |= DamageNotifyMore;
             ev.area.x = pBoxes[i].x1;
             ev.area.y = pBoxes[i].y1;
-            ev.area.width = pBoxes[i].x2 - pBoxes[i].x1;
-            ev.area.height = pBoxes[i].y2 - pBoxes[i].y1;
+            ev.area.width = cast(ushort)(pBoxes[i].x2 - pBoxes[i].x1);
+            ev.area.height = cast(ushort)(pBoxes[i].y2 - pBoxes[i].y1);
             WriteEventsToClient(pClient, 1, cast(xEvent*) &ev);
         }
     }
     else {
         ev.area.x = 0;
         ev.area.y = 0;
-        ev.area.width = w;
-        ev.area.height = h;
+        ev.area.width = cast(ushort)w;
+        ev.area.height = cast(ushort)h;
         WriteEventsToClient(pClient, 1, cast(xEvent*) &ev);
     }
 
@@ -174,7 +176,7 @@ private void DamageExtNotify(DamageExtPtr pDamageExt, BoxPtr pBoxes, int nBoxes)
 
 private void DamageExtReport(DamagePtr pDamage, RegionPtr pRegion, void* closure)
 {
-    DamageExtPtr pDamageExt = closure;
+    DamageExtPtr pDamageExt = cast(DamageExtPtr)closure;
 
     switch (pDamageExt.level) {
     case DamageReportRawRegion:
@@ -195,9 +197,9 @@ private void DamageExtReport(DamagePtr pDamage, RegionPtr pRegion, void* closure
 
 private void DamageExtDestroy(DamagePtr pDamage, void* closure)
 {
-    DamageExtPtr pDamageExt = closure;
+    DamageExtPtr pDamageExt = cast(DamageExtPtr)closure;
 
-    pDamageExt.pDamage = 0;
+    pDamageExt.pDamage = null;
     if (pDamageExt.id)
         FreeResource(pDamageExt.id, X11_RESTYPE_NONE);
 }
@@ -212,9 +214,9 @@ void DamageExtSetCritical(ClientPtr pClient, bool critical)
 
 private int ProcDamageQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDamageQueryVersionReq);
-    X_REQUEST_FIELD_CARD32(majorVersion);
-    X_REQUEST_FIELD_CARD32(minorVersion);
+    mixin(X_REQUEST_HEAD_STRUCT!(xDamageQueryVersionReq));
+    mixin(X_REQUEST_FIELD_CARD32!("majorVersion"));
+    mixin(X_REQUEST_FIELD_CARD32!("minorVersion"));
 
     DamageClientPtr pDamageClient = mixin(GetDamageClient!(`client`));
 
@@ -235,10 +237,10 @@ private int ProcDamageQueryVersion(ClientPtr client)
     pDamageClient.major_version = reply.majorVersion;
     pDamageClient.minor_version = reply.minorVersion;
 
-    X_REPLY_FIELD_CARD32(majorVersion);
-    X_REPLY_FIELD_CARD32(minorVersion);
+    mixin(X_REPLY_FIELD_CARD32!"majorVersion");
+    mixin(X_REPLY_FIELD_CARD32!"minorVersion");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private void DamageExtRegister(DrawablePtr pDrawable, DamagePtr pDamage, Bool report)
@@ -256,7 +258,7 @@ private void DamageExtRegister(DrawablePtr pDrawable, DamagePtr pDamage, Bool re
 
 private DamageExtPtr DamageExtCreate(DrawablePtr pDrawable, DamageReportLevel level, ClientPtr client, XID id, XID drawable)
 {
-    DamageExtPtr pDamageExt = calloc(1, DamageExtRec.sizeof);
+    DamageExtPtr pDamageExt = cast(DamageExtPtr)calloc(1, DamageExtRec.sizeof);
     if (!pDamageExt)
         return null;
 
@@ -324,9 +326,9 @@ private int doDamageCreate(ClientPtr client, DamageExtPtr* ext, xDamageCreateReq
 
 private int ProcDamageCreate(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDamageCreateReq);
-    X_REQUEST_FIELD_CARD32(damage.ptr);
-    X_REQUEST_FIELD_CARD32(drawable);
+    mixin(X_REQUEST_HEAD_STRUCT!"xDamageCreateReq");
+    mixin(X_REQUEST_FIELD_CARD32!("damage.ptr"));
+    mixin(X_REQUEST_FIELD_CARD32!("drawable"));
 
 version (XINERAMA) {
     if (damageUseXinerama)
@@ -340,7 +342,7 @@ version (XINERAMA) {
 private int ProcDamageDestroy(ClientPtr client)
 {
     X_REQUEST_HEAD_STRUCT(xDamageDestroyReq);
-    X_REQUEST_FIELD_CARD32(damage.ptr);
+    mixin(X_REQUEST_FIELD_CARD32!("damage.ptr"));
 
     DamageExtPtr pDamageExt = void;
     mixin(VERIFY_DAMAGEEXT!(`pDamageExt`, `stuff.damage`, `client`, `DixDestroyAccess`));
@@ -428,9 +430,9 @@ version (XINERAMA) {
 private int ProcDamageSubtract(ClientPtr client)
 {
     X_REQUEST_HEAD_STRUCT(xDamageSubtractReq);
-    X_REQUEST_FIELD_CARD32(damage.ptr);
-    X_REQUEST_FIELD_CARD32(repair);
-    X_REQUEST_FIELD_CARD32(parts);
+    mixin(X_REQUEST_FIELD_CARD32!("damage.ptr"));
+    mixin(X_REQUEST_FIELD_CARD32!("repair"));
+    mixin(X_REQUEST_FIELD_CARD32!("parts"));
 
     DamageExtPtr pDamageExt = void;
     RegionPtr pRepair = void;
@@ -463,8 +465,8 @@ private int ProcDamageSubtract(ClientPtr client)
 private int ProcDamageAdd(ClientPtr client)
 {
     X_REQUEST_HEAD_STRUCT(xDamageAddReq);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(region);
+    mixin(X_REQUEST_FIELD_CARD32!("drawable"));
+    mixin(X_REQUEST_FIELD_CARD32!("region"));
 
     DrawablePtr pDrawable = void;
     RegionPtr pRegion = void;

@@ -33,12 +33,15 @@ import build.dix_config;
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.extensions.bigreqsproto;
+import externs.X11.extensions.bigreqsproto;
 
 import dix.dix_priv;
 import dix.request_priv;
 import include.extnsionst;
 import miext.extinit_priv;
+import dix.extension;
+
+alias ClientPtr = include.dixstruct._Client*;
 
 private int ProcBigReqDispatch(ClientPtr client)
 {
@@ -51,17 +54,17 @@ private int ProcBigReqDispatch(ClientPtr client)
     client.big_requests = TRUE;
 
     xBigReqEnableReply reply = {
-        max_request_size: maxBigRequestSize
+        max_request_size: cast(uint)maxBigRequestSize
     };
 
-    X_REPLY_FIELD_CARD32(max_request_size);
+    mixin(X_REPLY_FIELD_CARD32!("max_request_size"));
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 void BigReqExtensionInit()
 {
     AddExtension(XBigReqExtensionName, 0, 0,
                  &ProcBigReqDispatch, &ProcBigReqDispatch,
-                 null, StandardMinorOpcode);
+                 null, &StandardMinorOpcode);
 }

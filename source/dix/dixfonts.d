@@ -85,6 +85,8 @@ import include.dixfont;
 import Xext.xace;
 import os.utils;
 
+// alias ClientPtr = include.dixstruct.ClientPtr;
+
 version (XF86BIGFONT) {
 import Xext.xf86bigfontsrv;
 }

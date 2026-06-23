@@ -57,7 +57,7 @@ public import include.damage;
 // //public import externs.X11.extensions._randr;
 public import include.picturestr;
 
-struct DrawableRec {
+struct _Drawable {
     ubyte type;         /* DRAWABLE_<type> */
     ubyte class_;        /* specific to type */
     ubyte depth;
@@ -70,6 +70,9 @@ struct DrawableRec {
     ScreenPtr pScreen;
     c_ulong serialNumber;
 }
+
+alias DrawableRec = _Drawable;
+alias DrawablePtr = DrawableRec*;
 
 /*
  * PIXMAP -- device dependent

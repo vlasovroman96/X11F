@@ -83,7 +83,7 @@ extern EventSwapPtr[128] EventSwapVector;
 
 extern noreturn NotImplemented(xEvent*, xEvent*);
 
-extern int* AddExtension(const(char)*, int, int, int function(ClientPtr), int function(ClientPtr), void function(_ExtensionEntry*), ushort function(ClientPtr));
+// extern int* AddExtension(const(char)*, int, int, int function(ClientPtr), int function(ClientPtr), void function(_ExtensionEntry*), ushort function(ClientPtr));
 
 extern int* CheckExtension(const(char)* extname);
 extern int* GetExtensionEntry(int major);

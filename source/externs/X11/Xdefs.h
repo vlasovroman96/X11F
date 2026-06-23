@@ -54,8 +54,17 @@ typedef void *pointer;
 #endif
 
 #ifndef _XTYPEDEF_CLIENTPTR
-typedef struct _Client *ClientPtr;
-#  define _XTYPEDEF_CLIENTPTR
+#define _XTYPEDEF_CLIENTPTR
+
+#ifdef __IMPORTC__
+    /* Когда этот файл парсит компилятор D (ImportC) */
+    __import include.dixstruct; 
+    typedef struct _Client *ClientPtr;
+#else
+    /* Когда этот файл парсит обычный Си-компилятор (GCC/Clang) */
+    typedef struct _Client *ClientPtr;
+#endif
+
 #endif
 
 #ifndef _XTYPEDEF_XID

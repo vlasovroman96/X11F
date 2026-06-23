@@ -13,6 +13,7 @@ public import include.dix;
 public import include.dixstruct;
 public import include.misc;    /* bytes_to_int32 */
 public import include.os;      /* WriteToClient */
+import dix.request_priv;
 
 /*
  * @brief write rpc buffer to client and then clear it
@@ -29,6 +30,22 @@ pragma(inline, true) private ssize_t WriteRpcbufToClient(ClientPtr pClient, x_rp
                                 rpcbuf.buffer);
     x_rpcbuf_clear(rpcbuf);
     return ret;
+}
+
+int __write_reply_hdr_simple(ClientPtr pClient, void* hdrData, size_t hdrLen)
+{
+    xGenericReply* reply = cast(xGenericReply*)hdrData;
+    reply.type = X_Reply;
+    reply.length = (bytes_to_int32(hdrLen - xGenericReply.sizeof));
+    reply.sequenceNumber = cast(CARD16)pClient.sequence; /* shouldn't go above 64k */
+
+    if (pClient.swapped) {
+         swaps(&reply.sequenceNumber);
+         swapl(&reply.length);
+    }
+
+    WriteToClient(pClient, cast(int)hdrLen, hdrData);
+    return Success;
 }
 
 /* compute the amount of extra units a reply header needs.
@@ -62,21 +79,21 @@ pragma(inline, true) private int __write_reply_hdr_and_rpcbuf(ClientPtr pClient,
     return Success;
 }
 
-pragma(inline, true) private int __write_reply_hdr_simple(ClientPtr pClient, void* hdrData, size_t hdrLen)
-{
-    xGenericReply* reply = hdrData;
-    reply.type = X_Reply;
-    reply.length = (bytes_to_int32(hdrLen - xGenericReply.sizeof));
-    reply.sequenceNumber = cast(CARD16)pClient.sequence; /* shouldn't go above 64k */
+// pragma(inline, true) private int __write_reply_hdr_simple(ClientPtr pClient, void* hdrData, size_t hdrLen)
+// {
+//     xGenericReply* reply = hdrData;
+//     reply.type = X_Reply;
+//     reply.length = (bytes_to_int32(hdrLen - xGenericReply.sizeof));
+//     reply.sequenceNumber = cast(CARD16)pClient.sequence; /* shouldn't go above 64k */
 
-    if (pClient.swapped) {
-         swaps(&reply.sequenceNumber);
-         swapl(&reply.length);
-    }
+//     if (pClient.swapped) {
+//          swaps(&reply.sequenceNumber);
+//          swapl(&reply.length);
+//     }
 
-    WriteToClient(pClient, cast(int)hdrLen, hdrData);
-    return Success;
-}
+//     WriteToClient(pClient, cast(int)hdrLen, hdrData);
+//     return Success;
+// }
 
 /*
  * send reply with header struct (not pointer!) along with rpcbuf payload
@@ -97,7 +114,7 @@ enum string X_SEND_REPLY_WITH_RPCBUF(string client, string hdrstruct, string rpc
  * @return            X11 result code (=Success)
  */
 enum string X_SEND_REPLY_SIMPLE(string client, string hdrstruct) = `
-    __write_reply_hdr_simple(` ~ client ~ `, &(` ~ hdrstruct ~ `), ` ~ hdrstruct ~ `.sizeof);`;
+    __write_reply_hdr_simple(` ~ client ~ `, &(` ~ hdrstruct ~ `), ` ~ hdrstruct ~ `.sizeof)`;
 
 /*
  * macros for request handlers
@@ -106,11 +123,16 @@ enum string X_SEND_REPLY_SIMPLE(string client, string hdrstruct) = `
  * values, if necessary. (length field is already swapped earlier)
  */
 
-/* declare request struct and check size */
-enum string X_REQUEST_HEAD_STRUCT(string type) = `
-    REQUEST(` ~ type ~ `); 
-    if (stuff == null) return (BadLength); 
-    REQUEST_SIZE_MATCH(` ~ type ~ `);`;
+enum string X_REQUEST_HEAD_STRUCT(alias T) =
+    q{
+        auto stuff = cast(} ~ T.stringof ~ q{*)client.requestBuffer;
+
+        if (stuff is null)
+            return BadLength;
+
+        if (client.req_len < (} ~ T.stringof ~ q{.sizeof >> 2))
+            return BadLength;
+    };
 
 /* declare request struct and check size (at least as big) */
 enum string X_REQUEST_HEAD_AT_LEAST(string type) = `
@@ -129,7 +151,7 @@ enum string X_REQUEST_FIELD_CARD16(string field) = `
 
 /* swap a CARD32 request struct field if necessary */
 enum string X_REQUEST_FIELD_CARD32(string field) = `
-    do { if (client.swapped) swapl(&stuff.` ~ field ~ `); } while (0)`;
+    if (client.swapped) swapl(&stuff.` ~ field ~ `);`;
 
 /* swap a CARD64 request struct field if necessary */
 enum string X_REQUEST_FIELD_CARD64(string field) = `
@@ -167,7 +189,7 @@ enum string X_REPLY_FIELD_CARD16(string field) = `
 
 /* swap a CARD32 field (if necessary) in reply struct */
 enum string X_REPLY_FIELD_CARD32(string field) = `
-    do { if (client.swapped) swapl(&reply.` ~ field ~ `); } while (0)`;
+    if (client.swapped) swapl(&reply.` ~ field ~ `);`;
 
 /* swap a CARD64 field (if necessary) in reply struct */
 enum string X_REPLY_FIELD_CARD64(string field) = `

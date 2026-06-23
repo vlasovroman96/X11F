@@ -205,7 +205,7 @@ private void CursorScreenClose(CallbackListPtr* pcbl, ScreenPtr pScreen, void* u
 {
     CursorScreenPtr cs = mixin(GetCursorScreen!(`pScreen`));
 
-    _X_UNUSED DisplayCursorProcPtr = void; display_proc;
+     DisplayCursorProcPtr = void; display_proc;
 
     dixScreenUnhookClose(pScreen, CursorScreenClose);
     mixin(Unwrap!(`cs`, `pScreen`, `DisplayCursor`, `display_proc`));

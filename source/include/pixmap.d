@@ -74,7 +74,7 @@ enum PW_BORDER = 1;
 
 enum NullPixmap = cast(PixmapPtr)0;
 
-alias DrawablePtr = _Drawable*;
+// alias DrawablePtr = _Drawable*;
 alias PixmapPtr = _Pixmap*;
 
 alias PixmapDirtyUpdatePtr = _PixmapDirtyUpdate*;

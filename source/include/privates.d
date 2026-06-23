@@ -195,7 +195,7 @@ public import include.resource;
  * storage. For privates without defined storage, return the pointer
  * contents
  */
-pragma(inline, true) private void* dixLookupPrivate(PrivatePtr* privates, const(DevPrivateKey) key)
+pragma(inline, true) void* dixLookupPrivate(PrivatePtr* privates, const(DevPrivateKey) key)
 {
     if (key.size)
         return dixGetPrivateAddr(privates, key);

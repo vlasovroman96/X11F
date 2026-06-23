@@ -97,7 +97,7 @@ import sys.sysctl;
 import os.auth;
 import os.log_priv;
 
-alias _Client = externs.X11.Xdefs._Client;
+// alias _Client = externs.X11.Xdefs._Client;
 
 /**
  * Try to determine a PID for a client from its connection

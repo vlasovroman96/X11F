@@ -98,7 +98,7 @@ typedef int DrawDirection;
 #define DEFAULT_GLYPH_CACHING_MODE CACHE_16_BIT_GLYPHS
 extern int glyphCachingMode;
 
-struct _Client;
+// struct _Client;
 
 extern int StartListFontsWithInfo(
     struct _Client * /*client*/,

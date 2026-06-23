@@ -13,6 +13,7 @@ public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 
 public import include.callback;
+import include.dixstruct;
 
 /* Client IDs. Use GetClientPid, GetClientCmdName and GetClientCmdArgs
  * instead of accessing the fields directly. */
@@ -22,7 +23,7 @@ struct _ClientId {
     const(char)* cmdargs;        /* process arguments, NULL if not available */
 }
 
-struct _Client;
+// struct _Client;
 
 /* Initialize and clean up. */
 void ReserveClientIds(_Client* client);

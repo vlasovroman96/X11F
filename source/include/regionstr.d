@@ -86,7 +86,7 @@ pragma(inline, true) private Bool RegionNar(RegionPtr reg)
     return ((reg).data == &RegionBrokenData);
 }
 
-pragma(inline, true) private int RegionNumRects(RegionPtr reg)
+pragma(inline, true) int RegionNumRects(RegionPtr reg)
 {
     return cast(int)(reg.data ? reg.data.numRects : 1);
 }
@@ -96,7 +96,7 @@ pragma(inline, true) private int RegionSize(RegionPtr reg)
     return cast(int)(reg.data ? reg.data.size : 0);
 }
 
-pragma(inline, true) private BoxPtr RegionRects(RegionPtr reg)
+pragma(inline, true) BoxPtr RegionRects(RegionPtr reg)
 {
     return ((reg).data ? cast(BoxPtr) ((reg).data + 1) : &(reg).extents);
 }
@@ -187,7 +187,7 @@ pragma(inline, true) private void RegionEmpty(RegionPtr _pReg)
     (_pReg).data = &RegionEmptyData;
 }
 
-pragma(inline, true) private BoxPtr RegionExtents(RegionPtr _pReg)
+pragma(inline, true) BoxPtr RegionExtents(RegionPtr _pReg)
 {
     return (&(_pReg).extents);
 }
@@ -276,7 +276,7 @@ pragma(inline, true) private int RegionContainsRect(RegionPtr region, BoxPtr pre
    translates in place
 */
 
-pragma(inline, true) private void RegionTranslate(RegionPtr pReg, int x, int y)
+pragma(inline, true) void RegionTranslate(RegionPtr pReg, int x, int y)
 {
     pixman_region_translate(pReg, x, y);
 }

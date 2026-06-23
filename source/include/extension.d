@@ -88,7 +88,7 @@ struct ExtensionModule {
     Bool* disablePtr;
 }
 
-extern ubyte StandardMinorOpcode(ClientPtr);
+// extern ubyte StandardMinorOpcode(ClientPtr);
 
 extern void  EnableDisableExtension(const(char)* name, Bool enable);
 

@@ -26,11 +26,12 @@ extern(C): __gshared:
 //public import externs.X11.Xdefs;
 import include.regionstr;
 import include.screenint;
+import include.privates;
 
 struct _Damage;
 alias DamagePtr = _Damage*;
 
-enum DamageReportLevel {
+enum DamageReportLevel : ubyte {
     DamageReportRawRegion,
     DamageReportDeltaRegion,
     DamageReportBoundingBox,
@@ -87,7 +88,7 @@ extern int miDamageDestroy(DamagePtr);
 // alias ScreenPtr = _Screen*;
 extern int DamageSetup(ScreenPtr pScreen);
 
-extern int DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDestroy, DamageReportLevel damageLevel, Bool isInternal, ScreenPtr pScreen, void* closure);
+// extern int DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDestroy, DamageReportLevel damageLevel, Bool isInternal, ScreenPtr pScreen, void* closure);
 
 extern int DamageDrawInternal(ScreenPtr pScreen, Bool enable);
 

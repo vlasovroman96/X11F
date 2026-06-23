@@ -251,11 +251,11 @@ pragma(inline, true) private uint bswap_32(uint x)
             ((x & 0x000000FF) << 24));
 }
 
-enum string swapl(string x) = `do { 
-		if (typeof(*(` ~ x ~ `)).sizeof != 4) 
+ref auto swapl(T)(T* t) {
+		if (typeof(*(t)).sizeof != 4) 
 			wrong_size(); 
-		*(` ~ x ~ `) = bswap_32(*(` ~ x ~ `)); 
-	} while (0)`;
+		*(t) = bswap_32(*(t)); 
+}
 
 pragma(inline, true) private ushort bswap_16(ushort x)
 {
