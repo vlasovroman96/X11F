@@ -72,7 +72,7 @@ import Xi.handlers;
 
 int ProcXAllowDeviceEvents(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xAllowDeviceEventsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xAllowDeviceEventsReq);
     X_REQUEST_FIELD_CARD32(time);
 
     DeviceIntPtr thisdev = void;

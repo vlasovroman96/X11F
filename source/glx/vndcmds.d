@@ -259,7 +259,7 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
 
 private int dispatch_GLXMakeCurrent(ClientPtr client)
 {
-    REQUEST(xGLXMakeCurrentReq);
+    mixin(REQUEST!xGLXMakeCurrentReq);
     REQUEST_SIZE_MATCH(*stuff);
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
@@ -268,7 +268,7 @@ private int dispatch_GLXMakeCurrent(ClientPtr client)
 
 private int dispatch_GLXMakeContextCurrent(ClientPtr client)
 {
-    REQUEST(xGLXMakeContextCurrentReq);
+    mixin(REQUEST!xGLXMakeContextCurrentReq);
     REQUEST_SIZE_MATCH(*stuff);
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
@@ -277,7 +277,7 @@ private int dispatch_GLXMakeContextCurrent(ClientPtr client)
 
 private int dispatch_GLXMakeCurrentReadSGI(ClientPtr client)
 {
-    REQUEST(xGLXMakeCurrentReadSGIReq);
+    mixin(REQUEST!xGLXMakeCurrentReadSGIReq);
     REQUEST_SIZE_MATCH(*stuff);
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
@@ -286,7 +286,7 @@ private int dispatch_GLXMakeCurrentReadSGI(ClientPtr client)
 
 private int dispatch_GLXCopyContext(ClientPtr client)
 {
-    REQUEST(xGLXCopyContextReq);
+    mixin(REQUEST!xGLXCopyContextReq);
     GlxServerVendor* vendor = void;
     REQUEST_SIZE_MATCH(*stuff);
 
@@ -312,7 +312,7 @@ private int dispatch_GLXCopyContext(ClientPtr client)
 private int dispatch_GLXSwapBuffers(ClientPtr client)
 {
     GlxServerVendor* vendor = null;
-    REQUEST(xGLXSwapBuffersReq);
+    mixin(REQUEST!xGLXSwapBuffersReq);
     REQUEST_SIZE_MATCH(*stuff);
 
     if (stuff.contextTag != 0) {
@@ -340,7 +340,7 @@ private int dispatch_GLXSwapBuffers(ClientPtr client)
  */
 private int dispatch_GLXSingle(ClientPtr client)
 {
-    REQUEST(xGLXSingleReq);
+    mixin(REQUEST!xGLXSingleReq);
     GlxContextTagInfo* tagInfo = void;
     REQUEST_AT_LEAST_SIZE(*stuff);
 
@@ -355,7 +355,7 @@ private int dispatch_GLXSingle(ClientPtr client)
 private int dispatch_GLXVendorPriv(ClientPtr client)
 {
     GlxVendorPrivDispatch* disp = void;
-    REQUEST(xGLXVendorPrivateReq);
+    mixin(REQUEST!xGLXVendorPrivateReq);
     REQUEST_AT_LEAST_SIZE(*stuff);
 
     disp = LookupVendorPrivDispatch(GlxCheckSwap(client, stuff.vendorCode), TRUE);
@@ -450,7 +450,7 @@ void GlxDispatchReset()
 
 int GlxDispatchRequest(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     int result = void;
 
     if (GlxExtensionEntry.base == 0)

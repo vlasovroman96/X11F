@@ -176,7 +176,7 @@ private int ProcXResQueryVersion(ClientPtr client)
 
 private int ProcXResQueryClients(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXResQueryClientsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientsReq);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -225,7 +225,7 @@ private CARD32 resourceTypeAtom(int i)
 
 private int ProcXResQueryClientResources(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXResQueryClientResourcesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientResourcesReq);
     X_REQUEST_FIELD_CARD32(xid);
 
     ClientPtr resClient = dixClientForXID(stuff.xid);
@@ -282,7 +282,7 @@ private void ResFindResourcePixmaps(void* value, XID id, RESTYPE type, void* cda
 
 private int ProcXResQueryClientPixmapBytes(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXResQueryClientPixmapBytesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientPixmapBytesReq);
     X_REQUEST_FIELD_CARD32(xid);
 
     ClientPtr owner = dixClientForXID(stuff.xid);
@@ -845,7 +845,7 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
 
 private int ProcResDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_XResQueryVersion:
         return ProcXResQueryVersion(client);

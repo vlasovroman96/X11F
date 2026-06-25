@@ -36,19 +36,19 @@ import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
 import core.stdc.stddef;             /* For NULL */
-import mi;
-import scrnintstr;
+import include.mi;
+import include.scrnintstr;
 import include.gcstruct;
-import pixmapstr;
-import windowstr;
-import dixfontstr;
-import fb;
+import include.pixmapstr;
+import include.windowstr;
+import include.dixfontstr;
+import include.fb;
 
 import core.sys.posix.sys.types;
 import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
 
-import rootlessCommon;
+import miext.rootless.rootlessCommon;
 
 // GC functions
 
@@ -62,13 +62,13 @@ import rootlessCommon;
 
 
 GCFuncs rootlessGCFuncs = {
-    RootlessValidateGC,
-    RootlessChangeGC,
-    RootlessCopyGC,
-    RootlessDestroyGC,
-    RootlessChangeClip,
-    RootlessDestroyClip,
-    RootlessCopyClip,
+    &RootlessValidateGC,
+    &RootlessChangeGC,
+    &RootlessCopyGC,
+    &RootlessDestroyGC,
+    &RootlessChangeClip,
+    &RootlessDestroyClip,
+    &RootlessCopyClip,
 };
 
 // GC operations
@@ -94,26 +94,26 @@ GCFuncs rootlessGCFuncs = {
 
 
 private GCOps rootlessGCOps = {
-    RootlessFillSpans,
-    RootlessSetSpans,
-    RootlessPutImage,
-    RootlessCopyArea,
-    RootlessCopyPlane,
-    RootlessPolyPoint,
-    RootlessPolylines,
-    RootlessPolySegment,
-    RootlessPolyRectangle,
-    RootlessPolyArc,
-    RootlessFillPolygon,
-    RootlessPolyFillRect,
-    RootlessPolyFillArc,
-    RootlessPolyText8,
-    RootlessPolyText16,
-    RootlessImageText8,
-    RootlessImageText16,
-    RootlessImageGlyphBlt,
-    RootlessPolyGlyphBlt,
-    RootlessPushPixels
+    &RootlessFillSpans,
+    &RootlessSetSpans,
+    &RootlessPutImage,
+    &RootlessCopyArea,
+    &RootlessCopyPlane,
+    &RootlessPolyPoint,
+    &RootlessPolylines,
+    &RootlessPolySegment,
+    &RootlessPolyRectangle,
+    &RootlessPolyArc,
+    &RootlessFillPolygon,
+    &RootlessPolyFillRect,
+    &RootlessPolyFillArc,
+    &RootlessPolyText8,
+    &RootlessPolyText16,
+    &RootlessImageText8,
+    &RootlessImageText16,
+    &RootlessImageGlyphBlt,
+    &RootlessPolyGlyphBlt,
+    &RootlessPushPixels
 };
 
 /*

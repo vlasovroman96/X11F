@@ -76,7 +76,7 @@ private Bool dri3_screen_can_one_point_four(ScreenPtr screen)
 
 private int proc_dri3_query_version(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3QueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3QueryVersionReq);
     X_REQUEST_FIELD_CARD32(majorVersion);
     X_REQUEST_FIELD_CARD32(minorVersion);
 
@@ -103,7 +103,7 @@ private int proc_dri3_query_version(ClientPtr client)
         }
     });
 
-    DIX_FOR_EACH_GPU_SCREEN({
+    mixin(DIX_FOR_EACH_GPU_SCREEN!("{
         if (!dri3_screen_can_one_point_one(walkScreen)) {
             reply.minorVersion = 0;
             break;
@@ -119,7 +119,7 @@ private int proc_dri3_query_version(ClientPtr client)
             reply.minorVersion = 4;
             break;
         }
-    });
+    }"));
 
     /* From DRI3 proto:
      *
@@ -157,7 +157,7 @@ int dri3_send_open_reply(ClientPtr client, int fd)
 
 private int proc_dri3_open(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3OpenReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3OpenReq);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(provider);
 
@@ -194,7 +194,7 @@ private int proc_dri3_open(ClientPtr client)
 
 private int proc_dri3_pixmap_from_buffer(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3PixmapFromBufferReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3PixmapFromBufferReq);
     X_REQUEST_FIELD_CARD32(pixmap);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(size);
@@ -270,7 +270,7 @@ private int proc_dri3_pixmap_from_buffer(ClientPtr client)
 
 private int proc_dri3_buffer_from_pixmap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3BufferFromPixmapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3BufferFromPixmapReq);
     X_REQUEST_FIELD_CARD32(pixmap);
 
     int rc = void;
@@ -311,7 +311,7 @@ private int proc_dri3_buffer_from_pixmap(ClientPtr client)
 
 private int proc_dri3_fence_from_fd(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3FenceFromFDReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3FenceFromFDReq);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(fence);
 
@@ -338,7 +338,7 @@ private int proc_dri3_fence_from_fd(ClientPtr client)
 
 private int proc_dri3_fd_from_fence(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3FDFromFenceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3FDFromFenceReq);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(fence);
 
@@ -369,7 +369,7 @@ private int proc_dri3_fd_from_fence(ClientPtr client)
 
 private int proc_dri3_get_supported_modifiers(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3GetSupportedModifiersReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3GetSupportedModifiersReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr window = void;
@@ -410,7 +410,7 @@ private int proc_dri3_get_supported_modifiers(ClientPtr client)
 
 private int proc_dri3_pixmap_from_buffers(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3PixmapFromBuffersReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3PixmapFromBuffersReq);
     X_REQUEST_FIELD_CARD32(pixmap);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD16(width);
@@ -516,7 +516,7 @@ private int proc_dri3_pixmap_from_buffers(ClientPtr client)
 
 private int proc_dri3_buffers_from_pixmap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3BuffersFromPixmapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3BuffersFromPixmapReq);
     X_REQUEST_FIELD_CARD32(pixmap);
 
     int rc = void;
@@ -568,7 +568,7 @@ private int proc_dri3_buffers_from_pixmap(ClientPtr client)
 
 private int proc_dri3_set_drm_device_in_use(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3SetDRMDeviceInUseReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3SetDRMDeviceInUseReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(drmMajor);
     X_REQUEST_FIELD_CARD32(drmMinor);
@@ -591,7 +591,7 @@ private int proc_dri3_set_drm_device_in_use(ClientPtr client)
 
 private int proc_dri3_import_syncobj(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3ImportSyncobjReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3ImportSyncobjReq);
     X_REQUEST_FIELD_CARD32(syncobj);
     X_REQUEST_FIELD_CARD32(drawable);
 
@@ -619,7 +619,7 @@ private int proc_dri3_import_syncobj(ClientPtr client)
 
 private int proc_dri3_free_syncobj(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDRI3FreeSyncobjReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDRI3FreeSyncobjReq);
     X_REQUEST_FIELD_CARD32(syncobj);
 
     dri3_syncobj* syncobj = void;
@@ -636,7 +636,7 @@ private int proc_dri3_free_syncobj(ClientPtr client)
 
 int proc_dri3_dispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     if (!client.local)
         return BadMatch;
 

@@ -205,7 +205,7 @@ DevPrivateKeyRec XIClientPrivateKeyRec;
 
 private int ProcIDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     UpdateCurrentTimeIf();
 

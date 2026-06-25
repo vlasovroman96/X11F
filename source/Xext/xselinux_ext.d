@@ -145,7 +145,7 @@ private int ProcSELinuxGetCreateContext(ClientPtr client, uint offset)
     security_id_t* pSid = void;
     char* ptr = void;
 
-    X_REQUEST_HEAD_STRUCT(SELinuxGetCreateContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetCreateContextReq);
 
     if (offset == CTX_DEV) {
         ptr = dixLookupPrivate(&serverClient.devPrivates, subjectKey);
@@ -204,7 +204,7 @@ private int ProcSELinuxSetDeviceContext(ClientPtr client)
 
 private int ProcSELinuxGetDeviceContext(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
     X_REQUEST_FIELD_CARD32(id);
 
     DeviceIntPtr dev = void;
@@ -221,7 +221,7 @@ private int ProcSELinuxGetDeviceContext(ClientPtr client)
 
 private int ProcSELinuxGetDrawableContext(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
     X_REQUEST_FIELD_CARD32(id);
 
     DrawablePtr pDraw = void;
@@ -245,7 +245,7 @@ private int ProcSELinuxGetDrawableContext(ClientPtr client)
 
 private int ProcSELinuxGetPropertyContext(ClientPtr client, void* privKey)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetPropertyContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetPropertyContextReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(property);
 
@@ -270,7 +270,7 @@ private int ProcSELinuxGetPropertyContext(ClientPtr client, void* privKey)
 
 private int ProcSELinuxGetSelectionContext(ClientPtr client, void* privKey)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
     X_REQUEST_FIELD_CARD32(id);
 
     Selection* pSel = void;
@@ -287,7 +287,7 @@ private int ProcSELinuxGetSelectionContext(ClientPtr client, void* privKey)
 
 private int ProcSELinuxGetClientContext(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
     X_REQUEST_FIELD_CARD32(id);
 
     ClientPtr target = void;
@@ -366,7 +366,7 @@ private int SELinuxSendItemsToClient(ClientPtr client, SELinuxListItemRec* items
 
 private int ProcSELinuxListProperties(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
     X_REQUEST_FIELD_CARD32(id);
 
     WindowPtr pWin = void;
@@ -408,7 +408,7 @@ private int ProcSELinuxListProperties(ClientPtr client)
 
 private int ProcSELinuxListSelections(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(SELinuxGetCreateContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetCreateContextReq);
 
     Selection* pSel = void;
     SELinuxListItemRec* items = void;
@@ -446,7 +446,7 @@ private int ProcSELinuxListSelections(ClientPtr client)
 
 private int ProcSELinuxDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_SELinuxQueryVersion:
         return ProcSELinuxQueryVersion(client);

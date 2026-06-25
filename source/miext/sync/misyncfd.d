@@ -1,4 +1,4 @@
-module misyncfd.c;
+module miext.sync.misyncfd;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -27,11 +27,12 @@ import build.dix_config;
 
 import dix.input_priv;
 
-import scrnintstr;
-import misync_priv;
-import misyncstr;
-import misyncfd;
-import pixmapstr;
+import include.scrnintstr;
+import miext.sync.misync_priv;
+// import miext.sync.misync_priv;
+import miext.sync.misyncfd;
+import include.pixmapstr;
+import include.misyncfd;
 
 private DevPrivateKeyRec syncFdScreenPrivateKey;
 

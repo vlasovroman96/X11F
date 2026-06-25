@@ -74,7 +74,7 @@ import include.inputstr;           /* DeviceIntPtr      */
 
 int ProcXGetDeviceMotionEvents(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xGetDeviceMotionEventsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetDeviceMotionEventsReq);
     X_REQUEST_FIELD_CARD32(start);
     X_REQUEST_FIELD_CARD32(stop);
 

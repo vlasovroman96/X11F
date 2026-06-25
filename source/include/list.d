@@ -348,7 +348,7 @@ enum string xorg_list_last_entry(string ptr, string type, string member) = `
     ` ~ xorg_list_entry!(`(` ~ ptr ~ `).prev`, type, member) ~ ``;
 
 alias __container_of(alias ptr, alias sample, alias member) = 
-    container_of!(sapmle, member )(ptr);
+    container_of!(sample, member )(ptr);
 
 /**
  * Loop through the list given by head and set pos to struct in the list.
@@ -368,6 +368,12 @@ alias __container_of(alias ptr, alias sample, alias member) =
  *
  */
 
+enum string xorg_list_for_each_entry(string pos, string head, string member) = 
+    `if ((` ~ pos ~ ` = ((` ~ head ~ `).next !is null ? __container_of!((` ~ head ~ `).next, ` ~ pos ~ `, ` ~ pos ~ `.` ~ member ~ `) : null)) !is null)` ~
+    `while (` ~ pos ~ ` !is null && &` ~ pos ~ `.` ~ member ~ ` !is cast(typeof((` ~ head ~ `).next))&(` ~ head ~ `))` ~
+    `for (bool _once = true; _once; _once = false, ` ~ 
+    `     ` ~ pos ~ ` = ((` ~ pos ~ `.` ~ member ~ `.next !is null) ? __container_of!(` ~ pos ~ `.` ~ member ~ `.next, ` ~ pos ~ `, ` ~ pos ~ `.` ~ member ~ `) : null))` // <-- ОБРАТИТЕ ВНИМАНИЕ НА ТОЧКУ С ЗАПЯТОЙ В КОНЦЕ СТРОКИ!
+;
 /**
  * Loop through the list, keeping a backup pointer to the element. This
  * macro allows for the deletion of a list element while looping through the

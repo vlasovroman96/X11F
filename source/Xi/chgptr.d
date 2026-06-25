@@ -77,7 +77,7 @@ import chgptr;
 
 int ProcXChangePointerDevice(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xChangePointerDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xChangePointerDeviceReq);
 
     return BadDevice;
 }

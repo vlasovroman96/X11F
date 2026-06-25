@@ -402,7 +402,7 @@ int RRConfigureOutputProperty(RROutputPtr output, Atom property, Bool pending, B
 
 int ProcRRListOutputProperties(ClientPtr client)
 {
-    REQUEST(xRRListOutputPropertiesReq);
+    mixin(REQUEST!xRRListOutputPropertiesReq);
     REQUEST_SIZE_MATCH(xRRListOutputPropertiesReq);
 
     if (client.swapped)
@@ -432,7 +432,7 @@ int ProcRRListOutputProperties(ClientPtr client)
 
 int ProcRRQueryOutputProperty(ClientPtr client)
 {
-    REQUEST(xRRQueryOutputPropertyReq);
+    mixin(REQUEST!xRRQueryOutputPropertyReq);
     REQUEST_SIZE_MATCH(xRRQueryOutputPropertyReq);
 
     if (client.swapped) {
@@ -463,7 +463,7 @@ int ProcRRQueryOutputProperty(ClientPtr client)
 
 int ProcRRConfigureOutputProperty(ClientPtr client)
 {
-    REQUEST(xRRConfigureOutputPropertyReq);
+    mixin(REQUEST!xRRConfigureOutputPropertyReq);
     REQUEST_AT_LEAST_SIZE(xRRConfigureOutputPropertyReq);
 
     if (client.swapped) {
@@ -489,7 +489,7 @@ int ProcRRConfigureOutputProperty(ClientPtr client)
 
 int ProcRRChangeOutputProperty(ClientPtr client)
 {
-    REQUEST(xRRChangeOutputPropertyReq);
+    mixin(REQUEST!xRRChangeOutputPropertyReq);
     REQUEST_AT_LEAST_SIZE(xRRChangeOutputPropertyReq);
 
     if (client.swapped) {
@@ -561,7 +561,7 @@ int ProcRRChangeOutputProperty(ClientPtr client)
 
 int ProcRRDeleteOutputProperty(ClientPtr client)
 {
-    REQUEST(xRRDeleteOutputPropertyReq);
+    mixin(REQUEST!xRRDeleteOutputPropertyReq);
     REQUEST_SIZE_MATCH(xRRDeleteOutputPropertyReq);
 
     if (client.swapped) {
@@ -600,7 +600,7 @@ int ProcRRDeleteOutputProperty(ClientPtr client)
 
 int ProcRRGetOutputProperty(ClientPtr client)
 {
-    REQUEST(xRRGetOutputPropertyReq);
+    mixin(REQUEST!xRRGetOutputPropertyReq);
     REQUEST_SIZE_MATCH(xRRGetOutputPropertyReq);
 
     if (client.swapped) {

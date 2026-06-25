@@ -265,7 +265,7 @@ private int XFixesSelectCursorInput(ClientPtr pClient, WindowPtr pWindow, CARD32
 
 int ProcXFixesSelectCursorInput(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesSelectCursorInputReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesSelectCursorInputReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(eventMask);
 
@@ -347,7 +347,7 @@ private void CopyCursorToImage(CursorPtr pCursor, CARD32* image)
 
 int ProcXFixesGetCursorImage(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesGetCursorImageReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesGetCursorImageReq);
 
     CursorPtr pCursor = CursorForClient(client);
     if (!pCursor)
@@ -415,7 +415,7 @@ int ProcXFixesSetCursorName(ClientPtr client)
 
 int ProcXFixesGetCursorName(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesGetCursorNameReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesGetCursorNameReq);
     X_REQUEST_FIELD_CARD32(cursor);
 
     CursorPtr pCursor = void;
@@ -439,7 +439,7 @@ int ProcXFixesGetCursorName(ClientPtr client)
 
 int ProcXFixesGetCursorImageAndName(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesGetCursorImageAndNameReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesGetCursorImageAndNameReq);
 
     CursorPtr pCursor = CursorForClient(client);
     if (!pCursor)
@@ -603,7 +603,7 @@ int ProcXFixesChangeCursor(ClientPtr client)
 {
     CursorPtr pSource = void, pDestination = void;
 
-    X_REQUEST_HEAD_STRUCT(xXFixesChangeCursorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesChangeCursorReq);
     X_REQUEST_FIELD_CARD32(source);
     X_REQUEST_FIELD_CARD32(destination);
 
@@ -734,7 +734,7 @@ private void deleteCursorHideCountsForScreen(ScreenPtr pScreen)
 
 int ProcXFixesHideCursor(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesHideCursorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesHideCursorReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -784,7 +784,7 @@ int ProcXFixesHideCursor(ClientPtr client)
 
 int ProcXFixesShowCursor(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesShowCursorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesShowCursorReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -884,7 +884,7 @@ int ProcXFixesCreatePointerBarrier(ClientPtr client)
 
 int ProcXFixesDestroyPointerBarrier(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesDestroyPointerBarrierReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesDestroyPointerBarrierReq);
     X_REQUEST_FIELD_CARD32(barrier);
     return XIDestroyPointerBarrier(client, stuff);
 }

@@ -321,7 +321,7 @@ int ProcXListInputDevices(ClientPtr client)
     xDeviceInfo* dev = void;
     DeviceIntPtr d = void;
 
-    X_REQUEST_HEAD_STRUCT(xListInputDevicesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xListInputDevicesReq);
 
     /* allocate space for saving skip value */
     skip = cast(Bool*) calloc(inputInfo.numDevices, Bool.sizeof);

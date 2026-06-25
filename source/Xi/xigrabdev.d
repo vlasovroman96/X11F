@@ -126,7 +126,7 @@ reply:
 
 int ProcXIUngrabDevice(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIUngrabDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIUngrabDeviceReq);
     X_REQUEST_FIELD_CARD16(deviceid);
     X_REQUEST_FIELD_CARD32(time);
 

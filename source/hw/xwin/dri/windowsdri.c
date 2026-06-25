@@ -68,7 +68,7 @@ ProcWindowsDRIQueryVersion(ClientPtr client)
 static int
 ProcWindowsDRIQueryDirectRenderingCapable(ClientPtr client)
 {
-    REQUEST(xWindowsDRIQueryDirectRenderingCapableReq);
+    mixin(REQUEST!xWindowsDRIQueryDirectRenderingCapableReq);
     REQUEST_SIZE_MATCH(xWindowsDRIQueryDirectRenderingCapableReq);
 
     if (client->swapped)
@@ -85,7 +85,7 @@ ProcWindowsDRIQueryDirectRenderingCapable(ClientPtr client)
 static int
 ProcWindowsDRIQueryDrawable(ClientPtr client)
 {
-    REQUEST(xWindowsDRIQueryDrawableReq);
+    mixin(REQUEST!xWindowsDRIQueryDrawableReq);
     REQUEST_SIZE_MATCH(xWindowsDRIQueryDrawableReq);
 
     if (client->swapped) {
@@ -112,7 +112,7 @@ ProcWindowsDRIQueryDrawable(ClientPtr client)
 static int
 ProcWindowsDRIFBConfigToPixelFormat(ClientPtr client)
 {
-    REQUEST(xWindowsDRIFBConfigToPixelFormatReq);
+    mixin(REQUEST!xWindowsDRIFBConfigToPixelFormatReq);
     REQUEST_SIZE_MATCH(xWindowsDRIFBConfigToPixelFormatReq);
 
     if (client->swapped) {
@@ -136,7 +136,7 @@ ProcWindowsDRIFBConfigToPixelFormat(ClientPtr client)
 static int
 ProcWindowsDRIDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff->data) {
     case X_WindowsDRIQueryVersion:

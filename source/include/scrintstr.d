@@ -1,5 +1,5 @@
 module include.scrintstr;
-
+extern(C): @nogc: nothrow:
 /***********************************************************
 
 Copyright 1987, 1998  The Open Group

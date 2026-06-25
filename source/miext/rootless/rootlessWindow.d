@@ -1,4 +1,4 @@
-module rootlessWindow.h;
+module miext.rootless.rootlessWindow;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -33,7 +33,7 @@ import core.stdc.config: c_long, c_ulong;
  
 public import dix.screen_hooks_priv;
 
-public import rootlessCommon;
+public import miext.rootless.rootlessCommon;
 
 Bool RootlessCreateWindow(WindowPtr pWin);
 void RootlessWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin);

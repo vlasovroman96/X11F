@@ -79,7 +79,7 @@ private void XF86DRIResetProc(ExtensionEntry* extEntry)
 
 private int ProcXF86DRIQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIQueryVersionReq);
 
     xXF86DRIQueryVersionReply reply = {
         majorVersion: SERVER_XF86DRI_MAJOR_VERSION,
@@ -96,7 +96,7 @@ private int ProcXF86DRIQueryVersion(ClientPtr client)
 
 private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIQueryDirectRenderingCapableReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIQueryDirectRenderingCapableReq);
     X_REQUEST_FIELD_CARD32(screen);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
@@ -125,7 +125,7 @@ private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
 
 private int ProcXF86DRIOpenConnection(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIOpenConnectionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIOpenConnectionReq);
 
     drm_handle_t hSAREA = void;
     char* busIdString = void;
@@ -162,7 +162,7 @@ static if(HasVersion!("LONG64") && !HasVersion!("__linux__")) {
 
 private int ProcXF86DRIAuthConnection(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIAuthConnectionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIAuthConnectionReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen) {
@@ -185,7 +185,7 @@ private int ProcXF86DRIAuthConnection(ClientPtr client)
 
 private int ProcXF86DRICloseConnection(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRICloseConnectionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRICloseConnectionReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen) {
@@ -199,7 +199,7 @@ private int ProcXF86DRICloseConnection(ClientPtr client)
 
 private int ProcXF86DRIGetClientDriverName(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIGetClientDriverNameReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIGetClientDriverNameReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen) {
@@ -228,7 +228,7 @@ private int ProcXF86DRIGetClientDriverName(ClientPtr client)
 
 private int ProcXF86DRICreateContext(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRICreateContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRICreateContextReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen) {
@@ -250,7 +250,7 @@ private int ProcXF86DRICreateContext(ClientPtr client)
 
 private int ProcXF86DRIDestroyContext(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIDestroyContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIDestroyContextReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen) {
@@ -267,7 +267,7 @@ private int ProcXF86DRIDestroyContext(ClientPtr client)
 
 private int ProcXF86DRICreateDrawable(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRICreateDrawableReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRICreateDrawableReq);
 
     DrawablePtr pDrawable = void;
     int rc = void;
@@ -295,7 +295,7 @@ private int ProcXF86DRICreateDrawable(ClientPtr client)
 
 private int ProcXF86DRIDestroyDrawable(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIDestroyDrawableReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIDestroyDrawableReq);
 
     DrawablePtr pDrawable = void;
     int rc = void;
@@ -321,7 +321,7 @@ private int ProcXF86DRIDestroyDrawable(ClientPtr client)
 
 private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIGetDrawableInfoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIGetDrawableInfoReq);
 
     DrawablePtr pDrawable = void;
     int X = void, Y = void, W = void, H = void;
@@ -403,7 +403,7 @@ private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
 
 private int ProcXF86DRIGetDeviceInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86DRIGetDeviceInfoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIGetDeviceInfoReq);
 
     drm_handle_t hFrameBuffer = void;
     void* pDevPrivate = void;
@@ -439,7 +439,7 @@ static if (HasVersion!"LONG64" && !HasVersion!"linux") {
 
 private int ProcXF86DRIDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_XF86DRIQueryVersion:

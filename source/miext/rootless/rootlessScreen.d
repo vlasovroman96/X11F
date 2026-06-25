@@ -47,15 +47,17 @@ import include.colormapst;
 import include.mipict;
 import mi.mi_priv;
 
-import scrnintstr;
+import include.scrnintstr;
 import include.gcstruct;
-import pixmapstr;
-import windowstr;
-import propertyst;
-import picturestr;
+import include.pixmapstr;
+import include.windowstr;
+import include.propertyst;
+import include.picturestr;
 
-import rootlessCommon;
-import rootlessWindow;
+import miext.rootless.rootlessCommon;
+import miext.rootless.rootlessWindow;
+import externs.X11.extensions.renderproto;
+
 
 extern int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind);
 extern Bool RootlessCreateGC(GCPtr pGC);

@@ -26,9 +26,9 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import scrnintstr;
-import misync_priv;
-import misyncstr;
+import include.scrnintstr;
+import miext.sync.misync_priv;
+// import miext.sync.misync;
 
 DevPrivateKeyRec miSyncScreenPrivateKey;
 

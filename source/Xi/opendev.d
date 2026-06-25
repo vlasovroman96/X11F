@@ -90,7 +90,7 @@ int ProcXOpenDevice(ClientPtr client)
     int status = Success;
     DeviceIntPtr dev = void;
 
-    X_REQUEST_HEAD_STRUCT(xOpenDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xOpenDeviceReq);
 
     status = dixLookupDevice(&dev, stuff.deviceid, client, DixUseAccess);
 

@@ -941,7 +941,7 @@ private void PanoramiXResetProc(_ExtensionEntry* extEntry)
 
 int ProcPanoramiXQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xPanoramiXQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xPanoramiXQueryVersionReq);
 
     xPanoramiXQueryVersionReply reply = {
         majorVersion: SERVER_PANORAMIX_MAJOR_VERSION,
@@ -956,7 +956,7 @@ int ProcPanoramiXQueryVersion(ClientPtr client)
 
 int ProcPanoramiXGetState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xPanoramiXGetStateReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xPanoramiXGetStateReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -976,7 +976,7 @@ int ProcPanoramiXGetState(ClientPtr client)
 
 int ProcPanoramiXGetScreenCount(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xPanoramiXGetScreenCountReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xPanoramiXGetScreenCountReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -996,7 +996,7 @@ int ProcPanoramiXGetScreenCount(ClientPtr client)
 
 int ProcPanoramiXGetScreenSize(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xPanoramiXGetScreenSizeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xPanoramiXGetScreenSizeReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(screen);
 
@@ -1028,7 +1028,7 @@ int ProcPanoramiXGetScreenSize(ClientPtr client)
 
 int ProcXineramaIsActive(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXineramaIsActiveReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXineramaIsActiveReq);
 
     xXineramaIsActiveReply reply = {
 // #if 1
@@ -1047,7 +1047,7 @@ int ProcXineramaIsActive(ClientPtr client)
 
 int ProcXineramaQueryScreens(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXineramaQueryScreensReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXineramaQueryScreensReq);
 
     CARD32 number = (noPanoramiXExtension) ? 0 : PanoramiXNumScreens;
     xXineramaQueryScreensReply reply = {
@@ -1074,7 +1074,7 @@ int ProcXineramaQueryScreens(ClientPtr client)
 
 private int ProcPanoramiXDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_PanoramiXQueryVersion:
         return ProcPanoramiXQueryVersion(client);

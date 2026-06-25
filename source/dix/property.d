@@ -263,7 +263,7 @@ int ProcRotateProperties(ClientPtr client)
 
 int ProcChangeProperty(ClientPtr client)
 {
-    REQUEST(xChangePropertyReq);
+    mixin(REQUEST!xChangePropertyReq);
     REQUEST_AT_LEAST_SIZE(xChangePropertyReq);
 
     if (client.swapped) {
@@ -517,7 +517,7 @@ void DeleteAllWindowProperties(WindowPtr pWin)
 
 int ProcGetProperty(ClientPtr client)
 {
-    REQUEST(xGetPropertyReq);
+    mixin(REQUEST!xGetPropertyReq);
     REQUEST_SIZE_MATCH(xGetPropertyReq);
 
     if (client.swapped) {
@@ -675,7 +675,7 @@ int ProcListProperties(ClientPtr client)
 {
     WindowPtr pWin = void;
 
-    REQUEST(xResourceReq);
+    mixin(REQUEST!xResourceReq);
     REQUEST_SIZE_MATCH(xResourceReq);
 
     if (client.swapped)
@@ -710,7 +710,7 @@ int ProcListProperties(ClientPtr client)
 
 int ProcDeleteProperty(ClientPtr client)
 {
-    REQUEST(xDeletePropertyReq);
+    mixin(REQUEST!xDeletePropertyReq);
     REQUEST_SIZE_MATCH(xDeletePropertyReq);
 
     if (client.swapped) {

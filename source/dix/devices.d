@@ -1654,7 +1654,7 @@ Bool BadDeviceMap(BYTE* buff, int length, uint low, uint high, XID* errval)
 
 int ProcSetModifierMapping(ClientPtr client)
 {
-    REQUEST(xSetModifierMappingReq);
+    mixin(REQUEST!xSetModifierMappingReq);
     REQUEST_AT_LEAST_SIZE(xSetModifierMappingReq);
 
     if (client.req_len != ((stuff.numKeyPerModifier << 1) +
@@ -1699,7 +1699,7 @@ int ProcGetModifierMapping(ClientPtr client)
 
 int ProcChangeKeyboardMapping(ClientPtr client)
 {
-    REQUEST(xChangeKeyboardMappingReq);
+    mixin(REQUEST!xChangeKeyboardMappingReq);
     REQUEST_AT_LEAST_SIZE(xChangeKeyboardMappingReq);
 
     uint len = client.req_len - bytes_to_int32(xChangeKeyboardMappingReq.sizeof);
@@ -1754,7 +1754,7 @@ int ProcChangeKeyboardMapping(ClientPtr client)
 
 int ProcSetPointerMapping(ClientPtr client)
 {
-    REQUEST(xSetPointerMappingReq);
+    mixin(REQUEST!xSetPointerMappingReq);
     REQUEST_AT_LEAST_SIZE(xSetPointerMappingReq);
 
     if (client.req_len !=
@@ -1802,7 +1802,7 @@ int ProcSetPointerMapping(ClientPtr client)
 
 int ProcGetKeyboardMapping(ClientPtr client)
 {
-    REQUEST(xGetKeyboardMappingReq);
+    mixin(REQUEST!xGetKeyboardMappingReq);
     REQUEST_SIZE_MATCH(xGetKeyboardMappingReq);
 
     DeviceIntPtr kbd = PickKeyboard(client);
@@ -2054,7 +2054,7 @@ enum DO_ALL =    (-1);
  */
 int ProcChangeKeyboardControl(ClientPtr client)
 {
-    REQUEST(xChangeKeyboardControlReq);
+    mixin(REQUEST!xChangeKeyboardControlReq);
     REQUEST_AT_LEAST_SIZE(xChangeKeyboardControlReq);
 
     BITS32 vmask = stuff.mask;
@@ -2119,7 +2119,7 @@ int ProcGetKeyboardControl(ClientPtr client)
 
 int ProcBell(ClientPtr client)
 {
-    REQUEST(xBellReq);
+    mixin(REQUEST!xBellReq);
     REQUEST_SIZE_MATCH(xBellReq);
 
     if (stuff.percent < -100 || stuff.percent > 100) {
@@ -2153,7 +2153,7 @@ int ProcBell(ClientPtr client)
 
 int ProcChangePointerControl(ClientPtr client)
 {
-    REQUEST(xChangePointerControlReq);
+    mixin(REQUEST!xChangePointerControlReq);
     REQUEST_SIZE_MATCH(xChangePointerControlReq);
 
     DeviceIntPtr mouse = PickPointer(client);
@@ -2269,7 +2269,7 @@ void MaybeStopHint(DeviceIntPtr dev, ClientPtr client)
 
 int ProcGetMotionEvents(ClientPtr client)
 {
-    REQUEST(xGetMotionEventsReq);
+    mixin(REQUEST!xGetMotionEventsReq);
     REQUEST_SIZE_MATCH(xGetMotionEventsReq);
 
     WindowPtr pWin = void;

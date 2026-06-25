@@ -30,17 +30,16 @@ public import include.input;
 public import include.os;
 public import include.resource;
 public import include.window;
+public import dix.resource;
 
 /* pad scanline to a longword */
 enum BITMAP_SCANLINE_UNIT =    32;
 
 enum string LEGAL_NEW_RESOURCE(string id,string client) = `
-    do {                                        
         if (!LegalNewID((` ~ id ~ `), (` ~ client ~ `))) {      
             (` ~ client ~ `).errorValue = (` ~ id ~ `);        
             return BadIDChoice;                 
-        }                                       
-    } while (0)`;
+        }`;                                       
 
 import std.conv;
 /* static assert for protocol structure sizes */

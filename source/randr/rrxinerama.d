@@ -115,7 +115,7 @@ int ProcRRXineramaQueryVersion(ClientPtr client)
 
 int ProcRRXineramaGetState(ClientPtr client)
 {
-    REQUEST(xPanoramiXGetStateReq);
+    mixin(REQUEST!xPanoramiXGetStateReq);
     REQUEST_SIZE_MATCH(xPanoramiXGetStateReq);
 
     if (client.swapped)
@@ -160,7 +160,7 @@ private Bool RRXineramaScreenActive(ScreenPtr pScreen)
 
 int ProcRRXineramaGetScreenCount(ClientPtr client)
 {
-    REQUEST(xPanoramiXGetScreenCountReq);
+    mixin(REQUEST!xPanoramiXGetScreenCountReq);
     REQUEST_SIZE_MATCH(xPanoramiXGetScreenCountReq);
 
     if (client.swapped)
@@ -185,7 +185,7 @@ int ProcRRXineramaGetScreenCount(ClientPtr client)
 
 int ProcRRXineramaGetScreenSize(ClientPtr client)
 {
-    REQUEST(xPanoramiXGetScreenSizeReq);
+    mixin(REQUEST!xPanoramiXGetScreenSizeReq);
     REQUEST_SIZE_MATCH(xPanoramiXGetScreenSizeReq);
 
     if (client.swapped) {
@@ -274,7 +274,7 @@ int ProcRRXineramaQueryScreens(ClientPtr client)
 
 private int ProcRRXineramaDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_PanoramiXQueryVersion:
         return ProcRRXineramaQueryVersion(client);

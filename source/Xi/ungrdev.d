@@ -72,7 +72,7 @@ import include.windowstr;          /* window structure  */
 
 int ProcXUngrabDevice(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xUngrabDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xUngrabDeviceReq);
     X_REQUEST_FIELD_CARD32(time);
 
     DeviceIntPtr dev = void;

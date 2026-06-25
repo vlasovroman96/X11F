@@ -1231,7 +1231,7 @@ private int FreeAlarmClient(void* value, XID id)
  */
 private int ProcSyncInitialize(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncInitializeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncInitializeReq);
 
     xSyncInitializeReply reply = {
         majorVersion: SERVER_SYNC_MAJOR_VERSION,
@@ -1246,7 +1246,7 @@ private int ProcSyncInitialize(ClientPtr client)
  */
 private int ProcSyncListSystemCounters(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncListSystemCountersReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncListSystemCountersReq);
 
     SysCounterInfo* psci = void;
 
@@ -1289,7 +1289,7 @@ private int ProcSyncListSystemCounters(ClientPtr client)
  */
 private int ProcSyncSetPriority(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncSetPriorityReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncSetPriorityReq);
     X_REQUEST_FIELD_CARD32(id);
     X_REQUEST_FIELD_CARD32(priority);
 
@@ -1323,7 +1323,7 @@ private int ProcSyncSetPriority(ClientPtr client)
  */
 private int ProcSyncGetPriority(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncGetPriorityReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncGetPriorityReq);
     X_REQUEST_FIELD_CARD32(id);
 
     ClientPtr priorityclient = void;
@@ -1351,7 +1351,7 @@ private int ProcSyncGetPriority(ClientPtr client)
  */
 private int ProcSyncCreateCounter(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncCreateCounterReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncCreateCounterReq);
     X_REQUEST_FIELD_CARD32(cid);
     X_REQUEST_FIELD_CARD32(initial_value_lo);
     X_REQUEST_FIELD_CARD32(initial_value_hi);
@@ -1373,7 +1373,7 @@ private int ProcSyncCreateCounter(ClientPtr client)
  */
 private int ProcSyncSetCounter(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncSetCounterReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncSetCounterReq);
     X_REQUEST_FIELD_CARD32(cid);
     X_REQUEST_FIELD_CARD32(value_lo);
     X_REQUEST_FIELD_CARD32(value_hi);
@@ -1401,7 +1401,7 @@ private int ProcSyncSetCounter(ClientPtr client)
  */
 private int ProcSyncChangeCounter(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncChangeCounterReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncChangeCounterReq);
     X_REQUEST_FIELD_CARD32(cid);
     X_REQUEST_FIELD_CARD32(value_lo);
     X_REQUEST_FIELD_CARD32(value_hi);
@@ -1436,7 +1436,7 @@ private int ProcSyncChangeCounter(ClientPtr client)
  */
 private int ProcSyncDestroyCounter(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncDestroyCounterReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyCounterReq);
     X_REQUEST_FIELD_CARD32(counter);
 
     SyncCounter* pCounter = void;
@@ -1592,7 +1592,7 @@ private int ProcSyncAwait(ClientPtr client)
  */
 private int ProcSyncQueryCounter(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncQueryCounterReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryCounterReq);
     X_REQUEST_FIELD_CARD32(counter);
 
     SyncCounter* pCounter = void;
@@ -1750,7 +1750,7 @@ private int ProcSyncChangeAlarm(ClientPtr client)
 
 private int ProcSyncQueryAlarm(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncQueryAlarmReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryAlarmReq);
     X_REQUEST_FIELD_CARD32(alarm);
 
     SyncAlarm* pAlarm = void;
@@ -1799,7 +1799,7 @@ private int ProcSyncQueryAlarm(ClientPtr client)
 
 private int ProcSyncDestroyAlarm(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncDestroyAlarmReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyAlarmReq);
     X_REQUEST_FIELD_CARD32(alarm);
 
     SyncAlarm* pAlarm = void;
@@ -1815,7 +1815,7 @@ private int ProcSyncDestroyAlarm(ClientPtr client)
 
 private int ProcSyncCreateFence(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncCreateFenceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncCreateFenceReq);
     X_REQUEST_FIELD_CARD32(d);
     X_REQUEST_FIELD_CARD32(fid);
 
@@ -1858,7 +1858,7 @@ int SyncVerifyFence(SyncFence** ppSyncFence, XID fid, ClientPtr client, Mask mod
 
 private int ProcSyncTriggerFence(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncTriggerFenceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncTriggerFenceReq);
     X_REQUEST_FIELD_CARD32(fid);
 
     SyncFence* pFence = void;
@@ -1875,7 +1875,7 @@ private int ProcSyncTriggerFence(ClientPtr client)
 
 private int ProcSyncResetFence(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncResetFenceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncResetFenceReq);
     X_REQUEST_FIELD_CARD32(fid);
 
     SyncFence* pFence = void;
@@ -1895,7 +1895,7 @@ private int ProcSyncResetFence(ClientPtr client)
 
 private int ProcSyncDestroyFence(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncDestroyFenceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyFenceReq);
     X_REQUEST_FIELD_CARD32(fid);
 
     SyncFence* pFence = void;
@@ -1911,7 +1911,7 @@ private int ProcSyncDestroyFence(ClientPtr client)
 
 private int ProcSyncQueryFence(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSyncQueryFenceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryFenceReq);
     X_REQUEST_FIELD_CARD32(fid);
 
     SyncFence* pFence = void;
@@ -2010,7 +2010,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
  */
 private int ProcSyncDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_SyncInitialize:

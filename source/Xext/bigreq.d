@@ -45,7 +45,7 @@ alias ClientPtr = include.dixstruct._Client*;
 
 private int ProcBigReqDispatch(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xBigReqEnableReq);
+    mixin(X_REQUEST_HEAD_STRUCT!(xBigReqEnableReq));
 
     if (stuff.brReqType != X_BigReqEnable) {
         return BadRequest;

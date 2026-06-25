@@ -198,7 +198,7 @@ static if (RANDR_12_INTERFACE) {
  */
 int ProcRRGetScreenSizeRange(ClientPtr client)
 {
-    REQUEST(xRRGetScreenSizeRangeReq);
+    mixin(REQUEST!xRRGetScreenSizeRangeReq);
     REQUEST_SIZE_MATCH(xRRGetScreenSizeRangeReq);
     if (client.swapped)
         swapl(&stuff.window);
@@ -240,7 +240,7 @@ int ProcRRGetScreenSizeRange(ClientPtr client)
 
 int ProcRRSetScreenSize(ClientPtr client)
 {
-    REQUEST(xRRSetScreenSizeReq);
+    mixin(REQUEST!xRRSetScreenSizeReq);
     REQUEST_SIZE_MATCH(xRRSetScreenSizeReq);
     if (client.swapped) {
         swapl(&stuff.window);
@@ -483,7 +483,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
 
 private int rrGetScreenResources(ClientPtr client, Bool query)
 {
-    REQUEST(xRRGetScreenResourcesReq);
+    mixin(REQUEST!xRRGetScreenResourcesReq);
     REQUEST_SIZE_MATCH(xRRGetScreenResourcesReq);
 
     if (client.swapped)
@@ -730,7 +730,7 @@ private RR10DataPtr RR10GetData(ScreenPtr pScreen, RROutputPtr output)
 
 int ProcRRGetScreenInfo(ClientPtr client)
 {
-    REQUEST(xRRGetScreenInfoReq);
+    mixin(REQUEST!xRRGetScreenInfoReq);
     REQUEST_SIZE_MATCH(xRRGetScreenInfoReq);
     if (client.swapped)
         swapl(&stuff.window);
@@ -861,7 +861,7 @@ finish:
 
 int ProcRRSetScreenConfig(ClientPtr client)
 {
-    REQUEST(xRRSetScreenConfigReq);
+    mixin(REQUEST!xRRSetScreenConfigReq);
 
     int rate = 0;
     if (RRClientKnowsRates(client)) {

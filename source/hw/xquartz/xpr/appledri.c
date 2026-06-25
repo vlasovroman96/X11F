@@ -111,7 +111,7 @@ ProcAppleDRIQueryVersion(register ClientPtr client)
 static int
 ProcAppleDRIQueryDirectRenderingCapable(register ClientPtr client)
 {
-    REQUEST(xAppleDRIQueryDirectRenderingCapableReq);
+    mixin(REQUEST!xAppleDRIQueryDirectRenderingCapableReq);
     REQUEST_SIZE_MATCH(xAppleDRIQueryDirectRenderingCapableReq);
 
     if (client->swapped)
@@ -142,7 +142,7 @@ ProcAppleDRIQueryDirectRenderingCapable(register ClientPtr client)
 static int
 ProcAppleDRIAuthConnection(register ClientPtr client)
 {
-    REQUEST(xAppleDRIAuthConnectionReq);
+    mixin(REQUEST!xAppleDRIAuthConnectionReq);
     REQUEST_SIZE_MATCH(xAppleDRIAuthConnectionReq);
 
     if (client->swapped) {
@@ -188,7 +188,7 @@ surface_notify(void *_arg,
 static int
 ProcAppleDRICreateSurface(ClientPtr client)
 {
-    REQUEST(xAppleDRICreateSurfaceReq);
+    mixin(REQUEST!xAppleDRICreateSurfaceReq);
     REQUEST_SIZE_MATCH(xAppleDRICreateSurfaceReq);
 
     if (client->swapped) {
@@ -234,7 +234,7 @@ ProcAppleDRICreateSurface(ClientPtr client)
 static int
 ProcAppleDRIDestroySurface(register ClientPtr client)
 {
-    REQUEST(xAppleDRIDestroySurfaceReq);
+    mixin(REQUEST!xAppleDRIDestroySurfaceReq);
     REQUEST_SIZE_MATCH(xAppleDRIDestroySurfaceReq);
 
     if (client->swapped) {
@@ -262,7 +262,7 @@ ProcAppleDRIDestroySurface(register ClientPtr client)
 static int
 ProcAppleDRICreatePixmap(ClientPtr client)
 {
-    REQUEST(xAppleDRICreatePixmapReq);
+    mixin(REQUEST!xAppleDRICreatePixmapReq);
     REQUEST_SIZE_MATCH(xAppleDRICreatePixmapReq);
 
     if (client->swapped) {
@@ -325,7 +325,7 @@ ProcAppleDRICreatePixmap(ClientPtr client)
 static int
 ProcAppleDRIDestroyPixmap(ClientPtr client)
 {
-    REQUEST(xAppleDRIDestroyPixmapReq);
+    mixin(REQUEST!xAppleDRIDestroyPixmapReq);
     REQUEST_SIZE_MATCH(xAppleDRIDestroyPixmapReq);
 
     if (client->swapped)
@@ -350,7 +350,7 @@ ProcAppleDRIDestroyPixmap(ClientPtr client)
 static int
 ProcAppleDRIDispatch(register ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff->data) {
     case X_AppleDRIQueryVersion:

@@ -125,7 +125,7 @@ int ProcXCloseDevice(ClientPtr client)
     int rc = void;
     DeviceIntPtr d = void;
 
-    X_REQUEST_HEAD_STRUCT(xCloseDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCloseDeviceReq);
 
     rc = dixLookupDevice(&d, stuff.deviceid, client, DixUseAccess);
     if (rc != Success)

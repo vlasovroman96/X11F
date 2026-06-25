@@ -75,7 +75,7 @@ import chgptr;
  */
 int ProcXChangeKeyboardDevice(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xChangeKeyboardDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xChangeKeyboardDeviceReq);
 
     return BadDevice;
 }

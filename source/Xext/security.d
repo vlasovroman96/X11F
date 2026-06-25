@@ -341,7 +341,7 @@ private void SecurityStartAuthorizationTimer(SecurityAuthorizationPtr pAuth)
 
 private int ProcSecurityQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSecurityQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSecurityQueryVersionReq);
     X_REQUEST_FIELD_CARD16(majorVersion);
     X_REQUEST_FIELD_CARD16(minorVersion);
 
@@ -560,7 +560,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
 private int ProcSecurityRevokeAuthorization(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSecurityRevokeAuthorizationReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSecurityRevokeAuthorizationReq);
     X_REQUEST_FIELD_CARD32(authId);
 
     SecurityAuthorizationPtr pAuth = void;
@@ -577,7 +577,7 @@ private int ProcSecurityRevokeAuthorization(ClientPtr client)
 
 private int ProcSecurityDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_SecurityQueryVersion:

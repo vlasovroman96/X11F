@@ -78,7 +78,7 @@ int ProcXGetDeviceModifierMapping(ClientPtr client)
     KeyCode* modkeymap = null;
     int ret = void, max_keys_per_mod = void;
 
-    X_REQUEST_HEAD_STRUCT(xGetDeviceModifierMappingReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetDeviceModifierMappingReq);
 
     ret = dixLookupDevice(&dev, stuff.deviceid, client, DixGetAttrAccess);
     if (ret != Success)

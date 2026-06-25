@@ -337,15 +337,15 @@ void BlockHandler(void* pTimeout)
         if (!handlers[i].deleted)
             (*handlers[i].BlockHandler) (handlers[i].blockData, pTimeout);
 
-    DIX_FOR_EACH_GPU_SCREEN({
+    mixin(DIX_FOR_EACH_GPU_SCREEN!("{
         if (walkScreen.BlockHandler)
             walkScreen.BlockHandler(walkScreen, pTimeout);
-    });
+    }"));
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!("{
         if (walkScreen.BlockHandler)
             walkScreen.BlockHandler(walkScreen, pTimeout);
-    });
+    }"));
 
     if (handlerDeleted) {
         for (size_t i = 0; i < numHandlers;)
@@ -370,15 +370,15 @@ void WakeupHandler(int result)
 {
     ++inHandler;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!("{
         if (walkScreen.WakeupHandler)
             walkScreen.WakeupHandler(walkScreen, result);
-    });
+    }"));
 
-    DIX_FOR_EACH_GPU_SCREEN({
+    mixin(DIX_FOR_EACH_GPU_SCREEN!("{
         if (walkScreen.WakeupHandler)
             walkScreen.WakeupHandler(walkScreen, result);
-    });
+    }"));
 
     for (size_t i = numHandlers; i > 0; i--)
         if (!handlers[i-1].deleted)

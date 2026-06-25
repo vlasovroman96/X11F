@@ -619,7 +619,7 @@ else
 
 private int ProcScreenSaverQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xScreenSaverQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xScreenSaverQueryVersionReq);
 
     xScreenSaverQueryVersionReply reply = {
         majorVersion: SERVER_SAVER_MAJOR_VERSION,
@@ -634,7 +634,7 @@ private int ProcScreenSaverQueryVersion(ClientPtr client)
 
 private int ProcScreenSaverQueryInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xScreenSaverQueryInfoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xScreenSaverQueryInfoReq);
     X_REQUEST_FIELD_CARD32(drawable);
 
     DrawablePtr pDraw = void;
@@ -693,7 +693,7 @@ private int ProcScreenSaverQueryInfo(ClientPtr client)
 
 private int ProcScreenSaverSelectInput(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xScreenSaverSelectInputReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xScreenSaverSelectInputReq);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(eventMask);
 
@@ -1193,7 +1193,7 @@ version (XINERAMA) {
 
 private int ProcScreenSaverUnsetAttributes(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xScreenSaverUnsetAttributesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xScreenSaverUnsetAttributesReq);
     X_REQUEST_FIELD_CARD32(drawable);
 
 version (XINERAMA) {
@@ -1219,7 +1219,7 @@ version (XINERAMA) {
 
 private int ProcScreenSaverSuspend(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xScreenSaverSuspendReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xScreenSaverSuspendReq);
     X_REQUEST_FIELD_CARD32(suspend);
 
     ScreenSaverSuspensionPtr* prev = void; ScreenSaverSuspensionPtr this_ = void;
@@ -1286,7 +1286,7 @@ private int ProcScreenSaverSuspend(ClientPtr client)
 
 private int ProcScreenSaverDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
         case X_ScreenSaverQueryVersion:
             return ProcScreenSaverQueryVersion(client);

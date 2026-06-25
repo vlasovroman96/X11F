@@ -40,9 +40,9 @@ import    include.mi;
 import    include.regionstr;
 import    globals;
 import    include.gcstruct;
-import    shadow;
-import    fb;
-import    c2p_core;
+import include.shadow;
+import    include.fb;
+import    miext.shadow.c2p_core;
 
 
     /*

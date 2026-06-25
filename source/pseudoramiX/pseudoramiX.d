@@ -165,7 +165,7 @@ private void PseudoramiXResetProc(ExtensionEntry* extEntry)
 // was PanoramiX
 private int ProcPseudoramiXGetState(ClientPtr client)
 {
-    REQUEST(xPanoramiXGetStateReq);
+    mixin(REQUEST!xPanoramiXGetStateReq);
     REQUEST_SIZE_MATCH(xPanoramiXGetStateReq);
 
     if (client.swapped)
@@ -195,7 +195,7 @@ private int ProcPseudoramiXGetState(ClientPtr client)
 // was PanoramiX
 private int ProcPseudoramiXGetScreenCount(ClientPtr client)
 {
-    REQUEST(xPanoramiXGetScreenCountReq);
+    mixin(REQUEST!xPanoramiXGetScreenCountReq);
     REQUEST_SIZE_MATCH(xPanoramiXGetScreenCountReq);
 
     if (client.swapped)
@@ -225,7 +225,7 @@ private int ProcPseudoramiXGetScreenCount(ClientPtr client)
 // was PanoramiX
 private int ProcPseudoramiXGetScreenSize(ClientPtr client)
 {
-    REQUEST(xPanoramiXGetScreenSizeReq);
+    mixin(REQUEST!xPanoramiXGetScreenSizeReq);
     REQUEST_SIZE_MATCH(xPanoramiXGetScreenSizeReq);
 
     if (client.swapped) {
@@ -265,7 +265,7 @@ private int ProcPseudoramiXGetScreenSize(ClientPtr client)
 // was Xinerama
 private int ProcPseudoramiXIsActive(ClientPtr client)
 {
-    /* REQUEST(xXineramaIsActiveReq); */
+    /* mixin(REQUEST!xXineramaIsActiveReq); */
     TRACE;
     REQUEST_SIZE_MATCH(xXineramaIsActiveReq);
 
@@ -283,7 +283,7 @@ private int ProcPseudoramiXIsActive(ClientPtr client)
 // was Xinerama
 private int ProcPseudoramiXQueryScreens(ClientPtr client)
 {
-    /* REQUEST(xXineramaQueryScreensReq); */
+    /* mixin(REQUEST!xXineramaQueryScreensReq); */
 
     mixin(DEBUG_LOG!(`"noPseudoramiXExtension=%d, pseudoramiXNumScreens=%d\n"`,
               `noPseudoramiXExtension`,
@@ -317,7 +317,7 @@ private int ProcPseudoramiXQueryScreens(ClientPtr client)
 // was PanoramiX
 private int ProcPseudoramiXDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     TRACE;
     switch (stuff.data) {
     case X_PanoramiXQueryVersion:

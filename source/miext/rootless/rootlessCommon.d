@@ -1,4 +1,4 @@
-module rootlessCommon.h;
+module miext.rootless.rootlessCommon;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -36,11 +36,11 @@ public import core.stdc.stdint;
 
 public import misc;
 public import miext.rootless.rootless_;
-public import fb;
+public import include.fb;
 
-public import scrnintstr;
+public import include.scrnintstr;
 
-public import picturestr;
+public import include.picturestr;
 
 // Debug output, or not.
 version (ROOTLESSDEBUG) {

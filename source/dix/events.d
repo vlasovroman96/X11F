@@ -1908,7 +1908,7 @@ int ProcAllowEvents(ClientPtr client)
     DeviceIntPtr mouse = null;
     DeviceIntPtr keybd = null;
 
-    REQUEST(xAllowEventsReq);
+    mixin(REQUEST!xAllowEventsReq);
     REQUEST_SIZE_MATCH(xAllowEventsReq);
 
     if (client.swapped)
@@ -3506,7 +3506,7 @@ int XineramaWarpPointer(ClientPtr client)
     int x = void, y = void, rc = void;
     SpritePtr pSprite = PickPointer(client).spriteInfo.sprite;
 
-    REQUEST(xWarpPointerReq);
+    mixin(REQUEST!xWarpPointerReq);
 
     if (stuff.dstWid != None) {
         rc = dixLookupWindow(&dest, stuff.dstWid, client, DixReadAccess);
@@ -3584,7 +3584,7 @@ int ProcWarpPointer(ClientPtr client)
     DeviceIntPtr dev = void;
     SpritePtr pSprite = void;
 
-    REQUEST(xWarpPointerReq);
+    mixin(REQUEST!xWarpPointerReq);
     REQUEST_SIZE_MATCH(xWarpPointerReq);
 
     dev = PickPointer(client);
@@ -4855,7 +4855,7 @@ int ProcSetInputFocus(ClientPtr client)
 {
     DeviceIntPtr kbd = PickKeyboard(client);
 
-    REQUEST(xSetInputFocusReq);
+    mixin(REQUEST!xSetInputFocusReq);
 
     REQUEST_SIZE_MATCH(xSetInputFocusReq);
 
@@ -4875,7 +4875,7 @@ int ProcGetInputFocus(ClientPtr client)
     FocusClassPtr focus = kbd.focus;
     int rc = void;
 
-    /* REQUEST(xReq); */
+    /* mixin(REQUEST!xReq); */
     REQUEST_SIZE_MATCH(xReq);
 
     rc = dixCallDeviceAccessCallback(client, kbd, DixGetFocusAccess);
@@ -4908,7 +4908,7 @@ int ProcGetInputFocus(ClientPtr client)
  */
 int ProcGrabPointer(ClientPtr client)
 {
-    REQUEST(xGrabPointerReq);
+    mixin(REQUEST!xGrabPointerReq);
     REQUEST_SIZE_MATCH(xGrabPointerReq);
 
     if (client.swapped) {
@@ -4974,7 +4974,7 @@ int ProcChangeActivePointerGrab(ClientPtr client)
     GrabPtr grab = void;
     CursorPtr newCursor = void, oldCursor = void;
 
-    REQUEST(xChangeActivePointerGrabReq);
+    mixin(REQUEST!xChangeActivePointerGrabReq);
     TimeStamp time = void;
 
     REQUEST_SIZE_MATCH(xChangeActivePointerGrabReq);
@@ -5025,7 +5025,7 @@ int ProcUngrabPointer(ClientPtr client)
     GrabPtr grab = void;
     TimeStamp time = void;
 
-    REQUEST(xResourceReq);
+    mixin(REQUEST!xResourceReq);
     REQUEST_SIZE_MATCH(xResourceReq);
 
     if (client.swapped)
@@ -5171,7 +5171,7 @@ int ProcGrabKeyboard(ClientPtr client)
 {
     BYTE status = void;
 
-    REQUEST(xGrabKeyboardReq);
+    mixin(REQUEST!xGrabKeyboardReq);
     int result = void;
     DeviceIntPtr keyboard = PickKeyboard(client);
     GrabMask mask = void;
@@ -5207,7 +5207,7 @@ int ProcUngrabKeyboard(ClientPtr client)
     GrabPtr grab = void;
     TimeStamp time = void;
 
-    REQUEST(xResourceReq);
+    mixin(REQUEST!xResourceReq);
     REQUEST_SIZE_MATCH(xResourceReq);
 
     if (client.swapped)
@@ -5239,7 +5239,7 @@ int ProcQueryPointer(ClientPtr client)
     SpritePtr pSprite = void;
     int rc = void;
 
-    REQUEST(xResourceReq);
+    mixin(REQUEST!xResourceReq);
     REQUEST_SIZE_MATCH(xResourceReq);
 
     if (client.swapped)
@@ -5378,7 +5378,7 @@ int ProcSendEvent(ClientPtr client)
     DeviceIntPtr keybd = GetMaster(dev, MASTER_KEYBOARD);
     SpritePtr pSprite = dev.spriteInfo.sprite;
 
-    REQUEST(xSendEventReq);
+    mixin(REQUEST!xSendEventReq);
 
     REQUEST_SIZE_MATCH(xSendEventReq);
 
@@ -5478,7 +5478,7 @@ int ProcSendEvent(ClientPtr client)
  */
 int ProcUngrabKey(ClientPtr client)
 {
-    REQUEST(xUngrabKeyReq);
+    mixin(REQUEST!xUngrabKeyReq);
     WindowPtr pWin = void;
     GrabPtr tempGrab = void;
     DeviceIntPtr keybd = PickKeyboard(client);
@@ -5533,7 +5533,7 @@ int ProcGrabKey(ClientPtr client)
 {
     WindowPtr pWin = void;
 
-    REQUEST(xGrabKeyReq);
+    mixin(REQUEST!xGrabKeyReq);
     GrabPtr grab = void;
     DeviceIntPtr keybd = PickKeyboard(client);
     int rc = void;
@@ -5581,7 +5581,7 @@ int ProcGrabKey(ClientPtr client)
  */
 int ProcGrabButton(ClientPtr client)
 {
-    REQUEST(xGrabButtonReq);
+    mixin(REQUEST!xGrabButtonReq);
     REQUEST_SIZE_MATCH(xGrabButtonReq);
 
     if (client.swapped) {
@@ -5682,7 +5682,7 @@ int ProcGrabButton(ClientPtr client)
  */
 int ProcUngrabButton(ClientPtr client)
 {
-    REQUEST(xUngrabButtonReq);
+    mixin(REQUEST!xUngrabButtonReq);
     WindowPtr pWin = void;
     GrabPtr tempGrab = void;
     int rc = void;
@@ -5882,7 +5882,7 @@ int ProcRecolorCursor(ClientPtr client)
     Bool displayed = void;
     SpritePtr pSprite = PickPointer(client).spriteInfo.sprite;
 
-    REQUEST(xRecolorCursorReq);
+    mixin(REQUEST!xRecolorCursorReq);
 
     REQUEST_SIZE_MATCH(xRecolorCursorReq);
     rc = dixLookupResourceByType(cast(void**) &pCursor, stuff.cursor, X11_RESTYPE_CURSOR,

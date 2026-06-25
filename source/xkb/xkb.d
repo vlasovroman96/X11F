@@ -176,7 +176,7 @@ private Bool _XkbCheckRequestBounds(ClientPtr client, void* stuff, void* from, v
 
 int ProcXkbUseExtension(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbUseExtensionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbUseExtensionReq);
     X_REQUEST_FIELD_CARD16(wantedMajor);
     X_REQUEST_FIELD_CARD16(wantedMinor);
 
@@ -556,7 +556,7 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
 
 int ProcXkbBell(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbBellReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbBellReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(bellClass);
     X_REQUEST_FIELD_CARD16(bellID);
@@ -647,7 +647,7 @@ int ProcXkbBell(ClientPtr client)
 
 int ProcXkbGetState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetStateReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetStateReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
 
     DeviceIntPtr dev = void;
@@ -681,7 +681,7 @@ int ProcXkbGetState(ClientPtr client)
 
 int ProcXkbLatchLockState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbLatchLockStateReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbLatchLockStateReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(groupLatch);
 
@@ -746,7 +746,7 @@ int ProcXkbLatchLockState(ClientPtr client)
 
 int ProcXkbGetControls(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetControlsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetControlsReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
 
     XkbControlsPtr xkb = void;
@@ -813,7 +813,7 @@ int ProcXkbGetControls(ClientPtr client)
 
 int ProcXkbSetControls(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbSetControlsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbSetControlsReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(affectInternalVMods);
     X_REQUEST_FIELD_CARD16(internalVMods);
@@ -1436,7 +1436,7 @@ private void XkbAssembleMap(ClientPtr client, XkbDescPtr xkb, xkbGetMapReply rep
 
 int ProcXkbGetMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetMapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetMapReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(full);
     X_REQUEST_FIELD_CARD16(partial);
@@ -2819,7 +2819,7 @@ private void XkbAssembleCompatMap(ClientPtr client, XkbCompatMapPtr compat, xkbG
 
 int ProcXkbGetCompatMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetCompatMapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetCompatMapReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(firstSI);
     X_REQUEST_FIELD_CARD16(nSI);
@@ -3085,7 +3085,7 @@ int ProcXkbSetCompatMap(ClientPtr client)
 
 int ProcXkbGetIndicatorState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetIndicatorStateReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetIndicatorStateReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
 
     XkbSrvLedInfoPtr sli = void;
@@ -3148,7 +3148,7 @@ private void XkbAssembleIndicatorMap(ClientPtr client, XkbIndicatorPtr indicator
 
 int ProcXkbGetIndicatorMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetIndicatorMapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetIndicatorMapReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD32(which);
 
@@ -3293,7 +3293,7 @@ int ProcXkbSetIndicatorMap(ClientPtr client)
 
 int ProcXkbGetNamedIndicator(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetNamedIndicatorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetNamedIndicatorReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(ledClass);
     X_REQUEST_FIELD_CARD16(ledID);
@@ -3483,7 +3483,7 @@ private int _XkbSetNamedIndicator(ClientPtr client, DeviceIntPtr dev, xkbSetName
 
 int ProcXkbSetNamedIndicator(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbSetNamedIndicatorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbSetNamedIndicatorReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(ledClass);
     X_REQUEST_FIELD_CARD16(ledID);
@@ -3767,7 +3767,7 @@ private void XkbAssembleNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply
 
 int ProcXkbGetNames(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetNamesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetNamesReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD32(which);
 
@@ -4738,7 +4738,7 @@ private void XkbAssembleGeometry(ClientPtr client, XkbGeometryPtr geom, xkbGetGe
 
 int ProcXkbGetGeometry(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetGeometryReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetGeometryReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD32(name);
 
@@ -5356,7 +5356,7 @@ int ProcXkbSetGeometry(ClientPtr client)
 
 int ProcXkbPerClientFlags(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbPerClientFlagsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbPerClientFlagsReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD32(change);
     X_REQUEST_FIELD_CARD32(value);
@@ -6163,7 +6163,7 @@ private int FillDeviceLedFBs(DeviceIntPtr dev, int class_, int id, uint wantLeng
 
 int ProcXkbGetDeviceInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetDeviceInfoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetDeviceInfoReq);
     X_REQUEST_FIELD_CARD16(deviceSpec);
     X_REQUEST_FIELD_CARD16(wanted);
     X_REQUEST_FIELD_CARD16(ledClass);
@@ -6706,7 +6706,7 @@ int ProcXkbSetDebuggingFlags(ClientPtr client)
 
 private int ProcXkbDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_kbUseExtension:
         return ProcXkbUseExtension(client);

@@ -80,7 +80,7 @@ int ProcXDeviceBell(ClientPtr client)
     void* ctrl = void;
     BellProcPtr proc = void;
 
-    X_REQUEST_HEAD_STRUCT(xDeviceBellReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDeviceBellReq);
 
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixBellAccess);
     if (rc != Success) {

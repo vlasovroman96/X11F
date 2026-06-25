@@ -47,6 +47,10 @@ import include.protocol_versions;
 import dix.dixstruct_priv;
 import include.privates;
 import miext.damage.damage_;
+import xfixes.xfixes;;
+import xfixes.region;
+import include.regionstr;
+import dix.extension;
 
 struct _DamageClient {
     CARD32 major_version;
@@ -326,8 +330,8 @@ private int doDamageCreate(ClientPtr client, DamageExtPtr* ext, xDamageCreateReq
 
 private int ProcDamageCreate(ClientPtr client)
 {
-    mixin(X_REQUEST_HEAD_STRUCT!"xDamageCreateReq");
-    mixin(X_REQUEST_FIELD_CARD32!("damage.ptr"));
+    mixin(X_REQUEST_HEAD_STRUCT!xDamageCreateReq);
+    mixin(X_REQUEST_FIELD_CARD32!("damage"));
     mixin(X_REQUEST_FIELD_CARD32!("drawable"));
 
 version (XINERAMA) {
@@ -335,14 +339,14 @@ version (XINERAMA) {
         return PanoramiXDamageCreate(client, stuff);
 }
 
-    LEGAL_NEW_RESOURCE(stuff.damage, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.damage","client"));
     return doDamageCreate(client, null, stuff);
 }
 
 private int ProcDamageDestroy(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDamageDestroyReq);
-    mixin(X_REQUEST_FIELD_CARD32!("damage.ptr"));
+    mixin(X_REQUEST_HEAD_STRUCT!xDamageDestroyReq);
+    mixin(X_REQUEST_FIELD_CARD32!("damage"));
 
     DamageExtPtr pDamageExt = void;
     mixin(VERIFY_DAMAGEEXT!(`pDamageExt`, `stuff.damage`, `client`, `DixDestroyAccess`));
@@ -429,8 +433,8 @@ version (XINERAMA) {
 
 private int ProcDamageSubtract(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDamageSubtractReq);
-    mixin(X_REQUEST_FIELD_CARD32!("damage.ptr"));
+    mixin(X_REQUEST_HEAD_STRUCT!xDamageSubtractReq);
+    mixin(X_REQUEST_FIELD_CARD32!("damage"));
     mixin(X_REQUEST_FIELD_CARD32!("repair"));
     mixin(X_REQUEST_FIELD_CARD32!("parts"));
 
@@ -439,8 +443,8 @@ private int ProcDamageSubtract(ClientPtr client)
     RegionPtr pParts = void;
 
     mixin(VERIFY_DAMAGEEXT!(`pDamageExt`, `stuff.damage`, `client`, `DixWriteAccess`));
-    VERIFY_REGION_OR_NONE(pRepair, stuff.repair, client, DixWriteAccess);
-    VERIFY_REGION_OR_NONE(pParts, stuff.parts, client, DixWriteAccess);
+    mixin(VERIFY_REGION_OR_NONE!("pRepair", "stuff.repair", "client", "DixWriteAccess"));
+    mixin(VERIFY_REGION_OR_NONE!("pParts", "stuff.parts", "client", "DixWriteAccess"));
 
     if (pDamageExt.level != DamageReportRawRegion) {
         DamagePtr pDamage = pDamageExt.pDamage;
@@ -464,14 +468,14 @@ private int ProcDamageSubtract(ClientPtr client)
 
 private int ProcDamageAdd(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDamageAddReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDamageAddReq);
     mixin(X_REQUEST_FIELD_CARD32!("drawable"));
     mixin(X_REQUEST_FIELD_CARD32!("region"));
 
     DrawablePtr pDrawable = void;
     RegionPtr pRegion = void;
 
-    VERIFY_REGION(pRegion, stuff.region, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixWriteAccess"));
     int rc = dixLookupDrawable(&pDrawable, stuff.drawable, client, 0,
                            DixWriteAccess);
     if (rc != Success)
@@ -489,7 +493,7 @@ private int ProcDamageAdd(ClientPtr client)
 
 private int ProcDamageDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
         /* version 1 */
         case X_DamageQueryVersion:
@@ -652,9 +656,9 @@ void DamageExtensionInit()
 {
     ExtensionEntry* extEntry = void;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!(`{
         DamageSetup(walkScreen);
-    });
+    }`));
 
     DamageExtType = CreateNewResourceType(&FreeDamageExt, "DamageExt");
     if (!DamageExtType)
@@ -667,11 +671,11 @@ void DamageExtensionInit()
     if ((extEntry = AddExtension(DAMAGE_NAME, XDamageNumberEvents,
                                  XDamageNumberErrors,
                                  &ProcDamageDispatch, &ProcDamageDispatch,
-                                 null, StandardMinorOpcode)) != 0) {
+                                 null, &StandardMinorOpcode)) != null) {
         DamageReqCode = cast(ubyte) extEntry.base;
         DamageEventBase = extEntry.eventBase;
         EventSwapVector[DamageEventBase + XDamageNotify] =
-            cast(EventSwapPtr) SDamageNotifyEvent;
+            cast(EventSwapPtr) &SDamageNotifyEvent;
         SetResourceTypeErrorValue(DamageExtType,
                                   extEntry.errorBase + BadDamage);
 version (XINERAMA) {

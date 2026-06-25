@@ -113,7 +113,7 @@ private void DbeStubScreen(DbeScreenPrivPtr pDbeScreenPriv, int* nStubbedScreens
 
 private int ProcDbeGetVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDbeGetVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDbeGetVersionReq);
 
     xDbeGetVersionReply reply = {
         majorVersion: DBE_MAJOR_VERSION,
@@ -148,7 +148,7 @@ private int ProcDbeGetVersion(ClientPtr client)
 
 private int ProcDbeAllocateBackBufferName(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDbeAllocateBackBufferNameReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDbeAllocateBackBufferNameReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(buffer);
 
@@ -350,7 +350,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
 
 private int ProcDbeDeallocateBackBufferName(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDbeDeallocateBackBufferNameReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDbeDeallocateBackBufferNameReq);
     X_REQUEST_FIELD_CARD32(buffer);
 
     DbeWindowPrivPtr pDbeWindowPriv = void;
@@ -650,7 +650,7 @@ clearRpcBuf:
 
 private int ProcDbeGetBackBufferAttributes(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDbeGetBackBufferAttributesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDbeGetBackBufferAttributesReq);
     X_REQUEST_FIELD_CARD32(buffer);
 
     DbeWindowPrivPtr pDbeWindowPriv = void;
@@ -686,7 +686,7 @@ private int ProcDbeGetBackBufferAttributes(ClientPtr client)
 
 private int ProcDbeDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_DbeGetVersion:

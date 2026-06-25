@@ -328,7 +328,7 @@ int RRConfigureProviderProperty(RRProviderPtr provider, Atom property, Bool pend
 
 int ProcRRListProviderProperties(ClientPtr client)
 {
-    REQUEST(xRRListProviderPropertiesReq);
+    mixin(REQUEST!xRRListProviderPropertiesReq);
     REQUEST_SIZE_MATCH(xRRListProviderPropertiesReq);
 
     if (client.swapped)
@@ -359,7 +359,7 @@ int ProcRRListProviderProperties(ClientPtr client)
 
 int ProcRRQueryProviderProperty(ClientPtr client)
 {
-    REQUEST(xRRQueryProviderPropertyReq);
+    mixin(REQUEST!xRRQueryProviderPropertyReq);
     REQUEST_SIZE_MATCH(xRRQueryProviderPropertyReq);
 
     if (client.swapped) {
@@ -390,7 +390,7 @@ int ProcRRQueryProviderProperty(ClientPtr client)
 
 int ProcRRConfigureProviderProperty(ClientPtr client)
 {
-    REQUEST(xRRConfigureProviderPropertyReq);
+    mixin(REQUEST!xRRConfigureProviderPropertyReq);
     REQUEST_AT_LEAST_SIZE(xRRConfigureProviderPropertyReq);
 
     if (client.swapped) {
@@ -414,7 +414,7 @@ int ProcRRConfigureProviderProperty(ClientPtr client)
 
 int ProcRRChangeProviderProperty(ClientPtr client)
 {
-    REQUEST(xRRChangeProviderPropertyReq);
+    mixin(REQUEST!xRRChangeProviderPropertyReq);
     REQUEST_AT_LEAST_SIZE(xRRChangeProviderPropertyReq);
 
     if (client.swapped) {
@@ -483,7 +483,7 @@ int ProcRRChangeProviderProperty(ClientPtr client)
 
 int ProcRRDeleteProviderProperty(ClientPtr client)
 {
-    REQUEST(xRRDeleteProviderPropertyReq);
+    mixin(REQUEST!xRRDeleteProviderPropertyReq);
     REQUEST_SIZE_MATCH(xRRDeleteProviderPropertyReq);
 
     if (client.swapped) {
@@ -519,7 +519,7 @@ int ProcRRDeleteProviderProperty(ClientPtr client)
 
 int ProcRRGetProviderProperty(ClientPtr client)
 {
-    REQUEST(xRRGetProviderPropertyReq);
+    mixin(REQUEST!xRRGetProviderPropertyReq);
     REQUEST_SIZE_MATCH(xRRGetProviderPropertyReq);
 
     if (client.swapped) {

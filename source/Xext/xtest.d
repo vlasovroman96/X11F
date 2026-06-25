@@ -94,7 +94,7 @@ DeviceIntPtr xtestpointer, xtestkeyboard;
 
 private int ProcXTestGetVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXTestGetVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXTestGetVersionReq);
     X_REQUEST_FIELD_CARD16(minorVersion);
 
     xXTestGetVersionReply reply = {
@@ -109,7 +109,7 @@ private int ProcXTestGetVersion(ClientPtr client)
 
 private int ProcXTestCompareCursor(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXTestCompareCursorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXTestCompareCursorReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(cursor);
 
@@ -462,7 +462,7 @@ private int ProcXTestFakeInput(ClientPtr client)
 
 private int ProcXTestGrabControl(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXTestGrabControlReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXTestGrabControlReq);
 
     if ((stuff.impervious != xTrue) && (stuff.impervious != xFalse)) {
         client.errorValue = stuff.impervious;
@@ -478,7 +478,7 @@ private int ProcXTestGrabControl(ClientPtr client)
 
 private int ProcXTestDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_XTestGetVersion:
         return ProcXTestGetVersion(client);

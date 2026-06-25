@@ -38,7 +38,7 @@ import    include.mi;
 import    include.regionstr;
 import    globals;
 import    include.gcstruct;
-import    shadow;
+import include.shadow;
 
 private DevPrivateKeyRec shadowScrPrivateKeyRec;
 enum shadowScrPrivateKey = (&shadowScrPrivateKeyRec);

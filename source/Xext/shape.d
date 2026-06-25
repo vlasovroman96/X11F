@@ -219,7 +219,7 @@ RegionPtr CreateClipShape(WindowPtr pWin)
 
 private int ProcShapeQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShapeQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShapeQueryVersionReq);
 
     xShapeQueryVersionReply reply = {
         majorVersion: SERVER_SHAPE_MAJOR_VERSION,
@@ -396,7 +396,7 @@ private int ShapeMask(ClientPtr client, xShapeMaskReq* stuff)
 
 private int ProcShapeMask(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShapeMaskReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShapeMaskReq);
     X_REQUEST_FIELD_CARD32(dest);
     X_REQUEST_FIELD_CARD16(xOff);
     X_REQUEST_FIELD_CARD16(yOff);
@@ -627,7 +627,7 @@ version (XINERAMA) {
 
 private int ProcShapeQueryExtents(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShapeQueryExtentsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShapeQueryExtentsReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -690,7 +690,7 @@ private int ProcShapeQueryExtents(ClientPtr client)
 
 private int ProcShapeSelectInput(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShapeSelectInputReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShapeSelectInputReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -812,7 +812,7 @@ void SendShapeNotify(WindowPtr pWin, int which)
 
 private int ProcShapeInputSelected(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShapeInputSelectedReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShapeInputSelectedReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -842,7 +842,7 @@ private int ProcShapeInputSelected(ClientPtr client)
 
 private int ProcShapeGetRectangles(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShapeGetRectanglesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShapeGetRectanglesReq);
     X_REQUEST_FIELD_CARD32(window);
 
     WindowPtr pWin = void;
@@ -920,7 +920,7 @@ private int ProcShapeGetRectangles(ClientPtr client)
 
 private int ProcShapeDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_ShapeQueryVersion:
         return ProcShapeQueryVersion(client);

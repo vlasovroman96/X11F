@@ -78,7 +78,7 @@ int ProcXGetDeviceFocus(ClientPtr client)
     FocusClassPtr focus = void;
     int rc = void;
 
-    X_REQUEST_HEAD_STRUCT(xGetDeviceFocusReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetDeviceFocusReq);
 
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixGetFocusAccess);
     if (rc != Success)

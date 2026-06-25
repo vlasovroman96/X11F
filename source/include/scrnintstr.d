@@ -131,15 +131,15 @@ alias PositionWindowProcPtr = Bool function(WindowPtr, int, int);
 
 // alias UnrealizeWindowProcPtr = Bool function(WindowPtr);
 
-alias RestackWindowProcPtr = void function(WindowPtr, WindowPtr);
+// alias RestackWindowProcPtr = void function(WindowPtr, WindowPtr);
 
-alias ValidateTreeProcPtr = int function(WindowPtr, WindowPtr, VTKind);
+// alias ValidateTreeProcPtr = int function(WindowPtr, WindowPtr, VTKind);
 
 // alias PostValidateTreeProcPtr = void function(WindowPtr, WindowPtr, VTKind);
 
 // alias WindowExposuresProcPtr = void function(WindowPtr, RegionPtr);
 
-alias PaintWindowProcPtr = void function(WindowPtr, RegionPtr, int);
+// alias PaintWindowProcPtr = void function(WindowPtr, RegionPtr, int);
 
 // alias CopyWindowProcPtr = void function(WindowPtr, xPoint, RegionPtr);
 
@@ -225,7 +225,7 @@ alias SetScreenPixmapProcPtr = void function(PixmapPtr);
 
 alias MarkWindowProcPtr = void function(WindowPtr);
 
-alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr, WindowPtr, WindowPtr*);
+// alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr, WindowPtr, WindowPtr*);
 
 // alias ConfigNotifyProcPtr = int function(WindowPtr, int, int, int, int, int, WindowPtr);
 
@@ -239,7 +239,7 @@ alias GetLayerWindowProcPtr = WindowPtr function(WindowPtr);
 
 // alias ReparentWindowProcPtr = void function(WindowPtr, WindowPtr);
 
-alias SetShapeProcPtr = void function(WindowPtr, int);
+// alias SetShapeProcPtr = void function(WindowPtr, int);
 
 // alias ChangeBorderWidthProcPtr = void function(WindowPtr, uint);
 
@@ -616,6 +616,6 @@ pragma(inline, true) private RegionPtr BitmapToRegion(ScreenPtr _pScreen, Pixmap
 //     int height;                 /* total height of all screens together */
 // }
 
-extern ScreenInfo screenInfo;
+// extern ScreenInfo screenInfo;
 
                           /* SCREENINTSTRUCT_H */

@@ -67,7 +67,7 @@ import include.xkbsrv;
 
 int ProcXIQueryPointer(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIQueryPointerReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIQueryPointerReq);
     X_REQUEST_FIELD_CARD16(deviceid);
     X_REQUEST_FIELD_CARD32(win);
 

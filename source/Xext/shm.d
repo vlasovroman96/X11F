@@ -238,7 +238,7 @@ void ShmRegisterFbFuncs(ScreenPtr pScreen)
 
 private int ProcShmQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmQueryVersionReq);
 
     xShmQueryVersionReply reply = {
         sharedPixmaps: sharedPixmaps,
@@ -324,7 +324,7 @@ static if (HasVersion!"HAVE_GETZONEID" && HasVersion!"SHMPERM_ZONEID") {
 
 private int ProcShmAttach(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmAttachReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmAttachReq);
     X_REQUEST_FIELD_CARD32(shmseg);
     X_REQUEST_FIELD_CARD32(shmid);
 
@@ -414,7 +414,7 @@ static if (SHM_FD_PASSING) {
 
 private int ProcShmDetach(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmDetachReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmDetachReq);
     X_REQUEST_FIELD_CARD32(shmseg);
 
     if (!client.local)
@@ -677,7 +677,7 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
 
 private int ProcShmPutImage(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmPutImageReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmPutImageReq);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(gc);
     X_REQUEST_FIELD_CARD16(totalWidth);
@@ -740,7 +740,7 @@ version (XINERAMA) {
 
 private int ProcShmGetImage(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmGetImageReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmGetImageReq);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD16(x);
     X_REQUEST_FIELD_CARD16(y);
@@ -888,7 +888,7 @@ version (XINERAMA) {
 
 private int ProcShmCreatePixmap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmCreatePixmapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmCreatePixmapReq);
     X_REQUEST_FIELD_CARD32(pid);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD16(width);
@@ -1120,7 +1120,7 @@ private void ShmBusfaultNotify(void* context)
 
 private int ProcShmAttachFd(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmAttachFdReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmAttachFdReq);
     X_REQUEST_FIELD_CARD32(shmseg);
 
     if (!client.local)
@@ -1238,7 +1238,7 @@ version (HAVE_MKOSTEMP) {} else {
 
 private int ProcShmCreateSegment(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xShmCreateSegmentReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xShmCreateSegmentReq);
     X_REQUEST_FIELD_CARD32(shmseg);
     X_REQUEST_FIELD_CARD32(size);
 
@@ -1313,7 +1313,7 @@ private int ProcShmCreateSegment(ClientPtr client)
 
 private int ProcShmDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_ShmQueryVersion:

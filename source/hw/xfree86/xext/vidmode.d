@@ -197,7 +197,7 @@ private int ClientMajorVersion(ClientPtr client)
 
 private int ProcVidModeQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeQueryVersionReq);
 
     DEBUG_P("XF86VidModeQueryVersion");
 
@@ -214,7 +214,7 @@ private int ProcVidModeQueryVersion(ClientPtr client)
 
 private int ProcVidModeGetModeLine(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetModeLineReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetModeLineReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     VidModePtr pVidMode = void;
@@ -334,7 +334,7 @@ private void fillModeInfoV2(x_rpcbuf_t* rpcbuf, int dotClock, DisplayModePtr mod
 
 private int ProcVidModeGetAllModeLines(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetAllModeLinesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetAllModeLinesReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     VidModePtr pVidMode = void;
@@ -1071,7 +1071,7 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
 
 private int ProcVidModeSwitchMode(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeSwitchModeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSwitchModeReq);
     X_REQUEST_FIELD_CARD16(screen);
     X_REQUEST_FIELD_CARD16(zoom);
 
@@ -1213,7 +1213,7 @@ private int VidModeSwitchToMode(ClientPtr client, xXF86VidModeSwitchToModeReq* s
 
 private int ProcVidModeLockModeSwitch(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeLockModeSwitchReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeLockModeSwitchReq);
     X_REQUEST_FIELD_CARD16(screen);
     X_REQUEST_FIELD_CARD16(lock);
 
@@ -1248,7 +1248,7 @@ pragma(inline, true) private CARD32 _combine_f(vidMonitorValue a, vidMonitorValu
 
 private int ProcVidModeGetMonitor(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetMonitorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetMonitorReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     DEBUG_P("XF86VidModeGetMonitor");
@@ -1298,7 +1298,7 @@ private int ProcVidModeGetMonitor(ClientPtr client)
 
 private int ProcVidModeGetViewPort(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetViewPortReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetViewPortReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     VidModePtr pVidMode = void;
@@ -1329,7 +1329,7 @@ private int ProcVidModeGetViewPort(ClientPtr client)
 
 private int ProcVidModeSetViewPort(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeSetViewPortReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSetViewPortReq);
     X_REQUEST_FIELD_CARD16(screen);
     X_REQUEST_FIELD_CARD32(x);
     X_REQUEST_FIELD_CARD32(y);
@@ -1358,7 +1358,7 @@ private int ProcVidModeSetViewPort(ClientPtr client)
 
 private int ProcVidModeGetDotClocks(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetDotClocksReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetDotClocksReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     VidModePtr pVidMode = void;
@@ -1409,7 +1409,7 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
 
 private int ProcVidModeSetGamma(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeSetGammaReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSetGammaReq);
     X_REQUEST_FIELD_CARD16(screen);
     X_REQUEST_FIELD_CARD32(red);
     X_REQUEST_FIELD_CARD32(green);
@@ -1441,7 +1441,7 @@ private int ProcVidModeSetGamma(ClientPtr client)
 
 private int ProcVidModeGetGamma(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetGammaReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetGammaReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     VidModePtr pVidMode = void;
@@ -1517,7 +1517,7 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
 
 private int ProcVidModeGetGammaRamp(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetGammaRampReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetGammaRampReq);
     X_REQUEST_FIELD_CARD16(size);
     X_REQUEST_FIELD_CARD16(screen);
 
@@ -1563,7 +1563,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
 
 private int ProcVidModeGetGammaRampSize(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetGammaRampSizeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetGammaRampSizeReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     VidModePtr pVidMode = void;
@@ -1587,7 +1587,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
 
 private int ProcVidModeGetPermissions(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeGetPermissionsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetPermissionsReq);
     X_REQUEST_FIELD_CARD16(screen);
 
     if (!dixScreenExists(stuff.screen))
@@ -1606,7 +1606,7 @@ private int ProcVidModeGetPermissions(ClientPtr client)
 
 private int ProcVidModeSetClientVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86VidModeSetClientVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSetClientVersionReq);
     X_REQUEST_FIELD_CARD16(major);
     X_REQUEST_FIELD_CARD16(minor);
 
@@ -1629,7 +1629,7 @@ private int ProcVidModeSetClientVersion(ClientPtr client)
 
 private int ProcVidModeDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_XF86VidModeQueryVersion:
         return ProcVidModeQueryVersion(client);

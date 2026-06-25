@@ -37,7 +37,7 @@ alias XSyncFence = CARD32;
 
 private int proc_present_query_version(ClientPtr client)
 {
-    REQUEST(xPresentQueryVersionReq);
+    mixin(REQUEST!xPresentQueryVersionReq);
     xPresentQueryVersionReply reply = {
         majorVersion: SERVER_PRESENT_MAJOR_VERSION,
         minorVersion: SERVER_PRESENT_MINOR_VERSION
@@ -169,7 +169,7 @@ private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixm
 
 private int proc_present_pixmap(ClientPtr client)
 {
-    REQUEST(xPresentPixmapReq);
+    mixin(REQUEST!xPresentPixmapReq);
     REQUEST_AT_LEAST_SIZE(xPresentPixmapReq);
 
     version(DRI3) {
@@ -200,7 +200,7 @@ private int proc_present_pixmap(ClientPtr client)
 
 private int proc_present_notify_msc(ClientPtr client)
 {
-    REQUEST(xPresentNotifyMSCReq);
+    mixin(REQUEST!xPresentNotifyMSCReq);
     WindowPtr window = void;
     int rc = void;
 
@@ -230,7 +230,7 @@ private int proc_present_notify_msc(ClientPtr client)
 
 private int proc_present_select_input(ClientPtr client)
 {
-    REQUEST(xPresentSelectInputReq);
+    mixin(REQUEST!xPresentSelectInputReq);
     WindowPtr window = void;
     int rc = void;
 
@@ -249,7 +249,7 @@ private int proc_present_select_input(ClientPtr client)
 
 private int proc_present_query_capabilities(ClientPtr client)
 {
-    REQUEST(xPresentQueryCapabilitiesReq);
+    mixin(REQUEST!xPresentQueryCapabilitiesReq);
     WindowPtr window = void;
     RRCrtcPtr crtc = null;
     int r = void;
@@ -280,7 +280,7 @@ private int proc_present_query_capabilities(ClientPtr client)
 version (DRI3) {
 private int proc_present_pixmap_synced(ClientPtr client)
 {
-    REQUEST(xPresentPixmapSyncedReq);
+    mixin(REQUEST!xPresentPixmapSyncedReq);
     dri3_syncobj* acquire_syncobj = void;
     dri3_syncobj* release_syncobj = void;
 
@@ -308,7 +308,7 @@ private int proc_present_pixmap_synced(ClientPtr client)
 
 int proc_present_dispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
         case X_PresentQueryVersion:
@@ -332,7 +332,7 @@ version (DRI3) {
 
 private int sproc_present_query_version(ClientPtr client)
 {
-    REQUEST(xPresentQueryVersionReq);
+    mixin(REQUEST!xPresentQueryVersionReq);
     REQUEST_SIZE_MATCH(xPresentQueryVersionReq);
 
     swapl(&stuff.majorVersion);
@@ -342,7 +342,7 @@ private int sproc_present_query_version(ClientPtr client)
 
 private int sproc_present_pixmap(ClientPtr client)
 {
-    REQUEST(xPresentPixmapReq);
+    mixin(REQUEST!xPresentPixmapReq);
     REQUEST_AT_LEAST_SIZE(xPresentPixmapReq);
 
     swapl(&stuff.window);
@@ -364,7 +364,7 @@ private int sproc_present_pixmap(ClientPtr client)
 
 private int sproc_present_notify_msc(ClientPtr client)
 {
-    REQUEST(xPresentNotifyMSCReq);
+    mixin(REQUEST!xPresentNotifyMSCReq);
     REQUEST_SIZE_MATCH(xPresentNotifyMSCReq);
 
     swapl(&stuff.window);
@@ -376,7 +376,7 @@ private int sproc_present_notify_msc(ClientPtr client)
 
 private int sproc_present_select_input(ClientPtr client)
 {
-    REQUEST(xPresentSelectInputReq);
+    mixin(REQUEST!xPresentSelectInputReq);
     REQUEST_SIZE_MATCH(xPresentSelectInputReq);
 
     swapl(&stuff.eid);
@@ -387,7 +387,7 @@ private int sproc_present_select_input(ClientPtr client)
 
 private int sproc_present_query_capabilities(ClientPtr client)
 {
-    REQUEST(xPresentQueryCapabilitiesReq);
+    mixin(REQUEST!xPresentQueryCapabilitiesReq);
     REQUEST_SIZE_MATCH(xPresentQueryCapabilitiesReq);
     swapl(&stuff.target);
     return proc_present_query_capabilities(client);
@@ -397,7 +397,7 @@ private int sproc_present_query_capabilities(ClientPtr client)
 version (DRI3) {
 private int sproc_present_pixmap_synced(ClientPtr client)
 {
-    REQUEST(xPresentPixmapSyncedReq);
+    mixin(REQUEST!xPresentPixmapSyncedReq);
     REQUEST_AT_LEAST_SIZE(xPresentPixmapSyncedReq);
 
     swapl(&stuff.window);
@@ -428,7 +428,7 @@ private int sproc_present_pixmap_synced(ClientPtr client)
 
 int sproc_present_dispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
         case X_PresentQueryVersion:

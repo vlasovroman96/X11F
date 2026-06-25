@@ -143,7 +143,7 @@ private int ProcRenderQueryVersion(ClientPtr client)
 {
     RenderClientPtr pRenderClient = mixin(GetRenderClient!(`client`));
 
-    REQUEST(xRenderQueryVersionReq);
+    mixin(REQUEST!xRenderQueryVersionReq);
     REQUEST_SIZE_MATCH(xRenderQueryVersionReq);
 
     if (client.swapped) {
@@ -202,7 +202,7 @@ private int ProcRenderQueryPictFormats(ClientPtr client)
     int numScreens = void;
     int numSubpixel = void;
 
-/*    REQUEST(xRenderQueryPictFormatsReq); */
+/*    mixin(REQUEST!xRenderQueryPictFormatsReq); */
 
     REQUEST_SIZE_MATCH(xRenderQueryPictFormatsReq);
 
@@ -372,7 +372,7 @@ private int ProcRenderQueryPictIndexValues(ClientPtr client)
     PictFormatPtr pFormat = void;
     int rc = void;
 
-    REQUEST(xRenderQueryPictIndexValuesReq);
+    mixin(REQUEST!xRenderQueryPictIndexValuesReq);
     REQUEST_AT_LEAST_SIZE(xRenderQueryPictIndexValuesReq);
 
     if (client.swapped)
@@ -483,7 +483,7 @@ private int SingleRenderFreePicture(ClientPtr client)
 {
     PicturePtr pPicture = void;
 
-    REQUEST(xRenderFreePictureReq);
+    mixin(REQUEST!xRenderFreePictureReq);
 
     VERIFY_PICTURE(pPicture, stuff.picture, client, DixDestroyAccess);
     FreeResource(stuff.picture, X11_RESTYPE_NONE);
@@ -685,7 +685,7 @@ private int ProcRenderCreateGlyphSet(ClientPtr client)
     PictFormatPtr format = void;
     int rc = void, f = void;
 
-    REQUEST(xRenderCreateGlyphSetReq);
+    mixin(REQUEST!xRenderCreateGlyphSetReq);
     REQUEST_SIZE_MATCH(xRenderCreateGlyphSetReq);
 
     if (client.swapped) {
@@ -738,7 +738,7 @@ private int ProcRenderReferenceGlyphSet(ClientPtr client)
     GlyphSetPtr glyphSet = void;
     int rc = void;
 
-    REQUEST(xRenderReferenceGlyphSetReq);
+    mixin(REQUEST!xRenderReferenceGlyphSetReq);
     REQUEST_SIZE_MATCH(xRenderReferenceGlyphSetReq);
 
     if (client.swapped) {
@@ -768,7 +768,7 @@ private int ProcRenderFreeGlyphSet(ClientPtr client)
     GlyphSetPtr glyphSet = void;
     int rc = void;
 
-    REQUEST(xRenderFreeGlyphSetReq);
+    mixin(REQUEST!xRenderFreeGlyphSetReq);
     REQUEST_SIZE_MATCH(xRenderFreeGlyphSetReq);
 
     if (client.swapped)
@@ -796,7 +796,7 @@ enum string NeedsComponent(string f) = `(PIXMAN_FORMAT_A(` ~ f ~ `) != 0 && PIXM
 
 private int ProcRenderAddGlyphs(ClientPtr client)
 {
-    REQUEST(xRenderAddGlyphsReq);
+    mixin(REQUEST!xRenderAddGlyphsReq);
     REQUEST_AT_LEAST_SIZE(xRenderAddGlyphsReq);
 
     if (client.swapped) {
@@ -1019,7 +1019,7 @@ private int ProcRenderAddGlyphs(ClientPtr client)
 
 private int ProcRenderFreeGlyphs(ClientPtr client)
 {
-    REQUEST(xRenderFreeGlyphsReq);
+    mixin(REQUEST!xRenderFreeGlyphsReq);
     REQUEST_AT_LEAST_SIZE(xRenderFreeGlyphsReq);
 
     if (client.swapped) {
@@ -1264,7 +1264,7 @@ enum DITHER_SIZE =  ((orderedDither.sizeof / orderedDither[0][0].sizeof) + 1);
 
 private int ProcRenderCreateCursor(ClientPtr client)
 {
-    REQUEST(xRenderCreateCursorReq);
+    mixin(REQUEST!xRenderCreateCursorReq);
     REQUEST_SIZE_MATCH(xRenderCreateCursorReq);
 
     if (client.swapped) {
@@ -1475,7 +1475,7 @@ private int SingleRenderSetPictureTransform(ClientPtr client, xRenderSetPictureT
 
 private int ProcRenderQueryFilters(ClientPtr client)
 {
-    REQUEST(xRenderQueryFiltersReq);
+    mixin(REQUEST!xRenderQueryFiltersReq);
     REQUEST_SIZE_MATCH(xRenderQueryFiltersReq);
 
     if (client.swapped)
@@ -1593,7 +1593,7 @@ private int SingleRenderSetPictureFilter(ClientPtr client, xRenderSetPictureFilt
 
 private int ProcRenderCreateAnimCursor(ClientPtr client)
 {
-    REQUEST(xRenderCreateAnimCursorReq);
+    mixin(REQUEST!xRenderCreateAnimCursorReq);
     REQUEST_AT_LEAST_SIZE(xRenderCreateAnimCursorReq);
 
     if (client.swapped) {
@@ -1785,7 +1785,7 @@ private int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateCon
 
 private int ProcRenderDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
         case X_RenderQueryVersion:             return ProcRenderQueryVersion(client);
@@ -1978,7 +1978,7 @@ private int PanoramiXRenderFreePicture(ClientPtr client)
     PanoramiXRes* pict = void;
     int result = Success;
 
-    REQUEST(xRenderFreePictureReq);
+    mixin(REQUEST!xRenderFreePictureReq);
 
     client.errorValue = stuff.picture;
 
@@ -2485,7 +2485,7 @@ void PanoramiXRenderReset()
 
 private int ProcRenderCreatePicture(ClientPtr client)
 {
-    REQUEST(xRenderCreatePictureReq);
+    mixin(REQUEST!xRenderCreatePictureReq);
     REQUEST_AT_LEAST_SIZE(xRenderCreatePictureReq);
 
     if (client.swapped) {
@@ -2506,7 +2506,7 @@ version (XINERAMA) {
 
 private int ProcRenderChangePicture(ClientPtr client)
 {
-    REQUEST(xRenderChangePictureReq);
+    mixin(REQUEST!xRenderChangePictureReq);
     REQUEST_AT_LEAST_SIZE(xRenderChangePictureReq);
 
     if (client.swapped) {
@@ -2525,7 +2525,7 @@ version (XINERAMA) {
 
 private int ProcRenderSetPictureClipRectangles(ClientPtr client)
 {
-    REQUEST(xRenderSetPictureClipRectanglesReq);
+    mixin(REQUEST!xRenderSetPictureClipRectanglesReq);
     REQUEST_AT_LEAST_SIZE(xRenderSetPictureClipRectanglesReq);
 
     if (client.swapped) {
@@ -2545,7 +2545,7 @@ version (XINERAMA) {
 
 private int ProcRenderFreePicture(ClientPtr client)
 {
-    REQUEST(xRenderFreePictureReq);
+    mixin(REQUEST!xRenderFreePictureReq);
     REQUEST_SIZE_MATCH(xRenderFreePictureReq);
 
     if (client.swapped)
@@ -2561,7 +2561,7 @@ version (XINERAMA) {
 
 private int ProcRenderComposite(ClientPtr client)
 {
-    REQUEST(xRenderCompositeReq);
+    mixin(REQUEST!xRenderCompositeReq);
     REQUEST_SIZE_MATCH(xRenderCompositeReq);
 
     if (client.swapped) {
@@ -2588,7 +2588,7 @@ version (XINERAMA) {
 
 private int ProcRenderTrapezoids(ClientPtr client)
 {
-    REQUEST(xRenderTrapezoidsReq);
+    mixin(REQUEST!xRenderTrapezoidsReq);
     REQUEST_AT_LEAST_SIZE(xRenderTrapezoidsReq);
 
     if (client.swapped) {
@@ -2610,7 +2610,7 @@ version (XINERAMA) {
 
 private int ProcRenderTriangles(ClientPtr client)
 {
-    REQUEST(xRenderTrianglesReq);
+    mixin(REQUEST!xRenderTrianglesReq);
     REQUEST_AT_LEAST_SIZE(xRenderTrianglesReq);
 
     if (client.swapped) {
@@ -2632,7 +2632,7 @@ version (XINERAMA) {
 
 private int ProcRenderTriStrip(ClientPtr client)
 {
-    REQUEST(xRenderTriStripReq);
+    mixin(REQUEST!xRenderTriStripReq);
     REQUEST_AT_LEAST_SIZE(xRenderTriStripReq);
 
     if (client.swapped) {
@@ -2654,7 +2654,7 @@ version (XINERAMA) {
 
 private int ProcRenderTriFan(ClientPtr client)
 {
-    REQUEST(xRenderTriFanReq);
+    mixin(REQUEST!xRenderTriFanReq);
     REQUEST_AT_LEAST_SIZE(xRenderTriFanReq);
 
     if (client.swapped) {
@@ -2676,7 +2676,7 @@ version (XINERAMA) {
 
 private int ProcRenderCompositeGlyphs(ClientPtr client)
 {
-    REQUEST(xRenderCompositeGlyphsReq);
+    mixin(REQUEST!xRenderCompositeGlyphsReq);
     REQUEST_AT_LEAST_SIZE(xRenderCompositeGlyphsReq);
 
     if (client.swapped) {
@@ -2759,7 +2759,7 @@ version (XINERAMA) {
 
 private int ProcRenderFillRectangles(ClientPtr client)
 {
-    REQUEST(xRenderFillRectanglesReq);
+    mixin(REQUEST!xRenderFillRectanglesReq);
     REQUEST_AT_LEAST_SIZE(xRenderFillRectanglesReq);
 
     if (client.swapped) {
@@ -2781,7 +2781,7 @@ version (XINERAMA) {
 
 private int ProcRenderSetPictureTransform(ClientPtr client)
 {
-    REQUEST(xRenderSetPictureTransformReq);
+    mixin(REQUEST!xRenderSetPictureTransformReq);
     REQUEST_SIZE_MATCH(xRenderSetPictureTransformReq);
 
     if (client.swapped) {
@@ -2807,7 +2807,7 @@ version (XINERAMA) {
 
 private int ProcRenderSetPictureFilter(ClientPtr client)
 {
-    REQUEST(xRenderSetPictureFilterReq);
+    mixin(REQUEST!xRenderSetPictureFilterReq);
     REQUEST_AT_LEAST_SIZE(xRenderSetPictureFilterReq);
 
     if (client.swapped) {
@@ -2825,7 +2825,7 @@ version (XINERAMA) {
 
 private int ProcRenderAddTraps(ClientPtr client)
 {
-    REQUEST(xRenderAddTrapsReq);
+    mixin(REQUEST!xRenderAddTrapsReq);
     REQUEST_AT_LEAST_SIZE(xRenderAddTrapsReq);
 
     if (client.swapped) {
@@ -2845,7 +2845,7 @@ version (XINERAMA) {
 
 private int ProcRenderCreateSolidFill(ClientPtr client)
 {
-    REQUEST(xRenderCreateSolidFillReq);
+    mixin(REQUEST!xRenderCreateSolidFillReq);
     REQUEST_AT_LEAST_SIZE(xRenderCreateSolidFillReq);
 
     if (client.swapped) {
@@ -2866,7 +2866,7 @@ version (XINERAMA) {
 
 private int ProcRenderCreateLinearGradient(ClientPtr client)
 {
-    REQUEST(xRenderCreateLinearGradientReq);
+    mixin(REQUEST!xRenderCreateLinearGradientReq);
     REQUEST_AT_LEAST_SIZE(xRenderCreateLinearGradientReq);
 
     if (client.swapped) {
@@ -2896,7 +2896,7 @@ version (XINERAMA) {
 
 private int ProcRenderCreateRadialGradient(ClientPtr client)
 {
-    REQUEST(xRenderCreateRadialGradientReq);
+    mixin(REQUEST!xRenderCreateRadialGradientReq);
     REQUEST_AT_LEAST_SIZE(xRenderCreateRadialGradientReq);
 
     if (client.swapped) {
@@ -2928,7 +2928,7 @@ version (XINERAMA) {
 
 private int ProcRenderCreateConicalGradient(ClientPtr client)
 {
-    REQUEST(xRenderCreateConicalGradientReq);
+    mixin(REQUEST!xRenderCreateConicalGradientReq);
     REQUEST_AT_LEAST_SIZE(xRenderCreateConicalGradientReq);
 
     if (client.swapped) {

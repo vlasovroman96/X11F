@@ -441,7 +441,7 @@ void RROutputInitErrorValue()
 
 int ProcRRGetOutputInfo(ClientPtr client)
 {
-    REQUEST(xRRGetOutputInfoReq);
+    mixin(REQUEST!xRRGetOutputInfoReq);
     REQUEST_SIZE_MATCH(xRRGetOutputInfoReq);
 
     if (client.swapped) {
@@ -539,7 +539,7 @@ private void RRSetPrimaryOutput(ScreenPtr pScreen, rrScrPrivPtr pScrPriv, RROutp
 
 int ProcRRSetOutputPrimary(ClientPtr client)
 {
-    REQUEST(xRRSetOutputPrimaryReq);
+    mixin(REQUEST!xRRSetOutputPrimaryReq);
     REQUEST_SIZE_MATCH(xRRSetOutputPrimaryReq);
 
     if (client.swapped) {
@@ -591,7 +591,7 @@ int ProcRRSetOutputPrimary(ClientPtr client)
 
 int ProcRRGetOutputPrimary(ClientPtr client)
 {
-    REQUEST(xRRGetOutputPrimaryReq);
+    mixin(REQUEST!xRRGetOutputPrimaryReq);
     REQUEST_SIZE_MATCH(xRRGetOutputPrimaryReq);
 
     if (client.swapped)

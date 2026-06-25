@@ -23,10 +23,10 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-enum FUNC =	shadowUpdateRotate32_90;
-enum Data =	CARD32;
+alias FUNC =	shadowUpdateRotate32_90;
+alias Data=	CARD32;
 enum ROTATE =	90;
 
 import build.dix_config;
 
-import shrotpack;
+import miext.shadow.shrotpack;

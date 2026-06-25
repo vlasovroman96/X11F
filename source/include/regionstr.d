@@ -206,17 +206,17 @@ extern void RegionDestroy(RegionPtr);
 
 extern void RegionDuplicate(RegionPtr);
 
-pragma(inline, true) private Bool RegionCopy(RegionPtr dst, RegionPtr src)
+pragma(inline, true) Bool RegionCopy(RegionPtr dst, RegionPtr src)
 {
     return pixman_region_copy(dst, src);
 }
 
-pragma(inline, true) private Bool RegionIntersect(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2)
+pragma(inline, true) Bool RegionIntersect(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2)
 {
     return pixman_region_intersect(newReg, reg1, reg2);
 }
 
-pragma(inline, true) private Bool RegionUnion(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2)
+pragma(inline, true) Bool RegionUnion(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2)
 {
     return pixman_region_union(newReg, reg1, reg2);
 }

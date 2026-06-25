@@ -103,7 +103,7 @@ private int XvMCDestroySubpictureRes(void* data, XID id)
 
 private int ProcXvMCQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcQueryVersionReq);
 
     xvmcQueryVersionReply reply = {
         major: SERVER_XVMC_MAJOR_VERSION,
@@ -122,7 +122,7 @@ private int ProcXvMCListSurfaceTypes(ClientPtr client)
     XvMCScreenPtr pScreenPriv = void;
     XvMCAdaptorPtr adaptor = null;
 
-    X_REQUEST_HEAD_STRUCT(xvmcListSurfaceTypesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcListSurfaceTypesReq);
     X_REQUEST_FIELD_CARD32(port);
 
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -178,7 +178,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
     XvMCAdaptorPtr adaptor = null;
     XvMCSurfaceInfoPtr surface = null;
 
-    X_REQUEST_HEAD_STRUCT(xvmcCreateContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcCreateContextReq);
     X_REQUEST_FIELD_CARD32(context_id);
     X_REQUEST_FIELD_CARD16(width);
     X_REQUEST_FIELD_CARD16(height);
@@ -263,7 +263,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
 
 private int ProcXvMCDestroyContext(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcDestroyContextReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcDestroyContextReq);
     X_REQUEST_FIELD_CARD32(context_id);
 
     void* val = void;
@@ -280,7 +280,7 @@ private int ProcXvMCDestroyContext(ClientPtr client)
 
 private int ProcXvMCCreateSurface(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcCreateSurfaceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcCreateSurfaceReq);
     X_REQUEST_FIELD_CARD32(surface_id);
     X_REQUEST_FIELD_CARD32(context_id);
 
@@ -332,7 +332,7 @@ private int ProcXvMCCreateSurface(ClientPtr client)
 
 private int ProcXvMCDestroySurface(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcDestroySurfaceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcDestroySurfaceReq);
     X_REQUEST_FIELD_CARD32(surface_id);
 
     void* val = void;
@@ -349,7 +349,7 @@ private int ProcXvMCDestroySurface(ClientPtr client)
 
 private int ProcXvMCCreateSubpicture(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcCreateSubpictureReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcCreateSubpictureReq);
     X_REQUEST_FIELD_CARD32(subpicture_id);
     X_REQUEST_FIELD_CARD32(context_id);
     X_REQUEST_FIELD_CARD32(xvimage_id);
@@ -459,7 +459,7 @@ private int ProcXvMCCreateSubpicture(ClientPtr client)
 
 private int ProcXvMCDestroySubpicture(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcDestroySubpictureReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcDestroySubpictureReq);
     X_REQUEST_FIELD_CARD32(subpicture_id);
 
     void* val = void;
@@ -476,7 +476,7 @@ private int ProcXvMCDestroySubpicture(ClientPtr client)
 
 private int ProcXvMCListSubpictureTypes(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcListSubpictureTypesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcListSubpictureTypesReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(surface_type_id);
 
@@ -583,7 +583,7 @@ private int ProcXvMCListSubpictureTypes(ClientPtr client)
 
 private int ProcXvMCGetDRInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvmcGetDRInfoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvmcGetDRInfoReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(shmKey);
     X_REQUEST_FIELD_CARD32(magic);
@@ -632,7 +632,7 @@ private int ProcXvMCDispatch(ClientPtr client)
     if (!(client.local))
         return BadImplementation;
 
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data)
     {
         case xvmc_QueryVersion:

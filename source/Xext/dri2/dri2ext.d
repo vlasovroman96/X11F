@@ -92,7 +92,7 @@ private int ProcDRI2QueryVersion(ClientPtr client)
 
 private int ProcDRI2Connect(ClientPtr client)
 {
-    REQUEST(xDRI2ConnectReq);
+    mixin(REQUEST!xDRI2ConnectReq);
     DrawablePtr pDraw = void;
     int fd = void, status = void;
     const(char)* driverName = void;
@@ -120,7 +120,7 @@ private int ProcDRI2Connect(ClientPtr client)
 
 private int ProcDRI2Authenticate(ClientPtr client)
 {
-    REQUEST(xDRI2AuthenticateReq);
+    mixin(REQUEST!xDRI2AuthenticateReq);
     DrawablePtr pDraw = void;
     int status = void;
 
@@ -149,7 +149,7 @@ private void DRI2InvalidateBuffersEvent(DrawablePtr pDraw, void* priv, XID id)
 
 private int ProcDRI2CreateDrawable(ClientPtr client)
 {
-    REQUEST(xDRI2CreateDrawableReq);
+    mixin(REQUEST!xDRI2CreateDrawableReq);
     DrawablePtr pDrawable = void;
     int status = void;
 
@@ -169,7 +169,7 @@ private int ProcDRI2CreateDrawable(ClientPtr client)
 
 private int ProcDRI2DestroyDrawable(ClientPtr client)
 {
-    REQUEST(xDRI2DestroyDrawableReq);
+    mixin(REQUEST!xDRI2DestroyDrawableReq);
     DrawablePtr pDrawable = void;
     int status = void;
 
@@ -232,7 +232,7 @@ private int send_buffers_reply(ClientPtr client, DrawablePtr pDrawable, DRI2Buff
 
 private int ProcDRI2GetBuffers(ClientPtr client)
 {
-    REQUEST(xDRI2GetBuffersReq);
+    mixin(REQUEST!xDRI2GetBuffersReq);
     DrawablePtr pDrawable = void;
     DRI2BufferPtr* buffers = void;
     int status = void, width = void, height = void, count = void;
@@ -261,7 +261,7 @@ private int ProcDRI2GetBuffers(ClientPtr client)
 
 private int ProcDRI2GetBuffersWithFormat(ClientPtr client)
 {
-    REQUEST(xDRI2GetBuffersReq);
+    mixin(REQUEST!xDRI2GetBuffersReq);
     DrawablePtr pDrawable = void;
     DRI2BufferPtr* buffers = void;
     int status = void, width = void, height = void, count = void;
@@ -290,7 +290,7 @@ private int ProcDRI2GetBuffersWithFormat(ClientPtr client)
 
 private int ProcDRI2CopyRegion(ClientPtr client)
 {
-    REQUEST(xDRI2CopyRegionReq);
+    mixin(REQUEST!xDRI2CopyRegionReq);
     DrawablePtr pDrawable = void;
     int status = void;
     RegionPtr pRegion = void;
@@ -342,7 +342,7 @@ private void DRI2SwapEvent(ClientPtr client, void* data, int type, CARD64 ust, C
 
 private int ProcDRI2SwapBuffers(ClientPtr client)
 {
-    REQUEST(xDRI2SwapBuffersReq);
+    mixin(REQUEST!xDRI2SwapBuffersReq);
     DrawablePtr pDrawable = void;
     CARD64 target_msc = void, divisor = void, remainder = void, swap_target = void;
     int status = void;
@@ -389,7 +389,7 @@ private void load_msc_reply(xDRI2MSCReply* rep, CARD64 ust, CARD64 msc, CARD64 s
 
 private int ProcDRI2GetMSC(ClientPtr client)
 {
-    REQUEST(xDRI2GetMSCReq);
+    mixin(REQUEST!xDRI2GetMSCReq);
     DrawablePtr pDrawable = void;
     CARD64 ust = void, msc = void, sbc = void;
     int status = void;
@@ -413,7 +413,7 @@ private int ProcDRI2GetMSC(ClientPtr client)
 
 private int ProcDRI2WaitMSC(ClientPtr client)
 {
-    REQUEST(xDRI2WaitMSCReq);
+    mixin(REQUEST!xDRI2WaitMSCReq);
     DrawablePtr pDrawable = void;
     CARD64 target = void, divisor = void, remainder = void;
     int status = void;
@@ -448,7 +448,7 @@ int ProcDRI2WaitMSCReply(ClientPtr client, CARD64 ust, CARD64 msc, CARD64 sbc)
 
 private int ProcDRI2SwapInterval(ClientPtr client)
 {
-    REQUEST(xDRI2SwapIntervalReq);
+    mixin(REQUEST!xDRI2SwapIntervalReq);
     DrawablePtr pDrawable = void;
     int status = void;
 
@@ -467,7 +467,7 @@ private int ProcDRI2SwapInterval(ClientPtr client)
 
 private int ProcDRI2WaitSBC(ClientPtr client)
 {
-    REQUEST(xDRI2WaitSBCReq);
+    mixin(REQUEST!xDRI2WaitSBCReq);
     DrawablePtr pDrawable = void;
     CARD64 target = void;
     int status = void;
@@ -486,7 +486,7 @@ private int ProcDRI2WaitSBC(ClientPtr client)
 
 private int ProcDRI2GetParam(ClientPtr client)
 {
-    REQUEST(xDRI2GetParamReq);
+    mixin(REQUEST!xDRI2GetParamReq);
     DrawablePtr pDrawable = void;
     CARD64 value = void;
     int status = void;
@@ -512,7 +512,7 @@ private int ProcDRI2GetParam(ClientPtr client)
 
 private int ProcDRI2Dispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_DRI2QueryVersion:

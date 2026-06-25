@@ -149,7 +149,7 @@ void DeleteClientFromAnySelections(ClientPtr client)
 
 int ProcSetSelectionOwner(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xSetSelectionOwnerReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSetSelectionOwnerReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(selection);
     X_REQUEST_FIELD_CARD32(time);
@@ -238,7 +238,7 @@ int ProcSetSelectionOwner(ClientPtr client)
 
 int ProcGetSelectionOwner(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xResourceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xResourceReq);
     X_REQUEST_FIELD_CARD32(id);
 
     Selection* pSel = void;
@@ -289,7 +289,7 @@ int ProcConvertSelection(ClientPtr client)
     Selection* pSel = void;
     int rc = void;
 
-    REQUEST(xConvertSelectionReq);
+    mixin(REQUEST!xConvertSelectionReq);
     REQUEST_SIZE_MATCH(xConvertSelectionReq);
 
     /* allow extensions to intercept */

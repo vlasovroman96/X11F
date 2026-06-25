@@ -79,7 +79,7 @@ import getprop;
 
 int ProcXGetSelectedExtensionEvents(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xGetSelectedExtensionEventsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetSelectedExtensionEventsReq);
     X_REQUEST_FIELD_CARD32(window);
 
     int i = void, rc = 0;

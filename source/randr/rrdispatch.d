@@ -42,7 +42,7 @@ Bool RRClientKnowsRates(ClientPtr pClient)
 
 int ProcRRQueryVersion(ClientPtr client)
 {
-    REQUEST(xRRQueryVersionReq);
+    mixin(REQUEST!xRRQueryVersionReq);
     REQUEST_SIZE_MATCH(xRRQueryVersionReq);
 
     if (client.swapped) {
@@ -77,7 +77,7 @@ int ProcRRQueryVersion(ClientPtr client)
 
 int ProcRRSelectInput(ClientPtr client)
 {
-    REQUEST(xRRSelectInputReq);
+    mixin(REQUEST!xRRSelectInputReq);
     REQUEST_SIZE_MATCH(xRRSelectInputReq);
 
     if (client.swapped) {
@@ -221,7 +221,7 @@ int ProcRRSelectInput(ClientPtr client)
 
 int ProcRRDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     UpdateCurrentTimeIf();
 
     switch (stuff.data) {

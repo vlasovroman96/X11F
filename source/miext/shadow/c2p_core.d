@@ -1,4 +1,4 @@
-module c2p_core.h;
+module miext.shadow.c2p_core;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -32,6 +32,7 @@ extern(C): __gshared:
 
  
 public import os.bug_priv;
+import externs.X11.Xmd;
 
     /*
      *  Basic transpose step

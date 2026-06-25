@@ -26,8 +26,8 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 
-import shadow;
-import fb;
+import include.shadow;
+import include.fb;
 
 enum string Get8(string a) = `(cast(CARD32) READ(` ~ a ~ `))`;
 

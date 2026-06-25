@@ -63,8 +63,8 @@ enum EARLIER = -1;
 enum SAMETIME = 0;
 enum LATER = 1;
 
-enum string REQUEST(string type) = `
-    type* stuff = cast(type*)client.requestBuffer;`;
+enum string REQUEST(alias type) = 
+    type.stringof ~`* stuff = cast(`~type.stringof~`*)client.requestBuffer;`;
 
 size_t ARRAY_SIZE(alias a)()
 {

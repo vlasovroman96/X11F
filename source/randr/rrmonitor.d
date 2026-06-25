@@ -566,7 +566,7 @@ private CARD32 RRMonitorTimestamp(ScreenPtr screen)
 
 int ProcRRGetMonitors(ClientPtr client)
 {
-    REQUEST(xRRGetMonitorsReq);
+    mixin(REQUEST!xRRGetMonitorsReq);
     REQUEST_SIZE_MATCH(xRRGetMonitorsReq);
 
     if (client.swapped)
@@ -642,7 +642,7 @@ int ProcRRGetMonitors(ClientPtr client)
 
 int ProcRRSetMonitor(ClientPtr client)
 {
-    REQUEST(xRRSetMonitorReq);
+    mixin(REQUEST!xRRSetMonitorReq);
     REQUEST_AT_LEAST_SIZE(xRRSetMonitorReq);
 
     if (client.swapped) {
@@ -702,7 +702,7 @@ int ProcRRSetMonitor(ClientPtr client)
 
 int ProcRRDeleteMonitor(ClientPtr client)
 {
-    REQUEST(xRRDeleteMonitorReq);
+    mixin(REQUEST!xRRDeleteMonitorReq);
     REQUEST_SIZE_MATCH(xRRDeleteMonitorReq);
 
     if (client.swapped) {

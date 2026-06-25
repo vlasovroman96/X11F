@@ -1148,7 +1148,7 @@ private int ProcXDGAQueryVersion(ClientPtr client)
 
 private int ProcXDGAOpenFramebuffer(ClientPtr client)
 {
-    REQUEST(xXDGAOpenFramebufferReq);
+    mixin(REQUEST!xXDGAOpenFramebufferReq);
     char* deviceName = void;
     int nameSize = void;
 
@@ -1181,7 +1181,7 @@ private int ProcXDGAOpenFramebuffer(ClientPtr client)
 
 private int ProcXDGACloseFramebuffer(ClientPtr client)
 {
-    REQUEST(xXDGACloseFramebufferReq);
+    mixin(REQUEST!xXDGACloseFramebufferReq);
 
     REQUEST_SIZE_MATCH(xXDGACloseFramebufferReq);
 
@@ -1201,7 +1201,7 @@ private int ProcXDGAQueryModes(ClientPtr client)
 {
     int num = void;
 
-    REQUEST(xXDGAQueryModesReq);
+    mixin(REQUEST!xXDGAQueryModesReq);
     xXDGAModeInfo info = void;
     XDGAModePtr mode = void;
 
@@ -1295,7 +1295,7 @@ private void DGAClientStateChange(CallbackListPtr* pcbl, void* nulldata, void* c
 
 private int ProcXDGASetMode(ClientPtr client)
 {
-    REQUEST(xXDGASetModeReq);
+    mixin(REQUEST!xXDGASetModeReq);
     XDGAModeRec mode = void;
     xXDGAModeInfo info = void;
     PixmapPtr pPix = void;
@@ -1381,7 +1381,7 @@ private int ProcXDGASetMode(ClientPtr client)
 
 private int ProcXDGASetViewport(ClientPtr client)
 {
-    REQUEST(xXDGASetViewportReq);
+    mixin(REQUEST!xXDGASetViewportReq);
 
     REQUEST_SIZE_MATCH(xXDGASetViewportReq);
 
@@ -1402,7 +1402,7 @@ private int ProcXDGAInstallColormap(ClientPtr client)
     ColormapPtr cmap = void;
     int rc = void;
 
-    REQUEST(xXDGAInstallColormapReq);
+    mixin(REQUEST!xXDGAInstallColormapReq);
 
     REQUEST_SIZE_MATCH(xXDGAInstallColormapReq);
 
@@ -1423,7 +1423,7 @@ private int ProcXDGAInstallColormap(ClientPtr client)
 
 private int ProcXDGASelectInput(ClientPtr client)
 {
-    REQUEST(xXDGASelectInputReq);
+    mixin(REQUEST!xXDGASelectInputReq);
 
     REQUEST_SIZE_MATCH(xXDGASelectInputReq);
 
@@ -1442,7 +1442,7 @@ private int ProcXDGASelectInput(ClientPtr client)
 
 private int ProcXDGAFillRectangle(ClientPtr client)
 {
-    REQUEST(xXDGAFillRectangleReq);
+    mixin(REQUEST!xXDGAFillRectangleReq);
 
     REQUEST_SIZE_MATCH(xXDGAFillRectangleReq);
 
@@ -1462,7 +1462,7 @@ private int ProcXDGAFillRectangle(ClientPtr client)
 
 private int ProcXDGACopyArea(ClientPtr client)
 {
-    REQUEST(xXDGACopyAreaReq);
+    mixin(REQUEST!xXDGACopyAreaReq);
 
     REQUEST_SIZE_MATCH(xXDGACopyAreaReq);
 
@@ -1483,7 +1483,7 @@ private int ProcXDGACopyArea(ClientPtr client)
 
 private int ProcXDGACopyTransparentArea(ClientPtr client)
 {
-    REQUEST(xXDGACopyTransparentAreaReq);
+    mixin(REQUEST!xXDGACopyTransparentAreaReq);
 
     REQUEST_SIZE_MATCH(xXDGACopyTransparentAreaReq);
 
@@ -1504,7 +1504,7 @@ private int ProcXDGACopyTransparentArea(ClientPtr client)
 
 private int ProcXDGAGetViewportStatus(ClientPtr client)
 {
-    REQUEST(xXDGAGetViewportStatusReq);
+    mixin(REQUEST!xXDGAGetViewportStatusReq);
 
     REQUEST_SIZE_MATCH(xXDGAGetViewportStatusReq);
 
@@ -1524,7 +1524,7 @@ private int ProcXDGAGetViewportStatus(ClientPtr client)
 
 private int ProcXDGASync(ClientPtr client)
 {
-    REQUEST(xXDGASyncReq);
+    mixin(REQUEST!xXDGASyncReq);
 
     REQUEST_SIZE_MATCH(xXDGASyncReq);
 
@@ -1543,7 +1543,7 @@ private int ProcXDGASync(ClientPtr client)
 
 private int ProcXDGASetClientVersion(ClientPtr client)
 {
-    REQUEST(xXDGASetClientVersionReq);
+    mixin(REQUEST!xXDGASetClientVersionReq);
 
     DGAPrivPtr pPriv = void;
 
@@ -1563,7 +1563,7 @@ private int ProcXDGASetClientVersion(ClientPtr client)
 
 private int ProcXDGAChangePixmapMode(ClientPtr client)
 {
-    REQUEST(xXDGAChangePixmapModeReq);
+    mixin(REQUEST!xXDGAChangePixmapModeReq);
     int x = void, y = void;
 
     REQUEST_SIZE_MATCH(xXDGAChangePixmapModeReq);
@@ -1591,7 +1591,7 @@ private int ProcXDGAChangePixmapMode(ClientPtr client)
 
 private int ProcXDGACreateColormap(ClientPtr client)
 {
-    REQUEST(xXDGACreateColormapReq);
+    mixin(REQUEST!xXDGACreateColormapReq);
     int result = void;
 
     REQUEST_SIZE_MATCH(xXDGACreateColormapReq);
@@ -1652,7 +1652,7 @@ private char*[28] dgaMinor = [
 
 private int ProcXDGADispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     if (!client.local)
         return DGAErrorBase + XF86DGAClientNotLocal;

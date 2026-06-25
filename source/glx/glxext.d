@@ -339,7 +339,7 @@ private GlxServerVendor* vendorForScreen(ClientPtr client, int screen)
 /* this ought to be generated */
 private int xorgGlxThunkRequest(ClientPtr client)
 {
-    REQUEST(xGLXVendorPrivateReq);
+    mixin(REQUEST!xGLXVendorPrivateReq);
     CARD32 vendorCode = maybe_swap32(client, stuff.vendorCode);
     GlxServerVendor* vendor = null;
     XID resource = 0;
@@ -552,7 +552,7 @@ void xorgGlxCreateVendor()
 __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* error)
 {
     ClientPtr client = cl.client;
-    REQUEST(xGLXSingleReq);
+    mixin(REQUEST!xGLXSingleReq);
 
     __GLXcontext* cx = void;
 
@@ -667,7 +667,7 @@ void* __glGetProcAddress(const(char)* proc)
 */
 private int __glXDispatch(ClientPtr client)
 {
-    REQUEST(xGLXSingleReq);
+    mixin(REQUEST!xGLXSingleReq);
     CARD8 opcode = void;
     __GLXdispatchSingleProcPtr proc = void;
     __GLXclientState* cl = void;

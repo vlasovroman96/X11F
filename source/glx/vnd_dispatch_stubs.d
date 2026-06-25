@@ -30,7 +30,7 @@ pragma(inline, true) private GlxServerVendor* vendorForScreen(ClientPtr pClient,
 
 private int dispatch_Render(ClientPtr client)
 {
-    REQUEST(xGLXRenderReq);
+    mixin(REQUEST!xGLXRenderReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
     REQUEST_AT_LEAST_SIZE(*stuff);
@@ -47,7 +47,7 @@ private int dispatch_Render(ClientPtr client)
 }
 private int dispatch_RenderLarge(ClientPtr client)
 {
-    REQUEST(xGLXRenderLargeReq);
+    mixin(REQUEST!xGLXRenderLargeReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
     REQUEST_AT_LEAST_SIZE(*stuff);
@@ -64,7 +64,7 @@ private int dispatch_RenderLarge(ClientPtr client)
 }
 private int dispatch_CreateContext(ClientPtr client)
 {
-    REQUEST(xGLXCreateContextReq);
+    mixin(REQUEST!xGLXCreateContextReq);
     CARD32 screen = void, context = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -89,7 +89,7 @@ private int dispatch_CreateContext(ClientPtr client)
 }
 private int dispatch_DestroyContext(ClientPtr client)
 {
-    REQUEST(xGLXDestroyContextReq);
+    mixin(REQUEST!xGLXDestroyContextReq);
     CARD32 context = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -109,7 +109,7 @@ private int dispatch_DestroyContext(ClientPtr client)
 }
 private int dispatch_WaitGL(ClientPtr client)
 {
-    REQUEST(xGLXWaitGLReq);
+    mixin(REQUEST!xGLXWaitGLReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -126,7 +126,7 @@ private int dispatch_WaitGL(ClientPtr client)
 }
 private int dispatch_WaitX(ClientPtr client)
 {
-    REQUEST(xGLXWaitXReq);
+    mixin(REQUEST!xGLXWaitXReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -143,7 +143,7 @@ private int dispatch_WaitX(ClientPtr client)
 }
 private int dispatch_UseXFont(ClientPtr client)
 {
-    REQUEST(xGLXUseXFontReq);
+    mixin(REQUEST!xGLXUseXFontReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -160,7 +160,7 @@ private int dispatch_UseXFont(ClientPtr client)
 }
 private int dispatch_CreateGLXPixmap(ClientPtr client)
 {
-    REQUEST(xGLXCreateGLXPixmapReq);
+    mixin(REQUEST!xGLXCreateGLXPixmapReq);
     CARD32 screen = void, glxpixmap = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -185,7 +185,7 @@ private int dispatch_CreateGLXPixmap(ClientPtr client)
 }
 private int dispatch_GetVisualConfigs(ClientPtr client)
 {
-    REQUEST(xGLXGetVisualConfigsReq);
+    mixin(REQUEST!xGLXGetVisualConfigsReq);
     CARD32 screen = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -202,7 +202,7 @@ private int dispatch_GetVisualConfigs(ClientPtr client)
 }
 private int dispatch_DestroyGLXPixmap(ClientPtr client)
 {
-    REQUEST(xGLXDestroyGLXPixmapReq);
+    mixin(REQUEST!xGLXDestroyGLXPixmapReq);
     CARD32 glxpixmap = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -219,7 +219,7 @@ private int dispatch_DestroyGLXPixmap(ClientPtr client)
 }
 private int dispatch_QueryExtensionsString(ClientPtr client)
 {
-    REQUEST(xGLXQueryExtensionsStringReq);
+    mixin(REQUEST!xGLXQueryExtensionsStringReq);
     CARD32 screen = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -236,7 +236,7 @@ private int dispatch_QueryExtensionsString(ClientPtr client)
 }
 private int dispatch_QueryServerString(ClientPtr client)
 {
-    REQUEST(xGLXQueryServerStringReq);
+    mixin(REQUEST!xGLXQueryServerStringReq);
     CARD32 screen = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -253,7 +253,7 @@ private int dispatch_QueryServerString(ClientPtr client)
 }
 private int dispatch_ChangeDrawableAttributes(ClientPtr client)
 {
-    REQUEST(xGLXChangeDrawableAttributesReq);
+    mixin(REQUEST!xGLXChangeDrawableAttributesReq);
     CARD32 drawable = void;
     GlxServerVendor* vendor = null;
     REQUEST_AT_LEAST_SIZE(*stuff);
@@ -270,7 +270,7 @@ private int dispatch_ChangeDrawableAttributes(ClientPtr client)
 }
 private int dispatch_CreateNewContext(ClientPtr client)
 {
-    REQUEST(xGLXCreateNewContextReq);
+    mixin(REQUEST!xGLXCreateNewContextReq);
     CARD32 screen = void, context = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -295,7 +295,7 @@ private int dispatch_CreateNewContext(ClientPtr client)
 }
 private int dispatch_CreatePbuffer(ClientPtr client)
 {
-    REQUEST(xGLXCreatePbufferReq);
+    mixin(REQUEST!xGLXCreatePbufferReq);
     CARD32 screen = void, pbuffer = void;
     REQUEST_AT_LEAST_SIZE(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -320,7 +320,7 @@ private int dispatch_CreatePbuffer(ClientPtr client)
 }
 private int dispatch_CreatePixmap(ClientPtr client)
 {
-    REQUEST(xGLXCreatePixmapReq);
+    mixin(REQUEST!xGLXCreatePixmapReq);
     CARD32 screen = void, glxpixmap = void;
     REQUEST_AT_LEAST_SIZE(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -345,7 +345,7 @@ private int dispatch_CreatePixmap(ClientPtr client)
 }
 private int dispatch_CreateWindow(ClientPtr client)
 {
-    REQUEST(xGLXCreateWindowReq);
+    mixin(REQUEST!xGLXCreateWindowReq);
     CARD32 screen = void, glxwindow = void;
     REQUEST_AT_LEAST_SIZE(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -370,7 +370,7 @@ private int dispatch_CreateWindow(ClientPtr client)
 }
 private int dispatch_CreateContextAttribsARB(ClientPtr client)
 {
-    REQUEST(xGLXCreateContextAttribsARBReq);
+    mixin(REQUEST!xGLXCreateContextAttribsARBReq);
     CARD32 screen = void, context = void;
     REQUEST_AT_LEAST_SIZE(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -395,7 +395,7 @@ private int dispatch_CreateContextAttribsARB(ClientPtr client)
 }
 private int dispatch_DestroyPbuffer(ClientPtr client)
 {
-    REQUEST(xGLXDestroyPbufferReq);
+    mixin(REQUEST!xGLXDestroyPbufferReq);
     CARD32 pbuffer = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -415,7 +415,7 @@ private int dispatch_DestroyPbuffer(ClientPtr client)
 }
 private int dispatch_DestroyPixmap(ClientPtr client)
 {
-    REQUEST(xGLXDestroyPixmapReq);
+    mixin(REQUEST!xGLXDestroyPixmapReq);
     CARD32 glxpixmap = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -435,7 +435,7 @@ private int dispatch_DestroyPixmap(ClientPtr client)
 }
 private int dispatch_DestroyWindow(ClientPtr client)
 {
-    REQUEST(xGLXDestroyWindowReq);
+    mixin(REQUEST!xGLXDestroyWindowReq);
     CARD32 glxwindow = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -455,7 +455,7 @@ private int dispatch_DestroyWindow(ClientPtr client)
 }
 private int dispatch_GetDrawableAttributes(ClientPtr client)
 {
-    REQUEST(xGLXGetDrawableAttributesReq);
+    mixin(REQUEST!xGLXGetDrawableAttributesReq);
     CARD32 drawable = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -472,7 +472,7 @@ private int dispatch_GetDrawableAttributes(ClientPtr client)
 }
 private int dispatch_GetFBConfigs(ClientPtr client)
 {
-    REQUEST(xGLXGetFBConfigsReq);
+    mixin(REQUEST!xGLXGetFBConfigsReq);
     CARD32 screen = void;
     REQUEST_SIZE_MATCH(*stuff);
     screen = GlxCheckSwap(client, stuff.screen);
@@ -489,7 +489,7 @@ private int dispatch_GetFBConfigs(ClientPtr client)
 }
 private int dispatch_QueryContext(ClientPtr client)
 {
-    REQUEST(xGLXQueryContextReq);
+    mixin(REQUEST!xGLXQueryContextReq);
     CARD32 context = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);
@@ -506,7 +506,7 @@ private int dispatch_QueryContext(ClientPtr client)
 }
 private int dispatch_IsDirect(ClientPtr client)
 {
-    REQUEST(xGLXIsDirectReq);
+    mixin(REQUEST!xGLXIsDirectReq);
     CARD32 context = void;
     GlxServerVendor* vendor = null;
     REQUEST_SIZE_MATCH(*stuff);

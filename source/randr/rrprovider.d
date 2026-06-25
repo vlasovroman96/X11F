@@ -56,7 +56,7 @@ enum string ADD_PROVIDER(string _pScreen) = `do {
 
 int ProcRRGetProviders(ClientPtr client)
 {
-    REQUEST(xRRGetProvidersReq);
+    mixin(REQUEST!xRRGetProvidersReq);
     REQUEST_SIZE_MATCH(xRRGetProvidersReq);
 
     if (client.swapped)
@@ -107,7 +107,7 @@ int ProcRRGetProviders(ClientPtr client)
 
 int ProcRRGetProviderInfo(ClientPtr client)
 {
-    REQUEST(xRRGetProviderInfoReq);
+    mixin(REQUEST!xRRGetProviderInfoReq);
     REQUEST_SIZE_MATCH(xRRGetProviderInfoReq);
 
     if (client.swapped) {
@@ -286,7 +286,7 @@ private void RRFiniPrimeSyncProps(ScreenPtr pScreen)
 
 int ProcRRSetProviderOutputSource(ClientPtr client)
 {
-    REQUEST(xRRSetProviderOutputSourceReq);
+    mixin(REQUEST!xRRSetProviderOutputSourceReq);
     REQUEST_SIZE_MATCH(xRRSetProviderOutputSourceReq);
 
     if (client.swapped) {
@@ -331,7 +331,7 @@ int ProcRRSetProviderOutputSource(ClientPtr client)
 
 int ProcRRSetProviderOffloadSink(ClientPtr client)
 {
-    REQUEST(xRRSetProviderOffloadSinkReq);
+    mixin(REQUEST!xRRSetProviderOffloadSinkReq);
     REQUEST_SIZE_MATCH(xRRSetProviderOffloadSinkReq);
 
     if (client.swapped) {

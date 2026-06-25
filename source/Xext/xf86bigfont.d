@@ -275,7 +275,7 @@ private void XF86BigfontResetProc(ExtensionEntry* extEntry)
 
 private int ProcXF86BigfontQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86BigfontQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86BigfontQueryVersionReq);
 
 static if(CONFIG_MITSHM)
     xXF86BigfontQueryVersionReply reply = {
@@ -333,7 +333,7 @@ enum string hashCI(string p) = `
 static int
 ProcXF86BigfontQueryFont(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXF86BigfontQueryFontReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXF86BigfontQueryFontReq);
     X_REQUEST_FIELD_CARD32(id);
 
     FontPtr pFont;
@@ -699,7 +699,7 @@ if (nCharInfos > 0)
 
 private int ProcXF86BigfontDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_XF86BigfontQueryVersion:

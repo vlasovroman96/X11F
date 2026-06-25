@@ -72,7 +72,7 @@ int ProcXQueryDeviceState(ClientPtr client)
     DeviceIntPtr dev = void;
     double* values = void;
 
-    X_REQUEST_HEAD_STRUCT(xQueryDeviceStateReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xQueryDeviceStateReq);
 
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixReadAccess);
     if (rc != Success && rc != BadAccess)

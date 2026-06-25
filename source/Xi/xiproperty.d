@@ -813,7 +813,7 @@ private int _writeDevProps(x_rpcbuf_t* rpcbuf, XID devId, ClientPtr pClient, siz
 
 int ProcXListDeviceProperties(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xListDevicePropertiesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xListDevicePropertiesReq);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -869,7 +869,7 @@ int ProcXChangeDeviceProperty(ClientPtr client)
 
 int ProcXDeleteDeviceProperty(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xDeleteDevicePropertyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xDeleteDevicePropertyReq);
     X_REQUEST_FIELD_CARD32(property);
 
     DeviceIntPtr dev = void;
@@ -891,7 +891,7 @@ int ProcXDeleteDeviceProperty(ClientPtr client)
 
 int ProcXGetDeviceProperty(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xGetDevicePropertyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetDevicePropertyReq);
     X_REQUEST_FIELD_CARD32(property);
     X_REQUEST_FIELD_CARD32(type);
     X_REQUEST_FIELD_CARD32(longOffset);
@@ -969,7 +969,7 @@ int ProcXGetDeviceProperty(ClientPtr client)
 /* XI2 Request/reply handling */
 int ProcXIListProperties(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIListPropertiesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIListPropertiesReq);
     X_REQUEST_FIELD_CARD16(deviceid);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
@@ -1027,7 +1027,7 @@ int ProcXIChangeProperty(ClientPtr client)
 
 int ProcXIDeleteProperty(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIDeletePropertyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIDeletePropertyReq);
     X_REQUEST_FIELD_CARD16(deviceid);
     X_REQUEST_FIELD_CARD32(property);
 
@@ -1050,7 +1050,7 @@ int ProcXIDeleteProperty(ClientPtr client)
 
 int ProcXIGetProperty(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIGetPropertyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIGetPropertyReq);
     X_REQUEST_FIELD_CARD16(deviceid);
     X_REQUEST_FIELD_CARD32(property);
     X_REQUEST_FIELD_CARD32(type);

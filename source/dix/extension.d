@@ -238,6 +238,7 @@ ExtensionEntry* GetExtensionEntry(int major)
     return extensions[major];
 }
 
+extern(C)
 ushort StandardMinorOpcode(ClientPtr client)
 {
     return (cast(xReq*) client.requestBuffer).data;

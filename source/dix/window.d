@@ -1534,7 +1534,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
 
 int ProcGetWindowAttributes(ClientPtr client)
 {
-    REQUEST(xResourceReq);
+    mixin(REQUEST!xResourceReq);
     REQUEST_SIZE_MATCH(xResourceReq);
 
     if (client.swapped)

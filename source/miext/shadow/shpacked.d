@@ -38,8 +38,8 @@ import    include.mi;
 import    include.regionstr;
 import    globals;
 import    include.gcstruct;
-import    shadow;
-import    fb;
+import include.shadow;
+import    include.fb;
 
 void shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
 {

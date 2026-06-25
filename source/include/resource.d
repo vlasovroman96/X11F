@@ -147,7 +147,7 @@ alias ResourceSizePtr = ResourceSizeRec*;
 
 alias SizeType = void function(void* value, XID id, ResourceSizePtr size);
 
-extern void CreateNewResourceType(DeleteType deleteFunc, const(char)* name);
+// extern void CreateNewResourceType(DeleteType deleteFunc, const(char)* name);
 
 alias FindTypeSubResources = void function(void* value, FindAllRes func, void* cdata);
 
@@ -157,22 +157,22 @@ extern void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
 
 extern void SetResourceTypeSizeFunc(RESTYPE, SizeType);
 
-extern void SetResourceTypeErrorValue(RESTYPE, int);
+// extern void SetResourceTypeErrorValue(RESTYPE, int);
 
 extern void CreateNewResourceClass();
 
 extern void InitClientResources(ClientPtr);
 
-extern void FakeClientID(int);
+// extern void FakeClientID(int);
 
 /* Quartz support on Mac OS X uses the CarbonCore
    framework whose AddResource function conflicts here. */
 version (OSX) {
 enum AddResource = Darwin_X_AddResource;
 }
-extern int AddResource(XID id, RESTYPE type, void* value);
+// extern int AddResource(XID id, RESTYPE type, void* value);
 
-extern void FreeResource(XID, RESTYPE);
+// extern void FreeResource(XID, RESTYPE);
 
 extern void FreeResourceByType(XID, RESTYPE, Bool);
 
@@ -194,11 +194,11 @@ extern void FreeClientResources(ClientPtr);
 
 extern void FreeAllResources();
 
-extern void LegalNewID(XID, ClientPtr);
+// extern void LegalNewID(XID, ClientPtr);
 
 extern void* LookupClientResourceComplex(ClientPtr client, RESTYPE type, FindComplexResType func, void* cdata);
 
-extern void dixLookupResourceByType(void** result, XID id, RESTYPE rtype, ClientPtr client, Mask access_mode);
+// extern void dixLookupResourceByType(void** result, XID id, RESTYPE rtype, ClientPtr client, Mask access_mode);
 
 extern void dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr client, Mask access_mode);
 
@@ -215,6 +215,6 @@ extern RESTYPE TypeMask;
  * @obsoletes FakeClientID
  * @return XID the newly allocated XID
  */
-XID dixAllocServerXID();
+// XID dixAllocServerXID();
 
 } /* RESOURCE_H */

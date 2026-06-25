@@ -38,8 +38,8 @@ import    include.mi;
 import    include.regionstr;
 import    globals;
 import    include.gcstruct;
-import    shadow;
-import    fb;
+import include.shadow;
+import    include.fb;
 
 /*
  * 32 4-bit pixels per write

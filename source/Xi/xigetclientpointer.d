@@ -51,7 +51,7 @@ import Xi.exglobals;
 
 int ProcXIGetClientPointer(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIGetClientPointerReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIGetClientPointerReq);
     X_REQUEST_FIELD_CARD32(win);
 
     int rc = void;

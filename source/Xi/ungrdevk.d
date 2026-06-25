@@ -81,7 +81,7 @@ enum AllModifiersMask = (
 
 int ProcXUngrabDeviceKey(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xUngrabDeviceKeyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xUngrabDeviceKeyReq);
     X_REQUEST_FIELD_CARD32(grabWindow);
     X_REQUEST_FIELD_CARD16(modifiers);
 

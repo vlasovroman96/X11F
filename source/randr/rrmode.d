@@ -279,7 +279,7 @@ void RRModeInitErrorValue()
 
 int ProcRRCreateMode(ClientPtr client)
 {
-    REQUEST(xRRCreateModeReq);
+    mixin(REQUEST!xRRCreateModeReq);
     REQUEST_AT_LEAST_SIZE(xRRCreateModeReq);
 
     if (client.swapped) {
@@ -342,7 +342,7 @@ int ProcRRCreateMode(ClientPtr client)
 
 int ProcRRDestroyMode(ClientPtr client)
 {
-    REQUEST(xRRDestroyModeReq);
+    mixin(REQUEST!xRRDestroyModeReq);
     REQUEST_SIZE_MATCH(xRRDestroyModeReq);
 
     if (client.swapped)
@@ -361,7 +361,7 @@ int ProcRRDestroyMode(ClientPtr client)
 
 int ProcRRAddOutputMode(ClientPtr client)
 {
-    REQUEST(xRRAddOutputModeReq);
+    mixin(REQUEST!xRRAddOutputModeReq);
     REQUEST_SIZE_MATCH(xRRAddOutputModeReq);
 
     if (client.swapped) {
@@ -383,7 +383,7 @@ int ProcRRAddOutputMode(ClientPtr client)
 
 int ProcRRDeleteOutputMode(ClientPtr client)
 {
-    REQUEST(xRRDeleteOutputModeReq);
+    mixin(REQUEST!xRRDeleteOutputModeReq);
     REQUEST_SIZE_MATCH(xRRDeleteOutputModeReq);
 
     if (client.swapped) {

@@ -53,7 +53,7 @@ import Xi.exglobals;
 
 int ProcXISetClientPointer(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXISetClientPointerReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXISetClientPointerReq);
     X_REQUEST_FIELD_CARD32(win);
     X_REQUEST_FIELD_CARD16(deviceid);
 

@@ -60,7 +60,7 @@ import include.input;
 
 int ProcXIChangeCursor(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIChangeCursorReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIChangeCursorReq);
     X_REQUEST_FIELD_CARD32(win);
     X_REQUEST_FIELD_CARD32(cursor);
     X_REQUEST_FIELD_CARD16(deviceid);

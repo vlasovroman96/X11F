@@ -36,8 +36,8 @@ import    include.mi;
 import    include.regionstr;
 import    globals;
 import    include.gcstruct;
-import    shadow;
-import    fb;
+import include.shadow;
+import    include.fb;
 
 /*
  * These indicate which way the source (shadow) is scanned when

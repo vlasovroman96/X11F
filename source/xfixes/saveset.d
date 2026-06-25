@@ -33,7 +33,7 @@ import xfixes.xfixesint;
 
 int ProcXFixesChangeSaveSet(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesChangeSaveSetReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesChangeSaveSetReq);
     X_REQUEST_FIELD_CARD32(window);
 
     Bool toRoot = void, map = void;

@@ -1135,7 +1135,7 @@ void RRCrtcInitErrorValue()
 
 int ProcRRGetCrtcInfo(ClientPtr client)
 {
-    REQUEST(xRRGetCrtcInfoReq);
+    mixin(REQUEST!xRRGetCrtcInfoReq);
     REQUEST_SIZE_MATCH(xRRGetCrtcInfoReq);
 
     if (client.swapped) {
@@ -1232,7 +1232,7 @@ int ProcRRGetCrtcInfo(ClientPtr client)
 
 int ProcRRSetCrtcConfig(ClientPtr client)
 {
-    REQUEST(xRRSetCrtcConfigReq);
+    mixin(REQUEST!xRRSetCrtcConfigReq);
     REQUEST_AT_LEAST_SIZE(xRRSetCrtcConfigReq);
 
     if (client.swapped) {
@@ -1450,7 +1450,7 @@ version (RANDR_12_INTERFACE) {
 
 int ProcRRGetPanning(ClientPtr client)
 {
-    REQUEST(xRRGetPanningReq);
+    mixin(REQUEST!xRRGetPanningReq);
     REQUEST_SIZE_MATCH(xRRGetPanningReq);
 
     if (client.swapped)
@@ -1515,7 +1515,7 @@ int ProcRRGetPanning(ClientPtr client)
 
 int ProcRRSetPanning(ClientPtr client)
 {
-    REQUEST(xRRSetPanningReq);
+    mixin(REQUEST!xRRSetPanningReq);
     REQUEST_SIZE_MATCH(xRRSetPanningReq);
 
     if (client.swapped) {
@@ -1600,7 +1600,7 @@ sendReply: {}
 
 int ProcRRGetCrtcGammaSize(ClientPtr client)
 {
-    REQUEST(xRRGetCrtcGammaSizeReq);
+    mixin(REQUEST!xRRGetCrtcGammaSizeReq);
     REQUEST_SIZE_MATCH(xRRGetCrtcGammaSizeReq);
 
     if (client.swapped)
@@ -1625,7 +1625,7 @@ int ProcRRGetCrtcGammaSize(ClientPtr client)
 
 int ProcRRGetCrtcGamma(ClientPtr client)
 {
-    REQUEST(xRRGetCrtcGammaReq);
+    mixin(REQUEST!xRRGetCrtcGammaReq);
     REQUEST_SIZE_MATCH(xRRGetCrtcGammaReq);
 
     if (client.swapped)
@@ -1657,7 +1657,7 @@ int ProcRRGetCrtcGamma(ClientPtr client)
 
 int ProcRRSetCrtcGamma(ClientPtr client)
 {
-    REQUEST(xRRSetCrtcGammaReq);
+    mixin(REQUEST!xRRSetCrtcGammaReq);
     REQUEST_AT_LEAST_SIZE(xRRSetCrtcGammaReq);
 
     if (client.swapped) {
@@ -1695,7 +1695,7 @@ int ProcRRSetCrtcGamma(ClientPtr client)
 
 int ProcRRSetCrtcTransform(ClientPtr client)
 {
-    REQUEST(xRRSetCrtcTransformReq);
+    mixin(REQUEST!xRRSetCrtcTransformReq);
     REQUEST_AT_LEAST_SIZE(xRRSetCrtcTransformReq);
 
     if (client.swapped) {
@@ -1743,7 +1743,7 @@ int ProcRRSetCrtcTransform(ClientPtr client)
 
 int ProcRRGetCrtcTransform(ClientPtr client)
 {
-    REQUEST(xRRGetCrtcTransformReq);
+    mixin(REQUEST!xRRGetCrtcTransformReq);
     REQUEST_SIZE_MATCH(xRRGetCrtcTransformReq);
 
     if (client.swapped)

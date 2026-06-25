@@ -50,7 +50,7 @@ import dix.swaprep;
 
 private int ProcXCMiscGetVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXCMiscGetVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXCMiscGetVersionReq);
     X_REQUEST_FIELD_CARD16(majorVersion);
     X_REQUEST_FIELD_CARD16(minorVersion);
 
@@ -67,7 +67,7 @@ private int ProcXCMiscGetVersion(ClientPtr client)
 
 private int ProcXCMiscGetXIDRange(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXCMiscGetXIDRangeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXCMiscGetXIDRangeReq);
 
     XID min_id = void, max_id = void;
     GetXIDRange(client.index, FALSE, &min_id, &max_id);
@@ -85,7 +85,7 @@ private int ProcXCMiscGetXIDRange(ClientPtr client)
 
 private int ProcXCMiscGetXIDList(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXCMiscGetXIDListReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXCMiscGetXIDListReq);
     X_REQUEST_FIELD_CARD32(count);
 
     if (stuff.count > UINT32_MAX / XID.sizeof) {
@@ -115,7 +115,7 @@ private int ProcXCMiscGetXIDList(ClientPtr client)
 
 private int ProcXCMiscDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_XCMiscGetVersion:
         return ProcXCMiscGetVersion(client);

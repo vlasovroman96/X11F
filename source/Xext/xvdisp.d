@@ -63,7 +63,7 @@ c_ulong XvXRTPort;
 
 private int ProcXvQueryExtension(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvQueryExtensionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvQueryExtensionReq);
 
     xvQueryExtensionReply reply = {
         version_: XvVersion,
@@ -78,7 +78,7 @@ private int ProcXvQueryExtension(ClientPtr client)
 
 private int ProcXvQueryAdaptors(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvQueryAdaptorsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvQueryAdaptorsReq);
     X_REQUEST_FIELD_CARD32(window);
 
     int na = void, nf = void, rc = void;
@@ -138,7 +138,7 @@ private int ProcXvQueryAdaptors(ClientPtr client)
 
 private int ProcXvQueryEncodings(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvQueryEncodingsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvQueryEncodingsReq);
     X_REQUEST_FIELD_CARD32(port);
 
     XvPortPtr pPort = void;
@@ -179,7 +179,7 @@ private int SingleXvPutVideo(ClientPtr client)
     GCPtr pGC = void;
     int status = void;
 
-    REQUEST(xvPutVideoReq);
+    mixin(REQUEST!xvPutVideoReq);
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -206,7 +206,7 @@ version (XINERAMA) {
 
 private int ProcXvPutVideo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvPutVideoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvPutVideoReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(gc);
@@ -233,7 +233,7 @@ private int SingleXvPutStill(ClientPtr client)
     GCPtr pGC = void;
     int status = void;
 
-    REQUEST(xvPutStillReq);
+    mixin(REQUEST!xvPutStillReq);
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -260,7 +260,7 @@ version (XINERAMA) {
 
 private int ProcXvPutStill(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvPutStillReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvPutStillReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(gc);
@@ -282,7 +282,7 @@ version (XINERAMA) {
 
 private int ProcXvGetVideo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvGetVideoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvGetVideoReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(gc);
@@ -321,7 +321,7 @@ private int ProcXvGetVideo(ClientPtr client)
 
 private int ProcXvGetStill(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvGetStillReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvGetStillReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(gc);
@@ -363,7 +363,7 @@ private int ProcXvSelectVideoNotify(ClientPtr client)
     DrawablePtr pDraw = void;
     int rc = void;
 
-    X_REQUEST_HEAD_STRUCT(xvSelectVideoNotifyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvSelectVideoNotifyReq);
     X_REQUEST_FIELD_CARD32(drawable);
 
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, 0,
@@ -376,7 +376,7 @@ private int ProcXvSelectVideoNotify(ClientPtr client)
 
 private int ProcXvSelectPortNotify(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvSelectPortNotifyReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvSelectPortNotifyReq);
     X_REQUEST_FIELD_CARD32(port);
 
     XvPortPtr pPort = void;
@@ -387,7 +387,7 @@ private int ProcXvSelectPortNotify(ClientPtr client)
 
 private int ProcXvGrabPort(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvGrabPortReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvGrabPortReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(time);
 
@@ -410,7 +410,7 @@ private int ProcXvGrabPort(ClientPtr client)
 
 private int ProcXvUngrabPort(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvUngrabPortReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvUngrabPortReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(time);
 
@@ -426,7 +426,7 @@ private int SingleXvStopVideo(ClientPtr client)
     DrawablePtr pDraw = void;
     XvPortPtr pPort = void;
 
-    REQUEST(xvStopVideoReq);
+    mixin(REQUEST!xvStopVideoReq);
 
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
@@ -443,7 +443,7 @@ version (XINERAMA) {
 
 private int ProcXvStopVideo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvStopVideoReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvStopVideoReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(drawable);
 
@@ -459,7 +459,7 @@ private int SingleXvSetPortAttribute(ClientPtr client)
     int status = void;
     XvPortPtr pPort = void;
 
-    REQUEST(xvSetPortAttributeReq);
+    mixin(REQUEST!xvSetPortAttributeReq);
 
     VALIDATE_XV_PORT(stuff.port, pPort, DixSetAttrAccess);
 
@@ -485,7 +485,7 @@ version (XINERAMA) {
 
 private int ProcXvSetPortAttribute(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvSetPortAttributeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvSetPortAttributeReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(attribute);
     X_REQUEST_FIELD_CARD32(value);
@@ -503,7 +503,7 @@ private int ProcXvGetPortAttribute(ClientPtr client)
     int status = void;
     XvPortPtr pPort = void;
 
-    X_REQUEST_HEAD_STRUCT(xvGetPortAttributeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvGetPortAttributeReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(attribute);
 
@@ -531,7 +531,7 @@ private int ProcXvGetPortAttribute(ClientPtr client)
 
 private int ProcXvQueryBestSize(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvQueryBestSizeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvQueryBestSizeReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD16(vid_w);
     X_REQUEST_FIELD_CARD16(vid_h);
@@ -561,7 +561,7 @@ private int ProcXvQueryBestSize(ClientPtr client)
 
 private int ProcXvQueryPortAttributes(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvQueryPortAttributesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvQueryPortAttributesReq);
     X_REQUEST_FIELD_CARD32(port);
 
     int i = void;
@@ -603,7 +603,7 @@ private int SingleXvPutImage(ClientPtr client)
     int status = void, i = void, size = void;
     CARD16 width = void, height = void;
 
-    REQUEST(xvPutImageReq);
+    mixin(REQUEST!xvPutImageReq);
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -690,7 +690,7 @@ private int SingleXvShmPutImage(ClientPtr client)
     int status = void, size_needed = void, i = void;
     CARD16 width = void, height = void;
 
-    REQUEST(xvShmPutImageReq);
+    mixin(REQUEST!xvShmPutImageReq);
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -762,7 +762,7 @@ version (XINERAMA) {
 private int ProcXvShmPutImage(ClientPtr client)
 {
 version (CONFIG_MITSHM) {
-    X_REQUEST_HEAD_STRUCT(xvShmPutImageReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvShmPutImageReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(drawable);
     X_REQUEST_FIELD_CARD32(gc);
@@ -794,7 +794,7 @@ mixin __size_assert!(int, INT32.sizeof);
 
 private int ProcXvQueryImageAttributes(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvQueryImageAttributesReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvQueryImageAttributesReq);
     X_REQUEST_FIELD_CARD32(port);
     X_REQUEST_FIELD_CARD32(id);
     X_REQUEST_FIELD_CARD16(width);
@@ -863,7 +863,7 @@ version (XvMCExtension) {
 
 private int ProcXvListImageFormats(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xvListImageFormatsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xvListImageFormatsReq);
     X_REQUEST_FIELD_CARD32(port);
 
     XvPortPtr pPort = void;
@@ -923,7 +923,7 @@ private int ProcXvListImageFormats(ClientPtr client)
 
 int ProcXvDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     UpdateCurrentTime();
 
@@ -979,7 +979,7 @@ private int XineramaXvStopVideo(ClientPtr client)
     int result = void;
     PanoramiXRes* draw = void, port = void;
 
-    REQUEST(xvStopVideoReq);
+    mixin(REQUEST!xvStopVideoReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1004,7 +1004,7 @@ private int XineramaXvStopVideo(ClientPtr client)
 
 private int XineramaXvSetPortAttribute(ClientPtr client)
 {
-    REQUEST(xvSetPortAttributeReq);
+    mixin(REQUEST!xvSetPortAttributeReq);
     PanoramiXRes* port = void;
     int result = void;
 
@@ -1026,7 +1026,7 @@ private int XineramaXvSetPortAttribute(ClientPtr client)
 version (CONFIG_MITSHM) {
 private int XineramaXvShmPutImage(ClientPtr client)
 {
-    REQUEST(xvShmPutImageReq);
+    mixin(REQUEST!xvShmPutImageReq);
     PanoramiXRes* draw = void, gc = void, port = void;
     Bool send_event = void;
     Bool isRoot = void;
@@ -1079,7 +1079,7 @@ enum XineramaXvShmPutImage = ProcXvShmPutImage;
 
 private int XineramaXvPutImage(ClientPtr client)
 {
-    REQUEST(xvPutImageReq);
+    mixin(REQUEST!xvPutImageReq);
     PanoramiXRes* draw = void, gc = void, port = void;
     Bool isRoot = void;
     int result = void, x = void, y = void;
@@ -1125,7 +1125,7 @@ private int XineramaXvPutImage(ClientPtr client)
 
 private int XineramaXvPutVideo(ClientPtr client)
 {
-    REQUEST(xvPutImageReq);
+    mixin(REQUEST!xvPutImageReq);
     PanoramiXRes* draw = void, gc = void, port = void;
     Bool isRoot = void;
     int result = void, x = void, y = void;
@@ -1171,7 +1171,7 @@ private int XineramaXvPutVideo(ClientPtr client)
 
 private int XineramaXvPutStill(ClientPtr client)
 {
-    REQUEST(xvPutImageReq);
+    mixin(REQUEST!xvPutImageReq);
     PanoramiXRes* draw = void, gc = void, port = void;
     Bool isRoot = void;
     int result = void, x = void, y = void;

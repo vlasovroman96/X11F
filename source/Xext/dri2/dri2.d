@@ -52,6 +52,7 @@ import Xext.dri2.dri2int;
 import include.damage;
 import include.dri2;
 import externs.X11.extensions.dri2tokens;
+import include.list;
 
 
 CARD8 dri2_major;               /* version of DRI2 supported by DDX */
@@ -176,7 +177,7 @@ private Bool dri2Sleep(ClientPtr client, DRI2DrawablePtr pPriv, DRI2WakeType t)
 
 private DRI2ScreenPtr DRI2GetScreen(ScreenPtr pScreen)
 {
-    return dixLookupPrivate(&pScreen.devPrivates, &dri2ScreenPrivateKeyRec);
+    return cast(DRI2ScreenPtr)dixLookupPrivate(&pScreen.devPrivates, &dri2ScreenPrivateKeyRec);
 }
 
 private ScreenPtr GetScreenPrime(ScreenPtr primary, int prime_id)
@@ -185,7 +186,7 @@ private ScreenPtr GetScreenPrime(ScreenPtr primary, int prime_id)
         return primary;
 
     ScreenPtr secondary = void;
-    xorg_list_for_each_entry(secondary, &primary.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("secondary", "&primary.secondary_list", "secondary_head")); {
         if (!secondary.is_offload_secondary)
             continue;
 

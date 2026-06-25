@@ -207,7 +207,7 @@ Bool RRLeaseInit()
 
 int ProcRRCreateLease(ClientPtr client)
 {
-    REQUEST(xRRCreateLeaseReq);
+    mixin(REQUEST!xRRCreateLeaseReq);
     REQUEST_AT_LEAST_SIZE(xRRCreateLeaseReq);
 
     if (client.swapped) {
@@ -349,7 +349,7 @@ bail_lease:
 
 int ProcRRFreeLease(ClientPtr client)
 {
-    REQUEST(xRRFreeLeaseReq);
+    mixin(REQUEST!xRRFreeLeaseReq);
     REQUEST_SIZE_MATCH(xRRFreeLeaseReq);
 
     if (client.swapped)

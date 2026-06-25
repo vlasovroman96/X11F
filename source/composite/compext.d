@@ -105,7 +105,7 @@ private int FreeCompositeClientOverlay(void* value, XID ccwid)
 
 private int ProcCompositeQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeQueryVersionReq);
     X_REQUEST_FIELD_CARD32(majorVersion);
     X_REQUEST_FIELD_CARD32(minorVersion);
 
@@ -184,7 +184,7 @@ private int SingleCompositeUnredirectSubwindows(ClientPtr client, xCompositeUnre
 
 private int ProcCompositeCreateRegionFromBorderClip(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeCreateRegionFromBorderClipReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeCreateRegionFromBorderClipReq);
     X_REQUEST_FIELD_CARD32(region);
     X_REQUEST_FIELD_CARD32(window);
 
@@ -331,7 +331,7 @@ private int SingleCompositeReleaseOverlayWindow(ClientPtr client, xCompositeRele
 
 private int ProcCompositeDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
         case X_CompositeQueryVersion:
             return ProcCompositeQueryVersion(client);
@@ -441,7 +441,7 @@ void CompositeExtensionInit()
 
 private int ProcCompositeRedirectWindow(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeRedirectWindowReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeRedirectWindowReq);
     X_REQUEST_FIELD_CARD32(window);
 
 version (XINERAMA) {
@@ -472,7 +472,7 @@ version (XINERAMA) {
 
 private int ProcCompositeRedirectSubwindows(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeRedirectSubwindowsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeRedirectSubwindowsReq);
     X_REQUEST_FIELD_CARD32(window);
 
 version (XINERAMA) {
@@ -503,7 +503,7 @@ version (XINERAMA) {
 
 private int ProcCompositeUnredirectWindow(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeUnredirectWindowReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeUnredirectWindowReq);
     X_REQUEST_FIELD_CARD32(window);
 
 version (XINERAMA) {
@@ -534,7 +534,7 @@ version (XINERAMA) {
 
 private int ProcCompositeUnredirectSubwindows(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeUnredirectSubwindowsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeUnredirectSubwindowsReq);
     X_REQUEST_FIELD_CARD32(window);
 
 version (XINERAMA) {
@@ -565,7 +565,7 @@ version (XINERAMA) {
 
 private int ProcCompositeNameWindowPixmap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeNameWindowPixmapReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeNameWindowPixmapReq);
     X_REQUEST_FIELD_CARD32(window);
     X_REQUEST_FIELD_CARD32(pixmap);
 
@@ -640,7 +640,7 @@ version (XINERAMA) {
 
 private int ProcCompositeGetOverlayWindow(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeGetOverlayWindowReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeGetOverlayWindowReq);
     X_REQUEST_FIELD_CARD32(window);
 
 version (XINERAMA) {
@@ -736,7 +736,7 @@ version (XINERAMA) {
 
 private int ProcCompositeReleaseOverlayWindow(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xCompositeReleaseOverlayWindowReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xCompositeReleaseOverlayWindowReq);
     X_REQUEST_FIELD_CARD32(window);
 
 version (XINERAMA) {

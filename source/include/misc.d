@@ -252,9 +252,9 @@ pragma(inline, true) private uint bswap_32(uint x)
 }
 
 ref auto swapl(T)(T* t) {
-		if (typeof(*(t)).sizeof != 4) 
+		if (T.sizeof != 4) 
 			wrong_size(); 
-		*(t) = bswap_32(*(t)); 
+		*(t) = cast(ulong)bswap_32(cast(uint)*(t)); 
 }
 
 pragma(inline, true) private ushort bswap_16(ushort x)
@@ -263,25 +263,50 @@ pragma(inline, true) private ushort bswap_16(ushort x)
             ((x & 0x00FF) << 8));
 }
 
-enum string swaps(string x) = `do { 
-		if (typeof(*(` ~ x ~ `)).sizeof != 2) 
+// enum string swaps(string x) = `do { 
+// 		if (typeof(*(` ~ x ~ `)).sizeof != 2) 
+// 			wrong_size(); 
+// 		*(` ~ x ~ `) = bswap_16(*(` ~ x ~ `)); 
+// 	} while (0)`;
+
+void swaps(T)(T* x) {
+    if (typeof(*x).sizeof != 2) 
 			wrong_size(); 
-		*(` ~ x ~ `) = bswap_16(*(` ~ x ~ `)); 
-	} while (0)`;
+	*x = bswap_16(*x); 
+}
 
 /* copy 32-bit value from src to dst byteswapping on the way */
-enum string cpswapl(string src, string dst) = `do { 
-		if (typeof((` ~ src ~ `)).sizeof != 4 || typeof((` ~ dst ~ `)).sizeof != 4) 
+// enum string cpswapl(string src, string dst) = `do { 
+// 		if (typeof((` ~ src ~ `)).sizeof != 4 || typeof((` ~ dst ~ `)).sizeof != 4) 
+// 			wrong_size(); 
+// 		(` ~ dst ~ `) = bswap_32((` ~ src ~ `)); 
+// 	} while (0)`;\
+
+void cpswapl(T, U)(ref T src, ref U dst) {
+    if (typeof(src).sizeof != 4 || typeof(dst).sizeof != 4)
 			wrong_size(); 
-		(` ~ dst ~ `) = bswap_32((` ~ src ~ `)); 
-	} while (0)`;
+		dst = bswap_32(src); 
+}
 
 /* copy short from src to dst byteswapping on the way */
-enum string cpswaps(string src, string dst) = `do { 
-		if (typeof((` ~ src ~ `)).sizeof != 2 || typeof((` ~ dst ~ `)).sizeof != 2) 
+// enum string cpswaps(string src, string dst) = `do { 
+// 		if (typeof((` ~ src ~ `)).sizeof != 2 || typeof((` ~ dst ~ `)).sizeof != 2) 
+// 			wrong_size(); 
+// 		(` ~ dst ~ `) = bswap_16((` ~ src ~ `)); 
+// 	} while (0)`;
+
+// enum string cpswap(string src, string dst) = `do { 
+// 		if (typeof((` ~ src ~ `)).sizeof != 2 || typeof((` ~ dst ~ `)).sizeof != 2) 
+// 			wrong_size(); 
+// 		(` ~ dst ~ `) = bswap_16((` ~ src ~ `)); 
+// 	} while (0)`;
+
+
+void cpswaps(T, U)(ref T src, ref U dst) {
+    if (typeof(src).sizeof != 2 || typeof(dst).sizeof != 2) 
 			wrong_size(); 
-		(` ~ dst ~ `) = bswap_16((` ~ src ~ `)); 
-	} while (0)`;
+		dst = bswap_16(src); 
+}
 
 extern void SwapShorts(short* list, c_ulong count);
 

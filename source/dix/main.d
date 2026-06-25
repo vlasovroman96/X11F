@@ -201,33 +201,33 @@ int dix_main(int argc, char** argv, char** envp)
         InitExtensions(argc, argv);
         LogMessageVerb(X_INFO, 1, "Extensions initialized\n");
 
-        DIX_FOR_EACH_GPU_SCREEN({
+        mixin(DIX_FOR_EACH_GPU_SCREEN!("{
             if (!PixmapScreenInit(walkScreen))
-                FatalError("failed to create screen pixmap properties");
+                FatalError(\"failed to create screen pixmap properties\");
             if (!dixScreenRaiseCreateResources(walkScreen))
-                FatalError("failed to create screen resources");
-        });
+                FatalError(\"failed to create screen resources\");
+        }"));
 
         /* Let all screens register the necessary privates */
     
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!("{
             if (!PixmapScreenInit(walkScreen))
-                FatalError("failed to create screen pixmap properties");
+                FatalError(\"failed to create screen pixmap properties\");
             if (!dixScreenRaiseCreateResources(walkScreen))
-                FatalError("failed to create screen resources");
-        });
+                FatalError(\"failed to create screen resources\");
+        }"));
 
         /* Then use these privates to initialize root windows etc */
 
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!("{
             if (!CreateGCperDepth(walkScreen))
-                FatalError("failed to create scratch GCs");
+                FatalError(\"failed to create scratch GCs\");
             if (!CreateDefaultStipple(walkScreen))
-                FatalError("failed to create default stipple");
+                FatalError(\"failed to create default stipple\");
             if (!CreateRootWindow(walkScreen))
-                FatalError("failed to create root window");
+                FatalError(\"failed to create root window\");
             CallCallbacks(&RootWindowFinalizeCallback, walkScreen);
-        });
+        }"));
 
         if (SetDefaultFontPath(defaultFontPath) != Success) {
             ErrorF("[dix] failed to set default font path '%s'",
@@ -251,10 +251,10 @@ version (XINERAMA) {
             PanoramiXConsolidate();
 } /* XINERAMA */
 
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!("{
             InitRootWindow(walkScreen.root);
             CallCallbacks(&PostInitRootWindowCallback, walkScreen);
-        });
+        }"));
 
         LogMessageVerb(X_INFO, 1, "Screen(s) initialized\n");
 
@@ -322,7 +322,7 @@ version (XINERAMA) {
 
         InputThreadFini();
 
-        DIX_FOR_EACH_SCREEN({ walkScreen.root = NullWindow; });
+        mixin(DIX_FOR_EACH_SCREEN!("{ walkScreen.root = NullWindow; }"));
 
         CloseDownDevices();
 

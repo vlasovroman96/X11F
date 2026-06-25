@@ -79,7 +79,7 @@ int ProcXSetDeviceMode(ClientPtr client)
     DeviceIntPtr dev = void;
     int rc = void;
 
-    X_REQUEST_HEAD_STRUCT(xSetDeviceModeReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xSetDeviceModeReq);
 
     xSetDeviceModeReply reply = {
         RepType: X_SetDeviceMode,

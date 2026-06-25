@@ -1,4 +1,4 @@
-module misync_priv.h;
+module miext.sync.misync_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -7,7 +7,10 @@ extern(C): __gshared:
  * Copyright © 2010 NVIDIA Corporation
  */
  
-public import misync;
+public import include.misync;
+
+import include.privates;
+
 
 extern DevPrivateKeyRec miSyncScreenPrivateKey;
 

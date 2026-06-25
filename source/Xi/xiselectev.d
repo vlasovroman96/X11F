@@ -317,7 +317,7 @@ int ProcXISelectEvents(ClientPtr client)
 
 int ProcXIGetSelectedEvents(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIGetSelectedEventsReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIGetSelectedEventsReq);
     X_REQUEST_FIELD_CARD32(win);
 
     int rc = void, i = void;

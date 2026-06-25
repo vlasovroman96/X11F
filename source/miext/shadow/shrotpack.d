@@ -1,4 +1,4 @@
-module shrotpack.h;
+module miext.shadow.shrotpack;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -40,10 +40,12 @@ public import    include.mi;
 public import    include.regionstr;
 public import    globals;
 public import    include.gcstruct;
-public import    shadow;
-public import    fb;
+public import include.shadow;
+public import    include.fb;
 
 enum DANDEBUG =         0;
+
+enum ROTATE = 0;
 
 static if (ROTATE == 270) {
 

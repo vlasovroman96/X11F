@@ -272,7 +272,7 @@ private int SELinuxAudit(void* auditdata, security_class_t class_, char* msgbuf,
     int major = -1, minor = -1;
 
     if (client) {
-        REQUEST(xReq);
+        mixin(REQUEST!xReq);
         if (stuff) {
             major = client.majorOp;
             minor = client.minorOp;

@@ -81,7 +81,7 @@ int ProcXGetDeviceKeyMapping(ClientPtr client)
     KeySymsPtr syms = void;
     int rc = void;
 
-    X_REQUEST_HEAD_STRUCT(xGetDeviceKeyMappingReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetDeviceKeyMappingReq);
 
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixGetAttrAccess);
     if (rc != Success)

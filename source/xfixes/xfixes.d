@@ -54,9 +54,19 @@ import os.fmt;
 
 import xfixes.xfixesint;
 import externs.X11.extensions.xfixeswire;
-// import externs.X11.extensions.Xfixes;
+// import externs.X11.extensions.Xfixeenum string
+enum string VERIFY_REGION(string pRegion, string rid, string client, string mode)	=
+	`int err;					
+	err = dixLookupResourceByType(cast(void **) &`~pRegion~`,`~ rid~`,
+				      RegionResType,`~ client~`,`~ mode~`);
+	if (err != Success) {				
+	    `~client~`.errorValue = `~rid~`;			
+	    return err;					
+	}`;			
 
-
+enum string VERIFY_REGION_OR_NONE(string pRegion,string  rid,string  client,string  mode) =
+    pRegion ~` = null; 
+    if (`~rid~`) {` ~VERIFY_REGION!(pRegion,rid,client,mode)~`}`;
 
 import include.protocol_versions;
 
@@ -72,7 +82,7 @@ enum XFixesClientPrivateKey = (&XFixesClientPrivateKeyRec);
 
 private int ProcXFixesQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXFixesQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXFixesQueryVersionReq);
     X_REQUEST_FIELD_CARD32(majorVersion);
     X_REQUEST_FIELD_CARD32(minorVersion);
 
@@ -115,7 +125,7 @@ private const(int)[8] version_requests = [
 
 private int ProcXFixesDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     XFixesClientPtr pXFixesClient = GetXFixesClient(client);
 
     if (pXFixesClient.major_version >= ARRAY_SIZE(version_requests.ptr))

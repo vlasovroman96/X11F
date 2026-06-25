@@ -62,7 +62,7 @@ import mi.mipointer;          /* for miPointerUpdateSprite */
 
 int ProcXIWarpPointer(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIWarpPointerReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIWarpPointerReq);
     X_REQUEST_FIELD_CARD32(src_win);
     X_REQUEST_FIELD_CARD32(dst_win);
     X_REQUEST_FIELD_CARD32(src_x);

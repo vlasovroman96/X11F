@@ -63,7 +63,7 @@ static void SwapDeviceInfo(DeviceIntPtr dev, xXIDeviceInfo * info);
 
 int ProcXIQueryDevice(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xXIQueryDeviceReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xXIQueryDeviceReq);
     X_REQUEST_FIELD_CARD16(deviceid);
 
     DeviceIntPtr dev = null;

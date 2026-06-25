@@ -322,8 +322,8 @@ static if (DAMAGE_DEBUG_ENABLE) {
 
 
 private GCFuncs damageGCFuncs = {
-    damageValidateGC, damageChangeGC, damageCopyGC, damageDestroyGC,
-    damageChangeClip, damageDestroyClip, damageCopyClip
+    &damageValidateGC, &damageChangeGC, &damageCopyGC, &damageDestroyGC,
+    &damageChangeClip, &damageDestroyClip, &damageCopyClip
 };
 
 // private GCOps damageGCOps;
@@ -1414,16 +1414,16 @@ private void damageCopyWindow(WindowPtr pWindow, xPoint ptOldOrg, RegionPtr prgn
 }
 
 private GCOps damageGCOps = {
-    damageFillSpans, damageSetSpans,
-    damagePutImage, damageCopyArea,
-    damageCopyPlane, damagePolyPoint,
-    damagePolylines, damagePolySegment,
-    damagePolyRectangle, damagePolyArc,
-    damageFillPolygon, damagePolyFillRect,
-    damagePolyFillArc, damagePolyText8,
-    damagePolyText16, damageImageText8,
-    damageImageText16, damageImageGlyphBlt,
-    damagePolyGlyphBlt, damagePushPixels,
+    &damageFillSpans, &damageSetSpans,
+    &damagePutImage, &damageCopyArea,
+    &damageCopyPlane, &damagePolyPoint,
+    &damagePolylines, &damagePolySegment,
+    &damagePolyRectangle, &damagePolyArc,
+    &damageFillPolygon, &damagePolyFillRect,
+    &damagePolyFillArc, &damagePolyText8,
+    &damagePolyText16, &damageImageText8,
+    &damageImageText16, &damageImageGlyphBlt,
+    &damagePolyGlyphBlt, &damagePushPixels,
 };
 
 private void damageSetWindowPixmap(WindowPtr pWindow, PixmapPtr pPixmap)

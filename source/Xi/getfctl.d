@@ -252,7 +252,7 @@ int ProcXGetFeedbackControl(ClientPtr client)
     BellFeedbackPtr b = void;
     LedFeedbackPtr l = void;
 
-    X_REQUEST_HEAD_STRUCT(xGetFeedbackControlReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGetFeedbackControlReq);
 
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixGetAttrAccess);
     if (rc != Success)

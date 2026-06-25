@@ -72,7 +72,7 @@ enum string EXT_MASK(string ext) = `((` ~ ext ~ `) & 0x7F)`;
 
 private int ProcGEQueryVersion(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xGEQueryVersionReq);
+    mixin(X_REQUEST_HEAD_STRUCT!xGEQueryVersionReq);
     X_REQUEST_FIELD_CARD16(majorVersion);
     X_REQUEST_FIELD_CARD16(minorVersion);
 
@@ -102,7 +102,7 @@ private int ProcGEQueryVersion(ClientPtr client)
 /* dispatch requests */
 private int ProcGEDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
 
     switch (stuff.data) {
     case X_GEQueryVersion:
