@@ -111,5 +111,5 @@ int ProcXSetDeviceValuators(ClientPtr client)
     if (reply.status != Success && reply.status != AlreadyGrabbed)
         return reply.status;
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

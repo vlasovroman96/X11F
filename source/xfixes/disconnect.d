@@ -88,7 +88,7 @@ int ProcXFixesGetClientDisconnectMode(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(disconnect_mode);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 Bool XFixesShouldDisconnectClient(ClientPtr client)

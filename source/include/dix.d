@@ -71,17 +71,15 @@ size_t ARRAY_SIZE(alias a)()
     return a.length;
 }
 
-enum string REQUEST_SIZE_MATCH(string req) = `
-    do {                                                                
-        if ((req.sizeof >> 2) != client.req_len)                      
-            return(BadLength);                                          
-    } while (0)`;
+enum string REQUEST_SIZE_MATCH(alias req) = ` 
+        if ((`~req.stringof~`.sizeof >> 2) != client.req_len)                      
+            return(BadLength); `;
 
-enum string REQUEST_AT_LEAST_SIZE(string req) = `
-    do {                                                                
-        if ((req.sizeof >> 2) > client.req_len)                       
+enum string REQUEST_AT_LEAST_SIZE(alias req) = `
+    {                                                                
+        if ((`~req.stringof~`.sizeof >> 2) != client.req_len)                      
             return(BadLength);                                          
-    } while (0)`;
+    }`;
 
 enum string REQUEST_AT_LEAST_EXTRA_SIZE(string req, string extra) = `
     do {                                                                
@@ -89,13 +87,12 @@ enum string REQUEST_AT_LEAST_EXTRA_SIZE(string req, string extra) = `
             return(BadLength);                                          
     } while (0)`;
 
-enum string REQUEST_FIXED_SIZE(string req, string n) = `
-    do {                                                                
-        if ((((` ~ req ~ `.sizeof) >> 2) > client.req_len) ||            
+enum string REQUEST_FIXED_SIZE(alias req, string n) = `                                  
+        if (((` ~ req.stringof ~ `.sizeof >> 2) > client.req_len) ||            
             (((` ~ n ~ `) >> 2) >= client.req_len) ||                         
-            (((cast(ulong) ((` ~ req ~ `) + (` ~ n ~ `) + 3).sizeof) >> 2) != cast(ulong) client.req_len)) 
+            (((cast(ulong) ` ~ req ~ `.sizeof + (` ~ n ~ `) + 3) >> 2) != cast(ulong) client.req_len)) 
             return(BadLength);                                          
-    } while (0)`;
+`;
 
 alias TimeStampPtr = _TimeStamp*;
 

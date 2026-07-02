@@ -1909,7 +1909,7 @@ int ProcAllowEvents(ClientPtr client)
     DeviceIntPtr keybd = null;
 
     mixin(REQUEST!xAllowEventsReq);
-    REQUEST_SIZE_MATCH(xAllowEventsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllowEventsReq);
 
     if (client.swapped)
         swapl(&stuff.time);
@@ -3585,7 +3585,7 @@ int ProcWarpPointer(ClientPtr client)
     SpritePtr pSprite = void;
 
     mixin(REQUEST!xWarpPointerReq);
-    REQUEST_SIZE_MATCH(xWarpPointerReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xWarpPointerReq);
 
     dev = PickPointer(client);
 
@@ -4857,7 +4857,7 @@ int ProcSetInputFocus(ClientPtr client)
 
     mixin(REQUEST!xSetInputFocusReq);
 
-    REQUEST_SIZE_MATCH(xSetInputFocusReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetInputFocusReq);
 
     return SetInputFocus(client, kbd, stuff.focus,
                          stuff.revertTo, stuff.time, FALSE);
@@ -4876,7 +4876,7 @@ int ProcGetInputFocus(ClientPtr client)
     int rc = void;
 
     /* mixin(REQUEST!xReq); */
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     rc = dixCallDeviceAccessCallback(client, kbd, DixGetFocusAccess);
     if (rc != Success)
@@ -4897,7 +4897,7 @@ int ProcGetInputFocus(ClientPtr client)
         swapl(&reply.focus);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**
@@ -4909,7 +4909,7 @@ int ProcGetInputFocus(ClientPtr client)
 int ProcGrabPointer(ClientPtr client)
 {
     mixin(REQUEST!xGrabPointerReq);
-    REQUEST_SIZE_MATCH(xGrabPointerReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGrabPointerReq);
 
     if (client.swapped) {
         swapl(&stuff.grabWindow);
@@ -4959,7 +4959,7 @@ int ProcGrabPointer(ClientPtr client)
         status: status,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**
@@ -4977,7 +4977,7 @@ int ProcChangeActivePointerGrab(ClientPtr client)
     mixin(REQUEST!xChangeActivePointerGrabReq);
     TimeStamp time = void;
 
-    REQUEST_SIZE_MATCH(xChangeActivePointerGrabReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeActivePointerGrabReq);
     if (stuff.eventMask & ~PointerGrabMask) {
         client.errorValue = stuff.eventMask;
         return BadValue;
@@ -5026,7 +5026,7 @@ int ProcUngrabPointer(ClientPtr client)
     TimeStamp time = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -5176,7 +5176,7 @@ int ProcGrabKeyboard(ClientPtr client)
     DeviceIntPtr keyboard = PickKeyboard(client);
     GrabMask mask = void;
 
-    REQUEST_SIZE_MATCH(xGrabKeyboardReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGrabKeyboardReq);
     UpdateCurrentTime();
 
     mask.core = KeyPressMask | KeyReleaseMask;
@@ -5193,7 +5193,7 @@ int ProcGrabKeyboard(ClientPtr client)
         status: status,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**
@@ -5208,7 +5208,7 @@ int ProcUngrabKeyboard(ClientPtr client)
     TimeStamp time = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -5240,7 +5240,7 @@ int ProcQueryPointer(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -5310,7 +5310,7 @@ version (XINERAMA) {
         swaps(&reply.mask);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**
@@ -5380,7 +5380,7 @@ int ProcSendEvent(ClientPtr client)
 
     mixin(REQUEST!xSendEventReq);
 
-    REQUEST_SIZE_MATCH(xSendEventReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSendEventReq);
 
     /* libXext and other extension libraries may set the bit indicating
      * that this event came from a SendEvent request so remove it
@@ -5484,7 +5484,7 @@ int ProcUngrabKey(ClientPtr client)
     DeviceIntPtr keybd = PickKeyboard(client);
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xUngrabKeyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xUngrabKeyReq);
     rc = dixLookupWindow(&pWin, stuff.grabWindow, client, DixGetAttrAccess);
     if (rc != Success)
         return rc;
@@ -5540,7 +5540,7 @@ int ProcGrabKey(ClientPtr client)
     GrabParameters param = void;
     GrabMask mask = void;
 
-    REQUEST_SIZE_MATCH(xGrabKeyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGrabKeyReq);
 
     param = GrabParameters (
         grabtype: CORE,
@@ -5582,7 +5582,7 @@ int ProcGrabKey(ClientPtr client)
 int ProcGrabButton(ClientPtr client)
 {
     mixin(REQUEST!xGrabButtonReq);
-    REQUEST_SIZE_MATCH(xGrabButtonReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGrabButtonReq);
 
     if (client.swapped) {
         swapl(&stuff.grabWindow);
@@ -5688,7 +5688,7 @@ int ProcUngrabButton(ClientPtr client)
     int rc = void;
     DeviceIntPtr ptr = void;
 
-    REQUEST_SIZE_MATCH(xUngrabButtonReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xUngrabButtonReq);
     UpdateCurrentTime();
     if ((stuff.modifiers != AnyModifier) &&
         (stuff.modifiers & ~AllModifiersMask)) {
@@ -5884,7 +5884,7 @@ int ProcRecolorCursor(ClientPtr client)
 
     mixin(REQUEST!xRecolorCursorReq);
 
-    REQUEST_SIZE_MATCH(xRecolorCursorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecolorCursorReq);
     rc = dixLookupResourceByType(cast(void**) &pCursor, stuff.cursor, X11_RESTYPE_CURSOR,
                                  client, DixWriteAccess);
     if (rc != Success) {

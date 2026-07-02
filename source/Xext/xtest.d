@@ -104,7 +104,7 @@ private int ProcXTestGetVersion(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXTestCompareCursor(ClientPtr client)
@@ -143,7 +143,7 @@ private int ProcXTestCompareCursor(ClientPtr client)
         same: (wCursor(pWin) == pCursor)
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 void XTestDeviceSendEvents(DeviceIntPtr dev, int type, int detail, int flags, const(ValuatorMask)* mask)

@@ -403,7 +403,7 @@ int RRConfigureOutputProperty(RROutputPtr output, Atom property, Bool pending, B
 int ProcRRListOutputProperties(ClientPtr client)
 {
     mixin(REQUEST!xRRListOutputPropertiesReq);
-    REQUEST_SIZE_MATCH(xRRListOutputPropertiesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRListOutputPropertiesReq);
 
     if (client.swapped)
         swapl(&stuff.output);
@@ -427,13 +427,13 @@ int ProcRRListOutputProperties(ClientPtr client)
         swaps(&reply.nAtoms);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRQueryOutputProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRQueryOutputPropertyReq);
-    REQUEST_SIZE_MATCH(xRRQueryOutputPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRQueryOutputPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -458,13 +458,13 @@ int ProcRRQueryOutputProperty(ClientPtr client)
         immutable_: prop.immutable_
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRConfigureOutputProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRConfigureOutputPropertyReq);
-    REQUEST_AT_LEAST_SIZE(xRRConfigureOutputPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRConfigureOutputPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -490,7 +490,7 @@ int ProcRRConfigureOutputProperty(ClientPtr client)
 int ProcRRChangeOutputProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRChangeOutputPropertyReq);
-    REQUEST_AT_LEAST_SIZE(xRRChangeOutputPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRChangeOutputPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -562,7 +562,7 @@ int ProcRRChangeOutputProperty(ClientPtr client)
 int ProcRRDeleteOutputProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRDeleteOutputPropertyReq);
-    REQUEST_SIZE_MATCH(xRRDeleteOutputPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRDeleteOutputPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -601,7 +601,7 @@ int ProcRRDeleteOutputProperty(ClientPtr client)
 int ProcRRGetOutputProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRGetOutputPropertyReq);
-    REQUEST_SIZE_MATCH(xRRGetOutputPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetOutputPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -727,5 +727,5 @@ sendout:
         RRDestroyOutputProperty(prop);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

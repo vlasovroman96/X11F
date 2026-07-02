@@ -48,7 +48,7 @@ WindowsDRIResetProc(ExtensionEntry* extEntry)
 static int
 ProcWindowsDRIQueryVersion(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xWindowsDRIQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xWindowsDRIQueryVersionReq);
 
     xWindowsDRIQueryVersionReply reply = {
         .majorVersion = SERVER_WINDOWSDRI_MAJOR_VERSION,
@@ -62,14 +62,14 @@ ProcWindowsDRIQueryVersion(ClientPtr client)
         swapl(&reply.patchVersion);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
 ProcWindowsDRIQueryDirectRenderingCapable(ClientPtr client)
 {
     mixin(REQUEST!xWindowsDRIQueryDirectRenderingCapableReq);
-    REQUEST_SIZE_MATCH(xWindowsDRIQueryDirectRenderingCapableReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xWindowsDRIQueryDirectRenderingCapableReq);
 
     if (client->swapped)
         swapl(&stuff->screen);
@@ -79,14 +79,14 @@ ProcWindowsDRIQueryDirectRenderingCapable(ClientPtr client)
                      glxWinGetScreenAiglxIsActive(screenInfo.screens[stuff->screen])
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
 ProcWindowsDRIQueryDrawable(ClientPtr client)
 {
     mixin(REQUEST!xWindowsDRIQueryDrawableReq);
-    REQUEST_SIZE_MATCH(xWindowsDRIQueryDrawableReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xWindowsDRIQueryDrawableReq);
 
     if (client->swapped) {
         swapl(&stuff->screen);
@@ -106,14 +106,14 @@ ProcWindowsDRIQueryDrawable(ClientPtr client)
         swapl(&reply.drawable_type);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
 ProcWindowsDRIFBConfigToPixelFormat(ClientPtr client)
 {
     mixin(REQUEST!xWindowsDRIFBConfigToPixelFormatReq);
-    REQUEST_SIZE_MATCH(xWindowsDRIFBConfigToPixelFormatReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xWindowsDRIFBConfigToPixelFormatReq);
 
     if (client->swapped) {
         swapl(&stuff->screen);
@@ -128,7 +128,7 @@ ProcWindowsDRIFBConfigToPixelFormat(ClientPtr client)
         swapl(&reply.pixelFormatIndex);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* dispatch */

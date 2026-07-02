@@ -113,7 +113,7 @@ private int ProcXvMCQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD32(major);
     X_REPLY_FIELD_CARD32(minor);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXvMCListSurfaceTypes(ClientPtr client)
@@ -163,7 +163,7 @@ private int ProcXvMCListSurfaceTypes(ClientPtr client)
     };
 
     X_REPLY_FIELD_CARD32(num);
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvMCCreateContext(ClientPtr client)
@@ -258,7 +258,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
     X_REPLY_FIELD_CARD16(height_actual);
     X_REPLY_FIELD_CARD32(flags_return);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvMCDestroyContext(ClientPtr client)
@@ -327,7 +327,7 @@ private int ProcXvMCCreateSurface(ClientPtr client)
 
     pContext.refcnt++;
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvMCDestroySurface(ClientPtr client)
@@ -454,7 +454,7 @@ private int ProcXvMCCreateSubpicture(ClientPtr client)
 
     pContext.refcnt++;
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvMCDestroySubpicture(ClientPtr client)
@@ -578,7 +578,7 @@ private int ProcXvMCListSubpictureTypes(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(num);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvMCGetDRInfo(ClientPtr client)
@@ -624,7 +624,7 @@ private int ProcXvMCGetDRInfo(ClientPtr client)
     X_REPLY_FIELD_CARD32(busIDLen);
     X_REPLY_FIELD_CARD32(isLocal);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvMCDispatch(ClientPtr client)

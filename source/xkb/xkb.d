@@ -212,7 +212,7 @@ int ProcXkbUseExtension(ClientPtr client)
     X_REPLY_FIELD_CARD16(serverMajor);
     X_REPLY_FIELD_CARD16(serverMinor);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbSelectEvents(ClientPtr client)
@@ -676,7 +676,7 @@ int ProcXkbGetState(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(ptrBtnState);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbLatchLockState(ClientPtr client)
@@ -808,7 +808,7 @@ int ProcXkbGetControls(ClientPtr client)
     X_REPLY_FIELD_CARD16(axtOptsValues);
     X_REPLY_FIELD_CARD16(axOptions);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbSetControls(ClientPtr client)
@@ -1554,7 +1554,7 @@ int ProcXkbGetMap(ClientPtr client)
     X_REPLY_FIELD_CARD16(totalSyms);
     X_REPLY_FIELD_CARD16(totalActs);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, xkbKeyTypeWireDesc** wireRtrn, int* nMapsRtrn, CARD8* mapWidthRtrn, Bool doswap)
@@ -2863,7 +2863,7 @@ int ProcXkbGetCompatMap(ClientPtr client)
     X_REPLY_FIELD_CARD16(nSI);
     X_REPLY_FIELD_CARD16(nTotalSI);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /**
@@ -3108,7 +3108,7 @@ int ProcXkbGetIndicatorState(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(state);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private Status XkbComputeGetIndicatorMapReplySize(XkbIndicatorPtr indicators, xkbGetIndicatorMapReply* rep)
@@ -3180,7 +3180,7 @@ int ProcXkbGetIndicatorMap(ClientPtr client)
     X_REPLY_FIELD_CARD32(which);
     X_REPLY_FIELD_CARD32(realIndicators);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /**
@@ -3350,7 +3350,7 @@ int ProcXkbGetNamedIndicator(ClientPtr client)
     X_REPLY_FIELD_CARD16(virtualMods);
     X_REPLY_FIELD_CARD32(ctrls);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**
@@ -3804,7 +3804,7 @@ int ProcXkbGetNames(ClientPtr client)
     X_REPLY_FIELD_CARD16(virtualMods);
     X_REPLY_FIELD_CARD32(indicators);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private CARD32* _XkbCheckAtoms(CARD32* wire, int nAtoms, int swapped, Atom* pError)
@@ -4775,7 +4775,7 @@ int ProcXkbGetGeometry(ClientPtr client)
     X_REPLY_FIELD_CARD16(nDoodads);
     X_REPLY_FIELD_CARD16(nKeyAliases);
 
-    status = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    status = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
 free_out:
     if (shouldFree)
@@ -5424,7 +5424,7 @@ int ProcXkbPerClientFlags(ClientPtr client)
     X_REPLY_FIELD_CARD32(autoCtrls);
     X_REPLY_FIELD_CARD32(autoCtrlValues);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* all latin-1 alphanumerics, plus parens, minus, underscore, slash */
@@ -5532,7 +5532,7 @@ int ProcXkbListComponents(ClientPtr client)
         deviceID: dev.id,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private uint XkbConvertGetByNameComponents(Bool toXkm, uint orig)
@@ -5913,7 +5913,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
     X_REPLY_FIELD_CARD16(found);
     X_REPLY_FIELD_CARD16(reported);
 
-    status = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    status = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
     if (loaded) {
         XkbDescPtr old_xkb = void;
@@ -6310,7 +6310,7 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
     X_REPLY_FIELD_CARD16(dfltLedFB);
     X_REPLY_FIELD_CARD32(devType);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private char* CheckSetDeviceIndicators(char* wire, DeviceIntPtr dev, int num, int* status_rtrn, ClientPtr client, xkbSetDeviceInfoReq* stuff)
@@ -6701,7 +6701,7 @@ int ProcXkbSetDebuggingFlags(ClientPtr client)
     X_REPLY_FIELD_CARD32(supportedFlags);
     X_REPLY_FIELD_CARD32(supportedCtrls);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXkbDispatch(ClientPtr client)

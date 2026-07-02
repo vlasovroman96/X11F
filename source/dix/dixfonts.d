@@ -814,7 +814,7 @@ private Bool doListFontsAndAliases(ClientPtr client, list_fonts_closure* c)
         swaps(&reply.nFonts);
     }
 
-    X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
  bail:
     ClientWakeup(client);
@@ -1089,7 +1089,7 @@ private int doListFontsWithInfo(ClientPtr client, list_fonts_with_info_closure* 
  finish: {}
     /* finish it the replies series sending an empty reply */
     xListFontsWithInfoReply reply = { 0 };
-    X_SEND_REPLY_SIMPLE(client, reply);
+    mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
  bail:
     ClientWakeup(client);
     for (int i = 0; i < c.num_fpes; i++)

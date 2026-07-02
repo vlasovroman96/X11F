@@ -348,7 +348,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
     switch (vendorCode) {
     case X_GLXvop_QueryContextInfoEXT: {
         xGLXQueryContextInfoEXTReq* req = cast(xGLXQueryContextInfoEXTReq*) (cast(void*)stuff);
-        REQUEST_AT_LEAST_SIZE(*req);
+        mixin(REQUEST_AT_LEAST_SIZE!(*req));
         if (((vendor = glxServer.getXIDMap(maybe_swap32(client, req.context))) == 0))
             return __glXError(GLXBadContext);
         break;
@@ -356,7 +356,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     case X_GLXvop_GetFBConfigsSGIX: {
         xGLXGetFBConfigsSGIXReq* req = cast(xGLXGetFBConfigsSGIXReq*) (cast(void*)stuff);
-        REQUEST_AT_LEAST_SIZE(*req);
+        mixin(REQUEST_AT_LEAST_SIZE!(*req));
         if (((vendor = vendorForScreen(client, req.screen)) == 0))
             return BadValue;
         break;
@@ -364,7 +364,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     case X_GLXvop_CreateContextWithConfigSGIX: {
         xGLXCreateContextWithConfigSGIXReq* req = cast(xGLXCreateContextWithConfigSGIXReq*) (cast(void*)stuff);
-        REQUEST_AT_LEAST_SIZE(*req);
+        mixin(REQUEST_AT_LEAST_SIZE!(*req));
         resource = maybe_swap32(client, req.context);
         if (((vendor = vendorForScreen(client, req.screen)) == 0))
             return BadValue;
@@ -373,7 +373,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     case X_GLXvop_CreateGLXPixmapWithConfigSGIX: {
         xGLXCreateGLXPixmapWithConfigSGIXReq* req = cast(xGLXCreateGLXPixmapWithConfigSGIXReq*) (cast(void*)stuff);
-        REQUEST_AT_LEAST_SIZE(*req);
+        mixin(REQUEST_AT_LEAST_SIZE!(*req));
         resource = maybe_swap32(client, req.glxpixmap);
         if (((vendor = vendorForScreen(client, req.screen)) == 0))
             return BadValue;
@@ -382,7 +382,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     case X_GLXvop_CreateGLXPbufferSGIX: {
         xGLXCreateGLXPbufferSGIXReq* req = cast(xGLXCreateGLXPbufferSGIXReq*) (cast(void*)stuff);
-        REQUEST_AT_LEAST_SIZE(*req);
+        mixin(REQUEST_AT_LEAST_SIZE!(*req));
         resource = maybe_swap32(client, req.pbuffer);
         if (((vendor = vendorForScreen(client, req.screen)) == 0))
             return BadValue;
@@ -394,7 +394,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
     case X_GLXvop_ChangeDrawableAttributesSGIX:
     case X_GLXvop_GetDrawableAttributesSGIX: {
         xGLXGetDrawableAttributesSGIXReq* req = cast(xGLXGetDrawableAttributesSGIXReq*) (cast(void*)stuff);
-        REQUEST_AT_LEAST_SIZE(*req);
+        mixin(REQUEST_AT_LEAST_SIZE!(*req));
         if (((vendor = glxServer.getXIDMap(maybe_swap32(client,
                                                         req.drawable))) == 0))
             return __glXError(GLXBadDrawable);

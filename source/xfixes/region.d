@@ -425,7 +425,7 @@ int ProcXFixesFetchRegion(ClientPtr client)
     X_REPLY_FIELD_CARD16(width);
     X_REPLY_FIELD_CARD16(height);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 version (XINERAMA) {

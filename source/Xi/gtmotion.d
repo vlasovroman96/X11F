@@ -118,5 +118,5 @@ int ProcXGetDeviceMotionEvents(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(nEvents);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

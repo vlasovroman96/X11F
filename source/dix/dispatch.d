@@ -740,7 +740,7 @@ int DoCreateWindowReq(ClientPtr client, xCreateWindowReq* stuff, XID* xids)
 int ProcCreateWindow(ClientPtr client)
 {
     mixin(REQUEST!xCreateWindowReq);
-    REQUEST_AT_LEAST_SIZE(xCreateWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateWindowReq);
 
     int len = client.req_len - bytes_to_int32(xCreateWindowReq.sizeof);
     if (Ones(stuff.mask) != len)
@@ -752,7 +752,7 @@ int ProcCreateWindow(ClientPtr client)
 int ProcChangeWindowAttributes(ClientPtr client)
 {
     mixin(REQUEST!xChangeWindowAttributesReq);
-    REQUEST_AT_LEAST_SIZE(xChangeWindowAttributesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeWindowAttributesReq);
     Mask access_mode = (stuff.valueMask & CWEventMask) ? DixReceiveAccess : 0;
     access_mode |= (stuff.valueMask & ~CWEventMask) ? DixSetAttrAccess : 0;
 
@@ -772,7 +772,7 @@ int ProcDestroyWindow(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -797,7 +797,7 @@ int ProcDestroySubwindows(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -816,7 +816,7 @@ int ProcChangeSaveSet(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xChangeSaveSetReq);
-    REQUEST_SIZE_MATCH(xChangeSaveSetReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeSaveSetReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -837,7 +837,7 @@ int ProcChangeSaveSet(ClientPtr client)
 int ProcReparentWindow(ClientPtr client)
 {
     mixin(REQUEST!xReparentWindowReq);
-    REQUEST_SIZE_MATCH(xReparentWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReparentWindowReq);
 
     WindowPtr pWin = void;
     int rc = dixLookupWindow(&pWin, stuff.window, client, DixManageAccess);
@@ -863,7 +863,7 @@ int ProcReparentWindow(ClientPtr client)
 int ProcMapWindow(ClientPtr client)
 {
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -880,7 +880,7 @@ int ProcMapWindow(ClientPtr client)
 int ProcMapSubwindows(ClientPtr client)
 {
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -899,7 +899,7 @@ int ProcUnmapWindow(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -919,7 +919,7 @@ int ProcUnmapSubwindows(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -940,7 +940,7 @@ int ProcConfigureWindow(ClientPtr client)
     mixin(REQUEST!xConfigureWindowReq);
     int len = void, rc = void;
 
-    REQUEST_AT_LEAST_SIZE(xConfigureWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xConfigureWindowReq);
     rc = dixLookupWindow(&pWin, stuff.window, client,
                          DixManageAccess | DixSetAttrAccess);
     if (rc != Success)
@@ -956,7 +956,7 @@ int ProcCirculateWindow(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xCirculateWindowReq);
-    REQUEST_SIZE_MATCH(xCirculateWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCirculateWindowReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -980,7 +980,7 @@ int ProcGetGeometry(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1013,7 +1013,7 @@ int ProcGetGeometry(ClientPtr client)
         swaps(&reply.borderWidth);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcQueryTree(ClientPtr client)
@@ -1022,7 +1022,7 @@ int ProcQueryTree(ClientPtr client)
     WindowPtr pWin = void, pHead = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1053,7 +1053,7 @@ int ProcQueryTree(ClientPtr client)
         swaps(&reply.nChildren);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcInternAtom(ClientPtr client)
@@ -1062,7 +1062,7 @@ int ProcInternAtom(ClientPtr client)
     char* tchar = void;
 
     mixin(REQUEST!xInternAtomReq);
-    REQUEST_AT_LEAST_SIZE(xInternAtomReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xInternAtomReq);
     if (client.swapped)
         swaps(&stuff.nbytes);
 
@@ -1084,7 +1084,7 @@ int ProcInternAtom(ClientPtr client)
         swapl(&reply.atom);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcGetAtomName(ClientPtr client)
@@ -1092,7 +1092,7 @@ int ProcGetAtomName(ClientPtr client)
     const(char)* str = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1115,14 +1115,14 @@ int ProcGetAtomName(ClientPtr client)
         swaps(&reply.nameLength);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcGrabServer(ClientPtr client)
 {
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
     if (grabState != GrabNone && client != grabClient) {
         ResetCurrentRequest(client);
         client.sequence--;
@@ -1176,7 +1176,7 @@ private void UngrabServer(ClientPtr client)
 
 int ProcUngrabServer(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
     UngrabServer(client);
     return Success;
 }
@@ -1188,7 +1188,7 @@ int ProcTranslateCoords(ClientPtr client)
     WindowPtr pWin = void, pDst = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xTranslateCoordsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xTranslateCoordsReq);
     rc = dixLookupWindow(&pWin, stuff.srcWid, client, DixGetAttrAccess);
     if (rc != Success)
         return rc;
@@ -1250,7 +1250,7 @@ int ProcTranslateCoords(ClientPtr client)
         swaps(&reply.dstY);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcOpenFont(ClientPtr client)
@@ -1277,7 +1277,7 @@ int ProcCloseFont(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1301,7 +1301,7 @@ int ProcQueryFont(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1354,7 +1354,7 @@ int ProcQueryTextExtents(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xQueryTextExtentsReq);
-    REQUEST_AT_LEAST_SIZE(xQueryTextExtentsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xQueryTextExtentsReq);
 
     if (client.swapped)
         swapl(&stuff.fid);
@@ -1394,7 +1394,7 @@ int ProcQueryTextExtents(ClientPtr client)
         swapl(&reply.overallRight);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcListFonts(ClientPtr client)
@@ -1440,7 +1440,7 @@ int ProcCreatePixmap(ClientPtr client)
     DepthPtr pDepth = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xCreatePixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreatePixmapReq);
     client.errorValue = stuff.pid;
     LEGAL_NEW_RESOURCE(stuff.pid, client);
 
@@ -1502,7 +1502,7 @@ int ProcFreePixmap(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1528,7 +1528,7 @@ int ProcCreateGC(ClientPtr client)
 
     mixin(REQUEST!xCreateGCReq);
 
-    REQUEST_AT_LEAST_SIZE(xCreateGCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateGCReq);
     client.errorValue = stuff.gc;
     LEGAL_NEW_RESOURCE(stuff.gc, client);
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, 0,
@@ -1555,7 +1555,7 @@ int ProcChangeGC(ClientPtr client)
     uint len = void;
 
     mixin(REQUEST!xChangeGCReq);
-    REQUEST_AT_LEAST_SIZE(xChangeGCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeGCReq);
 
     result = dixLookupGC(&pGC, stuff.gc, client, DixSetAttrAccess);
     if (result != Success)
@@ -1575,7 +1575,7 @@ int ProcCopyGC(ClientPtr client)
     int result = void;
 
     mixin(REQUEST!xCopyGCReq);
-    REQUEST_SIZE_MATCH(xCopyGCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyGCReq);
 
     result = dixLookupGC(&pGC, stuff.srcGC, client, DixGetAttrAccess);
     if (result != Success)
@@ -1623,7 +1623,7 @@ int ProcSetClipRectangles(ClientPtr client)
 
     mixin(REQUEST!xSetClipRectanglesReq);
 
-    REQUEST_AT_LEAST_SIZE(xSetClipRectanglesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetClipRectanglesReq);
     if ((stuff.ordering != Unsorted) && (stuff.ordering != YSorted) &&
         (stuff.ordering != YXSorted) && (stuff.ordering != YXBanded)) {
         client.errorValue = stuff.ordering;
@@ -1647,7 +1647,7 @@ int ProcFreeGC(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1666,7 +1666,7 @@ int ProcClearToBackground(ClientPtr client)
     WindowPtr pWin = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xClearAreaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xClearAreaReq);
     rc = dixLookupWindow(&pWin, stuff.window, client, DixWriteAccess);
     if (rc != Success)
         return rc;
@@ -1741,7 +1741,7 @@ int ProcCopyArea(ClientPtr client)
     RegionPtr pRgn = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xCopyAreaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyAreaReq);
 
     VALIDATE_DRAWABLE_AND_GC(stuff.dstDrawable, pDst, DixWriteAccess);
     if (stuff.dstDrawable != stuff.srcDrawable) {
@@ -1778,7 +1778,7 @@ int ProcCopyPlane(ClientPtr client)
     RegionPtr pRgn = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xCopyPlaneReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyPlaneReq);
 
     VALIDATE_DRAWABLE_AND_GC(stuff.dstDrawable, pdstDraw, DixWriteAccess);
     if (stuff.dstDrawable != stuff.srcDrawable) {
@@ -1817,7 +1817,7 @@ int ProcCopyPlane(ClientPtr client)
 int ProcPolyPoint(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -1845,7 +1845,7 @@ int ProcPolyPoint(ClientPtr client)
 int ProcPolyLine(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -1873,7 +1873,7 @@ int ProcPolyLine(ClientPtr client)
 int ProcPolySegment(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -1898,7 +1898,7 @@ int ProcPolySegment(ClientPtr client)
 int ProcPolyRectangle(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -1924,7 +1924,7 @@ int ProcPolyRectangle(ClientPtr client)
 int ProcPolyArc(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -1954,7 +1954,7 @@ int ProcFillPoly(ClientPtr client)
 
     mixin(REQUEST!xFillPolyReq);
 
-    REQUEST_AT_LEAST_SIZE(xFillPolyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xFillPolyReq);
     if ((stuff.shape != Complex) && (stuff.shape != Nonconvex) &&
         (stuff.shape != Convex)) {
         client.errorValue = stuff.shape;
@@ -1978,7 +1978,7 @@ int ProcFillPoly(ClientPtr client)
 int ProcPolyFillRectangle(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -2005,7 +2005,7 @@ int ProcPolyFillRectangle(ClientPtr client)
 int ProcPolyFillArc(ClientPtr client)
 {
     mixin(REQUEST!xPolyPointReq);
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -2089,7 +2089,7 @@ int ProcPutImage(ClientPtr client)
 
     mixin(REQUEST!xPutImageReq);
 
-    REQUEST_AT_LEAST_SIZE(xPutImageReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPutImageReq);
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
     if (stuff.format == XYBitmap) {
         if ((stuff.depth != 1) ||
@@ -2336,14 +2336,14 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
         swapl(&reply.visual);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcGetImage(ClientPtr client)
 {
     mixin(REQUEST!xGetImageReq);
 
-    REQUEST_SIZE_MATCH(xGetImageReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGetImageReq);
 
     return DoGetImage(client, stuff.format, stuff.drawable,
                       stuff.x, stuff.y,
@@ -2354,7 +2354,7 @@ int ProcGetImage(ClientPtr client)
 int ProcPolyText(ClientPtr client)
 {
     mixin(REQUEST!xPolyTextReq);
-    REQUEST_AT_LEAST_SIZE(xPolyTextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyTextReq);
 
     if (client.swapped) {
         swapl(&stuff.drawable);
@@ -2423,7 +2423,7 @@ int ProcCreateColormap(ClientPtr client)
     mixin(REQUEST!xCreateColormapReq);
     int i = void, result = void;
 
-    REQUEST_SIZE_MATCH(xCreateColormapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateColormapReq);
 
     if ((stuff.alloc != AllocNone) && (stuff.alloc != AllocAll)) {
         client.errorValue = stuff.alloc;
@@ -2453,7 +2453,7 @@ int ProcFreeColormap(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -2480,7 +2480,7 @@ int ProcCopyColormapAndFree(ClientPtr client)
     mixin(REQUEST!xCopyColormapAndFreeReq);
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xCopyColormapAndFreeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyColormapAndFreeReq);
     mid = stuff.mid;
     LEGAL_NEW_RESOURCE(mid, client);
     rc = dixLookupResourceByType(cast(void**) &pSrcMap, stuff.srcCmap,
@@ -2498,7 +2498,7 @@ int ProcInstallColormap(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -2529,7 +2529,7 @@ int ProcUninstallColormap(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -2561,7 +2561,7 @@ int ProcListInstalledColormaps(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -2594,7 +2594,7 @@ int ProcListInstalledColormaps(ClientPtr client)
         swaps(&reply.nColormaps);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int dixAllocColor(ClientPtr client, Colormap cmap, CARD16* red, CARD16* green, CARD16* blue, CARD32* pixel)
@@ -2614,7 +2614,7 @@ int dixAllocColor(ClientPtr client, Colormap cmap, CARD16* red, CARD16* green, C
 int ProcAllocColor(ClientPtr client)
 {
     mixin(REQUEST!xAllocColorReq);
-    REQUEST_SIZE_MATCH(xAllocColorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllocColorReq);
 
     if (client.swapped) {
         swapl(&stuff.cmap);
@@ -2643,7 +2643,7 @@ int ProcAllocColor(ClientPtr client)
         swapl(&reply.pixel);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcAllocNamedColor(ClientPtr client)
@@ -2692,10 +2692,10 @@ int ProcAllocNamedColor(ClientPtr client)
 
 version (XINERAMA) {
     if (noPanoramiXExtension || !pcmp.pScreen.myNum)
-        return X_SEND_REPLY_SIMPLE(client, reply);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     return Success;
 } else {
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 } /* XINERAMA */
 }
 
@@ -2706,7 +2706,7 @@ int ProcAllocColorCells(ClientPtr client)
 
     mixin(REQUEST!xAllocColorCellsReq);
 
-    REQUEST_SIZE_MATCH(xAllocColorCellsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllocColorCellsReq);
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixAddAccess);
     if (rc == Success) {
@@ -2751,7 +2751,7 @@ version (XINERAMA) {
                 SwapLongs(ppixels, length / 4);
             }
 
-            return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+            return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
         }
 }
 
@@ -2766,7 +2766,7 @@ version (XINERAMA) {
                 SwapLongs(ppixels, length / 4);
             }
 
-            return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+            return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
         }
         x_rpcbuf_clear(&rpcbuf);
         return Success;
@@ -2784,7 +2784,7 @@ int ProcAllocColorPlanes(ClientPtr client)
 
     mixin(REQUEST!xAllocColorPlanesReq);
 
-    REQUEST_SIZE_MATCH(xAllocColorPlanesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllocColorPlanesReq);
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixAddAccess);
     if (rc == Success) {
@@ -2830,11 +2830,11 @@ int ProcAllocColorPlanes(ClientPtr client)
 version (XINERAMA) {
         if (noPanoramiXExtension || !pcmp.pScreen.myNum) /* XINERAMA */
         {
-            return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+            return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
         }
 }
 else {
-            return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+            return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
         x_rpcbuf_clear(&rpcbuf);
         return Success;
@@ -2853,7 +2853,7 @@ int ProcFreeColors(ClientPtr client)
 
     mixin(REQUEST!xFreeColorsReq);
 
-    REQUEST_AT_LEAST_SIZE(xFreeColorsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xFreeColorsReq);
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixRemoveAccess);
     if (rc == Success) {
@@ -2878,7 +2878,7 @@ int ProcStoreColors(ClientPtr client)
 
     mixin(REQUEST!xStoreColorsReq);
 
-    REQUEST_AT_LEAST_SIZE(xStoreColorsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xStoreColorsReq);
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixWriteAccess);
     if (rc == Success) {
@@ -2929,7 +2929,7 @@ int ProcStoreNamedColor(ClientPtr client)
 int ProcQueryColors(ClientPtr client)
 {
     mixin(REQUEST!xQueryColorsReq);
-    REQUEST_AT_LEAST_SIZE(xQueryColorsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xQueryColorsReq);
 
     if (client.swapped) {
         swapl(&stuff.cmap);
@@ -2965,7 +2965,7 @@ int ProcQueryColors(ClientPtr client)
             SwapShorts(cast(short*)prgbs, count * 4); // xrgb = 4 shorts
         }
 
-        return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+        return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
     }
     else {
         client.errorValue = stuff.cmap;
@@ -2976,7 +2976,7 @@ int ProcQueryColors(ClientPtr client)
 int ProcLookupColor(ClientPtr client)
 {
     mixin(REQUEST!xLookupColorReq);
-    REQUEST_AT_LEAST_SIZE(xLookupColorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xLookupColorReq);
 
     if (client.swapped) {
         swapl(&stuff.cmap);
@@ -3024,7 +3024,7 @@ int ProcLookupColor(ClientPtr client)
         swaps(&reply.screenBlue);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcCreateCursor(ClientPtr client)
@@ -3040,7 +3040,7 @@ int ProcCreateCursor(ClientPtr client)
 
     mixin(REQUEST!xCreateCursorReq);
 
-    REQUEST_SIZE_MATCH(xCreateCursorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateCursorReq);
     LEGAL_NEW_RESOURCE(stuff.cid, client);
 
     rc = dixLookupResourceByType(cast(void**) &src, stuff.source, X11_RESTYPE_PIXMAP,
@@ -3128,7 +3128,7 @@ int ProcCreateCursor(ClientPtr client)
 int ProcCreateGlyphCursor(ClientPtr client)
 {
     mixin(REQUEST!xCreateGlyphCursorReq);
-    REQUEST_SIZE_MATCH(xCreateGlyphCursorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateGlyphCursorReq);
 
     if (client.swapped) {
         swapl(&stuff.cid);
@@ -3167,7 +3167,7 @@ int ProcFreeCursor(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -3195,7 +3195,7 @@ int ProcQueryBestSize(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xQueryBestSizeReq);
-    REQUEST_SIZE_MATCH(xQueryBestSizeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xQueryBestSizeReq);
 
     if ((stuff.class_ != CursorShape) &&
         (stuff.class_ != TileShape) && (stuff.class_ != StippleShape)) {
@@ -3226,13 +3226,13 @@ int ProcQueryBestSize(ClientPtr client)
         swaps(&reply.height);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcSetScreenSaver(ClientPtr client)
 {
     mixin(REQUEST!xSetScreenSaverReq);
-    REQUEST_SIZE_MATCH(xSetScreenSaverReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetScreenSaverReq);
 
     if (client.swapped) {
         swaps(&stuff.timeout);
@@ -3294,7 +3294,7 @@ int ProcSetScreenSaver(ClientPtr client)
 
 int ProcGetScreenSaver(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     DIX_FOR_EACH_SCREEN({
         int rc = dixCallScreensaverAccessCallback(client, walkScreen, DixGetAttrAccess);
@@ -3314,7 +3314,7 @@ int ProcGetScreenSaver(ClientPtr client)
         swaps(&reply.interval);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcChangeHosts(ClientPtr client)
@@ -3341,7 +3341,7 @@ int ProcListHosts(ClientPtr client)
 
     /* mixin(REQUEST!xListHostsReq); */
 
-    REQUEST_SIZE_MATCH(xListHostsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xListHostsReq);
 
     /* untrusted clients can't list hosts */
     result = dixCallServerAccessCallback(client, DixReadAccess);
@@ -3376,14 +3376,14 @@ int ProcListHosts(ClientPtr client)
     x_rpcbuf_write_CARD8s(&rpcbuf, pdata, len);
     free(pdata);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcChangeAccessControl(ClientPtr client)
 {
     mixin(REQUEST!xSetAccessControlReq);
 
-    REQUEST_SIZE_MATCH(xSetAccessControlReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetAccessControlReq);
     if ((stuff.mode != EnableAccess) && (stuff.mode != DisableAccess)) {
         client.errorValue = stuff.mode;
         return BadValue;
@@ -3413,7 +3413,7 @@ private void CloseDownRetainedResources()
 int ProcKillClient(ClientPtr client)
 {
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -3450,7 +3450,7 @@ int ProcSetFontPath(ClientPtr client)
 
     mixin(REQUEST!xSetFontPathReq);
 
-    REQUEST_AT_LEAST_SIZE(xSetFontPathReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetFontPathReq);
 
     nbytes = (client.req_len << 2) - xSetFontPathReq.sizeof;
     total = nbytes;
@@ -3470,7 +3470,7 @@ int ProcSetFontPath(ClientPtr client)
 int ProcGetFontPath(ClientPtr client)
 {
     /* REQUEST (xReq); */
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     int rc = dixCallServerAccessCallback(client, DixGetAttrAccess);
     if (rc != Success)
@@ -3486,7 +3486,7 @@ int ProcGetFontPath(ClientPtr client)
         swaps(&reply.nPaths);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcChangeCloseDownMode(ClientPtr client)
@@ -3494,7 +3494,7 @@ int ProcChangeCloseDownMode(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xSetCloseDownModeReq);
-    REQUEST_SIZE_MATCH(xSetCloseDownModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetCloseDownModeReq);
 
     rc = dixCallClientAccessCallback(client, client, DixManageAccess);
     if (rc != Success)
@@ -3517,7 +3517,7 @@ int ProcForceScreenSaver(ClientPtr client)
 
     mixin(REQUEST!xForceScreenSaverReq);
 
-    REQUEST_SIZE_MATCH(xForceScreenSaverReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xForceScreenSaverReq);
 
     if ((stuff.mode != ScreenSaverReset) && (stuff.mode != ScreenSaverActive)) {
         client.errorValue = stuff.mode;
@@ -3531,7 +3531,7 @@ int ProcForceScreenSaver(ClientPtr client)
 
 int ProcNoOperation(ClientPtr client)
 {
-    REQUEST_AT_LEAST_SIZE(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     /* noop -- don't do anything */
     return Success;

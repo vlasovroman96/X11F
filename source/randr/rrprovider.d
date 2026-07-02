@@ -57,7 +57,7 @@ enum string ADD_PROVIDER(string _pScreen) = `do {
 int ProcRRGetProviders(ClientPtr client)
 {
     mixin(REQUEST!xRRGetProvidersReq);
-    REQUEST_SIZE_MATCH(xRRGetProvidersReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetProvidersReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -82,7 +82,7 @@ int ProcRRGetProviders(ClientPtr client)
         };
         if (client.swapped)
             swapl(&reply.timestamp);
-        return X_SEND_REPLY_SIMPLE(client, reply);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
@@ -102,13 +102,13 @@ int ProcRRGetProviders(ClientPtr client)
         swapl(&reply.timestamp);
         swaps(&reply.nProviders);
     }
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRGetProviderInfo(ClientPtr client)
 {
     mixin(REQUEST!xRRGetProviderInfoReq);
-    REQUEST_SIZE_MATCH(xRRGetProviderInfoReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetProviderInfoReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -231,7 +231,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
         swaps(&reply.nAssociatedProviders);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private void RRInitPrimeSyncProps(ScreenPtr pScreen)
@@ -287,7 +287,7 @@ private void RRFiniPrimeSyncProps(ScreenPtr pScreen)
 int ProcRRSetProviderOutputSource(ClientPtr client)
 {
     mixin(REQUEST!xRRSetProviderOutputSourceReq);
-    REQUEST_SIZE_MATCH(xRRSetProviderOutputSourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetProviderOutputSourceReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -332,7 +332,7 @@ int ProcRRSetProviderOutputSource(ClientPtr client)
 int ProcRRSetProviderOffloadSink(ClientPtr client)
 {
     mixin(REQUEST!xRRSetProviderOffloadSinkReq);
-    REQUEST_SIZE_MATCH(xRRSetProviderOffloadSinkReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetProviderOffloadSinkReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);

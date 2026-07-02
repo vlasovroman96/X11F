@@ -141,7 +141,7 @@ AppleWMDoReorderWindow(WindowPtr pWin)
 static int
 ProcAppleWMQueryVersion(register ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xAppleWMQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMQueryVersionReq);
 
     xAppleWMQueryVersionReply reply = {
         .majorVersion = SERVER_APPLEWM_MAJOR_VERSION,
@@ -149,7 +149,7 @@ ProcAppleWMQueryVersion(register ClientPtr client)
         .patchVersion = SERVER_APPLEWM_PATCH_VERSION,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* events */
@@ -218,7 +218,7 @@ ProcAppleWMSelectInput(register ClientPtr client)
     XID clientResource;
     int i;
 
-    REQUEST_SIZE_MATCH(xAppleWMSelectInputReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSelectInputReq);
     i =
         dixLookupResourceByType((void **)&pHead, eventResource, EventType,
                                 client,
@@ -336,7 +336,7 @@ AppleWMSelectedEvents(void)
 static int
 ProcAppleWMDisableUpdate(register ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xAppleWMDisableUpdateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMDisableUpdateReq);
 
     appleWMProcs->DisableUpdate();
 
@@ -346,7 +346,7 @@ ProcAppleWMDisableUpdate(register ClientPtr client)
 static int
 ProcAppleWMReenableUpdate(register ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xAppleWMReenableUpdateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMReenableUpdateReq);
 
     appleWMProcs->EnableUpdate();
 
@@ -362,7 +362,7 @@ ProcAppleWMSetWindowMenu(register ClientPtr client)
     int max_len, nitems, i, j;
     mixin(REQUEST!xAppleWMSetWindowMenuReq);
 
-    REQUEST_AT_LEAST_SIZE(xAppleWMSetWindowMenuReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSetWindowMenuReq);
 
     nitems = stuff->nitems;
     const char **items = calloc(nitems, sizeof(char *));
@@ -409,7 +409,7 @@ ProcAppleWMSetWindowMenuCheck(register ClientPtr client)
 {
     mixin(REQUEST!xAppleWMSetWindowMenuCheckReq);
 
-    REQUEST_SIZE_MATCH(xAppleWMSetWindowMenuCheckReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSetWindowMenuCheckReq);
     X11ApplicationSetWindowMenuCheck(stuff->index);
     return Success;
 }
@@ -417,7 +417,7 @@ ProcAppleWMSetWindowMenuCheck(register ClientPtr client)
 static int
 ProcAppleWMSetFrontProcess(register ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xAppleWMSetFrontProcessReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSetFrontProcessReq);
 
     X11ApplicationSetFrontProcess();
     return Success;
@@ -430,7 +430,7 @@ ProcAppleWMSetWindowLevel(register ClientPtr client)
     WindowPtr pWin;
     int err;
 
-    REQUEST_SIZE_MATCH(xAppleWMSetWindowLevelReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSetWindowLevelReq);
 
     if (Success != dixLookupWindow(&pWin, stuff->window, client,
                                    DixReadAccess))
@@ -454,7 +454,7 @@ ProcAppleWMSendPSN(register ClientPtr client)
     mixin(REQUEST!xAppleWMSendPSNReq);
     int err;
 
-    REQUEST_SIZE_MATCH(xAppleWMSendPSNReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSendPSNReq);
 
     if (!appleWMProcs->SendPSN)
         return BadRequest;
@@ -474,7 +474,7 @@ ProcAppleWMAttachTransient(register ClientPtr client)
     mixin(REQUEST!xAppleWMAttachTransientReq);
     int err;
 
-    REQUEST_SIZE_MATCH(xAppleWMAttachTransientReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMAttachTransientReq);
 
     if (!appleWMProcs->AttachTransient)
         return BadRequest;
@@ -505,7 +505,7 @@ ProcAppleWMSetCanQuit(register ClientPtr client)
 {
     mixin(REQUEST!xAppleWMSetCanQuitReq);
 
-    REQUEST_SIZE_MATCH(xAppleWMSetCanQuitReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMSetCanQuitReq);
 
     X11ApplicationSetCanQuit(stuff->state);
     return Success;
@@ -519,7 +519,7 @@ ProcAppleWMFrameGetRect(register ClientPtr client)
     BoxRec ir, or, rr;
     mixin(REQUEST!xAppleWMFrameGetRectReq);
 
-    REQUEST_SIZE_MATCH(xAppleWMFrameGetRectReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMFrameGetRectReq);
 
     ir = make_box(stuff->ix, stuff->iy, stuff->iw, stuff->ih);
     or = make_box(stuff->ox, stuff->oy, stuff->ow, stuff->oh);
@@ -537,7 +537,7 @@ ProcAppleWMFrameGetRect(register ClientPtr client)
         .h = rr.y2 - rr.y1,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
@@ -547,7 +547,7 @@ ProcAppleWMFrameHitTest(register ClientPtr client)
     int ret;
     mixin(REQUEST!xAppleWMFrameHitTestReq);
 
-    REQUEST_SIZE_MATCH(xAppleWMFrameHitTestReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMFrameHitTestReq);
 
     ir = make_box(stuff->ix, stuff->iy, stuff->iw, stuff->ih);
     or = make_box(stuff->ox, stuff->oy, stuff->ow, stuff->oh);
@@ -561,7 +561,7 @@ ProcAppleWMFrameHitTest(register ClientPtr client)
         .ret = ret
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
@@ -573,7 +573,7 @@ ProcAppleWMFrameDraw(register ClientPtr client)
     mixin(REQUEST!xAppleWMFrameDrawReq);
     WindowPtr pWin;
 
-    REQUEST_AT_LEAST_SIZE(xAppleWMFrameDrawReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleWMFrameDrawReq);
 
     if (Success != dixLookupWindow(&pWin, stuff->window, client,
                                    DixReadAccess))

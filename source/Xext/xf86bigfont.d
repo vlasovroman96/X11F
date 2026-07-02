@@ -301,7 +301,7 @@ else {
     X_REPLY_FIELD_CARD32(gid);
     X_REPLY_FIELD_CARD32(signature);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private void swapCharInfo(xCharInfo* pCI)
@@ -683,7 +683,7 @@ if (nCharInfos > 0)
             x_rpcbuf_write_CARD16s(&rpcbuf, pIndex2UniqIndex, nCharInfos);
         }
 
-        int rc = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+        int rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
         if (nCharInfos > 0) {
             if (shmid == -1) {

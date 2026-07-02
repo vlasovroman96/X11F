@@ -208,7 +208,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
         SendEventToAllWindows(dev, DevicePresenceNotifyMask,
                               cast(xEvent*) &dpn, 1);
 
-        ret = X_SEND_REPLY_SIMPLE(client, reply);
+        ret = mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
     return ret;

@@ -89,7 +89,7 @@ int __glXDispSwap_CreateContextWithConfigSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXCreateContextWithConfigSGIXReq* req = cast(xGLXCreateContextWithConfigSGIXReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXCreateContextWithConfigSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateContextWithConfigSGIXReq);
 
     swaps(&req.length);
     swapl(&req.context);
@@ -201,7 +201,7 @@ int __glXDispSwap_GetFBConfigsSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXGetFBConfigsSGIXReq* req = cast(xGLXGetFBConfigsSGIXReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXGetFBConfigsSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXGetFBConfigsSGIXReq);
 
     swapl(&req.screen);
     return __glXDisp_GetFBConfigsSGIX(cl, pc);
@@ -226,7 +226,7 @@ int __glXDispSwap_CreatePixmap(__GLXclientState* cl, GLbyte* pc)
     xGLXCreatePixmapReq* req = cast(xGLXCreatePixmapReq*) pc;
     CARD32* attribs = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreatePixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreatePixmapReq);
 
     swaps(&req.length);
     swapl(&req.screen);
@@ -251,7 +251,7 @@ int __glXDispSwap_CreateGLXPixmapWithConfigSGIX(__GLXclientState* cl, GLbyte* pc
     ClientPtr client = cl.client;
     xGLXCreateGLXPixmapWithConfigSGIXReq* req = cast(xGLXCreateGLXPixmapWithConfigSGIXReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXCreateGLXPixmapWithConfigSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateGLXPixmapWithConfigSGIXReq);
 
     swaps(&req.length);
     swapl(&req.screen);
@@ -277,7 +277,7 @@ int __glXDispSwap_DestroyPixmap(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXDestroyGLXPixmapReq* req = cast(xGLXDestroyGLXPixmapReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXDestroyGLXPixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyGLXPixmapReq);
 
     swaps(&req.length);
     swapl(&req.glxpixmap);
@@ -301,7 +301,7 @@ int __glXDispSwap_CreatePbuffer(__GLXclientState* cl, GLbyte* pc)
 
     CARD32* attribs = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreatePbufferReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreatePbufferReq);
 
     swapl(&req.screen);
     swapl(&req.fbconfig);
@@ -324,7 +324,7 @@ int __glXDispSwap_CreateGLXPbufferSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXCreateGLXPbufferSGIXReq* req = cast(xGLXCreateGLXPbufferSGIXReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreateGLXPbufferSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateGLXPbufferSGIXReq);
 
     swapl(&req.screen);
     swapl(&req.fbconfig);
@@ -349,7 +349,7 @@ int __glXDispSwap_DestroyGLXPbufferSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXDestroyGLXPbufferSGIXReq* req = cast(xGLXDestroyGLXPbufferSGIXReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXDestroyGLXPbufferSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyGLXPbufferSGIXReq);
 
     swapl(&req.pbuffer);
 
@@ -362,7 +362,7 @@ int __glXDispSwap_ChangeDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
     xGLXChangeDrawableAttributesReq* req = cast(xGLXChangeDrawableAttributesReq*) pc;
     CARD32* attribs = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXChangeDrawableAttributesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXChangeDrawableAttributesReq);
 
     swapl(&req.drawable);
     swapl(&req.numAttribs);
@@ -387,7 +387,7 @@ int __glXDispSwap_ChangeDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
     xGLXChangeDrawableAttributesSGIXReq* req = cast(xGLXChangeDrawableAttributesSGIXReq*) pc;
     CARD32* attribs = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXChangeDrawableAttributesSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXChangeDrawableAttributesSGIXReq);
 
     swapl(&req.drawable);
     swapl(&req.numAttribs);
@@ -411,7 +411,7 @@ int __glXDispSwap_CreateWindow(__GLXclientState* cl, GLbyte* pc)
 
     CARD32* attribs = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreateWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateWindowReq);
 
     swapl(&req.screen);
     swapl(&req.fbconfig);
@@ -435,7 +435,7 @@ int __glXDispSwap_DestroyWindow(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXDestroyWindowReq* req = cast(xGLXDestroyWindowReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXDestroyWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyWindowReq);
 
     swapl(&req.glxwindow);
 
@@ -493,7 +493,7 @@ int __glXDispSwap_ClientInfo(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXClientInfoReq* req = cast(xGLXClientInfoReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXClientInfoReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXClientInfoReq);
 
     swaps(&req.length);
     swapl(&req.major);
@@ -508,7 +508,7 @@ int __glXDispSwap_QueryContextInfoEXT(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXQueryContextInfoEXTReq* req = cast(xGLXQueryContextInfoEXTReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXQueryContextInfoEXTReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXQueryContextInfoEXTReq);
 
     swaps(&req.length);
     swapl(&req.context);
@@ -596,7 +596,7 @@ int __glXDispSwap_GetDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
     xGLXVendorPrivateWithReplyReq* req = cast(xGLXVendorPrivateWithReplyReq*) pc;
     CARD32* data = void;
 
-    REQUEST_SIZE_MATCH(xGLXGetDrawableAttributesSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXGetDrawableAttributesSGIXReq);
 
     data = cast(CARD32*) (req + 1);
     swaps(&req.length);
@@ -611,7 +611,7 @@ int __glXDispSwap_GetDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXGetDrawableAttributesReq* req = cast(xGLXGetDrawableAttributesReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXGetDrawableAttributesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXGetDrawableAttributesReq);
 
     swaps(&req.length);
     swapl(&req.drawable);
@@ -653,7 +653,7 @@ int __glXDispSwap_VendorPrivate(__GLXclientState* cl, GLbyte* pc)
     GLint vendorcode = void;
     __GLXdispatchVendorPrivProcPtr proc = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXVendorPrivateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXVendorPrivateReq);
 
     req = cast(xGLXVendorPrivateReq*) pc;
     swaps(&req.length);
@@ -679,7 +679,7 @@ int __glXDispSwap_VendorPrivateWithReply(__GLXclientState* cl, GLbyte* pc)
     GLint vendorcode = void;
     __GLXdispatchVendorPrivProcPtr proc = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXVendorPrivateWithReplyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXVendorPrivateWithReplyReq);
 
     req = cast(xGLXVendorPrivateWithReplyReq*) pc;
     swaps(&req.length);

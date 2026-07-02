@@ -184,5 +184,5 @@ version (XINERAMA) {
     X_REPLY_FIELD_CARD32(win_y);
     X_REPLY_FIELD_CARD16(buttons_len);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

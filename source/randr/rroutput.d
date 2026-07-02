@@ -442,7 +442,7 @@ void RROutputInitErrorValue()
 int ProcRRGetOutputInfo(ClientPtr client)
 {
     mixin(REQUEST!xRRGetOutputInfoReq);
-    REQUEST_SIZE_MATCH(xRRGetOutputInfoReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetOutputInfoReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -512,7 +512,7 @@ int ProcRRGetOutputInfo(ClientPtr client)
         swaps(&reply.nameLength);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private void RRSetPrimaryOutput(ScreenPtr pScreen, rrScrPrivPtr pScrPriv, RROutputPtr output)
@@ -540,7 +540,7 @@ private void RRSetPrimaryOutput(ScreenPtr pScreen, rrScrPrivPtr pScrPriv, RROutp
 int ProcRRSetOutputPrimary(ClientPtr client)
 {
     mixin(REQUEST!xRRSetOutputPrimaryReq);
-    REQUEST_SIZE_MATCH(xRRSetOutputPrimaryReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetOutputPrimaryReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -592,7 +592,7 @@ int ProcRRSetOutputPrimary(ClientPtr client)
 int ProcRRGetOutputPrimary(ClientPtr client)
 {
     mixin(REQUEST!xRRGetOutputPrimaryReq);
-    REQUEST_SIZE_MATCH(xRRGetOutputPrimaryReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetOutputPrimaryReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -618,5 +618,5 @@ int ProcRRGetOutputPrimary(ClientPtr client)
         swapl(&reply.output);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

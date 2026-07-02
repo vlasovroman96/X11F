@@ -407,7 +407,7 @@ int __glXDisp_CreateContextWithConfigSGIX(__GLXclientState* cl, GLbyte* pc)
     __GLXscreen* pGlxScreen = void;
     int err = void;
 
-    REQUEST_SIZE_MATCH(xGLXCreateContextWithConfigSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateContextWithConfigSGIXReq);
 
     if (!validGlxScreen(cl.client, req.screen, &pGlxScreen, &err))
         return err;
@@ -692,7 +692,7 @@ int __glXDisp_IsDirect(__GLXclientState* cl, GLbyte* pc)
         isDirect: glxc.isDirect
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int __glXDisp_QueryVersion(__GLXclientState* cl, GLbyte* pc)
@@ -700,7 +700,7 @@ int __glXDisp_QueryVersion(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXQueryVersionReq* req = cast(xGLXQueryVersionReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXQueryVersionReq);
 
     GLuint major = req.majorVersion;
     GLuint minor = req.minorVersion;
@@ -722,7 +722,7 @@ int __glXDisp_QueryVersion(__GLXclientState* cl, GLbyte* pc)
         swapl(&reply.minorVersion);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int __glXDisp_WaitGL(__GLXclientState* cl, GLbyte* pc)
@@ -938,7 +938,7 @@ int __glXDisp_GetVisualConfigs(__GLXclientState* cl, GLbyte* pc)
         }
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 enum __GLX_TOTAL_FBCONFIG_ATTRIBS = (44);
@@ -1074,7 +1074,7 @@ int __glXDisp_GetFBConfigsSGIX(__GLXclientState* cl, GLbyte* pc)
     xGLXGetFBConfigsSGIXReq* req = cast(xGLXGetFBConfigsSGIXReq*) pc;
 
     /* work around mesa bug, don't use REQUEST_SIZE_MATCH */
-    REQUEST_AT_LEAST_SIZE(xGLXGetFBConfigsSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXGetFBConfigsSGIXReq);
     return DoGetFBConfigs(cl, req.screen);
 }
 
@@ -1209,7 +1209,7 @@ int __glXDisp_CreatePixmap(__GLXclientState* cl, GLbyte* pc)
     __GLXscreen* pGlxScreen = void;
     int err = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreatePixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreatePixmapReq);
     if (req.numAttribs > (UINT32_MAX >> 3)) {
         client.errorValue = req.numAttribs;
         return BadValue;
@@ -1240,7 +1240,7 @@ int __glXDisp_CreateGLXPixmapWithConfigSGIX(__GLXclientState* cl, GLbyte* pc)
     __GLXscreen* pGlxScreen = void;
     int err = void;
 
-    REQUEST_SIZE_MATCH(xGLXCreateGLXPixmapWithConfigSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateGLXPixmapWithConfigSGIXReq);
 
     if (!validGlxScreen(cl.client, req.screen, &pGlxScreen, &err))
         return err;
@@ -1279,7 +1279,7 @@ int __glXDisp_DestroyPixmap(__GLXclientState* cl, GLbyte* pc)
 
     /* should be REQUEST_SIZE_MATCH, but mesa's glXDestroyPixmap used to set
      * length to 3 instead of 2 */
-    REQUEST_AT_LEAST_SIZE(xGLXDestroyPixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyPixmapReq);
 
     return DoDestroyDrawable(cl, req.glxpixmap, GLX_DRAWABLE_PIXMAP);
 }
@@ -1328,7 +1328,7 @@ int __glXDisp_CreatePbuffer(__GLXclientState* cl, GLbyte* pc)
     CARD32* attrs = void;
     int width = void, height = void, i = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreatePbufferReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreatePbufferReq);
     if (req.numAttribs > (UINT32_MAX >> 3)) {
         client.errorValue = req.numAttribs;
         return BadValue;
@@ -1362,7 +1362,7 @@ int __glXDisp_CreateGLXPbufferSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXCreateGLXPbufferSGIXReq* req = cast(xGLXCreateGLXPbufferSGIXReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreateGLXPbufferSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateGLXPbufferSGIXReq);
 
     /*
      * We should really handle attributes correctly, but this extension
@@ -1377,7 +1377,7 @@ int __glXDisp_DestroyPbuffer(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXDestroyPbufferReq* req = cast(xGLXDestroyPbufferReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXDestroyPbufferReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyPbufferReq);
 
     return DoDestroyDrawable(cl, req.pbuffer, GLX_DRAWABLE_PBUFFER);
 }
@@ -1387,7 +1387,7 @@ int __glXDisp_DestroyGLXPbufferSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXDestroyGLXPbufferSGIXReq* req = cast(xGLXDestroyGLXPbufferSGIXReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXDestroyGLXPbufferSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyGLXPbufferSGIXReq);
 
     return DoDestroyDrawable(cl, req.pbuffer, GLX_DRAWABLE_PBUFFER);
 }
@@ -1420,7 +1420,7 @@ int __glXDisp_ChangeDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXChangeDrawableAttributesReq* req = cast(xGLXChangeDrawableAttributesReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXChangeDrawableAttributesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXChangeDrawableAttributesReq);
     if (req.numAttribs > (UINT32_MAX >> 3)) {
         client.errorValue = req.numAttribs;
         return BadValue;
@@ -1443,7 +1443,7 @@ int __glXDisp_ChangeDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXChangeDrawableAttributesSGIXReq* req = cast(xGLXChangeDrawableAttributesSGIXReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXChangeDrawableAttributesSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXChangeDrawableAttributesSGIXReq);
     if (req.numAttribs > (UINT32_MAX >> 3)) {
         client.errorValue = req.numAttribs;
         return BadValue;
@@ -1464,7 +1464,7 @@ int __glXDisp_CreateWindow(__GLXclientState* cl, GLbyte* pc)
     DrawablePtr pDraw = void;
     int err = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXCreateWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXCreateWindowReq);
     if (req.numAttribs > (UINT32_MAX >> 3)) {
         client.errorValue = req.numAttribs;
         return BadValue;
@@ -1496,7 +1496,7 @@ int __glXDisp_DestroyWindow(__GLXclientState* cl, GLbyte* pc)
     xGLXDestroyWindowReq* req = cast(xGLXDestroyWindowReq*) pc;
 
     /* mesa's glXDestroyWindow used to set length to 3 instead of 2 */
-    REQUEST_AT_LEAST_SIZE(xGLXDestroyWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXDestroyWindowReq);
 
     return DoDestroyDrawable(cl, req.glxwindow, GLX_DRAWABLE_WINDOW);
 }
@@ -1583,7 +1583,7 @@ private int DoQueryContext(__GLXclientState* cl, GLXContextID gcId)
         swapl(&reply.n);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int __glXDisp_QueryContextInfoEXT(__GLXclientState* cl, GLbyte* pc)
@@ -1591,7 +1591,7 @@ int __glXDisp_QueryContextInfoEXT(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXQueryContextInfoEXTReq* req = cast(xGLXQueryContextInfoEXTReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXQueryContextInfoEXTReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXQueryContextInfoEXTReq);
 
     return DoQueryContext(cl, req.context);
 }
@@ -1804,7 +1804,7 @@ enum string ATTRIB(string a, string v) = `do {
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD32s(&rpcbuf, attributes, num << 1);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int __glXDisp_GetDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
@@ -1813,7 +1813,7 @@ int __glXDisp_GetDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
     xGLXGetDrawableAttributesReq* req = cast(xGLXGetDrawableAttributesReq*) pc;
 
     /* this should be REQUEST_SIZE_MATCH, but mesa sends an additional 4 bytes */
-    REQUEST_AT_LEAST_SIZE(xGLXGetDrawableAttributesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXGetDrawableAttributesReq);
 
     return DoGetDrawableAttributes(cl, req.drawable);
 }
@@ -1823,7 +1823,7 @@ int __glXDisp_GetDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXGetDrawableAttributesSGIXReq* req = cast(xGLXGetDrawableAttributesSGIXReq*) pc;
 
-    REQUEST_SIZE_MATCH(xGLXGetDrawableAttributesSGIXReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXGetDrawableAttributesSGIXReq);
 
     return DoGetDrawableAttributes(cl, req.drawable);
 }
@@ -1859,7 +1859,7 @@ int __glXDisp_Render(__GLXclientState* cl, GLbyte* pc)
     __GLXrenderHeader* hdr = void;
     __GLXcontext* glxc = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXRenderReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXRenderReq);
 
     req = cast(xGLXRenderReq*) pc;
     if (client.swapped) {
@@ -1958,7 +1958,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
     int error = void;
     CARD16 opcode = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXRenderLargeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXRenderLargeReq);
 
     req = cast(xGLXRenderLargeReq*) pc;
     if (client.swapped) {
@@ -2176,7 +2176,7 @@ int __glXDisp_VendorPrivate(__GLXclientState* cl, GLbyte* pc)
     GLint vendorcode = req.vendorCode;
     __GLXdispatchVendorPrivProcPtr proc = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXVendorPrivateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXVendorPrivateReq);
 
     proc = cast(__GLXdispatchVendorPrivProcPtr)
         __glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info,
@@ -2196,7 +2196,7 @@ int __glXDisp_VendorPrivateWithReply(__GLXclientState* cl, GLbyte* pc)
     GLint vendorcode = req.vendorCode;
     __GLXdispatchVendorPrivProcPtr proc = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXVendorPrivateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXVendorPrivateReq);
 
     proc = cast(__GLXdispatchVendorPrivProcPtr)
         __glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info,
@@ -2233,7 +2233,7 @@ int __glXDisp_QueryExtensionsString(__GLXclientState* cl, GLbyte* pc)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
     x_rpcbuf_write_string_0t_pad(&rpcbuf, pGlxScreen.GLXextensions);
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 enum GLX_VENDOR_NAMES_EXT = 0x20F6;
@@ -2311,7 +2311,7 @@ int __glXDisp_ClientInfo(__GLXclientState* cl, GLbyte* pc)
     xGLXClientInfoReq* req = cast(xGLXClientInfoReq*) pc;
     const(char)* buf = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXClientInfoReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXClientInfoReq);
 
     buf = cast(const(char)*) (req + 1);
     if (!memchr(buf, 0, (client.req_len << 2) - xGLXClientInfoReq.sizeof))

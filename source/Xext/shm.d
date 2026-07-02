@@ -254,7 +254,7 @@ private int ProcShmQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(uid);
     X_REPLY_FIELD_CARD16(gid);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /*
@@ -672,7 +672,7 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
     X_REPLY_FIELD_CARD32(visual);
     X_REPLY_FIELD_CARD32(size);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcShmPutImage(ClientPtr client)
@@ -880,7 +880,7 @@ version (XINERAMA) {
     X_REPLY_FIELD_CARD32(visual);
     X_REPLY_FIELD_CARD32(size);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 } else {
     return ShmGetImage(client, stuff);
 } /* XINERAMA */
@@ -1307,7 +1307,7 @@ private int ProcShmCreateSegment(ClientPtr client)
         nfd: 1,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 } /* SHM_FD_PASSING */
 

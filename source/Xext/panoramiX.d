@@ -951,7 +951,7 @@ int ProcPanoramiXQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(majorVersion);
     X_REPLY_FIELD_CARD16(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcPanoramiXGetState(ClientPtr client)
@@ -971,7 +971,7 @@ int ProcPanoramiXGetState(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(window);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcPanoramiXGetScreenCount(ClientPtr client)
@@ -991,7 +991,7 @@ int ProcPanoramiXGetScreenCount(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(window);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcPanoramiXGetScreenSize(ClientPtr client)
@@ -1023,7 +1023,7 @@ int ProcPanoramiXGetScreenSize(ClientPtr client)
     X_REPLY_FIELD_CARD32(window);
     X_REPLY_FIELD_CARD32(screen);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXineramaIsActive(ClientPtr client)
@@ -1042,7 +1042,7 @@ int ProcXineramaIsActive(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(state);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXineramaQueryScreens(ClientPtr client)
@@ -1069,7 +1069,7 @@ int ProcXineramaQueryScreens(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(number);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcPanoramiXDispatch(ClientPtr client)

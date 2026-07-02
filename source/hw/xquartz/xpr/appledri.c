@@ -90,7 +90,7 @@ AppleDRIResetProc(ExtensionEntry* extEntry)
 static int
 ProcAppleDRIQueryVersion(register ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xAppleDRIQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRIQueryVersionReq);
 
     xAppleDRIQueryVersionReply reply = {
         .majorVersion = SERVER_APPLEDRI_MAJOR_VERSION,
@@ -103,7 +103,7 @@ ProcAppleDRIQueryVersion(register ClientPtr client)
         swaps(&reply.minorVersion);
         swapl(&reply.patchVersion);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* surfaces */
@@ -112,7 +112,7 @@ static int
 ProcAppleDRIQueryDirectRenderingCapable(register ClientPtr client)
 {
     mixin(REQUEST!xAppleDRIQueryDirectRenderingCapableReq);
-    REQUEST_SIZE_MATCH(xAppleDRIQueryDirectRenderingCapableReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRIQueryDirectRenderingCapableReq);
 
     if (client->swapped)
         swapl(&stuff->screen);
@@ -136,14 +136,14 @@ ProcAppleDRIQueryDirectRenderingCapable(register ClientPtr client)
         .isCapable = isCapable,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
 ProcAppleDRIAuthConnection(register ClientPtr client)
 {
     mixin(REQUEST!xAppleDRIAuthConnectionReq);
-    REQUEST_SIZE_MATCH(xAppleDRIAuthConnectionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRIAuthConnectionReq);
 
     if (client->swapped) {
         swapl(&stuff->screen);
@@ -164,7 +164,7 @@ ProcAppleDRIAuthConnection(register ClientPtr client)
         swapl(&reply.authenticated); /* Yes, this is a CARD32 ... sigh */
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static void
@@ -189,7 +189,7 @@ static int
 ProcAppleDRICreateSurface(ClientPtr client)
 {
     mixin(REQUEST!xAppleDRICreateSurfaceReq);
-    REQUEST_SIZE_MATCH(xAppleDRICreateSurfaceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRICreateSurfaceReq);
 
     if (client->swapped) {
         swapl(&stuff->screen);
@@ -228,14 +228,14 @@ ProcAppleDRICreateSurface(ClientPtr client)
         swapl(&reply.uid);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 static int
 ProcAppleDRIDestroySurface(register ClientPtr client)
 {
     mixin(REQUEST!xAppleDRIDestroySurfaceReq);
-    REQUEST_SIZE_MATCH(xAppleDRIDestroySurfaceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRIDestroySurfaceReq);
 
     if (client->swapped) {
         swapl(&stuff->screen);
@@ -263,7 +263,7 @@ static int
 ProcAppleDRICreatePixmap(ClientPtr client)
 {
     mixin(REQUEST!xAppleDRICreatePixmapReq);
-    REQUEST_SIZE_MATCH(xAppleDRICreatePixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRICreatePixmapReq);
 
     if (client->swapped) {
         swapl(&stuff->screen);
@@ -276,7 +276,7 @@ ProcAppleDRICreatePixmap(ClientPtr client)
     int width, height, pitch, bpp;
     void *ptr;
 
-    REQUEST_SIZE_MATCH(xAppleDRICreatePixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRICreatePixmapReq);
 
     rc = dixLookupDrawable(&pDrawable, stuff->drawable, client, 0,
                            DixReadAccess);
@@ -319,14 +319,14 @@ ProcAppleDRICreatePixmap(ClientPtr client)
         swapl(&reply.size);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 static int
 ProcAppleDRIDestroyPixmap(ClientPtr client)
 {
     mixin(REQUEST!xAppleDRIDestroyPixmapReq);
-    REQUEST_SIZE_MATCH(xAppleDRIDestroyPixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAppleDRIDestroyPixmapReq);
 
     if (client->swapped)
         swapl(&stuff->drawable);

@@ -129,7 +129,7 @@ pragma(inline, true) private size_t RegionSizeof(size_t n)
         return 0;
 }
 
-pragma(inline, true) private void RegionInit(RegionPtr _pReg, BoxPtr _rect, size_t _size)
+pragma(inline, true) void RegionInit(RegionPtr _pReg, BoxPtr _rect, size_t _size)
 {
     if ((_rect) != null) {
         (_pReg).extents = *(_rect);
@@ -153,7 +153,7 @@ pragma(inline, true) private Bool RegionInitBoxes(RegionPtr pReg, BoxPtr boxes, 
     return pixman_region_init_rects(pReg, boxes, nBoxes);
 }
 
-pragma(inline, true) private void RegionUninit(RegionPtr _pReg)
+pragma(inline, true) void RegionUninit(RegionPtr _pReg)
 {
     if ((_pReg).data && (_pReg).data.size) {
         if ((_pReg).data != &RegionEmptyData)
@@ -162,24 +162,24 @@ pragma(inline, true) private void RegionUninit(RegionPtr _pReg)
     }
 }
 
-pragma(inline, true) private void RegionReset(RegionPtr _pReg, BoxPtr _pBox)
+pragma(inline, true) void RegionReset(RegionPtr _pReg, BoxPtr _pBox)
 {
     (_pReg).extents = *(_pBox);
     RegionUninit(_pReg);
     (_pReg).data = cast(RegDataPtr) null;
 }
 
-pragma(inline, true) private Bool RegionNotEmpty(RegionPtr _pReg)
+pragma(inline, true) Bool RegionNotEmpty(RegionPtr _pReg)
 {
     return !RegionNil(_pReg);
 }
 
-pragma(inline, true) private Bool RegionBroken(RegionPtr _pReg)
+pragma(inline, true) Bool RegionBroken(RegionPtr _pReg)
 {
     return RegionNar(_pReg);
 }
 
-pragma(inline, true) private void RegionEmpty(RegionPtr _pReg)
+pragma(inline, true) void RegionEmpty(RegionPtr _pReg)
 {
     RegionUninit(_pReg);
     (_pReg).extents.x2 = (_pReg).extents.x1;
@@ -192,7 +192,7 @@ pragma(inline, true) BoxPtr RegionExtents(RegionPtr _pReg)
     return (&(_pReg).extents);
 }
 
-pragma(inline, true) private void RegionNull(RegionPtr _pReg)
+pragma(inline, true) void RegionNull(RegionPtr _pReg)
 {
     (_pReg).extents = RegionEmptyBox;
     (_pReg).data = &RegionEmptyData;
@@ -283,12 +283,12 @@ pragma(inline, true) void RegionTranslate(RegionPtr pReg, int x, int y)
 
 extern void RegionBreak(RegionPtr);
 
-pragma(inline, true) private Bool RegionContainsPoint(RegionPtr pReg, int x, int y, BoxPtr box)
+pragma(inline, true) Bool RegionContainsPoint(RegionPtr pReg, int x, int y, BoxPtr box)
 {
     return pixman_region_contains_point(pReg, x, y, box);
 }
 
-pragma(inline, true) private Bool RegionEqual(RegionPtr reg1, RegionPtr reg2)
+pragma(inline, true) Bool RegionEqual(RegionPtr reg1, RegionPtr reg2)
 {
     return pixman_region_equal(reg1, reg2);
 }

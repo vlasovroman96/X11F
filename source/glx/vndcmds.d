@@ -98,12 +98,12 @@ import glx.vnd_dispatch_stubs;
 private int dispatch_GLXQueryVersion(ClientPtr client)
 {
     xGLXQueryVersionReply reply = void;
-    REQUEST_SIZE_MATCH(xGLXQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXQueryVersionReq);
 
     reply.majorVersion = GlxCheckSwap(client, 1);
     reply.minorVersion = GlxCheckSwap(client, 4);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* broken header workaround */
@@ -120,11 +120,11 @@ private int dispatch_GLXClientInfo(ClientPtr client)
     size_t requestSize = client.req_len * 4;
 
     if (client.minorOp == X_GLXClientInfo) {
-        REQUEST_AT_LEAST_SIZE(xGLXClientInfoReq);
+        mixin(REQUEST_AT_LEAST_SIZE!xGLXClientInfoReq);
     } else if (client.minorOp == X_GLXSetClientInfoARB) {
-        REQUEST_AT_LEAST_SIZE(xGLXSetClientInfoARBReq);
+        mixin(REQUEST_AT_LEAST_SIZE!xGLXSetClientInfoARBReq);
     } else if (client.minorOp == X_GLXSetClientInfo2ARB) {
-        REQUEST_AT_LEAST_SIZE(xGLXSetClientInfo2ARBReq);
+        mixin(REQUEST_AT_LEAST_SIZE!xGLXSetClientInfo2ARBReq);
     } else {
         return BadImplementation;
     }
@@ -254,13 +254,13 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
 
     reply.contextTag = GlxCheckSwap(client, reply.contextTag);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int dispatch_GLXMakeCurrent(ClientPtr client)
 {
     mixin(REQUEST!xGLXMakeCurrentReq);
-    REQUEST_SIZE_MATCH(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
             stuff.drawable, stuff.drawable, stuff.context);
@@ -269,7 +269,7 @@ private int dispatch_GLXMakeCurrent(ClientPtr client)
 private int dispatch_GLXMakeContextCurrent(ClientPtr client)
 {
     mixin(REQUEST!xGLXMakeContextCurrentReq);
-    REQUEST_SIZE_MATCH(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
             stuff.drawable, stuff.readdrawable, stuff.context);
@@ -278,7 +278,7 @@ private int dispatch_GLXMakeContextCurrent(ClientPtr client)
 private int dispatch_GLXMakeCurrentReadSGI(ClientPtr client)
 {
     mixin(REQUEST!xGLXMakeCurrentReadSGIReq);
-    REQUEST_SIZE_MATCH(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
             stuff.drawable, stuff.readable, stuff.context);
@@ -288,7 +288,7 @@ private int dispatch_GLXCopyContext(ClientPtr client)
 {
     mixin(REQUEST!xGLXCopyContextReq);
     GlxServerVendor* vendor = void;
-    REQUEST_SIZE_MATCH(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     // If we've got a context tag, then we'll use it to select a vendor. If we
     // don't have a tag, then we'll look up one of the contexts. In either
@@ -313,7 +313,7 @@ private int dispatch_GLXSwapBuffers(ClientPtr client)
 {
     GlxServerVendor* vendor = null;
     mixin(REQUEST!xGLXSwapBuffersReq);
-    REQUEST_SIZE_MATCH(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     if (stuff.contextTag != 0) {
         // If the request has a context tag, then look up a vendor from that.
@@ -342,7 +342,7 @@ private int dispatch_GLXSingle(ClientPtr client)
 {
     mixin(REQUEST!xGLXSingleReq);
     GlxContextTagInfo* tagInfo = void;
-    REQUEST_AT_LEAST_SIZE(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     tagInfo = GlxLookupContextTag(client, GlxCheckSwap(client, stuff.contextTag));
     if (tagInfo != null) {
@@ -356,7 +356,7 @@ private int dispatch_GLXVendorPriv(ClientPtr client)
 {
     GlxVendorPrivDispatch* disp = void;
     mixin(REQUEST!xGLXVendorPrivateReq);
-    REQUEST_AT_LEAST_SIZE(*stuff);
+    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
 
     disp = LookupVendorPrivDispatch(GlxCheckSwap(client, stuff.vendorCode), TRUE);
     if (disp == null) {

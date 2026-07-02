@@ -174,7 +174,7 @@ enum AddResource = Darwin_X_AddResource;
 
 // extern void FreeResource(XID, RESTYPE);
 
-extern void FreeResourceByType(XID, RESTYPE, Bool);
+// extern void FreeResourceByType(XID, RESTYPE, Bool);
 
 extern void ChangeResourceValue(XID id, RESTYPE rtype, void* value);
 

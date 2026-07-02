@@ -1655,7 +1655,7 @@ Bool BadDeviceMap(BYTE* buff, int length, uint low, uint high, XID* errval)
 int ProcSetModifierMapping(ClientPtr client)
 {
     mixin(REQUEST!xSetModifierMappingReq);
-    REQUEST_AT_LEAST_SIZE(xSetModifierMappingReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetModifierMappingReq);
 
     if (client.req_len != ((stuff.numKeyPerModifier << 1) +
                             bytes_to_int32(xSetModifierMappingReq.sizeof)))
@@ -1673,12 +1673,12 @@ int ProcSetModifierMapping(ClientPtr client)
         success: rc,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcGetModifierMapping(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     int max_keys_per_mod = 0;
     KeyCode* modkeymap = null;
@@ -1694,13 +1694,13 @@ int ProcGetModifierMapping(ClientPtr client)
         numKeyPerModifier: max_keys_per_mod,
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcChangeKeyboardMapping(ClientPtr client)
 {
     mixin(REQUEST!xChangeKeyboardMappingReq);
-    REQUEST_AT_LEAST_SIZE(xChangeKeyboardMappingReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeKeyboardMappingReq);
 
     uint len = client.req_len - bytes_to_int32(xChangeKeyboardMappingReq.sizeof);
     if (len != (stuff.keyCodes * stuff.keySymsPerKeyCode))
@@ -1755,7 +1755,7 @@ int ProcChangeKeyboardMapping(ClientPtr client)
 int ProcSetPointerMapping(ClientPtr client)
 {
     mixin(REQUEST!xSetPointerMappingReq);
-    REQUEST_AT_LEAST_SIZE(xSetPointerMappingReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetPointerMappingReq);
 
     if (client.req_len !=
         bytes_to_int32(((xSetPointerMappingReq) + stuff.nElts).sizeof))
@@ -1797,13 +1797,13 @@ int ProcSetPointerMapping(ClientPtr client)
         success: (ret == MappingBusy) ? MappingBusy : MappingSuccess,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcGetKeyboardMapping(ClientPtr client)
 {
     mixin(REQUEST!xGetKeyboardMappingReq);
-    REQUEST_SIZE_MATCH(xGetKeyboardMappingReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGetKeyboardMappingReq);
 
     DeviceIntPtr kbd = PickKeyboard(client);
     int rc = dixCallDeviceAccessCallback(client, kbd, DixGetAttrAccess);
@@ -1841,12 +1841,12 @@ int ProcGetKeyboardMapping(ClientPtr client)
     free(syms.map);
     free(syms);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcGetPointerMapping(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     /* Apps may get different values each time they call GetPointerMapping as
      * the ClientPointer could change. */
@@ -1865,7 +1865,7 @@ int ProcGetPointerMapping(ClientPtr client)
         nElts: nElts,
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 void NoteLedState(DeviceIntPtr keybd, int led, Bool on)
@@ -2055,7 +2055,7 @@ enum DO_ALL =    (-1);
 int ProcChangeKeyboardControl(ClientPtr client)
 {
     mixin(REQUEST!xChangeKeyboardControlReq);
-    REQUEST_AT_LEAST_SIZE(xChangeKeyboardControlReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeKeyboardControlReq);
 
     BITS32 vmask = stuff.mask;
     if (client.req_len !=
@@ -2091,7 +2091,7 @@ int ProcChangeKeyboardControl(ClientPtr client)
 
 int ProcGetKeyboardControl(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     DeviceIntPtr kbd = PickKeyboard(client);
     int rc = dixCallDeviceAccessCallback(client, kbd, DixGetAttrAccess);
@@ -2114,13 +2114,13 @@ int ProcGetKeyboardControl(ClientPtr client)
     X_REPLY_FIELD_CARD16(bellPitch);
     X_REPLY_FIELD_CARD16(bellDuration);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcBell(ClientPtr client)
 {
     mixin(REQUEST!xBellReq);
-    REQUEST_SIZE_MATCH(xBellReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xBellReq);
 
     if (stuff.percent < -100 || stuff.percent > 100) {
         client.errorValue = stuff.percent;
@@ -2154,7 +2154,7 @@ int ProcBell(ClientPtr client)
 int ProcChangePointerControl(ClientPtr client)
 {
     mixin(REQUEST!xChangePointerControlReq);
-    REQUEST_SIZE_MATCH(xChangePointerControlReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangePointerControlReq);
 
     DeviceIntPtr mouse = PickPointer(client);
 
@@ -2229,7 +2229,7 @@ int ProcChangePointerControl(ClientPtr client)
 
 int ProcGetPointerControl(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     DeviceIntPtr ptr = PickPointer(client);
     int rc = dixCallDeviceAccessCallback(client, ptr, DixGetAttrAccess);
@@ -2249,7 +2249,7 @@ int ProcGetPointerControl(ClientPtr client)
     X_REPLY_FIELD_CARD16(accelDenominator);
     X_REPLY_FIELD_CARD16(threshold);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 void MaybeStopHint(DeviceIntPtr dev, ClientPtr client)
@@ -2270,7 +2270,7 @@ void MaybeStopHint(DeviceIntPtr dev, ClientPtr client)
 int ProcGetMotionEvents(ClientPtr client)
 {
     mixin(REQUEST!xGetMotionEventsReq);
-    REQUEST_SIZE_MATCH(xGetMotionEventsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGetMotionEventsReq);
 
     WindowPtr pWin = void;
     int rc = dixLookupWindow(&pWin, stuff.window, client, DixGetAttrAccess);
@@ -2329,12 +2329,12 @@ int ProcGetMotionEvents(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(nEvents);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcQueryKeymap(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     xQueryKeymapReply reply = { 0 };
 
@@ -2351,7 +2351,7 @@ int ProcQueryKeymap(ClientPtr client)
     else if (rc != BadAccess)
         return rc;
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**

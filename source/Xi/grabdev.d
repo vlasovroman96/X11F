@@ -112,7 +112,7 @@ int ProcXGrabDevice(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /***********************************************************************

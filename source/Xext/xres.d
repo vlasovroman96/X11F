@@ -161,7 +161,7 @@ private void DestroyConstructResourceBytesCtx(ConstructResourceBytesCtx* ctx)
 
 private int ProcXResQueryVersion(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xXResQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXResQueryVersionReq);
 
     xXResQueryVersionReply reply = {
         server_major: SERVER_XRES_MAJOR_VERSION,
@@ -171,7 +171,7 @@ private int ProcXResQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(server_major);
     X_REPLY_FIELD_CARD16(server_minor);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXResQueryClients(ClientPtr client)
@@ -197,7 +197,7 @@ private int ProcXResQueryClients(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(num_clients);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private void ResFindAllRes(void* value, XID id, RESTYPE type, void* cdata)
@@ -267,7 +267,7 @@ private int ProcXResQueryClientResources(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(num_types);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private void ResFindResourcePixmaps(void* value, XID id, RESTYPE type, void* cdata)
@@ -312,7 +312,7 @@ private int ProcXResQueryClientPixmapBytes(ClientPtr client)
     X_REPLY_FIELD_CARD32(bytes);
     X_REPLY_FIELD_CARD32(bytes_overflow);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /** @brief Finds out if a client's information need to be put into the
@@ -836,7 +836,7 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
             LogMessage(X_WARNING, "ProcXResQueryClientIds() rpcbuf size (%ld) context size (%ld)\n",
                        cast(c_ulong)rpcbuf.wpos, cast(c_ulong)ctx.resultBytes);
 
-        rc = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+        rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
     }
 
     DestroyConstructResourceBytesCtx(&ctx);

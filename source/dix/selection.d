@@ -273,7 +273,7 @@ int ProcGetSelectionOwner(ClientPtr client)
         swapl(&reply.owner);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 
 out_:
     if (param.status != Success)
@@ -290,7 +290,7 @@ int ProcConvertSelection(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST!xConvertSelectionReq);
-    REQUEST_SIZE_MATCH(xConvertSelectionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xConvertSelectionReq);
 
     /* allow extensions to intercept */
     SelectionFilterParamRec param = {

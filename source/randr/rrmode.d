@@ -280,7 +280,7 @@ void RRModeInitErrorValue()
 int ProcRRCreateMode(ClientPtr client)
 {
     mixin(REQUEST!xRRCreateModeReq);
-    REQUEST_AT_LEAST_SIZE(xRRCreateModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRCreateModeReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -337,13 +337,13 @@ int ProcRRCreateMode(ClientPtr client)
         swapl(&reply.mode);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRDestroyMode(ClientPtr client)
 {
     mixin(REQUEST!xRRDestroyModeReq);
-    REQUEST_SIZE_MATCH(xRRDestroyModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRDestroyModeReq);
 
     if (client.swapped)
         swapl(&stuff.mode);
@@ -362,7 +362,7 @@ int ProcRRDestroyMode(ClientPtr client)
 int ProcRRAddOutputMode(ClientPtr client)
 {
     mixin(REQUEST!xRRAddOutputModeReq);
-    REQUEST_SIZE_MATCH(xRRAddOutputModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRAddOutputModeReq);
 
     if (client.swapped) {
         swapl(&stuff.output);
@@ -384,7 +384,7 @@ int ProcRRAddOutputMode(ClientPtr client)
 int ProcRRDeleteOutputMode(ClientPtr client)
 {
     mixin(REQUEST!xRRDeleteOutputModeReq);
-    REQUEST_SIZE_MATCH(xRRDeleteOutputModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRDeleteOutputModeReq);
 
     if (client.swapped) {
         swapl(&stuff.output);

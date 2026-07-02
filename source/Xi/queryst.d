@@ -151,5 +151,5 @@ int ProcXQueryDeviceState(ClientPtr client)
         num_classes: num_classes
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

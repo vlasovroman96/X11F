@@ -95,5 +95,5 @@ int ProcXGetDeviceButtonMapping(ClientPtr client)
         nElts: b.numButtons,
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

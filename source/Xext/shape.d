@@ -229,7 +229,7 @@ private int ProcShapeQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(majorVersion);
     X_REPLY_FIELD_CARD16(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ShapeRectangles(ClientPtr client, xShapeRectanglesReq* stuff)
@@ -685,7 +685,7 @@ private int ProcShapeQueryExtents(ClientPtr client)
     X_REPLY_FIELD_CARD16(widthClipShape);
     X_REPLY_FIELD_CARD16(heightClipShape);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcShapeSelectInput(ClientPtr client)
@@ -696,7 +696,7 @@ private int ProcShapeSelectInput(ClientPtr client)
     WindowPtr pWin = void;
     ShapeEventPtr pNewShapeEvent = void;
 
-    REQUEST_SIZE_MATCH(xShapeSelectInputReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xShapeSelectInputReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -837,7 +837,7 @@ private int ProcShapeInputSelected(ClientPtr client)
         enabled: enabled,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcShapeGetRectangles(ClientPtr client)
@@ -915,7 +915,7 @@ private int ProcShapeGetRectangles(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(nrects);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcShapeDispatch(ClientPtr client)

@@ -629,7 +629,7 @@ private int ProcScreenSaverQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(majorVersion);
     X_REPLY_FIELD_CARD16(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcScreenSaverQueryInfo(ClientPtr client)
@@ -688,7 +688,7 @@ private int ProcScreenSaverQueryInfo(ClientPtr client)
     X_REPLY_FIELD_CARD32(idle);
     X_REPLY_FIELD_CARD32(eventMask);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcScreenSaverSelectInput(ClientPtr client)

@@ -74,7 +74,7 @@ int PanoramiXCreateWindow(ClientPtr client)
     int orig_x = void, orig_y = void;
     XID orig_visual = void, tmp = void;
 
-    REQUEST_AT_LEAST_SIZE(xCreateWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateWindowReq);
 
     len = client.req_len - bytes_to_int32(xCreateWindowReq.sizeof);
     if (Ones(stuff.mask) != len)
@@ -183,7 +183,7 @@ int PanoramiXChangeWindowAttributes(ClientPtr client)
     int result = void, len = void;
     XID tmp = void;
 
-    REQUEST_AT_LEAST_SIZE(xChangeWindowAttributesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeWindowAttributesReq);
 
     len = client.req_len - bytes_to_int32(xChangeWindowAttributesReq.sizeof);
     if (Ones(stuff.valueMask) != len)
@@ -251,7 +251,7 @@ int PanoramiXDestroyWindow(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.id, XRT_WINDOW,
                                      client, DixDestroyAccess);
@@ -278,7 +278,7 @@ int PanoramiXDestroySubwindows(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.id, XRT_WINDOW,
                                      client, DixDestroyAccess);
@@ -305,7 +305,7 @@ int PanoramiXChangeSaveSet(ClientPtr client)
 
     mixin(REQUEST!xChangeSaveSetReq);
 
-    REQUEST_SIZE_MATCH(xChangeSaveSetReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeSaveSetReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.window,
                                      XRT_WINDOW, client, DixReadAccess);
@@ -330,7 +330,7 @@ int PanoramiXReparentWindow(ClientPtr client)
 
     mixin(REQUEST!xReparentWindowReq);
 
-    REQUEST_SIZE_MATCH(xReparentWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReparentWindowReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.window,
                                      XRT_WINDOW, client, DixWriteAccess);
@@ -372,7 +372,7 @@ int PanoramiXMapWindow(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.id,
                                      XRT_WINDOW, client, DixReadAccess);
@@ -396,7 +396,7 @@ int PanoramiXMapSubwindows(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.id,
                                      XRT_WINDOW, client, DixReadAccess);
@@ -420,7 +420,7 @@ int PanoramiXUnmapWindow(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.id,
                                      XRT_WINDOW, client, DixReadAccess);
@@ -444,7 +444,7 @@ int PanoramiXUnmapSubwindows(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.id,
                                      XRT_WINDOW, client, DixReadAccess);
@@ -472,7 +472,7 @@ int PanoramiXConfigureWindow(ClientPtr client)
 
     mixin(REQUEST!xConfigureWindowReq);
 
-    REQUEST_AT_LEAST_SIZE(xConfigureWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xConfigureWindowReq);
 
     len = client.req_len - bytes_to_int32(xConfigureWindowReq.sizeof);
     if (Ones(stuff.mask) != len)
@@ -540,7 +540,7 @@ int PanoramiXCirculateWindow(ClientPtr client)
 
     mixin(REQUEST!xCirculateWindowReq);
 
-    REQUEST_SIZE_MATCH(xCirculateWindowReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCirculateWindowReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.window,
                                      XRT_WINDOW, client, DixWriteAccess);
@@ -562,7 +562,7 @@ int PanoramiXGetGeometry(ClientPtr client)
     DrawablePtr pDraw = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     int rc = dixLookupDrawable(&pDraw, stuff.id, client, M_ANY, DixGetAttrAccess);
     if (rc != Success)
@@ -609,7 +609,7 @@ int PanoramiXGetGeometry(ClientPtr client)
         swaps(&reply.borderWidth);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int PanoramiXTranslateCoords(ClientPtr client)
@@ -619,7 +619,7 @@ int PanoramiXTranslateCoords(ClientPtr client)
     mixin(REQUEST!xTranslateCoordsReq);
     WindowPtr pWin = void, pDst = void;
 
-    REQUEST_SIZE_MATCH(xTranslateCoordsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xTranslateCoordsReq);
 
     int rc = dixLookupWindow(&pWin, stuff.srcWid, client, DixReadAccess);
     if (rc != Success)
@@ -689,7 +689,7 @@ int PanoramiXTranslateCoords(ClientPtr client)
         swaps(&reply.dstY);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int PanoramiXCreatePixmap(ClientPtr client)
@@ -699,7 +699,7 @@ int PanoramiXCreatePixmap(ClientPtr client)
 
     mixin(REQUEST!xCreatePixmapReq);
 
-    REQUEST_SIZE_MATCH(xCreatePixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreatePixmapReq);
     client.errorValue = stuff.pid;
 
     result = dixLookupResourceByClass(cast(void**) &refDraw, stuff.drawable,
@@ -737,7 +737,7 @@ int PanoramiXFreePixmap(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     client.errorValue = stuff.id;
 
@@ -772,7 +772,7 @@ int PanoramiXCreateGC(ClientPtr client)
     int result = void, len = void;
     XID tmp = void;
 
-    REQUEST_AT_LEAST_SIZE(xCreateGCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateGCReq);
 
     client.errorValue = stuff.gc;
     len = client.req_len - bytes_to_int32(xCreateGCReq.sizeof);
@@ -852,7 +852,7 @@ int PanoramiXChangeGC(ClientPtr client)
     int result = void, len = void;
     XID tmp = void;
 
-    REQUEST_AT_LEAST_SIZE(xChangeGCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangeGCReq);
 
     len = client.req_len - bytes_to_int32(xChangeGCReq.sizeof);
     if (Ones(stuff.mask) != len)
@@ -914,7 +914,7 @@ int PanoramiXCopyGC(ClientPtr client)
 
     mixin(REQUEST!xCopyGCReq);
 
-    REQUEST_SIZE_MATCH(xCopyGCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyGCReq);
 
     result = dixLookupResourceByType(cast(void**) &srcGC, stuff.srcGC, XRT_GC,
                                      client, DixReadAccess);
@@ -968,7 +968,7 @@ int PanoramiXSetClipRectangles(ClientPtr client)
 
     mixin(REQUEST!xSetClipRectanglesReq);
 
-    REQUEST_AT_LEAST_SIZE(xSetClipRectanglesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xSetClipRectanglesReq);
 
     result = dixLookupResourceByType(cast(void**) &gc, stuff.gc, XRT_GC,
                                      client, DixWriteAccess);
@@ -992,7 +992,7 @@ int PanoramiXFreeGC(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     result = dixLookupResourceByType(cast(void**) &gc, stuff.id, XRT_GC,
                                      client, DixDestroyAccess);
@@ -1020,7 +1020,7 @@ int PanoramiXClearToBackground(ClientPtr client)
 
     mixin(REQUEST!xClearAreaReq);
 
-    REQUEST_SIZE_MATCH(xClearAreaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xClearAreaReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.window,
                                      XRT_WINDOW, client, DixWriteAccess);
@@ -1065,7 +1065,7 @@ int PanoramiXCopyArea(ClientPtr client)
 
     mixin(REQUEST!xCopyAreaReq);
 
-    REQUEST_SIZE_MATCH(xCopyAreaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyAreaReq);
 
     result = dixLookupResourceByClass(cast(void**) &src, stuff.srcDrawable,
                                       XRC_DRAWABLE, client, DixReadAccess);
@@ -1274,7 +1274,7 @@ int PanoramiXCopyPlane(ClientPtr client)
 
     mixin(REQUEST!xCopyPlaneReq);
 
-    REQUEST_SIZE_MATCH(xCopyPlaneReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyPlaneReq);
 
     int rc = dixLookupResourceByClass(cast(void**) &src, stuff.srcDrawable,
                                       XRC_DRAWABLE, client, DixReadAccess);
@@ -1380,7 +1380,7 @@ int PanoramiXPolyPoint(ClientPtr client)
 
     mixin(REQUEST!xPolyPointReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyPointReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyPointReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1446,7 +1446,7 @@ int PanoramiXPolyLine(ClientPtr client)
 
     mixin(REQUEST!xPolyLineReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyLineReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyLineReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1511,7 +1511,7 @@ int PanoramiXPolySegment(ClientPtr client)
 
     mixin(REQUEST!xPolySegmentReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolySegmentReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolySegmentReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1580,7 +1580,7 @@ int PanoramiXPolyRectangle(ClientPtr client)
 
     mixin(REQUEST!xPolyRectangleReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyRectangleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyRectangleReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1648,7 +1648,7 @@ int PanoramiXPolyArc(ClientPtr client)
 
     mixin(REQUEST!xPolyArcReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyArcReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyArcReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1714,7 +1714,7 @@ int PanoramiXFillPoly(ClientPtr client)
 
     mixin(REQUEST!xFillPolyReq);
 
-    REQUEST_AT_LEAST_SIZE(xFillPolyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xFillPolyReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1780,7 +1780,7 @@ int PanoramiXPolyFillRectangle(ClientPtr client)
     Bool isRoot = void;
     mixin(REQUEST!xPolyFillRectangleReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyFillRectangleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyFillRectangleReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1848,7 +1848,7 @@ int PanoramiXPolyFillArc(ClientPtr client)
 
     mixin(REQUEST!xPolyFillArcReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyFillArcReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyFillArcReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1915,7 +1915,7 @@ int PanoramiXPutImage(ClientPtr client)
 
     mixin(REQUEST!xPutImageReq);
 
-    REQUEST_AT_LEAST_SIZE(xPutImageReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPutImageReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -1963,7 +1963,7 @@ int PanoramiXGetImage(ClientPtr client)
 
     mixin(REQUEST!xGetImageReq);
 
-    REQUEST_SIZE_MATCH(xGetImageReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGetImageReq);
 
     if ((stuff.format != XYPixmap) && (stuff.format != ZPixmap)) {
         client.errorValue = stuff.format;
@@ -2107,7 +2107,7 @@ int PanoramiXGetImage(ClientPtr client)
         swapl(&reply.visual);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /* The text stuff should be rewritten so that duplication happens
@@ -2123,7 +2123,7 @@ int PanoramiXPolyText8(ClientPtr client)
 
     mixin(REQUEST!xPolyTextReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyTextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyTextReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -2167,7 +2167,7 @@ int PanoramiXPolyText16(ClientPtr client)
 
     mixin(REQUEST!xPolyTextReq);
 
-    REQUEST_AT_LEAST_SIZE(xPolyTextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPolyTextReq);
 
     result = dixLookupResourceByClass(cast(void**) &draw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixWriteAccess);
@@ -2297,7 +2297,7 @@ int PanoramiXCreateColormap(ClientPtr client)
 
     mixin(REQUEST!xCreateColormapReq);
 
-    REQUEST_SIZE_MATCH(xCreateColormapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCreateColormapReq);
 
     result = dixLookupResourceByType(cast(void**) &win, stuff.window,
                                      XRT_WINDOW, client, DixReadAccess);
@@ -2336,7 +2336,7 @@ int PanoramiXFreeColormap(ClientPtr client)
 
     mixin(REQUEST!xResourceReq);
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     client.errorValue = stuff.id;
 
@@ -2365,7 +2365,7 @@ int PanoramiXCopyColormapAndFree(ClientPtr client)
 
     mixin(REQUEST!xCopyColormapAndFreeReq);
 
-    REQUEST_SIZE_MATCH(xCopyColormapAndFreeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xCopyColormapAndFreeReq);
 
     client.errorValue = stuff.srcCmap;
 
@@ -2403,7 +2403,7 @@ int PanoramiXInstallColormap(ClientPtr client)
     int result = void;
     PanoramiXRes* cmap = void;
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     client.errorValue = stuff.id;
 
@@ -2428,7 +2428,7 @@ int PanoramiXUninstallColormap(ClientPtr client)
     int result = void;
     PanoramiXRes* cmap = void;
 
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     client.errorValue = stuff.id;
 
@@ -2453,7 +2453,7 @@ int PanoramiXAllocColor(ClientPtr client)
     PanoramiXRes* cmap = void;
 
     mixin(REQUEST!xAllocColorReq);
-    REQUEST_SIZE_MATCH(xAllocColorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllocColorReq);
 
     if (client.swapped) {
         swapl(&stuff.cmap);
@@ -2497,7 +2497,7 @@ int PanoramiXAllocColor(ClientPtr client)
             }
 
             /* iterating backwards, first screen comes last, so we can return here */
-            return X_SEND_REPLY_SIMPLE(client, reply);
+            return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
         }
     });
 
@@ -2539,7 +2539,7 @@ int PanoramiXAllocColorCells(ClientPtr client)
 
     mixin(REQUEST!xAllocColorCellsReq);
 
-    REQUEST_SIZE_MATCH(xAllocColorCellsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllocColorCellsReq);
 
     client.errorValue = stuff.cmap;
 
@@ -2565,7 +2565,7 @@ int PanoramiXAllocColorPlanes(ClientPtr client)
 
     mixin(REQUEST!xAllocColorPlanesReq);
 
-    REQUEST_SIZE_MATCH(xAllocColorPlanesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xAllocColorPlanesReq);
 
     client.errorValue = stuff.cmap;
 
@@ -2591,7 +2591,7 @@ int PanoramiXFreeColors(ClientPtr client)
 
     mixin(REQUEST!xFreeColorsReq);
 
-    REQUEST_AT_LEAST_SIZE(xFreeColorsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xFreeColorsReq);
 
     client.errorValue = stuff.cmap;
 
@@ -2615,7 +2615,7 @@ int PanoramiXStoreColors(ClientPtr client)
 
     mixin(REQUEST!xStoreColorsReq);
 
-    REQUEST_AT_LEAST_SIZE(xStoreColorsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xStoreColorsReq);
 
     client.errorValue = stuff.cmap;
 

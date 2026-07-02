@@ -37,7 +37,7 @@ private int set_client_info(__GLXclientState* cl, xGLXSetClientInfoARBReq* req, 
     char* glx_extensions = void;
     int size = void;
 
-    REQUEST_AT_LEAST_SIZE(xGLXSetClientInfoARBReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSetClientInfoARBReq);
 
     /* Verify that the size of the packet matches the size inferred from the
      * sizes specified for the various fields.
@@ -86,7 +86,7 @@ int __glXDispSwap_SetClientInfoARB(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXSetClientInfoARBReq* req = cast(xGLXSetClientInfoARBReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXSetClientInfoARBReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSetClientInfoARBReq);
 
     req.length = bswap_16(req.length);
     req.numVersions = bswap_32(req.numVersions);
@@ -106,7 +106,7 @@ int __glXDispSwap_SetClientInfo2ARB(__GLXclientState* cl, GLbyte* pc)
     ClientPtr client = cl.client;
     xGLXSetClientInfoARBReq* req = cast(xGLXSetClientInfoARBReq*) pc;
 
-    REQUEST_AT_LEAST_SIZE(xGLXSetClientInfoARBReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSetClientInfoARBReq);
 
     req.length = bswap_16(req.length);
     req.numVersions = bswap_32(req.numVersions);

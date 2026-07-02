@@ -179,7 +179,7 @@ pragma(inline, true) private void* dixGetPrivate(PrivatePtr* privates, const(Dev
  * Associate 'val' with 'key' in 'privates' so that later calls to
  * dixLookupPrivate(privates, key) will return 'val'.
  */
-pragma(inline, true) private void dixSetPrivate(PrivatePtr* privates, const(DevPrivateKey) key, void* val)
+pragma(inline, true) void dixSetPrivate(PrivatePtr* privates, const(DevPrivateKey) key, void* val)
 {
     assert(key.size == 0);
     *cast(void**) dixGetPrivateAddr(privates, key) = val;

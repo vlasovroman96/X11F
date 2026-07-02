@@ -392,7 +392,7 @@ int ProcXFixesGetCursorImage(ClientPtr client)
     X_REPLY_FIELD_CARD16(yhot);
     X_REPLY_FIELD_CARD32(cursorSerial);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcXFixesSetCursorName(ClientPtr client)
@@ -434,7 +434,7 @@ int ProcXFixesGetCursorName(ClientPtr client)
     X_REPLY_FIELD_CARD32(atom);
     X_REPLY_FIELD_CARD16(nbytes);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcXFixesGetCursorImageAndName(ClientPtr client)
@@ -494,7 +494,7 @@ int ProcXFixesGetCursorImageAndName(ClientPtr client)
     X_REPLY_FIELD_CARD32(cursorName);
     X_REPLY_FIELD_CARD16(nbytes);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /*

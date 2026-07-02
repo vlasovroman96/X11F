@@ -101,5 +101,5 @@ int ProcXSetDeviceButtonMapping(ClientPtr client)
         status: (ret == Success ? MappingSuccess : MappingBusy),
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

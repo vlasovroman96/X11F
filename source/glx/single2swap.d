@@ -227,7 +227,7 @@ int __glXDispSwap_Flush(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = void;
     int error = void;
 
-    REQUEST_SIZE_MATCH(xGLXSingleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
@@ -245,7 +245,7 @@ int __glXDispSwap_Finish(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = void;
     int error = void;
 
-    REQUEST_SIZE_MATCH(xGLXSingleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);

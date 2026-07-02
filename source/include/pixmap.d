@@ -106,9 +106,9 @@ extern int AllocatePixmap(ScreenPtr, int);
 
 extern int FreePixmap(PixmapPtr);
 
-extern int PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary);
+// extern int PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary);
 
-extern int PixmapUnshareSecondaryPixmap(PixmapPtr secondary_pixmap);
+// extern int PixmapUnshareSecondaryPixmap(PixmapPtr secondary_pixmap);
 
 enum HAS_DIRTYTRACKING_ROTATION = 1;
 enum HAS_DIRTYTRACKING_DRAWABLE_SRC = 1;

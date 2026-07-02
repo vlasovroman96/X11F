@@ -120,7 +120,7 @@ private int ProcDbeGetVersion(ClientPtr client)
         minorVersion: DBE_MINOR_VERSION
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /******************************************************************************
@@ -624,7 +624,7 @@ private int ProcDbeGetVisualInfo(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(m);
 
-    rc = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
 clearRpcBuf:
     x_rpcbuf_clear(&rpcbuf);
@@ -671,7 +671,7 @@ private int ProcDbeGetBackBufferAttributes(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(attributes);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /******************************************************************************

@@ -73,7 +73,7 @@ private int ProcXvQueryExtension(ClientPtr client)
     X_REPLY_FIELD_CARD16(version_);
     X_REPLY_FIELD_CARD16(revision);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXvQueryAdaptors(ClientPtr client)
@@ -133,7 +133,7 @@ private int ProcXvQueryAdaptors(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(num_adaptors);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvQueryEncodings(ClientPtr client)
@@ -169,7 +169,7 @@ private int ProcXvQueryEncodings(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(num_encodings);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int SingleXvPutVideo(ClientPtr client)
@@ -405,7 +405,7 @@ private int ProcXvGrabPort(ClientPtr client)
         result: result
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXvUngrabPort(ClientPtr client)
@@ -526,7 +526,7 @@ private int ProcXvGetPortAttribute(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(value);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXvQueryBestSize(ClientPtr client)
@@ -556,7 +556,7 @@ private int ProcXvQueryBestSize(ClientPtr client)
     X_REPLY_FIELD_CARD16(actual_width);
     X_REPLY_FIELD_CARD16(actual_height);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXvQueryPortAttributes(ClientPtr client)
@@ -591,7 +591,7 @@ private int ProcXvQueryPortAttributes(ClientPtr client)
     X_REPLY_FIELD_CARD32(num_attributes);
     X_REPLY_FIELD_CARD32(text_size);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int SingleXvPutImage(ClientPtr client)
@@ -858,7 +858,7 @@ version (XvMCExtension) {
     X_REPLY_FIELD_CARD16(width);
     X_REPLY_FIELD_CARD16(height);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXvListImageFormats(ClientPtr client)
@@ -918,7 +918,7 @@ private int ProcXvListImageFormats(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(num_formats);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcXvDispatch(ClientPtr client)

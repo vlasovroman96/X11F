@@ -1535,7 +1535,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
 int ProcGetWindowAttributes(ClientPtr client)
 {
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -1576,7 +1576,7 @@ int ProcGetWindowAttributes(ClientPtr client)
         swaps(&reply.doNotPropagateMask);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 WindowPtr MoveWindowInStack(WindowPtr pWin, WindowPtr pNextSib)

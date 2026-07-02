@@ -1136,14 +1136,14 @@ private void XDGAResetProc(ExtensionEntry* extEntry)
 
 private int ProcXDGAQueryVersion(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xXDGAQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAQueryVersionReq);
 
     xXDGAQueryVersionReply reply = {
         majorVersion: SERVER_XDGA_MAJOR_VERSION,
         minorVersion: SERVER_XDGA_MINOR_VERSION
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXDGAOpenFramebuffer(ClientPtr client)
@@ -1152,7 +1152,7 @@ private int ProcXDGAOpenFramebuffer(ClientPtr client)
     char* deviceName = void;
     int nameSize = void;
 
-    REQUEST_SIZE_MATCH(xXDGAOpenFramebufferReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAOpenFramebufferReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1176,14 +1176,14 @@ private int ProcXDGAOpenFramebuffer(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)deviceName, nameSize);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXDGACloseFramebuffer(ClientPtr client)
 {
     mixin(REQUEST!xXDGACloseFramebufferReq);
 
-    REQUEST_SIZE_MATCH(xXDGACloseFramebufferReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGACloseFramebufferReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1205,7 +1205,7 @@ private int ProcXDGAQueryModes(ClientPtr client)
     xXDGAModeInfo info = void;
     XDGAModePtr mode = void;
 
-    REQUEST_SIZE_MATCH(xXDGAQueryModesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAQueryModesReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1215,7 +1215,7 @@ private int ProcXDGAQueryModes(ClientPtr client)
         (((num = DGAGetModes(stuff.screen)) == 0)))
     {
         xXDGAQueryModesReply reply = { 0 };
-        return X_SEND_REPLY_SIMPLE(client, reply);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
     if (((mode = calloc(num, XDGAModeRec.sizeof)) == 0))
@@ -1266,7 +1266,7 @@ private int ProcXDGAQueryModes(ClientPtr client)
 
     free(mode);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private void DGAClientStateChange(CallbackListPtr* pcbl, void* nulldata, void* calldata)
@@ -1301,7 +1301,7 @@ private int ProcXDGASetMode(ClientPtr client)
     PixmapPtr pPix = void;
     ClientPtr owner = void;
 
-    REQUEST_SIZE_MATCH(xXDGASetModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGASetModeReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1325,7 +1325,7 @@ private int ProcXDGASetMode(ClientPtr client)
         mixin(DGA_SETCLIENT!(`stuff.screen`, `null`));
         DGASelectInput(stuff.screen, null, 0);
         DGASetMode(stuff.screen, 0, &mode, &pPix);
-        return X_SEND_REPLY_SIMPLE(client, reply);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
     if (Success != DGASetMode(stuff.screen, stuff.mode, &mode, &pPix))
@@ -1376,14 +1376,14 @@ private int ProcXDGASetMode(ClientPtr client)
     x_rpcbuf_write_binary_pad(&rpcbuf, &info, info.sizeof);
     x_rpcbuf_write_string_0t_pad(&rpcbuf, mode.name);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXDGASetViewport(ClientPtr client)
 {
     mixin(REQUEST!xXDGASetViewportReq);
 
-    REQUEST_SIZE_MATCH(xXDGASetViewportReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGASetViewportReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1404,7 +1404,7 @@ private int ProcXDGAInstallColormap(ClientPtr client)
 
     mixin(REQUEST!xXDGAInstallColormapReq);
 
-    REQUEST_SIZE_MATCH(xXDGAInstallColormapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAInstallColormapReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1425,7 +1425,7 @@ private int ProcXDGASelectInput(ClientPtr client)
 {
     mixin(REQUEST!xXDGASelectInputReq);
 
-    REQUEST_SIZE_MATCH(xXDGASelectInputReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGASelectInputReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1444,7 +1444,7 @@ private int ProcXDGAFillRectangle(ClientPtr client)
 {
     mixin(REQUEST!xXDGAFillRectangleReq);
 
-    REQUEST_SIZE_MATCH(xXDGAFillRectangleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAFillRectangleReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1464,7 +1464,7 @@ private int ProcXDGACopyArea(ClientPtr client)
 {
     mixin(REQUEST!xXDGACopyAreaReq);
 
-    REQUEST_SIZE_MATCH(xXDGACopyAreaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGACopyAreaReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (pScreen)
@@ -1485,7 +1485,7 @@ private int ProcXDGACopyTransparentArea(ClientPtr client)
 {
     mixin(REQUEST!xXDGACopyTransparentAreaReq);
 
-    REQUEST_SIZE_MATCH(xXDGACopyTransparentAreaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGACopyTransparentAreaReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1506,7 +1506,7 @@ private int ProcXDGAGetViewportStatus(ClientPtr client)
 {
     mixin(REQUEST!xXDGAGetViewportStatusReq);
 
-    REQUEST_SIZE_MATCH(xXDGAGetViewportStatusReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAGetViewportStatusReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1519,14 +1519,14 @@ private int ProcXDGAGetViewportStatus(ClientPtr client)
         status: DGAGetViewportStatus(stuff.screen)
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXDGASync(ClientPtr client)
 {
     mixin(REQUEST!xXDGASyncReq);
 
-    REQUEST_SIZE_MATCH(xXDGASyncReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGASyncReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (pScreen)
@@ -1538,7 +1538,7 @@ private int ProcXDGASync(ClientPtr client)
     xXDGASyncReply reply = { 0 };
     DGASync(stuff.screen);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXDGASetClientVersion(ClientPtr client)
@@ -1547,7 +1547,7 @@ private int ProcXDGASetClientVersion(ClientPtr client)
 
     DGAPrivPtr pPriv = void;
 
-    REQUEST_SIZE_MATCH(xXDGASetClientVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGASetClientVersionReq);
     if ((pPriv = mixin(DGA_GETPRIV!(`client`))) == null) {
         pPriv = calloc(1, DGAPrivRec.sizeof);
         /* XXX Need to look into freeing this */
@@ -1566,7 +1566,7 @@ private int ProcXDGAChangePixmapMode(ClientPtr client)
     mixin(REQUEST!xXDGAChangePixmapModeReq);
     int x = void, y = void;
 
-    REQUEST_SIZE_MATCH(xXDGAChangePixmapModeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGAChangePixmapModeReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1586,7 +1586,7 @@ private int ProcXDGAChangePixmapMode(ClientPtr client)
         y: y
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXDGACreateColormap(ClientPtr client)
@@ -1594,7 +1594,7 @@ private int ProcXDGACreateColormap(ClientPtr client)
     mixin(REQUEST!xXDGACreateColormapReq);
     int result = void;
 
-    REQUEST_SIZE_MATCH(xXDGACreateColormapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXDGACreateColormapReq);
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)

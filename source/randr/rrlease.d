@@ -208,7 +208,7 @@ Bool RRLeaseInit()
 int ProcRRCreateLease(ClientPtr client)
 {
     mixin(REQUEST!xRRCreateLeaseReq);
-    REQUEST_AT_LEAST_SIZE(xRRCreateLeaseReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRCreateLeaseReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -340,7 +340,7 @@ leaseReturned:
         nfd: 1,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 
 bail_lease:
     free(lease);
@@ -350,7 +350,7 @@ bail_lease:
 int ProcRRFreeLease(ClientPtr client)
 {
     mixin(REQUEST!xRRFreeLeaseReq);
-    REQUEST_SIZE_MATCH(xRRFreeLeaseReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRFreeLeaseReq);
 
     if (client.swapped)
         swapl(&stuff.lid);

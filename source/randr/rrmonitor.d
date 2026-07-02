@@ -567,7 +567,7 @@ private CARD32 RRMonitorTimestamp(ScreenPtr screen)
 int ProcRRGetMonitors(ClientPtr client)
 {
     mixin(REQUEST!xRRGetMonitorsReq);
-    REQUEST_SIZE_MATCH(xRRGetMonitorsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetMonitorsReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -637,13 +637,13 @@ int ProcRRGetMonitors(ClientPtr client)
         swapl(&reply.noutputs);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRSetMonitor(ClientPtr client)
 {
     mixin(REQUEST!xRRSetMonitorReq);
-    REQUEST_AT_LEAST_SIZE(xRRSetMonitorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetMonitorReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -703,7 +703,7 @@ int ProcRRSetMonitor(ClientPtr client)
 int ProcRRDeleteMonitor(ClientPtr client)
 {
     mixin(REQUEST!xRRDeleteMonitorReq);
-    REQUEST_SIZE_MATCH(xRRDeleteMonitorReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRDeleteMonitorReq);
 
     if (client.swapped) {
         swapl(&stuff.window);

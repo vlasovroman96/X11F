@@ -1238,7 +1238,7 @@ private int ProcSyncInitialize(ClientPtr client)
         minorVersion: SERVER_SYNC_MINOR_VERSION,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /*
@@ -1280,7 +1280,7 @@ private int ProcSyncListSystemCounters(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(nCounters);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /*
@@ -1343,7 +1343,7 @@ private int ProcSyncGetPriority(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(priority);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /*
@@ -1616,7 +1616,7 @@ private int ProcSyncQueryCounter(ClientPtr client)
     X_REPLY_FIELD_CARD32(value_hi);
     X_REPLY_FIELD_CARD32(value_lo);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /*
@@ -1794,7 +1794,7 @@ private int ProcSyncQueryAlarm(ClientPtr client)
     X_REPLY_FIELD_CARD32(delta_hi);
     X_REPLY_FIELD_CARD32(delta_lo);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcSyncDestroyAlarm(ClientPtr client)
@@ -1925,7 +1925,7 @@ private int ProcSyncQueryFence(ClientPtr client)
         triggered: pFence.funcs.CheckTriggered(pFence)
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcSyncAwaitFence(ClientPtr client)

@@ -98,5 +98,5 @@ int ProcXGetDeviceModifierMapping(ClientPtr client)
         numKeyPerModifier: max_keys_per_mod,
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

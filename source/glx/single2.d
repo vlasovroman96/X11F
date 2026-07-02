@@ -200,7 +200,7 @@ int __glXDisp_RenderMode(__GLXclientState* cl, GLbyte* pc)
         newMode: newMode
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int __glXDisp_Flush(__GLXclientState* cl, GLbyte* pc)
@@ -209,7 +209,7 @@ int __glXDisp_Flush(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = void;
     int error = void;
 
-    REQUEST_SIZE_MATCH(xGLXSingleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
     if (!cx) {
@@ -226,7 +226,7 @@ int __glXDisp_Finish(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = void;
     int error = void;
 
-    REQUEST_SIZE_MATCH(xGLXSingleReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
     if (!cx) {

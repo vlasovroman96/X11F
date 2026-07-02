@@ -121,7 +121,7 @@ reply:
         status: status
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXIUngrabDevice(ClientPtr client)

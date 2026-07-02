@@ -128,7 +128,7 @@ private int ProcCompositeQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD32(majorVersion);
     X_REPLY_FIELD_CARD32(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 enum string VERIFY_WINDOW(string pWindow, string wid, string client, string mode) = `
@@ -298,7 +298,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
 
     X_REPLY_FIELD_CARD32(overlayWin);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int SingleCompositeReleaseOverlayWindow(ClientPtr client, xCompositeReleaseOverlayWindowReq* stuff)
@@ -728,7 +728,7 @@ version (XINERAMA) {
 
     X_REPLY_FIELD_CARD32(overlayWin);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 } else {
     return SingleCompositeGetOverlayWindow(client, stuff);
 } /* XINERAMA */

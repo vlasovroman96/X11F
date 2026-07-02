@@ -210,7 +210,7 @@ enum CREATE_PIXMAP_USAGE_GLYPH_PICTURE =               3;
 /* pixmap will be shared */
 enum CREATE_PIXMAP_USAGE_SHARED =                      4;
 
-alias CreatePixmapProcPtr = Bool function(ScreenPtr /*pScreen */ ,
+alias CreatePixmapProcPtr = PixmapPtr function(ScreenPtr /*pScreen */ ,
                                           int /*width */ ,
                                           int /*height */ ,
                                           int /*depth */ ,
@@ -314,12 +314,12 @@ alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap,
                                            int devKind,
                                            void *pPixData);
 
-alias GetWindowPixmapProcPtr = void function(WindowPtr /*pWin */ );
+alias GetWindowPixmapProcPtr = PixmapPtr function(WindowPtr /*pWin */ );
 
 alias SetWindowPixmapProcPtr = void function(WindowPtr /*pWin */ ,
                                         PixmapPtr /*pPix */ );
 
-alias GetScreenPixmapProcPtr = void function(ScreenPtr /*pScreen */ );
+alias GetScreenPixmapProcPtr = PixmapPtr function(ScreenPtr /*pScreen */ );
 
 alias SetScreenPixmapProcPtr = void function(PixmapPtr /*pPix */ );
 
@@ -329,7 +329,7 @@ alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr /*parent */ ,
                                               WindowPtr /*firstChild */ ,
                                               WindowPtr * /*pLayerWin */ );
 
-alias ConfigNotifyProcPtr = void function(WindowPtr /*pWin */ ,
+alias ConfigNotifyProcPtr = int function(WindowPtr /*pWin */ ,
                                     int /*x */ ,
                                     int /*y */ ,
                                     int /*w */ ,

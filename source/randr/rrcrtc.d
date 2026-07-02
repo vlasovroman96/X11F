@@ -1136,7 +1136,7 @@ void RRCrtcInitErrorValue()
 int ProcRRGetCrtcInfo(ClientPtr client)
 {
     mixin(REQUEST!xRRGetCrtcInfoReq);
-    REQUEST_SIZE_MATCH(xRRGetCrtcInfoReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetCrtcInfoReq);
 
     if (client.swapped) {
         swapl(&stuff.crtc);
@@ -1227,13 +1227,13 @@ int ProcRRGetCrtcInfo(ClientPtr client)
         swaps(&reply.nPossibleOutput);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRSetCrtcConfig(ClientPtr client)
 {
     mixin(REQUEST!xRRSetCrtcConfigReq);
-    REQUEST_AT_LEAST_SIZE(xRRSetCrtcConfigReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetCrtcConfigReq);
 
     if (client.swapped) {
         swapl(&stuff.crtc);
@@ -1445,13 +1445,13 @@ version (RANDR_12_INTERFACE) {
         swapl(&reply.newTimestamp);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRGetPanning(ClientPtr client)
 {
     mixin(REQUEST!xRRGetPanningReq);
-    REQUEST_SIZE_MATCH(xRRGetPanningReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetPanningReq);
 
     if (client.swapped)
         swapl(&stuff.crtc);
@@ -1510,13 +1510,13 @@ int ProcRRGetPanning(ClientPtr client)
         swaps(&reply.border_right);
         swaps(&reply.border_bottom);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRSetPanning(ClientPtr client)
 {
     mixin(REQUEST!xRRSetPanningReq);
-    REQUEST_SIZE_MATCH(xRRSetPanningReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetPanningReq);
 
     if (client.swapped) {
         swapl(&stuff.crtc);
@@ -1595,13 +1595,13 @@ sendReply: {}
     if (client.swapped) {
         swapl(&reply.newTimestamp);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRGetCrtcGammaSize(ClientPtr client)
 {
     mixin(REQUEST!xRRGetCrtcGammaSizeReq);
-    REQUEST_SIZE_MATCH(xRRGetCrtcGammaSizeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetCrtcGammaSizeReq);
 
     if (client.swapped)
         swapl(&stuff.crtc);
@@ -1620,13 +1620,13 @@ int ProcRRGetCrtcGammaSize(ClientPtr client)
     if (client.swapped) {
         swaps(&reply.size);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRGetCrtcGamma(ClientPtr client)
 {
     mixin(REQUEST!xRRGetCrtcGammaReq);
-    REQUEST_SIZE_MATCH(xRRGetCrtcGammaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetCrtcGammaReq);
 
     if (client.swapped)
         swapl(&stuff.crtc);
@@ -1652,13 +1652,13 @@ int ProcRRGetCrtcGamma(ClientPtr client)
         swaps(&reply.size);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRSetCrtcGamma(ClientPtr client)
 {
     mixin(REQUEST!xRRSetCrtcGammaReq);
-    REQUEST_AT_LEAST_SIZE(xRRSetCrtcGammaReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetCrtcGammaReq);
 
     if (client.swapped) {
         swapl(&stuff.crtc);
@@ -1696,7 +1696,7 @@ int ProcRRSetCrtcGamma(ClientPtr client)
 int ProcRRSetCrtcTransform(ClientPtr client)
 {
     mixin(REQUEST!xRRSetCrtcTransformReq);
-    REQUEST_AT_LEAST_SIZE(xRRSetCrtcTransformReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetCrtcTransformReq);
 
     if (client.swapped) {
         swapl(&stuff.crtc);
@@ -1744,7 +1744,7 @@ int ProcRRSetCrtcTransform(ClientPtr client)
 int ProcRRGetCrtcTransform(ClientPtr client)
 {
     mixin(REQUEST!xRRGetCrtcTransformReq);
-    REQUEST_SIZE_MATCH(xRRGetCrtcTransformReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetCrtcTransformReq);
 
     if (client.swapped)
         swapl(&stuff.crtc);
@@ -1789,7 +1789,7 @@ int ProcRRGetCrtcTransform(ClientPtr client)
         swaps(&reply.currentNparamsFilter);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private Bool check_all_screen_crtcs(ScreenPtr pScreen, int* x, int* y)

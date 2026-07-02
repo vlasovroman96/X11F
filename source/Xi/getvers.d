@@ -92,5 +92,5 @@ int ProcXGetExtensionVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(major_version);
     X_REPLY_FIELD_CARD16(minor_version);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

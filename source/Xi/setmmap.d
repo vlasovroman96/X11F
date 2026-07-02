@@ -101,5 +101,5 @@ int ProcXSetDeviceModifierMapping(ClientPtr client)
         success: ret,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

@@ -303,12 +303,12 @@ int ProcQueryExtension(ClientPtr client)
         }
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcListExtensions(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
     xListExtensionsReply reply = { 0 };
 
@@ -329,5 +329,5 @@ int ProcListExtensions(ClientPtr client)
         }
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

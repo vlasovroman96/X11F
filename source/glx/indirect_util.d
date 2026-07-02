@@ -140,7 +140,7 @@ void __glXSendReply(ClientPtr client, const(void)* data, size_t elements, size_t
         cast(void) memcpy(&reply.pad3, data, element_size);
     }
 
-    X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /**

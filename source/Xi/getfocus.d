@@ -106,5 +106,5 @@ int ProcXGetDeviceFocus(ClientPtr client)
     X_REPLY_FIELD_CARD32(focus);
     X_REPLY_FIELD_CARD32(time);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

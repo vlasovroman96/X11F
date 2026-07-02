@@ -264,7 +264,7 @@ int ProcRotateProperties(ClientPtr client)
 int ProcChangeProperty(ClientPtr client)
 {
     mixin(REQUEST!xChangePropertyReq);
-    REQUEST_AT_LEAST_SIZE(xChangePropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xChangePropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -518,7 +518,7 @@ void DeleteAllWindowProperties(WindowPtr pWin)
 int ProcGetProperty(ClientPtr client)
 {
     mixin(REQUEST!xGetPropertyReq);
-    REQUEST_SIZE_MATCH(xGetPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xGetPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -575,7 +575,7 @@ int ProcGetProperty(ClientPtr client)
     rc = dixLookupProperty(&pProp, pWin, p.property, p.client, prop_mode);
     if (rc == BadMatch) {
         xGetPropertyReply reply = { 0 };
-        return X_SEND_REPLY_SIMPLE(client, reply);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
     else if (rc != Success)
         return rc;
@@ -593,7 +593,7 @@ int ProcGetProperty(ClientPtr client)
             swapl(&reply.propertyType);
             swapl(&reply.bytesAfter);
         }
-        return X_SEND_REPLY_SIMPLE(client, reply);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
 /*
@@ -668,7 +668,7 @@ int ProcGetProperty(ClientPtr client)
         swapl(&reply.nItems);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcListProperties(ClientPtr client)
@@ -676,7 +676,7 @@ int ProcListProperties(ClientPtr client)
     WindowPtr pWin = void;
 
     mixin(REQUEST!xResourceReq);
-    REQUEST_SIZE_MATCH(xResourceReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
     if (client.swapped)
         swapl(&stuff.id);
@@ -705,13 +705,13 @@ int ProcListProperties(ClientPtr client)
         swaps(&reply.nProperties);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcDeleteProperty(ClientPtr client)
 {
     mixin(REQUEST!xDeletePropertyReq);
-    REQUEST_SIZE_MATCH(xDeletePropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xDeletePropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.window);

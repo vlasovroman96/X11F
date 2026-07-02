@@ -209,7 +209,7 @@ private int ProcVidModeQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(majorVersion);
     X_REPLY_FIELD_CARD16(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcVidModeGetModeLine(ClientPtr client)
@@ -295,7 +295,7 @@ private int ProcVidModeGetModeLine(ClientPtr client)
         return X_SEND_REPLY_SIMPLE(client, oldrep);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private void fillModeInfoV1(x_rpcbuf_t* rpcbuf, int dotClock, DisplayModePtr mode)
@@ -375,7 +375,7 @@ private int ProcVidModeGetAllModeLines(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(modecount);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 enum string MODEMATCH(string mode,string stuff) = `
@@ -1066,7 +1066,7 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
 
     X_REPLY_FIELD_CARD32(status);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcVidModeSwitchMode(ClientPtr client)
@@ -1293,7 +1293,7 @@ private int ProcVidModeGetMonitor(ClientPtr client)
         modelLength: x_safe_strlen(modelStr),
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcVidModeGetViewPort(ClientPtr client)
@@ -1324,7 +1324,7 @@ private int ProcVidModeGetViewPort(ClientPtr client)
     X_REPLY_FIELD_CARD32(x);
     X_REPLY_FIELD_CARD32(y);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcVidModeSetViewPort(ClientPtr client)
@@ -1404,7 +1404,7 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
     X_REPLY_FIELD_CARD32(maxclocks);
     X_REPLY_FIELD_CARD32(flags);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcVidModeSetGamma(ClientPtr client)
@@ -1470,7 +1470,7 @@ private int ProcVidModeGetGamma(ClientPtr client)
     X_REPLY_FIELD_CARD32(green);
     X_REPLY_FIELD_CARD32(blue);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcVidModeSetGammaRamp(ClientPtr client)
@@ -1558,7 +1558,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(size);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcVidModeGetGammaRampSize(ClientPtr client)
@@ -1582,7 +1582,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(size);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcVidModeGetPermissions(ClientPtr client)
@@ -1601,7 +1601,7 @@ private int ProcVidModeGetPermissions(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(permissions);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcVidModeSetClientVersion(ClientPtr client)

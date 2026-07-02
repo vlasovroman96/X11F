@@ -43,7 +43,7 @@ Bool RRClientKnowsRates(ClientPtr pClient)
 int ProcRRQueryVersion(ClientPtr client)
 {
     mixin(REQUEST!xRRQueryVersionReq);
-    REQUEST_SIZE_MATCH(xRRQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRQueryVersionReq);
 
     if (client.swapped) {
         swapl(&stuff.majorVersion);
@@ -72,13 +72,13 @@ int ProcRRQueryVersion(ClientPtr client)
         swapl(&reply.minorVersion);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRSelectInput(ClientPtr client)
 {
     mixin(REQUEST!xRRSelectInputReq);
-    REQUEST_SIZE_MATCH(xRRSelectInputReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSelectInputReq);
 
     if (client.swapped) {
         swapl(&stuff.window);

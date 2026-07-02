@@ -105,18 +105,18 @@ int ProcRRXineramaQueryVersion(ClientPtr client)
         minorVersion: SERVER_RRXINERAMA_MINOR_VERSION
     };
 
-    REQUEST_SIZE_MATCH(xPanoramiXQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXQueryVersionReq);
     if (client.swapped) {
         swaps(&reply.majorVersion);
         swaps(&reply.minorVersion);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRXineramaGetState(ClientPtr client)
 {
     mixin(REQUEST!xPanoramiXGetStateReq);
-    REQUEST_SIZE_MATCH(xPanoramiXGetStateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXGetStateReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -145,7 +145,7 @@ int ProcRRXineramaGetState(ClientPtr client)
     if (client.swapped) {
         swapl(&reply.window);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int RRXineramaScreenCount(ScreenPtr pScreen)
@@ -161,7 +161,7 @@ private Bool RRXineramaScreenActive(ScreenPtr pScreen)
 int ProcRRXineramaGetScreenCount(ClientPtr client)
 {
     mixin(REQUEST!xPanoramiXGetScreenCountReq);
-    REQUEST_SIZE_MATCH(xPanoramiXGetScreenCountReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXGetScreenCountReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -180,13 +180,13 @@ int ProcRRXineramaGetScreenCount(ClientPtr client)
     if (client.swapped) {
         swapl(&reply.window);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRXineramaGetScreenSize(ClientPtr client)
 {
     mixin(REQUEST!xPanoramiXGetScreenSizeReq);
-    REQUEST_SIZE_MATCH(xPanoramiXGetScreenSizeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXGetScreenSizeReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -216,12 +216,12 @@ int ProcRRXineramaGetScreenSize(ClientPtr client)
         swapl(&reply.window);
         swapl(&reply.screen);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRXineramaIsActive(ClientPtr client)
 {
-    REQUEST_SIZE_MATCH(xXineramaIsActiveReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXineramaIsActiveReq);
 
     xXineramaIsActiveReply reply = {
         state: RRXineramaScreenActive(screenInfo.screens[RR_XINERAMA_SCREEN])
@@ -229,7 +229,7 @@ int ProcRRXineramaIsActive(ClientPtr client)
     if (client.swapped) {
         swapl(&reply.state);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRXineramaQueryScreens(ClientPtr client)
@@ -239,7 +239,7 @@ int ProcRRXineramaQueryScreens(ClientPtr client)
     RRMonitorPtr monitors = null;
     int nmonitors = 0;
 
-    REQUEST_SIZE_MATCH(xXineramaQueryScreensReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXineramaQueryScreensReq);
 
     if (RRXineramaScreenActive(pScreen)) {
         RRGetInfo(pScreen, FALSE);
@@ -269,7 +269,7 @@ int ProcRRXineramaQueryScreens(ClientPtr client)
     if (monitors)
         RRMonitorFreeList(monitors, nmonitors);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcRRXineramaDispatch(ClientPtr client)

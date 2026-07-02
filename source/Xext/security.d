@@ -353,7 +353,7 @@ private int ProcSecurityQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(majorVersion);
     X_REPLY_FIELD_CARD16(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }                               /* ProcSecurityQueryVersion */
 
 private int SecurityEventSelectForAuthorization(SecurityAuthorizationPtr pAuth, ClientPtr client, Mask mask)
@@ -547,7 +547,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
     X_REPLY_FIELD_CARD16(dataLength);
 
     /* the request succeeded; don't call RemoveAuthorization or free pAuth */
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
  bailout:
     if (removeAuth)

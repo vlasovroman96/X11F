@@ -199,7 +199,7 @@ static if (RANDR_12_INTERFACE) {
 int ProcRRGetScreenSizeRange(ClientPtr client)
 {
     mixin(REQUEST!xRRGetScreenSizeRangeReq);
-    REQUEST_SIZE_MATCH(xRRGetScreenSizeRangeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetScreenSizeRangeReq);
     if (client.swapped)
         swapl(&stuff.window);
 
@@ -235,13 +235,13 @@ int ProcRRGetScreenSizeRange(ClientPtr client)
         swaps(&reply.maxWidth);
         swaps(&reply.maxHeight);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcRRSetScreenSize(ClientPtr client)
 {
     mixin(REQUEST!xRRSetScreenSizeReq);
-    REQUEST_SIZE_MATCH(xRRSetScreenSizeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRSetScreenSizeReq);
     if (client.swapped) {
         swapl(&stuff.window);
         swaps(&stuff.width);
@@ -478,13 +478,13 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
         swaps(&reply.nbytesNames);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int rrGetScreenResources(ClientPtr client, Bool query)
 {
     mixin(REQUEST!xRRGetScreenResourcesReq);
-    REQUEST_SIZE_MATCH(xRRGetScreenResourcesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetScreenResourcesReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -617,7 +617,7 @@ finish:
         swaps(&reply.nModes);
         swaps(&reply.nbytesNames);
     }
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRGetScreenResources(ClientPtr client)
@@ -731,7 +731,7 @@ private RR10DataPtr RR10GetData(ScreenPtr pScreen, RROutputPtr output)
 int ProcRRGetScreenInfo(ClientPtr client)
 {
     mixin(REQUEST!xRRGetScreenInfoReq);
-    REQUEST_SIZE_MATCH(xRRGetScreenInfoReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetScreenInfoReq);
     if (client.swapped)
         swapl(&stuff.window);
 
@@ -856,7 +856,7 @@ finish:
         swaps(&reply.rate);
         swaps(&reply.nrateEnts);
     }
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRSetScreenConfig(ClientPtr client)
@@ -865,12 +865,12 @@ int ProcRRSetScreenConfig(ClientPtr client)
 
     int rate = 0;
     if (RRClientKnowsRates(client)) {
-        REQUEST_SIZE_MATCH(xRRSetScreenConfigReq);
+        mixin(REQUEST_AT_LEAST_SIZE!xRRSetScreenConfigReq);
         if (client.swapped) swaps(&stuff.rate);
         rate = stuff.rate;
     }
     else {
-        REQUEST_SIZE_MATCH(xRR1_0SetScreenConfigReq);
+        mixin(REQUEST_AT_LEAST_SIZE!xRR1_0SetScreenConfigReq);
     }
 
     if (client.swapped) {
@@ -1079,7 +1079,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
         swapl(&reply.newConfigTimestamp);
         swapl(&reply.root);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private CARD16 RR10CurrentSizeID(ScreenPtr pScreen)

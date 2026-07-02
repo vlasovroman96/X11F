@@ -78,7 +78,7 @@ private int ProcSELinuxQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(server_major);
     X_REPLY_FIELD_CARD16(server_minor);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int SELinuxSendContextReply(ClientPtr client, security_id_t sid)
@@ -102,7 +102,7 @@ private int SELinuxSendContextReply(ClientPtr client, security_id_t sid)
 
     X_REPLY_FIELD_CARD32(context_len);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcSELinuxSetCreateContext(ClientPtr client, uint offset)
@@ -361,7 +361,7 @@ private int SELinuxSendItemsToClient(ClientPtr client, SELinuxListItemRec* items
     X_REPLY_FIELD_CARD32(count);
 
     SELinuxFreeItems(items, count);
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcSELinuxListProperties(ClientPtr client)

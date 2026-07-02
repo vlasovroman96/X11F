@@ -1789,7 +1789,7 @@ private int RecordRegisterClients(RecordContextPtr pContext, ClientPtr client, x
 private int ProcRecordQueryVersion(ClientPtr client)
 {
     mixin(REQUEST!xRecordQueryVersionReq);
-    REQUEST_SIZE_MATCH(xRecordQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordQueryVersionReq);
 
     if (client.swapped) {
         swaps(&stuff.majorVersion);
@@ -1806,7 +1806,7 @@ private int ProcRecordQueryVersion(ClientPtr client)
         swaps(&reply.minorVersion);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 
@@ -1814,7 +1814,7 @@ private int ProcRecordQueryVersion(ClientPtr client)
 private int ProcRecordCreateContext(ClientPtr client)
 {
     mixin(REQUEST!xRecordCreateContextReq);
-    REQUEST_AT_LEAST_SIZE(xRecordCreateContextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordCreateContextReq);
 
     if (client.swapped) {
         int rc = SwapCreateRegister(client, cast(void*) stuff);
@@ -1869,7 +1869,7 @@ private int ProcRecordCreateContext(ClientPtr client)
 private int ProcRecordRegisterClients(ClientPtr client)
 {
     mixin(REQUEST!xRecordRegisterClientsReq);
-    REQUEST_AT_LEAST_SIZE(xRecordRegisterClientsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordRegisterClientsReq);
 
     if (client.swapped) {
         int rc = SwapCreateRegister(client, cast(void*) stuff);
@@ -1886,7 +1886,7 @@ private int ProcRecordRegisterClients(ClientPtr client)
 private int ProcRecordUnregisterClients(ClientPtr client)
 {
     mixin(REQUEST!xRecordUnregisterClientsReq);
-    REQUEST_AT_LEAST_SIZE(xRecordUnregisterClientsReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordUnregisterClientsReq);
 
     if (client.swapped) {
         swapl(&stuff.context);
@@ -2110,7 +2110,7 @@ private void RecordSwapRanges(xRecordRange* pRanges, int nRanges)
 private int ProcRecordGetContext(ClientPtr client)
 {
     mixin(REQUEST!xRecordGetContextReq);
-    REQUEST_SIZE_MATCH(xRecordGetContextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordGetContextReq);
 
     if (client.swapped)
         swapl(&stuff.context);
@@ -2263,7 +2263,7 @@ private int ProcRecordGetContext(ClientPtr client)
 private int ProcRecordEnableContext(ClientPtr client)
 {
     mixin(REQUEST!xRecordEnableContextReq);
-    REQUEST_SIZE_MATCH(xRecordEnableContextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordEnableContextReq);
 
     if (client.swapped)
         swapl(&stuff.context);
@@ -2375,7 +2375,7 @@ private void RecordDisableContext(RecordContextPtr pContext)
 private int ProcRecordDisableContext(ClientPtr client)
 {
     mixin(REQUEST!xRecordDisableContextReq);
-    REQUEST_SIZE_MATCH(xRecordDisableContextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordDisableContextReq);
 
     if (client.swapped)
         swapl(&stuff.context);
@@ -2436,7 +2436,7 @@ private int RecordDeleteContext(void* value, XID id)
 private int ProcRecordFreeContext(ClientPtr client)
 {
     mixin(REQUEST!xRecordFreeContextReq);
-    REQUEST_SIZE_MATCH(xRecordFreeContextReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRecordFreeContextReq);
 
     if (client.swapped)
         swapl(&stuff.context);

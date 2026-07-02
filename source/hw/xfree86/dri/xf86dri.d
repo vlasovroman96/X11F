@@ -91,7 +91,7 @@ private int ProcXF86DRIQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD16(minorVersion);
     X_REPLY_FIELD_CARD32(patchVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
@@ -120,7 +120,7 @@ private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
         isCapable: isCapable
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXF86DRIOpenConnection(ClientPtr client)
@@ -157,7 +157,7 @@ static if(HasVersion!("LONG64") && !HasVersion!("__linux__")) {
 }
 // #endif
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXF86DRIAuthConnection(ClientPtr client)
@@ -180,7 +180,7 @@ private int ProcXF86DRIAuthConnection(ClientPtr client)
         authenticated: authenticated
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXF86DRICloseConnection(ClientPtr client)
@@ -223,7 +223,7 @@ private int ProcXF86DRIGetClientDriverName(ClientPtr client)
         x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)clientDriverName, reply.clientDriverNameLength);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXF86DRICreateContext(ClientPtr client)
@@ -245,7 +245,7 @@ private int ProcXF86DRICreateContext(ClientPtr client)
         return BadValue;
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXF86DRIDestroyContext(ClientPtr client)
@@ -290,7 +290,7 @@ private int ProcXF86DRICreateDrawable(ClientPtr client)
         return BadValue;
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXF86DRIDestroyDrawable(ClientPtr client)
@@ -398,7 +398,7 @@ private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
         x_rpcbuf_write_CARD16(&rpcbuf, pBackClipRects[i].y2);
     }
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXF86DRIGetDeviceInfo(ClientPtr client)
@@ -434,7 +434,7 @@ static if (HasVersion!"LONG64" && !HasVersion!"linux") {
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD8s(&rpcbuf, pDevPrivate, reply.devPrivateSize);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int ProcXF86DRIDispatch(ClientPtr client)

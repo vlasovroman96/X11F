@@ -166,7 +166,7 @@ private void PseudoramiXResetProc(ExtensionEntry* extEntry)
 private int ProcPseudoramiXGetState(ClientPtr client)
 {
     mixin(REQUEST!xPanoramiXGetStateReq);
-    REQUEST_SIZE_MATCH(xPanoramiXGetStateReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXGetStateReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -189,14 +189,14 @@ private int ProcPseudoramiXGetState(ClientPtr client)
         swapl(&reply.window);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 // was PanoramiX
 private int ProcPseudoramiXGetScreenCount(ClientPtr client)
 {
     mixin(REQUEST!xPanoramiXGetScreenCountReq);
-    REQUEST_SIZE_MATCH(xPanoramiXGetScreenCountReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXGetScreenCountReq);
 
     if (client.swapped)
         swapl(&stuff.window);
@@ -219,14 +219,14 @@ private int ProcPseudoramiXGetScreenCount(ClientPtr client)
         swapl(&reply.window);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 // was PanoramiX
 private int ProcPseudoramiXGetScreenSize(ClientPtr client)
 {
     mixin(REQUEST!xPanoramiXGetScreenSizeReq);
-    REQUEST_SIZE_MATCH(xPanoramiXGetScreenSizeReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPanoramiXGetScreenSizeReq);
 
     if (client.swapped) {
         swapl(&stuff.window);
@@ -259,7 +259,7 @@ private int ProcPseudoramiXGetScreenSize(ClientPtr client)
         swapl(&reply.screen);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 // was Xinerama
@@ -267,7 +267,7 @@ private int ProcPseudoramiXIsActive(ClientPtr client)
 {
     /* mixin(REQUEST!xXineramaIsActiveReq); */
     TRACE;
-    REQUEST_SIZE_MATCH(xXineramaIsActiveReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXineramaIsActiveReq);
 
     xXineramaIsActiveReply reply = {
         state: !noPseudoramiXExtension
@@ -277,7 +277,7 @@ private int ProcPseudoramiXIsActive(ClientPtr client)
         swapl(&reply.state);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 // was Xinerama
@@ -289,7 +289,7 @@ private int ProcPseudoramiXQueryScreens(ClientPtr client)
               `noPseudoramiXExtension`,
               `pseudoramiXNumScreens`));
 
-    REQUEST_SIZE_MATCH(xXineramaQueryScreensReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xXineramaQueryScreensReq);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -311,7 +311,7 @@ private int ProcPseudoramiXQueryScreens(ClientPtr client)
     if (client.swapped)
         swapl(&reply.number);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 // was PanoramiX

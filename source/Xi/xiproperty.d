@@ -829,7 +829,7 @@ int ProcXListDeviceProperties(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(nAtoms);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcXChangeDeviceProperty(ClientPtr client)
@@ -963,7 +963,7 @@ int ProcXGetDeviceProperty(ClientPtr client)
     X_REPLY_FIELD_CARD32(bytesAfter);
     X_REPLY_FIELD_CARD32(nItems);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /* XI2 Request/reply handling */
@@ -986,7 +986,7 @@ int ProcXIListProperties(ClientPtr client)
 
     X_REPLY_FIELD_CARD16(num_properties);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcXIChangeProperty(ClientPtr client)
@@ -1108,7 +1108,7 @@ int ProcXIGetProperty(ClientPtr client)
     X_REPLY_FIELD_CARD32(bytes_after);
     X_REPLY_FIELD_CARD32(num_items);
 
-    rc = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
     if (rc != Success)
         return rc;
 

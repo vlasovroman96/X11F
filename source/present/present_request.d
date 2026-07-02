@@ -43,7 +43,7 @@ private int proc_present_query_version(ClientPtr client)
         minorVersion: SERVER_PRESENT_MINOR_VERSION
     };
 
-    REQUEST_SIZE_MATCH(xPresentQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentQueryVersionReq);
     /* From presentproto:
      *
      * The client sends the highest supported version to the server
@@ -62,7 +62,7 @@ private int proc_present_query_version(ClientPtr client)
         swapl(&reply.minorVersion);
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 enum string VERIFY_FENCE_OR_NONE(string fence_ptr, string fence_id, string client, string access) = `do {  
@@ -170,7 +170,7 @@ private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixm
 private int proc_present_pixmap(ClientPtr client)
 {
     mixin(REQUEST!xPresentPixmapReq);
-    REQUEST_AT_LEAST_SIZE(xPresentPixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapReq);
 
     version(DRI3) {
         return proc_present_pixmap_common(client, stuff.window, stuff.pixmap, stuff.serial,
@@ -204,7 +204,7 @@ private int proc_present_notify_msc(ClientPtr client)
     WindowPtr window = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xPresentNotifyMSCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentNotifyMSCReq);
     rc = dixLookupWindow(&window, stuff.window, client, DixReadAccess);
     if (rc != Success)
         return rc;
@@ -234,7 +234,7 @@ private int proc_present_select_input(ClientPtr client)
     WindowPtr window = void;
     int rc = void;
 
-    REQUEST_SIZE_MATCH(xPresentSelectInputReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentSelectInputReq);
 
     rc = dixLookupWindow(&window, stuff.window, client, DixGetAttrAccess);
     if (rc != Success)
@@ -254,7 +254,7 @@ private int proc_present_query_capabilities(ClientPtr client)
     RRCrtcPtr crtc = null;
     int r = void;
 
-    REQUEST_SIZE_MATCH(xPresentQueryCapabilitiesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentQueryCapabilitiesReq);
     r = dixLookupWindow(&window, stuff.target, client, DixGetAttrAccess);
     switch (r) {
     case Success:
@@ -274,7 +274,7 @@ private int proc_present_query_capabilities(ClientPtr client)
     if (client.swapped) {
         swapl(&reply.capabilities);
     }
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 version (DRI3) {
@@ -284,7 +284,7 @@ private int proc_present_pixmap_synced(ClientPtr client)
     dri3_syncobj* acquire_syncobj = void;
     dri3_syncobj* release_syncobj = void;
 
-    REQUEST_AT_LEAST_SIZE(xPresentPixmapSyncedReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapSyncedReq);
     VERIFY_DRI3_SYNCOBJ(stuff.acquire_syncobj, acquire_syncobj, DixWriteAccess);
     VERIFY_DRI3_SYNCOBJ(stuff.release_syncobj, release_syncobj, DixWriteAccess);
 
@@ -333,7 +333,7 @@ version (DRI3) {
 private int sproc_present_query_version(ClientPtr client)
 {
     mixin(REQUEST!xPresentQueryVersionReq);
-    REQUEST_SIZE_MATCH(xPresentQueryVersionReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentQueryVersionReq);
 
     swapl(&stuff.majorVersion);
     swapl(&stuff.minorVersion);
@@ -343,7 +343,7 @@ private int sproc_present_query_version(ClientPtr client)
 private int sproc_present_pixmap(ClientPtr client)
 {
     mixin(REQUEST!xPresentPixmapReq);
-    REQUEST_AT_LEAST_SIZE(xPresentPixmapReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapReq);
 
     swapl(&stuff.window);
     swapl(&stuff.pixmap);
@@ -365,7 +365,7 @@ private int sproc_present_pixmap(ClientPtr client)
 private int sproc_present_notify_msc(ClientPtr client)
 {
     mixin(REQUEST!xPresentNotifyMSCReq);
-    REQUEST_SIZE_MATCH(xPresentNotifyMSCReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentNotifyMSCReq);
 
     swapl(&stuff.window);
     swapll(&stuff.target_msc);
@@ -377,7 +377,7 @@ private int sproc_present_notify_msc(ClientPtr client)
 private int sproc_present_select_input(ClientPtr client)
 {
     mixin(REQUEST!xPresentSelectInputReq);
-    REQUEST_SIZE_MATCH(xPresentSelectInputReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentSelectInputReq);
 
     swapl(&stuff.eid);
     swapl(&stuff.window);
@@ -388,7 +388,7 @@ private int sproc_present_select_input(ClientPtr client)
 private int sproc_present_query_capabilities(ClientPtr client)
 {
     mixin(REQUEST!xPresentQueryCapabilitiesReq);
-    REQUEST_SIZE_MATCH(xPresentQueryCapabilitiesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentQueryCapabilitiesReq);
     swapl(&stuff.target);
     return proc_present_query_capabilities(client);
 }
@@ -398,7 +398,7 @@ version (DRI3) {
 private int sproc_present_pixmap_synced(ClientPtr client)
 {
     mixin(REQUEST!xPresentPixmapSyncedReq);
-    REQUEST_AT_LEAST_SIZE(xPresentPixmapSyncedReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapSyncedReq);
 
     swapl(&stuff.window);
 

@@ -93,5 +93,5 @@ int ProcXIGetFocus(ClientPtr client)
 
     X_REPLY_FIELD_CARD32(focus);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

@@ -138,7 +138,7 @@ private int proc_dri3_query_version(ClientPtr client)
     X_REPLY_FIELD_CARD32(majorVersion);
     X_REPLY_FIELD_CARD32(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int dri3_send_open_reply(ClientPtr client, int fd)
@@ -152,7 +152,7 @@ int dri3_send_open_reply(ClientPtr client, int fd)
         return BadAlloc;
     }
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int proc_dri3_open(ClientPtr client)
@@ -306,7 +306,7 @@ private int proc_dri3_buffer_from_pixmap(ClientPtr client)
     X_REPLY_FIELD_CARD16(height);
     X_REPLY_FIELD_CARD16(stride);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int proc_dri3_fence_from_fd(ClientPtr client)
@@ -364,7 +364,7 @@ private int proc_dri3_fd_from_fence(ClientPtr client)
     if (WriteFdToClient(client, fd, FALSE) < 0)
         return BadAlloc;
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int proc_dri3_get_supported_modifiers(ClientPtr client)
@@ -405,7 +405,7 @@ private int proc_dri3_get_supported_modifiers(ClientPtr client)
     X_REPLY_FIELD_CARD32(numWindowModifiers);
     X_REPLY_FIELD_CARD32(numScreenModifiers);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int proc_dri3_pixmap_from_buffers(ClientPtr client)
@@ -563,7 +563,7 @@ private int proc_dri3_buffers_from_pixmap(ClientPtr client)
     X_REPLY_FIELD_CARD16(height);
     X_REPLY_FIELD_CARD64(modifier);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int proc_dri3_set_drm_device_in_use(ClientPtr client)

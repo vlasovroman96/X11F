@@ -54,6 +54,7 @@ import os.fmt;
 
 import xfixes.xfixesint;
 import externs.X11.extensions.xfixeswire;
+import xfixes.region;
 // import externs.X11.extensions.Xfixeenum string
 enum string VERIFY_REGION(string pRegion, string rid, string client, string mode)	=
 	`int err;					
@@ -109,7 +110,7 @@ private int ProcXFixesQueryVersion(ClientPtr client)
     X_REPLY_FIELD_CARD32(majorVersion);
     X_REPLY_FIELD_CARD32(minorVersion);
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* Major version controls available requests */

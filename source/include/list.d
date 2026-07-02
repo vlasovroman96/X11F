@@ -125,18 +125,18 @@ struct xorg_list {
  *
  * @param list The list to initialize
  */
-pragma(inline, true) private void xorg_list_init(xorg_list* list)
+pragma(inline, true) void xorg_list_init(xorg_list* list)
 {
     list.next = list.prev = list;
 }
 
-pragma(inline, true) private void __xorg_list_autoinit(xorg_list* head)
+pragma(inline, true) void __xorg_list_autoinit(xorg_list* head)
 {
     if ((!head.prev) && (!head.next))
         xorg_list_init(head);
 }
 
-pragma(inline, true) private void __xorg_list_add(xorg_list* entry, xorg_list* prev, xorg_list* next)
+pragma(inline, true) void __xorg_list_add(xorg_list* entry, xorg_list* prev, xorg_list* next)
 {
     next.prev = entry;
     entry.next = next;
@@ -159,7 +159,7 @@ pragma(inline, true) private void __xorg_list_add(xorg_list* entry, xorg_list* p
  * @param entry The new element to prepend to the list.
  * @param head The existing list.
  */
-pragma(inline, true) private void xorg_list_add(xorg_list* entry, xorg_list* head)
+pragma(inline, true) void xorg_list_add(xorg_list* entry, xorg_list* head)
 {
     __xorg_list_autoinit(head);
     __xorg_list_add(entry, head, head.next);
@@ -180,13 +180,13 @@ pragma(inline, true) private void xorg_list_add(xorg_list* entry, xorg_list* hea
  * @param entry The new element to append to the list.
  * @param head The existing list.
  */
-pragma(inline, true) private void xorg_list_append(xorg_list* entry, xorg_list* head)
+pragma(inline, true) void xorg_list_append(xorg_list* entry, xorg_list* head)
 {
     __xorg_list_autoinit(head);
     __xorg_list_add(entry, head.prev, head);
 }
 
-pragma(inline, true) private void __xorg_list_del(xorg_list* prev, xorg_list* next)
+pragma(inline, true) void __xorg_list_del(xorg_list* prev, xorg_list* next)
 {
     next.prev = prev;
     prev.next = next;
@@ -206,7 +206,7 @@ pragma(inline, true) private void __xorg_list_del(xorg_list* prev, xorg_list* ne
  *
  * @param entry The element to remove.
  */
-pragma(inline, true) private void xorg_list_del(xorg_list* entry)
+pragma(inline, true) void xorg_list_del(xorg_list* entry)
 {
     __xorg_list_del(entry.prev, entry.next);
     xorg_list_init(entry);
@@ -221,7 +221,7 @@ pragma(inline, true) private void xorg_list_del(xorg_list* entry)
  * @return True if the list is empty or False if the list contains one or more
  * elements.
  */
-pragma(inline, true) private int xorg_list_is_empty(xorg_list* head)
+pragma(inline, true) int xorg_list_is_empty(xorg_list* head)
 {
     return ((head.next == null) || (head.next == head));
 }
@@ -233,7 +233,7 @@ pragma(inline, true) private int xorg_list_is_empty(xorg_list* head)
  * @param head The existing list.
  * @return zero when entry isn't present in list, otherwise non-zero
  */
-pragma(inline, true) private int xorg_list_present(xorg_list* entry, xorg_list* head)
+pragma(inline, true) int xorg_list_present(xorg_list* entry, xorg_list* head)
 {
     for (xorg_list* l = head.next; l && (l != head); l=l.next) {
         if (l == entry)
@@ -251,7 +251,7 @@ pragma(inline, true) private int xorg_list_present(xorg_list* entry, xorg_list* 
  * @param head The existing list.
  * @return zero if element already in list, otherwise non-zero
  */
-pragma(inline, true) private int xorg_list_add_ndup(xorg_list* entry, xorg_list* head)
+pragma(inline, true) int xorg_list_add_ndup(xorg_list* entry, xorg_list* head)
 {
     if (xorg_list_present(entry, head))
         return 0;
@@ -269,7 +269,7 @@ pragma(inline, true) private int xorg_list_add_ndup(xorg_list* entry, xorg_list*
  * @param head The existing list.
  * @return zero if element already in list, otherwise non-zero
  */
-pragma(inline, true) private int xorg_list_append_ndup(xorg_list* entry, xorg_list* head)
+pragma(inline, true) int xorg_list_append_ndup(xorg_list* entry, xorg_list* head)
 {
     if (xorg_list_present(entry, head))
         return 0;
@@ -367,50 +367,44 @@ alias __container_of(alias ptr, alias sample, alias member) =
  * @param member Member name of the struct xorg_list in the list elements.
  *
  */
-
-enum string xorg_list_for_each_entry(string pos, string head, string member) = 
-    `if ((` ~ pos ~ ` = ((` ~ head ~ `).next !is null ? __container_of!((` ~ head ~ `).next, ` ~ pos ~ `, ` ~ pos ~ `.` ~ member ~ `) : null)) !is null)` ~
-    `while (` ~ pos ~ ` !is null && &` ~ pos ~ `.` ~ member ~ ` !is cast(typeof((` ~ head ~ `).next))&(` ~ head ~ `))` ~
-    `for (bool _once = true; _once; _once = false, ` ~ 
-    `     ` ~ pos ~ ` = ((` ~ pos ~ `.` ~ member ~ `.next !is null) ? __container_of!(` ~ pos ~ `.` ~ member ~ `.next, ` ~ pos ~ `, ` ~ pos ~ `.` ~ member ~ `) : null))` // <-- ОБРАТИТЕ ВНИМАНИЕ НА ТОЧКУ С ЗАПЯТОЙ В КОНЦЕ СТРОКИ!
-;
-/**
+template xorg_list_for_each_entry(string pos, string head, string member, string bodyCode)
+{
+    const string xorg_list_for_each_entry = 
+        "for (" ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((" ~ head ~ ").next); "
+        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " != (" ~ head ~ ")); "
+        ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next)) {"
+        ~ bodyCode
+        ~ "}";
+}
+/*
  * Loop through the list, keeping a backup pointer to the element. This
  * macro allows for the deletion of a list element while looping through the
  * list.
  *
  * See xorg_list_for_each_entry for more details.
  */
-mixin template xorg_list_for_each_entry_safe(
-    alias pos,
-    alias tmp,
-    alias head,
-    string member,
-    T
+template xorg_list_for_each_entry_safe(
+    string pos,     // Передаем как строку "ref_"
+    string tmp,     // Передаем как строку "next"
+    string head,    // Передаем как строку "pPriv.reference_list" (БЕЗ &)
+    string member,  // Передаем как строку "link"
+    string bodyCode // Тело цикла через q{...}
 )
 {
-    mixin 
-    ( {
-        q{
-            for (
-                pos = containerOf!(T, member)(head.next),
-                tmp = containerOf!(T, member)(
-                    __traits(getMember, pos, member).next
-                );
-
-                head.next !is null &&
-                &(__traits(getMember, pos, member)) != &head;
-
-                pos = tmp,
-                tmp = containerOf!(T, member)(
-                    __traits(getMember, pos, member).next
-                )
-            )
-        };
-        }
-    );
+    // typeof(*pos) автоматически определит тип структуры во время компиляции
+    const string xorg_list_for_each_entry_safe = 
+        "for (" 
+        ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ head ~ ".next), "
+        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((*" ~ pos ~ ")." ~ member ~ ".next); "
+        ~ "(" ~ head ~ ".next !is null) && &((*" ~ pos ~ ")." ~ member ~ ") != &" ~ head ~ "; "
+        ~ pos ~ " = " ~ tmp ~ ", "
+        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((*" ~ pos ~ ")." ~ member ~ ".next)"
+        ~ ") {" 
+        ~ bodyCode 
+        ~ "}";
 }
 
+// alias 
 /* NULL-Terminated List Interface
  *
  * The interface below does _not_ use the struct xorg_list as described above.

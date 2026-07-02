@@ -329,7 +329,7 @@ int RRConfigureProviderProperty(RRProviderPtr provider, Atom property, Bool pend
 int ProcRRListProviderProperties(ClientPtr client)
 {
     mixin(REQUEST!xRRListProviderPropertiesReq);
-    REQUEST_SIZE_MATCH(xRRListProviderPropertiesReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRListProviderPropertiesReq);
 
     if (client.swapped)
         swapl(&stuff.provider);
@@ -354,13 +354,13 @@ int ProcRRListProviderProperties(ClientPtr client)
     if (client.swapped)
         swaps(&reply.nAtoms);
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRQueryProviderProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRQueryProviderPropertyReq);
-    REQUEST_SIZE_MATCH(xRRQueryProviderPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRQueryProviderPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -385,13 +385,13 @@ int ProcRRQueryProviderProperty(ClientPtr client)
         c_immutable: prop.immutable_
     };
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 int ProcRRConfigureProviderProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRConfigureProviderPropertyReq);
-    REQUEST_AT_LEAST_SIZE(xRRConfigureProviderPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRConfigureProviderPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -415,7 +415,7 @@ int ProcRRConfigureProviderProperty(ClientPtr client)
 int ProcRRChangeProviderProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRChangeProviderPropertyReq);
-    REQUEST_AT_LEAST_SIZE(xRRChangeProviderPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRChangeProviderPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -484,7 +484,7 @@ int ProcRRChangeProviderProperty(ClientPtr client)
 int ProcRRDeleteProviderProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRDeleteProviderPropertyReq);
-    REQUEST_SIZE_MATCH(xRRDeleteProviderPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRDeleteProviderPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -520,7 +520,7 @@ int ProcRRDeleteProviderProperty(ClientPtr client)
 int ProcRRGetProviderProperty(ClientPtr client)
 {
     mixin(REQUEST!xRRGetProviderPropertyReq);
-    REQUEST_SIZE_MATCH(xRRGetProviderPropertyReq);
+    mixin(REQUEST_AT_LEAST_SIZE!xRRGetProviderPropertyReq);
 
     if (client.swapped) {
         swapl(&stuff.provider);
@@ -648,5 +648,5 @@ int ProcRRGetProviderProperty(ClientPtr client)
     }
 
 sendout:
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

@@ -57,7 +57,7 @@ int __write_reply_hdr_simple(ClientPtr pClient, void* hdrData, size_t hdrLen)
 enum string X_REPLY_HEADER_UNITS(string hdrtype) = `
     (bytes_to_int32((((` ~ hdrtype ~ `) - xGenericReply.sizeof).sizeof)))`;
 
-pragma(inline, true) private int __write_reply_hdr_and_rpcbuf(ClientPtr pClient, void* hdrData, size_t hdrLen, x_rpcbuf_t* rpcbuf)
+pragma(inline, true) int __write_reply_hdr_and_rpcbuf(ClientPtr pClient, void* hdrData, size_t hdrLen, x_rpcbuf_t* rpcbuf)
 {
     if (rpcbuf.error)
         return BadAlloc;
@@ -104,7 +104,7 @@ pragma(inline, true) private int __write_reply_hdr_and_rpcbuf(ClientPtr pClient,
  * return             X11 result code
  */
 enum string X_SEND_REPLY_WITH_RPCBUF(string client, string hdrstruct, string rpcbuf) = `
-    __write_reply_hdr_and_rpcbuf(` ~ client ~ `, &(` ~ hdrstruct ~ `), ` ~ hdrstruct ~ `.sizeof, &(` ~ rpcbuf ~ `));`;
+    __write_reply_hdr_and_rpcbuf(` ~ client ~ `, &(` ~ hdrstruct ~ `), ` ~ hdrstruct ~ `.sizeof, &(` ~ rpcbuf ~ `))`;
 
 /*
  * send reply with header struct (not pointer!) without any payload
@@ -138,7 +138,7 @@ enum string X_REQUEST_HEAD_STRUCT(alias T) =
 enum string X_REQUEST_HEAD_AT_LEAST(string type) = `
     mixin(REQUEST!` ~ type ~ `); 
     if (stuff == null) return (BadLength); 
-    REQUEST_AT_LEAST_SIZE(` ~ type ~ `); 
+    mixin(REQUEST_AT_LEAST_SIZE!` ~ type ~ `); 
 `;
 /* declare request struct, do NOT check size !*/
 enum string X_REQUEST_HEAD_NO_CHECK(string type) = `

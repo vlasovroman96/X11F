@@ -53,7 +53,9 @@ import include.damage;
 import include.dri2;
 import externs.X11.extensions.dri2tokens;
 import include.list;
-
+import dix.pixmap;
+import os.log;
+import std.string;
 
 CARD8 dri2_major;               /* version of DRI2 supported by DDX */
 CARD8 dri2_minor;
@@ -186,7 +188,11 @@ private ScreenPtr GetScreenPrime(ScreenPtr primary, int prime_id)
         return primary;
 
     ScreenPtr secondary = void;
-    mixin(xorg_list_for_each_entry!("secondary", "&primary.secondary_list", "secondary_head")); {
+    // pragma(msg, xorg_list_for_each_entry!(
+    // "secondary",
+    // "&primary.secondary_list",
+    // "secondary_head"));
+   mixin(xorg_list_for_each_entry!("secondary", "&primary.secondary_list", "secondary_head", q{
         if (!secondary.is_offload_secondary)
             continue;
 
@@ -196,7 +202,7 @@ private ScreenPtr GetScreenPrime(ScreenPtr primary, int prime_id)
 
         if (ds.prime_id == prime_id)
             return secondary;
-    }
+    }));
     return primary;
 }
 
@@ -211,12 +217,12 @@ private DRI2DrawablePtr DRI2GetDrawable(DrawablePtr pDraw)
     case DRAWABLE_WINDOW:
     {
         WindowPtr pWin = cast(WindowPtr) pDraw;
-        return dixLookupPrivate(&pWin.devPrivates, &dri2WindowPrivateKeyRec);
+        return cast(DRI2DrawablePtr)dixLookupPrivate(&pWin.devPrivates, &dri2WindowPrivateKeyRec);
     }
     case DRAWABLE_PIXMAP:
     {
         PixmapPtr pPixmap = cast(PixmapPtr) pDraw;
-        return dixLookupPrivate(&pPixmap.devPrivates, &dri2PixmapPrivateKeyRec);
+        return cast(DRI2DrawablePtr)dixLookupPrivate(&pPixmap.devPrivates, &dri2PixmapPrivateKeyRec);
     }
     default:
         return null;
@@ -225,7 +231,8 @@ private DRI2DrawablePtr DRI2GetDrawable(DrawablePtr pDraw)
 
 private DRI2DrawablePtr DRI2AllocateDrawable(DrawablePtr pDraw)
 {
-    DRI2DrawablePtr pPriv = calloc(1, (*pPriv).sizeof);
+    DRI2DrawablePtr pPriv;
+    pPriv = cast(DRI2DrawablePtr)calloc(1, (*pPriv).sizeof);
     if (pPriv == null)
         return null;
 
@@ -247,7 +254,7 @@ private DRI2DrawablePtr DRI2AllocateDrawable(DrawablePtr pDraw)
     if (!ds.GetMSC || !(*ds.GetMSC) (pDraw, &ust, &pPriv.last_swap_target))
         pPriv.last_swap_target = 0;
 
-    memset(pPriv.blocked, 0, typeof(pPriv.blocked).sizeof);
+    memset(pPriv.blocked.ptr, 0, typeof(pPriv.blocked).sizeof);
     pPriv.swap_limit = 1;      /* default to double buffering */
     pPriv.last_swap_msc = 0;
     pPriv.last_swap_ust = 0;
@@ -285,7 +292,7 @@ Bool DRI2SwapLimit(DrawablePtr pDraw, int swap_limit)
     if (pPriv.swapsPending >= pPriv.swap_limit)
         return TRUE;
 
-    dri2WakeAll(CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
+    dri2WakeAll(cast(ClientPtr)CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
     return TRUE;
 }
 
@@ -301,17 +308,18 @@ private DRI2DrawableRefPtr DRI2LookupDrawableRef(DRI2DrawablePtr pPriv, XID id)
 {
     DRI2DrawableRefPtr ref_ = void;
 
-    xorg_list_for_each_entry(ref_, &pPriv.reference_list, link); {
+    mixin(xorg_list_for_each_entry!("ref_", "&pPriv.reference_list", "link", q{
         if (ref_.id == id)
             return ref_;
-    }
+    }));
 
     return null;
 }
 
 private int DRI2AddDrawableRef(DRI2DrawablePtr pPriv, XID id, XID dri2_id, DRI2InvalidateProcPtr invalidate, void* priv)
 {
-    DRI2DrawableRefPtr ref_ = calloc(1, (*ref_).sizeof);
+    DRI2DrawableRefPtr ref_;
+    ref_ = cast(DRI2DrawableRefPtr)calloc(1, (*ref_).sizeof);
     if (ref_ == null)
         return BadAlloc;
 
@@ -368,10 +376,10 @@ int DRI2CreateDrawable(ClientPtr client, DrawablePtr pDraw, XID id, DRI2Invalida
 
 private int DRI2DrawableGone(void* p, XID id)
 {
-    DRI2DrawablePtr pPriv = p;
+    DRI2DrawablePtr pPriv = cast(DRI2DrawablePtr)p;
 
     DRI2DrawableRefPtr ref_ = void, next = void;
-    xorg_list_for_each_entry_safe(ref_, next, &pPriv.reference_list, link); {
+    mixin(xorg_list_for_each_entry_safe!("ref_", "next", "pPriv.reference_list", "link", q{
         if (ref_.dri2_id == id) {
             xorg_list_del(&ref_.link);
             /* If this was the last ref under this X drawable XID,
@@ -387,7 +395,7 @@ private int DRI2DrawableGone(void* p, XID id)
             FreeResourceByType(ref_.dri2_id, dri2DrawableRes, TRUE);
             free(ref_);
         }
-    }
+    }));
 
     if (!xorg_list_is_empty(&pPriv.reference_list))
         return Success;
@@ -418,9 +426,9 @@ private int DRI2DrawableGone(void* p, XID id)
         dixDestroyPixmap(pPriv.redirectpixmap, 0);
     }
 
-    dri2WakeAll(CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
-    dri2WakeAll(CLIENT_SIGNAL_ANY, pPriv, WAKE_MSC);
-    dri2WakeAll(CLIENT_SIGNAL_ANY, pPriv, WAKE_SBC);
+    dri2WakeAll(cast(ClientPtr)CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
+    dri2WakeAll(cast(ClientPtr)CLIENT_SIGNAL_ANY, pPriv, WAKE_MSC);
+    dri2WakeAll(cast(ClientPtr)CLIENT_SIGNAL_ANY, pPriv, WAKE_SBC);
 
     free(pPriv);
 
@@ -520,16 +528,17 @@ private DRI2BufferPtr* do_get_buffers(DrawablePtr pDraw, int* width, int* height
     int dimensions_match = (pDraw.width == pPriv.width)
         && (pDraw.height == pPriv.height);
 
-    DRI2BufferPtr* buffers = cast(DRI2BufferPtr*) calloc((count + 1), typeof(buffers[0]).sizeof);
-    if (!buffers)
-        goto err_out;
-
+    DRI2BufferPtr* buffers;
+    buffers = cast(DRI2BufferPtr*) calloc((count + 1), typeof(buffers[0]).sizeof);
+    int i = void;
+    int buffers_changed = 0;
     int need_real_front = 0;
     int need_fake_front = 0;
     int have_fake_front = 0;
     int front_format = 0;
-    int buffers_changed = 0;
-    int i = void;
+    if (!buffers)
+        goto err_out;
+
     for (i = 0; i < count; i++) {
         const(uint) attachment = *(attachments++);
         const(uint) format = (has_format) ? *(attachments++) : 0;
@@ -607,8 +616,8 @@ private DRI2BufferPtr* do_get_buffers(DrawablePtr pDraw, int* width, int* height
 
         box.x1 = 0;
         box.y1 = 0;
-        box.x2 = pPriv.width;
-        box.y2 = pPriv.height;
+        box.x2 = cast(short)pPriv.width;
+        box.y2 = cast(short)pPriv.height;
         RegionInit(&region, &box, 0);
 
         DRI2CopyRegion(pDraw, &region, DRI2BufferFakeFrontLeft,
@@ -661,8 +670,9 @@ private void DRI2InvalidateDrawable(DrawablePtr pDraw)
     pPriv.needInvalidate = FALSE;
 
     DRI2DrawableRefPtr ref_ = void;
-    xorg_list_for_each_entry(ref_, &pPriv.reference_list, link);
+    mixin(xorg_list_for_each_entry!("ref_", "&pPriv.reference_list", "link", q{
         ref_.invalidate(pDraw, ref_.priv, ref_.id);
+    }));
 }
 
 /*
@@ -907,7 +917,7 @@ private void DRI2WakeClient(ClientPtr client, DrawablePtr pDraw, int frame, uint
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
     if (pPriv == null) {
-        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return;
     }
 
@@ -927,14 +937,14 @@ private void DRI2WakeClient(ClientPtr client, DrawablePtr pDraw, int frame, uint
         }
     }
 
-    dri2WakeAll(CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
+    dri2WakeAll(cast(ClientPtr)CLIENT_SIGNAL_ANY, pPriv, WAKE_SWAP);
 }
 
 void DRI2SwapComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec, int type, DRI2SwapEventPtr swap_complete, void* swap_data)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
     if (pPriv == null) {
-        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return;
     }
 
@@ -954,7 +964,7 @@ void DRI2SwapComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_se
 
     CARD64 ust = (cast(CARD64) tv_sec * 1000000) + tv_usec;
     if (swap_complete)
-        swap_complete(client, swap_data, type, ust, frame, pPriv.swap_count);
+        swap_complete(client, swap_data, type, ust, frame,cast(uint) pPriv.swap_count);
 
     pPriv.last_swap_msc = frame;
     pPriv.last_swap_ust = ust;
@@ -985,7 +995,7 @@ int DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD
 
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
     if (pPriv == null) {
-        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return BadDrawable;
     }
 
@@ -1005,7 +1015,7 @@ int DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD
             pSrcBuffer = cast(DRI2BufferPtr) pPriv.buffers[i];
     }
     if (pSrcBuffer == null || pDestBuffer == null) {
-        LogMessage(X_ERROR, "[DRI2] %s: drawable has no back or front?\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: drawable has no back or front?\n");
         return BadDrawable;
     }
 
@@ -1023,7 +1033,7 @@ int DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD
         pPriv.swapsPending++;
 
         dri2_copy_region(pDraw, &region, pDestBuffer, pSrcBuffer);
-        DRI2SwapComplete(client, pDraw, target_msc, 0, 0, DRI2_BLIT_COMPLETE,
+        DRI2SwapComplete(client, pDraw, cast(int)target_msc, 0, 0, DRI2_BLIT_COMPLETE,
                          func, data);
         return Success;
     }
@@ -1063,7 +1073,7 @@ int DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD
                                    &target_msc, divisor, remainder, func, data);
     if (!ret) {
         pPriv.swapsPending--;  /* didn't schedule */
-        LogMessage(X_ERROR, "[DRI2] %s: driver failed to schedule swap\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: driver failed to schedule swap\n");
         return BadDrawable;
     }
 
@@ -1079,7 +1089,7 @@ void DRI2SwapInterval(DrawablePtr pDrawable, int interval)
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDrawable);
 
     if (pPriv == null) {
-        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return;
     }
 
@@ -1093,7 +1103,7 @@ int DRI2GetMSC(DrawablePtr pDraw, CARD64* ust, CARD64* msc, CARD64* sbc)
 
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
     if (pPriv == null) {
-        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n", __func__);
+        LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return BadDrawable;
     }
 
@@ -1126,7 +1136,7 @@ int DRI2WaitMSC(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD64 d
 
     /* Old DDX just completes immediately */
     if (!ds.ScheduleWaitMSC) {
-        DRI2WaitMSCComplete(client, pDraw, target_msc, 0, 0);
+        DRI2WaitMSCComplete(client, pDraw, cast(int)target_msc, 0, 0);
         return Success;
     }
 
@@ -1243,7 +1253,7 @@ private int DRI2ConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw,
         int ret = pScreen.ConfigNotify(pWin, x, y, w, h, bw, pSib);
 
         ds.ConfigNotify = pScreen.ConfigNotify;
-        pScreen.ConfigNotify = DRI2ConfigNotify;
+        pScreen.ConfigNotify = &DRI2ConfigNotify;
         if (ret)
             return ret;
     }
@@ -1263,7 +1273,7 @@ private void DRI2SetWindowPixmap(WindowPtr pWin, PixmapPtr pPix)
     pScreen.SetWindowPixmap = ds.SetWindowPixmap;
     (*pScreen.SetWindowPixmap) (pWin, pPix);
     ds.SetWindowPixmap = pScreen.SetWindowPixmap;
-    pScreen.SetWindowPixmap = DRI2SetWindowPixmap;
+    pScreen.SetWindowPixmap = &DRI2SetWindowPixmap;
 
     DRI2InvalidateDrawable(&pWin.drawable);
 }
@@ -1342,8 +1352,9 @@ out_:
 Bool DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info)
 {
     const(char)*[3] driverTypeNames = [
-        "DRI",                  /* DRI2DriverDRI */
-        "VDPAU",                /* DRI2DriverVDPAU */
+        "DRI"c.ptr,                  /* DRI2DriverDRI */
+        "VDPAU"c.ptr,                /* DRI2DriverVDPAU */
+        null
     ];
 
     if (info.version_ < 3)
@@ -1361,7 +1372,8 @@ Bool DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info)
     if (!dixRegisterPrivateKey(&dri2ClientPrivateKeyRec, PRIVATE_CLIENT, DRI2ClientRec.sizeof))
         return FALSE;
 
-    DRI2ScreenPtr ds = calloc(1, (*ds).sizeof);
+    DRI2ScreenPtr ds;
+    ds = cast(DRI2ScreenPtr)calloc(1, (*ds).sizeof);
     if (!ds)
         return FALSE;
 
@@ -1418,7 +1430,7 @@ Bool DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info)
      * version is too low, call through LegacyAuthMagic
      */
     if (!ds.AuthMagic) {
-        ds.AuthMagic = DRI2AuthMagic;
+        ds.AuthMagic = &DRI2AuthMagic;
         /*
          * If the driver doesn't provide an AuthMagic function
          * it relies on the old method (using libdrm) or fails
@@ -1439,7 +1451,8 @@ version (WITH_LIBDRM) {
     if (info.version_ == 3 || info.numDrivers == 0) {
         /* Driver too old: use the old-style driverName field */
         ds.numDrivers = info.driverName ? 1 : 2;
-        ds.driverNames = calloc(ds.numDrivers, typeof(*ds.driverNames).sizeof);
+        // ds.driverNames;
+        ds.driverNames = cast(const(char)**)calloc(ds.numDrivers, typeof(*ds.driverNames).sizeof);
         if (!ds.driverNames)
             goto err_out;
 
@@ -1460,7 +1473,7 @@ version (WITH_LIBDRM) {
     }
     else {
         ds.numDrivers = info.numDrivers;
-        ds.driverNames = calloc(info.numDrivers, typeof(*ds.driverNames).sizeof);
+        ds.driverNames = cast(const(char)**)calloc(info.numDrivers, typeof(*ds.driverNames).sizeof);
         if (!ds.driverNames)
             goto err_out;
         memcpy(ds.driverNames, info.driverNames,
@@ -1470,10 +1483,10 @@ version (WITH_LIBDRM) {
     dixSetPrivate(&pScreen.devPrivates, &dri2ScreenPrivateKeyRec, ds);
 
     ds.ConfigNotify = pScreen.ConfigNotify;
-    pScreen.ConfigNotify = DRI2ConfigNotify;
+    pScreen.ConfigNotify = &DRI2ConfigNotify;
 
     ds.SetWindowPixmap = pScreen.SetWindowPixmap;
-    pScreen.SetWindowPixmap = DRI2SetWindowPixmap;
+    pScreen.SetWindowPixmap = &DRI2SetWindowPixmap;
 
     LogMessage(X_INFO, "[DRI2] Setup complete\n");
     for (int i = 0; i < ARRAY_SIZE(driverTypeNames.ptr); i++) {
@@ -1529,7 +1542,7 @@ void DRI2Version(int* major, int* minor)
 int DRI2GetParam(ClientPtr client, DrawablePtr drawable, CARD64 param, BOOL* is_param_recognized, CARD64* value)
 {
     DRI2ScreenPtr ds = DRI2GetScreen(drawable.pScreen);
-    char high_byte = (param >> 24);
+    char high_byte = cast(char)(param >> 24);
 
     switch (high_byte) {
     case 0:
