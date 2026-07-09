@@ -31,6 +31,7 @@ public import include.os;
 public import include.resource;
 public import include.window;
 public import dix.resource;
+import dix.dixutils;
 
 /* pad scanline to a longword */
 enum BITMAP_SCANLINE_UNIT =    32;
@@ -124,9 +125,9 @@ enum string VALIDATE_DRAWABLE_AND_GC(string drawID, string pDraw, string mode) =
             ValidateGC(` ~ pDraw ~ `, pGC);`
         ;
 
-int dixLookupGC(GCPtr* result, XID id, ClientPtr client, Mask access_mode);
+// int dixLookupGC(GCPtr* result, XID id, ClientPtr client, Mask access_mode);
 
-int dixLookupResourceOwner(ClientPtr* result, XID id, ClientPtr client, Mask access_mode);
+// int dixLookupResourceOwner(ClientPtr* result, XID id, ClientPtr client, Mask access_mode);
 
 Bool CreateConnectionBlock();
 

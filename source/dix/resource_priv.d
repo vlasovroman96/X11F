@@ -140,7 +140,7 @@ int HashResourceID(XID id, uint numBits);
  * @param pids pointer to XID where to return found free XIDs
  * @result number of free XIDs
  */
-uint GetXIDList(ClientPtr pClient, uint count, XID* pids);
+// uint GetXIDList(ClientPtr pClient, uint count, XID* pids);
 
 /*
  * @brief retrieve a range of free XIDs for given client
@@ -150,7 +150,7 @@ uint GetXIDList(ClientPtr pClient, uint count, XID* pids);
  * @param minp pointer to result buffer: minimum XID of found range
  * @param maxp pointer to result buffer: maximum XID of found range
  */
-void GetXIDRange(int client, Bool server, XID* minp, XID* maxp);
+// void GetXIDRange(int client, Bool server, XID* minp, XID* maxp);
 
 /* Resource state callback */
 extern CallbackListPtr ResourceStateCallback;

@@ -132,7 +132,7 @@ private Bool fbOverlayCreateScreenResources(ScreenPtr pScreen)
             return FALSE;
         if (!(*pScreen.ModifyPixmapHeader) (pPixmap, pScreen.width,
                                              pScreen.height, depth,
-                                             BitsPerPixel(depth),
+                                             mixin(BitsPerPixel!("depth")),
                                              PixmapBytePad(width, depth),
                                              pbits))
             return FALSE;

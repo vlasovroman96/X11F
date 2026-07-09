@@ -953,10 +953,10 @@ private void FreeWindowResources(WindowPtr pWin)
     RegionUninit(&pWin.borderSize);
     if (mixin(wBoundingShape!("pWin")))
         RegionDestroy(mixin(wBoundingShape!("pWin")));
-    if (wClipShape(pWin))
-        RegionDestroy(wClipShape(pWin));
-    if (wInputShape(pWin))
-        RegionDestroy(wInputShape(pWin));
+    if (mixin(wClipShape!("pWin")))
+        RegionDestroy(mixin(wClipShape!("pWin")));
+    if (mixin(wInputShape!("pWin")))
+        RegionDestroy(mixin(wInputShape!("pWin")));
     if (pWin.borderIsPixel == FALSE)
         dixDestroyPixmap(pWin.border.pixmap, 0);
     if (pWin.backgroundState == BackgroundPixmap)
@@ -1679,13 +1679,13 @@ void SetWinSize(WindowPtr pWin)
                              pWin.drawable.x, pWin.drawable.y,
                              cast(int) pWin.drawable.width,
                              cast(int) pWin.drawable.height);
-    if (mixin(wBoundingShape!("pWin")) || wClipShape(pWin)) {
+    if (mixin(wBoundingShape!("pWin")) || mixin(wClipShape!("pWin"))) {
         RegionTranslate(&pWin.winSize, -pWin.drawable.x, -pWin.drawable.y);
         if (mixin(wBoundingShape!("pWin")))
             RegionIntersect(&pWin.winSize, &pWin.winSize,
                             mixin(wBoundingShape!("pWin")));
-        if (wClipShape(pWin))
-            RegionIntersect(&pWin.winSize, &pWin.winSize, wClipShape(pWin));
+        if (mixin(wClipShape!("pWin")))
+            RegionIntersect(&pWin.winSize, &pWin.winSize, mixin(wClipShape!("pWin")));
         RegionTranslate(&pWin.winSize, pWin.drawable.x, pWin.drawable.y);
     }
 }
@@ -2299,7 +2299,7 @@ version (ROOTLESS) {} else {
 
     if (mixin(SubStrSend!(`pWin`, `pParent`))) {
         // xEvent event = {
-            // u:configureNotify:window: pWin.drawable.id,
+            // u:configureNotify:window: cast(uint)pWin.drawable.id,
         //     u:configureNotify:aboveSibling: pSib ? pSib.drawable.id : None,
         //     u:configureNotify:x: x,
         //     u:configureNotify:y: y,
@@ -2397,7 +2397,7 @@ int CirculateWindow(WindowPtr pParent, int direction, ClientPtr client)
     }
 
     // event = xEvent (
-    //     u:circulate:window: pWin.drawable.id,
+    //     u:circulate:window: cast(uint)pWin.drawable.id,
     //     u:circulate:parent: pParent.drawable.id,
     //     u:circulate:event: pParent.drawable.id,
     //     u:circulate:place: (direction == RaiseLowest) ?
@@ -2919,8 +2919,8 @@ Bool PointInWindowIsVisible(WindowPtr pWin, int x, int y)
     if (!pWin.realized)
         return FALSE;
     if (RegionContainsPoint(&pWin.borderClip, x, y, &box)
-        && (!wInputShape(pWin) ||
-            RegionContainsPoint(wInputShape(pWin),
+        && (!mixin(wInputShape!("pWin")) ||
+            RegionContainsPoint(mixin(wInputShape!("pWin")),
                                 x - pWin.drawable.x,
                                 y - pWin.drawable.y, &box)))
         return TRUE;

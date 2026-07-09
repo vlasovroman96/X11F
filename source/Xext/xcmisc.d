@@ -31,7 +31,7 @@ from The Open Group.
 
 import build.dix_config;
 
-import core.stdc.stdint;
+// import core.stdc.stdint;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.xcmiscproto;
@@ -47,6 +47,8 @@ import include.os;
 import include.dixstruct;
 import include.extnsionst;
 import dix.swaprep;
+import externs.X11.extensions.xcmiscproto;
+import dix.extension;
 
 private int ProcXCMiscGetVersion(ClientPtr client)
 {
@@ -73,12 +75,12 @@ private int ProcXCMiscGetXIDRange(ClientPtr client)
     GetXIDRange(client.index, FALSE, &min_id, &max_id);
 
     xXCMiscGetXIDRangeReply reply = {
-        start_id: min_id,
-        count: max_id - min_id + 1
+        start_id: cast(uint)min_id,
+        count: cast(uint)(max_id - min_id + 1)
     };
 
-    mixin(X_REPLY_FIELD_CARD32!start_id);
-    mixin(X_REPLY_FIELD_CARD32!count);
+    mixin(X_REPLY_FIELD_CARD32!"start_id");
+    mixin(X_REPLY_FIELD_CARD32!"count");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -86,9 +88,9 @@ private int ProcXCMiscGetXIDRange(ClientPtr client)
 private int ProcXCMiscGetXIDList(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXCMiscGetXIDListReq);
-    mixin(X_REQUEST_FIELD_CARD32!count);
+    mixin(X_REQUEST_FIELD_CARD32!"count");
 
-    if (stuff.count > UINT32_MAX / XID.sizeof) {
+    if (stuff.count > uint.max / XID.sizeof) {
         return BadAlloc;
     }
 
@@ -101,14 +103,14 @@ private int ProcXCMiscGetXIDList(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    x_rpcbuf_write_CARD32s(&rpcbuf, pids, count);
+    x_rpcbuf_write_CARD32s(&rpcbuf, cast(CARD32*)pids, count);
     free(pids);
 
     xXCMiscGetXIDListReply reply = {
-        count: count
+        count: cast(uint)count
     };
 
-    mixin(X_REPLY_FIELD_CARD32!count);
+    mixin(X_REPLY_FIELD_CARD32!"count");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -132,5 +134,5 @@ void XCMiscExtensionInit()
 {
     AddExtension(XCMiscExtensionName, 0, 0,
                  &ProcXCMiscDispatch, &ProcXCMiscDispatch,
-                 null, StandardMinorOpcode);
+                 null, &StandardMinorOpcode);
 }

@@ -56,6 +56,8 @@ import include.misc;
 import include.dixstruct;
 import include.resource;
 import panoramiXh;
+import dix.dixutils;
+import dix.gc;
 
 enum XINERAMA_IMAGE_BUFSIZE = (256*1024);
 enum INPUTONLY_LEGAL_MASK = (CWWinGravity | CWEventMask |

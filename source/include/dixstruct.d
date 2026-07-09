@@ -119,7 +119,7 @@ struct _Client {
 
 extern TimeStamp currentTime;
 
-extern int CompareTimeStamps(TimeStamp, TimeStamp);
+// extern int CompareTimeStamps(TimeStamp, TimeStamp);
 
 extern TimeStamp ClientTimeToServerTime(CARD32);
 

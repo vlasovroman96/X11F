@@ -454,10 +454,10 @@ void xnestShapeWindow(WindowPtr pWin)
         }
     }
 
-    if (!xnestRegionEqual(xnestWindowPriv(pWin).clip_shape, wClipShape(pWin))) {
+    if (!xnestRegionEqual(xnestWindowPriv(pWin).clip_shape, mixin(wClipShape!("pWin")))) {
 
-        if (wClipShape(pWin)) {
-            RegionCopy(xnestWindowPriv(pWin).clip_shape, wClipShape(pWin));
+        if (mixin(wClipShape!("pWin"))) {
+            RegionCopy(xnestWindowPriv(pWin).clip_shape, mixin(wClipShape!("pWin")));
 
             const(int) num_rects = RegionNumRects(xnestWindowPriv(pWin).clip_shape);
             const(BoxPtr) pBox = RegionRects(xnestWindowPriv(pWin).clip_shape);

@@ -58,6 +58,9 @@ import include.regionstr;
 import include.gcstruct;
 import include.protocol_versions;
 import externs.X11.extensions.shapeproto;
+import dix.swapreq;
+import dix.dixutils;
+import dix.extension;
 
 Bool noShapeExtension = FALSE;
 
@@ -89,13 +92,14 @@ struct _ShapeEvent {
     ClientPtr client;
     WindowPtr window;
 }
+alias ShapeEventRec = _ShapeEvent;
 alias ShapeEventPtr = _ShapeEvent*;
 
 enum string  SHAPE_WINDOW_PRIVADDR(string pWin) = `(cast(ShapeEventPtr*) 
 dixLookupPrivateAddr(&(` ~ pWin ~ `).devPrivates, &ShapeWindowPrivateKeyRec))`;
 
 private int ShapeDelClientFromWin(WindowPtr pWin, void* value) {
-    ClientPtr client = value;
+    ClientPtr client = cast(ClientPtr)value;
     ShapeEventPtr* pHead = mixin(SHAPE_WINDOW_PRIVADDR!(`pWin`));
     ShapeEventPtr* prev = pHead;
     ShapeEventPtr curr = *pHead;
@@ -138,7 +142,7 @@ private int RegionOperate(ClientPtr client, WindowPtr pWin, int kind, RegionPtr*
     if (srcRgn == null) {
         if (*destRgnp != null) {
             RegionDestroy(*destRgnp);
-            *destRgnp = 0;
+            *destRgnp = null;
             /* go on to remove shape and generate ShapeNotify */
         }
         else {
@@ -159,7 +163,7 @@ private int RegionOperate(ClientPtr client, WindowPtr pWin, int kind, RegionPtr*
             if (*destRgnp)
                 RegionDestroy(*destRgnp);
             *destRgnp = srcRgn;
-            srcRgn = 0;
+            srcRgn = null;
             break;
         case ShapeUnion:
             if (*destRgnp)
@@ -170,7 +174,7 @@ private int RegionOperate(ClientPtr client, WindowPtr pWin, int kind, RegionPtr*
                 RegionIntersect(*destRgnp, *destRgnp, srcRgn);
             else {
                 *destRgnp = srcRgn;
-                srcRgn = 0;
+                srcRgn = null;
             }
             break;
         case ShapeSubtract:
@@ -199,10 +203,10 @@ RegionPtr CreateBoundingShape(WindowPtr pWin)
 {
     BoxRec extents = void;
 
-    extents.x1 = -mixin(wBorderWidth!("pWin"));
-    extents.y1 = -mixin(wBorderWidth!("pWin"));
-    extents.x2 = pWin.drawable.width + mixin(wBorderWidth!("pWin"));
-    extents.y2 = pWin.drawable.height + mixin(wBorderWidth!("pWin"));
+    extents.x1 = cast(short)-mixin(wBorderWidth!("pWin"));
+    extents.y1 = cast(short)-mixin(wBorderWidth!("pWin"));
+    extents.x2 = cast(short)(pWin.drawable.width + mixin(wBorderWidth!("pWin")));
+    extents.y2 = cast(short)(pWin.drawable.height + mixin(wBorderWidth!("pWin")));
     return RegionCreate(&extents, 1);
 }
 
@@ -247,13 +251,13 @@ private int ShapeRectangles(ClientPtr client, xShapeRectanglesReq* stuff)
         return rc;
     switch (stuff.destKind) {
     case ShapeBounding:
-        createDefault = CreateBoundingShape;
+        createDefault = &CreateBoundingShape;
         break;
     case ShapeClip:
-        createDefault = CreateClipShape;
+        createDefault = &CreateClipShape;
         break;
     case ShapeInput:
-        createDefault = CreateBoundingShape;
+        createDefault = &CreateBoundingShape;
         break;
     default:
         client.errorValue = stuff.destKind;
@@ -264,7 +268,7 @@ private int ShapeRectangles(ClientPtr client, xShapeRectanglesReq* stuff)
         client.errorValue = stuff.ordering;
         return BadValue;
     }
-    nrects = ((client.req_len << 2) - xShapeRectanglesReq.sizeof);
+    nrects = cast(int)((client.req_len << 2) - xShapeRectanglesReq.sizeof);
     if (nrects & 4)
         return BadLength;
     nrects >>= 3;
@@ -299,10 +303,10 @@ private int ShapeRectangles(ClientPtr client, xShapeRectanglesReq* stuff)
 private int ProcShapeRectangles(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xShapeRectanglesReq);
-    mixin(X_REQUEST_FIELD_CARD32!dest);
-    mixin(X_REQUEST_FIELD_CARD16!xOff);
-    mixin(X_REQUEST_FIELD_CARD16!yOff);
-    X_REQUEST_REST_CARD16();
+    mixin(X_REQUEST_FIELD_CARD32!"dest");
+    mixin(X_REQUEST_FIELD_CARD16!"xOff");
+    mixin(X_REQUEST_FIELD_CARD16!"yOff");
+    mixin(X_REQUEST_REST_CARD16!());
 
 version (XINERAMA) {
     if (noPanoramiXExtension)
@@ -344,13 +348,13 @@ private int ShapeMask(ClientPtr client, xShapeMaskReq* stuff)
         return rc;
     switch (stuff.destKind) {
     case ShapeBounding:
-        createDefault = CreateBoundingShape;
+        createDefault = &CreateBoundingShape;
         break;
     case ShapeClip:
-        createDefault = CreateClipShape;
+        createDefault = &CreateClipShape;
         break;
     case ShapeInput:
-        createDefault = CreateBoundingShape;
+        createDefault = &CreateBoundingShape;
         break;
     default:
         client.errorValue = stuff.destKind;
@@ -358,7 +362,7 @@ private int ShapeMask(ClientPtr client, xShapeMaskReq* stuff)
     }
     pScreen = pWin.drawable.pScreen;
     if (stuff.src == None)
-        srcRgn = 0;
+        srcRgn = null;
     else {
         rc = dixLookupResourceByType(cast(void**) &pPixmap, stuff.src,
                                      X11_RESTYPE_PIXMAP, client, DixReadAccess);
@@ -397,10 +401,10 @@ private int ShapeMask(ClientPtr client, xShapeMaskReq* stuff)
 private int ProcShapeMask(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShapeMaskReq);
-    mixin(X_REQUEST_FIELD_CARD32!dest);
-    mixin(X_REQUEST_FIELD_CARD16!xOff);
-    mixin(X_REQUEST_FIELD_CARD16!yOff);
-    mixin(X_REQUEST_FIELD_CARD32!src);
+    mixin(X_REQUEST_FIELD_CARD32!"dest");
+    mixin(X_REQUEST_FIELD_CARD16!"xOff");
+    mixin(X_REQUEST_FIELD_CARD16!"yOff");
+    mixin(X_REQUEST_FIELD_CARD32!"src");
 
 version (XINERAMA) {
     if (noPanoramiXExtension)
@@ -456,13 +460,13 @@ private int ShapeCombine(ClientPtr client, xShapeCombineReq* stuff)
 
     switch (stuff.destKind) {
     case ShapeBounding:
-        createDefault = CreateBoundingShape;
+        createDefault = &CreateBoundingShape;
         break;
     case ShapeClip:
-        createDefault = CreateClipShape;
+        createDefault = &CreateClipShape;
         break;
     case ShapeInput:
-        createDefault = CreateBoundingShape;
+        createDefault = &CreateBoundingShape;
         break;
     default:
         client.errorValue = stuff.destKind;
@@ -474,16 +478,16 @@ private int ShapeCombine(ClientPtr client, xShapeCombineReq* stuff)
         return rc;
     switch (stuff.srcKind) {
     case ShapeBounding:
-        srcRgn = wBoundingShape(pSrcWin);
-        createSrc = CreateBoundingShape;
+        srcRgn = mixin(wBoundingShape!("pSrcWin"));
+        createSrc = &CreateBoundingShape;
         break;
     case ShapeClip:
-        srcRgn = wClipShape(pSrcWin);
-        createSrc = CreateClipShape;
+        srcRgn = mixin(wClipShape!("pSrcWin"));
+        createSrc = &CreateClipShape;
         break;
     case ShapeInput:
-        srcRgn = wInputShape(pSrcWin);
-        createSrc = CreateBoundingShape;
+        srcRgn = mixin(wInputShape!("pSrcWin"));
+        createSrc = &CreateBoundingShape;
         break;
     default:
         client.errorValue = stuff.srcKind;
@@ -526,10 +530,10 @@ private int ShapeCombine(ClientPtr client, xShapeCombineReq* stuff)
 private int ProcShapeCombine(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xShapeCombineReq);
-    mixin(X_REQUEST_FIELD_CARD32!dest);
-    mixin(X_REQUEST_FIELD_CARD16!xOff);
-    mixin(X_REQUEST_FIELD_CARD16!yOff);
-    mixin(X_REQUEST_FIELD_CARD32!src);
+    mixin(X_REQUEST_FIELD_CARD32!"dest");
+    mixin(X_REQUEST_FIELD_CARD16!"xOff");
+    mixin(X_REQUEST_FIELD_CARD16!"yOff");
+    mixin(X_REQUEST_FIELD_CARD32!"src");
 
 version (XINERAMA) {
     if (noPanoramiXExtension)
@@ -576,10 +580,10 @@ private int ShapeOffset(ClientPtr client, xShapeOffsetReq* stuff)
         srcRgn = mixin(wBoundingShape!("pWin"));
         break;
     case ShapeClip:
-        srcRgn = wClipShape(pWin);
+        srcRgn = mixin(wClipShape!("pWin"));
         break;
     case ShapeInput:
-        srcRgn = wInputShape(pWin);
+        srcRgn = mixin(wInputShape!("pWin"));
         break;
     default:
         client.errorValue = stuff.destKind;
@@ -596,9 +600,9 @@ private int ShapeOffset(ClientPtr client, xShapeOffsetReq* stuff)
 private int ProcShapeOffset(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xShapeOffsetReq);
-    mixin(X_REQUEST_FIELD_CARD32!dest);
-    mixin(X_REQUEST_FIELD_CARD16!yOff);
-    mixin(X_REQUEST_FIELD_CARD16!yOff);
+    mixin(X_REQUEST_FIELD_CARD32!"dest");
+    mixin(X_REQUEST_FIELD_CARD16!"yOff");
+    mixin(X_REQUEST_FIELD_CARD16!"yOff");
 
 version (XINERAMA) {
     PanoramiXRes* win = void;
@@ -637,21 +641,21 @@ private int ProcShapeQueryExtents(ClientPtr client)
 
     RegionPtr boundRegion = void;
     BoxRec boundBox = void;
-    if ((boundRegion = mixin(wBoundingShape!("pWin")))) {
+    if ((boundRegion = mixin(wBoundingShape!("pWin"))) !is null) {
         /* this is done in two steps because of a compiler bug on SunOS 4.1.3 */
         BoxRec* pExtents = RegionExtents(boundRegion);
         boundBox = *pExtents;
     }
     else {
-        boundBox.x1 = -mixin(wBorderWidth!("pWin"));
-        boundBox.y1 = -mixin(wBorderWidth!("pWin"));
-        boundBox.x2 = pWin.drawable.width + mixin(wBorderWidth!("pWin"));
-        boundBox.y2 = pWin.drawable.height + mixin(wBorderWidth!("pWin"));
+        boundBox.x1 = cast(ushort)-mixin(wBorderWidth!("pWin"));
+        boundBox.y1 = cast(ushort)-mixin(wBorderWidth!("pWin"));
+        boundBox.x2 = cast(ushort)(pWin.drawable.width + mixin(wBorderWidth!("pWin")));
+        boundBox.y2 = cast(ushort)(pWin.drawable.height + mixin(wBorderWidth!("pWin")));
     }
 
     RegionPtr shapeRegion = void;
     BoxRec shapeBox = void;
-    if ((shapeRegion = wClipShape(pWin))) {
+    if ((shapeRegion = mixin(wClipShape!("pWin"))) !is null) {
         /* this is done in two steps because of a compiler bug on SunOS 4.1.3 */
         BoxRec* pExtents = RegionExtents(shapeRegion);
         shapeBox = *pExtents;
@@ -664,26 +668,26 @@ private int ProcShapeQueryExtents(ClientPtr client)
     }
 
     xShapeQueryExtentsReply reply = {
-        boundingShaped: (mixin(wBoundingShape!("pWin")) != 0),
-        clipShaped: (wClipShape(pWin) != 0),
+        boundingShaped: (mixin(wBoundingShape!("pWin")) !is null),
+        clipShaped: (mixin(wClipShape!("pWin")) !is null),
         xBoundingShape: boundBox.x1,
         yBoundingShape: boundBox.y1,
-        widthBoundingShape: boundBox.x2 - boundBox.x1,
-        heightBoundingShape: boundBox.y2 - boundBox.y1,
+        widthBoundingShape: cast(ushort)(boundBox.x2 - boundBox.x1),
+        heightBoundingShape: cast(ushort)(boundBox.y2 - boundBox.y1),
         xClipShape: shapeBox.x1,
         yClipShape: shapeBox.y1,
-        widthClipShape: shapeBox.x2 - shapeBox.x1,
-        heightClipShape: shapeBox.y2 - shapeBox.y1,
+        widthClipShape: cast(ushort)(shapeBox.x2 - shapeBox.x1),
+        heightClipShape: cast(ushort)(shapeBox.y2 - shapeBox.y1),
     };
 
-    mixin(X_REPLY_FIELD_CARD16!xBoundingShape);
-    mixin(X_REPLY_FIELD_CARD16!yBoundingShape);
-    mixin(X_REPLY_FIELD_CARD16!widthBoundingShape);
-    mixin(X_REPLY_FIELD_CARD16!heightBoundingShape);
-    mixin(X_REPLY_FIELD_CARD16!xClipShape);
-    mixin(X_REPLY_FIELD_CARD16!yClipShape);
-    mixin(X_REPLY_FIELD_CARD16!widthClipShape);
-    mixin(X_REPLY_FIELD_CARD16!heightClipShape);
+    mixin(X_REPLY_FIELD_CARD16!"xBoundingShape");
+    mixin(X_REPLY_FIELD_CARD16!"yBoundingShape");
+    mixin(X_REPLY_FIELD_CARD16!"widthBoundingShape");
+    mixin(X_REPLY_FIELD_CARD16!"heightBoundingShape");
+    mixin(X_REPLY_FIELD_CARD16!"xClipShape");
+    mixin(X_REPLY_FIELD_CARD16!"yClipShape");
+    mixin(X_REPLY_FIELD_CARD16!"widthClipShape");
+    mixin(X_REPLY_FIELD_CARD16!"heightClipShape");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -716,7 +720,7 @@ private int ProcShapeSelectInput(ClientPtr client)
         }
 
         /* Form the event */
-        pNewShapeEvent = calloc(1, ShapeEventRec.sizeof);
+        pNewShapeEvent = cast(ShapeEventPtr)calloc(1, ShapeEventRec.sizeof);
         if (!pNewShapeEvent)
             return BadAlloc;
         pNewShapeEvent.next = *pHead;
@@ -755,15 +759,15 @@ void SendShapeNotify(WindowPtr pWin, int which)
             shaped = xTrue;
         }
         else {
-            extents.x1 = -mixin(wBorderWidth!("pWin"));
-            extents.y1 = -mixin(wBorderWidth!("pWin"));
-            extents.x2 = pWin.drawable.width + mixin(wBorderWidth!("pWin"));
-            extents.y2 = pWin.drawable.height + mixin(wBorderWidth!("pWin"));
+            extents.x1 = cast(short)-mixin(wBorderWidth!("pWin"));
+            extents.y1 = cast(short)-mixin(wBorderWidth!("pWin"));
+            extents.x2 = cast(short)(pWin.drawable.width + mixin(wBorderWidth!("pWin")));
+            extents.y2 = cast(short)(pWin.drawable.height + mixin(wBorderWidth!("pWin")));
             shaped = xFalse;
         }
         break;
     case ShapeClip:
-        region = wClipShape(pWin);
+        region = mixin(wClipShape!("pWin"));
         if (region) {
             extents = *RegionExtents(region);
             shaped = xTrue;
@@ -777,16 +781,16 @@ void SendShapeNotify(WindowPtr pWin, int which)
         }
         break;
     case ShapeInput:
-        region = wInputShape(pWin);
+        region = mixin(wInputShape!("pWin"));
         if (region) {
             extents = *RegionExtents(region);
             shaped = xTrue;
         }
         else {
-            extents.x1 = -mixin(wBorderWidth!("pWin"));
-            extents.y1 = -mixin(wBorderWidth!("pWin"));
-            extents.x2 = pWin.drawable.width + mixin(wBorderWidth!("pWin"));
-            extents.y2 = pWin.drawable.height + mixin(wBorderWidth!("pWin"));
+            extents.x1 = cast(short)-mixin(wBorderWidth!("pWin"));
+            extents.y1 = cast(short)-mixin(wBorderWidth!("pWin"));
+            extents.x2 = cast(short)(pWin.drawable.width + mixin(wBorderWidth!("pWin")));
+            extents.y2 = cast(short)(pWin.drawable.height + mixin(wBorderWidth!("pWin")));
             shaped = xFalse;
         }
         break;
@@ -796,13 +800,13 @@ void SendShapeNotify(WindowPtr pWin, int which)
     UpdateCurrentTimeIf();
     for (pShapeEvent = *pHead; pShapeEvent; pShapeEvent = pShapeEvent.next) {
         xShapeNotifyEvent se = {
-            type: ShapeNotify + ShapeEventBase,
-            kind: which,
-            window: pWin.drawable.id,
+            type: cast(ubyte)(ShapeNotify + ShapeEventBase),
+            kind: cast(ubyte)which,
+            window: cast(uint)pWin.drawable.id,
             x: extents.x1,
             y: extents.y1,
-            width: extents.x2 - extents.x1,
-            height: extents.y2 - extents.y1,
+            width: cast(ushort)(extents.x2 - extents.x1),
+            height: cast(ushort)(extents.y2 - extents.y1),
             time: currentTime.milliseconds,
             shaped: shaped
         };
@@ -834,7 +838,7 @@ private int ProcShapeInputSelected(ClientPtr client)
     }
 
     xShapeInputSelectedReply reply = {
-        enabled: enabled,
+        enabled: cast(ubyte)enabled,
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -857,10 +861,10 @@ private int ProcShapeGetRectangles(ClientPtr client)
         region = mixin(wBoundingShape!("pWin"));
         break;
     case ShapeClip:
-        region = wClipShape(pWin);
+        region = mixin(wClipShape!("pWin"));
         break;
     case ShapeInput:
-        region = wInputShape(pWin);
+        region = mixin(wInputShape!("pWin"));
         break;
     default:
         client.errorValue = stuff.kind;
@@ -873,10 +877,10 @@ private int ProcShapeGetRectangles(ClientPtr client)
         xRectangle rect = void;
         switch (stuff.kind) {
         case ShapeBounding:
-            rect.x = -cast(int) mixin(wBorderWidth!("pWin"));
-            rect.y = -cast(int) mixin(wBorderWidth!("pWin"));
-            rect.width = pWin.drawable.width + mixin(wBorderWidth!("pWin"));
-            rect.height = pWin.drawable.height + mixin(wBorderWidth!("pWin"));
+            rect.x = cast(short)-mixin(wBorderWidth!("pWin"));
+            rect.y = cast(short)-mixin(wBorderWidth!("pWin"));
+            rect.width = cast(ushort)(pWin.drawable.width + mixin(wBorderWidth!("pWin")));
+            rect.height = cast(ushort)(pWin.drawable.height + mixin(wBorderWidth!("pWin")));
             break;
         case ShapeClip:
             rect.x = 0;
@@ -885,10 +889,10 @@ private int ProcShapeGetRectangles(ClientPtr client)
             rect.height = pWin.drawable.height;
             break;
         case ShapeInput:
-            rect.x = -cast(int) mixin(wBorderWidth!("pWin"));
-            rect.y = -cast(int) mixin(wBorderWidth!("pWin"));
-            rect.width = pWin.drawable.width + mixin(wBorderWidth!("pWin"));
-            rect.height = pWin.drawable.height + mixin(wBorderWidth!("pWin"));
+            rect.x = cast(short)-mixin(wBorderWidth!("pWin"));
+            rect.y = cast(short)-mixin(wBorderWidth!("pWin"));
+            rect.width = cast(ushort)(pWin.drawable.width + mixin(wBorderWidth!("pWin")));
+            rect.height = cast(ushort)(pWin.drawable.height + mixin(wBorderWidth!("pWin")));
             break;
         default: break;}
         nrects = 1;
@@ -901,8 +905,8 @@ private int ProcShapeGetRectangles(ClientPtr client)
             xRectangle rect = {
                 x: boxes[i].x1,
                 y: boxes[i].y1,
-                width: boxes[i].x2 - boxes[i].x1,
-                height: boxes[i].y2 - boxes[i].y1,
+                width: cast(ushort)(boxes[i].x2 - boxes[i].x1),
+                height: cast(ushort)(boxes[i].y2 - boxes[i].y1),
             };
             x_rpcbuf_write_CARD16s(&rpcbuf, cast(CARD16*)&rect, 4);
         }{}
@@ -913,7 +917,7 @@ private int ProcShapeGetRectangles(ClientPtr client)
         nrects: nrects
     };
 
-    mixin(X_REPLY_FIELD_CARD32!nrects);
+    mixin(X_REPLY_FIELD_CARD32!"nrects");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -976,9 +980,9 @@ private void ShapeWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, Window
 
 private void ShapeClientDestroyCallback(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    ClientPtr client = calldata;
+    ClientPtr client = cast(ClientPtr)calldata;
     mixin(DIX_FOR_EACH_SCREEN!q{
-        WalkTree(walkScreen, ShapeDelClientFromWin, client);
+        WalkTree(walkScreen, &ShapeDelClientFromWin, client);
     });
 }
 
@@ -990,15 +994,15 @@ void ShapeExtensionInit()
         return;
 
     mixin(DIX_FOR_EACH_SCREEN!q{
-        dixScreenHookWindowDestroy(walkScreen,ShapeWindowDestroy);
+        dixScreenHookWindowDestroy(walkScreen,&ShapeWindowDestroy);
     });
 
     AddCallback(&ClientDestroyCallback, &ShapeClientDestroyCallback, null);
 
     if ((extEntry = AddExtension(SHAPENAME, ShapeNumberEvents, 0,
                                  &ProcShapeDispatch, &ProcShapeDispatch,
-                                 null, StandardMinorOpcode))) {
+                                 null, &StandardMinorOpcode)) !is null) {
         ShapeEventBase = extEntry.eventBase;
-        EventSwapVector[ShapeEventBase] = cast(EventSwapPtr) SShapeNotifyEvent;
+        EventSwapVector[ShapeEventBase] = cast(EventSwapPtr) &SShapeNotifyEvent;
     }
 }

@@ -181,7 +181,7 @@ private int SingleXvPutVideo(ClientPtr client)
 
     mixin(REQUEST!xvPutVideoReq);
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
     if (!(pPort.pAdaptor.type & XvInputMask) ||
@@ -235,7 +235,7 @@ private int SingleXvPutStill(ClientPtr client)
 
     mixin(REQUEST!xvPutStillReq);
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
     if (!(pPort.pAdaptor.type & XvInputMask) ||
@@ -605,7 +605,7 @@ private int SingleXvPutImage(ClientPtr client)
 
     mixin(REQUEST!xvPutImageReq);
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
     if (!(pPort.pAdaptor.type & XvImageMask) ||
@@ -692,7 +692,7 @@ private int SingleXvShmPutImage(ClientPtr client)
 
     mixin(REQUEST!xvShmPutImageReq);
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
     if (!(pPort.pAdaptor.type & XvImageMask) ||
@@ -740,7 +740,7 @@ private int SingleXvShmPutImage(ClientPtr client)
 
     if ((status == Success) && stuff.send_event) {
         xShmCompletionEvent ev = {
-            type: ShmCompletionCode,
+            type: cast(ubyte)ShmCompletionCode,
             drawable: stuff.drawable,
             minorEvent: xv_ShmPutImage,
             majorEvent: XvReqCode,

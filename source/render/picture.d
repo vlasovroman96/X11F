@@ -198,7 +198,7 @@ private PictFormatPtr PictureCreateDefaultFormats(ScreenPtr pScreen, int* nforma
         depth = visualDepth(pScreen, pVisual);
         if (!depth)
             continue;
-        bpp = BitsPerPixel(depth);
+        bpp = mixin(BitsPerPixel!("depth"));
         switch (pVisual.class_) {
         case DirectColor:
         case TrueColor:

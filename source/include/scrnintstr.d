@@ -150,7 +150,7 @@ alias PositionWindowProcPtr = Bool function(WindowPtr, int, int);
 alias SetWindowVRRModeProcPtr = void function(WindowPtr pWindow, WindowVRRMode mode);
 
 /* pixmap will exist only for the duration of the current rendering operation */
-enum CREATE_PIXMAP_USAGE_SCRATCH =                     1;
+// enum CREATE_PIXMAP_USAGE_SCRATCH =                     1;
 /* pixmap will be the backing pixmap for a redirected window */
 enum CREATE_PIXMAP_USAGE_BACKING_PIXMAP =              2;
 /* pixmap will contain a glyph */

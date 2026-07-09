@@ -57,8 +57,8 @@ enum XSHM_CREATE_PIXMAP_ARGS = "
     char *                      /* addr */";
 
 struct _ShmFuncs {
-    mixin("PixmapPtr function(" ~ XSHM_CREATE_PIXMAP_ARGS ~ ") CreatePixmap;");
-    mixin("void function(" ~ XSHM_PUT_IMAGE_ARGS ~ ") PutImage;");
+    mixin("PixmapPtr function(" ~ XSHM_CREATE_PIXMAP_ARGS ~ ") @nogc nothrow CreatePixmap;");
+    mixin("void function(" ~ XSHM_PUT_IMAGE_ARGS ~ ") @nogc nothrow PutImage;");
 }alias ShmFuncs = _ShmFuncs;
 alias ShmFuncsPtr = _ShmFuncs*;
 

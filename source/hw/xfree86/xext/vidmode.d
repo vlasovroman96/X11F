@@ -1481,7 +1481,7 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
 
     REQUEST_FIXED_SIZE(xXF86VidModeSetGammaRampReq,
                        ((stuff.size + 1) & ~1) * 6);
-    X_REQUEST_REST_CARD16();
+    mixin(X_REQUEST_REST_CARD16!());
 
     CARD16* r = void, g = void, b = void;
     VidModePtr pVidMode = void;

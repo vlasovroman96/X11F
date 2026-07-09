@@ -43,7 +43,7 @@ void
 winSetShapeMultiWindow(WindowPtr pWin, int kind)
 {
 #if ENABLE_DEBUG
-    ErrorF("winSetShapeMultiWindow - pWin: %p kind: %i\n", pWin, kind);
+    ErrorF("winSetShapeMultiWindow - pWin: %p kind: cast(ubyte)%i\n", pWin, kind);
 #endif
 
     miSetShape(pWin, kind);

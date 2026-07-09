@@ -142,7 +142,7 @@ import include.extnsionst;
 import include.dixfont;
 import dix.dispatch;
 import dix.swaprep;
-import swapreq;
+import dix.swapreq;
 import include.privates;
 import Xext.xace;
 import include.inputstr;
@@ -1228,8 +1228,8 @@ int ProcTranslateCoords(ClientPtr client)
                 && (!mixin(wBoundingShape!("pWin")) ||
                     RegionContainsPoint(&pWin.borderSize, x, y, &box))
 
-                && (!wInputShape(pWin) ||
-                    RegionContainsPoint(wInputShape(pWin),
+                && (!mixin(wInputShape!("pWin")) ||
+                    RegionContainsPoint(mixin(wInputShape!("pWin")),
                                         x - pWin.drawable.x,
                                         y - pWin.drawable.y, &box))
                 ) {
@@ -1261,7 +1261,7 @@ int ProcOpenFont(ClientPtr client)
 
     REQUEST_FIXED_SIZE(xOpenFontReq, stuff.nbytes);
     client.errorValue = stuff.fid;
-    LEGAL_NEW_RESOURCE(stuff.fid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.fid", "client"));
     err = OpenFont(client, stuff.fid, cast(Mask) 0,
                    stuff.nbytes, cast(char*) &stuff[1]);
     if (err == Success) {
@@ -1442,7 +1442,7 @@ int ProcCreatePixmap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreatePixmapReq);
     client.errorValue = stuff.pid;
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, M_ANY,
                            DixGetAttrAccess);
@@ -1834,7 +1834,7 @@ int ProcPolyPoint(ClientPtr client)
         client.errorValue = stuff.coordMode;
         return BadValue;
     }
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     npoint = bytes_to_int32((client.req_len << 2) - xPolyPointReq.sizeof);
     if (npoint)
         (*pGC.ops.PolyPoint) (pDraw, pGC, stuff.coordMode, npoint,
@@ -1862,7 +1862,7 @@ int ProcPolyLine(ClientPtr client)
         client.errorValue = stuff.coordMode;
         return BadValue;
     }
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     npoint = bytes_to_int32((client.req_len << 2) - xPolyLineReq.sizeof);
     if (npoint > 1)
         (*pGC.ops.Polylines) (pDraw, pGC, stuff.coordMode, npoint,
@@ -1885,7 +1885,7 @@ int ProcPolySegment(ClientPtr client)
     GCPtr pGC = void;
     DrawablePtr pDraw = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     nsegs = (client.req_len << 2) - xPolySegmentReq.sizeof;
     if (nsegs & 4)
         return BadLength;
@@ -1910,7 +1910,7 @@ int ProcPolyRectangle(ClientPtr client)
     GCPtr pGC = void;
     DrawablePtr pDraw = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     nrects = (client.req_len << 2) - xPolyRectangleReq.sizeof;
     if (nrects & 4)
         return BadLength;
@@ -1936,7 +1936,7 @@ int ProcPolyArc(ClientPtr client)
     GCPtr pGC = void;
     DrawablePtr pDraw = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     narcs = cast(int)(client.req_len << 2) - xPolyArcReq.sizeof;
     if (narcs % xArc.sizeof)
         return BadLength;
@@ -1966,7 +1966,7 @@ int ProcFillPoly(ClientPtr client)
         return BadValue;
     }
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     things = cast(int)bytes_to_int32((client.req_len << 2) - xFillPolyReq.sizeof);
     if (things)
         (*pGC.ops.FillPolygon) (pDraw, pGC, stuff.shape,
@@ -1990,7 +1990,7 @@ int ProcPolyFillRectangle(ClientPtr client)
     GCPtr pGC = void;
     DrawablePtr pDraw = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     things = cast(int)(client.req_len << 2) - xPolyFillRectangleReq.sizeof;
     if (things & 4)
         return BadLength;
@@ -2017,7 +2017,7 @@ int ProcPolyFillArc(ClientPtr client)
     GCPtr pGC = void;
     DrawablePtr pDraw = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     narcs = cast(int)(client.req_len << 2) - xPolyFillArcReq.sizeof;
     if (narcs % xArc.sizeof)
         return BadLength;
@@ -2090,7 +2090,7 @@ int ProcPutImage(ClientPtr client)
     mixin(REQUEST!xPutImageReq);
 
     mixin(REQUEST_AT_LEAST_SIZE!xPutImageReq);
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     if (stuff.format == XYBitmap) {
         if ((stuff.depth != 1) ||
             (stuff.leftPad >= cast(uint) screenInfo.bitmapScanlinePad))
@@ -2366,7 +2366,7 @@ int ProcPolyText(ClientPtr client)
     DrawablePtr pDraw = void;
     GCPtr pGC = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
 
     return PolyText(client,
                    pDraw,
@@ -2384,7 +2384,7 @@ int ProcImageText8(ClientPtr client)
     mixin(REQUEST!xImageTextReq);
 
     mixin(REQUEST_FIXED_SIZE!("xImageTextReq", "stuff.nChars"));
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
 
     return ImageText(client,
                     pDraw,
@@ -2402,7 +2402,7 @@ int ProcImageText16(ClientPtr client)
     mixin(REQUEST!xImageTextReq);
 
    mixin(REQUEST_FIXED_SIZE!("xImageTextReq", "stuff.nChars << 1"));
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
 
     return ImageText(client,
                     pDraw,
@@ -3041,7 +3041,7 @@ int ProcCreateCursor(ClientPtr client)
     mixin(REQUEST!xCreateCursorReq);
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreateCursorReq);
-    LEGAL_NEW_RESOURCE(stuff.cid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.cid", "client"));
 
     rc = dixLookupResourceByType(cast(void**) &src, stuff.source, X11_RESTYPE_PIXMAP,
                                  client, DixReadAccess);
@@ -3147,7 +3147,7 @@ int ProcCreateGlyphCursor(ClientPtr client)
     CursorPtr pCursor = void;
     int res = void;
 
-    LEGAL_NEW_RESOURCE(stuff.cid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.cid", "client"));
 
     res = AllocGlyphCursor(stuff.source, stuff.sourceChar,
                            stuff.mask, stuff.maskChar,
@@ -3353,7 +3353,7 @@ int ProcListHosts(ClientPtr client)
         return result;
 
     xListHostsReply reply = {
-        enabled: enabled,
+        enabled: cast(ubyte)enabled,
         nHosts: nHosts
     };
 

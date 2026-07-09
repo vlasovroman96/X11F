@@ -78,7 +78,7 @@ void RRSendConfigNotify(ScreenPtr pScreen)
 {
     WindowPtr pWin = pScreen.root;
     // xEvent event = {
-    //     u:configureNotify:window: pWin.drawable.id,
+    //     u:configureNotify:window: cast(uint)pWin.drawable.id,
     //     u:configureNotify:aboveSibling: None,
 
     // /* XXX xinerama stuff ? */
@@ -116,7 +116,7 @@ void RRDeliverScreenEvent(ClientPtr client, WindowPtr pWin, ScreenPtr pScreen)
         timestamp: pScrPriv.lastSetTime.milliseconds,
         configTimestamp: pScrPriv.lastConfigTime.milliseconds,
         root: cast(uint)pRoot.drawable.id,
-        window: pWin.drawable.id,
+        window: cast(uint)pWin.drawable.id,
         subpixelOrder: PictureGetSubpixelOrder(pScreen),
 
         sizeID: RR10CurrentSizeID(pScreen)

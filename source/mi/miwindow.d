@@ -752,8 +752,8 @@ WindowPtr miSpriteTrace(SpritePtr pSprite, int x, int y)
              * borderSize
              */
             && (!mixin(wBoundingShape!("pWin")) || PointInBorderSize(pWin, x, y))
-            && (!wInputShape(pWin) ||
-                RegionContainsPoint(wInputShape(pWin),
+            && (!mixin(wInputShape!("pWin")) ||
+                RegionContainsPoint(mixin(wInputShape!("pWin")),
                                     x - pWin.drawable.x,
                                     y - pWin.drawable.y, &box))
             /* In rootless mode windows may be offscreen, even when

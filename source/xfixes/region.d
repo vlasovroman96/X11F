@@ -77,7 +77,7 @@ int ProcXFixesCreateRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesCreateRegionReq);
     mixin(X_REQUEST_FIELD_CARD32!region);
-    X_REQUEST_REST_CARD16();
+    mixin(X_REQUEST_REST_CARD16!());
 
     int things = void;
     RegionPtr pRegion = void;
@@ -157,7 +157,7 @@ int ProcXFixesCreateRegionFromWindow(ClientPtr client)
         }
         break;
     case WindowRegionClip:
-        pRegion = wClipShape(pWin);
+        pRegion = mixin(wClipShape!("pWin"));
         if (!pRegion) {
             pRegion = CreateClipShape(pWin);
             copy = FALSE;
@@ -254,7 +254,7 @@ int ProcXFixesSetRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesSetRegionReq);
     mixin(X_REQUEST_FIELD_CARD32!region);
-    X_REQUEST_REST_CARD16();
+    mixin(X_REQUEST_REST_CARD16!());
 
     int things = void;
     RegionPtr pRegion = void, pNew = void;

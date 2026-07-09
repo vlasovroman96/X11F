@@ -80,7 +80,7 @@ alias GCPtr = _GC*;
 alias GCOpsPtr = _GCOps*;
 alias GCOps = _GCOps;
 
-extern void ValidateGC(DrawablePtr, GCPtr);
+// extern void ValidateGC(DrawablePtr, GCPtr);
 
 union _ChangeGCVal {
     CARD32 val;
@@ -90,8 +90,8 @@ alias ChangeGCValPtr = ChangeGCVal*;
 
 extern void ChangeGC(ClientPtr, GCPtr, BITS32, ChangeGCValPtr);
 
-extern void GetScratchGC(uint, ScreenPtr);
+// extern void GetScratchGC(uint, ScreenPtr);
 
-extern void FreeScratchGC(GCPtr);
+// extern void FreeScratchGC(GCPtr);
 
                           /* GC_H */

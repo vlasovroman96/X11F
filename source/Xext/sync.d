@@ -81,6 +81,11 @@ import include.protocol_versions;
 import include.inputstr;
 import externs.X11.extensions.syncconst;
 import externs.X11.extensions.syncproto;
+import os.log;
+import dix.dixutils;
+import dix.extension;
+import os.utils;
+import os.WaitFor;
 // import include.misync_priv;
 
 /*
@@ -111,15 +116,15 @@ enum string IsSystemCounter(string pCounter) = `
 enum XSyncCAAllTrigger = 
     (XSyncCACounter | XSyncCAValueType | XSyncCAValue | XSyncCATestType);
 
-static void SyncComputeBracketValues(SyncCounter *);
+// static void SyncComputeBracketValues(SyncCounter *);
 
-static void SyncInitServerTime();
+// static void SyncInitServerTime();
 
-static void SyncInitIdleTime();
+// static void SyncInitIdleTime();
 
 pragma(inline, true) private void* SysCounterGetPrivate(SyncCounter* counter)
 {
-    BUG_WARN(!mixin(IsSystemCounter!(`counter`)));
+    mixin(BUG_WARN!("!mixin(IsSystemCounter!(`counter`))"));
 
     return counter.pSysCounterInfo ? counter.pSysCounterInfo.private_ : null;
 }
@@ -199,7 +204,7 @@ int SyncAddTriggerToSyncObject(SyncTrigger* pTrigger)
     }
 
     /* Failure is not an option, it's succeed or burst! */
-    pCur = XNFalloc(SyncTriggerList.sizeof);
+    pCur = cast(SyncTriggerList*)XNFalloc(SyncTriggerList.sizeof);
 
     pCur.pTrigger = pTrigger;
     pCur.next = pTrigger.pSync.pTriglist;
@@ -390,23 +395,23 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
     if (changes & XSyncCATestType) {
 
         if (pSync && SYNC_FENCE == pSync.type) {
-            pTrigger.CheckTrigger = SyncCheckTriggerFence;
+            pTrigger.CheckTrigger = &SyncCheckTriggerFence;
         }
         else {
             /* select appropriate CheckTrigger function */
 
             switch (pTrigger.test_type) {
             case XSyncPositiveTransition:
-                pTrigger.CheckTrigger = SyncCheckTriggerPositiveTransition;
+                pTrigger.CheckTrigger = &SyncCheckTriggerPositiveTransition;
                 break;
             case XSyncNegativeTransition:
-                pTrigger.CheckTrigger = SyncCheckTriggerNegativeTransition;
+                pTrigger.CheckTrigger = &SyncCheckTriggerNegativeTransition;
                 break;
             case XSyncPositiveComparison:
-                pTrigger.CheckTrigger = SyncCheckTriggerPositiveComparison;
+                pTrigger.CheckTrigger = &SyncCheckTriggerPositiveComparison;
                 break;
             case XSyncNegativeComparison:
-                pTrigger.CheckTrigger = SyncCheckTriggerNegativeComparison;
+                pTrigger.CheckTrigger = &SyncCheckTriggerNegativeComparison;
                 break;
             default:
                 client.errorValue = pTrigger.test_type;
@@ -443,7 +448,7 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
 private void SyncSendAlarmNotifyEvents(SyncAlarm* pAlarm)
 {
     SyncAlarmClientList* pcl = void;
-    xSyncAlarmNotifyEvent ane = void;
+    // xSyncAlarmNotifyEvent ane = void;
     SyncTrigger* pTrigger = &pAlarm.trigger;
     SyncCounter* pCounter = void;
 
@@ -454,19 +459,19 @@ private void SyncSendAlarmNotifyEvents(SyncAlarm* pAlarm)
 
     UpdateCurrentTime();
 
-    ane = xSyncAlarmNotifyEvent (
-        type: SyncEventBase + XSyncAlarmNotify,
-        kind: XSyncAlarmNotify,
-        alarm: pAlarm.alarm_id,
+    xSyncAlarmNotifyEvent ane = {
+        type: cast(ubyte)(SyncEventBase + XSyncAlarmNotify),
+        kind: cast(ubyte)XSyncAlarmNotify,
+        alarm: cast(uint)pAlarm.alarm_id,
         alarm_value_hi: pTrigger.test_value >> 32,
-        alarm_value_lo: pTrigger.test_value,
+        alarm_value_lo: cast(uint)pTrigger.test_value,
         time: currentTime.milliseconds,
-        state: pAlarm.state
-    );
+        state: cast(ubyte)pAlarm.state
+    };
 
     if (pTrigger.pSync && SYNC_COUNTER == pTrigger.pSync.type) {
         ane.counter_value_hi = pCounter.value >> 32;
-        ane.counter_value_lo = pCounter.value;
+        ane.counter_value_lo = cast(uint)pCounter.value;
     }
     else {
         /* XXX what else can we do if there's no counter? */
@@ -499,15 +504,15 @@ private void SyncSendCounterNotifyEvents(ClientPtr client, SyncAwait** ppAwait, 
     for (i = 0; i < num_events; i++, ppAwait++, pev++) {
         SyncTrigger* pTrigger = &(*ppAwait).trigger;
 
-        pev.type = SyncEventBase + XSyncCounterNotify;
+        pev.type = cast(ubyte)(SyncEventBase + XSyncCounterNotify);
         pev.kind = XSyncCounterNotify;
-        pev.counter = pTrigger.pSync.id;
-        pev.wait_value_lo = pTrigger.test_value;
+        pev.counter = cast(uint)pTrigger.pSync.id;
+        pev.wait_value_lo = cast(uint)pTrigger.test_value;
         pev.wait_value_hi = pTrigger.test_value >> 32;
         if (SYNC_COUNTER == pTrigger.pSync.type) {
             SyncCounter* pCounter = cast(SyncCounter*) pTrigger.pSync;
 
-            pev.counter_value_lo = pCounter.value;
+            pev.counter_value_lo = cast(uint)pCounter.value;
             pev.counter_value_hi = pCounter.value >> 32;
         }
         else {
@@ -516,8 +521,8 @@ private void SyncSendCounterNotifyEvents(ClientPtr client, SyncAwait** ppAwait, 
         }
 
         pev.time = currentTime.milliseconds;
-        pev.count = num_events - i - 1;        /* events remaining */
-        pev.destroyed = pTrigger.pSync.beingDestroyed;
+        pev.count = cast(ushort)(num_events - i - 1);        /* events remaining */
+        pev.destroyed = cast(ubyte)pTrigger.pSync.beingDestroyed;
     }
     /* swapping will be taken care of by this */
     WriteEventsToClient(client, num_events, cast(xEvent*) pEvents);
@@ -750,8 +755,8 @@ private Bool SyncEventSelectForAlarm(SyncAlarm* pAlarm, ClientPtr client, Bool w
 
     /* see if the client is already on the list (has events selected) */
 
-    for (SyncAlarmClientList* pClients = pClients = pAlarm.pEventClients;
-         pClients; pClients = pClients.next) {
+    for (SyncAlarmClientList* pClients = pAlarm.pEventClients;
+         pClients !is null; pClients = pClients.next) {
         if (pClients.client == client) {
             /* client's presence on the list indicates desire for
              * events.  If the client doesn't want events, remove it
@@ -816,10 +821,10 @@ private int SyncChangeAlarmAttributes(ClientPtr client, SyncAlarm* pAlarm, Mask 
     counter = trigger.pSync ? trigger.pSync.id : None;
 
     while (mask) {
-        int index2 = mixin(lowbit!mask);
+        int index2 = cast(int)mixin(lowbit!mask);
 
         mask &= ~index2;
-        switch (index2) {
+        switch (cast(long)index2) {
         case XSyncCACounter:
             mask &= ~XSyncCACounter;
             /* sanity check in SyncInitTrigger */
@@ -913,8 +918,8 @@ SyncObject* SyncCreate(ClientPtr client, XID id, ubyte type)
         resType = RTCounter;
         break;
     case SYNC_FENCE:
-        pSync = cast(SyncObject*) dixAllocateObjectWithPrivates(SyncFence,
-                                                             PRIVATE_SYNC_FENCE);
+        pSync = cast(SyncObject*) mixin(dixAllocateObjectWithPrivates!("SyncFence",
+                                                             "PRIVATE_SYNC_FENCE"));
         resType = RTFence;
         break;
     default:
@@ -973,7 +978,7 @@ private SyncCounter* SyncCreateCounter(ClientPtr client, XSyncCounter id, long i
 {
     SyncCounter* pCounter = void;
 
-    if (((pCounter = cast(SyncCounter*) SyncCreate(client, id, SYNC_COUNTER)) == 0))
+    if (((pCounter = cast(SyncCounter*) SyncCreate(client, id, SYNC_COUNTER)) is null))
         return null;
 
     pCounter.value = initialvalue;
@@ -995,14 +1000,14 @@ SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial, long resol
     SyncCounter* pCounter = SyncCreateCounter(null, dixAllocServerXID(), initial);
 
     if (pCounter) {
-        SysCounterInfo* psci = cast(SysCounterInfo*) calloc(1, SysCounterInfo.sizeof);
+        SysCounterInfo* psci = cast(_SysCounterInfo*) calloc(1, SysCounterInfo.sizeof);
         if (!psci) {
             FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
             return null;
         }
         pCounter.pSysCounterInfo = psci;
         psci.pCounter = pCounter;
-        if (((psci.name = strdup(name)) == 0)) {
+        if (((psci.name = strdup(name)) is null)) {
             free(psci);
             pCounter.pSysCounterInfo = null;
             FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
@@ -1220,7 +1225,9 @@ private int FreeAlarmClient(void* value, XID id)
         }
     }
     FatalError("alarm client not on event list");
- /*NOTREACHED*/}
+    assert(0);
+ /*NOTREACHED*/
+ }
 
 /*
  * *****  Proc functions
@@ -1253,23 +1260,23 @@ private int ProcSyncListSystemCounters(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
     CARD32 nCounters = 0;
-    xorg_list_for_each_entry(psci, &SysCounterList, entry); {
-        CARD16 namelen = strlen(psci.name);
+    mixin(xorg_list_for_each_entry!("psci", "&SysCounterList", "entry", q{
+        CARD16 namelen = cast(ushort)strlen(psci.name);
 
         /* write xSyncSystemCounter:
            the name chars (`namelen` amount of bytes) are directly written
            after the header fields, then the whole thing is padded to
            full protocol units.
         */
-        x_rpcbuf_write_CARD32(&rpcbuf, psci.pCounter.sync.id);
-        x_rpcbuf_write_INT32(&rpcbuf, psci.resolution >> 32);
-        x_rpcbuf_write_INT32(&rpcbuf, psci.resolution);
-        x_rpcbuf_write_CARD16(&rpcbuf, namelen);
+        x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)psci.pCounter.sync.id);
+        x_rpcbuf_write_INT32(&rpcbuf, cast(uint)(psci.resolution >> 32));
+        x_rpcbuf_write_INT32(&rpcbuf, cast(uint)psci.resolution);
+        x_rpcbuf_write_CARD16(&rpcbuf, cast(ubyte)namelen);
         x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)psci.name, namelen);
         x_rpcbuf_pad(&rpcbuf);
 
         nCounters++;
-    }
+    }));
 
     if (rpcbuf.error)
         return BadAlloc;
@@ -1278,7 +1285,7 @@ private int ProcSyncListSystemCounters(ClientPtr client)
         nCounters: nCounters
     };
 
-    mixin(X_REPLY_FIELD_CARD32!nCounters);
+    mixin(X_REPLY_FIELD_CARD32!"nCounters");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -1290,8 +1297,8 @@ private int ProcSyncListSystemCounters(ClientPtr client)
 private int ProcSyncSetPriority(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncSetPriorityReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
-    mixin(X_REQUEST_FIELD_CARD32!priority);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
+    mixin(X_REQUEST_FIELD_CARD32!"priority");
 
     ClientPtr priorityclient = void;
 
@@ -1324,7 +1331,7 @@ private int ProcSyncSetPriority(ClientPtr client)
 private int ProcSyncGetPriority(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncGetPriorityReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     ClientPtr priorityclient = void;
 
@@ -1341,7 +1348,7 @@ private int ProcSyncGetPriority(ClientPtr client)
         priority: priorityclient.priority
     };
 
-    mixin(X_REPLY_FIELD_CARD32!priority);
+    mixin(X_REPLY_FIELD_CARD32!"priority");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1352,13 +1359,13 @@ private int ProcSyncGetPriority(ClientPtr client)
 private int ProcSyncCreateCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncCreateCounterReq);
-    mixin(X_REQUEST_FIELD_CARD32!cid);
-    mixin(X_REQUEST_FIELD_CARD32!initial_value_lo);
-    mixin(X_REQUEST_FIELD_CARD32!initial_value_hi);
+    mixin(X_REQUEST_FIELD_CARD32!"cid");
+    mixin(X_REQUEST_FIELD_CARD32!"initial_value_lo");
+    mixin(X_REQUEST_FIELD_CARD32!"initial_value_hi");
 
     long initial = void;
 
-    LEGAL_NEW_RESOURCE(stuff.cid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.cid", "client"));
 
     initial = (cast(long)stuff.initial_value_hi << 32) | stuff.initial_value_lo;
 
@@ -1374,9 +1381,9 @@ private int ProcSyncCreateCounter(ClientPtr client)
 private int ProcSyncSetCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncSetCounterReq);
-    mixin(X_REQUEST_FIELD_CARD32!cid);
-    mixin(X_REQUEST_FIELD_CARD32!value_lo);
-    mixin(X_REQUEST_FIELD_CARD32!value_hi);
+    mixin(X_REQUEST_FIELD_CARD32!"cid");
+    mixin(X_REQUEST_FIELD_CARD32!"value_lo");
+    mixin(X_REQUEST_FIELD_CARD32!"value_hi");
 
     SyncCounter* pCounter = void;
     long newvalue = void;
@@ -1402,9 +1409,9 @@ private int ProcSyncSetCounter(ClientPtr client)
 private int ProcSyncChangeCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncChangeCounterReq);
-    mixin(X_REQUEST_FIELD_CARD32!cid);
-    mixin(X_REQUEST_FIELD_CARD32!value_lo);
-    mixin(X_REQUEST_FIELD_CARD32!value_hi);
+    mixin(X_REQUEST_FIELD_CARD32!"cid");
+    mixin(X_REQUEST_FIELD_CARD32!"value_lo");
+    mixin(X_REQUEST_FIELD_CARD32!"value_hi");
 
     SyncCounter* pCounter = void;
     long newvalue = void;
@@ -1437,7 +1444,7 @@ private int ProcSyncChangeCounter(ClientPtr client)
 private int ProcSyncDestroyCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyCounterReq);
-    mixin(X_REQUEST_FIELD_CARD32!counter);
+    mixin(X_REQUEST_FIELD_CARD32!"counter");
 
     SyncCounter* pCounter = void;
 
@@ -1467,7 +1474,7 @@ private SyncAwaitUnion* SyncAwaitPrologue(ClientPtr client, int items)
 
     /* first item is the header, remainder are real wait conditions */
 
-    pAwaitUnion.header.delete_id = FakeClientID(client.index);
+    pAwaitUnion.header.delete_id = cast(uint)FakeClientID(client.index);
     pAwaitUnion.header.client = client;
     pAwaitUnion.header.num_waitconditions = 0;
 
@@ -1535,7 +1542,7 @@ private int ProcSyncAwait(ClientPtr client)
         return BadValue;
     }
 
-    if (((pAwaitUnion = SyncAwaitPrologue(client, items)) == 0))
+    if (((pAwaitUnion = SyncAwaitPrologue(client, items)) is null))
         return BadAlloc;
 
     /* don't need to do any more memory allocation for this request! */
@@ -1572,8 +1579,8 @@ private int ProcSyncAwait(ClientPtr client)
             return status;
         }
         /* this is not a mistake -- same function works for both cases */
-        pAwait.trigger.TriggerFired = SyncAwaitTriggerFired;
-        pAwait.trigger.CounterDestroyed = SyncAwaitTriggerFired;
+        pAwait.trigger.TriggerFired = &SyncAwaitTriggerFired;
+        pAwait.trigger.CounterDestroyed = &SyncAwaitTriggerFired;
         pAwait.event_threshold =
             (cast(long) pProtocolWaitConds.event_threshold_hi << 32) |
             pProtocolWaitConds.event_threshold_lo;
@@ -1593,7 +1600,7 @@ private int ProcSyncAwait(ClientPtr client)
 private int ProcSyncQueryCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryCounterReq);
-    mixin(X_REQUEST_FIELD_CARD32!counter);
+    mixin(X_REQUEST_FIELD_CARD32!"counter");
 
     SyncCounter* pCounter = void;
 
@@ -1610,11 +1617,11 @@ private int ProcSyncQueryCounter(ClientPtr client)
 
     xSyncQueryCounterReply reply = {
         value_hi: pCounter.value >> 32,
-        value_lo: pCounter.value
+        value_lo: cast(uint)pCounter.value
     };
 
-    mixin(X_REPLY_FIELD_CARD32!value_hi);
-    mixin(X_REPLY_FIELD_CARD32!value_lo);
+    mixin(X_REPLY_FIELD_CARD32!"value_hi");
+    mixin(X_REPLY_FIELD_CARD32!"value_lo");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1625,8 +1632,8 @@ private int ProcSyncQueryCounter(ClientPtr client)
 private int ProcSyncCreateAlarm(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xSyncCreateAlarmReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
-    mixin(X_REQUEST_FIELD_CARD32!valueMask);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
+    mixin(X_REQUEST_FIELD_CARD32!"valueMask");
     mixin(X_REQUEST_REST_CARD32!());
 
     SyncAlarm* pAlarm = void;
@@ -1634,7 +1641,7 @@ private int ProcSyncCreateAlarm(ClientPtr client)
     c_ulong len = void, vmask = void;
     SyncTrigger* pTrigger = void;
 
-    LEGAL_NEW_RESOURCE(stuff.id, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.id", "client"));
 
     vmask = stuff.valueMask;
     len = client.req_len - bytes_to_int32(xSyncCreateAlarmReq.sizeof);
@@ -1642,7 +1649,7 @@ private int ProcSyncCreateAlarm(ClientPtr client)
     if (len != (Ones(vmask) + Ones(vmask & (XSyncCAValue | XSyncCADelta))))
         return BadLength;
 
-    if (((pAlarm = cast(SyncAlarm*) calloc(1, SyncAlarm.sizeof)) == 0)) {
+    if (((pAlarm = cast(SyncAlarm*) calloc(1, SyncAlarm.sizeof)) is null)) {
         return BadAlloc;
     }
 
@@ -1653,8 +1660,8 @@ private int ProcSyncCreateAlarm(ClientPtr client)
     pTrigger.value_type = XSyncAbsolute;
     pTrigger.wait_value = 0;
     pTrigger.test_type = XSyncPositiveComparison;
-    pTrigger.TriggerFired = SyncAlarmTriggerFired;
-    pTrigger.CounterDestroyed = SyncAlarmCounterDestroyed;
+    pTrigger.TriggerFired = &SyncAlarmTriggerFired;
+    pTrigger.CounterDestroyed = &SyncAlarmCounterDestroyed;
     status = SyncInitTrigger(client, pTrigger, None, RTCounter,
                              XSyncCAAllTrigger);
     if (status != Success) {
@@ -1709,8 +1716,8 @@ private int ProcSyncCreateAlarm(ClientPtr client)
 private int ProcSyncChangeAlarm(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xSyncChangeAlarmReq);
-    mixin(X_REQUEST_FIELD_CARD32!alarm);
-    mixin(X_REQUEST_FIELD_CARD32!valueMask);
+    mixin(X_REQUEST_FIELD_CARD32!"alarm");
+    mixin(X_REQUEST_FIELD_CARD32!"valueMask");
     mixin(X_REQUEST_REST_CARD32!());
 
     SyncAlarm* pAlarm = void;
@@ -1751,7 +1758,7 @@ private int ProcSyncChangeAlarm(ClientPtr client)
 private int ProcSyncQueryAlarm(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryAlarmReq);
-    mixin(X_REQUEST_FIELD_CARD32!alarm);
+    mixin(X_REQUEST_FIELD_CARD32!"alarm");
 
     SyncAlarm* pAlarm = void;
     SyncTrigger* pTrigger = void;
@@ -1764,7 +1771,7 @@ private int ProcSyncQueryAlarm(ClientPtr client)
     pTrigger = &pAlarm.trigger;
 
     xSyncQueryAlarmReply reply = {
-        counter: (pTrigger.pSync) ? pTrigger.pSync.id : None,
+        counter: cast(uint)((pTrigger.pSync) ? pTrigger.pSync.id : None),
 
 // #if 0  /* XXX unclear what to do, depends on whether relative value-types
 //         * are "consumed" immediately and are considered absolute from then
@@ -1776,23 +1783,23 @@ private int ProcSyncQueryAlarm(ClientPtr client)
 // #else
         value_type: XSyncAbsolute,
         wait_value_hi: pTrigger.test_value >> 32,
-        wait_value_lo: pTrigger.test_value,
+        wait_value_lo: cast(uint)pTrigger.test_value,
 // #endif
 
         test_type: pTrigger.test_type,
         delta_hi: pAlarm.delta >> 32,
-        delta_lo: pAlarm.delta,
-        events: pAlarm.events,
-        state: pAlarm.state
+        delta_lo: cast(uint)pAlarm.delta,
+        events: cast(ubyte)pAlarm.events,
+        state: cast(ubyte)pAlarm.state
     };
 
-    mixin(X_REPLY_FIELD_CARD32!counter);
-    mixin(X_REPLY_FIELD_CARD32!value_type);
-    mixin(X_REPLY_FIELD_CARD32!wait_value_hi);
-    mixin(X_REPLY_FIELD_CARD32!wait_value_lo);
-    mixin(X_REPLY_FIELD_CARD32!test_type);
-    mixin(X_REPLY_FIELD_CARD32!delta_hi);
-    mixin(X_REPLY_FIELD_CARD32!delta_lo);
+    mixin(X_REPLY_FIELD_CARD32!"counter");
+    mixin(X_REPLY_FIELD_CARD32!"value_type");
+    mixin(X_REPLY_FIELD_CARD32!"wait_value_hi");
+    mixin(X_REPLY_FIELD_CARD32!"wait_value_lo");
+    mixin(X_REPLY_FIELD_CARD32!"test_type");
+    mixin(X_REPLY_FIELD_CARD32!"delta_hi");
+    mixin(X_REPLY_FIELD_CARD32!"delta_lo");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1800,7 +1807,7 @@ private int ProcSyncQueryAlarm(ClientPtr client)
 private int ProcSyncDestroyAlarm(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyAlarmReq);
-    mixin(X_REQUEST_FIELD_CARD32!alarm);
+    mixin(X_REQUEST_FIELD_CARD32!"alarm");
 
     SyncAlarm* pAlarm = void;
 
@@ -1816,8 +1823,8 @@ private int ProcSyncDestroyAlarm(ClientPtr client)
 private int ProcSyncCreateFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncCreateFenceReq);
-    mixin(X_REQUEST_FIELD_CARD32!d);
-    mixin(X_REQUEST_FIELD_CARD32!fid);
+    mixin(X_REQUEST_FIELD_CARD32!"d");
+    mixin(X_REQUEST_FIELD_CARD32!"fid");
 
     DrawablePtr pDraw = void;
     SyncFence* pFence = void;
@@ -1826,9 +1833,9 @@ private int ProcSyncCreateFence(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    LEGAL_NEW_RESOURCE(stuff.fid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.fid", "client"));
 
-    if (((pFence = cast(SyncFence*) SyncCreate(client, stuff.fid, SYNC_FENCE)) == 0))
+    if (((pFence = cast(SyncFence*) SyncCreate(client, stuff.fid, SYNC_FENCE)) is null))
         return BadAlloc;
 
     miSyncInitFence(pDraw.pScreen, pFence, stuff.initially_triggered);
@@ -1859,7 +1866,7 @@ int SyncVerifyFence(SyncFence** ppSyncFence, XID fid, ClientPtr client, Mask mod
 private int ProcSyncTriggerFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncTriggerFenceReq);
-    mixin(X_REQUEST_FIELD_CARD32!fid);
+    mixin(X_REQUEST_FIELD_CARD32!"fid");
 
     SyncFence* pFence = void;
 
@@ -1876,7 +1883,7 @@ private int ProcSyncTriggerFence(ClientPtr client)
 private int ProcSyncResetFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncResetFenceReq);
-    mixin(X_REQUEST_FIELD_CARD32!fid);
+    mixin(X_REQUEST_FIELD_CARD32!"fid");
 
     SyncFence* pFence = void;
 
@@ -1896,7 +1903,7 @@ private int ProcSyncResetFence(ClientPtr client)
 private int ProcSyncDestroyFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyFenceReq);
-    mixin(X_REQUEST_FIELD_CARD32!fid);
+    mixin(X_REQUEST_FIELD_CARD32!"fid");
 
     SyncFence* pFence = void;
 
@@ -1912,7 +1919,7 @@ private int ProcSyncDestroyFence(ClientPtr client)
 private int ProcSyncQueryFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryFenceReq);
-    mixin(X_REQUEST_FIELD_CARD32!fid);
+    mixin(X_REQUEST_FIELD_CARD32!"fid");
 
     SyncFence* pFence = void;
 
@@ -1922,7 +1929,7 @@ private int ProcSyncQueryFence(ClientPtr client)
         return rc;
 
     xSyncQueryFenceReply reply = {
-        triggered: pFence.funcs.CheckTriggered(pFence)
+        triggered: cast(ubyte)pFence.funcs.CheckTriggered(pFence)
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -1946,7 +1953,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
 
     len = client.req_len << 2;
     len -= sz_xSyncAwaitFenceReq;
-    items = len / CARD32.sizeof;
+    items = cast(uint)(len / CARD32.sizeof);
 
     if (items * CARD32.sizeof != len) {
         return BadLength;
@@ -1956,7 +1963,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
         return BadValue;
     }
 
-    if (((pAwaitUnion = SyncAwaitPrologue(client, items)) == 0))
+    if (((pAwaitUnion = SyncAwaitPrologue(client, items)) is null))
         return BadAlloc;
 
     /* don't need to do any more memory allocation for this request! */
@@ -1971,7 +1978,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
              */
             FreeResource(pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
             client.errorValue = *pProtocolFences;
-            return SyncErrorBase + XSyncBadFence;
+            return cast(uint)(SyncErrorBase + XSyncBadFence);
         }
 
         pAwait.trigger.pSync = null;
@@ -1992,8 +1999,8 @@ private int ProcSyncAwaitFence(ClientPtr client)
             return status;
         }
         /* this is not a mistake -- same function works for both cases */
-        pAwait.trigger.TriggerFired = SyncAwaitTriggerFired;
-        pAwait.trigger.CounterDestroyed = SyncAwaitTriggerFired;
+        pAwait.trigger.TriggerFired = &SyncAwaitTriggerFired;
+        pAwait.trigger.CounterDestroyed = &SyncAwaitTriggerFired;
         /* event_threshold is unused for fence syncs */
         pAwait.event_threshold = 0;
         pAwait.pHeader = &pAwaitUnion.header;
@@ -2125,9 +2132,9 @@ void SyncExtensionInit()
     if (RTCounter == 0 || RTAwait == 0 || RTAlarm == 0 ||
         RTAlarmClient == 0 ||
         (extEntry = AddExtension(SYNC_NAME,
-                                 XSyncNumberEvents, XSyncNumberErrors,
+                                 cast(int)XSyncNumberEvents, cast(int)XSyncNumberErrors,
                                  &ProcSyncDispatch, &ProcSyncDispatch,
-                                 &SyncResetProc, StandardMinorOpcode)) == null) {
+                                 &SyncResetProc, &StandardMinorOpcode)) == null) {
         ErrorF("Sync Extension %d.%d failed to Initialise\n",
                SYNC_MAJOR_VERSION, SYNC_MINOR_VERSION);
         return;
@@ -2136,13 +2143,13 @@ void SyncExtensionInit()
     SyncEventBase = extEntry.eventBase;
     SyncErrorBase = extEntry.errorBase;
     EventSwapVector[SyncEventBase + XSyncCounterNotify] =
-        cast(EventSwapPtr) SCounterNotifyEvent;
+        cast(EventSwapPtr) &SCounterNotifyEvent;
     EventSwapVector[SyncEventBase + XSyncAlarmNotify] =
-        cast(EventSwapPtr) SAlarmNotifyEvent;
+        cast(EventSwapPtr) &SAlarmNotifyEvent;
 
-    SetResourceTypeErrorValue(RTCounter, SyncErrorBase + XSyncBadCounter);
-    SetResourceTypeErrorValue(RTAlarm, SyncErrorBase + XSyncBadAlarm);
-    SetResourceTypeErrorValue(RTFence, SyncErrorBase + XSyncBadFence);
+    SetResourceTypeErrorValue(RTCounter, cast(int)(SyncErrorBase + XSyncBadCounter));
+    SetResourceTypeErrorValue(RTAlarm, cast(int)(SyncErrorBase + XSyncBadAlarm));
+    SetResourceTypeErrorValue(RTFence, cast(int)(SyncErrorBase + XSyncBadFence));
 
     /*
      * Although SERVERTIME is implemented by the OS layer, we initialise it
@@ -2195,7 +2202,7 @@ private void GetTime()
         else {
             timeout = *pnext_time - Now;
         }
-        AdjustWaitForDelay(wt, timeout);        /* os/utils.c */
+        AdjustWaitForDelay(wt, cast(int)timeout);        /* os/utils.c */
     }
 }
 
@@ -2208,7 +2215,7 @@ private void GetTime()
         GetTime();
 
         if (Now >= *pnext_time) {
-            SyncChangeCounter(ServertimeCounter, Now);
+            SyncChangeCounter(cast(SyncCounter*)ServertimeCounter, cast(long)Now);
         }
     }
 }
@@ -2260,8 +2267,8 @@ private void IdleTimeQueryValue(void* pCounter, long* pValue_return)
     CARD32 idle = void;
 
     if (pCounter) {
-        SyncCounter* counter = pCounter;
-        IdleCounterPriv* priv = SysCounterGetPrivate(counter);
+        SyncCounter* counter = cast(SyncCounter*)pCounter;
+        IdleCounterPriv* priv = cast(IdleCounterPriv*)SysCounterGetPrivate(counter);
         if (priv)
             deviceid = priv.deviceid;
     }
@@ -2271,9 +2278,9 @@ private void IdleTimeQueryValue(void* pCounter, long* pValue_return)
 
 private void IdleTimeBlockHandler(void* pCounter, void* wt)
 {
-    SyncCounter* counter = pCounter;
-    IdleCounterPriv* priv = SysCounterGetPrivate(counter);
-    BUG_RETURN(priv == null);
+    SyncCounter* counter = cast(SyncCounter*)pCounter;
+    IdleCounterPriv* priv = cast(IdleCounterPriv*)SysCounterGetPrivate(counter);
+    assert(priv !is null);
     long* less = priv.value_less;
     long* greater = priv.value_greater;
     long idle = void, old_idle = void;
@@ -2330,7 +2337,7 @@ private void IdleTimeBlockHandler(void* pCounter, void* wt)
          */
 
         if (idle < *greater) {
-            AdjustWaitForDelay(wt, *greater - idle);
+            AdjustWaitForDelay(wt, cast(int)(*greater - idle));
         }
         else {
             for (list = counter.sync.pTriglist; list;
@@ -2359,9 +2366,9 @@ private void IdleTimeCheckBrackets(SyncCounter* counter, long idle, long* less, 
 
 private void IdleTimeWakeupHandler(void* pCounter, int rc)
 {
-    SyncCounter* counter = pCounter;
-    IdleCounterPriv* priv = SysCounterGetPrivate(counter);
-    BUG_RETURN(priv == null);
+    SyncCounter* counter = cast(SyncCounter*)pCounter;
+    IdleCounterPriv* priv = cast(IdleCounterPriv*)SysCounterGetPrivate(counter);
+    assert(priv !is null);
     long* less = priv.value_less;
     long* greater = priv.value_greater;
     long idle = void;
@@ -2391,9 +2398,9 @@ private void IdleTimeWakeupHandler(void* pCounter, int rc)
 
 private void IdleTimeBracketValues(void* pCounter, long* pbracket_less, long* pbracket_greater)
 {
-    SyncCounter* counter = pCounter;
-    IdleCounterPriv* priv = SysCounterGetPrivate(counter);
-    BUG_RETURN(priv == null);
+    SyncCounter* counter = cast(SyncCounter*)pCounter;
+    IdleCounterPriv* priv = cast(IdleCounterPriv*)SysCounterGetPrivate(counter);
+    assert(priv !is null);
     long* less = priv.value_less;
     long* greater = priv.value_greater;
     Bool registered = (less || greater);

@@ -93,6 +93,9 @@ alias AuthRemCFunc = int function(ushort, const char *);
 enum AuthRstCArgs = "";
 alias AuthRstCFunc = int function();
 
+enum LCC_UID_SET = 1 << 0;
+enum LCC_GID_SET = 1 << 1;
+
 import os.xdmauth;
 import os.mitauth;
 

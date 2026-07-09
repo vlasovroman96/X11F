@@ -788,7 +788,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
         mode: mode,
         type: (type == XI_FocusIn) ? DeviceFocusIn : DeviceFocusOut,
         detail: detail,
-        window: pWin.drawable.id,
+        window: cast(uint)pWin.drawable.id,
         time: currentTime.milliseconds
     );
 

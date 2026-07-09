@@ -200,11 +200,11 @@ pragma(inline, true) void RegionNull(RegionPtr _pReg)
 
 extern void InitRegions();
 
-extern void RegionCreate(BoxPtr, int);
+extern RegionPtr RegionCreate(BoxPtr, int);
 
 extern void RegionDestroy(RegionPtr);
 
-extern void RegionDuplicate(RegionPtr);
+extern RegionPtr RegionDuplicate(RegionPtr);
 
 pragma(inline, true) Bool RegionCopy(RegionPtr dst, RegionPtr src)
 {
@@ -225,7 +225,7 @@ extern void RegionAppend(RegionPtr, RegionPtr);
 
 extern void RegionValidate(RegionPtr, Bool*);
 
-extern void RegionFromRects(int, xRectanglePtr, int);
+extern RegionPtr RegionFromRects(int, xRectanglePtr, int);
 
 /*-
  *-----------------------------------------------------------------------

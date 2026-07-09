@@ -104,7 +104,7 @@ Bool miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth, i
         if (bitsPerPixel > 0)
             pPixmap.drawable.bitsPerPixel = bitsPerPixel;
         else if ((bitsPerPixel < 0) && (depth > 0))
-            pPixmap.drawable.bitsPerPixel = BitsPerPixel(depth);
+            pPixmap.drawable.bitsPerPixel = mixin(BitsPerPixel!("depth"));
 
         /*
          * CAVEAT:  Non-SI DDXen may use devKind and devPrivate fields for

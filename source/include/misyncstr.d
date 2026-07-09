@@ -69,14 +69,16 @@ struct _SyncTrigger {
     uint value_type;    /* Absolute or Relative */
     uint test_type;     /* transition or Comparison type */
     long test_value;         /* trigger event threshold value */
-    Bool function(_SyncTrigger* pTrigger, long newval) CheckTrigger;
-    void function(_SyncTrigger* pTrigger) TriggerFired;
-    void function(_SyncTrigger* pTrigger) CounterDestroyed;
+    Bool function(_SyncTrigger* pTrigger, long newval) @nogc nothrow CheckTrigger;
+    void function(_SyncTrigger* pTrigger) @nogc nothrow TriggerFired;
+    void function(_SyncTrigger* pTrigger) @nogc nothrow CounterDestroyed;
 }
 
 struct _SyncTriggerList {
     SyncTrigger* pTrigger;
     _SyncTriggerList* next;
 }
+
+alias SyncTriggerList = _SyncTriggerList;
 
                           /* _MISYNCSTR_H_ */

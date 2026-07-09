@@ -946,7 +946,7 @@ winCreatePixmapMultiwindow(ScreenPtr pScreen, int width, int height, int depth,
     if (!pPixmap)
         return NullPixmap;
 
-    bpp = BitsPerPixel(depth);
+    bpp = mixin(BitsPerPixel!("depth"));
     /*
       DIBs have 4-byte aligned rows
 

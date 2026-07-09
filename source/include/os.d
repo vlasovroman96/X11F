@@ -126,10 +126,10 @@ extern void IgnoreClient(ClientPtr);
 
 extern void AttendClient(ClientPtr);
 
-extern uint GetTimeInMillis();
-extern ulong GetTimeInMicros();
+// extern uint GetTimeInMillis();
+// extern ulong GetTimeInMicros();
 
-extern void AdjustWaitForDelay(void* waitTime, int newdelay);
+// extern void AdjustWaitForDelay(void* waitTime, int newdelay);
 
 struct _OsTimerRec;
 alias OsTimerPtr = _OsTimerRec*;

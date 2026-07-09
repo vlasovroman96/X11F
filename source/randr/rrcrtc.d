@@ -244,7 +244,7 @@ void RRDeliverCrtcEvent(ClientPtr client, WindowPtr pWin, RRCrtcPtr crtc)
         type: RRNotify + RREventBase,
         subCode: RRNotify_CrtcChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
-        window: pWin.drawable.id,
+        window: cast(uint)pWin.drawable.id,
         crtc: crtc.id,
         mode: mode ? mode.mode.id : None,
         rotation: crtc.rotation,

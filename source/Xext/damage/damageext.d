@@ -51,6 +51,7 @@ import xfixes.xfixes;;
 import xfixes.region;
 import include.regionstr;
 import dix.extension;
+import dix.dixutils;
 
 struct _DamageClient {
     CARD32 major_version;

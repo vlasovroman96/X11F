@@ -33,6 +33,10 @@ import include.pixmapstr;
 import include.regionstr;
 import include.gcstruct;
 import Xext.xacestr;
+import dix.pixmap;
+import dix.gc;
+import dix.dixutils;
+
 // import externs.
 
 enum XACE_RESOURCE_ACCESS =		2;
@@ -123,10 +127,10 @@ void XaceCensorImage(ClientPtr client, RegionPtr pVisibleRegion, c_long widthByt
     BoxRec imageBox = void;
     int nRects = void;
 
-    imageBox.x1 = pDraw.x + x;
-    imageBox.y1 = pDraw.y + y;
-    imageBox.x2 = pDraw.x + x + w;
-    imageBox.y2 = pDraw.y + y + h;
+    imageBox.x1 = cast(short)(pDraw.x + x);
+    imageBox.y1 = cast(short)(pDraw.y + y);
+    imageBox.x2 = cast(short)(pDraw.x + x + w);
+    imageBox.y2 = cast(short)(pDraw.y + y + h);
     RegionInit(&imageRegion, &imageBox, 1);
     RegionNull(&censorRegion);
 
@@ -150,10 +154,10 @@ void XaceCensorImage(ClientPtr client, RegionPtr pVisibleRegion, c_long widthByt
             goto failSafe;
         }
         for (pBox = RegionRects(&censorRegion), i = 0; i < nRects; i++, pBox++) {
-            pRects[i].x = pBox.x1 - imageBox.x1;
-            pRects[i].y = pBox.y1 - imageBox.y1;
-            pRects[i].width = pBox.x2 - pBox.x1;
-            pRects[i].height = pBox.y2 - pBox.y1;
+            pRects[i].x = cast(short)(pBox.x1 - imageBox.x1);
+            pRects[i].y = cast(short)(pBox.y1 - imageBox.y1);
+            pRects[i].width = cast(short)(pBox.x2 - pBox.x1);
+            pRects[i].height = cast(short)(pBox.y2 - pBox.y1);
         }
 
         /* use pBuf as a fake pixmap */
@@ -165,7 +169,7 @@ void XaceCensorImage(ClientPtr client, RegionPtr pVisibleRegion, c_long widthByt
 
         pPix = GetScratchPixmapHeader(pDraw.pScreen, w, h,
                                       depth, bitsPerPixel,
-                                      widthBytesLine, cast(void*) pBuf);
+                                      cast(int)widthBytesLine, cast(void*) pBuf);
         if (!pPix) {
             failed = TRUE;
             goto failSafe;

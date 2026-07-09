@@ -129,9 +129,9 @@ int dixDestroyPixmap(void* pPixmap, XID unused);
 
 /* dixutils.c */
 
-extern int dixLookupWindow(WindowPtr* result, XID id, ClientPtr client, Mask access_mode);
+// extern int dixLookupWindow(WindowPtr* result, XID id, ClientPtr client, Mask access_mode);
 
-extern int dixLookupDrawable(DrawablePtr* result, XID id, ClientPtr client, Mask type_mask, Mask access_mode);
+// extern int dixLookupDrawable(DrawablePtr* result, XID id, ClientPtr client, Mask type_mask, Mask access_mode);
 
 extern int dixLookupFontable(FontPtr* result, XID id, ClientPtr client, Mask access_mode);
 
@@ -141,9 +141,9 @@ alias ServerBlockHandlerProcPtr = void function(void* blockData, void* timeout);
 
 alias ServerWakeupHandlerProcPtr = void function(void* blockData, int result);
 
-extern int RegisterBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
+// extern int RegisterBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
 
-extern int RemoveBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
+// extern int RemoveBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
 
 extern int QueueWorkProc(Bool function(ClientPtr clientUnused, void* closure) function_, ClientPtr client, void* closure);
 

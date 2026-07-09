@@ -162,7 +162,7 @@ Bool exaModifyPixmapHeader_mixed(PixmapPtr pPixmap, int width, int height, int d
         if (depth <= 0)
             bitsPerPixel = pPixmap.drawable.bitsPerPixel;
         else
-            bitsPerPixel = BitsPerPixel(depth);
+            bitsPerPixel = mixin(BitsPerPixel!("depth"));
     }
 
     if (depth <= 0)

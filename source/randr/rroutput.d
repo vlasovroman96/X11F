@@ -337,7 +337,7 @@ void RRDeliverOutputEvent(ClientPtr client, WindowPtr pWin, RROutputPtr output)
         subCode: RRNotify_OutputChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
         configTimestamp: pScrPriv.lastConfigTime.milliseconds,
-        window: pWin.drawable.id,
+        window: cast(uint)pWin.drawable.id,
         output: output.id,
         crtc: crtc ? crtc.id : None,
         mode: mode ? mode.mode.id : None,

@@ -212,7 +212,7 @@ Bool x_rpcbuf_write_CARD32(x_rpcbuf_t* rpcbuf, CARD32 value);
  * @param value     the CARD16 value to write
  * @return          TRUE on success, FALSE on allocation failure
  */
-pragma(inline, true) private Bool x_rpcbuf_write_INT32(x_rpcbuf_t* rpcbuf, INT32 value) {
+pragma(inline, true) Bool x_rpcbuf_write_INT32(x_rpcbuf_t* rpcbuf, INT32 value) {
     return x_rpcbuf_write_CARD32(rpcbuf, cast(CARD32)value);
 }
 
@@ -328,7 +328,7 @@ pragma(inline, true) private CARD32 x_rpcbuf_wsize_units(x_rpcbuf_t* rpcbuf) {
  *
  * @param rpcbuf    pointer to x_rpcbuf_t to operate on
  */
-pragma(inline, true) private void x_rpcbuf_pad(x_rpcbuf_t* rpcbuf) {
+pragma(inline, true) void x_rpcbuf_pad(x_rpcbuf_t* rpcbuf) {
     x_rpcbuf_reserve0(
         rpcbuf,
         (((rpcbuf.wpos + 3) / 4) * 4) - rpcbuf.wpos);

@@ -443,7 +443,7 @@ void RRDeliverProviderEvent(ClientPtr client, WindowPtr pWin, RRProviderPtr prov
         type: RRNotify + RREventBase,
         subCode: RRNotify_ProviderChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
-        window: pWin.drawable.id,
+        window: cast(uint)pWin.drawable.id,
         provider: provider.id
     };
 

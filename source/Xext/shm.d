@@ -80,6 +80,11 @@ import include.servermd;
 import Xext.xace;
 import include.protocol_versions;
 import externs.X11.extensions.shmproto;
+import os.access;
+import dix.pixmap;
+import dix.gc;
+import dix.dixutils;
+import dix.extension;
 
 /* Needed for Solaris cross-zone shared memory extension */
 version (HAVE_SHMCTL64) {
@@ -116,7 +121,7 @@ struct ShmScrPrivateRec {
 Bool noMITShmExtension = FALSE;
 
 static mixin("PixmapPtr fbShmCreatePixmap("~XSHM_CREATE_PIXMAP_ARGS~");");
-static int ShmDetachSegment(void *value, XID shmseg);
+// static int ShmDetachSegment(void *value, XID shmseg);
 static void ShmResetProc(ExtensionEntry *extEntry);
 static void SShmCompletionEvent(xShmCompletionEvent *from,
                                 xShmCompletionEvent *to);
@@ -140,16 +145,15 @@ enum string ShmGetScreenPriv(string s) = `(cast(ShmScrPrivateRec*)dixLookupPriva
 
 enum string VERIFY_SHMSEG(string shmseg,string shmdesc,string client) = `
 { 
-    int tmprc = void; 
-    tmprc = dixLookupResourceByType(cast(void**)&(` ~ shmdesc ~ `), ` ~ shmseg ~ `, ShmSegType, 
+    int tmprc_ = void; 
+    tmprc_ = dixLookupResourceByType(cast(void**)&(` ~ shmdesc ~ `), ` ~ shmseg ~ `, ShmSegType, 
                                     ` ~ client ~ `, DixReadAccess); 
-    if (tmprc != Success) 
-	return tmprc; 
+    if (tmprc_ != Success) 
+	return tmprc_; 
 }`;
 
 enum string VERIFY_SHMPTR(string shmseg,string offset,string needwrite,string shmdesc,string client) = "
-{ 
-    VERIFY_SHMSEG!("~shmseg~","~ shmdesc~","~ client~"); 
+    mixin(VERIFY_SHMSEG!(\"" ~ shmseg ~ "\", \"" ~ shmdesc ~ "\", \"" ~ client ~ "\")); 
     if ((" ~ offset ~ " & 3) || (" ~ offset ~ " > " ~ shmdesc ~ ".size)) 
     { 
 	" ~ client ~ ".errorValue = " ~ offset ~ "; 
@@ -157,7 +161,7 @@ enum string VERIFY_SHMPTR(string shmseg,string offset,string needwrite,string sh
     } 
     if (" ~ needwrite ~ " && !" ~ shmdesc ~ ".writable) 
 	return BadAccess; 
-}";
+";
 
 enum string VERIFY_SHMSIZE(string shmdesc,string offset,string len,string client) = `
 { 
@@ -218,7 +222,7 @@ private Bool ShmRegisterPrivates()
  /*ARGSUSED*/ private void ShmResetProc(ExtensionEntry* extEntry)
 {
     mixin(DIX_FOR_EACH_SCREEN!q{
-        ShmRegisterFuncs(walkScreen, NULL);
+        ShmRegisterFuncs(walkScreen, null);
     });
 }
 
@@ -241,18 +245,18 @@ private int ProcShmQueryVersion(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xShmQueryVersionReq);
 
     xShmQueryVersionReply reply = {
-        sharedPixmaps: sharedPixmaps,
+        sharedPixmaps: cast(ubyte)sharedPixmaps,
         majorVersion: SERVER_SHM_MAJOR_VERSION,
         minorVersion: SERVER_SHM_MINOR_VERSION,
-        uid: geteuid(),
-        gid: getegid(),
+        uid: cast(ushort)geteuid(),
+        gid: cast(ushort)getegid(),
         pixmapFormat: sharedPixmaps ? ZPixmap : 0
     };
 
     mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
     mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
-    mixin(X_REPLY_FIELD_CARD16!uid);
-    mixin(X_REPLY_FIELD_CARD16!gid);
+    mixin(X_REPLY_FIELD_CARD16!"uid");
+    mixin(X_REPLY_FIELD_CARD16!"gid");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -325,8 +329,8 @@ static if (HasVersion!"HAVE_GETZONEID" && HasVersion!"SHMPERM_ZONEID") {
 private int ProcShmAttach(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmAttachReq);
-    mixin(X_REQUEST_FIELD_CARD32!shmseg);
-    mixin(X_REQUEST_FIELD_CARD32!shmid);
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
+    mixin(X_REQUEST_FIELD_CARD32!"shmid");
 
     if (!client.local)
         return BadRequest;
@@ -334,13 +338,13 @@ private int ProcShmAttach(ClientPtr client)
     SHMSTAT_TYPE buf = void;
     ShmDescPtr shmdesc = void;
 
-    LEGAL_NEW_RESOURCE(stuff.shmseg, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.shmseg", "client"));
     if ((stuff.readOnly != xTrue) && (stuff.readOnly != xFalse)) {
         client.errorValue = stuff.readOnly;
         return BadValue;
     }
     for (shmdesc = Shmsegs; shmdesc; shmdesc = shmdesc.next) {
-        if (!SHMDESC_IS_FD(shmdesc) && shmdesc.shmid == stuff.shmid)
+        if (!mixin(SHMDESC_IS_FD!("shmdesc")) && shmdesc.shmid == stuff.shmid)
             break;
     }
     if (shmdesc) {
@@ -349,13 +353,13 @@ private int ProcShmAttach(ClientPtr client)
         shmdesc.refcnt++;
     }
     else {
-        shmdesc = calloc(1, ShmDescRec.sizeof);
+        shmdesc = cast(ShmDescPtr)calloc(1, ShmDescRec.sizeof);
         if (!shmdesc)
             return BadAlloc;
 version (SHM_FD_PASSING) {
         shmdesc.is_fd = FALSE;
 }
-        shmdesc.addr = shmat(stuff.shmid, 0,
+        shmdesc.addr = cast(char*)shmat(cast(void*)stuff.shmid, null,
                               stuff.readOnly ? SHM_RDONLY : 0);
         if ((shmdesc.addr == (cast(char*) -1)) || mixin(SHMSTAT!(`stuff.shmid`, `&buf`))) {
             free(shmdesc);
@@ -396,8 +400,8 @@ version (SHM_FD_PASSING) {
         return TRUE;
 static if (SHM_FD_PASSING) {
     if (shmdesc.is_fd) {
-        if (shmdesc.busfault)
-            busfault_unregister(shmdesc.busfault);
+        if (shmdesc._busfault)
+            busfault_unregister(shmdesc._busfault);
         munmap(shmdesc.addr, shmdesc.size);
     } else {
         shmdt(shmdesc.addr);
@@ -415,7 +419,7 @@ static if (SHM_FD_PASSING) {
 private int ProcShmDetach(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmDetachReq);
-    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
 
     if (!client.local)
         return BadRequest;
@@ -437,7 +441,7 @@ private void doShmPutImage(DrawablePtr dst, GCPtr pGC, int depth, uint format, i
 
     if (format == ZPixmap || (format == XYPixmap && depth == 1)) {
         pPixmap = GetScratchPixmapHeader(dst.pScreen, w, h, depth,
-                                         BitsPerPixel(depth),
+                                         mixin(BitsPerPixel!("depth")),
                                          PixmapBytePad(w, depth), data);
         if (!pPixmap)
             return;
@@ -480,7 +484,7 @@ private int ShmPutImage(ClientPtr client, xShmPutImageReq* stuff)
     c_long length = void;
     ShmDescPtr shmdesc = void;
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
     mixin(VERIFY_SHMPTR!(`stuff.shmseg`, `stuff.offset`, `FALSE`, `shmdesc`, `client`));
     if ((stuff.sendEvent != xTrue) && (stuff.sendEvent != xFalse))
         return BadValue;
@@ -555,7 +559,7 @@ private int ShmPutImage(ClientPtr client, xShmPutImageReq* stuff)
 
     if (stuff.sendEvent) {
         xShmCompletionEvent ev = {
-            type: ShmCompletionCode,
+            type: cast(ubyte)ShmCompletionCode,
             drawable: stuff.drawable,
             minorEvent: X_ShmPutImage,
             majorEvent: ShmReqCode,
@@ -655,7 +659,7 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
                                              shmdesc.addr + len2);
                 if (pVisibleRegion)
                     XaceCensorImage(client, pVisibleRegion,
-                            BitmapBytePad(stuff.width), pDraw,
+                            mixin(BitmapBytePad!("stuff.width")), pDraw,
                             stuff.x, stuff.y, stuff.width, stuff.height,
                             stuff.format, shmdesc.addr + len2);
                 len2 += lenPer;
@@ -665,12 +669,12 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
 
     xShmGetImageReply reply = {
         depth: pDraw.depth,
-        size: length,
-        visual: visual,
+        size: cast(uint)length,
+        visual: cast(uint)visual,
     };
 
-    mixin(X_REPLY_FIELD_CARD32!visual);
-    mixin(X_REPLY_FIELD_CARD32!size);
+    mixin(X_REPLY_FIELD_CARD32!"visual");
+    mixin(X_REPLY_FIELD_CARD32!"size");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -678,18 +682,18 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
 private int ProcShmPutImage(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmPutImageReq);
-    mixin(X_REQUEST_FIELD_CARD32!drawable);
-    mixin(X_REQUEST_FIELD_CARD32!gc);
-    mixin(X_REQUEST_FIELD_CARD16!totalWidth);
-    mixin(X_REQUEST_FIELD_CARD16!totalHeight);
-    mixin(X_REQUEST_FIELD_CARD16!srcX);
-    mixin(X_REQUEST_FIELD_CARD16!srcY);
-    mixin(X_REQUEST_FIELD_CARD16!srcWidth);
-    mixin(X_REQUEST_FIELD_CARD16!srcHeight);
-    mixin(X_REQUEST_FIELD_CARD16!dstX);
-    mixin(X_REQUEST_FIELD_CARD16!dstY);
-    mixin(X_REQUEST_FIELD_CARD32!shmseg);
-    mixin(X_REQUEST_FIELD_CARD32!offset);
+    mixin(X_REQUEST_FIELD_CARD32!"drawable");
+    mixin(X_REQUEST_FIELD_CARD32!"gc");
+    mixin(X_REQUEST_FIELD_CARD16!"totalWidth");
+    mixin(X_REQUEST_FIELD_CARD16!"totalHeight");
+    mixin(X_REQUEST_FIELD_CARD16!"srcX");
+    mixin(X_REQUEST_FIELD_CARD16!"srcY");
+    mixin(X_REQUEST_FIELD_CARD16!"srcWidth");
+    mixin(X_REQUEST_FIELD_CARD16!"srcHeight");
+    mixin(X_REQUEST_FIELD_CARD16!"dstX");
+    mixin(X_REQUEST_FIELD_CARD16!"dstY");
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
+    mixin(X_REQUEST_FIELD_CARD32!"offset");
 
     if (!client.local)
         return BadRequest;
@@ -741,14 +745,14 @@ version (XINERAMA) {
 private int ProcShmGetImage(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmGetImageReq);
-    mixin(X_REQUEST_FIELD_CARD32!drawable);
-    mixin(X_REQUEST_FIELD_CARD16!x);
-    mixin(X_REQUEST_FIELD_CARD16!y);
-    mixin(X_REQUEST_FIELD_CARD16!width);
-    mixin(X_REQUEST_FIELD_CARD16!height);
-    mixin(X_REQUEST_FIELD_CARD32!planeMask);
-    mixin(X_REQUEST_FIELD_CARD32!shmseg);
-    mixin(X_REQUEST_FIELD_CARD32!offset);
+    mixin(X_REQUEST_FIELD_CARD32!"drawable");
+    mixin(X_REQUEST_FIELD_CARD16!"x");
+    mixin(X_REQUEST_FIELD_CARD16!"y");
+    mixin(X_REQUEST_FIELD_CARD16!"width");
+    mixin(X_REQUEST_FIELD_CARD16!"height");
+    mixin(X_REQUEST_FIELD_CARD32!"planeMask");
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
+    mixin(X_REQUEST_FIELD_CARD32!"offset");
 
     if (!client.local)
         return BadRequest;
@@ -889,12 +893,12 @@ version (XINERAMA) {
 private int ProcShmCreatePixmap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmCreatePixmapReq);
-    mixin(X_REQUEST_FIELD_CARD32!pid);
-    mixin(X_REQUEST_FIELD_CARD32!drawable);
-    mixin(X_REQUEST_FIELD_CARD16!width);
-    mixin(X_REQUEST_FIELD_CARD16!height);
-    mixin(X_REQUEST_FIELD_CARD32!shmseg);
-    mixin(X_REQUEST_FIELD_CARD32!offset);
+    mixin(X_REQUEST_FIELD_CARD32!"pid");
+    mixin(X_REQUEST_FIELD_CARD32!"drawable");
+    mixin(X_REQUEST_FIELD_CARD16!"width");
+    mixin(X_REQUEST_FIELD_CARD16!"height");
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
+    mixin(X_REQUEST_FIELD_CARD32!"offset");
 
     if (!client.local)
         return BadRequest;
@@ -915,7 +919,7 @@ version (XINERAMA) {
     client.errorValue = stuff.pid;
     if (!sharedPixmaps)
         return BadImplementation;
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, M_ANY,
                            DixGetAttrAccess);
     if (rc != Success)
@@ -944,7 +948,7 @@ version (XINERAMA) {
 
  CreatePmap:
     size = PixmapBytePad(width, depth) * height;
-    if (size.sizeof == 4 && BitsPerPixel(depth) > 8) {
+    if (size.sizeof == 4 && mixin(BitsPerPixel!("depth")) > 8) {
         if (size < width * height)
             return BadAlloc;
     }
@@ -1021,7 +1025,7 @@ private PixmapPtr fbShmCreatePixmap(ScreenPtr pScreen, int width, int height, in
         return NullPixmap;
 
     if (!(*pScreen.ModifyPixmapHeader) (pPixmap, width, height, depth,
-                                         BitsPerPixel(depth),
+                                         mixin(BitsPerPixel!("depth")),
                                          PixmapBytePad(width, depth),
                                          cast(void*) addr)) {
         dixDestroyPixmap(pPixmap, 0);
@@ -1044,7 +1048,7 @@ private int ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq* stuff)
     client.errorValue = stuff.pid;
     if (!sharedPixmaps)
         return BadImplementation;
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, M_ANY,
                            DixGetAttrAccess);
     if (rc != Success)
@@ -1073,7 +1077,7 @@ private int ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq* stuff)
 
  CreatePmap:
     size = PixmapBytePad(width, depth) * height;
-    if (size.sizeof == 4 && BitsPerPixel(depth) > 8) {
+    if (size.sizeof == 4 && mixin(BitsPerPixel!("depth")) > 8) {
         if (size < width * height)
             return BadAlloc;
     }
@@ -1131,7 +1135,7 @@ private int ProcShmAttachFd(ClientPtr client)
     stat statb = void;
 
     SetReqFds(client, 1);
-    LEGAL_NEW_RESOURCE(stuff.shmseg, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.shmseg", "client"));
     if ((stuff.readOnly != xTrue) && (stuff.readOnly != xFalse)) {
         client.errorValue = stuff.readOnly;
         return BadValue;
@@ -1248,7 +1252,7 @@ private int ProcShmCreateSegment(ClientPtr client)
     int fd = void;
     ShmDescPtr shmdesc = void;
 
-    LEGAL_NEW_RESOURCE(stuff.shmseg, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.shmseg", "client"));
     if ((stuff.readOnly != xTrue) && (stuff.readOnly != xFalse)) {
         client.errorValue = stuff.readOnly;
         return BadValue;
@@ -1391,11 +1395,11 @@ version (MUST_CHECK_FOR_SHM_SYSCALL) {
     if (ShmSegType &&
         (extEntry = AddExtension(SHMNAME, ShmNumberEvents, ShmNumberErrors,
                                  &ProcShmDispatch, &ProcShmDispatch,
-                                 &ShmResetProc, StandardMinorOpcode))) {
+                                 &ShmResetProc, &StandardMinorOpcode))!is null) {
         ShmReqCode = cast(ubyte) extEntry.base;
         ShmCompletionCode = extEntry.eventBase;
         BadShmSegCode = extEntry.errorBase;
         SetResourceTypeErrorValue(ShmSegType, BadShmSegCode);
-        EventSwapVector[ShmCompletionCode] = cast(EventSwapPtr) SShmCompletionEvent;
+        EventSwapVector[ShmCompletionCode] = cast(EventSwapPtr) &SShmCompletionEvent;
     }
 }

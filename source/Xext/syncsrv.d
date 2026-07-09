@@ -88,12 +88,15 @@ struct _SysCounterInfo {
     void* private_;
     xorg_list entry;
 }
+alias SysCounterInfo = _SysCounterInfo;
 
 struct _SyncAlarmClientList {
     ClientPtr client;
     XID delete_id;
     _SyncAlarmClientList* next;
 }
+
+alias SyncAlarmClientList = _SyncAlarmClientList;
 
 struct _SyncAlarm {
     SyncTrigger trigger;

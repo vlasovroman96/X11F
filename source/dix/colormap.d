@@ -423,7 +423,7 @@ version (XINERAMA) {
     if (wColormap(pwin) == *pmid) {
         /* This should be call to DeliverEvent */
         // xEvent xE = {
-        //     u:colormap:window: pwin.drawable.id,
+        //     u:colormap:window: cast(uint)pWin.drawable.id,
         //     u:colormap:colormap: *pmid,
         //     u:colormap:new: FALSE,
         //     u:colormap:state: ColormapUninstalled

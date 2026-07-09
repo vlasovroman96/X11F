@@ -212,10 +212,10 @@ pragma(inline, true) private int padding_for_int32(const(int) bytes)
 /* some macros to help swap requests, replies, and events */
 
 enum string LengthRestS(string stuff) = `
-    ((client.req_len << 1) - (((*` ~ stuff ~ `) >> 1).sizeof))`;
+    (client.req_len << 1) - ((*` ~ stuff ~ `).sizeof >> 1)`;
 
 enum string SwapRestS(string stuff) = `
-    SwapShorts(cast(short*)(` ~ stuff ~ ` + 1), ` ~ LengthRestS!(stuff) ~ `)`;
+    SwapShorts(cast(short*)(` ~ stuff ~ ` + 1), ` ~ LengthRestS!(stuff) ~ `);`;
 
 static if (HasVersion!"__GNUC__" && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))) {
 
@@ -315,7 +315,7 @@ void cpswaps(T, U)(ref T src, ref U dst) {
 		dst = bswap_16(src); 
 }
 
-extern void SwapShorts(short* list, c_ulong count);
+// extern void SwapShorts(short* list, c_ulong count);
 
 alias DDXPointPtr = _xPoint*;
 alias BoxPtr = pixman_box16*;

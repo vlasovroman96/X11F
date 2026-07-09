@@ -10,6 +10,7 @@ import core.stdc.config: c_long, c_ulong;
  
 public import include.resource;
 public import include.shmint;
+import os.busfault;
 
 struct _ShmDesc {
     _ShmDesc* next;
@@ -18,11 +19,11 @@ struct _ShmDesc {
     char* addr;
     Bool writable;
     c_ulong size;
-version (SHM_FD_PASSING) {
+// version (SHM_FD_PASSING) {
     Bool is_fd;
-    busfault* busfault;
+    busfault* _busfault;
     XID resource;
-}
+// }
 }alias ShmDescRec = _ShmDesc;
 alias ShmDescPtr = _ShmDesc*;
 

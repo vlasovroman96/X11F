@@ -70,6 +70,8 @@ import Xext.dpmsproc;
 }
 import include.protocol_versions;
 import dix.extension;
+import dix.dixutils;
+import os.utils;
 
 Bool noScreenSaverExtension = FALSE;
 

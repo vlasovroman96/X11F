@@ -41,13 +41,17 @@ import include.windowstr;
 import include.dixstruct;
 import include.pixmapstr;
 import include.scrnintstr;
+import dix.resource;
+import os.WaitFor;
+import os.utils;
+import dix.dixutils;
 
 struct _Sertafied {
     _Sertafied* next;
     TimeStamp revive;
     ClientPtr pClient;
     XID id;
-    void function(ClientPtr, void*) notifyFunc;
+    void function(ClientPtr, void*) @nogc nothrow notifyFunc;
 
     void* closure;
 }alias SertafiedRec = _Sertafied;
@@ -63,15 +67,15 @@ private Bool BlockHandlerRegistered;
 
 
 
-int ClientSleepUntil(ClientPtr client, TimeStamp* revive, void function(ClientPtr, void*) notifyFunc, void* closure)
+int ClientSleepUntil(ClientPtr client, TimeStamp* revive, void function(ClientPtr, void*) @nogc nothrow notifyFunc, void* closure)
 {
-    SertafiedResType = CreateNewResourceType(SertafiedDelete,
+    SertafiedResType = CreateNewResourceType(&SertafiedDelete,
                                              "ClientSleep");
     if (!SertafiedResType)
         return FALSE;
     BlockHandlerRegistered = FALSE;
 
-    SertafiedPtr pRequest = calloc(1, SertafiedRec.sizeof);
+    SertafiedPtr pRequest = cast(SertafiedPtr)calloc(1, SertafiedRec.sizeof);
     if (!pRequest)
         return FALSE;
     pRequest.pClient = client;
@@ -79,19 +83,19 @@ int ClientSleepUntil(ClientPtr client, TimeStamp* revive, void function(ClientPt
     pRequest.id = FakeClientID(client.index);
     pRequest.closure = closure;
     if (!BlockHandlerRegistered) {
-        if (!RegisterBlockAndWakeupHandlers(SertafiedBlockHandler,
-                                            SertafiedWakeupHandler,
+        if (!RegisterBlockAndWakeupHandlers(&SertafiedBlockHandler,
+                                            &SertafiedWakeupHandler,
                                             cast(void*) 0)) {
             free(pRequest);
             return FALSE;
         }
         BlockHandlerRegistered = TRUE;
     }
-    pRequest.notifyFunc = 0;
+    pRequest.notifyFunc = null;
     if (!AddResource(pRequest.id, SertafiedResType, cast(void*) pRequest))
         return FALSE;
     if (!notifyFunc)
-        notifyFunc = ClientAwaken;
+        notifyFunc = &ClientAwaken;
     pRequest.notifyFunc = notifyFunc;
     /* Insert into time-ordered queue, with earliest activation time coming first. */
 
@@ -162,7 +166,7 @@ private void SertafiedBlockHandler(void* data, void* wt)
 
     if (pending) {
         delay = pending.revive.milliseconds - now.milliseconds;
-        AdjustWaitForDelay(wt, delay);
+        AdjustWaitForDelay(wt, cast(int)delay);
     }
 }
 
@@ -184,7 +188,7 @@ private void SertafiedWakeupHandler(void* data, int i)
     }
     if (!pending) {
         RemoveBlockAndWakeupHandlers(&SertafiedBlockHandler,
-                                     SertafiedWakeupHandler, cast(void*) 0);
+                                     &SertafiedWakeupHandler, cast(void*) 0);
         BlockHandlerRegistered = FALSE;
     }
 }

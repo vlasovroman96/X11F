@@ -69,6 +69,7 @@ import include.protocol_versions;
 import dix.extension;
 import os.log;
 import xfixes.xfixes;
+import dix.dixutils;
 
 struct PanoramiXInfo {
     XID id;

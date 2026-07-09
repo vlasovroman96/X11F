@@ -155,7 +155,7 @@ void present_send_complete_notify(WindowPtr window, CARD8 kind, CARD8 mode, CARD
             extension: present_request,
             length: (((xPresentCompleteNotify) - 32).sizeof) >> 2,
             evtype: PresentCompleteNotify,
-            kind: kind,
+            kind: cast(ubyte)kind,
             mode: mode,
             eid: 0,
             window: window.drawable.id,

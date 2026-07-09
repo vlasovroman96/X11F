@@ -1,4 +1,4 @@
-module swapreq;
+module dix.swapreq;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -60,7 +60,7 @@ import dix.reqhandlers_priv;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;         /* for SendEvent */
-import swapreq;
+// import swapreq;
 
 /* Thanks to Jack Palevich for testing and subsequently rewriting all this */
 

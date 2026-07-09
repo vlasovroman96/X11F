@@ -209,7 +209,7 @@ pragma(inline, true) void* dixLookupPrivate(PrivatePtr* privates, const(DevPriva
  * This returns the place where the private pointer is stored,
  * which is only valid for privates without predefined storage.
  */
-pragma(inline, true) private void** dixLookupPrivateAddr(PrivatePtr* privates, const(DevPrivateKey) key)
+pragma(inline, true) void** dixLookupPrivateAddr(PrivatePtr* privates, const(DevPrivateKey) key)
 {
     assert(key.size == 0);
     return cast(void**) dixGetPrivateAddr(privates, key);
@@ -319,7 +319,7 @@ enum string dixFiniPrivates(string o,string t) = `_dixFiniPrivates((` ~ o ~ `).d
  */
 extern int* _dixAllocateObjectWithPrivates(uint size, uint clear, uint offset, DevPrivateType type);
 
-enum string dixAllocateObjectWithPrivates(string t, string type) = `cast(t*) _dixAllocateObjectWithPrivates(` ~ t ~ `.sizeof, ` ~ t ~ `.sizeof, t.devPrivates.offsetof, ` ~ type ~ `)`;
+enum string dixAllocateObjectWithPrivates(string t, string type) = `cast(`~t~`*) _dixAllocateObjectWithPrivates(` ~ t ~ `.sizeof, ` ~ t ~ `.sizeof, `~t~`.devPrivates.offsetof, ` ~ type ~ `)`;
 
 extern int _dixFreeObjectWithPrivates(void* object, PrivatePtr privates, DevPrivateType type);
 

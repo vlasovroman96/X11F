@@ -96,9 +96,9 @@ enum string OnScreenDrawable(string type) = `
 enum string WindowDrawable(string type) = `
 	((` ~ type ~ ` == DRAWABLE_WINDOW) || (` ~ type ~ ` == UNDRAWABLE_WINDOW))`;
 
-extern int GetScratchPixmapHeader(ScreenPtr pScreen, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
+// extern int GetScratchPixmapHeader(ScreenPtr pScreen, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
 
-extern int FreeScratchPixmapHeader(PixmapPtr);
+// extern int FreeScratchPixmapHeader(PixmapPtr);
 
 extern int PixmapScreenInit(ScreenPtr);
 

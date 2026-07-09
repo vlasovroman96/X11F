@@ -417,7 +417,7 @@ private int SingleRenderCreatePicture(ClientPtr client, xRenderCreatePictureReq*
     PictFormatPtr pFormat = void;
     int len = void, error = void, rc = void;
 
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
     rc = dixLookupDrawable(&pDrawable, stuff.drawable, client, 0,
                            DixReadAccess | DixAddAccess);
     if (rc != Success)
@@ -1288,7 +1288,7 @@ private int ProcRenderCreateCursor(ClientPtr client)
     CARD32[3] twocolor = void;
     int rc = void, ncolor = void;
 
-    LEGAL_NEW_RESOURCE(stuff.cid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.cid", "client"));
 
     VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
     if (!pSrc.pDrawable)
@@ -1607,7 +1607,7 @@ private int ProcRenderCreateAnimCursor(ClientPtr client)
     int i = void;
     int ret = void;
 
-    LEGAL_NEW_RESOURCE(stuff.cid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.cid", "client"));
     if (client.req_len & 1)
         return BadLength;
 
@@ -1665,7 +1665,7 @@ private int SingleRenderCreateSolidFill(ClientPtr client, xRenderCreateSolidFill
     PicturePtr pPicture = void;
     int error = 0;
 
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     pPicture = CreateSolidPicture(stuff.pid, &stuff.color, &error);
     if (!pPicture)
@@ -1688,7 +1688,7 @@ private int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLine
     XFixed* stops = void;
     xRenderColor* colors = void;
 
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
     if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -1722,7 +1722,7 @@ private int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadi
     XFixed* stops = void;
     xRenderColor* colors = void;
 
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
     if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -1757,7 +1757,7 @@ private int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateCon
     XFixed* stops = void;
     xRenderColor* colors = void;
 
-    LEGAL_NEW_RESOURCE(stuff.pid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
     if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))

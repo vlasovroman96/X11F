@@ -431,7 +431,7 @@ private void RRDeliverResourceEvent(ClientPtr client, WindowPtr pWin)
         type: RRNotify + RREventBase,
         subCode: RRNotify_ResourceChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
-        window: pWin.drawable.id
+        window: cast(uint)pWin.drawable.id
     };
 
     WriteEventsToClient(client, 1, cast(xEvent*) &re);

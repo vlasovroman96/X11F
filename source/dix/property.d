@@ -159,7 +159,7 @@ private void deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr p
     UpdateCurrentTimeIf();
     event = xEvent;
     //  (
-        // u:property:window: pWin.drawable.id,
+        // u:property:window: cast(uint)pWin.drawable.id,
     //     u:property:state: state,
     //     u:property:atom: pProp.propertyName,
     //     u:property:time: currentTime.milliseconds,

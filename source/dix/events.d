@@ -3490,8 +3490,8 @@ Bool XineramaPointInWindowIsVisible(WindowPtr pWin, int x, int y)
         y = yoff - walkScreen.y;
 
         if (RegionContainsPoint(&pWin.borderClip, x, y, &box)
-            && (!wInputShape(pWin) ||
-                RegionContainsPoint(wInputShape(pWin),
+            && (!mixin(wInputShape!("pWin")) ||
+                RegionContainsPoint(mixin(wInputShape!("pWin")),
                                     x - pWin.drawable.x,
                                     y - pWin.drawable.y, &box)))
             return TRUE;

@@ -61,7 +61,7 @@ import include.dixstruct;
 import dix.dixstruct_priv;
 import dix.dispatch;
 import dix.swaprep;
-import swapreq;
+import dix.swapreq;
 import dix.window;
 import dix.property;
 import dix.selection;
