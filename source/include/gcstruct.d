@@ -74,19 +74,19 @@ alias CharInfoPtr = legacyXfs._CharInfo*;  /* also in fonts/include/font.h */
  */
 
 struct GCFuncs {
-    void function(GCPtr, c_ulong, DrawablePtr) ValidateGC;
+    void function(GCPtr, c_ulong, DrawablePtr) @nogc nothrow ValidateGC;
 
-    void function(GCPtr, c_ulong) ChangeGC;
+    void function(GCPtr, c_ulong) @nogc nothrow ChangeGC;
 
-    void function(GCPtr, c_ulong, GCPtr) CopyGC;
+    void function(GCPtr, c_ulong, GCPtr) @nogc nothrow CopyGC;
 
-    void function(GCPtr) DestroyGC;
+    void function(GCPtr) @nogc nothrow DestroyGC;
 
-    void function(GCPtr pGC, int type, void* pvalue, int nrects) ChangeClip;
+    void function(GCPtr pGC, int type, void* pvalue, int nrects) @nogc nothrow ChangeClip;
 
-    void function(GCPtr) DestroyClip;
+    void function(GCPtr) @nogc nothrow DestroyClip;
 
-    void function(GCPtr, GCPtr) CopyClip;
+    void function(GCPtr, GCPtr) @nogc nothrow CopyClip;
 }
 
 /*
@@ -94,44 +94,44 @@ struct GCFuncs {
  */
 
 struct _GCOps {
-    void function(DrawablePtr, GCPtr, int, DDXPointPtr, int*, int) FillSpans;
+    void function(DrawablePtr, GCPtr, int, DDXPointPtr, int*, int) @nogc nothrow FillSpans;
 
-    void function(DrawablePtr, GCPtr, char*, DDXPointPtr, int*, int, int) SetSpans;
+    void function(DrawablePtr, GCPtr, char*, DDXPointPtr, int*, int, int) @nogc nothrow SetSpans;
 
-    void function(DrawablePtr, GCPtr, int, int, int, int, int, int, int, char*) PutImage;
+    void function(DrawablePtr, GCPtr, int, int, int, int, int, int, int, char*) @nogc nothrow PutImage ;
 
-    RegionPtr function(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int) CopyArea;
+    RegionPtr function(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int) @nogc nothrow CopyArea;
 
-    RegionPtr function(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int, c_ulong) CopyPlane;
-    void function(DrawablePtr, GCPtr, int, int, DDXPointPtr) PolyPoint;
+    RegionPtr function(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int, c_ulong) @nogc nothrow CopyPlane;
+    void function(DrawablePtr, GCPtr, int, int, DDXPointPtr) @nogc nothrow PolyPoint;
 
-    void function(DrawablePtr, GCPtr, int, int, DDXPointPtr) Polylines;
+    void function(DrawablePtr, GCPtr, int, int, DDXPointPtr) @nogc nothrow Polylines;
 
-    void function(DrawablePtr, GCPtr, int, xSegment*) PolySegment;
+    void function(DrawablePtr, GCPtr, int, xSegment*) @nogc nothrow PolySegment;
 
-    void function(DrawablePtr, GCPtr, int, xRectangle*) PolyRectangle;
+    void function(DrawablePtr, GCPtr, int, xRectangle*) @nogc nothrow PolyRectangle;
 
-    void function(DrawablePtr, GCPtr, int, xArc*) PolyArc;
+    void function(DrawablePtr, GCPtr, int, xArc*) @nogc nothrow PolyArc;
 
-    void function(DrawablePtr, GCPtr, int, int, int, DDXPointPtr) FillPolygon;
+    void function(DrawablePtr, GCPtr, int, int, int, DDXPointPtr) @nogc nothrow FillPolygon;
 
-    void function(DrawablePtr, GCPtr, int, xRectangle*) PolyFillRect;
+    void function(DrawablePtr, GCPtr, int, xRectangle*) @nogc nothrow PolyFillRect;
 
-    void function(DrawablePtr, GCPtr, int, xArc*) PolyFillArc;
+    void function(DrawablePtr, GCPtr, int, xArc*) @nogc nothrow PolyFillArc;
 
-    int function(DrawablePtr, GCPtr, int, int, int, char*) PolyText8;
+    int function(DrawablePtr, GCPtr, int, int, int, char*) @nogc nothrow PolyText8;
 
-    int function(DrawablePtr, GCPtr, int, int, int, ushort*) PolyText16;
+    int function(DrawablePtr, GCPtr, int, int, int, ushort*) @nogc nothrow PolyText16;
 
-    void function(DrawablePtr, GCPtr, int, int, int, char*) ImageText8;
+    void function(DrawablePtr, GCPtr, int, int, int, char*) @nogc nothrow ImageText8;
 
-    void function(DrawablePtr, GCPtr, int, int, int, ushort*) ImageText16;
+    void function(DrawablePtr, GCPtr, int, int, int, ushort*) @nogc nothrow ImageText16;
 
-    void function(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase) ImageGlyphBlt;
+    void function(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase) @nogc nothrow ImageGlyphBlt;
 
-    void function(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase) PolyGlyphBlt;
+    void function(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase) @nogc nothrow PolyGlyphBlt;
 
-    void function(GCPtr, PixmapPtr, DrawablePtr, int, int, int, int) PushPixels;
+    void function(GCPtr, PixmapPtr, DrawablePtr, int, int, int, int) @nogc nothrow PushPixels;
 }
 
 /* there is padding in the bit fields because the Sun compiler doesn't

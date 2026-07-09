@@ -914,7 +914,7 @@ private int ProcRenderAddGlyphs(ClientPtr client)
                 goto bail;
             }
 
-            DIX_FOR_EACH_SCREEN({
+            mixin(DIX_FOR_EACH_SCREEN!q{
                 int width = gi[i].width;
                 int height = gi[i].height;
                 int depth = glyphSet.format.depth;
@@ -1226,7 +1226,7 @@ private int SingleRenderFillRectangles(ClientPtr client, xRenderFillRectanglesRe
     if (!pDst.pDrawable)
         return BadDrawable;
 
-    things = (client.req_len << 2) - xRenderFillRectanglesReq.sizeof;
+    things = cast(int)(client.req_len << 2) - xRenderFillRectanglesReq.sizeof;
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -1891,13 +1891,13 @@ private int PanoramiXRenderCreatePicture(ClientPtr client, xRenderCreatePictureR
     else
         newPict.u.pict.root = FALSE;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
-        stuff.pid = newPict.info[walkScreenIdx].id;
-        stuff.drawable = refDraw.info[walkScreenIdx].id;
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
+        stuff.pid = cast(uint)newPict.info[walkScreenIdx].id;
+        stuff.drawable = cast(uint)refDraw.info[walkScreenIdx].id;
         result = SingleRenderCreatePicture(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     if (result == Success)
         AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
@@ -1914,11 +1914,11 @@ private int PanoramiXRenderChangePicture(ClientPtr client, xRenderChangePictureR
 
     mixin(VERIFY_XIN_PICTURE!(`pict`, `pictID`, `client`, `DixWriteAccess`));
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         result = SingleRenderChangePicture(client, stuff, pict.info[walkScreenIdx].id);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -1930,11 +1930,11 @@ private int PanoramiXRenderSetPictureClipRectangles(ClientPtr client, xRenderSet
 
     mixin(VERIFY_XIN_PICTURE!(`pict`, `pictID`, `client`, `DixWriteAccess`));
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         result = SingleRenderSetPictureClipRectangles(client, stuff, pict.info[walkScreenIdx].id);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -1946,12 +1946,12 @@ private int PanoramiXRenderSetPictureTransform(ClientPtr client, xRenderSetPictu
 
     mixin(VERIFY_XIN_PICTURE!(`pict`, `stuff.picture`, `client`, `DixWriteAccess`));
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         stuff.picture = pict.info[walkScreenIdx].id;
         result = SingleRenderSetPictureTransform(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -1963,12 +1963,12 @@ private int PanoramiXRenderSetPictureFilter(ClientPtr client, xRenderSetPictureF
 
     mixin(VERIFY_XIN_PICTURE!(`pict`, `stuff.picture`, `client`, `DixWriteAccess`));
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         stuff.picture = pict.info[walkScreenIdx].id;
         result = SingleRenderSetPictureFilter(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -1984,12 +1984,12 @@ private int PanoramiXRenderFreePicture(ClientPtr client)
 
     mixin(VERIFY_XIN_PICTURE!(`pict`, `stuff.picture`, `client`, `DixDestroyAccess`));
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         stuff.picture = pict.info[walkScreenIdx].id;
         result = SingleRenderFreePicture(client);
         if (result != Success)
             break;
-    });
+    }));
 
     /* Since ProcRenderFreePicture is using FreeResource, it will free
        our resource for us on the last pass through the loop above */
@@ -2009,7 +2009,7 @@ private int PanoramiXRenderComposite(ClientPtr client, xRenderCompositeReq* orig
 
     xRenderCompositeReq sub_req = orig;
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         sub_req.src = src.info[walkScreenIdx].id;
         if (src.u.pict.root) {
             sub_req.xSrc = orig.xSrc - walkScreen.x;
@@ -2030,7 +2030,7 @@ private int PanoramiXRenderComposite(ClientPtr client, xRenderCompositeReq* orig
         result = SingleRenderComposite(client, &sub_req);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -2053,7 +2053,7 @@ private int PanoramiXRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGly
         xSrc = stuff.xSrc;
         ySrc = stuff.ySrc;
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             stuff.src = src.info[walkScreenIdx].id;
             if (src.u.pict.root) {
                 stuff.xSrc = xSrc - walkScreen.x;
@@ -2067,7 +2067,7 @@ private int PanoramiXRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGly
             result = SingleRenderCompositeGlyphs(client, stuff);
             if (result != Success)
                 break;
-        });
+        }));
     }
 
     return result;
@@ -2085,7 +2085,7 @@ private int PanoramiXRenderFillRectangles(ClientPtr client, xRenderFillRectangle
     if (extra_len && (extra = cast(char*) calloc(1, extra_len))) {
         memcpy(extra, stuff + 1, extra_len);
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             if (walkScreenIdx) /* skip screen #0 */
                 memcpy(stuff + 1, extra, extra_len);
             if (dst.u.pict.root) {
@@ -2107,7 +2107,7 @@ private int PanoramiXRenderFillRectangles(ClientPtr client, xRenderFillRectangle
             result = SingleRenderFillRectangles(client, stuff);
             if (result != Success)
                 break;
-        });
+        }));
 
         free(extra);
     }
@@ -2131,7 +2131,7 @@ private int PanoramiXRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* st
     if (extra_len && (extra = cast(char*) calloc(1, extra_len))) {
         memcpy(extra, stuff + 1, extra_len);
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             if (walkScreenIdx) /* skip screen #0 */
                 memcpy(stuff + 1, extra, extra_len);
             if (dst.u.pict.root) {
@@ -2164,7 +2164,7 @@ private int PanoramiXRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* st
 
             if (result != Success)
                 break;
-        });
+        }));
 
         free(extra);
     }
@@ -2188,7 +2188,7 @@ private int PanoramiXRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuf
     if (extra_len && (extra = cast(char*) calloc(1, extra_len))) {
         memcpy(extra, stuff + 1, extra_len);
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             if (walkScreenIdx) /* skip screen #0 */
                 memcpy(stuff + 1, extra, extra_len);
             if (dst.u.pict.root) {
@@ -2217,7 +2217,7 @@ private int PanoramiXRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuf
 
             if (result != Success)
                 break;
-        });
+        }));
 
         free(extra);
     }
@@ -2241,7 +2241,7 @@ private int PanoramiXRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
     if (extra_len && (extra = cast(char*) calloc(1, extra_len))) {
         memcpy(extra, stuff + 1, extra_len);
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             if (walkScreenIdx) /* skip screen #0 */
                 memcpy(stuff + 1, extra, extra_len);
             if (dst.u.pict.root) {
@@ -2266,7 +2266,7 @@ private int PanoramiXRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
 
             if (result != Success)
                 break;
-        });
+        }));
 
         free(extra);
     }
@@ -2289,7 +2289,7 @@ private int PanoramiXRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
     if (extra_len && (extra = cast(char*) calloc(1, extra_len))) {
         memcpy(extra, stuff + 1, extra_len);
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             if (walkScreenIdx) /* skip screen #0 */
                 memcpy(stuff + 1, extra, extra_len);
             if (dst.u.pict.root) {
@@ -2314,7 +2314,7 @@ private int PanoramiXRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
 
             if (result != Success)
                 break;
-        });
+        }));
 
         free(extra);
     }
@@ -2337,7 +2337,7 @@ private int PanoramiXRenderAddTraps(ClientPtr client, xRenderAddTrapsReq* stuff)
         x_off = stuff.xOff;
         y_off = stuff.yOff;
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             if (walkScreenIdx) /* skip screen #0 */
                 memcpy(stuff + 1, extra, extra_len);
             stuff.picture = picture.info[walkScreenIdx].id;
@@ -2349,7 +2349,7 @@ private int PanoramiXRenderAddTraps(ClientPtr client, xRenderAddTrapsReq* stuff)
             result = SingleRenderAddTraps(client, stuff);
             if (result != Success)
                 break;
-        });
+        }));
 
         free(extra);
     }
@@ -2369,12 +2369,12 @@ private int PanoramiXRenderCreateSolidFill(ClientPtr client, xRenderCreateSolidF
     panoramix_setup_ids(newPict, client, stuff.pid);
     newPict.u.pict.root = FALSE;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
-        stuff.pid = newPict.info[walkScreenIdx].id;
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
+        stuff.pid = cast(uint)newPict.info[walkScreenIdx].id;
         result = SingleRenderCreateSolidFill(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     if (result == Success)
         AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
@@ -2396,12 +2396,12 @@ private int PanoramiXRenderCreateLinearGradient(ClientPtr client, xRenderCreateL
     panoramix_setup_ids(newPict, client, stuff.pid);
     newPict.u.pict.root = FALSE;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
-        stuff.pid = newPict.info[walkScreenIdx].id;
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
+        stuff.pid = cast(uint)newPict.info[walkScreenIdx].id;
         result = SingleRenderCreateLinearGradient(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     if (result == Success)
         AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
@@ -2423,12 +2423,12 @@ private int PanoramiXRenderCreateRadialGradient(ClientPtr client, xRenderCreateR
     panoramix_setup_ids(newPict, client, stuff.pid);
     newPict.u.pict.root = FALSE;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
-        stuff.pid = newPict.info[walkScreenIdx].id;
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
+        stuff.pid = cast(uint)newPict.info[walkScreenIdx].id;
         result = SingleRenderCreateRadialGradient(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     if (result == Success)
         AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
@@ -2450,12 +2450,12 @@ private int PanoramiXRenderCreateConicalGradient(ClientPtr client, xRenderCreate
     panoramix_setup_ids(newPict, client, stuff.pid);
     newPict.u.pict.root = FALSE;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
-        stuff.pid = newPict.info[walkScreenIdx].id;
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
+        stuff.pid = cast(uint)newPict.info[walkScreenIdx].id;
         result = SingleRenderCreateConicalGradient(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     if (result == Success)
         AddResource(newPict.info[0].id, XRT_PICTURE, newPict);

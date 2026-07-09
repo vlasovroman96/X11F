@@ -108,7 +108,7 @@ version (XINERAMA) {
 
     dri3_request = extension.base;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (!dri3_screen_init(walkScreen, null))
             goto bail;
     });

@@ -2244,7 +2244,7 @@ Bool KdCursorOffScreen(ScreenPtr* ppScreen, int* x, int* y)
     n_best_y = -1;
     best_y = 32767;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (walkScreen == pScreen)
             continue;
         int dx = mixin(KdScreenOrigin!(`walkScreen`)).x - mixin(KdScreenOrigin!(`pScreen`)).x;

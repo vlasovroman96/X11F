@@ -85,13 +85,13 @@ struct PixmapFormatRec {
 //     VisualID* vids;             /* block of visual ids for this depth */
 // }
 
-struct _ScreenSaverStuff {
-    WindowPtr pWindow;
-    XID wid;
-    char blanked = 0;
-    Bool function(ScreenPtr, int, Bool) ExternalScreenSaver;
-}alias ScreenSaverStuffRec = _ScreenSaverStuff;
-alias ScreenSaverStuffPtr = _ScreenSaverStuff*;
+// struct _ScreenSaverStuff {
+//     WindowPtr pWindow;
+//     XID wid;
+//     char blanked = 0;
+//     Bool function(ScreenPtr, int, Bool) ExternalScreenSaver;
+// }alias ScreenSaverStuffRec = _ScreenSaverStuff;
+// alias ScreenSaverStuffPtr = _ScreenSaverStuff*;
 
 // enum WindowVRRMode {
 //     WINDOW_VRR_DISABLED = 0,

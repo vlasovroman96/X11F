@@ -135,10 +135,10 @@ enum string X_REQUEST_HEAD_STRUCT(alias T) =
     };
 
 /* declare request struct and check size (at least as big) */
-enum string X_REQUEST_HEAD_AT_LEAST(string type) = `
-    mixin(REQUEST!` ~ type ~ `); 
+enum string X_REQUEST_HEAD_AT_LEAST(alias type) = `
+    mixin(REQUEST!` ~ type.stringof ~ `); 
     if (stuff == null) return (BadLength); 
-    mixin(REQUEST_AT_LEAST_SIZE!` ~ type ~ `); 
+    mixin(REQUEST_AT_LEAST_SIZE!` ~ type.stringof ~ `); 
 `;
 /* declare request struct, do NOT check size !*/
 enum string X_REQUEST_HEAD_NO_CHECK(string type) = `
@@ -150,7 +150,7 @@ enum string X_REQUEST_FIELD_CARD16(string field) = `
     if (client.swapped) swaps(&stuff.` ~ field ~ `);`;
 
 /* swap a CARD32 request struct field if necessary */
-enum string X_REQUEST_FIELD_CARD32(string field) = `
+enum string X_REQUEST_FIELD_CARD32(alias field) = `
     if (client.swapped) swapl(&stuff.` ~ field ~ `);`;
 
 /* swap a CARD64 request struct field if necessary */
@@ -163,7 +163,7 @@ enum string X_REQUEST_REST_CARD16() = `
 
 /* swap CARD32 rest of request (after the struct) */
 enum string X_REQUEST_REST_CARD32() = `
-    do { if (client.swapped) SwapRestL(stuff); } while (0)`;
+    if (client.swapped) mixin(SwapRestL!("stuff"));`;
 
 /* swap CARD16 rest of request (after the struct) - check fixed count */
 enum string X_REQUEST_REST_COUNT_CARD16(string count) = `

@@ -1802,7 +1802,7 @@ private Bool AllocCP(ColormapPtr pmap, EntryPtr pentFirst, int count, int planes
         Pixel* ppix = pixels;
         int found = 0;
         Pixel entries = pmap.pVisual.ColormapEntries - mask;
-        base = lowbit(mask);
+        base = mixin(lowbit!mask);
         for (pixel = 0; pixel < entries; pixel++) {
             if (pixel & mask)
                 continue;
@@ -1868,7 +1868,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
         SHAREDCOLOR* pshared = null;
         if (rmask) {
             Pixel bits = 0;
-            Pixel base = lowbit(rmask);
+            Pixel base = mixin(lowbit!rmask);
             while (1) {
                 pshared = *ppshared++;
                 pshared.refcnt = 1 << (g + b);
@@ -1897,7 +1897,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
         common = *pptr & basemask;
         if (gmask) {
             Pixel bits = 0;
-            Pixel base = lowbit(gmask);
+            Pixel base = mixin(lowbit!gmask);
             while (1) {
                 pshared = *ppshared++;
                 pshared.refcnt = 1 << (r + b);
@@ -1924,7 +1924,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
         common = *pptr & basemask;
         if (bmask) {
             Pixel bits = 0;
-            Pixel base = lowbit(bmask);
+            Pixel base = mixin(lowbit!bmask);
             while (1) {
                 pshared = *ppshared++;
                 pshared.refcnt = 1 << (r + g);
@@ -2015,7 +2015,7 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
 
     Pixel bits = 0;
     int zapped = 0;
-    Pixel base = lowbit(mask);
+    Pixel base = mixin(lowbit!mask);
 
     switch (color) {
     case REDMAP:

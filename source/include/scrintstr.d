@@ -100,9 +100,9 @@ struct _ScreenSaverStuff {
     WindowPtr pWindow;
     XID wid;
     char blanked;
-    bool function(	ScreenPtr /*pScreen */ ,
+    Bool function(	ScreenPtr /*pScreen */ ,
                 	int /*xstate */ ,
-                    Bool /*force */ ) ExternalScreenSaver;
+                    Bool /*force */ )  @nogc nothrow ExternalScreenSaver;
 } 
 alias ScreenSaverStuffRec = _ScreenSaverStuff;
 alias ScreenSaverStuffPtr = ScreenSaverStuffRec*;

@@ -217,7 +217,7 @@ private Bool ShmRegisterPrivates()
 
  /*ARGSUSED*/ private void ShmResetProc(ExtensionEntry* extEntry)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         ShmRegisterFuncs(walkScreen, NULL);
     });
 }
@@ -249,10 +249,10 @@ private int ProcShmQueryVersion(ClientPtr client)
         pixmapFormat: sharedPixmaps ? ZPixmap : 0
     };
 
-    X_REPLY_FIELD_CARD16(majorVersion);
-    X_REPLY_FIELD_CARD16(minorVersion);
-    X_REPLY_FIELD_CARD16(uid);
-    X_REPLY_FIELD_CARD16(gid);
+    mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!uid);
+    mixin(X_REPLY_FIELD_CARD16!gid);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -325,8 +325,8 @@ static if (HasVersion!"HAVE_GETZONEID" && HasVersion!"SHMPERM_ZONEID") {
 private int ProcShmAttach(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmAttachReq);
-    X_REQUEST_FIELD_CARD32(shmseg);
-    X_REQUEST_FIELD_CARD32(shmid);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!shmid);
 
     if (!client.local)
         return BadRequest;
@@ -415,7 +415,7 @@ static if (SHM_FD_PASSING) {
 private int ProcShmDetach(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmDetachReq);
-    X_REQUEST_FIELD_CARD32(shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
 
     if (!client.local)
         return BadRequest;
@@ -596,14 +596,14 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
                pDraw.y + stuff.y + cast(int) stuff.height >
                pDraw.pScreen.height ||
                /* check for being inside of border */
-               stuff.x < -wBorderWidth(cast(WindowPtr) pDraw) ||
+               stuff.x < -mixin(wBorderWidth!("cast(WindowPtr) pDraw")) ||
                stuff.x + cast(int) stuff.width >
-               wBorderWidth(cast(WindowPtr) pDraw) + cast(int) pDraw.width ||
-               stuff.y < -wBorderWidth(cast(WindowPtr) pDraw) ||
+               mixin(wBorderWidth!("cast(WindowPtr) pDraw")) + cast(int) pDraw.width ||
+               stuff.y < -mixin(wBorderWidth!("cast(WindowPtr) pDraw")) ||
                stuff.y + cast(int) stuff.height >
-               wBorderWidth(cast(WindowPtr) pDraw) + cast(int) pDraw.height)
+               mixin(wBorderWidth!("cast(WindowPtr) pDraw")) + cast(int) pDraw.height)
             return BadMatch;
-        visual = wVisual((cast(WindowPtr) pDraw));
+        visual = mixin(wVisual!("cast(WindowPtr) pDraw"));
         if (pDraw.type == DRAWABLE_WINDOW)
             pVisibleRegion = &(cast(WindowPtr) pDraw).borderClip;
         pDraw.pScreen.SourceValidate(pDraw, stuff.x, stuff.y,
@@ -669,8 +669,8 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
         visual: visual,
     };
 
-    X_REPLY_FIELD_CARD32(visual);
-    X_REPLY_FIELD_CARD32(size);
+    mixin(X_REPLY_FIELD_CARD32!visual);
+    mixin(X_REPLY_FIELD_CARD32!size);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -678,18 +678,18 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
 private int ProcShmPutImage(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmPutImageReq);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD16(totalWidth);
-    X_REQUEST_FIELD_CARD16(totalHeight);
-    X_REQUEST_FIELD_CARD16(srcX);
-    X_REQUEST_FIELD_CARD16(srcY);
-    X_REQUEST_FIELD_CARD16(srcWidth);
-    X_REQUEST_FIELD_CARD16(srcHeight);
-    X_REQUEST_FIELD_CARD16(dstX);
-    X_REQUEST_FIELD_CARD16(dstY);
-    X_REQUEST_FIELD_CARD32(shmseg);
-    X_REQUEST_FIELD_CARD32(offset);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD16!totalWidth);
+    mixin(X_REQUEST_FIELD_CARD16!totalHeight);
+    mixin(X_REQUEST_FIELD_CARD16!srcX);
+    mixin(X_REQUEST_FIELD_CARD16!srcY);
+    mixin(X_REQUEST_FIELD_CARD16!srcWidth);
+    mixin(X_REQUEST_FIELD_CARD16!srcHeight);
+    mixin(X_REQUEST_FIELD_CARD16!dstX);
+    mixin(X_REQUEST_FIELD_CARD16!dstY);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!offset);
 
     if (!client.local)
         return BadRequest;
@@ -718,19 +718,19 @@ version (XINERAMA) {
     sendEvent = stuff.sendEvent;
     stuff.sendEvent = 0;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (!walkScreenIdx)
             stuff.sendEvent = sendEvent;
-        stuff.drawable = draw.info[walkScreenIdx].id;
-        stuff.gc = gc.info[walkScreenIdx].id;
+        stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
+        stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
         if (isRoot) {
-            stuff.dstX = orig_x - walkScreen.x;
-            stuff.dstY = orig_y - walkScreen.y;
+            stuff.dstX = cast(short)orig_x - walkScreen.x;
+            stuff.dstY = cast(short)orig_y - walkScreen.y;
         }
         result = ShmPutImage(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 } else {
@@ -741,14 +741,14 @@ version (XINERAMA) {
 private int ProcShmGetImage(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmGetImageReq);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD16(x);
-    X_REQUEST_FIELD_CARD16(y);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
-    X_REQUEST_FIELD_CARD32(planeMask);
-    X_REQUEST_FIELD_CARD32(shmseg);
-    X_REQUEST_FIELD_CARD32(offset);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD16!x);
+    mixin(X_REQUEST_FIELD_CARD16!y);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
+    mixin(X_REQUEST_FIELD_CARD32!planeMask);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!offset);
 
     if (!client.local)
         return BadRequest;
@@ -807,10 +807,10 @@ version (XINERAMA) {
                masterScreen.y + pDraw.y + y < 0 ||
                masterScreen.y + pDraw.y + y + h > PanoramiXPixHeight ||
                /* check for being inside of border */
-               x < -wBorderWidth(cast(WindowPtr) pDraw) ||
-               x + w > wBorderWidth(cast(WindowPtr) pDraw) + cast(int) pDraw.width ||
-               y < -wBorderWidth(cast(WindowPtr) pDraw) ||
-               y + h > wBorderWidth(cast(WindowPtr) pDraw) + cast(int) pDraw.height)
+               x < -mixin(wBorderWidth!("cast(WindowPtr) pDraw")) ||
+               x + w > mixin(wBorderWidth!("cast(WindowPtr) pDraw")) + cast(int) pDraw.width ||
+               y < -mixin(wBorderWidth!("cast(WindowPtr) pDraw")) ||
+               y + h > mixin(wBorderWidth!("cast(WindowPtr) pDraw")) + cast(int) pDraw.height)
             return BadMatch;
     }
 
@@ -832,7 +832,7 @@ version (XINERAMA) {
         return BadAlloc;
 
     drawables[0] = pDraw;
-    XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0!(q{
         rc = dixLookupDrawable(drawables + walkScreenIdx,
                                draw.info[walkScreenIdx].id,
                                client, 0,
@@ -841,14 +841,14 @@ version (XINERAMA) {
             free(drawables);
             return rc;
         }
-    });
+    }));
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         drawables[walkScreenIdx].pScreen.SourceValidate(drawables[walkScreenIdx], 0, 0,
                                               drawables[walkScreenIdx].width,
                                               drawables[walkScreenIdx].height,
                                               IncludeInferiors);
-    });
+    }));
 
 
     if (length == 0) {          /* nothing to do */
@@ -872,13 +872,13 @@ version (XINERAMA) {
     free(drawables);
 
     xShmGetImageReply reply = {
-        visual: wVisual((cast(WindowPtr) pDraw)),
+        visual: mixin(wVisual!("cast(WindowPtr) pDraw")),
         depth: pDraw.depth,
         size: length
     };
 
-    X_REPLY_FIELD_CARD32(visual);
-    X_REPLY_FIELD_CARD32(size);
+    mixin(X_REPLY_FIELD_CARD32!visual);
+    mixin(X_REPLY_FIELD_CARD32!size);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 } else {
@@ -889,12 +889,12 @@ version (XINERAMA) {
 private int ProcShmCreatePixmap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmCreatePixmapReq);
-    X_REQUEST_FIELD_CARD32(pid);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
-    X_REQUEST_FIELD_CARD32(shmseg);
-    X_REQUEST_FIELD_CARD32(offset);
+    mixin(X_REQUEST_FIELD_CARD32!pid);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!offset);
 
     if (!client.local)
         return BadRequest;
@@ -964,7 +964,7 @@ version (XINERAMA) {
     result = Success;
 
     uint lastOne = 0;
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         lastOne = walkScreenIdx;
         ShmScrPrivateRec* screen_priv = void;
 
@@ -996,7 +996,7 @@ version (XINERAMA) {
             result = BadAlloc;
             break;
         }
-    });
+    }));
 
     if (result != Success) {
         while (lastOne--)
@@ -1121,7 +1121,7 @@ private void ShmBusfaultNotify(void* context)
 private int ProcShmAttachFd(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmAttachFdReq);
-    X_REQUEST_FIELD_CARD32(shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
 
     if (!client.local)
         return BadRequest;
@@ -1239,8 +1239,8 @@ version (HAVE_MKOSTEMP) {} else {
 private int ProcShmCreateSegment(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmCreateSegmentReq);
-    X_REQUEST_FIELD_CARD32(shmseg);
-    X_REQUEST_FIELD_CARD32(size);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!size);
 
     if (!client.local)
         return BadRequest;
@@ -1375,7 +1375,7 @@ version (MUST_CHECK_FOR_SHM_SYSCALL) {
     sharedPixmaps = xFalse;
     {
         sharedPixmaps = xTrue;
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
             ShmScrPrivateRec* screen_priv = mixin(ShmGetScreenPriv!(`walkScreen`));
             if (!screen_priv.shmFuncs)
                 screen_priv.shmFuncs = &miFuncs;
@@ -1383,7 +1383,7 @@ version (MUST_CHECK_FOR_SHM_SYSCALL) {
                 sharedPixmaps = xFalse;
         });
         if (sharedPixmaps)
-            DIX_FOR_EACH_SCREEN({
+            mixin(DIX_FOR_EACH_SCREEN!q{
                 dixScreenHookPixmapDestroy(walkScreen, &ShmPixmapDestroy);
             });
     }

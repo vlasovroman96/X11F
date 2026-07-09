@@ -110,8 +110,8 @@ private int ProcXvMCQueryVersion(ClientPtr client)
         minor: SERVER_XVMC_MINOR_VERSION
     };
 
-    X_REPLY_FIELD_CARD32(major);
-    X_REPLY_FIELD_CARD32(minor);
+    mixin(X_REPLY_FIELD_CARD32!major);
+    mixin(X_REPLY_FIELD_CARD32!minor);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -123,7 +123,7 @@ private int ProcXvMCListSurfaceTypes(ClientPtr client)
     XvMCAdaptorPtr adaptor = null;
 
     mixin(X_REQUEST_HEAD_STRUCT!xvmcListSurfaceTypesReq);
-    X_REQUEST_FIELD_CARD32(port);
+    mixin(X_REQUEST_FIELD_CARD32!port);
 
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
@@ -162,7 +162,7 @@ private int ProcXvMCListSurfaceTypes(ClientPtr client)
         num: num_surfaces,
     };
 
-    X_REPLY_FIELD_CARD32(num);
+    mixin(X_REPLY_FIELD_CARD32!num);
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
@@ -179,10 +179,10 @@ private int ProcXvMCCreateContext(ClientPtr client)
     XvMCSurfaceInfoPtr surface = null;
 
     mixin(X_REQUEST_HEAD_STRUCT!xvmcCreateContextReq);
-    X_REQUEST_FIELD_CARD32(context_id);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
-    X_REQUEST_FIELD_CARD32(flags);
+    mixin(X_REQUEST_FIELD_CARD32!context_id);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
+    mixin(X_REQUEST_FIELD_CARD32!flags);
 
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
 
@@ -254,9 +254,9 @@ private int ProcXvMCCreateContext(ClientPtr client)
         flags_return: pContext.flags
     };
 
-    X_REPLY_FIELD_CARD16(width_actual);
-    X_REPLY_FIELD_CARD16(height_actual);
-    X_REPLY_FIELD_CARD32(flags_return);
+    mixin(X_REPLY_FIELD_CARD16!width_actual);
+    mixin(X_REPLY_FIELD_CARD16!height_actual);
+    mixin(X_REPLY_FIELD_CARD32!flags_return);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -264,7 +264,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
 private int ProcXvMCDestroyContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcDestroyContextReq);
-    X_REQUEST_FIELD_CARD32(context_id);
+    mixin(X_REQUEST_FIELD_CARD32!context_id);
 
     void* val = void;
 
@@ -281,8 +281,8 @@ private int ProcXvMCDestroyContext(ClientPtr client)
 private int ProcXvMCCreateSurface(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcCreateSurfaceReq);
-    X_REQUEST_FIELD_CARD32(surface_id);
-    X_REQUEST_FIELD_CARD32(context_id);
+    mixin(X_REQUEST_FIELD_CARD32!surface_id);
+    mixin(X_REQUEST_FIELD_CARD32!context_id);
 
     CARD32* data = null;
     int dwords = 0;
@@ -333,7 +333,7 @@ private int ProcXvMCCreateSurface(ClientPtr client)
 private int ProcXvMCDestroySurface(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcDestroySurfaceReq);
-    X_REQUEST_FIELD_CARD32(surface_id);
+    mixin(X_REQUEST_FIELD_CARD32!surface_id);
 
     void* val = void;
 
@@ -350,11 +350,11 @@ private int ProcXvMCDestroySurface(ClientPtr client)
 private int ProcXvMCCreateSubpicture(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcCreateSubpictureReq);
-    X_REQUEST_FIELD_CARD32(subpicture_id);
-    X_REQUEST_FIELD_CARD32(context_id);
-    X_REQUEST_FIELD_CARD32(xvimage_id);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
+    mixin(X_REQUEST_FIELD_CARD32!subpicture_id);
+    mixin(X_REQUEST_FIELD_CARD32!context_id);
+    mixin(X_REQUEST_FIELD_CARD32!xvimage_id);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
 
     Bool image_supported = FALSE;
     CARD32* data = null;
@@ -460,7 +460,7 @@ private int ProcXvMCCreateSubpicture(ClientPtr client)
 private int ProcXvMCDestroySubpicture(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcDestroySubpictureReq);
-    X_REQUEST_FIELD_CARD32(subpicture_id);
+    mixin(X_REQUEST_FIELD_CARD32!subpicture_id);
 
     void* val = void;
 
@@ -477,8 +477,8 @@ private int ProcXvMCDestroySubpicture(ClientPtr client)
 private int ProcXvMCListSubpictureTypes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcListSubpictureTypesReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(surface_type_id);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!surface_type_id);
 
     XvPortPtr pPort = void;
     XvMCScreenPtr pScreenPriv = void;
@@ -576,7 +576,7 @@ private int ProcXvMCListSubpictureTypes(ClientPtr client)
         num: num,
     };
 
-    X_REPLY_FIELD_CARD32(num);
+    mixin(X_REPLY_FIELD_CARD32!num);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -584,9 +584,9 @@ private int ProcXvMCListSubpictureTypes(ClientPtr client)
 private int ProcXvMCGetDRInfo(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvmcGetDRInfoReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(shmKey);
-    X_REQUEST_FIELD_CARD32(magic);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!shmKey);
+    mixin(X_REQUEST_FIELD_CARD32!magic);
 
     XvPortPtr pPort = void;
     ScreenPtr pScreen = void;
@@ -617,12 +617,12 @@ private int ProcXvMCGetDRInfo(ClientPtr client)
      * Read back to the client what she has put in the shared memory
      * segment she prepared for us.
      */
-    X_REPLY_FIELD_CARD32(major);
-    X_REPLY_FIELD_CARD32(minor);
-    X_REPLY_FIELD_CARD32(patchLevel);
-    X_REPLY_FIELD_CARD32(nameLen);
-    X_REPLY_FIELD_CARD32(busIDLen);
-    X_REPLY_FIELD_CARD32(isLocal);
+    mixin(X_REPLY_FIELD_CARD32!major);
+    mixin(X_REPLY_FIELD_CARD32!minor);
+    mixin(X_REPLY_FIELD_CARD32!patchLevel);
+    mixin(X_REPLY_FIELD_CARD32!nameLen);
+    mixin(X_REPLY_FIELD_CARD32!busIDLen);
+    mixin(X_REPLY_FIELD_CARD32!isLocal);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

@@ -130,8 +130,15 @@ public import include.os;                 /* for ALLOCATE_LOCAL and DEALLOCATE_L
 enum NullBox = cast(BoxPtr)0;
 
 /* @deprecated */
-enum string min(string a, string b) = `(((` ~ a ~ `) < (` ~ b ~ `)) ? (` ~ a ~ `) : (` ~ b ~ `))`;
-enum string max(string a, string b) = `(((` ~ a ~ `) > (` ~ b ~ `)) ? (` ~ a ~ `) : (` ~ b ~ `))`;
+auto min(T, S) (T a, S b) {
+    return a < b ? a : b;
+}
+
+auto max(T, S) (T a, S b) {
+    return a > b ? a : b;
+}
+// enum string min(string a, string b) = `(((` ~ a ~ `) < (` ~ b ~ `)) ? (` ~ a ~ `) : (` ~ b ~ `))`;
+// enum string max(string a, string b) = `(((` ~ a ~ `) > (` ~ b ~ `)) ? (` ~ a ~ `) : (` ~ b ~ `))`;
 /* abs() is a function, not a macro; include the file declaring
  * it in case we haven't done that yet.
  */
@@ -175,7 +182,7 @@ pragma(inline, true) private int bits_to_bytes(const(int) bits)
  * @param bytes The minimum number of bytes needed.
  * @return The number of 4-byte units needed to hold bytes.
  */
-pragma(inline, true) private CARD32 bytes_to_int32(const(size_t) bytes)
+pragma(inline, true) CARD32 bytes_to_int32(const(size_t) bytes)
 {
     return cast(CARD32)(((bytes) + 3) >> 2);
 }

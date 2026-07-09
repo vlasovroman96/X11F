@@ -87,7 +87,7 @@ struct PaddingInfo {
     int bytesPerPixel;          /* only set when notPower2 is TRUE */
     int bitsPerPixel;           /* bits per pixel */
 }
-extern void [1] PixmapWidthPaddingInfo;
+extern PaddingInfo [1] PixmapWidthPaddingInfo;
 
 /* The only portable way to get the bpp from the depth is to look it up */
 enum string BitsPerPixel(string d) = `(PixmapWidthPaddingInfo[` ~ d ~ `].bitsPerPixel)`;
@@ -104,8 +104,12 @@ enum string PixmapWidthInPadUnits(string w, string d) = `
  *	Return the number of bytes to which a scanline of the given
  * depth and width will be padded.
  */
-enum string PixmapBytePad(string w, string d) = `
-    (` ~ PixmapWidthInPadUnits!(w, d) ~ ` << PixmapWidthPaddingInfo[` ~ d ~ `].padBytesLog2)`;
+// enum string PixmapBytePad(string w, string d) = `
+//     (` ~ PixmapWidthInPadUnits!(w, d) ~ ` << PixmapWidthPaddingInfo[` ~ d ~ `].padBytesLog2)`;
+
+auto PixmapBytePad(T, S) (T w, S d) {
+    return mixin(PixmapWidthInPadUnits!("w", "d")) << PixmapWidthPaddingInfo[d].padBytesLog2;
+}
 
 enum string BitmapBytePad(string w) = `
     ((cast(int)((` ~ w ~ `) + BITMAP_SCANLINE_PAD - 1) >> LOG2_BITMAP_PAD) << LOG2_BYTES_PER_SCANLINE_PAD)`;

@@ -126,8 +126,8 @@ extern void IgnoreClient(ClientPtr);
 
 extern void AttendClient(ClientPtr);
 
-extern void GetTimeInMillis();
-extern void GetTimeInMicros();
+extern uint GetTimeInMillis();
+extern ulong GetTimeInMicros();
 
 extern void AdjustWaitForDelay(void* waitTime, int newdelay);
 
@@ -139,7 +139,7 @@ alias OsTimerCallback = CARD32 function(OsTimerPtr timer, CARD32 time, void* arg
 enum TimerAbsolute = (1<<0);
 enum TimerForceOld = (1<<1);
 
-extern void TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
+extern OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
 
 extern void TimerCancel(OsTimerPtr);
 extern void TimerFree(OsTimerPtr);

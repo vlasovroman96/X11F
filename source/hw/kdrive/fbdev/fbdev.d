@@ -170,7 +170,7 @@ private Pixel fbdevMakeContig(Pixel orig, Pixel others)
 {
     Pixel low = void;
 
-    low = lowbit(orig) >> 1;
+    low = mixin(lowbit!orig) >> 1;
     while (low && (others & low) == 0) {
         orig |= low;
         low >>= 1;

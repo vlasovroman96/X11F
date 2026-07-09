@@ -1857,7 +1857,7 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
         arcs[iphase].caps = 0;
         capSize[iphase] = 0;
 
-        arcs[iphase].narcs = 0;
+        arcs[iphase].narcs = cast(int)0;
         arcs[iphase].arcs = 0;
         arcSize[iphase] = 0;
     }

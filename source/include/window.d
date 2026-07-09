@@ -70,7 +70,7 @@ enum WT_NOMATCH = 3;
 enum NullWindow = cast(WindowPtr) 0;
 
 /* Forward declaration, we can't include input.h here */
-struct _DeviceIntRec;
+// struct _DeviceIntRec;
 struct _Cursor;
 
 struct _BackingStore; 
@@ -114,9 +114,9 @@ enum ChangeWindowAttributes = Darwin_X_ChangeWindowAttributes;
 }
 extern int ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
 
-extern int ChangeWindowDeviceCursor(WindowPtr, _DeviceIntRec*, _Cursor*);
+extern int ChangeWindowDeviceCursor(WindowPtr, DeviceIntRec*, _Cursor*);
 
-extern _Cursor* WindowGetDeviceCursor(WindowPtr, _DeviceIntRec*);
+extern _Cursor* WindowGetDeviceCursor(WindowPtr, DeviceIntRec*);
 
 /* Quartz support on Mac OS X uses the HIToolbox
    framework whose GetWindowAttributes function conflicts here. */

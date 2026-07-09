@@ -433,7 +433,7 @@ int ProcXIChangeHierarchy(ClientPtr client)
         CHANGED,
     }_Changes changes = NO_CHANGE;
 
-    X_REQUEST_HEAD_AT_LEAST(xXIChangeHierarchyReq);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXIChangeHierarchyReq);
 
     if (!stuff.num_changes)
         return rc;

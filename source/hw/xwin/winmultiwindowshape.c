@@ -106,11 +106,11 @@ winReshapeMultiWindow(WindowPtr pWin)
     }
 
     /* Bail if the window has no bounding region defined */
-    if (!wBoundingShape(pWin))
+    if (!mixin(wBoundingShape!("pWin")))
         return;
 
     RegionNull(&rrNewShape);
-    RegionCopy(&rrNewShape, wBoundingShape(pWin));
+    RegionCopy(&rrNewShape, mixin(wBoundingShape!("pWin")));
     RegionTranslate(&rrNewShape, pWin->borderWidth, pWin->borderWidth);
 
     nRects = RegionNumRects(&rrNewShape);

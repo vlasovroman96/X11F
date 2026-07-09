@@ -14,7 +14,7 @@ public import include.resource;
 import dix.resource;
 
 enum string SameClient(string obj,string client) = `
-        (CLIENT_BITS((` ~ obj ~ `).resource) == (` ~ client ~ `).clientAsMask)`;
+        CLIENT_BITS(` ~ obj ~ `.resource) == (` ~ client ~ `).clientAsMask`;
 
 /*
  * Resource IDs having that bit set still belonging to some client,
@@ -26,6 +26,10 @@ enum SERVER_BIT =           cast(Mask)0x40000000;       /* use illegal bit */;
 @property uint RESOURCE_CLIENT_MASK() => ((((1u << ResourceClientBits())) - 1) << CLIENTOFFSET);
 
 @property auto CLIENTOFFSET() => (RESOURCE_AND_CLIENT_COUNT - ResourceClientBits());
+
+@property auto CLIENT_BITS(T)(T id) {
+        return id & RESOURCE_CLIENT_MASK;
+}
 
 @property uint RESOURCE_ID_MASK() => ((1u << CLIENTOFFSET) - 1);
 
@@ -84,7 +88,7 @@ ClientPtr dixClientForOtherClients(OtherClientsPtr pOtherClients);
  * @param XID the ID of the resource whose client is retrieved
  * @return index of the client (within client or resource table)
  */
-pragma(inline, true) private ushort dixClientIdForXID(XID xid) {
+pragma(inline, true) ushort dixClientIdForXID(XID xid) {
     return cast(ushort)((mixin(CLIENT_BITS!(`xid`)) >> CLIENTOFFSET));
 }
 
@@ -97,7 +101,7 @@ pragma(inline, true) private ushort dixClientIdForXID(XID xid) {
  * @param XID the ID of the resource whose client is retrieved
  * @return pointer to ClientRec structure or NULL
  */
-pragma(inline, true) private ClientPtr dixClientForXID(XID xid) {
+pragma(inline, true) ClientPtr dixClientForXID(XID xid) {
     const(int) idx = dixClientIdForXID(xid);
     if (idx < MAXCLIENTS)
         return clients[idx];
@@ -110,7 +114,7 @@ pragma(inline, true) private ClientPtr dixClientForXID(XID xid) {
  * @param XID the ID of the resource to check
  * @return TRUE if resource is server owned
  */
-pragma(inline, true) private Bool dixResouceIsServerOwned(XID xid) {
+pragma(inline, true) Bool dixResouceIsServerOwned(XID xid) {
     return (dixClientForXID(xid) == serverClient);
 }
 

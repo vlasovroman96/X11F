@@ -150,9 +150,9 @@ void DeleteClientFromAnySelections(ClientPtr client)
 int ProcSetSelectionOwner(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSetSelectionOwnerReq);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD32(selection);
-    X_REQUEST_FIELD_CARD32(time);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD32!selection);
+    mixin(X_REQUEST_FIELD_CARD32!time);
 
     WindowPtr pWin = null;
     TimeStamp time = void;
@@ -239,7 +239,7 @@ int ProcSetSelectionOwner(ClientPtr client)
 int ProcGetSelectionOwner(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xResourceReq);
-    X_REQUEST_FIELD_CARD32(id);
+    mixin(X_REQUEST_FIELD_CARD32!id);
 
     Selection* pSel = void;
 

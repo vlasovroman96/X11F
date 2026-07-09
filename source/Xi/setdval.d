@@ -78,7 +78,7 @@ int ProcXSetDeviceValuators(ClientPtr client)
     DeviceIntPtr dev = void;
     int rc = void;
 
-    X_REQUEST_HEAD_AT_LEAST(xSetDeviceValuatorsReq);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSetDeviceValuatorsReq);
 
     xSetDeviceValuatorsReply reply = {
         RepType: X_SetDeviceValuators,

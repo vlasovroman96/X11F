@@ -816,7 +816,7 @@ private int SyncChangeAlarmAttributes(ClientPtr client, SyncAlarm* pAlarm, Mask 
     counter = trigger.pSync ? trigger.pSync.id : None;
 
     while (mask) {
-        int index2 = lowbit(mask);
+        int index2 = mixin(lowbit!mask);
 
         mask &= ~index2;
         switch (index2) {
@@ -1278,7 +1278,7 @@ private int ProcSyncListSystemCounters(ClientPtr client)
         nCounters: nCounters
     };
 
-    X_REPLY_FIELD_CARD32(nCounters);
+    mixin(X_REPLY_FIELD_CARD32!nCounters);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -1290,8 +1290,8 @@ private int ProcSyncListSystemCounters(ClientPtr client)
 private int ProcSyncSetPriority(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncSetPriorityReq);
-    X_REQUEST_FIELD_CARD32(id);
-    X_REQUEST_FIELD_CARD32(priority);
+    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!priority);
 
     ClientPtr priorityclient = void;
 
@@ -1324,7 +1324,7 @@ private int ProcSyncSetPriority(ClientPtr client)
 private int ProcSyncGetPriority(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncGetPriorityReq);
-    X_REQUEST_FIELD_CARD32(id);
+    mixin(X_REQUEST_FIELD_CARD32!id);
 
     ClientPtr priorityclient = void;
 
@@ -1341,7 +1341,7 @@ private int ProcSyncGetPriority(ClientPtr client)
         priority: priorityclient.priority
     };
 
-    X_REPLY_FIELD_CARD32(priority);
+    mixin(X_REPLY_FIELD_CARD32!priority);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1352,9 +1352,9 @@ private int ProcSyncGetPriority(ClientPtr client)
 private int ProcSyncCreateCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncCreateCounterReq);
-    X_REQUEST_FIELD_CARD32(cid);
-    X_REQUEST_FIELD_CARD32(initial_value_lo);
-    X_REQUEST_FIELD_CARD32(initial_value_hi);
+    mixin(X_REQUEST_FIELD_CARD32!cid);
+    mixin(X_REQUEST_FIELD_CARD32!initial_value_lo);
+    mixin(X_REQUEST_FIELD_CARD32!initial_value_hi);
 
     long initial = void;
 
@@ -1374,9 +1374,9 @@ private int ProcSyncCreateCounter(ClientPtr client)
 private int ProcSyncSetCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncSetCounterReq);
-    X_REQUEST_FIELD_CARD32(cid);
-    X_REQUEST_FIELD_CARD32(value_lo);
-    X_REQUEST_FIELD_CARD32(value_hi);
+    mixin(X_REQUEST_FIELD_CARD32!cid);
+    mixin(X_REQUEST_FIELD_CARD32!value_lo);
+    mixin(X_REQUEST_FIELD_CARD32!value_hi);
 
     SyncCounter* pCounter = void;
     long newvalue = void;
@@ -1402,9 +1402,9 @@ private int ProcSyncSetCounter(ClientPtr client)
 private int ProcSyncChangeCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncChangeCounterReq);
-    X_REQUEST_FIELD_CARD32(cid);
-    X_REQUEST_FIELD_CARD32(value_lo);
-    X_REQUEST_FIELD_CARD32(value_hi);
+    mixin(X_REQUEST_FIELD_CARD32!cid);
+    mixin(X_REQUEST_FIELD_CARD32!value_lo);
+    mixin(X_REQUEST_FIELD_CARD32!value_hi);
 
     SyncCounter* pCounter = void;
     long newvalue = void;
@@ -1437,7 +1437,7 @@ private int ProcSyncChangeCounter(ClientPtr client)
 private int ProcSyncDestroyCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyCounterReq);
-    X_REQUEST_FIELD_CARD32(counter);
+    mixin(X_REQUEST_FIELD_CARD32!counter);
 
     SyncCounter* pCounter = void;
 
@@ -1513,8 +1513,8 @@ private void SyncAwaitEpilogue(ClientPtr client, int items, SyncAwaitUnion* pAwa
  */
 private int ProcSyncAwait(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xSyncAwaitReq);
-    X_REQUEST_REST_CARD32();
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSyncAwaitReq);
+    mixin(X_REQUEST_REST_CARD32!());
 
     int len = void, items = void;
     int i = void;
@@ -1593,7 +1593,7 @@ private int ProcSyncAwait(ClientPtr client)
 private int ProcSyncQueryCounter(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryCounterReq);
-    X_REQUEST_FIELD_CARD32(counter);
+    mixin(X_REQUEST_FIELD_CARD32!counter);
 
     SyncCounter* pCounter = void;
 
@@ -1613,8 +1613,8 @@ private int ProcSyncQueryCounter(ClientPtr client)
         value_lo: pCounter.value
     };
 
-    X_REPLY_FIELD_CARD32(value_hi);
-    X_REPLY_FIELD_CARD32(value_lo);
+    mixin(X_REPLY_FIELD_CARD32!value_hi);
+    mixin(X_REPLY_FIELD_CARD32!value_lo);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1624,10 +1624,10 @@ private int ProcSyncQueryCounter(ClientPtr client)
  */
 private int ProcSyncCreateAlarm(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xSyncCreateAlarmReq);
-    X_REQUEST_FIELD_CARD32(id);
-    X_REQUEST_FIELD_CARD32(valueMask);
-    X_REQUEST_REST_CARD32();
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSyncCreateAlarmReq);
+    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!valueMask);
+    mixin(X_REQUEST_REST_CARD32!());
 
     SyncAlarm* pAlarm = void;
     int status = void;
@@ -1708,10 +1708,10 @@ private int ProcSyncCreateAlarm(ClientPtr client)
  */
 private int ProcSyncChangeAlarm(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xSyncChangeAlarmReq);
-    X_REQUEST_FIELD_CARD32(alarm);
-    X_REQUEST_FIELD_CARD32(valueMask);
-    X_REQUEST_REST_CARD32();
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSyncChangeAlarmReq);
+    mixin(X_REQUEST_FIELD_CARD32!alarm);
+    mixin(X_REQUEST_FIELD_CARD32!valueMask);
+    mixin(X_REQUEST_REST_CARD32!());
 
     SyncAlarm* pAlarm = void;
     SyncCounter* pCounter = null;
@@ -1751,7 +1751,7 @@ private int ProcSyncChangeAlarm(ClientPtr client)
 private int ProcSyncQueryAlarm(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryAlarmReq);
-    X_REQUEST_FIELD_CARD32(alarm);
+    mixin(X_REQUEST_FIELD_CARD32!alarm);
 
     SyncAlarm* pAlarm = void;
     SyncTrigger* pTrigger = void;
@@ -1786,13 +1786,13 @@ private int ProcSyncQueryAlarm(ClientPtr client)
         state: pAlarm.state
     };
 
-    X_REPLY_FIELD_CARD32(counter);
-    X_REPLY_FIELD_CARD32(value_type);
-    X_REPLY_FIELD_CARD32(wait_value_hi);
-    X_REPLY_FIELD_CARD32(wait_value_lo);
-    X_REPLY_FIELD_CARD32(test_type);
-    X_REPLY_FIELD_CARD32(delta_hi);
-    X_REPLY_FIELD_CARD32(delta_lo);
+    mixin(X_REPLY_FIELD_CARD32!counter);
+    mixin(X_REPLY_FIELD_CARD32!value_type);
+    mixin(X_REPLY_FIELD_CARD32!wait_value_hi);
+    mixin(X_REPLY_FIELD_CARD32!wait_value_lo);
+    mixin(X_REPLY_FIELD_CARD32!test_type);
+    mixin(X_REPLY_FIELD_CARD32!delta_hi);
+    mixin(X_REPLY_FIELD_CARD32!delta_lo);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1800,7 +1800,7 @@ private int ProcSyncQueryAlarm(ClientPtr client)
 private int ProcSyncDestroyAlarm(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyAlarmReq);
-    X_REQUEST_FIELD_CARD32(alarm);
+    mixin(X_REQUEST_FIELD_CARD32!alarm);
 
     SyncAlarm* pAlarm = void;
 
@@ -1816,8 +1816,8 @@ private int ProcSyncDestroyAlarm(ClientPtr client)
 private int ProcSyncCreateFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncCreateFenceReq);
-    X_REQUEST_FIELD_CARD32(d);
-    X_REQUEST_FIELD_CARD32(fid);
+    mixin(X_REQUEST_FIELD_CARD32!d);
+    mixin(X_REQUEST_FIELD_CARD32!fid);
 
     DrawablePtr pDraw = void;
     SyncFence* pFence = void;
@@ -1859,7 +1859,7 @@ int SyncVerifyFence(SyncFence** ppSyncFence, XID fid, ClientPtr client, Mask mod
 private int ProcSyncTriggerFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncTriggerFenceReq);
-    X_REQUEST_FIELD_CARD32(fid);
+    mixin(X_REQUEST_FIELD_CARD32!fid);
 
     SyncFence* pFence = void;
 
@@ -1876,7 +1876,7 @@ private int ProcSyncTriggerFence(ClientPtr client)
 private int ProcSyncResetFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncResetFenceReq);
-    X_REQUEST_FIELD_CARD32(fid);
+    mixin(X_REQUEST_FIELD_CARD32!fid);
 
     SyncFence* pFence = void;
 
@@ -1896,7 +1896,7 @@ private int ProcSyncResetFence(ClientPtr client)
 private int ProcSyncDestroyFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncDestroyFenceReq);
-    X_REQUEST_FIELD_CARD32(fid);
+    mixin(X_REQUEST_FIELD_CARD32!fid);
 
     SyncFence* pFence = void;
 
@@ -1912,7 +1912,7 @@ private int ProcSyncDestroyFence(ClientPtr client)
 private int ProcSyncQueryFence(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSyncQueryFenceReq);
-    X_REQUEST_FIELD_CARD32(fid);
+    mixin(X_REQUEST_FIELD_CARD32!fid);
 
     SyncFence* pFence = void;
 
@@ -1930,8 +1930,8 @@ private int ProcSyncQueryFence(ClientPtr client)
 
 private int ProcSyncAwaitFence(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xSyncAwaitFenceReq);
-    X_REQUEST_REST_CARD32();
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSyncAwaitFenceReq);
+    mixin(X_REQUEST_REST_CARD32!());
 
     SyncAwaitUnion* pAwaitUnion = void;
     SyncAwait* pAwait = void;
@@ -2107,7 +2107,7 @@ void SyncExtensionInit()
 {
     ExtensionEntry* extEntry = void;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         miSyncSetup(walkScreen);
     });
 

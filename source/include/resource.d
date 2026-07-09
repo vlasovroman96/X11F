@@ -159,7 +159,7 @@ extern void SetResourceTypeSizeFunc(RESTYPE, SizeType);
 
 // extern void SetResourceTypeErrorValue(RESTYPE, int);
 
-extern void CreateNewResourceClass();
+// extern void CreateNewResourceClass();
 
 extern void InitClientResources(ClientPtr);
 
@@ -196,11 +196,11 @@ extern void FreeAllResources();
 
 // extern void LegalNewID(XID, ClientPtr);
 
-extern void* LookupClientResourceComplex(ClientPtr client, RESTYPE type, FindComplexResType func, void* cdata);
+// extern void* LookupClientResourceComplex(ClientPtr client, RESTYPE type, FindComplexResType func, void* cdata);
 
 // extern void dixLookupResourceByType(void** result, XID id, RESTYPE rtype, ClientPtr client, Mask access_mode);
 
-extern void dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr client, Mask access_mode);
+// extern void dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr client, Mask access_mode);
 
 extern RESTYPE lastResourceType;
 extern RESTYPE TypeMask;

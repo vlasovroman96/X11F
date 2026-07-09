@@ -1096,10 +1096,10 @@ void AbortDevices()
      * state the input thread might be in, and that could
      * cause a dead-lock.
      */
-    nt_list_for_each_entry(dev, inputInfo.devices, next); {
+    mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next", q{
         if (!InputDevIsMaster(dev))
             (*dev.deviceProc) (dev, DEVICE_ABORT);
-    }
+    }));
 
     nt_list_for_each_entry(dev, inputInfo.off_devices, next); {
         if (!InputDevIsMaster(dev))
@@ -1887,7 +1887,7 @@ enum DO_ALL =    (-1);
 
     while (vmask) {
         int led = DO_ALL;
-        BITS32 index2 = cast(BITS32) lowbit(vmask);
+        BITS32 index2 = cast(BITS32) mixin(lowbit!vmask);
         vmask &= ~index2;
         switch (index2) {
         case KBKeyClickPercent:
@@ -1947,7 +1947,7 @@ enum DO_ALL =    (-1);
         }
         case KBLed:
         {
-            led = (CARD8) *vlist;
+            led = cast(CARD8) *vlist;
             vlist++;
             if (led < 1 || led > 32) {
                 client.errorValue = led;
@@ -1959,7 +1959,7 @@ enum DO_ALL =    (-1);
         }
         case KBLedMode:
         {
-            int t = (CARD8) *vlist;
+            int t = cast(CARD8) *vlist;
             vlist++;
 
             if (t == LedModeOff) {
@@ -2004,7 +2004,7 @@ enum DO_ALL =    (-1);
         {
             int i = (key >> 3);
             mask = (1 << (key & 7));
-            int t = (CARD8) *vlist;
+            int t = cast(CARD8) *vlist;
             vlist++;
             if (key != DO_ALL)
                 XkbDisableComputedAutoRepeats(keybd, key);
@@ -2110,9 +2110,9 @@ int ProcGetKeyboardControl(ClientPtr client)
     for (int i = 0; i < 32; i++)
         reply.map[i] = ctrl.autoRepeats[i];
 
-    X_REPLY_FIELD_CARD32(ledMask);
-    X_REPLY_FIELD_CARD16(bellPitch);
-    X_REPLY_FIELD_CARD16(bellDuration);
+    mixin(X_REPLY_FIELD_CARD32!ledMask);
+    mixin(X_REPLY_FIELD_CARD16!bellPitch);
+    mixin(X_REPLY_FIELD_CARD16!bellDuration);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -2245,9 +2245,9 @@ int ProcGetPointerControl(ClientPtr client)
         threshold: ctrl.threshold
     };
 
-    X_REPLY_FIELD_CARD16(accelNumerator);
-    X_REPLY_FIELD_CARD16(accelDenominator);
-    X_REPLY_FIELD_CARD16(threshold);
+    mixin(X_REPLY_FIELD_CARD16!accelNumerator);
+    mixin(X_REPLY_FIELD_CARD16!accelDenominator);
+    mixin(X_REPLY_FIELD_CARD16!threshold);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -2303,12 +2303,12 @@ int ProcGetMotionEvents(ClientPtr client)
         int count = GetMotionHistory(mouse, &coords, start.milliseconds,
                                  stop.milliseconds, pWin.drawable.pScreen,
                                  TRUE);
-        int xmin = pWin.drawable.x - wBorderWidth(pWin);
+        int xmin = pWin.drawable.x - mixin(wBorderWidth!("pWin"));
         int xmax = pWin.drawable.x + cast(int) pWin.drawable.width +
-            wBorderWidth(pWin);
-        int ymin = pWin.drawable.y - wBorderWidth(pWin);
+            mixin(wBorderWidth!("pWin"));
+        int ymin = pWin.drawable.y - mixin(wBorderWidth!("pWin"));
         int ymax = pWin.drawable.y + cast(int) pWin.drawable.height +
-            wBorderWidth(pWin);
+            mixin(wBorderWidth!("pWin"));
         for (int i = 0; i < count; i++)
             if ((xmin <= coords[i].x) && (coords[i].x < xmax) &&
                 (ymin <= coords[i].y) && (coords[i].y < ymax)) {
@@ -2327,7 +2327,7 @@ int ProcGetMotionEvents(ClientPtr client)
         nEvents: nEvents,
     };
 
-    X_REPLY_FIELD_CARD32(nEvents);
+    mixin(X_REPLY_FIELD_CARD32!nEvents);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

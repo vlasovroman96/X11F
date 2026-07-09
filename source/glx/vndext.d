@@ -99,7 +99,7 @@ GlxScreenPriv* GlxGetScreen(ScreenPtr pScreen)
 
 private void GlxMappingReset()
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         GlxScreenPriv* priv = xglvGetScreenPrivate(walkScreen);
         if (priv != null) {
             xglvSetScreenPrivate(walkScreen, null);
@@ -110,7 +110,7 @@ private void GlxMappingReset()
 
 private Bool GlxMappingInit()
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (GlxGetScreen(walkScreen) == null) {
             GlxMappingReset();
             return FALSE;
@@ -145,7 +145,7 @@ GlxClientPriv* GlxGetClientData(ClientPtr client)
                 + screenInfo.numScreens * (GlxServerVendor*).sizeof).sizeof);
         if (cl != null) {
             cl.vendors = cast(GlxServerVendor**) (cl + 1);
-            DIX_FOR_EACH_SCREEN({
+            mixin(DIX_FOR_EACH_SCREEN!q{
                 cl.vendors[walkScreenIdx] = GlxGetVendorForScreen(null, walkScreen);
             });
             xglvSetClientPrivate(client, cl);
@@ -238,7 +238,7 @@ void GlxExtensionInit()
     CallCallbacks(&vndInitCallbackListPtr, extEntry);
 
     /* We'd better have found at least one vendor */
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (GlxGetVendorForScreen(serverClient, walkScreen))
             return;
     });

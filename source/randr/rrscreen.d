@@ -85,7 +85,7 @@ void RRSendConfigNotify(ScreenPtr pScreen)
 
     //     u:configureNotify:width: pWin.drawable.width,
     //     u:configureNotify:height: pWin.drawable.height,
-    //     u:configureNotify:borderWidth: wBorderWidth(pWin),
+    //     u:configureNotify:borderWidth: mixin(wBorderWidth!("pWin")),
     //     u:configureNotify:override: pWin.overrideRedirect
     // };
         xEvent event;
@@ -96,7 +96,7 @@ void RRSendConfigNotify(ScreenPtr pScreen)
 
         event.configureNotify.width = pWin.drawable.width,
         event.configureNotify.height = pWin.drawable.height,
-        event.configureNotify.borderWidth = wBorderWidth(pWin),
+        event.configureNotify.borderWidth = mixin(wBorderWidth!("pWin")),
         event.configureNotify.c_override = pWin.overrideRedirect;
     // };
 
@@ -115,7 +115,7 @@ void RRDeliverScreenEvent(ClientPtr client, WindowPtr pWin, ScreenPtr pScreen)
         rotation: cast(CARD8) (crtc ? crtc.rotation : RR_Rotate_0),
         timestamp: pScrPriv.lastSetTime.milliseconds,
         configTimestamp: pScrPriv.lastConfigTime.milliseconds,
-        root: pRoot.drawable.id,
+        root: cast(uint)pRoot.drawable.id,
         window: pWin.drawable.id,
         subpixelOrder: PictureGetSubpixelOrder(pScreen),
 
@@ -762,7 +762,7 @@ int ProcRRGetScreenInfo(ClientPtr client)
     if (!pScrPriv || !output) {
         reply = xRRGetScreenInfoReply (
             setOfRotations: RR_Rotate_0,
-            root: pWin.drawable.pScreen.root.drawable.id,
+            root: cast(uint)pWin.drawable.pScreen.root.drawable.id,
             timestamp: currentTime.milliseconds,
             configTimestamp: currentTime.milliseconds,
             rotation: RR_Rotate_0,
@@ -781,7 +781,7 @@ int ProcRRGetScreenInfo(ClientPtr client)
 
         reply = xRRGetScreenInfoReply (
             setOfRotations: output.crtc.rotations,
-            root: pWin.drawable.pScreen.root.drawable.id,
+            root: cast(uint)pWin.drawable.pScreen.root.drawable.id,
             timestamp: pScrPriv.lastSetTime.milliseconds,
             configTimestamp: pScrPriv.lastConfigTime.milliseconds,
             rotation: output.crtc.rotation,
@@ -1070,7 +1070,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
         status: status,
         newTimestamp: pScrPriv.lastSetTime.milliseconds,
         newConfigTimestamp: pScrPriv.lastConfigTime.milliseconds,
-        root: pDraw.pScreen.root.drawable.id,
+        root: cast(uint)pDraw.pScreen.root.drawable.id,
         /* .subpixelOrder = ?? */
     };
 

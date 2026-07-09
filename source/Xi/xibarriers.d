@@ -404,7 +404,7 @@ void input_constrain_cursor(DeviceIntPtr dev, ScreenPtr pScreen, int current_x, 
         sourceid: dev.id,
         dx: dest_x - current_x,
         dy: dest_y - current_y,
-        root: pScreen.root.drawable.id,
+        root: cast(uint)pScreen.root.drawable.id,
     };
     InternalEvent* barrier_events = events;
     DeviceIntPtr master = void;
@@ -594,7 +594,7 @@ private int CreatePointerBarrierClient(ClientPtr client, xXFixesCreatePointerBar
 
     /* Alloc one per master pointer, they're the ones that can be blocked */
     xorg_list_init(&ret.per_device);
-    nt_list_for_each_entry(dev, inputInfo.devices, next); {
+    mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next", q{
         PointerBarrierDevice* pbd = void;
 
         if (dev.type != MASTER_POINTER)
@@ -610,7 +610,7 @@ private int CreatePointerBarrierClient(ClientPtr client, xXFixesCreatePointerBar
         input_lock();
         xorg_list_add(&pbd.entry, &ret.per_device);
         input_unlock();
-    }
+    }));
 
     ret.id = stuff.barrier;
     ret.barrier.x1 = stuff.x1;
@@ -658,7 +658,7 @@ private int BarrierFreeBarrier(void* data, XID id)
             sourceid: 0,
             barrierid: c.id,
             window: c.window,
-            root: pScreen.root.drawable.id,
+            root: cast(uint)pScreen.root.drawable.id,
             dx: 0,
             dy: 0,
             /* .root_x */
@@ -748,7 +748,7 @@ private void remove_master_func(void* res, XID id, void* devid)
             sourceid: 0,
             dx: 0,
             dy: 0,
-            root: barrier.pScreen.root.drawable.id,
+            root: cast(uint)barrier.pScreen.root.drawable.id,
             window: barrier.window,
             dt: ms - pbd.last_timestamp,
             flags: XIBarrierPointerReleased,
@@ -830,8 +830,8 @@ int XIDestroyPointerBarrier(ClientPtr client, xXFixesDestroyPointerBarrierReq* s
 
 int ProcXIBarrierReleasePointer(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXIBarrierReleasePointerReq);
-    X_REQUEST_FIELD_CARD32(num_barriers);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXIBarrierReleasePointerReq);
+    mixin(X_REQUEST_FIELD_CARD32!num_barriers);
 
     if (stuff.num_barriers > UINT32_MAX / xXIBarrierReleasePointerInfo.sizeof)
         return BadLength;
@@ -898,7 +898,7 @@ Bool XIBarrierInit()
     if (!dixRegisterPrivateKey(&BarrierScreenPrivateKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         BarrierScreenPtr cs = void;
         cs = cast(BarrierScreenPtr) calloc(1, BarrierScreenRec.sizeof);
         if (!cs)
@@ -915,7 +915,7 @@ Bool XIBarrierInit()
 
 void XIBarrierReset()
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         BarrierScreenPtr cs = mixin(GetBarrierScreen!(`walkScreen`));
         free(cs);
         mixin(SetBarrierScreen!(`walkScreen`, `null`));

@@ -138,12 +138,12 @@ version (XINERAMA) {
         if (rc != Success)
             goto no_panoramix;
 
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             WindowPtr pWin = void;
             rc = dixLookupWindow(&pWin, win.info[walkScreenIdx].id, pClient, DixSetPropAccess);
             if (rc == Success)
                 setVRRMode(pWin, mode);
-        });
+        }));
     }
     return;
 no_panoramix:
@@ -176,11 +176,11 @@ private void deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr p
 
 int ProcRotateProperties(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xRotatePropertiesReq);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD16(nAtoms);
-    X_REQUEST_FIELD_CARD16(nPositions);
-    X_REQUEST_REST_CARD32();
+    mixin(X_REQUEST_HEAD_AT_LEAST!xRotatePropertiesReq);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD16!nAtoms);
+    mixin(X_REQUEST_FIELD_CARD16!nPositions);
+    mixin(X_REQUEST_REST_CARD32!());
 
     int delta = void, rc = void;
     PropertyPtr* props = void;         /* array of pointer */

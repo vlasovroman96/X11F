@@ -30,7 +30,7 @@ struct ScreenSaverAccessCallbackParam {
     int status;
 }
 
-pragma(inline, true) private int dixCallScreensaverAccessCallback(ClientPtr client, ScreenPtr screen, Mask access_mode)
+pragma(inline, true) int dixCallScreensaverAccessCallback(ClientPtr client, ScreenPtr screen, Mask access_mode)
 {
     ScreenSaverAccessCallbackParam rec = { client, screen, access_mode, Success };
     CallCallbacks(&ScreenSaverAccessCallback, &rec);

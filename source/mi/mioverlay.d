@@ -909,7 +909,7 @@ private void miOverlayMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pNextSi
 
     if (((pParent = pWin.parent) == 0))
         return;
-    bw = wBorderWidth(pWin);
+    bw = mixin(wBorderWidth!("pWin"));
 
     oldpt.x = pWin.drawable.x;
     oldpt.y = pWin.drawable.y;
@@ -1054,7 +1054,7 @@ private void miOverlayResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h,
     ushort height = pWin.drawable.height;
     short oldx = pWin.drawable.x;
     short oldy = pWin.drawable.y;
-    int bw = wBorderWidth(pWin);
+    int bw = mixin(wBorderWidth!("pWin"));
     short dw = void, dh = void;
     xPoint oldpt = void;
     RegionPtr oldRegion = null, oldRegion2 = null;
@@ -1466,7 +1466,7 @@ private void miOverlayChangeBorderWidth(WindowPtr pWin, uint width)
     Bool WasViewable = cast(Bool) (pWin.viewable);
     Bool HadBorder = void;
 
-    oldwidth = wBorderWidth(pWin);
+    oldwidth = mixin(wBorderWidth!("pWin"));
     if (oldwidth == width)
         return;
     HadBorder = HasBorder(pWin);

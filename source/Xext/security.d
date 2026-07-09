@@ -57,6 +57,11 @@ import Xext.xacestr;
 import Xext.securitysrv;
 import include.protocol_versions;
 import externs.X11.extensions.securproto;
+import externs.X11.extensions.secur;
+import os.log;
+import dix.dixutils;
+import dix.extension;
+enum XSecurityAllEventMasks = 1<<0;
 
 Bool noSecurityExtension = FALSE;
 
@@ -149,7 +154,7 @@ private void SecurityLabelInitial()
     SecurityStateRec* state = void;
 
     /* Do the serverClient */
-    state = dixLookupPrivate(&serverClient.devPrivates, stateKey);
+    state = cast(SecurityStateRec*)dixLookupPrivate(&serverClient.devPrivates, stateKey);
     state.trustLevel = XSecurityClientTrusted;
     state.haveState = TRUE;
     state.live = FALSE;
@@ -200,11 +205,11 @@ private int SecurityDeleteAuthorization(void* value, XID id)
 
     /* send revoke events */
 
-    while ((pEventClient = pAuth.eventClients)) {
+    while ((pEventClient = pAuth.eventClients) !is null) {
         /* send revocation event event */
         xSecurityAuthorizationRevokedEvent are = {
-            type: SecurityEventBase + XSecurityAuthorizationRevoked,
-            authId: pAuth.id
+            type: cast(ubyte)(SecurityEventBase + XSecurityAuthorizationRevoked),
+            authId: cast(uint)pAuth.id
         };
         WriteEventsToClient(dixClientForOtherClients(pEventClient), 1, cast(xEvent*) &are);
         FreeResource(pEventClient.resource, X11_RESTYPE_NONE);
@@ -216,7 +221,7 @@ private int SecurityDeleteAuthorization(void* value, XID id)
         if (clients[i]) {
             SecurityStateRec* state = void;
 
-            state = dixLookupPrivate(&clients[i].devPrivates, stateKey);
+            state = cast(SecurityStateRec*)dixLookupPrivate(&clients[i].devPrivates, stateKey);
             if (state.haveState && state.authId == pAuth.id)
                 CloseDownClient(clients[i]);
         }
@@ -342,16 +347,16 @@ private void SecurityStartAuthorizationTimer(SecurityAuthorizationPtr pAuth)
 private int ProcSecurityQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSecurityQueryVersionReq);
-    X_REQUEST_FIELD_CARD16(majorVersion);
-    X_REQUEST_FIELD_CARD16(minorVersion);
+    mixin(X_REQUEST_FIELD_CARD16!"majorVersion");
+    mixin(X_REQUEST_FIELD_CARD16!"minorVersion");
 
     xSecurityQueryVersionReply reply = {
         majorVersion: SERVER_SECURITY_MAJOR_VERSION,
         minorVersion: SERVER_SECURITY_MINOR_VERSION
     };
 
-    X_REPLY_FIELD_CARD16(majorVersion);
-    X_REPLY_FIELD_CARD16(minorVersion);
+    mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }                               /* ProcSecurityQueryVersion */
@@ -362,7 +367,7 @@ private int SecurityEventSelectForAuthorization(SecurityAuthorizationPtr pAuth, 
 
     for (pEventClient = pAuth.eventClients;
          pEventClient; pEventClient = pEventClient.next) {
-        if (SameClient(pEventClient, client)) {
+        if (mixin(SameClient!("pEventClient", "client"))) {
             if (mask == 0)
                 FreeResource(pEventClient.resource, X11_RESTYPE_NONE);
             else
@@ -388,10 +393,10 @@ private int SecurityEventSelectForAuthorization(SecurityAuthorizationPtr pAuth, 
 
 private int ProcSecurityGenerateAuthorization(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xSecurityGenerateAuthorizationReq);
-    X_REQUEST_FIELD_CARD16(nbytesAuthProto);
-    X_REQUEST_FIELD_CARD16(nbytesAuthData);
-    X_REQUEST_FIELD_CARD32(valueMask);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSecurityGenerateAuthorizationReq);
+    mixin(X_REQUEST_FIELD_CARD16!"nbytesAuthProto");
+    mixin(X_REQUEST_FIELD_CARD16!"nbytesAuthData");
+    mixin(X_REQUEST_FIELD_CARD32!"valueMask");
 
     int len = void;                    /* request length in CARD32s */
     Bool removeAuth = FALSE;    /* if bailout, call RemoveAuthorization? */
@@ -409,7 +414,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
     /* check request length */
 
-    len = bytes_to_int32(SIZEOF(xSecurityGenerateAuthorizationReq));
+    len = bytes_to_int32(xSecurityGenerateAuthorizationReq.sizeof);
     len += bytes_to_int32(stuff.nbytesAuthProto);
     len += bytes_to_int32(stuff.nbytesAuthData);
     values = (cast(CARD32*) stuff) + len;
@@ -469,7 +474,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
     eventMask = 0;
     if (stuff.valueMask & XSecurityEventMask) {
         eventMask = *values++;
-        if (eventMask & ~XSecurityAllEventMasks) {
+        if (eventMask & ~(XSecurityAllEventMasks)) {
             client.errorValue = eventMask;
             return BadValue;
         }
@@ -494,7 +499,12 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
     /* associate additional information with this auth ID */
 
-    SecurityAuthorizationPtr pAuth = calloc(1, SecurityAuthorizationRec.sizeof);
+    SecurityAuthorizationPtr pAuth = cast(SecurityAuthorizationPtr)calloc(1, SecurityAuthorizationRec.sizeof);
+    x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
+    xSecurityGenerateAuthorizationReply reply = {
+        authId: cast(uint)authId,
+        dataLength: cast(ushort)authdata_len
+    };
     if (!pAuth) {
         err = BadAlloc;
         goto bailout;
@@ -530,21 +540,16 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
     /* tell client the auth id and data */
 
-    x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_binary_pad(&rpcbuf, pAuthdata, authdata_len);
 
-    xSecurityGenerateAuthorizationReply reply = {
-        authId: authId,
-        dataLength: authdata_len
-    };
 
     SecurityAudit
         ("client %d generated authorization %lu trust %d timeout %lu group %lu events %lu\n",
          client.index, cast(c_ulong)pAuth.id, pAuth.trustLevel, cast(c_ulong)pAuth.timeout,
          cast(c_ulong)pAuth.group, cast(c_ulong)eventMask);
 
-    X_REPLY_FIELD_CARD32(authId);
-    X_REPLY_FIELD_CARD16(dataLength);
+    mixin(X_REPLY_FIELD_CARD32!"authId");
+    mixin(X_REPLY_FIELD_CARD16!"dataLength");
 
     /* the request succeeded; don't call RemoveAuthorization or free pAuth */
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -552,7 +557,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
  bailout:
     if (removeAuth)
         RemoveAuthorization(stuff.nbytesAuthProto, protoname,
-                            authdata_len, pAuthdata);
+                            cast(ushort)authdata_len, pAuthdata);
     free(pAuth);
     return err;
 
@@ -561,7 +566,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 private int ProcSecurityRevokeAuthorization(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSecurityRevokeAuthorizationReq);
-    X_REQUEST_FIELD_CARD32(authId);
+    mixin(X_REQUEST_FIELD_CARD32!"authId");
 
     SecurityAuthorizationPtr pAuth = void;
 
@@ -617,13 +622,13 @@ private void SwapSecurityAuthorizationRevokedEvent(xSecurityAuthorizationRevoked
 
 private void SecurityDevice(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    DeviceAccessCallbackParam* rec = calldata;
+    DeviceAccessCallbackParam* rec = cast(DeviceAccessCallbackParam*)calldata;
     SecurityStateRec* subj = void, obj = void;
     Mask requested = rec.access_mode;
     Mask allowed = SecurityDeviceMask;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
-    obj = dixLookupPrivate(&serverClient.devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    obj = cast(SecurityStateRec*)dixLookupPrivate(&serverClient.devPrivates, stateKey);
 
     if (rec.dev != inputInfo.keyboard)
         /* this extension only supports the core keyboard */
@@ -660,12 +665,12 @@ private void SecurityDevice(CallbackListPtr* pcbl, void* unused, void* calldata)
 
 private void SecurityResource(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    XaceResourceAccessRec* rec = calldata;
+    XaceResourceAccessRec* rec = cast(XaceResourceAccessRec*)calldata;
     SecurityStateRec* subj = void, obj = void;
     Mask requested = rec.access_mode;
     Mask allowed = SecurityResourceMask;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
 
     /* disable background None for untrusted windows */
     if ((requested & DixCreateAccess) && (rec.rtype == X11_RESTYPE_WINDOW))
@@ -695,7 +700,7 @@ private void SecurityResource(CallbackListPtr* pcbl, void* unused, void* calldat
             allowed |= DixReadAccess;
     }
 
-    obj = dixLookupPrivate(&owner.devPrivates, stateKey);
+    obj = cast(SecurityStateRec* )dixLookupPrivate(&owner.devPrivates, stateKey);
     if (SecurityDoCheck(subj, obj, requested, allowed) == Success)
         return;
 
@@ -710,11 +715,11 @@ denied:
 
 private void SecurityExtension(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    ExtensionAccessCallbackParam* rec = calldata;
+    ExtensionAccessCallbackParam* rec = cast(ExtensionAccessCallbackParam*)calldata;
     SecurityStateRec* subj = void;
     int i = 0;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
 
     if (subj.haveState && subj.trustLevel == XSecurityClientTrusted)
         return;
@@ -732,13 +737,13 @@ private void SecurityExtension(CallbackListPtr* pcbl, void* unused, void* callda
 
 private void SecurityServer(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    ServerAccessCallbackParam* rec = calldata;
+    ServerAccessCallbackParam* rec = cast(ServerAccessCallbackParam*)calldata;
     SecurityStateRec* subj = void, obj = void;
     Mask requested = rec.access_mode;
     Mask allowed = SecurityServerMask;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
-    obj = dixLookupPrivate(&serverClient.devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    obj = cast(SecurityStateRec*)dixLookupPrivate(&serverClient.devPrivates, stateKey);
 
     if (SecurityDoCheck(subj, obj, requested, allowed) != Success) {
         SecurityAudit("Security: denied client %d access to server "
@@ -750,13 +755,13 @@ private void SecurityServer(CallbackListPtr* pcbl, void* unused, void* calldata)
 
 private void SecurityClient(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    ClientAccessCallbackParam* rec = calldata;
+    ClientAccessCallbackParam* rec = cast(ClientAccessCallbackParam*)calldata;
     SecurityStateRec* subj = void, obj = void;
     Mask requested = rec.access_mode;
     Mask allowed = SecurityClientMask;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
-    obj = dixLookupPrivate(&rec.target.devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    obj = cast(SecurityStateRec*)dixLookupPrivate(&rec.target.devPrivates, stateKey);
 
     if (SecurityDoCheck(subj, obj, requested, allowed) != Success) {
         SecurityAudit("Security: denied client %d access to client %d on "
@@ -768,14 +773,14 @@ private void SecurityClient(CallbackListPtr* pcbl, void* unused, void* calldata)
 
 private void SecurityProperty(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    XacePropertyAccessRec* rec = calldata;
+    XacePropertyAccessRec* rec = cast(XacePropertyAccessRec*)calldata;
     SecurityStateRec* subj = void, obj = void;
     ATOM name = (*rec.ppProp).propertyName;
     Mask requested = rec.access_mode;
     Mask allowed = SecurityResourceMask | DixReadAccess;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
-    obj = dixLookupPrivate(&dixClientForWindow(rec.pWin).devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    obj = cast(SecurityStateRec*)dixLookupPrivate(&dixClientForWindow(rec.pWin).devPrivates, stateKey);
 
     if (SecurityDoCheck(subj, obj, requested, allowed) != Success) {
         SecurityAudit("Security: denied client %d access to property %s "
@@ -789,14 +794,14 @@ private void SecurityProperty(CallbackListPtr* pcbl, void* unused, void* calldat
 
 private void SecuritySend(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    XaceSendAccessRec* rec = calldata;
+    XaceSendAccessRec* rec = cast(XaceSendAccessRec*)calldata;
     SecurityStateRec* subj = void, obj = void;
 
     if (rec.client) {
         int i = void;
 
-        subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
-        obj = dixLookupPrivate(&dixClientForWindow(rec.pWin).devPrivates, stateKey);
+        subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
+        obj = cast(SecurityStateRec*)dixLookupPrivate(&dixClientForWindow(rec.pWin).devPrivates, stateKey);
 
         if (SecurityDoCheck(subj, obj, DixSendAccess, 0) == Success)
             return;
@@ -820,11 +825,11 @@ private void SecuritySend(CallbackListPtr* pcbl, void* unused, void* calldata)
 
 private void SecurityReceive(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    XaceReceiveAccessRec* rec = calldata;
+    XaceReceiveAccessRec* rec = cast(XaceReceiveAccessRec*)calldata;
     SecurityStateRec* subj = void, obj = void;
 
-    subj = dixLookupPrivate(&rec.client.devPrivates, stateKey);
-    obj = dixLookupPrivate(&dixClientForWindow(rec.pWin).devPrivates, stateKey);
+    subj = cast(SecurityStateRec*)dixLookupPrivate(&rec.client.devPrivates, stateKey);
+    obj = cast(SecurityStateRec*)dixLookupPrivate(&dixClientForWindow(rec.pWin).devPrivates, stateKey);
 
     if (SecurityDoCheck(subj, obj, DixReceiveAccess, 0) == Success)
         return;
@@ -860,11 +865,11 @@ private void SecurityReceive(CallbackListPtr* pcbl, void* unused, void* calldata
 
 private void SecurityClientState(CallbackListPtr* pcbl, void* unused, void* calldata)
 {
-    NewClientInfoRec* pci = calldata;
+    NewClientInfoRec* pci = cast(NewClientInfoRec*)calldata;
     SecurityStateRec* state = void;
     SecurityAuthorizationPtr pAuth = void;
 
-    state = dixLookupPrivate(&pci.client.devPrivates, stateKey);
+    state = cast(SecurityStateRec*)dixLookupPrivate(&pci.client.devPrivates, stateKey);
 
     switch (pci.client.clientState) {
     case ClientStateInitial:
@@ -991,13 +996,13 @@ void SecurityExtensionInit()
     extEntry = AddExtension(SECURITY_EXTENSION_NAME,
                             XSecurityNumberEvents, XSecurityNumberErrors,
                             &ProcSecurityDispatch, &ProcSecurityDispatch,
-                            &SecurityResetProc, StandardMinorOpcode);
+                            &SecurityResetProc, &StandardMinorOpcode);
 
     SecurityErrorBase = extEntry.errorBase;
     SecurityEventBase = extEntry.eventBase;
 
     EventSwapVector[SecurityEventBase + XSecurityAuthorizationRevoked] =
-        cast(EventSwapPtr) SwapSecurityAuthorizationRevokedEvent;
+        cast(EventSwapPtr) &SwapSecurityAuthorizationRevokedEvent;
 
     SetResourceTypeErrorValue(SecurityAuthorizationResType,
                               SecurityErrorBase + XSecurityBadAuthorization);

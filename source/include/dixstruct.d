@@ -125,9 +125,9 @@ extern TimeStamp ClientTimeToServerTime(CARD32);
 
 /* proc vectors */
 
-extern  int*[256] ProcVector;
+extern  int function(ClientPtr)[256] ProcVector;
 
-extern  int*[256] SwappedProcVector;
+extern  int function(ClientPtr)[256] SwappedProcVector;
 
 /* fixme: still needed by (public) dix.h */
 extern ReplySwapPtr[256] ReplySwapVector;

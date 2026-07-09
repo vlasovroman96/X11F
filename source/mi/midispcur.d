@@ -426,7 +426,7 @@ bool miDCDeviceInitialize(DeviceIntPtr pDev, ScreenPtr pScreen)
     if (!DevHasCursor(pDev))
         return TRUE;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         pBuffer = calloc(1, miDCBufferRec.sizeof);
         if (!pBuffer)
             goto failure;
@@ -471,7 +471,7 @@ void miDCDeviceCleanup(DeviceIntPtr pDev, ScreenPtr pScreen)
     if (!DevHasCursor(pDev))
         return;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         miDCBufferPtr pBuffer = mixin(miGetDCDevice!(`pDev`, `walkScreen`));
         if (!pBuffer)
             continue;

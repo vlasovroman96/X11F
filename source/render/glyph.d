@@ -227,7 +227,7 @@ void CheckDuplicates(GlyphHashPtr hash, char* where)
 
 private void FreeGlyphPicture(GlyphPtr glyph)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (GetGlyphPicture(glyph, walkScreen))
             FreePicture(cast(void*) GetGlyphPicture(glyph, walkScreen), 0);
 
@@ -343,7 +343,7 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
     dixInitPrivates(glyph, cast(char*) glyph + head_size, PRIVATE_GLYPH);
 
     uint i = 0;
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         SetGlyphPicture(glyph, walkScreen, NULL);
         PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
         if (ps) {

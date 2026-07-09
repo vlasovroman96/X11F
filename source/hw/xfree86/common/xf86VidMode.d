@@ -427,7 +427,7 @@ void XFree86VidModeExtensionInit()
     if (!xf86Info.vidModeEnabled)
         return;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (xf86VidModeInit(walkScreen))
             enabled = TRUE;
     });

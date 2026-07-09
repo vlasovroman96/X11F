@@ -103,8 +103,8 @@ int ProcXGetDeviceFocus(ClientPtr client)
     else
         reply.focus = focus.win.drawable.id;
 
-    X_REPLY_FIELD_CARD32(focus);
-    X_REPLY_FIELD_CARD32(time);
+    mixin(X_REPLY_FIELD_CARD32!focus);
+    mixin(X_REPLY_FIELD_CARD32!time);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

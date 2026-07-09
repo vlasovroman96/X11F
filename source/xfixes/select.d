@@ -138,9 +138,9 @@ enum SelectionAllEvents = (XFixesSetSelectionOwnerNotifyMask |
 int ProcXFixesSelectSelectionInput(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesSelectSelectionInputReq);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD32(selection);
-    X_REQUEST_FIELD_CARD32(eventMask);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD32!selection);
+    mixin(X_REQUEST_FIELD_CARD32!eventMask);
 
     /* allow extensions to intercept */
     SelectionFilterParamRec param = {

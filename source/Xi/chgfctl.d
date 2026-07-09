@@ -394,8 +394,8 @@ private int ChangeLedFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
 
 int ProcXChangeFeedbackControl(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xChangeFeedbackControlReq);
-    X_REQUEST_FIELD_CARD32(mask);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xChangeFeedbackControlReq);
+    mixin(X_REQUEST_FIELD_CARD32!mask);
 
     uint len = void;
     DeviceIntPtr dev = void;

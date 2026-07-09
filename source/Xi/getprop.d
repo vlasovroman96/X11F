@@ -81,7 +81,7 @@ extern int ExtEventIndex;
 int ProcXGetDeviceDontPropagateList(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xGetDeviceDontPropagateListReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
     CARD16 count = 0;
     int i = void, rc = void;
@@ -118,7 +118,7 @@ int ProcXGetDeviceDontPropagateList(ClientPtr client)
         }
     }
 
-    X_REPLY_FIELD_CARD16(count);
+    mixin(X_REPLY_FIELD_CARD16!count);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

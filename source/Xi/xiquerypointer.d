@@ -68,8 +68,8 @@ import include.xkbsrv;
 int ProcXIQueryPointer(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIQueryPointerReq);
-    X_REQUEST_FIELD_CARD16(deviceid);
-    X_REQUEST_FIELD_CARD32(win);
+    mixin(X_REQUEST_FIELD_CARD16!deviceid);
+    mixin(X_REQUEST_FIELD_CARD32!win);
 
     int rc = void;
     DeviceIntPtr pDev = void, kbd = void;
@@ -118,7 +118,7 @@ int ProcXIQueryPointer(ClientPtr client)
 
     xXIQueryPointerReply reply = {
         RepType: X_XIQueryPointer,
-        root: (InputDevCurrentRootWindow(pDev)).drawable.id,
+        root: cast(uint)(InputDevCurrentRootWindow(pDev)).drawable.id,
         root_x: double_to_fp1616(pSprite.hot.x),
         root_y: double_to_fp1616(pSprite.hot.y),
     };
@@ -176,13 +176,13 @@ version (XINERAMA) {
     }
 } /* XINERAMA */
 
-    X_REPLY_FIELD_CARD32(root);
-    X_REPLY_FIELD_CARD32(child);
-    X_REPLY_FIELD_CARD32(root_x);
-    X_REPLY_FIELD_CARD32(root_y);
-    X_REPLY_FIELD_CARD32(win_x);
-    X_REPLY_FIELD_CARD32(win_y);
-    X_REPLY_FIELD_CARD16(buttons_len);
+    mixin(X_REPLY_FIELD_CARD32!root);
+    mixin(X_REPLY_FIELD_CARD32!child);
+    mixin(X_REPLY_FIELD_CARD32!root_x);
+    mixin(X_REPLY_FIELD_CARD32!root_y);
+    mixin(X_REPLY_FIELD_CARD32!win_x);
+    mixin(X_REPLY_FIELD_CARD32!win_y);
+    mixin(X_REPLY_FIELD_CARD16!buttons_len);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

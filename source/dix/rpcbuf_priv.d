@@ -385,7 +385,7 @@ pragma(inline, true) private void x_rpcbuf_write_rpcbuf_pad(x_rpcbuf_t* rpcbuf, 
  * @param width     WIDTH value of the rectangle
  * @param height    HEIGHT value of the rectangle
  */
-pragma(inline, true) private void x_rpcbuf_write_rect(x_rpcbuf_t* rpcbuf, INT16 x, INT16 y, CARD16 width, CARD16 height)
+pragma(inline, true) void x_rpcbuf_write_rect(x_rpcbuf_t* rpcbuf, INT16 x, INT16 y, CARD16 width, CARD16 height)
 {
     x_rpcbuf_write_INT16(rpcbuf, x);
     x_rpcbuf_write_INT16(rpcbuf, y);

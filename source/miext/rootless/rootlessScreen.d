@@ -812,9 +812,9 @@ Bool RootlessInit(ScreenPtr pScreen, RootlessFrameProcsPtr procs)
 void RootlessUpdateRooted(Bool state)
 {
     if (!state) {
-        DIX_FOR_EACH_SCREEN({ RootlessDisableRoot(walkScreen); });{}
+        mixin(DIX_FOR_EACH_SCREEN!q{ RootlessDisableRoot(walkScreen); });{}
     }
     else {
-        DIX_FOR_EACH_SCREEN({ RootlessEnableRoot(walkScreen); });{}
+        mixin(DIX_FOR_EACH_SCREEN!q{ RootlessEnableRoot(walkScreen); });{}
     }
 }

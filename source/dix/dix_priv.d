@@ -111,8 +111,7 @@ Bool dixLookupBuiltinColor(char* name, uint len, ushort* pred, ushort* pgreen, u
 
 void DeleteWindowFromAnySaveSet(WindowPtr pWin);
 
-enum string VALIDATE_DRAWABLE_AND_GC(string drawID, string pDraw, string mode) = `
-    do {                                                                
+enum string VALIDATE_DRAWABLE_AND_GC(string drawID, string pDraw, string mode) = `                                                           
         int tmprc = dixLookupDrawable(&(` ~ pDraw ~ `), ` ~ drawID ~ `, client, M_ANY, ` ~ mode ~ `); 
         if (tmprc != Success)                                           
             return tmprc;                                               
@@ -122,8 +121,8 @@ enum string VALIDATE_DRAWABLE_AND_GC(string drawID, string pDraw, string mode) =
         if ((pGC.depth != ` ~ pDraw ~ `.depth) || (pGC.pScreen != ` ~ pDraw ~ `.pScreen)) 
             return BadMatch;                                            
         if (pGC.serialNumber != ` ~ pDraw ~ `.serialNumber)                   
-            ValidateGC(` ~ pDraw ~ `, pGC);                                     
-    } while (0)`;
+            ValidateGC(` ~ pDraw ~ `, pGC);`
+        ;
 
 int dixLookupGC(GCPtr* result, XID id, ClientPtr client, Mask access_mode);
 
@@ -682,7 +681,7 @@ int dixAllocColor(ClientPtr client, Colormap cmap, CARD16* red, CARD16* green, C
  * @param list    pointer to list of clients
  * @param count   amount of CARD32s to swap
  */
-pragma(inline, true) private void SwapLongs(CARD32* list, c_ulong count) {
+pragma(inline, true) void SwapLongs(CARD32* list, c_ulong count) {
     while (count >= 8) {
         swapl(list + 0);
         swapl(list + 1);
@@ -704,6 +703,16 @@ pragma(inline, true) private void SwapLongs(CARD32* list, c_ulong count) {
 }
 
 enum string SwapRestL(string stuff) = `
-    SwapLongs(cast(CARD32*)(` ~ stuff ~ ` + 1), (client.req_len - (((*` ~ stuff ~ `) >> 2).sizeof)))`;
+    SwapLongs(
+        cast(CARD32*)(` ~ stuff ~ ` + 1),
+        (
+            client.req_len - 
+                (
+                    (
+                        (*` ~ stuff ~ `).sizeof >> 2
+                    )
+                )
+        )
+    );`;
 
  /* _XSERVER_DIX_PRIV_H */

@@ -66,11 +66,11 @@ int ProcXIAllowEvents(ClientPtr client)
     if (version_compare(xi_client.major_version,
                         xi_client.minor_version, 2, 2) >= 0) {
         // Xi >= v2.2 request
-        X_REQUEST_HEAD_AT_LEAST(xXI2_2AllowEventsReq);
-        X_REQUEST_FIELD_CARD16(deviceid);
-        X_REQUEST_FIELD_CARD32(time);
-        X_REQUEST_FIELD_CARD32(touchid);
-        X_REQUEST_FIELD_CARD32(grab_window);
+        mixin(X_REQUEST_HEAD_AT_LEAST!xXI2_2AllowEventsReq);
+        mixin(X_REQUEST_FIELD_CARD16!deviceid);
+        mixin(X_REQUEST_FIELD_CARD32!time);
+        mixin(X_REQUEST_FIELD_CARD32!touchid);
+        mixin(X_REQUEST_FIELD_CARD32!grab_window);
 
         have_xi22 = TRUE;
         clientTime = stuff.time;
@@ -81,9 +81,9 @@ int ProcXIAllowEvents(ClientPtr client)
     }
     else {
         // Xi < v2.2 request
-        X_REQUEST_HEAD_AT_LEAST(xXIAllowEventsReq);
-        X_REQUEST_FIELD_CARD16(deviceid);
-        X_REQUEST_FIELD_CARD32(time);
+        mixin(X_REQUEST_HEAD_AT_LEAST!xXIAllowEventsReq);
+        mixin(X_REQUEST_FIELD_CARD16!deviceid);
+        mixin(X_REQUEST_FIELD_CARD32!time);
 
         clientTime = stuff.time;
         deviceId = stuff.deviceid;

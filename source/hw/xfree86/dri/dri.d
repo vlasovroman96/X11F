@@ -1646,7 +1646,7 @@ void DRIDestroyInfoRec(DRIInfoPtr DRIInfo)
 
 void DRIWakeupHandler(void* wakeupData, int result)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         DRIScreenPrivPtr pDRIPriv = DRI_SCREEN_PRIV(walkScreen);
         if (pDRIPriv && pDRIPriv.pDriverInfo.wrap.WakeupHandler)
             (*pDRIPriv.pDriverInfo.wrap.WakeupHandler) (walkScreen, result);
@@ -1655,7 +1655,7 @@ void DRIWakeupHandler(void* wakeupData, int result)
 
 void DRIBlockHandler(void* blockData, void* pTimeout)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         DRIScreenPrivPtr pDRIPriv = DRI_SCREEN_PRIV(walkScreen);
         if (pDRIPriv && pDRIPriv.pDriverInfo.wrap.BlockHandler)
             (*pDRIPriv.pDriverInfo.wrap.BlockHandler) (walkScreen, pTimeout);

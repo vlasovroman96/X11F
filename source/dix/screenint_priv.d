@@ -30,7 +30,7 @@ void DetachOffloadGPU(ScreenPtr slave);
 
 void InitOutput(int argc, char** argv);
 
-pragma(inline, true) private ScreenPtr dixGetMasterScreen() {
+pragma(inline, true) ScreenPtr dixGetMasterScreen() {
     return screenInfo.screens[0];
 }
 
@@ -41,7 +41,7 @@ pragma(inline, true) private ScreenPtr dixGetMasterScreen() {
  * @param idx screen index
  * @return pointer to idx'th screen or NULL
  */
-pragma(inline, true) private ScreenPtr dixGetScreenPtr(uint idx) {
+pragma(inline, true) ScreenPtr dixGetScreenPtr(uint idx) {
     if (idx < screenInfo.numScreens)
         return screenInfo.screens[idx];
     return null;

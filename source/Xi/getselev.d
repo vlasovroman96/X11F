@@ -80,7 +80,7 @@ import getprop;
 int ProcXGetSelectedExtensionEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xGetSelectedExtensionEventsReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
     int i = void, rc = 0;
     WindowPtr pWin = void;
@@ -136,8 +136,8 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
         free(buf);
     }
 
-    X_REPLY_FIELD_CARD16(this_client_count);
-    X_REPLY_FIELD_CARD16(all_clients_count);
+    mixin(X_REPLY_FIELD_CARD16!this_client_count);
+    mixin(X_REPLY_FIELD_CARD16!all_clients_count);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

@@ -848,8 +848,8 @@ winAdjustXWindow(WindowPtr pWin, HWND hwnd)
      * ([2] and [3]) but currently we set all the parameters and leave
      * the decision to ConfigureWindow.  The reason is code simplicity.
      */
-    vlist[0] = pDraw->x + dX - wBorderWidth(pWin);
-    vlist[1] = pDraw->y + dY - wBorderWidth(pWin);
+    vlist[0] = pDraw->x + dX - mixin(wBorderWidth!("pWin"));
+    vlist[1] = pDraw->y + dY - mixin(wBorderWidth!("pWin"));
     vlist[2] = pDraw->width + dW;
     vlist[3] = pDraw->height + dH;
 #if ENABLE_DEBUG

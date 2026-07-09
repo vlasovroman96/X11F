@@ -87,9 +87,9 @@ private int ProcXF86DRIQueryVersion(ClientPtr client)
         patchVersion: SERVER_XF86DRI_PATCH_VERSION
     };
 
-    X_REPLY_FIELD_CARD16(majorVersion);
-    X_REPLY_FIELD_CARD16(minorVersion);
-    X_REPLY_FIELD_CARD32(patchVersion);
+    mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
+    mixin(X_REPLY_FIELD_CARD32!patchVersion);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -97,7 +97,7 @@ private int ProcXF86DRIQueryVersion(ClientPtr client)
 private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIQueryDirectRenderingCapableReq);
-    X_REQUEST_FIELD_CARD32(screen);
+    mixin(X_REQUEST_FIELD_CARD32!"screen");
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
 

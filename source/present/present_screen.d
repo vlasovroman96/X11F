@@ -249,7 +249,7 @@ version (XINERAMA) {
     if (!present_event_init())
         goto bail;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (!present_screen_init(walkScreen, null))
             goto bail;
     });

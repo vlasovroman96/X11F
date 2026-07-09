@@ -72,7 +72,7 @@ public import core.stdc.stddef;
  * If you care about the extra instruction on 2's complement
  * machines, change to ((x) & (-(x)))
  */
-enum string lowbit(string x) = `((` ~ x ~ `) & (~(` ~ x ~ `) + 1))`;
+enum string lowbit(alias x) = `((` ~ x.stringof ~ `) & (~(` ~ x.stringof ~ `) + 1))`;
 
 version (__has_builtin) {} else {
 enum string __has_builtin(string x) = `0     /* Compatibility with older compilers */`;
@@ -182,7 +182,7 @@ void* XNFreallocarray(void* ptr, size_t nmemb, size_t size);
  * Algorithm from MIT AI Lab Memo 239: "HAKMEM", ITEM 169.
  * https://dspace.mit.edu/handle/1721.1/6086
  */
-pragma(inline, true) private int Ones(c_ulong mask)
+pragma(inline, true) int Ones(c_ulong mask)
 {
     c_ulong y = void;
 

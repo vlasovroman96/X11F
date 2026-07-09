@@ -106,8 +106,8 @@ private int FreeCompositeClientOverlay(void* value, XID ccwid)
 private int ProcCompositeQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeQueryVersionReq);
-    X_REQUEST_FIELD_CARD32(majorVersion);
-    X_REQUEST_FIELD_CARD32(minorVersion);
+    mixin(X_REQUEST_FIELD_CARD32!majorVersion);
+    mixin(X_REQUEST_FIELD_CARD32!minorVersion);
 
     CompositeClientPtr pCompositeClient = mixin(GetCompositeClient!(`client`));
 
@@ -125,8 +125,8 @@ private int ProcCompositeQueryVersion(ClientPtr client)
     pCompositeClient.major_version = reply.majorVersion;
     pCompositeClient.minor_version = reply.minorVersion;
 
-    X_REPLY_FIELD_CARD32(majorVersion);
-    X_REPLY_FIELD_CARD32(minorVersion);
+    mixin(X_REPLY_FIELD_CARD32!majorVersion);
+    mixin(X_REPLY_FIELD_CARD32!minorVersion);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -185,8 +185,8 @@ private int SingleCompositeUnredirectSubwindows(ClientPtr client, xCompositeUnre
 private int ProcCompositeCreateRegionFromBorderClip(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeCreateRegionFromBorderClipReq);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
     WindowPtr pWin = void;
     mixin(VERIFY_WINDOW!(`pWin`, `stuff.window`, `client`, `DixGetAttrAccess`));
@@ -296,7 +296,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
         overlayWin: cs.pOverlayWin.drawable.id
     };
 
-    X_REPLY_FIELD_CARD32(overlayWin);
+    mixin(X_REPLY_FIELD_CARD32!overlayWin);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -383,7 +383,7 @@ void CompositeExtensionInit()
     /* Assume initialization is going to fail */
     noCompositeExtension = TRUE;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
 
         /* Composite on 8bpp pseudocolor root windows appears to fail, so
          * just disable it on anything pseudocolor for safety.
@@ -422,7 +422,7 @@ void CompositeExtensionInit()
                                CompositeClientRec.sizeof))
         return;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (!compScreenInit(walkScreen))
             return;
     });
@@ -442,7 +442,7 @@ void CompositeExtensionInit()
 private int ProcCompositeRedirectWindow(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeRedirectWindowReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -457,12 +457,12 @@ version (XINERAMA) {
         return rc;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         stuff.window = win.info[walkScreenIdx].id;
         rc = SingleCompositeRedirectWindow(client, stuff);
         if (rc != Success)
             break;
-    });
+    }));
 
     return rc;
 } else {
@@ -473,7 +473,7 @@ version (XINERAMA) {
 private int ProcCompositeRedirectSubwindows(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeRedirectSubwindowsReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -488,12 +488,12 @@ version (XINERAMA) {
         return rc;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         stuff.window = win.info[walkScreenIdx].id;
         rc = SingleRedirectSubwindows(client, stuff);
         if (rc != Success)
             break;
-    });
+    }));
 
     return rc;
 } else {
@@ -504,7 +504,7 @@ version (XINERAMA) {
 private int ProcCompositeUnredirectWindow(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeUnredirectWindowReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -519,12 +519,12 @@ version (XINERAMA) {
         return rc;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         stuff.window = win.info[walkScreenIdx].id;
         rc = SingleCompositeUnredirectWindow(client, stuff);
         if (rc != Success)
             break;
-    });
+    }));
 
     return rc;
 } else {
@@ -535,7 +535,7 @@ version (XINERAMA) {
 private int ProcCompositeUnredirectSubwindows(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeUnredirectSubwindowsReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -550,12 +550,12 @@ version (XINERAMA) {
         return rc;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         stuff.window = win.info[walkScreenIdx].id;
         rc = SingleCompositeUnredirectSubwindows(client, stuff);
         if (rc != Success)
             break;
-    });
+    }));
 
     return rc;
 } else {
@@ -566,8 +566,8 @@ version (XINERAMA) {
 private int ProcCompositeNameWindowPixmap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeNameWindowPixmapReq);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD32(pixmap);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD32!pixmap);
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -594,7 +594,7 @@ version (XINERAMA) {
     newPix.u.pix.shared_ = FALSE;
     panoramix_setup_ids(newPix, client, stuff.pixmap);
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         rc = dixLookupResourceByType(cast(void**) &pWin, win.info[walkScreenIdx].id,
                                      X11_RESTYPE_WINDOW, client,
                                      DixGetAttrAccess);
@@ -627,7 +627,7 @@ version (XINERAMA) {
         }
 
         ++pPixmap.refcnt;
-    });
+    }));
 
     if (!AddResource(stuff.pixmap, XRT_PIXMAP, cast(void*) newPix))
         return BadAlloc;
@@ -641,7 +641,7 @@ version (XINERAMA) {
 private int ProcCompositeGetOverlayWindow(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeGetOverlayWindowReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -668,7 +668,7 @@ version (XINERAMA) {
         overlayWin.u.win.root = FALSE;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         rc = dixLookupResourceByType(cast(void**) &pWin, win.info[walkScreenIdx].id,
                                      X11_RESTYPE_WINDOW, client,
                                      DixGetAttrAccess);
@@ -679,10 +679,6 @@ version (XINERAMA) {
         }
         pScreen = pWin.drawable.pScreen;
 
-        /*
-         * Create an OverlayClient structure to mark this client's
-         * interest in the overlay window
-         */
         pOc = compCreateOverlayClient(pScreen, client);
         if (pOc == null) {
             free(overlayWin);
@@ -709,13 +705,13 @@ version (XINERAMA) {
             free(overlayWin);
             return rc;
         }
-    });
+    }));
 
     if (overlayWin) {
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             cs = GetCompScreen(walkScreen);
             overlayWin.info[walkScreenIdx].id = cs.pOverlayWin.drawable.id;
-        });
+        }));
 
         AddResource(overlayWin.info[0].id, XRT_WINDOW, overlayWin);
     }
@@ -726,7 +722,7 @@ version (XINERAMA) {
         overlayWin: cs.pOverlayWin.drawable.id
     };
 
-    X_REPLY_FIELD_CARD32(overlayWin);
+    mixin(X_REPLY_FIELD_CARD32!overlayWin);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 } else {
@@ -737,7 +733,7 @@ version (XINERAMA) {
 private int ProcCompositeReleaseOverlayWindow(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeReleaseOverlayWindowReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -754,25 +750,20 @@ version (XINERAMA) {
         return rc;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if ((rc = dixLookupResourceByType(cast(void**) &pWin, win.info[walkScreenIdx].id,
                                           XRT_WINDOW, client,
                                           DixUnknownAccess))) {
             client.errorValue = stuff.window;
             return rc;
         }
-
-        /*
-         * Has client queried a reference to the overlay window
-         * on this screen? If not, generate an error.
-         */
         pOc = compFindOverlayClient(pWin.drawable.pScreen, client);
         if (pOc == null)
             return BadMatch;
 
         /* The delete function will free the client structure */
         FreeResource(pOc.resource, X11_RESTYPE_NONE);
-    });
+    }));
 
     return Success;
 } else {

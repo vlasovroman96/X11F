@@ -282,7 +282,7 @@ void GlxPushProvider(__GLXprovider* provider)
 
 private Bool checkScreenVisuals()
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         for (int j = 0; j < walkScreen.numVisuals; j++) {
             if ((walkScreen.visuals[j].class_ == TrueColor ||
                  walkScreen.visuals[j].class_ == DirectColor) &&
@@ -507,7 +507,7 @@ private void xorgGlxServerInit(CallbackListPtr* pcbl, void* param, void* ext)
         return;
     }
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         __GLXprovider* p = void;
 
         if (glxServer.getVendorForScreen(null, walkScreen) != null) {

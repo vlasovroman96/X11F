@@ -1064,7 +1064,7 @@ private void RootlessPolyFillArc(DrawablePtr dst, GCPtr pGC, int narcsInit, xArc
 
     if (narcsInit > 0) {
         BoxRec box = void;
-        int narcs = narcsInit;
+        int narcs = cast(int)narcsInit;
         xArc* parcs = parcsInit;
 
         box.x1 = parcs.x;

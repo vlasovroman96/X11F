@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// //import externs.X11.extensions.ge;
+import externs.X11.extensions.geproto;
 // // //import externs.X11.extensions.geproto;
 //import externs.X11.X;
 
@@ -39,6 +39,8 @@ import Xext.geext_priv;
 
 import include.windowstr;
 import include.protocol_versions;
+import os.log;
+import dix.extension;
 
 enum MAXEXTENSIONS =   128;
 
@@ -47,7 +49,7 @@ DevPrivateKeyRec GEClientPrivateKeyRec;
 /** Struct to keep information about registered extensions */
 struct _GEExtension {
     /** Event swapping routine */
-    void function(xGenericEvent* from, xGenericEvent* to) evswap;
+    nothrow @nogc void function(xGenericEvent* from, xGenericEvent* to) evswap;
 }alias GEExtension = _GEExtension;
 alias GEExtensionPtr = _GEExtension*;
 
@@ -73,8 +75,8 @@ enum string EXT_MASK(string ext) = `((` ~ ext ~ `) & 0x7F)`;
 private int ProcGEQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xGEQueryVersionReq);
-    X_REQUEST_FIELD_CARD16(majorVersion);
-    X_REQUEST_FIELD_CARD16(minorVersion);
+    mixin(X_REQUEST_FIELD_CARD16!("majorVersion"));
+    mixin(X_REQUEST_FIELD_CARD16!("minorVersion"));
 
     GEClientInfoPtr pGEClient = mixin(GEGetClient!(`client`));
 
@@ -89,8 +91,8 @@ private int ProcGEQueryVersion(ClientPtr client)
     pGEClient.major_version = stuff.majorVersion;
     pGEClient.minor_version = stuff.minorVersion;
 
-    X_REPLY_FIELD_CARD16(majorVersion);
-    X_REPLY_FIELD_CARD16(minorVersion);
+    mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -115,7 +117,7 @@ private int ProcGEDispatch(ClientPtr client)
 /* Reset extension. Called on server shutdown. */
 private void GEResetProc(_ExtensionEntry* extEntry)
 {
-    EventSwapVector[GenericEvent] = NotImplemented;
+    EventSwapVector[GenericEvent] = &NotImplemented;
 }
 
 /*  Calls the registered event swap function for the extension.
@@ -131,7 +133,7 @@ private void SGEGenericEvent(xEvent* from, xEvent* to)
     xGenericEvent* geto = cast(xGenericEvent*) to;
 
     if ((gefrom.extension & 0x7f) > MAXEXTENSIONS) {
-        ErrorF("GE: Invalid extension offset for event.\n");
+        // ErrorF("GE: Invalid extension offset for event.\n");
         return;
     }
 
@@ -150,11 +152,11 @@ void GEExtensionInit()
         FatalError("GEExtensionInit: GE private request failed.\n");
 
     if (!AddExtension(GE_NAME, 0, GENumberErrors, &ProcGEDispatch, &ProcGEDispatch,
-                      &GEResetProc, StandardMinorOpcode))
+                      &GEResetProc, &StandardMinorOpcode))
         FatalError("GEInit: AddExtensions failed.\n");
 
     memset(GEExtensions.ptr, 0, GEExtensions.sizeof);
-    EventSwapVector[GenericEvent] = cast(EventSwapPtr) SGEGenericEvent;
+    EventSwapVector[GenericEvent] = cast(EventSwapPtr) &SGEGenericEvent;
 }
 
 /************************************************************/
@@ -168,7 +170,7 @@ void GEExtensionInit()
  * @param ev_fill Called for an event before delivery. The extension now has
  * the chance to fill in necessary fields for the event.
  */
-void GERegisterExtension(int extension, void function(xGenericEvent* from, xGenericEvent* to) ev_swap)
+void GERegisterExtension(int extension, void function(xGenericEvent* from, xGenericEvent* to) nothrow @nogc   ev_swap)
 {
     if (mixin(EXT_MASK!(`extension`)) >= MAXEXTENSIONS)
         FatalError("GE: extension > MAXEXTENSIONS. This should not happen.\n");

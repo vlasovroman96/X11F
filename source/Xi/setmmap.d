@@ -78,7 +78,7 @@ int ProcXSetDeviceModifierMapping(ClientPtr client)
     int ret = void;
     DeviceIntPtr dev = void;
 
-    X_REQUEST_HEAD_AT_LEAST(xSetDeviceModifierMappingReq);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSetDeviceModifierMappingReq);
 
     if (client.req_len != bytes_to_int32(xSetDeviceModifierMappingReq.sizeof) +
         (stuff.numKeyPerModifier << 1))

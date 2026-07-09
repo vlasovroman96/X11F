@@ -11,14 +11,15 @@ import include.regionstr;
 import externs.X11.Xproto;
 import include.screenint;
 import include.pixmap;
+import dix.resource;
 
-extern int PanoramiXNumScreens;
-extern int PanoramiXPixWidth;
-extern int PanoramiXPixHeight;
+// extern int PanoramiXNumScreens;
+// extern int PanoramiXPixWidth;
+// extern int PanoramiXPixHeight;
 extern RegionRec PanoramiXScreenRegion;
 
 // exported for nvidia
-export VisualID PanoramiXTranslateVisualID(int screen, VisualID orig);
+// export VisualID PanoramiXTranslateVisualID(int screen, VisualID orig);
 
 void PanoramiXConsolidate();
 Bool PanoramiXCreateConnectionBlock();
@@ -27,12 +28,12 @@ Bool XineramaRegisterConnectionBlockCallback(void function() func);
 int XineramaDeleteResource(void*, XID);
 
 /* only exported for Nvidia legacy. This really shouldn't be used by drivers */
-extern RESTYPE XRC_DRAWABLE;
+// extern RESTYPE XRC_DRAWABLE;
 
-extern RESTYPE XRT_WINDOW;
-extern RESTYPE XRT_PIXMAP;
-extern RESTYPE XRT_GC;
-extern RESTYPE XRT_COLORMAP;
+// extern RESTYPE XRT_WINDOW;
+// extern RESTYPE XRT_PIXMAP;
+// extern RESTYPE XRT_GC;
+// extern RESTYPE XRT_COLORMAP;
 extern RESTYPE XRT_PICTURE;
 
 /*
@@ -44,14 +45,14 @@ extern RESTYPE XRT_PICTURE;
  */
 alias XineramaVisualsEqualProcPtr = Bool function(VisualPtr, ScreenPtr, VisualPtr);
 
-void XineramaGetImageData(DrawablePtr* pDrawables, int left, int top, int width, int height, uint format, c_ulong planemask, char* data, int pitch, Bool isRoot);
+// void XineramaGetImageData(DrawablePtr* pDrawables, int left, int top, int width, int height, uint format, c_ulong planemask, char* data, int pitch, Bool isRoot);
 
-pragma(inline, true) private void panoramix_setup_ids(PanoramiXRes* resource, ClientPtr client, XID base_id)
+pragma(inline, true) void panoramix_setup_ids(PanoramiXRes* resource, ClientPtr client, XID base_id)
 {
     resource.info[0].id = base_id;
-    XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0!(q{
         resource.info[walkScreenIdx].id = FakeClientID(client.index);
-    });
+    }));
 }
 
                           /* _PANORAMIXSRV_H_ */

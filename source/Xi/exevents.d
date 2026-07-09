@@ -3173,7 +3173,7 @@ private void FindInterestedChildren(DeviceIntPtr dev, WindowPtr p1, Mask mask, x
 
 void SendEventToAllWindows(DeviceIntPtr dev, Mask mask, xEvent* ev, int count)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         WindowPtr pWin = walkScreen.root;
         if (!pWin)
             continue;

@@ -381,7 +381,7 @@ void present_event_notify(ulong event_id, ulong ust, ulong msc)
         }
     }
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         present_screen_priv_ptr screen_priv = present_screen_priv(walkScreen);
 
         if (event_id == screen_priv.unflip_event_id) {

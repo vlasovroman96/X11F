@@ -687,7 +687,7 @@ void miPolyFillArc(DrawablePtr pDraw, GCPtr pGC, int narcs_all, xArc* parcs)
         int* wids = void, widths = void;
         int n = void;
 
-        for (narcs = 0, arc = parcs; narcs < narcs_all; narcs++, arc++) {
+        for (narcs = cast(int)0, arc = parcs; narcs < narcs_all; narcs++, arc++) {
             if (narcs && nspans + arc.height > MAX_SPANS_PER_LOOP)
                 break;
             nspans += arc.height;

@@ -223,7 +223,7 @@ void fbGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, 
         }
     }
     else {
-        dstStride = BitmapBytePad(w) / FbStip.sizeof;
+        dstStride = mixin(BitmapBytePad!"w") / FbStip.sizeof;
         fbBltPlane(src + (y + srcYoff) * srcStride,
                    srcStride,
                    (x + srcXoff) * srcBpp,

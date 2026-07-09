@@ -324,7 +324,7 @@ int SetPictureFilter(PicturePtr pPicture, char* name, int len, XFixed* params, i
         /* For source pictures, the picture isn't tied to a screen.  So, ensure
          * that all screens can handle a filter we set for the picture.
          */
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
             if (!walkScreenIdx)
                 continue; // skip the first screen
 

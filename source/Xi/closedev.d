@@ -138,7 +138,7 @@ int ProcXCloseDevice(ClientPtr client)
      * and selected by this client.
      * Delete passive grabs from all windows for this device.      */
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         DeleteDeviceEvents(d, walkScreen.root, client);
         DeleteEventsFromChildren(d, walkScreen.root.firstChild, client);
     });

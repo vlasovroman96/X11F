@@ -406,7 +406,7 @@ static if(GLYPHPADBYTES == 8)
     pfont.refcnt++;
     if (pfont.refcnt == 1) {
         UseFPE(pfont.fpe);
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
             if (walkScreen.RealizeFont) {
                 if (!(*walkScreen.RealizeFont) (walkScreen, pfont)) {
                     CloseFont(pfont, cast(Font) 0);
@@ -527,7 +527,7 @@ int CloseFont(void* value, XID fid)
          * since the last reference is gone, ask each screen to free any
          * storage it may have allocated locally for it.
          */
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
             if (walkScreen.UnrealizeFont)
                 walkScreen.UnrealizeFont(walkScreen, pfont);
         });

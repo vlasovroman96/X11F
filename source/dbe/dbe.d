@@ -149,8 +149,8 @@ private int ProcDbeGetVersion(ClientPtr client)
 private int ProcDbeAllocateBackBufferName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDbeAllocateBackBufferNameReq);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD32(buffer);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD32!buffer);
 
     /* The window must be valid. */
     WindowPtr pWin = void;
@@ -351,7 +351,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
 private int ProcDbeDeallocateBackBufferName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDbeDeallocateBackBufferNameReq);
-    X_REQUEST_FIELD_CARD32(buffer);
+    mixin(X_REQUEST_FIELD_CARD32!buffer);
 
     DbeWindowPrivPtr pDbeWindowPriv = void;
 
@@ -417,8 +417,8 @@ private int ProcDbeDeallocateBackBufferName(ClientPtr client)
 
 private int ProcDbeSwapBuffers(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xDbeSwapBuffersReq);
-    X_REQUEST_FIELD_CARD32(n);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xDbeSwapBuffersReq);
+    mixin(X_REQUEST_FIELD_CARD32!n);
 
     if (stuff.n == 0)
         return Success;
@@ -541,9 +541,9 @@ private int ProcDbeSwapBuffers(ClientPtr client)
 
 private int ProcDbeGetVisualInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xDbeGetVisualInfoReq);
-    X_REQUEST_FIELD_CARD32(n);
-    X_REQUEST_REST_CARD32();
+    mixin(X_REQUEST_HEAD_AT_LEAST!xDbeGetVisualInfoReq);
+    mixin(X_REQUEST_FIELD_CARD32!n);
+    mixin(X_REQUEST_REST_CARD32!());
 
     DbeScreenPrivPtr pDbeScreenPriv = void;
     Drawable* drawables = void;
@@ -622,7 +622,7 @@ private int ProcDbeGetVisualInfo(ClientPtr client)
         m: count
     };
 
-    X_REPLY_FIELD_CARD32(m);
+    mixin(X_REPLY_FIELD_CARD32!m);
 
     rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
@@ -651,7 +651,7 @@ clearRpcBuf:
 private int ProcDbeGetBackBufferAttributes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDbeGetBackBufferAttributesReq);
-    X_REQUEST_FIELD_CARD32(buffer);
+    mixin(X_REQUEST_FIELD_CARD32!buffer);
 
     DbeWindowPrivPtr pDbeWindowPriv = void;
     int rc = void;
@@ -669,7 +669,7 @@ private int ProcDbeGetBackBufferAttributes(ClientPtr client)
         reply.attributes = None;
     }
 
-    X_REPLY_FIELD_CARD32(attributes);
+    mixin(X_REPLY_FIELD_CARD32!attributes);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -911,7 +911,7 @@ private int DbeWindowPrivDelete(void* pDbeWinPriv, XID id)
  *****************************************************************************/
 private void DbeResetProc(ExtensionEntry* extEntry)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         DbeScreenPrivPtr pDbeScreenPriv = DBE_SCREEN_PRIV(walkScreen);
         if (pDbeScreenPriv) {
             dixScreenUnhookWindowDestroy(walkScreen, miDbeWindowDestroy);
@@ -987,7 +987,7 @@ version (XINERAMA) {
     if (!dixRegisterPrivateKey(&dbeWindowPrivKeyRec, PRIVATE_WINDOW, 0))
         return;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         /* For each screen, set up DBE screen privates and init DIX
          * interface (DDX isn't supported anymore).
          */
@@ -1033,7 +1033,7 @@ version (XINERAMA) {
 
     if (nStubbedScreens == screenInfo.numScreens) {
         /* All screens stubbed.  Clean up and return. */
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
             free(dixLookupPrivate(&walkScreen.devPrivates, &dbeScreenPrivKeyRec));
             dixSetPrivate(&walkScreen.devPrivates, &dbeScreenPrivKeyRec, null);
         });

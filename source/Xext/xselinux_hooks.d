@@ -209,7 +209,7 @@ private void SELinuxLabelInitial()
     srec.access_mode = DixCreateAccess;
     srec.status = Success;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         /* Do the screen object */
         srec.screen = walkScreen;
         SELinuxScreen(null, null, &srec);

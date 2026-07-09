@@ -95,14 +95,14 @@ DeviceIntPtr xtestpointer, xtestkeyboard;
 private int ProcXTestGetVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXTestGetVersionReq);
-    X_REQUEST_FIELD_CARD16(minorVersion);
+    mixin(X_REQUEST_FIELD_CARD16!"minorVersion");
 
     xXTestGetVersionReply reply = {
         majorVersion: XTestMajorVersion,
         minorVersion: XTestMinorVersion
     };
 
-    X_REPLY_FIELD_CARD16(minorVersion);
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -110,8 +110,8 @@ private int ProcXTestGetVersion(ClientPtr client)
 private int ProcXTestCompareCursor(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXTestCompareCursorReq);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD32(cursor);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD32!cursor);
 
     WindowPtr pWin = void;
     CursorPtr pCursor = void;

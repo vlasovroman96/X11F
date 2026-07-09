@@ -822,7 +822,7 @@ private void DGACopyModeInfo(DGAModePtr mode, XDGAModePtr xmode)
 
 Bool DGAVTSwitch()
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         /* Alternatively, this could send events to DGA clients */
 
         if (DGAScreenKeyRegistered) {
@@ -1273,7 +1273,7 @@ private void DGAClientStateChange(CallbackListPtr* pcbl, void* nulldata, void* c
 {
     NewClientInfoRec* pci = cast(NewClientInfoRec*) calldata;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (pci.client && (mixin(DGA_GETCLIENT!(`walkScreenIdx`)) == pci.client)) {
             if ((pci.client.clientState == ClientStateGone) ||
                 (pci.client.clientState == ClientStateRetained))

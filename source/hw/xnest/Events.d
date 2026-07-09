@@ -215,8 +215,8 @@ private void xnest_handle_event(xcb_generic_event_t* event)
             if (pWin && ev.width && ev.height) {
                 RegionRec Rgn = void;
                 BoxRec Box = void;
-                Box.x1 = pWin.drawable.x + wBorderWidth(pWin) + ev.x;
-                Box.y1 = pWin.drawable.y + wBorderWidth(pWin) + ev.y;
+                Box.x1 = pWin.drawable.x + mixin(wBorderWidth!"pWin")+ ev.x;
+                Box.y1 = pWin.drawable.y + mixin(wBorderWidth!"pWin")+ ev.y;
                 Box.x2 = Box.x1 + ev.width;
                 Box.y2 = Box.y1 + ev.height;
                 RegionInit(&Rgn, &Box, 1);

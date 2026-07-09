@@ -51,16 +51,16 @@ import dix.swaprep;
 private int ProcXCMiscGetVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXCMiscGetVersionReq);
-    X_REQUEST_FIELD_CARD16(majorVersion);
-    X_REQUEST_FIELD_CARD16(minorVersion);
+    mixin(X_REQUEST_FIELD_CARD16!"majorVersion");
+    mixin(X_REQUEST_FIELD_CARD16!"minorVersion");
 
     xXCMiscGetVersionReply reply = {
         majorVersion: XCMiscMajorVersion,
         minorVersion: XCMiscMinorVersion
     };
 
-    X_REPLY_FIELD_CARD16(majorVersion);
-    X_REPLY_FIELD_CARD16(minorVersion);
+    mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -77,8 +77,8 @@ private int ProcXCMiscGetXIDRange(ClientPtr client)
         count: max_id - min_id + 1
     };
 
-    X_REPLY_FIELD_CARD32(start_id);
-    X_REPLY_FIELD_CARD32(count);
+    mixin(X_REPLY_FIELD_CARD32!start_id);
+    mixin(X_REPLY_FIELD_CARD32!count);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -86,7 +86,7 @@ private int ProcXCMiscGetXIDRange(ClientPtr client)
 private int ProcXCMiscGetXIDList(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXCMiscGetXIDListReq);
-    X_REQUEST_FIELD_CARD32(count);
+    mixin(X_REQUEST_FIELD_CARD32!count);
 
     if (stuff.count > UINT32_MAX / XID.sizeof) {
         return BadAlloc;
@@ -108,7 +108,7 @@ private int ProcXCMiscGetXIDList(ClientPtr client)
         count: count
     };
 
-    X_REPLY_FIELD_CARD32(count);
+    mixin(X_REPLY_FIELD_CARD32!count);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

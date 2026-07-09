@@ -117,9 +117,9 @@ Bool xnestCreateColormap(ColormapPtr pCmap)
     case TrueColor:            /* read only */
     {
         uint* colors = cast(uint*) malloc(ncolors * uint.sizeof);
-        Pixel red = 0, redInc = lowbit(pVisual.redMask);
-        Pixel green = 0, greenInc = lowbit(pVisual.greenMask);
-        Pixel blue = 0, blueInc = lowbit(pVisual.blueMask);
+        Pixel red = 0, redInc = mixin(lowbit!pVisual.redMask);
+        Pixel green = 0, greenInc = mixin(lowbit!pVisual.greenMask);
+        Pixel blue = 0, blueInc = mixin(lowbit!pVisual.blueMask);
 
         for (int i = 0; i < ncolors; i++) {
             colors[i] = red | green | blue;

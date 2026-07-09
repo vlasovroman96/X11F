@@ -373,7 +373,7 @@ private RegionPtr DamageExtSubtractWindowClip(DamageExtPtr pDamageExt)
     if (!ret)
         return null;
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         if (Success != dixLookupWindow(&win, res.info[walkScreenIdx].id, serverClient,
                                        DixReadAccess))
             goto out_;
@@ -384,7 +384,7 @@ private RegionPtr DamageExtSubtractWindowClip(DamageExtPtr pDamageExt)
         if (!RegionUnion(ret, ret, &win.borderClip))
             goto out_;
         RegionTranslate(ret, pScreen.x, pScreen.y);
-    });
+    }));
 
     return ret;
 
@@ -592,7 +592,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
 
     rc = doDamageCreate(client, &(damage.ext), stuff);
     if (rc == Success && draw.type == XRT_WINDOW) {
-        XINERAMA_FOR_EACH_SCREEN_FORWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
             DrawablePtr pDrawable = void;
             DamagePtr pDamage = DamageCreate(&PanoramiXDamageReport,
                                              &PanoramiXDamageExtDestroy,
@@ -612,7 +612,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
                 break;
 
             DamageExtRegister(pDrawable, pDamage, walkScreenIdx != 0);
-        });
+        }));
     }
 
     if (rc != Success)
@@ -625,12 +625,12 @@ private int PanoramiXDamageDelete(void* res, XID id)
 {
     PanoramiXDamageRes* damage = res;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (damage.damage[walkScreenIdx]) {
             DamageDestroy(damage.damage[walkScreenIdx]);
             damage.damage[walkScreenIdx] = null;
         }
-    });
+    }));
 
     free(damage);
     return 1;

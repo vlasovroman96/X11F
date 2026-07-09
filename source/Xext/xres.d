@@ -168,8 +168,8 @@ private int ProcXResQueryVersion(ClientPtr client)
         server_minor: SERVER_XRES_MINOR_VERSION
     };
 
-    X_REPLY_FIELD_CARD16(server_major);
-    X_REPLY_FIELD_CARD16(server_minor);
+    mixin(X_REPLY_FIELD_CARD16!server_major);
+    mixin(X_REPLY_FIELD_CARD16!server_minor);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -195,7 +195,7 @@ private int ProcXResQueryClients(ClientPtr client)
         num_clients: num_clients
     };
 
-    X_REPLY_FIELD_CARD32(num_clients);
+    mixin(X_REPLY_FIELD_CARD32!num_clients);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -226,7 +226,7 @@ private CARD32 resourceTypeAtom(int i)
 private int ProcXResQueryClientResources(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientResourcesReq);
-    X_REQUEST_FIELD_CARD32(xid);
+    mixin(X_REQUEST_FIELD_CARD32!xid);
 
     ClientPtr resClient = dixClientForXID(stuff.xid);
 
@@ -265,7 +265,7 @@ private int ProcXResQueryClientResources(ClientPtr client)
         num_types: num_types
     };
 
-    X_REPLY_FIELD_CARD32(num_types);
+    mixin(X_REPLY_FIELD_CARD32!num_types);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -283,7 +283,7 @@ private void ResFindResourcePixmaps(void* value, XID id, RESTYPE type, void* cda
 private int ProcXResQueryClientPixmapBytes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientPixmapBytesReq);
-    X_REQUEST_FIELD_CARD32(xid);
+    mixin(X_REQUEST_FIELD_CARD32!xid);
 
     ClientPtr owner = dixClientForXID(stuff.xid);
     if ((!owner) ||
@@ -309,8 +309,8 @@ private int ProcXResQueryClientPixmapBytes(ClientPtr client)
         };
     }
 
-    X_REPLY_FIELD_CARD32(bytes);
-    X_REPLY_FIELD_CARD32(bytes_overflow);
+    mixin(X_REPLY_FIELD_CARD32!bytes);
+    mixin(X_REPLY_FIELD_CARD32!bytes_overflow);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -450,8 +450,8 @@ private int ConstructClientIds(ClientPtr client, int numSpecs, xXResClientIdSpec
 */
 private int ProcXResQueryClientIds(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXResQueryClientIdsReq);
-    X_REQUEST_FIELD_CARD32(numSpecs);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXResQueryClientIdsReq);
+    mixin(X_REQUEST_FIELD_CARD32!numSpecs);
 
     REQUEST_FIXED_SIZE(xXResQueryClientIdsReq,
                        cast(ulong)stuff.numSpecs * xXResClientIdSpec.sizeof);
@@ -474,7 +474,7 @@ private int ProcXResQueryClientIds(ClientPtr client)
             numIds: ctx.numIds
         };
 
-        X_REPLY_FIELD_CARD32(numIds);
+        mixin(X_REPLY_FIELD_CARD32!numIds);
 
         rc = X_SEND_REPLY_WITH_RPCBUF(client, reply, ctx.rpcbuf);
     }
@@ -792,8 +792,8 @@ private int ConstructResourceBytes(XID aboutClient, ConstructResourceBytesCtx* c
 /** @brief Implements the XResQueryResourceBytes of XResProto v1.2 */
 private int ProcXResQueryResourceBytes(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXResQueryResourceBytesReq);
-    X_REQUEST_FIELD_CARD32(numSpecs);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXResQueryResourceBytesReq);
+    mixin(X_REQUEST_FIELD_CARD32!numSpecs);
 
     REQUEST_FIXED_SIZE(xXResQueryResourceBytesReq,
                        (cast(ulong)stuff.numSpecs) * xXResResourceIdSpec.sizeof);
@@ -821,7 +821,7 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
             numSizes: ctx.numSizes
         };
 
-        X_REPLY_FIELD_CARD32(numSizes);
+        mixin(X_REPLY_FIELD_CARD32!numSizes);
 
         if (client.swapped) {
             SwapXResQueryResourceBytes(&ctx.response);

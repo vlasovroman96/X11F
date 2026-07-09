@@ -134,7 +134,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
 
     maskQ = mask;               /* save these for when we walk the GCque */
     while (mask && !error) {
-        index2 = cast(BITS32) lowbit(mask);
+        index2 = cast(BITS32) mixin(lowbit!mask);
         mask &= ~index2;
         pGC.stateChanges |= index2;
         switch (index2) {
@@ -618,7 +618,7 @@ int CopyGC(GCPtr pgcSrc, GCPtr pgcDst, BITS32 mask)
     pgcDst.stateChanges |= mask;
     maskQ = mask;
     while (mask) {
-        index2 = cast(BITS32) lowbit(mask);
+        index2 = cast(BITS32) mixin(lowbit!mask);
         mask &= ~index2;
         switch (index2) {
         case GCFunction:

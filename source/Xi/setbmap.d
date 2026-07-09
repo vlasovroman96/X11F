@@ -77,7 +77,7 @@ int ProcXSetDeviceButtonMapping(ClientPtr client)
     int ret = void;
     DeviceIntPtr dev = void;
 
-    X_REQUEST_HEAD_AT_LEAST(xSetDeviceButtonMappingReq);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSetDeviceButtonMappingReq);
 
     if (client.req_len !=
         bytes_to_int32(((xSetDeviceButtonMappingReq) + stuff.map_length).sizeof))

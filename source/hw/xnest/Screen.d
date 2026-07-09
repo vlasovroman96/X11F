@@ -122,10 +122,10 @@ private void xnestCrossScreen(ScreenPtr pScreen, Bool entering)
 {
 }
 
-private miPointerScreenFuncRec xnestPointerCursorFuncs = {
-    &xnestCursorOffScreen,
-    &xnestCrossScreen,
-    &miPointerWarpCursor
+miPointerScreenFuncRec xnestPointerScreenFuncs = {
+    CursorOffScreen: &xnestCursorOffScreen,
+    CrossScreen:     &xnestCrossScreen,
+    // WarpCursor:      &xnestWarpCursor
 };
 
 private miPointerSpriteFuncRec xnestPointerSpriteFuncs = {

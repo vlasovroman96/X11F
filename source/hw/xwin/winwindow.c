@@ -210,7 +210,7 @@ winAddRgn(WindowPtr pWin, void *data)
         winDebug("winAddRgn ()\n");
 #endif
         if (pWin->mapped) {
-            iBorder = wBorderWidth(pWin);
+            iBorder = mixin(wBorderWidth!("pWin"));
 
             iX = pWin->drawable.x - iBorder;
             iY = pWin->drawable.y - iBorder;
@@ -298,11 +298,11 @@ winReshapeRootless(WindowPtr pWin)
     }
 
     /* Bail if the window has no bounding region defined */
-    if (!wBoundingShape(pWin))
+    if (!mixin(wBoundingShape!("pWin")))
         return;
 
     RegionNull(&rrNewShape);
-    RegionCopy(&rrNewShape, wBoundingShape(pWin));
+    RegionCopy(&rrNewShape, mixin(wBoundingShape!("pWin")));
     RegionTranslate(&rrNewShape, pWin->borderWidth, pWin->borderWidth);
 
     nRects = RegionNumRects(&rrNewShape);

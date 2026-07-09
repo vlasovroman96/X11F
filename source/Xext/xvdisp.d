@@ -70,8 +70,8 @@ private int ProcXvQueryExtension(ClientPtr client)
         revision: XvRevision
     };
 
-    X_REPLY_FIELD_CARD16(version_);
-    X_REPLY_FIELD_CARD16(revision);
+    mixin(X_REPLY_FIELD_CARD16!version_);
+    mixin(X_REPLY_FIELD_CARD16!revision);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -79,7 +79,7 @@ private int ProcXvQueryExtension(ClientPtr client)
 private int ProcXvQueryAdaptors(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvQueryAdaptorsReq);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
     int na = void, nf = void, rc = void;
     XvAdaptorPtr pa = void;
@@ -131,7 +131,7 @@ private int ProcXvQueryAdaptors(ClientPtr client)
         num_adaptors: numAdaptors,
     };
 
-    X_REPLY_FIELD_CARD16(num_adaptors);
+    mixin(X_REPLY_FIELD_CARD16!num_adaptors);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -139,7 +139,7 @@ private int ProcXvQueryAdaptors(ClientPtr client)
 private int ProcXvQueryEncodings(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvQueryEncodingsReq);
-    X_REQUEST_FIELD_CARD32(port);
+    mixin(X_REQUEST_FIELD_CARD32!port);
 
     XvPortPtr pPort = void;
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -167,7 +167,7 @@ private int ProcXvQueryEncodings(ClientPtr client)
         num_encodings: pPort.pAdaptor.nEncodings,
     };
 
-    X_REPLY_FIELD_CARD16(num_encodings);
+    mixin(X_REPLY_FIELD_CARD16!num_encodings);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -207,17 +207,17 @@ version (XINERAMA) {
 private int ProcXvPutVideo(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvPutVideoReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD16(vid_x);
-    X_REQUEST_FIELD_CARD16(vid_y);
-    X_REQUEST_FIELD_CARD16(vid_w);
-    X_REQUEST_FIELD_CARD16(vid_h);
-    X_REQUEST_FIELD_CARD16(drw_x);
-    X_REQUEST_FIELD_CARD16(drw_y);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD16!vid_x);
+    mixin(X_REQUEST_FIELD_CARD16!vid_y);
+    mixin(X_REQUEST_FIELD_CARD16!vid_w);
+    mixin(X_REQUEST_FIELD_CARD16!vid_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_x);
+    mixin(X_REQUEST_FIELD_CARD16!drw_y);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
 
 version (XINERAMA) {
     if (xvUseXinerama)
@@ -261,17 +261,17 @@ version (XINERAMA) {
 private int ProcXvPutStill(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvPutStillReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD16(vid_x);
-    X_REQUEST_FIELD_CARD16(vid_y);
-    X_REQUEST_FIELD_CARD16(vid_w);
-    X_REQUEST_FIELD_CARD16(vid_h);
-    X_REQUEST_FIELD_CARD16(drw_x);
-    X_REQUEST_FIELD_CARD16(drw_y);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD16!vid_x);
+    mixin(X_REQUEST_FIELD_CARD16!vid_y);
+    mixin(X_REQUEST_FIELD_CARD16!vid_w);
+    mixin(X_REQUEST_FIELD_CARD16!vid_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_x);
+    mixin(X_REQUEST_FIELD_CARD16!drw_y);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
 
 version (XINERAMA) {
     if (xvUseXinerama)
@@ -283,17 +283,17 @@ version (XINERAMA) {
 private int ProcXvGetVideo(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvGetVideoReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD16(vid_x);
-    X_REQUEST_FIELD_CARD16(vid_y);
-    X_REQUEST_FIELD_CARD16(vid_w);
-    X_REQUEST_FIELD_CARD16(vid_h);
-    X_REQUEST_FIELD_CARD16(drw_x);
-    X_REQUEST_FIELD_CARD16(drw_y);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD16!vid_x);
+    mixin(X_REQUEST_FIELD_CARD16!vid_y);
+    mixin(X_REQUEST_FIELD_CARD16!vid_w);
+    mixin(X_REQUEST_FIELD_CARD16!vid_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_x);
+    mixin(X_REQUEST_FIELD_CARD16!drw_y);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
 
     DrawablePtr pDraw = void;
     XvPortPtr pPort = void;
@@ -322,17 +322,17 @@ private int ProcXvGetVideo(ClientPtr client)
 private int ProcXvGetStill(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvGetStillReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD16(vid_x);
-    X_REQUEST_FIELD_CARD16(vid_y);
-    X_REQUEST_FIELD_CARD16(vid_w);
-    X_REQUEST_FIELD_CARD16(vid_h);
-    X_REQUEST_FIELD_CARD16(drw_x);
-    X_REQUEST_FIELD_CARD16(drw_y);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD16!vid_x);
+    mixin(X_REQUEST_FIELD_CARD16!vid_y);
+    mixin(X_REQUEST_FIELD_CARD16!vid_w);
+    mixin(X_REQUEST_FIELD_CARD16!vid_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_x);
+    mixin(X_REQUEST_FIELD_CARD16!drw_y);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
 
     DrawablePtr pDraw = void;
     XvPortPtr pPort = void;
@@ -364,7 +364,7 @@ private int ProcXvSelectVideoNotify(ClientPtr client)
     int rc = void;
 
     mixin(X_REQUEST_HEAD_STRUCT!xvSelectVideoNotifyReq);
-    X_REQUEST_FIELD_CARD32(drawable);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
 
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, 0,
                            DixReceiveAccess);
@@ -377,7 +377,7 @@ private int ProcXvSelectVideoNotify(ClientPtr client)
 private int ProcXvSelectPortNotify(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvSelectPortNotifyReq);
-    X_REQUEST_FIELD_CARD32(port);
+    mixin(X_REQUEST_FIELD_CARD32!port);
 
     XvPortPtr pPort = void;
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -388,8 +388,8 @@ private int ProcXvSelectPortNotify(ClientPtr client)
 private int ProcXvGrabPort(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvGrabPortReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(time);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!time);
 
     int result = void, status = void;
     XvPortPtr pPort = void;
@@ -411,8 +411,8 @@ private int ProcXvGrabPort(ClientPtr client)
 private int ProcXvUngrabPort(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvUngrabPortReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(time);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!time);
 
     XvPortPtr pPort = void;
     VALIDATE_XV_PORT(stuff.port, pPort, DixReadAccess);
@@ -444,8 +444,8 @@ version (XINERAMA) {
 private int ProcXvStopVideo(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvStopVideoReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
 
 version (XINERAMA) {
     if (xvUseXinerama)
@@ -486,9 +486,9 @@ version (XINERAMA) {
 private int ProcXvSetPortAttribute(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvSetPortAttributeReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(attribute);
-    X_REQUEST_FIELD_CARD32(value);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!attribute);
+    mixin(X_REQUEST_FIELD_CARD32!value);
 
 version (XINERAMA) {
     if (xvUseXinerama)
@@ -504,8 +504,8 @@ private int ProcXvGetPortAttribute(ClientPtr client)
     XvPortPtr pPort = void;
 
     mixin(X_REQUEST_HEAD_STRUCT!xvGetPortAttributeReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(attribute);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!attribute);
 
     VALIDATE_XV_PORT(stuff.port, pPort, DixGetAttrAccess);
 
@@ -524,7 +524,7 @@ private int ProcXvGetPortAttribute(ClientPtr client)
         value: value
     };
 
-    X_REPLY_FIELD_CARD32(value);
+    mixin(X_REPLY_FIELD_CARD32!value);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -532,11 +532,11 @@ private int ProcXvGetPortAttribute(ClientPtr client)
 private int ProcXvQueryBestSize(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvQueryBestSizeReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD16(vid_w);
-    X_REQUEST_FIELD_CARD16(vid_h);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD16!vid_w);
+    mixin(X_REQUEST_FIELD_CARD16!vid_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
 
     uint actual_width = void, actual_height = void;
     XvPortPtr pPort = void;
@@ -553,8 +553,8 @@ private int ProcXvQueryBestSize(ClientPtr client)
         actual_height: actual_height
     };
 
-    X_REPLY_FIELD_CARD16(actual_width);
-    X_REPLY_FIELD_CARD16(actual_height);
+    mixin(X_REPLY_FIELD_CARD16!actual_width);
+    mixin(X_REPLY_FIELD_CARD16!actual_height);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -562,7 +562,7 @@ private int ProcXvQueryBestSize(ClientPtr client)
 private int ProcXvQueryPortAttributes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvQueryPortAttributesReq);
-    X_REQUEST_FIELD_CARD32(port);
+    mixin(X_REQUEST_FIELD_CARD32!port);
 
     int i = void;
     XvPortPtr pPort = void;
@@ -588,8 +588,8 @@ private int ProcXvQueryPortAttributes(ClientPtr client)
         text_size: textSize,
     };
 
-    X_REPLY_FIELD_CARD32(num_attributes);
-    X_REPLY_FIELD_CARD32(text_size);
+    mixin(X_REPLY_FIELD_CARD32!num_attributes);
+    mixin(X_REPLY_FIELD_CARD32!text_size);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -655,21 +655,21 @@ version (XINERAMA) {
 
 private int ProcXvPutImage(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xvPutImageReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD32(id);
-    X_REQUEST_FIELD_CARD16(src_x);
-    X_REQUEST_FIELD_CARD16(src_y);
-    X_REQUEST_FIELD_CARD16(src_w);
-    X_REQUEST_FIELD_CARD16(src_h);
-    X_REQUEST_FIELD_CARD16(drw_x);
-    X_REQUEST_FIELD_CARD16(drw_y);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xvPutImageReq);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD16!src_x);
+    mixin(X_REQUEST_FIELD_CARD16!src_y);
+    mixin(X_REQUEST_FIELD_CARD16!src_w);
+    mixin(X_REQUEST_FIELD_CARD16!src_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_x);
+    mixin(X_REQUEST_FIELD_CARD16!drw_y);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
 
 version (XINERAMA) {
     if (xvUseXinerama)
@@ -763,22 +763,22 @@ private int ProcXvShmPutImage(ClientPtr client)
 {
 version (CONFIG_MITSHM) {
     mixin(X_REQUEST_HEAD_STRUCT!xvShmPutImageReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(drawable);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD32(shmseg);
-    X_REQUEST_FIELD_CARD32(id);
-    X_REQUEST_FIELD_CARD32(offset);
-    X_REQUEST_FIELD_CARD16(src_x);
-    X_REQUEST_FIELD_CARD16(src_y);
-    X_REQUEST_FIELD_CARD16(src_w);
-    X_REQUEST_FIELD_CARD16(src_h);
-    X_REQUEST_FIELD_CARD16(drw_x);
-    X_REQUEST_FIELD_CARD16(drw_y);
-    X_REQUEST_FIELD_CARD16(drw_w);
-    X_REQUEST_FIELD_CARD16(drw_h);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!drawable);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD32!shmseg);
+    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!offset);
+    mixin(X_REQUEST_FIELD_CARD16!src_x);
+    mixin(X_REQUEST_FIELD_CARD16!src_y);
+    mixin(X_REQUEST_FIELD_CARD16!src_w);
+    mixin(X_REQUEST_FIELD_CARD16!src_h);
+    mixin(X_REQUEST_FIELD_CARD16!drw_x);
+    mixin(X_REQUEST_FIELD_CARD16!drw_y);
+    mixin(X_REQUEST_FIELD_CARD16!drw_w);
+    mixin(X_REQUEST_FIELD_CARD16!drw_h);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
 
 version (XINERAMA) {
     if (xvUseXinerama)
@@ -795,10 +795,10 @@ mixin __size_assert!(int, INT32.sizeof);
 private int ProcXvQueryImageAttributes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvQueryImageAttributesReq);
-    X_REQUEST_FIELD_CARD32(port);
-    X_REQUEST_FIELD_CARD32(id);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
+    mixin(X_REQUEST_FIELD_CARD32!port);
+    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
 
     int size = void, num_planes = void, i = void;
     CARD16 width = void, height = void;
@@ -853,10 +853,10 @@ version (XvMCExtension) {
         SwapLongs(cast(CARD32*) offsets, x_rpcbuf_wsize_units(&rpcbuf));
     }
 
-    X_REPLY_FIELD_CARD32(num_planes);
-    X_REPLY_FIELD_CARD32(data_size);
-    X_REPLY_FIELD_CARD16(width);
-    X_REPLY_FIELD_CARD16(height);
+    mixin(X_REPLY_FIELD_CARD32!num_planes);
+    mixin(X_REPLY_FIELD_CARD32!data_size);
+    mixin(X_REPLY_FIELD_CARD16!width);
+    mixin(X_REPLY_FIELD_CARD16!height);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -864,7 +864,7 @@ version (XvMCExtension) {
 private int ProcXvListImageFormats(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xvListImageFormatsReq);
-    X_REQUEST_FIELD_CARD32(port);
+    mixin(X_REQUEST_FIELD_CARD32!port);
 
     XvPortPtr pPort = void;
     XvImagePtr pImage = void;
@@ -916,7 +916,7 @@ private int ProcXvListImageFormats(ClientPtr client)
         num_formats: pPort.pAdaptor.nImages,
     };
 
-    X_REPLY_FIELD_CARD32(num_formats);
+    mixin(X_REPLY_FIELD_CARD32!num_formats);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -991,13 +991,13 @@ private int XineramaXvStopVideo(ClientPtr client)
     if (result != Success)
         return result;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (port.info[walkScreenIdx].id) {
-            stuff.drawable = draw.info[walkScreenIdx].id;
+            stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
             result = SingleXvStopVideo(client);
         }
-    });
+    }));
 
     return result;
 }
@@ -1013,12 +1013,12 @@ private int XineramaXvSetPortAttribute(ClientPtr client)
     if (result != Success)
         return result;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (port.info[walkScreenIdx].id) {
             stuff.port = port.info[walkScreenIdx].id;
             result = SingleXvSetPortAttribute(client);
         }
-    });
+    }));
 
     return result;
 }
@@ -1054,11 +1054,11 @@ private int XineramaXvShmPutImage(ClientPtr client)
     x = stuff.drw_x;
     y = stuff.drw_y;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (port.info[walkScreenIdx].id) {
-            stuff.drawable = draw.info[walkScreenIdx].id;
+            stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
-            stuff.gc = gc.info[walkScreenIdx].id;
+            stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
             stuff.drw_x = x;
             stuff.drw_y = y;
             if (isRoot) {
@@ -1069,7 +1069,7 @@ private int XineramaXvShmPutImage(ClientPtr client)
 
             result = SingleXvShmPutImage(client);
         }
-    });
+    }));
 
     return result;
 }
@@ -1104,11 +1104,11 @@ private int XineramaXvPutImage(ClientPtr client)
     x = stuff.drw_x;
     y = stuff.drw_y;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (port.info[walkScreenIdx].id) {
-            stuff.drawable = draw.info[walkScreenIdx].id;
+            stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
-            stuff.gc = gc.info[walkScreenIdx].id;
+            stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
             stuff.drw_x = x;
             stuff.drw_y = y;
             if (isRoot) {
@@ -1118,7 +1118,7 @@ private int XineramaXvPutImage(ClientPtr client)
 
             result = SingleXvPutImage(client);
         }
-    });
+    }));
 
     return result;
 }
@@ -1150,11 +1150,11 @@ private int XineramaXvPutVideo(ClientPtr client)
     x = stuff.drw_x;
     y = stuff.drw_y;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (port.info[walkScreenIdx].id) {
-            stuff.drawable = draw.info[walkScreenIdx].id;
+            stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
-            stuff.gc = gc.info[walkScreenIdx].id;
+            stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
             stuff.drw_x = x;
             stuff.drw_y = y;
             if (isRoot) {
@@ -1164,7 +1164,7 @@ private int XineramaXvPutVideo(ClientPtr client)
 
             result = SingleXvPutVideo(client);
         }
-    });
+    }));
 
     return result;
 }
@@ -1196,11 +1196,11 @@ private int XineramaXvPutStill(ClientPtr client)
     x = stuff.drw_x;
     y = stuff.drw_y;
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (port.info[walkScreenIdx].id) {
-            stuff.drawable = draw.info[walkScreenIdx].id;
+            stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
-            stuff.gc = gc.info[walkScreenIdx].id;
+            stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
             stuff.drw_x = x;
             stuff.drw_y = y;
             if (isRoot) {
@@ -1209,7 +1209,7 @@ private int XineramaXvPutStill(ClientPtr client)
             }
             result = SingleXvPutStill(client);
         }
-    });
+    }));
 
     return result;
 }
@@ -1289,9 +1289,9 @@ void XineramifyXv()
         MatchingAdaptors[0] = refAdapt;
         isOverlay = hasOverlay(refAdapt);
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0!(q{
             MatchingAdaptors[walkScreenIdx] = matchAdaptor(walkScreen, refAdapt, isOverlay);
-        });
+        }));
 
         /* now create a resource for each port */
         for (int j = 0; j < refAdapt.nPorts; j++) {
@@ -1300,12 +1300,12 @@ void XineramifyXv()
             if (!port)
                 break;
 
-            XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+            mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
                 if (MatchingAdaptors[walkScreenIdx] && (MatchingAdaptors[walkScreenIdx].nPorts > j))
                     port.info[walkScreenIdx].id = MatchingAdaptors[walkScreenIdx].base_id + j;
                 else
                     port.info[walkScreenIdx].id = 0;
-            });
+            }));
 
             AddResource(port.info[0].id, XvXRTPort, port);
         }

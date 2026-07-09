@@ -75,7 +75,7 @@ private void RRClientCallback(CallbackListPtr* list, void* closure, void* data)
     pRRClient.major_version = 0;
     pRRClient.minor_version = 0;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         rrScrPriv(walkScreen);
         if (pScrPriv) {
             pTimes[walkScreenIdx].setTime = pScrPriv.lastSetTime;

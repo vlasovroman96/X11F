@@ -177,8 +177,8 @@ private Bool _XkbCheckRequestBounds(ClientPtr client, void* stuff, void* from, v
 int ProcXkbUseExtension(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbUseExtensionReq);
-    X_REQUEST_FIELD_CARD16(wantedMajor);
-    X_REQUEST_FIELD_CARD16(wantedMinor);
+    mixin(X_REQUEST_FIELD_CARD16!wantedMajor);
+    mixin(X_REQUEST_FIELD_CARD16!wantedMinor);
 
     int supported = void;
 
@@ -209,21 +209,21 @@ int ProcXkbUseExtension(ClientPtr client)
         serverMinor: SERVER_XKB_MINOR_VERSION
     };
 
-    X_REPLY_FIELD_CARD16(serverMajor);
-    X_REPLY_FIELD_CARD16(serverMinor);
+    mixin(X_REPLY_FIELD_CARD16!serverMajor);
+    mixin(X_REPLY_FIELD_CARD16!serverMinor);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbSelectEvents(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSelectEventsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(affectWhich);
-    X_REQUEST_FIELD_CARD16(clear);
-    X_REQUEST_FIELD_CARD16(selectAll);
-    X_REQUEST_FIELD_CARD16(affectMap);
-    X_REQUEST_FIELD_CARD16(map);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSelectEventsReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!affectWhich);
+    mixin(X_REQUEST_FIELD_CARD16!clear);
+    mixin(X_REQUEST_FIELD_CARD16!selectAll);
+    mixin(X_REQUEST_FIELD_CARD16!affectMap);
+    mixin(X_REQUEST_FIELD_CARD16!map);
     /* more swapping done down below */
 
     if (client.swapped) {
@@ -557,13 +557,13 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
 int ProcXkbBell(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbBellReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(bellClass);
-    X_REQUEST_FIELD_CARD16(bellID);
-    X_REQUEST_FIELD_CARD32(name);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD16(pitch);
-    X_REQUEST_FIELD_CARD16(duration);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!bellClass);
+    mixin(X_REQUEST_FIELD_CARD16!bellID);
+    mixin(X_REQUEST_FIELD_CARD32!name);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD16!pitch);
+    mixin(X_REQUEST_FIELD_CARD16!duration);
 
     DeviceIntPtr dev = void;
     WindowPtr pWin = void;
@@ -648,7 +648,7 @@ int ProcXkbBell(ClientPtr client)
 int ProcXkbGetState(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetStateReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
 
     DeviceIntPtr dev = void;
     XkbStateRec* xkb = void;
@@ -674,7 +674,7 @@ int ProcXkbGetState(ClientPtr client)
         ptrBtnState: xkb.ptr_buttons
     };
 
-    X_REPLY_FIELD_CARD16(ptrBtnState);
+    mixin(X_REPLY_FIELD_CARD16!ptrBtnState);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -682,8 +682,8 @@ int ProcXkbGetState(ClientPtr client)
 int ProcXkbLatchLockState(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbLatchLockStateReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(groupLatch);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!groupLatch);
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -747,7 +747,7 @@ int ProcXkbLatchLockState(ClientPtr client)
 int ProcXkbGetControls(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetControlsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
 
     XkbControlsPtr xkb = void;
     DeviceIntPtr dev = void;
@@ -789,24 +789,24 @@ int ProcXkbGetControls(ClientPtr client)
     };
     memcpy(reply.perKeyRepeat, xkb.per_key_repeat, XkbPerKeyBitArraySize);
 
-    X_REPLY_FIELD_CARD16(internalVMods);
-    X_REPLY_FIELD_CARD16(ignoreLockVMods);
-    X_REPLY_FIELD_CARD32(enabledCtrls);
-    X_REPLY_FIELD_CARD16(repeatDelay);
-    X_REPLY_FIELD_CARD16(repeatInterval);
-    X_REPLY_FIELD_CARD16(slowKeysDelay);
-    X_REPLY_FIELD_CARD16(debounceDelay);
-    X_REPLY_FIELD_CARD16(mkDelay);
-    X_REPLY_FIELD_CARD16(mkInterval);
-    X_REPLY_FIELD_CARD16(mkTimeToMax);
-    X_REPLY_FIELD_CARD16(mkMaxSpeed);
-    X_REPLY_FIELD_CARD16(mkCurve);
-    X_REPLY_FIELD_CARD16(axTimeout);
-    X_REPLY_FIELD_CARD32(axtCtrlsMask);
-    X_REPLY_FIELD_CARD32(axtCtrlsValues);
-    X_REPLY_FIELD_CARD16(axtOptsMask);
-    X_REPLY_FIELD_CARD16(axtOptsValues);
-    X_REPLY_FIELD_CARD16(axOptions);
+    mixin(X_REPLY_FIELD_CARD16!internalVMods);
+    mixin(X_REPLY_FIELD_CARD16!ignoreLockVMods);
+    mixin(X_REPLY_FIELD_CARD32!enabledCtrls);
+    mixin(X_REPLY_FIELD_CARD16!repeatDelay);
+    mixin(X_REPLY_FIELD_CARD16!repeatInterval);
+    mixin(X_REPLY_FIELD_CARD16!slowKeysDelay);
+    mixin(X_REPLY_FIELD_CARD16!debounceDelay);
+    mixin(X_REPLY_FIELD_CARD16!mkDelay);
+    mixin(X_REPLY_FIELD_CARD16!mkInterval);
+    mixin(X_REPLY_FIELD_CARD16!mkTimeToMax);
+    mixin(X_REPLY_FIELD_CARD16!mkMaxSpeed);
+    mixin(X_REPLY_FIELD_CARD16!mkCurve);
+    mixin(X_REPLY_FIELD_CARD16!axTimeout);
+    mixin(X_REPLY_FIELD_CARD32!axtCtrlsMask);
+    mixin(X_REPLY_FIELD_CARD32!axtCtrlsValues);
+    mixin(X_REPLY_FIELD_CARD16!axtOptsMask);
+    mixin(X_REPLY_FIELD_CARD16!axtOptsValues);
+    mixin(X_REPLY_FIELD_CARD16!axOptions);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -814,29 +814,29 @@ int ProcXkbGetControls(ClientPtr client)
 int ProcXkbSetControls(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbSetControlsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(affectInternalVMods);
-    X_REQUEST_FIELD_CARD16(internalVMods);
-    X_REQUEST_FIELD_CARD16(affectIgnoreLockVMods);
-    X_REQUEST_FIELD_CARD16(ignoreLockVMods);
-    X_REQUEST_FIELD_CARD16(axOptions);
-    X_REQUEST_FIELD_CARD32(affectEnabledCtrls);
-    X_REQUEST_FIELD_CARD32(enabledCtrls);
-    X_REQUEST_FIELD_CARD32(changeCtrls);
-    X_REQUEST_FIELD_CARD16(repeatDelay);
-    X_REQUEST_FIELD_CARD16(repeatInterval);
-    X_REQUEST_FIELD_CARD16(slowKeysDelay);
-    X_REQUEST_FIELD_CARD16(debounceDelay);
-    X_REQUEST_FIELD_CARD16(mkDelay);
-    X_REQUEST_FIELD_CARD16(mkInterval);
-    X_REQUEST_FIELD_CARD16(mkTimeToMax);
-    X_REQUEST_FIELD_CARD16(mkMaxSpeed);
-    X_REQUEST_FIELD_CARD16(mkCurve);
-    X_REQUEST_FIELD_CARD16(axTimeout);
-    X_REQUEST_FIELD_CARD32(axtCtrlsMask);
-    X_REQUEST_FIELD_CARD32(axtCtrlsValues);
-    X_REQUEST_FIELD_CARD16(axtOptsMask);
-    X_REQUEST_FIELD_CARD16(axtOptsValues);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!affectInternalVMods);
+    mixin(X_REQUEST_FIELD_CARD16!internalVMods);
+    mixin(X_REQUEST_FIELD_CARD16!affectIgnoreLockVMods);
+    mixin(X_REQUEST_FIELD_CARD16!ignoreLockVMods);
+    mixin(X_REQUEST_FIELD_CARD16!axOptions);
+    mixin(X_REQUEST_FIELD_CARD32!affectEnabledCtrls);
+    mixin(X_REQUEST_FIELD_CARD32!enabledCtrls);
+    mixin(X_REQUEST_FIELD_CARD32!changeCtrls);
+    mixin(X_REQUEST_FIELD_CARD16!repeatDelay);
+    mixin(X_REQUEST_FIELD_CARD16!repeatInterval);
+    mixin(X_REQUEST_FIELD_CARD16!slowKeysDelay);
+    mixin(X_REQUEST_FIELD_CARD16!debounceDelay);
+    mixin(X_REQUEST_FIELD_CARD16!mkDelay);
+    mixin(X_REQUEST_FIELD_CARD16!mkInterval);
+    mixin(X_REQUEST_FIELD_CARD16!mkTimeToMax);
+    mixin(X_REQUEST_FIELD_CARD16!mkMaxSpeed);
+    mixin(X_REQUEST_FIELD_CARD16!mkCurve);
+    mixin(X_REQUEST_FIELD_CARD16!axTimeout);
+    mixin(X_REQUEST_FIELD_CARD32!axtCtrlsMask);
+    mixin(X_REQUEST_FIELD_CARD32!axtCtrlsValues);
+    mixin(X_REQUEST_FIELD_CARD16!axtOptsMask);
+    mixin(X_REQUEST_FIELD_CARD16!axtOptsValues);
 
     DeviceIntPtr dev = void, tmpd = void;
     XkbSrvInfoPtr xkbi = void;
@@ -1437,10 +1437,10 @@ private void XkbAssembleMap(ClientPtr client, XkbDescPtr xkb, xkbGetMapReply rep
 int ProcXkbGetMap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(full);
-    X_REQUEST_FIELD_CARD16(partial);
-    X_REQUEST_FIELD_CARD16(virtualMods);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!full);
+    mixin(X_REQUEST_FIELD_CARD16!partial);
+    mixin(X_REQUEST_FIELD_CARD16!virtualMods);
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -1550,9 +1550,9 @@ int ProcXkbGetMap(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD16(present);
-    X_REPLY_FIELD_CARD16(totalSyms);
-    X_REPLY_FIELD_CARD16(totalActs);
+    mixin(X_REPLY_FIELD_CARD16!present);
+    mixin(X_REPLY_FIELD_CARD16!totalSyms);
+    mixin(X_REPLY_FIELD_CARD16!totalActs);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -2671,13 +2671,13 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
 
 int ProcXkbSetMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(present);
-    X_REQUEST_FIELD_CARD16(flags);
-    X_REQUEST_FIELD_CARD16(totalSyms);
-    X_REQUEST_FIELD_CARD16(totalActs);
-    X_REQUEST_FIELD_CARD16(virtualMods);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!present);
+    mixin(X_REQUEST_FIELD_CARD16!flags);
+    mixin(X_REQUEST_FIELD_CARD16!totalSyms);
+    mixin(X_REQUEST_FIELD_CARD16!totalActs);
+    mixin(X_REQUEST_FIELD_CARD16!virtualMods);
 
     DeviceIntPtr dev = void, master = void;
     char* tmp = void;
@@ -2820,9 +2820,9 @@ private void XkbAssembleCompatMap(ClientPtr client, XkbCompatMapPtr compat, xkbG
 int ProcXkbGetCompatMap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetCompatMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(firstSI);
-    X_REQUEST_FIELD_CARD16(nSI);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!firstSI);
+    mixin(X_REQUEST_FIELD_CARD16!nSI);
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -2859,9 +2859,9 @@ int ProcXkbGetCompatMap(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD16(firstSI);
-    X_REPLY_FIELD_CARD16(nSI);
-    X_REPLY_FIELD_CARD16(nTotalSI);
+    mixin(X_REPLY_FIELD_CARD16!firstSI);
+    mixin(X_REPLY_FIELD_CARD16!nSI);
+    mixin(X_REPLY_FIELD_CARD16!nTotalSI);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -3023,10 +3023,10 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
 
 int ProcXkbSetCompatMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetCompatMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(firstSI);
-    X_REQUEST_FIELD_CARD16(nSI);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetCompatMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!firstSI);
+    mixin(X_REQUEST_FIELD_CARD16!nSI);
 
     DeviceIntPtr dev = void;
     char* data = void;
@@ -3086,7 +3086,7 @@ int ProcXkbSetCompatMap(ClientPtr client)
 int ProcXkbGetIndicatorState(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetIndicatorStateReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
 
     XkbSrvLedInfoPtr sli = void;
     DeviceIntPtr dev = void;
@@ -3106,7 +3106,7 @@ int ProcXkbGetIndicatorState(ClientPtr client)
         state: sli.effectiveState
     };
 
-    X_REPLY_FIELD_CARD32(state);
+    mixin(X_REPLY_FIELD_CARD32!state);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -3149,8 +3149,8 @@ private void XkbAssembleIndicatorMap(ClientPtr client, XkbIndicatorPtr indicator
 int ProcXkbGetIndicatorMap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetIndicatorMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(which);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD32!which);
 
     DeviceIntPtr dev = void;
     XkbDescPtr xkb = void;
@@ -3177,8 +3177,8 @@ int ProcXkbGetIndicatorMap(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD32(which);
-    X_REPLY_FIELD_CARD32(realIndicators);
+    mixin(X_REPLY_FIELD_CARD32!which);
+    mixin(X_REPLY_FIELD_CARD32!realIndicators);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -3229,9 +3229,9 @@ private int _XkbSetIndicatorMap(ClientPtr client, DeviceIntPtr dev, int which, x
 
 int ProcXkbSetIndicatorMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetIndicatorMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(which);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetIndicatorMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD32!which);
 
     int i = void, bit = void;
     int nIndicators = void;
@@ -3294,10 +3294,10 @@ int ProcXkbSetIndicatorMap(ClientPtr client)
 int ProcXkbGetNamedIndicator(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetNamedIndicatorReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(ledClass);
-    X_REQUEST_FIELD_CARD16(ledID);
-    X_REQUEST_FIELD_CARD32(indicator);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!ledClass);
+    mixin(X_REQUEST_FIELD_CARD16!ledID);
+    mixin(X_REQUEST_FIELD_CARD32!indicator);
 
     DeviceIntPtr dev = void;
     int i = 0;
@@ -3346,9 +3346,9 @@ int ProcXkbGetNamedIndicator(ClientPtr client)
         reply.ctrls = map.ctrls;
     }
 
-    X_REPLY_FIELD_CARD32(indicator);
-    X_REPLY_FIELD_CARD16(virtualMods);
-    X_REPLY_FIELD_CARD32(ctrls);
+    mixin(X_REPLY_FIELD_CARD32!indicator);
+    mixin(X_REPLY_FIELD_CARD16!virtualMods);
+    mixin(X_REPLY_FIELD_CARD32!ctrls);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -3484,12 +3484,12 @@ private int _XkbSetNamedIndicator(ClientPtr client, DeviceIntPtr dev, xkbSetName
 int ProcXkbSetNamedIndicator(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbSetNamedIndicatorReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(ledClass);
-    X_REQUEST_FIELD_CARD16(ledID);
-    X_REQUEST_FIELD_CARD32(indicator);
-    X_REQUEST_FIELD_CARD16(virtualMods);
-    X_REQUEST_FIELD_CARD32(ctrls);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!ledClass);
+    mixin(X_REQUEST_FIELD_CARD16!ledID);
+    mixin(X_REQUEST_FIELD_CARD32!indicator);
+    mixin(X_REQUEST_FIELD_CARD16!virtualMods);
+    mixin(X_REQUEST_FIELD_CARD32!ctrls);
 
     int rc = void;
     DeviceIntPtr dev = void;
@@ -3768,8 +3768,8 @@ private void XkbAssembleNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply
 int ProcXkbGetNames(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetNamesReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(which);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD32!which);
 
     DeviceIntPtr dev = void;
     XkbDescPtr xkb = void;
@@ -3800,9 +3800,9 @@ int ProcXkbGetNames(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD32(which);
-    X_REPLY_FIELD_CARD16(virtualMods);
-    X_REPLY_FIELD_CARD32(indicators);
+    mixin(X_REPLY_FIELD_CARD32!which);
+    mixin(X_REPLY_FIELD_CARD16!virtualMods);
+    mixin(X_REPLY_FIELD_CARD32!indicators);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -4200,12 +4200,12 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
 
 int ProcXkbSetNames(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetNamesReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(virtualMods);
-    X_REQUEST_FIELD_CARD32(which);
-    X_REQUEST_FIELD_CARD32(indicators);
-    X_REQUEST_FIELD_CARD16(totalKTLevelNames);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetNamesReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!virtualMods);
+    mixin(X_REQUEST_FIELD_CARD32!which);
+    mixin(X_REQUEST_FIELD_CARD32!indicators);
+    mixin(X_REQUEST_FIELD_CARD16!totalKTLevelNames);
 
     DeviceIntPtr dev = void;
     CARD32* tmp = void;
@@ -4739,8 +4739,8 @@ private void XkbAssembleGeometry(ClientPtr client, XkbGeometryPtr geom, xkbGetGe
 int ProcXkbGetGeometry(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetGeometryReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(name);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD32!name);
 
     DeviceIntPtr dev = void;
     XkbGeometryPtr geom = void;
@@ -4765,15 +4765,15 @@ int ProcXkbGetGeometry(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     XkbAssembleGeometry(client, geom, reply, &rpcbuf);
 
-    X_REPLY_FIELD_CARD32(name);
-    X_REPLY_FIELD_CARD16(widthMM);
-    X_REPLY_FIELD_CARD16(heightMM);
-    X_REPLY_FIELD_CARD16(nProperties);
-    X_REPLY_FIELD_CARD16(nColors);
-    X_REPLY_FIELD_CARD16(nShapes);
-    X_REPLY_FIELD_CARD16(nSections);
-    X_REPLY_FIELD_CARD16(nDoodads);
-    X_REPLY_FIELD_CARD16(nKeyAliases);
+    mixin(X_REPLY_FIELD_CARD32!name);
+    mixin(X_REPLY_FIELD_CARD16!widthMM);
+    mixin(X_REPLY_FIELD_CARD16!heightMM);
+    mixin(X_REPLY_FIELD_CARD16!nProperties);
+    mixin(X_REPLY_FIELD_CARD16!nColors);
+    mixin(X_REPLY_FIELD_CARD16!nShapes);
+    mixin(X_REPLY_FIELD_CARD16!nSections);
+    mixin(X_REPLY_FIELD_CARD16!nDoodads);
+    mixin(X_REPLY_FIELD_CARD16!nKeyAliases);
 
     status = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
@@ -5315,15 +5315,15 @@ private int _XkbSetGeometry(ClientPtr client, DeviceIntPtr dev, xkbSetGeometryRe
 
 int ProcXkbSetGeometry(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetGeometryReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(name);
-    X_REQUEST_FIELD_CARD16(widthMM);
-    X_REQUEST_FIELD_CARD16(heightMM);
-    X_REQUEST_FIELD_CARD16(nProperties);
-    X_REQUEST_FIELD_CARD16(nColors);
-    X_REQUEST_FIELD_CARD16(nDoodads);
-    X_REQUEST_FIELD_CARD16(nKeyAliases);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetGeometryReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD32!name);
+    mixin(X_REQUEST_FIELD_CARD16!widthMM);
+    mixin(X_REQUEST_FIELD_CARD16!heightMM);
+    mixin(X_REQUEST_FIELD_CARD16!nProperties);
+    mixin(X_REQUEST_FIELD_CARD16!nColors);
+    mixin(X_REQUEST_FIELD_CARD16!nDoodads);
+    mixin(X_REQUEST_FIELD_CARD16!nKeyAliases);
 
     DeviceIntPtr dev = void;
     int rc = void;
@@ -5357,12 +5357,12 @@ int ProcXkbSetGeometry(ClientPtr client)
 int ProcXkbPerClientFlags(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbPerClientFlagsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(change);
-    X_REQUEST_FIELD_CARD32(value);
-    X_REQUEST_FIELD_CARD32(ctrlsToChange);
-    X_REQUEST_FIELD_CARD32(autoCtrls);
-    X_REQUEST_FIELD_CARD32(autoCtrlValues);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD32!change);
+    mixin(X_REQUEST_FIELD_CARD32!value);
+    mixin(X_REQUEST_FIELD_CARD32!ctrlsToChange);
+    mixin(X_REQUEST_FIELD_CARD32!autoCtrls);
+    mixin(X_REQUEST_FIELD_CARD32!autoCtrlValues);
 
     DeviceIntPtr dev = void;
     XkbInterestPtr interest = void;
@@ -5419,10 +5419,10 @@ int ProcXkbPerClientFlags(ClientPtr client)
         autoCtrlValues:  interest ? interest.autoCtrlValues : 0,
     };
 
-    X_REPLY_FIELD_CARD32(supported);
-    X_REPLY_FIELD_CARD32(value);
-    X_REPLY_FIELD_CARD32(autoCtrls);
-    X_REPLY_FIELD_CARD32(autoCtrlValues);
+    mixin(X_REPLY_FIELD_CARD32!supported);
+    mixin(X_REPLY_FIELD_CARD32!value);
+    mixin(X_REPLY_FIELD_CARD32!autoCtrls);
+    mixin(X_REPLY_FIELD_CARD32!autoCtrlValues);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -5496,9 +5496,9 @@ private char* GetComponentSpec(ClientPtr client, xkbGetKbdByNameReq* stuff, ubyt
 
 int ProcXkbListComponents(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbListComponentsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(maxNames);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbListComponentsReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!maxNames);
 
     DeviceIntPtr dev = void;
     uint len = void;
@@ -5575,10 +5575,10 @@ private uint XkbConvertGetByNameComponents(Bool toXkm, uint orig)
 
 int ProcXkbGetKbdByName(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbGetKbdByNameReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(want);
-    X_REQUEST_FIELD_CARD16(need);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbGetKbdByNameReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!want);
+    mixin(X_REQUEST_FIELD_CARD16!need);
 
     DeviceIntPtr dev = void;
     DeviceIntPtr tmpd = void;
@@ -5910,8 +5910,8 @@ int ProcXkbGetKbdByName(ClientPtr client)
         x_rpcbuf_write_rpcbuf_pad(&rpcbuf, &childbuf);
     }
 
-    X_REPLY_FIELD_CARD16(found);
-    X_REPLY_FIELD_CARD16(reported);
+    mixin(X_REPLY_FIELD_CARD16!found);
+    mixin(X_REPLY_FIELD_CARD16!reported);
 
     status = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
@@ -6164,10 +6164,10 @@ private int FillDeviceLedFBs(DeviceIntPtr dev, int class_, int id, uint wantLeng
 int ProcXkbGetDeviceInfo(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xkbGetDeviceInfoReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(wanted);
-    X_REQUEST_FIELD_CARD16(ledClass);
-    X_REQUEST_FIELD_CARD16(ledID);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!wanted);
+    mixin(X_REQUEST_FIELD_CARD16!ledClass);
+    mixin(X_REQUEST_FIELD_CARD16!ledID);
 
     DeviceIntPtr dev = void;
     int status = void;
@@ -6302,13 +6302,13 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
         return BadLength;
     }
 
-    X_REPLY_FIELD_CARD16(present);
-    X_REPLY_FIELD_CARD16(supported);
-    X_REPLY_FIELD_CARD16(unsupported);
-    X_REPLY_FIELD_CARD16(nDeviceLedFBs);
-    X_REPLY_FIELD_CARD16(dfltKbdFB);
-    X_REPLY_FIELD_CARD16(dfltLedFB);
-    X_REPLY_FIELD_CARD32(devType);
+    mixin(X_REPLY_FIELD_CARD16!present);
+    mixin(X_REPLY_FIELD_CARD16!supported);
+    mixin(X_REPLY_FIELD_CARD16!unsupported);
+    mixin(X_REPLY_FIELD_CARD16!nDeviceLedFBs);
+    mixin(X_REPLY_FIELD_CARD16!dfltKbdFB);
+    mixin(X_REPLY_FIELD_CARD16!dfltLedFB);
+    mixin(X_REPLY_FIELD_CARD32!devType);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -6576,10 +6576,10 @@ private int _XkbSetDeviceInfo(ClientPtr client, DeviceIntPtr dev, xkbSetDeviceIn
 
 int ProcXkbSetDeviceInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetDeviceInfoReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(change);
-    X_REQUEST_FIELD_CARD16(nDeviceLedFBs);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetDeviceInfoReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceSpec);
+    mixin(X_REQUEST_FIELD_CARD16!change);
+    mixin(X_REQUEST_FIELD_CARD16!nDeviceLedFBs);
 
     DeviceIntPtr dev = void;
     int rc = void;
@@ -6643,12 +6643,12 @@ int ProcXkbSetDeviceInfo(ClientPtr client)
 
 int ProcXkbSetDebuggingFlags(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetDebuggingFlagsReq);
-    X_REQUEST_FIELD_CARD32(affectFlags);
-    X_REQUEST_FIELD_CARD32(flags);
-    X_REQUEST_FIELD_CARD32(affectCtrls);
-    X_REQUEST_FIELD_CARD32(ctrls);
-    X_REQUEST_FIELD_CARD16(msgLength);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetDebuggingFlagsReq);
+    mixin(X_REQUEST_FIELD_CARD32!affectFlags);
+    mixin(X_REQUEST_FIELD_CARD32!flags);
+    mixin(X_REQUEST_FIELD_CARD32!affectCtrls);
+    mixin(X_REQUEST_FIELD_CARD32!ctrls);
+    mixin(X_REQUEST_FIELD_CARD16!msgLength);
 
     CARD32 newFlags = void, newCtrls = void, extraLength = void;
     int rc = void;
@@ -6696,10 +6696,10 @@ int ProcXkbSetDebuggingFlags(ClientPtr client)
         supportedCtrls: ~0
     };
 
-    X_REPLY_FIELD_CARD32(currentFlags);
-    X_REPLY_FIELD_CARD32(currentCtrls);
-    X_REPLY_FIELD_CARD32(supportedFlags);
-    X_REPLY_FIELD_CARD32(supportedCtrls);
+    mixin(X_REPLY_FIELD_CARD32!currentFlags);
+    mixin(X_REPLY_FIELD_CARD32!currentCtrls);
+    mixin(X_REPLY_FIELD_CARD32!supportedFlags);
+    mixin(X_REPLY_FIELD_CARD32!supportedCtrls);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

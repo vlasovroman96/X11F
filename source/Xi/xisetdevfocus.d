@@ -46,10 +46,10 @@ import Xi.exglobals;          /* BadDevice */
 
 int ProcXISetFocus(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXISetFocusReq);
-    X_REQUEST_FIELD_CARD16(deviceid);
-    X_REQUEST_FIELD_CARD32(focus);
-    X_REQUEST_FIELD_CARD32(time);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXISetFocusReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceid);
+    mixin(X_REQUEST_FIELD_CARD32!focus);
+    mixin(X_REQUEST_FIELD_CARD32!time);
 
     DeviceIntPtr dev = void;
     int ret = void;
@@ -66,8 +66,8 @@ int ProcXISetFocus(ClientPtr client)
 
 int ProcXIGetFocus(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXIGetFocusReq);
-    X_REQUEST_FIELD_CARD16(deviceid);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXIGetFocusReq);
+    mixin(X_REQUEST_FIELD_CARD16!deviceid);
 
     DeviceIntPtr dev = void;
     int ret = void;
@@ -91,7 +91,7 @@ int ProcXIGetFocus(ClientPtr client)
     else
         reply.focus = dev.focus.win.drawable.id;
 
-    X_REPLY_FIELD_CARD32(focus);
+    mixin(X_REPLY_FIELD_CARD32!focus);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

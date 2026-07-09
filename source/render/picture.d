@@ -1010,7 +1010,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
     pPicture.serialNumber |= GC_CHANGE_SERIAL_BIT;
     maskQ = vmask;
     while (vmask && !error) {
-        index2 = cast(BITS32) lowbit(vmask);
+        index2 = cast(BITS32) mixin(lowbit!vmask);
         vmask &= ~index2;
         pPicture.stateChanges |= index2;
         switch (index2) {

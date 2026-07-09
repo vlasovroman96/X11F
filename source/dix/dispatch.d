@@ -645,7 +645,7 @@ Bool CreateConnectionBlock()
     memset(&depth, 0, xDepth.sizeof);
     memset(&visual, 0, xVisualType.sizeof);
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         DepthPtr pDepth = void;
         VisualPtr pVisual = void;
 
@@ -990,17 +990,17 @@ int ProcGetGeometry(ClientPtr client)
         return rc;
 
     xGetGeometryReply reply = {
-        root: pDraw.pScreen.root.drawable.id,
+        root: cast(uint)pDraw.pScreen.root.drawable.id,
         depth: pDraw.depth,
         width: pDraw.width,
         height: pDraw.height,
     };
 
-    if (WindowDrawable(pDraw.type)) {
+    if (mixin(WindowDrawable!("pDraw.type"))) {
         WindowPtr pWin = cast(WindowPtr) pDraw;
 
-        reply.x = pWin.origin.x - wBorderWidth(pWin);
-        reply.y = pWin.origin.y - wBorderWidth(pWin);
+        reply.x = pWin.origin.x - mixin(wBorderWidth!("pWin"));
+        reply.y = pWin.origin.y - mixin(wBorderWidth!("pWin"));
         reply.borderWidth = pWin.borderWidth;
     }
 
@@ -1042,7 +1042,7 @@ int ProcQueryTree(ClientPtr client)
     }
 
     xQueryTreeReply reply = {
-        root: pWin.drawable.pScreen.root.drawable.id,
+        root: cast(uint)pWin.drawable.pScreen.root.drawable.id,
         parent: (pWin.parent) ? pWin.parent.drawable.id : cast(Window) None,
         nChildren: numChildren,
     };
@@ -1215,17 +1215,17 @@ int ProcTranslateCoords(ClientPtr client)
             BoxRec box = void;
 
             if ((pWin.mapped) &&
-                (x >= pWin.drawable.x - wBorderWidth(pWin)) &&
+                (x >= pWin.drawable.x - mixin(wBorderWidth!("pWin"))) &&
                 (x < pWin.drawable.x + cast(int) pWin.drawable.width +
-                 wBorderWidth(pWin)) &&
-                (y >= pWin.drawable.y - wBorderWidth(pWin)) &&
+                 mixin(wBorderWidth!("pWin"))) &&
+                (y >= pWin.drawable.y - mixin(wBorderWidth!("pWin"))) &&
                 (y < pWin.drawable.y + cast(int) pWin.drawable.height +
-                 wBorderWidth(pWin))
+                 mixin(wBorderWidth!("pWin")))
                 /* When a window is shaped, a further check
                  * is made to see if the point is inside
                  * borderSize
                  */
-                && (!wBoundingShape(pWin) ||
+                && (!mixin(wBoundingShape!("pWin")) ||
                     RegionContainsPoint(&pWin.borderSize, x, y, &box))
 
                 && (!wInputShape(pWin) ||
@@ -1599,7 +1599,7 @@ int ProcSetDashes(ClientPtr client)
 
     mixin(REQUEST!xSetDashesReq);
 
-    REQUEST_FIXED_SIZE(xSetDashesReq, stuff.nDashes);
+    mixin(REQUEST_FIXED_SIZE!(xSetDashesReq, "stuff.nDashes"));
     if (stuff.nDashes == 0) {
         client.errorValue = 0;
         return BadValue;
@@ -1743,7 +1743,7 @@ int ProcCopyArea(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCopyAreaReq);
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.dstDrawable, pDst, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.dstDrawable", "pDst", "DixWriteAccess"));
     if (stuff.dstDrawable != stuff.srcDrawable) {
         rc = dixLookupDrawable(&pSrc, stuff.srcDrawable, client, 0,
                                DixReadAccess);
@@ -1780,7 +1780,7 @@ int ProcCopyPlane(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCopyPlaneReq);
 
-    VALIDATE_DRAWABLE_AND_GC(stuff.dstDrawable, pdstDraw, DixWriteAccess);
+    mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.dstDrawable", "pdstDraw", "DixWriteAccess"));
     if (stuff.dstDrawable != stuff.srcDrawable) {
         rc = dixLookupDrawable(&psrcDraw, stuff.srcDrawable, client, 0,
                                DixReadAccess);
@@ -1937,7 +1937,7 @@ int ProcPolyArc(ClientPtr client)
     DrawablePtr pDraw = void;
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
-    narcs = (client.req_len << 2) - xPolyArcReq.sizeof;
+    narcs = cast(int)(client.req_len << 2) - xPolyArcReq.sizeof;
     if (narcs % xArc.sizeof)
         return BadLength;
     narcs /= xArc.sizeof;
@@ -1967,7 +1967,7 @@ int ProcFillPoly(ClientPtr client)
     }
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
-    things = bytes_to_int32((client.req_len << 2) - xFillPolyReq.sizeof);
+    things = cast(int)bytes_to_int32((client.req_len << 2) - xFillPolyReq.sizeof);
     if (things)
         (*pGC.ops.FillPolygon) (pDraw, pGC, stuff.shape,
                                   stuff.coordMode, things,
@@ -1991,7 +1991,7 @@ int ProcPolyFillRectangle(ClientPtr client)
     DrawablePtr pDraw = void;
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
-    things = (client.req_len << 2) - xPolyFillRectangleReq.sizeof;
+    things = cast(int)(client.req_len << 2) - xPolyFillRectangleReq.sizeof;
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -2018,7 +2018,7 @@ int ProcPolyFillArc(ClientPtr client)
     DrawablePtr pDraw = void;
 
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
-    narcs = (client.req_len << 2) - xPolyFillArcReq.sizeof;
+    narcs = cast(int)(client.req_len << 2) - xPolyFillArcReq.sizeof;
     if (narcs % xArc.sizeof)
         return BadLength;
     narcs /= xArc.sizeof;
@@ -2176,10 +2176,10 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
 
         /* If the drawable is a window, the rectangle must be contained within
          * its bounds (including the border). */
-        if (x < -wBorderWidth(pWin) ||
-            x + width > wBorderWidth(pWin) + cast(int) pDraw.width ||
-            y < -wBorderWidth(pWin) ||
-            y + height > wBorderWidth(pWin) + cast(int) pDraw.height)
+        if (x < -mixin(wBorderWidth!"pWin")||
+            x + width > mixin(wBorderWidth!"pWin")+ cast(int) pDraw.width ||
+            y < -mixin(wBorderWidth!"pWin")||
+            y + height > mixin(wBorderWidth!"pWin")+ cast(int) pDraw.height)
             return BadMatch;
 
         relx += pDraw.x;
@@ -2383,7 +2383,7 @@ int ProcImageText8(ClientPtr client)
 
     mixin(REQUEST!xImageTextReq);
 
-    REQUEST_FIXED_SIZE(xImageTextReq, stuff.nChars);
+    mixin(REQUEST_FIXED_SIZE!("xImageTextReq", "stuff.nChars"));
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
 
     return ImageText(client,
@@ -2401,7 +2401,7 @@ int ProcImageText16(ClientPtr client)
 
     mixin(REQUEST!xImageTextReq);
 
-    REQUEST_FIXED_SIZE(xImageTextReq, stuff.nChars << 1);
+   mixin(REQUEST_FIXED_SIZE!("xImageTextReq", "stuff.nChars << 1"));
     VALIDATE_DRAWABLE_AND_GC(stuff.drawable, pDraw, DixWriteAccess);
 
     return ImageText(client,
@@ -2653,7 +2653,7 @@ int ProcAllocNamedColor(ClientPtr client)
 
     mixin(REQUEST!xAllocNamedColorReq);
 
-    REQUEST_FIXED_SIZE(xAllocNamedColorReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xAllocNamedColorReq", "stuff.nbytes"));
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixAddAccess);
     if (rc != Success) {
@@ -2903,7 +2903,7 @@ int ProcStoreNamedColor(ClientPtr client)
 
     mixin(REQUEST!xStoreNamedColorReq);
 
-    REQUEST_FIXED_SIZE(xStoreNamedColorReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xStoreNamedColorReq", "stuff.nbytes"));
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixWriteAccess);
     if (rc == Success) {
@@ -3241,7 +3241,7 @@ int ProcSetScreenSaver(ClientPtr client)
 
     int blankingOption = void, exposureOption = void;
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         int rc = dixCallScreensaverAccessCallback(client, walkScreen, DixSetAttrAccess);
         if (rc != Success)
             return rc;
@@ -3296,7 +3296,7 @@ int ProcGetScreenSaver(ClientPtr client)
 {
     mixin(REQUEST_AT_LEAST_SIZE!xReq);
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         int rc = dixCallScreensaverAccessCallback(client, walkScreen, DixGetAttrAccess);
         if (rc != Success)
             return rc;

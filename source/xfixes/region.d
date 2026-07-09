@@ -75,8 +75,8 @@ Bool XFixesRegionInit()
 
 int ProcXFixesCreateRegion(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXFixesCreateRegionReq);
-    X_REQUEST_FIELD_CARD32(region);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesCreateRegionReq);
+    mixin(X_REQUEST_FIELD_CARD32!region);
     X_REQUEST_REST_CARD16();
 
     int things = void;
@@ -84,7 +84,7 @@ int ProcXFixesCreateRegion(ClientPtr client)
 
     LEGAL_NEW_RESOURCE(stuff.region, client);
 
-    things = (client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
+    things = cast(int)(client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -101,8 +101,8 @@ int ProcXFixesCreateRegion(ClientPtr client)
 int ProcXFixesCreateRegionFromBitmap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesCreateRegionFromBitmapReq);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD32(bitmap);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD32!bitmap);
 
     RegionPtr pRegion = void;
     PixmapPtr pPixmap = void;
@@ -133,8 +133,8 @@ int ProcXFixesCreateRegionFromBitmap(ClientPtr client)
 int ProcXFixesCreateRegionFromWindow(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesCreateRegionFromWindowReq);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD32(window);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD32!"window");
 
     RegionPtr pRegion = void;
     Bool copy = TRUE;
@@ -150,7 +150,7 @@ int ProcXFixesCreateRegionFromWindow(ClientPtr client)
     }
     switch (stuff.kind) {
     case WindowRegionBounding:
-        pRegion = wBoundingShape(pWin);
+        pRegion = mixin(wBoundingShape!("pWin"));
         if (!pRegion) {
             pRegion = CreateBoundingShape(pWin);
             copy = FALSE;
@@ -180,8 +180,8 @@ int ProcXFixesCreateRegionFromWindow(ClientPtr client)
 int ProcXFixesCreateRegionFromGC(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesCreateRegionFromGCReq);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD32(gc);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
 
     RegionPtr pRegion = void, pClip = void;
     GCPtr pGC = void;
@@ -211,8 +211,8 @@ int ProcXFixesCreateRegionFromGC(ClientPtr client)
 int ProcXFixesCreateRegionFromPicture(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesCreateRegionFromPictureReq);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD32(picture);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD32!picture);
 
     RegionPtr pRegion = void;
     PicturePtr pPicture = void;
@@ -241,7 +241,7 @@ int ProcXFixesCreateRegionFromPicture(ClientPtr client)
 int ProcXFixesDestroyRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesDestroyRegionReq);
-    X_REQUEST_FIELD_CARD32(region);
+    mixin(X_REQUEST_FIELD_CARD32!region);
 
     RegionPtr pRegion = void;
 
@@ -252,8 +252,8 @@ int ProcXFixesDestroyRegion(ClientPtr client)
 
 int ProcXFixesSetRegion(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xXFixesSetRegionReq);
-    X_REQUEST_FIELD_CARD32(region);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesSetRegionReq);
+    mixin(X_REQUEST_FIELD_CARD32!region);
     X_REQUEST_REST_CARD16();
 
     int things = void;
@@ -261,7 +261,7 @@ int ProcXFixesSetRegion(ClientPtr client)
 
     VERIFY_REGION(pRegion, stuff.region, client, DixWriteAccess);
 
-    things = (client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
+    things = cast(int)(client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -280,8 +280,8 @@ int ProcXFixesSetRegion(ClientPtr client)
 int ProcXFixesCopyRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesCopyRegionReq);
-    X_REQUEST_FIELD_CARD32(source);
-    X_REQUEST_FIELD_CARD32(destination);
+    mixin(X_REQUEST_FIELD_CARD32!source);
+    mixin(X_REQUEST_FIELD_CARD32!destination);
 
     RegionPtr pSource = void, pDestination = void;
 
@@ -297,9 +297,9 @@ int ProcXFixesCopyRegion(ClientPtr client)
 int ProcXFixesCombineRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesCombineRegionReq);
-    X_REQUEST_FIELD_CARD32(source1);
-    X_REQUEST_FIELD_CARD32(source2);
-    X_REQUEST_FIELD_CARD32(destination);
+    mixin(X_REQUEST_FIELD_CARD32!source1);
+    mixin(X_REQUEST_FIELD_CARD32!source2);
+    mixin(X_REQUEST_FIELD_CARD32!destination);
 
     RegionPtr pSource1 = void, pSource2 = void, pDestination = void;
 
@@ -328,12 +328,12 @@ int ProcXFixesCombineRegion(ClientPtr client)
 int ProcXFixesInvertRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesInvertRegionReq);
-    X_REQUEST_FIELD_CARD32(source);
-    X_REQUEST_FIELD_CARD16(x);
-    X_REQUEST_FIELD_CARD16(y);
-    X_REQUEST_FIELD_CARD16(width);
-    X_REQUEST_FIELD_CARD16(height);
-    X_REQUEST_FIELD_CARD32(destination);
+    mixin(X_REQUEST_FIELD_CARD32!source);
+    mixin(X_REQUEST_FIELD_CARD16!x);
+    mixin(X_REQUEST_FIELD_CARD16!y);
+    mixin(X_REQUEST_FIELD_CARD16!width);
+    mixin(X_REQUEST_FIELD_CARD16!height);
+    mixin(X_REQUEST_FIELD_CARD32!destination);
 
     RegionPtr pSource = void, pDestination = void;
     BoxRec bounds = void;
@@ -363,9 +363,9 @@ int ProcXFixesInvertRegion(ClientPtr client)
 int ProcXFixesTranslateRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesTranslateRegionReq);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD16(dx);
-    X_REQUEST_FIELD_CARD16(dy);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD16!dx);
+    mixin(X_REQUEST_FIELD_CARD16!dy);
 
     RegionPtr pRegion = void;
 
@@ -378,8 +378,8 @@ int ProcXFixesTranslateRegion(ClientPtr client)
 int ProcXFixesRegionExtents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesRegionExtentsReq);
-    X_REQUEST_FIELD_CARD32(source);
-    X_REQUEST_FIELD_CARD32(destination);
+    mixin(X_REQUEST_FIELD_CARD32!source);
+    mixin(X_REQUEST_FIELD_CARD32!destination);
 
     RegionPtr pSource = void, pDestination = void;
 
@@ -394,7 +394,7 @@ int ProcXFixesRegionExtents(ClientPtr client)
 int ProcXFixesFetchRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesFetchRegionReq);
-    X_REQUEST_FIELD_CARD32(region);
+    mixin(X_REQUEST_FIELD_CARD32!region);
 
     RegionPtr pRegion = void;
     VERIFY_REGION(pRegion, stuff.region, client, DixReadAccess);
@@ -420,10 +420,10 @@ int ProcXFixesFetchRegion(ClientPtr client)
         height: pExtent.y2 - pExtent.y1,
     };
 
-    X_REPLY_FIELD_CARD16(x);
-    X_REPLY_FIELD_CARD16(y);
-    X_REPLY_FIELD_CARD16(width);
-    X_REPLY_FIELD_CARD16(height);
+    mixin(X_REPLY_FIELD_CARD16!x);
+    mixin(X_REPLY_FIELD_CARD16!y);
+    mixin(X_REPLY_FIELD_CARD16!width);
+    mixin(X_REPLY_FIELD_CARD16!height);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -437,10 +437,10 @@ version (XINERAMA) {
 int ProcXFixesSetGCClipRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesSetGCClipRegionReq);
-    X_REQUEST_FIELD_CARD32(gc);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD16(xOrigin);
-    X_REQUEST_FIELD_CARD16(yOrigin);
+    mixin(X_REQUEST_FIELD_CARD32!gc);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD16!xOrigin);
+    mixin(X_REQUEST_FIELD_CARD16!yOrigin);
 
 version (XINERAMA) {
     if (XFixesUseXinerama)
@@ -556,10 +556,10 @@ version (XINERAMA) {
 int ProcXFixesSetWindowShapeRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesSetWindowShapeRegionReq);
-    X_REQUEST_FIELD_CARD32(dest);
-    X_REQUEST_FIELD_CARD16(xOff);
-    X_REQUEST_FIELD_CARD16(yOff);
-    X_REQUEST_FIELD_CARD32(region);
+    mixin(X_REQUEST_FIELD_CARD32!dest);
+    mixin(X_REQUEST_FIELD_CARD16!xOff);
+    mixin(X_REQUEST_FIELD_CARD16!yOff);
+    mixin(X_REQUEST_FIELD_CARD32!region);
 
 version (XINERAMA) {
     if (XFixesUseXinerama)
@@ -577,10 +577,10 @@ version (XINERAMA) {
 int ProcXFixesSetPictureClipRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesSetPictureClipRegionReq);
-    X_REQUEST_FIELD_CARD32(picture);
-    X_REQUEST_FIELD_CARD32(region);
-    X_REQUEST_FIELD_CARD16(xOrigin);
-    X_REQUEST_FIELD_CARD16(yOrigin);
+    mixin(X_REQUEST_FIELD_CARD32!picture);
+    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REQUEST_FIELD_CARD16!xOrigin);
+    mixin(X_REQUEST_FIELD_CARD16!yOrigin);
 
 version (XINERAMA) {
     if (XFixesUseXinerama)
@@ -607,12 +607,12 @@ private int SingleXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPicture
 int ProcXFixesExpandRegion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesExpandRegionReq);
-    X_REQUEST_FIELD_CARD32(source);
-    X_REQUEST_FIELD_CARD32(destination);
-    X_REQUEST_FIELD_CARD16(left);
-    X_REQUEST_FIELD_CARD16(right);
-    X_REQUEST_FIELD_CARD16(top);
-    X_REQUEST_FIELD_CARD16(bottom);
+    mixin(X_REQUEST_FIELD_CARD32!source);
+    mixin(X_REQUEST_FIELD_CARD32!destination);
+    mixin(X_REQUEST_FIELD_CARD16!left);
+    mixin(X_REQUEST_FIELD_CARD16!right);
+    mixin(X_REQUEST_FIELD_CARD16!top);
+    mixin(X_REQUEST_FIELD_CARD16!bottom);
 
     RegionPtr pSource = void, pDestination = void;
     VERIFY_REGION(pSource, stuff.source, client, DixReadAccess);
@@ -654,12 +654,12 @@ private int PanoramiXFixesSetGCClipRegion(ClientPtr client, xXFixesSetGCClipRegi
         return result;
     }
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
-        stuff.gc = gc.info[walkScreenIdx].id;
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
+        stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
         result = SingleXFixesSetGCClipRegion(client, stuff);
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -680,7 +680,7 @@ private int PanoramiXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindo
     if (win.u.win.root)
         VERIFY_REGION_OR_NONE(reg, stuff.region, client, DixReadAccess);
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         stuff.dest = win.info[walkScreenIdx].id;
 
         if (reg)
@@ -693,7 +693,7 @@ private int PanoramiXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindo
 
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }
@@ -714,7 +714,7 @@ private int PanoramiXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPictu
     if (pict.u.pict.root)
         VERIFY_REGION_OR_NONE(reg, stuff.region, client, DixReadAccess);
 
-    XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+    mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         stuff.picture = pict.info[walkScreenIdx].id;
 
         if (reg)
@@ -727,7 +727,7 @@ private int PanoramiXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPictu
 
         if (result != Success)
             break;
-    });
+    }));
 
     return result;
 }

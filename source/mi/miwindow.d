@@ -258,7 +258,7 @@ void miMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pNextSib, VTKind kind)
     if (((pParent = pWin.parent) == 0))
         return;
     pScreen = pWin.drawable.pScreen;
-    bw = wBorderWidth(pWin);
+    bw = mixin(wBorderWidth!("pWin"));
 
     oldpt.x = pWin.drawable.x;
     oldpt.y = pWin.drawable.y;
@@ -342,7 +342,7 @@ void miResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib
     Bool WasViewable = cast(Bool) (pWin.viewable);
     ushort width = pWin.drawable.width, height = pWin.drawable.height;
     short oldx = pWin.drawable.x, oldy = pWin.drawable.y;
-    int bw = wBorderWidth(pWin);
+    int bw = mixin(wBorderWidth!("pWin"));
     short dw = void, dh = void;
     xPoint oldpt = void;
     RegionPtr oldRegion = null;
@@ -682,7 +682,7 @@ void miChangeBorderWidth(WindowPtr pWin, uint width)
     Bool HadBorder = void;
     WindowPtr pLayerWin = void;
 
-    oldwidth = wBorderWidth(pWin);
+    oldwidth = mixin(wBorderWidth!("pWin"));
     if (oldwidth == width)
         return;
     HadBorder = HasBorder(pWin);
@@ -741,17 +741,17 @@ WindowPtr miSpriteTrace(SpritePtr pSprite, int x, int y)
     pWin = DeepestSpriteWin(pSprite).firstChild;
     while (pWin) {
         if ((pWin.mapped) &&
-            (x >= pWin.drawable.x - wBorderWidth(pWin)) &&
+            (x >= pWin.drawable.x - mixin(wBorderWidth!("pWin"))) &&
             (x < pWin.drawable.x + cast(int) pWin.drawable.width +
-             wBorderWidth(pWin)) &&
-            (y >= pWin.drawable.y - wBorderWidth(pWin)) &&
+             mixin(wBorderWidth!("pWin"))) &&
+            (y >= pWin.drawable.y - mixin(wBorderWidth!("pWin"))) &&
             (y < pWin.drawable.y + cast(int) pWin.drawable.height +
-             wBorderWidth(pWin))
+             mixin(wBorderWidth!("pWin")))
             /* When a window is shaped, a further check
              * is made to see if the point is inside
              * borderSize
              */
-            && (!wBoundingShape(pWin) || PointInBorderSize(pWin, x, y))
+            && (!mixin(wBoundingShape!("pWin")) || PointInBorderSize(pWin, x, y))
             && (!wInputShape(pWin) ||
                 RegionContainsPoint(wInputShape(pWin),
                                     x - pWin.drawable.x,

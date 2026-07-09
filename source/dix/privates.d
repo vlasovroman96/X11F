@@ -214,7 +214,7 @@ private Bool fixupOneScreen(ScreenPtr pScreen, FixupFunc fixup, uint bytes)
 
 private Bool fixupScreens(FixupFunc fixup, uint bytes)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (!fixupOneScreen (walkScreen, fixup, bytes))
             return FALSE;
     });
@@ -293,7 +293,7 @@ private void grow_private_set(DevPrivateSetPtr set, uint bytes)
 private void grow_screen_specific_set(DevPrivateType type, uint bytes)
 {
     /* Update offsets for all screen-specific keys */
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         grow_private_set(&walkScreen.screenSpecificPrivates[type], bytes);
     });
     mixin(DIX_FOR_EACH_GPU_SCREEN!("{

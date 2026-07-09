@@ -63,13 +63,13 @@ alias CallbackListPtr = CallbackListRec*;
 
 alias CallbackProcPtr = void function(CallbackListPtr*, void*, void*);
 
-extern void AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+// extern void AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
 
-extern void DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+// extern void DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
 
 extern void _CallCallbacks(CallbackListPtr* pcbl, void* call_data);
 
-pragma(inline, true) private void CallCallbacks(CallbackListPtr* pcbl, void* call_data)
+pragma(inline, true) void CallCallbacks(CallbackListPtr* pcbl, void* call_data)
 {
     if (!pcbl || !*pcbl)
         return;

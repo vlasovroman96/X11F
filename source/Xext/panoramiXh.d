@@ -71,6 +71,6 @@ int ProcXineramaIsActive(ClientPtr client);
 extern int connBlockScreenStart;
 extern xConnSetupPrefix connSetupPrefix;
 
-extern int function(ClientPtr client)[256] SavedProcVector;
+// extern int function(ClientPtr client)[256] SavedProcVector;
 
  /* XSERVER_PANORAMIXH_H */

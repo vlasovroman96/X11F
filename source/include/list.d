@@ -383,24 +383,17 @@ template xorg_list_for_each_entry(string pos, string head, string member, string
  *
  * See xorg_list_for_each_entry for more details.
  */
-template xorg_list_for_each_entry_safe(
-    string pos,     // Передаем как строку "ref_"
-    string tmp,     // Передаем как строку "next"
-    string head,    // Передаем как строку "pPriv.reference_list" (БЕЗ &)
-    string member,  // Передаем как строку "link"
-    string bodyCode // Тело цикла через q{...}
-)
+template xorg_list_for_each_entry_safe(string pos, string tmp, string head, string member, string bodyCode)
 {
-    // typeof(*pos) автоматически определит тип структуры во время компиляции
-    const string xorg_list_for_each_entry_safe = 
-        "for (" 
-        ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ head ~ ".next), "
-        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((*" ~ pos ~ ")." ~ member ~ ".next); "
-        ~ "(" ~ head ~ ".next !is null) && &((*" ~ pos ~ ")." ~ member ~ ") != &" ~ head ~ "; "
+    // Используем enum вместо const для CTFE и ленивую подстановку head без преждевременного раскрытия
+    enum xorg_list_for_each_entry_safe = 
+        "for (" ~ pos ~ " = null, "
+        ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((" ~ head ~ ").next), "
+        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next); "
+        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " !is &(" ~ head ~ ")); "
         ~ pos ~ " = " ~ tmp ~ ", "
-        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((*" ~ pos ~ ")." ~ member ~ ".next)"
-        ~ ") {" 
-        ~ bodyCode 
+        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next)) {"
+        ~ bodyCode
         ~ "}";
 }
 
@@ -463,8 +456,8 @@ enum string nt_list_next(string _list, string _member) = `
  * @param list The list to iterate through.
  * @param member Member name of the field pointing to next struct.
  */
-enum string nt_list_for_each_entry(string _entry, string _list, string _member) = `
-	for (` ~ _entry ~ ` = ` ~ _list ~ `; ` ~ _entry ~ `; ` ~ _entry ~ ` = (` ~ _entry ~ `).` ~ _member ~ `)`;
+enum string nt_list_for_each_entry(string _entry, string _list, string _member, string lambda) = `
+	for (` ~ _entry ~ ` = ` ~ _list ~ `; ` ~ _entry ~ `; ` ~ _entry ~ ` = (` ~ _entry ~ `).` ~ _member ~ `)` ~ lambda;
 
 /**
  * Iterate through each element in the list, keeping a backup pointer to the

@@ -79,9 +79,9 @@ extern int lastEvent;           /* Defined in extension.c */
 
 int ProcXSendExtensionEvent(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xSendExtensionEventReq);
-    X_REQUEST_FIELD_CARD32(destination);
-    X_REQUEST_FIELD_CARD16(count);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xSendExtensionEventReq);
+    mixin(X_REQUEST_FIELD_CARD32!destination);
+    mixin(X_REQUEST_FIELD_CARD16!count);
 
     if (client.req_len !=
         bytes_to_int32(xSendExtensionEventReq.sizeof) + stuff.count +

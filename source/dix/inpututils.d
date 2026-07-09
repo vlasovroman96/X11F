@@ -784,7 +784,7 @@ void update_desktop_dimensions()
     int x1 = INT_MAX, y1 = INT_MAX;     /* top-left */
     int x2 = INT_MIN, y2 = INT_MIN;     /* bottom-right */
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         x1 = min(x1, walkScreen.x);
         y1 = min(y1, walkScreen.y);
         x2 = max(x2, walkScreen.x + walkScreen.width);

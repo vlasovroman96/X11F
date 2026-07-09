@@ -121,7 +121,7 @@ int FreeCursor(void* value, XID cid)
 
     BUG_WARN(CursorRefCount(pCurs) < 0);
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (walkScreen.UnrealizeCursor)
             walkScreen.UnrealizeCursor(pDev, walkScreen, pCurs);
     });
@@ -184,7 +184,7 @@ private void CheckForEmptyMask(CursorBitsPtr bits)
  */
 private int RealizeCursorAllScreens(CursorPtr pCurs)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         for (DeviceIntPtr pDev = inputInfo.devices; pDev; pDev = pDev.next) {
             if (DevHasCursor(pDev)) {
                 if (!(*walkScreen.RealizeCursor) (pDev, walkScreen, pCurs)) {

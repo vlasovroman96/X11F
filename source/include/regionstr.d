@@ -241,7 +241,7 @@ extern void RegionFromRects(int, xRectanglePtr, int);
  *
  *-----------------------------------------------------------------------
  */
-pragma(inline, true) private Bool RegionSubtract(RegionPtr regD, RegionPtr regM, RegionPtr regS)
+pragma(inline, true) Bool RegionSubtract(RegionPtr regD, RegionPtr regM, RegionPtr regS)
 {
     return pixman_region_subtract(regD, regM, regS);
 }
@@ -267,7 +267,7 @@ pragma(inline, true) private Bool RegionInverse(RegionPtr newReg, RegionPtr reg1
     return pixman_region_inverse(newReg, reg1, invRect);
 }
 
-pragma(inline, true) private int RegionContainsRect(RegionPtr region, BoxPtr prect)
+pragma(inline, true) int RegionContainsRect(RegionPtr region, BoxPtr prect)
 {
     return pixman_region_contains_rectangle(region, prect);
 }

@@ -530,14 +530,14 @@ private Bool XineramaSetCursorPosition(DeviceIntPtr pDev, int x, int y, Bool gen
     y += masterScreen.y;
 
     if (!point_on_screen(pScreen, x, y)) {
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             if (walkScreenIdx == pScreen.myNum)
                 continue;
             if (point_on_screen(walkScreen, x, y)) {
                 pScreen = walkScreen;
                 break;
             }
-        });
+        }));
     }
 
     pSprite.screen = pScreen;
@@ -574,9 +574,9 @@ private Bool XineramaSetWindowPntrs(DeviceIntPtr pDev, WindowPtr pWin)
     SpritePtr pSprite = pDev.spriteInfo.sprite;
 
     if (pWin == dixGetMasterScreen().root) {
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             pSprite.windows[walkScreenIdx] = walkScreen.root;
-        });
+        }));
     }
     else {
         PanoramiXRes* win = void;
@@ -587,13 +587,13 @@ private Bool XineramaSetWindowPntrs(DeviceIntPtr pDev, WindowPtr pWin)
         if (rc != Success)
             return FALSE;
 
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             rc = dixLookupWindow(pSprite.windows + walkScreenIdx,
                                  win.info[walkScreenIdx].id,
                                  serverClient, DixReadAccess);
             if (rc != Success)  /* window is being unmapped */
                 return FALSE;
-        });
+        }));
     }
     return TRUE;
 }
@@ -885,7 +885,7 @@ version (XINERAMA) {
         }
         else /* XINERAMA */
         {
-            if (wBoundingShape(pWin))
+            if (mixin(wBoundingShape!("pWin")))
                 reg = &pWin.borderSize;
         }
 
@@ -924,7 +924,7 @@ version (XINERAMA) {
         }
 } /* XINERAMA */
         pSprite.hotLimits = *RegionExtents(&pWin.borderSize);
-        pSprite.hotShape = wBoundingShape(pWin) ? &pWin.borderSize
+        pSprite.hotShape = mixin(wBoundingShape!("pWin")) ? &pWin.borderSize
             : NullRegion;
         CheckPhysLimits(pDev, pSprite.current, generateEvents,
                         confineToScreen, pWin.drawable.pScreen);
@@ -2433,7 +2433,7 @@ void DeliverRawEvent(RawDeviceEvent* ev, DeviceIntPtr device)
 
     filter = GetEventFilter(device, xi);
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         InputClients* inputclients = void;
 
         WindowPtr root = walkScreen.root;
@@ -2947,14 +2947,14 @@ version (XINERAMA) {
         SpritePtr pSprite = inputInfo.pointer.spriteInfo.sprite;
         ScreenPtr masterScreen = dixGetMasterScreen();
 
-        XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0!(q{
             if (RegionContainsPoint(&pSprite.windows[walkScreenIdx].borderSize,
                                     x + masterScreen.x -
                                     walkScreen.x,
                                     y + masterScreen.y -
                                     walkScreen.y, &box))
                 return TRUE;
-        });
+        }));
     }
 } /* XINERAMA */
     return FALSE;
@@ -3483,7 +3483,7 @@ Bool XineramaPointInWindowIsVisible(WindowPtr pWin, int x, int y)
     xoff = x + masterScreen.x;
     yoff = y + masterScreen.y;
 
-    XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0({
+    mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0!(q{
         pWin = inputInfo.pointer.spriteInfo.sprite.windows[walkScreenIdx];
 
         x = xoff - walkScreen.x;
@@ -3495,7 +3495,7 @@ Bool XineramaPointInWindowIsVisible(WindowPtr pWin, int x, int y)
                                     x - pWin.drawable.x,
                                     y - pWin.drawable.y, &box)))
             return TRUE;
-    });
+    }));
 
     return FALSE;
 }
@@ -3682,15 +3682,15 @@ Bool BorderSizeNotEmpty(DeviceIntPtr pDev, WindowPtr pWin)
     if (RegionNotEmpty(&pWin.borderSize))
         return TRUE;
 
-version (XINERAMA) {
+// version (XINERAMA) {
     if (!noPanoramiXExtension && XineramaSetWindowPntrs(pDev, pWin)) {
-        XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0({
+        mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD_SKIP0!(q{
             if (RegionNotEmpty
                 (&pDev.spriteInfo.sprite.windows[walkScreenIdx].borderSize))
                 return TRUE;
-        });
+        }));
     }
-} /* XINERAMA */
+// } /* XINERAMA */
     return FALSE;
 }
 
@@ -5260,7 +5260,7 @@ int ProcQueryPointer(ClientPtr client)
 
     xQueryPointerReply reply = {
         mask: event_get_corestate(mouse, keyboard),
-        root: (InputDevCurrentRootWindow(mouse)).drawable.id,
+        root: cast(uint)(InputDevCurrentRootWindow(mouse)).drawable.id,
         rootX: pSprite.hot.x,
         rootY: pSprite.hot.y,
         child: None
@@ -5901,7 +5901,7 @@ int ProcRecolorCursor(ClientPtr client)
     pCursor.backBlue = stuff.backBlue;
 
 version(XINERAMA) {
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
         if (!noPanoramiXExtension)
             displayed = (walkScreen == pSprite.screen);
         else
@@ -5911,7 +5911,7 @@ version(XINERAMA) {
     });
 }
 else {
-        DIX_FOR_EACH_SCREEN({
+        mixin(DIX_FOR_EACH_SCREEN!q{
             displayed = (walkScreen == pSprite.hotPhys.pScreen);
         (*walkScreen.RecolorCursor) (PickPointer(client), walkScreen, pCursor,
                                 (pCursor == pSprite.current) && displayed);

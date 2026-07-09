@@ -84,8 +84,8 @@ enum XFixesClientPrivateKey = (&XFixesClientPrivateKeyRec);
 private int ProcXFixesQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesQueryVersionReq);
-    X_REQUEST_FIELD_CARD32(majorVersion);
-    X_REQUEST_FIELD_CARD32(minorVersion);
+    mixin(X_REQUEST_FIELD_CARD32!majorVersion);
+    mixin(X_REQUEST_FIELD_CARD32!minorVersion);
 
     int major = void, minor = void;
     XFixesClientPtr pXFixesClient = GetXFixesClient(client);
@@ -107,8 +107,8 @@ private int ProcXFixesQueryVersion(ClientPtr client)
         minorVersion: minor
     };
 
-    X_REPLY_FIELD_CARD32(majorVersion);
-    X_REPLY_FIELD_CARD32(minorVersion);
+    mixin(X_REPLY_FIELD_CARD32!majorVersion);
+    mixin(X_REPLY_FIELD_CARD32!minorVersion);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -247,7 +247,7 @@ void XFixesExtensionInit()
     }
 }
 
-version (XINERAMA) {
+// version (XINERAMA) {
 
 int XFixesUseXinerama = 0;
 
@@ -261,4 +261,4 @@ void PanoramiXFixesReset()
     XFixesUseXinerama = 0;
 }
 
-} /* XINERAMA */
+// } /* XINERAMA */

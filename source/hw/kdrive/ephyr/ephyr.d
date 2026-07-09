@@ -978,7 +978,7 @@ miPointerScreenFuncRec ephyrPointerScreenFuncs = {
 
 private KdScreenInfo* screen_from_window(Window w)
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         KdPrivScreenPtr kdscrpriv = KdGetScreenPriv(walkScreen);
         KdScreenInfo* screen = kdscrpriv.screen;
         EphyrScrPriv* scrpriv = screen.driver;

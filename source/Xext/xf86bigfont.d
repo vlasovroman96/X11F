@@ -295,11 +295,11 @@ else {
         gid: getegid()};
 }
 
-    X_REPLY_FIELD_CARD16(majorVersion);
-    X_REPLY_FIELD_CARD16(minorVersion);
-    X_REPLY_FIELD_CARD32(uid);
-    X_REPLY_FIELD_CARD32(gid);
-    X_REPLY_FIELD_CARD32(signature);
+    mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
+    mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
+    mixin(X_REPLY_FIELD_CARD32!uid);
+    mixin(X_REPLY_FIELD_CARD32!gid);
+    mixin(X_REPLY_FIELD_CARD32!signature);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -334,7 +334,7 @@ static int
 ProcXF86BigfontQueryFont(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86BigfontQueryFontReq);
-    X_REQUEST_FIELD_CARD32(id);
+    mixin(X_REQUEST_FIELD_CARD32!id);
 
     FontPtr pFont;
     CARD32 stuff_flags;
@@ -653,16 +653,16 @@ if (nCharInfos > 0)
             shmid: shmid,
         };
 
-        X_REPLY_FIELD_CARD16(minCharOrByte2);
-        X_REPLY_FIELD_CARD16(maxCharOrByte2);
-        X_REPLY_FIELD_CARD16(defaultChar);
-        X_REPLY_FIELD_CARD16(nFontProps);
-        X_REPLY_FIELD_CARD16(fontAscent);
-        X_REPLY_FIELD_CARD16(fontDescent);
-        X_REPLY_FIELD_CARD32(nCharInfos);
-        X_REPLY_FIELD_CARD32(nUniqCharInfos);
-        X_REPLY_FIELD_CARD32(shmid);
-        X_REPLY_FIELD_CARD32(shmsegoffset);
+        mixin(X_REPLY_FIELD_CARD16!minCharOrByte2);
+        mixin(X_REPLY_FIELD_CARD16!maxCharOrByte2);
+        mixin(X_REPLY_FIELD_CARD16!defaultChar);
+        mixin(X_REPLY_FIELD_CARD16!nFontProps);
+        mixin(X_REPLY_FIELD_CARD16!fontAscent);
+        mixin(X_REPLY_FIELD_CARD16!fontDescent);
+        mixin(X_REPLY_FIELD_CARD32!nCharInfos);
+        mixin(X_REPLY_FIELD_CARD32!nUniqCharInfos);
+        mixin(X_REPLY_FIELD_CARD32!shmid);
+        mixin(X_REPLY_FIELD_CARD32!shmsegoffset);
 
         if (client.swapped) {
             swapCharInfo(&reply.minBounds);

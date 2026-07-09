@@ -389,7 +389,7 @@ void PrintPassiveGrabs()
 
 void PrintWindowTree()
 {
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         ErrorF("[dix] Dumping windows for screen %d (pixmap %x):\n", walkScreenIdx,
                cast(uint) walkScreen.GetScreenPixmap(walkScreen).drawable.id);
         WindowPtr pWin = walkScreen.root;
@@ -951,8 +951,8 @@ private void FreeWindowResources(WindowPtr pWin)
     RegionUninit(&pWin.winSize);
     RegionUninit(&pWin.borderClip);
     RegionUninit(&pWin.borderSize);
-    if (wBoundingShape(pWin))
-        RegionDestroy(wBoundingShape(pWin));
+    if (mixin(wBoundingShape!("pWin")))
+        RegionDestroy(mixin(wBoundingShape!("pWin")));
     if (wClipShape(pWin))
         RegionDestroy(wClipShape(pWin));
     if (wInputShape(pWin))
@@ -1123,7 +1123,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
     pVlist = vlist;
     tmask = vmask;
     while (tmask) {
-        index2 = cast(Mask) lowbit(tmask);
+        index2 = cast(Mask) mixin(lowbit!tmask);
         tmask &= ~index2;
         switch (index2) {
         case CWBackPixmap:
@@ -1243,7 +1243,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             break;
         case CWBitGravity:
-            val = (CARD8) *pVlist;
+            val = cast(CARD8) *pVlist;
             pVlist++;
             if (val > StaticGravity) {
                 error = BadValue;
@@ -1253,7 +1253,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pWin.bitGravity = val;
             break;
         case CWWinGravity:
-            val = (CARD8) *pVlist;
+            val = cast(CARD8) *pVlist;
             pVlist++;
             if (val > StaticGravity) {
                 error = BadValue;
@@ -1263,7 +1263,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pWin.winGravity = val;
             break;
         case CWBackingStore:
-            val = (CARD8) *pVlist;
+            val = cast(CARD8) *pVlist;
             pVlist++;
             if ((val != NotUseful) && (val != WhenMapped) && (val != Always)) {
                 error = BadValue;
@@ -1303,7 +1303,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             break;
         case CWSaveUnder:
-            val = (BOOL) * pVlist;
+            val = cast(BOOL) *pVlist;
             pVlist++;
             if ((val != xTrue) && (val != xFalse)) {
                 error = BadValue;
@@ -1330,7 +1330,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             break;
         case CWOverrideRedirect:
-            val = (BOOL) * pVlist;
+            val = cast(BOOL) *pVlist;
             pVlist++;
             if ((val != xTrue) && (val != xFalse)) {
                 error = BadValue;
@@ -1349,7 +1349,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pWin.overrideRedirect = val;
             break;
         case CWColormap:
-            cmap = (Colormap) * pVlist;
+            cmap = cast(Colormap) * pVlist;
             pVlist++;
             if (cmap == CopyFromParent) {
                 if (pWin.parent &&
@@ -1422,7 +1422,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             }
             break;
         case CWCursor:
-            cursorID = (Cursor) * pVlist;
+            cursorID = cast(Cursor) * pVlist;
             pVlist++;
             /*
              * install the new
@@ -1679,11 +1679,11 @@ void SetWinSize(WindowPtr pWin)
                              pWin.drawable.x, pWin.drawable.y,
                              cast(int) pWin.drawable.width,
                              cast(int) pWin.drawable.height);
-    if (wBoundingShape(pWin) || wClipShape(pWin)) {
+    if (mixin(wBoundingShape!("pWin")) || wClipShape(pWin)) {
         RegionTranslate(&pWin.winSize, -pWin.drawable.x, -pWin.drawable.y);
-        if (wBoundingShape(pWin))
+        if (mixin(wBoundingShape!("pWin")))
             RegionIntersect(&pWin.winSize, &pWin.winSize,
-                            wBoundingShape(pWin));
+                            mixin(wBoundingShape!("pWin")));
         if (wClipShape(pWin))
             RegionIntersect(&pWin.winSize, &pWin.winSize, wClipShape(pWin));
         RegionTranslate(&pWin.winSize, pWin.drawable.x, pWin.drawable.y);
@@ -1695,7 +1695,7 @@ void SetBorderSize(WindowPtr pWin)
     int bw = void;
 
     if (HasBorder(pWin)) {
-        bw = wBorderWidth(pWin);
+        bw = mixin(wBorderWidth!("pWin"));
         if (pWin.redirectDraw != RedirectDrawNone) {
             BoxRec box = void;
 
@@ -1714,11 +1714,11 @@ void SetBorderSize(WindowPtr pWin)
                                  pWin.drawable.x - bw, pWin.drawable.y - bw,
                                  cast(int) (pWin.drawable.width + (bw << 1)),
                                  cast(int) (pWin.drawable.height + (bw << 1)));
-        if (wBoundingShape(pWin)) {
+        if (mixin(wBoundingShape!("pWin"))) {
             RegionTranslate(&pWin.borderSize, -pWin.drawable.x,
                             -pWin.drawable.y);
             RegionIntersect(&pWin.borderSize, &pWin.borderSize,
-                            wBoundingShape(pWin));
+                            mixin(wBoundingShape!("pWin")));
             RegionTranslate(&pWin.borderSize, pWin.drawable.x,
                             pWin.drawable.y);
             RegionUnion(&pWin.borderSize, &pWin.borderSize, &pWin.winSize);
@@ -1857,7 +1857,7 @@ enum string GET_CARD16(string m, string f) = `
 enum string GET_CARD8(string m, string f) = `
 	if (` ~ m ~ ` & mask) 
 	 { 
-	    ` ~ f ~ ` = (CARD8) *pVlist;
+	    ` ~ f ~ ` = cast(CARD8) *pVlist;
 	    pVlist++;
 	 }`;
 
@@ -1885,12 +1885,12 @@ private int IsSiblingAboveMe(WindowPtr pMe, WindowPtr pSib)
 
 private BoxPtr WindowExtents(WindowPtr pWin, BoxPtr pBox)
 {
-    pBox.x1 = pWin.drawable.x - wBorderWidth(pWin);
-    pBox.y1 = pWin.drawable.y - wBorderWidth(pWin);
+    pBox.x1 = pWin.drawable.x - mixin(wBorderWidth!("pWin"));
+    pBox.y1 = pWin.drawable.y - mixin(wBorderWidth!("pWin"));
     pBox.x2 = pWin.drawable.x + cast(int) pWin.drawable.width
-        + wBorderWidth(pWin);
+        + mixin(wBorderWidth!("pWin"));
     pBox.y2 = pWin.drawable.y + cast(int) pWin.drawable.height
-        + wBorderWidth(pWin);
+        + mixin(wBorderWidth!("pWin"));
     return pBox;
 }
 
@@ -1900,9 +1900,9 @@ private RegionPtr MakeBoundingRegion(WindowPtr pWin, BoxPtr pBox)
 {
     RegionPtr pRgn = RegionCreate(pBox, 1);
 
-    if (wBoundingShape(pWin)) {
+    if (mixin(wBoundingShape!("pWin"))) {
         RegionTranslate(pRgn, -pWin.origin.x, -pWin.origin.y);
-        RegionIntersect(pRgn, pRgn, wBoundingShape(pWin));
+        RegionIntersect(pRgn, pRgn, mixin(wBoundingShape!("pWin")));
         RegionTranslate(pRgn, pWin.origin.x, pWin.origin.y);
     }
     return pRgn;
@@ -2163,7 +2163,7 @@ enum REBORDER_WIN =   3;
     }
     tmask = mask & ~ChangeMask;
     while (tmask) {
-        index2 = cast(Mask) lowbit(tmask);
+        index2 = cast(Mask) mixin(lowbit!tmask);
         tmask &= ~index2;
         switch (index2) {
         case CWBorderWidth:
@@ -2272,7 +2272,7 @@ version (XINERAMA) {
         goto ActuallyDoSomething;
     if ((mask & CWY) && (y != beforeY))
         goto ActuallyDoSomething;
-    if ((mask & CWBorderWidth) && (bw != wBorderWidth(pWin)))
+    if ((mask & CWBorderWidth) && (bw != mixin(wBorderWidth!("pWin"))))
         goto ActuallyDoSomething;
     if (mask & CWStackMode) {
 version (ROOTLESS) {} else {
@@ -2337,8 +2337,8 @@ version (XINERAMA) {
             pWin.borderWidth = bw;
         }
         else if ((action == MOVE_WIN) &&
-                 (beforeX + wBorderWidth(pWin) == x + cast(int) bw) &&
-                 (beforeY + wBorderWidth(pWin) == y + cast(int) bw)) {
+                 (beforeX + mixin(wBorderWidth!"pWin")== x + cast(int) bw) &&
+                 (beforeY + mixin(wBorderWidth!"pWin")== y + cast(int) bw)) {
             action = REBORDER_WIN;
             (*pWin.drawable.pScreen.ChangeBorderWidth) (pWin, bw);
         }
@@ -2447,7 +2447,7 @@ int ReparentWindow(WindowPtr pWin, WindowPtr pParent, int x, int y, ClientPtr cl
     WindowPtr pPrev = void, pPriorParent = void;
     Bool WasMapped = cast(Bool) (pWin.mapped);
     xEvent event = void;
-    int bw = wBorderWidth(pWin);
+    int bw = mixin(wBorderWidth!("pWin"));
     ScreenPtr pScreen = void;
 
     pScreen = pWin.drawable.pScreen;
@@ -2892,9 +2892,9 @@ void HandleSaveSet(ClientPtr client)
                 if (!SaveSetShouldMap(client.saveSet[j]))
                     UnmapWindow(pWin, FALSE);
                 ReparentWindow(pWin, pParent,
-                               pWin.drawable.x - wBorderWidth(pWin) -
+                               pWin.drawable.x - mixin(wBorderWidth!"pWin")-
                                pParent.drawable.x,
-                               pWin.drawable.y - wBorderWidth(pWin) -
+                               pWin.drawable.y - mixin(wBorderWidth!"pWin")-
                                pParent.drawable.y, client);
                 if (!pWin.realized && pWin.mapped)
                     pWin.mapped = FALSE;
@@ -2960,7 +2960,7 @@ version (XINERAMA) {
 
         switch (visibility) {
         case VisibilityUnobscured: {
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             if (walkScreenIdx == Scrnum)
                 continue;
 
@@ -2974,7 +2974,7 @@ version (XINERAMA) {
                 if (!walkScreenIdx)
                     pWin = pWin2;
             }
-        });
+        }));
         }
             break;
         case VisibilityPartiallyObscured:
@@ -2986,7 +2986,7 @@ version (XINERAMA) {
             }
             break;
         case VisibilityFullyObscured: {
-        XINERAMA_FOR_EACH_SCREEN_BACKWARD({
+        mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
             if (walkScreenIdx == Scrnum)
                 continue;
 
@@ -3000,7 +3000,7 @@ version (XINERAMA) {
                 if (!walkScreenIdx)
                     pWin = pWin2;
             }
-        });
+        }));
             break;
         }
         default: break;}
@@ -3037,14 +3037,14 @@ int dixSaveScreens(ClientPtr client, int on, int mode)
             type = SCREEN_SAVER_CYCLE;
     }
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         int rc = dixCallScreensaverAccessCallback(client, walkScreen,
                       DixShowAccess | DixHideAccess);
         if (rc != Success)
             return rc;
     });
 
-    DIX_FOR_EACH_SCREEN({
+    mixin(DIX_FOR_EACH_SCREEN!q{
         if (on == SCREEN_SAVER_FORCER)
             walkScreen.SaveScreen(walkScreen, on);
         if (walkScreen.screensaver.ExternalScreenSaver) {

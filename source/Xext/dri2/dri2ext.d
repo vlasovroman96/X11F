@@ -56,6 +56,7 @@ import include.dri2;
 import externs.X11.extensions.dri2tokens;
 import include.dix;
 import xfixes.region;
+import dix.extension;
 
 /* For the static extension loader */
 Bool noDRI2Extension = FALSE;
@@ -581,7 +582,7 @@ version (XINERAMA) {
                                  &ProcDRI2Dispatch,
                                  &ProcDRI2Dispatch,
                                  null,
-                                 StandardMinorOpcode);
+                                 &StandardMinorOpcode);
 
     DRI2EventBase = dri2Extension.eventBase;
 
