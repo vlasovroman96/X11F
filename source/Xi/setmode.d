@@ -94,7 +94,7 @@ int ProcXSetDeviceMode(ClientPtr client)
     if (IsXTestDevice(dev, null))
         return BadMatch;
 
-    if ((dev.deviceGrab.grab) && !SameClient(dev.deviceGrab.grab, client))
+    if ((dev.deviceGrab.grab) && !mixin(SameClient!("dev.deviceGrab.grab", "client")))
         reply.status = AlreadyGrabbed;
     else
         reply.status = SetDeviceMode(client, dev, stuff.mode);

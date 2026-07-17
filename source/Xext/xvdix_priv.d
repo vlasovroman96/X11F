@@ -39,7 +39,7 @@ extern int XvErrorBase;
 extern RESTYPE XvRTPort;
 
 /* dispatch functions */
-int ProcXvDispatch(ClientPtr);
+// int ProcXvDispatch(ClientPtr);
 
 void XvFreeAdaptor(XvAdaptorPtr pAdaptor);
 

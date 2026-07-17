@@ -76,8 +76,8 @@ import Xi.exglobals;
 int ProcXSetDeviceFocus(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xSetDeviceFocusReq);
-    mixin(X_REPLY_FIELD_CARD32!"focus");
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"focus");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
 
     int ret = void;
     DeviceIntPtr dev = void;

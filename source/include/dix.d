@@ -81,11 +81,10 @@ enum string REQUEST_AT_LEAST_SIZE(alias req) = `
             return(BadLength);                                          
     }`;
 
-enum string REQUEST_AT_LEAST_EXTRA_SIZE(string req, string extra) = `
-    do {                                                                
-        if (((((` ~ req ~ `) + (cast(ulong) (` ~ extra ~ `))).sizeof) >> 2) > client.req_len) 
-            return(BadLength);                                          
-    } while (0)`;
+enum string REQUEST_AT_LEAST_EXTRA_SIZE(string req, string extra) = `                                                            
+        if ((((` ~ req ~ `).sizeof + (cast(ulong) (` ~ extra ~ `))) >> 2) > client.req_len) 
+            return(BadLength);                                          `
+            ;
 
 enum string REQUEST_FIXED_SIZE(alias req, string n) = `                                  
         if (((` ~ req.stringof ~ `.sizeof >> 2) > client.req_len) ||            

@@ -68,7 +68,7 @@ enum string GetClientDisconnect(string s) = `
 int ProcXFixesSetClientDisconnectMode(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesSetClientDisconnectModeReq);
-    mixin(X_REPLY_FIELD_CARD32!"disconnect_mode");
+    mixin(X_REQUEST_FIELD_CARD32!"disconnect_mode");
 
     ClientDisconnectPtr pDisconnect = mixin(GetClientDisconnect!(`client`));
     pDisconnect.disconnect_mode = stuff.disconnect_mode;

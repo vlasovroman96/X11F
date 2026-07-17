@@ -79,10 +79,10 @@ extern int ExtEventIndex;
 int ProcXGrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xGrabDeviceReq);
-    mixin(X_REPLY_FIELD_CARD32!"grabWindow");
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"grabWindow");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
     mixin(X_REQUEST_FIELD_CARD16!"event_count");
-    X_REQUEST_REST_COUNT_CARD32(stuff.event_count);
+    mixin(X_REQUEST_REST_COUNT_CARD32!("stuff.event_count"));
 
     int rc = void;
     DeviceIntPtr dev = void;

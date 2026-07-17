@@ -63,6 +63,9 @@ import dix.dix_priv;
 import dix.request_priv;
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.handlers;
+import externs.X11.extensions.XI;
+import dix.globals;
+
 
 enum DO_ALL =    (-1);
 
@@ -395,7 +398,7 @@ private int ChangeLedFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
 int ProcXChangeFeedbackControl(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xChangeFeedbackControlReq);
-    mixin(X_REPLY_FIELD_CARD32!"mask");
+    mixin(X_REQUEST_FIELD_CARD32!"mask");
 
     uint len = void;
     DeviceIntPtr dev = void;
@@ -435,8 +438,8 @@ int ProcXChangeFeedbackControl(ClientPtr client)
     {
         xStringFeedbackCtl* f = void;
 
-        REQUEST_AT_LEAST_EXTRA_SIZE(xChangeFeedbackControlReq,
-                                    xStringFeedbackCtl.sizeof);
+        mixin(REQUEST_AT_LEAST_EXTRA_SIZE!("xChangeFeedbackControlReq",
+                                    "xStringFeedbackCtl.sizeof"));
         f = (cast(xStringFeedbackCtl*) &stuff[1]);
         if (client.swapped) {
             if (len < bytes_to_int32(xStringFeedbackCtl.sizeof))

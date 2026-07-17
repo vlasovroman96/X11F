@@ -246,8 +246,8 @@ struct LedCtrl {
     ubyte id;
 }
 
-extern int defaultKeyboardControl;
-extern int defaultPointerControl;
+// extern DeviceIntPtr defaultKeyboardControl;
+// extern int defaultPointerControl;
 
 alias InputOption = _InputOption;
 alias XI2Mask = _XI2Mask;

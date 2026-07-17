@@ -121,7 +121,7 @@ extern TimeStamp currentTime;
 
 // extern int CompareTimeStamps(TimeStamp, TimeStamp);
 
-extern TimeStamp ClientTimeToServerTime(CARD32);
+// extern TimeStamp ClientTimeToServerTime(CARD32);
 
 /* proc vectors */
 

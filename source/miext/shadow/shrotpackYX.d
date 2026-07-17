@@ -29,7 +29,7 @@ public import    include.windowstr;
 public import    include.dixfontstr;
 public import    include.mi;
 public import    include.regionstr;
-public import    globals;
+public import    dix.globals;
 public import    include.gcstruct;
 public import include.shadow;
 public import    include.fb;

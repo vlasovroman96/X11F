@@ -68,6 +68,7 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import include.scrnintstr;         /* screen structure  */
 import XIstubs;
+import dix.resource;
 
 /***********************************************************************
  *
@@ -82,12 +83,12 @@ private void DeleteDeviceEvents(DeviceIntPtr dev, WindowPtr pWin, ClientPtr clie
     OtherInputMasks* pOthers = void;
     GrabPtr grab = void, next = void;
 
-    if ((pOthers = wOtherInputMasks(pWin)) != 0)
+    if ((pOthers = mixin(wOtherInputMasks!("pWin")) )!is null)
         for (others = pOthers.inputClients; others; others = others.next)
-            if (SameClient(others, client))
+            if (mixin(SameClient!("others", "client")))
                 others.mask[dev.id] = NoEventMask;
 
-    for (grab = wPassiveGrabs(pWin); grab; grab = next) {
+    for (grab = mixin(wPassiveGrabs!("pWin")); grab; grab = next) {
         next = grab.next;
         if ((grab.device == dev) &&
             (client.clientAsMask == CLIENT_BITS(grab.resource)))
@@ -131,7 +132,7 @@ int ProcXCloseDevice(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    if (d.deviceGrab.grab && SameClient(d.deviceGrab.grab, client))
+    if (d.deviceGrab.grab && mixin(SameClient!("d.deviceGrab.grab", "client")))
         (*d.deviceGrab.DeactivateGrab) (d);    /* release active grab */
 
     /* Remove event selections from all windows for events from this device

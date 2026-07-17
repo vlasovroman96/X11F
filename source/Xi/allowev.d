@@ -63,6 +63,9 @@ import dix.dix_priv;
 import dix.input_priv;
 import dix.request_priv;
 import Xi.handlers;
+import externs.X11.extensions.XIproto;
+import dix.dixutils;
+import externs.X11.extensions.XI;
 
 /***********************************************************************
  *
@@ -73,7 +76,7 @@ import Xi.handlers;
 int ProcXAllowDeviceEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xAllowDeviceEventsReq);
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
 
     DeviceIntPtr thisdev = void;
     int rc = dixLookupDevice(&thisdev, stuff.deviceid, client, DixGetAttrAccess);

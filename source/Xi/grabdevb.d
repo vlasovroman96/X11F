@@ -85,10 +85,10 @@ int ProcXGrabDeviceButton(ClientPtr client)
     GrabMask mask = void;
 
     mixin(X_REQUEST_HEAD_AT_LEAST!xGrabDeviceButtonReq);
-    mixin(X_REPLY_FIELD_CARD32!"grabWindow");
+    mixin(X_REQUEST_FIELD_CARD32!"grabWindow");
     mixin(X_REQUEST_FIELD_CARD16!"modifiers");
     mixin(X_REQUEST_FIELD_CARD16!"event_count");
-    X_REQUEST_REST_COUNT_CARD32(stuff.event_count);
+    mixin(X_REQUEST_REST_COUNT_CARD32!("stuff.event_count"));
 
     ret = dixLookupDevice(&dev, stuff.grabbed_device, client, DixGrabAccess);
     if (ret != Success)

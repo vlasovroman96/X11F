@@ -168,6 +168,7 @@ alias OtherInputMasks = _OtherInputMasks;
  * that is not much waste since there aren't many active grabs (one per
  * keyboard/pointer device) going at once in the server.
  */
+alias GrabRec = _GrabRec;
 
 struct _DetailRec {     /* Grab details may be bit masks */
     uint exact;
@@ -195,7 +196,7 @@ union _GrabMask {
  * If the grab is a result of a ButtonPress, then eventMask is the core mask
  * and deviceMask is set to the XI event mask for the grab.
  */
-struct GrabRec {
+struct _GrabRec {
     GrabPtr next;               /* for chain of passive grabs */
     XID resource;
     DeviceIntPtr device;

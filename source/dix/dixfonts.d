@@ -800,7 +800,7 @@ private Bool doListFontsAndAliases(ClientPtr client, list_fonts_closure* c)
             reply.nFonts--;
         else {
             /* write a pascal string */
-            x_rpcbuf_write_CARD8(&rpcbuf, names.length[i]);
+            x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)names.length[i]);
             x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)names.names[i], names.length[i]);
         }
     }

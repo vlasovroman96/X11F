@@ -101,7 +101,7 @@ int ProcXSetDeviceValuators(ClientPtr client)
     if (stuff.first_valuator + stuff.num_valuators > dev.valuator.numAxes)
         return BadValue;
 
-    if ((dev.deviceGrab.grab) && !SameClient(dev.deviceGrab.grab, client))
+    if ((dev.deviceGrab.grab) && !mixin(SameClient!("dev.deviceGrab.grab", "client")))
         reply.status = AlreadyGrabbed;
     else
         reply.status = SetDeviceValuators(client, dev, cast(int*) &stuff[1],

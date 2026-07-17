@@ -48,8 +48,8 @@ int ProcXISetFocus(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXISetFocusReq);
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-    mixin(X_REPLY_FIELD_CARD32!"focus");
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"focus");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
 
     DeviceIntPtr dev = void;
     int ret = void;

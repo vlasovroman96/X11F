@@ -1125,7 +1125,7 @@ private void ShmBusfaultNotify(void* context)
 private int ProcShmAttachFd(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmAttachFdReq);
-    mixin(X_REPLY_FIELD_CARD32!"shmseg");
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
 
     if (!client.local)
         return BadRequest;
@@ -1243,8 +1243,8 @@ version (HAVE_MKOSTEMP) {} else {
 private int ProcShmCreateSegment(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xShmCreateSegmentReq);
-    mixin(X_REPLY_FIELD_CARD32!"shmseg");
-    mixin(X_REPLY_FIELD_CARD32!"size");
+    mixin(X_REQUEST_FIELD_CARD32!"shmseg");
+    mixin(X_REQUEST_FIELD_CARD32!"size");
 
     if (!client.local)
         return BadRequest;

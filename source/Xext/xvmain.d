@@ -105,6 +105,11 @@ import include.opaque;
 import include.input;
 import Xext.xvdisp;
 import externs.X11.extensions.Xvproto;
+import os.log;
+import dix.extension;
+import externs.X11.extensions.Xv;
+import dix.dixutils;
+import dix.gc;
 
 enum string SCREEN_PROLOGUE(string pScreen, string field) = `((` ~ pScreen ~ `).` ~ field ~ ` = (cast(XvScreenPtr) 
     dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, &XvScreenKeyRec)).` ~ field ~ `)`;
@@ -188,8 +193,8 @@ version (XINERAMA) {
         XvExtensionGeneration = serverGeneration;
 
         extEntry = AddExtension(XvName, XvNumEvents, XvNumErrors,
-                                ProcXvDispatch, ProcXvDispatch,
-                                XvResetProc, StandardMinorOpcode);
+                                &ProcXvDispatch, &ProcXvDispatch,
+                                &XvResetProc, &StandardMinorOpcode);
         if (!extEntry) {
             FatalError("XvExtensionInit: AddExtensions failed\n");
         }
@@ -199,9 +204,9 @@ version (XINERAMA) {
         XvErrorBase = extEntry.errorBase;
 
         EventSwapVector[XvEventBase + XvVideoNotify] =
-            cast(EventSwapPtr) WriteSwappedVideoNotifyEvent;
+            cast(EventSwapPtr) &WriteSwappedVideoNotifyEvent;
         EventSwapVector[XvEventBase + XvPortNotify] =
-            cast(EventSwapPtr) WriteSwappedPortNotifyEvent;
+            cast(EventSwapPtr) &WriteSwappedPortNotifyEvent;
 
         SetResourceTypeErrorValue(XvRTPort, _XvBadPort);
         cast(void) dixAddAtom(XvName);
@@ -216,23 +221,23 @@ private Bool CreateResourceTypes()
 
     XvResourceGeneration = serverGeneration;
 
-    if (((XvRTPort = CreateNewResourceType(XvdiDestroyPort, "XvRTPort")) == 0)) {
+    if (((XvRTPort = CreateNewResourceType(&XvdiDestroyPort, "XvRTPort")) == 0)) {
         ErrorF("CreateResourceTypes: failed to allocate port resource.\n");
         return FALSE;
     }
 
-    if (((XvRTGrab = CreateNewResourceType(XvdiDestroyGrab, "XvRTGrab")) == 0)) {
+    if (((XvRTGrab = CreateNewResourceType(&XvdiDestroyGrab, "XvRTGrab")) == 0)) {
         ErrorF("CreateResourceTypes: failed to allocate grab resource.\n");
         return FALSE;
     }
 
-    if (((XvRTEncoding = CreateNewResourceType(XvdiDestroyEncoding,
+    if (((XvRTEncoding = CreateNewResourceType(&XvdiDestroyEncoding,
                                                "XvRTEncoding")) == 0)) {
         ErrorF("CreateResourceTypes: failed to allocate encoding resource.\n");
         return FALSE;
     }
 
-    if (((XvRTVideoNotify = CreateNewResourceType(XvdiDestroyVideoNotify,
+    if (((XvRTVideoNotify = CreateNewResourceType(&XvdiDestroyVideoNotify,
                                                   "XvRTVideoNotify")) == 0)) {
         ErrorF
             ("CreateResourceTypes: failed to allocate video notify resource.\n");
@@ -241,14 +246,14 @@ private Bool CreateResourceTypes()
 
     if (
         ((XvRTVideoNotifyList =
-         CreateNewResourceType(XvdiDestroyVideoNotifyList,
+         CreateNewResourceType(&XvdiDestroyVideoNotifyList,
                                "XvRTVideoNotifyList")) == 0)) {
         ErrorF
             ("CreateResourceTypes: failed to allocate video notify list resource.\n");
         return FALSE;
     }
 
-    if (((XvRTPortNotify = CreateNewResourceType(XvdiDestroyPortNotify,
+    if (((XvRTPortNotify = CreateNewResourceType(&XvdiDestroyPortNotify,
                                                  "XvRTPortNotify")) == 0)) {
         ErrorF
             ("CreateResourceTypes: failed to allocate port notify resource.\n");
@@ -286,7 +291,7 @@ version (XINERAMA) {
         return BadAlloc;
 
     dixScreenHookWindowDestroy(pScreen, &XvWindowDestroy);
-    dixScreenHookClose(pScreen, XvScreenClose);
+    dixScreenHookClose(pScreen, &XvScreenClose);
     dixScreenHookPixmapDestroy(pScreen, &XvPixmapDestroy);
 
     return Success;
@@ -295,7 +300,7 @@ version (XINERAMA) {
 private void XvScreenClose(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
     dixScreenUnhookWindowDestroy(pScreen, &XvWindowDestroy);
-    dixScreenUnhookClose(pScreen, XvScreenClose);
+    dixScreenUnhookClose(pScreen, &XvScreenClose);
     dixScreenUnhookPixmapDestroy(pScreen, &XvPixmapDestroy);
 }
 
@@ -317,7 +322,7 @@ c_ulong XvGetRTPort()
 private void XvStopAdaptors(DrawablePtr pDrawable)
 {
     ScreenPtr pScreen = pDrawable.pScreen;
-    XvScreenPtr pxvs = dixLookupPrivate(&pScreen.devPrivates, &XvScreenKeyRec);
+    XvScreenPtr pxvs = cast(XvScreenPtr)dixLookupPrivate(&pScreen.devPrivates, &XvScreenKeyRec);
     XvAdaptorPtr pa = pxvs.pAdaptors;
     int na = pxvs.nAdaptors;
 
@@ -401,13 +406,13 @@ private int XvdiSendVideoNotify(XvPortPtr pPort, DrawablePtr pDraw, int reason)
 
     while (pn) {
         xvEvent event;
-            event.u.videoNotify.reason = reason;
+            event.u.videoNotify.reason = cast(ubyte)reason;
             event.u.videoNotify.time = currentTime.milliseconds;
-            event.u.videoNotify.drawable = pDraw.id;
-            event.u.videoNotify.port = pPort.id;
+            event.u.videoNotify.drawable = cast(uint)pDraw.id;
+            event.u.videoNotify.port = cast(uint)pPort.id;
 
-        event.u.u.type = XvEventBase + XvVideoNotify;
-        WriteEventsToClient(pn.client, 1, (xEventPtr) &event);
+        event.u.u.type = cast(ubyte)(XvEventBase + XvVideoNotify);
+        WriteEventsToClient(pn.client, 1, cast(xEventPtr) &event);
         pn = pn.next;
     }
 
@@ -424,12 +429,12 @@ private int XvdiSendPortNotify(XvPortPtr pPort, Atom attribute, INT32 value)
     while (pn) {
         xvEvent event;
             event.u.portNotify.time = currentTime.milliseconds;
-            event.u.portNotify.port = pPort.id;
-            event.u.portNotify.attribute = attribute;
+            event.u.portNotify.port = cast(uint)pPort.id;
+            event.u.portNotify.attribute = cast(uint)attribute;
             event.u.portNotify.value = value;
 
-        event.u.u.type = XvEventBase + XvPortNotify;
-        WriteEventsToClient(pn.client, 1, (xEventPtr) &event);
+        event.u.u.type = cast(ubyte)(XvEventBase + XvPortNotify);
+        WriteEventsToClient(pn.client, 1, cast(xEventPtr) &event);
         pn = pn.next;
     }
 
@@ -612,7 +617,7 @@ int XvdiGrabPort(ClientPtr client, XvPortPtr pPort, Time ctime, int* p_result)
     TimeStamp time = void;
 
     UpdateCurrentTime();
-    time = ClientTimeToServerTime(ctime);
+    time = ClientTimeToServerTime(cast(uint)ctime);
 
     if (pPort.grab.client && (client != pPort.grab.client)) {
         *p_result = XvAlreadyGrabbed;
@@ -658,7 +663,7 @@ int XvdiUngrabPort(ClientPtr client, XvPortPtr pPort, Time ctime)
     TimeStamp time = void;
 
     UpdateCurrentTime();
-    time = ClientTimeToServerTime(ctime);
+    time = ClientTimeToServerTime(cast(uint)ctime);
 
     if ((!pPort.grab.client) || (client != pPort.grab.client)) {
         return Success;
@@ -700,7 +705,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
        WILL BE DELETED WHEN THE DRAWABLE IS DESTROYED */
 
     if (!pn) {
-        if (((tpn = calloc(1, XvVideoNotifyRec.sizeof)) == 0))
+        if (((tpn = cast(XvVideoNotifyPtr)calloc(1, XvVideoNotifyRec.sizeof)) == null))
             return BadAlloc;
         tpn.next = null;
         tpn.client = null;
@@ -736,7 +741,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
             tpn = fpn;
         }
         else {
-            if (((tpn = calloc(1, XvVideoNotifyRec.sizeof)) == 0))
+            if (((tpn = cast(XvVideoNotifyPtr)calloc(1, XvVideoNotifyRec.sizeof)) == null))
                 return BadAlloc;
             tpn.next = pn.next;
             pn.next = tpn;
@@ -789,7 +794,7 @@ int XvdiSelectPortNotify(ClientPtr client, XvPortPtr pPort, BOOL onoff)
        CREATE A NEW ONE AND ADD IT TO THE BEGINNING OF THE LIST */
 
     if (!tpn) {
-        if (((tpn = calloc(1, XvPortNotifyRec.sizeof)) == 0))
+        if (((tpn = cast(XvPortNotifyPtr)calloc(1, XvPortNotifyRec.sizeof)) == null))
             return BadAlloc;
         tpn.next = pPort.pNotify;
         pPort.pNotify = tpn;
@@ -960,16 +965,16 @@ void XvFillColorKey(DrawablePtr pDraw, CARD32 key, RegionPtr region)
 
     pval[0].val = key;
     pval[1].val = IncludeInferiors;
-    cast(void) ChangeGC(null, gc, GCForeground | GCSubwindowMode, pval.ptr);
+    cast(void) ChangeGC(null, gc, cast(uint)(GCForeground | GCSubwindowMode), pval.ptr);
     ValidateGC(pDraw, gc);
 
     rects = cast(xRectangle*) calloc(nbox, xRectangle.sizeof);
     if (rects) {
         for (i = 0; i < nbox; i++, pbox++) {
-            rects[i].x = pbox.x1 - pDraw.x;
-            rects[i].y = pbox.y1 - pDraw.y;
-            rects[i].width = pbox.x2 - pbox.x1;
-            rects[i].height = pbox.y2 - pbox.y1;
+            rects[i].x = cast(ushort)(pbox.x1 - pDraw.x);
+            rects[i].y = cast(ushort)(pbox.y1 - pDraw.y);
+            rects[i].width = cast(ushort)(pbox.x2 - pbox.x1);
+            rects[i].height = cast(ushort)(pbox.y2 - pbox.y1);
         }
 
         (*gc.ops.PolyFillRect) (pDraw, gc, nbox, rects);

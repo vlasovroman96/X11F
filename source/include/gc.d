@@ -88,7 +88,7 @@ union _ChangeGCVal {
 }alias ChangeGCVal = _ChangeGCVal;
 alias ChangeGCValPtr = ChangeGCVal*;
 
-extern void ChangeGC(ClientPtr, GCPtr, BITS32, ChangeGCValPtr);
+// extern void ChangeGC(ClientPtr, GCPtr, BITS32, ChangeGCValPtr);
 
 // extern void GetScratchGC(uint, ScreenPtr);
 

@@ -75,8 +75,8 @@ import include.inputstr;           /* DeviceIntPtr      */
 int ProcXGetDeviceMotionEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xGetDeviceMotionEventsReq);
-    mixin(X_REPLY_FIELD_CARD32!"start");
-    mixin(X_REPLY_FIELD_CARD32!"stop");
+    mixin(X_REQUEST_FIELD_CARD32!"start");
+    mixin(X_REQUEST_FIELD_CARD32!"stop");
 
     DeviceIntPtr dev = void;
     int rc = dixLookupDevice(&dev, stuff.deviceid, client, DixReadAccess);

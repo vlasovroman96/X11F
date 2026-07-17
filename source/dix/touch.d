@@ -720,7 +720,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
     if (!mask)
         return FALSE;
 
-    inputMasks = wOtherInputMasks(win);
+    inputMasks = mixin(wOtherInputMasks!("win"));
 
     if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
         nt_list_for_each_entry(iclients, inputMasks.inputClients, next); {

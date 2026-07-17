@@ -52,9 +52,9 @@ int ProcXIGrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIGrabDeviceReq);
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-    mixin(X_REPLY_FIELD_CARD32!"grab_window");
+    mixin(X_REQUEST_FIELD_CARD32!"grab_window");
     mixin(X_REQUEST_FIELD_CARD32!"cursor");
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
     mixin(X_REQUEST_FIELD_CARD16!"mask_len");
 
     DeviceIntPtr dev = void;
@@ -128,7 +128,7 @@ int ProcXIUngrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIUngrabDeviceReq);
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
 
     DeviceIntPtr dev = void;
     GrabPtr grab = void;
@@ -144,7 +144,7 @@ int ProcXIUngrabDevice(ClientPtr client)
     time = ClientTimeToServerTime(stuff.time);
     if ((CompareTimeStamps(time, currentTime) != LATER) &&
         (CompareTimeStamps(time, dev.deviceGrab.grabTime) != EARLIER) &&
-        (grab) && SameClient(grab, client) && grab.grabtype == XI2)
+        (grab) && mixin(SameClient!("grab", "client")) && grab.grabtype == XI2)
         (*dev.deviceGrab.DeactivateGrab) (dev);
 
     return Success;

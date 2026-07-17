@@ -506,7 +506,7 @@ int AddPassiveGrabToList(ClientPtr client, GrabPtr pGrab)
     Mask access_mode = DixGrabAccess;
     int rc = void;
 
-    for (GrabPtr grab = wPassiveGrabs(pGrab.window); grab; grab = grab.next) {
+    for (GrabPtr grab = mixin(wPassiveGrabs!("pGrab.window")); grab; grab = grab.next) {
         if (GrabMatchesSecond(pGrab, grab, (pGrab.grabtype == CORE))) {
             if (dixClientIdForXID(pGrab.resource) != dixClientIdForXID(grab.resource)) {
                 FreeGrab(pGrab);
@@ -523,7 +523,7 @@ int AddPassiveGrabToList(ClientPtr client, GrabPtr pGrab)
         return rc;
 
     /* Remove all grabs that match the new one exactly */
-    for (GrabPtr grab = wPassiveGrabs(pGrab.window); grab; grab = grab.next) {
+    for (GrabPtr grab = mixin(wPassiveGrabs!("pGrab.window")); grab; grab = grab.next) {
         if (GrabsAreIdentical(pGrab, grab)) {
             DeletePassiveGrabFromList(grab);
             break;
@@ -562,7 +562,7 @@ enum string UPDATE(string mask,string exact) = `
 	  updates[nups++] = &(` ~ mask ~ `)`;
 
     i = 0;
-    for (GrabPtr grab = wPassiveGrabs(pMinuendGrab.window); grab; grab = grab.next)
+    for (GrabPtr grab = mixin(wPassiveGrabs!("pMinuendGrab.window")); grab; grab = grab.next)
         i++;
     if (!i)
         return TRUE;
@@ -584,7 +584,7 @@ enum string UPDATE(string mask,string exact) = `
         cast(uint) XIAnyKeycode : cast(uint) AnyKey;
     ndels = nadds = nups = 0;
     ok = TRUE;
-    for (GrabPtr grab = wPassiveGrabs(pMinuendGrab.window);
+    for (GrabPtr grab = mixin(wPassiveGrabs!("pMinuendGrab.window"));
          grab && ok; grab = grab.next) {
         if ((dixClientIdForXID(grab.resource) != dixClientIdForXID(pMinuendGrab.resource))
             || !GrabMatchesSecond(grab, pMinuendGrab, (grab.grabtype == CORE)))

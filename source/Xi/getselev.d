@@ -107,7 +107,7 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
                               &reply.all_clients_count, COUNT);
 
         for (others = pOthers.inputClients; others; others = others.next)
-            if (SameClient(others, client)) {
+            if (mixin(SameClient!("others", "client"))) {
                 for (i = 0; i < EMASKSIZE; i++)
                     ClassFromMask(null, others.mask[i], i,
                                   &reply.this_client_count, COUNT);

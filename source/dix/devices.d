@@ -2256,7 +2256,7 @@ void MaybeStopHint(DeviceIntPtr dev, ClientPtr client)
 {
     GrabPtr grab = dev.deviceGrab.grab;
 
-    if ((grab && SameClient(grab, client) &&
+    if ((grab && mixin(SameClient!("grab", "client")) &&
          ((grab.eventMask & PointerMotionHintMask) ||
           (grab.ownerEvents &&
            (EventMaskForClient(dev.valuator.motionHintWindow, client) &

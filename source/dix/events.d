@@ -457,7 +457,7 @@ int GetXI2MaskByte(XI2Mask* mask, DeviceIntPtr dev, int event_type)
  */
 Bool WindowXI2MaskIsset(DeviceIntPtr dev, WindowPtr win, xEvent* ev)
 {
-    OtherInputMasks* inputMasks = wOtherInputMasks(win);
+    OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
     int evtype = void;
 
     if (!inputMasks || xi2_get_type(ev) == 0)
@@ -1791,7 +1791,7 @@ void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newSt
     TimeStamp grabTime = void;
     GrabInfoPtr devgrabinfo = void, grabinfo = &thisDev.deviceGrab;
 
-    thisGrabbed = grabinfo.grab && SameClient(grabinfo.grab, client);
+    thisGrabbed = grabinfo.grab && mixin(SameClient!("grabinfo.grab", "client"));
     thisSynced = FALSE;
     otherGrabbed = FALSE;
     othersFrozen = FALSE;
@@ -1801,7 +1801,7 @@ void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newSt
 
         if (dev == thisDev)
             continue;
-        if (devgrabinfo.grab && SameClient(devgrabinfo.grab, client)) {
+        if (devgrabinfo.grab && mixin(SameClient!("devgrabinfo.grab", "client"))) {
             if (!(thisGrabbed || otherGrabbed) ||
                 (CompareTimeStamps(devgrabinfo.grabTime, grabTime) == LATER))
                 grabTime = devgrabinfo.grabTime;
@@ -1837,10 +1837,10 @@ void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newSt
         if (othersFrozen) {
             for (DeviceIntPtr dev = inputInfo.devices; dev; dev = dev.next) {
                 devgrabinfo = &dev.deviceGrab;
-                if (devgrabinfo.grab && SameClient(devgrabinfo.grab, client))
+                if (devgrabinfo.grab && mixin(SameClient!("devgrabinfo.grab", "client")))
                     devgrabinfo.sync.state = GRAB_STATE_THAWED;
                 if (devgrabinfo.sync.other &&
-                    SameClient(devgrabinfo.sync.other, client))
+                    mixin(SameClient!("devgrabinfo.sync.other", "client")))
                     devgrabinfo.sync.other = NullGrab;
             }
             ComputeFreezes();
@@ -1850,10 +1850,10 @@ void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newSt
         if (othersFrozen) {
             for (DeviceIntPtr dev = inputInfo.devices; dev; dev = dev.next) {
                 devgrabinfo = &dev.deviceGrab;
-                if (devgrabinfo.grab && SameClient(devgrabinfo.grab, client))
+                if (devgrabinfo.grab && mixin(SameClient!("devgrabinfo.grab", "client")))
                     devgrabinfo.sync.state = GRAB_STATE_FREEZE_BOTH_NEXT_EVENT;
                 if (devgrabinfo.sync.other
-                    && SameClient(devgrabinfo.sync.other, client))
+                    && mixin(SameClient!("devgrabinfo.sync.other", "client")))
                     devgrabinfo.sync.other = NullGrab;
             }
             ComputeFreezes();
@@ -1875,10 +1875,10 @@ void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newSt
                 if (dev == thisDev)
                     continue;
                 devgrabinfo = &dev.deviceGrab;
-                if (devgrabinfo.grab && SameClient(devgrabinfo.grab, client))
+                if (devgrabinfo.grab && mixin(SameClient!("devgrabinfo.grab", "client")))
                     devgrabinfo.sync.state = GRAB_STATE_THAWED;
                 if (devgrabinfo.sync.other
-                    && SameClient(devgrabinfo.sync.other, client))
+                    && mixin(SameClient!("devgrabinfo.sync.other", "client")))
                     devgrabinfo.sync.other = NullGrab;
             }
             ComputeFreezes();
@@ -1966,7 +1966,7 @@ void ReleaseActiveGrabs(ClientPtr client)
         done = TRUE;
         for (DeviceIntPtr dev = inputInfo.devices; dev; dev = dev.next) {
             if (dev.deviceGrab.grab &&
-                SameClient(dev.deviceGrab.grab, client)) {
+                mixin(SameClient!("dev.deviceGrab.grab", "client"))) {
                 (*dev.deviceGrab.DeactivateGrab) (dev);
                 done = FALSE;
             }
@@ -2028,7 +2028,7 @@ version (DEBUG_EVENTS) {
         return 0;
     }
 
-    if (grab && !SameClient(grab, client)) {
+    if (grab && !mixin(SameClient!("grab", "client"))) {
 version (DEBUG_EVENTS) {
         ErrorF(" not delivered due to grab\n");
 }
@@ -2140,7 +2140,7 @@ private BOOL ActivateImplicitGrab(DeviceIntPtr dev, ClientPtr client, WindowPtr 
     tempGrab.grabtype = grabtype;
 
     /* get the XI and XI2 device mask */
-    inputMasks = wOtherInputMasks(win);
+    inputMasks = mixin(wOtherInputMasks!("win"));
     tempGrab.deviceMask = (inputMasks) ? inputMasks.inputEvents[dev.id] : 0;
 
     if (inputMasks)
@@ -2193,7 +2193,7 @@ private Bool GetClientsForDelivery(DeviceIntPtr dev, WindowPtr win, xEvent* even
     if (core_get_type(events) != 0)
         *iclients = cast(InputClients*) wOtherClients(win);
     else if (xi2_get_type(events) != 0) {
-        OtherInputMasks* inputMasks = wOtherInputMasks(win);
+        OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
 
         /* Has any client selected for the event? */
         if (!WindowXI2MaskIsset(dev, win, events))
@@ -2201,7 +2201,7 @@ private Bool GetClientsForDelivery(DeviceIntPtr dev, WindowPtr win, xEvent* even
         *iclients = inputMasks.inputClients;
     }
     else {
-        OtherInputMasks* inputMasks = wOtherInputMasks(win);
+        OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
 
         /* Has any client selected for the event? */
         if (!inputMasks || !(inputMasks.inputEvents[dev.id] & filter))
@@ -2402,7 +2402,7 @@ private BOOL FilterRawEvents(const(ClientPtr) client, const(GrabPtr) grab, Windo
     if (cmp == 0)
         return TRUE;
 
-    return (grab.window != root) ? FALSE : SameClient(grab, client);
+    return (grab.window != root) ? FALSE : mixin(SameClient!("grab", "client"));
 }
 
 /**
@@ -2472,7 +2472,7 @@ pragma(inline, true) private Bool XineramaTryClientEventsResult(ClientPtr client
 {
     if ((client) && (client != serverClient) && (!client.clientGone) &&
         ((filter == CantBeFiltered) || (mask & filter))) {
-        if (grab && !SameClient(grab, client))
+        if (grab && !mixin(SameClient!("grab", "client")))
             return FALSE;
         else
             return TRUE;
@@ -2507,7 +2507,7 @@ version (XINERAMA) {
     }
     for (OtherClients* other = wOtherClients(pWin); other; other = other.next) {
         if (other.mask & filter) {
-            if (SameClient(other, dontClient))
+            if (mixin(SameClient!("other", "dontClient")))
                 return FALSE;
 version (XINERAMA) {
             if (!noPanoramiXExtension && pWin.drawable.pScreen.myNum)
@@ -2698,7 +2698,7 @@ int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win)
     int rc = 0;
     int filter = 0;
     int type = void;
-    OtherInputMasks* inputMasks = wOtherInputMasks(win);
+    OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
 
     if ((type = GetXI2Type(evtype)) != 0) {
         if (inputMasks && xi2mask_isset(inputMasks.xi2mask, dev, type))
@@ -3801,7 +3801,7 @@ BOOL CoreGrabInterferes(DeviceIntPtr device, GrabPtr grab)
         GrabPtr othergrab = other.deviceGrab.grab;
 
         if (othergrab && othergrab.grabtype == CORE &&
-            SameClient(grab, dixClientForGrab(othergrab)) &&
+            mixin(SameClient!("grab", "dixClientForGrab(othergrab")) &&
             ((IsPointerDevice(grab.device) &&
               IsPointerDevice(othergrab.device)) ||
              (IsKeyboardDevice(grab.device) &&
@@ -3980,7 +3980,7 @@ Bool CheckPassiveGrab(DeviceIntPtr device, GrabPtr grab, InternalEvent* event, B
 
 GrabPtr CheckPassiveGrabsOnWindow(WindowPtr pWin, DeviceIntPtr device, InternalEvent* event, BOOL checkCore, BOOL activate)
 {
-    GrabPtr grab = wPassiveGrabs(pWin);
+    GrabPtr grab = mixin(wPassiveGrabs!("pWin"));
     GrabPtr tempGrab = void;
 
     if (!grab)
@@ -4478,7 +4478,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
         if ((dixClientForWindow(pWin) != client) && (check & pWin.eventMask))
             return BadAccess;
         for (OtherClients* others = wOtherClients(pWin); others; others = others.next) {
-            if (!SameClient(others, client) && (check & others.mask))
+            if (!mixin(SameClient!("others", "client")) && (check & others.mask))
                 return BadAccess;
         }
     }
@@ -4488,7 +4488,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
     }
     else {
         for (OtherClients* others = wOtherClients(pWin); others; others = others.next) {
-            if (SameClient(others, client)) {
+            if (mixin(SameClient!("others", "client"))) {
                 check = others.mask;
                 if (mask == 0) {
                     FreeResource(others.resource, X11_RESTYPE_NONE);
@@ -4999,7 +4999,7 @@ int ProcChangeActivePointerGrab(ClientPtr client)
 
     if (!grab)
         return Success;
-    if (!SameClient(grab, client))
+    if (!mixin(SameClient!("grab", "client")))
         return Success;
     UpdateCurrentTime();
     time = ClientTimeToServerTime(stuff.time);
@@ -5037,7 +5037,7 @@ int ProcUngrabPointer(ClientPtr client)
     time = ClientTimeToServerTime(stuff.id);
     if ((CompareTimeStamps(time, currentTime) != LATER) &&
         (CompareTimeStamps(time, device.deviceGrab.grabTime) != EARLIER) &&
-        (grab) && SameClient(grab, client))
+        (grab) && mixin(SameClient!("grab", "client")))
         (*device.deviceGrab.DeactivateGrab) (device);
     return Success;
 }
@@ -5119,7 +5119,7 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
     grab = grabInfo.grab;
     if (grab && grab.grabtype != grabtype)
         *status = AlreadyGrabbed;
-    else if (grab && !SameClient(grab, client))
+    else if (grab && !mixin(SameClient!("grab", "client")))
         *status = AlreadyGrabbed;
     else if ((!pWin.realized) ||
              (confineTo &&
@@ -5129,7 +5129,7 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
              (CompareTimeStamps(time, grabInfo.grabTime) == EARLIER))
         *status = GrabInvalidTime;
     else if (grabInfo.sync.frozen &&
-             grabInfo.sync.other && !SameClient(grabInfo.sync.other, client))
+             grabInfo.sync.other && !mixin(SameClient!("grabInfo.sync.other", "client")))
         *status = GrabFrozen;
     else {
         GrabPtr tempGrab = void;
@@ -5220,7 +5220,7 @@ int ProcUngrabKeyboard(ClientPtr client)
     time = ClientTimeToServerTime(stuff.id);
     if ((CompareTimeStamps(time, currentTime) != LATER) &&
         (CompareTimeStamps(time, device.deviceGrab.grabTime) != EARLIER) &&
-        (grab) && SameClient(grab, client) && grab.grabtype == CORE)
+        (grab) && mixin(SameClient!("grab", "client")) && grab.grabtype == CORE)
         (*device.deviceGrab.DeactivateGrab) (device);
     return Success;
 }
@@ -5866,7 +5866,7 @@ Mask EventMaskForClient(WindowPtr pWin, ClientPtr client)
     if (dixClientForWindow(pWin) == client)
         return pWin.eventMask;
     for (OtherClientsPtr other = wOtherClients(pWin); other; other = other.next) {
-        if (SameClient(other, client))
+        if (mixin(SameClient!("other", "client")))
             return other.mask;
     }
     return 0;
@@ -6086,7 +6086,7 @@ DeviceIntPtr PickPointer(ClientPtr client)
     for (DeviceIntPtr it = inputInfo.devices; it; it = it.next) {
         GrabPtr grab = it.deviceGrab.grab;
 
-        if (grab && grab.grabtype == CORE && SameClient(grab, client)) {
+        if (grab && grab.grabtype == CORE && mixin(SameClient!("grab", "client"))) {
             it = GetMaster(it, MASTER_POINTER);
             return it;          /* Always return a core grabbed device */
         }
@@ -6147,12 +6147,12 @@ Bool IsInterferingGrab(ClientPtr client, DeviceIntPtr dev, xEvent* event)
         return FALSE;
     }
 
-    if (dev.deviceGrab.grab && SameClient(dev.deviceGrab.grab, client))
+    if (dev.deviceGrab.grab && mixin(SameClient!("dev.deviceGrab.grab", "client")))
         return FALSE;
 
     while (it) {
         if (it != dev) {
-            if (it.deviceGrab.grab && SameClient(it.deviceGrab.grab, client)
+            if (it.deviceGrab.grab && mixin(SameClient!("it.deviceGrab.grab", "client"))
                 && !it.deviceGrab.fromPassiveGrab) {
                 if ((IsPointerDevice(it) && IsPointerDevice(dev)) ||
                     (IsKeyboardDevice(it) && IsKeyboardDevice(dev)))

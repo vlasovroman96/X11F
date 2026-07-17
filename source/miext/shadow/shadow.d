@@ -36,7 +36,7 @@ import    include.windowstr;
 import    include.dixfontstr;
 import    include.mi;
 import    include.regionstr;
-import    globals;
+import    dix.globals;
 import    include.gcstruct;
 import include.shadow;
 

@@ -51,7 +51,7 @@ import include.windowstr;
  */
 private int check_for_touch_selection_conflicts(ClientPtr B, WindowPtr win, int deviceid, int evtype)
 {
-    OtherInputMasks* inputMasks = wOtherInputMasks(win);
+    OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
     InputClients* A = null;
 
     if (inputMasks)
@@ -117,7 +117,7 @@ int XICheckInvalidMaskBits(ClientPtr client, ubyte* mask, int len)
 int ProcXISelectEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXISelectEventsReq);
-    mixin(X_REPLY_FIELD_CARD32!"win");
+    mixin(X_REQUEST_FIELD_CARD32!"win");
     mixin(X_REQUEST_FIELD_CARD16!"num_masks");
 
     if (client.swapped) {
@@ -318,7 +318,7 @@ int ProcXISelectEvents(ClientPtr client)
 int ProcXIGetSelectedEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIGetSelectedEventsReq);
-    mixin(X_REPLY_FIELD_CARD32!"win");
+    mixin(X_REQUEST_FIELD_CARD32!"win");
 
     int rc = void, i = void;
     WindowPtr win = void;
@@ -334,11 +334,11 @@ int ProcXIGetSelectedEvents(ClientPtr client)
         RepType: X_XIGetSelectedEvents,
     };
 
-    masks = wOtherInputMasks(win);
+    masks = mixin(wOtherInputMasks!("win"));
     if (masks) {
         for (others = wOtherInputMasks(win).inputClients; others;
              others = others.next) {
-            if (SameClient(others, client)) {
+            if (mixin(SameClient!("others", "client"))) {
                 break;
             }
         }

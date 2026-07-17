@@ -63,14 +63,14 @@ import mi.mipointer;          /* for miPointerUpdateSprite */
 int ProcXIWarpPointer(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIWarpPointerReq);
-    mixin(X_REPLY_FIELD_CARD32!"src_win");
-    mixin(X_REPLY_FIELD_CARD32!"dst_win");
-    mixin(X_REPLY_FIELD_CARD32!"src_x");
-    mixin(X_REPLY_FIELD_CARD32!"src_y");
+    mixin(X_REQUEST_FIELD_CARD32!"src_win");
+    mixin(X_REQUEST_FIELD_CARD32!"dst_win");
+    mixin(X_REQUEST_FIELD_CARD32!"src_x");
+    mixin(X_REQUEST_FIELD_CARD32!"src_y");
     mixin(X_REQUEST_FIELD_CARD16!"src_width");
     mixin(X_REQUEST_FIELD_CARD16!"src_height");
-    mixin(X_REPLY_FIELD_CARD32!"dst_x");
-    mixin(X_REPLY_FIELD_CARD32!"dst_y");
+    mixin(X_REQUEST_FIELD_CARD32!"dst_x");
+    mixin(X_REQUEST_FIELD_CARD32!"dst_y");
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
 
     int rc = void;

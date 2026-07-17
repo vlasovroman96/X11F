@@ -68,6 +68,8 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import XIstubs;
 import Xi.exglobals;
+import externs.X11.extensions.XI;
+
 
 /***********************************************************************
  *
@@ -78,7 +80,7 @@ import Xi.exglobals;
 int ProcXChangeDeviceControl(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xChangeDeviceControlReq);
-    REQUEST_AT_LEAST_EXTRA_SIZE(xChangeDeviceControlReq, xDeviceCtl.sizeof);
+    mixin(REQUEST_AT_LEAST_EXTRA_SIZE!("xChangeDeviceControlReq", "xDeviceCtl.sizeof"));
     mixin(X_REQUEST_FIELD_CARD16!"control");
 
     if (client.swapped) {
@@ -89,6 +91,10 @@ int ProcXChangeDeviceControl(ClientPtr client)
 
     uint len = client.req_len - bytes_to_int32(xChangeDeviceControlReq.sizeof);
 
+    xChangeDeviceControlReply reply = {
+        RepType: X_ChangeDeviceControl,
+        status: Success,
+    };
     DeviceIntPtr dev = void;
     int ret = dixLookupDevice(&dev, stuff.deviceid, client, DixManageAccess);
     if (ret != Success)
@@ -100,10 +106,6 @@ int ProcXChangeDeviceControl(ClientPtr client)
         goto out_;
     }
 
-    xChangeDeviceControlReply reply = {
-        RepType: X_ChangeDeviceControl,
-        status: Success,
-    };
 
     switch (stuff.control) {
     case DEVICE_RESOLUTION:
@@ -119,7 +121,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
             ret = BadMatch;
             goto out_;
         }
-        if ((dev.deviceGrab.grab) && !SameClient(dev.deviceGrab.grab, client)) {
+        if ((dev.deviceGrab.grab) && !mixin(SameClient!("dev.deviceGrab.grab", "client"))) {
             reply.status = AlreadyGrabbed;
             ret = Success;
             goto out_;
@@ -144,8 +146,8 @@ int ProcXChangeDeviceControl(ClientPtr client)
 
             ret = Success;
         }
-        else if (status == DeviceBusy) {
-            reply.status = DeviceBusy;
+        else if (status == cast(ubyte)DeviceBusy) {
+            reply.status = cast(ubyte)DeviceBusy;
             ret = Success;
         }
         else {
@@ -183,7 +185,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
             ret = Success;
         }
         else if (status == DeviceBusy) {
-            reply.status = DeviceBusy;
+            reply.status = cast(ubyte)DeviceBusy;
             ret = Success;
         }
         else {
@@ -199,10 +201,10 @@ int ProcXChangeDeviceControl(ClientPtr client)
  out_:
     if (ret == Success) {
         devicePresenceNotify dpn = {
-            type: DevicePresenceNotify,
+            type: cast(ubyte)DevicePresenceNotify,
             time: currentTime.milliseconds,
             devchange: DeviceControlChanged,
-            deviceid: dev.id,
+            deviceid: cast(ubyte)dev.id,
             control: stuff.control
         };
         SendEventToAllWindows(dev, DevicePresenceNotifyMask,

@@ -68,9 +68,9 @@ int ProcXIAllowEvents(ClientPtr client)
         // Xi >= v2.2 request
         mixin(X_REQUEST_HEAD_AT_LEAST!xXI2_2AllowEventsReq);
         mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-        mixin(X_REPLY_FIELD_CARD32!"time");
-        mixin(X_REPLY_FIELD_CARD32!"touchid");
-        mixin(X_REPLY_FIELD_CARD32!"grab_window");
+        mixin(X_REQUEST_FIELD_CARD32!"time");
+        mixin(X_REQUEST_FIELD_CARD32!"touchid");
+        mixin(X_REQUEST_FIELD_CARD32!"grab_window");
 
         have_xi22 = TRUE;
         clientTime = stuff.time;
@@ -83,7 +83,7 @@ int ProcXIAllowEvents(ClientPtr client)
         // Xi < v2.2 request
         mixin(X_REQUEST_HEAD_AT_LEAST!xXIAllowEventsReq);
         mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-        mixin(X_REPLY_FIELD_CARD32!"time");
+        mixin(X_REQUEST_FIELD_CARD32!"time");
 
         clientTime = stuff.time;
         deviceId = stuff.deviceid;

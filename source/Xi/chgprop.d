@@ -69,6 +69,9 @@ import include.windowstr;
 import include.exevents;
 import Xi.exglobals;
 import grabdev;
+import dix.dixutils;
+import externs.X11.extensions.XI;
+
 
 /***********************************************************************
  *
@@ -81,14 +84,14 @@ int ProcXChangeDeviceDontPropagateList(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xChangeDeviceDontPropagateListReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
     mixin(X_REQUEST_FIELD_CARD16!"count");
-    X_REQUEST_REST_COUNT_CARD32(stuff.count);
+    mixin(X_REQUEST_REST_COUNT_CARD32!("stuff.count"));
 
     int i = void, rc = void;
     WindowPtr pWin = void;
     tmask[EMASKSIZE] tmp = void;
     OtherInputMasks* others = void;
 
-    rc = dixLookupWindow(&pWin, stuff.window, client, DixSetAttrAccess);
+    rc = cast(int)dixLookupWindow(&pWin, stuff.window, client, DixSetAttrAccess);
     if (rc != Success)
         return rc;
 
@@ -102,7 +105,7 @@ int ProcXChangeDeviceDontPropagateList(ClientPtr client)
                                  X_ChangeDeviceDontPropagateList)) != Success)
         return rc;
 
-    others = wOtherInputMasks(pWin);
+    others = mixin(wOtherInputMasks!("pWin"));
     if (!others && stuff.mode == DeleteFromList)
         return Success;
     for (i = 0; i < EMASKSIZE; i++) {

@@ -65,6 +65,7 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.exglobals;
+import externs.X11.extensions.XI;
 
 /***********************************************************************
  *
@@ -76,7 +77,7 @@ int ProcXChangeDeviceKeyMapping(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xChangeDeviceKeyMappingReq);
     uint count = stuff.keyCodes * stuff.keySymsPerKeyCode;
-    X_REQUEST_REST_COUNT_CARD32(count);
+    mixin(X_REQUEST_REST_COUNT_CARD32!("count"));
 
     int ret = void;
     uint len = void;

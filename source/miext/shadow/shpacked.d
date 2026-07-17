@@ -36,7 +36,7 @@ import    include.dixfontstr;
 import    externs.X11.fonts.fontstruct;
 import    include.mi;
 import    include.regionstr;
-import    globals;
+import    dix.globals;
 import    include.gcstruct;
 import include.shadow;
 import    include.fb;

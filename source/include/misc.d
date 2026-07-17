@@ -321,8 +321,8 @@ alias DDXPointPtr = _xPoint*;
 alias BoxPtr = pixman_box16*;
 alias xEventPtr = _xEvent*;
 alias xRectanglePtr = _xRectangle*;
-struct _GrabRec;
-alias GrabPtr = _GrabRec*;
+// struct _GrabRec;
+alias GrabPtr = GrabRec*;
 
 alias x_server_generation_t = c_ulong;
 

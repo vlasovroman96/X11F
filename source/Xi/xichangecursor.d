@@ -61,7 +61,7 @@ import include.input;
 int ProcXIChangeCursor(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIChangeCursorReq);
-    mixin(X_REPLY_FIELD_CARD32!"win");
+    mixin(X_REQUEST_FIELD_CARD32!"win");
     mixin(X_REQUEST_FIELD_CARD32!"cursor");
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
 

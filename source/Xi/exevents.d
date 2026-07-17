@@ -2576,7 +2576,7 @@ int SelectForWindow(DeviceIntPtr dev, WindowPtr pWin, ClientPtr client, Mask mas
              */
             for (others = wOtherInputMasks(pWin).inputClients; others;
                  others = others.next) {
-                if (!SameClient(others, client) && (check &
+                if (!mixin(SameClient!("others", "client")) && (check &
                                                     others.mask[mskidx]))
                     return BadAccess;
             }
@@ -2584,7 +2584,7 @@ int SelectForWindow(DeviceIntPtr dev, WindowPtr pWin, ClientPtr client, Mask mas
         assert(wOtherInputMasks(pWin));
         for (others = wOtherInputMasks(pWin).inputClients; others;
              others = others.next) {
-            if (SameClient(others, client)) {
+            if (mixin(SameClient!("others", "client"))) {
                 check = others.mask[mskidx];
                 others.mask[mskidx] = mask;
                 if (mask == 0) {
@@ -2738,7 +2738,7 @@ int InputClientGone(WindowPtr pWin, XID id)
             }
             else if (!(other.next)) {
                 if (ShouldFreeInputMasks(pWin, TRUE)) {
-                    OtherInputMasks* mask = wOtherInputMasks(pWin);
+                    OtherInputMasks* mask = mixin(wOtherInputMasks!("pWin"));
 
                     mask.inputClients = other.next;
                     FreeInputMask(&mask);
@@ -3072,7 +3072,7 @@ private Mask DeviceEventMaskForClient(DeviceIntPtr dev, WindowPtr pWin, ClientPt
         return 0;
     for (other = wOtherInputMasks(pWin).inputClients; other;
          other = other.next) {
-        if (SameClient(other, client))
+        if (mixin(SameClient!("other", "client")))
             return other.mask[dev.id];
     }
     return 0;
@@ -3085,7 +3085,7 @@ void MaybeStopDeviceHint(DeviceIntPtr dev, ClientPtr client)
 
     pWin = dev.valuator.motionHintWindow;
 
-    if ((grab && SameClient(grab, client) &&
+    if ((grab && mixin(SameClient!("grab", "client")) &&
          ((grab.eventMask & DevicePointerMotionHintMask) ||
           (grab.ownerEvents &&
            (DeviceEventMaskForClient(dev, pWin, client) &
@@ -3098,7 +3098,7 @@ void MaybeStopDeviceHint(DeviceIntPtr dev, ClientPtr client)
 
 int DeviceEventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, int maskndx)
 {
-    _OtherInputMasks* inputMasks = wOtherInputMasks(pWin);
+    _OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("pWin"));
 
     if (mask & ~XIPropagateMask) {
         client.errorValue = mask;
@@ -3115,7 +3115,7 @@ int DeviceEventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, in
 
             if (ret != Success)
                 return ret;
-            inputMasks = wOtherInputMasks(pWin);
+            inputMasks = mixin(wOtherInputMasks!("pWin"));
             BUG_RETURN_VAL(!inputMasks, BadAlloc);
         }
         inputMasks.dontPropagateMask[maskndx] = mask;
@@ -3133,7 +3133,7 @@ Bool ShouldFreeInputMasks(WindowPtr pWin, Bool ignoreSelectedEvents)
 {
     int i = void;
     Mask allInputEventMasks = 0;
-    _OtherInputMasks* inputMasks = wOtherInputMasks(pWin);
+    _OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("pWin"));
 
     for (i = 0; i < EMASKSIZE; i++)
         allInputEventMasks |= inputMasks.dontPropagateMask[i];
@@ -3195,11 +3195,11 @@ int XISetEventMask(DeviceIntPtr dev, WindowPtr win, ClientPtr client, uint len, 
     OtherInputMasks* masks = void;
     InputClientsPtr others = null;
 
-    masks = wOtherInputMasks(win);
+    masks = mixin(wOtherInputMasks!("win"));
     if (masks) {
         for (others = wOtherInputMasks(win).inputClients; others;
              others = others.next) {
-            if (SameClient(others, client)) {
+            if (mixin(SameClient!("others", "client"))) {
                 xi2mask_zero(others.xi2mask, dev.id);
                 break;
             }

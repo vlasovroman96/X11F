@@ -73,7 +73,7 @@ import include.windowstr;          /* window structure  */
 int ProcXUngrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xUngrabDeviceReq);
-    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
 
     DeviceIntPtr dev = void;
     GrabPtr grab = void;
@@ -88,7 +88,7 @@ int ProcXUngrabDevice(ClientPtr client)
     time = ClientTimeToServerTime(stuff.time);
     if ((CompareTimeStamps(time, currentTime) != LATER) &&
         (CompareTimeStamps(time, dev.deviceGrab.grabTime) != EARLIER) &&
-        (grab) && SameClient(grab, client) && grab.grabtype == XI)
+        (grab) && mixin(SameClient!("grab", "client")) && grab.grabtype == XI)
         (*dev.deviceGrab.DeactivateGrab) (dev);
     return Success;
 }

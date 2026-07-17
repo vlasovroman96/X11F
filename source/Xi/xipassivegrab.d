@@ -55,10 +55,10 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIPassiveGrabDeviceReq);
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-    mixin(X_REPLY_FIELD_CARD32!"grab_window");
+    mixin(X_REQUEST_FIELD_CARD32!"grab_window");
     mixin(X_REQUEST_FIELD_CARD32!"cursor");
-    mixin(X_REPLY_FIELD_CARD32!"time");
-    mixin(X_REPLY_FIELD_CARD32!"detail");
+    mixin(X_REQUEST_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD32!"detail");
     mixin(X_REQUEST_FIELD_CARD16!"mask_len");
     mixin(X_REQUEST_FIELD_CARD16!"num_modifiers");
     REQUEST_FIXED_SIZE(xXIPassiveGrabDeviceReq,
@@ -217,8 +217,8 @@ modifier_done:
         if (status != GrabSuccess) {
             /* write xXIGrabModifierInfo */
             x_rpcbuf_write_CARD32(&rpcbuf, *modifiers);
-            x_rpcbuf_write_CARD8(&rpcbuf, status);
-            x_rpcbuf_write_CARD8(&rpcbuf, 0); /* pad0 */
+            x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)status);
+            x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)0); /* pad0 */
             x_rpcbuf_write_CARD16(&rpcbuf, 0); /* pad1 */
 
             reply.num_modifiers++;
@@ -240,9 +240,9 @@ modifier_done:
 int ProcXIPassiveUngrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIPassiveUngrabDeviceReq);
-    mixin(X_REPLY_FIELD_CARD32!"grab_window");
+    mixin(X_REQUEST_FIELD_CARD32!"grab_window");
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
-    mixin(X_REPLY_FIELD_CARD32!"detail");
+    mixin(X_REQUEST_FIELD_CARD32!"detail");
     mixin(X_REQUEST_FIELD_CARD16!"num_modifiers");
     REQUEST_FIXED_SIZE(xXIPassiveUngrabDeviceReq,
                        (cast(uint) stuff.num_modifiers) << 2);
