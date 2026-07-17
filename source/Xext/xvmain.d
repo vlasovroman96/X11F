@@ -705,7 +705,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
        WILL BE DELETED WHEN THE DRAWABLE IS DESTROYED */
 
     if (!pn) {
-        if (((tpn = cast(XvVideoNotifyPtr)calloc(1, XvVideoNotifyRec.sizeof)) == null))
+        if (((tpn = cast(XvVideoNotifyPtr)cast(XvVideoNotifyRec*) calloc(1, XvVideoNotifyRec.sizeof)) == null))
             return BadAlloc;
         tpn.next = null;
         tpn.client = null;
@@ -741,7 +741,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
             tpn = fpn;
         }
         else {
-            if (((tpn = cast(XvVideoNotifyPtr)calloc(1, XvVideoNotifyRec.sizeof)) == null))
+            if (((tpn = cast(XvVideoNotifyPtr)cast(XvVideoNotifyRec*) calloc(1, XvVideoNotifyRec.sizeof)) == null))
                 return BadAlloc;
             tpn.next = pn.next;
             pn.next = tpn;
@@ -794,7 +794,7 @@ int XvdiSelectPortNotify(ClientPtr client, XvPortPtr pPort, BOOL onoff)
        CREATE A NEW ONE AND ADD IT TO THE BEGINNING OF THE LIST */
 
     if (!tpn) {
-        if (((tpn = cast(XvPortNotifyPtr)calloc(1, XvPortNotifyRec.sizeof)) == null))
+        if (((tpn = cast(XvPortNotifyPtr)cast(XvPortNotifyRec*) calloc(1, XvPortNotifyRec.sizeof)) == null))
             return BadAlloc;
         tpn.next = pPort.pNotify;
         pPort.pNotify = tpn;

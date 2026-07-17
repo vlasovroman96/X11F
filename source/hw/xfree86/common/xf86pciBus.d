@@ -656,7 +656,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
         }
 
         pci_iterator_destroy(iter);
-        instances = XNFreallocarray(null, max_entries, Inst.sizeof);
+        instances = cast(Inst*) XNFreallocarray(null, max_entries, Inst.sizeof);
     }
 
     iter = pci_slot_match_iterator_create(null);
@@ -950,7 +950,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
 
         /* Allocate an entry in the lists to be returned */
         numFound++;
-        retEntities = XNFreallocarray(retEntities, numFound, int.sizeof);
+        retEntities = cast(int*) XNFreallocarray(retEntities, numFound, int.sizeof);
         retEntities[numFound - 1] = xf86ClaimPciSlot(pPci, drvp,
                                                      instances[i].chip,
                                                      instances[i].dev,

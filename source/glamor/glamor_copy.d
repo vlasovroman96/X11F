@@ -407,7 +407,7 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
 
     glEnable(GL_SCISSOR_TEST);
 
-    BUG_RETURN_VAL(!src_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!src_priv", "FALSE"));
 
     glamor_pixmap_loop(src_priv, src_box_index); {
         BoxPtr src_box = glamor_pixmap_box_at(src_priv, src_box_index);
@@ -419,7 +419,7 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
         if (!glamor_use_program(dst, gc, prog, &args))
             goto bail_ctx;
 
-        BUG_RETURN_VAL(!dst_priv, FALSE);
+        mixin(BUG_RETURN_VAL!("!dst_priv", "FALSE"));
 
         glamor_pixmap_loop(dst_priv, dst_box_index); {
             BoxRec scissor = {
@@ -638,8 +638,8 @@ private Bool glamor_copy_gl(DrawablePtr src, DrawablePtr dst, GCPtr gc, BoxPtr b
     glamor_pixmap_private* src_priv = glamor_get_pixmap_private(src_pixmap);
     glamor_pixmap_private* dst_priv = glamor_get_pixmap_private(dst_pixmap);
 
-    BUG_RETURN_VAL(!dst_priv, FALSE);
-    BUG_RETURN_VAL(!src_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!dst_priv", "FALSE"));
+    mixin(BUG_RETURN_VAL!("!src_priv", "FALSE"));
 
     if (GLAMOR_PIXMAP_PRIV_HAS_FBO(dst_priv)) {
         if (GLAMOR_PIXMAP_PRIV_HAS_FBO(src_priv)) {

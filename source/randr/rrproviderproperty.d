@@ -96,7 +96,7 @@ private RRPropertyPtr RRCreateProviderProperty(Atom property)
 {
     RRPropertyPtr prop = void;
 
-    prop = cast(RRPropertyPtr) calloc(1, RRPropertyRec.sizeof);
+    prop = cast(RRPropertyPtr) cast(RRPropertyRec*) calloc(1, RRPropertyRec.sizeof);
     if (!prop)
         return null;
     prop.propertyName = property;

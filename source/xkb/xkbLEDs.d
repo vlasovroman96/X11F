@@ -551,7 +551,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
     sli = null;
     checkAccel = checkNames = FALSE;
     if ((kf != null) && (kf.xkb_sli == null)) {
-        kf.xkb_sli = sli = calloc(1, XkbSrvLedInfoRec.sizeof);
+        kf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
         if (sli == null)
             return null;        /* ALLOCATION ERROR */
         if (dev.key && dev.key.xkbInfo)
@@ -598,7 +598,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
         }
     }
     else if ((lf != null) && (lf.xkb_sli == null)) {
-        lf.xkb_sli = sli = calloc(1, XkbSrvLedInfoRec.sizeof);
+        lf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
         if (sli == null)
             return null;        /* ALLOCATION ERROR */
         if (dev.key && dev.key.xkbInfo)
@@ -663,7 +663,7 @@ XkbSrvLedInfoPtr XkbCopySrvLedInfo(DeviceIntPtr from, XkbSrvLedInfoPtr src, KbdF
     if (!src)
         goto finish;
 
-    sli_new = calloc(1, XkbSrvLedInfoRec.sizeof);
+    sli_new = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
     if (!sli_new)
         goto finish;
 

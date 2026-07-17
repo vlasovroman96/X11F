@@ -748,7 +748,7 @@ private int drm_mode_ensure_blob(xf86CrtcPtr crtc, const(drmModeModeInfo)* mode_
         drmmode_CompareKModes(&drmmode_crtc.current_mode.mode_info, mode_info) == 0)
         return 0;
 
-    mode = calloc(1, drmmode_mode_rec.sizeof);
+    mode = cast(drmmode_mode_rec*) calloc(1, drmmode_mode_rec.sizeof);
     if (!mode)
         return -1;
 
@@ -1609,7 +1609,7 @@ private void drmmode_destroy_tearfree_shadow(xf86CrtcPtr crtc)
     if (trf.flip_seq)
         ms_drm_abort_seq(crtc.scrn, trf.flip_seq);
 
-    for (i = 0; i < ARRAY_SIZE(trf.buf); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("trf.buf")); i++) {
         if (trf.buf[i].px) {
             drmmode_shadow_fb_destroy(crtc, trf.buf[i].px, cast(void*)cast(c_long)1,
                                       trf.buf[i].bo, &trf.buf[i].fb_id);
@@ -1634,7 +1634,7 @@ private Bool drmmode_create_tearfree_shadow(xf86CrtcPtr crtc)
 
     /* Destroy the old mode's buffers and make new ones */
     drmmode_destroy_tearfree_shadow(crtc);
-    for (i = 0; i < ARRAY_SIZE(trf.buf); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("trf.buf")); i++) {
         trf.buf[i].px = drmmode_shadow_fb_create(crtc, null, w, h,
                                                   &trf.buf[i].bo,
                                                   &trf.buf[i].fb_id);
@@ -3669,7 +3669,7 @@ private void drmmode_create_name(ScrnInfoPtr pScrn, drmModeConnectorPtr koutput,
     return;
 
  fallback:
-    if (koutput.connector_type >= ARRAY_SIZE(output_names.ptr))
+    if (koutput.connector_type >= mixin(ARRAY_SIZE!("output_names.ptr")))
         snprintf(name, 32, "Unknown%d-%d", koutput.connector_type, koutput.connector_type_id);
     else if (pScrn.is_gpu)
         snprintf(name, 32, "%s-%d-%d", output_names[koutput.connector_type], pScrn.scrnIndex - GPU_SCREEN_OFFSET + 1, koutput.connector_type_id);
@@ -3791,7 +3791,7 @@ private uint drmmode_output_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, drmMode
         goto out_free_encoders;
     }
 
-    drmmode_output = calloc(1, drmmode_output_private_rec.sizeof);
+    drmmode_output = cast(drmmode_output_private_rec*) calloc(1, drmmode_output_private_rec.sizeof);
     if (!drmmode_output) {
         xf86OutputDestroy(output);
         goto out_free_encoders;
@@ -4105,7 +4105,7 @@ private int drmmode_create_lease(RRLeasePtr lease, int* fd)
     if (nobjects == 0)
         return BadValue;
 
-    lease_private = calloc(1, drmmode_lease_private_rec.sizeof);
+    lease_private = cast(drmmode_lease_private_rec*) calloc(1, drmmode_lease_private_rec.sizeof);
     if (!lease_private)
         return BadAlloc;
 

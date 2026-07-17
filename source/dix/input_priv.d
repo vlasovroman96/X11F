@@ -77,12 +77,12 @@ void AbortDevices();
 
 void UndisplayDevices();
 
-ValuatorClassPtr AllocValuatorClass(ValuatorClassPtr src, int numAxes);
+// ValuatorClassPtr AllocValuatorClass(ValuatorClassPtr src, int numAxes);
 void FreeDeviceClass(int type, void** class_);
 
 int ApplyPointerMapping(DeviceIntPtr pDev, CARD8* map, int len, ClientPtr client);
 
-Bool BadDeviceMap(BYTE* buff, int length, uint low, uint high, XID* errval);
+// Bool BadDeviceMap(BYTE* buff, int length, uint low, uint high, XID* errval);
 
 void NoteLedState(DeviceIntPtr keybd, int led, Bool on);
 
@@ -100,7 +100,7 @@ void PostSyntheticMotion(DeviceIntPtr pDev, int x, int y, int screen, c_ulong ti
 
 void ReleaseButtonsAndKeys(DeviceIntPtr dev);
 
-int AttachDevice(ClientPtr client, DeviceIntPtr slave, DeviceIntPtr master);
+// int AttachDevice(ClientPtr client, DeviceIntPtr slave, DeviceIntPtr master);
 
 void DeepCopyDeviceClasses(DeviceIntPtr from, DeviceIntPtr to, DeviceChangedEvent* dce);
 
@@ -401,7 +401,7 @@ pragma(inline, true) private int CountBits(const(ubyte)* mask, int len)
 {
     int ret = 0;
     for (int i = 0; i < len; i++)
-        if (BitIsOn(mask, i))
+        if (mixin(BitIsOn!("mask", "i")))
             ret++;
     return ret;
 }

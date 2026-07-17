@@ -1117,7 +1117,7 @@ void LastEventTimeToggleResetFlag(int deviceid, Bool state)
 void LastEventTimeToggleResetAll(Bool state)
 {
     DeviceIntPtr dev = void;
-    nt_list_for_each_entry(dev, inputInfo.devices, next) ;{
+    mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next")) ;{
         LastEventTimeToggleResetFlag(dev.id, FALSE);
     }
     LastEventTimeToggleResetFlag(XIAllDevices, FALSE);
@@ -1326,7 +1326,7 @@ private void ComputeFreezes()
                               syncEvents.replayWin)) {
             if (IsTouchEvent(event)) {
                 TouchPointInfoPtr ti = TouchFindByClientID(replayDev, event.device_event.touchid);
-                BUG_WARN(!ti);
+                mixin(BUG_WARN!("!ti"));
 
                 TouchListenerAcceptReject(replayDev, ti, 0, XIRejectTouch);
             }
@@ -2094,7 +2094,7 @@ version (DEBUG_EVENTS) {
         }
     }
 
-    if (BitIsOn(criticalEvents.ptr, type)) {
+    if (mixin(BitIsOn!("criticalEvents.ptr", "type"))) {
         if (client.smart_priority < SMART_MAX_PRIORITY)
             client.smart_priority++;
         SetCriticalOutputPending();
@@ -2424,7 +2424,7 @@ void DeliverRawEvent(RawDeviceEvent* ev, DeviceIntPtr device)
     rc = EventToXI2(cast(InternalEvent*) ev, cast(xEvent**) &xi);
     if (rc != Success) {
         ErrorF("[Xi] %s: XI2 conversion failed in %s (%d)\n",
-               __func__, device.name, rc);
+               __FUNCTION__.ptr, device.name, rc);
         return;
     }
 
@@ -3237,7 +3237,7 @@ void InitializeSprite(DeviceIntPtr pDev, WindowPtr pWin)
     CursorPtr pCursor = void;
 
     if (!pDev.spriteInfo.sprite) {
-        pDev.spriteInfo.sprite = cast(SpritePtr) calloc(1, SpriteRec.sizeof);
+        pDev.spriteInfo.sprite = cast(SpritePtr) cast(SpriteRec*) calloc(1, SpriteRec.sizeof);
         if (!pDev.spriteInfo.sprite)
             FatalError("InitializeSprite: failed to allocate sprite struct");
 
@@ -3848,7 +3848,7 @@ MatchFlags MatchForType(const(GrabPtr) grab, GrabPtr tmp, InputLevel level, int 
     case XI2:
         grabtype = XI2;
         evtype = GetXI2Type(event_type);
-        BUG_WARN(!evtype);
+        mixin(BUG_WARN!("!evtype"));
         match = XI2_MATCH;
         break;
     case XI:
@@ -4502,7 +4502,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
         check = 0;
         if (!MakeWindowOptional(pWin))
             return BadAlloc;
-        OtherClients* others = cast(OtherClients*) calloc(1, OtherClients.sizeof);
+        OtherClients* others = cast(OtherClients*) cast(OtherClients*) calloc(1, OtherClients.sizeof);
         if (!others)
             return BadAlloc;
         others.mask = mask;
@@ -4680,7 +4680,7 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
     event.root_y = double_to_fp1616(mouse.spriteInfo.sprite.hot.y);
 
     for (int i = 0; mouse && mouse.button && i < mouse.button.numButtons; i++)
-        if (BitIsOn(mouse.button.down, i))
+        if (mixin(BitIsOn!("mouse.button.down", "i")))
             SetBit(&event[1], i);
 
     kbd = GetMaster(mouse, MASTER_KEYBOARD);
@@ -4832,7 +4832,7 @@ int SetInputFocus(ClientPtr client, DeviceIntPtr dev, Window focusID, CARD8 reve
             depth++;
         if (depth > focus.traceSize) {
             const(size_t) num = depth+1;
-            WindowPtr* wins = reallocarray(focus.trace, num, WindowPtr.sizeof);
+            WindowPtr* wins = cast(WindowPtr*) reallocarray(focus.trace, num, WindowPtr.sizeof);
             if (!wins)
                 return BadAlloc;
             focus.traceSize = num;

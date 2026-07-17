@@ -467,7 +467,7 @@ private Bool ms_dri2_schedule_flip(ms_dri2_frame_event_ptr info)
     ms_dri2_buffer_private_ptr back_priv = info.back.driverPrivate;
     ms_dri2_vblank_event* event = void;
 
-    event = cast(ms_dri2_vblank_event*) calloc(1, ms_dri2_vblank_event.sizeof);
+    event = cast(ms_dri2_vblank_event*) cast(ms_dri2_vblank_event*) calloc(1, ms_dri2_vblank_event.sizeof);
     if (!event)
         return FALSE;
 
@@ -644,7 +644,7 @@ private void ms_dri2_frame_event_handler(ulong msc, ulong usec, void* data)
 
     default:
         xf86DrvMsg(scrn.scrnIndex, X_WARNING,
-                   "%s: unknown vblank event (type %d) received\n", __func__,
+                   "%s: unknown vblank event (type %d) received\n", __FUNCTION__.ptr,
                    frame_info.type);
         break;
     }
@@ -725,7 +725,7 @@ private int ms_dri2_schedule_wait_msc(ClientPtr client, DrawablePtr draw, CARD64
             if (limit) {
                 xf86DrvMsg(scrn.scrnIndex, X_WARNING,
                            "%s:%d get vblank counter failed: %s\n",
-                           __func__, __LINE__,
+                           __FUNCTION__.ptr, __LINE__,
                            strerror(errno));
                 limit--;
             }
@@ -763,7 +763,7 @@ private int ms_dri2_schedule_wait_msc(ClientPtr client, DrawablePtr draw, CARD64
         if (limit) {
             xf86DrvMsg(scrn.scrnIndex, X_WARNING,
                        "%s:%d get vblank counter failed: %s\n",
-                       __func__, __LINE__,
+                       __FUNCTION__.ptr, __LINE__,
                        strerror(errno));
             limit--;
         }

@@ -144,7 +144,7 @@ version (Windows) {} else {
 
 Bool ephyrCardInit(KdCardInfo* card)
 {
-    EphyrPriv* priv = cast(EphyrPriv*) calloc(1, EphyrPriv.sizeof);
+    EphyrPriv* priv = cast(EphyrPriv*) cast(EphyrPriv*) calloc(1, EphyrPriv.sizeof);
     if (!priv)
         return FALSE;
 
@@ -1394,7 +1394,7 @@ void ephyrPutColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 private Status MouseInit(KdPointerInfo* pi)
 {
     pi.driverPrivate = cast(EphyrPointerPrivate*)
-        calloc(1, EphyrPointerPrivate.sizeof);
+        cast(EphyrPointerPrivate*) calloc(1, EphyrPointerPrivate.sizeof);
     if (!pi.driverPrivate)
         return BadAlloc;
 
@@ -1453,7 +1453,7 @@ private Status EphyrKeyboardInit(KdKeyboardInfo* ki)
     XkbControlsRec controls = void;
 
     ki.driverPrivate = cast(EphyrKbdPrivate*)
-        calloc(1, EphyrKbdPrivate.sizeof);
+        cast(EphyrKbdPrivate*) calloc(1, EphyrKbdPrivate.sizeof);
 
     if (hostx_load_keymap(&keySyms, modmap.ptr, &controls)) {
         XkbApplyMappingChange(ki.dixdev, &keySyms,

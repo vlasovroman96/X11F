@@ -148,7 +148,7 @@ static if (DEBUG_MIGRATE) {
                 static Bool firsttime = TRUE;
 
                 if (firsttime) {
-                    ErrorF("%s: Pending damage region empty!\n", __func__);
+                    ErrorF("%s: Pending damage region empty!\n", __FUNCTION__.ptr);
                     firsttime = FALSE;
                 }
             }
@@ -610,7 +610,7 @@ void exaDoMigration_classic(ExaMigrationPtr pixmaps, int npixmaps, Bool can_acce
             if (!exaPixmapIsDirty(pixmaps[i].pPix) &&
                 !exaAssertNotDirty(pixmaps[i].pPix))
                 ErrorF("%s: Pixmap %d dirty but not marked as such!\n",
-                       __func__, i);
+                       __FUNCTION__.ptr, i);
         }
     }
     /* If anything is pinned in system memory, we won't be able to

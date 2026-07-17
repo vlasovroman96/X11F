@@ -169,7 +169,7 @@ xf86OpenConsole(void)
         xf86Info.consoleFd = -1;
 
         /* detect which driver we are running on */
-        for (unsigned idx=0; idx < ARRAY_SIZE(console_drivers); idx++) {
+        for (unsigned idx=0; idx < mixin(ARRAY_SIZE!("console_drivers")); idx++) {
             if ((xf86Info.consoleFd = console_drivers[idx].open()) >= 0)
                 break;
         }
@@ -177,7 +177,7 @@ xf86OpenConsole(void)
         /* Check that a supported console driver was found */
         if (xf86Info.consoleFd < 0) {
             char cons_drivers[80] = { 0, };
-            for (i = 0; i < ARRAY_SIZE(console_drivers); i++) {
+            for (i = 0; i < mixin(ARRAY_SIZE!("console_drivers")); i++) {
                 if (i) {
                     strcat(cons_drivers, ", ");
                 }

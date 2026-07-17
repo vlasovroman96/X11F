@@ -208,7 +208,7 @@ void* xf86HandleInt10Options(ScrnInfoPtr pScrn, int entityIndex)
             configOptions = pEnt.device.options;
 
         if (configOptions) {
-            if (((options = cast(OptionInfoPtr) calloc(1, INT10Options.sizeof)) == 0))
+            if (((options = cast(OptionInfoPtr) cast(INT10Options*) calloc(1, INT10Options.sizeof)) == 0))
                 return null;
 
             cast(void) memcpy(options, INT10Options.ptr, INT10Options.sizeof);

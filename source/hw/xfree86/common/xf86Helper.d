@@ -1264,7 +1264,7 @@ int xf86MatchDevice(const(char)* drivername, GDevPtr** sectlist)
             /*
              * we have a matching driver that wasn't claimed, yet
              */
-            pgdp = XNFreallocarray(pgdp, i + 2, GDevPtr.sizeof);
+            pgdp = cast(GDevPtr*) XNFreallocarray(pgdp, i + 2, GDevPtr.sizeof);
             pgdp[i++] = screensecptr.device;
         }
         for (k = 0; k < screensecptr.num_gpu_devices; k++) {
@@ -1287,7 +1287,7 @@ int xf86MatchDevice(const(char)* drivername, GDevPtr** sectlist)
         if (gdp.driver && !gdp.claimed &&
             !xf86NameCmp(gdp.driver, drivername)) {
             /* we have a matching driver that wasn't claimed yet */
-            pgdp = XNFreallocarray(pgdp, i + 2, GDevPtr.sizeof);
+            pgdp = cast(GDevPtr*) XNFreallocarray(pgdp, i + 2, GDevPtr.sizeof);
             pgdp[i++] = gdp;
         }
         j++;

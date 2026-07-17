@@ -449,7 +449,7 @@ winClipboardFlushXEvents(HWND hwnd,
                                           selection_request->property,
                                           XCB_ATOM_ATOM,
                                           32,
-                                          ARRAY_SIZE(atomTargetArr),
+                                          mixin(ARRAY_SIZE!("atomTargetArr")),
                                           (unsigned char *) atomTargetArr);
                 xcb_generic_error_t *error;
                 if ((error = xcb_request_check(conn, cookie))) {

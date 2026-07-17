@@ -72,7 +72,7 @@ private Bool glamor_poly_glyph_blt_gl(DrawablePtr drawable, GCPtr gc, int start_
     start_x += drawable.x;
     y += drawable.y;
 
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
     glamor_pixmap_loop(pixmap_priv, box_index) ;{
         int x = void;
@@ -243,7 +243,7 @@ else {
 
     glamor_put_vbo_space(screen);
 
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
     glamor_pixmap_loop(pixmap_priv, box_index); {
         if (!glamor_set_destination_drawable(drawable, box_index, FALSE, TRUE,

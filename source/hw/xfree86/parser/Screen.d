@@ -190,7 +190,7 @@ private XF86ConfDisplayPtr xf86parseDisplaySubSection()
             while ((token =
                     xf86getSubTokenWithTab(&(ptr.disp_comment),
                                            DisplayTab.ptr)) == XF86_TOKEN_STRING) {
-                mptr = calloc(1, XF86ModeRec.sizeof);
+                mptr = cast(XF86ModeRec*) calloc(1, XF86ModeRec.sizeof);
                 mptr.mode_name = xf86_lex_val.str;
                 mptr.list.next = null;
                 ptr.disp_mode_lst = cast(XF86ModePtr)
@@ -322,7 +322,7 @@ XF86ConfScreenPtr xf86parseScreenSection()
                     break;
 
             if (aptr == null) {
-                aptr = calloc(1, XF86ConfAdaptorLinkRec.sizeof);
+                aptr = cast(XF86ConfAdaptorLinkRec*) calloc(1, XF86ConfAdaptorLinkRec.sizeof);
                 aptr.list.next = null;
                 aptr.al_adaptor_str = xf86_lex_val.str;
                 ptr.scrn_adaptor_lst = cast(XF86ConfAdaptorLinkPtr)

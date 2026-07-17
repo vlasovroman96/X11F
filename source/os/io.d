@@ -772,7 +772,7 @@ int WriteToClient(ClientPtr who, int count, const(void)* __buf)
     const(char)* buf = __buf;
 
     BUG_RETURN_VAL_MSG(in_input_thread(), 0,
-                       "******** %s called from input thread *********\n", __func__);
+                       "******** %s called from input thread *********\n", __FUNCTION__.ptr);
 
 version (DEBUG_COMMUNICATION) {
     Bool multicount = FALSE;
@@ -986,7 +986,7 @@ abortClient:
 
 private ConnectionInputPtr AllocateInputBuffer()
 {
-    ConnectionInputPtr oci = calloc(1, ConnectionInput.sizeof);
+    ConnectionInputPtr oci = cast(ConnectionInput*) calloc(1, ConnectionInput.sizeof);
     if (!oci)
         return null;
     oci.buffer = calloc(1, BUFSIZE);
@@ -1004,7 +1004,7 @@ private ConnectionInputPtr AllocateInputBuffer()
 
 private ConnectionOutputPtr AllocateOutputBuffer()
 {
-    ConnectionOutputPtr oco = calloc(1, ConnectionOutput.sizeof);
+    ConnectionOutputPtr oco = cast(ConnectionOutput*) calloc(1, ConnectionOutput.sizeof);
     if (!oco)
         return null;
     oco.buf = calloc(1, BUFSIZE);

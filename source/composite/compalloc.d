@@ -135,7 +135,7 @@ private void compHandleMarkedWindows(WindowPtr pWin, WindowPtr pLayerWin)
  */
 int compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
 {
-    BUG_RETURN_VAL(!pClient, BadMatch);
+    mixin(BUG_RETURN_VAL!("!pClient", "BadMatch"));
 
     CompWindowPtr cw = GetCompWindow(pWin);
     CompScreenPtr cs = GetCompScreen(pWin.drawable.pScreen);
@@ -163,7 +163,7 @@ int compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
      * The client *could* allocate multiple, but while supported,
      * it is not expected to be common
      */
-    CompClientWindowPtr ccw = calloc(1, CompClientWindowRec.sizeof);
+    CompClientWindowPtr ccw = cast(CompClientWindowRec*) calloc(1, CompClientWindowRec.sizeof);
     if (!ccw)
         return BadAlloc;
     ccw.id = FakeClientID(pClient.index);
@@ -172,7 +172,7 @@ int compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
      * Now make sure there's a per-window structure to hang this from
      */
     if (!cw) {
-        cw = calloc(1, CompWindowRec.sizeof);
+        cw = cast(CompWindowRec*) calloc(1, CompWindowRec.sizeof);
         if (!cw) {
             free(ccw);
             return BadAlloc;
@@ -322,7 +322,7 @@ int compUnredirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
 {
     CompWindowPtr cw = GetCompWindow(pWin);
 
-    BUG_RETURN_VAL(!pClient, BadValue);
+    mixin(BUG_RETURN_VAL!("!pClient", "BadValue"));
 
     if (!cw)
         return BadValue;
@@ -355,7 +355,7 @@ int compRedirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
      * The client *could* allocate multiple, but while supported,
      * it is not expected to be common
      */
-    CompClientWindowPtr ccw = calloc(1, CompClientWindowRec.sizeof);
+    CompClientWindowPtr ccw = cast(CompClientWindowRec*) calloc(1, CompClientWindowRec.sizeof);
     if (!ccw)
         return BadAlloc;
     ccw.id = FakeClientID(pClient.index);
@@ -364,7 +364,7 @@ int compRedirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
      * Now make sure there's a per-window structure to hang this from
      */
     if (!csw) {
-        csw = calloc(1, CompSubwindowsRec.sizeof);
+        csw = cast(CompSubwindowsRec*) calloc(1, CompSubwindowsRec.sizeof);
         if (!csw) {
             free(ccw);
             return BadAlloc;

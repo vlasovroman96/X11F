@@ -104,7 +104,7 @@ Bool miDCInitialize(ScreenPtr pScreen, miPointerScreenFuncPtr screenFuncs)
                                      0))
         return FALSE;
 
-    pScreenPriv = calloc(1, miDCScreenRec.sizeof);
+    pScreenPriv = cast(miDCScreenRec*) calloc(1, miDCScreenRec.sizeof);
     if (!pScreenPriv)
         return FALSE;
 
@@ -427,7 +427,7 @@ bool miDCDeviceInitialize(DeviceIntPtr pDev, ScreenPtr pScreen)
         return TRUE;
 
     mixin(DIX_FOR_EACH_SCREEN!q{
-        pBuffer = calloc(1, miDCBufferRec.sizeof);
+        pBuffer = cast(miDCBufferRec*) calloc(1, miDCBufferRec.sizeof);
         if (!pBuffer)
             goto failure;
 

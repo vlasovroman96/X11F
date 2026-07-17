@@ -411,7 +411,7 @@ xf86MonPtr xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool complete)
 
     /* Default DDC and DDC2 to enabled. */
     Bool noddc = FALSE, noddc2 = FALSE;
-    OptionInfoPtr options = calloc(1, DDCOptions.sizeof);
+    OptionInfoPtr options = cast(DDCOptions*) calloc(1, DDCOptions.sizeof);
     if (!options)
         return null;
     memcpy(options, DDCOptions.ptr, DDCOptions.sizeof);

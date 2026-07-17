@@ -437,7 +437,7 @@ private DisplayModePtr FindDMTMode(int hsize, int vsize, int refresh, Bool rb)
     int i = void;
     const(DisplayModeRec)* ret = void;
 
-    for (i = 0; i < ARRAY_SIZE(DMTModes.ptr); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("DMTModes.ptr")); i++) {
         ret = &DMTModes[i];
 
         if (!rb && xf86ModeIsReduced(ret))
@@ -549,7 +549,7 @@ private void DDCModeDoInterlaceQuirks(DisplayModePtr mode)
     ];
     int i = void;
 
-    for (i = 0; i < ARRAY_SIZE(cea_interlaced.ptr); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("cea_interlaced.ptr")); i++) {
         if ((mode.HDisplay == cea_interlaced[i].w) &&
             (mode.VDisplay == cea_interlaced[i].h / 2)) {
             mode.VDisplay *= 2;
@@ -578,7 +578,7 @@ private DisplayModePtr DDCModeFromDetailedTiming(int scrnIndex, detailed_timings
      */
     if (timing.h_active < 64 || timing.v_active < 64) {
         xf86DrvMsg(scrnIndex, X_INFO,
-                   "%s: Ignoring tiny %dx%d mode\n", __func__,
+                   "%s: Ignoring tiny %dx%d mode\n", __FUNCTION__.ptr,
                    timing.h_active, timing.v_active);
         return null;
     }
@@ -586,7 +586,7 @@ private DisplayModePtr DDCModeFromDetailedTiming(int scrnIndex, detailed_timings
     /* We don't do stereo */
     if (timing.stereo) {
         xf86DrvMsg(scrnIndex, X_INFO,
-                   "%s: Ignoring: We don't handle stereo.\n", __func__);
+                   "%s: Ignoring: We don't handle stereo.\n", __FUNCTION__.ptr);
         return null;
     }
 
@@ -594,7 +594,7 @@ private DisplayModePtr DDCModeFromDetailedTiming(int scrnIndex, detailed_timings
     if (timing.sync != 0x03) {
         xf86DrvMsg(scrnIndex, X_INFO,
                    "%s: %dx%d Warning: We only handle separate"
-                   ~ " sync.\n", __func__, timing.h_active, timing.v_active);
+                   ~ " sync.\n", __FUNCTION__.ptr, timing.h_active, timing.v_active);
     }
 
     Mode = XNFcallocarray(1, DisplayModeRec.sizeof);

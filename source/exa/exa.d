@@ -730,7 +730,7 @@ private void exaCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unus
  */
 ExaDriverPtr exaDriverAlloc()
 {
-    return calloc(1, ExaDriverRec.sizeof);
+    return cast(ExaDriverRec*) calloc(1, ExaDriverRec.sizeof);
 }
 
 /**
@@ -820,7 +820,7 @@ Bool exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo)
         return FALSE;
     }
 
-    pExaScr = calloc(1, ExaScreenPrivRec.sizeof);
+    pExaScr = cast(ExaScreenPrivRec*) calloc(1, ExaScreenPrivRec.sizeof);
     if (!pExaScr) {
         LogMessage(X_WARNING, "EXA(%d): Failed to allocate screen private\n",
                    pScreen.myNum);

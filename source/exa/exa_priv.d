@@ -61,7 +61,7 @@ enum DEBUG_GLYPH_CACHE =	0;
 static if (DEBUG_TRACE_FALL) {
 enum string EXA_FALLBACK(string x) = `
 do {								
-	ErrorF("EXA fallback at %s: ", __func__);		
+	ErrorF("EXA fallback at %s: ", __FUNCTION__.ptr);		
 	ErrorF x = void;						
 } while (0)`;
 

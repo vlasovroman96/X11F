@@ -1568,7 +1568,7 @@ events be delivered to it through the GetMotionProc routine.
                 int percent;
                 DeviceIntPtr pDevice;
                 pointer ctrl;
-                int class;
+                intclass_;
 </programlisting></blockquote>
 You need to write this routine to ring the bell on the keyboard.
 loud is a number from 0 to 100, with 100 being the loudest.

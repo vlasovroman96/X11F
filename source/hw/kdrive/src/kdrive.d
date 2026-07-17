@@ -1257,7 +1257,7 @@ private Bool KdSetPixmapFormats()
     /*
      * Fill in additional formats
      */
-    for (i = 0; i < ARRAY_SIZE(kdDepths.ptr); i++)
+    for (i = 0; i < mixin(ARRAY_SIZE!("kdDepths.ptr")); i++)
         if (!depthToBpp[kdDepths[i].depth])
             depthToBpp[kdDepths[i].depth] = kdDepths[i].bpp;
 

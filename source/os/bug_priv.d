@@ -13,13 +13,13 @@ enum string BUG_WARN_MSG(string cond) = `` ~ __BUG_WARN_MSG!(cond, `__VA_ARGS__`
 enum string BUG_WARN(string cond) = __BUG_WARN_MSG!(cond, `null`);
 
 enum string BUG_RETURN(string cond) = `
-    do { if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `null`) ~ `; return; } } while(0)`;
+    if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `null`) ~ `; return; }`;
 
 enum string BUG_RETURN_MSG(string cond) = `
     do { if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `__VA_ARGS__`) ~ `; return; } } while(0)`;
 
 enum string BUG_RETURN_VAL(string cond, string val) = `
-    do { if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `null`) ~ `; return (` ~ val ~ `); } } while(0)`;
+    if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `null`) ~ `; return (` ~ val ~ `); }`;
 
 enum string BUG_RETURN_VAL_MSG(string cond, string val) = `
     do { if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `__VA_ARGS__`) ~ `; return (` ~ val ~ `); } } while(0)`;

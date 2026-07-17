@@ -166,7 +166,7 @@ no_mem:
 
 present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc)
 {
-    present_vblank_ptr vblank = calloc(1, present_vblank_rec.sizeof);
+    present_vblank_ptr vblank = cast(present_vblank_rec*) calloc(1, present_vblank_rec.sizeof);
 
     if (!vblank)
         return null;

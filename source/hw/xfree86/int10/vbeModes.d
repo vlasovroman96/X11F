@@ -398,7 +398,7 @@ void VBESetModeParameters(ScrnInfoPtr pScrn, vbeInfoPtr pVbe)
             xf86DrvMsg(pScrn.scrnIndex, X_INFO,
                        "Attempting to use %dHz refresh for mode \"%s\" (%x)\n",
                        cast(int) pMode.VRefresh, pMode.name, data.mode);
-            data.block = calloc(1, VbeCRTCInfoBlock.sizeof);
+            data.block = cast(VbeCRTCInfoBlock*) calloc(1, VbeCRTCInfoBlock.sizeof);
             if (!data.block)
                 continue;
             data.block.HorizontalTotal = best.HTotal;

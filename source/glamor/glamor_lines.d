@@ -104,7 +104,7 @@ private Bool glamor_poly_lines_solid_gl(DrawablePtr drawable, GCPtr gc, int mode
 
     glEnable(GL_SCISSOR_TEST);
 
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
     glamor_pixmap_loop(pixmap_priv, box_index); {
         int nbox = RegionNumRects(gc.pCompositeClip);

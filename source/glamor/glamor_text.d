@@ -189,7 +189,7 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
 
         glEnable(GL_SCISSOR_TEST);
 
-        BUG_RETURN_VAL(!pixmap_priv, 0);
+        mixin(BUG_RETURN_VAL!("!pixmap_priv", "0"));
 
         glamor_pixmap_loop(pixmap_priv, box_index); {
             BoxPtr box = RegionRects(gc.pCompositeClip);

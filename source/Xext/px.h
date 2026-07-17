@@ -55,7 +55,7 @@ typedef struct {
     union {
         struct {
             char visibility;
-            char class;
+            charclass_;
             char root;
         } win;
         struct {

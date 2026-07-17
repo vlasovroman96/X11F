@@ -1,4 +1,4 @@
-module stubs;
+module Xi.stubs;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -64,7 +64,7 @@ import externs.X11.Xdefs;
 import include.inputstr;
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-import XIstubs;
+import Xi.XIstubs;
 import Xext.xace;
 
 /****************************************************************************

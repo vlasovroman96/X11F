@@ -60,7 +60,7 @@ private RRModePtr RROldModeAdd(RROutputPtr output, RRScreenSizePtr size, int ref
         modes = reallocarray(output.modes,
                              output.numModes + 1, RRModePtr.sizeof);
     else
-        modes = cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
+        modes = cast(RRModePtr*) cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
     if (!modes) {
         RRModeDestroy(mode);
         FreeResource(mode.mode.id, 0);
@@ -278,7 +278,7 @@ Bool RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate)
         if (pSize.pRates[i].rate == rate)
             return TRUE;
 
-    pNew = reallocarray(pSize.pRates, pSize.nRates + 1, RRScreenRate.sizeof);
+    pNew = cast(RRScreenRate*) reallocarray(pSize.pRates, pSize.nRates + 1, RRScreenRate.sizeof);
     if (!pNew)
         return FALSE;
     pRate = &pNew[pSize.nRates++];

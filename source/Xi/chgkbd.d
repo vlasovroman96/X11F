@@ -1,4 +1,4 @@
-module chgkbd;
+module Xi.chgkbd;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -62,11 +62,11 @@ import dix.request_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import XIstubs;
+import Xi.XIstubs;
 import include.globals;
 import include.exevents;
 import Xi.exglobals;
-import chgptr;
+import Xi.chgptr;
 
 /***********************************************************************
  *

@@ -64,7 +64,7 @@ HashTable ht_create(int keySize, int dataSize, HashFunc hash, HashCompareFunc co
 {
     int c = void;
     int numBuckets = void;
-    HashTable ht = cast(HashTable)calloc(1, HashTableRec.sizeof);
+    HashTable ht = cast(HashTable)cast(HashTableRec*) calloc(1, HashTableRec.sizeof);
 
     if (!ht) {
         return null;
@@ -152,7 +152,7 @@ void* ht_add(HashTable ht, const(void)* key)
 {
     uint index = ht.hash(ht.cdata, key, ht.bucketBits);
     xorg_list* bucket = &ht.buckets[index];
-    BucketRec* elem = cast(BucketRec*) calloc(1, BucketRec.sizeof);
+    BucketRec* elem = cast(BucketRec*) cast(BucketRec*) calloc(1, BucketRec.sizeof);
     if (!elem) {
         goto outOfMemory;
     }

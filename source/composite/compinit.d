@@ -294,7 +294,7 @@ private Bool compAddAlternateVisuals(ScreenPtr pScreen, CompScreenPtr cs)
 {
     int ret = 0;
 
-    for (int alt = 0; alt < ARRAY_SIZE(altVisuals.ptr); alt++)
+    for (int alt = 0; alt < mixin(ARRAY_SIZE!("altVisuals.ptr")); alt++)
         ret |= compAddAlternateVisual(pScreen, cs, altVisuals.ptr + alt);
 
     return ret;
@@ -311,7 +311,7 @@ Bool compScreenInit(ScreenPtr pScreen)
 
     if (GetCompScreen(pScreen))
         return TRUE;
-    CompScreenPtr cs = calloc(1, CompScreenRec.sizeof);
+    CompScreenPtr cs = cast(CompScreenRec*) calloc(1, CompScreenRec.sizeof);
     if (!cs)
         return FALSE;
 

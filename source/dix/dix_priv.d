@@ -219,9 +219,9 @@ Bool IsGestureEndEvent(InternalEvent* event);
 
 void CopyKeyClass(DeviceIntPtr device, DeviceIntPtr master);
 
-int CorePointerProc(DeviceIntPtr dev, int what);
+// int CorePointerProc(DeviceIntPtr dev, int what);
 
-int CoreKeyboardProc(DeviceIntPtr dev, int what);
+// int CoreKeyboardProc(DeviceIntPtr dev, int what);
 
 alias xQueryFontReplyPtr = _xQueryFontReply*;
 void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);

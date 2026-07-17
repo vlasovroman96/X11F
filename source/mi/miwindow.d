@@ -125,7 +125,7 @@ void miMarkWindow(WindowPtr pWin)
     if (pWin.valdata)
         return;
 
-    ValidatePtr val = cast(ValidatePtr) calloc(1, MiValidateRec.sizeof);
+    ValidatePtr val = cast(ValidatePtr) cast(MiValidateRec*) calloc(1, MiValidateRec.sizeof);
     if (!val)
         return;
 

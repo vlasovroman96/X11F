@@ -587,7 +587,7 @@ version (XINERAMA) {
 
     LEGAL_NEW_RESOURCE(stuff.pixmap, client);
 
-    if (((newPix = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
 
     newPix.type = XRT_PIXMAP;
@@ -661,7 +661,7 @@ version (XINERAMA) {
 
     CompScreenPtr cs = GetCompScreen(dixGetMasterScreen());
     if (!cs.pOverlayWin) {
-        if (((overlayWin = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+        if (((overlayWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
             return BadAlloc;
 
         overlayWin.type = XRT_WINDOW;

@@ -192,7 +192,7 @@ void UngrabAllDevices(Bool kill_client)
 
 GrabPtr AllocGrab(const(GrabPtr) src)
 {
-    GrabPtr grab = calloc(1, GrabRec.sizeof);
+    GrabPtr grab = cast(GrabRec*) calloc(1, GrabRec.sizeof);
 
     if (grab) {
         grab.xi2mask = xi2mask_new();

@@ -116,7 +116,7 @@ int EventToCore(InternalEvent* event, xEvent** core_out, int* count_out)
 
         /* Don't create core motion event if neither x nor y are
          * present */
-        if (!BitIsOn(e.valuators.mask, 0) && !BitIsOn(e.valuators.mask, 1)) {
+        if (!mixin(BitIsOn!("e.valuators.mask", "0")) && !mixin(BitIsOn!("e.valuators.mask", "1"))) {
             ret = BadMatch;
             goto out_;
         }
@@ -409,7 +409,7 @@ private int countValuators(DeviceEvent* ev, int* first)
     int first_valuator = -1, last_valuator = -1, num_valuators = 0;
 
     for (int i = 0; i < ((ev.valuators.mask) * 8).sizeof; i++) {
-        if (BitIsOn(ev.valuators.mask, i)) {
+        if (mixin(BitIsOn!("ev.valuators.mask", "i"))) {
             if (first_valuator == -1)
                 first_valuator = i;
             last_valuator = i;
@@ -655,7 +655,7 @@ private int eventToDeviceEvent(DeviceEvent* ev, xEvent** xi)
     btlen = bytes_to_int32(bits_to_bytes(MAX_BUTTONS));
     len += btlen * 4;           /* buttonmask len */
 
-    vallen = count_bits(ev.valuators.mask, ARRAY_SIZE(ev.valuators.mask));
+    vallen = count_bits(ev.valuators.mask, mixin(ARRAY_SIZE!("ev.valuators.mask")));
     len += vallen * 2 * uint.sizeof;       /* axisvalues */
     vallen = bytes_to_int32(bits_to_bytes(MAX_VALUATORS));
     len += vallen * 4;          /* valuators mask */
@@ -707,14 +707,14 @@ private int eventToDeviceEvent(DeviceEvent* ev, xEvent** xi)
 
     ptr = cast(char*) &xde[1];
     for (int i = 0; i < ((ev.buttons) * 8).sizeof; i++) {
-        if (BitIsOn(ev.buttons, i))
+        if (mixin(BitIsOn!("ev.buttons", "i")))
             SetBit(ptr, i);
     }
 
     ptr += xde.buttons_len * 4;
     axisval = cast(FP3232*) (ptr + xde.valuators_len * 4);
     for (int i = 0; i < MAX_VALUATORS; i++) {
-        if (BitIsOn(ev.valuators.mask, i)) {
+        if (mixin(BitIsOn!("ev.valuators.mask", "i"))) {
             SetBit(ptr, i);
             *axisval = double_to_fp3232(ev.valuators.data[i]);
             axisval++;
@@ -779,7 +779,7 @@ private int eventToRawEvent(RawDeviceEvent* ev, xEvent** xi)
     axisval = cast(FP3232*) (ptr + raw.valuators_len * 4);
     axisval_raw = axisval + nvals;
     for (int i = 0; i < MAX_VALUATORS; i++) {
-        if (BitIsOn(ev.valuators.mask, i)) {
+        if (mixin(BitIsOn!("ev.valuators.mask", "i"))) {
             SetBit(ptr, i);
             *axisval = double_to_fp3232(ev.valuators.data[i]);
             *axisval_raw = double_to_fp3232(ev.valuators.data_raw[i]);

@@ -63,7 +63,7 @@ GlxServerVendor* GlxCreateVendor(const(GlxServerImports)* imports)
         return null;
     }
 
-    vendor = cast(GlxServerVendor*) calloc(1, GlxServerVendor.sizeof);
+    vendor = cast(GlxServerVendor*) cast(GlxServerVendor*) calloc(1, GlxServerVendor.sizeof);
     if (vendor == null) {
         ErrorF("GLX: Can't allocate vendor library.\n");
         return null;

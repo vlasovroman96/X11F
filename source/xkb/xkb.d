@@ -1025,7 +1025,7 @@ int ProcXkbSetControls(ClientPtr client)
                 memcpy(new_.per_key_repeat, stuff.perKeyRepeat,
                        XkbPerKeyBitArraySize);
                 if (xkbi.repeatKey &&
-                    !BitIsOn(new_.per_key_repeat, xkbi.repeatKey)) {
+                    !mixin(BitIsOn!("new_.per_key_repeat", "xkbi.repeatKey"))) {
                     AccessXCancelRepeatKey(xkbi, xkbi.repeatKey);
                 }
             }

@@ -92,7 +92,7 @@ XF86ConfFlagsPtr xf86parseFlagsSection(XF86ConfFlagsPtr ptr)
 
     if (ptr == null)
     {
-        if((ptr=calloc(1, XF86ConfFlagsRec.sizeof)) == null)
+        if((ptr=cast(XF86ConfFlagsRec*) calloc(1, XF86ConfFlagsRec.sizeof)) == null)
         {
             return null;
         }

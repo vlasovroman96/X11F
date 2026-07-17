@@ -472,7 +472,7 @@ private ModeStatus xf86LookupMode(ScrnInfoPtr scrp, DisplayModePtr modep, ClockR
         M_T_DRIVER,
         0
     ];
-    const(int) ntypes = ARRAY_SIZE(types.ptr);
+    const(int) ntypes = mixin(ARRAY_SIZE!("types.ptr"));
 
     strategy &= ~(LOOKUP_CLKDIV2 | LOOKUP_OPTIONAL_TOLERANCES);
 
@@ -1428,7 +1428,7 @@ int xf86ValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)**
     /*
      * Store the clockRanges for later use by the VidMode extension.
      */
-    nt_list_for_each_entry(cp, clockRanges, next); {
+    mixin(nt_list_for_each_entry!("cp", "clockRanges", "next")); {
         ClockRangePtr newCR = XNFalloc(ClockRange.sizeof);
         memcpy(newCR, cp, ClockRange.sizeof);
         newCR.next = null;
@@ -1805,7 +1805,7 @@ version (XINERAMA) {
                 M_T_DRIVER,
                 0
             ];
-            const(int) ntypes = ARRAY_SIZE(types.ptr);
+            const(int) ntypes = mixin(ARRAY_SIZE!("types.ptr"));
             int n;
 
             /*

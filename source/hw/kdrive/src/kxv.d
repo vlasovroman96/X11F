@@ -163,7 +163,7 @@ Bool KdXVScreenInit(ScreenPtr pScreen, KdVideoAdaptorPtr adaptors, int num)
     KdXvScreenKey = XvGetScreenKey();
     PortResource = XvGetRTPort();
 
-    ScreenPriv = calloc(1, KdXVScreenRec.sizeof);
+    ScreenPriv = cast(KdXVScreenRec*) calloc(1, KdXVScreenRec.sizeof);
     dixSetPrivate(&pScreen.devPrivates, &KdXVScreenPrivateKey, ScreenPriv);
 
     if (!ScreenPriv)
@@ -366,7 +366,7 @@ private Bool KdXVInitAdaptors(ScreenPtr pScreen, KdVideoAdaptorPtr infoPtr, int 
             continue;
         }
 
-        if (((adaptorPriv = calloc(1, XvAdaptorRecPrivate.sizeof)) == 0)) {
+        if (((adaptorPriv = cast(XvAdaptorRecPrivate*) calloc(1, XvAdaptorRecPrivate.sizeof)) == 0)) {
             KdXVFreeAdaptor(pa);
             continue;
         }
@@ -395,7 +395,7 @@ private Bool KdXVInitAdaptors(ScreenPtr pScreen, KdVideoAdaptorPtr infoPtr, int 
             if (((pp.id = dixAllocServerXID()) == 0))
                 continue;
 
-            if (((portPriv = calloc(1, XvPortRecPrivate.sizeof)) == 0))
+            if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) == 0))
                 continue;
 
             if (!AddResource(pp.id, PortResource, pp)) {
@@ -743,7 +743,7 @@ private int KdXVEnlistPortInWindow(WindowPtr pWin, XvPortRecPrivatePtr portPriv)
     }
 
     if (!winPriv) {
-        winPriv = calloc(1, KdXVWindowRec.sizeof);
+        winPriv = cast(KdXVWindowRec*) calloc(1, KdXVWindowRec.sizeof);
         if (!winPriv)
             return BadAlloc;
         winPriv.PortRec = portPriv;

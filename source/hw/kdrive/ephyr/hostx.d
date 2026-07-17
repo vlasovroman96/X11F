@@ -887,7 +887,7 @@ hostx_screen_init(KdScreenInfo* screen,
     Bool shm_success = FALSE;
 
     if (!scrpriv) {
-        fprintf(stderr, "%s: Error in accessing hostx data\n", __func__);
+        fprintf(stderr, "%s: Error in accessing hostx data\n", __FUNCTION__.ptr);
         exit(1);
     }
 

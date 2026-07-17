@@ -782,7 +782,7 @@ private Bool SyncEventSelectForAlarm(SyncAlarm* pAlarm, ClientPtr client, Bool w
 
     /* add new client to pAlarm->pEventClients */
 
-    SyncAlarmClientList* pClients = cast(SyncAlarmClientList*) calloc(1, SyncAlarmClientList.sizeof);
+    SyncAlarmClientList* pClients = cast(SyncAlarmClientList*) cast(SyncAlarmClientList*) calloc(1, SyncAlarmClientList.sizeof);
     if (!pClients)
         return BadAlloc;
 
@@ -914,7 +914,7 @@ SyncObject* SyncCreate(ClientPtr client, XID id, ubyte type)
 
     switch (type) {
     case SYNC_COUNTER:
-        pSync = cast(SyncObject*) calloc(1, SyncCounter.sizeof);
+        pSync = cast(SyncObject*) cast(SyncCounter*) calloc(1, SyncCounter.sizeof);
         resType = RTCounter;
         break;
     case SYNC_FENCE:
@@ -1000,7 +1000,7 @@ SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial, long resol
     SyncCounter* pCounter = SyncCreateCounter(null, dixAllocServerXID(), initial);
 
     if (pCounter) {
-        SysCounterInfo* psci = cast(_SysCounterInfo*) calloc(1, SysCounterInfo.sizeof);
+        SysCounterInfo* psci = cast(_SysCounterInfo*) cast(SysCounterInfo*) calloc(1, SysCounterInfo.sizeof);
         if (!psci) {
             FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
             return null;
@@ -1649,7 +1649,7 @@ private int ProcSyncCreateAlarm(ClientPtr client)
     if (len != (Ones(vmask) + Ones(vmask & (XSyncCAValue | XSyncCADelta))))
         return BadLength;
 
-    if (((pAlarm = cast(SyncAlarm*) calloc(1, SyncAlarm.sizeof)) is null)) {
+    if (((pAlarm = cast(SyncAlarm*) cast(SyncAlarm*) calloc(1, SyncAlarm.sizeof)) is null)) {
         return BadAlloc;
     }
 
@@ -2429,7 +2429,7 @@ private SyncCounter* init_system_idle_counter(const(char)* name, int deviceid)
 
     IdleTimeQueryValue(null, &idle);
 
-    IdleCounterPriv* priv = cast(IdleCounterPriv*) calloc(1, IdleCounterPriv.sizeof);
+    IdleCounterPriv* priv = cast(IdleCounterPriv*) cast(IdleCounterPriv*) calloc(1, IdleCounterPriv.sizeof);
     if (!priv)
         return null;
 

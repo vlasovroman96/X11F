@@ -1,4 +1,4 @@
-module opendev;
+module Xi.opendev;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -65,7 +65,7 @@ import dix.rpcbuf_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import XIstubs;
+import Xi.XIstubs;
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
 import include.exevents;

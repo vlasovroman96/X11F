@@ -237,7 +237,7 @@ static if (DEBUG_OFFSCREEN) {
 
     /* save extra space in new area */
     if (real_size < area.size) {
-        ExaOffscreenArea* new_area = cast(ExaOffscreenArea*) calloc(1, ExaOffscreenArea.sizeof);
+        ExaOffscreenArea* new_area = cast(ExaOffscreenArea*) cast(ExaOffscreenArea*) calloc(1, ExaOffscreenArea.sizeof);
 
         if (!new_area)
             return null;
@@ -626,7 +626,7 @@ Bool exaOffscreenInit(ScreenPtr pScreen)
     ExaScreenPriv(pScreen);
 
     /* Allocate a big free area */
-    ExaOffscreenArea* area = cast(ExaOffscreenArea*) calloc(1, ExaOffscreenArea.sizeof);
+    ExaOffscreenArea* area = cast(ExaOffscreenArea*) cast(ExaOffscreenArea*) calloc(1, ExaOffscreenArea.sizeof);
     if (!area)
         return FALSE;
 

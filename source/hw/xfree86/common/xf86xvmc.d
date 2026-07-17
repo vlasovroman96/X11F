@@ -155,7 +155,7 @@ Bool xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* a
         return FALSE;
     }
 
-    if (((pScreenPriv = calloc(1, xf86XvMCScreenRec.sizeof)) == 0)) {
+    if (((pScreenPriv = cast(xf86XvMCScreenRec*) calloc(1, xf86XvMCScreenRec.sizeof)) == 0)) {
         free(pAdapt);
         return FALSE;
     }
@@ -202,7 +202,7 @@ Bool xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* a
 
 XF86MCAdaptorPtr xf86XvMCCreateAdaptorRec()
 {
-    return calloc(1, XF86MCAdaptorRec.sizeof);
+    return cast(XF86MCAdaptorRec*) calloc(1, XF86MCAdaptorRec.sizeof);
 }
 
 void xf86XvMCDestroyAdaptorRec(XF86MCAdaptorPtr adaptor)

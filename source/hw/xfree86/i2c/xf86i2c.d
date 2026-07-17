@@ -519,7 +519,7 @@ Bool xf86I2CWriteVec(I2CDevPtr d, I2CByte* vec, int nValues)
 
 I2CDevPtr xf86CreateI2CDevRec()
 {
-    return calloc(1, I2CDevRec.sizeof);
+    return cast(I2CDevRec*) calloc(1, I2CDevRec.sizeof);
 }
 
 /* Unlink an I2C device. If you got the I2CDevRec from xf86CreateI2CDevRec
@@ -616,7 +616,7 @@ I2CBusPtr xf86CreateI2CBusRec()
 {
     I2CBusPtr b = void;
 
-    b = cast(I2CBusPtr) calloc(1, I2CBusRec.sizeof);
+    b = cast(I2CBusPtr) cast(I2CBusRec*) calloc(1, I2CBusRec.sizeof);
 
     if (b != null) {
         b.scrnIndex = -1;
@@ -779,7 +779,7 @@ int xf86I2CGetScreenBuses(int scrnIndex, I2CBusPtr** pppI2CBus)
         if (!pppI2CBus)
             continue;
 
-        *pppI2CBus = XNFreallocarray(*pppI2CBus, n, I2CBusPtr.sizeof);
+        *pppI2CBus = cast(I2CBusPtr*) XNFreallocarray(*pppI2CBus, n, I2CBusPtr.sizeof);
         (*pppI2CBus)[n - 1] = pI2CBus;
     }
 

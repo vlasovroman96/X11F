@@ -4498,7 +4498,7 @@ The XF86VideoFormatRec:
 	  <programlisting>
 typedef struct {
 	char  depth;
-	short class;
+	shortclass_;
 } XF86VideoFormatRec, *XF86VideoFormatPtr;
 
 	  </programlisting>

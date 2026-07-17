@@ -136,7 +136,7 @@ void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
             overlay_active_now = (xkbi.desc.ctrls.enabled_ctrls & which) ? 1 : 0;
 
             if (cast(ubyte)key == key) {
-                key_was_overlaid = BitIsOn(xkbi.overlay_perkey_state, key);
+                key_was_overlaid = mixin(BitIsOn!("xkbi.overlay_perkey_state", "key"));
                 if (!is_keyrelease) {
                     if (overlay_active_now)
                         SetBit(xkbi.overlay_perkey_state, key);

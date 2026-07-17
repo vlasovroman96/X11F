@@ -283,7 +283,7 @@ private FBAreaPtr AllocateArea(FBManagerPtr offman, int w, int h, int granularit
         if (((boxp.y2 - boxp.y1) < h) || ((boxp.x2 - x) < w))
             continue;
 
-        link = calloc(1, FBLink.sizeof);
+        link = cast(FBLink*) calloc(1, FBLink.sizeof);
         if (!link)
             return null;
 
@@ -742,7 +742,7 @@ private FBLinearPtr AllocateLinear(FBManagerPtr offman, int size, int granularit
 
     /* break left */
     if (offset > linear.linear.offset) {
-        FBLinearLinkPtr newlink = calloc(1, FBLinearLink.sizeof);
+        FBLinearLinkPtr newlink = cast(FBLinearLink*) calloc(1, FBLinearLink.sizeof);
         if (!newlink)
             return null;
         newlink.area = null;
@@ -758,7 +758,7 @@ private FBLinearPtr AllocateLinear(FBManagerPtr offman, int size, int granularit
 
     /* break right */
     if (size < linear.linear.size) {
-        FBLinearLinkPtr newlink = calloc(1, FBLinearLink.sizeof);
+        FBLinearLinkPtr newlink = cast(FBLinearLink*) calloc(1, FBLinearLink.sizeof);
         if (!newlink)
             return null;
         newlink.area = null;
@@ -802,7 +802,7 @@ private FBLinearPtr localAllocateOffscreenLinear(ScreenPtr pScreen, int length, 
 
     DebugF("NOPE, ALLOCATING AREA\n");
 
-    if (((link = calloc(1, FBLinearLink.sizeof)) == 0))
+    if (((link = cast(FBLinearLink*) calloc(1, FBLinearLink.sizeof)) == 0))
         return null;
 
     /* No linear available, so try and pinch some from the XY areas */
@@ -1106,7 +1106,7 @@ private Bool xf86InitFBManagerRegion(ScreenPtr pScreen, RegionPtr FullRegion)
     if (!xf86RegisterOffscreenManager(pScreen, &xf86FBManFuncs))
         return FALSE;
 
-    FBManagerPtr offman = calloc(1, FBManager.sizeof);
+    FBManagerPtr offman = cast(FBManager*) calloc(1, FBManager.sizeof);
     if (!offman)
         return FALSE;
 
@@ -1143,7 +1143,7 @@ Bool xf86InitFBManagerLinear(ScreenPtr pScreen, int offset, int size)
 
     offman = cast(FBManagerPtr) dixLookupPrivate(&pScreen.devPrivates,
                                              xf86FBScreenKey);
-    offman.LinearAreas = calloc(1, FBLinearLink.sizeof);
+    offman.LinearAreas = cast(FBLinearLink*) calloc(1, FBLinearLink.sizeof);
     if (!offman.LinearAreas)
         return FALSE;
 

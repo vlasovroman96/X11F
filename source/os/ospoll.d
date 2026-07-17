@@ -232,7 +232,7 @@ pragma(inline, true) private void array_delete(void* base, size_t num, size_t si
 ospoll* ospoll_create()
 {
 static if (POLLSET) {
-    ospoll* ospoll = cast(ospoll*) calloc(1, ospoll.sizeof);
+    ospoll* ospoll = cast(ospoll*) cast(ospoll*) calloc(1, ospoll.sizeof);
 
     ospoll.ps = pollset_create(-1);
     if (ospoll.ps < 0) {
@@ -242,7 +242,7 @@ static if (POLLSET) {
     return ospoll;
 }
 static if (PORT) {
-    ospoll* ospoll = cast(ospoll*) calloc(1, ospoll.sizeof);
+    ospoll* ospoll = cast(ospoll*) cast(ospoll*) calloc(1, ospoll.sizeof);
 
     ospoll.epoll_fd = port_create();
     if (ospoll.epoll_fd < 0) {
@@ -253,7 +253,7 @@ static if (PORT) {
     return ospoll;
 }
 static if (EPOLL) {
-    ospoll* ospoll = cast(ospoll*) calloc(1, ospoll.sizeof);
+    ospoll* ospoll = cast(ospoll*) cast(ospoll*) calloc(1, ospoll.sizeof);
     if (ospoll == null)
         return null;
     ospoll.epoll_fd = epoll_create1(EPOLL_CLOEXEC);
@@ -265,7 +265,7 @@ static if (EPOLL) {
     return ospoll;
 }
 static if (POLL) {
-    return calloc(1, ospoll.sizeof);
+    return cast(ospoll*) calloc(1, ospoll.sizeof);
 }
 }
 
@@ -329,7 +329,7 @@ static if (PORT) {
     ospollfd* osfd = void;
 
     if (pos < 0) {
-        osfd = cast(ospollfd*) calloc(1, ospollfd.sizeof);
+        osfd = cast(ospollfd*) cast(ospollfd*) calloc(1, ospollfd.sizeof);
         if (!osfd)
             return false;
 
@@ -367,7 +367,7 @@ static if (EPOLL) {
 
         epoll_event ev = void;
 
-        osfd = cast(ospollfd*) calloc(1, ospollfd.sizeof);
+        osfd = cast(ospollfd*) cast(ospollfd*) calloc(1, ospollfd.sizeof);
         if (!osfd)
             return false;
 

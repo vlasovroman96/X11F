@@ -92,14 +92,14 @@ private void load_extension_config()
     if (!mod_con)
         return;
 
-    nt_list_for_each_entry(modp, mod_con.mod_load_lst, list.next); {
+    mixin(nt_list_for_each_entry!("modp", "mod_con.mod_load_lst", "list.next")); {
         InputOption* opt = void;
 
         if (strcasecmp(modp.load_name, "extmod") != 0)
             continue;
 
         /* extmod options are of the form "omit <extension-name>" */
-        nt_list_for_each_entry(opt, modp.load_opt, list.next); {
+        mixin(nt_list_for_each_entry!("opt", "modp.load_opt", "list.next")); {
             const(char)* key = input_option_get_key(opt);
             if (strncasecmp(key, "omit", 4) != 0 || strlen(key) < 5)
                 continue;
@@ -131,5 +131,5 @@ void xf86ExtensionInit()
 {
     load_extension_config();
 
-    LoadExtensionList(extensionModules.ptr, ARRAY_SIZE(extensionModules.ptr), TRUE);
+    LoadExtensionList(extensionModules.ptr, mixin(ARRAY_SIZE!("extensionModules.ptr")), TRUE);
 }

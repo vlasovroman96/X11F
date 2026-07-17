@@ -289,7 +289,7 @@ attach(__GLXAquaContext *context, __GLXAquaDrawable *draw)
     pDraw = draw->base.pDraw;
 
     if (NULL == pDraw) {
-        ErrorF("%s:%s() pDraw is NULL!\n", __FILE__, __func__);
+        ErrorF("%s:%s() pDraw is NULL!\n", __FILE__, __FUNCTION__.ptr);
         return TRUE;
     }
 
@@ -391,7 +391,7 @@ __glXAquaDrawableSwapBuffers(ClientPtr client, __GLXdrawable *base)
     //    GLAQUA_DEBUG_MSG("glAquaDrawableSwapBuffers(%p)\n",base);
 
     if (!base) {
-        ErrorF("%s passed NULL\n", __func__);
+        ErrorF("%s passed NULL\n", __FUNCTION__.ptr);
         return GL_FALSE;
     }
 
@@ -399,7 +399,7 @@ __glXAquaDrawableSwapBuffers(ClientPtr client, __GLXdrawable *base)
 
     if (NULL == drawable->context) {
         ErrorF("%s called with a NULL->context for drawable %p!\n",
-               __func__, (void *)drawable);
+               __FUNCTION__.ptr, (void *)drawable);
         return GL_FALSE;
     }
 
@@ -407,7 +407,7 @@ __glXAquaDrawableSwapBuffers(ClientPtr client, __GLXdrawable *base)
 
     if (kCGLNoError != err) {
         ErrorF("CGLFlushDrawable error: %s in %s\n", CGLErrorString(err),
-               __func__);
+               __FUNCTION__.ptr);
         return GL_FALSE;
     }
 

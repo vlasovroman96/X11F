@@ -126,7 +126,7 @@ Bool miPointerInitialize(ScreenPtr pScreen, miPointerSpriteFuncPtr spriteFuncs, 
     if (!dixRegisterPrivateKey(&miPointerPrivKeyRec, PRIVATE_DEVICE, 0))
         return FALSE;
 
-    pScreenPriv = calloc(1, miPointerScreenRec.sizeof);
+    pScreenPriv = cast(miPointerScreenRec*) calloc(1, miPointerScreenRec.sizeof);
     if (!pScreenPriv)
         return FALSE;
     pScreenPriv.spriteFuncs = spriteFuncs;
@@ -305,7 +305,7 @@ private Bool miPointerDeviceInitialize(DeviceIntPtr pDev, ScreenPtr pScreen)
 {
     mixin(SetupScreen!(`pScreen`));
 
-    miPointerPtr pPointer = calloc(1, miPointerRec.sizeof);
+    miPointerPtr pPointer = cast(miPointerRec*) calloc(1, miPointerRec.sizeof);
     if (!pPointer)
         return FALSE;
 

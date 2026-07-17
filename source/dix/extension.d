@@ -118,7 +118,7 @@ struct _ReservedExt { const(char)* name; int id; }private _ReservedExt[37] reser
 
 private int checkReserved(const(char)* name)
 {
-    for (int i = 0; i<ARRAY_SIZE(reservedExt.ptr); i++) {
+    for (int i = 0; i<mixin(ARRAY_SIZE!("reservedExt.ptr")); i++) {
         if (strcmp(name, reservedExt[i].name) == 0) {
             if (reservedExt[i].id < (RESERVED_EXTENSIONS + EXTENSION_BASE))
                 return reservedExt[i].id;
@@ -144,7 +144,7 @@ ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, in
         return (cast(ExtensionEntry*) null);
     }
 
-    ExtensionEntry* ext = cast(ExtensionEntry*) calloc(1, ExtensionEntry.sizeof);
+    ExtensionEntry* ext = cast(ExtensionEntry*) cast(ExtensionEntry*) calloc(1, ExtensionEntry.sizeof);
     if (!ext)
         return null;
     if (!dixAllocatePrivates(&ext.devPrivates, PRIVATE_EXTENSION))

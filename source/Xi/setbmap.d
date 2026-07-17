@@ -1,4 +1,4 @@
-module setbmap;
+module Xi.setbmap;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

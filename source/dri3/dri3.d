@@ -60,7 +60,7 @@ Bool dri3_screen_init(ScreenPtr screen, const(dri3_screen_info_rec)* info)
         return FALSE;
 
     if (!dri3_screen_priv(screen)) {
-        dri3_screen_priv_ptr screen_priv = calloc(1, dri3_screen_priv_rec.sizeof);
+        dri3_screen_priv_ptr screen_priv = cast(dri3_screen_priv_rec*) calloc(1, dri3_screen_priv_rec.sizeof);
         if (!screen_priv)
             return FALSE;
 

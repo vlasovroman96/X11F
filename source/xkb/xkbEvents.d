@@ -513,7 +513,7 @@ void XkbHandleBell(BOOL force, BOOL eventOnly, DeviceIntPtr kbd, CARD8 percent, 
                 bn.type = XkbEventCode + XkbEventBase;
                 bn.xkbType = XkbBellNotify;
                 bn.deviceID = kbd.id;
-                bn.bellClass = class_;
+                bn.bellClass =
                 bn.bellID = id;
                 bn.percent = percent;
                 bn.eventOnly = (eventOnly != 0);
@@ -973,7 +973,7 @@ XkbInterestPtr XkbAddClientResource(DevicePtr inDev, ClientPtr client, XID id)
             return ((interest.resource == id) ? interest : null);
         interest = interest.next;
     }
-    interest = calloc(1, XkbInterestRec.sizeof);
+    interest = cast(XkbInterestRec*) calloc(1, XkbInterestRec.sizeof);
     if (interest) {
         interest.dev = dev;
         interest.client = client;

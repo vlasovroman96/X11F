@@ -212,7 +212,7 @@ private ScreenSaverScreenPrivatePtr MakeScreenPrivate(ScreenPtr pScreen)
         return pPriv;
     }
 
-    pPriv = cast(ScreenSaverScreenPrivatePtr)calloc(1, ScreenSaverScreenPrivateRec.sizeof);
+    pPriv = cast(ScreenSaverScreenPrivatePtr)cast(ScreenSaverScreenPrivateRec*) calloc(1, ScreenSaverScreenPrivateRec.sizeof);
     if (!pPriv) {
         return null;
     }
@@ -272,7 +272,7 @@ private Bool setEventMask(ScreenPtr pScreen, ClientPtr client, c_ulong mask)
         CheckScreenPrivate(pScreen);
     } else {
         if (!pEv) {
-            pEv = cast(ScreenSaverEventPtr)calloc(1, ScreenSaverEventRec.sizeof);
+            pEv = cast(ScreenSaverEventPtr)cast(ScreenSaverEventRec*) calloc(1, ScreenSaverEventRec.sizeof);
             if (!pEv) {
                 CheckScreenPrivate(pScreen);
                 return FALSE;
@@ -840,7 +840,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
             return FALSE;
         }
     }
-    pAttr = cast(ScreenSaverAttrPtr)calloc(1, ScreenSaverAttrRec.sizeof);
+    pAttr = cast(ScreenSaverAttrPtr)cast(ScreenSaverAttrRec*) calloc(1, ScreenSaverAttrRec.sizeof);
     if (!pAttr) {
         ret = BadAlloc;
         goto bail;
@@ -1263,7 +1263,7 @@ private int ProcScreenSaverSuspend(ClientPtr client)
      * to the record, so the screensaver will be re-enabled and the record freed
      * if the client disconnects without reenabling it first.
      */
-    this_ = cast(ScreenSaverSuspensionPtr)calloc(1, ScreenSaverSuspensionRec.sizeof);
+    this_ = cast(ScreenSaverSuspensionPtr)cast(ScreenSaverSuspensionRec*) calloc(1, ScreenSaverSuspensionRec.sizeof);
 
     if (!this_) {
         return BadAlloc;

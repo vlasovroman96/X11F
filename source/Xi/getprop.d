@@ -1,4 +1,4 @@
-module getprop;
+module Xi.getprop;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -67,7 +67,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structs    */
 import dix.swaprep;
-import getprop;
+import Xi.getprop;
 
 extern XExtEventInfo[1] EventInfo;
 extern int ExtEventIndex;
@@ -99,7 +99,7 @@ int ProcXGetDeviceDontPropagateList(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    if ((others = wOtherInputMasks(pWin)) != 0) {
+    if ((others = mixin(wOtherInputMasks!("pWin"))) != 0) {
         for (i = 0; i < EMASKSIZE; i++)
             ClassFromMask(null, others.dontPropagateMask[i], i, &count, COUNT);
         if (count) {

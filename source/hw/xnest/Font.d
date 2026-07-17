@@ -69,7 +69,7 @@ Bool xnestRealizeFont(ScreenPtr pScreen, FontPtr pFont)
     if (!name)
         return FALSE;
 
-    xnestPrivFont* priv = cast(xnestPrivFont*) calloc(1, xnestPrivFont.sizeof);
+    xnestPrivFont* priv = cast(xnestPrivFont*) cast(xnestPrivFont*) calloc(1, xnestPrivFont.sizeof);
     xfont2_font_set_private(pFont, xnestFontPrivateIndex, priv);
 
     priv.font_id = xcb_generate_id(xnestUpstreamInfo.conn);

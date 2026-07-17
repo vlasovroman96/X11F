@@ -59,7 +59,7 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
     }
 
     if (xkb.map == null) {
-        map = calloc(1, XkbClientMapRec.sizeof);
+        map = cast(XkbClientMapRec*) calloc(1, XkbClientMapRec.sizeof);
         if (map == null)
             return BadAlloc;
         xkb.map = map;
@@ -79,7 +79,7 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
             XkbKeyTypeRec* prev_types = map.types;
 
             map.types =
-                reallocarray(map.types, nTotalTypes, XkbKeyTypeRec.sizeof);
+                cast(XkbKeyTypeRec*) reallocarray(map.types, nTotalTypes, XkbKeyTypeRec.sizeof);
             if (map.types == null) {
                 free(prev_types);
                 map.num_types = map.size_types = 0;
@@ -132,7 +132,7 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
     if (xkb == null)
         return BadMatch;
     if (xkb.server == null) {
-        map = calloc(1, XkbServerMapRec.sizeof);
+        map = cast(XkbServerMapRec*) calloc(1, XkbServerMapRec.sizeof);
         if (map == null)
             return BadAlloc;
         for (i = 0; i < XkbNumVirtualMods; i++) {
@@ -172,7 +172,7 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
             XkbAction* prev_acts = map.acts;
 
             need = map.num_acts + nNewActions;
-            map.acts = reallocarray(map.acts, need, XkbAction.sizeof);
+            map.acts = cast(XkbAction*) reallocarray(map.acts, need, XkbAction.sizeof);
             if (map.acts == null) {
                 free(prev_acts);
                 map.num_acts = map.size_acts = 0;
@@ -296,7 +296,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
 
         if ((map_count > type.map_count) || (type.map == null))
             type.map =
-                reallocarray(type.map, map_count, XkbKTMapEntryRec.sizeof);
+                cast(XkbKTMapEntryRec*) reallocarray(type.map, map_count, XkbKTMapEntryRec.sizeof);
         if (!type.map) {
             free(prev_map);
             return BadAlloc;

@@ -657,7 +657,7 @@ CARD32 exaGetPixmapFirstPixel(PixmapPtr pPixmap)
         return pixel;
     }
     default:
-        FatalError("%s called for invalid bpp %d\n", __func__,
+        FatalError("%s called for invalid bpp %d\n", __FUNCTION__.ptr,
                    pPixmap.drawable.bitsPerPixel);
     }
 }

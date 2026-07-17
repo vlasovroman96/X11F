@@ -273,7 +273,7 @@ void glamor_egl_set_pixmap_image(PixmapPtr pixmap, EGLImageKHR image, Bool used_
     glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(pixmap);
     EGLImageKHR old = void;
 
-    BUG_RETURN(!pixmap_priv);
+    mixin(BUG_RETURN!("!pixmap_priv"));
 
     old = pixmap_priv.image;
     if (old) {
@@ -485,7 +485,7 @@ Bool glamor_make_pixmap_exportable(PixmapPtr pixmap, Bool modifiers_ok)
     PixmapPtr exported = void;
     GCPtr scratch_gc = void;
 
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
     if (pixmap_priv.image &&
         (modifiers_ok || !pixmap_priv.used_modifiers))
@@ -633,7 +633,7 @@ gbm_bo* glamor_gbm_bo_from_pixmap_internal(ScreenPtr screen, PixmapPtr pixmap)
     glamor_egl_priv_t* glamor_egl = glamor_egl_get_screen_private(screen);
     glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(pixmap);
 
-    BUG_RETURN_VAL(!pixmap_priv, null);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "null"));
 
     if (!pixmap_priv.image)
         return null;
@@ -1086,7 +1086,7 @@ void glamor_egl_pixmap_destroy(CallbackListPtr* pcbl, ScreenPtr pScreen, PixmapP
 
     glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(pixmap);
 
-    BUG_RETURN(!pixmap_priv);
+    mixin(BUG_RETURN!("!pixmap_priv"));
 
     if (pixmap_priv.image) {
         eglDestroyImageKHR(glamor_egl.display, pixmap_priv.image);
@@ -1109,10 +1109,10 @@ version (GLAMOR_HAS_GBM) {
 version (GLAMOR_HAS_GBM) {
     temp_img = back_priv.image;
     temp_mod = back_priv.used_modifiers;
-    BUG_RETURN(!back_priv);
+    mixin(BUG_RETURN!("!back_priv"));
     back_priv.image = front_priv.image;
     back_priv.used_modifiers = front_priv.used_modifiers;
-    BUG_RETURN(!front_priv);
+    mixin(BUG_RETURN!("!front_priv"));
     front_priv.image = temp_img;
     front_priv.used_modifiers = temp_mod;
 }
@@ -1714,7 +1714,7 @@ Bool glamor_egl_try_big_gl_api(glamor_egl_priv_t* glamor_egl)
     glamor_egl.context = glamor_egl_create_context(glamor_egl.display,
                                                     config_attrib_list.ptr,
                                                     ctx_attrib_lists.ptr,
-                                                    ARRAY_SIZE(ctx_attrib_lists.ptr));
+                                                    mixin(ARRAY_SIZE!("ctx_attrib_lists.ptr")));
 
     if (glamor_egl.context == EGL_NO_CONTEXT) {
         LogMessage(X_ERROR, "Failed to create GL context\n");
@@ -1771,7 +1771,7 @@ Bool glamor_egl_try_gles_api(glamor_egl_priv_t* glamor_egl)
     glamor_egl.context = glamor_egl_create_context(glamor_egl.display,
                                                     config_attrib_list.ptr,
                                                     ctx_attrib_lists.ptr,
-                                                    ARRAY_SIZE(ctx_attrib_lists.ptr));
+                                                    mixin(ARRAY_SIZE!("ctx_attrib_lists.ptr")));
 
     if (glamor_egl.context == EGL_NO_CONTEXT) {
         LogMessage(X_ERROR, "Failed to create GLES context\n");

@@ -143,7 +143,7 @@ int SELinuxAtomToSID(Atom atom, int prop, SELinuxObjectRec** obj_rtn)
 
     rec = cast(SELinuxAtomRec*)SELinuxArrayGet(&arr_atoms, cast(uint)atom);
     if (!rec) {
-        rec = cast(SELinuxAtomRec*) stdc.calloc(1, SELinuxAtomRec.sizeof);
+        rec = cast(SELinuxAtomRec*) cast(SELinuxAtomRec*) stdc.calloc(1, SELinuxAtomRec.sizeof);
         if (!rec) {
             return BadAlloc;
         }
@@ -350,7 +350,7 @@ security_class_t SELinuxTypeToClass(RESTYPE type)
             }
         }
 
-        tmp = cast(void*) class_;
+        tmp = cast(void*)
         SELinuxArraySet(&arr_types, type & TypeMask, tmp);
     }
 

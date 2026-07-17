@@ -530,7 +530,7 @@ DRIDrawablePrivDelete(void *pResource, XID id)
 
     if (pDRIDrawablePriv == NULL) {
         /*
-         * We reuse __func__ and the resource type for the GLXPixmap code.
+         * We reuse __FUNCTION__.ptr and the resource type for the GLXPixmap code.
          * Attempt to free a pixmap buffer associated with the resource
          * if possible.
          */
@@ -662,7 +662,7 @@ DRISurfaceNotify(xp_surface_id id, int kind)
         error = xp_destroy_surface(pDRIDrawablePriv->sid);
 
         if (error)
-            ErrorF("%s: xp_destroy_surface failed: %d\n", __func__, error);
+            ErrorF("%s: xp_destroy_surface failed: %d\n", __FUNCTION__.ptr, error);
 
         /* Guard against reuse, even though we are freeing after this. */
         pDRIDrawablePriv->sid = 0;
@@ -690,7 +690,7 @@ DRICreatePixmap(ScreenPtr pScreen, Drawable id,
 
     DRIPixmapBufferPtr shared = calloc(1, sizeof(*shared));
     if (NULL == shared) {
-        FatalError("failed to allocate DRIPixmapBuffer in %s\n", __func__);
+        FatalError("failed to allocate DRIPixmapBuffer in %s\n", __FUNCTION__.ptr);
     }
 
     shared->pDrawable = pDrawable;
@@ -709,7 +709,7 @@ DRICreatePixmap(ScreenPtr pScreen, Drawable id,
     if (-1 == snprintf(shared->shmPath, sizeof(shared->shmPath),
                        "%d_0x%lx", getpid(),
                        (unsigned long)id)) {
-        FatalError("buffer overflow in %s\n", __func__);
+        FatalError("buffer overflow in %s\n", __FUNCTION__.ptr);
     }
 
     shared->fd = shm_open(shared->shmPath,

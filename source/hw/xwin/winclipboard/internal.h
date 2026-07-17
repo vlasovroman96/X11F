@@ -45,7 +45,7 @@
 
 #define WM_WM_QUIT                             (WM_USER + 2)
 
-#define ARRAY_SIZE(a)  (sizeof((a)) / sizeof((a)[0]))
+#define mixin(ARRAY_SIZE!("a"))  (sizeof((a)) / sizeof((a)[0]))
 
 /*
  * References to external symbols

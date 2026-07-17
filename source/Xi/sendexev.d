@@ -66,7 +66,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* Window            */
 import include.extnsionst;         /* EventSwapPtr      */
-import grabdev;
+import Xi.grabdev;
 
 extern int lastEvent;           /* Defined in extension.c */
 

@@ -211,7 +211,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
          * Allocate a window priv.
          */
 
-        pDbeWindowPriv = calloc(1, DbeWindowPrivRec.sizeof);
+        pDbeWindowPriv = cast(DbeWindowPrivRec*) calloc(1, DbeWindowPrivRec.sizeof);
         if (!pDbeWindowPriv)
             return BadAlloc;
 
@@ -991,7 +991,7 @@ version (XINERAMA) {
         /* For each screen, set up DBE screen privates and init DIX
          * interface (DDX isn't supported anymore).
          */
-        if (((pDbeScreenPriv = calloc(1, DbeScreenPrivRec.sizeof)) == 0)) {
+        if (((pDbeScreenPriv = cast(DbeScreenPrivRec*) calloc(1, DbeScreenPrivRec.sizeof)) == 0)) {
             /* If we can not alloc a window or screen private,
              * then free any privates that we already alloc'ed and return
              */

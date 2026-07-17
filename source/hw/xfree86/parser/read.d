@@ -275,7 +275,7 @@ int xf86itemNotSublist(GenericListPtr list_1, GenericListPtr list_2)
 XF86ConfigPtr xf86allocateConfig()
 {
     if (!xf86configptr) {
-        xf86configptr = calloc(1, XF86ConfigRec.sizeof);
+        xf86configptr = cast(XF86ConfigRec*) calloc(1, XF86ConfigRec.sizeof);
     }
     return xf86configptr;
 }

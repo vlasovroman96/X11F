@@ -353,7 +353,7 @@ private int ProcShmAttach(ClientPtr client)
         shmdesc.refcnt++;
     }
     else {
-        shmdesc = cast(ShmDescPtr)calloc(1, ShmDescRec.sizeof);
+        shmdesc = cast(ShmDescPtr)cast(ShmDescRec*) calloc(1, ShmDescRec.sizeof);
         if (!shmdesc)
             return BadAlloc;
 version (SHM_FD_PASSING) {
@@ -958,7 +958,7 @@ version (XINERAMA) {
 
     mixin(VERIFY_SHMSIZE!(`shmdesc`, `stuff.offset`, `size`, `client`));
 
-    if (((newPix = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
 
     newPix.type = XRT_PIXMAP;
@@ -1149,7 +1149,7 @@ private int ProcShmAttachFd(ClientPtr client)
         return BadMatch;
     }
 
-    shmdesc = calloc(1, ShmDescRec.sizeof);
+    shmdesc = cast(ShmDescRec*) calloc(1, ShmDescRec.sizeof);
     if (!shmdesc) {
         close(fd);
         return BadAlloc;
@@ -1205,7 +1205,7 @@ version (HAVE_MEMFD_CREATE) {
 }
 
 version (O_TMPFILE) {
-    for (int i = 0; i < ARRAY_SIZE(shmdirs.ptr); i++) {
+    for (int i = 0; i < mixin(ARRAY_SIZE!("shmdirs.ptr")); i++) {
         import std.conv.octal;
         fd = open(shmdirs[i], O_TMPFILE|O_RDWR|O_CLOEXEC|O_EXCL, octal!"666");
         if (fd >= 0) {
@@ -1216,9 +1216,9 @@ version (O_TMPFILE) {
     ErrorF ("Not using O_TMPFILE\n");
 }
 
-    for (int i = 0; i < ARRAY_SIZE(shmdirs.ptr); i++) {
+    for (int i = 0; i < mixin(ARRAY_SIZE!("shmdirs.ptr")); i++) {
         char[PATH_MAX] template_ = void;
-        snprintf(template_, ARRAY_SIZE(template_), "%s/shmfd-XXXXXX", shmdirs[i]);
+        snprintf(template_, mixin(ARRAY_SIZE!("template_")), "%s/shmfd-XXXXXX", shmdirs[i]);
 version (HAVE_MKOSTEMP) {
         fd = mkostemp(template_, O_CLOEXEC);
 } else {
@@ -1264,7 +1264,7 @@ private int ProcShmCreateSegment(ClientPtr client)
         close(fd);
         return BadAlloc;
     }
-    shmdesc = calloc(1, ShmDescRec.sizeof);
+    shmdesc = cast(ShmDescRec*) calloc(1, ShmDescRec.sizeof);
     if (!shmdesc) {
         close(fd);
         return BadAlloc;

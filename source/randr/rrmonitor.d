@@ -492,7 +492,7 @@ int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
                                 pScrPriv.numMonitors + 1,
                                 RRMonitorPtr.sizeof);
     else
-        monitors = cast(RRMonitorPtr*) calloc(1, RRMonitorPtr.sizeof);
+        monitors = cast(RRMonitorPtr*) cast(RRMonitorPtr*) calloc(1, RRMonitorPtr.sizeof);
 
     if (!monitors)
         return BadAlloc;

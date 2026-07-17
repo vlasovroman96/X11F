@@ -316,7 +316,7 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
     ephyr_glamor* glamor = void;
     EGLSurface egl_win = void;
 
-    glamor = cast(ephyr_glamor*) calloc(1, ephyr_glamor.sizeof);
+    glamor = cast(ephyr_glamor*) cast(ephyr_glamor*) calloc(1, ephyr_glamor.sizeof);
     if (!glamor) {
         FatalError("calloc");
         return null;

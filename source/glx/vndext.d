@@ -84,7 +84,7 @@ GlxScreenPriv* GlxGetScreen(ScreenPtr pScreen)
     if (pScreen != null) {
         GlxScreenPriv* priv = xglvGetScreenPrivate(pScreen);
         if (priv == null) {
-            priv = cast(GlxScreenPriv*) calloc(1, GlxScreenPriv.sizeof);
+            priv = cast(GlxScreenPriv*) cast(GlxScreenPriv*) calloc(1, GlxScreenPriv.sizeof);
             if (priv == null) {
                 return null;
             }
@@ -285,7 +285,7 @@ private void* GlxGetContextTagPrivate(ClientPtr client, GLXContextTag tag)
 
 private GlxServerImports* GlxAllocateServerImports()
 {
-    return cast(GlxServerImports*)calloc(1, GlxServerImports.sizeof);
+    return cast(GlxServerImports*)cast(GlxServerImports*) calloc(1, GlxServerImports.sizeof);
 }
 
 private void GlxFreeServerImports(GlxServerImports* imports)

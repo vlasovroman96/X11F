@@ -40,7 +40,7 @@ enum string GLAMOR_PANIC(string _format_) = "";
   // do {							
   //   LogMessageVerb(X_NONE, 0, "Glamor Fatal Error"	
 	// 	   ~ " at %32s line %d: " _format_ ~ "\n",	
-	// 	   __func__, __LINE__,			
+	// 	   __FUNCTION__.ptr, __LINE__,			
 	// 	   ##__VA_ARGS__ );			
   //   exit(1);                                            
   // } while(0)`;
@@ -49,7 +49,7 @@ enum string __debug_output_message(string _format_, string _prefix_) = "";
   // LogMessageVerb(X_NONE, 0,				
 	// 	 "%32s:\t" ` ~ _format_ ~ ` ,		
 	// 	 /*_prefix_,*/				
-	// 	 __func__,				
+	// 	 __FUNCTION__.ptr,				
 	// 	 ##__VA_ARGS__)`;
 
 enum string glamor_debug_output(string _level_, string _format_) = "";

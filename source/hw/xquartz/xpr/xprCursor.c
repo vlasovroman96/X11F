@@ -96,7 +96,7 @@ load_cursor(CursorPtr src, int screen)
         data = calloc(rowbytes, src->bits->height);
         free_data = TRUE;
         if (!data) {
-            FatalError("Failed to allocate memory in %s\n", __func__);
+            FatalError("Failed to allocate memory in %s\n", __FUNCTION__.ptr);
         }
         for (i = 0; i < (src->bits->width * src->bits->height); i++)
             data[i] = ntohl(be_data[i]);
@@ -122,7 +122,7 @@ load_cursor(CursorPtr src, int screen)
         data = calloc(rowbytes, src->bits->height);
         free_data = TRUE;
         if (!data) {
-            FatalError("Failed to allocate memory in %s\n", __func__);
+            FatalError("Failed to allocate memory in %s\n", __FUNCTION__.ptr);
         }
 
         if (!src->bits->emptyMask) {

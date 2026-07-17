@@ -271,7 +271,7 @@ void glamor_pixmap_attach_fbo(PixmapPtr pixmap, glamor_pixmap_fbo* fbo)
     glamor_pixmap_private* pixmap_priv = void;
 
     pixmap_priv = glamor_get_pixmap_private(pixmap);
-    BUG_RETURN(!pixmap_priv);
+    mixin(BUG_RETURN!("!pixmap_priv"));
 
     if (pixmap_priv.fbo)
         return;
@@ -297,7 +297,7 @@ void glamor_pixmap_destroy_fbo(PixmapPtr pixmap)
 
     if (glamor_pixmap_priv_is_large(priv)) {
         int i = void;
-        BUG_RETURN(!priv);
+        mixin(BUG_RETURN!("!priv"));
 
         for (i = 0; i < priv.block_wcnt * priv.block_hcnt; i++)
             glamor_destroy_fbo(glamor_priv, priv.fbo_array[i]);
@@ -320,7 +320,7 @@ Bool glamor_pixmap_ensure_fbo(PixmapPtr pixmap, int flag)
     glamor_priv = glamor_get_screen_private(pixmap.drawable.pScreen);
     pixmap_priv = glamor_get_pixmap_private(pixmap);
 
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
     if (pixmap_priv.fbo == null) {
 
@@ -353,8 +353,8 @@ void glamor_pixmap_exchange_fbos(PixmapPtr front, PixmapPtr back)
 
     front_priv = glamor_get_pixmap_private(front);
     back_priv = glamor_get_pixmap_private(back);
-    BUG_RETURN(!front_priv);
-    BUG_RETURN(!back_priv);
+    mixin(BUG_RETURN!("!front_priv"));
+    mixin(BUG_RETURN!("!back_priv"));
     temp_fbo = front_priv.fbo;
     front_priv.fbo = back_priv.fbo;
     back_priv.fbo = temp_fbo;

@@ -118,7 +118,7 @@ private Bool miInsertEdgeInET(EdgeTable* ET, EdgeTableEntry* ETE, int scanline, 
      */
     if ((!pSLL) || (pSLL.scanline > scanline)) {
         if (*iSLLBlock > SLLSPERBLOCK - 1) {
-            tmpSLLBlock = cast(ScanLineListBlock*) calloc(1, ScanLineListBlock.sizeof);
+            tmpSLLBlock = cast(ScanLineListBlock*) cast(ScanLineListBlock*) calloc(1, ScanLineListBlock.sizeof);
             if (!tmpSLLBlock)
                 return FALSE;
             (*SLLBlock).next = tmpSLLBlock;

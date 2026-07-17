@@ -37,7 +37,7 @@ import include.fbpict;
 enum EPHYR_TRACE_DRAW = 0;
 
 static if (EPHYR_TRACE_DRAW) {
-enum string TRACE_DRAW() = `ErrorF("%s\n", __func__);`;
+enum string TRACE_DRAW() = `ErrorF("%s\n", __FUNCTION__.ptr);`;
 } else {
 enum string TRACE_DRAW() = `do { } while (0)`;
 }

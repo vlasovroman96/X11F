@@ -640,8 +640,8 @@ InitOutput(int argc, char **argv)
     screenInfo.bitmapBitOrder = BITMAP_BIT_ORDER;
 
     // List how we want common pixmap formats to be padded
-    screenInfo.numPixmapFormats = ARRAY_SIZE(formats);
-    for (i = 0; i < ARRAY_SIZE(formats); i++)
+    screenInfo.numPixmapFormats = mixin(ARRAY_SIZE!("formats"));
+    for (i = 0; i < mixin(ARRAY_SIZE!("formats")); i++)
         screenInfo.formats[i] = formats[i];
 
     // Discover screens and do mode specific initialization

@@ -1,4 +1,4 @@
-module getdctl;
+module Xi.getdctl;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -56,6 +56,12 @@ import dix.dix_priv;
 import dix.request_priv;
 import dix.rpcbuf_priv;
 import Xi.handlers;
+import externs.X11.extensions.XI;
+import externs.X11.extensions.XIproto;
+import dix.dixutils;
+import dix.devices;
+
+
 
 import include.inputstr;           /* DeviceIntPtr      */
 
@@ -67,7 +73,7 @@ private void _writeDeviceResolution(ClientPtr client, ValuatorClassPtr v, x_rpcb
     /* write xDeviceResolutionState */
     x_rpcbuf_write_CARD16(rpcbuf, DEVICE_RESOLUTION);
     x_rpcbuf_write_CARD16(rpcbuf,
-        ((xDeviceResolutionState) + (3*((CARD32)*v.numAxes).sizeof)).sizeof);
+        cast(ushort)((xDeviceResolutionState).sizeof + (3*((CARD32).sizeof*v.numAxes))));
     x_rpcbuf_write_CARD32(rpcbuf, v.numAxes);
 
     for (i = 0, a = v.axes; i < v.numAxes; i++, a++)
@@ -83,8 +89,8 @@ private void _writeDeviceCore(ClientPtr client, DeviceIntPtr dev, x_rpcbuf_t* rp
     /* write xDeviceCoreState */
     x_rpcbuf_write_CARD16(rpcbuf, DEVICE_CORE);
     x_rpcbuf_write_CARD16(rpcbuf, xDeviceCoreState.sizeof);
-    x_rpcbuf_write_CARD8(rpcbuf, dev.coreEvents);
-    x_rpcbuf_write_CARD8(rpcbuf, (dev == inputInfo.keyboard || dev == inputInfo.pointer));
+    x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)dev.coreEvents);
+    x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)(dev == inputInfo.keyboard || dev == inputInfo.pointer));
     x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
 }
 
@@ -93,7 +99,7 @@ private void _writeDeviceEnable(ClientPtr client, DeviceIntPtr dev, x_rpcbuf_t* 
     /* write xDeviceEnableState */
     x_rpcbuf_write_CARD16(rpcbuf, DEVICE_ENABLE);
     x_rpcbuf_write_CARD16(rpcbuf, xDeviceEnableState.sizeof);
-    x_rpcbuf_write_CARD8(rpcbuf, dev.enabled);
+    x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)dev.enabled);
     x_rpcbuf_write_CARD8(rpcbuf, 0); /* pad0 */
     x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
 }

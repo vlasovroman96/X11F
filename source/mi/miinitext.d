@@ -160,7 +160,7 @@ void ListStaticExtensions()
     int i = void;
 
     ErrorF(" Only the following extensions can be run-time enabled/disabled:\n");
-    for (i = 0; i < ARRAY_SIZE(staticExtensions.ptr); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
         ext = &staticExtensions[i];
         if (ext.disablePtr != null) {
             ErrorF("\t%s\n", ext.name);
@@ -173,7 +173,7 @@ Bool EnableDisableExtension(const(char)* name, Bool enable)
     const(ExtensionModule)* ext = void;
     int i = void;
 
-    for (i = 0; i < ARRAY_SIZE(staticExtensions.ptr); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
         ext = &staticExtensions[i];
         if (strcasecmp(name, ext.name) == 0) {
             if (ext.disablePtr != null) {
@@ -197,7 +197,7 @@ void EnableDisableExtensionError(const(char)* name, Bool enable)
     int i = void;
     Bool found = FALSE;
 
-    for (i = 0; i < ARRAY_SIZE(staticExtensions.ptr); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
         ext = &staticExtensions[i];
         if ((strcmp(name, ext.name) == 0) && (ext.disablePtr == null)) {
             ErrorF("[mi] Extension \"%s\" can not be disabled\n", name);
@@ -226,7 +226,7 @@ private void AddStaticExtensions()
     listInitialised = TRUE;
 
     /* Add built-in extensions to the list. */
-    LoadExtensionList(staticExtensions.ptr, ARRAY_SIZE(staticExtensions.ptr), TRUE);
+    LoadExtensionList(staticExtensions.ptr, mixin(ARRAY_SIZE!("staticExtensions.ptr")), TRUE);
 }
 
 void InitExtensions(int argc, char** argv)

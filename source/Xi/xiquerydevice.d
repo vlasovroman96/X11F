@@ -252,7 +252,7 @@ int ListButtonInfo(DeviceIntPtr dev, xXIButtonInfo* info, Bool reportState)
 
     if (reportState)
         for (i = 0; i < dev.button.numButtons; i++)
-            if (BitIsOn(dev.button.down, i))
+            if (mixin(BitIsOn!("dev.button.down", "i")))
                 SetBit(bits, i);
 
     memcpy(labels, dev.button.labels, dev.button.numButtons * Atom.sizeof);
@@ -437,7 +437,7 @@ private Bool ShouldListGestureInfo(ClientPtr client)
      * properly ignore unknown device classes. Since breaking libxcb would break quite a lot of
      * applications, we instead report Gesture device class only if the client advertised support
      * for XI 2.4. Clients may still not work in cases when a client advertises XI 2.4 support
-     * and then a completely separate module within the client uses broken libxcb to call
+     * and then a completely separate module Xi.within the client uses broken libxcb to call
      * XIQueryDevice.
      */
     XIClientPtr pXIClient = XIClientPriv(client);

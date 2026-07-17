@@ -196,12 +196,12 @@ winQueryRGBBitsAndMasks(ScreenPtr pScreen)
         pdw = (DWORD *) ((CARD8 *) pbmih + sizeof(BITMAPINFOHEADER));
 
 #if ENABLE_DEBUG
-        winDebug("%s - Masks: %08x %08x %08x\n", __func__,
+        winDebug("%s - Masks: %08x %08x %08x\n", __FUNCTION__.ptr,
                  (unsigned int)pdw[0], (unsigned int)pdw[1], (unsigned int)pdw[2]);
-        winDebug("%s - Bitmap: %dx%d %d bpp %d planes\n", __func__,
+        winDebug("%s - Bitmap: %dx%d %d bpp %d planes\n", __FUNCTION__.ptr,
                  (int)pbmih->biWidth, (int)pbmih->biHeight, pbmih->biBitCount,
                  pbmih->biPlanes);
-        winDebug("%s - Compression: %u %s\n", __func__,
+        winDebug("%s - Compression: %u %s\n", __FUNCTION__.ptr,
                  (unsigned int)pbmih->biCompression,
                  (pbmih->biCompression ==
                   BI_RGB ? "(BI_RGB)" : (pbmih->biCompression ==

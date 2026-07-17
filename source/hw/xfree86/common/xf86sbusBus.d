@@ -67,7 +67,7 @@ private void CheckSbusDevice(const(char)* device, int fbNum)
     if (!sbusDeviceTable[i].devId)
         return;
     xf86SbusInfo =
-        XNFreallocarray(xf86SbusInfo, ++xf86nSbusInfo + 1, psdp.sizeof);
+        cast(psdp*) XNFreallocarray(xf86SbusInfo, ++xf86nSbusInfo + 1, psdp.sizeof);
     xf86SbusInfo[xf86nSbusInfo] = null;
     xf86SbusInfo[xf86nSbusInfo - 1] = psdp = XNFcallocarray(1, sbusDevice.sizeof);
     psdp.devId = sbusDeviceTable[i].devId;
@@ -84,7 +84,7 @@ void xf86SbusProbe()
     char[32] fbDevName = void;
     sbusDevicePtr psdp = void; sbusDevicePtr* psdpp = void;
 
-    xf86SbusInfo = calloc(1, psdp.sizeof);
+    xf86SbusInfo = cast(psdp*) calloc(1, psdp.sizeof);
     *xf86SbusInfo = null;
     for (i = 0; i < 32; i++) {
         snprintf(fbDevName.ptr, fbDevName.sizeof, "/dev/fb%d", i);
@@ -517,7 +517,7 @@ int xf86MatchSbusInstances(const(char)* driverName, int sbusDevId, GDevPtr* devL
 
         /* Allocate an entry in the lists to be returned */
         numFound++;
-        retEntities = XNFreallocarray(retEntities, numFound, int.sizeof);
+        retEntities = cast(int*) XNFreallocarray(retEntities, numFound, int.sizeof);
         retEntities[numFound - 1]
             = xf86ClaimSbusSlot(psdp, drvp, instances[i].dev,
                                 instances[i].dev.active ? TRUE : FALSE);

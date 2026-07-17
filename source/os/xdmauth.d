@@ -249,7 +249,7 @@ private XdmClientAuthPtr XdmAuthorizationValidate(ubyte* plain, int length, XdmA
             *reason = "Bad XDM authorization key length";
         return null;
     }
-    client = calloc(1, XdmClientAuthRec.sizeof);
+    client = cast(XdmClientAuthRec*) calloc(1, XdmClientAuthRec.sizeof);
     if (!client)
         return null;
     XdmClientAuthDecode(plain, client);
@@ -355,7 +355,7 @@ version (XDMCP) {
             return walk.id;
     }
 
-    XdmAuthorizationPtr new_ = calloc(1, XdmAuthorizationRec.sizeof);
+    XdmAuthorizationPtr new_ = cast(XdmAuthorizationRec*) calloc(1, XdmAuthorizationRec.sizeof);
     if (!new_)
         return 0;
     new_.next = xdmAuth;

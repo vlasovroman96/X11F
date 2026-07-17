@@ -289,17 +289,17 @@ extern DeviceIntPtr AddInputDevice(ClientPtr /*client */ ,
                                              DeviceProc /*deviceProc */ ,
                                              Bool /*autoStart */ );
 
-extern int EnableDevice(DeviceIntPtr, BOOL);
+// extern int EnableDevice(DeviceIntPtr, BOOL);
 
-extern int ActivateDevice(DeviceIntPtr, BOOL);
+// extern int ActivateDevice(DeviceIntPtr, BOOL);
 
-extern int DisableDevice(DeviceIntPtr, BOOL);
+// extern int DisableDevice(DeviceIntPtr, BOOL);
 
 extern int RemoveDevice(DeviceIntPtr, BOOL);
 
 extern int NumMotionEvents();
 
-extern int dixLookupDevice(DeviceIntPtr*, int, ClientPtr, Mask);
+// extern int dixLookupDevice(DeviceIntPtr*, int, ClientPtr, Mask);
 
 extern int QueryMinMaxKeyCodes(KeyCode*, KeyCode*);
 
@@ -313,7 +313,7 @@ extern int InitFocusClassDeviceStruct(DeviceIntPtr);
 
 extern int InitTouchClassDeviceStruct(DeviceIntPtr, uint, uint, uint);
 
-extern int InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches);
+// extern int InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches);
 
 alias BellProcPtr = void function(int percent, DeviceIntPtr device, void* ctrl, int feedbackClass);
 
@@ -374,9 +374,9 @@ extern int AllocateMotionHistory(DeviceIntPtr pDev);
 extern int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulong stop, ScreenPtr pScreen, BOOL core);
 
 extern int GetPairedDevice(DeviceIntPtr kbd);
-extern int GetMaster(DeviceIntPtr dev, int type);
+// extern int GetMaster(DeviceIntPtr dev, int type);
 
-extern int AllocDevicePair(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master);
+// extern int AllocDevicePair(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master);
 
 /* Helper functions. */
 extern int generate_modkeymap(ClientPtr client, DeviceIntPtr dev, KeyCode** modkeymap, int* max_keys_per_mod);

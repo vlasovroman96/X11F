@@ -1,4 +1,4 @@
-module grabdev;
+module Xi.grabdev;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -65,7 +65,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
-import grabdev;
+import Xi.grabdev;
 
 extern XExtEventInfo[1] EventInfo;
 extern int ExtEventIndex;

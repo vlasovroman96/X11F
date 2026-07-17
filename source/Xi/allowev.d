@@ -1,4 +1,4 @@
-module allowev;
+module Xi.allowev;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -66,6 +66,8 @@ import Xi.handlers;
 import externs.X11.extensions.XIproto;
 import dix.dixutils;
 import externs.X11.extensions.XI;
+import dix.devices;
+
 
 /***********************************************************************
  *

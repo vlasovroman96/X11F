@@ -376,7 +376,7 @@ private int SecurityEventSelectForAuthorization(SecurityAuthorizationPtr pAuth, 
         }
     }
 
-    pEventClient = cast(OtherClients*) calloc(1, OtherClients.sizeof);
+    pEventClient = cast(OtherClients*) cast(OtherClients*) calloc(1, OtherClients.sizeof);
     if (!pEventClient)
         return BadAlloc;
     pEventClient.mask = mask;
@@ -499,7 +499,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
     /* associate additional information with this auth ID */
 
-    SecurityAuthorizationPtr pAuth = cast(SecurityAuthorizationPtr)calloc(1, SecurityAuthorizationRec.sizeof);
+    SecurityAuthorizationPtr pAuth = cast(SecurityAuthorizationPtr)cast(SecurityAuthorizationRec*) calloc(1, SecurityAuthorizationRec.sizeof);
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     xSecurityGenerateAuthorizationReply reply = {
         authId: cast(uint)authId,

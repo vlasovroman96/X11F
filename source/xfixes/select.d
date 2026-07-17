@@ -186,7 +186,7 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
         return Success;
     }
     if (!e) {
-        e = calloc(1, SelectionEventRec.sizeof);
+        e = cast(SelectionEventRec*) calloc(1, SelectionEventRec.sizeof);
         if (!e)
             return BadAlloc;
 

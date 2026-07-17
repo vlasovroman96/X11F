@@ -319,7 +319,7 @@ private PatternPtr InitPatterns(const(char)** patternlist)
     if (patternlist) {
         for (i = 0, s = patternlist; *s; i++, s++)
             if (*s == DEFAULT_LIST)
-                i += ARRAY_SIZE(stdPatterns.ptr) - 1 - 1;
+                i += mixin(ARRAY_SIZE!("stdPatterns.ptr")) - 1 - 1;
         patterns = calloc(i + 1, PatternRec.sizeof);
         if (!patterns) {
             return null;
@@ -716,7 +716,7 @@ ModuleDescPtr DuplicateModule(ModuleDescPtr mod, ModuleDescPtr parent)
     if (!mod)
         return null;
 
-    ret = calloc(1, ModuleDesc.sizeof);
+    ret = cast(ModuleDesc*) calloc(1, ModuleDesc.sizeof);
     if (ret == null)
         return null;
 
@@ -864,7 +864,7 @@ ModuleDescPtr LoadModule(const(char)* module_, void* options, const(XF86ModReqIn
             *errmaj = LDR_BADUSAGE;
         goto LoadModule_fail;
     }
-    ret = calloc(1, ModuleDesc.sizeof);
+    ret = cast(ModuleDesc*) calloc(1, ModuleDesc.sizeof);
     if (!ret) {
         if (errmaj)
             *errmaj = LDR_NOMEM;

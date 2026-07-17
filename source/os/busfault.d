@@ -59,7 +59,7 @@ busfault* busfault_register_mmap(void* addr, size_t size, busfault_notify_ptr no
 {
     busfault* busfault = void;
 
-    busfault = cast(busfault*) calloc(1, busfault.sizeof);
+    busfault = cast(busfault*) cast(busfault*) calloc(1, busfault.sizeof);
     if (!busfault)
         return null;
 

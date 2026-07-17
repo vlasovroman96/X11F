@@ -85,9 +85,9 @@ private RRModePtr RRModeCreate(xRRModeInfo* modeInfo, const(char)* name, ScreenP
     mode.userScreen = userScreen;
 
     if (num_modes)
-        newModes = reallocarray(modes, num_modes + 1, RRModePtr.sizeof);
+        newModes = cast(RRModePtr*) reallocarray(modes, num_modes + 1, RRModePtr.sizeof);
     else
-        newModes = cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
+        newModes = cast(RRModePtr*) cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
 
     if (!newModes) {
         free(mode);

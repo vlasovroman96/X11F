@@ -369,7 +369,7 @@ version (XINERAMA) {
     if (!dixRegisterPrivateKey(&xf86RandRKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    XF86RandRInfoPtr randrp = calloc(1, XF86RandRInfoRec.sizeof);
+    XF86RandRInfoPtr randrp = cast(XF86RandRInfoRec*) calloc(1, XF86RandRInfoRec.sizeof);
     if (!randrp)
         return FALSE;
 

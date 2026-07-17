@@ -1,4 +1,4 @@
-module getmmap;
+module Xi.getmmap;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

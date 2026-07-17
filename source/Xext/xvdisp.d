@@ -1303,7 +1303,7 @@ void XineramifyXv()
 
         /* now create a resource for each port */
         for (int j = 0; j < refAdapt.nPorts; j++) {
-            PanoramiXRes* port = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
+            PanoramiXRes* port = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
 
             if (!port)
                 break;

@@ -1489,7 +1489,7 @@ version (WITH_LIBDRM) {
     pScreen.SetWindowPixmap = &DRI2SetWindowPixmap;
 
     LogMessage(X_INFO, "[DRI2] Setup complete\n");
-    for (int i = 0; i < ARRAY_SIZE(driverTypeNames.ptr); i++) {
+    for (int i = 0; i < mixin(ARRAY_SIZE!("driverTypeNames.ptr")); i++) {
         if (i < ds.numDrivers && ds.driverNames[i]) {
             LogMessage(X_INFO, "[DRI2]   %s driver: %s\n",
                        driverTypeNames[i], ds.driverNames[i]);

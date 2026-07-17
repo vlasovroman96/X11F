@@ -385,7 +385,7 @@ Bool dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr screenKey, ScreenPtr pSc
         assert(key.type == type);
         return TRUE;
     }
-    key = calloc(1, DevPrivateKeyRec.sizeof);
+    key = cast(DevPrivateKeyRec*) calloc(1, DevPrivateKeyRec.sizeof);
     if (!key)
         return FALSE;
     if (!dixRegisterPrivateKey(key, type, size)) {
@@ -554,7 +554,7 @@ int dixLookupPrivateOffset(RESTYPE type)
             return offsets[X11_RESTYPE_PIXMAP & TypeMask];
     }
     type = type & TypeMask;
-    if (type < ARRAY_SIZE(offsets.ptr))
+    if (type < mixin(ARRAY_SIZE!("offsets.ptr")))
         return offsets[type];
     return -1;
 }

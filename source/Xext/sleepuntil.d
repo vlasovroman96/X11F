@@ -75,7 +75,7 @@ int ClientSleepUntil(ClientPtr client, TimeStamp* revive, void function(ClientPt
         return FALSE;
     BlockHandlerRegistered = FALSE;
 
-    SertafiedPtr pRequest = cast(SertafiedPtr)calloc(1, SertafiedRec.sizeof);
+    SertafiedPtr pRequest = cast(SertafiedPtr)cast(SertafiedRec*) calloc(1, SertafiedRec.sizeof);
     if (!pRequest)
         return FALSE;
     pRequest.pClient = client;

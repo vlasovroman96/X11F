@@ -472,7 +472,7 @@ private xf86EdgePtr AddEdge(xf86EdgePtr edge, short min, short max, short dx, sh
         }
 
         if (!pEdge) {
-            if (((pNew = calloc(1, xf86EdgeRec.sizeof)) == 0))
+            if (((pNew = cast(xf86EdgeRec*) calloc(1, xf86EdgeRec.sizeof)) == 0))
                 break;
 
             pNew.screen = screen;
@@ -490,7 +490,7 @@ private xf86EdgePtr AddEdge(xf86EdgePtr edge, short min, short max, short dx, sh
             break;
         }
         else if (min < pEdge.start) {
-            if (((pNew = calloc(1, xf86EdgeRec.sizeof)) == 0))
+            if (((pNew = cast(xf86EdgeRec*) calloc(1, xf86EdgeRec.sizeof)) == 0))
                 break;
 
             pNew.screen = screen;

@@ -63,7 +63,7 @@ Bool XkbRF_LoadRules(FILE* file, XkbRF_RulesPtr rules);
 
 pragma(inline, true) private XkbRF_RulesPtr XkbRF_Create()
 {
-    return calloc(1, XkbRF_RulesRec.sizeof);
+    return cast(XkbRF_RulesRec*) calloc(1, XkbRF_RulesRec.sizeof);
 }
 
 void XkbRF_Free(XkbRF_RulesPtr rules);

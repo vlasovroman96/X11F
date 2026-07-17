@@ -1,4 +1,4 @@
-module getkmap;
+module Xi.getkmap;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

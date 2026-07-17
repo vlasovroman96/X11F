@@ -291,7 +291,7 @@ Bool RRScreenInit(ScreenPtr pScreen)
     if (!RRInit())
         return FALSE;
 
-    pScrPriv = cast(rrScrPrivPtr) calloc(1, rrScrPrivRec.sizeof);
+    pScrPriv = cast(rrScrPrivPtr) cast(rrScrPrivRec*) calloc(1, rrScrPrivRec.sizeof);
     if (!pScrPriv)
         return FALSE;
 

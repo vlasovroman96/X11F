@@ -263,7 +263,7 @@ private void DamageExtRegister(DrawablePtr pDrawable, DamagePtr pDamage, Bool re
 
 private DamageExtPtr DamageExtCreate(DrawablePtr pDrawable, DamageReportLevel level, ClientPtr client, XID id, XID drawable)
 {
-    DamageExtPtr pDamageExt = cast(DamageExtPtr)calloc(1, DamageExtRec.sizeof);
+    DamageExtPtr pDamageExt = cast(DamageExtPtr)cast(DamageExtRec*) calloc(1, DamageExtRec.sizeof);
     if (!pDamageExt)
         return null;
 
@@ -585,7 +585,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
     if (rc != Success)
         return rc;
 
-    if (((damage = cast(PanoramiXDamageRes*) calloc(1, PanoramiXDamageRes.sizeof)) == 0))
+    if (((damage = cast(PanoramiXDamageRes*) cast(PanoramiXDamageRes*) calloc(1, PanoramiXDamageRes.sizeof)) == 0))
         return BadAlloc;
 
     if (!AddResource(stuff.damage, XRT_DAMAGE, damage))

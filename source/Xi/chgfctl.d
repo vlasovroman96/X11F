@@ -1,4 +1,4 @@
-module chgfctl;
+module Xi.chgfctl;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -65,6 +65,8 @@ import include.inputstr;           /* DeviceIntPtr      */
 import Xi.handlers;
 import externs.X11.extensions.XI;
 import dix.globals;
+import dix.devices;
+
 
 
 enum DO_ALL =    (-1);

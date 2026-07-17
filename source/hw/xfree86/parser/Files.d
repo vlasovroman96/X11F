@@ -86,7 +86,7 @@ XF86ConfFilesPtr xf86parseFilesSection(XF86ConfFilesPtr ptr)
 
     if (ptr == null)
     {
-        if((ptr=calloc(1, XF86ConfFilesRec.sizeof)) == null)
+        if((ptr=cast(XF86ConfFilesRec*) calloc(1, XF86ConfFilesRec.sizeof)) == null)
         {
             return null;
         }

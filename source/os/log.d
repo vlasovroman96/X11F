@@ -422,7 +422,7 @@ private int parse_length_modifier(const(char)* format, size_t len, int* flags_re
     while (idx < len) {
         switch (format[idx]) {
             case 'l':
-                BUG_RETURN_VAL(length_modifier & LMOD_SHORT, 0);
+                mixin(BUG_RETURN_VAL!("length_modifier & LMOD_SHORT", "0"));
 
                 if (length_modifier & LMOD_LONG)
                     length_modifier |= LMOD_LONGLONG;
@@ -430,7 +430,7 @@ private int parse_length_modifier(const(char)* format, size_t len, int* flags_re
                     length_modifier |= LMOD_LONG;
                 break;
             case 'h':
-                BUG_RETURN_VAL(length_modifier & (LMOD_LONG|LMOD_LONGLONG), 0);
+                mixin(BUG_RETURN_VAL!("length_modifier & (LMOD_LONG|LMOD_LONGLONG)", "0"));
                 length_modifier |= LMOD_SHORT;
                 /* gcc says 'short int' is promoted to 'int' when
                  * passed through '...', so ignored during

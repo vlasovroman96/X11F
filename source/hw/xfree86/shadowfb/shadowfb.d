@@ -61,7 +61,7 @@ Bool ShadowFBInit2(ScreenPtr pScreen, RefreshAreaFuncPtr preRefreshArea, Refresh
     if (!dixRegisterPrivateKey(&ShadowScreenKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    if (((pPriv = cast(ShadowScreenPtr) calloc(1, ShadowScreenRec.sizeof)) == 0))
+    if (((pPriv = cast(ShadowScreenPtr) cast(ShadowScreenRec*) calloc(1, ShadowScreenRec.sizeof)) == 0))
         return FALSE;
 
     dixSetPrivate(&pScreen.devPrivates, &ShadowScreenKeyRec, pPriv);

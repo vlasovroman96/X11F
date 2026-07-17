@@ -106,7 +106,7 @@ private void RRInitOutputPropertyValue(RRPropertyValuePtr property_value)
 
 private RRPropertyPtr RRCreateOutputProperty(Atom property)
 {
-    RRPropertyPtr prop = calloc(1, RRPropertyRec.sizeof);
+    RRPropertyPtr prop = cast(RRPropertyRec*) calloc(1, RRPropertyRec.sizeof);
     if (!prop)
         return null;
     prop.next = null;

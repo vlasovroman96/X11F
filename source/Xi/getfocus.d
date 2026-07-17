@@ -1,4 +1,4 @@
-module getfocus;
+module Xi.getfocus;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

@@ -1,4 +1,4 @@
-module queryst;
+module Xi.queryst;
 @nogc nothrow:
 extern(C): __gshared:
 /*

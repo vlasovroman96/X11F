@@ -449,7 +449,7 @@ uint ms_drm_queue_alloc(xf86CrtcPtr crtc, void* data, ms_drm_handler_proc handle
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
     ms_drm_queue* q = void;
 
-    q = cast(ms_drm_queue*) calloc(1, ms_drm_queue.sizeof);
+    q = cast(ms_drm_queue*) cast(ms_drm_queue*) calloc(1, ms_drm_queue.sizeof);
 
     if (!q)
         return 0;

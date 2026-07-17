@@ -1,4 +1,4 @@
-module chgkmap;
+module Xi.chgkmap;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -66,6 +66,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.exglobals;
 import externs.X11.extensions.XI;
+import dix.devices;
 
 /***********************************************************************
  *

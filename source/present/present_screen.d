@@ -167,7 +167,7 @@ present_screen_priv_ptr present_screen_priv_init(ScreenPtr screen)
 {
     present_screen_priv_ptr screen_priv = void;
 
-    screen_priv = calloc(1, present_screen_priv_rec.sizeof);
+    screen_priv = cast(present_screen_priv_rec*) calloc(1, present_screen_priv_rec.sizeof);
     if (!screen_priv)
         return null;
 

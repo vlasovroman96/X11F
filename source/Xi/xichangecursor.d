@@ -1,4 +1,4 @@
-module xichangecursor;
+module Xi.xichangecursor;
 @nogc nothrow:
 extern(C): __gshared:
 /*

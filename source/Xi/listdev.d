@@ -1,4 +1,4 @@
-module listdev;
+module Xi.listdev;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -68,7 +68,7 @@ import dix.rpcbuf_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import XIstubs;
+import Xi.XIstubs;
 import include.extnsionst;
 import include.exevents;
 import include.xkbsrv;

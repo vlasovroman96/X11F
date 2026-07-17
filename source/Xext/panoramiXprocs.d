@@ -125,7 +125,7 @@ int PanoramiXCreateWindow(ClientPtr client)
         }
     }
 
-    if (((newWin = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == null))
+    if (((newWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == null))
         return BadAlloc;
 
     newWin.type = XRT_WINDOW;
@@ -709,7 +709,7 @@ int PanoramiXCreatePixmap(ClientPtr client)
     if (result != Success)
         return (result == BadValue) ? BadDrawable : result;
 
-    if (((newPix = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
+    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
         return BadAlloc;
 
     newPix.type = XRT_PIXMAP;
@@ -814,7 +814,7 @@ int PanoramiXCreateGC(ClientPtr client)
         }
     }
 
-    if (((newGC = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
+    if (((newGC = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
         return BadAlloc;
 
     newGC.type = XRT_GC;
@@ -2306,7 +2306,7 @@ int PanoramiXCreateColormap(ClientPtr client)
     if (result != Success)
         return result;
 
-    if (((newCmap = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
+    if (((newCmap = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
         return BadAlloc;
 
     newCmap.type = XRT_COLORMAP;
@@ -2377,7 +2377,7 @@ int PanoramiXCopyColormapAndFree(ClientPtr client)
     if (result != Success)
         return result;
 
-    if (((newCmap = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
+    if (((newCmap = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
         return BadAlloc;
 
     newCmap.type = XRT_COLORMAP;

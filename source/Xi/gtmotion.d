@@ -1,4 +1,4 @@
-module gtmotion;
+module Xi.gtmotion;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

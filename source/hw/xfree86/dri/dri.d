@@ -417,7 +417,7 @@ version (XINERAMA) {
     if (!dixRegisterPrivateKey(&DRIWindowPrivKeyRec, PRIVATE_WINDOW, 0))
         return FALSE;
 
-    pDRIPriv = cast(DRIScreenPrivPtr) calloc(1, DRIScreenPrivRec.sizeof);
+    pDRIPriv = cast(DRIScreenPrivPtr) cast(DRIScreenPrivRec*) calloc(1, DRIScreenPrivRec.sizeof);
     if (!pDRIPriv) {
         dixSetPrivate(&pScreen.devPrivates, DRIScreenPrivKey, null);
         return FALSE;
@@ -1294,7 +1294,7 @@ Bool DRICreateDrawable(ScreenPtr pScreen, ClientPtr client, DrawablePtr pDrawabl
         }
         else {
             /* allocate a DRI Window Private record */
-            if (((pDRIDrawablePriv = calloc(1, DRIDrawablePrivRec.sizeof)) == 0)) {
+            if (((pDRIDrawablePriv = cast(DRIDrawablePrivRec*) calloc(1, DRIDrawablePrivRec.sizeof)) == 0)) {
                 return FALSE;
             }
 
@@ -1615,7 +1615,7 @@ Bool DRIGetDeviceInfo(ScreenPtr pScreen, drm_handle_t* hFrameBuffer, int* fbOrig
 
 DRIInfoPtr DRICreateInfoRec()
 {
-    DRIInfoPtr inforec = cast(DRIInfoPtr) calloc(1, DRIInfoRec.sizeof);
+    DRIInfoPtr inforec = cast(DRIInfoPtr) cast(DRIInfoRec*) calloc(1, DRIInfoRec.sizeof);
 
     if (!inforec)
         return null;

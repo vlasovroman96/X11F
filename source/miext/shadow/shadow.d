@@ -117,7 +117,7 @@ Bool shadowSetup(ScreenPtr pScreen)
     if (!DamageSetup(pScreen))
         return FALSE;
 
-    shadowBufPtr pBuf = calloc(1, shadowBufRec.sizeof);
+    shadowBufPtr pBuf = cast(shadowBufRec*) calloc(1, shadowBufRec.sizeof);
     if (!pBuf)
         return FALSE;
     pBuf.pDamage = DamageCreate(cast(DamageReportFunc) null,

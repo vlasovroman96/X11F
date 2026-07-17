@@ -897,7 +897,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
     /* client map */
     if (src.map) {
         if (!dst.map) {
-            tmp = calloc(1, XkbClientMapRec.sizeof);
+            tmp = cast(XkbClientMapRec*) calloc(1, XkbClientMapRec.sizeof);
             if (!tmp)
                 return FALSE;
             dst.map = tmp;
@@ -1136,7 +1136,7 @@ private Bool _XkbCopyServerMap(XkbDescPtr src, XkbDescPtr dst)
     /* server map */
     if (src.server) {
         if (!dst.server) {
-            tmp = calloc(1, XkbServerMapRec.sizeof);
+            tmp = cast(XkbServerMapRec*) calloc(1, XkbServerMapRec.sizeof);
             if (!tmp)
                 return FALSE;
             dst.server = tmp;
@@ -1250,7 +1250,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
     /* names */
     if (src.names) {
         if (!dst.names) {
-            dst.names = calloc(1, XkbNamesRec.sizeof);
+            dst.names = cast(XkbNamesRec*) calloc(1, XkbNamesRec.sizeof);
             if (!dst.names)
                 return FALSE;
         }
@@ -1338,7 +1338,7 @@ private Bool _XkbCopyCompat(XkbDescPtr src, XkbDescPtr dst)
     /* compat */
     if (src.compat) {
         if (!dst.compat) {
-            dst.compat = calloc(1, XkbCompatMapRec.sizeof);
+            dst.compat = cast(XkbCompatMapRec*) calloc(1, XkbCompatMapRec.sizeof);
             if (!dst.compat)
                 return FALSE;
         }
@@ -1880,7 +1880,7 @@ private Bool _XkbCopyIndicators(XkbDescPtr src, XkbDescPtr dst)
     /* indicators */
     if (src.indicators) {
         if (!dst.indicators) {
-            dst.indicators = calloc(1, XkbIndicatorRec.sizeof);
+            dst.indicators = cast(XkbIndicatorRec*) calloc(1, XkbIndicatorRec.sizeof);
             if (!dst.indicators)
                 return FALSE;
         }
@@ -1898,7 +1898,7 @@ private Bool _XkbCopyControls(XkbDescPtr src, XkbDescPtr dst)
     /* controls */
     if (src.ctrls) {
         if (!dst.ctrls) {
-            dst.ctrls = calloc(1, XkbControlsRec.sizeof);
+            dst.ctrls = cast(XkbControlsRec*) calloc(1, XkbControlsRec.sizeof);
             if (!dst.ctrls)
                 return FALSE;
         }

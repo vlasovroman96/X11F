@@ -454,7 +454,7 @@ private void create_driver_context(__GLXDRIcontext* context, __GLXDRIscreen* scr
                 ctx_attribs[num_ctx_attribs++] = reset;
             }
 
-            assert(num_ctx_attribs <= ARRAY_SIZE(ctx_attribs.ptr));
+            assert(num_ctx_attribs <= mixin(ARRAY_SIZE!("ctx_attribs.ptr")));
         }
 
         context.driContext =

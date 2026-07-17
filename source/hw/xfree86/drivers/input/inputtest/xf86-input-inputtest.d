@@ -306,8 +306,8 @@ private void init_pointer(InputInfoPtr pInfo)
     has_pressure = xf86SetBoolOption(pInfo.options, "PointerHasPressure",
                                      false);
 
-    init_button_map(btnmap.ptr, ARRAY_SIZE(btnmap.ptr));
-    init_button_labels(btnlabels.ptr, ARRAY_SIZE(btnlabels.ptr));
+    init_button_map(btnmap.ptr, mixin(ARRAY_SIZE!("btnmap.ptr")));
+    init_button_labels(btnlabels.ptr, mixin(ARRAY_SIZE!("btnlabels.ptr")));
 
     axislabels[num_axes++] = XIGetKnownProperty(AXIS_LABEL_PROP_REL_X);
     axislabels[num_axes++] = XIGetKnownProperty(AXIS_LABEL_PROP_REL_Y);
@@ -359,8 +359,8 @@ private void init_pointer_absolute(InputInfoPtr pInfo)
     has_pressure = xf86SetBoolOption(pInfo.options, "PointerHasPressure",
                                      false);
 
-    init_button_map(btnmap.ptr, ARRAY_SIZE(btnmap.ptr));
-    init_button_labels(btnlabels.ptr, ARRAY_SIZE(btnlabels.ptr));
+    init_button_map(btnmap.ptr, mixin(ARRAY_SIZE!("btnmap.ptr")));
+    init_button_labels(btnlabels.ptr, mixin(ARRAY_SIZE!("btnlabels.ptr")));
 
     axislabels[num_axes++] = XIGetKnownProperty(AXIS_LABEL_PROP_ABS_X);
     axislabels[num_axes++] = XIGetKnownProperty(AXIS_LABEL_PROP_ABS_Y);
@@ -432,8 +432,8 @@ private void init_touch(InputInfoPtr pInfo)
     int nbuttons = 7;
     int ntouches = TOUCH_MAX_SLOTS;
 
-    init_button_map(btnmap.ptr, ARRAY_SIZE(btnmap.ptr));
-    init_button_labels(btnlabels.ptr, ARRAY_SIZE(btnlabels.ptr));
+    init_button_map(btnmap.ptr, mixin(ARRAY_SIZE!("btnmap.ptr")));
+    init_button_labels(btnlabels.ptr, mixin(ARRAY_SIZE!("btnlabels.ptr")));
 
     axislabels[num_axes++] = XIGetKnownProperty(AXIS_LABEL_PROP_ABS_MT_POSITION_X);
     axislabels[num_axes++] = XIGetKnownProperty(AXIS_LABEL_PROP_ABS_MT_POSITION_Y);
@@ -541,7 +541,7 @@ private void convert_to_valuator_mask(xf86ITValuatorData* event, ValuatorMask* m
 {
     valuator_mask_zero(mask);
     for (int i = 0; i < min(XF86IT_MAX_VALUATORS, MAX_VALUATORS); ++i) {
-        if (BitIsOn(event.mask, i)) {
+        if (mixin(BitIsOn!("event.mask", "i"))) {
             if (event.has_unaccelerated) {
                 valuator_mask_set_unaccelerated(mask, i, event.valuators[i],
                                                 event.unaccelerated[i]);
@@ -915,7 +915,7 @@ private const(char)* get_type_name(InputInfoPtr pInfo, xf86ITDevicePtr driver_da
 
 private xf86ITDevicePtr device_alloc()
 {
-    xf86ITDevicePtr driver_data = calloc(1, xf86ITDevice.sizeof);
+    xf86ITDevicePtr driver_data = cast(xf86ITDevice*) calloc(1, xf86ITDevice.sizeof);
 
     if (!driver_data)
         return null;

@@ -115,7 +115,7 @@ struct _Client {
     int req_fds;
 }
 
-// alias ClientPtr = _Client*;
+alias ClientPtr = _Client*;
 
 extern TimeStamp currentTime;
 

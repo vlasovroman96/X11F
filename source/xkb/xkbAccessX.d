@@ -371,7 +371,7 @@ private CARD32 AccessXSlowKeyExpire(OsTimerPtr timer, CARD32 now, void* arg)
         if (keybd.kbdfeed.ctrl.autoRepeat &&
             ((xkbi.slowKey != xkbi.mouseKey) || (!xkbi.mouseKeysAccel)) &&
             (ctrls.enabled_ctrls & XkbRepeatKeysMask)) {
-            if (BitIsOn(keybd.kbdfeed.ctrl.autoRepeats, xkbi.slowKey)) {
+            if (mixin(BitIsOn!("keybd.kbdfeed.ctrl.autoRepeats", "xkbi.slowKey"))) {
                 xkbi.repeatKey = xkbi.slowKey;
                 xkbi.repeatKeyTimer = TimerSet(xkbi.repeatKeyTimer,
                                                 0, ctrls.repeat_delay,
@@ -539,7 +539,7 @@ Bool AccessXFilterPressEvent(DeviceEvent* event, DeviceIntPtr keybd)
         if ((keybd.kbdfeed.ctrl.autoRepeat) &&
             ((ctrls.enabled_ctrls & (XkbSlowKeysMask | XkbRepeatKeysMask)) ==
              XkbRepeatKeysMask)) {
-            if (BitIsOn(keybd.kbdfeed.ctrl.autoRepeats, key)) {
+            if (mixin(BitIsOn!("keybd.kbdfeed.ctrl.autoRepeats", "key"))) {
                 if (xkbDebugFlags & 0x10)
                     DebugF("Starting software autorepeat...\n");
                 if (xkbi.repeatKey == key)
@@ -604,7 +604,7 @@ Bool AccessXFilterReleaseEvent(DeviceEvent* event, DeviceIntPtr keybd)
      * BounceKeys.
      */
     if (ctrls.enabled_ctrls & XkbBounceKeysMask) {
-        if ((key != xkbi.mouseKey) && (!BitIsOn(keybd.key.down, key)))
+        if ((key != xkbi.mouseKey) && (!mixin(BitIsOn!("keybd.key.down", "key"))))
             ignoreKeyEvent = TRUE;
         xkbi.inactiveKey = key;
         xkbi.bounceKeysTimer = TimerSet(xkbi.bounceKeysTimer, 0,
@@ -625,7 +625,7 @@ Bool AccessXFilterReleaseEvent(DeviceEvent* event, DeviceIntPtr keybd)
         ev.keycode = key;
         ev.slowKeysDelay = ctrls.slow_keys_delay;
         ev.debounceDelay = ctrls.debounce_delay;
-        if (BitIsOn(keybd.key.down, key) || (xkbi.mouseKey == key)) {
+        if (mixin(BitIsOn!("keybd.key.down", "key")) || (xkbi.mouseKey == key)) {
             ev.detail = XkbAXN_SKRelease;
             beep_type = _BEEP_SLOW_RELEASE;
             mask = XkbAX_SKReleaseFBMask;

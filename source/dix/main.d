@@ -159,7 +159,7 @@ int dix_main(int argc, char** argv, char** envp)
             CreateWellKnownSockets();
             for (int i = 1; i < LimitClients; i++)
                 clients[i] = null;
-            serverClient = calloc(1, ClientRec.sizeof);
+            serverClient = cast(ClientRec*) calloc(1, ClientRec.sizeof);
             if (!serverClient)
                 FatalError("couldn't create server client");
             InitClient(serverClient, 0, cast(void*) null);

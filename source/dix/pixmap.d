@@ -174,7 +174,7 @@ Bool PixmapStartDirtyTracking(DrawablePtr src, PixmapPtr secondary_dst, int x, i
     RegionRec dstregion = void;
     BoxRec box = void;
 
-    dirty_update = calloc(1, PixmapDirtyUpdateRec.sizeof);
+    dirty_update = cast(PixmapDirtyUpdateRec*) calloc(1, PixmapDirtyUpdateRec.sizeof);
     if (!dirty_update)
         return FALSE;
 

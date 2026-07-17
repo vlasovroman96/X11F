@@ -116,7 +116,7 @@ enum string SetBarrierScreen(string s,string p) = `dixSetPrivate(&(` ~ s ~ `).de
 
 private PointerBarrierDevice* AllocBarrierDevice()
 {
-    PointerBarrierDevice* pbd = cast(PointerBarrierDevice*) calloc(1, PointerBarrierDevice.sizeof);
+    PointerBarrierDevice* pbd = cast(PointerBarrierDevice*) cast(PointerBarrierDevice*) calloc(1, PointerBarrierDevice.sizeof);
     if (!pbd)
         return null;
 
@@ -900,7 +900,7 @@ Bool XIBarrierInit()
 
     mixin(DIX_FOR_EACH_SCREEN!q{
         BarrierScreenPtr cs = void;
-        cs = cast(BarrierScreenPtr) calloc(1, BarrierScreenRec.sizeof);
+        cs = cast(BarrierScreenPtr) cast(BarrierScreenRec*) calloc(1, BarrierScreenRec.sizeof);
         if (!cs)
             return FALSE;
         xorg_list_init(&cs.barriers);

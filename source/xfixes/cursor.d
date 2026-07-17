@@ -232,7 +232,7 @@ private int XFixesSelectCursorInput(ClientPtr pClient, WindowPtr pWindow, CARD32
         return Success;
     }
     if (!e) {
-        e = calloc(1, CursorEventRec.sizeof);
+        e = cast(CursorEventRec*) calloc(1, CursorEventRec.sizeof);
         if (!e)
             return BadAlloc;
 
@@ -580,7 +580,7 @@ private void ReplaceCursor(CursorPtr pCursor, TestCursorFunc testCursor, void* c
     for (clientIndex = 0; clientIndex < currentMaxClients; clientIndex++) {
         if (!clients[clientIndex])
             continue;
-        for (resIndex = 0; resIndex < ARRAY_SIZE(CursorRestypes.ptr); resIndex++) {
+        for (resIndex = 0; resIndex < mixin(ARRAY_SIZE!("CursorRestypes.ptr")); resIndex++) {
             rcl.type = CursorRestypes[resIndex];
             /*
              * This function walks the entire client resource database
@@ -667,7 +667,7 @@ private CursorHideCountPtr findCursorHideCount(ClientPtr pClient, ScreenPtr pScr
 private int createCursorHideCount(ClientPtr pClient, ScreenPtr pScreen)
 {
     CursorScreenPtr cs = mixin(GetCursorScreen!(`pScreen`));
-    CursorHideCountPtr pChc = calloc(1, CursorHideCountRec.sizeof);
+    CursorHideCountPtr pChc = cast(CursorHideCountRec*) calloc(1, CursorHideCountRec.sizeof);
     if (pChc == null) {
         return BadAlloc;
     }

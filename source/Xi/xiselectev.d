@@ -1,4 +1,4 @@
-module xiselectev;
+module Xi.xiselectev;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -104,7 +104,7 @@ int XICheckInvalidMaskBits(ClientPtr client, ubyte* mask, int len)
         int i = void;
 
         for (i = XI2LASTEVENT + 1; i < len * 8; i++) {
-            if (BitIsOn(mask, i)) {
+            if (mixin(BitIsOn!("mask", "i"))) {
                 client.errorValue = i;
                 return BadValue;
             }
@@ -176,7 +176,7 @@ int ProcXISelectEvents(ClientPtr client)
         if (evmask.deviceid != XIAllDevices && evmask.mask_len >= 1) {
             ubyte* bits = cast(ubyte*) &evmask[1];
 
-            if (BitIsOn(bits, XI_HierarchyChanged)) {
+            if (mixin(BitIsOn!("bits", "XI_HierarchyChanged"))) {
                 client.errorValue = XI_HierarchyChanged;
                 return BadValue;
             }
@@ -186,14 +186,14 @@ int ProcXISelectEvents(ClientPtr client)
         if (win.parent && evmask.mask_len >= 1) {
             ubyte* bits = cast(ubyte*) &evmask[1];
 
-            if (BitIsOn(bits, XI_RawKeyPress) ||
-                BitIsOn(bits, XI_RawKeyRelease) ||
-                BitIsOn(bits, XI_RawButtonPress) ||
-                BitIsOn(bits, XI_RawButtonRelease) ||
-                BitIsOn(bits, XI_RawMotion) ||
-                BitIsOn(bits, XI_RawTouchBegin) ||
-                BitIsOn(bits, XI_RawTouchUpdate) ||
-                BitIsOn(bits, XI_RawTouchEnd)) {
+            if (mixin(BitIsOn!("bits", "XI_RawKeyPress")) ||
+                mixin(BitIsOn!("bits", "XI_RawKeyRelease")) ||
+                mixin(BitIsOn!("bits", "XI_RawButtonPress")) ||
+                mixin(BitIsOn!("bits", "XI_RawButtonRelease")) ||
+                mixin(BitIsOn!("bits", "XI_RawMotion")) ||
+                mixin(BitIsOn!("bits", "XI_RawTouchBegin")) ||
+                mixin(BitIsOn!("bits", "XI_RawTouchUpdate")) ||
+                mixin(BitIsOn!("bits", "XI_RawTouchEnd"))) {
                 client.errorValue = XI_RawKeyPress;
                 return BadValue;
             }
@@ -203,24 +203,24 @@ int ProcXISelectEvents(ClientPtr client)
             ubyte* bits = cast(ubyte*) &evmask[1];
 
             /* All three touch events must be selected at once */
-            if ((BitIsOn(bits, XI_TouchBegin) ||
-                 BitIsOn(bits, XI_TouchUpdate) ||
-                 BitIsOn(bits, XI_TouchOwnership) ||
-                 BitIsOn(bits, XI_TouchEnd)) &&
-                (!BitIsOn(bits, XI_TouchBegin) ||
-                 !BitIsOn(bits, XI_TouchUpdate) ||
-                 !BitIsOn(bits, XI_TouchEnd))) {
+            if ((mixin(BitIsOn!("bits", "XI_TouchBegin")) ||
+                 mixin(BitIsOn!("bits", "XI_TouchUpdate")) ||
+                 mixin(BitIsOn!("bits", "XI_TouchOwnership")) ||
+                 mixin(BitIsOn!("bits", "XI_TouchEnd"))) &&
+                (!mixin(BitIsOn!("bits", "XI_TouchBegin")) ||
+                 !mixin(BitIsOn!("bits", "XI_TouchUpdate")) ||
+                 !mixin(BitIsOn!("bits", "XI_TouchEnd")))) {
                 client.errorValue = XI_TouchBegin;
                 return BadValue;
             }
 
             /* All three pinch gesture events must be selected at once */
-            if ((BitIsOn(bits, XI_GesturePinchBegin) ||
-                 BitIsOn(bits, XI_GesturePinchUpdate) ||
-                 BitIsOn(bits, XI_GesturePinchEnd)) &&
-                (!BitIsOn(bits, XI_GesturePinchBegin) ||
-                 !BitIsOn(bits, XI_GesturePinchUpdate) ||
-                 !BitIsOn(bits, XI_GesturePinchEnd))) {
+            if ((mixin(BitIsOn!("bits", "XI_GesturePinchBegin")) ||
+                 mixin(BitIsOn!("bits", "XI_GesturePinchUpdate")) ||
+                 mixin(BitIsOn!("bits", "XI_GesturePinchEnd"))) &&
+                (!mixin(BitIsOn!("bits", "XI_GesturePinchBegin")) ||
+                 !mixin(BitIsOn!("bits", "XI_GesturePinchUpdate")) ||
+                 !mixin(BitIsOn!("bits", "XI_GesturePinchEnd")))) {
                 client.errorValue = XI_GesturePinchBegin;
                 return BadValue;
             }
@@ -229,20 +229,20 @@ int ProcXISelectEvents(ClientPtr client)
                that the XI_GestureSwipeEnd is at index 32 which is on the next
                4-byte mask element */
             if (evmask.mask_len == 1 &&
-                (BitIsOn(bits, XI_GestureSwipeBegin) ||
-                 BitIsOn(bits, XI_GestureSwipeUpdate)))
+                (mixin(BitIsOn!("bits", "XI_GestureSwipeBegin")) ||
+                 mixin(BitIsOn!("bits", "XI_GestureSwipeUpdate"))))
             {
                 client.errorValue = XI_GestureSwipeBegin;
                 return BadValue;
             }
 
             if (evmask.mask_len >= 2 &&
-                (BitIsOn(bits, XI_GestureSwipeBegin) ||
-                 BitIsOn(bits, XI_GestureSwipeUpdate) ||
-                 BitIsOn(bits, XI_GestureSwipeEnd)) &&
-                (!BitIsOn(bits, XI_GestureSwipeBegin) ||
-                 !BitIsOn(bits, XI_GestureSwipeUpdate) ||
-                 !BitIsOn(bits, XI_GestureSwipeEnd))) {
+                (mixin(BitIsOn!("bits", "XI_GestureSwipeBegin")) ||
+                 mixin(BitIsOn!("bits", "XI_GestureSwipeUpdate")) ||
+                 mixin(BitIsOn!("bits", "XI_GestureSwipeEnd"))) &&
+                (!mixin(BitIsOn!("bits", "XI_GestureSwipeBegin")) ||
+                 !mixin(BitIsOn!("bits", "XI_GestureSwipeUpdate")) ||
+                 !mixin(BitIsOn!("bits", "XI_GestureSwipeEnd")))) {
                 client.errorValue = XI_GestureSwipeBegin;
                 return BadValue;
             }
@@ -250,7 +250,7 @@ int ProcXISelectEvents(ClientPtr client)
             /* Only one client per window may select for touch or gesture events
              * on the same devices, including master devices.
              * XXX: This breaks if a device goes from floating to attached. */
-            if (BitIsOn(bits, XI_TouchBegin)) {
+            if (mixin(BitIsOn!("bits", "XI_TouchBegin"))) {
                 rc = check_for_touch_selection_conflicts(client,
                                                          win,
                                                          evmask.deviceid,
@@ -258,7 +258,7 @@ int ProcXISelectEvents(ClientPtr client)
                 if (rc != Success)
                     return rc;
             }
-            if (BitIsOn(bits, XI_GesturePinchBegin)) {
+            if (mixin(BitIsOn!("bits", "XI_GesturePinchBegin"))) {
                 rc = check_for_touch_selection_conflicts(client,
                                                          win,
                                                          evmask.deviceid,
@@ -266,7 +266,7 @@ int ProcXISelectEvents(ClientPtr client)
                 if (rc != Success)
                     return rc;
             }
-            if (BitIsOn(bits, XI_GestureSwipeBegin)) {
+            if (mixin(BitIsOn!("bits", "XI_GestureSwipeBegin"))) {
                 rc = check_for_touch_selection_conflicts(client,
                                                          win,
                                                          evmask.deviceid,
@@ -336,7 +336,7 @@ int ProcXIGetSelectedEvents(ClientPtr client)
 
     masks = mixin(wOtherInputMasks!("win"));
     if (masks) {
-        for (others = wOtherInputMasks(win).inputClients; others;
+        for (others = mixin(wOtherInputMasks!("win")).inputClients; others;
              others = others.next) {
             if (mixin(SameClient!("others", "client"))) {
                 break;

@@ -167,7 +167,7 @@ Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86L
         return FALSE;
     }
 
-    if (((pScreenPriv = calloc(1, CMapScreenRec.sizeof)) == 0)) {
+    if (((pScreenPriv = cast(CMapScreenRec*) calloc(1, CMapScreenRec.sizeof)) == 0)) {
         free(gamma);
         free(indices);
         return FALSE;
@@ -262,7 +262,7 @@ private Bool CMapAllocateColormapPrivate(ColormapPtr pmap)
     if (((colors = cast(LOCO*) calloc(numColors, LOCO.sizeof)) == 0))
         return FALSE;
 
-    if (((pColPriv = calloc(1, CMapColormapRec.sizeof)) == 0)) {
+    if (((pColPriv = cast(CMapColormapRec*) calloc(1, CMapColormapRec.sizeof)) == 0)) {
         free(colors);
         return FALSE;
     }
@@ -275,7 +275,7 @@ private Bool CMapAllocateColormapPrivate(ColormapPtr pmap)
     pColPriv.overscan = -1;
 
     /* add map to list */
-    CMapLinkPtr pLink = calloc(1, CMapLink.sizeof);
+    CMapLinkPtr pLink = cast(CMapLink*) calloc(1, CMapLink.sizeof);
     if (pLink) {
         pLink.cmap = pmap;
         pLink.next = pScreenPriv.maps;

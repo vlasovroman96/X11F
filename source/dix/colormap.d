@@ -823,7 +823,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
     default: break;}
 
     int npix = nump[client];
-    Pixel* ppix = reallocarray(pixp[client], npix + 1, Pixel.sizeof);
+    Pixel* ppix = cast(Pixel*) reallocarray(pixp[client], npix + 1, Pixel.sizeof);
     if (!ppix) {
         pent.refcnt--;
         if (!pent.fShared)
@@ -1004,7 +1004,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
     if ((pmap.numPixelsRed[client] == 1) &&
         (dixClientIdForXID(pmap.mid) != client) && !(pmap.flags & CM_BeingCreated)) {
 
-        colorResource* pcr = cast(colorResource*) calloc(1, colorResource.sizeof);
+        colorResource* pcr = cast(colorResource*) cast(colorResource*) calloc(1, colorResource.sizeof);
         if (!pcr) {
             cast(void) FreeColors(pmap, client, 1, pPix, cast(Pixel) 0);
             return BadAlloc;
@@ -1404,7 +1404,7 @@ int AllocColorCells(ClientPtr pClient, ColormapPtr pmap, int colors, int planes,
 
     colorResource* pcr = cast(colorResource*) null;
     if (!oldcount && (dixClientIdForXID(pmap.mid) != client)) {
-        pcr = cast(colorResource*) calloc(1, colorResource.sizeof);
+        pcr = cast(colorResource*) cast(colorResource*) calloc(1, colorResource.sizeof);
         if (!pcr)
             return BadAlloc;
     }
@@ -1465,7 +1465,7 @@ int AllocColorPlanes(int client, ColormapPtr pmap, int colors, int r, int g, int
     if (class_ == DirectColor)
         oldcount += pmap.numPixelsGreen[client] + pmap.numPixelsBlue[client];
     if (!oldcount && (dixClientIdForXID(pmap.mid) != client)) {
-        pcr = cast(colorResource*) calloc(1, colorResource.sizeof);
+        pcr = cast(colorResource*) cast(colorResource*) calloc(1, colorResource.sizeof);
         if (!pcr)
             return BadAlloc;
     }
@@ -1852,7 +1852,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
 
     SHAREDCOLOR** ppshared = psharedList;
     for (int z = npixShared; --z >= 0;) {
-        if (((ppshared[z] = calloc(1, SHAREDCOLOR.sizeof)) == 0)) {
+        if (((ppshared[z] = cast(SHAREDCOLOR*) calloc(1, SHAREDCOLOR.sizeof)) == 0)) {
             for (z++; z < npixShared; z++)
                 free(ppshared[z]);
             free(psharedList);
@@ -2102,7 +2102,7 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
                     npix++;
                 }
             }
-            pptr = reallocarray(ppixClient, npixNew, Pixel.sizeof);
+            pptr = cast(Pixel*) reallocarray(ppixClient, npixNew, Pixel.sizeof);
             if (pptr)
                 ppixClient = pptr;
             npixClient = npixNew;
@@ -2412,7 +2412,7 @@ Bool ResizeVisualArray(ScreenPtr pScreen, int new_visual_count, DepthPtr depth)
     depth.vids = vids;
 
     int numVisuals = pScreen.numVisuals + new_visual_count;
-    VisualPtr visuals = reallocarray(pScreen.visuals, numVisuals, VisualRec.sizeof);
+    VisualPtr visuals = cast(VisualRec*) reallocarray(pScreen.visuals, numVisuals, VisualRec.sizeof);
     if (!visuals) {
         return FALSE;
     }

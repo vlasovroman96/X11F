@@ -1425,7 +1425,7 @@ private int get_mcast_options(int argc, char** argv, int i)
         else {
             multicastinfo* mcastinfo = void, mcl = void;
 
-            mcastinfo = cast(multicastinfo*) calloc(1, multicastinfo.sizeof);
+            mcastinfo = cast(multicastinfo*) cast(multicastinfo*) calloc(1, multicastinfo.sizeof);
             if (!mcastinfo)
                 FatalError("Xserver: failed to allocate mcastinfo\n");
 

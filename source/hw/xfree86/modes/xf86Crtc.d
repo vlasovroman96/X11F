@@ -92,7 +92,7 @@ xf86CrtcPtr xf86CrtcCreate(ScrnInfoPtr scrn, const(xf86CrtcFuncsRec)* funcs)
     xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
     xf86CrtcPtr crtc = void; xf86CrtcPtr* crtcs = void;
 
-    crtc = calloc(1, xf86CrtcRec.sizeof);
+    crtc = cast(xf86CrtcRec*) calloc(1, xf86CrtcRec.sizeof);
     if (!crtc)
         return null;
     crtc.version_ = XF86_CRTC_VERSION;

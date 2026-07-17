@@ -1,4 +1,4 @@
-module chgptr;
+module Xi.chgptr;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -62,12 +62,12 @@ import dix.request_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import XIstubs;
+import Xi.XIstubs;
 import include.windowstr;          /* window structure  */
 import include.scrnintstr;         /* screen structure  */
 import include.exevents;
 import Xi.exglobals;
-import chgptr;
+import Xi.chgptr;
 
 /***********************************************************************
  *

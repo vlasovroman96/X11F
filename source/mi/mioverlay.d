@@ -129,7 +129,7 @@ Bool miInitOverlay(ScreenPtr pScreen, miOverlayInOverlayFunc inOverlayFunc, miOv
     if (!dixRegisterPrivateKey(&miOverlayScreenKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    if (((pScreenPriv = calloc(1, miOverlayScreenRec.sizeof)) == 0))
+    if (((pScreenPriv = cast(miOverlayScreenRec*) calloc(1, miOverlayScreenRec.sizeof)) == 0))
         return FALSE;
 
     dixSetPrivate(&pScreen.devPrivates, miOverlayScreenKey, pScreenPriv);
@@ -194,7 +194,7 @@ private Bool miOverlayCreateWindow(WindowPtr pWin)
     pWinPriv.tree = null;
 
     if (!pWin.parent || !((*pScreenPriv.InOverlay) (pWin))) {
-        if (((pTree = cast(miOverlayTreePtr) calloc(1, miOverlayTreeRec.sizeof)) == 0))
+        if (((pTree = cast(miOverlayTreePtr) cast(miOverlayTreeRec*) calloc(1, miOverlayTreeRec.sizeof)) == 0))
             return FALSE;
     }
 

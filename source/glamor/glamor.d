@@ -101,7 +101,7 @@ void glamor_set_pixmap_type(PixmapPtr pixmap, glamor_pixmap_type_t type)
     glamor_pixmap_private* pixmap_priv = void;
 
     pixmap_priv = glamor_get_pixmap_private(pixmap);
-    BUG_RETURN(!pixmap_priv);
+    mixin(BUG_RETURN!("!pixmap_priv"));
     pixmap_priv.type = type;
     glamor_init_pixmap_private_small(pixmap, pixmap_priv);
 }
@@ -116,7 +116,7 @@ Bool glamor_set_pixmap_texture(PixmapPtr pixmap, uint tex)
     glamor_priv = glamor_get_screen_private(screen);
     pixmap_priv = glamor_get_pixmap_private(pixmap);
 
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
     if (pixmap_priv.fbo) {
         fbo = glamor_pixmap_detach_fbo(pixmap_priv);
@@ -148,7 +148,7 @@ void glamor_clear_pixmap(PixmapPtr pixmap)
     pixmap_priv = glamor_get_pixmap_private(pixmap);
     pixmap_format = glamor_format_for_pixmap(pixmap);
 
-    BUG_RETURN(!pixmap_priv);
+    mixin(BUG_RETURN!("!pixmap_priv"));
     assert(pixmap_priv.fbo != null);
 
     glamor_pixmap_clear_fbo(glamor_priv, pixmap_priv.fbo, pixmap_format);
@@ -230,7 +230,7 @@ PixmapPtr glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint u
         return NullPixmap;
 
     pixmap_priv = glamor_get_pixmap_private(pixmap);
-    BUG_RETURN_VAL(!pixmap_priv, null);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "null"));
 
     pixmap_priv.is_cbcr = (GLAMOR_CREATE_FORMAT_CBCR & usage) == GLAMOR_CREATE_FORMAT_CBCR;
 
@@ -419,7 +419,7 @@ const(glamor_format)* glamor_format_for_pixmap(PixmapPtr pixmap)
     glamor_screen_private* glamor_priv = glamor_get_screen_private(pScreen);
     glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(pixmap);
 
-    BUG_RETURN_VAL(!pixmap_priv, null);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "null"));
 
     if (pixmap_priv.is_cbcr)
         return &glamor_priv.cbcr_format;
@@ -1023,7 +1023,7 @@ version (GLAMOR_HAS_GBM) {
     if (!glamor_priv.dri3_enabled)
         return 0;
 
-    BUG_RETURN_VAL(!pixmap_priv, 0);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "0"));
 
     switch (pixmap_priv.type) {
     case GLAMOR_TEXTURE_DRM:
@@ -1094,7 +1094,7 @@ int glamor_name_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* size)
 {
     glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(pixmap);
 
-    BUG_RETURN_VAL(!pixmap_priv, -1);
+    mixin(BUG_RETURN_VAL!("!pixmap_priv", "-1"));
 
     switch (pixmap_priv.type) {
     case GLAMOR_TEXTURE_DRM:

@@ -148,7 +148,7 @@ Bool DGAInit(ScreenPtr pScreen, DGAFunctionPtr funcs, DGAModePtr modes, int num)
     pScreenPriv = mixin(DGA_GET_SCREEN_PRIV!(`pScreen`));
 
     if (!pScreenPriv) {
-        if (((pScreenPriv = calloc(1, DGAScreenRec.sizeof)) == 0))
+        if (((pScreenPriv = cast(DGAScreenRec*) calloc(1, DGAScreenRec.sizeof)) == 0))
             return FALSE;
         dixSetPrivate(&pScreen.devPrivates, &DGAScreenKeyRec, pScreenPriv);
         dixScreenHookClose(pScreen, DGACloseScreen);
@@ -395,7 +395,7 @@ int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
     else
         return BadValue;
 
-    if (((device = calloc(1, DGADeviceRec.sizeof)) == 0))
+    if (((device = cast(DGADeviceRec*) calloc(1, DGADeviceRec.sizeof)) == 0))
         return BadAlloc;
 
     if (!pScreenPriv.current) {
@@ -633,7 +633,7 @@ private int DGACreateColormap(int index, ClientPtr client, int id, int mode, int
 
     pMode = &(pScreenPriv.modes[mode - 1]);
 
-    if (((pVisual = calloc(1, VisualRec.sizeof)) == 0))
+    if (((pVisual = cast(VisualRec*) calloc(1, VisualRec.sizeof)) == 0))
         return BadAlloc;
 
     pVisual.vid = dixAllocServerXID();
@@ -667,7 +667,7 @@ private int DGACreateColormap(int index, ClientPtr client, int id, int mode, int
         pVisual.offsetBlue = BitsClear(pVisual.blueMask);
     default: break;}
 
-    if (((fvlp = cast(FakedVisualList*) calloc(1, FakedVisualList.sizeof)) == 0)) {
+    if (((fvlp = cast(FakedVisualList*) cast(FakedVisualList*) calloc(1, FakedVisualList.sizeof)) == 0)) {
         free(pVisual);
         return BadAlloc;
     }
@@ -1549,7 +1549,7 @@ private int ProcXDGASetClientVersion(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGASetClientVersionReq);
     if ((pPriv = mixin(DGA_GETPRIV!(`client`))) == null) {
-        pPriv = calloc(1, DGAPrivRec.sizeof);
+        pPriv = cast(DGAPrivRec*) calloc(1, DGAPrivRec.sizeof);
         /* XXX Need to look into freeing this */
         if (!pPriv)
             return BadAlloc;

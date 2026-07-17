@@ -1,4 +1,4 @@
-module xichangehierarchy;
+module Xi.xichangehierarchy;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -58,7 +58,7 @@ import include.misc;
 import Xext.xace;
 import Xi.xiquerydevice;      /* for GetDeviceUse */
 import include.xkbsrv;
-import xichangehierarchy;
+import Xi.xichangehierarchy;
 import Xi.xibarriers;
 
 /**
@@ -251,26 +251,26 @@ private int remove_master(ClientPtr client, xXIRemoveMasterInfo* r, int* flags)
 
     if ((ptr = GetMaster(dev, MASTER_POINTER)) == null)
         ptr = find_disabled_master(MASTER_POINTER);
-    BUG_RETURN_VAL(ptr == null, BadDevice);
+    mixin(BUG_RETURN_VAL!("ptr == null", "BadDevice"));
     rc = dixLookupDevice(&ptr, ptr.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;
 
     if ((keybd = GetMaster(dev, MASTER_KEYBOARD)) == null)
         keybd = find_disabled_master(MASTER_KEYBOARD);
-    BUG_RETURN_VAL(keybd == null, BadDevice);
+    mixin(BUG_RETURN_VAL!("keybd == null", "BadDevice"));
     rc = dixLookupDevice(&keybd, keybd.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;
 
     XTestptr = GetXTestDevice(ptr);
-    BUG_RETURN_VAL(XTestptr == null, BadDevice);
+    mixin(BUG_RETURN_VAL!("XTestptr == null", "BadDevice"));
     rc = dixLookupDevice(&XTestptr, XTestptr.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;
 
     XTestkeybd = GetXTestDevice(keybd);
-    BUG_RETURN_VAL(XTestkeybd == null, BadDevice);
+    mixin(BUG_RETURN_VAL!("XTestkeybd == null", "BadDevice"));
     rc = dixLookupDevice(&XTestkeybd, XTestkeybd.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;

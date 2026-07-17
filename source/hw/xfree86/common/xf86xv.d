@@ -143,7 +143,7 @@ int xf86XVListGenericAdaptors(ScrnInfoPtr pScrn, XF86VideoAdaptorPtr** adaptors)
         n = (*GenDrivers[i]) (pScrn, &DrivAdap);
         if (0 == n)
             continue;
-        new_ = reallocarray(*adaptors, num + n, XF86VideoAdaptorPtr.sizeof);
+        new_ = cast(XF86VideoAdaptorPtr*) reallocarray(*adaptors, num + n, XF86VideoAdaptorPtr.sizeof);
         if (null == new_)
             continue;
         *adaptors = new_;
@@ -195,7 +195,7 @@ XF86OffscreenImagePtr xf86XVQueryOffscreenImages(ScreenPtr pScreen, int* num)
 
 XF86VideoAdaptorPtr xf86XVAllocateVideoAdaptorRec(ScrnInfoPtr pScrn)
 {
-    return calloc(1, XF86VideoAdaptorRec.sizeof);
+    return cast(XF86VideoAdaptorRec*) calloc(1, XF86VideoAdaptorRec.sizeof);
 }
 
 void xf86XVFreeVideoAdaptorRec(XF86VideoAdaptorPtr ptr)
@@ -221,7 +221,7 @@ Bool xf86XVScreenInit(ScreenPtr pScreen, XF86VideoAdaptorPtr* adaptors, int num)
 
     PortResource = XvGetRTPort();
 
-    ScreenPriv = calloc(1, XF86XVScreenRec.sizeof);
+    ScreenPriv = cast(XF86XVScreenRec*) calloc(1, XF86XVScreenRec.sizeof);
     dixSetPrivate(&pScreen.devPrivates, &XF86XVScreenPrivateKey, ScreenPriv);
 
     if (!ScreenPriv)
@@ -433,7 +433,7 @@ private Bool xf86XVInitAdaptors(ScreenPtr pScreen, XF86VideoAdaptorPtr* infoPtr,
             continue;
         }
 
-        if (((adaptorPriv = calloc(1, XvAdaptorRecPrivate.sizeof)) == 0)) {
+        if (((adaptorPriv = cast(XvAdaptorRecPrivate*) calloc(1, XvAdaptorRecPrivate.sizeof)) == 0)) {
             xf86XVFreeAdaptor(pa);
             continue;
         }
@@ -462,7 +462,7 @@ private Bool xf86XVInitAdaptors(ScreenPtr pScreen, XF86VideoAdaptorPtr* infoPtr,
             if (((pp.id = dixAllocServerXID()) == 0))
                 continue;
 
-            if (((portPriv = calloc(1, XvPortRecPrivate.sizeof)) == 0))
+            if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) == 0))
                 continue;
 
             if (!AddResource(pp.id, PortResource, pp)) {
@@ -842,7 +842,7 @@ private int xf86XVEnlistPortInWindow(WindowPtr pWin, XvPortRecPrivatePtr portPri
     }
 
     if (!winPriv) {
-        winPriv = calloc(1, XF86XVWindowRec.sizeof);
+        winPriv = cast(XF86XVWindowRec*) calloc(1, XF86XVWindowRec.sizeof);
         if (!winPriv)
             return BadAlloc;
         winPriv.PortRec = portPriv;

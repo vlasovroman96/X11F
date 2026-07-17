@@ -1,4 +1,4 @@
-module setdval;
+module Xi.setdval;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -65,7 +65,7 @@ import dix.resource_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import XIstubs;
+import Xi.XIstubs;
 
 /***********************************************************************
  *

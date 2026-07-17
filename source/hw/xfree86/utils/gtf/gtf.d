@@ -289,7 +289,7 @@ mode* vert_refresh(int h_pixels, int v_lines, float freq, int interlaced, int ma
     float h_front_porch = void;
     float v_odd_front_porch_lines = void;
 
-    mode* m = cast(mode*) calloc(1, mode.sizeof);
+    mode* m = cast(mode*) cast(mode*) calloc(1, mode.sizeof);
     if (!m)
         return null;
 
@@ -599,7 +599,7 @@ options* parse_command_line(int argc, char** argv)
 {
     int n = void;
 
-    options* o = cast(options*) calloc(1, options.sizeof);
+    options* o = cast(options*) cast(options*) calloc(1, options.sizeof);
     if (!o)
         goto bad_option;
 

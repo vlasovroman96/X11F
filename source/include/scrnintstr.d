@@ -69,7 +69,7 @@ struct PixmapFormatRec {
 
 // struct VisualRec {
 //     VisualID vid;
-//     short class_;
+//     short
 //     short bitsPerRGBValue;
 //     short ColormapEntries;
 //     short nplanes;              /* = log2 (ColormapEntries). This does not

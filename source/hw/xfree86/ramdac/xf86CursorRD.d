@@ -66,7 +66,7 @@ Bool xf86InitCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr)
     if (!dixRegisterPrivateKey(&xf86CursorScreenKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    ScreenPriv = calloc(1, xf86CursorScreenRec.sizeof);
+    ScreenPriv = cast(xf86CursorScreenRec*) calloc(1, xf86CursorScreenRec.sizeof);
     if (!ScreenPriv)
         return FALSE;
 
@@ -448,7 +448,7 @@ CursorPtr xf86CurrentCursor(ScreenPtr pScreen)
 
 xf86CursorInfoPtr xf86CreateCursorInfoRec()
 {
-    return calloc(1, xf86CursorInfoRec.sizeof);
+    return cast(xf86CursorInfoRec*) calloc(1, xf86CursorInfoRec.sizeof);
 }
 
 void xf86DestroyCursorInfoRec(xf86CursorInfoPtr infoPtr)

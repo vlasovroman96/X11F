@@ -1617,7 +1617,7 @@ private int miGetArcPts(SppArcPtr parc, int cpt, SppPointPtr* ppPts)
     count++;
 
     cdt = 2 * miDcos(dt);
-    if (((poly = reallocarray(*ppPts, cpt + count, SppPointRec.sizeof)) == 0))
+    if (((poly = cast(SppPointRec*) reallocarray(*ppPts, cpt + count, SppPointRec.sizeof)) == 0))
         return 0;
     *ppPts = poly;
 
@@ -2924,7 +2924,7 @@ private finalSpan* realAllocSpan()
     finalSpan* span = void;
     int i = void;
 
-    finalSpanChunk* newChunk = cast(finalSpanChunk*) calloc(1, finalSpanChunk.sizeof);
+    finalSpanChunk* newChunk = cast(finalSpanChunk*) cast(finalSpanChunk*) calloc(1, finalSpanChunk.sizeof);
     if (!newChunk)
         return cast(finalSpan*) null;
     newChunk.next = chunks;

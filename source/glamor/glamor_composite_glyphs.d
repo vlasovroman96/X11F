@@ -124,7 +124,7 @@ pragma(inline, true) private void glamor_copy_glyph(PixmapPtr glyph_pixmap, Draw
 
 private Bool glamor_glyph_atlas_init(ScreenPtr screen, glamor_glyph_atlas* atlas)
 {
-    BUG_RETURN_VAL(!atlas, FALSE);
+    mixin(BUG_RETURN_VAL!("!atlas", "FALSE"));
 
     glamor_screen_private* glamor_priv = glamor_get_screen_private(screen);
     PictFormatPtr format = atlas.format;
@@ -282,7 +282,7 @@ private void glamor_glyphs_flush(CARD8 op, PicturePtr src, PicturePtr dst, glamo
 
         glUniform1i(prog.atlas_uniform, 1);
 
-        BUG_RETURN(!pixmap_priv);
+        mixin(BUG_RETURN!("!pixmap_priv"));
 
         glamor_pixmap_loop(pixmap_priv, box_index); {
             BoxPtr box = RegionRects(dst.pCompositeClip);
@@ -437,7 +437,7 @@ void glamor_composite_glyphs(CARD8 op, PicturePtr src, PicturePtr dst, PictForma
 
                     /* Glyph not cached in current atlas?
                      */
-                    BUG_RETURN(!glyph_atlas);
+                    mixin(BUG_RETURN!("!glyph_atlas"));
                     if (_X_UNLIKELY(glyph_priv.serial != glyph_atlas.serial)) {
                         if (!glamor_glyph_can_add(glyph_atlas, glyph_atlas_dim, glyph_draw)) {
                             if (glyphs_queued) {

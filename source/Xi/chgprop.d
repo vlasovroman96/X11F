@@ -1,4 +1,4 @@
-module chgprop;
+module Xi.chgprop;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -68,7 +68,7 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;
 import include.exevents;
 import Xi.exglobals;
-import grabdev;
+import Xi.grabdev;
 import dix.dixutils;
 import externs.X11.extensions.XI;
 

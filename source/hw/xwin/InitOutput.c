@@ -141,8 +141,8 @@ void XwinExtensionInit(void)
 #endif
 
     /* need this to prevent compiler warning */
-    if (ARRAY_SIZE(xwinExtensions) > 0)
-        LoadExtensionList(xwinExtensions, ARRAY_SIZE(xwinExtensions), TRUE);
+    if (mixin(ARRAY_SIZE!("xwinExtensions")) > 0)
+        LoadExtensionList(xwinExtensions, mixin(ARRAY_SIZE!("xwinExtensions")), TRUE);
 }
 
 /*
@@ -900,10 +900,10 @@ InitOutput(int argc, char *argv[])
     screenInfo.bitmapScanlinePad = BITMAP_SCANLINE_PAD;
     screenInfo.bitmapScanlineUnit = BITMAP_SCANLINE_UNIT;
     screenInfo.bitmapBitOrder = BITMAP_BIT_ORDER;
-    screenInfo.numPixmapFormats = ARRAY_SIZE(g_PixmapFormats);
+    screenInfo.numPixmapFormats = mixin(ARRAY_SIZE!("g_PixmapFormats"));
 
     /* Describe how we want common pixmap formats padded */
-    for (i = 0; i < ARRAY_SIZE(g_PixmapFormats); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("g_PixmapFormats")); i++) {
         screenInfo.formats[i] = g_PixmapFormats[i];
     }
 

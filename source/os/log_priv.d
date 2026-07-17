@@ -41,13 +41,14 @@ void LogSetDisplay();
  */
 void LogClose(ExitCode error);
 
-version (DEBUG) {
-/**
- * @brief log debug messages (like errors) if symbol DEBUG is defined
- */
-enum DebugF = ErrorF;
-} else {
-//#define DebugF(...)             /* */
+version (DEBUG)
+{
+    alias DebugF = ErrorF;
+}
+else
+{
+    extern(C) @nogc nothrow
+    void DebugF(const(char)* fmt, ...) {}
 }
 
 /**

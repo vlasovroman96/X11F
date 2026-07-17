@@ -673,8 +673,8 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
     ValuatorClassPtr v = void;
     int nval = 0, nkeys = 0, nbuttons = 0, first = 0;
 
-    if (!(wOtherInputMasks(win)) ||
-        !(wOtherInputMasks(win).inputEvents[dev.id] & DeviceStateNotifyMask))
+    if (!(mixin(wOtherInputMasks!("win"))) ||
+        !(mixin(wOtherInputMasks!("win")).inputEvents[dev.id] & DeviceStateNotifyMask))
         return;
 
     if ((b = dev.button) != null) {
@@ -694,7 +694,7 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
         evcount += ((nval - 3) + 6)/6;
     }
 
-    BUG_RETURN(evcount > ARRAY_SIZE(sev.ptr));
+    mixin(BUG_RETURN!("evcount > mixin(ARRAY_SIZE!(`sev.ptr`))"));
 
     FixDeviceStateNotify(dev, ev, k, b, v, first);
 
@@ -743,7 +743,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
     len = (cast(xXIFocusInEvent) + btlen * 4).sizeof;
 
     xXIFocusInEvent* xi2event = cast(xXIFocusInEvent*) calloc(1, len);
-    BUG_RETURN(xi2event == null);
+    mixin(BUG_RETURN!("xi2event == null"));
 
     xi2event.type = GenericEvent;
     xi2event.extension = EXTENSION_MAJOR_XINPUT;
@@ -759,7 +759,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
     xi2event.root_y = double_to_fp1616(mouse.spriteInfo.sprite.hot.y);
 
     for (int i = 0; mouse && mouse.button && i < mouse.button.numButtons; i++)
-        if (BitIsOn(mouse.button.down, i))
+        if (mixin(BitIsOn!("mouse.button.down", "i")))
             SetBit(&xi2event[1], mouse.button.map[i]);
 
     if (dev.key) {

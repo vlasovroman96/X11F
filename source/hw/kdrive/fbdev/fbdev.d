@@ -359,7 +359,7 @@ Bool fbdevScreenInit(KdScreenInfo* screen)
 {
     FbdevScrPriv* scrpriv = void;
 
-    scrpriv = cast(FbdevScrPriv*) calloc(1, FbdevScrPriv.sizeof);
+    scrpriv = cast(FbdevScrPriv*) cast(FbdevScrPriv*) calloc(1, FbdevScrPriv.sizeof);
     if (!scrpriv)
         return FALSE;
     screen.driver = scrpriv;

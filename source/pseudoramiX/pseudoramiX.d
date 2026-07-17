@@ -51,7 +51,7 @@ import include.window;
 ////import externs.X11.extensions.panoramiXproto;
 import include.globals;
 
-// enum TRACE = LogMessageVerb(X_NONE, 10, "TRACE " ~ __FILE__ ~":%s", __func__);
+// enum TRACE = LogMessageVerb(X_NONE, 10, "TRACE " ~ __FILE__ ~":%s", __FUNCTION__.ptr);
 // enum string DEBUG_LOG(__VA_ARGS__) = `LogMessageVerb(X_NONE, 3, `~__VA_ARGS__~`);`;
 
 Bool noPseudoramiXExtension = FALSE;

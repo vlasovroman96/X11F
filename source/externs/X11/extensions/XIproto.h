@@ -779,7 +779,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8   c_class;
 #else
-    CARD8   class;
+    CARD8 class_; 
 #endif
     CARD8   id;
     CARD16  length;
@@ -798,7 +798,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8   c_class;
 #else
-    CARD8   class;
+    CARD8  class_;
 #endif
     CARD8   id;
     CARD16  length;
@@ -812,7 +812,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;	/* feedback class id		*/
 #else
-    CARD8	class;		/* feedback class id		*/
+    CARD8	class_;		/* feedback class id		*/
 #endif
     CARD8	id;
     CARD16	length;		/* feedback length		*/
@@ -825,7 +825,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;	/* feedback class id		*/
 #else
-    CARD8	class;		/* feedback class id		*/
+    CARD8	class_;		/* feedback class id		*/
 #endif
     CARD8	id;
     CARD16	length;		/* feedback length		*/
@@ -837,7 +837,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;	/* feedback class id		*/
 #else
-    CARD8	class;		/* feedback class id		*/
+    CARD8	class_;		/* feedback class id		*/
 #endif
     CARD8	id;
     CARD16	length;		/* feedback length		*/
@@ -851,7 +851,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;	/* feedback class id		*/
 #else
-    CARD8	class;		/* feedback class id		*/
+    CARD8	class_;		/* feedback class id		*/
 #endif
     CARD8	id;
     CARD16	length;		/* feedback length		*/
@@ -889,7 +889,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;	/* feedback class id		*/
 #else
-    CARD8	class;		/* feedback class id		*/
+    CARD8	class_;		/* feedback class id		*/
 #endif
     CARD8	id;		/* feedback length		*/
     CARD16	length;		/* feedback length		*/
@@ -921,7 +921,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;	/* feedback class id		*/
 #else
-    CARD8	class;		/* feedback class id		*/
+    CARD8	class_;		/* feedback class id		*/
 #endif
     CARD8	id;		/* feedback id		*/
     CARD16	length;		/* feedback length		*/

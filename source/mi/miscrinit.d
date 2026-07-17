@@ -191,7 +191,7 @@ private Bool miScreenDevPrivateInit(ScreenPtr pScreen, int width, void* pbits, i
      * to the screen, until CreateScreenResources can put them in the
      * screen pixmap.
      */
-    miScreenInitParmsPtr pScrInitParms = calloc(1, miScreenInitParmsRec.sizeof);
+    miScreenInitParmsPtr pScrInitParms = cast(miScreenInitParmsRec*) calloc(1, miScreenInitParmsRec.sizeof);
     if (!pScrInitParms)
         return FALSE;
     pScrInitParms.pbits = pbits;

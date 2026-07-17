@@ -129,7 +129,7 @@ enum string winDamageRef(string pWindow) = `
 
 // #if DAMAGE_DEBUG_ENABLE
 // private void _damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool clip, int subWindowMode, const(char)* where);
-// enum string damageRegionAppend(string d,string r,string c,string m) = `_damageRegionAppend(` ~ d ~ `,` ~ r ~ `,` ~ c ~ `,` ~ m ~ `,__func__)`;
+// enum string damageRegionAppend(string d,string r,string c,string m) = `_damageRegionAppend(` ~ d ~ `,` ~ r ~ `,` ~ c ~ `,` ~ m ~ `,__FUNCTION__.ptr)`;
 // } else {
 private void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool clip, int subWindowMode)
 // #endif
@@ -296,7 +296,7 @@ private void damageRegionProcessPending(DrawablePtr pDrawable)
 }
 
 // #if DAMAGE_DEBUG_ENABLE
-// enum string damageDamageBox(string d,string b,string m) = `_damageDamageBox(` ~ d ~ `,` ~ b ~ `,` ~ m ~ `,__func__)`;
+// enum string damageDamageBox(string d,string b,string m) = `_damageDamageBox(` ~ d ~ `,` ~ b ~ `,` ~ m ~ `,__FUNCTION__.ptr)`;
 // private void _damageDamageBox(DrawablePtr pDrawable, BoxPtr pBox, int subWindowMode, const(char)* where);
 // } else {
 private void damageDamageBox(DrawablePtr pDrawable, BoxPtr pBox, int subWindowMode)
@@ -1551,7 +1551,7 @@ Bool DamageSetup(ScreenPtr pScreen)
     if (!dixRegisterPrivateKey(&damageWinPrivateKeyRec, PRIVATE_WINDOW, 0))
         return FALSE;
 
-    DamageScrPrivPtr pScrPriv = calloc(1, DamageScrPrivRec.sizeof);
+    DamageScrPrivPtr pScrPriv = cast(DamageScrPrivRec*) calloc(1, DamageScrPrivRec.sizeof);
     if (!pScrPriv)
         return FALSE;
 
@@ -1582,7 +1582,7 @@ DamagePtr DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDe
     damageScrPriv(pScreen);
     DamagePtr pDamage = void;
 
-    pDamage = calloc(1, DamageRec.sizeof);
+    pDamage = cast(DamageRec*) calloc(1, DamageRec.sizeof);
     if (!pDamage)
         return 0;
     pDamage.pNext = 0;

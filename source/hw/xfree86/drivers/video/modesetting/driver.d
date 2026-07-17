@@ -774,7 +774,7 @@ private void ms_tearfree_update_damages(ScreenPtr pScreen)
         RegionIntersect(&region, &region, dirty);
 
         if (trf.buf[0].px) {
-            for (i = 0; i < ARRAY_SIZE(trf.buf); i++)
+            for (i = 0; i < mixin(ARRAY_SIZE!("trf.buf")); i++)
                 RegionUnion(&trf.buf[i].dmg, &trf.buf[i].dmg, &region);
         } else {
             /* Just notify the kernel of the damages if TearFree isn't used */
@@ -1399,7 +1399,7 @@ private Bool PreInit(ScrnInfoPtr pScrn, int flags)
 
     /* Process the options */
     xf86CollectOptions(pScrn, null);
-    if (((ms.drmmode.Options = calloc(1, Options.sizeof)) == 0))
+    if (((ms.drmmode.Options = cast(Options*) calloc(1, Options.sizeof)) == 0))
         return FALSE;
     memcpy(ms.drmmode.Options, Options.ptr, Options.sizeof);
     xf86ProcessOptions(pScrn.scrnIndex, pScrn.options, ms.drmmode.Options);

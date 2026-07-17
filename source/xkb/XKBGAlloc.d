@@ -456,7 +456,7 @@ Status XkbAllocGeometry(XkbDescPtr xkb, XkbGeometrySizesPtr sizes)
     Status rtrn = void;
 
     if (xkb.geom == null) {
-        xkb.geom = calloc(1, XkbGeometryRec.sizeof);
+        xkb.geom = cast(XkbGeometryRec*) calloc(1, XkbGeometryRec.sizeof);
         if (!xkb.geom)
             return BadAlloc;
     }

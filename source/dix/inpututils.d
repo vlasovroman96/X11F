@@ -340,7 +340,7 @@ InputAttributes* DuplicateInputAttributes(InputAttributes* attrs)
     if (!attrs)
         return null;
 
-    if (((new_attr = cast(InputAttributes*) calloc(1, InputAttributes.sizeof)) == 0))
+    if (((new_attr = cast(InputAttributes*) cast(InputAttributes*) calloc(1, InputAttributes.sizeof)) == 0))
         goto unwind;
 
     if (attrs.product && ((new_attr.product = strdup(attrs.product)) == 0))
@@ -413,7 +413,7 @@ ValuatorMask* valuator_mask_new(int num_valuators)
     /* alloc a fixed size mask for now and ignore num_valuators. in the
      * flying-car future, when we can dynamically alloc the masks and are
      * not constrained by signals, we can start using num_valuators */
-    ValuatorMask* mask = cast(ValuatorMask*) calloc(1, ValuatorMask.sizeof);
+    ValuatorMask* mask = cast(ValuatorMask*) cast(ValuatorMask*) calloc(1, ValuatorMask.sizeof);
 
     if (mask == null)
         return null;
@@ -472,7 +472,7 @@ int valuator_mask_num_valuators(const(ValuatorMask)* mask)
  */
 int valuator_mask_isset(const(ValuatorMask)* mask, int valuator)
 {
-    return mask.last_bit >= valuator && BitIsOn(mask.mask, valuator);
+    return mask.last_bit >= valuator && mixin(BitIsOn!("mask.mask", "valuator"));
 }
 
 pragma(inline, true) private void _valuator_mask_set_double(ValuatorMask* mask, int valuator, double data)
@@ -708,7 +708,7 @@ int event_get_corestate(DeviceIntPtr mouse, DeviceIntPtr kbd)
 void event_set_state(DeviceIntPtr mouse, DeviceIntPtr kbd, DeviceEvent* event)
 {
     for (int i = 0; mouse && mouse.button && i < mouse.button.numButtons; i++)
-        if (BitIsOn(mouse.button.down, i))
+        if (mixin(BitIsOn!("mouse.button.down", "i")))
             SetBit(event.buttons, mouse.button.map[i]);
 
     if (mouse && mouse.touch && mouse.touch.buttonsDown > 0)
@@ -833,7 +833,7 @@ InputOption* input_option_new(InputOption* list, const(char)* key, const(char)* 
         return null;
 
     if (list) {
-        nt_list_for_each_entry(opt, list, list.next); {
+        mixin(nt_list_for_each_entry!("opt", "list", "list.next")); {
             if (strcmp(input_option_get_key(opt), key) == 0) {
                 input_option_set_value(opt, value);
                 return list;
@@ -841,7 +841,7 @@ InputOption* input_option_new(InputOption* list, const(char)* key, const(char)* 
         }
     }
 
-    opt = cast(InputOption*) calloc(1, InputOption.sizeof);
+    opt = cast(InputOption*) cast(InputOption*) calloc(1, InputOption.sizeof);
     if (!opt)
         return null;
 
@@ -862,7 +862,7 @@ InputOption* input_option_free_element(InputOption* list, const(char)* key)
 {
     InputOption* element = void;
 
-    nt_list_for_each_entry(element, list, list.next); {
+    mixin(nt_list_for_each_entry!("element", "list", "list.next")); {
         if (strcmp(input_option_get_key(element), key) == 0) {
             nt_list_del(element, list, InputOption, list.next);
 
@@ -897,7 +897,7 @@ InputOption* input_option_find(InputOption* list, const(char)* key)
 {
     InputOption* element = void;
 
-    nt_list_for_each_entry(element, list, list.next); {
+    mixin(nt_list_for_each_entry!("element", "list", "list.next")); {
         if (strcmp(input_option_get_key(element), key) == 0)
             return element;
     }
@@ -1035,11 +1035,11 @@ void xi2mask_free(XI2Mask** mask)
  */
 Bool xi2mask_isset_for_device(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type)
 {
-    BUG_WARN(dev.id < 0);
-    BUG_WARN(dev.id >= mask.nmasks);
-    BUG_WARN(bits_to_bytes(event_type + 1) > mask.mask_size);
+    mixin(BUG_WARN!("dev.id < 0"));
+    mixin(BUG_WARN!("dev.id >= mask.nmasks"));
+    mixin(BUG_WARN!("bits_to_bytes(event_type + 1) > mask.mask_size"));
 
-    return BitIsOn(mask.masks[dev.id], event_type);
+    return mixin(BitIsOn!("mask.masks[dev.id]", "event_type"));
 }
 
 /**
@@ -1067,9 +1067,9 @@ Bool xi2mask_isset(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type)
  */
 void xi2mask_set(XI2Mask* mask, int deviceid, int event_type)
 {
-    BUG_WARN(deviceid < 0);
-    BUG_WARN(deviceid >= mask.nmasks);
-    BUG_WARN(bits_to_bytes(event_type + 1) > mask.mask_size);
+    mixin(BUG_WARN!("deviceid < 0"));
+    mixin(BUG_WARN!("deviceid >= mask.nmasks"));
+    mixin(BUG_WARN!("bits_to_bytes(event_type + 1) > mask.mask_size"));
 
     SetBit(mask.masks[deviceid], event_type);
 }
@@ -1080,7 +1080,7 @@ void xi2mask_set(XI2Mask* mask, int deviceid, int event_type)
  */
 void xi2mask_zero(XI2Mask* mask, int deviceid)
 {
-    BUG_WARN(deviceid > 0 && deviceid >= mask.nmasks);
+    mixin(BUG_WARN!("deviceid > 0 && deviceid >= mask.nmasks"));
 
     if (deviceid >= 0)
         memset(mask.masks[deviceid], 0, mask.mask_size);
@@ -1123,8 +1123,8 @@ size_t xi2mask_mask_size(const(XI2Mask)* mask)
  */
 void xi2mask_set_one_mask(XI2Mask* xi2mask, int deviceid, const(ubyte)* mask, size_t mask_size)
 {
-    BUG_WARN(deviceid < 0);
-    BUG_WARN(deviceid >= xi2mask.nmasks);
+    mixin(BUG_WARN!("deviceid < 0"));
+    mixin(BUG_WARN!("deviceid >= xi2mask.nmasks"));
 
     memcpy(xi2mask.masks[deviceid], mask, min(xi2mask.mask_size, mask_size));
 }
@@ -1134,8 +1134,8 @@ void xi2mask_set_one_mask(XI2Mask* xi2mask, int deviceid, const(ubyte)* mask, si
  */
 const(ubyte)* xi2mask_get_one_mask(const(XI2Mask)* mask, int deviceid)
 {
-    BUG_WARN(deviceid < 0);
-    BUG_WARN(deviceid >= mask.nmasks);
+    mixin(BUG_WARN!("deviceid < 0"));
+    mixin(BUG_WARN!("deviceid >= mask.nmasks"));
 
     return mask.masks[deviceid];
 }

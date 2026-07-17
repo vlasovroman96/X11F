@@ -325,12 +325,12 @@ private Bool copyScreen(confScreenPtr oscreen, GDevPtr odev, int i, char* driver
 {
     char* identifier = void;
 
-    confScreenPtr nscreen = calloc(1, confScreenRec.sizeof);
+    confScreenPtr nscreen = cast(confScreenRec*) calloc(1, confScreenRec.sizeof);
     if (!nscreen)
         return FALSE;
     memcpy(nscreen, oscreen, confScreenRec.sizeof);
 
-    GDevPtr cptr = calloc(1, GDevRec.sizeof);
+    GDevPtr cptr = cast(GDevRec*) calloc(1, GDevRec.sizeof);
     if (!cptr) {
         free(nscreen);
         return FALSE;
@@ -371,7 +371,7 @@ GDevPtr autoConfigDevice(GDevPtr preconf_device)
         ptr = preconf_device;
     }
     else {
-        ptr = calloc(1, GDevRec.sizeof);
+        ptr = cast(GDevRec*) calloc(1, GDevRec.sizeof);
         if (!ptr) {
             return null;
         }

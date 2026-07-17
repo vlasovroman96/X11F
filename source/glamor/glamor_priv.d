@@ -491,7 +491,7 @@ pragma(inline, true) private glamor_pixmap_private* glamor_get_pixmap_private(Pi
 pragma(inline, true) private Bool glamor_pixmap_drm_only(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
-    BUG_RETURN_VAL(!priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.type == GLAMOR_DRM_ONLY;
 }
 
@@ -501,7 +501,7 @@ pragma(inline, true) private Bool glamor_pixmap_drm_only(PixmapPtr pixmap)
 pragma(inline, true) private Bool glamor_pixmap_is_memory(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
-    BUG_RETURN_VAL(!priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.type == GLAMOR_MEMORY;
 }
 
@@ -510,13 +510,13 @@ pragma(inline, true) private Bool glamor_pixmap_is_memory(PixmapPtr pixmap)
  */
 pragma(inline, true) private Bool glamor_pixmap_priv_is_large(glamor_pixmap_private* priv)
 {
-    BUG_RETURN_VAL(!priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.block_wcnt > 1 || priv.block_hcnt > 1;
 }
 
 pragma(inline, true) private Bool glamor_pixmap_priv_is_small(glamor_pixmap_private* priv)
 {
-    BUG_RETURN_VAL(!priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.block_wcnt <= 1 && priv.block_hcnt <= 1;
 }
 
@@ -532,14 +532,14 @@ pragma(inline, true) private Bool glamor_pixmap_is_large(PixmapPtr pixmap)
 pragma(inline, true) private Bool glamor_pixmap_has_fbo(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
-    BUG_RETURN_VAL(!priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.gl_fbo == GLAMOR_FBO_NORMAL;
 }
 
 pragma(inline, true) private void glamor_set_pixmap_fbo_current(glamor_pixmap_private* priv, int idx)
 {
     if (glamor_pixmap_priv_is_large(priv)) {
-        BUG_RETURN(!priv);
+        mixin(BUG_RETURN!("!priv"));
         priv.fbo = priv.fbo_array[idx];
         priv.box = priv.box_array[idx];
     }
@@ -561,13 +561,13 @@ pragma(inline, true) private BoxPtr glamor_pixmap_box_at(glamor_pixmap_private* 
 
 pragma(inline, true) private int glamor_pixmap_wcnt(glamor_pixmap_private* priv)
 {
-    BUG_RETURN_VAL(!priv, 0);
+    mixin(BUG_RETURN_VAL!("!priv", "0"));
     return priv.block_wcnt;
 }
 
 pragma(inline, true) private int glamor_pixmap_hcnt(glamor_pixmap_private* priv)
 {
-    BUG_RETURN_VAL(!priv, 0);
+    mixin(BUG_RETURN_VAL!("!priv", "0"));
     return priv.block_hcnt;
 }
 

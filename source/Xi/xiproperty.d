@@ -348,7 +348,7 @@ Atom XIGetKnownProperty(const(char)* name)
     if (!name)
         return None;
 
-    for (i = 0; i < ARRAY_SIZE(dev_properties.ptr); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("dev_properties.ptr")); i++) {
         if (strcmp(name, dev_properties[i].name) == 0) {
             if (dev_properties[i].type == None)
                 dev_properties[i].type = dixAddAtom(dev_properties[i].name);
@@ -363,7 +363,7 @@ void XIResetProperties()
 {
     int i = void;
 
-    for (i = 0; i < ARRAY_SIZE(dev_properties.ptr); i++)
+    for (i = 0; i < mixin(ARRAY_SIZE!("dev_properties.ptr")); i++)
         dev_properties[i].type = None;
 }
 
@@ -496,7 +496,7 @@ c_long XIRegisterPropertyHandler(DeviceIntPtr dev, int function(DeviceIntPtr dev
 {
     XIPropertyHandlerPtr new_handler = void;
 
-    new_handler = calloc(1, XIPropertyHandler.sizeof);
+    new_handler = cast(XIPropertyHandler*) calloc(1, XIPropertyHandler.sizeof);
     if (!new_handler)
         return 0;
 
@@ -533,7 +533,7 @@ void XIUnregisterPropertyHandler(DeviceIntPtr dev, c_long id)
 
 private XIPropertyPtr XICreateDeviceProperty(Atom property)
 {
-    XIPropertyPtr prop = calloc(1, XIPropertyRec.sizeof);
+    XIPropertyPtr prop = cast(XIPropertyRec*) calloc(1, XIPropertyRec.sizeof);
     if (!prop)
         return null;
 

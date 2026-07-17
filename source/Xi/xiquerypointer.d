@@ -1,4 +1,4 @@
-module xiquerypointer;
+module Xi.xiquerypointer;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -146,7 +146,7 @@ int ProcXIQueryPointer(ClientPtr client)
             return BadAlloc;
 
         for (i = 1; i < pDev.button.numButtons; i++)
-            if (BitIsOn(pDev.button.down, i))
+            if (mixin(BitIsOn!("pDev.button.down", "i")))
                 SetBit(buttons, pDev.button.map[i]);
 
         if (!have_xi22 && pDev.touch && pDev.touch.buttonsDown > 0)

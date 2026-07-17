@@ -278,7 +278,7 @@ bool miSpriteInitialize(ScreenPtr pScreen, miPointerScreenFuncPtr screenFuncs)
         (&miSpriteDevPrivatesKeyRec, PRIVATE_DEVICE, miCursorInfoRec.sizeof))
         return FALSE;
 
-    miSpriteScreenPtr pScreenPriv = calloc(1, miSpriteScreenRec.sizeof);
+    miSpriteScreenPtr pScreenPriv = cast(miSpriteScreenRec*) calloc(1, miSpriteScreenRec.sizeof);
     if (!pScreenPriv)
         return FALSE;
 

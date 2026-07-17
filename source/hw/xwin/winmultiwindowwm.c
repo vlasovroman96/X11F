@@ -1565,7 +1565,7 @@ winInitMultiWindowWM(WMInfoPtr pWMInfo, WMProcArgPtr pProcArg)
                 };
 
             xcb_ewmh_set_supported(&pWMInfo->ewmh, pProcArg->dwScreen,
-                                   ARRAY_SIZE(supported), supported);
+                                   mixin(ARRAY_SIZE!("supported")), supported);
         }
         else {
             ErrorF("winInitMultiWindowWM - xcb_ewmh_init_atoms() failed\n");

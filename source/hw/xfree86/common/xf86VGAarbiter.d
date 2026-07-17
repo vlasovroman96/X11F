@@ -171,7 +171,7 @@ Bool xf86VGAarbiterWrapFunctions()
         if (!dixRegisterPrivateKey(&VGAarbiterScreenKeyRec, PRIVATE_SCREEN, 0))
             return FALSE;
 
-        if (((pScreenPriv = calloc(1, VGAarbiterScreenRec.sizeof)) == 0))
+        if (((pScreenPriv = cast(VGAarbiterScreenRec*) calloc(1, VGAarbiterScreenRec.sizeof)) == 0))
             return FALSE;
 
         dixSetPrivate(&pScreen.devPrivates, &VGAarbiterScreenKeyRec, pScreenPriv);

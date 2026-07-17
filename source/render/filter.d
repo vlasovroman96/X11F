@@ -179,9 +179,9 @@ int PictureAddFilter(ScreenPtr pScreen, const(char)* filter, PictFilterValidateP
             return -1;
     if (ps.filters)
         filters =
-            reallocarray(ps.filters, ps.nfilters + 1, PictFilterRec.sizeof);
+            cast(PictFilterRec*) reallocarray(ps.filters, ps.nfilters + 1, PictFilterRec.sizeof);
     else
-        filters = calloc(1, PictFilterRec.sizeof);
+        filters = cast(PictFilterRec*) calloc(1, PictFilterRec.sizeof);
     if (!filters)
         return -1;
     ps.filters = filters;
@@ -214,7 +214,7 @@ Bool PictureSetFilterAlias(ScreenPtr pScreen, const(char)* filter, const(char)* 
                                    ps.nfilterAliases + 1,
                                    PictFilterAliasRec.sizeof);
         else
-            aliases = calloc(1, PictFilterAliasRec.sizeof);
+            aliases = cast(PictFilterAliasRec*) calloc(1, PictFilterAliasRec.sizeof);
         if (!aliases)
             return FALSE;
         ps.filterAliases = aliases;

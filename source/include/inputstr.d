@@ -344,6 +344,7 @@ struct _TouchPointInfo {
     size_t history_elements;    /* Number of current elements in history */
     size_t history_size;        /* Size of history in elements */
 }
+alias TouchPointInfoRec = _TouchPointInfo;
 
 struct _TouchClassRec {
     int sourceid;
@@ -356,6 +357,8 @@ struct _TouchClassRec {
     ushort state;       /* logical button state */
     Mask motionMask;
 }
+
+alias TouchClassRec = _TouchClassRec;
 
 struct GestureListener {
     XID listener;           /* grabs/event selection IDs receiving
@@ -435,23 +438,31 @@ struct _KbdFeedbackClassRec {
     _XkbSrvLedInfo* xkb_sli;
 }
 
+alias KbdFeedbackClassRec = _KbdFeedbackClassRec;
+
 struct _PtrFeedbackClassRec {
     PtrCtrlProcPtr CtrlProc;
     PtrCtrl ctrl;
     PtrFeedbackPtr next;
 }
 
+alias PtrFeedbackClassRec = _PtrFeedbackClassRec;
+
 struct _IntegerFeedbackClassRec {
     IntegerCtrlProcPtr CtrlProc;
     IntegerCtrl ctrl;
     IntegerFeedbackPtr next;
 }
+alias IntegerFeedbackClassRec = _IntegerFeedbackClassRec;
 
 struct _StringFeedbackClassRec {
     StringCtrlProcPtr CtrlProc;
     StringCtrl ctrl;
     StringFeedbackPtr next;
 }
+
+alias StringFeedbackClassRec = _StringFeedbackClassRec;
+
 
 struct _BellFeedbackClassRec {
     BellProcPtr BellProc;
@@ -460,12 +471,16 @@ struct _BellFeedbackClassRec {
     BellFeedbackPtr next;
 }
 
+alias BellFeedbackClassRec = _BellFeedbackClassRec;
+
 struct _LedFeedbackClassRec {
     LedCtrlProcPtr CtrlProc;
     LedCtrl ctrl;
     LedFeedbackPtr next;
     _XkbSrvLedInfo* xkb_sli;
 }
+
+alias LedFeedbackClassRec = _LedFeedbackClassRec;
 
 struct _ClassesRec {
     KeyClassPtr key;
@@ -518,8 +533,8 @@ struct _GrabInfoRec {
     GrabPtr unused;             /* Kept for ABI stability, remove soon */
     GrabPtr grab;
     CARD8 activatingKey;
-    void function(DeviceIntPtr, GrabPtr, TimeStamp, Bool) ActivateGrab;
-    void function(DeviceIntPtr) DeactivateGrab;
+    @nogc nothrow void function(DeviceIntPtr, GrabPtr, TimeStamp, Bool) ActivateGrab;
+    @nogc nothrow void function(DeviceIntPtr) DeactivateGrab;
     struct _Sync {
         Bool frozen;
         int state;
@@ -693,7 +708,7 @@ extern EventSyncInfoRec syncEvents;
  * Given a sprite, returns the window at the bottom of the trace (i.e. the
  * furthest window from the root).
  */
-pragma(inline, true) private WindowPtr DeepestSpriteWin(SpritePtr sprite)
+pragma(inline, true) WindowPtr DeepestSpriteWin(SpritePtr sprite)
 {
     assert(sprite.spriteTraceGood > 0);
     return sprite.spriteTrace[sprite.spriteTraceGood - 1];

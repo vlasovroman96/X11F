@@ -117,6 +117,14 @@ import include.scrnintstr;
 import Xext.xace;
 import Xi.xiquerydevice;      /* For List*Info */
 import include.eventstr;
+import dix.devices;
+import os.log;
+import os.log_priv;
+import dix.dixutils;
+
+import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI;
+import externs.X11.X;
 
 enum string WID(string w) = `((` ~ w ~ `) ? ((` ~ w ~ `).drawable.id) : 0)`;
 enum AllModifiersMask = ( 
@@ -125,7 +133,9 @@ enum AllModifiersMask = (
 enum AllButtonsMask = ( 
 	Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask );
 
-
+enum RevertToNone = cast(int)0;
+enum RevertToPointerRoot = cast(int)PointerRoot;
+enum RevertToFollowKeyboard = 	cast(int)3;
 
 
 /*
@@ -296,7 +306,7 @@ private void DeepCopyFeedbackClasses(DeviceIntPtr from, DeviceIntPtr to)
         i = &to.intfeed;
         for (it = from.intfeed; it; it = it.next) {
             if (!(*i)) {
-                *i = calloc(1, IntegerFeedbackClassRec.sizeof);
+                *i = cast(_IntegerFeedbackClassRec*)cast(IntegerFeedbackClassRec*) calloc(1, IntegerFeedbackClassRec.sizeof);
                 if (!(*i)) {
                     ErrorF("[Xi] Cannot alloc memory for class copy.");
                     return;
@@ -326,7 +336,7 @@ private void DeepCopyFeedbackClasses(DeviceIntPtr from, DeviceIntPtr to)
         s = &to.stringfeed;
         for (it = from.stringfeed; it; it = it.next) {
             if (!(*s)) {
-                *s = calloc(1, StringFeedbackClassRec.sizeof);
+                *s = cast(StringFeedbackClassRec*) calloc(1, StringFeedbackClassRec.sizeof);
                 if (!(*s)) {
                     ErrorF("[Xi] Cannot alloc memory for class copy.");
                     return;
@@ -356,7 +366,7 @@ private void DeepCopyFeedbackClasses(DeviceIntPtr from, DeviceIntPtr to)
         b = &to.bell;
         for (it = from.bell; it; it = it.next) {
             if (!(*b)) {
-                *b = calloc(1, BellFeedbackClassRec.sizeof);
+                *b = cast(BellFeedbackClassRec*) calloc(1, BellFeedbackClassRec.sizeof);
                 if (!(*b)) {
                     ErrorF("[Xi] Cannot alloc memory for class copy.");
                     return;
@@ -387,7 +397,7 @@ private void DeepCopyFeedbackClasses(DeviceIntPtr from, DeviceIntPtr to)
         l = &to.leds;
         for (it = from.leds; it; it = it.next) {
             if (!(*l)) {
-                *l = calloc(1, LedFeedbackClassRec.sizeof);
+                *l = cast(LedFeedbackClassRec*) calloc(1, LedFeedbackClassRec.sizeof);
                 if (!(*l)) {
                     ErrorF("[Xi] Cannot alloc memory for class copy.");
                     return;
@@ -431,7 +441,7 @@ private void DeepCopyKeyboardClasses(DeviceIntPtr from, DeviceIntPtr to)
         k = &to.kbdfeed;
         for (it = from.kbdfeed; it; it = it.next) {
             if (!(*k)) {
-                *k = calloc(1, KbdFeedbackClassRec.sizeof);
+                *k = cast(KbdFeedbackClassRec*) calloc(1, KbdFeedbackClassRec.sizeof);
                 if (!*k) {
                     ErrorF("[Xi] Cannot alloc memory for class copy.");
                     return;
@@ -483,8 +493,8 @@ private void DeepCopyKeyboardClasses(DeviceIntPtr from, DeviceIntPtr to)
                 continue;
             if (k.xkb_sli.flags & XkbSLI_IsDefault) {
                 assert(to.key);
-                k.xkb_sli.names = to.key.xkbInfo.desc.names.indicators;
-                k.xkb_sli.maps = to.key.xkbInfo.desc.indicators.maps;
+                k.xkb_sli.names = to.key.xkbInfo.desc.names.indicators.ptr;
+                k.xkb_sli.maps = to.key.xkbInfo.desc.indicators.maps.ptr;
             }
         }
     }
@@ -502,7 +512,7 @@ private void DeepCopyKeyboardClasses(DeviceIntPtr from, DeviceIntPtr to)
             classes = to.unused_classes;
             to.focus = classes.focus;
             if (!to.focus) {
-                to.focus = calloc(1, FocusClassRec.sizeof);
+                to.focus = cast(FocusClassRec*) calloc(1, FocusClassRec.sizeof);
                 if (!to.focus)
                     FatalError("[Xi] no memory for class shift.\n");
             }
@@ -511,7 +521,7 @@ private void DeepCopyKeyboardClasses(DeviceIntPtr from, DeviceIntPtr to)
 
             oldTrace = to.focus.trace;
             memcpy(to.focus, from.focus, FocusClassRec.sizeof);
-            to.focus.trace = reallocarray(oldTrace,
+            to.focus.trace = cast(WindowPtr*)reallocarray(oldTrace,
                                             to.focus.traceSize,
                                             WindowPtr.sizeof);
             if (!to.focus.trace && to.focus.traceSize)
@@ -548,7 +558,7 @@ private void DeepCopyPointerClasses(DeviceIntPtr from, DeviceIntPtr to)
         p = &to.ptrfeed;
         for (it = from.ptrfeed; it; it = it.next) {
             if (!(*p)) {
-                *p = calloc(1, PtrFeedbackClassRec.sizeof);
+                *p = cast(PtrFeedbackClassRec*) calloc(1, PtrFeedbackClassRec.sizeof);
                 if (!*p) {
                     ErrorF("[Xi] Cannot alloc memory for class copy.");
                     return;
@@ -597,7 +607,7 @@ private void DeepCopyPointerClasses(DeviceIntPtr from, DeviceIntPtr to)
             classes = to.unused_classes;
             to.button = classes.button;
             if (!to.button) {
-                to.button = calloc(1, ButtonClassRec.sizeof);
+                to.button = cast(ButtonClassRec*) calloc(1, ButtonClassRec.sizeof);
                 if (!to.button)
                     FatalError("[Xi] no memory for class shift.\n");
                 to.button.numButtons = from.button.numButtons;
@@ -608,7 +618,7 @@ private void DeepCopyPointerClasses(DeviceIntPtr from, DeviceIntPtr to)
 
         if (from.button.xkb_acts) {
             size_t maxbuttons = max(to.button.numButtons, from.button.numButtons);
-            to.button.xkb_acts = XNFreallocarray(to.button.xkb_acts,
+            to.button.xkb_acts = cast(XkbAction*)XNFreallocarray(to.button.xkb_acts,
                                                    maxbuttons,
                                                    XkbAction.sizeof);
             memset(to.button.xkb_acts, 0, maxbuttons * XkbAction.sizeof);
@@ -620,7 +630,7 @@ private void DeepCopyPointerClasses(DeviceIntPtr from, DeviceIntPtr to)
             to.button.xkb_acts = null;
         }
 
-        memcpy(to.button.labels, from.button.labels,
+        memcpy(to.button.labels.ptr, from.button.labels.ptr,
                from.button.numButtons * Atom.sizeof);
         to.button.sourceid = from.id;
     }
@@ -635,7 +645,7 @@ private void DeepCopyPointerClasses(DeviceIntPtr from, DeviceIntPtr to)
             classes = to.unused_classes;
             to.proximity = classes.proximity;
             if (!to.proximity) {
-                to.proximity = calloc(1, ProximityClassRec.sizeof);
+                to.proximity = cast(ProximityClassRec*) calloc(1, ProximityClassRec.sizeof);
                 if (!to.proximity)
                     FatalError("[Xi] no memory for class shift.\n");
             }
@@ -660,11 +670,11 @@ private void DeepCopyPointerClasses(DeviceIntPtr from, DeviceIntPtr to)
             if (!to.touch) {
                 int i = void;
 
-                to.touch = calloc(1, TouchClassRec.sizeof);
+                to.touch = cast(TouchClassRec*) calloc(1, TouchClassRec.sizeof);
                 if (!to.touch)
                     FatalError("[Xi] no memory for class shift.\n");
                 to.touch.num_touches = from.touch.num_touches;
-                to.touch.touches = calloc(to.touch.num_touches,
+                to.touch.touches = cast(TouchPointInfoRec*)calloc(to.touch.num_touches,
                                             TouchPointInfoRec.sizeof);
                 for (i = 0; i < to.touch.num_touches; i++)
                     TouchInitTouchPoint(to.touch, to.valuator, i);
@@ -882,7 +892,7 @@ int UpdateDeviceState(DeviceIntPtr device, DeviceEvent* event)
     /* Check valuators first */
     last_valuator = -1;
     for (i = 0; i < MAX_VALUATORS; i++) {
-        if (BitIsOn(&event.valuators.mask, i)) {
+        if (mixin(BitIsOn!("&event.valuators.mask", "i"))) {
             if (!v) {
                 ErrorF("[Xi] Valuators reported for non-valuator device '%s'. "
                        ~ "Ignoring event.\n", device.name);
@@ -899,7 +909,7 @@ int UpdateDeviceState(DeviceIntPtr device, DeviceEvent* event)
 
     for (i = 0; i <= last_valuator && i < v.numAxes; i++) {
         /* XXX: Relative/Absolute mode */
-        if (BitIsOn(&event.valuators.mask, i))
+        if (mixin(BitIsOn!("&event.valuators.mask", "i")))
             v.axisVal[i] = event.valuators.data[i];
     }
 
@@ -979,8 +989,8 @@ int UpdateDeviceState(DeviceIntPtr device, DeviceEvent* event)
     else if (event.type == ET_ProximityOut)
         device.proximity.in_proximity = FALSE;
     else if (event.type == ET_TouchBegin) {
-        BUG_RETURN_VAL(!b || !v, DONT_PROCESS);
-        BUG_RETURN_VAL(!t, DONT_PROCESS);
+        mixin(BUG_RETURN_VAL!("!b || !v", "DONT_PROCESS"));
+        mixin(BUG_RETURN_VAL!("!t", "DONT_PROCESS"));
 
         if (!b.map[key])
             return DONT_PROCESS;
@@ -994,8 +1004,8 @@ int UpdateDeviceState(DeviceIntPtr device, DeviceEvent* event)
         UpdateDeviceMotionMask(device, t.state, DeviceButtonMotionMask);
     }
     else if (event.type == ET_TouchEnd) {
-        BUG_RETURN_VAL(!b || !v, DONT_PROCESS);
-        BUG_RETURN_VAL(!t, DONT_PROCESS);
+        mixin(BUG_RETURN_VAL!("!b || !v", "DONT_PROCESS"));
+        mixin(BUG_RETURN_VAL!("!t", "DONT_PROCESS"));
 
         if (t.buttonsDown <= 0 || !b.map[key])
             return DONT_PROCESS;
@@ -1022,13 +1032,13 @@ pragma(inline, true) private Bool TouchClientWantsOwnershipEvents(ClientPtr clie
 {
     InputClients* iclient = void;
 
-    assert(wOtherInputMasks(win));
-    nt_list_for_each_entry(iclient, wOtherInputMasks(win).inputClients, next); {
+    assert(mixin(wOtherInputMasks!("win")));
+    mixin(nt_list_for_each_entry!("iclient", "mixin(wOtherInputMasks!(`win`)).inputClients", "next", q{
         if (dixClientForInputClients(iclient) != client)
             continue;
 
         return xi2mask_isset(iclient.xi2mask, dev, XI_TouchOwnership);
-    }
+    }));
 
     return FALSE;
 }
@@ -1036,12 +1046,12 @@ pragma(inline, true) private Bool TouchClientWantsOwnershipEvents(ClientPtr clie
 private void TouchSendOwnershipEvent(DeviceIntPtr dev, TouchPointInfoPtr ti, int reason, XID resource)
 {
     int nev = void, i = void;
-    InternalEvent* tel = InitEventList(GetMaximumEventsNum());
+    InternalEvent* tel = cast(InternalEvent*)InitEventList(GetMaximumEventsNum());
 
     if (!tel)
         return;
 
-    nev = GetTouchOwnershipEvents(tel, dev, ti, reason, resource, 0);
+    nev = GetTouchOwnershipEvents(tel, dev, ti, cast(ubyte)reason, resource, 0);
     for (i = 0; i < nev; i++)
         mieqProcessDeviceEvent(dev, tel + i, null);
 
@@ -1070,7 +1080,7 @@ private Bool DeliverOneTouchEvent(ClientPtr client, DeviceIntPtr dev, TouchPoint
     err = EventToXI2(ev, &xi2);
     if (err != Success)
         FatalError("[Xi] %s: XI2 conversion failed in %s"
-                   ~ " (%d)\n", dev.name, __func__, err);
+                   ~ " (%d)\n", dev.name, __FUNCTION__.ptr, err);
 
     FixUpEventFromWindow(&ti.sprite, xi2, win, child, FALSE, XI2);
     filter = GetEventFilter(dev, xi2);
@@ -1090,9 +1100,9 @@ private void ActivateEarlyAccept(DeviceIntPtr dev, TouchPointInfoPtr ti)
     XID error = void;
     GrabPtr grab = ti.listeners[0].grab;
 
-    BUG_RETURN(ti.listeners[0].type != TOUCH_LISTENER_GRAB &&
-               ti.listeners[0].type != TOUCH_LISTENER_POINTER_GRAB);
-    BUG_RETURN(!grab);
+     mixin(BUG_RETURN!("ti.listeners[0].type != TOUCH_LISTENER_GRAB &&
+               ti.listeners[0].type != TOUCH_LISTENER_POINTER_GRAB"));
+    mixin(BUG_RETURN!("!grab"));
 
     client = dixClientForGrab(grab);
 
@@ -1301,8 +1311,8 @@ private void TouchCopyValuatorData(DeviceEvent* ev, TouchPointInfoPtr ti)
 {
     int i = void;
 
-    for (i = 0; i < ARRAY_SIZE(ev.valuators.data); i++)
-        if (BitIsOn(ev.valuators.mask, i))
+    for (i = 0; i < mixin(ARRAY_SIZE!("ev.valuators.data")); i++)
+        if (mixin(BitIsOn!("ev.valuators.mask", "i")))
             valuator_mask_set_double(ti.valuators, i, ev.valuators.data[i]);
 }
 
@@ -1330,7 +1340,7 @@ private Bool RetrieveTouchDeliveryData(DeviceIntPtr dev, TouchPointInfoPtr ti, I
         listener.type == TOUCH_LISTENER_POINTER_GRAB) {
         *grab = listener.grab;
 
-        BUG_RETURN_VAL(!*grab, FALSE);
+        mixin(BUG_RETURN_VAL!("!*grab", "FALSE"));
 
         *client = dixClientForGrab(*grab);
         *win = (*grab).window;
@@ -1348,48 +1358,52 @@ private Bool RetrieveTouchDeliveryData(DeviceIntPtr dev, TouchPointInfoPtr ti, I
 
             if (ti.emulate_pointer &&
                 listener.type == TOUCH_LISTENER_POINTER_REGULAR)
-                evtype = GetXI2Type(TouchGetPointerEventType(ev));
+                evtype = GetXI2Type(cast(EventType)TouchGetPointerEventType(ev));
             else
                 evtype = GetXI2Type(ev.any.type);
 
-            assert(wOtherInputMasks(*win));
+            assert(mixin(wOtherInputMasks!("*win")));
 
             InputClients* iclients = null;
-            nt_list_for_each_entry(iclients,
-                                   wOtherInputMasks(*win).inputClients, next);
+            mixin(nt_list_for_each_entry!("iclients",
+                                `mixin(wOtherInputMasks!("*win")).inputClients`, `next`, q{
                 if (xi2mask_isset(iclients.xi2mask, dev, evtype))
                 break;
+            }));
 
-            BUG_RETURN_VAL(!iclients, FALSE);
+            mixin(BUG_RETURN_VAL!("!iclients", "FALSE"));
 
             *mask = iclients.xi2mask;
             *client = dixClientForInputClients(iclients);
         }
         else if (listener.level == XI) {
-            int xi_type = GetXIType(TouchGetPointerEventType(ev));
+            int xi_type = GetXIType(cast(EventType)TouchGetPointerEventType(ev));
             Mask xi_filter = event_get_filter_from_type(dev, xi_type);
 
-            assert(wOtherInputMasks(*win));
+            assert(mixin(wOtherInputMasks!("*win")));
 
             InputClients* iclients = null;
-            nt_list_for_each_entry(iclients,
-                                   wOtherInputMasks(*win).inputClients, next);
+            mixin(nt_list_for_each_entry!("iclients",
+                                   `mixin(wOtherInputMasks!("*win")).inputClients`, `next`, q{
                 if (iclients.mask[dev.id] & xi_filter)
                 break;
-            BUG_RETURN_VAL(!iclients, FALSE);
+            }));
+
+            mixin(BUG_RETURN_VAL!("!iclients", "FALSE"));
 
             *client = dixClientForInputClients(iclients);
         }
         else {
-            int coretype = GetCoreType(TouchGetPointerEventType(ev));
+            int coretype = GetCoreType(cast(EventType)TouchGetPointerEventType(ev));
             Mask core_filter = event_get_filter_from_type(dev, coretype);
             OtherClients* oclients = void;
 
             /* all others */
-            nt_list_for_each_entry(oclients,
-                                   cast(OtherClients*) wOtherClients(*win), next);
+            mixin(nt_list_for_each_entry!("oclients",
+                                   `cast(OtherClients*) mixin(wOtherClients!("*win"))`, `next`, q{
                 if (oclients.mask & core_filter)
                     break;
+            }));
 
             /* if owner selected, oclients is NULL */
             *client = oclients ? dixClientForOtherClients(oclients) : dixClientForWindow(*win);
@@ -1422,7 +1436,7 @@ private int DeliverTouchEmulatedEvent(DeviceIntPtr dev, TouchPointInfoPtr ti, In
         return !Success;
 
     nevents = TouchConvertToPointerEvent(ev, &motion, &button);
-    BUG_RETURN_VAL(nevents == 0, BadValue);
+    mixin(BUG_RETURN_VAL!("nevents == 0", "BadValue"));
 
     /* Note that here we deliver only part of the events that are generated by the touch event:
      *
@@ -1490,7 +1504,7 @@ private int DeliverTouchEmulatedEvent(DeviceIntPtr dev, TouchPointInfoPtr ti, In
 
             devgrab = dev.deviceGrab.grab;
             g = AllocGrab(devgrab);
-            BUG_WARN(!g);
+            mixin(BUG_WARN!("!g"));
 
             CopyPartialInternalEvent(dev.deviceGrab.sync.event, ev);
 
@@ -1549,7 +1563,7 @@ private void DeliverEmulatedMotionEvent(DeviceIntPtr dev, TouchPointInfoPtr ti, 
 
         converted = TouchConvertToPointerEvent(ev, &motion, &button);
 
-        BUG_WARN(converted == 0);
+        mixin(BUG_WARN!("converted == 0"));
         if (converted)
             ProcessOtherEvent(&motion, dev);
     }
@@ -1684,7 +1698,7 @@ private void ProcessBarrierEvent(InternalEvent* e, DeviceIntPtr dev)
 
     rc = EventToXI2(e, &ev);
     if (rc != Success) {
-        ErrorF("[Xi] event conversion from %s failed with code %d\n", __func__, rc);
+        ErrorF("[Xi] event conversion from %s failed with code %d\n", __FUNCTION__.ptr, rc);
         return;
     }
 
@@ -1818,8 +1832,8 @@ private void ProcessDeviceEvent(InternalEvent* ev, DeviceIntPtr device)
     case ET_ProximityIn:
     case ET_ProximityOut:
         GetSpritePosition(device, &rootX, &rootY);
-        event.root_x = rootX;
-        event.root_y = rootY;
+        event.root_x = cast(ushort)rootX;
+        event.root_y = cast(ushort)rootY;
         NoticeEventTime(cast(InternalEvent*) event, device);
         event.corestate = corestate;
         key = event.detail.key;
@@ -1849,7 +1863,7 @@ private void ProcessDeviceEvent(InternalEvent* ev, DeviceIntPtr device)
          * nested) to clients. */
         if (event.source_type == EVENT_SOURCE_FOCUS)
             return;
-        if (!grab && CheckDeviceGrabs(device, ev, 0))
+        if (!grab && CheckDeviceGrabs(device, ev, null))
             return;
         break;
     case ET_KeyRelease:
@@ -1862,7 +1876,7 @@ private void ProcessDeviceEvent(InternalEvent* ev, DeviceIntPtr device)
         if (b.map[key] == 0)   /* there's no button 0 */
             return;
         event.detail.button = b.map[key];
-        if (!grab && CheckDeviceGrabs(device, ev, 0)) {
+        if (!grab && CheckDeviceGrabs(device, ev, null)) {
             /* if a passive grab was activated, the event has been sent
              * already */
             return;
@@ -1876,6 +1890,7 @@ private void ProcessDeviceEvent(InternalEvent* ev, DeviceIntPtr device)
             device.deviceGrab.fromPassiveGrab &&
             GrabIsPointerGrab(device.deviceGrab.grab))
             deactivateDeviceGrab = TRUE;
+        break;
     default:
         break;
     }
@@ -1904,7 +1919,7 @@ private void ProcessDeviceEvent(InternalEvent* ev, DeviceIntPtr device)
             flags = (IsPointerDevice (device)) ?
                 DEVCHANGE_POINTER_EVENT : DEVCHANGE_KEYBOARD_EVENT;
             UpdateFromMaster (&dce, device, flags, &num_events);
-            BUG_WARN(num_events > 1);
+            mixin(BUG_WARN!("num_events > 1"));
 
             if (num_events == 1)
                 ChangeMasterDeviceClasses(GetMaster (device, MASTER_ATTACHED),
@@ -2161,7 +2176,7 @@ private Bool DeliverOneGestureEvent(ClientPtr client, DeviceIntPtr dev, GestureI
     err = EventToXI2(ev, &xi2);
     if (err != Success)
         FatalError("[Xi] %s: XI2 conversion failed in %s"
-                   ~ " (%d)\n", dev.name, __func__, err);
+                   ~ " (%d)\n", dev.name, __FUNCTION__.ptr, err);
 
     FixUpEventFromWindow(&gi.sprite, xi2, win, child, FALSE, XI2);
     filter = GetEventFilter(dev, xi2);
@@ -2198,7 +2213,7 @@ private Bool RetrieveGestureDeliveryData(DeviceIntPtr dev, InternalEvent* ev, Ge
         listener.type == GESTURE_LISTENER_NONGESTURE_GRAB) {
         *grab = listener.grab;
 
-        BUG_RETURN_VAL(!*grab, FALSE);
+        mixin(BUG_RETURN_VAL!("!*grab", "FALSE"));
 
         *client = dixClientForGrab(*grab);
         *win = (*grab).window;
@@ -2213,12 +2228,13 @@ private Bool RetrieveGestureDeliveryData(DeviceIntPtr dev, InternalEvent* ev, Ge
            listener->type == GESTURE_LISTENER_REGULAR */
         evtype = GetXI2Type(ev.any.type);
 
-        assert(wOtherInputMasks(*win));
-        nt_list_for_each_entry(iclients, wOtherInputMasks(*win).inputClients, next);
+        assert(mixin(wOtherInputMasks!("*win")));
+        mixin(nt_list_for_each_entry!("iclients", "mixin(wOtherInputMasks!(`*win`)).inputClients", "next", q{
             if (xi2mask_isset(iclients.xi2mask, dev, evtype))
                 break;
+        }));
 
-        BUG_RETURN_VAL(!iclients, FALSE);
+        mixin(BUG_RETURN_VAL!("!iclients", "FALSE"));
 
         *client = dixClientForInputClients(iclients);
     }
@@ -2250,10 +2266,10 @@ Bool DeliverGestureEventToOwner(DeviceIntPtr dev, GestureInfoPtr gi, InternalEve
 
 int InitProximityClassDeviceStruct(DeviceIntPtr dev)
 {
-    BUG_RETURN_VAL(dev == null, FALSE);
-    BUG_RETURN_VAL(dev.proximity != null, FALSE);
+    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.proximity != null", "FALSE"));
 
-    ProximityClassPtr proxc = calloc(1, ProximityClassRec.sizeof);
+    ProximityClassPtr proxc = cast(ProximityClassRec*) calloc(1, ProximityClassRec.sizeof);
     if (!proxc)
         return FALSE;
     proxc.sourceid = dev.id;
@@ -2275,10 +2291,10 @@ Bool InitValuatorAxisStruct(DeviceIntPtr dev, int axnum, Atom label, int minval,
 {
     AxisInfoPtr ax = void;
 
-    BUG_RETURN_VAL(dev == null, FALSE);
-    BUG_RETURN_VAL(dev.valuator == null, FALSE);
-    BUG_RETURN_VAL(axnum >= dev.valuator.numAxes, FALSE);
-    BUG_RETURN_VAL(minval > maxval && mode == Absolute, FALSE);
+    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.valuator == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("axnum >= dev.valuator.numAxes", "FALSE"));
+    mixin(BUG_RETURN_VAL!("minval > maxval && mode == Absolute", "FALSE"));
 
     ax = dev.valuator.axes + axnum;
 
@@ -2288,7 +2304,7 @@ Bool InitValuatorAxisStruct(DeviceIntPtr dev, int axnum, Atom label, int minval,
     ax.min_resolution = min_res;
     ax.max_resolution = max_res;
     ax.label = label;
-    ax.mode = mode;
+    ax.mode = cast(ubyte)mode;
 
     if (mode & OutOfProximity)
         dev.proximity.in_proximity = FALSE;
@@ -2306,9 +2322,9 @@ Bool SetScrollValuator(DeviceIntPtr dev, int axnum, ScrollType type, double incr
     InternalEvent dce = void;
     DeviceIntPtr master = void;
 
-    BUG_RETURN_VAL(dev == null, FALSE);
-    BUG_RETURN_VAL(dev.valuator == null, FALSE);
-    BUG_RETURN_VAL(axnum >= dev.valuator.numAxes, FALSE);
+    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.valuator == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("axnum >= dev.valuator.numAxes", "FALSE"));
 
     switch (type) {
     case SCROLL_TYPE_VERTICAL:
@@ -2438,7 +2454,7 @@ int GrabButton(ClientPtr client, DeviceIntPtr dev, DeviceIntPtr modifier_device,
         type = XI_ButtonPress;
 
     grab = CreateGrab(client, dev, modifier_device, pWin, grabtype,
-                      mask, param, type, button, confineTo, cursor);
+                      mask, cast(_GrabParameters*)param, type, cast(ubyte)button, confineTo, cursor);
     if (!grab)
         return BadAlloc;
     return AddPassiveGrabToList(client, grab);
@@ -2483,7 +2499,7 @@ int GrabKey(ClientPtr client, DeviceIntPtr dev, DeviceIntPtr modifier_device, in
         return rc;
 
     grab = CreateGrab(client, dev, modifier_device, pWin, grabtype,
-                      mask, param, type, key, null, null);
+                      mask, cast(_GrabParameters*)param, type, cast(ubyte)key, null, null);
     if (!grab)
         return BadAlloc;
     return AddPassiveGrabToList(client, grab);
@@ -2524,7 +2540,7 @@ int GrabWindow(ClientPtr client, DeviceIntPtr dev, int type, GrabParameters* par
         return rc;
 
     grab = CreateGrab(client, dev, dev, pWin, XI2,
-                      mask, param,
+                      mask, cast(_GrabParameters*)param,
                       (type == XIGrabtypeEnter) ? XI_Enter : XI_FocusIn, 0,
                       null, cursor);
 
@@ -2553,7 +2569,7 @@ int GrabTouchOrGesture(ClientPtr client, DeviceIntPtr dev, DeviceIntPtr mod_dev,
         return rc;
 
     grab = CreateGrab(client, dev, mod_dev, pWin, XI2,
-                      mask, param, type, 0, NullWindow, NullCursor);
+                      mask, cast(_GrabParameters*)param, type, 0, NullWindow, NullCursor);
     if (!grab)
         return BadAlloc;
 
@@ -2568,21 +2584,21 @@ int SelectForWindow(DeviceIntPtr dev, WindowPtr pWin, ClientPtr client, Mask mas
     InputClientsPtr others = void;
 
     check = (mask & exclusivemasks);
-    if (wOtherInputMasks(pWin)) {
-        if (check & wOtherInputMasks(pWin).inputEvents[mskidx]) {
+    if (mixin(wOtherInputMasks!("pWin"))) {
+        if (check & mixin(wOtherInputMasks!("pWin")).inputEvents[mskidx]) {
             /* It is illegal for two different clients to select on any of
              * the events for maskcheck. However, it is OK, for some client
              * to continue selecting on one of those events.
              */
-            for (others = wOtherInputMasks(pWin).inputClients; others;
+            for (others = mixin(wOtherInputMasks!("pWin")).inputClients; others;
                  others = others.next) {
                 if (!mixin(SameClient!("others", "client")) && (check &
                                                     others.mask[mskidx]))
                     return BadAccess;
             }
         }
-        assert(wOtherInputMasks(pWin));
-        for (others = wOtherInputMasks(pWin).inputClients; others;
+        assert(mixin(wOtherInputMasks!("pWin")));
+        for (others = mixin(wOtherInputMasks!("pWin")).inputClients; others;
              others = others.next) {
             if (mixin(SameClient!("others", "client"))) {
                 check = others.mask[mskidx];
@@ -2624,7 +2640,7 @@ private void FreeInputClient(InputClientsPtr* other)
 
 private InputClientsPtr AllocInputClient()
 {
-    return calloc(1, InputClients.sizeof);
+    return cast(InputClients*) calloc(1, InputClients.sizeof);
 }
 
 int AddExtensionClient(WindowPtr pWin, ClientPtr client, Mask mask, int mskidx)
@@ -2658,7 +2674,7 @@ private Bool MakeInputMasks(WindowPtr pWin)
 {
     _OtherInputMasks* imasks = void;
 
-    imasks = cast(_OtherInputMasks*) calloc(1, _OtherInputMasks.sizeof);
+    imasks = cast(_OtherInputMasks*) cast(_OtherInputMasks*) calloc(1, _OtherInputMasks.sizeof);
     if (!imasks)
         return FALSE;
     imasks.xi2mask = xi2mask_new();
@@ -2692,7 +2708,7 @@ void RecalculateDeviceDeliverableEvents(WindowPtr pWin)
 
     pChild = pWin;
     while (1) {
-        if ((inputMasks = wOtherInputMasks(pChild)) != 0) {
+        if ((inputMasks = mixin(wOtherInputMasks!("pChild"))) !is null) {
             xi2mask_zero(inputMasks.xi2mask, -1);
             for (others = inputMasks.inputClients; others;
                  others = others.next) {
@@ -2703,10 +2719,10 @@ void RecalculateDeviceDeliverableEvents(WindowPtr pWin)
             for (i = 0; i < EMASKSIZE; i++)
                 inputMasks.deliverableEvents[i] = inputMasks.inputEvents[i];
             for (tmp = pChild.parent; tmp; tmp = tmp.parent)
-                if (wOtherInputMasks(tmp))
+                if (mixin(wOtherInputMasks!("tmp")))
                     for (i = 0; i < EMASKSIZE; i++)
                         inputMasks.deliverableEvents[i] |=
-                            (wOtherInputMasks(tmp).deliverableEvents[i]
+                            (mixin(wOtherInputMasks!("tmp")).deliverableEvents[i]
                              & ~inputMasks.dontPropagateMask[i] &
                              XIPropagateMask);
         }
@@ -2726,10 +2742,10 @@ int InputClientGone(WindowPtr pWin, XID id)
 {
     InputClientsPtr other = void, prev = void;
 
-    if (!wOtherInputMasks(pWin))
+    if (!mixin(wOtherInputMasks!("pWin")))
         return Success;
-    prev = 0;
-    for (other = wOtherInputMasks(pWin).inputClients; other;
+    prev = null;
+    for (other = mixin(wOtherInputMasks!("pWin")).inputClients; other;
          other = other.next) {
         if (other.resource == id) {
             if (prev) {
@@ -2754,7 +2770,7 @@ int InputClientGone(WindowPtr pWin, XID id)
                 }
             }
             else {
-                wOtherInputMasks(pWin).inputClients = other.next;
+                mixin(wOtherInputMasks!("pWin")).inputClients = other.next;
                 FreeInputClient(&other);
             }
             RecalculateDeviceDeliverableEvents(pWin);
@@ -2763,6 +2779,7 @@ int InputClientGone(WindowPtr pWin, XID id)
         prev = other;
     }
     FatalError("client not on device event list");
+    assert(0);
 }
 
 /**
@@ -2844,8 +2861,8 @@ int SendEvent(ClientPtr client, DeviceIntPtr d, Window dest, Bool propagate, xEv
                 return Success;
             if (pWin == effectiveFocus)
                 return Success;
-            if (wOtherInputMasks(pWin))
-                mask &= ~wOtherInputMasks(pWin).dontPropagateMask[d.id];
+            if (mixin(wOtherInputMasks!("pWin")))
+                mask &= ~mixin(wOtherInputMasks!("pWin")).dontPropagateMask[d.id];
             if (!mask)
                 break;
         }
@@ -2870,7 +2887,7 @@ int SetButtonMapping(ClientPtr client, DeviceIntPtr dev, int nElts, BYTE* map)
     if (BadDeviceMap(&map[0], nElts, 1, 255, &client.errorValue))
         return BadValue;
     for (i = 0; i < nElts; i++)
-        if ((b.map[i + 1] != map[i]) && BitIsOn(b.down, i + 1))
+        if ((b.map[i + 1] != map[i]) && mixin(BitIsOn!("b.down", "i + 1")))
             return MappingBusy;
     for (i = 0; i < nElts; i++)
         b.map[i + 1] = map[i];
@@ -2898,7 +2915,7 @@ int ChangeKeyMapping(ClientPtr client, DeviceIntPtr dev, uint len, int type, Key
         return BadValue;
     }
     keysyms.minKeyCode = firstKeyCode;
-    keysyms.maxKeyCode = firstKeyCode + keyCodes - 1;
+    keysyms.maxKeyCode = cast(ubyte)(firstKeyCode + keyCodes - 1);
     keysyms.mapWidth = keySymsPerKeyCode;
     keysyms.map = map;
 
@@ -2998,7 +3015,7 @@ void DeleteWindowFromAnyExtEvents(WindowPtr pWin, Bool freeResources)
         DeleteDeviceFromAnyExtEvents(pWin, dev);
 
     if (freeResources)
-        while ((inputMasks = wOtherInputMasks(pWin)) != 0) {
+        while ((inputMasks = mixin(wOtherInputMasks!("pWin"))) !is null) {
             ic = inputMasks.inputClients;
             for (i = 0; i < EMASKSIZE; i++)
                 inputMasks.dontPropagateMask[i] = 0;
@@ -3068,9 +3085,9 @@ private Mask DeviceEventMaskForClient(DeviceIntPtr dev, WindowPtr pWin, ClientPt
 {
     InputClientsPtr other = void;
 
-    if (!wOtherInputMasks(pWin))
+    if (!mixin(wOtherInputMasks!("pWin")))
         return 0;
-    for (other = wOtherInputMasks(pWin).inputClients; other;
+    for (other = mixin(wOtherInputMasks!("pWin")).inputClients; other;
          other = other.next) {
         if (mixin(SameClient!("other", "client")))
             return other.mask[dev.id];
@@ -3116,14 +3133,14 @@ int DeviceEventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, in
             if (ret != Success)
                 return ret;
             inputMasks = mixin(wOtherInputMasks!("pWin"));
-            BUG_RETURN_VAL(!inputMasks, BadAlloc);
+            mixin(BUG_RETURN_VAL!("!inputMasks", "BadAlloc"));
         }
         inputMasks.dontPropagateMask[maskndx] = mask;
     }
     RecalculateDeviceDeliverableEvents(pWin);
     if (ShouldFreeInputMasks(pWin, FALSE)) {
-        BUG_RETURN_VAL(!inputMasks, BadImplementation);
-        BUG_RETURN_VAL(!inputMasks.inputClients, BadImplementation);
+        mixin(BUG_RETURN_VAL!("!inputMasks", "BadImplementation"));
+        mixin(BUG_RETURN_VAL!("!inputMasks.inputClients", "BadImplementation"));
         FreeResource(inputMasks.inputClients.resource, X11_RESTYPE_NONE);
     }
     return Success;
@@ -3197,7 +3214,7 @@ int XISetEventMask(DeviceIntPtr dev, WindowPtr win, ClientPtr client, uint len, 
 
     masks = mixin(wOtherInputMasks!("win"));
     if (masks) {
-        for (others = wOtherInputMasks(win).inputClients; others;
+        for (others = mixin(wOtherInputMasks!("win")).inputClients; others;
              others = others.next) {
             if (mixin(SameClient!("others", "client"))) {
                 xi2mask_zero(others.xi2mask, dev.id);
@@ -3209,13 +3226,13 @@ int XISetEventMask(DeviceIntPtr dev, WindowPtr win, ClientPtr client, uint len, 
     if (len && !others) {
         if (AddExtensionClient(win, client, 0, 0) != Success)
             return BadAlloc;
-        assert(wOtherInputMasks(win));
-        others = wOtherInputMasks(win).inputClients;
+        assert(mixin(wOtherInputMasks!("win")));
+        others = mixin(wOtherInputMasks!("win")).inputClients;
     }
 
     if (others) {
         xi2mask_zero(others.xi2mask, dev.id);
-        len = min(len, xi2mask_mask_size(others.xi2mask));
+        len = cast(uint)min(len, xi2mask_mask_size(others.xi2mask));
     }
 
     if (len) {

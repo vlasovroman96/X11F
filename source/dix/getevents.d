@@ -108,9 +108,9 @@ Bool button_is_down(DeviceIntPtr pDev, int button, int type)
     Bool ret = FALSE;
 
     if (type & BUTTON_PROCESSED)
-        ret = ret || BitIsOn(pDev.button.down, button);
+        ret = ret || mixin(BitIsOn!("pDev.button.down", "button"));
     if (type & BUTTON_POSTED)
-        ret = ret || BitIsOn(pDev.button.postdown, button);
+        ret = ret || mixin(BitIsOn!("pDev.button.postdown", "button"));
 
     return ret;
 }
@@ -136,9 +136,9 @@ Bool key_is_down(DeviceIntPtr pDev, int key_code, int type)
     Bool ret = FALSE;
 
     if (type & KEY_PROCESSED)
-        ret = ret || BitIsOn(pDev.key.down, key_code);
+        ret = ret || mixin(BitIsOn!("pDev.key.down", "key_code"));
     if (type & KEY_POSTED)
-        ret = ret || BitIsOn(pDev.key.postdown, key_code);
+        ret = ret || mixin(BitIsOn!("pDev.key.postdown", "key_code"));
 
     return ret;
 }
@@ -839,7 +839,7 @@ private ScreenPtr scale_to_desktop(DeviceIntPtr dev, ValuatorMask* mask, double*
     ScreenPtr scr = miPointerGetScreen(dev);
     double x = void, y = void;
 
-    BUG_WARN(dev.valuator && dev.valuator.numAxes < 2);
+    mixin(BUG_WARN!("dev.valuator && dev.valuator.numAxes < 2"));
     if (!dev.valuator || dev.valuator.numAxes < 2) {
         /* if we have no axes, last.valuators must be in screen coords
          * anyway */
@@ -1596,7 +1596,7 @@ version (XSERVER_DTRACE) {
     }
 }
 
-    BUG_RETURN_VAL(buttons >= MAX_BUTTONS, 0);
+    mixin(BUG_RETURN_VAL!("buttons >= MAX_BUTTONS", "0"));
 
     /* refuse events from disabled devices */
     if (!pDev.enabled)
@@ -2004,7 +2004,7 @@ void GetDixTouchEnd(InternalEvent* ievent, DeviceIntPtr dev, TouchPointInfoPtr t
     DeviceEvent* event = &ievent.device_event;
     CARD32 ms = GetTimeInMillis();
 
-    BUG_WARN(!dev.enabled);
+    mixin(BUG_WARN!("!dev.enabled"));
 
     init_device_event(event, dev, ms, EVENT_SOURCE_NORMAL);
 

@@ -1,4 +1,4 @@
-module XIstubs;
+module Xi.XIstubs;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

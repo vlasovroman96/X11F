@@ -127,7 +127,7 @@ private int validGlxFBConfigForWindow(ClientPtr client, __GLXconfig* config, Dra
         }
     }
 
-    BUG_RETURN_VAL(!pVisual, FALSE);
+    mixin(BUG_RETURN_VAL!("!pVisual", "FALSE"));
 
     /* FIXME: What exactly should we check here... */
     if (pVisual == null ||
@@ -219,7 +219,7 @@ __GLXcontext* __glXdirectContextCreate(__GLXscreen* screen, __GLXconfig* modes, 
 {
     __GLXcontext* context = void;
 
-    context = cast(__GLXcontext*) calloc(1, __GLXcontext.sizeof);
+    context = cast(__GLXcontext*) cast(__GLXcontext*) calloc(1, __GLXcontext.sizeof);
     if (context == null)
         return null;
 

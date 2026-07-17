@@ -186,7 +186,7 @@ private EphyrXVPriv* ephyrXVPrivNew()
 
     EPHYR_LOG("enter\n");
 
-    xv_priv = cast(EphyrXVPriv*) calloc(1, EphyrXVPriv.sizeof);
+    xv_priv = cast(EphyrXVPriv*) cast(EphyrXVPriv*) calloc(1, EphyrXVPriv.sizeof);
     if (!xv_priv) {
         EPHYR_LOG_ERROR("failed to create EphyrXVPriv\n");
         goto error;

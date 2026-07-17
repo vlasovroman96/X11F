@@ -82,6 +82,88 @@ import include.protocol_versions;
 import Xi.handlers;
 import Xi.xibarriers;
 import Xi.xiproperty;
+import Xi.getvers;
+import Xi.listdev;
+import Xi.opendev;
+import Xi.closedev;
+import Xi.setmode;
+import Xi.getselev;
+import Xi.selectev;
+import Xi.getprop;
+import Xi.chgprop;
+import Xi.gtmotion;
+import Xi.chgkbd;
+import Xi.chgptr;
+import Xi.grabdev;
+import Xi.grabdevb;
+import Xi.ungrdev;
+import Xi.ungrdevb;
+import Xi.grabdevk;
+import Xi.ungrdevk;
+import Xi.allowev;
+import Xi.getfocus;
+// allowev
+import Xi.exevents;
+import Xi.getprop;
+import Xi.setmode;
+import Xi.xigetclientpointer;
+import Xi.xisetdevfocus;
+import Xi.chgdctl;
+import Xi.exglobals;
+import Xi.getselev;
+import Xi.opendev;
+import Xi.stubs;
+import Xi.xigrabdev;
+import Xi.XIstubs;
+import Xi.chgfctl;
+import Xi.extinit;
+import Xi.getvers;
+import Xi.queryst;
+import Xi.ungrdevb;
+import Xi.xipassivegrab;
+import Xi.xiwarppointer;
+import Xi.chgkbd;
+import Xi.getbmap;
+import Xi.grabdevb;
+import Xi.selectev;
+import Xi.ungrdev;
+import Xi.xiproperty;
+import Xi.chgkmap;
+import Xi.getdctl;
+import Xi.grabdev;
+import Xi.sendexev;
+import Xi.ungrdevk;
+import Xi.xiquerydevice;
+import Xi.chgprop;
+import Xi.getfctl;
+import Xi.grabdevk;
+import Xi.setbmap;
+import Xi.xiallowev;
+import Xi.xiquerypointer;
+import Xi.chgptr;
+import Xi.getfocus;
+import Xi.gtmotion;
+import Xi.setdval;
+import Xi.xibarriers;
+import Xi.xiqueryversion;
+import Xi.closedev;
+import Xi.getkmap;
+import Xi.handlers;
+import Xi.setfocus;
+import Xi.xichangecursor;
+import Xi.xiselectev;
+import Xi.devbell;
+import Xi.getmmap;
+import Xi.listdev;
+import Xi.setmmap;
+import Xi.xichangehierarchy;
+import Xi.xisetclientpointer;
+
+import include.misc;
+import os.log;
+import std.conv;
+import dix.extension;
+
 import externs.X11.extensions.XI;
 
 /* Masks for XI events have to be aligned with core event (partially anyway).
@@ -471,9 +553,9 @@ private void SDeviceChangedEvent(xXIDeviceChangedEvent* from, xXIDeviceChangedEv
         case ButtonClass:
         {
             xXIButtonInfo* bi = cast(xXIButtonInfo*) any;
-            Atom* labels = cast(Atom*) (cast(char*) bi + ((xXIButtonInfo) +
+            Atom* labels = cast(Atom*) (cast(char*) bi + ((xXIButtonInfo).sizeof +
                                      pad_to_int32(bits_to_bytes
-                                                  (bi.num_buttons))).sizeof);
+                                                  (bi.num_buttons))));
             for (j = 0; j < bi.num_buttons; j++)
                 swapl(&labels[j]);
             swaps(&bi.num_buttons);
@@ -517,7 +599,7 @@ private void SDeviceEvent(xXIDeviceEvent* from, xXIDeviceEvent* to)
     char* ptr = void;
     char* vmask = void;
 
-    memcpy(to, from, (cast(xEvent) + from.length * 4).sizeof);
+    memcpy(to, from, xEvent.sizeof + from.length * 4);
 
     swaps(&to.sequenceNumber);
     swapl(&to.length);
@@ -546,7 +628,7 @@ private void SDeviceEvent(xXIDeviceEvent* from, xXIDeviceEvent* to)
     vmask = ptr;                /* valuator mask */
     ptr += from.valuators_len * 4;
     for (i = 0; i < from.valuators_len * 32; i++) {
-        if (BitIsOn(vmask, i)) {
+        if (mixin(BitIsOn!("vmask", "i"))) {
             swapl((cast(uint*) ptr));
             ptr += 4;
             swapl((cast(uint*) ptr));
@@ -594,7 +676,7 @@ private void SRawEvent(xXIRawEvent* from, xXIRawEvent* to)
     FP3232* values = void;
     ubyte* mask = void;
 
-    memcpy(to, from, (cast(xEvent) + from.length * 4).sizeof);
+    memcpy(to, from, (xEvent).sizeof + from.length * 4);
 
     swaps(&to.sequenceNumber);
     swapl(&to.length);
@@ -607,7 +689,7 @@ private void SRawEvent(xXIRawEvent* from, xXIRawEvent* to)
     values = cast(FP3232*) (mask + from.valuators_len * 4);
 
     for (i = 0; i < from.valuators_len * 4 * 8; i++) {
-        if (BitIsOn(mask, i)) {
+        if (mixin(BitIsOn!("mask", "i"))) {
             /* for each bit set there are two FP3232 values on the wire, in
              * the order abcABC for data and data_raw. Here we swap as if
              * they were in aAbBcC order because it's easier and really
@@ -812,8 +894,8 @@ void XI2EventSwap(xGenericEvent* from, xGenericEvent* to)
 
 private void SetEventInfo(Mask mask, int constant)
 {
-    EventInfo[ExtEventIndex].mask = mask;
-    EventInfo[ExtEventIndex++].type = constant;
+    EventInfo[ExtEventIndex].mask = cast(uint)mask;
+    EventInfo[ExtEventIndex++].type = cast(ubyte)constant;
 }
 
 /**************************************************************************
@@ -826,8 +908,8 @@ private void SetMaskForExtEvent(Mask mask, int event)
 {
     int i = void;
 
-    EventInfo[ExtEventIndex].mask = mask;
-    EventInfo[ExtEventIndex++].type = event;
+    EventInfo[ExtEventIndex].mask = cast(uint)mask;
+    EventInfo[ExtEventIndex++].type = cast(ubyte)event;
 
     if ((event < LASTEvent) || (event >= 128))
         FatalError("MaskForExtensionEvent: bogus event number");
@@ -862,12 +944,12 @@ private void FixExtensionEvents(ExtensionEntry* extEntry)
     DevicePresenceNotify = DeviceButtonStateNotify + 1;
     DevicePropertyNotify = DevicePresenceNotify + 1;
 
-    event_base[KeyClass] = DeviceKeyPress;
-    event_base[ButtonClass] = DeviceButtonPress;
-    event_base[ValuatorClass] = DeviceMotionNotify;
-    event_base[ProximityClass] = ProximityIn;
-    event_base[FocusClass] = DeviceFocusIn;
-    event_base[OtherClass] = DeviceStateNotify;
+    event_base[KeyClass] = cast(ubyte)DeviceKeyPress;
+    event_base[ButtonClass] = cast(ubyte)DeviceButtonPress;
+    event_base[ValuatorClass] = cast(ubyte)DeviceMotionNotify;
+    event_base[ProximityClass] = cast(ubyte)ProximityIn;
+    event_base[FocusClass] = cast(ubyte)DeviceFocusIn;
+    event_base[OtherClass] = cast(ubyte)DeviceStateNotify;
 
     BadDevice += extEntry.errorBase;
     BadEvent += extEntry.errorBase;
@@ -975,23 +1057,23 @@ private void RestoreExtensionEvents()
 
 private void IResetProc(ExtensionEntry* unused)
 {
-    EventSwapVector[DeviceValuator] = NotImplemented;
-    EventSwapVector[DeviceKeyPress] = NotImplemented;
-    EventSwapVector[DeviceKeyRelease] = NotImplemented;
-    EventSwapVector[DeviceButtonPress] = NotImplemented;
-    EventSwapVector[DeviceButtonRelease] = NotImplemented;
-    EventSwapVector[DeviceMotionNotify] = NotImplemented;
-    EventSwapVector[DeviceFocusIn] = NotImplemented;
-    EventSwapVector[DeviceFocusOut] = NotImplemented;
-    EventSwapVector[ProximityIn] = NotImplemented;
-    EventSwapVector[ProximityOut] = NotImplemented;
-    EventSwapVector[DeviceStateNotify] = NotImplemented;
-    EventSwapVector[DeviceKeyStateNotify] = NotImplemented;
-    EventSwapVector[DeviceButtonStateNotify] = NotImplemented;
-    EventSwapVector[DeviceMappingNotify] = NotImplemented;
-    EventSwapVector[ChangeDeviceNotify] = NotImplemented;
-    EventSwapVector[DevicePresenceNotify] = NotImplemented;
-    EventSwapVector[DevicePropertyNotify] = NotImplemented;
+    EventSwapVector[DeviceValuator] = &NotImplemented;
+    EventSwapVector[DeviceKeyPress] = &NotImplemented;
+    EventSwapVector[DeviceKeyRelease] = &NotImplemented;
+    EventSwapVector[DeviceButtonPress] = &NotImplemented;
+    EventSwapVector[DeviceButtonRelease] = &NotImplemented;
+    EventSwapVector[DeviceMotionNotify] = &NotImplemented;
+    EventSwapVector[DeviceFocusIn] = &NotImplemented;
+    EventSwapVector[DeviceFocusOut] = &NotImplemented;
+    EventSwapVector[ProximityIn] = &NotImplemented;
+    EventSwapVector[ProximityOut] = &NotImplemented;
+    EventSwapVector[DeviceStateNotify] = &NotImplemented;
+    EventSwapVector[DeviceKeyStateNotify] = &NotImplemented;
+    EventSwapVector[DeviceButtonStateNotify] = &NotImplemented;
+    EventSwapVector[DeviceMappingNotify] = &NotImplemented;
+    EventSwapVector[ChangeDeviceNotify] = &NotImplemented;
+    EventSwapVector[DevicePresenceNotify] = &NotImplemented;
+    EventSwapVector[DevicePropertyNotify] = &NotImplemented;
     RestoreExtensionEvents();
 
     free(xi_all_devices.name);
@@ -1009,7 +1091,7 @@ private void IResetProc(ExtensionEntry* unused)
 void AssignTypeAndName(DeviceIntPtr dev, Atom type, const(char)* name)
 {
     dev.xinput_type = type;
-    dev.name = XNFstrdup(name);
+    dev.name = cast(char*)XNFstrdup(name);
 }
 
 /***********************************************************************
@@ -1032,7 +1114,7 @@ private void MakeDeviceTypeAtoms()
  *
  *	Swap any events defined in this extension.
  */
-enum string DO_SWAP(string func,string type) = `` ~ func ~ ` (cast(type*)from, cast(type*)to)`;
+enum string DO_SWAP(string func,string type) = `` ~ func ~ ` (cast(`~type~`*)from, cast(`~type~`*)to);`;
 
 private void SEventIDispatch(xEvent* from, xEvent* to)
 {
@@ -1120,43 +1202,43 @@ void XInputExtensionInit()
         FatalError("Could not initialize barriers.\n");
 
     extEntry = AddExtension(INAME, IEVENTS, IERRORS, &ProcIDispatch,
-                            &ProcIDispatch, &IResetProc, StandardMinorOpcode);
+                            &ProcIDispatch, &IResetProc, &StandardMinorOpcode);
     if (extEntry) {
         assert(extEntry.base == EXTENSION_MAJOR_XINPUT);
 
         IEventBase = extEntry.eventBase;
         XIVersion = thisversion;
         MakeDeviceTypeAtoms();
-        RT_INPUTCLIENT = CreateNewResourceType(cast(DeleteType) InputClientGone,
+        RT_INPUTCLIENT = CreateNewResourceType(cast(DeleteType) &InputClientGone,
                                                "INPUTCLIENT");
         if (!RT_INPUTCLIENT)
             FatalError("Failed to add resource type for XI.\n");
         FixExtensionEvents(extEntry);
-        EventSwapVector[DeviceValuator] = SEventIDispatch;
-        EventSwapVector[DeviceKeyPress] = SEventIDispatch;
-        EventSwapVector[DeviceKeyRelease] = SEventIDispatch;
-        EventSwapVector[DeviceButtonPress] = SEventIDispatch;
-        EventSwapVector[DeviceButtonRelease] = SEventIDispatch;
-        EventSwapVector[DeviceMotionNotify] = SEventIDispatch;
-        EventSwapVector[DeviceFocusIn] = SEventIDispatch;
-        EventSwapVector[DeviceFocusOut] = SEventIDispatch;
-        EventSwapVector[ProximityIn] = SEventIDispatch;
-        EventSwapVector[ProximityOut] = SEventIDispatch;
-        EventSwapVector[DeviceStateNotify] = SEventIDispatch;
-        EventSwapVector[DeviceKeyStateNotify] = SEventIDispatch;
-        EventSwapVector[DeviceButtonStateNotify] = SEventIDispatch;
-        EventSwapVector[DeviceMappingNotify] = SEventIDispatch;
-        EventSwapVector[ChangeDeviceNotify] = SEventIDispatch;
-        EventSwapVector[DevicePresenceNotify] = SEventIDispatch;
+        EventSwapVector[DeviceValuator] = &SEventIDispatch;
+        EventSwapVector[DeviceKeyPress] = &SEventIDispatch;
+        EventSwapVector[DeviceKeyRelease] = &SEventIDispatch;
+        EventSwapVector[DeviceButtonPress] = &SEventIDispatch;
+        EventSwapVector[DeviceButtonRelease] = &SEventIDispatch;
+        EventSwapVector[DeviceMotionNotify] = &SEventIDispatch;
+        EventSwapVector[DeviceFocusIn] = &SEventIDispatch;
+        EventSwapVector[DeviceFocusOut] = &SEventIDispatch;
+        EventSwapVector[ProximityIn] = &SEventIDispatch;
+        EventSwapVector[ProximityOut] = &SEventIDispatch;
+        EventSwapVector[DeviceStateNotify] = &SEventIDispatch;
+        EventSwapVector[DeviceKeyStateNotify] = &SEventIDispatch;
+        EventSwapVector[DeviceButtonStateNotify] = &SEventIDispatch;
+        EventSwapVector[DeviceMappingNotify] = &SEventIDispatch;
+        EventSwapVector[ChangeDeviceNotify] = &SEventIDispatch;
+        EventSwapVector[DevicePresenceNotify] = &SEventIDispatch;
 
         GERegisterExtension(EXTENSION_MAJOR_XINPUT, &XI2EventSwap);
 
         memset(&xi_all_devices, 0, xi_all_devices.sizeof);
         memset(&xi_all_master_devices, 0, xi_all_master_devices.sizeof);
         xi_all_devices.id = XIAllDevices;
-        xi_all_devices.name = XNFstrdup("XIAllDevices");
+        xi_all_devices.name = cast(char*)XNFstrdup("XIAllDevices");
         xi_all_master_devices.id = XIAllMasterDevices;
-        xi_all_master_devices.name = XNFstrdup("XIAllMasterDevices");
+        xi_all_master_devices.name = cast(char*)XNFstrdup("XIAllMasterDevices");
 
         inputInfo.all_devices = &xi_all_devices;
         inputInfo.all_master_devices = &xi_all_master_devices;

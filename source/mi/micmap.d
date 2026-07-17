@@ -488,7 +488,7 @@ Bool miInitVisuals(VisualPtr* visualp, DepthPtr* depthp, int* nvisualp, int* nde
             if (vid)
                 *vid = visual.vid;
             else
-                BUG_WARN(vid == 0);
+                mixin(BUG_WARN!("vid == 0"));
 
             switch (visual.class_) {
             case PseudoColor:

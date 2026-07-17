@@ -68,7 +68,7 @@ import xf86_priv;
 import include.xf86Priv;
 import xf86Config;
 import xf86Xinput_priv;
-import XIstubs;
+import Xi.XIstubs;
 import include.xf86Optrec;
 import mi.mipointer;
 import hw.xfree86.loader.loaderProcs;
@@ -118,7 +118,7 @@ import include.xf86Parser;
 enum string XI_VERIFY_VALUATORS(string num_valuators) = `
     if (` ~ num_valuators ~ ` > MAX_VALUATORS) { 
         LogMessageVerb(X_ERROR, 1, "%s: num_valuator %d is greater than MAX_VALUATORS\n", 
-                       __func__, ` ~ num_valuators ~ `); 
+                       __FUNCTION__.ptr, ` ~ num_valuators ~ `); 
         return; 
     }`;
 
@@ -1056,7 +1056,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
     if (!pInfo)
         return BadAlloc;
 
-    nt_list_for_each_entry(option, options, list.next); {
+    mixin(nt_list_for_each_entry!("option", "options", "list.next")); {
         const(char)* key = input_option_get_key(option);
         const(char)* value = input_option_get_value(option);
 
@@ -1102,7 +1102,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
             pInfo.minor = atoi(value);
     }
 
-    nt_list_for_each_entry(option, options, list.next); {
+    mixin(nt_list_for_each_entry!("option", "options", "list.next")); {
         /* Copy option key/value strings from the provided list */
         pInfo.options = xf86AddNewOption(pInfo.options,
                                           input_option_get_key(option),

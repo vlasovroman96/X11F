@@ -58,7 +58,7 @@ import mi.mipointer_priv;
 import os.cmdline;
 
 import include.xkbsrv;
-import XIstubs;            /* even though we don't use stubs.  cute, no? */
+import Xi.XIstubs;            /* even though we don't use stubs.  cute, no? */
 import include.exevents;
 import Xi.exglobals;
 import include.eventstr;
@@ -857,7 +857,7 @@ void KdRemoveKeyboardDriver(KdKeyboardDriver* driver)
 
 KdKeyboardInfo* KdNewKeyboard()
 {
-    KdKeyboardInfo* ki = cast(KdKeyboardInfo*) calloc(1, KdKeyboardInfo.sizeof);
+    KdKeyboardInfo* ki = cast(KdKeyboardInfo*) cast(KdKeyboardInfo*) calloc(1, KdKeyboardInfo.sizeof);
 
     if (!ki)
         return null;
@@ -887,7 +887,7 @@ int KdAddConfigKeyboard(const(char)* keyboard)
     if (!keyboard)
         return Success;
 
-    new_ = cast(KdConfigDevice*) calloc(1, KdConfigDevice.sizeof);
+    new_ = cast(KdConfigDevice*) cast(KdConfigDevice*) calloc(1, KdConfigDevice.sizeof);
     if (!new_)
         return BadAlloc;
 
@@ -948,7 +948,7 @@ int KdAddConfigPointer(const(char)* pointer)
     if (!pointer)
         return Success;
 
-    new_ = cast(KdConfigDevice*) calloc(1, KdConfigDevice.sizeof);
+    new_ = cast(KdConfigDevice*) cast(KdConfigDevice*) calloc(1, KdConfigDevice.sizeof);
     if (!new_)
         return BadAlloc;
 
@@ -1043,7 +1043,7 @@ KdParseKbdOptions(KdKeyboardInfo* ki)
 {
     InputOption* option = null;
 
-    nt_list_for_each_entry(option, ki.options, list.next); {
+    mixin(nt_list_for_each_entry!("option", "ki.options", "list.next")); {
         const(char)* key = input_option_get_key(option);
         const(char)* value = input_option_get_value(option);
 
@@ -1180,7 +1180,7 @@ void KdParsePointerOptions(KdPointerInfo* pi)
 {
     InputOption* option = null;
 
-    nt_list_for_each_entry(option, pi.options, list.next); {
+    mixin(nt_list_for_each_entry!("option", "pi.options", "list.next")); {
         const(char)* key = input_option_get_key(option);
         const(char)* value = input_option_get_value(option);
 
@@ -2362,7 +2362,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
     KdPointerInfo* pi = null;
     KdKeyboardInfo* ki = null;
 
-    nt_list_for_each_entry(option, options, list.next); {
+    mixin(nt_list_for_each_entry!("option", "options", "list.next")); {
         const(char)* key = input_option_get_key(option);
         const(char)* value = input_option_get_value(option);
         optionsdup = input_option_new(optionsdup, key, value);

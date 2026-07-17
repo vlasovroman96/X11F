@@ -155,7 +155,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
         }
 
         /* build the entry */
-        pNewEvent = cast(DPMSEventPtr)calloc(1, DPMSEventRec.sizeof);
+        pNewEvent = cast(DPMSEventPtr)cast(DPMSEventRec*) calloc(1, DPMSEventRec.sizeof);
         if (!pNewEvent)
             return BadAlloc;
         pNewEvent.client = client;
@@ -173,7 +173,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
          * of clients selecting input
          */
         if (i != Success || !pHead) {
-            pHead = cast(DPMSEventPtr*) calloc(1, DPMSEventPtr.sizeof);
+            pHead = cast(DPMSEventPtr*) cast(DPMSEventPtr*) calloc(1, DPMSEventPtr.sizeof);
             if (!pHead ||
                     !AddResource(eventResource, DPMSEventType, cast(void*)pHead)) {
                 FreeResource(clientResource, X11_RESTYPE_NONE);

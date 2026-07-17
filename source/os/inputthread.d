@@ -214,7 +214,7 @@ int InputThreadRegisterDev(int fd, NotifyFdProcPtr readInputProc, void* readInpu
         dev.readInputProc = readInputProc;
         dev.readInputArgs = readInputArgs;
     } else {
-        dev = cast(InputThreadDevice*) calloc(1, InputThreadDevice.sizeof);
+        dev = cast(InputThreadDevice*) cast(InputThreadDevice*) calloc(1, InputThreadDevice.sizeof);
         if (dev == null) {
             DebugF("input-thread: could not register device\n");
             input_unlock();
@@ -333,7 +333,7 @@ version (HAVE_PTHREAD_SETNAME_NP_WITH_TID) {
 
     while (inputThreadInfo.running)
     {
-        DebugF("input-thread: %s waiting for devices\n", __func__);
+        DebugF("input-thread: %s waiting for devices\n", __FUNCTION__.ptr);
 
         /* Check for hotplug changes and modify the ospoll structure to suit */
         if (inputThreadInfo.changed) {
@@ -365,9 +365,9 @@ version (HAVE_PTHREAD_SETNAME_NP_WITH_TID) {
 
         if (ospoll_wait(inputThreadInfo.fds, -1) < 0) {
             if (errno == EINVAL)
-                FatalError("input-thread: %s (%s)", __func__, strerror(errno));
+                FatalError("input-thread: %s (%s)", __FUNCTION__.ptr, strerror(errno));
             else if (errno != EINTR)
-                ErrorF("input-thread: %s (%s)\n", __func__, strerror(errno));
+                ErrorF("input-thread: %s (%s)\n", __FUNCTION__.ptr, strerror(errno));
         }
 
         /* Kick main thread to process the generated input events and drain
@@ -403,7 +403,7 @@ void InputThreadPreInit()
      if (pipe(hotplugPipe.ptr) < 0)
         FatalError("input-thread: could not create pipe");
 
-    inputThreadInfo = cast(InputThreadInfo*) calloc(1, InputThreadInfo.sizeof);
+    inputThreadInfo = cast(InputThreadInfo*) cast(InputThreadInfo*) calloc(1, InputThreadInfo.sizeof);
     if (!inputThreadInfo)
         FatalError("input-thread: could not allocate memory");
 

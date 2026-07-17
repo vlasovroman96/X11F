@@ -1,4 +1,4 @@
-module getselev;
+module Xi.getselev;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -68,7 +68,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window struct     */
 import dix.swaprep;
-import getprop;
+import Xi.getprop;
 
 /***********************************************************************
  *
@@ -100,7 +100,7 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    if ((pOthers = wOtherInputMasks(pWin)) != 0) {
+    if ((pOthers = mixin(wOtherInputMasks!("pWin"))) != 0) {
         for (others = pOthers.inputClients; others; others = others.next)
             for (i = 0; i < EMASKSIZE; i++)
                 ClassFromMask(null, others.mask[i], i,

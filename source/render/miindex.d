@@ -242,7 +242,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
             pixels[p] = p;
     }
 
-    miIndexedPtr pIndexed = calloc(1, miIndexedRec.sizeof);
+    miIndexedPtr pIndexed = cast(miIndexedRec*) calloc(1, miIndexedRec.sizeof);
     if (!pIndexed)
         return FALSE;
 

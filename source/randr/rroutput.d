@@ -218,7 +218,7 @@ int RROutputAddUserMode(RROutputPtr output, RRModePtr mode)
         newModes = reallocarray(output.userModes,
                                 output.numUserModes + 1, RRModePtr.sizeof);
     else
-        newModes = cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
+        newModes = cast(RRModePtr*) cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
     if (!newModes)
         return BadAlloc;
 

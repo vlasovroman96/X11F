@@ -86,7 +86,7 @@ enum string DEBUG_P(string x) = `DebugF(x"\n")`;
 
 private DisplayModePtr VidModeCreateMode()
 {
-    DisplayModePtr mode = calloc(1, DisplayModeRec.sizeof);
+    DisplayModePtr mode = cast(DisplayModeRec*) calloc(1, DisplayModeRec.sizeof);
     if (mode != null) {
         mode.name = "";
         mode.VScan = 1;        /* divides refresh rate. default = 1 */
@@ -1615,7 +1615,7 @@ private int ProcVidModeSetClientVersion(ClientPtr client)
     DEBUG_P("XF86VidModeSetClientVersion");
 
     if ((pPriv = mixin(VM_GETPRIV!(`client`))) == null) {
-        pPriv = calloc(1, VidModePrivRec.sizeof);
+        pPriv = cast(VidModePrivRec*) calloc(1, VidModePrivRec.sizeof);
         if (!pPriv)
             return BadAlloc;
         mixin(VM_SETPRIV!(`client`, `pPriv`));

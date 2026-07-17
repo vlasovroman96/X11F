@@ -178,7 +178,7 @@ version (MUST_CHECK_FOR_SHM_SYSCALL) {
         return cast(ShmDescPtr) null;
     }
 
-    ShmDescPtr pDesc = cast(ShmDescPtr)calloc(1, ShmDescRec.sizeof);
+    ShmDescPtr pDesc = cast(ShmDescPtr)cast(ShmDescRec*) calloc(1, ShmDescRec.sizeof);
     if (!pDesc) {
         return cast(ShmDescPtr) null;
     }

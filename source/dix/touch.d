@@ -532,8 +532,8 @@ int TouchConvertToPointerEvent(const(InternalEvent)* event, InternalEvent* motio
     int ptrtype = void;
     int nevents = 0;
 
-    BUG_RETURN_VAL(!event, 0);
-    BUG_RETURN_VAL(!motion_event, 0);
+    mixin(BUG_RETURN_VAL!("!event", "0"));
+    mixin(BUG_RETURN_VAL!("!motion_event", "0"));
 
     switch (event.any.type) {
     case ET_TouchUpdate:
@@ -561,7 +561,7 @@ int TouchConvertToPointerEvent(const(InternalEvent)* event, InternalEvent* motio
     motion_event.device_event.flags = XIPointerEmulated;
 
     if (nevents > 1) {
-        BUG_RETURN_VAL(!button_event, 0);
+        mixin(BUG_RETURN_VAL!("!button_event", "0"));
         button_event.device_event = event.device_event;
         button_event.any.type = ptrtype;
         button_event.device_event.flags = XIPointerEmulated;
@@ -723,7 +723,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
     inputMasks = mixin(wOtherInputMasks!("win"));
 
     if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
-        nt_list_for_each_entry(iclients, inputMasks.inputClients, next); {
+        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next")); {
             if (!xi2mask_isset(iclients.xi2mask, dev, evtype))
                 continue;
 
@@ -740,7 +740,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
         int xitype = GetXIType(TouchGetPointerEventType(ev));
         Mask xi_filter = event_get_filter_from_type(dev, xitype);
 
-        nt_list_for_each_entry(iclients, inputMasks.inputClients, next); {
+        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next")); {
             if (!(iclients.mask[dev.id] & xi_filter))
                 continue;
 
@@ -769,7 +769,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
         }
 
         /* all others */
-        nt_list_for_each_entry(oclients, wOtherClients(win), next); {
+        mixin(nt_list_for_each_entry!("oclients", "wOtherClients(win)", "next")); {
             if (!(oclients.mask & core_filter))
                 continue;
 
@@ -900,8 +900,8 @@ int TouchListenerAcceptReject(DeviceIntPtr dev, TouchPointInfoPtr ti, int listen
     InternalEvent* events = void;
     int nev = void;
 
-    BUG_RETURN_VAL(listener < 0, BadMatch);
-    BUG_RETURN_VAL(listener >= ti.num_listeners, BadMatch);
+    mixin(BUG_RETURN_VAL!("listener < 0", "BadMatch"));
+    mixin(BUG_RETURN_VAL!("listener >= ti.num_listeners", "BadMatch"));
 
     if (listener > 0) {
         if (mode == XIRejectTouch)

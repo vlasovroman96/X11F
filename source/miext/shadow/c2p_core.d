@@ -48,7 +48,7 @@ pragma(inline, true) private void _transp(CARD32* d, uint i1, uint i2, uint shif
 
 
 pragma(inline, true) private void c2p_unsupported() {
-    BUG_WARN(1);
+    mixin(BUG_WARN!("1"));
 }
 
 pragma(inline, true) private CARD32 get_mask(uint n)

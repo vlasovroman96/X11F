@@ -124,7 +124,7 @@ void exaDDXDriverInit(ScreenPtr pScreen)
     if (!dixRegisterPrivateKey(&exaXorgScreenPrivateKeyRec, PRIVATE_SCREEN, 0))
         return;
 
-    pScreenPriv = calloc(1, ExaXorgScreenPrivRec.sizeof);
+    pScreenPriv = cast(ExaXorgScreenPrivRec*) calloc(1, ExaXorgScreenPrivRec.sizeof);
     if (pScreenPriv == null)
         return;
 

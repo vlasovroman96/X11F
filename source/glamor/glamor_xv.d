@@ -574,7 +574,7 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
     glamor_put_vbo_space(screen);
 
     /* Now draw our big triangle, clipped to each of the clip boxes. */
-    BUG_RETURN(!pixmap_priv);
+    mixin(BUG_RETURN!("!pixmap_priv"));
     glamor_pixmap_loop(pixmap_priv, dst_box_index); {
         int dst_off_x = void, dst_off_y = void;
 

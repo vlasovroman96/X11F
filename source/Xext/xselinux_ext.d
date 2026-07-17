@@ -38,6 +38,8 @@ import externs.attrs;
 import dix.dixutils;
 import os.log;
 import dix.extension;
+import dix.devices;
+
 
 enum SELINUX_MODE_DISABLED = false;
 

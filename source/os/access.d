@@ -1158,7 +1158,7 @@ static if (!(HasVersion!"__sun" && HasVersion!"HAVE_GETPEERUCRED")) {
     }
 }
 
-    *lccp = calloc(1, LocalClientCredRec.sizeof);
+    *lccp = cast(LocalClientCredRec*) calloc(1, LocalClientCredRec.sizeof);
     if (*lccp == null)
         return -1;
     lcc = *lccp;
@@ -1621,7 +1621,7 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
         }
     }
 
-    s = cast(siType*) calloc(1, siType.sizeof);
+    s = cast(siType*) cast(siType*) calloc(1, siType.sizeof);
     if (s == null)
         return BadAlloc;
 
@@ -2702,7 +2702,7 @@ static if (!(HasVersion!"__sun" && HasVersion!"HAVE_GETPEERUCRED")) {
     }
 }
 
-    *lccp = calloc(1, LocalClientCredRec.sizeof);
+    *lccp = cast(LocalClientCredRec*) calloc(1, LocalClientCredRec.sizeof);
     if (*lccp == null)
         return -1;
     lcc = *lccp;
@@ -3165,7 +3165,7 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
         }
     }
 
-    s = cast(siType*) calloc(1, siType.sizeof);
+    s = cast(siType*) cast(siType*) calloc(1, siType.sizeof);
     if (s == null)
         return BadAlloc;
 

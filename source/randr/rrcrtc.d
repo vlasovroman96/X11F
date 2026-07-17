@@ -87,7 +87,7 @@ RRCrtcPtr RRCrtcCreate(ScreenPtr pScreen, void* devPrivate)
         return null;
     pScrPriv.crtcs = crtcs;
 
-    crtc = calloc(1, RRCrtcRec.sizeof);
+    crtc = cast(RRCrtcRec*) calloc(1, RRCrtcRec.sizeof);
     if (!crtc)
         return null;
     crtc.id = dixAllocServerXID();
@@ -192,7 +192,7 @@ Bool RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotatio
     /*
      * Copy the new list of outputs into the crtc
      */
-    BUG_RETURN_VAL(numOutputs != 0 && outputs == null, FALSE);
+    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs == null", "FALSE"));
     memcpy(crtc.outputs, outputs, numOutputs * RROutputPtr.sizeof);
 
     /*
@@ -730,7 +730,7 @@ Bool RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, 
     Bool crtcChanged = void;
     int o = void;
 
-    BUG_RETURN_VAL(numOutputs != 0 && outputs == null, FALSE);
+    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs == null", "FALSE"));
 
     rrScrPriv(pScreen);
 

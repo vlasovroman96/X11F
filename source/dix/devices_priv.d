@@ -21,7 +21,7 @@ struct DeviceAccessCallbackParam {
     int status;
 }
 
-pragma(inline, true) private int dixCallDeviceAccessCallback(ClientPtr client, DeviceIntPtr dev, Mask access_mode)
+pragma(inline, true) int dixCallDeviceAccessCallback(ClientPtr client, DeviceIntPtr dev, Mask access_mode)
 {
     DeviceAccessCallbackParam rec = { client, dev, access_mode, Success };
     CallCallbacks(&DeviceAccessCallback, &rec);

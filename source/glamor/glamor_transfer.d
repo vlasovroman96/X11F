@@ -55,7 +55,7 @@ void glamor_upload_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, int
     if (glamor_priv.has_unpack_subimage)
         glPixelStorei(GL_UNPACK_ROW_LENGTH, byte_stride / bytes_per_pixel);
 
-    BUG_RETURN(!priv);
+    mixin(BUG_RETURN!("!priv"));
 
     glamor_pixmap_loop(priv, box_index); {
         BoxPtr box = glamor_pixmap_box_at(priv, box_index);
@@ -153,7 +153,7 @@ void glamor_download_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, i
     if (glamor_priv.has_pack_subimage)
         glPixelStorei(GL_PACK_ROW_LENGTH, byte_stride / bytes_per_pixel);
 
-    BUG_RETURN(!priv);
+    mixin(BUG_RETURN!("!priv"));
 
     glamor_pixmap_loop(priv, box_index); {
         BoxPtr box = glamor_pixmap_box_at(priv, box_index);

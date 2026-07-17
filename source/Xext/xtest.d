@@ -77,6 +77,7 @@ import os.log;
 import externs.gnu;
 import externs.X11.Xatom;
 import dix.extension;
+import dix.devices;
 
 enum XTestCurrentCursor = cast(Cursor)1;
 

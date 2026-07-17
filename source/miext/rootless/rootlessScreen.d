@@ -712,7 +712,7 @@ private Bool RootlessAllocatePrivates(ScreenPtr pScreen)
         (&rootlessWindowOldPixmapPrivateKeyRec, PRIVATE_WINDOW, 0))
         return FALSE;
 
-    RootlessScreenRec* s = cast(RootlessScreenRec*) calloc(1, RootlessScreenRec.sizeof);
+    RootlessScreenRec* s = cast(RootlessScreenRec*) cast(RootlessScreenRec*) calloc(1, RootlessScreenRec.sizeof);
     if (!s)
         return FALSE;
     SETSCREENREC(pScreen, s);

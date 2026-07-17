@@ -266,7 +266,7 @@ private char* vs_location_vars(glamor_program_location locations)
     int l = void;
     char* vars = strdup("");
 
-    for (l = 0; vars && l < ARRAY_SIZE(location_vars.ptr); l++)
+    for (l = 0; vars && l < mixin(ARRAY_SIZE!("location_vars.ptr")); l++)
         if (locations & location_vars[l].location)
             vars = add_var(vars, location_vars[l].vs_vars);
     return vars;
@@ -277,7 +277,7 @@ private char* fs_location_vars(glamor_program_location locations)
     int l = void;
     char* vars = strdup("");
 
-    for (l = 0; vars && l < ARRAY_SIZE(location_vars.ptr); l++)
+    for (l = 0; vars && l < mixin(ARRAY_SIZE!("location_vars.ptr")); l++)
         if (locations & location_vars[l].location)
             vars = add_var(vars, location_vars[l].fs_vars);
     return vars;
@@ -709,7 +709,7 @@ glamor_program* glamor_setup_program_render(CARD8 op, PicturePtr src, PicturePtr
     glamor_program_source source_type = void;
     glamor_program* prog = void;
 
-    if (op > ARRAY_SIZE(composite_op_info.ptr))
+    if (op > mixin(ARRAY_SIZE!("composite_op_info.ptr")))
         return null;
 
     if (glamor_is_component_alpha(mask)) {

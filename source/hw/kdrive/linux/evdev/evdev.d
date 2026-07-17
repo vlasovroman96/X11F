@@ -226,7 +226,7 @@ private Status EvdevPtrEnable(KdPointerInfo* pi)
         close(fd);
         return BadMatch;
     }
-    ke = cast(Kevdev*) calloc(1, Kevdev.sizeof);
+    ke = cast(Kevdev*) cast(Kevdev*) calloc(1, Kevdev.sizeof);
     if (!ke) {
         close(fd);
         return BadAlloc;
@@ -390,7 +390,7 @@ private Status EvdevKbdEnable(KdKeyboardInfo* ki)
         return BadMatch;
     }
 
-    ke = cast(Kevdev*) calloc(1, Kevdev.sizeof);
+    ke = cast(Kevdev*) cast(Kevdev*) calloc(1, Kevdev.sizeof);
     if (!ke) {
         close(fd);
         return BadAlloc;

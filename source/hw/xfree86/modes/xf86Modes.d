@@ -653,7 +653,7 @@ private DisplayModePtr xf86GetConfigModes(XF86ConfModeLinePtr conf_mode)
     DisplayModePtr head = null, prev = null, mode = void;
 
     for (; conf_mode; conf_mode = cast(XF86ConfModeLinePtr) conf_mode.list.next) {
-        mode = calloc(1, DisplayModeRec.sizeof);
+        mode = cast(DisplayModeRec*) calloc(1, DisplayModeRec.sizeof);
         if (!mode)
             continue;
         mode.name = Xstrdup(conf_mode.ml_identifier);

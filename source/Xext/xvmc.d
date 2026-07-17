@@ -224,7 +224,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
         (stuff.height > surface.max_height))
         return BadValue;
 
-    if (((pContext = cast(XvMCContextPtr)calloc(1, XvMCContextRec.sizeof)) !is null)) {
+    if (((pContext = cast(XvMCContextPtr)cast(XvMCContextRec*) calloc(1, XvMCContextRec.sizeof)) !is null)) {
         return BadAlloc;
     }
 
@@ -302,7 +302,7 @@ private int ProcXvMCCreateSurface(ClientPtr client)
 
     pScreenPriv = mixin(XVMC_GET_PRIVATE!(`pContext.pScreen`));
 
-    if (((pSurface = cast(XvMCSurfacePtr)calloc(1, XvMCSurfaceRec.sizeof)) !is null))
+    if (((pSurface = cast(XvMCSurfacePtr)cast(XvMCSurfaceRec*) calloc(1, XvMCSurfaceRec.sizeof)) !is null))
         return BadAlloc;
 
     pSurface.surface_id = stuff.surface_id;
@@ -409,7 +409,7 @@ private int ProcXvMCCreateSubpicture(ClientPtr client)
         (stuff.height > surface.subpicture_max_height))
         return BadValue;
 
-    if (((pSubpicture = cast(XvMCSubpicturePtr)calloc(1, XvMCSubpictureRec.sizeof)) !is null))
+    if (((pSubpicture = cast(XvMCSubpicturePtr)cast(XvMCSubpictureRec*) calloc(1, XvMCSubpictureRec.sizeof)) !is null))
         return BadAlloc;
 
     pSubpicture.subpicture_id = stuff.subpicture_id;
@@ -715,7 +715,7 @@ int XvMCScreenInit(ScreenPtr pScreen, int num, XvMCAdaptorPtr pAdapt)
     if (!dixRegisterPrivateKey(&XvMCScreenKeyRec, PRIVATE_SCREEN, 0))
         return BadAlloc;
 
-    if (((pScreenPriv = cast(XvMCScreenPtr)calloc(1, XvMCScreenRec.sizeof)) !is null))
+    if (((pScreenPriv = cast(XvMCScreenPtr)cast(XvMCScreenRec*) calloc(1, XvMCScreenRec.sizeof)) !is null))
         return BadAlloc;
 
     dixSetPrivate(&pScreen.devPrivates, &XvMCScreenKeyRec, pScreenPriv);

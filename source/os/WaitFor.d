@@ -290,7 +290,7 @@ OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback 
     CARD32 now = GetTimeInMillis();
 
     if (!timer) {
-        timer = calloc(1, _OsTimerRec.sizeof);
+        timer = cast(_OsTimerRec*) calloc(1, _OsTimerRec.sizeof);
         if (!timer)
             return null;
         xorg_list_init(&timer.list);

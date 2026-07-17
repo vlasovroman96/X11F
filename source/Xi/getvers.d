@@ -1,4 +1,4 @@
-module getvers;
+module Xi.getvers;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************

@@ -1195,7 +1195,7 @@ private void dix_input_attributes()
     new_ = DuplicateInputAttributes(null);
     assert(!new_);
 
-    orig = cast(InputAttributes*) calloc(1, InputAttributes.sizeof);
+    orig = cast(InputAttributes*) cast(InputAttributes*) calloc(1, InputAttributes.sizeof);
     assert(orig);
 
     new_ = DuplicateInputAttributes(orig);
@@ -1434,14 +1434,14 @@ private void include_bit_test_macros()
     ubyte[9] mask = 0;
     int i = void;
 
-    for (i = 0; i < ARRAY_SIZE(mask.ptr); i++) {
-        assert(BitIsOn(mask.ptr, i) == 0);
+    for (i = 0; i < mixin(ARRAY_SIZE!("mask.ptr")); i++) {
+        assert(mixin(BitIsOn!("mask.ptr", "i")) == 0);
         SetBit(mask.ptr, i);
-        assert(BitIsOn(mask.ptr, i) == 1);
+        assert(mixin(BitIsOn!("mask.ptr", "i")) == 1);
         assert(! !(mask[i / 8] & (1 << (i % 8))));
         assert(CountBits(mask.ptr, mask.sizeof) == 1);
         ClearBit(mask.ptr, i);
-        assert(BitIsOn(mask.ptr, i) == 0);
+        assert(mixin(BitIsOn!("mask.ptr", "i")) == 0);
     }
 }
 

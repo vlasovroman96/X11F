@@ -254,7 +254,7 @@ Bool fbOverlayFinishScreenInit(ScreenPtr pScreen, void* pbits1, void* pbits2, in
     if (bpp1 == 24 || bpp2 == 24)
         return FALSE;
 
-    FbOverlayScrPrivPtr pScrPriv = calloc(1, FbOverlayScrPrivRec.sizeof);
+    FbOverlayScrPrivPtr pScrPriv = cast(FbOverlayScrPrivRec*) calloc(1, FbOverlayScrPrivRec.sizeof);
     if (!pScrPriv)
         return FALSE;
 

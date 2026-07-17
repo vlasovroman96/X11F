@@ -171,7 +171,7 @@ public import core.stdc.stdio;              /* for fopen, etc... */
  * @param bits The minimum number of bits needed.
  * @return The number of bytes needed to hold bits.
  */
-pragma(inline, true) private int bits_to_bytes(const(int) bits)
+pragma(inline, true) int bits_to_bytes(const(int) bits)
 {
     return ((bits + 7) >> 3);
 }

@@ -1,4 +1,4 @@
-module devbell;
+module Xi.devbell;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -62,6 +62,11 @@ import include.inputstr;           /* DeviceIntPtr      */
 
 import dix.request_priv;
 import Xi.handlers;
+import externs.X11.extensions.XI;
+import externs.X11.extensions.XIproto;
+import dix.devices;
+
+
 
 /***********************************************************************
  *

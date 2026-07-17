@@ -121,7 +121,7 @@ private int ms_present_queue_vblank(RRCrtcPtr crtc, ulong event_id, ulong msc)
     ms_present_vblank_event* event = void;
     uint seq = void;
 
-    event = cast(ms_present_vblank_event*) calloc(1, ms_present_vblank_event.sizeof);
+    event = cast(ms_present_vblank_event*) cast(ms_present_vblank_event*) calloc(1, ms_present_vblank_event.sizeof);
     if (!event)
         return BadAlloc;
     event.event_id = event_id;
@@ -388,7 +388,7 @@ private Bool ms_present_flip(RRCrtcPtr crtc, ulong event_id, ulong target_msc, P
         !ms_present_check_flip(crtc, ms.flip_window, pixmap, sync_flip, null))
         return FALSE;
 
-    event = cast(ms_present_vblank_event*) calloc(1, ms_present_vblank_event.sizeof);
+    event = cast(ms_present_vblank_event*) cast(ms_present_vblank_event*) calloc(1, ms_present_vblank_event.sizeof);
     if (!event)
         return FALSE;
 
@@ -440,7 +440,7 @@ private void ms_present_unflip(ScreenPtr screen, ulong event_id)
     if (ms_present_check_unflip(null, screen.root, pixmap, TRUE, null)) {
         ms_present_vblank_event* event = void;
 
-        event = cast(ms_present_vblank_event*) calloc(1, ms_present_vblank_event.sizeof);
+        event = cast(ms_present_vblank_event*) cast(ms_present_vblank_event*) calloc(1, ms_present_vblank_event.sizeof);
         if (!event)
             return;
 

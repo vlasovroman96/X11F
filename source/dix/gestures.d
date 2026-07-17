@@ -162,7 +162,7 @@ void GestureAddListener(GestureInfoPtr gi, XID resource, int resource_type, Gest
 {
     GrabPtr g = null;
 
-    BUG_RETURN(gi.has_listener);
+    mixin(BUG_RETURN!("gi.has_listener"));
 
     /* We need a copy of the grab, not the grab itself since that may be deleted by
      * a UngrabButton request and leaves us with a dangling pointer */
@@ -233,7 +233,7 @@ private void GestureAddRegularListener(DeviceIntPtr dev, GestureInfoPtr gi, Wind
     inputMasks = mixin(wOtherInputMasks!("win"));
 
     if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
-        nt_list_for_each_entry(iclients, inputMasks.inputClients, next); {
+        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next")); {
             if (!xi2mask_isset(iclients.xi2mask, dev, evtype))
                 continue;
 

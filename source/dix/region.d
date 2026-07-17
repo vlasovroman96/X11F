@@ -241,7 +241,7 @@ void InitRegions()
 
 RegionPtr RegionCreate(BoxPtr rect, int size)
 {
-    RegionPtr pReg = calloc(1, RegionRec.sizeof);
+    RegionPtr pReg = cast(RegionRec*) calloc(1, RegionRec.sizeof);
     if (!pReg)
         return &RegionBrokenRegion;
 
@@ -1214,7 +1214,7 @@ Bool RegionValidate(RegionPtr badreg, Bool* pOverlap)
         if (sizeRI == numRI) {
             /* Oops, allocate space for new region information */
             sizeRI <<= 1;
-            rit = cast(RegionInfo*) reallocarray(ri, sizeRI, RegionInfo.sizeof);
+            rit = cast(RegionInfo*) cast(RegionInfo*) reallocarray(ri, sizeRI, RegionInfo.sizeof);
             if (!rit)
                 goto bail;
             ri = rit;

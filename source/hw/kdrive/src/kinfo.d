@@ -32,7 +32,7 @@ KdCardInfo* KdCardInfoAdd(KdCardFuncs* funcs, void* closure)
 {
     KdCardInfo* ci = void; KdCardInfo** prev = void;
 
-    ci = cast(KdCardInfo*) calloc(1, KdCardInfo.sizeof);
+    ci = cast(KdCardInfo*) cast(KdCardInfo*) calloc(1, KdCardInfo.sizeof);
     if (!ci)
         return 0;
     for (prev = &kdCardInfo; *prev; prev = &(*prev).next){}
@@ -72,7 +72,7 @@ KdScreenInfo* KdScreenInfoAdd(KdCardInfo* ci)
     KdScreenInfo* si = void; KdScreenInfo** prev = void;
     int n = void;
 
-    si = cast(KdScreenInfo*) calloc(1, KdScreenInfo.sizeof);
+    si = cast(KdScreenInfo*) cast(KdScreenInfo*) calloc(1, KdScreenInfo.sizeof);
     if (!si)
         return 0;
     for (prev = &ci.screenList, n = 0; *prev; prev = &(*prev).next, n++){}
@@ -104,7 +104,7 @@ KdPointerInfo* KdNewPointer()
     KdPointerInfo* pi = void;
     int i = void;
 
-    pi = cast(KdPointerInfo*) calloc(1, KdPointerInfo.sizeof);
+    pi = cast(KdPointerInfo*) cast(KdPointerInfo*) calloc(1, KdPointerInfo.sizeof);
     if (!pi)
         return null;
 

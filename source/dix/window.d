@@ -562,7 +562,7 @@ Bool CreateRootWindow(ScreenPtr pScreen)
     pWin.parent = NullWindow;
     SetWindowToDefaults(pWin);
 
-    pWin.optional = calloc(1, WindowOptRec.sizeof);
+    pWin.optional = cast(WindowOptRec*) calloc(1, WindowOptRec.sizeof);
     if (!pWin.optional)
         return FALSE;
 
@@ -3115,7 +3115,7 @@ int dixSaveScreens(ClientPtr client, int on, int mode)
         if (on == SCREEN_SAVER_FORCER) {
             DeviceIntPtr dev = void;
             UpdateCurrentTimeIf();
-            nt_list_for_each_entry(dev, inputInfo.devices, next);
+            mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next"));
                 NoticeTime(dev, currentTime);
         }
         SetScreenSaverTimer();
@@ -3313,7 +3313,7 @@ Bool MakeWindowOptional(WindowPtr pWin)
     if (pWin.optional)
         return TRUE;
 
-    WindowOptPtr optional = calloc(1, WindowOptRec.sizeof);
+    WindowOptPtr optional = cast(WindowOptRec*) calloc(1, WindowOptRec.sizeof);
     if (!optional)
         return FALSE;
     optional.dontPropagateMask = DontPropagateMasks[pWin.dontPropagate];
@@ -3404,7 +3404,7 @@ int ChangeWindowDeviceCursor(WindowPtr pWin, DeviceIntPtr pDev, CursorPtr pCurso
         if (!pCursor)
             return Success;
 
-        DevCursNodePtr pNewNode = calloc(1, DevCursNodeRec.sizeof);
+        DevCursNodePtr pNewNode = cast(DevCursNodeRec*) calloc(1, DevCursNodeRec.sizeof);
         if (!pNewNode)
             return BadAlloc;
 

@@ -1,4 +1,4 @@
-module getfctl;
+module Xi.getfctl;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -64,6 +64,12 @@ import dix.rpcbuf_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.devices;
+
+
+
 
 /***********************************************************************
  *
@@ -80,13 +86,13 @@ private void CopySwapKbdFeedback(ClientPtr client, KbdFeedbackPtr k, char** buf)
     k2.class_ = KbdFeedbackClass;
     k2.length = xKbdFeedbackState.sizeof;
     k2.id = k.ctrl.id;
-    k2.click = k.ctrl.click;
-    k2.percent = k.ctrl.bell;
-    k2.pitch = k.ctrl.bell_pitch;
-    k2.duration = k.ctrl.bell_duration;
-    k2.led_mask = k.ctrl.leds;
-    k2.led_values = k.ctrl.leds;
-    k2.global_auto_repeat = k.ctrl.autoRepeat;
+    k2.click = cast(ubyte)k.ctrl.click;
+    k2.percent = cast(ubyte)k.ctrl.bell;
+    k2.pitch = cast(ushort)k.ctrl.bell_pitch;
+    k2.duration = cast(ushort)k.ctrl.bell_duration;
+    k2.led_mask = cast(uint)k.ctrl.leds;
+    k2.led_values = cast(uint)k.ctrl.leds;
+    k2.global_auto_repeat = cast(ubyte)k.ctrl.autoRepeat;
     for (i = 0; i < 32; i++)
         k2.auto_repeats[i] = k.ctrl.autoRepeats[i];
     if (client.swapped) {
@@ -113,9 +119,9 @@ private void CopySwapPtrFeedback(ClientPtr client, PtrFeedbackPtr p, char** buf)
     p2.class_ = PtrFeedbackClass;
     p2.length = xPtrFeedbackState.sizeof;
     p2.id = p.ctrl.id;
-    p2.accelNum = p.ctrl.num;
-    p2.accelDenom = p.ctrl.den;
-    p2.threshold = p.ctrl.threshold;
+    p2.accelNum = cast(ushort)p.ctrl.num;
+    p2.accelDenom = cast(ushort)p.ctrl.den;
+    p2.threshold = cast(ushort)p.ctrl.threshold;
     if (client.swapped) {
         swaps(&p2.length);
         swaps(&p2.accelNum);
@@ -165,11 +171,11 @@ private void CopySwapStringFeedback(ClientPtr client, StringFeedbackPtr s, char*
 
     s2 = cast(xStringFeedbackState*) * buf;
     s2.class_ = StringFeedbackClass;
-    s2.length = (cast(xStringFeedbackState) +
-        s.ctrl.num_symbols_supported * KeySym.sizeof).sizeof;
+    s2.length = cast(ushort)(xStringFeedbackState.sizeof +
+        s.ctrl.num_symbols_supported * KeySym.sizeof);
     s2.id = s.ctrl.id;
-    s2.max_symbols = s.ctrl.max_symbols;
-    s2.num_syms_supported = s.ctrl.num_symbols_supported;
+    s2.max_symbols = cast(ushort)s.ctrl.max_symbols;
+    s2.num_syms_supported = cast(ushort)s.ctrl.num_symbols_supported;
     *buf += xStringFeedbackState.sizeof;
     kptr = cast(KeySym*) (*buf);
     for (i = 0; i < s.ctrl.num_symbols_supported; i++)
@@ -200,8 +206,8 @@ private void CopySwapLedFeedback(ClientPtr client, LedFeedbackPtr l, char** buf)
     l2.class_ = LedFeedbackClass;
     l2.length = xLedFeedbackState.sizeof;
     l2.id = l.ctrl.id;
-    l2.led_values = l.ctrl.led_values;
-    l2.led_mask = l.ctrl.led_mask;
+    l2.led_values = cast(uint)l.ctrl.led_values;
+    l2.led_mask = cast(uint)l.ctrl.led_mask;
     if (client.swapped) {
         swaps(&l2.length);
         swapl(&l2.led_values);
@@ -224,9 +230,9 @@ private void CopySwapBellFeedback(ClientPtr client, BellFeedbackPtr b, char** bu
     b2.class_ = BellFeedbackClass;
     b2.length = xBellFeedbackState.sizeof;
     b2.id = b.ctrl.id;
-    b2.percent = b.ctrl.percent;
-    b2.pitch = b.ctrl.pitch;
-    b2.duration = b.ctrl.duration;
+    b2.percent = cast(ubyte)b.ctrl.percent;
+    b2.pitch = cast(ushort)b.ctrl.pitch;
+    b2.duration = cast(ushort)b.ctrl.duration;
     if (client.swapped) {
         swaps(&b2.length);
         swaps(&b2.pitch);
@@ -272,8 +278,8 @@ int ProcXGetFeedbackControl(ClientPtr client)
     }
     for (s = dev.stringfeed; s; s = s.next) {
         reply.num_feedbacks++;
-        total_length += ((xStringFeedbackState) +
-            (s.ctrl.num_symbols_supported * KeySym.sizeof)).sizeof;
+        total_length += ((xStringFeedbackState).sizeof +
+            (s.ctrl.num_symbols_supported * KeySym.sizeof));
     }
     for (i = dev.intfeed; i; i = i.next) {
         reply.num_feedbacks++;
@@ -292,7 +298,7 @@ int ProcXGetFeedbackControl(ClientPtr client)
         return BadMatch;
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-    char* buf = x_rpcbuf_reserve(&rpcbuf, total_length);
+    char* buf = cast(char*)x_rpcbuf_reserve(&rpcbuf, total_length);
 
     for (k = dev.kbdfeed; k; k = k.next)
         CopySwapKbdFeedback(client, k, &buf);

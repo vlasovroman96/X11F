@@ -861,7 +861,7 @@ private int RecordInstallHooks(RecordClientsAndProtocolPtr pRCAP, XID oneclient)
                     RecordClientPrivatePtr pClientPriv = void;
 
                     /* no Record proc vector; allocate one */
-                    pClientPriv = calloc(1, RecordClientPrivateRec.sizeof);
+                    pClientPriv = cast(RecordClientPrivateRec*) calloc(1, RecordClientPrivateRec.sizeof);
                     if (!pClientPriv)
                         return BadAlloc;
                     /* copy old proc vector to new */
@@ -1827,14 +1827,14 @@ private int ProcRecordCreateContext(ClientPtr client)
 
     LEGAL_NEW_RESOURCE(stuff.context, client);
 
-    RecordContextPtr pContext = calloc(1, RecordContextRec.sizeof);
+    RecordContextPtr pContext = cast(RecordContextRec*) calloc(1, RecordContextRec.sizeof);
     if (!pContext)
         goto bailout;
 
     /* make sure there is room in ppAllContexts to store the new context */
 
     ppNewAllContexts =
-        reallocarray(ppAllContexts, numContexts + 1, RecordContextPtr.sizeof);
+        cast(RecordContextPtr*) reallocarray(ppAllContexts, numContexts + 1, RecordContextPtr.sizeof);
     if (!ppNewAllContexts)
         goto bailout;
     ppAllContexts = ppNewAllContexts;
@@ -1961,7 +1961,7 @@ private int RecordAllocRanges(GetContextRangeInfoPtr pri, int nRanges)
 enum SZINCR = 8;
 
     newsize = max(pri.size + SZINCR, nRanges);
-    pNewRange = reallocarray(pri.pRanges, newsize, xRecordRange.sizeof);
+    pNewRange = cast(xRecordRange*) reallocarray(pri.pRanges, newsize, xRecordRange.sizeof);
     if (!pNewRange)
         return BadAlloc;
 

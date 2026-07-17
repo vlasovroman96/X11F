@@ -124,7 +124,7 @@ XF86ConfModulePtr xf86parseModuleSection(XF86ConfModulePtr ptr)
 
     if (ptr == null)
     {
-        if((ptr=calloc(1, XF86ConfModuleRec.sizeof)) == null)
+        if((ptr=cast(XF86ConfModuleRec*) calloc(1, XF86ConfModuleRec.sizeof)) == null)
         {
             return null;
         }
@@ -228,7 +228,7 @@ XF86LoadPtr xf86addNewLoadDirective(XF86LoadPtr head, const(char)* name, int typ
     XF86LoadPtr new_ = void;
     int token = void;
 
-    new_ = calloc(1, XF86LoadRec.sizeof);
+    new_ = cast(XF86LoadRec*) calloc(1, XF86LoadRec.sizeof);
     assert(new_);
     new_.load_name = name;
     new_.load_type = type;

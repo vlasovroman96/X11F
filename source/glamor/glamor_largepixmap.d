@@ -186,7 +186,7 @@ glamor_pixmap_clipped_regions* glamor_compute_clipped_regions_ext(PixmapPtr pixm
         small_box.y2 = block_h;
     }
     else {
-        BUG_RETURN_VAL(!pixmap_priv, null);
+        mixin(BUG_RETURN_VAL!("!pixmap_priv", "null"));
         glamor_pixmap_private* priv = __glamor_large(pixmap_priv);
 
         clipped_regions = __glamor_compute_clipped_regions(priv.block_w,
@@ -1133,7 +1133,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
         /* XXX self-copy... */
         need_free_source_pixmap_priv = source_pixmap_priv;
         source_pixmap_priv = cast(glamor_pixmap_private*) calloc(1, typeof(*source_pixmap_priv).sizeof);
-        BUG_RETURN_VAL(!source_pixmap_priv, FALSE);
+        mixin(BUG_RETURN_VAL!("!source_pixmap_priv", "FALSE"));
         *source_pixmap_priv = *need_free_source_pixmap_priv;
         need_free_source_pixmap_priv = source_pixmap_priv;
     }

@@ -1060,7 +1060,7 @@ private int _XkbFilterDeviceBtn(XkbSrvInfoPtr xkbi, XkbFilterPtr filter, uint ke
         switch (pAction.type) {
         case XkbSA_LockDeviceBtn:
             if ((pAction.devbtn.flags & XkbSA_LockNoLock) ||
-                BitIsOn(dev.button.down, button))
+                mixin(BitIsOn!("dev.button.down", "button")))
                 return 0;
             XkbFakeDeviceButton(dev, TRUE, button);
             filter.upAction.type = XkbSA_NoAction;
@@ -1095,7 +1095,7 @@ private int _XkbFilterDeviceBtn(XkbSrvInfoPtr xkbi, XkbFilterPtr filter, uint ke
         switch (filter.upAction.type) {
         case XkbSA_LockDeviceBtn:
             if ((filter.upAction.devbtn.flags & XkbSA_LockNoUnlock) ||
-                !BitIsOn(dev.button.down, button))
+                !mixin(BitIsOn!("dev.button.down", "button")))
                 return 0;
             XkbFakeDeviceButton(dev, FALSE, button);
             break;

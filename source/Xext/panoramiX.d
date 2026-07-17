@@ -441,7 +441,7 @@ Bool XineramaRegisterConnectionBlockCallback(void function() @nogc nothrow func)
 {
     XineramaConnectionCallbackList* newlist = void;
 
-    if (((newlist = cast(XineramaConnectionCallbackList*) calloc(1, XineramaConnectionCallbackList.sizeof)) == null))
+    if (((newlist = cast(XineramaConnectionCallbackList*) cast(XineramaConnectionCallbackList*) calloc(1, XineramaConnectionCallbackList.sizeof)) == null))
         return FALSE;
 
     newlist.next = ConnectionCallbackList;
@@ -534,7 +534,7 @@ void PanoramiXExtensionInit()
      *      run in non-PanoramiXeen mode.
      */
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
-        PanoramiXScreenPtr pScreenPriv = cast(PanoramiXScreenPtr)calloc(1, PanoramiXScreenRec.sizeof);
+        PanoramiXScreenPtr pScreenPriv = cast(PanoramiXScreenPtr)cast(PanoramiXScreenRec*) calloc(1, PanoramiXScreenRec.sizeof);
         dixSetPrivate(&walkScreen.devPrivates, &PanoramiXScreenKeyRec,
                       pScreenPriv);
         if (!pScreenPriv) {
@@ -859,18 +859,18 @@ extern void PanoramiXConsolidate()
     for (int i = 0; i < masterScreen.numVisuals; i++)
         PanoramiXMaybeAddVisual(pVisual++);
 
-    PanoramiXRes* root = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
+    PanoramiXRes* root = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
     if (!root)
         return;
 
     root.type = XRT_WINDOW;
-    PanoramiXRes* defmap = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
+    PanoramiXRes* defmap = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
     if (!defmap) {
         free(root);
         return;
     }
     defmap.type = XRT_COLORMAP;
-    PanoramiXRes* saver = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
+    PanoramiXRes* saver = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof);
     if (!saver) {
         free(root);
         free(defmap);

@@ -66,9 +66,11 @@ import dix.resource_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
-import XIstubs;
+import Xi.XIstubs;
 import Xi.exglobals;
 import externs.X11.extensions.XI;
+import dix.devices;
+
 
 
 /***********************************************************************

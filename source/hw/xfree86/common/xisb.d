@@ -44,7 +44,7 @@ import include.xisb;
 
 XISBuffer* XisbNew(int fd, ssize_t size)
 {
-    XISBuffer* b = cast(XISBuffer*) calloc(1, XISBuffer.sizeof);
+    XISBuffer* b = cast(XISBuffer*) cast(XISBuffer*) calloc(1, XISBuffer.sizeof);
     if (!b)
         return null;
     b.buf = calloc(ubyte.sizeof, size);

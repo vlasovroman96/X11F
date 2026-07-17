@@ -1049,7 +1049,7 @@ void* Popen(const(char)* command, const(char)* type)
     if ((*type != 'r' && *type != 'w') || type[1])
         return null;
 
-    if ((cur = cast(pid*) calloc(1, pid.sizeof)) == null)
+    if ((cur = cast(pid*) cast(pid*) calloc(1, pid.sizeof)) == null)
         return null;
 
     if (pipe(pdes.ptr) < 0) {

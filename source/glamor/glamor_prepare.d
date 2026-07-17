@@ -46,7 +46,7 @@ private Bool glamor_prep_drawable_box(DrawablePtr drawable, glamor_access_t acce
     RegionRec region = void;
     int off_x = void, off_y = void;
 
-    BUG_RETURN_VAL(!priv, FALSE);
+    mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
 
     if (priv.type == GLAMOR_DRM_ONLY)
         return FALSE;
@@ -165,7 +165,7 @@ void glamor_finish_access(DrawablePtr drawable)
     if (!GLAMOR_PIXMAP_PRIV_HAS_FBO(priv))
         return;
 
-    BUG_RETURN(!priv);
+    mixin(BUG_RETURN!("!priv"));
 
     if (!priv.prepared)
         return;

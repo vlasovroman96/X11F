@@ -720,7 +720,7 @@ private int ProcShapeSelectInput(ClientPtr client)
         }
 
         /* Form the event */
-        pNewShapeEvent = cast(ShapeEventPtr)calloc(1, ShapeEventRec.sizeof);
+        pNewShapeEvent = cast(ShapeEventPtr)cast(ShapeEventRec*) calloc(1, ShapeEventRec.sizeof);
         if (!pNewShapeEvent)
             return BadAlloc;
         pNewShapeEvent.next = *pHead;

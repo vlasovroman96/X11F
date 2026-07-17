@@ -44,14 +44,14 @@ enum INFO_LOG_LEVEL = 4;
 version (EPHYR_LOG) {} else {
 enum string EPHYR_LOG() = `
 LogMessageVerb(X_NOTICE, INFO_LOG_LEVEL, "in %s:%d:%s: ",
-                      __FILE__, __LINE__, __func__) ; 
+                      __FILE__, __LINE__, __FUNCTION__.ptr) ; 
 LogMessageVerb(X_NOTICE, INFO_LOG_LEVEL, __VA_ARGS__)`;
 }                          /*nomadik_log */
 
 version (EPHYR_LOG_ERROR) {} else {
 enum string EPHYR_LOG_ERROR() = `
 LogMessageVerb(X_NOTICE, ERROR_LOG_LEVEL, "Error:in %s:%d:%s: ",
-                      __FILE__, __LINE__, __func__) ; 
+                      __FILE__, __LINE__, __FUNCTION__.ptr) ; 
 LogMessageVerb(X_NOTICE, ERROR_LOG_LEVEL, __VA_ARGS__)`;
 }                          /*EPHYR_LOG_ERROR */
 

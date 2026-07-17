@@ -85,7 +85,7 @@ Bool miSyncFdScreenInit(ScreenPtr pScreen, const(SyncFdScreenFuncsRec)* funcs)
             return FALSE;
     }
 
-    priv = calloc(1, SyncFdScreenPrivateRec.sizeof);
+    priv = cast(SyncFdScreenPrivateRec*) calloc(1, SyncFdScreenPrivateRec.sizeof);
     if (!priv)
         return FALSE;
 

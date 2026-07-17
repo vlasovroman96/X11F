@@ -375,7 +375,7 @@ VbeInfoBlock* VBEGetVBEInfo(vbeInfoPtr pVbe)
     if (mixin(R16!(`pVbe.pInt10.ax`)) != 0x4f)
         return null;
 
-    block = cast(VbeInfoBlock*) calloc(1, VbeInfoBlock.sizeof);
+    block = cast(VbeInfoBlock*) cast(VbeInfoBlock*) calloc(1, VbeInfoBlock.sizeof);
     if (!block)
         return null;
     block.VESASignature[0] = (cast(char*) pVbe.memory)[0];
@@ -528,7 +528,7 @@ VbeModeInfoBlock* VBEGetModeInfo(vbeInfoPtr pVbe, int mode)
     if (mixin(R16!(`pVbe.pInt10.ax`)) != 0x4f)
         return null;
 
-    VbeModeInfoBlock* block = cast(VbeModeInfoBlock*) calloc(1, VbeModeInfoBlock.sizeof);
+    VbeModeInfoBlock* block = cast(VbeModeInfoBlock*) cast(VbeModeInfoBlock*) calloc(1, VbeModeInfoBlock.sizeof);
     if (block)
         memcpy(block, pVbe.memory, typeof(*block).sizeof);
 

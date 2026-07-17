@@ -157,7 +157,7 @@ void processScreenOrOutputArg(const(char)* screen_size, const(char)* output, cha
 
         screen = KdScreenInfoAdd(card);
         KdParseScreen(screen, screen_size);
-        screen.driver = calloc(1, EphyrScrPriv.sizeof);
+        screen.driver = cast(EphyrScrPriv*) calloc(1, EphyrScrPriv.sizeof);
         if (!screen.driver)
             FatalError("Couldn't alloc screen private\n");
 

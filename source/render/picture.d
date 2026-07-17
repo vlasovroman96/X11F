@@ -651,7 +651,7 @@ Bool PictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
         }
         formats[n].format = PIXMAN_FORMAT(0, type, a, r, g, b);
     }
-    PictureScreenPtr ps = calloc(1, PictureScreenRec.sizeof);
+    PictureScreenPtr ps = cast(PictureScreenRec*) calloc(1, PictureScreenRec.sizeof);
     if (!ps) {
         free(formats);
         return FALSE;
@@ -836,7 +836,7 @@ PicturePtr CreateSolidPicture(Picture pid, xRenderColor* color, int* error)
     }
 
     pPicture.id = pid;
-    pPicture.pSourcePict = calloc(1, SourcePict.sizeof);
+    pPicture.pSourcePict = cast(SourcePict*) calloc(1, SourcePict.sizeof);
     if (!pPicture.pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -864,7 +864,7 @@ PicturePtr CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed
     }
 
     pPicture.id = pid;
-    pPicture.pSourcePict = calloc(1, SourcePict.sizeof);
+    pPicture.pSourcePict = cast(SourcePict*) calloc(1, SourcePict.sizeof);
     if (!pPicture.pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -901,7 +901,7 @@ PicturePtr CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFi
     }
 
     pPicture.id = pid;
-    pPicture.pSourcePict = calloc(1, SourcePict.sizeof);
+    pPicture.pSourcePict = cast(SourcePict*) calloc(1, SourcePict.sizeof);
     if (!pPicture.pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -942,7 +942,7 @@ PicturePtr CreateConicalGradientPicture(Picture pid, xPointFixed* center, XFixed
     }
 
     pPicture.id = pid;
-    pPicture.pSourcePict = calloc(1, SourcePict.sizeof);
+    pPicture.pSourcePict = cast(SourcePict*) calloc(1, SourcePict.sizeof);
     if (!pPicture.pSourcePict) {
         *error = BadAlloc;
         free(pPicture);
@@ -1284,7 +1284,7 @@ int SetPictureTransform(PicturePtr pPicture, PictTransform* transform)
 
     if (transform) {
         if (!pPicture.transform) {
-            pPicture.transform = calloc(1, PictTransform.sizeof);
+            pPicture.transform = cast(PictTransform*) calloc(1, PictTransform.sizeof);
             if (!pPicture.transform)
                 return BadAlloc;
         }

@@ -553,7 +553,7 @@ XF86ConfMonitorPtr xf86parseMonitorSection()
 
             /* add to the end of the list of modes sections
                referenced here */
-            mptr = calloc(1, XF86ConfModesLinkRec.sizeof);
+            mptr = cast(XF86ConfModesLinkRec*) calloc(1, XF86ConfModesLinkRec.sizeof);
             mptr.list.next = null;
             mptr.ml_modes_str = xf86_lex_val.str;
             mptr.ml_modes = null;

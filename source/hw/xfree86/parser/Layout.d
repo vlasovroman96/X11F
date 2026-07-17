@@ -120,7 +120,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
         {
             XF86ConfInactivePtr iptr = void;
 
-            iptr = calloc(1, XF86ConfInactiveRec.sizeof);
+            iptr = cast(XF86ConfInactiveRec*) calloc(1, XF86ConfInactiveRec.sizeof);
             iptr.list.next = null;
             if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
                 free(iptr);
@@ -136,7 +136,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
             XF86ConfAdjacencyPtr aptr = void;
             int absKeyword = 0;
 
-            aptr = calloc(1, XF86ConfAdjacencyRec.sizeof);
+            aptr = cast(XF86ConfAdjacencyRec*) calloc(1, XF86ConfAdjacencyRec.sizeof);
             aptr.list.next = null;
             aptr.adj_scrnum = -1;
             aptr.adj_where = CONF_ADJ_OBSOLETE;
@@ -269,7 +269,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
         {
             XF86ConfInputrefPtr iptr = void;
 
-            iptr = calloc(1, XF86ConfInputrefRec.sizeof);
+            iptr = cast(XF86ConfInputrefRec*) calloc(1, XF86ConfInputrefRec.sizeof);
             iptr.list.next = null;
             iptr.iref_option_lst = null;
             if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
@@ -442,7 +442,7 @@ int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout)
             }
 
             if (!iref) {
-                XF86ConfInputrefPtr iptr = calloc(1, XF86ConfInputrefRec.sizeof);
+                XF86ConfInputrefPtr iptr = cast(XF86ConfInputrefRec*) calloc(1, XF86ConfInputrefRec.sizeof);
                 if (!iptr)
                     return -1;
                 iptr.iref_inputdev_str = input.inp_identifier;

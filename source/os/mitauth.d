@@ -60,7 +60,7 @@ XID MitAddCookie(ushort data_length, const(char)* data)
             return walk.id;
     }
 
-    new_ = calloc(1, auth.sizeof);
+    new_ = cast(auth*) calloc(1, auth.sizeof);
     if (!new_)
         return 0;
     new_.data = calloc(1, cast(uint) data_length);

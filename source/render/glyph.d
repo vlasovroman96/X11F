@@ -240,7 +240,7 @@ private void FreeGlyphPicture(GlyphPtr glyph)
 void FreeGlyph(GlyphPtr glyph, int format)
 {
     CheckDuplicates(&globalGlyphs[format], "FreeGlyph");
-    BUG_RETURN(glyph.refcnt == 0);
+    mixin(BUG_RETURN!("glyph.refcnt == 0"));
     if (--glyph.refcnt == 0) {
         GlyphRefPtr gr = void;
         int i = void;

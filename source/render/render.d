@@ -1879,7 +1879,7 @@ private int PanoramiXRenderCreatePicture(ClientPtr client, xRenderCreatePictureR
                                       XRC_DRAWABLE, client, DixWriteAccess);
     if (result != Success)
         return (result == BadValue) ? BadDrawable : result;
-    if (((newPict = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPict = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
     newPict.type = XRT_PICTURE;
     panoramix_setup_ids(newPict, client, stuff.pid);
@@ -2362,7 +2362,7 @@ private int PanoramiXRenderCreateSolidFill(ClientPtr client, xRenderCreateSolidF
     PanoramiXRes* newPict = void;
     int result = Success;
 
-    if (((newPict = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPict = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
 
     newPict.type = XRT_PICTURE;
@@ -2389,7 +2389,7 @@ private int PanoramiXRenderCreateLinearGradient(ClientPtr client, xRenderCreateL
     PanoramiXRes* newPict = void;
     int result = Success;
 
-    if (((newPict = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPict = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
 
     newPict.type = XRT_PICTURE;
@@ -2416,7 +2416,7 @@ private int PanoramiXRenderCreateRadialGradient(ClientPtr client, xRenderCreateR
     PanoramiXRes* newPict = void;
     int result = Success;
 
-    if (((newPict = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPict = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
 
     newPict.type = XRT_PICTURE;
@@ -2443,7 +2443,7 @@ private int PanoramiXRenderCreateConicalGradient(ClientPtr client, xRenderCreate
     PanoramiXRes* newPict = void;
     int result = Success;
 
-    if (((newPict = cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPict = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
 
     newPict.type = XRT_PICTURE;

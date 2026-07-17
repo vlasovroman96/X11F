@@ -30,7 +30,7 @@
 #ifndef KEYSYM2UCS_H
 #define KEYSYM2UCS_H 1
 
-#define ARRAY_SIZE(a)  (sizeof((a)) / sizeof((a)[0]))
+#define mixin(ARRAY_SIZE!("a"))  (sizeof((a)) / sizeof((a)[0]))
 
 extern long
 keysym2ucs(int keysym);

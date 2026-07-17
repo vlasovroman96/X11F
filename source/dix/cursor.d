@@ -119,7 +119,7 @@ int FreeCursor(void* value, XID cid)
     if (CursorRefCount(pCurs) != 0)
         return Success;
 
-    BUG_WARN(CursorRefCount(pCurs) < 0);
+    mixin(BUG_WARN!("CursorRefCount(pCurs) < 0"));
 
     mixin(DIX_FOR_EACH_SCREEN!q{
         if (walkScreen.UnrealizeCursor)
@@ -410,7 +410,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
             bits.refcnt = -1;
         else {
             bits.refcnt = 1;
-            pShare = calloc(1, GlyphShare.sizeof);
+            pShare = cast(GlyphShare*) calloc(1, GlyphShare.sizeof);
             if (!pShare) {
                 FreeCursorBits(bits);
                 return BadAlloc;

@@ -54,7 +54,7 @@ import sha1;
 
 void* x_sha1_init()
 {
-    SHA1_CTX* ctx = cast(SHA1_CTX*) calloc(1, SHA1_CTX.sizeof);
+    SHA1_CTX* ctx = cast(SHA1_CTX*) cast(SHA1_CTX*) calloc(1, SHA1_CTX.sizeof);
     if (!ctx)
         return null;
     SHA1Init(ctx);
@@ -84,7 +84,7 @@ import CommonCrypto.CommonDigest;
 
 void* x_sha1_init()
 {
-    CC_SHA1_CTX* ctx = cast(CC_SHA1_CTX*) calloc(1, CC_SHA1_CTX.sizeof);
+    CC_SHA1_CTX* ctx = cast(CC_SHA1_CTX*) cast(CC_SHA1_CTX*) calloc(1, CC_SHA1_CTX.sizeof);
 
     if (!ctx)
         return null;
@@ -119,7 +119,7 @@ private HCRYPTPROV hProv;
 
 void* x_sha1_init()
 {
-    HCRYPTHASH* ctx = cast(HCRYPTHASH*) calloc(1, HCRYPTHASH.sizeof);
+    HCRYPTHASH* ctx = cast(HCRYPTHASH*) cast(HCRYPTHASH*) calloc(1, HCRYPTHASH.sizeof);
 
     if (!ctx)
         return null;
@@ -155,7 +155,7 @@ import nettle.version_;
 
 void* x_sha1_init()
 {
-    sha1_ctx* ctx = cast(sha1_ctx*) calloc(1, sha1_ctx.sizeof);
+    sha1_ctx* ctx = cast(sha1_ctx*) cast(sha1_ctx*) calloc(1, sha1_ctx.sizeof);
 
     if (!ctx)
         return null;
@@ -227,7 +227,7 @@ import libsha1;
 
 void* x_sha1_init()
 {
-    sha1_ctx* ctx = cast(sha1_ctx*) calloc(1, sha1_ctx.sizeof);
+    sha1_ctx* ctx = cast(sha1_ctx*) cast(sha1_ctx*) calloc(1, sha1_ctx.sizeof);
 
     if (!ctx)
         return null;
@@ -286,7 +286,7 @@ version (USE_EVP) {
         return null;
     }
 } else {
-    SHA_CTX* ctx = cast(SHA_CTX*) calloc(1, SHA_CTX.sizeof);
+    SHA_CTX* ctx = cast(SHA_CTX*) cast(SHA_CTX*) calloc(1, SHA_CTX.sizeof);
 
     if (!ctx)
         return null;

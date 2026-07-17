@@ -92,7 +92,7 @@ sunToXF86(int type)
 {
     int i;
 
-    for (i = 0; i < ARRAY_SIZE(sunToXF86Array); i++) {
+    for (i = 0; i < mixin(ARRAY_SIZE!("sunToXF86Array")); i++) {
         if (type == sunToXF86Array[i].apmBsd) {
             return sunToXF86Array[i].xf86;
         }

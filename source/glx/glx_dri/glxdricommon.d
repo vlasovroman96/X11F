@@ -103,7 +103,7 @@ private void setScalar(__GLXconfig* config, uint attrib, uint value)
 {
     int i = void;
 
-    for (i = 0; i < ARRAY_SIZE(attribMap.ptr); i++)
+    for (i = 0; i < mixin(ARRAY_SIZE!("attribMap.ptr")); i++)
         if (attribMap[i].attrib == attrib) {
             *cast(uint*) (cast(char*) config + attribMap[i].offset) = value;
             return;

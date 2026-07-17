@@ -573,7 +573,7 @@ private ClientPtr AllocNewConnection(XtransConnInfo trans_conn, int fd, CARD32 c
 {
     ClientPtr client = void;
 
-    OsCommPtr oc = calloc(1, OsCommRec.sizeof);
+    OsCommPtr oc = cast(OsCommRec*) calloc(1, OsCommRec.sizeof);
     if (!oc)
         return null;
     oc.trans_conn = trans_conn;
@@ -768,7 +768,7 @@ Bool SetNotifyFd(int fd, NotifyFdProcPtr notify, int mask, void* data)
         if (mask == 0)
             return TRUE;
 
-        n = cast(notify_fd*) calloc(1, notify_fd.sizeof);
+        n = cast(notify_fd*) cast(notify_fd*) calloc(1, notify_fd.sizeof);
         if (!n)
             return FALSE;
         ospoll_add(server_poll, fd,
@@ -973,7 +973,7 @@ void ListenOnOpenFD(int fd, int noxauth)
 
     /* Allocate space to store it */
     ListenTransFds =
-        XNFreallocarray(ListenTransFds, ListenTransCount + 1, int.sizeof);
+        cast(int*) XNFreallocarray(ListenTransFds, ListenTransCount + 1, int.sizeof);
     ListenTransConns =
         XNFreallocarray(ListenTransConns, ListenTransCount + 1,
                         XtransConnInfo.sizeof);

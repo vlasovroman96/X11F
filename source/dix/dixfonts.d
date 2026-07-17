@@ -1663,7 +1663,7 @@ private int SetFontPathElements(int npaths, ubyte* paths, int* bad, Bool persist
             }
             /* if error or can't do it, act like it's a new one */
             if (!fpe) {
-                fpe = calloc(1, FontPathElementRec.sizeof);
+                fpe = cast(FontPathElementRec*) calloc(1, FontPathElementRec.sizeof);
                 if (!fpe) {
                     err = BadAlloc;
                     goto bail;
@@ -1830,7 +1830,7 @@ private int register_fpe_funcs(const(xfont2_fpe_funcs_rec)* funcs)
     const(xfont2_fpe_funcs_rec)** new_ = void;
 
     /* grow the list */
-    new_ = reallocarray(fpe_functions, num_fpe_types + 1, xfont2_fpe_funcs_ptr.sizeof);
+    new_ = cast(xfont2_fpe_funcs_ptr*) reallocarray(fpe_functions, num_fpe_types + 1, xfont2_fpe_funcs_ptr.sizeof);
     if (!new_)
         return -1;
     fpe_functions = new_;
@@ -1951,7 +1951,7 @@ private xorg_list fs_fd_list;
 
 private int add_fs_fd(int fd, FontFdHandlerProcPtr handler, void* data)
 {
-    fs_fd_entry* entry = cast(fs_fd_entry*) calloc(1, fs_fd_entry.sizeof);
+    fs_fd_entry* entry = cast(fs_fd_entry*) cast(fs_fd_entry*) calloc(1, fs_fd_entry.sizeof);
 
     if (!entry)
         return FALSE;

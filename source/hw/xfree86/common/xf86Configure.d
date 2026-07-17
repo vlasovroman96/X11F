@@ -122,7 +122,7 @@ static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__Op
     /* Allocate new structure occurrence */
     i = nDevToConfig++;
     DevToConfig =
-        XNFreallocarray(DevToConfig, nDevToConfig, DevToConfigRec.sizeof);
+        cast(DevToConfigRec*) XNFreallocarray(DevToConfig, nDevToConfig, DevToConfigRec.sizeof);
     memset(DevToConfig + i, 0, DevToConfigRec.sizeof);
 
     DevToConfig[i].GDev.chipID =
@@ -186,7 +186,7 @@ private XF86ConfInputPtr configureInputSection()
         }
     }
 
-    if (((mouse = calloc(1, XF86ConfInputRec.sizeof)) == 0))
+    if (((mouse = cast(XF86ConfInputRec*) calloc(1, XF86ConfInputRec.sizeof)) == 0))
         return null;
 
     mouse.inp_identifier = XNFstrdup("Mouse0");
@@ -218,8 +218,8 @@ private XF86ConfScreenPtr configureScreenSection(int screennum)
     XNFasprintf(&tmp, "Card%d", screennum);
     ptr.scrn_device_str = tmp;
 
-    for (i = 0; i < ARRAY_SIZE(depths.ptr); i++) {
-        XF86ConfDisplayPtr conf_display = calloc(1, XF86ConfDisplayRec.sizeof);
+    for (i = 0; i < mixin(ARRAY_SIZE!("depths.ptr")); i++) {
+        XF86ConfDisplayPtr conf_display = cast(XF86ConfDisplayRec*) calloc(1, XF86ConfDisplayRec.sizeof);
         if (!conf_display)
             continue;
         conf_display.disp_depth = depths[i];
@@ -341,7 +341,7 @@ private XF86ConfLayoutPtr configureLayoutSection()
     ptr.lay_identifier = "X.org Configured";
 
     {
-        XF86ConfInputrefPtr iptr = calloc(1, XF86ConfInputrefRec.sizeof);
+        XF86ConfInputrefPtr iptr = cast(XF86ConfInputrefRec*) calloc(1, XF86ConfInputrefRec.sizeof);
         assert(iptr);
         iptr.list.next = null;
         iptr.iref_option_lst = null;
@@ -354,7 +354,7 @@ private XF86ConfLayoutPtr configureLayoutSection()
     }
 
     {
-        XF86ConfInputrefPtr iptr = calloc(1, XF86ConfInputrefRec.sizeof);
+        XF86ConfInputrefPtr iptr = cast(XF86ConfInputrefRec*) calloc(1, XF86ConfInputrefRec.sizeof);
         assert(iptr);
         iptr.list.next = null;
         iptr.iref_option_lst = null;
@@ -369,7 +369,7 @@ private XF86ConfLayoutPtr configureLayoutSection()
     for (scrnum = 0; scrnum < nDevToConfig; scrnum++) {
         char* tmp = void;
 
-        XF86ConfAdjacencyPtr aptr = calloc(1, XF86ConfAdjacencyRec.sizeof);
+        XF86ConfAdjacencyPtr aptr = cast(XF86ConfAdjacencyRec*) calloc(1, XF86ConfAdjacencyRec.sizeof);
         assert(aptr);
         aptr.list.next = null;
         aptr.adj_x = 0;
@@ -410,7 +410,7 @@ private XF86ConfModulePtr configureModuleSection()
     elist = LoaderListDir("extensions", null);
     if (elist) {
         for (el = elist; *el; el++) {
-            XF86LoadPtr module_ = calloc(1, XF86LoadRec.sizeof);
+            XF86LoadPtr module_ = cast(XF86LoadRec*) calloc(1, XF86LoadRec.sizeof);
             if (!module_)
                 return ptr;
             module_.load_name = *el;
@@ -619,7 +619,7 @@ void DoConfigure()
     xorgHWAccess = xf86EnableIO();
 
     /* Create XF86Config file structure */
-    xf86config = calloc(1, XF86ConfigRec.sizeof);
+    xf86config = cast(XF86ConfigRec*) calloc(1, XF86ConfigRec.sizeof);
 
     /* Call all of the probe functions, reporting the results. */
     for (CurrentDriver = 0; CurrentDriver < xf86NumDrivers; CurrentDriver++) {

@@ -1,4 +1,4 @@
-module selectev;
+module Xi.selectev;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -67,7 +67,7 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
-import grabdev;
+import Xi.grabdev;
 
 private int HandleDevicePresenceMask(ClientPtr client, WindowPtr win, XEventClass* cls, CARD16* count)
 {

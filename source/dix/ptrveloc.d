@@ -128,8 +128,8 @@ Bool InitPredictableAccelerationScheme(DeviceIntPtr dev, ValuatorAccelerationPtr
     PredictableAccelSchemePtr schemeData = void;
 
     scheme = *protoScheme;
-    vel = calloc(1, DeviceVelocityRec.sizeof);
-    schemeData = calloc(1, PredictableAccelSchemeRec.sizeof);
+    vel = cast(DeviceVelocityRec*) calloc(1, DeviceVelocityRec.sizeof);
+    schemeData = cast(PredictableAccelSchemeRec*) calloc(1, PredictableAccelSchemeRec.sizeof);
     if (!vel || !schemeData) {
         free(vel);
         free(schemeData);
@@ -993,7 +993,7 @@ void SetDeviceSpecificAccelerationProfile(DeviceVelocityPtr vel, PointerAccelera
  */
 DeviceVelocityPtr GetDevicePredictableAccelData(DeviceIntPtr dev)
 {
-    BUG_RETURN_VAL(!dev, null);
+    mixin(BUG_RETURN_VAL!("!dev", "null"));
 
     if (dev.valuator &&
         dev.valuator.accelScheme.AccelSchemeProc ==

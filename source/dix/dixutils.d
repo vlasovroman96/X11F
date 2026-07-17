@@ -633,7 +633,7 @@ private CallbackListPtr** listsToCleanup = null;
 
 private Bool _AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data)
 {
-    CallbackPtr cbr = calloc(1, CallbackRec.sizeof);
+    CallbackPtr cbr = cast(CallbackRec*) calloc(1, CallbackRec.sizeof);
     if (!cbr)
         return FALSE;
     cbr.proc = callback;
@@ -751,7 +751,7 @@ private Bool CreateCallbackList(CallbackListPtr* pcbl)
     if (!pcbl)
         return FALSE;
 
-    CallbackListPtr cbl = calloc(1, CallbackListRec.sizeof);
+    CallbackListPtr cbl = cast(CallbackListRec*) calloc(1, CallbackListRec.sizeof);
     if (!cbl)
         return FALSE;
     cbl.inCallback = 0;

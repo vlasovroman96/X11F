@@ -188,7 +188,7 @@ Bool xnestOpenScreen(ScreenPtr pScreen, int argc, char** argv)
         return FALSE;
 
     int numVisuals = 0;
-    VisualPtr visuals = calloc(1, VisualRec.sizeof);
+    VisualPtr visuals = cast(VisualRec*) calloc(1, VisualRec.sizeof);
     int numDepths = 0;
     DepthPtr depths = calloc(MAXDEPTH, DepthRec.sizeof);
 
@@ -199,9 +199,9 @@ Bool xnestOpenScreen(ScreenPtr pScreen, int argc, char** argv)
     }
 
     if (!xnestVisualMap)
-        xnestVisualMap = calloc(1, xnest_visual_t.sizeof);
+        xnestVisualMap = cast(xnest_visual_t*) calloc(1, xnest_visual_t.sizeof);
     else
-        xnestVisualMap = reallocarray(xnestVisualMap, xnestNumVisualMap+1, xnest_visual_t.sizeof);
+        xnestVisualMap = cast(xnest_visual_t*) reallocarray(xnestVisualMap, xnestNumVisualMap+1, xnest_visual_t.sizeof);
 
     add_depth(depths, &numDepths, 1);
 
@@ -282,13 +282,13 @@ Bool xnestOpenScreen(ScreenPtr pScreen, int argc, char** argv)
 
             numVisuals++;
             xnestNumVisualMap++;
-            visuals = reallocarray(visuals, numVisuals+1, VisualRec.sizeof);
-            xnestVisualMap = reallocarray(xnestVisualMap, xnestNumVisualMap+1, xnest_visual_t.sizeof);
+            visuals = cast(VisualRec*) reallocarray(visuals, numVisuals+1, VisualRec.sizeof);
+            xnestVisualMap = cast(xnest_visual_t*) reallocarray(xnestVisualMap, xnestNumVisualMap+1, xnest_visual_t.sizeof);
         }
     }
 breakout:
-    visuals = reallocarray(visuals, numVisuals, VisualRec.sizeof);
-    xnestVisualMap = reallocarray(xnestVisualMap, xnestNumVisualMap, xnest_visual_t.sizeof);
+    visuals = cast(VisualRec*) reallocarray(visuals, numVisuals, VisualRec.sizeof);
+    xnestVisualMap = cast(xnest_visual_t*) reallocarray(xnestVisualMap, xnestNumVisualMap, xnest_visual_t.sizeof);
 
     if (!found_default_visual) {
         ErrorF("Xnest: can't find matching visual for user specified depth %d\n", xnestDefaultDepth);

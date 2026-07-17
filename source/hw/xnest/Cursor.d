@@ -93,7 +93,7 @@ Bool xnestRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
                   pixmap_len,
                   cast(ubyte*) pCursor.bits.mask);
 
-    xnestSetCursorPriv(pCursor, pScreen, calloc(1, xnestPrivCursor.sizeof));
+    xnestSetCursorPriv(pCursor, pScreen, cast(xnestPrivCursor*) calloc(1, xnestPrivCursor.sizeof));
     uint cursor = xcb_generate_id(xnestUpstreamInfo.conn);
     xcb_create_cursor(xnestUpstreamInfo.conn, cursor, source, mask,
                       pCursor.foreRed, pCursor.foreGreen, pCursor.foreBlue,

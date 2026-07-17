@@ -4028,7 +4028,7 @@ int AddScreen(Bool function(ScreenPtr, int, char**) pfnInit, int argc, char** ar
     if (i == MAXSCREENS)
         return -1;
 
-    pScreen = cast(ScreenPtr) calloc(1, ScreenRec.sizeof);
+    pScreen = cast(ScreenPtr) cast(ScreenRec*) calloc(1, ScreenRec.sizeof);
     if (!pScreen)
         return -1;
 
@@ -4070,7 +4070,7 @@ int AddGPUScreen(Bool function(ScreenPtr, int, char**) pfnInit, int argc, char**
     if (i == MAXGPUSCREENS)
         return -1;
 
-    pScreen = cast(ScreenPtr) calloc(1, ScreenRec.sizeof);
+    pScreen = cast(ScreenPtr) cast(ScreenRec*) calloc(1, ScreenRec.sizeof);
     if (!pScreen)
         return -1;
 

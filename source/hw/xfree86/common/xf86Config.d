@@ -1072,7 +1072,7 @@ private InputInfoPtr* addDevice(InputInfoPtr* list, InputInfoPtr pInfo)
     for (devs = list; devs && *devs; devs++)
         count++;
 
-    list = XNFreallocarray(list, count + 1, InputInfoPtr.sizeof);
+    list = cast(InputInfoPtr*) XNFreallocarray(list, count + 1, InputInfoPtr.sizeof);
     list[count] = null;
 
     list[count - 1] = pInfo;
@@ -1610,7 +1610,7 @@ private Bool configLayout(serverLayoutPtr servlayoutp, XF86ConfLayoutPtr conf_la
     }
     DebugF("Found %d inactive devices in the layout section %s\n",
            count, conf_layout.lay_identifier);
-    gdp = XNFreallocarray(null, count + 1, GDevRec.sizeof);
+    gdp = cast(GDevRec*) XNFreallocarray(null, count + 1, GDevRec.sizeof);
     gdp[count].identifier = null;
     idp = conf_layout.lay_inactive_lst;
     count = 0;
@@ -1727,7 +1727,7 @@ private Bool configXvAdaptor(confXvAdaptorPtr adaptor, XF86ConfVideoAdaptorPtr c
         count++;
         conf_port = cast(XF86ConfVideoPortPtr) conf_port.list.next;
     }
-    adaptor.ports = XNFreallocarray(null, count, confXvPortRec.sizeof);
+    adaptor.ports = cast(confXvPortRec*) XNFreallocarray(null, count, confXvPortRec.sizeof);
     adaptor.numports = count;
     count = 0;
     conf_port = conf_adaptor.va_port_lst;
@@ -1856,7 +1856,7 @@ private Bool configScreen(confScreenPtr screenp, XF86ConfScreenPtr conf_screen, 
         count++;
         dispptr = cast(XF86ConfDisplayPtr) dispptr.list.next;
     }
-    screenp.displays = XNFreallocarray(null, count, DispPtr.sizeof);
+    screenp.displays = cast(DispPtr*) XNFreallocarray(null, count, DispPtr.sizeof);
     screenp.numdisplays = count;
 
     for (count = 0, dispptr = conf_screen.scrn_display_lst;
@@ -1885,7 +1885,7 @@ private Bool configScreen(confScreenPtr screenp, XF86ConfScreenPtr conf_screen, 
         count++;
         conf_adaptor = cast(XF86ConfAdaptorLinkPtr) conf_adaptor.list.next;
     }
-    screenp.xvadaptors = XNFreallocarray(null, count, confXvAdaptorRec.sizeof);
+    screenp.xvadaptors = cast(confXvAdaptorRec*) XNFreallocarray(null, count, confXvAdaptorRec.sizeof);
     screenp.numxvadaptors = 0;
     conf_adaptor = conf_screen.scrn_adaptor_lst;
     while (conf_adaptor) {

@@ -224,7 +224,7 @@ private int queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc, ms_flipdata* 
     ms_crtc_pageflip* flip = void;
     uint seq = void;
 
-    flip = cast(ms_crtc_pageflip*) calloc(1, ms_crtc_pageflip.sizeof);
+    flip = cast(ms_crtc_pageflip*) cast(ms_crtc_pageflip*) calloc(1, ms_crtc_pageflip.sizeof);
     if (flip == null) {
         return QUEUE_FLIP_ALLOC_FAILED;
     }
@@ -412,7 +412,7 @@ Bool ms_do_pageflip(ScreenPtr screen, PixmapPtr new_front, void* event, xf86Crtc
         goto error_free_event;
     }
 
-    flipdata = cast(ms_flipdata*) calloc(1, ms_flipdata.sizeof);
+    flipdata = cast(ms_flipdata*) cast(ms_flipdata*) calloc(1, ms_flipdata.sizeof);
     if (!flipdata) {
         gbm_bo_destroy(new_front_bo);
         xf86DrvMsg(scrn.scrnIndex, X_ERROR,

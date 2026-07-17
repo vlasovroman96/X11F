@@ -74,7 +74,7 @@ import xkb.xkbsrv_priv;
         }
         return Success;
     }
-    compat = calloc(1, XkbCompatMapRec.sizeof);
+    compat = cast(XkbCompatMapRec*) calloc(1, XkbCompatMapRec.sizeof);
     if (compat == null)
         return BadAlloc;
     if (nSI > 0) {
@@ -126,7 +126,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
     if (xkb == null)
         return BadMatch;
     if (xkb.names == null) {
-        xkb.names = calloc(1, XkbNamesRec.sizeof);
+        xkb.names = cast(XkbNamesRec*) calloc(1, XkbNamesRec.sizeof);
         if (xkb.names == null)
             return BadAlloc;
     }
@@ -258,7 +258,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
         return BadMatch;
 
     if (xkb.ctrls == null) {
-        xkb.ctrls = calloc(1, XkbControlsRec.sizeof);
+        xkb.ctrls = cast(XkbControlsRec*) calloc(1, XkbControlsRec.sizeof);
         if (!xkb.ctrls)
             return BadAlloc;
     }
@@ -281,7 +281,7 @@ int XkbAllocIndicatorMaps(XkbDescPtr xkb)
     if (xkb == null)
         return BadMatch;
     if (xkb.indicators == null) {
-        xkb.indicators = calloc(1, XkbIndicatorRec.sizeof);
+        xkb.indicators = cast(XkbIndicatorRec*) calloc(1, XkbIndicatorRec.sizeof);
         if (!xkb.indicators)
             return BadAlloc;
     }
@@ -303,7 +303,7 @@ XkbDescRec* XkbAllocKeyboard()
 {
     XkbDescRec* xkb = void;
 
-    xkb = cast(XkbDescRec*) calloc(1, XkbDescRec.sizeof);
+    xkb = cast(XkbDescRec*) cast(XkbDescRec*) calloc(1, XkbDescRec.sizeof);
     if (xkb)
         xkb.device_spec = XkbUseCoreKbd;
     return xkb;

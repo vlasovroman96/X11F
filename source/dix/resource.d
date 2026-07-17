@@ -641,7 +641,7 @@ Bool InitClientResources(ClientPtr client)
         lastResourceClass = RC_LASTPREDEF;
         TypeMask = RC_LASTPREDEF - 1;
         free(resourceTypes);
-        resourceTypes = cast(ResourceType*) calloc(1, predefTypes.sizeof);
+        resourceTypes = cast(ResourceType*) cast(predefTypes*) calloc(1, predefTypes.sizeof);
         if (!resourceTypes)
             return FALSE;
         memcpy(resourceTypes, predefTypes.ptr, predefTypes.sizeof);
@@ -816,7 +816,7 @@ version (XSERVER_DTRACE) {
     if ((rrec.elements >= 4 * rrec.buckets) && (rrec.hashsize < MAXHASHSIZE))
         RebuildTable(client);
     head = &rrec.resources[HashResourceID(id, clientTable[client].hashsize)];
-    ResourcePtr res = calloc(1, ResourceRec.sizeof);
+    ResourcePtr res = cast(ResourceRec*) calloc(1, ResourceRec.sizeof);
     if (!res) {
         (*resourceTypes[type & TypeMask].deleteFunc) (value, id);
         return FALSE;
