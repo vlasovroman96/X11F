@@ -1311,8 +1311,8 @@ int ProcQueryFont(ClientPtr client)
         return rc;
 
     {
-        xCharInfo* pmax = FONTINKMAX(pFont);
-        xCharInfo* pmin = FONTINKMIN(pFont);
+        xCharInfo* pmax = mixin(FONTINKMAX!("pFont"));
+        xCharInfo* pmin = mixin(FONTINKMIN!("pFont"));
         int nprotoxcistructs = void;
         int rlength = void;
 
@@ -1321,7 +1321,7 @@ int ProcQueryFont(ClientPtr client)
                             pmax.descent == pmin.descent &&
                             pmax.ascent == pmin.ascent &&
                             pmax.characterWidth == pmin.characterWidth) ?
-            0 : N2dChars(pFont);
+            0 : mixin(N2dChars!("pFont"));
 
         rlength = (cast(xQueryFontReply) +
             FONTINFONPROPS(FONTCHARSET(pFont)) * (cast(xFontProp) +

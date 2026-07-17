@@ -104,7 +104,7 @@ void ht_destroy(HashTable ht)
         
         // Передаем "head" как фиксированную строку. 
         // Теперь макрос развернется в &(head), что абсолютно валидно и прозрачно для D.
-        mixin(xorg_list_for_each_entry_safe!("it", "tmp", "head", "l",
+        mixin(xorg_list_for_each_entry_safe!("it", "tmp", "&head", "l",
         q{
             xorg_list_del(&it.l);
             free(it.key);
@@ -132,7 +132,7 @@ private Bool double_size(HashTable ht)
 
         for (c = 0; c < numBuckets; ++c) {
             BucketPtr it = void, tmp = void;
-            mixin(xorg_list_for_each_entry_safe!("it", "tmp", "ht.buckets[c]", "l", q{
+            mixin(xorg_list_for_each_entry_safe!("it", "tmp", "&ht.buckets[c]", "l", q{
                 xorg_list* newBucket = &newBuckets[ht.hash(ht.cdata, it.key, newBucketBits)];
                 xorg_list_del(&it.l);
                 xorg_list_add(&it.l, newBucket);

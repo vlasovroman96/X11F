@@ -2110,9 +2110,9 @@ int ProcGetKeyboardControl(ClientPtr client)
     for (int i = 0; i < 32; i++)
         reply.map[i] = ctrl.autoRepeats[i];
 
-    mixin(X_REPLY_FIELD_CARD32!ledMask);
-    mixin(X_REPLY_FIELD_CARD16!bellPitch);
-    mixin(X_REPLY_FIELD_CARD16!bellDuration);
+    mixin(X_REPLY_FIELD_CARD32!"ledMask");
+    mixin(X_REPLY_FIELD_CARD16!"bellPitch");
+    mixin(X_REPLY_FIELD_CARD16!"bellDuration");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -2245,9 +2245,9 @@ int ProcGetPointerControl(ClientPtr client)
         threshold: ctrl.threshold
     };
 
-    mixin(X_REPLY_FIELD_CARD16!accelNumerator);
-    mixin(X_REPLY_FIELD_CARD16!accelDenominator);
-    mixin(X_REPLY_FIELD_CARD16!threshold);
+    mixin(X_REPLY_FIELD_CARD16!"accelNumerator");
+    mixin(X_REPLY_FIELD_CARD16!"accelDenominator");
+    mixin(X_REPLY_FIELD_CARD16!"threshold");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -2327,7 +2327,7 @@ int ProcGetMotionEvents(ClientPtr client)
         nEvents: nEvents,
     };
 
-    mixin(X_REPLY_FIELD_CARD32!nEvents);
+    mixin(X_REPLY_FIELD_CARD32!"nEvents");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

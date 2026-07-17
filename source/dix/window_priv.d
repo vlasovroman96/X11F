@@ -20,7 +20,7 @@ enum string wUseDefault(string w,string field,string def) = `((` ~ w ~ `).option
                                  : ` ~ def ~ `)`;
 
 enum string wVisual(string w) = `` ~ wTrackParent!(w, `visual`) ~ ``;
-enum string wCursor(string w) = `((` ~ w ~ `).cursorIsNone ? None : ` ~ wTrackParent!(w, `cursor`) ~ `)`;
+enum string wCursor(string w) = `((` ~ w ~ `).cursorIsNone ? null : ` ~ wTrackParent!(w, `cursor`) ~ `)`;
 enum string wColormap(string w) = `((` ~ w ~ `).drawable.class_ == InputOnly ? None : ` ~ wTrackParent!(w, `colormap`) ~ `)`;
 enum string wDontPropagateMask(string w) = `` ~ wUseDefault!(w, `dontPropagateMask`, `DontPropagateMasks[(` ~ w ~ `).dontPropagate]`) ~ ``;
 enum string wOtherEventMasks(string w) = `` ~ wUseDefault!(w, `otherEventMasks`, `0`) ~ ``;

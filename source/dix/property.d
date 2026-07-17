@@ -178,8 +178,8 @@ int ProcRotateProperties(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xRotatePropertiesReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD16!nAtoms);
-    mixin(X_REQUEST_FIELD_CARD16!nPositions);
+    mixin(X_REQUEST_FIELD_CARD16!"nAtoms");
+    mixin(X_REQUEST_FIELD_CARD16!"nPositions");
     mixin(X_REQUEST_REST_CARD32!());
 
     int delta = void, rc = void;

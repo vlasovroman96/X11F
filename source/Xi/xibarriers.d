@@ -831,7 +831,7 @@ int XIDestroyPointerBarrier(ClientPtr client, xXFixesDestroyPointerBarrierReq* s
 int ProcXIBarrierReleasePointer(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIBarrierReleasePointerReq);
-    mixin(X_REQUEST_FIELD_CARD32!num_barriers);
+    mixin(X_REPLY_FIELD_CARD32!"num_barriers");
 
     if (stuff.num_barriers > UINT32_MAX / xXIBarrierReleasePointerInfo.sizeof)
         return BadLength;

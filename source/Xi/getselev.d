@@ -136,8 +136,8 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
         free(buf);
     }
 
-    mixin(X_REPLY_FIELD_CARD16!this_client_count);
-    mixin(X_REPLY_FIELD_CARD16!all_clients_count);
+    mixin(X_REPLY_FIELD_CARD16!"this_client_count");
+    mixin(X_REPLY_FIELD_CARD16!"all_clients_count");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

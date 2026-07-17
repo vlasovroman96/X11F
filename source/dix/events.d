@@ -3272,7 +3272,7 @@ void InitializeSprite(DeviceIntPtr pDev, WindowPtr pWin)
     pSprite.win = pWin;
 
     if (pWin) {
-        pCursor = wCursor(pWin);
+        pCursor = mixin(wCursor!"pWin");
         pSprite.spriteTrace = cast(WindowPtr*) calloc(1, 32 * WindowPtr.sizeof);
         if (!pSprite.spriteTrace)
             FatalError("Failed to allocate spriteTrace");

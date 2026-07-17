@@ -379,7 +379,7 @@ private int DRI2DrawableGone(void* p, XID id)
     DRI2DrawablePtr pPriv = cast(DRI2DrawablePtr)p;
 
     DRI2DrawableRefPtr ref_ = void, next = void;
-    mixin(xorg_list_for_each_entry_safe!("ref_", "next", "pPriv.reference_list", "link", q{
+    mixin(xorg_list_for_each_entry_safe!("ref_", "next", "&(pPriv.reference_list)", "link", q{
         if (ref_.dri2_id == id) {
             xorg_list_del(&ref_.link);
             /* If this was the last ref under this X drawable XID,

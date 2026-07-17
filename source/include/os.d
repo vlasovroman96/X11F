@@ -117,7 +117,7 @@ public import include.fd_notify;
 
 extern void SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
 
-pragma(inline, true) private void RemoveNotifyFd(int fd)
+pragma(inline, true) void RemoveNotifyFd(int fd)
 {
     cast(void) SetNotifyFd(fd, null, X_NOTIFY_NONE, null);
 }
@@ -191,7 +191,7 @@ extern void OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
 
 extern void PrivsElevated();
 
-extern void GetClientFd(ClientPtr);
+// extern void GetClientFd(ClientPtr);
 
 /* stuff for FlushCallback */
 extern CallbackListPtr FlushCallback;

@@ -69,6 +69,16 @@ import Xi.exglobals;
 import mi.mipointer;
 import include.xserver_properties;
 import include.eventstr;
+import externs.X11.extensions.xtestproto;
+import externs.X11.extensions.xtestconst;
+import dix.dixutils;
+import std.conv;
+import os.log;
+import externs.gnu;
+import externs.X11.Xatom;
+import dix.extension;
+
+enum XTestCurrentCursor = cast(Cursor)1;
 
 Bool noTestExtensions = FALSE;
 
@@ -111,7 +121,7 @@ private int ProcXTestCompareCursor(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXTestCompareCursorReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD32!cursor);
+    mixin(X_REQUEST_FIELD_CARD32!"cursor");
 
     WindowPtr pWin = void;
     CursorPtr pCursor = void;
@@ -140,7 +150,7 @@ private int ProcXTestCompareCursor(ClientPtr client)
     }
 
     xXTestCompareCursorReply reply = {
-        same: (wCursor(pWin) == pCursor)
+        same: (mixin(wCursor!("pWin")) == pCursor)
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -172,7 +182,7 @@ void XTestDeviceSendEvents(DeviceIntPtr dev, int type, int detail, int flags, co
 
 private int ProcXTestFakeInput(ClientPtr client)
 {
-    X_REQUEST_HEAD_NO_CHECK(xXTestFakeInputReq);
+    mixin(X_REQUEST_HEAD_NO_CHECK!("xXTestFakeInputReq"));
 
     if (client.swapped) {
         int n = XTestSwapFakeInput(client, cast(xReq*)stuff);
@@ -194,7 +204,7 @@ private int ProcXTestFakeInput(ClientPtr client)
     int flags = 0;
     int need_ptr_update = 1;
 
-    nev = (client.req_len << 2) - xReq.sizeof;
+    nev = cast(uint)(cast(uint)(client.req_len << 2) - xReq.sizeof);
     if ((nev % xEvent.sizeof) || !nev)
         return BadLength;
     nev /= xEvent.sizeof;
@@ -209,7 +219,7 @@ private int ProcXTestFakeInput(ClientPtr client)
         int rc = dixLookupDevice(&dev, stuff.deviceid & octal!"177", client,
                              DixWriteAccess);
         if (rc != Success) {
-            client.errorValue = stuff.deviceid & octral!"177";
+            client.errorValue = stuff.deviceid & octal!"177";
             return rc;
         }
 
@@ -288,14 +298,19 @@ private int ProcXTestFakeInput(ClientPtr client)
             switch (dv.num_valuators) {
             case 6:
                 valuators[base + 5] = dv.valuator5;
+                goto case 5;
             case 5:
                 valuators[base + 4] = dv.valuator4;
+                goto case 4;
             case 4:
                 valuators[base + 3] = dv.valuator3;
+                goto case 3;
             case 3:
                 valuators[base + 2] = dv.valuator2;
+                goto case 2;
             case 2:
                 valuators[base + 1] = dv.valuator1;
+                goto case 1;
             case 1:
                 valuators[base] = dv.valuator0;
                 break;
@@ -500,13 +515,13 @@ private int XTestSwapFakeInput(ClientPtr client, xReq* req)
     xEvent sev = void;
     EventSwapPtr proc = void;
 
-    nev = ((client.req_len << 2) - xReq.sizeof) / xEvent.sizeof;
+    nev = cast(uint)(((client.req_len << 2) - xReq.sizeof) / xEvent.sizeof);
     for (ev = cast(xEvent*) &req[1]; --nev >= 0; ev++) {
         int evtype = ev.u.u.type & octal!"177";
         /* Swap event */
         proc = EventSwapVector[evtype];
         /* no swapping proc; invalid event type? */
-        if (!proc || proc == NotImplemented || evtype == GenericEvent) {
+        if (!proc || proc == &NotImplemented || evtype == GenericEvent) {
             client.errorValue = ev.u.u.type;
             return BadValue;
         }
@@ -571,8 +586,8 @@ int AllocXTestDevice(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, Dev
     }
 
     retval =
-        AllocDevicePair(client, xtestname, ptr, keybd, CorePointerProc,
-                        CoreKeyboardProc, FALSE);
+        AllocDevicePair(client, xtestname, ptr, keybd, &CorePointerProc,
+                        &CoreKeyboardProc, FALSE);
     if (retval == Success) {
         (*ptr).xtest_master_id = master_ptr.id;
         (*keybd).xtest_master_id = master_keybd.id;
@@ -646,7 +661,7 @@ void XTestExtensionInit()
 {
     AddExtension(XTestExtensionName, 0, 0,
                  &ProcXTestDispatch, &ProcXTestDispatch,
-                 &XTestExtensionTearDown, StandardMinorOpcode);
+                 &XTestExtensionTearDown, &StandardMinorOpcode);
 
-    xtest_evlist = InitEventList(GetMaximumEventsNum());
+    xtest_evlist = cast(_InternalEvent*)InitEventList(GetMaximumEventsNum());
 }

@@ -117,8 +117,8 @@ int XICheckInvalidMaskBits(ClientPtr client, ubyte* mask, int len)
 int ProcXISelectEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXISelectEventsReq);
-    mixin(X_REQUEST_FIELD_CARD32!win);
-    mixin(X_REQUEST_FIELD_CARD16!num_masks);
+    mixin(X_REPLY_FIELD_CARD32!"win");
+    mixin(X_REQUEST_FIELD_CARD16!"num_masks");
 
     if (client.swapped) {
         int len = client.req_len - bytes_to_int32(xXISelectEventsReq.sizeof);
@@ -318,7 +318,7 @@ int ProcXISelectEvents(ClientPtr client)
 int ProcXIGetSelectedEvents(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIGetSelectedEventsReq);
-    mixin(X_REQUEST_FIELD_CARD32!win);
+    mixin(X_REPLY_FIELD_CARD32!"win");
 
     int rc = void, i = void;
     WindowPtr win = void;
@@ -384,7 +384,7 @@ int ProcXIGetSelectedEvents(ClientPtr client)
 
 finish: {}
 
-    mixin(X_REPLY_FIELD_CARD16!num_masks);
+    mixin(X_REPLY_FIELD_CARD16!"num_masks");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

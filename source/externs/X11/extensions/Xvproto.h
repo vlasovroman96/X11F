@@ -428,7 +428,7 @@ typedef struct _QueryExtensionReply {
   CARD8 padb1;
   CARD16 sequenceNumber;
   CARD32 length;
-  CARD16 version;
+  CARD16 version_;
   CARD16 revision;
   CARD32 padl4;
   CARD32 padl5;

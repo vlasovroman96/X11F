@@ -68,8 +68,8 @@ import include.xkbsrv;
 int ProcXIQueryPointer(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIQueryPointerReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!win);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REPLY_FIELD_CARD32!"win");
 
     int rc = void;
     DeviceIntPtr pDev = void, kbd = void;
@@ -176,13 +176,13 @@ version (XINERAMA) {
     }
 } /* XINERAMA */
 
-    mixin(X_REPLY_FIELD_CARD32!root);
-    mixin(X_REPLY_FIELD_CARD32!child);
-    mixin(X_REPLY_FIELD_CARD32!root_x);
-    mixin(X_REPLY_FIELD_CARD32!root_y);
-    mixin(X_REPLY_FIELD_CARD32!win_x);
-    mixin(X_REPLY_FIELD_CARD32!win_y);
-    mixin(X_REPLY_FIELD_CARD16!buttons_len);
+    mixin(X_REPLY_FIELD_CARD32!"root");
+    mixin(X_REPLY_FIELD_CARD32!"child");
+    mixin(X_REPLY_FIELD_CARD32!"root_x");
+    mixin(X_REPLY_FIELD_CARD32!"root_y");
+    mixin(X_REPLY_FIELD_CARD32!"win_x");
+    mixin(X_REPLY_FIELD_CARD32!"win_y");
+    mixin(X_REPLY_FIELD_CARD16!"buttons_len");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

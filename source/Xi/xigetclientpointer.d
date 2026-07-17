@@ -52,7 +52,7 @@ import Xi.exglobals;
 int ProcXIGetClientPointer(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIGetClientPointerReq);
-    mixin(X_REQUEST_FIELD_CARD32!win);
+    mixin(X_REPLY_FIELD_CARD32!"win");
 
     int rc = void;
     ClientPtr winclient = void;
@@ -72,7 +72,7 @@ int ProcXIGetClientPointer(ClientPtr client)
         deviceid: (winclient.clientPtr) ? winclient.clientPtr.id : 0
     };
 
-    mixin(X_REPLY_FIELD_CARD16!deviceid);
+    mixin(X_REPLY_FIELD_CARD16!"deviceid");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

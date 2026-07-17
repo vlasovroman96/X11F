@@ -106,8 +106,8 @@ private int FreeCompositeClientOverlay(void* value, XID ccwid)
 private int ProcCompositeQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeQueryVersionReq);
-    mixin(X_REQUEST_FIELD_CARD32!majorVersion);
-    mixin(X_REQUEST_FIELD_CARD32!minorVersion);
+    mixin(X_REPLY_FIELD_CARD32!"majorVersion");
+    mixin(X_REPLY_FIELD_CARD32!"minorVersion");
 
     CompositeClientPtr pCompositeClient = mixin(GetCompositeClient!(`client`));
 
@@ -125,8 +125,8 @@ private int ProcCompositeQueryVersion(ClientPtr client)
     pCompositeClient.major_version = reply.majorVersion;
     pCompositeClient.minor_version = reply.minorVersion;
 
-    mixin(X_REPLY_FIELD_CARD32!majorVersion);
-    mixin(X_REPLY_FIELD_CARD32!minorVersion);
+    mixin(X_REPLY_FIELD_CARD32!"majorVersion");
+    mixin(X_REPLY_FIELD_CARD32!"minorVersion");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -185,7 +185,7 @@ private int SingleCompositeUnredirectSubwindows(ClientPtr client, xCompositeUnre
 private int ProcCompositeCreateRegionFromBorderClip(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeCreateRegionFromBorderClipReq);
-    mixin(X_REQUEST_FIELD_CARD32!region);
+    mixin(X_REPLY_FIELD_CARD32!"region");
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
     WindowPtr pWin = void;
@@ -296,7 +296,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
         overlayWin: cs.pOverlayWin.drawable.id
     };
 
-    mixin(X_REPLY_FIELD_CARD32!overlayWin);
+    mixin(X_REPLY_FIELD_CARD32!"overlayWin");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -567,7 +567,7 @@ private int ProcCompositeNameWindowPixmap(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeNameWindowPixmapReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD32!pixmap);
+    mixin(X_REPLY_FIELD_CARD32!"pixmap");
 
 version (XINERAMA) {
     if (!compositeUseXinerama)
@@ -722,7 +722,7 @@ version (XINERAMA) {
         overlayWin: cs.pOverlayWin.drawable.id
     };
 
-    mixin(X_REPLY_FIELD_CARD32!overlayWin);
+    mixin(X_REPLY_FIELD_CARD32!"overlayWin");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 } else {

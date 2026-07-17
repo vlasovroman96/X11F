@@ -151,7 +151,7 @@ alias SizeType = void function(void* value, XID id, ResourceSizePtr size);
 
 alias FindTypeSubResources = void function(void* value, FindAllRes func, void* cdata);
 
-extern void GetResourceTypeSizeFunc(RESTYPE);
+// extern void GetResourceTypeSizeFunc(RESTYPE);
 
 extern void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
 
@@ -178,15 +178,15 @@ enum AddResource = Darwin_X_AddResource;
 
 extern void ChangeResourceValue(XID id, RESTYPE rtype, void* value);
 
-extern void FindClientResourcesByType(ClientPtr client, RESTYPE type, FindResType func, void* cdata);
+// extern void FindClientResourcesByType(ClientPtr client, RESTYPE type, FindResType func, void* cdata);
 
-extern void FindAllClientResources(ClientPtr client, FindAllRes func, void* cdata);
+// extern void FindAllClientResources(ClientPtr client, FindAllRes func, void* cdata);
 
 /** @brief Iterate through all subresources of a resource.
 
     @note The XID argument provided to the FindAllRes function
           may be 0 for subresources that don't have an XID */
-extern void FindSubResources(void* resource, RESTYPE type, FindAllRes func, void* cdata);
+// extern void FindSubResources(void* resource, RESTYPE type, FindAllRes func, void* cdata);
 
 extern void FreeClientNeverRetainResources(ClientPtr);
 
@@ -202,8 +202,8 @@ extern void FreeAllResources();
 
 // extern void dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr client, Mask access_mode);
 
-extern RESTYPE lastResourceType;
-extern RESTYPE TypeMask;
+// extern RESTYPE lastResourceType;
+// extern RESTYPE TypeMask;
 
 /*
  * @brief allocate a XID (resource ID) for the server itself

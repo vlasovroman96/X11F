@@ -139,15 +139,15 @@ struct SELinuxListItemsReply {
     CARD32 pad6;
 }
 
-enum SELINUX_MODE_DEFAULT =    0;
+// enum SELINUX_MODE_DEFAULT =    0;
 
 
-version (XSELINUX) {
+// version (XSELINUX) {
 enum SELINUX_MODE_DEFAULT =    0;
 enum SELINUX_MODE_DISABLED =   1;
 enum SELINUX_MODE_PERMISSIVE = 2;
 enum SELINUX_MODE_ENFORCING =  3;
-extern int selinuxEnforcingState;
-}
+// extern int selinuxEnforcingState;
+// }
 
                           /* _XSELINUX_H */

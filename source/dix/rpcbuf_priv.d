@@ -181,7 +181,7 @@ Bool x_rpcbuf_write_CARD16(x_rpcbuf_t* rpcbuf, CARD16 value);
  * @param value     the CARD16 value to write
  * @return          TRUE on success, FALSE on allocation failure
  */
-pragma(inline, true) private Bool x_rpcbuf_write_INT16(x_rpcbuf_t* rpcbuf, INT16 value) {
+pragma(inline, true) Bool x_rpcbuf_write_INT16(x_rpcbuf_t* rpcbuf, INT16 value) {
     return x_rpcbuf_write_CARD16(rpcbuf, cast(CARD16)value);
 }
 
@@ -319,7 +319,7 @@ Bool x_rpcbuf_write_CARD64s(x_rpcbuf_t* rpcbuf, const(CARD64)* values, size_t co
  * @param rpcbuf    pointer to x_rpcbuf_t to operate on
  * @return          number of 4-byte units (w/ padding) written into the buffer
  */
-pragma(inline, true) private CARD32 x_rpcbuf_wsize_units(x_rpcbuf_t* rpcbuf) {
+pragma(inline, true) CARD32 x_rpcbuf_wsize_units(x_rpcbuf_t* rpcbuf) {
     return cast(CARD32)((rpcbuf.wpos + 3) / 4);
 }
 

@@ -21,7 +21,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ********************************************************/
 
  
-public import externs.selinux.selinux;
+public import externs.selinux.selinux_;
 public import externs.selinux.avc;
 
 public import include.globals;
@@ -31,8 +31,8 @@ public import include.privates;
 public import include.resource;
 public import include.inputstr;
 public import Xext.xselinux;
-import externs.selinux.selinux;
-import externs.selinux.avc;
+// import externs.selinux.selinux;
+// import externs.selinux.avc;
 
 
 /*
@@ -127,11 +127,11 @@ enum SECCLASS_X_EVENT =		14;
 enum SECCLASS_X_FAKEEVENT =		15;
 enum SECCLASS_X_RESOURCE =		16;
 
-version (_XSELINUX_NEED_FLASK_MAP) {
+// version (_XSELINUX_NEED_FLASK_MAP) {
 /* Mapping from DixAccess bits to Flask permissions */
-private security_class_mapping[17] map = [
+security_class_mapping[17] map = [
     {"x_drawable",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -157,9 +157,9 @@ private security_class_mapping[17] map = [
       "receive",                /* DixReceiveAccess */
       "",                       /* DixUseAccess */
       "manage",                 /* DixManageAccess */
-      null}},
+      ]},
     {"x_screen",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "",                       /* DixDestroyAccess */
       "",                       /* DixCreateAccess */
@@ -177,9 +177,9 @@ private security_class_mapping[17] map = [
       "show_cursor",            /* DixShowAccess */
       "saver_hide",             /* DixBlendAccess */
       "saver_show",             /* DixGrabAccess */
-      null}},
+      ]},
     {"x_gc",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -204,9 +204,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixSendAccess */
       "",                       /* DixReceiveAccess */
       "use",                    /* DixUseAccess */
-      null}},
+      ]},
     {"x_font",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -231,9 +231,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixSendAccess */
       "",                       /* DixReceiveAccess */
       "use",                    /* DixUseAccess */
-      null}},
+      ]},
     {"x_colormap",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -258,9 +258,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixSendAccess */
       "",                       /* DixReceiveAccess */
       "use",                    /* DixUseAccess */
-      null}},
+      ]},
     {"x_property",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -277,17 +277,17 @@ private security_class_mapping[17] map = [
       "",                       /* DixHideAccess */
       "",                       /* DixShowAccess */
       "write",                  /* DixBlendAccess */
-      null}},
+      ]},
     {"x_selection",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "",                       /* DixDestroyAccess */
       "setattr",                /* DixCreateAccess */
       "getattr",                /* DixGetAttrAccess */
       "setattr",                /* DixSetAttrAccess */
-      null}},
+      ]},
     {"x_cursor",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -312,9 +312,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixSendAccess */
       "",                       /* DixReceiveAccess */
       "use",                    /* DixUseAccess */
-      null}},
+      ]},
     {"x_client",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "",                       /* DixCreateAccess */
@@ -340,9 +340,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixReceiveAccess */
       "",                       /* DixUseAccess */
       "manage",                 /* DixManageAccess */
-      null}},
+      ]},
     {"x_pointer",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -370,9 +370,9 @@ private security_class_mapping[17] map = [
       "manage",                 /* DixManageAccess */
       "",                       /* DixDebugAccess */
       "bell",                   /* DixBellAccess */
-      null}},
+      ]},
     {"x_keyboard",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "destroy",                /* DixDestroyAccess */
       "create",                 /* DixCreateAccess */
@@ -400,9 +400,9 @@ private security_class_mapping[17] map = [
       "manage",                 /* DixManageAccess */
       "",                       /* DixDebugAccess */
       "bell",                   /* DixBellAccess */
-      null}},
+      ]},
     {"x_server",
-     {"record",                 /* DixReadAccess */
+     ["record",                 /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "",                       /* DixDestroyAccess */
       "",                       /* DixCreateAccess */
@@ -429,9 +429,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixUseAccess */
       "manage",                 /* DixManageAccess */
       "debug",                  /* DixDebugAccess */
-      null}},
+      ]},
     {"x_extension",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "",                       /* DixDestroyAccess */
       "",                       /* DixCreateAccess */
@@ -456,9 +456,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixSendAccess */
       "",                       /* DixReceiveAccess */
       "use",                    /* DixUseAccess */
-      null}},
+      ]},
     {"x_event",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "",                       /* DixDestroyAccess */
       "",                       /* DixCreateAccess */
@@ -482,9 +482,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixUninstallAccess */
       "send",                   /* DixSendAccess */
       "receive",                /* DixReceiveAccess */
-      null}},
+      ]},
     {"x_synthetic_event",
-     {"",                       /* DixReadAccess */
+     ["",                       /* DixReadAccess */
       "",                       /* DixWriteAccess */
       "",                       /* DixDestroyAccess */
       "",                       /* DixCreateAccess */
@@ -508,9 +508,9 @@ private security_class_mapping[17] map = [
       "",                       /* DixUninstallAccess */
       "send",                   /* DixSendAccess */
       "receive",                /* DixReceiveAccess */
-      null}},
+      ]},
     {"x_resource",
-     {"read",                   /* DixReadAccess */
+     ["read",                   /* DixReadAccess */
       "write",                  /* DixWriteAccess */
       "write",                  /* DixDestroyAccess */
       "write",                  /* DixCreateAccess */
@@ -538,8 +538,7 @@ private security_class_mapping[17] map = [
       "write",                  /* DixManageAccess */
       "read",                   /* DixDebugAccess */
       "write",                  /* DixBellAccess */
-      null}},
-    {null}
+      ]},
 ];
 
 /* x_resource "read" bits from the list above */
@@ -548,5 +547,5 @@ enum SELinuxReadMask = (DixReadAccess|DixGetAttrAccess|DixListPropAccess|
 			 DixShowAccess|DixBlendAccess|DixReceiveAccess| 
 			 DixUseAccess|DixDebugAccess);
 
-}                          /* _XSELINUX_NEED_FLASK_MAP */
+// }                          /* _XSELINUX_NEED_FLASK_MAP */
                           /* _XSELINUXINT_H */

@@ -39,7 +39,7 @@ pid_t GetClientPid(_Client* client);
 const(char)* GetClientCmdName(_Client* client);
 const(char)* GetClientCmdArgs(_Client* client);
 
-Bool ClientIsLocal(_Client* client);
+// Bool ClientIsLocal(_Client* client);
 XID AuthorizationIDOfClient(_Client* client);
 const(char)* ClientAuthorized(_Client* client, uint proto_n, char* auth_proto, uint string_n, char* auth_string);
 Bool AddClientOnOpenFD(int fd);

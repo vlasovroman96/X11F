@@ -54,13 +54,13 @@ import include.misc;
 int ProcXIPassiveGrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIPassiveGrabDeviceReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!grab_window);
-    mixin(X_REQUEST_FIELD_CARD32!cursor);
-    mixin(X_REQUEST_FIELD_CARD32!time);
-    mixin(X_REQUEST_FIELD_CARD32!detail);
-    mixin(X_REQUEST_FIELD_CARD16!mask_len);
-    mixin(X_REQUEST_FIELD_CARD16!num_modifiers);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REPLY_FIELD_CARD32!"grab_window");
+    mixin(X_REQUEST_FIELD_CARD32!"cursor");
+    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REPLY_FIELD_CARD32!"detail");
+    mixin(X_REQUEST_FIELD_CARD16!"mask_len");
+    mixin(X_REQUEST_FIELD_CARD16!"num_modifiers");
     REQUEST_FIXED_SIZE(xXIPassiveGrabDeviceReq,
         (cast(uint) stuff.mask_len + stuff.num_modifiers) *4);
     mixin(X_REQUEST_REST_CARD32!()); /* event mask and modifiers list */
@@ -227,7 +227,7 @@ modifier_done:
 
     xi2mask_free(&mask.xi2mask);
 
-    mixin(X_REPLY_FIELD_CARD16!num_modifiers);
+    mixin(X_REPLY_FIELD_CARD16!"num_modifiers");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
@@ -240,10 +240,10 @@ modifier_done:
 int ProcXIPassiveUngrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIPassiveUngrabDeviceReq);
-    mixin(X_REQUEST_FIELD_CARD32!grab_window);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!detail);
-    mixin(X_REQUEST_FIELD_CARD16!num_modifiers);
+    mixin(X_REPLY_FIELD_CARD32!"grab_window");
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REPLY_FIELD_CARD32!"detail");
+    mixin(X_REQUEST_FIELD_CARD16!"num_modifiers");
     REQUEST_FIXED_SIZE(xXIPassiveUngrabDeviceReq,
                        (cast(uint) stuff.num_modifiers) << 2);
     mixin(X_REQUEST_REST_CARD32!()); /* modifiers list */

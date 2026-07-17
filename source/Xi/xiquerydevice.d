@@ -64,7 +64,7 @@ static void SwapDeviceInfo(DeviceIntPtr dev, xXIDeviceInfo * info);
 int ProcXIQueryDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIQueryDeviceReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
 
     DeviceIntPtr dev = null;
     int rc = Success;
@@ -143,7 +143,7 @@ int ProcXIQueryDevice(ClientPtr client)
 
     free(skip);
 
-    mixin(X_REPLY_FIELD_CARD16!num_devices);
+    mixin(X_REPLY_FIELD_CARD16!"num_devices");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

@@ -50,7 +50,7 @@ alias miPointerScreenFuncPtr = _miPointerScreenFuncRec*;
 
 extern void  miDCInitialize(ScreenPtr, miPointerScreenFuncPtr);
 
-extern void  miPointerGetScreen(DeviceIntPtr pDev);
+// extern void  miPointerGetScreen(DeviceIntPtr pDev);
 
 /* Returns the current cursor position. */
 extern void  miPointerGetPosition(DeviceIntPtr pDev, int* x, int* y);

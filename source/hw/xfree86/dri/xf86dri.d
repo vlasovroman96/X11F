@@ -89,7 +89,7 @@ private int ProcXF86DRIQueryVersion(ClientPtr client)
 
     mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
     mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
-    mixin(X_REPLY_FIELD_CARD32!patchVersion);
+    mixin(X_REPLY_FIELD_CARD32!"patchVersion");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

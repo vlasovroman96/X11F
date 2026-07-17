@@ -27,7 +27,7 @@ struct ClientAccessCallbackParam {
  */
 extern CallbackListPtr ClientAccessCallback;
 
-pragma(inline, true) private int dixCallClientAccessCallback(ClientPtr client, ClientPtr target, Mask access_mode)
+pragma(inline, true) int dixCallClientAccessCallback(ClientPtr client, ClientPtr target, Mask access_mode)
 {
     ClientAccessCallbackParam rec = { client, target, access_mode, Success };
     CallCallbacks(&ClientAccessCallback, &rec);

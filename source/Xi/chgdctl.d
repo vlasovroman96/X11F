@@ -79,7 +79,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xChangeDeviceControlReq);
     REQUEST_AT_LEAST_EXTRA_SIZE(xChangeDeviceControlReq, xDeviceCtl.sizeof);
-    mixin(X_REQUEST_FIELD_CARD16!control);
+    mixin(X_REQUEST_FIELD_CARD16!"control");
 
     if (client.swapped) {
         xDeviceCtl* ctl = cast(xDeviceCtl*) &stuff[1];

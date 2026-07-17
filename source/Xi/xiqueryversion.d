@@ -61,8 +61,8 @@ extern XExtensionVersion XIVersion;     /* defined in getvers.c */
 int ProcXIQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIQueryVersionReq);
-    mixin(X_REQUEST_FIELD_CARD16!major_version);
-    mixin(X_REQUEST_FIELD_CARD16!minor_version);
+    mixin(X_REQUEST_FIELD_CARD16!"major_version");
+    mixin(X_REQUEST_FIELD_CARD16!"minor_version");
 
     int major = void, minor = void;
 
@@ -124,8 +124,8 @@ int ProcXIQueryVersion(ClientPtr client)
         minor_version: minor
     };
 
-    mixin(X_REPLY_FIELD_CARD16!major_version);
-    mixin(X_REPLY_FIELD_CARD16!minor_version);
+    mixin(X_REPLY_FIELD_CARD16!"major_version");
+    mixin(X_REPLY_FIELD_CARD16!"minor_version");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

@@ -192,7 +192,7 @@ pragma(inline, true) CARD32 bytes_to_int32(const(size_t) bytes)
  * @param bytes The minimum number of bytes needed.
  * @return The closest multiple of 4 that is equal or higher than bytes.
  */
-pragma(inline, true) private int pad_to_int32(const(int) bytes)
+pragma(inline, true) int pad_to_int32(const(int) bytes)
 {
     return (((bytes) + 3) & ~3);
 }

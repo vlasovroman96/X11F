@@ -1443,7 +1443,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                 }
             }
 
-            if (pCursor != wCursor(pWin)) {
+            if (pCursor != mixin(wCursor!"pWin")) {
                 /*
                  * patch up child windows so they don't lose cursors.
                  */
@@ -1493,7 +1493,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                 CursorVisible = TRUE;
 
                 if (pWin.realized)
-                    WindowHasNewCursor(pWin);
+                    WindowHasNemixin(wCursor!"pWin");
 
                 /* Can't free cursor until here - old cursor
                  * is needed in WindowHasNewCursor
@@ -3438,7 +3438,7 @@ int ChangeWindowDeviceCursor(WindowPtr pWin, DeviceIntPtr pDev, CursorPtr pCurso
     CursorVisible = TRUE;
 
     if (pWin.realized)
-        WindowHasNewCursor(pWin);
+        WindowHasNemixin(wCursor!"pWin");
 
     FreeCursor(pOldCursor, cast(Cursor) 0);
 

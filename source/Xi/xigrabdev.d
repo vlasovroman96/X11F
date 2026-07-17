@@ -51,11 +51,11 @@ import Xi.exglobals;          /* BadDevice */
 int ProcXIGrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIGrabDeviceReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!grab_window);
-    mixin(X_REQUEST_FIELD_CARD32!cursor);
-    mixin(X_REQUEST_FIELD_CARD32!time);
-    mixin(X_REQUEST_FIELD_CARD16!mask_len);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REPLY_FIELD_CARD32!"grab_window");
+    mixin(X_REQUEST_FIELD_CARD32!"cursor");
+    mixin(X_REPLY_FIELD_CARD32!"time");
+    mixin(X_REQUEST_FIELD_CARD16!"mask_len");
 
     DeviceIntPtr dev = void;
     int ret = Success;
@@ -127,8 +127,8 @@ reply:
 int ProcXIUngrabDevice(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIUngrabDeviceReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!time);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REPLY_FIELD_CARD32!"time");
 
     DeviceIntPtr dev = void;
     GrabPtr grab = void;

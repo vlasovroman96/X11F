@@ -153,7 +153,7 @@ int HashResourceID(XID id, uint numBits);
 // void GetXIDRange(int client, Bool server, XID* minp, XID* maxp);
 
 /* Resource state callback */
-extern CallbackListPtr ResourceStateCallback;
+// extern CallbackListPtr ResourceStateCallback;
 
 enum ResourceState {
     ResourceStateAdding,

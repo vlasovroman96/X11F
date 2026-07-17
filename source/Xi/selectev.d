@@ -123,7 +123,7 @@ int ProcXSelectExtensionEvent(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xSelectExtensionEventReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD16!count);
+    mixin(X_REQUEST_FIELD_CARD16!"count");
     X_REQUEST_REST_COUNT_CARD32(stuff.count);
 
     int ret = void;

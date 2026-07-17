@@ -150,7 +150,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDbeAllocateBackBufferNameReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD32!buffer);
+    mixin(X_REPLY_FIELD_CARD32!"buffer");
 
     /* The window must be valid. */
     WindowPtr pWin = void;
@@ -351,7 +351,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
 private int ProcDbeDeallocateBackBufferName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDbeDeallocateBackBufferNameReq);
-    mixin(X_REQUEST_FIELD_CARD32!buffer);
+    mixin(X_REPLY_FIELD_CARD32!"buffer");
 
     DbeWindowPrivPtr pDbeWindowPriv = void;
 
@@ -418,7 +418,7 @@ private int ProcDbeDeallocateBackBufferName(ClientPtr client)
 private int ProcDbeSwapBuffers(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xDbeSwapBuffersReq);
-    mixin(X_REQUEST_FIELD_CARD32!n);
+    mixin(X_REPLY_FIELD_CARD32!"n");
 
     if (stuff.n == 0)
         return Success;
@@ -542,7 +542,7 @@ private int ProcDbeSwapBuffers(ClientPtr client)
 private int ProcDbeGetVisualInfo(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xDbeGetVisualInfoReq);
-    mixin(X_REQUEST_FIELD_CARD32!n);
+    mixin(X_REPLY_FIELD_CARD32!"n");
     mixin(X_REQUEST_REST_CARD32!());
 
     DbeScreenPrivPtr pDbeScreenPriv = void;
@@ -622,7 +622,7 @@ private int ProcDbeGetVisualInfo(ClientPtr client)
         m: count
     };
 
-    mixin(X_REPLY_FIELD_CARD32!m);
+    mixin(X_REPLY_FIELD_CARD32!"m");
 
     rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
@@ -651,7 +651,7 @@ clearRpcBuf:
 private int ProcDbeGetBackBufferAttributes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDbeGetBackBufferAttributesReq);
-    mixin(X_REQUEST_FIELD_CARD32!buffer);
+    mixin(X_REPLY_FIELD_CARD32!"buffer");
 
     DbeWindowPrivPtr pDbeWindowPriv = void;
     int rc = void;
@@ -669,7 +669,7 @@ private int ProcDbeGetBackBufferAttributes(ClientPtr client)
         reply.attributes = None;
     }
 
-    mixin(X_REPLY_FIELD_CARD32!attributes);
+    mixin(X_REPLY_FIELD_CARD32!"attributes");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }

@@ -118,7 +118,7 @@ int ProcXGetDeviceDontPropagateList(ClientPtr client)
         }
     }
 
-    mixin(X_REPLY_FIELD_CARD16!count);
+    mixin(X_REPLY_FIELD_CARD16!"count");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

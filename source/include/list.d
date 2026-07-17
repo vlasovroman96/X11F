@@ -390,7 +390,7 @@ template xorg_list_for_each_entry_safe(string pos, string tmp, string head, stri
         "for (" ~ pos ~ " = null, "
         ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((" ~ head ~ ").next), "
         ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next); "
-        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " !is &(" ~ head ~ ")); "
+        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " !is (" ~ head ~ ")); "
         ~ pos ~ " = " ~ tmp ~ ", "
         ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next)) {"
         ~ bodyCode

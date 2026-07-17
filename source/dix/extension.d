@@ -285,7 +285,7 @@ private Bool ExtensionAvailable(ClientPtr client, ExtensionEntry* ext)
 int ProcQueryExtension(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xQueryExtensionReq);
-    mixin(X_REQUEST_FIELD_CARD16!nbytes);
+    mixin(X_REQUEST_FIELD_CARD16!"nbytes");
     REQUEST_FIXED_SIZE(xQueryExtensionReq, stuff.nbytes);
 
     xQueryExtensionReply reply = { 0 };

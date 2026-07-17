@@ -40,6 +40,8 @@ import Xext.hashtable;
 import include.picturestr;
 import composite.compint;
 import externs.X11.extensions.XResproto;
+import os.log;
+import dix.extension;
 
 Bool noResExtension = FALSE;
 
@@ -108,7 +110,7 @@ struct ConstructResourceBytesCtx {
 */
 private void* AddFragment(xorg_list* frags, int bytes)
 {
-    FragmentList* f = cast(FragmentList*) calloc(1, ((FragmentList) + bytes).sizeof);
+    FragmentList* f = cast(FragmentList*) calloc(1, ((FragmentList).sizeof + bytes));
     if (!f) {
         return null;
     } else {
@@ -126,10 +128,10 @@ private void DestroyFragments(xorg_list* frags)
 {
     FragmentList* it = void, tmp = void;
     if (!xorg_list_is_empty(frags)) {
-        xorg_list_for_each_entry_safe(it, tmp, frags, l); {
+        mixin(xorg_list_for_each_entry_safe!("it", "tmp", "frags", "l", q{
             xorg_list_del(&it.l);
             free(it);
-        }
+        }));
     }
 }
 
@@ -143,7 +145,7 @@ private Bool InitConstructResourceBytesCtx(ConstructResourceBytesCtx* ctx, Clien
     ctx.numSpecs = numSpecs;
     ctx.specs = specs;
     ctx.visitedResources = ht_create(XID.sizeof, 0,
-                                      ht_resourceid_hash, ht_resourceid_compare,
+                                      &ht_resourceid_hash, &ht_resourceid_compare,
                                       null);
 
     if (!ctx.visitedResources) {
@@ -168,8 +170,8 @@ private int ProcXResQueryVersion(ClientPtr client)
         server_minor: SERVER_XRES_MINOR_VERSION
     };
 
-    mixin(X_REPLY_FIELD_CARD16!server_major);
-    mixin(X_REPLY_FIELD_CARD16!server_minor);
+    mixin(X_REPLY_FIELD_CARD16!"server_major");
+    mixin(X_REPLY_FIELD_CARD16!"server_minor");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -185,7 +187,7 @@ private int ProcXResQueryClients(ClientPtr client)
         ClientPtr walkClient = clients[i];
         if (walkClient &&
             (dixCallClientAccessCallback(client, walkClient, DixReadAccess) == Success)) {
-            x_rpcbuf_write_CARD32(&rpcbuf, walkClient.clientAsMask); /* resource_base */
+            x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)walkClient.clientAsMask); /* resource_base */
             x_rpcbuf_write_CARD32(&rpcbuf, RESOURCE_ID_MASK);         /* resource_mask */
             num_clients++;
         }
@@ -195,7 +197,7 @@ private int ProcXResQueryClients(ClientPtr client)
         num_clients: num_clients
     };
 
-    mixin(X_REPLY_FIELD_CARD32!num_clients);
+    mixin(X_REPLY_FIELD_CARD32!"num_clients");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -213,11 +215,11 @@ private CARD32 resourceTypeAtom(int i)
 
     const(char)* name = LookupResourceName(i);
     if (strcmp(name, XREGISTRY_UNKNOWN)) {
-        ret = dixAddAtom(name);
+        ret = cast(uint)dixAddAtom(name);
     } else {
         char[40] buf = void;
         snprintf(buf.ptr, buf.sizeof, "Unregistered resource %i", i + 1);
-        ret = dixAddAtom(buf.ptr);
+        ret = cast(uint)dixAddAtom(buf.ptr);
     }
 
     return ret;
@@ -226,7 +228,7 @@ private CARD32 resourceTypeAtom(int i)
 private int ProcXResQueryClientResources(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientResourcesReq);
-    mixin(X_REQUEST_FIELD_CARD32!xid);
+    mixin(X_REQUEST_FIELD_CARD32!"xid");
 
     ClientPtr resClient = dixClientForXID(stuff.xid);
 
@@ -265,7 +267,7 @@ private int ProcXResQueryClientResources(ClientPtr client)
         num_types: num_types
     };
 
-    mixin(X_REPLY_FIELD_CARD32!num_types);
+    mixin(X_REPLY_FIELD_CARD32!"num_types");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -274,7 +276,7 @@ private void ResFindResourcePixmaps(void* value, XID id, RESTYPE type, void* cda
 {
     SizeType sizeFunc = GetResourceTypeSizeFunc(type);
     ResourceSizeRec size = { 0, 0, 0 };
-    c_ulong* bytes = cdata;
+    c_ulong* bytes = cast(c_ulong*)cdata;
 
     sizeFunc(value, id, &size);
     *bytes += size.pixmapRefSize;
@@ -283,7 +285,7 @@ private void ResFindResourcePixmaps(void* value, XID id, RESTYPE type, void* cda
 private int ProcXResQueryClientPixmapBytes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXResQueryClientPixmapBytesReq);
-    mixin(X_REQUEST_FIELD_CARD32!xid);
+    mixin(X_REQUEST_FIELD_CARD32!"xid");
 
     ClientPtr owner = dixClientForXID(stuff.xid);
     if ((!owner) ||
@@ -305,12 +307,12 @@ private int ProcXResQueryClientPixmapBytes(ClientPtr client)
     }
     else {
         xXResQueryClientPixmapBytesReply reply = {
-            bytes: bytes,
+            bytes: cast(uint)bytes,
         };
     }
 
-    mixin(X_REPLY_FIELD_CARD32!bytes);
-    mixin(X_REPLY_FIELD_CARD32!bytes_overflow);
+    mixin(X_REPLY_FIELD_CARD32!"bytes");
+    mixin(X_REPLY_FIELD_CARD32!"bytes_overflow");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -359,7 +361,7 @@ private Bool ConstructClientIdValue(ClientPtr sendClient, ClientPtr client, CARD
     if (WillConstructMask(client, mask, ctx, X_XResClientXIDMask)) {
         xXResClientIdValue reply;
     
-        reply.spec.client = client.clientAsMask;
+        reply.spec.client = cast(uint)client.clientAsMask;
         reply.spec.mask = X_XResClientXIDMask;
 
         /* can't used REPLY_FIELD_*() here, because we're looking at sendClient */
@@ -381,7 +383,7 @@ private Bool ConstructClientIdValue(ClientPtr sendClient, ClientPtr client, CARD
 
         xXResClientIdValue reply;
     
-        reply.spec.client = client.clientAsMask;
+        reply.spec.client = cast(uint)client.clientAsMask;
         reply.spec.mask = X_XResLocalClientPIDMask;
         reply.length = 4;
 
@@ -451,10 +453,10 @@ private int ConstructClientIds(ClientPtr client, int numSpecs, xXResClientIdSpec
 private int ProcXResQueryClientIds(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXResQueryClientIdsReq);
-    mixin(X_REQUEST_FIELD_CARD32!numSpecs);
+    mixin(X_REQUEST_FIELD_CARD32!"numSpecs");
 
-    REQUEST_FIXED_SIZE(xXResQueryClientIdsReq,
-                       cast(ulong)stuff.numSpecs * xXResClientIdSpec.sizeof);
+    mixin(REQUEST_FIXED_SIZE!(xXResQueryClientIdsReq,
+                       "cast(ulong)stuff.numSpecs * xXResClientIdSpec.sizeof"));
 
     xXResClientIdSpec* specs = cast(xXResClientIdSpec*) (cast(void*) (cast(char*) stuff + xXResQueryClientIdsReq.sizeof));
 
@@ -474,9 +476,9 @@ private int ProcXResQueryClientIds(ClientPtr client)
             numIds: ctx.numIds
         };
 
-        mixin(X_REPLY_FIELD_CARD32!numIds);
+        mixin(X_REPLY_FIELD_CARD32!"numIds");
 
-        rc = X_SEND_REPLY_WITH_RPCBUF(client, reply, ctx.rpcbuf);
+        rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "ctx.rpcbuf"));
     }
 
     x_rpcbuf_clear(&ctx.rpcbuf);
@@ -512,10 +514,10 @@ private void SwapXResQueryResourceBytes(xorg_list* response)
     xorg_list* it = response.next;
 
     while (it != response) {
-        xXResResourceSizeValue* value = mixin(FRAGMENT_DATA!(`it`));
+        xXResResourceSizeValue* value = cast(xXResResourceSizeValue*)mixin(FRAGMENT_DATA!(`it`));
         it = it.next;
         for (int c = 0; c < value.numCrossReferences; ++c) {
-            xXResResourceSizeSpec* spec = mixin(FRAGMENT_DATA!(`it`));
+            xXResResourceSizeSpec* spec = cast(xXResResourceSizeSpec*)mixin(FRAGMENT_DATA!(`it`));
             SwapXResResourceSizeSpec(spec);
             it = it.next;
         }
@@ -539,17 +541,17 @@ private void SwapXResQueryResourceBytes(xorg_list* response)
 */
 private void AddSubResourceSizeSpec(void* value, XID id, RESTYPE type, void* cdata)
 {
-    ConstructResourceBytesCtx* ctx = cdata;
+    ConstructResourceBytesCtx* ctx = cast(ConstructResourceBytesCtx*)cdata;
 
     if (ctx.status == Success) {
-        xXResResourceSizeSpec** prevCrossRef = ht_find(ctx.visitedSubResources, &value);
+        xXResResourceSizeSpec** prevCrossRef = cast(xXResResourceSizeSpec**)ht_find(ctx.visitedSubResources, &value);
         if (!prevCrossRef) {
             Bool ok = TRUE;
-            xXResResourceSizeSpec* crossRef = AddFragment(&ctx.response, xXResResourceSizeSpec.sizeof);
+            xXResResourceSizeSpec* crossRef = cast(xXResResourceSizeSpec*)AddFragment(&ctx.response, xXResResourceSizeSpec.sizeof);
             ok = ok && crossRef != null;
             if (ok) {
                 xXResResourceSizeSpec** p = void;
-                p = ht_add(ctx.visitedSubResources, &value);
+                p = cast(xXResResourceSizeSpec**)ht_add(ctx.visitedSubResources, &value);
                 if (!p) {
                     ok = FALSE;
                 } else {
@@ -563,10 +565,10 @@ private void AddSubResourceSizeSpec(void* value, XID id, RESTYPE type, void* cda
                 ResourceSizeRec size = { 0, 0, 0 };
                 sizeFunc(value, id, &size);
 
-                crossRef.spec.resource = id;
+                crossRef.spec.resource = cast(uint)id;
                 crossRef.spec.type = resourceTypeAtom(type);
-                crossRef.bytes = size.resourceSize;
-                crossRef.refCount = size.refCnt;
+                crossRef.bytes = cast(uint)size.resourceSize;
+                crossRef.refCount = cast(uint)size.refCnt;
                 crossRef.useCount = 1;
 
                 ++ctx.sizeValue.numCrossReferences;
@@ -598,7 +600,7 @@ private void AddSubResourceSizeSpec(void* value, XID id, RESTYPE type, void* cda
 */
 private void AddResourceSizeValue(void* ptr, XID id, RESTYPE type, void* cdata)
 {
-    ConstructResourceBytesCtx* ctx = cdata;
+    ConstructResourceBytesCtx* ctx = cast(ConstructResourceBytesCtx*)cdata;
     if (ctx.status == Success &&
         !ht_find(ctx.visitedResources, &id)) {
         Bool ok = TRUE;
@@ -613,7 +615,7 @@ private void AddResourceSizeValue(void* ptr, XID id, RESTYPE type, void* cdata)
          * ht_init, so we don't need to clean it up here in any
          * special way */
 
-        xXResResourceSizeValue* value = AddFragment(&ctx.response, xXResResourceSizeValue.sizeof);
+        xXResResourceSizeValue* value = cast(xXResResourceSizeValue*)AddFragment(&ctx.response, xXResResourceSizeValue.sizeof);
         if (!value) {
             ok = FALSE;
         }
@@ -621,7 +623,7 @@ private void AddResourceSizeValue(void* ptr, XID id, RESTYPE type, void* cdata)
         if (ok) {
             ht = ht_create(htSetup.keySize,
                            (xXResResourceSizeSpec*).sizeof,
-                           ht_generic_hash, ht_generic_compare,
+                           &ht_generic_hash, &ht_generic_compare,
                            &htSetup);
             ok = ok && ht;
         }
@@ -634,10 +636,10 @@ private void AddResourceSizeValue(void* ptr, XID id, RESTYPE type, void* cdata)
 
             sizeFunc(ptr, id, &size);
 
-            value.size.spec.resource = id;
+            value.size.spec.resource = cast(uint)id;
             value.size.spec.type = resourceTypeAtom(type);
-            value.size.bytes = size.resourceSize;
-            value.size.refCount = size.refCnt;
+            value.size.bytes = cast(uint)size.resourceSize;
+            value.size.refCount = cast(uint)size.refCnt;
             value.size.useCount = 1;
             value.numCrossReferences = 0;
 
@@ -666,7 +668,7 @@ private void AddResourceSizeValue(void* ptr, XID id, RESTYPE type, void* cdata)
 */
 private void AddResourceSizeValueWithResType(void* ptr, XID id, void* cdata)
 {
-    ConstructResourceBytesCtx* ctx = cdata;
+    ConstructResourceBytesCtx* ctx = cast(ConstructResourceBytesCtx*)cdata;
     AddResourceSizeValue(ptr, id, ctx.resType, cdata);
 }
 
@@ -683,7 +685,7 @@ private void AddResourceSizeValueWithResType(void* ptr, XID id, void* cdata)
 */
 private void AddResourceSizeValueByResource(void* ptr, XID id, RESTYPE type, void* cdata)
 {
-    ConstructResourceBytesCtx* ctx = cdata;
+    ConstructResourceBytesCtx* ctx = cast(ConstructResourceBytesCtx*)cdata;
     xXResResourceIdSpec* spec = ctx.curSpec;
 
     if ((!spec.type || spec.type == type) &&
@@ -793,10 +795,10 @@ private int ConstructResourceBytes(XID aboutClient, ConstructResourceBytesCtx* c
 private int ProcXResQueryResourceBytes(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXResQueryResourceBytesReq);
-    mixin(X_REQUEST_FIELD_CARD32!numSpecs);
+    mixin(X_REQUEST_FIELD_CARD32!"numSpecs");
 
-    REQUEST_FIXED_SIZE(xXResQueryResourceBytesReq,
-                       (cast(ulong)stuff.numSpecs) * xXResResourceIdSpec.sizeof);
+    mixin(REQUEST_FIXED_SIZE!(xXResQueryResourceBytesReq,
+                       "(cast(ulong)stuff.numSpecs) * xXResResourceIdSpec.sizeof"));
 
     if (client.swapped) {
         xXResResourceIdSpec* specs = cast(xXResResourceIdSpec*) (cast(void*) (cast(char*) stuff + typeof(*stuff).sizeof));
@@ -807,7 +809,7 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
     ConstructResourceBytesCtx ctx = void;
     if (!InitConstructResourceBytesCtx(&ctx, client,
                                        stuff.numSpecs,
-                                       cast(void*) (cast(char*) stuff +
+                                       cast(_XResResourceIdSpec*) (cast(char*) stuff +
                                                 sz_xXResQueryResourceBytesReq))) {
         return BadAlloc;
     }
@@ -821,16 +823,16 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
             numSizes: ctx.numSizes
         };
 
-        mixin(X_REPLY_FIELD_CARD32!numSizes);
+        mixin(X_REPLY_FIELD_CARD32!"numSizes");
 
         if (client.swapped) {
             SwapXResQueryResourceBytes(&ctx.response);
         }
 
         FragmentList* it = void;
-        xorg_list_for_each_entry(it, &ctx.response, l); {
-            x_rpcbuf_write_CARD8s(&rpcbuf, mixin(FRAGMENT_DATA!(`it`)), it.bytes);
-        }
+        mixin(xorg_list_for_each_entry!("it", "&ctx.response", "l", q{
+            x_rpcbuf_write_CARD8s(&rpcbuf, cast(ubyte*)mixin(FRAGMENT_DATA!(`it`)), it.bytes);
+        }));
 
         if (rpcbuf.wpos != ctx.resultBytes)
             LogMessage(X_WARNING, "ProcXResQueryClientIds() rpcbuf size (%ld) context size (%ld)\n",
@@ -869,5 +871,5 @@ void ResExtensionInit()
 {
     cast(void) AddExtension(XRES_NAME, 0, 0,
                         &ProcResDispatch, &ProcResDispatch,
-                        null, StandardMinorOpcode);
+                        null, &StandardMinorOpcode);
 }

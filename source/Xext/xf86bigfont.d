@@ -50,11 +50,11 @@ import core.sys.posix.unistd;
 import core.stdc.time;
 import core.stdc.errno;
 
-version (CONFIG_MITSHM) {
+static if (CONFIG_MITSHM) {
 version (Cygwin) {
 import sys.param;
 }
-import sys.sysmacros;
+// import sys.sysmacros;
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;
 import core.sys.posix.sys.stat;
@@ -81,12 +81,17 @@ import include.extnsionst;
 import include.protocol_versions;
 
 import Xext.xf86bigfontsrv;
+import externs.X11.extensions.xf86bigfproto;
+import externs.X11.fonts.fontstruct;
+import externs.attrs;
+import os.log;
+import dix.extension;
 
 Bool noXFree86BigfontExtension = FALSE;
 
 
 
-version (CONFIG_MITSHM) {
+static if (CONFIG_MITSHM) {
 
 /* A random signature, transmitted to the clients so they can verify that the
    shared memory segment they are attaching to was really established by the
@@ -173,7 +178,7 @@ version (MUST_CHECK_FOR_SHM_SYSCALL) {
         return cast(ShmDescPtr) null;
     }
 
-    ShmDescPtr pDesc = calloc(1, ShmDescRec.sizeof);
+    ShmDescPtr pDesc = cast(ShmDescPtr)calloc(1, ShmDescRec.sizeof);
     if (!pDesc) {
         return cast(ShmDescPtr) null;
     }
@@ -187,16 +192,16 @@ version (MUST_CHECK_FOR_SHM_SYSCALL) {
         return cast(ShmDescPtr) null;
     }
 
-    if ((addr = shmat(shmid, 0, 0)) == cast(char*) -1) {
+    if ((addr = cast(char*)shmat(shmid, null, 0)) == cast(void*) -1) {
         ErrorF(XF86BIGFONTNAME ~" extension: shmat() failed, size = %u, %s\n",
                size, strerror(errno));
-        shmctl(shmid, IPC_RMID, cast(void*) 0);
+        shmctl(shmid, IPC_RMID, cast(shmid_ds*) null);
         free(pDesc);
         return cast(ShmDescPtr) null;
     }
 
 version (EARLY_REMOVE) {
-    shmctl(shmid, IPC_RMID, cast(void*) 0);
+    shmctl(shmid, IPC_RMID, cast(shmid_ds*) null);
 }
 
     pDesc.shmid = shmid;
@@ -283,7 +288,7 @@ static if(CONFIG_MITSHM)
         minorVersion: SERVER_XF86BIGFONT_MINOR_VERSION,
         uid: geteuid(),
         gid: getegid(),
-        .signature = signature,
+        signature: .signature,
         capabilities: (client.local && !client.swapped)
                          ? XF86Bigfont_CAP_LocalShm : 0
     };
@@ -297,9 +302,9 @@ else {
 
     mixin(X_REPLY_FIELD_CARD16!("majorVersion"));
     mixin(X_REPLY_FIELD_CARD16!("minorVersion"));
-    mixin(X_REPLY_FIELD_CARD32!uid);
-    mixin(X_REPLY_FIELD_CARD32!gid);
-    mixin(X_REPLY_FIELD_CARD32!signature);
+    mixin(X_REPLY_FIELD_CARD32!"uid");
+    mixin(X_REPLY_FIELD_CARD32!"gid");
+    mixin(X_REPLY_FIELD_CARD32!"signature");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -334,7 +339,7 @@ static int
 ProcXF86BigfontQueryFont(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86BigfontQueryFontReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     FontPtr pFont;
     CARD32 stuff_flags;
@@ -370,15 +375,15 @@ version (CONFIG_MITSHM) {
         Success)
         return BadFont;         /* protocol spec says only error is BadFont */
 
-    pmax = FONTINKMAX(pFont);
-    pmin = FONTINKMIN(pFont);
+    pmax = mixin(FONTINKMAX!("pFont"));
+    pmin = mixin(FONTINKMIN!("pFont"));
     nCharInfos =
         (pmax.rightSideBearing == pmin.rightSideBearing
          && pmax.leftSideBearing == pmin.leftSideBearing
          && pmax.descent == pmin.descent
          && pmax.ascent == pmin.ascent
          && pmax.characterWidth == pmin.characterWidth)
-        ? 0 : N2dChars(pFont);
+        ? 0 : mixin(N2dChars!("pFont"));
     shmid = -1;
     pCI = null;
     pIndex2UniqIndex = null;
@@ -486,7 +491,14 @@ if (nCharInfos > 0)
                 chars[i++] = cast(ubyte) col;
             }
 
-            (*pFont.get_metrics)(
+            (cast( int function(
+                FontPtr,
+                c_ulong,
+                ubyte*,
+                FontEncoding,
+                c_ulong*,
+                xCharInfo**
+            ) @nogc nothrow ) pFont.get_metrics)(
                 pFont,
                 ncols,
                 chars.ptr,
@@ -594,7 +606,7 @@ if (nCharInfos > 0)
                 }
                 if (i != cast(CARD16) (-1)) {
                     /* Found *p at Index j, UniqIndex i */
-                    pIndex2UniqIndex[NextIndex] = i;
+                    pIndex2UniqIndex[NextIndex] = cast(ushort)i;
                 }
                 else {
                     /* Allocate a new entry in the Uniq table */
@@ -616,16 +628,16 @@ if (nCharInfos > 0)
                             p = &pCI[j];
                             hashCode = mixin(hashCI!(`p`)) % hashModulus;
                             pUniqIndex2NextUniqIndex[i] = pHash2UniqIndex[hashCode];
-                            pHash2UniqIndex[hashCode] = i;
+                            pHash2UniqIndex[hashCode] = cast(ushort)i;
                         }
                         p = &pCI[NextIndex];
                         hashCode = mixin(hashCI!(`p`)) % hashModulus;
                     }
                     i = NextUniqIndex++;
                     pUniqIndex2NextUniqIndex[i] = pHash2UniqIndex[hashCode];
-                    pHash2UniqIndex[hashCode] = i;
-                    pUniqIndex2Index[i] = NextIndex;
-                    pIndex2UniqIndex[NextIndex] = i;
+                    pHash2UniqIndex[hashCode] = cast(ushort)i;
+                    pUniqIndex2Index[i] = cast(ushort)NextIndex;
+                    pIndex2UniqIndex[NextIndex] = cast(ushort)i;
                 }
             }
             nUniqCharInfos = NextUniqIndex;
@@ -641,11 +653,11 @@ if (nCharInfos > 0)
             minCharOrByte2: pFont.info.firstCol,
             maxCharOrByte2: pFont.info.lastCol,
             defaultChar: pFont.info.defaultCh,
-            nFontProps: pFont.info.nprops,
-            drawDirection: pFont.info.drawDirection,
-            minByte1: pFont.info.firstRow,
-            maxByte1: pFont.info.lastRow,
-            allCharsExist: pFont.info.allExist,
+            nFontProps: cast(ushort)pFont.info.nprops,
+            drawDirection: cast(ubyte)pFont.info.drawDirection,
+            minByte1: cast(ubyte)pFont.info.firstRow,
+            maxByte1: cast(ubyte)pFont.info.lastRow,
+            allCharsExist: cast(ubyte)pFont.info.allExist,
             fontAscent: pFont.info.fontAscent,
             fontDescent: pFont.info.fontDescent,
             nCharInfos: nCharInfos,
@@ -653,16 +665,16 @@ if (nCharInfos > 0)
             shmid: shmid,
         };
 
-        mixin(X_REPLY_FIELD_CARD16!minCharOrByte2);
-        mixin(X_REPLY_FIELD_CARD16!maxCharOrByte2);
-        mixin(X_REPLY_FIELD_CARD16!defaultChar);
-        mixin(X_REPLY_FIELD_CARD16!nFontProps);
-        mixin(X_REPLY_FIELD_CARD16!fontAscent);
-        mixin(X_REPLY_FIELD_CARD16!fontDescent);
-        mixin(X_REPLY_FIELD_CARD32!nCharInfos);
-        mixin(X_REPLY_FIELD_CARD32!nUniqCharInfos);
-        mixin(X_REPLY_FIELD_CARD32!shmid);
-        mixin(X_REPLY_FIELD_CARD32!shmsegoffset);
+        mixin(X_REPLY_FIELD_CARD16!"minCharOrByte2");
+        mixin(X_REPLY_FIELD_CARD16!"maxCharOrByte2");
+        mixin(X_REPLY_FIELD_CARD16!"defaultChar");
+        mixin(X_REPLY_FIELD_CARD16!"nFontProps");
+        mixin(X_REPLY_FIELD_CARD16!"fontAscent");
+        mixin(X_REPLY_FIELD_CARD16!"fontDescent");
+        mixin(X_REPLY_FIELD_CARD32!"nCharInfos");
+        mixin(X_REPLY_FIELD_CARD32!"nUniqCharInfos");
+        mixin(X_REPLY_FIELD_CARD32!"shmid");
+        mixin(X_REPLY_FIELD_CARD32!"shmsegoffset");
 
         if (client.swapped) {
             swapCharInfo(&reply.minBounds);
@@ -672,8 +684,8 @@ if (nCharInfos > 0)
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
         for (int i = 0; i < nfontprops; i++) {
-            x_rpcbuf_write_CARD32(&rpcbuf, pFont.info.props[i].name);
-            x_rpcbuf_write_CARD32(&rpcbuf, pFont.info.props[i].value);
+            x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)pFont.info.props[i].name);
+            x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)pFont.info.props[i].value);
         }
 
         if (nCharInfos > 0 && shmid == -1) {
@@ -718,7 +730,7 @@ void XFree86BigfontExtensionInit()
                      XF86BigfontNumberErrors,
                      &ProcXF86BigfontDispatch,
                      &ProcXF86BigfontDispatch,
-                     &XF86BigfontResetProc, StandardMinorOpcode)) {
+                     &XF86BigfontResetProc, &StandardMinorOpcode)) {
 version (CONFIG_MITSHM) {
 version (MUST_CHECK_FOR_SHM_SYSCALL) {
         /*

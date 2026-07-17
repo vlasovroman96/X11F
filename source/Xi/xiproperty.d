@@ -827,7 +827,7 @@ int ProcXListDeviceProperties(ClientPtr client)
         nAtoms: natoms
     };
 
-    mixin(X_REPLY_FIELD_CARD16!nAtoms);
+    mixin(X_REPLY_FIELD_CARD16!"nAtoms");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -835,9 +835,9 @@ int ProcXListDeviceProperties(ClientPtr client)
 int ProcXChangeDeviceProperty(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xChangeDevicePropertyReq);
-    mixin(X_REQUEST_FIELD_CARD32!property);
-    mixin(X_REQUEST_FIELD_CARD32!type);
-    mixin(X_REQUEST_FIELD_CARD32!nUnits);
+    mixin(X_REQUEST_FIELD_CARD32!"property");
+    mixin(X_REPLY_FIELD_CARD32!"type");
+    mixin(X_REPLY_FIELD_CARD32!"nUnits");
 
     DeviceIntPtr dev = void;
     c_ulong len = void;
@@ -870,7 +870,7 @@ int ProcXChangeDeviceProperty(ClientPtr client)
 int ProcXDeleteDeviceProperty(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xDeleteDevicePropertyReq);
-    mixin(X_REQUEST_FIELD_CARD32!property);
+    mixin(X_REQUEST_FIELD_CARD32!"property");
 
     DeviceIntPtr dev = void;
     int rc = void;
@@ -892,10 +892,10 @@ int ProcXDeleteDeviceProperty(ClientPtr client)
 int ProcXGetDeviceProperty(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xGetDevicePropertyReq);
-    mixin(X_REQUEST_FIELD_CARD32!property);
-    mixin(X_REQUEST_FIELD_CARD32!type);
-    mixin(X_REQUEST_FIELD_CARD32!longOffset);
-    mixin(X_REQUEST_FIELD_CARD32!longLength);
+    mixin(X_REQUEST_FIELD_CARD32!"property");
+    mixin(X_REPLY_FIELD_CARD32!"type");
+    mixin(X_REPLY_FIELD_CARD32!"longOffset");
+    mixin(X_REPLY_FIELD_CARD32!"longLength");
 
     DeviceIntPtr dev = void;
     int length = void;
@@ -959,9 +959,9 @@ int ProcXGetDeviceProperty(ClientPtr client)
         }
     }
 
-    mixin(X_REPLY_FIELD_CARD32!propertyType);
-    mixin(X_REPLY_FIELD_CARD32!bytesAfter);
-    mixin(X_REPLY_FIELD_CARD32!nItems);
+    mixin(X_REPLY_FIELD_CARD32!"propertyType");
+    mixin(X_REPLY_FIELD_CARD32!"bytesAfter");
+    mixin(X_REPLY_FIELD_CARD32!"nItems");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -970,7 +970,7 @@ int ProcXGetDeviceProperty(ClientPtr client)
 int ProcXIListProperties(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIListPropertiesReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -984,7 +984,7 @@ int ProcXIListProperties(ClientPtr client)
         num_properties: natoms
     };
 
-    mixin(X_REPLY_FIELD_CARD16!num_properties);
+    mixin(X_REPLY_FIELD_CARD16!"num_properties");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -992,10 +992,10 @@ int ProcXIListProperties(ClientPtr client)
 int ProcXIChangeProperty(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIChangePropertyReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!property);
-    mixin(X_REQUEST_FIELD_CARD32!type);
-    mixin(X_REQUEST_FIELD_CARD32!num_items);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REQUEST_FIELD_CARD32!"property");
+    mixin(X_REPLY_FIELD_CARD32!"type");
+    mixin(X_REPLY_FIELD_CARD32!"num_items");
 
     int rc = void;
     DeviceIntPtr dev = void;
@@ -1028,8 +1028,8 @@ int ProcXIChangeProperty(ClientPtr client)
 int ProcXIDeleteProperty(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIDeletePropertyReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!property);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REQUEST_FIELD_CARD32!"property");
 
     DeviceIntPtr dev = void;
     int rc = void;
@@ -1051,11 +1051,11 @@ int ProcXIDeleteProperty(ClientPtr client)
 int ProcXIGetProperty(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXIGetPropertyReq);
-    mixin(X_REQUEST_FIELD_CARD16!deviceid);
-    mixin(X_REQUEST_FIELD_CARD32!property);
-    mixin(X_REQUEST_FIELD_CARD32!type);
-    mixin(X_REQUEST_FIELD_CARD32!offset);
-    mixin(X_REQUEST_FIELD_CARD32!len);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceid");
+    mixin(X_REQUEST_FIELD_CARD32!"property");
+    mixin(X_REPLY_FIELD_CARD32!"type");
+    mixin(X_REPLY_FIELD_CARD32!"offset");
+    mixin(X_REPLY_FIELD_CARD32!"len");
 
     DeviceIntPtr dev = void;
     int length = void;
@@ -1104,9 +1104,9 @@ int ProcXIGetProperty(ClientPtr client)
         }
     }
 
-    mixin(X_REPLY_FIELD_CARD32!type);
-    mixin(X_REPLY_FIELD_CARD32!bytes_after);
-    mixin(X_REPLY_FIELD_CARD32!num_items);
+    mixin(X_REPLY_FIELD_CARD32!"type");
+    mixin(X_REPLY_FIELD_CARD32!"bytes_after");
+    mixin(X_REPLY_FIELD_CARD32!"num_items");
 
     rc = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
     if (rc != Success)

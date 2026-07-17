@@ -215,7 +215,7 @@ private int ProcVidModeQueryVersion(ClientPtr client)
 private int ProcVidModeGetModeLine(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetModeLineReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     VidModePtr pVidMode = void;
     DisplayModePtr mode = void;
@@ -265,18 +265,18 @@ private int ProcVidModeGetModeLine(ClientPtr client)
            reply.vdisplay, reply.vsyncstart, reply.vsyncend,
            reply.vtotal, cast(c_ulong) reply.flags);
 
-    mixin(X_REPLY_FIELD_CARD32!dotclock);
-    mixin(X_REPLY_FIELD_CARD16!hdisplay);
-    mixin(X_REPLY_FIELD_CARD16!hsyncstart);
-    mixin(X_REPLY_FIELD_CARD16!hsyncend);
-    mixin(X_REPLY_FIELD_CARD16!htotal);
-    mixin(X_REPLY_FIELD_CARD16!hskew);
-    mixin(X_REPLY_FIELD_CARD16!vdisplay);
-    mixin(X_REPLY_FIELD_CARD16!vsyncstart);
-    mixin(X_REPLY_FIELD_CARD16!vsyncend);
-    mixin(X_REPLY_FIELD_CARD16!vtotal);
-    mixin(X_REPLY_FIELD_CARD32!flags);
-    mixin(X_REPLY_FIELD_CARD32!privsize);
+    mixin(X_REPLY_FIELD_CARD32!"dotclock");
+    mixin(X_REPLY_FIELD_CARD16!"hdisplay");
+    mixin(X_REPLY_FIELD_CARD16!"hsyncstart");
+    mixin(X_REPLY_FIELD_CARD16!"hsyncend");
+    mixin(X_REPLY_FIELD_CARD16!"htotal");
+    mixin(X_REPLY_FIELD_CARD16!"hskew");
+    mixin(X_REPLY_FIELD_CARD16!"vdisplay");
+    mixin(X_REPLY_FIELD_CARD16!"vsyncstart");
+    mixin(X_REPLY_FIELD_CARD16!"vsyncend");
+    mixin(X_REPLY_FIELD_CARD16!"vtotal");
+    mixin(X_REPLY_FIELD_CARD32!"flags");
+    mixin(X_REPLY_FIELD_CARD32!"privsize");
 
     if (ver < 2) {
         xXF86OldVidModeGetModeLineReply oldrep = {
@@ -335,7 +335,7 @@ private void fillModeInfoV2(x_rpcbuf_t* rpcbuf, int dotClock, DisplayModePtr mod
 private int ProcVidModeGetAllModeLines(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetAllModeLinesReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     VidModePtr pVidMode = void;
     DisplayModePtr mode = void;
@@ -373,7 +373,7 @@ private int ProcVidModeGetAllModeLines(ClientPtr client)
         modecount: modecount
     };
 
-    mixin(X_REPLY_FIELD_CARD32!modecount);
+    mixin(X_REPLY_FIELD_CARD32!"modecount");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -408,16 +408,16 @@ private int ProcVidModeAddModeLine(ClientPtr client)
             bytes_to_int32(xXF86OldVidModeAddModeLineReq.sizeof);
 
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         if (len != stuff.privsize)
@@ -459,17 +459,17 @@ private int ProcVidModeAddModeLine(ClientPtr client)
             bytes_to_int32(xXF86VidModeAddModeLineReq.sizeof);
 
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!hskew);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"hskew");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         if (len != stuff.privsize)
@@ -608,16 +608,16 @@ private int ProcVidModeDeleteModeLine(ClientPtr client)
     if (ClientMajorVersion(client) < 2) {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86OldVidModeDeleteModeLineReq);
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         len =
@@ -654,17 +654,17 @@ private int ProcVidModeDeleteModeLine(ClientPtr client)
     else {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86VidModeDeleteModeLineReq);
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!hskew);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"hskew");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         len =
@@ -767,16 +767,16 @@ private int ProcVidModeModModeLine(ClientPtr client)
 
     if (ClientMajorVersion(client) < 2) {
          mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         int len = client.req_len -
@@ -805,17 +805,17 @@ private int ProcVidModeModModeLine(ClientPtr client)
     else {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86VidModeModModeLineReq);
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!hskew);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"hskew");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         int len = client.req_len -
@@ -930,16 +930,16 @@ private int ProcVidModeValidateModeLine(ClientPtr client)
     if (ClientMajorVersion(client) < 2) {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86OldVidModeValidateModeLineReq);
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         len = client.req_len -
@@ -968,17 +968,17 @@ private int ProcVidModeValidateModeLine(ClientPtr client)
     else {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86VidModeValidateModeLineReq);
         mixin(X_REQUEST_FIELD_CARD32!"screen");
-        mixin(X_REQUEST_FIELD_CARD16!hdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!hsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!htotal);
-        mixin(X_REQUEST_FIELD_CARD16!hskew);
-        mixin(X_REQUEST_FIELD_CARD16!vdisplay);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncstart);
-        mixin(X_REQUEST_FIELD_CARD16!vsyncend);
-        mixin(X_REQUEST_FIELD_CARD16!vtotal);
-        mixin(X_REQUEST_FIELD_CARD32!flags);
-        mixin(X_REQUEST_FIELD_CARD32!privsize);
+        mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"hsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"htotal");
+        mixin(X_REQUEST_FIELD_CARD16!"hskew");
+        mixin(X_REQUEST_FIELD_CARD16!"vdisplay");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncstart");
+        mixin(X_REQUEST_FIELD_CARD16!"vsyncend");
+        mixin(X_REQUEST_FIELD_CARD16!"vtotal");
+        mixin(X_REPLY_FIELD_CARD32!"flags");
+        mixin(X_REPLY_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
         len =
@@ -1064,7 +1064,7 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
 
     DebugF("ValidateModeLine - Succeeded (status = %d)\n", status);
 
-    mixin(X_REPLY_FIELD_CARD32!status);
+    mixin(X_REPLY_FIELD_CARD32!"status");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1072,8 +1072,8 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
 private int ProcVidModeSwitchMode(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSwitchModeReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
-    mixin(X_REQUEST_FIELD_CARD16!zoom);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
+    mixin(X_REQUEST_FIELD_CARD16!"zoom");
 
     VidModePtr pVidMode = void;
 
@@ -1214,8 +1214,8 @@ private int VidModeSwitchToMode(ClientPtr client, xXF86VidModeSwitchToModeReq* s
 private int ProcVidModeLockModeSwitch(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeLockModeSwitchReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
-    mixin(X_REQUEST_FIELD_CARD16!lock);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
+    mixin(X_REQUEST_FIELD_CARD16!"lock");
 
     VidModePtr pVidMode = void;
 
@@ -1249,7 +1249,7 @@ pragma(inline, true) private CARD32 _combine_f(vidMonitorValue a, vidMonitorValu
 private int ProcVidModeGetMonitor(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetMonitorReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     DEBUG_P("XF86VidModeGetMonitor");
 
@@ -1299,7 +1299,7 @@ private int ProcVidModeGetMonitor(ClientPtr client)
 private int ProcVidModeGetViewPort(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetViewPortReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     VidModePtr pVidMode = void;
     int x = void, y = void;
@@ -1321,8 +1321,8 @@ private int ProcVidModeGetViewPort(ClientPtr client)
         y: y
     };
 
-    mixin(X_REPLY_FIELD_CARD32!x);
-    mixin(X_REPLY_FIELD_CARD32!y);
+    mixin(X_REPLY_FIELD_CARD32!"x");
+    mixin(X_REPLY_FIELD_CARD32!"y");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1330,9 +1330,9 @@ private int ProcVidModeGetViewPort(ClientPtr client)
 private int ProcVidModeSetViewPort(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSetViewPortReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
-    mixin(X_REQUEST_FIELD_CARD32!x);
-    mixin(X_REQUEST_FIELD_CARD32!y);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
+    mixin(X_REPLY_FIELD_CARD32!"x");
+    mixin(X_REPLY_FIELD_CARD32!"y");
 
     VidModePtr pVidMode = void;
 
@@ -1359,7 +1359,7 @@ private int ProcVidModeSetViewPort(ClientPtr client)
 private int ProcVidModeGetDotClocks(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetDotClocksReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     VidModePtr pVidMode = void;
     int numClocks = void;
@@ -1400,9 +1400,9 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
         flags: (ClockProg ? CLKFLAG_PROGRAMABLE : 0),
     };
 
-    mixin(X_REPLY_FIELD_CARD32!clocks);
-    mixin(X_REPLY_FIELD_CARD32!maxclocks);
-    mixin(X_REPLY_FIELD_CARD32!flags);
+    mixin(X_REPLY_FIELD_CARD32!"clocks");
+    mixin(X_REPLY_FIELD_CARD32!"maxclocks");
+    mixin(X_REPLY_FIELD_CARD32!"flags");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -1410,10 +1410,10 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
 private int ProcVidModeSetGamma(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSetGammaReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
-    mixin(X_REQUEST_FIELD_CARD32!red);
-    mixin(X_REQUEST_FIELD_CARD32!green);
-    mixin(X_REQUEST_FIELD_CARD32!blue);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
+    mixin(X_REPLY_FIELD_CARD32!"red");
+    mixin(X_REPLY_FIELD_CARD32!"green");
+    mixin(X_REPLY_FIELD_CARD32!"blue");
 
     VidModePtr pVidMode = void;
 
@@ -1442,7 +1442,7 @@ private int ProcVidModeSetGamma(ClientPtr client)
 private int ProcVidModeGetGamma(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetGammaReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     VidModePtr pVidMode = void;
     float red = void, green = void, blue = void;
@@ -1466,9 +1466,9 @@ private int ProcVidModeGetGamma(ClientPtr client)
         blue: cast(CARD32) (blue * 10000.)
     };
 
-    mixin(X_REPLY_FIELD_CARD32!red);
-    mixin(X_REPLY_FIELD_CARD32!green);
-    mixin(X_REPLY_FIELD_CARD32!blue);
+    mixin(X_REPLY_FIELD_CARD32!"red");
+    mixin(X_REPLY_FIELD_CARD32!"green");
+    mixin(X_REPLY_FIELD_CARD32!"blue");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1476,8 +1476,8 @@ private int ProcVidModeGetGamma(ClientPtr client)
 private int ProcVidModeSetGammaRamp(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXF86VidModeSetGammaRampReq);
-    mixin(X_REQUEST_FIELD_CARD16!size);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"size");
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     REQUEST_FIXED_SIZE(xXF86VidModeSetGammaRampReq,
                        ((stuff.size + 1) & ~1) * 6);
@@ -1518,8 +1518,8 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
 private int ProcVidModeGetGammaRamp(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetGammaRampReq);
-    mixin(X_REQUEST_FIELD_CARD16!size);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"size");
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
     if (!pScreen)
@@ -1556,7 +1556,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
         size: stuff.size
     };
 
-    mixin(X_REPLY_FIELD_CARD16!size);
+    mixin(X_REPLY_FIELD_CARD16!"size");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -1564,7 +1564,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
 private int ProcVidModeGetGammaRampSize(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetGammaRampSizeReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     VidModePtr pVidMode = void;
 
@@ -1580,7 +1580,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
         size: pVidMode.GetGammaRampSize(pScreen)
     };
 
-    mixin(X_REPLY_FIELD_CARD16!size);
+    mixin(X_REPLY_FIELD_CARD16!"size");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1588,7 +1588,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
 private int ProcVidModeGetPermissions(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetPermissionsReq);
-    mixin(X_REQUEST_FIELD_CARD16!screen);
+    mixin(X_REQUEST_FIELD_CARD16!"screen");
 
     if (!dixScreenExists(stuff.screen))
         return BadValue;
@@ -1599,7 +1599,7 @@ private int ProcVidModeGetPermissions(ClientPtr client)
                             XF86VM_WRITE_PERMISSION : 0)),
     };
 
-    mixin(X_REPLY_FIELD_CARD32!permissions);
+    mixin(X_REPLY_FIELD_CARD32!"permissions");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1607,8 +1607,8 @@ private int ProcVidModeGetPermissions(ClientPtr client)
 private int ProcVidModeSetClientVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeSetClientVersionReq);
-    mixin(X_REQUEST_FIELD_CARD16!major);
-    mixin(X_REQUEST_FIELD_CARD16!minor);
+    mixin(X_REQUEST_FIELD_CARD16!"major");
+    mixin(X_REQUEST_FIELD_CARD16!"minor");
 
     VidModePrivPtr pPriv = void;
 

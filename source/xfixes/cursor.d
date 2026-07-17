@@ -267,7 +267,7 @@ int ProcXFixesSelectCursorInput(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesSelectCursorInputReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD32!eventMask);
+    mixin(X_REPLY_FIELD_CARD32!"eventMask");
 
     WindowPtr pWin = void;
     int rc = dixLookupWindow(&pWin, stuff.window, client, DixGetAttrAccess);
@@ -384,13 +384,13 @@ int ProcXFixesGetCursorImage(ClientPtr client)
         cursorSerial: pCursor.serialNumber,
     };
 
-    mixin(X_REPLY_FIELD_CARD16!x);
-    mixin(X_REPLY_FIELD_CARD16!y);
-    mixin(X_REPLY_FIELD_CARD16!width);
-    mixin(X_REPLY_FIELD_CARD16!height);
-    mixin(X_REPLY_FIELD_CARD16!xhot);
-    mixin(X_REPLY_FIELD_CARD16!yhot);
-    mixin(X_REPLY_FIELD_CARD32!cursorSerial);
+    mixin(X_REPLY_FIELD_CARD16!"x");
+    mixin(X_REPLY_FIELD_CARD16!"y");
+    mixin(X_REPLY_FIELD_CARD16!"width");
+    mixin(X_REPLY_FIELD_CARD16!"height");
+    mixin(X_REPLY_FIELD_CARD16!"xhot");
+    mixin(X_REPLY_FIELD_CARD16!"yhot");
+    mixin(X_REPLY_FIELD_CARD32!"cursorSerial");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -398,8 +398,8 @@ int ProcXFixesGetCursorImage(ClientPtr client)
 int ProcXFixesSetCursorName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesSetCursorNameReq);
-    mixin(X_REQUEST_FIELD_CARD32!cursor);
-    mixin(X_REQUEST_FIELD_CARD16!nbytes);
+    mixin(X_REQUEST_FIELD_CARD32!"cursor");
+    mixin(X_REQUEST_FIELD_CARD16!"nbytes");
     REQUEST_FIXED_SIZE(xXFixesSetCursorNameReq, stuff.nbytes);
 
     CursorPtr pCursor = void;
@@ -416,7 +416,7 @@ int ProcXFixesSetCursorName(ClientPtr client)
 int ProcXFixesGetCursorName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesGetCursorNameReq);
-    mixin(X_REQUEST_FIELD_CARD32!cursor);
+    mixin(X_REQUEST_FIELD_CARD32!"cursor");
 
     CursorPtr pCursor = void;
     mixin(VERIFY_CURSOR!(`pCursor`, `stuff.cursor`, `client`, `DixGetAttrAccess`));
@@ -431,8 +431,8 @@ int ProcXFixesGetCursorName(ClientPtr client)
         nbytes: strlen(str)
     };
 
-    mixin(X_REPLY_FIELD_CARD32!atom);
-    mixin(X_REPLY_FIELD_CARD16!nbytes);
+    mixin(X_REPLY_FIELD_CARD32!"atom");
+    mixin(X_REPLY_FIELD_CARD16!"nbytes");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -484,15 +484,15 @@ int ProcXFixesGetCursorImageAndName(ClientPtr client)
         nbytes: strlen(name),
     };
 
-    mixin(X_REPLY_FIELD_CARD16!x);
-    mixin(X_REPLY_FIELD_CARD16!y);
-    mixin(X_REPLY_FIELD_CARD16!width);
-    mixin(X_REPLY_FIELD_CARD16!height);
-    mixin(X_REPLY_FIELD_CARD16!xhot);
-    mixin(X_REPLY_FIELD_CARD16!yhot);
-    mixin(X_REPLY_FIELD_CARD32!cursorSerial);
-    mixin(X_REPLY_FIELD_CARD32!cursorName);
-    mixin(X_REPLY_FIELD_CARD16!nbytes);
+    mixin(X_REPLY_FIELD_CARD16!"x");
+    mixin(X_REPLY_FIELD_CARD16!"y");
+    mixin(X_REPLY_FIELD_CARD16!"width");
+    mixin(X_REPLY_FIELD_CARD16!"height");
+    mixin(X_REPLY_FIELD_CARD16!"xhot");
+    mixin(X_REPLY_FIELD_CARD16!"yhot");
+    mixin(X_REPLY_FIELD_CARD32!"cursorSerial");
+    mixin(X_REPLY_FIELD_CARD32!"cursorName");
+    mixin(X_REPLY_FIELD_CARD16!"nbytes");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -604,8 +604,8 @@ int ProcXFixesChangeCursor(ClientPtr client)
     CursorPtr pSource = void, pDestination = void;
 
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesChangeCursorReq);
-    mixin(X_REQUEST_FIELD_CARD32!source);
-    mixin(X_REQUEST_FIELD_CARD32!destination);
+    mixin(X_REPLY_FIELD_CARD32!"source");
+    mixin(X_REPLY_FIELD_CARD32!"destination");
 
     mixin(VERIFY_CURSOR!(`pSource`, `stuff.source`, `client`,
                   `DixReadAccess | DixGetAttrAccess`));
@@ -626,8 +626,8 @@ private Bool TestForCursorName(CursorPtr pCursor, void* closure)
 int ProcXFixesChangeCursorByName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesChangeCursorByNameReq);
-    mixin(X_REQUEST_FIELD_CARD32!source);
-    mixin(X_REQUEST_FIELD_CARD16!nbytes);
+    mixin(X_REPLY_FIELD_CARD32!"source");
+    mixin(X_REQUEST_FIELD_CARD16!"nbytes");
     REQUEST_FIXED_SIZE(xXFixesChangeCursorByNameReq, stuff.nbytes);
 
     CursorPtr pSource = void;
@@ -867,14 +867,14 @@ int ProcXFixesCreatePointerBarrier(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesCreatePointerBarrierReq);
 
-    mixin(X_REQUEST_FIELD_CARD16!num_devices);
-    mixin(X_REQUEST_FIELD_CARD32!barrier);
+    mixin(X_REQUEST_FIELD_CARD16!"num_devices");
+    mixin(X_REPLY_FIELD_CARD32!"barrier");
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD16!x1);
-    mixin(X_REQUEST_FIELD_CARD16!y1);
-    mixin(X_REQUEST_FIELD_CARD16!x2);
-    mixin(X_REQUEST_FIELD_CARD16!y2);
-    mixin(X_REQUEST_FIELD_CARD32!directions);
+    mixin(X_REQUEST_FIELD_CARD16!"x1");
+    mixin(X_REQUEST_FIELD_CARD16!"y1");
+    mixin(X_REQUEST_FIELD_CARD16!"x2");
+    mixin(X_REQUEST_FIELD_CARD16!"y2");
+    mixin(X_REPLY_FIELD_CARD32!"directions");
     X_REQUEST_REST_COUNT_CARD16(stuff.num_devices);
 
     LEGAL_NEW_RESOURCE(stuff.barrier, client);
@@ -885,7 +885,7 @@ int ProcXFixesCreatePointerBarrier(ClientPtr client)
 int ProcXFixesDestroyPointerBarrier(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXFixesDestroyPointerBarrierReq);
-    mixin(X_REQUEST_FIELD_CARD32!barrier);
+    mixin(X_REPLY_FIELD_CARD32!"barrier");
     return XIDestroyPointerBarrier(client, stuff);
 }
 

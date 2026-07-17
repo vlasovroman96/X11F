@@ -34,6 +34,19 @@ import include.propertyst;
 import include.extnsionst;
 import Xext.xselinuxint;
 import Xext.xselinux;
+import externs.attrs;
+import dix.dixutils;
+import os.log;
+import dix.extension;
+
+enum SELINUX_MODE_DISABLED = false;
+
+alias calloc = core.stdc.stdlib.calloc;
+alias free = core.stdc.stdlib.free;
+alias CheckContextFn = extern(C) int function(const(char)*) @nogc nothrow;
+alias FreeConnFn = extern(C) void function(const(char)*) @nogc nothrow;
+alias GetBooleanActiveFn = extern(C) bool function(const(char)*) @nogc nothrow;
+alias IsSeLinuxEnabledFn = extern(C) bool function() @nogc nothrow;
 
 enum CTX_DEV = SELinuxSubjectRec.dev_create_sid.offsetof;
 enum CTX_WIN = SELinuxSubjectRec.win_create_sid.offsetof;
@@ -75,8 +88,8 @@ private int ProcSELinuxQueryVersion(ClientPtr client)
         server_minor: SELINUX_MINOR_VERSION
     };
 
-    mixin(X_REPLY_FIELD_CARD16!server_major);
-    mixin(X_REPLY_FIELD_CARD16!server_minor);
+    mixin(X_REPLY_FIELD_CARD16!"server_major");
+    mixin(X_REPLY_FIELD_CARD16!"server_minor");
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -85,22 +98,25 @@ private int SELinuxSendContextReply(ClientPtr client, security_id_t sid)
 {
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
+    // auto dd = &assumeNoGC(&avc_sid_to_context_raw);
+
+    import externs.attrs;
     int len = 0;
     if (sid) {
         char* ctx = void;
-        if (avc_sid_to_context_raw(sid, &ctx) < 0) {
+        if (assumeNoGC(&avc_sid_to_context_raw)(sid, &ctx) < 0) {
             return BadValue;
         }
-        len = strlen(ctx) + 1;
+        len = cast(uint)(strlen(ctx) + 1);
         x_rpcbuf_write_string_0t_pad(&rpcbuf, ctx);
-        free(ctx);
+        assumeNoGC(&externs.selinux.avc.free)(ctx);
     }
 
     SELinuxGetContextReply reply = {
         context_len: len
     };
 
-    mixin(X_REPLY_FIELD_CARD32!context_len);
+    mixin(X_REPLY_FIELD_CARD32!"context_len");
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -108,8 +124,8 @@ private int SELinuxSendContextReply(ClientPtr client, security_id_t sid)
 private int ProcSELinuxSetCreateContext(ClientPtr client, uint offset)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!SELinuxSetCreateContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!context_len);
-    REQUEST_FIXED_SIZE(SELinuxSetCreateContextReq, stuff.context_len);
+    mixin(X_REQUEST_FIELD_CARD32!"context_len");
+    mixin(REQUEST_FIXED_SIZE!(SELinuxSetCreateContextReq, "stuff.context_len"));
 
     PrivateRec** privPtr = &client.devPrivates;
     security_id_t* pSid = void;
@@ -123,14 +139,15 @@ private int ProcSELinuxSetCreateContext(ClientPtr client, uint offset)
         }
     }
 
-    ptr = dixLookupPrivate(privPtr, subjectKey);
+    ptr = cast(char*)dixLookupPrivate(privPtr, subjectKey);
     pSid = cast(security_id_t*) (ptr + offset);
     *pSid = null;
 
     int rc = Success;
     if (stuff.context_len > 0) {
-        if (security_check_context_raw(ctx) < 0 ||
-            avc_context_to_sid_raw(ctx, pSid) < 0)
+       
+        if (assumeNoGC(cast(CheckContextFn)&security_check_context_raw)(ctx) < 0 ||
+            assumeNoGC(&avc_context_to_sid_raw)(ctx, pSid) < 0)
         {
             rc = BadValue;
         }
@@ -148,9 +165,9 @@ private int ProcSELinuxGetCreateContext(ClientPtr client, uint offset)
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetCreateContextReq);
 
     if (offset == CTX_DEV) {
-        ptr = dixLookupPrivate(&serverClient.devPrivates, subjectKey);
+        ptr = cast(char*)dixLookupPrivate(&serverClient.devPrivates, subjectKey);
     } else {
-        ptr = dixLookupPrivate(&client.devPrivates, subjectKey);
+        ptr = cast(char*)dixLookupPrivate(&client.devPrivates, subjectKey);
     }
 
     pSid = cast(security_id_t*) (ptr + offset);
@@ -160,10 +177,10 @@ private int ProcSELinuxGetCreateContext(ClientPtr client, uint offset)
 private int ProcSELinuxSetDeviceContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_AT_LEAST!SELinuxSetContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
-    mixin(X_REQUEST_FIELD_CARD32!context_len);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
+    mixin(X_REQUEST_FIELD_CARD32!"context_len");
 
-    REQUEST_FIXED_SIZE(SELinuxSetContextReq, stuff.context_len);
+    mixin(REQUEST_FIXED_SIZE!(SELinuxSetContextReq, "stuff.context_len"));
 
     char* ctx = void;
     security_id_t sid = void;
@@ -185,15 +202,15 @@ private int ProcSELinuxSetDeviceContext(ClientPtr client)
         goto out_;
     }
 
-    if (security_check_context_raw(ctx) < 0 ||
-        avc_context_to_sid_raw(ctx, &sid) < 0) {
+    if (assumeNoGC(cast(CheckContextFn)&security_check_context_raw)(ctx) < 0 ||
+        assumeNoGC(&avc_context_to_sid_raw)(ctx, &sid) < 0) {
         rc = BadValue;
         goto out_;
     }
 
-    subj = dixLookupPrivate(&dev.devPrivates, subjectKey);
+    subj = cast(SELinuxSubjectRec*)dixLookupPrivate(&dev.devPrivates, subjectKey);
     subj.sid = sid;
-    obj = dixLookupPrivate(&dev.devPrivates, objectKey);
+    obj = cast(SELinuxObjectRec*)dixLookupPrivate(&dev.devPrivates, objectKey);
     obj.sid = sid;
 
     rc = Success;
@@ -205,7 +222,7 @@ private int ProcSELinuxSetDeviceContext(ClientPtr client)
 private int ProcSELinuxGetDeviceContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     DeviceIntPtr dev = void;
     SELinuxSubjectRec* subj = void;
@@ -215,14 +232,14 @@ private int ProcSELinuxGetDeviceContext(ClientPtr client)
         return rc;
     }
 
-    subj = dixLookupPrivate(&dev.devPrivates, subjectKey);
+    subj = cast(SELinuxSubjectRec*)dixLookupPrivate(&dev.devPrivates, subjectKey);
     return SELinuxSendContextReply(client, subj.sid);
 }
 
 private int ProcSELinuxGetDrawableContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     DrawablePtr pDraw = void;
     PrivateRec** privatePtr = void;
@@ -239,7 +256,7 @@ private int ProcSELinuxGetDrawableContext(ClientPtr client)
         privatePtr = &(cast(WindowPtr) pDraw).devPrivates;
     }
 
-    obj = dixLookupPrivate(privatePtr, objectKey);
+    obj = cast(SELinuxObjectRec*)dixLookupPrivate(privatePtr, objectKey);
     return SELinuxSendContextReply(client, obj.sid);
 }
 
@@ -247,7 +264,7 @@ private int ProcSELinuxGetPropertyContext(ClientPtr client, void* privKey)
 {
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetPropertyContextReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
-    mixin(X_REQUEST_FIELD_CARD32!property);
+    mixin(X_REQUEST_FIELD_CARD32!"property");
 
     WindowPtr pWin = void;
     PropertyPtr pProp = void;
@@ -264,14 +281,14 @@ private int ProcSELinuxGetPropertyContext(ClientPtr client, void* privKey)
         return rc;
     }
 
-    obj = dixLookupPrivate(&pProp.devPrivates, privKey);
+    obj = cast(SELinuxObjectRec*)dixLookupPrivate(&pProp.devPrivates, cast(_DevPrivateKeyRec*)privKey);
     return SELinuxSendContextReply(client, obj.sid);
 }
 
 private int ProcSELinuxGetSelectionContext(ClientPtr client, void* privKey)
 {
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     Selection* pSel = void;
     SELinuxObjectRec* obj = void;
@@ -281,14 +298,14 @@ private int ProcSELinuxGetSelectionContext(ClientPtr client, void* privKey)
         return rc;
     }
 
-    obj = dixLookupPrivate(&pSel.devPrivates, privKey);
+    obj = cast(SELinuxObjectRec*)dixLookupPrivate(&pSel.devPrivates, cast(_DevPrivateKeyRec*)privKey);
     return SELinuxSendContextReply(client, obj.sid);
 }
 
 private int ProcSELinuxGetClientContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     ClientPtr target = void;
     SELinuxSubjectRec* subj = void;
@@ -298,22 +315,22 @@ private int ProcSELinuxGetClientContext(ClientPtr client)
         return rc;
     }
 
-    subj = dixLookupPrivate(&target.devPrivates, subjectKey);
+    subj = cast(SELinuxSubjectRec*)dixLookupPrivate(&target.devPrivates, subjectKey);
     return SELinuxSendContextReply(client, subj.sid);
 }
 
 private int SELinuxPopulateItem(SELinuxListItemRec* i, PrivateRec** privPtr, CARD32 id, int* size)
 {
-    SELinuxObjectRec* obj = dixLookupPrivate(privPtr, objectKey);
-    SELinuxObjectRec* data = dixLookupPrivate(privPtr, dataKey);
+    SELinuxObjectRec* obj = cast(SELinuxObjectRec*)dixLookupPrivate(privPtr, objectKey);
+    SELinuxObjectRec* data = cast(SELinuxObjectRec*)dixLookupPrivate(privPtr, dataKey);
 
     if (!i) {
         return BadValue;
     }
-    if (avc_sid_to_context_raw(obj.sid, &i.octx) < 0) {
+    if (assumeNoGC(&avc_sid_to_context_raw)(obj.sid, &i.octx) < 0) {
         return BadValue;
     }
-    if (avc_sid_to_context_raw(data.sid, &i.dctx) < 0) {
+    if (assumeNoGC(&avc_sid_to_context_raw)(data.sid, &i.dctx) < 0) {
         return BadValue;
     }
 
@@ -332,10 +349,10 @@ private void SELinuxFreeItems(SELinuxListItemRec* items, int count)
     if (!items) {
         return;
     }
-
+        
     for (k = 0; k < count; k++) {
-        freecon(items[k].octx);
-        freecon(items[k].dctx);
+        assumeNoGC(cast(FreeConnFn)&freecon)(items[k].octx);
+        assumeNoGC(cast(FreeConnFn)&freecon)(items[k].dctx);
     }
     free(items);
 }
@@ -358,7 +375,7 @@ private int SELinuxSendItemsToClient(ClientPtr client, SELinuxListItemRec* items
         count: count
     };
 
-    mixin(X_REPLY_FIELD_CARD32!count);
+    mixin(X_REPLY_FIELD_CARD32!"count");
 
     SELinuxFreeItems(items, count);
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -367,7 +384,7 @@ private int SELinuxSendItemsToClient(ClientPtr client, SELinuxListItemRec* items
 private int ProcSELinuxListProperties(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!SELinuxGetContextReq);
-    mixin(X_REQUEST_FIELD_CARD32!id);
+    mixin(X_REQUEST_FIELD_CARD32!"id");
 
     WindowPtr pWin = void;
     PropertyPtr pProp = void;
@@ -432,7 +449,7 @@ private int ProcSELinuxListSelections(ClientPtr client)
     i = 0;
     size = 0;
     for (pSel = CurrentSelections; pSel; pSel = pSel.next) {
-        id = pSel.selection;
+        id = cast(uint)pSel.selection;
         int rc = SELinuxPopulateItem(items + i, &pSel.devPrivates, id, &size);
         if (rc != Success) {
             SELinuxFreeItems(items, count);
@@ -512,7 +529,7 @@ private void SELinuxResetProc(ExtensionEntry* extEntry)
 void SELinuxExtensionInit()
 {
     /* Check SELinux mode on system, configuration file, and boolean */
-    if (!is_selinux_enabled()) {
+    if (!assumeNoGC(cast(IsSeLinuxEnabledFn)(&is_selinux_enabled))()) {
         LogMessage(X_INFO, "SELinux: Disabled on system\n");
         return;
     }
@@ -520,7 +537,7 @@ void SELinuxExtensionInit()
         LogMessage(X_INFO, "SELinux: Disabled in configuration file\n");
         return;
     }
-    if (!security_get_boolean_active("xserver_object_manager")) {
+    if (!assumeNoGC(cast(GetBooleanActiveFn)&security_get_boolean_active)("xserver_object_manager")) {
         LogMessage(X_INFO, "SELinux: Disabled by boolean\n");
         return;
     }
@@ -532,5 +549,5 @@ void SELinuxExtensionInit()
     /* Add extension to server */
     AddExtension(SELINUX_EXTENSION_NAME, SELinuxNumberEvents,
                  SELinuxNumberErrors, &ProcSELinuxDispatch,
-                 &ProcSELinuxDispatch, &SELinuxResetProc, StandardMinorOpcode);
+                 &ProcSELinuxDispatch, &SELinuxResetProc, &StandardMinorOpcode);
 }
