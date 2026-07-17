@@ -67,6 +67,8 @@ import include.inputstr;           /* DeviceIntPtr      */
 import dix.swaprep;
 import include.xkbsrv;
 import include.xkbsrv;
+import externs.X11.extensions.XIproto;
+import dix.devices;
 
 /***********************************************************************
  *
@@ -111,7 +113,7 @@ int ProcXGetDeviceKeyMapping(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD32s(
         &rpcbuf,
-        &syms.map[mapWidth * (stuff.firstKeyCode - syms.minKeyCode)],
+        cast(uint*)&syms.map[mapWidth * (stuff.firstKeyCode - syms.minKeyCode)],
         numKeySyms);
 
     free(syms.map);
@@ -119,7 +121,7 @@ int ProcXGetDeviceKeyMapping(ClientPtr client)
 
     xGetDeviceKeyMappingReply reply = {
         RepType: X_GetDeviceKeyMapping,
-        keySymsPerKeyCode: mapWidth,
+        keySymsPerKeyCode: cast(ubyte)mapWidth,
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));

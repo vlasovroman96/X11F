@@ -70,6 +70,11 @@ import include.windowstr;          /* window struct     */
 import dix.swaprep;
 import Xi.getprop;
 
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.dixutils;
+import dix.devices;
+
 /***********************************************************************
  *
  * This procedure gets the current device select mask,
@@ -100,7 +105,7 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    if ((pOthers = mixin(wOtherInputMasks!("pWin"))) != 0) {
+    if ((pOthers = mixin(wOtherInputMasks!("pWin"))) !is null) {
         for (others = pOthers.inputClients; others; others = others.next)
             for (i = 0; i < EMASKSIZE; i++)
                 ClassFromMask(null, others.mask[i], i,
@@ -132,7 +137,7 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
                 aclient =
                     ClassFromMask(aclient, others.mask[i], i, null, CREATE);
 
-        x_rpcbuf_write_CARD32s(&rpcbuf, buf, total_count);
+        x_rpcbuf_write_CARD32s(&rpcbuf, cast(const uint*)buf, total_count);
         free(buf);
     }
 

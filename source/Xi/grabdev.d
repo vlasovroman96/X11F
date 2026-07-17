@@ -66,6 +66,10 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
 import Xi.grabdev;
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.dixutils;
+import dix.devices;
 
 extern XExtEventInfo[1] EventInfo;
 extern int ExtEventIndex;
@@ -148,7 +152,7 @@ int CreateMaskFromList(ClientPtr client, XEventClass* list, int count, tmask* ma
     memset(mask, 0, EMASKSIZE * tmask.sizeof);
 
     for (i = 0; i < count; i++, list++) {
-        device = *list >> 8;
+        device = cast(int)(*list >> 8);
         if (device > 255)
             return BadClass;
 

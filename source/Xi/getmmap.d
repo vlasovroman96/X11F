@@ -65,6 +65,8 @@ import dix.request_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
+import externs.X11.extensions.XIproto;
+import dix.devices;
 
 /***********************************************************************
  *
@@ -95,7 +97,7 @@ int ProcXGetDeviceModifierMapping(ClientPtr client)
 
     xGetDeviceModifierMappingReply reply = {
         RepType: X_GetDeviceModifierMapping,
-        numKeyPerModifier: max_keys_per_mod,
+        numKeyPerModifier: cast(ubyte)max_keys_per_mod,
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));

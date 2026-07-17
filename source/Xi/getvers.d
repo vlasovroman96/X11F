@@ -78,8 +78,8 @@ int ProcXGetExtensionVersion(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xGetExtensionVersionReq);
     mixin(X_REQUEST_FIELD_CARD16!"nbytes");
 
-    if (client.req_len != bytes_to_int32(((xGetExtensionVersionReq) +
-                                        stuff.nbytes).sizeof))
+    if (client.req_len != bytes_to_int32(xGetExtensionVersionReq.sizeof +
+                                        stuff.nbytes))
         return BadLength;
 
     xGetExtensionVersionReply reply = {

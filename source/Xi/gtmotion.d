@@ -65,6 +65,11 @@ import dix.rpcbuf_priv;
 import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.dixutils;
+import dix.devices;
+
 
 /****************************************************************************
  *
@@ -92,7 +97,7 @@ int ProcXGetDeviceMotionEvents(ClientPtr client)
 
     xGetDeviceMotionEventsReply reply = {
         RepType: X_GetDeviceMotionEvents,
-        axes: v.numAxes,
+        axes: cast(ubyte)v.numAxes,
         mode: Absolute        /* XXX we don't do relative at the moment */
     };
 

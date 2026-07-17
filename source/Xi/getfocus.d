@@ -65,6 +65,9 @@ import Xi.handlers;
 import include.windowstr;          /* focus struct      */
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.exglobals;
+import dix.dixutils;
+import dix.devices;
+
 
 /***********************************************************************
  *
@@ -90,8 +93,8 @@ int ProcXGetDeviceFocus(ClientPtr client)
 
     xGetDeviceFocusReply reply = {
         RepType: X_GetDeviceFocus,
-        time: focus.time.milliseconds,
-        revertTo: focus.revert,
+        time: cast(ubyte)focus.time.milliseconds,
+        revertTo: cast(ubyte)focus.revert,
     };
 
     if (focus.win == NoneWin)
@@ -101,7 +104,7 @@ int ProcXGetDeviceFocus(ClientPtr client)
     else if (focus.win == FollowKeyboardWin)
         reply.focus = FollowKeyboard;
     else
-        reply.focus = focus.win.drawable.id;
+        reply.focus = cast(uint)focus.win.drawable.id;
 
     mixin(X_REPLY_FIELD_CARD32!"focus");
     mixin(X_REPLY_FIELD_CARD32!"time");

@@ -68,6 +68,9 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structs    */
 import dix.swaprep;
 import Xi.getprop;
+import externs.X11.extensions.XIproto;
+import dix.devices;
+import dix.dixutils;
 
 extern XExtEventInfo[1] EventInfo;
 extern int ExtEventIndex;
@@ -99,7 +102,7 @@ int ProcXGetDeviceDontPropagateList(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    if ((others = mixin(wOtherInputMasks!("pWin"))) != 0) {
+    if ((others = mixin(wOtherInputMasks!("pWin"))) !is null) {
         for (i = 0; i < EMASKSIZE; i++)
             ClassFromMask(null, others.dontPropagateMask[i], i, &count, COUNT);
         if (count) {
@@ -113,7 +116,7 @@ int ProcXGetDeviceDontPropagateList(ClientPtr client)
                 tbuf = ClassFromMask(tbuf, others.dontPropagateMask[i], i,
                                      null, CREATE);
 
-            x_rpcbuf_write_CARD32s(&rpcbuf, buf, count);
+            x_rpcbuf_write_CARD32s(&rpcbuf, cast(uint*)buf, count);
             free(buf);
         }
     }
