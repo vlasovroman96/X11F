@@ -37,12 +37,13 @@ enum EXGLOBALS_H = 1;
 
 public import dix.exevents_priv;
 public import include.privates;
+public import Xi.extinit;
 
-extern int IEventBase;
-extern int BadDevice;
-extern int BadMode;
-extern int DeviceBusy;
-extern int BadClass;
+// extern int IEventBase;
+// extern int BadDevice;
+// extern int BadMode;
+// extern int DeviceBusy;
+// extern int BadClass;
 
 /* Note: only the ones needed in files other than extinit.c are declared */
 extern const(Mask) DevicePointerMotionHintMask;

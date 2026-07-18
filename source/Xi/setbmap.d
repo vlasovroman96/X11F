@@ -65,6 +65,10 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.exevents;
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.devices;
+
 
 /***********************************************************************
  *
@@ -80,7 +84,7 @@ int ProcXSetDeviceButtonMapping(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xSetDeviceButtonMappingReq);
 
     if (client.req_len !=
-        bytes_to_int32(((xSetDeviceButtonMappingReq) + stuff.map_length).sizeof))
+        bytes_to_int32(xSetDeviceButtonMappingReq.sizeof + stuff.map_length))
         return BadLength;
 
     ret = dixLookupDevice(&dev, stuff.deviceid, client, DixManageAccess);

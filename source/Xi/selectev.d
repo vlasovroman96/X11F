@@ -68,6 +68,8 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
 import Xi.grabdev;
+import dix.dixutils;
+import std.conv;
 
 private int HandleDevicePresenceMask(ClientPtr client, WindowPtr win, XEventClass* cls, CARD16* count)
 {
@@ -98,7 +100,7 @@ private int HandleDevicePresenceMask(ClientPtr client, WindowPtr win, XEventClas
         default: break;}
     }
 
-    *count = j;
+    *count = cast(ushort)j;
 
     if (mask == 0)
         return Success;

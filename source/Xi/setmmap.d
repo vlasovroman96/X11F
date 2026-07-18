@@ -66,7 +66,9 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.exevents;
-
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.devices;
 /***********************************************************************
  *
  * Set the device Modifier mapping.
@@ -98,7 +100,7 @@ int ProcXSetDeviceModifierMapping(ClientPtr client)
 
     xSetDeviceModifierMappingReply reply = {
         RepType: X_SetDeviceModifierMapping,
-        success: ret,
+        success: cast(ubyte)ret,
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));

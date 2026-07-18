@@ -292,7 +292,7 @@ Bool x_rpcbuf_write_CARD32s(x_rpcbuf_t* rpcbuf, const(CARD32)* values, size_t co
  * @param count     number of elements in the array
  * @return          TRUE on success, FALSE on allocation failure
  */
-pragma(inline, true) private Bool x_rpcbuf_write_INT32s(x_rpcbuf_t* rpcbuf, const(INT32)* values, size_t count)
+pragma(inline, true) Bool x_rpcbuf_write_INT32s(x_rpcbuf_t* rpcbuf, const(INT32)* values, size_t count)
 {
     return x_rpcbuf_write_CARD32s(rpcbuf, cast(CARD32*)values, count);
 }

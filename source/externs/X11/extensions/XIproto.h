@@ -250,7 +250,7 @@ typedef struct _xKeyInfo {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;
 #else
-    CARD8	class;
+    CARD8	class_;
 #endif
     CARD8	length;
     KeyCode	min_keycode;
@@ -265,7 +265,7 @@ typedef struct _xButtonInfo {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;
 #else
-    CARD8	class;
+    CARD8	class_;
 #endif
     CARD8	length;
     CARD16	num_buttons;
@@ -277,7 +277,7 @@ typedef struct _xValuatorInfo {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;
 #else
-    CARD8	class;
+    CARD8	class_;
 #endif
     CARD8	length;
     CARD8	num_axes;
@@ -1163,7 +1163,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;
 #else
-    CARD8	class;
+    CARD8	class_;
 #endif
     CARD8	length;
     CARD8	num_keys;
@@ -1175,7 +1175,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;
 #else
-    CARD8	class;
+    CARD8	class_;
 #endif
     CARD8	length;
     CARD8	num_buttons;
@@ -1187,7 +1187,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8	c_class;
 #else
-    CARD8	class;
+    CARD8	class_;
 #endif
     CARD8	length;
     CARD8	num_valuators;

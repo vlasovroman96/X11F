@@ -66,6 +66,8 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.XIstubs;
+import externs.X11.extensions.XI;
+import dix.devices;
 
 /***********************************************************************
  *
@@ -102,9 +104,9 @@ int ProcXSetDeviceValuators(ClientPtr client)
         return BadValue;
 
     if ((dev.deviceGrab.grab) && !mixin(SameClient!("dev.deviceGrab.grab", "client")))
-        reply.status = AlreadyGrabbed;
+        reply.status = cast(ubyte)AlreadyGrabbed;
     else
-        reply.status = SetDeviceValuators(client, dev, cast(int*) &stuff[1],
+        reply.status = cast(ubyte)SetDeviceValuators(client, dev, cast(int*) &stuff[1],
                                         stuff.first_valuator,
                                         stuff.num_valuators);
 

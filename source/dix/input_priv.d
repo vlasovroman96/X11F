@@ -216,7 +216,7 @@ alias EVENT_REJECTED = EventDeliveryState.EVENT_REJECTED;
 
 
 enum VALUATOR_MODE_ALL_AXES = -1;
-int valuator_get_mode(DeviceIntPtr dev, int axis);
+// int valuator_get_mode(DeviceIntPtr dev, int axis);
 void valuator_set_mode(DeviceIntPtr dev, int axis, int mode);
 
 /* Set to TRUE by default - os/utils.c sets it to FALSE on user request,

@@ -67,6 +67,9 @@ import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* Window            */
 import include.extnsionst;         /* EventSwapPtr      */
 import Xi.grabdev;
+import std.conv;
+import externs.X11.extensions.XI;
+import dix.devices;
 
 extern int lastEvent;           /* Defined in extension.c */
 
@@ -98,11 +101,11 @@ int ProcXSendExtensionEvent(ClientPtr client)
 
             EventSwapPtr proc = EventSwapVector[eventP.u.u.type & octal!"177"];
             /* no swapping proc; invalid event type? */
-            if (proc == NotImplemented) {
+            if (proc == &NotImplemented) {
                 client.errorValue = eventP.u.u.type;
                 return BadValue;
             }
-            xEvent eventT = { 0 };
+            xEvent eventT;
             (*proc) (eventP, &eventT);
             *eventP = eventT;
         }

@@ -72,7 +72,9 @@ import Xi.XIstubs;
 import include.extnsionst;
 import include.exevents;
 import include.xkbsrv;
+import externs.X11.extensions.XI;
 import include.xkbsrv;
+import dix.devices;
 
 enum VPC =        20              /* Max # valuators per chunk */;
 
@@ -96,8 +98,8 @@ private void SizeDeviceInfo(DeviceIntPtr d, int* namesize, int* size)
         *size += xButtonInfo.sizeof;
     if (d.valuator != null) {
         chunks = (cast(int) d.valuator.numAxes + 19) / VPC;
-        *size += (chunks * (cast(xValuatorInfo) +
-                  d.valuator.numAxes * xAxisInfo.sizeof).sizeof);
+        *size += (chunks * (xValuatorInfo).sizeof +
+                  d.valuator.numAxes * xAxisInfo.sizeof);
     }
 }
 
@@ -116,7 +118,7 @@ private void CopyDeviceName(char** namebuf, const(char)* name)
     char* nameptr = *namebuf;
 
     if (name) {
-        *nameptr++ = strlen(name);
+        *(nameptr++) = cast(char)strlen(name);
         strcpy(nameptr, name);
         *namebuf += (strlen(name) + 1);
     }
@@ -136,7 +138,7 @@ private void CopySwapButtonClass(ClientPtr client, ButtonClassPtr b, char** buf)
 {
     xButtonInfoPtr b2 = void;
 
-    b2 = (xButtonInfoPtr) * buf;
+    b2 = cast(xButtonInfoPtr) * buf;
     b2.class_ = ButtonClass;
     b2.length = xButtonInfo.sizeof;
     b2.num_buttons = b.numButtons;
@@ -156,11 +158,11 @@ private void CopySwapDevice(ClientPtr client, DeviceIntPtr d, int num_classes, c
 {
     xDeviceInfoPtr dev = void;
 
-    dev = (xDeviceInfoPtr) * buf;
+    dev = cast(xDeviceInfoPtr) * buf;
 
-    dev.id = d.id;
-    dev.type = d.xinput_type;
-    dev.num_classes = num_classes;
+    dev.id = cast(ubyte)d.id;
+    dev.type = cast(uint)d.xinput_type;
+    dev.num_classes = cast(ubyte)num_classes;
     if (InputDevIsMaster(d) && IsKeyboardDevice(d))
         dev.use = IsXKeyboard;
     else if (InputDevIsMaster(d) && IsPointerDevice(d))
@@ -188,12 +190,12 @@ private void CopySwapKeyClass(ClientPtr client, KeyClassPtr k, char** buf)
 {
     xKeyInfoPtr k2 = void;
 
-    k2 = (xKeyInfoPtr) * buf;
+    k2 = cast(xKeyInfoPtr) * buf;
     k2.class_ = KeyClass;
     k2.length = xKeyInfo.sizeof;
     k2.min_keycode = k.xkbInfo.desc.min_key_code;
     k2.max_keycode = k.xkbInfo.desc.max_key_code;
-    k2.num_keys = k2.max_keycode - k2.min_keycode + 1;
+    k2.num_keys = cast(ushort)(k2.max_keycode - k2.min_keycode + 1);
     if (client && client.swapped) {
         swaps(&k2.num_keys);
     }
@@ -225,18 +227,18 @@ private int CopySwapValuatorClass(ClientPtr client, DeviceIntPtr dev, char** buf
         t_axes = axes < VPC ? axes : VPC;
         if (t_axes < 0)
             t_axes = v.numAxes % VPC;
-        v2 = (xValuatorInfoPtr) * buf;
+        v2 = cast(xValuatorInfoPtr) * buf;
         v2.class_ = ValuatorClass;
-        v2.length = (cast(xValuatorInfo) + t_axes * xAxisInfo.sizeof).sizeof;
-        v2.num_axes = t_axes;
-        v2.mode = valuator_get_mode(dev, 0);
+        v2.length = cast(ubyte)((xValuatorInfo).sizeof + t_axes * xAxisInfo.sizeof);
+        v2.num_axes = cast(ubyte)t_axes;
+        v2.mode = cast(ubyte)valuator_get_mode(dev, 0);
         v2.motion_buffer_size = v.numMotionEvents;
         if (client && client.swapped) {
             swapl(&v2.motion_buffer_size);
         }
         *buf += xValuatorInfo.sizeof;
         a = v.axes + (VPC * i);
-        a2 = (xAxisInfoPtr) * buf;
+        a2 = cast(xAxisInfoPtr) * buf;
         for (j = 0; j < t_axes; j++) {
             a2.min_value = a.min_value;
             a2.max_value = a.max_value;
@@ -351,8 +353,8 @@ int ProcXListInputDevices(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
     /* allocate space for reply */
-    total_length = numdevs * ((xDeviceInfo) + size + namesize).sizeof;
-    char* devbuf = x_rpcbuf_reserve(&rpcbuf, total_length);
+    total_length = cast(int)(numdevs * ((xDeviceInfo).sizeof + size + namesize));
+    char* devbuf = cast(char*)x_rpcbuf_reserve(&rpcbuf, total_length);
     if (!devbuf) {
         free(skip);
         return BadAlloc;
@@ -382,7 +384,7 @@ int ProcXListInputDevices(ClientPtr client)
 
     xListInputDevicesReply reply = {
         RepType: X_ListInputDevices,
-        ndevices: numdevs,
+        ndevices: cast(ubyte)numdevs,
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));

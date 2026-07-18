@@ -69,8 +69,12 @@ import Xi.XIstubs;
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
 import include.exevents;
+import dix.devices;
+import externs.X11.extensions.XI;
+import Xi.extinit;
 
-extern CARD8[1] event_base;
+
+// extern CARD8[1] event_base;
 
 /***********************************************************************
  *
@@ -78,11 +82,11 @@ extern CARD8[1] event_base;
  *
  */
 
-enum string WRITE_ICI(string cls) = `do { 
+enum string WRITE_ICI(string cls) = `{ 
         x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)` ~ cls ~ `); 
         x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)event_base[` ~ cls ~ `]); 
         num_classes++; 
-    } while (0)`;
+    } `;
 
 int ProcXOpenDevice(ClientPtr client)
 {
@@ -135,7 +139,7 @@ int ProcXOpenDevice(ClientPtr client)
 
     xOpenDeviceReply reply = {
         RepType: X_OpenDevice,
-        num_classes: num_classes
+        num_classes: cast(ubyte)num_classes
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
