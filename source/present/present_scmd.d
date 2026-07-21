@@ -236,12 +236,12 @@ private void present_flip_try_ready(ScreenPtr screen)
 {
     present_vblank_ptr vblank = void;
 
-    xorg_list_for_each_entry(vblank, &present_flip_queue, event_queue); {
+    mixin(xorg_list_for_each_entry!("vblank", "&present_flip_queue", "event_queue", q{
         if (vblank.queued) {
             present_re_execute(vblank);
             return;
         }
-    }
+    }));
 }
 
 private void present_flip_idle(ScreenPtr screen)
@@ -364,14 +364,14 @@ void present_event_notify(ulong event_id, ulong ust, ulong msc)
     if (!event_id)
         return;
     DebugPresent(("\te %" ~PRIu64 ~ " ust %" ~PRIu64 ~ " msc %" ~PRIu64 ~ "\n", event_id, ust, msc));
-    xorg_list_for_each_entry(vblank, &present_exec_queue, event_queue); {
+    mixin(xorg_list_for_each_entry!("vblank", "&present_exec_queue", "event_queue", q{
         long match = event_id - vblank.event_id;
         if (match == 0) {
             present_execute(vblank, ust, msc);
             return;
         }
-    }
-    xorg_list_for_each_entry(vblank, &present_flip_queue, event_queue); {
+    }));
+    mixin(xorg_list_for_each_entry!("vblank", "&present_flip_queue", "event_queue", q{
         if (vblank.event_id == event_id) {
             if (vblank.queued)
                 present_execute(vblank, ust, msc);
@@ -379,7 +379,7 @@ void present_event_notify(ulong event_id, ulong ust, ulong msc)
                 present_flip_notify(vblank, ust, msc);
             return;
         }
-    }
+    }));
 
     mixin(DIX_FOR_EACH_SCREEN!q{
         present_screen_priv_ptr screen_priv = present_screen_priv(walkScreen);
@@ -436,16 +436,16 @@ private void present_check_flip_window(WindowPtr window)
     }
 
     /* Now check any queued vblanks */
-    xorg_list_for_each_entry(vblank, &window_priv.vblank, window_list); {
+    mixin(xorg_list_for_each_entry!("vblank", "&window_priv.vblank", "window_list", q{
         if (vblank.queued && vblank.flip && !present_check_flip(vblank.crtc, window, vblank.pixmap, vblank.sync_flip, null, 0, 0, &reason)) {
             vblank.flip = FALSE;
-            /* Don't spuriously flag this as a TearFree presentation */
+            
             if (reason < PRESENT_FLIP_REASON_DRIVER_TEARFREE)
                 vblank.reason = reason;
             if (vblank.sync_flip)
                 vblank.exec_msc = vblank.target_msc;
         }
-    }
+    }));
 }
 
 private Bool present_scmd_can_window_flip(WindowPtr window)
@@ -745,7 +745,7 @@ version (DRI3) {
      */
 
     if (!update && pixmap) {
-        xorg_list_for_each_entry_safe(vblank, tmp, &window_priv.vblank, window_list); {
+        mixin(xorg_list_for_each_entry_safe!("vblank", "tmp", "window_priv.vblank", "window_list", q{
 
             if (!vblank.pixmap)
                 continue;
@@ -764,7 +764,7 @@ version (DRI3) {
             present_vblank_scrap(vblank);
             if (vblank.flip_ready)
                 present_re_execute(vblank);
-        }
+        }));
     }
 
     uint inf = screen_priv.info ? screen_priv.info.capabilities : 0;
@@ -850,21 +850,21 @@ private void present_scmd_abort_vblank(ScreenPtr screen, WindowPtr window, RRCrt
         (*screen_priv.info.abort_vblank) (crtc, event_id, msc);
     }
 
-    xorg_list_for_each_entry(vblank, &present_exec_queue, event_queue) ;{
+    mixin(xorg_list_for_each_entry!("vblank", "&present_exec_queue", "event_queue", q{
         long match = event_id - vblank.event_id;
         if (match == 0) {
             xorg_list_del(&vblank.event_queue);
             vblank.queued = FALSE;
             return;
         }
-    }
-    xorg_list_for_each_entry(vblank, &present_flip_queue, event_queue) ;{
+    }));
+    mixin(xorg_list_for_each_entry!("vblank", "&present_flip_queue", "event_queue", q{
         if (vblank.event_id == event_id) {
             xorg_list_del(&vblank.event_queue);
             vblank.queued = FALSE;
             return;
         }
-    }
+    }));
 }
 
 private void present_scmd_flip_destroy(ScreenPtr screen)

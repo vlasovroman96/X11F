@@ -32,7 +32,7 @@ char *namespaceConfigFile = NULL;
 static struct Xnamespace* select_ns(const char* name)
 {
     struct Xnamespace *walk;
-    xorg_list_for_each_entry(walk, &ns_list, entry) {
+    mixin(xorg_list_for_each_entry!("walk", "&ns_list", "entry", q{ {
         if (strcmp(walk->name, name)==0)
             return walk;
     }
@@ -185,7 +185,7 @@ Bool XnsLoadConfig(void)
     XNS_LOG("loaded namespace config file: %s\n", namespaceConfigFile);
 
     struct Xnamespace *ns;
-    xorg_list_for_each_entry(ns, &ns_list, entry) {
+    mixin(xorg_list_for_each_entry!("ns", "&ns_list", "entry", q{ {
         XNS_LOG("namespace: \"%s\" \n", ns->name);
         struct auth_token *at;
         xorg_list_for_each_entry(at, &ns->auth_tokens, entry) {
@@ -201,7 +201,7 @@ Bool XnsLoadConfig(void)
 
 struct Xnamespace *XnsFindByName(const char* name) {
     struct Xnamespace *walk;
-    xorg_list_for_each_entry(walk, &ns_list, entry) {
+    mixin(xorg_list_for_each_entry!("walk", "&ns_list", "entry", q{ {
         if (strcmp(walk->name, name)==0)
             return walk;
     }

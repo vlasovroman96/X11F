@@ -88,10 +88,10 @@ void busfault_check()
 
     busfaulted = FALSE;
 
-    xorg_list_for_each_entry_safe(busfault, tmp, &busfaults, list) ;{
+    mixin(xorg_list_for_each_entry_safe!("busfault", "tmp", "busfaults", "list", q{
         if (!busfault.valid)
             (*busfault.notify)(busfault.context);
-    }
+    }));
 }
 
 private void function(int sig, siginfo_t* info, void* param) previous_busfault_sigaction;
@@ -104,12 +104,12 @@ private void busfault_sigaction(int sig, siginfo_t* info, void* param)
 
     /* Locate the faulting address in our list of shared segments
      */
-    xorg_list_for_each_entry(iter, &busfaults, list); {
+    mixin(xorg_list_for_each_entry!("iter", "&busfaults", "list", q{
 	if (cast(char*) iter.addr <= cast(char*) fault && cast(char*) fault < cast(char*) iter.addr + iter.size) {
 	    busfault = iter;
 	    break;
 	}
-    }
+    }));
     if (!busfault)
         goto panic_;
 

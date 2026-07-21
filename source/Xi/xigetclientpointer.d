@@ -43,6 +43,9 @@ import include.scrnintstr;         /* screen structure  */
 import include.extnsionst;
 import include.exevents;
 import Xi.exglobals;
+import dix.devices;
+import dix.dixutils;
+import externs.X11.extensions.XI2proto;
 
 /***********************************************************************
  * This procedure allows a client to query another client's client pointer
@@ -69,7 +72,7 @@ int ProcXIGetClientPointer(ClientPtr client)
     xXIGetClientPointerReply reply = {
         RepType: X_XIGetClientPointer,
         set: (winclient.clientPtr != null),
-        deviceid: (winclient.clientPtr) ? winclient.clientPtr.id : 0
+        deviceid: (winclient.clientPtr) ? cast(ushort)winclient.clientPtr.id : 0
     };
 
     mixin(X_REPLY_FIELD_CARD16!"deviceid");

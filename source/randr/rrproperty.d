@@ -536,7 +536,7 @@ int ProcRRChangeOutputProperty(ClientPtr client)
         return BadLength;
     sizeInBytes = format >> 3;
     totalSize = len * sizeInBytes;
-    REQUEST_FIXED_SIZE(xRRChangeOutputPropertyReq, totalSize);
+    mixin(REQUEST_FIXED_SIZE!("xRRChangeOutputPropertyReq", "totalSize"));
 
     VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
 

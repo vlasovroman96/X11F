@@ -252,12 +252,12 @@ private void CheckAllTimers()
  start:
     now = GetTimeInMillis();
 
-    xorg_list_for_each_entry(timer, &timers, list); {
+    mixin(xorg_list_for_each_entry!("timer", "&timers", "list", q{
         if (timer.expires - now > timer.delta + 250) {
             DoTimer(timer, now);
             goto start;
         }
-    }
+    }));
     input_unlock();
 }
 
@@ -319,9 +319,10 @@ OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback 
     input_lock();
 
     /* Sort into list */
-    xorg_list_for_each_entry(existing, &timers, list);
+    mixin(xorg_list_for_each_entry!("existing", "&timers", "list", q{;
         if (cast(int) (existing.expires - millis) > 0)
             break;
+    }));
     /* This even works at the end of the list -- existing->list will be timers */
     xorg_list_append(&timer.list, &existing.list);
 
@@ -372,10 +373,10 @@ void TimerInit()
         xorg_list_init(cast(xorg_list*) &timers);
     }
 
-    xorg_list_for_each_entry_safe(timer, tmp, &timers, list); {
+    mixin(xorg_list_for_each_entry_safe!("timer", "tmp", "timers", "list", q{
         xorg_list_del(&timer.list);
         free(timer);
-    }
+    }));
 }
 
 version (DPMSExtension) {

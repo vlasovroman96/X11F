@@ -47,6 +47,9 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;          /* BadDevice */
+import externs.X11.extensions.XI2proto;
+import dix.devices;
+import dix.dixutils;
 
 int ProcXIGrabDevice(ClientPtr client)
 {
@@ -65,7 +68,7 @@ int ProcXIGrabDevice(ClientPtr client)
     uint keyboard_mode = void;
     uint pointer_mode = void;
 
-    REQUEST_FIXED_SIZE(xXIGrabDeviceReq, (cast(size_t) stuff.mask_len) * 4);
+    mixin(REQUEST_FIXED_SIZE!("xXIGrabDeviceReq", "(cast(size_t) stuff.mask_len) * 4"));
 
     ret = dixLookupDevice(&dev, stuff.deviceid, client, DixGrabAccess);
     if (ret != Success)
@@ -96,7 +99,7 @@ int ProcXIGrabDevice(ClientPtr client)
     if (!mask.xi2mask)
         return BadAlloc;
 
-    mask_len = min(xi2mask_mask_size(mask.xi2mask), stuff.mask_len * 4);
+    mask_len = cast(int)min(xi2mask_mask_size(mask.xi2mask), stuff.mask_len * 4);
     /* FIXME: I think the old code was broken here */
     xi2mask_set_one_mask(mask.xi2mask, dev.id, cast(ubyte*) &stuff[1],
                          mask_len);

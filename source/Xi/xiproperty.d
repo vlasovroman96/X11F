@@ -860,7 +860,7 @@ int ProcXChangeDeviceProperty(ClientPtr client)
         return BadLength;
 
     totalSize = len * (stuff.format / 8);
-    REQUEST_FIXED_SIZE(xChangeDevicePropertyReq, totalSize);
+    mixin(REQUEST_FIXED_SIZE!("xChangeDevicePropertyReq", "totalSize"));
 
     rc = change_property(client, dev, stuff.property, stuff.type,
                          stuff.format, stuff.mode, len, cast(void*) &stuff[1]);
@@ -1018,7 +1018,7 @@ int ProcXIChangeProperty(ClientPtr client)
         return BadLength;
 
     totalSize = len * (stuff.format / 8);
-    REQUEST_FIXED_SIZE(xXIChangePropertyReq, totalSize);
+    mixin(REQUEST_FIXED_SIZE!("xXIChangePropertyReq", "totalSize"));
 
     rc = change_property(client, dev, stuff.property, stuff.type,
                          stuff.format, stuff.mode, len, cast(void*) &stuff[1]);

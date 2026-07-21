@@ -51,6 +51,9 @@ import include.extnsionst;
 import include.exevents;
 import Xi.exglobals;
 import include.input;
+import externs.X11.extensions.XI2proto;
+import dix.devices;
+import dix.dixutils;
 
 /***********************************************************************
  *

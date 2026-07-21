@@ -82,7 +82,7 @@ public import core.stdc.stddef; /* offsetof() */
  * name of the field the subnodes use.
  *
  * struct foo *iterator;
- * xorg_list_for_each_entry(iterator, &bar.list_of_foos, entry) {
+ * mixin(xorg_list_for_each_entry!("iterator", "&bar.list_of_foos", "entry", q{ {
  *      if (iterator->something == ...)
  *             ...
  * }
@@ -91,7 +91,7 @@ public import core.stdc.stddef; /* offsetof() */
  * loop. You need to run the safe for-each loop instead:
  *
  * struct foo *iterator, *next;
- * xorg_list_for_each_entry_safe(iterator, next, &bar.list_of_foos, entry) {
+ * mixin(xorg_list_for_each_entry_safe!("iterator", "next", "bar.list_of_foos", "entry") {
  *      if (...)
  *              xorg_list_del(&iterator->entry);
  * }
@@ -305,10 +305,9 @@ template offsetof(T, string member)
 
 T* containerOf(T, string member)(void* ptr)
 {
-    return cast(T*)(
-        cast(char*)ptr -
-        offsetof!(T, member)
-    );
+    enum offset = __traits(getMember, T.init, member).offsetof;
+
+    return cast(T*)(cast(ubyte*)ptr - offset);
 }
 
 /**
@@ -367,11 +366,17 @@ alias __container_of(alias ptr, alias sample, alias member) =
  * @param member Member name of the struct xorg_list in the list elements.
  *
  */
+ pragma(msg, xorg_list_for_each_entry!(
+    "ref_",
+    "&pPriv.reference_list",
+    "link",
+    q{}
+));
 template xorg_list_for_each_entry(string pos, string head, string member, string bodyCode)
 {
     const string xorg_list_for_each_entry = 
         "for (" ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((" ~ head ~ ").next); "
-        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " != (" ~ head ~ ")); "
+        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " !is (" ~ head ~ ")); "
         ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next)) {"
         ~ bodyCode
         ~ "}";
@@ -383,16 +388,20 @@ template xorg_list_for_each_entry(string pos, string head, string member, string
  *
  * See xorg_list_for_each_entry for more details.
  */
-template xorg_list_for_each_entry_safe(string pos, string tmp, string head, string member, string bodyCode)
+template xorg_list_for_each_entry_safe(
+    string pos,
+    string tmp,
+    string head,
+    string member,
+    string bodyCode)
 {
-    // Используем enum вместо const для CTFE и ленивую подстановку head без преждевременного раскрытия
-    enum xorg_list_for_each_entry_safe = 
-        "for (" ~ pos ~ " = null, "
+    enum xorg_list_for_each_entry_safe =
+        "for ("
         ~ pos ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")((" ~ head ~ ").next), "
         ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next); "
-        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " !is (" ~ head ~ ")); "
+        ~ "(((" ~ head ~ ").next !is null) && &" ~ pos ~ "." ~ member ~ " != (" ~ head ~ ")); "
         ~ pos ~ " = " ~ tmp ~ ", "
-        ~ tmp ~ " = containerOf!(typeof(*" ~ pos ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next)) {"
+        ~ tmp ~ " = containerOf!(typeof(*" ~ tmp ~ "), \"" ~ member ~ "\")(" ~ pos ~ "." ~ member ~ ".next)) {"
         ~ bodyCode
         ~ "}";
 }
@@ -457,7 +466,7 @@ enum string nt_list_next(string _list, string _member) = `
  * @param member Member name of the field pointing to next struct.
  */
 enum string nt_list_for_each_entry(string _entry, string _list, string _member, string lambda) = `
-	for (` ~ _entry ~ ` = ` ~ _list ~ `; ` ~ _entry ~ `; ` ~ _entry ~ ` = (` ~ _entry ~ `).` ~ _member ~ `)` ~ lambda;
+	for (` ~ _entry ~ ` = ` ~ _list ~ `; ` ~ _entry ~ `; ` ~ _entry ~ ` = (` ~ _entry ~ `).` ~ _member ~ `){` ~ lambda~`}`;
 
 /**
  * Iterate through each element in the list, keeping a backup pointer to the

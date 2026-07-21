@@ -1229,7 +1229,7 @@ version (XINERAMA) {
 }
 
  restart:
-    xorg_list_for_each_entry_safe(qe, tmp, &syncEvents.pending, next); {
+    mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "syncEvents.pending", "next", q{
         if (!qe.device.deviceGrab.sync.frozen) {
             xorg_list_del(&qe.next);
             pDev = qe.device;
@@ -1277,7 +1277,7 @@ version (XINERAMA) {
             /* So to play it safe, restart at the head of the queue */
             goto restart;
         }
-    }
+    }));
 }
 
 /**
@@ -5339,8 +5339,9 @@ void InitEvents()
     syncEvents.replayDev = cast(DeviceIntPtr) null;
     syncEvents.replayWin = NullWindow;
     if (syncEvents.pending.next)
-        xorg_list_for_each_entry_safe(qe, tmp, &syncEvents.pending, next);
+        mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "syncEvents.pending", "next", q{
             free(qe);
+        }));
     xorg_list_init(&syncEvents.pending);
     syncEvents.playingEvents = FALSE;
     syncEvents.time.months = 0;

@@ -44,7 +44,7 @@ int __glXDisp_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
     ClientPtr client = cl.client;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     pc += __GLX_SINGLE_HDR_SIZE;
     if (cx != null) {
@@ -88,7 +88,7 @@ int __glXDispSwap_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, bswap_32(req.contextTag), &error);
     ClientPtr client = cl.client;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     pc += __GLX_SINGLE_HDR_SIZE;
     if (cx != null) {

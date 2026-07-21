@@ -935,7 +935,7 @@ private void ms_dirty_update(ScreenPtr screen, int* timeout)
     if (xorg_list_is_empty(&screen.pixmap_dirty_list))
         return;
 
-    xorg_list_for_each_entry(ent, &screen.pixmap_dirty_list, ent); {
+    mixin(xorg_list_for_each_entry!("ent", "&screen.pixmap_dirty_list", "ent", q{
         region = DamageRegion(ent.damage);
         if (RegionNotEmpty(region)) {
             if (!screen.isGPU) {
@@ -956,7 +956,7 @@ private void ms_dirty_update(ScreenPtr screen, int* timeout)
             redisplay_dirty(screen, ent, timeout);
             DamageEmpty(ent.damage);
         }
-    }
+    }));
 }
 
 private PixmapDirtyUpdatePtr ms_dirty_get_ent(ScreenPtr screen, PixmapPtr secondary_dst)
@@ -966,10 +966,10 @@ private PixmapDirtyUpdatePtr ms_dirty_get_ent(ScreenPtr screen, PixmapPtr second
     if (xorg_list_is_empty(&screen.pixmap_dirty_list))
         return null;
 
-    xorg_list_for_each_entry(ent, &screen.pixmap_dirty_list, ent); {
+    mixin(xorg_list_for_each_entry!("ent", "&screen.pixmap_dirty_list", "ent", q{
         if (ent.secondary_dst == secondary_dst)
             return ent;
-    }
+    }));
 
     return null;
 }

@@ -26,12 +26,12 @@ pragma(inline, true) private void xf86freeMatchGroup(xf86MatchGroup* group)
 {
     xorg_list_del(&group.entry);
     xf86MatchPattern* pattern = void, next_pattern = void;
-    xorg_list_for_each_entry_safe(pattern, next_pattern, &group.patterns, entry); {
+    mixin(xorg_list_for_each_entry_safe!("pattern", "next_pattern", "group.patterns", "entry", q{
         xorg_list_del(&pattern.entry);
         if (pattern.str)
             free(pattern.str);
         free(pattern);
-    }
+    }));
     free(group);
 }
 

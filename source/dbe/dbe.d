@@ -425,7 +425,7 @@ private int ProcDbeSwapBuffers(ClientPtr client)
 
     if (stuff.n > UINT32_MAX / DbeSwapInfoRec.sizeof)
         return BadLength;
-    REQUEST_FIXED_SIZE(xDbeSwapBuffersReq, stuff.n * xDbeSwapInfo.sizeof);
+    mixin(REQUEST_FIXED_SIZE!("xDbeSwapBuffersReq", "stuff.n * xDbeSwapInfo.sizeof"));
 
     if (client.swapped) {
         xDbeSwapInfo* pSwapInfo = void;
@@ -553,7 +553,7 @@ private int ProcDbeGetVisualInfo(ClientPtr client)
 
     if (stuff.n > UINT32_MAX / CARD32.sizeof)
         return BadLength;
-    REQUEST_FIXED_SIZE(xDbeGetVisualInfoReq, stuff.n * CARD32.sizeof);
+    mixin(REQUEST_FIXED_SIZE!("xDbeGetVisualInfoReq", "stuff.n * CARD32.sizeof"));
 
     if (stuff.n > UINT32_MAX / DrawablePtr.sizeof)
         return BadAlloc;

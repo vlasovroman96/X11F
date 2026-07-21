@@ -1971,13 +1971,13 @@ private void remove_fs_fd(int fd)
 {
     fs_fd_entry* entry = void, temp = void;
 
-    xorg_list_for_each_entry_safe(entry, temp, &fs_fd_list, entry); {
+    mixin(xorg_list_for_each_entry_safe!("entry", "temp", "fs_fd_list", "entry", q{
         if (entry.fd == fd) {
             xorg_list_del(&entry.entry);
             free(entry);
             break;
         }
-    }
+    }));
     RemoveNotifyFd(fd);
 }
 

@@ -47,7 +47,7 @@ void RRDeliverLeaseEvent(ClientPtr client, WindowPtr window)
     RRLeasePtr lease = void;
 
     UpdateCurrentTimeIf();
-    xorg_list_for_each_entry(lease, &scr_priv.leases, list); {
+    mixin(xorg_list_for_each_entry!("lease", "&scr_priv.leases", "list", q{
         if (lease.id != None && (lease.state == RRLeaseCreating ||
                                   lease.state == RRLeaseTerminating))
         {
@@ -61,7 +61,7 @@ void RRDeliverLeaseEvent(ClientPtr client, WindowPtr window)
             );
             WriteEventsToClient(client, 1, cast(xEvent*) &le);
         }
-    }
+    }));
 }
 
 /*
@@ -113,11 +113,11 @@ Bool RRCrtcIsLeased(RRCrtcPtr crtc)
     RRLeasePtr lease = void;
     int c = void;
 
-    xorg_list_for_each_entry(lease, &scr_priv.leases, list) ;{
+    mixin(xorg_list_for_each_entry!("lease", "&scr_priv.leases", "list", q{
         for (c = 0; c < lease.numCrtcs; c++)
             if (lease.crtcs[c] == crtc)
                 return TRUE;
-    }
+    }));
     return FALSE;
 }
 
@@ -131,11 +131,11 @@ Bool RROutputIsLeased(RROutputPtr output)
     RRLeasePtr lease = void;
     int o = void;
 
-    xorg_list_for_each_entry(lease, &scr_priv.leases, list); {
+    mixin(xorg_list_for_each_entry!("lease", "&scr_priv.leases", "list", q{
         for (o = 0; o < lease.numOutputs; o++)
             if (lease.outputs[o] == output)
                 return TRUE;
-    }
+    }));
     return FALSE;
 }
 

@@ -947,12 +947,12 @@ private void FreePendingFrozenDeviceEvents(DeviceIntPtr dev)
         return;
 
     /* Dequeue any frozen pending events */
-    xorg_list_for_each_entry_safe(qe, tmp, &syncEvents.pending, next); {
+    mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "syncEvents.pending", "next", q{
         if (qe.device == dev) {
             xorg_list_del(&qe.next);
             free(qe);
         }
-    }
+    }));
 }
 
 /**

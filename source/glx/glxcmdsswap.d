@@ -239,7 +239,7 @@ int __glXDispSwap_CreatePixmap(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXCreatePixmapReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXCreatePixmapReq", "req.numAttribs << 3"));
     attribs = cast(CARD32*) (req + 1);
     SwapLongs(attribs, req.numAttribs << 1);
 
@@ -312,7 +312,7 @@ int __glXDispSwap_CreatePbuffer(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXCreatePbufferReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXCreatePbufferReq", "req.numAttribs << 3"));
     attribs = cast(CARD32*) (req + 1);
     SwapLongs(attribs, req.numAttribs << 1);
 
@@ -423,7 +423,7 @@ int __glXDispSwap_CreateWindow(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXCreateWindowReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXCreateWindowReq", "req.numAttribs << 3"));
     attribs = cast(CARD32*) (req + 1);
     SwapLongs(attribs, req.numAttribs << 1);
 
@@ -549,7 +549,7 @@ int __glXDispSwap_ReleaseTexImageEXT(__GLXclientState* cl, GLbyte* pc)
     GLXDrawable* drawId = void;
     int* buffer = void;
 
-    REQUEST_FIXED_SIZE(xGLXVendorPrivateReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "8"));
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
 
@@ -571,7 +571,7 @@ int __glXDispSwap_CopySubBufferMESA(__GLXclientState* cl, GLbyte* pc)
     GLXDrawable* drawId = void;
     int* buffer = void;
 
-    REQUEST_FIXED_SIZE(xGLXVendorPrivateReq, 20);
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "20"));
 
     cast(void) drawId;
     cast(void) buffer;

@@ -55,7 +55,7 @@ int __glXDisp_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = void;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
     if (!cx) {
@@ -85,7 +85,7 @@ int __glXDisp_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
     GLsizei size = void;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 4);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
     if (!cx) {
@@ -115,7 +115,7 @@ int __glXDisp_RenderMode(__GLXclientState* cl, GLbyte* pc)
     GLenum newMode = void;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 4);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
     if (!cx) {
@@ -326,7 +326,7 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
     char* buf = null, buf1 = null;
     GLint length = 0;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 4);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     /* If the client has the opposite byte order, swap the contextTag and
      * the name.

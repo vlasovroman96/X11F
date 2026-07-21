@@ -82,12 +82,12 @@ private GlxServerDispatchProc GetVendorDispatchFunc(CARD8 opcode, CARD32 vendorC
 {
     GlxServerVendor* vendor = void;
 
-    xorg_list_for_each_entry(vendor, &GlxVendorList, entry); {
+    mixin(xorg_list_for_each_entry!("vendor", "&GlxVendorList", "entry", q{
         GlxServerDispatchProc proc = vendor.glxvc.getDispatchAddress(opcode, vendorCode);
         if (proc != null) {
             return proc;
         }
-    }
+    }));
 
     return DispatchBadRequest;
 }
@@ -138,11 +138,11 @@ private int dispatch_GLXClientInfo(ClientPtr client)
     }
     memcpy(requestCopy, client.requestBuffer, requestSize);
 
-    xorg_list_for_each_entry(vendor, &GlxVendorList, entry); {
+    mixin(xorg_list_for_each_entry!("vendor", "&GlxVendorList", "entry", q{
         vendor.glxvc.handleRequest(client);
         // Revert the request buffer back to our copy.
         memcpy(client.requestBuffer, requestCopy, requestSize);
-    }
+    }));
     free(requestCopy);
     return Success;
 }

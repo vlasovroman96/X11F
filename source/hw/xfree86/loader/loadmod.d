@@ -118,13 +118,13 @@ void LoaderInitPath() {
 
 void LoaderClosePath() {
     LoaderModulePathListItem* item = void, next = void;
-    xorg_list_for_each_entry_safe(item, next, &modulePathLists, entry); {
+    mixin(xorg_list_for_each_entry_safe!("item", "next", "modulePathLists", "entry", q{
         xorg_list_del(&item.entry);
         free(item.name);
         if (item.paths)
             FreeStringList(item.paths);
         free(item);
-    }
+    }));
     xorg_list_del(&modulePathLists);
     FreeStringList(defaultPathList);
 }
@@ -204,7 +204,7 @@ void LoaderSetPath(const(char)* driver, const(char)* path)
         return;
     }
 
-    xorg_list_for_each_entry(item, &modulePathLists, entry); {
+    mixin(xorg_list_for_each_entry!("item", "&modulePathLists", "entry", q{
         if (!strcmp(item.name, driver)) {
             FreeStringList(item.paths);
             if (path)
@@ -213,7 +213,7 @@ void LoaderSetPath(const(char)* driver, const(char)* path)
                 item.paths = null;
             return;
         }
-    }
+    }));
 
     item = cast(LoaderModulePathListItem*) malloc(LoaderModulePathListItem.sizeof);
     if (item) {
@@ -244,14 +244,14 @@ private char** LoaderGetPath(const(char)* module_)
 {
     LoaderModulePathListItem* item = void;
 
-    xorg_list_for_each_entry(item, &modulePathLists, entry); {
+    mixin(xorg_list_for_each_entry!("item", "&modulePathLists", "entry", q{
         if (!strcmp(item.name, module_)) {
             if (item.paths)
                 return item.paths;
             else
                 return defaultPathList;
         }
-    }
+    }));
 
     return defaultPathList;
 }

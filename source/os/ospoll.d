@@ -190,10 +190,10 @@ private void ospoll_clean_deleted(ospoll* ospoll)
 {
     ospollfd* osfd = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(osfd, tmp, &ospoll.deleted, deleted); {
+    mixin(xorg_list_for_each_entry_safe!("osfd", "tmp", "ospoll.deleted", "deleted", q{
         xorg_list_del(&osfd.deleted);
         free(osfd);
-    }
+    }));
 }
 }
 

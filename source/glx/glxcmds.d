@@ -1214,7 +1214,7 @@ int __glXDisp_CreatePixmap(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXCreatePixmapReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXCreatePixmapReq", "req.numAttribs << 3"));
 
     if (!validGlxScreen(cl.client, req.screen, &pGlxScreen, &err))
         return err;
@@ -1333,7 +1333,7 @@ int __glXDisp_CreatePbuffer(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXCreatePbufferReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXCreatePbufferReq", "req.numAttribs << 3"));
 
     attrs = cast(CARD32*) (req + 1);
     width = 0;
@@ -1427,7 +1427,7 @@ int __glXDisp_ChangeDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
     }
 version (none) {
     /* mesa sends an additional 8 bytes */
-    REQUEST_FIXED_SIZE(xGLXChangeDrawableAttributesReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXChangeDrawableAttributesReq", "req.numAttribs << 3"));
 } else {
     if (((((xGLXChangeDrawableAttributesReq) +
           (req.numAttribs << 3)).sizeof) >> 2) < client.req_len)
@@ -1469,7 +1469,7 @@ int __glXDisp_CreateWindow(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXCreateWindowReq, req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXCreateWindowReq", "req.numAttribs << 3"));
 
     if (!validGlxScreen(client, req.screen, &pGlxScreen, &err))
         return err;
@@ -1626,7 +1626,7 @@ int __glXDisp_BindTexImageEXT(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = num_attribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXVendorPrivateReq, 12 + (num_attribs << 3));
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "12 + (num_attribs << 3"));
 
     if (buffer != GLX_FRONT_LEFT_EXT)
         return __glXError(GLXBadPixmap);
@@ -1655,7 +1655,7 @@ int __glXDisp_ReleaseTexImageEXT(__GLXclientState* cl, GLbyte* pc)
     int buffer = void;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXVendorPrivateReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "8"));
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
 
@@ -1690,7 +1690,7 @@ int __glXDisp_CopySubBufferMESA(__GLXclientState* cl, GLbyte* pc)
     cast(void) client;
     cast(void) req;
 
-    REQUEST_FIXED_SIZE(xGLXVendorPrivateReq, 20);
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "20"));
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
 

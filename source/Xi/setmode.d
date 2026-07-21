@@ -67,6 +67,9 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.XIstubs;
 import Xi.exglobals;
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.devices;
 
 /***********************************************************************
  *
@@ -97,7 +100,7 @@ int ProcXSetDeviceMode(ClientPtr client)
     if ((dev.deviceGrab.grab) && !mixin(SameClient!("dev.deviceGrab.grab", "client")))
         reply.status = AlreadyGrabbed;
     else
-        reply.status = SetDeviceMode(client, dev, stuff.mode);
+        reply.status = cast(ubyte)SetDeviceMode(client, dev, stuff.mode);
 
     if (reply.status == Success)
         valuator_set_mode(dev, VALUATOR_MODE_ALL_AXES, stuff.mode);
@@ -108,7 +111,7 @@ int ProcXSetDeviceMode(ClientPtr client)
         case BadAlloc:
             break;
         default:
-            reply.status = BadMode;
+            reply.status = cast(ubyte)BadMode;
         }
         return reply.status;
     }

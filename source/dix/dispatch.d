@@ -307,22 +307,22 @@ private void mark_client_grab(ClientPtr grab)
 {
     ClientPtr client = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(client, tmp, &ready_clients, ready); {
+    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "ready_clients", "ready", q{
         if (client != grab) {
             xorg_list_del(&client.ready);
             xorg_list_append(&client.ready, &saved_ready_clients);
         }
-    }
+    }));
 }
 
 private void mark_client_ungrab()
 {
     ClientPtr client = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(client, tmp, &saved_ready_clients, ready); {
+    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "saved_ready_clients", "ready", q{
         xorg_list_del(&client.ready);
         xorg_list_append(&client.ready, &ready_clients);
-    }
+    }));
 }
 
 private ClientPtr SmartScheduleClient()
@@ -333,21 +333,17 @@ private ClientPtr SmartScheduleClient()
     int bestRobin = 0;
     c_long idle = 2 * SmartScheduleSlice;
 
-    xorg_list_for_each_entry(pClient, &ready_clients, ready); {
+    mixin(xorg_list_for_each_entry!("pClient", "&ready_clients", "ready", q{
         nready++;
-
-        /* Praise clients which haven't run in a while */
         if ((now - pClient.smart_stop_tick) >= idle) {
             if (pClient.smart_priority < 0)
                 pClient.smart_priority++;
         }
 
-        /* check priority to select best client */
         int robin = (pClient.index -
              SmartLastIndex[pClient.smart_priority -
                             SMART_MIN_PRIORITY]) & 0xff;
 
-        /* pick the best client */
         if (!best ||
             pClient.priority > best.priority ||
             (pClient.priority == best.priority &&
@@ -361,7 +357,7 @@ version (SMART_DEBUG) {
         if ((now - SmartLastPrint) >= 5000)
             fprintf(stderr, " %2d: %3d", pClient.index, pClient.smart_priority);
 }
-    }
+    }));
 version (SMART_DEBUG) {
     if ((now - SmartLastPrint) >= 5000) {
         fprintf(stderr, " use %2d\n", best.index);
@@ -1066,7 +1062,7 @@ int ProcInternAtom(ClientPtr client)
     if (client.swapped)
         swaps(&stuff.nbytes);
 
-    REQUEST_FIXED_SIZE(xInternAtomReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xInternAtomReq", "stuff.nbytes"));
     if ((stuff.onlyIfExists != xTrue) && (stuff.onlyIfExists != xFalse)) {
         client.errorValue = stuff.onlyIfExists;
         return BadValue;
@@ -1259,7 +1255,7 @@ int ProcOpenFont(ClientPtr client)
 
     mixin(REQUEST!xOpenFontReq);
 
-    REQUEST_FIXED_SIZE(xOpenFontReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xOpenFontReq", "stuff.nbytes"));
     client.errorValue = stuff.fid;
     mixin(LEGAL_NEW_RESOURCE!("stuff.fid", "client"));
     err = OpenFont(client, stuff.fid, cast(Mask) 0,
@@ -1401,7 +1397,7 @@ int ProcListFonts(ClientPtr client)
 {
     mixin(REQUEST!xListFontsReq);
 
-    REQUEST_FIXED_SIZE(xListFontsReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xListFontsReq", "stuff.nbytes"));
 
     return ListFonts(client, cast(ubyte*) &stuff[1], stuff.nbytes,
                      stuff.maxNames);
@@ -1411,7 +1407,7 @@ int ProcListFontsWithInfo(ClientPtr client)
 {
     mixin(REQUEST!xListFontsWithInfoReq);
 
-    REQUEST_FIXED_SIZE(xListFontsWithInfoReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xListFontsWithInfoReq", "stuff.nbytes"));
 
     return StartListFontsWithInfo(client, stuff.nbytes,
                                   cast(ubyte*) &stuff[1], stuff.maxNames);
@@ -2983,7 +2979,7 @@ int ProcLookupColor(ClientPtr client)
         swaps(&stuff.nbytes);
     }
 
-    REQUEST_FIXED_SIZE(xLookupColorReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xLookupColorReq", "stuff.nbytes"));
 
     ColormapPtr pcmp = void;
     int rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
@@ -3321,7 +3317,7 @@ int ProcChangeHosts(ClientPtr client)
 {
     mixin(REQUEST!xChangeHostsReq);
 
-    REQUEST_FIXED_SIZE(xChangeHostsReq, stuff.hostLength);
+    mixin(REQUEST_FIXED_SIZE!("xChangeHostsReq", "stuff.hostLength"));
 
     if (stuff.mode == HostInsert)
         return AddHost(client, cast(int) stuff.hostFamily,

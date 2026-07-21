@@ -65,7 +65,7 @@ private int DoGetProgramString(__GLXclientStateRec* cl, GLbyte* pc, PFNGLGETPROG
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
     ClientPtr client = cl.client;
 
-    REQUEST_FIXED_SIZE(xGLXVendorPrivateWithReplyReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateWithReplyReq", "8"));
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
     if (cx != null) {

@@ -41,9 +41,9 @@ void present_clear_window_notifies(WindowPtr window)
     if (!window_priv)
         return;
 
-    xorg_list_for_each_entry(notify, &window_priv.notifies, window_list); {
+    mixin(xorg_list_for_each_entry!("notify", "&window_priv.notifies", "window_list", q{
         notify.window = null;
-    }
+    }));
 }
 
 /*

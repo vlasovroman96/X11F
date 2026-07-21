@@ -66,6 +66,10 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.devices;
+import dix.dixutils;
 
 enum AllModifiersMask = ( 
 	ShiftMask | LockMask | ControlMask | Mod1Mask | Mod2Mask | 
@@ -121,7 +125,7 @@ int ProcXUngrabDeviceButton(ClientPtr client)
     temporaryGrab.resource = client.clientAsMask;
     temporaryGrab.device = dev;
     temporaryGrab.window = pWin;
-    temporaryGrab.type = DeviceButtonPress;
+    temporaryGrab.type = cast(ubyte)DeviceButtonPress;
     temporaryGrab.grabtype = XI;
     temporaryGrab.modifierDevice = mdev;
     temporaryGrab.modifiersDetail.exact = stuff.modifiers;

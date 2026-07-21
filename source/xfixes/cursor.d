@@ -400,7 +400,7 @@ int ProcXFixesSetCursorName(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesSetCursorNameReq);
     mixin(X_REQUEST_FIELD_CARD32!"cursor");
     mixin(X_REQUEST_FIELD_CARD16!"nbytes");
-    REQUEST_FIXED_SIZE(xXFixesSetCursorNameReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xXFixesSetCursorNameReq", "stuff.nbytes"));
 
     CursorPtr pCursor = void;
     mixin(VERIFY_CURSOR!(`pCursor`, `stuff.cursor`, `client`, `DixSetAttrAccess`));
@@ -628,7 +628,7 @@ int ProcXFixesChangeCursorByName(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xXFixesChangeCursorByNameReq);
     mixin(X_REQUEST_FIELD_CARD32!"source");
     mixin(X_REQUEST_FIELD_CARD16!"nbytes");
-    REQUEST_FIXED_SIZE(xXFixesChangeCursorByNameReq, stuff.nbytes);
+    mixin(REQUEST_FIXED_SIZE!("xXFixesChangeCursorByNameReq", "stuff.nbytes"));
 
     CursorPtr pSource = void;
     Atom name = void;

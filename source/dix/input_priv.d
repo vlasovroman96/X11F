@@ -98,7 +98,7 @@ InternalEvent* UpdateFromMaster(InternalEvent* events, DeviceIntPtr pDev, int ty
 
 void PostSyntheticMotion(DeviceIntPtr pDev, int x, int y, int screen, c_ulong time);
 
-void ReleaseButtonsAndKeys(DeviceIntPtr dev);
+// void ReleaseButtonsAndKeys(DeviceIntPtr dev);
 
 // int AttachDevice(ClientPtr client, DeviceIntPtr slave, DeviceIntPtr master);
 
@@ -217,7 +217,7 @@ alias EVENT_REJECTED = EventDeliveryState.EVENT_REJECTED;
 
 enum VALUATOR_MODE_ALL_AXES = -1;
 // int valuator_get_mode(DeviceIntPtr dev, int axis);
-void valuator_set_mode(DeviceIntPtr dev, int axis, int mode);
+// void valuator_set_mode(DeviceIntPtr dev, int axis, int mode);
 
 /* Set to TRUE by default - os/utils.c sets it to FALSE on user request,
    xfixes/cursor.c uses it to determine if the cursor is enabled */

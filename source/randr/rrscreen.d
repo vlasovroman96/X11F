@@ -399,7 +399,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
 
     mixin(update_totals!(`pScreen`, `pScrPriv`));
 
-    xorg_list_for_each_entry(iter, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
         if (!iter.is_output_secondary)
             continue;
 
@@ -409,7 +409,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
           if (!RRGetInfo(iter, query))
             return BadAlloc;
         mixin(update_totals!(`iter`, `pScrPriv`));
-    }
+    }));
 
     pScrPriv = rrGetScrPriv(pScreen);
 
@@ -458,14 +458,14 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
     }
     mixin(update_arrays!(`pScreen`, `pScrPriv`, `primary_crtc`, `has_primary`));
 
-    xorg_list_for_each_entry(iter, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
         if (!iter.is_output_secondary)
             continue;
 
         pScrPriv = rrGetScrPriv(iter);
 
         mixin(update_arrays!(`iter`, `pScrPriv`, `primary_crtc`, `has_primary`));
-    }
+    }));
 
     assert(bytes_to_int32(cast(char*) names - cast(char*) extra) == reply.length);
 

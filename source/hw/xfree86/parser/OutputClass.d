@@ -190,25 +190,25 @@ void xf86printOutputClassSection(FILE* cf, XF86ConfOutputClassPtr ptr)
         if (ptr.modulepath)
             fprintf(cf, "\tModulePath      \"%s\"\n", ptr.modulepath);
 
-        xorg_list_for_each_entry(group, &ptr.match_driver, entry) ;{
+        mixin(xorg_list_for_each_entry!("group", "&ptr.match_driver", "entry", q{
             fprintf(cf, "\tMatchDriver     \"");
             not_first = FALSE;
-            xorg_list_for_each_entry(pattern, &group.patterns, entry) ;{
+            mixin(xorg_list_for_each_entry!("pattern", "&group.patterns", "entry", q{
                 xf86printMatchPattern(cf, pattern, not_first);
                 not_first = TRUE;
-            }
+            }));
             fprintf(cf, "\"\n");
-        }
+        }));
 
-        xorg_list_for_each_entry(group, &ptr.match_layout, entry) ;{
+        mixin(xorg_list_for_each_entry!("group", "&ptr.match_layout", "entry", q{
             fprintf(cf, "\tMatchLayout     \"");
             not_first = FALSE;
-            xorg_list_for_each_entry(pattern, &group.patterns, entry) ;{
+            mixin(xorg_list_for_each_entry!("pattern", "&group.patterns", "entry", q{
                 xf86printMatchPattern(cf, pattern, not_first);
                 not_first = TRUE;
-            }
+            }));
             fprintf(cf, "\"\n");
-        }
+        }));
 
         fprintf(cf, "EndSection\n\n");
         ptr = ptr.list.next;

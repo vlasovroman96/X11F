@@ -80,7 +80,7 @@ void XnamespaceAssignClientByName(struct XnamespaceClientPriv *priv, const char 
 struct Xnamespace* XnsFindByAuth(size_t szAuthProto, const char* authProto, size_t szAuthToken, const char* authToken)
 {
     struct Xnamespace *walk;
-    xorg_list_for_each_entry(walk, &ns_list, entry) {
+    mixin(xorg_list_for_each_entry!("walk", "&ns_list", "entry", q{ {
         struct auth_token *at;
         xorg_list_for_each_entry(at, &walk->auth_tokens, entry) {
             int protoLen = at->authProto ? strlen(at->authProto) : 0;

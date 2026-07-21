@@ -203,12 +203,12 @@ int InputThreadRegisterDev(int fd, NotifyFdProcPtr readInputProc, void* readInpu
     input_lock();
 
     dev = null;
-    xorg_list_for_each_entry(old, &inputThreadInfo.devs, node); {
+    mixin(xorg_list_for_each_entry!("old", "&inputThreadInfo.devs", "node", q{
         if (old.fd == fd && old.state != device_state_removed) {
             dev = old;
             break;
         }
-    }
+    }));
 
     if (dev) {
         dev.readInputProc = readInputProc;
@@ -262,11 +262,12 @@ int InputThreadUnregisterDev(int fd)
     }
 
     input_lock();
-    xorg_list_for_each_entry(dev, &inputThreadInfo.devs, node);
+    mixin(xorg_list_for_each_entry!("dev", "&inputThreadInfo.devs", "node", q{;
         if (dev.fd == fd) {
             found_device = TRUE;
             break;
         }
+    }));
 
     /* fd didn't match any registered device. */
     if (!found_device) {
@@ -341,7 +342,7 @@ version (HAVE_PTHREAD_SETNAME_NP_WITH_TID) {
 
             input_lock();
             inputThreadInfo.changed = FALSE;
-            xorg_list_for_each_entry_safe(dev, tmp, &inputThreadInfo.devs, node); {
+            mixin(xorg_list_for_each_entry_safe!("dev", "tmp", "inputThreadInfo.devs", "node", q{
                 switch (dev.state) {
                 case device_state_added:
                     ospoll_add(inputThreadInfo.fds, dev.fd,
@@ -359,7 +360,7 @@ version (HAVE_PTHREAD_SETNAME_NP_WITH_TID) {
                     free(dev);
                     break;
                 default: break;}
-            }
+            }));
             input_unlock();
         }
 
@@ -497,10 +498,10 @@ void InputThreadFini()
     input_force_unlock();
     pthread_join(inputThreadInfo.thread, null);
 
-    xorg_list_for_each_entry_safe(dev, next, &inputThreadInfo.devs, node); {
+    mixin(xorg_list_for_each_entry_safe!("dev", "next", "inputThreadInfo.devs", "node", q{
         ospoll_remove(inputThreadInfo.fds, dev.fd);
         free(dev);
-    }
+    }));
     xorg_list_init(&inputThreadInfo.devs);
     ospoll_destroy(inputThreadInfo.fds);
 

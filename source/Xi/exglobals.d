@@ -79,7 +79,7 @@ extern RESTYPE RT_INPUTCLIENT;
 
 extern DevPrivateKeyRec XIClientPrivateKeyRec;
 
-pragma(inline, true) private XIClientPtr XIClientPriv(ClientPtr client) {
+pragma(inline, true) XIClientPtr XIClientPriv(ClientPtr client) {
     return cast(XIClientPtr)dixLookupPrivate(&client.devPrivates, &XIClientPrivateKeyRec);
 }
 

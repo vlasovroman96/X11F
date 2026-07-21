@@ -629,7 +629,7 @@ void FlushAllOutput()
     CriticalOutputPending = FALSE;
     NewOutputPending = FALSE;
 
-    xorg_list_for_each_entry_safe(client, tmp, &output_pending_clients, output_pending);{
+    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "output_pending_clients", "output_pending", q{
         if (client.clientGone)
             continue;
         if (!client_is_ready(client)) {
@@ -637,7 +637,7 @@ void FlushAllOutput()
             FlushClient(client, oc);
         } else
             NewOutputPending = TRUE;
-    }
+    }));
 }
 
 void FlushIfCriticalOutputPending()

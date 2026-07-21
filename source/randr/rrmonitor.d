@@ -204,7 +204,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
 
     /* Count the number of crtcs in this and any secondary screens */
     numCrtcs = pScrPriv.numCrtcs;
-    xorg_list_for_each_entry(secondary, &screen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("secondary", "&screen.secondary_list", "secondary_head", q{
         rrScrPrivPtr pSecondaryPriv = void;
 
         if (!secondary.is_output_secondary)
@@ -212,7 +212,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
 
         pSecondaryPriv = rrGetScrPriv(secondary);
         numCrtcs += pSecondaryPriv.numCrtcs;
-    }
+    }));
     mon_list.num_crtcs = numCrtcs;
 
     mon_list.server_crtc = calloc(numCrtcs * 2, RRCrtcPtr.sizeof);
@@ -226,7 +226,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
             mon_list.server_crtc[c] = pScrPriv.crtcs[sc];
     }
 
-    xorg_list_for_each_entry(secondary, &screen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("secondary", "&screen.secondary_list", "secondary_head", q{
         rrScrPrivPtr pSecondaryPriv = void;
 
         if (!secondary.is_output_secondary)
@@ -237,7 +237,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
             if (pSecondaryPriv.crtcs[sc].mode != null)
                 mon_list.server_crtc[c] = pSecondaryPriv.crtcs[sc];
         }
-    }
+    }));
 
     /* Walk the list of client-defined monitors, clearing the covered
      * CRTCs from the full list and finding whether one of the
@@ -473,7 +473,7 @@ int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
         return BadValue;
     }
 
-    xorg_list_for_each_entry(secondary, &screen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("secondary", "&screen.secondary_list", "secondary_head", q{
         if (!secondary.is_output_secondary)
             continue;
 
@@ -481,7 +481,7 @@ int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
             client.errorValue = monitor.name;
             return BadValue;
         }
-    }
+    }));
 
     /* Allocate space for the new pointer. This is done before
      * removing matching monitors as it may fail, and the request

@@ -2450,9 +2450,9 @@ private void drmmode_crtc_destroy(xf86CrtcPtr crtc)
         return;
 
     drmmode_prop_info_free(drmmode_crtc.props_plane, DRMMODE_PLANE__COUNT);
-    xorg_list_for_each_entry_safe(iterator, next, &drmmode_crtc.mode_list, entry); {
+    mixin(xorg_list_for_each_entry_safe!("iterator", "next", "drmmode_crtc.mode_list", "entry", q{
         drm.drm_mode_destroy(crtc, iterator);
-    }
+    }));
 }
 
 private const(xf86CrtcFuncsRec) drmmode_crtc_funcs = {
@@ -4063,7 +4063,7 @@ private void drmmode_validate_leases(ScrnInfoPtr scrn)
     if (!lessees)
         return;
 
-    xorg_list_for_each_entry_safe(lease, next, &scr_priv.leases, list); {
+    mixin(xorg_list_for_each_entry_safe!("lease", "next", "scr_priv.leases", "list", q{
         drmmode_lease_private_ptr lease_private = lease.devPrivate;
 
         for (l = 0; l < lessees.count; l++) {
@@ -4077,7 +4077,7 @@ private void drmmode_validate_leases(ScrnInfoPtr scrn)
             lease.devPrivate = null;
             xf86CrtcLeaseTerminated(lease);
         }
-    }
+    }));
 
     free(lessees);
 }

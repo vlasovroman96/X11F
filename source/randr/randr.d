@@ -92,8 +92,9 @@ private void RRCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unuse
 
     dixScreenUnhookClose(pScreen, RRCloseScreen);
 
-    xorg_list_for_each_entry_safe(lease, next, &pScrPriv.leases, list);
+    mixin(xorg_list_for_each_entry_safe!("lease", "next", "pScrPriv.leases", "list", q{
         RRTerminateLease(lease);
+    }));
     for (j = pScrPriv.numCrtcs - 1; j >= 0; j--)
         RRCrtcDestroy(pScrPriv.crtcs[j]);
     for (j = pScrPriv.numOutputs - 1; j >= 0; j--)
@@ -469,7 +470,7 @@ private int TellChanged(WindowPtr pWin, void* value)
                     RRDeliverCrtcEvent(client, pWin, crtc);
             }
 
-            xorg_list_for_each_entry(iter, &pScreen.secondary_list, secondary_head); {
+            mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
                 if (!iter.is_output_secondary)
                     continue;
 
@@ -480,7 +481,7 @@ private int TellChanged(WindowPtr pWin, void* value)
                     if (crtc.changed)
                         RRDeliverCrtcEvent(client, pWin, crtc);
                 }
-            }
+            }));
         }
 
         if (pRREvent.mask & RROutputChangeNotifyMask) {
@@ -491,7 +492,7 @@ private int TellChanged(WindowPtr pWin, void* value)
                     RRDeliverOutputEvent(client, pWin, output);
             }
 
-            xorg_list_for_each_entry(iter, &pScreen.secondary_list, secondary_head); {
+            mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
                 if (!iter.is_output_secondary)
                     continue;
 
@@ -502,15 +503,15 @@ private int TellChanged(WindowPtr pWin, void* value)
                     if (output.changed)
                         RRDeliverOutputEvent(client, pWin, output);
                 }
-            }
+            }));
         }
 
         if (pRREvent.mask & RRProviderChangeNotifyMask) {
-            xorg_list_for_each_entry(iter, &pScreen.secondary_list, secondary_head); {
+            mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
                 pSecondaryScrPriv = rrGetScrPriv(iter);
                 if (pSecondaryScrPriv.provider.changed)
                     RRDeliverProviderEvent(client, pWin, pSecondaryScrPriv.provider);
-            }
+            }));
         }
 
         if (pRREvent.mask & RRResourceChangeNotifyMask) {
@@ -576,7 +577,7 @@ void RRTellChanged(ScreenPtr pScreen)
     if (!primary.root)
         return;
 
-    xorg_list_for_each_entry(iter, &primary.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("iter", "&primary.secondary_list", "secondary_head", q{
         pSecondaryScrPriv = rrGetScrPriv(iter);
 
         if (!iter.is_output_secondary)
@@ -586,7 +587,7 @@ void RRTellChanged(ScreenPtr pScreen)
                               pSecondaryScrPriv.lastSetTime) == EARLIER) {
             primarysp.lastSetTime = pSecondaryScrPriv.lastSetTime;
         }
-    }
+    }));
 
     if (primarysp.changed) {
         UpdateCurrentTimeIf();
@@ -606,7 +607,7 @@ void RRTellChanged(ScreenPtr pScreen)
         for (i = 0; i < pScrPriv.numCrtcs; i++)
             pScrPriv.crtcs[i].changed = FALSE;
 
-        xorg_list_for_each_entry(iter, &primary.secondary_list, secondary_head); {
+        mixin(xorg_list_for_each_entry!("iter", "&primary.secondary_list", "secondary_head", q{
             pSecondaryScrPriv = rrGetScrPriv(iter);
             pSecondaryScrPriv.provider.changed = FALSE;
             if (iter.is_output_secondary) {
@@ -615,7 +616,7 @@ void RRTellChanged(ScreenPtr pScreen)
                 for (i = 0; i < pSecondaryScrPriv.numCrtcs; i++)
                     pSecondaryScrPriv.crtcs[i].changed = FALSE;
             }
-        }
+        }));
 
         if (primarysp.layoutChanged) {
             pScrPriv.layoutChanged = FALSE;

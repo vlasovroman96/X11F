@@ -458,7 +458,7 @@ int ProcRRChangeProviderProperty(ClientPtr client)
         return BadLength;
     sizeInBytes = format >> 3;
     totalSize = len * sizeInBytes;
-    REQUEST_FIXED_SIZE(xRRChangeProviderPropertyReq, totalSize);
+    mixin(REQUEST_FIXED_SIZE!("xRRChangeProviderPropertyReq", "totalSize"));
 
     VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
 

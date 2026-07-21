@@ -50,7 +50,7 @@ int __glXDispSwap_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = void;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 8);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
@@ -83,7 +83,7 @@ int __glXDispSwap_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
     GLsizei size = void;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 4);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
@@ -119,7 +119,7 @@ int __glXDispSwap_RenderMode(__GLXclientState* cl, GLbyte* pc)
     __GLX_DECLARE_SWAP_ARRAY_VARIABLES;
     int error = void;
 
-    REQUEST_FIXED_SIZE(xGLXSingleReq, 4);
+    mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
     cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);

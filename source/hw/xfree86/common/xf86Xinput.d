@@ -619,12 +619,12 @@ Bool MatchAttrToken(const(char)* attr, xorg_list* groups)
     xorg_list_for_each_entry(group, groups, entry); {
         Bool match = FALSE;
 
-        xorg_list_for_each_entry(pattern, &group.patterns, entry); {
+        mixin(xorg_list_for_each_entry!("pattern", "&group.patterns", "entry", q{
             /* It is enough to find one pattern matched by the attribute */
             match = ((!match_token(attr, pattern)) == pattern.is_negated);
             if (match)
                 goto group_done;
-        }
+        }));
       group_done:
         if (match == group.is_negated)
             return FALSE;
@@ -1174,14 +1174,14 @@ void RemoveInputDeviceTraces(const(char)* config_info)
 {
     PausedInputDevicePtr d = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(d, tmp, &new_input_devices_list, node); {
+    mixin(xorg_list_for_each_entry_safe!("d", "tmp", "new_input_devices_list", "node", q{
         const(char)* ci = xf86findOptionValue(d.pInfo.options, "config_info");
         if (!ci || strcmp(ci, config_info) != 0)
             continue;
 
         xorg_list_del(&d.node);
         free(d);
-    }
+    }));
 }
 
 /*
@@ -1569,7 +1569,7 @@ void xf86InputEnableVTProbe()
     DeviceIntPtr pdev = void;
     PausedInputDevicePtr d = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(d, tmp, &new_input_devices_list, node); {
+    mixin(xorg_list_for_each_entry_safe!("d", "tmp", "new_input_devices_list", "node", q{
         InputInfoPtr pInfo = d.pInfo;
         const(char)* value = xf86findOptionValue(pInfo.options, "_source");
 
@@ -1585,7 +1585,7 @@ void xf86InputEnableVTProbe()
                                    (is_auto && xf86Info.autoEnableDevices)));
         xorg_list_del(&d.node);
         free(d);
-    }
+    }));
 }
 
 /* end of xf86Xinput.c */

@@ -128,7 +128,7 @@ private void DestroyFragments(xorg_list* frags)
 {
     FragmentList* it = void, tmp = void;
     if (!xorg_list_is_empty(frags)) {
-        mixin(xorg_list_for_each_entry_safe!("it", "tmp", "frags", "l", q{
+        mixin(xorg_list_for_each_entry_safe!( "it", "tmp", "frags", "l",q{
             xorg_list_del(&it.l);
             free(it);
         }));

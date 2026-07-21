@@ -89,9 +89,9 @@ int ProcRRGetProviders(ClientPtr client)
 
     CARD16 count_providers = 0;
     mixin(ADD_PROVIDER!(`pScreen`));
-    xorg_list_for_each_entry(iter, &pScreen.secondary_list, secondary_head) ;{
+    mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
         mixin(ADD_PROVIDER!(`iter`));
-    }
+    }));
 
     xRRGetProvidersReply reply = {
         timestamp: pScrPriv.lastSetTime.milliseconds,
@@ -148,10 +148,10 @@ int ProcRRGetProviderInfo(ClientPtr client)
     if (provider.output_source &&
             provider.output_source != provider.offload_sink)
         reply.nAssociatedProviders++;
-    xorg_list_for_each_entry(provscreen, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("provscreen", "&pScreen.secondary_list", "secondary_head", q{
         if (provscreen.is_output_secondary || provscreen.is_offload_secondary)
             reply.nAssociatedProviders++;
-    }
+    }));
 
     reply.length = (pScrPriv.numCrtcs + pScrPriv.numOutputs +
                    (reply.nAssociatedProviders * 2) + bytes_to_int32(reply.nameLength));
@@ -204,7 +204,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
         }
         i++;
     }
-    xorg_list_for_each_entry(provscreen, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("provscreen", "&pScreen.secondary_list", "secondary_head", q{
         if (!provscreen.is_output_secondary && !provscreen.is_offload_secondary)
             continue;
         pScrProvPriv = rrGetScrPriv(provscreen);
@@ -219,7 +219,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
         if (client.swapped)
             swapl(&prov_cap[i]);
         i++;
-    }
+    }));
 
     memcpy(name, provider.name, reply.nameLength);
     if (client.swapped) {

@@ -13,6 +13,22 @@ import core.stdc.stdint;
 
 import os.fmt;
 
+int
+version_compare(uint32_t a_major, uint32_t a_minor,
+                uint32_t b_major, uint32_t b_minor)
+{
+    if (a_major > b_major)
+        return 1;
+    if (a_major < b_major)
+        return -1;
+    if (a_minor > b_minor)
+        return 1;
+    if (a_minor < b_minor)
+        return -1;
+
+    return 0;
+}
+
 /* Format a signed number into a string in a signal safe manner. The string
  * should be at least 21 characters in order to handle all int64_t values.
  */

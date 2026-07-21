@@ -60,6 +60,8 @@ import Xi.xiquerydevice;      /* for GetDeviceUse */
 import include.xkbsrv;
 import Xi.xichangehierarchy;
 import Xi.xibarriers;
+import os.utils;
+import dix.devices;
 
 /**
  * Send the current state of the device hierarchy to all clients.
@@ -75,8 +77,8 @@ void XISendDeviceHierarchyEvent(int* flags)
     if (!flags)
         return;
 
-    ev = cast(xXIHierarchyEvent*) calloc(1, (cast(xXIHierarchyEvent) +
-                MAXDEVICES * xXIHierarchyInfo.sizeof).sizeof);
+    ev = cast(xXIHierarchyEvent*) calloc(1, ((xXIHierarchyEvent).sizeof +
+                MAXDEVICES * xXIHierarchyInfo.sizeof));
     if (!ev)
         return;
     ev.type = GenericEvent;
@@ -84,21 +86,21 @@ void XISendDeviceHierarchyEvent(int* flags)
     ev.evtype = XI_HierarchyChanged;
     ev.time = GetTimeInMillis();
     ev.flags = 0;
-    ev.num_info = inputInfo.numDevices;
+    ev.num_info = cast(ushort)inputInfo.numDevices;
 
     info = cast(xXIHierarchyInfo*) &ev[1];
     for (dev = inputInfo.devices; dev; dev = dev.next) {
-        info.deviceid = dev.id;
-        info.enabled = dev.enabled;
-        info.use = GetDeviceUse(dev, &info.attachment);
+        info.deviceid = cast(ushort)dev.id;
+        info.enabled = cast(ubyte)dev.enabled;
+        info.use = cast(ubyte)GetDeviceUse(dev, &info.attachment);
         info.flags = flags[dev.id];
         ev.flags |= info.flags;
         info++;
     }
     for (dev = inputInfo.off_devices; dev; dev = dev.next) {
-        info.deviceid = dev.id;
-        info.enabled = dev.enabled;
-        info.use = GetDeviceUse(dev, &info.attachment);
+        info.deviceid = cast(ushort)dev.id;
+        info.enabled = cast(ubyte)dev.enabled;
+        info.use = cast(ubyte)GetDeviceUse(dev, &info.attachment);
         info.flags = flags[dev.id];
         ev.flags |= info.flags;
         info++;
@@ -106,7 +108,7 @@ void XISendDeviceHierarchyEvent(int* flags)
 
     for (i = 0; i < MAXDEVICES; i++) {
         if (flags[i] & (XIMasterRemoved | XISlaveRemoved)) {
-            info.deviceid = i;
+            info.deviceid = cast(ushort)i;
             info.enabled = FALSE;
             info.flags = flags[i];
             info.use = 0;
@@ -147,7 +149,7 @@ private int add_master(ClientPtr client, xXIAddMasterInfo* c, int* flags)
     strncpy(name, cast(char*) &c[1], c.name_len);
 
     rc = AllocDevicePair(client, name, &ptr, &keybd,
-                         CorePointerProc, CoreKeyboardProc, TRUE);
+                         &CorePointerProc, &CoreKeyboardProc, TRUE);
     if (rc != Success)
         goto unwind;
 
@@ -431,7 +433,8 @@ int ProcXIChangeHierarchy(ClientPtr client)
         NO_CHANGE,
         FLUSH,
         CHANGED,
-    }_Changes changes = NO_CHANGE;
+    }
+    _Changes changes = _Changes.NO_CHANGE;
 
     mixin(X_REQUEST_HEAD_AT_LEAST!xXIChangeHierarchyReq);
 
@@ -456,12 +459,10 @@ int ProcXIChangeHierarchy(ClientPtr client)
             return BadLength;
 
 enum string CHANGE_SIZE_MATCH(string type) = `
-    do { 
-        if ((len < ` ~ type ~ `.sizeof) || (any.length != (type.sizeof >> 2))) { 
+        if ((len < ` ~ type ~ `.sizeof) || (any.length != (`~type~`.sizeof >> 2))) { 
             rc = BadLength; 
             goto unwind; 
-        } 
-    } while(0)`;
+        }`; 
 
         switch (any.type) {
         case XIAddMaster:
@@ -482,10 +483,10 @@ enum string CHANGE_SIZE_MATCH(string type) = `
                 goto unwind;
             }
 
-            rc = add_master(client, c, flags);
+            rc = add_master(client, c, flags.ptr);
             if (rc != Success)
                 goto unwind;
-            changes = FLUSH;
+            changes = _Changes.FLUSH;
             break;
         }
         case XIRemoveMaster:
@@ -493,10 +494,10 @@ enum string CHANGE_SIZE_MATCH(string type) = `
             xXIRemoveMasterInfo* r = cast(xXIRemoveMasterInfo*) any;
 
             mixin(CHANGE_SIZE_MATCH!(`xXIRemoveMasterInfo`));
-            rc = remove_master(client, r, flags);
+            rc = remove_master(client, r, flags.ptr);
             if (rc != Success)
                 goto unwind;
-            changes = FLUSH;
+            changes = _Changes.FLUSH;
             break;
         }
         case XIDetachSlave:
@@ -504,10 +505,10 @@ enum string CHANGE_SIZE_MATCH(string type) = `
             xXIDetachSlaveInfo* c = cast(xXIDetachSlaveInfo*) any;
 
             mixin(CHANGE_SIZE_MATCH!(`xXIDetachSlaveInfo`));
-            rc = detach_slave(client, c, flags);
+            rc = detach_slave(client, c, flags.ptr);
             if (rc != Success)
                 goto unwind;
-            changes = CHANGED;
+            changes = _Changes.CHANGED;
             break;
         }
         case XIAttachSlave:
@@ -515,20 +516,20 @@ enum string CHANGE_SIZE_MATCH(string type) = `
             xXIAttachSlaveInfo* c = cast(xXIAttachSlaveInfo*) any;
 
             mixin(CHANGE_SIZE_MATCH!(`xXIAttachSlaveInfo`));
-            rc = attach_slave(client, c, flags);
+            rc = attach_slave(client, c, flags.ptr);
             if (rc != Success)
                 goto unwind;
-            changes = CHANGED;
+            changes = _Changes.CHANGED;
             break;
         }
         default:
             break;
         }
 
-        if (changes == FLUSH) {
-            XISendDeviceHierarchyEvent(flags);
-            memset(flags, 0, flags.sizeof);
-            changes = NO_CHANGE;
+        if (changes == _Changes.FLUSH) {
+            XISendDeviceHierarchyEvent(flags.ptr);
+            memset(flags.ptr, 0, flags.sizeof);
+            changes = _Changes.NO_CHANGE;
         }
 
         len -= any.length * 4;
@@ -536,7 +537,7 @@ enum string CHANGE_SIZE_MATCH(string type) = `
     }
 
  unwind:
-    if (changes != NO_CHANGE)
-        XISendDeviceHierarchyEvent(flags);
+    if (changes != _Changes.NO_CHANGE)
+        XISendDeviceHierarchyEvent(flags.ptr);
     return rc;
 }

@@ -144,7 +144,7 @@ Bool xf86CheckHWCursor(ScreenPtr pScreen, CursorPtr cursor, xf86CursorInfoPtr in
     }
 
     /* ask each driver consuming a pixmap if it can support HW cursor */
-    xorg_list_for_each_entry(pSlave, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("pSlave", "&pScreen.secondary_list", "secondary_head", q{
         xf86CursorScreenPtr sPriv = void;
 
         if (!RRHasScanoutPixmap(pSlave))
@@ -153,15 +153,15 @@ Bool xf86CheckHWCursor(ScreenPtr pScreen, CursorPtr cursor, xf86CursorInfoPtr in
         sPriv = dixLookupPrivate(&pSlave.devPrivates, &xf86CursorScreenKeyRec);
         if (!sPriv) { /* NULL if Option "SWCursor", possibly other conditions */
             use_hw_cursor = FALSE;
-	    break;
-	}
+	        break;
+	    }
 
         /* FALSE if HWCursor not supported by secondary */
         if (!xf86ScreenCheckHWCursor(pSlave, cursor, sPriv.CursorInfoPtr)) {
             use_hw_cursor = FALSE;
-	    break;
-	}
-    }
+	        break;
+	    }   
+    }));
 
 unlock:
     input_unlock();
@@ -243,7 +243,7 @@ Bool xf86SetCursor(ScreenPtr pScreen, CursorPtr pCurs, int x, int y)
         goto out_;
 
     /* ask each secondary driver to set the cursor. */
-    xorg_list_for_each_entry(pSlave, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("pSlave", "&pScreen.secondary_list", "secondary_head", q{
         if (!RRHasScanoutPixmap(pSlave))
             continue;
 
@@ -255,7 +255,7 @@ Bool xf86SetCursor(ScreenPtr pScreen, CursorPtr pCurs, int x, int y)
             xf86SetCursor(pScreen, NullCursor, x, y);
             goto out_;
         }
-    }
+    }));
     ret = TRUE;
 
  out_:
@@ -313,12 +313,12 @@ void xf86MoveCursor(ScreenPtr pScreen, int x, int y)
     xf86ScreenMoveCursor(pScreen, x, y);
 
     /* ask each secondary driver to move the cursor */
-    xorg_list_for_each_entry(pSlave, &pScreen.secondary_list, secondary_head); {
+    mixin(xorg_list_for_each_entry!("pSlave", "&pScreen.secondary_list", "secondary_head", q{
         if (!RRHasScanoutPixmap(pSlave))
             continue;
 
         xf86ScreenMoveCursor(pSlave, x, y);
-    }
+    }));
 
     input_unlock();
 }

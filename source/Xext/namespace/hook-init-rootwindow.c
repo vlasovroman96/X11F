@@ -32,7 +32,7 @@ void hookInitRootWindow(CallbackListPtr *pcbl, void *data, void *screen)
 
     struct Xnamespace *walk;
 
-    xorg_list_for_each_entry(walk, &ns_list, entry) {
+    mixin(xorg_list_for_each_entry!("walk", "&ns_list", "entry", q{ {
         if (strcmp(walk->name, NS_NAME_ROOT)==0) {
             walk->rootWindow = realRoot;
             XNS_LOG("<%s> actual root 0x%0llx\n", walk->name, (unsigned long long)walk->rootWindow->drawable.id);

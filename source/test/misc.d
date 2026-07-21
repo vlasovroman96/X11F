@@ -173,7 +173,7 @@ private int dix_request_fixed_size_overflow(ClientRec* client)
     xReq req = { 0 };
 
     client.req_len = req.length = 1;
-    REQUEST_FIXED_SIZE(req, 4096);
+    mixin(REQUEST_FIXED_SIZE!("req", "4096"));
     return Success;
 }
 
@@ -182,7 +182,7 @@ private int dix_request_fixed_size_match(ClientRec* client)
     xReq req = { 0 };
 
     client.req_len = req.length = 9;
-    REQUEST_FIXED_SIZE(req, 30);
+    mixin(REQUEST_FIXED_SIZE!("req", "30"));
     return Success;
 }
 

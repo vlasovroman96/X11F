@@ -556,13 +556,13 @@ Bool ms_tearfree_dri_abort(xf86CrtcPtr crtc, Bool function(void* data, void* mat
     ms_crtc_pageflip* flip = void;
 
     /* The window is getting destroyed; abort without notifying the client */
-    xorg_list_for_each_entry(flip, &trf.dri_flip_list, node); {
+    mixin(xorg_list_for_each_entry!("flip", "&trf.dri_flip_list", "node", q{
         if (match(flip.flipdata.event, match_data)) {
             xorg_list_del(&flip.node);
             ms_pageflip_abort(flip);
             return TRUE;
         }
-    }
+    }));
 
     return FALSE;
 }
@@ -584,8 +584,9 @@ void ms_tearfree_dri_abort_all(xf86CrtcPtr crtc)
      * time and MSC for this CRTC.
      */
     ms_get_crtc_ust_msc(crtc, &usec, &msc);
-    xorg_list_for_each_entry_safe(flip, tmp, &trf.dri_flip_list, node);
+    mixin(xorg_list_for_each_entry_safe!("flip", "tmp", "trf.dri_flip_list", "node", q{
         ms_pageflip_handler(msc, usec, flip);
+    }));
     xorg_list_init(&trf.dri_flip_list);
 }
 
@@ -593,7 +594,7 @@ private void ms_tearfree_dri_notify(drmmode_tearfree_ptr trf, ulong msc, ulong u
 {
     ms_crtc_pageflip* flip = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(flip, tmp, &trf.dri_flip_list, node); {
+    mixin(xorg_list_for_each_entry_safe!("flip", "tmp", "trf.dri_flip_list", "node", q{
         /* If a TearFree flip was already pending at the time this DRI client's
          * pixmap was copied, then the pixmap isn't contained in this TearFree
          * flip, but will be part of the next TearFree flip instead.
@@ -604,7 +605,7 @@ private void ms_tearfree_dri_notify(drmmode_tearfree_ptr trf, ulong msc, ulong u
             xorg_list_del(&flip.node);
             ms_pageflip_handler(msc, usec, flip);
         }
-    }
+    }));
 }
 
 private void ms_tearfree_flip_abort(void* data)

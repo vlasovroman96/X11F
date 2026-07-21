@@ -295,7 +295,7 @@ extern DeviceIntPtr AddInputDevice(ClientPtr /*client */ ,
 
 // extern int DisableDevice(DeviceIntPtr, BOOL);
 
-extern int RemoveDevice(DeviceIntPtr, BOOL);
+// extern int RemoveDevice(DeviceIntPtr, BOOL);
 
 extern int NumMotionEvents();
 

@@ -1503,7 +1503,7 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
 
     int length = (stuff.size + 1) & ~1;
 
-    REQUEST_FIXED_SIZE(xXF86VidModeSetGammaRampReq, length * 6);
+    mixin(REQUEST_FIXED_SIZE!("xXF86VidModeSetGammaRampReq", "length * 6"));
 
     r = cast(CARD16*) &stuff[1];
     g = r + length;

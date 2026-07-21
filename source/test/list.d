@@ -131,9 +131,9 @@ private void test_xorg_list_append()
     assert(memcmp(c, &child[2], child.sizeof) == 0);
 
     i = 0;
-    xorg_list_for_each_entry(c, &parent.children, node) ;{
+    mixin(xorg_list_for_each_entry!("c", "&parent.children", "node", q{
         assert(memcmp(c, &child[i++], child.sizeof) == 0);
-    }
+    }));
 }
 
 private void test_xorg_list_del()
@@ -197,18 +197,18 @@ private void test_xorg_list_for_each()
     xorg_list_add(&child[1].node, &parent.children);
     xorg_list_add(&child[0].node, &parent.children);
 
-    xorg_list_for_each_entry(c, &parent.children, node); {
+    mixin(xorg_list_for_each_entry!("c", "&parent.children", "node", q{
         assert(memcmp(c, &child[i], child.sizeof) == 0);
         i++;
-    }
+    }));
 
     /* foreach on empty list */
     xorg_list_del(&parent.children);
     assert(xorg_list_is_empty(&parent.children));
 
-    xorg_list_for_each_entry(c, &parent.children, node); {
+    mixin(xorg_list_for_each_entry!("c", "&parent.children", "node", q{
         assert(0);              /* we must not get here */
-    }
+    }));
 }
 
 struct foo {

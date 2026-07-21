@@ -186,7 +186,7 @@ int ProcRotateProperties(ClientPtr client)
     PropertyPtr* props = void;         /* array of pointer */
     PropertyPtr pProp = void, saved = void;
 
-    REQUEST_FIXED_SIZE(xRotatePropertiesReq, stuff.nAtoms << 2);
+    mixin(REQUEST_FIXED_SIZE!("xRotatePropertiesReq", "stuff.nAtoms << 2"));
     UpdateCurrentTime();
 
     PropertyFilterParam p = {
@@ -305,7 +305,7 @@ int ProcChangeProperty(ClientPtr client)
         return BadLength;
     sizeInBytes = format >> 3;
     totalSize = len * sizeInBytes;
-    REQUEST_FIXED_SIZE(xChangePropertyReq, totalSize);
+    mixin(REQUEST_FIXED_SIZE!("xChangePropertyReq", "totalSize"));
 
     if (!ValidAtom(stuff.property)) {
         client.errorValue = stuff.property;

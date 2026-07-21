@@ -66,6 +66,7 @@ import include.inputstr;
 // //import externs.X11.extensions.XIproto;
 import Xi.XIstubs;
 import Xext.xace;
+import dix.devices;
 
 /****************************************************************************
  *

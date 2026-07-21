@@ -170,14 +170,14 @@ private RRCrtcPtr rr_crtc_covering_box_on_secondary(ScreenPtr pScreen, BoxPtr bo
         ScreenPtr secondary = void;
         RRCrtcPtr crtc = null;
 
-        xorg_list_for_each_entry(secondary, &pScreen.secondary_list, secondary_head); {
+        mixin(xorg_list_for_each_entry!("secondary", "&pScreen.secondary_list", "secondary_head", q{
             if (!secondary.is_output_secondary)
                 continue;
 
             crtc = rr_crtc_covering_box(secondary, box, FALSE);
             if (crtc)
                 return crtc;
-        }
+        }));
     }
 
     return null;
@@ -261,12 +261,12 @@ private void ms_drm_set_seq_msc(uint seq, ulong msc)
 {
     ms_drm_queue* q = void;
 
-    xorg_list_for_each_entry(q, &ms_drm_queue, list) ;{
+    mixin(xorg_list_for_each_entry!("q", "&ms_drm_queue", "list", q{
         if (q.seq == seq) {
             q.msc = msc;
             break;
         }
-    }
+    }));
 }
 
 private void ms_drm_set_seq_queued(uint seq, ulong msc)
@@ -274,7 +274,7 @@ private void ms_drm_set_seq_queued(uint seq, ulong msc)
     drmmode_crtc_private_ptr drmmode_crtc = void;
     ms_drm_queue* q = void;
 
-    xorg_list_for_each_entry(q, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry!("q", "&ms_drm_queue", "list", q{
         if (q.seq == seq) {
             drmmode_crtc = q.crtc.driver_private;
             if (msc < drmmode_crtc.next_msc)
@@ -283,7 +283,7 @@ private void ms_drm_set_seq_queued(uint seq, ulong msc)
             q.kernel_queued = TRUE;
             break;
         }
-    }
+    }));
 }
 
 private Bool ms_queue_coalesce(xf86CrtcPtr crtc, uint seq, ulong msc)
@@ -498,10 +498,10 @@ private void ms_drm_abort_scrn(ScrnInfoPtr scrn)
 {
     ms_drm_queue* q = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(q, tmp, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry_safe!("q", "tmp", "ms_drm_queue", "list", q{
         if (q.scrn == scrn)
             ms_drm_abort_one(q);
-    }
+    }));
 }
 
 /**
@@ -511,12 +511,12 @@ void ms_drm_abort_seq(ScrnInfoPtr scrn, uint seq)
 {
     ms_drm_queue* q = void, tmp = void;
 
-    xorg_list_for_each_entry_safe(q, tmp, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry_safe!("q", "tmp", "ms_drm_queue", "list", q{
         if (q.seq == seq) {
             ms_drm_abort_one(q);
             break;
         }
-    }
+    }));
 }
 
 /*
@@ -527,12 +527,12 @@ void ms_drm_abort(ScrnInfoPtr scrn, Bool function(void* data, void* match_data) 
 {
     ms_drm_queue* q = void;
 
-    xorg_list_for_each_entry(q, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry!("q", "&ms_drm_queue", "list", q{
         if (match(q.data, match_data)) {
             ms_drm_abort_one(q);
             break;
         }
-    }
+    }));
 }
 
 /*
@@ -548,39 +548,32 @@ private void ms_drm_sequence_handler(int fd, ulong frame, ulong ns, Bool is64bit
     ulong msc = void, next_msc = UINT64_MAX;
 
     /* Handle the seq for this event first in order to get the CRTC */
-    xorg_list_for_each_entry(q, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry!("q", "&ms_drm_queue", "list", q{
         if (q.seq == seq) {
             crtc = q.crtc;
             msc = ms_kernel_msc_to_crtc_msc(crtc, frame, is64bit);
-
-            /* Write the current MSC to this event to ensure its handler runs in
-             * the loop below. This is done because we don't want to run the
-             * handler right now, since we need to ensure all events are handled
-             * in FIFO order with respect to one another. Otherwise, if this
-             * event were handled first just because it was queued to the
-             * kernel, it could run before older events expiring at this MSC.
-             */
+        //comment
             q.msc = msc;
             break;
         }
-    }
+    }));
 
     if (!crtc)
         return;
 
     /* Now run all of the vblank events for this CRTC with an expired MSC */
-    xorg_list_for_each_entry_safe(q, tmp, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry_safe!("q", "tmp", "ms_drm_queue", "list", q{
         if (q.crtc == crtc && q.msc <= msc) {
             xorg_list_del(&q.list);
             if (!q.aborted)
                 q.handler(msc, ns / 1000, q.data);
             free(q);
         }
-    }
+    }));
 
     /* Find this CRTC's next queued MSC and next non-queued MSC to be handled */
     msc = UINT64_MAX;
-    xorg_list_for_each_entry(q, &ms_drm_queue, list); {
+    mixin(xorg_list_for_each_entry!("q", "&ms_drm_queue", "list", q{
         if (q.crtc == crtc) {
             if (q.kernel_queued) {
                 if (q.msc < next_msc)
@@ -590,7 +583,7 @@ private void ms_drm_sequence_handler(int fd, ulong frame, ulong ns, Bool is64bit
                 seq = q.seq;
             }
         }
-    }
+    }));
 
     /* Queue an event if the next queued MSC isn't soon enough */
     drmmode_crtc = crtc.driver_private;
@@ -598,10 +591,10 @@ private void ms_drm_sequence_handler(int fd, ulong frame, ulong ns, Bool is64bit
     if (msc < next_msc && !ms_queue_vblank(crtc, MS_QUEUE_ABSOLUTE, msc, null, seq)) {
         xf86DrvMsg(crtc.scrn.scrnIndex, X_WARNING,
                    "failed to queue next vblank event, aborting lost events\n");
-        xorg_list_for_each_entry_safe(q, tmp, &ms_drm_queue, list); {
+        mixin(xorg_list_for_each_entry_safe!("q", "tmp", "ms_drm_queue", "list", q{
             if (q.crtc == crtc && q.msc < next_msc)
                 ms_drm_abort_one(q);
-        }
+        }));
     }
 }
 

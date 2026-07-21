@@ -104,7 +104,7 @@ void ht_destroy(HashTable ht)
         
         // Передаем "head" как фиксированную строку. 
         // Теперь макрос развернется в &(head), что абсолютно валидно и прозрачно для D.
-        mixin(xorg_list_for_each_entry_safe!("it", "tmp", "&head", "l",
+        mixin(xorg_list_for_each_entry_safe!("it","tmp", "&head", "l", 
         q{
             xorg_list_del(&it.l);
             free(it.key);

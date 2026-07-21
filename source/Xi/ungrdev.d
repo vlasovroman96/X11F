@@ -63,6 +63,10 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
+import externs.X11.extensions.XIproto;
+import externs.X11.extensions.XI;
+import dix.devices;
+import dix.dixutils;
 
 /***********************************************************************
  *
