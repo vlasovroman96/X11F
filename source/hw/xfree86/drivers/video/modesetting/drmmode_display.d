@@ -4638,7 +4638,7 @@ version (CONFIG_UDEV_KMS) {
         return;
     }
 
-    if (udev_monitor_filter_add_match_subsystem_devtype(mon,
+    if (assumeNoGC(&udev_monitor_filter_add_match_subsystem_devtype)(mon,
                                                         "drm",
                                                         "drm_minor") < 0 ||
         udev_monitor_enable_receiving(mon) < 0) {

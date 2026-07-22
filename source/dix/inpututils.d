@@ -1,4 +1,4 @@
-module inpututils;
+module dix.inpututils;
 @nogc nothrow:
 extern(C): __gshared:
 /*

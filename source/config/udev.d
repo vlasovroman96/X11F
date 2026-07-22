@@ -41,6 +41,11 @@ import include.inputstr;
 import config.config_backends;
 import include.os;
 import include.globals;
+import externs.attrs;
+import os.log;
+import dix.inpututils;
+import externs.gnu;
+import os.string;
 
 import hw.xfree86.os_support.linux.systemd_logind;
 
@@ -48,21 +53,49 @@ version (HAVE_SYS_SYSMACROS_H) {
 import sys.sysmacros;
 }
 
-struct udev_enumerate;
+// struct udev_enumerate;
 extern udev_enumerate* udev_enumerate_unref(udev_enumerate *p);
+
+auto cstr(T)(T value)
+{
+    static if (is(T : const(char)*))
+        return value;
+    else
+        return value.ptr;
+}
+
+template udev_list_entry_foreach(string entry, string set, string bodyCode)
+{
+    enum udev_list_entry_foreach = 
+        "for (" ~ entry ~ " = " ~ set ~ "; "
+        ~ entry ~ " !is null; "
+        ~ entry ~ " = assumeNoGC(&udev_list_entry_get_next)(" ~ entry ~ ")) {"
+        ~ bodyCode
+        ~ "}";
+}
 
 enum UDEV_XKB_PROP_KEY = "xkb";
 
-enum string LOG_PROPERTY(string path, string prop, string val) = `
-    LogMessageVerb(X_INFO, 10,                                          
-                   "config/udev: getting property %s on %s "            
-                   ~ "returned \"%s\"\n",                                 
-                   (` ~ prop ~ `), (` ~ path ~ `), (` ~ val ~ `) ? (` ~ val ~ `) : "(null)")`;
+    enum string LOG_PROPERTY(string path, string attr, string val) = `
+    LogMessageVerb(
+        X_INFO,
+        10,
+        cstr("config/udev: getting attribute %s on %s returned \"%s\"\n"),
+        cstr(` ~ attr ~ `),
+        cstr(` ~ path ~ `),
+        cstr(` ~ val ~ ` ? ` ~ val ~ ` : "(null)")
+    );`;
 enum string LOG_SYSATTR(string path, string attr, string val) = `
-    LogMessageVerb(X_INFO, 10,                                          
-                   "config/udev: getting attribute %s on %s "           
-                   ~ "returned \"%s\"\n",                                 
-                   (` ~ attr ~ `), (` ~ path ~ `), (` ~ val ~ `) ? (` ~ val ~ `) : "(null)")`;
+    LogMessageVerb(
+        X_INFO,
+        10,
+        cstr("config/udev: getting attribute %s on %s returned \"%s\"\n"),
+        cstr(` ~ attr ~ `),
+        cstr(` ~ path ~ `),
+        cstr(` ~ val ~ ` ? ` ~ val ~ ` : "(null)")
+    );`;
+
+
 
 private udev_monitor* udev_monitor_;
 
@@ -74,7 +107,7 @@ private Bool check_seat(udev_device* udev_device)
 {
     const(char)* dev_seat = void;
 
-    dev_seat = udev_device_get_property_value(udev_device, "ID_SEAT");
+    dev_seat = assumeNoGC(&udev_device_get_property_value)(udev_device, "ID_SEAT");
     if (!dev_seat)
         dev_seat = "seat0";
 
@@ -87,7 +120,9 @@ private Bool check_seat(udev_device* udev_device)
     return TRUE;
 }
 
-private void device_added(udev_device* udev_device)
+alias dev_t = core.sys.posix.sys.types.dev_t;
+
+private void device_added(udev_device* udev_device_)
 {
     const(char)* path = void, name = null;
     char* config_info = null;
@@ -98,30 +133,30 @@ version (CONFIG_UDEV_KMS) {
     const(char)* subsys = null;
 }
     InputOption* input_options = void;
-    InputAttributes attrs = { 0 };
+    InputAttributes attrs;
     DeviceIntPtr dev = null;
     udev_list_entry* set = void, entry = void;
     udev_device* parent = void;
     int rc = void;
     dev_t devnum = void;
 
-    path = udev_device_get_devnode(udev_device);
+    path = assumeNoGC(&udev_device_get_devnode)(udev_device_);
 
-    syspath = udev_device_get_syspath(udev_device);
+    syspath = assumeNoGC(&udev_device_get_syspath)(udev_device_);
 
     if (!path || !syspath)
         return;
 
-    if (!check_seat(udev_device))
+    if (!check_seat(udev_device_))
         return;
 
-    devnum = udev_device_get_devnum(udev_device);
+    devnum = assumeNoGC(&udev_device_get_devnum)(udev_device_);
 
 version (CONFIG_UDEV_KMS) {
-    subsys = udev_device_get_subsystem(udev_device);
+    subsys = assumeNoGC(&udev_device_get_subsystem)(udev_device_);
 
     if (subsys && !strcmp(subsys, "drm")) {
-        const(char)* sysname = udev_device_get_sysname(udev_device);
+        const(char)* sysname = udev_device_get_sysname(udev_device_);
 
         if (strncmp(sysname, "card", 4) != 0)
             return;
@@ -132,13 +167,13 @@ version (CONFIG_UDEV_KMS) {
 
         LogMessage(X_INFO, "config/udev: Adding drm device (%s)\n", path);
 
-        config_udev_odev_setup_attribs(udev_device, path, syspath, major(devnum),
+        config_udev_odev_setup_attribs(udev_device_, path, syspath, major(devnum),
                                        minor(devnum), NewGPUDeviceRequest);
         return;
     }
 }
 
-    value = udev_device_get_property_value(udev_device, "ID_INPUT");
+    value = assumeNoGC(&udev_device_get_property_value)(udev_device_, "ID_INPUT");
     if (!value || !strcmp(value, "0")) {
         LogMessageVerb(X_INFO, 10,
                        "config/udev: ignoring device %s without "
@@ -150,17 +185,17 @@ version (CONFIG_UDEV_KMS) {
     if (!input_options)
         return;
 
-    parent = udev_device_get_parent(udev_device);
+    parent = assumeNoGC(&udev_device_get_parent)(udev_device_);
     if (parent) {
-        const(char)* ppath = udev_device_get_devnode(parent);
-        const(char)* product = udev_device_get_property_value(parent, "PRODUCT");
-        const(char)* pnp_id = udev_device_get_sysattr_value(parent, "id");
+        const(char)* ppath = assumeNoGC(&udev_device_get_devnode)(parent);
+        const(char)* product = assumeNoGC(&udev_device_get_property_value)(parent, "PRODUCT");
+        const(char)* pnp_id = assumeNoGC(&udev_device_get_sysattr_value)(parent, "id");
         uint usb_vendor = void, usb_model = void;
 
-        name = udev_device_get_sysattr_value(parent, "name");
+        name = assumeNoGC(&udev_device_get_sysattr_value)(parent, "name");
         mixin(LOG_SYSATTR!(`ppath`, `"name"`, `name`));
         if (!name) {
-            name = udev_device_get_property_value(parent, "NAME");
+            name = assumeNoGC(&udev_device_get_property_value)(parent, "NAME");
             mixin(LOG_PROPERTY!(`ppath`, `"NAME"`, `name`));
         }
 
@@ -176,13 +211,13 @@ version (CONFIG_UDEV_KMS) {
             attrs.usb_id = usb_id;
         }
 
-        while (!pnp_id && (parent = udev_device_get_parent(parent))) {
-            pnp_id = udev_device_get_sysattr_value(parent, "id");
+        while (!pnp_id && (parent = assumeNoGC(&udev_device_get_parent)(parent)) !is null) {
+            pnp_id = assumeNoGC(&udev_device_get_sysattr_value)(parent, "id");
             if (!pnp_id)
                 continue;
 
             attrs.pnp_id = strdup(pnp_id);
-            ppath = udev_device_get_devnode(parent);
+            ppath = assumeNoGC(&udev_device_get_devnode)(parent);
             mixin(LOG_SYSATTR!(`ppath`, `"id"`, `pnp_id`));
         }
 
@@ -196,14 +231,14 @@ version (CONFIG_UDEV_KMS) {
     input_options = input_option_new(input_options, "name", name);
     input_options = input_option_new(input_options, "path", path);
     input_options = input_option_new(input_options, "device", path);
-    sprintf(buf.ptr, "%u", major(devnum));
+    sprintf(buf.ptr, "%u", majorDev(devnum));
     input_options = input_option_new(input_options, "major", buf.ptr);
-    sprintf(buf.ptr, "%u", minor(devnum));
+    sprintf(buf.ptr, "%u", minorDev(devnum));
     input_options = input_option_new(input_options, "minor", buf.ptr);
     if (path)
         attrs.device = strdup(path);
 
-    tags_prop = udev_device_get_property_value(udev_device, "ID_INPUT.tags");
+    tags_prop = assumeNoGC(&udev_device_get_property_value)(udev_device_, "ID_INPUT.tags");
     mixin(LOG_PROPERTY!(`path`, `"ID_INPUT.tags"`, `tags_prop`));
     attrs.tags = xstrtokenize(tags_prop, ",");
 
@@ -218,15 +253,15 @@ version (CONFIG_UDEV_KMS) {
         goto unwind;
     }
 
-    set = udev_device_get_properties_list_entry(udev_device);
-    udev_list_entry_foreach(entry, set); {
-        key = udev_list_entry_get_name(entry);
+    set = assumeNoGC(&udev_device_get_properties_list_entry)(udev_device_);
+    mixin(udev_list_entry_foreach!("entry", "set", q{
+        key = assumeNoGC(&udev_list_entry_get_name)(entry);
         if (!key)
             continue;
-        value = udev_list_entry_get_value(entry);
-        if (!strncasecmp(key, UDEV_XKB_PROP_KEY, ((UDEV_XKB_PROP_KEY) - 1).sizeof)) {
+        value = assumeNoGC(&udev_list_entry_get_value)(entry);
+        if (!strncasecmp(key, UDEV_XKB_PROP_KEY, ((UDEV_XKB_PROP_KEY).sizeof - 1))) {
             mixin(LOG_PROPERTY!(`path`, `key`, `value`));
-            tmp = key + ((UDEV_XKB_PROP_KEY) - 1).sizeof;
+            tmp = key + ((UDEV_XKB_PROP_KEY).sizeof - 1);
             if (!strcasecmp(tmp, "rules"))
                 input_options =
                     input_option_new(input_options, "xkb_rules", value);
@@ -262,11 +297,8 @@ version (CONFIG_UDEV_KMS) {
                 { null, 0 },
             ];
 
-            /* Anything but the literal string "0" is considered a
-             * boolean true. The empty string isn't a thing with udev
-             * properties anyway */
             if (value && strcmp(value, "0")) {
-                const(pfmap)* m = map;
+                const(pfmap)* m = map.ptr;
 
                 while (m.property != null) {
                     if (!strcmp(m.property, key)) {
@@ -277,12 +309,12 @@ version (CONFIG_UDEV_KMS) {
                 }
             }
         }
-    }
+    }));
 
     input_options = input_option_new(input_options, "config_info", config_info);
 
     /* Default setting needed for non-seat0 seats */
-    if (ServerIsNotSeat0())
+    if (mixin(ServerIsNotSeat0!()))
         input_options = input_option_new(input_options, "GrabDevice", "on");
 
     LogMessage(X_INFO, "config/udev: Adding input device %s (%s)\n",
@@ -316,15 +348,15 @@ version (CONFIG_UDEV_KMS) {
 private void device_removed(udev_device* device)
 {
     char* value = void;
-    const(char)* syspath = udev_device_get_syspath(device);
+    const(char)* syspath = assumeNoGC(&udev_device_get_syspath)(device);
 
 version (CONFIG_UDEV_KMS) {
-    const(char)* subsys = udev_device_get_subsystem(device);
+    const(char)* subsys = assumeNoGC(&udev_device_get_subsystem)(device);
 
     if (subsys && !strcmp(subsys, "drm")) {
         const(char)* sysname = udev_device_get_sysname(device);
-        const(char)* path = udev_device_get_devnode(device);
-        dev_t devnum = udev_device_get_devnum(device);
+        const(char)* path = assumeNoGC(&udev_device_get_devnode)(device);
+        dev_t devnum = assumeNoGC(&udev_device_get_devnum)(device);
 
         if ((strncmp(sysname,"card", 4) != 0) || (path == null))
             return;
@@ -356,19 +388,19 @@ private void socket_handler(int fd, int ready, void* data)
     const(char)* action = void;
 
     input_lock();
-    udev_device = udev_monitor_receive_device(udev_monitor);
+    udev_device = assumeNoGC(&udev_monitor_receive_device)(udev_monitor_);
     if (!udev_device) {
         input_unlock();
         return;
     }
-    action = udev_device_get_action(udev_device);
+    action = assumeNoGC(&udev_device_get_action)(udev_device);
     if (action) {
         if (!strcmp(action, "add")) {
             device_removed(udev_device);
             device_added(udev_device);
         } else if (!strcmp(action, "change")) {
             /* ignore change for the drm devices */
-            const(char)* subsys = udev_device_get_subsystem(udev_device);
+            const(char)* subsys = assumeNoGC(&udev_device_get_subsystem)(udev_device);
 
             if (subsys && strcmp(subsys, "drm")) {
                 device_removed(udev_device);
@@ -378,7 +410,7 @@ private void socket_handler(int fd, int ready, void* data)
         else if (!strcmp(action, "remove"))
             device_removed(udev_device);
     }
-    udev_device_unref(udev_device);
+    assumeNoGC(&udev_device_unref)(udev_device);
     input_unlock();
 }
 
@@ -386,28 +418,28 @@ int config_udev_pre_init()
 {
     udev* udev = void;
 
-    udev = udev_new();
+    udev = assumeNoGC(&udev_new)();
     if (!udev)
         return 0;
 
-    udev_monitor = udev_monitor_new_from_netlink(udev, "udev");
-    if (!udev_monitor)
+    udev_monitor_ = assumeNoGC(&udev_monitor_new_from_netlink)(udev, "udev");
+    if (!udev_monitor_)
         return 0;
 
-    udev_monitor_filter_add_match_subsystem_devtype(udev_monitor, "input",
+    assumeNoGC(&udev_monitor_filter_add_match_subsystem_devtype)(udev_monitor_, "input",
                                                     null);
     /* For Wacom serial devices */
-    udev_monitor_filter_add_match_subsystem_devtype(udev_monitor, "tty", null);
+    assumeNoGC(&udev_monitor_filter_add_match_subsystem_devtype)(udev_monitor_, "tty", null);
 version (CONFIG_UDEV_KMS) {
     /* For output GPU devices */
-    udev_monitor_filter_add_match_subsystem_devtype(udev_monitor, "drm", null);
+    assumeNoGC(&udev_monitor_filter_add_match_subsystem_devtype)(udev_monitor_, "drm", null);
 }
 
 version (HAVE_UDEV_MONITOR_FILTER_ADD_MATCH_TAG) {
     if (ServerIsNotSeat0())
-        udev_monitor_filter_add_match_tag(udev_monitor, dixSettingSeatId);
+        udev_monitor_filter_add_match_tag(udev_monitor_, dixSettingSeatId);
 }
-    if (udev_monitor_enable_receiving(udev_monitor)) {
+    if (assumeNoGC(&udev_monitor_enable_receiving)(udev_monitor_)) {
         ErrorF("config/udev: failed to bind the udev monitor\n");
         return 0;
     }
@@ -420,15 +452,15 @@ int config_udev_init()
     udev_enumerate* enumerate = void;
     udev_list_entry* devices = void, device = void;
 
-    udev = udev_monitor_get_udev(udev_monitor);
-    enumerate = udev_enumerate_new(udev);
+    udev = assumeNoGC(&udev_monitor_get_udev)(udev_monitor_);
+    enumerate = assumeNoGC(&udev_enumerate_new)(udev);
     if (!enumerate)
         return 0;
 
-    udev_enumerate_add_match_subsystem(enumerate, "input");
-    udev_enumerate_add_match_subsystem(enumerate, "tty");
+    assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "input");
+    assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "tty");
 version (CONFIG_UDEV_KMS) {
-    udev_enumerate_add_match_subsystem(enumerate, "drm");
+    assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "drm");
 }
 
 version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
@@ -436,23 +468,23 @@ version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
         udev_enumerate_add_match_tag(enumerate, dixSettingSeatId);
 }
 
-    udev_enumerate_scan_devices(enumerate);
-    devices = udev_enumerate_get_list_entry(enumerate);
-    udev_list_entry_foreach(device, devices); {
-        const(char)* syspath = udev_list_entry_get_name(device);
-        udev_device* udev_device = udev_device_new_from_syspath(udev, syspath);
+    assumeNoGC(&udev_enumerate_scan_devices)(enumerate);
+    devices = assumeNoGC(&udev_enumerate_get_list_entry)(enumerate);
+    mixin(udev_list_entry_foreach!("device", "devices", q{
+        const(char)* syspath = assumeNoGC(&udev_list_entry_get_name)(device);
+        udev_device* udev_device = assumeNoGC(&udev_device_new_from_syspath)(udev, syspath);
 
         /* Device might be gone by the time we try to open it */
         if (!udev_device)
             continue;
 
         device_added(udev_device);
-        udev_device_unref(udev_device);
-    }
+        assumeNoGC(&udev_device_unref)(udev_device);
+    }));
 
     udev_enumerate_unref(enumerate);
 
-    SetNotifyFd(udev_monitor_get_fd(udev_monitor), &socket_handler, X_NOTIFY_READ, null);
+    SetNotifyFd(assumeNoGC(&udev_monitor_get_fd)(udev_monitor_), &socket_handler, X_NOTIFY_READ, null);
 
     return 1;
 }
@@ -461,15 +493,15 @@ void config_udev_fini()
 {
     udev* udev = void;
 
-    if (!udev_monitor)
+    if (!udev_monitor_)
         return;
 
-    udev = udev_monitor_get_udev(udev_monitor);
+    udev = assumeNoGC(&udev_monitor_get_udev)(udev_monitor_);
 
-    RemoveNotifyFd(udev_monitor_get_fd(udev_monitor));
-    udev_monitor_unref(udev_monitor);
-    udev_monitor = null;
-    udev_unref(udev);
+    RemoveNotifyFd(assumeNoGC(&udev_monitor_get_fd)(udev_monitor_));
+    assumeNoGC(&udev_monitor_unref)(udev_monitor_);
+    udev_monitor_ = null;
+    assumeNoGC(&udev_unref)(udev);
 }
 
 version (CONFIG_UDEV_KMS) {
@@ -510,11 +542,11 @@ private char* config_udev_get_fallback_bus_id(udev_device* udev_device)
     const(char)* sysname = void;
     char* busid = void;
 
-    udev_device = udev_device_get_parent(udev_device);
+    udev_device = assumeNoGC(&udev_device_get_parent)(udev_device);
     if (udev_device == null)
         return null;
 
-    if (strcmp(udev_device_get_subsystem(udev_device), "pci") != 0)
+    if (strcmp(assumeNoGC(&udev_device_get_subsystem)(udev_device), "pci") != 0)
         return null;
 
     sysname = udev_device_get_sysname(udev_device);
@@ -536,7 +568,7 @@ private void config_udev_odev_setup_attribs(udev_device* udev_device, const(char
     attribs.major = major;
     attribs.minor = minor;
 
-    value = udev_device_get_property_value(udev_device, "ID_PATH");
+    value = assumeNoGC(&udev_device_get_property_value)(udev_device, "ID_PATH");
     if (value && (str = strrstr(value, "pci-"))) {
         value = str;
 
@@ -563,26 +595,26 @@ void config_udev_odev_probe(config_odev_probe_proc_ptr probe_callback)
     udev_enumerate* enumerate = void;
     udev_list_entry* devices = void, device = void;
 
-    udev = udev_monitor_get_udev(udev_monitor);
-    enumerate = udev_enumerate_new(udev);
+    udev = assumeNoGC(&udev_monitor_get_udev)(udev_monitor);
+    enumerate = assumeNoGC(&udev_enumerate_new)(udev);
     if (!enumerate)
         return;
 
-    udev_enumerate_add_match_subsystem(enumerate, "drm");
+    assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "drm");
     udev_enumerate_add_match_sysname(enumerate, "card[0-9]*");
 version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
     if (ServerIsNotSeat0())
         udev_enumerate_add_match_tag(enumerate, dixSettingSeatId);
 }
-    udev_enumerate_scan_devices(enumerate);
-    devices = udev_enumerate_get_list_entry(enumerate);
-    udev_list_entry_foreach(device, devices); {
-        const(char)* syspath = udev_list_entry_get_name(device);
-        udev_device* udev_device = udev_device_new_from_syspath(udev, syspath);
-        const(char)* path = udev_device_get_devnode(udev_device);
-        const(char)* sysname = udev_device_get_sysname(udev_device);
-        dev_t devnum = udev_device_get_devnum(udev_device);
-        const(char)* subsys = udev_device_get_subsystem(udev_device);
+    assumeNoGC(&udev_enumerate_scan_devices)(enumerate);
+    devices = assumeNoGC(&udev_enumerate_get_list_entry)(enumerate);
+    mixin(udev_list_entry_foreach!("device", "devices", q{
+        const(char)* syspath = assumeNoGC(&udev_list_entry_get_name)(device);
+        udev_device* udev_device = assumeNoGC(&udev_device_new_from_syspath)(udev, syspath);
+        const(char)* path = assumeNoGC(&udev_device_get_devnode)(udev_device);
+        const(char)* sysname = assumeNoGC(&udev_device_get_sysname)(udev_device);
+        dev_t devnum = assumeNoGC(&udev_device_get_devnum)(udev_device);
+        const(char)* subsys = assumeNoGC(&udev_device_get_subsystem)(udev_device);
 
         if (!path || !syspath || !subsys)
             goto no_probe;
@@ -596,8 +628,8 @@ version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
         config_udev_odev_setup_attribs(udev_device, path, syspath, major(devnum),
                                        minor(devnum), probe_callback);
     no_probe:
-        udev_device_unref(udev_device);
-    }
+        assumeNoGC(&udev_device_unref)(udev_device);
+    }));
     udev_enumerate_unref(enumerate);
     return;
 }

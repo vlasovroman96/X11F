@@ -41,6 +41,7 @@ import include.inputstr;
 import config.config_backends;
 
 import hw.xfree86.os_support.linux.systemd_logind;
+import os.log;
 
 void config_pre_init()
 {
@@ -132,7 +133,7 @@ BOOL device_is_duplicate(const(char)* config_info)
 
 OdevAttributes* config_odev_allocate_attributes()
 {
-    OdevAttributes* attribs = XNFcallocarray(1, OdevAttributes.sizeof);
+    OdevAttributes* attribs = cast(OdevAttributes*)XNFcallocarray(1, OdevAttributes.sizeof);
     attribs.fd = -1;
     return attribs;
 }

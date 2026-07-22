@@ -111,7 +111,7 @@ int systemd_logind_take_fd(int _major, int _minor, const(char)* path, Bool* paus
         return pInfo.fd;
     }
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
     msg = dbus_message_new_method_call("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "TakeDevice");
@@ -135,7 +135,7 @@ int systemd_logind_take_fd(int _major, int _minor, const(char)* path, Bool* paus
         goto cleanup;
     }
 
-    if (!dbus_message_get_args(reply, &error,
+    if (!dbus_message_get_args_d(reply, &error,
                                DBUS_TYPE_UNIX_FD, &fd,
                                DBUS_TYPE_BOOLEAN, &paused,
                                DBUS_TYPE_INVALID)) {
@@ -154,7 +154,7 @@ cleanup:
         dbus_message_unref(msg);
     if (reply)
         dbus_message_unref(reply);
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
     return fd;
 }
@@ -187,7 +187,7 @@ void systemd_logind_release_fd(int _major, int _minor, int fd)
 
     LogMessage(X_INFO, "systemd-logind: releasing fd for %u:%u\n", major, minor);
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
     msg = dbus_message_new_method_call("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "ReleaseDevice");
@@ -214,7 +214,7 @@ cleanup:
         dbus_message_unref(msg);
     if (reply)
         dbus_message_unref(reply);
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 close:
     if (fd != -1)
         close(fd);
@@ -265,7 +265,7 @@ private void systemd_logind_ack_pause(systemd_logind_info* info, dbus_int32_t mi
     DBusMessage* msg = null;
     DBusMessage* reply = null;
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
     msg = dbus_message_new_method_call("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "PauseDeviceComplete");
@@ -292,7 +292,7 @@ cleanup:
         dbus_message_unref(msg);
     if (reply)
         dbus_message_unref(reply);
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 }
 
 /*
@@ -343,18 +343,18 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
     if (strcmp(dbus_message_get_path(message), info.session) != 0)
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    if (dbus_message_is_signal(message, "org.freedesktop.login1.Session",
+    if (assumeNoGC(&dbus_message_is_signal)(message, "org.freedesktop.login1.Session",
                                "PauseDevice")) {
-        if (!dbus_message_get_args(message, &error,
+        if (!dbus_message_get_args_d(message, &error,
                                DBUS_TYPE_UINT32, &major,
                                DBUS_TYPE_UINT32, &minor,
                                DBUS_TYPE_STRING, &pause_str,
                                DBUS_TYPE_INVALID)) {
             LogMessage(X_ERROR, "systemd-logind: PauseDevice: %s\n",
                        error.message);
-            dbus_error_free(&error);
+            assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
 
@@ -375,16 +375,16 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
     }
-    else if (dbus_message_is_signal(message, "org.freedesktop.login1.Session",
+    else if (assumeNoGC(&dbus_message_is_signal)(message, "org.freedesktop.login1.Session",
                                     "ResumeDevice")) {
-        if (!dbus_message_get_args(message, &error,
+        if (!dbus_message_get_args_d(message, &error,
                                    DBUS_TYPE_UINT32, &major,
                                    DBUS_TYPE_UINT32, &minor,
                                    DBUS_TYPE_UNIX_FD, &fd,
                                    DBUS_TYPE_INVALID)) {
             LogMessage(X_ERROR, "systemd-logind: ResumeDevice: %s\n",
                        error.message);
-            dbus_error_free(&error);
+            assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
 
@@ -448,7 +448,7 @@ private void connect_hook(DBusConnection* connection, void* data)
     dbus_int32_t arg = void;
     char* session = null;
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
     msg = dbus_message_new_method_call("org.freedesktop.login1",
             "/org/freedesktop/login1", "org.freedesktop.login1.Manager",
@@ -474,7 +474,7 @@ private void connect_hook(DBusConnection* connection, void* data)
     }
     dbus_message_unref(msg);
 
-    if (!dbus_message_get_args(reply, &error, DBUS_TYPE_OBJECT_PATH, &session,
+    if (!dbus_message_get_args_d(reply, &error, DBUS_TYPE_OBJECT_PATH, &session,
                                DBUS_TYPE_INVALID)) {
         LogMessage(X_ERROR, "systemd-logind: GetSessionByPID: %s\n",
                    error.message);
@@ -536,13 +536,13 @@ private void connect_hook(DBusConnection* connection, void* data)
         if (!dbus_error_has_name(&error, DBUS_ERROR_ACCESS_DENIED) &&
             !dbus_error_has_name(&error, DBUS_ERROR_UNKNOWN_METHOD))
             LogMessage(X_WARNING, "systemd-logind: SetType failed: %s\n", error.message);
-        dbus_error_free(&error);
+        assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
     }
 
     dbus_bus_add_match(connection,
         "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.login1.Session',member='PauseDevice'",
         &error);
-    if (dbus_error_is_set(&error)) {
+    if (assumeNoGC(&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "systemd-logind: could not add match: %s\n",
                    error.message);
         goto cleanup;
@@ -551,7 +551,7 @@ private void connect_hook(DBusConnection* connection, void* data)
     dbus_bus_add_match(connection,
         "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.login1.Session',member='ResumeDevice'",
         &error);
-    if (dbus_error_is_set(&error)) {
+    if (assumeNoGC(&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "systemd-logind: could not add match: %s\n",
                    error.message);
         goto cleanup;
@@ -567,14 +567,14 @@ version (none) {
         "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',path='%s'",
         session);
     dbus_bus_add_match(connection, match, &error);
-    if (dbus_error_is_set(&error)) {
+    if (assumeNoGC(&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "systemd-logind: could not add match: %s\n",
                    error.message);
         goto cleanup;
     }
 }
 
-    if (!dbus_connection_add_filter(connection, &message_filter, info, null)) {
+    if (!assumeNoGC(&dbus_connection_add_filter)(connection, &message_filter, info, null)) {
         LogMessage(X_ERROR, "systemd-logind: could not add filter: %s\n",
                    error.message);
         goto cleanup;
@@ -593,7 +593,7 @@ cleanup:
         dbus_message_unref(msg);
     if (reply)
         dbus_message_unref(reply);
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 }
 
 private void systemd_logind_release_control(systemd_logind_info* info)
@@ -602,7 +602,7 @@ private void systemd_logind_release_control(systemd_logind_info* info)
     DBusMessage* msg = null;
     DBusMessage* reply = null;
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
     msg = dbus_message_new_method_call("org.freedesktop.login1",
             info.session, "org.freedesktop.login1.Session", "ReleaseControl");
@@ -624,7 +624,7 @@ cleanup:
         dbus_message_unref(msg);
     if (reply)
         dbus_message_unref(reply);
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 }
 
 private void disconnect_hook(void* data)

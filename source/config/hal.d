@@ -42,9 +42,33 @@ import include.input;
 import include.inputstr;
 import config.config_backends;
 import include.os;
+import externs.gnu;
+import os.log;
+import externs.libhal;
+import externs.attrs;
+import os.string;
+import build.dix_config;
+
+import externs.dbus;
+import core.sys.posix.sys.select;
+
+import os.log_priv;
+
+import include.dix;
+import include.os;
+
+import config.dbus_core;
+import externs.attrs;
+import os.log;
+import dix.inpututils;
+
 
 enum LIBHAL_PROP_KEY = "input.X11_options.";
 enum LIBHAL_XKB_PROP_KEY = "input.xkb.";
+
+alias DBusErrorFn = @nogc nothrow void function(DBusError*);
+alias DBusErrorBoolFn = @nogc nothrow bool function(DBusError*);
+alias HalConfigFn = @nogc nothrow bool function(DBusConnection*);
 
 struct config_hal_info {
     DBusConnection* system_bus;
@@ -76,12 +100,12 @@ private char* get_prop_string(LibHalContext* hal_ctx, const(char)* udi, const(ch
 {
     char* prop = void, ret = void;
 
-    prop = libhal_device_get_property_string(hal_ctx, udi, name, null);
+    prop = assumeNoGC(&libhal_device_get_property_string)(hal_ctx, udi, name, null);
     LogMessageVerb(X_INFO, 10, "config/hal: getting %s on %s returned %s\n",
                    name, udi, prop ? prop : "(null)");
     if (prop) {
         ret = strdup(prop);
-        libhal_free_string(prop);
+        assumeNoGC(&libhal_free_string)(prop);
     }
     else {
         return null;
@@ -95,14 +119,14 @@ private char* get_prop_string_array(LibHalContext* hal_ctx, const(char)* udi, co
     char** props = void; char* ret = void, str = void;
     int i = void, len = 0;
 
-    props = libhal_device_get_property_strlist(hal_ctx, udi, prop, null);
+    props = assumeNoGC(&libhal_device_get_property_strlist)(hal_ctx, udi, prop, null);
     if (props) {
         for (i = 0; props[i]; i++)
             len += strlen(props[i]);
 
         ret = cast(char*) calloc(len + i, char.sizeof);    /* i - 1 commas, 1 NULL */
         if (!ret) {
-            libhal_free_string_array(props);
+            assumeNoGC(&libhal_free_string_array)(props);
             return null;
         }
 
@@ -114,7 +138,7 @@ private char* get_prop_string_array(LibHalContext* hal_ctx, const(char)* udi, co
         }
         *(str - 1) = '\0';
 
-        libhal_free_string_array(props);
+        assumeNoGC(&libhal_free_string_array)(props);
     }
     else {
         return null;
@@ -128,17 +152,18 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
     char* path = null, driver = null, name = null, config_info = null;
     char* hal_tags = void, parent = void;
     InputOption* input_options = null;
-    InputAttributes attrs = { 0 };
+    InputAttributes attrs;
     DeviceIntPtr dev = null;
     DBusError error = void;
-    xkb_options xkb_opts = { 0 };
+    xkb_options xkb_opts;
     int rc = void;
 
     LibHalPropertySet* set = null;
     LibHalPropertySetIterator set_iter = void;
     char* psi_key = null, tmp_val = void;
 
-    dbus_error_init(&error);
+    alias dbuserrorFn = @nogc nothrow extern(C) void function(DBusError*);
+    assumeNoGC(cast(dbuserrorFn)&dbus_error_init)(&error);
 
     driver = get_prop_string(hal_ctx, udi, "input.X11_driver");
     if (!driver) {
@@ -167,19 +192,19 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
     attrs.tags = xstrtokenize(hal_tags, ",");
     free(hal_tags);
 
-    if (libhal_device_query_capability(hal_ctx, udi, "input.keys", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.keys", null))
         attrs.flags |= ATTR_KEY | ATTR_KEYBOARD;
-    if (libhal_device_query_capability(hal_ctx, udi, "input.mouse", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.mouse", null))
         attrs.flags |= ATTR_POINTER;
-    if (libhal_device_query_capability(hal_ctx, udi, "input.joystick", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.joystick", null))
         attrs.flags |= ATTR_JOYSTICK;
-    if (libhal_device_query_capability(hal_ctx, udi, "input.tablet", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.tablet", null))
         attrs.flags |= ATTR_TABLET;
-    if (libhal_device_query_capability(hal_ctx, udi, "input.tablet_pad", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.tablet_pad", null))
         attrs.flags |= ATTR_TABLET_PAD;
-    if (libhal_device_query_capability(hal_ctx, udi, "input.touchpad", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.touchpad", null))
         attrs.flags |= ATTR_TOUCHPAD;
-    if (libhal_device_query_capability(hal_ctx, udi, "input.touchscreen", null))
+    if (assumeNoGC(&libhal_device_query_capability)(hal_ctx, udi, "input.touchscreen", null))
         attrs.flags |= ATTR_TOUCHSCREEN;
 
     parent = get_prop_string(hal_ctx, udi, "info.parent");
@@ -188,12 +213,12 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
         char* old_parent = void;
 
         /* construct USB ID in lowercase - "0000:ffff" */
-        usb_vendor = libhal_device_get_property_int(hal_ctx, parent,
+        usb_vendor = assumeNoGC(&libhal_device_get_property_int)(hal_ctx, parent,
                                                     "usb.vendor_id", null);
         LogMessageVerb(X_INFO, 10,
                        "config/hal: getting usb.vendor_id on %s "
                        ~ "returned %04x\n", parent, usb_vendor);
-        usb_product = libhal_device_get_property_int(hal_ctx, parent,
+        usb_product = assumeNoGC(&libhal_device_get_property_int)(hal_ctx, parent,
                                                      "usb.product_id", null);
         LogMessageVerb(X_INFO, 10,
                        "config/hal: getting usb.product_id on %s "
@@ -207,7 +232,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
         old_parent = parent;
 
         while (!attrs.pnp_id &&
-               (parent = get_prop_string(hal_ctx, parent, "info.parent"))) {
+               (parent = get_prop_string(hal_ctx, parent, "info.parent")) !is null) {
             attrs.pnp_id = get_prop_string(hal_ctx, parent, "pnp.id");
 
             free(old_parent);
@@ -247,7 +272,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 
     /* ok, grab options from hal.. iterate through all properties
      * and lets see if any of them are options that we can add */
-    set = libhal_device_get_all_properties(hal_ctx, udi, &error);
+    set = assumeNoGC(&libhal_device_get_all_properties)(hal_ctx, udi, &error);
 
     if (!set) {
         LogMessage(X_ERROR,
@@ -256,16 +281,16 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
         goto unwind;
     }
 
-    libhal_psi_init(&set_iter, set);
-    while (libhal_psi_has_more(&set_iter)) {
+    assumeNoGC(&libhal_psi_init)(&set_iter, set);
+    while (assumeNoGC(&libhal_psi_has_more)(&set_iter)) {
         /* we are looking for supported keys.. extract and add to options */
-        psi_key = libhal_psi_get_key(&set_iter);
+        psi_key = assumeNoGC(&libhal_psi_get_key)(&set_iter);
 
         if (psi_key) {
 
             /* normal options first (input.X11_options.<propname>) */
             if (!strncasecmp
-                (psi_key, LIBHAL_PROP_KEY, ((LIBHAL_PROP_KEY) - 1).sizeof)) {
+                (psi_key, LIBHAL_PROP_KEY, ((LIBHAL_PROP_KEY).sizeof - 1))) {
                 char* tmp = void;
 
                 /* only support strings for all values */
@@ -280,7 +305,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
                      * Since we can't predict the order in which the keys
                      * arrive, we need to store them.
                      */
-                    if ((tmp = strcasestr(psi_key, "xkb")) && strlen(tmp) >= 4) {
+                    if ((tmp = strcasestr(psi_key, "xkb")) !is null && strlen(tmp) >= 4) {
                         if (!strcasecmp(&tmp[3], "layout")) {
                             free(xkb_opts.layout);
                             xkb_opts.layout = strdup(tmp_val);
@@ -306,18 +331,18 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
                         /* all others */
                         input_options =
                             input_option_new(input_options,
-                                             psi_key + ((LIBHAL_PROP_KEY) -
-                                             1).sizeof, tmp_val);
+                                             psi_key + ((LIBHAL_PROP_KEY).sizeof -
+                                             1), tmp_val);
                         free(tmp_val);
                     }
                 }
                 else {
                     /* server 1.4 had xkb_options as strlist. */
-                    if ((tmp = strcasestr(psi_key, "xkb")) &&
+                    if ((tmp = strcasestr(psi_key, "xkb")) !is null &&
                         (strlen(tmp) >= 4) &&
                         (!strcasecmp(&tmp[3], "options")) &&
                         (tmp_val =
-                         get_prop_string_array(hal_ctx, udi, psi_key))) {
+                         get_prop_string_array(hal_ctx, udi, psi_key)) !is null) {
                         free(xkb_opts.options);
                         xkb_opts.options = strdup(tmp_val);
                     }
@@ -325,7 +350,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
             }
             else if (!strncasecmp
                      (psi_key, LIBHAL_XKB_PROP_KEY,
-                      ((LIBHAL_XKB_PROP_KEY) - 1).sizeof)) {
+                      ((LIBHAL_XKB_PROP_KEY).sizeof - 1))) {
                 char* tmp = void;
 
                 /* only support strings for all values */
@@ -333,7 +358,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 
                 if (tmp_val && strlen(psi_key) >= LIBHAL_XKB_PROP_KEY.sizeof) {
 
-                    tmp = &psi_key[((LIBHAL_XKB_PROP_KEY) - 1).sizeof];
+                    tmp = &psi_key[((LIBHAL_XKB_PROP_KEY).sizeof - 1)];
 
                     if (!strcasecmp(tmp, "layout")) {
                         if (!xkb_opts.layout)
@@ -362,7 +387,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
                     tmp_val = get_prop_string_array(hal_ctx, udi, psi_key);
                     if (tmp_val &&
                         strlen(psi_key) >= LIBHAL_XKB_PROP_KEY.sizeof) {
-                        tmp = &psi_key[((LIBHAL_XKB_PROP_KEY) - 1).sizeof];
+                        tmp = &psi_key[((LIBHAL_XKB_PROP_KEY).sizeof - 1)];
                         if (!strcasecmp(tmp, ".options") && (!xkb_opts.options))
                             xkb_opts.options = strdup(tmp_val);
                     }
@@ -372,7 +397,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
         }
 
         /* psi_key doesn't need to be freed */
-        libhal_psi_next(&set_iter);
+        assumeNoGC(&libhal_psi_next)(&set_iter);
     }
 
     /* Now add xkb options */
@@ -404,7 +429,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 
  unwind:
     if (set)
-        libhal_free_property_set(set);
+        assumeNoGC(&libhal_free_property_set)(set);
     free(path);
     free(driver);
     free(name);
@@ -432,7 +457,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
     free(xkb_opts.variant);
     free(xkb_opts.options);
 
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
     return;
 }
@@ -440,18 +465,18 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 private void disconnect_hook(void* data)
 {
     DBusError error = void;
-    config_hal_info* info = data;
+    config_hal_info* info = cast(config_hal_info*)data;
 
     if (info.hal_ctx) {
-        if (dbus_connection_get_is_connected(info.system_bus)) {
-            dbus_error_init(&error);
-            if (!libhal_ctx_shutdown(info.hal_ctx, &error))
+        if (assumeNoGC(cast(HalConfigFn)&dbus_connection_get_is_connected)(info.system_bus)) {
+            assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+            if (!assumeNoGC(&libhal_ctx_shutdown)(info.hal_ctx, &error))
                 LogMessage(X_WARNING,
                            "config/hal: disconnect_hook couldn't shut down context: %s (%s)\n",
                            error.name, error.message);
-            dbus_error_free(&error);
+            assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
         }
-        libhal_ctx_free(info.hal_ctx);
+        assumeNoGC(&libhal_ctx_free)(info.hal_ctx);
     }
 
     info.hal_ctx = null;
@@ -465,44 +490,44 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
     int num_devices = void, i = void;
 
     if (info.hal_ctx)
-        return TRUE;            /* already registered, pretend we did something */
+        return 1;            /* already registered, pretend we did something */
 
     info.system_bus = connection;
 
-    dbus_error_init(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    info.hal_ctx = libhal_ctx_new();
+    info.hal_ctx = assumeNoGC(&libhal_ctx_new)();
     if (!info.hal_ctx) {
         LogMessage(X_ERROR, "config/hal: couldn't create HAL context\n");
         goto out_err;
     }
 
-    if (!libhal_ctx_set_dbus_connection(info.hal_ctx, info.system_bus)) {
+    if (!assumeNoGC(&libhal_ctx_set_dbus_connection)(info.hal_ctx, info.system_bus)) {
         LogMessage(X_ERROR,
                    "config/hal: couldn't associate HAL context with bus\n");
         goto out_err;
     }
-    if (!libhal_ctx_init(info.hal_ctx, &error)) {
+    if (!assumeNoGC(&libhal_ctx_init)(info.hal_ctx, &error)) {
         LogMessage(X_ERROR,
                    "config/hal: couldn't initialise context: %s (%s)\n",
                    error.name ? error.name : "unknown error",
                    error.message ? error.message : "null");
         goto out_err;
     }
-    if (!libhal_device_property_watch_all(info.hal_ctx, &error)) {
+    if (!assumeNoGC(&libhal_device_property_watch_all)(info.hal_ctx, &error)) {
         LogMessage(X_ERROR,
                    "config/hal: couldn't watch all properties: %s (%s)\n",
                    error.name ? error.name : "unknown error",
                    error.message ? error.message : "null");
         goto out_ctx;
     }
-    libhal_ctx_set_device_added(info.hal_ctx, &device_added);
-    libhal_ctx_set_device_removed(info.hal_ctx, &device_removed);
+    assumeNoGC(&libhal_ctx_set_device_added)(info.hal_ctx, &device_added);
+    assumeNoGC(&libhal_ctx_set_device_removed)(info.hal_ctx, &device_removed);
 
-    devices = libhal_find_device_by_capability(info.hal_ctx, "input",
+    devices = assumeNoGC(&libhal_find_device_by_capability)(info.hal_ctx, "input",
                                                &num_devices, &error);
     /* FIXME: Get default devices if error is set. */
-    if (dbus_error_is_set(&error)) {
+    if (assumeNoGC(cast(DBusErrorBoolFn)&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "config/hal: couldn't find input device: %s (%s)\n",
                    error.name ? error.name : "unknown error",
                    error.message ? error.message : "null");
@@ -510,34 +535,34 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
     }
     for (i = 0; i < num_devices; i++)
         device_added(info.hal_ctx, devices[i]);
-    libhal_free_string_array(devices);
+    assumeNoGC(&libhal_free_string_array)(devices);
 
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
-    return TRUE;
+    return 1;
 
  out_ctx:
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
-    if (!libhal_ctx_shutdown(info.hal_ctx, &error)) {
+    if (!assumeNoGC(&libhal_ctx_shutdown)(info.hal_ctx, &error)) {
         LogMessage(X_WARNING,
                    "config/hal: couldn't shut down context: %s (%s)\n",
                    error.name ? error.name : "unknown error",
                    error.message ? error.message : "null");
-        dbus_error_free(&error);
+        assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
     }
 
  out_err:
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
     if (info.hal_ctx) {
-        libhal_ctx_free(info.hal_ctx);
+        assumeNoGC(&libhal_ctx_free)(info.hal_ctx);
     }
 
     info.hal_ctx = null;
     info.system_bus = null;
 
-    return FALSE;
+    return 0;
 }
 
 /**
@@ -552,18 +577,18 @@ private DBusHandlerResult ownerchanged_handler(DBusConnection* connection, DBusM
 {
     int ret = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-    if (dbus_message_is_signal(message,
+    if (dbus_message_is_signal_d(message,
                                "org.freedesktop.DBus", "NameOwnerChanged")) {
         DBusError error = void;
         char* name = void, old_owner = void, new_owner = void;
 
-        dbus_error_init(&error);
-        dbus_message_get_args(message, &error,
+        assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+        dbus_message_get_args_d2(message, &error,
                               DBUS_TYPE_STRING, &name,
                               DBUS_TYPE_STRING, &old_owner,
                               DBUS_TYPE_STRING, &new_owner, DBUS_TYPE_INVALID);
 
-        if (dbus_error_is_set(&error)) {
+        if (config.libhal.dbus_error_is_set_d(&error)) {
             ErrorF
                 ("[config/hal] failed to get NameOwnerChanged args: %s (%s)\n",
                  error.name, error.message);
@@ -573,19 +598,20 @@ private DBusHandlerResult ownerchanged_handler(DBusConnection* connection, DBusM
             if (!old_owner || !strlen(old_owner)) {
                 DebugF("[config/hal] HAL startup detected.\n");
                 if (connect_and_register
-                    (connection, cast(config_hal_info*) data))
-                    dbus_connection_unregister_object_path(connection,
+                    (connection, cast(config_hal_info*) data)) {
+                        dbus_connection_unregister_object_path_d(connection,
                                                            "/org/freedesktop/DBus");
+                    }
                 else
                     ErrorF("[config/hal] Failed to connect to HAL bus.\n");
             }
 
             ret = DBUS_HANDLER_RESULT_HANDLED;
         }
-        dbus_error_free(&error);
+        assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
     }
 
-    return ret;
+    return cast(DBusHandlerResult)ret;
 }
 
 /**
@@ -593,21 +619,21 @@ private DBusHandlerResult ownerchanged_handler(DBusConnection* connection, DBusM
  */
 private BOOL listen_for_startup(DBusConnection* connection, void* data)
 {
-    DBusObjectPathVTable vtable = {message_function: ownerchanged_handler, };
+    DBusObjectPathVTable vtable = {message_function: &ownerchanged_handler, };
     DBusError error = void;
     const(char)[132] MATCH_RULE = "sender='org.freedesktop.DBus',"
         ~ "interface='org.freedesktop.DBus',"
         ~ "type='signal',"
         ~ "path='/org/freedesktop/DBus'," ~ "member='NameOwnerChanged'";
-    int rc = FALSE;
+    int rc = 0;
 
-    dbus_error_init(&error);
-    dbus_bus_add_match(connection, MATCH_RULE.ptr, &error);
-    if (!dbus_error_is_set(&error)) {
-        if (dbus_connection_register_object_path(connection,
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    dbus_bus_add_match_d(connection, MATCH_RULE.ptr, &error);
+    if (!dbus_error_is_set_d(&error)) {
+        if (dbus_connection_register_object_path_d(connection,
                                                  "/org/freedesktop/DBus",
                                                  &vtable, data))
-            rc = TRUE;
+            rc = 1;
         else
             ErrorF("[config/hal] cannot register object path.\n");
     }
@@ -617,18 +643,18 @@ private BOOL listen_for_startup(DBusConnection* connection, void* data)
         ErrorF("[config/hal] cannot detect a HAL startup.\n");
     }
 
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
-    return rc;
+    return cast(BOOL)rc;
 }
 
 private void connect_hook(DBusConnection* connection, void* data)
 {
-    config_hal_info* info = data;
+    config_hal_info* info = cast(config_hal_info*)data;
 
     if (listen_for_startup(connection, data) &&
         connect_and_register(connection, info))
-        dbus_connection_unregister_object_path(connection,
+        dbus_connection_unregister_object_path_d(connection,
                                                "/org/freedesktop/DBus");
 
     return;

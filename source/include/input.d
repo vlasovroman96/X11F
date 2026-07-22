@@ -453,8 +453,8 @@ extern int valuator_mask_get_accelerated(const(ValuatorMask)* mask, int valuator
 extern int valuator_mask_get_unaccelerated(const(ValuatorMask)* mask, int valuator);
 extern int valuator_mask_fetch_unaccelerated(const(ValuatorMask)* mask, int valuator, double* accel, double* unaccel);
 /* InputOption handling interface */
-extern int* input_option_new(InputOption* list, const(char)* key, const(char)* value);
-extern int input_option_free_list(InputOption** opt);
+// extern int* input_option_new(InputOption* list, const(char)* key, const(char)* value);
+// extern int input_option_free_list(InputOption** opt);
 extern int* input_option_free_element(InputOption* opt, const(char)* key);
 extern int* input_option_find(InputOption* list, const(char)* key);
 extern const(int)* input_option_get_key(const(InputOption)* opt);

@@ -37,9 +37,110 @@ import include.dix;
 import include.os;
 
 import config.dbus_core;
+import externs.attrs;
+import os.log;
+import config.libhal;
 
 /* How often to attempt reconnecting when we get booted off the bus. */
 enum RECONNECT_DELAY = (10 * 1000)     /* in ms */;
+
+extern(C) nothrow @nogc
+dbus_bool_t dbus_connection_unregister_object_path_d(
+    DBusConnection* connection,
+    const(char)* path)
+{
+    alias Fn = extern(C) dbus_bool_t function(
+        DBusConnection*,
+        const(char)*);
+
+    return assumeNoGC(
+        cast(Fn)&dbus_connection_unregister_object_path
+    )(connection, path);
+}
+
+extern(C) nothrow @nogc
+void dbus_bus_add_match_d(
+    DBusConnection* connection,
+    const(char)* rule,
+    DBusError* error)
+{
+    assumeNoGC(&dbus_bus_add_match)(
+        connection,
+        rule,
+        error
+    );
+}
+
+extern(C) nothrow @nogc
+dbus_bool_t dbus_connection_register_object_path_d(
+    DBusConnection* connection,
+    const(char)* path,
+    DBusObjectPathVTable* vtable,
+    void* data)
+{
+    alias Fn = extern(C) dbus_bool_t function(
+        DBusConnection*,
+        const(char)*,
+        DBusObjectPathVTable*,
+        void*
+    );
+
+    return assumeNoGC(cast(Fn)&dbus_connection_register_object_path)(
+        connection,
+        path,
+        vtable,
+        data
+    );
+}
+
+dbus_bool_t dbus_error_is_set_d(DBusError* error) {
+    return (cast(dbus_bool_t function(DBusError*)@nogc nothrow )&dbus_error_is_set)(error);
+}
+
+    dbus_bool_t dbus_message_is_signal_d(
+        DBusMessage* msg,
+        const(char)* iface,
+        const(char)* name
+    ) {
+        return dbus_message_is_signal_d(msg, iface, name);
+    }
+
+int dbus_message_get_args_d(
+    DBusMessage *message,
+    DBusError *error,
+    const char *name,
+    const char *old_owner,
+    const char *new_owner)
+{
+    return assumeNoGC(&dbus_message_get_args)(
+        message,
+        error,
+        DBUS_TYPE_STRING, &name,
+        DBUS_TYPE_STRING, &old_owner,
+        DBUS_TYPE_STRING, &new_owner,
+        DBUS_TYPE_INVALID);
+}
+
+int dbus_message_get_args_d2(
+    DBusMessage* message,
+    DBusError* error,
+    int type1,
+    char** name,
+    int type2,
+    char** old_owner,
+    int type3,
+    char** new_owner,
+    int type4)
+{
+    return assumeNoGC(&dbus_message_get_args)(
+        message,
+        error,
+        type1, name,
+        type2, old_owner,
+        type3, new_owner,
+        type4
+    );
+}
 
 alias dbus_core_connect_hook = void function(DBusConnection * connection,
                                                void *data);
@@ -65,14 +166,14 @@ private dbus_core_info bus_info = { fd: -1 };
 
 private void socket_handler(int fd, int ready, void* data)
 {
-    dbus_core_info* info = data;
+    dbus_core_info* info = cast(dbus_core_info*)data;
 
     if (info.connection) {
         do {
-            dbus_connection_read_write_dispatch(info.connection, 0);
+            assumeNoGC(&dbus_connection_read_write_dispatch)(info.connection, 0);
         } while (info.connection &&
-                 dbus_connection_get_is_connected(info.connection) &&
-                 dbus_connection_get_dispatch_status(info.connection) ==
+                 assumeNoGC(&dbus_connection_get_is_connected)(info.connection) &&
+                 assumeNoGC(&dbus_connection_get_dispatch_status)(info.connection) ==
                  DBUS_DISPATCH_DATA_REMAINS);
     }
 }
@@ -81,7 +182,7 @@ private void socket_handler(int fd, int ready, void* data)
  * Disconnect (if we haven't already been forcefully disconnected), clean up
  * after ourselves, and call all registered disconnect hooks.
  */
-private void teardown()
+nothrow @nogc private void teardown()
 {
     dbus_core_hook* hook = void;
 
@@ -94,7 +195,7 @@ private void teardown()
      * completeness.  But then it gets awkward, given that you can't
      * guarantee that they'll be called ... */
     if (bus_info.connection)
-        dbus_connection_unref(bus_info.connection);
+        assumeNoGC(&dbus_connection_unref)(bus_info.connection);
 
     if (bus_info.fd != -1)
         RemoveNotifyFd(bus_info.fd);
@@ -118,14 +219,14 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
     /* If we get disconnected, then take everything down, and attempt to
      * reconnect immediately (assuming it's just a restart).  The
      * connection isn't valid at this point, so throw it out immediately. */
-    if (dbus_message_is_signal(message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
+    if (assumeNoGC(&dbus_message_is_signal)(message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
         DebugF("[dbus-core] disconnected from bus\n");
         bus_info.connection = null;
         teardown();
 
         if (bus_info.timer)
             TimerFree(bus_info.timer);
-        bus_info.timer = TimerSet(null, 0, 1, reconnect_timer, null);
+        bus_info.timer = TimerSet(null, 0, 1, &reconnect_timer, null);
 
         return DBUS_HANDLER_RESULT_HANDLED;
     }
@@ -144,30 +245,30 @@ private int connect_to_bus()
     DBusError error = void;
     dbus_core_hook* hook = void;
 
-    dbus_error_init(&error);
-    bus_info.connection = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
-    if (!bus_info.connection || dbus_error_is_set(&error)) {
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    bus_info.connection = assumeNoGC(&dbus_bus_get)(DBUS_BUS_SYSTEM, &error);
+    if (!bus_info.connection || assumeNoGC(&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "dbus-core: error connecting to system bus: %s (%s)\n",
                error.name, error.message);
         goto err_begin;
     }
 
     /* Thankyou.  Really, thankyou. */
-    dbus_connection_set_exit_on_disconnect(bus_info.connection, FALSE);
+    assumeNoGC(&dbus_connection_set_exit_on_disconnect)(bus_info.connection, 0);
 
-    if (!dbus_connection_get_unix_fd(bus_info.connection, &bus_info.fd)) {
+    if (!assumeNoGC(&dbus_connection_get_unix_fd)(bus_info.connection, &bus_info.fd)) {
         ErrorF("[dbus-core] couldn't get fd for system bus\n");
         goto err_unref;
     }
 
-    if (!dbus_connection_add_filter(bus_info.connection, &message_filter,
+    if (!assumeNoGC(&dbus_connection_add_filter)(bus_info.connection, &message_filter,
                                     &bus_info, null)) {
         ErrorF("[dbus-core] couldn't add filter: %s (%s)\n", error.name,
                error.message);
         goto err_fd;
     }
 
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
     SetNotifyFd(bus_info.fd, &socket_handler, X_NOTIFY_READ, &bus_info);
 
     for (hook = bus_info.hooks; hook; hook = hook.next) {
@@ -180,10 +281,10 @@ private int connect_to_bus()
  err_fd:
     bus_info.fd = -1;
  err_unref:
-    dbus_connection_unref(bus_info.connection);
+    assumeNoGC(&dbus_connection_unref)(bus_info.connection);
     bus_info.connection = null;
  err_begin:
-    dbus_error_free(&error);
+    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
     return 0;
 }
