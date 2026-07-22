@@ -172,7 +172,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
     }
 
     /* The id must be in range and not already in use. */
-    LEGAL_NEW_RESOURCE(stuff.buffer, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.buffer", "client"));
 
     /* The visual of the window must be in the list returned by
      * GetVisualInfo.
@@ -188,7 +188,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
     }
 
     /* See if the window's visual is on the list. */
-    VisualID visual = wVisual(pWin);
+    VisualID visual = mixin(wVisual!("pWin"));
     Bool visualMatched = FALSE;
     for (int i = 0; (i < scrVisInfo.count) && !visualMatched; i++) {
         if (scrVisInfo.visinfo[i].visual == visual) {

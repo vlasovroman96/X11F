@@ -231,7 +231,7 @@ private void FreeGlyphPicture(GlyphPtr glyph)
         if (GetGlyphPicture(glyph, walkScreen))
             FreePicture(cast(void*) GetGlyphPicture(glyph, walkScreen), 0);
 
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps)
             (*ps.UnrealizeGlyph) (walkScreen, glyph);
     });
@@ -345,7 +345,7 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
     uint i = 0;
     mixin(DIX_FOR_EACH_SCREEN!q{
         SetGlyphPicture(glyph, walkScreen, NULL);
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps) {
             if (!(ps.RealizeGlyph(walkScreen, glyph))) {
                 i = walkScreenIdx;
@@ -359,7 +359,7 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
  bail:
     while (i--) {
         ScreenPtr walkScreen = dixGetScreenPtr(i);
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps)
             ps.UnrealizeGlyph(walkScreen, glyph);
     }

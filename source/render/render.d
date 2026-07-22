@@ -228,7 +228,7 @@ version (XINERAMA) {
                     ++nvisual;
             }
         }
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps)
             nformat += ps.nformats;
     }
@@ -250,7 +250,7 @@ version (XINERAMA) {
 
     for (uint walkScreenIdx = 0; walkScreenIdx < numScreens; walkScreenIdx++) {
         ScreenPtr walkScreen = screenInfo.screens[walkScreenIdx];
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps) {
             size_t idx = void;
             PictFormatPtr pFormat = void;
@@ -322,7 +322,7 @@ version (XINERAMA) {
             pictScreen.nDepth++;
             pictDepth = cast(xPictDepth*) pictVisual;
         }
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps)
             pictScreen.fallback = ps.fallback.id;
         else
@@ -337,7 +337,7 @@ version (XINERAMA) {
 
     for (uint walkScreenIdx = 0; walkScreenIdx < numSubpixel; walkScreenIdx++) {
         ScreenPtr walkScreen = screenInfo.screens[walkScreenIdx];
-        PictureScreenPtr ps = GetPictureScreenIfSet(walkScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps)
             *pictSubpixel = ps.subpixel;
         else
@@ -693,7 +693,7 @@ private int ProcRenderCreateGlyphSet(ClientPtr client)
         swapl(&stuff.format);
     }
 
-    LEGAL_NEW_RESOURCE(stuff.gsid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.gsid", "client"));
     rc = dixLookupResourceByType(cast(void**) &format, stuff.format,
                                  PictFormatType, client, DixReadAccess);
     if (rc != Success)
@@ -746,7 +746,7 @@ private int ProcRenderReferenceGlyphSet(ClientPtr client)
         swapl(&stuff.existing);
     }
 
-    LEGAL_NEW_RESOURCE(stuff.gsid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.gsid", "client"));
 
     rc = dixLookupResourceByType(cast(void**) &glyphSet, stuff.existing,
                                  GlyphSetType, client, DixGetAttrAccess);
@@ -1498,7 +1498,7 @@ private int ProcRenderQueryFilters(ClientPtr client)
     pScreen = pDrawable.pScreen;
     nbytesName = 0;
     nnames = 0;
-    ps = GetPictureScreenIfSet(pScreen);
+    ps = mixin(GetPictureScreenIfSet!("pScreen"));
     if (ps) {
         for (i = 0; i < ps.nfilters; i++)
             nbytesName += 1 + strlen(ps.filters[i].name);

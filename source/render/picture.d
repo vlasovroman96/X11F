@@ -403,7 +403,7 @@ private VisualPtr PictureFindVisual(ScreenPtr pScreen, VisualID visual)
 
 private Bool PictureInitIndexedFormat(ScreenPtr pScreen, PictFormatPtr format)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     if (format.type != PictTypeIndexed || format.index.pColormap)
         return TRUE;
@@ -431,7 +431,7 @@ private Bool PictureInitIndexedFormat(ScreenPtr pScreen, PictFormatPtr format)
 
 private Bool PictureInitIndexedFormats(ScreenPtr pScreen)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
     PictFormatPtr format = void;
     int nformat = void;
 
@@ -459,7 +459,7 @@ Bool PictureFinishInit()
 
 Bool PictureSetSubpixelOrder(ScreenPtr pScreen, int subpixel)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     if (!ps)
         return FALSE;
@@ -470,7 +470,7 @@ Bool PictureSetSubpixelOrder(ScreenPtr pScreen, int subpixel)
 
 int PictureGetSubpixelOrder(ScreenPtr pScreen)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     if (!ps)
         return SubPixelUnknown;
@@ -479,7 +479,7 @@ int PictureGetSubpixelOrder(ScreenPtr pScreen)
 
 PictFormatPtr PictureMatchVisual(ScreenPtr pScreen, int depth, VisualPtr pVisual)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
     PictFormatPtr format = void;
     int nformat = void;
     int type = void;
@@ -526,7 +526,7 @@ PictFormatPtr PictureMatchVisual(ScreenPtr pScreen, int depth, VisualPtr pVisual
 
 PictFormatPtr PictureMatchFormat(ScreenPtr pScreen, int depth, CARD32 f)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
     PictFormatPtr format = void;
     int nformat = void;
 

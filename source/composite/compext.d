@@ -56,6 +56,8 @@ import composite.compint;
 import Xext.xace;
 import include.protocol_versions;
 import externs.X11.extensions.compositeproto;
+import xfixes.region;
+import dix.extension;
 
 
 private CARD8 CompositeReqCode;
@@ -81,7 +83,7 @@ enum string GetCompositeClient(string pClient) = `(cast(CompositeClientPtr)
 
 private int FreeCompositeClientWindow(void* value, XID ccwid)
 {
-    WindowPtr pWin = value;
+    WindowPtr pWin = cast(WindowPtr)value;
 
     compFreeClientWindow(pWin, ccwid);
     return Success;
@@ -89,7 +91,7 @@ private int FreeCompositeClientWindow(void* value, XID ccwid)
 
 private int FreeCompositeClientSubwindows(void* value, XID ccwid)
 {
-    WindowPtr pWin = value;
+    WindowPtr pWin = cast(WindowPtr)value;
 
     compFreeClientSubwindows(pWin, ccwid);
     return Success;
@@ -132,15 +134,13 @@ private int ProcCompositeQueryVersion(ClientPtr client)
 }
 
 enum string VERIFY_WINDOW(string pWindow, string wid, string client, string mode) = `
-    do {                                                                
         int err = void;                                                        
         err = dixLookupResourceByType(cast(void**) &` ~ pWindow ~ `, ` ~ wid ~ `,          
                                       X11_RESTYPE_WINDOW, ` ~ client ~ `, ` ~ mode ~ `);
         if (err != Success) {                                           
             ` ~ client ~ `.errorValue = ` ~ wid ~ `;                                   
             return err;                                                 
-        }                                                               
-    } while (0)`;
+        }`;                                                               
 
 private int SingleCompositeRedirectWindow(ClientPtr client, xCompositeRedirectWindowReq* stuff)
 {
@@ -190,9 +190,9 @@ private int ProcCompositeCreateRegionFromBorderClip(ClientPtr client)
 
     WindowPtr pWin = void;
     mixin(VERIFY_WINDOW!(`pWin`, `stuff.window`, `client`, `DixGetAttrAccess`));
-    LEGAL_NEW_RESOURCE(stuff.region, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
-    CompWindowPtr cw = GetCompWindow(pWin);
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
 
     RegionPtr pBorderClip = (cw ? &cw.borderClip : &pWin.borderClip);
 
@@ -219,9 +219,9 @@ private int SingleCompositeNameWindowPixmap(ClientPtr client, xCompositeNameWind
     if (!pWin.viewable)
         return BadMatch;
 
-    LEGAL_NEW_RESOURCE(stuff.pixmap, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
 
-    CompWindowPtr cw = GetCompWindow(pWin);
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
     if (!cw)
         return BadMatch;
 
@@ -274,7 +274,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
     /*
      * Make sure the overlay window exists
      */
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     if (cs.pOverlayWin == null)
         if (!compCreateOverlayWindow(pScreen)) {
             FreeResource(pOc.resource, X11_RESTYPE_NONE);
@@ -293,7 +293,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
     }
 
     xCompositeGetOverlayWindowReply reply = {
-        overlayWin: cs.pOverlayWin.drawable.id
+        overlayWin: cast(uint)cs.pOverlayWin.drawable.id
     };
 
     mixin(X_REPLY_FIELD_CARD32!"overlayWin");
@@ -361,7 +361,7 @@ private SizeType coreGetWindowBytes;
 
 private void GetCompositeWindowBytes(void* value, XID id, ResourceSizePtr size)
 {
-    WindowPtr window = value;
+    WindowPtr window = cast(WindowPtr)value;
 
     /* call down */
     coreGetWindowBytes(value, id, size);
@@ -396,7 +396,7 @@ void CompositeExtensionInit()
         /* Ensure that Render is initialized, which is required for automatic
          * compositing.
          */
-        if (GetPictureScreenIfSet(walkScreen) == null)
+        if (mixin(GetPictureScreenIfSet!("walkScreen")) == null)
             return;
     });
 
@@ -430,7 +430,7 @@ void CompositeExtensionInit()
     ExtensionEntry* extEntry = AddExtension(COMPOSITE_NAME, 0, 0,
                             &ProcCompositeDispatch,
                             &ProcCompositeDispatch,
-                            null, StandardMinorOpcode);
+                            null, &StandardMinorOpcode);
     if (!extEntry)
         return;
     CompositeReqCode = cast(CARD8) extEntry.base;
@@ -585,7 +585,7 @@ version (XINERAMA) {
         return rc;
     }
 
-    LEGAL_NEW_RESOURCE(stuff.pixmap, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
 
     if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
         return BadAlloc;
@@ -609,7 +609,7 @@ version (XINERAMA) {
             return BadMatch;
         }
 
-        cw = GetCompWindow(pWin);
+        cw = mixin(GetCompWindow!("pWin");
         if (!cw) {
             free(newPix);
             return BadMatch;
@@ -659,7 +659,7 @@ version (XINERAMA) {
         return rc;
     }
 
-    CompScreenPtr cs = GetCompScreen(dixGetMasterScreen());
+    CompScreenPtr cs = mixin(GetCompScreen!("dixGetMasterScreen("));
     if (!cs.pOverlayWin) {
         if (((overlayWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
             return BadAlloc;
@@ -688,7 +688,7 @@ version (XINERAMA) {
         /*
          * Make sure the overlay window exists
          */
-        cs = GetCompScreen(pScreen);
+        cs = mixin(GetCompScreen!("pScreen"));
         if (cs.pOverlayWin == null)
             if (!compCreateOverlayWindow(pScreen)) {
                 FreeResource(pOc.resource, X11_RESTYPE_NONE);
@@ -709,14 +709,14 @@ version (XINERAMA) {
 
     if (overlayWin) {
         mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
-            cs = GetCompScreen(walkScreen);
+            cs = mixin(GetCompScreen!("walkScreen"));
             overlayWin.info[walkScreenIdx].id = cs.pOverlayWin.drawable.id;
         }));
 
         AddResource(overlayWin.info[0].id, XRT_WINDOW, overlayWin);
     }
 
-    cs = GetCompScreen(dixGetMasterScreen());
+    cs = mixin(GetCompScreen!("dixGetMasterScreen()"));
 
     xCompositeGetOverlayWindowReply reply = {
         overlayWin: cs.pOverlayWin.drawable.id

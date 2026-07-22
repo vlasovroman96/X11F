@@ -155,7 +155,7 @@ alias FindTypeSubResources = void function(void* value, FindAllRes func, void* c
 
 extern void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
 
-extern void SetResourceTypeSizeFunc(RESTYPE, SizeType);
+// extern void SetResourceTypeSizeFunc(RESTYPE, SizeType);
 
 // extern void SetResourceTypeErrorValue(RESTYPE, int);
 

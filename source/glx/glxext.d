@@ -414,7 +414,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     /* If we're creating a resource, add the map now */
     if (resource) {
-        LEGAL_NEW_RESOURCE(resource, client);
+        mixin(LEGAL_NEW_RESOURCE!("resource", "client"));
         if (!glxServer.addXIDMap(resource, vendor))
             return BadAlloc;
     }

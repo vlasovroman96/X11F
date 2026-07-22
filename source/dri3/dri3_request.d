@@ -209,7 +209,7 @@ private int proc_dri3_pixmap_from_buffer(ClientPtr client)
     int rc = void;
 
     SetReqFds(client, 1);
-    LEGAL_NEW_RESOURCE(stuff.pixmap, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
     rc = dixLookupDrawable(&drawable, stuff.drawable, client, M_ANY, DixGetAttrAccess);
     if (rc != Success) {
         client.errorValue = stuff.drawable;
@@ -320,7 +320,7 @@ private int proc_dri3_fence_from_fd(ClientPtr client)
     int status = void;
 
     SetReqFds(client, 1);
-    LEGAL_NEW_RESOURCE(stuff.fence, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.fence", "client"));
 
     status = dixLookupDrawable(&drawable, stuff.drawable, client, M_ANY, DixGetAttrAccess);
     if (status != Success)
@@ -434,7 +434,7 @@ private int proc_dri3_pixmap_from_buffers(ClientPtr client)
     int i = void;
 
     SetReqFds(client, stuff.num_buffers);
-    LEGAL_NEW_RESOURCE(stuff.pixmap, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
     rc = dixLookupWindow(&window, stuff.window, client, DixGetAttrAccess);
     if (rc != Success) {
         client.errorValue = stuff.window;
@@ -601,7 +601,7 @@ private int proc_dri3_import_syncobj(ClientPtr client)
     int status = void;
 
     SetReqFds(client, 1);
-    LEGAL_NEW_RESOURCE(stuff.syncobj, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.syncobj", "client"));
 
     status = dixLookupDrawable(&drawable, stuff.drawable, client,
                                M_ANY, DixGetAttrAccess);

@@ -707,7 +707,7 @@ Bool CreateConnectionBlock()
 
 int DoCreateWindowReq(ClientPtr client, xCreateWindowReq* stuff, XID* xids)
 {
-    LEGAL_NEW_RESOURCE(stuff.wid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.wid", "client"));
 
     WindowPtr pParent = void;
     int rc = dixLookupWindow(&pParent, stuff.parent, client, DixAddAccess);
@@ -1526,7 +1526,7 @@ int ProcCreateGC(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreateGCReq);
     client.errorValue = stuff.gc;
-    LEGAL_NEW_RESOURCE(stuff.gc, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.gc", "client"));
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, 0,
                            DixGetAttrAccess);
     if (rc != Success)
@@ -2192,7 +2192,7 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
             pBoundingDraw = cast(DrawablePtr) pDraw.pScreen.root;
         }
 
-        reply.visual = wVisual(pWin);
+        reply.visual = mixin(wVisual!("pWin"));
     }
     else {
         pBoundingDraw = pDraw;
@@ -2426,7 +2426,7 @@ int ProcCreateColormap(ClientPtr client)
         return BadValue;
     }
     mid = stuff.mid;
-    LEGAL_NEW_RESOURCE(mid, client);
+    mixin(LEGAL_NEW_RESOURCE!("mid", "client"));
     result = dixLookupWindow(&pWin, stuff.window, client, DixGetAttrAccess);
     if (result != Success)
         return result;
@@ -2478,7 +2478,7 @@ int ProcCopyColormapAndFree(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCopyColormapAndFreeReq);
     mid = stuff.mid;
-    LEGAL_NEW_RESOURCE(mid, client);
+    mixin(LEGAL_NEW_RESOURCE!("mid", "client"));
     rc = dixLookupResourceByType(cast(void**) &pSrcMap, stuff.srcCmap,
                                  X11_RESTYPE_COLORMAP, client,
                                  DixReadAccess | DixRemoveAccess);

@@ -579,7 +579,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
     PanoramiXDamageRes* damage = void;
     PanoramiXRes* draw = void;
 
-    LEGAL_NEW_RESOURCE(stuff.damage, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.damage", "client"));
     int rc = dixLookupResourceByClass(cast(void**)&draw, stuff.drawable, XRC_DRAWABLE,
                                   client, DixGetAttrAccess | DixReadAccess);
     if (rc != Success)

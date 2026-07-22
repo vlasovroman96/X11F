@@ -253,7 +253,7 @@ version (DUMB_WINDOW_MANAGERS) {
 
             pWin = xnestWindowPtr(icws.windows[0]);
 
-            if (xnest_visual_map_to_upstream(wVisual(pWin)) ==
+            if (xnest_visual_map_to_upstream(mixin(wVisual!("pWin"))) ==
                 xnest_visual_map_to_upstream(pScreen.rootVisual))
                 dixLookupResourceByType(cast(void**) &pCmap, wColormap(pWin),
                                         X11_RESTYPE_COLORMAP, serverClient,

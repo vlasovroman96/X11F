@@ -617,7 +617,7 @@ Bool glamor_init(ScreenPtr screen, uint flags)
     int gl_version = void;
     int[2] max_viewport_size = void;
 
-    PictureScreenPtr ps = GetPictureScreenIfSet(screen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("screen"));
 
     if (flags & ~GLAMOR_VALID_FLAGS) {
         ErrorF("glamor_init: Invalid flags %x\n", flags);
@@ -946,7 +946,7 @@ private void glamor_close_screen(CallbackListPtr* pcbl, ScreenPtr screen, void* 
         screen.BitmapToRegion = glamor_priv.saved_procs.bitmap_to_region;
         screen.BlockHandler = glamor_priv.saved_procs.block_handler;
 
-        PictureScreenPtr ps = GetPictureScreenIfSet(screen);
+        PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("screen"));
         if (ps) {
             ps.Composite = glamor_priv.saved_procs.composite;
             ps.Trapezoids = glamor_priv.saved_procs.trapezoids;

@@ -241,7 +241,7 @@ private void miSpriteRegisterBlockHandler(ScreenPtr pScreen, miSpriteScreenPtr p
 
 private void miSpriteReportDamage(DamagePtr pDamage, RegionPtr pRegion, void* closure)
 {
-    ScreenPtr pScreen = closure;
+    ScreenPtr pScreen = cast(ScreenPtr)closure;
     miCursorInfoPtr pCursorInfo = void;
     DeviceIntPtr pDev = void;
 

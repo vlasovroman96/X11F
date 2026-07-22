@@ -877,7 +877,7 @@ int ProcXFixesCreatePointerBarrier(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"directions");
     X_REQUEST_REST_COUNT_CARD16(stuff.num_devices);
 
-    LEGAL_NEW_RESOURCE(stuff.barrier, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.barrier", "client"));
 
     return XICreatePointerBarrier(client, stuff);
 }

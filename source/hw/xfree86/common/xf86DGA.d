@@ -677,7 +677,7 @@ private int DGACreateColormap(int index, ClientPtr client, int id, int mode, int
     fvlp.next = pScreenPriv.fakedVisuals;
     pScreenPriv.fakedVisuals = fvlp;
 
-    LEGAL_NEW_RESOURCE(id, client);
+    mixin(LEGAL_NEW_RESOURCE!("id", "client"));
 
     return dixCreateColormap(id, pScreen, pVisual, &pmap, alloc, client);
 }

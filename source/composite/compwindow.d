@@ -56,13 +56,21 @@ import Xext.panoramiXsrv;
 
 import composite.compint;
 import composite.compositeext_priv;
+import composite.compwindow;
+import externs.X11.extensions.composite_;
+import externs.X11.extensions.render_;
+import dix.resource;
+import miext.damage.damage_;
+import dix.gc;
+import render.picture;
+import dix.dixutils;
 
-version (COMPOSITE_DEBUG) {
+// version (COMPOSITE_DEBUG) {
 private int compCheckWindow(WindowPtr pWin, void* data)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
     PixmapPtr pWinPixmap = (*pScreen.GetWindowPixmap) (pWin);
-    PixmapPtr pParentPixmap = pWin.parent ? (*pScreen.GetWindowPixmap) (pWin.parent) : 0;
+    PixmapPtr pParentPixmap = pWin.parent ? (*pScreen.GetWindowPixmap) (pWin.parent) : null;
     PixmapPtr pScreenPixmap = (*pScreen.GetScreenPixmap) (pScreen);
 
     if (!pWin.parent) {
@@ -92,9 +100,9 @@ private int compCheckWindow(WindowPtr pWin, void* data)
 
 void compCheckTree(ScreenPtr pScreen)
 {
-    WalkTree(pScreen, &compCheckWindow, 0);
+    WalkTree(pScreen, &compCheckWindow, null);
 }
-}
+// }
 
 struct _compPixmapVisit {
     WindowPtr pWindow;
@@ -154,8 +162,8 @@ void compSetPixmap(WindowPtr pWindow, PixmapPtr pPixmap, int bw)
 
 Bool compCheckRedirect(WindowPtr pWin)
 {
-    CompWindowPtr cw = GetCompWindow(pWin);
-    CompScreenPtr cs = GetCompScreen(pWin.drawable.pScreen);
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
+    CompScreenPtr cs = mixin(GetCompScreen!("pWin.drawable.pScreen"));
     Bool should = void;
 
     should = pWin.realized && (pWin.drawable.class_ != InputOnly) &&
@@ -204,7 +212,7 @@ version (XINERAMA) {
     }
 } /* XINERAMA */
 
-    cs = GetCompScreen(pScreen);
+    cs = mixin(GetCompScreen!("pScreen"));
     if ((pWin = cs.pOverlayWin) != null) {
         if ((pWin.drawable.width == w) && (pWin.drawable.height == h))
             return Success;
@@ -230,7 +238,7 @@ void compWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWind
      */
 version (COMPOSITE_DEBUG) {
     if ((pWin.redirectDraw != RedirectDrawNone) !=
-        (pWin.viewable && (GetCompWindow(pWin) != null)))
+        (pWin.viewable && (mixin(GetCompWindow!("pWin") != null))))
         OsAbort();
 }
     if (pWin.redirectDraw != RedirectDrawNone) {
@@ -240,8 +248,8 @@ version (COMPOSITE_DEBUG) {
         int ny = pWin.drawable.y - bw;
 
         if (pPixmap.screen_x != nx || pPixmap.screen_y != ny) {
-            pPixmap.screen_x = nx;
-            pPixmap.screen_y = ny;
+            pPixmap.screen_x = cast(short)nx;
+            pPixmap.screen_y = cast(short)ny;
             pPixmap.drawable.serialNumber = NEXT_SERIAL_NUMBER;
         }
     }
@@ -253,7 +261,7 @@ version (COMPOSITE_DEBUG) {
 Bool compRealizeWindow(WindowPtr pWin)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     Bool ret = TRUE;
 
     pScreen.RealizeWindow = cs.RealizeWindow;
@@ -261,7 +269,7 @@ Bool compRealizeWindow(WindowPtr pWin)
     if (!(*pScreen.RealizeWindow) (pWin))
         ret = FALSE;
     cs.RealizeWindow = pScreen.RealizeWindow;
-    pScreen.RealizeWindow = compRealizeWindow;
+    pScreen.RealizeWindow = &compRealizeWindow;
     compCheckTree(pWin.drawable.pScreen);
     return ret;
 }
@@ -269,7 +277,7 @@ Bool compRealizeWindow(WindowPtr pWin)
 Bool compUnrealizeWindow(WindowPtr pWin)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     Bool ret = TRUE;
 
     pScreen.UnrealizeWindow = cs.UnrealizeWindow;
@@ -277,7 +285,7 @@ Bool compUnrealizeWindow(WindowPtr pWin)
     if (!(*pScreen.UnrealizeWindow) (pWin))
         ret = FALSE;
     cs.UnrealizeWindow = pScreen.UnrealizeWindow;
-    pScreen.UnrealizeWindow = compUnrealizeWindow;
+    pScreen.UnrealizeWindow = &compUnrealizeWindow;
     compCheckTree(pWin.drawable.pScreen);
     return ret;
 }
@@ -290,8 +298,8 @@ Bool compUnrealizeWindow(WindowPtr pWin)
 void compClipNotify(WindowPtr pWin, int dx, int dy)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
-    CompWindowPtr cw = GetCompWindow(pWin);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
 
     if (cw) {
         if (cw.borderClipX != pWin.drawable.x ||
@@ -307,13 +315,13 @@ void compClipNotify(WindowPtr pWin, int dx, int dy)
         pScreen.ClipNotify = cs.ClipNotify;
         (*pScreen.ClipNotify) (pWin, dx, dy);
         cs.ClipNotify = pScreen.ClipNotify;
-        pScreen.ClipNotify = compClipNotify;
+        pScreen.ClipNotify = &compClipNotify;
     }
 }
 
 Bool compIsAlternateVisual(ScreenPtr pScreen, XID visual)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     for (int i = 0; cs && i < cs.numAlternateVisuals; i++)
         if (cs.alternateVisuals[i] == visual)
@@ -323,7 +331,7 @@ Bool compIsAlternateVisual(ScreenPtr pScreen, XID visual)
 
 Bool CompositeIsImplicitRedirectException(ScreenPtr pScreen, XID parentVisual, XID winVisual)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     for (int i = 0; i < cs.numImplicitRedirectExceptions; i++)
         if (cs.implicitRedirectExceptions[i].parentVisual == parentVisual &&
@@ -337,8 +345,8 @@ private Bool compImplicitRedirect(WindowPtr pWin, WindowPtr pParent)
 {
     if (pParent) {
         ScreenPtr pScreen = pWin.drawable.pScreen;
-        XID winVisual = wVisual(pWin);
-        XID parentVisual = wVisual(pParent);
+        XID winVisual = mixin(wVisual!("pWin"));
+        XID parentVisual = mixin(wVisual!("pParent"));
 
         if (CompositeIsImplicitRedirectException(pScreen, parentVisual, winVisual))
             return FALSE;
@@ -354,7 +362,7 @@ private Bool compImplicitRedirect(WindowPtr pWin, WindowPtr pParent)
 private void compFreeOldPixmap(WindowPtr pWin)
 {
     if (pWin.redirectDraw != RedirectDrawNone) {
-        CompWindowPtr cw = GetCompWindow(pWin);
+        CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
 
         if (cw.pOldPixmap) {
             dixDestroyPixmap(cw.pOldPixmap, 0);
@@ -366,12 +374,12 @@ private void compFreeOldPixmap(WindowPtr pWin)
 void compMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pSib, VTKind kind)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     pScreen.MoveWindow = cs.MoveWindow;
     (*pScreen.MoveWindow) (pWin, x, y, pSib, kind);
     cs.MoveWindow = pScreen.MoveWindow;
-    pScreen.MoveWindow = compMoveWindow;
+    pScreen.MoveWindow = &compMoveWindow;
 
     compFreeOldPixmap(pWin);
     compCheckTree(pScreen);
@@ -380,12 +388,12 @@ void compMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pSib, VTKind kind)
 void compResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     pScreen.ResizeWindow = cs.ResizeWindow;
     (*pScreen.ResizeWindow) (pWin, x, y, w, h, pSib);
     cs.ResizeWindow = pScreen.ResizeWindow;
-    pScreen.ResizeWindow = compResizeWindow;
+    pScreen.ResizeWindow = &compResizeWindow;
 
     compFreeOldPixmap(pWin);
     compCheckTree(pWin.drawable.pScreen);
@@ -394,12 +402,12 @@ void compResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pS
 void compChangeBorderWidth(WindowPtr pWin, uint bw)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     pScreen.ChangeBorderWidth = cs.ChangeBorderWidth;
     (*pScreen.ChangeBorderWidth) (pWin, bw);
     cs.ChangeBorderWidth = pScreen.ChangeBorderWidth;
-    pScreen.ChangeBorderWidth = compChangeBorderWidth;
+    pScreen.ChangeBorderWidth = &compChangeBorderWidth;
 
     compFreeOldPixmap(pWin);
     compCheckTree(pWin.drawable.pScreen);
@@ -408,7 +416,7 @@ void compChangeBorderWidth(WindowPtr pWin, uint bw)
 void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     CompWindowPtr cw = void;
 
     pScreen.ReparentWindow = cs.ReparentWindow;
@@ -446,9 +454,9 @@ void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
     if (pScreen.ReparentWindow)
         (*pScreen.ReparentWindow) (pWin, pPriorParent);
     cs.ReparentWindow = pScreen.ReparentWindow;
-    pScreen.ReparentWindow = compReparentWindow;
+    pScreen.ReparentWindow = &compReparentWindow;
 
-    cw = GetCompWindow(pWin);
+    cw = mixin(GetCompWindow!("pWin"));
     if (pWin.damagedDescendants || (cw && cw.damaged))
         compMarkAncestors(pWin);
 
@@ -458,12 +466,12 @@ void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
 void compCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     int dx = 0, dy = 0;
 
     if (pWin.redirectDraw != RedirectDrawNone) {
         PixmapPtr pPixmap = (*pScreen.GetWindowPixmap) (pWin);
-        CompWindowPtr cw = GetCompWindow(pWin);
+        CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
 
         assert(cw.oldx != COMP_ORIGIN_INVALID);
         assert(cw.oldy != COMP_ORIGIN_INVALID);
@@ -531,20 +539,20 @@ void compCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
         DamageDamageRegion(&pWin.drawable, prgnSrc);
     }
     cs.CopyWindow = pScreen.CopyWindow;
-    pScreen.CopyWindow = compCopyWindow;
+    pScreen.CopyWindow = &compCopyWindow;
     compCheckTree(pWin.drawable.pScreen);
 }
 
 Bool compCreateWindow(WindowPtr pWin)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     Bool ret = void;
 
     pScreen.CreateWindow = cs.CreateWindow;
     ret = (*pScreen.CreateWindow) (pWin);
     if (pWin.parent && ret) {
-        CompSubwindowsPtr csw = GetCompSubwindows(pWin.parent);
+        CompSubwindowsPtr csw = mixin(GetCompSubwindows!("pWin.parent"));
         PixmapPtr parent_pixmap = (*pScreen.GetWindowPixmap)(pWin.parent);
         PixmapPtr window_pixmap = (*pScreen.GetWindowPixmap)(pWin);
 
@@ -558,20 +566,20 @@ Bool compCreateWindow(WindowPtr pWin)
             compRedirectWindow(serverClient, pWin, CompositeRedirectAutomatic);
     }
     cs.CreateWindow = pScreen.CreateWindow;
-    pScreen.CreateWindow = compCreateWindow;
+    pScreen.CreateWindow = &compCreateWindow;
     compCheckTree(pWin.drawable.pScreen);
     return ret;
 }
 
 void compWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     CompWindowPtr cw = void;
     CompSubwindowsPtr csw = void;
 
-    while ((cw = GetCompWindow(pWin)))
+    while ((cw = mixin(GetCompWindow!("pWin"))) != null)
         FreeResource(cw.clients.id, X11_RESTYPE_NONE);
-    while ((csw = GetCompSubwindows(pWin)))
+    while ((csw = mixin(GetCompSubwindows!("pWin")))!= null)
         FreeResource(csw.clients.id, X11_RESTYPE_NONE);
 
     if (pWin.redirectDraw != RedirectDrawNone) {
@@ -590,7 +598,7 @@ void compWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin)
 
 void compSetRedirectBorderClip(WindowPtr pWin, RegionPtr pRegion)
 {
-    CompWindowPtr cw = GetCompWindow(pWin);
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
     RegionRec damage = void;
 
     RegionNull(&damage);
@@ -619,14 +627,14 @@ void compSetRedirectBorderClip(WindowPtr pWin, RegionPtr pRegion)
 
 RegionPtr compGetRedirectBorderClip(WindowPtr pWin)
 {
-    CompWindowPtr cw = GetCompWindow(pWin);
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
 
     return &cw.borderClip;
 }
 
 private void compWindowUpdateAutomatic(WindowPtr pWin)
 {
-    CompWindowPtr cw = GetCompWindow(pWin);
+    CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
     ScreenPtr pScreen = pWin.drawable.pScreen;
     WindowPtr pParent = pWin.parent;
     PixmapPtr pSrcPixmap = (*pScreen.GetWindowPixmap) (pWin);
@@ -636,7 +644,7 @@ private void compWindowUpdateAutomatic(WindowPtr pWin)
     RegionPtr pRegion = DamageRegion(cw.damage);
     PicturePtr pSrcPicture = CreatePicture(0, &pSrcPixmap.drawable,
                                            pSrcFormat,
-                                           0, 0,
+                                           0, null,
                                            serverClient,
                                            &error);
     XID subwindowMode = IncludeInferiors;
@@ -670,12 +678,12 @@ private void compWindowUpdateAutomatic(WindowPtr pWin)
     /*
      * And paint
      */
-    CompositePicture(PictOpSrc, pSrcPicture, 0, pDstPicture,
+    CompositePicture(PictOpSrc, pSrcPicture, null, pDstPicture,
                      0, 0,      /* src_x, src_y */
                      0, 0,      /* msk_x, msk_y */
-                     pSrcPixmap.screen_x - pParent.drawable.x,
-                     pSrcPixmap.screen_y - pParent.drawable.y,
-                     pSrcPixmap.drawable.width, pSrcPixmap.drawable.height);
+                     cast(short)(pSrcPixmap.screen_x - pParent.drawable.x),
+                     cast(short)(pSrcPixmap.screen_y - pParent.drawable.y),
+                     cast(ushort)pSrcPixmap.drawable.width, cast(ushort)pSrcPixmap.drawable.height);
     FreePicture(pSrcPicture, 0);
     FreePicture(pDstPicture, 0);
     /*
@@ -690,7 +698,7 @@ private void compPaintWindowToParent(WindowPtr pWin)
     compPaintChildrenToWindow(pWin);
 
     if (pWin.redirectDraw != RedirectDrawNone) {
-        CompWindowPtr cw = GetCompWindow(pWin);
+        CompWindowPtr cw = mixin(GetCompWindow!("pWin"));
 
         if (cw.damaged) {
             compWindowUpdateAutomatic(pWin);
@@ -733,7 +741,7 @@ WindowPtr CompositeRealChildHead(WindowPtr pWin)
         return NullWindow;
     }
 
-    cs = GetCompScreen(pWin.drawable.pScreen);
+    cs = mixin(GetCompScreen!("pWin.drawable.pScreen"));
     if (pChild == cs.pOverlayWin) {
         return pChild;
     }
@@ -745,7 +753,7 @@ WindowPtr CompositeRealChildHead(WindowPtr pWin)
 int compConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw, WindowPtr pSib)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     Bool ret = 0;
     WindowPtr pParent = pWin.parent;
     int draw_x = void, draw_y = void;
@@ -755,7 +763,7 @@ int compConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw, WindowP
         pScreen.ConfigNotify = cs.ConfigNotify;
         ret = (*pScreen.ConfigNotify) (pWin, x, y, w, h, bw, pSib);
         cs.ConfigNotify = pScreen.ConfigNotify;
-        pScreen.ConfigNotify = compConfigNotify;
+        pScreen.ConfigNotify = &compConfigNotify;
 
         if (ret)
             return ret;

@@ -160,7 +160,7 @@ Bool xf86VGAarbiterWrapFunctions()
 
     for (i = 0; i < xf86NumScreens; i++) {
         pScreen = xf86Screens[i].pScreen;
-        ps = GetPictureScreenIfSet(pScreen);
+        ps = mixin(GetPictureScreenIfSet!("pScreen"));
         pScrn = xf86ScreenToScrn(pScreen);
         PointPriv = dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
 
@@ -216,7 +216,7 @@ private Bool VGAarbiterCloseScreen(ScreenPtr pScreen)
                                                &VGAarbiterScreenKeyRec);
     miPointerScreenPtr PointPriv = cast(miPointerScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
                                               miPointerScreenKey);
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     UNWRAP_SCREEN(CreateGC);
     UNWRAP_SCREEN(CloseScreen);

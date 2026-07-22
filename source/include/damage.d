@@ -94,7 +94,7 @@ extern int DamageDrawInternal(ScreenPtr pScreen, Bool enable);
 
 // extern int DamageRegister(DrawablePtr pDrawable, DamagePtr pDamage);
 
-extern int DamageUnregister(DamagePtr pDamage);
+// extern int DamageUnregister(DamagePtr pDamage);
 
 // extern int DamageDestroy(DamagePtr pDamage);
 

@@ -144,7 +144,7 @@ alias ServerWakeupHandlerProcPtr = void function(void* blockData, int result);
 
 // extern int RemoveBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
 
-extern int QueueWorkProc(Bool function(ClientPtr clientUnused, void* closure) function_, ClientPtr client, void* closure);
+// extern int QueueWorkProc(Bool function(ClientPtr clientUnused, void* closure) function_, ClientPtr client, void* closure);
 
 /* atom.c */
 

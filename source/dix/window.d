@@ -196,7 +196,7 @@ enum WINDOW_NAME_BUF_LEN = 512;
     static char[WINDOW_NAME_BUF_LEN] buf = 0;
     int len = void;
 
-    CompScreenPtr comp_screen = GetCompScreen(pWin.drawable.pScreen);
+    CompScreenPtr comp_screen = mixin(GetCompScreen!("pWin.drawable.pScreen"));
 
     if (comp_screen && pWin == comp_screen.pOverlayWin)
         return overlay_win_name;
@@ -1354,7 +1354,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             if (cmap == CopyFromParent) {
                 if (pWin.parent &&
                     (!pWin.optional ||
-                     pWin.optional.visual == wVisual(pWin.parent))) {
+                     pWin.optional.visual == mixin(wVisual!("pWin.parent")))) {
                     cmap = wColormap(pWin.parent);
                 }
                 else
@@ -1371,7 +1371,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                 client.errorValue = cmap;
                 goto PatchUp;
             }
-            if (pCmap.pVisual.vid != wVisual(pWin) ||
+            if (pCmap.pVisual.vid != mixin(wVisual!("pWin")) ||
                 pCmap.pScreen != pScreen) {
                 error = BadMatch;
                 goto PatchUp;
@@ -1562,7 +1562,7 @@ int ProcGetWindowAttributes(ClientPtr client)
         reply.allEventMasks = pWin.eventMask | wOtherEventMasks(pWin),
         reply.doNotPropagateMask = wDontPropagateMask(pWin),
         reply.c_class = pWin.drawable.class_,
-        reply.visualID = wVisual(pWin);
+        reply.visualID = mixin(wVisual!("pWin"));
     // };
 
     if (client.swapped) {
@@ -3206,7 +3206,7 @@ private Bool TileScreenSaver(ScreenPtr pScreen, int kind)
                      cast(ushort) pScreen.width + RANDOM_WIDTH,
                      cast(ushort) pScreen.height + RANDOM_WIDTH,
                      0, InputOutput, mask, attributes.ptr, 0, serverClient,
-                     wVisual(pScreen.root), &result);
+                     mixin(wVisual!("pScreen.root")), &result);
 
     if (cursor)
         FreeResource(cursorID, X11_RESTYPE_NONE);
@@ -3628,7 +3628,7 @@ void SetRootClip(ScreenPtr pScreen, int enable)
 VisualPtr WindowGetVisual(WindowPtr pWin)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    VisualID vid = wVisual(pWin);
+    VisualID vid = mixin(wVisual!("pWin"));
 
     for (int i = 0; i < pScreen.numVisuals; i++)
         if (pScreen.visuals[i].vid == vid)

@@ -67,7 +67,7 @@ struct _PictFormat {
     IndexFormatRec index;
 }
 
-alias DirectFormatRec = _PictFormat;
+alias DirectFormatRec = _DirectFormat;
 
 alias PictVector = pixman_vector;
 alias PictVectorPtr = pixman_vector*;
@@ -325,7 +325,7 @@ enum string SetPictureScreen(string s,string p) = `dixSetPrivate(&(` ~ s ~ `).de
 enum string GetPictureWindow(string w) = `(cast(PicturePtr)dixLookupPrivate(&(` ~ w ~ `).devPrivates, &PictureWindowPrivateKeyRec))`;
 enum string SetPictureWindow(string w,string p) = `dixSetPrivate(&(` ~ w ~ `).devPrivates, &PictureWindowPrivateKeyRec, ` ~ p ~ `)`;
 
-extern int PictureWindowFormat(WindowPtr pWindow);
+// extern int PictureWindowFormat(WindowPtr pWindow);
 
 extern int PictureSetSubpixelOrder(ScreenPtr pScreen, int subpixel);
 
@@ -333,7 +333,7 @@ extern int PictureGetSubpixelOrder(ScreenPtr pScreen);
 
 extern int PictureMatchVisual(ScreenPtr pScreen, int depth, VisualPtr pVisual);
 
-extern int PictureMatchFormat(ScreenPtr pScreen, int depth, CARD32 format);
+// extern int PictureMatchFormat(ScreenPtr pScreen, int depth, CARD32 format);
 
 extern int PictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats);
 
@@ -357,21 +357,21 @@ extern int SetPictureFilter(PicturePtr pPicture, char* name, int len, XFixed* pa
 
 extern int PictureFinishInit();
 
-extern int CreatePicture(Picture pid, DrawablePtr pDrawable, PictFormatPtr pFormat, Mask mask, XID* list, ClientPtr client, int* error);
+// extern int CreatePicture(Picture pid, DrawablePtr pDrawable, PictFormatPtr pFormat, Mask mask, XID* list, ClientPtr client, int* error);
 
 extern int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, ClientPtr client);
 
 extern int SetPictureClipRects(PicturePtr pPicture, int xOrigin, int yOrigin, int nRect, xRectangle* rects);
 
-extern int SetPictureClipRegion(PicturePtr pPicture, int xOrigin, int yOrigin, RegionPtr pRegion);
+// extern int SetPictureClipRegion(PicturePtr pPicture, int xOrigin, int yOrigin, RegionPtr pRegion);
 
 extern int SetPictureTransform(PicturePtr pPicture, PictTransform* transform);
 
 extern int ValidatePicture(PicturePtr pPicture);
 
-extern int FreePicture(void* pPicture, XID pid);
+// extern int FreePicture(void* pPicture, XID pid);
 
-extern int CompositePicture(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
+// extern int CompositePicture(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
 extern int CompositeGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr lists, GlyphPtr* glyphs);
 

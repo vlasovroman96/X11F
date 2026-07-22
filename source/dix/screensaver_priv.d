@@ -39,7 +39,7 @@ pragma(inline, true) int dixCallScreensaverAccessCallback(ClientPtr client, Scre
 
 extern int screenIsSaved;
 
-pragma(inline, true) private bool HasSaverWindow(ScreenPtr pScreen) {
+pragma(inline, true) bool HasSaverWindow(ScreenPtr pScreen) {
     return (pScreen.screensaver.pWindow != NullWindow);
 }
 

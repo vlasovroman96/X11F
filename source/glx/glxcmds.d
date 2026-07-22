@@ -119,7 +119,7 @@ private int validGlxFBConfigForWindow(ClientPtr client, __GLXconfig* config, Dra
     XID vid = void;
     int i = void;
 
-    vid = wVisual(cast(WindowPtr) pDraw);
+    vid = mixin(wVisual!("cast(WindowPtr)pDraw"));
     for (i = 0; i < pScreen.numVisuals; i++) {
         if (pScreen.visuals[i].vid == vid) {
             pVisual = &pScreen.visuals[i];
@@ -451,7 +451,7 @@ __GLXcontext* __glXLookupContextByTag(__GLXclientState* cl, GLXContextTag tag)
 
 private __GLXconfig* inferConfigForWindow(__GLXscreen* pGlxScreen, WindowPtr pWin)
 {
-    int i = void, vid = wVisual(pWin);
+    int i = void, vid = mixin(wVisual!("pWin"));
 
     for (i = 0; i < pGlxScreen.numVisuals; i++)
         if (pGlxScreen.visuals[i].visualID == vid)

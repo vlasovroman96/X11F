@@ -53,6 +53,13 @@ import Xext.panoramiXsrv;
 
 import composite.compint;
 import Xext.xace;
+import composite.compwindow;
+import externs.X11.extensions.composite_;
+import externs.X11.extensions.render_;
+import dix.resource;
+import miext.damage.damage_;
+import dix.gc;
+import render.picture;
 
 /*
  * Delete the given overlay client list element from its screen list.
@@ -60,10 +67,10 @@ import Xext.xace;
 void compFreeOverlayClient(CompOverlayClientPtr pOcToDel)
 {
     ScreenPtr pScreen = pOcToDel.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     for ({CompOverlayClientPtr* pPrev = &cs.pOverlayClients; CompOverlayClientPtr pOc = void;}
-                        ((pOc = *pPrev) != 0); pPrev = &pOc.pNext) {
+                        ((pOc = *pPrev) !is null); pPrev = &pOc.pNext) {
         if (pOc == pOcToDel) {
             *pPrev = pOc.pNext;
             free(pOc);
@@ -81,7 +88,7 @@ void compFreeOverlayClient(CompOverlayClientPtr pOcToDel)
  */
 CompOverlayClientPtr compFindOverlayClient(ScreenPtr pScreen, ClientPtr pClient)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     for (CompOverlayClientPtr pOc = cs.pOverlayClients;
                           pOc != null; pOc = pOc.pNext)
@@ -96,7 +103,7 @@ CompOverlayClientPtr compFindOverlayClient(ScreenPtr pScreen, ClientPtr pClient)
  */
 CompOverlayClientPtr compCreateOverlayClient(ScreenPtr pScreen, ClientPtr pClient)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     CompOverlayClientPtr pOc = cast(CompOverlayClientRec*) calloc(1, CompOverlayClientRec.sizeof);
     if (pOc == null)
         return null;
@@ -122,7 +129,7 @@ CompOverlayClientPtr compCreateOverlayClient(ScreenPtr pScreen, ClientPtr pClien
  */
 Bool compCreateOverlayWindow(ScreenPtr pScreen)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     WindowPtr pRoot = pScreen.root;
     WindowPtr pWin = void;
     XID[2] attrs = [ None, TRUE ];       /* backPixmap, overrideRedirect */
@@ -161,7 +168,7 @@ version (XINERAMA) {
  */
 void compDestroyOverlayWindow(ScreenPtr pScreen)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     cs.pOverlayWin = NullWindow;
     FreeResource(cs.overlayWid, X11_RESTYPE_NONE);

@@ -231,7 +231,7 @@ int present_select_input(ClientPtr client, XID eid, WindowPtr window, CARD32 mas
     if (mask == 0)
         return Success;
 
-    LEGAL_NEW_RESOURCE(eid, client);
+    mixin(LEGAL_NEW_RESOURCE!("eid", "client"));
 
     window_priv = present_get_window_priv(window, TRUE);
     if (!window_priv)

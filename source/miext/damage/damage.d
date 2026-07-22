@@ -1529,7 +1529,7 @@ void miDamageDestroy(DamagePtr pDamage)
 
 Bool DamageSetup(ScreenPtr pScreen)
 {
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     const(DamageScreenFuncsRec) miFuncs = {
         miDamageCreate, miDamageRegister, miDamageUnregister, miDamageDestroy

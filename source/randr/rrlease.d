@@ -229,7 +229,7 @@ int ProcRRCreateLease(ClientPtr client)
     c_ulong len = void;
     int c = void, o = void;
 
-    LEGAL_NEW_RESOURCE(stuff.lid, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.lid", "client"));
 
     rc = dixLookupWindow(&window, stuff.window, client, DixGetAttrAccess);
     if (rc != Success)

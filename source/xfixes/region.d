@@ -82,7 +82,7 @@ int ProcXFixesCreateRegion(ClientPtr client)
     int things = void;
     RegionPtr pRegion = void;
 
-    LEGAL_NEW_RESOURCE(stuff.region, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
     things = cast(int)(client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
     if (things & 4)
@@ -108,7 +108,7 @@ int ProcXFixesCreateRegionFromBitmap(ClientPtr client)
     PixmapPtr pPixmap = void;
     int rc = void;
 
-    LEGAL_NEW_RESOURCE(stuff.region, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
     rc = dixLookupResourceByType(cast(void**) &pPixmap, stuff.bitmap, X11_RESTYPE_PIXMAP,
                                  client, DixReadAccess);
@@ -141,7 +141,7 @@ int ProcXFixesCreateRegionFromWindow(ClientPtr client)
     WindowPtr pWin = void;
     int rc = void;
 
-    LEGAL_NEW_RESOURCE(stuff.region, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
     rc = dixLookupResourceByType(cast(void**) &pWin, stuff.window, X11_RESTYPE_WINDOW,
                                  client, DixGetAttrAccess);
     if (rc != Success) {
@@ -187,7 +187,7 @@ int ProcXFixesCreateRegionFromGC(ClientPtr client)
     GCPtr pGC = void;
     int rc = void;
 
-    LEGAL_NEW_RESOURCE(stuff.region, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
     rc = dixLookupGC(&pGC, stuff.gc, client, DixGetAttrAccess);
     if (rc != Success)
@@ -217,7 +217,7 @@ int ProcXFixesCreateRegionFromPicture(ClientPtr client)
     RegionPtr pRegion = void;
     PicturePtr pPicture = void;
 
-    LEGAL_NEW_RESOURCE(stuff.region, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
     VERIFY_PICTURE(pPicture, stuff.picture, client, DixGetAttrAccess);
 

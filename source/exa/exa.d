@@ -674,7 +674,7 @@ private void ExaWakeupHandler(ScreenPtr pScreen, int result)
 private void exaCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
     ExaScreenPriv(pScreen);
-    PictureScreenPtr ps = GetPictureScreenIfSet(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     dixScreenUnhookClose(pScreen, exaCloseScreen);
     dixScreenUnhookPostCreateResources(pScreen, &exaCreateScreenResources);
@@ -812,7 +812,7 @@ Bool exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo)
         pScreenInfo.maxPitchPixels = pScreenInfo.maxX;
     }
 
-    ps = GetPictureScreenIfSet(pScreen);
+    ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     if (!dixRegisterPrivateKey(&exaScreenPrivateKeyRec, PRIVATE_SCREEN, 0)) {
         LogMessage(X_WARNING, "EXA(%d): Failed to register screen private\n",

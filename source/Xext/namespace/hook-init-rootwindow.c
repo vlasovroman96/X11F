@@ -48,7 +48,7 @@ void hookInitRootWindow(CallbackListPtr *pcbl, void *data, void *screen)
             NULL, /* vlist */
             0, /* depth */
             serverClient,
-            wVisual(realRoot), /* visual */
+            mixin(wVisual!("realRoot")), /* visual */
             &rc);
 
         if (!pWin)

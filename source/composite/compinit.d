@@ -55,6 +55,14 @@ import os.osdep;
 
 import composite.compint;
 import include.compositeext;
+import composite.compwindow;
+import externs.X11.extensions.composite_;
+import externs.X11.extensions.render_;
+import dix.resource;
+import miext.damage.damage_;
+import dix.gc;
+import render.picture;
+
 
 Bool noCompositeExtension = FALSE;
 
@@ -64,7 +72,7 @@ DevPrivateKeyRec CompSubwindowsPrivateKeyRec;
 
 private void compCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     free(cs.alternateVisuals);
     free(cs.implicitRedirectExceptions);
@@ -84,9 +92,9 @@ private void compCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unu
     pScreen.CopyWindow = cs.CopyWindow;
     pScreen.SourceValidate = cs.SourceValidate;
 
-    dixScreenUnhookClose(pScreen, compCloseScreen);
-    dixScreenUnhookWindowDestroy(pScreen, compWindowDestroy);
-    dixScreenUnhookWindowPosition(pScreen, compWindowPosition);
+    dixScreenUnhookClose(pScreen, &compCloseScreen);
+    dixScreenUnhookWindowDestroy(pScreen, &compWindowDestroy);
+    dixScreenUnhookWindowPosition(pScreen, &compWindowPosition);
 
     free(cs);
     dixSetPrivate(&pScreen.devPrivates, CompScreenPrivateKey, null);
@@ -96,7 +104,7 @@ private void compInstallColormap(ColormapPtr pColormap)
 {
     VisualPtr pVisual = pColormap.pVisual;
     ScreenPtr pScreen = pColormap.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     for (int a = 0; a < cs.numAlternateVisuals; a++)
         if (pVisual.vid == cs.alternateVisuals[a])
@@ -104,7 +112,7 @@ private void compInstallColormap(ColormapPtr pColormap)
     pScreen.InstallColormap = cs.InstallColormap;
     (*pScreen.InstallColormap) (pColormap);
     cs.InstallColormap = pScreen.InstallColormap;
-    pScreen.InstallColormap = compInstallColormap;
+    pScreen.InstallColormap = &compInstallColormap;
 }
 
 private void compCheckBackingStore(WindowPtr pWin)
@@ -122,7 +130,7 @@ private void compCheckBackingStore(WindowPtr pWin)
 private Bool compChangeWindowAttributes(WindowPtr pWin, c_ulong mask)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     Bool ret = void;
 
     pScreen.ChangeWindowAttributes = cs.ChangeWindowAttributes;
@@ -132,7 +140,7 @@ private Bool compChangeWindowAttributes(WindowPtr pWin, c_ulong mask)
         pScreen.backingStoreSupport != NotUseful)
         compCheckBackingStore(pWin);
 
-    pScreen.ChangeWindowAttributes = compChangeWindowAttributes;
+    pScreen.ChangeWindowAttributes = &compChangeWindowAttributes;
 
     return ret;
 }
@@ -140,7 +148,7 @@ private Bool compChangeWindowAttributes(WindowPtr pWin, c_ulong mask)
 private void compSourceValidate(DrawablePtr pDrawable, int x, int y, int width, int height, uint subWindowMode)
 {
     ScreenPtr pScreen = pDrawable.pScreen;
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     pScreen.SourceValidate = cs.SourceValidate;
     if (pDrawable.type == DRAWABLE_WINDOW && subWindowMode == IncludeInferiors)
@@ -148,7 +156,7 @@ private void compSourceValidate(DrawablePtr pDrawable, int x, int y, int width, 
     (*pScreen.SourceValidate) (pDrawable, x, y, width, height,
                                 subWindowMode);
     cs.SourceValidate = pScreen.SourceValidate;
-    pScreen.SourceValidate = compSourceValidate;
+    pScreen.SourceValidate = &compSourceValidate;
 }
 
 /*
@@ -165,7 +173,7 @@ private DepthPtr compFindVisuallessDepth(ScreenPtr pScreen, int d)
              * Make sure it doesn't have visuals already
              */
             if (depth.numVids)
-                return 0;
+                return null;
             /*
              * looks fine
              */
@@ -176,7 +184,7 @@ private DepthPtr compFindVisuallessDepth(ScreenPtr pScreen, int d)
      * If there isn't one, then it's gonna be hard to have
      * an associated visual
      */
-    return 0;
+    return null;
 }
 
 /*
@@ -186,12 +194,12 @@ private Bool compRegisterAlternateVisuals(CompScreenPtr cs, VisualID* vids, int 
 {
     VisualID* p = void;
 
-    p = reallocarray(cs.alternateVisuals,
+    p = cast(ulong*)reallocarray(cs.alternateVisuals,
                      cs.numAlternateVisuals + nVisuals, VisualID.sizeof);
     if (p == null)
         return FALSE;
 
-    memcpy(&p[cs.numAlternateVisuals], vids, ((VisualID) * nVisuals).sizeof);
+    memcpy(&p[cs.numAlternateVisuals], vids, ((VisualID).sizeof * nVisuals));
 
     cs.alternateVisuals = p;
     cs.numAlternateVisuals += nVisuals;
@@ -201,7 +209,7 @@ private Bool compRegisterAlternateVisuals(CompScreenPtr cs, VisualID* vids, int 
 
 Bool CompositeRegisterAlternateVisuals(ScreenPtr pScreen, VisualID* vids, int nVisuals)
 {
-    CompScreenPtr cs = GetCompScreen(pScreen);
+    CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     return compRegisterAlternateVisuals(cs, vids, nVisuals);
 }
@@ -256,18 +264,18 @@ private Bool compAddAlternateVisual(ScreenPtr pScreen, CompScreenPtr cs, CompAlt
     visual.bitsPerRGBValue = 8;
     if (PIXMAN_FORMAT_TYPE(alt.format) == PIXMAN_TYPE_COLOR) {
         visual.class_ = PseudoColor;
-        visual.nplanes = PIXMAN_FORMAT_BPP(alt.format);
-        visual.ColormapEntries = 1 << visual.nplanes;
+        visual.nplanes = cast(ushort)PIXMAN_FORMAT_BPP(alt.format);
+        visual.ColormapEntries = cast(ushort)(1 << visual.nplanes);
     }
     else {
         DirectFormatRec* direct = &pPictFormat.direct;
 
         visual.class_ = TrueColor;
-        visual.redMask = (cast(c_ulong) direct.redMask) << direct.red;
+        visual.redMask = cast(ubyte)(cast(c_ulong) direct.redMask << direct.red);
         visual.greenMask =
-            (cast(c_ulong) direct.greenMask) << direct.green;
-        visual.blueMask = (cast(c_ulong) direct.blueMask) << direct.blue;
-        alphaMask = (cast(c_ulong) direct.alphaMask) << direct.alpha;
+            cast(ubyte)(cast(c_ulong) direct.greenMask << direct.green);
+        visual.blueMask = cast(ubyte)(cast(c_ulong) direct.blueMask << direct.blue);
+        alphaMask = cast(ubyte)(cast(c_ulong) direct.alphaMask << direct.alpha);
         visual.offsetRed = direct.red;
         visual.offsetGreen = direct.green;
         visual.offsetBlue = direct.blue;
@@ -275,11 +283,11 @@ private Bool compAddAlternateVisual(ScreenPtr pScreen, CompScreenPtr cs, CompAlt
          * Include A bits in this (unlike GLX which includes only RGB)
          * This lets DIX compute suitable masks for colormap allocations
          */
-        visual.nplanes = Ones(visual.redMask |
+        visual.nplanes = cast(short)Ones(visual.redMask |
                                visual.greenMask |
                                visual.blueMask | alphaMask);
         /* find widest component */
-        visual.ColormapEntries = (1 << max(Ones(visual.redMask),
+        visual.ColormapEntries = cast(short)(1 << max(Ones(visual.redMask),
                                             max(Ones(visual.greenMask),
                                                 Ones(visual.blueMask))));
     }
@@ -309,7 +317,7 @@ Bool compScreenInit(ScreenPtr pScreen)
     if (!dixRegisterPrivateKey(&CompSubwindowsPrivateKeyRec, PRIVATE_WINDOW, 0))
         return FALSE;
 
-    if (GetCompScreen(pScreen))
+    if (mixin(GetCompScreen!("pScreen")))
         return TRUE;
     CompScreenPtr cs = cast(CompScreenRec*) calloc(1, CompScreenRec.sizeof);
     if (!cs)
@@ -335,51 +343,51 @@ Bool compScreenInit(ScreenPtr pScreen)
         pScreen.backingStoreSupport = WhenMapped;
 
     dixScreenHookClose(pScreen, &compCloseScreen);
-    dixScreenHookWindowDestroy(pScreen, compWindowDestroy);
-    dixScreenHookWindowPosition(pScreen, compWindowPosition);
+    dixScreenHookWindowDestroy(pScreen, &compWindowDestroy);
+    dixScreenHookWindowPosition(pScreen, &compWindowPosition);
 
     cs.CopyWindow = pScreen.CopyWindow;
-    pScreen.CopyWindow = compCopyWindow;
+    pScreen.CopyWindow = &compCopyWindow;
 
     cs.CreateWindow = pScreen.CreateWindow;
-    pScreen.CreateWindow = compCreateWindow;
+    pScreen.CreateWindow = &compCreateWindow;
 
     cs.RealizeWindow = pScreen.RealizeWindow;
-    pScreen.RealizeWindow = compRealizeWindow;
+    pScreen.RealizeWindow = &compRealizeWindow;
 
     cs.UnrealizeWindow = pScreen.UnrealizeWindow;
-    pScreen.UnrealizeWindow = compUnrealizeWindow;
+    pScreen.UnrealizeWindow = &compUnrealizeWindow;
 
     cs.ClipNotify = pScreen.ClipNotify;
-    pScreen.ClipNotify = compClipNotify;
+    pScreen.ClipNotify = &compClipNotify;
 
     cs.ConfigNotify = pScreen.ConfigNotify;
-    pScreen.ConfigNotify = compConfigNotify;
+    pScreen.ConfigNotify = &compConfigNotify;
 
     cs.MoveWindow = pScreen.MoveWindow;
-    pScreen.MoveWindow = compMoveWindow;
+    pScreen.MoveWindow = &compMoveWindow;
 
     cs.ResizeWindow = pScreen.ResizeWindow;
-    pScreen.ResizeWindow = compResizeWindow;
+    pScreen.ResizeWindow = &compResizeWindow;
 
     cs.ChangeBorderWidth = pScreen.ChangeBorderWidth;
-    pScreen.ChangeBorderWidth = compChangeBorderWidth;
+    pScreen.ChangeBorderWidth = &compChangeBorderWidth;
 
     cs.ReparentWindow = pScreen.ReparentWindow;
-    pScreen.ReparentWindow = compReparentWindow;
+    pScreen.ReparentWindow = &compReparentWindow;
 
     cs.InstallColormap = pScreen.InstallColormap;
-    pScreen.InstallColormap = compInstallColormap;
+    pScreen.InstallColormap = &compInstallColormap;
 
     cs.ChangeWindowAttributes = pScreen.ChangeWindowAttributes;
-    pScreen.ChangeWindowAttributes = compChangeWindowAttributes;
+    pScreen.ChangeWindowAttributes = &compChangeWindowAttributes;
 
     cs.SourceValidate = pScreen.SourceValidate;
-    pScreen.SourceValidate = compSourceValidate;
+    pScreen.SourceValidate = &compSourceValidate;
 
     dixSetPrivate(&pScreen.devPrivates, CompScreenPrivateKey, cs);
 
-    RegisterRealChildHeadProc(CompositeRealChildHead);
+    RegisterRealChildHeadProc(&CompositeRealChildHead);
 
     return TRUE;
 }

@@ -114,6 +114,7 @@ struct _CompOverlayClientRec {
     ScreenPtr pScreen;
     XID resource;
 }
+alias CompOverlayClientRec = _CompOverlayClientRec; 
 alias CompOverlayClientPtr = _CompOverlayClientRec*;
 
 struct CompImplicitRedirectException {
@@ -248,43 +249,43 @@ void compCheckTree(ScreenPtr pScreen);
 //#define compCheckTree(s)
 }
 
-void compSetPixmap(WindowPtr pWin, PixmapPtr pPixmap, int bw);
+// void compSetPixmap(WindowPtr pWin, PixmapPtr pPixmap, int bw);
 
-Bool compCheckRedirect(WindowPtr pWin);
+// Bool compCheckRedirect(WindowPtr pWin);
 
-void compWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWindowPositionParamRec* param);
+// void compWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWindowPositionParamRec* param);
 
-Bool compRealizeWindow(WindowPtr pWin);
+// Bool compRealizeWindow(WindowPtr pWin);
 
-Bool compUnrealizeWindow(WindowPtr pWin);
+// Bool compUnrealizeWindow(WindowPtr pWin);
 
-void compClipNotify(WindowPtr pWin, int dx, int dy);
+// void compClipNotify(WindowPtr pWin, int dx, int dy);
 
-void compMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pSib, VTKind kind);
+// void compMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pSib, VTKind kind);
 
-void compResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib);
+// void compResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib);
 
-void compChangeBorderWidth(WindowPtr pWin, uint border_width);
+// void compChangeBorderWidth(WindowPtr pWin, uint border_width);
 
-void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent);
+// void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent);
 
-Bool compCreateWindow(WindowPtr pWin);
+// Bool compCreateWindow(WindowPtr pWin);
 
-void compWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin);
+// void compWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin);
 
-void compSetRedirectBorderClip(WindowPtr pWin, RegionPtr pRegion);
+// void compSetRedirectBorderClip(WindowPtr pWin, RegionPtr pRegion);
 
-RegionPtr compGetRedirectBorderClip(WindowPtr pWin);
+// RegionPtr compGetRedirectBorderClip(WindowPtr pWin);
 
-void compCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc);
+// void compCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc);
 
-void compPaintChildrenToWindow(WindowPtr pWin);
+// void compPaintChildrenToWindow(WindowPtr pWin);
 
-WindowPtr CompositeRealChildHead(WindowPtr pWin);
+// WindowPtr CompositeRealChildHead(WindowPtr pWin);
 
-int DeleteWindowNoInputDevices(void* value, XID wid);
+// int DeleteWindowNoInputDevices(void* value, XID wid);
 
-int compConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw, WindowPtr pSib);
+// int compConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw, WindowPtr pSib);
 
 void PanoramiXCompositeInit();
 void PanoramiXCompositeReset();

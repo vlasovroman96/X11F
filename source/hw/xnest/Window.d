@@ -96,8 +96,8 @@ Bool xnestCreateWindow(WindowPtr pWin)
 
         if (pWin.parent) {
             if (pWin.optional &&
-                pWin.optional.visual != wVisual(pWin.parent)) {
-                visual = xnest_visual_map_to_upstream(wVisual(pWin));
+                pWin.optional.visual != mixin(wVisual!("pWin.parent"))) {
+                visual = xnest_visual_map_to_upstream(mixin(wVisual!("pWin")));
                 mask |= XCB_CW_COLORMAP;
                 if (pWin.optional.colormap) {
                     dixLookupResourceByType(cast(void**) &pCmap, wColormap(pWin),
@@ -112,7 +112,7 @@ Bool xnestCreateWindow(WindowPtr pWin)
                 visual = CopyFromParent;
         }
         else {                  /* root windows have their own colormaps at creation time */
-            visual = xnest_visual_map_to_upstream(wVisual(pWin));
+            visual = xnest_visual_map_to_upstream(mixin(wVisual!("pWin")));
             dixLookupResourceByType(cast(void**) &pCmap, wColormap(pWin),
                                     X11_RESTYPE_COLORMAP, serverClient, DixUseAccess);
             mask |= XCB_CW_COLORMAP;

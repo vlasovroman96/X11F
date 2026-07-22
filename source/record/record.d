@@ -1825,7 +1825,7 @@ private int ProcRecordCreateContext(ClientPtr client)
     RecordContextPtr* ppNewAllContexts = null;
     int err = BadAlloc;
 
-    LEGAL_NEW_RESOURCE(stuff.context, client);
+    mixin(LEGAL_NEW_RESOURCE!("stuff.context", "client"));
 
     RecordContextPtr pContext = cast(RecordContextRec*) calloc(1, RecordContextRec.sizeof);
     if (!pContext)

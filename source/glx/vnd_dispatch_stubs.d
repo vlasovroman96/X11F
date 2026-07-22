@@ -69,7 +69,7 @@ private int dispatch_CreateContext(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     context = GlxCheckSwap(client, stuff.context);
-    LEGAL_NEW_RESOURCE(context, client);
+    mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
@@ -165,7 +165,7 @@ private int dispatch_CreateGLXPixmap(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
-    LEGAL_NEW_RESOURCE(glxpixmap, client);
+    mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
@@ -275,7 +275,7 @@ private int dispatch_CreateNewContext(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     context = GlxCheckSwap(client, stuff.context);
-    LEGAL_NEW_RESOURCE(context, client);
+    mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
@@ -300,7 +300,7 @@ private int dispatch_CreatePbuffer(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     pbuffer = GlxCheckSwap(client, stuff.pbuffer);
-    LEGAL_NEW_RESOURCE(pbuffer, client);
+    mixin(LEGAL_NEW_RESOURCE!("pbuffer", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
@@ -325,7 +325,7 @@ private int dispatch_CreatePixmap(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
-    LEGAL_NEW_RESOURCE(glxpixmap, client);
+    mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
@@ -350,7 +350,7 @@ private int dispatch_CreateWindow(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     glxwindow = GlxCheckSwap(client, stuff.glxwindow);
-    LEGAL_NEW_RESOURCE(glxwindow, client);
+    mixin(LEGAL_NEW_RESOURCE!("glxwindow", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
@@ -375,7 +375,7 @@ private int dispatch_CreateContextAttribsARB(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
     screen = GlxCheckSwap(client, stuff.screen);
     context = GlxCheckSwap(client, stuff.context);
-    LEGAL_NEW_RESOURCE(context, client);
+    mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
