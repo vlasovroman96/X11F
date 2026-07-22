@@ -156,7 +156,7 @@ void xnestDestroyColormap(ColormapPtr pCmap)
 }
 
 enum SEARCH_PREDICATE = 
-  `(xnestWindow(pWin) != XCB_WINDOW_NONE && wColormap(pWin) == icws->cmapIDs[i]);`;
+  `(xnestWindow(pWin) != XCB_WINDOW_NONE && mixin(wColormap!("pWin")) == icws->cmapIDs[i]);`;
 
 private int xnestCountInstalledColormapWindows(WindowPtr pWin, void* ptr)
 {
@@ -255,7 +255,7 @@ version (DUMB_WINDOW_MANAGERS) {
 
             if (xnest_visual_map_to_upstream(mixin(wVisual!("pWin"))) ==
                 xnest_visual_map_to_upstream(pScreen.rootVisual))
-                dixLookupResourceByType(cast(void**) &pCmap, wColormap(pWin),
+                dixLookupResourceByType(cast(void**) &pCmap, mixin(wColormap!("pWin")),
                                         X11_RESTYPE_COLORMAP, serverClient,
                                         DixUseAccess);
             else

@@ -3622,7 +3622,7 @@ version (XSERVER_DTRACE) {
             nextFreeClientID = client.index;
         clients[client.index] = null;
         SmartLastClient = null;
-        dixFreeObjectWithPrivates(client, PRIVATE_CLIENT);
+        mixin(dixFreeObjectWithPrivatesM!("client", "PRIVATE_CLIENT"));
 
         while (!clients[currentMaxClients - 1])
             currentMaxClients--;
@@ -3679,14 +3679,14 @@ ClientPtr NextAvailableClient(void* ospriv)
         return cast(ClientPtr) null;
     InitClient(client, i, ospriv);
     if (!InitClientResources(client)) {
-        dixFreeObjectWithPrivates(client, PRIVATE_CLIENT);
+        mixin(dixFreeObjectWithPrivatesM!("client", "PRIVATE_CLIENT"));
         return cast(ClientPtr) null;
     }
     data.reqType = 1;
     data.length = bytes_to_int32(sz_xReq + sz_xConnClientPrefix);
     if (!InsertFakeRequest(client, cast(char*) &data, sz_xReq)) {
         FreeClientResources(client);
-        dixFreeObjectWithPrivates(client, PRIVATE_CLIENT);
+        mixin(dixFreeObjectWithPrivatesM!("client", "PRIVATE_CLIENT"));
         return cast(ClientPtr) null;
     }
     if (i == currentMaxClients)

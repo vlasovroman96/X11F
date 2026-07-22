@@ -69,8 +69,8 @@ SOFTWARE.
 
 ******************************************************************/
 
-#include <../Xmd.h>
-#include <../Xprotostr.h>
+#include <X11/Xmd.h>
+#include <X11/Xprotostr.h>
 
 /*
  * Define constants for the sizes of the network packets.  The sz_ prefix is
@@ -994,7 +994,7 @@ typedef struct {
  *****************************************************************/
 
 typedef struct _xEvent {
-    union {
+    union _Union{
 	struct {
 	    BYTE type;
 	    BYTE detail;
@@ -1160,15 +1160,15 @@ typedef struct _xEvent {
 	    Window requestor;
 	    Atom selection, target, property;
 	} selectionNotify;
-	struct {
+	struct _Colormap{
 	    CARD32 pad00;
 	    Window window;
 	    Colormap colormap;
-#if defined(__cplusplus) || defined(c_plusplus)
+// #if defined(__cplusplus) || defined(c_plusplus)
+	    // BOOL c_new;
+// #else
 	    BOOL c_new;
-#else
-	    BOOL new;
-#endif
+// #endif
 	    BYTE state;			/* Installed or UnInstalled */
 	    BYTE pad1, pad2;
 	} colormap;

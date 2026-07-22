@@ -53,6 +53,7 @@ import build.dix_config;
 
 import dix.dix_priv;
 import include.dix;
+import externs.gnu;
 
 struct BuiltinColor {
     ubyte red;

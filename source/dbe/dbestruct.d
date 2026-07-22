@@ -173,13 +173,13 @@ alias DbeWindowPrivPtr = _DbeWindowPrivRec*;
 
 struct _DbeScreenPrivRec {
     /* Per-screen DIX routines */
-    Bool function(WindowPtr, GCPtr) SetupBackgroundPainter;
+    @nogc nothrow Bool function(WindowPtr, GCPtr) SetupBackgroundPainter;
 
     /* Per-screen DDX routines */
-    Bool function(ScreenPtr, XdbeScreenVisualInfo*) GetVisualInfo;
-    int function(WindowPtr, XID, int) AllocBackBufferName;
-    int function(ClientPtr, int*, DbeSwapInfoPtr) SwapBuffers;
-    void function(DbeWindowPrivPtr, XID) WinPrivDelete;
+@nogc nothrow     Bool function(ScreenPtr, XdbeScreenVisualInfo*) GetVisualInfo;
+    @nogc nothrow int function(WindowPtr, XID, int) AllocBackBufferName;
+    @nogc nothrow int function(ClientPtr, int*, DbeSwapInfoPtr) SwapBuffers;
+    @nogc nothrow void function(DbeWindowPrivPtr, XID) WinPrivDelete;
 }alias DbeScreenPrivRec = _DbeScreenPrivRec;
 alias DbeScreenPrivPtr = _DbeScreenPrivRec*;
 

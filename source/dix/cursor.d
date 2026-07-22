@@ -87,7 +87,7 @@ private void FreeCursorBits(CursorBitsPtr bits)
     free(bits.source);
     free(bits.mask);
     free(bits.argb);
-    dixFiniPrivates(bits, PRIVATE_CURSOR_BITS);
+    mixin(dixFiniPrivates!("bits", "PRIVATE_CURSOR_BITS"));
     if (bits.refcnt == 0) {
         GlyphSharePtr* prev = void; GlyphSharePtr this_ = void;
 
@@ -127,7 +127,7 @@ int FreeCursor(void* value, XID cid)
     });
 
     FreeCursorBits(pCurs.bits);
-    dixFiniPrivates(pCurs, PRIVATE_CURSOR);
+    mixin(dixFiniPrivates!("pCurs", "PRIVATE_CURSOR"));
     free(pCurs);
     return Success;
 }
@@ -303,7 +303,7 @@ int AllocARGBCursor(ubyte* psrcbits, ubyte* pmaskbits, CARD32* argb, CursorMetri
 
  error:
     FreeCursorBits(bits);
-    dixFiniPrivates(pCurs, PRIVATE_CURSOR);
+    mixin(dixFiniPrivates!("pCurs", "PRIVATE_CURSOR"));
     free(pCurs);
 
     return rc;
@@ -456,7 +456,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
 
  error:
     FreeCursorBits(bits);
-    dixFiniPrivates(pCurs, PRIVATE_CURSOR);
+    mixin(dixFiniPrivates!("pCurs", "PRIVATE_CURSOR"));
     free(pCurs);
 
     return rc;

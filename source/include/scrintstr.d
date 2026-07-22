@@ -279,8 +279,8 @@ alias InstallColormapProcPtr = void function(ColormapPtr /*pColormap */ );
 
 alias UninstallColormapProcPtr = void function(ColormapPtr /*pColormap */ );
 
-alias ListInstalledColormapsProcPtr = void function(ScreenPtr /*pScreen */ ,
-                                              XID * /*pmaps */ );
+// alias ListInstalledColormapsProcPtr = void function(ScreenPtr /*pScreen */ ,
+//                                               XID * /*pmaps */ );
 
 alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
                                     int /*ndef */ ,

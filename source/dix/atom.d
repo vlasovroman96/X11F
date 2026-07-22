@@ -53,7 +53,9 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.string;
 //import externs.X11.X;
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
+import os.log;
+import externs.gnu;
 
 import dix.atom_priv;
 import dix.dix_priv;
@@ -84,10 +86,10 @@ extern Bool ValidAtom(Atom atom);
 const(char)* NameForAtom(Atom atom)
 {
     if (atom > lastAtom)
-        return 0;
+        return null;
 
     if (nodeTable[atom] == null)
-        return 0;
+        return null;
 
     return nodeTable[atom].string;
 }

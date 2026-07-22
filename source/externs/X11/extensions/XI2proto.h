@@ -57,8 +57,8 @@
 #ifndef _XI2PROTO_H_
 #define _XI2PROTO_H_
 
-#include <../Xproto.h>
-#include <../X.h>
+#include <X11/Xproto.h>
+#include <X11/X.h>
 #include "XI2.h"
 #include <stdint.h>
 

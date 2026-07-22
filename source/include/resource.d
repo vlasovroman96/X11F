@@ -176,7 +176,7 @@ enum AddResource = Darwin_X_AddResource;
 
 // extern void FreeResourceByType(XID, RESTYPE, Bool);
 
-extern void ChangeResourceValue(XID id, RESTYPE rtype, void* value);
+// extern void ChangeResourceValue(XID id, RESTYPE rtype, void* value);
 
 // extern void FindClientResourcesByType(ClientPtr client, RESTYPE type, FindResType func, void* cdata);
 

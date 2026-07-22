@@ -266,7 +266,7 @@ void FreeGlyph(GlyphPtr glyph, int format)
         }
 
         FreeGlyphPicture(glyph);
-        dixFreeObjectWithPrivates(glyph, PRIVATE_GLYPH);
+        mixin(dixFreeObjectWithPrivatesM!("glyph", "PRIVATE_GLYPH"));
     }
 }
 
@@ -364,7 +364,7 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
             ps.UnrealizeGlyph(walkScreen, glyph);
     }
 
-    dixFreeObjectWithPrivates(glyph, PRIVATE_GLYPH);
+    mixin(dixFreeObjectWithPrivatesM!("glyph", "PRIVATE_GLYPH"));
     return 0;
 }
 
@@ -471,7 +471,7 @@ int FreeGlyphSet(void* value, XID gid)
         else
             ResizeGlyphHash(&globalGlyphs[glyphSet.fdepth], 0, TRUE);
         free(table);
-        dixFreeObjectWithPrivates(glyphSet, PRIVATE_GLYPHSET);
+        mixin(dixFreeObjectWithPrivatesM!("glyphSet", "PRIVATE_GLYPHSET"));
     }
     return Success;
 }

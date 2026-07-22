@@ -55,6 +55,10 @@ import Xext.xace;
 
 import core.stdc.stdio;
 import dix.screen_hooks_priv;
+import dbe.dbe;
+import dix.resource;
+import dix.gc;
+import externs.X11.extensions.dbe_;
 /******************************************************************************
  *
  * DBE MI Procedure: miDbeGetVisualInfo
@@ -84,7 +88,7 @@ private Bool miDbeGetVisualInfo(ScreenPtr pScreen, XdbeScreenVisualInfo* pScrVis
     }
 
     /* Allocate an array of XdbeVisualInfo items. */
-    if (((visInfo = cast(XdbeVisualInfo*) calloc(count, XdbeVisualInfo.sizeof)) == 0)) {
+    if (((visInfo = cast(XdbeVisualInfo*) calloc(count, XdbeVisualInfo.sizeof)) is null)) {
         return FALSE;           /* memory alloc failure */
     }
 
@@ -135,7 +139,7 @@ private int miDbeAllocBackBufferName(WindowPtr pWin, XID bufId, int swapAction)
     int rc = void;
 
     pScreen = pWin.drawable.pScreen;
-    pDbeWindowPriv = DBE_WINDOW_PRIV(pWin);
+    pDbeWindowPriv = mixin(DBE_WINDOW_PRIV!("pWin"));
 
     if (pDbeWindowPriv.nBufferIDs == 0) {
         /* There is no buffer associated with the window.
@@ -144,13 +148,13 @@ private int miDbeAllocBackBufferName(WindowPtr pWin, XID bufId, int swapAction)
          * create the priv priv and attach it to the priv.
          */
 
-        pDbeScreenPriv = DBE_SCREEN_PRIV(pScreen);
+        pDbeScreenPriv = mixin(DBE_SCREEN_PRIV!("pScreen"));
 
         /* Get a front pixmap. */
         if (((pDbeWindowPriv.pFrontBuffer =
               (*pScreen.CreatePixmap) (pScreen, pDbeWindowPriv.width,
                                         pDbeWindowPriv.height,
-                                        pWin.drawable.depth, 0)) == 0)) {
+                                        pWin.drawable.depth, 0)) is null)) {
             return BadAlloc;
         }
 
@@ -158,7 +162,7 @@ private int miDbeAllocBackBufferName(WindowPtr pWin, XID bufId, int swapAction)
         if (((pDbeWindowPriv.pBackBuffer =
               (*pScreen.CreatePixmap) (pScreen, pDbeWindowPriv.width,
                                         pDbeWindowPriv.height,
-                                        pWin.drawable.depth, 0)) == 0)) {
+                                        pWin.drawable.depth, 0)) is null)) {
             dixDestroyPixmap(pDbeWindowPriv.pFrontBuffer, 0);
             return BadAlloc;
         }
@@ -247,8 +251,8 @@ private int miDbeSwapBuffers(ClientPtr client, int* pNumWindows, DbeSwapInfoPtr 
     xRectangle clearRect = void;
 
     pWin = swapInfo[0].pWindow;
-    pDbeScreenPriv = DBE_SCREEN_PRIV_FROM_WINDOW(pWin);
-    pDbeWindowPriv = DBE_WINDOW_PRIV(pWin);
+    pDbeScreenPriv = mixin(DBE_SCREEN_PRIV_FROM_WINDOW!("pWin"));
+    pDbeWindowPriv = mixin(DBE_WINDOW_PRIV!("pWin"));
     pGC = GetScratchGC(pWin.drawable.depth, pWin.drawable.pScreen);
 
     /*
@@ -450,7 +454,7 @@ void miDbeWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWin
     xRectangle clearRect = void;
 
     WindowPtr pWin = param.window;
-    pDbeScreenPriv = DBE_SCREEN_PRIV(pScreen);
+    pDbeScreenPriv = mixin(DBE_SCREEN_PRIV!("pScreen"));
 
     /*
      **************************************************************************
@@ -458,7 +462,7 @@ void miDbeWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWin
      **************************************************************************
      */
 
-    if (((pDbeWindowPriv = DBE_WINDOW_PRIV(pWin)) == 0))
+    if (((pDbeWindowPriv = mixin(DBE_WINDOW_PRIV!("pWin"))) is null))
         return;
 
     if (pDbeWindowPriv.width == pWin.drawable.width &&
@@ -505,10 +509,10 @@ void miDbeWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWin
         saveheight = height - desty;
     }
 
-    pDbeWindowPriv.width = width;
-    pDbeWindowPriv.height = height;
-    pDbeWindowPriv.x = pWin.drawable.x;
-    pDbeWindowPriv.y = pWin.drawable.y;
+    pDbeWindowPriv.width = cast(ushort)width;
+    pDbeWindowPriv.height = cast(ushort)height;
+    pDbeWindowPriv.x = cast(ushort)pWin.drawable.x;
+    pDbeWindowPriv.y = cast(ushort)pWin.drawable.y;
 
     pGC = GetScratchGC(pWin.drawable.depth, pScreen);
 
@@ -516,8 +520,8 @@ void miDbeWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWin
         if ((*pDbeScreenPriv.SetupBackgroundPainter) (pWin, pGC)) {
             clearRect.x = 0;
             clearRect.y = 0;
-            clearRect.width = width;
-            clearRect.height = height;
+            clearRect.width = cast(ushort)width;
+            clearRect.height = cast(ushort)height;
         }
         else {
             clear = FALSE;
@@ -543,7 +547,7 @@ void miDbeWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWin
              * more buffer IDs associated with this window.
              */
             FreeResource(pDbeWindowPriv.IDs[0], X11_RESTYPE_NONE);
-            pDbeWindowPriv = DBE_WINDOW_PRIV(pWin);
+            pDbeWindowPriv = mixin(DBE_WINDOW_PRIV!("pWin"));
         }
 
         FreeScratchGC(pGC);
@@ -612,10 +616,10 @@ Bool miDbeInit(ScreenPtr pScreen, DbeScreenPrivPtr pDbeScreenPriv)
     dixScreenHookWindowPosition(pScreen, &miDbeWindowPosition);
 
     /* Initialize the per-screen DBE function pointers. */
-    pDbeScreenPriv.GetVisualInfo = miDbeGetVisualInfo;
-    pDbeScreenPriv.AllocBackBufferName = miDbeAllocBackBufferName;
-    pDbeScreenPriv.SwapBuffers = miDbeSwapBuffers;
-    pDbeScreenPriv.WinPrivDelete = miDbeWinPrivDelete;
+    pDbeScreenPriv.GetVisualInfo = &miDbeGetVisualInfo;
+    pDbeScreenPriv.AllocBackBufferName = &miDbeAllocBackBufferName;
+    pDbeScreenPriv.SwapBuffers = &miDbeSwapBuffers;
+    pDbeScreenPriv.WinPrivDelete = &miDbeWinPrivDelete;
 
     return TRUE;
 }

@@ -365,7 +365,7 @@ int dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property, At
         ubyte* data = cast(ubyte*) calloc(1, totalSize);
         if (totalSize) {
             if (!data) {
-                dixFreeObjectWithPrivates(pProp, PRIVATE_PROPERTY);
+                mixin(dixFreeObjectWithPrivatesM!("pProp", "PRIVATE_PROPERTY"));
                 return BadAlloc;
             }
             memcpy(data, value, totalSize);
@@ -379,7 +379,7 @@ int dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property, At
                                     DixCreateAccess | DixWriteAccess);
         if (rc != Success) {
             free(data);
-            dixFreeObjectWithPrivates(pProp, PRIVATE_PROPERTY);
+            mixin(dixFreeObjectWithPrivatesM!("pProp", "PRIVATE_PROPERTY"));
             pClient.errorValue = property;
             return rc;
         }
@@ -485,7 +485,7 @@ int DeleteProperty(ClientPtr client, WindowPtr pWin, Atom propName)
         deliverPropertyNotifyEvent(pWin, PropertyDelete, pProp);
         notifyVRRMode(client, pWin, PropertyDelete, pProp);
         free(pProp.data);
-        dixFreeObjectWithPrivates(pProp, PRIVATE_PROPERTY);
+        mixin(dixFreeObjectWithPrivatesM!("pProp", "PRIVATE_PROPERTY"));
     }
     return rc;
 }
@@ -498,7 +498,7 @@ void DeleteAllWindowProperties(WindowPtr pWin)
         deliverPropertyNotifyEvent(pWin, PropertyDelete, pProp);
         PropertyPtr pNextProp = pProp.next;
         free(pProp.data);
-        dixFreeObjectWithPrivates(pProp, PRIVATE_PROPERTY);
+        mixin(dixFreeObjectWithPrivatesM!("pProp", "PRIVATE_PROPERTY"));
         pProp = pNextProp;
     }
 
@@ -659,7 +659,7 @@ int ProcGetProperty(ClientPtr client)
         }
 
         free(pProp.data);
-        dixFreeObjectWithPrivates(pProp, PRIVATE_PROPERTY);
+        mixin(dixFreeObjectWithPrivatesM!("pProp", "PRIVATE_PROPERTY"));
     }
 
     if (client.swapped) {

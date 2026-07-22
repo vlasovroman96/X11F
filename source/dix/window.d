@@ -807,7 +807,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
 
     if (visual != ancwopt.visual) {
         if (!MakeWindowOptional(pWin)) {
-            dixFreeObjectWithPrivates(pWin, PRIVATE_WINDOW);
+            mixin(dixFreeObjectWithPrivatesM!("pWin", "PRIVATE_WINDOW"));
             *error = BadAlloc;
             return NullWindow;
         }
@@ -823,7 +823,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
                       X11_RESTYPE_WINDOW, pWin.parent,
                       DixCreateAccess | DixSetAttrAccess);
     if (*error != Success) {
-        dixFreeObjectWithPrivates(pWin, PRIVATE_WINDOW);
+        mixin(dixFreeObjectWithPrivatesM!("pWin", "PRIVATE_WINDOW"));
         return NullWindow;
     }
 
@@ -996,7 +996,7 @@ private void CrushTree(WindowPtr pWin)
                 dixScreenRaiseUnrealizeWindow(pChild);
             }
             FreeWindowResources(pChild);
-            dixFreeObjectWithPrivates(pChild, PRIVATE_WINDOW);
+            mixin(dixFreeObjectWithPrivatesM!("pChild", "PRIVATE_WINDOW"));
             if ((pChild = pSib))
                 break;
             pChild = pParent;
@@ -1043,7 +1043,7 @@ int DeleteWindow(void* value, XID wid)
     }
     else
         pWin.drawable.pScreen.root = null;
-    dixFreeObjectWithPrivates(pWin, PRIVATE_WINDOW);
+    mixin(dixFreeObjectWithPrivatesM!("pWin", "PRIVATE_WINDOW"));
     return Success;
 }
 
@@ -1355,7 +1355,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                 if (pWin.parent &&
                     (!pWin.optional ||
                      pWin.optional.visual == mixin(wVisual!("pWin.parent")))) {
-                    cmap = wColormap(pWin.parent);
+                    cmap = mixin(wColormap!("pWin.parent"));
                 }
                 else
                     cmap = None;
@@ -1376,14 +1376,14 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                 error = BadMatch;
                 goto PatchUp;
             }
-            if (cmap != wColormap(pWin)) {
+            if (cmap != mixin(wColormap!("pWin"))) {
                 if (!pWin.optional) {
                     if (!MakeWindowOptional(pWin)) {
                         error = BadAlloc;
                         goto PatchUp;
                     }
                 }
-                else if (pWin.parent && cmap == wColormap(pWin.parent))
+                else if (pWin.parent && cmap == mixin(wColormap!("pWin.parent")))
                     checkOptional = TRUE;
 
                 /*
@@ -1555,9 +1555,9 @@ int ProcGetWindowAttributes(ClientPtr client)
         reply.c_override = pWin.overrideRedirect,
         reply.mapState = (!pWin.mapped ? IsUnmapped :
                      (pWin.realized ? IsViewable : IsUnviewable)),
-        reply.colormap = wColormap(pWin),
-        reply.mapInstalled = (wColormap(pWin) == None) ? xFalse
-             : IsMapInstalled(wColormap(pWin), pWin),
+        reply.colormap = mixin(wColormap!("pWin")),
+        reply.mapInstalled = (mixin(wColormap!("pWin")) == None) ? xFalse
+             : IsMapInstalled(mixin(wColormap!("pWin")), pWin),
         reply.yourEventMask = EventMaskForClient(pWin, client),
         reply.allEventMasks = pWin.eventMask | wOtherEventMasks(pWin),
         reply.doNotPropagateMask = wDontPropagateMask(pWin),

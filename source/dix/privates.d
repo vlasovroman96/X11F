@@ -1,4 +1,4 @@
-module privates;
+module dix.privates;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -495,7 +495,7 @@ Bool dixAllocatePrivates(PrivatePtr* privates, DevPrivateType type)
  * This is expected to be invoked from the
  * dixFreeObjectWithPrivates macro
  */
-void _dixFreeObjectWithPrivates(void* object, PrivatePtr privates, DevPrivateType type)
+void dixFreeObjectWithPrivates(void* object, PrivatePtr privates, DevPrivateType type)
 {
     _dixFiniPrivates(privates, type);
     free(object);

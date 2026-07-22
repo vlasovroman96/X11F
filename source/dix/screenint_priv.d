@@ -117,7 +117,7 @@ struct ScreenAccessCallbackParam {
     int status;
 }
 
-pragma(inline, true) private int dixCallScreenAccessCallback(ClientPtr client, ScreenPtr screen, Mask access_mode)
+pragma(inline, true) int dixCallScreenAccessCallback(ClientPtr client, ScreenPtr screen, Mask access_mode)
 {
     ScreenAccessCallbackParam rec = { client, screen, access_mode, Success };
     CallCallbacks(&ScreenAccessCallback, &rec);

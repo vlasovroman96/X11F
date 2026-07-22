@@ -1367,7 +1367,7 @@ int FreePicture(void* value, XID pid)
                 dixDestroyPixmap(cast(PixmapPtr) pPicture.pDrawable, 0);
             }
         }
-        dixFreeObjectWithPrivates(pPicture, PRIVATE_PICTURE);
+        mixin(dixFreeObjectWithPrivatesM!("pPicture", "PRIVATE_PICTURE"));
     }
     return Success;
 }

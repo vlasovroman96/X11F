@@ -115,7 +115,7 @@ PixmapPtr AllocatePixmap(ScreenPtr pScreen, int pixDataSize)
 /* callable by ddx */
 void FreePixmap(PixmapPtr pPixmap)
 {
-    dixFiniPrivates(pPixmap, PRIVATE_PIXMAP);
+    mixin(dixFiniPrivates!("pPixmap", "PRIVATE_PIXMAP"));
     free(pPixmap);
 }
 

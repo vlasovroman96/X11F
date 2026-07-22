@@ -772,7 +772,7 @@ int FreeGC(void* value, XID gid)
         (*pGC.funcs.DestroyGC) (pGC);
     if (pGC.dash != DefaultDash.ptr)
         free(pGC.dash);
-    dixFreeObjectWithPrivates(pGC, PRIVATE_GC);
+    mixin(dixFreeObjectWithPrivatesM!("pGC", "PRIVATE_GC"));
     return Success;
 }
 

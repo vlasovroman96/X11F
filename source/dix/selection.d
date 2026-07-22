@@ -110,7 +110,7 @@ void InitSelections()
     pSel = CurrentSelections;
     while (pSel) {
         pNextSel = pSel.next;
-        dixFreeObjectWithPrivates(pSel, PRIVATE_SELECTION);
+        mixin(dixFreeObjectWithPrivatesM!("pSel", "PRIVATE_SELECTION"));
         pSel = pNextSel;
     }
 

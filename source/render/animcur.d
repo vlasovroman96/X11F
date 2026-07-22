@@ -333,7 +333,7 @@ int AnimCursorCreate(CursorPtr* cursors, CARD32* deltas, int ncursor, CursorPtr*
 
     if (rc != Success) {
         TimerFree(ac.timer);
-        dixFiniPrivates(pCursor, PRIVATE_CURSOR);
+        mixin(dixFiniPrivates!("pCursor", "PRIVATE_CURSOR"));
         free(pCursor);
         return rc;
     }

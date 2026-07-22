@@ -16,8 +16,6 @@
     "-P-I/usr/lib/dbus-1.0/include",
     "-P-Isource/Xext/dri2",
     "-P-I/usr/include/libdrm",
-    "-P-I/usr/include/X11/fonts",
-	"-P-I/usr/include",
     "-P-Isource",
     "-P-Isource/hw/xfree86/x86emu",
     "-P-Isource/externs",

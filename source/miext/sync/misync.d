@@ -116,7 +116,7 @@ void miSyncDestroyFence(SyncFence* pFence)
         pScreenPriv.funcs.DestroyFence(pScreen, pFence);
     }
 
-    dixFreeObjectWithPrivates(pFence, PRIVATE_SYNC_FENCE);
+    mixin(dixFreeObjectWithPrivatesM!("pFence", "PRIVATE_SYNC_FENCE"));
 }
 
 void miSyncTriggerFence(SyncFence* pFence)

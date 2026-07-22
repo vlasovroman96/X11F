@@ -74,6 +74,8 @@ import include.resource;
 import include.windowstr;
 import include.privates;
 import Xext.xace;
+import os.osinit;
+import std.conv;
 
 enum REDMAP = 0;
 enum GREENMAP = 1;
@@ -193,7 +195,7 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
 
     ColormapPtr pmap = void;
     if (mid == pScreen.defColormap) {
-        pmap = calloc(1, sizebytes);
+        pmap = cast(ColormapPtr)calloc(1, sizebytes);
         if (!pmap)
             return BadAlloc;
         if (!dixAllocatePrivates(&pmap.devPrivates, PRIVATE_COLORMAP)) {
@@ -202,7 +204,7 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
         }
     }
     else {
-        pmap = _dixAllocateObjectWithPrivates(sizebytes, sizebytes,
+        pmap = cast(ColormapPtr)_dixAllocateObjectWithPrivates(cast(uint)sizebytes, cast(uint)sizebytes,
                                               ColormapRec.devPrivates.offsetof,
                                               PRIVATE_COLORMAP);
         if (!pmap)
@@ -342,7 +344,7 @@ int FreeColormap(void* value, XID mid)
 
     if (!dixResouceIsServerOwned(mid)) {
         (*pmap.pScreen.UninstallColormap) (pmap);
-        WalkTree(pmap.pScreen, cast(VisitWindowProcPtr) TellNoMap, cast(void*) &mid);
+        WalkTree(pmap.pScreen, cast(VisitWindowProcPtr) &TellNoMap, cast(void*) &mid);
     }
 
     /* This is the device's chance to undo anything it needs to, especially
@@ -379,19 +381,21 @@ int FreeColormap(void* value, XID mid)
         free(pmap);
     }
     else
-        dixFreeObjectWithPrivates(pmap, PRIVATE_COLORMAP);
+        mixin(dixFreeObjectWithPrivatesM!("pmap", "PRIVATE_COLORMAP"));
     return Success;
 }
 
 /* Tell window that pmid has disappeared */
 private int TellNoMap(WindowPtr pwin, Colormap* pmid)
 {
-    if (wColormap(pwin) == *pmid) {
+    if (mixin(wColormap!("pwin")) == *pmid) {
         /* This should be call to DeliverEvent */
         xEvent xE;
-            xE.u.colormap.window = pwin.drawable.id;
+        pragma(msg, typeof(xE.u.colormap.window).stringof);
+// pragma(msg, typeof(pwin.drawable.id).stringof);
+            xE.u.colormap.window = cast(uint)pwin.drawable.id;
             xE.u.colormap.colormap = None;
-            xE.u.colormap.с_new = true;
+            xE.u.colormap.c_new = true;
             xE.u.colormap.state = ColormapUninstalled;
             xE.u.u.type = ColormapNotify;
 version (XINERAMA) {
@@ -420,7 +424,7 @@ version (XINERAMA) {
     if (!noPanoramiXExtension && pwin.drawable.pScreen.myNum)
         return WT_STOPWALKING;
 } /* XINERAMA */
-    if (wColormap(pwin) == *pmid) {
+    if (mixin(wColormap!("pwin")) == *pmid) {
         /* This should be call to DeliverEvent */
         // xEvent xE = {
         //     u:colormap:window: cast(uint)pWin.drawable.id,
@@ -429,9 +433,9 @@ version (XINERAMA) {
         //     u:colormap:state: ColormapUninstalled
         // };
         xEvent xE;
-            xE.u.colormap.window = pwin.drawable.id;
-            xE.u.colormap.colormap = *pmid;
-            xE.u.colormap.с_new = false;
+            xE.u.colormap.window = cast(uint)pwin.drawable.id;
+            xE.u.colormap.colormap = cast(uint)*pmid;
+            xE.u.colormap.c_new = false;
             xE.u.colormap.state = ColormapUninstalled;
             // xE.u.u.type = ColormapNotify;
             xE.u.u.type = ColormapNotify;
@@ -450,12 +454,12 @@ version (XINERAMA) {
     if (!noPanoramiXExtension && pwin.drawable.pScreen.myNum)
         return WT_STOPWALKING;
 } /* XINERAMA */
-    if (wColormap(pwin) == *pmid) {
+    if (mixin(wColormap!("pwin")) == *pmid) {
         /* This should be call to DeliverEvent */
         xEvent xE;
-            xE.u.colormap.window = pwin.drawable.id;
-            xE.u.colormap.colormap = *pmid;
-            xE.u.colormap.с_new = false;
+            xE.u.colormap.window = cast(uint)pwin.drawable.id;
+            xE.u.colormap.colormap = cast(uint)*pmid;
+            xE.u.colormap.c_new = false;
             xE.u.colormap.state = ColormapInstalled;
             // xE.u.u.type = ColormapNotify;
             xE.u.u.type = ColormapNotify;
@@ -596,15 +600,15 @@ private void FreeCell(ColormapPtr pmap, Pixel i, int channel)
     default:         /* so compiler can see that everything gets initialized */
     case PSEUDOMAP:
     case REDMAP:
-        pent = (EntryPtr) &pmap.red[i];
+        pent = cast(EntryPtr) &pmap.red[i];
         pCount = &pmap.freeRed;
         break;
     case GREENMAP:
-        pent = (EntryPtr) &pmap.green[i];
+        pent = cast(EntryPtr) &pmap.green[i];
         pCount = &pmap.freeGreen;
         break;
     case BLUEMAP:
-        pent = (EntryPtr) &pmap.blue[i];
+        pent = cast(EntryPtr) &pmap.blue[i];
         pCount = &pmap.freeBlue;
         break;
     }
@@ -650,7 +654,7 @@ private void doUpdateColors(ColormapPtr pmap)
             pdef.red = pmap.red[i].co.local.red;
             pdef.green = pmap.green[i].co.local.green;
             pdef.blue = pmap.blue[i].co.local.blue;
-            pdef.flags = DoRed | DoGreen | DoBlue;
+            pdef.flags =cast(ubyte)( DoRed | DoGreen | DoBlue);
             pdef++;
             n++;
         }
@@ -671,7 +675,7 @@ private void doUpdateColors(ColormapPtr pmap)
                 pdef.green = pent.co.local.green;
                 pdef.blue = pent.co.local.blue;
             }
-            pdef.flags = DoRed | DoGreen | DoBlue;
+            pdef.flags =cast(ubyte)( DoRed | DoGreen | DoBlue);
             pdef++;
             n++;
         }
@@ -697,6 +701,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
     bool foundFree = FALSE;
     int count = void;
     EntryPtr pent = void;
+    xColorItem def = void;
     for (pent = pentFirst + pixel, count = size; --count >= 0;) {
         if (pent.refcnt > 0) {
             if ((*comp) (pent, prgb)) {
@@ -706,6 +711,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
                 switch (channel) {
                 case REDMAP:
                     *pPixel <<= pmap.pVisual.offsetRed;
+                goto case PSEUDOMAP;
                 case PSEUDOMAP:
                     break;
                 case GREENMAP:
@@ -745,7 +751,6 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
     pent.fShared = FALSE;
     pent.refcnt = (client >= 0) ? 1 : AllocTemporary;
 
-    xColorItem def = void;
     switch (channel) {
     case PSEUDOMAP:
         pent.co.local.red = prgb.red;
@@ -754,7 +759,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
         def.red = prgb.red;
         def.green = prgb.green;
         def.blue = prgb.blue;
-        def.flags = (DoRed | DoGreen | DoBlue);
+        def.flags = cast(ubyte)(DoRed | DoGreen | DoBlue);
         if (client >= 0)
             pmap.freeRed--;
         def.pixel = Free;
@@ -765,7 +770,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
         def.red = prgb.red;
         def.green = pmap.green[0].co.local.green;
         def.blue = pmap.blue[0].co.local.blue;
-        def.flags = DoRed;
+        def.flags = cast(ubyte)DoRed;
         if (client >= 0)
             pmap.freeRed--;
         def.pixel = Free << pmap.pVisual.offsetRed;
@@ -776,7 +781,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
         def.red = pmap.red[0].co.local.red;
         def.green = prgb.green;
         def.blue = pmap.blue[0].co.local.blue;
-        def.flags = DoGreen;
+        def.flags = cast(ubyte)DoGreen;
         if (client >= 0)
             pmap.freeGreen--;
         def.pixel = Free << pmap.pVisual.offsetGreen;
@@ -787,7 +792,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
         def.red = pmap.red[0].co.local.red;
         def.green = pmap.green[0].co.local.green;
         def.blue = prgb.blue;
-        def.flags = DoBlue;
+        def.flags = cast(ubyte)DoBlue;
         if (client >= 0)
             pmap.freeBlue--;
         def.pixel = Free << pmap.pVisual.offsetBlue;
@@ -854,12 +859,12 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
 int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pixel* pPix, int client)
 {
     VisualPtr pVisual = pmap.pVisual;
-    (*pmap.pScreen.ResolveColor) (pred, pgreen, pblue, pVisual);
-    xrgb rgb = {
+    (*pmap.pScreen.ResolveColor) (cast(ubyte*)pred, cast(ubyte*)pgreen, cast(ubyte*)pblue, pVisual);
+    xrgb rgb;
         rgb.red = *pred,
         rgb.green = *pgreen,
-        rgb.blue = *pblue,
-    };
+        rgb.blue = *pblue;
+    // };
 
     int class_ = pmap.class_;
     int entries = pVisual.ColormapEntries;
@@ -887,7 +892,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         *pgreen = pmap.red[pixR].co.local.green;
         *pblue = pmap.red[pixR].co.local.blue;
         npix = pmap.numPixelsRed[client];
-        ppix = reallocarray(pmap.clientPixelsRed[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
@@ -909,21 +914,21 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         *pgreen = pmap.green[pixG].co.local.green;
         *pblue = pmap.blue[pixB].co.local.blue;
         npix = pmap.numPixelsRed[client];
-        ppix = reallocarray(pmap.clientPixelsRed[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
         ppix[npix] = pixR;
         pmap.clientPixelsRed[client] = ppix;
         npix = pmap.numPixelsGreen[client];
-        ppix = reallocarray(pmap.clientPixelsGreen[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsGreen[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
         ppix[npix] = pixG;
         pmap.clientPixelsGreen[client] = ppix;
         npix = pmap.numPixelsBlue[client];
-        ppix = reallocarray(pmap.clientPixelsBlue[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsBlue[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
@@ -946,10 +951,10 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
 
             if (pmap.class_ == prootmap.class_)
                 FindColorInRootCmap(prootmap, prootmap.red, entries, &rgb,
-                                    pPix, PSEUDOMAP, AllComp);
+                                    pPix, PSEUDOMAP, &AllComp);
         }
         if (FindColor(pmap, pmap.red, entries, &rgb, pPix, PSEUDOMAP,
-                      client, AllComp) != Success)
+                      client, &AllComp) != Success)
             return BadAlloc;
         break;
 
@@ -965,30 +970,30 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
             if (pmap.class_ == prootmap.class_) {
                 pixR = (*pPix & pVisual.redMask) >> pVisual.offsetRed;
                 FindColorInRootCmap(prootmap, prootmap.red, entries, &rgb,
-                                    &pixR, REDMAP, RedComp);
+                                    &pixR, REDMAP, &RedComp);
                 pixG = (*pPix & pVisual.greenMask) >> pVisual.offsetGreen;
                 FindColorInRootCmap(prootmap, prootmap.green, entries, &rgb,
-                                    &pixG, GREENMAP, GreenComp);
+                                    &pixG, GREENMAP, &GreenComp);
                 pixB = (*pPix & pVisual.blueMask) >> pVisual.offsetBlue;
                 FindColorInRootCmap(prootmap, prootmap.blue, entries, &rgb,
-                                    &pixB, BLUEMAP, BlueComp);
+                                    &pixB, BLUEMAP, &BlueComp);
                 *pPix = pixR | pixG | pixB;
             }
         }
 
         pixR = (*pPix & pVisual.redMask) >> pVisual.offsetRed;
         if (FindColor(pmap, pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, &pixR, REDMAP,
-                      client, RedComp) != Success)
+                      client, &RedComp) != Success)
             return BadAlloc;
         pixG = (*pPix & pVisual.greenMask) >> pVisual.offsetGreen;
         if (FindColor(pmap, pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb, &pixG,
-                      GREENMAP, client, GreenComp) != Success) {
+                      GREENMAP, client, &GreenComp) != Success) {
             cast(void) FreeCo(pmap, client, REDMAP, 1, &pixR, cast(Pixel) 0);
             return BadAlloc;
         }
         pixB = (*pPix & pVisual.blueMask) >> pVisual.offsetBlue;
         if (FindColor(pmap, pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, &pixB, BLUEMAP,
-                      client, BlueComp) != Success) {
+                      client, &BlueComp) != Success) {
             cast(void) FreeCo(pmap, client, GREENMAP, 1, &pixG, cast(Pixel) 0);
             cast(void) FreeCo(pmap, client, REDMAP, 1, &pixR, cast(Pixel) 0);
             return BadAlloc;
@@ -1034,7 +1039,7 @@ void FakeAllocColor(ColormapPtr pmap, xColorItem* item)
         green: item.green,
         blue: item.blue
     };
-    (*pmap.pScreen.ResolveColor) (&rgb.red, &rgb.green, &rgb.blue, pVisual);
+    (*pmap.pScreen.ResolveColor) (cast(ubyte*)&rgb.red, cast(ubyte*)&rgb.green, cast(ubyte*)&rgb.blue, pVisual);
 
     int class_ = pmap.class_;
     int entries = pVisual.ColormapEntries;
@@ -1046,13 +1051,14 @@ void FakeAllocColor(ColormapPtr pmap, xColorItem* item)
         Pixel temp = 0;
         item.pixel = 0;
         if (FindColor(pmap, pmap.red, entries, &rgb, &temp, PSEUDOMAP,
-                      -1, AllComp) == Success) {
+                      -1, &AllComp) == Success) {
             item.pixel = temp;
             break;
         }
         /* fall through ... */
-    }
+    } goto case StaticColor;
     case StaticColor:
+    goto case StaticColor;
     case StaticGray:
         item.pixel = FindBestPixel(pmap.red, entries, &rgb, PSEUDOMAP);
         break;
@@ -1064,15 +1070,15 @@ void FakeAllocColor(ColormapPtr pmap, xColorItem* item)
         Pixel pixG = (item.pixel & pVisual.greenMask) >> pVisual.offsetGreen;
         Pixel pixB = (item.pixel & pVisual.blueMask) >> pVisual.offsetBlue;
         if (FindColor(pmap, pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, &pixR, REDMAP,
-                      -1, RedComp) != Success)
+                      -1, &RedComp) != Success)
             pixR = FindBestPixel(pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, REDMAP)
                 << pVisual.offsetRed;
         if (FindColor(pmap, pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb, &pixG,
-                      GREENMAP, -1, GreenComp) != Success)
+                      GREENMAP, -1, &GreenComp) != Success)
             pixG = FindBestPixel(pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb,
                                  GREENMAP) << pVisual.offsetGreen;
         if (FindColor(pmap, pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, &pixB, BLUEMAP,
-                      -1, BlueComp) != Success)
+                      -1, &BlueComp) != Success)
             pixB = FindBestPixel(pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP)
                 << pVisual.offsetBlue;
         item.pixel = pixR | pixG | pixB;
@@ -1137,11 +1143,11 @@ alias BigNumPtr = _bignum*;
 enum string BigNumGreater(string x,string y) = `(((` ~ x ~ `).upper > (` ~ y ~ `).upper) ||
 			    ((` ~ x ~ `).upper == (` ~ y ~ `).upper && (` ~ x ~ `).lower > (` ~ y ~ `).lower))`;
 
-enum string UnsignedToBigNum(string u,string r) = `(((` ~ r ~ `).upper = ` ~ UPPERPART!(u) ~ `), 
-				 ((` ~ r ~ `).lower = ` ~ LOWERPART!(u) ~ `))`;
+enum string UnsignedToBigNum(string u,string r) = `(((` ~ r ~ `).upper = cast(ushort)` ~ UPPERPART!(u) ~ `), 
+				 ((` ~ r ~ `).lower = ` ~ LOWERPART!(u) ~ `));`;
 
 enum string MaxBigNum(string r) = `(((` ~ r ~ `).upper = BIGNUMUPPER-1), 
-				 ((` ~ r ~ `).lower = BIGNUMLOWER-1))`;
+				 ((` ~ r ~ `).lower = BIGNUMLOWER-1));`;
 
 private void BigNumAdd(BigNumPtr x, BigNumPtr y, BigNumPtr r)
 {
@@ -1152,7 +1158,7 @@ private void BigNumAdd(BigNumPtr x, BigNumPtr y, BigNumPtr r)
         carry = 1;
     }
     r.lower = lower;
-    r.upper = x.upper + y.upper + carry;
+    r.upper = cast(ushort)(x.upper + y.upper + carry);
 }
 
 private Pixel FindBestPixel(EntryPtr pentFirst, int size, xrgb* prgb, int channel)
@@ -1173,6 +1179,7 @@ private Pixel FindBestPixel(EntryPtr pentFirst, int size, xrgb* prgb, int channe
             dg = cast(c_long) pent.co.local.green - prgb.green;
             db = cast(c_long) pent.co.local.blue - prgb.blue;
             /* fallthrough */
+        goto case;
         case REDMAP:
             dr = cast(c_long) pent.co.local.red - prgb.red;
             break;
@@ -1315,7 +1322,7 @@ int QueryColors(ColormapPtr pmap, int count, Pixel* ppixIn, xrgb* prgbList, Clie
                 errVal = BadValue;
             }
             else {
-                EntryPtr pent = (EntryPtr) &pmap.red[pixel];
+                EntryPtr pent = cast(EntryPtr) &pmap.red[pixel];
                 if (pent.fShared) {
                     prgb.red = pent.co.shco.red.color;
                     prgb.green = pent.co.shco.green.color;
@@ -1380,7 +1387,7 @@ int FreeClientPixels(void* value, XID fakeid)
 {
     cast(void) fakeid;
     void* pmap = void;
-    colorResource* pcr = value;
+    colorResource* pcr = cast(colorResource*)value;
 
     int rc = dixLookupResourceByType(&pmap, pcr.mid, X11_RESTYPE_COLORMAP, serverClient,
                                  DixRemoveAccess);
@@ -1562,17 +1569,17 @@ private int AllocDirect(int client, ColormapPtr pmap, int c, int r, int g, int b
     Pixel* rpix = null, gpix = null, bpix = null;
 
     if (okR && okG && okB) {
-        rpix = reallocarray(pmap.clientPixelsRed[client],
+        rpix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             pmap.numPixelsRed[client] + (c << r),
                             Pixel.sizeof);
         if (rpix)
             pmap.clientPixelsRed[client] = rpix;
-        gpix = reallocarray(pmap.clientPixelsGreen[client],
+        gpix = cast(uint*)reallocarray(pmap.clientPixelsGreen[client],
                             pmap.numPixelsGreen[client] + (c << g),
                             Pixel.sizeof);
         if (gpix)
             pmap.clientPixelsGreen[client] = gpix;
-        bpix = reallocarray(pmap.clientPixelsBlue[client],
+        bpix = cast(uint*)reallocarray(pmap.clientPixelsBlue[client],
                             pmap.numPixelsBlue[client] + (c << b),
                             Pixel.sizeof);
         if (bpix)
@@ -1649,7 +1656,7 @@ private int AllocPseudo(int client, ColormapPtr pmap, int c, int r, Bool contig,
         return BadAlloc;
 
     Pixel* ppixTemp = void;
-    if (((ppixTemp = cast(Pixel*) calloc(npix, Pixel.sizeof)) == 0))
+    if (((ppixTemp = cast(Pixel*) calloc(npix, Pixel.sizeof)) is null))
         return BadAlloc;
 
     Bool ok = AllocCP(pmap, pmap.red, c, r, contig, ppixTemp, pmask);
@@ -1657,7 +1664,7 @@ private int AllocPseudo(int client, ColormapPtr pmap, int c, int r, Bool contig,
 
         /* all the allocated pixels are added to the client pixel list,
          * but only the unique ones are returned to the client */
-        Pixel* ppix = reallocarray(pmap.clientPixelsRed[client],
+        Pixel* ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             pmap.numPixelsRed[client] + npix, Pixel.sizeof);
         if (!ppix) {
             for (Pixel* p = ppixTemp; p < ppixTemp + npix; p++)
@@ -1796,7 +1803,7 @@ private Bool AllocCP(ColormapPtr pmap, EntryPtr pentFirst, int count, int planes
     for (mask = ((cast(Pixel) 3) << (planes - 1)) - 1; mask <= finalmask; mask++) {
         /* next 3 magic statements count number of ones (HAKMEM #169) */
         Pixel pixel = (mask >> 1) & octal!"033333333333";
-        pixel = mask - pixel - ((pixel >> 1) & octal!"033333333333");
+        pixel = cast(uint)(mask - pixel - ((pixel >> 1) & octal!"033333333333"));
         if ((((pixel + (pixel >> 3)) & octal!"030707070707") % octal!"077") != planes)
             continue;
         Pixel* ppix = pixels;
@@ -1852,7 +1859,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
 
     SHAREDCOLOR** ppshared = psharedList;
     for (int z = npixShared; --z >= 0;) {
-        if (((ppshared[z] = cast(SHAREDCOLOR*) calloc(1, SHAREDCOLOR.sizeof)) == 0)) {
+        if (((ppshared[z] = cast(SHAREDCOLOR*) calloc(1, SHAREDCOLOR.sizeof)) is null)) {
             for (z++; z < npixShared; z++)
                 free(ppshared[z]);
             free(psharedList);
@@ -1871,7 +1878,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
             Pixel base = mixin(lowbit!rmask);
             while (1) {
                 pshared = *ppshared++;
-                pshared.refcnt = 1 << (g + b);
+                pshared.refcnt = cast(short)(1 << (g + b));
                 int z = npixClientNew;
                 for (Pixel* cptr = ppixFirst; --z >= 0; cptr++) {
                     if ((*cptr & basemask) == (common | bits)) {
@@ -1884,7 +1891,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
         }
         else {
             pshared = *ppshared++;
-            pshared.refcnt = 1 << (g + b);
+            pshared.refcnt = cast(short)(1 << (g + b));
             int z = npixClientNew;
             for (Pixel* cptr = ppixFirst; --z >= 0; cptr++) {
                 if ((*cptr & basemask) == common) {
@@ -1900,7 +1907,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
             Pixel base = mixin(lowbit!gmask);
             while (1) {
                 pshared = *ppshared++;
-                pshared.refcnt = 1 << (r + b);
+                pshared.refcnt = cast(short)(1 << (r + b));
                 int z = npixClientNew;
                 for (Pixel* cptr = ppixFirst; --z >= 0; cptr++) {
                     if ((*cptr & basemask) == (common | bits)) {
@@ -1912,7 +1919,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
         }
         else {
             pshared = *ppshared++;
-            pshared.refcnt = 1 << (g + b);
+            pshared.refcnt = cast(short)(1 << (g + b));
             int z = npixClientNew;
             for (Pixel* cptr = ppixFirst; --z >= 0; cptr++) {
                 if ((*cptr & basemask) == common) {
@@ -1927,7 +1934,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
             Pixel base = mixin(lowbit!bmask);
             while (1) {
                 pshared = *ppshared++;
-                pshared.refcnt = 1 << (r + g);
+                pshared.refcnt = cast(short)(1 << (r + g));
                 int z = npixClientNew;
                 for (Pixel* cptr = ppixFirst; --z >= 0; cptr++) {
                     if ((*cptr & basemask) == (common | bits)) {
@@ -1939,7 +1946,7 @@ private Bool AllocShared(ColormapPtr pmap, Pixel* ppix, int c, int r, int g, int
         }
         else {
             pshared = *ppshared++;
-            pshared.refcnt = 1 << (g + b);
+            pshared.refcnt = cast(short)(1 << (g + b));
             int z = npixClientNew;
             for (Pixel* cptr = ppixFirst; --z >= 0; cptr++) {
                 if ((*cptr & basemask) == common) {
@@ -2154,7 +2161,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
             bool ok = TRUE;
 
             (*pmap.pScreen.ResolveColor)
-                (&pdef.red, &pdef.green, &pdef.blue, pmap.pVisual);
+                (cast(ubyte*)&pdef.red, cast(ubyte*)&pdef.green, cast(ubyte*)&pdef.blue, pmap.pVisual);
 
             if (pdef.pixel & rgbbad) {
                 errVal = BadValue;
@@ -2249,7 +2256,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
                 continue;
 
             (*pmap.pScreen.ResolveColor)
-                (&pdef.red, &pdef.green, &pdef.blue, pmap.pVisual);
+                (cast(ubyte*)&pdef.red, cast(ubyte*)&pdef.green, cast(ubyte*)&pdef.blue, pmap.pVisual);
 
             EntryPtr pent = &pmap.red[pdef.pixel];
 
@@ -2326,16 +2333,16 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
 
                         defChg.flags = 0;
                         if (ChgRed && pentT.co.shco.red == pred) {
-                            defChg.flags |= DoRed;
+                            defChg.flags |= cast(ubyte)DoRed;
                         }
                         if (ChgGreen && pentT.co.shco.green == pgreen) {
-                            defChg.flags |= DoGreen;
+                            defChg.flags |= cast(ubyte)DoGreen;
                         }
                         if (ChgBlue && pentT.co.shco.blue == pblue) {
-                            defChg.flags |= DoBlue;
+                            defChg.flags |= cast(ubyte)DoBlue;
                         }
                         if (defChg.flags != 0) {
-                            defChg.pixel = pentT - pmap.red;
+                            defChg.pixel = cast(uint)(pentT - pmap.red);
                             defChg.red = pentT.co.shco.red.color;
                             defChg.green = pentT.co.shco.green.color;
                             defChg.blue = pentT.co.shco.blue.color;
@@ -2384,15 +2391,15 @@ struct colormap_lookup_data {
 private void _colormap_find_resource(void* value, XID id, void* cdata)
 {
     cast(void) id;
-    colormap_lookup_data* cmap_data = cdata;
+    colormap_lookup_data* cmap_data = cast(colormap_lookup_data*)cdata;
     VisualPtr visuals = cmap_data.visuals;
     ScreenPtr pScreen = cmap_data.pScreen;
-    ColormapPtr cmap = value;
+    ColormapPtr cmap = cast(ColormapPtr)value;
 
     if (pScreen != cmap.pScreen)
         return;
 
-    int j = cmap.pVisual - pScreen.visuals;
+    int j = cast(int)(cmap.pVisual - pScreen.visuals);
     cmap.pVisual = &visuals[j];
 }
 
@@ -2403,7 +2410,7 @@ Bool ResizeVisualArray(ScreenPtr pScreen, int new_visual_count, DepthPtr depth)
     int first_new_vid = depth.numVids;
     int first_new_visual = pScreen.numVisuals;
 
-    XID* vids = reallocarray(depth.vids, depth.numVids + new_visual_count,
+    XID* vids = cast(ulong*)reallocarray(depth.vids, depth.numVids + new_visual_count,
                         XID.sizeof);
     if (!vids)
         return FALSE;

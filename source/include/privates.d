@@ -20,6 +20,7 @@ enum PRIVATES_H = 1;
 // //public import externs.X11.Xfuncproto;
 public import core.stdc.assert_;
 public import include.misc;
+public import dix.privates;
 
 /*****************************************************************
  * STUFF FOR PRIVATES
@@ -317,13 +318,13 @@ enum string dixFiniPrivates(string o,string t) = `_dixFiniPrivates((` ~ o ~ `).d
  * for almost all objects, except for the list described
  * above for dixAllocatePrivates.
  */
-extern int* _dixAllocateObjectWithPrivates(uint size, uint clear, uint offset, DevPrivateType type);
+// extern int* _dixAllocateObjectWithPrivates(uint size, uint clear, uint offset, DevPrivateType type);
 
 enum string dixAllocateObjectWithPrivates(string t, string type) = `cast(`~t~`*) _dixAllocateObjectWithPrivates(` ~ t ~ `.sizeof, ` ~ t ~ `.sizeof, `~t~`.devPrivates.offsetof, ` ~ type ~ `)`;
 
-extern int _dixFreeObjectWithPrivates(void* object, PrivatePtr privates, DevPrivateType type);
+// extern int _mixin(dixFreeObjectWithPrivatesM!("void* object", "PrivatePtr privates, DevPrivateType type"));
 
-enum string dixFreeObjectWithPrivates(string o,string t) = `_dixFreeObjectWithPrivates(` ~ o ~ `, (` ~ o ~ `).devPrivates, ` ~ t ~ `)`;
+enum string dixFreeObjectWithPrivatesM(string o, string t) = `dixFreeObjectWithPrivates(` ~ o ~ `, ` ~ o ~ `.devPrivates, ` ~ t ~ `);`;
 
 /*
  * Return size of privates for the specified type
