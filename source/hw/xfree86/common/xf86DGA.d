@@ -1038,8 +1038,8 @@ private void DGAProcessPointerEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIn
             ev.corestate = event.state;
             /* DGA is core only, so valuators.data doesn't actually matter.
              * Mask must be set for EventToCore to create motion events. */
-            SetBit(ev.valuators.mask, 0);
-            SetBit(ev.valuators.mask, 1);
+            mixin(SetBit!("ev.valuators.mask", "0"));
+            mixin(SetBit!("ev.valuators.mask", "1"));
             DeliverGrabbedEvent(cast(InternalEvent*) &ev, mouse, FALSE);
         }
     }

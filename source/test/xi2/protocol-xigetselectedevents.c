@@ -198,7 +198,7 @@ test_XIGetSelectedEvents(void)
         mask = test_data.mask[j];
         /* bits one-by-one */
         for (i = 0; i < XI2LASTEVENT; i++) {
-            SetBit(mask, i);
+            mixin(SetBit!("mask", "i"));
             XISetEventMask(&dev, &root, &client, (i + 8) / 8, mask);
             request_XIGetSelectedEvents(&request, Success);
             ClearBit(mask, i);
@@ -206,7 +206,7 @@ test_XIGetSelectedEvents(void)
 
         /* all valid mask bits */
         for (i = 0; i < XI2LASTEVENT; i++) {
-            SetBit(mask, i);
+            mixin(SetBit!("mask", "i"));
             XISetEventMask(&dev, &root, &client, (i + 8) / 8, mask);
             request_XIGetSelectedEvents(&request, Success);
         }

@@ -36,8 +36,8 @@ import build.dix_config;
 
 //import externs.X11.X;              /* for inputstr.h    */
 //import externs.X11.Xproto;         /* Request macro     */
-//import externs.X11.extensions.XI;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI;
+import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.eventconvert;
@@ -58,7 +58,8 @@ import include.extnsionst;
 import Xi.exglobals;
 import include.scrnintstr;
 import include.xkbsrv;
-
+import dix.devices;
+import dix.dixutils;
 /***********************************************************************
  *
  * This procedure allows a client to query the pointer of a device.
@@ -129,8 +130,8 @@ int ProcXIQueryPointer(ClientPtr client)
         reply.mods.latched_mods = state.latched_mods;
         reply.mods.locked_mods = state.locked_mods;
 
-        reply.group.base_group = state.base_group;
-        reply.group.latched_group = state.latched_group;
+        reply.group.base_group = cast(ubyte)state.base_group;
+        reply.group.latched_group = cast(ubyte)state.latched_group;
         reply.group.locked_group = state.locked_group;
     }
 
@@ -140,17 +141,17 @@ int ProcXIQueryPointer(ClientPtr client)
         int i = void;
 
         const(int) buttons_size = bits_to_bytes(256); /* button map up to 255 */
-        reply.buttons_len = bytes_to_int32(buttons_size);
-        char* buttons = x_rpcbuf_reserve(&rpcbuf, buttons_size);
+        reply.buttons_len = cast(ushort)bytes_to_int32(buttons_size);
+        char* buttons = cast(char*)x_rpcbuf_reserve(&rpcbuf, buttons_size);
         if (!buttons)
             return BadAlloc;
 
         for (i = 1; i < pDev.button.numButtons; i++)
             if (mixin(BitIsOn!("pDev.button.down", "i")))
-                SetBit(buttons, pDev.button.map[i]);
+                mixin(SetBit!("buttons", "pDev.button.map[i]"));
 
         if (!have_xi22 && pDev.touch && pDev.touch.buttonsDown > 0)
-            SetBit(buttons, pDev.button.map[1]);
+            mixin(SetBit!("buttons", "pDev.button.map[1]"));
     }
 
     if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
@@ -159,7 +160,7 @@ int ProcXIQueryPointer(ClientPtr client)
         reply.win_y = double_to_fp1616(pSprite.hot.y - pWin.drawable.y);
         for (t = pSprite.win; t; t = t.parent)
             if (t.parent == pWin) {
-                reply.child = t.drawable.id;
+                reply.child = cast(uint)t.drawable.id;
                 break;
             }
     }

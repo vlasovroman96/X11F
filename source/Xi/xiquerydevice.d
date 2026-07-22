@@ -36,6 +36,8 @@ import build.dix_config;
 //import externs.X11.X;
 //import externs.X11.Xatom;
 import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI;
+
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -54,12 +56,14 @@ import include.xserver_properties;
 import Xi.exglobals;
 import include.privates;
 import Xi.xiquerydevice;
+import dix.devices;
+import os.log;
 
-static Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr d);
-static int
- ListDeviceInfo(ClientPtr client, DeviceIntPtr dev, xXIDeviceInfo * info);
-static int SizeDeviceInfo(DeviceIntPtr dev);
-static void SwapDeviceInfo(DeviceIntPtr dev, xXIDeviceInfo * info);
+// static Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr d);
+// static int
+//  ListDeviceInfo(ClientPtr client, DeviceIntPtr dev, xXIDeviceInfo * info);
+// static int SizeDeviceInfo(DeviceIntPtr dev);
+// static void SwapDeviceInfo(DeviceIntPtr dev, xXIDeviceInfo * info);
 
 int ProcXIQueryDevice(ClientPtr client)
 {
@@ -101,7 +105,7 @@ int ProcXIQueryDevice(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    info = x_rpcbuf_reserve(&rpcbuf, len);
+    info = cast(char*)x_rpcbuf_reserve(&rpcbuf, len);
     if (!info) {
         free(skip);
         return BadAlloc;
@@ -171,7 +175,7 @@ private int SizeDeviceInfo(DeviceIntPtr dev)
     int len = xXIDeviceInfo.sizeof;
 
     /* 4-padded name */
-    len += pad_to_int32(strlen(dev.name));
+    len += pad_to_int32(cast(int)strlen(dev.name));
 
     return len + SizeDeviceClasses(dev);
 
@@ -244,18 +248,18 @@ int ListButtonInfo(DeviceIntPtr dev, xXIButtonInfo* info, Bool reportState)
     info.type = ButtonClass;
     info.num_buttons = dev.button.numButtons;
     ButtonInfoData(info, &mask_len, &bits, &labels);
-    info.length = bytes_to_int32(xXIButtonInfo.sizeof) +
-        info.num_buttons + mask_len;
-    info.sourceid = dev.button.sourceid;
+    info.length = cast(ushort)(bytes_to_int32(xXIButtonInfo.sizeof) +
+        info.num_buttons + cast(ushort)mask_len);
+    info.sourceid = cast(ushort)dev.button.sourceid;
 
     memset(bits, 0, mask_len * 4);
 
     if (reportState)
         for (i = 0; i < dev.button.numButtons; i++)
             if (mixin(BitIsOn!("dev.button.down", "i")))
-                SetBit(bits, i);
+                mixin(SetBit!("bits", "i"));
 
-    memcpy(labels, dev.button.labels, dev.button.numButtons * Atom.sizeof);
+    memcpy(labels, dev.button.labels.ptr, dev.button.numButtons * Atom.sizeof);
 
     return info.length * 4;
 }
@@ -290,9 +294,9 @@ int ListKeyInfo(DeviceIntPtr dev, xXIKeyInfo* info)
     uint* kc = void;
 
     info.type = KeyClass;
-    info.num_keycodes = xkb.max_key_code - xkb.min_key_code + 1;
-    info.length = xXIKeyInfo.sizeof / 4 + info.num_keycodes;
-    info.sourceid = dev.key.sourceid;
+    info.num_keycodes = cast(ushort)(xkb.max_key_code - xkb.min_key_code + 1);
+    info.length = cast(ushort)(xXIKeyInfo.sizeof / 4 + info.num_keycodes);
+    info.sourceid = cast(ushort)dev.key.sourceid;
 
     kc = cast(uint*) &info[1];
     for (i = xkb.min_key_code; i <= xkb.max_key_code; i++, kc++)
@@ -328,16 +332,16 @@ int ListValuatorInfo(DeviceIntPtr dev, xXIValuatorInfo* info, int axisnumber, Bo
 
     info.type = ValuatorClass;
     info.length = xXIValuatorInfo.sizeof / 4;
-    info.label = v.axes[axisnumber].label;
+    info.label = cast(uint)v.axes[axisnumber].label;
     info.min.integral = v.axes[axisnumber].min_value;
     info.min.frac = 0;
     info.max.integral = v.axes[axisnumber].max_value;
     info.max.frac = 0;
     info.value = double_to_fp3232(v.axisVal[axisnumber]);
     info.resolution = v.axes[axisnumber].resolution;
-    info.number = axisnumber;
-    info.mode = valuator_get_mode(dev, axisnumber);
-    info.sourceid = v.sourceid;
+    info.number = cast(ushort)axisnumber;
+    info.mode = cast(ubyte)valuator_get_mode(dev, axisnumber);
+    info.sourceid = cast(ushort)v.sourceid;
 
     if (!reportState)
         info.value = info.min;
@@ -371,7 +375,7 @@ int ListScrollInfo(DeviceIntPtr dev, xXIScrollInfo* info, int axisnumber)
 
     info.type = XIScrollClass;
     info.length = xXIScrollInfo.sizeof / 4;
-    info.number = axisnumber;
+    info.number = cast(ushort)axisnumber;
     switch (axis.scroll.type) {
     case SCROLL_TYPE_VERTICAL:
         info.scroll_type = XIScrollTypeVertical;
@@ -385,7 +389,7 @@ int ListScrollInfo(DeviceIntPtr dev, xXIScrollInfo* info, int axisnumber)
         break;
     }
     info.increment = double_to_fp3232(axis.scroll.increment);
-    info.sourceid = v.sourceid;
+    info.sourceid = cast(ushort)v.sourceid;
 
     info.flags = 0;
 
@@ -416,10 +420,10 @@ private void SwapScrollInfo(DeviceIntPtr dev, xXIScrollInfo* info)
 int ListTouchInfo(DeviceIntPtr dev, xXITouchInfo* touch)
 {
     touch.type = XITouchClass;
-    touch.length = xXITouchInfo.sizeof >> 2;
-    touch.sourceid = dev.touch.sourceid;
+    touch.length = (xXITouchInfo.sizeof >> 2);
+    touch.sourceid = cast(ushort)dev.touch.sourceid;
     touch.mode = dev.touch.mode;
-    touch.num_touches = dev.touch.num_touches;
+    touch.num_touches = cast(ubyte)dev.touch.num_touches;
 
     return touch.length << 2;
 }
@@ -456,8 +460,8 @@ private int ListGestureInfo(DeviceIntPtr dev, xXIGestureInfo* gesture)
 {
     gesture.type = XIGestureClass;
     gesture.length = xXIGestureInfo.sizeof >> 2;
-    gesture.sourceid = dev.gesture.sourceid;
-    gesture.num_touches = dev.gesture.max_touches;
+    gesture.sourceid = cast(ushort)dev.gesture.sourceid;
+    gesture.num_touches = cast(ubyte)dev.gesture.max_touches;
 
     return gesture.length << 2;
 }
@@ -478,11 +482,11 @@ int GetDeviceUse(DeviceIntPtr dev, ushort* attachment)
         DeviceIntPtr paired = GetPairedDevice(dev);
 
         use = IsPointerDevice(dev) ? XIMasterPointer : XIMasterKeyboard;
-        *attachment = (paired ? paired.id : 0);
+        *attachment = (paired ? cast(ushort)paired.id : 0);
     }
     else if (!InputDevIsFloating(dev)) {
         use = IsPointerDevice(master) ? XISlavePointer : XISlaveKeyboard;
-        *attachment = master.id;
+        *attachment = cast(ushort)master.id;
     }
     else
         use = XIFloatingSlave;
@@ -502,11 +506,11 @@ private int ListDeviceInfo(ClientPtr client, DeviceIntPtr dev, xXIDeviceInfo* in
     char* any = cast(char*) &info[1];
     int len = 0, total_len = 0;
 
-    info.deviceid = dev.id;
-    info.use = GetDeviceUse(dev, &info.attachment);
+    info.deviceid = cast(ushort)dev.id;
+    info.use = cast(ushort)GetDeviceUse(dev, &info.attachment);
     info.num_classes = 0;
-    info.name_len = strlen(dev.name);
-    info.enabled = dev.enabled;
+    info.name_len = cast(ushort)strlen(dev.name);
+    info.enabled = cast(ubyte)dev.enabled;
     total_len = xXIDeviceInfo.sizeof;
 
     len = pad_to_int32(info.name_len);

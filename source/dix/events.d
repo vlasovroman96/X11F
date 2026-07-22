@@ -4681,7 +4681,7 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
 
     for (int i = 0; mouse && mouse.button && i < mouse.button.numButtons; i++)
         if (mixin(BitIsOn!("mouse.button.down", "i")))
-            SetBit(&event[1], i);
+            mixin(SetBit!("&event[1]", "i"));
 
     kbd = GetMaster(mouse, MASTER_KEYBOARD);
     if (kbd && kbd.key) {

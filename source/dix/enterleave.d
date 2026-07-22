@@ -760,7 +760,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
 
     for (int i = 0; mouse && mouse.button && i < mouse.button.numButtons; i++)
         if (mixin(BitIsOn!("mouse.button.down", "i")))
-            SetBit(&xi2event[1], mouse.button.map[i]);
+            mixin(SetBit!("&xi2event[1]", "mouse.button.map[i]"));
 
     if (dev.key) {
         xi2event.mods.base_mods = dev.key.xkbInfo.state.base_mods;

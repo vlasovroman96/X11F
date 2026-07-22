@@ -34,7 +34,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 //import externs.X11.extensions.XI2;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -43,6 +43,8 @@ import Xi.handlers;
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structure  */
 import Xi.exglobals;          /* BadDevice */
+import dix.devices;
+import dix.dixutils;
 
 int ProcXISetFocus(ClientPtr client)
 {
@@ -89,7 +91,7 @@ int ProcXIGetFocus(ClientPtr client)
     else if (dev.focus.win == FollowKeyboardWin)
         reply.focus = FollowKeyboard;
     else
-        reply.focus = dev.focus.win.drawable.id;
+        reply.focus = cast(uint)dev.focus.win.drawable.id;
 
     mixin(X_REPLY_FIELD_CARD32!"focus");
 

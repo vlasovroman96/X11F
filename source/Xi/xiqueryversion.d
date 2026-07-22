@@ -120,8 +120,8 @@ int ProcXIQueryVersion(ClientPtr client)
 
     xXIQueryVersionReply reply = {
         RepType: X_XIQueryVersion,
-        major_version: major,
-        minor_version: minor
+        major_version: cast(ushort)major,
+        minor_version: cast(ushort)minor
     };
 
     mixin(X_REPLY_FIELD_CARD16!"major_version");

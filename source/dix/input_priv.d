@@ -86,7 +86,7 @@ int ApplyPointerMapping(DeviceIntPtr pDev, CARD8* map, int len, ClientPtr client
 
 void NoteLedState(DeviceIntPtr keybd, int led, Bool on);
 
-void MaybeStopHint(DeviceIntPtr device, ClientPtr client);
+// void MaybeStopHint(DeviceIntPtr device, ClientPtr client);
 
 void ProcessPointerEvent(InternalEvent* ev, DeviceIntPtr mouse);
 

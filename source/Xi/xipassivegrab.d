@@ -34,8 +34,8 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.X11.extensions.XI2;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2;
+import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.dixgrabs_priv;
@@ -50,6 +50,8 @@ import include.windowstr;          /* window structure  */
 import dix.swaprep;
 import Xi.exglobals;          /* BadDevice */
 import include.misc;
+import dix.dixutils;
+import dix.devices;
 
 int ProcXIPassiveGrabDevice(ClientPtr client)
 {
@@ -61,15 +63,15 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"detail");
     mixin(X_REQUEST_FIELD_CARD16!"mask_len");
     mixin(X_REQUEST_FIELD_CARD16!"num_modifiers");
-    REQUEST_FIXED_SIZE(xXIPassiveGrabDeviceReq,
-        (cast(uint) stuff.mask_len + stuff.num_modifiers) *4);
+    mixin(REQUEST_FIXED_SIZE!("xXIPassiveGrabDeviceReq",
+        "(cast(uint) stuff.mask_len + stuff.num_modifiers) *4"));
     mixin(X_REQUEST_REST_CARD32!()); /* event mask and modifiers list */
 
     DeviceIntPtr dev = void, mod_dev = void;
     xXIPassiveGrabDeviceReply reply = {
         repType: X_Reply,
         RepType: X_XIPassiveGrabDevice,
-        sequenceNumber: client.sequence,
+        sequenceNumber: cast(ushort)client.sequence,
         length: 0,
         num_modifiers: 0
     };
@@ -127,7 +129,7 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
     if (!mask.xi2mask)
         return BadAlloc;
 
-    mask_len = min(xi2mask_mask_size(mask.xi2mask), stuff.mask_len * 4);
+    mask_len = cast(int)min(xi2mask_mask_size(mask.xi2mask), stuff.mask_len * 4);
     xi2mask_set_one_mask(mask.xi2mask, stuff.deviceid,
                          cast(ubyte*) &stuff[1], mask_len * 4);
 
@@ -188,33 +190,33 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
 
         switch (stuff.grab_type) {
         case XIGrabtypeButton:
-            status = GrabButton(client, dev, mod_dev, stuff.detail,
+            status = cast(ubyte)GrabButton(client, dev, mod_dev, stuff.detail,
                                 &param, XI2, &mask);
             break;
         case XIGrabtypeKeycode:
-            status = GrabKey(client, dev, mod_dev, stuff.detail,
+            status = cast(ubyte)GrabKey(client, dev, mod_dev, stuff.detail,
                              &param, XI2, &mask);
             break;
         case XIGrabtypeEnter:
         case XIGrabtypeFocusIn:
-            status = GrabWindow(client, dev, stuff.grab_type, &param, &mask);
+            status = cast(ubyte)GrabWindow(client, dev, stuff.grab_type, &param, &mask);
             break;
         case XIGrabtypeTouchBegin:
-            status = GrabTouchOrGesture(client, dev, mod_dev, XI_TouchBegin,
+            status = cast(ubyte)GrabTouchOrGesture(client, dev, mod_dev, XI_TouchBegin,
                                         &param, &mask);
             break;
         case XIGrabtypeGesturePinchBegin:
-            status = GrabTouchOrGesture(client, dev, mod_dev,
+            status = cast(ubyte)GrabTouchOrGesture(client, dev, mod_dev,
                                         XI_GesturePinchBegin, &param, &mask);
             break;
         case XIGrabtypeGestureSwipeBegin:
-            status = GrabTouchOrGesture(client, dev, mod_dev,
+            status = cast(ubyte)GrabTouchOrGesture(client, dev, mod_dev,
                                         XI_GestureSwipeBegin, &param, &mask);
             break;
         default: break;}
 
 modifier_done:
-        if (status != GrabSuccess) {
+        if (status != cast(ubyte)GrabSuccess) {
             /* write xXIGrabModifierInfo */
             x_rpcbuf_write_CARD32(&rpcbuf, *modifiers);
             x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)status);
@@ -244,8 +246,8 @@ int ProcXIPassiveUngrabDevice(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"deviceid");
     mixin(X_REQUEST_FIELD_CARD32!"detail");
     mixin(X_REQUEST_FIELD_CARD16!"num_modifiers");
-    REQUEST_FIXED_SIZE(xXIPassiveUngrabDeviceReq,
-                       (cast(uint) stuff.num_modifiers) << 2);
+    mixin(REQUEST_FIXED_SIZE!("xXIPassiveUngrabDeviceReq",
+                       "(cast(uint) stuff.num_modifiers) << 2"));
     mixin(X_REQUEST_REST_CARD32!()); /* modifiers list */
 
     DeviceIntPtr dev = void, mod_dev = void;

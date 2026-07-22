@@ -282,8 +282,8 @@ enum string test_event() = `
     ev.time = time;
     ev.root_y = x;
     ev.root_x = y;
-    SetBit(ev.valuators.mask, 0);
-    SetBit(ev.valuators.mask, 1);
+    mixin(SetBit!("ev.valuators.mask", "0"));
+    mixin(SetBit!("ev.valuators.mask", "1"));
     ev.root = ROOT_WINDOW_ID;
     ev.corestate = state;
     ev.detail.key = detail;
@@ -479,8 +479,8 @@ private void dix_event_to_xi1_conversion()
     ev.time = time;
     ev.root_y = x;
     ev.root_x = y;
-    SetBit(ev.valuators.mask, 0);
-    SetBit(ev.valuators.mask, 1);
+    mixin(SetBit!("ev.valuators.mask", "0"));
+    mixin(SetBit!("ev.valuators.mask", "1"));
     ev.root = ROOT_WINDOW_ID;
     ev.corestate = state;
     ev.detail.key = detail;
@@ -521,13 +521,13 @@ private void dix_event_to_xi1_conversion()
     _dix_test_xi_convert(&ev, BadMatch, 0);
 
     /* more than 6 axes → 2 valuator events */
-    SetBit(ev.valuators.mask, 0);
-    SetBit(ev.valuators.mask, 1);
-    SetBit(ev.valuators.mask, 2);
-    SetBit(ev.valuators.mask, 3);
-    SetBit(ev.valuators.mask, 4);
-    SetBit(ev.valuators.mask, 5);
-    SetBit(ev.valuators.mask, 6);
+    mixin(SetBit!("ev.valuators.mask", "0"));
+    mixin(SetBit!("ev.valuators.mask", "1"));
+    mixin(SetBit!("ev.valuators.mask", "2"));
+    mixin(SetBit!("ev.valuators.mask", "3"));
+    mixin(SetBit!("ev.valuators.mask", "4"));
+    mixin(SetBit!("ev.valuators.mask", "5"));
+    mixin(SetBit!("ev.valuators.mask", "6"));
     ev.type = ET_KeyPress;
     _dix_test_xi_convert(&ev, Success, 2);
     ev.type = ET_KeyRelease;
@@ -1436,7 +1436,7 @@ private void include_bit_test_macros()
 
     for (i = 0; i < mixin(ARRAY_SIZE!("mask.ptr")); i++) {
         assert(mixin(BitIsOn!("mask.ptr", "i")) == 0);
-        SetBit(mask.ptr, i);
+        mixin(SetBit!("mask.ptr", "i"));
         assert(mixin(BitIsOn!("mask.ptr", "i")) == 1);
         assert(! !(mask[i / 8] & (1 << (i % 8))));
         assert(CountBits(mask.ptr, mask.sizeof) == 1);

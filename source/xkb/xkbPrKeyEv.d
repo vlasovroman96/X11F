@@ -139,7 +139,7 @@ void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
                 key_was_overlaid = mixin(BitIsOn!("xkbi.overlay_perkey_state", "key"));
                 if (!is_keyrelease) {
                     if (overlay_active_now)
-                        SetBit(xkbi.overlay_perkey_state, key);
+                        mixin(SetBit!("xkbi.overlay_perkey_state", "key"));
                 } else {
                     if (key_was_overlaid)
                         ClearBit(xkbi.overlay_perkey_state, key);

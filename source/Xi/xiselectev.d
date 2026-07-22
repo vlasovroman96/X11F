@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -40,7 +40,8 @@ import Xi.handlers;
 
 import include.dixstruct;
 import include.windowstr;
-
+import dix.devices;
+import dix.dixutils;
 /**
  * Ruleset:
  * - if A has XIAllDevices, B may select on device X
@@ -156,7 +157,7 @@ int ProcXISelectEvents(ClientPtr client)
     xXIEventMask* evmask = cast(xXIEventMask*) &stuff[1];
     int num_masks = stuff.num_masks;
     while (num_masks--) {
-        len += (cast(xXIEventMask) + evmask.mask_len * 4).sizeof;
+        len += (xXIEventMask).sizeof + evmask.mask_len * 4;
 
         if (bytes_to_int32(len) > client.req_len)
             return BadLength;
@@ -294,7 +295,7 @@ int ProcXISelectEvents(ClientPtr client)
     num_masks = stuff.num_masks;
     while (num_masks--) {
         DeviceIntPtr dev = void;
-        DeviceIntRec dummy = { 0 };
+        DeviceIntRec dummy;
         if (evmask.deviceid == XIAllDevices ||
             evmask.deviceid == XIAllMasterDevices) {
             dummy.id = evmask.deviceid;
@@ -359,15 +360,15 @@ int ProcXIGetSelectedEvents(ClientPtr client)
                 continue;
         }
 
-        for (j = xi2mask_mask_size(others.xi2mask) - 1; j >= 0; j--) {
+        for (j = cast(int)(xi2mask_mask_size(others.xi2mask) - 1); j >= 0; j--) {
             /* scan backwards to skip trailing zeros. mask is always written in 32bit granularity */
             if (devmask[j] != 0) {
 
                 int mask_len = (j + 4) / 4;     /* j is an index, hence + 4, not + 3 */
 
                 /* write xXIEventMask */
-                x_rpcbuf_write_CARD16(&rpcbuf, i);
-                x_rpcbuf_write_CARD16(&rpcbuf, mask_len);
+                x_rpcbuf_write_CARD16(&rpcbuf, cast(ushort)i);
+                x_rpcbuf_write_CARD16(&rpcbuf, cast(ushort)mask_len);
 
                 /* write mask -- be prepared for original mask not 32bit aligned */
                 x_rpcbuf_write_CARD8s(&rpcbuf, devmask, j+1);

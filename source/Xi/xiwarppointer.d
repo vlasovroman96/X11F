@@ -37,7 +37,7 @@ import build.dix_config;
 //import externs.X11.X;              /* for inputstr.h    */
 //import externs.X11.Xproto;         /* Request macro     */
 //import externs.X11.extensions.XI;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 
 import dix.cursor_priv;
 import dix.dix_priv;
@@ -53,7 +53,8 @@ import include.extnsionst;
 import include.exevents;
 import Xi.exglobals;
 import mi.mipointer;          /* for miPointerUpdateSprite */
-
+import dix.devices;
+import dix.dixutils;
 /***********************************************************************
  *
  * This procedure allows a client to warp the pointer of a device.
@@ -109,10 +110,10 @@ int ProcXIWarpPointer(ClientPtr client)
     x = pSprite.hotPhys.x;
     y = pSprite.hotPhys.y;
 
-    src_x = stuff.src_x / cast(double) (1 << 16);
-    src_y = stuff.src_y / cast(double) (1 << 16);
-    dst_x = stuff.dst_x / cast(double) (1 << 16);
-    dst_y = stuff.dst_y / cast(double) (1 << 16);
+    src_x = cast(int)(stuff.src_x / cast(double) (1 << 16));
+    src_y = cast(int)(stuff.src_y / cast(double) (1 << 16));
+    dst_x = cast(int)(stuff.dst_x / cast(double) (1 << 16));
+    dst_y = cast(int)(stuff.dst_y / cast(double) (1 << 16));
 
     if (stuff.src_win != None) {
         int winX = void, winY = void;
@@ -183,7 +184,7 @@ int ProcXIWarpPointer(ClientPtr client)
     pDev.last.valuators[1] = y;
     miPointerUpdateSprite(pDev);
 
-    if (*newScreen.CursorWarpedTo)
+    if (newScreen.CursorWarpedTo != null)
         (*newScreen.CursorWarpedTo) (pDev, newScreen, client,
                                       dest, pSprite, x, y);
 

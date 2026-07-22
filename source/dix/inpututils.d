@@ -478,7 +478,7 @@ int valuator_mask_isset(const(ValuatorMask)* mask, int valuator)
 pragma(inline, true) private void _valuator_mask_set_double(ValuatorMask* mask, int valuator, double data)
 {
     mask.last_bit = max(valuator, mask.last_bit);
-    SetBit(mask.mask, valuator);
+    mixin(SetBit!("mask.mask", "valuator"));
     mask.valuators[valuator] = data;
 }
 
@@ -709,10 +709,10 @@ void event_set_state(DeviceIntPtr mouse, DeviceIntPtr kbd, DeviceEvent* event)
 {
     for (int i = 0; mouse && mouse.button && i < mouse.button.numButtons; i++)
         if (mixin(BitIsOn!("mouse.button.down", "i")))
-            SetBit(event.buttons, mouse.button.map[i]);
+            mixin(SetBit!("event.buttons", "mouse.button.map[i]"));
 
     if (mouse && mouse.touch && mouse.touch.buttonsDown > 0)
-        SetBit(event.buttons, mouse.button.map[1]);
+        mixin(SetBit!("event.buttons", "mouse.button.map[1]"));
 
     if (kbd && kbd.key) {
         XkbStatePtr state = void;
@@ -1071,7 +1071,7 @@ void xi2mask_set(XI2Mask* mask, int deviceid, int event_type)
     mixin(BUG_WARN!("deviceid >= mask.nmasks"));
     mixin(BUG_WARN!("bits_to_bytes(event_type + 1) > mask.mask_size"));
 
-    SetBit(mask.masks[deviceid], event_type);
+    mixin(SetBit!("mask.masks[deviceid]", "event_type"));
 }
 
 /**

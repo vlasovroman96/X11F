@@ -90,9 +90,9 @@ int GetMotionHistorySize()
 void set_button_down(DeviceIntPtr pDev, int button, int type)
 {
     if (type == BUTTON_PROCESSED)
-        SetBit(pDev.button.down, button);
+        mixin(SetBit!("pDev.button.down", "button"));
     else
-        SetBit(pDev.button.postdown, button);
+        mixin(SetBit!("pDev.button.postdown", "button"));
 }
 
 void set_button_up(DeviceIntPtr pDev, int button, int type)
@@ -118,9 +118,9 @@ Bool button_is_down(DeviceIntPtr pDev, int button, int type)
 void set_key_down(DeviceIntPtr pDev, int key_code, int type)
 {
     if (type == KEY_PROCESSED)
-        SetBit(pDev.key.down, key_code);
+        mixin(SetBit!("pDev.key.down", "key_code"));
     else
-        SetBit(pDev.key.postdown, key_code);
+        mixin(SetBit!("pDev.key.postdown", "key_code"));
 }
 
 void set_key_up(DeviceIntPtr pDev, int key_code, int type)
@@ -204,7 +204,7 @@ private void set_raw_valuators(RawDeviceEvent* event, ValuatorMask* mask, BOOL u
         if (valuator_mask_isset(mask, i)) {
             double v = void;
 
-            SetBit(event.valuators.mask, i);
+            mixin(SetBit!("event.valuators.mask", "i"));
 
             if (use_unaccel)
                 v = valuator_mask_get_unaccelerated(mask, i);
@@ -222,9 +222,9 @@ private void set_valuators(DeviceIntPtr dev, DeviceEvent* event, ValuatorMask* m
      * may be used when sent as part of an XI 1.x valuator event. */
     for (int i = 0; i < valuator_mask_size(mask); i++) {
         if (valuator_mask_isset(mask, i)) {
-            SetBit(event.valuators.mask, i);
+            mixin(SetBit!("event.valuators.mask", "i"));
             if (valuator_get_mode(dev, i) == Absolute)
-                SetBit(event.valuators.mode, i);
+                mixin(SetBit!("event.valuators.mode", "i"));
             event.valuators.data[i] = valuator_mask_get_double(mask, i);
         }
         else

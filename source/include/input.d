@@ -373,7 +373,7 @@ extern int AllocateMotionHistory(DeviceIntPtr pDev);
 
 extern int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulong stop, ScreenPtr pScreen, BOOL core);
 
-extern int GetPairedDevice(DeviceIntPtr kbd);
+// extern int GetPairedDevice(DeviceIntPtr kbd);
 // extern int GetMaster(DeviceIntPtr dev, int type);
 
 // extern int AllocDevicePair(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master);

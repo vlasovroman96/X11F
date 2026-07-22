@@ -128,21 +128,21 @@ request_XISelectEvent(xXISelectEventsReq * req, int error)
 static void
 _set_bit(unsigned char *bits, int bit)
 {
-    SetBit(bits, bit);
+    mixin(SetBit!("bits", "bit"));
     if (bit >= XI_TouchBegin && bit <= XI_TouchOwnership) {
-        SetBit(bits, XI_TouchBegin);
-        SetBit(bits, XI_TouchUpdate);
-        SetBit(bits, XI_TouchEnd);
+        mixin(SetBit!("bits", "XI_TouchBegin"));
+        mixin(SetBit!("bits", "XI_TouchUpdate"));
+        mixin(SetBit!("bits", "XI_TouchEnd"));
     }
     if (bit >= XI_GesturePinchBegin && bit <= XI_GesturePinchEnd) {
-        SetBit(bits, XI_GesturePinchBegin);
-        SetBit(bits, XI_GesturePinchUpdate);
-        SetBit(bits, XI_GesturePinchEnd);
+        mixin(SetBit!("bits", "XI_GesturePinchBegin"));
+        mixin(SetBit!("bits", "XI_GesturePinchUpdate"));
+        mixin(SetBit!("bits", "XI_GesturePinchEnd"));
     }
     if (bit >= XI_GestureSwipeBegin && bit <= XI_GestureSwipeEnd) {
-        SetBit(bits, XI_GestureSwipeBegin);
-        SetBit(bits, XI_GestureSwipeUpdate);
-        SetBit(bits, XI_GestureSwipeEnd);
+        mixin(SetBit!("bits", "XI_GestureSwipeBegin"));
+        mixin(SetBit!("bits", "XI_GestureSwipeUpdate"));
+        mixin(SetBit!("bits", "XI_GestureSwipeEnd"));
     }
 }
 
@@ -249,8 +249,8 @@ request_XISelectEvents_masks(xXISelectEventsReq * req)
         bits = (unsigned char *) &mask[1];
         mask->mask_len = 1;
         memset(bits, 0, 5);
-        SetBit(bits, XI_ButtonPress); // does not matter which one
-        SetBit(bits, XI_GestureSwipeEnd);
+        mixin(SetBit!("bits", "XI_ButtonPress")); // does not matter which one
+        mixin(SetBit!("bits", "XI_GestureSwipeEnd"));
         request_XISelectEvent(req, Success);
 
         /* Test 6:
@@ -260,7 +260,7 @@ request_XISelectEvents_masks(xXISelectEventsReq * req)
         bits = (unsigned char *) &mask[1];
         mask->mask_len = (nmasks + 3) / 4;
         memset(bits, 0, mask->mask_len * 4);
-        SetBit(bits, XI_HierarchyChanged);
+        mixin(SetBit!("bits", "XI_HierarchyChanged"));
         mask->deviceid = XIAllDevices;
         request_XISelectEvent(req, Success);
         for (j = 1; j < devices.num_devices; j++) {

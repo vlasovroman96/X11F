@@ -67,7 +67,7 @@ import include.misyncstr;
 alias CARD8 = externs.X11.Xmd.CARD8;
 
 enum string BitIsOn(string ptr, string bit) = `(!!((cast(const(BYTE)*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] & (1 << ((` ~ bit ~ `) & 7))))`;
-enum string SetBit(string ptr, string bit) = `((cast(BYTE*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] |= (1 << ((` ~ bit ~ `) & 7)))`;
+enum string SetBit(string ptr, string bit) = `((cast(BYTE*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] |= (1 << ((` ~ bit ~ `) & 7)));`;
 enum string ClearBit(string ptr, string bit) = `((cast(BYTE*)(` ~ ptr ~ `))[(` ~ bit ~ `)>>3] &= ~(1 << ((` ~ bit ~ `) & 7)))`;
 
 enum EMASKSIZE =	(MAXDEVICES + 2);
@@ -520,9 +520,9 @@ alias XIPropertyValuePtr = XIPropertyValueRec*;
 struct _XIPropertyHandler {
     _XIPropertyHandler* next;
     c_long id;
-    int function(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) SetProperty;
-    int function(DeviceIntPtr dev, Atom property) GetProperty;
-    int function(DeviceIntPtr dev, Atom property) DeleteProperty;
+    @nogc nothrow int function(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) SetProperty;
+    @nogc nothrow int function(DeviceIntPtr dev, Atom property) GetProperty;
+    @nogc nothrow int function(DeviceIntPtr dev, Atom property) DeleteProperty;
 }alias XIPropertyHandler = _XIPropertyHandler;
 alias XIPropertyHandlerPtr = _XIPropertyHandler*;
 

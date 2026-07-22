@@ -34,7 +34,7 @@ import build.dix_config;
 //import externs.X11.Xatom;
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -50,7 +50,8 @@ import Xi.exglobals;
 import dix.swaprep;
 import Xi.xiproperty;
 import include.xserver_properties;
- 
+import externs.X11.Xatom;
+import dix.devices;
 
 /**
  * Properties used or alloced from inside the server.
@@ -196,10 +197,10 @@ private void send_property_event(DeviceIntPtr dev, Atom property, int what)
 {
     int state = (what == XIPropertyDeleted) ? PropertyDelete : PropertyNewValue;
     devicePropertyNotify event = {
-        type: DevicePropertyNotify,
-        deviceid: dev.id,
-        state: state,
-        atom: property,
+        type: cast(ubyte)DevicePropertyNotify,
+        deviceid: cast(ubyte)dev.id,
+        state:cast(ubyte) state,
+        atom: cast(uint)property,
         time: currentTime.milliseconds
     };
     xXIPropertyEvent xi2 = {
@@ -207,10 +208,10 @@ private void send_property_event(DeviceIntPtr dev, Atom property, int what)
         extension: EXTENSION_MAJOR_XINPUT,
         length: 0,
         evtype: XI_PropertyEvent,
-        deviceid: dev.id,
+        deviceid: cast(ushort)dev.id,
         time: currentTime.milliseconds,
-        property: property,
-        what: what
+        property: cast(uint)property,
+        what: cast(ubyte)what
     };
 
     SendEventToAllWindows(dev, DevicePropertyNotifyMask, cast(xEvent*) &event, 1);
@@ -263,7 +264,7 @@ private int get_property(ClientPtr client, DeviceIntPtr dev, Atom property, Atom
        property information, but not the data. */
 
     if (((type != prop_value.type) && (type != AnyPropertyType))) {
-        *bytes_after = prop_value.size;
+        *bytes_after = cast(int)prop_value.size;
         *format = prop_value.format;
         *length_return = 0;
         *nitems = 0;
@@ -285,11 +286,11 @@ private int get_property(ClientPtr client, DeviceIntPtr dev, Atom property, Atom
 
     len = min(n - ind, 4 * length);
 
-    *bytes_after = n - (ind + len);
+    *bytes_after = cast(int)(n - (ind + len));
     *format = prop_value.format;
-    *length_return = len;
+    *length_return = cast(int)len;
     if (prop_value.format)
-        *nitems = len / (prop_value.format / 8);
+        *nitems = cast(int)(len / (prop_value.format / 8));
     else
         *nitems = 0;
     *type_return = prop_value.type;
@@ -413,10 +414,10 @@ int XIPropToInt(XIPropertyValuePtr val, int* nelem_return, int** buf_return)
         if (!buf)
             return BadAlloc;
         *buf_return = buf;
-        *nelem_return = val.size;
+        *nelem_return = cast(int)val.size;
     }
-    else if (val.size < *nelem_return)
-        *nelem_return = val.size;
+    else if (cast(int)val.size < *nelem_return)
+        *nelem_return = cast(int)val.size;
 
     for (i = 0; i < val.size && i < *nelem_return; i++) {
         switch (val.format) {
@@ -476,10 +477,10 @@ int XIPropToFloat(XIPropertyValuePtr val, int* nelem_return, float** buf_return)
         if (!buf)
             return BadAlloc;
         *buf_return = buf;
-        *nelem_return = val.size;
+        *nelem_return = cast(int)val.size;
     }
     else if (val.size < *nelem_return)
-        *nelem_return = val.size;
+        *nelem_return = cast(int) val.size;
 
     for (i = 0; i < val.size && i < *nelem_return; i++)
         buf[i] = (cast(float*) val.data)[i];
@@ -501,9 +502,9 @@ c_long XIRegisterPropertyHandler(DeviceIntPtr dev, int function(DeviceIntPtr dev
         return 0;
 
     new_handler.id = XIPropHandlerID++;
-    new_handler.SetProperty = SetProperty;
-    new_handler.GetProperty = GetProperty;
-    new_handler.DeleteProperty = DeleteProperty;
+    new_handler.SetProperty = cast(typeof(new_handler.SetProperty))SetProperty;
+    new_handler.GetProperty = cast(typeof(new_handler.GetProperty))GetProperty;
+    new_handler.DeleteProperty = cast(typeof(new_handler.DeleteProperty))DeleteProperty;
     new_handler.next = dev.properties.handlers;
     dev.properties.handlers = new_handler;
 
@@ -598,7 +599,7 @@ int XIDeleteDeviceProperty(DeviceIntPtr device, Atom property, Bool fromClient)
     XIPropertyPtr prop = void; XIPropertyPtr* prev = void;
     int rc = Success;
 
-    for (prev = &device.properties.properties; ((prop = *prev) != 0);
+    for (prev = &device.properties.properties; ((prop = *prev) !is null);
          prev = &(prop.next))
         if (prop.propertyName == property)
             break;
@@ -681,7 +682,7 @@ int XIChangeDeviceProperty(DeviceIntPtr dev, Atom property, Atom type, int forma
         }
         new_value.size = total_len;
         new_value.type = type;
-        new_value.format = format;
+        new_value.format = cast(short)format;
 
         switch (mode) {
         case PropModeReplace:
@@ -790,21 +791,21 @@ int XISetDevicePropertyDeletable(DeviceIntPtr dev, Atom property, Bool deletable
     if (!prop)
         return BadAtom;
 
-    prop.deletable = deletable;
+    prop.deletable = cast(ubyte)deletable;
     return Success;
 }
 
 /* rpcbuf->err_clear needs to be TRUE */
 private int _writeDevProps(x_rpcbuf_t* rpcbuf, XID devId, ClientPtr pClient, size_t* natoms) {
     DeviceIntPtr dev = void;
-    int rc = dixLookupDevice(&dev, devId, pClient, DixListPropAccess);
+    int rc = dixLookupDevice(&dev, cast(int)devId, pClient, DixListPropAccess);
     if (rc != Success)
         return rc;
 
     size_t n = 0;
     for (XIPropertyPtr p = dev.properties.properties; p; p = p.next) {
         n++;
-        if (!x_rpcbuf_write_CARD32(rpcbuf, p.propertyName))
+        if (!x_rpcbuf_write_CARD32(rpcbuf, cast(uint)p.propertyName))
             return BadAlloc;
     }
     *natoms = n;
@@ -824,7 +825,7 @@ int ProcXListDeviceProperties(ClientPtr client)
 
     xListDevicePropertiesReply reply = {
         RepType: X_ListDeviceProperties,
-        nAtoms: natoms
+        nAtoms: cast(ushort)natoms
     };
 
     mixin(X_REPLY_FIELD_CARD16!"nAtoms");
@@ -863,7 +864,7 @@ int ProcXChangeDeviceProperty(ClientPtr client)
     mixin(REQUEST_FIXED_SIZE!("xChangeDevicePropertyReq", "totalSize"));
 
     rc = change_property(client, dev, stuff.property, stuff.type,
-                         stuff.format, stuff.mode, len, cast(void*) &stuff[1]);
+                         stuff.format, stuff.mode, cast(int)len, cast(void*) &stuff[1]);
     return rc;
 }
 
@@ -919,11 +920,11 @@ int ProcXGetDeviceProperty(ClientPtr client)
 
     xGetDevicePropertyReply reply = {
         RepType: X_GetDeviceProperty,
-        propertyType: type,
+        propertyType: cast(uint)type,
         bytesAfter: bytes_after,
         nItems: nitems,
-        format: format,
-        deviceid: dev.id
+        format: cast(ubyte)format,
+        deviceid: cast(ubyte)dev.id
     };
 
     if (stuff.delete_ && (reply.bytesAfter == 0))
@@ -949,7 +950,7 @@ int ProcXGetDeviceProperty(ClientPtr client)
     if (stuff.delete_ && (reply.bytesAfter == 0)) {
         XIPropertyPtr prop = void; XIPropertyPtr* prev = void;
 
-        for (prev = &dev.properties.properties; ((prop = *prev) != 0);
+        for (prev = &dev.properties.properties; ((prop = *prev) !is null);
              prev = &prop.next) {
             if (prop.propertyName == stuff.property) {
                 *prev = prop.next;
@@ -981,7 +982,7 @@ int ProcXIListProperties(ClientPtr client)
 
     xXIListPropertiesReply reply = {
         RepType: X_XIListProperties,
-        num_properties: natoms
+        num_properties: cast(ushort)natoms
     };
 
     mixin(X_REPLY_FIELD_CARD16!"num_properties");
@@ -1021,7 +1022,7 @@ int ProcXIChangeProperty(ClientPtr client)
     mixin(REQUEST_FIXED_SIZE!("xXIChangePropertyReq", "totalSize"));
 
     rc = change_property(client, dev, stuff.property, stuff.type,
-                         stuff.format, stuff.mode, len, cast(void*) &stuff[1]);
+                         stuff.format, stuff.mode, cast(int)len, cast(void*) &stuff[1]);
     return rc;
 }
 
@@ -1079,10 +1080,10 @@ int ProcXIGetProperty(ClientPtr client)
 
     xXIGetPropertyReply reply = {
         RepType: X_XIGetProperty,
-        type: type,
+        type: cast(uint)type,
         bytes_after: bytes_after,
         num_items: nitems,
-        format: format
+        format: cast(ubyte)format
     };
 
     if (length && stuff.delete_ && (reply.bytes_after == 0))
@@ -1116,7 +1117,7 @@ int ProcXIGetProperty(ClientPtr client)
     if (stuff.delete_ && (reply.bytes_after == 0)) {
         XIPropertyPtr prop = void; XIPropertyPtr* prev = void;
 
-        for (prev = &dev.properties.properties; ((prop = *prev) != 0);
+        for (prev = &dev.properties.properties; ((prop = *prev) !is null);
              prev = &prop.next) {
             if (prop.propertyName == stuff.property) {
                 *prev = prop.next;

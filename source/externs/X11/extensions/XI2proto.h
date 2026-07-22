@@ -803,7 +803,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     uint8_t     c_delete;
 #else
-    uint8_t     delete;
+    uint8_t     delete_;
 #endif
     uint8_t     pad0;
     Atom        property;

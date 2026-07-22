@@ -236,7 +236,7 @@ test_XIPassiveGrabDevice(void)
 
     request->mask_len = bytes_to_int32(XI2LASTEVENT + 1);
     request->length += request->mask_len;
-    SetBit(mask, XI2LASTEVENT + 1);
+    mixin(SetBit!("mask", "XI2LASTEVENT + 1"));
     request_XIPassiveGrabDevice(&client_request, request, BadValue,
                                 XI2LASTEVENT + 1);
 
@@ -251,9 +251,9 @@ test_XIPassiveGrabDevice(void)
     request_XIPassiveGrabDevice(&client_request, request, Success, 0);
 
     /* Set a few random masks to make sure we handle modifiers correctly */
-    SetBit(mask, XI_ButtonPress);
-    SetBit(mask, XI_KeyPress);
-    SetBit(mask, XI_Enter);
+    mixin(SetBit!("mask", "XI_ButtonPress"));
+    mixin(SetBit!("mask", "XI_KeyPress"));
+    mixin(SetBit!("mask", "XI_Enter"));
 
     /* some modifiers */
     request->num_modifiers = N_MODS;
