@@ -161,7 +161,7 @@ extern void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
 
 // extern void CreateNewResourceClass();
 
-extern void InitClientResources(ClientPtr);
+// extern void InitClientResources(ClientPtr);
 
 // extern void FakeClientID(int);
 
@@ -188,9 +188,9 @@ enum AddResource = Darwin_X_AddResource;
           may be 0 for subresources that don't have an XID */
 // extern void FindSubResources(void* resource, RESTYPE type, FindAllRes func, void* cdata);
 
-extern void FreeClientNeverRetainResources(ClientPtr);
+// extern void FreeClientNeverRetainResources(ClientPtr);
 
-extern void FreeClientResources(ClientPtr);
+// extern void FreeClientResources(ClientPtr);
 
 extern void FreeAllResources();
 

@@ -13,6 +13,8 @@ public import include.dix;
 public import include.resource;
 import dix.resource;
 
+enum RESOURCE_AND_CLIENT_COUNT = 29;
+
 enum string SameClient(string obj,string client) = `
         CLIENT_BITS(` ~ obj ~ `.resource) == (` ~ client ~ `).clientAsMask`;
 

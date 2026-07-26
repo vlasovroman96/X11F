@@ -104,7 +104,7 @@ uint xnest_create_bitmap_from_data(xcb_connection_t* conn, uint drawable, const(
                   0 /* dst_y */,
                   leftPad,
                   1 /* depth */,
-                  BitmapBytePad(width + leftPad) * height,
+                  mixin(BitmapBytePad!("width + leftPad")) * height,
                   cast(ubyte*)data);
 
     xcb_free_gc(conn, gc);
@@ -137,7 +137,7 @@ uint xnest_create_pixmap_from_bitmap_data(xcb_connection_t* conn, uint drawable,
                   0 /* dst_y */,
                   leftPad,
                   1 /* depth */,
-                  BitmapBytePad(width + leftPad) * height,
+                  mixin(BitmapBytePad!("width + leftPad")) * height,
                   cast(ubyte*)data);
 
     xcb_free_gc(conn, gc);

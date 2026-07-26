@@ -109,13 +109,13 @@ public import core.stdc.stdarg;
 
 extern void ReadFdFromClient(ClientPtr client);
 
-extern void WriteToClient(ClientPtr, int, const(void)*);
+// extern void WriteToClient(ClientPtr, int, const(void)*);
 
 alias NotifyFdProcPtr = void function(int fd, int ready, void* data);
 
 public import include.fd_notify;
 
-extern void SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
+// extern void SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
 
 pragma(inline, true) void RemoveNotifyFd(int fd)
 {

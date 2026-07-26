@@ -1,3 +1,4 @@
+
 module record;
 @nogc nothrow:
 extern(C): __gshared:
@@ -1659,7 +1660,7 @@ private int RecordRegisterClients(RecordContextPtr pContext, ClientPtr client, x
 
     /* allocate memory for the whole RCAP */
 
-    RecordClientsAndProtocolPtr pRCAP = calloc(1, totRCAPsize);
+    RecordClientsAndProtocolPtr pRCAP = cast(RecordClientsAndProtocolPtr) calloc(1, totRCAPsize);
     if (!pRCAP) {
         err = BadAlloc;
         goto bailout;
@@ -1891,7 +1892,7 @@ private int ProcRecordUnregisterClients(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.context);
         swapl(&stuff.nClients);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     RecordContextPtr pContext = void;

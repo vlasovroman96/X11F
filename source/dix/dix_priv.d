@@ -31,7 +31,9 @@ public import include.os;
 public import include.resource;
 public import include.window;
 public import dix.resource;
-import dix.dixutils;
+public import dix.dixutils;
+public import dix.globals;
+import os.io;
 
 /* pad scanline to a longword */
 enum BITMAP_SCANLINE_UNIT =    32;
@@ -56,7 +58,7 @@ mixin template XTYPE_SIZE_ASSERT(alias typename) {
 
 /* server setting: maximum size for big requests */
 enum MAX_BIG_REQUEST_SIZE = 4194303;
-extern c_long maxBigRequestSize;
+// extern c_long maxBigRequestSize;
 
 extern char dispatchExceptionAtReset;
 extern int terminateDelay;
@@ -86,7 +88,7 @@ extern bool enableIndirectGLX;
  */
 extern CallbackListPtr PostInitRootWindowCallback;
 
-pragma(inline, true) private bool InputCheckPending()
+pragma(inline, true) bool InputCheckPending()
 {
     return (*checkForInput[0] != *checkForInput[1]);
 }
@@ -99,9 +101,9 @@ pragma(inline, true) private void SetInputCheck(HWEventQueuePtr c0, HWEventQueue
 
 void ClearWorkQueue();
 void ProcessWorkQueue();
-void ProcessWorkQueueZombies();
+// void ProcessWorkQueueZombies();
 
-void CloseDownClient(ClientPtr client);
+// void CloseDownClient(ClientPtr client);
 ClientPtr GetCurrentClient();
 void InitClient(ClientPtr client, int i, void* ospriv);
 
@@ -129,7 +131,7 @@ enum string VALIDATE_DRAWABLE_AND_GC(string drawID, string pDraw, string mode) =
 
 // int dixLookupResourceOwner(ClientPtr* result, XID id, ClientPtr client, Mask access_mode);
 
-Bool CreateConnectionBlock();
+// Bool CreateConnectionBlock();
 
 void EnableLimitedSchedulingLatency();
 
@@ -228,18 +230,18 @@ void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
 
 extern Bool whiteRoot;
 
-extern /*volatile*/ char isItTimeToYield;
+// extern /*volatile*/ char isItTimeToYield;
 
 /* bit values for dispatchException */
 enum DE_TERMINATE = 2;
 enum DE_PRIORITYCHANGE = 4     /* set when a client's priority changes */;
 
-extern /*volatile*/ char dispatchException;
+// extern /*volatile*/ char dispatchException;
 
-extern int ScreenSaverBlanking;
-extern int ScreenSaverAllowExposures;
-extern int defaultScreenSaverBlanking;
-extern int defaultScreenSaverAllowExposures;
+// extern int ScreenSaverBlanking;
+// extern int ScreenSaverAllowExposures;
+// extern int defaultScreenSaverBlanking;
+// extern int defaultScreenSaverAllowExposures;
 extern const(char)* display;
 extern int displayfd;
 extern Bool explicit_display;
@@ -391,7 +393,7 @@ alias ClientSleepProcPtr = Bool function(ClientPtr client, void* closure);
  * @param func  called when client wakes up
  * @param closure   data passed to the callback function
  */
-Bool ClientSleep(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
+// Bool ClientSleep(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
 
 /*
  * @brief signal to sleeping client there's work to do
@@ -399,7 +401,7 @@ Bool ClientSleep(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
  * @param pClient   the client to signal to
  * @return TRUE on success
  */
-Bool dixClientSignal(ClientPtr pClient);
+// Bool dixClientSignal(ClientPtr pClient);
 
 enum CLIENT_SIGNAL_ANY = (cast(void *)null);
 /*
@@ -420,7 +422,7 @@ int ClientSignalAll(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
  *
  * @param pClient pointer to client structure
  */
-void ClientWakeup(ClientPtr pclient);
+// void ClientWakeup(ClientPtr pclient);
 
 /*
  * @brief check whether client is asleep
@@ -428,7 +430,7 @@ void ClientWakeup(ClientPtr pclient);
  * @param pClient pointer to client structure
  * @return TRUE if client is sleeping and has no work to do
  */
-Bool ClientIsAsleep(ClientPtr pClient);
+// Bool ClientIsAsleep(ClientPtr pClient);
 
 /*
  * @brief send error packet (xError) to client
@@ -439,7 +441,7 @@ Bool ClientIsAsleep(ClientPtr pClient);
  * @param resId       ID of resource the failure occured on
  * @param errorCode   error code value
  */
-void SendErrorToClient(ClientPtr pClient, CARD8 majorCode, CARD16 minorCode, XID resId, BYTE errorCode);
+// void SendErrorToClient(ClientPtr pClient, CARD8 majorCode, CARD16 minorCode, XID resId, BYTE errorCode);
 
 /*
  * @brief send GraphicsExposure events for given region to client
@@ -453,7 +455,9 @@ void SendErrorToClient(ClientPtr pClient, CARD8 majorCode, CARD16 minorCode, XID
  * @param majorOpcode major opcode of request which caused the expose event
  * @param minorOpcode minor opcode of request which caused the expose event
  */
-void SendGraphicsExpose(ClientPtr pClient, RegionPtr pRegion, XID drawable, BYTE majorOpcode, CARD16 minorOpcode);
+// public import dix.dispatch;
+
+// void SendGraphicsExpose(ClientPtr pClient, RegionPtr pRegion, XID drawable, BYTE majorOpcode, CARD16 minorOpcode);
 
 /*
  * @brief alter the SaveSet of a window (see automatic reparenting when client gone)
@@ -465,7 +469,7 @@ void SendGraphicsExpose(ClientPtr pClient, RegionPtr pRegion, XID drawable, BYTE
  * @param map     TRUE if window shall remain mapped
  * @return X return code
  */
-XRetCode AlterSaveSetForClient(ClientPtr pClient, WindowPtr pWin, uint mode, Bool toRoot, Bool map);
+// XRetCode AlterSaveSetForClient(ClientPtr pClient, WindowPtr pWin, uint mode, Bool toRoot, Bool map);
 
 /**
  * @brief deliver the given events to the given client.
@@ -672,7 +676,7 @@ pragma(inline, true) private int xmitClientEvent(ClientPtr pClient, xEvent ev)
  * @param pixel   pointer to return buffer for pixel value
  * @return        X11 error code
  */
-int dixAllocColor(ClientPtr client, Colormap cmap, CARD16* red, CARD16* green, CARD16* blue, CARD32* pixel);
+// int dixAllocColor(ClientPtr client, Colormap cmap, CARD16* red, CARD16* green, CARD16* blue, CARD32* pixel);
 
 // void ReplyNotSwappd(ClientPtr pClient, int size, void* pbuf);
 

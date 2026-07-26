@@ -653,7 +653,7 @@ private RR10DataPtr RR10GetData(ScreenPtr pScreen, RROutputPtr output)
     Bool* used = void;
 
     /* Make sure there is plenty of space for any combination */
-    RR10DataPtr data = calloc(1, ((RR10DataRec) +
+    RR10DataPtr data = cast(RR10DataPtr) calloc(1, ((RR10DataRec) +
                   ((RRScreenSize) * nmode +
                   ((RRScreenRate) * nmode + ((Bool) * nmode).sizeof).sizeof).sizeof).sizeof);
     if (!data)

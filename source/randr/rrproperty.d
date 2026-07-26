@@ -469,7 +469,7 @@ int ProcRRConfigureOutputProperty(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.output);
         swapl(&stuff.property);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     RROutputPtr output = void;
@@ -501,10 +501,10 @@ int ProcRRChangeOutputProperty(ClientPtr client)
             case 8:
                 break;
             case 16:
-                SwapRestS(stuff);
+                mixin(SwapRestS!("stuff"));
                 break;
             case 32:
-                SwapRestL(stuff);
+                mixin(SwapRestL!("stuff"));
                 break;
             default:
                 client.errorValue = stuff.format;

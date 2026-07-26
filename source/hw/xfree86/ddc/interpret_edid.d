@@ -183,7 +183,7 @@ private void encode_aspect_ratio(xf86MonPtr m)
 
 private xf86MonPtr parseEDID(int scrnIndex, ubyte* block, size_t size, bool copy)
 {
-    xf86MonPtr m = calloc(1, ((xf86Monitor) + (copy ? size : 0)).sizeof);
+    xf86MonPtr m = cast(xf86MonPtr) calloc(1, ((xf86Monitor) + (copy ? size : 0)).sizeof);
     if (!m)
         return null;
 

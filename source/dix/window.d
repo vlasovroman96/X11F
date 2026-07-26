@@ -178,13 +178,13 @@ enum string BOXES_OVERLAP(string b1, string b2) = `
 	( ((` ~ b1 ~ `).y1 >= (` ~ b2 ~ `).y2)) ) )`;
 
 enum string RedirectSend(string pWin) = `
-    ((` ~ pWin ~ `.eventMask|wOtherEventMasks(` ~ pWin ~ `)) & SubstructureRedirectMask)`;
+    ((` ~ pWin ~ `.eventMask|mixin(wOtherEventMasks!("` ~ pWin ~ `"))) & SubstructureRedirectMask)`;
 
 enum string SubSend(string pWin) = `
-    ((` ~ pWin ~ `.eventMask|wOtherEventMasks(` ~ pWin ~ `)) & SubstructureNotifyMask)`;
+    ((` ~ pWin ~ `.eventMask|mixin(wOtherEventMasks!("` ~ pWin ~ `"))) & SubstructureNotifyMask)`;
 
 enum string StrSend(string pWin) = `
-    ((` ~ pWin ~ `.eventMask|wOtherEventMasks(` ~ pWin ~ `)) & StructureNotifyMask)`;
+    ((` ~ pWin ~ `.eventMask|mixin(wOtherEventMasks!("` ~ pWin ~ `"))) & StructureNotifyMask)`;
 
 enum string SubStrSend(string pWin,string pParent) = `(` ~ StrSend!(pWin) ~ ` || ` ~ SubSend!(pParent) ~ `)`;
 
@@ -490,7 +490,7 @@ private void MakeRootTile(WindowPtr pWin)
     ScreenPtr pScreen = pWin.drawable.pScreen;
     GCPtr pGC = void;
     ubyte[128] back = void;
-    int len = BitmapBytePad(c_long.sizeof);
+    int len = mixin(BitmapBytePad!("c_long.sizeof"));
     ubyte* to = void;
 
     pWin.background.pixmap = (*pScreen.CreatePixmap) (pScreen, 4, 4,
@@ -1559,7 +1559,7 @@ int ProcGetWindowAttributes(ClientPtr client)
         reply.mapInstalled = (mixin(wColormap!("pWin")) == None) ? xFalse
              : IsMapInstalled(mixin(wColormap!("pWin")), pWin),
         reply.yourEventMask = EventMaskForClient(pWin, client),
-        reply.allEventMasks = pWin.eventMask | wOtherEventMasks(pWin),
+        reply.allEventMasks = pWin.eventMask | mixin(wOtherEventMasks!("pWin")),
         reply.doNotPropagateMask = wDontPropagateMask(pWin),
         reply.c_class = pWin.drawable.class_,
         reply.visualID = mixin(wVisual!("pWin"));
@@ -2239,7 +2239,7 @@ version (XINERAMA) {
             || (h != pWin.drawable.height);
 
         if (size_change &&
-            ((pWin.eventMask | wOtherEventMasks(pWin)) & ResizeRedirectMask)) {
+            ((pWin.eventMask | mixin(wOtherEventMasks!("pWin"))) & ResizeRedirectMask)) {
             xEvent eventT; 
 
                 eventT.u.resizeRequest.window = pWin.drawable.id,
@@ -3172,15 +3172,15 @@ private Bool TileScreenSaver(ScreenPtr pScreen, int kind)
     cm.height = 16;
     cm.xhot = 8;
     cm.yhot = 8;
-    ubyte* srcbits = cast(ubyte*) calloc(16, BitmapBytePad(32));
-    ubyte* mskbits = cast(ubyte*) calloc(16, BitmapBytePad(32));
+    ubyte* srcbits = cast(ubyte*) calloc(16, mixin(BitmapBytePad!("32")));
+    ubyte* mskbits = cast(ubyte*) calloc(16, mixin(BitmapBytePad!("32")));
     if (!srcbits || !mskbits) {
         free(srcbits);
         free(mskbits);
         cursor = 0;
     }
     else {
-        for (int j = 0; j < BitmapBytePad(32) * 16; j++)
+        for (int j = 0; j < mixin(BitmapBytePad!("32")) * 16; j++)
             srcbits[j] = mskbits[j] = 0x0;
         result = AllocARGBCursor(srcbits, mskbits, null, &cm, 0, 0, 0, 0, 0, 0,
                                  &cursor, serverClient, cast(XID) 0);

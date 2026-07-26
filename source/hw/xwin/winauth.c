@@ -83,7 +83,7 @@ winGenerateAuthorization(void)
 
 #ifdef XCSECURITY
     /* Allocate structure for additional auth information */
-    SecurityAuthorizationPtr pAuth = calloc(1, sizeof(SecurityAuthorizationRec));
+    SecurityAuthorizationPtr pAuth = cast(SecurityAuthorizationPtr) calloc(1, sizeof(SecurityAuthorizationRec));
     if (!(pAuth)) {
         ErrorF("winGenerateAuthorization - Failed allocating "
                "SecurityAuthorizationPtr.\n");

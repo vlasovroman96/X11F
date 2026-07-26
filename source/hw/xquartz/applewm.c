@@ -236,7 +236,7 @@ ProcAppleWMSelectInput(register ClientPtr client)
         }
 
         /* build the entry */
-        WMEventPtr pNewEvent = calloc(1, sizeof(WMEventRec));
+        WMEventPtr pNewEvent = cast(WMEventPtr) calloc(1, sizeof(WMEventRec));
         if (!pNewEvent)
             return BadAlloc;
         pNewEvent->next = 0;

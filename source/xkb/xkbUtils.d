@@ -536,7 +536,7 @@ void XkbApplyMappingChange(DeviceIntPtr kbd, KeySymsPtr map, KeyCode first_key, 
 
     if (map && first_key && num_keys) {
         check = 0;
-        XkbSetCauseCoreReq(&cause, X_ChangeKeyboardMapping, client);
+        mixin(XkbSetCauseCoreReq!("&cause", "X_ChangeKeyboardMapping", "client"));
 
         XkbUpdateKeyTypesFromCore(kbd, map, first_key, num_keys, &changes);
         XkbUpdateActions(kbd, first_key, num_keys, &changes, &check, &cause);
@@ -549,7 +549,7 @@ void XkbApplyMappingChange(DeviceIntPtr kbd, KeySymsPtr map, KeyCode first_key, 
         /* A keymap change can imply a modmap change, se we prefer the
          * former. */
         if (!cause.mjr)
-            XkbSetCauseCoreReq(&cause, X_SetModifierMapping, client);
+            mixin(XkbSetCauseCoreReq!("&cause", "X_SetModifierMapping", "client"));
 
         check = 0;
         num_keys = xkb.max_key_code - xkb.min_key_code + 1;

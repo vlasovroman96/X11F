@@ -36,13 +36,13 @@ public import include.cursor;
 public import include.gc;
 public import include.pixmap;
 public import include.privates;
-
+public import dix.globals;
 /*
  * 	direct-mapped hash table, used by resource manager to store
  *      translation from client ids to server addresses.
  */
 
-extern CallbackListPtr ClientStateCallback;
+// extern CallbackListPtr ClientStateCallback;
 
 struct NewClientInfoRec {
     ClientPtr client;
@@ -98,7 +98,7 @@ struct _Client {
     int ignoreCount;            /* count for Attend/IgnoreClient */
     uint numSaved;          /* amount of windows in saveSet */
     SaveSetElt* saveSet;
-    int function(ClientPtr)* requestVector;
+    @nogc nothrow int function(ClientPtr)* requestVector;
     CARD32 req_len;             /* length of current request */
     uint replyBytesRemaining;
     PrivateRec* devPrivates;
@@ -117,7 +117,7 @@ struct _Client {
 
 alias ClientPtr = _Client*;
 
-extern TimeStamp currentTime;
+// extern TimeStamp currentTime;
 
 // extern int CompareTimeStamps(TimeStamp, TimeStamp);
 

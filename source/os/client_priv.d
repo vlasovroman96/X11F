@@ -44,12 +44,12 @@ XID AuthorizationIDOfClient(_Client* client);
 const(char)* ClientAuthorized(_Client* client, uint proto_n, char* auth_proto, uint string_n, char* auth_string);
 Bool AddClientOnOpenFD(int fd);
 void ListenOnOpenFD(int fd, int noxauth);
-int ReadRequestFromClient(_Client* client);
+// int ReadRequestFromClient(_Client* client);
 int WriteFdToClient(_Client* client, int fd, Bool do_close);
-Bool InsertFakeRequest(_Client* client, char* data, int count);
-void FlushAllOutput();
-void FlushIfCriticalOutputPending();
-void ResetOsBuffers();
+// Bool InsertFakeRequest(_Client* client, char* data, int count);
+// void FlushAllOutput();
+// void FlushIfCriticalOutputPending();
+// void ResetOsBuffers();
 void NotifyParentProcess();
 void CreateWellKnownSockets();
 void CloseWellKnownConnections();
@@ -58,7 +58,7 @@ void CloseWellKnownConnections();
 void SetCriticalOutputPending();
 
 /* exported only for DRI module, but should not be used by external drivers */
-void ResetCurrentRequest(_Client* client);
+// void ResetCurrentRequest(_Client* client);
 
 /* stuff for ReplyCallback */
 extern CallbackListPtr ReplyCallback;

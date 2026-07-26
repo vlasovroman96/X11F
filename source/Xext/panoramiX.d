@@ -711,7 +711,7 @@ Bool PanoramiXCreateConnectionBlock()
             for (pVisual = PanoramiXVisuals;
                  pVisual.vid != visual.visualID; pVisual++){}
 
-            __traits(getMember, *visual, "class")  = cast(ubyte)pVisual.class_;
+            __traits(getMember, *visual, "class_")  = cast(ubyte)pVisual.class_;
             visual.bitsPerRGB = cast(ubyte)pVisual.bitsPerRGBValue;
             visual.colormapEntries = pVisual.ColormapEntries;
             visual.redMask = pVisual.redMask;

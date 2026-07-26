@@ -85,7 +85,7 @@ int dixLookupSelection(Selection** result, Atom selectionName, ClientPtr client,
             break;
 
     if (!pSel) {
-        pSel = dixAllocateObjectWithPrivates(Selection, PRIVATE_SELECTION);
+        pSel = mixin(dixAllocateObjectWithPrivates!("Selection", "PRIVATE_SELECTION"));
         if (!pSel)
             return BadAlloc;
         pSel.selection = selectionName;

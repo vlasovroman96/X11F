@@ -117,7 +117,7 @@ static if (1) {
         startmask = cast(MiBits) (-1) ^ mixin(LONG2CHARSDIFFORDER!(`cast(MiBits) (-1) >> 1`));
 }
 
-    MiBits* pwLineStart = cast(MiBits*) calloc(1, BitmapBytePad(dx));
+    MiBits* pwLineStart = cast(MiBits*) calloc(1, mixin(BitmapBytePad!("dx")));
     if (!pwLineStart)
         return;
     ipt = 0;

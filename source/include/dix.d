@@ -58,6 +58,7 @@ public import include.window;
 public import include.input;
 public import include.cursor;
 public import include.events;
+public import dix.dispatch;
 
 enum EARLIER = -1;
 enum SAMETIME = 0;
@@ -95,9 +96,9 @@ enum string REQUEST_FIXED_SIZE(alias req, string n) = `
 
 alias TimeStampPtr = _TimeStamp*;
 
-extern ClientPtr[1] clients;
-extern ClientPtr serverClient;
-extern int currentMaxClients;
+// extern ClientPtr[1] clients;
+// extern ClientPtr serverClient;
+// extern int currentMaxClients;
 
 struct _TimeStamp {
     CARD32 months;              /* really ~49.7 days */
@@ -109,7 +110,7 @@ alias TimeStamp = _TimeStamp;
 /* dispatch.c */
 extern int UpdateCurrentTime();
 
-extern int UpdateCurrentTimeIf();
+// extern int UpdateCurrentTimeIf();
 
 /*
  * @brief dereference a pixmap and destroy it when not used anymore
@@ -124,7 +125,7 @@ extern int UpdateCurrentTimeIf();
  * @param pPixmap pointer to pixmap (PixmapPtr) that should be unref'ed
  * @param unused ignored, only for matching the resource destructor prototype
  */
-int dixDestroyPixmap(void* pPixmap, XID unused);
+// int dixDestroyPixmap(void* pPixmap, XID unused);
 
 /* dixutils.c */
 
@@ -132,7 +133,7 @@ int dixDestroyPixmap(void* pPixmap, XID unused);
 
 // extern int dixLookupDrawable(DrawablePtr* result, XID id, ClientPtr client, Mask type_mask, Mask access_mode);
 
-extern int dixLookupFontable(FontPtr* result, XID id, ClientPtr client, Mask access_mode);
+// extern int dixLookupFontable(FontPtr* result, XID id, ClientPtr client, Mask access_mode);
 
 // extern int NoopDDA();
 

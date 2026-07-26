@@ -58,7 +58,7 @@ public import include.privates;
 
 struct _ExtensionEntry {
     int index;
-    void function(_ExtensionEntry*) CloseDown;
+    @nogc nothrow void function(_ExtensionEntry*) CloseDown;
     const(char)* name;           /* extension name */
     int base;                   /* base request number */
     int eventBase;
@@ -66,7 +66,7 @@ struct _ExtensionEntry {
     int errorBase;
     int errorLast;
     void* extPrivate;
-    ushort function(ClientPtr) MinorOpcode;
+    @nogc nothrow ushort function(ClientPtr) MinorOpcode;
     PrivateRec* devPrivates;
 }
 
@@ -86,6 +86,6 @@ extern noreturn NotImplemented(xEvent*, xEvent*);
 // extern int* AddExtension(const(char)*, int, int, int function(ClientPtr), int function(ClientPtr), void function(_ExtensionEntry*), ushort function(ClientPtr));
 
 extern int* CheckExtension(const(char)* extname);
-extern int* GetExtensionEntry(int major);
+// extern int* GetExtensionEntry(int major);
 
                           /* EXTENSIONSTRUCT_H */

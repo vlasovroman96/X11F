@@ -318,7 +318,7 @@ private void CopyCursorToImage(CursorPtr pCursor, CARD32* image)
     {
         ubyte* srcLine = pCursor.bits.source;
         ubyte* mskLine = pCursor.bits.mask;
-        int stride = BitmapBytePad(width);
+        int stride = mixin(BitmapBytePad!("width"));
         int x = void, y = void;
         CARD32 fg = void, bg = void;
 

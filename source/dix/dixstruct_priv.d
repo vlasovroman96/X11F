@@ -66,7 +66,7 @@ pragma(inline, true) private void output_pending_mark(ClientPtr client)
         xorg_list_append(&client.output_pending, &output_pending_clients);
 }
 
-pragma(inline, true) private void output_pending_clear(ClientPtr client)
+pragma(inline, true) void output_pending_clear(ClientPtr client)
 {
     xorg_list_del(&client.output_pending);
 }

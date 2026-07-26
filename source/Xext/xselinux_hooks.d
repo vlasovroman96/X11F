@@ -69,6 +69,7 @@ import dix.extension;
 import include.os;
 import Xext.xselinux_ext;
 import Xext.xselinux;
+import os.connection;
 
 import stdc = core.stdc.errno;
 

@@ -10,7 +10,7 @@
 	},
 	"targetType": "executable",
 	"dflags": [
-   "-verrors=5",
+   "-verrors=30",
     "-P-I/usr/include/dbus-1.0",
     "-P-I/usr/include/pixman-1",
     "-P-I/usr/lib/dbus-1.0/include",

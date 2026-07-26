@@ -480,10 +480,12 @@ enum string nt_list_for_each_entry(string _entry, string _list, string _member, 
  * @param list The list to iterate through.
  * @param member Member name of the field pointing to next struct.
  */
-enum string nt_list_for_each_entry_safe(string _entry, string _tmp, string _list, string _member) = `
+enum string nt_list_for_each_entry_safe(string _entry, string _tmp, string _list, string _member, string funcbody) = `
 	for (` ~ _entry ~ ` = ` ~ _list ~ `, ` ~ _tmp ~ ` = (` ~ _entry ~ `) ? (` ~ _entry ~ `).` ~ _member ~ ` : null;
 		` ~ _entry ~ `;							
-		` ~ _entry ~ ` = ` ~ _tmp ~ `, ` ~ _tmp ~ ` = (` ~ _tmp ~ `) ? (` ~ _tmp ~ `).` ~ _member ~ `: null)`;
+		` ~ _entry ~ ` = ` ~ _tmp ~ `, ` ~ _tmp ~ ` = (` ~ _tmp ~ `) ? (` ~ _tmp ~ `).` ~ _member ~ `: null) {
+            `~funcbody~`
+        }`;
 
 /**
  * Append the element to the end of the list. This macro may be used to

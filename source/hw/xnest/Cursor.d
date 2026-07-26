@@ -65,7 +65,7 @@ Bool xnestRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr pCursor)
     const(Pixmap) mask = xcb_generate_id(xnestUpstreamInfo.conn);
     xcb_create_pixmap(xnestUpstreamInfo.conn, 1, mask, winId, pCursor.bits.width, pCursor.bits.height);
 
-    const(int) pixmap_len = BitmapBytePad(pCursor.bits.width) * pCursor.bits.height;
+    const(int) pixmap_len = mixin(BitmapBytePad!("pCursor.bits.width")) * pCursor.bits.height;
 
     xcb_put_image(xnestUpstreamInfo.conn,
                   XCB_IMAGE_FORMAT_XY_BITMAP,

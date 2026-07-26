@@ -397,7 +397,7 @@ int ProcRRConfigureProviderProperty(ClientPtr client)
         swapl(&stuff.provider);
         swapl(&stuff.property);
         /* TODO: no way to specify format? */
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     RRProviderPtr provider = void;
@@ -426,10 +426,10 @@ int ProcRRChangeProviderProperty(ClientPtr client)
             case 8:
                 break;
             case 16:
-                SwapRestS(stuff);
+                mixin(SwapRestS!("stuff"));
                 break;
             case 32:
-                SwapRestL(stuff);
+                mixin(SwapRestL!("stuff"));
                 break;
         default: break;}
     }

@@ -55,7 +55,7 @@ int __write_reply_hdr_simple(ClientPtr pClient, void* hdrData, size_t hdrLen)
  *
  */
 enum string X_REPLY_HEADER_UNITS(string hdrtype) = `
-    (bytes_to_int32((((` ~ hdrtype ~ `) - xGenericReply.sizeof).sizeof)))`;
+    (bytes_to_int32((((` ~ hdrtype ~ `).sizeof - xGenericReply.sizeof))))`;
 
 pragma(inline, true) int __write_reply_hdr_and_rpcbuf(ClientPtr pClient, void* hdrData, size_t hdrLen, x_rpcbuf_t* rpcbuf)
 {

@@ -456,7 +456,7 @@ void* _dixAllocateObjectWithPrivates(uint baseSize, uint clear, uint offset, Dev
     privates = cast(PrivatePtr) ((cast(char*) object) + baseSize);
     devPrivates = cast(PrivatePtr*) (cast(char*) object + offset);
 
-    _dixInitPrivates(devPrivates, privates, type);
+    _mixin(dixInitPrivates!("devPrivates", "privates", "type"));
 
     return object;
 }
@@ -483,7 +483,7 @@ Bool dixAllocatePrivates(PrivatePtr* privates, DevPrivateType type)
             return FALSE;
     }
 
-    _dixInitPrivates(privates, p, type);
+    _mixin(dixInitPrivates!("privates", "p", "type"));
     ++global_keys[type].allocated;
 
     return TRUE;

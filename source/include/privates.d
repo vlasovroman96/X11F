@@ -309,9 +309,9 @@ enum string dixInitPrivates(string o, string v, string type) = `_dixInitPrivates
 /*
  * Clean up privates
  */
-extern int _dixFiniPrivates(PrivatePtr privates, DevPrivateType type);
+// extern int _dixFiniPrivates(PrivatePtr privates, DevPrivateType type);
 
-enum string dixFiniPrivates(string o,string t) = `_dixFiniPrivates((` ~ o ~ `).devPrivates,` ~ t ~ `)`;
+enum string dixFiniPrivates(string o,string t) = `_dixFiniPrivates((` ~ o ~ `).devPrivates,` ~ t ~ `);`;
 
 /*
  * Allocates private data at object creation time. Required

@@ -14,11 +14,12 @@ public import include.callback;
 public import include.dix;
 public import include.screenint;
 public import include.scrnintstr;
+public import dix.globals;
 
-extern CARD32 defaultScreenSaverTime;
-extern CARD32 defaultScreenSaverInterval;
-extern CARD32 ScreenSaverTime;
-extern CARD32 ScreenSaverInterval;
+// extern CARD32 defaultScreenSaverTime;
+// extern CARD32 defaultScreenSaverInterval;
+// extern CARD32 ScreenSaverTime;
+// extern CARD32 ScreenSaverInterval;
 extern Bool screenSaverSuspended;
 
 extern CallbackListPtr ScreenSaverAccessCallback;

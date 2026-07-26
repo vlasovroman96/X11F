@@ -53,6 +53,7 @@ enum SERVERMD_H = 1;
 import build.dix_config;
 
 public import externs.X11.X;		/* for X_LITTLE_ENDIAN/X_BIG_ENDIAN */
+public import dix.dispatch;
 
 static if (X_BYTE_ORDER == X_LITTLE_ENDIAN) {
 enum IMAGE_BYTE_ORDER =        LSBFirst;
@@ -87,7 +88,7 @@ struct PaddingInfo {
     int bytesPerPixel;          /* only set when notPower2 is TRUE */
     int bitsPerPixel;           /* bits per pixel */
 }
-extern PaddingInfo [1] PixmapWidthPaddingInfo;
+// extern PaddingInfo [1] PixmapWidthPaddingInfo;
 
 /* The only portable way to get the bpp from the depth is to look it up */
 enum string BitsPerPixel(string d) = `(PixmapWidthPaddingInfo[` ~ d ~ `].bitsPerPixel)`;

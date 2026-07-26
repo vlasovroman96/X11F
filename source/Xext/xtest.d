@@ -37,7 +37,7 @@ import build.dix_config;
 //import externs.X11.Xproto;
 //import externs.X11.Xatom;
 // //import externs.X11.extensions.xtestproto;
-//import externs.X11.extensions.XI;
+import externs.X11.extensions.XI;
 // // //import externs.X11.extensions.XIproto;
 
 import dix.input_priv;
@@ -78,6 +78,8 @@ import externs.gnu;
 import externs.X11.Xatom;
 import dix.extension;
 import dix.devices;
+import Xi.xiproperty;
+import os.io;
 
 enum XTestCurrentCursor = cast(Cursor)1;
 
@@ -151,7 +153,7 @@ private int ProcXTestCompareCursor(ClientPtr client)
     }
 
     xXTestCompareCursorReply reply = {
-        same: (mixin(wCursor!("pWin")) == pCursor)
+        same: (mixin(wCursor!("pWin")) is pCursor)
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));

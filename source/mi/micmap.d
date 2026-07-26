@@ -328,7 +328,7 @@ Bool miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int prefer
 {
     miVisualsPtr* prev = void; miVisualsPtr v = void;
 
-    miVisualsPtr new_ = calloc(1, (*new_).sizeof);
+    miVisualsPtr new_ = cast(miVisualsPtr) calloc(1, (*new_).sizeof);
     if (!new_)
         return FALSE;
     if (!redMask || !greenMask || !blueMask) {
@@ -441,8 +441,8 @@ Bool miInitVisuals(VisualPtr* visualp, DepthPtr* depthp, int* nvisualp, int* nde
         nvisual += visuals.count;
     }
 
-    DepthPtr depth = calloc(ndepth, DepthRec.sizeof);
-    VisualPtr visual = calloc(nvisual, VisualRec.sizeof);
+    DepthPtr depth = cast(DepthPtr) calloc(ndepth, DepthRec.sizeof);
+    VisualPtr visual = cast(VisualPtr) calloc(nvisual, VisualRec.sizeof);
     int* preferredCVCs = cast(int*) calloc(ndepth, int.sizeof);
     if (!depth || !visual || !preferredCVCs) {
         free(depth);

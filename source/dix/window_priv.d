@@ -12,9 +12,9 @@ public import include.dix;
 public import include.window;
 public import include.windowstr;
 
-enum string wTrackParent(string w,string field) = `((` ~ w ~ `).optional ? 
+enum string wTrackParent(string w,string field) = `(((` ~ w ~ `).optional ? 
                                     (` ~ w ~ `).optional.` ~ field ~ ` 
-                                 : FindWindowWithOptional(` ~ w ~ `).optional.` ~ field ~ `)`;
+                                 : FindWindowWithOptional(` ~ w ~ `).optional.` ~ field ~ `))`;
 enum string wUseDefault(string w,string field,string def) = `((` ~ w ~ `).optional ? 
                                     (` ~ w ~ `).optional.` ~ field ~ ` 
                                  : ` ~ def ~ `)`;
@@ -74,7 +74,7 @@ Bool dixWindowIsRoot(Window window);
  * @brief lower part of X_CreateWindow request handler.
  * Called by ProcCreateWindow() as well as PanoramiXCreateWindow()
  */
-int DoCreateWindowReq(ClientPtr client, xCreateWindowReq* stuff, XID* xids);
+// int DoCreateWindowReq(ClientPtr client, xCreateWindowReq* stuff, XID* xids);
 
 void PrintPassiveGrabs();
 void PrintWindowTree();

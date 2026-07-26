@@ -215,7 +215,7 @@ int ProcRRCreateLease(ClientPtr client)
         swaps(&stuff.nCrtcs);
         swaps(&stuff.nOutputs);
         swapl(&stuff.lid);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     WindowPtr window = void;

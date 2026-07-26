@@ -393,206 +393,206 @@ enum string _SCREEN_HOOK_TYPE(string NAME, string FUNCTYPE, string ARRSIZE) = `
         void* arg = void; 
     }_NAME[` ~ ARRSIZE ~ `] NAME = void;`;
 
-struct ScreenRec {
-    int myNum;                  /* index of this instance in Screens[] */
-    ATOM id;
-    short x, y, width, height;
-    short mmWidth, mmHeight;
-    short numDepths;
-    ubyte rootDepth;
-    DepthPtr allowedDepths;
-    c_ulong rootVisual;
-    c_ulong defColormap;
-    short minInstalledCmaps, maxInstalledCmaps;
-    char backingStoreSupport = 0, saveUnderSupport = 0;
-    c_ulong whitePixel, blackPixel;
-    GCPtr[MAXFORMATS + 1] GCperDepth;
-    /* next field is a stipple to use as default in a GC.  we don't build
-     * default tiles of all depths because they are likely to be of a color
-     * different from the default fg pixel, so we don't win anything by
-     * building a standard one.
-     */
-    PixmapPtr defaultStipple;
-    void* devPrivate;
-    short numVisuals;
-    VisualPtr visuals;
-    WindowPtr root;
-    ScreenSaverStuffRec screensaver;
+// struct _Screen {
+//     int myNum;                  /* index of this instance in Screens[] */
+//     ATOM id;
+//     short x, y, width, height;
+//     short mmWidth, mmHeight;
+//     short numDepths;
+//     ubyte rootDepth;
+//     DepthPtr allowedDepths;
+//     c_ulong rootVisual;
+//     c_ulong defColormap;
+//     short minInstalledCmaps, maxInstalledCmaps;
+//     char backingStoreSupport = 0, saveUnderSupport = 0;
+//     c_ulong whitePixel, blackPixel;
+//     GCPtr[MAXFORMATS + 1] GCperDepth;
+//     /* next field is a stipple to use as default in a GC.  we don't build
+//      * default tiles of all depths because they are likely to be of a color
+//      * different from the default fg pixel, so we don't win anything by
+//      * building a standard one.
+//      */
+//     PixmapPtr defaultStipple;
+//     void* devPrivate;
+//     short numVisuals;
+//     VisualPtr visuals;
+//     WindowPtr root;
+//     ScreenSaverStuffRec screensaver;
 
-    DevPrivateSetRec[PRIVATE_LAST] screenSpecificPrivates;
+//     DevPrivateSetRec[PRIVATE_LAST] screenSpecificPrivates;
 
-    /* Random screen procedures */
+//     /* Random screen procedures */
 
-    CloseScreenProcPtr CloseScreen;
-    QueryBestSizeProcPtr QueryBestSize;
-    SaveScreenProcPtr SaveScreen;
-    GetImageProcPtr GetImage;
-    GetSpansProcPtr GetSpans;
-    SourceValidateProcPtr SourceValidate;
+//     CloseScreenProcPtr CloseScreen;
+//     QueryBestSizeProcPtr QueryBestSize;
+//     SaveScreenProcPtr SaveScreen;
+//     GetImageProcPtr GetImage;
+//     GetSpansProcPtr GetSpans;
+//     SourceValidateProcPtr SourceValidate;
 
-    /* Window Procedures */
+//     /* Window Procedures */
 
-    CreateWindowProcPtr CreateWindow;
-    DestroyWindowProcPtr DestroyWindow;
-    PositionWindowProcPtr PositionWindow;
-    ChangeWindowAttributesProcPtr ChangeWindowAttributes;
-    RealizeWindowProcPtr RealizeWindow;
-    UnrealizeWindowProcPtr UnrealizeWindow;
-    ValidateTreeProcPtr ValidateTree;
-    PostValidateTreeProcPtr PostValidateTree;
-    WindowExposuresProcPtr WindowExposures;
-    CopyWindowProcPtr CopyWindow;
-    ClearToBackgroundProcPtr ClearToBackground;
-    ClipNotifyProcPtr ClipNotify;
-    RestackWindowProcPtr RestackWindow;
-    PaintWindowProcPtr PaintWindow;
+//     CreateWindowProcPtr CreateWindow;
+//     DestroyWindowProcPtr DestroyWindow;
+//     PositionWindowProcPtr PositionWindow;
+//     ChangeWindowAttributesProcPtr ChangeWindowAttributes;
+//     RealizeWindowProcPtr RealizeWindow;
+//     UnrealizeWindowProcPtr UnrealizeWindow;
+//     ValidateTreeProcPtr ValidateTree;
+//     PostValidateTreeProcPtr PostValidateTree;
+//     WindowExposuresProcPtr WindowExposures;
+//     CopyWindowProcPtr CopyWindow;
+//     ClearToBackgroundProcPtr ClearToBackground;
+//     ClipNotifyProcPtr ClipNotify;
+//     RestackWindowProcPtr RestackWindow;
+//     PaintWindowProcPtr PaintWindow;
 
-    /* Pixmap procedures */
+//     /* Pixmap procedures */
 
-    CreatePixmapProcPtr CreatePixmap;
-    DestroyPixmapProcPtr DestroyPixmap;
+//     CreatePixmapProcPtr CreatePixmap;
+//     DestroyPixmapProcPtr DestroyPixmap;
 
-    /* Font procedures */
+//     /* Font procedures */
 
-    RealizeFontProcPtr RealizeFont;
-    UnrealizeFontProcPtr UnrealizeFont;
+//     RealizeFontProcPtr RealizeFont;
+//     UnrealizeFontProcPtr UnrealizeFont;
 
-    /* Cursor Procedures */
+//     /* Cursor Procedures */
 
-    ConstrainCursorProcPtr ConstrainCursor;
-    ConstrainCursorHarderProcPtr ConstrainCursorHarder;
-    CursorLimitsProcPtr CursorLimits;
-    DisplayCursorProcPtr DisplayCursor;
-    RealizeCursorProcPtr RealizeCursor;
-    UnrealizeCursorProcPtr UnrealizeCursor;
-    RecolorCursorProcPtr RecolorCursor;
-    SetCursorPositionProcPtr SetCursorPosition;
-    CursorWarpedToProcPtr CursorWarpedTo;
-    CursorConfinedToProcPtr CursorConfinedTo;
+//     ConstrainCursorProcPtr ConstrainCursor;
+//     ConstrainCursorHarderProcPtr ConstrainCursorHarder;
+//     CursorLimitsProcPtr CursorLimits;
+//     DisplayCursorProcPtr DisplayCursor;
+//     RealizeCursorProcPtr RealizeCursor;
+//     UnrealizeCursorProcPtr UnrealizeCursor;
+//     RecolorCursorProcPtr RecolorCursor;
+//     SetCursorPositionProcPtr SetCursorPosition;
+//     CursorWarpedToProcPtr CursorWarpedTo;
+//     CursorConfinedToProcPtr CursorConfinedTo;
 
-    /* GC procedures */
+//     /* GC procedures */
 
-    CreateGCProcPtr CreateGC;
+//     CreateGCProcPtr CreateGC;
 
-    /* Colormap procedures */
+//     /* Colormap procedures */
 
-    CreateColormapProcPtr CreateColormap;
-    DestroyColormapProcPtr DestroyColormap;
-    InstallColormapProcPtr InstallColormap;
-    UninstallColormapProcPtr UninstallColormap;
-    ListInstalledColormapsProcPtr ListInstalledColormaps;
-    StoreColorsProcPtr StoreColors;
-    ResolveColorProcPtr ResolveColor;
+//     CreateColormapProcPtr CreateColormap;
+//     DestroyColormapProcPtr DestroyColormap;
+//     InstallColormapProcPtr InstallColormap;
+//     UninstallColormapProcPtr UninstallColormap;
+//     ListInstalledColormapsProcPtr ListInstalledColormaps;
+//     StoreColorsProcPtr StoreColors;
+//     ResolveColorProcPtr ResolveColor;
 
-    /* Region procedures */
+//     /* Region procedures */
 
-    BitmapToRegionProcPtr BitmapToRegion;
+//     BitmapToRegionProcPtr BitmapToRegion;
 
-    /* os layer procedures */
+//     /* os layer procedures */
 
-    ScreenBlockHandlerProcPtr BlockHandler;
-    ScreenWakeupHandlerProcPtr WakeupHandler;
+//     ScreenBlockHandlerProcPtr BlockHandler;
+//     ScreenWakeupHandlerProcPtr WakeupHandler;
 
-    /* anybody can get a piece of this array */
-    PrivateRec* devPrivates;
+//     /* anybody can get a piece of this array */
+//     PrivateRec* devPrivates;
 
-    CreateScreenResourcesProcPtr CreateScreenResources;
-    ModifyPixmapHeaderProcPtr ModifyPixmapHeader;
+//     CreateScreenResourcesProcPtr CreateScreenResources;
+//     ModifyPixmapHeaderProcPtr ModifyPixmapHeader;
 
-    GetWindowPixmapProcPtr GetWindowPixmap;
-    SetWindowPixmapProcPtr SetWindowPixmap;
-    GetScreenPixmapProcPtr GetScreenPixmap;
-    SetScreenPixmapProcPtr SetScreenPixmap;
-    NameWindowPixmapProcPtr NameWindowPixmap;
+//     GetWindowPixmapProcPtr GetWindowPixmap;
+//     SetWindowPixmapProcPtr SetWindowPixmap;
+//     GetScreenPixmapProcPtr GetScreenPixmap;
+//     SetScreenPixmapProcPtr SetScreenPixmap;
+//     NameWindowPixmapProcPtr NameWindowPixmap;
 
-version (CONFIG_LEGACY_NVIDIA_PADDING) {
-    /* This field is used by the 470 and 390 proprietary nvidia DDX driver, and should always be NULL */
-    void* reserved_for_nvidia_470_and_390;
-}
+// version (CONFIG_LEGACY_NVIDIA_PADDING) {
+//     /* This field is used by the 470 and 390 proprietary nvidia DDX driver, and should always be NULL */
+//     void* reserved_for_nvidia_470_and_390;
+// }
 
-    uint totalPixmapSize;
+//     uint totalPixmapSize;
 
-    MarkWindowProcPtr MarkWindow;
-    MarkOverlappedWindowsProcPtr MarkOverlappedWindows;
-    ConfigNotifyProcPtr ConfigNotify;
-    MoveWindowProcPtr MoveWindow;
-    ResizeWindowProcPtr ResizeWindow;
-    GetLayerWindowProcPtr GetLayerWindow;
-    HandleExposuresProcPtr HandleExposures;
-    ReparentWindowProcPtr ReparentWindow;
+//     MarkWindowProcPtr MarkWindow;
+//     MarkOverlappedWindowsProcPtr MarkOverlappedWindows;
+//     ConfigNotifyProcPtr ConfigNotify;
+//     MoveWindowProcPtr MoveWindow;
+//     ResizeWindowProcPtr ResizeWindow;
+//     GetLayerWindowProcPtr GetLayerWindow;
+//     HandleExposuresProcPtr HandleExposures;
+//     ReparentWindowProcPtr ReparentWindow;
 
-    SetShapeProcPtr SetShape;
+//     SetShapeProcPtr SetShape;
 
-    ChangeBorderWidthProcPtr ChangeBorderWidth;
-    MarkUnrealizedWindowProcPtr MarkUnrealizedWindow;
+//     ChangeBorderWidthProcPtr ChangeBorderWidth;
+//     MarkUnrealizedWindowProcPtr MarkUnrealizedWindow;
 
-    /* Device cursor procedures */
-    DeviceCursorInitializeProcPtr DeviceCursorInitialize;
-    DeviceCursorCleanupProcPtr DeviceCursorCleanup;
+//     /* Device cursor procedures */
+//     DeviceCursorInitializeProcPtr DeviceCursorInitialize;
+//     DeviceCursorCleanupProcPtr DeviceCursorCleanup;
 
-    /* set it in driver side if X server can copy the framebuffer content.
-     * Meant to be used together with '-background none' option, avoiding
-     * malicious users to steal framebuffer's content if that would be the
-     * default */
-    Bool canDoBGNoneRoot;
+//     /* set it in driver side if X server can copy the framebuffer content.
+//      * Meant to be used together with '-background none' option, avoiding
+//      * malicious users to steal framebuffer's content if that would be the
+//      * default */
+//     Bool canDoBGNoneRoot;
 
-    Bool isGPU;
+//     Bool isGPU;
 
-    /* Info on this screen's secondarys (if any) */
-    xorg_list secondary_list;
-    xorg_list secondary_head;
-    int output_secondarys;
-    /* Info for when this screen is a secondary */
-    ScreenPtr current_primary;
-    Bool is_output_secondary;
-    Bool is_offload_secondary;
+//     /* Info on this screen's secondarys (if any) */
+//     xorg_list secondary_list;
+//     xorg_list secondary_head;
+//     int output_secondarys;
+//     /* Info for when this screen is a secondary */
+//     ScreenPtr current_primary;
+//     Bool is_output_secondary;
+//     Bool is_offload_secondary;
 
-    SharePixmapBackingProcPtr SharePixmapBacking;
-    SetSharedPixmapBackingProcPtr SetSharedPixmapBacking;
+//     SharePixmapBackingProcPtr SharePixmapBacking;
+//     SetSharedPixmapBackingProcPtr SetSharedPixmapBacking;
 
-    StartPixmapTrackingProcPtr StartPixmapTracking;
-    StopPixmapTrackingProcPtr StopPixmapTracking;
-    SyncSharedPixmapProcPtr SyncSharedPixmap;
+//     StartPixmapTrackingProcPtr StartPixmapTracking;
+//     StopPixmapTrackingProcPtr StopPixmapTracking;
+//     SyncSharedPixmapProcPtr SyncSharedPixmap;
 
-    SharedPixmapNotifyDamageProcPtr SharedPixmapNotifyDamage;
-    RequestSharedPixmapNotifyDamageProcPtr RequestSharedPixmapNotifyDamage;
-    PresentSharedPixmapProcPtr PresentSharedPixmap;
-    StopFlippingPixmapTrackingProcPtr StopFlippingPixmapTracking;
+//     SharedPixmapNotifyDamageProcPtr SharedPixmapNotifyDamage;
+//     RequestSharedPixmapNotifyDamageProcPtr RequestSharedPixmapNotifyDamage;
+//     PresentSharedPixmapProcPtr PresentSharedPixmap;
+//     StopFlippingPixmapTrackingProcPtr StopFlippingPixmapTracking;
 
-    xorg_list pixmap_dirty_list;
+//     xorg_list pixmap_dirty_list;
 
-    ReplaceScanoutPixmapProcPtr ReplaceScanoutPixmap;
-    XYToWindowProcPtr XYToWindow;
-    DPMSProcPtr DPMS;
+//     ReplaceScanoutPixmapProcPtr ReplaceScanoutPixmap;
+//     XYToWindowProcPtr XYToWindow;
+//     DPMSProcPtr DPMS;
 
-    /* ===== below here is PRIVATE ==== drivers MUST NEVER touch it ===== */
+//     /* ===== below here is PRIVATE ==== drivers MUST NEVER touch it ===== */
 
-    /* additional window destructors (replaces wrapping DestroyWindow).
-       should NOT be touched outside of DIX core */
-    CallbackListPtr hookWindowDestroy;
+//     /* additional window destructors (replaces wrapping DestroyWindow).
+//        should NOT be touched outside of DIX core */
+//     CallbackListPtr hookWindowDestroy;
 
-    /* additional window position notify hooks (replaces wrapping PositionWindow)
-       should NOT be touched outside of DIX core */
-    CallbackListPtr hookWindowPosition;
+//     /* additional window position notify hooks (replaces wrapping PositionWindow)
+//        should NOT be touched outside of DIX core */
+//     CallbackListPtr hookWindowPosition;
 
-    /* additional screen close notify hooks (replaces wrapping CloseScreen)
-       should NOT be touched outside of DIX core */
-    CallbackListPtr hookClose;
+//     /* additional screen close notify hooks (replaces wrapping CloseScreen)
+//        should NOT be touched outside of DIX core */
+//     CallbackListPtr hookClose;
 
-    /* additional pixmap destroy notify hooks (replaces wrapping DestroyPixmap)
-       should NOT be touched outside of DIX core */
-    CallbackListPtr hookPixmapDestroy;
+//     /* additional pixmap destroy notify hooks (replaces wrapping DestroyPixmap)
+//        should NOT be touched outside of DIX core */
+//     CallbackListPtr hookPixmapDestroy;
 
-    /* hooks run right after SUCCESSFUL CreateScreenResources
-       should NOT be touched outside of DIX core */
-    CallbackListPtr hookPostCreateResources;
+//     /* hooks run right after SUCCESSFUL CreateScreenResources
+//        should NOT be touched outside of DIX core */
+//     CallbackListPtr hookPostCreateResources;
 
-    SetWindowVRRModeProcPtr SetWindowVRRMode;
+//     SetWindowVRRModeProcPtr SetWindowVRRMode;
 
-    /* additional screen post-close notify hooks (replaces wrapping CloseScreen)
-       should NOT be touched outside of DIX core */
-    CallbackListPtr hookPostClose;
-}
+//     /* additional screen post-close notify hooks (replaces wrapping CloseScreen)
+//        should NOT be touched outside of DIX core */
+//     CallbackListPtr hookPostClose;
+// }
 
 pragma(inline, true) private RegionPtr BitmapToRegion(ScreenPtr _pScreen, PixmapPtr pPix)
 {

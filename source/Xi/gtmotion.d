@@ -111,7 +111,7 @@ int ProcXGetDeviceMotionEvents(ClientPtr client)
         if (CompareTimeStamps(stop, currentTime) == LATER)
             stop = currentTime;
         if (v.numMotionEvents) {
-            const(int) size = ((Time) + (v.numAxes * INT32.sizeof)).sizeof;
+            const(int) size = ((Time).sizeof + (v.numAxes * INT32.sizeof));
             INT32* coords = null;
             reply.nEvents = GetMotionHistory(dev, cast(xTimecoord**) &coords,   /* XXX */
                                            start.milliseconds, stop.milliseconds,

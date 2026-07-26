@@ -91,7 +91,7 @@ ClientPtr serverClient;
 int currentMaxClients;          /* current size of clients array */
 c_long maxBigRequestSize = MAX_BIG_REQUEST_SIZE;
 
-c_ulong globalSerialNumber = 0;
+static c_ulong globalSerialNumber = 0;
 
 /* this is always 1 now, since there's no internal reset anymore */
 x_server_generation_t serverGeneration = 1;

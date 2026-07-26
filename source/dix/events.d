@@ -1197,7 +1197,7 @@ version (XINERAMA) {
 
     eventlen = InternalEvent.sizeof;
 
-    QdEventPtr qe = calloc(1, ((QdEventRec) + eventlen).sizeof);
+    QdEventPtr qe = cast(QdEventPtr) calloc(1, ((QdEventRec) + eventlen).sizeof);
     if (!qe)
         return;
     xorg_list_init(&qe.next);
@@ -2159,7 +2159,7 @@ private EventDeliveryState DeliverToWindowOwner(DeviceIntPtr dev, WindowPtr win,
 {
     /* if nobody ever wants to see this event, skip some work */
     if (filter != CantBeFiltered &&
-        !((wOtherEventMasks(win) | win.eventMask) & filter))
+        !((mixin(wOtherEventMasks!("win")) | win.eventMask) & filter))
         return EVENT_SKIP;
 
     if (IsInterferingGrab(dixClientForWindow(win), dev, events))
@@ -2725,7 +2725,7 @@ int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win)
 
         /* Check for core mask */
         if ((win.deliverableEvents & filter) &&
-            ((wOtherEventMasks(win) | win.eventMask) & filter))
+            ((mixin(wOtherEventMasks!("win")) | win.eventMask) & filter))
             rc |= EVENT_CORE_MASK;
 
         /* Check for core DontPropagate mask */
@@ -4412,7 +4412,7 @@ void RecalculateDeliverableEvents(WindowPtr pWin)
             }
         }
         pChild.deliverableEvents = pChild.eventMask |
-            wOtherEventMasks(pChild);
+            mixin(wOtherEventMasks!("pChild"));
         if (pChild.parent)
             pChild.deliverableEvents |=
                 (pChild.parent.deliverableEvents &
@@ -4471,7 +4471,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
             return rc;
     }
     check = (mask & AtMostOneClient);
-    if (check & (pWin.eventMask | wOtherEventMasks(pWin))) {
+    if (check & (pWin.eventMask | mixin(wOtherEventMasks!("pWin")))) {
         /* It is illegal for two different clients to select on any of the
            events for AtMostOneClient. However, it is OK, for some client to
            continue selecting on one of those events.  */
@@ -4594,7 +4594,7 @@ void CoreEnterLeaveEvent(DeviceIntPtr mouse, int type, int mode, int detail, Win
             mask |= EventMaskForClient(pWin, dixClientForGrab(grab));
     }
     else {
-        mask = pWin.eventMask | wOtherEventMasks(pWin);
+        mask = pWin.eventMask | mixin(wOtherEventMasks!("pWin"));
     }
 
     event.u.enterLeave.time = currentTime.milliseconds;
@@ -4733,7 +4733,7 @@ void CoreFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPtr 
     DeliverEventsToWindow(dev, pWin, &event, 1,
                           GetEventFilter(dev, &event), NullGrab);
     if ((type == FocusIn) &&
-        ((pWin.eventMask | wOtherEventMasks(pWin)) & KeymapStateMask)) {
+        ((pWin.eventMask | mixin(wOtherEventMasks!("pWin"))) & KeymapStateMask)) {
         xKeymapEvent ke = {
             type: KeymapNotify
         };

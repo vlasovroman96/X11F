@@ -7,6 +7,7 @@ extern(C): __gshared:
 
  
 public import include.dix;
+public import dix.dispatch;
 
 int PanoramiXCreateWindow(ClientPtr client);
 int PanoramiXChangeWindowAttributes(ClientPtr client);
@@ -68,8 +69,8 @@ int ProcPanoramiXGetScreenSize(ClientPtr client);
 int ProcXineramaQueryScreens(ClientPtr client);
 int ProcXineramaIsActive(ClientPtr client);
 
-extern int connBlockScreenStart;
-extern xConnSetupPrefix connSetupPrefix;
+// extern int connBlockScreenStart;
+// extern xConnSetupPrefix connSetupPrefix;
 
 // extern int function(ClientPtr client)[256] SavedProcVector;
 

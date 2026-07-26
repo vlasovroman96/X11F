@@ -39,7 +39,7 @@ alias PredictableAccelSchemePtr = _PredictableAccelSchemeRec*;
 
 // void AccelerationDefaultCleanup(DeviceIntPtr dev);
 
-Bool InitPredictableAccelerationScheme(DeviceIntPtr dev, _ValuatorAccelerationRec* protoScheme);
+// Bool InitPredictableAccelerationScheme(DeviceIntPtr dev, _ValuatorAccelerationRec* protoScheme);
 
 // void acceleratePointerPredictable(DeviceIntPtr dev, ValuatorMask* val, CARD32 evtime);
 

@@ -204,7 +204,7 @@ pragma(inline, true) int pad_to_int32(const(int) bytes)
  * @return The bytes of padding needed to arrive at the closest multiple of 4
  * that is equal or higher than bytes.
  */
-pragma(inline, true) private int padding_for_int32(const(int) bytes)
+pragma(inline, true) int padding_for_int32(const(int) bytes)
 {
     return ((-bytes) & 3);
 }
@@ -326,7 +326,7 @@ alias GrabPtr = GrabRec*;
 
 alias x_server_generation_t = c_ulong;
 
-static ulong globalSerialNumber = 0;
-extern x_server_generation_t serverGeneration;
+// static ulong globalSerialNumber = 0;
+// extern x_server_generation_t serverGeneration;
 
 }                          /* MISC_H */

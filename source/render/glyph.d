@@ -334,13 +334,13 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
 
     head_size = (cast(GlyphRec) + screenInfo.numScreens * PicturePtr.sizeof).sizeof;
     size = (head_size + dixPrivatesSize(PRIVATE_GLYPH));
-    GlyphPtr glyph = calloc(1, size);
+    GlyphPtr glyph = cast(GlyphPtr) calloc(1, size);
     if (!glyph)
         return 0;
     glyph.refcnt = 1;
     glyph.size = size + xGlyphInfo.sizeof;
     glyph.info = *gi;
-    dixInitPrivates(glyph, cast(char*) glyph + head_size, PRIVATE_GLYPH);
+    mixin(dixInitPrivates!("glyph", "cast(char*) glyph + head_size", "PRIVATE_GLYPH"));
 
     uint i = 0;
     mixin(DIX_FOR_EACH_SCREEN!q{
@@ -435,7 +435,7 @@ GlyphSetPtr AllocateGlyphSet(int fdepth, PictFormatPtr format)
             return FALSE;
     }
 
-    glyphSet = dixAllocateObjectWithPrivates(GlyphSetRec, PRIVATE_GLYPHSET);
+    glyphSet = mixin(dixAllocateObjectWithPrivates!("GlyphSetRec", "PRIVATE_GLYPHSET"));
     if (!glyphSet)
         return FALSE;
 

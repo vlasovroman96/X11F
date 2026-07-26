@@ -69,7 +69,7 @@ struct _CursorBits {
 }alias CursorBits = _CursorBits;
 alias CursorBitsPtr = _CursorBits*;
 
-struct CursorRec {
+struct _Cursor {
     CursorBitsPtr bits;
     ushort foreRed, foreGreen, foreBlue;        /* device-independent color */
     ushort backRed, backGreen, backBlue;        /* device-independent color */
@@ -80,9 +80,13 @@ struct CursorRec {
     Atom name;
 }
 
+alias CursorRec = _Cursor;
+
 struct _CursorMetric {
     ushort width, height, xhot, yhot;
 }
+
+alias CursorMetricRec = _CursorMetric;
 
 struct HotSpot {
     int x, y;

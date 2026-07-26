@@ -97,6 +97,6 @@ int XIPropToFloat(XIPropertyValuePtr val, int* nelem_return, float** buf_return)
 
 void XIUnregisterPropertyHandler(DeviceIntPtr dev, c_long id);
 
-void XIDeleteAllDeviceProperties(DeviceIntPtr device);
+// void XIDeleteAllDeviceProperties(DeviceIntPtr device);
 
  /* _XSERVER_EXEVENTS_PRIV_H */

@@ -142,7 +142,7 @@ RegionPtr xnestPixmapToRegion(PixmapPtr pPixmap)
         Box.y1 = y;
         Box.y2 = y + 1;
         previousPixel = 0L;
-        const(int) line_start = BitmapBytePad(pPixmap.drawable.width) * y;
+        const(int) line_start = mixin(BitmapBytePad!("pPixmap.drawable.width")) * y;
 
         for (x = 0; x < pPixmap.drawable.width; x++) {
             currentPixel = ((image_data[line_start + (x/8)]) >> (x % 8)) & 1;

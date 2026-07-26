@@ -164,8 +164,8 @@ load_cursor(CursorPtr src, int screen)
                     }
                 }
 
-                srow += BitmapBytePad(src->bits->width);
-                mrow += BitmapBytePad(src->bits->width);
+                srow += mixin(BitmapBytePad!("src->bits->width"));
+                mrow += mixin(BitmapBytePad!("src->bits->width"));
                 drow = (uint32_t *)((char *)drow + rowbytes);
             }
         }

@@ -74,7 +74,7 @@ alias RegDataPtr = pixman_region16_data*;
 extern BoxRec RegionEmptyBox;
 extern RegDataRec RegionEmptyData;
 extern RegDataRec RegionBrokenData;
-pragma(inline, true) private Bool RegionNil(RegionPtr reg)
+pragma(inline, true) Bool RegionNil(RegionPtr reg)
 {
     return ((reg).data && !(reg).data.numRects);
 }

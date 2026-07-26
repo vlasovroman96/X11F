@@ -149,13 +149,35 @@ import include.inputstr;
 import include.xkbsrv;
 import xfixes.xfixesint;
 import dix.dixstruct_priv;
+import os.log;
+import os.utils;
+import dix.dix_priv;
+import dix.extension;
+import dix.dixutils;
+import externs.X11.fonts.fontstruct;
+import externs.X11.fonts.libxfont2;
+import dix.gc;
+import externs.attrs;
+import os.access;
+import dix.colormap;
+import os.osinit;
+import os.io;
+
+alias INT32_MAX = core.stdc.stdint.INT32_MAX;
+
+alias StartListFontsWithInfoFn = extern(C) int function(
+    ClientPtr client,
+    int len,
+    ubyte* stuff,
+    int maxLength
+) @nogc nothrow;
 
 enum mskcnt = ((MAXCLIENTS + 31) / 32);
 enum string BITMASK(string i) = `(1U << ((` ~ i ~ `) & 31))`;
 enum string MASKIDX(string i) = `((` ~ i ~ `) >> 5)`;
 enum string MASKWORD(string buf, string i) = buf ~ `[` ~ MASKIDX!(i) ~ `]`;
-enum string BITSET(string buf, string i) = MASKWORD!(buf, i) ~ ` |= ` ~ BITMASK!(i);
-enum string BITCLEAR(string buf, string i) = MASKWORD!(buf, i) ~ ` &= ~` ~ BITMASK!(i);
+enum string BITSET(string buf, string i) = MASKWORD!(buf, i) ~ ` |= ` ~ BITMASK!(i)~`;`;
+enum string BITCLEAR(string buf, string i) = MASKWORD!(buf, i) ~ ` &= ~` ~ BITMASK!(i)~`;`;
 enum string GETBIT(string buf, string i) = `(` ~ MASKWORD!(buf,i) ~ ` & ` ~ BITMASK!(i) ~ `)`;
 
 xConnSetupPrefix connSetupPrefix;
@@ -307,7 +329,7 @@ private void mark_client_grab(ClientPtr grab)
 {
     ClientPtr client = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "ready_clients", "ready", q{
+    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "&ready_clients", "ready", q{
         if (client != grab) {
             xorg_list_del(&client.ready);
             xorg_list_append(&client.ready, &saved_ready_clients);
@@ -319,7 +341,7 @@ private void mark_client_ungrab()
 {
     ClientPtr client = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "saved_ready_clients", "ready", q{
+    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "&saved_ready_clients", "ready", q{
         xorg_list_del(&client.ready);
         xorg_list_append(&client.ready, &ready_clients);
     }));
@@ -369,7 +391,7 @@ version (SMART_DEBUG) {
      * Set current client pointer
      */
     if (SmartLastClient != best) {
-        best.smart_start_tick = now;
+        best.smart_start_tick = cast(int)now;
         SmartLastClient = best;
     }
     /*
@@ -510,7 +532,7 @@ void Dispatch()
                     ExtensionEntry* ext = GetExtensionEntry(client.majorOp);
 
                     if (ext)
-                        client.minorOp = ext.MinorOpcode(client);
+                        client.minorOp = cast(ubyte)ext.MinorOpcode(client);
                 }
 version (XSERVER_DTRACE) {
                 if (XSERVER_REQUEST_START_ENABLED())
@@ -558,13 +580,13 @@ version (XSERVER_DTRACE) {
                 else if (result != Success) {
                     SendErrorToClient(client, client.majorOp,
                                       client.minorOp,
-                                      client.errorValue, result);
+                                      client.errorValue, cast(ubyte)result);
                     break;
                 }
             }
             FlushAllOutput();
             if (client == SmartLastClient)
-                client.smart_stop_tick = SmartScheduleTime;
+                client.smart_stop_tick = cast(int)SmartScheduleTime;
         }
         dispatchException &= ~DE_PRIORITYCHANGE;
     }
@@ -594,24 +616,24 @@ Bool CreateConnectionBlock()
     /*
      * per-server image and bitmap parameters are defined in Xmd.h
      */
-    setup.imageByteOrder = screenInfo.imageByteOrder;
+    setup.imageByteOrder = cast(ubyte)screenInfo.imageByteOrder;
 
-    setup.bitmapScanlineUnit = screenInfo.bitmapScanlineUnit;
-    setup.bitmapScanlinePad = screenInfo.bitmapScanlinePad;
+    setup.bitmapScanlineUnit = cast(ubyte)screenInfo.bitmapScanlineUnit;
+    setup.bitmapScanlinePad = cast(ubyte)screenInfo.bitmapScanlinePad;
 
-    setup.bitmapBitOrder = screenInfo.bitmapBitOrder;
+    setup.bitmapBitOrder = cast(ubyte)screenInfo.bitmapBitOrder;
     setup.motionBufferSize = NumMotionEvents();
-    setup.numRoots = screenInfo.numScreens;
-    setup.nbytesVendor = strlen(VendorString.ptr);
-    setup.numFormats = screenInfo.numPixmapFormats;
+    setup.numRoots = cast(ubyte)screenInfo.numScreens;
+    setup.nbytesVendor = cast(ushort)strlen(VendorString.ptr);
+    setup.numFormats = cast(ubyte)screenInfo.numPixmapFormats;
     setup.maxRequestSize = MAX_REQUEST_SIZE;
     QueryMinMaxKeyCodes(&setup.minKeyCode, &setup.maxKeyCode);
 
-    lenofblock = ((xConnSetup) +
+    lenofblock = cast(int)((xConnSetup).sizeof +
         pad_to_int32(setup.nbytesVendor) +
-        (setup.numFormats * xPixmapFormat.sizeof) +
-        (setup.numRoots * xWindowRoot.sizeof)).sizeof;
-    ConnectionInfo = calloc(1, lenofblock);
+        cast(uint)(setup.numFormats * xPixmapFormat.sizeof) +
+        cast(uint)(setup.numRoots * xWindowRoot.sizeof));
+    ConnectionInfo = cast(char*)calloc(1, lenofblock);
     if (!ConnectionInfo)
         return FALSE;
 
@@ -645,10 +667,10 @@ Bool CreateConnectionBlock()
         DepthPtr pDepth = void;
         VisualPtr pVisual = void;
 
-        root.windowId = walkScreen.root.drawable.id;
-        root.defaultColormap = walkScreen.defColormap;
-        root.whitePixel = walkScreen.whitePixel;
-        root.blackPixel = walkScreen.blackPixel;
+        root.windowId = cast(uint)walkScreen.root.drawable.id;
+        root.defaultColormap = cast(uint)walkScreen.defColormap;
+        root.whitePixel = cast(uint)walkScreen.whitePixel;
+        root.blackPixel = cast(uint)walkScreen.blackPixel;
         root.currentInputMask = 0;      /* filled in when sent */
         root.pixWidth = walkScreen.width;
         root.pixHeight = walkScreen.height;
@@ -656,19 +678,19 @@ Bool CreateConnectionBlock()
         root.mmHeight = walkScreen.mmHeight;
         root.minInstalledMaps = walkScreen.minInstalledCmaps;
         root.maxInstalledMaps = walkScreen.maxInstalledCmaps;
-        root.rootVisualID = walkScreen.rootVisual;
+        root.rootVisualID = cast(uint)walkScreen.rootVisual;
         root.backingStore = walkScreen.backingStoreSupport;
         root.saveUnders = FALSE;
-        root.rootDepth = walkScreen.rootDepth;
-        root.nDepths = walkScreen.numDepths;
+        root.rootDepth = cast(ubyte)walkScreen.rootDepth;
+        root.nDepths = cast(ubyte)walkScreen.numDepths;
         memcpy(pBuf, &root, xWindowRoot.sizeof);
         sizesofar += xWindowRoot.sizeof;
         pBuf += xWindowRoot.sizeof;
 
         pDepth = walkScreen.allowedDepths;
         for (int j = 0; j < walkScreen.numDepths; j++, pDepth++) {
-            lenofblock += ((xDepth) +
-                (pDepth.numVids * xVisualType.sizeof)).sizeof;
+            lenofblock += ((xDepth).sizeof +
+                (pDepth.numVids * xVisualType.sizeof));
             pBuf = cast(char*) realloc(ConnectionInfo, lenofblock);
             if (!pBuf) {
                 free(ConnectionInfo);
@@ -685,9 +707,9 @@ Bool CreateConnectionBlock()
                 vid = pDepth.vids[k];
                 for (pVisual = walkScreen.visuals;
                      pVisual.vid != vid; pVisual++){}
-                visual.visualID = vid;
-                visual.class_ = pVisual.class_;
-                visual.bitsPerRGB = pVisual.bitsPerRGBValue;
+                visual.visualID = cast(uint)vid;
+                visual.class_ = cast(ubyte)pVisual.class_;
+                visual.bitsPerRGB = cast(ubyte)pVisual.bitsPerRGBValue;
                 visual.colormapEntries = pVisual.ColormapEntries;
                 visual.redMask = pVisual.redMask;
                 visual.greenMask = pVisual.greenMask;
@@ -699,7 +721,7 @@ Bool CreateConnectionBlock()
         }
     });
     connSetupPrefix.success = xTrue;
-    connSetupPrefix.length = lenofblock / 4;
+    connSetupPrefix.length = cast(ushort)(lenofblock / 4);
     connSetupPrefix.majorVersion = X_PROTOCOL;
     connSetupPrefix.minorVersion = X_PROTOCOL_REVISION;
     return TRUE;
@@ -995,8 +1017,8 @@ int ProcGetGeometry(ClientPtr client)
     if (mixin(WindowDrawable!("pDraw.type"))) {
         WindowPtr pWin = cast(WindowPtr) pDraw;
 
-        reply.x = pWin.origin.x - mixin(wBorderWidth!("pWin"));
-        reply.y = pWin.origin.y - mixin(wBorderWidth!("pWin"));
+        reply.x = cast(ushort)(pWin.origin.x - mixin(wBorderWidth!("pWin")));
+        reply.y = cast(ushort)(pWin.origin.y - mixin(wBorderWidth!("pWin")));
         reply.borderWidth = pWin.borderWidth;
     }
 
@@ -1033,14 +1055,14 @@ int ProcQueryTree(ClientPtr client)
 
     CARD32 numChildren = 0;
     for (WindowPtr pChild = pWin.lastChild; pChild != pHead; pChild = pChild.prevSib) {
-        x_rpcbuf_write_CARD32(&rpcbuf, pChild.drawable.id);
+        x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)pChild.drawable.id);
         numChildren++;
     }
 
     xQueryTreeReply reply = {
         root: cast(uint)pWin.drawable.pScreen.root.drawable.id,
-        parent: (pWin.parent) ? pWin.parent.drawable.id : cast(Window) None,
-        nChildren: numChildren,
+        parent: cast(uint)((pWin.parent) ? pWin.parent.drawable.id : cast(Window) None),
+        nChildren: cast(ushort)numChildren,
     };
 
     if (client.swapped) {
@@ -1073,7 +1095,7 @@ int ProcInternAtom(ClientPtr client)
         return BadAlloc;
 
     xInternAtomReply reply = {
-        atom: atom
+        atom: cast(uint)atom
     };
 
     if (client.swapped) {
@@ -1093,18 +1115,18 @@ int ProcGetAtomName(ClientPtr client)
     if (client.swapped)
         swapl(&stuff.id);
 
-    if (((str = NameForAtom(stuff.id)) == 0)) {
+    if (((str = NameForAtom(stuff.id)) is null)) {
         client.errorValue = stuff.id;
         return BadAtom;
     }
 
-    const(int) len = strlen(str);
+    const(int) len = cast(int)strlen(str);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)str, len);
 
     xGetAtomNameReply reply = {
-        nameLength: len
+        nameLength: cast(ushort)len
     };
 
     if (client.swapped) {
@@ -1204,8 +1226,8 @@ int ProcTranslateCoords(ClientPtr client)
         reply.sameScreen = xTrue;
         reply.child = None;
         /* computing absolute coordinates -- adjust to destination later */
-        x = pWin.drawable.x + stuff.srcX;
-        y = pWin.drawable.y + stuff.srcY;
+        x = cast(ushort)(pWin.drawable.x + stuff.srcX);
+        y = cast(ushort)(pWin.drawable.y + stuff.srcY);
         pWin = pDst.firstChild;
         while (pWin) {
             BoxRec box = void;
@@ -1229,15 +1251,15 @@ int ProcTranslateCoords(ClientPtr client)
                                         x - pWin.drawable.x,
                                         y - pWin.drawable.y, &box))
                 ) {
-                reply.child = pWin.drawable.id;
+                reply.child = cast(uint)pWin.drawable.id;
                 pWin = cast(WindowPtr) null;
             }
             else
                 pWin = pWin.nextSib;
         }
         /* adjust to destination coordinates */
-        reply.dstX = x - pDst.drawable.x;
-        reply.dstY = y - pDst.drawable.y;
+        reply.dstX = cast(ushort)(x - pDst.drawable.x);
+        reply.dstY = cast(ushort)(y - pDst.drawable.y);
     }
 
     if (client.swapped) {
@@ -1319,9 +1341,9 @@ int ProcQueryFont(ClientPtr client)
                             pmax.characterWidth == pmin.characterWidth) ?
             0 : mixin(N2dChars!("pFont"));
 
-        rlength = (cast(xQueryFontReply) +
-            FONTINFONPROPS(FONTCHARSET(pFont)) * (cast(xFontProp) +
-            nprotoxcistructs * xCharInfo.sizeof).sizeof).sizeof;
+        rlength = cast(uint)((xQueryFontReply).sizeof +
+            mixin(FONTINFONPROPS!("mixin(FONTCHARSET!(`pFont`))")) * ((xFontProp).sizeof +
+            nprotoxcistructs * xCharInfo.sizeof));
         reply = cast(xQueryFontReply*) calloc(1, rlength);
         if (!reply) {
             return BadAlloc;
@@ -1329,7 +1351,7 @@ int ProcQueryFont(ClientPtr client)
 
         reply.type = X_Reply;
         reply.length = bytes_to_int32(rlength - xGenericReply.sizeof);
-        reply.sequenceNumber = client.sequence;
+        reply.sequenceNumber = cast(ushort)client.sequence;
         QueryFont(pFont, reply, nprotoxcistructs);
 
         if (client.swapped) {
@@ -1366,15 +1388,15 @@ int ProcQueryTextExtents(ClientPtr client)
             return BadLength;
         length--;
     }
-    if (!xfont2_query_text_extents(pFont, length, cast(ubyte*) &stuff[1], &info))
+    if (!assumeNoGC(&xfont2_query_text_extents)(pFont, length, cast(ubyte*) &stuff[1], &info))
         return BadAlloc;
 
     xQueryTextExtentsReply reply = {
-        drawDirection: info.drawDirection,
-        fontAscent: info.fontAscent,
-        fontDescent: info.fontDescent,
-        overallAscent: info.overallAscent,
-        overallDescent: info.overallDescent,
+        drawDirection: cast(ubyte)info.drawDirection,
+        fontAscent: cast(short)info.fontAscent,
+        fontDescent: cast(short)info.fontDescent,
+        overallAscent: cast(short)info.overallAscent,
+        overallDescent: cast(short)info.overallDescent,
         overallWidth: info.overallWidth,
         overallLeft: info.overallLeft,
         overallRight: info.overallRight
@@ -1409,7 +1431,7 @@ int ProcListFontsWithInfo(ClientPtr client)
 
     mixin(REQUEST_FIXED_SIZE!("xListFontsWithInfoReq", "stuff.nbytes"));
 
-    return StartListFontsWithInfo(client, stuff.nbytes,
+    return assumeNoGC(cast(StartListFontsWithInfoFn)&StartListFontsWithInfo)(client, stuff.nbytes,
                                   cast(ubyte*) &stuff[1], stuff.maxNames);
 }
 
@@ -1629,7 +1651,7 @@ int ProcSetClipRectangles(ClientPtr client)
     if (result != Success)
         return result;
 
-    size_t nr = (client.req_len << 2) - xSetClipRectanglesReq.sizeof;
+    size_t nr = ((client.req_len << 2)) - xSetClipRectanglesReq.sizeof;
     if (nr & 4)
         return BadLength;
     nr >>= 3;
@@ -1691,18 +1713,18 @@ void SendGraphicsExpose(ClientPtr client, RegionPtr pRgn, XID drawable, CARD8 ma
 
         numRects = RegionNumRects(pRgn);
         pBox = RegionRects(pRgn);
-        if (((pEvent = cast(xEvent*) calloc(numRects, xEvent.sizeof)) == 0))
+        if (((pEvent = cast(xEvent*) calloc(numRects, xEvent.sizeof)) is null))
             return;
         pe = pEvent;
 
         for (int i = 1; i <= numRects; i++, pe++, pBox++) {
             pe.u.u.type = GraphicsExpose;
-            pe.u.graphicsExposure.drawable = drawable;
+            pe.u.graphicsExposure.drawable = cast(uint)drawable;
             pe.u.graphicsExposure.x = pBox.x1;
             pe.u.graphicsExposure.y = pBox.y1;
-            pe.u.graphicsExposure.width = pBox.x2 - pBox.x1;
-            pe.u.graphicsExposure.height = pBox.y2 - pBox.y1;
-            pe.u.graphicsExposure.count = numRects - i;
+            pe.u.graphicsExposure.width = cast(ushort)(pBox.x2 - pBox.x1);
+            pe.u.graphicsExposure.height = cast(ushort)(pBox.y2 - pBox.y1);
+            pe.u.graphicsExposure.count = cast(ushort)(numRects - i);
             pe.u.graphicsExposure.majorEvent = major;
             pe.u.graphicsExposure.minorEvent = minor;
         }
@@ -1719,9 +1741,9 @@ void SendGraphicsExpose(ClientPtr client, RegionPtr pRgn, XID drawable, CARD8 ma
         //     u:noExposure:minorEvent: minor
         // };
         xEvent event;
-            event.u.oExposure.drawable = drawable;
-            event.u.oExposure.majorEvent = major;
-            event.u.oExposure.minorEvent = minor;        
+            event.u.noExposure.drawable = cast(uint)drawable;
+            event.u.noExposure.majorEvent = major;
+            event.u.noExposure.minorEvent = minor;        
         event.u.u.type = NoExpose;
         WriteEventsToClient(client, 1, &event);
     }
@@ -1818,7 +1840,7 @@ int ProcPolyPoint(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int npoint = void;
@@ -1831,7 +1853,7 @@ int ProcPolyPoint(ClientPtr client)
         return BadValue;
     }
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    npoint = bytes_to_int32((client.req_len << 2) - xPolyPointReq.sizeof);
+    npoint = bytes_to_int32(((client.req_len << 2)) - xPolyPointReq.sizeof);
     if (npoint)
         (*pGC.ops.PolyPoint) (pDraw, pGC, stuff.coordMode, npoint,
                                 cast(xPoint*) &stuff[1]);
@@ -1846,7 +1868,7 @@ int ProcPolyLine(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int npoint = void;
@@ -1859,10 +1881,10 @@ int ProcPolyLine(ClientPtr client)
         return BadValue;
     }
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    npoint = bytes_to_int32((client.req_len << 2) - xPolyLineReq.sizeof);
+    npoint = bytes_to_int32(((client.req_len << 2)) - xPolyLineReq.sizeof);
     if (npoint > 1)
         (*pGC.ops.Polylines) (pDraw, pGC, stuff.coordMode, npoint,
-                                (DDXPointPtr) &stuff[1]);
+                                cast(DDXPointPtr) &stuff[1]);
     return Success;
 }
 
@@ -1874,7 +1896,7 @@ int ProcPolySegment(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int nsegs = void;
@@ -1882,7 +1904,7 @@ int ProcPolySegment(ClientPtr client)
     DrawablePtr pDraw = void;
 
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    nsegs = (client.req_len << 2) - xPolySegmentReq.sizeof;
+    nsegs = cast(int)(((client.req_len << 2)) - xPolySegmentReq.sizeof);
     if (nsegs & 4)
         return BadLength;
     nsegs >>= 3;
@@ -1899,7 +1921,7 @@ int ProcPolyRectangle(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int nrects = void;
@@ -1907,7 +1929,7 @@ int ProcPolyRectangle(ClientPtr client)
     DrawablePtr pDraw = void;
 
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    nrects = (client.req_len << 2) - xPolyRectangleReq.sizeof;
+    nrects = cast(int)((client.req_len << 2) - xPolyRectangleReq.sizeof);
     if (nrects & 4)
         return BadLength;
     nrects >>= 3;
@@ -1925,7 +1947,7 @@ int ProcPolyArc(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int narcs = void;
@@ -1933,7 +1955,7 @@ int ProcPolyArc(ClientPtr client)
     DrawablePtr pDraw = void;
 
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    narcs = cast(int)(client.req_len << 2) - xPolyArcReq.sizeof;
+    narcs = cast(int)((client.req_len << 2) - xPolyArcReq.sizeof);
     if (narcs % xArc.sizeof)
         return BadLength;
     narcs /= xArc.sizeof;
@@ -1963,11 +1985,11 @@ int ProcFillPoly(ClientPtr client)
     }
 
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    things = cast(int)bytes_to_int32((client.req_len << 2) - xFillPolyReq.sizeof);
+    things = cast(int)bytes_to_int32(((client.req_len << 2)) - xFillPolyReq.sizeof);
     if (things)
         (*pGC.ops.FillPolygon) (pDraw, pGC, stuff.shape,
                                   stuff.coordMode, things,
-                                  (DDXPointPtr) &stuff[1]);
+                                  cast(DDXPointPtr) &stuff[1]);
     return Success;
 }
 
@@ -1979,7 +2001,7 @@ int ProcPolyFillRectangle(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int things = void;
@@ -1987,7 +2009,7 @@ int ProcPolyFillRectangle(ClientPtr client)
     DrawablePtr pDraw = void;
 
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    things = cast(int)(client.req_len << 2) - xPolyFillRectangleReq.sizeof;
+    things = cast(int)((client.req_len << 2)) - cast(int)xPolyFillRectangleReq.sizeof;
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -2006,7 +2028,7 @@ int ProcPolyFillArc(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.drawable);
         swapl(&stuff.gc);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     int narcs = void;
@@ -2014,7 +2036,7 @@ int ProcPolyFillArc(ClientPtr client)
     DrawablePtr pDraw = void;
 
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    narcs = cast(int)(client.req_len << 2) - xPolyFillArcReq.sizeof;
+    narcs = cast(int)((client.req_len << 2)) - cast(int)xPolyFillArcReq.sizeof;
     if (narcs % xArc.sizeof)
         return BadLength;
     narcs /= xArc.sizeof;
@@ -2023,46 +2045,46 @@ int ProcPolyFillArc(ClientPtr client)
     return Success;
 }
 
-version (MATCH_CLIENT_ENDIAN) {
+// version (MATCH_CLIENT_ENDIAN) {
 
-int ServerOrder()
-{
-    int whichbyte = 1;
+// int ServerOrder()
+// {
+//     int whichbyte = 1;
 
-    if (*(cast(char*) &whichbyte))
-        return LSBFirst;
-    return MSBFirst;
-}
+//     if (*(cast(char*) &whichbyte))
+//         return LSBFirst;
+//     return MSBFirst;
+// }
 
-enum string ClientOrder(string client) = `((` ~ client ~ `).swapped ? !ServerOrder() : ServerOrder())`;
+// enum string ClientOrder(string client) = `((` ~ client ~ `).swapped ? !ServerOrder() : ServerOrder())`;
 
-void ReformatImage(char* base, int nbytes, int bpp, int order)
-{
-    switch (bpp) {
-    case 1:                    /* yuck */
-        if (BITMAP_BIT_ORDER != order)
-            BitOrderInvert(cast(ubyte*) base, nbytes);
-static if (IMAGE_BYTE_ORDER != BITMAP_BIT_ORDER && BITMAP_SCANLINE_UNIT != 8) {
-        ReformatImage(base, nbytes, BITMAP_SCANLINE_UNIT, order);
-}
-        break;
-    case 4:
-        break;                  /* yuck */
-    case 8:
-        break;
-    case 16:
-        if (IMAGE_BYTE_ORDER != order)
-            TwoByteSwap(cast(ubyte*) base, nbytes);
-        break;
-    case 32:
-        if (IMAGE_BYTE_ORDER != order)
-            FourByteSwap(cast(ubyte*) base, nbytes);
-        break;
-    default: break;}
-}
-} else {
-//#define ReformatImage(b,n,bpp,o)
-}
+// void ReformatImage(char* base, int nbytes, int bpp, int order)
+// {
+//     switch (bpp) {
+//     case 1:                    /* yuck */
+//         if (BITMAP_BIT_ORDER != order)
+//             BitOrderInvert(cast(ubyte*) base, nbytes);
+// static if (IMAGE_BYTE_ORDER != BITMAP_BIT_ORDER && BITMAP_SCANLINE_UNIT != 8) {
+//         ReformatImage(base, nbytes, BITMAP_SCANLINE_UNIT, order);
+// }
+//         break;
+//     case 4:
+//         break;                  /* yuck */
+//     case 8:
+//         break;
+//     case 16:
+//         if (IMAGE_BYTE_ORDER != order)
+//             TwoByteSwap(cast(ubyte*) base, nbytes);
+//         break;
+//     case 32:
+//         if (IMAGE_BYTE_ORDER != order)
+//             FourByteSwap(cast(ubyte*) base, nbytes);
+//         break;
+//     default: break;}
+// }
+// } else {
+// //#define ReformatImage(b,n,bpp,o)
+// }
 
 /* 64-bit server notes: the protocol restricts padding of images to
  * 8-, 16-, or 32-bits. We would like to have 64-bits for the server
@@ -2091,13 +2113,13 @@ int ProcPutImage(ClientPtr client)
         if ((stuff.depth != 1) ||
             (stuff.leftPad >= cast(uint) screenInfo.bitmapScanlinePad))
             return BadMatch;
-        length = BitmapBytePad(stuff.width + stuff.leftPad);
+        length = mixin(BitmapBytePad!("stuff.width + stuff.leftPad"));
     }
     else if (stuff.format == XYPixmap) {
         if ((pDraw.depth != stuff.depth) ||
             (stuff.leftPad >= cast(uint) screenInfo.bitmapScanlinePad))
             return BadMatch;
-        length = BitmapBytePad(stuff.width + stuff.leftPad);
+        length = mixin(BitmapBytePad!("stuff.width + stuff.leftPad"));
         length *= stuff.depth;
     }
     else if (stuff.format == ZPixmap) {
@@ -2120,9 +2142,9 @@ int ProcPutImage(ClientPtr client)
          bytes_to_int32(xPutImageReq.sizeof)) != client.req_len)
         return BadLength;
 
-    ReformatImage(tmpImage, lengthProto * stuff.height,
-                  stuff.format == ZPixmap ? BitsPerPixel(stuff.depth) : 1,
-                  mixin(ClientOrder!(`client`)));
+    // ReformatImage(tmpImage, lengthProto * stuff.height,
+    //               stuff.format == ZPixmap ? BitsPerPixel(stuff.depth) : 1,
+    //               mixin(ClientOrder!(`client`)));
 
     (*pGC.ops.PutImage) (pDraw, pGC, stuff.depth, stuff.dstX, stuff.dstY,
                            stuff.width, stuff.height,
@@ -2192,7 +2214,7 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
             pBoundingDraw = cast(DrawablePtr) pDraw.pScreen.root;
         }
 
-        reply.visual = mixin(wVisual!("pWin"));
+        reply.visual = cast(uint)mixin(wVisual!("pWin"));
     }
     else {
         pBoundingDraw = pDraw;
@@ -2220,7 +2242,7 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
         length = widthBytesLine * height;
     }
     else {
-        widthBytesLine = BitmapBytePad(width);
+        widthBytesLine = mixin(BitmapBytePad!("width"));
         plane = (cast(Mask) 1) << (pDraw.depth - 1);
         /* only planes asked for */
         length = widthBytesLine * height *
@@ -2268,7 +2290,7 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
         while (height - linesDone > 0) {
             size_t nlines = min(linesPerBuf, height - linesDone);
 
-            char* pBuf = x_rpcbuf_reserve(&rpcbuf, (nlines * widthBytesLine));
+            char* pBuf = cast(char*)x_rpcbuf_reserve(&rpcbuf, (nlines * widthBytesLine));
             if (!pBuf) {
                 x_rpcbuf_clear(&rpcbuf);
                 return BadAlloc;
@@ -2278,16 +2300,16 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
                                          x,
                                          y + linesDone,
                                          width,
-                                         nlines,
-                                         format, planemask, cast(void*) pBuf);
+                                         cast(int)nlines,
+                                         format, planemask, cast(char*) pBuf);
             if (pVisibleRegion)
                 XaceCensorImage(client, pVisibleRegion, widthBytesLine,
                                 pDraw, x, y + linesDone, width,
-                                nlines, format, pBuf);
+                                cast(int)nlines, format, pBuf);
 
             /* Note that we DO NOT byte swap here */
-            ReformatImage(pBuf, cast(int) (nlines * widthBytesLine),
-                          BitsPerPixel(pDraw.depth), mixin(ClientOrder!(`client`)));
+            // ReformatImage(pBuf, cast(int) (nlines * widthBytesLine),
+            //               BitsPerPixel(pDraw.depth), mixin(ClientOrder!(`client`)));
 
             linesDone += nlines;
         }
@@ -2300,7 +2322,7 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
                 while (height - linesDone > 0) {
                     size_t nlines = min(linesPerBuf, height - linesDone);
 
-                    char* pBuf = x_rpcbuf_reserve(&rpcbuf, (nlines * widthBytesLine));
+                    char* pBuf = cast(char*)x_rpcbuf_reserve(&rpcbuf, (nlines * widthBytesLine));
                     if (!pBuf) {
                         x_rpcbuf_clear(&rpcbuf);
                         return BadAlloc;
@@ -2310,17 +2332,17 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
                                                  x,
                                                  y + linesDone,
                                                  width,
-                                                 nlines,
-                                                 format, plane, cast(void*) pBuf);
+                                                 cast(int)nlines,
+                                                 format, plane, cast(char*) pBuf);
                     if (pVisibleRegion)
                         XaceCensorImage(client, pVisibleRegion,
                                         widthBytesLine,
                                         pDraw, x, y + linesDone, width,
-                                        nlines, format, pBuf);
+                                        cast(int)nlines, format, pBuf);
 
                     /* Note that we DO NOT byte swap here */
-                    ReformatImage(pBuf, cast(int) (nlines * widthBytesLine),
-                                  1, mixin(ClientOrder!(`client`)));
+                    // ReformatImage(pBuf, cast(int) (nlines * widthBytesLine),
+                    //               1, mixin(ClientOrder!(`client`)));
 
                     linesDone += nlines;
                 }
@@ -2368,7 +2390,7 @@ int ProcPolyText(ClientPtr client)
                    pDraw,
                    pGC,
                    cast(ubyte*) &stuff[1],
-                   (cast(ubyte*) stuff) + (client.req_len << 2),
+                   (cast(ubyte*) stuff) + ((client.req_len << 2)),
                    stuff.x, stuff.y, stuff.reqType, stuff.drawable);
 }
 
@@ -2575,15 +2597,15 @@ int ProcListInstalledColormaps(ClientPtr client)
     if (!cm)
         return BadAlloc;
 
-    const(ScreenPtr) pScreen = pWin.drawable.pScreen;
+    ScreenPtr pScreen = pWin.drawable.pScreen;
     const(int) nummaps = pScreen.ListInstalledColormaps(pScreen, cm);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-    x_rpcbuf_write_CARD32s(&rpcbuf, cm, nummaps); /* Colormap is an XID, thus CARD32  */
+    x_rpcbuf_write_CARD32s(&rpcbuf, cast(uint*)cm, nummaps); /* Colormap is an XID, thus CARD32  */
     free(cm);
 
     xListInstalledColormapsReply reply = {
-        nColormaps: nummaps,
+        nColormaps: cast(ushort)nummaps,
     };
 
     if (client.swapped) {
@@ -2673,7 +2695,7 @@ int ProcAllocNamedColor(ClientPtr client)
                          &reply.screenGreen,
                          &reply.screenBlue,
                          &reply.pixel,
-                         client.index)))
+                         client.index)) != 0)
         return rc;
 
     if (client.swapped) {
@@ -2724,13 +2746,13 @@ int ProcAllocColorCells(ClientPtr client)
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-        Pixel* ppixels = x_rpcbuf_reserve(&rpcbuf, length);
+        Pixel* ppixels = cast(uint*)x_rpcbuf_reserve(&rpcbuf, length);
         if (!ppixels)
             return BadAlloc;
         pmasks = ppixels + npixels;
 
         if ((rc = AllocColorCells(client, pcmp, npixels, nmasks,
-                                  cast(Bool) stuff.contiguous, ppixels, pmasks))) {
+                                  cast(Bool) stuff.contiguous, ppixels, pmasks)) != 0) {
             x_rpcbuf_clear(&rpcbuf);
             return rc;
         }
@@ -2753,8 +2775,8 @@ version (XINERAMA) {
 
         else {
              xAllocColorCellsReply reply = {
-                nPixels: npixels,
-                nMasks: nmasks
+                nPixels: cast(ushort)npixels,
+                nMasks: cast(ushort)nmasks
             };
             if (client.swapped) {
                 swaps(&reply.nPixels);
@@ -2798,19 +2820,19 @@ int ProcAllocColorPlanes(ClientPtr client)
         }
 
         xAllocColorPlanesReply reply = {
-            nPixels: npixels
+            nPixels: cast(ushort)npixels
         };
         length = cast(c_long) npixels *Pixel.sizeof;
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-        Pixel* ppixels = x_rpcbuf_reserve(&rpcbuf, length);
+        Pixel* ppixels = cast(uint*)x_rpcbuf_reserve(&rpcbuf, length);
         if (!ppixels)
             return BadAlloc;
         if ((rc = AllocColorPlanes(client.index, pcmp, npixels,
                                    cast(int) stuff.red, cast(int) stuff.green,
                                    cast(int) stuff.blue, cast(Bool) stuff.contiguous,
                                    ppixels, &reply.redMask, &reply.greenMask,
-                                   &reply.blueMask))) {
+                                   &reply.blueMask)) != 0) {
             x_rpcbuf_clear(&rpcbuf);
             return rc;
         }
@@ -2857,7 +2879,7 @@ int ProcFreeColors(ClientPtr client)
 
         if (pcmp.flags & CM_AllAllocated)
             return BadAccess;
-        count = bytes_to_int32((client.req_len << 2) - xFreeColorsReq.sizeof);
+        count = bytes_to_int32(((client.req_len << 2)) - xFreeColorsReq.sizeof);
         return FreeColors(pcmp, client.index, count,
                           cast(Pixel*) &stuff[1], cast(Pixel) stuff.planeMask);
     }
@@ -2880,7 +2902,7 @@ int ProcStoreColors(ClientPtr client)
     if (rc == Success) {
         int count = void;
 
-        count = (client.req_len << 2) - xStoreColorsReq.sizeof;
+        count = cast(int)((client.req_len << 2) - cast(uint)xStoreColorsReq.sizeof);
         if (count % xColorItem.sizeof)
             return BadLength;
         count /= xColorItem.sizeof;
@@ -2929,7 +2951,7 @@ int ProcQueryColors(ClientPtr client)
 
     if (client.swapped) {
         swapl(&stuff.cmap);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     ColormapPtr pcmp = void;
@@ -2940,20 +2962,20 @@ int ProcQueryColors(ClientPtr client)
     if (rc == Success) {
         int count = void;
         count =
-            bytes_to_int32((client.req_len << 2) - xQueryColorsReq.sizeof);
+            bytes_to_int32(((client.req_len << 2)) - xQueryColorsReq.sizeof);
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-        xrgb* prgbs = x_rpcbuf_reserve(&rpcbuf, count * xrgb.sizeof);
+        xrgb* prgbs = cast(xrgb*)x_rpcbuf_reserve(&rpcbuf, count * xrgb.sizeof);
         if (!prgbs && count)
             return BadAlloc;
         if ((rc =
-             QueryColors(pcmp, count, cast(Pixel*) &stuff[1], prgbs, client))) {
+             QueryColors(pcmp, count, cast(Pixel*) &stuff[1], prgbs, client)) != 0) {
             x_rpcbuf_clear(&rpcbuf);
             return rc;
         }
 
         xQueryColorsReply reply = {
-            nColors: count
+            nColors: cast(ushort)count
         };
 
         if (client.swapped) {
@@ -3006,9 +3028,9 @@ int ProcLookupColor(ClientPtr client)
         screenBlue: exactBlue
     };
 
-    pcmp.pScreen.ResolveColor(&reply.screenRed,
-                                &reply.screenGreen,
-                                &reply.screenBlue,
+    pcmp.pScreen.ResolveColor(cast(ubyte*)&reply.screenRed,
+                                cast(ubyte*)&reply.screenGreen,
+                                cast(ubyte*)&reply.screenBlue,
                                 pcmp.pVisual);
 
     if (client.swapped) {
@@ -3072,10 +3094,10 @@ int ProcCreateCursor(ClientPtr client)
     if (stuff.x > width || stuff.y > height)
         return BadMatch;
 
-    srcbits = cast(ubyte*) calloc(BitmapBytePad(width), height);
+    srcbits = cast(ubyte*) calloc(mixin(BitmapBytePad!("width")), height);
     if (!srcbits)
         return BadAlloc;
-    n = BitmapBytePad(width) * height;
+    n = mixin(BitmapBytePad!("width")) * height;
 
     ubyte* mskbits = cast(ubyte*) calloc(1, n);
     if (!mskbits) {
@@ -3084,19 +3106,19 @@ int ProcCreateCursor(ClientPtr client)
     }
 
     (*src.drawable.pScreen.GetImage) (cast(DrawablePtr) src, 0, 0, width, height,
-                                        XYPixmap, 1, cast(void*) srcbits);
+                                        XYPixmap, 1, cast(char*) srcbits);
     if (msk == cast(PixmapPtr) null) {
         ubyte* bits = mskbits;
 
         while (--n >= 0)
-            *bits++ = ~0;
+            *bits++ = ubyte.max;
     }
     else {
         /* zeroing the (pad) bits helps some ddx cursor handling */
         memset(cast(char*) mskbits, 0, n);
         (*msk.drawable.pScreen.GetImage) (cast(DrawablePtr) msk, 0, 0, width,
                                             height, XYPixmap, 1,
-                                            cast(void*) mskbits);
+                                            cast(char*) mskbits);
     }
     cm.width = width;
     cm.height = height;
@@ -3209,8 +3231,8 @@ int ProcQueryBestSize(ClientPtr client)
     rc = dixCallScreenAccessCallback(client, pScreen, DixGetAttrAccess);
     if (rc != Success)
         return rc;
-    (*pScreen.QueryBestSize) (stuff.class_, &stuff.width,
-                               &stuff.height, pScreen);
+    (*pScreen.QueryBestSize) (stuff.class_, cast(ubyte*)&stuff.width,
+                               cast(ubyte*)&stuff.height, pScreen);
 
     xQueryBestSizeReply reply = {
         width: stuff.width,
@@ -3299,10 +3321,10 @@ int ProcGetScreenSaver(ClientPtr client)
     });
 
     xGetScreenSaverReply reply = {
-        timeout: ScreenSaverTime / MILLI_PER_SECOND,
-        interval: ScreenSaverInterval / MILLI_PER_SECOND,
-        preferBlanking: ScreenSaverBlanking,
-        allowExposures: ScreenSaverAllowExposures
+        timeout: cast(ushort)(ScreenSaverTime / MILLI_PER_SECOND),
+        interval: cast(ushort)(ScreenSaverInterval / MILLI_PER_SECOND),
+        preferBlanking: cast(ubyte)ScreenSaverBlanking,
+        allowExposures: cast(ubyte)ScreenSaverAllowExposures
     };
 
     if (client.swapped) {
@@ -3350,7 +3372,7 @@ int ProcListHosts(ClientPtr client)
 
     xListHostsReply reply = {
         enabled: cast(ubyte)enabled,
-        nHosts: nHosts
+        nHosts: cast(ushort)nHosts
     };
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
@@ -3363,13 +3385,13 @@ int ProcListHosts(ClientPtr client)
             xHostEntry* host = cast(xHostEntry*) bufT;
             int l1 = host.length;
             swaps(&host.length);
-            bufT += ((xHostEntry) + pad_to_int32(l1)).sizeof;
+            bufT += ((xHostEntry).sizeof + pad_to_int32(l1));
         }
 
         swaps(&reply.nHosts);
     }
 
-    x_rpcbuf_write_CARD8s(&rpcbuf, pdata, len);
+    x_rpcbuf_write_CARD8s(&rpcbuf, cast(ubyte*)pdata, len);
     free(pdata);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -3448,7 +3470,7 @@ int ProcSetFontPath(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xSetFontPathReq);
 
-    nbytes = (client.req_len << 2) - xSetFontPathReq.sizeof;
+    nbytes = ((client.req_len << 2)) - xSetFontPathReq.sizeof;
     total = nbytes;
     ptr = cast(ubyte*) &stuff[1];
     nfonts = stuff.nFonts;
@@ -3475,7 +3497,7 @@ int ProcGetFontPath(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
     xGetFontPathReply reply = {
-        nPaths: FillFontPath(&rpcbuf)
+        nPaths: cast(ushort)FillFontPath(&rpcbuf)
     };
 
     if (client.swapped) {
@@ -3644,16 +3666,16 @@ private void KillAllClients()
 
 void InitClient(ClientPtr client, int i, void* ospriv)
 {
-    client.index = i;
+    client.index = cast(ushort)i;
     xorg_list_init(&client.ready);
     xorg_list_init(&client.output_pending);
     client.clientAsMask = (cast(Mask) i) << CLIENTOFFSET;
     client.closeDownMode = i ? DestroyAll : RetainPermanent;
-    client.requestVector = InitialVector;
+    client.requestVector = InitialVector.ptr;
     client.osPrivate = ospriv;
     QueryMinMaxKeyCodes(&client.minKC, &client.maxKC);
-    client.smart_start_tick = SmartScheduleTime;
-    client.smart_stop_tick = SmartScheduleTime;
+    client.smart_start_tick = cast(int)SmartScheduleTime;
+    client.smart_stop_tick = cast(int)SmartScheduleTime;
     client.clientIds = null;
 }
 
@@ -3674,7 +3696,7 @@ ClientPtr NextAvailableClient(void* ospriv)
     if (i == LimitClients)
         return cast(ClientPtr) null;
     clients[i] = client =
-        dixAllocateObjectWithPrivates(ClientRec, PRIVATE_CLIENT);
+        mixin(dixAllocateObjectWithPrivates!("ClientRec", "PRIVATE_CLIENT"));
     if (!client)
         return cast(ClientPtr) null;
     InitClient(client, i, ospriv);
@@ -3683,7 +3705,7 @@ ClientPtr NextAvailableClient(void* ospriv)
         return cast(ClientPtr) null;
     }
     data.reqType = 1;
-    data.length = bytes_to_int32(sz_xReq + sz_xConnClientPrefix);
+    data.length = cast(ushort)bytes_to_int32(sz_xReq + sz_xConnClientPrefix);
     if (!InsertFakeRequest(client, cast(char*) &data, sz_xReq)) {
         FreeClientResources(client);
         mixin(dixFreeObjectWithPrivatesM!("client", "PRIVATE_CLIENT"));
@@ -3749,8 +3771,8 @@ private int SendConnSetup(ClientPtr client, const(char)* reason)
         xConnSetupPrefix csp = void;
 
         csp.success = xFalse;
-        csp.lengthReason = strlen(reason);
-        csp.length = bytes_to_int32(csp.lengthReason);
+        csp.lengthReason = cast(ubyte)strlen(reason);
+        csp.length = cast(ushort)bytes_to_int32(csp.lengthReason);
         csp.majorVersion = X_PROTOCOL;
         csp.minorVersion = X_PROTOCOL_REVISION;
         if (client.swapped)
@@ -3772,9 +3794,9 @@ private int SendConnSetup(ClientPtr client, const(char)* reason)
      */
     nClients++;
 
-    client.requestVector = client.swapped ? SwappedProcVector : ProcVector;
+    client.requestVector = client.swapped ? SwappedProcVector.ptr : ProcVector.ptr;
     client.sequence = 0;
-    (cast(xConnSetup*) lConnectionInfo).ridBase = client.clientAsMask;
+    (cast(xConnSetup*) lConnectionInfo).ridBase = cast(uint)client.clientAsMask;
     (cast(xConnSetup*) lConnectionInfo).ridMask = RESOURCE_ID_MASK;
 version (MATCH_CLIENT_ENDIAN) {
     (cast(xConnSetup*) lConnectionInfo).imageByteOrder = mixin(ClientOrder!(`client`));
@@ -3794,7 +3816,7 @@ version (XINERAMA) {
         xDepth* pDepth = void;
         WindowPtr pRoot = walkScreen.root;
 
-        root.currentInputMask = pRoot.eventMask | wOtherEventMasks(pRoot);
+        root.currentInputMask = cast(uint)(pRoot.eventMask | mixin(wOtherEventMasks!("pRoot")));
         pDepth = cast(xDepth*) (root + 1);
         for (uint j = 0; j < root.nDepths; j++) {
             pDepth = cast(xDepth*) ((cast(char*) (pDepth + 1)) +
@@ -3838,7 +3860,7 @@ int ProcEstablishConnection(ClientPtr client)
 
     if (client.swapped && !dixSettingAllowByteSwappedClients) {
         reason = "Prohibited client endianness, see the Xserver man page ";
-    } else if ((client.req_len << 2) != sz_xReq + sz_xConnClientPrefix +
+    } else if (((client.req_len << 2)) != sz_xReq + sz_xConnClientPrefix +
             pad_to_int32(prefix.nbytesAuthProto) +
             pad_to_int32(prefix.nbytesAuthString))
         reason = "Bad length";
@@ -3863,7 +3885,7 @@ void SendErrorToClient(ClientPtr client, CARD8 majorCode, CARD16 minorCode, XID 
     xError reply = {
         type: X_Error,
         errorCode: errorCode,
-        resourceID: resId,
+        resourceID: cast(uint)resId,
         minorCode: minorCode,
         majorCode: majorCode
     };
@@ -3974,8 +3996,8 @@ private int init_screen(ScreenPtr pScreen, int i, Bool gpu)
         pScreen.isGPU = TRUE;
     }
     pScreen.totalPixmapSize = 0;       /* computed in CreateScratchPixmapForScreen */
-    pScreen.ClipNotify = 0;    /* for R4 ddx compatibility */
-    pScreen.CreateScreenResources = 0;
+    pScreen.ClipNotify = null;    /* for R4 ddx compatibility */
+    pScreen.CreateScreenResources = null;
 
     xorg_list_init(&pScreen.pixmap_dirty_list);
     xorg_list_init(&pScreen.secondary_list);
@@ -4013,7 +4035,7 @@ private int init_screen(ScreenPtr pScreen, int i, Bool gpu)
     return 0;
 }
 
-int AddScreen(Bool function(ScreenPtr, int, char**) pfnInit, int argc, char** argv)
+int AddScreen(Bool function(ScreenPtr, int, char**) @nogc nothrow pfnInit, int argc, char** argv)
 {
 
     int i = void;
@@ -4056,7 +4078,7 @@ int AddScreen(Bool function(ScreenPtr, int, char**) pfnInit, int argc, char** ar
     return i;
 }
 
-int AddGPUScreen(Bool function(ScreenPtr, int, char**) pfnInit, int argc, char** argv)
+int AddGPUScreen(Bool function(ScreenPtr, int, char**) @nogc nothrow pfnInit, int argc, char** argv)
 {
     int i = void;
     ScreenPtr pScreen = void;

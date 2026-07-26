@@ -524,7 +524,7 @@ void ProcessWorkQueueZombies()
 
 Bool QueueWorkProc(Bool function(ClientPtr pClient, void* closure) function_, ClientPtr client, void* closure)
 {
-    WorkQueuePtr q = calloc(1, (*q).sizeof);
+    WorkQueuePtr q = cast(WorkQueuePtr) calloc(1, (*q).sizeof);
     if (!q)
         return FALSE;
     q.function_ = function_;
@@ -556,7 +556,7 @@ private SleepQueuePtr sleepQueue = null;
 
 Bool ClientSleep(ClientPtr client, ClientSleepProcPtr function_, void* closure)
 {
-    SleepQueuePtr q = calloc(1, (*q).sizeof);
+    SleepQueuePtr q = cast(SleepQueuePtr) calloc(1, (*q).sizeof);
     if (!q)
         return FALSE;
 

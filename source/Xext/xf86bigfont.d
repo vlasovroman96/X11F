@@ -86,6 +86,7 @@ import externs.X11.fonts.fontstruct;
 import externs.attrs;
 import os.log;
 import dix.extension;
+import dix.dixutils;
 
 Bool noXFree86BigfontExtension = FALSE;
 

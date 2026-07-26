@@ -1400,9 +1400,9 @@ bool winInitWM(void **ppWMInfo,
                HWND hwndScreen,
                bool compositeWM)
 {
-    WMProcArgPtr pArg = calloc(1, sizeof(WMProcArgRec));
-    WMInfoPtr pWMInfo = calloc(1, sizeof(WMInfoRec));
-    XMsgProcArgPtr pXMsgArg = calloc(1, sizeof(XMsgProcArgRec));
+    WMProcArgPtr pArg = cast(WMProcArgPtr) calloc(1, sizeof(WMProcArgRec));
+    WMInfoPtr pWMInfo = cast(WMInfoPtr) calloc(1, sizeof(WMInfoRec));
+    XMsgProcArgPtr pXMsgArg = cast(XMsgProcArgPtr) calloc(1, sizeof(XMsgProcArgRec));
 
     /* Bail if the input parameters are bad */
     if (pArg == NULL || pWMInfo == NULL || pXMsgArg == NULL) {
@@ -1639,7 +1639,7 @@ winSendMessageToWM(void *pWMInfo, winWMMessagePtr pMsg)
     ErrorF("winSendMessageToWM %s\n", MessageName(pMsg));
 #endif
 
-    WMMsgNodePtr pNode = calloc(1, sizeof(WMMsgNodeRec));
+    WMMsgNodePtr pNode = cast(WMMsgNodePtr) calloc(1, sizeof(WMMsgNodeRec));
     if (pNode != NULL) {
         memcpy(&pNode->msg, pMsg, sizeof(winWMMessageRec));
         PushMessage(&((WMInfoPtr) pWMInfo)->wmMsgQueue, pNode);

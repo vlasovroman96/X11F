@@ -66,6 +66,7 @@ import dix.inpututils_priv;
 import include.inputstr;
 import dix.input_priv;
 import include.optionstr;
+public import externs.X11.extensions.XI;
 
 enum DEFAULT_KEYBOARD_CLICK = 	0;
 enum DEFAULT_BELL =		50;
@@ -137,7 +138,7 @@ enum PointerRootWin = cast(WindowPtr)PointerRoot;
 enum NoneWin = cast(WindowPtr)None;
 enum NullDevice = cast(DevicePtr)null;
 
-enum FollowKeyboard = 		3;
+// enum FollowKeyboard = 		3;
 
 enum FollowKeyboardWin =  cast(WindowPtr) FollowKeyboard;
 
@@ -187,7 +188,7 @@ alias PointerAccelSchemeProc = void function(DeviceIntPtr, ValuatorMask*, CARD32
 
 alias DeviceCallbackProc = void function(DeviceIntPtr);
 
-struct _ValuatorAccelerationRec;
+// struct _ValuatorAccelerationRec;
 alias PointerAccelSchemeInitProc = Bool function(DeviceIntPtr, _ValuatorAccelerationRec*);
 
 alias DeviceSendEventsProc = void function(DeviceIntPtr, int, int, int, const(ValuatorMask)*);

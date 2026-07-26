@@ -688,7 +688,7 @@ DRICreatePixmap(ScreenPtr pScreen, Drawable id,
 
     pPix = (PixmapPtr)pDrawable;
 
-    DRIPixmapBufferPtr shared = calloc(1, sizeof(*shared));
+    DRIPixmapBufferPtr shared = cast(DRIPixmapBufferPtr) calloc(1, sizeof(*shared));
     if (NULL == shared) {
         FatalError("failed to allocate DRIPixmapBuffer in %s\n", __FUNCTION__.ptr);
     }

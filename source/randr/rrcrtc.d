@@ -1243,7 +1243,7 @@ int ProcRRSetCrtcConfig(ClientPtr client)
         swaps(&stuff.y);
         swapl(&stuff.mode);
         swaps(&stuff.rotation);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     ScreenPtr pScreen = void;
@@ -1663,7 +1663,7 @@ int ProcRRSetCrtcGamma(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.crtc);
         swaps(&stuff.size);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
     RRCrtcPtr crtc = void;

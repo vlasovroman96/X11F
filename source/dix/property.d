@@ -275,10 +275,10 @@ int ProcChangeProperty(ClientPtr client)
         case 8:
             break;
         case 16:
-            SwapRestS(stuff);
+            mixin(SwapRestS!("stuff"));
             break;
         case 32:
-            SwapRestL(stuff);
+            mixin(SwapRestL!("stuff"));
             break;
         default: break;}
     }
@@ -359,7 +359,7 @@ int dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property, At
     if (rc == BadMatch) {       /* just add to list */
         if (!MakeWindowOptional(pWin))
             return BadAlloc;
-        pProp = dixAllocateObjectWithPrivates(PropertyRec, PRIVATE_PROPERTY);
+        pProp = mixin(dixAllocateObjectWithPrivates!("PropertyRec", "PRIVATE_PROPERTY"));
         if (!pProp)
             return BadAlloc;
         ubyte* data = cast(ubyte*) calloc(1, totalSize);

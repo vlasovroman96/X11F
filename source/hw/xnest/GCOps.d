@@ -101,7 +101,7 @@ void xnestPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, in
                   leftPad,
                   depth,
                   (format == XCB_IMAGE_FORMAT_Z_PIXMAP ? PixmapBytePad(w, depth)
-                                                       : BitmapBytePad(w + leftPad)) * h,
+                                                       : mixin(BitmapBytePad!("w + leftPad"))) * h,
                   cast(ubyte*)pImage);
 }
 

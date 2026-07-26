@@ -25,7 +25,7 @@ struct ClientAccessCallbackParam {
 /*
  * called when a client tries to access another client
  */
-extern CallbackListPtr ClientAccessCallback;
+// extern CallbackListPtr ClientAccessCallback;
 
 pragma(inline, true) int dixCallClientAccessCallback(ClientPtr client, ClientPtr target, Mask access_mode)
 {

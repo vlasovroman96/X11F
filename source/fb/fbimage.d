@@ -42,7 +42,7 @@ void fbPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, int w
 
     switch (format) {
     case XYBitmap:
-        srcStride = BitmapBytePad(w + leftPad) / FbStip.sizeof;
+        srcStride = mixin(BitmapBytePad!("w + leftPad")) / FbStip.sizeof;
         fbPutXYImage(pDrawable,
                      fbGetCompositeClip(pGC),
                      pPriv.fg,
@@ -51,7 +51,7 @@ void fbPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, int w
                      pGC.alu, TRUE, x, y, w, h, src, srcStride, leftPad);
         break;
     case XYPixmap:
-        srcStride = BitmapBytePad(w + leftPad) / FbStip.sizeof;
+        srcStride = mixin(BitmapBytePad!("w + leftPad")) / FbStip.sizeof;
         for (i = cast(c_ulong) 1 << (pDrawable.depth - 1); i; i >>= 1) {
             if (i & pGC.planemask) {
                 fbPutXYImage(pDrawable,

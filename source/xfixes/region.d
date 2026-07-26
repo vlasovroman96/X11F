@@ -621,7 +621,7 @@ int ProcXFixesExpandRegion(ClientPtr client)
     int nBoxes = RegionNumRects(pSource);
     BoxPtr pSrc = RegionRects(pSource);
     if (nBoxes) {
-        BoxPtr pTmp = calloc(nBoxes, BoxRec.sizeof);
+        BoxPtr pTmp = cast(BoxPtr) calloc(nBoxes, BoxRec.sizeof);
         if (!pTmp)
             return BadAlloc;
         for (int i = 0; i < nBoxes; i++) {

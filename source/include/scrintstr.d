@@ -753,4 +753,4 @@ struct _ScreenInfo {
 }
 alias ScreenInfo = _ScreenInfo;
 
-ScreenInfo screenInfo;
+// ScreenInfo screenInfo;

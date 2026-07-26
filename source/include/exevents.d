@@ -32,8 +32,9 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
  
-// public // //import externs.X11.extensions.XIproto;
+public import externs.X11.extensions.XI;
 public import include.inputstr;
+import Xi.xiproperty;
 
 /***************************************************************
  *              Interface available to drivers                 *
@@ -67,15 +68,15 @@ extern int SetScrollValuator(DeviceIntPtr, int, ScrollType, double, int);
 
 extern int XIDeleteDeviceProperty(DeviceIntPtr, Atom, Bool);
 
-extern int XIChangeDeviceProperty(DeviceIntPtr, Atom, Atom, int, int, c_ulong, const(void)*, Bool);
+// extern int XIChangeDeviceProperty(DeviceIntPtr, Atom, Atom, int, int, c_ulong, const(void)*, Bool);
 
 extern int XIGetDeviceProperty(DeviceIntPtr, Atom, XIPropertyValuePtr*);
 
-extern int XISetDevicePropertyDeletable(DeviceIntPtr, Atom, Bool);
+// extern int XISetDevicePropertyDeletable(DeviceIntPtr, Atom, Bool);
 
-extern int XIRegisterPropertyHandler(DeviceIntPtr dev, int function(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) SetProperty, int function(DeviceIntPtr dev, Atom property) GetProperty, int function(DeviceIntPtr dev, Atom property) DeleteProperty);
+// extern int XIRegisterPropertyHandler(DeviceIntPtr dev, int function(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) SetProperty, int function(DeviceIntPtr dev, Atom property) GetProperty, int function(DeviceIntPtr dev, Atom property) DeleteProperty);
 
-extern int XIGetKnownProperty(const(char)* name);
+// extern int XIGetKnownProperty(const(char)* name);
 
 extern DeviceIntPtr XIGetDevice(xEvent *ev);
 

@@ -55,6 +55,7 @@ public import include.misc;
 public import include.regionstr;
 public import include.screenint;
 import include.propertyst;
+public import include.cursorstr;
 
 enum TOTALLY_OBSCURED = 0;
 enum UNOBSCURED = 1;
@@ -71,7 +72,7 @@ enum NullWindow = cast(WindowPtr) 0;
 
 /* Forward declaration, we can't include input.h here */
 // struct _DeviceIntRec;
-struct _Cursor;
+// struct _Cursor;
 
 struct _BackingStore; 
 alias BackingStorePtr = _BackingStore*;

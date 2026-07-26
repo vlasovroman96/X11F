@@ -130,7 +130,7 @@ void miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph,
 
     ChangeGC(null, pGCtmp, GCFunction | GCForeground | GCBackground, gcvals.ptr);
 
-    nbyLine = BitmapBytePad(width);
+    nbyLine = mixin(BitmapBytePad!("width"));
     pbits = cast(ubyte*) calloc(height, nbyLine);
     if (!pbits) {
         dixDestroyPixmap(pPixmap, 0);
@@ -144,7 +144,7 @@ void miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph,
         gHeight = GLYPHHEIGHTPIXELS(pci);
         if (gWidth && gHeight) {
             nbyGlyphWidth = GLYPHWIDTHBYTESPADDED(pci);
-            nbyPadGlyph = BitmapBytePad(gWidth);
+            nbyPadGlyph = mixin(BitmapBytePad!("gWidth"));
 
             if (nbyGlyphWidth == nbyPadGlyph)
 static if(GLYPHPADBYTES != 4) {

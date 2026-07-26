@@ -87,10 +87,10 @@ int PanoramiXCreateWindow(ClientPtr client)
     if (result != Success)
         return result;
 
-    if (__traits(getMember, stuff, "class") == CopyFromParent)
-        __traits(getMember, stuff, "class") = parent.u.win.class_;
+    if (__traits(getMember, stuff, "class_") == CopyFromParent)
+        __traits(getMember, stuff, "class_") = parent.u.win.class_;
 
-    if ((__traits(getMember, stuff, "class") == InputOnly) && (stuff.mask & (~INPUTONLY_LEGAL_MASK)))
+    if ((__traits(getMember, stuff, "class_") == InputOnly) && (stuff.mask & (~INPUTONLY_LEGAL_MASK)))
         return BadMatch;
 
     if (cast(Mask) stuff.mask & CWBackPixmap) {
@@ -130,11 +130,11 @@ int PanoramiXCreateWindow(ClientPtr client)
 
     newWin.type = XRT_WINDOW;
     newWin.u.win.visibility = VisibilityNotViewable;
-    newWin.u.win.class_ = cast(char)__traits(getMember, stuff, "class");
+    newWin.u.win.class_ = cast(char)__traits(getMember, stuff, "class_");
     newWin.u.win.root = FALSE;
     panoramix_setup_ids(newWin, client, stuff.wid);
 
-    if (__traits(getMember, stuff, "class") == InputOnly)
+    if (__traits(getMember, stuff, "class_") == InputOnly)
         stuff.visual = cast(uint)CopyFromParent;
     orig_visual = stuff.visual;
     orig_x = stuff.x;

@@ -190,7 +190,7 @@ Bool xnestOpenScreen(ScreenPtr pScreen, int argc, char** argv)
     int numVisuals = 0;
     VisualPtr visuals = cast(VisualRec*) calloc(1, VisualRec.sizeof);
     int numDepths = 0;
-    DepthPtr depths = calloc(MAXDEPTH, DepthRec.sizeof);
+    DepthPtr depths = cast(DepthPtr) calloc(MAXDEPTH, DepthRec.sizeof);
 
     if (!visuals || !depths) {
         free(visuals);

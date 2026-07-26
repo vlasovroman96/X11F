@@ -655,7 +655,7 @@ int ProcRRSetMonitor(ClientPtr client)
         swaps(&stuff.monitor.height);
         swapl(&stuff.monitor.widthInMillimeters);
         swapl(&stuff.monitor.heightInMillimeters);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     WindowPtr window = void;

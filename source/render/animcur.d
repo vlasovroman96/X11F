@@ -309,7 +309,7 @@ int AnimCursorCreate(CursorPtr* cursors, CARD32* deltas, int ncursor, CursorPtr*
                                  ncursor * AnimCurElt.sizeof).sizeof, 1);
     if (!pCursor)
         return rc;
-    dixInitPrivates(pCursor, pCursor + 1, PRIVATE_CURSOR);
+    mixin(dixInitPrivates!("pCursor", "pCursor + 1", "PRIVATE_CURSOR"));
     pCursor.bits = &animCursorBits;
     pCursor.refcnt = 1;
 

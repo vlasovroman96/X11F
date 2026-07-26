@@ -333,7 +333,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
 #else
-    CARD8 class;
+    CARD8 class_;
 #endif
     CARD8 bitsPerRGB;
     CARD16 colormapEntries;
@@ -1342,7 +1342,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD16 c_class;
 #else
-    CARD16 class;
+    CARD16 class_;
 #endif
     VisualID visual;
     CARD32 mask;
@@ -1900,7 +1900,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD8 c_class;
 #else
-    CARD8 class;
+    CARD8 class_;
 #endif
     CARD16 length;
     Drawable drawable;

@@ -46,6 +46,8 @@ import os.log;
 import dix.inpututils;
 import externs.gnu;
 import os.string;
+import os.connection;
+
 
 import hw.xfree86.os_support.linux.systemd_logind;
 

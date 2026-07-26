@@ -40,6 +40,8 @@ import config.dbus_core;
 import externs.attrs;
 import os.log;
 import config.libhal;
+import os.connection;
+
 
 /* How often to attempt reconnecting when we get booted off the bus. */
 enum RECONNECT_DELAY = (10 * 1000)     /* in ms */;

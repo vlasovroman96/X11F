@@ -109,7 +109,7 @@ int SProcCreateWindow(ClientPtr client)
     swaps(&stuff.class_);
     swapl(&stuff.visual);
     swapl(&stuff.mask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_CreateWindow]) (client));
 }
 
@@ -119,7 +119,7 @@ int SProcChangeWindowAttributes(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xChangeWindowAttributesReq);
     swapl(&stuff.window);
     swapl(&stuff.valueMask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_ChangeWindowAttributes]) (client));
 }
 
@@ -140,7 +140,7 @@ int SProcConfigureWindow(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xConfigureWindowReq);
     swapl(&stuff.window);
     swaps(&stuff.mask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_ConfigureWindow]) (client));
 
 }
@@ -329,7 +329,7 @@ int SProcCreateGC(ClientPtr client)
     swapl(&stuff.gc);
     swapl(&stuff.drawable);
     swapl(&stuff.mask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_CreateGC]) (client));
 }
 
@@ -339,7 +339,7 @@ int SProcChangeGC(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xChangeGCReq);
     swapl(&stuff.gc);
     swapl(&stuff.mask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_ChangeGC]) (client));
 }
 
@@ -370,7 +370,7 @@ int SProcSetClipRectangles(ClientPtr client)
     swapl(&stuff.gc);
     swaps(&stuff.xOrigin);
     swaps(&stuff.yOrigin);
-    SwapRestS(stuff);
+    mixin(SwapRestS!("stuff"));
     return ((*ProcVector[X_SetClipRectangles]) (client));
 }
 
@@ -428,7 +428,7 @@ int SProcFillPoly(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xFillPolyReq);
     swapl(&stuff.drawable);
     swapl(&stuff.gc);
-    SwapRestS(stuff);
+    mixin(SwapRestS!("stuff"));
     return ((*ProcVector[X_FillPoly]) (client));
 }
 
@@ -528,7 +528,7 @@ int SProcFreeColors(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xFreeColorsReq);
     swapl(&stuff.cmap);
     swapl(&stuff.planeMask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_FreeColors]) (client));
 }
 
@@ -609,7 +609,7 @@ int SProcChangeKeyboardMapping(ClientPtr client)
 {
     mixin(REQUEST!xChangeKeyboardMappingReq);
     mixin(REQUEST_AT_LEAST_SIZE!xChangeKeyboardMappingReq);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_ChangeKeyboardMapping]) (client));
 }
 
@@ -618,7 +618,7 @@ int SProcChangeKeyboardControl(ClientPtr client)
     mixin(REQUEST!xChangeKeyboardControlReq);
     mixin(REQUEST_AT_LEAST_SIZE!xChangeKeyboardControlReq);
     swapl(&stuff.mask);
-    SwapRestL(stuff);
+    mixin(SwapRestL!("stuff"));
     return ((*ProcVector[X_ChangeKeyboardControl]) (client));
 }
 

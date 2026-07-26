@@ -1024,7 +1024,7 @@ private int ProcRenderFreeGlyphs(ClientPtr client)
 
     if (client.swapped) {
         swapl(&stuff.glyphset);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     GlyphSetPtr glyphSet = void;
@@ -1305,7 +1305,7 @@ private int ProcRenderCreateCursor(ClientPtr client)
     if (!argbbits)
         return BadAlloc;
 
-    stride = BitmapBytePad(width);
+    stride = mixin(BitmapBytePad!("width"));
     nbytes_mono = stride * height;
 
     ubyte* srcbits = cast(ubyte*) calloc(1, nbytes_mono);
@@ -1598,7 +1598,7 @@ private int ProcRenderCreateAnimCursor(ClientPtr client)
 
     if (client.swapped) {
         swapl(&stuff.cid);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
     CARD32* deltas = void;
@@ -2493,7 +2493,7 @@ private int ProcRenderCreatePicture(ClientPtr client)
         swapl(&stuff.drawable);
         swapl(&stuff.format);
         swapl(&stuff.mask);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2512,7 +2512,7 @@ private int ProcRenderChangePicture(ClientPtr client)
     if (client.swapped) {
         swapl(&stuff.picture);
         swapl(&stuff.mask);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2532,7 +2532,7 @@ private int ProcRenderSetPictureClipRectangles(ClientPtr client)
         swapl(&stuff.picture);
         swaps(&stuff.xOrigin);
         swaps(&stuff.yOrigin);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2597,7 +2597,7 @@ private int ProcRenderTrapezoids(ClientPtr client)
         swapl(&stuff.maskFormat);
         swaps(&stuff.xSrc);
         swaps(&stuff.ySrc);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2619,7 +2619,7 @@ private int ProcRenderTriangles(ClientPtr client)
         swapl(&stuff.maskFormat);
         swaps(&stuff.xSrc);
         swaps(&stuff.ySrc);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2641,7 +2641,7 @@ private int ProcRenderTriStrip(ClientPtr client)
         swapl(&stuff.maskFormat);
         swaps(&stuff.xSrc);
         swaps(&stuff.ySrc);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2663,7 +2663,7 @@ private int ProcRenderTriFan(ClientPtr client)
         swapl(&stuff.maskFormat);
         swaps(&stuff.xSrc);
         swaps(&stuff.ySrc);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2768,7 +2768,7 @@ private int ProcRenderFillRectangles(ClientPtr client)
         swaps(&stuff.color.green);
         swaps(&stuff.color.blue);
         swaps(&stuff.color.alpha);
-        SwapRestS(stuff);
+        mixin(SwapRestS!("stuff"));
     }
 
 version (XINERAMA) {
@@ -2832,7 +2832,7 @@ private int ProcRenderAddTraps(ClientPtr client)
         swapl(&stuff.picture);
         swaps(&stuff.xOff);
         swaps(&stuff.yOff);
-        SwapRestL(stuff);
+        mixin(SwapRestL!("stuff"));
     }
 
 version (XINERAMA) {

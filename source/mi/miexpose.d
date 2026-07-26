@@ -363,7 +363,7 @@ void miWindowExposures(WindowPtr pWin, RegionPtr prgn)
 
     if (prgn && !RegionNil(prgn)) {
         RegionRec expRec = void;
-        int clientInterested = (pWin.eventMask | wOtherEventMasks(pWin)) & ExposureMask;
+        int clientInterested = (pWin.eventMask | mixin(wOtherEventMasks!("pWin"))) & ExposureMask;
         if (clientInterested && (RegionNumRects(prgn) > RECTLIMIT)) {
             /*
              * If we have LOTS of rectangles, we decide to take the extents

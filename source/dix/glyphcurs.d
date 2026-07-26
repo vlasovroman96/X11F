@@ -88,7 +88,7 @@ int ServerBitsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm, ubyte** ppbi
     char2b[1] = cast(ubyte) (ch & 0xff);
 
     ScreenPtr masterScreen = dixGetMasterScreen();
-    pbits = cast(char*) calloc(BitmapBytePad(cm.width), cm.height);
+    pbits = cast(char*) calloc(mixin(BitmapBytePad!("cm.width")), cm.height);
     if (!pbits)
         return BadAlloc;
 

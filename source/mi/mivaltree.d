@@ -262,7 +262,7 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
     pParent.visibility = newVis;
     if (oldVis != newVis &&
         ((pParent.
-          eventMask | wOtherEventMasks(pParent)) & VisibilityChangeMask))
+          eventMask | mixin(wOtherEventMasks!("pParent"))) & VisibilityChangeMask))
         SendVisibilityNotify(pParent);
 
     dx = pParent.drawable.x - pParent.valdata.before.oldAbsCorner.x;
@@ -479,7 +479,7 @@ private void miTreeObscured(WindowPtr pParent)
             oldVis = pChild.visibility;
             if (oldVis != (pChild.visibility = VisibilityFullyObscured) &&
                 ((pChild.
-                  eventMask | wOtherEventMasks(pChild)) & VisibilityChangeMask))
+                  eventMask | mixin(wOtherEventMasks!("pChild"))) & VisibilityChangeMask))
                 SendVisibilityNotify(pChild);
             if (pChild.firstChild) {
                 pChild = pChild.firstChild;

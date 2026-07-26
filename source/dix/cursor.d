@@ -92,7 +92,7 @@ private void FreeCursorBits(CursorBitsPtr bits)
         GlyphSharePtr* prev = void; GlyphSharePtr this_ = void;
 
         for (prev = &sharedGlyphs;
-             (this_ = *prev) && (this_.bits != bits); prev = &this_.next){}
+             (this_ = *prev) !is null && (this_.bits != bits); prev = &this_.next){}
         if (this_) {
             *prev = this_.next;
             CloseFont(this_.font, cast(Font) 0);
@@ -158,7 +158,7 @@ int CursorRefCount(ConstCursorPtr cursor)
 private void CheckForEmptyMask(CursorBitsPtr bits)
 {
     ubyte* msk = bits.mask;
-    int n = BitmapBytePad(bits.width) * bits.height;
+    int n = mixin(BitmapBytePad!("bits.width")) * bits.height;
 
     bits.emptyMask = FALSE;
     while (n--)
@@ -239,8 +239,8 @@ int AllocARGBCursor(ubyte* psrcbits, ubyte* pmaskbits, CARD32* argb, CursorMetri
         return BadAlloc;
 
     CursorBitsPtr bits = cast(CursorBitsPtr) (cast(char*) pCurs + CURSOR_REC_SIZE);
-    dixInitPrivates(pCurs, pCurs + 1, PRIVATE_CURSOR);
-    dixInitPrivates(bits, bits + 1, PRIVATE_CURSOR_BITS);
+    mixin(dixInitPrivates!("pCurs", "pCurs + 1", "PRIVATE_CURSOR"));
+    mixin(dixInitPrivates!("bits", "bits + 1", "PRIVATE_CURSOR_BITS"));
         bits.source = psrcbits;
     bits.mask = pmaskbits;
     bits.argb = argb;
@@ -344,7 +344,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
         pCurs = cast(CursorPtr) calloc(CURSOR_REC_SIZE, 1);
         if (!pCurs)
             return BadAlloc;
-        dixInitPrivates(pCurs, pCurs + 1, PRIVATE_CURSOR);
+        mixin(dixInitPrivates!("pCurs", "pCurs + 1", "PRIVATE_CURSOR"));
         bits = pShare.bits;
         bits.refcnt++;
     }
@@ -357,7 +357,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
 
         ubyte* mskbits = void;
         if (!maskfont) {
-            size_t n = BitmapBytePad(cm.width) * cast(c_long) cm.height;
+            size_t n = mixin(BitmapBytePad!("cm.width")) * cast(c_long) cm.height;
             mskbits = cast(ubyte*) calloc(1, n);
             if (!mskbits)
                 return BadAlloc;
@@ -368,12 +368,12 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
                 client.errorValue = maskChar;
                 return BadValue;
             }
-            if ((rc = ServerBitsFromGlyph(maskfont, maskChar, &cm, &mskbits)))
+            if ((rc = ServerBitsFromGlyph(maskfont, maskChar, &cm, &mskbits)) != 0)
                 return rc;
         }
 
         ubyte* srcbits = void;
-        if ((rc = ServerBitsFromGlyph(sourcefont, sourceChar, &cm, &srcbits))) {
+        if ((rc = ServerBitsFromGlyph(sourcefont, sourceChar, &cm, &srcbits)) != 0) {
             free(mskbits);
             return rc;
         }
@@ -397,11 +397,11 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
             free(srcbits);
             return BadAlloc;
         }
-        dixInitPrivates(pCurs, pCurs + 1, PRIVATE_CURSOR);
-        dixInitPrivates(bits, bits + 1, PRIVATE_CURSOR_BITS);
+        mixin(dixInitPrivates!("pCurs", "pCurs + 1", "PRIVATE_CURSOR"));
+        mixin(dixInitPrivates!("bits", "bits + 1", "PRIVATE_CURSOR_BITS"));
         bits.source = srcbits;
         bits.mask = mskbits;
-        bits.argb = 0;
+        bits.argb = null;
         bits.width = cm.width;
         bits.height = cm.height;
         bits.xhot = cm.xhot;
