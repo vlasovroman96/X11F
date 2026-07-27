@@ -93,7 +93,7 @@ pragma(inline, true) bool InputCheckPending()
     return (*checkForInput[0] != *checkForInput[1]);
 }
 
-pragma(inline, true) private void SetInputCheck(HWEventQueuePtr c0, HWEventQueuePtr c1)
+pragma(inline, true) void SetInputCheck(HWEventQueuePtr c0, HWEventQueuePtr c1)
 {
     checkForInput[0] = c0;
     checkForInput[1] = c1;
@@ -105,7 +105,7 @@ void ProcessWorkQueue();
 
 // void CloseDownClient(ClientPtr client);
 ClientPtr GetCurrentClient();
-void InitClient(ClientPtr client, int i, void* ospriv);
+// void InitClient(ClientPtr client, int i, void* ospriv);
 
 int FillFontPath(x_rpcbuf_t* rpcbuf);
 
@@ -159,7 +159,7 @@ void PlayReleasedEvents();
 
 // void ReleaseActiveGrabs(ClientPtr client);
 
-GrabPtr CheckPassiveGrabsOnWindow(WindowPtr pWin, DeviceIntPtr device, InternalEvent* event, BOOL checkCore, BOOL activate);
+// GrabPtr CheckPassiveGrabsOnWindow(WindowPtr pWin, DeviceIntPtr device, InternalEvent* event, BOOL checkCore, BOOL activate);
 
 // int DeliverDeviceEvents(WindowPtr pWin, InternalEvent* event, GrabPtr grab, WindowPtr stopAt, DeviceIntPtr dev);
 

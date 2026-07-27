@@ -26,8 +26,9 @@ enum string BUG_WARN(string cond) = __BUG_WARN_MSG!(cond, `null`);
 enum string BUG_RETURN(string cond) = `
     if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `null`) ~ `; return; }`;
 
-enum string BUG_RETURN_MSG(string cond) = `
-    do { if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `__VA_ARGS__`) ~ `; return; } } while(0)`;
+enum string BUG_RETURN_MSG(string cond, string msg) = `
+    if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, msg) ~ `; return; }
+    `;
 
 enum string BUG_RETURN_VAL(string cond, string val) = `
     if (` ~ cond ~ `) { ` ~ __BUG_WARN_MSG!(cond, `null`) ~ `; return (` ~ val ~ `); }`;

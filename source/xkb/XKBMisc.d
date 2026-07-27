@@ -451,7 +451,7 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
                 if (interps[0].flags & XkbSI_AutoRepeat)
                     mixin(SetBit!("xkb.ctrls.per_key_repeat", "key"));
                 else
-                    ClearBit(xkb.ctrls.per_key_repeat, key);
+                    mixin(ClearBit!("xkb.ctrls.per_key_repeat", "key"));
                 if (changes && old != mixin(BitIsOn!("xkb.ctrls.per_key_repeat", "key")))
                     changes.ctrls.changed_ctrls |= XkbPerKeyRepeatMask;
             }

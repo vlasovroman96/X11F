@@ -9,8 +9,8 @@ extern(C): __gshared:
 public import include.callback;
 import externs.X11.Xdefs;
 
-void InitCallbackManager();
-void DeleteCallbackManager();
+// void InitCallbackManager();
+// void DeleteCallbackManager();
 
 struct _CallbackRec {
     CallbackProcPtr proc;

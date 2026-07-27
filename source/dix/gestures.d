@@ -45,6 +45,8 @@ import include.eventstr;
 import include.exevents;
 import Xi.exglobals;
 import include.windowstr;
+import dix.events;
+import os.utils;
 
 enum GESTURE_HISTORY_SIZE = 100;
 
@@ -77,7 +79,7 @@ void GestureFreeGestureInfo(GestureInfoPtr gi)
 GestureInfoPtr GestureFindActiveByEventType(DeviceIntPtr dev, int type)
 {
     GestureClassPtr g = dev.gesture;
-    EventType type_to_expect = GestureTypeToBegin(type);
+    EventType type_to_expect = GestureTypeToBegin(cast(EventType)type);
 
     if (!g || type_to_expect == 0 || !g.gesture.active ||
         g.gesture.type != type_to_expect) {
@@ -99,7 +101,7 @@ GestureInfoPtr GestureBeginGesture(DeviceIntPtr dev, InternalEvent* ev)
     if (!g || gesture_type == 0 || g.gesture.active)
         return null;
 
-    g.gesture.type = gesture_type;
+    g.gesture.type = cast(ubyte)gesture_type;
 
     if (!GestureBuildSprite(dev, &g.gesture))
         return null;
@@ -194,7 +196,7 @@ private void GestureAddGrabListener(DeviceIntPtr dev, GestureInfoPtr gi, GrabPtr
         type = GESTURE_LISTENER_NONGESTURE_GRAB;
     }
     else {
-        BUG_RETURN_MSG(1, "Unsupported grab type\n");
+        mixin(BUG_RETURN_MSG!("1", "Unsupported grab type\n"));
     }
 
     /* grab listeners are always X11_RESTYPE_NONE since we keep the grab pointer */
@@ -209,8 +211,8 @@ private void GestureAddPassiveGrabListener(DeviceIntPtr dev, GestureInfoPtr gi, 
     Bool activate = FALSE;
     Bool check_core = FALSE;
 
-    GrabPtr grab = CheckPassiveGrabsOnWindow(win, dev, ev, check_core,
-                                             activate);
+    GrabPtr grab = CheckPassiveGrabsOnWindow(win, dev, ev, cast(ubyte)check_core,
+                                             cast(ubyte)activate);
     if (!grab)
         return;
 
@@ -223,7 +225,7 @@ private void GestureAddRegularListener(DeviceIntPtr dev, GestureInfoPtr gi, Wind
 {
     InputClients* iclients = null;
     OtherInputMasks* inputMasks = null;
-    ushort evtype = GetXI2Type(ev.any.type);
+    ushort evtype = cast(ushort)GetXI2Type(ev.any.type);
     int mask = void;
 
     mask = EventIsDeliverable(dev, ev.any.type, win);
@@ -233,14 +235,14 @@ private void GestureAddRegularListener(DeviceIntPtr dev, GestureInfoPtr gi, Wind
     inputMasks = mixin(wOtherInputMasks!("win"));
 
     if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
-        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next")); {
+        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next", q{
             if (!xi2mask_isset(iclients.xi2mask, dev, evtype))
                 continue;
 
             GestureAddListener(gi, iclients.resource, RT_INPUTCLIENT,
                                GESTURE_LISTENER_REGULAR, win, null);
             return;
-        }
+        }));
     }
 }
 
@@ -325,8 +327,8 @@ void GestureEndActiveGestures(DeviceIntPtr dev)
     input_lock();
     mieqProcessInputEvents();
     if (g.gesture.active) {
-        int type = GetXI2Type(GestureTypeToEnd(g.gesture.type));
-        int nevents = GetGestureEvents(eventlist, dev, type, g.gesture.num_touches,
+        int type = GetXI2Type(GestureTypeToEnd(cast(EventType)g.gesture.type));
+        int nevents = GetGestureEvents(eventlist, dev, cast(ushort)type, cast(ushort)g.gesture.num_touches,
                                        0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
         for (int j = 0; j < nevents; j++)
@@ -351,7 +353,7 @@ void GestureEmitGestureEndToOwner(DeviceIntPtr dev, GestureInfoPtr gi)
         return;
 
     DeliverDeviceClassesChangedEvent(gi.sourceid, GetTimeInMillis());
-    InitGestureEvent(&event, dev, GetTimeInMillis(), GestureTypeToEnd(gi.type),
+    InitGestureEvent(&event, dev, GetTimeInMillis(), GestureTypeToEnd(cast(EventType)gi.type),
                      0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     DeliverGestureEventToOwner(dev, gi, &event);
 }

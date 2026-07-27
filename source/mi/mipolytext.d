@@ -91,7 +91,7 @@ int miPolyText16(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, ushort* 
     CharInfoPtr[255] charinfo = void;  /* encoding only has 1 byte for count */
 
     GetGlyphs(pGC.font, cast(c_ulong) count, cast(ubyte*) chars,
-              (FONTLASTROW(pGC.font) == 0) ? Linear16Bit : TwoD16Bit,
+              (mixin(FONTLASTROW!("pGC.font")) == 0) ? Linear16Bit : TwoD16Bit,
               &n, charinfo.ptr);
     w = 0;
     for (i = 0; i < n; i++)
@@ -122,7 +122,7 @@ void miImageText16(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, ushort
     CharInfoPtr[255] charinfo = void;  /* encoding only has 1 byte for count */
 
     GetGlyphs(font, cast(c_ulong) count, cast(ubyte*) chars,
-              (FONTLASTROW(pGC.font) == 0) ? Linear16Bit : TwoD16Bit,
+              (mixin(FONTLASTROW!("pGC.font")) == 0) ? Linear16Bit : TwoD16Bit,
               &n, charinfo.ptr);
     if (n != 0)
         (*pGC.ops.ImageGlyphBlt) (pDraw, pGC, x, y, n, charinfo.ptr,

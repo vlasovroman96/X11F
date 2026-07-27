@@ -71,11 +71,16 @@ import include.windowstr;
 import include.inputstr;
 import include.cursorstr;
 import Xi.exglobals;
+import os.log;
+import os.access;
+import dix.events;
+import os.auth;
+import dix.dispatch;
 
 enum MasksPerDetailMask = 8;    /* 256 keycodes and 256 possible;
                                    modifier combinations; modifier MASKWORD(buf, i); */
-enum string BITCLEAR(string buf, string i) = `MASKWORD(` ~ buf ~ `, ` ~ i ~ `) &= ~BITMASK(` ~ i ~ `)`;
-enum string GETBIT(string buf, string i) = `(MASKWORD(` ~ buf ~ `, ` ~ i ~ `) & BITMASK(` ~ i ~ `))`;
+// enum string BITCLEAR(string buf, string i) = mixin(MASKWORD!(buf,i)) ~`&=` ~ mixin(BITMASK!(i));
+// enum string GETBIT(string buf, string i) = `(MASKWORD(` ~ buf ~ `, ` ~ i ~ `) & BITMASK(` ~ i ~ `))`;
 
 void PrintDeviceGrabInfo(DeviceIntPtr dev)
 {
@@ -86,8 +91,8 @@ void PrintDeviceGrabInfo(DeviceIntPtr dev)
 
     ErrorF("Active grab 0x%lx (%s) on device '%s' (%d):\n",
            cast(c_ulong) grab.resource,
-           (grab.grabtype == XI2) ? "xi2" :
-           ((grab.grabtype == CORE) ? "core" : "xi1"), dev.name, dev.id);
+           (grab.grabtype == XI2) ? "xi2".ptr :
+           ((grab.grabtype == CORE) ? "core".ptr : "xi1".ptr), dev.name, dev.id);
 
     ClientPtr client = dixClientForXID(grab.resource);
     if (client) {
@@ -121,16 +126,16 @@ void PrintDeviceGrabInfo(DeviceIntPtr dev)
 
     ErrorF("      at %ld (from %s grab)%s (device %s, state %d)\n",
            cast(c_ulong) devGrab.grabTime.milliseconds,
-           devGrab.fromPassiveGrab ? "passive" : "active",
-           devGrab.implicitGrab ? " (implicit)" : "",
-           devGrab.sync.frozen ? "frozen" : "thawed", devGrab.sync.state);
+           devGrab.fromPassiveGrab ? "passive".ptr : "active".ptr,
+           devGrab.implicitGrab ? " (implicit)".ptr : "".ptr,
+           devGrab.sync.frozen ? "frozen".ptr : "thawed".ptr, devGrab.sync.state);
 
     if (grab.grabtype == CORE) {
-        ErrorF("        core event mask 0x%lx\n",
+        ErrorF("        core event mask 0x%lx\n".ptr,
                cast(c_ulong) grab.eventMask);
     }
     else if (grab.grabtype == XI) {
-        ErrorF("      xi1 event mask 0x%lx\n",
+        ErrorF("      xi1 event mask 0x%lx\n".ptr,
                devGrab.implicitGrab ? cast(c_ulong) grab.deviceMask :
                cast(c_ulong) grab.eventMask);
     }
@@ -149,21 +154,21 @@ void PrintDeviceGrabInfo(DeviceIntPtr dev)
             }
             if (!print)
                 continue;
-            ErrorF("      xi2 event mask for device %d: 0x", dev.id);
+            ErrorF("      xi2 event mask for device %d: 0x".ptr, dev.id);
             for (int j = 0; j < xi2mask_mask_size(grab.xi2mask); j++)
-                ErrorF("%x", mask[j]);
-            ErrorF("\n");
+                ErrorF("%x".ptr, mask[j]);
+            ErrorF("\n".ptr);
         }
     }
 
     if (devGrab.fromPassiveGrab) {
-        ErrorF("      passive grab type %d, detail 0x%x, "
-               ~ "activating key %d\n", grab.type, grab.detail.exact,
+        ErrorF("      passive grab type %d, detail 0x%x, ".ptr,
+               "activating key %d\n".ptr, grab.type, grab.detail.exact,
                devGrab.activatingKey);
     }
 
-    ErrorF("      owner-events %s, kb %d ptr %d, confine %lx, cursor 0x%lx\n",
-           grab.ownerEvents ? "true" : "false",
+    ErrorF("      owner-events %s, kb %d ptr %d, confine %lx, cursor 0x%lx\n".ptr,
+           grab.ownerEvents ? "true".ptr : "false".ptr,
            grab.keyboardMode, grab.pointerMode,
            grab.confineTo ? cast(c_ulong) grab.confineTo.drawable.id : 0,
            grab.cursor ? cast(c_ulong) grab.cursor.id : 0);
@@ -171,8 +176,8 @@ void PrintDeviceGrabInfo(DeviceIntPtr dev)
 
 void UngrabAllDevices(Bool kill_client)
 {
-    ErrorF("Ungrabbing all devices%s; grabs listed below:\n",
-           kill_client ? " and killing their owners" : "");
+    ErrorF("Ungrabbing all devices%s; grabs listed below:\n".ptr,
+           kill_client ? " and killing their owners".ptr : "".ptr);
 
     for (DeviceIntPtr dev = inputInfo.devices; dev; dev = dev.next) {
         if (!dev.deviceGrab.grab)
@@ -190,7 +195,7 @@ void UngrabAllDevices(Bool kill_client)
 
 
 
-GrabPtr AllocGrab(const(GrabPtr) src)
+GrabPtr AllocGrab(GrabPtr src)
 {
     GrabPtr grab = cast(GrabRec*) calloc(1, GrabRec.sizeof);
 
@@ -231,7 +236,7 @@ GrabPtr CreateGrab(ClientPtr client, DeviceIntPtr device, DeviceIntPtr modDevice
     grab.modifiersDetail.exact = param.modifiers;
     grab.modifiersDetail.pMask = null;
     grab.modifierDevice = modDevice;
-    grab.type = eventType;
+    grab.type = cast(ubyte)eventType;
     grab.grabtype = grabtype;
     grab.detail.exact = keybut;
     grab.detail.pMask = null;
@@ -257,7 +262,7 @@ void FreeGrab(GrabPtr pGrab)
     free(pGrab);
 }
 
-private Bool CopyGrab(GrabPtr dst, const(GrabPtr) src)
+private Bool CopyGrab(GrabPtr dst, GrabPtr src)
 {
     Mask* mdetails_mask = null;
     Mask* details_mask = null;
@@ -312,11 +317,11 @@ int DeletePassiveGrab(void* value, XID id)
     GrabPtr pGrab = cast(GrabPtr) value;
 
     /* it is OK if the grab isn't found */
-    for (GrabPtr g = (mixin(wPassiveGrabs!("pGrab.window"))), prev = 0; g; g = g.next) {
+    for (GrabPtr g = (mixin(wPassiveGrabs!("pGrab.window"))), prev = null; g; g = g.next) {
         if (pGrab == g) {
             if (prev)
                 prev.next = g.next;
-            else if (((pGrab.window.optional.passiveGrabs = g.next) == 0))
+            else if (((pGrab.window.optional.passiveGrabs = g.next) is null))
                 CheckWindowOptionalNeed(pGrab.window);
             break;
         }
@@ -556,20 +561,20 @@ Bool DeletePassiveGrabFromList(GrabPtr pMinuendGrab)
     uint any_key = void;
 
 enum string UPDATE(string mask,string exact) = `
-	if (((details[nups] = DeleteDetailFromMask(` ~ mask ~ `, ` ~ exact ~ `)) == 0)) 
+	if (((details[nups] = DeleteDetailFromMask(` ~ mask ~ `, ` ~ exact ~ `)) is null)) 
 	  ok = FALSE; 
 	else 
-	  updates[nups++] = &(` ~ mask ~ `)`;
+	  updates[nups++] = &(` ~ mask ~ `);`;
 
     i = 0;
     for (GrabPtr grab = mixin(wPassiveGrabs!("pMinuendGrab.window")); grab; grab = grab.next)
         i++;
     if (!i)
         return TRUE;
-    deletes = calloc(i, GrabPtr.sizeof);
-    adds = calloc(i, GrabPtr.sizeof);
-    updates = calloc(i, (Mask**).sizeof);
-    details = calloc(i, (Mask*).sizeof);
+    deletes = cast(_GrabRec**)calloc(i, GrabPtr.sizeof);
+    adds = cast(_GrabRec**)calloc(i, GrabPtr.sizeof);
+    updates = cast(ulong***)calloc(i, (Mask**).sizeof);
+    details = cast(ulong**)calloc(i, (Mask*).sizeof);
     if (!deletes || !adds || !updates || !details) {
         free(details);
         free(updates);
@@ -619,14 +624,14 @@ enum string UPDATE(string mask,string exact) = `
                                   grab.grabtype,
                                   cast(GrabMask*) &grab.eventMask,
                                   &param, cast(int) grab.type,
-                                  pMinuendGrab.detail.exact,
+                                  cast(ubyte)pMinuendGrab.detail.exact,
                                   grab.confineTo, grab.cursor);
             if (!pNewGrab)
                 ok = FALSE;
             else if (((pNewGrab.modifiersDetail.pMask =
                        DeleteDetailFromMask(grab.modifiersDetail.pMask,
                                             pMinuendGrab.modifiersDetail.
-                                            exact)) == 0)
+                                            exact)) is null)
                      || (!MakeWindowOptional(pNewGrab.window))) {
                 FreeGrab(pNewGrab);
                 ok = FALSE;

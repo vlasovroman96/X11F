@@ -68,7 +68,7 @@ alias CARD8 = externs.X11.Xmd.CARD8;
 
 enum string BitIsOn(string ptr, string bit) = `(!!((cast(const(BYTE)*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] & (1 << ((` ~ bit ~ `) & 7))))`;
 enum string SetBit(string ptr, string bit) = `((cast(BYTE*) (` ~ ptr ~ `))[(` ~ bit ~ `)>>3] |= (1 << ((` ~ bit ~ `) & 7)));`;
-enum string ClearBit(string ptr, string bit) = `((cast(BYTE*)(` ~ ptr ~ `))[(` ~ bit ~ `)>>3] &= ~(1 << ((` ~ bit ~ `) & 7)))`;
+enum string ClearBit(string ptr, string bit) = `((cast(BYTE*)(` ~ ptr ~ `))[(` ~ bit ~ `)>>3] &= ~(1 << ((` ~ bit ~ `) & 7)));`;
 
 enum EMASKSIZE =	(MAXDEVICES + 2);
 

@@ -85,7 +85,7 @@ import pixman;
 // //import externs.X11.Xproto;
 // //import externs.X11.fonts.font;
 // //import externs.X11.fonts.fontstruct;
-// //import externs.X11.fonts.libxfont2;
+import externs.X11.fonts.libxfont2;
 
 import config.hotplug_priv;
 import dix.atom_priv;
@@ -123,6 +123,11 @@ import include.dixfont;
 import include.extnsionst;
 import include.privates;
 import include.exevents;
+import os.utils;
+import os.osinit;
+import os.log;
+import dix.dix_priv;
+import externs.attrs;
 
 version (DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
@@ -188,7 +193,7 @@ int dix_main(int argc, char** argv, char** envp)
 
         InitAtoms();
         InitEvents();
-        xfont2_init_glyph_caching();
+        assumeNoGC(&xfont2_init_glyph_caching)();
         dixResetRegistry();
         InitFonts();
         InitCallbackManager();
@@ -237,7 +242,7 @@ int dix_main(int argc, char** argv, char** envp)
             FatalError("could not open default font");
         }
 
-        if (((rootCursor = CreateRootCursor()) == 0)) {
+        if (((rootCursor = CreateRootCursor()) is null)) {
             FatalError("could not open default cursor font");
         }
 

@@ -192,7 +192,7 @@ enum AddResource = Darwin_X_AddResource;
 
 // extern void FreeClientResources(ClientPtr);
 
-extern void FreeAllResources();
+// extern void FreeAllResources();
 
 // extern void LegalNewID(XID, ClientPtr);
 

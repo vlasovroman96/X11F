@@ -139,7 +139,7 @@ alias OsSigHandlerPtr = void function(int sig);
 /* install signal handler */
 OsSigHandlerPtr OsSignal(int sig, OsSigHandlerPtr handler);
 
-void OsInit();
+// void OsInit();
 
 void  OsBlockSignals();
 

@@ -68,6 +68,10 @@ import include.windowstr;
 import include.xkbsrv;
 import Xi.exglobals;
 import include.extnsionst;
+import dix.devices;
+import os.utils;
+import dix.events;
+import externs.attrs;
 
 /* Number of motion history events to store. */
 enum MOTION_HISTORY_SIZE = 256;
@@ -98,9 +102,9 @@ void set_button_down(DeviceIntPtr pDev, int button, int type)
 void set_button_up(DeviceIntPtr pDev, int button, int type)
 {
     if (type == BUTTON_PROCESSED)
-        ClearBit(pDev.button.down, button);
+        mixin(ClearBit!("pDev.button.down", "button"));
     else
-        ClearBit(pDev.button.postdown, button);
+        mixin(ClearBit!("pDev.button.postdown", "button"));
 }
 
 Bool button_is_down(DeviceIntPtr pDev, int button, int type)
@@ -126,9 +130,9 @@ void set_key_down(DeviceIntPtr pDev, int key_code, int type)
 void set_key_up(DeviceIntPtr pDev, int key_code, int type)
 {
     if (type == KEY_PROCESSED)
-        ClearBit(pDev.key.down, key_code);
+        mixin(ClearBit!("pDev.key.down", "key_code"));
     else
-        ClearBit(pDev.key.postdown, key_code);
+        mixin(ClearBit!("pDev.key.postdown", "key_code"));
 }
 
 Bool key_is_down(DeviceIntPtr pDev, int key_code, int type)
@@ -351,7 +355,7 @@ void AllocateMotionHistory(DeviceIntPtr pDev)
      * 3 * INT32 for (min_val, max_val, curr_val))
      */
     if (InputDevIsMaster(pDev))
-        size = ((INT32) * 3 * MAX_VALUATORS).sizeof;
+        size = ((INT32).sizeof * 3 * MAX_VALUATORS);
     else {
         ValuatorClassPtr v = pDev.valuator;
         int numAxes = void;
@@ -360,7 +364,7 @@ void AllocateMotionHistory(DeviceIntPtr pDev)
         for (numAxes = 0; numAxes < v.numAxes; numAxes++)
             if (valuator_get_mode(pDev, numAxes) != valuator_get_mode(pDev, 0))
                 break;
-        size = ((INT32) * numAxes).sizeof;
+        size = cast(int)((INT32).sizeof * numAxes);
     }
 
     size += Time.sizeof;
@@ -401,11 +405,11 @@ int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulon
         return 0;
 
     if (InputDevIsMaster(pDev))
-        size = (((INT32) * 3 * MAX_VALUATORS).sizeof) + Time.sizeof;
+        size = (((INT32).sizeof * 3 * MAX_VALUATORS)) + Time.sizeof;
     else
-        size = (((INT32) * pDev.valuator.numAxes).sizeof) + Time.sizeof;
+        size = (((INT32).sizeof * pDev.valuator.numAxes)) + Time.sizeof;
 
-    *buff = calloc(size, pDev.valuator.numMotionEvents);
+    *buff = cast(xTimecoord*)calloc(size, pDev.valuator.numMotionEvents);
     if (!(*buff))
         return 0;
     obuff = cast(char*) *buff;
@@ -438,7 +442,7 @@ int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulon
                 to = &core_axis;
                 to.max_value = pScreen.width;
                 coord =
-                    rescaleValuatorAxis(coord, &from, to, 0, pScreen.width);
+                    cast(int)rescaleValuatorAxis(coord, &from, to, 0, pScreen.width);
 
                 memcpy(corebuf, &coord, INT16.sizeof);
                 corebuf++;
@@ -450,7 +454,7 @@ int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulon
 
                 to.max_value = pScreen.height;
                 coord =
-                    rescaleValuatorAxis(coord, &from, to, 0, pScreen.height);
+                    cast(int)rescaleValuatorAxis(coord, &from, to, 0, pScreen.height);
                 memcpy(corebuf, &coord, INT16.sizeof);
 
             }
@@ -479,7 +483,7 @@ int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulon
                         from.max_value = pScreen.height;
 
                     /* scale from stored range into current range */
-                    coord = rescaleValuatorAxis(coord, &from, to, 0, 0);
+                    coord = cast(int)rescaleValuatorAxis(coord, &from, to, 0, 0);
                     memcpy(ocbuf, &coord, INT32.sizeof);
                     ocbuf++;
                 }
@@ -490,10 +494,10 @@ int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulon
             /* don't advance by size here. size may be different to the
              * actually written size if the MD has less valuators than MAX */
             if (core)
-                obuff += ((INT32) + Time.sizeof).sizeof;
+                obuff += ((INT32).sizeof + Time.sizeof);
             else
                 obuff +=
-                    (((INT32) * pDev.valuator.numAxes).sizeof) + Time.sizeof;
+                    (((INT32).sizeof * pDev.valuator.numAxes)) + Time.sizeof;
             ret++;
         }
     }
@@ -522,13 +526,13 @@ private void updateMotionHistory(DeviceIntPtr pDev, CARD32 ms, ValuatorMask* mas
 
     v = pDev.valuator;
     if (InputDevIsMaster(pDev)) {
-        buff += ((((INT32) * 3 * MAX_VALUATORS).sizeof) + CARD32.sizeof) *
+        buff += ((((INT32).sizeof * 3 * MAX_VALUATORS)) + CARD32.sizeof) *
             v.last_motion;
 
         memcpy(buff, &ms, Time.sizeof);
         buff += Time.sizeof;
 
-        memset(buff, 0, ((INT32) * 3 * MAX_VALUATORS).sizeof);
+        memset(buff, 0, ((INT32).sizeof * 3 * MAX_VALUATORS));
 
         for (int i = 0; i < v.numAxes; i++) {
             int val = void;
@@ -544,20 +548,20 @@ private void updateMotionHistory(DeviceIntPtr pDev, CARD32 ms, ValuatorMask* mas
             buff += INT32.sizeof;
             memcpy(buff, &v.axes[i].max_value, INT32.sizeof);
             buff += INT32.sizeof;
-            val = valuators[i];
+            val = cast(int)valuators[i];
             memcpy(buff, &val, INT32.sizeof);
             buff += INT32.sizeof;
         }
     }
     else {
 
-        buff += ((((INT32) * pDev.valuator.numAxes).sizeof) + CARD32.sizeof) *
+        buff += ((((INT32).sizeof * pDev.valuator.numAxes)) + CARD32.sizeof) *
             pDev.valuator.last_motion;
 
         memcpy(buff, &ms, Time.sizeof);
         buff += Time.sizeof;
 
-        memset(buff, 0, ((INT32) * pDev.valuator.numAxes).sizeof);
+        memset(buff, 0, ((INT32).sizeof * pDev.valuator.numAxes));
 
         for (int i = 0; i < MAX_VALUATORS; i++) {
             int val = void;
@@ -566,7 +570,7 @@ private void updateMotionHistory(DeviceIntPtr pDev, CARD32 ms, ValuatorMask* mas
                 buff += INT32.sizeof;
                 continue;
             }
-            val = valuators[i];
+            val = cast(int)valuators[i];
             memcpy(buff, &val, INT32.sizeof);
             buff += INT32.sizeof;
         }
@@ -953,11 +957,11 @@ private void updateHistory(DeviceIntPtr dev, ValuatorMask* mask, CARD32 ms)
     if (!dev.valuator)
         return;
 
-    updateMotionHistory(dev, ms, mask, dev.last.valuators);
+    updateMotionHistory(dev, ms, mask, dev.last.valuators.ptr);
     if (!InputDevIsMaster(dev) && !InputDevIsFloating(dev)) {
         DeviceIntPtr master = GetMaster(dev, MASTER_POINTER);
 
-        updateMotionHistory(master, ms, mask, dev.last.valuators);
+        updateMotionHistory(master, ms, mask, dev.last.valuators.ptr);
     }
 }
 
@@ -969,10 +973,10 @@ private void queueEventList(DeviceIntPtr device, InternalEvent* events, int neve
 
 private void event_set_root_coordinates(DeviceEvent* event, double x, double y)
 {
-    event.root_x = trunc(x);
-    event.root_y = trunc(y);
-    event.root_x_frac = x - trunc(x);
-    event.root_y_frac = y - trunc(y);
+    event.root_x = cast(short)trunc(x);
+    event.root_y = cast(short)trunc(y);
+    event.root_x_frac = x - cast(short)trunc(x);
+    event.root_y_frac = y - cast(short)trunc(y);
 }
 
 /**
@@ -1106,8 +1110,8 @@ void FreeEventList(InternalEvent* list, int num_events)
  */
 private void transform(pixman_f_transform* m, double* x, double* y)
 {
-    pixman_f_vector p = {v: {*x, *y, 1} };
-    pixman_f_transform_point(m, &p);
+    pixman_f_vector p = {v: [*x, *y, 1] };
+    assumeNoGC(&pixman_f_transform_point)(m, &p);
 
     *x = p.v[0];
     *y = p.v[1];
@@ -1159,7 +1163,7 @@ private void transformAbsolute(DeviceIntPtr dev, ValuatorMask* mask)
         ox = dev.last.valuators[0];
         oy = dev.last.valuators[1];
 
-        pixman_f_transform_invert(&invert, &dev.scale_and_transform);
+        assumeNoGC(&pixman_f_transform_invert)(&invert, &dev.scale_and_transform);
         transform(&invert, &ox, &oy);
     }
 
@@ -1316,7 +1320,7 @@ private int fill_pointer_events(InternalEvent* events, DeviceIntPtr pDev, int ty
         if (flags & POINTER_EMULATED)
             raw.flags = XIPointerEmulated;
 
-        set_raw_valuators(raw, &mask, TRUE, raw.valuators.data_raw);
+        set_raw_valuators(raw, &mask, TRUE, raw.valuators.data_raw.ptr);
     }
 
     valuator_mask_drop_unaccelerated(&mask);
@@ -1333,7 +1337,7 @@ private int fill_pointer_events(InternalEvent* events, DeviceIntPtr pDev, int ty
         transformAbsolute(pDev, &mask);
         clipAbsolute(pDev, &mask);
         if ((flags & POINTER_NORAW) == 0 && raw)
-            set_raw_valuators(raw, &mask, FALSE, raw.valuators.data);
+            set_raw_valuators(raw, &mask, FALSE, raw.valuators.data.ptr);
     }
     else {
         transformRelative(pDev, &mask);
@@ -1341,7 +1345,7 @@ private int fill_pointer_events(InternalEvent* events, DeviceIntPtr pDev, int ty
         if (flags & POINTER_ACCELERATE)
             accelPointer(pDev, &mask, ms);
         if ((flags & POINTER_NORAW) == 0 && raw)
-            set_raw_valuators(raw, &mask, FALSE, raw.valuators.data);
+            set_raw_valuators(raw, &mask, FALSE, raw.valuators.data.ptr);
 
         moveRelative(pDev, flags, &mask);
     }
@@ -1454,7 +1458,7 @@ private int emulate_scroll_button_events(InternalEvent* events, DeviceIntPtr dev
     ax = &dev.valuator.axes[axis];
     incr = ax.scroll.increment;
 
-    BUG_WARN_MSG(incr == 0, "for device %s\n", dev.name);
+    mixin(BUG_WARN_MSG!("incr == 0", "for device %s\n"));
     if (incr == 0)
         return 0;
 
@@ -1614,7 +1618,7 @@ version (XSERVER_DTRACE) {
      * overwrites those but we need them for scroll button emulation */
     valuator_mask_zero(&last_valuators);
     for (size_t idx = 0; idx < pDev.last.numValuators; idx++)
-        valuator_mask_set_double(&last_valuators, idx, pDev.last.valuators[idx]);
+        valuator_mask_set_double(&last_valuators, cast(int)idx, cast(ulong)pDev.last.valuators[idx]);
 
     /* Turn a scroll button press into a smooth-scrolling event if
      * necessary. This only needs to cater for the XIScrollFlagPreferred
@@ -1790,7 +1794,7 @@ int GetTouchOwnershipEvents(InternalEvent* events, DeviceIntPtr pDev, TouchPoint
 
     event.touchid = ti.client_id;
     event.sourceid = ti.sourceid;
-    event.resource = resource;
+    event.resource = cast(uint)resource;
     event.flags = flags;
     event.reason = reason;
 
@@ -1814,7 +1818,7 @@ void QueueTouchEvents(DeviceIntPtr device, int type, uint ddx_touchid, int flags
     int nevents = void;
 
     nevents =
-        GetTouchEvents(InputEventList, device, ddx_touchid, type, flags, mask);
+        GetTouchEvents(InputEventList, device, ddx_touchid, cast(ushort)type, flags, mask);
     queueEventList(device, InputEventList, nevents);
 }
 
@@ -1869,7 +1873,7 @@ version (XSERVER_DTRACE) {
     ti = TouchFindByDDXID(dev, ddx_touchid, (type == XI_TouchBegin));
     if (!ti) {
         ErrorF("[dix] %s: unable to %s touch point %u\n", dev.name,
-               type == XI_TouchBegin ? "begin" : "find", ddx_touchid);
+               type == XI_TouchBegin ? "begin".ptr : "find".ptr, ddx_touchid);
         return 0;
     }
     client_id = ti.client_id;
@@ -1887,7 +1891,7 @@ version (XSERVER_DTRACE) {
         events++;
         num_events++;
         init_raw(dev, raw, ms, type, client_id);
-        set_raw_valuators(raw, &mask, TRUE, raw.valuators.data_raw);
+        set_raw_valuators(raw, &mask, TRUE, raw.valuators.data_raw.ptr);
     }
 
     event = &events.device_event;
@@ -1947,7 +1951,7 @@ version (XSERVER_DTRACE) {
         screeny = dev.spriteInfo.sprite.hotPhys.y;
     }
     if (need_rawevent)
-        set_raw_valuators(raw, &mask, FALSE, raw.valuators.data);
+        set_raw_valuators(raw, &mask, FALSE, raw.valuators.data.ptr);
 
     scr = dev.spriteInfo.sprite.hotPhys.pScreen;
 
@@ -2050,9 +2054,9 @@ version (XINERAMA) {
 
     memset(&ev, 0, DeviceEvent.sizeof);
     init_device_event(&ev, pDev, time, EVENT_SOURCE_NORMAL);
-    ev.root_x = x;
-    ev.root_y = y;
-    ev.type = ET_Motion;
+    ev.root_x = cast(short)x;
+    ev.root_y = cast(short)y;
+    ev.type = cast(EventType)ET_Motion;
     ev.time = time;
 
     /* FIXME: MD/SD considerations? */
@@ -2070,7 +2074,7 @@ void InitGestureEvent(InternalEvent* ievent, DeviceIntPtr dev, CARD32 ms, int ty
     screenx = dev.spriteInfo.sprite.hotPhys.x;
     screeny = dev.spriteInfo.sprite.hotPhys.y;
 
-    event.type = type;
+    event.type = cast(EventType)type;
     event.root = scr.root.drawable.id;
     event.root_x = screenx - scr.x;
     event.root_y = screeny - scr.y;

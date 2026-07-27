@@ -503,8 +503,8 @@ private void dix_event_to_xi1_conversion()
     _dix_test_xi_convert(&ev, Success, 1);
 
     /* No axes */
-    ClearBit(ev.valuators.mask, 0);
-    ClearBit(ev.valuators.mask, 1);
+    mixin(ClearBit!("ev.valuators.mask", "0"));
+    mixin(ClearBit!("ev.valuators.mask", "1"));
     ev.type = ET_KeyPress;
     _dix_test_xi_convert(&ev, Success, 1);
     ev.type = ET_KeyRelease;
@@ -1440,7 +1440,7 @@ private void include_bit_test_macros()
         assert(mixin(BitIsOn!("mask.ptr", "i")) == 1);
         assert(! !(mask[i / 8] & (1 << (i % 8))));
         assert(CountBits(mask.ptr, mask.sizeof) == 1);
-        ClearBit(mask.ptr, i);
+        mixin(ClearBit!("mask.ptr", "i"));
         assert(mixin(BitIsOn!("mask.ptr", "i")) == 0);
     }
 }

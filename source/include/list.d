@@ -428,7 +428,7 @@ template xorg_list_for_each_entry_safe(
  *
  * Example:
  * struct foo *list = malloc();
- * nt_list_init(list, next);
+ * mixin(nt_list_init!("list", "next"));
  *
  * @param list The list element that will be the start of the list
  * @param member Member name of the field pointing to next struct
@@ -466,7 +466,7 @@ enum string nt_list_next(string _list, string _member) = `
  * @param member Member name of the field pointing to next struct.
  */
 enum string nt_list_for_each_entry(string _entry, string _list, string _member, string lambda) = `
-	for (` ~ _entry ~ ` = ` ~ _list ~ `; ` ~ _entry ~ `; ` ~ _entry ~ ` = (` ~ _entry ~ `).` ~ _member ~ `){` ~ lambda~`}`;
+	for (` ~ _entry ~ ` = ` ~ _list ~ `; ` ~ _entry ~ `; ` ~ _entry ~ ` = cast(typeof(`~_entry~`))(` ~ _entry ~ `).` ~ _member ~ `){` ~ lambda~`}`;
 
 /**
  * Iterate through each element in the list, keeping a backup pointer to the
@@ -481,9 +481,9 @@ enum string nt_list_for_each_entry(string _entry, string _list, string _member, 
  * @param member Member name of the field pointing to next struct.
  */
 enum string nt_list_for_each_entry_safe(string _entry, string _tmp, string _list, string _member, string funcbody) = `
-	for (` ~ _entry ~ ` = ` ~ _list ~ `, ` ~ _tmp ~ ` = (` ~ _entry ~ `) ? (` ~ _entry ~ `).` ~ _member ~ ` : null;
+	for (` ~ _entry ~ ` = ` ~ _list ~ `, ` ~ _tmp ~ ` = (` ~ _entry ~ `) ? cast(typeof(`~_entry~`))(` ~ _entry ~ `).` ~ _member ~ ` : null;
 		` ~ _entry ~ `;							
-		` ~ _entry ~ ` = ` ~ _tmp ~ `, ` ~ _tmp ~ ` = (` ~ _tmp ~ `) ? (` ~ _tmp ~ `).` ~ _member ~ `: null) {
+		` ~ _entry ~ ` = ` ~ _tmp ~ `, ` ~ _tmp ~ ` = (` ~ _tmp ~ `) ? cast(typeof(`~_tmp~`))(` ~ _tmp ~ `).` ~ _member ~ `: null) {
             `~funcbody~`
         }`;
 
@@ -493,7 +493,7 @@ enum string nt_list_for_each_entry_safe(string _entry, string _tmp, string _list
  *
  * Example:
  * struct foo *elem = malloc(...);
- * nt_list_init(elem, next)
+ * mixin(nt_list_init!("elem", "next"))
  * nt_list_append(elem, list, struct foo, next);
  *
  * Resulting list order:
@@ -506,18 +506,16 @@ enum string nt_list_for_each_entry_safe(string _entry, string _tmp, string _list
  * @param member Member name of the field pointing to next struct
  */
 enum string nt_list_append(string _entry, string _list, string _type, string _member) = `
-    do {								
-	_type* __iterator = ` ~ _list ~ `;					
-	while (__iterator.` ~ _member ~ `) { __iterator = __iterator.` ~ _member ~ `;}
-	__iterator.` ~ _member ~ ` = ` ~ _entry ~ `;					
-    } while (0)`;
+	`~_type~`* __iterator = ` ~ _list ~ `;					
+	while (__iterator.` ~ _member ~ `) { __iterator = cast(`~_type~`*)__iterator.` ~ _member ~ `;}
+	__iterator.` ~ _member ~ ` = ` ~ _entry ~ `;`;
 
 /**
  * Insert the element at the next position in the list. This macro may be
  * used to insert a list into a list.
  *
  * struct foo *elem = malloc(...);
- * nt_list_init(elem, next)
+ * mixin(nt_list_init!("elem", "next"))
  * nt_list_insert(elem, list, struct foo, next);
  *
  * Resulting list order:
@@ -550,21 +548,19 @@ enum string nt_list_insert(string _entry, string _list, string _type, string _me
  * @param type The list type
  * @param member Member name of the field pointing to the next entry
  */
-enum string nt_list_del(string _entry, string _list, string _type, string _member) = `
-	do {							
-		_type* __e = ` ~ _entry ~ `;				
+enum string nt_list_del(string _entry, string _list, string _type, string _member) = `					
+		`~_type~`* __e = ` ~ _entry ~ `;				
 		if (__e == null || ` ~ _list ~ ` == null) break;        
 		if ((` ~ _list ~ `) == __e) {				
-		    ` ~ _list ~ ` = __e.` ~ _member ~ `;			
+		    ` ~ _list ~ ` = cast(`~_type~`*)__e.` ~ _member ~ `;			
 		} else {					
-		    _type* __prev = ` ~ _list ~ `;			
+		    `~_type~`* __prev = ` ~ _list ~ `;			
 		    while (__prev.` ~ _member ~ ` && __prev.` ~ _member ~ ` != __e)	
-			__prev = ` ~ nt_list_next!(`__prev`, _member) ~ `;	
+			__prev = ` ~ `cast(typeof(__prev))`~nt_list_next!(`__prev`, _member) ~ `;	
 		    if (__prev.` ~ _member ~ `)			
 			__prev.` ~ _member ~ ` = __e.` ~ _member ~ `;		
 		}						
-		` ~ nt_list_init!(`__e`, _member) ~ `;			
-	} while(0)`;
+		` ~ nt_list_init!(`__e`, _member) ~ `;`;
 
 /**
  * DO NOT USE THIS.

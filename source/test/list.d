@@ -223,7 +223,7 @@ private void test_nt_list_init()
 
     foo.a = 10;
     foo.b = 20;
-    nt_list_init(&foo, next);
+    mixin(nt_list_init!("&foo", "next"));
 
     assert(foo.a == 10);
     assert(foo.b == 20);
@@ -241,10 +241,10 @@ private void test_nt_list_append()
         assert(item);
         item.a = i;
         item.b = i * 2;
-        nt_list_init(item, next);
+        mixin(nt_list_init!("item", "next"));
 
         if (item != foo)
-            nt_list_append(item, foo, foo, next);
+            mixin(nt_list_append!("item", "foo", "foo", "next"));
     }
 
     /* Test using nt_list_next */
@@ -274,12 +274,12 @@ private void test_nt_list_insert()
 
     foo.a = 1;
     foo.b = 2;
-    nt_list_init(foo, next);
+    mixin(nt_list_init!("foo", "next"));
 
     for (item = &foo[1], i = 10; i > 1; i--, item++) {
         item.a = i;
         item.b = i * 2;
-        nt_list_init(item, next);
+        mixin(nt_list_init!("item", "next"));
         nt_list_insert(item, foo, foo, next);
     }
 
@@ -311,18 +311,18 @@ private void test_nt_list_delete()
     foo* item = void, tmp = void;
     foo* empty_list = foo;
 
-    nt_list_init(empty_list, next);
-    nt_list_del(empty_list, empty_list, foo, next);
+    mixin(nt_list_init!("empty_list", "next"));
+    mixin(nt_list_del!("empty_list", "empty_list", "foo", "next"));
 
     assert(!empty_list);
 
     for (item = foo, i = 1; i <= 10; i++, item++) {
         item.a = i;
         item.b = i * 2;
-        nt_list_init(item, next);
+        mixin(nt_list_init!("item", "next"));
 
         if (item != foo)
-            nt_list_append(item, foo, foo, next);
+            mixin(nt_list_append!("item", "foo", "foo", "next"));
     }
 
     i = 0;
@@ -332,7 +332,7 @@ private void test_nt_list_delete()
     assert(i == 10);
 
     /* delete last item */
-    nt_list_del(&foo[9], foo, foo, next);
+    mixin(nt_list_del!("&foo[9]", "foo", "foo", "next"));
 
     i = 0;
     mixin(nt_list_for_each_entry!("item", "foo", "next")); {
@@ -342,7 +342,7 @@ private void test_nt_list_delete()
     assert(i == 9);             /* 9 elements left */
 
     /* delete second item */
-    nt_list_del(foo.next, foo, foo, next);
+    mixin(nt_list_del!("foo.next", "foo", "foo", "next"));
 
     assert(foo.next.a == 3);
 
@@ -356,7 +356,7 @@ private void test_nt_list_delete()
 
     item = foo;
     /* delete first item */
-    nt_list_del(foo, foo, foo, next);
+    mixin(nt_list_del!("foo", "foo", "foo", "next"));
 
     assert(item != foo);
     assert(item.next == null);
@@ -364,7 +364,7 @@ private void test_nt_list_delete()
     assert(foo.next.a == 4);
 
     nt_list_for_each_entry_safe(item, tmp, foo, next); {
-        nt_list_del(item, foo, foo, next);
+        mixin(nt_list_del!("item", "foo", "foo", "next"));
     }
 
     assert(!foo);

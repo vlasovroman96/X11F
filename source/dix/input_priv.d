@@ -148,8 +148,8 @@ void TouchEmitTouchEnd(DeviceIntPtr dev, TouchPointInfoPtr ti, int flags, XID re
 void TouchAcceptAndEnd(DeviceIntPtr dev, int touchid);
 
 /* Gesture support */
-void InitGestureEvent(InternalEvent* ievent, DeviceIntPtr dev, CARD32 ms, int type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
-int GetGestureEvents(InternalEvent* events, DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
+// void InitGestureEvent(InternalEvent* ievent, DeviceIntPtr dev, CARD32 ms, int type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
+// int GetGestureEvents(InternalEvent* events, DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
 void QueueGesturePinchEvents(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
 void QueueGestureSwipeEvents(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y);
 Bool GestureInitGestureInfo(GestureInfoPtr gesture);
@@ -175,9 +175,9 @@ int GetXI2MaskByte(XI2Mask* mask, DeviceIntPtr dev, int event_type);
 // void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window child, Bool calcChild, InputLevel XILevel);
 Bool PointInBorderSize(WindowPtr pWin, int x, int y);
 WindowPtr XYToWindow(SpritePtr pSprite, int x, int y);
-int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win);
+// int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win);
 // Bool ActivatePassiveGrab(DeviceIntPtr dev, GrabPtr grab, InternalEvent* ev, InternalEvent* real_event);
-void ActivateGrabNoDelivery(DeviceIntPtr dev, GrabPtr grab, InternalEvent* event, InternalEvent* real_event);
+// void ActivateGrabNoDelivery(DeviceIntPtr dev, GrabPtr grab, InternalEvent* event, InternalEvent* real_event);
 
 /* states for device grabs */
 
@@ -397,7 +397,7 @@ int InputThreadUnregisterDev(int fd);
  * @param len size of bitmask in bits (may span multiple bytes)
  * @return number of bits set in the given bitmask
  */
-pragma(inline, true) private int CountBits(const(ubyte)* mask, int len)
+pragma(inline, true) int CountBits(const(ubyte)* mask, int len)
 {
     int ret = 0;
     for (int i = 0; i < len; i++)

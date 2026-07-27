@@ -44,6 +44,10 @@ import include.eventstr;
 import include.scrnintstr;
 import include.optionstr;
 import externs.X11.extensions.XI2proto;
+import os.io;
+import os.utils;
+import dix.events;
+import dix.devices;
 
 /* Check if a button map change is okay with the device.
  * Returns -1 for BadValue, as it collides with MappingBusy. */
@@ -74,7 +78,7 @@ private int check_butmap_change(DeviceIntPtr dev, CARD8* map, int len, CARD32* e
 private void do_butmap_change(DeviceIntPtr dev, CARD8* map, int len, ClientPtr client)
 {
     xEvent core_mn;
-    core_nm.u.u.type = MappingNotify ;
+    core_mn.u.u.type = MappingNotify ;
     deviceMappingNotify xi_mn = void;
 
     /* The map in ButtonClassRec refers to button numbers, whereas the
@@ -96,9 +100,9 @@ private void do_butmap_change(DeviceIntPtr dev, CARD8* map, int len, ClientPtr c
     }
 
     xi_mn = deviceMappingNotify (
-        type: DeviceMappingNotify,
-        request: MappingPointer,
-        deviceid: dev.id,
+        type: cast(ubyte)DeviceMappingNotify,
+        request: cast(ubyte)MappingPointer,
+        deviceid: cast(ubyte)dev.id,
         time: GetTimeInMillis()
     );
 
@@ -117,7 +121,7 @@ int ApplyPointerMapping(DeviceIntPtr dev, CARD8* map, int len, ClientPtr client)
     int ret = void;
 
     /* If we can't perform the change on the requested device, bail out. */
-    ret = check_butmap_change(dev, map, len, &client.errorValue, client);
+    ret = check_butmap_change(dev, map, len, cast(uint*)&client.errorValue, client);
     if (ret != Success)
         return ret;
     do_butmap_change(dev, map, len, client);
@@ -235,7 +239,7 @@ static if (MAP_LENGTH < 256) {
         if (modmap[modkeymap[i]])
             return BadValue;
 
-        modmap[modkeymap[i]] = 1 << (i / max_keys_per_mod);
+        modmap[modkeymap[i]] = cast(ubyte)(1 << (i / max_keys_per_mod));
     }
 
     return Success;
@@ -312,7 +316,7 @@ int generate_modkeymap(ClientPtr client, DeviceIntPtr dev, KeyCode** modkeymap_o
         for (int i = 8; i < MAP_LENGTH; i++) {
             for (int j = 0; j < 8; j++) {
                 if (dev.key.xkbInfo.desc.map.modmap[i] & (1 << j)) {
-                    modkeymap[(j * max_keys_per_mod) + keys_per_mod[j]] = i;
+                    modkeymap[(j * max_keys_per_mod) + keys_per_mod[j]] = cast(ubyte)i;
                     keys_per_mod[j]++;
                 }
             }
@@ -340,27 +344,27 @@ InputAttributes* DuplicateInputAttributes(InputAttributes* attrs)
     if (!attrs)
         return null;
 
-    if (((new_attr = cast(InputAttributes*) cast(InputAttributes*) calloc(1, InputAttributes.sizeof)) == 0))
+    if (((new_attr = cast(InputAttributes*) cast(InputAttributes*) calloc(1, InputAttributes.sizeof)) is null))
         goto unwind;
 
-    if (attrs.product && ((new_attr.product = strdup(attrs.product)) == 0))
+    if (attrs.product && ((new_attr.product = strdup(attrs.product)) is null))
         goto unwind;
-    if (attrs.vendor && ((new_attr.vendor = strdup(attrs.vendor)) == 0))
+    if (attrs.vendor && ((new_attr.vendor = strdup(attrs.vendor)) is null))
         goto unwind;
-    if (attrs.device && ((new_attr.device = strdup(attrs.device)) == 0))
+    if (attrs.device && ((new_attr.device = strdup(attrs.device)) is null))
         goto unwind;
-    if (attrs.pnp_id && ((new_attr.pnp_id = strdup(attrs.pnp_id)) == 0))
+    if (attrs.pnp_id && ((new_attr.pnp_id = strdup(attrs.pnp_id)) is null))
         goto unwind;
-    if (attrs.usb_id && ((new_attr.usb_id = strdup(attrs.usb_id)) == 0))
+    if (attrs.usb_id && ((new_attr.usb_id = strdup(attrs.usb_id)) is null))
         goto unwind;
 
     new_attr.flags = attrs.flags;
 
-    if ((tags = attrs.tags)) {
+    if ((tags = attrs.tags) !is null) {
         while (*tags++)
             ntags++;
 
-        new_attr.tags = calloc(ntags + 1, (char*).sizeof);
+        new_attr.tags = cast(char**)calloc(ntags + 1, (char*).sizeof);
         if (!new_attr.tags)
             goto unwind;
 
@@ -397,7 +401,7 @@ void FreeInputAttributes(InputAttributes* attrs)
     free(attrs.pnp_id);
     free(attrs.usb_id);
 
-    if ((tags = attrs.tags))
+    if ((tags = attrs.tags) !is null)
         while (*tags)
             free(*tags++);
 
@@ -464,7 +468,7 @@ int valuator_mask_size(const(ValuatorMask)* mask)
  */
 int valuator_mask_num_valuators(const(ValuatorMask)* mask)
 {
-    return CountBits(mask.mask, min(mask.last_bit + 1, MAX_VALUATORS));
+    return CountBits(mask.mask.ptr, min(mask.last_bit + 1, MAX_VALUATORS));
 }
 
 /**
@@ -477,7 +481,7 @@ int valuator_mask_isset(const(ValuatorMask)* mask, int valuator)
 
 pragma(inline, true) private void _valuator_mask_set_double(ValuatorMask* mask, int valuator, double data)
 {
-    mask.last_bit = max(valuator, mask.last_bit);
+    mask.last_bit = cast(byte)max(valuator, mask.last_bit);
     mixin(SetBit!("mask.mask", "valuator"));
     mask.valuators[valuator] = data;
 }
@@ -487,8 +491,8 @@ pragma(inline, true) private void _valuator_mask_set_double(ValuatorMask* mask, 
  */
 void valuator_mask_set_double(ValuatorMask* mask, int valuator, double data)
 {
-    BUG_WARN_MSG(mask.has_unaccelerated,
-                 "Do not mix valuator types, zero mask first\n");
+    mixin(BUG_WARN_MSG!("mask.has_unaccelerated",
+                 "Do not mix valuator types, zero mask first\n"));
     _valuator_mask_set_double(mask, valuator, data);
 }
 
@@ -516,7 +520,7 @@ double valuator_mask_get_double(const(ValuatorMask)* mask, int valuator)
  */
 int valuator_mask_get(const(ValuatorMask)* mask, int valuator)
 {
-    return trunc(valuator_mask_get_double(mask, valuator));
+    return cast(int)trunc(valuator_mask_get_double(mask, valuator));
 }
 
 /**
@@ -561,14 +565,14 @@ void valuator_mask_unset(ValuatorMask* mask, int valuator)
     if (mask.last_bit >= valuator) {
         int lastbit = -1;
 
-        ClearBit(mask.mask, valuator);
+        mixin(ClearBit!("mask.mask", "valuator"));
         mask.valuators[valuator] = 0.0;
         mask.unaccelerated[valuator] = 0.0;
 
         for (int i = 0; i <= mask.last_bit; i++)
             if (valuator_mask_isset(mask, i))
-                lastbit = max(lastbit, i);
-        mask.last_bit = lastbit;
+                lastbit = cast(byte)max(lastbit, i);
+        mask.last_bit = cast(byte)lastbit;
 
         if (mask.last_bit == -1)
             mask.has_unaccelerated = FALSE;
@@ -590,14 +594,14 @@ Bool valuator_mask_has_unaccelerated(const(ValuatorMask)* mask)
 
 void valuator_mask_drop_unaccelerated(ValuatorMask* mask)
 {
-    memset(mask.unaccelerated, 0, typeof(mask.unaccelerated).sizeof);
+    memset(mask.unaccelerated.ptr, 0, typeof(mask.unaccelerated).sizeof);
     mask.has_unaccelerated = FALSE;
 }
 
 void valuator_mask_set_absolute_unaccelerated(ValuatorMask* mask, int valuator, int absolute, double unaccel)
 {
-    BUG_WARN_MSG(mask.last_bit != -1 && !mask.has_unaccelerated,
-                 "Do not mix valuator types, zero mask first\n");
+    mixin(BUG_WARN_MSG!("mask.last_bit != -1 && !mask.has_unaccelerated",
+                 "Do not mix valuator types, zero mask first\n"));
     _valuator_mask_set_double(mask, valuator, absolute);
     mask.has_unaccelerated = TRUE;
     mask.unaccelerated[valuator] = unaccel;
@@ -608,8 +612,8 @@ void valuator_mask_set_absolute_unaccelerated(ValuatorMask* mask, int valuator, 
  */
 void valuator_mask_set_unaccelerated(ValuatorMask* mask, int valuator, double accel, double unaccel)
 {
-    BUG_WARN_MSG(mask.last_bit != -1 && !mask.has_unaccelerated,
-                 "Do not mix valuator types, zero mask first\n");
+    mixin(BUG_WARN_MSG!("mask.last_bit != -1 && !mask.has_unaccelerated",
+                 "Do not mix valuator types, zero mask first\n"));
     _valuator_mask_set_double(mask, valuator, accel);
     mask.has_unaccelerated = TRUE;
     mask.unaccelerated[valuator] = unaccel;
@@ -728,10 +732,10 @@ void event_set_state(DeviceIntPtr mouse, DeviceIntPtr kbd, DeviceEvent* event)
         event.mods.locked = state.locked_mods;
         event.mods.effective = state.mods;
 
-        event.group.base = state.base_group;
-        event.group.latched = state.latched_group;
-        event.group.locked = state.locked_group;
-        event.group.effective = state.group;
+        event.group.base = cast(ubyte)state.base_group;
+        event.group.latched = cast(ubyte)state.latched_group;
+        event.group.locked = cast(ubyte)state.locked_group;
+        event.group.effective = cast(ubyte)state.group;
     }
 }
 
@@ -745,9 +749,9 @@ void event_set_state_gesture(DeviceIntPtr kbd, GestureEvent* event)
         event.mods.locked = state.locked_mods;
         event.mods.effective = state.mods;
 
-        event.group.base = state.base_group;
-        event.group.latched = state.latched_group;
-        event.group.locked = state.locked_group;
+        event.group.base = cast(ubyte)state.base_group;
+        event.group.latched = cast(ubyte)state.latched_group;
+        event.group.locked = cast(ubyte)state.locked_group;
         event.group.effective = state.group;
     }
 }
@@ -833,24 +837,24 @@ InputOption* input_option_new(InputOption* list, const(char)* key, const(char)* 
         return null;
 
     if (list) {
-        mixin(nt_list_for_each_entry!("opt", "list", "list.next")); {
+        mixin(nt_list_for_each_entry!("opt", "list", "list.next", q{
             if (strcmp(input_option_get_key(opt), key) == 0) {
                 input_option_set_value(opt, value);
                 return list;
             }
-        }
+        }));
     }
 
     opt = cast(InputOption*) cast(InputOption*) calloc(1, InputOption.sizeof);
     if (!opt)
         return null;
 
-    nt_list_init(opt, list.next);
+    mixin(nt_list_init!("opt", "list.next")~";");
     input_option_set_key(opt, key);
     input_option_set_value(opt, value);
 
     if (list) {
-        nt_list_append(opt, list, InputOption, list.next);
+        mixin(nt_list_append!("opt", "list", "InputOption", "list.next"));
 
         return list;
     }
@@ -862,14 +866,14 @@ InputOption* input_option_free_element(InputOption* list, const(char)* key)
 {
     InputOption* element = void;
 
-    mixin(nt_list_for_each_entry!("element", "list", "list.next")); {
+    mixin(nt_list_for_each_entry!("element", "list", "list.next", q{
         if (strcmp(input_option_get_key(element), key) == 0) {
-            nt_list_del(element, list, InputOption, list.next);
+            mixin(nt_list_del!("element", "list", "InputOption", "list.next"));
 
             input_option_free(element);
             break;
         }
-    }
+    }));
     return list;
 }
 
@@ -880,11 +884,11 @@ void input_option_free_list(InputOption** opt)
 {
     InputOption* element = void, tmp = void;
 
-    nt_list_for_each_entry_safe(element, tmp, *opt, list.next); {
-        nt_list_del(element, *opt, InputOption, list.next);
+    mixin(nt_list_for_each_entry_safe!("element", "tmp", "*opt", "list.next", q{
+        mixin(nt_list_del!("element", "*opt", "InputOption", "list.next"));
 
         input_option_free(element);
-    }
+    }));
     *opt = null;
 }
 
@@ -897,10 +901,10 @@ InputOption* input_option_find(InputOption* list, const(char)* key)
 {
     InputOption* element = void;
 
-    mixin(nt_list_for_each_entry!("element", "list", "list.next")); {
+    mixin(nt_list_for_each_entry!("element", "list", "list.next", q{
         if (strcmp(input_option_get_key(element), key) == 0)
             return element;
-    }
+    }));
 
     return null;
 }
@@ -983,9 +987,9 @@ XI2Mask* xi2mask_new_with_size(size_t nmasks, size_t size)
     ubyte* cursor = void;
     XI2Mask* mask = void;
 
-    alloc_size = (cast(_XI2Mask)
-	       + nmasks * (cast(ubyte*)
-	       + nmasks * size).sizeof).sizeof;
+    alloc_size = cast(int)((_XI2Mask).sizeof
+	       + nmasks * ((ubyte*).sizeof
+	       + nmasks * size));
 
     mask = cast(XI2Mask*) calloc(1, alloc_size);
 
@@ -1048,7 +1052,7 @@ Bool xi2mask_isset_for_device(XI2Mask* mask, const(DeviceIntPtr) dev, int event_
  *
  * @return TRUE if the bit is set, FALSE otherwise
  */
-Bool xi2mask_isset(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type)
+Bool xi2mask_isset(XI2Mask* mask, DeviceIntPtr dev, int event_type)
 {
     int set = 0;
 
@@ -1149,7 +1153,7 @@ Bool CopySprite(SpritePtr src, SpritePtr dst)
 {
     WindowPtr* trace = void;
     if (src.spriteTraceGood > dst.spriteTraceSize) {
-        trace = reallocarray(dst.spriteTrace,
+        trace = cast(_Window**)reallocarray(dst.spriteTrace,
                              src.spriteTraceSize, typeof(*trace).sizeof);
         if (!trace) {
             dst.spriteTraceGood = 0;

@@ -13,7 +13,7 @@ public import include.os;
 
 // extern int auditTrailLevel;
 
-void FreeAuditTimer();
+// void FreeAuditTimer();
 
 void AuditF(const(char)* f, ...);
 // void VAuditF(const(char)* f, va_list args);

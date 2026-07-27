@@ -62,6 +62,11 @@ import externs.X11.X;
 import externs.X11.Xmd;
 import externs.X11.Xdefs;
 
+enum LCC_UID_SET =     (1 << 0);
+enum LCC_GID_SET =     (1 << 1);
+enum LCC_PID_SET =     (1 << 2);
+enum LCC_ZID_SET =     (1 << 3);
+
 
 struct LocalClientCredRec{
     int fieldsSet;              /* Bit mask of fields set */
@@ -92,9 +97,6 @@ alias AuthRemCFunc = int function(ushort, const char *);
 
 enum AuthRstCArgs = "";
 alias AuthRstCFunc = int function();
-
-enum LCC_UID_SET = 1 << 0;
-enum LCC_GID_SET = 1 << 1;
 
 import os.xdmauth;
 import os.mitauth;

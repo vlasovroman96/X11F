@@ -63,6 +63,8 @@ import include.dix;
 import include.cursorstr;
 import include.opaque;
 import include.servermd;
+import dix.gc;
+import externs.attrs;
 
 /*
     get the bits out of the font in a portable way.  to avoid
@@ -113,13 +115,13 @@ int ServerBitsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm, ubyte** ppbi
     gcval[0].val = GXcopy;
     gcval[1].val = 0;
     gcval[2].ptr = cast(void*) pfont;
-    ChangeGC(null, pGC, GCFunction | GCForeground | GCFont, gcval.ptr);
+    ChangeGC(null, pGC, cast(uint)(GCFunction | GCForeground | GCFont), gcval.ptr);
     ValidateGC(cast(DrawablePtr) ppix, pGC);
     (*pGC.ops.PolyFillRect) (cast(DrawablePtr) ppix, pGC, 1, &rect);
 
     /* draw the glyph */
     gcval[0].val = 1;
-    ChangeGC(null, pGC, GCForeground, gcval.ptr);
+    ChangeGC(null, pGC, cast(uint)GCForeground, gcval.ptr);
     ValidateGC(cast(DrawablePtr) ppix, pGC);
     (*pGC.ops.PolyText16) (cast(DrawablePtr) ppix, pGC, cm.xhot, cm.yhot,
                              1, cast(ushort*) char2b);
@@ -138,9 +140,9 @@ Bool CursorMetricsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm)
     CARD8[2] chs = void;
     FontEncoding encoding = void;
 
-    chs[0] = ch >> 8;
-    chs[1] = ch;
-    encoding = (FONTLASTROW(pfont) == 0) ? Linear16Bit : TwoD16Bit;
+    chs[0] = cast(ubyte)(ch >> 8);
+    chs[1] = cast(ubyte)ch;
+    encoding = (mixin(FONTLASTROW!("pfont")) == 0) ? Linear16Bit : TwoD16Bit;
     if (encoding == Linear16Bit) {
         if (ch < pfont.info.firstCol || pfont.info.lastCol < ch)
             return FALSE;
@@ -151,17 +153,17 @@ Bool CursorMetricsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm)
         if (chs[1] < pfont.info.firstCol || pfont.info.lastCol < chs[1])
             return FALSE;
     }
-    (*pfont.get_glyphs) (pfont, 1, chs.ptr, encoding, &nglyphs, &pci);
+    assumeNoGC(pfont.get_glyphs) (pfont, 1, chs.ptr, encoding, &nglyphs, &pci);
     if (nglyphs == 0)
         return FALSE;
-    cm.width = pci.metrics.rightSideBearing - pci.metrics.leftSideBearing;
-    cm.height = pci.metrics.descent + pci.metrics.ascent;
+    cm.width = cast(ushort)(pci.metrics.rightSideBearing - pci.metrics.leftSideBearing);
+    cm.height = cast(ushort)(pci.metrics.descent + pci.metrics.ascent);
     if (pci.metrics.leftSideBearing > 0) {
         cm.width += pci.metrics.leftSideBearing;
         cm.xhot = 0;
     }
     else {
-        cm.xhot = -pci.metrics.leftSideBearing;
+        cm.xhot = cast(ushort)-pci.metrics.leftSideBearing;
         if (pci.metrics.rightSideBearing < 0)
             cm.width -= pci.metrics.rightSideBearing;
     }

@@ -111,7 +111,7 @@ private int MakeBitmapsFromFont(FontPtr pFont, int first, int count, int list_ba
     CARD8[2] chs = void;               /* the font index we are going after */
     CharInfoPtr pci = void;
     int rv = void;                     /* return value */
-    int encoding = (FONTLASTROW(pFont) == 0) ? Linear16Bit : TwoD16Bit;
+    int encoding = (mixin(FONTLASTROW!("pFont")) == 0) ? Linear16Bit : TwoD16Bit;
 
     glPixelStorei(GL_UNPACK_SWAP_BYTES, FALSE);
     glPixelStorei(GL_UNPACK_LSB_FIRST, BITMAP_BIT_ORDER == LSBFirst);

@@ -48,7 +48,7 @@ private void glamor_get_glyphs(FontPtr font, glamor_font_t* glamor_font, int cou
 
     if (sixteen) {
         char_step = 2;
-        if (FONTLASTROW(font) == 0)
+        if (mixin(FONTLASTROW!("font")) == 0)
             encoding = Linear16Bit;
         else
             encoding = TwoD16Bit;
@@ -154,7 +154,7 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
                     row = chars[0];
                     col = chars[1];
                 }
-                if (FONTLASTROW(font) != 0) {
+                if (mixin(FONTLASTROW!("font")) != 0) {
                     ty = ((row - firstRow) / 2) * glyph_spacing_y;
                     second_row = (row - firstRow) & 1;
                 }
