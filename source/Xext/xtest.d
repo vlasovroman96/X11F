@@ -80,6 +80,7 @@ import dix.extension;
 import dix.devices;
 import Xi.xiproperty;
 import os.io;
+import dix.events;
 
 enum XTestCurrentCursor = cast(Cursor)1;
 

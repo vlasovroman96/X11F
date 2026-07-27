@@ -107,7 +107,7 @@ Equipment Corporation.
 
 import build.dix_config;
 
-//import externs.X11.X;
+import externs.X11.X;
 // //import externs.X11.extensions.ge;
 // //import externs.X11.extensions.XKBproto;
 // //import externs.X11.extensions.XIproto;
@@ -162,6 +162,12 @@ import dix.dixstruct_priv;
 import include.eventstr;
 import dix.enterleave;
 import include.mi;
+import dix.events;
+import dix.devices;
+import os.utils;
+import std.conv;
+import include.os;
+import os.io;
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `
         ((` ~ c ~ `).xkbClientFlags&XkbPCF_DetectableAutoRepeatMask)`;
@@ -225,7 +231,7 @@ Mask[DNPMCOUNT] DontPropagateMasks;
 private int[DNPMCOUNT] DontPropagateRefCnts;
 
 
-private void CheckPhysLimits(DeviceIntPtr pDev, CursorPtr cursor, Bool generateEvents, Bool confineToScreen, ScreenPtr pScreen);
+// private void CheckPhysLimits(DeviceIntPtr pDev, CursorPtr cursor, Bool generateEvents, Bool confineToScreen, ScreenPtr pScreen);
 
 
 /** Key repeat hack. Do not use but in TryClientEvents */
@@ -430,7 +436,7 @@ Mask GetEventFilter(DeviceIntPtr dev, xEvent* event)
 
     if (event.u.u.type != GenericEvent)
         return event_get_filter_from_type(dev, event.u.u.type);
-    else if ((evtype = xi2_get_type(event)))
+    else if ((evtype = xi2_get_type(event)) != 0)
         return event_get_filter_from_xi2type(evtype);
     ErrorF("[dix] Unknown event type %d. No filter\n", event.u.u.type);
     return 0;
@@ -446,7 +452,7 @@ int GetXI2MaskByte(XI2Mask* mask, DeviceIntPtr dev, int event_type)
      * for this mask anyway.
      */
     if (xi2mask_isset(mask, dev, event_type))
-        return event_get_filter_from_xi2type(event_type);
+        return cast(uint)event_get_filter_from_xi2type(event_type);
     else
         return 0;
 }
@@ -486,7 +492,7 @@ Mask GetEventMask(DeviceIntPtr dev, xEvent* event, InputClients* other)
     int evtype = void;
 
     /* XI2 filters are only ever 8 bit, so let's return a 8 bit mask */
-    if ((evtype = xi2_get_type(event))) {
+    if ((evtype = xi2_get_type(event)) != 0) {
         return GetXI2MaskByte(other.xi2mask, dev, evtype);
     }
     else if (core_get_type(event) != 0)
@@ -513,10 +519,10 @@ version (XINERAMA) {
 
 }
 
-version (XINERAMA) {
+// version (XINERAMA) {
 
 
-private Bool XineramaSetCursorPosition(DeviceIntPtr pDev, int x, int y, Bool generateEvent)
+Bool XineramaSetCursorPosition(DeviceIntPtr pDev, int x, int y, Bool generateEvent)
 {
     SpritePtr pSprite = pDev.spriteInfo.sprite;
     ScreenPtr pScreen = pSprite.screen;
@@ -569,7 +575,7 @@ private void XineramaConstrainCursor(DeviceIntPtr pDev)
     (*pScreen.ConstrainCursor) (pDev, pScreen, &newBox);
 }
 
-private Bool XineramaSetWindowPntrs(DeviceIntPtr pDev, WindowPtr pWin)
+Bool XineramaSetWindowPntrs(DeviceIntPtr pDev, WindowPtr pWin)
 {
     SpritePtr pSprite = pDev.spriteInfo.sprite;
 
@@ -588,7 +594,7 @@ private Bool XineramaSetWindowPntrs(DeviceIntPtr pDev, WindowPtr pWin)
             return FALSE;
 
         mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
-            rc = dixLookupWindow(pSprite.windows + walkScreenIdx,
+            rc = dixLookupWindow(pSprite.windows.ptr + walkScreenIdx,
                                  win.info[walkScreenIdx].id,
                                  serverClient, DixReadAccess);
             if (rc != Success)  /* window is being unmapped */
@@ -647,7 +653,7 @@ private void XineramaConfineCursorToWindow(DeviceIntPtr pDev, WindowPtr pWin, Bo
     CheckPhysLimits(pDev, pSprite.current, generateEvents, FALSE, null);
 }
 
-} /* XINERAMA */
+// } /* XINERAMA */
 
 /**
  * Modifies the filter for the given protocol event type to the given masks.
@@ -929,7 +935,7 @@ version (XINERAMA) {
         CheckPhysLimits(pDev, pSprite.current, generateEvents,
                         confineToScreen, pWin.drawable.pScreen);
 
-        if (*pScreen.CursorConfinedTo)
+        if (pScreen.CursorConfinedTo !is null)
             (*pScreen.CursorConfinedTo) (pDev, pScreen, pWin);
     }
 }
@@ -1096,7 +1102,7 @@ private void NoticeTimeMillis(const(DeviceIntPtr) dev, CARD32* ms)
 void NoticeEventTime(InternalEvent* ev, DeviceIntPtr dev)
 {
     if (!syncEvents.playingEvents)
-        NoticeTimeMillis(dev, &ev.any.time);
+        NoticeTimeMillis(dev, cast(uint*)&ev.any.time);
 }
 
 TimeStamp LastEventTime(int deviceid)
@@ -1117,9 +1123,9 @@ void LastEventTimeToggleResetFlag(int deviceid, Bool state)
 void LastEventTimeToggleResetAll(Bool state)
 {
     DeviceIntPtr dev = void;
-    mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next")) ;{
+    mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next", q{
         LastEventTimeToggleResetFlag(dev.id, FALSE);
-    }
+    }));
     LastEventTimeToggleResetFlag(XIAllDevices, FALSE);
     LastEventTimeToggleResetFlag(XIAllMasterDevices, FALSE);
 }
@@ -1141,14 +1147,14 @@ void EnqueueEvent(InternalEvent* ev, DeviceIntPtr device)
     DeviceEvent* event = &ev.device_event;
 
     if (!xorg_list_is_empty(&syncEvents.pending))
-        tail = xorg_list_last_entry(&syncEvents.pending, QdEventRec, next);
+        tail = mixin(xorg_list_last_entry!("&syncEvents.pending", "QdEventRec", "next"));
 
-    NoticeTimeMillis(device, &ev.any.time);
+    NoticeTimeMillis(device, cast(uint*)&ev.any.time);
 
     /* Fix for key repeating bug. */
     if (device.key != null && device.key.xkbInfo != null &&
         event.type == ET_KeyRelease)
-        AccessXCancelRepeatKey(device.key.xkbInfo, event.detail.key);
+        AccessXCancelRepeatKey(device.key.xkbInfo, cast(ubyte)event.detail.key);
 
     if (DeviceEventCallback) {
         DeviceEventInfoRec eventinfo = void;
@@ -1171,13 +1177,13 @@ void EnqueueEvent(InternalEvent* ev, DeviceIntPtr device)
     }
 
     if (event.type == ET_Motion) {
-version (XINERAMA) {
+// version (XINERAMA) {
         if (!noPanoramiXExtension) {
             ScreenPtr masterScreen = dixGetMasterScreen();
             event.root_x += pSprite.screen.x - masterScreen.x;
             event.root_y += pSprite.screen.y - masterScreen.y;
         }
-} /* XINERAMA */
+// } /* XINERAMA */
         pSprite.hotPhys.x = event.root_x;
         pSprite.hotPhys.y = event.root_y;
         /* do motion compression, but not if from different devices */
@@ -1187,8 +1193,8 @@ version (XINERAMA) {
             (tail.pScreen == pSprite.hotPhys.pScreen)) {
             DeviceEvent* tailev = &tail.event.device_event;
 
-            tailev.root_x = pSprite.hotPhys.x;
-            tailev.root_y = pSprite.hotPhys.y;
+            tailev.root_x = cast(ushort)pSprite.hotPhys.x;
+            tailev.root_y = cast(ushort)pSprite.hotPhys.y;
             tailev.time = event.time;
             tail.months = currentTime.months;
             return;
@@ -1197,7 +1203,7 @@ version (XINERAMA) {
 
     eventlen = InternalEvent.sizeof;
 
-    QdEventPtr qe = cast(QdEventPtr) calloc(1, ((QdEventRec) + eventlen).sizeof);
+    QdEventPtr qe = cast(QdEventPtr) calloc(1, ((QdEventRec).sizeof + eventlen));
     if (!qe)
         return;
     xorg_list_init(&qe.next);
@@ -1224,20 +1230,20 @@ void PlayReleasedEvents()
     QdEventPtr qe = void;
     DeviceIntPtr dev = void;
     DeviceIntPtr pDev = void;
-version (XINERAMA) {
+// version (XINERAMA) {
     ScreenPtr masterScreen = dixGetMasterScreen();
-}
+// }
 
  restart:
-    mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "syncEvents.pending", "next", q{
+    mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "&syncEvents.pending", "next", q{
         if (!qe.device.deviceGrab.sync.frozen) {
             xorg_list_del(&qe.next);
             pDev = qe.device;
             if (qe.event.any.type == ET_Motion)
                 CheckVirtualMotion(pDev, qe, NullWindow);
-            syncEvents.time.months = qe.months;
-            syncEvents.time.milliseconds = qe.event.any.time;
-version (XINERAMA) {
+            syncEvents.time.months = cast(uint)qe.months;
+            syncEvents.time.milliseconds = cast(uint)qe.event.any.time;
+// version (XINERAMA) {
             /* Translate back to the sprite screen since processInputProc
                will translate from sprite screen to screen 0 upon reentry
                to the DIX layer */
@@ -1265,7 +1271,7 @@ version (XINERAMA) {
                 }
 
             }
-} /* XINERAMA */
+// } /* XINERAMA */
             (*qe.device.public_.processInputProc) (qe.event, qe.device);
             free(qe);
             for (dev = inputInfo.devices; dev && dev.deviceGrab.sync.frozen;
@@ -1361,7 +1367,7 @@ private void ComputeFreezes()
         if (DevHasCursor(dev)) {
             /* the following may have been skipped during replay,
                so do it now */
-            if ((grab = dev.deviceGrab.grab) && grab.confineTo) {
+            if ((grab = dev.deviceGrab.grab) !is null && grab.confineTo) {
                 if (grab.confineTo.drawable.pScreen !=
                     dev.spriteInfo.sprite.hotPhys.pScreen)
                     dev.spriteInfo.sprite.hotPhys.x =
@@ -1546,7 +1552,7 @@ private void UpdateGesturesForGrab(DeviceIntPtr mouse)
 
     if (gi.active && CLIENT_BITS(listener.listener) == grab.resource) {
         if (grab.grabtype == CORE || grab.grabtype == XI ||
-            !xi2mask_isset(grab.xi2mask, mouse, GetXI2Type(gi.type))) {
+            !xi2mask_isset(grab.xi2mask, mouse, GetXI2Type(cast(EventType)gi.type))) {
 
             if (listener.type == GESTURE_LISTENER_REGULAR) {
                 /* if the listener already got any events relating to the gesture, we must send
@@ -2080,7 +2086,7 @@ version (DEBUG_EVENTS) {
         if (EventIsKeyRepeat(pEvents)) {
             if (!mixin(_XkbWantsDetectableAutoRepeat!(`client`))) {
                 deviceKeyButtonPointer release = *cast(deviceKeyButtonPointer*) pEvents;
-                release.type = DeviceKeyRelease;
+                release.type = cast(ubyte)DeviceKeyRelease;
 version (DEBUG_EVENTS) {
                 ErrorF(" (plus fake xi1 release for repeat)");
 }
@@ -2100,7 +2106,7 @@ version (DEBUG_EVENTS) {
         SetCriticalOutputPending();
     }
 
-    WriteEventsToClient(client, count, pEvents);
+    WriteEventsToClient(client, cast(int)count, pEvents);
 version (DEBUG_EVENTS) {
     ErrorF("[dix]  delivered\n");
 }
@@ -2118,7 +2124,7 @@ private BOOL ActivateImplicitGrab(DeviceIntPtr dev, ClientPtr client, WindowPtr 
         grabtype = CORE;
     else if (type == DeviceButtonPress)
         grabtype = XI;
-    else if ((type = xi2_get_type(event)) == XI_ButtonPress)
+    else if ((type = cast(ubyte)xi2_get_type(event)) == XI_ButtonPress)
         grabtype = XI2;
     else
         return FALSE;
@@ -2191,7 +2197,7 @@ private Bool GetClientsForDelivery(DeviceIntPtr dev, WindowPtr win, xEvent* even
     int rc = 0;
 
     if (core_get_type(events) != 0)
-        *iclients = cast(InputClients*) wOtherClients(win);
+        *iclients = cast(InputClients*) mixin(wOtherClients!("win"));
     else if (xi2_get_type(events) != 0) {
         OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
 
@@ -2241,7 +2247,7 @@ private EventDeliveryState DeliverEventToInputClients(DeviceIntPtr dev, InputCli
             /* do nothing */ {}
         else if ((attempt = TryClientEvents(client, dev,
                                             events, count,
-                                            mask, filter, grab))) {
+                                            mask, filter, grab)) != 0) {
             if (attempt > 0) {
                 /*
                  * The order of clients is arbitrary therefore if one
@@ -2318,7 +2324,7 @@ int DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWin, xEvent* pEvents, si
     if ((filter == CantBeFiltered) || core_get_type(pEvents) != 0) {
         EventDeliveryState rc = void;
 
-        rc = DeliverToWindowOwner(pDev, pWin, pEvents, count, filter, grab);
+        rc = DeliverToWindowOwner(pDev, pWin, pEvents, cast(int)count, filter, grab);
 
         switch (rc) {
         case EVENT_SKIP:
@@ -2341,7 +2347,7 @@ int DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWin, xEvent* pEvents, si
     if (filter != CantBeFiltered) {
         EventDeliveryState rc = void;
 
-        rc = DeliverEventToWindowMask(pDev, pWin, pEvents, count, filter,
+        rc = DeliverEventToWindowMask(pDev, pWin, pEvents, cast(int)count, filter,
                                       grab, &client, &deliveryMask);
 
         switch (rc) {
@@ -2385,7 +2391,7 @@ int DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWin, xEvent* pEvents, si
  *
  * @return TRUE if the event should be discarded, FALSE otherwise.
  */
-private BOOL FilterRawEvents(const(ClientPtr) client, const(GrabPtr) grab, WindowPtr root)
+private BOOL FilterRawEvents(ClientPtr client, const(GrabPtr) grab, WindowPtr root)
 {
     int cmp = void;
 
@@ -2431,7 +2437,7 @@ void DeliverRawEvent(RawDeviceEvent* ev, DeviceIntPtr device)
     if (grab)
         DeliverGrabbedEvent(cast(InternalEvent*) ev, device, FALSE);
 
-    filter = GetEventFilter(device, xi);
+    filter = cast(int)GetEventFilter(device, xi);
 
     mixin(DIX_FOR_EACH_SCREEN!q{
         InputClients* inputclients = void;
@@ -2505,7 +2511,7 @@ version (XINERAMA) {
         return TryClientEvents(dixClientForWindow(pWin), null, pEvents, 1,
                                pWin.eventMask, filter, NullGrab) == 1;
     }
-    for (OtherClients* other = wOtherClients(pWin); other; other = other.next) {
+    for (OtherClients* other = mixin(wOtherClients!("pWin")); other; other = other.next) {
         if (other.mask & filter) {
             if (mixin(SameClient!("other", "dontClient")))
                 return FALSE;
@@ -2552,18 +2558,18 @@ private Window FindChildForEvent(SpritePtr pSprite, WindowPtr event)
 
 private void FixUpXI2DeviceEventFromWindow(SpritePtr pSprite, int evtype, xXIDeviceEvent* event, WindowPtr pWin, Window child)
 {
-    event.root = mixin(RootWindow!(`pSprite`)).drawable.id;
-    event.event = pWin.drawable.id;
+    event.root = cast(uint)mixin(RootWindow!(`pSprite`)).drawable.id;
+    event.event = cast(uint)pWin.drawable.id;
 
     if (evtype == XI_TouchOwnership) {
-        event.child = child;
+        event.child = cast(uint)child;
         return;
     }
 
     if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
         event.event_x = event.root_x - double_to_fp1616(pWin.drawable.x);
         event.event_y = event.root_y - double_to_fp1616(pWin.drawable.y);
-        event.child = child;
+        event.child = cast(int)child;
     }
     else {
         event.event_x = 0;
@@ -2579,30 +2585,30 @@ private void FixUpXI2DeviceEventFromWindow(SpritePtr pSprite, int evtype, xXIDev
 
 private void FixUpXI2PinchEventFromWindow(SpritePtr pSprite, xXIGesturePinchEvent* event, WindowPtr pWin, Window child)
 {
-    event.root = mixin(RootWindow!(`pSprite`)).drawable.id;
-    event.event = pWin.drawable.id;
+    event.root = cast(uint)mixin(RootWindow!(`pSprite`)).drawable.id;
+    event.event = cast(uint)pWin.drawable.id;
 
     if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
         event.event_x = event.root_x - double_to_fp1616(pWin.drawable.x);
         event.event_y = event.root_y - double_to_fp1616(pWin.drawable.y);
-        event.child = child;
+        event.child = cast(uint)child;
     }
     else {
         event.event_x = 0;
         event.event_y = 0;
-        event.child = None;
+        event.child = cast(uint)None;
     }
 }
 
 private void FixUpXI2SwipeEventFromWindow(SpritePtr pSprite, xXIGestureSwipeEvent* event, WindowPtr pWin, Window child)
 {
-    event.root = mixin(RootWindow!(`pSprite`)).drawable.id;
-    event.event = pWin.drawable.id;
+    event.root = cast(uint)mixin(RootWindow!(`pSprite`)).drawable.id;
+    event.event = cast(uint)pWin.drawable.id;
 
     if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
         event.event_x = event.root_x - double_to_fp1616(pWin.drawable.x);
         event.event_y = event.root_y - double_to_fp1616(pWin.drawable.y);
-        event.child = child;
+        event.child = cast(uint)child;
     }
     else {
         event.event_x = 0;
@@ -2626,7 +2632,7 @@ void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window 
     if (calcChild)
         child = FindChildForEvent(pSprite, pWin);
 
-    if ((evtype = xi2_get_type(xE))) {
+    if ((evtype = xi2_get_type(xE)) != 0) {
        if(XILevel >= XI) {
           switch (evtype) {
              case XI_RawKeyPress:
@@ -2663,19 +2669,19 @@ void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window 
        }
     }
     else {
-        XE_KBPTR.root = mixin(RootWindow!(`pSprite`)).drawable.id;
-        XE_KBPTR.event = pWin.drawable.id;
+        XE_KBPTR(xE).root = cast(uint)mixin(RootWindow!(`pSprite`)).drawable.id;
+        XE_KBPTR(xE).event = cast(uint)pWin.drawable.id;
         if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
-            XE_KBPTR.sameScreen = xTrue;
-            XE_KBPTR.child = child;
-            XE_KBPTR.eventX = XE_KBPTR.rootX - pWin.drawable.x;
-            XE_KBPTR.eventY = XE_KBPTR.rootY - pWin.drawable.y;
+            XE_KBPTR(xE).sameScreen = xTrue;
+            XE_KBPTR(xE).child = cast(uint)child;
+            XE_KBPTR(xE).eventX = cast(ushort)(XE_KBPTR(xE).rootX - pWin.drawable.x);
+            XE_KBPTR(xE).eventY = cast(ushort)(XE_KBPTR(xE).rootY - pWin.drawable.y);
         }
         else {
-            XE_KBPTR.sameScreen = xFalse;
-            XE_KBPTR.child = None;
-            XE_KBPTR.eventX = 0;
-            XE_KBPTR.eventY = 0;
+            XE_KBPTR(xE).sameScreen = xFalse;
+            XE_KBPTR(xE).child = cast(uint)None;
+            XE_KBPTR(xE).eventX = 0;
+            XE_KBPTR(xE).eventY = 0;
         }
     }
 }
@@ -2700,13 +2706,13 @@ int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win)
     int type = void;
     OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("win"));
 
-    if ((type = GetXI2Type(evtype)) != 0) {
+    if ((type = GetXI2Type(cast(EventType)evtype)) != 0) {
         if (inputMasks && xi2mask_isset(inputMasks.xi2mask, dev, type))
             rc |= EVENT_XI2_MASK;
     }
 
-    if ((type = GetXIType(evtype)) != 0) {
-        filter = event_get_filter_from_type(dev, type);
+    if ((type = GetXIType(cast(EventType)evtype)) != 0) {
+        filter =cast(int) event_get_filter_from_type(dev, type);
 
         /* Check for XI mask */
         if (inputMasks &&
@@ -2720,8 +2726,8 @@ int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win)
 
     }
 
-    if ((type = GetCoreType(evtype)) != 0) {
-        filter = event_get_filter_from_type(dev, type);
+    if ((type = GetCoreType(cast(EventType)evtype)) != 0) {
+        filter = cast(int)event_get_filter_from_type(dev, type);
 
         /* Check for core mask */
         if ((win.deliverableEvents & filter) &&
@@ -2729,7 +2735,7 @@ int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win)
             rc |= EVENT_CORE_MASK;
 
         /* Check for core DontPropagate mask */
-        if (filter & wDontPropagateMask(win))
+        if (filter & mixin(wDontPropagateMask!("win")))
             rc |= EVENT_DONT_PROPAGATE_MASK;
     }
 
@@ -2779,9 +2785,8 @@ private int DeliverOneEvent(InternalEvent* event, DeviceIntPtr dev, InputLevel l
         free(xE);
     }
     else
-        BUG_WARN_MSG(rc != BadMatch,
-                     "%s: conversion to level %d failed with rc %d\n",
-                     dev.name, level, rc);
+        mixin(BUG_WARN_MSG!("rc != BadMatch",
+                    "%s: conversion to level %d failed with rc %d\n"));
     return deliveries;
 }
 
@@ -2817,7 +2822,7 @@ int DeliverDeviceEvents(WindowPtr pWin, InternalEvent* event, GrabPtr grab, Wind
 
     // try the window and all its parent, whichever one first wants the event
     while (pWin) {
-        if ((mask = EventIsDeliverable(dev, event.any.type, pWin))) {
+        if ((mask = EventIsDeliverable(dev, event.any.type, pWin)) != 0) {
             /* XI2 events first */
             if (mask & EVENT_XI2_MASK) {
                 deliveries =
@@ -2880,7 +2885,7 @@ version (XINERAMA) {
 } /* XINERAMA */
 
     if (!count)
-        return 0;
+        return cast(EventDeliveryState) 0;
 
     dummy.id = XIAllDevices;
 
@@ -2895,7 +2900,7 @@ version (XINERAMA) {
     case GravityNotify:
     case CirculateNotify:
     case CirculateRequest:
-        xE.u.destroyNotify.event = pWin.drawable.id;
+        xE.u.destroyNotify.event = cast(uint)pWin.drawable.id;
         break;
     default: break;}
 
@@ -2913,25 +2918,25 @@ version (XINERAMA) {
         Mask filter = void;
 
         filter = GetEventFilter(&dummy, xE);
-        return DeliverEventsToWindow(&dummy, pWin, xE, count, filter, NullGrab);
+        return cast(EventDeliveryState)DeliverEventsToWindow(&dummy, pWin, xE, count, filter, NullGrab);
     }
     }
 
     deliveries = DeliverEventsToWindow(&dummy, pWin, xE, count,
                                        StructureNotifyMask, NullGrab);
     if (pWin.parent) {
-        xE.u.destroyNotify.event = pWin.parent.drawable.id;
+        xE.u.destroyNotify.event = cast(uint)pWin.parent.drawable.id;
         deliveries += DeliverEventsToWindow(&dummy, pWin.parent, xE, count,
                                             SubstructureNotifyMask, NullGrab);
         if (xE.u.u.type == ReparentNotify) {
-            xE.u.destroyNotify.event = otherParent.drawable.id;
+            xE.u.destroyNotify.event = cast(uint)otherParent.drawable.id;
             deliveries += DeliverEventsToWindow(&dummy,
                                                 otherParent, xE, count,
                                                 SubstructureNotifyMask,
                                                 NullGrab);
         }
     }
-    return deliveries;
+    return cast(EventDeliveryState)deliveries;
 }
 
 Bool PointInBorderSize(WindowPtr pWin, int x, int y)
@@ -3003,7 +3008,7 @@ BOOL ActivateFocusInGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win)
     if (win == NoneWin || win == PointerRootWin)
         return FALSE;
 
-    event = InternalEvent;
+    // event = InternalEvent;
         event.device_event.header =  ET_Internal;
         event.device_event.type =  ET_FocusIn;
         event.device_event.length =  DeviceEvent.sizeof;
@@ -3040,7 +3045,7 @@ private BOOL ActivateEnterGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win)
         (*dev.deviceGrab.DeactivateGrab) (dev);
     }
 
-    event = InternalEvent;
+    // event = InternalEvent;
         event.device_event.header =  ET_Internal;
         event.device_event.type =  ET_Enter;
         event.device_event.length =  DeviceEvent.sizeof;
@@ -3092,7 +3097,7 @@ Bool CheckMotion(DeviceEvent* ev, DeviceIntPtr pDev)
             return FALSE;
         }
 
-version (XINERAMA) {
+// version (XINERAMA) {
         if (!noPanoramiXExtension) {
             /* Motion events entering DIX get translated to Screen 0
                coordinates.  Replayed events have already been
@@ -3108,8 +3113,8 @@ version (XINERAMA) {
                     pSprite.hot.pScreen.root;
             }
         }
-} /* XINERAMA */
-else {
+// } /* XINERAMA */
+// else {
         {
             if (pSprite.hot.pScreen != pSprite.hotPhys.pScreen) {
                 pSprite.hot.pScreen = pSprite.hotPhys.pScreen;
@@ -3117,7 +3122,7 @@ else {
                     pSprite.hot.pScreen.root;
             }
         }
-}
+// }
 
         pSprite.hot.x = ev.root_x;
         pSprite.hot.y = ev.root_y;
@@ -3136,7 +3141,7 @@ else {
 
         if ((pSprite.hotPhys.x != ev.root_x) ||
             (pSprite.hotPhys.y != ev.root_y)) {
-version (XINERAMA) {
+// version (XINERAMA) {
             if (!noPanoramiXExtension) {
                 XineramaSetCursorPosition(pDev, pSprite.hotPhys.x,
                                           pSprite.hotPhys.y, FALSE);
@@ -3152,9 +3157,9 @@ version (XINERAMA) {
                                                                 FALSE);
             }
 
-}
-else 
-{
+// }
+// else 
+// {
  /* XINERAMA */
             {
                 (*pSprite.hotPhys.pScreen.SetCursorPosition) (pDev,
@@ -3168,8 +3173,8 @@ else
             }
         }
 
-        ev.root_x = pSprite.hot.x;
-        ev.root_y = pSprite.hot.y;
+        ev.root_x = cast(ushort)pSprite.hot.x;
+        ev.root_y = cast(ushort)pSprite.hot.y;
     }
 
     newSpriteWin = XYToWindow(pSprite, pSprite.hot.x, pSprite.hot.y);
@@ -3197,7 +3202,7 @@ else
         return FALSE;
     }
     return TRUE;
-}
+// }
 }
 
 /**
@@ -3373,7 +3378,7 @@ void UpdateSpriteForScreen(DeviceIntPtr pDev, ScreenPtr pScreen)
     pSprite.hotLimits.x2 = pScreen.width;
     pSprite.hotLimits.y2 = pScreen.height;
     pSprite.win = win;
-    pCursor = RefCursor(wCursor(win));
+    pCursor = RefCursor(mixin(wCursor!("win")));
     FreeCursor(pSprite.current, 0);
     pSprite.current = pCursor;
     pSprite.spriteTraceGood = 1;
@@ -3671,7 +3676,7 @@ version (XINERAMA) {
     else if (!PointerConfinedToScreen(dev)) {
         NewCurrentScreen(dev, newScreen, x, y);
     }
-    if (*newScreen.CursorWarpedTo)
+    if (newScreen.CursorWarpedTo !is null)
         (*newScreen.CursorWarpedTo) (dev, newScreen, client,
                                       dest, pSprite, x, y);
     return Success;
@@ -3733,8 +3738,8 @@ Bool ActivatePassiveGrab(DeviceIntPtr device, GrabPtr grab, InternalEvent* event
     if (grab.grabtype == CORE) {
         rc = EventToCore(event, &xE, &count);
         if (rc != Success) {
-            BUG_WARN_MSG(rc != BadMatch, "[dix] %s: core conversion failed"
-                         ~ "(%d, %d).\n", device.name, event.any.type, rc);
+            mixin(BUG_WARN_MSG!("rc != BadMatch", "[dix] %s: core conversion failed"
+                         ~ "(%d, %d).\n"));
             return FALSE;
         }
     }
@@ -3742,8 +3747,8 @@ Bool ActivatePassiveGrab(DeviceIntPtr device, GrabPtr grab, InternalEvent* event
         rc = EventToXI2(event, &xE);
         if (rc != Success) {
             if (rc != BadMatch)
-                BUG_WARN_MSG(rc != BadMatch, "[dix] %s: XI2 conversion failed"
-                             ~ "(%d, %d).\n", device.name, event.any.type, rc);
+                mixin(BUG_WARN_MSG!("rc != BadMatch", "[dix] %s: XI2 conversion failed"
+                             ~ "(%d, %d).\n"));
             return FALSE;
         }
         count = 1;
@@ -3752,8 +3757,8 @@ Bool ActivatePassiveGrab(DeviceIntPtr device, GrabPtr grab, InternalEvent* event
         rc = EventToXI(event, &xE, &count);
         if (rc != Success) {
             if (rc != BadMatch)
-                BUG_WARN_MSG(rc != BadMatch, "[dix] %s: XI conversion failed"
-                             ~ "(%d, %d).\n", device.name, event.any.type, rc);
+                mixin(BUG_WARN_MSG!("rc != BadMatch", "[dix] %s: XI conversion failed"
+                             /*~ "(%d, %d).\n", device.name, event.any.type, rc*/));
             return FALSE;
         }
     }
@@ -3786,7 +3791,7 @@ void ActivateGrabNoDelivery(DeviceIntPtr dev, GrabPtr grab, InternalEvent* event
 {
     GrabInfoPtr grabinfo = &dev.deviceGrab;
     (*grabinfo.ActivateGrab) (dev, grab,
-                               ClientTimeToServerTime(event.any.time), TRUE);
+                               ClientTimeToServerTime(cast(uint)event.any.time), TRUE);
 
     if (grabinfo.sync.state == GRAB_STATE_FROZEN_NO_EVENT)
         grabinfo.sync.state = GRAB_STATE_FROZEN_WITH_EVENT;
@@ -3801,7 +3806,7 @@ BOOL CoreGrabInterferes(DeviceIntPtr device, GrabPtr grab)
         GrabPtr othergrab = other.deviceGrab.grab;
 
         if (othergrab && othergrab.grabtype == CORE &&
-            mixin(SameClient!("grab", "dixClientForGrab(othergrab")) &&
+            mixin(SameClient!("grab", "dixClientForGrab(othergrab)")) &&
             ((IsPointerDevice(grab.device) &&
               IsPointerDevice(othergrab.device)) ||
              (IsKeyboardDevice(grab.device) &&
@@ -3837,7 +3842,7 @@ alias XI2_MATCH = MatchFlags.XI2_MATCH;
  *
  * @return The respective matched flag or 0 for no match
  */
-MatchFlags MatchForType(const(GrabPtr) grab, GrabPtr tmp, InputLevel level, int event_type)
+MatchFlags MatchForType(GrabPtr grab, GrabPtr tmp, InputLevel level, int event_type)
 {
     MatchFlags match = void;
     BOOL ignore_device = FALSE;
@@ -3847,18 +3852,18 @@ MatchFlags MatchForType(const(GrabPtr) grab, GrabPtr tmp, InputLevel level, int 
     switch (level) {
     case XI2:
         grabtype = XI2;
-        evtype = GetXI2Type(event_type);
+        evtype = cast(int)GetXI2Type(cast(EventType)event_type);
         mixin(BUG_WARN!("!evtype"));
         match = XI2_MATCH;
         break;
     case XI:
         grabtype = XI;
-        evtype = GetXIType(event_type);
+        evtype = cast(int)GetXIType(cast(EventType)event_type);
         match = XI_MATCH;
         break;
     case CORE:
         grabtype = CORE;
-        evtype = GetCoreType(event_type);
+        evtype = cast(int)GetCoreType(cast(EventType)event_type);
         match = CORE_MATCH;
         ignore_device = TRUE;
         break;
@@ -3866,8 +3871,8 @@ MatchFlags MatchForType(const(GrabPtr) grab, GrabPtr tmp, InputLevel level, int 
         return NO_MATCH;
     }
 
-    tmp.grabtype = grabtype;
-    tmp.type = evtype;
+    tmp.grabtype = cast(InputLevel)grabtype;
+    tmp.type = cast(ubyte)evtype;
 
     if (tmp.type && GrabMatchesSecond(tmp, grab, ignore_device))
         return match;
@@ -3892,7 +3897,7 @@ Bool CheckPassiveGrab(DeviceIntPtr device, GrabPtr grab, InternalEvent* event, B
 {
     DeviceIntPtr gdev = void;
     XkbSrvInfoPtr xkbi = null;
-    MatchFlags match = 0;
+    MatchFlags match = cast(MatchFlags)0;
     int emulated_type = 0;
 
     gdev = grab.modifierDevice;
@@ -4107,7 +4112,7 @@ Bool CheckDeviceGrabs(DeviceIntPtr device, InternalEvent* ievent, WindowPtr ance
 
  out_:
     if (ret == TRUE && event.type == ET_KeyPress)
-        device.deviceGrab.activatingKey = event.detail.key;
+        device.deviceGrab.activatingKey = cast(ubyte)event.detail.key;
     return ret;
 }
 
@@ -4150,7 +4155,7 @@ void DeliverFocusedEvent(DeviceIntPtr keybd, InternalEvent* event, WindowPtr win
     rc = EventToXI2(event, &xi2);
     if (rc == Success) {
         /* XXX: XACE */
-        int filter = GetEventFilter(keybd, xi2);
+        int filter = cast(int)GetEventFilter(keybd, xi2);
 
         FixUpEventFromWindow(ptr.spriteInfo.sprite, xi2, focus, None, FALSE, XI2);
         deliveries = DeliverEventsToWindow(keybd, focus, xi2, 1,
@@ -4244,7 +4249,7 @@ int DeliverOneGrabbedEvent(InternalEvent* event, DeviceIntPtr dev, InputLevel le
             filter = GetEventFilter(dev, xE);
         break;
     default:
-        BUG_WARN_MSG(1, "Invalid input level %d\n", level);
+        mixin(BUG_WARN_MSG!("1", "Invalid input level %d\n"));
         return 0;
     }
 
@@ -4259,9 +4264,9 @@ int DeliverOneGrabbedEvent(InternalEvent* event, DeviceIntPtr dev, InputLevel le
         }
     }
     else
-        BUG_WARN_MSG(rc != BadMatch,
-                     "%s: conversion to mode %d failed on %d with %d\n",
-                     dev.name, level, event.any.type, rc);
+        mixin(BUG_WARN_MSG!("rc != BadMatch",
+                     "%s: conversion to mode %d failed on %d with %d\n"
+                     /*dev.name, level, event.any.type, rc*/));
 
     free(xE);
     return deliveries;
@@ -4353,6 +4358,7 @@ void FreezeThisEventIfNeededForSyncGrab(DeviceIntPtr thisDev, InternalEvent* eve
                 dev.deviceGrab.sync.other = grab;
         }
         /* fall through */
+        goto case;
     case GRAB_STATE_FREEZE_NEXT_EVENT:
         grabinfo.sync.state = GRAB_STATE_FROZEN_WITH_EVENT;
         FreezeThaw(thisDev, TRUE);
@@ -4370,8 +4376,8 @@ void FixKeyState(DeviceEvent* event, DeviceIntPtr keybd)
     int key = event.detail.key;
 
     if (event.type == ET_KeyPress) {
-        DebugF("FixKeyState: Key %d %s\n", key,
-               ((event.type == ET_KeyPress) ? "down" : "up"));
+        // DebugF("FixKeyState: Key %d %s\n", key,
+        //        ((event.type == ET_KeyPress) ? "down" : "up"));
     }
 
     if (event.type == ET_KeyPress)
@@ -4407,16 +4413,16 @@ void RecalculateDeliverableEvents(WindowPtr pWin)
     while (1) {
         if (pChild.optional) {
             pChild.optional.otherEventMasks = 0;
-            for (OtherClients* others = wOtherClients(pChild); others; others = others.next) {
+            for (OtherClients* others = mixin(wOtherClients!("pChild")); others; others = others.next) {
                 pChild.optional.otherEventMasks |= others.mask;
             }
         }
-        pChild.deliverableEvents = pChild.eventMask |
-            mixin(wOtherEventMasks!("pChild"));
+        pChild.deliverableEvents =cast(ushort)( pChild.eventMask |
+            mixin(wOtherEventMasks!("pChild")));
         if (pChild.parent)
             pChild.deliverableEvents |=
                 (pChild.parent.deliverableEvents &
-                 ~wDontPropagateMask(pChild) & PropagateMask);
+                 ~mixin(wDontPropagateMask!("pChild")) & PropagateMask);
         if (pChild.firstChild) {
             pChild = pChild.firstChild;
             continue;
@@ -4437,12 +4443,12 @@ int OtherClientGone(void* value, XID id)
 {
     WindowPtr pWin = cast(WindowPtr) value;
 
-    for (OtherClientsPtr other = wOtherClients(pWin), prev = 0; other; other = other.next) {
+    for (OtherClientsPtr other = mixin(wOtherClients!("pWin")), prev = null; other; other = other.next) {
         if (other.resource == id) {
             if (prev)
                 prev.next = other.next;
             else {
-                if (((pWin.optional.otherClients = other.next) == 0))
+                if (((pWin.optional.otherClients = other.next) == null))
                     CheckWindowOptionalNeed(pWin);
             }
             free(other);
@@ -4452,6 +4458,7 @@ int OtherClientGone(void* value, XID id)
         prev = other;
     }
     FatalError("client not on event list");
+    assert(0);
 }
 
 XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
@@ -4477,7 +4484,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
            continue selecting on one of those events.  */
         if ((dixClientForWindow(pWin) != client) && (check & pWin.eventMask))
             return BadAccess;
-        for (OtherClients* others = wOtherClients(pWin); others; others = others.next) {
+        for (OtherClients* others = mixin(wOtherClients!("pWin")); others; others = others.next) {
             if (!mixin(SameClient!("others", "client")) && (check & others.mask))
                 return BadAccess;
         }
@@ -4487,7 +4494,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
         pWin.eventMask = mask;
     }
     else {
-        for (OtherClients* others = wOtherClients(pWin); others; others = others.next) {
+        for (OtherClients* others = mixin(wOtherClients!("pWin")); others; others = others.next) {
             if (mixin(SameClient!("others", "client"))) {
                 check = others.mask;
                 if (mask == 0) {
@@ -4576,8 +4583,8 @@ int EventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, Bool* ch
 void CoreEnterLeaveEvent(DeviceIntPtr mouse, int type, int mode, int detail, WindowPtr pWin, Window child)
 {
     xEvent event;
-        event.u.u.type = type;
-        event.u.u.detail = detail;
+        event.u.u.type = cast(ubyte)type;
+        event.u.u.detail = cast(ubyte)detail;
     WindowPtr focus = void;
     DeviceIntPtr keybd = void;
     GrabPtr grab = mouse.deviceGrab.grab;
@@ -4598,21 +4605,21 @@ void CoreEnterLeaveEvent(DeviceIntPtr mouse, int type, int mode, int detail, Win
     }
 
     event.u.enterLeave.time = currentTime.milliseconds;
-    event.u.enterLeave.rootX = mouse.spriteInfo.sprite.hot.x;
-    event.u.enterLeave.rootY = mouse.spriteInfo.sprite.hot.y;
+    event.u.enterLeave.rootX = cast(ushort)mouse.spriteInfo.sprite.hot.x;
+    event.u.enterLeave.rootY = cast(ushort)mouse.spriteInfo.sprite.hot.y;
     /* Counts on the same initial structure of crossing & button events! */
     FixUpEventFromWindow(mouse.spriteInfo.sprite, &event, pWin, None, FALSE, CORE);
     /* Enter/Leave events always set child */
-    event.u.enterLeave.child = child;
-    event.u.enterLeave.flags = event.u.keyButtonPointer.sameScreen ?
-        ELFlagSameScreen : 0;
+    event.u.enterLeave.child = cast(uint)child;
+    event.u.enterLeave.flags = cast(ubyte)(event.u.keyButtonPointer.sameScreen ?
+        ELFlagSameScreen : 0);
     event.u.enterLeave.state =
         mouse.button ? (mouse.button.state & 0x1f00) : 0;
     if (keybd)
         event.u.enterLeave.state |=
             XkbGrabStateFromRec(&keybd.key.xkbInfo.state);
-    event.u.enterLeave.mode = mode;
-    focus = (keybd) ? keybd.focus.win : None;
+    event.u.enterLeave.mode = cast(ubyte)mode;
+    focus = (keybd) ? keybd.focus.win : null;
     if ((focus != NoneWin) &&
         ((pWin == focus) || (focus == PointerRootWin) || WindowIsParent(focus, pWin)))
         event.u.enterLeave.flags |= ELFlagFocus;
@@ -4660,7 +4667,7 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
 
     btlen = (mouse.button) ? bits_to_bytes(mouse.button.numButtons) : 0;
     btlen = bytes_to_int32(btlen);
-    len = (cast(xXIEnterEvent) + btlen * 4).sizeof;
+    len = cast(int)((xXIEnterEvent).sizeof + btlen * 4);
 
     xXIEnterEvent* event = cast(xXIEnterEvent*) calloc(1, len);
     if (!event)
@@ -4668,14 +4675,14 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
 
     event.type = GenericEvent;
     event.extension = EXTENSION_MAJOR_XINPUT;
-    event.evtype = type;
-    event.length = (len - xEvent.sizeof) / 4;
-    event.buttons_len = btlen;
-    event.detail = detail;
+    event.evtype = cast(ushort)type;
+    event.length = cast(uint)((len - xEvent.sizeof) / 4);
+    event.buttons_len = cast(ushort)btlen;
+    event.detail = cast(ubyte)detail;
     event.time = currentTime.milliseconds;
-    event.deviceid = mouse.id;
-    event.sourceid = sourceid;
-    event.mode = mode;
+    event.deviceid = cast(ushort)mouse.id;
+    event.sourceid = cast(ushort)sourceid;
+    event.mode = cast(ubyte)mode;
     event.root_x = double_to_fp1616(mouse.spriteInfo.sprite.hot.x);
     event.root_y = double_to_fp1616(mouse.spriteInfo.sprite.hot.y);
 
@@ -4685,23 +4692,23 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
 
     kbd = GetMaster(mouse, MASTER_KEYBOARD);
     if (kbd && kbd.key) {
-        event.mods.base_mods = kbd.key.xkbInfo.state.base_mods;
-        event.mods.latched_mods = kbd.key.xkbInfo.state.latched_mods;
+        event.mods.base_mods = cast(ubyte)kbd.key.xkbInfo.state.base_mods;
+        event.mods.latched_mods = cast(ubyte)kbd.key.xkbInfo.state.latched_mods;
         event.mods.locked_mods = kbd.key.xkbInfo.state.locked_mods;
 
-        event.group.base_group = kbd.key.xkbInfo.state.base_group;
-        event.group.latched_group = kbd.key.xkbInfo.state.latched_group;
+        event.group.base_group = cast(ubyte)kbd.key.xkbInfo.state.base_group;
+        event.group.latched_group = cast(ubyte)kbd.key.xkbInfo.state.latched_group;
         event.group.locked_group = kbd.key.xkbInfo.state.locked_group;
     }
 
-    focus = (kbd) ? kbd.focus.win : None;
+    focus = (kbd) ? kbd.focus.win : null;
     if ((focus != NoneWin) &&
         ((pWin == focus) || (focus == PointerRootWin) || WindowIsParent(focus, pWin)))
         event.focus = TRUE;
 
     FixUpEventFromWindow(mouse.spriteInfo.sprite, cast(xEvent*) event, pWin, None, FALSE, XI);
 
-    filter = GetEventFilter(mouse, cast(xEvent*) event);
+    filter = cast(int)GetEventFilter(mouse, cast(xEvent*) event);
 
     if (grab && grab.grabtype == XI2) {
         Mask mask = void;
@@ -4724,11 +4731,11 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
 void CoreFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPtr pWin)
 {
     xEvent event;
-        event.u.u.type = type;
-        event.u.u.detail = detail;
+        event.u.u.type = cast(ubyte)type;
+        event.u.u.detail = cast(ubyte)detail;
     
-    event.u.focus.mode = mode;
-    event.u.focus.window = pWin.drawable.id;
+    event.u.focus.mode = cast(ubyte)mode;
+    event.u.focus.window = cast(uint)pWin.drawable.id;
 
     DeliverEventsToWindow(dev, pWin, &event, 1,
                           GetEventFilter(dev, &event), NullGrab);
@@ -4766,6 +4773,10 @@ void CoreFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPtr 
  * @param ctime Specifies the time.
  * @param followOK True if pointer is allowed to follow the keyboard.
  */
+private
+ {enum RevertToNone		= 0;
+enum RevertToPointerRoot	= 1;
+enum RevertToParent		= 2;}
 int SetInputFocus(ClientPtr client, DeviceIntPtr dev, Window focusID, CARD8 revertTo, Time ctime, Bool followOK)
 {
     FocusClassPtr focus = void;
@@ -4782,7 +4793,7 @@ int SetInputFocus(ClientPtr client, DeviceIntPtr dev, Window focusID, CARD8 reve
         client.errorValue = revertTo;
         return BadValue;
     }
-    time = ClientTimeToServerTime(ctime);
+    time = ClientTimeToServerTime(cast(uint)ctime);
 
     keybd = GetMaster(dev, KEYBOARD_OR_FLOAT);
 
@@ -4835,7 +4846,7 @@ int SetInputFocus(ClientPtr client, DeviceIntPtr dev, Window focusID, CARD8 reve
             WindowPtr* wins = cast(WindowPtr*) reallocarray(focus.trace, num, WindowPtr.sizeof);
             if (!wins)
                 return BadAlloc;
-            focus.traceSize = num;
+            focus.traceSize = cast(int)num;
             focus.trace = wins;
         }
         focus.traceGood = depth;
@@ -4883,7 +4894,7 @@ int ProcGetInputFocus(ClientPtr client)
         return rc;
 
     xGetInputFocusReply reply = {
-        revertTo: focus.revert
+        revertTo: cast(ubyte)focus.revert
     };
 
     if (focus.win == NoneWin)
@@ -4891,7 +4902,7 @@ int ProcGetInputFocus(ClientPtr client)
     else if (focus.win == PointerRootWin)
         reply.focus = PointerRoot;
     else
-        reply.focus = focus.win.drawable.id;
+        reply.focus = cast(uint)focus.win.drawable.id;
 
     if (client.swapped) {
         swapl(&reply.focus);
@@ -5115,7 +5126,7 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
     if (rc != Success)
         return rc;
 
-    time = ClientTimeToServerTime(ctime);
+    time = ClientTimeToServerTime(cast(uint)ctime);
     grab = grabInfo.grab;
     if (grab && grab.grabtype != grabtype)
         *status = AlreadyGrabbed;
@@ -5153,7 +5164,7 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
         tempGrab.device = dev;
         tempGrab.cursor = RefCursor(cursor);
         tempGrab.confineTo = confineTo;
-        tempGrab.grabtype = grabtype;
+        tempGrab.grabtype = cast(InputLevel)grabtype;
         (*grabInfo.ActivateGrab) (dev, tempGrab, time, FALSE);
         *status = GrabSuccess;
 
@@ -5259,19 +5270,19 @@ int ProcQueryPointer(ClientPtr client)
         MaybeStopHint(mouse, client);
 
     xQueryPointerReply reply = {
-        mask: event_get_corestate(mouse, keyboard),
+        mask: cast(ushort)event_get_corestate(mouse, keyboard),
         root: cast(uint)(InputDevCurrentRootWindow(mouse)).drawable.id,
-        rootX: pSprite.hot.x,
-        rootY: pSprite.hot.y,
+        rootX: cast(short)pSprite.hot.x,
+        rootY: cast(short)pSprite.hot.y,
         child: None
     };
     if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
         reply.sameScreen = xTrue;
-        reply.winX = pSprite.hot.x - pWin.drawable.x;
-        reply.winY = pSprite.hot.y - pWin.drawable.y;
+        reply.winX = cast(short)(pSprite.hot.x - pWin.drawable.x);
+        reply.winY = cast(short)(pSprite.hot.y - pWin.drawable.y);
         for (WindowPtr t = pSprite.win; t; t = t.parent)
             if (t.parent == pWin) {
-                reply.child = t.drawable.id;
+                reply.child = cast(uint)t.drawable.id;
                 break;
             }
     }
@@ -5339,7 +5350,7 @@ void InitEvents()
     syncEvents.replayDev = cast(DeviceIntPtr) null;
     syncEvents.replayWin = NullWindow;
     if (syncEvents.pending.next)
-        mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "syncEvents.pending", "next", q{
+        mixin(xorg_list_for_each_entry_safe!("qe", "tmp", "&syncEvents.pending", "next", q{
             free(qe);
         }));
     xorg_list_init(&syncEvents.pending);
@@ -5460,7 +5471,7 @@ int ProcSendEvent(ClientPtr client)
                 return Success;
             if (pWin == effectiveFocus)
                 return Success;
-            stuff.eventMask &= ~wDontPropagateMask(pWin);
+            stuff.eventMask &= ~mixin(wDontPropagateMask!("pWin"));
             if (!stuff.eventMask)
                 break;
         }
@@ -5825,9 +5836,9 @@ void DeleteWindowFromAnyEvents(WindowPtr pWin, Bool freeResources)
     if (freeResources) {
         if (pWin.dontPropagate)
             DontPropagateRefCnts[pWin.dontPropagate]--;
-        while ((oc = wOtherClients(pWin)))
+        while ((oc = mixin(wOtherClients!("pWin"))) != null)
             FreeResource(oc.resource, X11_RESTYPE_NONE);
-        while ((passive = wPassiveGrabs(pWin)))
+        while ((passive = mixin(wPassiveGrabs!("pWin"))) != null)
             FreeResource(passive.resource, X11_RESTYPE_NONE);
     }
 
@@ -5852,7 +5863,7 @@ version (XINERAMA) {
     for (DeviceIntPtr pDev = inputInfo.devices; pDev; pDev = pDev.next) {
         if (DevHasCursor(pDev)) {
             grab = pDev.deviceGrab.grab;
-            if (grab && (confineTo = grab.confineTo)) {
+            if (grab && (confineTo = grab.confineTo) != null) {
                 if (!BorderSizeNotEmpty(pDev, confineTo))
                     (*pDev.deviceGrab.DeactivateGrab) (pDev);
                 else if ((pWin == confineTo) || WindowIsParent(pWin, confineTo))
@@ -5866,7 +5877,7 @@ Mask EventMaskForClient(WindowPtr pWin, ClientPtr client)
 {
     if (dixClientForWindow(pWin) == client)
         return pWin.eventMask;
-    for (OtherClientsPtr other = wOtherClients(pWin); other; other = other.next) {
+    for (OtherClientsPtr other = mixin(wOtherClients!("pWin")); other; other = other.next) {
         if (mixin(SameClient!("other", "client")))
             return other.mask;
     }
@@ -5949,7 +5960,7 @@ version (XINERAMA) {
 
     for (int i = 0; i < count; i++)
         if ((events[i].u.u.type & 0x7f) != KeymapNotify)
-            events[i].u.u.sequenceNumber = pClient.sequence;
+            events[i].u.u.sequenceNumber = cast(ushort)pClient.sequence;
 
     /* Let XKB rewrite the state, as it depends on client preferences. */
     XkbFilterEvents(pClient, count, events);

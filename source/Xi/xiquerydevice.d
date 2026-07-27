@@ -58,6 +58,7 @@ import include.privates;
 import Xi.xiquerydevice;
 import dix.devices;
 import os.log;
+import dix.events;
 
 // static Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr d);
 // static int

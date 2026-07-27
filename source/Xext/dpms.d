@@ -57,6 +57,8 @@ import externs.X11.extensions.dpmsconst;
 import externs.X11.extensions.dpmsproto;
 import dix.extension;
 
+import dix.events;
+
 Bool noDPMSExtension = FALSE;
 
 CARD16 DPMSPowerLevel = 0;

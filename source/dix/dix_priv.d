@@ -139,57 +139,57 @@ void DisableLimitedSchedulingLatency();
 
 int dix_main(int argc, char** argv, char** envp);
 
-void SetMaskForEvent(int deviceid, Mask mask, int event);
+// void SetMaskForEvent(int deviceid, Mask mask, int event);
 
-void EnqueueEvent(InternalEvent* ev, DeviceIntPtr device);
+// void EnqueueEvent(InternalEvent* ev, DeviceIntPtr device);
 
 void PlayReleasedEvents();
 
-void ActivatePointerGrab(DeviceIntPtr mouse, GrabPtr grab, TimeStamp time, Bool autoGrab);
+// void ActivatePointerGrab(DeviceIntPtr mouse, GrabPtr grab, TimeStamp time, Bool autoGrab);
 
-void DeactivatePointerGrab(DeviceIntPtr mouse);
+// void DeactivatePointerGrab(DeviceIntPtr mouse);
 
-void ActivateKeyboardGrab(DeviceIntPtr keybd, GrabPtr grab, TimeStamp time, Bool passive);
+// void ActivateKeyboardGrab(DeviceIntPtr keybd, GrabPtr grab, TimeStamp time, Bool passive);
 
-void DeactivateKeyboardGrab(DeviceIntPtr keybd);
+// void DeactivateKeyboardGrab(DeviceIntPtr keybd);
 
-BOOL ActivateFocusInGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win);
+// BOOL ActivateFocusInGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win);
 
-void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newState);
+// void AllowSome(ClientPtr client, TimeStamp time, DeviceIntPtr thisDev, int newState);
 
-void ReleaseActiveGrabs(ClientPtr client);
+// void ReleaseActiveGrabs(ClientPtr client);
 
 GrabPtr CheckPassiveGrabsOnWindow(WindowPtr pWin, DeviceIntPtr device, InternalEvent* event, BOOL checkCore, BOOL activate);
 
-int DeliverDeviceEvents(WindowPtr pWin, InternalEvent* event, GrabPtr grab, WindowPtr stopAt, DeviceIntPtr dev);
+// int DeliverDeviceEvents(WindowPtr pWin, InternalEvent* event, GrabPtr grab, WindowPtr stopAt, DeviceIntPtr dev);
 
-int DeliverOneGrabbedEvent(InternalEvent* event, DeviceIntPtr dev, InputLevel level);
+// int DeliverOneGrabbedEvent(InternalEvent* event, DeviceIntPtr dev, InputLevel level);
 
 void DeliverTouchEvents(DeviceIntPtr dev, TouchPointInfoPtr ti, InternalEvent* ev, XID resource);
 
 Bool DeliverGestureEventToOwner(DeviceIntPtr dev, GestureInfoPtr gi, InternalEvent* ev);
 
-void InitializeSprite(DeviceIntPtr pDev, WindowPtr pWin);
-void FreeSprite(DeviceIntPtr pDev);
+// void InitializeSprite(DeviceIntPtr pDev, WindowPtr pWin);
+// void FreeSprite(DeviceIntPtr pDev);
 void UpdateSpriteForScreen(DeviceIntPtr pDev, ScreenPtr pScreen);
 
-Bool CheckDeviceGrabs(DeviceIntPtr device, InternalEvent* event, WindowPtr ancestor);
+// Bool CheckDeviceGrabs(DeviceIntPtr device, InternalEvent* event, WindowPtr ancestor);
 
-void DeliverFocusedEvent(DeviceIntPtr keybd, InternalEvent* event, WindowPtr window);
+// void DeliverFocusedEvent(DeviceIntPtr keybd, InternalEvent* event, WindowPtr window);
 
-int DeliverGrabbedEvent(InternalEvent* event, DeviceIntPtr thisDev, Bool deactivateGrab);
+// int DeliverGrabbedEvent(InternalEvent* event, DeviceIntPtr thisDev, Bool deactivateGrab);
 
-void FreezeThisEventIfNeededForSyncGrab(DeviceIntPtr thisDev, InternalEvent* event);
+// void FreezeThisEventIfNeededForSyncGrab(DeviceIntPtr thisDev, InternalEvent* event);
 
 void FixKeyState(DeviceEvent* event, DeviceIntPtr keybd);
 
-void RecalculateDeliverableEvents(WindowPtr pWin);
+// void RecalculateDeliverableEvents(WindowPtr pWin);
 
-void DoFocusEvents(DeviceIntPtr dev, WindowPtr fromWin, WindowPtr toWin, int mode);
+// void DoFocusEvents(DeviceIntPtr dev, WindowPtr fromWin, WindowPtr toWin, int mode);
 
 int SetInputFocus(ClientPtr client, DeviceIntPtr dev, Window focusID, CARD8 revertTo, Time ctime, Bool followOK);
 
-int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint this_mode, uint other_mode, Window grabWindow, uint ownerEvents, Time ctime, GrabMask* mask, int grabtype, Cursor curs, Window confineToWin, CARD8* status);
+// int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint this_mode, uint other_mode, Window grabWindow, uint ownerEvents, Time ctime, GrabMask* mask, int grabtype, Cursor curs, Window confineToWin, CARD8* status);
 
 void InitEvents();
 
@@ -197,17 +197,17 @@ void CloseDownEvents();
 
 void DeleteWindowFromAnyEvents(WindowPtr pWin, Bool freeResources);
 
-Mask EventMaskForClient(WindowPtr pWin, ClientPtr client);
+// Mask EventMaskForClient(WindowPtr pWin, ClientPtr client);
 
-Bool CheckMotion(DeviceEvent* ev, DeviceIntPtr pDev);
+// Bool CheckMotion(DeviceEvent* ev, DeviceIntPtr pDev);
 
-int SetClientPointer(ClientPtr client, DeviceIntPtr device);
+// int SetClientPointer(ClientPtr client, DeviceIntPtr device);
 
 Bool IsInterferingGrab(ClientPtr client, DeviceIntPtr dev, xEvent* events);
 
 int XItoCoreType(int xi_type);
 
-Bool DevHasCursor(DeviceIntPtr pDev);
+// Bool DevHasCursor(DeviceIntPtr pDev);
 
 Bool IsPointerEvent(InternalEvent* event);
 
@@ -333,7 +333,7 @@ Bool dixScreenRaiseCreateResources(ScreenPtr pScreen);
  * @brief mark event ID as critical
  * @param event the event to add to the critical events bitmap
  */
-void SetCriticalEvent(int event);
+// void SetCriticalEvent(int event);
 
 /**
  * @brief try to deliver (single) event to interested parties.
@@ -496,7 +496,7 @@ int ClientSignalAll(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
  * @return 1 if event was delivered, 0 if not or -1 if grab was not set by the
  * client.
  */
-void  TryClientEvents(ClientPtr pClient, DeviceIntPtr device, xEventPtr pEvents, size_t count, Mask mask, Mask filter, GrabPtr grab);
+// void  TryClientEvents(ClientPtr pClient, DeviceIntPtr device, xEventPtr pEvents, size_t count, Mask mask, Mask filter, GrabPtr grab);
 
 /**
  * @brief deliver event to a window and its immediate parent.
@@ -537,7 +537,7 @@ EventDeliveryState DeliverEvents(WindowPtr pWindow, xEventPtr events, size_t nEv
  * made, 0 if no events were delivered, or a negative number if the event
  * has not been delivered _and_ rejected by at least one client.
  */
-int DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWindow, xEventPtr pEvents, size_t count, Mask filter, GrabPtr grab);
+// int DeliverEventsToWindow(DeviceIntPtr pDev, WindowPtr pWindow, xEventPtr pEvents, size_t count, Mask filter, GrabPtr grab);
 
 /*
  * @brief callback when root window has is finalized
@@ -584,7 +584,7 @@ int OtherClientGone(void* value, XID id);
  * @param child     the alleged child
  * @return TRUE if `child` is a child window of `parent`
  */
-Bool WindowIsParent(WindowPtr parent, WindowPtr child);
+// Bool WindowIsParent(WindowPtr parent, WindowPtr child);
 
 /*
  * @brief call the block handlers

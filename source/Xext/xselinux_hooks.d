@@ -70,6 +70,7 @@ import include.os;
 import Xext.xselinux_ext;
 import Xext.xselinux;
 import os.connection;
+import dix.events;
 
 import stdc = core.stdc.errno;
 

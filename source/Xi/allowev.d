@@ -67,7 +67,7 @@ import externs.X11.extensions.XIproto;
 import dix.dixutils;
 import externs.X11.extensions.XI;
 import dix.devices;
-
+import dix.events;
 
 /***********************************************************************
  *

@@ -769,7 +769,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
         }
 
         /* all others */
-        mixin(nt_list_for_each_entry!("oclients", "wOtherClients(win)", "next")); {
+        mixin(nt_list_for_each_entry!("oclients", "mixin(wOtherClients!("win"))", "next")); {
             if (!(oclients.mask & core_filter))
                 continue;
 

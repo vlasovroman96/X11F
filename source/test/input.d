@@ -1883,7 +1883,7 @@ enum NEVENTS = 5;
         ev[i].any.type = i;
         EnqueueEvent(&ev[i], &dev);
         assert(!xorg_list_is_empty(&syncEvents.pending));
-        qe = xorg_list_last_entry(&syncEvents.pending, QdEventRec, next);
+        qe = mixin(xorg_list_last_entry!("&syncEvents.pending", "QdEventRec", "next"));
         assert(memcmp(qe.event, &ev[i], ev[i].any.length) == 0);
         qe = xorg_list_first_entry(&syncEvents.pending, QdEventRec, next);
         assert(memcmp(qe.event, &ev[0], ev[i].any.length) == 0);

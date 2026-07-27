@@ -55,7 +55,7 @@ void CreateWellKnownSockets();
 void CloseWellKnownConnections();
 
 // exported for nvidia driver
-void SetCriticalOutputPending();
+// void SetCriticalOutputPending();
 
 /* exported only for DRI module, but should not be used by external drivers */
 // void ResetCurrentRequest(_Client* client);

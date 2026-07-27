@@ -61,6 +61,7 @@ import externs.X11.extensions.secur;
 import os.log;
 import dix.dixutils;
 import dix.extension;
+import dix.events;
 enum XSecurityAllEventMasks = 1<<0;
 
 Bool noSecurityExtension = FALSE;

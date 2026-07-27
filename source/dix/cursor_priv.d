@@ -44,10 +44,10 @@ Bool CursorMetricsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm);
 
 void CheckCursorConfinement(WindowPtr pWin);
 
-void NewCurrentScreen(DeviceIntPtr pDev, ScreenPtr newScreen, int x, int y);
+// void NewCurrentScreen(DeviceIntPtr pDev, ScreenPtr newScreen, int x, int y);
 
-Bool PointerConfinedToScreen(DeviceIntPtr pDev);
+// Bool PointerConfinedToScreen(DeviceIntPtr pDev);
 
-void GetSpritePosition(DeviceIntPtr pDev, int* px, int* py);
+// void GetSpritePosition(DeviceIntPtr pDev, int* px, int* py);
 
  /* _XSERVER_DIX_CURSOR_PRIV_H */

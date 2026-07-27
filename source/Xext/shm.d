@@ -85,6 +85,7 @@ import dix.pixmap;
 import dix.gc;
 import dix.dixutils;
 import dix.extension;
+import dix.events;
 
 /* Needed for Solaris cross-zone shared memory extension */
 version (HAVE_SHMCTL64) {

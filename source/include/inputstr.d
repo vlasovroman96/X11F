@@ -229,13 +229,13 @@ struct _SpriteRec {
     WindowPtr win;              /* window of logical position */
     HotSpot hot;                /* logical pointer position */
     HotSpot hotPhys;            /* physical pointer position */
-version (XINERAMA) {
+// version (XINERAMA) {
     ScreenPtr screen;           /* all others are in Screen 0 coordinates */
     RegionRec Reg1;             /* Region 1 for confining motion */
     RegionRec Reg2;             /* Region 2 for confining virtual motion */
     WindowPtr[MAXSCREENS] windows;
     WindowPtr confineWin;       /* confine window */
-} /* XINERAMA */
+// } /* XINERAMA */
     /* The window trace information is used at dix/events.c to avoid having
      * to compute all the windows between the root and the current pointer
      * window each time a button or key goes down. The grabs on each of those
@@ -659,7 +659,7 @@ struct InputInfo {
     DeviceIntPtr all_master_devices;
 }
 
-extern InputInfo inputInfo;
+// extern InputInfo inputInfo;
 
 /* for keeping the events for devices grabbed synchronously */
 struct _QdEvent {
@@ -702,7 +702,7 @@ struct _EventSyncInfo {
 }alias EventSyncInfoRec = _EventSyncInfo;
 alias EventSyncInfoPtr = _EventSyncInfo*;
 
-extern EventSyncInfoRec syncEvents;
+// extern EventSyncInfoRec syncEvents;
 
 /**
  * Given a sprite, returns the window at the bottom of the trace (i.e. the

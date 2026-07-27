@@ -67,6 +67,7 @@ import include.inputstr;
 import dix.input_priv;
 import include.optionstr;
 public import externs.X11.extensions.XI;
+public import dix.getevents;
 
 enum DEFAULT_KEYBOARD_CLICK = 	0;
 enum DEFAULT_BELL =		50;
@@ -142,7 +143,7 @@ enum NullDevice = cast(DevicePtr)null;
 
 enum FollowKeyboardWin =  cast(WindowPtr) FollowKeyboard;
 
-enum RevertToFollowKeyboard =	3;
+// enum RevertToFollowKeyboard =	3;
 
 
 enum InputLevel {
@@ -353,7 +354,7 @@ extern int CloseInput();
 
 extern int GetMaximumEventsNum();
 
-extern int* InitEventList(int num_events);
+// extern int* InitEventList(int num_events);
 extern int FreeEventList(InternalEvent* list, int num_events);
 
 extern int GetPointerEvents(InternalEvent* events, DeviceIntPtr pDev, int type, int buttons, int flags, const(ValuatorMask)* mask);

@@ -42,6 +42,7 @@ import include.dixstruct;
 import include.windowstr;
 import dix.devices;
 import dix.dixutils;
+import dix.events;
 /**
  * Ruleset:
  * - if A has XIAllDevices, B may select on device X

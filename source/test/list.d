@@ -110,7 +110,7 @@ private void test_xorg_list_append()
     c = xorg_list_first_entry(&parent.children, child, node);
 
     assert(memcmp(c, &child[0], child.sizeof) == 0);
-    c = xorg_list_last_entry(&parent.children, child, node);
+    c = mixin(xorg_list_last_entry!("&parent.children", "child", "node"));
 
     assert(memcmp(c, &child[0], child.sizeof) == 0);
 
@@ -118,7 +118,7 @@ private void test_xorg_list_append()
     c = xorg_list_first_entry(&parent.children, child, node);
 
     assert(memcmp(c, &child[0], child.sizeof) == 0);
-    c = xorg_list_last_entry(&parent.children, child, node);
+    c = mixin(xorg_list_last_entry!("&parent.children", "child", "node"));
 
     assert(memcmp(c, &child[1], child.sizeof) == 0);
 
@@ -126,7 +126,7 @@ private void test_xorg_list_append()
     c = xorg_list_first_entry(&parent.children, child, node);
 
     assert(memcmp(c, &child[0], child.sizeof) == 0);
-    c = xorg_list_last_entry(&parent.children, child, node);
+    c = mixin(xorg_list_last_entry!("&parent.children", "child", "node"));
 
     assert(memcmp(c, &child[2], child.sizeof) == 0);
 

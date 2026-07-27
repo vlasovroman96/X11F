@@ -55,6 +55,7 @@ import externs.X11.extensions.XI2proto;
 import externs.X11.extensions.XI;
 import dix.devices;
 import dix.dixutils;
+import dix.events;
 
 int ProcXIAllowEvents(ClientPtr client)
 {

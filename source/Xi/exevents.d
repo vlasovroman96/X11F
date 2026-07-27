@@ -125,6 +125,8 @@ import dix.dixutils;
 import externs.X11.extensions.XI2proto;
 import externs.X11.extensions.XI;
 import externs.X11.X;
+import dix.events;
+import dix.enterleave;
 
 enum string WID(string w) = `((` ~ w ~ `) ? ((` ~ w ~ `).drawable.id) : 0)`;
 enum AllModifiersMask = ( 

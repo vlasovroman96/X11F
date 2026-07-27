@@ -102,6 +102,7 @@ import include.pixmapstr;
 import include.gcstruct;
 import include.scrnintstr;
 import Xext.xace;
+import externs.attrs;
 
 /*
  * CompareTimeStamps returns -1, 0, or +1 depending on if the first
@@ -252,21 +253,21 @@ XRetCode AlterSaveSetForClient(ClientPtr client, WindowPtr pWin, uint mode, Bool
     j = 0;
     if (numnow) {
         pTmp = client.saveSet;
-        while ((j < numnow) && (SaveSetWindow(pTmp[j]) != cast(void*) pWin))
+        while ((j < numnow) && (mixin(SaveSetWindow!("pTmp[j]")) != cast(void*) pWin))
             j++;
     }
     if (mode == SetModeInsert) {
         if (j < numnow)         /* duplicate */
             return Success;
         numnow++;
-        pTmp = cast(SaveSetElt*) realloc(client.saveSet, ((*pTmp) * numnow).sizeof);
+        pTmp = cast(SaveSetElt*) realloc(client.saveSet, ((*pTmp).sizeof * numnow));
         if (!pTmp)
             return BadAlloc;
         client.saveSet = pTmp;
         client.numSaved = numnow;
-        SaveSetAssignWindow(client.saveSet[numnow - 1], pWin);
-        SaveSetAssignToRoot(client.saveSet[numnow - 1], toRoot);
-        SaveSetAssignMap(client.saveSet[numnow - 1], map);
+        mixin(SaveSetAssignWindow!("client.saveSet[numnow - 1]", "pWin"));
+        mixin(SaveSetAssignToRoot!("client.saveSet[numnow - 1]", "toRoot"));
+        mixin(SaveSetAssignMap!("client.saveSet[numnow - 1]", "map"));
         return Success;
     }
     else if ((mode == SetModeDelete) && (j < numnow)) {
@@ -277,7 +278,7 @@ XRetCode AlterSaveSetForClient(ClientPtr client, WindowPtr pWin, uint mode, Bool
         numnow--;
         if (numnow) {
             pTmp =
-                cast(SaveSetElt*) realloc(client.saveSet, ((*pTmp) * numnow).sizeof);
+                cast(SaveSetElt*) realloc(client.saveSet, ((*pTmp).sizeof * numnow));
             if (pTmp)
                 client.saveSet = pTmp;
         }
@@ -468,7 +469,7 @@ void ClearWorkQueue()
     WorkQueuePtr q = void; WorkQueuePtr* p = void;
 
     p = &workQueue;
-    while ((q = *p)) {
+    while ((q = *p) != null) {
         *p = q.next;
         free(q);
     }
@@ -490,8 +491,8 @@ void ProcessWorkQueue()
      * they will be called again.  This must be reentrant with
      * QueueWorkProc.
      */
-    while ((q = *p)) {
-        if ((*q.function_) (q.client, q.closure)) {
+    while ((q = *p) != null) {
+        if (assumeNoGC(q.function_) (q.client, q.closure)) {
             /* remove q from the list */
             *p = q.next;       /* don't fetch until after func called */
             free(q);
@@ -508,9 +509,9 @@ void ProcessWorkQueueZombies()
     WorkQueuePtr q = void; WorkQueuePtr* p = void;
 
     p = &workQueue;
-    while ((q = *p)) {
+    while ((q = *p) !is null) {
         if (q.client && q.client.clientGone) {
-            cast(void) (*q.function_) (q.client, q.closure);
+            assumeNoGC(q.function_) (q.client, q.closure);
             /* remove q from the list */
             *p = q.next;       /* don't fetch until after func called */
             free(q);
@@ -524,7 +525,7 @@ void ProcessWorkQueueZombies()
 
 Bool QueueWorkProc(Bool function(ClientPtr pClient, void* closure) function_, ClientPtr client, void* closure)
 {
-    WorkQueuePtr q = cast(WorkQueuePtr) calloc(1, (*q).sizeof);
+    WorkQueuePtr q = cast(WorkQueuePtr) calloc(1, _WorkQueue.sizeof);
     if (!q)
         return FALSE;
     q.function_ = function_;
@@ -556,7 +557,7 @@ private SleepQueuePtr sleepQueue = null;
 
 Bool ClientSleep(ClientPtr client, ClientSleepProcPtr function_, void* closure)
 {
-    SleepQueuePtr q = cast(SleepQueuePtr) calloc(1, (*q).sizeof);
+    SleepQueuePtr q = cast(SleepQueuePtr) calloc(1, _SleepQueue.sizeof);
     if (!q)
         return FALSE;
 
@@ -603,7 +604,7 @@ void ClientWakeup(ClientPtr client)
     SleepQueuePtr q = void; SleepQueuePtr* prev = void;
 
     prev = &sleepQueue;
-    while ((q = *prev)) {
+    while ((q = *prev) !is null) {
         if (q.client == client) {
             *prev = q.next;
             free(q);

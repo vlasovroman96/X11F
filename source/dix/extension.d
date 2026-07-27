@@ -65,6 +65,8 @@ import include.scrnintstr;
 import dix.dispatch;
 import include.privates;
 import Xext.xace;
+import os.log;
+import externs.attrs;
 
 enum LAST_ERROR = 255;
 
@@ -128,7 +130,7 @@ private int checkReserved(const(char)* name)
     return -1;
 }
 
-ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, int function(ClientPtr c1) MainProc, int function(ClientPtr c2) SwappedMainProc, void function(ExtensionEntry* e) CloseDownProc, ushort function(ClientPtr c3) MinorOpcodeProc)
+ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, int function(ClientPtr c1) @nogc nothrow MainProc, int function(ClientPtr c2) @nogc nothrow SwappedMainProc , void function(ExtensionEntry* e) CloseDownProc, ushort function(ClientPtr c3) MinorOpcodeProc )
 {
     if (!extensions)
         extensions = cast(ExtensionEntry**) calloc(NumExtensions, (ExtensionEntry*).sizeof);
@@ -143,7 +145,7 @@ ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, in
                    ~ "events or errors exceeded.\n", name);
         return (cast(ExtensionEntry*) null);
     }
-
+    int i;
     ExtensionEntry* ext = cast(ExtensionEntry*) cast(ExtensionEntry*) calloc(1, ExtensionEntry.sizeof);
     if (!ext)
         return null;
@@ -153,10 +155,10 @@ ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, in
     if (!ext.name)
         goto badalloc;
 
-    int i = checkReserved(ext.name);
+    i = checkReserved(ext.name);
     if (i == -1) {
         i = NumExtensions;
-        ExtensionEntry** newexts = reallocarray(extensions, i + 1, (ExtensionEntry*).sizeof);
+        ExtensionEntry** newexts = cast(ExtensionEntry**)reallocarray(extensions, i + 1, (ExtensionEntry*).sizeof);
         if (!newexts)
             goto badalloc;
 
@@ -169,8 +171,8 @@ ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, in
     extensions[i] = ext;
     ext.index = i;
     ext.base = i + EXTENSION_BASE;
-    ext.CloseDown = CloseDownProc;
-    ext.MinorOpcode = MinorOpcodeProc;
+    ext.CloseDown = assumeNoGC(CloseDownProc);
+    ext.MinorOpcode = assumeNoGC(MinorOpcodeProc);
     ProcVector[i + EXTENSION_BASE] = MainProc;
     SwappedProcVector[i + EXTENSION_BASE] = SwappedMainProc;
     if (NumEvents) {
@@ -296,10 +298,10 @@ int ProcQueryExtension(ClientPtr client)
         ExtensionEntry* extEntry = CheckExtension(extname.ptr);
 
         if (extEntry && ExtensionAvailable(client, extEntry)) {
-            reply.present = xTrue;
-            reply.major_opcode = extEntry.base;
-            reply.first_event = extEntry.eventBase;
-            reply.first_error = extEntry.errorBase;
+            reply.present = cast(ubyte)xTrue;
+            reply.major_opcode = cast(ubyte)extEntry.base;
+            reply.first_event = cast(ubyte)extEntry.eventBase;
+            reply.first_error = cast(ubyte)extEntry.errorBase;
         }
     }
 
@@ -319,7 +321,7 @@ int ProcListExtensions(ClientPtr client)
             if (!ExtensionAvailable(client, extensions[i]))
                 continue;
 
-            int len = strlen(extensions[i].name);
+            int len = cast(int)strlen(extensions[i].name);
 
             reply.nExtensions++;
 

@@ -170,7 +170,7 @@ struct _GC {
     PixmapPtr stipple;
     xPoint patOrg;         /* origin for (tile, stipple) */
     xPoint clipOrg;
-    _Font* font;
+    legacyXfs._Font* font;
     RegionPtr clientClip;
     uint stateChanges; /* masked with GC_<kind> */
     uint serialNumber;

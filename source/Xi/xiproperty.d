@@ -52,6 +52,7 @@ import Xi.xiproperty;
 import include.xserver_properties;
 import externs.X11.Xatom;
 import dix.devices;
+import dix.events;
 
 /**
  * Properties used or alloced from inside the server.

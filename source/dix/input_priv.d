@@ -92,11 +92,11 @@ void ProcessPointerEvent(InternalEvent* ev, DeviceIntPtr mouse);
 
 void ProcessKeyboardEvent(InternalEvent* ev, DeviceIntPtr keybd);
 
-void CreateClassesChangedEvent(InternalEvent* event, DeviceIntPtr master, DeviceIntPtr slave, int flags);
+// void CreateClassesChangedEvent(InternalEvent* event, DeviceIntPtr master, DeviceIntPtr slave, int flags);
 
-InternalEvent* UpdateFromMaster(InternalEvent* events, DeviceIntPtr pDev, int type, int* num_events);
+// InternalEvent* UpdateFromMaster(InternalEvent* events, DeviceIntPtr pDev, int type, int* num_events);
 
-void PostSyntheticMotion(DeviceIntPtr pDev, int x, int y, int screen, c_ulong time);
+// void PostSyntheticMotion(DeviceIntPtr pDev, int x, int y, int screen, c_ulong time);
 
 // void ReleaseButtonsAndKeys(DeviceIntPtr dev);
 
@@ -116,7 +116,7 @@ void DeliverDeviceClassesChangedEvent(int sourceid, Time time);
 /* touch support */
 int GetTouchEvents(InternalEvent* events, DeviceIntPtr pDev, uint ddx_touchid, ushort type, uint flags, const(ValuatorMask)* mask);
 void QueueTouchEvents(DeviceIntPtr device, int type, uint ddx_touchid, int flags, const(ValuatorMask)* mask);
-int GetTouchOwnershipEvents(InternalEvent* events, DeviceIntPtr pDev, TouchPointInfoPtr ti, ubyte mode, XID resource, uint flags);
+// int GetTouchOwnershipEvents(InternalEvent* events, DeviceIntPtr pDev, TouchPointInfoPtr ti, ubyte mode, XID resource, uint flags);
 void GetDixTouchEnd(InternalEvent* ievent, DeviceIntPtr dev, TouchPointInfoPtr ti, uint flags);
 void TouchInitDDXTouchPoint(DeviceIntPtr dev, DDXTouchPointInfoPtr ddxtouch);
 DDXTouchPointInfoPtr TouchBeginDDXTouch(DeviceIntPtr dev, uint ddx_id);
@@ -167,16 +167,16 @@ void GestureEmitGestureEndToOwner(DeviceIntPtr dev, GestureInfoPtr gi);
 void ProcessGestureEvent(InternalEvent* ev, DeviceIntPtr dev);
 
 /* misc event helpers */
-void CopyPartialInternalEvent(InternalEvent* dst_event, const(InternalEvent)* src_event);
+// void CopyPartialInternalEvent(InternalEvent* dst_event, const(InternalEvent)* src_event);
 Mask GetEventMask(DeviceIntPtr dev, xEvent* ev, InputClientsPtr clients);
-Mask GetEventFilter(DeviceIntPtr dev, xEvent* event);
+// Mask GetEventFilter(DeviceIntPtr dev, xEvent* event);
 Bool WindowXI2MaskIsset(DeviceIntPtr dev, WindowPtr win, xEvent* ev);
 int GetXI2MaskByte(XI2Mask* mask, DeviceIntPtr dev, int event_type);
-void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window child, Bool calcChild, InputLevel XILevel);
+// void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window child, Bool calcChild, InputLevel XILevel);
 Bool PointInBorderSize(WindowPtr pWin, int x, int y);
 WindowPtr XYToWindow(SpritePtr pSprite, int x, int y);
 int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win);
-Bool ActivatePassiveGrab(DeviceIntPtr dev, GrabPtr grab, InternalEvent* ev, InternalEvent* real_event);
+// Bool ActivatePassiveGrab(DeviceIntPtr dev, GrabPtr grab, InternalEvent* ev, InternalEvent* real_event);
 void ActivateGrabNoDelivery(DeviceIntPtr dev, GrabPtr grab, InternalEvent* event, InternalEvent* real_event);
 
 /* states for device grabs */
@@ -249,7 +249,7 @@ int InputThreadUnregisterDev(int fd);
  * @param pDev pointer to device structure
  * @return pointer to device cursor
  */
-CursorPtr InputDevGetSpriteCursor(DeviceIntPtr pDev);
+// CursorPtr InputDevGetSpriteCursor(DeviceIntPtr pDev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -263,7 +263,7 @@ CursorPtr InputDevGetSpriteCursor(DeviceIntPtr pDev);
  * @param px     in/out buffer for X position
  * @param py     in/out buffer for Y position
  */
-void ConfineToShape(RegionPtr region, int* px, int* py);
+// void ConfineToShape(RegionPtr region, int* px, int* py);
     // _X_ATTRIBUTE_NONNULL_ARG(1,2,3);
 
 /*
@@ -272,7 +272,7 @@ void ConfineToShape(RegionPtr region, int* px, int* py);
  * @param pDev  pointer to input device structure
  * @return pointer to current root window
  */
-WindowPtr InputDevCurrentRootWindow(DeviceIntPtr pDev);
+// WindowPtr InputDevCurrentRootWindow(DeviceIntPtr pDev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -281,7 +281,7 @@ WindowPtr InputDevCurrentRootWindow(DeviceIntPtr pDev);
  * @param pDev  pointer to input device structure
  * @return pointer to window the cursor is currently above
  */
-WindowPtr InputDevSpriteWindow(DeviceIntPtr pDev);
+// WindowPtr InputDevSpriteWindow(DeviceIntPtr pDev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -290,13 +290,13 @@ WindowPtr InputDevSpriteWindow(DeviceIntPtr pDev);
  * @param event     pointer to raw input device event structure
  * @param device    pointer to input device structure
  */
-void DeliverRawEvent(RawDeviceEvent* event, DeviceIntPtr device);
+// void DeliverRawEvent(RawDeviceEvent* event, DeviceIntPtr device);
     // _X_ATTRIBUTE_NONNULL_ARG(1,2);
 
 /*
  * @brief callback on input device events
  */
-extern CallbackListPtr DeviceEventCallback;
+// extern CallbackListPtr DeviceEventCallback;
 
 /*
  * @brief pick an appropriate pointer for the given client.
@@ -306,7 +306,7 @@ extern CallbackListPtr DeviceEventCallback;
  *  2) A device set as ClientPointer for the given client.
  *  3) The first master device.
  */
-DeviceIntPtr PickPointer(ClientPtr pClient);
+// DeviceIntPtr PickPointer(ClientPtr pClient);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -315,7 +315,7 @@ DeviceIntPtr PickPointer(ClientPtr pClient);
  * searching the list of devices for the keyboard device that is
  * paired with the client's pointer.
  */
-DeviceIntPtr PickKeyboard(ClientPtr client);
+// DeviceIntPtr PickKeyboard(ClientPtr client);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -324,7 +324,7 @@ DeviceIntPtr PickKeyboard(ClientPtr client);
  * @param dev   pointer to device structure
  * @return TRUE if dev is a pointer device
  */
-Bool IsPointerDevice(DeviceIntPtr dev);
+// Bool IsPointerDevice(DeviceIntPtr dev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -333,7 +333,7 @@ Bool IsPointerDevice(DeviceIntPtr dev);
  * @param dev   pointer to device structure
  * @return TRUE if dev is a keyboard device
  */
-Bool IsKeyboardDevice(DeviceIntPtr dev);
+// Bool IsKeyboardDevice(DeviceIntPtr dev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -342,7 +342,7 @@ Bool IsKeyboardDevice(DeviceIntPtr dev);
  * @param dev   device to be checked
  * @return TRUE if the device is a master
  */
-Bool InputDevIsMaster(DeviceIntPtr dev);
+// Bool InputDevIsMaster(DeviceIntPtr dev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -355,7 +355,7 @@ Bool InputDevIsMaster(DeviceIntPtr dev);
  * @param dev   device to check
  * @return TRUE if the device is in `floating` state
  */
-Bool InputDevIsFloating(DeviceIntPtr dev);
+// Bool InputDevIsFloating(DeviceIntPtr dev);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -364,7 +364,7 @@ Bool InputDevIsFloating(DeviceIntPtr dev);
  * @param dev       device the timestamp is stored for
  * @param time      the timestamp to store
  */
-void NoticeTime(const(DeviceIntPtr) dev, TimeStamp time);
+// void NoticeTime(const(DeviceIntPtr) dev, TimeStamp time);
     // _X_ATTRIBUTE_NONNULL_ARG(1);
 
 /*
@@ -373,7 +373,7 @@ void NoticeTime(const(DeviceIntPtr) dev, TimeStamp time);
  * @param event     source event
  * @param dev       device the timestamp is stored for
  */
-void NoticeEventTime(InternalEvent* ev, DeviceIntPtr dev);
+// void NoticeEventTime(InternalEvent* ev, DeviceIntPtr dev);
     // _X_ATTRIBUTE_NONNULL_ARG(1,2);
 
 /*
@@ -382,13 +382,13 @@ void NoticeEventTime(InternalEvent* ev, DeviceIntPtr dev);
  * @param deviceid  ID of device get fetch timestamp for
  * @return timestamp of last event
  */
-TimeStamp LastEventTime(int deviceid);
+// TimeStamp LastEventTime(int deviceid);
 
-Bool LastEventTimeWasReset(int deviceid);
+// Bool LastEventTimeWasReset(int deviceid);
 
-void LastEventTimeToggleResetFlag(int deviceid, Bool state);
+// void LastEventTimeToggleResetFlag(int deviceid, Bool state);
 
-void LastEventTimeToggleResetAll(Bool state);
+// void LastEventTimeToggleResetAll(Bool state);
 
 /*
  * @brief count the bits set in the given bitmask

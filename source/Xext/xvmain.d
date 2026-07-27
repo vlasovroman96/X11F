@@ -110,6 +110,7 @@ import dix.extension;
 import externs.X11.extensions.Xv;
 import dix.dixutils;
 import dix.gc;
+import dix.events;
 
 enum string SCREEN_PROLOGUE(string pScreen, string field) = `((` ~ pScreen ~ `).` ~ field ~ ` = (cast(XvScreenPtr) 
     dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, &XvScreenKeyRec)).` ~ field ~ `)`;

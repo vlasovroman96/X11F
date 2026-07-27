@@ -538,7 +538,7 @@ Bool CreateRootWindow(ScreenPtr pScreen)
     BoxRec box = void;
     PixmapFormatRec* format = void;
 
-    pWin = dixAllocateScreenObjectWithPrivates(pScreen, WindowRec, PRIVATE_WINDOW);
+    pWin = mixin(dixAllocateScreenObjectWithPrivates!("pScreen", "WindowRec", "PRIVATE_WINDOW"));
     if (!pWin)
         return FALSE;
 
@@ -782,7 +782,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
         return NullWindow;
     }
 
-    pWin = dixAllocateScreenObjectWithPrivates(pScreen, WindowRec, PRIVATE_WINDOW);
+    pWin = mixin(dixAllocateScreenObjectWithPrivates!("pScreen", "WindowRec", "PRIVATE_WINDOW"));
     if (!pWin) {
         *error = BadAlloc;
         return NullWindow;
@@ -1560,7 +1560,7 @@ int ProcGetWindowAttributes(ClientPtr client)
              : IsMapInstalled(mixin(wColormap!("pWin")), pWin),
         reply.yourEventMask = EventMaskForClient(pWin, client),
         reply.allEventMasks = pWin.eventMask | mixin(wOtherEventMasks!("pWin")),
-        reply.doNotPropagateMask = wDontPropagateMask(pWin),
+        reply.doNotPropagateMask = mixin(wDontPropagateMask!("pWin")),
         reply.c_class = pWin.drawable.class_,
         reply.visualID = mixin(wVisual!("pWin"));
     // };
@@ -2877,7 +2877,7 @@ void HandleSaveSet(ClientPtr client)
     WindowPtr pParent = void, pWin = void;
 
     for (uint j = 0; j < client.numSaved; j++) {
-        pWin = SaveSetWindow(client.saveSet[j]);
+        pWin = mixin(SaveSetWindow!("client.saveSet[j]"));
         if (SaveSetToRoot(client.saveSet[j]))
             pParent = pWin.drawable.pScreen.root;
         else

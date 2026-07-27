@@ -61,6 +61,7 @@ import externs.X11.extensions.shapeproto;
 import dix.swapreq;
 import dix.dixutils;
 import dix.extension;
+import dix.events;
 
 Bool noShapeExtension = FALSE;
 

@@ -52,6 +52,7 @@ import Xi.exglobals;          /* BadDevice */
 import include.misc;
 import dix.dixutils;
 import dix.devices;
+import dix.events;
 
 int ProcXIPassiveGrabDevice(ClientPtr client)
 {

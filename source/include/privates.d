@@ -273,9 +273,9 @@ extern void dixInitScreenSpecificPrivates(ScreenPtr pScreen);
 /* is this private created - so hotplug can avoid crashing */
 Bool dixPrivatesCreated(DevPrivateType type);
 
-extern int* _dixAllocateScreenObjectWithPrivates(ScreenPtr pScreen, uint size, uint offset, DevPrivateType type);
+// extern int* _dixAllocateScreenObjectWithPrivates(ScreenPtr pScreen, uint size, uint offset, DevPrivateType type);
 
-enum string dixAllocateScreenObjectWithPrivates(string s, string t, string type) = `_dixAllocateScreenObjectWithPrivates(` ~ s ~ `, ` ~ t ~ `.sizeof, t.devPrivates.offsetof, ` ~ type ~ `)`;
+enum string dixAllocateScreenObjectWithPrivates(string s, string t, string type) = `_dixAllocateScreenObjectWithPrivates(cast(ScreenPtr)` ~ s ~ `, ` ~ t ~ `.sizeof, `~t~`.devPrivates.offsetof, ` ~ type ~ `)`;
 
 extern int dixScreenSpecificPrivatesSize(ScreenPtr pScreen, DevPrivateType type);
 

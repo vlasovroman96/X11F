@@ -71,6 +71,7 @@ import dix.devices;
 import dix.dixutils;
 import os.utils;
 import externs.X11.extensions.XI2proto;
+import dix.events;
 
 RESTYPE PointerBarrierType;
 

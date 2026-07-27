@@ -72,6 +72,7 @@ import include.protocol_versions;
 import dix.extension;
 import dix.dixutils;
 import os.utils;
+import dix.events;
 
 Bool noScreenSaverExtension = FALSE;
 

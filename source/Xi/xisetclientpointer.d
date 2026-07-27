@@ -52,6 +52,7 @@ import include.exevents;
 import Xi.exglobals;
 import dix.devices;
 import dix.dixutils;
+import dix.events;
 
 int ProcXISetClientPointer(ClientPtr client)
 {

@@ -60,6 +60,7 @@ import include.scrnintstr;
 import include.xkbsrv;
 import dix.devices;
 import dix.dixutils;
+import dix.events;
 /***********************************************************************
  *
  * This procedure allows a client to query the pointer of a device.

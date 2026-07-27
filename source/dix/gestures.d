@@ -52,7 +52,7 @@ Bool GestureInitGestureInfo(GestureInfoPtr gi)
 {
     memset(gi, 0, typeof(*gi).sizeof);
 
-    gi.sprite.spriteTrace = calloc(32, typeof(*gi.sprite.spriteTrace).sizeof);
+    gi.sprite.spriteTrace = cast(_Window**)calloc(32, typeof(*gi.sprite.spriteTrace).sizeof);
     if (!gi.sprite.spriteTrace) {
         return FALSE;
     }

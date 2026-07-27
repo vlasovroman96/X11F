@@ -108,7 +108,7 @@ struct _TimeStamp {
 alias TimeStamp = _TimeStamp;
 
 /* dispatch.c */
-extern int UpdateCurrentTime();
+// extern int UpdateCurrentTime();
 
 // extern int UpdateCurrentTimeIf();
 
@@ -157,7 +157,7 @@ extern const(char*) NameForAtom(Atom);
 
 /* events.c */
 
-extern int WriteEventsToClient(ClientPtr, int, xEventPtr);
+// extern int WriteEventsToClient(ClientPtr, int, xEventPtr);
 
 /*
  *  ServerGrabCallback stuff

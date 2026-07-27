@@ -66,6 +66,7 @@ import include.dixfontstr;
 import include.opaque;
 import include.inputstr;
 import Xext.xace;
+import dix.events;
 
 struct _GlyphShare {
     FontPtr font;

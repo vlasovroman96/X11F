@@ -68,6 +68,9 @@ import include.dixstruct;
 import include.privates;
 import include.dix;
 import Xext.xace;
+import dix.dixutils;
+import dix.resource;
+import os.log;
 
 extern FontPtr defaultFont;
 
@@ -120,7 +123,7 @@ enum string NEXTVAL(string _type, string _var) = `{
     }`;
 
 enum string NEXT_PTR(string _type, string _var) = `{ 
-    ` ~ _var ~ ` = cast(_type)pUnion.ptr; pUnion++; }`;
+    ` ~ _var ~ ` = cast(`~_type~`)pUnion.ptr; pUnion++; }`;
 
 int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
 {
@@ -137,7 +140,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         index2 = cast(BITS32) mixin(lowbit!mask);
         mask &= ~index2;
         pGC.stateChanges |= index2;
-        switch (index2) {
+        switch (cast(long)index2) {
         case GCFunction:
         {
             CARD8 newalu = void;
@@ -153,11 +156,11 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
             break;
         }
         case GCPlaneMask:
-            mixin(NEXTVAL!(ulong, pGC.planemask));
+            mixin(NEXTVAL!("ulong", "pGC.planemask"));
 
             break;
         case GCForeground:
-            mixin(NEXTVAL!(ulong, pGC.fgPixel));
+            mixin(NEXTVAL!("ulong", "pGC.fgPixel"));
 
             /*
              * this is for CreateGC
@@ -168,7 +171,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
             }
             break;
         case GCBackground:
-            mixin(NEXTVAL!(ulong, pGC.bgPixel));
+            mixin(NEXTVAL!("ulong", "pGC.bgPixel"));
 
             break;
         case GCLineWidth:      /* ??? line width is a CARD16 */
@@ -178,7 +181,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCLineStyle:
         {
             uint newlinestyle = void;
-            mixin(NEXTVAL!(uint, newlinestyle));
+            mixin(NEXTVAL!("uint", "newlinestyle"));
 
             if (newlinestyle <= LineDoubleDash)
                 pGC.lineStyle = newlinestyle;
@@ -192,7 +195,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCCapStyle:
         {
             uint newcapstyle = void;
-            mixin(NEXTVAL!(uint, newcapstyle));
+            mixin(NEXTVAL!("uint", "newcapstyle"));
 
             if (newcapstyle <= CapProjecting)
                 pGC.capStyle = newcapstyle;
@@ -206,7 +209,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCJoinStyle:
         {
             uint newjoinstyle = void;
-            mixin(NEXTVAL!(uint, newjoinstyle));
+            mixin(NEXTVAL!("uint", "newjoinstyle"));
 
             if (newjoinstyle <= JoinBevel)
                 pGC.joinStyle = newjoinstyle;
@@ -220,7 +223,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCFillStyle:
         {
             uint newfillstyle = void;
-            mixin(NEXTVAL!(uint, newfillstyle));
+            mixin(NEXTVAL!("uint", "newfillstyle"));
 
             if (newfillstyle <= FillOpaqueStippled)
                 pGC.fillStyle = newfillstyle;
@@ -234,7 +237,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCFillRule:
         {
             uint newfillrule = void;
-            mixin(NEXTVAL!(uint, newfillrule));
+            mixin(NEXTVAL!("uint", "newfillrule"));
 
             if (newfillrule <= WindingRule)
                 pGC.fillRule = newfillrule;
@@ -298,7 +301,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCSubwindowMode:
         {
             uint newclipmode = void;
-            mixin(NEXTVAL!(uint, newclipmode));
+            mixin(NEXTVAL!("uint", "newclipmode"));
 
             if (newclipmode <= IncludeInferiors)
                 pGC.subWindowMode = newclipmode;
@@ -312,7 +315,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCGraphicsExposures:
         {
             uint newge = void;
-            mixin(NEXTVAL!(uint, newge));
+            mixin(NEXTVAL!("uint", "newge"));
 
             if (newge <= xTrue)
                 pGC.graphicsExposures = newge;
@@ -358,7 +361,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 if (pGC.dash != DefaultDash.ptr) {
                     free(pGC.dash);
                     pGC.numInDashList = 2;
-                    pGC.dash = DefaultDash;
+                    pGC.dash = DefaultDash.ptr;
                 }
             }
             else if (newdash != 0) {
@@ -384,7 +387,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
         case GCArcMode:
         {
             uint newarcmode = void;
-            mixin(NEXTVAL!(uint, newarcmode));
+            mixin(NEXTVAL!("uint", "newarcmode"));
 
             if (newarcmode <= ArcPieSlice)
                 pGC.arcMode = newarcmode;
@@ -462,17 +465,17 @@ private GCPtr NewGCObject(ScreenPtr pScreen, int depth)
 {
     GCPtr pGC = void;
 
-    pGC = dixAllocateScreenObjectWithPrivates(pScreen, GCRec, PRIVATE_GC);
+    pGC = cast(_GC*)mixin(dixAllocateScreenObjectWithPrivates!("pScreen", "GCRec", "PRIVATE_GC"));
     if (!pGC) {
         return cast(GCPtr) null;
     }
 
     pGC.pScreen = pScreen;
-    pGC.depth = depth;
+    pGC.depth = cast(ubyte)depth;
     pGC.alu = GXcopy;          /* dst <- src */
     pGC.planemask = ~0;
     pGC.serialNumber = 0;
-    pGC.funcs = 0;
+    pGC.funcs = null;
     pGC.fgPixel = 0;
     pGC.bgPixel = 1;
     pGC.lineWidth = 0;
@@ -492,9 +495,9 @@ private GCPtr NewGCObject(ScreenPtr pScreen, int depth)
     pGC.graphicsExposures = TRUE;
     pGC.clipOrg.x = 0;
     pGC.clipOrg.y = 0;
-    pGC.clientClip = cast(void*) null;
+    pGC.clientClip = null;
     pGC.numInDashList = 2;
-    pGC.dash = DefaultDash;
+    pGC.dash = DefaultDash.ptr;
     pGC.dashOffset = 0;
 
     /* use the default font and stipple */
@@ -529,7 +532,7 @@ GCPtr CreateGC(DrawablePtr pDrawable, BITS32 mask, XID* pval, int* pStatus, XID 
         return cast(GCPtr) null;
     }
 
-    pGC.serialNumber = GC_CHANGE_SERIAL_BIT;
+    pGC.serialNumber = cast(uint)GC_CHANGE_SERIAL_BIT;
     if (mask & GCForeground) {
         /*
          * magic special case -- ChangeGC checks for this condition
@@ -551,7 +554,7 @@ GCPtr CreateGC(DrawablePtr pDrawable, BITS32 mask, XID* pval, int* pStatus, XID 
     if (!(*pGC.pScreen.CreateGC) (pGC))
         *pStatus = BadAlloc;
     else if (mask)
-        *pStatus = ChangeGCXIDs(client, pGC, mask, pval);
+        *pStatus = ChangeGCXIDs(client, pGC, mask, cast(uint*)pval);
     else
         *pStatus = Success;
 
@@ -576,7 +579,7 @@ private Bool CreateDefaultTile(GCPtr pGC)
 
     w = 1;
     h = 1;
-    (*pGC.pScreen.QueryBestSize) (TileShape, &w, &h, pGC.pScreen);
+    (*pGC.pScreen.QueryBestSize) (TileShape, cast(ubyte*)&w, cast(ubyte*)&h, pGC.pScreen);
     pTile = cast(PixmapPtr)
         (*pGC.pScreen.CreatePixmap) (pGC.pScreen, w, h, pGC.depth, 0);
     pgcScratch = GetScratchGC(pGC.depth, pGC.pScreen);
@@ -586,11 +589,11 @@ private Bool CreateDefaultTile(GCPtr pGC)
             FreeScratchGC(pgcScratch);
         return FALSE;
     }
-    tmpval[0].val = GXcopy;
-    tmpval[1].val = pGC.tile.pixel;
+    tmpval[0].val = cast(uint)GXcopy;
+    tmpval[1].val = cast(uint)pGC.tile.pixel;
     tmpval[2].val = FillSolid;
     cast(void) ChangeGC(null, pgcScratch,
-                    GCFunction | GCForeground | GCFillStyle, tmpval.ptr);
+                    cast(uint)(GCFunction | GCForeground | GCFillStyle), tmpval.ptr);
     ValidateGC(cast(DrawablePtr) pTile, pgcScratch);
     rect.x = 0;
     rect.y = 0;
@@ -617,10 +620,10 @@ int CopyGC(GCPtr pgcSrc, GCPtr pgcDst, BITS32 mask)
     pgcDst.serialNumber |= GC_CHANGE_SERIAL_BIT;
     pgcDst.stateChanges |= mask;
     maskQ = mask;
-    while (mask) {
+    while (cast(long)mask) {
         index2 = cast(BITS32) mixin(lowbit!mask);
         mask &= ~index2;
-        switch (index2) {
+        switch (cast(long)index2) {
         case GCFunction:
             pgcDst.alu = pgcSrc.alu;
             break;
@@ -653,9 +656,9 @@ int CopyGC(GCPtr pgcSrc, GCPtr pgcDst, BITS32 mask)
             break;
         case GCTile:
         {
-            if (EqualPixUnion(pgcDst.tileIsPixel,
-                              pgcDst.tile,
-                              pgcSrc.tileIsPixel, pgcSrc.tile)) {
+            if (mixin(EqualPixUnion!("pgcDst.tileIsPixel",
+                              "pgcDst.tile",
+                              "pgcSrc.tileIsPixel", "pgcSrc.tile"))) {
                 break;
             }
             if (!pgcDst.tileIsPixel)
@@ -814,7 +817,7 @@ void FreeGCperDepth(ScreenPtr pScreen)
     if (!pScreen)
         return;
 
-    ppGC = pScreen.GCperDepth;
+    ppGC = cast(GCPtr*)pScreen.GCperDepth;
 
     for (int i = 0; i <= pScreen.numDepths; i++) {
         cast(void) FreeGC(ppGC[i], cast(XID) 0);
@@ -827,9 +830,9 @@ Bool CreateGCperDepth(ScreenPtr pScreen)
     DepthPtr pDepth = void;
     GCPtr* ppGC = void;
 
-    ppGC = pScreen.GCperDepth;
+    ppGC = cast(GCPtr*)&pScreen.GCperDepth;
     /* do depth 1 separately because it's not included in list */
-    if (((ppGC[0] = CreateScratchGC(pScreen, 1)) == 0))
+    if (((ppGC[0] = CreateScratchGC(pScreen, 1)) is null))
         return FALSE;
     /* Make sure we don't overflow GCperDepth[] */
     if (pScreen.numDepths > MAXFORMATS)
@@ -837,7 +840,7 @@ Bool CreateGCperDepth(ScreenPtr pScreen)
 
     pDepth = pScreen.allowedDepths;
     for (int i = 0; i < pScreen.numDepths; i++, pDepth++) {
-        if (((ppGC[i + 1] = CreateScratchGC(pScreen, pDepth.depth)) == 0)) {
+        if (((ppGC[i + 1] = CreateScratchGC(pScreen, pDepth.depth)) is null)) {
             for (; i >= 0; i--)
                 cast(void) FreeGC(ppGC[i], cast(XID) 0);
             return FALSE;
@@ -855,8 +858,8 @@ Bool CreateDefaultStipple(ScreenPtr pScreen)
 
     w = 16;
     h = 16;
-    (*pScreen.QueryBestSize) (StippleShape, &w, &h, pScreen);
-    if (((pScreen.defaultStipple = pScreen.CreatePixmap(pScreen, w, h, 1, 0)) == 0))
+    (*pScreen.QueryBestSize) (StippleShape, cast(ubyte*)&w, cast(ubyte*)&h, pScreen);
+    if (((pScreen.defaultStipple = pScreen.CreatePixmap(pScreen, w, h, 1, 0)) is null))
         return FALSE;
     /* fill stipple with 1 */
     tmpval[0].val = GXcopy;
@@ -868,7 +871,7 @@ Bool CreateDefaultStipple(ScreenPtr pScreen)
         return FALSE;
     }
     cast(void) ChangeGC(null, pgcScratch,
-                    GCFunction | GCForeground | GCFillStyle, tmpval.ptr);
+                    cast(uint)(GCFunction | GCForeground | GCFillStyle), tmpval.ptr);
     ValidateGC(cast(DrawablePtr) pScreen.defaultStipple, pgcScratch);
     rect.x = 0;
     rect.y = 0;
@@ -904,14 +907,14 @@ int SetDashes(GCPtr pGC, uint offset, uint ndash, ubyte* pdash)
 
     pGC.serialNumber |= GC_CHANGE_SERIAL_BIT;
     if (offset != pGC.dashOffset) {
-        pGC.dashOffset = offset;
+        pGC.dashOffset = cast(ushort)offset;
         pGC.stateChanges |= GCDashOffset;
         maskQ |= GCDashOffset;
     }
 
     if (pGC.dash != DefaultDash.ptr)
         free(pGC.dash);
-    pGC.numInDashList = ndash;
+    pGC.numInDashList = cast(ushort)ndash;
     pGC.dash = p;
     if (ndash & 1) {
         pGC.numInDashList += ndash;
@@ -975,10 +978,10 @@ int SetClipRects(GCPtr pGC, INT16 xOrigin, INT16 yOrigin, size_t nrects, xRectan
 {
     int newct = void, size = void;
 
-    newct = VerifyRectOrder(nrects, prects, ordering);
+    newct = VerifyRectOrder(cast(int)nrects, prects, ordering);
     if (newct < 0)
         return BadMatch;
-    size = nrects * xRectangle.sizeof;
+    size = cast(int)(nrects * xRectangle.sizeof);
 
     xRectangle* prectsNew = cast(xRectangle*) calloc(1, size);
     if (!prectsNew && size)
@@ -993,7 +996,7 @@ int SetClipRects(GCPtr pGC, INT16 xOrigin, INT16 yOrigin, size_t nrects, xRectan
 
     if (size && prectsNew)
         memmove(cast(char*) prectsNew, cast(char*) prects, size);
-    (*pGC.funcs.ChangeClip) (pGC, newct, cast(void*) prectsNew, nrects);
+    (*pGC.funcs.ChangeClip) (pGC, newct, cast(void*) prectsNew, cast(int)nrects);
     if (pGC.funcs.ChangeGC)
         (*pGC.funcs.ChangeGC) (pGC,
                                  GCClipXOrigin | GCClipYOrigin | GCClipMask);

@@ -158,6 +158,7 @@ import Xi.listdev;
 import Xi.setmmap;
 import Xi.xichangehierarchy;
 import Xi.xisetclientpointer;
+import dix.events;
 
 import include.misc;
 import os.log;

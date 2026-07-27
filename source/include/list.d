@@ -313,8 +313,8 @@ T* containerOf(T, string member)(void* ptr)
 /**
  * Alias of container_of
  */
-enum string xorg_list_entry(string ptr, string type, string member) = `
-    ` ~ container_of!(ptr, type, member) ~ ``;
+enum xorg_list_entry(string ptr, string type, string member) =
+    "containerOf!(" ~ type ~ ", \"" ~ member ~ "\")(" ~ ptr ~ ")";
 
 /**
  * Retrieve the first list entry for the given list pointer.
@@ -336,7 +336,7 @@ enum string xorg_list_first_entry(string ptr, string type, string member) = "
  *
  * Example:
  * struct foo *first;
- * first = xorg_list_last_entry(&bar->list_of_foos, struct foo, list_of_foos);
+ * first = mixin(xorg_list_last_entry!("&bar->list_of_foos", "struct foo", "list_of_foos"));
  *
  * @param ptr The list head
  * @param type Data type of the list element to retrieve

@@ -19,7 +19,9 @@ public import include.cursor;
  */
 extern int GrabInProgress;
 
-struct _GrabParameters;
+// struct _GrabParameters;
+import dix.exevents_priv;
+alias _GrabParameters = GrabParameters;
 
 /**
  * @brief Print current device grab information for specific device

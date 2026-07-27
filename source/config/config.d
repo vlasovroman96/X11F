@@ -42,6 +42,7 @@ import config.config_backends;
 
 import hw.xfree86.os_support.linux.systemd_logind;
 import os.log;
+import dix.events;
 
 void config_pre_init()
 {

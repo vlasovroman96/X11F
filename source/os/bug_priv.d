@@ -19,7 +19,7 @@ enum string __BUG_WARN_MSG(string cond, string with_msg) = `
             xorg_backtrace();                                             
         }
 }`;
-enum string BUG_WARN_MSG(string cond) = `` ~ __BUG_WARN_MSG!(cond, `__VA_ARGS__`) ~ ``;
+enum string BUG_WARN_MSG(string cond, string msg) = `` ~ __BUG_WARN_MSG!(cond, msg) ~ ``;
 
 enum string BUG_WARN(string cond) = __BUG_WARN_MSG!(cond, `null`);
 

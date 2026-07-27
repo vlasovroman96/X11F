@@ -32,7 +32,7 @@ import build.dix_config;
 //import externs.X11.X;
 //import externs.X11.extensions.XI2;
 // //import externs.X11.extensions.XIproto;
-// //import externs.X11.extensions.XI2proto;
+import externs.X11.extensions.XI2proto;
 
 import dix.dix_priv;
 import dix.eventconvert;
@@ -50,7 +50,8 @@ import include.scrnintstr;
 import Xi.exglobals;
 // import dix.enterleave;
 import include.xkbsrv;
-
+import dix.events;
+import dix.devices;
 /**
  * @file
  * This file describes the model for sending core enter/leave events and
@@ -526,7 +527,7 @@ private void CoreEnterLeaveEvents(DeviceIntPtr dev, WindowPtr from, WindowPtr to
     EnterWindow(dev, to, mode);
 }
 
-private void DeviceEnterLeaveEvents(DeviceIntPtr dev, int sourceid, WindowPtr from, WindowPtr to, int mode)
+void DeviceEnterLeaveEvents(DeviceIntPtr dev, int sourceid, WindowPtr from, WindowPtr to, int mode)
 {
     if (WindowIsParent(from, to)) {
         DeviceEnterLeaveEvent(dev, sourceid, XI_Leave, mode, NotifyInferior,
@@ -581,36 +582,41 @@ private void FixDeviceValuator(DeviceIntPtr dev, deviceValuator* ev, ValuatorCla
 {
     int nval = v.numAxes - first;
 
-    ev.type = DeviceValuator;
-    ev.deviceid = dev.id;
-    ev.num_valuators = nval < 6 ? nval : 6;
-    ev.first_valuator = first;
+    ev.type = cast(ubyte)DeviceValuator;
+    ev.deviceid = cast(ubyte)dev.id;
+    ev.num_valuators = cast(ubyte)(nval < 6 ? nval : 6);
+    ev.first_valuator = cast(ubyte)first;
     switch (ev.num_valuators) {
     case 6:
-        ev.valuator5 = v.axisVal[first + 5];
+        ev.valuator5 = cast(int)v.axisVal[first + 5];
         /* fallthrough */
+        goto case 5;
     case 5:
-        ev.valuator4 = v.axisVal[first + 4];
+        ev.valuator4 = cast(int)v.axisVal[first + 4];
         /* fallthrough */
+        goto case 4;
     case 4:
-        ev.valuator3 = v.axisVal[first + 3];
+        ev.valuator3 = cast(int)v.axisVal[first + 3];
         /* fallthrough */
+        goto case 3;
     case 3:
-        ev.valuator2 = v.axisVal[first + 2];
+        ev.valuator2 = cast(int)v.axisVal[first + 2];
         /* fallthrough */
+        goto case 2;
     case 2:
-        ev.valuator1 = v.axisVal[first + 1];
+        ev.valuator1 = cast(int)v.axisVal[first + 1];
         /* fallthrough */
+        goto case 1;
     case 1:
-        ev.valuator0 = v.axisVal[first];
+        ev.valuator0 = cast(int)v.axisVal[first];
         break;
     default: break;}
 }
 
 private void FixDeviceStateNotify(DeviceIntPtr dev, deviceStateNotify* ev, KeyClassPtr k, ButtonClassPtr b, ValuatorClassPtr v, int first)
 {
-    ev.type = DeviceStateNotify;
-    ev.deviceid = dev.id;
+    ev.type = cast(ubyte)DeviceStateNotify;
+    ev.deviceid = cast(ubyte)dev.id;
     ev.time = currentTime.milliseconds;
     ev.classes_reported = 0;
     ev.num_keys = 0;
@@ -624,8 +630,8 @@ private void FixDeviceStateNotify(DeviceIntPtr dev, deviceStateNotify* ev, KeyCl
     }
     if (k) {
         ev.classes_reported |= (1 << KeyClass);
-        ev.num_keys = k.xkbInfo.desc.max_key_code -
-            k.xkbInfo.desc.min_key_code;
+        ev.num_keys = cast(ubyte)(k.xkbInfo.desc.max_key_code -
+            k.xkbInfo.desc.min_key_code);
         memmove(cast(char*) &ev.keys[0], cast(char*) k.down, 4);
     }
     if (v) {
@@ -633,16 +639,18 @@ private void FixDeviceStateNotify(DeviceIntPtr dev, deviceStateNotify* ev, KeyCl
 
         ev.classes_reported |= (1 << ValuatorClass);
         ev.classes_reported |= valuator_get_mode(dev, 0) << ModeBitsShift;
-        ev.num_valuators = nval < 3 ? nval : 3;
+        ev.num_valuators = cast(ubyte)(nval < 3 ? nval : 3);
         switch (ev.num_valuators) {
         case 3:
-            ev.valuator2 = v.axisVal[first + 2];
+            ev.valuator2 = cast(int)v.axisVal[first + 2];
             /* fallthrough */
+            goto case 2;
         case 2:
-            ev.valuator1 = v.axisVal[first + 1];
+            ev.valuator1 = cast(int)v.axisVal[first + 1];
             /* fallthrough */
+            goto case 1;
         case 1:
-            ev.valuator0 = v.axisVal[first];
+            ev.valuator0 = cast(int)v.axisVal[first];
             break;
         default: break;}
     }
@@ -666,7 +674,7 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
      * and one deviceValuator for each 6 valuators */
     deviceStateNotify[3 + (MAX_VALUATORS + 6)/6] sev = void;
     int evcount = 1;
-    deviceStateNotify* ev = sev;
+    deviceStateNotify* ev = sev.ptr;
 
     KeyClassPtr k = void;
     ButtonClassPtr b = void;
@@ -701,8 +709,8 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
     if (b != null && nbuttons > 32) {
         deviceButtonStateNotify* bev = cast(deviceButtonStateNotify*) ++ev;
         (ev - 1).deviceid |= MORE_EVENTS;
-        bev.type = DeviceButtonStateNotify;
-        bev.deviceid = dev.id;
+        bev.type = cast(ubyte)DeviceButtonStateNotify;
+        bev.deviceid = cast(ubyte)dev.id;
         memcpy(cast(char*) &bev.buttons[0], cast(char*) &b.down[4],
                DOWN_LENGTH - 4);
     }
@@ -710,8 +718,8 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
     if (k != null && nkeys > 32) {
         deviceKeyStateNotify* kev = cast(deviceKeyStateNotify*) ++ev;
         (ev - 1).deviceid |= MORE_EVENTS;
-        kev.type = DeviceKeyStateNotify;
-        kev.deviceid = dev.id;
+        kev.type = cast(ubyte)DeviceKeyStateNotify;
+        kev.deviceid = cast(ubyte)dev.id;
         memmove(cast(char*) &kev.keys[0], cast(char*) &k.down[4], 28);
     }
 
@@ -740,21 +748,21 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
      * so we need 256 bits for the possibly maximum mapping */
     btlen = (mouse.button) ? bits_to_bytes(256) : 0;
     btlen = bytes_to_int32(btlen);
-    len = (cast(xXIFocusInEvent) + btlen * 4).sizeof;
+    len = cast(int)(xXIFocusInEvent.sizeof + btlen * 4);
 
     xXIFocusInEvent* xi2event = cast(xXIFocusInEvent*) calloc(1, len);
     mixin(BUG_RETURN!("xi2event == null"));
 
     xi2event.type = GenericEvent;
     xi2event.extension = EXTENSION_MAJOR_XINPUT;
-    xi2event.evtype = type;
+    xi2event.evtype = cast(ushort)type;
     xi2event.length = bytes_to_int32(len - xEvent.sizeof);
-    xi2event.buttons_len = btlen;
-    xi2event.detail = detail;
+    xi2event.buttons_len = cast(ushort)btlen;
+    xi2event.detail = cast(ubyte)detail;
     xi2event.time = currentTime.milliseconds;
-    xi2event.deviceid = dev.id;
-    xi2event.sourceid = dev.id;       /* a device doesn't change focus by itself */
-    xi2event.mode = mode;
+    xi2event.deviceid = cast(ushort)dev.id;
+    xi2event.sourceid = cast(ushort)dev.id;       /* a device doesn't change focus by itself */
+    xi2event.mode = cast(ubyte)mode;
     xi2event.root_x = double_to_fp1616(mouse.spriteInfo.sprite.hot.x);
     xi2event.root_y = double_to_fp1616(mouse.spriteInfo.sprite.hot.y);
 
@@ -768,8 +776,8 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
         xi2event.mods.locked_mods = dev.key.xkbInfo.state.locked_mods;
         xi2event.mods.effective_mods = dev.key.xkbInfo.state.mods;
 
-        xi2event.group.base_group = dev.key.xkbInfo.state.base_group;
-        xi2event.group.latched_group = dev.key.xkbInfo.state.latched_group;
+        xi2event.group.base_group = cast(ubyte)dev.key.xkbInfo.state.base_group;
+        xi2event.group.latched_group = cast(ubyte)dev.key.xkbInfo.state.latched_group;
         xi2event.group.locked_group = dev.key.xkbInfo.state.locked_group;
         xi2event.group.effective_group = dev.key.xkbInfo.state.group;
     }
@@ -784,10 +792,10 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
 
     /* XI 1.x event */
     event = deviceFocus (
-        deviceid: dev.id,
-        mode: mode,
-        type: (type == XI_FocusIn) ? DeviceFocusIn : DeviceFocusOut,
-        detail: detail,
+        deviceid: cast(ubyte)dev.id,
+        mode: cast(ubyte)mode,
+        type: cast(ubyte)((type == XI_FocusIn) ? DeviceFocusIn : DeviceFocusOut),
+        detail: cast(ubyte)detail,
         window: cast(uint)pWin.drawable.id,
         time: currentTime.milliseconds
     );
@@ -916,7 +924,7 @@ private void CoreFocusOutNotifyPointerEvents(DeviceIntPtr dev, WindowPtr pwin_pa
         if (!(pwin_parent == P && inclusive))
             return;
 
-    if (exclude != None && exclude != PointerRootWin &&
+    if (exclude != null && exclude != PointerRootWin &&
         (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
         return;
 
@@ -957,7 +965,7 @@ private void CoreFocusInNotifyPointerEvents(DeviceIntPtr dev, WindowPtr pwin_par
     if (!P || P == exclude || (pwin_parent != P && !WindowIsParent(pwin_parent, P)))
         return;
 
-    if (exclude != None && (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
+    if (exclude != null && (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
         return;
 
     CoreFocusInRecurse(dev, P, pwin_parent, mode, inclusive);
@@ -1000,7 +1008,7 @@ private void CoreFocusNonLinear(DeviceIntPtr dev, WindowPtr A, WindowPtr B, int 
         }
         else {
             /* NotifyPointer P-A */
-            CoreFocusOutNotifyPointerEvents(dev, A, None, mode, FALSE);
+            CoreFocusOutNotifyPointerEvents(dev, A, null, mode, FALSE);
             CoreFocusEvent(dev, FocusOut, mode, NotifyNonlinear, A);
         }
     }
@@ -1048,7 +1056,7 @@ private void CoreFocusNonLinear(DeviceIntPtr dev, WindowPtr A, WindowPtr B, int 
         else {
             CoreFocusEvent(dev, FocusIn, mode, NotifyNonlinear, B);
             /* NotifyPointer B-P unless P is child or below. */
-            CoreFocusInNotifyPointerEvents(dev, B, None, mode, FALSE);
+            CoreFocusInNotifyPointerEvents(dev, B, null, mode, FALSE);
         }
     }
 }
@@ -1192,14 +1200,14 @@ private void CoreFocusPointerRootNoneSwitchScr(ScreenPtr pScreen, DeviceIntPtr d
         B != PointerRootWin) {
         WindowPtr ptrwin = PointerWin(GetMaster(dev, POINTER_OR_FLOAT));
             if (ptrwin && WindowIsParent(root, ptrwin))
-            CoreFocusOutNotifyPointerEvents(dev, root, None, mode, TRUE);
+            CoreFocusOutNotifyPointerEvents(dev, root, null, mode, TRUE);
     }
     CoreFocusEvent(dev, FocusOut, mode,
                    A ? NotifyPointerRoot : NotifyDetailNone, root);
     CoreFocusEvent(dev, FocusIn, mode,
                    B ? NotifyPointerRoot : NotifyDetailNone, root);
     if (B == PointerRootWin)
-        CoreFocusInNotifyPointerEvents(dev, root, None, mode, TRUE);
+        CoreFocusInNotifyPointerEvents(dev, root, null, mode, TRUE);
 }
 
 /**
@@ -1208,9 +1216,9 @@ private void CoreFocusPointerRootNoneSwitchScr(ScreenPtr pScreen, DeviceIntPtr d
  */
 private void CoreFocusPointerRootNoneSwitch(DeviceIntPtr dev, WindowPtr A, WindowPtr B, int mode)
 {
-    DIX_FOR_EACH_SCREEN_XINERAMA({
+    mixin(DIX_FOR_EACH_SCREEN_XINERAMA!(q{
         CoreFocusPointerRootNoneSwitchScr(walkScreen, dev, A, B, mode);
-    });
+    }));
 }
 
 /**
@@ -1227,7 +1235,7 @@ private void CoreFocusToPointerRootOrNoneScr(ScreenPtr pScreen, DeviceIntPtr dev
     CoreFocusEvent(dev, FocusIn, mode,
                    B ? NotifyPointerRoot : NotifyDetailNone, root);
     if (B == PointerRootWin)
-        CoreFocusInNotifyPointerEvents(dev, root, None, mode, TRUE);
+        CoreFocusInNotifyPointerEvents(dev, root, null, mode, TRUE);
 }
 
 /**
@@ -1246,7 +1254,7 @@ private void CoreFocusToPointerRootOrNone(DeviceIntPtr dev, WindowPtr A, WindowP
         }
         else {
             /* NotifyPointer P-A */
-            CoreFocusOutNotifyPointerEvents(dev, A, None, mode, FALSE);
+            CoreFocusOutNotifyPointerEvents(dev, A, null, mode, FALSE);
             CoreFocusEvent(dev, FocusOut, mode, NotifyNonlinear, A);
         }
     }
@@ -1254,9 +1262,9 @@ private void CoreFocusToPointerRootOrNone(DeviceIntPtr dev, WindowPtr A, WindowP
     /* NullWindow means we include the root window */
     CoreFocusOutEvents(dev, A, NullWindow, mode, NotifyNonlinearVirtual);
 
-    DIX_FOR_EACH_SCREEN_XINERAMA({
+    mixin(DIX_FOR_EACH_SCREEN_XINERAMA!(q{
         CoreFocusToPointerRootOrNoneScr(walkScreen, dev, A, B, mode);
-    });
+    }));
 }
 
 /**
@@ -1277,7 +1285,7 @@ private void CoreFocusFromPointerRootOrNoneScr(ScreenPtr pScreen, DeviceIntPtr d
         B != PointerRootWin) {
         WindowPtr ptrwin = PointerWin(GetMaster(dev, POINTER_OR_FLOAT));
         if (ptrwin)
-            CoreFocusOutNotifyPointerEvents(dev, root, None, mode, TRUE);
+            CoreFocusOutNotifyPointerEvents(dev, root, null, mode, TRUE);
     }
     CoreFocusEvent(dev, FocusOut, mode,
                    A ? NotifyPointerRoot : NotifyDetailNone, root);
@@ -1289,9 +1297,9 @@ private void CoreFocusFromPointerRootOrNoneScr(ScreenPtr pScreen, DeviceIntPtr d
  */
 private void CoreFocusFromPointerRootOrNone(DeviceIntPtr dev, WindowPtr A, WindowPtr B, int mode)
 {
-    DIX_FOR_EACH_SCREEN_XINERAMA({
+    mixin(DIX_FOR_EACH_SCREEN_XINERAMA!(q{
         CoreFocusFromPointerRootOrNoneScr(walkScreen, dev, A, B, mode);
-    });
+    }));
 
     WindowPtr root = B;                   /* get B's root window */
     while (root.parent)
@@ -1313,7 +1321,7 @@ private void CoreFocusFromPointerRootOrNone(DeviceIntPtr dev, WindowPtr A, Windo
         else {
             CoreFocusEvent(dev, FocusIn, mode, NotifyNonlinear, B);
             /* NotifyPointer B-P unless P is child or below. */
-            CoreFocusInNotifyPointerEvents(dev, B, None, mode, FALSE);
+            CoreFocusInNotifyPointerEvents(dev, B, null, mode, FALSE);
         }
     }
 
@@ -1365,9 +1373,9 @@ private void DeviceFocusEvents(DeviceIntPtr dev, WindowPtr from, WindowPtr to, i
                                      NotifyPointer);
             }
             /* Notify all the roots */
-            DIX_FOR_EACH_SCREEN_XINERAMA({
+            mixin(DIX_FOR_EACH_SCREEN_XINERAMA!(q{
                 DeviceFocusEvent(dev, XI_FocusOut, mode, out_, walkScreen.root);
-            });
+            }));
         }
         else {
             if (WindowIsParent(from, sprite.win)) {
@@ -1383,9 +1391,9 @@ private void DeviceFocusEvents(DeviceIntPtr dev, WindowPtr from, WindowPtr to, i
         }
 
         /* Notify all the roots */
-        DIX_FOR_EACH_SCREEN_XINERAMA({
+        mixin(DIX_FOR_EACH_SCREEN_XINERAMA!(q{
             DeviceFocusEvent(dev, XI_FocusIn, mode, in_, walkScreen.root);
-        });
+        }));
 
         if (to == PointerRootWin) {
             DeviceFocusInEvents(dev, InputDevCurrentRootWindow(dev), sprite.win,
@@ -1403,9 +1411,9 @@ private void DeviceFocusEvents(DeviceIntPtr dev, WindowPtr from, WindowPtr to, i
                                      NotifyPointer);
             }
 
-            DIX_FOR_EACH_SCREEN_XINERAMA({
+            mixin(DIX_FOR_EACH_SCREEN_XINERAMA!(q{
                 DeviceFocusEvent(dev, XI_FocusOut, mode, out_, walkScreen.root);
-            });
+            }));
 
             if (to.parent != NullWindow)
                 DeviceFocusInEvents(dev, InputDevCurrentRootWindow(dev), to, mode,

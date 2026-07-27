@@ -312,7 +312,7 @@ int DeletePassiveGrab(void* value, XID id)
     GrabPtr pGrab = cast(GrabPtr) value;
 
     /* it is OK if the grab isn't found */
-    for (GrabPtr g = (wPassiveGrabs(pGrab.window)), prev = 0; g; g = g.next) {
+    for (GrabPtr g = (mixin(wPassiveGrabs!("pGrab.window"))), prev = 0; g; g = g.next) {
         if (pGrab == g) {
             if (prev)
                 prev.next = g.next;

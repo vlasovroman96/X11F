@@ -162,6 +162,7 @@ import os.access;
 import dix.colormap;
 import os.osinit;
 import os.io;
+import dix.events;
 
 alias INT32_MAX = core.stdc.stdint.INT32_MAX;
 

@@ -17,6 +17,7 @@ public import include.gc;
 public import include.pixmap;
 public import include.privates;
 public import include.dixstruct;
+import os.log;
 
 pragma(inline, true) private void SetReqFds(ClientPtr client, int req_fds) {
     if (client.req_fds != 0 && req_fds != client.req_fds)
