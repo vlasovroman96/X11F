@@ -68,6 +68,7 @@ import include.dixstruct;
 import dix.dispatch;
 import dix.swaprep;
 import Xext.xace;
+import dix.swapreq;
 
 /*****************************************************************
  * Property Stuff
@@ -157,7 +158,7 @@ private void deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr p
 {
     xEvent event = void;
     UpdateCurrentTimeIf();
-    event = xEvent;
+    // event = xEvent;
     //  (
         // u:property:window: cast(uint)pWin.drawable.id,
     //     u:property:state: state,
@@ -165,8 +166,8 @@ private void deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr p
     //     u:property:time: currentTime.milliseconds,
     // );
 
-        event.u.property.window = pWin.drawable.id;
-        event.u.property.state = state;
+        event.u.property.window = cast(uint)pWin.drawable.id;
+        event.u.property.state = cast(ubyte)state;
         event.u.property.atom = pProp.propertyName;
         event.u.property.time = currentTime.milliseconds;
         event.u.u.type = PropertyNotify;
@@ -208,7 +209,7 @@ int ProcRotateProperties(ClientPtr client)
         return rc;
 
     props = cast(PropertyPtr*) calloc(p.nAtoms, PropertyPtr.sizeof);
-    saved = calloc(p.nAtoms, PropertyRec.sizeof);
+    saved = cast(_Property*)calloc(p.nAtoms, PropertyRec.sizeof);
     if (!props || !saved) {
         rc = BadAlloc;
         goto out_;
@@ -235,7 +236,7 @@ int ProcRotateProperties(ClientPtr client)
         props[i] = pProp;
         saved[i] = *pProp;
     }
-    delta = p.nPositions;
+    delta = cast(int)p.nPositions;
 
     /* If the rotation is a complete 360 degrees, then moving the properties
        around and generating PropertyNotify events should be skipped. */
@@ -244,7 +245,7 @@ int ProcRotateProperties(ClientPtr client)
         while (delta < 0)       /* faster if abs value is small */
             delta += p.nAtoms;
         for (int i = 0; i < p.nAtoms; i++) {
-            int j = (i + delta) % p.nAtoms;
+            int j = cast(int)((i + delta) % p.nAtoms);
             deliverPropertyNotifyEvent(pWin, PropertyNewValue, props[i]);
             notifyVRRMode(client, pWin, PropertyNewValue, props[i]);
 
@@ -350,7 +351,7 @@ int dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property, At
     Mask access_mode = void;
 
     sizeInBytes = format >> 3;
-    totalSize = len * sizeInBytes;
+    totalSize = cast(int)(len * sizeInBytes);
     access_mode = (mode == PropModeReplace) ? DixWriteAccess : DixBlendAccess;
 
     /* first see if property already exists */
@@ -370,11 +371,11 @@ int dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property, At
             }
             memcpy(data, value, totalSize);
         }
-        pProp.propertyName = property;
-        pProp.type = type;
+        pProp.propertyName = cast(uint)property;
+        pProp.type = cast(uint)type;
         pProp.format = format;
         pProp.data = data;
-        pProp.size = len;
+        pProp.size = cast(uint)len;
         rc = XaceHookPropertyAccess(pClient, pWin, &pProp,
                                     DixCreateAccess | DixWriteAccess);
         if (rc != Success) {
@@ -408,8 +409,8 @@ int dixChangeWindowProperty(ClientPtr pClient, WindowPtr pWin, Atom property, At
                 memcpy(data, value, totalSize);
             }
             pProp.data = data;
-            pProp.size = len;
-            pProp.type = type;
+            pProp.size = cast(uint)len;
+            pProp.type = cast(uint)type;
             pProp.format = format;
         }
         else if (len == 0) {
@@ -471,7 +472,7 @@ int DeleteProperty(ClientPtr client, WindowPtr pWin, Atom propName)
     if (rc == Success) {
         if (pWin.properties == pProp) {
             /* Takes care of head */
-            if (((pWin.properties = pProp.next) == 0))
+            if (((pWin.properties = pProp.next) is null))
                 CheckWindowOptionalNeed(pWin);
         }
         else {
@@ -537,8 +538,8 @@ int ProcGetProperty(ClientPtr client)
         client.errorValue = stuff.property;
         return BadAtom;
     }
-    if ((stuff.delete != xTrue) && (stuff.delete != xFalse)) {
-        client.errorValue = stuff.delete;
+    if ((stuff.delete_ != xTrue) && (stuff.delete_ != xFalse)) {
+        client.errorValue = stuff.delete_;
         return BadValue;
     }
     if ((stuff.type != AnyPropertyType) && !ValidAtom(stuff.type)) {
@@ -551,7 +552,7 @@ int ProcGetProperty(ClientPtr client)
         window: stuff.window,
         property: stuff.property,
         type: stuff.type,
-        delete: stuff.delete,
+        delete_: stuff.delete_,
         access_mode: prop_mode,
         longOffset: stuff.longOffset,
         longLength: stuff.longLength,
@@ -561,7 +562,7 @@ int ProcGetProperty(ClientPtr client)
     if (p.skip)
         return p.status;
 
-    if (p.delete) {
+    if (p.delete_) {
         UpdateCurrentTime();
         win_mode |= DixSetPropAccess;
         prop_mode |= DixDestroyAccess;
@@ -586,7 +587,7 @@ int ProcGetProperty(ClientPtr client)
     if (((p.type != pProp.type) && (p.type != AnyPropertyType))) {
         xGetPropertyReply reply = {
             bytesAfter: pProp.size,
-            format: pProp.format,
+            format: cast(ubyte)pProp.format,
             propertyType: pProp.type
         };
         if (client.swapped) {
@@ -613,13 +614,13 @@ int ProcGetProperty(ClientPtr client)
     len = min(n - ind, 4 * p.longLength);
 
     xGetPropertyReply reply = {
-        bytesAfter: n - (ind + len),
-        format: pProp.format,
-        nItems: len / (pProp.format / 8),
+        bytesAfter: cast(uint)(n - (ind + len)),
+        format: cast(ubyte)pProp.format,
+        nItems: cast(uint)(len / (pProp.format / 8)),
         propertyType: pProp.type
     };
 
-    if (p.delete && (reply.bytesAfter == 0)) {
+    if (p.delete_ && (reply.bytesAfter == 0)) {
         deliverPropertyNotifyEvent(pWin, PropertyDelete, pProp);
         notifyVRRMode(client, pWin, PropertyDelete, pProp);
     }
@@ -643,11 +644,11 @@ int ProcGetProperty(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    if (p.delete && (reply.bytesAfter == 0)) {
+    if (p.delete_ && (reply.bytesAfter == 0)) {
         /* Delete the Property */
         if (pWin.properties == pProp) {
             /* Takes care of head */
-            if (((pWin.properties = pProp.next) == 0))
+            if (((pWin.properties = pProp.next) is null))
                 CheckWindowOptionalNeed(pWin);
         }
         else {
@@ -698,7 +699,7 @@ int ProcListProperties(ClientPtr client)
     }
 
     xListPropertiesReply reply = {
-        nProperties: numProps
+        nProperties: cast(ushort)numProps
     };
 
     if (client.swapped) {

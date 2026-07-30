@@ -35,10 +35,13 @@ import dix.ptrveloc_priv;
 import os.bug_priv;
 
 import include.ptrveloc;
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
 import include.os;
 
 import include.xserver_properties;
+import Xi.xiproperty;
+import mi.miarc;
+import os.log;
 
 /*****************************************************************************
  * Predictable pointer acceleration
@@ -354,7 +357,7 @@ private BOOL InitializePredictableAccelerationProperties(DeviceIntPtr dev, Devic
     if (!vel)
         return FALSE;
 
-    schemeData.prop_handlers = calloc(num_handlers, c_long.sizeof);
+    schemeData.prop_handlers = cast(long*)calloc(num_handlers, c_long.sizeof);
     if (!schemeData.prop_handlers)
         return FALSE;
     schemeData.num_prop_handlers = num_handlers;
@@ -548,10 +551,10 @@ pragma(inline, true) private void FeedTrackers(DeviceVelocityPtr vel, double dx,
     vel.tracker[n].dx = 0.0;
     vel.tracker[n].dy = 0.0;
     vel.tracker[n].time = cur_t;
-    vel.tracker[n].dir = GetDirection(dx, dy);
-    DebugAccelF("motion [dx: %f dy: %f dir:%d diff: %d]\n",
-                dx, dy, vel.tracker[n].dir,
-                cur_t - vel.tracker[vel.cur_tracker].time);
+    vel.tracker[n].dir = GetDirection(cast(int)dx, cast(int)dy);
+    // DebugAccelF("motion [dx: %f dy: %f dir:%d diff: %d]\n",
+    //             dx, dy, vel.tracker[n].dir,
+    //             cur_t - vel.tracker[vel.cur_tracker].time);
     vel.cur_tracker = n;
 }
 
@@ -595,8 +598,8 @@ private double QueryTrackers(DeviceVelocityPtr vel, int cur_t)
 
         /* bail out if data is too old and protect from overrun */
         if (age_ms >= vel.reset_time || age_ms < 0) {
-            DebugAccelF("query: tracker too old (reset after %d, age is %d)\n",
-                        vel.reset_time, age_ms);
+            // DebugAccelF("query: tracker too old (reset after %d, age is %d)\n",
+            //             vel.reset_time, age_ms);
             break;
         }
 
@@ -608,7 +611,7 @@ private double QueryTrackers(DeviceVelocityPtr vel, int cur_t)
          */
         dir &= tracker.dir;
         if (dir == 0) {         /* we've changed octant of movement (e.g. NE → NW) */
-            DebugAccelF("query: no longer linear\n");
+            // DebugAccelF("query: no longer linear\n");
             /* instead of breaking it we might also inspect the partition after,
              * but actual improvement with this is probably rare. */
             break;
@@ -629,9 +632,9 @@ private double QueryTrackers(DeviceVelocityPtr vel, int cur_t)
                 velocity_diff / (initial_velocity + tracker_velocity) >=
                 vel.max_rel_diff) {
                 /* we're not in range, quit - it won't get better. */
-                DebugAccelF("query: tracker too different:"
-                            ~ " old %2.2f initial %2.2f diff: %2.2f\n",
-                            tracker_velocity, initial_velocity, velocity_diff);
+                // DebugAccelF("query: tracker too different:"
+                //             ~ " old %2.2f initial %2.2f diff: %2.2f\n",
+                //             tracker_velocity, initial_velocity, velocity_diff);
                 break;
             }
             /* we're in range with the initial velocity,
@@ -642,7 +645,7 @@ private double QueryTrackers(DeviceVelocityPtr vel, int cur_t)
         }
     }
     if (offset == vel.num_tracker) {
-        DebugAccelF("query: last tracker in effect\n");
+        // DebugAccelF("query: last tracker in effect\n");
         used_offset = vel.num_tracker - 1;
     }
     if (used_offset >= 0) {
@@ -671,7 +674,7 @@ private BOOL ProcessVelocityData2D(DeviceVelocityPtr vel, double dx, double dy, 
 
     velocity = QueryTrackers(vel, time);
 
-    DebugAccelF("velocity is %f\n", velocity);
+    // DebugAccelF("velocity is %f\n", velocity);
 
     vel.velocity = velocity;
     return velocity == 0;
@@ -740,7 +743,7 @@ private double ComputeAcceleration(DeviceIntPtr dev, DeviceVelocityPtr vel, doub
     double result = void;
 
     if (vel.velocity <= 0) {
-        DebugAccelF("profile skipped\n");
+        // DebugAccelF("profile skipped\n");
         /*
          * If we have no idea about device velocity, don't pretend it.
          */
@@ -764,14 +767,14 @@ private double ComputeAcceleration(DeviceIntPtr dev, DeviceVelocityPtr vel, doub
                                             threshold,
                                             acc);
         result /= 6.0;
-        DebugAccelF("profile average [%.2f ... %.2f] is %.3f\n",
-                    vel.velocity, vel.last_velocity, result);
+        // DebugAccelF("profile average [%.2f ... %.2f] is %.3f\n",
+        //             vel.velocity, vel.last_velocity, result);
     }
     else {
         result = BasicComputeAcceleration(dev, vel,
                                           vel.velocity, threshold, acc);
-        DebugAccelF("profile sample [%.2f] is %.3f\n",
-                    vel.velocity, result);
+        // DebugAccelF("profile sample [%.2f] is %.3f\n",
+        //             vel.velocity, result);
     }
 
     return result;
@@ -918,23 +921,23 @@ private PointerAccelerationProfileFunc GetAccelerationProfile(DeviceVelocityPtr 
 {
     switch (profile_num) {
     case AccelProfileClassic:
-        return ClassicProfile;
+        return &ClassicProfile;
     case AccelProfileDeviceSpecific:
         return vel.deviceSpecificProfile;
     case AccelProfilePolynomial:
-        return PolynomialAccelerationProfile;
+        return &PolynomialAccelerationProfile;
     case AccelProfileSmoothLinear:
-        return SmoothLinearProfile;
+        return &SmoothLinearProfile;
     case AccelProfileSimple:
-        return SimpleSmoothProfile;
+        return &SimpleSmoothProfile;
     case AccelProfilePower:
-        return PowerProfile;
+        return &PowerProfile;
     case AccelProfileLinear:
-        return LinearProfile;
+        return &LinearProfile;
     case AccelProfileSmoothLimited:
-        return SmoothLimitedProfile;
+        return &SmoothLimitedProfile;
     case AccelProfileNone:
-        return NoProfile;
+        return &NoProfile;
     default:
         return null;
     }
@@ -996,8 +999,8 @@ DeviceVelocityPtr GetDevicePredictableAccelData(DeviceIntPtr dev)
     mixin(BUG_RETURN_VAL!("!dev", "null"));
 
     if (dev.valuator &&
-        dev.valuator.accelScheme.AccelSchemeProc ==
-        acceleratePointerPredictable &&
+        dev.valuator.accelScheme.AccelSchemeProc is
+        &acceleratePointerPredictable &&
         dev.valuator.accelScheme.accelData != null) {
 
         return (cast(PredictableAccelSchemePtr)
@@ -1052,7 +1055,7 @@ void acceleratePointerPredictable(DeviceIntPtr dev, ValuatorMask* val, CARD32 ev
                                        cast(double) dev.ptrfeed.ctrl.num /
                                        cast(double) dev.ptrfeed.ctrl.den);
 
-            DebugAccelF("mult is %f\n", mult);
+            // DebugAccelF("mult is %f\n", mult);
             if (mult != 1.0 || velocitydata.const_acceleration != 1.0) {
                 if (mult > 1.0 && soften)
                     ApplySoftening(velocitydata, &dx, &dy);
@@ -1062,7 +1065,7 @@ void acceleratePointerPredictable(DeviceIntPtr dev, ValuatorMask* val, CARD32 ev
                     valuator_mask_set_double(val, 0, mult * dx);
                 if (dy != 0.0)
                     valuator_mask_set_double(val, 1, mult * dy);
-                DebugAccelF("delta x:%.3f y:%.3f\n", mult * dx, mult * dy);
+                // DebugAccelF("delta x:%.3f y:%.3f\n", mult * dx, mult * dy);
             }
         }
     }

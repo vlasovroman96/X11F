@@ -1419,7 +1419,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     BOOL c_delete;
 #else
-    BOOL delete;
+    BOOL delete_;
 #endif
     CARD16 length;
     Window window;

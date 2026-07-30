@@ -91,11 +91,11 @@ int XICheckInvalidMaskBits(ClientPtr client, ubyte* mask, int len);
 
 void XTestDeviceSendEvents(DeviceIntPtr dev, int type, int detail, int flags, const(ValuatorMask)* mask);
 
-int XIPropToInt(XIPropertyValuePtr val, int* nelem_return, int** buf_return);
+// int XIPropToInt(XIPropertyValuePtr val, int* nelem_return, int** buf_return);
 
-int XIPropToFloat(XIPropertyValuePtr val, int* nelem_return, float** buf_return);
+// int XIPropToFloat(XIPropertyValuePtr val, int* nelem_return, float** buf_return);
 
-void XIUnregisterPropertyHandler(DeviceIntPtr dev, c_long id);
+// void XIUnregisterPropertyHandler(DeviceIntPtr dev, c_long id);
 
 // void XIDeleteAllDeviceProperties(DeviceIntPtr device);
 

@@ -67,6 +67,12 @@ import include.inputstr;
 import include.scrnintstr;
 import include.extnsionst;
 import include.inputstr;
+import dix.extension;
+import dix.resource;
+import dix.dixutils;
+import dix.input_priv;
+import dix.events;
+import os.log;
 
 private DevPrivateSetRec[PRIVATE_LAST] global_keys;
 
@@ -146,7 +152,7 @@ private Bool dixReallocPrivates(PrivatePtr* privates, int old_offset, uint bytes
     if (!new_privates)
         return FALSE;
     memset(cast(char*) new_privates + old_offset, '\0', bytes);
-    *privates = new_privates;
+    *privates = cast(_Private*)new_privates;
     return TRUE;
 }
 
@@ -180,7 +186,7 @@ private Bool fixupOneScreen(ScreenPtr pScreen, FixupFunc fixup, uint bytes)
     /* Moving means everyone shifts up in the privates by 'bytes' amount,
      * realloc means the base pointer moves
      */
-    if (fixup == dixMovePrivates)
+    if (fixup == &dixMovePrivates)
         new_ += bytes;
 
     if (cast(uintptr_t) new_ != old) {
@@ -237,7 +243,7 @@ private Bool fixupExtensions(FixupFunc fixup, uint bytes)
 {
     ExtensionEntry* extension = void;
 
-    for (ubyte major = EXTENSION_BASE; ((extension = GetExtensionEntry(major)) != 0);
+    for (ubyte major = EXTENSION_BASE; ((extension = GetExtensionEntry(major)) !is null);
          major++)
         if (!fixup
             (&extension.devPrivates, global_keys[PRIVATE_EXTENSION].offset, bytes))
@@ -317,7 +323,7 @@ Bool dixRegisterPrivateKey(DevPrivateKey key, DevPrivateType type, uint size)
         bytes = (void*).sizeof;
 
     /* align to pointer size */
-    bytes = (bytes + sizeofcast(void*) - 1) & ~(sizeofcast(void*) - 1);
+    bytes = cast(uint)(bytes + (void*).sizeof - 1) & ~((void*).sizeof - 1);
 
     /* Update offsets for all affected keys */
     if (type == PRIVATE_XSELINUX) {
@@ -379,7 +385,7 @@ Bool dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr screenKey, ScreenPtr pSc
 
     if (!dixRegisterPrivateKey(&screenKey.screenKey, PRIVATE_SCREEN, 0))
         return FALSE;
-    key = dixGetPrivate(&pScreen.devPrivates, &screenKey.screenKey);
+    key = cast(_DevPrivateKeyRec*)dixGetPrivate(&pScreen.devPrivates, &screenKey.screenKey);
     if (key != null) {
         assert(key.size == size);
         assert(key.type == type);
@@ -399,7 +405,7 @@ Bool dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr screenKey, ScreenPtr pSc
 
 DevPrivateKey _dixGetScreenPrivateKey(const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen)
 {
-    return dixGetPrivate(&pScreen.devPrivates, &key.screenKey);
+    return cast(DevPrivateKey)dixGetPrivate(&pScreen.devPrivates, &key.screenKey);
 }
 
 /*
@@ -413,8 +419,8 @@ void _dixInitPrivates(PrivatePtr* privates, void* addr, DevPrivateType type)
     if (xselinux_private[type])
         global_keys[PRIVATE_XSELINUX].created++;
     if (global_keys[type].offset == 0)
-        addr = 0;
-    *privates = addr;
+        addr = null;
+    *privates = cast(_Private*)addr;
     if (addr)
         memset(addr, '\0', global_keys[type].offset);
 }
@@ -446,7 +452,7 @@ void* _dixAllocateObjectWithPrivates(uint baseSize, uint clear, uint offset, Dev
     assert(!screen_specific_private[type]);
 
     /* round up so that void * is aligned */
-    baseSize = (baseSize + sizeofcast(void*) - 1) & ~(sizeofcast(void*) - 1);
+    baseSize = cast(uint)((baseSize + (void*).sizeof - 1) & ~((void*).sizeof - 1));
     totalSize = baseSize + global_keys[type].offset;
     void* object = calloc(1, totalSize);
     if (!object)
@@ -456,7 +462,7 @@ void* _dixAllocateObjectWithPrivates(uint baseSize, uint clear, uint offset, Dev
     privates = cast(PrivatePtr) ((cast(char*) object) + baseSize);
     devPrivates = cast(PrivatePtr*) (cast(char*) object + offset);
 
-    _mixin(dixInitPrivates!("devPrivates", "privates", "type"));
+    _dixInitPrivates(devPrivates, privates, type);
 
     return object;
 }
@@ -479,11 +485,11 @@ Bool dixAllocatePrivates(PrivatePtr* privates, DevPrivateType type)
         p = null;
     }
     else {
-        if (((p = calloc(1, size)) == 0))
+        if (((p = cast(_Private*)calloc(1, size)) is null))
             return FALSE;
     }
 
-    _mixin(dixInitPrivates!("privates", "p", "type"));
+    _dixInitPrivates(privates, p, type);
     ++global_keys[type].allocated;
 
     return TRUE;
@@ -583,7 +589,7 @@ Bool dixRegisterScreenSpecificPrivateKey(ScreenPtr pScreen, DevPrivateKey key, D
         bytes = (void*).sizeof;
 
     /* align to void * size */
-    bytes = (bytes + sizeofcast(void*) - 1) & ~(sizeofcast(void*) - 1);
+    bytes = cast(uint)((bytes + (void*).sizeof - 1) & ~((void*).sizeof - 1));
 
     assert (!allocated_early[type]);
     assert (!pScreen.screenSpecificPrivates[type].created);
@@ -636,8 +642,8 @@ void _dixInitScreenPrivates(ScreenPtr pScreen, PrivatePtr* privates, void* addr,
     if (xselinux_private[type])
         global_keys[PRIVATE_XSELINUX].created++;
     if (privates_size == 0)
-        addr = 0;
-    *privates = addr;
+        addr = null;
+    *privates = cast(_Private*)addr;
     if (addr)
         memset(addr, '\0', privates_size);
 }
@@ -658,7 +664,7 @@ void* _dixAllocateScreenObjectWithPrivates(ScreenPtr pScreen, uint baseSize, uin
     else
         privates_size = global_keys[type].offset;
     /* round up so that pointer is aligned */
-    baseSize = (baseSize + sizeofcast(void*) - 1) & ~(sizeofcast(void*) - 1);
+    baseSize = cast(uint)((baseSize + (void*).sizeof - 1) & ~((void*).sizeof - 1));
     totalSize = baseSize + privates_size;
     void* object = calloc(1, totalSize);
     if (!object)
@@ -689,7 +695,7 @@ void dixPrivateUsage()
     int bytes = 0;
     int alloc = 0;
 
-    for (DevPrivateType t = PRIVATE_XSELINUX + 1; t < PRIVATE_LAST; t++) {
+    for (DevPrivateType t = cast(DevPrivateType)(PRIVATE_XSELINUX + 1); t < PRIVATE_LAST; t++) {
         if (global_keys[t].offset) {
             ErrorF
                 ("%s: %d objects of %d bytes = %d total bytes %d private allocs\n",
@@ -711,7 +717,7 @@ void dixResetPrivates()
             key.offset = 0;
             key.initialized = FALSE;
             key.size = 0;
-            key.type = 0;
+            key.type = cast(DevPrivateType)0;
             if (key.allocated)
                 free(key);
         }

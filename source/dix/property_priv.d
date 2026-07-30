@@ -89,7 +89,7 @@ struct PropertyFilterParam {
     Bool sendevent;
 
     // only for GetProperty
-    BOOL delete;
+    BOOL delete_;
     CARD32 longOffset;
     CARD32 longLength;
 }

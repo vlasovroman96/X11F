@@ -81,7 +81,7 @@ pragma(inline, true) Bool RegionNil(RegionPtr reg)
 
 /* not a region */
 
-pragma(inline, true) private Bool RegionNar(RegionPtr reg)
+pragma(inline, true) Bool RegionNar(RegionPtr reg)
 {
     return ((reg).data == &RegionBrokenData);
 }
@@ -91,7 +91,7 @@ pragma(inline, true) int RegionNumRects(RegionPtr reg)
     return cast(int)(reg.data ? reg.data.numRects : 1);
 }
 
-pragma(inline, true) private int RegionSize(RegionPtr reg)
+pragma(inline, true) int RegionSize(RegionPtr reg)
 {
     return cast(int)(reg.data ? reg.data.size : 0);
 }
@@ -101,27 +101,27 @@ pragma(inline, true) BoxPtr RegionRects(RegionPtr reg)
     return ((reg).data ? cast(BoxPtr) ((reg).data + 1) : &(reg).extents);
 }
 
-pragma(inline, true) private BoxPtr RegionBoxptr(RegionPtr reg)
+pragma(inline, true) BoxPtr RegionBoxptr(RegionPtr reg)
 {
     return (cast(BoxPtr) ((reg).data + 1));
 }
 
-pragma(inline, true) private BoxPtr RegionBox(RegionPtr reg, int i)
+pragma(inline, true) BoxPtr RegionBox(RegionPtr reg, int i)
 {
     return (&RegionBoxptr(reg)[i]);
 }
 
-pragma(inline, true) private BoxPtr RegionTop(RegionPtr reg)
+pragma(inline, true) BoxPtr RegionTop(RegionPtr reg)
 {
     return RegionBox(reg, cast(int)reg.data.numRects);
 }
 
-pragma(inline, true) private BoxPtr RegionEnd(RegionPtr reg)
+pragma(inline, true) BoxPtr RegionEnd(RegionPtr reg)
 {
     return RegionBox(reg, cast(int)reg.data.numRects - 1);
 }
 
-pragma(inline, true) private size_t RegionSizeof(size_t n)
+pragma(inline, true) size_t RegionSizeof(size_t n)
 {
     if (n < ((INT_MAX - RegDataRec.sizeof) / BoxRec.sizeof))
         return (((RegDataRec) + ((n) * BoxRec.sizeof)).sizeof);
@@ -148,7 +148,7 @@ pragma(inline, true) void RegionInit(RegionPtr _pReg, BoxPtr _rect, size_t _size
     }
 }
 
-pragma(inline, true) private Bool RegionInitBoxes(RegionPtr pReg, BoxPtr boxes, int nBoxes)
+pragma(inline, true) Bool RegionInitBoxes(RegionPtr pReg, BoxPtr boxes, int nBoxes)
 {
     return pixman_region_init_rects(pReg, boxes, nBoxes);
 }
@@ -262,7 +262,7 @@ pragma(inline, true) Bool RegionSubtract(RegionPtr regD, RegionPtr regM, RegionP
  *-----------------------------------------------------------------------
  */
 
-pragma(inline, true) private Bool RegionInverse(RegionPtr newReg, RegionPtr reg1, BoxPtr invRect)
+pragma(inline, true) Bool RegionInverse(RegionPtr newReg, RegionPtr reg1, BoxPtr invRect)
 {
     return pixman_region_inverse(newReg, reg1, invRect);
 }

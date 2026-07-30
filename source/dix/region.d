@@ -85,8 +85,11 @@ import include.regionstr;
 // //import externs.X11.Xfuncproto;
 import include.gc;
 import pixman;
+import externs.attrs;
+import os.log;
+import os.io;
 
-version (REGION_DEBUG) {
+// version (REGION_DEBUG) {
 enum string assert_(string expr) = `{ 
             CARD32* foo = null; 
             if (!(` ~ expr ~ `)) { 
@@ -95,11 +98,11 @@ enum string assert_(string expr) = `{
                 *foo = 0xdeadbeef; /* to get a backtrace */ 
             } 
         }`;
-} else {
-//#define assert(expr)
-}
+// } else {
+// //#define assert(expr)
+// }
 
-enum string good(string reg) = `assert(RegionIsValid(` ~ reg ~ `))`;
+enum string good(string reg) = `assert(RegionIsValid(` ~ reg ~ `));`;
 
 /*
  * The functions in this file implement the Region abstraction used extensively
@@ -183,16 +186,17 @@ enum string RECTALLOC_BAIL(string pReg,string n,string bail) = `
 if (!(` ~ pReg ~ `).data || (((` ~ pReg ~ `).data.numRects + (` ~ n ~ `)) > (` ~ pReg ~ `).data.size)) 
     if (!RegionRectAlloc(` ~ pReg ~ `, ` ~ n ~ `)) { goto bail; }`;
 
-enum string RECTALLOC(string pReg,string n) = `
-if (!(` ~ pReg ~ `).data || (((` ~ pReg ~ `).data.numRects + (` ~ n ~ `)) > (` ~ pReg ~ `).data.size)) 
-    if (!RegionRectAlloc(` ~ pReg ~ `, ` ~ n ~ `)) { return FALSE; }`;
+enum string RECTALLOC(string pReg,string n) = ` {
+if ((` ~ pReg ~ `).data !is null || (((` ~ pReg ~ `).data.numRects + (` ~ n ~ `)) > (` ~ pReg ~ `).data.size)) 
+    if (!RegionRectAlloc(` ~ pReg ~ `, ` ~ n ~ `)) { return FALSE; }
+}`;
 
 enum string ADDRECT(string pNextRect,string nx1,string ny1,string nx2,string ny2) = `
 {						
-    ` ~ pNextRect ~ `.x1 = ` ~ nx1 ~ `;			
-    ` ~ pNextRect ~ `.y1 = ` ~ ny1 ~ `;			
-    ` ~ pNextRect ~ `.x2 = ` ~ nx2 ~ `;			
-    ` ~ pNextRect ~ `.y2 = ` ~ ny2 ~ `;			
+    ` ~ pNextRect ~ `.x1 = cast(short)` ~ nx1 ~ `;			
+    ` ~ pNextRect ~ `.y1 = cast(short)` ~ ny1 ~ `;			
+    ` ~ pNextRect ~ `.x2 = cast(short)` ~ nx2 ~ `;			
+    ` ~ pNextRect ~ `.y2 = cast(short)` ~ ny2 ~ `;			
     ` ~ pNextRect ~ `++;				
 }`;
 
@@ -213,7 +217,7 @@ enum string DOWNSIZE(string reg,string numRects) = `
 if (((` ~ numRects ~ `) < ((` ~ reg ~ `).data.size >> 1)) && ((` ~ reg ~ `).data.size > 50)) 
 {									 
     size_t NewSize = RegionSizeof(` ~ numRects ~ `);				 
-    RegDataPtr NewData = (NewSize > 0) ? realloc((` ~ reg ~ `).data, NewSize) : null;		 
+    RegDataPtr NewData = (NewSize > 0) ? cast(pixman_region16_data*)realloc((` ~ reg ~ `).data, NewSize) : null;		 
     if (NewData)							 
     {									 
 	NewData.size = (` ~ numRects ~ `);					 
@@ -229,7 +233,7 @@ private RegionRec RegionBrokenRegion = { {0, 0, 0, 0}, &RegionBrokenData };
 
 void InitRegions()
 {
-    pixman_region_set_static_pointers(&RegionEmptyBox, &RegionEmptyData,
+    assumeNoGC(&pixman_region_set_static_pointers)(&RegionEmptyBox, &RegionEmptyData,
                                       &RegionBrokenData);
 }
 
@@ -252,7 +256,7 @@ RegionPtr RegionCreate(BoxPtr rect, int size)
 
 void RegionDestroy(RegionPtr pReg)
 {
-    pixman_region_fini(pReg);
+    assumeNoGC(&pixman_region_fini)(pReg);
     if (pReg != &RegionBrokenRegion)
         free(pReg);
 }
@@ -288,7 +292,7 @@ void RegionPrint(RegionPtr rgn)
     ErrorF("[mi] \n");
 }
 
-version (DEBUG) {
+// version (DEBUG) {
 Bool RegionIsValid(RegionPtr reg)
 {
     int numRects = void;
@@ -328,7 +332,7 @@ Bool RegionIsValid(RegionPtr reg)
                 (box.y1 == reg.extents.y1) && (box.y2 == reg.extents.y2));
     }
 }
-}                          /* DEBUG */
+// }                          /* DEBUG */
 
 Bool RegionBreak(RegionPtr pReg)
 {
@@ -346,7 +350,7 @@ Bool RegionRectAlloc(RegionPtr pRgn, int n)
     if (!pRgn.data) {
         n++;
         rgnSize = RegionSizeof(n);
-        pRgn.data = (rgnSize > 0) ? calloc(1, rgnSize) : null;
+        pRgn.data = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
         if (!pRgn.data)
             return RegionBreak(pRgn);
         pRgn.data.numRects = 1;
@@ -354,20 +358,20 @@ Bool RegionRectAlloc(RegionPtr pRgn, int n)
     }
     else if (!pRgn.data.size) {
         rgnSize = RegionSizeof(n);
-        pRgn.data = (rgnSize > 0) ? calloc(1, rgnSize) : null;
+        pRgn.data = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
         if (!pRgn.data)
             return RegionBreak(pRgn);
         pRgn.data.numRects = 0;
     }
     else {
         if (n == 1) {
-            n = pRgn.data.numRects;
+            n = cast(int)pRgn.data.numRects;
             if (n > 500)        /* XXX pick numbers out of a hat */
                 n = 250;
         }
         n += pRgn.data.numRects;
         rgnSize = RegionSizeof(n);
-        data = (rgnSize > 0) ? realloc(pRgn.data, rgnSize) : null;
+        data = (rgnSize > 0) ? cast(pixman_region16_data*)realloc(pRgn.data, rgnSize) : null;
         if (!data)
             return RegionBreak(pRgn);
         pRgn.data = data;
@@ -448,7 +452,7 @@ pragma(inline, true) private int RegionCoalesce(RegionPtr pReg, int prevStart, i
     pReg.data.numRects -= numRects;
     do {
         pPrevBox--;
-        pPrevBox.y2 = y2;
+        pPrevBox.y2 = cast(short)y2;
         numRects--;
     } while (numRects);
     return prevStart;
@@ -485,7 +489,7 @@ pragma(inline, true) private Bool RegionAppendNonO(RegionPtr pReg, BoxPtr r, Box
     BoxPtr pNextRect = void;
     int newRects = void;
 
-    newRects = rEnd - r;
+    newRects = cast(int)(rEnd - r);
 
     assert(y1 < y2);
     assert(newRects != 0);
@@ -515,8 +519,8 @@ enum string FindBand(string r, string rBandEnd, string rEnd, string ry1) = `
 enum string	AppendRegions(string newReg, string r, string rEnd) = `
 {									
     int newRects = void;							
-    if ((newRects = ` ~ rEnd ~ ` - ` ~ r ~ `)) {					
-	` ~ RECTALLOC!(newReg, newRects) ~ `;					
+    if ((newRects = cast(int)(` ~ rEnd ~ ` - ` ~ r ~ `)) != 0) {					
+	` ~ RECTALLOC!(newReg, "newRects") ~ `					
 	memmove(cast(char*)RegionTop(` ~ newReg ~ `),cast(char*)` ~ r ~ `, 			
               newRects * BoxRec.sizeof);				
 	` ~ newReg ~ `.data.numRects += newRects;				
@@ -668,30 +672,30 @@ private Bool RegionOp(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2, OverlapP
          */
         if (r1y1 < r2y1) {
             if (appendNon1) {
-                top = max(r1y1, ybot);
-                bot = min(r1.y2, r2y1);
+                top = cast(short)max(r1y1, ybot);
+                bot = cast(short)min(r1.y2, r2y1);
                 if (top != bot) {
-                    curBand = newReg.data.numRects;
+                    curBand = cast(int)newReg.data.numRects;
                     RegionAppendNonO(newReg, r1, r1BandEnd, top, bot);
                     mixin(Coalesce!(`newReg`, `prevBand`, `curBand`));
                 }
             }
-            ytop = r2y1;
+            ytop = cast(short)r2y1;
         }
         else if (r2y1 < r1y1) {
             if (appendNon2) {
-                top = max(r2y1, ybot);
-                bot = min(r2.y2, r1y1);
+                top = cast(short)max(r2y1, ybot);
+                bot = cast(short)min(r2.y2, r1y1);
                 if (top != bot) {
-                    curBand = newReg.data.numRects;
+                    curBand = cast(int)newReg.data.numRects;
                     RegionAppendNonO(newReg, r2, r2BandEnd, top, bot);
                     mixin(Coalesce!(`newReg`, `prevBand`, `curBand`));
                 }
             }
-            ytop = r1y1;
+            ytop = cast(short)r1y1;
         }
         else {
-            ytop = r1y1;
+            ytop = cast(short)r1y1;
         }
 
         /*
@@ -700,7 +704,7 @@ private Bool RegionOp(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2, OverlapP
          */
         ybot = min(r1.y2, r2.y2);
         if (ybot > ytop) {
-            curBand = newReg.data.numRects;
+            curBand = cast(int)newReg.data.numRects;
             (*overlapFunc) (newReg, r1, r1BandEnd, r2, r2BandEnd, ytop, ybot,
                             pOverlap);
             mixin(Coalesce!(`newReg`, `prevBand`, `curBand`));
@@ -728,7 +732,7 @@ private Bool RegionOp(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2, OverlapP
     if ((r1 != r1End) && appendNon1) {
         /* Do first nonOverlap1Func call, which may be able to coalesce */
         mixin(FindBand!(`r1`, `r1BandEnd`, `r1End`, `r1y1`));
-        curBand = newReg.data.numRects;
+        curBand = cast(int)newReg.data.numRects;
         RegionAppendNonO(newReg, r1, r1BandEnd, max(r1y1, ybot), r1.y2);
         mixin(Coalesce!(`newReg`, `prevBand`, `curBand`));
         /* Just append the rest of the boxes  */
@@ -738,7 +742,7 @@ private Bool RegionOp(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2, OverlapP
     else if ((r2 != r2End) && appendNon2) {
         /* Do first nonOverlap2Func call, which may be able to coalesce */
         mixin(FindBand!(`r2`, `r2BandEnd`, `r2End`, `r2y1`));
-        curBand = newReg.data.numRects;
+        curBand = cast(int)newReg.data.numRects;
         RegionAppendNonO(newReg, r2, r2BandEnd, max(r2y1, ybot), r2.y2);
         mixin(Coalesce!(`newReg`, `prevBand`, `curBand`));
         /* Append rest of boxes */
@@ -747,7 +751,7 @@ private Bool RegionOp(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2, OverlapP
 
     free(oldData);
 
-    if (((numRects = newReg.data.numRects) == 0)) {
+    if (((numRects = cast(int)newReg.data.numRects) == 0)) {
         xfreeData(newReg);
         newReg.data = &RegionEmptyData;
     }
@@ -892,7 +896,7 @@ enum string MERGERECT(string r) = `
     while (r1 != r1End && r2 != r2End) {
         if (r1.x1 < r2.x1)
             mixin(MERGERECT!(`r1`));
-        else MERGERECT(r2);
+        else mixin(MERGERECT!("r2"));
     }
 
     /* Finish off whoever (if any) is left */
@@ -1126,7 +1130,7 @@ Bool RegionValidate(RegionPtr badreg, Bool* pOverlap)
         mixin(good!(`badreg`));
         return TRUE;
     }
-    numRects = badreg.data.numRects;
+    numRects = cast(int)badreg.data.numRects;
     if (!numRects) {
         if (RegionNar(badreg))
             return FALSE;
@@ -1201,7 +1205,7 @@ Bool RegionValidate(RegionPtr badreg, Bool* pOverlap)
                 if (reg.extents.x1 > box.x1)
                     reg.extents.x1 = box.x1;
                 mixin(Coalesce!(`reg`, `rit.prevBand`, `rit.curBand`));
-                rit.curBand = reg.data.numRects;
+                rit.curBand = cast(int)reg.data.numRects;
                 mixin(RECTALLOC_BAIL!(`reg`, `1`, `bail`));
                 *RegionTop(reg) = *box;
                 reg.data.numRects++;
@@ -1300,16 +1304,16 @@ RegionPtr RegionFromRects(int nrects, xRectangle* prect, int ctype)
         if ((y2 = y1 + cast(int) prect.height) > MAXSHORT)
             y2 = MAXSHORT;
         if (x1 != x2 && y1 != y2) {
-            pRgn.extents.x1 = x1;
-            pRgn.extents.y1 = y1;
-            pRgn.extents.x2 = x2;
-            pRgn.extents.y2 = y2;
+            pRgn.extents.x1 = cast(short)x1;
+            pRgn.extents.y1 = cast(short)y1;
+            pRgn.extents.x2 = cast(short)x2;
+            pRgn.extents.y2 = cast(short)y2;
             pRgn.data = null;
         }
         return pRgn;
     }
     rgnSize = RegionSizeof(nrects);
-    RegDataPtr pData = (rgnSize > 0) ? calloc(1, rgnSize) : null;
+    RegDataPtr pData = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
     if (!pData) {
         RegionBreak(pRgn);
         return pRgn;
@@ -1323,10 +1327,10 @@ RegionPtr RegionFromRects(int nrects, xRectangle* prect, int ctype)
         if ((y2 = y1 + cast(int) prect.height) > MAXSHORT)
             y2 = MAXSHORT;
         if (x1 != x2 && y1 != y2) {
-            pBox.x1 = x1;
-            pBox.y1 = y1;
-            pBox.x2 = x2;
-            pBox.y2 = y2;
+            pBox.x1 = cast(short)x1;
+            pBox.y1 = cast(short)y1;
+            pBox.x2 = cast(short)x2;
+            pBox.y2 = cast(short)y2;
             pBox++;
         }
     }

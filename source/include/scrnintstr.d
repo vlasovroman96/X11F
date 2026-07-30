@@ -147,7 +147,7 @@ alias PositionWindowProcPtr = Bool function(WindowPtr, int, int);
 
 // alias ClipNotifyProcPtr = void function(WindowPtr, int, int);
 
-alias SetWindowVRRModeProcPtr = void function(WindowPtr pWindow, WindowVRRMode mode);
+// alias SetWindowVRRModeProcPtr = void function(WindowPtr pWindow, WindowVRRMode mode);
 
 /* pixmap will exist only for the duration of the current rendering operation */
 // enum CREATE_PIXMAP_USAGE_SCRATCH =                     1;

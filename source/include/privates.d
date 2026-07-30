@@ -170,7 +170,7 @@ pragma(inline, true) private void* dixGetPrivateAddr(PrivatePtr* privates, const
  * This must only be used with keys that have
  * no pre-defined storage
  */
-pragma(inline, true) private void* dixGetPrivate(PrivatePtr* privates, const(DevPrivateKey) key)
+pragma(inline, true) void* dixGetPrivate(PrivatePtr* privates, const(DevPrivateKey) key)
 {
     assert(key.size == 0);
     return *cast(void**) dixGetPrivateAddr(privates, key);

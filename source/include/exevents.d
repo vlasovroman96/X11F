@@ -66,7 +66,7 @@ extern int InitValuatorAxisStruct(DeviceIntPtr, int, Atom, int, int, int, int, i
 
 extern int SetScrollValuator(DeviceIntPtr, int, ScrollType, double, int);
 
-extern int XIDeleteDeviceProperty(DeviceIntPtr, Atom, Bool);
+// extern int XIDeleteDeviceProperty(DeviceIntPtr, Atom, Bool);
 
 // extern int XIChangeDeviceProperty(DeviceIntPtr, Atom, Atom, int, int, c_ulong, const(void)*, Bool);
 

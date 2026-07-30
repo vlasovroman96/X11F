@@ -365,7 +365,7 @@ extern int SetPictureClipRects(PicturePtr pPicture, int xOrigin, int yOrigin, in
 
 // extern int SetPictureClipRegion(PicturePtr pPicture, int xOrigin, int yOrigin, RegionPtr pRegion);
 
-extern int SetPictureTransform(PicturePtr pPicture, PictTransform* transform);
+// extern int SetPictureTransform(PicturePtr pPicture, PictTransform* transform);
 
 extern int ValidatePicture(PicturePtr pPicture);
 

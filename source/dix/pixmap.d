@@ -47,6 +47,10 @@ import include.gcstruct;
 import include.servermd;
 import include.picturestr;
 import include.randrstr;
+import miext.damage.damage_;
+import dix.gc;
+import render.picture;
+import externs.attrs;
 /*
  * Scratch pixmap APIs are provided for source and binary compatibility.  In
  * older versions, DIX would store a freed scratch pixmap for future use.  This
@@ -83,7 +87,7 @@ Bool PixmapScreenInit(ScreenPtr pScreen)
 {
     uint pixmap_size = void;
 
-    pixmap_size = ((PixmapRec) + dixScreenSpecificPrivatesSize(pScreen, PRIVATE_PIXMAP)).sizeof;
+    pixmap_size = cast(uint)((PixmapRec).sizeof + dixScreenSpecificPrivatesSize(pScreen, PRIVATE_PIXMAP));
     pScreen.totalPixmapSize =
         mixin(BitmapBytePad!("pixmap_size * 8"));
 
@@ -104,11 +108,11 @@ PixmapPtr AllocatePixmap(ScreenPtr pScreen, int pixDataSize)
     if (pScreen.totalPixmapSize > (cast(size_t) - 1) - pixDataSize)
         return NullPixmap;
 
-    pPixmap = calloc(1, pScreen.totalPixmapSize + pixDataSize);
+    pPixmap = cast(PixmapPtr)calloc(1, pScreen.totalPixmapSize + pixDataSize);
     if (!pPixmap)
         return NullPixmap;
 
-    dixInitScreenPrivates(pScreen, pPixmap, pPixmap + 1, PRIVATE_PIXMAP);
+    mixin(dixInitScreenPrivates!("pScreen", "pPixmap", "pPixmap + 1", "PRIVATE_PIXMAP"));
     return pPixmap;
 }
 
@@ -161,7 +165,7 @@ PixmapPtr PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary)
 
 private void PixmapDirtyDamageDestroy(DamagePtr damage, void* closure)
 {
-    PixmapDirtyUpdatePtr dirty = closure;
+    PixmapDirtyUpdatePtr dirty = cast(PixmapDirtyUpdatePtr )closure;
 
     dirty.damage = null;
 }
@@ -207,15 +211,15 @@ Bool PixmapStartDirtyTracking(DrawablePtr src, PixmapPtr secondary_dst, int x, i
     /* Damage destination rectangle so that the destination pixmap contents
      * will get fully initialized
      */
-    box.x1 = dirty_update.x;
-    box.y1 = dirty_update.y;
+    box.x1 = cast(short)dirty_update.x;
+    box.y1 = cast(short)dirty_update.y;
     if (dirty_update.rotation == RR_Rotate_90 ||
         dirty_update.rotation == RR_Rotate_270) {
-        box.x2 = dirty_update.x + secondary_dst.drawable.height;
-        box.y2 = dirty_update.y + secondary_dst.drawable.width;
+        box.x2 = cast(short)(dirty_update.x + secondary_dst.drawable.height);
+        box.y2 = cast(short)(dirty_update.y + secondary_dst.drawable.width);
     } else {
-        box.x2 = dirty_update.x + secondary_dst.drawable.width;
-        box.y2 = dirty_update.y + secondary_dst.drawable.height;
+        box.x2 = cast(short)(dirty_update.x + secondary_dst.drawable.width);
+        box.y2 = cast(short)(dirty_update.y + secondary_dst.drawable.height);
     }
     RegionInit(&dstregion, &box, 1);
     damageregion = DamageRegion(dirty_update.damage);
@@ -232,7 +236,7 @@ Bool PixmapStopDirtyTracking(DrawablePtr src, PixmapPtr secondary_dst)
     ScreenPtr screen = src.pScreen;
     PixmapDirtyUpdatePtr ent = void, safe = void;
 
-    mixin(xorg_list_for_each_entry_safe!("ent", "safe", "screen.pixmap_dirty_list", "ent", q{
+    mixin(xorg_list_for_each_entry_safe!("ent", "safe", "&screen.pixmap_dirty_list", "ent", q{
         if (ent.src == src && ent.secondary_dst == secondary_dst) {
             if (ent.damage)
                 DamageDestroy(ent.damage);
@@ -258,7 +262,7 @@ void PixmapDirtyCopyArea(PixmapPtr dst, DrawablePtr src, int x, int y, int dst_x
         ChangeGCVal subWindowMode = void;
 
         subWindowMode.val = IncludeInferiors;
-        ChangeGC(null, pGC, GCSubwindowMode, &subWindowMode);
+        ChangeGC(null, pGC, cast(uint)GCSubwindowMode, &subWindowMode);
     }
     ValidateGC(&dst.drawable, pGC);
 
@@ -319,7 +323,7 @@ private void PixmapDirtyCompositeRotate(PixmapPtr dst_pixmap, PixmapDirtyUpdateP
         dst_box.x2 += dirty.x;
         dst_box.y1 += dirty.y;
         dst_box.y2 += dirty.y;
-        pixman_f_transform_bounds(&dirty.f_inverse, &dst_box);
+        assumeNoGC(&pixman_f_transform_bounds)(&dirty.f_inverse, &dst_box);
 
         CompositePicture(PictOpSrc,
                          src, null, dst,
@@ -328,8 +332,8 @@ private void PixmapDirtyCompositeRotate(PixmapPtr dst_pixmap, PixmapDirtyUpdateP
                          0, 0,
                          dst_box.x1,
                          dst_box.y1,
-                         dst_box.x2 - dst_box.x1,
-                         dst_box.y2 - dst_box.y1);
+                         cast(short)(dst_box.x2 - dst_box.x1),
+                         cast(short)(dst_box.y2 - dst_box.y1));
         b++;
     }
 
@@ -374,7 +378,7 @@ Bool PixmapSyncDirtyHelper(PixmapDirtyUpdatePtr dirty)
      * leaves the software cursor in place
      */
     SourceValidate = pScreen.SourceValidate;
-    pScreen.SourceValidate = miSourceValidate;
+    pScreen.SourceValidate = &miSourceValidate;
 
     RegionTranslate(&pixregion, dirty.x, dirty.y);
     RegionIntersect(&pixregion, &pixregion, region);

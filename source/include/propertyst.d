@@ -64,5 +64,6 @@ struct _Property {
     void* data;                 /* private to client */
     PrivateRec* devPrivates;
 }
+alias PropertyRec = _Property;
 
                           /* PROPERTYSTRUCT_H */
