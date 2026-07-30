@@ -58,6 +58,8 @@ import include.dixstruct;
 import dix.dispatch;
 import Xext.xace;
 import dix.selection_priv;;
+import os.io;
+import dix.events;
 
 /*****************************************************************
  * Selection Stuff
@@ -219,8 +221,8 @@ int ProcSetSelectionOwner(ClientPtr client)
         if (!param.skip) {
             xEvent event;
                 event.u.selectionClear.time = time.milliseconds;
-                event.u.selectionClear.window = eventParam.owner;
-                event.u.selectionClear.atom = eventParam.selection;
+                event.u.selectionClear.window = cast(uint)eventParam.owner;
+                event.u.selectionClear.atom = cast(uint)eventParam.selection;
 
             event.u.u.type = SelectionClear;
             WriteEventsToClient(eventParam.recvClient, 1, &event);
@@ -250,6 +252,7 @@ int ProcGetSelectionOwner(ClientPtr client)
         op: SELECTION_FILTER_GETOWNER,
     };
     CallCallbacks(&SelectionFilterCallback, &param);
+    xGetSelectionOwnerReply reply = { 0 };
     if (param.skip) {
         goto out_;
     }
@@ -259,11 +262,10 @@ int ProcGetSelectionOwner(ClientPtr client)
         goto out_;
     }
 
-    xGetSelectionOwnerReply reply = { 0 };
 
     param.status = dixLookupSelection(&pSel, param.selection, param.client, DixGetAttrAccess);
     if (param.status == Success)
-        reply.owner = pSel.window;
+        reply.owner = cast(uint)pSel.window;
     else if (param.status == BadMatch)
         reply.owner = None;
     else
@@ -354,12 +356,12 @@ int ProcConvertSelection(ClientPtr client)
         }
 
         event.u.u.type = SelectionRequest;
-        event.u.selectionRequest.owner = evParam.owner;
-        event.u.selectionRequest.time = evParam.time;
-        event.u.selectionRequest.requestor = evParam.requestor;
-        event.u.selectionRequest.selection = evParam.selection;
-        event.u.selectionRequest.target = evParam.target;
-        event.u.selectionRequest.property = evParam.property;
+        event.u.selectionRequest.owner = cast(uint)evParam.owner;
+        event.u.selectionRequest.time = cast(uint)evParam.time;
+        event.u.selectionRequest.requestor = cast(uint)evParam.requestor;
+        event.u.selectionRequest.selection = cast(uint)evParam.selection;
+        event.u.selectionRequest.target = cast(uint)evParam.target;
+        event.u.selectionRequest.property = cast(uint)evParam.property;
         WriteEventsToClient(evParam.recvClient, 1, &event);
         return Success;
     }
@@ -375,11 +377,11 @@ int ProcConvertSelection(ClientPtr client)
     }
 
     event.u.u.type = SelectionNotify;
-    event.u.selectionNotify.time = param.time;
-    event.u.selectionNotify.requestor = param.requestor;
-    event.u.selectionNotify.selection = param.selection;
-    event.u.selectionNotify.target = param.target;
-    event.u.selectionNotify.property = param.property;
+    event.u.selectionNotify.time = cast(uint)param.time;
+    event.u.selectionNotify.requestor = cast(uint)param.requestor;
+    event.u.selectionNotify.selection = cast(uint)param.selection;
+    event.u.selectionNotify.target = cast(uint)param.target;
+    event.u.selectionNotify.property = cast(uint)param.property;
     WriteEventsToClient(client, 1, &event);
     return Success;
 }

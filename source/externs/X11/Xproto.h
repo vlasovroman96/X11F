@@ -1060,7 +1060,7 @@ typedef struct _xEvent {
 	    Window parent, window;
 	    INT16 x, y;
 	    CARD16 width, height, borderWidth;
-	    BOOL override;
+	    BOOL override_;
 	    BYTE bpad;
         } createNotify;
 /*
@@ -1084,7 +1084,7 @@ typedef struct _xEvent {
 	struct {
 	    CARD32 pad00;
 	    Window event, window;
-	    BOOL override;
+	    BOOL override_;
 	    BYTE pad1, pad2, pad3;
         } mapNotify;
 	struct {
@@ -1095,7 +1095,7 @@ typedef struct _xEvent {
 	    CARD32 pad00;
 	    Window event, window, parent;
 	    INT16 x, y;
-	    BOOL override;
+	    BOOL override_;
 	    BYTE pad1, pad2, pad3;
 	} reparent;
 	struct {
@@ -1103,7 +1103,7 @@ typedef struct _xEvent {
 	    Window event, window, aboveSibling;
 	    INT16 x, y;
 	    CARD16 width, height, borderWidth;
-	    BOOL override;
+	    BOOL override_;
 	    BYTE bpad;
 	} configureNotify;
 	struct {
@@ -1167,7 +1167,7 @@ typedef struct _xEvent {
 // #if defined(__cplusplus) || defined(c_plusplus)
 	    // BOOL c_new;
 // #else
-	    BOOL c_new;
+	    BOOL new_;
 // #endif
 	    BYTE state;			/* Installed or UnInstalled */
 	    BYTE pad1, pad2;

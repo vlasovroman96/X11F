@@ -60,6 +60,7 @@ import dix.reqhandlers_priv;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;         /* for SendEvent */
+import std.conv;
 // import swapreq;
 
 /* Thanks to Jack Palevich for testing and subsequently rewriting all this */
@@ -177,7 +178,7 @@ int SProcSendEvent(ClientPtr client)
 
     /* Swap event */
     proc = EventSwapVector[stuff.event.u.u.type & octal!"0177"];
-    if (!proc || proc == NotImplemented)        /* no swapping proc; invalid event type? */
+    if (!proc || proc is &NotImplemented)        /* no swapping proc; invalid event type? */
         return BadValue;
     (*proc) (&stuff.event, &eventT);
     stuff.event = eventT;

@@ -36,6 +36,6 @@ struct CallbackListRec {
  *
  * @param pcbl pointer to the list head (CallbackListPtr)
  */
-void DeleteCallbackList(CallbackListPtr* pcbl);
+// void DeleteCallbackList(CallbackListPtr* pcbl);
 
  /* _XSERVER_CALLBACK_PRIV_H */

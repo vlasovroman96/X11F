@@ -47,6 +47,7 @@ import Xi.exglobals;
 import include.windowstr;
 import dix.events;
 import os.utils;
+import dix.devices;
 
 enum GESTURE_HISTORY_SIZE = 100;
 

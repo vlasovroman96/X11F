@@ -47,6 +47,10 @@ import include.scrnintstr;
 import include.eventstr;
 import Xi.exglobals;
 import include.windowstr;
+import dix.devices;
+import include.input;
+import dix.events;
+import os.utils;
 
 enum TOUCH_HISTORY_SIZE = 100;
 
@@ -90,12 +94,12 @@ private Bool TouchResizeQueue(DeviceIntPtr dev)
     /* Grow sufficiently so we don't need to do it often */
     size = dev.last.num_touches + dev.last.num_touches / 2 + 1;
 
-    tmp = reallocarray(dev.last.touches, size, typeof(*dev.last.touches).sizeof);
+    tmp = cast(_DDXTouchPointInfo*)reallocarray(dev.last.touches, size, typeof(*dev.last.touches).sizeof);
     if (tmp) {
         dev.last.touches = tmp;
         for (int j = dev.last.num_touches; j < size; j++)
             TouchInitDDXTouchPoint(dev, &dev.last.touches[j]);
-        dev.last.num_touches = size;
+        dev.last.num_touches = cast(int)size;
         return TRUE;
     }
     return FALSE;
@@ -197,7 +201,7 @@ void TouchEndDDXTouch(DeviceIntPtr dev, DDXTouchPointInfoPtr ti)
 void TouchInitDDXTouchPoint(DeviceIntPtr dev, DDXTouchPointInfoPtr ddxtouch)
 {
     memset(ddxtouch, 0, typeof(*ddxtouch).sizeof);
-    ddxtouch.valuators = valuator_mask_new(dev.valuator.numAxes);
+    ddxtouch.valuators = cast(_ValuatorMask*)valuator_mask_new(dev.valuator.numAxes);
 }
 
 Bool TouchInitTouchPoint(TouchClassPtr t, ValuatorClassPtr v, int index)
@@ -210,11 +214,11 @@ Bool TouchInitTouchPoint(TouchClassPtr t, ValuatorClassPtr v, int index)
 
     memset(ti, 0, typeof(*ti).sizeof);
 
-    ti.valuators = valuator_mask_new(v.numAxes);
+    ti.valuators = cast(_ValuatorMask*)valuator_mask_new(v.numAxes);
     if (!ti.valuators)
         return FALSE;
 
-    ti.sprite.spriteTrace = calloc(32, typeof(*ti.sprite.spriteTrace).sizeof);
+    ti.sprite.spriteTrace = cast(_Window**)calloc(32, typeof(*ti.sprite.spriteTrace).sizeof);
     if (!ti.sprite.spriteTrace) {
         valuator_mask_free(&ti.valuators);
         return FALSE;
@@ -318,7 +322,7 @@ TouchPointInfoPtr TouchBeginTouch(DeviceIntPtr dev, int sourceid, uint touchid, 
      * try again. */
     tmp = reallocarray(t.touches, t.num_touches + 1, typeof(*ti).sizeof);
     if (tmp) {
-        t.touches = tmp;
+        t.touches = cast(_TouchPointInfo*)tmp;
         t.num_touches++;
         if (TouchInitTouchPoint(t, dev.valuator, t.num_touches - 1))
             goto try_find_touch;
@@ -337,7 +341,7 @@ void TouchEndTouch(DeviceIntPtr dev, TouchPointInfoPtr ti)
     if (ti.emulate_pointer) {
         GrabPtr grab = void;
 
-        if ((grab = dev.deviceGrab.grab)) {
+        if ((grab = dev.deviceGrab.grab) !is null) {
             if (dev.deviceGrab.fromPassiveGrab &&
                 !dev.button.buttonsDown &&
                 !dev.touch.buttonsDown && GrabIsPointerGrab(grab))
@@ -374,7 +378,7 @@ Bool TouchEventHistoryAllocate(TouchPointInfoPtr ti)
     if (ti.history)
         return TRUE;
 
-    ti.history = calloc(TOUCH_HISTORY_SIZE, typeof(*ti.history).sizeof);
+    ti.history = cast(_DeviceEvent*)calloc(TOUCH_HISTORY_SIZE, typeof(*ti.history).sizeof);
     ti.history_elements = 0;
     if (ti.history)
         ti.history_size = TOUCH_HISTORY_SIZE;
@@ -440,7 +444,7 @@ void TouchEventHistoryReplay(TouchPointInfoPtr ti, DeviceIntPtr dev, XID resourc
         DeviceEvent* ev = &ti.history[i];
 
         ev.flags |= TOUCH_REPLAYING;
-        ev.resource = resource;
+        ev.resource = cast(uint)resource;
         /* FIXME:
            We're replaying ti->history which contains the TouchBegin +
            all TouchUpdates for ti. This needs to be passed on to the next
@@ -504,7 +508,7 @@ Bool TouchBuildSprite(DeviceIntPtr sourcedev, TouchPointInfoPtr ti, InternalEven
 
     /* Mark which grabs/event selections we're delivering to: max one grab per
      * window plus the bottom-most event selection, plus any active grab. */
-    ti.listeners = calloc(sprite.spriteTraceGood + 2, typeof(*ti.listeners).sizeof);
+    ti.listeners = cast(TouchListener*)calloc(sprite.spriteTraceGood + 2, typeof(*ti.listeners).sizeof);
     if (!ti.listeners) {
         sprite.spriteTraceGood = 0;
         return FALSE;
@@ -548,12 +552,12 @@ int TouchConvertToPointerEvent(const(InternalEvent)* event, InternalEvent* motio
         ptrtype = ET_ButtonRelease;
         break;
     default:
-        BUG_WARN_MSG(1, "Invalid event type %d\n", event.any.type);
+        mixin(BUG_WARN_MSG!("1", "Invalid event type %d\n"));
         return 0;
     }
 
-    BUG_WARN_MSG(!(event.device_event.flags & TOUCH_POINTER_EMULATED),
-                 "Non-emulating touch event\n");
+    mixin(BUG_WARN_MSG!("!(event.device_event.flags & TOUCH_POINTER_EMULATED)",
+                 "Non-emulating touch event\n"));
 
     motion_event.device_event = event.device_event;
     motion_event.any.type = ET_Motion;
@@ -563,7 +567,7 @@ int TouchConvertToPointerEvent(const(InternalEvent)* event, InternalEvent* motio
     if (nevents > 1) {
         mixin(BUG_RETURN_VAL!("!button_event", "0"));
         button_event.device_event = event.device_event;
-        button_event.any.type = ptrtype;
+        button_event.any.type = cast(EventType)ptrtype;
         button_event.device_event.flags = XIPointerEmulated;
         /* detail is already correct */
     }
@@ -691,7 +695,7 @@ private void TouchAddPassiveGrabListener(DeviceIntPtr dev, TouchPointInfoPtr ti,
     Bool check_core = InputDevIsMaster(dev) && ti.emulate_pointer;
 
     /* FIXME: make CheckPassiveGrabsOnWindow only trigger on TouchBegin */
-    grab = CheckPassiveGrabsOnWindow(win, dev, ev, check_core, FALSE);
+    grab = CheckPassiveGrabsOnWindow(win, dev, ev, cast(ubyte)check_core, FALSE);
     if (!grab)
         return;
 
@@ -706,14 +710,14 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
     TouchListenerType type = TOUCH_LISTENER_REGULAR;
     int mask = void;
 
-    evtype = GetXI2Type(ev.any.type);
+    evtype = cast(ushort)GetXI2Type(ev.any.type);
     mask = EventIsDeliverable(dev, ev.any.type, win);
     if (!mask && !ti.emulate_pointer)
         return FALSE;
     else if (!mask) {           /* now try for pointer event */
         mask = EventIsDeliverable(dev, TouchGetPointerEventType(ev), win);
         if (mask) {
-            evtype = GetXI2Type(TouchGetPointerEventType(ev));
+            evtype = cast(ushort)GetXI2Type(cast(EventType)TouchGetPointerEventType(ev));
             type = TOUCH_LISTENER_POINTER_REGULAR;
         }
     }
@@ -723,7 +727,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
     inputMasks = mixin(wOtherInputMasks!("win"));
 
     if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
-        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next")); {
+        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next", q{
             if (!xi2mask_isset(iclients.xi2mask, dev, evtype))
                 continue;
 
@@ -733,14 +737,14 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
             TouchAddListener(ti, iclients.resource, RT_INPUTCLIENT, XI2,
                              type, TOUCH_LISTENER_AWAITING_BEGIN, win, null);
             return TRUE;
-        }
+        }));
     }
 
     if ((mask & EVENT_XI1_MASK) && (inputMasks != null)) {
-        int xitype = GetXIType(TouchGetPointerEventType(ev));
+        int xitype = GetXIType(cast(EventType)TouchGetPointerEventType(ev));
         Mask xi_filter = event_get_filter_from_type(dev, xitype);
 
-        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next")); {
+        mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next", q{
             if (!(iclients.mask[dev.id] & xi_filter))
                 continue;
 
@@ -750,11 +754,11 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
                              TOUCH_LISTENER_AWAITING_BEGIN,
                              win, null);
             return TRUE;
-        }
+        }));
     }
 
     if (mask & EVENT_CORE_MASK) {
-        int coretype = GetCoreType(TouchGetPointerEventType(ev));
+        int coretype = GetCoreType(cast(EventType)TouchGetPointerEventType(ev));
         Mask core_filter = event_get_filter_from_type(dev, coretype);
         OtherClients* oclients = void;
 
@@ -769,7 +773,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
         }
 
         /* all others */
-        mixin(nt_list_for_each_entry!("oclients", "mixin(wOtherClients!("win"))", "next")); {
+        mixin(nt_list_for_each_entry!("oclients", "mixin(wOtherClients!(`win`))", "next", q{
             if (!(oclients.mask & core_filter))
                 continue;
 
@@ -777,7 +781,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
             TouchAddListener(ti, oclients.resource, X11_RESTYPE_OTHERCLIENT, CORE,
                              type, TOUCH_LISTENER_AWAITING_BEGIN, win, null);
             return TRUE;
-        }
+        }));
     }
 
     return FALSE;
@@ -913,11 +917,11 @@ int TouchListenerAcceptReject(DeviceIntPtr dev, TouchPointInfoPtr ti, int listen
     }
 
     events = InitEventList(GetMaximumEventsNum());
-    BUG_RETURN_VAL_MSG(!events, BadAlloc, "Failed to allocate touch ownership events\n");
+    mixin(BUG_RETURN_VAL_MSG!("!events", "BadAlloc", "Failed to allocate touch ownership events\n"));
 
-    nev = GetTouchOwnershipEvents(events, dev, ti, mode,
+    nev = GetTouchOwnershipEvents(events, dev, ti, cast(ubyte)mode,
                                   ti.listeners[0].listener, 0);
-    BUG_WARN_MSG(nev == 0, "Failed to get touch ownership events\n");
+    mixin(BUG_WARN_MSG!("nev == 0", "Failed to get touch ownership events\n"));
 
     for (int i = 0; i < nev; i++)
         mieqProcessDeviceEvent(dev, events + i, null);

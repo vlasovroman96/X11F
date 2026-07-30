@@ -395,7 +395,7 @@ private int TellNoMap(WindowPtr pwin, Colormap* pmid)
 // pragma(msg, typeof(pwin.drawable.id).stringof);
             xE.u.colormap.window = cast(uint)pwin.drawable.id;
             xE.u.colormap.colormap = None;
-            xE.u.colormap.c_new = true;
+            xE.u.colormap.new_ = true;
             xE.u.colormap.state = ColormapUninstalled;
             xE.u.u.type = ColormapNotify;
 version (XINERAMA) {
@@ -435,7 +435,7 @@ version (XINERAMA) {
         xEvent xE;
             xE.u.colormap.window = cast(uint)pwin.drawable.id;
             xE.u.colormap.colormap = cast(uint)*pmid;
-            xE.u.colormap.c_new = false;
+            xE.u.colormap.new_ = false;
             xE.u.colormap.state = ColormapUninstalled;
             // xE.u.u.type = ColormapNotify;
             xE.u.u.type = ColormapNotify;
@@ -459,7 +459,7 @@ version (XINERAMA) {
         xEvent xE;
             xE.u.colormap.window = cast(uint)pwin.drawable.id;
             xE.u.colormap.colormap = cast(uint)*pmid;
-            xE.u.colormap.c_new = false;
+            xE.u.colormap.new_ = false;
             xE.u.colormap.state = ColormapInstalled;
             // xE.u.u.type = ColormapNotify;
             xE.u.u.type = ColormapNotify;

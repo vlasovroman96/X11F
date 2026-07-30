@@ -111,13 +111,13 @@ BOOL IsXTestDevice(DeviceIntPtr dev, DeviceIntPtr master);
 DeviceIntPtr GetXTestDevice(DeviceIntPtr master);
 
 void SendDevicePresenceEvent(int deviceid, int type);
-void DeliverDeviceClassesChangedEvent(int sourceid, Time time);
+// void DeliverDeviceClassesChangedEvent(int sourceid, Time time);
 
 /* touch support */
-int GetTouchEvents(InternalEvent* events, DeviceIntPtr pDev, uint ddx_touchid, ushort type, uint flags, const(ValuatorMask)* mask);
+// int GetTouchEvents(InternalEvent* events, DeviceIntPtr pDev, uint ddx_touchid, ushort type, uint flags, const(ValuatorMask)* mask);
 void QueueTouchEvents(DeviceIntPtr device, int type, uint ddx_touchid, int flags, const(ValuatorMask)* mask);
 // int GetTouchOwnershipEvents(InternalEvent* events, DeviceIntPtr pDev, TouchPointInfoPtr ti, ubyte mode, XID resource, uint flags);
-void GetDixTouchEnd(InternalEvent* ievent, DeviceIntPtr dev, TouchPointInfoPtr ti, uint flags);
+// void GetDixTouchEnd(InternalEvent* ievent, DeviceIntPtr dev, TouchPointInfoPtr ti, uint flags);
 void TouchInitDDXTouchPoint(DeviceIntPtr dev, DDXTouchPointInfoPtr ddxtouch);
 DDXTouchPointInfoPtr TouchBeginDDXTouch(DeviceIntPtr dev, uint ddx_id);
 void TouchEndDDXTouch(DeviceIntPtr dev, DDXTouchPointInfoPtr ti);
@@ -174,7 +174,7 @@ Bool WindowXI2MaskIsset(DeviceIntPtr dev, WindowPtr win, xEvent* ev);
 int GetXI2MaskByte(XI2Mask* mask, DeviceIntPtr dev, int event_type);
 // void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window child, Bool calcChild, InputLevel XILevel);
 Bool PointInBorderSize(WindowPtr pWin, int x, int y);
-WindowPtr XYToWindow(SpritePtr pSprite, int x, int y);
+// WindowPtr XYToWindow(SpritePtr pSprite, int x, int y);
 // int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win);
 // Bool ActivatePassiveGrab(DeviceIntPtr dev, GrabPtr grab, InternalEvent* ev, InternalEvent* real_event);
 // void ActivateGrabNoDelivery(DeviceIntPtr dev, GrabPtr grab, InternalEvent* event, InternalEvent* real_event);

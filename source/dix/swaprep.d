@@ -61,7 +61,9 @@ import include.dixstruct;
 import include.scrnintstr;
 import dix.swaprep;
 import include.globals;
-
+import os.io;
+import os.log;
+import std.conv;
 
 
 
@@ -411,8 +413,8 @@ void SClientMessageEvent(xEvent* from, xEvent* to)
     cpswapl(from.u.clientMessage.u.l.type, to.u.clientMessage.u.l.type);
     switch (from.u.u.detail) {
     case 8:
-        memmove(to.u.clientMessage.u.b.bytes,
-                from.u.clientMessage.u.b.bytes, 20);
+        memmove(to.u.clientMessage.u.b.bytes.ptr,
+                from.u.clientMessage.u.b.bytes.ptr, 20);
         break;
     case 16:
         cpswaps(from.u.clientMessage.u.s.shorts0,
@@ -525,7 +527,7 @@ void SwapConnSetupInfo(char* pInfo, char* pInfoT)
     pInfoT += nbytesVendor;
 
     /* The Pixmap formats don't need to be swapped, just copied. */
-    nbytesVendor = ((xPixmapFormat) * pConnSetup.numFormats).sizeof;
+    nbytesVendor = ((xPixmapFormat).sizeof * pConnSetup.numFormats);
     memcpy(pInfoT, pInfo, nbytesVendor);
     pInfo += nbytesVendor;
     pInfoT += nbytesVendor;
