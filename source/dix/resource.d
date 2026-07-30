@@ -153,6 +153,7 @@ import include.cursor;
 import Xext.xace;
 import core.stdc.assert_;
 import include.gcstruct;
+import os.log;
 
 version (XSERVER_DTRACE) {
 
@@ -273,7 +274,7 @@ private c_ulong GetDrawableBytes(DrawablePtr drawable)
  */
 private void GetPixmapBytes(void* value, XID id, ResourceSizePtr size)
 {
-    PixmapPtr pixmap = value;
+    PixmapPtr pixmap = cast(PixmapPtr)value;
 
     size.resourceSize = 0;
     size.pixmapRefSize = 0;
@@ -303,7 +304,7 @@ private void GetWindowBytes(void* value, XID id, ResourceSizePtr size)
 {
     SizeType pixmapSizeFunc = GetResourceTypeSizeFunc(X11_RESTYPE_PIXMAP);
     ResourceSizeRec pixmapSize = { 0, 0, 0 };
-    WindowPtr window = value;
+    WindowPtr window = cast(WindowPtr)value;
 
     /* Currently only pixmap bytes are reported to clients. */
     size.resourceSize = 0;
@@ -342,7 +343,7 @@ private void GetWindowBytes(void* value, XID id, ResourceSizePtr size)
  */
 private void FindWindowSubRes(void* value, FindAllRes func, void* cdata)
 {
-    WindowPtr window = value;
+    WindowPtr window = cast(WindowPtr)value;
 
     /* Currently only pixmap subresources are reported to clients. */
 
@@ -374,7 +375,7 @@ private void GetGcBytes(void* value, XID id, ResourceSizePtr size)
 {
     SizeType pixmapSizeFunc = GetResourceTypeSizeFunc(X11_RESTYPE_PIXMAP);
     ResourceSizeRec pixmapSize = { 0, 0, 0 };
-    GCPtr gc = value;
+    GCPtr gc = cast(GCPtr)value;
 
     /* Currently only pixmap bytes are reported to clients. */
     size.resourceSize = 0;
@@ -412,7 +413,7 @@ private void GetGcBytes(void* value, XID id, ResourceSizePtr size)
  */
 private void FindGCSubRes(void* value, FindAllRes func, void* cdata)
 {
-    GCPtr gc = value;
+    GCPtr gc = cast(GCPtr)value;
 
     /* Currently only pixmap subresources are reported to clients. */
 
@@ -510,15 +511,15 @@ RESTYPE CreateNewResourceType(DeleteType deleteFunc, const(char)* name)
 
     if (next & lastResourceClass)
         return 0;
-    types = reallocarray(resourceTypes, next + 1, typeof(*resourceTypes).sizeof);
+    types = cast(ResourceType*)reallocarray(resourceTypes, next + 1, typeof(*resourceTypes).sizeof);
     if (!types)
         return 0;
 
     lastResourceType = next;
     resourceTypes = types;
     resourceTypes[next].deleteFunc = deleteFunc;
-    resourceTypes[next].sizeFunc = GetDefaultBytes;
-    resourceTypes[next].findSubResFunc = DefaultFindSubRes;
+    resourceTypes[next].sizeFunc = &GetDefaultBytes;
+    resourceTypes[next].findSubResFunc = &DefaultFindSubRes;
     resourceTypes[next].errorValue = BadValue;
 
 static if (X_REGISTRY_RESOURCE) {
@@ -641,13 +642,13 @@ Bool InitClientResources(ClientPtr client)
         lastResourceClass = RC_LASTPREDEF;
         TypeMask = RC_LASTPREDEF - 1;
         free(resourceTypes);
-        resourceTypes = cast(ResourceType*) cast(predefTypes*) calloc(1, predefTypes.sizeof);
+        resourceTypes = cast(ResourceType*) calloc(1, predefTypes.sizeof);
         if (!resourceTypes)
             return FALSE;
         memcpy(resourceTypes, predefTypes.ptr, predefTypes.sizeof);
     }
     clientTable[i = client.index].resources =
-        calloc(INITBUCKETS, ResourcePtr.sizeof);
+        cast(_Resource**)calloc(INITBUCKETS, ResourcePtr.sizeof);
     if (!clientTable[i].resources)
         return FALSE;
     clientTable[i].buckets = INITBUCKETS;
@@ -675,8 +676,8 @@ int HashResourceID(XID id, uint numBits)
         mask = RESOURCE_ID_MASK;
     id &= mask;
     if (numBits < 9)
-        return (id ^ (id >> numBits) ^ (id >> (numBits<<1))) & ~((~0U) << numBits);
-    return (id ^ (id >> numBits)) & ~((~0U) << numBits);
+        return cast(int)((id ^ (id >> numBits) ^ (id >> (numBits<<1))) & ~((~0U) << numBits));
+    return cast(int)((id ^ (id >> numBits)) & ~((~0U) << numBits));
 }
 
 private XID AvailableID(int client, XID id, XID maxid, XID goodid)
@@ -710,9 +711,16 @@ void GetXIDRange(int client, Bool server, XID* minp, XID* maxp)
         for (ResourcePtr res = *resp++; res; res = res.next) {
             if ((res.id < id) || (res.id > maxid))
                 continue;
-            if (((res.id - id) >= (maxid - res.id)) ?
-                (goodid = AvailableID(client, id, res.id - 1, goodid)) :
-                ((goodid = AvailableID(client, res.id + 1, maxid, goodid)) == 0))
+
+            bool searchLeft = (res.id - id) >= (maxid - res.id);
+
+            if (searchLeft){
+                goodid = AvailableID(client, id, res.id - 1, goodid);
+            }
+            else{
+                goodid = AvailableID(client, res.id + 1, maxid, goodid);
+            }
+            if (goodid == 0)
                 maxid = res.id - 1;
             else
                 id = res.id + 1;
@@ -894,7 +902,7 @@ void FreeResource(XID id, RESTYPE skipDeleteFuncType)
         eltptr = &clientTable[cid].elements;
 
         prev = head;
-        while ((res = *prev)) {
+        while ((res = *prev) != null) {
             if (res.id == id) {
                 RESTYPE rtype = res.type;
 
@@ -926,7 +934,7 @@ void FreeResourceByType(XID id, RESTYPE type, Bool skipFree)
         head = &clientTable[cid].resources[HashResourceID(id, clientTable[cid].hashsize)];
 
         prev = head;
-        while ((res = *prev)) {
+        while ((res = *prev) != null) {
             if (res.id == id && res.type == type) {
 version (XSERVER_DTRACE) {
                 XSERVER_RESOURCE_FREE(res.id, res.type,
@@ -1062,7 +1070,7 @@ void FreeClientNeverRetainResources(ClientPtr client)
     eltptr = &clientTable[client.index].elements;
     for (int j = 0; j < clientTable[client.index].buckets; j++) {
         prev = &resources[j];
-        while ((this_ = *prev)) {
+        while ((this_ = *prev) != null) {
             RESTYPE rtype = this_.type;
 
             if (rtype & RC_NEVERRETAIN) {

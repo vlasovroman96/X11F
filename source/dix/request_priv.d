@@ -14,6 +14,7 @@ public import include.dixstruct;
 public import include.misc;    /* bytes_to_int32 */
 public import include.os;      /* WriteToClient */
 import dix.request_priv;
+import os.io;
 
 /*
  * @brief write rpc buffer to client and then clear it
@@ -62,7 +63,7 @@ pragma(inline, true) int __write_reply_hdr_and_rpcbuf(ClientPtr pClient, void* h
     if (rpcbuf.error)
         return BadAlloc;
 
-    xGenericReply* reply = hdrData;
+    xGenericReply* reply = cast(xGenericReply*)hdrData;
     reply.type = X_Reply;
     reply.length = (bytes_to_int32(hdrLen - xGenericReply.sizeof))
                   + x_rpcbuf_wsize_units(rpcbuf);

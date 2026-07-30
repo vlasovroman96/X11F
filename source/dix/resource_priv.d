@@ -12,6 +12,7 @@ public import include.callback;
 public import include.dix;
 public import include.resource;
 import dix.resource;
+import build.dix_config;
 
 enum RESOURCE_AND_CLIENT_COUNT = 29;
 
@@ -91,7 +92,7 @@ ClientPtr dixClientForOtherClients(OtherClientsPtr pOtherClients);
  * @return index of the client (within client or resource table)
  */
 pragma(inline, true) ushort dixClientIdForXID(XID xid) {
-    return cast(ushort)((mixin(CLIENT_BITS!(`xid`)) >> CLIENTOFFSET));
+    return cast(ushort)((CLIENT_BITS(xid) >> CLIENTOFFSET));
 }
 
 /*

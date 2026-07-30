@@ -220,7 +220,7 @@ enum string SwapRestS(string stuff) = `
 static if (HasVersion!"__GNUC__" && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))) {
 
 } else {
-pragma(inline, true) private void wrong_size()
+pragma(inline, true) void wrong_size()
 {
 }
 }
@@ -232,7 +232,7 @@ pragma(inline, true) private int __builtin_constant_p(int x)
 }
 }
 
-pragma(inline, true) private ulong bswap_64(ulong x)
+pragma(inline, true) ulong bswap_64(ulong x)
 {
     return (((x & 0xFF00000000000000uL) >> 56) |
             ((x & 0x00FF000000000000uL) >> 40) |
@@ -244,11 +244,11 @@ pragma(inline, true) private ulong bswap_64(ulong x)
             ((x & 0x00000000000000FFuL) << 56));
 }
 
-enum string swapll(string x) = `do { 
+enum string swapll(string x) = `
 		if (typeof(*(` ~ x ~ `)).sizeof != 8) 
 			wrong_size(); 
 		*(` ~ x ~ `) = bswap_64(*(` ~ x ~ `));          
-	} while (0)`;
+	`;
 
 pragma(inline, true) private uint bswap_32(uint x)
 {

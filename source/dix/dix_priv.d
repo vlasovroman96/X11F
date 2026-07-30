@@ -382,7 +382,7 @@ ClientPtr NextAvailableClient(void* ospriv);
  *
  * @param pClient pointer to client that has exception
  */
-void dixMarkClientException(ClientPtr pClient);
+// void dixMarkClientException(ClientPtr pClient);
 
 alias ClientSleepProcPtr = Bool function(ClientPtr client, void* closure);
 
