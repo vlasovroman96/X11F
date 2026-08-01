@@ -1,4 +1,4 @@
-module fbpixmap;
+module fb.fbpixmap;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -28,6 +28,7 @@ import build.dix_config;
 import core.stdc.stdlib;
 
 import fb.fb_priv;
+import dix.pixmap;
 
 version (FB_DEBUG) {
 
@@ -51,20 +52,20 @@ PixmapPtr fbCreatePixmap(ScreenPtr pScreen, int width, int height, int depth, ui
     if (base & 7)
         adjust = 8 - (base & 7);
     datasize += adjust;
-version (FB_DEBUG) {
-    datasize += 2 * paddedWidth;
-}
-    pPixmap = AllocatePixmap(pScreen, datasize);
+// version (FB_DEBUG) {
+//     datasize += 2 * paddedWidth;
+// }
+    pPixmap = AllocatePixmap(pScreen, cast(int)datasize);
     if (!pPixmap)
         return NullPixmap;
     pPixmap.drawable.type = DRAWABLE_PIXMAP;
     pPixmap.drawable.pScreen = pScreen;
-    pPixmap.drawable.depth = depth;
-    pPixmap.drawable.bitsPerPixel = bpp;
+    pPixmap.drawable.depth = cast(ubyte)depth;
+    pPixmap.drawable.bitsPerPixel = cast(ubyte)bpp;
     pPixmap.drawable.serialNumber = NEXT_SERIAL_NUMBER;
-    pPixmap.drawable.width = width;
-    pPixmap.drawable.height = height;
-    pPixmap.devKind = paddedWidth;
+    pPixmap.drawable.width = cast(ushort)width;
+    pPixmap.drawable.height = cast(ushort)height;
+    pPixmap.devKind = cast(int)paddedWidth;
     pPixmap.refcnt = 1;
     pPixmap.devPrivate.ptr = cast(void*) (cast(char*) pPixmap + base + adjust);
     pPixmap.primary_pixmap = null;
@@ -102,10 +103,10 @@ if (((` ~ rx1 ~ `) < (` ~ rx2 ~ `)) && ((` ~ ry1 ~ `) < (` ~ ry2 ~ `)) &&
 	` ~ fr ~ ` = RegionBoxptr(` ~ reg ~ `);				
 	` ~ r ~ ` = ` ~ fr ~ ` + (` ~ reg ~ `).data.numRects;				
     }								
-    ` ~ r ~ `.x1 = (` ~ rx1 ~ `);						
-    ` ~ r ~ `.y1 = (` ~ ry1 ~ `);						
-    ` ~ r ~ `.x2 = (` ~ rx2 ~ `);						
-    ` ~ r ~ `.y2 = (` ~ ry2 ~ `);						
+    ` ~ r ~ `.x1 = cast(short)(` ~ rx1 ~ `);						
+    ` ~ r ~ `.y1 = cast(short)(` ~ ry1 ~ `);						
+    ` ~ r ~ `.x2 = cast(short)(` ~ rx2 ~ `);						
+    ` ~ r ~ `.y2 = cast(short)(` ~ ry2 ~ `);						
     (` ~ reg ~ `).data.numRects++;					
     if(` ~ r ~ `.x1 < (` ~ reg ~ `).extents.x1)				
 	(` ~ reg ~ `).extents.x1 = ` ~ r ~ `.x1;				
@@ -131,7 +132,7 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
     BoxPtr prectO = void, prectN = void;
     BoxPtr FirstRect = void, rects = void, prectLineStart = void;
     Bool fInBox = void, fSame = void;
-    FbBits mask0 = FB_ALLONES & ~FbScrRight(FB_ALLONES, 1);
+    FbBits mask0 = FB_ALLONES & ~mixin(FbScrRight!("FB_ALLONES", "1"));
     FbBits* pwLine = void;
     int nWidth = void;
 
@@ -141,22 +142,22 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
     FirstRect = RegionBoxptr(pReg);
     rects = FirstRect;
 
-    fbPrepareAccess(&pPix.drawable);
+    mixin(fbPrepareAccess!("(&pPix.drawable)")~";");
 
     pwLine = cast(FbBits*) pPix.devPrivate.ptr;
     nWidth = pPix.devKind >> (FB_SHIFT - 3);
 
     width = pPix.drawable.width;
-    pReg.extents.x1 = width - 1;
-    pReg.extents.x2 = 0;
+    pReg.extents.x1 = cast(short)(width - 1);
+    pReg.extents.x2 = cast(short)(0);
     irectPrevStart = -1;
     for (h = 0; h < pPix.drawable.height; h++) {
         pw = pwLine;
         pwLine += nWidth;
-        irectLineStart = rects - FirstRect;
+        irectLineStart = cast(int)(rects - FirstRect);
         /* If the Screen left most bit of the word is set, we're starting in
          * a box */
-        if (READ(pw) & mask0) {
+        if (mixin(READ!("pw")) & mask0) {
             fInBox = TRUE;
             rx1 = 0;
         }
@@ -165,7 +166,7 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
         /* Process all words which are fully in the pixmap */
         pwLineEnd = pw + (width >> FB_SHIFT);
         for (base = 0; pw < pwLineEnd; base += FB_UNIT) {
-            w = READ(pw++);
+            w = mixin(READ!("pw++"));
             if (fInBox) {
                 if (!~w)
                     continue;
@@ -193,12 +194,12 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
                     }
                 }
                 /* Shift the word VISUALLY left one. */
-                w = FbScrLeft(w, 1);
+                w = mixin(FbScrLeft!("w", "1"));
             }
         }
         if (width & FB_MASK) {
             /* Process final partial word on line */
-            w = READ(pw++);
+            w = mixin(READ!("pw++"));
             for (ib = 0; ib < (width & FB_MASK); ib++) {
                 /* If the Screen left most bit of the word is set, we're
                  * starting a box */
@@ -218,7 +219,7 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
                     }
                 }
                 /* Shift the word VISUALLY left one. */
-                w = FbScrLeft(w, 1);
+                w = mixin(FbScrLeft!("w", "1"));
             }
         }
         /* If scanline ended with last bit set, end the box */
@@ -271,7 +272,7 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
         }
     }
 
-    fbFinishAccess(&pPix.drawable);
+    mixin(fbFinishAccess!("&pPix.drawable"));
 version (DEBUG) {
     if (!RegionIsValid(pReg))
         FatalError("Assertion failed file %s, line %d: expr\n", __FILE__,

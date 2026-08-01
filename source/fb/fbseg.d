@@ -31,10 +31,15 @@ import fb.fb_priv;
 import fb.fbbits;;
 
 import include.miline;
+import fb.fbbitsh;
+import fb.fbfill;
+import dix.gc;
+import core.stdc.config;
+import mi.mizerclip;
 
 enum string fbBresShiftMask(string mask,string dir,string bpp) = `((` ~ bpp ~ ` == FB_STIP_UNIT) ? 0 : 
-					((` ~ dir ~ ` < 0) ? FbStipLeft(` ~ mask ~ `,` ~ bpp ~ `) : 
-					 FbStipRight(` ~ mask ~ `,` ~ bpp ~ `)))`;
+					((` ~ dir ~ ` < 0) ? `~FbStipLeft!(mask, bpp)~` : `~
+					 FbStipRight!(mask, bpp)~`))`;
 
 private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x1, int y1, int e, int e1, int e3, int len)
 {
@@ -53,10 +58,10 @@ private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int s
     x1 = (x1 + dstXoff) * dstBpp;
     dst += x1 >> FB_STIP_SHIFT;
     x1 &= FB_STIP_MASK;
-    mask0 = FbStipMask(0, dstBpp);
-    mask = FbStipRight(mask0, x1);
+    mask0 = mixin(FbStipMask!("0", "dstBpp"));
+    mask = mixin(FbStipRight!("mask0", "x1"));
     if (signdx < 0)
-        mask0 = FbStipRight(mask0, FB_STIP_UNIT - dstBpp);
+        mask0 = mixin(FbStipRight!("mask0", "FB_STIP_UNIT - dstBpp"));
     if (signdy < 0)
         dstStride = -dstStride;
     if (axis == X_AXIS) {
@@ -65,7 +70,7 @@ private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int s
             bits |= mask;
             mask = mixin(fbBresShiftMask!(`mask`, `signdx`, `dstBpp`));
             if (!mask) {
-                WRITE(dst, FbDoMaskRRop(READ(dst), and, xor, bits));
+                mixin(WRITE!("dst", FbDoMaskRRop!(READ!("dst"), "and", "xor", "bits"))~";");
                 bits = 0;
                 dst += signdx;
                 mask = mask0;
@@ -73,7 +78,7 @@ private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int s
             e += e1;
             if (e >= 0) {
                 if (bits) {
-                    WRITE(dst, FbDoMaskRRop (READ(dst), and, xor, bits));
+                    mixin(WRITE!("dst", FbDoMaskRRop!(READ!("dst"), "and", "xor", "bits"))~";");
                     bits = 0;
                 }
                 dst += dstStride;
@@ -81,11 +86,11 @@ private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int s
             }
         }
         if (bits)
-            WRITE(dst, FbDoMaskRRop(READ(dst), and, xor, bits));
+            mixin(WRITE!("dst", FbDoMaskRRop!(READ!("dst"), "and", "xor", "bits"))~";");
     }
     else {
         while (len--) {
-            WRITE(dst, FbDoMaskRRop(READ(dst), and, xor, mask));
+            mixin(WRITE!("dst", FbDoMaskRRop!(READ!("dst"), "and", "xor", "mask"))~";");
             dst += dstStride;
             e += e1;
             if (e >= 0) {
@@ -115,7 +120,7 @@ private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int si
     FbStip bgxor = cast(FbStip) pPriv.bgxor;
     FbStip mask = void, mask0 = void;
 
-    FbDashDeclare;
+    mixin(FbDashDeclare);
     int dashlen = void;
     Bool even = void;
     Bool doOdd = void;
@@ -123,23 +128,23 @@ private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int si
     mixin(fbGetStipDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     doOdd = pGC.lineStyle == LineDoubleDash;
 
-    FbDashInit(pGC, pPriv, dashOffset, dashlen, even);
+    mixin(FbDashInit!("pGC", "pPriv", "dashOffset", "dashlen", "even"));
 
     dst += ((y1 + dstYoff) * dstStride);
     x1 = (x1 + dstXoff) * dstBpp;
     dst += x1 >> FB_STIP_SHIFT;
     x1 &= FB_STIP_MASK;
-    mask0 = FbStipMask(0, dstBpp);
-    mask = FbStipRight(mask0, x1);
+    mask0 = mixin(FbStipMask!("0", "dstBpp"));
+    mask = mixin(FbStipRight!("mask0", "x1"));
     if (signdx < 0)
-        mask0 = FbStipRight(mask0, FB_STIP_UNIT - dstBpp);
+        mask0 = mixin(FbStipRight!("mask0", "FB_STIP_UNIT - dstBpp"));
     if (signdy < 0)
         dstStride = -dstStride;
     while (len--) {
         if (even)
-            WRITE(dst, FbDoMaskRRop(READ(dst), and, xor, mask));
+            mixin(WRITE!("dst", FbDoMaskRRop!(READ!("dst"), "and", "xor", "mask"))~";");
         else if (doOdd)
-            WRITE(dst, FbDoMaskRRop(READ(dst), bgand, bgxor, mask));
+            mixin(WRITE!("dst", FbDoMaskRRop!(READ!("dst"), "bgand", "bgxor", "mask"))~";");
         if (axis == X_AXIS) {
             mask = mixin(fbBresShiftMask!(`mask`, `signdx`, `dstBpp`));
             if (!mask) {
@@ -164,7 +169,7 @@ private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int si
                 }
             }
         }
-        FbDashStep(dashlen, even);
+        mixin(FbDashStep!("dashlen", "even"));
     }
 
     mixin(fbFinishAccess!("pDrawable"));
@@ -199,7 +204,7 @@ private void fbSetFg(DrawablePtr pDrawable, GCPtr pGC, Pixel fg)
         ChangeGCVal val = void;
 
         val.val = fg;
-        ChangeGC(null, pGC, GCForeground, &val);
+        ChangeGC(null, pGC, cast(uint)GCForeground, &val);
         ValidateGC(pDrawable, pGC);
     }
 }
@@ -208,7 +213,7 @@ private void fbBresFillDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, in
 {
     FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
 
-    FbDashDeclare;
+    mixin(FbDashDeclare);
     int dashlen = void;
     Bool even = void;
     Bool doOdd = void;
@@ -225,7 +230,7 @@ private void fbBresFillDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, in
                      pGC.fillStyle == FillStippled);
 
     /* compute current dash position */
-    FbDashInit(pGC, pPriv, dashOffset, dashlen, even);
+    mixin(FbDashInit!("pGC", "pPriv", "dashOffset", "dashlen", "even"));
 
     while (len--) {
         if (even || doOdd) {
@@ -253,7 +258,7 @@ private void fbBresFillDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, in
                 x1 += signdx;
             }
         }
-        FbDashStep(dashlen, even);
+        mixin(FbDashStep!("dashlen", "even"));
     }
     if (doBg)
         fbSetFg(pDrawable, pGC, fg);
@@ -272,40 +277,41 @@ private FbBres* fbSelectBres(DrawablePtr pDrawable, GCPtr pGC)
     FbBres* bres = void;
 
     if (pGC.lineStyle == LineSolid) {
-        bres = fbBresFill;
+        bres = &fbBresFill;
         if (pGC.fillStyle == FillSolid) {
-            bres = fbBresSolid;
+            bres = &fbBresSolid;
             if (pPriv.and == 0) {
                 switch (dstBpp) {
                 case 8:
-                    bres = fbBresSolid8;
+                    bres = &fbBresSolid8;
                     break;
                 case 16:
-                    bres = fbBresSolid16;
+                    bres = &fbBresSolid16;
                     break;
                 case 32:
-                    bres = fbBresSolid32;
+                    bres = &fbBresSolid32;
                     break;
                 default: break;}
             }
         }
     }
     else {
-        bres = fbBresFillDash;
+        bres = &fbBresFillDash;
         if (pGC.fillStyle == FillSolid) {
-            bres = fbBresDash;
+            bres = &fbBresDash;
             if (pPriv.and == 0 &&
                 (pGC.lineStyle == LineOnOffDash || pPriv.bgand == 0)) {
                 switch (dstBpp) {
                 case 8:
-                    bres = fbBresDash8;
+                    bres = &fbBresDash8;
                     break;
                 case 16:
-                    bres = fbBresDash16;
+                    bres = &fbBresDash16;
                     break;
                 case 32:
-                    bres = fbBresDash32;
+                    bres = &fbBresDash32;
                     break;
+
                 default: break;}
             }
         }
@@ -329,7 +335,7 @@ void fbSegment(DrawablePtr pDrawable, GCPtr pGC, int x1, int y1, int x2, int y2,
     int octant = void;
     int dashoff = void;
     int doff = void;
-    uint bias = miGetZeroLineBias(pDrawable.pScreen);
+    uint bias = cast(uint)mixin(miGetZeroLineBias!("pDrawable.pScreen"));
     uint oc1 = void;           /* outcode of point 1 */
     uint oc2 = void;           /* outcode of point 2 */
 
@@ -338,7 +344,7 @@ void fbSegment(DrawablePtr pDrawable, GCPtr pGC, int x1, int y1, int x2, int y2,
 
     bres = fbSelectBres(pDrawable, pGC);
 
-    CalcLineDeltas(x1, y1, x2, y2, adx, ady, signdx, signdy, 1, 1, octant);
+    mixin(CalcLineDeltas!("x1", "y1", "x2", "y2", "adx", "ady", "signdx", "signdy", "1", "1", "octant"));
 
     if (adx > ady) {
         axis = X_AXIS;
@@ -352,11 +358,11 @@ void fbSegment(DrawablePtr pDrawable, GCPtr pGC, int x1, int y1, int x2, int y2,
         e1 = adx << 1;
         e2 = e1 - (ady << 1);
         e = e1 - ady;
-        SetYMajorOctant(octant);
+        mixin(SetYMajorOctant!("octant")~";");
         len = ady;
     }
 
-    FIXUP_ERROR(e, octant, bias);
+    mixin(FIXUP_ERROR!("e", "octant", "bias")~";");
 
     /*
      * Adjust error terms to compare against zero
@@ -375,8 +381,8 @@ void fbSegment(DrawablePtr pDrawable, GCPtr pGC, int x1, int y1, int x2, int y2,
     while (nBox--) {
         oc1 = 0;
         oc2 = 0;
-        OUTCODES(oc1, x1, y1, pBox);
-        OUTCODES(oc2, x2, y2, pBox);
+        mixin(OUTCODES!("oc1", "x1", "y1", "pBox"));
+        mixin(OUTCODES!("oc2", "x2", "y2", "pBox"));
         if ((oc1 | oc2) == 0) {
             (*bres) (pDrawable, pGC, dashoff,
                      signdx, signdy, axis, x1, y1, e, e1, e3, len);

@@ -102,9 +102,9 @@ enum string WindowDrawable(string type) = `
 
 extern int PixmapScreenInit(ScreenPtr);
 
-extern int AllocatePixmap(ScreenPtr, int);
+// extern int AllocatePixmap(ScreenPtr, int);
 
-extern int FreePixmap(PixmapPtr);
+// extern int FreePixmap(PixmapPtr);
 
 // extern int PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary);
 

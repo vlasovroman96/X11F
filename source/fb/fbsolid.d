@@ -37,27 +37,27 @@ void fbSolid(FbBits* dst, FbStride dstStride, int dstX, int bpp, int width, int 
 
     dst += dstX >> FB_SHIFT;
     dstX &= FB_MASK;
-    FbMaskBitsBytes(dstX, width, and == 0, startmask, startbyte,
-                    nmiddle, endmask, endbyte);
+    mixin(FbMaskBitsBytes!("dstX", "width", "and == 0", "startmask", "startbyte",
+                    "nmiddle", "endmask", "endbyte"));
     if (startmask)
         dstStride--;
     dstStride -= nmiddle;
     while (height--) {
         if (startmask) {
-            FbDoLeftMaskByteRRop(dst, startbyte, startmask, and, xor);
+            mixin(FbDoLeftMaskByteRRop!("dst", "startbyte", "startmask", "and", "xor"));
             dst++;
         }
         n = nmiddle;
         if (!and)
             while (n--)
-                WRITE(dst++, xor);
+                mixin(WRITE!("dst++", "xor")~";");
         else
             while (n--) {
-                WRITE(dst, FbDoRRop(READ(dst), and, xor));
+                mixin(WRITE!("dst", FbDoRRop!(READ!("dst"), "and", "xor"))~";");
                 dst++;
             }
         if (endmask)
-            FbDoRightMaskByteRRop(dst, endbyte, endmask, and, xor);
+            mixin(FbDoRightMaskByteRRop!("dst", "endbyte", "endmask", "and", "xor"));
         dst += dstStride;
     }
 }

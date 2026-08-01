@@ -221,7 +221,7 @@ alias DestroyPixmapProcPtr = Bool function(PixmapPtr /*pPixmap */ ) @nogc nothro
 alias RealizeFontProcPtr = Bool function(ScreenPtr /*pScreen */ ,
                                     FontPtr /*pFont */ ) @nogc nothrow;
 
-alias UnrealizeFontProcPtr = void function(ScreenPtr /*pScreen */ ,
+alias UnrealizeFontProcPtr = Bool function(ScreenPtr /*pScreen */ ,
                                       FontPtr /*pFont */ ) @nogc nothrow;
 
 alias ConstrainCursorProcPtr = void function(DeviceIntPtr /*pDev */ ,
@@ -286,9 +286,9 @@ alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
                                     int /*ndef */ ,
                                     xColorItem * /*pdef */ ) @nogc nothrow;
 
-alias ResolveColorProcPtr = void function(ubyte * /*pred */ ,
-                                     ubyte * /*pgreen */ ,
-                                     ubyte * /*pblue */ ,
+alias ResolveColorProcPtr = void function(ushort * /*pred */ ,
+                                     ushort * /*pgreen */ ,
+                                     ushort * /*pblue */ ,
                                      VisualPtr /*pVisual */ ) @nogc nothrow;
 
 alias BitmapToRegionProcPtr = pixman_region16* function(PixmapPtr /*pPix */ ) @nogc nothrow;

@@ -131,6 +131,6 @@ extern DevPrivateKeyRec miZeroLineScreenKeyRec;
 
 enum miZeroLineScreenKey = (&miZeroLineScreenKeyRec);
 
-extern void  miZeroClipLine(int, int, int, int, int*, int*, int*, int*, uint, uint, int*, int*, int, uint, int, int);
+// extern void  miZeroClipLine(int, int, int, int, int*, int*, int*, int*, uint, uint, int*, int*, int, uint, int, int);
 
                           /* MILINE_H */

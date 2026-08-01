@@ -44,8 +44,8 @@ void fbEvenTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height
 
     dst += dstX >> FB_SHIFT;
     dstX &= FB_MASK;
-    FbMaskBitsBytes(dstX, width, FbDestInvarientRop(alu, pm),
-                    startmask, startbyte, nmiddle, endmask, endbyte);
+    mixin(FbMaskBitsBytes!("dstX", "width", FbDestInvarientRop!("alu", "pm"),
+                    "startmask", "startbyte", "nmiddle", "endmask", "endbyte"));
     if (startmask)
         dstStride--;
     dstStride -= nmiddle;
@@ -54,9 +54,9 @@ void fbEvenTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height
      * Compute tile start scanline and rotation parameters
      */
     tileEnd = tile + tileHeight * tileStride;
-    modulus(-yRot, tileHeight, tileY);
+    mixin(modulus!("-yRot", "tileHeight", "tileY"));
     t = tile + tileY * tileStride;
-    modulus(-xRot, FB_UNIT, tileX);
+    mixin(modulus!("-xRot", "FB_UNIT", "tileX"));
     rot = tileX;
 
     while (height--) {
@@ -64,29 +64,29 @@ void fbEvenTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height
         /*
          * Pick up bits for this scanline
          */
-        bits = READ(t);
+        bits = mixin(READ!("t"));
         t += tileStride;
         if (t >= tileEnd)
             t = tile;
-        bits = FbRotLeft(bits, rot);
-        and = fbAnd(alu, bits, pm);
-        xor = fbXor(alu, bits, pm);
+        bits = mixin(FbRotLeft!("bits", "rot"));
+        and = mixin(fbAnd!("alu", "bits", "pm"));
+        xor = mixin(fbXor!("alu", "bits", "pm"));
 
         if (startmask) {
-            FbDoLeftMaskByteRRop(dst, startbyte, startmask, and, xor);
+            mixin(FbDoLeftMaskByteRRop!("dst", "startbyte", "startmask", "and", "xor"));
             dst++;
         }
         n = nmiddle;
         if (!and)
             while (n--)
-                WRITE(dst++, xor);
+                mixin(WRITE!("dst++", "xor")~";");
         else
             while (n--) {
-                WRITE(dst, FbDoRRop(READ(dst), and, xor));
+                mixin(WRITE!("dst", FbDoRRop!(READ!("dst"), "and", "xor"))~";");
                 dst++;
             }
         if (endmask)
-            FbDoRightMaskByteRRop(dst, endbyte, endmask, and, xor);
+            mixin(FbDoRightMaskByteRRop!("dst", "endbyte", "endmask", "and", "xor"));
         dst += dstStride;
     }
 }
@@ -98,7 +98,7 @@ void fbOddTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height,
     int h = void, w = void;
     int x = void, y = void;
 
-    modulus(-yRot, tileHeight, tileY);
+    mixin(modulus!("-yRot", "tileHeight", "tileY"));
     y = 0;
     while (height) {
         h = tileHeight - tileY;
@@ -107,7 +107,7 @@ void fbOddTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height,
         height -= h;
         widthTmp = width;
         x = dstX;
-        modulus(dstX - xRot, tileWidth, tileX);
+        mixin(modulus!("dstX - xRot", "tileWidth", "tileX"));
         while (widthTmp) {
             w = tileWidth - tileX;
             if (w > widthTmp)
@@ -128,7 +128,7 @@ void fbOddTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height,
 
 void fbTile(FbBits* dst, FbStride dstStride, int dstX, int width, int height, FbBits* tile, FbStride tileStride, int tileWidth, int tileHeight, int alu, FbBits pm, int bpp, int xRot, int yRot)
 {
-    if (FbEvenTile(tileWidth))
+    if (mixin(FbEvenTile!("tileWidth")))
         fbEvenTile(dst, dstStride, dstX, width, height,
                    tile, tileStride, tileHeight, alu, pm, xRot, yRot);
     else

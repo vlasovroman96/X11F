@@ -1,4 +1,4 @@
-module mizerclip;
+module mi.mizerclip;
 @nogc nothrow:
 extern(C): __gshared:
 /***********************************************************

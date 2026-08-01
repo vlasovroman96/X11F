@@ -28,6 +28,12 @@ import build.dix_config;
 
 import fb.fb_priv;
 import os.osdep;
+import dix.pixmap;
+import dix.resource;
+import fb.fbpixmap;
+import fb.fbgc;
+import dix.dixutils;
+import mi.miscrinit;
 
 Bool fbCloseScreen(ScreenPtr pScreen)
 {
@@ -54,35 +60,36 @@ Bool fbUnrealizeFont(ScreenPtr pScreen, FontPtr pFont)
     return TRUE;
 }
 
-void fbQueryBestSize(int class_, ushort* width, ushort* height, ScreenPtr pScreen)
+void fbQueryBestSize(int class_, ubyte* width, ubyte* height, ScreenPtr pScreen)
 {
     ushort w = void;
 
     switch (class_) {
     case CursorShape:
         if (*width > pScreen.width)
-            *width = pScreen.width;
+            *width = cast(ubyte)pScreen.width;
         if (*height > pScreen.height)
-            *height = pScreen.height;
+            *height = cast(ubyte)pScreen.height;
         break;
     case TileShape:
     case StippleShape:
         w = *width;
         if ((w & (w - 1)) && w < FB_UNIT) {
             for (w = 1; w < *width; w <<= 1){}
-            *width = w;
+            *width = cast(ubyte)w;
         }
+    goto default;
     default: break;}
 }
 
 PixmapPtr _fbGetWindowPixmap(WindowPtr pWindow)
 {
-    return fbGetWindowPixmap(pWindow);
+    return mixin(fbGetWindowPixmap!("pWindow"));
 }
 
 void _fbSetWindowPixmap(WindowPtr pWindow, PixmapPtr pPixmap)
 {
-    dixSetPrivate(&pWindow.devPrivates, fbGetWinPrivateKey(pWindow), pPixmap);
+    dixSetPrivate(&pWindow.devPrivates, mixin(fbGetWinPrivateKey!("pWindow")), pPixmap);
 }
 
 Bool fbSetupScreen(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int bpp)
@@ -94,37 +101,40 @@ Bool fbSetupScreen(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpi
 	/* let CreateDefColormap do whatever it wants for pixels */
 	pScreen.blackPixel = pScreen.whitePixel = cast(Pixel) 0;
     }
-    pScreen.QueryBestSize = fbQueryBestSize;
+    pScreen.QueryBestSize = &fbQueryBestSize;
     /* SaveScreen */
-    pScreen.GetImage = fbGetImage;
-    pScreen.GetSpans = fbGetSpans;
-    pScreen.CreateWindow = fbCreateWindow;
-    pScreen.DestroyWindow = fbDestroyWindow;
-    pScreen.PositionWindow = fbPositionWindow;
-    pScreen.ChangeWindowAttributes = fbChangeWindowAttributes;
-    pScreen.RealizeWindow = fbRealizeWindow;
-    pScreen.UnrealizeWindow = fbUnrealizeWindow;
-    pScreen.CopyWindow = fbCopyWindow;
-    pScreen.CreatePixmap = fbCreatePixmap;
-    pScreen.DestroyPixmap = fbDestroyPixmap;
-    pScreen.RealizeFont = fbRealizeFont;
-    pScreen.UnrealizeFont = fbUnrealizeFont;
-    pScreen.CreateGC = fbCreateGC;
+    pScreen.GetImage = &fbGetImage;
+    pScreen.GetSpans = &fbGetSpans;
+    pScreen.CreateWindow = &fbCreateWindow;
+    pScreen.DestroyWindow = &fbDestroyWindow;
+    pScreen.PositionWindow = &fbPositionWindow;
+    pScreen.ChangeWindowAttributes = &fbChangeWindowAttributes;
+    pScreen.RealizeWindow = &fbRealizeWindow;
+    pScreen.UnrealizeWindow = &fbUnrealizeWindow;
+    pScreen.CopyWindow = &fbCopyWindow;
+    pScreen.CreatePixmap = &fbCreatePixmap;
+    pScreen.DestroyPixmap = &fbDestroyPixmap;
+    pScreen.RealizeFont = &fbRealizeFont;
+    pScreen.UnrealizeFont = &fbUnrealizeFont;
+    pScreen.CreateGC = &fbCreateGC;
     if (bpp == 1) {
-	pScreen.CreateColormap = mfbCreateColormap;
+	pScreen.CreateColormap = &mfbCreateColormap;
     } else {
-	pScreen.CreateColormap = fbInitializeColormap;
+	pScreen.CreateColormap = &fbInitializeColormap;
     }
-    pScreen.DestroyColormap = cast(void function(ColormapPtr)) NoopDDA;
-    pScreen.InstallColormap = fbInstallColormap;
-    pScreen.UninstallColormap = fbUninstallColormap;
-    pScreen.ListInstalledColormaps = fbListInstalledColormaps;
-    pScreen.StoreColors = cast(void function(ColormapPtr, int, xColorItem*)) NoopDDA;
-    pScreen.ResolveColor = fbResolveColor;
-    pScreen.BitmapToRegion = fbPixmapToRegion;
 
-    pScreen.GetWindowPixmap = _fbGetWindowPixmap;
-    pScreen.SetWindowPixmap = _fbSetWindowPixmap;
+    alias fn1 = extern(C) void function(ColormapPtr) @nogc nothrow;
+    alias fn2 = extern(C) void function(ColormapPtr, int, xColorItem*) @nogc nothrow;
+    pScreen.DestroyColormap = cast(fn1) &NoopDDA;
+    pScreen.InstallColormap = &fbInstallColormap;
+    pScreen.UninstallColormap = &fbUninstallColormap;
+    pScreen.ListInstalledColormaps = &fbListInstalledColormaps;
+    pScreen.StoreColors = cast(fn2) &NoopDDA;
+    pScreen.ResolveColor = &fbResolveColor;
+    pScreen.BitmapToRegion = &fbPixmapToRegion;
+
+    pScreen.GetWindowPixmap = &_fbGetWindowPixmap;
+    pScreen.SetWindowPixmap = &_fbSetWindowPixmap;
 
     return TRUE;
 }
@@ -187,7 +197,7 @@ else {
                         defaultVisual, nvisuals, visuals))
             return FALSE;
         /* overwrite miCloseScreen with our own */
-        pScreen.CloseScreen = fbCloseScreen;
+        pScreen.CloseScreen = &fbCloseScreen;
         return TRUE;
     }
 }

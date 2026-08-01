@@ -32,13 +32,14 @@ import include.fb;
 
 import include.picturestr;
 import include.damage;
+import externs.attrs;
 
 void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {
     pixman_image_t* image = void;
     int dst_xoff = void, dst_yoff = void;
 
-    if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) == 0))
+    if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) is null))
         return;
 
     assumeNoGC(&pixman_add_traps)(image, x_off + dst_xoff, y_off + dst_yoff,
@@ -52,7 +53,7 @@ void fbRasterizeTrapezoid(PicturePtr pPicture, xTrapezoid* trap, int x_off, int 
     pixman_image_t* image = void;
     int dst_xoff = void, dst_yoff = void;
 
-    if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) == 0))
+    if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) is null))
         return;
 
     assumeNoGC(&pixman_rasterize_trapezoid)(image, cast(pixman_trapezoid_t*) trap,
@@ -66,7 +67,7 @@ void fbAddTriangles(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntri, xTr
     pixman_image_t* image = void;
     int dst_xoff = void, dst_yoff = void;
 
-    if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) == 0))
+    if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) is null))
         return;
 
     assumeNoGC(&pixman_add_triangles)(image,

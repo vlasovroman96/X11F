@@ -860,7 +860,7 @@ private int FindColor(ColormapPtr pmap, EntryPtr pentFirst, int size, xrgb* prgb
 int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pixel* pPix, int client)
 {
     VisualPtr pVisual = pmap.pVisual;
-    (*pmap.pScreen.ResolveColor) (cast(ubyte*)pred, cast(ubyte*)pgreen, cast(ubyte*)pblue, pVisual);
+    (*pmap.pScreen.ResolveColor) (pred, pgreen, pblue, pVisual);
     xrgb rgb;
         rgb.red = *pred,
         rgb.green = *pgreen,
@@ -1040,7 +1040,7 @@ void FakeAllocColor(ColormapPtr pmap, xColorItem* item)
         green: item.green,
         blue: item.blue
     };
-    (*pmap.pScreen.ResolveColor) (cast(ubyte*)&rgb.red, cast(ubyte*)&rgb.green, cast(ubyte*)&rgb.blue, pVisual);
+    (*pmap.pScreen.ResolveColor) (&rgb.red, &rgb.green, &rgb.blue, pVisual);
 
     int class_ = pmap.class_;
     int entries = pVisual.ColormapEntries;
@@ -2162,7 +2162,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
             bool ok = TRUE;
 
             (*pmap.pScreen.ResolveColor)
-                (cast(ubyte*)&pdef.red, cast(ubyte*)&pdef.green, cast(ubyte*)&pdef.blue, pmap.pVisual);
+                (&pdef.red, &pdef.green, &pdef.blue, pmap.pVisual);
 
             if (pdef.pixel & rgbbad) {
                 errVal = BadValue;
@@ -2257,7 +2257,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
                 continue;
 
             (*pmap.pScreen.ResolveColor)
-                (cast(ubyte*)&pdef.red, cast(ubyte*)&pdef.green, cast(ubyte*)&pdef.blue, pmap.pVisual);
+                (&pdef.red, &pdef.green, &pdef.blue, pmap.pVisual);
 
             EntryPtr pent = &pmap.red[pdef.pixel];
 

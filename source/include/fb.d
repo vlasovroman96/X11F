@@ -423,11 +423,11 @@ extern void fbInstallColormap(ColormapPtr pmap);
 
 extern void fbUninstallColormap(ColormapPtr pmap);
 
-extern void fbResolveColor(ushort* pred, ushort* pgreen, ushort* pblue, VisualPtr pVisual);
+// extern void fbResolveColor(ushort* pred, ushort* pgreen, ushort* pblue, VisualPtr pVisual);
 
-extern void fbInitializeColormap(ColormapPtr pmap);
+// extern void fbInitializeColormap(ColormapPtr pmap);
 
-extern void mfbCreateColormap(ColormapPtr pmap);
+// extern void mfbCreateColormap(ColormapPtr pmap);
 
 extern void fbExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorItem* outdefs);
 
@@ -476,7 +476,7 @@ extern void fbFillSpans(DrawablePtr pDrawable, GCPtr pGC, int nInit, DDXPointPtr
  * fbgc.c
  */
 
-extern void fbCreateGC(GCPtr pGC);
+// extern void fbCreateGC(GCPtr pGC);
 
 extern void fbPadPixmap(PixmapPtr pPixmap);
 
@@ -528,9 +528,9 @@ extern void fbDestroyGlyphCache();
  * fbpixmap.c
  */
 
-extern void fbCreatePixmap(ScreenPtr pScreen, int width, int height, int depth, uint usage_hint);
+// extern void fbCreatePixmap(ScreenPtr pScreen, int width, int height, int depth, uint usage_hint);
 
-extern void fbDestroyPixmap(PixmapPtr pPixmap);
+// extern void fbDestroyPixmap(PixmapPtr pPixmap);
 
 extern void fbPixmapToRegion(PixmapPtr pPix);
 

@@ -50,7 +50,7 @@ enum string __FbMaskBits(string x,string w,string l,string n,string r) = `{
 /* Macros for dealing with dashing */
 
 enum FbDashDeclare =   
-    "ubyte       *__dash, *__firstDash, *__lastDash;";
+    "ubyte*       __dash, __firstDash, __lastDash;";
 
 enum string FbDashInit(string pGC,string pPriv,string dashOffset,string dashlen,string even) = `{     
     (` ~ even ~ `) = TRUE;                                          

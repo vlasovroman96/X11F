@@ -3029,9 +3029,9 @@ int ProcLookupColor(ClientPtr client)
         screenBlue: exactBlue
     };
 
-    pcmp.pScreen.ResolveColor(cast(ubyte*)&reply.screenRed,
-                                cast(ubyte*)&reply.screenGreen,
-                                cast(ubyte*)&reply.screenBlue,
+    pcmp.pScreen.ResolveColor(&reply.screenRed,
+                                &reply.screenGreen,
+                                &reply.screenBlue,
                                 pcmp.pVisual);
 
     if (client.swapped) {

@@ -27,7 +27,7 @@ import build.dix_config;
 
 import fb.fb_priv;
 
-alias FbDots = void function(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
+alias FbDots = extern(C) void function(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor) @nogc nothrow;
 
 private void fbDots(FbBits* dstOrig, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits andOrig, FbBits xorOrig)
 {
@@ -53,8 +53,8 @@ private void fbDots(FbBits* dstOrig, FbStride dstStride, int dstBpp, BoxPtr pBox
             d = dst + ((y + yoff) * dstStride) + (x >> FB_STIP_SHIFT);
             x &= FB_STIP_MASK;
 
-            mask = FbStipMask(x, dstBpp);
-            WRITE(d, FbDoMaskRRop(READ(d), and, xor, mask));
+            mask = mixin(FbStipMask!("x", "dstBpp"));
+            mixin(WRITE!("d", FbDoMaskRRop!(READ!("d"), "and", "xor", "mask"))~`;`);
         }
     }
 }
@@ -88,16 +88,16 @@ void fbPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int nptInit, xPoint
     mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     and = pPriv.and;
     xor = pPriv.xor;
-    dots = fbDots;
+    dots = &fbDots;
     switch (dstBpp) {
     case 8:
-        dots = fbDots8;
+        dots = &fbDots8;
         break;
     case 16:
-        dots = fbDots16;
+        dots = &fbDots16;
         break;
     case 32:
-        dots = fbDots32;
+        dots = &fbDots32;
         break;
     default: break;}
     for (nBox = RegionNumRects(pClip), pBox = RegionRects(pClip);

@@ -309,7 +309,7 @@ void DeleteWindowFromAnySaveSet(WindowPtr pWin)
  * colormaps, if someone calls install colormap, it's easier to have a dummy
  * procedure to call than to check if there's a procedure
  */
-void NoopDDA()
+extern(C) void NoopDDA() @nogc nothrow
 {
 }
 
