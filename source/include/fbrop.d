@@ -26,6 +26,7 @@ extern(C): __gshared:
  
 // //public import externs.X11.Xfuncproto;
 import include.fb;;
+import fb.fbutil;
 
 struct _mergeRopBits {
     FbBits ca1, cx1, ca2, cx2;
@@ -62,13 +63,13 @@ enum string FbDoMaskMergeRop(string src, string dst, string mask) = `
     (((` ~ dst ~ `) & ((((` ~ src ~ `) & _ca1) ^ _cx1) | ~(` ~ mask ~ `))) ^ ((((` ~ src ~ `) & _ca2) ^ _cx2) & (` ~ mask ~ `)))`;
 
 enum string FbDoLeftMaskByteMergeRop(string dst, string src, string lb, string l) = `{ 
-    FbBits __xor = ((` ~ src ~ `) & _ca2) ^ _cx2; 
-    FbDoLeftMaskByteRRop(` ~ dst ~ `,` ~ lb ~ `,` ~ l ~ `,((` ~ src ~ `) & _ca1) ^ _cx1,__xor); 
+    FbBits __xor = ((` ~ src ~ `) & _ca2) ^ _cx2; `~
+    FbDoLeftMaskByteRRop!(dst, lb, l, `((` ~ src ~ `) & _ca1) ^ _cx1`,`__xor`) ~`
 }`;
 
 enum string FbDoRightMaskByteMergeRop(string dst, string src, string rb, string r) = `{ 
-    FbBits __xor = ((` ~ src ~ `) & _ca2) ^ _cx2; 
-    FbDoRightMaskByteRRop(` ~ dst ~ `,` ~ rb ~ `,` ~ r ~ `,((` ~ src ~ `) & _ca1) ^ _cx1,__xor); 
+    FbBits __xor = ((` ~ src ~ `) & _ca2) ^ _cx2; `~
+    FbDoRightMaskByteRRop!(dst, rb, r, `((` ~ src ~ `) & _ca1) ^ _cx1`,`__xor`) ~` 
 }`;
 
 enum string FbDoRRop(string dst, string and, string xor) = `(((` ~ dst ~ `) & (` ~ and ~ `)) ^ (` ~ xor ~ `))`;
@@ -107,13 +108,13 @@ enum string FbStippleRRopMask(string dst, string b, string fa, string fx, string
     (` ~ FbDoMaskRRop!(dst, fa, fx, m) ~ ` & (` ~ b ~ `)) | (` ~ FbDoMaskRRop!(dst, ba, bx, m) ~ ` & ~(` ~ b ~ `))`;
 
 enum string FbDoLeftMaskByteStippleRRop(string dst, string b, string fa, string fx, string ba, string bx, string lb, string l) = `{ 
-    FbBits __xor = ((` ~ fx ~ `) & (` ~ b ~ `)) | ((` ~ bx ~ `) & ~(` ~ b ~ `)); 
-    FbDoLeftMaskByteRRop(` ~ dst ~ `, ` ~ lb ~ `, ` ~ l ~ `, ((` ~ fa ~ `) & (` ~ b ~ `)) | ((` ~ ba ~ `) & ~(` ~ b ~ `)), __xor); 
+    FbBits __xor = ((` ~ fx ~ `) & (` ~ b ~ `)) | ((` ~ bx ~ `) & ~(` ~ b ~ `)); `~
+    FbDoLeftMaskByteRRop!(dst, lb, l , `((`~fa~`) & (` ~ b ~ `)) | ((` ~ ba ~ `) & ~(` ~ b ~ `))`, `__xor`)~`; 
 }`;
 
 enum string FbDoRightMaskByteStippleRRop(string dst, string b, string fa, string fx, string ba, string bx, string rb, string r) = `{ 
-    FbBits __xor = ((` ~ fx ~ `) & (` ~ b ~ `)) | ((` ~ bx ~ `) & ~(` ~ b ~ `)); 
-    FbDoRightMaskByteRRop(` ~ dst ~ `, ` ~ rb ~ `, ` ~ r ~ `, ((` ~ fa ~ `) & (` ~ b ~ `)) | ((` ~ ba ~ `) & ~(` ~ b ~ `)), __xor); 
+    FbBits __xor = ((` ~ fx ~ `) & (` ~ b ~ `)) | ((` ~ bx ~ `) & ~(` ~ b ~ `)); `~
+    FbDoRightMaskByteRRop!(dst, rb, r , `((` ~ fa ~ `) & (` ~ b ~ `)) | ((` ~ ba ~ `) & ~(` ~ b ~ `))`, "__xor")~` 
 }`;
 
 enum string FbOpaqueStipple(string b, string fg, string bg) = `(((` ~ fg ~ `) & (` ~ b ~ `)) | ((` ~ bg ~ `) & ~(` ~ b ~ `)))`;

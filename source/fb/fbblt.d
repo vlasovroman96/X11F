@@ -30,13 +30,14 @@ import include.fb;
 
 version (FB_ACCESS_WRAPPER) {
 
-enum string MEMCPY_WRAPPED(string dst, string src, string size) = `do {                       
-    size_t _i = void;                                                    
-    CARD8* _dst = cast(CARD8*)(` ~ dst ~ `), _src = cast(CARD8*)(` ~ src ~ `);           
-    for(_i = 0; _i < ` ~ size ~ `; _i++) {                                
-        WRITE(_dst +_i, READ(_src + _i));                         
+enum string MEMCPY_WRAPPED(string dst, string src, string size) = `{                       
+        size_t _i = void;                                                    
+        CARD8* _dst = cast(CARD8*)(` ~ dst ~ `), _src = cast(CARD8*)(` ~ src ~ `);           
+        for(_i = 0; _i < ` ~ size ~ `; _i++) {                                
+            WRITE(_dst +_i, READ(_src + _i));                         
+        }
     }                                                             
-} while(0)`;
+`;
 
 enum string MEMSET_WRAPPED(string dst, string val, string size) = `do {                       
     size_t _i = void;                                                    
@@ -48,8 +49,8 @@ enum string MEMSET_WRAPPED(string dst, string val, string size) = `do {
 
 } else {
 
-enum string MEMCPY_WRAPPED(string dst, string src, string size) = `memcpy((` ~ dst ~ `), (` ~ src ~ `), (` ~ size ~ `))`;
-enum string MEMSET_WRAPPED(string dst, string val, string size) = `memset((` ~ dst ~ `), (` ~ val ~ `), (` ~ size ~ `))`;
+enum string MEMCPY_WRAPPED(string dst, string src, string size) = `memcpy((` ~ dst ~ `), (` ~ src ~ `), (` ~ size ~ `));`;
+enum string MEMSET_WRAPPED(string dst, string val, string size) = `memset((` ~ dst ~ `), (` ~ val ~ `), (` ~ size ~ `));`;
 
 } /* FB_ACCESS_WRAPPER */
 
@@ -77,7 +78,7 @@ void fbBlt(FbBits* srcLine, FbStride srcStride, int srcX, FbBits* dstLine, FbStr
     Bool destInvarient = void;
     int startbyte = void, endbyte = void;
 
-    FbDeclareMergeRop();
+    mixin(FbDeclareMergeRop!());
 
     if (alu == GXcopy && pm == FB_ALLONES &&
         !(srcX & 7) && !(dstX & 7) && !(width & 7))
@@ -112,16 +113,16 @@ void fbBlt(FbBits* srcLine, FbStride srcStride, int srcX, FbBits* dstLine, FbStr
         }
     }
 
-    FbInitializeMergeRop(alu, pm);
-    destInvarient = FbDestInvarientMergeRop();
+    mixin(FbInitializeMergeRop!("alu", "pm"));
+    destInvarient = mixin(FbDestInvarientMergeRop!());
     if (upsidedown) {
         srcLine += (height - 1) * (srcStride);
         dstLine += (height - 1) * (dstStride);
         srcStride = -srcStride;
         dstStride = -dstStride;
     }
-    FbMaskBitsBytes(dstX, width, destInvarient, startmask, startbyte,
-                    nmiddle, endmask, endbyte);
+    mixin(FbMaskBitsBytes!("dstX", "width", "destInvarient", "startmask", "startbyte",
+                    "nmiddle", "endmask", "endbyte"));
     if (reverse) {
         srcLine += ((srcX + width - 1) >> FB_SHIFT) + 1;
         dstLine += ((dstX + width - 1) >> FB_SHIFT) + 1;
@@ -142,71 +143,71 @@ void fbBlt(FbBits* srcLine, FbStride srcStride, int srcX, FbBits* dstLine, FbStr
             dstLine += dstStride;
             if (reverse) {
                 if (endmask) {
-                    bits = READ(--src);
+                    bits = mixin(READ!("--src"));
                     --dst;
-                    FbDoRightMaskByteMergeRop(dst, bits, endbyte, endmask);
+                    mixin(FbDoRightMaskByteMergeRop!("dst", "bits", "endbyte", "endmask"));
                 }
                 n = nmiddle;
                 if (destInvarient) {
                     while (n--)
-                        WRITE(--dst, FbDoDestInvarientMergeRop(READ(--src)));
+                        mixin(WRITE!("--dst", FbDoDestInvarientMergeRop!(READ!("--src")))~`;`);
                 }
                 else {
                     while (n--) {
-                        bits = READ(--src);
+                        bits = mixin(READ!("--src"));
                         --dst;
-                        WRITE(dst, FbDoMergeRop(bits, READ(dst)));
+                        mixin(WRITE!("dst", FbDoMergeRop!("bits", READ!("dst")))~';');
                     }
                 }
                 if (startmask) {
-                    bits = READ(--src);
+                    bits = mixin(READ!("--src"));
                     --dst;
-                    FbDoLeftMaskByteMergeRop(dst, bits, startbyte, startmask);
+                    mixin(FbDoLeftMaskByteMergeRop!("dst", "bits", "startbyte", "startmask"));
                 }
             }
             else {
                 if (startmask) {
-                    bits = READ(src++);
-                    FbDoLeftMaskByteMergeRop(dst, bits, startbyte, startmask);
+                    bits = mixin(READ!("src++"));
+                    mixin(FbDoLeftMaskByteMergeRop!("dst", "bits", "startbyte", "startmask"));
                     dst++;
                 }
                 n = nmiddle;
                 if (destInvarient) {
 version (none) {
-                    /*
-                     * This provides some speedup on screen->screen blts
-                     * over the PCI bus, usually about 10%.  But fb
-                     * isn't usually used for this operation...
-                     */
-                    if (_ca2 + 1 == 0 && _cx2 == 0) {
-                        FbBits t1 = void, t2 = void, t3 = void, t4 = void;
+                    // /*
+                    //  * This provides some speedup on screen->screen blts
+                    //  * over the PCI bus, usually about 10%.  But fb
+                    //  * isn't usually used for this operation...
+                    //  */
+                    // if (_ca2 + 1 == 0 && _cx2 == 0) {
+                    //     FbBits t1 = void, t2 = void, t3 = void, t4 = void;
 
-                        while (n >= 4) {
-                            t1 = *src++;
-                            t2 = *src++;
-                            t3 = *src++;
-                            t4 = *src++;
-                            *dst++ = t1;
-                            *dst++ = t2;
-                            *dst++ = t3;
-                            *dst++ = t4;
-                            n -= 4;
-                        }
-                    }
+                    //     while (n >= 4) {
+                    //         t1 = *src++;
+                    //         t2 = *src++;
+                    //         t3 = *src++;
+                    //         t4 = *src++;
+                    //         *dst++ = t1;
+                    //         *dst++ = t2;
+                    //         *dst++ = t3;
+                    //         *dst++ = t4;
+                    //         n -= 4;
+                    //     }
+                    // }
 }
                     while (n--)
-                        WRITE(dst++, FbDoDestInvarientMergeRop(READ(src++)));
+                        mixin(WRITE!("dst++", FbDoDestInvarientMergeRop!(READ!("src++")))~`;`);
                 }
                 else {
                     while (n--) {
-                        bits = READ(src++);
-                        WRITE(dst, FbDoMergeRop(bits, READ(dst)));
+                        bits = mixin(READ!("src++"));
+                        mixin(WRITE!("dst", FbDoMergeRop!("bits", READ!("dst")))~`;`);
                         dst++;
                     }
                 }
                 if (endmask) {
-                    bits = READ(src);
-                    FbDoRightMaskByteMergeRop(dst, bits, endbyte, endmask);
+                    bits = mixin(READ!("src"));
+                    mixin(FbDoRightMaskByteMergeRop!("dst", "bits", "endbyte", "endmask"));
                 }
             }
         }
@@ -229,83 +230,83 @@ version (none) {
             bits1 = 0;
             if (reverse) {
                 if (srcX < dstX)
-                    bits1 = READ(--src);
+                    bits1 = mixin(READ!("--src"));
                 if (endmask) {
-                    bits = FbScrRight(bits1, rightShift);
-                    if (FbScrRight(endmask, leftShift)) {
-                        bits1 = READ(--src);
-                        bits |= FbScrLeft(bits1, leftShift);
+                    bits = mixin(FbScrRight!("bits1", "rightShift"));
+                    if (mixin(FbScrRight!("endmask", "leftShift"))) {
+                        bits1 = mixin(READ!("--src"));
+                        bits |= mixin(FbScrLeft!("bits1", "leftShift"));
                     }
                     --dst;
-                    FbDoRightMaskByteMergeRop(dst, bits, endbyte, endmask);
+                    mixin(FbDoRightMaskByteMergeRop!("dst", "bits", "endbyte", "endmask"));
                 }
                 n = nmiddle;
                 if (destInvarient) {
                     while (n--) {
-                        bits = FbScrRight(bits1, rightShift);
-                        bits1 = READ(--src);
-                        bits |= FbScrLeft(bits1, leftShift);
+                        bits = mixin(FbScrRight!("bits1", "rightShift"));
+                        bits1 = mixin(READ!("--src"));
+                        bits |= mixin(FbScrLeft!("bits1", "leftShift"));
                         --dst;
-                        WRITE(dst, FbDoDestInvarientMergeRop(bits));
+                        mixin(WRITE!("dst", FbDoDestInvarientMergeRop!("bits"))~`;`);
                     }
                 }
                 else {
                     while (n--) {
-                        bits = FbScrRight(bits1, rightShift);
-                        bits1 = READ(--src);
-                        bits |= FbScrLeft(bits1, leftShift);
+                        bits = mixin(FbScrRight!("bits1", "rightShift"));
+                        bits1 = mixin(READ!("--src"));
+                        bits |= mixin(FbScrLeft!("bits1", "leftShift"));
                         --dst;
-                        WRITE(dst, FbDoMergeRop(bits, READ(dst)));
+                        mixin(WRITE!("dst", FbDoMergeRop!("bits", READ!("dst")))~`;`);
                     }
                 }
                 if (startmask) {
-                    bits = FbScrRight(bits1, rightShift);
-                    if (FbScrRight(startmask, leftShift)) {
-                        bits1 = READ(--src);
-                        bits |= FbScrLeft(bits1, leftShift);
+                    bits = mixin(FbScrRight!("bits1", "rightShift"));
+                    if (mixin(FbScrRight!("startmask", "leftShift"))) {
+                        bits1 = mixin(READ!("--src"));
+                        bits |= mixin(FbScrLeft!("bits1", "leftShift"));
                     }
                     --dst;
-                    FbDoLeftMaskByteMergeRop(dst, bits, startbyte, startmask);
+                    mixin(FbDoLeftMaskByteMergeRop!("dst", "bits", "startbyte", "startmask"));
                 }
             }
             else {
                 if (srcX > dstX)
-                    bits1 = READ(src++);
+                    bits1 = mixin(READ!("src++"));
                 if (startmask) {
-                    bits = FbScrLeft(bits1, leftShift);
-                    if (FbScrLeft(startmask, rightShift)) {
-                        bits1 = READ(src++);
-                        bits |= FbScrRight(bits1, rightShift);
+                    bits = mixin(FbScrLeft!("bits1", "leftShift"));
+                    if (mixin(FbScrLeft!("startmask", "rightShift"))) {
+                        bits1 = mixin(READ!("src++"));
+                        bits |= mixin(FbScrRight!("bits1", "rightShift"));
                     }
-                    FbDoLeftMaskByteMergeRop(dst, bits, startbyte, startmask);
+                    mixin(FbDoLeftMaskByteMergeRop!("dst", "bits", "startbyte", "startmask"));
                     dst++;
                 }
                 n = nmiddle;
                 if (destInvarient) {
                     while (n--) {
-                        bits = FbScrLeft(bits1, leftShift);
-                        bits1 = READ(src++);
-                        bits |= FbScrRight(bits1, rightShift);
-                        WRITE(dst, FbDoDestInvarientMergeRop(bits));
+                        bits = mixin(FbScrLeft!("bits1", "leftShift"));
+                        bits1 = mixin(READ!("src++"));
+                        bits |= mixin(FbScrRight!("bits1", "rightShift"));
+                        mixin(WRITE!("dst", FbDoDestInvarientMergeRop!("bits"))~`;`);
                         dst++;
                     }
                 }
                 else {
                     while (n--) {
-                        bits = FbScrLeft(bits1, leftShift);
-                        bits1 = READ(src++);
-                        bits |= FbScrRight(bits1, rightShift);
-                        WRITE(dst, FbDoMergeRop(bits, READ(dst)));
+                        bits = mixin(FbScrLeft!("bits1", "leftShift"));
+                        bits1 = mixin(READ!("src++"));
+                        bits |= mixin(FbScrRight!("bits1", "rightShift"));
+                        mixin(WRITE!("dst", FbDoMergeRop!("bits", READ!("dst")))~`;`);
                         dst++;
                     }
                 }
                 if (endmask) {
-                    bits = FbScrLeft(bits1, leftShift);
-                    if (FbScrLeft(endmask, rightShift)) {
-                        bits1 = READ(src);
-                        bits |= FbScrRight(bits1, rightShift);
+                    bits = mixin(FbScrLeft!("bits1", "leftShift"));
+                    if (mixin(FbScrLeft!("endmask", "rightShift"))) {
+                        bits1 = mixin(READ!("src"));
+                        bits |= mixin(FbScrRight!("bits1", "rightShift"));
                     }
-                    FbDoRightMaskByteMergeRop(dst, bits, endbyte, endmask);
+                    mixin(FbDoRightMaskByteMergeRop!("dst", "bits", "endbyte", "endmask"));
                 }
             }
         }

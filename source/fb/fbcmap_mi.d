@@ -39,7 +39,8 @@ import dix.colormap_priv;
 import fb.fb_priv;
 import mi.mi_priv;
 
-import micmap;
+import mi.micmap;
+import dix.colormap;
 
 int fbListInstalledColormaps(ScreenPtr pScreen, Colormap* pmaps)
 {
@@ -76,13 +77,13 @@ Bool mfbCreateColormap(ColormapPtr pmap)
     pScreen = pmap.pScreen;
     if (pScreen.whitePixel == 0)
     {
-	red0 = green0 = blue0 = ~0;
+	red0 = green0 = blue0 = cast(ushort)~0;
 	red1 = green1 = blue1 = 0;
     }
     else
     {
 	red0 = green0 = blue0 = 0;
-	red1 = green1 = blue1 = ~0;
+	red1 = green1 = blue1 = cast(ushort)~0;
     }
 
     /* this is a monochrome colormap, it only has two entries, just fill

@@ -10,11 +10,13 @@ extern(C): __gshared:
 
 public import include.fb;
 public import include.scrnintstr;
+public import fb.fballpriv;
+
 
 enum string FbBitsStrideToStipStride(string s) = `(((` ~ s ~ `) << (FB_SHIFT - FB_STIP_SHIFT)))`;
 
 /* NVidia v.340 legacy driver needs this symbol */
-extern void  fbGetGCPrivateKey(GCPtr pGC);
+// extern void  fbGetGCPrivateKey(GCPtr pGC);
 
 enum string fbGetGCPrivate(string pGC) = `(cast(FbGCPrivPtr)dixLookupPrivate(&(` ~ pGC ~ `).devPrivates, fbGetGCPrivateKey(` ~ pGC ~ `)))`;
 

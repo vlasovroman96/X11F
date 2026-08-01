@@ -79,7 +79,7 @@ void miMarkUnrealizedWindow(WindowPtr pChild, WindowPtr pWin, Bool fromConfigure
 WindowPtr miSpriteTrace(SpritePtr pSprite, int x, int y);
 WindowPtr miXYToWindow(ScreenPtr pScreen, SpritePtr pSprite, int x, int y);
 
-void  miExpandDirectColors(ColormapPtr, int, xColorItem*, xColorItem*);
+// void  miExpandDirectColors(ColormapPtr, int, xColorItem*, xColorItem*);
 
 union _MiValidate {
     struct BeforeValidate {

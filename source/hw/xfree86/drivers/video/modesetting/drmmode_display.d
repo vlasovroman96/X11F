@@ -46,7 +46,7 @@ import include.inputstr;
 import include.xf86str;
 //import externs.X11.Xatom;
 import include.mi;
-import micmap;
+import mi.micmap;
 import xf86cmap;
 import xf86DDC_priv;
 // import externs.libdrm;

@@ -44,6 +44,8 @@ public import include.mi;
 
 public import migc;
 public import include.picturestr;
+import fb.fballpriv;
+import include.fb;
 
 version (FB_ACCESS_WRAPPER) {
 
@@ -66,11 +68,11 @@ enum string READ(string ptr) = `(*(` ~ ptr ~ `))`;
  */
 
 enum FB_SHIFT =    LOG2_BITMAP_PAD;
-static if (FB_SHIFT == 5) {
+// static if (FB_SHIFT == 5) {
 alias FbBits = CARD32;
-} else {
-static assert(0, "Unsupported FB_SHIFT");
-}
+// } else {
+// static assert(0, "Unsupported FB_SHIFT");
+// }
 static if (LOG2_BITMAP_PAD == FB_SHIFT) {
 alias FbStip = FbBits;
 }
@@ -105,7 +107,7 @@ enum string FbScrLeft(string x,string n) = `((` ~ x ~ `) << (` ~ n ~ `))`;
 enum string FbScrRight(string x,string n) = `((` ~ x ~ `) >> (` ~ n ~ `))`;
 enum string FbLeftStipBits(string x,string n) = `((` ~ x ~ `) >> (FB_STIP_UNIT - (` ~ n ~ `)))`;
 enum string FbStipMoveLsb(string x,string s,string n) = `(` ~ x ~ `)`;
-enum FbPatternOffsetBits =	(sizeof (FbBits) - 1);
+enum FbPatternOffsetBits =	((FbBits).sizeof - 1);
 }
 
 public import include.micoord;
@@ -133,12 +135,12 @@ enum string FbStipMask(string x,string w) = `(` ~ FbStipRight!(`FB_STIP_ALLONES`
 
 enum FbByteMaskInvalid =   0x10;
 
-enum string FbPatternOffset(string o,string t) = `((` ~ o ~ `) ^ (FbPatternOffsetBits & ~(((` ~ t ~ `) - 1).sizeof)))`;
+enum string FbPatternOffset(string o,string t) = `(` ~ o ~ ` ^ (FbPatternOffsetBits & ~(` ~ t ~ `.sizeof - 1)))`;
 
-enum string FbPtrOffset(string p,string o,string t) = `(cast(t*) (cast(CARD8*) (` ~ p ~ `) + (` ~ o ~ `)))`;
-enum string FbSelectPatternPart(string xor,string o,string t) = `((` ~ xor ~ `) >> (` ~ FbPatternOffset! (o,t) ~ ` << 3))`;
+enum string FbPtrOffset(string p,string o,string t) = `(cast(`~t~`*) ((` ~ p ~ `) + (` ~ o ~ `)))`;
+enum string FbSelectPatternPart(string xor,string o,string t) = `cast(ubyte)((` ~ xor ~ `) >> (` ~ FbPatternOffset! (o,t) ~ ` << 3))`;
 enum string FbStorePart(string dst,string off,string t,string xor) = `(` ~ WRITE!(FbPtrOffset!(dst,off,t), 
-					 `FbSelectPart(` ~ xor ~ `,` ~ off ~ `,` ~ t ~ `)`) ~ `)`;
+					 FbSelectPart!(xor, off, t)) ~ `)`;
 version (FbSelectPart) {} else {
 enum string FbSelectPart(string x,string o,string t) = `` ~ FbSelectPatternPart!(x,o,t) ~ ``;
 }
@@ -150,7 +152,7 @@ enum string FbMaskBitsBytes(string x,string w,string copy,string l,string lb,str
     ` ~ r ~ ` = ` ~ FbRightMask!(`(` ~ x ~ `)+` ~ n ) ~ `; 
     if (` ~ r ~ `) { 
 	/* compute right byte length */ 
-	if (cast(copy) && (((` ~ x ~ `) + ` ~ n ~ `) & 7) == 0) { 
+	if (`~copy~` && (((` ~ x ~ `) + ` ~ n ~ `) & 7) == 0) { 
 	    ` ~ rb ~ ` = (((` ~ x ~ `) + ` ~ n ~ `) & FB_MASK) >> 3; 
 	} else { 
 	    ` ~ rb ~ ` = FbByteMaskInvalid; 
@@ -159,7 +161,7 @@ enum string FbMaskBitsBytes(string x,string w,string copy,string l,string lb,str
     ` ~ l ~ ` = ` ~ FbLeftMask!(x) ~ `; 
     if (` ~ l ~ `) { 
 	/* compute left byte length */ 
-	if (cast(copy) && ((` ~ x ~ `) & 7) == 0) { 
+	if (`~copy~` && ((` ~ x ~ `) & 7) == 0) { 
 	    ` ~ lb ~ ` = ((` ~ x ~ `) & FB_MASK) >> 3; 
 	} else { 
 	    ` ~ lb ~ ` = FbByteMaskInvalid; 
@@ -185,26 +187,27 @@ enum string FbMaskBitsBytes(string x,string w,string copy,string l,string lb,str
 
 enum string FbDoLeftMaskByteRRop(string dst,string lb,string l,string and,string xor) = `{ 
     switch (` ~ lb ~ `) { 
-    case (((FbBits) - 3).sizeof) | (1 << (FB_SHIFT - 3)): 
-	` ~ FbStorePart!(dst,`((FbBits) - 3).sizeof`,`CARD8`,xor) ~ `; 
+    case (((FbBits).sizeof - 3)) | (1 << (FB_SHIFT - 3)): 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 3)`,`CARD8`,xor) ~ `; 
 	break; 
-    case (((FbBits) - 3).sizeof) | (2 << (FB_SHIFT - 3)): 
-	` ~ FbStorePart!(dst,`((FbBits) - 3).sizeof`,`CARD8`,xor) ~ `; 
-	` ~ FbStorePart!(dst,`((FbBits) - 2).sizeof`,`CARD8`,xor) ~ `; 
+    case (((FbBits).sizeof - 3)) | (2 << (FB_SHIFT - 3)): 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 3)`,`CARD8`,xor) ~ `; 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 2)`,`CARD8`,xor) ~ `; 
 	break; 
-    case (((FbBits) - 2).sizeof) | (1 << (FB_SHIFT - 3)): 
-	` ~ FbStorePart!(dst,`((FbBits) - 2).sizeof`,`CARD8`,xor) ~ `; 
+    case (((FbBits).sizeof - 2)) | (1 << (FB_SHIFT - 3)): 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 2)`,`CARD8`,xor) ~ `; 
 	break; 
-    case ((FbBits) - 3).sizeof: 
-	` ~ FbStorePart!(dst,`((FbBits) - 3).sizeof`,`CARD8`,xor) ~ `; 
-    case ((FbBits) - 2).sizeof: 
-	` ~ FbStorePart!(dst,`((FbBits) - 2).sizeof`,`CARD16`,xor) ~ `; 
+    case ((FbBits).sizeof - 3): 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 3)`,`CARD8`,xor) ~ `;
+	goto case  ((FbBits).sizeof - 2);
+    case ((FbBits).sizeof - 2): 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 2)`,`CARD16`,xor) ~ `; 
 	break; 
-    case ((FbBits) - 1).sizeof: 
-	` ~ FbStorePart!(dst,`((FbBits) - 1).sizeof`,`CARD8`,xor) ~ `; 
+    case ((FbBits).sizeof - 1): 
+	` ~ FbStorePart!(dst,`((FbBits).sizeof - 1)`,`CARD8`,xor) ~ `; 
 	break; 
     default: 
-	` ~ WRITE!(dst, `FbDoMaskRRop(` ~ READ!(dst) ~ `, ` ~ and ~ `, ` ~ xor ~ `, ` ~ l ~ `)`) ~ `; 
+	` ~ WRITE!(dst, FbDoMaskRRop!(READ!(dst), and, xor, l)) ~ `; 
 	break; 
     } 
 }`;
@@ -222,7 +225,7 @@ enum string FbDoRightMaskByteRRop(string dst,string rb,string r,string and,strin
 	` ~ FbStorePart!(dst,`2`,`CARD8`,xor) ~ `; 
 	break; 
     default: 
-	` ~ WRITE!(dst, `FbDoMaskRRop (` ~ READ!(dst) ~ `, ` ~ and ~ `, ` ~ xor ~ `, ` ~ r ~ `)`) ~ `; 
+	` ~ WRITE!(dst, FbDoMaskRRop!(READ!(dst), and , xor, r)) ~ `; 
     } 
 }`;
 
@@ -232,32 +235,32 @@ alias WriteMemoryProcPtr = void function(void* dst, FbBits value, int size);
 alias SetupWrapProcPtr = void function(ReadMemoryProcPtr* pRead, WriteMemoryProcPtr* pWrite, DrawablePtr pDraw);
 alias FinishWrapProcPtr = void function(DrawablePtr pDraw);
 
-version (FB_ACCESS_WRAPPER) {
+// version (FB_ACCESS_WRAPPER) {
 
-enum string fbPrepareAccess(string pDraw) = `
-	fbGetScreenPrivate((` ~ pDraw ~ `).pScreen).setupWrap( 
+enum string fbPrepareAccess(string pDraw) = 
+	fbGetScreenPrivate!(pDraw~`.pScreen`)~`.setupWrap( 
 		&wfbReadMemory, 
-		&wfbWriteMemory, 
-		(` ~ pDraw ~ `))`;
+		&wfbWriteMemory, `~pDraw ~ `)`;
+
 enum string fbFinishAccess(string pDraw) = `
-	fbGetScreenPrivate((` ~ pDraw ~ `).pScreen).finishWrap(` ~ pDraw ~ `)`;
+	mixin(fbGetScreenPrivate!("(` ~ pDraw ~ `).pScreen")).finishWrap(` ~ pDraw ~ `);`;
 
-} else {
+// } else {
 
-//#define fbPrepareAccess(pPix)
-//#define fbFinishAccess(pDraw)
+// //#define fbPrepareAccess(pPix)
+// //#define fbFinishAccess(pDraw)
 
-}
+// }
 
-extern DevPrivateKey
-fbGetScreenPrivateKey();
+// extern DevPrivateKey
+// fbGetScreenPrivateKey();
 
 /* private field of a screen */
 struct _FbScreenPrivRec {
-version (FB_ACCESS_WRAPPER) {
+// version (FB_ACCESS_WRAPPER) {
     SetupWrapProcPtr setupWrap;   /* driver hook to set pixmap access wrapping */
     FinishWrapProcPtr finishWrap; /* driver hook to clean up pixmap access wrapping */
-}
+// }
     DevPrivateKeyRec gcPrivateKeyRec;
     DevPrivateKeyRec winPrivateKeyRec;
 }alias FbScreenPrivRec = _FbScreenPrivRec;
@@ -299,19 +302,19 @@ enum string fbGetDrawablePixmap(string pDrawable, string pixmap, string xoff, st
 	(` ~ pixmap ~ `) = cast(PixmapPtr) (` ~ pDrawable ~ `);					
 	(` ~ xoff ~ `) = ` ~ __fbPixOffXPix!(pixmap) ~ `; 					
 	(` ~ yoff ~ `) = ` ~ __fbPixOffYPix!(pixmap) ~ `; 					
-    } 										
-    fbPrepareAccess(` ~ pDrawable ~ `); 						
+    }`~ 										
+    fbPrepareAccess!(pDrawable)~`; 						
 }`;
 
 enum string fbGetPixmapBitsData(string pixmap, string pointer, string stride, string bpp) = `{			
     (` ~ pointer ~ `) = cast(FbBits*) (` ~ pixmap ~ `).devPrivate.ptr; 			       	
-    (` ~ stride ~ `) = (cast(int) (` ~ pixmap ~ `).devKind) / FbBits.sizeof; cast(void)(` ~ stride ~ `);	
+    (` ~ stride ~ `) = cast(int)(` ~ pixmap ~ `.devKind / FbBits.sizeof); cast(void)(` ~ stride ~ `);	
     (` ~ bpp ~ `) = (` ~ pixmap ~ `).drawable.bitsPerPixel;  cast(void)(` ~ bpp ~ `); 			
 }`;
 
 enum string fbGetPixmapStipData(string pixmap, string pointer, string stride, string bpp) = `{			
     (` ~ pointer ~ `) = cast(FbStip*) (` ~ pixmap ~ `).devPrivate.ptr; 			       	
-    (` ~ stride ~ `) = (cast(int) (` ~ pixmap ~ `).devKind) / FbStip.sizeof; cast(void)(` ~ stride ~ `);	
+    (` ~ stride ~ `) = (cast(int)(` ~ pixmap ~ `.devKind / FbStip.sizeof)); cast(void)(` ~ stride ~ `);	
     (` ~ bpp ~ `) = (` ~ pixmap ~ `).drawable.bitsPerPixel;  cast(void)(` ~ bpp ~ `); 			
 }`;
 
@@ -615,7 +618,7 @@ extern void fbTile(FbBits* dst, FbStride dstStride, int dstX, int width, int hei
 /*
  * fbutil.c
  */
-extern void fbReplicatePixel(Pixel p, int bpp);
+// extern void fbReplicatePixel(Pixel p, int bpp);
 
 version (FB_ACCESS_WRAPPER) {
 extern ReadMemoryProcPtr wfbReadMemory;

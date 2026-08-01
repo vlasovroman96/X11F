@@ -63,7 +63,7 @@ import hw.xfree86.loader.loaderProcs;
 import xf86_priv;
 import include.xf86Priv;
 import include.xf86_OSlib;
-import micmap;
+import mi.micmap;
 import xf86Bus;
 import xf86Xinput_priv;
 import xf86InPriv;

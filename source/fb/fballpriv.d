@@ -1,4 +1,4 @@
-module fballpriv;
+module fb.fballpriv;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -36,7 +36,7 @@ DevPrivateKey fbGetScreenPrivateKey()
 
 DevPrivateKey fbGetGCPrivateKey(GCPtr pGC)
 {
-    return &fbGetScreenPrivate((pGC).pScreen).gcPrivateKeyRec;
+    return &mixin(fbGetScreenPrivate!("(pGC).pScreen")).gcPrivateKeyRec;
 }
 
 Bool fbAllocatePrivates(ScreenPtr pScreen)
@@ -47,7 +47,7 @@ Bool fbAllocatePrivates(ScreenPtr pScreen)
         (&fbScreenPrivateKeyRec, PRIVATE_SCREEN, FbScreenPrivRec.sizeof))
         return FALSE;
 
-    pScrPriv = fbGetScreenPrivate(pScreen);
+    pScrPriv = mixin(fbGetScreenPrivate!("pScreen"));
 
     if (!dixRegisterScreenSpecificPrivateKey (pScreen, &pScrPriv.gcPrivateKeyRec, PRIVATE_GC, FbGCPrivRec.sizeof))
         return FALSE;
@@ -57,7 +57,7 @@ Bool fbAllocatePrivates(ScreenPtr pScreen)
     return TRUE;
 }
 
-version (FB_ACCESS_WRAPPER) {
+// version (FB_ACCESS_WRAPPER) {
 ReadMemoryProcPtr wfbReadMemory;
 WriteMemoryProcPtr wfbWriteMemory;
-}
+// }

@@ -65,7 +65,7 @@ import include.pixmapstr;
 import include.inputstr;
 import include.globals;
 import include.servermd;
-import micmap;
+import mi.micmap;
 import include.xkbsrv;
 import xf86Xinput;
 import include.eventstr;

@@ -63,6 +63,7 @@ public import include.events;
 import include.mistruct;
 import externs.X11.fonts.fontstruct;
 public import mi.micopy; 
+public import mi.miexpose;
 
 alias MiBits =	CARD32;
 
@@ -93,7 +94,7 @@ alias DevicePtr = _DeviceRec*;
 
 /* miexpose.c */
 
-extern void  miHandleExposures(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int);
+// extern void  miHandleExposures(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int);
 
 extern void  miClearDrawable(DrawablePtr, GCPtr);
 

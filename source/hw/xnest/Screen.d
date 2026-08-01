@@ -31,7 +31,7 @@ import mi.mipointer_priv;
 
 import include.scrnintstr;
 import include.dix;
-import micmap;
+import mi.micmap;
 import include.resource;
 
 import xnest_xcb;

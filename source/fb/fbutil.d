@@ -1,4 +1,4 @@
-module fbutil;
+module fb.fbutil;
 @nogc nothrow:
 extern(C): __gshared:
 /*

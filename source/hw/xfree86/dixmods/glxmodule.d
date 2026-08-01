@@ -38,7 +38,7 @@ import include.xf86Module;
 import include.xf86Priv;
 import include.xf86;
 import include.colormap;
-import micmap;
+import mi.micmap;
 import include.globals;
 import glx.glxserver;
 import include.glx_extinit;

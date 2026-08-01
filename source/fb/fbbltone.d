@@ -26,6 +26,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import include.fb;
+import fb.fbutil;
 
 /*
  * Stipple masks are independent of bit/byte order as long
@@ -150,12 +151,12 @@ version (__clang__) {
 
 enum string LoadBits = q{
     if (leftShift) { 
-        bitsRight = (src < srcEnd ? READ(src++) : 0); 
-        bits = (FbStipLeft(bitsLeft, leftShift) | 
-                FbStipRight(bitsRight, rightShift)); 
+        bitsRight = (src < srcEnd ? mixin(READ!("src++")) : 0); 
+        bits = (mixin(FbStipLeft!("bitsLeft", "leftShift")) | 
+                mixin(FbStipRight!("bitsRight", "rightShift"))); 
         bitsLeft = bitsRight; 
     } else {
-        bits = (src < srcEnd ? READ(src++) : 0); 
+        bits = (src < srcEnd ? mixin(READ!("src++")) : 0); 
     }
 };
 
@@ -211,8 +212,8 @@ void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride d
     srcX &= FB_STIP_MASK;
     dstX &= FB_MASK;
 
-    FbMaskBitsBytes(dstX, width, copy,
-                    startmask, startbyte, nmiddle, endmask, endbyte);
+    mixin(FbMaskBitsBytes!("dstX", "width", "copy",
+                    "startmask", "startbyte", "nmiddle", "endmask", "endbyte"));
 
     /*
      * Compute effective dest alignment requirement for
@@ -236,16 +237,16 @@ void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride d
     fbBits = null;                 /* unused */
     switch (pixelsPerDst) {
     case 8:
-        fbBits = fbStipple8Bits;
+        fbBits = fbStipple8Bits.ptr;
         break;
     case 4:
-        fbBits = fbStipple4Bits;
+        fbBits = fbStipple4Bits.ptr;
         break;
     case 2:
-        fbBits = fbStipple2Bits;
+        fbBits = fbStipple2Bits.ptr;
         break;
     case 1:
-        fbBits = fbStipple1Bits;
+        fbBits = fbStipple1Bits.ptr;
         break;
     default:
         return;
@@ -288,23 +289,23 @@ void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride d
 
         bitsLeft = 0;
         if (srcX > dstS)
-            bitsLeft = READ(src++);
+            bitsLeft = mixin(READ!("src++"));
         if (n) {
             /*
              * Load first set of stipple bits
              */
-            LoadBits;
+            mixin(LoadBits);
 
             /*
              * Consume stipple bits for startmask
              */
             if (startmask) {
-                mask = fbBits[FbLeftStipBits(bits, pixelsPerDst)];
+                mask = fbBits[mixin(FbLeftStipBits!("bits", "pixelsPerDst"))];
                 if (mask || !transparent)
-                    FbDoLeftMaskByteStippleRRop(dst, mask,
-                                                fgand, fgxor, bgand, bgxor,
-                                                startbyte, startmask);
-                bits = FbStipLeft(bits, pixelsPerDst);
+                    mixin(FbDoLeftMaskByteStippleRRop!("dst", "mask",
+                                                "fgand", "fgxor", "bgand", "bgxor",
+                                                "startbyte", "startmask"));
+                bits = mixin(FbStipLeft!("bits", "pixelsPerDst"));
                 dst++;
                 n--;
                 w--;
@@ -316,22 +317,22 @@ void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride d
                 w -= n;
                 if (copy) {
                     while (n--) {
-                        mask = fbBits[FbLeftStipBits(bits, pixelsPerDst)];
-                        WRITE(dst, FbOpaqueStipple(mask, fgxor, bgxor));
+                        mask = fbBits[mixin(FbLeftStipBits!("bits", "pixelsPerDst"))];
+                        mixin(WRITE!("dst", FbOpaqueStipple!("mask", "fgxor", "bgxor"))~`;`);
                         dst++;
-                        bits = FbStipLeft(bits, pixelsPerDst);
+                        bits = mixin(FbStipLeft!("bits", "pixelsPerDst"));
                     }
                 }
                 else {
                     while (n--) {
-                        left = FbLeftStipBits(bits, pixelsPerDst);
+                        left = mixin(FbLeftStipBits!("bits", "pixelsPerDst"));
                         if (left || !transparent) {
                             mask = fbBits[left];
-                            WRITE(dst, FbStippleRRop(READ(dst), mask, fgand,
-                                                     fgxor, bgand, bgxor));
+                            mixin(WRITE!("dst", FbStippleRRop!(READ!("dst"), "mask", "fgand",
+                                                     "fgxor", "bgand", "bgxor"))~";");
                         }
                         dst++;
-                        bits = FbStipLeft(bits, pixelsPerDst);
+                        bits = mixin(FbStipLeft!("bits", "pixelsPerDst"));
                     }
                 }
                 if (!w)
@@ -339,7 +340,7 @@ void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride d
                 /*
                  * Load another set and reset number of available units
                  */
-                LoadBits;
+                mixin(LoadBits);
                 n = unitsPerSrc;
                 if (n > w)
                     n = w;
@@ -350,12 +351,12 @@ void fbBltOne(FbStip* src, FbStride srcStride, int srcX, FbBits* dst, FbStride d
          */
         if (endmask) {
             if (endNeedsLoad) {
-                LoadBits;
+                mixin(LoadBits);
             }
-            mask = fbBits[FbLeftStipBits(bits, pixelsPerDst)];
+            mask = fbBits[mixin(FbLeftStipBits!("bits", "pixelsPerDst"))];
             if (mask || !transparent)
-                FbDoRightMaskByteStippleRRop(dst, mask, fgand, fgxor,
-                                             bgand, bgxor, endbyte, endmask);
+                mixin(FbDoRightMaskByteStippleRRop!("dst", "mask", "fgand", "fgxor",
+                                             "bgand", "bgxor", "endbyte", "endmask"));
         }
         dst += dstStride;
         src += srcStride;
@@ -396,10 +397,10 @@ void fbBltPlane(FbBits* src, FbStride srcStride, int srcX, int srcBpp, FbStip* d
     w = width / srcBpp;
 
     pm = fbReplicatePixel(planeMask, srcBpp);
-    srcMaskFirst = pm & FbBitsMask(srcX, srcBpp);
-    srcMask0 = pm & FbBitsMask(0, srcBpp);
+    srcMaskFirst = pm & mixin(FbBitsMask!("srcX", "srcBpp"));
+    srcMask0 = pm & mixin(FbBitsMask!("0", "srcBpp"));
 
-    dstMaskFirst = FbStipMask(dstX, 1);
+    dstMaskFirst = mixin(FbStipMask!("dstX", "1"));
     while (height--) {
         d = dst;
         dst += dstStride;
@@ -407,7 +408,7 @@ void fbBltPlane(FbBits* src, FbStride srcStride, int srcX, int srcBpp, FbStip* d
         src += srcStride;
 
         srcMask = srcMaskFirst;
-        srcBits = READ(s++);
+        srcBits = mixin(READ!("s++"));
 
         dstMask = dstMaskFirst;
         dstUnion = 0;
@@ -417,15 +418,15 @@ void fbBltPlane(FbBits* src, FbStride srcStride, int srcX, int srcBpp, FbStip* d
 
         while (wt--) {
             if (!srcMask) {
-                srcBits = READ(s++);
+                srcBits = mixin(READ!("s++"));
                 srcMask = srcMask0;
             }
             if (!dstMask) {
-                WRITE(d, FbStippleRRopMask(READ(d), dstBits,
-                                           fgand, fgxor, bgand, bgxor,
-                                           dstUnion));
+                mixin(WRITE!("d", FbStippleRRopMask!(READ!("d"), "dstBits",
+                                           "fgand", "fgxor", "bgand", "bgxor",
+                                           "dstUnion"))~`;`);
                 d++;
-                dstMask = FbStipMask(0, 1);
+                dstMask = mixin(FbStipMask!("0", "1"));
                 dstUnion = 0;
                 dstBits = 0;
             }
@@ -435,11 +436,11 @@ void fbBltPlane(FbBits* src, FbStride srcStride, int srcX, int srcBpp, FbStip* d
             if (srcBpp == FB_UNIT)
                 srcMask = 0;
             else
-                srcMask = FbScrRight(srcMask, srcBpp);
-            dstMask = FbStipRight(dstMask, 1);
+                srcMask = mixin(FbScrRight!("srcMask", "srcBpp"));
+            dstMask = mixin(FbStipRight!("dstMask", "1"));
         }
         if (dstUnion)
-            WRITE(d, FbStippleRRopMask(READ(d), dstBits,
-                                       fgand, fgxor, bgand, bgxor, dstUnion));
+            mixin(WRITE!("d", FbStippleRRopMask!(READ!("d"), "dstBits",
+                                       "fgand", "fgxor", "bgand", "bgxor", "dstUnion"))~`;`);
     }
 }

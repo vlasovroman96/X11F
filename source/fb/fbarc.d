@@ -37,22 +37,22 @@ void fbPolyArc(DrawablePtr pDrawable, GCPtr pGC, int narcs, xArc* parcs)
     FbArc arc = void;
 
     if (pGC.lineWidth == 0) {
-        arc = 0;
+        arc = null;
         if (pGC.lineStyle == LineSolid && pGC.fillStyle == FillSolid) {
             switch (pDrawable.bitsPerPixel) {
             case 8:
-                arc = fbArc8;
+                arc = &fbArc8;
                 break;
             case 16:
-                arc = fbArc16;
+                arc = &fbArc16;
                 break;
             case 32:
-                arc = fbArc32;
+                arc = &fbArc32;
                 break;
             default: break;}
         }
         if (arc) {
-            FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+            FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
             FbBits* dst = void;
             FbStride dstStride = void;
             int dstBpp = void;
@@ -65,12 +65,12 @@ version (FB_ACCESS_WRAPPER) {
             int wrapped = 1;
 }
 
-            cclip = fbGetCompositeClip(pGC);
-            fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+            cclip = mixin(fbGetCompositeClip!("pGC"));
+            mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
             while (narcs--) {
-                if (miCanZeroArc(parcs)) {
-                    box.x1 = parcs.x + pDrawable.x;
-                    box.y1 = parcs.y + pDrawable.y;
+                if (mixin(miCanZeroArc!("parcs"))) {
+                    box.x1 = cast(short)(parcs.x + pDrawable.x);
+                    box.y1 = cast(short)(parcs.y + pDrawable.y);
                     /*
                      * Because box.x2 and box.y2 get truncated to 16 bits, and the
                      * RECT_IN_REGION test treats the resulting number as a signed
@@ -82,10 +82,10 @@ version (FB_ACCESS_WRAPPER) {
                      * So we only allow the RECT_IN_REGION test to be used for
                      * values that can be expressed correctly in a signed short.
                      */
-                    x2 = box.x1 + cast(int) parcs.width + 1;
-                    box.x2 = x2;
-                    y2 = box.y1 + cast(int) parcs.height + 1;
-                    box.y2 = y2;
+                    x2 = cast(short)(box.x1 + cast(int) parcs.width + 1);
+                    box.x2 = cast(short)(x2);
+                    y2 = cast(short)(box.y1 + cast(int) parcs.height + 1);
+                    box.y2 = cast(short)(y2);
                     if ((x2 <= SHRT_MAX) && (y2 <= SHRT_MAX) &&
                         (RegionContainsRect(cclip, &box) == rgnIN)) {
 version (FB_ACCESS_WRAPPER) {

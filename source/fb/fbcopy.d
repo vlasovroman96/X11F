@@ -29,6 +29,8 @@ import build.dix_config;
 import core.stdc.stdlib;
 
 import fb.fb_priv;
+import externs.pixman;
+import externs.attrs;
 
 void
 fbCopyNtoN(DrawablePtr pSrcDrawable,
@@ -40,7 +42,7 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
            int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure)
 {
     CARD8 alu = pGC ? pGC.alu : GXcopy;
-    FbBits pm = pGC ? fbGetGCPrivate(pGC).pm : FB_ALLONES;
+    FbBits pm = pGC ? mixin(fbGetGCPrivate!("pGC")).pm : FB_ALLONES;
     FbBits* src;
     FbStride srcStride;
     int srcBpp;
@@ -50,15 +52,15 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
     int dstBpp;
     int dstXoff, dstYoff;
 
-    fbGetDrawable(pSrcDrawable, src, srcStride, srcBpp, srcXoff, srcYoff);
-    fbGetDrawable(pDstDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pSrcDrawable", "src", "srcStride", "srcBpp", "srcXoff", "srcYoff"));
+    mixin(fbGetDrawable!("pDstDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     while (nbox--) {
-        static if( FB_ACCESS_WRAPPER) {} 
-        else {
+        // static if( FB_ACCESS_WRAPPER) {} 
+        // else {
 // #ifndef FB_ACCESS_WRAPPER       /* pixman_blt() doesn't support accessors yet */
         if (pm == FB_ALLONES && alu == GXcopy && !reverse && !upsidedown) {
-            if (!pixman_blt
+            if (!assumeNoGC(&pixman_blt)
                 (cast(uint*) src, cast(uint*) dst, srcStride, dstStride,
                  srcBpp, dstBpp, (pbox.x1 + dx + srcXoff),
                  (pbox.y1 + dy + srcYoff), (pbox.x1 + dstXoff),
@@ -67,7 +69,7 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
                 goto fallback;
             else
                 goto next;
-        }
+        // }
  fallback:
         }
 // #endif
@@ -79,21 +81,21 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
               (pbox.x1 + dstXoff) * dstBpp,
               (pbox.x2 - pbox.x1) * dstBpp,
               (pbox.y2 - pbox.y1), alu, pm, dstBpp, reverse, upsidedown);
-static if(FB_ACCESS_WAPPER) {}
-else {
+// static if(FB_ACCESS_WAPPER) {}
+// else {
 // #ifndef FB_ACCESS_WRAPPER
  next:
-}
+// }
 // #endif
         pbox++;
     }
-    fbFinishAccess(pDstDrawable);
-    fbFinishAccess(pSrcDrawable);
+    mixin(fbFinishAccess!("pDstDrawable"));
+    mixin(fbFinishAccess!("pSrcDrawable"));
 }
 
 void fbCopy1toN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     FbBits* src = void;
     FbStride srcStride = void;
     int srcBpp = void;
@@ -103,8 +105,8 @@ void fbCopy1toN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
 
-    fbGetDrawable(pSrcDrawable, src, srcStride, srcBpp, srcXoff, srcYoff);
-    fbGetDrawable(pDstDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pSrcDrawable", "src", "srcStride", "srcBpp", "srcXoff", "srcYoff"));
+    mixin(fbGetDrawable!("pDstDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     while (nbox--) {
         if (dstBpp == 1) {
@@ -116,8 +118,8 @@ void fbCopy1toN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
                   (pbox.x1 + dstXoff) * dstBpp,
                   (pbox.x2 - pbox.x1) * dstBpp,
                   (pbox.y2 - pbox.y1),
-                  FbOpaqueStipple1Rop(pGC.alu,
-                                      pGC.fgPixel, pGC.bgPixel),
+                  mixin(FbOpaqueStipple1Rop!("pGC.alu",
+                                      "pGC.fgPixel", "pGC.bgPixel")),
                   pPriv.pm, dstBpp, reverse, upsidedown);
         }
         else {
@@ -135,13 +137,13 @@ void fbCopy1toN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
         pbox++;
     }
 
-    fbFinishAccess(pDstDrawable);
-    fbFinishAccess(pSrcDrawable);
+    mixin(fbFinishAccess!("pDstDrawable"));
+    mixin(fbFinishAccess!("pSrcDrawable"));
 }
 
 void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
 
     while (nbox--) {
         if (pDstDrawable.bitsPerPixel == 1) {
@@ -155,10 +157,10 @@ void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
             int dstBpp = void;
             int dstXoff = void, dstYoff = void;
 
-            fbGetDrawable(pSrcDrawable, src, srcStride, srcBpp, srcXoff,
-                          srcYoff);
-            fbGetStipDrawable(pDstDrawable, dst, dstStride, dstBpp, dstXoff,
-                              dstYoff);
+            mixin(fbGetDrawable!("pSrcDrawable", "src", "srcStride", "srcBpp", "srcXoff",
+"                          srcYoff"));
+            mixin(fbGetStipDrawable!("pDstDrawable", "dst", "dstStride", "dstBpp", "dstXoff",
+                              "dstYoff"));
             fbBltPlane(src + (pbox.y1 + dy + srcYoff) * srcStride, srcStride,
                        (pbox.x1 + dx + srcXoff) * srcBpp, srcBpp,
                        dst + (pbox.y1 + dstYoff) * dstStride, dstStride,
@@ -166,8 +168,8 @@ void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
                        (pbox.x2 - pbox.x1) * srcBpp, (pbox.y2 - pbox.y1),
                        cast(FbStip) pPriv.and, cast(FbStip) pPriv.xor,
                        cast(FbStip) pPriv.bgand, cast(FbStip) pPriv.bgxor, bitplane);
-            fbFinishAccess(pDstDrawable);
-            fbFinishAccess(pSrcDrawable);
+            mixin(fbFinishAccess!("pDstDrawable"));
+            mixin(fbFinishAccess!("pSrcDrawable"));
         }
         else {
             FbBits* src = void;
@@ -192,10 +194,10 @@ void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
             if (!tmp)
                 return;
 
-            fbGetDrawable(pSrcDrawable, src, srcStride, srcBpp, srcXoff,
-                          srcYoff);
-            fbGetDrawable(pDstDrawable, dst, dstStride, dstBpp, dstXoff,
-                          dstYoff);
+            mixin(fbGetDrawable!("pSrcDrawable", "src", "srcStride", "srcBpp", "srcXoff",
+"                          srcYoff"));
+            mixin(fbGetDrawable!("pDstDrawable", "dst", "dstStride", "dstBpp", "dstXoff",
+"                          dstYoff"));
 
             fbBltPlane(src + (pbox.y1 + dy + srcYoff) * srcStride,
                        srcStride,
@@ -206,10 +208,10 @@ void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
                        0,
                        width * srcBpp,
                        height,
-                       fbAndStip(GXcopy, FB_ALLONES, FB_ALLONES),
-                       fbXorStip(GXcopy, FB_ALLONES, FB_ALLONES),
-                       fbAndStip(GXcopy, 0, FB_ALLONES),
-                       fbXorStip(GXcopy, 0, FB_ALLONES), bitplane);
+                       mixin(fbAndStip!("GXcopy", "FB_ALLONES", "FB_ALLONES")),
+                       mixin(fbXorStip!("GXcopy", "FB_ALLONES", "FB_ALLONES")),
+                       mixin(fbAndStip!("GXcopy", "0", "FB_ALLONES")),
+                       mixin(fbXorStip!("GXcopy", "0", "FB_ALLONES")), bitplane);
             fbBltOne(tmp,
                      tmpStride,
                      0,
@@ -222,8 +224,8 @@ void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
                      pPriv.and, pPriv.xor, pPriv.bgand, pPriv.bgxor);
             free(tmp);
 
-            fbFinishAccess(pDstDrawable);
-            fbFinishAccess(pSrcDrawable);
+            mixin(fbFinishAccess!("pDstDrawable"));
+            mixin(fbFinishAccess!("pSrcDrawable"));
         }
         pbox++;
     }
@@ -232,7 +234,7 @@ void fbCopyNto1(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, B
 RegionPtr fbCopyArea(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut)
 {
     return miDoCopy(pSrcDrawable, pDstDrawable, pGC, xIn, yIn,
-                    widthSrc, heightSrc, xOut, yOut, fbCopyNtoN, 0, 0);
+                    widthSrc, heightSrc, xOut, yOut, &fbCopyNtoN, 0, null);
 }
 
 RegionPtr fbCopyPlane(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut, c_ulong bitplane)
@@ -240,11 +242,11 @@ RegionPtr fbCopyPlane(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr 
     if (pSrcDrawable.bitsPerPixel > 1)
         return miDoCopy(pSrcDrawable, pDstDrawable, pGC,
                         xIn, yIn, widthSrc, heightSrc,
-                        xOut, yOut, &fbCopyNto1, cast(Pixel) bitplane, 0);
+                        xOut, yOut, &fbCopyNto1, cast(Pixel) bitplane, null);
     else if (bitplane & 1)
         return miDoCopy(pSrcDrawable, pDstDrawable, pGC, xIn, yIn,
                         widthSrc, heightSrc, xOut, yOut, &fbCopy1toN,
-                        cast(Pixel) bitplane, 0);
+                        cast(Pixel) bitplane, null);
     else
         return miHandleExposures(pSrcDrawable, pDstDrawable, pGC,
                                  xIn, yIn,

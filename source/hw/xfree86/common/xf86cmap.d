@@ -46,7 +46,7 @@ import include.resource;
 import include.xf86;
 import include.xf86_OSproc;;
 import include.xf86str;
-import micmap;
+import mi.micmap;
 import xf86RandR12_priv;
 import include.xf86Crtc;
 import include.privates;

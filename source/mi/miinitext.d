@@ -92,7 +92,7 @@ import miext.extinit_priv;
 
 import include.misc;
 import include.extension;
-import micmap;
+import mi.micmap;
 import include.os;
 import include.globals;
 

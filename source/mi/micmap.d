@@ -1,4 +1,4 @@
-module micmap;
+module mi.micmap;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -44,7 +44,7 @@ import os.osdep;
 import include.scrnintstr;
 import include.resource;
 import include.globals;
-import micmap;
+import mi.micmap;
 
 enum MIN_TRUE_DEPTH =  6;
 

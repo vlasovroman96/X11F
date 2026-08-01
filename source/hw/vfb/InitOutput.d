@@ -58,7 +58,7 @@ import include.fb;
 import include.gcstruct;
 import include.input;
 import mi.mipointer;
-import micmap;
+import mi.micmap;
 import core.sys.posix.sys.types;
 version (HAVE_MMAP) {
 import core.sys.posix.sys.mman;
