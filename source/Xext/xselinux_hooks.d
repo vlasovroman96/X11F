@@ -191,7 +191,7 @@ private void SELinuxLabelClient(ClientPtr client)
     }
 
     obj.sid = subj.sid;
-    assumeNoGC(&freecon)(ctx);
+    freecon_d(ctx);
 }
 
 /*
@@ -221,7 +221,7 @@ private void SELinuxLabelInitial()
     }
 
     obj.sid = subj.sid;
-    assumeNoGC(&freecon)(ctx);
+    freecon_d(ctx);
 
     srec.client = serverClient;
     srec.access_mode = DixCreateAccess;
@@ -843,7 +843,7 @@ private void SELinuxResourceState(CallbackListPtr* pcbl, void* unused, void* cal
         if (rc != Success) {
             FatalError("SELinux: Failed to set label property on window!\n");
         }
-        assumeNoGC(&freecon)(ctx);
+        freecon_d(ctx);
     }
     else
         FatalError("SELinux: Unexpected unlabeled client found\n");
@@ -863,7 +863,7 @@ private void SELinuxResourceState(CallbackListPtr* pcbl, void* unused, void* cal
         if (rc != Success) {
             FatalError("SELinux: Failed to set label property on window!\n");
         }
-        assumeNoGC(&freecon)(ctx);
+        freecon_d(ctx);
     } else {
         FatalError("SELinux: Unexpected unlabeled window found\n");
     }
@@ -947,7 +947,7 @@ void SELinuxFlaskInit()
     if (avc_context_to_sid_raw_d(ctx, &unlabeled_sid) < 0) {
         FatalError("SELinux: a context_to_SID call failed!\n");
     }
-    assumeNoGC(&freecon)(ctx);
+    freecon_d(ctx);
 
     /* Prepare for auditing */
     audit_fd = audit_open_d();

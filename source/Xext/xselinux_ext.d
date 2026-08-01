@@ -149,7 +149,7 @@ private int ProcSELinuxSetCreateContext(ClientPtr client, uint offset)
     if (stuff.context_len > 0) {
        
         if (assumeNoGC(cast(CheckContextFn)&security_check_context_raw)(ctx) < 0 ||
-            assumeNoGC(&avc_context_to_sid_raw)(ctx, pSid) < 0)
+            avc_context_to_sid_raw_d(ctx, pSid) < 0)
         {
             rc = BadValue;
         }
@@ -205,7 +205,7 @@ private int ProcSELinuxSetDeviceContext(ClientPtr client)
     }
 
     if (assumeNoGC(cast(CheckContextFn)&security_check_context_raw)(ctx) < 0 ||
-        assumeNoGC(&avc_context_to_sid_raw)(ctx, &sid) < 0) {
+        avc_context_to_sid_raw_d(ctx, &sid) < 0) {
         rc = BadValue;
         goto out_;
     }
