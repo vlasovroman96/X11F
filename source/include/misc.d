@@ -143,7 +143,7 @@ auto max(T, S) (T a, S b) {
  * it in case we haven't done that yet.
  */
 /* this assumes b > 0 */
-enum string modulus(string a, string b, string d) = `if (((` ~ d ~ `) = (` ~ a ~ `) % (` ~ b ~ `)) < 0) (` ~ d ~ `) += (` ~ b ~ `)`;
+enum string modulus(string a, string b, string d) = `if (((` ~ d ~ `) = (` ~ a ~ `) % (` ~ b ~ `)) < 0) (` ~ d ~ `) += (` ~ b ~ `);`;
 
 /* XXX Not for modules */
 public import core.stdc.limits;
@@ -244,11 +244,11 @@ pragma(inline, true) ulong bswap_64(ulong x)
             ((x & 0x00000000000000FFuL) << 56));
 }
 
-enum string swapll(string x) = `
-		if (typeof(*(` ~ x ~ `)).sizeof != 8) 
+ref auto swapll(T)(T* t) {
+		if (T.sizeof != 8) 
 			wrong_size(); 
-		*(` ~ x ~ `) = bswap_64(*(` ~ x ~ `));          
-	`;
+		*t = cast(ulong)bswap_64(*t);          
+}
 
 pragma(inline, true) private uint bswap_32(uint x)
 {
@@ -261,7 +261,7 @@ pragma(inline, true) private uint bswap_32(uint x)
 ref auto swapl(T)(T* t) {
 		if (T.sizeof != 4) 
 			wrong_size(); 
-		*(t) = cast(ulong)bswap_32(cast(uint)*(t)); 
+		*t = cast(ulong)bswap_32(cast(uint)*(t)); 
 }
 
 pragma(inline, true) private ushort bswap_16(ushort x)

@@ -62,6 +62,7 @@ public import include.colormap;
 public import include.events;
 import include.mistruct;
 import externs.X11.fonts.fontstruct;
+public import mi.micopy; 
 
 alias MiBits =	CARD32;
 
@@ -82,7 +83,7 @@ alias miCopyProc = void function(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawa
 
 extern void  miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, RegionPtr pDstRegion, int dx, int dy, miCopyProc copyProc, Pixel bitPlane, void* closure);
 
-extern void  miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut, miCopyProc copyProc, Pixel bitplane, void* closure);
+// extern void  miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut, miCopyProc copyProc, Pixel bitplane, void* closure);
 
 /* mieq.c */
 

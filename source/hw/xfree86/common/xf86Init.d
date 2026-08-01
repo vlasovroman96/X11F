@@ -191,7 +191,7 @@ version (linux) {
     }
 }
     xf86ErrorFVerb(0, "Current version of pixman: %s\n",
-                   pixman_version_string());
+                   assumeNoGC(&pixman_version_string)());
 }
 
 Bool xf86HasTTYs()

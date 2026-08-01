@@ -51,8 +51,8 @@ static if (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__") {
 }
 import core.sys.posix.unistd;
 version (WITH_LIBDRM) {
-import drm;
-import externs.xf86drm; /* For DRM_DEV_NAME */
+// import drm;
+import externs.drm; /* For DRM_DEV_NAME */
 }
 
 import misc;

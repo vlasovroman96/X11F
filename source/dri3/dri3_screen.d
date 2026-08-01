@@ -25,7 +25,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.assert_;
-import externs.libdrm;
+// import externs.libdrm;
 import core.sys.posix.unistd;
 
 import include.syncsdk;
@@ -34,6 +34,9 @@ import dri3.dri3_priv;
 import include.misync;
 import include.misyncshm;
 import include.randrstr;
+import externs.libdrm;
+import include.dri3;
+import dix.resource;
 
 int dri3_open(ClientPtr client, ScreenPtr screen, RRProviderPtr provider, int* fd)
 {
@@ -65,7 +68,7 @@ int dri3_pixmap_from_fds(PixmapPtr* ppixmap, ScreenPtr screen, CARD8 num_fds, co
                                            strides, offsets, depth, bpp, modifier);
     } else if (info.pixmap_from_fd != null && num_fds == 1) {
         pixmap = (*info.pixmap_from_fd) (screen, fds[0], width, height,
-                                          strides[0], depth, bpp);
+                                          cast(ushort)strides[0], depth, bpp);
     } else {
         return BadImplementation;
     }
@@ -141,7 +144,7 @@ int dri3_fd_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* size)
         return -1;
     }
 
-    *stride = strides[0];
+    *stride = cast(ushort)strides[0];
     *size = size[0];
     return fds[0];
 }
@@ -178,7 +181,7 @@ private int cache_formats_and_modifiers(ScreenPtr screen)
         return Success;
     }
 
-    ds.formats = calloc(num_formats, dri3_dmabuf_format_rec.sizeof);
+    ds.formats = cast(dri3_dmabuf_format*)calloc(num_formats, dri3_dmabuf_format_rec.sizeof);
     if (!ds.formats) {
         free(formats);
         return BadAlloc;
@@ -245,7 +248,7 @@ int dri3_get_supported_modifiers(ScreenPtr screen, DrawablePtr drawable, CARD8 d
     }
 
     /* copy the screen mods so we can return an owned allocation */
-    screen_mods = XNFalloc(screen_format.num_modifiers * CARD64.sizeof);
+    screen_mods = cast(ulong*)XNFalloc(screen_format.num_modifiers * CARD64.sizeof);
     memcpy(screen_mods, screen_format.modifiers,
            screen_format.num_modifiers * CARD64.sizeof);
 

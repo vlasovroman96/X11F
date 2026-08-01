@@ -283,7 +283,7 @@ int ProcRRSetScreenSize(ClientPtr client)
                 mode.mode.width,
                 mode.mode.height
             };
-            pixman_f_transform_bounds(&crtc.f_transform, &display_box);
+            assumeNoGC(&pixman_f_transform_bounds)(&crtc.f_transform, &display_box);
 
             if (display_box.x2 > stuff.width || display_box.y2 > stuff.height)
                 return BadMatch;

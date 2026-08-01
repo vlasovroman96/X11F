@@ -150,7 +150,7 @@ pragma(inline, true) void RegionInit(RegionPtr _pReg, BoxPtr _rect, size_t _size
 
 pragma(inline, true) Bool RegionInitBoxes(RegionPtr pReg, BoxPtr boxes, int nBoxes)
 {
-    return pixman_region_init_rects(pReg, boxes, nBoxes);
+    return assumeNoGC(&pixman_region_init_rects)(pReg, boxes, nBoxes);
 }
 
 pragma(inline, true) void RegionUninit(RegionPtr _pReg)
@@ -208,17 +208,17 @@ extern RegionPtr RegionDuplicate(RegionPtr);
 
 pragma(inline, true) Bool RegionCopy(RegionPtr dst, RegionPtr src)
 {
-    return pixman_region_copy(dst, src);
+    return assumeNoGC(&pixman_region_copy)(dst, src);
 }
 
 pragma(inline, true) Bool RegionIntersect(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2)
 {
-    return pixman_region_intersect(newReg, reg1, reg2);
+    return assumeNoGC(&pixman_region_intersect)(newReg, reg1, reg2);
 }
 
 pragma(inline, true) Bool RegionUnion(RegionPtr newReg, RegionPtr reg1, RegionPtr reg2)
 {
-    return pixman_region_union(newReg, reg1, reg2);
+    return assumeNoGC(&pixman_region_union)(newReg, reg1, reg2);
 }
 
 extern void RegionAppend(RegionPtr, RegionPtr);
@@ -243,7 +243,7 @@ extern RegionPtr RegionFromRects(int, xRectanglePtr, int);
  */
 pragma(inline, true) Bool RegionSubtract(RegionPtr regD, RegionPtr regM, RegionPtr regS)
 {
-    return pixman_region_subtract(regD, regM, regS);
+    return assumeNoGC(&pixman_region_subtract)(regD, regM, regS);
 }
 
 /*-
@@ -264,12 +264,12 @@ pragma(inline, true) Bool RegionSubtract(RegionPtr regD, RegionPtr regM, RegionP
 
 pragma(inline, true) Bool RegionInverse(RegionPtr newReg, RegionPtr reg1, BoxPtr invRect)
 {
-    return pixman_region_inverse(newReg, reg1, invRect);
+    return assumeNoGC(&pixman_region_inverse)(newReg, reg1, invRect);
 }
 
 pragma(inline, true) int RegionContainsRect(RegionPtr region, BoxPtr prect)
 {
-    return pixman_region_contains_rectangle(region, prect);
+    return assumeNoGC(&pixman_region_contains_rectangle)(region, prect);
 }
 
 /* TranslateRegion(pReg, x, y)
@@ -278,19 +278,19 @@ pragma(inline, true) int RegionContainsRect(RegionPtr region, BoxPtr prect)
 
 pragma(inline, true) void RegionTranslate(RegionPtr pReg, int x, int y)
 {
-    pixman_region_translate(pReg, x, y);
+    assumeNoGC(&pixman_region_translate)(pReg, x, y);
 }
 
 extern void RegionBreak(RegionPtr);
 
 pragma(inline, true) Bool RegionContainsPoint(RegionPtr pReg, int x, int y, BoxPtr box)
 {
-    return pixman_region_contains_point(pReg, x, y, box);
+    return assumeNoGC(&pixman_region_contains_point)(pReg, x, y, box);
 }
 
 pragma(inline, true) Bool RegionEqual(RegionPtr reg1, RegionPtr reg2)
 {
-    return pixman_region_equal(reg1, reg2);
+    return assumeNoGC(&pixman_region_equal)(reg1, reg2);
 }
 
 extern void RegionRectAlloc(RegionPtr, int);

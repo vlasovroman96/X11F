@@ -67,6 +67,6 @@ alias CursorPtr = _Cursor*;
 alias ConstCursorPtr = _Cursor*;
 alias CursorMetricPtr = _CursorMetric*;
 
-extern int  FreeCursor(void* pCurs, XID cid);
+// extern int  FreeCursor(void* pCurs, XID cid);
 
                           /* CURSOR_H */

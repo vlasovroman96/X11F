@@ -48,6 +48,8 @@ import os.io;
 import os.utils;
 import dix.events;
 import dix.devices;
+import externs.attrs;
+
 
 /* Check if a button map change is okay with the device.
  * Returns -1 for BadValue, as it collides with MappingBusy. */

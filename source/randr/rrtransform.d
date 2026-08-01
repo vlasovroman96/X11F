@@ -29,9 +29,9 @@ import randr.randrstr_priv;
 
 void RRTransformInit(RRTransformPtr transform)
 {
-    pixman_transform_init_identity(&transform.transform);
-    pixman_f_transform_init_identity(&transform.f_transform);
-    pixman_f_transform_init_identity(&transform.f_inverse);
+    assumeNoGC(&pixman_transform_init_identity)(&transform.transform);
+    assumeNoGC(&pixman_f_transform_init_identity)(&transform.f_transform);
+    assumeNoGC(&pixman_f_transform_init_identity)(&transform.f_inverse);
     transform.filter = null;
     transform.params = null;
     transform.nparams = 0;
@@ -39,9 +39,9 @@ void RRTransformInit(RRTransformPtr transform)
 
 Bool RRTransformEqual(RRTransformPtr a, RRTransformPtr b)
 {
-    if (a && pixman_transform_is_identity(&a.transform))
+    if (a && assumeNoGC(&pixman_transform_is_identity)(&a.transform))
         a = null;
-    if (b && pixman_transform_is_identity(&b.transform))
+    if (b && assumeNoGC(&pixman_transform_is_identity)(&b.transform))
         b = null;
     if (a == null && b == null)
         return TRUE;
@@ -81,7 +81,7 @@ Bool RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* para
 
 Bool RRTransformCopy(RRTransformPtr dst, RRTransformPtr src)
 {
-    if (src && pixman_transform_is_identity(&src.transform))
+    if (src && assumeNoGC(&pixman_transform_is_identity)(&src.transform))
         src = null;
 
     if (src) {
@@ -96,9 +96,9 @@ Bool RRTransformCopy(RRTransformPtr dst, RRTransformPtr src)
     else {
         if (!RRTransformSetFilter(dst, null, null, 0, 0, 0))
             return FALSE;
-        pixman_transform_init_identity(&dst.transform);
-        pixman_f_transform_init_identity(&dst.f_transform);
-        pixman_f_transform_init_identity(&dst.f_inverse);
+        assumeNoGC(&pixman_transform_init_identity)(&dst.transform);
+        assumeNoGC(&pixman_f_transform_init_identity)(&dst.f_transform);
+        assumeNoGC(&pixman_f_transform_init_identity)(&dst.f_inverse);
     }
     return TRUE;
 }
@@ -140,10 +140,10 @@ Bool RRTransformCompute(int x, int y, int width, int height, Rotation rotation, 
     if (!f_inverse)
         f_inverse = &tf_inverse;
 
-    pixman_transform_init_identity(transform);
-    pixman_transform_init_identity(&inverse);
-    pixman_f_transform_init_identity(f_transform);
-    pixman_f_transform_init_identity(f_inverse);
+    assumeNoGC(&pixman_transform_init_identity)(transform);
+    assumeNoGC(&pixman_transform_init_identity)(&inverse);
+    assumeNoGC(&pixman_f_transform_init_identity)(f_transform);
+    assumeNoGC(&pixman_f_transform_init_identity)(f_inverse);
     if (rotation != RR_Rotate_0) {
         double f_rot_cos = void, f_rot_sin = void, f_rot_dx = void, f_rot_dy = void;
         double f_scale_x = void, f_scale_y = void, f_scale_dx = void, f_scale_dy = void;
@@ -195,10 +195,10 @@ Bool RRTransformCompute(int x, int y, int width, int height, Rotation rotation, 
             break;
         }
 
-        pixman_transform_rotate(transform, &inverse, rot_cos, rot_sin);
-        pixman_transform_translate(transform, &inverse, rot_dx, rot_dy);
-        pixman_f_transform_rotate(f_transform, f_inverse, f_rot_cos, f_rot_sin);
-        pixman_f_transform_translate(f_transform, f_inverse, f_rot_dx,
+        assumeNoGC(&pixman_transform_rotate)(transform, &inverse, rot_cos, rot_sin);
+        assumeNoGC(&pixman_transform_translate)(transform, &inverse, rot_dx, rot_dy);
+        assumeNoGC(&pixman_f_transform_rotate)(f_transform, f_inverse, f_rot_cos, f_rot_sin);
+        assumeNoGC(&pixman_f_transform_translate)(f_transform, f_inverse, f_rot_dx,
                                      f_rot_dy);
 
         /* reflection */
@@ -235,10 +235,10 @@ Bool RRTransformCompute(int x, int y, int width, int height, Rotation rotation, 
             }
         }
 
-        pixman_transform_scale(transform, &inverse, scale_x, scale_y);
-        pixman_f_transform_scale(f_transform, f_inverse, f_scale_x, f_scale_y);
-        pixman_transform_translate(transform, &inverse, scale_dx, scale_dy);
-        pixman_f_transform_translate(f_transform, f_inverse, f_scale_dx,
+        assumeNoGC(&pixman_transform_scale)(transform, &inverse, scale_x, scale_y);
+        assumeNoGC(&pixman_f_transform_scale)(f_transform, f_inverse, f_scale_x, f_scale_y);
+        assumeNoGC(&pixman_transform_translate)(transform, &inverse, scale_dx, scale_dy);
+        assumeNoGC(&pixman_f_transform_translate)(f_transform, f_inverse, f_scale_dx,
                                      f_scale_dy);
     }
 
@@ -247,32 +247,32 @@ version (RANDR_12_INTERFACE) {
         if (!pixman_transform_multiply
             (transform, &rr_transform.transform, transform))
             overflow = TRUE;
-        pixman_f_transform_multiply(f_transform, &rr_transform.f_transform,
+        assumeNoGC(&pixman_f_transform_multiply)(f_transform, &rr_transform.f_transform,
                                     f_transform);
-        pixman_f_transform_multiply(f_inverse, f_inverse,
+        assumeNoGC(&pixman_f_transform_multiply)(f_inverse, f_inverse,
                                     &rr_transform.f_inverse);
     }
 }
     /*
      * Compute the class of the resulting transform
      */
-    if (!overflow && pixman_transform_is_identity(transform)) {
-        pixman_transform_init_translate(transform, mixin(F!(`x`)), mixin(F!(`y`)));
+    if (!overflow && assumeNoGC(&pixman_transform_is_identity)(transform)) {
+        assumeNoGC(&pixman_transform_init_translate)(transform, mixin(F!(`x`)), mixin(F!(`y`)));
 
-        pixman_f_transform_init_translate(f_transform, x, y);
-        pixman_f_transform_init_translate(f_inverse, -x, -y);
+        assumeNoGC(&pixman_f_transform_init_translate)(f_transform, x, y);
+        assumeNoGC(&pixman_f_transform_init_translate)(f_inverse, -x, -y);
         return FALSE;
     }
     else {
-        pixman_f_transform_translate(f_transform, f_inverse, x, y);
-        if (!pixman_transform_translate(transform, &inverse, mixin(F!(`x`)), mixin(F!(`y`))))
+        assumeNoGC(&pixman_f_transform_translate)(f_transform, f_inverse, x, y);
+        if (!assumeNoGC(&pixman_transform_translate)(transform, &inverse, mixin(F!(`x`)), mixin(F!(`y`))))
             overflow = TRUE;
         if (overflow) {
             pixman_f_transform f_scaled = void;
 
             f_scaled = *f_transform;
             RRTransformRescale(&f_scaled, 16384.0);
-            pixman_transform_from_pixman_f_transform(transform, &f_scaled);
+            assumeNoGC(&pixman_transform_from_pixman_f_transform)(transform, &f_scaled);
         }
         return TRUE;
     }

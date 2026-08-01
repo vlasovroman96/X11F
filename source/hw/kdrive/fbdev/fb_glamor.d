@@ -22,7 +22,7 @@ import hw.kdrive.src.kxv;
 }
 
 version (WITH_LIBDRM) {
-import include.externs.xf86drm;
+import externs.drm;
 }
 
 import core.stdc.errno;

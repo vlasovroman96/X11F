@@ -63,7 +63,7 @@ import include.servermd;
 import dix.swaprep;
 import include.xf86str;
 import dri_priv;
-import externs.xf86drm;
+import externs.drm;
 import include.protocol_versions;
 import xf86Extensions;
 

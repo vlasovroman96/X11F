@@ -53,7 +53,7 @@ void fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, I
     dest = image_from_pict(pDst, TRUE, &dst_xoff, &dst_yoff);
 
     if (src && dest && !(pMask && !mask)) {
-        pixman_image_composite(op, src, mask, dest,
+        assumeNoGC(&pixman_image_composite)(op, src, mask, dest,
                                xSrc + src_xoff, ySrc + src_yoff,
                                xMask + msk_xoff, yMask + msk_yoff,
                                xDst + dst_xoff, yDst + dst_yoff, width, height);
@@ -70,7 +70,7 @@ void fbDestroyGlyphCache()
 {
     if (glyphCache)
     {
-	pixman_glyph_cache_destroy (glyphCache);
+	assumeNoGC(&pixman_glyph_cache_destroy) (glyphCache);
 	glyphCache = null;
     }
 }
@@ -78,7 +78,7 @@ void fbDestroyGlyphCache()
 private void fbUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr pGlyph)
 {
     if (glyphCache)
-	pixman_glyph_cache_remove (glyphCache, pGlyph, null);
+	assumeNoGC(&pixman_glyph_cache_remove) (glyphCache, pGlyph, null);
 }
 
 private void fbGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs)
@@ -102,9 +102,9 @@ enum N_STACK_GLYPHS = 512;
 	n_glyphs += list[i].len;
 
     if (!glyphCache)
-	glyphCache = pixman_glyph_cache_create();
+	glyphCache = assumeNoGC(&pixman_glyph_cache_create)();
 
-    pixman_glyph_cache_freeze (glyphCache);
+    assumeNoGC(&pixman_glyph_cache_freeze) (glyphCache);
 
     if (n_glyphs > N_STACK_GLYPHS) {
 	if (((pglyphs = cast(pixman_glyph_t*) calloc(n_glyphs, pixman_glyph_t.sizeof)) == 0))
@@ -122,7 +122,7 @@ enum N_STACK_GLYPHS = 512;
 
             glyph = *glyphs++;
 
-	    if (((g = pixman_glyph_cache_lookup (glyphCache, glyph, null)) == 0)) {
+	    if (((g = assumeNoGC(&pixman_glyph_cache_lookup) (glyphCache, glyph, null)) == 0)) {
 		pixman_image_t* glyphImage = void;
 		PicturePtr pPicture = void;
 		int xoff = void, yoff = void;
@@ -136,7 +136,7 @@ enum N_STACK_GLYPHS = 512;
 		if (((glyphImage = image_from_pict(pPicture, FALSE, &xoff, &yoff)) == 0))
 		    goto out_;
 
-		g = pixman_glyph_cache_insert(glyphCache, glyph, null,
+		g = assumeNoGC(&pixman_glyph_cache_insert)(glyphCache, glyph, null,
 					      glyph.info.x,
 					      glyph.info.y,
 					      glyphImage);
@@ -171,9 +171,9 @@ enum N_STACK_GLYPHS = 512;
 
 	format = maskFormat.format | (maskFormat.depth << 24);
 
-	pixman_glyph_get_extents(glyphCache, n_glyphs, pglyphs, &extents);
+	assumeNoGC(&pixman_glyph_get_extents)(glyphCache, n_glyphs, pglyphs, &extents);
 
-	pixman_composite_glyphs(op, srcImage, dstImage, format,
+	assumeNoGC(&pixman_composite_glyphs)(op, srcImage, dstImage, format,
 				xSrc + srcXoff + extents.x1 - xDst, ySrc + srcYoff + extents.y1 - yDst,
 				extents.x1, extents.y1,
 				extents.x1 + dstXoff, extents.y1 + dstYoff,
@@ -182,7 +182,7 @@ enum N_STACK_GLYPHS = 512;
 				glyphCache, n_glyphs, pglyphs);
     }
     else {
-	pixman_composite_glyphs_no_mask(op, srcImage, dstImage,
+	assumeNoGC(&pixman_composite_glyphs_no_mask)(op, srcImage, dstImage,
 					xSrc + srcXoff - xDst, ySrc + srcYoff - yDst,
 					dstXoff, dstYoff,
 					glyphCache, n_glyphs, pglyphs);
@@ -194,7 +194,7 @@ out_free_src:
     free_pixman_pict(pSrc, srcImage);
 
 out_:
-    pixman_glyph_cache_thaw(glyphCache);
+    assumeNoGC(&pixman_glyph_cache_thaw)(glyphCache);
     if (pglyphs != stack_glyphs.ptr)
 	free(pglyphs);
 }
@@ -205,7 +205,7 @@ private pixman_image_t* create_solid_fill_image(PicturePtr pict)
     /* pixman_color_t and xRenderColor have the same layout */
     pixman_color_t* color = cast(pixman_color_t*)&solid.fullcolor;
 
-    return pixman_image_create_solid_fill(color);
+    return assumeNoGC(&pixman_image_create_solid_fill)(color);
 }
 
 private pixman_image_t* create_linear_gradient_image(PictGradient* gradient)
@@ -219,7 +219,7 @@ private pixman_image_t* create_linear_gradient_image(PictGradient* gradient)
     p2.x = linear.p2.x;
     p2.y = linear.p2.y;
 
-    return pixman_image_create_linear_gradient(&p1, &p2,
+    return assumeNoGC(&pixman_image_create_linear_gradient)(&p1, &p2,
                                                cast(pixman_gradient_stop_t*)
                                                gradient.stops,
                                                gradient.nstops);
@@ -236,7 +236,7 @@ private pixman_image_t* create_radial_gradient_image(PictGradient* gradient)
     c2.x = radial.c2.x;
     c2.y = radial.c2.y;
 
-    return pixman_image_create_radial_gradient(&c1, &c2, radial.c1.radius,
+    return assumeNoGC(&pixman_image_create_radial_gradient)(&c1, &c2, radial.c1.radius,
                                                radial.c2.radius,
                                                cast(pixman_gradient_stop_t*)
                                                gradient.stops,
@@ -251,7 +251,7 @@ private pixman_image_t* create_conical_gradient_image(PictGradient* gradient)
     center.x = conical.center.x;
     center.y = conical.center.y;
 
-    return pixman_image_create_conical_gradient(&center, conical.angle,
+    return assumeNoGC(&pixman_image_create_conical_gradient)(&center, conical.angle,
                                                 cast(pixman_gradient_stop_t*)
                                                 gradient.stops,
                                                 gradient.nstops);
@@ -268,7 +268,7 @@ private pixman_image_t* create_bits_picture(PicturePtr pict, Bool has_clip, int*
     fbGetDrawablePixmap(pict.pDrawable, pixmap, *xoff, *yoff);
     fbGetPixmapBitsData(pixmap, bits, stride, bpp);
 
-    image = pixman_image_create_bits(cast(pixman_format_code_t) pict.format,
+    image = assumeNoGC(&pixman_image_create_bits)(cast(pixman_format_code_t) pict.format,
                                      pixmap.drawable.width,
                                      pixmap.drawable.height, cast(uint*) bits,
                                      stride * FbStride.sizeof);
@@ -277,7 +277,7 @@ private pixman_image_t* create_bits_picture(PicturePtr pict, Bool has_clip, int*
         return null;
 
 version (FB_ACCESS_WRAPPER) {
-    pixman_image_set_accessors(image,
+    assumeNoGC(&pixman_image_set_accessors)(image,
                                cast(pixman_read_memory_func_t) wfbReadMemory,
                                cast(pixman_write_memory_func_t) wfbWriteMemory);
 }
@@ -287,20 +287,20 @@ version (FB_ACCESS_WRAPPER) {
      */
     if (has_clip) {
         if (pict.clientClip)
-            pixman_image_set_has_client_clip(image, TRUE);
+            assumeNoGC(&pixman_image_set_has_client_clip)(image, TRUE);
 
         if (*xoff || *yoff)
-            pixman_region_translate(pict.pCompositeClip, *xoff, *yoff);
+            assumeNoGC(&pixman_region_translate)(pict.pCompositeClip, *xoff, *yoff);
 
-        pixman_image_set_clip_region(image, pict.pCompositeClip);
+        assumeNoGC(&pixman_image_set_clip_region)(image, pict.pCompositeClip);
 
         if (*xoff || *yoff)
-            pixman_region_translate(pict.pCompositeClip, -*xoff, -*yoff);
+            assumeNoGC(&pixman_region_translate)(pict.pCompositeClip, -*xoff, -*yoff);
     }
 
     /* Indexed table */
     if (pict.pFormat.index.devPrivate)
-        pixman_image_set_indexed(image, pict.pFormat.index.devPrivate);
+        assumeNoGC(&pixman_image_set_indexed)(image, pict.pFormat.index.devPrivate);
 
     /* Add in drawable origin to position within the image */
     *xoff += pict.pDrawable.x;
@@ -331,16 +331,16 @@ private void set_image_properties(pixman_image_t* image, PicturePtr pict, Bool h
             pixman_transform adjusted = void;
 
             adjusted = *pict.transform;
-            pixman_transform_translate(&adjusted,
+            assumeNoGC(&pixman_transform_translate)(&adjusted,
                                        null,
-                                       pixman_int_to_fixed(*xoff),
-                                       pixman_int_to_fixed(*yoff));
-            pixman_image_set_transform(image, &adjusted);
+                                       assumeNoGC(&pixman_int_to_fixed)(*xoff),
+                                       assumeNoGC(&pixman_int_to_fixed)(*yoff));
+            assumeNoGC(&pixman_image_set_transform)(image, &adjusted);
             *xoff = 0;
             *yoff = 0;
         }
         else
-            pixman_image_set_transform(image, pict.transform);
+            assumeNoGC(&pixman_image_set_transform)(image, pict.transform);
     }
 
     switch (pict.repeatType) {
@@ -362,7 +362,7 @@ private void set_image_properties(pixman_image_t* image, PicturePtr pict, Bool h
         break;
     }
 
-    pixman_image_set_repeat(image, repeat);
+    assumeNoGC(&pixman_image_set_repeat)(image, repeat);
 
     /* Fetch alpha map unless 'pict' is being used
      * as the alpha map for this operation
@@ -372,13 +372,13 @@ private void set_image_properties(pixman_image_t* image, PicturePtr pict, Bool h
         pixman_image_t* alpha_map = image_from_pict_internal(pict.alphaMap, FALSE, &alpha_xoff,
                                      &alpha_yoff, TRUE);
 
-        pixman_image_set_alpha_map(image, alpha_map, pict.alphaOrigin.x,
+        assumeNoGC(&pixman_image_set_alpha_map)(image, alpha_map, pict.alphaOrigin.x,
                                    pict.alphaOrigin.y);
 
         free_pixman_pict(pict.alphaMap, alpha_map);
     }
 
-    pixman_image_set_component_alpha(image, pict.componentAlpha);
+    assumeNoGC(&pixman_image_set_component_alpha)(image, pict.componentAlpha);
 
     switch (pict.filter) {
     default:
@@ -398,13 +398,13 @@ private void set_image_properties(pixman_image_t* image, PicturePtr pict, Bool h
     }
 
     if (pict.pDrawable)
-        pixman_image_set_destroy_function(image, &image_destroy,
+        assumeNoGC(&pixman_image_set_destroy_function)(image, &image_destroy,
                                           pict.pDrawable);
 
-    pixman_image_set_filter(image, filter,
+    assumeNoGC(&pixman_image_set_filter)(image, filter,
                             cast(pixman_fixed_t*) pict.filter_params,
                             pict.filter_nparams);
-    pixman_image_set_source_clipping(image, TRUE);
+    assumeNoGC(&pixman_image_set_source_clipping)(image, TRUE);
 }
 
 private pixman_image_t* image_from_pict_internal(PicturePtr pict, Bool has_clip, int* xoff, int* yoff, Bool is_alpha_map)
@@ -450,7 +450,7 @@ pixman_image_t* image_from_pict(PicturePtr pict, Bool has_clip, int* xoff, int* 
 void free_pixman_pict(PicturePtr pict, pixman_image_t* image)
 {
     if (image)
-        pixman_image_unref(image);
+        assumeNoGC(&pixman_image_unref)(image);
 }
 
 Bool fbPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)

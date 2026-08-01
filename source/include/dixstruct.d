@@ -69,8 +69,8 @@ struct SaveSetElt {
     Bool map;
 }
 enum string SaveSetWindow(string ss) = `((` ~ ss ~ `).windowPtr)`;
-enum string SaveSetToRoot(string ss) = `((` ~ ss ~ `).toRoot);`;
-enum string SaveSetShouldMap(string ss) = `((` ~ ss ~ `).map);`;
+enum string SaveSetToRoot(string ss) = `((` ~ ss ~ `).toRoot)`;
+enum string SaveSetShouldMap(string ss) = `((` ~ ss ~ `).map)`;
 enum string SaveSetAssignWindow(string ss,string w) = `((` ~ ss ~ `).windowPtr = (` ~ w ~ `));`;
 enum string SaveSetAssignToRoot(string ss,string tr) = `((` ~ ss ~ `).toRoot = (` ~ tr ~ `));`;
 enum string SaveSetAssignMap(string ss,string m) = `((` ~ ss ~ `).map = (` ~ m ~ `));`;

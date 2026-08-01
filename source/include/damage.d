@@ -27,6 +27,7 @@ extern(C): __gshared:
 import include.regionstr;
 import include.screenint;
 import include.privates;
+public import miext.damage.damage_;
 
 struct _Damage;
 alias DamagePtr = _Damage*;
@@ -104,7 +105,7 @@ extern int DamageDrawInternal(ScreenPtr pScreen, Bool enable);
 
 // extern int DamageRegion(DamagePtr pDamage);
 
-extern int DamagePendingRegion(DamagePtr pDamage);
+// extern int DamagePendingRegion(DamagePtr pDamage);
 
 /* In case of rendering, call this before the submitting the commands. */
 extern int DamageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion);

@@ -38,7 +38,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  
 public import include.dri;
 public import include.sarea;
-public import externs.xf86drm;
+public import externs.drm;
 public import include.xf86Crtc;
 
 enum string DRI_DRAWABLE_PRIV_FROM_WINDOW(string pWin) = `(cast(DRIDrawablePrivPtr) 

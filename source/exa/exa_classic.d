@@ -36,7 +36,7 @@ import include.exa_i;
 
 pragma(inline, true) private void* ExaGetPixmapAddress(PixmapPtr p)
 {
-    ExaPixmapPriv(p);
+    mixin(ExaPixmapPriv!("p"));
 
     if (pExaPixmap.use_gpu_copy && pExaPixmap.fb_ptr)
         return pExaPixmap.fb_ptr;
@@ -59,19 +59,19 @@ PixmapPtr exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth, ui
     BoxRec box = void;
     int bpp = void;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (w > 32767 || h > 32767)
         return NullPixmap;
 
-    swap(pExaScr, pScreen, CreatePixmap);
+    mixin(swap!("pExaScr", "pScreen", "CreatePixmap"));
     pPixmap = pScreen.CreatePixmap(pScreen, w, h, depth, usage_hint);
-    swap(pExaScr, pScreen, CreatePixmap);
+    mixin(swap!("pExaScr", "pScreen", "CreatePixmap"));
 
     if (!pPixmap)
         return null;
 
-    pExaPixmap = ExaGetPixmapPriv(pPixmap);
+    pExaPixmap = mixin(ExaGetPixmapPriv!("pPixmap"));
     pExaPixmap.driverPriv = null;
 
     bpp = pPixmap.drawable.bitsPerPixel;
@@ -85,7 +85,7 @@ PixmapPtr exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth, ui
     else
         pExaPixmap.score = EXA_PIXMAP_SCORE_INIT;
 
-    pExaPixmap.sys_ptr = pPixmap.devPrivate.ptr;
+    pExaPixmap.sys_ptr = cast(ubyte*)pPixmap.devPrivate.ptr;
     pExaPixmap.sys_pitch = pPixmap.devKind;
 
     pPixmap.devPrivate.ptr = null;
@@ -128,8 +128,8 @@ PixmapPtr exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth, ui
      */
     box.x1 = 0;
     box.y1 = 0;
-    box.x2 = w;
-    box.y2 = h;
+    box.x2 = cast(short)w;
+    box.y2 = cast(short)h;
     RegionInit(&pExaPixmap.validSys, &box, 0);
     RegionInit(&pExaPixmap.validFB, &box, 0);
 
@@ -153,12 +153,12 @@ Bool exaModifyPixmapHeader_classic(PixmapPtr pPixmap, int width, int height, int
         return FALSE;
 
     pScreen = pPixmap.drawable.pScreen;
-    pExaScr = ExaGetScreenPriv(pScreen);
-    pExaPixmap = ExaGetPixmapPriv(pPixmap);
+    pExaScr = mixin(ExaGetScreenPriv!("pScreen"));
+    pExaPixmap = mixin(ExaGetPixmapPriv!("pPixmap"));
 
     if (pExaPixmap) {
         if (pPixData)
-            pExaPixmap.sys_ptr = pPixData;
+            pExaPixmap.sys_ptr = cast(ubyte*)pPixData;
 
         if (devKind > 0)
             pExaPixmap.sys_pitch = devKind;
@@ -171,7 +171,7 @@ Bool exaModifyPixmapHeader_classic(PixmapPtr pPixmap, int width, int height, int
             if (cast(CARD8*) pPixData >= pExaScr.info.memoryBase &&
                 (cast(CARD8*) pPixData - pExaScr.info.memoryBase) <
                 pExaScr.info.memorySize) {
-                pExaPixmap.fb_ptr = pPixData;
+                pExaPixmap.fb_ptr = cast(ubyte*)pPixData;
                 pExaPixmap.fb_pitch = devKind;
                 pExaPixmap.use_gpu_copy = TRUE;
             }
@@ -192,10 +192,10 @@ Bool exaModifyPixmapHeader_classic(PixmapPtr pPixmap, int width, int height, int
         }
     }
 
-    swap(pExaScr, pScreen, ModifyPixmapHeader);
+    mixin(swap!("pExaScr", "pScreen", "ModifyPixmapHeader"));
     ret = pScreen.ModifyPixmapHeader(pPixmap, width, height, depth,
                                       bitsPerPixel, devKind, pPixData);
-    swap(pExaScr, pScreen, ModifyPixmapHeader);
+    mixin(swap!("pExaScr", "pScreen", "ModifyPixmapHeader"));
 
     /* Always NULL this, we don't want lingering pointers. */
     pPixmap.devPrivate.ptr = null;
@@ -205,17 +205,17 @@ Bool exaModifyPixmapHeader_classic(PixmapPtr pPixmap, int width, int height, int
 
 void exaPixmapDestroy_classic(CallbackListPtr* pcbl, ScreenPtr pScreen, PixmapPtr pPixmap)
 {
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     if (!pExaPixmap) // we're called on an error path
         return;
 
     exaDestroyPixmap(pPixmap);
 
     if (pExaPixmap.area) {
-        DBG_PIXMAP(("-- 0x%p (0x%x) (%dx%d)\n",
-                    cast(void*) pPixmap.drawable.id,
-                    ExaGetPixmapPriv(pPixmap).area.offset,
-                    pPixmap.drawable.width, pPixmap.drawable.height));
+        // DBG_PIXMAP(("-- 0x%p (0x%x) (%dx%d)\n",
+        //             cast(void*) pPixmap.drawable.id,
+        //             mixin(ExaGetPixmapPriv!("pPixmap")).area.offset,
+        //             pPixmap.drawable.width, pPixmap.drawable.height));
         /* Free the offscreen area */
         exaOffscreenFree(pPixmap.drawable.pScreen, pExaPixmap.area);
         pPixmap.devPrivate.ptr = pExaPixmap.sys_ptr;
@@ -229,8 +229,8 @@ Bool exaPixmapHasGpuCopy_classic(PixmapPtr pPixmap)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
     Bool ret = void;
 
     if (pExaScr.info.PixmapIsOffscreen) {

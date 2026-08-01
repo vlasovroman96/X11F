@@ -118,15 +118,15 @@ enum WindowVRRMode {
  *  or as a local variable) can easily do so and retain full type checking.
  */
 
-alias CloseScreenProcPtr = Bool function(ScreenPtr /*pScreen */ );
+alias CloseScreenProcPtr = Bool function(ScreenPtr /*pScreen */ )  @nogc nothrow;
 
 alias QueryBestSizeProcPtr = void function(int /*class */ ,
                                       ubyte * /*pwidth */ ,
                                       ubyte * /*pheight */ ,
-                                      ScreenPtr /*pScreen */ );
+                                      ScreenPtr /*pScreen */ )  @nogc nothrow;
 
 alias SaveScreenProcPtr = Bool function(ScreenPtr /*pScreen */ ,
-                                   int /*on */ );
+                                   int /*on */ )  @nogc nothrow;
 
 alias GetImageProcPtr = void function(DrawablePtr /*pDrawable */ ,
                                  int /*sx */ ,
@@ -135,71 +135,71 @@ alias GetImageProcPtr = void function(DrawablePtr /*pDrawable */ ,
                                  int /*h */ ,
                                  uint /*format */ ,
                                  ulong /*planeMask */ ,
-                                 char * /*pdstLine */ );
+                                 char * /*pdstLine */ )  @nogc nothrow;
 
 alias GetSpansProcPtr = void function(DrawablePtr /*pDrawable */ ,
                                  int /*wMax */ ,
                                  DDXPointPtr /*ppt */ ,
                                  int * /*pwidth */ ,
                                  int /*nspans */ ,
-                                 char * /*pdstStart */ );
+                                 char * /*pdstStart */ )  @nogc nothrow;
 
 alias SourceValidateProcPtr = void function(DrawablePtr /*pDrawable */ ,
                                        int /*x */ ,
                                        int /*y */ ,
                                        int /*width */ ,
                                        int /*height */ ,
-                                       uint /*subWindowMode */ );
+                                       uint /*subWindowMode */ )  @nogc nothrow;
 
-alias CreateWindowProcPtr = Bool function(WindowPtr /*pWindow */ );
+alias CreateWindowProcPtr = Bool function(WindowPtr /*pWindow */ )  @nogc nothrow;
 
-alias DestroyWindowProcPtr = Bool function(WindowPtr /*pWindow */ );
+alias DestroyWindowProcPtr = Bool function(WindowPtr /*pWindow */ )  @nogc nothrow;
 
 alias PositionWindowProcPtr = Bool function(WindowPtr /*pWindow */ ,
                                        int /*x */ ,
-                                       int /*y */ );
+                                       int /*y */ )  @nogc nothrow;
 
 alias ChangeWindowAttributesProcPtr = Bool function(WindowPtr /*pWindow */ ,
-                                               ulong /*mask */ );
+                                               ulong /*mask */ )  @nogc nothrow;
 
-alias RealizeWindowProcPtr = Bool function(WindowPtr /*pWindow */ );
+alias RealizeWindowProcPtr = Bool function(WindowPtr /*pWindow */ )  @nogc nothrow;
 
-alias UnrealizeWindowProcPtr = Bool function(WindowPtr /*pWindow */ );
+alias UnrealizeWindowProcPtr = Bool function(WindowPtr /*pWindow */ )  @nogc nothrow;
 
 alias RestackWindowProcPtr = void function(WindowPtr /*pWindow */ ,
-                                      WindowPtr /*pOldNextSib */ );
+                                      WindowPtr /*pOldNextSib */ )  @nogc nothrow;
 
 alias ValidateTreeProcPtr = void function(WindowPtr /*pParent */ ,
                                     WindowPtr /*pChild */ ,
-                                    VTKind /*kind */ );
+                                    VTKind /*kind */ )  @nogc nothrow;
 
 alias PostValidateTreeProcPtr = void function(WindowPtr /*pParent */ ,
                                          WindowPtr /*pChild */ ,
-                                         VTKind /*kind */ );
+                                         VTKind /*kind */ )  @nogc nothrow;
 
 alias WindowExposuresProcPtr = void function(WindowPtr /*pWindow */ ,
-                                        RegionPtr /*prgn */);
+                                        RegionPtr /*prgn */)  @nogc nothrow;
 
 alias PaintWindowProcPtr = void function(WindowPtr /*pWindow*/,
                                     RegionPtr /*pRegion*/,
-                                    int /*what*/);
+                                    int /*what*/)  @nogc nothrow;
 
 alias CopyWindowProcPtr = void function(WindowPtr /*pWindow */ ,
                                    xPoint /*ptOldOrg */ ,
-                                   RegionPtr /*prgnSrc */ );
+                                   RegionPtr /*prgnSrc */ )  @nogc nothrow;
 
 alias ClearToBackgroundProcPtr = void function(WindowPtr /*pWindow */ ,
                                           int /*x */ ,
                                           int /*y */ ,
                                           int /*w */ ,
                                           int /*h */ ,
-                                          Bool /*generateExposures */ );
+                                          Bool /*generateExposures */ )  @nogc nothrow;
 
 alias ClipNotifyProcPtr = void function(WindowPtr /*pWindow */ ,
                                    int /*dx */ ,
-                                   int /*dy */ );
+                                   int /*dy */ )  @nogc nothrow;
 
-alias SetWindowVRRModeProcPtr = void function(WindowPtr pWindow, WindowVRRMode mode);
+alias SetWindowVRRModeProcPtr = void function(WindowPtr pWindow, WindowVRRMode mode)  @nogc nothrow;
 
 /* pixmap will exist only for the duration of the current rendering operation */
 enum CREATE_PIXMAP_USAGE_SCRATCH =                     1;
@@ -214,48 +214,48 @@ alias CreatePixmapProcPtr = PixmapPtr function(ScreenPtr /*pScreen */ ,
                                           int /*width */ ,
                                           int /*height */ ,
                                           int /*depth */ ,
-                                          uint /*usage_hint */ );
+                                          uint /*usage_hint */ ) @nogc nothrow;
 
-alias DestroyPixmapProcPtr = Bool function(PixmapPtr /*pPixmap */ );
+alias DestroyPixmapProcPtr = Bool function(PixmapPtr /*pPixmap */ ) @nogc nothrow;
 
 alias RealizeFontProcPtr = Bool function(ScreenPtr /*pScreen */ ,
-                                    FontPtr /*pFont */ );
+                                    FontPtr /*pFont */ ) @nogc nothrow;
 
 alias UnrealizeFontProcPtr = void function(ScreenPtr /*pScreen */ ,
-                                      FontPtr /*pFont */ );
+                                      FontPtr /*pFont */ ) @nogc nothrow;
 
 alias ConstrainCursorProcPtr = void function(DeviceIntPtr /*pDev */ ,
                                         ScreenPtr /*pScreen */ ,
-                                        BoxPtr /*pBox */ );
+                                        BoxPtr /*pBox */ ) @nogc nothrow;
 
 alias CursorLimitsProcPtr = void function(DeviceIntPtr /* pDev */ ,
                                      ScreenPtr /*pScreen */ ,
                                      CursorPtr /*pCursor */ ,
                                      BoxPtr /*pHotBox */ ,
-                                     BoxPtr /*pTopLeftBox */ );
+                                     BoxPtr /*pTopLeftBox */ ) @nogc nothrow;
 
 alias DisplayCursorProcPtr = Bool function(DeviceIntPtr /* pDev */ ,
                                       ScreenPtr /*pScreen */ ,
-                                      CursorPtr /*pCursor */ );
+                                      CursorPtr /*pCursor */ ) @nogc nothrow;
 
 alias RealizeCursorProcPtr = Bool function(DeviceIntPtr /* pDev */ ,
                                       ScreenPtr /*pScreen */ ,
-                                      CursorPtr /*pCursor */ );
+                                      CursorPtr /*pCursor */ ) @nogc nothrow;
 
 alias UnrealizeCursorProcPtr = Bool function(DeviceIntPtr /* pDev */ ,
                                         ScreenPtr /*pScreen */ ,
-                                        CursorPtr /*pCursor */ );
+                                        CursorPtr /*pCursor */ ) @nogc nothrow;
 
 alias RecolorCursorProcPtr = void function(DeviceIntPtr /* pDev */ ,
                                       ScreenPtr /*pScreen */ ,
                                       CursorPtr /*pCursor */ ,
-                                      Bool /*displayed */ );
+                                      Bool /*displayed */ ) @nogc nothrow;
 
 alias SetCursorPositionProcPtr = Bool function(DeviceIntPtr /* pDev */ ,
                                           ScreenPtr /*pScreen */ ,
                                           int /*x */ ,
                                           int /*y */ ,
-                                          Bool /*generateEvent */ );
+                                          Bool /*generateEvent */ ) @nogc nothrow;
 
 alias CursorWarpedToProcPtr = void function(DeviceIntPtr /* pDev */ ,
                                        ScreenPtr /*pScreen */ ,
@@ -263,38 +263,38 @@ alias CursorWarpedToProcPtr = void function(DeviceIntPtr /* pDev */ ,
                                        WindowPtr /*pWindow */ ,
                                        SpritePtr /*pSprite */ ,
                                        int /*x */ ,
-                                       int /*y */ );
+                                       int /*y */ ) @nogc nothrow;
 
 alias CursorConfinedToProcPtr = void function(DeviceIntPtr /* pDev */ ,
                                          ScreenPtr /*pScreen */ ,
-                                         WindowPtr /*pWindow */ );
+                                         WindowPtr /*pWindow */ ) @nogc nothrow;
 
-alias CreateGCProcPtr = Bool function(GCPtr /*pGC */ );
+alias CreateGCProcPtr = Bool function(GCPtr /*pGC */ ) @nogc nothrow;
 
-alias CreateColormapProcPtr = Bool function(ColormapPtr /*pColormap */ );
+alias CreateColormapProcPtr = Bool function(ColormapPtr /*pColormap */ ) @nogc nothrow;
 
-alias DestroyColormapProcPtr = void function(ColormapPtr /*pColormap */ );
+alias DestroyColormapProcPtr = void function(ColormapPtr /*pColormap */ ) @nogc nothrow;
 
-alias InstallColormapProcPtr = void function(ColormapPtr /*pColormap */ );
+alias InstallColormapProcPtr = void function(ColormapPtr /*pColormap */ ) @nogc nothrow;
 
-alias UninstallColormapProcPtr = void function(ColormapPtr /*pColormap */ );
+alias UninstallColormapProcPtr = void function(ColormapPtr /*pColormap */ ) @nogc nothrow;
 
 // alias ListInstalledColormapsProcPtr = void function(ScreenPtr /*pScreen */ ,
-//                                               XID * /*pmaps */ );
+//                                               XID * /*pmaps */ ) @nogc nothrow;
 
 alias StoreColorsProcPtr = void function(ColormapPtr /*pColormap */ ,
                                     int /*ndef */ ,
-                                    xColorItem * /*pdef */ );
+                                    xColorItem * /*pdef */ ) @nogc nothrow;
 
 alias ResolveColorProcPtr = void function(ubyte * /*pred */ ,
                                      ubyte * /*pgreen */ ,
                                      ubyte * /*pblue */ ,
-                                     VisualPtr /*pVisual */ );
+                                     VisualPtr /*pVisual */ ) @nogc nothrow;
 
-alias BitmapToRegionProcPtr = void function(PixmapPtr /*pPix */ );
+alias BitmapToRegionProcPtr = pixman_region16* function(PixmapPtr /*pPix */ ) @nogc nothrow;
 
 alias ScreenBlockHandlerProcPtr = void function(ScreenPtr pScreen,
-                                           void *timeout);
+                                           void *timeout) @nogc nothrow;
 
 /* result has three possible values:
  * < 0 - error
@@ -302,9 +302,9 @@ alias ScreenBlockHandlerProcPtr = void function(ScreenPtr pScreen,
  * > 0 - activity
  */
 alias ScreenWakeupHandlerProcPtr = void function(ScreenPtr pScreen,
-                                            int result);
+                                            int result) @nogc nothrow;
 
-alias CreateScreenResourcesProcPtr = Bool function(ScreenPtr /*pScreen */ );
+alias CreateScreenResourcesProcPtr = Bool function(ScreenPtr /*pScreen */ ) @nogc nothrow;
 
 alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap,
                                            int width,
@@ -312,22 +312,22 @@ alias ModifyPixmapHeaderProcPtr = Bool function(PixmapPtr pPixmap,
                                            int depth,
                                            int bitsPerPixel,
                                            int devKind,
-                                           void *pPixData);
+                                           void *pPixData) @nogc nothrow;
 
-alias GetWindowPixmapProcPtr = PixmapPtr function(WindowPtr /*pWin */ );
+alias GetWindowPixmapProcPtr = PixmapPtr function(WindowPtr /*pWin */ ) @nogc nothrow;
 
 alias SetWindowPixmapProcPtr = void function(WindowPtr /*pWin */ ,
-                                        PixmapPtr /*pPix */ );
+                                        PixmapPtr /*pPix */ ) @nogc nothrow;
 
-alias GetScreenPixmapProcPtr = PixmapPtr function(ScreenPtr /*pScreen */ );
+alias GetScreenPixmapProcPtr = PixmapPtr function(ScreenPtr /*pScreen */ ) @nogc nothrow;
 
-alias SetScreenPixmapProcPtr = void function(PixmapPtr /*pPix */ );
+alias SetScreenPixmapProcPtr = void function(PixmapPtr /*pPix */ ) @nogc nothrow;
 
-alias MarkWindowProcPtr = void function(WindowPtr /*pWin */ );
+alias MarkWindowProcPtr = void function(WindowPtr /*pWin */ ) @nogc nothrow;
 
 alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr /*parent */ ,
                                               WindowPtr /*firstChild */ ,
-                                              WindowPtr * /*pLayerWin */ );
+                                              WindowPtr * /*pLayerWin */ ) @nogc nothrow;
 
 alias ConfigNotifyProcPtr = int function(WindowPtr /*pWin */ ,
                                     int /*x */ ,
@@ -335,13 +335,13 @@ alias ConfigNotifyProcPtr = int function(WindowPtr /*pWin */ ,
                                     int /*w */ ,
                                     int /*h */ ,
                                     int /*bw */ ,
-                                    WindowPtr /*pSib */ );
+                                    WindowPtr /*pSib */ ) @nogc nothrow;
 
 alias MoveWindowProcPtr = void function(WindowPtr /*pWin */ ,
                                    int /*x */ ,
                                    int /*y */ ,
                                    WindowPtr /*pSib */ ,
-                                   VTKind /*kind */ );
+                                   VTKind /*kind */ ) @nogc nothrow;
 
 alias ResizeWindowProcPtr = void function(WindowPtr /*pWin */ ,
                                      int /*x */ ,
@@ -349,39 +349,39 @@ alias ResizeWindowProcPtr = void function(WindowPtr /*pWin */ ,
                                      uint /*w */ ,
                                      uint /*h*/ ,
                                      WindowPtr/*pSib */
-    );
+    ) @nogc nothrow;
 
-alias GetLayerWindowProcPtr = void function(WindowPtr   /*pWin */
-    );
+alias GetLayerWindowProcPtr = WindowPtr function(WindowPtr   /*pWin */
+    ) @nogc nothrow;
 
-alias HandleExposuresProcPtr = void function(WindowPtr /*pWin */ );
+alias HandleExposuresProcPtr = void function(WindowPtr /*pWin */ ) @nogc nothrow;
 
 alias ReparentWindowProcPtr = void function(WindowPtr /*pWin */ ,
-                                       WindowPtr /*pPriorParent */ );
+                                       WindowPtr /*pPriorParent */ ) @nogc nothrow;
 
 alias SetShapeProcPtr = void function(WindowPtr /*pWin */ ,
-                                 int /* kind */ );
+                                 int /* kind */ ) @nogc nothrow;
 
 alias ChangeBorderWidthProcPtr = void function(WindowPtr /*pWin */ ,
-                                          uint /*width */ );
+                                          uint /*width */ ) @nogc nothrow;
 
 alias MarkUnrealizedWindowProcPtr = void function(WindowPtr /*pChild */ ,
                                              WindowPtr /*pWin */ ,
-                                             Bool /*fromConfigure */ );
+                                             Bool /*fromConfigure */ ) @nogc nothrow;
 
 alias DeviceCursorInitializeProcPtr = Bool function(DeviceIntPtr /* pDev */ ,
-                                               ScreenPtr /* pScreen */ );
+                                               ScreenPtr /* pScreen */ ) @nogc nothrow;
 
 alias DeviceCursorCleanupProcPtr = void function(DeviceIntPtr /* pDev */ ,
-                                            ScreenPtr /* pScreen */ );
+                                            ScreenPtr /* pScreen */ ) @nogc nothrow;
 
 alias ConstrainCursorHarderProcPtr = void function(DeviceIntPtr, ScreenPtr, int,
-                                              int *, int *);
+                                              int *, int *) @nogc nothrow;
 
 
-alias SharePixmapBackingProcPtr = Bool function(PixmapPtr, ScreenPtr, void **);
+alias SharePixmapBackingProcPtr = Bool function(PixmapPtr, ScreenPtr, void **) @nogc nothrow;
 
-alias SetSharedPixmapBackingProcPtr = Bool function(PixmapPtr, void *);
+alias SetSharedPixmapBackingProcPtr = Bool function(PixmapPtr, void *) @nogc nothrow;
 
 enum HAS_SYNC_SHARED_PIXMAP = 1;
 /* The SyncSharedPixmap hook has two purposes:

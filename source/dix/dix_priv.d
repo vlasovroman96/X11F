@@ -70,7 +70,7 @@ alias HWEventQueuePtr = HWEventQueueType*;
 extern HWEventQueuePtr[2] checkForInput;
 
  /* -retro mode */
-extern Bool party_like_its_1989;
+// extern Bool party_like_its_1989;
 
 /* needed by libglx and libglamor (server modules) */
 extern bool enableIndirectGLX;
@@ -195,7 +195,7 @@ void InitEvents();
 
 void CloseDownEvents();
 
-void DeleteWindowFromAnyEvents(WindowPtr pWin, Bool freeResources);
+// void DeleteWindowFromAnyEvents(WindowPtr pWin, Bool freeResources);
 
 // Mask EventMaskForClient(WindowPtr pWin, ClientPtr client);
 
@@ -228,7 +228,7 @@ void CopyKeyClass(DeviceIntPtr device, DeviceIntPtr master);
 alias xQueryFontReplyPtr = _xQueryFontReply*;
 void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
 
-extern Bool whiteRoot;
+// extern Bool whiteRoot;
 
 // extern /*volatile*/ char isItTimeToYield;
 
@@ -262,7 +262,7 @@ void dixFreeScreen(ScreenPtr pScreen);
  *
  * @param pWin the window that's being unrealized
  */
-void dixScreenRaiseUnrealizeWindow(WindowPtr pWin);
+// void dixScreenRaiseUnrealizeWindow(WindowPtr pWin);
 
 /*
  * @brief call screen's window destructors
@@ -275,7 +275,7 @@ void dixScreenRaiseUnrealizeWindow(WindowPtr pWin);
  *
  * Should only be called by DIX itself.
  */
-int dixScreenRaiseWindowDestroy(WindowPtr pWin);
+// int dixScreenRaiseWindowDestroy(WindowPtr pWin);
 
 /*
  * @brief call screen's window position notification hooks
@@ -287,7 +287,7 @@ int dixScreenRaiseWindowDestroy(WindowPtr pWin);
  *
  * Should only be called by DIX itself.
  */
-void dixScreenRaiseWindowPosition(WindowPtr pWin, uint x, uint y);
+// void dixScreenRaiseWindowPosition(WindowPtr pWin, uint x, uint y);
 
 /*
  * @brief call screen's close hooks
@@ -344,7 +344,7 @@ Bool dixScreenRaiseCreateResources(ScreenPtr pScreen);
  * @param skipClient    don't deliver to this client (if not NULL)
  * @return TRUE when event was delivered
  */
-Bool MaybeDeliverEventToClient(WindowPtr pWindow, xEvent* pEvent, Mask filter, ClientPtr skipClient);
+// Bool MaybeDeliverEventToClient(WindowPtr pWindow, xEvent* pEvent, Mask filter, ClientPtr skipClient);
 
 /*
  * @brief select window events to listen on
@@ -354,7 +354,7 @@ Bool MaybeDeliverEventToClient(WindowPtr pWindow, xEvent* pEvent, Mask filter, C
  * @param mask      mask of events to listen on
  * @return X error code
  */
-XRetCode EventSelectForWindow(WindowPtr pWindow, ClientPtr pClient, Mask mask);
+// XRetCode EventSelectForWindow(WindowPtr pWindow, ClientPtr pClient, Mask mask);
 
 /*
  * @brief set block propagation of specific events on window
@@ -365,7 +365,7 @@ XRetCode EventSelectForWindow(WindowPtr pWindow, ClientPtr pClient, Mask mask);
  * @param checkOptional set to w/ TRUE when window's optional structure changed
  * @return X error code
  */
-int EventSuppressForWindow(WindowPtr pWindow, ClientPtr pClient, Mask mask, Bool* checkOptional);
+// int EventSuppressForWindow(WindowPtr pWindow, ClientPtr pClient, Mask mask, Bool* checkOptional);
 
 /*
  * @brief allocate new ClientRec and initialize it
@@ -512,7 +512,7 @@ int ClientSignalAll(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
  * @param count         number of events in xE.
  * @param otherParent   Used for ReparentNotify events.
  */
-EventDeliveryState DeliverEvents(WindowPtr pWindow, xEventPtr events, size_t nEvents, WindowPtr otherParent);
+// EventDeliveryState DeliverEvents(WindowPtr pWindow, xEventPtr events, size_t nEvents, WindowPtr otherParent);
 
 /**
  * @brief deliver events to a window.
@@ -552,14 +552,14 @@ extern CallbackListPtr RootWindowFinalizeCallback;
  *
  * @param pWindow   window that just got a new cursor
  */
-void WindowHasNewCursor(WindowPtr pWin);
+// void WindowHasNewCursor(WindowPtr pWin);
 
 /*
  * @brief do post actions necessary when windows have been restructured
  *
  * currently updates the sprite position and the sprite's cursor.
  */
-void WindowsRestructured();
+// void WindowsRestructured();
 
 /*
  * @brief do post actions necessary whn screens have been restructured

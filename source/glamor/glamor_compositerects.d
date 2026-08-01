@@ -87,7 +87,7 @@ private Bool _pixman_region_init_clipped_rectangles(pixman_region16_t* region, u
 
     ret = FALSE;
     if (j)
-        ret = pixman_region_init_rects(region, boxes, j);
+        ret = assumeNoGC(&pixman_region_init_rects)(region, boxes, j);
 
     if (boxes != stack_boxes.ptr)
         free(boxes);
@@ -208,11 +208,11 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
            RegionNumRects(&region));
 
     if (dst.pCompositeClip.data &&
-        (!pixman_region_intersect(&region, &region, dst.pCompositeClip) ||
+        (!assumeNoGC(&pixman_region_intersect)(&region, &region, dst.pCompositeClip) ||
          RegionNil(&region))) {
         DEBUGF("%s: zero-intersection between rectangles and clip\n",
                __FUNCTION__.ptr);
-        pixman_region_fini(&region);
+        assumeNoGC(&pixman_region_fini)(&region);
         return;
     }
 
@@ -222,11 +222,11 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
            RegionExtents(&region).x2, RegionExtents(&region).y2,
            RegionNumRects(&region));
 
-    boxes = pixman_region_rectangles(&region, &num_boxes);
+    boxes = assumeNoGC(&pixman_region_rectangles)(&region, &num_boxes);
     if (op == PictOpSrc || op == PictOpClear) {
         CARD32 pixel = void;
 
-        pixman_region_translate(&region, -dst.pDrawable.x, -dst.pDrawable.y);
+        assumeNoGC(&pixman_region_translate)(&region, -dst.pDrawable.x, -dst.pDrawable.y);
 
         DEBUGF("%s: drawable extents (%d, %d),(%d, %d)\n",
                __FUNCTION__.ptr, dst_x, dst_y,
@@ -265,7 +265,7 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
     DamageRegionProcessPending(&pixmap.drawable);
 
     if (need_free_region)
-        pixman_region_fini(&region);
+        assumeNoGC(&pixman_region_fini)(&region);
     if (source)
         FreePicture(source, 0);
     return;

@@ -116,7 +116,7 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
     if (!picture)
         return;
 
-    image = pixman_image_create_bits(picture.format,
+    image = assumeNoGC(&pixman_image_create_bits)(picture.format,
                                      width, height, null, stride);
     if (!image) {
         FreePicture(picture, 0);
@@ -124,7 +124,7 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
     }
 
     for (; ntrap; ntrap--, traps++)
-        pixman_rasterize_trapezoid(image,
+        assumeNoGC(&pixman_rasterize_trapezoid)(image,
                                    cast(pixman_trapezoid_t*) traps,
                                    -bounds.x1, -bounds.y1);
 
@@ -135,7 +135,7 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
                                BitsPerPixel(mask_format.depth),
                                PixmapBytePad(width,
                                              mask_format.depth),
-                               pixman_image_get_data(image));
+                               assumeNoGC(&pixman_image_get_data)(image));
 
     x_rel = bounds.x1 + x_src - x_dst;
     y_rel = bounds.y1 + y_src - y_dst;
@@ -147,7 +147,7 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
                      bounds.x2 - bounds.x1, bounds.y2 - bounds.y1);
 
     if (image)
-        pixman_image_unref(image);
+        assumeNoGC(&pixman_image_unref)(image);
 
     FreePicture(picture, 0);
 }

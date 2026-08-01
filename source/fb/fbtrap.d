@@ -41,7 +41,7 @@ void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap*
     if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) == 0))
         return;
 
-    pixman_add_traps(image, x_off + dst_xoff, y_off + dst_yoff,
+    assumeNoGC(&pixman_add_traps)(image, x_off + dst_xoff, y_off + dst_yoff,
                      ntrap, cast(pixman_trap_t*) traps);
 
     free_pixman_pict(pPicture, image);
@@ -55,7 +55,7 @@ void fbRasterizeTrapezoid(PicturePtr pPicture, xTrapezoid* trap, int x_off, int 
     if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) == 0))
         return;
 
-    pixman_rasterize_trapezoid(image, cast(pixman_trapezoid_t*) trap,
+    assumeNoGC(&pixman_rasterize_trapezoid)(image, cast(pixman_trapezoid_t*) trap,
                                x_off + dst_xoff, y_off + dst_yoff);
 
     free_pixman_pict(pPicture, image);
@@ -69,7 +69,7 @@ void fbAddTriangles(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntri, xTr
     if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) == 0))
         return;
 
-    pixman_add_triangles(image,
+    assumeNoGC(&pixman_add_triangles)(image,
                          dst_xoff + x_off, dst_yoff + y_off,
                          ntri, cast(pixman_triangle_t*) tris);
 

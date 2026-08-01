@@ -76,6 +76,7 @@ import include.privates;
 import Xext.xace;
 import os.osinit;
 import std.conv;
+import dix.events;
 
 enum REDMAP = 0;
 enum GREENMAP = 1;
@@ -391,7 +392,7 @@ private int TellNoMap(WindowPtr pwin, Colormap* pmid)
     if (mixin(wColormap!("pwin")) == *pmid) {
         /* This should be call to DeliverEvent */
         xEvent xE;
-        pragma(msg, typeof(xE.u.colormap.window).stringof);
+        // pragma(msg, typeof(xE.u.colormap.window).stringof);
 // pragma(msg, typeof(pwin.drawable.id).stringof);
             xE.u.colormap.window = cast(uint)pwin.drawable.id;
             xE.u.colormap.colormap = None;

@@ -1,6 +1,9 @@
 // xorg_drm.h
+// #ifndef DRM
+// #define DRM
 #include <stddef.h>
 #include <sys/types.h>
+// #pragma once 
 
 // 1. Обманываем guard-макросы ядра Linux. 
 // Заставляем drm.h думать, что старые legacy-структуры уже были объявлены в другом месте.
@@ -21,11 +24,16 @@
 
 // 4. Теперь безопасно подключаем заголовки. 
 // Они увидят наши макросы-обманки и пропустят проблемные структуры.
-#include <libdrm/drm.h>
-#include <libdrm/drm_mode.h>
+#include <drm.h>
+#include <drm_mode.h>
 #include <xf86drmMode.h>
+#include <xf86drm.h>
 #include <gbm.h>
+#include <drm_fourcc.h>"
+
+// #define fourcc_code(a,b,c,d) ((uint32_t)(a) | ((uint32_t)(b)<<8) | ((uint32_t)(c)<<16) | ((uint32_t)(d)<<24))
 
 // 5. Очищаем макросы HDR, чтобы они не мешали остальному коду
 #undef hdr_metadata_infoframe
 #undef hdr_output_metadata
+// #endif

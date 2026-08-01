@@ -36,9 +36,14 @@ import dri3.dri3_priv;
 import Xext.syncsrv;
 import Xext.xace;
 import include.protocol_versions;
-import externs.libdrm;
+// import externs.libdrm;
 import randr.randrstr_priv;
 import dix.dixstruct_priv;
+import externs.X11.extensions.dri3proto;
+import os.io;
+import externs.libdrm;
+import Xext.sync;
+import include.dri3;
 
 private Bool dri3_screen_can_one_point_one(ScreenPtr screen)
 {
@@ -176,7 +181,7 @@ private int proc_dri3_open(ClientPtr client)
     else if (!RRProviderType) {
         return BadMatch;
     } else {
-        VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+        mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
         if (drawable.pScreen != provider.pScreen)
             return BadMatch;
     }
@@ -423,7 +428,7 @@ private int proc_dri3_pixmap_from_buffers(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"offset2");
     mixin(X_REQUEST_FIELD_CARD32!"stride3");
     mixin(X_REQUEST_FIELD_CARD32!"offset3");
-    X_REQUEST_FIELD_CARD64(modifier);
+    mixin(X_REQUEST_FIELD_CARD64!("modifier"));
 
     int[4] fds = void;
     CARD32[4] strides = void, offsets = void;
@@ -551,7 +556,7 @@ private int proc_dri3_buffers_from_pixmap(ClientPtr client)
     x_rpcbuf_write_CARD32s(&rpcbuf, cast(CARD32*)offsets, num_fds);
 
     xDRI3BuffersFromPixmapReply reply = {
-        nfd: num_fds,
+        nfd: cast(ubyte)num_fds,
         width: pixmap.drawable.width,
         height: pixmap.drawable.height,
         depth: pixmap.drawable.depth,
@@ -561,7 +566,7 @@ private int proc_dri3_buffers_from_pixmap(ClientPtr client)
 
     mixin(X_REPLY_FIELD_CARD16!"width");
     mixin(X_REPLY_FIELD_CARD16!"height");
-    X_REPLY_FIELD_CARD64(modifier);
+    mixin(X_REPLY_FIELD_CARD64!("modifier"));
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }

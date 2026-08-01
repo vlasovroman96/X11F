@@ -366,12 +366,12 @@ alias __container_of(alias ptr, alias sample, alias member) =
  * @param member Member name of the struct xorg_list in the list elements.
  *
  */
- pragma(msg, xorg_list_for_each_entry!(
-    "ref_",
-    "&pPriv.reference_list",
-    "link",
-    q{}
-));
+//  pragma(msg, xorg_list_for_each_entry!(
+//     "ref_",
+//     "&pPriv.reference_list",
+//     "link",
+//     q{}
+// ));
 template xorg_list_for_each_entry(string pos, string head, string member, string bodyCode)
 {
     const string xorg_list_for_each_entry = 

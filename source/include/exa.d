@@ -40,6 +40,7 @@ public import include.gcstruct;
 public import include.picturestr;
 public import include.fb;
 
+
 enum EXA_VERSION_MAJOR =   2;
 enum EXA_VERSION_MINOR =   6;
 enum EXA_VERSION_RELEASE = 0;
@@ -195,7 +196,7 @@ struct _ExaDriver {
      * The PrepareSolid() call is required of all drivers, but it may fail for any
      * reason.  Failure results in a fallback to software rendering.
      */
-    Bool function(PixmapPtr pPixmap, int alu, Pixel planemask, Pixel fg) PrepareSolid;
+    Bool function(PixmapPtr pPixmap, int alu, Pixel planemask, Pixel fg) @nogc nothrow PrepareSolid;
 
     /**
      * Solid() performs a solid fill set up in the last PrepareSolid() call.
@@ -216,7 +217,7 @@ struct _ExaDriver {
      *
      * This call is required if PrepareSolid() ever succeeds.
      */
-    void function(PixmapPtr pPixmap, int x1, int y1, int x2, int y2) Solid;
+    void function(PixmapPtr pPixmap, int x1, int y1, int x2, int y2) @nogc nothrow Solid;
 
     /**
      * DoneSolid() finishes a set of solid fills.
@@ -230,7 +231,7 @@ struct _ExaDriver {
      *
      * This call is required if PrepareSolid() ever succeeds.
      */
-    void function(PixmapPtr pPixmap) DoneSolid;
+    void function(PixmapPtr pPixmap) @nogc nothrow DoneSolid;
     /** @} */
 
     /** @name Copy
@@ -267,7 +268,7 @@ struct _ExaDriver {
      * The PrepareCopy() call is required of all drivers, but it may fail for any
      * reason.  Failure results in a fallback to software rendering.
      */
-    Bool function(PixmapPtr pSrcPixmap, PixmapPtr pDstPixmap, int dx, int dy, int alu, Pixel planemask) PrepareCopy;
+    Bool function(PixmapPtr pSrcPixmap, PixmapPtr pDstPixmap, int dx, int dy, int alu, Pixel planemask) @nogc nothrow PrepareCopy;
 
     /**
      * Copy() performs a copy set up in the last PrepareCopy call.
@@ -293,7 +294,7 @@ struct _ExaDriver {
      *
      * This call is required if PrepareCopy ever succeeds.
      */
-    void function(PixmapPtr pDstPixmap, int srcX, int srcY, int dstX, int dstY, int width, int height) Copy;
+    void function(PixmapPtr pDstPixmap, int srcX, int srcY, int dstX, int dstY, int width, int height) @nogc nothrow Copy;
 
     /**
      * DoneCopy() finishes a set of copies.
@@ -307,7 +308,7 @@ struct _ExaDriver {
      *
      * This call is required if PrepareCopy() ever succeeds.
      */
-    void function(PixmapPtr pDstPixmap) DoneCopy;
+    void function(PixmapPtr pDstPixmap) @nogc nothrow DoneCopy;
     /** @} */
 
     /** @name Composite
@@ -338,7 +339,7 @@ struct _ExaDriver {
      * The CheckComposite() call is recommended if PrepareComposite() is
      * implemented, but is not required.
      */
-    Bool function(int op, PicturePtr pSrcPicture, PicturePtr pMaskPicture, PicturePtr pDstPicture) CheckComposite;
+    Bool function(int op, PicturePtr pSrcPicture, PicturePtr pMaskPicture, PicturePtr pDstPicture) @nogc nothrow CheckComposite;
 
     /**
      * PrepareComposite() sets up the driver for doing a Composite operation
@@ -394,7 +395,7 @@ struct _ExaDriver {
      * of cairo applications.  Failure results in a fallback to software
      * rendering.
      */
-    Bool function(int op, PicturePtr pSrcPicture, PicturePtr pMaskPicture, PicturePtr pDstPicture, PixmapPtr pSrc, PixmapPtr pMask, PixmapPtr pDst) PrepareComposite;
+    Bool function(int op, PicturePtr pSrcPicture, PicturePtr pMaskPicture, PicturePtr pDstPicture, PixmapPtr pSrc, PixmapPtr pMask, PixmapPtr pDst) @nogc nothrow PrepareComposite;
 
     /**
      * Composite() performs a Composite operation set up in the last
@@ -420,7 +421,7 @@ struct _ExaDriver {
      *
      * This call is required if PrepareComposite() ever succeeds.
      */
-    void function(PixmapPtr pDst, int srcX, int srcY, int maskX, int maskY, int dstX, int dstY, int width, int height) Composite;
+    void function(PixmapPtr pDst, int srcX, int srcY, int maskX, int maskY, int dstX, int dstY, int width, int height) @nogc nothrow Composite;
 
     /**
      * DoneComposite() finishes a set of Composite operations.
@@ -434,7 +435,7 @@ struct _ExaDriver {
      *
      * This call is required if PrepareComposite() ever succeeds.
      */
-    void function(PixmapPtr pDst) DoneComposite;
+    void function(PixmapPtr pDst) @nogc nothrow DoneComposite;
     /** @} */
 
     /**
@@ -468,13 +469,13 @@ struct _ExaDriver {
      * UploadToScreen() is not required, but is recommended if Composite
      * acceleration is supported.
      */
-    Bool function(PixmapPtr pDst, int x, int y, int w, int h, char* src, int src_pitch) UploadToScreen;
+    Bool function(PixmapPtr pDst, int x, int y, int w, int h, char* src, int src_pitch) @nogc nothrow UploadToScreen;
 
     /**
      * UploadToScratch() is no longer used and will be removed next time the EXA
      * major version needs to be bumped.
      */
-    Bool function(PixmapPtr pSrc, PixmapPtr pDst) UploadToScratch;
+    Bool function(PixmapPtr pSrc, PixmapPtr pDst) @nogc nothrow UploadToScratch;
 
     /**
      * DownloadFromScreen() loads a rectangle of data from pSrc into dst
@@ -506,7 +507,7 @@ struct _ExaDriver {
      *
      * DownloadFromScreen() is not required, but is highly recommended.
      */
-    Bool function(PixmapPtr pSrc, int x, int y, int w, int h, char* dst, int dst_pitch) DownloadFromScreen;
+    Bool function(PixmapPtr pSrc, int x, int y, int w, int h, char* dst, int dst_pitch) @nogc nothrow DownloadFromScreen;
 
     /**
      * MarkSync() requests that the driver mark a synchronization point,
@@ -523,7 +524,7 @@ struct _ExaDriver {
      *
      * MarkSync() is optional.
      */
-    int function(ScreenPtr pScreen) MarkSync;
+    int function(ScreenPtr pScreen) @nogc nothrow MarkSync;
 
     /**
      * WaitMarker() waits for all rendering before the given marker to have
@@ -537,7 +538,7 @@ struct _ExaDriver {
      *
      * WaitMarker() is required of all drivers.
      */
-    void function(ScreenPtr pScreen, int marker) WaitMarker;
+    void function(ScreenPtr pScreen, int marker) @nogc nothrow WaitMarker;
 
     /** @{ */
     /**
@@ -573,7 +574,7 @@ struct _ExaDriver {
      * @return FALSE if PrepareAccess() is unsuccessful and EXA should use
      * DownloadFromScreen() to mitigate the pixmap out.
      */
-    Bool function(PixmapPtr pPix, int index) PrepareAccess;
+    Bool function(PixmapPtr pPix, int index) @nogc nothrow PrepareAccess;
 
     /**
      * FinishAccess() is called after CPU access to an offscreen pixmap.
@@ -585,7 +586,7 @@ struct _ExaDriver {
      * pixmap set up by PrepareAccess().  Note that the FinishAccess() will not be
      * called if PrepareAccess() failed and the pixmap was migrated out.
      */
-    void function(PixmapPtr pPix, int index) FinishAccess;
+    void function(PixmapPtr pPix, int index) @nogc nothrow FinishAccess;
 
     /**
      * PixmapIsOffscreen() is an optional driver replacement to
@@ -602,33 +603,13 @@ struct _ExaDriver {
      *
      *
      */
-    Bool function(PixmapPtr pPix) PixmapIsOffscreen;
+    Bool function(PixmapPtr pPix) @nogc nothrow PixmapIsOffscreen;
 
         /** @name PrepareAccess() and FinishAccess() indices
 	 * @{
 	 */
         /**
-	 * EXA_PREPARE_DEST is the index for a pixmap that may be drawn to or
-	 * read from.
-	 */
-enum EXA_PREPARE_DEST =	0;
-        /**
-	 * EXA_PREPARE_SRC is the index for a pixmap that may be read from
-	 */
-enum EXA_PREPARE_SRC =		1;
-        /**
-	 * EXA_PREPARE_SRC is the index for a second pixmap that may be read
-	 * from.
-	 */
-enum EXA_PREPARE_MASK =	2;
-        /**
-	 * EXA_PREPARE_AUX* are additional indices for other purposes, e.g.
-	 * separate alpha maps with Composite operations.
-	 */
-enum EXA_PREPARE_AUX_DEST =	3;
-enum EXA_PREPARE_AUX_SRC =	4;
-enum EXA_PREPARE_AUX_MASK =	5;
-enum EXA_NUM_PREPARE_INDICES =	6;
+
         /** @} */
 
     /**
@@ -662,32 +643,54 @@ enum EXA_NUM_PREPARE_INDICES =	6;
     int maxPitchBytes;
 
     /* Hooks to allow driver to its own pixmap memory management */
-    void* function(ScreenPtr pScreen, int size, int align_) CreatePixmap;
-    void function(ScreenPtr pScreen, void* driverPriv) DestroyPixmap;
+    void* function(ScreenPtr pScreen, int size, int align_) @nogc nothrow CreatePixmap;
+    void function(ScreenPtr pScreen, void* driverPriv) @nogc nothrow DestroyPixmap;
     /**
      * Returning a pixmap with non-NULL devPrivate.ptr implies a pixmap which is
      * not offscreen, which will never be accelerated and Prepare/FinishAccess won't
      * be called.
      */
-    Bool function(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData) ModifyPixmapHeader;
+    Bool function(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData) @nogc nothrow ModifyPixmapHeader;
 
     /* hooks for drivers with tiling support:
      * driver MUST fill out new_fb_pitch with valid pitch of pixmap
      */
-    void* function(ScreenPtr pScreen, int width, int height, int depth, int usage_hint, int bitsPerPixel, int* new_fb_pitch) CreatePixmap2;
+    void* function(ScreenPtr pScreen, int width, int height, int depth, int usage_hint, int bitsPerPixel, int* new_fb_pitch) @nogc nothrow CreatePixmap2;
     /** @} */
-    Bool function(PixmapPtr pPixmap, ScreenPtr secondary, void** handle_p) SharePixmapBacking;
+    Bool function(PixmapPtr pPixmap, ScreenPtr secondary, void** handle_p) @nogc nothrow SharePixmapBacking;
 
-    Bool function(PixmapPtr pPixmap, void* handle) SetSharedPixmapBacking;
+    Bool function(PixmapPtr pPixmap, void* handle) @nogc nothrow SetSharedPixmapBacking;
 
 }alias ExaDriverRec = _ExaDriver;
 alias ExaDriverPtr = _ExaDriver*;
 
 
-alias EXA_NUM_PREPARE_INDICES = _ExaDriver.EXA_NUM_PREPARE_INDICES;
+// alias EXA_NUM_PREPARE_INDICES = EXA_NUM_PREPARE_INDICES;
 /** @name EXA driver flags
  * @{
  */
+
+ 	 /* EXA_PREPARE_DEST is the index for a pixmap that may be drawn to or
+	 * read from.
+	 */
+enum EXA_PREPARE_DEST =	0;
+        /**
+	 * EXA_PREPARE_SRC is the index for a pixmap that may be read from
+	 */
+enum EXA_PREPARE_SRC =		1;
+        /**
+	 * EXA_PREPARE_SRC is the index for a second pixmap that may be read
+	 * from.
+	 */
+enum EXA_PREPARE_MASK =	2;
+        /**
+	 * EXA_PREPARE_AUX* are additional indices for other purposes, e.g.
+	 * separate alpha maps with Composite operations.
+	 */
+enum EXA_PREPARE_AUX_DEST =	3;
+enum EXA_PREPARE_AUX_SRC =	4;
+enum EXA_PREPARE_AUX_MASK =	5;
+enum EXA_NUM_PREPARE_INDICES =	6;
 /**
  * EXA_OFFSCREEN_PIXMAPS indicates to EXA that the driver can support
  * offscreen pixmaps.
@@ -775,7 +778,7 @@ extern int exaGetPixmapFirstPixel(PixmapPtr pPixmap);
  * pixel values for pDrawable.
  */
 enum string EXA_PM_IS_SOLID(string _pDrawable, string _pm) = `
-	(((` ~ _pm ~ `) & FbFullMask((` ~ _pDrawable ~ `).depth)) == 
-	 FbFullMask((` ~ _pDrawable ~ `).depth))`;
+	(((` ~ _pm ~ `) & `~FbFullMask!(_pDrawable ~ `.depth`)~`) == 
+	 `~FbFullMask!(_pDrawable~`.depth`)~`)`;
 
                           /* EXA_H */

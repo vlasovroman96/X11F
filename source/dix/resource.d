@@ -154,6 +154,7 @@ import Xext.xace;
 import core.stdc.assert_;
 import include.gcstruct;
 import os.log;
+import dix.cursor;
 
 version (XSERVER_DTRACE) {
 

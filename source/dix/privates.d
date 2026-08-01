@@ -411,7 +411,7 @@ DevPrivateKey _dixGetScreenPrivateKey(const(DevScreenPrivateKeyPtr) key, ScreenP
 /*
  * Initialize privates by zeroing them
  */
-void _dixInitPrivates(PrivatePtr* privates, void* addr, DevPrivateType type)
+void _dixInitPrivates(PrivatePtr* privates, void* addr, DevPrivateType type) @nogc nothrow
 {
     assert (!screen_specific_private[type]);
 
@@ -441,7 +441,7 @@ void _dixFiniPrivates(PrivatePtr privates, DevPrivateType type)
  * This is expected to be invoked from the
  * dixAllocateObjectWithPrivates macro
  */
-void* _dixAllocateObjectWithPrivates(uint baseSize, uint clear, uint offset, DevPrivateType type)
+void* _dixAllocateObjectWithPrivates(uint baseSize, uint clear, uint offset, DevPrivateType type) @nogc nothrow
 {
     uint totalSize = void;
     PrivatePtr privates = void;
@@ -506,6 +506,10 @@ void dixFreeObjectWithPrivates(void* object, PrivatePtr privates, DevPrivateType
     _dixFiniPrivates(privates, type);
     free(object);
 }
+
+// pragma(msg, __traits(getFunctionAttributes, free));
+// pragma(msg, __traits(getFunctionAttributes, _dixFiniPrivates));
+// pragma(msg, __traits(getFunctionAttributes, dixFreeObjectWithPrivates));
 
 /*
  * Called to free screen or client privates

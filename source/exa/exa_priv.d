@@ -51,6 +51,7 @@ public import include.glyphstr;
 public import include.damage;
 import include.exa_i;
 import include.gc;
+import include.privates;
 
 enum DEBUG_TRACE_FALL =	0;
 enum DEBUG_MIGRATE =		0;
@@ -71,7 +72,8 @@ char exaDrawableLocation(DrawablePtr pDrawable);
 }
 
 static if (DEBUG_PIXMAP) {
-enum string DBG_PIXMAP(string a) = `ErrorF a = void;`;
+// enum string DBG_PIXMAP(string a) ""= `ErrorF a = void;""`;
+// enum string DBG_PIXMAP*string 
 } else {
 //#define DBG_PIXMAP(a)
 }
@@ -83,12 +85,11 @@ version (DEBUG) {
 enum string EXA_FatalErrorDebug(string x) = `FatalError x = void;`;
 enum string EXA_FatalErrorDebugWithRet(string x, string ret) = `FatalError x = void;`;
 } else {
-enum string EXA_FatalErrorDebug(string x) = `ErrorF x = void;`;
-enum string EXA_FatalErrorDebugWithRet(string x, string ret) = `
-do { 
-    ErrorF x = void; 
-    return ` ~ ret ~ `; 
-} while (0)`;
+// enum string EXA_FatalErrorDebug(string x) = `ErrorF();`;
+enum string EXA_FatalErrorDebugWithRet(string x, string ret) = `{ 
+    // ErrorF x = void; 
+    return `~ret~`; 
+}`;
 }
 
 /**
@@ -171,11 +172,11 @@ struct _ExaScreenPrivRec {
     GlyphsProcPtr SavedGlyphs;
     TrapezoidsProcPtr SavedTrapezoids;
     AddTrapsProcPtr SavedAddTraps;
-    void function(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel) do_migration;
-    Bool function(PixmapPtr pPixmap) pixmap_has_gpu_copy;
-    void function(PixmapPtr pPixmap) do_move_in_pixmap;
-    void function(PixmapPtr pPixmap) do_move_out_pixmap;
-    void function(PixmapPtr pPixmap, int index, RegionPtr pReg) prepare_access_reg;
+    void function(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel) @nogc nothrow do_migration;
+    Bool function(PixmapPtr pPixmap) @nogc nothrow pixmap_has_gpu_copy;
+    void function(PixmapPtr pPixmap) @nogc nothrow do_move_in_pixmap;
+    void function(PixmapPtr pPixmap) @nogc nothrow do_move_out_pixmap;
+    void function(PixmapPtr pPixmap, int index, RegionPtr pReg) @nogc nothrow prepare_access_reg;
 
     Bool swappedOut;
     ExaMigrationHeuristic migration;
@@ -230,18 +231,18 @@ enum string ExaGCPriv(string gc) = `ExaGCPrivPtr pExaGC = ` ~ ExaGetGCPriv!(gc) 
  * Some macros to deal with function wrapping.
  */
 enum string wrap(string priv, string real_, string mem, string func) = `{
-    ` ~ priv ~ `.Saved##mem = ` ~ real_ ~ `.` ~ mem ~ `; 
-    ` ~ real_ ~ `.` ~ mem ~ ` = ` ~ func ~ `; 
+    ` ~ priv ~ `.Saved`~mem~` = ` ~ real_ ~ `.` ~ mem ~ `; 
+    ` ~ real_ ~ `.` ~ mem ~ ` = &` ~ func ~ `; 
 }`;
 
 enum string unwrap(string priv, string real_, string mem) = `{
-    ` ~ real_ ~ `.` ~ mem ~ ` = ` ~ priv ~ `.Saved##mem; 
+    ` ~ real_ ~ `.` ~ mem ~ ` = ` ~ priv ~ `.Saved`~mem~`; 
 }`;
 
-enum string swap(string priv, string real_, string mem) = `{\
-    typeof(real->mem) tmp = priv->Saved##mem; \
-    priv->Saved##mem = real->mem; \
-    real->mem = tmp; \
+enum string swap(string priv, string real_, string mem) = `{
+    typeof(`~real_~`.`~mem~`) tmp = `~priv~`.Saved`~mem~`;
+    `~priv~`.Saved`~mem~` = `~real_~`.`~mem~`;
+    `~real_~`.`~mem~` = tmp;
 }`;
 
 enum string EXA_PRE_FALLBACK(string _screen_) = `
@@ -391,7 +392,7 @@ void ExaCheckAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, 
 
 /* exa_accel.c */
 
-pragma(inline, true) private Bool exaGCReadsDestination(DrawablePtr pDrawable, c_ulong planemask, uint fillStyle, ubyte alu, Bool clientClip)
+pragma(inline, true) Bool exaGCReadsDestination(DrawablePtr pDrawable, c_ulong planemask, uint fillStyle, ubyte alu, Bool clientClip)
 {
     return ((alu != GXcopy && alu != GXclear && alu != GXset &&
              alu != GXcopyInverted) || fillStyle == FillStippled ||

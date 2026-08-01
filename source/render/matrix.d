@@ -73,10 +73,10 @@ void xRenderTransform_from_PictTransform(xRenderTransform* render, PictTransform
 
 Bool PictureTransformPoint(PictTransformPtr transform, PictVectorPtr vector)
 {
-    return pixman_transform_point(transform, vector);
+    return assumeNoGC(&pixman_transform_point)(transform, vector);
 }
 
 Bool PictureTransformPoint3d(PictTransformPtr transform, PictVectorPtr vector)
 {
-    return pixman_transform_point_3d(transform, vector);
+    return assumeNoGC(&pixman_transform_point_3d)(transform, vector);
 }

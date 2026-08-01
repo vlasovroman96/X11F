@@ -35,14 +35,14 @@ struct dri3_syncobj
     ScreenPtr screen;
     uint refcount;
 
-    void function(dri3_syncobj* syncobj) free;
-    Bool function(dri3_syncobj* syncobj, ulong point) has_fence;
-    Bool function(dri3_syncobj* syncobj, ulong point) is_signaled;
-    int function(dri3_syncobj* syncobj, ulong point) export_fence;
-    void function(dri3_syncobj* syncobj, ulong point, int fd) import_fence;
-    void function(dri3_syncobj* syncobj, ulong point) signal;
-    void function(dri3_syncobj* syncobj, ulong point, int efd) submitted_eventfd;
-    void function(dri3_syncobj* syncobj, ulong point, int efd) signaled_eventfd;
+    void function(dri3_syncobj* syncobj) @nogc nothrow free;
+    Bool function(dri3_syncobj* syncobj, ulong point) @nogc nothrow has_fence;
+    Bool function(dri3_syncobj* syncobj, ulong point) @nogc nothrow is_signaled;
+    int function(dri3_syncobj* syncobj, ulong point) @nogc nothrow export_fence;
+    void function(dri3_syncobj* syncobj, ulong point, int fd) @nogc nothrow import_fence;
+    void function(dri3_syncobj* syncobj, ulong point) @nogc nothrow signal;
+    void function(dri3_syncobj* syncobj, ulong point, int efd) @nogc nothrow submitted_eventfd;
+    void function(dri3_syncobj* syncobj, ulong point, int efd) @nogc nothrow signaled_eventfd;
 }
 
 alias dri3_open_proc = int function(ScreenPtr screen, RRProviderPtr provider, int* fd);

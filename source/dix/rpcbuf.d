@@ -159,7 +159,7 @@ Bool x_rpcbuf_write_CARD64(x_rpcbuf_t* rpcbuf, CARD64 value)
     *reserved = value;
 
     if (rpcbuf.swapped)
-        mixin(swapll!("reserved"));
+        swapll(reserved);
 
     return TRUE;
 }
@@ -225,7 +225,7 @@ Bool x_rpcbuf_write_CARD64s(x_rpcbuf_t* rpcbuf, const(CARD64)* values, size_t co
 
     if (rpcbuf.swapped)
         for (size_t x = 0; x<count; x++)
-            mixin(swapll!("&reserved[x]"));
+            swapll(&reserved[x]);
 
     return TRUE;
 }

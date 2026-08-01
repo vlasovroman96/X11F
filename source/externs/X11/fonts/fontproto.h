@@ -24,7 +24,7 @@ authorization from The XFree86 Project Inc..
 #define _FONTPROTO_H
 
 #include <X11/Xfuncproto.h>
-#include "externs/X11/fonts/fontstruct.h"
+#include <X11/fonts/fontstruct.h>
 /* Externally provided functions required by libXfont */
 
 extern _X_EXPORT int RegisterFPEFunctions (

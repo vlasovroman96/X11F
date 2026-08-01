@@ -41,11 +41,11 @@ private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr p
 {
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    mixin(ExaScreenPriv!("pScreen"));
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     BoxPtr pextent = void, pbox = void;
     int nbox = void;
     int extentX1 = void, extentX2 = void, extentY1 = void, extentY2 = void;
@@ -71,7 +71,7 @@ private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr p
         exaDoMigration(pixmaps.ptr, 1, TRUE);
     }
 
-    if (((pPixmap = exaGetOffscreenPixmap(pDrawable, &off_x, &off_y)) == 0) ||
+    if (((pPixmap = exaGetOffscreenPixmap(pDrawable, &off_x, &off_y)) is null) ||
         !(*pExaScr.info.PrepareSolid) (pPixmap,
                                          pGC.alu,
                                          pGC.planemask, pGC.fgPixel)) {
@@ -136,10 +136,10 @@ private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr p
 
 private Bool exaDoPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, int w, int h, int format, char* bits, int src_stride)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
     PixmapPtr pPix = exaGetDrawablePixmap(pDrawable);
 
-    ExaPixmapPriv(pPix);
+    mixin(ExaPixmapPriv!("pPix"));
     RegionPtr pClip = void;
     BoxPtr pbox = void;
     int nbox = void;
@@ -160,7 +160,7 @@ private Bool exaDoPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, i
         return FALSE;
 
     /* Only accelerate copies: no rop or planemask. */
-    if (!EXA_PM_IS_SOLID(pDrawable, pGC.planemask) || pGC.alu != GXcopy)
+    if (!mixin(EXA_PM_IS_SOLID!("pDrawable", "pGC.planemask")) || pGC.alu != GXcopy)
         return FALSE;
 
     if (pExaScr.swappedOut)
@@ -185,7 +185,7 @@ private Bool exaDoPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, i
     x += pDrawable.x;
     y += pDrawable.y;
 
-    pClip = fbGetCompositeClip(pGC);
+    pClip = mixin(fbGetCompositeClip!("pGC"));
     for (nbox = RegionNumRects(pClip),
          pbox = RegionRects(pClip); nbox--; pbox++) {
         int x1 = x;
@@ -234,7 +234,7 @@ private void exaPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int
 
 pragma(inline, true) private Bool exaCopyNtoNTwoDir(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy)
 {
-    ExaScreenPriv(pDstDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDstDrawable.pScreen"));
     PixmapPtr pSrcPixmap = void, pDstPixmap = void;
     int src_off_x = void, src_off_y = void, dst_off_x = void, dst_off_y = void;
     int dirsetup = void;
@@ -356,7 +356,7 @@ pragma(inline, true) private Bool exaCopyNtoNTwoDir(DrawablePtr pSrcDrawable, Dr
 
 Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown)
 {
-    ExaScreenPriv(pDstDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDstDrawable.pScreen"));
     PixmapPtr pSrcPixmap = void, pDstPixmap = void;
     ExaPixmapPrivPtr pSrcExaPixmap = void, pDstExaPixmap = void;
     int src_off_x = void, src_off_y = void;
@@ -380,10 +380,10 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
         int ordering = void;
 
         for (i = 0; i < nbox; i++) {
-            rects[i].x = pbox[i].x1 + dx + src_off_x;
-            rects[i].y = pbox[i].y1 + dy + src_off_y;
-            rects[i].width = pbox[i].x2 - pbox[i].x1;
-            rects[i].height = pbox[i].y2 - pbox[i].y1;
+            rects[i].x = cast(short)(pbox[i].x1 + dx + src_off_x);
+            rects[i].y = cast(short)(pbox[i].y1 + dy + src_off_y);
+            rects[i].width = cast(short)(pbox[i].x2 - pbox[i].x1);
+            rects[i].height = cast(short)(pbox[i].y2 - pbox[i].y1);
         }
 
         /* This must match the RegionCopy() logic for reversing rect order */
@@ -408,8 +408,8 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
         }
     }
 
-    pSrcExaPixmap = ExaGetPixmapPriv(pSrcPixmap);
-    pDstExaPixmap = ExaGetPixmapPriv(pDstPixmap);
+    pSrcExaPixmap = mixin(ExaGetPixmapPriv!("pSrcPixmap"));
+    pDstExaPixmap = mixin(ExaGetPixmapPriv!("pDstPixmap"));
 
     /* Check whether the accelerator can use this pixmap.
      * If the pitch of the pixmaps is out of range, there's nothing
@@ -493,7 +493,7 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
         }
         else if (!pDstExaPixmap.pDamage && pSrcExaPixmap.sys_ptr) {
             int bpp = pSrcDrawable.bitsPerPixel;
-            int src_stride = exaGetPixmapPitch(pSrcPixmap);
+            int src_stride = cast(int)exaGetPixmapPitch(pSrcPixmap);
             CARD8* src = null;
 
             if (!pExaScr.info.UploadToScreen)
@@ -507,7 +507,7 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
 
             if (pGC &&
                 !(pGC.alu == GXcopy &&
-                  EXA_PM_IS_SOLID(pSrcDrawable, pGC.planemask)))
+                  mixin(EXA_PM_IS_SOLID!("pSrcDrawable", "pGC.planemask"))))
                 goto fallback;
 
             while (nbox--) {
@@ -551,7 +551,7 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
 
 void exaCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure)
 {
-    ExaScreenPriv(pDstDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDstDrawable.pScreen"));
 
     if (pExaScr.fallback_counter ||
         (pExaScr.fallback_flags & EXA_FALLBACK_COPYWINDOW))
@@ -575,7 +575,7 @@ void exaCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, 
 
 RegionPtr exaCopyArea(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int srcx, int srcy, int width, int height, int dstx, int dsty)
 {
-    ExaScreenPriv(pDstDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDstDrawable.pScreen"));
 
     if (pExaScr.fallback_counter || pExaScr.swappedOut) {
         return ExaCheckCopyArea(pSrcDrawable, pDstDrawable, pGC,
@@ -589,7 +589,7 @@ RegionPtr exaCopyArea(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr 
 
 private void exaPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ppt)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
     int i = void;
 
     /* If we can't reuse the current GC as is, don't bother accelerating the
@@ -624,7 +624,7 @@ private void exaPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, D
  */
 private void exaPolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ppt)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
     int x1 = void, x2 = void, y1 = void, y2 = void;
     int i = void;
 
@@ -663,24 +663,24 @@ private void exaPolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, D
         }
 
         if (x1 < x2) {
-            prect[i].x = x1;
-            prect[i].width = x2 - x1 + 1;
+            prect[i].x = cast(short)(x1);
+            prect[i].width = cast(short)(x2 - x1 + 1);
         }
         else {
-            prect[i].x = x2;
-            prect[i].width = x1 - x2 + 1;
+            prect[i].x = cast(short)(x2);
+            prect[i].width = cast(short)(x1 - x2 + 1);
         }
         if (y1 < y2) {
-            prect[i].y = y1;
-            prect[i].height = y2 - y1 + 1;
+            prect[i].y = cast(short)(y1);
+            prect[i].height = cast(short)(y2 - y1 + 1);
         }
         else {
-            prect[i].y = y2;
-            prect[i].height = y1 - y2 + 1;
+            prect[i].y = cast(short)(y2);
+            prect[i].height = cast(short)(y1 - y2 + 1);
         }
 
-        x1 = x2;
-        y1 = y2;
+        x1 = cast(short)(x2);
+        y1 = cast(short)(y2);
     }
     pGC.ops.PolyFillRect(pDrawable, pGC, npt - 1, prect);
     free(prect);
@@ -693,7 +693,7 @@ private void exaPolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, D
  */
 private void exaPolySegment(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pSeg)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
 {}
     int i = void;
 
@@ -718,19 +718,19 @@ private void exaPolySegment(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment
     for (i = 0; i < nseg; i++) {
         if (pSeg[i].x1 < pSeg[i].x2) {
             prect[i].x = pSeg[i].x1;
-            prect[i].width = pSeg[i].x2 - pSeg[i].x1 + 1;
+            prect[i].width = cast(ushort)(pSeg[i].x2 - pSeg[i].x1 + 1);
         }
         else {
             prect[i].x = pSeg[i].x2;
-            prect[i].width = pSeg[i].x1 - pSeg[i].x2 + 1;
+            prect[i].width = cast(ushort)(pSeg[i].x1 - pSeg[i].x2 + 1);
         }
         if (pSeg[i].y1 < pSeg[i].y2) {
             prect[i].y = pSeg[i].y1;
-            prect[i].height = pSeg[i].y2 - pSeg[i].y1 + 1;
+            prect[i].height = cast(ushort)(pSeg[i].y2 - pSeg[i].y1 + 1);
         }
         else {
             prect[i].y = pSeg[i].y2;
-            prect[i].height = pSeg[i].y1 - pSeg[i].y2 + 1;
+            prect[i].height = cast(ushort)(pSeg[i].y1 - pSeg[i].y2 + 1);
         }
 
         /* don't paint last pixel */
@@ -749,11 +749,11 @@ private void exaPolySegment(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment
 
 private void exaPolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nrect, xRectangle* prect)
 {
-    ExaScreenPriv(pDrawable.pScreen);
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     BoxPtr pbox = void;
     BoxPtr pextent = void;
     int extentX1 = void, extentX2 = void, extentY1 = void, extentY2 = void;
@@ -788,7 +788,7 @@ private void exaPolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nrect, xRecta
          pGC.alu == GXset)) {
         if (((pGC.fillStyle == FillSolid || pGC.tileIsPixel) &&
              exaFillRegionSolid(pDrawable, pReg, pGC.fillStyle == FillSolid ?
-                                pGC.fgPixel : pGC.tile.pixel, pGC.planemask,
+                                cast(uint)pGC.fgPixel : cast(uint)pGC.tile.pixel, pGC.planemask,
                                 pGC.alu, pGC.clientClip != null)) ||
             (pGC.fillStyle == FillTiled && !pGC.tileIsPixel &&
              exaFillRegionTiled(pDrawable, pReg, pGC.tile.pixmap, &pGC.patOrg,
@@ -926,7 +926,7 @@ void exaCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
     int dx = void, dy = void;
     PixmapPtr pPixmap = (*pWin.drawable.pScreen.GetWindowPixmap) (pWin);
 
-    ExaScreenPriv(pWin.drawable.pScreen);
+    mixin(ExaScreenPriv!("pWin.drawable.pScreen"));
 
     dx = ptOldOrg.x - pWin.drawable.x;
     dy = ptOldOrg.y - pWin.drawable.y;
@@ -960,10 +960,10 @@ void exaCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
 
 private Bool exaFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, Pixel pixel, CARD32 planemask, CARD32 alu, Bool hasClientClip)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     int xoff = void, yoff = void;
     Bool ret = FALSE;
 
@@ -980,7 +980,7 @@ private Bool exaFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, Pixel 
         pixmaps[0].as_src = FALSE;
         pixmaps[0].pPix = pPixmap;
         pixmaps[0].pReg = exaGCReadsDestination(pDrawable, planemask, FillSolid,
-                                                alu,
+                                                cast(ubyte)alu,
                                                 hasClientClip) ? null : pRegion;
 
         exaDoMigration(pixmaps.ptr, 1, TRUE);
@@ -1010,15 +1010,16 @@ private Bool exaFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, Pixel 
 
             switch (pDrawable.bitsPerPixel) {
             case 32:
-                *cast(CARD32*) pExaPixmap.sys_ptr = pixel;
+                *cast(CARD32*) pExaPixmap.sys_ptr = cast(uint)pixel;
                 break;
             case 16:
-                *cast(CARD16*) pExaPixmap.sys_ptr = pixel;
+                *cast(CARD16*) pExaPixmap.sys_ptr = cast(ushort)pixel;
                 break;
             case 8:
             case 4:
             case 1:
-                *cast(CARD8*) pExaPixmap.sys_ptr = pixel;
+                *cast(CARD8*) pExaPixmap.sys_ptr = cast(ubyte)pixel;
+                goto default;
             default: break;}
 
             RegionUnion(&pExaPixmap.validSys, &pExaPixmap.validSys, pRegion);
@@ -1040,10 +1041,10 @@ private Bool exaFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, Pixel 
  */
 Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTile, DDXPointPtr pPatOrg, CARD32 planemask, CARD32 alu, Bool hasClientClip)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
     PixmapPtr pPixmap = void;
     ExaPixmapPrivPtr pExaPixmap = void;
-    ExaPixmapPrivPtr pTileExaPixmap = ExaGetPixmapPriv(pTile);
+    ExaPixmapPrivPtr pTileExaPixmap = mixin(ExaGetPixmapPriv!("pTile"));
     int xoff = void, yoff = void;
     int tileWidth = void, tileHeight = void;
     int nbox = RegionNumRects(pRegion);
@@ -1063,7 +1064,7 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
                                   alu, hasClientClip);
 
     pPixmap = exaGetDrawablePixmap(pDrawable);
-    pExaPixmap = ExaGetPixmapPriv(pPixmap);
+    pExaPixmap = mixin(ExaGetPixmapPriv!("pPixmap"));
 
     if (pExaScr.fallback_counter || pExaPixmap.accel_blocked ||
         pTileExaPixmap.accel_blocked)
@@ -1076,7 +1077,7 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
         pixmaps[0].as_src = FALSE;
         pixmaps[0].pPix = pPixmap;
         pixmaps[0].pReg = exaGCReadsDestination(pDrawable, planemask, FillTiled,
-                                                alu,
+                                                cast(ubyte)alu,
                                                 hasClientClip) ? null : pRegion;
         pixmaps[1].as_dst = FALSE;
         pixmaps[1].as_src = TRUE;
@@ -1103,7 +1104,7 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
             if (alu == GXcopy)
                 height = min(height, tileHeight);
 
-            modulus(dstY - yoff - pDrawable.y - pPatOrg.y, tileHeight, tileY);
+            mixin(modulus!("dstY - yoff - pDrawable.y - pPatOrg.y", "tileHeight", "tileY"));
 
             while (height > 0) {
                 int width = pBox[i].x2 - pBox[i].x1;
@@ -1118,8 +1119,8 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
                     h = height;
                 height -= h;
 
-                modulus(dstX - xoff - pDrawable.x - pPatOrg.x, tileWidth,
-                        tileX);
+                mixin(modulus!("dstX - xoff - pDrawable.x - pPatOrg.x", "tileWidth",
+                        "tileX"));
 
                 while (width > 0) {
                     int w = tileWidth - tileX;
@@ -1218,10 +1219,10 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
  */
 void exaGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, c_ulong planeMask, char* d)
 {
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
     PixmapPtr pPix = exaGetDrawablePixmap(pDrawable);
 
-    ExaPixmapPriv(pPix);
+    mixin(ExaPixmapPriv!("pPix"));
     int xoff = void, yoff = void;
     Bool ok = void;
 
@@ -1238,7 +1239,7 @@ void exaGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format,
         goto fallback;
 
     /* Only cover the ZPixmap, solid copy case. */
-    if (format != ZPixmap || !EXA_PM_IS_SOLID(pDrawable, planeMask))
+    if (format != ZPixmap || !mixin(EXA_PM_IS_SOLID!("pDrawable", "planeMask")))
         goto fallback;
 
     /* Only try to handle the 8bpp and up cases, since we don't want to think

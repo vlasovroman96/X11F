@@ -75,7 +75,7 @@ enum string VERIFY_DRI3_SYNCOBJ(string id, string ptr, string a) = `
         }
     } while (0);`;
 
-pragma(inline, true) private dri3_screen_priv_ptr dri3_screen_priv(ScreenPtr screen)
+pragma(inline, true) dri3_screen_priv_ptr dri3_screen_priv(ScreenPtr screen)
 {
     return cast(dri3_screen_priv_ptr)dixLookupPrivate(&(screen).devPrivates, &dri3_screen_private_key);
 }

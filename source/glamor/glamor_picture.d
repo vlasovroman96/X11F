@@ -239,22 +239,22 @@ private pixman_image_t* glamor_get_converted_image(pixman_format_code_t dst_form
     pixman_image_t* dst_image = void;
     pixman_image_t* src_image = void;
 
-    dst_image = pixman_image_create_bits(dst_format, w, h, null, 0);
+    dst_image = assumeNoGC(&pixman_image_create_bits)(dst_format, w, h, null, 0);
     if (dst_image == null) {
         return null;
     }
 
-    src_image = pixman_image_create_bits(src_format, w, h, src_bits, src_stride);
+    src_image = assumeNoGC(&pixman_image_create_bits)(src_format, w, h, src_bits, src_stride);
 
     if (src_image == null) {
-        pixman_image_unref(dst_image);
+        assumeNoGC(&pixman_image_unref)(dst_image);
         return null;
     }
 
-    pixman_image_composite(PictOpSrc, src_image, null, dst_image,
+    assumeNoGC(&pixman_image_composite)(PictOpSrc, src_image, null, dst_image,
                            0, 0, 0, 0, 0, 0, w, h);
 
-    pixman_image_unref(src_image);
+    assumeNoGC(&pixman_image_unref)(src_image);
     return dst_image;
 }
 
@@ -324,8 +324,8 @@ Bool glamor_upload_picture_to_texture(PicturePtr picture)
         if (!converted_image)
             return FALSE;
 
-        bits = pixman_image_get_data(converted_image);
-        stride = pixman_image_get_stride(converted_image);
+        bits = assumeNoGC(&pixman_image_get_data)(converted_image);
+        stride = assumeNoGC(&pixman_image_get_stride)(converted_image);
     }
 
     if (!glamor_priv.is_gles)
@@ -364,7 +364,7 @@ Bool glamor_upload_picture_to_texture(PicturePtr picture)
 
 fail:
     if (converted_image)
-        pixman_image_unref(converted_image);
+        assumeNoGC(&pixman_image_unref)(converted_image);
 
     return ret;
 }

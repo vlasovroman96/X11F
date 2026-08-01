@@ -446,7 +446,7 @@ typedef struct {
 #if defined(__cplusplus) || defined(c_plusplus)
     CARD16 c_class;
 #else
-    CARD16 class;
+    CARD16 class_;
 #endif
     CARD8 bitGravity;
     CARD8 winGravity;
@@ -455,7 +455,7 @@ typedef struct {
     BOOL saveUnder;
     BOOL mapInstalled;
     CARD8 mapState;
-    BOOL override;
+    BOOL override_;
     Colormap colormap;
     CARD32 allEventMasks;
     CARD32 yourEventMask;

@@ -28,7 +28,7 @@ extern(C): __gshared:
 public import include.misync;
 import externs.X11.Xdefs;
 
-extern void  SyncVerifyFence(SyncFence** ppFence, XID fid, ClientPtr client, Mask mode);
+// extern void  SyncVerifyFence(SyncFence** ppFence, XID fid, ClientPtr client, Mask mode);
 
 extern void * SyncCreate(ClientPtr client, XID id, ubyte type);
 

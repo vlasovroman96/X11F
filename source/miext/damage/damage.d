@@ -569,10 +569,10 @@ private void damageAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int n
         for (i = 0; i < ntrap; i++) {
             pixman_fixed_t l = min(t.top.l, t.bot.l);
             pixman_fixed_t r = max(t.top.r, t.bot.r);
-            int x1 = x + pixman_fixed_to_int(l);
-            int x2 = x + pixman_fixed_to_int(pixman_fixed_ceil(r));
-            int y1 = y + pixman_fixed_to_int(t.top.y);
-            int y2 = y + pixman_fixed_to_int(pixman_fixed_ceil(t.bot.y));
+            int x1 = x + assumeNoGC(&pixman_fixed_to_int)(l);
+            int x2 = x + assumeNoGC(&pixman_fixed_to_int)(assumeNoGC(&pixman_fixed_to_int)(r));
+            int y1 = y + assumeNoGC(&pixman_fixed_to_int)(t.top.y);
+            int y2 = y + assumeNoGC(&pixman_fixed_to_int)(assumeNoGC(&pixman_fixed_to_int)(t.bot.y));
 
             if (x1 < box.x1)
                 box.x1 = x1;

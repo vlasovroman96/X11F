@@ -97,9 +97,9 @@ RRCrtcPtr RRCrtcCreate(ScreenPtr pScreen, void* devPrivate)
     crtc.devPrivate = devPrivate;
     RRTransformInit(&crtc.client_pending_transform);
     RRTransformInit(&crtc.client_current_transform);
-    pixman_transform_init_identity(&crtc.transform);
-    pixman_f_transform_init_identity(&crtc.f_transform);
-    pixman_f_transform_init_identity(&crtc.f_inverse);
+    assumeNoGC(&pixman_transform_init_identity)(&crtc.transform);
+    assumeNoGC(&pixman_f_transform_init_identity)(&crtc.f_transform);
+    assumeNoGC(&pixman_f_transform_init_identity)(&crtc.f_inverse);
 
     if (!AddResource(crtc.id, RRCrtcType, cast(void*) crtc))
         return null;
@@ -291,7 +291,7 @@ private Bool cursor_bounds(RRCrtcPtr crtc, int* left, int* right, int* top, int*
 	bounds.y2 = crtc.mode.mode.height;
     }
 
-    pixman_f_transform_bounds(&crtc.f_transform, &bounds);
+    assumeNoGC(&pixman_f_transform_bounds)(&crtc.f_transform, &bounds);
 
     *left = bounds.x1;
     *right = bounds.x2;
@@ -880,7 +880,7 @@ RRTransformPtr RRCrtcGetTransform(RRCrtcPtr crtc)
 {
     RRTransformPtr transform = &crtc.client_pending_transform;
 
-    if (pixman_transform_is_identity(&transform.transform))
+    if (assumeNoGC(&pixman_transform_is_identity)(&transform.transform))
         return null;
     return transform;
 }
@@ -1035,7 +1035,7 @@ private void RRModeGetScanoutSize(RRModePtr mode, PictTransformPtr transform, in
         y2: mode.mode.height,
     };
 
-    pixman_transform_bounds(transform, &box);
+    assumeNoGC(&pixman_transform_bounds)(transform, &box);
     *width = box.x2 - box.x1;
     *height = box.y2 - box.y1;
 }
@@ -1726,8 +1726,8 @@ int ProcRRSetCrtcTransform(ClientPtr client)
         return BadAccess;
 
     PictTransform_from_xRenderTransform(&transform, &stuff.transform);
-    pixman_f_transform_from_pixman_transform(&f_transform, &transform);
-    if (!pixman_f_transform_invert(&f_inverse, &f_transform))
+    assumeNoGC(&pixman_f_transform_from_pixman_transform)(&f_transform, &transform);
+    if (!assumeNoGC(&pixman_f_transform_invert)(&f_inverse, &f_transform))
         return BadMatch;
 
     filter = cast(char*) (stuff + 1);

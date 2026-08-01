@@ -18,6 +18,7 @@ public import include.cursorstr;
 public import include.dix;
 public import include.input;
 public import include.window;
+public import dix.cursor;
 
 @property size_t CURSOR_BITS_SIZE() 
 {
@@ -28,7 +29,7 @@ public import include.window;
 // extern CursorPtr rootCursor;
 
 /* reference counting */
-CursorPtr RefCursor(CursorPtr cursor);
+// CursorPtr RefCursor(CursorPtr cursor);
 CursorPtr UnrefCursor(CursorPtr cursor);
 int CursorRefCount(ConstCursorPtr cursor);
 
@@ -42,7 +43,7 @@ int ServerBitsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm, ubyte** ppbi
 
 Bool CursorMetricsFromGlyph(FontPtr pfont, uint ch, CursorMetricPtr cm);
 
-void CheckCursorConfinement(WindowPtr pWin);
+// void CheckCursorConfinement(WindowPtr pWin);
 
 // void NewCurrentScreen(DeviceIntPtr pDev, ScreenPtr newScreen, int x, int y);
 

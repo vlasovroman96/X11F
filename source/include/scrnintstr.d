@@ -243,7 +243,7 @@ alias GetLayerWindowProcPtr = WindowPtr function(WindowPtr);
 
 // alias ChangeBorderWidthProcPtr = void function(WindowPtr, uint);
 
-alias MarkUnrealizedWindowProcPtr = void function(WindowPtr, WindowPtr, Bool);
+// alias MarkUnrealizedWindowProcPtr = void function(WindowPtr, WindowPtr, Bool);
 
 alias DeviceCursorInitializeProcPtr = Bool function(DeviceIntPtr, ScreenPtr);
 

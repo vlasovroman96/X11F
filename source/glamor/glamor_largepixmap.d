@@ -925,11 +925,11 @@ private void glamor_get_transform_extent_from_box(pixman_box32* box, pixman_tran
     mixin(VECTOR_FROM_POINT!(`p2`, `box.x2`, `box.y2`));
     mixin(VECTOR_FROM_POINT!(`p3`, `box.x1`, `box.y2`));
 
-    pixman_f_transform_from_pixman_transform(&ftransform, transform);
-    pixman_f_transform_point(&ftransform, &p0);
-    pixman_f_transform_point(&ftransform, &p1);
-    pixman_f_transform_point(&ftransform, &p2);
-    pixman_f_transform_point(&ftransform, &p3);
+    assumeNoGC(&pixman_f_transform_from_pixman_transform)(&ftransform, transform);
+    assumeNoGC(&pixman_f_transform_point)(&ftransform, &p0);
+    assumeNoGC(&pixman_f_transform_point)(&ftransform, &p1);
+    assumeNoGC(&pixman_f_transform_point)(&ftransform, &p2);
+    assumeNoGC(&pixman_f_transform_point)(&ftransform, &p3);
 
     min_x = MIN(p0.v[0], p1.v[0]);
     min_x = MIN(min_x, p2.v[0]);

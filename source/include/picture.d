@@ -181,17 +181,17 @@ alias XFixed = pixman_fixed_t;
 
 enum XFIXED_BITS =	16;
 
-enum string XFixedToInt(string f) = `pixman_fixed_to_int(` ~ f ~ `)`;
-enum string IntToXFixed(string i) = `pixman_int_to_fixed(` ~ i ~ `)`;
+enum string XFixedToInt(string f) = `assumeNoGC(&pixman_fixed_to_int)(` ~ f ~ `)`;
+enum string IntToXFixed(string i) = `assumeNoGC(&pixman_int_to_fixed)(` ~ i ~ `)`;
 enum XFixedE =		pixman_fixed_e;
 enum XFixed1 =		pixman_fixed_1;
 enum XFixed1MinusE =	pixman_fixed_1_minus_e;
-enum string XFixedFrac(string f) = `pixman_fixed_frac(` ~ f ~ `)`;
-enum string XFixedFloor(string f) = `pixman_fixed_floor(` ~ f ~ `)`;
-enum string XFixedCeil(string f) = `pixman_fixed_ceil(` ~ f ~ `)`;
+enum string XFixedFrac(string f) = `assumeNoGC(&pixman_fixed_frac)(` ~ f ~ `)`;
+enum string XFixedFloor(string f) = `assumeNoGC(&pixman_fixed_floor)(` ~ f ~ `)`;
+enum string XFixedCeil(string f) = `assumeNoGC(&pixman_fixed_ceil)(` ~ f ~ `)`;
 
-enum string XFixedFraction(string f) = `pixman_fixed_fraction(` ~ f ~ `)`;
-enum string XFixedMod2(string f) = `pixman_fixed_mod2(` ~ f ~ `)`;
+enum string XFixedFraction(string f) = `assumeNoGC(&pixman_fixed_fraction)(` ~ f ~ `)`;
+enum string XFixedMod2(string f) = `assumeNoGC(&pixman_fixed_mod2)(` ~ f ~ `)`;
 
 /* whether 't' is a well defined not obviously empty trapezoid */
 enum string xTrapezoidValid(string t) = `((` ~ t ~ `).left.p1.y != (` ~ t ~ `).left.p2.y && 

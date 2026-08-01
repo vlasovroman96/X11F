@@ -45,7 +45,7 @@ const(char)* ClientAuthorized(_Client* client, uint proto_n, char* auth_proto, u
 Bool AddClientOnOpenFD(int fd);
 void ListenOnOpenFD(int fd, int noxauth);
 // int ReadRequestFromClient(_Client* client);
-int WriteFdToClient(_Client* client, int fd, Bool do_close);
+// int WriteFdToClient(_Client* client, int fd, Bool do_close);
 // Bool InsertFakeRequest(_Client* client, char* data, int count);
 // void FlushAllOutput();
 // void FlushIfCriticalOutputPending();

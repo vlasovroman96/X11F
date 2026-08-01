@@ -40,6 +40,12 @@ import dix.screen_hooks_priv;
 
 import exa.exa_priv;
 import include.exa_i;
+import miext.damage.damage_;
+import os.log;
+import externs.attrs;
+import os.utils;
+import os.WaitFor;
+// import include.exa_i;
 
 DevPrivateKeyRec exaScreenPrivateKeyRec;
 
@@ -59,15 +65,15 @@ private ShmFuncs exaShmFuncs = { null, null };
  */
 c_ulong exaGetPixmapOffset(PixmapPtr pPix)
 {
-    ExaScreenPriv(pPix.drawable.pScreen);
-    ExaPixmapPriv(pPix);
+    mixin(ExaScreenPriv!("pPix.drawable.pScreen"));
+    mixin(ExaPixmapPriv!("pPix"));
 
     return cast(CARD8*) pExaPixmap.fb_ptr - pExaScr.info.memoryBase;
 }
 
 void* exaGetPixmapDriverPrivate(PixmapPtr pPix)
 {
-    ExaPixmapPriv(pPix);
+    mixin(ExaPixmapPriv!("pPix"));
 
     return pExaPixmap.driverPriv;
 }
@@ -128,10 +134,10 @@ void exaPixmapDirty(PixmapPtr pPix, int x1, int y1, int x2, int y2)
     BoxRec box = void;
     RegionRec region = void;
 
-    box.x1 = max(x1, 0);
-    box.y1 = max(y1, 0);
-    box.x2 = min(x2, pPix.drawable.width);
-    box.y2 = min(y2, pPix.drawable.height);
+    box.x1 = cast(short)max(x1, 0);
+    box.y1 = cast(short)max(y1, 0);
+    box.x2 = cast(short)min(x2, pPix.drawable.width);
+    box.y2 = cast(short)min(y2, pPix.drawable.height);
 
     if (box.x1 >= box.x2 || box.y1 >= box.y2)
         return;
@@ -181,8 +187,8 @@ void exaSetFbPitch(ExaScreenPrivPtr pExaScr, ExaPixmapPrivPtr pExaPixmap, int w,
     else
         pExaPixmap.fb_pitch = bits_to_bytes(w * bpp);
 
-    pExaPixmap.fb_pitch = EXA_ALIGN(pExaPixmap.fb_pitch,
-                                     pExaScr.info.pixmapPitchAlign);
+    pExaPixmap.fb_pitch = mixin(EXA_ALIGN!("pExaPixmap.fb_pitch",
+                                     "pExaScr.info.pixmapPitchAlign"));
 }
 
 /**
@@ -192,10 +198,10 @@ void exaSetFbPitch(ExaScreenPrivPtr pExaScr, ExaPixmapPrivPtr pExaPixmap, int w,
  */
 Bool exaPixmapIsPinned(PixmapPtr pPix)
 {
-    ExaPixmapPriv(pPix);
+    mixin(ExaPixmapPriv!("pPix"));
 
     if (pExaPixmap == null)
-        EXA_FatalErrorDebugWithRet(("EXA bug: exaPixmapIsPinned was called on a non-exa pixmap.\n"), TRUE);
+        mixin(EXA_FatalErrorDebugWithRet!(("EXA bug: exaPixmapIsPinned was called on a non-exa pixmap.\n"), "TRUE"));
 
     return pExaPixmap.score == EXA_PIXMAP_SCORE_PINNED;
 }
@@ -216,12 +222,12 @@ Bool exaPixmapHasGpuCopy(PixmapPtr pPixmap)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return FALSE;
 
-    return (*pExaScr.pixmap_has_gpu_copy) (pPixmap);
+    return assumeNoGC(pExaScr.pixmap_has_gpu_copy) (pPixmap);
 }
 
 /**
@@ -255,8 +261,8 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
     Bool has_gpu_copy = void, ret = void;
     int i = void;
 
@@ -264,7 +270,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
         return FALSE;
 
     if (pExaPixmap == null)
-        EXA_FatalErrorDebugWithRet(("EXA bug: ExaDoPrepareAccess was called on a non-exa pixmap.\n"), FALSE);
+        mixin(EXA_FatalErrorDebugWithRet!(("EXA bug: ExaDoPrepareAccess was called on a non-exa pixmap.\n"), "FALSE"));
 
     /* Handle repeated / nested calls. */
     for (i = 0; i < EXA_NUM_PREPARE_INDICES; i++) {
@@ -283,7 +289,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
 
     /* Access to this pixmap hasn't been prepared yet, so data pointer should be NULL. */
     if (pPixmap.devPrivate.ptr != null) {
-        EXA_FatalErrorDebug(("EXA bug: pPixmap->devPrivate.ptr was %p, but should have been NULL.\n", pPixmap.devPrivate.ptr));
+        // EXA_FatalErrorDebug("EXA bug: pPixmap->devPrivate.ptr was %p, but should have been NULL.\n", pPixmap.devPrivate.ptr);
     }
 
     has_gpu_copy = exaPixmapHasGpuCopy(pPixmap);
@@ -318,7 +324,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
         goto out_;
     }
 
-    if (!(*pExaScr.info.PrepareAccess) (pPixmap, index)) {
+    if (!assumeNoGC(pExaScr.info.PrepareAccess) (pPixmap, index)) {
         if (pExaPixmap.score == EXA_PIXMAP_SCORE_PINNED &&
             !(pExaScr.info.flags & EXA_MIXED_PIXMAPS))
             FatalError("Driver failed PrepareAccess on a pinned pixmap.\n");
@@ -344,10 +350,10 @@ void exaPrepareAccess(DrawablePtr pDrawable, int index)
 {
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    ExaScreenPriv(pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDrawable.pScreen"));
 
     if (pExaScr.prepare_access_reg)
-        pExaScr.prepare_access_reg(pPixmap, index, null);
+        assumeNoGC(pExaScr.prepare_access_reg)(pPixmap, index, null);
     else
         cast(void) ExaDoPrepareAccess(pPixmap, index);
 }
@@ -361,17 +367,17 @@ void exaFinishAccess(DrawablePtr pDrawable, int index)
 {
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     int i = void;
 
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return;
 
     if (pExaPixmap == null)
-        EXA_FatalErrorDebugWithRet(("EXA bug: exaFinishAccess was called on a non-exa pixmap.\n"),);
+        mixin(EXA_FatalErrorDebugWithRet!(("EXA bug: exaFinishAccess was called on a non-exa pixmap.\n"), ""));
 
     /* Handle repeated / nested calls. */
     for (i = 0; i < EXA_NUM_PREPARE_INDICES; i++) {
@@ -384,7 +390,7 @@ void exaFinishAccess(DrawablePtr pDrawable, int index)
 
     /* Catch unbalanced Prepare/FinishAccess calls. */
     if (i == EXA_NUM_PREPARE_INDICES)
-        EXA_FatalErrorDebugWithRet(("EXA bug: FinishAccess called without PrepareAccess for pixmap %p.\n", cast(void*)pPixmap),);
+        mixin(EXA_FatalErrorDebugWithRet!("EXA bug: FinishAccess called without PrepareAccess for pixmap %p.\n", "cast(void)*pPixmap"));
 
     pExaScr.access[i].pixmap = null;
 
@@ -402,7 +408,7 @@ void exaFinishAccess(DrawablePtr pDrawable, int index)
         return;
     }
 
-    (*pExaScr.info.FinishAccess) (pPixmap, i);
+    assumeNoGC(pExaScr.info.FinishAccess) (pPixmap, i);
 }
 
 /**
@@ -410,7 +416,7 @@ void exaFinishAccess(DrawablePtr pDrawable, int index)
  */
 void exaDestroyPixmap(PixmapPtr pPixmap)
 {
-    ExaScreenPriv(pPixmap.drawable.pScreen);
+    mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
     int i = void;
 
     /* Finish access if it was prepared (e.g. pixmap created during
@@ -462,8 +468,8 @@ private void exaValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
 
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaGCPriv(pGC);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaGCPriv!("pGC"));
     PixmapPtr pTile = null;
 
     /* Either of these conditions is enough to trigger access to a tile pixmap.
@@ -482,9 +488,9 @@ private void exaValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
 
     /* Calls to Create/DestroyPixmap have to be identified as special. */
     pExaScr.fallback_counter++;
-    swap(pExaGC, pGC, funcs);
+    mixin(swap!("pExaGC", "pGC", "funcs"));
     (*pGC.funcs.ValidateGC) (pGC, changes, pDrawable);
-    swap(pExaGC, pGC, funcs);
+    mixin(swap!("pExaGC", "pGC", "funcs"));
     pExaScr.fallback_counter--;
 
     if (pTile)
@@ -496,50 +502,50 @@ private void exaValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
 /* Is exaPrepareAccessGC() needed? */
 private void exaDestroyGC(GCPtr pGC)
 {
-    ExaGCPriv(pGC);
-    swap(pExaGC, pGC, funcs);
+    mixin(ExaGCPriv!("pGC"));
+    mixin(swap!("pExaGC", "pGC", "funcs"));
     (*pGC.funcs.DestroyGC) (pGC);
-    swap(pExaGC, pGC, funcs);
+    mixin(swap!("pExaGC", "pGC", "funcs"));
 }
 
 private void exaChangeGC(GCPtr pGC, c_ulong mask)
 {
-    ExaGCPriv(pGC);
-    swap(pExaGC, pGC, funcs);
+    mixin(ExaGCPriv!("pGC"));
+    mixin(swap!("pExaGC", "pGC", "funcs"));
     (*pGC.funcs.ChangeGC) (pGC, mask);
-    swap(pExaGC, pGC, funcs);
+    mixin(swap!("pExaGC", "pGC", "funcs"));
 }
 
 private void exaCopyGC(GCPtr pGCSrc, c_ulong mask, GCPtr pGCDst)
 {
-    ExaGCPriv(pGCDst);
-    swap(pExaGC, pGCDst, funcs);
+    mixin(ExaGCPriv!("pGCDst"));
+    mixin(swap!("pExaGC", "pGCDst", "funcs"));
     (*pGCDst.funcs.CopyGC) (pGCSrc, mask, pGCDst);
-    swap(pExaGC, pGCDst, funcs);
+    mixin(swap!("pExaGC", "pGCDst", "funcs"));
 }
 
 private void exaChangeClip(GCPtr pGC, int type, void* pvalue, int nrects)
 {
-    ExaGCPriv(pGC);
-    swap(pExaGC, pGC, funcs);
+    mixin(ExaGCPriv!("pGC"));
+    mixin(swap!("pExaGC", "pGC", "funcs"));
     (*pGC.funcs.ChangeClip) (pGC, type, pvalue, nrects);
-    swap(pExaGC, pGC, funcs);
+    mixin(swap!("pExaGC", "pGC", "funcs"));
 }
 
 private void exaCopyClip(GCPtr pGCDst, GCPtr pGCSrc)
 {
-    ExaGCPriv(pGCDst);
-    swap(pExaGC, pGCDst, funcs);
+    mixin(ExaGCPriv!("pGCDst"));
+    mixin(swap!("pExaGC", "pGCDst", "funcs"));
     (*pGCDst.funcs.CopyClip) (pGCDst, pGCSrc);
-    swap(pExaGC, pGCDst, funcs);
+    mixin(swap!("pExaGC", "pGCDst", "funcs"));
 }
 
 private void exaDestroyClip(GCPtr pGC)
 {
-    ExaGCPriv(pGC);
-    swap(pExaGC, pGC, funcs);
+    mixin(ExaGCPriv!("pGC"));
+    mixin(swap!("pExaGC", "pGC", "funcs"));
     (*pGC.funcs.DestroyClip) (pGC);
-    swap(pExaGC, pGC, funcs);
+    mixin(swap!("pExaGC", "pGC", "funcs"));
 }
 
 /**
@@ -550,16 +556,16 @@ private int exaCreateGC(GCPtr pGC)
 {
     ScreenPtr pScreen = pGC.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaGCPriv(pGC);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaGCPriv!("pGC"));
     Bool ret = void;
 
-    swap(pExaScr, pScreen, CreateGC);
-    if ((ret = (*pScreen.CreateGC) (pGC))) {
-        wrap(pExaGC, pGC, funcs, &exaGCFuncs);
-        wrap(pExaGC, pGC, ops, &exaOps);
+    mixin(swap!("pExaScr", "pScreen", "CreateGC"));
+    if ((ret = (*pScreen.CreateGC) (pGC)) != 0) {
+        mixin(exa.exa_priv.wrap!("pExaGC", "pGC", "funcs", "exaGCFuncs"));
+        mixin(exa.exa_priv.wrap!("pExaGC", "pGC", "ops", "exaOps"));
     }
-    swap(pExaScr, pScreen, CreateGC);
+    mixin(swap!("pExaScr", "pScreen", "CreateGC"));
 
     return ret;
 }
@@ -569,7 +575,7 @@ private Bool exaChangeWindowAttributes(WindowPtr pWin, c_ulong mask)
     Bool ret = void;
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if ((mask & CWBackPixmap) && pWin.backgroundState == BackgroundPixmap)
         exaPrepareAccess(&pWin.background.pixmap.drawable, EXA_PREPARE_SRC);
@@ -578,9 +584,9 @@ private Bool exaChangeWindowAttributes(WindowPtr pWin, c_ulong mask)
         exaPrepareAccess(&pWin.border.pixmap.drawable, EXA_PREPARE_MASK);
 
     pExaScr.fallback_counter++;
-    swap(pExaScr, pScreen, ChangeWindowAttributes);
+    mixin(swap!("pExaScr", "pScreen", "ChangeWindowAttributes"));
     ret = pScreen.ChangeWindowAttributes(pWin, mask);
-    swap(pExaScr, pScreen, ChangeWindowAttributes);
+    mixin(swap!("pExaScr", "pScreen", "ChangeWindowAttributes"));
     pExaScr.fallback_counter--;
 
     if ((mask & CWBackPixmap) && pWin.backgroundState == BackgroundPixmap)
@@ -596,12 +602,12 @@ private RegionPtr exaBitmapToRegion(PixmapPtr pPix)
     RegionPtr ret = void;
     ScreenPtr pScreen = pPix.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     exaPrepareAccess(&pPix.drawable, EXA_PREPARE_SRC);
-    swap(pExaScr, pScreen, BitmapToRegion);
+    mixin(swap!("pExaScr", "pScreen", "BitmapToRegion"));
     ret = (*pScreen.BitmapToRegion) (pPix);
-    swap(pExaScr, pScreen, BitmapToRegion);
+    mixin(swap!("pExaScr", "pScreen", "BitmapToRegion"));
     exaFinishAccess(&pPix.drawable, EXA_PREPARE_SRC);
 
     return ret;
@@ -609,11 +615,11 @@ private RegionPtr exaBitmapToRegion(PixmapPtr pPix)
 
 private void exaCreateScreenResources(CallbackListPtr* pcbl, ScreenPtr pScreen, Bool* ret)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     PixmapPtr pScreenPixmap = pScreen.GetScreenPixmap(pScreen);
 
     if (pScreenPixmap) {
-        ExaPixmapPriv(pScreenPixmap);
+        mixin(ExaPixmapPriv!("pScreenPixmap"));
         exaSetAccelBlock(pExaScr, pExaPixmap,
                          pScreenPixmap.drawable.width,
                          pScreenPixmap.drawable.height,
@@ -623,15 +629,15 @@ private void exaCreateScreenResources(CallbackListPtr* pcbl, ScreenPtr pScreen, 
 
 private void ExaBlockHandler(ScreenPtr pScreen, void* pTimeout)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     /* Move any deferred results from a software fallback to the driver pixmap */
     if (pExaScr.deferred_mixed_pixmap)
         exaMoveInPixmap_mixed(pExaScr.deferred_mixed_pixmap);
 
-    unwrap(pExaScr, pScreen, BlockHandler);
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "BlockHandler"));
     (*pScreen.BlockHandler) (pScreen, pTimeout);
-    wrap(pExaScr, pScreen, BlockHandler, ExaBlockHandler);
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "BlockHandler", "ExaBlockHandler"));
 
     /* The rest only applies to classic EXA */
     if (pExaScr.info.flags & EXA_HANDLES_PIXMAPS)
@@ -651,11 +657,11 @@ private void ExaBlockHandler(ScreenPtr pScreen, void* pTimeout)
 
 private void ExaWakeupHandler(ScreenPtr pScreen, int result)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
-    unwrap(pExaScr, pScreen, WakeupHandler);
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "WakeupHandler"));
     (*pScreen.WakeupHandler) (pScreen, result);
-    wrap(pExaScr, pScreen, WakeupHandler, ExaWakeupHandler);
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "WakeupHandler", "ExaWakeupHandler"));
 
     if (result == 0 && pExaScr.numOffscreenAvailable > 1) {
         CARD32 now = GetTimeInMillis();
@@ -668,51 +674,51 @@ private void ExaWakeupHandler(ScreenPtr pScreen, int result)
 }
 
 /**
- * exaCloseScreen() unwraps its wrapped screen functions and tears down EXA's
+ * exaCloseScreen() exa.exa_priv.unwraps its wrapped screen functions and tears down EXA's
  * screen private, before calling down to the next CloseSccreen.
  */
 private void exaCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
-    dixScreenUnhookClose(pScreen, exaCloseScreen);
+    dixScreenUnhookClose(pScreen, &exaCloseScreen);
     dixScreenUnhookPostCreateResources(pScreen, &exaCreateScreenResources);
 
     /* doesn't matter which one actually was registered */
-    dixScreenUnhookPixmapDestroy(pScreen, exaPixmapDestroy_classic);
-    dixScreenUnhookPixmapDestroy(pScreen, exaPixmapDestroy_driver);
-    dixScreenUnhookPixmapDestroy(pScreen, exaPixmapDestroy_mixed);
+    dixScreenUnhookPixmapDestroy(pScreen, &exaPixmapDestroy_classic);
+    dixScreenUnhookPixmapDestroy(pScreen, &exaPixmapDestroy_driver);
+    dixScreenUnhookPixmapDestroy(pScreen, &exaPixmapDestroy_mixed);
 
-    if (ps && ps.Glyphs == exaGlyphs)
+    if (ps && ps.Glyphs is &exaGlyphs)
         exaGlyphsFini(pScreen);
 
-    if (pScreen.BlockHandler == ExaBlockHandler)
-        unwrap(pExaScr, pScreen, BlockHandler);
-    if (pScreen.WakeupHandler == ExaWakeupHandler)
-        unwrap(pExaScr, pScreen, WakeupHandler);
-    unwrap(pExaScr, pScreen, CreateGC);
-    unwrap(pExaScr, pScreen, GetImage);
-    unwrap(pExaScr, pScreen, GetSpans);
+    if (pScreen.BlockHandler is &ExaBlockHandler)
+        mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "BlockHandler"));
+    if (pScreen.WakeupHandler is &ExaWakeupHandler)
+        mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "WakeupHandler"));
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "CreateGC"));
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "GetImage"));
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "GetSpans"));
     if (pExaScr.SavedCreatePixmap)
-        unwrap(pExaScr, pScreen, CreatePixmap);
+        mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "CreatePixmap"));
     if (pExaScr.SavedModifyPixmapHeader)
-        unwrap(pExaScr, pScreen, ModifyPixmapHeader);
-    unwrap(pExaScr, pScreen, CopyWindow);
-    unwrap(pExaScr, pScreen, ChangeWindowAttributes);
-    unwrap(pExaScr, pScreen, BitmapToRegion);
+        mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "ModifyPixmapHeader"));
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "CopyWindow"));
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "ChangeWindowAttributes"));
+    mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "BitmapToRegion"));
     if (pExaScr.SavedSharePixmapBacking)
-        unwrap(pExaScr, pScreen, SharePixmapBacking);
+        mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "SharePixmapBacking"));
     if (pExaScr.SavedSetSharedPixmapBacking)
-        unwrap(pExaScr, pScreen, SetSharedPixmapBacking);
+        mixin(exa.exa_priv.unwrap!("pExaScr", "pScreen", "SetSharedPixmapBacking"));
 
     if (ps) {
-        unwrap(pExaScr, ps, Composite);
+        mixin(exa.exa_priv.unwrap!("pExaScr", "ps", "Composite"));
         if (pExaScr.SavedGlyphs)
-            unwrap(pExaScr, ps, Glyphs);
-        unwrap(pExaScr, ps, Trapezoids);
-        unwrap(pExaScr, ps, Triangles);
-        unwrap(pExaScr, ps, AddTraps);
+            mixin(exa.exa_priv.unwrap!("pExaScr", "ps", "Glyphs"));
+        mixin(exa.exa_priv.unwrap!("pExaScr", "ps", "Trapezoids"));
+        mixin(exa.exa_priv.unwrap!("pExaScr", "ps", "Triangles"));
+        mixin(exa.exa_priv.unwrap!("pExaScr", "ps", "AddTraps"));
     }
 
     free(pExaScr);
@@ -848,30 +854,30 @@ Bool exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo)
     if ((pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS) &&
         (!(pExaScr.info.flags & EXA_HANDLES_PIXMAPS) ||
          (pExaScr.info.flags & EXA_MIXED_PIXMAPS)))
-        wrap(pExaScr, pScreen, BlockHandler, &ExaBlockHandler);
+        mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "BlockHandler", "ExaBlockHandler"));
     if ((pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS) &&
         !(pExaScr.info.flags & EXA_HANDLES_PIXMAPS))
-        wrap(pExaScr, pScreen, WakeupHandler, &ExaWakeupHandler);
-    wrap(pExaScr, pScreen, CreateGC, &exaCreateGC);
+        mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "WakeupHandler", "ExaWakeupHandler"));
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "CreateGC", "exaCreateGC"));
     dixScreenHookClose(pScreen, &exaCloseScreen);
     dixScreenHookPostCreateResources(pScreen, &exaCreateScreenResources);
-    wrap(pExaScr, pScreen, GetImage, exaGetImage);
-    wrap(pExaScr, pScreen, GetSpans, ExaCheckGetSpans);
-    wrap(pExaScr, pScreen, CopyWindow, exaCopyWindow);
-    wrap(pExaScr, pScreen, ChangeWindowAttributes, &exaChangeWindowAttributes);
-    wrap(pExaScr, pScreen, BitmapToRegion, &exaBitmapToRegion);
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "GetImage", "exaGetImage"));
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "GetSpans", "ExaCheckGetSpans"));
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "CopyWindow", "exaCopyWindow"));
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "ChangeWindowAttributes", "exaChangeWindowAttributes"));
+    mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "BitmapToRegion", "exaBitmapToRegion"));
 
     if (ps) {
-        wrap(pExaScr, ps, Composite, exaComposite);
+        mixin(exa.exa_priv.wrap!("pExaScr", "ps", "Composite", "exaComposite"));
         if (pScreenInfo.PrepareComposite) {
-            wrap(pExaScr, ps, Glyphs, exaGlyphs);
+            mixin(exa.exa_priv.wrap!("pExaScr", "ps", "Glyphs", "exaGlyphs"));
         }
         else {
-            wrap(pExaScr, ps, Glyphs, ExaCheckGlyphs);
+            mixin(exa.exa_priv.wrap!("pExaScr", "ps", "Glyphs", "ExaCheckGlyphs"));
         }
-        wrap(pExaScr, ps, Trapezoids, exaTrapezoids);
-        wrap(pExaScr, ps, Triangles, exaTriangles);
-        wrap(pExaScr, ps, AddTraps, ExaCheckAddTraps);
+        mixin(exa.exa_priv.wrap!("pExaScr", "ps", "Trapezoids", "exaTrapezoids"));
+        mixin(exa.exa_priv.wrap!("pExaScr", "ps", "Triangles", "exaTriangles"));
+        mixin(exa.exa_priv.wrap!("pExaScr", "ps", "AddTraps", "ExaCheckAddTraps"));
     }
 
 version (CONFIG_MITSHM) {
@@ -894,44 +900,44 @@ version (CONFIG_MITSHM) {
         }
         if (pExaScr.info.flags & EXA_HANDLES_PIXMAPS) {
             if (pExaScr.info.flags & EXA_MIXED_PIXMAPS) {
-                dixScreenHookPixmapDestroy(pScreen, exaPixmapDestroy_mixed);
+                dixScreenHookPixmapDestroy(pScreen, &exaPixmapDestroy_mixed);
 
-                wrap(pExaScr, pScreen, CreatePixmap, exaCreatePixmap_mixed);
-                wrap(pExaScr, pScreen, ModifyPixmapHeader,
-                     exaModifyPixmapHeader_mixed);
-                wrap(pExaScr, pScreen, SharePixmapBacking, exaSharePixmapBacking_mixed);
-                wrap(pExaScr, pScreen, SetSharedPixmapBacking, exaSetSharedPixmapBacking_mixed);
+                mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "CreatePixmap", "exaCreatePixmap_mixed"));
+                mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "ModifyPixmapHeader",
+"                     exaModifyPixmapHeader_mixed"));
+                mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "SharePixmapBacking", "exaSharePixmapBacking_mixed"));
+                mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "SetSharedPixmapBacking", "exaSetSharedPixmapBacking_mixed"));
 
-                pExaScr.do_migration = exaDoMigration_mixed;
-                pExaScr.pixmap_has_gpu_copy = exaPixmapHasGpuCopy_mixed;
-                pExaScr.do_move_in_pixmap = exaMoveInPixmap_mixed;
+                pExaScr.do_migration = &exaDoMigration_mixed;
+                pExaScr.pixmap_has_gpu_copy = &exaPixmapHasGpuCopy_mixed;
+                pExaScr.do_move_in_pixmap = &exaMoveInPixmap_mixed;
                 pExaScr.do_move_out_pixmap = null;
-                pExaScr.prepare_access_reg = exaPrepareAccessReg_mixed;
+                pExaScr.prepare_access_reg = &exaPrepareAccessReg_mixed;
             }
             else {
-                dixScreenHookPixmapDestroy(pScreen, exaPixmapDestroy_driver);
+                dixScreenHookPixmapDestroy(pScreen, &exaPixmapDestroy_driver);
 
-                wrap(pExaScr, pScreen, CreatePixmap, exaCreatePixmap_driver);
-                wrap(pExaScr, pScreen, ModifyPixmapHeader,
-                     exaModifyPixmapHeader_driver);
+                mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "CreatePixmap", "exaCreatePixmap_driver"));
+                mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "ModifyPixmapHeader",
+"                     exaModifyPixmapHeader_driver"));
                 pExaScr.do_migration = null;
-                pExaScr.pixmap_has_gpu_copy = exaPixmapHasGpuCopy_driver;
+                pExaScr.pixmap_has_gpu_copy = &exaPixmapHasGpuCopy_driver;
                 pExaScr.do_move_in_pixmap = null;
                 pExaScr.do_move_out_pixmap = null;
                 pExaScr.prepare_access_reg = null;
             }
         }
         else {
-            dixScreenHookPixmapDestroy(pScreen, exaPixmapDestroy_classic);
+            dixScreenHookPixmapDestroy(pScreen, &exaPixmapDestroy_classic);
 
-            wrap(pExaScr, pScreen, CreatePixmap, exaCreatePixmap_classic);
-            wrap(pExaScr, pScreen, ModifyPixmapHeader,
-                 exaModifyPixmapHeader_classic);
-            pExaScr.do_migration = exaDoMigration_classic;
-            pExaScr.pixmap_has_gpu_copy = exaPixmapHasGpuCopy_classic;
-            pExaScr.do_move_in_pixmap = exaMoveInPixmap_classic;
-            pExaScr.do_move_out_pixmap = exaMoveOutPixmap_classic;
-            pExaScr.prepare_access_reg = exaPrepareAccessReg_classic;
+            mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "CreatePixmap", "exaCreatePixmap_classic"));
+            mixin(exa.exa_priv.wrap!("pExaScr", "pScreen", "ModifyPixmapHeader",
+"                 exaModifyPixmapHeader_classic"));
+            pExaScr.do_migration = &exaDoMigration_classic;
+            pExaScr.pixmap_has_gpu_copy = &exaPixmapHasGpuCopy_classic;
+            pExaScr.do_move_in_pixmap = &exaMoveInPixmap_classic;
+            pExaScr.do_move_out_pixmap = &exaMoveOutPixmap_classic;
+            pExaScr.prepare_access_reg = &exaPrepareAccessReg_classic;
         }
         if (!(pExaScr.info.flags & EXA_HANDLES_PIXMAPS)) {
             LogMessage(X_INFO, "EXA(%d): Offscreen pixmap area of %lu bytes\n",
@@ -949,8 +955,8 @@ version (CONFIG_MITSHM) {
         LogMessage(X_INFO, "EXA(%d): No offscreen pixmaps\n", pScreen.myNum);
 
     if (!(pExaScr.info.flags & EXA_HANDLES_PIXMAPS)) {
-        DBG_PIXMAP(("============== %ld < %ld\n", pExaScr.info.offScreenBase,
-                    pExaScr.info.memorySize));
+        // DBG_PIXMAP(("============== %ld < %ld\n", pExaScr.info.offScreenBase,
+        //             pExaScr.info.memorySize));
         if (pExaScr.info.offScreenBase < pExaScr.info.memorySize) {
             if (!exaOffscreenInit(pScreen)) {
                 LogMessage(X_WARNING,
@@ -961,7 +967,7 @@ version (CONFIG_MITSHM) {
         }
     }
 
-    if (ps && ps.Glyphs == exaGlyphs)
+    if (ps && ps.Glyphs == &exaGlyphs)
         exaGlyphsInit(pScreen);
 
     LogMessage(X_INFO, "EXA(%d): Driver registered support for the following"
@@ -1006,7 +1012,7 @@ void exaDriverFini(ScreenPtr pScreen)
  */
 void exaMarkSync(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     pExaScr.info.needsSync = TRUE;
     if (pExaScr.info.MarkSync != null) {
@@ -1025,7 +1031,7 @@ void exaMarkSync(ScreenPtr pScreen)
  */
 void exaWaitSync(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (pExaScr.info.needsSync && !pExaScr.swappedOut) {
         (*pExaScr.info.WaitMarker) (pScreen, pExaScr.info.lastMarker);
@@ -1042,7 +1048,7 @@ void exaDoMigration(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel)
 {
     ScreenPtr pScreen = pixmaps[0].pPix.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return;
@@ -1055,7 +1061,7 @@ void exaMoveInPixmap(PixmapPtr pPixmap)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return;
@@ -1068,7 +1074,7 @@ void exaMoveOutPixmap(PixmapPtr pPixmap)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return;

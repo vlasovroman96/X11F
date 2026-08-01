@@ -107,7 +107,7 @@ enum string xnfstrdup(string s) = `XNFstrdup(` ~ s ~ `)`;
 public import core.stdc.stdio;
 public import core.stdc.stdarg;
 
-extern void ReadFdFromClient(ClientPtr client);
+// extern void ReadFdFromClient(ClientPtr client);
 
 // extern void WriteToClient(ClientPtr, int, const(void)*);
 

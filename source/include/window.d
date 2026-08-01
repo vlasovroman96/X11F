@@ -88,7 +88,7 @@ alias ROOT_CLIP_FULL = RootClipMode.ROOT_CLIP_FULL;
 alias ROOT_CLIP_INPUT_ONLY = RootClipMode.ROOT_CLIP_INPUT_ONLY;
 
 
-alias VisitWindowProcPtr = int function(WindowPtr pWin, void* data);
+alias VisitWindowProcPtr = int function(WindowPtr pWin, void* data) @nogc nothrow;
 
 extern int TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
 
@@ -98,7 +98,7 @@ extern bool CreateRootWindow(ScreenPtr);
 
 extern void InitRootWindow(WindowPtr);
 
-alias RealChildHeadProc = WindowPtr function(WindowPtr pWin);
+alias RealChildHeadProc = WindowPtr function(WindowPtr pWin) @nogc nothrow;
 
 extern void RegisterRealChildHeadProc(RealChildHeadProc proc);
 

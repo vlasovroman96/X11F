@@ -156,7 +156,7 @@ enum string X_REQUEST_FIELD_CARD32(alias field) = `
 
 /* swap a CARD64 request struct field if necessary */
 enum string X_REQUEST_FIELD_CARD64(string field) = `
-    do { if (client.swapped) swapll(&stuff.` ~ field ~ `); } while (0)`;
+    if (client.swapped) swapll(&stuff.` ~ field~ `);`;
 
 /* swap CARD16 rest of request (after the struct) */
 enum string X_REQUEST_REST_CARD16() = `
@@ -194,6 +194,6 @@ enum string X_REPLY_FIELD_CARD32(string field) = `
 
 /* swap a CARD64 field (if necessary) in reply struct */
 enum string X_REPLY_FIELD_CARD64(string field) = `
-    do { if (client.swapped) swapll(&reply.` ~ field ~ `); } while (0)`;
+    if (client.swapped) swapll(&reply.` ~ field ~ `);`;
 
  /* _XSERVER_DIX_REQUEST_PRIV_H */

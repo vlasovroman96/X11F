@@ -29,8 +29,15 @@ import dix.screenint_priv;
 import miext.extinit_priv;
 
 import dri3.dri3_priv;
-import externs.libdrm;
+// import externs.libdrm;
 import include.dri3;
+import dix.extension;
+import dix.resource;
+import os.log;
+import externs.X11.extensions.dri3proto;
+// import externs.drm_fourcc;
+import externs.libdrm;
+
 
 private int dri3_request;
 DevPrivateKeyRec dri3_screen_private_key;
@@ -49,7 +56,7 @@ private void dri3_screen_close(CallbackListPtr* pcbl, ScreenPtr screen, void* un
     }
     free(screen_priv);
 
-    dixScreenUnhookClose(screen, dri3_screen_close);
+    dixScreenUnhookClose(screen, &dri3_screen_close);
 }
 
 Bool dri3_screen_init(ScreenPtr screen, const(dri3_screen_info_rec)* info)
@@ -79,7 +86,7 @@ RESTYPE dri3_syncobj_type;
 
 private int dri3_syncobj_free(void* data, XID id)
 {
-    dri3_syncobj* syncobj = data;
+    dri3_syncobj* syncobj = cast(dri3_syncobj* )data;
     if (--syncobj.refcount == 0)
         syncobj.free(syncobj);
     return 0;
@@ -101,8 +108,8 @@ version (XINERAMA) {
 } /* XINERAMA */
 
     extension = AddExtension(DRI3_NAME, DRI3NumberEvents, DRI3NumberErrors,
-                             proc_dri3_dispatch, proc_dri3_dispatch,
-                             null, StandardMinorOpcode);
+                             &proc_dri3_dispatch, &proc_dri3_dispatch,
+                             null, &StandardMinorOpcode);
     if (!extension)
         goto bail;
 

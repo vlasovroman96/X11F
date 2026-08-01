@@ -224,10 +224,10 @@ enum string BOUND(string v) = `cast(INT16) ((` ~ v ~ `) < MINSHORT ? MINSHORT : 
 
 pragma(inline, true) private pixman_bool_t miClipPictureReg(pixman_region16_t* pRegion, pixman_region16_t* pClip, int dx, int dy)
 {
-    if (pixman_region_n_rects(pRegion) == 1 &&
-        pixman_region_n_rects(pClip) == 1) {
-        pixman_box16_t* pRbox = pixman_region_rectangles(pRegion, null);
-        pixman_box16_t* pCbox = pixman_region_rectangles(pClip, null);
+    if (assumeNoGC(&pixman_region_n_rects)(pRegion) == 1 &&
+        assumeNoGC(&pixman_region_n_rects)(pClip) == 1) {
+        pixman_box16_t* pRbox = assumeNoGC(&pixman_region_rectangles)(pRegion, null);
+        pixman_box16_t* pCbox = assumeNoGC(&pixman_region_rectangles)(pClip, null);
         int v = void;
 
         if (pRbox.x1 < (v = pCbox.x1 + dx))
@@ -239,20 +239,20 @@ pragma(inline, true) private pixman_bool_t miClipPictureReg(pixman_region16_t* p
         if (pRbox.y2 > (v = pCbox.y2 + dy))
             pRbox.y2 = mixin(BOUND!(`v`));
         if (pRbox.x1 >= pRbox.x2 || pRbox.y1 >= pRbox.y2) {
-            pixman_region_init(pRegion);
+            assumeNoGC(&pixman_region_init)(pRegion);
         }
     }
-    else if (!pixman_region_not_empty(pClip))
+    else if (!assumeNoGC(&pixman_region_not_empty)(pClip))
         return FALSE;
     else {
         if (dx || dy)
-            pixman_region_translate(pRegion, -dx, -dy);
-        if (!pixman_region_intersect(pRegion, pRegion, pClip))
+            assumeNoGC(&pixman_region_translate)(pRegion, -dx, -dy);
+        if (!assumeNoGC(&pixman_region_intersect)(pRegion, pRegion, pClip))
             return FALSE;
         if (dx || dy)
-            pixman_region_translate(pRegion, dx, dy);
+            assumeNoGC(&pixman_region_translate)(pRegion, dx, dy);
     }
-    return pixman_region_not_empty(pRegion);
+    return assumeNoGC(&pixman_region_not_empty)(pRegion);
 }
 
 pragma(inline, true) private Bool miClipPictureSrc(RegionPtr pRegion, PicturePtr pPicture, int dx, int dy)
@@ -260,13 +260,13 @@ pragma(inline, true) private Bool miClipPictureSrc(RegionPtr pRegion, PicturePtr
     if (pPicture.clientClip) {
         Bool result = void;
 
-        pixman_region_translate(pPicture.clientClip,
+        assumeNoGC(&pixman_region_translate)(pPicture.clientClip,
                                 pPicture.clipOrigin.x + dx,
                                 pPicture.clipOrigin.y + dy);
 
         result = RegionIntersect(pRegion, pRegion, pPicture.clientClip);
 
-        pixman_region_translate(pPicture.clientClip,
+        assumeNoGC(&pixman_region_translate)(pPicture.clientClip,
                                 -(pPicture.clipOrigin.x + dx),
                                 -(pPicture.clipOrigin.y + dy));
 
@@ -317,45 +317,45 @@ Bool miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMa
     /* Check for empty operation */
     if (pRegion.extents.x1 >= pRegion.extents.x2 ||
         pRegion.extents.y1 >= pRegion.extents.y2) {
-        pixman_region_init(pRegion);
+        assumeNoGC(&pixman_region_init)(pRegion);
         return FALSE;
     }
     /* clip against dst */
     if (!miClipPictureReg(pRegion, pDst.pCompositeClip, 0, 0)) {
-        pixman_region_fini(pRegion);
+        assumeNoGC(&pixman_region_fini)(pRegion);
         return FALSE;
     }
     if (pDst.alphaMap) {
         if (!miClipPictureReg(pRegion, pDst.alphaMap.pCompositeClip,
                               -pDst.alphaOrigin.x, -pDst.alphaOrigin.y)) {
-            pixman_region_fini(pRegion);
+            assumeNoGC(&pixman_region_fini)(pRegion);
             return FALSE;
         }
     }
     /* clip against src */
     if (!miClipPictureSrc(pRegion, pSrc, xDst - xSrc, yDst - ySrc)) {
-        pixman_region_fini(pRegion);
+        assumeNoGC(&pixman_region_fini)(pRegion);
         return FALSE;
     }
     if (pSrc.alphaMap) {
         if (!miClipPictureSrc(pRegion, pSrc.alphaMap,
                               xDst - (xSrc - pSrc.alphaOrigin.x),
                               yDst - (ySrc - pSrc.alphaOrigin.y))) {
-            pixman_region_fini(pRegion);
+            assumeNoGC(&pixman_region_fini)(pRegion);
             return FALSE;
         }
     }
     /* clip against mask */
     if (pMask) {
         if (!miClipPictureSrc(pRegion, pMask, xDst - xMask, yDst - yMask)) {
-            pixman_region_fini(pRegion);
+            assumeNoGC(&pixman_region_fini)(pRegion);
             return FALSE;
         }
         if (pMask.alphaMap) {
             if (!miClipPictureSrc(pRegion, pMask.alphaMap,
                                   xDst - (xMask - pMask.alphaOrigin.x),
                                   yDst - (yMask - pMask.alphaOrigin.y))) {
-                pixman_region_fini(pRegion);
+                assumeNoGC(&pixman_region_fini)(pRegion);
                 return FALSE;
             }
         }

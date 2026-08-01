@@ -15,11 +15,12 @@ import include.dix; /* ARRAY_SIZE() */
 
 import dix.dix_priv;
 
-import externs.libdrm;
+// import externs.libdrm.drm;
+// import externs.drm; 
 // import externs.libdrm_mode;
 import externs.gbm;
 
-import externs.xf86drm;
+import externs.drm;
 import include.xf86Crtc;
 
 import hw.xfree86.drivers.video.modesetting.driver;

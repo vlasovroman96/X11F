@@ -37,7 +37,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.xf86drm;
+public import externs.drm;
 
 /* SAREA area needs to be at least a page */
 version (__alpha__) {

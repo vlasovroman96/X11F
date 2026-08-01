@@ -49,12 +49,12 @@ import include.mi;
 import micmap;
 import xf86cmap;
 import xf86DDC_priv;
-import externs.libdrm;
-import externs.libdrm;
+// import externs.libdrm;
+// import externs.libdrm;
 
-import externs.xf86drm;
+import externs.drm;
 import include.mipointer;
-// import externs.xf86drmMode;
+// import externs.drmMode;
 import externs.gbm;
 
 import include.xf86Crtc;

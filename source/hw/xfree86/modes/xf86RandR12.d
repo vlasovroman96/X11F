@@ -390,7 +390,7 @@ private void xf86RandR13Pan(xf86CrtcPtr crtc, int x, int y)
         c.v[1] = y;
         c.v[2] = 1.0;
         if (crtc.transform_in_use) {
-            pixman_f_transform_point(&crtc.f_framebuffer_to_crtc, &c);
+            assumeNoGC(&pixman_f_transform_point)(&crtc.f_framebuffer_to_crtc, &c);
         }
         else {
             c.v[0] -= crtc.x;

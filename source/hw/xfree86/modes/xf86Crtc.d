@@ -103,9 +103,9 @@ version (RANDR_12_INTERFACE) {
 }
     crtc.rotation = RR_Rotate_0;
     crtc.desiredRotation = RR_Rotate_0;
-    pixman_transform_init_identity(&crtc.crtc_to_framebuffer);
-    pixman_f_transform_init_identity(&crtc.f_crtc_to_framebuffer);
-    pixman_f_transform_init_identity(&crtc.f_framebuffer_to_crtc);
+    assumeNoGC(&pixman_transform_init_identity)(&crtc.crtc_to_framebuffer);
+    assumeNoGC(&pixman_f_transform_init_identity)(&crtc.f_crtc_to_framebuffer);
+    assumeNoGC(&pixman_f_transform_init_identity)(&crtc.f_framebuffer_to_crtc);
     crtc.filter = null;
     crtc.params = null;
     crtc.nparams = 0;

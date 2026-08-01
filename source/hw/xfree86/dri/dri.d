@@ -60,7 +60,7 @@ import include.extinit;
 import include.sarea;
 
 import include.xf86;
-import externs.xf86drm;
+import externs.drm;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;
@@ -80,6 +80,8 @@ import xf86VGAarbiter_priv;
 import xf86Extensions;
 import xf86Config;
 import hw.xfree86.os_support.linux.lnx_kmod;
+// import externs.drm_fourcc;
+import externs.libdrm;
 
 
 alias gid_t = core.sys.posix.sys.types.gid_t;

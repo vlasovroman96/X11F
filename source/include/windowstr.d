@@ -164,7 +164,7 @@ struct _Window {
     PropertyPtr properties;     /* default: NULL */
 }
 
-extern void [1] DontPropagateMasks;
+// extern void [1] DontPropagateMasks;
 
 enum string wBorderWidth(string w) = `(cast(int) (` ~ w ~ `).borderWidth)`;
 
@@ -172,7 +172,7 @@ pragma(inline, true) private PropertyPtr wUserProps(WindowPtr pWin) { return pWi
 
 /* true when w needs a border drawn. */
 
-enum string HasBorder(string w) = `((` ~ w ~ `).borderWidth || wClipShape(` ~ w ~ `))`;
+enum string HasBorder(string w) = `((` ~ w ~ `).borderWidth || `~wClipShape!(w)~ `)`;
 
 enum SCREEN_IS_BLANKED =   0;
 enum SCREEN_ISNT_SAVED =   1;

@@ -85,7 +85,7 @@ import seatd_libseat;
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 // import hw.xfree86.drivers.video.modesetting
-import externs.libdrm;
+// import externs.libdrm;
 import include.shadow;
 
 
