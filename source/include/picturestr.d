@@ -316,7 +316,7 @@ enum PICTURE_SCREEN_VERSION = 2;
 }alias PictureScreenRec = _PictureScreen;
 alias PictureScreenPtr = _PictureScreen*;
 
-extern DevPrivateKeyRec PictureScreenPrivateKeyRec;
+// extern DevPrivateKeyRec PictureScreenPrivateKeyRec;
 extern DevPrivateKeyRec PictureWindowPrivateKeyRec;
 
 enum string GetPictureScreen(string s) = `(cast(PictureScreenPtr)dixLookupPrivate(&(` ~ s ~ `).devPrivates, &PictureScreenPrivateKeyRec))`;
@@ -367,7 +367,7 @@ extern int SetPictureClipRects(PicturePtr pPicture, int xOrigin, int yOrigin, in
 
 // extern int SetPictureTransform(PicturePtr pPicture, PictTransform* transform);
 
-extern int ValidatePicture(PicturePtr pPicture);
+// extern int ValidatePicture(PicturePtr pPicture);
 
 // extern int FreePicture(void* pPicture, XID pid);
 

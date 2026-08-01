@@ -497,7 +497,7 @@ void ephyrDrawFini(ScreenPtr pScreen)
  */
 void exaDDXDriverInit(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     pExaScr.migration = ExaMigrationSmart;
     pExaScr.checkDirtyCorrectness = TRUE;

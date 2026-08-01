@@ -31,6 +31,7 @@ import core.stdc.string;
 
 import exa.exa_priv;
 import include.exa_i;
+import exa.exa;
 
 /* This file holds the classic exa specific implementation. */
 
@@ -205,7 +206,7 @@ Bool exaModifyPixmapHeader_classic(PixmapPtr pPixmap, int width, int height, int
 
 void exaPixmapDestroy_classic(CallbackListPtr* pcbl, ScreenPtr pScreen, PixmapPtr pPixmap)
 {
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     if (!pExaPixmap) // we're called on an error path
         return;
 
@@ -230,7 +231,7 @@ Bool exaPixmapHasGpuCopy_classic(PixmapPtr pPixmap)
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
     mixin(ExaScreenPriv!("pScreen"));
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     Bool ret = void;
 
     if (pExaScr.info.PixmapIsOffscreen) {

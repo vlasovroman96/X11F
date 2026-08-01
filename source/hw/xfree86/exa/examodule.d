@@ -117,7 +117,7 @@ private void exaXorgEnableDisableFBAccess(ScrnInfoPtr pScrn, Bool enable)
  */
 void exaDDXDriverInit(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
     ExaXorgScreenPrivPtr pScreenPriv = void;
 

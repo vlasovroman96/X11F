@@ -31,13 +31,15 @@ import core.stdc.string;
 
 import exa.exa_priv;
 import include.exa_i;
+import exa.exa;
+import exa.exa_migration_mixed;
 
 /* This file holds the driver allocated pixmaps + better initial placement code.
  */
 
 pragma(inline, true) private void* ExaGetPixmapAddress(PixmapPtr p)
 {
-    ExaPixmapPriv(p);
+    mixin(ExaPixmapPriv!("p"));
 
     return pExaPixmap.sys_ptr;
 }
@@ -52,19 +54,19 @@ PixmapPtr exaCreatePixmap_mixed(ScreenPtr pScreen, int w, int h, int depth, uint
     int bpp = void;
     size_t paddedWidth = void;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (w > 32767 || h > 32767)
         return NullPixmap;
 
-    swap(pExaScr, pScreen, CreatePixmap);
+    mixin(swap!("pExaScr", "pScreen", "CreatePixmap"));
     pPixmap = pScreen.CreatePixmap(pScreen, 0, 0, depth, usage_hint);
-    swap(pExaScr, pScreen, CreatePixmap);
+    mixin(swap!("pExaScr", "pScreen", "CreatePixmap"));
 
     if (!pPixmap)
         return null;
 
-    pExaPixmap = ExaGetPixmapPriv(pPixmap);
+    pExaPixmap = mixin(ExaGetPixmapPriv!("pPixmap"));
     pExaPixmap.driverPriv = null;
 
     bpp = pPixmap.drawable.bitsPerPixel;
@@ -76,7 +78,7 @@ PixmapPtr exaCreatePixmap_mixed(ScreenPtr pScreen, int w, int h, int depth, uint
     /* We will allocate the system pixmap later if needed. */
     pPixmap.devPrivate.ptr = null;
     pExaPixmap.sys_ptr = null;
-    pExaPixmap.sys_pitch = paddedWidth;
+    pExaPixmap.sys_pitch = cast(int)paddedWidth;
 
     pExaPixmap.area = null;
     pExaPixmap.fb_ptr = null;
@@ -85,7 +87,7 @@ PixmapPtr exaCreatePixmap_mixed(ScreenPtr pScreen, int w, int h, int depth, uint
     exaSetFbPitch(pExaScr, pExaPixmap, w, h, bpp);
     exaSetAccelBlock(pExaScr, pExaPixmap, w, h, bpp);
 
-    (*pScreen.ModifyPixmapHeader) (pPixmap, w, h, 0, 0, paddedWidth, null);
+    (*pScreen.ModifyPixmapHeader) (pPixmap, w, h, 0, 0, cast(int)paddedWidth, null);
 
     /* A scratch pixmap will become a driver pixmap right away. */
     if (!w || !h) {
@@ -96,10 +98,10 @@ PixmapPtr exaCreatePixmap_mixed(ScreenPtr pScreen, int w, int h, int depth, uint
         pExaPixmap.use_gpu_copy = FALSE;
 
         if (w == 1 && h == 1) {
-            pExaPixmap.sys_ptr = calloc(1, paddedWidth);
+            pExaPixmap.sys_ptr = cast(ubyte*)calloc(1, paddedWidth);
 
             /* Set up damage tracking */
-            pExaPixmap.pDamage = DamageCreate(exaDamageReport_mixed, null,
+            pExaPixmap.pDamage = DamageCreate(&exaDamageReport_mixed, null,
                                                DamageReportNonEmpty, TRUE,
                                                pPixmap.drawable.pScreen,
                                                pPixmap);
@@ -132,8 +134,8 @@ Bool exaModifyPixmapHeader_mixed(PixmapPtr pPixmap, int width, int height, int d
         return FALSE;
 
     pScreen = pPixmap.drawable.pScreen;
-    pExaScr = ExaGetScreenPriv(pScreen);
-    pExaPixmap = ExaGetPixmapPriv(pPixmap);
+    pExaScr = mixin(ExaGetScreenPriv!("pScreen"));
+    pExaPixmap = mixin(ExaGetPixmapPriv!("pPixmap"));
 
     if (pPixData) {
         if (pExaPixmap.driverPriv) {
@@ -217,18 +219,18 @@ Bool exaModifyPixmapHeader_mixed(PixmapPtr pPixmap, int width, int height, int d
             goto out_;
     }
 
-    swap(pExaScr, pScreen, ModifyPixmapHeader);
+    mixin(swap!("pExaScr", "pScreen", "ModifyPixmapHeader"));
     ret = pScreen.ModifyPixmapHeader(pPixmap, width, height, depth,
                                       bitsPerPixel, devKind, pPixData);
-    swap(pExaScr, pScreen, ModifyPixmapHeader);
+    mixin(swap!("pExaScr", "pScreen", "ModifyPixmapHeader"));
 
  out_:
     if (has_gpu_copy) {
-        pExaPixmap.fb_ptr = pPixmap.devPrivate.ptr;
+        pExaPixmap.fb_ptr = cast(ubyte*) pPixmap.devPrivate.ptr;
         pExaPixmap.fb_pitch = pPixmap.devKind;
     }
     else {
-        pExaPixmap.sys_ptr = pPixmap.devPrivate.ptr;
+        pExaPixmap.sys_ptr = cast(ubyte*)pPixmap.devPrivate.ptr;
         pExaPixmap.sys_pitch = pPixmap.devKind;
     }
     /* Always NULL this, we don't want lingering pointers. */
@@ -239,9 +241,9 @@ Bool exaModifyPixmapHeader_mixed(PixmapPtr pPixmap, int width, int height, int d
 
 void exaPixmapDestroy_mixed(CallbackListPtr* pcbl, ScreenPtr pScreen, PixmapPtr pPixmap)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     if (!pExaPixmap) // we're called on an error path
         return;
 
@@ -265,8 +267,8 @@ Bool exaPixmapHasGpuCopy_mixed(PixmapPtr pPixmap)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
     void* saved_ptr = void;
     Bool ret = void;
 
@@ -284,7 +286,7 @@ Bool exaPixmapHasGpuCopy_mixed(PixmapPtr pPixmap)
 Bool exaSharePixmapBacking_mixed(PixmapPtr pPixmap, ScreenPtr secondary, void** handle_p)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     Bool ret = FALSE;
 
     exaMoveInPixmap(pPixmap);
@@ -298,7 +300,7 @@ Bool exaSharePixmapBacking_mixed(PixmapPtr pPixmap, ScreenPtr secondary, void** 
 Bool exaSetSharedPixmapBacking_mixed(PixmapPtr pPixmap, void* handle)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     Bool ret = FALSE;
 
     if (pExaScr.info.SetSharedPixmapBacking)

@@ -1,4 +1,4 @@
-module mipict;
+module render.mipict;
 @nogc nothrow:
 extern(C): __gshared:
 /*

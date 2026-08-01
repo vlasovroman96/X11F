@@ -749,17 +749,17 @@ extern int exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo);
 
 extern int exaDriverFini(ScreenPtr pScreen);
 
-extern int exaMarkSync(ScreenPtr pScreen);
-extern int exaWaitSync(ScreenPtr pScreen);
+// extern int exaMarkSync(ScreenPtr pScreen);
+// extern v exaWaitSync(ScreenPtr pScreen);
 
 extern ulong exaGetPixmapOffset(PixmapPtr pPix);
 
-extern ulong exaGetPixmapPitch(PixmapPtr pPix);
+// extern ulong exaGetPixmapPitch(PixmapPtr pPix);
 
 extern int* exaGetPixmapDriverPrivate(PixmapPtr p);
 
 /* in exa_offscreen.c */
-extern int* exaOffscreenAlloc(ScreenPtr pScreen, int size, int align_, Bool locked, ExaOffscreenSaveProc save, void* privData);
+// extern int* exaOffscreenAlloc(ScreenPtr pScreen, int size, int align_, Bool locked, ExaOffscreenSaveProc save, void* privData);
 
 extern int* exaOffscreenFree(ScreenPtr pScreen, ExaOffscreenArea* area);
 
@@ -768,7 +768,7 @@ extern int exaEnableDisableFBAccess(ScreenPtr pScreen, Bool enable);
 extern int exaDrawableIsOffscreen(DrawablePtr pDrawable);
 
 /* in exa.c */
-extern int exaMoveInPixmap(PixmapPtr pPixmap);
+// extern int exaMoveInPixmap(PixmapPtr pPixmap);
 
 /* in exa_unaccel.c */
 extern int exaGetPixmapFirstPixel(PixmapPtr pPixmap);

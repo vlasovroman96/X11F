@@ -45,6 +45,8 @@ import os.log;
 import externs.attrs;
 import os.utils;
 import os.WaitFor;
+import render.picture;
+
 // import include.exa_i;
 
 DevPrivateKeyRec exaScreenPrivateKeyRec;
@@ -262,7 +264,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
     mixin(ExaScreenPriv!("pScreen"));
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     Bool has_gpu_copy = void, ret = void;
     int i = void;
 
@@ -370,7 +372,7 @@ void exaFinishAccess(DrawablePtr pDrawable, int index)
     mixin(ExaScreenPriv!("pScreen"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     int i = void;
 
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))

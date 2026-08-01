@@ -58,6 +58,8 @@ import include.protocol_versions;
 import externs.X11.extensions.compositeproto;
 import xfixes.region;
 import dix.extension;
+import render.picture;
+
 
 
 private CARD8 CompositeReqCode;

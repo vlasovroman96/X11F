@@ -31,6 +31,11 @@ import core.stdc.stdlib;
 import include.mipict;
 
 import exa.exa_priv;
+import os.log;
+import exa.exa;
+import render.picture;
+import render.mipict;
+import dix.gc;
 
 static if (DEBUG_TRACE_FALL) {
 private void exaCompositeFallbackPictDesc(PicturePtr pict, char* string, int n)
@@ -193,19 +198,19 @@ private Bool exaGetRGBAFromPixel(CARD32 pixel, CARD16* red, CARD16* green, CARD1
                    ~ "createSourcePicture()\n");
 
     if (rbits) {
-        *red = ((pixel >> rshift) & ((1 << rbits) - 1)) << (16 - rbits);
+        *red = cast(ushort)(((pixel >> rshift) & ((1 << rbits) - 1)) << (16 - rbits));
         while (rbits < 16) {
             *red |= *red >> rbits;
             rbits <<= 1;
         }
 
-        *green = ((pixel >> gshift) & ((1 << gbits) - 1)) << (16 - gbits);
+        *green = cast(ushort)(((pixel >> gshift) & ((1 << gbits) - 1)) << (16 - gbits));
         while (gbits < 16) {
             *green |= *green >> gbits;
             gbits <<= 1;
         }
 
-        *blue = ((pixel >> bshift) & ((1 << bbits) - 1)) << (16 - bbits);
+        *blue = cast(ushort)(((pixel >> bshift) & ((1 << bbits) - 1)) << (16 - bbits));
         while (bbits < 16) {
             *blue |= *blue >> bbits;
             bbits <<= 1;
@@ -218,7 +223,7 @@ private Bool exaGetRGBAFromPixel(CARD32 pixel, CARD16* red, CARD16* green, CARD1
     }
 
     if (abits) {
-        *alpha = ((pixel >> ashift) & ((1 << abits) - 1)) << (16 - abits);
+        *alpha = cast(ushort)(((pixel >> ashift) & ((1 << abits) - 1)) << (16 - abits));
         while (abits < 16) {
             *alpha |= *alpha >> abits;
             abits <<= 1;
@@ -232,7 +237,7 @@ private Bool exaGetRGBAFromPixel(CARD32 pixel, CARD16* red, CARD16* green, CARD1
 
 private int exaTryDriverSolidFill(PicturePtr pSrc, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
-    ExaScreenPriv(pDst.pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDst.pDrawable.pScreen"));
     RegionRec region = void;
     BoxPtr pbox = void;
     int nbox = void;
@@ -243,7 +248,7 @@ private int exaTryDriverSolidFill(PicturePtr pSrc, PicturePtr pDst, INT16 xSrc, 
     CARD16 red = void, green = void, blue = void, alpha = void;
 
     pDstPix = exaGetDrawablePixmap(pDst.pDrawable);
-    pDstExaPix = ExaGetPixmapPriv(pDstPix);
+    pDstExaPix = mixin(ExaGetPixmapPriv!("pDstPix"));
 
     /* Check whether the accelerator can use the destination pixmap.
      */
@@ -321,7 +326,7 @@ private int exaTryDriverSolidFill(PicturePtr pSrc, PicturePtr pDst, INT16 xSrc, 
 
 private int exaTryDriverCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, int nrect, ExaCompositeRectPtr rects)
 {
-    ExaScreenPriv(pDst.pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDst.pDrawable.pScreen"));
     int src_off_x = 0, src_off_y = 0, mask_off_x = 0, mask_off_y = 0;
     int dst_off_x = void, dst_off_y = void;
     PixmapPtr pSrcPix = null, pMaskPix = null, pDstPix = void;
@@ -332,16 +337,16 @@ private int exaTryDriverCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMa
 
     if (pSrc.pDrawable) {
         pSrcPix = exaGetDrawablePixmap(pSrc.pDrawable);
-        pSrcExaPix = ExaGetPixmapPriv(pSrcPix);
+        pSrcExaPix = mixin(ExaGetPixmapPriv!("pSrcPix"));
     }
 
     if (pMask && pMask.pDrawable) {
         pMaskPix = exaGetDrawablePixmap(pMask.pDrawable);
-        pMaskExaPix = ExaGetPixmapPriv(pMaskPix);
+        pMaskExaPix = mixin(ExaGetPixmapPriv!("pMaskPix"));
     }
 
     pDstPix = exaGetDrawablePixmap(pDst.pDrawable);
-    pDstExaPix = ExaGetPixmapPriv(pDstPix);
+    pDstExaPix = mixin(ExaGetPixmapPriv!("pDstPix"));
 
     /* Check whether the accelerator can use these pixmaps.
      * FIXME: If it cannot, use temporary pixmaps so that the drawing
@@ -410,8 +415,8 @@ private int exaTryDriverCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMa
         return -1;
 
     while (nrect--) {
-        INT16 xDst = rects.xDst + pDst.pDrawable.x;
-        INT16 yDst = rects.yDst + pDst.pDrawable.y;
+        INT16 xDst = cast(short)(rects.xDst + pDst.pDrawable.x);
+        INT16 yDst = cast(short)(rects.yDst + pDst.pDrawable.y);
         INT16 xMask = rects.xMask;
         INT16 yMask = rects.yMask;
         INT16 xSrc = rects.xSrc;
@@ -440,10 +445,10 @@ private int exaTryDriverCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMa
         nbox = RegionNumRects(&region);
         pbox = RegionRects(&region);
 
-        xMask = xMask + mask_off_x - xDst - dst_off_x;
-        yMask = yMask + mask_off_y - yDst - dst_off_y;
-        xSrc = xSrc + src_off_x - xDst - dst_off_x;
-        ySrc = ySrc + src_off_y - yDst - dst_off_y;
+        xMask = cast(short)(xMask + mask_off_x - xDst - dst_off_x);
+        yMask = cast(short)(yMask + mask_off_y - yDst - dst_off_y);
+        xSrc = cast(short)(xSrc + src_off_x - xDst - dst_off_x);
+        ySrc = cast(short)(ySrc + src_off_y - yDst - dst_off_y);
 
         while (nbox--) {
             (*pExaScr.info.Composite) (pDstPix,
@@ -479,7 +484,7 @@ private int exaTryDriverCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMa
  */
 void exaCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, int nrect, ExaCompositeRectPtr rects)
 {
-    ExaScreenPriv(pDst.pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDst.pDrawable.pScreen"));
     int n = void;
     ExaCompositeRectPtr r = void;
     int ret = void;
@@ -527,10 +532,10 @@ void exaCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr p
         if (x2 <= x1 || y2 <= y1)
             return;
 
-        box.x1 = x1;
-        box.x2 = x2 < MAXSHORT ? x2 : MAXSHORT;
-        box.y1 = y1;
-        box.y2 = y2 < MAXSHORT ? y2 : MAXSHORT;
+        box.x1 = cast(short)(x1);
+        box.x2 = cast(short)(x2 < MAXSHORT ? x2 : MAXSHORT);
+        box.y1 = cast(short)(y1);
+        box.y2 = cast(short)(y2 < MAXSHORT ? y2 : MAXSHORT);
 
         /* The pixmap migration code relies on pendingDamage indicating
          * the bounds of the current rendering, so we need to force
@@ -597,7 +602,7 @@ void exaCompositeRects(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr p
 
 private int exaTryDriverComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
-    ExaScreenPriv(pDst.pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDst.pDrawable.pScreen"));
     RegionRec region = void;
     BoxPtr pbox = void;
     int nbox = void;
@@ -607,15 +612,15 @@ private int exaTryDriverComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, P
 
     if (pSrc.pDrawable) {
         pSrcPix = exaGetDrawablePixmap(pSrc.pDrawable);
-        pSrcExaPix = ExaGetPixmapPriv(pSrcPix);
+        pSrcExaPix = mixin(ExaGetPixmapPriv!("pSrcPix"));
     }
 
     pDstPix = exaGetDrawablePixmap(pDst.pDrawable);
-    pDstExaPix = ExaGetPixmapPriv(pDstPix);
+    pDstExaPix = mixin(ExaGetPixmapPriv!("pDstPix"));
 
     if (pMask && pMask.pDrawable) {
         pMaskPix = exaGetDrawablePixmap(pMask.pDrawable);
-        pMaskExaPix = ExaGetPixmapPriv(pMaskPix);
+        pMaskExaPix = mixin(ExaGetPixmapPriv!("pMaskPix"));
     }
 
     /* Check whether the accelerator can use these pixmaps.
@@ -716,11 +721,11 @@ private int exaTryDriverComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, P
     nbox = RegionNumRects(&region);
     pbox = RegionRects(&region);
 
-    xMask = xMask + mask_off_x - xDst - dst_off_x;
-    yMask = yMask + mask_off_y - yDst - dst_off_y;
+    xMask = cast(short)(xMask + mask_off_x - xDst - dst_off_x);
+    yMask = cast(short)(yMask + mask_off_y - yDst - dst_off_y);
 
-    xSrc = xSrc + src_off_x - xDst - dst_off_x;
-    ySrc = ySrc + src_off_y - yDst - dst_off_y;
+    xSrc = cast(short)(xSrc + src_off_x - xDst - dst_off_x);
+    ySrc = cast(short)(ySrc + src_off_y - yDst - dst_off_y);
 
     while (nbox--) {
         (*pExaScr.info.Composite) (pDstPix,
@@ -791,7 +796,7 @@ private int exaTryDriverComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, P
 
 private int exaTryMagicTwoPassCompositeHelper(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
-    ExaScreenPriv(pDst.pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDst.pDrawable.pScreen"));
 
     assert(op == PictOpOver);
 
@@ -819,7 +824,7 @@ private int exaTryMagicTwoPassCompositeHelper(CARD8 op, PicturePtr pSrc, Picture
 
 void exaComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
-    ExaScreenPriv(pDst.pDrawable.pScreen);
+    mixin(ExaScreenPriv!("pDst.pDrawable.pScreen"));
     int ret = -1;
     Bool saveSrcRepeat = pSrc.repeat;
     Bool saveMaskRepeat = pMask ? pMask.repeat : 0;
@@ -919,8 +924,8 @@ void exaComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, 
 
                 /* pattern origin is the point in the destination drawable
                  * corresponding to (0,0) in the source */
-                patOrg.x = xDst - xSrc;
-                patOrg.y = yDst - ySrc;
+                patOrg.x = cast(short)(xDst - xSrc);
+                patOrg.y = cast(short)(yDst - ySrc);
 
                 ret = exaFillRegionTiled(pDst.pDrawable, &region,
                                          cast(PixmapPtr) pSrc.pDrawable,
@@ -1008,7 +1013,7 @@ private PicturePtr exaCreateAlphaPicture(ScreenPtr pScreen, PicturePtr pDst, Pic
     xRectangle rect = void;
 
     if (width > 32767 || height > 32767)
-        return 0;
+        return null;
 
     if (!pPictFormat) {
         if (pDst.polyEdge == PolyEdgeSharp)
@@ -1016,17 +1021,17 @@ private PicturePtr exaCreateAlphaPicture(ScreenPtr pScreen, PicturePtr pDst, Pic
         else
             pPictFormat = PictureMatchFormat(pScreen, 8, PIXMAN_a8);
         if (!pPictFormat)
-            return 0;
+            return null;
     }
 
     pPixmap = (*pScreen.CreatePixmap) (pScreen, width, height,
                                         pPictFormat.depth, 0);
     if (!pPixmap)
-        return 0;
+        return null;
     pGC = GetScratchGC(pPixmap.drawable.depth, pScreen);
     if (!pGC) {
         dixDestroyPixmap(pPixmap, 0);
-        return 0;
+        return null;
     }
     ValidateGC(&pPixmap.drawable, pGC);
     rect.x = 0;
@@ -1037,7 +1042,7 @@ private PicturePtr exaCreateAlphaPicture(ScreenPtr pScreen, PicturePtr pDst, Pic
     exaPixmapDirty(pPixmap, 0, 0, width, height);
     FreeScratchGC(pGC);
     pPicture = CreatePicture(0, &pPixmap.drawable, pPictFormat,
-                             0, 0, serverClient, &error);
+                             0, null, serverClient, &error);
     dixDestroyPixmap(pPixmap, 0);
     return pPicture;
 }
@@ -1058,7 +1063,7 @@ private PicturePtr exaCreateAlphaPicture(ScreenPtr pScreen, PicturePtr pDst, Pic
 void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     BoxRec bounds = void;
 
     if (maskFormat) {
@@ -1075,22 +1080,22 @@ void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mas
         yDst = traps[0].left.p1.y >> 16;
 
         pPicture = exaCreateAlphaPicture(pScreen, pDst, maskFormat,
-                                         bounds.x2 - bounds.x1,
-                                         bounds.y2 - bounds.y1);
+                                         cast(short)(bounds.x2 - bounds.x1),
+                                         cast(short)(bounds.y2 - bounds.y1));
         if (!pPicture)
             return;
 
         exaPrepareAccess(pPicture.pDrawable, EXA_PREPARE_DEST);
         for (; ntrap; ntrap--, traps++)
-            if (xTrapezoidValid(traps))
+            if (mixin(xTrapezoidValid!("traps")))
                 (*ps.RasterizeTrapezoid) (pPicture, traps, -bounds.x1, -bounds.y1);
         exaFinishAccess(pPicture.pDrawable, EXA_PREPARE_DEST);
 
-        xRel = bounds.x1 + xSrc - xDst;
-        yRel = bounds.y1 + ySrc - yDst;
+        xRel = cast(short)(bounds.x1 + xSrc - xDst);
+        yRel = cast(short)(bounds.y1 + ySrc - yDst);
         CompositePicture(op, pSrc, pPicture, pDst,
                          xRel, yRel, 0, 0, bounds.x1, bounds.y1,
-                         bounds.x2 - bounds.x1, bounds.y2 - bounds.y1);
+                         cast(short)(bounds.x2 - bounds.x1), cast(short)(bounds.y2 - bounds.y1));
         FreePicture(pPicture, 0);
     }
     else {
@@ -1119,7 +1124,7 @@ void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mas
 void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, xTriangle* tris)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     BoxRec bounds = void;
 
     if (maskFormat) {
@@ -1136,20 +1141,20 @@ void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mask
         yDst = tris[0].p1.y >> 16;
 
         pPicture = exaCreateAlphaPicture(pScreen, pDst, maskFormat,
-                                         bounds.x2 - bounds.x1,
-                                         bounds.y2 - bounds.y1);
+                                         cast(short)(bounds.x2 - bounds.x1),
+                                         cast(short)(bounds.y2 - bounds.y1));
         if (!pPicture)
             return;
 
         exaPrepareAccess(pPicture.pDrawable, EXA_PREPARE_DEST);
-        (*ps.AddTriangles) (pPicture, -bounds.x1, -bounds.y1, ntri, tris);
+        (*ps.AddTriangles) (pPicture, cast(short)-bounds.x1, cast(short)-bounds.y1, ntri, tris);
         exaFinishAccess(pPicture.pDrawable, EXA_PREPARE_DEST);
 
-        xRel = bounds.x1 + xSrc - xDst;
-        yRel = bounds.y1 + ySrc - yDst;
+        xRel = cast(short)(bounds.x1 + xSrc - xDst);
+        yRel = cast(short)(bounds.y1 + ySrc - yDst);
         CompositePicture(op, pSrc, pPicture, pDst,
                          xRel, yRel, 0, 0, bounds.x1, bounds.y1,
-                         bounds.x2 - bounds.x1, bounds.y2 - bounds.y1);
+                         cast(short)(bounds.x2 - bounds.x1), cast(short)(bounds.y2 - bounds.y1));
         FreePicture(pPicture, 0);
     }
     else {

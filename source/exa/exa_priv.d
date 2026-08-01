@@ -60,11 +60,10 @@ enum DEBUG_OFFSCREEN =		0;
 enum DEBUG_GLYPH_CACHE =	0;
 
 static if (DEBUG_TRACE_FALL) {
-enum string EXA_FALLBACK(string x) = `
-do {								
+enum string EXA_FALLBACK(string x) = `{						
 	ErrorF("EXA fallback at %s: ", __FUNCTION__.ptr);		
-	ErrorF x = void;						
-} while (0)`;
+	// ErrorF x = void;						
+}`;
 
 char exaDrawableLocation(DrawablePtr pDrawable);
 } else {
@@ -246,21 +245,21 @@ enum string swap(string priv, string real_, string mem) = `{
 }`;
 
 enum string EXA_PRE_FALLBACK(string _screen_) = `
-    ` ~ ExaScreenPriv!(_screen_) ~ `; 
+    ` ~ ExaScreenPriv!(_screen_) ~ ` 
     pExaScr.fallback_counter++;`;
 
 enum string EXA_POST_FALLBACK(string _screen_) = `
     pExaScr.fallback_counter--;`;
 
 enum string EXA_PRE_FALLBACK_GC(string _gc_) = `
-    ` ~ ExaScreenPriv!(`` ~ _gc_ ~ `.pScreen`) ~ `; 
-    ` ~ ExaGCPriv!(_gc_) ~ `; 
+    ` ~ ExaScreenPriv!(`` ~ _gc_ ~ `.pScreen`) ~ ` 
+    ` ~ ExaGCPriv!(_gc_) ~ ` 
     pExaScr.fallback_counter++; 
-    ` ~ swap!(`pExaGC`, _gc_, `ops`) ~ `;`;
+    ` ~ swap!(`pExaGC`, _gc_, `ops`) ~ ``;
 
-enum string EXA_POST_FALLBACK_GC(string _gc_) = `
+enum string EXA_POST_FALLBACK_GC(string _gc_) = `{
     pExaScr.fallback_counter--; 
-    ` ~ swap!(`pExaGC`, _gc_, `ops`) ~ `;`;
+    ` ~ swap!(`pExaGC`, _gc_, `ops`) ~ `;}`;
 
 /** Align an offset to an arbitrary alignment */
 enum string EXA_ALIGN(string offset, string align_) = `(((` ~ offset ~ `) + (` ~ align_ ~ `) - 1) - 
@@ -396,7 +395,7 @@ pragma(inline, true) Bool exaGCReadsDestination(DrawablePtr pDrawable, c_ulong p
 {
     return ((alu != GXcopy && alu != GXclear && alu != GXset &&
              alu != GXcopyInverted) || fillStyle == FillStippled ||
-            clientClip != FALSE || !EXA_PM_IS_SOLID(pDrawable, planemask));
+            clientClip != FALSE || !mixin(EXA_PM_IS_SOLID!("pDrawable", "planemask")));
 }
 
 void exaCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc);
@@ -429,31 +428,31 @@ Bool exaOffscreenInit(ScreenPtr pScreen);
 void ExaOffscreenFini(ScreenPtr pScreen);
 
 /* exa.c */
-Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index);
+// Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index);
 
-void exaPrepareAccess(DrawablePtr pDrawable, int index);
+// void exaPrepareAccess(DrawablePtr pDrawable, int index);
 
-void exaFinishAccess(DrawablePtr pDrawable, int index);
+// void exaFinishAccess(DrawablePtr pDrawable, int index);
 
-void exaDestroyPixmap(PixmapPtr pPixmap);
+// void exaDestroyPixmap(PixmapPtr pPixmap);
 
-void exaPixmapDirty(PixmapPtr pPix, int x1, int y1, int x2, int y2);
+// void exaPixmapDirty(PixmapPtr pPix, int x1, int y1, int x2, int y2);
 
-void exaGetDrawableDeltas(DrawablePtr pDrawable, PixmapPtr pPixmap, int* xp, int* yp);
+// void exaGetDrawableDeltas(DrawablePtr pDrawable, PixmapPtr pPixmap, int* xp, int* yp);
 
-Bool exaPixmapHasGpuCopy(PixmapPtr p);
+// Bool exaPixmapHasGpuCopy(PixmapPtr p);
 
-PixmapPtr exaGetOffscreenPixmap(DrawablePtr pDrawable, int* xp, int* yp);
+// PixmapPtr exaGetOffscreenPixmap(DrawablePtr pDrawable, int* xp, int* yp);
 
-PixmapPtr exaGetDrawablePixmap(DrawablePtr pDrawable);
+// PixmapPtr exaGetDrawablePixmap(DrawablePtr pDrawable);
 
-void exaSetFbPitch(ExaScreenPrivPtr pExaScr, ExaPixmapPrivPtr pExaPixmap, int w, int h, int bpp);
+// void exaSetFbPitch(ExaScreenPrivPtr pExaScr, ExaPixmapPrivPtr pExaPixmap, int w, int h, int bpp);
 
-void exaSetAccelBlock(ExaScreenPrivPtr pExaScr, ExaPixmapPrivPtr pExaPixmap, int w, int h, int bpp);
+// void exaSetAccelBlock(ExaScreenPrivPtr pExaScr, ExaPixmapPrivPtr pExaPixmap, int w, int h, int bpp);
 
-void exaDoMigration(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel);
+// void exaDoMigration(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel);
 
-Bool exaPixmapIsPinned(PixmapPtr pPix);
+// Bool exaPixmapIsPinned(PixmapPtr pPix);
 
 extern const(GCFuncs) exaGCFuncs;
 
@@ -485,13 +484,13 @@ void exaPixmapDestroy_mixed(CallbackListPtr* pcbl, ScreenPtr pScreen, PixmapPtr 
 Bool exaPixmapHasGpuCopy_mixed(PixmapPtr pPixmap);
 
 /* exa_migration_mixed.c */
-void exaCreateDriverPixmap_mixed(PixmapPtr pPixmap);
+// void exaCreateDriverPixmap_mixed(PixmapPtr pPixmap);
 
 void exaDoMigration_mixed(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel);
 
 void exaMoveInPixmap_mixed(PixmapPtr pPixmap);
 
-void exaDamageReport_mixed(DamagePtr pDamage, RegionPtr pRegion, void* closure);
+// void exaDamageReport_mixed(DamagePtr pDamage, RegionPtr pRegion, void* closure);
 
 void exaPrepareAccessReg_mixed(PixmapPtr pPixmap, int index, RegionPtr pReg);
 
@@ -531,8 +530,8 @@ void exaMoveInPixmap_classic(PixmapPtr pPixmap);
 
 void exaPrepareAccessReg_classic(PixmapPtr pPixmap, int index, RegionPtr pReg);
 
-void exaMoveOutPixmap(PixmapPtr pPixmap);
+// void exaMoveOutPixmap(PixmapPtr pPixmap);
 
-void ExaOffscreenMarkUsed(PixmapPtr pPixmap);
+// void ExaOffscreenMarkUsed(PixmapPtr pPixmap);
 
                           /* EXAPRIV_H */

@@ -56,7 +56,7 @@ extern void  miDestroyPicture(PicturePtr pPicture);
 
 extern void  miCompositeSourceValidate(PicturePtr pPicture);
 
-extern void  miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
+// extern void  miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
 extern void  miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats);
 
@@ -64,9 +64,9 @@ extern void  miRealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
 extern void  miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
-extern void  miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs);
+// extern void  miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs);
 
-extern void  miRenderColorToPixel(PictFormatPtr pPict, xRenderColor* color, CARD32* pixel);
+// extern void  miRenderColorToPixel(PictFormatPtr pPict, xRenderColor* color, CARD32* pixel);
 
 extern void  miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, xRenderColor* color);
 

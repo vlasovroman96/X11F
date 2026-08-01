@@ -35,6 +35,11 @@ import core.stdc.string;
 
 import exa.exa_priv;
 import include.exa_i;
+import exa.exa;
+import os.log;
+import exa.exa_offscreen;
+import exa.exa_priv;
+
 
 static if (DEBUG_MIGRATE) {
 enum string DBG_MIGRATE(string a) = `ErrorF a = void;`;
@@ -68,10 +73,10 @@ private void exaMemcpyBox(PixmapPtr pPixmap, BoxPtr pbox, CARD8* src, int src_pi
  */
 private Bool exaPixmapIsDirty(PixmapPtr pPix)
 {
-    ExaPixmapPriv(pPix);
+    mixin(ExaPixmapPriv!("pPix"));
 
     if (pExaPixmap == null)
-        EXA_FatalErrorDebugWithRet(("EXA bug: exaPixmapIsDirty was called on a non-exa pixmap.\n"), TRUE);
+        // EXA_FatalErrorDebugWithRet(("EXA bug: exaPixmapIsDirty was called on a non-exa pixmap.\n"), TRUE);
 
     if (!pExaPixmap.pDamage)
         return FALSE;
@@ -89,7 +94,7 @@ private Bool exaPixmapIsDirty(PixmapPtr pPix)
  */
 private Bool exaPixmapShouldBeInFB(PixmapPtr pPix)
 {
-    ExaPixmapPriv(pPix);
+    mixin(ExaPixmapPriv!("pPix"));
 
     if (exaPixmapIsPinned(pPix))
         return TRUE;
@@ -101,11 +106,11 @@ private Bool exaPixmapShouldBeInFB(PixmapPtr pPix)
  * If the pixmap is currently dirty, this copies at least the dirty area from
  * FB to system or vice versa.  Both areas must be allocated.
  */
-private void exaCopyDirty(ExaMigrationPtr migrate, RegionPtr pValidDst, RegionPtr pValidSrc, Bool function(PixmapPtr pPix, int x, int y, int w, int h, char* sys, int sys_pitch) transfer, int fallback_index, void function(ScreenPtr pScreen) sync)
+private void exaCopyDirty(ExaMigrationPtr migrate, RegionPtr pValidDst, RegionPtr pValidSrc, Bool function(PixmapPtr pPix, int x, int y, int w, int h, char* sys, int sys_pitch) @nogc nothrow transfer, int fallback_index, void function(ScreenPtr pScreen) @nogc nothrow sync)
 {
     PixmapPtr pPixmap = migrate.pPix;
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     RegionPtr damage = DamageRegion(pExaPixmap.pDamage);
     RegionRec CopyReg = void;
     Bool save_use_gpu_copy = void;
@@ -132,7 +137,7 @@ private void exaCopyDirty(ExaMigrationPtr migrate, RegionPtr pValidDst, RegionPt
     RegionSubtract(&CopyReg, pValidSrc, pValidDst);
 
     if (migrate.as_dst) {
-        ExaScreenPriv(pPixmap.drawable.pScreen);
+        mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
 
         /* XXX: The pending damage region will be marked as damaged after the
          * operation, so it should serve as an upper bound for the region that
@@ -202,10 +207,10 @@ static if (DEBUG_MIGRATE) {
     pPixmap.devKind = pExaPixmap.fb_pitch;
 
     while (nbox--) {
-        pBox.x1 = max(pBox.x1, 0);
-        pBox.y1 = max(pBox.y1, 0);
-        pBox.x2 = min(pBox.x2, pPixmap.drawable.width);
-        pBox.y2 = min(pBox.y2, pPixmap.drawable.height);
+        pBox.x1 = cast(short)max(pBox.x1, 0);
+        pBox.y1 = cast(short)max(pBox.y1, 0);
+        pBox.x2 = cast(short)min(pBox.x2, pPixmap.drawable.width);
+        pBox.y2 = cast(short)min(pBox.y2, pPixmap.drawable.height);
 
         if (pBox.x1 >= pBox.x2 || pBox.y1 >= pBox.y2)
             continue;
@@ -227,11 +232,11 @@ static if (DEBUG_MIGRATE) {
             if (fallback_index == EXA_PREPARE_DEST) {
                 exaMemcpyBox(pPixmap, pBox,
                              pExaPixmap.sys_ptr, pExaPixmap.sys_pitch,
-                             pPixmap.devPrivate.ptr, pPixmap.devKind);
+                             cast(ubyte*)pPixmap.devPrivate.ptr, pPixmap.devKind);
             }
             else {
                 exaMemcpyBox(pPixmap, pBox,
-                             pPixmap.devPrivate.ptr, pPixmap.devKind,
+                             cast(ubyte*)pPixmap.devPrivate.ptr, pPixmap.devKind,
                              pExaPixmap.sys_ptr, pExaPixmap.sys_pitch);
             }
         }
@@ -271,12 +276,12 @@ void exaCopyDirtyToSys(ExaMigrationPtr migrate)
 {
     PixmapPtr pPixmap = migrate.pPix;
 
-    ExaScreenPriv(pPixmap.drawable.pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     exaCopyDirty(migrate, &pExaPixmap.validSys, &pExaPixmap.validFB,
                  pExaScr.info.DownloadFromScreen, EXA_PREPARE_SRC,
-                 exaWaitSync);
+                 &exaWaitSync);
 }
 
 /**
@@ -288,8 +293,8 @@ void exaCopyDirtyToFb(ExaMigrationPtr migrate)
 {
     PixmapPtr pPixmap = migrate.pPix;
 
-    ExaScreenPriv(pPixmap.drawable.pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     exaCopyDirty(migrate, &pExaPixmap.validFB, &pExaPixmap.validSys,
                  pExaScr.info.UploadToScreen, EXA_PREPARE_DEST, null);
@@ -315,8 +320,8 @@ private void exaDoMoveInPixmap(ExaMigrationPtr migrate)
     PixmapPtr pPixmap = migrate.pPix;
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     /* If we're VT-switched away, no touching card memory allowed. */
     if (pExaScr.swappedOut)
@@ -340,7 +345,7 @@ private void exaDoMoveInPixmap(ExaMigrationPtr migrate)
         pExaPixmap.area =
             exaOffscreenAlloc(pScreen, pExaPixmap.fb_size,
                               pExaScr.info.pixmapOffsetAlign, FALSE,
-                              exaPixmapSave, cast(void*) pPixmap);
+                              &exaPixmapSave, cast(void*) pPixmap);
         if (pExaPixmap.area == null)
             return;
 
@@ -353,12 +358,12 @@ private void exaDoMoveInPixmap(ExaMigrationPtr migrate)
     if (exaPixmapHasGpuCopy(pPixmap))
         return;
 
-    DBG_MIGRATE(("-> %p (0x%x) (%dx%d) (%c)\n", pPixmap,
-                 (ExaGetPixmapPriv(pPixmap).area ?
-                  ExaGetPixmapPriv(pPixmap).area.offset : 0),
-                 pPixmap.drawable.width,
-                 pPixmap.drawable.height,
-                 exaPixmapIsDirty(pPixmap) ? 'd' : 'c'));
+    // DBG_MIGRATE(("-> %p (0x%x) (%dx%d) (%c)\n", pPixmap,
+    //              (mixin(ExaGetPixmapPriv!("pPixmap")).area ?
+    //               mixin(ExaGetPixmapPriv!("pPixmap")).area.offset : 0),
+    //              pPixmap.drawable.width,
+    //              pPixmap.drawable.height,
+    //              exaPixmapIsDirty(pPixmap) ? 'd' : 'c'));
 
     pExaPixmap.use_gpu_copy = TRUE;
 
@@ -384,7 +389,7 @@ private void exaDoMoveOutPixmap(ExaMigrationPtr migrate)
 {
     PixmapPtr pPixmap = migrate.pPix;
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     if (!pExaPixmap.area || exaPixmapIsPinned(pPixmap))
         return;
@@ -393,12 +398,12 @@ private void exaDoMoveOutPixmap(ExaMigrationPtr migrate)
 
     if (exaPixmapHasGpuCopy(pPixmap)) {
 
-        DBG_MIGRATE(("<- %p (%p) (%dx%d) (%c)\n", pPixmap,
-                     cast(void*) (ExaGetPixmapPriv(pPixmap).area ?
-                               ExaGetPixmapPriv(pPixmap).area.offset : 0),
-                     pPixmap.drawable.width,
-                     pPixmap.drawable.height,
-                     exaPixmapIsDirty(pPixmap) ? 'd' : 'c'));
+        // DBG_MIGRATE(("<- %p (%p) (%dx%d) (%c)\n", pPixmap,
+        //              cast(void*) (mixin(ExaGetPixmapPriv!("pPixmap")).area ?
+        //                        mixin(ExaGetPixmapPriv!("pPixmap")).area.offset : 0),
+        //              pPixmap.drawable.width,
+        //              pPixmap.drawable.height,
+        //              exaPixmapIsDirty(pPixmap) ? 'd' : 'c'));
 
         pExaPixmap.use_gpu_copy = FALSE;
 
@@ -424,9 +429,9 @@ void exaMoveOutPixmap_classic(PixmapPtr pPixmap)
  */
 void exaPixmapSave(ScreenPtr pScreen, ExaOffscreenArea* area)
 {
-    PixmapPtr pPixmap = area.privData;
+    PixmapPtr pPixmap = cast(_Pixmap*)area.privData;
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     exaMoveOutPixmap(pPixmap);
 
@@ -446,16 +451,16 @@ private void exaMigrateTowardFb(ExaMigrationPtr migrate)
 {
     PixmapPtr pPixmap = migrate.pPix;
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     if (pExaPixmap.score == EXA_PIXMAP_SCORE_PINNED) {
-        DBG_MIGRATE(("UseScreen: not migrating pinned pixmap %p\n",
-                     cast(void*) pPixmap));
+        // DBG_MIGRATE(("UseScreen: not migrating pinned pixmap %p\n",
+        //              cast(void*) pPixmap));
         return;
     }
 
-    DBG_MIGRATE(("UseScreen %p score %d\n",
-                 cast(void*) pPixmap, pExaPixmap.score));
+    // DBG_MIGRATE(("UseScreen %p score %d\n",
+    //              cast(void*) pPixmap, pExaPixmap.score));
 
     if (pExaPixmap.score == EXA_PIXMAP_SCORE_INIT) {
         exaDoMoveInPixmap(migrate);
@@ -486,10 +491,10 @@ private void exaMigrateTowardSys(ExaMigrationPtr migrate)
 {
     PixmapPtr pPixmap = migrate.pPix;
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
 
-    DBG_MIGRATE(("UseMem: %p score %d\n", cast(void*) pPixmap,
-                 pExaPixmap.score));
+    // DBG_MIGRATE(("UseMem: %p score %d\n", cast(void*) pPixmap,
+    //              pExaPixmap.score));
 
     if (pExaPixmap.score == EXA_PIXMAP_SCORE_PINNED)
         return;
@@ -517,7 +522,7 @@ private void exaMigrateTowardSys(ExaMigrationPtr migrate)
  */
 private Bool exaAssertNotDirty(PixmapPtr pPixmap)
 {
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     CARD8* dst = void, src = void;
     RegionRec ValidReg = void;
     int dst_pitch = void, src_pitch = void, cpp = void, y = void, nbox = void, save_pitch = void;
@@ -551,10 +556,10 @@ private Bool exaAssertNotDirty(PixmapPtr pPixmap)
     while (nbox--) {
         int rowbytes = void;
 
-        pBox.x1 = max(pBox.x1, 0);
-        pBox.y1 = max(pBox.y1, 0);
-        pBox.x2 = min(pBox.x2, pPixmap.drawable.width);
-        pBox.y2 = min(pBox.y2, pPixmap.drawable.height);
+        pBox.x1 = cast(short)max(pBox.x1, 0);
+        pBox.y1 = cast(short)max(pBox.y1, 0);
+        pBox.x2 = cast(short)min(pBox.x2, pPixmap.drawable.width);
+        pBox.y2 = cast(short)min(pBox.y2, pPixmap.drawable.height);
 
         if (pBox.x1 >= pBox.x2 || pBox.y1 >= pBox.y2)
             continue;
@@ -595,7 +600,7 @@ void exaDoMigration_classic(ExaMigrationPtr pixmaps, int npixmaps, Bool can_acce
 {
     ScreenPtr pScreen = pixmaps[0].pPix.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     int i = void, j = void;
 
     /* If this debugging flag is set, check each pixmap for whether it is marked
@@ -619,9 +624,9 @@ void exaDoMigration_classic(ExaMigrationPtr pixmaps, int npixmaps, Bool can_acce
     for (i = 0; i < npixmaps; i++) {
         if (exaPixmapIsPinned(pixmaps[i].pPix) &&
             !exaPixmapHasGpuCopy(pixmaps[i].pPix)) {
-            EXA_FALLBACK(("Pixmap %p (%dx%d) pinned in sys\n", pixmaps[i].pPix,
-                          pixmaps[i].pPix.drawable.width,
-                          pixmaps[i].pPix.drawable.height));
+            // EXA_FALLBACK(("Pixmap %p (%dx%d) pinned in sys\n", pixmaps[i].pPix,
+            //               pixmaps[i].pPix.drawable.width,
+            //               pixmaps[i].pPix.drawable.height));
             can_accel = FALSE;
             break;
         }

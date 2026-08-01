@@ -1,4 +1,4 @@
-module exa_migration_mixed;
+module exa.exa_migration_mixed;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -31,13 +31,15 @@ import core.stdc.string;
 
 import exa.exa_priv;
 import include.exa_i;
+import exa.exa;
+import os.log;
 
 void exaCreateDriverPixmap_mixed(PixmapPtr pPixmap)
 {
     ScreenPtr pScreen = pPixmap.drawable.pScreen;
 
-    ExaScreenPriv(pScreen);
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaScreenPriv!("pScreen"));
+    mixin(ExaPixmapPriv!("pPixmap"));
     int w = pPixmap.drawable.width, h = pPixmap.drawable.height;
     int depth = pPixmap.drawable.depth, bpp = pPixmap.drawable.bitsPerPixel;
     int usage_hint = pPixmap.usage_hint;
@@ -97,13 +99,13 @@ void exaDoMigration_mixed(ExaMigrationPtr pixmaps, int npixmaps, Bool can_accel)
     for (i = 0; i < npixmaps; i++) {
         PixmapPtr pPixmap = pixmaps[i].pPix;
 
-        ExaPixmapPriv(pPixmap);
+        mixin(ExaPixmapPriv!("pPixmap"));
 
         if (!pExaPixmap.driverPriv)
             exaCreateDriverPixmap_mixed(pPixmap);
 
         if (pExaPixmap.pDamage && exaPixmapHasGpuCopy(pPixmap)) {
-            ExaScreenPriv(pPixmap.drawable.pScreen);
+            mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
 
             /* This pitch is needed for proper acceleration. For some reason
              * there are pixmaps without pDamage and a bad fb_pitch value.
@@ -139,9 +141,9 @@ void exaMoveInPixmap_mixed(PixmapPtr pPixmap)
 
 void exaDamageReport_mixed(DamagePtr pDamage, RegionPtr pRegion, void* closure)
 {
-    PixmapPtr pPixmap = closure;
+    PixmapPtr pPixmap = cast(_Pixmap*)closure;
 
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
 
     /* Move back results of software rendering on system memory copy of mixed driver
      * pixmap (see exaPrepareAccessReg_mixed).
@@ -150,7 +152,7 @@ void exaDamageReport_mixed(DamagePtr pDamage, RegionPtr pRegion, void* closure)
      * overhead on multiple subsequent software fallbacks.
      */
     if (!pExaPixmap.use_gpu_copy && exaPixmapHasGpuCopy(pPixmap)) {
-        ExaScreenPriv(pPixmap.drawable.pScreen);
+        mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
 
         if (pExaScr.deferred_mixed_pixmap &&
             pExaScr.deferred_mixed_pixmap != pPixmap)
@@ -166,7 +168,7 @@ void exaDamageReport_mixed(DamagePtr pDamage, RegionPtr pRegion, void* closure)
  */
 void exaPrepareAccessReg_mixed(PixmapPtr pPixmap, int index, RegionPtr pReg)
 {
-    ExaPixmapPriv(pPixmap);
+    mixin(ExaPixmapPriv!("pPixmap"));
     Bool has_gpu_copy = exaPixmapHasGpuCopy(pPixmap);
     Bool success = void;
 
@@ -201,7 +203,7 @@ void exaPrepareAccessReg_mixed(PixmapPtr pPixmap, int index, RegionPtr pReg)
 
         /* Do we need to allocate our system buffer? */
         if (!pExaPixmap.sys_ptr) {
-            pExaPixmap.sys_ptr = calloc(pExaPixmap.sys_pitch,
+            pExaPixmap.sys_ptr = cast(ubyte*)calloc(pExaPixmap.sys_pitch,
                                          pPixmap.drawable.height);
             if (!pExaPixmap.sys_ptr)
                 FatalError("EXA: malloc failed for size %d bytes\n",

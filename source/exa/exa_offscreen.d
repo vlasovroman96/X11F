@@ -1,4 +1,4 @@
-module exa_offscreen;
+module exa.exa_offscreen;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -36,6 +36,7 @@ import exa.exa_priv;
 import core.stdc.limits;
 import core.stdc.assert_;
 import core.stdc.stdlib;
+import exa.exa;
 
 static if (DEBUG_OFFSCREEN) {
 enum string DBG_OFFSCREEN(string a) = `ErrorF a = void;`;
@@ -43,10 +44,10 @@ enum string DBG_OFFSCREEN(string a) = `ErrorF a = void;`;
 //#define DBG_OFFSCREEN(a)
 }
 
-static if (DEBUG_OFFSCREEN) {
-private void ExaOffscreenValidate(ScreenPtr pScreen)
+// static if (DEBUG_OFFSCREEN) {
+void ExaOffscreenValidate(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     ExaOffscreenArea* prev = null, area = void;
 
     assert(pExaScr.info.offScreenAreas.base_offset ==
@@ -60,9 +61,9 @@ private void ExaOffscreenValidate(ScreenPtr pScreen)
     }
     assert(prev.base_offset + prev.size == pExaScr.info.memorySize);
 }
-} else {
-//#define ExaOffscreenValidate(s)
-}
+// } else {
+// //#define ExaOffscreenValidate(s)
+// }
 
 private ExaOffscreenArea* ExaOffscreenKickOut(ScreenPtr pScreen, ExaOffscreenArea* area)
 {
@@ -163,7 +164,7 @@ ExaOffscreenArea* exaOffscreenAlloc(ScreenPtr pScreen, int size, int align_, Boo
 {
     ExaOffscreenArea* area = void;
 
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     int real_size = 0, largest_avail = 0;
 
 static if (DEBUG_OFFSCREEN) {
@@ -178,15 +179,15 @@ static if (DEBUG_OFFSCREEN) {
         align_ = 1;
 
     if (!size) {
-        DBG_OFFSCREEN(("Alloc 0x%x -> EMPTY\n", size));
+        // DBG_OFFSCREEN(("Alloc 0x%x -> EMPTY\n", size));
         return null;
     }
 
     /* throw out requests that cannot fit */
     if (size > (pExaScr.info.memorySize - pExaScr.info.offScreenBase)) {
-        DBG_OFFSCREEN(("Alloc 0x%x vs (0x%lx) -> TOBIG\n", size,
-                       pExaScr.info.memorySize -
-                       pExaScr.info.offScreenBase));
+        // DBG_OFFSCREEN(("Alloc 0x%x vs (0x%lx) -> TOBIG\n", size,
+        //                pExaScr.info.memorySize -
+        //                pExaScr.info.offScreenBase));
         return null;
     }
 
@@ -211,7 +212,7 @@ static if (DEBUG_OFFSCREEN) {
         area = exaFindAreaToEvict(pExaScr, size, align_);
 
         if (!area) {
-            DBG_OFFSCREEN(("Alloc 0x%x -> NOSPACE\n", size));
+            // DBG_OFFSCREEN(("Alloc 0x%x -> NOSPACE\n", size));
             /* Could not allocate memory */
             ExaOffscreenValidate(pScreen);
             return null;
@@ -279,8 +280,8 @@ static if (DEBUG_OFFSCREEN) {
 
     ExaOffscreenValidate(pScreen);
 
-    DBG_OFFSCREEN(("Alloc 0x%x -> 0x%x (0x%x)\n", size,
-                   area.base_offset, area.offset));
+    // DBG_OFFSCREEN(("Alloc 0x%x -> 0x%x (0x%x)\n", size,
+                //    area.base_offset, area.offset));
     return area;
 }
 
@@ -289,7 +290,7 @@ static if (DEBUG_OFFSCREEN) {
  */
 void ExaOffscreenSwapOut(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     ExaOffscreenValidate(pScreen);
     /* loop until a single free area spans the space */
@@ -314,7 +315,7 @@ void ExaOffscreenSwapOut(ScreenPtr pScreen)
 /** Ejects all pixmaps managed by EXA. */
 private void ExaOffscreenEjectPixmaps(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     ExaOffscreenValidate(pScreen);
     /* loop until a single free area spans the space */
@@ -324,7 +325,7 @@ private void ExaOffscreenEjectPixmaps(ScreenPtr pScreen)
         for (area = pExaScr.info.offScreenAreas; area != null;
              area = area.next) {
             if (area.state == ExaOffscreenRemovable &&
-                area.save == exaPixmapSave) {
+                area.save == &exaPixmapSave) {
                 cast(void) ExaOffscreenKickOut(pScreen, area);
                 ExaOffscreenValidate(pScreen);
                 break;
@@ -358,7 +359,7 @@ void ExaOffscreenSwapIn(ScreenPtr pScreen)
  */
 void exaEnableDisableFBAccess(ScreenPtr pScreen, Bool enable)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     if (pExaScr.info.flags & EXA_HANDLES_PIXMAPS)
         return;
@@ -411,12 +412,12 @@ private void ExaOffscreenMerge(ExaScreenPrivPtr pExaScr, ExaOffscreenArea* area)
  */
 ExaOffscreenArea* exaOffscreenFree(ScreenPtr pScreen, ExaOffscreenArea* area)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     ExaOffscreenArea* next = area.next;
     ExaOffscreenArea* prev = void;
 
-    DBG_OFFSCREEN(("Free 0x%x -> 0x%x (0x%x)\n", area.size,
-                   area.base_offset, area.offset));
+    // DBG_OFFSCREEN(("Free 0x%x -> 0x%x (0x%x)\n", area.size,
+    //                area.base_offset, area.offset));
     ExaOffscreenValidate(pScreen);
 
     area.state = ExaOffscreenAvail;
@@ -444,14 +445,14 @@ ExaOffscreenArea* exaOffscreenFree(ScreenPtr pScreen, ExaOffscreenArea* area)
     }
 
     ExaOffscreenValidate(pScreen);
-    DBG_OFFSCREEN(("\tdone freeing\n"));
+    // DBG_OFFSCREEN(("\tdone freeing\n"));
     return area;
 }
 
 void ExaOffscreenMarkUsed(PixmapPtr pPixmap)
 {
-    ExaPixmapPriv(pPixmap);
-    ExaScreenPriv(pPixmap.drawable.pScreen);
+    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaScreenPriv!("pPixmap.drawable.pScreen"));
 
     if (!pExaPixmap || !pExaPixmap.area)
         return;
@@ -466,7 +467,7 @@ void ExaOffscreenMarkUsed(PixmapPtr pPixmap)
  */
 ExaOffscreenArea* ExaOffscreenDefragment(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     ExaOffscreenArea* area = void, largest_available = null;
     int largest_size = 0;
     PixmapPtr pDstPix = void;
@@ -477,7 +478,7 @@ ExaOffscreenArea* ExaOffscreenDefragment(ScreenPtr pScreen)
     if (!pDstPix)
         return null;
 
-    pExaDstPix = ExaGetPixmapPriv(pDstPix);
+    pExaDstPix = mixin(ExaGetPixmapPriv!("pDstPix"));
     pExaDstPix.use_gpu_copy = TRUE;
 
     for (area = pExaScr.info.offScreenAreas.prev;
@@ -491,7 +492,7 @@ ExaOffscreenArea* ExaOffscreenDefragment(ScreenPtr pScreen)
         if (area.state != ExaOffscreenAvail ||
             prev.state == ExaOffscreenLocked ||
             (prev.state == ExaOffscreenRemovable &&
-             prev.save != exaPixmapSave)) {
+             prev.save != &exaPixmapSave)) {
             area = prev;
             continue;
         }
@@ -511,8 +512,8 @@ ExaOffscreenArea* ExaOffscreenDefragment(ScreenPtr pScreen)
             largest_size = area.size;
         }
 
-        pSrcPix = prev.privData;
-        pExaSrcPix = ExaGetPixmapPriv(pSrcPix);
+        pSrcPix = cast(_Pixmap*)prev.privData;
+        pExaSrcPix = mixin(ExaGetPixmapPriv!("pSrcPix"));
 
         pExaDstPix.fb_ptr = pExaScr.info.memoryBase +
             area.base_offset + area.size - prev.size + prev.base_offset -
@@ -554,7 +555,7 @@ ExaOffscreenArea* ExaOffscreenDefragment(ScreenPtr pScreen)
         pExaScr.info.DoneCopy(pDstPix);
         exaMarkSync(pScreen);
 
-        DBG_OFFSCREEN(("Before swap: prev=0x%08x-0x%08x-0x%08x area=0x%08x-0x%08x-0x%08x\n", prev.base_offset, prev.offset, prev.base_offset + prev.size, area.base_offset, area.offset, area.base_offset + area.size));
+        // DBG_OFFSCREEN(("Before swap: prev=0x%08x-0x%08x-0x%08x area=0x%08x-0x%08x-0x%08x\n", prev.base_offset, prev.offset, prev.base_offset + prev.size, area.base_offset, area.offset, area.base_offset + area.size));
 
         /* Calculate swapped area offsets and sizes */
         area.base_offset = prev.base_offset;
@@ -564,12 +565,12 @@ ExaOffscreenArea* ExaOffscreenDefragment(ScreenPtr pScreen)
         assert(prev.offset < pExaScr.info.memorySize);
         prev.base_offset = prev.offset;
         if (area.next)
-            prev.size = area.next.base_offset - prev.base_offset;
+            prev.size = cast(int)(area.next.base_offset - prev.base_offset);
         else
-            prev.size = pExaScr.info.memorySize - prev.base_offset;
+            prev.size = cast(int)(pExaScr.info.memorySize - prev.base_offset);
         area.size = prev.base_offset - area.base_offset;
 
-        DBG_OFFSCREEN(("After swap: area=0x%08x-0x%08x-0x%08x prev=0x%08x-0x%08x-0x%08x\n", area.base_offset, area.offset, area.base_offset + area.size, prev.base_offset, prev.offset, prev.base_offset + prev.size));
+        // DBG_OFFSCREEN(("After swap: area=0x%08x-0x%08x-0x%08x prev=0x%08x-0x%08x-0x%08x\n", area.base_offset, area.offset, area.base_offset + area.size, prev.base_offset, prev.offset, prev.base_offset + prev.size));
 
         /* Swap areas in list */
         if (area.next)
@@ -623,7 +624,7 @@ static if (DEBUG_OFFSCREEN) {
  */
 Bool exaOffscreenInit(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
 
     /* Allocate a big free area */
     ExaOffscreenArea* area = cast(ExaOffscreenArea*) cast(ExaOffscreenArea*) calloc(1, ExaOffscreenArea.sizeof);
@@ -631,10 +632,10 @@ Bool exaOffscreenInit(ScreenPtr pScreen)
         return FALSE;
 
     area.state = ExaOffscreenAvail;
-    area.base_offset = pExaScr.info.offScreenBase;
+    area.base_offset = cast(int)pExaScr.info.offScreenBase;
     area.offset = area.base_offset;
     area.align_ = 0;
-    area.size = pExaScr.info.memorySize - area.base_offset;
+    area.size = cast(int)(pExaScr.info.memorySize - area.base_offset);
     area.save = null;
     area.next = null;
     area.prev = area;
@@ -653,11 +654,11 @@ Bool exaOffscreenInit(ScreenPtr pScreen)
 
 void ExaOffscreenFini(ScreenPtr pScreen)
 {
-    ExaScreenPriv(pScreen);
+    mixin(ExaScreenPriv!("pScreen"));
     ExaOffscreenArea* area = void;
 
     /* just free all of the area records */
-    while ((area = pExaScr.info.offScreenAreas)) {
+    while ((area = pExaScr.info.offScreenAreas) != null) {
         pExaScr.info.offScreenAreas = area.next;
         free(area);
     }

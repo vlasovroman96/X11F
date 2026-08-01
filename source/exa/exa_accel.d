@@ -36,6 +36,7 @@ import exa.exa_priv;
 // //import externs.X11.fonts.fontstruct;
 import include.dixfontstr;
 import include.exa_i;
+import exa.exa;
 
 private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr ppt, int* pwidth, int fSorted)
 {
@@ -45,7 +46,7 @@ private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr p
     RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     BoxPtr pextent = void, pbox = void;
     int nbox = void;
     int extentX1 = void, extentX2 = void, extentY1 = void, extentY2 = void;
@@ -753,7 +754,7 @@ private void exaPolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nrect, xRecta
     RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     BoxPtr pbox = void;
     BoxPtr pextent = void;
     int extentX1 = void, extentX2 = void, extentY1 = void, extentY2 = void;
@@ -963,7 +964,7 @@ private Bool exaFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, Pixel 
     mixin(ExaScreenPriv!("pDrawable.pScreen"));
     PixmapPtr pPixmap = exaGetDrawablePixmap(pDrawable);
 
-    mixin(ExaPixmapPriv!("pPixmap"));
+    mixin(ExaPixmapPriv!("pPixmap"));;
     int xoff = void, yoff = void;
     Bool ret = FALSE;
 

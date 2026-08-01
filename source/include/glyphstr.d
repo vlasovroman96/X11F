@@ -33,6 +33,7 @@ import externs.X11.extensions.renderproto;
 // alias xGlyphInfo = XGlyphInfo;
 public import include.picture;
 public import include.screenint;
+public import render.glyph;
 
 enum GlyphFormat1 =	0;
 enum GlyphFormat4 =	1;
@@ -60,7 +61,7 @@ struct _GlyphList {
 alias GlyphListPtr = _GlyphList*;
 
 enum GLYPH_HAS_GLYPH_PICTURE_ACCESSOR = 1 /* used for api compat */;
-extern void GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen);
+// extern void GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen);
 extern void SetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen, PicturePtr picture);
 
                           /* _GLYPHSTR_H_ */
