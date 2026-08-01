@@ -82,7 +82,7 @@ private void picture_window_destructor(CallbackListPtr* pcbl, ScreenPtr pScreen,
 
 private void PictureScreenClose(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     int n = void;
 
     PictureResetFilters(pScreen);
@@ -99,7 +99,7 @@ private void PictureScreenClose(CallbackListPtr* pcbl, ScreenPtr pScreen, void* 
 private void PictureStoreColors(ColormapPtr pColormap, int ndef, xColorItem* pdef)
 {
     ScreenPtr pScreen = pColormap.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     pScreen.StoreColors = ps.StoreColors;
     (*pScreen.StoreColors) (pColormap, ndef, pdef);
@@ -1002,7 +1002,7 @@ enum string NEXT_PTR(string _type) = `(cast(_type) ulist++.ptr)`;
 int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, ClientPtr client)
 {
     ScreenPtr pScreen = pPicture.pDrawable ? pPicture.pDrawable.pScreen : 0;
-    PictureScreenPtr ps = pScreen ? GetPictureScreen(pScreen) : 0;
+    PictureScreenPtr ps = pScreen ? mixin(GetPictureScreen!("pScreen")) : 0;
     BITS32 index2 = void;
     int error = 0;
     BITS32 maskQ = void;
@@ -1213,7 +1213,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
 int SetPictureClipRects(PicturePtr pPicture, int xOrigin, int yOrigin, int nRect, xRectangle* rects)
 {
     ScreenPtr pScreen = pPicture.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     RegionPtr clientClip = void;
     int result = void;
 
@@ -1234,7 +1234,7 @@ int SetPictureClipRects(PicturePtr pPicture, int xOrigin, int yOrigin, int nRect
 int SetPictureClipRegion(PicturePtr pPicture, int xOrigin, int yOrigin, RegionPtr pRegion)
 {
     ScreenPtr pScreen = pPicture.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     RegionPtr clientClip = void;
     int result = void;
     int type = void;
@@ -1344,7 +1344,7 @@ int FreePicture(void* value, XID pid)
 
         if (pPicture.pDrawable) {
             ScreenPtr pScreen = pPicture.pDrawable.pScreen;
-            PictureScreenPtr ps = GetPictureScreen(pScreen);
+            PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
             if (pPicture.alphaMap)
                 FreePicture(cast(void*) pPicture.alphaMap, cast(XID) 0);

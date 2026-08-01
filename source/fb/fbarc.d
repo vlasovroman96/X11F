@@ -101,7 +101,7 @@ version (FB_ACCESS_WRAPPER) {
                     else {
 version (FB_ACCESS_WRAPPER) {
                         if (wrapped) {
-                            fbFinishAccess(pDrawable);
+                            mixin(fbFinishAccess!("pDrawable"));
                             wrapped = 0;
                         }
 }
@@ -111,7 +111,7 @@ version (FB_ACCESS_WRAPPER) {
                 else {
 version (FB_ACCESS_WRAPPER) {
                     if (wrapped) {
-                        fbFinishAccess(pDrawable);
+                        mixin(fbFinishAccess!("pDrawable"));
                         wrapped = 0;
                     }
 }
@@ -121,7 +121,7 @@ version (FB_ACCESS_WRAPPER) {
             }
 version (FB_ACCESS_WRAPPER) {
             if (wrapped) {
-                fbFinishAccess(pDrawable);
+                mixin(fbFinishAccess!("pDrawable"));
                 wrapped = 0;
             }
 }

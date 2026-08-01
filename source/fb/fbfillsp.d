@@ -26,10 +26,11 @@ extern(C): __gshared:
 import build.dix_config;
 
 import include.fb;
+import fb.fbfill;
 
 void fbFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr ppt, int* pwidth, int fSorted)
 {
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     BoxPtr pextent = void, pbox = void;
     int nbox = void;
     int extentX1 = void, extentX2 = void, extentY1 = void, extentY2 = void;

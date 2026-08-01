@@ -1,4 +1,4 @@
-module fbfill;
+module fb.fbfill;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -26,6 +26,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import fb.fb_priv;
+import externs.attrs;
 
 private void fbStipple(FbBits* dst, FbStride dstStride, int dstX, int dstBpp, int width, int height, FbStip* stip, FbStride stipStride, int stipWidth, int stipHeight, FbBits fgand, FbBits fgxor, FbBits bgand, FbBits bgxor, int xRot, int yRot)
 {
@@ -69,18 +70,18 @@ void fbFill(DrawablePtr pDrawable, GCPtr pGC, int x, int y, int width, int heigh
     FbStride dstStride = void;
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     switch (pGC.fillStyle) {
     case FillSolid:
-version (FB_ACCESS_WRAPPER) {
+// version (FB_ACCESS_WRAPPER) {
                 fbSolid(dst + (y + dstYoff) * dstStride,
                     dstStride,
                     (x + dstXoff) * dstBpp,
                     dstBpp, width * dstBpp, height, pPriv.and, pPriv.xor);
-} else {
+// } else {
         if (pPriv.and || !assumeNoGC(&pixman_fill)(cast(uint*) dst, dstStride, dstBpp,
                                        x + dstXoff, y + dstYoff,
                                        width, height, pPriv.xor))
@@ -88,7 +89,7 @@ version (FB_ACCESS_WRAPPER) {
                     dstStride,
                     (x + dstXoff) * dstBpp,
                     dstBpp, width * dstBpp, height, pPriv.and, pPriv.xor);
-}
+// }
         break;
     case FillStippled:
     case FillOpaqueStippled:{
@@ -104,16 +105,16 @@ version (FB_ACCESS_WRAPPER) {
             int stipXoff = void, stipYoff = void;
 
             if (pGC.fillStyle == FillStippled)
-                alu = FbStipple1Rop(pGC.alu, pGC.fgPixel);
+                alu = mixin(FbStipple1Rop!("pGC.alu", "pGC.fgPixel"));
             else
-                alu = FbOpaqueStipple1Rop(pGC.alu, pGC.fgPixel, pGC.bgPixel);
-            fbGetDrawable(&pStip.drawable, stip, stipStride, stipBpp, stipXoff,
-                          stipYoff);
+                alu = mixin(FbOpaqueStipple1Rop!("pGC.alu", "pGC.fgPixel", "pGC.bgPixel"));
+            mixin(fbGetDrawable!("(&pStip.drawable)", "stip", "stipStride", "stipBpp", "stipXoff",
+                          "stipYoff"));
             fbTile(dst + (y + dstYoff) * dstStride, dstStride, x + dstXoff,
                    width, height, stip, stipStride, stipWidth, stipHeight, alu,
                    pPriv.pm, dstBpp, (pGC.patOrg.x + pDrawable.x + dstXoff),
                    pGC.patOrg.y + pDrawable.y - y);
-            fbFinishAccess(&pStip.drawable);
+            mixin(fbFinishAccess!("&pStip.drawable"));
         }
         else {
             FbStip* stip = void;
@@ -125,23 +126,23 @@ version (FB_ACCESS_WRAPPER) {
             fgand = pPriv.and;
             fgxor = pPriv.xor;
             if (pGC.fillStyle == FillStippled) {
-                bgand = fbAnd(GXnoop, cast(FbBits) 0, FB_ALLONES);
-                bgxor = fbXor(GXnoop, cast(FbBits) 0, FB_ALLONES);
+                bgand = mixin(fbAnd!("GXnoop", "cast(FbBits) 0", "FB_ALLONES"));
+                bgxor = mixin(fbXor!("GXnoop", "cast(FbBits) 0", "FB_ALLONES"));
             }
             else {
                 bgand = pPriv.bgand;
                 bgxor = pPriv.bgxor;
             }
 
-            fbGetStipDrawable(&pStip.drawable, stip, stipStride, stipBpp,
-                              stipXoff, stipYoff);
+            mixin(fbGetStipDrawable!("(&pStip.drawable)", "stip", "stipStride", "stipBpp",
+                              "stipXoff", "stipYoff"));
             fbStipple(dst + (y + dstYoff) * dstStride, dstStride,
                       (x + dstXoff) * dstBpp, dstBpp, width * dstBpp, height,
                       stip, stipStride, stipWidth, stipHeight,
                       fgand, fgxor, bgand, bgxor,
                       pGC.patOrg.x + pDrawable.x + dstXoff,
                       pGC.patOrg.y + pDrawable.y - y);
-            fbFinishAccess(&pStip.drawable);
+            mixin(fbFinishAccess!("&pStip.drawable"));
         }
         break;
     }
@@ -154,8 +155,8 @@ version (FB_ACCESS_WRAPPER) {
         int tileHeight = void;
         int tileXoff = void, tileYoff = void;
 
-        fbGetDrawable(&pTile.drawable, tile, tileStride, tileBpp, tileXoff,
-                      tileYoff);
+        mixin(fbGetDrawable!("(&pTile.drawable)", "tile", "tileStride", "tileBpp", "tileXoff",
+                      "tileYoff"));
         tileWidth = pTile.drawable.width;
         tileHeight = pTile.drawable.height;
         fbTile(dst + (y + dstYoff) * dstStride,
@@ -171,12 +172,13 @@ version (FB_ACCESS_WRAPPER) {
                dstBpp,
                (pGC.patOrg.x + pDrawable.x + dstXoff) * dstBpp,
                pGC.patOrg.y + pDrawable.y - y);
-        fbFinishAccess(&pTile.drawable);
+        mixin(fbFinishAccess!("&pTile.drawable"));
         break;
-    }}
+    }
     default: break;
+    }
     fbValidateDrawable(pDrawable);
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 
 void fbSolidBoxClipped(DrawablePtr pDrawable, RegionPtr pClip, int x1, int y1, int x2, int y2, FbBits and, FbBits xor)
@@ -189,7 +191,7 @@ void fbSolidBoxClipped(DrawablePtr pDrawable, RegionPtr pClip, int x1, int y1, i
     int nbox = void;
     int partX1 = void, partX2 = void, partY1 = void, partY2 = void;
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     for (nbox = RegionNumRects(pClip), pbox = RegionRects(pClip);
          nbox--; pbox++) {
@@ -231,6 +233,6 @@ version (FB_ACCESS_WRAPPER) {
                     dstBpp,
                     (partX2 - partX1) * dstBpp, (partY2 - partY1), and, xor);
     }
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 }

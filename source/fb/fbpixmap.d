@@ -321,7 +321,7 @@ void fbValidateDrawable(DrawablePtr pDrawable)
     if (!fbValidateBits(first, stride, FB_HEAD_BITS) ||
         !fbValidateBits(last, stride, FB_TAIL_BITS))
         fbInitializeDrawable(pDrawable);
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 
 void fbSetBits(FbStip* bits, int stride, FbStip data)
@@ -341,6 +341,6 @@ void fbInitializeDrawable(DrawablePtr pDrawable)
     last = bits + stride * pDrawable.height;
     fbSetBits(first, stride, FB_HEAD_BITS);
     fbSetBits(last, stride, FB_TAIL_BITS);
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 }                          /* FB_DEBUG */

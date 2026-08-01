@@ -29,10 +29,11 @@ import build.dix_config;
 import core.stdc.string;
 
 import fb.fb_priv;
+import fb.fbutil;
 
 void fbPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, int w, int h, int leftPad, int format, char* pImage)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     c_ulong i = void;
     FbStride srcStride = void;
     FbStip* src = cast(FbStip*) pImage;
@@ -42,23 +43,23 @@ void fbPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, int w
 
     switch (format) {
     case XYBitmap:
-        srcStride = mixin(BitmapBytePad!("w + leftPad")) / FbStip.sizeof;
+        srcStride = cast(int)(mixin(BitmapBytePad!("w + leftPad")) / FbStip.sizeof);
         fbPutXYImage(pDrawable,
-                     fbGetCompositeClip(pGC),
+                     mixin(fbGetCompositeClip!("pGC")),
                      pPriv.fg,
                      pPriv.bg,
                      pPriv.pm,
                      pGC.alu, TRUE, x, y, w, h, src, srcStride, leftPad);
         break;
     case XYPixmap:
-        srcStride = mixin(BitmapBytePad!("w + leftPad")) / FbStip.sizeof;
+        srcStride = cast(int)(mixin(BitmapBytePad!("w + leftPad")) / FbStip.sizeof);
         for (i = cast(c_ulong) 1 << (pDrawable.depth - 1); i; i >>= 1) {
             if (i & pGC.planemask) {
                 fbPutXYImage(pDrawable,
-                             fbGetCompositeClip(pGC),
+                             mixin(fbGetCompositeClip!("pGC")),
                              FB_ALLONES,
                              0,
-                             fbReplicatePixel(i, pDrawable.bitsPerPixel),
+                             fbReplicatePixel(cast(uint)i, pDrawable.bitsPerPixel),
                              pGC.alu,
                              TRUE, x, y, w, h, src, srcStride, leftPad);
             }
@@ -66,9 +67,10 @@ void fbPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y, int w
         }
         break;
     case ZPixmap:
-        srcStride = PixmapBytePad(w, pDrawable.depth) / FbStip.sizeof;
-        fbPutZImage(pDrawable, fbGetCompositeClip(pGC),
+        srcStride = cast(int)(PixmapBytePad(w, pDrawable.depth) / FbStip.sizeof);
+        fbPutZImage(pDrawable, mixin(fbGetCompositeClip!("pGC")),
                     pGC.alu, pPriv.pm, x, y, w, h, src, srcStride);
+                    goto default;
     default: break;}
 }
 
@@ -82,7 +84,7 @@ void fbPutZImage(DrawablePtr pDrawable, RegionPtr pClip, int alu, FbBits pm, int
     BoxPtr pbox = void;
     int x1 = void, y1 = void, x2 = void, y2 = void;
 
-    fbGetStipDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetStipDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     for (nbox = RegionNumRects(pClip),
          pbox = RegionRects(pClip); nbox--; pbox++) {
@@ -109,7 +111,7 @@ void fbPutZImage(DrawablePtr pDrawable, RegionPtr pClip, int alu, FbBits pm, int
                   (x2 - x1) * dstBpp, (y2 - y1), alu, pm, dstBpp);
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 
 void fbPutXYImage(DrawablePtr pDrawable, RegionPtr pClip, FbBits fg, FbBits bg, FbBits pm, int alu, Bool opaque, int x, int y, int width, int height, FbStip* src, FbStride srcStride, int srcX)
@@ -123,24 +125,24 @@ void fbPutXYImage(DrawablePtr pDrawable, RegionPtr pClip, FbBits fg, FbBits bg, 
     int x1 = void, y1 = void, x2 = void, y2 = void;
     FbBits fgand = 0, fgxor = 0, bgand = 0, bgxor = 0;
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     if (dstBpp == 1) {
         if (opaque)
-            alu = FbOpaqueStipple1Rop(alu, fg, bg);
+            alu = mixin(FbOpaqueStipple1Rop!("alu", "fg", "bg"));
         else
-            alu = FbStipple1Rop(alu, fg);
+            alu = mixin(FbStipple1Rop!("alu", "fg"));
     }
     else {
-        fgand = fbAnd(alu, fg, pm);
-        fgxor = fbXor(alu, fg, pm);
+        fgand = mixin(fbAnd!("alu", "fg", "pm"));
+        fgxor = mixin(fbXor!("alu", "fg", "pm"));
         if (opaque) {
-            bgand = fbAnd(alu, bg, pm);
-            bgxor = fbXor(alu, bg, pm);
+            bgand = mixin(fbAnd!("alu", "bg", "pm"));
+            bgxor = mixin(fbXor!("alu", "bg", "pm"));
         }
         else {
-            bgand = fbAnd(GXnoop, cast(FbBits) 0, FB_ALLONES);
-            bgxor = fbXor(GXnoop, cast(FbBits) 0, FB_ALLONES);
+            bgand = mixin(fbAnd!("GXnoop", "cast(FbBits) 0", "FB_ALLONES"));
+            bgxor = mixin(fbXor!("GXnoop", "cast(FbBits) 0", "FB_ALLONES"));
         }
     }
 
@@ -165,7 +167,7 @@ void fbPutXYImage(DrawablePtr pDrawable, RegionPtr pClip, FbBits fg, FbBits bg, 
                       srcStride,
                       (x1 - x) + srcX,
                       cast(FbStip*) (dst + (y1 + dstYoff) * dstStride),
-                      FbBitsStrideToStipStride(dstStride),
+                      mixin(FbBitsStrideToStipStride!("dstStride")),
                       (x1 + dstXoff) * dstBpp,
                       (x2 - x1) * dstBpp, (y2 - y1), alu, pm, dstBpp);
         }
@@ -181,7 +183,7 @@ void fbPutXYImage(DrawablePtr pDrawable, RegionPtr pClip, FbBits fg, FbBits bg, 
         }
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 
 void fbGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, c_ulong planeMask, char* d)
@@ -197,10 +199,10 @@ void fbGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, 
      * XFree86 DDX empties the root borderClip when the VT is
      * switched away; this checks for that case
      */
-    if (!fbDrawableEnabled(pDrawable))
+    if (!mixin(fbDrawableEnabled!("pDrawable")))
         return;
 
-    fbGetDrawable(pDrawable, src, srcStride, srcBpp, srcXoff, srcYoff);
+    mixin(fbGetDrawable!("pDrawable", "src", "srcStride", "srcBpp", "srcXoff", "srcYoff"));
 
     x += pDrawable.x;
     y += pDrawable.y;
@@ -209,11 +211,11 @@ void fbGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, 
     if (format == ZPixmap || srcBpp == 1) {
         FbBits pm = void;
 
-        pm = fbReplicatePixel(planeMask, srcBpp);
+        pm = fbReplicatePixel(cast(uint)planeMask, srcBpp);
         dstStride = PixmapBytePad(w, pDrawable.depth);
         dstStride /= FbStip.sizeof;
         fbBltStip(cast(FbStip*) (src + (y + srcYoff) * srcStride),
-                  FbBitsStrideToStipStride(srcStride),
+                  mixin(FbBitsStrideToStipStride!("srcStride")),
                   (x + srcXoff) * srcBpp,
                   dst, dstStride, 0, w * srcBpp, h, GXcopy, FB_ALLONES, srcBpp);
 
@@ -223,7 +225,7 @@ void fbGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, 
         }
     }
     else {
-        dstStride = mixin(BitmapBytePad!"w") / FbStip.sizeof;
+        dstStride = cast(int)(mixin(BitmapBytePad!"w") / FbStip.sizeof);
         fbBltPlane(src + (y + srcYoff) * srcStride,
                    srcStride,
                    (x + srcXoff) * srcBpp,
@@ -232,11 +234,11 @@ void fbGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format, 
                    dstStride,
                    0,
                    w * srcBpp, h,
-                   fbAndStip(GXcopy, FB_STIP_ALLONES, FB_STIP_ALLONES),
-                   fbXorStip(GXcopy, FB_STIP_ALLONES, FB_STIP_ALLONES),
-                   fbAndStip(GXcopy, 0, FB_STIP_ALLONES),
-                   fbXorStip(GXcopy, 0, FB_STIP_ALLONES), planeMask);
+                   mixin(fbAndStip!("GXcopy", "FB_STIP_ALLONES", "FB_STIP_ALLONES")),
+                   mixin(fbXorStip!("GXcopy", "FB_STIP_ALLONES", "FB_STIP_ALLONES")),
+                   mixin(fbAndStip!("GXcopy", "0", "FB_STIP_ALLONES")),
+                   mixin(fbXorStip!("GXcopy", "0", "FB_STIP_ALLONES")), cast(uint)planeMask);
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }

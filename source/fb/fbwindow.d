@@ -1,4 +1,4 @@
-module fbwindow;
+module fb.fbwindow;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -32,7 +32,7 @@ import fb.fb_priv;
 
 Bool fbCreateWindow(WindowPtr pWin)
 {
-    dixSetPrivate(&pWin.devPrivates, fbGetWinPrivateKey(pWin),
+    dixSetPrivate(&pWin.devPrivates, mixin(fbGetWinPrivateKey!("pWin")),
                   fbGetScreenPixmap(pWin.drawable.pScreen));
     return TRUE;
 }
@@ -151,7 +151,7 @@ version (FB_ACCESS_WRAPPER) {} else {
         try_mmx = 1;
 }
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     while (n--) {
 version (FB_ACCESS_WRAPPER) {} else {
@@ -174,5 +174,5 @@ version (FB_ACCESS_WRAPPER) {} else {}
         pbox++;
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }

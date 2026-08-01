@@ -38,7 +38,7 @@ private void fbDots(FbBits* dstOrig, FbStride dstStride, int dstBpp, BoxPtr pBox
     FbStip and = andOrig;
     FbStip xor = xorOrig;
 
-    dstStride = FbBitsStrideToStipStride(dstStride);
+    dstStride = mixin(FbBitsStrideToStipStride!("dstStride"));
     x1 = pBox.x1;
     y1 = pBox.y1;
     x2 = pBox.x2;
@@ -61,8 +61,8 @@ private void fbDots(FbBits* dstOrig, FbStride dstStride, int dstBpp, BoxPtr pBox
 
 void fbPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int nptInit, xPoint* pptInit)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     FbBits* dst = void;
     FbStride dstStride = void;
     int dstBpp = void;
@@ -85,7 +85,7 @@ void fbPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int nptInit, xPoint
             ppt.y += (ppt - 1).y;
         }
     }
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     and = pPriv.and;
     xor = pPriv.xor;
     dots = fbDots;
@@ -104,5 +104,5 @@ void fbPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int nptInit, xPoint
          nBox--; pBox++)
         (*dots) (dst, dstStride, dstBpp, pBox, pptInit, nptInit,
                  pDrawable.x, pDrawable.y, dstXoff, dstYoff, and, xor);
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }

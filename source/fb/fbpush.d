@@ -1,4 +1,4 @@
-module fbpush;
+module fb.fbpush;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -83,7 +83,7 @@ private void fbPushPattern(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStri
 
 private void fbPushFill(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride srcStride, int srcX, int x, int y, int width, int height)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
 
     if (pGC.fillStyle == FillSolid) {
         FbBits* dst = void;
@@ -93,7 +93,7 @@ private void fbPushFill(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride 
         int dstX = void;
         int dstWidth = void;
 
-        fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+        mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
         dst = dst + (y + dstYoff) * dstStride;
         dstX = (x + dstXoff) * dstBpp;
         dstWidth = width * dstBpp;
@@ -102,7 +102,7 @@ private void fbPushFill(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride 
                       srcStride,
                       srcX,
                       cast(FbStip*) dst,
-                      FbBitsStrideToStipStride(dstStride),
+                      mixin(FbBitsStrideToStipStride!("dstStride")),
                       dstX,
                       dstWidth,
                       height,
@@ -122,7 +122,7 @@ private void fbPushFill(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride 
                      fbAnd(GXnoop, cast(FbBits) 0, FB_ALLONES),
                      fbXor(GXnoop, cast(FbBits) 0, FB_ALLONES));
         }
-        fbFinishAccess(pDrawable);
+        mixin(fbFinishAccess!("pDrawable"));
     }
     else {
         fbPushPattern(pDrawable, pGC, src, srcStride, srcX,
@@ -132,7 +132,7 @@ private void fbPushFill(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride 
 
 void fbPushImage(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride srcStride, int srcX, int x, int y, int width, int height)
 {
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     int nbox = void;
     BoxPtr pbox = void;
     int x1 = void, y1 = void, x2 = void, y2 = void;

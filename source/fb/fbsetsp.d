@@ -30,8 +30,8 @@ import fb.fb_priv;
 
 void fbSetSpans(DrawablePtr pDrawable, GCPtr pGC, char* src, DDXPointPtr ppt, int* pwidth, int nspans, int fSorted)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     FbBits* dst = void, d = void, s = void;
     FbStride dstStride = void;
     int dstBpp = void;
@@ -41,7 +41,7 @@ void fbSetSpans(DrawablePtr pDrawable, GCPtr pGC, char* src, DDXPointPtr ppt, in
     int xoff = void;
     int x1 = void, x2 = void;
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     while (nspans--) {
         d = dst + (ppt.y + dstYoff) * dstStride;
         xoff = cast(int) ((cast(c_long) src) & (FB_MASK >> 3));
@@ -75,5 +75,5 @@ void fbSetSpans(DrawablePtr pDrawable, GCPtr pGC, char* src, DDXPointPtr ppt, in
         pwidth++;
     }
     fbValidateDrawable(pDrawable);
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }

@@ -87,59 +87,59 @@ void fbFixCoordModePrevious(int npt, DDXPointPtr ppt)
 
 void fbPolyLine(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ppt)
 {
-    void function(DrawablePtr, GCPtr, int mode, int npt, DDXPointPtr ppt) line = void;
+    extern(C) void function(DrawablePtr, GCPtr, int mode, int npt, DDXPointPtr ppt) @nogc nothrow line = void;
 
     if (pGC.lineWidth == 0) {
-        line = fbZeroLine;
+        line = &fbZeroLine;
         if (pGC.fillStyle == FillSolid &&
             pGC.lineStyle == LineSolid &&
-            RegionNumRects(fbGetCompositeClip(pGC)) == 1) {
+            RegionNumRects(mixin(fbGetCompositeClip!("pGC"))) == 1) {
             switch (pDrawable.bitsPerPixel) {
             case 8:
-                line = fbPolyline8;
+                line = &fbPolyline8;
                 break;
             case 16:
-                line = fbPolyline16;
+                line = &fbPolyline16;
                 break;
             case 32:
-                line = fbPolyline32;
+                line = &fbPolyline32;
                 break;
             default: break;}
         }
     }
     else {
         if (pGC.lineStyle != LineSolid)
-            line = miWideDash;
+            line = &miWideDash;
         else
-            line = miWideLine;
+            line = &miWideLine;
     }
     (*line) (pDrawable, pGC, mode, npt, ppt);
 }
 
 void fbPolySegment(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg)
 {
-    void function(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg) seg = void;
+    extern(C) void function(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg) @nogc nothrow seg = void;
 
     if (pGC.lineWidth == 0) {
-        seg = fbZeroSegment;
+        seg = &fbZeroSegment;
         if (pGC.fillStyle == FillSolid &&
             pGC.lineStyle == LineSolid &&
-            RegionNumRects(fbGetCompositeClip(pGC)) == 1) {
+            RegionNumRects(mixin(fbGetCompositeClip!("pGC"))) == 1) {
             switch (pDrawable.bitsPerPixel) {
             case 8:
-                seg = fbPolySegment8;
+                seg = &fbPolySegment8;
                 break;
             case 16:
-                seg = fbPolySegment16;
+                seg = &fbPolySegment16;
                 break;
             case 32:
-                seg = fbPolySegment32;
+                seg = &fbPolySegment32;
                 break;
             default: break;}
         }
     }
     else {
-        seg = miPolySegment;
+        seg = &miPolySegment;
     }
     (*seg) (pDrawable, pGC, nseg, pseg);
 }

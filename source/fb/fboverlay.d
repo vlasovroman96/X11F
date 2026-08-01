@@ -36,6 +36,9 @@ import mi.mi_priv;
 
 import include.fb;
 import include.fboverlay;
+import fb.fballpriv;
+import fb.fbutil;
+import mi.miscrinit;
 
 private DevPrivateKeyRec fbOverlayScreenPrivateKeyRec;
 
@@ -52,7 +55,7 @@ DevPrivateKey fbOverlayGetScreenPrivateKey()
  */
 private Bool fbOverlayCreateWindow(WindowPtr pWin)
 {
-    FbOverlayScrPrivPtr pScrPriv = fbOverlayGetScrPriv(pWin.drawable.pScreen);
+    FbOverlayScrPrivPtr pScrPriv = mixin(fbOverlayGetScrPriv!("pWin.drawable.pScreen"));
     int i = void;
     PixmapPtr pPixmap = void;
 
@@ -62,7 +65,7 @@ private Bool fbOverlayCreateWindow(WindowPtr pWin)
     for (i = 0; i < pScrPriv.nlayers; i++) {
         pPixmap = pScrPriv.layer[i].u.run.pixmap;
         if (pWin.drawable.depth == pPixmap.drawable.depth) {
-            dixSetPrivate(&pWin.devPrivates, fbGetWinPrivateKey(pWin), pPixmap);
+            dixSetPrivate(&pWin.devPrivates, mixin(fbGetWinPrivateKey!("pWin")), pPixmap);
             /*
              * Make sure layer keys are written correctly by
              * having non-root layers set to full while the
@@ -81,7 +84,7 @@ private Bool fbOverlayCreateWindow(WindowPtr pWin)
 
 private Bool fbOverlayCloseScreen(ScreenPtr pScreen)
 {
-    FbOverlayScrPrivPtr pScrPriv = fbOverlayGetScrPriv(pScreen);
+    FbOverlayScrPrivPtr pScrPriv = mixin(fbOverlayGetScrPriv!("pScreen"));
     int i = void;
 
     for (i = 0; i < pScrPriv.nlayers; i++) {
@@ -96,11 +99,11 @@ private Bool fbOverlayCloseScreen(ScreenPtr pScreen)
  */
 private int fbOverlayWindowLayer(WindowPtr pWin)
 {
-    FbOverlayScrPrivPtr pScrPriv = fbOverlayGetScrPriv(pWin.drawable.pScreen);
+    FbOverlayScrPrivPtr pScrPriv = mixin(fbOverlayGetScrPriv!("pWin.drawable.pScreen"));
     int i = void;
 
     for (i = 0; i < pScrPriv.nlayers; i++)
-        if (dixLookupPrivate(&pWin.devPrivates, fbGetWinPrivateKey(pWin)) ==
+        if (dixLookupPrivate(&pWin.devPrivates, mixin(fbGetWinPrivateKey!("pWin"))) ==
             cast(void*) pScrPriv.layer[i].u.run.pixmap)
             return i;
     return 0;
@@ -109,7 +112,7 @@ private int fbOverlayWindowLayer(WindowPtr pWin)
 private Bool fbOverlayCreateScreenResources(ScreenPtr pScreen)
 {
     int i = void;
-    FbOverlayScrPrivPtr pScrPriv = fbOverlayGetScrPriv(pScreen);
+    FbOverlayScrPrivPtr pScrPriv = mixin(fbOverlayGetScrPriv!("pScreen"));
     PixmapPtr pPixmap = void;
     void* pbits = void;
     int width = void;
@@ -154,7 +157,7 @@ private void fbOverlayPaintKey(DrawablePtr pDrawable, RegionPtr pRegion, CARD32 
  */
 private void fbOverlayUpdateLayerRegion(ScreenPtr pScreen, int layer, RegionPtr prgn)
 {
-    FbOverlayScrPrivPtr pScrPriv = fbOverlayGetScrPriv(pScreen);
+    FbOverlayScrPrivPtr pScrPriv = mixin(fbOverlayGetScrPriv!("pScreen"));
     int i = void;
     RegionRec rgnNew = void;
 
@@ -186,7 +189,7 @@ private void fbOverlayUpdateLayerRegion(ScreenPtr pScreen, int layer, RegionPtr 
 private void fbOverlayCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
-    FbOverlayScrPrivPtr pScrPriv = fbOverlayGetScrPriv(pScreen);
+    FbOverlayScrPrivPtr pScrPriv = mixin(fbOverlayGetScrPriv!("pScreen"));
     RegionRec rgnDst = void;
     int dx = void, dy = void;
     int i = void;
@@ -215,7 +218,7 @@ private void fbOverlayCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgn
             RegionTranslate(&layerRgn[i], -dx, -dy);
             pPixmap = pScrPriv.layer[i].u.run.pixmap;
             miCopyRegion(&pPixmap.drawable, &pPixmap.drawable,
-                         0,
+                         null,
                          &layerRgn[i], dx, dy, pScrPriv.CopyWindow, 0,
                          cast(void*) cast(c_long) i);
         }
@@ -264,7 +267,7 @@ Bool fbOverlayFinishScreenInit(ScreenPtr pScreen, void* pbits1, void* pbits2, in
         free(pScrPriv);
         return FALSE;
     }
-    if (!miScreenInit(pScreen, 0, xsize, ysize, dpix, dpiy, 0,
+    if (!miScreenInit(pScreen, null, xsize, ysize, dpix, dpiy, 0,
                       depth1, ndepths, depths,
                       defaultVisual, nvisuals, visuals)) {
         free(pScrPriv);
@@ -278,8 +281,8 @@ version (CONFIG_MITSHM) {
     pScreen.maxInstalledCmaps = 2;
 
     pScrPriv.nlayers = 2;
-    pScrPriv.PaintKey = fbOverlayPaintKey;
-    pScrPriv.CopyWindow = fbCopyWindowProc;
+    pScrPriv.PaintKey = &fbOverlayPaintKey;
+    pScrPriv.CopyWindow = &fbCopyWindowProc;
     pScrPriv.layer[0].u.init.pbits = pbits1;
     pScrPriv.layer[0].u.init.width = width1;
     pScrPriv.layer[0].u.init.depth = depth1;
@@ -290,11 +293,11 @@ version (CONFIG_MITSHM) {
     dixSetPrivate(&pScreen.devPrivates, fbOverlayScreenPrivateKey, pScrPriv);
 
     /* overwrite miCloseScreen with our own */
-    pScreen.CloseScreen = fbOverlayCloseScreen;
-    pScreen.CreateScreenResources = fbOverlayCreateScreenResources;
-    pScreen.CreateWindow = fbOverlayCreateWindow;
-    pScreen.WindowExposures = fbOverlayWindowExposures;
-    pScreen.CopyWindow = fbOverlayCopyWindow;
+    pScreen.CloseScreen = &fbOverlayCloseScreen;
+    pScreen.CreateScreenResources = &fbOverlayCreateScreenResources;
+    pScreen.CreateWindow = &fbOverlayCreateWindow;
+    pScreen.WindowExposures = &fbOverlayWindowExposures;
+    pScreen.CopyWindow = &fbOverlayCopyWindow;
 
     return TRUE;
 }

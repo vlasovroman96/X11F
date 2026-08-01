@@ -62,8 +62,8 @@ private int __glXMakeBitmapFromGlyph(FontPtr font, CharInfoPtr pci)
 enum __GL_CHAR_BUF_SIZE = 2048;
     ubyte[__GL_CHAR_BUF_SIZE] buf = void;
 
-    w = GLYPHWIDTHPIXELS(pci);
-    h = GLYPHHEIGHTPIXELS(pci);
+    w = mixin(GLYPHWIDTHPIXELS!("pci"));
+    h = mixin(GLYPHHEIGHTPIXELS!("pci"));
     widthPadded = GLYPHWIDTHBYTESPADDED(pci);
 
     /*

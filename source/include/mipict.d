@@ -54,11 +54,11 @@ extern void  miCreatePicture(PicturePtr pPicture);
 
 extern void  miDestroyPicture(PicturePtr pPicture);
 
-extern void  miCompositeSourceValidate(PicturePtr pPicture);
+// extern void  miCompositeSourceValidate(PicturePtr pPicture);
 
 // extern void  miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
-extern void  miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats);
+// extern void  miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats);
 
 extern void  miRealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 

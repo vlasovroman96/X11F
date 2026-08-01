@@ -1117,8 +1117,8 @@ private void RootlessImageText8(DrawablePtr dst, GCPtr pGC, int x, int y, int co
         int top = void, bot = void, Min = void, Max = void;
         BoxRec box = void;
 
-        top = max(FONTMAXBOUNDS(pGC.font, ascent), FONTASCENT(pGC.font));
-        bot = max(FONTMAXBOUNDS(pGC.font, descent), FONTDESCENT(pGC.font));
+        top = max(FONTMAXBOUNDS(pGC.font, ascent), mixin(FONTASCENT!("pGC.font")));
+        bot = max(FONTMAXBOUNDS(pGC.font, descent), mixin(FONTDESCENT!("pGC.font")));
 
         Min = count * FONTMINBOUNDS(pGC.font, characterWidth);
         if (Min > 0)
@@ -1201,8 +1201,8 @@ private void RootlessImageText16(DrawablePtr dst, GCPtr pGC, int x, int y, int c
         int top = void, bot = void, Min = void, Max = void;
         BoxRec box = void;
 
-        top = max(FONTMAXBOUNDS(pGC.font, ascent), FONTASCENT(pGC.font));
-        bot = max(FONTMAXBOUNDS(pGC.font, descent), FONTDESCENT(pGC.font));
+        top = max(FONTMAXBOUNDS(pGC.font, ascent), mixin(FONTASCENT!("pGC.font")));
+        bot = max(FONTMAXBOUNDS(pGC.font, descent), mixin(FONTDESCENT!("pGC.font")));
 
         Min = count * FONTMINBOUNDS(pGC.font, characterWidth);
         if (Min > 0)
@@ -1287,8 +1287,8 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
         uint nglyph = nglyphInit;
         CharInfoPtr* ppci = ppciInit;
 
-        top = max(FONTMAXBOUNDS(pGC.font, ascent), FONTASCENT(pGC.font));
-        bot = max(FONTMAXBOUNDS(pGC.font, descent), FONTDESCENT(pGC.font));
+        top = max(FONTMAXBOUNDS(pGC.font, ascent), mixin(FONTASCENT!("pGC.font")));
+        bot = max(FONTMAXBOUNDS(pGC.font, descent), mixin(FONTDESCENT!("pGC.font")));
 
         box.x1 = ppci[0].metrics.leftSideBearing;
         if (box.x1 > 0)

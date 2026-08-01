@@ -139,9 +139,9 @@ void miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph,
     }
     while (nglyph--) {
         pci = *ppci++;
-        pglyph = FONTGLYPHBITS(pglyphBase, pci);
-        gWidth = GLYPHWIDTHPIXELS(pci);
-        gHeight = GLYPHHEIGHTPIXELS(pci);
+        pglyph = mixin(FONTGLYPHBITS!("pglyphBase", "pci"));
+        gWidth = mixin(GLYPHWIDTHPIXELS!("pci"));
+        gHeight = mixin(GLYPHHEIGHTPIXELS!("pci"));
         if (gWidth && gHeight) {
             nbyGlyphWidth = GLYPHWIDTHBYTESPADDED(pci);
             nbyPadGlyph = mixin(BitmapBytePad!("gWidth"));
@@ -202,8 +202,8 @@ void miImageGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph
         backrect.x = x + info.overallWidth;
         backrect.width = -info.overallWidth;
     }
-    backrect.y = y - FONTASCENT(pGC.font);
-    backrect.height = FONTASCENT(pGC.font) + FONTDESCENT(pGC.font);
+    backrect.y = y - mixin(FONTASCENT!("pGC.font"));
+    backrect.height = mixin(FONTASCENT!("pGC.font")) + mixin(FONTDESCENT!("pGC.font"));
 
     oldAlu = pGC.alu;
     oldFG = pGC.fgPixel;

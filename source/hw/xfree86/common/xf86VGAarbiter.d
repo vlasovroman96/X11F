@@ -847,7 +847,7 @@ private void VGAarbiterDeviceCursorCleanup(DeviceIntPtr pDev, ScreenPtr pScreen)
 private void VGAarbiterComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     PICTURE_PROLOGUE(Composite);
 
@@ -861,7 +861,7 @@ private void VGAarbiterComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pi
 private void VGAarbiterGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     PICTURE_PROLOGUE(Glyphs);
 
@@ -874,7 +874,7 @@ private void VGAarbiterGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFo
 private void VGAarbiterCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     PICTURE_PROLOGUE(CompositeRects);
 

@@ -164,7 +164,7 @@ private void PictureFreeFilterIds()
 
 int PictureAddFilter(ScreenPtr pScreen, const(char)* filter, PictFilterValidateParamsProcPtr ValidateParams, int width, int height)
 {
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     int id = PictureGetFilterId(filter, -1, TRUE);
     int i = void;
     PictFilterPtr filters = void;
@@ -196,7 +196,7 @@ int PictureAddFilter(ScreenPtr pScreen, const(char)* filter, PictFilterValidateP
 
 Bool PictureSetFilterAlias(ScreenPtr pScreen, const(char)* filter, const(char)* alias_)
 {
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     int filter_id = PictureGetFilterId(filter, -1, FALSE);
     int alias_id = PictureGetFilterId(alias_, -1, TRUE);
     int i = void;
@@ -228,7 +228,7 @@ Bool PictureSetFilterAlias(ScreenPtr pScreen, const(char)* filter, const(char)* 
 
 PictFilterPtr PictureFindFilter(ScreenPtr pScreen, char* name, int len)
 {
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     int id = PictureGetFilterId(name, len, FALSE);
     int i = void;
 
@@ -295,7 +295,7 @@ Bool PictureSetDefaultFilters(ScreenPtr pScreen)
 
 void PictureResetFilters(ScreenPtr pScreen)
 {
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     free(ps.filters);
     free(ps.filterAliases);
@@ -371,7 +371,7 @@ int SetPicturePictFilter(PicturePtr pPicture, PictFilterPtr pFilter, XFixed* par
     pPicture.filter = pFilter.id;
 
     if (pPicture.pDrawable) {
-        PictureScreenPtr ps = GetPictureScreen(pScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
         int result = void;
 
         result = (*ps.ChangePictureFilter) (pPicture, pPicture.filter,

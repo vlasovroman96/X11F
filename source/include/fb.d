@@ -46,6 +46,9 @@ public import migc;
 public import include.picturestr;
 import fb.fballpriv;
 import include.fb;
+public import fb.fbcmap_mi;
+public import fb.fbwindow;
+
 
 version (FB_ACCESS_WRAPPER) {
 
@@ -366,7 +369,7 @@ extern void fbDots8(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xP
 
 extern void fbArc8(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
 
-extern void fbGlyph8(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
+extern extern(C) void fbGlyph8(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
 
 extern void fbPolyline8(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
 
@@ -436,7 +439,7 @@ extern void fbSetVisualTypes(int depth, int visuals, int bitsPerRGB);
 
 extern void fbSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, Pixel redMask, Pixel greenMask, Pixel blueMask);
 
-extern void fbInitVisuals(VisualPtr* visualp, DepthPtr* depthp, int* nvisualp, int* ndepthp, int* rootDepthp, VisualID* defaultVisp, c_ulong sizes, int bitsPerRGB);
+// extern void fbInitVisuals(VisualPtr* visualp, DepthPtr* depthp, int* nvisualp, int* ndepthp, int* rootDepthp, VisualID* defaultVisp, c_ulong sizes, int bitsPerRGB);
 
 /*
  * fbcopy.c
@@ -541,7 +544,7 @@ extern void fbPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, xPo
  * fbpush.c
  */
 
-extern void fbPushImage(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride srcStride, int srcX, int x, int y, int width, int height);
+// extern void fbPushImage(DrawablePtr pDrawable, GCPtr pGC, FbStip* src, FbStride srcStride, int srcX, int x, int y, int width, int height);
 
 extern void fbPushPixels(GCPtr pGC, PixmapPtr pBitmap, DrawablePtr pDrawable, int dx, int dy, int xOrg, int yOrg);
 
@@ -639,7 +642,7 @@ extern int fbPositionWindow(WindowPtr pWin, int x, int y);
 
 extern int fbUnrealizeWindow(WindowPtr pWindow);
 
-extern int fbCopyWindowProc(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure);
+// extern int fbCopyWindowProc(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure);
 
 extern void fbCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc);
 

@@ -126,13 +126,13 @@ void BRESSOLID(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int
     FbStride dstStride = void;
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     UNIT* bits = void;
     FbStride bitsStride = void;
     FbStride majorStep = void, minorStep = void;
     BITS xor = cast(BITS) pPriv.xor;
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     bits =
         (cast(UNIT*) (dst + ((y1 + dstYoff) * dstStride))) + (x1 + dstXoff);
     bitsStride = dstStride * (FbBits.sizeof / UNIT.sizeof);
@@ -156,7 +156,7 @@ void BRESSOLID(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int
         }
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 }
 
@@ -167,7 +167,7 @@ void BRESDASH(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int 
     FbStride dstStride = void;
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     UNIT* bits = void;
     FbStride bitsStride = void;
     FbStride majorStep = void, minorStep = void;
@@ -178,7 +178,7 @@ void BRESDASH(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int 
     Bool even = void;
     Bool doOdd = void;
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     doOdd = pGC.lineStyle == LineDoubleDash;
     xorfg = cast(BITS) pPriv.xor;
     xorbg = cast(BITS) pPriv.bgxor;
@@ -278,7 +278,7 @@ void BRESDASH(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int 
         }
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 }
 
@@ -527,7 +527,7 @@ enum string WRITE4(string d,string n,string fg) = `WRITE(cast(BITS4*) &((` ~ d ~
 enum string WRITE4(string d,string n,string fg) = `(` ~ WRITE2!(d,n,fg) ~ `, ` ~ WRITE2!(d,`(` ~ n ~ `)+2`,fg) ~ `)`;
 }
 
-void GLYPH(FbBits* dstBits, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int x, int height)
+extern(C) void GLYPH(FbBits* dstBits, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int x, int height)
 {
     int lshift = void;
     FbStip bits = void;
@@ -620,7 +620,7 @@ void POLYLINE(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr p
     int xoff = pDrawable.x;
     int yoff = pDrawable.y;
     uint bias = miGetZeroLineBias(pDrawable.pScreen);
-    BoxPtr pBox = RegionExtents(fbGetCompositeClip(pGC));
+    BoxPtr pBox = RegionExtents(mixin(fbGetCompositeClip!("pGC")));
 
     FbBits* dst = void;
     int dstStride = void;
@@ -629,8 +629,8 @@ void POLYLINE(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr p
 
     UNIT* bits = void, bitsBase = void;
     FbStride bitsStride = void;
-    BITS xor = fbGetGCPrivate(pGC).xor;
-    BITS and = fbGetGCPrivate(pGC).and;
+    BITS xor = mixin(fbGetGCPrivate!("pGC")).xor;
+    BITS and = mixin(fbGetGCPrivate!("pGC")).and;
     int dashoffset = 0;
 
     INT32 ul = void, lr = void;
@@ -643,7 +643,7 @@ void POLYLINE(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr p
     if (mode == CoordModePrevious)
         fbFixCoordModePrevious(npt, ptsOrig);
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     bitsStride = dstStride * (FbBits.sizeof / UNIT.sizeof);
     bitsBase =
         (cast(UNIT*) dst) + (yoff + dstYoff) * bitsStride + (xoff + dstXoff);
@@ -661,7 +661,7 @@ void POLYLINE(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr p
                       intToX(pt2) + xoff, intToY(pt2) + yoff,
                       npt == 0 && pGC.capStyle != CapNotLast, &dashoffset);
             if (!npt) {
-                fbFinishAccess(pDrawable);
+                mixin(fbFinishAccess!("pDrawable"));
                 return;
             }
             pt1 = pt2;
@@ -716,7 +716,7 @@ void POLYLINE(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr p
                         pt2 != *(cast(INT32*) ptsOrig)) {
                         mixin(RROP!(`bits`, `and`, `xor`));
                     }
-                    fbFinishAccess(pDrawable);
+                    mixin(fbFinishAccess!("pDrawable"));
                     return;
                 }
                 pt1 = pt2;
@@ -728,7 +728,7 @@ void POLYLINE(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr p
         }
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 }
 
@@ -739,7 +739,7 @@ void POLYSEGMENT(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg)
     int xoff = pDrawable.x;
     int yoff = pDrawable.y;
     uint bias = miGetZeroLineBias(pDrawable.pScreen);
-    BoxPtr pBox = RegionExtents(fbGetCompositeClip(pGC));
+    BoxPtr pBox = RegionExtents(mixin(fbGetCompositeClip!("pGC")));
 
     FbBits* dst = void;
     int dstStride = void;
@@ -748,8 +748,8 @@ void POLYSEGMENT(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg)
 
     UNIT* bits = void, bitsBase = void;
     FbStride bitsStride = void;
-    FbBits xorBits = fbGetGCPrivate(pGC).xor;
-    FbBits andBits = fbGetGCPrivate(pGC).and;
+    FbBits xorBits = mixin(fbGetGCPrivate!("pGC")).xor;
+    FbBits andBits = mixin(fbGetGCPrivate!("pGC")).and;
     BITS xor = xorBits;
     BITS and = andBits;
     int dashoffset = 0;
@@ -762,7 +762,7 @@ void POLYSEGMENT(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg)
     int octant = void;
     Bool capNotLast = void;
 
-    fbGetDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     bitsStride = dstStride * (FbBits.sizeof / UNIT.sizeof);
     bitsBase =
         (cast(UNIT*) dst) + (yoff + dstYoff) * bitsStride + (xoff + dstXoff);
@@ -875,7 +875,7 @@ void POLYSEGMENT(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg)
         }
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 }
 

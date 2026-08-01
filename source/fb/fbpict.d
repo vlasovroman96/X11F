@@ -36,6 +36,14 @@ import include.mipict;
 import include.fb;
 import render.glyphstr_priv;
 import include.picturestr;
+import externs.attrs;
+import include.fb;
+import fb.fballpriv;
+import render.mipict;
+
+alias uint32_t = core.stdc.stdint.uint32_t;
+
+enum pixman_int_to_fixed(string i) =		`((pixman_fixed_t) (cast(uint32_t) (`~i~`) << 16))`;
 
 void fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
@@ -53,10 +61,10 @@ void fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, I
     dest = image_from_pict(pDst, TRUE, &dst_xoff, &dst_yoff);
 
     if (src && dest && !(pMask && !mask)) {
-        assumeNoGC(&pixman_image_composite)(op, src, mask, dest,
-                               xSrc + src_xoff, ySrc + src_yoff,
-                               xMask + msk_xoff, yMask + msk_yoff,
-                               xDst + dst_xoff, yDst + dst_yoff, width, height);
+        assumeNoGC(&pixman_image_composite)(cast(pixman_op_t)op, src, mask, dest,
+                               cast(short)(xSrc + src_xoff), cast(short)(ySrc + src_yoff),
+                               cast(short)(xMask + msk_xoff), cast(short)(yMask + msk_yoff),
+                               cast(short)(xDst + dst_xoff), cast(short)(yDst + dst_yoff), width, height);
     }
 
     free_pixman_pict(pSrc, src);
@@ -86,7 +94,7 @@ private void fbGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr 
 enum N_STACK_GLYPHS = 512;
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     pixman_glyph_t[N_STACK_GLYPHS] stack_glyphs = void;
-    pixman_glyph_t* pglyphs = stack_glyphs;
+    pixman_glyph_t* pglyphs = stack_glyphs.ptr;
     pixman_image_t* srcImage = void, dstImage = void;
     int srcXoff = void, srcYoff = void, dstXoff = void, dstYoff = void;
     GlyphPtr glyph = void;
@@ -107,7 +115,7 @@ enum N_STACK_GLYPHS = 512;
     assumeNoGC(&pixman_glyph_cache_freeze) (glyphCache);
 
     if (n_glyphs > N_STACK_GLYPHS) {
-	if (((pglyphs = cast(pixman_glyph_t*) calloc(n_glyphs, pixman_glyph_t.sizeof)) == 0))
+	if (((pglyphs = cast(pixman_glyph_t*) calloc(n_glyphs, pixman_glyph_t.sizeof)) is null))
 	    goto out_;
     }
 
@@ -122,7 +130,7 @@ enum N_STACK_GLYPHS = 512;
 
             glyph = *glyphs++;
 
-	    if (((g = assumeNoGC(&pixman_glyph_cache_lookup) (glyphCache, glyph, null)) == 0)) {
+	    if (((g = assumeNoGC(&pixman_glyph_cache_lookup) (glyphCache, glyph, null)) is null)) {
 		pixman_image_t* glyphImage = void;
 		PicturePtr pPicture = void;
 		int xoff = void, yoff = void;
@@ -133,7 +141,7 @@ enum N_STACK_GLYPHS = 512;
 		    goto next;
 		}
 
-		if (((glyphImage = image_from_pict(pPicture, FALSE, &xoff, &yoff)) == 0))
+		if (((glyphImage = image_from_pict(pPicture, FALSE, &xoff, &yoff)) is null))
 		    goto out_;
 
 		g = assumeNoGC(&pixman_glyph_cache_insert)(glyphCache, glyph, null,
@@ -159,21 +167,21 @@ enum N_STACK_GLYPHS = 512;
 	list++;
     }
 
-    if (((srcImage = image_from_pict(pSrc, FALSE, &srcXoff, &srcYoff)) == 0))
+    if (((srcImage = image_from_pict(pSrc, FALSE, &srcXoff, &srcYoff)) is null))
 	goto out_;
 
-    if (((dstImage = image_from_pict(pDst, TRUE, &dstXoff, &dstYoff)) == 0))
+    if (((dstImage = image_from_pict(pDst, TRUE, &dstXoff, &dstYoff)) is null))
 	goto out_free_src;
 
     if (maskFormat) {
 	pixman_format_code_t format = void;
 	pixman_box32_t extents = void;
 
-	format = maskFormat.format | (maskFormat.depth << 24);
+	format = cast(pixman_format_code_t)(maskFormat.format | (maskFormat.depth << 24));
 
 	assumeNoGC(&pixman_glyph_get_extents)(glyphCache, n_glyphs, pglyphs, &extents);
 
-	assumeNoGC(&pixman_composite_glyphs)(op, srcImage, dstImage, format,
+	assumeNoGC(&pixman_composite_glyphs)(cast(pixman_op_t)op, srcImage, dstImage, format,
 				xSrc + srcXoff + extents.x1 - xDst, ySrc + srcYoff + extents.y1 - yDst,
 				extents.x1, extents.y1,
 				extents.x1 + dstXoff, extents.y1 + dstYoff,
@@ -182,7 +190,7 @@ enum N_STACK_GLYPHS = 512;
 				glyphCache, n_glyphs, pglyphs);
     }
     else {
-	assumeNoGC(&pixman_composite_glyphs_no_mask)(op, srcImage, dstImage,
+	assumeNoGC(&pixman_composite_glyphs_no_mask)(cast(pixman_op_t)op, srcImage, dstImage,
 					xSrc + srcXoff - xDst, ySrc + srcYoff - yDst,
 					dstXoff, dstYoff,
 					glyphCache, n_glyphs, pglyphs);
@@ -265,13 +273,13 @@ private pixman_image_t* create_bits_picture(PicturePtr pict, Bool has_clip, int*
     int bpp = void;
     pixman_image_t* image = void;
 
-    fbGetDrawablePixmap(pict.pDrawable, pixmap, *xoff, *yoff);
-    fbGetPixmapBitsData(pixmap, bits, stride, bpp);
+    mixin(fbGetDrawablePixmap!("pict.pDrawable", "pixmap", "*xoff", "*yoff"));
+    mixin(fbGetPixmapBitsData!("pixmap", "bits", "stride", "bpp"));
 
     image = assumeNoGC(&pixman_image_create_bits)(cast(pixman_format_code_t) pict.format,
                                      pixmap.drawable.width,
                                      pixmap.drawable.height, cast(uint*) bits,
-                                     stride * FbStride.sizeof);
+                                     cast(int)(stride * FbStride.sizeof));
 
     if (!image)
         return null;
@@ -300,7 +308,7 @@ version (FB_ACCESS_WRAPPER) {
 
     /* Indexed table */
     if (pict.pFormat.index.devPrivate)
-        assumeNoGC(&pixman_image_set_indexed)(image, pict.pFormat.index.devPrivate);
+        assumeNoGC(&pixman_image_set_indexed)(image, cast(pixman_indexed*)pict.pFormat.index.devPrivate);
 
     /* Add in drawable origin to position within the image */
     *xoff += pict.pDrawable.x;
@@ -313,7 +321,7 @@ private pixman_image_t* image_from_pict_internal(PicturePtr pict, Bool has_clip,
 
 private void image_destroy(pixman_image_t* image, void* data)
 {
-    fbFinishAccess(cast(DrawablePtr)data);
+    mixin(fbFinishAccess!("cast(DrawablePtr)data"));
 }
 
 private void set_image_properties(pixman_image_t* image, PicturePtr pict, Bool has_clip, int* xoff, int* yoff, Bool is_alpha_map)
@@ -333,8 +341,8 @@ private void set_image_properties(pixman_image_t* image, PicturePtr pict, Bool h
             adjusted = *pict.transform;
             assumeNoGC(&pixman_transform_translate)(&adjusted,
                                        null,
-                                       assumeNoGC(&pixman_int_to_fixed)(*xoff),
-                                       assumeNoGC(&pixman_int_to_fixed)(*yoff));
+                                       mixin(pixman_int_to_fixed!("*xoff")),
+                                       mixin(pixman_int_to_fixed!("*yoff")));
             assumeNoGC(&pixman_image_set_transform)(image, &adjusted);
             *xoff = 0;
             *yoff = 0;
@@ -460,16 +468,16 @@ Bool fbPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
 
     if (!miPictureInit(pScreen, formats, nformats))
         return FALSE;
-    ps = GetPictureScreen(pScreen);
-    ps.Composite = fbComposite;
-    ps.Glyphs = fbGlyphs;
-    ps.UnrealizeGlyph = fbUnrealizeGlyph;
-    ps.CompositeRects = miCompositeRects;
-    ps.RasterizeTrapezoid = fbRasterizeTrapezoid;
-    ps.Trapezoids = fbTrapezoids;
-    ps.AddTraps = fbAddTraps;
-    ps.AddTriangles = fbAddTriangles;
-    ps.Triangles = fbTriangles;
+    ps = mixin(GetPictureScreen!("pScreen"));
+    ps.Composite = &fbComposite;
+    ps.Glyphs = &fbGlyphs;
+    ps.UnrealizeGlyph = &fbUnrealizeGlyph;
+    ps.CompositeRects = &miCompositeRects;
+    ps.RasterizeTrapezoid = &fbRasterizeTrapezoid;
+    ps.Trapezoids = &fbTrapezoids;
+    ps.AddTraps = &fbAddTraps;
+    ps.AddTriangles = &fbAddTriangles;
+    ps.Triangles = &fbTriangles;
 
     return TRUE;
 }

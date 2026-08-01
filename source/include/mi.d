@@ -64,6 +64,7 @@ import include.mistruct;
 import externs.X11.fonts.fontstruct;
 public import mi.micopy; 
 public import mi.miexpose;
+import mi.miscrinit;
 
 alias MiBits =	CARD32;
 
@@ -80,9 +81,9 @@ extern void  miPolyArc(DrawablePtr, GCPtr, int, xArc*);
 
 enum string miGetCompositeClip(string pGC) = `((` ~ pGC ~ `).pCompositeClip)`;
 
-alias miCopyProc = void function(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pDstBox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure);
+alias miCopyProc = void function(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pDstBox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure) @nogc nothrow;
 
-extern void  miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, RegionPtr pDstRegion, int dx, int dy, miCopyProc copyProc, Pixel bitPlane, void* closure);
+extern void  miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, RegionPtr pDstRegion, int dx, int dy, miCopyProc copyProc, Pixel bitPlane, void* closure) @nogc nothrow;
 
 // extern void  miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, int xIn, int yIn, int widthSrc, int heightSrc, int xOut, int yOut, miCopyProc copyProc, Pixel bitplane, void* closure);
 
@@ -137,7 +138,7 @@ extern void  miPushPixels(GCPtr, PixmapPtr, DrawablePtr, int, int, int, int);
 /* miscrinit.c */
 extern void  miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
 
-extern void  miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int rootDepth, int numDepths, DepthPtr depths, VisualID rootVisual, int numVisuals, VisualPtr visuals);
+// extern void  miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int rootDepth, int numDepths, DepthPtr depths, VisualID rootVisual, int numVisuals, VisualPtr visuals);
 
 /* mivaltree.c */
 

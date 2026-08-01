@@ -22,6 +22,7 @@ public import include.screenint;
 public import include.scrnintstr;
 public import include.validate;
 public import include.window;
+public import mi.miexpose;
 
 pragma(inline, true) private void SetInstalledmiColormap(ScreenPtr s, ColormapPtr c) {
     dixSetPrivate(&(s).devPrivates, micmapScrPrivateKey, c);
@@ -55,13 +56,13 @@ void mieqSetHandler(int event, mieqHandler handler);
 
 void miSendExposures(WindowPtr pWin, RegionPtr pRgn, int dx, int dy);
 
-void  miWindowExposures(WindowPtr pWin, RegionPtr prgn);
+// void  miWindowExposures(WindowPtr pWin, RegionPtr prgn);
 
 void miPaintWindow(WindowPtr pWin, RegionPtr prgn, int what);
 void miSourceValidate(DrawablePtr pDrawable, int x, int y, int w, int h, uint subWindowMode);
 
 /* only exported for modesetting, not for external drivers (yet) */
-Bool miCreateScreenResources(ScreenPtr pScreen);
+// Bool miCreateScreenResources(ScreenPtr pScreen);
 
 int miShapedWindowIn(RegionPtr universe, RegionPtr bounding, BoxPtr rect, int x, int y);
 int miValidateTree(WindowPtr pParent, WindowPtr pChild, VTKind kind);

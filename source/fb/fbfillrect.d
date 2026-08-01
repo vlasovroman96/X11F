@@ -26,10 +26,12 @@ extern(C): __gshared:
 import build.dix_config;
 
 import include.fb;
+import fb.fbfill;;
+
 
 void fbPolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nrect, xRectangle* prect)
 {
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     BoxPtr pbox = void;
     BoxPtr pextent = void;
     int extentX1 = void, extentX2 = void, extentY1 = void, extentY2 = void;

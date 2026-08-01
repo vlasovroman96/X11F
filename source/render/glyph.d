@@ -87,7 +87,7 @@ private GlyphHashRec[GlyphFormatNum] globalGlyphs;
 
 void GlyphUninit(ScreenPtr pScreen)
 {
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     GlyphPtr glyph = void;
     int fdepth = void, i = void;
 

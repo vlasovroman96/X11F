@@ -59,7 +59,7 @@ private void miDestroyPictureClip(PicturePtr pPicture)
 private int miChangePictureClip(PicturePtr pPicture, int type, void* value, int n)
 {
     ScreenPtr pScreen = pPicture.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     RegionPtr clientClip = void;
 
     switch (type) {
@@ -521,7 +521,7 @@ Bool miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
 
     if (!PictureInit(pScreen, formats, nformats))
         return FALSE;
-    ps = GetPictureScreen(pScreen);
+    ps = mixin(GetPictureScreen!("pScreen"));
     ps.CreatePicture = miCreatePicture;
     ps.DestroyPicture = miDestroyPicture;
     ps.ChangePictureClip = miChangePictureClip;

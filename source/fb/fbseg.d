@@ -42,13 +42,13 @@ private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int s
     FbStride dstStride = void;
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     FbStip and = cast(FbStip) pPriv.and;
     FbStip xor = cast(FbStip) pPriv.xor;
     FbStip mask = void, mask0 = void;
     FbStip bits = void;
 
-    fbGetStipDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetStipDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     dst += ((y1 + dstYoff) * dstStride);
     x1 = (x1 + dstXoff) * dstBpp;
     dst += x1 >> FB_STIP_SHIFT;
@@ -99,7 +99,7 @@ private void fbBresSolid(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int s
         }
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 
 private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x1, int y1, int e, int e1, int e3, int len)
@@ -108,7 +108,7 @@ private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int si
     FbStride dstStride = void;
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     FbStip and = cast(FbStip) pPriv.and;
     FbStip xor = cast(FbStip) pPriv.xor;
     FbStip bgand = cast(FbStip) pPriv.bgand;
@@ -120,7 +120,7 @@ private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int si
     Bool even = void;
     Bool doOdd = void;
 
-    fbGetStipDrawable(pDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetStipDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
     doOdd = pGC.lineStyle == LineDoubleDash;
 
     FbDashInit(pGC, pPriv, dashOffset, dashlen, even);
@@ -167,7 +167,7 @@ private void fbBresDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int si
         FbDashStep(dashlen, even);
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }
 
 private void fbBresFill(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x1, int y1, int e, int e1, int e3, int len)
@@ -206,7 +206,7 @@ private void fbSetFg(DrawablePtr pDrawable, GCPtr pGC, Pixel fg)
 
 private void fbBresFillDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x1, int y1, int e, int e1, int e3, int len)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
 
     FbDashDeclare;
     int dashlen = void;
@@ -267,7 +267,7 @@ private void fbBresFillDash(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, in
 
 private FbBres* fbSelectBres(DrawablePtr pDrawable, GCPtr pGC)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     int dstBpp = pDrawable.bitsPerPixel;
     FbBres* bres = void;
 
@@ -316,7 +316,7 @@ private FbBres* fbSelectBres(DrawablePtr pDrawable, GCPtr pGC)
 void fbSegment(DrawablePtr pDrawable, GCPtr pGC, int x1, int y1, int x2, int y2, Bool drawLast, int* dashOffset)
 {
     FbBres* bres = void;
-    RegionPtr pClip = fbGetCompositeClip(pGC);
+    RegionPtr pClip = mixin(fbGetCompositeClip!("pGC"));
     BoxPtr pBox = void;
     int nBox = void;
     int adx = void;                    /* abs values of dx and dy */

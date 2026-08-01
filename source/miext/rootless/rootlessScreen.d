@@ -214,7 +214,7 @@ private void RootlessSourceValidate(DrawablePtr pDrawable, int x, int y, int w, 
 private void RootlessComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     WindowPtr srcWin = void, dstWin = void, maskWin = null;
 
     if (pMask) {                // pMask can be NULL
@@ -251,7 +251,7 @@ private void RootlessComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pict
 private void RootlessGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     int x = void, y = void;
     int n = void;
     GlyphPtr glyph = void;
@@ -328,7 +328,7 @@ private void RootlessGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictForm
 private void RootlessTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntrap, xTrapezoid* traps)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     WindowPtr srcWin = void, dstWin = void;
 
     srcWin = (pSrc.pDrawable && pSrc.pDrawable.type == DRAWABLE_WINDOW) ?
@@ -365,7 +365,7 @@ private void RootlessTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, Pict
 private void RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, xTriangle* tris)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     WindowPtr srcWin = void, dstWin = void;
 
     srcWin = (pSrc.pDrawable && pSrc.pDrawable.type == DRAWABLE_WINDOW) ?
@@ -402,7 +402,7 @@ private void RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictF
 private void RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
     WindowPtr dstWin = void;
 
     dstWin = (pDst.pDrawable.type == DRAWABLE_WINDOW) ?
@@ -762,7 +762,7 @@ enum string WRAP(string a) = `\
 
     {
         // PictureScreen procs don't use normal screen wrapping
-        PictureScreenPtr ps = GetPictureScreen(pScreen);
+        PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
         s.Composite = ps.Composite;
         ps.Composite = RootlessComposite;

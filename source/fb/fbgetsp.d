@@ -27,6 +27,7 @@ import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
 import include.fb;
+import fb.fballpriv;
 
 void fbGetSpans(DrawablePtr pDrawable, int wMax, DDXPointPtr ppt, int* pwidth, int nspans, char* pchardstStart)
 {
@@ -40,10 +41,10 @@ void fbGetSpans(DrawablePtr pDrawable, int wMax, DDXPointPtr ppt, int* pwidth, i
      * XFree86 DDX empties the root borderClip when the VT is
      * switched away; this checks for that case
      */
-    if (!fbDrawableEnabled(pDrawable))
+    if (!mixin(fbDrawableEnabled!("pDrawable")))
         return;
 
-    fbGetDrawable(pDrawable, src, srcStride, srcBpp, srcXoff, srcYoff);
+    mixin(fbGetDrawable!("pDrawable", "src", "srcStride", "srcBpp", "srcXoff", "srcYoff"));
 
     while (nspans--) {
         xoff = cast(int) ((cast(c_long) pchardstStart) & (FB_MASK >> 3));
@@ -60,5 +61,5 @@ void fbGetSpans(DrawablePtr pDrawable, int wMax, DDXPointPtr ppt, int* pwidth, i
         pwidth++;
     }
 
-    fbFinishAccess(pDrawable);
+    mixin(fbFinishAccess!("pDrawable"));
 }

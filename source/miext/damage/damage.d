@@ -457,7 +457,7 @@ enum string checkPictureDamage(string p) = `(` ~ getDrawableDamage!(`` ~ p ~ `.p
 private void damageComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     damageScrPriv(pScreen);
 
@@ -494,7 +494,7 @@ private void damageComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pictur
 private void damageGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs)
 {
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     damageScrPriv(pScreen);
 
@@ -550,7 +550,7 @@ private void damageGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormat
 private void damageAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {
     ScreenPtr pScreen = pPicture.pDrawable.pScreen;
-    PictureScreenPtr ps = GetPictureScreen(pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
     damageScrPriv(pScreen);
 

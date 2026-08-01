@@ -66,7 +66,7 @@ enum string N1dChars(string pfont) = `(` ~ FONTLASTCOL!(pfont) ~ ` - ` ~ FONTFIR
 enum string N2dChars(string pfont) = `(` ~ N1dChars!(pfont) ~ ` * 
 			 (` ~ FONTLASTROW!(pfont) ~ ` - ` ~ FONTFIRSTROW!(pfont) ~ ` + 1))`;
 
-enum GLYPHPADBYTES = -1;
+// enum GLYPHPADBYTES = -1;
 
 
 static if (GLYPHPADBYTES == 0 || GLYPHPADBYTES == 1) {

@@ -60,7 +60,7 @@ struct _fbOverlayScrPriv {
 alias FbOverlayScrPrivPtr = _fbOverlayScrPriv*;
 
 enum string fbOverlayGetScrPriv(string s) = `
-    dixLookupPrivate(&(` ~ s ~ `).devPrivates, fbOverlayGetScreenPrivateKey())`;
+    cast(_fbOverlayScrPriv*)dixLookupPrivate((&` ~ s ~ `.devPrivates), fbOverlayGetScreenPrivateKey())`;
 
 extern int fbOverlayFinishScreenInit(ScreenPtr pScreen, void* pbits1, void* pbits2, int xsize, int ysize, int dpix, int dpiy, int width1, int width2, int bpp1, int bpp2, int depth1, int depth2);
 

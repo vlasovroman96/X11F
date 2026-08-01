@@ -90,28 +90,28 @@ void fbPadPixmap(PixmapPtr pPixmap)
     int bpp = void;
     int xOff = void, yOff = void;
 
-    fbGetDrawable(&pPixmap.drawable, bits, stride, bpp, xOff, yOff);
+    mixin(fbGetDrawable!("(&pPixmap.drawable)", "bits", "stride", "bpp", "xOff", "yOff"));
 
     width = pPixmap.drawable.width * pPixmap.drawable.bitsPerPixel;
     height = pPixmap.drawable.height;
-    mask = FbBitsMask(0, width);
+    mask = mixin(FbBitsMask!("0", "width"));
     while (height--) {
-        b = READ(bits) & mask;
+        b = mixin(READ!("bits")) & mask;
         w = width;
         while (w < FB_UNIT) {
-            b = b | FbScrRight(b, w);
+            b = b | mixin(FbScrRight!("b", "w"));
             w <<= 1;
         }
-        WRITE(bits, b);
+        mixin(WRITE!("bits", "b")~";");
         bits += stride;
     }
 
-    fbFinishAccess(&pPixmap.drawable);
+    mixin(fbFinishAccess!("&pPixmap.drawable"));
 }
 
 void fbValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
 {
-    FbGCPrivPtr pPriv = fbGetGCPrivate(pGC);
+    FbGCPrivPtr pPriv = mixin(fbGetGCPrivate!("pGC"));
     FbBits mask = void;
 
     /*
@@ -129,8 +129,8 @@ void fbValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
 
     if (changes & GCTile) {
         if (!pGC.tileIsPixel &&
-            FbEvenTile(pGC.tile.pixmap.drawable.width *
-                       pDrawable.bitsPerPixel))
+            mixin(FbEvenTile!("pGC.tile.pixmap.drawable.width *
+                       pDrawable.bitsPerPixel")))
             fbPadPixmap(pGC.tile.pixmap);
     }
     if (changes & GCStipple) {
@@ -147,8 +147,8 @@ void fbValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
         int s = void;
         FbBits depthMask = void;
 
-        mask = FbFullMask(pDrawable.bitsPerPixel);
-        depthMask = FbFullMask(pDrawable.depth);
+        mask = mixin(FbFullMask!("pDrawable.bitsPerPixel"));
+        depthMask = mixin(FbFullMask!("pDrawable.depth"));
 
         pPriv.fg = pGC.fgPixel & mask;
         pPriv.bg = pGC.bgPixel & mask;
@@ -165,10 +165,10 @@ void fbValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
             pPriv.pm |= pPriv.pm << s;
             s <<= 1;
         }
-        pPriv.and = fbAnd(pGC.alu, pPriv.fg, pPriv.pm);
-        pPriv.xor = fbXor(pGC.alu, pPriv.fg, pPriv.pm);
-        pPriv.bgand = fbAnd(pGC.alu, pPriv.bg, pPriv.pm);
-        pPriv.bgxor = fbXor(pGC.alu, pPriv.bg, pPriv.pm);
+        pPriv.and = mixin(fbAnd!("pGC.alu", "pPriv.fg", "pPriv.pm"));
+        pPriv.xor = mixin(fbXor!("pGC.alu", "pPriv.fg", "pPriv.pm"));
+        pPriv.bgand = mixin(fbAnd!("pGC.alu", "pPriv.bg", "pPriv.pm"));
+        pPriv.bgxor = mixin(fbXor!("pGC.alu", "pPriv.bg", "pPriv.pm"));
     }
     if (changes & GCDashList) {
         ushort n = pGC.numInDashList;
