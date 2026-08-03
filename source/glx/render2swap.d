@@ -38,6 +38,8 @@ import glx.glxserver;
 import glx.unpack;
 import glx.indirect_size;
 import glx.indirect_dispatch;
+ import externs.epoxy;
+
 
 void __glXDispSwap_Map1f(GLbyte* pc)
 {

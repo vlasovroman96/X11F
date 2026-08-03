@@ -43,11 +43,11 @@ public import include.misyncshm;
 public import include.misyncstr;
 }
 
-public import externs.epoxygl;
+public import externs.epoxy;
 version (GLAMOR_HAS_GBM) {
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-public import externs.epoxygl;
+public import externs.epoxy;
 }
 
 enum GLAMOR_DEFAULT_PRECISION = 
@@ -477,7 +477,7 @@ version (GLAMOR_HAS_GBM) {
 
 extern DevPrivateKeyRec glamor_pixmap_private_key;
 
-pragma(inline, true) private glamor_pixmap_private* glamor_get_pixmap_private(PixmapPtr pixmap)
+pragma(inline, true) glamor_pixmap_private* glamor_get_pixmap_private(PixmapPtr pixmap)
 {
     if (pixmap == null)
         return null;
@@ -488,7 +488,7 @@ pragma(inline, true) private glamor_pixmap_private* glamor_get_pixmap_private(Pi
 /*
  * Returns TRUE if pixmap has no image object
  */
-pragma(inline, true) private Bool glamor_pixmap_drm_only(PixmapPtr pixmap)
+pragma(inline, true) Bool glamor_pixmap_drm_only(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
     mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
@@ -498,7 +498,7 @@ pragma(inline, true) private Bool glamor_pixmap_drm_only(PixmapPtr pixmap)
 /*
  * Returns TRUE if pixmap is plain memory (not a GL object at all)
  */
-pragma(inline, true) private Bool glamor_pixmap_is_memory(PixmapPtr pixmap)
+pragma(inline, true) Bool glamor_pixmap_is_memory(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
     mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
@@ -508,19 +508,19 @@ pragma(inline, true) private Bool glamor_pixmap_is_memory(PixmapPtr pixmap)
 /*
  * Returns TRUE if pixmap requires multiple textures to hold it
  */
-pragma(inline, true) private Bool glamor_pixmap_priv_is_large(glamor_pixmap_private* priv)
+pragma(inline, true) Bool glamor_pixmap_priv_is_large(glamor_pixmap_private* priv)
 {
     mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.block_wcnt > 1 || priv.block_hcnt > 1;
 }
 
-pragma(inline, true) private Bool glamor_pixmap_priv_is_small(glamor_pixmap_private* priv)
+pragma(inline, true) Bool glamor_pixmap_priv_is_small(glamor_pixmap_private* priv)
 {
     mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.block_wcnt <= 1 && priv.block_hcnt <= 1;
 }
 
-pragma(inline, true) private Bool glamor_pixmap_is_large(PixmapPtr pixmap)
+pragma(inline, true) Bool glamor_pixmap_is_large(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
 
@@ -529,14 +529,14 @@ pragma(inline, true) private Bool glamor_pixmap_is_large(PixmapPtr pixmap)
 /*
  * Returns TRUE if pixmap has an FBO
  */
-pragma(inline, true) private Bool glamor_pixmap_has_fbo(PixmapPtr pixmap)
+pragma(inline, true) Bool glamor_pixmap_has_fbo(PixmapPtr pixmap)
 {
     glamor_pixmap_private* priv = glamor_get_pixmap_private(pixmap);
     mixin(BUG_RETURN_VAL!("!priv", "FALSE"));
     return priv.gl_fbo == GLAMOR_FBO_NORMAL;
 }
 
-pragma(inline, true) private void glamor_set_pixmap_fbo_current(glamor_pixmap_private* priv, int idx)
+pragma(inline, true) void glamor_set_pixmap_fbo_current(glamor_pixmap_private* priv, int idx)
 {
     if (glamor_pixmap_priv_is_large(priv)) {
         mixin(BUG_RETURN!("!priv"));
@@ -545,37 +545,40 @@ pragma(inline, true) private void glamor_set_pixmap_fbo_current(glamor_pixmap_pr
     }
 }
 
-pragma(inline, true) private glamor_pixmap_fbo* glamor_pixmap_fbo_at(glamor_pixmap_private* priv, int box)
+pragma(inline, true) glamor_pixmap_fbo* glamor_pixmap_fbo_at(glamor_pixmap_private* priv, int box)
 {
     assert(priv);
     assert(box < priv.block_wcnt * priv.block_hcnt);
     return priv.fbo_array[box];
 }
 
-pragma(inline, true) private BoxPtr glamor_pixmap_box_at(glamor_pixmap_private* priv, int box)
+pragma(inline, true) BoxPtr glamor_pixmap_box_at(glamor_pixmap_private* priv, int box)
 {
     assert(priv);
     assert(box < priv.block_wcnt * priv.block_hcnt);
     return &priv.box_array[box];
 }
 
-pragma(inline, true) private int glamor_pixmap_wcnt(glamor_pixmap_private* priv)
+pragma(inline, true) int glamor_pixmap_wcnt(glamor_pixmap_private* priv)
 {
     mixin(BUG_RETURN_VAL!("!priv", "0"));
     return priv.block_wcnt;
 }
 
-pragma(inline, true) private int glamor_pixmap_hcnt(glamor_pixmap_private* priv)
+pragma(inline, true) int glamor_pixmap_hcnt(glamor_pixmap_private* priv)
 {
     mixin(BUG_RETURN_VAL!("!priv", "0"));
     return priv.block_hcnt;
 }
 
-enum string glamor_pixmap_loop(string priv, string box_index) = `
+enum string glamor_pixmap_loop(string priv, string box_index, string func) = `
     for (` ~ box_index ~ ` = 0; ` ~ box_index ~ ` < glamor_pixmap_hcnt(` ~ priv ~ `) *         
-             glamor_pixmap_wcnt(` ~ priv ~ `); ` ~ box_index ~ `++)                    
+             glamor_pixmap_wcnt(` ~ priv ~ `); ` ~ box_index ~ `++)
+             {
+             `~func~`
+             }                    
 `;
-pragma(inline, true) private int glamor_drawable_effective_depth(DrawablePtr drawable)
+pragma(inline, true) int glamor_drawable_effective_depth(DrawablePtr drawable)
 {
     WindowPtr window = void;
 
@@ -598,7 +601,7 @@ pragma(inline, true) private int glamor_drawable_effective_depth(DrawablePtr dra
     return 32;
 }
 
-/* GC private structure. Currently holds only any computed dash pixmap */
+/* GC structure. Currently holds only any computed dash pixmap */
 
 struct glamor_gc_private {
     PixmapPtr dash;
@@ -609,11 +612,11 @@ struct glamor_gc_private {
 extern DevPrivateKeyRec glamor_gc_private_key;
 extern DevPrivateKeyRec glamor_screen_private_key;
 
-extern glamor_screen_private* glamor_get_screen_private(ScreenPtr screen);
+// extern glamor_screen_private* glamor_get_screen_private(ScreenPtr screen);
 
 extern void glamor_set_screen_private(ScreenPtr screen, glamor_screen_private* priv);
 
-pragma(inline, true) private glamor_gc_private* glamor_get_gc_private(GCPtr gc)
+pragma(inline, true) glamor_gc_private* glamor_get_gc_private(GCPtr gc)
 {
     return dixLookupPrivate(&gc.devPrivates, &glamor_gc_private_key);
 }
@@ -622,7 +625,7 @@ pragma(inline, true) private glamor_gc_private* glamor_get_gc_private(GCPtr gc)
  * Returns TRUE if the given planemask covers all the significant bits in the
  * pixel values for pDrawable.
  */
-pragma(inline, true) private Bool glamor_pm_is_solid(int depth, c_ulong planemask)
+pragma(inline, true) Bool glamor_pm_is_solid(int depth, c_ulong planemask)
 {
     return (planemask & FbFullMask(depth)) ==
         FbFullMask(depth);
@@ -631,7 +634,7 @@ pragma(inline, true) private Bool glamor_pm_is_solid(int depth, c_ulong planemas
 extern int glamor_debug_level;
 
 /*import glamor.glamor_c */
-PixmapPtr glamor_get_drawable_pixmap(DrawablePtr drawable);
+// PixmapPtr glamor_get_drawable_pixmap(DrawablePtr drawable);
 
 glamor_pixmap_fbo* glamor_pixmap_detach_fbo(glamor_pixmap_private* pixmap_priv);
 void glamor_pixmap_attach_fbo(PixmapPtr pixmap, glamor_pixmap_fbo* fbo);
@@ -645,20 +648,20 @@ void glamor_pixmap_clear_fbo(glamor_screen_private* glamor_priv, glamor_pixmap_f
 const(glamor_format)* glamor_format_for_pixmap(PixmapPtr pixmap);
 
 /* Return whether 'picture' is alpha-only */
-pragma(inline, true) private Bool glamor_picture_is_alpha(PicturePtr picture)
+pragma(inline, true) Bool glamor_picture_is_alpha(PicturePtr picture)
 {
     return picture.format == PIXMAN_a1 || picture.format == PIXMAN_a8;
 }
 
 /* Return whether 'picture' is storing alpha bits in the red channel */
-pragma(inline, true) private Bool glamor_picture_red_is_alpha(PicturePtr picture)
+pragma(inline, true) Bool glamor_picture_red_is_alpha(PicturePtr picture)
 {
     /* True when the picture is alpha only and the screen is using GL_RED for alpha pictures */
     return glamor_picture_is_alpha(picture) &&
         glamor_get_screen_private(picture.pDrawable.pScreen).formats[8].format == GL_RED;
 }
 
-void glamor_bind_texture(glamor_screen_private* glamor_priv, GLenum texture, glamor_pixmap_fbo* fbo, Bool destination_red);
+// void glamor_bind_texture(glamor_screen_private* glamor_priv, GLenum texture, glamor_pixmap_fbo* fbo, Bool destination_red);
 
 glamor_pixmap_fbo* glamor_create_fbo_array(glamor_screen_private* glamor_priv, PixmapPtr pixmap, int flag, int block_w, int block_h, glamor_pixmap_private*);
 
@@ -878,7 +881,7 @@ void glamor_copy_window(WindowPtr window, xPoint old_origin, RegionPtr src_regio
  * unref a glamor pixmap (specialized form of fbPixmap) and free
  * if refcnt already had reached 1
  */
-Bool glamor_destroy_pixmap(PixmapPtr pixmap);
+// Bool glamor_destroy_pixmap(PixmapPtr pixmap);
 
 public import glamor.glamor_utils;
 

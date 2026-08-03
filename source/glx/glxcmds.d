@@ -47,6 +47,8 @@ import dix.screenint_priv;
 import dix.window_priv;
 import os.bug_priv;
 import present.present_priv;
+ import externs.epoxy;
+
 
 import glx.glxserver;
 import glx.unpack;

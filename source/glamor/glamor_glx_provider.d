@@ -39,7 +39,7 @@ import dix.dix_priv;
 
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-import externs.epoxygl;
+import externs.epoxy;
 import glx.glxserver;
 import glx.glxutil;
 import composite.compint;

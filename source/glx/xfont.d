@@ -40,10 +40,12 @@ import glx.glxserver;
 import glx.glxutil;
 import glx.unpack;
 import glx.indirect_dispatch;
-import externs.gl;
+// import externs.gl;
 import include.pixmapstr;
 import include.windowstr;
 import include.dixfontstr;
+ import externs.epoxy;
+
 
 /*
 ** Make a single GL bitmap from a single X glyph

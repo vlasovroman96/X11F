@@ -54,6 +54,9 @@ import glx.singlesize;
 import glx.unpack;
 import glx.indirect_size_get;
 import glx.indirect_dispatch;
+//import externs.GL.glext;
+ import externs.epoxy;
+
 
 /**
  * Handle both types of glGetProgramString calls.

@@ -44,8 +44,8 @@ public import include.extnsionst;
 public import include.resource;
 public import include.scrnintstr;
 
-public import externs.gl;
-public import externs.glext;
+// public //import externs.GL.gl;
+// public //import externs.GL.glext;
 public import externs.glxproto;
 
 enum GLX_CONTEXT_OPENGL_NO_ERROR_ARB = 0x31B3;
@@ -66,6 +66,8 @@ public import glx.glxdrawable;
 public import glx.glxcontext;
 public import include.glx_extinit;
 import glx.glxscreens_h;
+ import externs.epoxy;
+
 
 extern __GLXscreen* glxGetScreen(ScreenPtr pScreen);
 extern __GLXclientState* glxGetClient(ClientPtr pClient);

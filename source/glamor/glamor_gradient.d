@@ -644,9 +644,9 @@ private void _glamor_gradient_convert_trans_matrix(PictTransform* from, float[3]
         * (normalize ? (cast(float) height) : 1.0);
     to[2][2] = cast(float) pixman_fixed_to_double(from.matrix[2][2]);
 
-    DEBUGF("the transposed transform matrix is:\n%f\t%f\t%f\n%f\t%f\t%f\n%f\t%f\t%f\n",
-           to[0][0], to[0][1], to[0][2],
-           to[1][0], to[1][1], to[1][2], to[2][0], to[2][1], to[2][2]);
+    //DEBUGF("the transposed transform matrix is:\n%f\t%f\t%f\n%f\t%f\t%f\n%f\t%f\t%f\n",
+        //    to[0][0], to[0][1], to[0][2],
+        //    to[1][0], to[1][1], to[1][2], to[2][0], to[2][1], to[2][2]);
 }
 
 private int _glamor_gradient_set_pixmap_destination(ScreenPtr screen, glamor_screen_private* glamor_priv, PicturePtr dst_picture, GLfloat* xscale, GLfloat* yscale, int x_source, int y_source, int tex_normalize)
@@ -667,10 +667,10 @@ private int _glamor_gradient_set_pixmap_destination(ScreenPtr screen, glamor_scr
 
     pixmap_priv_get_dest_scale(pixmap, pixmap_priv, xscale, yscale);
 
-    DEBUGF("xscale = %f, yscale = %f,"
-           ~ " x_source = %d, y_source = %d, width = %d, height = %d\n",
-           *xscale, *yscale, x_source, y_source,
-           dst_picture.pDrawable.width, dst_picture.pDrawable.height);
+    //DEBUGF("xscale = %f, yscale = %f,"
+        //    ~ " x_source = %d, y_source = %d, width = %d, height = %d\n",
+        //    *xscale, *yscale, x_source, y_source,
+        //    dst_picture.pDrawable.width, dst_picture.pDrawable.height);
 
     v = glamor_get_vbo_space(screen, 16 * GLfloat.sizeof, &vbo_offset);
 
@@ -702,14 +702,14 @@ private int _glamor_gradient_set_pixmap_destination(ScreenPtr screen, glamor_scr
                                      &v[8]);
     }
 
-    DEBUGF("vertices --> leftup : %f X %f, rightup: %f X %f,"
-           ~ "rightbottom: %f X %f, leftbottom : %f X %f\n",
-           v[0], v[1], v[2], v[3],
-           v[4], v[5], v[6], v[7]);
-    DEBUGF("tex_vertices --> leftup : %f X %f, rightup: %f X %f,"
-           ~ "rightbottom: %f X %f, leftbottom : %f X %f\n",
-           v[8], v[9], v[10], v[11],
-           v[12], v[13], v[14], v[15]);
+    //DEBUGF("vertices --> leftup : %f X %f, rightup: %f X %f,"
+        //    ~ "rightbottom: %f X %f, leftbottom : %f X %f\n",
+        //    v[0], v[1], v[2], v[3],
+        //    v[4], v[5], v[6], v[7]);
+    //DEBUGF("tex_vertices --> leftup : %f X %f, rightup: %f X %f,"
+        //    ~ "rightbottom: %f X %f, leftbottom : %f X %f\n",
+        //    v[8], v[9], v[10], v[11],
+        //    v[12], v[13], v[14], v[15]);
 
     glamor_make_current(glamor_priv);
 
@@ -793,10 +793,10 @@ enum string REPEAT_FILL_STOPS(string m, string n) = `
     }
 
     for (i = 0; i < count; i++) {
-        DEBUGF("n_stops[%d] = %f, color = r:%f g:%f b:%f a:%f\n",
-               i, n_stops[i],
-               stop_colors[i * 4], stop_colors[i * 4 + 1],
-               stop_colors[i * 4 + 2], stop_colors[i * 4 + 3]);
+        //DEBUGF("n_stops[%d] = %f, color = r:%f g:%f b:%f a:%f\n",
+            //    i, n_stops[i],
+            //    stop_colors[i * 4], stop_colors[i * 4 + 1],
+            //    stop_colors[i * 4 + 2], stop_colors[i * 4 + 3]);
     }
 
     return count;
@@ -1070,8 +1070,8 @@ PicturePtr glamor_generate_radial_gradient_picture(ScreenPtr screen, PicturePtr 
                                                                         r1);
     glUniform1f(A_value_uniform_location, A_value);
 
-    DEBUGF("C1:(%f, %f) R1:%f\nC2:(%f, %f) R2:%f\nA = %f\n",
-           c1x, c1y, r1, c2x, c2y, r2, A_value);
+    //DEBUGF("C1:(%f, %f) R1:%f\nC2:(%f, %f) R2:%f\nA = %f\n",
+        //    c1x, c1y, r1, c2x, c2y, r2, A_value);
 
     /* Now rendering. */
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -1287,10 +1287,10 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
                             pixman_fixed_to_double(src_picture.pSourcePict.
                                                    linear.p1.y),
                             pt1.ptr);
-    DEBUGF("pt1:(%f, %f) ---> (%f %f)\n",
-           pixman_fixed_to_double(src_picture.pSourcePict.linear.p1.x),
-           pixman_fixed_to_double(src_picture.pSourcePict.linear.p1.y),
-           pt1[0], pt1[1]);
+    //DEBUGF("pt1:(%f, %f) ---> (%f %f)\n",
+        //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p1.x),
+        //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p1.y),
+        //    pt1[0], pt1[1]);
 
     glamor_set_normalize_pt(xscale, yscale,
                             pixman_fixed_to_double(src_picture.pSourcePict.
@@ -1298,10 +1298,10 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
                             pixman_fixed_to_double(src_picture.pSourcePict.
                                                    linear.p2.y),
                             pt2.ptr);
-    DEBUGF("pt2:(%f, %f) ---> (%f %f)\n",
-           pixman_fixed_to_double(src_picture.pSourcePict.linear.p2.x),
-           pixman_fixed_to_double(src_picture.pSourcePict.linear.p2.y),
-           pt2[0], pt2[1]);
+    //DEBUGF("pt2:(%f, %f) ---> (%f %f)\n",
+        //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p2.x),
+        //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p2.y),
+        //    pt2[0], pt2[1]);
 
     /* Set all the stops and colors to shader. */
     if (stops_count > LINEAR_SMALL_STOPS) {
@@ -1382,8 +1382,8 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
 
     if (src_picture.pSourcePict.linear.p2.y == src_picture.pSourcePict.linear.p1.y) {       // The horizontal case.
         glUniform1i(hor_ver_uniform_location, 1);
-        DEBUGF("p1.y: %f, p2.y: %f, enter the horizontal case\n",
-               pt1[1], pt2[1]);
+        //DEBUGF("p1.y: %f, p2.y: %f, enter the horizontal case\n",
+            //    pt1[1], pt2[1]);
 
         p1_distance = pt1[0];
         pt_distance = (pt2[0] - p1_distance);

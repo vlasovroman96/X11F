@@ -154,7 +154,7 @@ alias PositionWindowProcPtr = Bool function(WindowPtr, int, int);
 /* pixmap will be the backing pixmap for a redirected window */
 // enum CREATE_PIXMAP_USAGE_BACKING_PIXMAP =              2;
 /* pixmap will contain a glyph */
-enum CREATE_PIXMAP_USAGE_GLYPH_PICTURE =               3;
+// enum CREATE_PIXMAP_USAGE_GLYPH_PICTURE =               3;
 /* pixmap will be shared */
 // enum CREATE_PIXMAP_USAGE_SHARED =                      4;
 

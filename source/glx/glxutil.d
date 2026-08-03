@@ -32,12 +32,13 @@ extern(C): __gshared:
  * Silicon Graphics, Inc.
  */
 
-import externs.GL.glx_;
-import externs.GL.gl_;
+//import externs.GL.glx;
+//import externs.GL.gl;
 import glx.glxdrawable;
 import glx.glxscreens_h;
 import glx.glxcontext;
 import glx.glxserver;
+import externs.epoxy;
 
 extern GLboolean __glXDrawableInit(__GLXdrawable* drawable, __GLXscreen* screen, DrawablePtr pDraw, int type, XID drawID, __GLXconfig* config);
 extern void __glXDrawableRelease(__GLXdrawable* drawable);

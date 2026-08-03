@@ -29,11 +29,12 @@ import build.dix_config;
 import core.stdc.stdlib;
 
 import fb.fb_priv;
+import externs.attrs;
 
 Bool fbCreateWindow(WindowPtr pWin)
 {
     dixSetPrivate(&pWin.devPrivates, mixin(fbGetWinPrivateKey!("pWin")),
-                  fbGetScreenPixmap(pWin.drawable.pScreen));
+                  mixin(fbGetScreenPixmap!("pWin.drawable.pScreen")));
     return TRUE;
 }
 
@@ -68,8 +69,8 @@ void fbCopyWindowProc(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr 
     int dstBpp = void;
     int dstXoff = void, dstYoff = void;
 
-    fbGetDrawable(pSrcDrawable, src, srcStride, srcBpp, srcXoff, srcYoff);
-    fbGetDrawable(pDstDrawable, dst, dstStride, dstBpp, dstXoff, dstYoff);
+    mixin(fbGetDrawable!("pSrcDrawable", "src", "srcStride", "srcBpp", "srcXoff", "srcYoff"));
+    mixin(fbGetDrawable!("pDstDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     while (nbox--) {
         fbBlt(src + (pbox.y1 + dy + srcYoff) * srcStride,
@@ -84,8 +85,8 @@ void fbCopyWindowProc(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr 
         pbox++;
     }
 
-    fbFinishAccess(pDstDrawable);
-    fbFinishAccess(pSrcDrawable);
+    mixin(fbFinishAccess!("pDstDrawable"));
+    mixin(fbFinishAccess!("pSrcDrawable"));
 }
 
 void fbCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
@@ -93,7 +94,7 @@ void fbCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
     RegionRec rgnDst = void;
     int dx = void, dy = void;
 
-    PixmapPtr pPixmap = fbGetWindowPixmap(pWin);
+    PixmapPtr pPixmap = mixin(fbGetWindowPixmap!("pWin"));
     DrawablePtr pDrawable = &pPixmap.drawable;
 
     dx = ptOldOrg.x - pWin.drawable.x;
@@ -108,7 +109,7 @@ void fbCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
         RegionTranslate(&rgnDst, -pPixmap.screen_x, -pPixmap.screen_y);
 
     miCopyRegion(pDrawable, pDrawable,
-                 0, &rgnDst, dx, dy, &fbCopyWindowProc, 0, 0);
+                 null, &rgnDst, dx, dy, &fbCopyWindowProc, 0, null);
 
     RegionUninit(&rgnDst);
     fbValidateDrawable(&pWin.drawable);
@@ -118,7 +119,7 @@ private void fbFixupWindowPixmap(DrawablePtr pDrawable, PixmapPtr* ppPixmap)
 {
     PixmapPtr pPixmap = *ppPixmap;
 
-    if (FbEvenTile(pPixmap.drawable.width * pPixmap.drawable.bitsPerPixel))
+    if (mixin(FbEvenTile!("pPixmap.drawable.width * pPixmap.drawable.bitsPerPixel")))
         fbPadPixmap(pPixmap);
 }
 

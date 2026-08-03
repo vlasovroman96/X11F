@@ -33,7 +33,7 @@ import core.stdc.stdint;
 import core.stdc.errno;
 import core.sys.posix.dlfcn;
 import core.sys.posix.sys.time;
-import externs.gl;
+// import externs.gl;
 import externs.glxtokens;
 import externs.internal.dri_interface;
 
@@ -46,6 +46,8 @@ import glx.glxcontext;
 import glx.glxscreens;
 import glx.glx_dri.glxdricommon;
 import glx.glxscreens_h;
+ import externs.epoxy;
+
 
 struct __GLXDRIconfig {
     __GLXconfig config;

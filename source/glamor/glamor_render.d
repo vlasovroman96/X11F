@@ -1276,10 +1276,10 @@ private Bool glamor_composite_with_shader(CARD8 op, PicturePtr source, PicturePt
             width = rects.width;
             height = rects.height;
 
-            mixin(DEBUGF!
-                (`"dest(%d,%d) source(%d %d) mask (%d %d), width %d height %d \n"`,
-                 `x_dest`, `y_dest`, `x_source`, `y_source`, `x_mask`, `y_mask`, `width`,
-                 `height`));
+            //mixin(DEBUGF!
+                // (`"dest(%d,%d) source(%d %d) mask (%d %d), width %d height %d \n"`,
+                //  `x_dest`, `y_dest`, `x_source`, `y_source`, `x_mask`, `y_mask`, `width`,
+                // //  `height`));
 
             glamor_set_normalize_vcoords_ext(dest_pixmap_priv, dst_xscale,
                                              dst_yscale, x_dest, y_dest,
@@ -1337,7 +1337,7 @@ disable_va:
     glDisableVertexAttribArray(GLAMOR_VERTEX_SOURCE);
     glDisableVertexAttribArray(GLAMOR_VERTEX_MASK);
     glDisable(GL_BLEND);
-    mixin(DEBUGF!(`"finish rendering.\n"`));
+    //mixin(DEBUGF!(`"finish rendering.\n"`));
     if (saved_source_format)
         source.format = saved_source_format;
 
@@ -1446,8 +1446,8 @@ Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mas
     x_temp_mask = x_mask;
     y_temp_mask = y_mask;
 
-    mixin(DEBUGF!(`"clipped (%d %d) (%d %d) (%d %d) width %d height %d \n"`,
-           `x_source`, `y_source`, `x_mask`, `y_mask`, `x_dest`, `y_dest`, `width`, `height`));
+    //mixin(DEBUGF!(`"clipped (%d %d) (%d %d) (%d %d) width %d height %d \n"`,
+        //    `x_source`, `y_source`, `x_mask`, `y_mask`, `x_dest`, `y_dest`, `width`, `height`));
 
     /* Is the composite operation equivalent to a copy? */
     if (source &&
@@ -1586,7 +1586,7 @@ Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mas
             prect[i].y_dst = box[i].y1;
             prect[i].width = box[i].x2 - box[i].x1;
             prect[i].height = box[i].y2 - box[i].y1;
-            mixin(DEBUGF!(`"dest %d %d \n"`, `prect[i].x_dst`, `prect[i].y_dst`));
+            //mixin(DEBUGF!(`"dest %d %d \n"`, `prect[i].x_dst`, `prect[i].y_dst`));
         }
         ok = glamor_composite_with_shader(op, temp_src, temp_mask, dest,
                                           temp_src_pixmap, temp_mask_pixmap, dest_pixmap,
@@ -1633,10 +1633,10 @@ void glamor_composite(CARD8 op, PicturePtr source, PicturePtr mask, PicturePtr d
             goto fail;
     }
 
-    mixin(DEBUGF!
-        (`"source pixmap %p (%d %d) mask(%d %d) dest(%d %d) width %d height %d \n"`,
-         `source_pixmap`, `x_source`, `y_source`, `x_mask`, `y_mask`, `x_dest`, `y_dest`,
-         `width`, `height`));
+    //mixin(DEBUGF!
+        // (`"source pixmap %p (%d %d) mask(%d %d) dest(%d %d) width %d height %d \n"`,
+        //  `source_pixmap`, `x_source`, `y_source`, `x_mask`, `y_mask`, `x_dest`, `y_dest`,
+        //  `width`, `height`));
 
     if (!glamor_pixmap_has_fbo(dest_pixmap))
         goto fail;
@@ -1677,7 +1677,7 @@ void glamor_composite(CARD8 op, PicturePtr source, PicturePtr mask, PicturePtr d
     }
 
     nbox = REGION_NUM_RECTS(&region);
-    mixin(DEBUGF!(`"first clipped when compositing.\n"`));
+    //mixin(DEBUGF!(`"first clipped when compositing.\n"`));
     DEBUGRegionPrint(&region);
     extent = RegionExtents(&region);
     if (nbox == 0)

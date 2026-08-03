@@ -29,6 +29,8 @@ import include.misc;
 import glx.glxserver;
 import glx.indirect_dispatch;
 import glx.unpack;
+ import externs.epoxy;
+
 
 private int set_client_info(__GLXclientState* cl, xGLXSetClientInfoARBReq* req, uint bytes_per_version)
 {

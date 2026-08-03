@@ -39,6 +39,8 @@ import glx.singlesize;
 import glx.unpack;
 import glx.indirect_dispatch;
 import glx.indirect_size_get;
+ import externs.epoxy;
+
 
 int __glXDispSwap_ReadPixels(__GLXclientState* cl, GLbyte* pc)
 {

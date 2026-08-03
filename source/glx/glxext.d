@@ -53,6 +53,8 @@ import glx.indirect_util;
 import include.glxvndabi;
 import include.glx_extinit;
 import glx.glx_dri.glxdriswrast;
+ import externs.epoxy;
+
 
 
 /*

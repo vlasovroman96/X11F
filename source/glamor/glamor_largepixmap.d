@@ -54,13 +54,13 @@ private glamor_pixmap_clipped_regions* __glamor_compute_clipped_regions(int bloc
     end_x = MIN(x + w, extent.x2);
     end_y = MIN(y + h, extent.y2);
 
-    mixin(DEBUGF!(`"start compute clipped regions:\n"`));
-    mixin(DEBUGF!(`"block w %d h %d  x %d y %d w %d h %d, block_stride %d \n"`,
-           `block_w`, `block_h`, `x`, `y`, `w`, `h`, `block_stride`));
-    DEBUGRegionPrint(region);
+    //mixin(DEBUGF!(`"start compute clipped regions:\n"`));
+    //mixin(DEBUGF!(`"block w %d h %d  x %d y %d w %d h %d, block_stride %d \n"`,
+        //    `block_w`, `block_h`, `x`, `y`, `w`, `h`, `block_stride`));
+    // DEBUGRegionPrint(region);
 
-    mixin(DEBUGF!(`"start_x %d start_y %d end_x %d end_y %d \n"`, `start_x`, `start_y`,
-           `end_x`, `end_y`));
+    //mixin(DEBUGF!(`"start_x %d start_y %d end_x %d end_y %d \n"`, `start_x`, `start_y`,
+        //    `end_x`, `end_y`));
 
     if (start_x >= end_x || start_y >= end_y) {
         *n_region = 0;
@@ -80,10 +80,10 @@ private glamor_pixmap_clipped_regions* __glamor_compute_clipped_regions(int bloc
         return null;
     }
 
-    mixin(DEBUGF!(`"startx %d starty %d endx %d endy %d \n"`,
-           `start_x`, `start_y`, `end_x`, `end_y`));
-    mixin(DEBUGF!(`"start_block_x %d end_block_x %d \n"`, `start_block_x`, `end_block_x`));
-    mixin(DEBUGF!(`"start_block_y %d end_block_y %d \n"`, `start_block_y`, `end_block_y`));
+    //mixin(DEBUGF!(`"startx %d starty %d endx %d endy %d \n"`,
+        //    `start_x`, `start_y`, `end_x`, `end_y`));
+    //mixin(DEBUGF!(`"start_block_x %d end_block_x %d \n"`, `start_block_x`, `end_block_x`));
+    //mixin(DEBUGF!(`"start_block_y %d end_block_y %d \n"`, `start_block_y`, `end_block_y`));
 
     if (!reverse) {
         loop_start_block_x = start_block_x;
@@ -122,11 +122,11 @@ private glamor_pixmap_clipped_regions* __glamor_compute_clipped_regions(int bloc
             temp_box.x2 = MIN(temp_box.x1 + block_w, end_x);
             temp_box.y2 = MIN(temp_box.y1 + block_h, end_y);
             RegionInitBoxes(&temp_region, &temp_box, 1);
-            mixin(DEBUGF!(`"block idx %d \n"`, `temp_block_idx`));
+            //mixin(DEBUGF!(`"block idx %d \n"`, `temp_block_idx`));
             DEBUGRegionPrint(&temp_region);
             current_region = RegionCreate(null, 4);
             RegionIntersect(current_region, &temp_region, region);
-            mixin(DEBUGF!(`"i %d j %d  region: \n"`, `i`, `j`));
+            //mixin(DEBUGF!(`"i %d j %d  region: \n"`, `i`, `j`));
             DEBUGRegionPrint(current_region);
             if (RegionNumRects(current_region)) {
                 clipped_regions[k].region = current_region;
@@ -166,7 +166,7 @@ glamor_pixmap_clipped_regions* glamor_compute_clipped_regions_ext(PixmapPtr pixm
     BoxRec small_box = void;
     int block_w = void, block_h = void;
 
-    mixin(DEBUGF!(`"ext called \n"`));
+    //mixin(DEBUGF!(`"ext called \n"`));
 
     if (glamor_pixmap_priv_is_small(pixmap_priv)) {
         clipped_regions = cast(glamor_pixmap_clipped_regions*) calloc(1, typeof(*clipped_regions).sizeof);
@@ -456,12 +456,12 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
         return null;
     }
     if (right_shift != 0 || down_shift != 0) {
-        mixin(DEBUGF!(`"region to be repeated shifted \n"`));
+        //mixin(DEBUGF!(`"region to be repeated shifted \n"`));
         DEBUGRegionPrint(region);
     }
-    mixin(DEBUGF!(`"repeat pixmap width %d height %d \n"`, `pixmap_width`, `pixmap_height`));
-    mixin(DEBUGF!(`"extent x1 %d y1 %d x2 %d y2 %d \n"`, `extent.x1`, `extent.y1`,
-           `extent.x2`, `extent.y2`));
+    //mixin(DEBUGF!(`"repeat pixmap width %d height %d \n"`, `pixmap_width`, `pixmap_height`));
+    //mixin(DEBUGF!(`"extent x1 %d y1 %d x2 %d y2 %d \n"`, `extent.x1`, `extent.y1`,
+        //    `extent.x2`, `extent.y2`));
     for (j = 0; j < priv.block_hcnt; j++) {
         for (i = 0; i < priv.block_wcnt; i++) {
             int dx = pixmap_width;
@@ -501,8 +501,8 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
 
             current_region = RegionCreate(null, 4);
             RegionInit(&temp_region, null, 4);
-            mixin(DEBUGF!(`"init repeat box %d %d %d %d \n"`,
-                   `repeat_box.x1`, `repeat_box.y1`, `repeat_box.x2`, `repeat_box.y2`));
+            //mixin(DEBUGF!(`"init repeat box %d %d %d %d \n"`,
+                //    `repeat_box.x1`, `repeat_box.y1`, `repeat_box.x2`, `repeat_box.y2`));
 
             if (repeat_type == RepeatNormal) {
                 saved_y1 = repeat_box.y1;
@@ -516,10 +516,10 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
                          repeat_box.y1 += dy, repeat_box.y2 += dy) {
 
                         RegionInitBoxes(&repeat_region, &repeat_box, 1);
-                        mixin(DEBUGF!(`"Start to clip repeat region: \n"`));
+                        //mixin(DEBUGF!(`"Start to clip repeat region: \n"`));
                         DEBUGRegionPrint(&repeat_region);
                         RegionIntersect(&temp_region, &repeat_region, region);
-                        mixin(DEBUGF!(`"clip result:\n"`));
+                        //mixin(DEBUGF!(`"clip result:\n"`));
                         DEBUGRegionPrint(&temp_region);
                         RegionAppend(current_region, &temp_region);
                         RegionUninit(&repeat_region);
@@ -545,10 +545,10 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
                     for (repeat_box.y1 = saved_y1, repeat_box.y2 = saved_y2;;
                          repeat_box.y1 += dy, repeat_box.y2 += dy) {
 
-                        mixin(DEBUGF!(`"x_idx %d y_idx %d dx %d dy %d\n"`, `x_idx`, `y_idx`,
-                               `dx`, `dy`));
-                        mixin(DEBUGF!(`"repeat box %d %d %d %d \n"`, `repeat_box.x1`,
-                               `repeat_box.y1`, `repeat_box.x2`, `repeat_box.y2`));
+                        //mixin(DEBUGF!(`"x_idx %d y_idx %d dx %d dy %d\n"`, `x_idx`, `y_idx`,
+                            //    `dx`, `dy`));
+                        //mixin(DEBUGF!(`"repeat box %d %d %d %d \n"`, `repeat_box.x1`,
+                            //    `repeat_box.y1`, `repeat_box.x2`, `repeat_box.y2`));
 
                         if (priv.block_hcnt > 1) {
                             reflect_repeat_box.y1 = (y_idx & 1) ?
@@ -563,15 +563,15 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
                             reflect_repeat_box.y2 = repeat_box.y2;
                         }
 
-                        mixin(DEBUGF!(`"valid_repeat_box x1 %d y1 %d \n"`,
-                               `valid_repeat_box.x1`, `valid_repeat_box.y1`));
+                        //mixin(DEBUGF!(`"valid_repeat_box x1 %d y1 %d \n"`,
+                            //    `valid_repeat_box.x1`, `valid_repeat_box.y1`));
                         if (valid_repeat_box.y1 >= extent.y2)
                             break;
                         RegionInitBoxes(&repeat_region, valid_repeat_box, 1);
-                        mixin(DEBUGF!(`"start to clip repeat[reflect] region: \n"`));
+                        //mixin(DEBUGF!(`"start to clip repeat[reflect] region: \n"`));
                         DEBUGRegionPrint(&repeat_region);
                         RegionIntersect(&temp_region, &repeat_region, region);
-                        mixin(DEBUGF!(`"result:\n"`));
+                        //mixin(DEBUGF!(`"result:\n"`));
                         DEBUGRegionPrint(&temp_region);
                         if (is_transform && RegionNumRects(&temp_region)) {
                             BoxRec temp_box = void;
@@ -637,7 +637,7 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
                             RegionTranslate(&temp_region,
                                             x_center_shift * pixmap_width,
                                             y_center_shift * pixmap_height);
-                            mixin(DEBUGF!(`"for transform result:\n"`));
+                            //mixin(DEBUGF!(`"for transform result:\n"`));
                             DEBUGRegionPrint(&temp_region);
                         }
                         RegionAppend(current_region, &temp_region);
@@ -647,7 +647,7 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
                     x_idx++;
                 }
             }
-            mixin(DEBUGF!(`"dx %d dy %d \n"`, `dx`, `dy`));
+            //mixin(DEBUGF!(`"dx %d dy %d \n"`, `dx`, `dy`));
 
             if (RegionNumRects(current_region)) {
 
@@ -694,7 +694,7 @@ private glamor_pixmap_clipped_regions* glamor_compute_transform_clipped_regions(
 
     temp_region = RegionCreate(null, 4);
     temp_extent = RegionExtents(region);
-    mixin(DEBUGF!(`"dest region \n"`));
+    //mixin(DEBUGF!(`"dest region \n"`));
     DEBUGRegionPrint(region);
     /* dx/dy may exceed MAX SHORT. we have to use
      * a box32 to represent it.*/
@@ -703,8 +703,8 @@ private glamor_pixmap_clipped_regions* glamor_compute_transform_clipped_regions(
     temp_box.y1 = temp_extent.y1 + dy;
     temp_box.y2 = temp_extent.y2 + dy;
 
-    mixin(DEBUGF!(`"source box %d %d %d %d \n"`, `temp_box.x1`, `temp_box.y1`, `temp_box.x2`,
-           `temp_box.y2`));
+    //mixin(DEBUGF!(`"source box %d %d %d %d \n"`, `temp_box.x1`, `temp_box.y1`, `temp_box.x2`,
+        //    `temp_box.y2`));
     if (transform)
         glamor_get_transform_extent_from_box(&temp_box, transform);
     if (repeat_type == RepeatNone) {
@@ -721,14 +721,14 @@ private glamor_pixmap_clipped_regions* glamor_compute_transform_clipped_regions(
     short_box.x2 = MIN(temp_box.x2, INT16_MAX);
     short_box.y2 = MIN(temp_box.y2, INT16_MAX);
     RegionInitBoxes(temp_region, &short_box, 1);
-    mixin(DEBUGF!(`"copy to temp source region \n"`));
+    //mixin(DEBUGF!(`"copy to temp source region \n"`));
     DEBUGRegionPrint(temp_region);
     ret = _glamor_compute_clipped_regions(pixmap,
                                           priv,
                                           temp_region,
                                           n_region,
                                           repeat_type, 1, reverse, upsidedown);
-    mixin(DEBUGF!(`"n_regions = %d \n"`, `*n_region`));
+    //mixin(DEBUGF!(`"n_regions = %d \n"`, `*n_region`));
     RegionDestroy(temp_region);
 
     return ret;
@@ -762,20 +762,20 @@ private void glamor_merge_clipped_regions(PixmapPtr pixmap, glamor_pixmap_privat
 
     temp_region = RegionCreate(null, 4);
     for (i = 0; i < *n_regions; i++) {
-        mixin(DEBUGF!(`"Region %d:\n"`, `i`));
+        //mixin(DEBUGF!(`"Region %d:\n"`, `i`));
         DEBUGRegionPrint(clipped_regions[i].region);
         RegionAppend(temp_region, clipped_regions[i].region);
     }
 
     RegionValidate(temp_region, &overlap);
-    mixin(DEBUGF!(`"temp region: \n"`));
+    //mixin(DEBUGF!(`"temp region: \n"`));
     DEBUGRegionPrint(temp_region);
 
     temp_box = *RegionExtents(temp_region);
 
-    mixin(DEBUGF!(`"need copy region: \n"`));
-    mixin(DEBUGF!(`"%d %d %d %d \n"`, `temp_box.x1`, `temp_box.y1`, `temp_box.x2`,
-           `temp_box.y2`));
+    //mixin(DEBUGF!(`"need copy region: \n"`));
+    //mixin(DEBUGF!(`"%d %d %d %d \n"`, `temp_box.x1`, `temp_box.y1`, `temp_box.x2`,
+        //    `temp_box.y2`));
     temp_pixmap =
         glamor_create_pixmap(pixmap.drawable.pScreen,
                              temp_box.x2 - temp_box.x1,
@@ -817,8 +817,8 @@ private void glamor_merge_clipped_regions(PixmapPtr pixmap, glamor_pixmap_privat
             while (nbox--) {
                 int dx = void, dy = void, c = void, d = void;
 
-                mixin(DEBUGF!(`"box x1 %d y1 %d x2 %d y2 %d \n"`,
-                       `box.x1`, `box.y1`, `box.x2`, `box.y2`));
+                //mixin(DEBUGF!(`"box x1 %d y1 %d x2 %d y2 %d \n"`,
+                    //    `box.x1`, `box.y1`, `box.x2`, `box.y2`));
                 modulus(box.x1, pixmap_width, c);
                 dx = c - (box.x1 - temp_box.x1);
                 copy_box.x1 = box.x1 - temp_box.x1;
@@ -829,9 +829,9 @@ private void glamor_merge_clipped_regions(PixmapPtr pixmap, glamor_pixmap_privat
                 copy_box.y1 = box.y1 - temp_box.y1;
                 copy_box.y2 = box.y2 - temp_box.y1;
 
-                mixin(DEBUGF!(`"copying box %d %d %d %d, dx %d dy %d\n"`,
-                       `copy_box.x1`, `copy_box.y1`, `copy_box.x2`,
-                       `copy_box.y2`, `dx`, `dy`));
+                //mixin(DEBUGF!(`"copying box %d %d %d %d, dx %d dy %d\n"`,
+                    //    `copy_box.x1`, `copy_box.y1`, `copy_box.x2`,
+                    //    `copy_box.y2`, `dx`, `dy`));
 
                 glamor_copy(&pixmap.drawable,
                             &temp_pixmap.drawable,
@@ -849,8 +849,8 @@ private void glamor_merge_clipped_regions(PixmapPtr pixmap, glamor_pixmap_privat
     RegionDestroy(temp_region);
     priv.box = temp_box;
     priv.fbo = glamor_pixmap_detach_fbo(temp_priv);
-    mixin(DEBUGF!(`"priv box x1 %d y1 %d x2 %d y2 %d \n"`,
-           `priv.box.x1`, `priv.box.y1`, `priv.box.x2`, `priv.box.y2`));
+    //mixin(DEBUGF!(`"priv box x1 %d y1 %d x2 %d y2 %d \n"`,
+        //    `priv.box.x1`, `priv.box.y1`, `priv.box.x2`, `priv.box.y2`));
     glamor_destroy_pixmap(temp_pixmap);
     *need_clean_fbo = 1;
     *n_regions = 1;
@@ -904,8 +904,8 @@ private Bool glamor_get_transform_block_size(pixman_transform* transform, int bl
     *transformed_block_h = *transformed_block_w;
     if (*transformed_block_w <= 0 || *transformed_block_h <= 0)
         return FALSE;
-    mixin(DEBUGF!(`"original block_w/h %d %d, fixed %d %d \n"`, `block_w`, `block_h`,
-           `*transformed_block_w`, `*transformed_block_h`));
+    //mixin(DEBUGF!(`"original block_w/h %d %d, fixed %d %d \n"`, `block_w`, `block_h`,
+        //    `*transformed_block_w`, `*transformed_block_h`));
     return TRUE;
 }
 
@@ -1078,7 +1078,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
                                              &source_transformed_block_width,
                                              &source_transformed_block_height))
         {
-            mixin(DEBUGF!(`"source block size less than 1, fallback.\n"`));
+            //mixin(DEBUGF!(`"source block size less than 1, fallback.\n"`));
             RegionTranslate(region, dest.pDrawable.x, dest.pDrawable.y);
             return FALSE;
         }
@@ -1086,8 +1086,8 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
             min(fixed_block_width, source_transformed_block_width);
         fixed_block_height =
             min(fixed_block_height, source_transformed_block_height);
-        mixin(DEBUGF!(`"new source block size %d x %d \n"`, `fixed_block_width`,
-               `fixed_block_height`));
+        //mixin(DEBUGF!(`"new source block size %d x %d \n"`, `fixed_block_width`,
+            //    `fixed_block_height`));
     }
 
     if (mask_pixmap_priv
@@ -1099,7 +1099,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
                                              __glamor_large(mask_pixmap_priv).block_h,
                                              &mask_transformed_block_width,
                                              &mask_transformed_block_height)) {
-            mixin(DEBUGF!(`"mask block size less than 1, fallback.\n"`));
+            //mixin(DEBUGF!(`"mask block size less than 1, fallback.\n"`));
             RegionTranslate(region, dest.pDrawable.x, dest.pDrawable.y);
             return FALSE;
         }
@@ -1107,8 +1107,8 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
             min(fixed_block_width, mask_transformed_block_width);
         fixed_block_height =
             min(fixed_block_height, mask_transformed_block_height);
-        mixin(DEBUGF!(`"new mask block size %d x %d \n"`, `fixed_block_width`,
-               `fixed_block_height`));
+        //mixin(DEBUGF!(`"new mask block size %d x %d \n"`, `fixed_block_width`,
+            //    `fixed_block_height`));
     }
 
     /*compute the correct block width and height whose transformed source/mask
@@ -1125,7 +1125,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
                                                               region,
                                                               &n_dest_regions,
                                                               0, 0, 0);
-    mixin(DEBUGF!(`"dest clipped result %d region: \n"`, `n_dest_regions`));
+    //mixin(DEBUGF!(`"dest clipped result %d region: \n"`, `n_dest_regions`));
     if (source_pixmap_priv
         && (source_pixmap_priv == dest_pixmap_priv ||
             source_pixmap_priv == mask_pixmap_priv)
@@ -1140,9 +1140,9 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
     assert(mask_pixmap_priv != dest_pixmap_priv);
 
     for (i = 0; i < n_dest_regions; i++) {
-        mixin(DEBUGF!(`"dest region %d  idx %d\n"`, `i`,
-               `clipped_dest_regions[i].block_idx`));
-        DEBUGRegionPrint(clipped_dest_regions[i].region);
+        //mixin(DEBUGF!(`"dest region %d  idx %d\n"`, `i`,
+            //    `clipped_dest_regions[i].block_idx`));
+        // DEBUGRegionPrint(clipped_dest_regions[i].region);
         glamor_set_pixmap_fbo_current(dest_pixmap_priv,
                                clipped_dest_regions[i].block_idx);
         if (source_pixmap_priv &&
@@ -1180,7 +1180,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
                          clipped_source_regions, &n_source_regions,
                          &need_clean_source_fbo);
             }
-            mixin(DEBUGF!(`"source clipped result %d region: \n"`, `n_source_regions`));
+            //mixin(DEBUGF!(`"source clipped result %d region: \n"`, `n_source_regions`));
             for (j = 0; j < n_source_regions; j++) {
                 if (is_normal_source_fbo)
                     glamor_set_pixmap_fbo_current(source_pixmap_priv,
@@ -1191,8 +1191,8 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
                     if (is_normal_mask_fbo && is_normal_source_fbo) {
                         /* both mask and source are normal fbo box without transform or repeatpad.
                          * The region is clipped against source and then we clip it against mask here.*/
-                        mixin(DEBUGF!(`"source region %d  idx %d\n"`, `j`,
-                               `clipped_source_regions[j].block_idx`));
+                        //mixin(DEBUGF!(`"source region %d  idx %d\n"`, `j`,
+                            //    `clipped_source_regions[j].block_idx`));
                         DEBUGRegionPrint(clipped_source_regions[j].region);
                         RegionTranslate(clipped_source_regions[j].region,
                                         -x_source + x_mask, -y_source + y_mask);
@@ -1250,7 +1250,7 @@ Bool glamor_composite_largepixmap_region(CARD8 op, PicturePtr source, PicturePtr
                                  clipped_mask_regions, &n_mask_regions,
                                  &need_clean_mask_fbo);
                     }
-                    mixin(DEBUGF!(`"mask clipped result %d region: \n"`, `n_mask_regions`));
+                    //mixin(DEBUGF!(`"mask clipped result %d region: \n"`, `n_mask_regions`));
 
 enum string COMPOSITE_REGION(string region) = `do {				
 	if (!glamor_composite_clipped_region(op,		
@@ -1266,17 +1266,17 @@ enum string COMPOSITE_REGION(string region) = `do {
    } while(0)`;
 
                     for (k = 0; k < n_mask_regions; k++) {
-                        mixin(DEBUGF!(`"mask region %d  idx %d\n"`, `k`,
-                               `clipped_mask_regions[k].block_idx`));
+                        //mixin(DEBUGF!(`"mask region %d  idx %d\n"`, `k`,
+                            //    `clipped_mask_regions[k].block_idx`));
                         DEBUGRegionPrint(clipped_mask_regions[k].region);
                         if (is_normal_mask_fbo) {
                             glamor_set_pixmap_fbo_current(mask_pixmap_priv,
                                                    clipped_mask_regions[k].
                                                    block_idx);
-                            mixin(DEBUGF!(`"mask fbo off %d %d \n"`,
-                                   `__glamor_large(mask_pixmap_priv).box.x1`,
-                                   `__glamor_large(mask_pixmap_priv).box.y1`));
-                            mixin(DEBUGF!(`"start composite mask hasn't transform.\n"`));
+                            //mixin(DEBUGF!(`"mask fbo off %d %d \n"`,
+                                //    `__glamor_large(mask_pixmap_priv).box.x1`,
+                                //    `__glamor_large(mask_pixmap_priv).box.y1`));
+                            //mixin(DEBUGF!(`"start composite mask hasn't transform.\n"`));
                             RegionTranslate(clipped_mask_regions[k].region,
                                             x_dest - x_mask +
                                             dest.pDrawable.x,
@@ -1285,16 +1285,16 @@ enum string COMPOSITE_REGION(string region) = `do {
                             mixin(COMPOSITE_REGION!(`clipped_mask_regions[k].region`));
                         }
                         else if (!is_normal_mask_fbo && !is_normal_source_fbo) {
-                            mixin(DEBUGF!
-                                (`"start composite both mask and source have transform.\n"`));
+                            //mixin(DEBUGF!
+                                // (`"start composite both mask and source have transform.\n"`));
                             RegionTranslate(clipped_dest_regions[i].region,
                                             dest.pDrawable.x,
                                             dest.pDrawable.y);
                             mixin(COMPOSITE_REGION!(`clipped_dest_regions[i].region`));
                         }
                         else {
-                            mixin(DEBUGF!
-                                (`"start composite only mask has transform.\n"`));
+                            //mixin(DEBUGF!
+                                // (`"start composite only mask has transform.\n"`));
                             RegionTranslate(clipped_source_regions[j].region,
                                             x_dest - x_source +
                                             dest.pDrawable.x,
@@ -1377,9 +1377,9 @@ enum string COMPOSITE_REGION(string region) = `do {
                 }
 
                 for (k = 0; k < n_mask_regions; k++) {
-                    mixin(DEBUGF!(`"mask region %d  idx %d\n"`, `k`,
-                           `clipped_mask_regions[k].block_idx`));
-                    DEBUGRegionPrint(clipped_mask_regions[k].region);
+                    //mixin(DEBUGF!(`"mask region %d  idx %d\n"`, `k`,
+                        //    `clipped_mask_regions[k].block_idx`));
+                    // DEBUGRegionPrint(clipped_mask_regions[k].region);
                     if (is_normal_mask_fbo) {
                         glamor_set_pixmap_fbo_current(mask_pixmap_priv,
                                                clipped_mask_regions[k].

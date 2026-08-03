@@ -33,6 +33,8 @@ import glx.glxserver;
 import glx.glxext;
 import glx.indirect_dispatch;
 import include.opaque;
+ import externs.epoxy;
+
 
 enum ALL_VALID_FLAGS = 
     (GLX_CONTEXT_DEBUG_BIT_ARB | GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 

@@ -36,6 +36,12 @@ import include.mipict;
 import glamor.glamor_priv;
 import include.damage;
 import externs.X11.extensions.renderproto;
+import externs.attrs;
+import exa.exa_render;
+import render.mipict;
+import glamor.glamor;
+import render.picture;
+
 
 
 /** @file glamor_compositerects.
@@ -49,12 +55,12 @@ private short bound(short a, ushort b)
 
     if (v > MAXSHORT)
         return MAXSHORT;
-    return v;
+    return cast(short)v;
 }
 
 private Bool _pixman_region_init_clipped_rectangles(pixman_region16_t* region, uint num_rects, xRectangle* rects, int tx, int ty, BoxPtr extents)
 {
-    pixman_box16_t[64] stack_boxes = void; pixman_box16_t* boxes = stack_boxes;
+    pixman_box16_t[64] stack_boxes = void; pixman_box16_t* boxes = stack_boxes.ptr;
     pixman_bool_t ret = void;
     uint i = void, j = void;
 
@@ -65,19 +71,19 @@ private Bool _pixman_region_init_clipped_rectangles(pixman_region16_t* region, u
     }
 
     for (i = j = 0; i < num_rects; i++) {
-        boxes[j].x1 = rects[i].x + tx;
+        boxes[j].x1 = cast(short)(rects[i].x + tx);
         if (boxes[j].x1 < extents.x1)
             boxes[j].x1 = extents.x1;
 
-        boxes[j].y1 = rects[i].y + ty;
+        boxes[j].y1 = cast(short)(rects[i].y + ty);
         if (boxes[j].y1 < extents.y1)
             boxes[j].y1 = extents.y1;
 
-        boxes[j].x2 = bound(rects[i].x + tx, rects[i].width);
+        boxes[j].x2 = bound(cast(short)(rects[i].x + tx), rects[i].width);
         if (boxes[j].x2 > extents.x2)
             boxes[j].x2 = extents.x2;
 
-        boxes[j].y2 = bound(rects[i].y + ty, rects[i].height);
+        boxes[j].y2 = bound(cast(short)(rects[i].y + ty), rects[i].height);
         if (boxes[j].y2 > extents.y2)
             boxes[j].y2 = extents.y2;
 
@@ -92,10 +98,10 @@ private Bool _pixman_region_init_clipped_rectangles(pixman_region16_t* region, u
     if (boxes != stack_boxes.ptr)
         free(boxes);
 
-    DEBUGF("%s: nrects=%d, region=(%d, %d), (%d, %d) x %d\n",
-           __FUNCTION__.ptr, num_rects,
-           region.extents.x1, region.extents.y1,
-           region.extents.x2, region.extents.y2, j);
+    // //DEBUGF("%s: nrects=%d, region=(%d, %d), (%d, %d) x %d\n",
+    //        __FUNCTION__.ptr, num_rects,
+    //        region.extents.x1, region.extents.y1,
+    //        region.extents.x2, region.extents.y2, j);
     return ret;
 }
 
@@ -109,19 +115,19 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
     PicturePtr source = null;
     Bool need_free_region = FALSE;
 
-    DEBUGF("%s(op=%d, %08x x %d [(%d, %d)x(%d, %d) ...])\n",
-           __FUNCTION__.ptr, op,
-           (color.alpha >> 8 << 24) |
-           (color.red >> 8 << 16) |
-           (color.green >> 8 << 8) |
-           (color.blue >> 8 << 0),
-           num_rects, rects[0].x, rects[0].y, rects[0].width, rects[0].height);
+    // //DEBUGF("%s(op=%d, %08x x %d [(%d, %d)x(%d, %d) ...])\n",
+    //        __FUNCTION__.ptr, op,
+    //        (color.alpha >> 8 << 24) |
+    //        (color.red >> 8 << 16) |
+    //        (color.green >> 8 << 8) |
+    //        (color.blue >> 8 << 0),
+    //        num_rects, rects[0].x, rects[0].y, rects[0].width, rects[0].height);
 
     if (!num_rects)
         return;
 
     if (RegionNil(dst.pCompositeClip)) {
-        DEBUGF("%s: empty clip, skipping\n", __FUNCTION__.ptr);
+        //DEBUGF("%s: empty clip, skipping\n", __FUNCTION__.ptr);
         return;
     }
 
@@ -177,7 +183,7 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
             break;
         default: break;}
     }
-    DEBUGF("%s: converted to op %d\n", __FUNCTION__.ptr, op);
+    // //DEBUGF("%s: converted to op %d\n", __FUNCTION__.ptr, op);
 
     if (!_pixman_region_init_clipped_rectangles(&region,
                                                 num_rects, rects,
@@ -185,7 +191,7 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
                                                 dst.pDrawable.y,
                                                 &dst.pCompositeClip.extents))
     {
-        DEBUGF("%s: allocation failed for region\n", __FUNCTION__.ptr);
+        // //DEBUGF("%s: allocation failed for region\n", __FUNCTION__.ptr);
         return;
     }
 
@@ -195,32 +201,32 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
     if (!GLAMOR_PIXMAP_PRIV_HAS_FBO(priv))
         goto fallback;
     if (dst.alphaMap) {
-        DEBUGF("%s: fallback, dst has an alpha-map\n", __FUNCTION__.ptr);
+        // //DEBUGF("%s: fallback, dst has an alpha-map\n", __FUNCTION__.ptr);
         goto fallback;
     }
 
     need_free_region = TRUE;
 
-    DEBUGF("%s: drawable extents (%d, %d),(%d, %d) x %d\n",
-           __FUNCTION__.ptr,
-           RegionExtents(&region).x1, RegionExtents(&region).y1,
-           RegionExtents(&region).x2, RegionExtents(&region).y2,
-           RegionNumRects(&region));
+    // //DEBUGF("%s: drawable extents (%d, %d),(%d, %d) x %d\n",
+        //    __FUNCTION__.ptr,
+        //    RegionExtents(&region).x1, RegionExtents(&region).y1,
+        //    RegionExtents(&region).x2, RegionExtents(&region).y2,
+        //    RegionNumRects(&region));
 
     if (dst.pCompositeClip.data &&
         (!assumeNoGC(&pixman_region_intersect)(&region, &region, dst.pCompositeClip) ||
          RegionNil(&region))) {
-        DEBUGF("%s: zero-intersection between rectangles and clip\n",
-               __FUNCTION__.ptr);
+        //DEBUGF("%s: zero-intersection between rectangles and clip\n",
+            //    __FUNCTION__.ptr);
         assumeNoGC(&pixman_region_fini)(&region);
         return;
     }
 
-    DEBUGF("%s: clipped extents (%d, %d),(%d, %d) x %d\n",
-           __FUNCTION__.ptr,
-           RegionExtents(&region).x1, RegionExtents(&region).y1,
-           RegionExtents(&region).x2, RegionExtents(&region).y2,
-           RegionNumRects(&region));
+    //DEBUGF("%s: clipped extents (%d, %d),(%d, %d) x %d\n",
+        //    __FUNCTION__.ptr,
+        //    RegionExtents(&region).x1, RegionExtents(&region).y1,
+        //    RegionExtents(&region).x2, RegionExtents(&region).y2,
+        //    RegionNumRects(&region));
 
     boxes = assumeNoGC(&pixman_region_rectangles)(&region, &num_boxes);
     if (op == PictOpSrc || op == PictOpClear) {
@@ -228,10 +234,10 @@ void glamor_composite_rectangles(CARD8 op, PicturePtr dst, xRenderColor* color, 
 
         assumeNoGC(&pixman_region_translate)(&region, -dst.pDrawable.x, -dst.pDrawable.y);
 
-        DEBUGF("%s: drawable extents (%d, %d),(%d, %d)\n",
-               __FUNCTION__.ptr, dst_x, dst_y,
-               RegionExtents(&region).x1, RegionExtents(&region).y1,
-               RegionExtents(&region).x2, RegionExtents(&region).y2);
+        //DEBUGF("%s: drawable extents (%d, %d),(%d, %d)\n",
+            //    __FUNCTION__.ptr, dst_x, dst_y,
+            //    RegionExtents(&region).x1, RegionExtents(&region).y1,
+            //    RegionExtents(&region).x2, RegionExtents(&region).y2);
 
         if (op == PictOpClear)
             pixel = 0;

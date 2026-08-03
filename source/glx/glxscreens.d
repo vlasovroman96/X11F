@@ -51,6 +51,8 @@ import glx.glxext;
 import include.protocol_versions;
 import include.compositeext;
 import glx.glxscreens_h;
+ import externs.epoxy;
+
 
 private DevPrivateKeyRec glxScreenPrivateKeyRec;
 

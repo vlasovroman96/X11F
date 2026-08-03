@@ -40,6 +40,8 @@ version (GLAMOR_FOR_XORG) {
 public import xf86xv;
 }
 
+import glamor.glamor;
+
 // struct glamor_context;
 struct gbm_bo;
 struct gbm_device;
@@ -118,7 +120,7 @@ extern int glamor_clear_pixmap(PixmapPtr pixmap);
 
 extern int glamor_block_handler(ScreenPtr screen);
 
-extern int glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint usage);
+// extern int glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint usage);
 
 /* needed by Xrdp module include.*/
 enum GLAMOR_CREATE_PIXMAP_CPU =        0x100;

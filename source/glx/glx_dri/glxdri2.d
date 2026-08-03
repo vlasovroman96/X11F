@@ -33,7 +33,7 @@ import core.stdc.string;
 import core.stdc.errno;
 import core.sys.posix.dlfcn;
 
-import externs.gl;
+// import externs.gl;
 import externs.internal.dri_interface;
 import externs.glxtokens;
 
@@ -50,6 +50,7 @@ import glx.glx_dri.glxdricommon;
 
 import glx.extension_string;
 import glx.glxscreens_h;
+ import externs.epoxy;
 
 
 

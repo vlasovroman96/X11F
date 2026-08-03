@@ -36,9 +36,11 @@ public import include.glx_extinit;
 
 public import glx.extension_string;
 public import include.glxvndabi;
-import externs.GL.glx_;
+// //import externs.GL.glx;
 import glx.glxcontext;
 import glx.glxdrawable;
+ import externs.epoxy;
+
 
 struct __GLXconfig {
     /* Management */

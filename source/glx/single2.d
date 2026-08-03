@@ -46,6 +46,8 @@ import glx.glxutil;
 import glx.glxext;
 import glx.indirect_dispatch;
 import glx.unpack;
+ import externs.epoxy;
+
 
 int __glXDisp_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
 {

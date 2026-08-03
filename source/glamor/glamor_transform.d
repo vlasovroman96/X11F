@@ -139,6 +139,16 @@ void glamor_set_color_depth(ScreenPtr pScreen, int depth, CARD32 pixel, GLint un
     glUniform4fv(uniform, 1, color.ptr);
 }
 
+void
+glamor_set_color(DrawablePtr    drawable,
+                 CARD32         pixel,
+                 GLint          uniform)
+{
+    glamor_set_color_depth(drawable.pScreen,
+                           glamor_drawable_effective_depth(drawable),
+                           pixel, uniform);
+}
+
 Bool glamor_set_solid(DrawablePtr drawable, GCPtr gc, Bool use_alu, GLint uniform)
 {
     CARD32 pixel = void;

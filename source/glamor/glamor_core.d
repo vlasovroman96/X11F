@@ -33,16 +33,26 @@ import core.stdc.config: c_long, c_ulong;
 /** @file glamor_core.c
  *
  * This file covers core X rendering inimport glamor.glamor_
+
+ 
  */
+
+//  import core.stdc.stdio : vasprintf;
+import core.stdc.stdarg;
 import build.dix_config;
+
+extern(C) int vasprintf(char** strp, const(char)* fmt, va_list ap);
 
 import core.stdc.stdlib;
 
 import os.bug_priv;
 
 import glamor.glamor_priv;
+import glamor.glamor;
+import externs.gnu;
+import fb.fbgc;
 
-Bool glamor_get_drawable_location(const(DrawablePtr) drawable)
+Bool glamor_get_drawable_location(DrawablePtr drawable)
 {
     PixmapPtr pixmap = glamor_get_drawable_pixmap(drawable);
     glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(pixmap);
@@ -72,7 +82,7 @@ GLint glamor_compile_glsl_prog(GLenum type, const(char)* source)
         if (info) {
             glGetShaderInfoLog(prog, size, null, info);
             ErrorF("Failed to compile %s: %s\n",
-                   type == GL_FRAGMENT_SHADER ? "FS" : "VS", info);
+                   type == GL_FRAGMENT_SHADER ? "FS".ptr : "VS".ptr, info);
             ErrorF("Program source:\n%s", source);
             free(info);
         }
@@ -161,14 +171,14 @@ private void glamor_invalidate_stipple(GCPtr gc)
 
 private void glamor_stipple_damage_report(DamagePtr damage, RegionPtr region, void* closure)
 {
-    GCPtr gc = closure;
+    GCPtr gc = cast(GCPtr)closure;
 
     glamor_invalidate_stipple(gc);
 }
 
 private void glamor_stipple_damage_destroy(DamagePtr damage, void* closure)
 {
-    GCPtr gc = closure;
+    GCPtr gc = cast(GCPtr)closure;
     glamor_gc_private* gc_priv = glamor_get_gc_private(gc);
 
     gc_priv.stipple_damage = null;
@@ -206,10 +216,10 @@ void glamor_validate_gc(GCPtr gc, c_ulong changes, DrawablePtr drawable)
 
             glamor_pixmap_private* pixmap_priv = glamor_get_pixmap_private(gc.tile.pixmap);
             if ((!GLAMOR_PIXMAP_PRIV_HAS_FBO(pixmap_priv))
-                && FbEvenTile(gc.tile.pixmap.drawable.width *
-                              drawable.bitsPerPixel)) {
-                glamor_fallback
-                    ("GC %p tile changed %p.\n", gc, gc.tile.pixmap);
+                && mixin(FbEvenTile!("gc.tile.pixmap.drawable.width *
+                              drawable.bitsPerPixel"))) {
+                // mixin(glamor_fallback!
+                //     ("GC %p tile changed %p.\n", gc, gc.tile.pixmap));
                 if (glamor_prepare_access
                     (&gc.tile.pixmap.drawable, GLAMOR_ACCESS_RW)) {
                     fbPadPixmap(gc.tile.pixmap);
@@ -297,7 +307,7 @@ RegionPtr glamor_bitmap_to_region(PixmapPtr pixmap)
 {
     RegionPtr ret = void;
 
-    glamor_fallback("pixmap %p \n", pixmap);
+    // mixin(glamor_fallback!("pixmap %p \n", pixmap));
     if (!glamor_prepare_access(&pixmap.drawable, GLAMOR_ACCESS_RO))
         return null;
     ret = fbPixmapToRegion(pixmap);

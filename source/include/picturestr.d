@@ -387,7 +387,7 @@ extern int CompositeTriFan(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictForma
 
 extern int AddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntraps, xTrap* traps);
 
-extern int CreateSolidPicture(Picture pid, xRenderColor* color, int* error);
+// extern int CreateSolidPicture(Picture pid, xRenderColor* color, int* error);
 
 extern int CreateLinearGradientPicture(Picture pid, xPointFixed* p1, xPointFixed* p2, int nStops, XFixed* stops, xRenderColor* colors, int* error);
 

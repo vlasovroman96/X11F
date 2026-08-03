@@ -36,6 +36,8 @@ import core.stdc.config: c_long, c_ulong;
  import externs.X11.Xdefs;
  import glx.glxserver;
  import glx.glxscreens_h;
+ import externs.epoxy;
+
 
 struct __GLXcontext {
     void function(__GLXcontext* context) destroy;

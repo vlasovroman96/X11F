@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.epoxygl;
+public import externs.epoxy;
 
 /**
  * @file glamor_context.h

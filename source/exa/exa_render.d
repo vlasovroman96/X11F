@@ -1,4 +1,4 @@
-module exa_render;
+module exa.exa_render;
 @nogc nothrow:
 extern(C): __gshared:
 /*

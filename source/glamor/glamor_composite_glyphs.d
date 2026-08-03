@@ -35,6 +35,9 @@ import glamor.glamor_priv;
 import glamor.glamor_transform;
 import glamor.glamor_transfer;
 import render.glyphstr_priv;
+import dix.gc;
+import externs.gnu;
+import glamor.glamor;
 
 enum DEFAULT_ATLAS_DIM =       1024;
 
@@ -56,7 +59,7 @@ struct glamor_glyph_atlas {
 }
 
 pragma(inline, true) private glamor_glyph_private* glamor_get_glyph_private(PixmapPtr pixmap) {
-    return dixLookupPrivate(&pixmap.devPrivates, &glamor_glyph_private_key);
+    return cast(glamor_glyph_private*)dixLookupPrivate(&pixmap.devPrivates, &glamor_glyph_private_key);
 }
 
 pragma(inline, true) private void glamor_copy_glyph(PixmapPtr glyph_pixmap, DrawablePtr atlas_draw, short x, short y)
@@ -96,7 +99,7 @@ pragma(inline, true) private void glamor_copy_glyph(PixmapPtr glyph_pixmap, Draw
         changes[0].val = 0xff;
         changes[1].val = 0x00;
         if (ChangeGC(null, scratch_gc,
-                     GCForeground|GCBackground, changes.ptr) != Success) {
+                     cast(uint)(GCForeground|GCBackground), changes.ptr) != Success) {
             glamor_destroy_pixmap(upload_pixmap);
             FreeScratchGC(scratch_gc);
             return;
@@ -115,7 +118,7 @@ pragma(inline, true) private void glamor_copy_glyph(PixmapPtr glyph_pixmap, Draw
                         &box, 1,
                         0, 0,
                         x, y,
-                        upload_pixmap.devPrivate.ptr,
+                        cast(ubyte*)upload_pixmap.devPrivate.ptr,
                         upload_pixmap.devKind);
 
     if (upload_pixmap != glyph_pixmap)
@@ -165,10 +168,10 @@ private Bool glamor_glyph_add(glamor_glyph_atlas* atlas, DrawablePtr glyph_draw)
     PixmapPtr glyph_pixmap = cast(PixmapPtr) glyph_draw;
     glamor_glyph_private* glyph_priv = glamor_get_glyph_private(glyph_pixmap);
 
-    glamor_copy_glyph(glyph_pixmap, &atlas.atlas.drawable, atlas.x, atlas.y);
+    glamor_copy_glyph(glyph_pixmap, &atlas.atlas.drawable, cast(short)atlas.x, cast(short)atlas.y);
 
-    glyph_priv.x = atlas.x;
-    glyph_priv.y = atlas.y;
+    glyph_priv.x = cast(short)atlas.x;
+    glyph_priv.y = cast(short)atlas.y;
     glyph_priv.serial = atlas.serial;
 
     atlas.x += glyph_draw.width;
@@ -284,7 +287,7 @@ private void glamor_glyphs_flush(CARD8 op, PicturePtr src, PicturePtr dst, glamo
 
         mixin(BUG_RETURN!("!pixmap_priv"));
 
-        glamor_pixmap_loop(pixmap_priv, box_index); {
+        mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
             BoxPtr box = RegionRects(dst.pCompositeClip);
             int nbox = RegionNumRects(dst.pCompositeClip);
 
@@ -308,7 +311,7 @@ private void glamor_glyphs_flush(CARD8 op, PicturePtr src, PicturePtr dst, glamo
                 else
                     glamor_glDrawArrays_GL_QUADS(glamor_priv, nglyph);
             }
-        }
+        }));
         if (prog.alpha != glamor_program_alpha_ca_first)
             break;
         prog++;
@@ -334,7 +337,7 @@ private GLshort* glamor_glyph_start(ScreenPtr screen, int count)
     /* Set up the vertex buffers for the font and destination */
 
     if (glamor_glsl_has_ints(glamor_priv)) {
-        v = glamor_get_vbo_space(screen, count * (6 * GLshort.sizeof), &vbo_offset);
+        v = cast(short*)glamor_get_vbo_space(screen, cast(uint)(count * (6 * GLshort.sizeof)), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);
@@ -346,7 +349,7 @@ private GLshort* glamor_glyph_start(ScreenPtr screen, int count)
         glVertexAttribPointer(GLAMOR_VERTEX_SOURCE, 2, GL_SHORT, GL_FALSE,
                               6 * GLshort.sizeof, vbo_offset + 4 * GLshort.sizeof);
     } else {
-        v = glamor_get_vbo_space(screen, count * (16 * GLshort.sizeof), &vbo_offset);
+        v = cast(short*)glamor_get_vbo_space(screen, cast(uint)(count * (16 * GLshort.sizeof)), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_SHORT, GL_FALSE,
@@ -402,7 +405,7 @@ void glamor_composite_glyphs(CARD8 op, PicturePtr src, PicturePtr dst, PictForma
             /* Glyph not empty?
              */
             if (glyph.info.width && glyph.info.height) {
-                PicturePtr glyph_pict = GlyphPicture(glyph)[screen_num];
+                PicturePtr glyph_pict = mixin(GlyphPicture!("glyph"))[screen_num];
                 DrawablePtr glyph_draw = glyph_pict.pDrawable;
 
                 /* Need to draw with slow path?
@@ -417,9 +420,9 @@ void glamor_composite_glyphs(CARD8 op, PicturePtr src, PicturePtr dst, PictForma
                     }
                 bail_one:
                     glamor_composite(op, src, glyph_pict, dst,
-                                     x_src + (x - glyph.info.x), (y - glyph.info.y),
+                                     cast(short)(x_src + (x - glyph.info.x)), cast(short)(y - glyph.info.y),
                                      0, 0,
-                                     x - glyph.info.x, y - glyph.info.y,
+                                     cast(short)(x - glyph.info.x), cast(short)(y - glyph.info.y),
                                      glyph_draw.width, glyph_draw.height);
                 } else {
                     glamor_glyph_private* glyph_priv = glamor_get_glyph_private(cast(PixmapPtr)(glyph_draw));
@@ -484,36 +487,36 @@ void glamor_composite_glyphs(CARD8 op, PicturePtr src, PicturePtr dst, PictForma
 
                     glyphs_queued++;
                     if (_X_LIKELY(glamor_glsl_has_ints(glamor_priv))) {
-                        v[0] = x - glyph.info.x;
-                        v[1] = y - glyph.info.y;
-                        v[2] = glyph_draw.width;
-                        v[3] = glyph_draw.height;
-                        v[4] = glyph_priv.x;
-                        v[5] = glyph_priv.y;
+                        v[0] = cast(short)(x - glyph.info.x);
+                        v[1] = cast(short)(y - glyph.info.y);
+                        v[2] = cast(short)(glyph_draw.width);
+                        v[3] = cast(short)(glyph_draw.height);
+                        v[4] = cast(short)(glyph_priv.x);
+                        v[5] = cast(short)(glyph_priv.y);
                         v += 6;
                     } else {
-                        v[0] = x - glyph.info.x;
-                        v[1] = y - glyph.info.y;
-                        v[2] = glyph_priv.x;
-                        v[3] = glyph_priv.y;
+                        v[0] = cast(short)(x - glyph.info.x);
+                        v[1] = cast(short)(y - glyph.info.y);
+                        v[2] = cast(short)(glyph_priv.x);
+                        v[3] = cast(short)(glyph_priv.y);
                         v += 4;
 
-                        v[0] = x - glyph.info.x + glyph_draw.width;
-                        v[1] = y - glyph.info.y;
-                        v[2] = glyph_priv.x + glyph_draw.width;
-                        v[3] = glyph_priv.y;
+                        v[0] = cast(short)(x - glyph.info.x + glyph_draw.width);
+                        v[1] = cast(short)(y - glyph.info.y);
+                        v[2] = cast(short)(glyph_priv.x + glyph_draw.width);
+                        v[3] = cast(short)(glyph_priv.y);
                         v += 4;
 
-                        v[0] = x - glyph.info.x + glyph_draw.width;
-                        v[1] = y - glyph.info.y + glyph_draw.height;
-                        v[2] = glyph_priv.x + glyph_draw.width;
-                        v[3] = glyph_priv.y + glyph_draw.height;
+                        v[0] = cast(short)(x - glyph.info.x + glyph_draw.width);
+                        v[1] = cast(short)(y - glyph.info.y + glyph_draw.height);
+                        v[2] = cast(short)(glyph_priv.x + glyph_draw.width);
+                        v[3] = cast(short)(glyph_priv.y + glyph_draw.height);
                         v += 4;
 
-                        v[0] = x - glyph.info.x;
-                        v[1] = y - glyph.info.y + glyph_draw.height;
-                        v[2] = glyph_priv.x;
-                        v[3] = glyph_priv.y + glyph_draw.height;
+                        v[0] = cast(short)(x - glyph.info.x);
+                        v[1] = cast(short)(y - glyph.info.y + glyph_draw.height);
+                        v[2] = cast(short)(glyph_priv.x);
+                        v[3] = cast(short)(glyph_priv.y + glyph_draw.height);
                         v += 4;
                     }
                 }
@@ -557,7 +560,7 @@ Bool glamor_composite_glyphs_init(ScreenPtr screen)
     /* Make glyph atlases of a reasonable size, but no larger than the maximum
      * supported by the hardware
      */
-    glamor_priv.glyph_atlas_dim = MIN(DEFAULT_ATLAS_DIM, glamor_priv.max_fbo_size);
+    glamor_priv.glyph_atlas_dim = mixin(MIN!("DEFAULT_ATLAS_DIM", "glamor_priv.max_fbo_size"));
 
     /* Don't stick huge glyphs in the atlases */
     glamor_priv.glyph_max_dim = glamor_priv.glyph_atlas_dim / 8;

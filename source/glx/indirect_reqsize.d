@@ -29,12 +29,14 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import externs.gl;
+// import externs.gl;
 
 import glx.glxserver;
 import glx.indirect_size;
 import glx.indirect_reqsize;
 import include.misc;
+ import externs.epoxy;
+
 
 version (HAVE_ALIAS) {
 enum string ALIAS2(string from,string to) = `

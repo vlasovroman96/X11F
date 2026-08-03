@@ -33,6 +33,8 @@ import include.fb;
 import include.picturestr;
 import include.damage;
 import externs.attrs;
+import render.mipict;
+import fb.fbpict;
 
 void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
 {
@@ -42,7 +44,7 @@ void fbAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap*
     if (((image = image_from_pict(pPicture, FALSE, &dst_xoff, &dst_yoff)) is null))
         return;
 
-    assumeNoGC(&pixman_add_traps)(image, x_off + dst_xoff, y_off + dst_yoff,
+    assumeNoGC(&pixman_add_traps)(image, cast(short)(x_off + dst_xoff), cast(short)(y_off + dst_yoff),
                      ntrap, cast(pixman_trap_t*) traps);
 
     free_pixman_pict(pPicture, image);
@@ -143,8 +145,8 @@ void fbTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mask
     xSrc -= (traps[0].left.p1.x >> 16);
     ySrc -= (traps[0].left.p1.y >> 16);
 
-    fbShapes(cast(CompositeShapesFunc) pixman_composite_trapezoids,
-             op, pSrc, pDst, maskFormat,
+    fbShapes(cast(CompositeShapesFunc) &pixman_composite_trapezoids,
+             cast(pixman_op_t)op, pSrc, pDst, maskFormat,
              xSrc, ySrc, ntrap, xTrapezoid.sizeof, cast(const(ubyte)*) traps);
 }
 
@@ -153,7 +155,7 @@ void fbTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskF
     xSrc -= (tris[0].p1.x >> 16);
     ySrc -= (tris[0].p1.y >> 16);
 
-    fbShapes(cast(CompositeShapesFunc) pixman_composite_triangles,
-             op, pSrc, pDst, maskFormat,
+    fbShapes(cast(CompositeShapesFunc) &pixman_composite_triangles,
+             cast(pixman_op_t)op, pSrc, pDst, maskFormat,
              xSrc, ySrc, ntris, xTriangle.sizeof, cast(const(ubyte)*) tris);
 }

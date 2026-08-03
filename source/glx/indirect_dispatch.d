@@ -37,6 +37,8 @@ import glx.indirect_dispatch;
 import glx.indirect_util;
 import include.misc;
 import glx.singlesize;
+ import externs.epoxy;
+
 
 enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
 

@@ -32,7 +32,8 @@ private template HasVersion(string versionId) {
  * SOFTWARE.
  */
 
- import externs.GL.gl_;
+ //import externs.GL.gl;
+ import externs.epoxy;
 
 static if (!HasVersion!"_INDIRECT_SIZE_H_") {
 // version = _INDIRECT_SIZE_H_;

@@ -47,6 +47,8 @@ import glx.glxext;
 import glx.indirect_dispatch;
 import glx.indirect_table;
 import glx.indirect_util;
+ import externs.epoxy;
+
 
 /************************************************************************/
 

@@ -31,7 +31,7 @@ FbBits fbReplicatePixel(Pixel p, int bpp)
 {
     FbBits b = p;
 
-    b &= FbFullMask(bpp);
+    b &= mixin(FbFullMask!("bpp"));
     while (bpp < FB_UNIT) {
         b |= b << bpp;
         bpp <<= 1;

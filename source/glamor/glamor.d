@@ -1,4 +1,4 @@
-module glamor.glamor_glamor;
+module glamor.glamor;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -45,6 +45,16 @@ import os.bug_priv;
 
 import glamor.glamor_priv;
 import glamor.glamor_egl_priv;
+//import externs.GL.gl;
+import externs.attrs;
+import fb.fbpixmap;
+ import externs.epoxy;
+import glamor.glamor_utils;;
+//import externs.GL.glext;
+import include.picturestr;
+import render.picture;
+import glamor.glamor;
+
 
 DevPrivateKeyRec glamor_screen_private_key;
 DevPrivateKeyRec glamor_pixmap_private_key;
@@ -244,14 +254,14 @@ PixmapPtr glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint u
         return pixmap;
     }
     else if (usage == GLAMOR_CREATE_NO_LARGE ||
-        glamor_check_fbo_size(glamor_priv, w, h))
+        mixin(glamor_check_fbo_size!("glamor_priv", "w", "h")))
     {
         glamor_init_pixmap_private_small(pixmap, pixmap_priv);
         fbo = glamor_create_fbo(glamor_priv, pixmap, w, h, usage);
     } else {
         int tile_size = glamor_priv.max_fbo_size;
-        DEBUGF("Create LARGE pixmap %p width %d height %d, tile size %d\n",
-               pixmap, w, h, tile_size);
+        // //DEBUGF("Create LARGE pixmap %p width %d height %d, tile size %d\n",
+        //        pixmap, w, h, tile_size);
         fbo = glamor_create_fbo_array(glamor_priv, pixmap, usage,
                                       tile_size, tile_size, pixmap_priv);
     }
@@ -290,7 +300,7 @@ private void _glamor_block_handler(ScreenPtr screen, void* timeout)
     screen.BlockHandler = glamor_priv.saved_procs.block_handler;
     screen.BlockHandler(screen, timeout);
     glamor_priv.saved_procs.block_handler = screen.BlockHandler;
-    screen.BlockHandler = _glamor_block_handler;
+    screen.BlockHandler = &_glamor_block_handler;
 }
 
 private void glamor_set_debug_level(int* debug_level)
@@ -342,17 +352,17 @@ void glamor_gldrawarrays_quads_using_indices(glamor_screen_private* glamor_priv,
             size_t size = count * 6 * GLushort.sizeof;
 
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, null, GL_STATIC_DRAW);
-            data = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER,
+            data = cast(ushort*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER,
                                     0, size,
                                     GL_MAP_WRITE_BIT |
                                     GL_MAP_INVALIDATE_BUFFER_BIT);
             for (i = 0; i < count; i++) {
-                data[i * 6 + 0] = i * 4 + 0;
-                data[i * 6 + 1] = i * 4 + 1;
-                data[i * 6 + 2] = i * 4 + 2;
-                data[i * 6 + 3] = i * 4 + 0;
-                data[i * 6 + 4] = i * 4 + 2;
-                data[i * 6 + 5] = i * 4 + 3;
+                data[i * 6 + 0] = cast(ushort)(i * 4 + 0);
+                data[i * 6 + 1] = cast(ushort)(i * 4 + 1);
+                data[i * 6 + 2] = cast(ushort)(i * 4 + 2);
+                data[i * 6 + 3] = cast(ushort)(i * 4 + 0);
+                data[i * 6 + 4] = cast(ushort)(i * 4 + 2);
+                data[i * 6 + 5] = cast(ushort)(i * 4 + 3);
             }
             glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
@@ -372,7 +382,7 @@ fallback:
 
 private void glamor_debug_output_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const(GLchar)* message, const(void)* userParam)
 {
-    ScreenPtr screen = cast(void*)userParam;
+    ScreenPtr screen = cast(ScreenPtr)userParam;
     glamor_screen_private* glamor_priv = glamor_get_screen_private(screen);
 
     if (glamor_priv.suppress_gl_out_of_memory_logging &&
@@ -812,8 +822,8 @@ Bool glamor_init(ScreenPtr screen, uint flags)
     glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &glamor_priv.max_fbo_size);
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glamor_priv.max_fbo_size);
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport_size.ptr);
-    glamor_priv.max_fbo_size = MIN(glamor_priv.max_fbo_size, max_viewport_size[0]);
-    glamor_priv.max_fbo_size = MIN(glamor_priv.max_fbo_size, max_viewport_size[1]);
+    glamor_priv.max_fbo_size = mixin(MIN!("glamor_priv.max_fbo_size", "max_viewport_size[0]"));
+    glamor_priv.max_fbo_size = mixin(MIN!("glamor_priv.max_fbo_size", "max_viewport_size[1]"));
 version (MAX_FBO_SIZE) {
     glamor_priv.max_fbo_size = MAX_FBO_SIZE;
 }
@@ -831,7 +841,7 @@ version (MAX_FBO_SIZE) {
 
     if (!(flags & GLAMOR_NO_RENDER_ACCEL)) {
         glamor_priv.saved_procs.block_handler = screen.BlockHandler;
-        screen.BlockHandler = _glamor_block_handler;
+        screen.BlockHandler = &_glamor_block_handler;
 
         if (!glamor_composite_glyphs_init(screen)) {
             ErrorF("Failed to initialize composite masks\n");
@@ -839,45 +849,45 @@ version (MAX_FBO_SIZE) {
         }
 
         glamor_priv.saved_procs.create_gc = screen.CreateGC;
-        screen.CreateGC = glamor_create_gc;
+        screen.CreateGC = &glamor_create_gc;
 
         glamor_priv.saved_procs.create_pixmap = screen.CreatePixmap;
-        screen.CreatePixmap = glamor_create_pixmap;
+        screen.CreatePixmap = &glamor_create_pixmap;
 
         glamor_priv.saved_procs.get_spans = screen.GetSpans;
-        screen.GetSpans = glamor_get_spans;
+        screen.GetSpans = &glamor_get_spans;
 
         glamor_priv.saved_procs.get_image = screen.GetImage;
-        screen.GetImage = glamor_get_image;
+        screen.GetImage = &glamor_get_image;
 
         glamor_priv.saved_procs.change_window_attributes =
             screen.ChangeWindowAttributes;
-        screen.ChangeWindowAttributes = glamor_change_window_attributes;
+        screen.ChangeWindowAttributes = &glamor_change_window_attributes;
 
         glamor_priv.saved_procs.copy_window = screen.CopyWindow;
-        screen.CopyWindow = glamor_copy_window;
+        screen.CopyWindow = &glamor_copy_window;
 
         glamor_priv.saved_procs.bitmap_to_region = screen.BitmapToRegion;
-        screen.BitmapToRegion = glamor_bitmap_to_region;
+        screen.BitmapToRegion = &glamor_bitmap_to_region;
 
         if (ps) {
             glamor_priv.saved_procs.composite = ps.Composite;
-            ps.Composite = glamor_composite;
+            ps.Composite = &glamor_composite;
 
             glamor_priv.saved_procs.trapezoids = ps.Trapezoids;
-            ps.Trapezoids = glamor_trapezoids;
+            ps.Trapezoids = &glamor_trapezoids;
 
             glamor_priv.saved_procs.triangles = ps.Triangles;
-            ps.Triangles = glamor_triangles;
+            ps.Triangles = &glamor_triangles;
 
             glamor_priv.saved_procs.addtraps = ps.AddTraps;
-            ps.AddTraps = glamor_add_traps;
+            ps.AddTraps = &glamor_add_traps;
 
             glamor_priv.saved_procs.composite_rects = ps.CompositeRects;
-            ps.CompositeRects = glamor_composite_rectangles;
+            ps.CompositeRects = &glamor_composite_rectangles;
 
             glamor_priv.saved_procs.glyphs = ps.Glyphs;
-            ps.Glyphs = glamor_composite_glyphs;
+            ps.Glyphs = &glamor_composite_glyphs;
         }
 
         glamor_init_vbo(screen);
@@ -896,7 +906,7 @@ version (MAX_FBO_SIZE) {
 
         glamor_priv.screen = screen;
 
-        dixScreenHookClose(screen, glamor_close_screen);
+        dixScreenHookClose(screen, &glamor_close_screen);
         dixScreenHookPixmapDestroy(screen, &glamor_pixmap_destroy);
     }
 
@@ -934,7 +944,7 @@ private void glamor_close_screen(CallbackListPtr* pcbl, ScreenPtr screen, void* 
     glamor_set_glvnd_vendor(screen, null);
 
     if (!(glamor_priv.flags & GLAMOR_NO_RENDER_ACCEL)) {
-        dixScreenUnhookClose(screen, glamor_close_screen);
+        dixScreenUnhookClose(screen, &glamor_close_screen);
         dixScreenUnhookPixmapDestroy(screen, &glamor_pixmap_destroy);
 
         screen.CreateGC = glamor_priv.saved_procs.create_gc;
@@ -977,7 +987,7 @@ void glamor_set_glvnd_vendor(ScreenPtr screen, const(char)* vendor_name)
     if (glamor_priv.glvnd_vendor)
         free(glamor_priv.glvnd_vendor);
 
-    glamor_priv.glvnd_vendor = XNFstrdup(vendor_name);
+    glamor_priv.glvnd_vendor = cast(char*)XNFstrdup(vendor_name);
 }
 
 void glamor_enable_dri3(ScreenPtr screen)
@@ -1067,7 +1077,7 @@ int glamor_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, CARD16* stride, CA
     if (ret != 1)
         return -1;
 
-    *stride = stride32;
+    *stride = cast(ushort)stride32;
     return fd;
 }
 

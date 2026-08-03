@@ -30,7 +30,7 @@ import build.dix_config;
 import core.stdc.inttypes;
 import core.stdc.string;
 //import externs.X11.Xmd; // needs to be before glxproto.h
-import externs.gl;
+// import externs.gl;
 import externs.glxproto;
 
 import dix.dix_priv;
@@ -46,9 +46,11 @@ import glx.glxext;
 import glx.indirect_table;
 import glx.indirect_util;
 import include.misc;
+ import externs.epoxy;
 
-import externs.GL.glx_;
-import externs.GL.gl_;
+
+//import externs.GL.glx;
+//import externs.GL.gl;
 
 
 enum string __GLX_PAD(string a) = `(((` ~ a ~ `)+3)&~3)`;

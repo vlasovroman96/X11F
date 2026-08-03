@@ -33,11 +33,12 @@ import core.stdc.config: c_long, c_ulong;
  * Silicon Graphics, Inc.
  */
 
-import externs.GL.glx_;
-import externs.GL.gl_;
+//import externs.GL.glx;
+//import externs.GL.gl;
 import externs.X11.Xdefs;
 import include.pixmap;
 import glx.glxscreens_h;
+import externs.epoxy;
 
 /* We just need to avoid clashing with DRAWABLE_{WINDOW,PIXMAP} */
 enum {

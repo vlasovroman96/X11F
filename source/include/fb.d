@@ -478,9 +478,9 @@ extern void fbFillSpans(DrawablePtr pDrawable, GCPtr pGC, int nInit, DDXPointPtr
 
 // extern void fbCreateGC(GCPtr pGC);
 
-extern void fbPadPixmap(PixmapPtr pPixmap);
+// extern void fbPadPixmap(PixmapPtr pPixmap);
 
-extern void fbValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable);
+// extern void fbValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable);
 
 /*
  * fbgetsp.c
@@ -650,8 +650,8 @@ extern int fbChangeWindowAttributes(WindowPtr pWin, c_ulong mask);
 
 extern int fbFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, FbBits and, FbBits xor);
 
-extern int* image_from_pict(PicturePtr pict, Bool has_clip, int* xoff, int* yoff);
+// extern pixman_image* image_from_pict(PicturePtr pict, Bool has_clip, int* xoff, int* yoff);
 
-extern int free_pixman_pict(PicturePtr, pixman_image_t*);
+// extern int free_pixman_pict(PicturePtr, pixman_image_t*);
 
                           /* _FB_H_ */

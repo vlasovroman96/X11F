@@ -34,12 +34,15 @@ extern(C): __gshared:
 import build.dix_config;
 
 import externs.X11.Xmd;
-import externs.gl;
+// import externs.gl;
 import glx.glxserver;
 import externs.glxproto;
 import glx.unpack;
 import glx.indirect_size;
 import glx.indirect_reqsize;
+
+ import externs.epoxy;
+
 
 enum string SWAPL(string a) = `
   (((` ~ a ~ ` & 0xff000000U)>>24) | ((` ~ a ~ ` & 0xff0000U)>>8) | 

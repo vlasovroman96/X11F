@@ -32,11 +32,13 @@ private template HasVersion(string versionId) {
 import build.dix_config;
 
 // //import externs.X11.Xfuncproto;
-import externs.gl;
+// import externs.gl;
 import glx.indirect_size_get;
 import glx.glxserver;
 import glx.indirect_util;
 import glx.indirect_size;
+ import externs.epoxy;
+
 
 // version (__GNUC__) {
 // enum PURE = __attribute__((pure));

@@ -33,10 +33,12 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import externs.gl;
+// import externs.gl;
 import glx.glxserver;
 import glx.singlesize;
 import glx.indirect_size_get;
+ import externs.epoxy;
+
 
 /*
 ** These routines compute the size of variable-size returned parameters.

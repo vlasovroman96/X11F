@@ -31,6 +31,9 @@ import glamor.glamor_priv;
 import glamor.glamor_transfer;
 import glamor.glamor_prepare;
 import glamor.glamor_transform;
+import glamor.glamor;
+import fb.fbpixmap;
+import fb.fballpriv;
 
 struct copy_args {
     DrawablePtr src_drawable;
@@ -41,7 +44,7 @@ struct copy_args {
 
 private Bool use_copyarea(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
 {
-    copy_args* args = arg;
+    copy_args* args = cast(copy_args*)arg;
     glamor_pixmap_fbo* src = args.src;
 
     glamor_bind_texture(glamor_get_screen_private(drawable.pScreen),
@@ -69,7 +72,7 @@ private const(glamor_facet) glamor_facet_copyarea = {
 
 private Bool use_copyplane(DrawablePtr drawable, GCPtr gc, glamor_program* prog, void* arg)
 {
-    copy_args* args = arg;
+    copy_args* args = cast(copy_args*)arg;
     glamor_pixmap_fbo* src = args.src;
 
     glamor_bind_texture(glamor_get_screen_private(drawable.pScreen),
@@ -225,11 +228,11 @@ private Bool glamor_copy_cpu_fbo(DrawablePtr src, DrawablePtr dst, GCPtr gc, Box
             goto bail;
         }
 
-        tmp_pix.drawable.x = dst_xoff;
-        tmp_pix.drawable.y = dst_yoff;
+        tmp_pix.drawable.x = cast(short)dst_xoff;
+        tmp_pix.drawable.y = cast(short)dst_yoff;
 
-        fbGetDrawable(&tmp_pix.drawable, tmp_bits, tmp_stride, tmp_bpp, tmp_xoff,
-                      tmp_yoff);
+        mixin(fbGetDrawable!("(&tmp_pix.drawable)", "tmp_bits", "tmp_stride", "tmp_bpp", "tmp_xoff",
+                      "tmp_yoff"));
 
         if (src.bitsPerPixel > 1)
             fbCopyNto1(src, &tmp_pix.drawable, gc, box, nbox, dx, dy,
@@ -240,7 +243,7 @@ private Bool glamor_copy_cpu_fbo(DrawablePtr src, DrawablePtr dst, GCPtr gc, Box
 
         glamor_upload_boxes(dst, box, nbox, tmp_xoff, tmp_yoff,
                             dst_xoff, dst_yoff, cast(ubyte*) tmp_bits,
-                            tmp_stride * FbBits.sizeof);
+                            cast(uint)(tmp_stride * FbBits.sizeof));
         fbDestroyPixmap(tmp_pix);
     } else {
         FbBits* src_bits = void;
@@ -248,10 +251,10 @@ private Bool glamor_copy_cpu_fbo(DrawablePtr src, DrawablePtr dst, GCPtr gc, Box
         int src_bpp = void;
         int src_xoff = void, src_yoff = void;
 
-        fbGetDrawable(src, src_bits, src_stride, src_bpp, src_xoff, src_yoff);
+        mixin(fbGetDrawable!("src", "src_bits", "src_stride", "src_bpp", "src_xoff", "src_yoff"));
         glamor_upload_boxes(dst, box, nbox, src_xoff + dx, src_yoff + dy,
                             dst_xoff, dst_yoff,
-                            cast(ubyte*) src_bits, src_stride * FbBits.sizeof);
+                            cast(ubyte*) src_bits, cast(uint)(src_stride * FbBits.sizeof));
     }
     glamor_finish_access(src);
 
@@ -289,11 +292,11 @@ private Bool glamor_copy_fbo_cpu(DrawablePtr src, DrawablePtr dst, GCPtr gc, Box
 
     glamor_get_drawable_deltas(src, src_pixmap, &src_xoff, &src_yoff);
 
-    fbGetDrawable(dst, dst_bits, dst_stride, dst_bpp, dst_xoff, dst_yoff);
+    mixin(fbGetDrawable!("dst", "dst_bits", "dst_stride", "dst_bpp", "dst_xoff", "dst_yoff"));
 
     glamor_download_boxes(src, box, nbox, src_xoff + dx, src_yoff + dy,
                           dst_xoff, dst_yoff,
-                          cast(ubyte*) dst_bits, dst_stride * FbBits.sizeof);
+                          cast(ubyte*) dst_bits, cast(uint)(dst_stride * FbBits.sizeof));
     glamor_finish_access(dst);
 
     return TRUE;
@@ -367,7 +370,7 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
 
     /* Set up the vertex buffers for the points */
 
-    v = glamor_get_vbo_space(dst.pScreen, nbox * 8 * short.sizeof, &vbo_offset);
+    v = cast(short*)glamor_get_vbo_space(dst.pScreen, cast(uint)(nbox * 8 * short.sizeof), &vbo_offset);
 
     if (src_pixmap == dst_pixmap && glamor_priv.has_mesa_tile_raster_order) {
         glEnable(GL_TILE_RASTER_ORDER_FIXED_MESA);
@@ -409,7 +412,7 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
 
     mixin(BUG_RETURN_VAL!("!src_priv", "FALSE"));
 
-    glamor_pixmap_loop(src_priv, src_box_index); {
+    mixin(glamor_pixmap_loop!("src_priv", "src_box_index", q{
         BoxPtr src_box = glamor_pixmap_box_at(src_priv, src_box_index);
 
         args.dx = dx + src_off_x - src_box.x1;
@@ -421,12 +424,12 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
 
         mixin(BUG_RETURN_VAL!("!dst_priv", "FALSE"));
 
-        glamor_pixmap_loop(dst_priv, dst_box_index); {
+        mixin(glamor_pixmap_loop!("dst_priv", "dst_box_index", q{
             BoxRec scissor = {
-                x1: max(-args.dx, bounds.x1),
-                y1: max(-args.dy, bounds.y1),
-                x2: min(-args.dx + src_box.x2 - src_box.x1, bounds.x2),
-                y2: min(-args.dy + src_box.y2 - src_box.y1, bounds.y2),
+                x1: cast(short)max(-args.dx, bounds.x1),
+                y1: cast(short)max(-args.dy, bounds.y1),
+                x2: cast(short)min(-args.dx + src_box.x2 - src_box.x1, bounds.x2),
+                y2: cast(short)min(-args.dy + src_box.y2 - src_box.y1, bounds.y2),
             };
             if (scissor.x1 >= scissor.x2 || scissor.y1 >= scissor.y2)
                 continue;
@@ -442,9 +445,8 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
                       scissor.y2 - scissor.y1);
 
             glamor_glDrawArrays_GL_QUADS(glamor_priv, nbox);
-        }
-    }
-
+        }));
+    }));
     ret = TRUE;
 
 bail_ctx:
@@ -505,17 +507,17 @@ private Bool glamor_copy_fbo_fbo_temp(DrawablePtr src, DrawablePtr dst, GCPtr gc
     if (!tmp_pixmap)
         goto bail;
 
-    tmp_box = calloc(nbox, BoxRec.sizeof);
+    tmp_box = cast(pixman_box16*)calloc(nbox, BoxRec.sizeof);
     if (!tmp_box)
         goto bail_pixmap;
 
     /* Convert destination boxes into tmp pixmap boxes
      */
     for (n = 0; n < nbox; n++) {
-        tmp_box[n].x1 = box[n].x1 - bounds.x1;
-        tmp_box[n].x2 = box[n].x2 - bounds.x1;
-        tmp_box[n].y1 = box[n].y1 - bounds.y1;
-        tmp_box[n].y2 = box[n].y2 - bounds.y1;
+        tmp_box[n].x1 = cast(short)(box[n].x1 - bounds.x1);
+        tmp_box[n].x2 = cast(short)(box[n].x2 - bounds.x1);
+        tmp_box[n].y1 = cast(short)(box[n].y1 - bounds.y1);
+        tmp_box[n].y2 = cast(short)(box[n].y2 - bounds.y1);
     }
 
     if (!glamor_copy_fbo_fbo_draw(src,
@@ -681,12 +683,12 @@ RegionPtr glamor_copy_area(DrawablePtr src, DrawablePtr dst, GCPtr gc, int srcx,
 
 RegionPtr glamor_copy_plane(DrawablePtr src, DrawablePtr dst, GCPtr gc, int srcx, int srcy, int width, int height, int dstx, int dsty, c_ulong bitplane)
 {
-    if ((bitplane & FbFullMask(glamor_drawable_effective_depth(src))) == 0)
+    if ((bitplane & mixin(FbFullMask!("glamor_drawable_effective_depth(src)"))) == 0)
         return miHandleExposures(src, dst, gc,
                                  srcx, srcy, width, height, dstx, dsty);
     return miDoCopy(src, dst, gc,
                     srcx, srcy, width, height,
-                    dstx, dsty, &glamor_copy, bitplane, null);
+                    dstx, dsty, &glamor_copy, cast(uint)bitplane, null);
 }
 
 void glamor_copy_window(WindowPtr window, xPoint old_origin, RegionPtr src_region)
@@ -708,7 +710,7 @@ void glamor_copy_window(WindowPtr window, xPoint old_origin, RegionPtr src_regio
         RegionTranslate(&dst_region, -pixmap.screen_x, -pixmap.screen_y);
 
     miCopyRegion(drawable, drawable,
-                 0, &dst_region, dx, dy, &glamor_copy, 0, 0);
+                 null, &dst_region, dx, dy, &glamor_copy, 0, null);
 
     RegionUninit(&dst_region);
 }
