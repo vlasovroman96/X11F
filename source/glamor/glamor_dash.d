@@ -31,6 +31,8 @@ import glamor.glamor_program;
 import glamor.glamor_transform;
 import glamor.glamor_transfer;
 import glamor.glamor_prepare;
+import glamor.glamor;
+import dix.gc;
 
 enum dash_vs_vars = "in vec3 primitive;\n"
     ~ "out float dash_offset;\n";
@@ -107,9 +109,9 @@ private PixmapPtr glamor_get_dash_pixmap(GCPtr gc)
         ChangeGCVal changes = void;
 
         changes.val = pixel;
-        cast(void) ChangeGC(null, scratch_gc, GCForeground, &changes);
+        cast(void) ChangeGC(null, scratch_gc, cast(uint)GCForeground, &changes);
         ValidateGC(&pixmap.drawable, scratch_gc);
-        rect.x = offset;
+        rect.x = cast(short)offset;
         rect.y = 0;
         rect.width = gc.dash[d];
         rect.height = 1;
@@ -208,7 +210,7 @@ private void glamor_dash_loop(DrawablePtr drawable, GCPtr gc, glamor_program* pr
 
     mixin(BUG_RETURN!("!pixmap_priv"));
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         int nbox = RegionNumRects(gc.pCompositeClip);
         BoxPtr box = RegionRects(gc.pCompositeClip);
 
@@ -223,7 +225,7 @@ private void glamor_dash_loop(DrawablePtr drawable, GCPtr gc, glamor_program* pr
             box++;
             glDrawArrays(mode, 0, n);
         }
-    }
+    }));
 
     glDisable(GL_SCISSOR_TEST);
     glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
@@ -248,7 +250,7 @@ Bool glamor_poly_lines_dash_gl(DrawablePtr drawable, GCPtr gc, int mode, int n, 
     if (n < 2)
         return TRUE;
 
-    if (((prog = glamor_dash_setup(drawable, gc)) == 0))
+    if (((prog = glamor_dash_setup(drawable, gc)) is null))
         return FALSE;
 
     add_last = 0;
@@ -257,8 +259,8 @@ Bool glamor_poly_lines_dash_gl(DrawablePtr drawable, GCPtr gc, int mode, int n, 
 
     /* Set up the vertex buffers for the points */
 
-    v = glamor_get_vbo_space(drawable.pScreen,
-                             (n + add_last) * 3 * short.sizeof,
+    v = cast(short*)glamor_get_vbo_space(drawable.pScreen,
+                             cast(uint)((n + add_last) * 3 * short.sizeof),
                              &vbo_offset);
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
@@ -275,19 +277,19 @@ Bool glamor_poly_lines_dash_gl(DrawablePtr drawable, GCPtr gc, int mode, int n, 
                 this_x += prev_x;
                 this_y += prev_y;
             }
-            dash_pos += glamor_line_length(prev_x, prev_y,
-                                           this_x, this_y);
+            dash_pos += glamor_line_length(cast(short)prev_x, cast(short)prev_y,
+                                           cast(short)this_x, cast(short)this_y);
         }
-        v[0] = prev_x = this_x;
-        v[1] = prev_y = this_y;
-        v[2] = dash_pos;
+        v[0] = prev_x = cast(short)this_x;
+        v[1] = prev_y = cast(short)this_y;
+        v[2] = cast(short)dash_pos;
         v += 3;
     }
 
     if (add_last) {
-        v[0] = prev_x + 1;
-        v[1] = prev_y;
-        v[2] = dash_pos + 1;
+        v[0] = cast(short)(prev_x + 1);
+        v[1] = cast(short)(prev_y);
+        v[2] = cast(short)(dash_pos + 1);
     }
 
     glamor_put_vbo_space(screen);
@@ -299,13 +301,13 @@ Bool glamor_poly_lines_dash_gl(DrawablePtr drawable, GCPtr gc, int mode, int n, 
 
 private short* glamor_add_segment(short* v, short x1, short y1, short x2, short y2, int dash_start, int dash_end)
 {
-    v[0] = x1;
-    v[1] = y1;
-    v[2] = dash_start;
+    v[0] = cast(short)x1;
+    v[1] = cast(short)y1;
+    v[2] = cast(short)dash_start;
 
-    v[3] = x2;
-    v[4] = y2;
-    v[5] = dash_end;
+    v[3] = cast(short)x2;
+    v[4] = cast(short)y2;
+    v[5] = cast(short)dash_end;
     return v + 6;
 }
 
@@ -319,7 +321,7 @@ Bool glamor_poly_segment_dash_gl(DrawablePtr drawable, GCPtr gc, int nseg, xSegm
     int add_last = void;
     int i = void;
 
-    if (((prog = glamor_dash_setup(drawable, gc)) == 0))
+    if (((prog = glamor_dash_setup(drawable, gc)) is null))
         return FALSE;
 
     add_last = 0;
@@ -328,8 +330,8 @@ Bool glamor_poly_segment_dash_gl(DrawablePtr drawable, GCPtr gc, int nseg, xSegm
 
     /* Set up the vertex buffers for the points */
 
-    v = glamor_get_vbo_space(drawable.pScreen,
-                             (nseg<<add_last) * 6 * short.sizeof,
+    v = cast(short*)glamor_get_vbo_space(drawable.pScreen,
+                             cast(uint)((nseg<<add_last) * 6 * short.sizeof),
                              &vbo_offset);
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
@@ -346,7 +348,7 @@ Bool glamor_poly_segment_dash_gl(DrawablePtr drawable, GCPtr gc, int nseg, xSegm
         if (add_last)
             v = glamor_add_segment(v,
                                    segs[i].x2, segs[i].y2,
-                                   segs[i].x2 + 1, segs[i].y2,
+                                   cast(short)(segs[i].x2 + 1), cast(short)(segs[i].y2),
                                    dash_end, dash_end + 1);
     }
 

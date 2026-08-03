@@ -27,12 +27,18 @@ import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
 import core.stdc.stddef;
-// //import externs.X11.fonts.fontstruct; // libxfont2.h missed to include that
-// //import externs.X11.fonts.libxfont2;
+
+import externs.X11.fonts.fontstruct; // libxfont2.h missed to include that
+import externs.X11.fonts.libxfont2;
 
 import glamor.glamor_priv;
 import glamor.glamor_font;
 import include.dixfontstr;
+import glamor.glamor;
+import externs.attrs;
+import fb.fbglyph;
+import include.dixfontstr;
+
 
 private int glamor_font_private_index;
 private int glamor_font_screen_count;
@@ -71,12 +77,12 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
     if (!glamor_glsl_has_ints(glamor_priv))
         return null;
 
-    privates = FontGetPrivate(font, glamor_font_private_index);
+    privates = cast(glamor_font_t*)FontGetPrivate(font, glamor_font_private_index);
     if (!privates) {
         privates = cast(glamor_font_t*) calloc(glamor_font_screen_count, glamor_font_t.sizeof);
         if (!privates)
             return null;
-        xfont2_font_set_private(font, glamor_font_private_index, privates);
+        assumeNoGC(&xfont2_font_set_private)(font, glamor_font_private_index, privates);
     }
 
     glamor_font = &privates[screen.myNum];
@@ -94,9 +100,9 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
 
     glyph_width_bytes = (glyph_width_pixels + 7) >> 3;
 
-    glamor_font.glyph_width_pixels = glyph_width_pixels;
-    glamor_font.glyph_width_bytes = glyph_width_bytes;
-    glamor_font.glyph_height = glyph_height;
+    glamor_font.glyph_width_pixels = cast(ushort)glyph_width_pixels;
+    glamor_font.glyph_width_bytes = cast(ushort)glyph_width_bytes;
+    glamor_font.glyph_height = cast(ushort)glyph_height;
 
     /*
      * Layout the font two blocks of columns wide.
@@ -122,13 +128,13 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
         return null;
 
     /* Check whether the font has a default character */
-    c[0] = font.info.lastRow + 1;
-    c[1] = font.info.lastCol + 1;
-    (*font.get_glyphs)(font, 1, c.ptr, TwoD16Bit, &count, &glyph);
+    c[0] = cast(ubyte)(font.info.lastRow + 1);
+    c[1] = cast(ubyte)(font.info.lastCol + 1);
+    assumeNoGC(font.get_glyphs)(font, 1, c.ptr, TwoD16Bit, &count, &glyph);
 
     glamor_font.default_char = count ? glyph : null;
     glamor_font.default_row = font.info.defaultCh >> 8;
-    glamor_font.default_col = font.info.defaultCh;
+    glamor_font.default_col = cast(ubyte)font.info.defaultCh;
 
     glamor_priv = glamor_get_screen_private(screen);
     glamor_make_current(glamor_priv);
@@ -143,10 +149,10 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
     /* Paint all of the glyphs */
     for (row = 0; row < num_rows; row++) {
         for (col = 0; col < num_cols; col++) {
-            c[0] = row + font.info.firstRow;
-            c[1] = col + font.info.firstCol;
+            c[0] = cast(ubyte)(row + font.info.firstRow);
+            c[1] = cast(ubyte)(col + font.info.firstCol);
 
-            (*font.get_glyphs)(font, 1, c.ptr, TwoD16Bit, &count, &glyph);
+            assumeNoGC(font.get_glyphs)(font, 1, c.ptr, TwoD16Bit, &count, &glyph);
 
             if (count) {
                 char* dst = void;
@@ -160,10 +166,10 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
                 dst += (row & 1) ? glamor_font.row_width : 0;
 
                 dst += col * glyph_width_bytes;
-                for (y = 0; y < GLYPHHEIGHTPIXELS(glyph); y++) {
-                    memcpy(dst, src, GLYPHWIDTHBYTES(glyph));
+                for (y = 0; y < mixin(GLYPHHEIGHTPIXELS!("glyph")); y++) {
+                    memcpy(dst, src, mixin(GLYPHWIDTHBYTES!("glyph")));
                     dst += overall_width;
-                    src += GLYPHWIDTHBYTESPADDED(glyph);
+                    src += cast(ptrdiff_t)GLYPHWIDTHBYTESPADDED!("glyph");
                 }
             }
         }
@@ -193,7 +199,7 @@ private Bool glamor_realize_font(ScreenPtr screen, FontPtr font)
 private Bool glamor_unrealize_font(ScreenPtr screen, FontPtr font)
 {
     glamor_screen_private* glamor_priv = void;
-    glamor_font_t* privates = FontGetPrivate(font, glamor_font_private_index);
+    glamor_font_t* privates = cast(glamor_font_t*)FontGetPrivate(font, glamor_font_private_index);
     glamor_font_t* glamor_font = void;
     int s = void;
 
@@ -220,7 +226,7 @@ private Bool glamor_unrealize_font(ScreenPtr screen, FontPtr font)
             return TRUE;
 
     free(privates);
-    xfont2_font_set_private(font, glamor_font_private_index, null);
+    assumeNoGC(&xfont2_font_set_private)(font, glamor_font_private_index, null);
     return TRUE;
 }
 
@@ -231,7 +237,7 @@ Bool glamor_font_init(ScreenPtr screen)
     if (!glamor_glsl_has_ints(glamor_priv))
         return TRUE;
 
-    glamor_font_private_index = xfont2_allocate_font_private_index();
+    glamor_font_private_index = assumeNoGC(&xfont2_allocate_font_private_index)();
     if (glamor_font_private_index == -1)
         return FALSE;
     glamor_font_screen_count = 0;
@@ -239,7 +245,7 @@ Bool glamor_font_init(ScreenPtr screen)
     if (screen.myNum >= glamor_font_screen_count)
         glamor_font_screen_count = screen.myNum + 1;
 
-    screen.RealizeFont = glamor_realize_font;
-    screen.UnrealizeFont = glamor_unrealize_font;
+    screen.RealizeFont = &glamor_realize_font;
+    screen.UnrealizeFont = &glamor_unrealize_font;
     return TRUE;
 }

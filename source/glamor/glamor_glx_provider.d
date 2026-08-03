@@ -47,6 +47,7 @@ import composite.compint;
 import glamor.glamor_priv;
 import include.glamor;
 import glx.glxscreens_h;
+import glamor.glamor;
 
 /* Can't get these from <GL/glx.h> since it pulls in client headers */
 enum GLX_RGBA_BIT =		0x00000001;
@@ -120,11 +121,11 @@ private __GLXdrawable* egl_create_glx_drawable(ClientPtr client, __GLXscreen* sc
         return null;
     }
 
-    ret.destroy = egl_drawable_destroy;
-    ret.swapBuffers = egl_drawable_swap_buffers;
-    ret.copySubBuffer = egl_drawable_copy_sub_buffer;
-    ret.waitX = egl_drawable_wait_x;
-    ret.waitGL = egl_drawable_wait_gl;
+    ret.destroy = &egl_drawable_destroy;
+    ret.swapBuffers = &egl_drawable_swap_buffers;
+    ret.copySubBuffer = &egl_drawable_copy_sub_buffer;
+    ret.waitX = &egl_drawable_wait_x;
+    ret.waitGL = &egl_drawable_wait_gl;
 
     return ret;
 }
@@ -141,7 +142,7 @@ private egl_config* translate_eglconfig(ScreenPtr pScreen, egl_screen* screen, E
     EGLint value = void;
     bool valid_depth = void;
     int i = void;
-    egl_config* c = cast(egl_config*) calloc(1, (*c).sizeof);
+    egl_config* c = cast(egl_config*) calloc(1, (egl_config*).sizeof);
 
     if (!c)
         return chain;
@@ -193,7 +194,7 @@ private egl_config* translate_eglconfig(ScreenPtr pScreen, egl_screen* screen, E
 
     /* direct-mapped state */
 enum string GET(string attr, string slot) = `
-    eglGetConfigAttrib(screen.display, hc, ` ~ attr ~ `, &c.base.` ~ slot ~ `)`;
+    eglGetConfigAttrib(screen.display, hc, ` ~ attr ~ `, &c.base.` ~ slot ~ `);`;
     mixin(GET!(`EGL_RED_SIZE`, `redBits`));
     mixin(GET!(`EGL_GREEN_SIZE`, `greenBits`));
     mixin(GET!(`EGL_BLUE_SIZE`, `blueBits`));
@@ -317,7 +318,7 @@ enum string GET(string attr, string slot) = `
         free(c);
         return chain;
     }
-    c.base.duplicatedForComp = duplicate_for_composite;
+    c.base.duplicatedForComp = cast(ubyte)duplicate_for_composite;
 
     c.base.next = chain ? &chain.base : null;
     return c;
@@ -333,7 +334,7 @@ private __GLXconfig* egl_mirror_configs(ScreenPtr pScreen, egl_screen* screen)
                     epoxy_has_gl_extension("GL_EXT_sRGB_write_control");
 
     eglGetConfigs(screen.display, null, 0, &nconfigs);
-    if (((host_configs = cast(EGLConfig*) calloc(nconfigs, (*host_configs).sizeof)) == 0))
+    if (((host_configs = cast(EGLConfig*) calloc(nconfigs, (*host_configs).sizeof)) is null))
         return null;
 
     eglGetConfigs(screen.display, host_configs, nconfigs, &nconfigs);
@@ -375,30 +376,30 @@ private __GLXscreen* egl_screen_probe(ScreenPtr pScreen)
     if (!glamor_screen)
         return null;
 
-    if (((screen = cast(egl_screen*) calloc(1, (*screen).sizeof)) == 0))
+    if (((screen = cast(egl_screen*) calloc(1, (*screen).sizeof)) is null))
         return null;
 
     base = &screen.base;
-    base.destroy = egl_screen_destroy;
-    base.createDrawable = egl_create_glx_drawable;
+    base.destroy = &egl_screen_destroy;
+    base.createDrawable = &egl_create_glx_drawable;
     /* base.swapInterval = NULL; */
 
     screen.display = glamor_screen.ctx.display;
 
-    __glXInitExtensionEnableBits(screen.base.glx_enable_bits);
-    __glXEnableExtension(base.glx_enable_bits, "GLX_ARB_context_flush_control");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_ARB_create_context");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_ARB_create_context_no_error");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_ARB_create_context_profile");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_ARB_create_context_robustness");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_ARB_fbconfig_float");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_EXT_create_context_es2_profile");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_EXT_create_context_es_profile");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_EXT_fbconfig_packed_float");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_EXT_framebuffer_sRGB");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_EXT_no_config_context");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_EXT_texture_from_pixmap");
-    __glXEnableExtension(base.glx_enable_bits, "GLX_MESA_copy_sub_buffer");
+    __glXInitExtensionEnableBits(screen.base.glx_enable_bits.ptr);
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_ARB_context_flush_control");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_ARB_create_context");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_ARB_create_context_no_error");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_ARB_create_context_profile");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_ARB_create_context_robustness");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_ARB_fbconfig_float");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_EXT_create_context_es2_profile");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_EXT_create_context_es_profile");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_EXT_fbconfig_packed_float");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_EXT_framebuffer_sRGB");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_EXT_no_config_context");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_EXT_texture_from_pixmap");
+    __glXEnableExtension(base.glx_enable_bits.ptr, "GLX_MESA_copy_sub_buffer");
     // __glXEnableExtension(base->glx_enable_bits, "GLX_SGI_swap_control");
 
     base.fbconfigs = egl_mirror_configs(pScreen, screen);

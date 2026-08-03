@@ -118,7 +118,7 @@ extern int glamor_get_pixmap_texture(PixmapPtr pixmap);
 
 extern int glamor_clear_pixmap(PixmapPtr pixmap);
 
-extern int glamor_block_handler(ScreenPtr screen);
+// extern int glamor_block_handler(ScreenPtr screen);
 
 // extern int glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint usage);
 

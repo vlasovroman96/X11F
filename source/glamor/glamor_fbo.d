@@ -35,6 +35,7 @@ import core.stdc.stdlib;
 
 import glamor.glamor_priv;
 import os.bug_priv;
+import glamor.glamor;
 
 void glamor_destroy_fbo(glamor_screen_private* glamor_priv, glamor_pixmap_fbo* fbo)
 {
@@ -88,7 +89,7 @@ private int glamor_pixmap_ensure_fb(glamor_screen_private* glamor_priv, glamor_p
             break;
         }
 
-        glamor_fallback("glamor: Failed to create fbo, %s\n", str);
+        // glamor_fallback("glamor: Failed to create fbo, %s\n", str);
         err = -1;
     }
 
@@ -182,14 +183,14 @@ glamor_pixmap_fbo* glamor_create_fbo_array(glamor_screen_private* glamor_priv, P
     block_wcnt = (w + block_w - 1) / block_w;
     block_hcnt = (h + block_h - 1) / block_h;
 
-    box_array = calloc(block_wcnt * block_hcnt, typeof(box_array[0]).sizeof);
+    box_array = cast(pixman_box16*)calloc(block_wcnt * block_hcnt, typeof(box_array[0]).sizeof);
     if (box_array == null)
         return null;
 
     fbo_array = cast(glamor_pixmap_fbo**) calloc(block_wcnt * block_hcnt, (glamor_pixmap_fbo*).sizeof);
     if (fbo_array == null) {
         free(box_array);
-        return FALSE;
+        return null;
     }
     for (i = 0; i < block_hcnt; i++) {
         int block_y1 = void, block_y2 = void;
@@ -200,11 +201,11 @@ glamor_pixmap_fbo* glamor_create_fbo_array(glamor_screen_private* glamor_priv, P
         fbo_h = block_y2 - block_y1;
 
         for (j = 0; j < block_wcnt; j++) {
-            box_array[i * block_wcnt + j].x1 = j * block_w;
-            box_array[i * block_wcnt + j].y1 = block_y1;
-            box_array[i * block_wcnt + j].x2 =
-                (j + 1) * block_w > w ? w : (j + 1) * block_w;
-            box_array[i * block_wcnt + j].y2 = block_y2;
+            box_array[i * block_wcnt + j].x1 = cast(short)(j * block_w);
+            box_array[i * block_wcnt + j].y1 = cast(short)(block_y1);
+            box_array[i * block_wcnt + j].x2 = cast(short)
+                ((j + 1) * block_w > w ? w : (j + 1) * block_w);
+            box_array[i * block_wcnt + j].y2 = cast(short)(block_y2);
             fbo_w =
                 box_array[i * block_wcnt + j].x2 - box_array[i * block_wcnt +
                                                              j].x1;
@@ -283,6 +284,7 @@ void glamor_pixmap_attach_fbo(PixmapPtr pixmap, glamor_pixmap_fbo* fbo)
     case GLAMOR_TEXTURE_DRM:
         pixmap_priv.gl_fbo = GLAMOR_FBO_NORMAL;
         pixmap.devPrivate.ptr = null;
+    goto default;
     default:
         break;
     }

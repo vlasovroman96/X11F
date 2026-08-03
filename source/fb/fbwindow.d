@@ -30,6 +30,7 @@ import core.stdc.stdlib;
 
 import fb.fb_priv;
 import externs.attrs;
+import fb.fbgc;
 
 Bool fbCreateWindow(WindowPtr pWin)
 {

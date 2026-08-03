@@ -662,7 +662,7 @@ private void* glamor_setup_composite_vbo(ScreenPtr screen, int n_verts)
     vert_size = n_verts * glamor_priv.vb_stride;
 
     glamor_make_current(glamor_priv);
-    vb = glamor_get_vbo_space(screen, vert_size, &vbo_offset);
+    vb = glamor_get_vbo_space(screen, cast(uint)(vert_size), &vbo_offset);
 
     glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_FLOAT, GL_FALSE,
                           glamor_priv.vb_stride, vbo_offset);

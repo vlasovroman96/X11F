@@ -93,12 +93,12 @@ enum string t_from_x_coord_x(string _xscale_, string _x_) = `((` ~ _x_ ~ `) * (`
 enum string t_from_x_coord_y(string _yscale_, string _y_) = `((` ~ _y_ ~ `) * (` ~ _yscale_ ~ `))`;
 
 enum string pixmap_priv_get_dest_scale(string pixmap, string _pixmap_priv_, string _pxscale_, string _pyscale_) = `
-  do {                                                                   
+  {                                                                   
     int _w_ = void, _h_ = void;                                                         
-    PIXMAP_PRIV_GET_ACTUAL_SIZE(` ~ pixmap ~ `, ` ~ _pixmap_priv_ ~ `, _w_, _h_);        
+    `~PIXMAP_PRIV_GET_ACTUAL_SIZE!(pixmap,_pixmap_priv_,`_w_`,`_h_`)~`;        
     *(` ~ _pxscale_ ~ `) = 1.0 / _w_;                                            
     *(` ~ _pyscale_ ~ `) = 1.0 / _h_;                                            
-   } while(0)`;
+   } `;
 
 enum string pixmap_priv_get_scale(string _pixmap_priv_, string _pxscale_, string _pyscale_) = `
    do {									
@@ -542,7 +542,7 @@ enum string glamor_set_repeat_normalize_tcoords_ext(string pixmap, string priv, 
 enum string glamor_set_normalize_tcoords_tri_stripe(string xscale, string yscale,		
 						string x1, string y1, string x2, string y2,		
 						string vertices) = `
-    do {								
+    {								
 	(` ~ vertices ~ `)[0] = ` ~ t_from_x_coord_x!(xscale, x1) ~ `;			
 	(` ~ vertices ~ `)[2] = ` ~ t_from_x_coord_x!(xscale, x2) ~ `;			
 	(` ~ vertices ~ `)[6] = (` ~ vertices ~ `)[2];					
@@ -551,10 +551,10 @@ enum string glamor_set_normalize_tcoords_tri_stripe(string xscale, string yscale
         (` ~ vertices ~ `)[7] = ` ~ t_from_x_coord_y!(yscale, y2) ~ `;                   
 	(` ~ vertices ~ `)[3] = (` ~ vertices ~ `)[1];					
 	(` ~ vertices ~ `)[5] = (` ~ vertices ~ `)[7];					
-    } while(0)`;
+    }`;
 
 enum string glamor_set_tcoords_tri_strip(string x1, string y1, string x2, string y2, string vertices) = `
-    do {								
+    {								
 	(` ~ vertices ~ `)[0] = (` ~ x1 ~ `);						
 	(` ~ vertices ~ `)[2] = (` ~ x2 ~ `);						
 	(` ~ vertices ~ `)[6] = (` ~ vertices ~ `)[2];					
@@ -563,7 +563,7 @@ enum string glamor_set_tcoords_tri_strip(string x1, string y1, string x2, string
         (` ~ vertices ~ `)[7] = (` ~ y2 ~ `);                                           
 	(` ~ vertices ~ `)[3] = (` ~ vertices ~ `)[1];					
 	(` ~ vertices ~ `)[5] = (` ~ vertices ~ `)[7];					
-    } while(0)`;
+    }`;
 
 enum string glamor_set_normalize_vcoords_ext(string priv, string xscale, string yscale,		
 				     string x1, string y1, string x2, string y2,			
@@ -589,7 +589,7 @@ enum string glamor_set_normalize_vcoords_ext(string priv, string xscale, string 
 enum string glamor_set_normalize_vcoords_tri_strip(string xscale, string yscale,		
 					       string x1, string y1, string x2, string y2,		
 					       string vertices) = `
-    do {								
+    {								
 	(` ~ vertices ~ `)[0] = ` ~ v_from_x_coord_x!(xscale, x1) ~ `;			
 	(` ~ vertices ~ `)[2] = ` ~ v_from_x_coord_x!(xscale, x2) ~ `;			
 	(` ~ vertices ~ `)[6] = (` ~ vertices ~ `)[2];					
@@ -598,21 +598,21 @@ enum string glamor_set_normalize_vcoords_tri_strip(string xscale, string yscale,
         (` ~ vertices ~ `)[7] = ` ~ v_from_x_coord_y!(yscale, y2) ~ `;                   
 	(` ~ vertices ~ `)[3] = (` ~ vertices ~ `)[1];					
 	(` ~ vertices ~ `)[5] = (` ~ vertices ~ `)[7];					
-    } while(0)`;
+    }`;
 
 enum string glamor_set_normalize_pt(string xscale, string yscale, string x, string y,		
                                 string pt) = `
-    do {							
+    {							
         (` ~ pt ~ `)[0] = ` ~ t_from_x_coord_x!(xscale, x) ~ `;			
         (` ~ pt ~ `)[1] = ` ~ t_from_x_coord_y!(yscale, y) ~ `;                  
-    } while(0)`;
+    }`;
 
 enum string glamor_set_circle_centre(string width, string height, string x, string y,	
 				 string c) = `
-    do {						
+    {						
         (` ~ c ~ `)[0] = cast(float)` ~ x ~ `;				
         (` ~ c ~ `)[1] = cast(float)` ~ y ~ `;				
-    } while(0)`;
+    }`;
 
 version (ALIGN) {} else { /* FreeBSD already has it */
 enum string ALIGN(string i,string m) = `(((` ~ i ~ `) + (` ~ m ~ `) - 1) & ~((` ~ m ~ `) - 1))`;

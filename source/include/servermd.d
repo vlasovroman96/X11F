@@ -55,15 +55,15 @@ import build.dix_config;
 public import externs.X11.X;		/* for X_LITTLE_ENDIAN/X_BIG_ENDIAN */
 public import dix.dispatch;
 
-static if (X_BYTE_ORDER == X_LITTLE_ENDIAN) {
+// static if (X_BYTE_ORDER == X_LITTLE_ENDIAN) {
 enum IMAGE_BYTE_ORDER =        LSBFirst;
 enum BITMAP_BIT_ORDER =        LSBFirst;
-} else static if (X_BYTE_ORDER == X_BIG_ENDIAN) {
-enum IMAGE_BYTE_ORDER =        MSBFirst;
-enum BITMAP_BIT_ORDER =        MSBFirst;
-} else {
-static assert(0, "Too weird to live.");
-}
+// } else static if (X_BYTE_ORDER == X_BIG_ENDIAN) {
+// enum IMAGE_BYTE_ORDER =        MSBFirst;
+// enum BITMAP_BIT_ORDER =        MSBFirst;
+// } else {
+// static assert(0, "Too weird to live.");
+// }
 
 enum GLYPHPADBYTES =           4;
 

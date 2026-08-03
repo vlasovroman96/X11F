@@ -35,6 +35,9 @@ extern(C): __gshared:
 import build.dix_config;
 
 import glamor.glamor_priv;
+import externs.gnu;
+import glamor.glamor;;
+import render.picture;
 
 enum LINEAR_SMALL_STOPS = (6 + 2);
 enum LINEAR_LARGE_STOPS = (16 + 2);
@@ -85,7 +88,7 @@ enum gradient_fs_getcolor =
 
     /* Because the array access for shader is very slow, the performance is very low
        if use array. So use global uniform to replace for it if the number of n_stops is small. */
-    const(char)* gradient_fs_getcolor_no_array = GLAMOR_DEFAULT_PRECISION;
+    const(char)* gradient_fs_getcolor_no_array = GLAMOR_DEFAULT_PRECISION ~
         "uniform int n_stop;\n"
         ~ "uniform float stop0;\n"
         ~ "uniform float stop1;\n"
@@ -177,7 +180,7 @@ enum gradient_fs_getcolor =
         return gradient_fs;
     }
     else {
-        return XNFstrdup(gradient_fs_getcolor_no_array);
+        return cast(char*)XNFstrdup(gradient_fs_getcolor_no_array);
     }
 }
 
@@ -190,7 +193,7 @@ private Bool _glamor_create_radial_gradient_program(ScreenPtr screen, int stops_
     char* gradient_fs = null;
     GLint fs_prog = void, vs_prog = void;
 
-    const(char)* gradient_vs = GLAMOR_DEFAULT_PRECISION;
+    const(char)* gradient_vs = GLAMOR_DEFAULT_PRECISION~
         "attribute vec4 v_position;\n"
         ~ "attribute vec4 v_texcoord;\n"
         ~ "varying vec2 source_texture;\n"
@@ -665,41 +668,41 @@ private int _glamor_gradient_set_pixmap_destination(ScreenPtr screen, glamor_scr
 
     glamor_set_destination_pixmap_priv_nc(glamor_priv, pixmap, pixmap_priv);
 
-    pixmap_priv_get_dest_scale(pixmap, pixmap_priv, xscale, yscale);
+    mixin(pixmap_priv_get_dest_scale!("pixmap", "pixmap_priv", "xscale", "yscale"));
 
     //DEBUGF("xscale = %f, yscale = %f,"
         //    ~ " x_source = %d, y_source = %d, width = %d, height = %d\n",
         //    *xscale, *yscale, x_source, y_source,
         //    dst_picture.pDrawable.width, dst_picture.pDrawable.height);
 
-    v = glamor_get_vbo_space(screen, 16 * GLfloat.sizeof, &vbo_offset);
+    v = cast(float*)glamor_get_vbo_space(screen, cast(uint)(16 * GLfloat.sizeof), &vbo_offset);
 
-    glamor_set_normalize_vcoords_tri_strip(*xscale, *yscale,
-                                           0, 0,
-                                           cast(INT16) (dst_picture.pDrawable.
-                                                    width),
-                                           cast(INT16) (dst_picture.pDrawable.
-                                                    height),
-                                           v);
+    mixin(glamor_set_normalize_vcoords_tri_strip!("*xscale", "*yscale",
+                                           "0", "0",
+                                           "cast(INT16) (dst_picture.pDrawable.
+                                                    width)",
+                                           "cast(INT16) (dst_picture.pDrawable.
+                                                    height)",
+                                           "v"));
 
     if (tex_normalize) {
-        glamor_set_normalize_tcoords_tri_stripe(*xscale, *yscale,
-                                                x_source, y_source,
-                                                cast(INT16) (dst_picture.
+        mixin(glamor_set_normalize_tcoords_tri_stripe!("*xscale", "*yscale",
+                                                "x_source", "y_source",
+                                                "cast(INT16) (dst_picture.
                                                          pDrawable.width +
-                                                         x_source),
-                                                cast(INT16) (dst_picture.
+                                                         x_source)",
+                                                "cast(INT16) (dst_picture.
                                                          pDrawable.height +
-                                                         y_source),
-                                                &v[8]);
+                                                         y_source)",
+                                                "&v[8]"));
     }
     else {
-        glamor_set_tcoords_tri_strip(x_source, y_source,
-                                     cast(INT16) (dst_picture.pDrawable.width) +
-                                     x_source,
-                                     cast(INT16) (dst_picture.pDrawable.height) +
-                                     y_source,
-                                     &v[8]);
+        mixin(glamor_set_tcoords_tri_strip!("x_source", "y_source",
+                                     "cast(INT16) (dst_picture.pDrawable.width) +
+                                     x_source",
+                                     "cast(INT16) (dst_picture.pDrawable.height) +
+                                     y_source",
+                                     "&v[8]"));
     }
 
     //DEBUGF("vertices --> leftup : %f X %f, rightup: %f X %f,"
@@ -865,7 +868,7 @@ PicturePtr glamor_generate_radial_gradient_picture(ScreenPtr screen, PicturePtr 
     dst_picture = CreatePicture(0, &pixmap.drawable,
                                 PictureMatchFormat(screen,
                                                    PIXMAN_FORMAT_DEPTH(format),
-                                                   format), 0, 0, serverClient,
+                                                   format), 0, null, serverClient,
                                 &error);
 
     /* Release the reference, picture will hold the last one. */
@@ -985,8 +988,8 @@ PicturePtr glamor_generate_radial_gradient_picture(ScreenPtr screen, PicturePtr 
         }
     }
     else {
-        stop_colors = stop_colors_st;
-        n_stops = n_stops_st;
+        stop_colors = stop_colors_st.ptr;
+        n_stops = n_stops_st.ptr;
     }
 
     count =
@@ -1056,11 +1059,11 @@ PicturePtr glamor_generate_radial_gradient_picture(ScreenPtr screen, PicturePtr 
     r2 = cast(float) pixman_fixed_to_double(src_picture.pSourcePict.radial.c2.
                                         radius);
 
-    glamor_set_circle_centre(width, height, c1x, c1y, cxy.ptr);
+    mixin(glamor_set_circle_centre!("width", "height", "c1x", "c1y", "cxy.ptr"));
     glUniform2fv(c1_uniform_location, 1, cxy.ptr);
     glUniform1f(r1_uniform_location, r1);
 
-    glamor_set_circle_centre(width, height, c2x, c2y, cxy.ptr);
+    mixin(glamor_set_circle_centre!("width", "height", "c2x", "c2y", "cxy.ptr"));
     glUniform2fv(c2_uniform_location, 1, cxy.ptr);
     glUniform1f(r2_uniform_location, r2);
 
@@ -1168,7 +1171,7 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
     dst_picture = CreatePicture(0, &pixmap.drawable,
                                 PictureMatchFormat(screen,
                                                    PIXMAN_FORMAT_DEPTH(format),
-                                                   format), 0, 0, serverClient,
+                                                   format), 0, null, serverClient,
                                 &error);
 
     /* Release the reference, picture will hold the last one. */
@@ -1281,23 +1284,23 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
     glamor_set_alu(&pixmap.drawable, GXcopy);
 
     /* Normalize the PTs. */
-    glamor_set_normalize_pt(xscale, yscale,
-                            pixman_fixed_to_double(src_picture.pSourcePict.
-                                                   linear.p1.x),
-                            pixman_fixed_to_double(src_picture.pSourcePict.
-                                                   linear.p1.y),
-                            pt1.ptr);
+    mixin(glamor_set_normalize_pt!("xscale", "yscale",
+                            "pixman_fixed_to_double(src_picture.pSourcePict.
+                                                   linear.p1.x)",
+                            "pixman_fixed_to_double(src_picture.pSourcePict.
+                                                   linear.p1.y)",
+                            "pt1.ptr"));
     //DEBUGF("pt1:(%f, %f) ---> (%f %f)\n",
         //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p1.x),
         //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p1.y),
         //    pt1[0], pt1[1]);
 
-    glamor_set_normalize_pt(xscale, yscale,
-                            pixman_fixed_to_double(src_picture.pSourcePict.
-                                                   linear.p2.x),
-                            pixman_fixed_to_double(src_picture.pSourcePict.
-                                                   linear.p2.y),
-                            pt2.ptr);
+    mixin(glamor_set_normalize_pt!("xscale", "yscale",
+                            "pixman_fixed_to_double(src_picture.pSourcePict.
+                                                   linear.p2.x)",
+                            "pixman_fixed_to_double(src_picture.pSourcePict.
+                                                   linear.p2.y)",
+                            "pt2.ptr"));
     //DEBUGF("pt2:(%f, %f) ---> (%f %f)\n",
         //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p2.x),
         //    pixman_fixed_to_double(src_picture.pSourcePict.linear.p2.y),
@@ -1318,8 +1321,8 @@ PicturePtr glamor_generate_linear_gradient_picture(ScreenPtr screen, PicturePtr 
         }
     }
     else {
-        stop_colors = stop_colors_st;
-        n_stops = n_stops_st;
+        stop_colors = stop_colors_st.ptr;
+        n_stops = n_stops_st.ptr;
     }
 
     count =

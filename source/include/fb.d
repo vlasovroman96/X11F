@@ -41,6 +41,7 @@ public import include.windowstr;
 public import include.privates;
 public import include.mi;
 public import include.mi;
+import include.servermd;
 
 public import migc;
 public import include.picturestr;
@@ -532,7 +533,7 @@ extern void fbDestroyGlyphCache();
 
 // extern void fbDestroyPixmap(PixmapPtr pPixmap);
 
-extern void fbPixmapToRegion(PixmapPtr pPix);
+// extern void fbPixmapToRegion(PixmapPtr pPix);
 
 /*
  * fbpoint.c

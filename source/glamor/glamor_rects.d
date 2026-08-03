@@ -83,7 +83,7 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, nrect * xRectangle.sizeof, &vbo_offset);
+        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(nrect * xRectangle.sizeof), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);
@@ -110,7 +110,7 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, nrect * 8 * short.sizeof, &vbo_offset);
+        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(nrect * 8 * short.sizeof), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_SHORT, GL_FALSE,

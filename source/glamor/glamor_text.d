@@ -120,7 +120,7 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
 
     /* Set up the vertex buffers for the font and destination */
 
-    v = glamor_get_vbo_space(drawable.pScreen, count * (6 * GLshort.sizeof), &vbo_offset);
+    v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(count * (6 * GLshort.sizeof)), &vbo_offset);
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
     glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);

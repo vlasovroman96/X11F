@@ -29,6 +29,7 @@ public import include.servermd;
 public import include.dixfont;
 // //public import externs.X11.fonts.fontstruct;
 //public import externs.X11.Xproto;         /* for xQueryFontReply */
+import fb.fbglyph;
 
 enum string FONTCHARSET(string font) = `(` ~ font ~ `)`;
 enum string FONTMAXBOUNDS(string font,string field) = `(` ~ font ~ `).info.maxbounds.` ~ field ~ ``;
@@ -70,19 +71,19 @@ enum string N2dChars(string pfont) = `(` ~ N1dChars!(pfont) ~ ` *
 
 
 static if (GLYPHPADBYTES == 0 || GLYPHPADBYTES == 1) {
-enum string	GLYPHWIDTHBYTESPADDED(string pci) = `(GLYPHWIDTHBYTES(` ~ pci ~ `))`;
+enum string	GLYPHWIDTHBYTESPADDED(string pci) = `(`~GLYPHWIDTHBYTES!(pci)~`)`;
 }
 
 static if (GLYPHPADBYTES == 2) {
-enum string	GLYPHWIDTHBYTESPADDED(string pci) = `((GLYPHWIDTHBYTES(` ~ pci ~ `)+1) & ~0x1)`;
+enum string	GLYPHWIDTHBYTESPADDED(string pci) = `((`~GLYPHWIDTHBYTES!(pci)~`+1) & ~0x1)`;
 }
 
 static if (GLYPHPADBYTES == 4) {
-enum string	GLYPHWIDTHBYTESPADDED(string pci) = `((GLYPHWIDTHBYTES(` ~ pci ~ `)+3) & ~0x3)`;
+enum string	GLYPHWIDTHBYTESPADDED(string pci) = `((`~GLYPHWIDTHBYTES!(pci)~`+3) & ~0x3)`;
 }
 
 static if (GLYPHPADBYTES == 8) {          /* for a cray? */
-enum string	GLYPHWIDTHBYTESPADDED(string pci) = `((GLYPHWIDTHBYTES(` ~ pci ~ `)+7) & ~0x7)`;
+enum string	GLYPHWIDTHBYTESPADDED(string pci) = `((`~GLYPHWIDTHBYTES!(pci)~`+7) & ~0x7)`;
 }
 
                           /* DIXFONTSTRUCT_H */

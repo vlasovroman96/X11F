@@ -1,4 +1,4 @@
-module fbglyph;
+module fb.fbglyph;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -38,6 +38,7 @@ enum string GLYPHWIDTHPIXELS(string pci) =
     pci ~ ".metrics.leftSideBearing)";
     enum string GLYPHHEIGHTPIXELS(string pci) =
     `(` ~ pci ~ `.metrics.ascent + ` ~ pci ~ `.metrics.descent)`;
+enum string GLYPHWIDTHBYTES(string pci) = `(((`~GLYPHWIDTHPIXELS!(pci) ~`)+7) >> 3)`;
 
 private Bool fbGlyphIn(RegionPtr pRegion, int x, int y, int width, int height)
 {

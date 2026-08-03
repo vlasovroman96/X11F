@@ -40,6 +40,7 @@ import core.stdc.config: c_long, c_ulong;
 //  import core.stdc.stdio : vasprintf;
 import core.stdc.stdarg;
 import build.dix_config;
+import fb.fbpixmap;
 
 extern(C) int vasprintf(char** strp, const(char)* fmt, va_list ap);
 

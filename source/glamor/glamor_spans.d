@@ -74,7 +74,7 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, n * (4 * GLshort.sizeof), &vbo_offset);
+        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(n * (4 * GLshort.sizeof)), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);
@@ -99,7 +99,7 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, n * 8 * short.sizeof, &vbo_offset);
+        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(n * 8 * short.sizeof), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_SHORT, GL_FALSE,

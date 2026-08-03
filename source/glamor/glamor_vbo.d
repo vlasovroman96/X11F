@@ -83,7 +83,7 @@ void* glamor_get_vbo_space(ScreenPtr screen, uint size, char** vbo_offset)
                     glamor_priv.has_buffer_storage = false;
                     glamor_priv.vbo_size = 0;
 
-                    return glamor_get_vbo_space(screen, size, vbo_offset);
+                    return glamor_get_vbo_space(screen, cast(uint)(size), vbo_offset);
                 }
             }
 

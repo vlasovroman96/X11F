@@ -534,7 +534,7 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
 
     glEnable(GL_SCISSOR_TEST);
 
-    v = glamor_get_vbo_space(screen, 3 * 4 * GLfloat.sizeof, &vbo_offset);
+    v = glamor_get_vbo_space(screen, cast(uint)(3 * 4 * GLfloat.sizeof), &vbo_offset);
 
     /* Set up a single primitive covering the area being drawn.  We'll
      * clip it to port_priv->clip using GL scissors instead of just

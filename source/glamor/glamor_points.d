@@ -75,7 +75,7 @@ private Bool glamor_poly_point_gl(DrawablePtr drawable, GCPtr gc, int mode, int 
     if (!glamor_use_program(drawable, gc, prog, null))
         goto bail;
 
-    vbo_ppt = glamor_get_vbo_space(screen, npt * (2 * INT16.sizeof), &vbo_offset);
+    vbo_ppt = glamor_get_vbo_space(screen, cast(uint)(npt * (2 * INT16.sizeof)), &vbo_offset);
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
     glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_SHORT, GL_FALSE, 0, vbo_offset);
     if (mode == CoordModePrevious) {

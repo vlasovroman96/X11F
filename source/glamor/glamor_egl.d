@@ -39,10 +39,14 @@ import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
 import core.sys.posix.sys.ioctl;
 import core.sys.posix.sys.stat;
+alias stat = core.sys.posix.sys.stat.stat_t;
 import core.stdc.errno;
+import externs.sys.sysmacros;
 
 version (HAVE_SYS_SYSMACROS_H) {
 import sys.sysmacros; /* for major() & minor() */
+import core.sys.linux.sys.s;
+
 }
 version (HAVE_SYS_MKDEV_H) {
 import sys.mkdev;          /* for major() & minor() on Solaris */
@@ -69,6 +73,8 @@ import glamor.glamor_egl_ext;
 import glamor.glamor_egl_priv;
 import glamor.glamor_glx_provider;
 import dri3.dri3;
+import hw.kdrive.ephyr.ephyr_glamor;
+import externs.epoxy;
 
 /**
  * EGLDeviceEXT's are internally stored as a globals.
@@ -102,7 +108,7 @@ struct glamor_egl_conf_t{
     glamor_egl_priv_t *glamor_egl_priv;
 
     /* Optional 2 function that maps a glamor_egl_priv_t to each screen*/
-    glamor_egl_priv_t* function(ScreenPtr screen) GLAMOR_EGL_PRIV_PROC;
+    glamor_egl_priv_t* function(ScreenPtr screen) @nogc nothrow GLAMOR_EGL_PRIV_PROC ;
 
     char *glvnd_vendor; /* glvnd vendor library or driver name */
     int fd; /* /dev/dri/cardxx */
@@ -132,9 +138,24 @@ void glamor_egl_add_display_to_list(EGLDisplay dpy)
         ptr = &(*ptr).next;
     }
 
-    *ptr = XNFalloc(typeof(**ptr).sizeof);
+    *ptr = cast(FreeDisplayList*)XNFalloc(typeof(**ptr).sizeof);
     (*ptr).dpy = dpy;
     (*ptr).next = null;
+}
+
+EGLDisplay
+glamor_egl_get_display2(EGLint type, void *native, bool platform_fallback)
+{
+    /* In practise any EGL 1.5 implementation would support the EXT extension */
+    if (epoxy_has_egl_extension(null, "EGL_EXT_platform_base")) {
+        PFNEGLGETPLATFORMDISPLAYEXTPROC getPlatformDisplayEXT =
+            cast(PFNEGLGETPLATFORMDISPLAYEXTPROC) eglGetProcAddress("eglGetPlatformDisplayEXT");
+        if (getPlatformDisplayEXT)
+            return getPlatformDisplayEXT(type, native, null);
+    }
+
+    /* Welp, everything is awful. */
+    return platform_fallback ? eglGetDisplay(native) : null;
 }
 
 void glamor_egl_destroy_display(EGLDisplay dpy)
@@ -182,7 +203,7 @@ pragma(inline, true) Bool glamor_egl_init_screen_private(ScreenPtr screen)
 
 glamor_egl_priv_t* _glamor_egl_get_screen_private(ScreenPtr screen)
 {
-    return dixLookupPrivate(&screen.devPrivates, &glamor_egl_screen_private_key);
+    return cast(glamor_egl_priv_t*)dixLookupPrivate(&screen.devPrivates, &glamor_egl_screen_private_key);
 }
 
 /**
@@ -196,7 +217,7 @@ glamor_egl_priv_t* _glamor_egl_get_screen_private(ScreenPtr screen)
  * See: https://gitlab.freedesktop.org/xorg/xserver/-/merge_requests/309
  */
 
-glamor_egl_priv_t* function(ScreenPtr screen) glamor_egl_get_screen_= &_glamor_egl_get_screen_private;
+glamor_egl_priv_t* function(ScreenPtr screen) glamor_egl_get_screen_private = &_glamor_egl_get_screen_private;
 
 void glamor_egl_make_current(glamor_context* glamor_ctx)
 {
@@ -837,7 +858,7 @@ version (GLAMOR_HAS_GBM) {
 
 PixmapPtr glamor_pixmap_from_fds(ScreenPtr screen, CARD8 num_fds, const(int)* fds, CARD16 width, CARD16 height, const(CARD32)* strides, const(CARD32)* offsets, CARD8 depth, CARD8 bpp, ulong modifier)
 {
-static if (HasVersion!"GLAMOR_HAS_GBM" && HasVersion!"WITH_LIBDRM") {
+static if (HasVersion!"WITH_LIBDRM") {
     PixmapPtr pixmap = void;
     glamor_egl_priv_t* glamor_egl = void;
     Bool ret = FALSE;
@@ -847,7 +868,6 @@ static if (HasVersion!"GLAMOR_HAS_GBM" && HasVersion!"WITH_LIBDRM") {
 
     pixmap = screen.CreatePixmap(screen, 0, 0, depth, 0);
 
-version (GBM_BO_WITH_MODIFIERS) {
     if (glamor_egl.dmabuf_capable && modifier != DRM_FORMAT_MOD_INVALID) {
         gbm_import_fd_modifier_data import_data = { 0 };
         gbm_bo* bo = void;
@@ -886,10 +906,9 @@ error:
         return null;
     }
     return pixmap;
-} else {
+}
+else
     return null;
-}
-}
 }
 
 PixmapPtr glamor_pixmap_from_fd(ScreenPtr screen, int fd, CARD16 width, CARD16 height, CARD16 stride, CARD8 depth, CARD8 bpp)
@@ -974,13 +993,11 @@ version(WITH_LIBDRM) {
         }
 }
 else {
-
-        if (linear_only
+        if (linear_only &&
             (*modifiers)[i] != 0) /* DRM_FORMAT_MOD_LINEAR */
         {
             continue;
         }
-
 }
 
         (*modifiers)[write_pos++] = (*modifiers)[i];
@@ -1145,7 +1162,7 @@ version (GLAMOR_HAS_GBM) {
 
     glamor_egl_pre_close_screen_cleanup(glamor_egl);
 
-    dixScreenUnhookClose(screen, glamor_egl_close_screen);
+    dixScreenUnhookClose(screen, &glamor_egl_close_screen);
 version (GLAMOR_HAS_GBM) {
     dixScreenUnhookPixmapDestroy(screen, &glamor_egl_pixmap_destroy);
 }
@@ -1160,7 +1177,7 @@ version (GLAMOR_HAS_GBM) {
         gbm_device_destroy(glamor_egl.gbm);
 }
 
-    dixScreenUnhookPostClose(screen, glamor_egl_post_close_screen);
+    dixScreenUnhookPostClose(screen, &glamor_egl_post_close_screen);
 }
 
 version (DRI3) {
@@ -1289,7 +1306,7 @@ version (GLAMOR_HAS_GBM) {
     glamor_ctx.ctx = glamor_egl.context;
     glamor_ctx.display = glamor_egl.display;
 
-    glamor_ctx.make_current = glamor_egl_make_current;
+    glamor_ctx.make_current = &glamor_egl_make_current;
 
     glamor_egl_set_glvnd_vendor(screen);
 version (DRI3) {
@@ -1345,7 +1362,7 @@ Bool glamor_query_devices_ext(EGLDeviceEXT** devices, EGLint* num_devices)
          return FALSE;
     }
 
-    *devices = calloc(max_devices, typeof(**devices).sizeof);
+    *devices = cast(void**)calloc(max_devices, typeof(**devices).sizeof);
     if (*devices == null) {
          return FALSE;
     }
@@ -1361,7 +1378,7 @@ Bool glamor_query_devices_ext(EGLDeviceEXT** devices, EGLint* num_devices)
          /* Shouldn't happen */
          void* tmp = realloc(*devices, *num_devices * typeof(**devices).sizeof);
          if (tmp) {
-             *devices = tmp;
+             *devices = cast(void**)tmp;
          }
     }
 
@@ -1621,7 +1638,7 @@ version (GLAMOR_HAS_GBM) {
 void glamor_egl_cleanup_screen(ScreenPtr screen)
 {
     /* Only clean up stuff if we set it up to begin with */
-    if (screen && (glamor_egl_screen_init2 == glamor_egl_screen_init)) {
+    if (screen && (glamor_egl_screen_init2 is &glamor_egl_screen_init)) {
         glamor_egl_cleanup(glamor_egl_get_screen_private(screen));
     }
 }
@@ -1634,7 +1651,7 @@ void glamor_egl_chose_configs(EGLDisplay display, const(EGLint)* attrib_list, EG
     if (!eglChooseConfig(display, attrib_list, null, 0, &max_configs) || max_configs == 0) {
         return;
     }
-    *configs = calloc(max_configs, EGLConfig.sizeof);
+    *configs = cast(void**)calloc(max_configs, EGLConfig.sizeof);
     if (*configs == null) {
         return;
     }
@@ -1647,7 +1664,7 @@ void glamor_egl_chose_configs(EGLDisplay display, const(EGLint)* attrib_list, EG
         /* Shouldn't happen */
         void* tmp = realloc(*configs, *num_configs * EGLConfig.sizeof);
         if (tmp) {
-            *configs = tmp;
+            *configs = cast(void**)tmp;
         }
     }
 }
@@ -1697,7 +1714,7 @@ Bool glamor_egl_try_big_gl_api(glamor_egl_priv_t* glamor_egl)
         EGL_NONE
     ];
 
-    static const(EGLint)*[2] ctx_attrib_lists = [ config_attribs_core, config_attribs ];
+    static const(EGLint)*[2] ctx_attrib_lists = [ config_attribs_core.ptr, config_attribs.ptr ];
 
     static const(EGLint)[7] config_attrib_list = [
         EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
@@ -1753,7 +1770,7 @@ Bool glamor_egl_try_gles_api(glamor_egl_priv_t* glamor_egl)
         EGL_NONE
     ];
 
-    static const(EGLint)*[1] ctx_attrib_lists = [ config_attribs ];
+    static const(EGLint)*[1] ctx_attrib_lists = [ config_attribs.ptr ];
 
     static const(EGLint)[7] config_attrib_list = [
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -1817,26 +1834,26 @@ Bool glamor_egl_init_display(glamor_egl_priv_t* glamor_egl, int* dri_fd)
      * If the user didn't give us a GL driver/library name,
      * we populate it with what we queried
      */
-enum string GLAMOR_EGL_TRY_PLATFORM(string platform, string native, string platform_fallback) = `\
-    glamor_egl->display = glamor_egl_get_display2(platform, native, platform_fallback); \
-    glamor_egl_add_display_to_list(glamor_egl->display); \
-    if (glamor_egl->display == EGL_NO_DISPLAY) { \
-        LogMessage(X_ERROR, "glamor: eglGetDisplay(" #platform ", " #native ") failed\n"); \
-    } else { \
-        if (eglInitialize(glamor_egl->display, NULL, NULL)) { \
-            if (!glamor_egl->glvnd_vendor && driver_name) { \
-                glamor_egl->glvnd_vendor = strdup(driver_name); \
-            } \
-            LogMessage(X_INFO, "glamor: eglInitialize() succeeded on " #platform "\n"); \
-            if (dri_fd && platform == EGL_PLATFORM_DEVICE_EXT) { \
-                *dri_fd = glamor_egl_device_get_fd(native); \
-            } \
-            free(devices); \
-            return TRUE; \
-        } \
-        LogMessage(X_ERROR, "glamor: eglInitialize() failed on " #platform "\n"); \
-        glamor_egl_destroy_display(glamor_egl->display); \
-        glamor_egl->display = EGL_NO_DISPLAY; \
+enum string GLAMOR_EGL_TRY_PLATFORM(string platform, string native, string platform_fallback) = `
+    glamor_egl.display = glamor_egl_get_display2(`~platform~`, `~native~`, `~platform_fallback~`); 
+    glamor_egl_add_display_to_list(glamor_egl.display); 
+    if (glamor_egl.display == EGL_NO_DISPLAY) { 
+        //LogMessage(X_ERROR, "glamor: eglGetDisplay(`~platform~`, `~native~`) failedn"); 
+    } else { 
+        if (eglInitialize(glamor_egl.display, null, null)) { 
+            if (!glamor_egl.glvnd_vendor && driver_name) { 
+                glamor_egl.glvnd_vendor = strdup(driver_name); 
+            } 
+            //LogMessage(X_INFO, "glamor: eglInitialize() succeeded on " #platform "n"); 
+            if (dri_fd && `~platform~` == EGL_PLATFORM_DEVICE_EXT) { 
+                *dri_fd = glamor_egl_device_get_fd(`~native~`); 
+            } 
+            free(devices); 
+            return TRUE; 
+        } 
+        //LogMessage(X_ERROR, "glamor: eglInitialize() failed on " #platform "n"); 
+        glamor_egl_destroy_display(glamor_egl.display); 
+        glamor_egl.display = EGL_NO_DISPLAY; 
     }`;
 
 version (GLAMOR_HAS_GBM) {
@@ -1921,9 +1938,12 @@ Bool glamor_egl_init_internal(glamor_egl_conf_t* glamor_egl_conf, int* caps)
     if (caps) {
         *caps = GLAMOR_EGL_CAP_NONE;
     }
+    Bool found = FALSE;
+    CARD32* formats = null;
+    CARD32 num_formats = 0;
 
     if (glamor_egl_conf.GLAMOR_EGL_PRIV_PROC) {
-        glamor_egl_get_screen_= glamor_egl_conf.GLAMOR_EGL_PRIV_PROC;
+        glamor_egl_get_screen_private = glamor_egl_conf.GLAMOR_EGL_PRIV_PROC;
         glamor_egl = glamor_egl_conf.glamor_egl_priv;
     } else {
         if (!glamor_egl_conf.screen ||
@@ -1990,10 +2010,10 @@ version (GLAMOR_HAS_GBM) {
     }
 }
 
-enum string GLAMOR_CHECK_EGL_EXTENSION(string EXT) = `\
-	if (!epoxy_has_egl_extension(glamor_egl->display, "EGL_" #EXT)) {  \
-		ErrorF("EGL_" #EXT " required.\n");  \
-		goto error;  \
+enum string GLAMOR_CHECK_EGL_EXTENSION(string EXT) = `
+	if (!epoxy_has_egl_extension(glamor_egl.display, "EGL_`~EXT~`")) {  
+		ErrorF("EGL_`~EXT~` required.\n");  
+		goto error;  
 	}`;
 
     mixin(GLAMOR_CHECK_EGL_EXTENSION!(`KHR_surfaceless_context`));
@@ -2027,7 +2047,7 @@ enum string GLAMOR_CHECK_EGL_EXTENSION(string EXT) = `\
                        "Refusing to try glamor on softpipe\n");
             goto error;
         }
-        if (!strncmp("llvmpipe", cast(const(char)*)renderer, (("llvmpipe") - 1).sizeof)) {
+        if (!strncmp("llvmpipe", cast(const(char)*)renderer, (("llvmpipe").sizeof - 1))) {
             if (glamor_egl_conf.llvmpipe_allowed)
                 LogMessage(X_INFO,
                            "Allowing glamor on llvmpipe for PRIME\n");
@@ -2085,9 +2105,6 @@ version (GLAMOR_HAS_GBM) {
 }
 
     /* Check if at least one combination of format + modifier is supported */
-    CARD32* formats = null;
-    CARD32 num_formats = 0;
-    Bool found = FALSE;
     if (!glamor_get_formats_internal(glamor_egl, &num_formats, &formats)) {
         goto glamor_no_dri;
     }

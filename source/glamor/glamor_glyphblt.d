@@ -35,6 +35,8 @@ import os.bug_priv;
 import glamor.glamor_priv;
 import include.dixfontstr;
 import glamor.glamor_transform;
+import glamor.glamor;
+import fb.fbglyph;
 
 private const(glamor_facet) glamor_facet_poly_glyph_blt = {
     name: "poly_glyph_blt",
@@ -74,7 +76,7 @@ private Bool glamor_poly_glyph_blt_gl(DrawablePtr drawable, GCPtr gc, int start_
 
     mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
-    glamor_pixmap_loop(pixmap_priv, box_index) ;{
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         int x = void;
         int n = void;
         int num_points = void, max_points = void;
@@ -91,14 +93,14 @@ private Bool glamor_poly_glyph_blt_gl(DrawablePtr drawable, GCPtr gc, int start_
         x = start_x;
         for (n = 0; n < nglyph; n++) {
             CharInfoPtr charinfo = ppci[n];
-            int w = GLYPHWIDTHPIXELS(charinfo);
-            int h = GLYPHHEIGHTPIXELS(charinfo);
-            ubyte* glyphbits = FONTGLYPHBITS(null, charinfo);
+            int w = mixin(GLYPHWIDTHPIXELS!("charinfo"));
+            int h = mixin(GLYPHHEIGHTPIXELS!("charinfo"));
+            ubyte* glyphbits = mixin(FONTGLYPHBITS!("null", "charinfo"));
 
             if (w && h) {
                 int glyph_x = x + charinfo.metrics.leftSideBearing;
                 int glyph_y = y - charinfo.metrics.ascent;
-                int glyph_stride = GLYPHWIDTHBYTESPADDED(charinfo);
+                int glyph_stride = mixin(GLYPHWIDTHBYTESPADDED!("charinfo"));
                 int xx = void, yy = void;
 
                 for (yy = 0; yy < h; yy++) {
@@ -119,9 +121,9 @@ else
                             continue;
 
                         if (!num_points) {
-                            points = glamor_get_vbo_space(screen,
+                            points = cast(short*)glamor_get_vbo_space(screen,
                                                           max_points *
-                                                          (2 * INT16.sizeof),
+                                                          cast(uint)(2 * INT16.sizeof),
                                                           &vbo_offset);
 
                             glVertexAttribPointer(GLAMOR_VERTEX_POS,
@@ -129,8 +131,8 @@ else
                                                   GL_FALSE, 0, vbo_offset);
                         }
 
-                        *points++ = pt_x_i;
-                        *points++ = pt_y_i;
+                        *points++ = cast(short)pt_x_i;
+                        *points++ = cast(short)pt_y_i;
                         num_points++;
 
                         if (num_points == max_points) {
@@ -149,7 +151,7 @@ else
             glamor_put_vbo_space(screen);
             glDrawArrays(GL_POINTS, 0, num_points);
         }
-    }
+    }));
 
     ret = TRUE;
 
@@ -174,7 +176,7 @@ private Bool glamor_push_pixels_gl(GCPtr gc, PixmapPtr bitmap, DrawablePtr drawa
     glamor_screen_private* glamor_priv = glamor_get_screen_private(screen);
     PixmapPtr pixmap = glamor_get_drawable_pixmap(drawable);
     glamor_pixmap_private* pixmap_priv = void;
-    ubyte* bitmap_data = bitmap.devPrivate.ptr;
+    ubyte* bitmap_data = cast(ubyte*)bitmap.devPrivate.ptr;
     int bitmap_stride = bitmap.devKind;
     glamor_program* prog = void;
     RegionPtr clip = gc.pCompositeClip;
@@ -202,7 +204,7 @@ private Bool glamor_push_pixels_gl(GCPtr gc, PixmapPtr bitmap, DrawablePtr drawa
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
 
-    points = glamor_get_vbo_space(screen, w * h * ((INT16) * 2).sizeof,
+    points = cast(short*)glamor_get_vbo_space(screen, cast(uint)(w * h * ((INT16).sizeof * 2)),
                                   &vbo_offset);
     num_points = 0;
 
@@ -228,11 +230,11 @@ static if (BITMAP_BIT_ORDER == MSBFirst) {
 else {
             if (bitmap_row[xx / 8] & (1 << xx % 8) &&
                 RegionContainsPoint(clip,
-                                    x + xx,
-                                    y + yy,
+                                    cast(short)(x + xx),
+                                    cast(short)(y + yy),
                                     null)) {
-                *points++ = x + xx;
-                *points++ = y + yy;
+                *points++ = cast(short)(x + xx);
+                *points++ = cast(short)(y + yy);
                 num_points++;
             }
 }
@@ -245,13 +247,13 @@ else {
 
     mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         if (!glamor_set_destination_drawable(drawable, box_index, FALSE, TRUE,
                                              prog.matrix_uniform, null, null))
             goto bail;
 
         glDrawArrays(GL_POINTS, 0, num_points);
-    }
+    }));
 
     ret = TRUE;
 

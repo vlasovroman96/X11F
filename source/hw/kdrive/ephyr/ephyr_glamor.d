@@ -49,8 +49,8 @@ enum EGL_NO_DISPLAY = cast(EGLDisplay)null;
 
 /* until we need geometry shaders GL3.1 should suffice. */
 /* Xephyr has its own copy of this for build reasons */
-enum GLAMOR_GL_CORE_VER_MAJOR = 3;
-enum GLAMOR_GL_CORE_VER_MINOR = 1;
+// enum GLAMOR_GL_CORE_VER_MAJOR = 3;
+// enum GLAMOR_GL_CORE_VER_MINOR = 1;
 /** @{
  *
  * global state for Xephyr with glamor, all of which is arguably a bug.
