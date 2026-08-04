@@ -59,7 +59,7 @@ enum string ALIAS2(string from,string to) = `
 enum string ALIAS(string from,string to) = `ALIAS2( from, __gl`~ to ~` _size )`;
 } else {
 enum string ALIAS(string from,string to) = `
-    GLint __gl` ~ from ~ `size( GLenum e ) 
+    GLint __gl` ~ from ~ `_size( GLenum e ) 
     { return __gl` ~ to ~ `_size( e ); }`;
 }
 

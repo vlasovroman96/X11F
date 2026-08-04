@@ -60,7 +60,7 @@ int __glXDisp_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
                                  &compsize);
 
         if (compsize != 0) {
-            PFNGLGETCOMPRESSEDTEXIMAGEARBPROC GetCompressedTexImageARB = __glGetProcAddress("glGetCompressedTexImageARB");
+            PFNGLGETCOMPRESSEDTEXIMAGEARBPROC GetCompressedTexImageARB = cast(PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)__glGetProcAddress("glGetCompressedTexImageARB");
             __GLX_GET_ANSWER_BUFFER(answer, cl, compsize, 1);
             __glXClearErrorOccured();
             GetCompressedTexImageARB(target, level, answer);
@@ -104,7 +104,7 @@ int __glXDispSwap_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
                                  &compsize);
 
         if (compsize != 0) {
-            PFNGLGETCOMPRESSEDTEXIMAGEARBPROC GetCompressedTexImageARB = __glGetProcAddress("glGetCompressedTexImageARB");
+            PFNGLGETCOMPRESSEDTEXIMAGEARBPROC GetCompressedTexImageARB = cast(PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)__glGetProcAddress("glGetCompressedTexImageARB");
             __GLX_GET_ANSWER_BUFFER(answer, cl, compsize, 1);
             __glXClearErrorOccured();
             GetCompressedTexImageARB(target, level, answer);

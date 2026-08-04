@@ -49,11 +49,11 @@ enum {
 }
 
 struct __GLXdrawable {
-    void function(__GLXdrawable* private_) destroy;
-     GLboolean function(ClientPtr client, __GLXdrawable*) swapBuffers;
-    void function(__GLXdrawable* drawable, int x, int y, int w, int h) copySubBuffer;
-    void function(__GLXdrawable*) waitX;
-    void function(__GLXdrawable*) waitGL;
+    void function(__GLXdrawable* private_) @nogc nothrow destroy;
+     GLboolean function(ClientPtr client, __GLXdrawable*) @nogc nothrow swapBuffers;
+    void function(__GLXdrawable* drawable, int x, int y, int w, int h) @nogc nothrow copySubBuffer;
+    void function(__GLXdrawable*) @nogc nothrow waitX;
+    void function(__GLXdrawable*) @nogc nothrow waitGL;
 
     DrawablePtr pDraw;
     XID drawId;

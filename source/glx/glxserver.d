@@ -97,12 +97,12 @@ enum {
 alias glx_func_ptr = void function();
 alias glx_gpa_proc = glx_func_ptr function(const(char)*);
 // void __glXsetGetProcAddress(glx_gpa_proc get_proc_address);
-void* __glGetProcAddress(const(char)*);
+// void* __glGetProcAddress(const(char)*);
 
 void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 msc, CARD32 sbc);
 
 static if (PRESENT) {
-void __glXregisterPresentCompleteNotify();
+// void __glXregisterPresentCompleteNotify();
 }
 
 /*

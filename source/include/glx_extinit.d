@@ -37,7 +37,7 @@ extern(C): __gshared:
 
 
 struct __GLXprovider {
-    __GLXscreen* function(ScreenPtr pScreen) screenProbe;
+    __GLXscreen* function(ScreenPtr pScreen) @nogc nothrow screenProbe;
     const(char)* name;
     __GLXprovider* next;
 }

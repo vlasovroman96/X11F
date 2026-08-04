@@ -118,16 +118,16 @@ private int DoGetProgramString(__GLXclientStateRec* cl, GLbyte* pc, PFNGLGETPROG
 
 int __glXDisp_GetProgramStringARB(__GLXclientStateRec* cl, GLbyte* pc)
 {
-    PFNGLGETPROGRAMIVARBPROC get_program = __glGetProcAddress("glGetProgramivARB");
-    PFNGLGETPROGRAMSTRINGARBPROC get_program_string = __glGetProcAddress("glGetProgramStringARB");
+    PFNGLGETPROGRAMIVARBPROC get_program = cast(PFNGLGETPROGRAMIVARBPROC)__glGetProcAddress("glGetProgramivARB");
+    PFNGLGETPROGRAMSTRINGARBPROC get_program_string = cast(PFNGLGETPROGRAMSTRINGARBPROC)__glGetProcAddress("glGetProgramStringARB");
 
     return DoGetProgramString(cl, pc, get_program, get_program_string, FALSE);
 }
 
 int __glXDispSwap_GetProgramStringARB(__GLXclientStateRec* cl, GLbyte* pc)
 {
-    PFNGLGETPROGRAMIVARBPROC get_program = __glGetProcAddress("glGetProgramivARB");
-    PFNGLGETPROGRAMSTRINGARBPROC get_program_string = __glGetProcAddress("glGetProgramStringARB");
+    PFNGLGETPROGRAMIVARBPROC get_program = cast(PFNGLGETPROGRAMIVARBPROC)__glGetProcAddress("glGetProgramivARB");
+    PFNGLGETPROGRAMSTRINGARBPROC get_program_string = cast(PFNGLGETPROGRAMSTRINGARBPROC)__glGetProcAddress("glGetProgramStringARB");
 
     return DoGetProgramString(cl, pc, get_program, get_program_string, TRUE);
 }

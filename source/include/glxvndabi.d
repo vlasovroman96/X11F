@@ -269,12 +269,12 @@ struct GlxServerImportsRec {
      * If the server is exiting, then GLVND will free any remaining vendor
      * handles after calling the extensionCloseDown callbacks.
      */
-    void function(const(ExtensionEntry)* extEntry) extensionCloseDown;
+    void function(const(ExtensionEntry)* extEntry) @nogc nothrow extensionCloseDown;
 
     /**
      * Handles a GLX request.
      */
-    int function(ClientPtr client) handleRequest;
+    int function(ClientPtr client) @nogc nothrow handleRequest;
 
     /**
      * Returns a dispatch function for a request.
@@ -285,7 +285,7 @@ struct GlxServerImportsRec {
      * \return A dispatch function, or NULL if the vendor doesn't support this
      *      request.
      */
-    GlxServerDispatchProc function(CARD8 minorOpcode, CARD32 vendorCode) getDispatchAddress;
+    GlxServerDispatchProc function(CARD8 minorOpcode, CARD32 vendorCode) @nogc nothrow getDispatchAddress;
 
     /**
      * Handles a MakeCurrent request.
@@ -306,7 +306,7 @@ struct GlxServerImportsRec {
      * Likewise, the vendor can use \c __GLXserverExports::setContextTagPrivate
      * to assign a private data pointer to \p newContextTag.
      */
-    int function(ClientPtr client, GLXContextTag oldContextTag, XID drawable, XID readdrawable, XID context, GLXContextTag newContextTag) makeCurrent;
+    int function(ClientPtr client, GLXContextTag oldContextTag, XID drawable, XID readdrawable, XID context, GLXContextTag newContextTag) @nogc nothrow makeCurrent;
 };
 
 version (none) {

@@ -54,7 +54,12 @@ import include.glxvndabi;
 import include.glx_extinit;
 import glx.glx_dri.glxdriswrast;
  import externs.epoxy;
-
+ import dix.dixutils;
+import glx.vndext;
+import glx.glxcmds;
+import glx.glxscreens_h;
+import os.log;
+import os.io;
 
 
 /*
@@ -250,7 +255,7 @@ int __glXError(int error)
 
 __GLXclientState* glxGetClient(ClientPtr pClient)
 {
-    return dixLookupPrivate(&pClient.devPrivates, glxClientPrivateKey);
+    return cast(__GLXclientState*)dixLookupPrivate(&pClient.devPrivates, glxClientPrivateKey);
 }
 
 private void glxClientCallback(CallbackListPtr* list, void* closure, void* data)
@@ -303,7 +308,7 @@ private Bool checkScreenVisuals()
 
 private void GetGLXDrawableBytes(void* value, XID id, ResourceSizePtr size)
 {
-    __GLXdrawable* draw = value;
+    __GLXdrawable* draw = cast(__GLXdrawable*)value;
 
     size.resourceSize = 0;
     size.pixmapRefSize = 0;
@@ -355,43 +360,43 @@ private int xorgGlxThunkRequest(ClientPtr client)
     switch (vendorCode) {
     case X_GLXvop_QueryContextInfoEXT: {
         xGLXQueryContextInfoEXTReq* req = cast(xGLXQueryContextInfoEXTReq*) (cast(void*)stuff);
-        mixin(REQUEST_AT_LEAST_SIZE!(*req));
-        if (((vendor = glxServer.getXIDMap(maybe_swap32(client, req.context))) == 0))
+        mixin(REQUEST_AT_LEAST_SIZE!("*req"));
+        if (((vendor = glxServer.getXIDMap(maybe_swap32(client, req.context)))) is null)
             return __glXError(GLXBadContext);
         break;
         }
 
     case X_GLXvop_GetFBConfigsSGIX: {
         xGLXGetFBConfigsSGIXReq* req = cast(xGLXGetFBConfigsSGIXReq*) (cast(void*)stuff);
-        mixin(REQUEST_AT_LEAST_SIZE!(*req));
-        if (((vendor = vendorForScreen(client, req.screen)) == 0))
+        mixin(REQUEST_AT_LEAST_SIZE!("*req"));
+        if (((vendor = vendorForScreen(client, req.screen))) is null)
             return BadValue;
         break;
         }
 
     case X_GLXvop_CreateContextWithConfigSGIX: {
         xGLXCreateContextWithConfigSGIXReq* req = cast(xGLXCreateContextWithConfigSGIXReq*) (cast(void*)stuff);
-        mixin(REQUEST_AT_LEAST_SIZE!(*req));
+        mixin(REQUEST_AT_LEAST_SIZE!("*req"));
         resource = maybe_swap32(client, req.context);
-        if (((vendor = vendorForScreen(client, req.screen)) == 0))
+        if (((vendor = vendorForScreen(client, req.screen)) is null))
             return BadValue;
         break;
         }
 
     case X_GLXvop_CreateGLXPixmapWithConfigSGIX: {
         xGLXCreateGLXPixmapWithConfigSGIXReq* req = cast(xGLXCreateGLXPixmapWithConfigSGIXReq*) (cast(void*)stuff);
-        mixin(REQUEST_AT_LEAST_SIZE!(*req));
+        mixin(REQUEST_AT_LEAST_SIZE!("*req"));
         resource = maybe_swap32(client, req.glxpixmap);
-        if (((vendor = vendorForScreen(client, req.screen)) == 0))
+        if (((vendor = vendorForScreen(client, req.screen)) is null))
             return BadValue;
         break;
         }
 
     case X_GLXvop_CreateGLXPbufferSGIX: {
         xGLXCreateGLXPbufferSGIXReq* req = cast(xGLXCreateGLXPbufferSGIXReq*) (cast(void*)stuff);
-        mixin(REQUEST_AT_LEAST_SIZE!(*req));
+        mixin(REQUEST_AT_LEAST_SIZE!("*req"));
         resource = maybe_swap32(client, req.pbuffer);
-        if (((vendor = vendorForScreen(client, req.screen)) == 0))
+        if (((vendor = vendorForScreen(client, req.screen)) is null))
             return BadValue;
         break;
         }
@@ -401,9 +406,9 @@ private int xorgGlxThunkRequest(ClientPtr client)
     case X_GLXvop_ChangeDrawableAttributesSGIX:
     case X_GLXvop_GetDrawableAttributesSGIX: {
         xGLXGetDrawableAttributesSGIXReq* req = cast(xGLXGetDrawableAttributesSGIXReq*) (cast(void*)stuff);
-        mixin(REQUEST_AT_LEAST_SIZE!(*req));
+        mixin(REQUEST_AT_LEAST_SIZE!("*req"));
         if (((vendor = glxServer.getXIDMap(maybe_swap32(client,
-                                                        req.drawable))) == 0))
+                                                        req.drawable))) is null))
             return __glXError(GLXBadDrawable);
         break;
         }
@@ -451,7 +456,7 @@ private GlxServerDispatchProc xorgGlxGetDispatchAddress(CARD8 minorOpcode, CARD3
                                         FALSE))
         return null;
 
-    return xorgGlxThunkRequest;
+    return &xorgGlxThunkRequest;
 }
 
 private Bool xorgGlxServerPreInit(const(ExtensionEntry)* extEntry)
@@ -460,9 +465,9 @@ private Bool xorgGlxServerPreInit(const(ExtensionEntry)* extEntry)
         if (!checkScreenVisuals())
             return FALSE;
 
-        __glXContextRes = CreateNewResourceType(cast(DeleteType) ContextGone,
+        __glXContextRes = CreateNewResourceType(cast(DeleteType) &ContextGone,
                                                 "GLXContext");
-        __glXDrawableRes = CreateNewResourceType(cast(DeleteType) DrawableGone,
+        __glXDrawableRes = CreateNewResourceType(cast(DeleteType) &DrawableGone,
                                                  "GLXDrawable");
         if (!__glXContextRes || !__glXDrawableRes)
             return FALSE;
@@ -470,7 +475,7 @@ private Bool xorgGlxServerPreInit(const(ExtensionEntry)* extEntry)
         if (!dixRegisterPrivateKey
             (&glxClientPrivateKeyRec, PRIVATE_CLIENT, __GLXclientState.sizeof))
             return FALSE;
-        if (!AddCallback(&ClientStateCallback, &glxClientCallback, 0))
+        if (!AddCallback(&ClientStateCallback, &glxClientCallback, null))
             return FALSE;
 
         __glXErrorBase = extEntry.errorBase;
@@ -491,10 +496,10 @@ private void xorgGlxInitGLVNDVendor()
         imports = glxServer.allocateServerImports();
 
         if (imports != null) {
-            imports.extensionCloseDown = xorgGlxCloseExtension;
-            imports.handleRequest = xorgGlxHandleRequest;
-            imports.getDispatchAddress = xorgGlxGetDispatchAddress;
-            imports.makeCurrent = xorgGlxMakeCurrent;
+            imports.extensionCloseDown = &xorgGlxCloseExtension;
+            imports.handleRequest = &xorgGlxHandleRequest;
+            imports.getDispatchAddress = &xorgGlxGetDispatchAddress;
+            imports.makeCurrent = &xorgGlxMakeCurrent;
             glvnd_vendor = glxServer.createVendor(imports);
             glxServer.freeServerImports(imports);
         }
@@ -503,7 +508,7 @@ private void xorgGlxInitGLVNDVendor()
 
 private void xorgGlxServerInit(CallbackListPtr* pcbl, void* param, void* ext)
 {
-    const(ExtensionEntry)* extEntry = ext;
+    const(ExtensionEntry)* extEntry = cast(const(ExtensionEntry)*)ext;
 
     if (!xorgGlxServerPreInit(extEntry)) {
         return;
@@ -570,14 +575,14 @@ __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* er
     if (!cx) {
         cl.client.errorValue = tag;
         *error = __glXError(GLXBadContextTag);
-        return 0;
+        return null;
     }
 
     /* If we're expecting a glXRenderLarge request, this better be one. */
     if (cx.largeCmdRequestsSoFar != 0 && stuff.glxCode != X_GLXRenderLarge) {
         client.errorValue = stuff.glxCode;
         *error = __glXError(GLXBadLargeRequest);
-        return 0;
+        return null;
     }
 
     if (!cx.isDirect) {
@@ -588,7 +593,7 @@ __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* er
              ** refcounted and don't go away until no one is using them.
              */
             *error = __glXError(GLXBadCurrentWindow);
-            return 0;
+            return null;
         }
     }
 
@@ -614,7 +619,7 @@ __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* er
             lastGLContext = null;
             cl.client.errorValue = cx.id;
             *error = __glXError(GLXBadContextState);
-            return 0;
+            return null;
         }
     }
     return cx;
@@ -665,7 +670,7 @@ void* __glGetProcAddress(const(char)* proc)
 {
     void* ret = cast(void*) _get_proc_address(proc);
 
-    return ret ? ret : cast(void*) NoopDDA;
+    return ret ? ret : cast(void*) &NoopDDA;
 }
 
 /*
@@ -698,7 +703,7 @@ private int __glXDispatch(ClientPtr client)
     /*
      ** Use the opcode to index into the procedure table.
      */
-    proc = __glXGetProtocolDecodeFunction(&Single_dispatch_info, opcode,
+    proc = cast(__GLXdispatchSingleProcPtr)__glXGetProtocolDecodeFunction(&Single_dispatch_info, opcode,
                                           client.swapped);
     if (proc != null)
         retval = (*proc) (cl, cast(GLbyte*) stuff);

@@ -52,6 +52,7 @@ import include.protocol_versions;
 import include.compositeext;
 import glx.glxscreens_h;
  import externs.epoxy;
+ import dix.resource;
 
 
 private DevPrivateKeyRec glxScreenPrivateKeyRec;
@@ -166,13 +167,13 @@ private const(char)[2432] GLServerExtensions = "GL_ARB_depth_texture "
 private void glxCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
     __GLXscreen* pGlxScreen = glxGetScreen(pScreen);
-    dixScreenUnhookClose(pScreen, glxCloseScreen);
+    dixScreenUnhookClose(pScreen, &glxCloseScreen);
     pGlxScreen.destroy(pGlxScreen);
 }
 
 __GLXscreen* glxGetScreen(ScreenPtr pScreen)
 {
-    return dixLookupPrivate(&pScreen.devPrivates, glxScreenPrivateKey);
+    return cast(__GLXscreen*)dixLookupPrivate(&pScreen.devPrivates, glxScreenPrivateKey);
 }
 
 GLint glxConvertToXVisualType(int visualType)
@@ -229,15 +230,15 @@ private void initGlxVisual(VisualPtr visual, __GLXconfig* config)
 
     maxBits = max(config.redBits, max(config.greenBits, config.blueBits));
 
-    config.visualID = visual.vid;
-    visual.class_ = glxConvertToXVisualType(config.visualType);
-    visual.bitsPerRGBValue = maxBits;
-    visual.ColormapEntries = 1 << maxBits;
-    visual.nplanes = config.redBits + config.greenBits + config.blueBits;
+    config.visualID = cast(int)visual.vid;
+    visual.class_ = cast(short)glxConvertToXVisualType(config.visualType);
+    visual.bitsPerRGBValue = cast(short)maxBits;
+    visual.ColormapEntries = cast(short)(1 << maxBits);
+    visual.nplanes = cast(short)(config.redBits + config.greenBits + config.blueBits);
 
-    visual.redMask = config.redMask;
-    visual.greenMask = config.greenMask;
-    visual.blueMask = config.blueMask;
+    visual.redMask = cast(ubyte)config.redMask;
+    visual.greenMask = cast(ubyte)config.greenMask;
+    visual.blueMask = cast(ubyte)config.blueMask;
     visual.offsetRed = findFirstSet(config.redMask);
     visual.offsetGreen = findFirstSet(config.greenMask);
     visual.offsetBlue = findFirstSet(config.blueMask);
@@ -316,21 +317,21 @@ void __glXScreenInit(__GLXscreen* pGlxScreen, ScreenPtr pScreen)
         return;
 
     pGlxScreen.pScreen = pScreen;
-    pGlxScreen.GLextensions = XNFstrdup(GLServerExtensions.ptr);
+    pGlxScreen.GLextensions = cast(char*)XNFstrdup(GLServerExtensions.ptr);
     pGlxScreen.GLXextensions = null;
 
     dixScreenHookClose(pScreen, &glxCloseScreen);
 
     i = 0;
     for (m = pGlxScreen.fbconfigs; m != null; m = m.next) {
-        m.fbconfigID = dixAllocServerXID();
+        m.fbconfigID = cast(int)dixAllocServerXID();
         m.visualID = 0;
         i++;
     }
     pGlxScreen.numFBConfigs = i;
 
     pGlxScreen.visuals =
-        XNFcallocarray(pGlxScreen.numFBConfigs, (__GLXconfig*).sizeof);
+        cast(__GLXconfig**)XNFcallocarray(pGlxScreen.numFBConfigs, (__GLXconfig*).sizeof);
 
     /* First, try to choose featureful FBconfigs for the existing X visuals.
      * Note that if multiple X visuals end up with the same FBconfig being
@@ -343,7 +344,7 @@ void __glXScreenInit(__GLXscreen* pGlxScreen, ScreenPtr pScreen)
         config = pickFBConfig(pGlxScreen, visual);
         if (config) {
             pGlxScreen.visuals[pGlxScreen.numVisuals++] = config;
-            config.visualID = visual.vid;
+            config.visualID = cast(int)visual.vid;
             if (!noCompositeExtension) {
                 if (compIsAlternateVisual(pScreen, visual.vid))
                     config.visualSelectGroup++;
@@ -406,12 +407,12 @@ void __glXScreenInit(__GLXscreen* pGlxScreen, ScreenPtr pScreen)
     dixSetPrivate(&pScreen.devPrivates, glxScreenPrivateKey, pGlxScreen);
 
     if (pGlxScreen.glvnd)
-        __glXEnableExtension(pGlxScreen.glx_enable_bits, "GLX_EXT_libglvnd");
+        __glXEnableExtension(pGlxScreen.glx_enable_bits.ptr, "GLX_EXT_libglvnd");
 
-    i = __glXGetExtensionString(pGlxScreen.glx_enable_bits, null);
+    i = __glXGetExtensionString(pGlxScreen.glx_enable_bits.ptr, null);
     if (i > 0) {
-        pGlxScreen.GLXextensions = XNFalloc(i);
-        cast(void) __glXGetExtensionString(pGlxScreen.glx_enable_bits,
+        pGlxScreen.GLXextensions = cast(char*)XNFalloc(i);
+        cast(void) __glXGetExtensionString(pGlxScreen.glx_enable_bits.ptr,
                                        pGlxScreen.GLXextensions);
     }
 
