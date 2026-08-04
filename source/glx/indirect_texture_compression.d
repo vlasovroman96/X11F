@@ -37,6 +37,10 @@ import glx.unpack;
 import glx.indirect_size_get;
 import glx.indirect_dispatch;
  import externs.epoxy;
+ import glx.glxcmds;
+import core.stdc.config: c_long, c_ulong;
+import os.io;
+
 
 
 int __glXDisp_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
@@ -61,20 +65,20 @@ int __glXDisp_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
 
         if (compsize != 0) {
             PFNGLGETCOMPRESSEDTEXIMAGEARBPROC GetCompressedTexImageARB = cast(PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)__glGetProcAddress("glGetCompressedTexImageARB");
-            __GLX_GET_ANSWER_BUFFER(answer, cl, compsize, 1);
+            mixin(__GLX_GET_ANSWER_BUFFER!("answer", "cl", "compsize", "1"));
             __glXClearErrorOccured();
             GetCompressedTexImageARB(target, level, answer);
         }
 
         if (__glXErrorOccured()) {
-            __GLX_BEGIN_REPLY(0);
-            __GLX_SEND_HEADER();
+            mixin(__GLX_BEGIN_REPLY!("0"));
+            mixin(__GLX_SEND_HEADER!());
         }
         else {
-            __GLX_BEGIN_REPLY(compsize);
+            mixin(__GLX_BEGIN_REPLY!("compsize"));
             (cast(xGLXGetTexImageReply*) &reply).width = compsize;
-            __GLX_SEND_HEADER();
-            __GLX_SEND_VOID_ARRAY(compsize);
+            mixin(__GLX_SEND_HEADER!());
+            mixin(__GLX_SEND_VOID_ARRAY!("compsize")~";");
         }
 
         error = Success;
@@ -105,20 +109,20 @@ int __glXDispSwap_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
 
         if (compsize != 0) {
             PFNGLGETCOMPRESSEDTEXIMAGEARBPROC GetCompressedTexImageARB = cast(PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)__glGetProcAddress("glGetCompressedTexImageARB");
-            __GLX_GET_ANSWER_BUFFER(answer, cl, compsize, 1);
+            mixin(__GLX_GET_ANSWER_BUFFER!("answer", "cl", "compsize", "1"));
             __glXClearErrorOccured();
             GetCompressedTexImageARB(target, level, answer);
         }
 
         if (__glXErrorOccured()) {
-            __GLX_BEGIN_REPLY(0);
-            __GLX_SEND_HEADER();
+            mixin(__GLX_BEGIN_REPLY!("0"));
+            mixin(__GLX_SEND_HEADER!());
         }
         else {
-            __GLX_BEGIN_REPLY(compsize);
+            mixin(__GLX_BEGIN_REPLY!("compsize"));
             (cast(xGLXGetTexImageReply*) &reply).width = compsize;
-            __GLX_SEND_HEADER();
-            __GLX_SEND_VOID_ARRAY(compsize);
+            mixin(__GLX_SEND_HEADER!());
+            mixin(__GLX_SEND_VOID_ARRAY!("compsize")~";");
         }
 
         error = Success;

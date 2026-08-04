@@ -242,8 +242,8 @@ int __glXDisp_Finish(__GLXclientState* cl, GLbyte* pc)
     client = cl.client;
 
     xGLXSingleReply reply = { 0 };
-    __GLX_BEGIN_REPLY(0);
-    __GLX_SEND_HEADER();
+    mixin(__GLX_BEGIN_REPLY!("0"));
+    mixin(__GLX_SEND_HEADER!());
     return Success;
 }
 
@@ -376,7 +376,7 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
     }
 
     xGLXSingleReply reply = { 0 };
-    __GLX_BEGIN_REPLY(length);
+    mixin(__GLX_BEGIN_REPLY!("length"));
     __GLX_PUT_SIZE(length);
 
     if (need_swap) {
@@ -384,7 +384,7 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
         __GLX_SWAP_REPLY_HEADER();
     }
 
-    __GLX_SEND_HEADER();
+    mixin(__GLX_SEND_HEADER!());
     WriteToClient(client, length, string);
     free(buf);
 

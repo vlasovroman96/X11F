@@ -47,6 +47,10 @@ import glx.indirect_table;
 import glx.indirect_util;
 import include.misc;
  import externs.epoxy;
+ import core.stdc.stdint;
+ import os.io;
+
+ alias SIZE_MAX = core.stdc.stdint.SIZE_MAX;
 
 
 //import externs.GL.glx;
@@ -96,8 +100,8 @@ void* __glXGetAnswerBuffer(__GLXclientState* cl, size_t required_size, void* loc
                 return null;
             }
 
-            cl.returnBuf = temp;
-            cl.returnBufSize = worst_case_size;
+            cl.returnBuf = cast(byte*)temp;
+            cl.returnBufSize = cast(int)worst_case_size;
         }
 
         temp_buf = cast(intptr_t) cl.returnBuf;
@@ -130,10 +134,10 @@ void __glXSendReply(ClientPtr client, const(void)* data, size_t elements, size_t
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     /* data should already be padded */
-    x_rpcbuf_write_CARD8s(&rpcbuf, data, reply_ints * 4);
+    x_rpcbuf_write_CARD8s(&rpcbuf, cast(ubyte*)data, reply_ints * 4);
 
     xGLXSingleReply reply = {
-        size: elements,
+        size: cast(uint)elements,
         retval: retval,
     };
 
@@ -142,7 +146,7 @@ void __glXSendReply(ClientPtr client, const(void)* data, size_t elements, size_t
         cast(void) memcpy(&reply.pad3, data, element_size);
     }
 
-    mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
+    mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf")~";");
 }
 
 /**
@@ -170,11 +174,11 @@ void __glXSendReplySwap(ClientPtr client, const(void)* data, size_t elements, si
     }
 
     xGLXSingleReply reply = {
-        length: bswap_32(reply_ints),
+        length: bswap_32(cast(uint)reply_ints),
         type: X_Reply,
-        sequenceNumber: bswap_16(client.sequence),
-        size: bswap_32(elements),
-        retval: bswap_32(retval),
+        sequenceNumber: bswap_16(cast(ushort)client.sequence),
+        size: bswap_32(cast(uint)elements),
+        retval: bswap_32(cast(uint)retval),
     };
 
     /* Single element goes in reply padding; don't leak uninitialized data. */
@@ -184,7 +188,7 @@ void __glXSendReplySwap(ClientPtr client, const(void)* data, size_t elements, si
     WriteToClient(client, xGLXSingleReply.sizeof, &reply);
 
     if (reply_ints != 0) {
-        WriteToClient(client, reply_ints * 4, data);
+        WriteToClient(client, cast(int)(reply_ints * 4), data);
     }
 }
 
@@ -213,7 +217,7 @@ private int get_decode_index(const(__glXDispatchInfo)* dispatch_info, uint opcod
          * This masks the 3 bits that we would want for this node.
          */
 
-        next_remain = remaining_bits - tree[index];
+        next_remain = cast(int)(remaining_bits - tree[index]);
         mask = ((1 << remaining_bits) - 1) & ~((1 << next_remain) - 1);
 
         /* Using the mask, calculate the index of the opcode in the node.
@@ -233,7 +237,7 @@ private int get_decode_index(const(__glXDispatchInfo)* dispatch_info, uint opcod
         if (index == EMPTY_LEAF) {
             return -1;
         }
-        else if (IS_LEAF_INDEX(index)) {
+        else if (mixin(IS_LEAF_INDEX!("index"))) {
             uint func_index = void;
 
             /* The value stored in the tree for a leaf node is the base of
@@ -242,7 +246,7 @@ private int get_decode_index(const(__glXDispatchInfo)* dispatch_info, uint opcod
              * opcode.
              */
 
-            func_index = -index;
+            func_index = cast(uint)-index;
             func_index += opcode & ((1 << next_remain) - 1);
             return func_index;
         }
@@ -270,9 +274,9 @@ int __glXGetProtocolSizeData(const(__glXDispatchInfo)* dispatch_info, int opcode
 
         if ((func_index >= 0)
             && (dispatch_info.size_table[func_index][0] != 0)) {
-            const(int) var_offset = dispatch_info.size_table[func_index][1];
+            const(int) var_offset = cast(const int)dispatch_info.size_table[func_index][1];
 
-            data.bytes = dispatch_info.size_table[func_index][0];
+            data.bytes = cast(int)dispatch_info.size_table[func_index][0];
             data.varsize = (var_offset != ~0)
                 ? dispatch_info.size_func_table[var_offset]
                 : null;

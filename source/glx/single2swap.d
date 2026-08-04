@@ -117,8 +117,8 @@ int __glXDispSwap_RenderMode(__GLXclientState* cl, GLbyte* pc)
     GLubyte* retBuffer = null;
     GLenum newMode = void;
 
-    __GLX_DECLARE_SWAP_VARIABLES;
-    __GLX_DECLARE_SWAP_ARRAY_VARIABLES;
+    mixin(__GLX_DECLARE_SWAP_VARIABLES);;
+    mixin(__GLX_DECLARE_SWAP_ARRAY_VARIABLES);;
     int error = void;
 
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
@@ -162,7 +162,7 @@ int __glXDispSwap_RenderMode(__GLXclientState* cl, GLbyte* pc)
         }
         retBytes = nitems * __GLX_SIZE_FLOAT32;
         retBuffer = cast(GLubyte*) cx.feedbackBuf;
-        __GLX_SWAP_FLOAT_ARRAY(cast(GLbyte*) retBuffer, nitems);
+        mixin(__GLX_SWAP_FLOAT_ARRAY!("cast(GLbyte*) retBuffer", "nitems"));
         cx.renderMode = newMode;
         break;
     case GL_SELECT:
@@ -260,10 +260,10 @@ int __glXDispSwap_Finish(__GLXclientState* cl, GLbyte* pc)
 
     /* Send empty reply packet to indicate finish is finished */
     xGLXSingleReply reply = { 0 };
-    __GLX_BEGIN_REPLY(0);
+    mixin(__GLX_BEGIN_REPLY!("0"));
     __GLX_PUT_RETVAL(0);
     __GLX_SWAP_REPLY_HEADER();
-    __GLX_SEND_HEADER();
+    mixin(__GLX_SEND_HEADER!());
 
     return Success;
 }

@@ -39,6 +39,9 @@ import glx.unpack;
 import glx.indirect_size;
 import glx.indirect_dispatch;
  import externs.epoxy;
+ import glx.glxext;
+ import glx.indirect_dispatch_swap;
+ import glx.indirect_size_get;
 
 
 void __glXDispSwap_Map1f(GLbyte* pc)
@@ -48,13 +51,13 @@ void __glXDispSwap_Map1f(GLbyte* pc)
     GLenum target = void;
     GLint compsize = void;
 
-    __GLX_DECLARE_SWAP_VARIABLES;
-    __GLX_DECLARE_SWAP_ARRAY_VARIABLES;
+    mixin(__GLX_DECLARE_SWAP_VARIABLES);;
+    mixin(__GLX_DECLARE_SWAP_ARRAY_VARIABLES);;
 
     swapl(cast(CARD32*)(pc + 0));
     swapl(cast(CARD32*)(pc + 12));
-    __GLX_SWAP_FLOAT(pc + 4);
-    __GLX_SWAP_FLOAT(pc + 8);
+    mixin(__GLX_SWAP_FLOAT!("pc + 4"));
+    mixin(__GLX_SWAP_FLOAT!("pc + 8"));
 
     target = *cast(GLenum*) (pc + 0);
     order = *cast(GLint*) (pc + 12);
@@ -70,7 +73,7 @@ void __glXDispSwap_Map1f(GLbyte* pc)
     else {
         compsize = order * k;
     }
-    __GLX_SWAP_FLOAT_ARRAY(points, compsize);
+    mixin(__GLX_SWAP_FLOAT_ARRAY!("points", "compsize"));
 
     glMap1f(target, u1, u2, k, order, points);
 }
@@ -82,16 +85,16 @@ void __glXDispSwap_Map2f(GLbyte* pc)
     GLenum target = void;
     GLint compsize = void;
 
-    __GLX_DECLARE_SWAP_VARIABLES;
-    __GLX_DECLARE_SWAP_ARRAY_VARIABLES;
+    mixin(__GLX_DECLARE_SWAP_VARIABLES);;
+    mixin(__GLX_DECLARE_SWAP_ARRAY_VARIABLES);;
 
     swapl(cast(CARD32*)(pc + 0));
     swapl(cast(CARD32*)(pc + 12));
     swapl(cast(CARD32*)(pc + 24));
-    __GLX_SWAP_FLOAT(pc + 4);
-    __GLX_SWAP_FLOAT(pc + 8);
-    __GLX_SWAP_FLOAT(pc + 16);
-    __GLX_SWAP_FLOAT(pc + 20);
+    mixin(__GLX_SWAP_FLOAT!("pc + 4"));
+    mixin(__GLX_SWAP_FLOAT!("pc + 8"));
+    mixin(__GLX_SWAP_FLOAT!("pc + 16"));
+    mixin(__GLX_SWAP_FLOAT!("pc + 20"));
 
     target = *cast(GLenum*) (pc + 0);
     uorder = *cast(GLint*) (pc + 12);
@@ -113,7 +116,7 @@ void __glXDispSwap_Map2f(GLbyte* pc)
     else {
         compsize = uorder * vorder * k;
     }
-    __GLX_SWAP_FLOAT_ARRAY(points, compsize);
+    mixin(__GLX_SWAP_FLOAT_ARRAY!("points", "compsize"));
 
     glMap2f(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
 }
@@ -124,11 +127,11 @@ void __glXDispSwap_Map1d(GLbyte* pc)
     GLenum target = void;
     GLdouble u1 = void, u2 = void; GLdouble* points = void;
 
-    __GLX_DECLARE_SWAP_VARIABLES;
-    __GLX_DECLARE_SWAP_ARRAY_VARIABLES;
+    mixin(__GLX_DECLARE_SWAP_VARIABLES);;
+    mixin(__GLX_DECLARE_SWAP_ARRAY_VARIABLES);;
 
-    __GLX_SWAP_DOUBLE(pc + 0);
-    __GLX_SWAP_DOUBLE(pc + 8);
+    mixin(__GLX_SWAP_DOUBLE!("pc + 0"));
+    mixin(__GLX_SWAP_DOUBLE!("pc + 8"));
     swapl(cast(CARD32*)(pc + 16));
     swapl(cast(CARD32*)(pc + 20));
 
@@ -142,9 +145,9 @@ void __glXDispSwap_Map1d(GLbyte* pc)
     else {
         compsize = order * k;
     }
-    __GLX_GET_DOUBLE(u1, pc);
-    __GLX_GET_DOUBLE(u2, pc + 8);
-    __GLX_SWAP_DOUBLE_ARRAY(pc + 24, compsize);
+    mixin(__GLX_GET_DOUBLE!("u1", "pc"));
+    mixin(__GLX_GET_DOUBLE!("u2", "pc + 8"));
+    mixin(__GLX_SWAP_DOUBLE_ARRAY!("pc + 24", "compsize"));
     pc += 24;
 
 version (__GLX_ALIGN64) {
@@ -171,13 +174,13 @@ void __glXDispSwap_Map2d(GLbyte* pc)
     GLint uorder = void, vorder = void, ustride = void, vstride = void, k = void, compsize = void;
     GLenum target = void;
 
-    __GLX_DECLARE_SWAP_VARIABLES;
-    __GLX_DECLARE_SWAP_ARRAY_VARIABLES;
+    mixin(__GLX_DECLARE_SWAP_VARIABLES);;
+    mixin(__GLX_DECLARE_SWAP_ARRAY_VARIABLES);;
 
-    __GLX_SWAP_DOUBLE(pc + 0);
-    __GLX_SWAP_DOUBLE(pc + 8);
-    __GLX_SWAP_DOUBLE(pc + 16);
-    __GLX_SWAP_DOUBLE(pc + 24);
+    mixin(__GLX_SWAP_DOUBLE!("pc + 0"));
+    mixin(__GLX_SWAP_DOUBLE!("pc + 8"));
+    mixin(__GLX_SWAP_DOUBLE!("pc + 16"));
+    mixin(__GLX_SWAP_DOUBLE!("pc + 24"));
     swapl(cast(CARD32*)(pc + 32));
     swapl(cast(CARD32*)(pc + 36));
     swapl(cast(CARD32*)(pc + 40));
@@ -193,11 +196,11 @@ void __glXDispSwap_Map2d(GLbyte* pc)
     else {
         compsize = uorder * vorder * k;
     }
-    __GLX_GET_DOUBLE(u1, pc);
-    __GLX_GET_DOUBLE(u2, pc + 8);
-    __GLX_GET_DOUBLE(v1, pc + 16);
-    __GLX_GET_DOUBLE(v2, pc + 24);
-    __GLX_SWAP_DOUBLE_ARRAY(pc + 44, compsize);
+    mixin(__GLX_GET_DOUBLE!("u1", "pc"));
+    mixin(__GLX_GET_DOUBLE!("u2", "pc + 8"));
+    mixin(__GLX_GET_DOUBLE!("v1", "pc + 16"));
+    mixin(__GLX_GET_DOUBLE!("v2", "pc + 24"));
+    mixin(__GLX_SWAP_DOUBLE_ARRAY!("pc + 44", "compsize"));
     pc += 44;
     ustride = vorder * k;
     vstride = k;
@@ -224,7 +227,7 @@ private void swapArray(GLint numVals, GLenum datatype, GLint stride, GLint numVe
 {
     int i = void, j = void;
 
-    __GLX_DECLARE_SWAP_VARIABLES;
+    mixin(__GLX_DECLARE_SWAP_VARIABLES);;
 
     switch (datatype) {
     case GL_BYTE:
@@ -258,7 +261,7 @@ private void swapArray(GLint numVals, GLenum datatype, GLint stride, GLint numVe
             GLfloat* pVal = cast(GLfloat*) pc;
 
             for (j = 0; j < numVals; j++) {
-                __GLX_SWAP_FLOAT(&pVal[j]);
+                mixin(__GLX_SWAP_FLOAT!("&pVal[j]"));
             }
             pc += stride;
         }
@@ -268,7 +271,7 @@ private void swapArray(GLint numVals, GLenum datatype, GLint stride, GLint numVe
             GLdouble* pVal = cast(GLdouble*) pc;
 
             for (j = 0; j < numVals; j++) {
-                __GLX_SWAP_DOUBLE(&pVal[j]);
+                mixin(__GLX_SWAP_DOUBLE!("&pVal[j]"));
             }
             pc += stride;
         }

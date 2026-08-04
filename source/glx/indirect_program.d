@@ -56,6 +56,11 @@ import glx.indirect_size_get;
 import glx.indirect_dispatch;
 //import externs.GL.glext;
  import externs.epoxy;
+ import glx.glxcmds;
+ import core.stdc.stdint;
+ import glx.indirect_dispatch_swap;
+ import core.stdc.config: c_long, c_ulong;
+ import os.io;
 
 
 /**
@@ -93,21 +98,21 @@ private int DoGetProgramString(__GLXclientStateRec* cl, GLbyte* pc, PFNGLGETPROG
         get_programiv(target, GL_PROGRAM_LENGTH_ARB, &compsize);
 
         if (compsize != 0) {
-            __GLX_GET_ANSWER_BUFFER(answer, cl, compsize, 1);
+            mixin(__GLX_GET_ANSWER_BUFFER!("answer", "cl", "compsize", "1"));
             __glXClearErrorOccured();
 
             get_program_string(target, pname, cast(GLubyte*) answer);
         }
 
         if (__glXErrorOccured()) {
-            __GLX_BEGIN_REPLY(0);
-            __GLX_SEND_HEADER();
+            mixin(__GLX_BEGIN_REPLY!("0"));
+            mixin(__GLX_SEND_HEADER!());
         }
         else {
-            __GLX_BEGIN_REPLY(compsize);
+            mixin(__GLX_BEGIN_REPLY!("compsize"));
             (cast(xGLXGetTexImageReply*) &reply).width = compsize;
-            __GLX_SEND_HEADER();
-            __GLX_SEND_VOID_ARRAY(compsize);
+            mixin(__GLX_SEND_HEADER!());
+            mixin(__GLX_SEND_VOID_ARRAY!("compsize")~";");
         }
 
         error = Success;

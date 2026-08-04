@@ -34,6 +34,7 @@ public import dix.request_priv;
  * other dealings in this Software without prior written authorization from
  * Silicon Graphics, Inc.
  */
+  import glx.indirect_dispatch_swap;
 
 // enum string __GLX_PAD(string s) = `(((` ~ s ~ `)+3) & cast(GLuint)~3)`;
 
@@ -50,13 +51,13 @@ version (__GLX_ALIGN64) {
 enum string __GLX_MEM_COPY(string dst,string src,string n) = `memmove(` ~ dst ~ `,` ~ src ~ `,` ~ n ~ `)`;
 enum string __GLX_GET_DOUBLE(string dst,string src) = `` ~ __GLX_MEM_COPY!(`&` ~ dst,src,`8`) ~ ``;
 } else {
-enum string __GLX_GET_DOUBLE(string dst,string src) = `(` ~ dst ~ `) = *(cast(GLdouble*)(` ~ src ~ `))`;
+enum string __GLX_GET_DOUBLE(string dst,string src) = `(` ~ dst ~ `) = *(cast(GLdouble*)(` ~ src ~ `));`;
 }
 
 enum string __GLX_BEGIN_REPLY(string size) = `
 	reply.length = ` ~ __GLX_PAD!(size) ~ ` >> 2;	
 	reply.type = X_Reply; 			
-	reply.sequenceNumber = client.sequence;`;
+	reply.sequenceNumber = cast(ushort)client.sequence;`;
 
 enum string __GLX_SEND_HEADER() = `
 	WriteToClient (client, xGLXSingleReply.sizeof, &reply);`;
@@ -109,17 +110,17 @@ enum string __GLX_SEND_FLOAT_ARRAY(string len) = `
 enum string __GLX_SEND_DOUBLE_ARRAY(string len) = `
 	WriteToClient(client, (` ~ len ~ `)*__GLX_SIZE_FLOAT64, answer)`;
 
-enum string __GLX_SEND_VOID_ARRAY(string len) = `__GLX_SEND_BYTE_ARRAY(` ~ len ~ `)`;
-enum string __GLX_SEND_UBYTE_ARRAY(string len) = `__GLX_SEND_BYTE_ARRAY(` ~ len ~ `)`;
-enum string __GLX_SEND_USHORT_ARRAY(string len) = `__GLX_SEND_SHORT_ARRAY(` ~ len ~ `)`;
-enum string __GLX_SEND_UINT_ARRAY(string len) = `__GLX_SEND_INT_ARRAY(` ~ len ~ `)`;
+enum string __GLX_SEND_VOID_ARRAY(string len) = __GLX_SEND_BYTE_ARRAY!(len);
+enum string __GLX_SEND_UBYTE_ARRAY(string len) = __GLX_SEND_BYTE_ARRAY!(len);
+enum string __GLX_SEND_USHORT_ARRAY(string len) = __GLX_SEND_SHORT_ARRAY!(len);
+enum string __GLX_SEND_UINT_ARRAY(string len) = __GLX_SEND_INT_ARRAY!(len);
 
 /*
 ** PERFORMANCE NOTE:
 ** Machine dependent optimizations abound here; these swapping macros can
 ** conceivably be replaced with routines that do the job faster.
 */
-enum __GLX_DECLARE_SWAP_VARIABLES = `GLByte sw`;
+enum __GLX_DECLARE_SWAP_VARIABLES = `GLbyte sw;`;
 
 enum __GLX_DECLARE_SWAP_ARRAY_VARIABLES = `
   	GLbyte *swapPC;	

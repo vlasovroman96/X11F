@@ -36,6 +36,7 @@ import glx.indirect_size;
 import glx.indirect_reqsize;
 import include.misc;
  import externs.epoxy;
+ import glx.indirect_size_get;
 
 
 version (HAVE_ALIAS) {

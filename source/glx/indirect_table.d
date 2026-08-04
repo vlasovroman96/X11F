@@ -55,7 +55,7 @@ import glx.swap_interval;
 
 // import glx.render2;
 
-
+enum string IS_LEAF_INDEX(string x) =  `((`~x~`) <= 0)`;
 
 
 
@@ -82,7 +82,7 @@ struct __glXDispatchInfo {
      * is the non-byte-swapped version, and the second element is the
      * byte-swapped version.
      */
-    const(void)*[2] dispatch_functions;
+    const(void)*[2]* dispatch_functions;
 
     /**
      * Pointer to size validation data.  This table is indexed with the same

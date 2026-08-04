@@ -49,8 +49,8 @@ enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
 // }
 alias _GLXpixel3DHeader = __GLX_PIXEL_3D_HDR;
 
-extern GLboolean __glXErrorOccured();
-extern void __glXClearErrorOccured();
+// extern GLboolean __glXErrorOccured();
+// extern void __glXClearErrorOccured();
 
 private const(uint)[2] dummy_answer = [ 0, 0 ];
 

@@ -39,6 +39,9 @@ import glx.unpack;
 import glx.indirect_size;
 import glx.indirect_dispatch;
  import externs.epoxy;
+ import glx.indirect_size_get;
+ import glx.indirect_dispatch_swap;
+ import glx.glxext;
 
 
 void __glXDisp_Map1f(GLbyte* pc)
@@ -102,8 +105,8 @@ version (__GLX_ALIGN64) {
     }
 }
 
-    __GLX_GET_DOUBLE(u1, pc);
-    __GLX_GET_DOUBLE(u2, pc + 8);
+    mixin(__GLX_GET_DOUBLE!("u1", "pc"));
+    mixin(__GLX_GET_DOUBLE!("u2", "pc + 8"));
     pc += 24;
 
 version (__GLX_ALIGN64) {
@@ -148,10 +151,10 @@ version (__GLX_ALIGN64) {
     }
 }
 
-    __GLX_GET_DOUBLE(u1, pc);
-    __GLX_GET_DOUBLE(u2, pc + 8);
-    __GLX_GET_DOUBLE(v1, pc + 16);
-    __GLX_GET_DOUBLE(v2, pc + 24);
+    mixin(__GLX_GET_DOUBLE!("u1", "pc"));
+    mixin(__GLX_GET_DOUBLE!("u2", "pc + 8"));
+    mixin(__GLX_GET_DOUBLE!("v1", "pc + 16"));
+    mixin(__GLX_GET_DOUBLE!("v2", "pc + 24"));
     pc += 44;
 
     ustride = vorder * k;
