@@ -57,8 +57,8 @@ private auto xcb_image_put_pixel_XY32M(xcb_image_t* image, uint x, uint y, int p
   uint unit = (x >> 3) & ~xcb_mask(2);
   uint byte_ = xcb_mask(2) - ((x >> 3) & xcb_mask(2));
   uint bit = xcb_mask(3) - (x & xcb_mask(3));
-  ubyte m = 1 << bit;
-  ubyte p = pixel << bit;
+  ubyte m = cast(ubyte)(1 << bit);
+  ubyte p = cast(ubyte)(pixel << bit);
   ubyte* bp = image.data + (y * image.stride) + (unit | byte_);
   *bp = (*bp & ~m) | p;
 }
@@ -66,8 +66,8 @@ private auto xcb_image_put_pixel_XY32M(xcb_image_t* image, uint x, uint y, int p
 private auto xcb_image_put_pixel_XY32L(xcb_image_t* image, uint x, uint y, int pixel)
 {
   uint bit = x & xcb_mask(3);
-  ubyte m = 1 << bit;
-  ubyte p = pixel << bit;
+  ubyte m = cast(ubyte)(1 << bit);
+  ubyte p = cast(ubyte)(pixel << bit);
   ubyte* bp = image.data + (y * image.stride) + (x >> 3);
   *bp = (*bp & ~m) | p;
 }
@@ -102,18 +102,18 @@ private auto xcb_image_put_pixel_Z32M(xcb_image_t* image, uint x, uint y, uint p
 {
   ubyte* row = image.data + (y * image.stride);
   row[x << 2] = pixel >> 24;
-  row[(x << 2) + 1] = pixel >> 16;
-  row[(x << 2) + 2] = pixel >> 8;
-  row[(x << 2) + 3] = pixel;
+  row[(x << 2) + 1] = cast(ubyte)(pixel >> 16);
+  row[(x << 2) + 2] = cast(ubyte)(pixel >> 8);
+  row[(x << 2) + 3] = cast(ubyte)(pixel);
 }
 
 private auto xcb_image_put_pixel_Z32L(xcb_image_t* image, uint x, uint y, uint pixel)
 {
   ubyte* row = image.data + (y * image.stride);
-  row[x << 2] = pixel;
-  row[(x << 2) + 1] = pixel >> 8;
-  row[(x << 2) + 2] = pixel >> 16;
-  row[(x << 2) + 3] = pixel >> 24;
+  row[x << 2] = cast(ubyte)pixel;
+  row[(x << 2) + 1] = cast(ubyte)(pixel >> 8);
+  row[(x << 2) + 2] = cast(ubyte)(pixel >> 16);
+  row[(x << 2) + 3] = cast(ubyte)(pixel >> 24);
 }
 
 private auto xcb_image_get_pixel_Z32M(xcb_image_t* image, uint x, uint y)

@@ -64,6 +64,7 @@ import dix.events;
 import mi.mipointer;
 import os.log;
 import hw.kdrive.src.kinput;
+import os.connection;
 
 struct EphyrPriv {
     CARD8 *base;
@@ -469,7 +470,7 @@ Bool ephyrRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 {
     mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     RRScreenSizePtr pSize = void;
     Rotation randr = void;
     int n = 0;
@@ -527,7 +528,7 @@ Bool ephyrRandRSetConfig(ScreenPtr pScreen, Rotation randr, int rate, RRScreenSi
 {
     mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     Bool wasEnabled = pScreenPriv.enabled;
     EphyrScrPriv oldscr = void;
     int oldwidth = void, oldheight = void, oldmmwidth = void, oldmmheight = void;
@@ -1187,7 +1188,7 @@ private void ephyrProcessKeyRelease(xcb_generic_event_t* xev)
         ) {
             KdScreenInfo* screen = screen_from_window(key.event);
             assert(screen);
-            EphyrScrPriv* scrpriv = screen.driver;
+            EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
             if (grabbed_screen != -1) {
                 xcb_ungrab_keyboard(conn, XCB_TIME_CURRENT_TIME);
@@ -1250,7 +1251,7 @@ private void ephyrProcessConfigureNotify(xcb_generic_event_t* xev)
 {
     xcb_configure_notify_event_t* configure = cast(xcb_configure_notify_event_t*)xev;
     KdScreenInfo* screen = screen_from_window(configure.window);
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (!scrpriv ||
         (scrpriv.win_pre_existing == None && !EphyrWantResize)) {
@@ -1344,7 +1345,7 @@ private void ephyrXcbNotify(int fd, int ready, void* data)
 
 void ephyrCardFini(KdCardInfo* card)
 {
-    EphyrPriv* priv = card.driver;
+    EphyrPriv* priv = cast(EphyrPriv*)card.driver;
 
     free(priv);
 }
@@ -1353,7 +1354,7 @@ void ephyrGetColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 {
     /* XXX Not sure if this is right */
 
-    EPHYR_LOG("mark");
+    // EPHYR_LOG("mark");
 
     while (n--) {
         pdefs.red = 0;
@@ -1368,7 +1369,7 @@ void ephyrPutColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 {
     mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     int min = void, max = void, p = void;
 
     /* XXX Not sure if this is right */
@@ -1383,7 +1384,7 @@ void ephyrPutColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
         if (p > max)
             max = p;
 
-        hostx_set_cmap_entry(pScreen, p,
+        hostx_set_cmap_entry(pScreen, cast(ubyte)p,
                              pdefs.red >> 8,
                              pdefs.green >> 8, pdefs.blue >> 8);
         pdefs++;
@@ -1471,7 +1472,7 @@ private Status EphyrKeyboardInit(KdKeyboardInfo* ki)
     if (hostx_load_keymap(&keySyms, modmap.ptr, &controls)) {
         XkbApplyMappingChange(ki.dixdev, &keySyms,
                               keySyms.minKeyCode,
-                              keySyms.maxKeyCode - keySyms.minKeyCode + 1,
+                              cast(ubyte)(keySyms.maxKeyCode - keySyms.minKeyCode + 1),
                               modmap.ptr, serverClient);
         XkbDDXChangeControls(ki.dixdev, &controls, &controls);
         free(keySyms.map);

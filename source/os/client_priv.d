@@ -50,9 +50,9 @@ void ListenOnOpenFD(int fd, int noxauth);
 // void FlushAllOutput();
 // void FlushIfCriticalOutputPending();
 // void ResetOsBuffers();
-void NotifyParentProcess();
-void CreateWellKnownSockets();
-void CloseWellKnownConnections();
+// void NotifyParentProcess();
+// void CreateWellKnownSockets();
+// void CloseWellKnownConnections();
 
 // exported for nvidia driver
 // void SetCriticalOutputPending();

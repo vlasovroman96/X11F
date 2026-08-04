@@ -743,16 +743,16 @@ enum EXA_MIXED_PIXMAPS = (1 << 6);
 /** @} */
 
 /* in exa.c */
-extern ExaDriverPtr exaDriverAlloc();
+// extern ExaDriverPtr exaDriverAlloc();
 
-extern int exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo);
+// extern int exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo);
 
 extern int exaDriverFini(ScreenPtr pScreen);
 
 // extern int exaMarkSync(ScreenPtr pScreen);
 // extern v exaWaitSync(ScreenPtr pScreen);
 
-extern ulong exaGetPixmapOffset(PixmapPtr pPix);
+// extern ulong exaGetPixmapOffset(PixmapPtr pPix);
 
 // extern ulong exaGetPixmapPitch(PixmapPtr pPix);
 

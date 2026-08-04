@@ -1041,7 +1041,7 @@ Bool KdSaveScreen(ScreenPtr pScreen, int on)
 private Bool KdCreateWindow(WindowPtr pWin)
 {
     if (!pWin.parent) {
-        KdScreenPriv(pWin.drawable.pScreen);
+        mixin(KdScreenPriv!("pWin.drawable.pScreen"));;
 
         if (!pScreenPriv.enabled) {
             RegionEmpty(&pWin.borderClip);

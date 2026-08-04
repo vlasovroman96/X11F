@@ -173,7 +173,7 @@ private Bool can_argb_cursor()
 
 private Bool ephyrRealizeCursor(DeviceIntPtr dev, ScreenPtr screen, CursorPtr cursor)
 {
-    KdScreenPriv(screen);
+    mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kscr = pScreenPriv.screen;
     EphyrScrPriv* scr = kscr.driver;
 
@@ -200,7 +200,7 @@ private Bool ephyrUnrealizeCursor(DeviceIntPtr dev, ScreenPtr screen, CursorPtr 
 
 private void ephyrSetCursor(DeviceIntPtr dev, ScreenPtr screen, CursorPtr cursor, int x, int y)
 {
-    KdScreenPriv(screen);
+    mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kscr = pScreenPriv.screen;
     EphyrScrPriv* scr = kscr.driver;
     uint attr = None;

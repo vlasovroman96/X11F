@@ -129,7 +129,7 @@ void KdDisableColormap(ScreenPtr pScreen)
  */
 void KdInstallColormap(ColormapPtr pCmap)
 {
-    KdScreenPriv(pCmap.pScreen);
+    mixin(KdScreenPriv!("pCmap.pScreen"));;
 
     if (pCmap == pScreenPriv.pInstalledmap)
         return;
@@ -157,7 +157,7 @@ void KdInstallColormap(ColormapPtr pCmap)
  */
 void KdUninstallColormap(ColormapPtr pCmap)
 {
-    KdScreenPriv(pCmap.pScreen);
+    mixin(KdScreenPriv!("pCmap.pScreen"));;
     Colormap defMapID = void;
     ColormapPtr defMap = void;
 
@@ -203,7 +203,7 @@ int KdListInstalledColormaps(ScreenPtr pScreen, Colormap* pCmaps)
  */
 void KdStoreColors(ColormapPtr pCmap, int ndef, xColorItem* pdefs)
 {
-    KdScreenPriv(pCmap.pScreen);
+    mixin(KdScreenPriv!("pCmap.pScreen"));;
     VisualPtr pVisual = void;
     xColorItem[KD_MAX_PSEUDO_SIZE] expanddefs = void;
 

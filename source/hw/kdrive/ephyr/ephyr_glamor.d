@@ -100,7 +100,7 @@ private void glamor_egl_make_current(glamor_context* glamor_ctx)
 
 private void ephyr_glamor_egl_screen_init(ScreenPtr screen, glamor_context* glamor_ctx)
 {
-    KdScreenPriv(screen);
+    mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kd_screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = kd_screen.driver;
     ephyr_glamor* ephyr_glamor = scrpriv.glamor;

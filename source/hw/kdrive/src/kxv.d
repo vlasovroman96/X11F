@@ -946,7 +946,7 @@ private int KdXVPutVideo(DrawablePtr pDraw, XvPortPtr pPort, GCPtr pGC, INT16 vi
 {
     XvPortRecPrivatePtr portPriv = cast(XvPortRecPrivatePtr) (pPort.devPriv.ptr);
 
-    KdScreenPriv(portPriv.screen.pScreen);
+    mixin(KdScreenPriv!("portPriv.screen.pScreen"));;
     int result = void;
 
     /* No dumping video to pixmaps... For now anyhow */
@@ -1080,7 +1080,7 @@ private int KdXVGetVideo(DrawablePtr pDraw, XvPortPtr pPort, GCPtr pGC, INT16 vi
     XvPortRecPrivatePtr portPriv = cast(XvPortRecPrivatePtr) (pPort.devPriv.ptr);
     int result = void;
 
-    KdScreenPriv(portPriv.screen.pScreen);
+    mixin(KdScreenPriv!("portPriv.screen.pScreen"));;
 
     /* No pixmaps... For now anyhow */
     if (pDraw.type != DRAWABLE_WINDOW) {
@@ -1182,7 +1182,7 @@ private int KdXVStopVideo(XvPortPtr pPort, DrawablePtr pDraw)
 {
     XvPortRecPrivatePtr portPriv = cast(XvPortRecPrivatePtr) (pPort.devPriv.ptr);
 
-    KdScreenPriv(portPriv.screen.pScreen);
+    mixin(KdScreenPriv!("portPriv.screen.pScreen"));;
 
     if (pDraw.type != DRAWABLE_WINDOW)
         return BadAlloc;

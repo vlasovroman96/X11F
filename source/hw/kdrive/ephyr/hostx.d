@@ -168,7 +168,7 @@ enum string host_depth_matches_server(string _vars) = `(HostX.depth == (` ~ _var
 
 int hostx_want_screen_geometry(KdScreenInfo* screen, int* width, int* height, int* x, int* y)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv && (scrpriv.win_pre_existing != None ||
                     scrpriv.output != null ||
@@ -185,7 +185,7 @@ int hostx_want_screen_geometry(KdScreenInfo* screen, int* width, int* height, in
 
 void hostx_add_screen(KdScreenInfo* screen, c_ulong win_id, int screen_num, Bool use_geometry, const(char)* output)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     int index = HostX.n_screens;
 
     HostX.n_screens += 1;
@@ -206,7 +206,7 @@ void hostx_set_display_name(char* name)
 
 void hostx_set_screen_number(KdScreenInfo* screen, int number)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv) {
         scrpriv.mynum = number;
@@ -216,7 +216,7 @@ void hostx_set_screen_number(KdScreenInfo* screen, int number)
 
 void hostx_set_win_title(KdScreenInfo* screen, const(char)* extra_text)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (!scrpriv)
         return;
@@ -264,7 +264,7 @@ xcb_cursor_t hostx_get_empty_cursor()
 
 int hostx_want_preexisting_window(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv && scrpriv.win_pre_existing) {
         return 1;
@@ -602,7 +602,7 @@ else {
 
     for (index = 0; index < HostX.n_screens; index++) {
         KdScreenInfo* screen = HostX.screens[index];
-        EphyrScrPriv* scrpriv = screen.driver;
+        EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
         scrpriv.win = xcb_generate_id(HostX.conn);
         scrpriv.vid = xscreen.root_visual;
@@ -744,7 +744,7 @@ else {
         /* Ditch the cursor, we provide our 'own' */
         for (index = 0; index < HostX.n_screens; index++) {
             KdScreenInfo* screen = HostX.screens[index];
-            EphyrScrPriv* scrpriv = screen.driver;
+            EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
             xcb_change_window_attributes(HostX.conn,
                                          scrpriv.win,
@@ -788,14 +788,14 @@ int hostx_get_depth()
 
 int hostx_get_server_depth(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     return scrpriv ? scrpriv.server_depth : 0;
 }
 
 int hostx_get_bpp(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (!scrpriv)
         return 0;
@@ -808,7 +808,7 @@ int hostx_get_bpp(KdScreenInfo* screen)
 
 void hostx_get_visual_masks(KdScreenInfo* screen, CARD32* rmsk, CARD32* gmsk, CARD32* bmsk)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (!scrpriv)
         return;
@@ -849,7 +849,7 @@ void hostx_set_cmap_entry(ScreenPtr pScreen, ubyte idx, ubyte r, ubyte g, ubyte 
 {
     mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 /* need to calculate the shifts for RGB because server could be BGR. */
 /* XXX Not sure if this is correct for 8 on 16, but this works for 8 on 24.*/
     static int rshift, bshift, gshift = 0;
@@ -884,7 +884,7 @@ hostx_screen_init(KdScreenInfo* screen,
                   int width, int height, int buffer_height,
                   int* bytes_per_line, int* bits_per_pixel)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     Bool shm_success = FALSE;
 
     if (!scrpriv) {
@@ -1057,7 +1057,7 @@ else {
 
 void hostx_paint_rect(KdScreenInfo* screen, int sx, int sy, int dx, int dy, int width, int height, Bool sync)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     EPHYR_DBG("painting in screen %d\n", scrpriv.mynum);
 
@@ -1158,7 +1158,7 @@ version (GLAMOR) {
 
 private void hostx_paint_debug_rect(KdScreenInfo* screen, int x, int y, int width, int height)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     timespec tspec = void;
     xcb_rectangle_t rect = { x: x, y: y, width: width, height: height };
     xcb_void_cookie_t cookie = void;
@@ -1606,7 +1606,7 @@ private char* __glXQueryServerString(CARD32 name)
 
 Bool ephyr_glamor_init(ScreenPtr screen)
 {
-    KdScreenPriv(screen);
+    mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kd_screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = kd_screen.driver;
     char* hostx_glx_exts = null;
@@ -1711,7 +1711,7 @@ void ephyr_glamor_disable(ScreenPtr screen)
 
 void ephyr_glamor_fini(ScreenPtr screen)
 {
-    KdScreenPriv(screen);
+    mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kd_screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = kd_screen.driver;
 
