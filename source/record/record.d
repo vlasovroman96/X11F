@@ -1,5 +1,5 @@
 
-module record;
+module record.record;
 @nogc nothrow:
 extern(C): __gshared:
 /*

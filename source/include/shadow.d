@@ -67,7 +67,7 @@ enum SHADOW_REFLECT_X =    16;
 enum SHADOW_REFLECT_Y =    32;
 enum SHADOW_REFLECT_ALL =  (SHADOW_REFLECT_X|SHADOW_REFLECT_Y);
 
-extern void  shadowSetup(ScreenPtr pScreen);
+// extern void  shadowSetup(ScreenPtr pScreen);
 
 extern void  shadowAdd(ScreenPtr pScreen, PixmapPtr pPixmap, ShadowUpdateProc update, ShadowWindowProc window, int randr, void* closure);
 

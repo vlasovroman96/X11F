@@ -39,7 +39,7 @@ import ephyrlog;
 import hw.kdrive.src.kdrive;
 import hw.kdrive.src.kxv;
 import ephyr;
-import hostx;
+import hw.kdrive.ephyr.hostx;
 import include.xvdix;
 
 struct _EphyrXVPriv {
@@ -146,7 +146,7 @@ Bool ephyrInitVideo(ScreenPtr pScreen)
 {
     Bool is_ok = FALSE;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     static EphyrXVPriv* xv_priv;
 

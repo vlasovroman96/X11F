@@ -70,6 +70,28 @@ enum KD_KEYBOARD = 1;
 enum KD_MOUSE = 2;
 enum KD_TOUCHSCREEN = 3;
 
+enum KD_MAX_PSEUDO_DEPTH = 8;
+enum KD_MAX_PSEUDO_SIZE =     (1 << KD_MAX_PSEUDO_DEPTH);
+
+struct KdPrivScreenRec {
+    KdScreenInfo *screen;
+    KdCardInfo *card;
+
+    Bool enabled;
+    Bool closed;
+    int bytesPerPixel;
+
+    int dpmsState;
+
+    ColormapPtr pInstalledmap;  /* current colormap */
+    xColorItem[KD_MAX_PSEUDO_SIZE] systemPalette;       /* saved windows colors */
+
+    CreateScreenResourcesProcPtr CreateScreenResources;
+    CloseScreenProcPtr CloseScreen;
+} 
+
+alias KdPrivScreenPtr = KdPrivScreenRec*;
+
 alias Status = int;
 struct _KdCardFuncs {
     Bool function(KdCardInfo *) cardinit;    /* detect and map device */
@@ -314,7 +336,29 @@ KdDepths[7] kdDepths = [
 
 enum KD_DEFAULT_BUTTONS = 5;
 
+
+enum RR_Rotate_All =	(RR_Rotate_0|RR_Rotate_90|RR_Rotate_180|RR_Rotate_270);
+enum RR_Reflect_All =	(RR_Reflect_X|RR_Reflect_Y);
+
+enum KD_BUTTON_1 =	0x01;
+enum KD_BUTTON_2 =	0x02;
+enum KD_BUTTON_3 =	0x04;
+enum KD_BUTTON_4 =	0x08;
+enum KD_BUTTON_5 =	0x10;
+enum KD_BUTTON_8 =	0x80;
+enum KD_POINTER_DESKTOP = 0x40000000;
+enum KD_MOUSE_DELTA =	0x80000000;
+
+enum string KdGetScreenPriv(string pScreen) =  `(cast(KdPrivScreenPtr) 
+    dixLookupPrivate(&(`~pScreen~`).devPrivates, `~kdScreenPrivateKey~`))`;
+
+enum string KdSetScreenPriv(string pScreen,string v) =`
+    dixSetPrivate(&(`~pScreen~`).devPrivates, `~kdScreenPrivateKey~`, `~v~`)`;
+
+enum string KdScreenPriv(string pScreen) = `KdPrivScreenPtr pScreenPriv = ` ~KdGetScreenPriv!(pScreen)~`;`;
+
 DevPrivateKeyRec kdScreenPrivateKeyRec;
+enum kdScreenPrivateKey = `(&kdScreenPrivateKeyRec)`;
 
 Bool kdVideoTest;
 c_ulong kdVideoTestTime;
@@ -346,7 +390,7 @@ const(KdOsFuncs)* kdOsFuncs = null;
 
 void KdDisableScreen(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
 
     if (!pScreenPriv.enabled)
         return;
@@ -414,7 +458,7 @@ void KdDisableScreens(int ddxAbort)
 
 Bool KdEnableScreen(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
 
     if (pScreenPriv.enabled)
         return TRUE;
@@ -890,7 +934,7 @@ private bool KdAllocatePrivates(ScreenPtr pScreen)
 
 Bool KdCreateScreenResources(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdCardInfo* card = pScreenPriv.card;
 
     if (!miCreateScreenResources(pScreen))
@@ -904,7 +948,7 @@ Bool KdCreateScreenResources(ScreenPtr pScreen)
 
 Bool KdCloseScreen(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     KdCardInfo* card = pScreenPriv.card;
     Bool ret = void;
@@ -964,7 +1008,7 @@ Bool KdCloseScreen(ScreenPtr pScreen)
 
 Bool KdSaveScreen(ScreenPtr pScreen, int on)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     int dpmsState = void;
 
     if (!pScreenPriv.card.cfuncs.dpms)
@@ -1009,7 +1053,7 @@ private Bool KdCreateWindow(WindowPtr pWin)
 
 void KdSetSubpixelOrder(ScreenPtr pScreen, Rotation randr)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     int subpixel_order = screen.subpixel_order;
     Rotation subpixel_dir = void;
@@ -1311,7 +1355,7 @@ version (none) {                           /* This function is not used currentl
 
 int KdDepthToFb(ScreenPtr pScreen, int depth)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
 
     for (fb = 0; fb <= KD_MAX_FB && pScreenPriv.screen.fb.frameBuffer; fb++)
         if (pScreenPriv.screen.fb.depth == depth)

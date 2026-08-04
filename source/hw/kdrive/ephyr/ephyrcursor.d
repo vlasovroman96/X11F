@@ -29,14 +29,14 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
-import externs.xcb.xcb_render;
+import externs.xcb.render;
 import externs.xcb.xcb_renderutil;
 
 import mi.mipointer_priv;
 
 import ephyr;
 import ephyrlog;
-import hostx;
+import hw.kdrive.ephyr.hostx;
 import include.cursorstr;
 
 private DevPrivateKeyRec ephyrCursorPrivateKey;

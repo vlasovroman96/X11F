@@ -212,7 +212,7 @@ private void KdXVFreeAdaptor(XvAdaptorPtr pAdaptor)
 
 private Bool KdXVInitAdaptors(ScreenPtr pScreen, KdVideoAdaptorPtr infoPtr, int number)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
 
     XvScreenPtr pxvs = mixin(GET_XV_SCREEN!(`pScreen`));
@@ -590,7 +590,7 @@ private int KdXVReputVideo(XvPortRecPrivatePtr portPriv)
     BoxRec WinBox = void;
     ScreenPtr pScreen = portPriv.pDraw.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     int ret = Success;
     Bool clippedAway = FALSE;
@@ -665,7 +665,7 @@ private int KdXVReputImage(XvPortRecPrivatePtr portPriv)
     BoxRec WinBox = void;
     ScreenPtr pScreen = portPriv.pDraw.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     int ret = Success;
     Bool clippedAway = FALSE;
@@ -994,7 +994,7 @@ private int KdXVPutStill(DrawablePtr pDraw, XvPortPtr pPort, GCPtr pGC, INT16 vi
     XvPortRecPrivatePtr portPriv = cast(XvPortRecPrivatePtr) (pPort.devPriv.ptr);
     ScreenPtr pScreen = pDraw.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     RegionRec WinRegion = void;
     RegionRec ClipRegion = void;
@@ -1127,7 +1127,7 @@ private int KdXVGetStill(DrawablePtr pDraw, XvPortPtr pPort, GCPtr pGC, INT16 vi
     XvPortRecPrivatePtr portPriv = cast(XvPortRecPrivatePtr) (pPort.devPriv.ptr);
     ScreenPtr pScreen = pDraw.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     RegionRec WinRegion = void;
     RegionRec ClipRegion = void;
     BoxRec WinBox = void;
@@ -1239,7 +1239,7 @@ private int KdXVPutImage(DrawablePtr pDraw, XvPortPtr pPort, GCPtr pGC, INT16 sr
     XvPortRecPrivatePtr portPriv = cast(XvPortRecPrivatePtr) (pPort.devPriv.ptr);
     ScreenPtr pScreen = pDraw.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     RegionRec WinRegion = void;
     RegionRec ClipRegion = void;
     BoxRec WinBox = void;

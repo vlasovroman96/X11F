@@ -1,4 +1,4 @@
-module hostx;
+module hw.kdrive.ephyr.hostx;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -54,7 +54,7 @@ import core.sys.posix.sys.time;
 //import externs.X11.Xutil;
 import dix.input_priv;
 
-import hostx;
+import hw.kdrive.ephyr.hostx;
 
 version = X_INCLUDE_STRING_H;
 // //import externs.X11.Xos_r;
@@ -67,8 +67,8 @@ import externs.xcb.shm;
 import externs.xcb.xcb_image;
 import externs.xcb.shape;
 import externs.xcb.xcb_keysyms;
-import externs.xcb.xcb_randr;
-import externs.xcb.xcb_xkb;
+import externs.xcb.randr;
+import externs.xcb.xkb;
 version (GLAMOR) {
 import externs.xcb.glx;
 import epoxy.common;
@@ -84,6 +84,7 @@ import hw.kdrive.src.kxv;
 }
 import ephyrlog;
 import ephyr;
+import externs.xcb.xcbext;
 
 
 struct EphyrHostWindowAttributes{
@@ -846,7 +847,7 @@ private int hostx_calculate_color_shift(c_ulong mask)
 
 void hostx_set_cmap_entry(ScreenPtr pScreen, ubyte idx, ubyte r, ubyte g, ubyte b)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
 /* need to calculate the shifts for RGB because server could be BGR. */
@@ -1655,7 +1656,7 @@ private int ephyrSetPixmapVisitWindow(WindowPtr window, void* data)
 
 Bool ephyr_glamor_create_screen_resources(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* kd_screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = kd_screen.driver;
     PixmapPtr old_screen_pixmap = void, screen_pixmap = void;

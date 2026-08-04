@@ -92,7 +92,7 @@ private Bool ephyrPrepareSolid(PixmapPtr pPix, int alu, Pixel pm, Pixel fg)
 {
     ScreenPtr pScreen = pPix.drawable.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -122,7 +122,7 @@ private void ephyrSolid(PixmapPtr pPix, int x1, int y1, int x2, int y2)
 {
     ScreenPtr pScreen = pPix.drawable.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -137,7 +137,7 @@ private void ephyrDoneSolid(PixmapPtr pPix)
 {
     ScreenPtr pScreen = pPix.drawable.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -155,7 +155,7 @@ private Bool ephyrPrepareCopy(PixmapPtr pSrc, PixmapPtr pDst, int dx, int dy, in
 {
     ScreenPtr pScreen = pDst.drawable.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -186,7 +186,7 @@ private void ephyrCopy(PixmapPtr pDst, int srcX, int srcY, int dstX, int dstY, i
 {
     ScreenPtr pScreen = pDst.drawable.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -202,7 +202,7 @@ private void ephyrDoneCopy(PixmapPtr pDst)
 {
     ScreenPtr pScreen = pDst.drawable.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -374,7 +374,7 @@ private Bool ephyrPrepareAccess(PixmapPtr pPix, int index)
  */
 private int ephyrMarkSync(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -393,7 +393,7 @@ private int ephyrMarkSync(ScreenPtr pScreen)
  */
 private void ephyrWaitMarker(ScreenPtr pScreen, int marker)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
@@ -408,7 +408,7 @@ private void ephyrWaitMarker(ScreenPtr pScreen, int marker)
  */
 Bool ephyrDrawInit(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     EphyrPriv* priv = screen.card.driver;

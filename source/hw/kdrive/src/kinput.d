@@ -1,4 +1,4 @@
-module kinput;
+module hw.kdrive.src.kinput;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -1226,6 +1226,7 @@ version (KDRIVE_EVDEV) {
     }
 }
 }
+}
 
 /*
  * Mouse argument syntax:
@@ -1576,138 +1577,138 @@ struct KdInputTransition {
 const(KdInputTransition)[num_input_class][num_input_states] kdInputMachine = [
     /* start */
     [
-     {{hold, setto}, button_1_pend},    /* v1 */
-     {{deliver, noop}, start},  /* ^1 */
-     {{deliver, noop}, button_2_down},  /* v2 */
-     {{deliver, noop}, start},  /* ^2 */
-     {{hold, setto}, button_3_pend},    /* v3 */
-     {{deliver, noop}, start},  /* ^3 */
-     {{deliver, noop}, start},  /* vo */
-     {{deliver, noop}, start},  /* ^o */
-     {{deliver, noop}, start},  /* <> */
-     {{deliver, noop}, start},  /* <-> */
-     {{noop, noop}, start},     /* k */
-     {{noop, noop}, start},     /* ... */
+     {[hold, setto], button_1_pend},    /* v1 */
+     {[deliver, noop], start},  /* ^1 */
+     {[deliver, noop], button_2_down},  /* v2 */
+     {[deliver, noop], start},  /* ^2 */
+     {[hold, setto], button_3_pend},    /* v3 */
+     {[deliver, noop], start},  /* ^3 */
+     {[deliver, noop], start},  /* vo */
+     {[deliver, noop], start},  /* ^o */
+     {[deliver, noop], start},  /* <> */
+     {[deliver, noop], start},  /* <-> */
+     {[noop, noop], start},     /* k */
+     {[noop, noop], start},     /* ... */
      ],
     /* button_1_pend */
     [
-     {{noop, noop}, button_1_pend},     /* v1 */
-     {{release, deliver}, start},       /* ^1 */
-     {{release, deliver}, button_1_down},       /* v2 */
-     {{release, deliver}, button_1_down},       /* ^2 */
-     {{clearto, gen_down_2}, synth_2_down_13},  /* v3 */
-     {{release, deliver}, button_1_down},       /* ^3 */
-     {{release, deliver}, button_1_down},       /* vo */
-     {{release, deliver}, button_1_down},       /* ^o */
-     {{deliver, noop}, button_1_pend},  /* <> */
-     {{release, deliver}, button_1_down},       /* <-> */
-     {{noop, noop}, button_1_down},     /* k */
-     {{release, noop}, button_1_down},  /* ... */
+     {[noop, noop], button_1_pend},     /* v1 */
+     {[release, deliver], start},       /* ^1 */
+     {[release, deliver], button_1_down},       /* v2 */
+     {[release, deliver], button_1_down},       /* ^2 */
+     {[clearto, gen_down_2], synth_2_down_13},  /* v3 */
+     {[release, deliver], button_1_down},       /* ^3 */
+     {[release, deliver], button_1_down},       /* vo */
+     {[release, deliver], button_1_down},       /* ^o */
+     {[deliver, noop], button_1_pend},  /* <> */
+     {[release, deliver], button_1_down},       /* <-> */
+     {[noop, noop], button_1_down},     /* k */
+     {[release, noop], button_1_down},  /* ... */
      ],
     /* button_1_down */
     [
-     {{noop, noop}, button_1_down},     /* v1 */
-     {{deliver, noop}, start},  /* ^1 */
-     {{deliver, noop}, button_1_down},  /* v2 */
-     {{deliver, noop}, button_1_down},  /* ^2 */
-     {{deliver, noop}, button_1_down},  /* v3 */
-     {{deliver, noop}, button_1_down},  /* ^3 */
-     {{deliver, noop}, button_1_down},  /* vo */
-     {{deliver, noop}, button_1_down},  /* ^o */
-     {{deliver, noop}, button_1_down},  /* <> */
-     {{deliver, noop}, button_1_down},  /* <-> */
-     {{noop, noop}, button_1_down},     /* k */
-     {{noop, noop}, button_1_down},     /* ... */
+     {[noop, noop], button_1_down},     /* v1 */
+     {[deliver, noop], start},  /* ^1 */
+     {[deliver, noop], button_1_down},  /* v2 */
+     {[deliver, noop], button_1_down},  /* ^2 */
+     {[deliver, noop], button_1_down},  /* v3 */
+     {[deliver, noop], button_1_down},  /* ^3 */
+     {[deliver, noop], button_1_down},  /* vo */
+     {[deliver, noop], button_1_down},  /* ^o */
+     {[deliver, noop], button_1_down},  /* <> */
+     {[deliver, noop], button_1_down},  /* <-> */
+     {[noop, noop], button_1_down},     /* k */
+     {[noop, noop], button_1_down},     /* ... */
      ],
     /* button_2_down */
     [
-     {{deliver, noop}, button_2_down},  /* v1 */
-     {{deliver, noop}, button_2_down},  /* ^1 */
-     {{noop, noop}, button_2_down},     /* v2 */
-     {{deliver, noop}, start},  /* ^2 */
-     {{deliver, noop}, button_2_down},  /* v3 */
-     {{deliver, noop}, button_2_down},  /* ^3 */
-     {{deliver, noop}, button_2_down},  /* vo */
-     {{deliver, noop}, button_2_down},  /* ^o */
-     {{deliver, noop}, button_2_down},  /* <> */
-     {{deliver, noop}, button_2_down},  /* <-> */
-     {{noop, noop}, button_2_down},     /* k */
-     {{noop, noop}, button_2_down},     /* ... */
+     {[deliver, noop], button_2_down},  /* v1 */
+     {[deliver, noop], button_2_down},  /* ^1 */
+     {[noop, noop], button_2_down},     /* v2 */
+     {[deliver, noop], start},  /* ^2 */
+     {[deliver, noop], button_2_down},  /* v3 */
+     {[deliver, noop], button_2_down},  /* ^3 */
+     {[deliver, noop], button_2_down},  /* vo */
+     {[deliver, noop], button_2_down},  /* ^o */
+     {[deliver, noop], button_2_down},  /* <> */
+     {[deliver, noop], button_2_down},  /* <-> */
+     {[noop, noop], button_2_down},     /* k */
+     {[noop, noop], button_2_down},     /* ... */
      ],
     /* button_3_pend */
     [
-     {{clearto, gen_down_2}, synth_2_down_13},  /* v1 */
-     {{release, deliver}, button_3_down},       /* ^1 */
-     {{release, deliver}, button_3_down},       /* v2 */
-     {{release, deliver}, button_3_down},       /* ^2 */
-     {{release, deliver}, button_3_down},       /* v3 */
-     {{release, deliver}, start},       /* ^3 */
-     {{release, deliver}, button_3_down},       /* vo */
-     {{release, deliver}, button_3_down},       /* ^o */
-     {{deliver, noop}, button_3_pend},  /* <> */
-     {{release, deliver}, button_3_down},       /* <-> */
-     {{release, noop}, button_3_down},  /* k */
-     {{release, noop}, button_3_down},  /* ... */
+     {[clearto, gen_down_2], synth_2_down_13},  /* v1 */
+     {[release, deliver], button_3_down},       /* ^1 */
+     {[release, deliver], button_3_down},       /* v2 */
+     {[release, deliver], button_3_down},       /* ^2 */
+     {[release, deliver], button_3_down},       /* v3 */
+     {[release, deliver], start},       /* ^3 */
+     {[release, deliver], button_3_down},       /* vo */
+     {[release, deliver], button_3_down},       /* ^o */
+     {[deliver, noop], button_3_pend},  /* <> */
+     {[release, deliver], button_3_down},       /* <-> */
+     {[release, noop], button_3_down},  /* k */
+     {[release, noop], button_3_down},  /* ... */
      ],
     /* button_3_down */
     [
-     {{deliver, noop}, button_3_down},  /* v1 */
-     {{deliver, noop}, button_3_down},  /* ^1 */
-     {{deliver, noop}, button_3_down},  /* v2 */
-     {{deliver, noop}, button_3_down},  /* ^2 */
-     {{noop, noop}, button_3_down},     /* v3 */
-     {{deliver, noop}, start},  /* ^3 */
-     {{deliver, noop}, button_3_down},  /* vo */
-     {{deliver, noop}, button_3_down},  /* ^o */
-     {{deliver, noop}, button_3_down},  /* <> */
-     {{deliver, noop}, button_3_down},  /* <-> */
-     {{noop, noop}, button_3_down},     /* k */
-     {{noop, noop}, button_3_down},     /* ... */
+     {[deliver, noop], button_3_down},  /* v1 */
+     {[deliver, noop], button_3_down},  /* ^1 */
+     {[deliver, noop], button_3_down},  /* v2 */
+     {[deliver, noop], button_3_down},  /* ^2 */
+     {[noop, noop], button_3_down},     /* v3 */
+     {[deliver, noop], start},  /* ^3 */
+     {[deliver, noop], button_3_down},  /* vo */
+     {[deliver, noop], button_3_down},  /* ^o */
+     {[deliver, noop], button_3_down},  /* <> */
+     {[deliver, noop], button_3_down},  /* <-> */
+     {[noop, noop], button_3_down},     /* k */
+     {[noop, noop], button_3_down},     /* ... */
      ],
     /* synthetic_2_down_13 */
     [
-     {{noop, noop}, synth_2_down_13},   /* v1 */
-     {{gen_up_2, noop}, synth_2_down_3},        /* ^1 */
-     {{noop, noop}, synth_2_down_13},   /* v2 */
-     {{noop, noop}, synth_2_down_13},   /* ^2 */
-     {{noop, noop}, synth_2_down_13},   /* v3 */
-     {{gen_up_2, noop}, synth_2_down_1},        /* ^3 */
-     {{deliver, noop}, synth_2_down_13},        /* vo */
-     {{deliver, noop}, synth_2_down_13},        /* ^o */
-     {{deliver, noop}, synth_2_down_13},        /* <> */
-     {{deliver, noop}, synth_2_down_13},        /* <-> */
-     {{noop, noop}, synth_2_down_13},   /* k */
-     {{noop, noop}, synth_2_down_13},   /* ... */
+     {[noop, noop], synth_2_down_13},   /* v1 */
+     {[gen_up_2, noop], synth_2_down_3},        /* ^1 */
+     {[noop, noop], synth_2_down_13},   /* v2 */
+     {[noop, noop], synth_2_down_13},   /* ^2 */
+     {[noop, noop], synth_2_down_13},   /* v3 */
+     {[gen_up_2, noop], synth_2_down_1},        /* ^3 */
+     {[deliver, noop], synth_2_down_13},        /* vo */
+     {[deliver, noop], synth_2_down_13},        /* ^o */
+     {[deliver, noop], synth_2_down_13},        /* <> */
+     {[deliver, noop], synth_2_down_13},        /* <-> */
+     {[noop, noop], synth_2_down_13},   /* k */
+     {[noop, noop], synth_2_down_13},   /* ... */
      ],
     /* synthetic_2_down_3 */
     [
-     {{deliver, noop}, synth_2_down_3}, /* v1 */
-     {{deliver, noop}, synth_2_down_3}, /* ^1 */
-     {{deliver, noop}, synth_2_down_3}, /* v2 */
-     {{deliver, noop}, synth_2_down_3}, /* ^2 */
-     {{noop, noop}, synth_2_down_3},    /* v3 */
-     {{noop, noop}, start},     /* ^3 */
-     {{deliver, noop}, synth_2_down_3}, /* vo */
-     {{deliver, noop}, synth_2_down_3}, /* ^o */
-     {{deliver, noop}, synth_2_down_3}, /* <> */
-     {{deliver, noop}, synth_2_down_3}, /* <-> */
-     {{noop, noop}, synth_2_down_3},    /* k */
-     {{noop, noop}, synth_2_down_3},    /* ... */
+     {[deliver, noop], synth_2_down_3}, /* v1 */
+     {[deliver, noop], synth_2_down_3}, /* ^1 */
+     {[deliver, noop], synth_2_down_3}, /* v2 */
+     {[deliver, noop], synth_2_down_3}, /* ^2 */
+     {[noop, noop], synth_2_down_3},    /* v3 */
+     {[noop, noop], start},     /* ^3 */
+     {[deliver, noop], synth_2_down_3}, /* vo */
+     {[deliver, noop], synth_2_down_3}, /* ^o */
+     {[deliver, noop], synth_2_down_3}, /* <> */
+     {[deliver, noop], synth_2_down_3}, /* <-> */
+     {[noop, noop], synth_2_down_3},    /* k */
+     {[noop, noop], synth_2_down_3},    /* ... */
      ],
     /* synthetic_2_down_1 */
     [
-     {{noop, noop}, synth_2_down_1},    /* v1 */
-     {{noop, noop}, start},     /* ^1 */
-     {{deliver, noop}, synth_2_down_1}, /* v2 */
-     {{deliver, noop}, synth_2_down_1}, /* ^2 */
-     {{deliver, noop}, synth_2_down_1}, /* v3 */
-     {{deliver, noop}, synth_2_down_1}, /* ^3 */
-     {{deliver, noop}, synth_2_down_1}, /* vo */
-     {{deliver, noop}, synth_2_down_1}, /* ^o */
-     {{deliver, noop}, synth_2_down_1}, /* <> */
-     {{deliver, noop}, synth_2_down_1}, /* <-> */
-     {{noop, noop}, synth_2_down_1},    /* k */
-     {{noop, noop}, synth_2_down_1},    /* ... */
+     {[noop, noop], synth_2_down_1},    /* v1 */
+     {[noop, noop], start},     /* ^1 */
+     {[deliver, noop], synth_2_down_1}, /* v2 */
+     {[deliver, noop], synth_2_down_1}, /* ^2 */
+     {[deliver, noop], synth_2_down_1}, /* v3 */
+     {[deliver, noop], synth_2_down_1}, /* ^3 */
+     {[deliver, noop], synth_2_down_1}, /* vo */
+     {[deliver, noop], synth_2_down_1}, /* ^o */
+     {[deliver, noop], synth_2_down_1}, /* <> */
+     {[deliver, noop], synth_2_down_1}, /* <-> */
+     {[noop, noop], synth_2_down_1},    /* k */
+     {[noop, noop], synth_2_down_1},    /* ... */
      ],
 ];
 
@@ -2310,9 +2311,9 @@ void KdWarpCursor(DeviceIntPtr pDev, ScreenPtr pScreen, int x, int y)
 }
 
 miPointerScreenFuncRec kdPointerScreenFuncs = {
-    KdCursorOffScreen,
-    KdCrossScreen,
-    KdWarpCursor
+    &KdCursorOffScreen,
+    &KdCrossScreen,
+    &KdWarpCursor
 };
 
 void ProcessInputEvents()
@@ -2506,4 +2507,3 @@ void DeleteInputDeviceRequest(DeviceIntPtr pDev)
 void RemoveInputDeviceTraces(const(char)* config_info_){
 }
 
-}

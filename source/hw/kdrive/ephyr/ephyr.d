@@ -53,6 +53,18 @@ import include.shadow;
 import include.exa_i;
 import externs.xcb.xcb_image;
 import hw.kdrive.ephyr.ephyr_glamor;
+import hw.kdrive.ephyr.hostx;
+import hw.kdrive.ephyr.ephyrinit;
+import hw.kdrive.src.kinput;
+import dix.dixutils;
+import hw.kdrive.src.kshadow;
+import os.WaitFor;
+import miext.shadow.shadow;
+import dix.events;
+import mi.mipointer;
+import os.log;
+import hw.kdrive.src.kinput;
+
 struct EphyrPriv {
     CARD8 *base;
     int bytes_per_line;
@@ -134,10 +146,10 @@ private Bool EphyrHostGrabSet = FALSE;
 Bool ephyrInitialize(KdCardInfo* card, EphyrPriv* priv)
 {
 version (Windows) {} else {
-    OsSignal(SIGUSR1, hostx_handle_signal);
+    OsSignal(SIGUSR1, &hostx_handle_signal);
 }
 
-    priv.base = 0;
+    priv.base = null;
     priv.bytes_per_line = 0;
     return TRUE;
 }
@@ -159,7 +171,7 @@ Bool ephyrCardInit(KdCardInfo* card)
 
 Bool ephyrScreenInitialize(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     int x = 0, y = 0;
     int width = 640, height = 480;
     CARD32 redMask = void, greenMask = void, blueMask = void;
@@ -244,11 +256,11 @@ Bool ephyrScreenInitialize(KdScreenInfo* screen)
 
 void* ephyrWindowLinear(ScreenPtr pScreen, CARD32 row, CARD32 offset, int mode, CARD32* size, void* closure)
 {
-    KdScreenPriv(pScreen);
-    EphyrPriv* priv = pScreenPriv.card.driver;
+    mixin(KdScreenPriv!("pScreen"));
+    EphyrPriv* priv = cast(EphyrPriv*)pScreenPriv.card.driver;
 
     if (!pScreenPriv.enabled)
-        return 0;
+        return null;
 
     *size = priv.bytes_per_line;
     return priv.base + row * priv.bytes_per_line + offset;
@@ -271,13 +283,13 @@ int ephyrBufferHeight(KdScreenInfo* screen)
 
 Bool ephyrMapFramebuffer(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
-    EphyrPriv* priv = screen.card.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
+    EphyrPriv* priv = cast(EphyrPriv*)screen.card.driver;
     KdPointerMatrix m = void;
     int buffer_height = void;
 
-    EPHYR_LOG("screen->width: %d, screen->height: %d index=%d",
-              screen.width, screen.height, screen.mynum);
+    // EPHYR_LOG("screen->width: %d, screen->height: %d index=%d",
+    //           screen.width, screen.height, screen.mynum);
 
     /*
      * Use the rotation last applied to ourselves (in the Xephyr case the fb
@@ -289,7 +301,7 @@ Bool ephyrMapFramebuffer(KdScreenInfo* screen)
     buffer_height = ephyrBufferHeight(screen);
 
     priv.base =
-        hostx_screen_init(screen, screen.x, screen.y,
+        cast(ubyte*)hostx_screen_init(screen, screen.x, screen.y,
                           screen.width, screen.height, buffer_height,
                           &priv.bytes_per_line, &screen.fb.bitsPerPixel);
 
@@ -304,7 +316,7 @@ Bool ephyrMapFramebuffer(KdScreenInfo* screen)
         /* Rotated/Reflected so we need to use shadow fb */
         scrpriv.shadow = TRUE;
 
-        EPHYR_LOG("allocating shadow");
+        // EPHYR_LOG("allocating shadow");
 
         KdShadowFbAlloc(screen,
                         scrpriv.randr & (RR_Rotate_90 | RR_Rotate_270));
@@ -315,27 +327,27 @@ Bool ephyrMapFramebuffer(KdScreenInfo* screen)
 
 void ephyrSetScreenSizes(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv.randr & (RR_Rotate_0 | RR_Rotate_180)) {
-        pScreen.width = screen.width;
-        pScreen.height = screen.height;
-        pScreen.mmWidth = screen.width_mm;
-        pScreen.mmHeight = screen.height_mm;
+        pScreen.width = cast(short)screen.width;
+        pScreen.height = cast(short)screen.height;
+        pScreen.mmWidth = cast(short)screen.width_mm;
+        pScreen.mmHeight = cast(short)screen.height_mm;
     }
     else {
-        pScreen.width = screen.height;
-        pScreen.height = screen.width;
-        pScreen.mmWidth = screen.height_mm;
-        pScreen.mmHeight = screen.width_mm;
+        pScreen.width = cast(short)screen.height;
+        pScreen.height = cast(short)screen.width;
+        pScreen.mmWidth = cast(short)screen.height_mm;
+        pScreen.mmHeight = cast(short)screen.width_mm;
     }
 }
 
 Bool ephyrUnmapFramebuffer(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv.shadow)
         KdShadowFbFree(screen);
@@ -347,10 +359,10 @@ Bool ephyrUnmapFramebuffer(KdScreenInfo* screen)
 
 void ephyrShadowUpdate(ScreenPtr pScreen, shadowBufPtr pBuf)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
 
-    EPHYR_LOG("slow paint");
+    // EPHYR_LOG("slow paint");
 
     /* FIXME: Slow Rotated/Reflected updates could be much
      * much faster efficiently updating via transforming
@@ -362,9 +374,9 @@ void ephyrShadowUpdate(ScreenPtr pScreen, shadowBufPtr pBuf)
 
 private void ephyrInternalDamageRedisplay(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     RegionPtr pRegion = void;
 
     if (!scrpriv || !scrpriv.pDamage)
@@ -405,14 +417,14 @@ private Bool ephyrEventWorkProc(ClientPtr client, void* closure)
 
 private void ephyrScreenBlockHandler(ScreenPtr pScreen, void* timeout)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     pScreen.BlockHandler = scrpriv.BlockHandler;
     (*pScreen.BlockHandler)(pScreen, timeout);
     scrpriv.BlockHandler = pScreen.BlockHandler;
-    pScreen.BlockHandler = ephyrScreenBlockHandler;
+    pScreen.BlockHandler = &ephyrScreenBlockHandler;
 
     if (scrpriv.pDamage)
         ephyrInternalDamageRedisplay(pScreen);
@@ -426,9 +438,9 @@ private void ephyrScreenBlockHandler(ScreenPtr pScreen, void* timeout)
 
 Bool ephyrSetInternalDamage(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     PixmapPtr pPixmap = null;
 
     scrpriv.pDamage = DamageCreate(cast(DamageReportFunc) 0,
@@ -444,9 +456,9 @@ Bool ephyrSetInternalDamage(ScreenPtr pScreen)
 
 void ephyrUnsetInternalDamage(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     DamageDestroy(scrpriv.pDamage);
     scrpriv.pDamage = null;
@@ -455,7 +467,7 @@ void ephyrUnsetInternalDamage(ScreenPtr pScreen)
 version (RANDR) {
 Bool ephyrRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     RRScreenSizePtr pSize = void;
@@ -513,7 +525,7 @@ Bool ephyrRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 
 Bool ephyrRandRSetConfig(ScreenPtr pScreen, Rotation randr, int rate, RRScreenSizePtr pSize)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     Bool wasEnabled = pScreenPriv.enabled;
@@ -654,7 +666,7 @@ Bool ephyrRandRInit(ScreenPtr pScreen)
 
 private Bool ephyrResizeScreen(ScreenPtr pScreen, int newwidth, int newheight)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     RRScreenSize size = {0};
     Bool ret = void;
@@ -697,7 +709,7 @@ Bool ephyrCreateColormap(ColormapPtr pmap)
 Bool ephyrSetGrabShortcut(const(char*) desc)
 {
     if (desc == null || !strcmp(desc, "NULL")) {
-        EphyrKeybindToggleHostGrabModMask = 0;
+        EphyrKeybindToggleHostGrabModMask = cast(xcb_mod_mask_t)0;
         EphyrKeybindToggleHostGrabKey = 0;
         EphyrTitleHostGrabKeyComboHint = null;
         EphyrTitleHostGrabKeyComboHintLen = 0;
@@ -755,7 +767,7 @@ Bool ephyrSetGrabShortcut(const(char*) desc)
         }
 
         EphyrTitleHostGrabKeyComboHint = desc;
-        EphyrTitleHostGrabKeyComboHintLen = strlen(desc);
+        EphyrTitleHostGrabKeyComboHintLen = cast(ubyte)strlen(desc);
     }
 
     EphyrHostGrabSet = TRUE;
@@ -769,7 +781,7 @@ private void ephyrPrintGrabShortcut(char* out_, const(size_t) out_size, const(Bo
             EphyrKeybindToggleHostGrabModMask == 0 &&
             EphyrKeybindToggleHostGrabKey == 0
         ) || (
-            EphyrTitleHostGrabKeyComboHint == 0 ||
+            EphyrTitleHostGrabKeyComboHint == null ||
             EphyrTitleHostGrabKeyComboHintLen == 0
         )
     ) {
@@ -801,16 +813,16 @@ private void ephyrUpdateWindowTitle(KdScreenInfo* screen, const(Bool) currently_
 
 Bool ephyrInitScreen(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
 
-    EPHYR_LOG("pScreen->myNum:%d\n", pScreen.myNum);
+    // EPHYR_LOG("pScreen->myNum:%d\n", pScreen.myNum);
     hostx_set_screen_number(screen, pScreen.myNum);
     if (!EphyrHostGrabSet) {
         ephyrSetGrabShortcut("ctrl+shift");
     }
     ephyrUpdateWindowTitle(screen, FALSE);
-    pScreen.CreateColormap = ephyrCreateColormap;
+    pScreen.CreateColormap = &ephyrCreateColormap;
 
 version (XV) {
     if (!ephyrNoXV) {
@@ -829,9 +841,9 @@ version (XV) {
 
 Bool ephyrFinishInitScreen(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     /* FIXME: Calling this even if not using shadow.
      * Seems harmless enough. But may be safer elsewhere.
@@ -845,7 +857,7 @@ version (RANDR) {
 }
 
     scrpriv.BlockHandler = pScreen.BlockHandler;
-    pScreen.BlockHandler = ephyrScreenBlockHandler;
+    pScreen.BlockHandler = &ephyrScreenBlockHandler;
 
     return TRUE;
 }
@@ -858,12 +870,12 @@ version (RANDR) {
  */
 Bool ephyrCreateResources(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
-    EPHYR_LOG("mark pScreen=%p mynum=%d shadow=%d",
-              pScreen, pScreen.myNum, scrpriv.shadow);
+    // EPHYR_LOG("mark pScreen=%p mynum=%d shadow=%d",
+            //   pScreen, pScreen.myNum, scrpriv.shadow);
 
     if (scrpriv.shadow)
         return KdShadowSet(pScreen,
@@ -882,7 +894,7 @@ version (GLAMOR) {
 
 void ephyrScreenFini(KdScreenInfo* screen)
 {
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv.shadow) {
         KdShadowFbFree(screen);
@@ -927,11 +939,11 @@ void ephyrUpdateModifierState(uint state)
             for (key = 0; key < MAP_LENGTH; key++)
                 if (keyc.xkbInfo.desc.map.modmap[key] & mask) {
                     if (mask == XCB_MOD_MASK_LOCK) {
-                        KdEnqueueKeyboardEvent(ephyrKbd, key, FALSE);
-                        KdEnqueueKeyboardEvent(ephyrKbd, key, TRUE);
+                        KdEnqueueKeyboardEvent(ephyrKbd, cast(ubyte)key, FALSE);
+                        KdEnqueueKeyboardEvent(ephyrKbd, cast(ubyte)key, TRUE);
                     }
                     else if (key_is_down(pDev, key, KEY_PROCESSED))
-                        KdEnqueueKeyboardEvent(ephyrKbd, key, TRUE);
+                        KdEnqueueKeyboardEvent(ephyrKbd, cast(ubyte)key, TRUE);
 
                     if (--count == 0)
                         break;
@@ -942,9 +954,9 @@ void ephyrUpdateModifierState(uint state)
         if (!(xkb_state & mask) && (state & mask))
             for (key = 0; key < MAP_LENGTH; key++)
                 if (keyc.xkbInfo.desc.map.modmap[key] & mask) {
-                    KdEnqueueKeyboardEvent(ephyrKbd, key, FALSE);
+                    KdEnqueueKeyboardEvent(ephyrKbd, cast(ubyte)key, FALSE);
                     if (mask == XCB_MOD_MASK_LOCK)
-                        KdEnqueueKeyboardEvent(ephyrKbd, key, TRUE);
+                        KdEnqueueKeyboardEvent(ephyrKbd, cast(ubyte)key, TRUE);
                     break;
                 }
     }
@@ -979,9 +991,9 @@ miPointerScreenFuncRec ephyrPointerScreenFuncs = {
 private KdScreenInfo* screen_from_window(Window w)
 {
     mixin(DIX_FOR_EACH_SCREEN!q{
-        KdPrivScreenPtr kdscrpriv = KdGetScreenPriv(walkScreen);
+        KdPrivScreenPtr kdscrpriv = mixin(KdGetScreenPriv!("walkScreen"));
         KdScreenInfo* screen = kdscrpriv.screen;
-        EphyrScrPriv* scrpriv = screen.driver;
+        EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
         if (scrpriv.win == w
             || scrpriv.peer_win == w
@@ -1016,7 +1028,7 @@ private void ephyrProcessExpose(xcb_generic_event_t* xev)
     KdScreenInfo* screen = screen_from_window(expose.window);
     if (!screen)
         return;
-    EphyrScrPriv* scrpriv = screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     /* Wait for the last expose event in a series of cliprects
      * to actually paint our screen.
@@ -1030,7 +1042,8 @@ private void ephyrProcessExpose(xcb_generic_event_t* xev)
                          scrpriv.win_height,
                          TRUE);
     } else {
-        EPHYR_LOG_ERROR("failed to get host screen\n");
+        assert(0);
+        // EPHYR_LOG_ERROR("failed to get host screen\n");
     }
 }
 
@@ -1044,24 +1057,24 @@ private void ephyrProcessMouseMotion(xcb_generic_event_t* xev)
 
     if (!ephyrMouse ||
         !(cast(EphyrPointerPrivate*) ephyrMouse.driverPrivate).enabled) {
-        EPHYR_LOG("skipping mouse motion:%d\n", screen.pScreen.myNum);
+        // EPHYR_LOG("skipping mouse motion:%d\n", screen.pScreen.myNum);
         return;
     }
 
     if (ephyrCursorScreen != screen.pScreen) {
-        EPHYR_LOG("warping mouse cursor. "
-                  ~ "cur_screen:%d, motion_screen:%d\n",
-                  ephyrCursorScreen ? ephyrCursorScreen.myNum : -1, screen.pScreen.myNum);
+        // EPHYR_LOG("warping mouse cursor. "
+        //           ~ "cur_screen:%d, motion_screen:%d\n",
+        //           ephyrCursorScreen ? ephyrCursorScreen.myNum : -1, screen.pScreen.myNum);
         ephyrWarpCursor(inputInfo.pointer, screen.pScreen,
                         motion.event_x, motion.event_y);
     }
     else {
         int x = 0, y = 0;
 
-        EPHYR_LOG("enqueuing mouse motion:%d\n", screen.pScreen.myNum);
+        // EPHYR_LOG("enqueuing mouse motion:%d\n", screen.pScreen.myNum);
         x = motion.event_x;
         y = motion.event_y;
-        EPHYR_LOG("initial (x,y):(%d,%d)\n", x, y);
+        // EPHYR_LOG("initial (x,y):(%d,%d)\n", x, y);
 
         /* convert coords into desktop-wide coordinates.
          * fill_pointer_events will convert that back to
@@ -1079,7 +1092,7 @@ private void ephyrProcessButtonPress(xcb_generic_event_t* xev)
 
     if (!ephyrMouse ||
         !(cast(EphyrPointerPrivate*) ephyrMouse.driverPrivate).enabled) {
-        EPHYR_LOG("skipping mouse press:%d\n", screen_from_window(button.event).pScreen.myNum);
+        // EPHYR_LOG("skipping mouse press:%d\n", screen_from_window(button.event).pScreen.myNum);
         return;
     }
 
@@ -1089,7 +1102,7 @@ private void ephyrProcessButtonPress(xcb_generic_event_t* xev)
      */
     mouseState |= 1 << (button.detail - 1);
 
-    EPHYR_LOG("enqueuing mouse press:%d\n", screen_from_window(button.event).pScreen.myNum);
+    // EPHYR_LOG("enqueuing mouse press:%d\n", screen_from_window(button.event).pScreen.myNum);
     KdEnqueuePointerEvent(ephyrMouse, mouseState | KD_MOUSE_DELTA, 0, 0, 0);
 }
 
@@ -1105,7 +1118,7 @@ private void ephyrProcessButtonRelease(xcb_generic_event_t* xev)
     ephyrUpdateModifierState(button.state);
     mouseState &= ~(1 << (button.detail - 1));
 
-    EPHYR_LOG("enqueuing mouse release:%d\n", screen_from_window(button.event).pScreen.myNum);
+    // EPHYR_LOG("enqueuing mouse release:%d\n", screen_from_window(button.event).pScreen.myNum);
     KdEnqueuePointerEvent(ephyrMouse, mouseState | KD_MOUSE_DELTA, 0, 0, 0);
 }
 
@@ -1353,7 +1366,7 @@ void ephyrGetColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 
 void ephyrPutColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     EphyrScrPriv* scrpriv = screen.driver;
     int min = void, max = void, p = void;

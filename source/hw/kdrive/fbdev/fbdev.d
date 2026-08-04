@@ -373,7 +373,7 @@ Bool fbdevScreenInit(KdScreenInfo* screen)
 
 private void* fbdevWindowLinear(ScreenPtr pScreen, CARD32 row, CARD32 offset, int mode, CARD32* size, void* closure)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
 
     if (!pScreenPriv.enabled) {
@@ -386,7 +386,7 @@ private void* fbdevWindowLinear(ScreenPtr pScreen, CARD32 row, CARD32 offset, in
 
 private void* fbdevWindowAfb(ScreenPtr pScreen, CARD32 row, CARD32 offset, int mode, CARD32* size, void* closure)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
 
     if (!pScreenPriv.enabled) {
@@ -438,7 +438,7 @@ Bool fbdevMapFramebuffer(KdScreenInfo* screen)
 
 private void fbdevSetScreenSizes(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     FbdevPriv* priv = screen.card.driver;
@@ -465,7 +465,7 @@ private Bool fbdevUnmapFramebuffer(KdScreenInfo* screen)
 
 private Bool fbdevSetShadow(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     FbdevPriv* priv = screen.card.driver;
@@ -570,7 +570,7 @@ version (__arm__) {
 version (RANDR) {
 private Bool fbdevRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     RRScreenSizePtr pSize = void;
@@ -598,7 +598,7 @@ private Bool fbdevRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 
 private Bool fbdevRandRSetConfig(ScreenPtr pScreen, Rotation randr, int rate, RRScreenSizePtr pSize)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     Bool wasEnabled = pScreenPriv.enabled;
@@ -705,7 +705,7 @@ private Bool fbdevCreateColormap(ColormapPtr pmap)
 {
     ScreenPtr pScreen = pmap.pScreen;
 
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
     VisualPtr pVisual = void;
     int i = void;
@@ -798,7 +798,7 @@ private int fbdevUpdateFbColormap(FbdevPriv* priv, int minidx, int maxidx)
 
 Bool fbdevEnable(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
 
     int k = void;
@@ -831,7 +831,7 @@ Bool fbdevEnable(ScreenPtr pScreen)
 
 Bool fbdevDPMS(ScreenPtr pScreen, int mode)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
     static int oldmode = -1;
 
@@ -882,7 +882,7 @@ void fbdevCardFini(KdCardInfo* card)
  */
 void fbdevGetColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
     fb_cmap cmap = void;
     int p = void;
@@ -922,7 +922,7 @@ void fbdevGetColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
  */
 void fbdevPutColors(ScreenPtr pScreen, int n, xColorItem* pdefs)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     FbdevPriv* priv = pScreenPriv.card.driver;
     int p = void;
     int min = void, max = void;

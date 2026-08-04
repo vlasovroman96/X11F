@@ -33,7 +33,7 @@ import dix.colormap_priv;
  */
 void KdSetColormap(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     ColormapPtr pCmap = pScreenPriv.pInstalledmap;
     Pixel[KD_MAX_PSEUDO_SIZE] pixels = void;
     xrgb[KD_MAX_PSEUDO_SIZE] colors = void;
@@ -86,7 +86,7 @@ void KdSetColormap(ScreenPtr pScreen)
  */
 void KdEnableColormap(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     int i = void;
 
     if (!pScreenPriv.card.cfuncs.getColors)
@@ -105,7 +105,7 @@ void KdEnableColormap(ScreenPtr pScreen)
 
 void KdDisableColormap(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
 
     if (!pScreenPriv.card.cfuncs.putColors)
         return;
@@ -184,7 +184,7 @@ void KdUninstallColormap(ColormapPtr pCmap)
 
 int KdListInstalledColormaps(ScreenPtr pScreen, Colormap* pCmaps)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     int n = 0;
 
     if (pScreenPriv.pInstalledmap) {

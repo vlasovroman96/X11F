@@ -45,6 +45,9 @@ import include.pixmapstr;
 import include.windowstr;
 import include.dixfontstr;
  import externs.epoxy;
+import fb.fbglyph;
+import externs.attrs;
+import glx.glxext;
 
 
 /*
@@ -66,14 +69,14 @@ enum __GL_CHAR_BUF_SIZE = 2048;
 
     w = mixin(GLYPHWIDTHPIXELS!("pci"));
     h = mixin(GLYPHHEIGHTPIXELS!("pci"));
-    widthPadded = GLYPHWIDTHBYTESPADDED(pci);
+    widthPadded = mixin(GLYPHWIDTHBYTESPADDED!("pci"));
 
     /*
      ** Use the local buf if possible, otherwise calloc.
      */
     allocBytes = widthPadded * h;
     if (allocBytes <= __GL_CHAR_BUF_SIZE) {
-        p = buf;
+        p = buf.ptr;
         allocbuf = null;
     }
     else {
@@ -87,7 +90,7 @@ enum __GL_CHAR_BUF_SIZE = 2048;
      ** We have to reverse the picture, top to bottom
      */
 
-    pglyph = FONTGLYPHBITS(FONTGLYPHS(font), pci) + (h - 1) * widthPadded;
+    pglyph = mixin(FONTGLYPHBITS!(FONTGLYPHS!("font"), "pci")) + (h - 1) * widthPadded;
     for (j = 0; j < h; j++) {
         for (i = 0; i < widthPadded; i++) {
             p[i] = pglyph[i];
@@ -96,7 +99,7 @@ enum __GL_CHAR_BUF_SIZE = 2048;
         p += widthPadded;
     }
     glBitmap(w, h, -pci.metrics.leftSideBearing, pci.metrics.descent,
-             pci.metrics.characterWidth, 0, allocbuf ? allocbuf : buf);
+             pci.metrics.characterWidth, 0, allocbuf ? allocbuf : buf.ptr);
 
     free(allocbuf);
     return Success;
@@ -122,16 +125,16 @@ private int MakeBitmapsFromFont(FontPtr pFont, int first, int count, int list_ba
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, GLYPHPADBYTES);
     for (i = 0; i < count; i++) {
-        chs[0] = (first + i) >> 8;      /* high byte is first byte */
-        chs[1] = first + i;
+        chs[0] = cast(ubyte)((first + i) >> 8);      /* high byte is first byte */
+        chs[1] = cast(ubyte)(first + i);
 
-        (*pFont.get_glyphs) (pFont, 1, chs.ptr, cast(FontEncoding) encoding,
+        assumeNoGC(pFont.get_glyphs) (pFont, 1, chs.ptr, cast(FontEncoding) encoding,
                               &nglyphs, &pci);
 
         /*
          ** Define a display list containing just a glBitmap() call.
          */
-        glNewList(list_base + i, GL_COMPILE);
+        glNewList(cast(uint)(list_base + i), GL_COMPILE);
         if (nglyphs) {
             rv = __glXMakeBitmapFromGlyph(pFont, pci);
             if (rv) {

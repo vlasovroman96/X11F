@@ -1,4 +1,4 @@
-module kshadow;
+module hw.kdrive.src.kshadow;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -62,7 +62,7 @@ void KdShadowFbFree(KdScreenInfo* screen)
 
 Bool KdShadowSet(ScreenPtr pScreen, int randr, ShadowUpdateProc update, ShadowWindowProc window)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
 
     shadowRemove(pScreen, pScreen.GetScreenPixmap(pScreen));

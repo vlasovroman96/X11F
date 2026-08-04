@@ -36,6 +36,9 @@ import glx.vndserver_priv;
 import include.pixmapstr;
 
 import glx.vndservervendor;
+import dix.dixutils;
+import dix.resource;
+
 
 private ClientPtr requestClient = null;
 

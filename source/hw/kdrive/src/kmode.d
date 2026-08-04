@@ -329,7 +329,7 @@ Bool KdTuneMode(KdScreenInfo* screen, Bool function(KdScreenInfo*) usable, Bool 
 version (RANDR) {
 Bool KdRandRGetInfo(ScreenPtr pScreen, int randr, Bool function(ScreenPtr pScreen, const(KdMonitorTiming)*) supported)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     int i = void;
     const(KdMonitorTiming)* t = void;

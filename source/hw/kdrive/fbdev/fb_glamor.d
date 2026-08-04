@@ -29,7 +29,7 @@ import core.stdc.errno;
 
 Bool fbdevInitAccel(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     FbScreenConf* config = screen.card.closure;
@@ -109,7 +109,7 @@ version (XV) {
 void fbdevEnableAccel(ScreenPtr pScreen)
 {
 version (WITH_LIBDRM) {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     FbScreenConf* config = screen.card.closure;
@@ -123,7 +123,7 @@ version (WITH_LIBDRM) {
 void fbdevDisableAccel(ScreenPtr pScreen)
 {
 version (WITH_LIBDRM) {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
     FbScreenConf* config = screen.card.closure;
@@ -136,7 +136,7 @@ version (WITH_LIBDRM) {
 
 void fbdevFiniAccel(ScreenPtr pScreen)
 {
-    KdScreenPriv(pScreen);
+    mixin(KdScreenPriv!("pScreen"));
     KdScreenInfo* screen = pScreenPriv.screen;
     FbdevScrPriv* scrpriv = screen.driver;
 

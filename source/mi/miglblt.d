@@ -143,7 +143,7 @@ void miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph,
         gWidth = mixin(GLYPHWIDTHPIXELS!("pci"));
         gHeight = mixin(GLYPHHEIGHTPIXELS!("pci"));
         if (gWidth && gHeight) {
-            nbyGlyphWidth = GLYPHWIDTHBYTESPADDED(pci);
+            nbyGlyphWidth = mixin(GLYPHWIDTHBYTESPADDED!("pci"));
             nbyPadGlyph = mixin(BitmapBytePad!("gWidth"));
 
             if (nbyGlyphWidth == nbyPadGlyph)

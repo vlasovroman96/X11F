@@ -47,6 +47,7 @@ import dix.callback_priv;
 import dix.dix_priv;
 import dix.screenint_priv;
 import miext.extinit_priv;
+import dix.extension;
 
 Bool noGlxExtension = FALSE;
 
@@ -129,7 +130,7 @@ private Bool GlxMappingInit()
 
 private GlxClientPriv* xglvGetClientPrivate(ClientPtr pClient)
 {
-    return dixLookupPrivate(&pClient.devPrivates, &glvXGLVClientPrivKey);
+    return cast(GlxClientPriv*)dixLookupPrivate(&pClient.devPrivates, &glvXGLVClientPrivKey);
 }
 
 private void xglvSetClientPrivate(ClientPtr pClient, void* priv)
@@ -141,8 +142,8 @@ GlxClientPriv* GlxGetClientData(ClientPtr client)
 {
     GlxClientPriv* cl = xglvGetClientPrivate(client);
     if (cl == null) {
-        cl = cast(GlxClientPriv*) calloc(1, (cast(GlxClientPriv)
-                + screenInfo.numScreens * (GlxServerVendor*).sizeof).sizeof);
+        cl = cast(GlxClientPriv*) calloc(1, ((GlxClientPriv).sizeof
+                + screenInfo.numScreens * (GlxServerVendor*).sizeof));
         if (cl != null) {
             cl.vendors = cast(GlxServerVendor**) (cl + 1);
             mixin(DIX_FOR_EACH_SCREEN!q{
@@ -227,8 +228,8 @@ void GlxExtensionInit()
     }
 
     extEntry = AddExtension(GLX_EXTENSION_NAME, __GLX_NUMBER_EVENTS,
-                            __GLX_NUMBER_ERRORS, GlxDispatchRequest,
-                            GlxDispatchRequest, &GLXReset, StandardMinorOpcode);
+                            __GLX_NUMBER_ERRORS, &GlxDispatchRequest,
+                            &GlxDispatchRequest, &GLXReset, &StandardMinorOpcode);
     if (!extEntry) {
         return;
     }
@@ -293,7 +294,7 @@ private void GlxFreeServerImports(GlxServerImports* imports)
     free(imports);
 }
 
-enum GlxServerExports glxServer = {
+__gshared GlxServerExports glxServer = {
     majorVersion: GLXSERVER_VENDOR_ABI_MAJOR_VERSION,
     minorVersion: GLXSERVER_VENDOR_ABI_MINOR_VERSION,
 
