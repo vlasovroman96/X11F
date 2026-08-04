@@ -1226,7 +1226,7 @@ int glamor_dri3_open_client(ClientPtr client, ScreenPtr screen, RRProviderPtr pr
 }
 
 const(dri3_screen_info_rec) glamor_dri3_info = {
-    c_version: 2,
+    version_: 2,
     open_client: glamor_dri3_open_client,
     pixmap_from_fds: glamor_pixmap_from_fds,
     fd_from_pixmap: glamor_egl_fd_from_pixmap,

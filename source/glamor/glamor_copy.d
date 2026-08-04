@@ -34,6 +34,7 @@ import glamor.glamor_transform;
 import glamor.glamor;
 import fb.fbpixmap;
 import fb.fballpriv;
+import glamor.glamor_pixmap;
 
 struct copy_args {
     DrawablePtr src_drawable;
@@ -148,7 +149,7 @@ private Bool use_copyplane(DrawablePtr drawable, GCPtr gc, glamor_program* prog,
 
 private const(glamor_facet) glamor_facet_copyplane = {
     "copy_plane",
-    c_version: 130,
+    version_: 130,
     vs_vars: "in vec2 primitive;\n",
     vs_exec: (GLAMOR_POS!("gl_Position", ("primitive.xy"))~
                 "       fill_pos = (fill_offset + primitive.xy) * fill_size_inv;\n"),

@@ -68,10 +68,10 @@ void glamor_upload_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, int
         while (nbox--) {
 
             /* compute drawable coordinates */
-            int x1 = MAX(boxes.x1 + dx_dst, box.x1);
-            int x2 = MIN(boxes.x2 + dx_dst, box.x2);
-            int y1 = MAX(boxes.y1 + dy_dst, box.y1);
-            int y2 = MIN(boxes.y2 + dy_dst, box.y2);
+            int x1 = mixin(MAX!("boxes.x1 + dx_dst", "box.x1"));
+            int x2 = mixin(MIN!("boxes.x2 + dx_dst", "box.x2"));
+            int y1 = mixin(MAX!("boxes.y1 + dy_dst", "box.y1"));
+            int y2 = mixin(MIN!("boxes.y2 + dy_dst", "box.y2"));
 
             uint* src_line = void;
             size_t ofs = (y1 - dy_dst + dy_src) * byte_stride;
@@ -168,10 +168,10 @@ void glamor_download_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, i
         while (nbox--) {
 
             /* compute drawable coordinates */
-            int x1 = MAX(boxes.x1 + dx_src, box.x1);
-            int x2 = MIN(boxes.x2 + dx_src, box.x2);
-            int y1 = MAX(boxes.y1 + dy_src, box.y1);
-            int y2 = MIN(boxes.y2 + dy_src, box.y2);
+            int x1 = mixin(MAX!("boxes.x1 + dx_src", "box.x1"));
+            int x2 = mixin(MIN!("boxes.x2 + dx_src", "box.x2"));
+            int y1 = mixin(MAX!("boxes.y1 + dy_src", "box.y1"));
+            int y2 = mixin(MIN!("boxes.y2 + dy_src", "box.y2"));
             size_t ofs = (y1 - dy_src + dy_dst) * byte_stride;
             ofs += (x1 - dx_src + dx_dst) * bytes_per_pixel;
 

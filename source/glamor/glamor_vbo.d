@@ -61,7 +61,7 @@ void* glamor_get_vbo_space(ScreenPtr screen, uint size, char** vbo_offset)
                 glUnmapBuffer(GL_ARRAY_BUFFER);
 
             if (size > glamor_priv.vbo_size) {
-                glamor_priv.vbo_size = MAX(GLAMOR_VBO_SIZE, size);
+                glamor_priv.vbo_size = mixin(MAX!("GLAMOR_VBO_SIZE", "size"));
 
                 /* We aren't allowed to resize glBufferStorage()
                  * buffers, so we need to gen a new one.
@@ -109,7 +109,7 @@ void* glamor_get_vbo_space(ScreenPtr screen, uint size, char** vbo_offset)
             return null;
 
         if (glamor_priv.vbo_size < glamor_priv.vbo_offset + size) {
-            glamor_priv.vbo_size = MAX(GLAMOR_VBO_SIZE, size);
+            glamor_priv.vbo_size = mixin(MAX!("GLAMOR_VBO_SIZE", "size"));
             glamor_priv.vbo_offset = 0;
             glBufferData(GL_ARRAY_BUFFER,
                          glamor_priv.vbo_size, null, GL_STREAM_DRAW);
@@ -129,7 +129,7 @@ void* glamor_get_vbo_space(ScreenPtr screen, uint size, char** vbo_offset)
          * memory. We'll upload it through glBufferData() later.
          */
         if (glamor_priv.vbo_size < size) {
-            glamor_priv.vbo_size = MAX(GLAMOR_VBO_SIZE, size);
+            glamor_priv.vbo_size = mixin(MAX!("GLAMOR_VBO_SIZE", "size"));
             free(glamor_priv.vb);
             glamor_priv.vb = XNFalloc(glamor_priv.vbo_size);
         }

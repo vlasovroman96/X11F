@@ -30,6 +30,7 @@ import glamor.glamor_priv;
 import glamor.glamor_program;
 import glamor.glamor_transform;
 import glamor.glamor_prepare;
+import glamor.glamor;
 
 private const(glamor_facet) glamor_facet_poly_lines = {
     name: "poly_lines",
@@ -74,8 +75,8 @@ private Bool glamor_poly_lines_solid_gl(DrawablePtr drawable, GCPtr gc, int mode
 
     /* Set up the vertex buffers for the points */
 
-    v = glamor_get_vbo_space(drawable.pScreen,
-                             (n + add_last) * xPoint.sizeof,
+    v = cast(_xPoint*)glamor_get_vbo_space(drawable.pScreen,
+                             cast(uint)((n + add_last) * xPoint.sizeof),
                              &vbo_offset);
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
@@ -96,8 +97,8 @@ private Bool glamor_poly_lines_solid_gl(DrawablePtr drawable, GCPtr gc, int mode
     }
 
     if (add_last) {
-        v[n].x = v[n-1].x + 1;
-        v[n].y = v[n-1].y;
+        v[n].x = cast(short)(v[n-1].x + 1);
+        v[n].y = cast(short)(v[n-1].y);
     }
 
     glamor_put_vbo_space(screen);
@@ -106,7 +107,7 @@ private Bool glamor_poly_lines_solid_gl(DrawablePtr drawable, GCPtr gc, int mode
 
     mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         int nbox = RegionNumRects(gc.pCompositeClip);
         BoxPtr box = RegionRects(gc.pCompositeClip);
 
@@ -122,7 +123,7 @@ private Bool glamor_poly_lines_solid_gl(DrawablePtr drawable, GCPtr gc, int mode
             box++;
             glDrawArrays(GL_LINE_STRIP, 0, n + add_last);
         }
-    }
+    }));
 
     ret = TRUE;
 
@@ -155,8 +156,8 @@ private Bool glamor_poly_lines_gl(DrawablePtr drawable, GCPtr gc, int mode, int 
 
 private void glamor_poly_lines_bail(DrawablePtr drawable, GCPtr gc, int mode, int n, DDXPointPtr points)
 {
-    glamor_fallback("to %p (%c)\n", drawable,
-                    glamor_get_drawable_location(drawable));
+    // glamor_fallback("to %p (%c)\n", drawable,
+    //                 glamor_get_drawable_location(drawable));
 
     miPolylines(drawable, gc, mode, n, points);
 }

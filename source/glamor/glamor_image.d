@@ -28,6 +28,10 @@ import build.dix_config;
 import glamor.glamor_priv;
 import glamor.glamor_transfer;
 import glamor.glamor_transform;
+import glamor.glamor;
+import fb.fbutil;
+import glamor.glamor_pixmap;
+
 
 /*
  * PutImage. Only does ZPixmap right now as other formats are quite a bit harder
@@ -61,19 +65,19 @@ private Bool glamor_put_image_gl(DrawablePtr drawable, GCPtr gc, int depth, int 
     if (format != ZPixmap)
         goto bail;
 
-    x += drawable.x;
-    y += drawable.y;
-    box.x1 = x;
-    box.y1 = y;
-    box.x2 = box.x1 + w;
-    box.y2 = box.y1 + h;
+    x += cast(short)drawable.x;
+    y += cast(short)drawable.y;
+    box.x1 = cast(short)(x);
+    box.y1 = cast(short)(y);
+    box.x2 = cast(short)(box.x1 + w);
+    box.y2 = cast(short)(box.y1 + h);
     RegionInit(&region, &box, 1);
     RegionIntersect(&region, &region, gc.pCompositeClip);
 
     glamor_get_drawable_deltas(drawable, pixmap, &off_x, &off_y);
     if (off_x || off_y) {
-        x += off_x;
-        y += off_y;
+        x += cast(short)off_x;
+        y += cast(short)off_y;
         RegionTranslate(&region, off_x, off_y);
     }
 
@@ -117,17 +121,17 @@ private Bool glamor_get_image_gl(DrawablePtr drawable, int x, int y, int w, int 
         goto bail;
 
     glamor_get_drawable_deltas(drawable, pixmap, &off_x, &off_y);
-    box.x1 = x;
-    box.x2 = x + w;
-    box.y1 = y;
-    box.y2 = y + h;
+    box.x1 = cast(short)(x);
+    box.x2 = cast(short)(x + w);
+    box.y1 = cast(short)(y);
+    box.y2 = cast(short)(y + h);
     glamor_download_boxes(drawable, &box, 1,
                           drawable.x + off_x, drawable.y + off_y,
                           -x, -y,
                           cast(ubyte*) d, byte_stride);
 
     if (!glamor_pm_is_solid(glamor_drawable_effective_depth(drawable), plane_mask)) {
-        FbStip pm = fbReplicatePixel(plane_mask, drawable.bitsPerPixel);
+        FbStip pm = fbReplicatePixel(cast(uint)plane_mask, drawable.bitsPerPixel);
         FbStip* dst = cast(FbStip*) (cast(void*)d);
         uint dstStride = byte_stride / FbStip.sizeof;
 

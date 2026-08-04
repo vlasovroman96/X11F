@@ -29,10 +29,11 @@ import os.bug_priv;
 import glamor.glamor_priv;
 import glamor.glamor_program;
 import glamor.glamor_transform;
+import glamor.glamor;
 
 private const(glamor_facet) glamor_facet_polyfillrect_130 = {
     name: "poly_fill_rect",
-    c_version: 130,
+    version_: 130,
     source_name: "size",
     vs_vars: "in vec2 primitive;\n"
                ~ "in vec2 size;\n",
@@ -83,7 +84,7 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(nrect * xRectangle.sizeof), &vbo_offset);
+        v = cast(short*)glamor_get_vbo_space(drawable.pScreen, cast(uint)(nrect * xRectangle.sizeof), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);
@@ -110,17 +111,17 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(nrect * 8 * short.sizeof), &vbo_offset);
+        v = cast(short*)glamor_get_vbo_space(drawable.pScreen, cast(uint)(nrect * 8 * short.sizeof), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_SHORT, GL_FALSE,
                               2 * short.sizeof, vbo_offset);
 
         for (n = 0; n < nrect; n++) {
-            v[0] = prect.x;                v[1] = prect.y;
-            v[2] = prect.x;                v[3] = prect.y + prect.height;
-            v[4] = prect.x + prect.width; v[5] = prect.y + prect.height;
-            v[6] = prect.x + prect.width; v[7] = prect.y;
+            v[0] = cast(short)prect.x;                v[1] = cast(short)prect.y;
+            v[2] = cast(short)prect.x;                v[3] = cast(short)(prect.y + prect.height);
+            v[4] = cast(short)(prect.x + prect.width); v[5] = cast(short)(prect.y + prect.height);
+            v[6] = cast(short)(prect.x + prect.width); v[7] = cast(short)prect.y;
             prect++;
             v += 8;
         }
@@ -132,7 +133,7 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
 
     mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         int nbox = RegionNumRects(gc.pCompositeClip);
         BoxPtr box = RegionRects(gc.pCompositeClip);
 
@@ -142,10 +143,10 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
 
         while (nbox--) {
             BoxRec scissor = {
-                x1: max(box.x1, bounds.x1 + drawable.x),
-                y1: max(box.y1, bounds.y1 + drawable.y),
-                x2: min(box.x2, bounds.x2 + drawable.x),
-                y2: min(box.y2, bounds.y2 + drawable.y),
+                x1: cast(short)max(box.x1, bounds.x1 + drawable.x),
+                y1: cast(short)max(box.y1, bounds.y1 + drawable.y),
+                x2: cast(short)min(box.x2, bounds.x2 + drawable.x),
+                y2: cast(short)min(box.y2, bounds.y2 + drawable.y),
             };
 
             box++;
@@ -163,7 +164,7 @@ private Bool glamor_poly_fill_rect_gl(DrawablePtr drawable, GCPtr gc, int nrect,
                 glamor_glDrawArrays_GL_QUADS(glamor_priv, nrect);
             }
         }
-    }
+    }));
 
     ret = TRUE;
 
@@ -181,8 +182,8 @@ bail:
 
 private void glamor_poly_fill_rect_bail(DrawablePtr drawable, GCPtr gc, int nrect, xRectangle* prect)
 {
-    glamor_fallback("to %p (%c)\n", drawable,
-                    glamor_get_drawable_location(drawable));
+    // glamor_fallback("to %p (%c)\n", drawable,
+                    // glamor_get_drawable_location(drawable));
     if (glamor_prepare_access(drawable, GLAMOR_ACCESS_RW) &&
         glamor_prepare_access_gc(gc)) {
         fbPolyFillRect(drawable, gc, nrect, prect);

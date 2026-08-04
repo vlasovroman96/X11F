@@ -29,6 +29,8 @@ import os.bug_priv;
 import glamor.glamor_priv;
 import glamor.glamor_prepare;
 import glamor.glamor_transfer;
+import glamor.glamor;
+import glamor.glamor_pixmap;
 
 /*
  * Make a drawable ready to draw with fb by
@@ -134,7 +136,7 @@ private Bool glamor_prep_drawable_box(DrawablePtr drawable, glamor_access_t acce
     }
 
     glamor_download_boxes(drawable, RegionRects(&region), RegionNumRects(&region),
-                          0, 0, 0, 0, pixmap.devPrivate.ptr, pixmap.devKind);
+                          0, 0, 0, 0, cast(ubyte*)pixmap.devPrivate.ptr, pixmap.devKind);
 
     RegionUninit(&region);
 
@@ -181,7 +183,7 @@ void glamor_finish_access(DrawablePtr drawable)
         glamor_upload_boxes(drawable,
                             RegionRects(&priv.prepare_region),
                             RegionNumRects(&priv.prepare_region),
-                            0, 0, 0, 0, pixmap.devPrivate.ptr, pixmap.devKind);
+                            0, 0, 0, 0, cast(ubyte*)pixmap.devPrivate.ptr, pixmap.devKind);
     }
 
     RegionUninit(&priv.prepare_region);
@@ -206,10 +208,10 @@ Bool glamor_prepare_access(DrawablePtr drawable, glamor_access_t access)
 {
     BoxRec box = void;
 
-    box.x1 = drawable.x;
-    box.x2 = box.x1 + drawable.width;
-    box.y1 = drawable.y;
-    box.y2 = box.y1 + drawable.height;
+    box.x1 = cast(short)(drawable.x);
+    box.x2 = cast(short)(box.x1 + drawable.width);
+    box.y1 = cast(short)(drawable.y);
+    box.y2 = cast(short)(box.y1 + drawable.height);
     return glamor_prep_drawable_box(drawable, access, &box);
 }
 
@@ -217,10 +219,10 @@ Bool glamor_prepare_access_box(DrawablePtr drawable, glamor_access_t access, int
 {
     BoxRec box = void;
 
-    box.x1 = drawable.x + x;
-    box.x2 = box.x1 + w;
-    box.y1 = drawable.y + y;
-    box.y2 = box.y1 + h;
+    box.x1 = cast(short)(drawable.x + x);
+    box.x2 = cast(short)(box.x1 + w);
+    box.y1 = cast(short)(drawable.y + y);
+    box.y2 = cast(short)(box.y1 + h);
     return glamor_prep_drawable_box(drawable, access, &box);
 }
 

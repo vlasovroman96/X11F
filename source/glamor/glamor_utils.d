@@ -101,68 +101,68 @@ enum string pixmap_priv_get_dest_scale(string pixmap, string _pixmap_priv_, stri
    } `;
 
 enum string pixmap_priv_get_scale(string _pixmap_priv_, string _pxscale_, string _pyscale_) = `
-   do {									
+   {									
     *(` ~ _pxscale_ ~ `) = 1.0 / (` ~ _pixmap_priv_ ~ `).fbo.width;			
     *(` ~ _pyscale_ ~ `) = 1.0 / (` ~ _pixmap_priv_ ~ `).fbo.height;			
-  } while(0)`;
+  }`;
 
 enum string PIXMAP_PRIV_GET_ACTUAL_SIZE(string pixmap, string priv, string w, string h) = `
-  do {								
-	if (_X_UNLIKELY(glamor_pixmap_priv_is_large(` ~ priv ~ `))) {	
+  {								
+	if (glamor_pixmap_priv_is_large(` ~ priv ~ `)) {	
 		` ~ w ~ ` = ` ~ priv ~ `.box.x2 - ` ~ priv ~ `.box.x1;	
 		` ~ h ~ ` = ` ~ priv ~ `.box.y2 - ` ~ priv ~ `.box.y1;	
 	} else {						
 		` ~ w ~ ` = (` ~ pixmap ~ `).drawable.width;		
 		` ~ h ~ ` = (` ~ pixmap ~ `).drawable.height;		
 	}							
-  } while(0)`;
+  }`;
 
 enum string glamor_pixmap_fbo_fix_wh_ratio(string wh, string pixmap, string priv) = `
-  do {								
+  {								
 	int actual_w = void, actual_h = void;					
 	` ~ PIXMAP_PRIV_GET_ACTUAL_SIZE!(pixmap, priv, `actual_w`, `actual_h`) ~ `;	
 	` ~ wh ~ `[0] = cast(float)` ~ priv ~ `.fbo.width / actual_w;	
 	` ~ wh ~ `[1] = cast(float)` ~ priv ~ `.fbo.height / actual_h;	
 	` ~ wh ~ `[2] = 1.0 / ` ~ priv ~ `.fbo.width;			
 	` ~ wh ~ `[3] = 1.0 / ` ~ priv ~ `.fbo.height;			
-  } while(0)`;
+  } `;
 
 enum string pixmap_priv_get_fbo_off(string _priv_, string _xoff_, string _yoff_) = `
-   do {								
-        if (_X_UNLIKELY(` ~ _priv_ ~ ` && glamor_pixmap_priv_is_large(` ~ _priv_ ~ `))) { 
+   {								
+        if ((` ~ _priv_ ~ ` && glamor_pixmap_priv_is_large(` ~ _priv_ ~ `))) { 
 		*(` ~ _xoff_ ~ `) = - (` ~ _priv_ ~ `).box.x1;	
 		*(` ~ _yoff_ ~ `) = - (` ~ _priv_ ~ `).box.y1;	
 	} else {						
 		*(` ~ _xoff_ ~ `) = 0;					
 		*(` ~ _yoff_ ~ `) = 0;					
 	}							
-   } while(0)`;
+   } `;
 
-enum string xFixedToFloat(string _val_) = `(cast(float)xFixedToInt(` ~ _val_ ~ `)			
-			      + (cast(float)xFixedFrac(` ~ _val_ ~ `) / 65536.0))`;
+enum string xFixedToFloat(string _val_) = `(cast(float)`~xFixedToInt!(_val_) ~`			
+			      + (cast(float)`~xFixedFrac!(_val_) ~ ` / 65536.0))`;
 
 enum string glamor_picture_get_matrixf(string _picture_, string _matrix_) = `
-  do {									
+  {									
     int _i_ = void;								
     if ((` ~ _picture_ ~ `).transform)						
       {									
 	for(_i_ = 0; _i_ < 3; _i_++)					
 	  {								
 	    (` ~ _matrix_ ~ `)[_i_ * 3 + 0] =					
-	      ` ~ xFixedToFloat!(`(` ~ _picture_ ~ `).transform.matrix[_i_][0]`) ~ `;	
+	      ` ~ xFixedToFloat!(`(`~_picture_ ~ `).transform.matrix[_i_][0]`) ~ `;	
 	    (` ~ _matrix_ ~ `)[_i_ * 3 + 1] =					
 	      ` ~ xFixedToFloat!(`(` ~ _picture_ ~ `).transform.matrix[_i_][1]`) ~ `;	
 	    (` ~ _matrix_ ~ `)[_i_ * 3 + 2] = 
 	      ` ~ xFixedToFloat!(`(` ~ _picture_ ~ `).transform.matrix[_i_][2]`) ~ `;	
 	  }								
       }									
-  }  while(0)`;
+  } `;
 
 enum string fmod(string x, string w) = `(` ~ x ~ ` - ` ~ w ~ ` * floor(cast(float)` ~ x ~ `/` ~ w ~ `))`;
 
-enum string fmodulus(string x, string w, string c) = `do {` ~ c ~ ` = ` ~ fmod!(x, w) ~ `;		
+enum string fmodulus(string x, string w, string c) = `{` ~ c ~ ` = ` ~ fmod!(x, w) ~ `;		
 				    ` ~ c ~ ` = ` ~ c ~ ` >= 0 ? ` ~ c ~ ` : ` ~ c ~ ` + ` ~ w ~ `;}	
-				while(0)`;
+			`;
 /* @x: is current coord
  * @x2: is the right/bottom edge
  * @w: is current width or height
@@ -170,7 +170,7 @@ enum string fmodulus(string x, string w, string c) = `do {` ~ c ~ ` = ` ~ fmod!(
  * odd region.
  * @c: is output value, equal to x mod w. */
 enum string fodd_repeat_mod(string x, string x2, string w, string odd, string c) = `
-  do {						
+  {						
 	float shift = void;				
 	` ~ fmodulus!(`(` ~ x ~ `)`, w, c) ~ `; 			
 	shift = fabs((` ~ x ~ `) - (` ~ c ~ `));		
@@ -179,7 +179,7 @@ enum string fodd_repeat_mod(string x, string x2, string w, string odd, string c)
 	if (` ~ odd ~ ` && (((` ~ x2 ~ ` % ` ~ w ~ `) == 0) &&		
 	    round(fabs(` ~ x ~ `)) == ` ~ x2 ~ `))		
 		` ~ odd ~ ` = 0;			
-  } while(0)`;
+  }`;
 
 /* @txy: output value, is the corrected coords.
  * @xy: input coords to be fixed up.
@@ -211,7 +211,7 @@ enum string fodd_repeat_mod(string x, string x2, string w, string odd, string c)
  **/
 enum string __glamor_repeat_reflect_fixup(string txy, string xy,		
 				string cd, string wh, string bxy1, string bxy2) = `
-  do {							
+  {							
 	` ~ cd ~ ` = ` ~ wh ~ ` - ` ~ cd ~ `;					
 	if ( ` ~ xy ~ ` >= ` ~ bxy1 ~ ` && ` ~ xy ~ ` < ` ~ bxy2 ~ `) {			
 		` ~ cd ~ ` = ` ~ cd ~ ` - ` ~ bxy1 ~ `;				
@@ -228,22 +228,22 @@ enum string __glamor_repeat_reflect_fixup(string txy, string xy,
 			bxy2_mod = ` ~ wh ~ `;			
 		` ~ txy ~ ` = (bxy2_mod - ` ~ cd ~ `) + ` ~ bxy2 ~ ` - ` ~ bxy1 ~ `;	
 	} else {assert(0); ` ~ txy ~ ` = 0;}			
-  } while(0)`;
+  }`;
 
 enum string _glamor_repeat_reflect_fixup(string txy, string xy, string cd, string odd,	
 				     string wh, string bxy1, string bxy2) = `
-  do {							
+  {							
 	if (` ~ odd ~ `) {					
 		` ~ __glamor_repeat_reflect_fixup!(txy, xy, 	
 			cd, wh, bxy1, bxy2) ~ `;		
 	} else						
 		` ~ txy ~ ` = ` ~ xy ~ ` - ` ~ bxy1 ~ `;			
-  } while(0)`;
+  }`;
 
 enum string _glamor_get_reflect_transform_coords(string pixmap, string priv, string repeat_type,	
 					    string tx1, string ty1, 		
 				            string _x1_, string _y1_) = `
-  do {								
+  {								
 	int odd_x = void, odd_y = void;					
 	float c = void, d = void;						
 	` ~ fodd_repeat_mod!(_x1_,`` ~ priv ~ `.box.x2`,			
@@ -253,30 +253,30 @@ enum string _glamor_get_reflect_transform_coords(string pixmap, string priv, str
 		    `(` ~ pixmap ~ `).drawable.height`,		
 		    `odd_y`, `d`) ~ `;					
 	//DEBUGF("c %f d %f oddx %d oddy %d \n",			
-		c, d, odd_x, odd_y);				
+		// c, d, odd_x, odd_y);				
 	//DEBUGF("x2 %d x1 %d fbo->width %d \n", ` ~ priv ~ `.box.x2,	
-		` ~ priv ~ `.box.x1, ` ~ priv ~ `.fbo.width);		
+		// ` ~ priv ~ `.box.x1, ` ~ priv ~ `.fbo.width);		
 	//DEBUGF("y2 %d y1 %d fbo->height %d \n", ` ~ priv ~ `.box.y2, 	
-		` ~ priv ~ `.box.y1, ` ~ priv ~ `.fbo.height);		
+		// ` ~ priv ~ `.box.y1, ` ~ priv ~ `.fbo.height);		
 	` ~ _glamor_repeat_reflect_fixup!(tx1, _x1_, `c`, `odd_x`,	
 		`(` ~ pixmap ~ `).drawable.width`,		
 		`` ~ priv ~ `.box.x1`, `` ~ priv ~ `.box.x2`) ~ `;			
 	` ~ _glamor_repeat_reflect_fixup!(ty1, _y1_, `d`, `odd_y`,	
 		`(` ~ pixmap ~ `).drawable.height`,		
 		`` ~ priv ~ `.box.y1`, `` ~ priv ~ `.box.y2`) ~ `;			
-   } while(0)`;
+   }`;
 
 enum string _glamor_get_repeat_coords(string pixmap, string priv, string repeat_type, string tx1,	
 				  string ty1, string tx2, string ty2,		
 				  string _x1_, string _y1_, string _x2_,		
 				  string _y2_, string c, string d, string odd_x, string odd_y) = `
-  do {								
+  {								
 	if (` ~ repeat_type ~ ` == RepeatReflect) {			
 		//DEBUGF("x1 y1 %d %d\n",				
-			` ~ _x1_ ~ `, ` ~ _y1_ ~ ` );				
+			// ` ~ _x1_ ~ `, ` ~ _y1_ ~ ` );				
 		//DEBUGF("width %d box.x1 %d \n",			
-		       (` ~ pixmap ~ `).drawable.width,	
-		       ` ~ priv ~ `.box.x1);				
+		    //    (` ~ pixmap ~ `).drawable.width,	
+		    //    ` ~ priv ~ `.box.x1);				
 		if (` ~ odd_x ~ `) {					
 			` ~ c ~ ` = (` ~ pixmap ~ `).drawable.width	
 				- ` ~ c ~ `;				
@@ -301,16 +301,16 @@ enum string _glamor_get_repeat_coords(string pixmap, string priv, string repeat_
 		` ~ tx2 ~ ` = ` ~ tx1 ~ ` + ((` ~ _x2_ ~ `) - (` ~ _x1_ ~ `));			
 		` ~ ty2 ~ ` = ` ~ ty1 ~ ` + ((` ~ _y2_ ~ `) - (` ~ _y1_ ~ `));			
 	}							
-   } while(0)`;
+   }`;
 
 /* _x1_ ... _y2_ may has fractional. */
 enum string glamor_get_repeat_transform_coords(string pixmap, string priv, string repeat_type, string tx1, 
 					   string ty1, string _x1_, string _y1_) = `
-  do {									
+  {									
 	//DEBUGF("width %d box.x1 %d x2 %d y1 %d y2 %d\n",		
-		(` ~ pixmap ~ `).drawable.width,			
-		` ~ priv ~ `.box.x1, ` ~ priv ~ `.box.x2, ` ~ priv ~ `.box.y1,		
-		` ~ priv ~ `.box.y2);						
+		// (` ~ pixmap ~ `).drawable.width,			
+		// ` ~ priv ~ `.box.x1, ` ~ priv ~ `.box.x2, ` ~ priv ~ `.box.y1,		
+		// ` ~ priv ~ `.box.y2);						
 	//DEBUGF("x1 %f y1 %f \n", ` ~ _x1_ ~ `, ` ~ _y1_ ~ `);				
 	if (` ~ repeat_type ~ ` != RepeatReflect) {				
 		` ~ tx1 ~ ` = ` ~ _x1_ ~ ` - ` ~ priv ~ `.box.x1;				
@@ -320,21 +320,21 @@ enum string glamor_get_repeat_transform_coords(string pixmap, string priv, strin
 				  tx1, ty1, 				
 				  _x1_, _y1_) ~ `;				
 	//DEBUGF("tx1 %f ty1 %f \n", ` ~ tx1 ~ `, ` ~ ty1 ~ `);				
-   } while(0)`;
+   }`;
 
 /* _x1_ ... _y2_ must be integer. */
 enum string glamor_get_repeat_coords(string pixmap, string priv, string repeat_type, string tx1,		
 				 string ty1, string tx2, string ty2, string _x1_, string _y1_, string _x2_,	
 				 string _y2_) = `
-  do {									
+  {									
 	int c = void, d = void;							
 	int odd_x = 0, odd_y = 0;					
 	//DEBUGF("width %d box.x1 %d x2 %d y1 %d y2 %d\n",		
-		(` ~ pixmap ~ `).drawable.width,			
-		` ~ priv ~ `.box.x1, ` ~ priv ~ `.box.x2,				
-		` ~ priv ~ `.box.y1, ` ~ priv ~ `.box.y2);				
-	modulus((` ~ _x1_ ~ `), (` ~ pixmap ~ `).drawable.width, c); 	
-	modulus((` ~ _y1_ ~ `), (` ~ pixmap ~ `).drawable.height, d);	
+		// (` ~ pixmap ~ `).drawable.width,			
+		// ` ~ priv ~ `.box.x1, ` ~ priv ~ `.box.x2,				
+		// ` ~ priv ~ `.box.y1, ` ~ priv ~ `.box.y2);				
+	`~modulus!(_x1_ , pixmap ~ `.drawable.width`, `c`) ~`; 	
+	`~modulus!(_y1_, pixmap~`.drawable.height`, `d`)~`;	
 	//DEBUGF("c %d d %d \n", c, d);					
 	if (` ~ repeat_type ~ ` == RepeatReflect) {				
 		odd_x = abs((` ~ _x1_ ~ ` - c)					
@@ -345,46 +345,46 @@ enum string glamor_get_repeat_coords(string pixmap, string priv, string repeat_t
 	` ~ _glamor_get_repeat_coords!(pixmap, priv, repeat_type, tx1, ty1, tx2, ty2, 
 				  _x1_, _y1_, _x2_, _y2_, `c`, `d`,		
 				  `odd_x`, `odd_y`) ~ `;			
-   } while(0)`;
+   }`;
 
 enum string glamor_transform_point(string matrix, string tx, string ty, string x, string y) = `
-  do {									
+  {									
     int _i_ = void;								
     float[4] _result_ = void;							
     for (_i_ = 0; _i_ < 3; _i_++) {					
-      _result_[_i_] = (` ~ matrix ~ `)[_i_ * 3] * cast(x) + (` ~ matrix ~ `)[_i_ * 3 + 1] * cast(y)	
-	+ (` ~ matrix ~ `)[_i_ * 3 + 2];					
+      _result_[_i_] = ` ~ matrix ~ `[_i_ * 3] * `~x~` + ` ~ matrix ~ `[_i_ * 3 + 1] * `~y~`
+	+ ` ~ matrix ~ `[_i_ * 3 + 2];					
     }									
     ` ~ tx ~ ` = _result_[0] / _result_[2];					
     ` ~ ty ~ ` = _result_[1] / _result_[2];					
-  } while(0)`;
+  }`;
 
 enum string _glamor_set_normalize_tpoint(string xscale, string yscale, string _tx_, string _ty_,	
 				     string texcoord) = `
-  do {									
+  {									
 	(` ~ texcoord ~ `)[0] = ` ~ t_from_x_coord_x!(xscale, _tx_) ~ `;			
         (` ~ texcoord ~ `)[1] = ` ~ t_from_x_coord_y!(yscale, _ty_) ~ `;                 
         //DEBUGF("normalized point tx %f ty %f \n", (` ~ texcoord ~ `)[0],	
-		(` ~ texcoord ~ `)[1]);						
-  } while(0)`;
+		// (` ~ texcoord ~ `)[1]);						
+  }`;
 
 enum string glamor_set_transformed_point(string priv, string matrix, string xscale,              
 				     string yscale, string texcoord,			
                                      string x, string y) = `
-  do {									
+  {									
     float tx = void, ty = void;							
     int fbo_x_off = void, fbo_y_off = void;						
     ` ~ pixmap_priv_get_fbo_off!(priv, `&fbo_x_off`, `&fbo_y_off`) ~ `;		
     ` ~ glamor_transform_point!(matrix, `tx`, `ty`, x, y) ~ `;			
     //DEBUGF("tx %f ty %f fbooff %d %d \n",				
-	    tx, ty, fbo_x_off, fbo_y_off);				
+	    // tx, ty, fbo_x_off, fbo_y_off);				
 									
     tx += fbo_x_off;							
     ty += fbo_y_off;							
     (` ~ texcoord ~ `)[0] = ` ~ t_from_x_coord_x!(xscale, `tx`) ~ `;			
     (` ~ texcoord ~ `)[1] = ` ~ t_from_x_coord_y!(yscale, `ty`) ~ `;                       
     //DEBUGF("normalized tx %f ty %f \n", (` ~ texcoord ~ `)[0], (` ~ texcoord ~ `)[1]);	
-  } while(0)`;
+  }`;
 
 enum string glamor_set_transformed_normalize_tcoords_ext( string priv,		
 						  string matrix,		
@@ -393,7 +393,7 @@ enum string glamor_set_transformed_normalize_tcoords_ext( string priv,
                                                   string tx1, string ty1, string tx2, string ty2,   
                                                   string texcoords,		
 						  string stride) = `
-  do {									
+  {									
     ` ~ glamor_set_transformed_point!(priv, matrix, xscale, yscale,		
 				 texcoords, tx1, ty1) ~ `;                  
     ` ~ glamor_set_transformed_point!(priv, matrix, xscale, yscale,		
@@ -402,7 +402,7 @@ enum string glamor_set_transformed_normalize_tcoords_ext( string priv,
 				 `` ~ texcoords ~ ` + 2 * ` ~ stride ~ ``, tx2, ty2) ~ `;     
     ` ~ glamor_set_transformed_point!(priv, matrix, xscale, yscale,		
 				 `` ~ texcoords ~ ` + 3 * ` ~ stride ~ ``, tx1, ty2) ~ `;     
-  } while (0)`;
+  }`;
 
 enum string glamor_set_repeat_transformed_normalize_tcoords_ext(string pixmap, string priv, 
 							 string repeat_type,	
@@ -413,8 +413,8 @@ enum string glamor_set_repeat_transformed_normalize_tcoords_ext(string pixmap, s
 							 string _x2_, string _y2_,   	
 							 string texcoords,	
 							 string stride) = `
-  do {									
-    if (_X_LIKELY(glamor_pixmap_priv_is_small(` ~ priv ~ `))) {		
+  {									
+    if ((glamor_pixmap_priv_is_small(` ~ priv ~ `))) {		
 	` ~ glamor_set_transformed_normalize_tcoords_ext!(priv, matrix, xscale,	
 						 yscale, _x1_, _y1_,	
 						 _x2_, _y2_,	
@@ -428,7 +428,7 @@ enum string glamor_set_repeat_transformed_normalize_tcoords_ext(string pixmap, s
     ` ~ glamor_transform_point!(matrix, `tx3`, `ty3`, _x2_, _y2_) ~ `;		
     ` ~ glamor_transform_point!(matrix, `tx4`, `ty4`, _x1_, _y2_) ~ `;		
     //DEBUGF("transformed %f %f %f %f %f %f %f %f\n",			
-	   tx1, ty1, tx2, ty2, tx3, ty3, tx4, ty4);			
+	//    tx1, ty1, tx2, ty2, tx3, ty3, tx4, ty4);		
     ` ~ glamor_get_repeat_transform_coords!(pixmap, priv, repeat_type, 
 				       `ttx1`, `tty1`, 			
 				       `tx1`, `ty1`) ~ `;			
@@ -442,7 +442,7 @@ enum string glamor_set_repeat_transformed_normalize_tcoords_ext(string pixmap, s
 				       `ttx4`, `tty4`, 			
 				       `tx4`, `ty4`) ~ `;			
     //DEBUGF("repeat transformed %f %f %f %f %f %f %f %f\n", ttx1, tty1, 	
-	    ttx2, tty2,	ttx3, tty3, ttx4, tty4);			
+	    // ttx2, tty2,	ttx3, tty3, ttx4, tty4);			
     ` ~ _glamor_set_normalize_tpoint!(xscale, yscale, `ttx1`, `tty1`,		
 				 texcoords) ~ `;			
     ` ~ _glamor_set_normalize_tpoint!(xscale, yscale, `ttx2`, `tty2`,		
@@ -452,7 +452,7 @@ enum string glamor_set_repeat_transformed_normalize_tcoords_ext(string pixmap, s
     ` ~ _glamor_set_normalize_tpoint!(xscale, yscale, `ttx4`, `tty4`,		
 				 `` ~ texcoords ~ ` + 3 * ` ~ stride ~ ``) ~ `;	
    }									
-  } while (0)`;
+  } `;
 
 enum string glamor_set_repeat_transformed_normalize_tcoords( string pixmap,        
                                                          string priv,          
@@ -463,7 +463,7 @@ enum string glamor_set_repeat_transformed_normalize_tcoords( string pixmap,
 							 string _x1_, string _y1_,	
 							 string _x2_, string _y2_,   	
 							 string texcoords) = `
-  do {									
+  {									
       ` ~ glamor_set_repeat_transformed_normalize_tcoords_ext!( pixmap,      
                                                            priv,	
 							 repeat_type,	
@@ -479,7 +479,7 @@ enum string glamor_set_repeat_transformed_normalize_tcoords( string pixmap,
 enum string _glamor_set_normalize_tcoords(string xscale, string yscale, string tx1,		
 				      string ty1, string tx2, string ty2,			
 				      string vertices, string stride) = `
-  do {									
+  {									
     /* vertices may be write-only, so we use following			\
      * temporary variable. */ 						
     float _t0_ = void, _t1_ = void, _t2_ = void, _t5_ = void;					
@@ -491,13 +491,13 @@ enum string _glamor_set_normalize_tcoords(string xscale, string yscale, string t
     (` ~ vertices ~ `)[2 * ` ~ stride ~ ` + 1] = _t5_ = ` ~ t_from_x_coord_y!(yscale, ty2) ~ `;  
     (` ~ vertices ~ `)[1 * ` ~ stride ~ ` + 1] = _t1_;					
     (` ~ vertices ~ `)[3 * ` ~ stride ~ ` + 1] = _t5_;					
-  } while(0)`;
+  }`;
 
 enum string glamor_set_normalize_tcoords_ext(string priv, string xscale, string yscale,		
 				     string x1, string y1, string x2, string y2,			
                                      string vertices, string stride) = `
-  do {									
-     if (_X_UNLIKELY(glamor_pixmap_priv_is_large(` ~ priv ~ `))) {		
+  {									
+     if (glamor_pixmap_priv_is_large(` ~ priv ~ `)) {		
 	float tx1 = void, tx2 = void, ty1 = void, ty2 = void;					
 	int fbo_x_off = void, fbo_y_off = void;					
 	` ~ pixmap_priv_get_fbo_off!(priv, `&fbo_x_off`, `&fbo_y_off`) ~ `;		
@@ -511,14 +511,14 @@ enum string glamor_set_normalize_tcoords_ext(string priv, string xscale, string 
      } else								
 	` ~ _glamor_set_normalize_tcoords!(xscale, yscale, x1, y1,		
                                       x2, y2, vertices, stride) ~ `;        
- } while(0)`;
+ }`;
 
 enum string glamor_set_repeat_normalize_tcoords_ext(string pixmap, string priv, string repeat_type, 
 					    string xscale, string yscale,		
 					    string _x1_, string _y1_, string _x2_, string _y2_,	
 	                                    string vertices, string stride) = `
-  do {									
-     if (_X_UNLIKELY(glamor_pixmap_priv_is_large(` ~ priv ~ `))) {		
+  {									
+     if ((glamor_pixmap_priv_is_large(` ~ priv ~ `))) {		
 	float tx1 = void, tx2 = void, ty1 = void, ty2 = void;					
 	if (` ~ repeat_type ~ ` == RepeatPad) {					
 		tx1 = ` ~ _x1_ ~ ` - ` ~ priv ~ `.box.x1;			        
@@ -537,7 +537,7 @@ enum string glamor_set_repeat_normalize_tcoords_ext(string pixmap, string priv, 
 	` ~ _glamor_set_normalize_tcoords!(xscale, yscale, _x1_, _y1_,	
                                       _x2_, _y2_, vertices,             
 				   stride) ~ `;				
- } while(0)`;
+ } `;
 
 enum string glamor_set_normalize_tcoords_tri_stripe(string xscale, string yscale,		
 						string x1, string y1, string x2, string y2,		
@@ -568,7 +568,7 @@ enum string glamor_set_tcoords_tri_strip(string x1, string y1, string x2, string
 enum string glamor_set_normalize_vcoords_ext(string priv, string xscale, string yscale,		
 				     string x1, string y1, string x2, string y2,			
                                          string vertices, string stride) = `
-  do {									
+  {									
     int fbo_x_off = void, fbo_y_off = void;						
     /* vertices may be write-only, so we use following			\
      * temporary variable. */						
@@ -584,7 +584,7 @@ enum string glamor_set_normalize_vcoords_ext(string priv, string xscale, string 
         ` ~ v_from_x_coord_y!(yscale, `` ~ y2 ~ ` + fbo_y_off`) ~ `;                       
     (` ~ vertices ~ `)[1 * ` ~ stride ~ ` + 1] = _t1_;					
     (` ~ vertices ~ `)[3 * ` ~ stride ~ ` + 1] = _t5_;					
-  } while(0)`;
+  }`;
 
 enum string glamor_set_normalize_vcoords_tri_strip(string xscale, string yscale,		
 					       string x1, string y1, string x2, string y2,		

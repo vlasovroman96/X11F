@@ -56,7 +56,7 @@ enum  double_fs_exec = "       float pattern = texture(dash, vec2(dash_offset, 0
 
 
 private const(glamor_facet) glamor_facet_on_off_dash_lines = {
-    c_version: 130,
+    version_: 130,
     name: "poly_lines_on_off_dash",
     vs_vars: dash_vs_vars,
     vs_exec: dash_vs_exec,
@@ -66,7 +66,7 @@ private const(glamor_facet) glamor_facet_on_off_dash_lines = {
 };
 
 private const(glamor_facet) glamor_facet_double_dash_lines = {
-    c_version: 130,
+    version_: 130,
     name: "poly_lines_double_dash",
     vs_vars: dash_vs_vars,
     vs_exec: dash_vs_exec,

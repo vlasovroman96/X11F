@@ -41,7 +41,7 @@ alias PicturePtr = _Picture*;
  * representations for data to simplify software rendering,
  */
 enum string PICT_FORMAT(string bpp,string type,string a,string r,string g,string b) = `PIXMAN_FORMAT(` ~ bpp ~ `, ` ~ type ~ `, ` ~ a ~ `, ` ~ r ~ `, ` ~ g ~ `, ` ~ b ~ `)`;
-
+enum string PIXMAN_FORMAT_RGB(string f) =	`(((`~f~`)      ) & 0xfff)`;
 /*
  * gray/color formats use a visual index instead of argb
  */
@@ -179,19 +179,32 @@ alias XFixed_16_16 = pixman_fixed_16_16_t;
  */
 alias XFixed = pixman_fixed_t;
 
+alias uint32_t = core.stdc.stdint.uint32_t;
+
 enum XFIXED_BITS =	16;
 
-enum string XFixedToInt(string f) = `assumeNoGC(&pixman_fixed_to_int)(` ~ f ~ `)`;
-enum string IntToXFixed(string i) = `assumeNoGC(&pixman_int_to_fixed)(` ~ i ~ `)`;
-enum XFixedE =		pixman_fixed_e;
-enum XFixed1 =		pixman_fixed_1;
-enum XFixed1MinusE =	pixman_fixed_1_minus_e;
-enum string XFixedFrac(string f) = `assumeNoGC(&pixman_fixed_frac)(` ~ f ~ `)`;
-enum string XFixedFloor(string f) = `assumeNoGC(&pixman_fixed_floor)(` ~ f ~ `)`;
-enum string XFixedCeil(string f) = `assumeNoGC(&pixman_fixed_ceil)(` ~ f ~ `)`;
+enum pixman_fixed_e =			(cast(pixman_fixed_t) 1);
+enum pixman_fixed_1 =			(pixman_int_to_fixed!("1"));
+enum pixman_fixed_1_minus_e =		(mixin(pixman_fixed_1) - pixman_fixed_e);
+// alias pixman_fixed_minus_1		(pixman_int_to_fixed(-1))
+enum string pixman_fixed_to_int(string f) = `(cast(int) ((`~f~`) >> 16))`;
+enum string pixman_int_to_fixed(string i) =		`(cast(pixman_fixed_t) (cast(uint32_t) (`~i~`) << 16))`;
+// alias pixman_fixed_to_double(f)	(double) ((f) / (double) pixman_fixed_1)
+// alias pixman_double_to_fixed(d)	((pixman_fixed_t) ((d) * 65536.0))
+enum string pixman_fixed_frac(string f) = 		`((`~f~`) & pixman_fixed_1_minus_e)`;
 
-enum string XFixedFraction(string f) = `assumeNoGC(&pixman_fixed_fraction)(` ~ f ~ `)`;
-enum string XFixedMod2(string f) = `assumeNoGC(&pixman_fixed_mod2)(` ~ f ~ `)`;
+// import glamor.glamor_render;
+enum string xFixedToInt(string f) = pixman_fixed_to_int!(f);
+enum string IntToxFixed(string i) = `&pixman_int_to_fixed(` ~ i ~ `)`;
+enum xFixedE =		pixman_fixed_e;
+enum xFixed1 =		pixman_fixed_1;
+enum xFixed1MinusE =	pixman_fixed_1_minus_e;
+enum string xFixedFrac(string f) = pixman_fixed_frac!(f);
+enum string xFixedFloor(string f) = `assumeNoGC(&pixman_fixed_floor)(` ~ f ~ `)`;
+enum string xFixedCeil(string f) = `assumeNoGC(&pixman_fixed_ceil)(` ~ f ~ `)`;
+
+enum string xFixedFraction(string f) = `assumeNoGC(&pixman_fixed_fraction)(` ~ f ~ `)`;
+enum string xFixedMod2(string f) = `assumeNoGC(&pixman_fixed_mod2)(` ~ f ~ `)`;
 
 /* whether 't' is a well defined not obviously empty trapezoid */
 enum string xTrapezoidValid(string t) = `((` ~ t ~ `).left.p1.y != (` ~ t ~ `).left.p2.y && 

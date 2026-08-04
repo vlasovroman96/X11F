@@ -46,6 +46,9 @@ import core.stdc.stdlib;
 import include.mipict;
 
 import glamor.glamor_priv;
+import glamor.glamor;
+import externs.attrs;;
+import externs.X11.extensions.render_;
 
 private void byte_swap_swizzle(GLenum* swizzle)
 {
@@ -244,15 +247,15 @@ private pixman_image_t* glamor_get_converted_image(pixman_format_code_t dst_form
         return null;
     }
 
-    src_image = assumeNoGC(&pixman_image_create_bits)(src_format, w, h, src_bits, src_stride);
+    src_image = assumeNoGC(&pixman_image_create_bits)(src_format, w, h, cast(uint*)src_bits, src_stride);
 
     if (src_image == null) {
         assumeNoGC(&pixman_image_unref)(dst_image);
         return null;
     }
 
-    assumeNoGC(&pixman_image_composite)(PictOpSrc, src_image, null, dst_image,
-                           0, 0, 0, 0, 0, 0, w, h);
+    assumeNoGC(&pixman_image_composite)(cast(pixman_op_t)PictOpSrc, src_image, null, dst_image,
+                           0, 0, 0, 0, 0, 0, cast(ushort)w, cast(ushort)h);
 
     assumeNoGC(&pixman_image_unref)(src_image);
     return dst_image;
@@ -288,9 +291,9 @@ Bool glamor_upload_picture_to_texture(PicturePtr picture)
     /* No handling of large pixmap pictures here (would need to make
      * an FBO array and split the uploads across it).
      */
-    if (!glamor_check_fbo_size(glamor_priv,
-                               pixmap.drawable.width,
-                               pixmap.drawable.height)) {
+    if (!mixin(glamor_check_fbo_size!("glamor_priv",
+                               "pixmap.drawable.width",
+                               "pixmap.drawable.height"))) {
         return FALSE;
     }
 
@@ -300,7 +303,7 @@ Bool glamor_upload_picture_to_texture(PicturePtr picture)
                                                     &format,
                                                     &type,
                                                     swizzle.ptr)) {
-        glamor_fallback("Unknown pixmap depth %d.\n", pixmap.drawable.depth);
+        // glamor_fallback("Unknown pixmap depth %d.\n", pixmap.drawable.depth);
         return FALSE;
     }
 
@@ -310,8 +313,8 @@ Bool glamor_upload_picture_to_texture(PicturePtr picture)
                      swizzle[3] != GL_ALPHA);
 
     if (!glamor_priv.has_texture_swizzle && needs_swizzle) {
-        glamor_fallback("Couldn't upload temporary picture due to missing "
-                        ~ "GL_ARB_texture_swizzle.\n");
+        // glamor_fallback("Couldn't upload temporary picture due to missing "
+        //                 ~ "GL_ARB_texture_swizzle.\n");
         return FALSE;
     }
 

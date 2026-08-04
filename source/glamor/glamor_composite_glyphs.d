@@ -185,7 +185,7 @@ private Bool glamor_glyph_add(glamor_glyph_atlas* atlas, DrawablePtr glyph_draw)
 
 private const(glamor_facet) glamor_facet_composite_glyphs_es300 = {
     name: "composite_glyphs",
-    c_version: 130,
+    version_: 130,
     fs_extensions: ("#extension GL_EXT_blend_func_extended : enable\n"),
     vs_vars: ("in vec4 primitive;\n"
                 ~ "in vec2 source;\n"
@@ -203,7 +203,7 @@ private const(glamor_facet) glamor_facet_composite_glyphs_es300 = {
 
 private const(glamor_facet) glamor_facet_composite_glyphs_130 = {
     name: "composite_glyphs",
-    c_version: 130,
+    version_: 130,
     vs_vars: ("in vec4 primitive;\n"
                 ~ "in vec2 source;\n"
                 ~ "out vec2 glyph_pos;\n"),
@@ -234,7 +234,7 @@ private const(glamor_facet) glamor_facet_composite_glyphs_120 = {
 
 private const(glamor_facet) glamor_facet_composite_glyphs_gles2 = {
     name: "composite_glyphs",
-    c_version: 100,
+    version_: 100,
     fs_extensions: ("#extension GL_EXT_blend_func_extended : enable\n"),
     vs_vars: ("attribute vec2 primitive;\n"
                 ~ "attribute vec2 source;\n"

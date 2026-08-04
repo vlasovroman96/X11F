@@ -37,6 +37,7 @@ import glamor.glamor_composite_glyphs;
 import  externs.X11.extensions.renderproto;
 public import include.glamor;
 public import include.xvdix;
+import glamor.glamor;
 
 static if (XSYNC) {
 public import include.misyncshm;
@@ -482,7 +483,7 @@ pragma(inline, true) glamor_pixmap_private* glamor_get_pixmap_private(PixmapPtr 
     if (pixmap == null)
         return null;
 
-    return dixLookupPrivate(&pixmap.devPrivates, &glamor_pixmap_private_key);
+    return cast(glamor_pixmap_private*)dixLookupPrivate(&pixmap.devPrivates, &glamor_pixmap_private_key);
 }
 
 /*
@@ -618,7 +619,7 @@ extern void glamor_set_screen_private(ScreenPtr screen, glamor_screen_private* p
 
 pragma(inline, true) glamor_gc_private* glamor_get_gc_private(GCPtr gc)
 {
-    return dixLookupPrivate(&gc.devPrivates, &glamor_gc_private_key);
+    return cast(glamor_gc_private*)dixLookupPrivate(&gc.devPrivates, &glamor_gc_private_key);
 }
 
 /**
@@ -627,8 +628,8 @@ pragma(inline, true) glamor_gc_private* glamor_get_gc_private(GCPtr gc)
  */
 pragma(inline, true) Bool glamor_pm_is_solid(int depth, c_ulong planemask)
 {
-    return (planemask & FbFullMask(depth)) ==
-        FbFullMask(depth);
+    return (planemask & mixin(FbFullMask!("depth"))) ==
+        mixin(FbFullMask!("depth"));
 }
 
 extern int glamor_debug_level;
@@ -669,7 +670,7 @@ void glamor_gldrawarrays_quads_using_indices(glamor_screen_private* glamor_priv,
 
 /* glamor_core.c */
 Bool glamor_get_drawable_location(const(DrawablePtr) drawable);
-void glamor_get_drawable_deltas(DrawablePtr drawable, PixmapPtr pixmap, int* x, int* y);
+// void glamor_get_drawable_deltas(DrawablePtr drawable, PixmapPtr pixmap, int* x, int* y);
 GLint glamor_compile_glsl_prog(GLenum type, const(char)* source);
 Bool glamor_link_glsl_prog(ScreenPtr screen, GLint prog, const(char)* format, ...);
 void glamor_get_color_4f_from_pixel(PixmapPtr pixmap, c_ulong fg_pixel, GLfloat* color);
@@ -681,10 +682,10 @@ void glamor_set_destination_pixmap_fbo(glamor_screen_private* glamor_priv, glamo
 /* nc means no check. caller must ensure this pixmap has valid fbo.
  * usually use the GLAMOR_PIXMAP_PRIV_HAS_FBO firstly.
  * */
-void glamor_set_destination_pixmap_priv_nc(glamor_screen_private* glamor_priv, PixmapPtr pixmap, glamor_pixmap_private* pixmap_priv);
+// void glamor_set_destination_pixmap_priv_nc(glamor_screen_private* glamor_priv, PixmapPtr pixmap, glamor_pixmap_private* pixmap_priv);
 
-Bool glamor_set_alu(DrawablePtr drawable, ubyte alu);
-Bool glamor_set_planemask(int depth, c_ulong planemask);
+// Bool glamor_set_alu(DrawablePtr drawable, ubyte alu);
+// Bool glamor_set_planemask(int depth, c_ulong planemask);
 RegionPtr glamor_bitmap_to_region(PixmapPtr pixmap);
 
 void glamor_track_stipple(GCPtr gc);

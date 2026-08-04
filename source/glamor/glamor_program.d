@@ -30,6 +30,9 @@ import externs.X11.extensions.render_;
 
 import glamor.glamor_priv;
 import glamor.glamor_transform;
+import glamor.glamor;
+import externs.gnu;
+import include.picture;
 // import glamor.glamor_program;
 
 alias glamor_program_location = int;
@@ -46,9 +49,16 @@ enum : glamor_program_location{
     glamor_program_location_atlas = 128,
 } ;
 
+Bool
+glamor_is_component_alpha(PicturePtr mask) {
+    if (mask && mask.componentAlpha && mixin(PIXMAN_FORMAT_RGB!("mask.format")))
+        return TRUE;
+    return FALSE;
+}
+
 struct glamor_facet{
     const char                          *name;
-    const int                           c_version;
+    const int                           version_;
     char                                *vs_extensions;
     const char                          *fs_extensions;
     const char                          *vs_vars;
@@ -252,7 +262,7 @@ private char* add_var(char* cur, const(char)* add)
     if (!add)
         return cur;
 
-    new_ = realloc(cur, strlen(cur) + strlen(add) + 1);
+    new_ = cast(char*)realloc(cur, strlen(cur) + strlen(add) + 1);
     if (!new_) {
         free(cur);
         return null;
@@ -361,7 +371,7 @@ Bool glamor_build_program(ScreenPtr screen, glamor_program* prog, const(glamor_f
 
     locations |= fill.locations;
     flags |= fill.flags;
-    version_ = MAX(version_, fill.version_);
+    version_ = mixin(MAX!("version_", "fill.version_"));
 
     if (version_ > glamor_priv.glsl_version) {
         if (version_ == 130 && !glamor_priv.use_gpu_shader4)
@@ -389,7 +399,7 @@ Bool glamor_build_program(ScreenPtr screen, glamor_program* prog, const(glamor_f
 
     if (version_) {
         if (asprintf(&version_string, "#version %d %s\n", version_,
-                     glamor_priv.is_gles && version_ > 100 ? "es" : "") < 0)
+                     glamor_priv.is_gles && version_ > 100 ? "es".ptr : "".ptr) < 0)
             version_string = null;
         if (!version_string)
             goto fail;
@@ -398,8 +408,8 @@ Bool glamor_build_program(ScreenPtr screen, glamor_program* prog, const(glamor_f
     if (asprintf(&vs_prog_string,
                  vs_template.ptr,
                  str(version_string),
-                 gpu_shader4 ? "#extension GL_EXT_gpu_shader4 : require\n" : "",
-                 version_ < 130 ? GLAMOR_COMPAT_DEFINES_VS : "",
+                 gpu_shader4 ? "#extension GL_EXT_gpu_shader4 : require\n".ptr : "".ptr,
+                 version_ < 130 ? GLAMOR_COMPAT_DEFINES_VS.ptr : "".ptr,
                  str(defines),
                  str(prim.vs_vars),
                  str(fill.vs_vars),
@@ -413,8 +423,8 @@ Bool glamor_build_program(ScreenPtr screen, glamor_program* prog, const(glamor_f
                  str(version_string),
                  str(prim.fs_extensions),
                  str(fill.fs_extensions),
-                 gpu_shader4 ? "#extension GL_EXT_gpu_shader4 : require\n#define texelFetch texelFetch2D\n#define uint unsigned int\n" : "",
-                 GLAMOR_COMPAT_DEFINES_FS,
+                 gpu_shader4 ? "#extension GL_EXT_gpu_shader4 : require\n#define texelFetch texelFetch2D\n#define uint unsigned int\n".ptr : "".ptr,
+                 GLAMOR_COMPAT_DEFINES_FS.ptr,
                  str(defines),
                  str(prim.fs_vars),
                  str(fill.fs_vars),
@@ -516,7 +526,7 @@ glamor_program* glamor_use_program_fill(DrawablePtr drawable, GCPtr gc, glamor_p
     const(glamor_facet)* fill = void;
 
     if (prog.failed)
-        return FALSE;
+        return null;
 
     if (!prog.prog) {
         fill = glamor_facet_fill[fill_style];

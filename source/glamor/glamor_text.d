@@ -278,7 +278,7 @@ else {
 
 private const(glamor_facet) glamor_facet_poly_text = {
     name: "poly_text",
-    c_version: 130,
+    version_: 130,
     vs_vars: vs_vars_text,
     vs_exec: vs_exec_text,
     fs_vars: fs_vars_text,
@@ -353,7 +353,7 @@ int glamor_poly_text16(DrawablePtr drawable, GCPtr gc, int x, int y, int count, 
 
 private const(glamor_facet) glamor_facet_image_text = {
     name: "image_text",
-    c_version: 130,
+    version_: 130,
     vs_vars: vs_vars_text,
     vs_exec: vs_exec_text,
     fs_vars: fs_vars_text,
@@ -384,7 +384,7 @@ private Bool glamor_te_text_use(DrawablePtr drawable, GCPtr gc, glamor_program* 
 
 private const(glamor_facet) glamor_facet_te_text = {
     name: "te_text",
-    c_version: 130,
+    version_: 130,
     vs_vars: vs_vars_text,
     vs_exec: vs_exec_text,
     fs_vars: fs_vars_text,

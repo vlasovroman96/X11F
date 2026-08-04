@@ -35,6 +35,8 @@ import build.dix_config;
 import core.stdc.stdlib;
 
 import glamor.glamor_priv;
+import glamor.glamor_pixmap;
+import glamor.glamor;
 /**
  * Sets the offsets to add to coordinates to make them address the same bits in
  * the backing drawable. These coordinates are nonzero only for redirected
@@ -73,7 +75,7 @@ void glamor_set_destination_pixmap_priv_nc(glamor_screen_private* glamor_priv, P
 {
     int w = void, h = void;
 
-    PIXMAP_PRIV_GET_ACTUAL_SIZE(pixmap, pixmap_priv, w, h);
+    mixin(PIXMAP_PRIV_GET_ACTUAL_SIZE!("pixmap", "pixmap_priv", "w", "h"));
     glamor_set_destination_pixmap_fbo(glamor_priv, pixmap_priv.fbo, 0, 0, w, h);
 }
 
@@ -103,7 +105,7 @@ Bool glamor_set_planemask(int depth, c_ulong planemask)
         return GL_TRUE;
     }
 
-    glamor_fallback("unsupported planemask %lx\n", planemask);
+    // glamor_fallback("unsupported planemask %lx\n", planemask);
     return GL_FALSE;
 }
 
@@ -133,7 +135,7 @@ Bool glamor_set_alu(DrawablePtr drawable, ubyte alu)
     default:
         if (glamor_drawable_effective_depth(drawable) == 24 &&
             glamor_get_drawable_pixmap(drawable).drawable.depth == 32) {
-            glamor_fallback("ALU %x not supported with mixed depth\n", alu);
+            // glamor_fallback("ALU %x not supported with mixed depth\n", alu);
             return FALSE;
         }
     }
@@ -186,7 +188,7 @@ Bool glamor_set_alu(DrawablePtr drawable, ubyte alu)
         glLogicOp(GL_SET);
         break;
     default:
-        glamor_fallback("unsupported alu %x\n", alu);
+        // glamor_fallback("unsupported alu %x\n", alu);
         return FALSE;
     }
 

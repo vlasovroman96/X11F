@@ -581,7 +581,7 @@ extern char *bundle_id_prefix;
 
     [apps_table reloadData];
 
-    row = MIN(row, [table_apps count] - 1);
+    row = mixin(MIN!("row", "[table_apps count] - 1"));
     if (row >= 0)
         [apps_table selectRowIndexes:[NSIndexSet indexSetWithIndex:row]
          byExtendingSelection:NO];

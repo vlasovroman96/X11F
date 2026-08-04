@@ -487,7 +487,7 @@ private present_screen_info_rec ms_present_screen_info;
 static this()
 {
     ms_present_screen_info = present_screen_info_rec(
-        c_version: PRESENT_SCREEN_INFO_VERSION,
+        version_: PRESENT_SCREEN_INFO_VERSION,
 
         get_crtc: ms_present_get_crtc,
         get_ust_msc: ms_present_get_ust_msc,
