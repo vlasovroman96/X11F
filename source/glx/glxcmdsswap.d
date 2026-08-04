@@ -48,8 +48,10 @@ import glx.indirect_dispatch;
 import glx.indirect_table;
 import glx.indirect_util;
  import externs.epoxy;
+import glx.glxcmds;
+import glx.xfont;
 
-
+alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 /************************************************************************/
 
 /*
@@ -373,8 +375,8 @@ int __glXDispSwap_ChangeDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    if (((((xGLXChangeDrawableAttributesReq) +
-          (req.numAttribs << 3)).sizeof) >> 2) < client.req_len)
+    if (((((xGLXChangeDrawableAttributesReq).sizeof +
+          (req.numAttribs << 3))) >> 2) < client.req_len)
         return BadLength;
 
     attribs = cast(CARD32*) (req + 1);
@@ -398,8 +400,8 @@ int __glXDispSwap_ChangeDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXChangeDrawableAttributesSGIXReq,
-                       req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXChangeDrawableAttributesSGIXReq",
+                       "req.numAttribs << 3"));
     attribs = cast(CARD32*) (req + 1);
     SwapLongs(attribs, req.numAttribs << 1);
 
@@ -526,7 +528,7 @@ int __glXDispSwap_BindTexImageEXT(__GLXclientState* cl, GLbyte* pc)
     int* buffer = void;
     CARD32* num_attribs = void;
 
-    if ((((xGLXVendorPrivateReq) + 12).sizeof) >> 2 > client.req_len)
+    if ((((xGLXVendorPrivateReq).sizeof + 12)) >> 2 > client.req_len)
         return BadLength;
 
     pc += __GLX_VENDPRIV_HDR_SIZE;

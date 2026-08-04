@@ -120,18 +120,18 @@ struct GlxServerExports {
      * the __GLXserverImports struct allows backward compatibility with
      * existing drivers.
      */
-    GlxServerImports* function() allocateServerImports;
+    GlxServerImports* function() @nogc nothrow allocateServerImports;
 
     /**
      * Frees a __GLXserverImports structure that was allocated with
      * \c allocateServerImports.
      */
-    void function(GlxServerImports* imports) freeServerImports;
+    void function(GlxServerImports* imports) @nogc nothrow freeServerImports;
 
     /**
      * Creates a new vendor library handle.
      */
-    GlxServerVendor* function(const(GlxServerImports)* imports) createVendor;
+    GlxServerVendor* function(const(GlxServerImports)* imports) @nogc nothrow createVendor;
 
     /**
      * Destroys a vendor library handle.
@@ -140,7 +140,7 @@ struct GlxServerExports {
      * screen, but it may be called from the __GLXserverImports::extensionCloseDown
      * callback.
      */
-    void function(GlxServerVendor* vendor) destroyVendor;
+    void function(GlxServerVendor* vendor) @nogc nothrow destroyVendor;
 
     /**
      * Sets the vendor library to use for a screen.
@@ -148,7 +148,7 @@ struct GlxServerExports {
      * This function should be called from the screen's CreateScreenResources
      * callback.
      */
-    Bool function(ScreenPtr screen, GlxServerVendor* vendor) setScreenVendor;
+    Bool function(ScreenPtr screen, GlxServerVendor* vendor) @nogc nothrow setScreenVendor;
 
 
     /**
@@ -156,7 +156,7 @@ struct GlxServerExports {
      *
      * This mapping is used to dispatch requests based on an XID.
      *
-     * Client-generated XID's (contexts, drawables, etc) must be added to the
+     * Client-generated XID's (contexts, drawables, etc) @nogc nothrow must be added to the
      * map by the dispatch stub.
      *
      * XID's that are generated in the server should be added by the vendor
@@ -173,7 +173,7 @@ struct GlxServerExports {
      * \param vendor The vendor library to associate with \p id.
      * \return True on success, or False on failure.
      */
-    Bool function(XID id, GlxServerVendor* vendor) addXIDMap;
+    Bool function(XID id, GlxServerVendor* vendor) @nogc nothrow addXIDMap;
 
     /**
      * Returns the vendor and data for an XID, as added with \c addXIDMap.
@@ -186,12 +186,12 @@ struct GlxServerExports {
      * \return The vendor that owns the XID, or \c NULL if no matching vendor
      * was found.
      */
-    GlxServerVendor* function(XID id) getXIDMap;
+    GlxServerVendor* function(XID id) @nogc nothrow getXIDMap;
 
     /**
      * Removes an entry from the XID map.
      */
-    void function(XID id) removeXIDMap;
+    void function(XID id) @nogc nothrow removeXIDMap;
 
     /**
      * Looks up a context tag.
@@ -204,7 +204,7 @@ struct GlxServerExports {
      * \return The vendor that owns the context tag, or \c NULL if the context
      * tag is invalid.
      */
-    GlxServerVendor* function(ClientPtr client, GLXContextTag tag) getContextTag;
+    GlxServerVendor* function(ClientPtr client, GLXContextTag tag) @nogc nothrow getContextTag;
 
     /**
      * Assigns a pointer to vendor-private data for a context tag.
@@ -216,7 +216,7 @@ struct GlxServerExports {
      * \param tag The context tag.
      * \param data An arbitrary pointer value.
      */
-    Bool function(ClientPtr client, GLXContextTag tag, void* data) setContextTagPrivate;
+    Bool function(ClientPtr client, GLXContextTag tag, void* data) @nogc nothrow setContextTagPrivate;
 
     /**
      * Returns the private data pointer that was assigned from
@@ -228,9 +228,9 @@ struct GlxServerExports {
      * However, this function is not safe to use from a ClientStateCallback,
      * because GLVND may have already deleted the tag by that point.
      */
-    void* function(ClientPtr client, GLXContextTag tag) getContextTagPrivate;
+    void* function(ClientPtr client, GLXContextTag tag) @nogc nothrow getContextTagPrivate;
 
-    GlxServerVendor* function(ClientPtr client, ScreenPtr screen) getVendorForScreen;
+    GlxServerVendor* function(ClientPtr client, ScreenPtr screen) @nogc nothrow getVendorForScreen;
 
     /**
      * Forwards a request to a vendor library.
@@ -238,7 +238,7 @@ struct GlxServerExports {
      * \param vendor The vendor to send the request to.
      * \param client The client.
      */
-    int function(GlxServerVendor* vendor, ClientPtr client) forwardRequest;
+    int function(GlxServerVendor* vendor, ClientPtr client) @nogc nothrow forwardRequest;
 
     /**
      * Sets the vendor library to use for a screen for a specific client.
@@ -249,7 +249,7 @@ struct GlxServerExports {
      *
      * This function is available in GLXVND version 0.1 or later.
      */
-    Bool function(ClientPtr client, ScreenPtr screen, GlxServerVendor* vendor) setClientScreenVendor;
+    Bool function(ClientPtr client, ScreenPtr screen, GlxServerVendor* vendor) @nogc nothrow setClientScreenVendor;
 }
 
 // extern const(void ) GlxServerExports;

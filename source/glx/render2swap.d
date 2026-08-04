@@ -305,7 +305,7 @@ void __glXDispSwap_DrawArrays(GLbyte* pc)
         swapl(&numVals);
         swapl(&component);
 
-        stride += __GLX_PAD(numVals * __glXTypeSize(datatype));
+        stride += mixin(__GLX_PAD!("numVals * __glXTypeSize(datatype)"));
     }
 
     pc += numComponents * __GLXdispatchDrawArraysComponentHeader.sizeof;
@@ -365,7 +365,7 @@ void __glXDispSwap_DrawArrays(GLbyte* pc)
             break;
         }
 
-        pc += __GLX_PAD(numVals * __glXTypeSize(datatype));
+        pc += mixin(__GLX_PAD!("numVals * __glXTypeSize(datatype)"));
     }
 
     glDrawArrays(primType, 0, numVertexes);

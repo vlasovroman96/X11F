@@ -3,6 +3,7 @@
 #include <epoxy/egl.h>
 #include <epoxy/gl_generated.h>
 #include <epoxy/egl_generated.h>
+#include <epoxy/glx_generated.h>
 
 
 #pragma attribute(pop)

@@ -110,7 +110,7 @@ struct __GLXconfig {
     GLint sRGBCapable;
 }
 
-GLint glxConvertToXVisualType(int visualType);
+// GLint glxConvertToXVisualType(int visualType);
 
 /*
 ** Screen dependent data.  These methods are the interface between the DIX
@@ -118,12 +118,12 @@ GLint glxConvertToXVisualType(int visualType);
 ** interface for context management on a screen.
 */
 struct __GLXscreen {
-    void function(__GLXscreen* screen) destroy;
+    @nogc nothrow void function(__GLXscreen* screen) destroy;
 
-    __GLXcontext* function(__GLXscreen* screen, __GLXconfig* modes, __GLXcontext* shareContext, uint num_attribs, const(uint)* attribs, int* error) createContext;
+    @nogc nothrow __GLXcontext* function(__GLXscreen* screen, __GLXconfig* modes, __GLXcontext* shareContext, uint num_attribs, const(uint)* attribs, int* error) createContext;
 
-    __GLXdrawable* function(ClientPtr client, __GLXscreen* context, DrawablePtr pDraw, XID drawId, int type, XID glxDrawId, __GLXconfig* modes) createDrawable;
-    int function(__GLXdrawable* drawable, int interval) swapInterval;
+    @nogc nothrow __GLXdrawable* function(ClientPtr client, __GLXscreen* context, DrawablePtr pDraw, XID drawId, int type, XID glxDrawId, __GLXconfig* modes) createDrawable;
+    @nogc nothrow int function(__GLXdrawable* drawable, int interval) swapInterval;
 
     ScreenPtr pScreen;
 

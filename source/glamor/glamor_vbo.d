@@ -32,6 +32,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import glamor.glamor_priv;
+import glamor.glamor;
 
 /** Default size of the VBO, in bytes.
  *
@@ -88,14 +89,14 @@ void* glamor_get_vbo_space(ScreenPtr screen, uint size, char** vbo_offset)
             }
 
             glamor_priv.vbo_offset = 0;
-            glamor_priv.vb = glMapBufferRange(GL_ARRAY_BUFFER,
+            glamor_priv.vb = cast(char*)glMapBufferRange(GL_ARRAY_BUFFER,
                                                0, glamor_priv.vbo_size,
                                                GL_MAP_WRITE_BIT |
                                                GL_MAP_INVALIDATE_BUFFER_BIT |
                                                GL_MAP_PERSISTENT_BIT |
                                                GL_MAP_COHERENT_BIT);
         }
-        *vbo_offset = cast(void*)cast(uintptr_t)glamor_priv.vbo_offset;
+        *vbo_offset = cast(char*)cast(uintptr_t)glamor_priv.vbo_offset;
         data = glamor_priv.vb + glamor_priv.vbo_offset;
         glamor_priv.vbo_offset += size;
     } else if (glamor_priv.has_map_buffer_range) {
@@ -131,7 +132,7 @@ void* glamor_get_vbo_space(ScreenPtr screen, uint size, char** vbo_offset)
         if (glamor_priv.vbo_size < size) {
             glamor_priv.vbo_size = mixin(MAX!("GLAMOR_VBO_SIZE", "size"));
             free(glamor_priv.vb);
-            glamor_priv.vb = XNFalloc(glamor_priv.vbo_size);
+            glamor_priv.vb = cast(char*)XNFalloc(glamor_priv.vbo_size);
         }
         *vbo_offset = null;
         /* We point to the start of glamor_priv->vb every time, and

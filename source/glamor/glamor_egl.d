@@ -42,6 +42,8 @@ import core.sys.posix.sys.stat;
 alias stat = core.sys.posix.sys.stat.stat_t;
 import core.stdc.errno;
 import externs.sys.sysmacros;
+import glx.vndext;
+import dix.dixutils;
 
 version (HAVE_SYS_SYSMACROS_H) {
 import sys.sysmacros; /* for major() & minor() */

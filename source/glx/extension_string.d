@@ -46,6 +46,16 @@ import std.meta : AliasSeq;
 
 enum __GLX_EXT_BYTES = ((__NUM_GLX_EXTS + 7) / 8);
 
+enum SET_BIT(string m, string b) =    `(`~m~`[ (`~b~`) / 8 ] |=  (1U << ((`~b~`) % 8)))`;
+// enum CLR_BIT(string m, string b)    (m[ (b) / 8 ] &= ~(1U << ((b) % 8)))
+enum IS_SET(string m, string b) =   `((`~m~`[ (`~b~`) / 8 ] &   (1U << ((`~b~`) % 8))) != 0)`;
+// enum CONCAT(a,b) a ## b
+// enum GLX(n) "GLX_" # n, 4 + sizeof( # n ) - 1, CONCAT(n,_bit)
+// enum VER(a,b)  a, b
+// enum Y  1
+// enum N  0
+enum EXT_ENABLED(string bit, string supported) = (IS_SET!(supported, bit));
+
 enum {
 /*   GLX_ARB_get_proc_address is implemented on the client. */
     ARB_context_flush_control_bit = 0,
@@ -204,7 +214,7 @@ void __glXEnableExtension(ubyte* enable_bits, const(char)* ext)
     for (i = 0; known_glx_extensions[i].name != null; i++) {
         if ((ext_name_len == known_glx_extensions[i].name_len)
             && (memcmp(ext, known_glx_extensions[i].name, ext_name_len) == 0)) {
-            mixin(SET_BIT!(`enable_bits`, `known_glx_extensions[i].bit`));
+            mixin(SET_BIT!(`enable_bits`, `known_glx_extensions[i].bit`)~";");
             break;
         }
     }
@@ -218,7 +228,7 @@ void __glXInitExtensionEnableBits(ubyte* enable_bits)
 
     for (i = 0; known_glx_extensions[i].name != null; i++) {
         if (known_glx_extensions[i].driver_support) {
-            mixin(SET_BIT!(`enable_bits`, `known_glx_extensions[i].bit`));
+            mixin(SET_BIT!(`enable_bits`, `known_glx_extensions[i].bit`)~";");
         }
     }
 

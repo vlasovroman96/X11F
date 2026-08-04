@@ -323,7 +323,7 @@ enum string REGION_RESET(string pScreen, string r, string b) = `RegionReset(` ~ 
 enum string REGION_NOTEMPTY(string pScreen, string r) = `RegionNotEmpty(` ~ r ~ `)`;
 enum string REGION_EMPTY(string pScreen, string r) = `RegionEmpty(` ~ r ~ `)`;
 enum string REGION_EXTENTS(string pScreen, string r) = `RegionExtents(` ~ r ~ `)`;
-enum string REGION_NULL(string pScreen, string r) = `RegionNull(` ~ r ~ `)`;
+enum string REGION_NULL(string pScreen, string r) = `RegionNull(` ~ r ~ `);`;
 
 }                          /* INCLUDE_LEGACY_REGION_DEFINES */
                           /* REGIONSTRUCT_H */

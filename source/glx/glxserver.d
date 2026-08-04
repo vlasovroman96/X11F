@@ -48,14 +48,14 @@ public import include.scrnintstr;
 // public //import externs.GL.glext;
 public import externs.glxproto;
 
-enum GLX_CONTEXT_OPENGL_NO_ERROR_ARB = 0x31B3;
+// enum GLX_CONTEXT_OPENGL_NO_ERROR_ARB = 0x31B3;
 
 
 /*
 ** GLX resources.
 */
-alias GLXContextID = XID;
-alias GLXDrawable = XID;
+// alias GLXContextID = XID;
+// alias GLXDrawable = XID;
 
 alias __GLXclientState = __GLXclientStateRec;
 
@@ -70,7 +70,7 @@ import glx.glxscreens_h;
 
 
 extern __GLXscreen* glxGetScreen(ScreenPtr pScreen);
-extern __GLXclientState* glxGetClient(ClientPtr pClient);
+// extern __GLXclientState* glxGetClient(ClientPtr pClient);
 
 /************************************************************************/
 
@@ -79,9 +79,9 @@ void __glXScreenInitVisuals(__GLXscreen* screen);
 /*
 ** The last context used (from the server's perspective) is cached.
 */
-extern __GLXcontext* __glXForceCurrent(__GLXclientState*, GLXContextTag, int*);
+// extern __GLXcontext* __glXForceCurrent(__GLXclientState*, GLXContextTag, int*);
 
-int __glXError(int error);
+// int __glXError(int error);
 
 /************************************************************************/
 
@@ -91,12 +91,12 @@ enum {
     GLX_ALL_VISUALS
 }
 
-void glxSuspendClients();
-void glxResumeClients();
+// void glxSuspendClients();
+// void glxResumeClients();
 
 alias glx_func_ptr = void function();
 alias glx_gpa_proc = glx_func_ptr function(const(char)*);
-void __glXsetGetProcAddress(glx_gpa_proc get_proc_address);
+// void __glXsetGetProcAddress(glx_gpa_proc get_proc_address);
 void* __glGetProcAddress(const(char)*);
 
 void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 msc, CARD32 sbc);
@@ -145,9 +145,9 @@ struct __GLXrenderSizeData {
 /*
 ** X resources.
 */
-extern RESTYPE __glXContextRes;
+// extern RESTYPE __glXContextRes;
 extern RESTYPE __glXClientRes;
-extern RESTYPE __glXDrawableRes;
+// extern RESTYPE __glXDrawableRes;
 
 /************************************************************************/
 
@@ -155,7 +155,7 @@ extern RESTYPE __glXDrawableRes;
  * Routines for computing the size of variably-sized rendering commands.
  */
 
-private auto safe_add(int a, int b)
+auto safe_add(int a, int b)
 {
     if (a < 0 || b < 0)
         return -1;
@@ -166,7 +166,7 @@ private auto safe_add(int a, int b)
     return a + b;
 }
 
-private auto safe_mul(int a, int b)
+auto safe_mul(int a, int b)
 {
     if (a < 0 || b < 0)
         return -1;
@@ -180,7 +180,7 @@ private auto safe_mul(int a, int b)
     return a * b;
 }
 
-private auto safe_pad(int a)
+auto safe_pad(int a)
 {
     int ret = void;
 
@@ -199,6 +199,6 @@ extern int __glXImageSize(GLenum format, GLenum type, GLenum target, GLsizei w, 
 extern uint glxMajorVersion;
 extern uint glxMinorVersion;
 
-extern int __glXEventBase;
+// extern int __glXEventBase;
 
                           /* !__GLX_server_h__ */

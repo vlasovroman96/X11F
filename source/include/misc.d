@@ -2,7 +2,7 @@ module include.misc;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
+template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
 }
 import core.stdc.config: c_long, c_ulong;
@@ -226,7 +226,7 @@ pragma(inline, true) void wrong_size()
 }
 
 static if (!(HasVersion!"__GNUC__")) {
-pragma(inline, true) private int __builtin_constant_p(int x)
+pragma(inline, true) int __builtin_constant_p(int x)
 {
     return 0;
 }
@@ -250,7 +250,7 @@ ref auto swapll(T)(T* t) {
 		*t = cast(ulong)bswap_64(*t);          
 }
 
-pragma(inline, true) private uint bswap_32(uint x)
+pragma(inline, true) uint bswap_32(uint x)
 {
     return (((x & 0xFF000000) >> 24) |
             ((x & 0x00FF0000) >> 8) |
@@ -264,7 +264,7 @@ ref auto swapl(T)(T* t) {
 		*t = cast(ulong)bswap_32(cast(uint)*(t)); 
 }
 
-pragma(inline, true) private ushort bswap_16(ushort x)
+pragma(inline, true) ushort bswap_16(ushort x)
 {
     return (((x & 0xFF00) >> 8) |
             ((x & 0x00FF) << 8));

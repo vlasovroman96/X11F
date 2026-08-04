@@ -193,7 +193,7 @@ void __glXDisp_DrawArrays(GLbyte* pc)
         GLenum datatype = compHeader[i].datatype;
         GLint numVals = compHeader[i].numVals;
 
-        stride += __GLX_PAD(numVals * __glXTypeSize(datatype));
+        stride += mixin(__GLX_PAD!("numVals * __glXTypeSize(datatype)"));
     }
 
     pc += numComponents * __GLXdispatchDrawArraysComponentHeader.sizeof;
@@ -247,7 +247,7 @@ void __glXDisp_DrawArrays(GLbyte* pc)
             break;
         }
 
-        pc += __GLX_PAD(numVals * __glXTypeSize(datatype));
+        pc += mixin(__GLX_PAD!("numVals * __glXTypeSize(datatype)"));
     }
 
     glDrawArrays(primType, 0, numVertexes);

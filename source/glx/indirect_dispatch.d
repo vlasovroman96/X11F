@@ -40,7 +40,7 @@ import glx.singlesize;
  import externs.epoxy;
 
 
-enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
+// enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
 
 enum __GLX_PIXEL_3D_HDR =`	
     BOOL	swapBytes;	

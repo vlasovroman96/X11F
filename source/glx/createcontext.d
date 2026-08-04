@@ -34,6 +34,17 @@ import glx.glxext;
 import glx.indirect_dispatch;
 import include.opaque;
  import externs.epoxy;
+import glx.glxext;
+// import externs.xorg.glx_extinit;
+import glx.glxscreens_h;
+
+enum GLX_RGBA_FLOAT_BIT_ARB =             0x00000004;
+enum GLX_RGBA_FLOAT_TYPE_ARB =            0x20B9;
+enum GLX_RGBA_UNSIGNED_FLOAT_BIT_EXT =    0x00000008;
+enum GLX_RGBA_UNSIGNED_FLOAT_TYPE_EXT =   0x20B1;
+enum GLX_CONTEXT_RELEASE_BEHAVIOR_ARB =   0x2097;
+enum GLX_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB = 0x2098;
+enum GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB = 0;
 
 
 enum ALL_VALID_FLAGS = 
@@ -117,8 +128,8 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
     /* Verify that the size of the packet matches the size inferred from the
      * sizes specified for the various fields.
      */
-    const(uint) expected_size = (((xGLXCreateContextAttribsARBReq)
-                                    + (req.numAttribs * 8)).sizeof) / 4;
+    const(uint) expected_size = (((xGLXCreateContextAttribsARBReq).sizeof
+                                    + (req.numAttribs * 8))) / 4;
 
     if (req.length != expected_size)
         return BadLength;

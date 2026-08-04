@@ -187,9 +187,9 @@ extern void  xf86PrintModes(ScrnInfoPtr scrp);
 extern void  xf86CollectOptions(ScrnInfoPtr pScrn, XF86OptionPtr extraOpts);
 
 /* convert ScreenPtr to ScrnInfoPtr */
-extern void  xf86ScreenToScrn(ScreenPtr pScreen);
+// extern void  xf86ScreenToScrn(ScreenPtr pScreen);
 /* convert ScrnInfoPtr to ScreenPtr */
-extern void  xf86ScrnToScreen(ScrnInfoPtr pScrn);
+// extern void  xf86ScrnToScreen(ScrnInfoPtr pScrn);
 
 enum XF86_HAS_SCRN_CONV = 1 /* define for drivers to use in api compat */;
 

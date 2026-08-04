@@ -35,7 +35,7 @@ public import dix.request_priv;
  * Silicon Graphics, Inc.
  */
 
-enum string __GLX_PAD(string s) = `(((` ~ s ~ `)+3) & cast(GLuint)~3)`;
+// enum string __GLX_PAD(string s) = `(((` ~ s ~ `)+3) & cast(GLuint)~3)`;
 
 /*
 ** Fetch the context-id out of a SingleReq request pointed to by pc.

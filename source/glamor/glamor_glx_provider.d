@@ -48,20 +48,21 @@ import glamor.glamor_priv;
 import include.glamor;
 import glx.glxscreens_h;
 import glamor.glamor;
+import glx.glxext;
 
 /* Can't get these from <GL/glx.h> since it pulls in client headers */
-enum GLX_RGBA_BIT =		0x00000001;
-enum GLX_WINDOW_BIT =		0x00000001;
-enum GLX_PIXMAP_BIT =		0x00000002;
-enum GLX_PBUFFER_BIT =		0x00000004;
-enum GLX_NONE =                0x8000;
-enum GLX_SLOW_CONFIG =         0x8001;
-enum GLX_TRUE_COLOR =		0x8002;
-enum GLX_DIRECT_COLOR =	0x8003;
-enum GLX_NON_CONFORMANT_CONFIG = 0x800D;
-enum GLX_DONT_CARE =           0xFFFFFFFF;
-enum GLX_RGBA_FLOAT_BIT_ARB =  0x00000004;
-enum GLX_SWAP_UNDEFINED_OML =  0x8063;
+// enum GLX_RGBA_BIT =		0x00000001;
+// enum GLX_WINDOW_BIT =		0x00000001;
+// enum GLX_PIXMAP_BIT =		0x00000002;
+// enum GLX_PBUFFER_BIT =		0x00000004;
+// enum GLX_NONE =                0x8000;
+// enum GLX_SLOW_CONFIG =         0x8001;
+// enum GLX_TRUE_COLOR =		0x8002;
+// enum GLX_DIRECT_COLOR =	0x8003;
+// enum GLX_NON_CONFORMANT_CONFIG = 0x800D;
+// enum GLX_DONT_CARE =           0xFFFFFFFF;
+// enum GLX_RGBA_FLOAT_BIT_ARB =  0x00000004;
+// enum GLX_SWAP_UNDEFINED_OML =  0x8063;
 
 struct egl_config {
     __GLXconfig base;

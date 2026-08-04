@@ -771,25 +771,25 @@ struct _ScrnInfoRec {
      *
      */
 
-    xf86ProbeProc* Probe;
-    xf86PreInitProc* PreInit;
-    xf86ScreenInitProc* ScreenInit;
-    xf86SwitchModeProc* SwitchMode;
-    xf86AdjustFrameProc* AdjustFrame;
-    xf86EnterVTProc* EnterVT;
-    xf86LeaveVTProc* LeaveVT;
-    xf86FreeScreenProc* FreeScreen;
-    xf86ValidModeProc* ValidMode;
-    xf86EnableDisableFBAccessProc* EnableDisableFBAccess;
-    xf86SetDGAModeProc* SetDGAMode;
-    xf86ChangeGammaProc* ChangeGamma;
-    xf86PointerMovedProc* PointerMoved;
-    xf86PMEventProc* PMEvent;
-    xf86DPMSSetProc* DPMSSet;
-    xf86LoadPaletteProc* LoadPalette;
-    xf86SetOverscanProc* SetOverscan;
-    xorgDriverFuncProc* DriverFunc;
-    xf86ModeSetProc* ModeSet;
+    xf86ProbeProc Probe;
+    xf86PreInitProc PreInit;
+    xf86ScreenInitProc ScreenInit;
+    xf86SwitchModeProc SwitchMode;
+    xf86AdjustFrameProc AdjustFrame;
+    xf86EnterVTProc EnterVT;
+    xf86LeaveVTProc LeaveVT;
+    xf86FreeScreenProc FreeScreen;
+    xf86ValidModeProc ValidMode;
+    xf86EnableDisableFBAccessProc EnableDisableFBAccess;
+    xf86SetDGAModeProc SetDGAMode;
+    xf86ChangeGammaProc ChangeGamma;
+    xf86PointerMovedProc PointerMoved;
+    xf86PMEventProc PMEvent;
+    xf86DPMSSetProc DPMSSet;
+    xf86LoadPaletteProc LoadPalette;
+    xf86SetOverscanProc SetOverscan;
+    xorgDriverFuncProc DriverFunc;
+    xf86ModeSetProc ModeSet;
 
     int[NUM_RESERVED_INTS] reservedInt;
     void*[NUM_RESERVED_POINTERS] reservedPtr;

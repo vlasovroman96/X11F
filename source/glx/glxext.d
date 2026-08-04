@@ -72,7 +72,12 @@ enum glxClientPrivateKey = (&glxClientPrivateKeyRec);
 ** Forward declarations.
 */
 
-
+// enum GLX_RGBA_FLOAT_BIT_ARB =             0x00000004;
+// enum GLX_RGBA_FLOAT_TYPE_ARB =            0x20B9;
+// enum GLX_RGBA_UNSIGNED_FLOAT_BIT_EXT =    0x00000008;
+// enum GLX_RGBA_UNSIGNED_FLOAT_TYPE_EXT =   0x20B1;
+// enum GLX_CONTEXT_RELEASE_BEHAVIOR_ARB =   0x2097;
+// enum GLX_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB = 0x2098;
 
 /*
  * This procedure is called when the client who created the context goes away
@@ -513,8 +518,7 @@ private void xorgGlxServerInit(CallbackListPtr* pcbl, void* param, void* ext)
         __GLXprovider* p = void;
 
         if (glxServer.getVendorForScreen(null, walkScreen) != null) {
-            // There's already a vendor registered.
-            LogMessage(X_INFO, "GLX: Another vendor is already registered for screen %d\n", walkScreenIdx);
+            //LogMessage(X_INFO, "GLX: Another vendor is already registered for screen %d\n", walkScreenIdx);
             continue;
         }
 

@@ -196,7 +196,7 @@ struct DeviceEventInfoRec {
     DeviceIntPtr device;
 }
 
-extern void* lastGLContext;
+// extern void* lastGLContext;
 
 /**
  * @brief get display string for given screen

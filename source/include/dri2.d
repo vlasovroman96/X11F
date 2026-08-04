@@ -227,7 +227,7 @@ extern void  DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info);
 
 extern void  DRI2CloseScreen(ScreenPtr pScreen);
 
-extern void  DRI2HasSwapControl(ScreenPtr pScreen);
+// extern void  DRI2HasSwapControl(ScreenPtr pScreen);
 
 // extern void  DRI2Connect(ClientPtr client, ScreenPtr pScreen, uint driverType, int* fd, const(char)** driverName, const(char)** deviceName);
 
@@ -235,7 +235,7 @@ extern void  DRI2HasSwapControl(ScreenPtr pScreen);
 
 // extern void  DRI2CreateDrawable(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv);
 
-extern void  DRI2CreateDrawable2(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv, XID* dri2_id_out);
+// extern void  DRI2CreateDrawable2(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv, XID* dri2_id_out);
 
 // extern void * DRI2GetBuffers(DrawablePtr pDraw, int* width, int* height, uint* attachments, int count, int* out_count);
 
@@ -264,7 +264,7 @@ extern void  DRI2Version(int* major, int* minor);
 // extern void  DRI2SwapInterval(DrawablePtr pDrawable, int interval);
 extern void  DRI2SwapLimit(DrawablePtr pDraw, int swap_limit);
 // extern void  DRI2SwapBuffers(ClientPtr client, DrawablePtr pDrawable, CARD64 target_msc, CARD64 divisor, CARD64 remainder, CARD64* swap_target, DRI2SwapEventPtr func, void* data);
-extern void  DRI2WaitSwap(ClientPtr client, DrawablePtr pDrawable);
+// extern void  DRI2WaitSwap(ClientPtr client, DrawablePtr pDrawable);
 
 // extern void  DRI2GetMSC(DrawablePtr pDrawable, CARD64* ust, CARD64* msc, CARD64* sbc);
 // extern void  DRI2WaitMSC(ClientPtr client, DrawablePtr pDrawable, CARD64 target_msc, CARD64 divisor, CARD64 remainder);

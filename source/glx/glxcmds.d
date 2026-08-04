@@ -63,6 +63,17 @@ import include.protocol_versions;
 import include.glxvndabi;
 import Xext.xace;
 import glx.glxscreens_h;
+import glx.vndext;
+import externs.attrs;
+import os.io;
+import externs.glxproto;
+import dix.events;
+import externs.X11.extensions.presenttokens;
+
+alias __GLX_SINGLE_HDR_SIZE = sz_xGLXSingleReq;
+alias __GLX_VENDPRIV_HDR_SIZE = sz_xGLXVendorPrivateReq;
+
+alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 
 private char[4] GLXServerVendorName = "SGI";
 
@@ -226,8 +237,8 @@ __GLXcontext* __glXdirectContextCreate(__GLXscreen* screen, __GLXconfig* modes, 
         return null;
 
     context.config = modes;
-    context.destroy = __glXdirectContextDestroy;
-    context.loseCurrent = __glXdirectContextLoseCurrent;
+    context.destroy = &__glXdirectContextDestroy;
+    context.loseCurrent = &__glXdirectContextLoseCurrent;
 
     return context;
 }
@@ -448,12 +459,12 @@ int __glXDisp_DestroyContext(__GLXclientState* cl, GLbyte* pc)
 
 __GLXcontext* __glXLookupContextByTag(__GLXclientState* cl, GLXContextTag tag)
 {
-    return glxServer.getContextTagPrivate(cl.client, tag);
+    return cast(__GLXcontext*)glxServer.getContextTagPrivate(cl.client, tag);
 }
 
 private __GLXconfig* inferConfigForWindow(__GLXscreen* pGlxScreen, WindowPtr pWin)
 {
-    int i = void, vid = mixin(wVisual!("pWin"));
+    int i = void, vid = cast(int)mixin(wVisual!("pWin"));
 
     for (i = 0; i < pGlxScreen.numVisuals; i++)
         if (pGlxScreen.visuals[i].visualID == vid)
@@ -581,7 +592,7 @@ int xorgGlxMakeCurrent(ClientPtr client, GLXContextTag tag, XID drawId, XID read
 
     /* Look up old context. If we have one, it must be in a usable state. */
     if (tag != 0) {
-        prevglxc = glxServer.getContextTagPrivate(client, tag);
+        prevglxc = cast(__GLXcontext*)glxServer.getContextTagPrivate(client, tag);
 
         if (prevglxc && prevglxc.renderMode != GL_RENDER) {
             /* Oops.  Not in render mode render. */
@@ -747,7 +758,7 @@ int __glXDisp_WaitGL(__GLXclientState* cl, GLbyte* pc)
     }
 
     if (glxc && glxc.drawPriv && glxc.drawPriv.waitGL)
-        (*glxc.drawPriv.waitGL) (glxc.drawPriv);
+        assumeNoGC(glxc.drawPriv.waitGL) (glxc.drawPriv);
 
     return Success;
 }
@@ -770,7 +781,7 @@ int __glXDisp_WaitX(__GLXclientState* cl, GLbyte* pc)
     }
 
     if (glxc && glxc.drawPriv && glxc.drawPriv.waitX)
-        (*glxc.drawPriv.waitX) (glxc.drawPriv);
+        assumeNoGC(glxc.drawPriv.waitX) (glxc.drawPriv);
 
     return Success;
 }
@@ -936,7 +947,7 @@ int __glXDisp_GetVisualConfigs(__GLXclientState* cl, GLbyte* pc)
             x_rpcbuf_write_CARD32(&rpcbuf, modes.sRGBCapable);
         } else {
             /* Pad with zeroes, so that attributes count is constant. */
-            x_rpcbuf_reserve0(&rpcbuf, ((CARD32) * 2).sizeof);
+            x_rpcbuf_reserve0(&rpcbuf, ((CARD32).sizeof * 2));
         }
     }
 
@@ -968,7 +979,7 @@ private int DoGetFBConfigs(__GLXclientState* cl, uint screen)
 
     xGLXGetFBConfigsReply reply = {
         type: X_Reply,
-        sequenceNumber: client.sequence,
+        sequenceNumber: cast(ushort)client.sequence,
         length: __GLX_FBCONFIG_ATTRIBS_LENGTH * pGlxScreen.numFBConfigs,
         numFBConfigs: pGlxScreen.numFBConfigs,
         numAttribs: __GLX_TOTAL_FBCONFIG_ATTRIBS
@@ -987,7 +998,7 @@ private int DoGetFBConfigs(__GLXclientState* cl, uint screen)
         p = 0;
 
 enum string WRITE_PAIR(string tag,string value) = `
-    do { buf[p++] = ` ~ tag ~ ` ; buf[p++] = ` ~ value ~ ` ; } while( 0 )`;
+    { buf[p++] = ` ~ tag ~ ` ; buf[p++] = ` ~ value ~ ` ; }`;
 
         mixin(WRITE_PAIR!(`GLX_VISUAL_ID`, `modes.visualID`));
         mixin(WRITE_PAIR!(`GLX_FBCONFIG_ID`, `modes.fbconfigID`));
@@ -1431,8 +1442,8 @@ version (none) {
     /* mesa sends an additional 8 bytes */
     mixin(REQUEST_FIXED_SIZE!("xGLXChangeDrawableAttributesReq", "req.numAttribs << 3"));
 } else {
-    if (((((xGLXChangeDrawableAttributesReq) +
-          (req.numAttribs << 3)).sizeof) >> 2) < client.req_len)
+    if (((((xGLXChangeDrawableAttributesReq).sizeof +
+          (req.numAttribs << 3))) >> 2) < client.req_len)
         return BadLength;
 }
 
@@ -1450,8 +1461,8 @@ int __glXDisp_ChangeDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = req.numAttribs;
         return BadValue;
     }
-    REQUEST_FIXED_SIZE(xGLXChangeDrawableAttributesSGIXReq,
-                       req.numAttribs << 3);
+    mixin(REQUEST_FIXED_SIZE!("xGLXChangeDrawableAttributesSGIXReq",
+                       "req.numAttribs << 3"));
 
     return DoChangeDrawableAttributes(cl.client, req.drawable,
                                       req.numAttribs, cast(CARD32*) (req + 1));
@@ -1549,7 +1560,7 @@ int __glXDisp_SwapBuffers(__GLXclientState* cl, GLbyte* pc)
         return error;
 
     if (pGlxDraw.type == DRAWABLE_WINDOW &&
-        (*pGlxDraw.swapBuffers) (cl.client, pGlxDraw) == GL_FALSE)
+        assumeNoGC(pGlxDraw.swapBuffers) (cl.client, pGlxDraw) == GL_FALSE)
         return __glXError(GLXBadDrawable);
 
     return Success;
@@ -1578,7 +1589,7 @@ private int DoQueryContext(__GLXclientState* cl, GLXContextID gcId)
     x_rpcbuf_write_CARD32(&rpcbuf, cast(int) (ctx.renderType));
 
     xGLXQueryContextInfoEXTReply reply = {
-        n: (rpcbuf.wpos / CARD32.sizeof) / 2,
+        n: cast(uint)((rpcbuf.wpos / CARD32.sizeof) / 2),
     };
 
     if (client.swapped) {
@@ -1616,7 +1627,7 @@ int __glXDisp_BindTexImageEXT(__GLXclientState* cl, GLbyte* pc)
     int error = void;
     CARD32 num_attribs = void;
 
-    if ((((xGLXVendorPrivateReq) + 12).sizeof) >> 2 > client.req_len)
+    if ((((xGLXVendorPrivateReq).sizeof + 12)) >> 2 > client.req_len)
         return BadLength;
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
@@ -1628,7 +1639,7 @@ int __glXDisp_BindTexImageEXT(__GLXclientState* cl, GLbyte* pc)
         client.errorValue = num_attribs;
         return BadValue;
     }
-    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "12 + (num_attribs << 3"));
+    mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "12 + (num_attribs << 3)"));
 
     if (buffer != GLX_FRONT_LEFT_EXT)
         return __glXError(GLXBadPixmap);
@@ -1733,7 +1744,7 @@ int __glXDisp_CopySubBufferMESA(__GLXclientState* cl, GLbyte* pc)
         pGlxDraw.copySubBuffer == null)
         return __glXError(GLXBadDrawable);
 
-    (*pGlxDraw.copySubBuffer) (pGlxDraw, x, y, width, height);
+    assumeNoGC(pGlxDraw.copySubBuffer) (pGlxDraw, x, y, width, height);
 
     return Success;
 }
@@ -1764,11 +1775,11 @@ private int DoGetDrawableAttributes(__GLXclientState* cl, XID drawId)
     if (pGlxDraw)
         pDraw = pGlxDraw.pDraw;
 
-enum string ATTRIB(string a, string v) = `do { 
+enum string ATTRIB(string a, string v) = `{ 
     attributes[2*num] = (` ~ a ~ `); 
-    attributes[2*num+1] = (` ~ v ~ `); 
+    attributes[2*num+1] = cast(typeof(attributes[0]))(` ~ v ~ `); 
     num++; 
-    } while (0)`;
+    }`;
 
     mixin(ATTRIB!(`GLX_Y_INVERTED_EXT`, `GL_FALSE`));
     mixin(ATTRIB!(`GLX_WIDTH`, `pDraw.width`));
@@ -1804,7 +1815,7 @@ enum string ATTRIB(string a, string v) = `do {
     }
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-    x_rpcbuf_write_CARD32s(&rpcbuf, attributes, num << 1);
+    x_rpcbuf_write_CARD32s(&rpcbuf, attributes.ptr, num << 1);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -1876,7 +1887,7 @@ int __glXDisp_Render(__GLXclientState* cl, GLbyte* pc)
 
     commandsDone = 0;
     pc += xGLXRenderReq.sizeof;
-    left = (req.length << 2) - xGLXRenderReq.sizeof;
+    left = cast(int)((req.length << 2) - xGLXRenderReq.sizeof);
     while (left > 0) {
         __GLXrenderSizeData entry = void;
         int extra = 0;
@@ -1982,7 +1993,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
     /*
      ** Check the request length.
      */
-    if ((req.length << 2) != safe_pad(dataBytes) + xGLXRenderLargeReq.sizeof) {
+    if ((req.length << 2) != safe_pad(cast(int)dataBytes) + xGLXRenderLargeReq.sizeof) {
         client.errorValue = req.length;
         /* Reset in case this isn't 1st request. */
         ResetLargeCommandStatus(glxc);
@@ -1993,7 +2004,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
     if (glxc.largeCmdRequestsSoFar == 0) {
         __GLXrenderSizeData entry = void;
         int extra = 0;
-        int left = (req.length << 2) - xGLXRenderLargeReq.sizeof;
+        int left = cast(int)((req.length << 2) - xGLXRenderLargeReq.sizeof);
         int cmdlen = void;
         int err = void;
 
@@ -2014,7 +2025,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
             swapl(&hdr.length);
             swapl(&hdr.opcode);
         }
-        opcode = hdr.opcode;
+        opcode = cast(ushort)hdr.opcode;
         if ((cmdlen = safe_pad(hdr.length)) < 0)
             return BadLength;
 
@@ -2052,7 +2063,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
         if (glxc.largeCmdBufSize < cmdlen) {
 	    GLbyte* newbuf = glxc.largeCmdBuf;
 
-	    if (((newbuf = cast(GLbyte*) realloc(newbuf, cmdlen)) == 0))
+	    if (((newbuf = cast(GLbyte*) realloc(newbuf, cmdlen)) is null))
 		return BadAlloc;
 
 	    glxc.largeCmdBuf = newbuf;
@@ -2060,7 +2071,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
         }
         memcpy(glxc.largeCmdBuf, pc, dataBytes);
 
-        glxc.largeCmdBytesSoFar = dataBytes;
+        glxc.largeCmdBytesSoFar = cast(int)dataBytes;
         glxc.largeCmdBytesTotal = cmdlen;
         glxc.largeCmdRequestsSoFar = 1;
         glxc.largeCmdRequestsTotal = req.requestTotal;
@@ -2091,7 +2102,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
         /*
          ** Check that we didn't get too much data.
          */
-        if ((bytesSoFar = safe_add(glxc.largeCmdBytesSoFar, dataBytes)) < 0) {
+        if ((bytesSoFar = safe_add(cast(int)glxc.largeCmdBytesSoFar, cast(int)dataBytes)) < 0) {
             client.errorValue = dataBytes;
             ResetLargeCommandStatus(glxc);
             return __glXError(GLXBadLargeRequest);
@@ -2135,7 +2146,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
              **
              ** Use the opcode to index into the procedure table.
              */
-            opcode = hdr.opcode;
+            opcode = cast(ushort)hdr.opcode;
 
             proc = cast(__GLXdispatchRenderProcPtr)
                 __glXGetProtocolDecodeFunction(&Render_dispatch_info, opcode,
@@ -2225,7 +2236,7 @@ int __glXDisp_QueryExtensionsString(__GLXclientState* cl, GLbyte* pc)
      * and uses this header to determine how many bytes to process */
     size_t n = strlen(pGlxScreen.GLXextensions) + 1;
     xGLXQueryExtensionsStringReply reply = {
-        n: n
+        n: cast(uint)n
     };
 
     if (client.swapped) {
@@ -2256,7 +2267,7 @@ int __glXDisp_QueryServerString(__GLXclientState* cl, GLbyte* pc)
 
     switch (req.name) {
     case GLX_VENDOR:
-        ptr = GLXServerVendorName;
+        ptr = GLXServerVendorName.ptr;
         break;
     case GLX_VERSION:
         ptr = "1.4";
@@ -2270,18 +2281,19 @@ int __glXDisp_QueryServerString(__GLXclientState* cl, GLbyte* pc)
             break;
         }
         /* else fall through */
+        goto default;
     default:
         return BadValue;
     }
 
     n = strlen(ptr) + 1;
-    length = __GLX_PAD(n) >> 2;
+    length = mixin(__GLX_PAD!("n")) >> 2;
 
     xGLXQueryServerStringReply reply = {
         type: X_Reply,
-        sequenceNumber: client.sequence,
-        length: length,
-        n: n
+        sequenceNumber: cast(ushort)client.sequence,
+        length: cast(uint)length,
+        n: cast(uint)n
     };
 
     buf = cast(char*) calloc(length, 4);
@@ -2296,7 +2308,7 @@ int __glXDisp_QueryServerString(__GLXclientState* cl, GLbyte* pc)
         swapl(&reply.n);
         WriteToClient(client, xGLXQueryServerStringReply.sizeof, &reply);
         /** no swap is needed for an array of chars **/
-        WriteToClient(client, length << 2, buf);
+        WriteToClient(client, cast(uint)(length << 2), buf);
     }
     else {
         WriteToClient(client, xGLXQueryServerStringReply.sizeof, &reply);
@@ -2336,7 +2348,7 @@ void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 ms
         return;
 
     xGLXBufferSwapComplete2 wire = {
-        type: __glXEventBase + GLX_BufferSwapComplete
+        type: cast(ubyte)(__glXEventBase + GLX_BufferSwapComplete)
     };
 
     if (!client)
@@ -2345,8 +2357,8 @@ void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 ms
     if (!(drawable.eventMask & GLX_BUFFER_SWAP_COMPLETE_INTEL_MASK))
         return;
 
-    wire.event_type = type;
-    wire.drawable = drawable.drawId;
+    wire.event_type = cast(ushort)type;
+    wire.drawable = cast(uint)drawable.drawId;
     wire.ust_hi = ust >> 32;
     wire.ust_lo = ust & 0xffffffff;
     wire.msc_hi = msc >> 32;

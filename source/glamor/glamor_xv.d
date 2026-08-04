@@ -45,6 +45,9 @@ import glamor.glamor_priv;
 import glamor.glamor_transform;
 import glamor.glamor_transfer;
 import externs.X11.extensions.Xv;
+import glamor.glamor;
+import glamor.glamor_pixmap;
+
 
 // //import externs.X11.extensions.Xv;
 import include.fourcc;
@@ -330,15 +333,15 @@ int glamor_xv_query_image_attributes(int id, ushort* w, ushort* h, int* pitches,
     switch (id) {
     case FOURCC_YV12:
     case FOURCC_I420:
-        *w = ALIGN(*w, 2);
-        *h = ALIGN(*h, 2);
-        size = ALIGN(*w, 4);
+        *w = cast(ushort)mixin(ALIGN!("*w", "2")) ;
+        *h = cast(ushort)mixin(ALIGN!("*h", "2")) ;
+        size = mixin(ALIGN!("*w", "4")) ;
         if (pitches)
             pitches[0] = size;
         size *= *h;
         if (offsets)
             offsets[1] = size;
-        tmp = ALIGN(*w >> 1, 4);
+        tmp = mixin(ALIGN!("*w >> 1", "4")) ;
         if (pitches)
             pitches[1] = pitches[2] = tmp;
         tmp *= (*h >> 1);
@@ -348,15 +351,15 @@ int glamor_xv_query_image_attributes(int id, ushort* w, ushort* h, int* pitches,
         size += tmp;
         break;
     case FOURCC_NV12:
-        *w = ALIGN(*w, 2);
-        *h = ALIGN(*h, 2);
-        size = ALIGN(*w, 4);
+        *w = cast(ushort)mixin(ALIGN!("*w", "2")) ;
+        *h = cast(ushort)mixin(ALIGN!("*h", "2")) ;
+        size = mixin(ALIGN!("*w", "4")) ;
         if (pitches)
             pitches[0] = size;
         size *= *h;
         if (offsets)
             offsets[1] = size;
-        tmp = ALIGN(*w, 4);
+        tmp = mixin(ALIGN!("*w", "4")) ;
         if (pitches)
             pitches[1] = tmp;
         tmp *= (*h >> 1);
@@ -372,7 +375,7 @@ int glamor_xv_query_image_attributes(int id, ushort* w, ushort* h, int* pitches,
         break;
     case FOURCC_UYVY:
         /* UYVU is single-plane really, all transformation is processed inside a shader */
-        size = ALIGN(*w, 2) * 2;
+        size = mixin(ALIGN!("*w", "2"))  * 2;
         if (pitches)
             pitches[0] = size;
         if (offsets)
@@ -450,8 +453,8 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
         if (port_priv.src_pix[i]) {
             src_pixmap_priv[i] =
                 glamor_get_pixmap_private(port_priv.src_pix[i]);
-            pixmap_priv_get_scale(src_pixmap_priv[i], &src_xscale[i],
-                                  &src_yscale[i]);
+            mixin(pixmap_priv_get_scale!("src_pixmap_priv[i]", "&src_xscale[i]",
+                                  "&src_yscale[i]"));
         } else {
            src_pixmap_priv[i] = null;
         }
@@ -534,7 +537,7 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
 
     glEnable(GL_SCISSOR_TEST);
 
-    v = glamor_get_vbo_space(screen, cast(uint)(3 * 4 * GLfloat.sizeof), &vbo_offset);
+    v = cast(float*)glamor_get_vbo_space(screen, cast(uint)(3 * 4 * GLfloat.sizeof), &vbo_offset);
 
     /* Set up a single primitive covering the area being drawn.  We'll
      * clip it to port_priv->clip using GL scissors instead of just
@@ -552,16 +555,16 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
     v[i++] = port_priv.drw_x;
     v[i++] = port_priv.drw_y + port_priv.dst_h * 2;
 
-    v[i++] = t_from_x_coord_x(src_xscale[0], port_priv.src_x);
-    v[i++] = t_from_x_coord_y(src_yscale[0], port_priv.src_y);
+    v[i++] = mixin(t_from_x_coord_x!("src_xscale[0]", "port_priv.src_x"));
+    v[i++] = mixin(t_from_x_coord_y!("src_yscale[0]", "port_priv.src_y"));
 
-    v[i++] = t_from_x_coord_x(src_xscale[0], port_priv.src_x +
-                              port_priv.src_w * 2);
-    v[i++] = t_from_x_coord_y(src_yscale[0], port_priv.src_y);
+    v[i++] = mixin(t_from_x_coord_x!("src_xscale[0]", "port_priv.src_x +
+                              port_priv.src_w * 2"));
+    v[i++] = mixin(t_from_x_coord_y!("src_yscale[0]", "port_priv.src_y"));
 
-    v[i++] = t_from_x_coord_x(src_xscale[0], port_priv.src_x);
-    v[i++] = t_from_x_coord_y(src_yscale[0], port_priv.src_y +
-                              port_priv.src_h * 2);
+    v[i++] = mixin(t_from_x_coord_x!("src_xscale[0]", "port_priv.src_x"));
+    v[i++] = mixin(t_from_x_coord_y!("src_yscale[0]", "port_priv.src_y +
+                              port_priv.src_h * 2"));
 
     glVertexAttribPointer(GLAMOR_VERTEX_POS, 2,
                           GL_FLOAT, GL_FALSE,
@@ -575,7 +578,7 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
 
     /* Now draw our big triangle, clipped to each of the clip boxes. */
     mixin(BUG_RETURN!("!pixmap_priv"));
-    glamor_pixmap_loop(pixmap_priv, dst_box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "dst_box_index", q{
         int dst_off_x = void, dst_off_y = void;
 
         glamor_set_destination_drawable(port_priv.pDraw,
@@ -595,7 +598,7 @@ void glamor_xv_render(glamor_port_private* port_priv, int id)
             glScissor(dstx, dsty, dstw, dsth);
             glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
         }
-    }
+    }));
     glDisable(GL_SCISSOR_TEST);
 
     glDisableVertexAttribArray(GLAMOR_VERTEX_POS);
@@ -714,8 +717,8 @@ int glamor_xv_put_image(glamor_port_private* port_priv, DrawablePtr pDrawable, s
     switch (id) {
     case FOURCC_YV12:
     case FOURCC_I420:
-        srcPitch = ALIGN(width, 4);
-        srcPitch2 = ALIGN(width >> 1, 4);
+        srcPitch = mixin(ALIGN!("width", "4")) ;
+        srcPitch2 = mixin(ALIGN!("width >> 1", "4")) ;
         s2offset = srcPitch * height;
         s3offset = s2offset + (srcPitch2 * ((height + 1) >> 1));
         s2offset += ((top >> 1) * srcPitch2);
@@ -728,13 +731,13 @@ int glamor_xv_put_image(glamor_port_private* port_priv, DrawablePtr pDrawable, s
 
         full_box.x1 = 0;
         full_box.y1 = 0;
-        full_box.x2 = width;
-        full_box.y2 = nlines;
+        full_box.x2 = cast(short)width;
+        full_box.y2 = cast(short)nlines;
 
-        half_box.x1 = 0;
-        half_box.y1 = 0;
-        half_box.x2 = width >> 1;
-        half_box.y2 = (nlines + 1) >> 1;
+        half_box.x1 = cast(short)0;
+        half_box.y1 = cast(short)0;
+        half_box.x2 = cast(short)width >> 1;
+        half_box.y2 = cast(short)(nlines + 1) >> 1;
 
         glamor_upload_boxes(&port_priv.src_pix[0].drawable, &full_box, 1,
                             0, 0, 0, 0,
@@ -749,19 +752,19 @@ int glamor_xv_put_image(glamor_port_private* port_priv, DrawablePtr pDrawable, s
                             buf + s3offset, srcPitch2);
         break;
     case FOURCC_NV12:
-        srcPitch = ALIGN(width, 4);
+        srcPitch = mixin(ALIGN!("width", "4")) ;
         s2offset = srcPitch * height;
         s2offset += ((top >> 1) * srcPitch);
 
-        full_box.x1 = 0;
-        full_box.y1 = 0;
-        full_box.x2 = width;
-        full_box.y2 = nlines;
+        full_box.x1 = cast(short)0;
+        full_box.y1 = cast(short)0;
+        full_box.x2 = cast(short)width;
+        full_box.y2 = cast(short)nlines;
 
-        half_box.x1 = 0;
-        half_box.y1 = 0;
-        half_box.x2 = width;
-        half_box.y2 = (nlines + 1) >> 1;
+        half_box.x1 = cast(short)0;
+        half_box.y1 = cast(short)0;
+        half_box.x2 = cast(short)width;
+        half_box.y2 = cast(short)(nlines + 1) >> 1;
 
         glamor_upload_boxes(&port_priv.src_pix[0].drawable, &full_box, 1,
                             0, 0, 0, 0,
@@ -772,7 +775,7 @@ int glamor_xv_put_image(glamor_port_private* port_priv, DrawablePtr pDrawable, s
                             buf + s2offset, srcPitch);
         break;
     case FOURCC_UYVY:
-        srcPitch = ALIGN(width, 2) * 2;
+        srcPitch = mixin(ALIGN!("width", "2"))  * 2;
         full_box.x1 = 0;
         full_box.y1 = 0;
         full_box.x2 = width;
@@ -836,7 +839,7 @@ void glamor_xv_init_port(glamor_port_private* port_priv)
     port_priv.gamma = 1000;
     port_priv.transform_index = 0;
 
-    REGION_NULL(pScreen, &port_priv.clip);
+    mixin(REGION_NULL!("pScreen", "&port_priv.clip"));
 }
 
 void glamor_xv_core_init(ScreenPtr screen)

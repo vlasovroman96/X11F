@@ -44,7 +44,7 @@ void __glXDisp_SeparableFilter2D(GLbyte* pc)
     __GLXdispatchConvolutionFilterHeader* hdr = cast(__GLXdispatchConvolutionFilterHeader*) pc;
     GLint hdrlen = void, image1len = void;
 
-    hdrlen = __GLX_PAD(__GLX_CONV_FILT_CMD_DISPATCH_HDR_SIZE);
+    hdrlen = mixin(__GLX_PAD!("__GLX_CONV_FILT_CMD_DISPATCH_HDR_SIZE"));
 
     glPixelStorei(GL_UNPACK_SWAP_BYTES, hdr.swapBytes);
     glPixelStorei(GL_UNPACK_LSB_FIRST, hdr.lsbFirst);
@@ -59,7 +59,7 @@ void __glXDisp_SeparableFilter2D(GLbyte* pc)
     image1len = __glXImageSize(hdr.format, hdr.type, 0, hdr.width, 1, 1,
                                0, hdr.rowLength, 0, hdr.skipRows,
                                hdr.alignment);
-    image1len = __GLX_PAD(image1len);
+    image1len = mixin(__GLX_PAD!("image1len"));
 
     glSeparableFilter2D(hdr.target, hdr.internalformat, hdr.width,
                         hdr.height, hdr.format, hdr.type,

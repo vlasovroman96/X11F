@@ -1,4 +1,4 @@
-module xf86Helper;
+module hw.xfree86.common.xf86Helper;
 @nogc nothrow:
 extern(C): __gshared:
 

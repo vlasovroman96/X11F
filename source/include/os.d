@@ -189,7 +189,7 @@ alias OsSigWrapperPtr = int function(int);
 
 extern void OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
 
-extern void PrivsElevated();
+// extern void PrivsElevated();
 
 // extern void GetClientFd(ClientPtr);
 

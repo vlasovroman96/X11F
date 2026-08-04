@@ -28,6 +28,8 @@ import build.dix_config;
 import glamor.glamor_priv;
 import externs.X11.extensions.renderproto;
 import dix.gc;
+import dix.dixutils;
+
 
 
 alias UINT16_MAX = core.stdc.stdint.UINT16_MAX;

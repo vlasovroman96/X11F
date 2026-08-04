@@ -47,11 +47,17 @@ import glx.glxscreens;
 import glx.glx_dri.glxdricommon;
 import glx.glxscreens_h;
  import externs.epoxy;
-
+ import externs.attrs;
+import externs.internal.dri_interface;
+import glamor.glamor_glx_provider;
+import externs.epoxy;
+import os.log;
+import externs.gnu;
+import os.utils;
 
 struct __GLXDRIconfig {
     __GLXconfig config;
-    const __DRIconfig *driConfig;
+    __DRIconfig *driConfig;
 };
 
 enum string __ATTRIB(string attrib, string field) = `
@@ -134,7 +140,7 @@ private int server_has_depth(int depth)
     return 0;
 }
 
-private __GLXconfig* createModeFromConfig(const(__DRIcoreExtension)* core, const(__DRIconfig)* driConfig, uint visualType, GLboolean duplicateForComp)
+private __GLXconfig* createModeFromConfig(__DRIcoreExtension* core, __DRIconfig* driConfig, uint visualType, GLboolean duplicateForComp)
 {
     __GLXDRIconfig* config = void;
     GLint renderType = 0;
@@ -149,7 +155,7 @@ private __GLXconfig* createModeFromConfig(const(__DRIcoreExtension)* core, const
     config.driConfig = driConfig;
 
     i = 0;
-    while (core.indexConfigAttrib(driConfig, i++, &attrib, &value)) {
+    while (assumeNoGC(core.indexConfigAttrib)(driConfig, i++, &attrib, &value)) {
         switch (attrib) {
         case __DRI_ATTRIB_RENDER_TYPE:
             if (value & __DRI_ATTRIB_RGBA_BIT)
@@ -186,6 +192,7 @@ private __GLXconfig* createModeFromConfig(const(__DRIcoreExtension)* core, const
                 value != GLX_SWAP_EXCHANGE_OML)
                 value = GLX_SWAP_UNDEFINED_OML;
             /* Fall through. */
+            goto default;
         default:
             setScalar(&config.config, attrib, value);
             break;
@@ -239,7 +246,7 @@ private __GLXconfig* createModeFromConfig(const(__DRIcoreExtension)* core, const
     return &config.config;
 }
 
-__GLXconfig* glxConvertConfigs(const(__DRIcoreExtension)* core, const(__DRIconfig)** configs)
+__GLXconfig* glxConvertConfigs(__DRIcoreExtension* core, __DRIconfig** configs)
 {
     __GLXconfig head = void; __GLXconfig* tail = void;
     int i = void;
@@ -293,7 +300,7 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
     void* driver = void;
     char[PATH_MAX] filename = void;
     char* get_extensions_name = void;
-    const(__DRIextension)** extensions = null;
+    __DRIextension** extensions = null;
     const(char)* path = null;
 
     /* Search in LIBGL_DRIVERS_PATH if we're not setuid. */
@@ -309,10 +316,10 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
 
         next = strchr(path, ':');
         if (next) {
-            path_len = next - path;
+            path_len = cast(int)(next - path);
             next++;
         } else {
-            path_len = strlen(path);
+            path_len = cast(int)strlen(path);
             next = null;
         }
 
@@ -335,9 +342,9 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
         goto cleanup_failure;
     }
 
-    if (asprintf(&get_extensions_name, "%s_%s",
-                 __DRI_DRIVER_GET_EXTENSIONS, driverName) != -1) {
-        const(__DRIextension)** function() get_extensions = void;
+    if (asprintf(&get_extensions_name, "%s_%s".ptr,
+                 __DRI_DRIVER_GET_EXTENSIONS.ptr, driverName) != -1) {
+        __DRIextension** function() @nogc nothrow get_extensions = void;
 
         for (uint i = 0; i < strlen(get_extensions_name); i++) {
             /* Replace all non-alphanumeric characters with underscore,
@@ -348,14 +355,14 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
                 get_extensions_name[i] = '_';
         }
 
-        get_extensions = dlsym(driver, get_extensions_name);
+        get_extensions = cast(__DRIextensionRec** function() @nogc nothrow )dlsym(driver, get_extensions_name);
         if (get_extensions)
             extensions = get_extensions();
         free(get_extensions_name);
     }
 
     if (!extensions)
-        extensions = dlsym(driver, __DRI_DRIVER_EXTENSIONS);
+        extensions = cast(__DRIextensionRec**)dlsym(driver, __DRI_DRIVER_EXTENSIONS);
     if (extensions == null) {
         LogMessage(X_ERROR, "AIGLX error: %s exports no extensions (%s)\n",
                    driverName, dlerror());

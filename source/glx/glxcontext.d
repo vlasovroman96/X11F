@@ -40,15 +40,15 @@ import core.stdc.config: c_long, c_ulong;
 
 
 struct __GLXcontext {
-    void function(__GLXcontext* context) destroy;
-    int function(__GLXcontext* context) makeCurrent;
-    int function(__GLXcontext* context) loseCurrent;
-    int function(__GLXcontext* dst, __GLXcontext* src, c_ulong mask) copy;
-    Bool function(__GLXcontext* context, __GLXclientState* cl, int* error) wait;
+    void function(__GLXcontext* context) @nogc nothrow destroy;
+    int function(__GLXcontext* context) @nogc nothrow makeCurrent;
+    int function(__GLXcontext* context) @nogc nothrow loseCurrent;
+    int function(__GLXcontext* dst, __GLXcontext* src, c_ulong mask) @nogc nothrow copy;
+    Bool function(__GLXcontext* context, __GLXclientState* cl, int* error) @nogc nothrow wait;
 
     /* EXT_texture_from_pixmap */
-    int function(__GLXcontext* baseContext, int buffer, __GLXdrawable* pixmap) bindTexImage;
-    int function(__GLXcontext* baseContext, int buffer, __GLXdrawable* pixmap) releaseTexImage;
+    int function(__GLXcontext* baseContext, int buffer, __GLXdrawable* pixmap) @nogc nothrow bindTexImage;
+    int function(__GLXcontext* baseContext, int buffer, __GLXdrawable* pixmap) @nogc nothrow releaseTexImage;
 
     /*
      ** list of context structs
