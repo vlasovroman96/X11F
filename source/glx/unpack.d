@@ -173,6 +173,6 @@ enum string __GLX_SWAP_REPLY_RETVAL() = `
 	swpal(&reply.retval)`;
 
 enum string __GLX_SWAP_REPLY_SIZE() = `
-	swapl(&reply.size)`;
+	swapl(&reply.size);`;
 
                           /* !__GLX_unpack_h__ */

@@ -37,6 +37,7 @@ import dix.request_priv;
 import Xext.hashtable;
 import glx.vndserver_priv;
 import glx.vndservervendor;
+import glx.vndext;
 
 /**
  * The length of the dispatchFuncs array. Every opcode above this is a
@@ -67,9 +68,9 @@ private GlxVendorPrivDispatch* LookupVendorPrivDispatch(CARD32 vendorCode, Bool 
 {
     GlxVendorPrivDispatch* disp = null;
 
-    disp = ht_find(vendorPrivHash, &vendorCode);
+    disp = cast(GlxVendorPrivDispatch*)ht_find(vendorPrivHash, &vendorCode);
     if (disp == null && create) {
-        if ((disp = ht_add(vendorPrivHash, &vendorCode))) {
+        if ((disp = cast(GlxVendorPrivDispatch*)ht_add(vendorPrivHash, &vendorCode)) !is null) {
             disp.vendorCode = vendorCode;
             disp.proc = null;
         }
@@ -89,7 +90,7 @@ private GlxServerDispatchProc GetVendorDispatchFunc(CARD8 opcode, CARD32 vendorC
         }
     }));
 
-    return DispatchBadRequest;
+    return &DispatchBadRequest;
 }
 
 /* Include the trivial dispatch handlers */
@@ -260,7 +261,8 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
 private int dispatch_GLXMakeCurrent(ClientPtr client)
 {
     mixin(REQUEST!xGLXMakeCurrentReq);
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
             stuff.drawable, stuff.drawable, stuff.context);
@@ -269,7 +271,8 @@ private int dispatch_GLXMakeCurrent(ClientPtr client)
 private int dispatch_GLXMakeContextCurrent(ClientPtr client)
 {
     mixin(REQUEST!xGLXMakeContextCurrentReq);
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
             stuff.drawable, stuff.readdrawable, stuff.context);
@@ -278,7 +281,8 @@ private int dispatch_GLXMakeContextCurrent(ClientPtr client)
 private int dispatch_GLXMakeCurrentReadSGI(ClientPtr client)
 {
     mixin(REQUEST!xGLXMakeCurrentReadSGIReq);
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     return CommonMakeCurrent(client, stuff.oldContextTag,
             stuff.drawable, stuff.readable, stuff.context);
@@ -288,7 +292,8 @@ private int dispatch_GLXCopyContext(ClientPtr client)
 {
     mixin(REQUEST!xGLXCopyContextReq);
     GlxServerVendor* vendor = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     // If we've got a context tag, then we'll use it to select a vendor. If we
     // don't have a tag, then we'll look up one of the contexts. In either
@@ -313,7 +318,8 @@ private int dispatch_GLXSwapBuffers(ClientPtr client)
 {
     GlxServerVendor* vendor = null;
     mixin(REQUEST!xGLXSwapBuffersReq);
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     if (stuff.contextTag != 0) {
         // If the request has a context tag, then look up a vendor from that.
@@ -342,7 +348,8 @@ private int dispatch_GLXSingle(ClientPtr client)
 {
     mixin(REQUEST!xGLXSingleReq);
     GlxContextTagInfo* tagInfo = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     tagInfo = GlxLookupContextTag(client, GlxCheckSwap(client, stuff.contextTag));
     if (tagInfo != null) {
@@ -356,7 +363,8 @@ private int dispatch_GLXVendorPriv(ClientPtr client)
 {
     GlxVendorPrivDispatch* disp = void;
     mixin(REQUEST!xGLXVendorPrivateReq);
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
+
 
     disp = LookupVendorPrivDispatch(GlxCheckSwap(client, stuff.vendorCode), TRUE);
     if (disp == null) {
@@ -382,7 +390,7 @@ Bool GlxDispatchInit()
     GlxVendorPrivDispatch* disp = void;
 
     vendorPrivHash = ht_create(CARD32.sizeof, GlxVendorPrivDispatch.sizeof,
-                               ht_generic_hash, ht_generic_compare,
+                               &ht_generic_hash, &ht_generic_compare,
                                cast(void*) &vendorPrivSetup);
     if (!vendorPrivHash) {
         return FALSE;
@@ -394,48 +402,48 @@ Bool GlxDispatchInit()
     if (disp == null) {
         return FALSE;
     }
-    disp.proc = dispatch_GLXMakeCurrentReadSGI;
+    disp.proc = &dispatch_GLXMakeCurrentReadSGI;
 
     // Assign the dispatch stubs for requests that need special handling.
-    dispatchFuncs[X_GLXQueryVersion] = dispatch_GLXQueryVersion;
-    dispatchFuncs[X_GLXMakeCurrent] = dispatch_GLXMakeCurrent;
-    dispatchFuncs[X_GLXMakeContextCurrent] = dispatch_GLXMakeContextCurrent;
-    dispatchFuncs[X_GLXCopyContext] = dispatch_GLXCopyContext;
-    dispatchFuncs[X_GLXSwapBuffers] = dispatch_GLXSwapBuffers;
+    dispatchFuncs[X_GLXQueryVersion] = &dispatch_GLXQueryVersion;
+    dispatchFuncs[X_GLXMakeCurrent] = &dispatch_GLXMakeCurrent;
+    dispatchFuncs[X_GLXMakeContextCurrent] = &dispatch_GLXMakeContextCurrent;
+    dispatchFuncs[X_GLXCopyContext] = &dispatch_GLXCopyContext;
+    dispatchFuncs[X_GLXSwapBuffers] = &dispatch_GLXSwapBuffers;
 
-    dispatchFuncs[X_GLXClientInfo] = dispatch_GLXClientInfo;
-    dispatchFuncs[X_GLXSetClientInfoARB] = dispatch_GLXClientInfo;
-    dispatchFuncs[X_GLXSetClientInfo2ARB] = dispatch_GLXClientInfo;
+    dispatchFuncs[X_GLXClientInfo] = &dispatch_GLXClientInfo;
+    dispatchFuncs[X_GLXSetClientInfoARB] = &dispatch_GLXClientInfo;
+    dispatchFuncs[X_GLXSetClientInfo2ARB] = &dispatch_GLXClientInfo;
 
-    dispatchFuncs[X_GLXVendorPrivate] = dispatch_GLXVendorPriv;
-    dispatchFuncs[X_GLXVendorPrivateWithReply] = dispatch_GLXVendorPriv;
+    dispatchFuncs[X_GLXVendorPrivate] = &dispatch_GLXVendorPriv;
+    dispatchFuncs[X_GLXVendorPrivateWithReply] = &dispatch_GLXVendorPriv;
 
     // Assign the trivial stubs
-    dispatchFuncs[X_GLXRender] = dispatch_Render;
-    dispatchFuncs[X_GLXRenderLarge] = dispatch_RenderLarge;
-    dispatchFuncs[X_GLXCreateContext] = dispatch_CreateContext;
-    dispatchFuncs[X_GLXDestroyContext] = dispatch_DestroyContext;
-    dispatchFuncs[X_GLXWaitGL] = dispatch_WaitGL;
-    dispatchFuncs[X_GLXWaitX] = dispatch_WaitX;
-    dispatchFuncs[X_GLXUseXFont] = dispatch_UseXFont;
-    dispatchFuncs[X_GLXCreateGLXPixmap] = dispatch_CreateGLXPixmap;
-    dispatchFuncs[X_GLXGetVisualConfigs] = dispatch_GetVisualConfigs;
-    dispatchFuncs[X_GLXDestroyGLXPixmap] = dispatch_DestroyGLXPixmap;
-    dispatchFuncs[X_GLXQueryExtensionsString] = dispatch_QueryExtensionsString;
-    dispatchFuncs[X_GLXQueryServerString] = dispatch_QueryServerString;
-    dispatchFuncs[X_GLXChangeDrawableAttributes] = dispatch_ChangeDrawableAttributes;
-    dispatchFuncs[X_GLXCreateNewContext] = dispatch_CreateNewContext;
-    dispatchFuncs[X_GLXCreatePbuffer] = dispatch_CreatePbuffer;
-    dispatchFuncs[X_GLXCreatePixmap] = dispatch_CreatePixmap;
-    dispatchFuncs[X_GLXCreateWindow] = dispatch_CreateWindow;
-    dispatchFuncs[X_GLXCreateContextAttribsARB] = dispatch_CreateContextAttribsARB;
-    dispatchFuncs[X_GLXDestroyPbuffer] = dispatch_DestroyPbuffer;
-    dispatchFuncs[X_GLXDestroyPixmap] = dispatch_DestroyPixmap;
-    dispatchFuncs[X_GLXDestroyWindow] = dispatch_DestroyWindow;
-    dispatchFuncs[X_GLXGetDrawableAttributes] = dispatch_GetDrawableAttributes;
-    dispatchFuncs[X_GLXGetFBConfigs] = dispatch_GetFBConfigs;
-    dispatchFuncs[X_GLXQueryContext] = dispatch_QueryContext;
-    dispatchFuncs[X_GLXIsDirect] = dispatch_IsDirect;
+    dispatchFuncs[X_GLXRender] = &dispatch_Render;
+    dispatchFuncs[X_GLXRenderLarge] = &dispatch_RenderLarge;
+    dispatchFuncs[X_GLXCreateContext] = &dispatch_CreateContext;
+    dispatchFuncs[X_GLXDestroyContext] = &dispatch_DestroyContext;
+    dispatchFuncs[X_GLXWaitGL] = &dispatch_WaitGL;
+    dispatchFuncs[X_GLXWaitX] = &dispatch_WaitX;
+    dispatchFuncs[X_GLXUseXFont] = &dispatch_UseXFont;
+    dispatchFuncs[X_GLXCreateGLXPixmap] = &dispatch_CreateGLXPixmap;
+    dispatchFuncs[X_GLXGetVisualConfigs] = &dispatch_GetVisualConfigs;
+    dispatchFuncs[X_GLXDestroyGLXPixmap] = &dispatch_DestroyGLXPixmap;
+    dispatchFuncs[X_GLXQueryExtensionsString] = &dispatch_QueryExtensionsString;
+    dispatchFuncs[X_GLXQueryServerString] = &dispatch_QueryServerString;
+    dispatchFuncs[X_GLXChangeDrawableAttributes] = &dispatch_ChangeDrawableAttributes;
+    dispatchFuncs[X_GLXCreateNewContext] = &dispatch_CreateNewContext;
+    dispatchFuncs[X_GLXCreatePbuffer] = &dispatch_CreatePbuffer;
+    dispatchFuncs[X_GLXCreatePixmap] = &dispatch_CreatePixmap;
+    dispatchFuncs[X_GLXCreateWindow] = &dispatch_CreateWindow;
+    dispatchFuncs[X_GLXCreateContextAttribsARB] = &dispatch_CreateContextAttribsARB;
+    dispatchFuncs[X_GLXDestroyPbuffer] = &dispatch_DestroyPbuffer;
+    dispatchFuncs[X_GLXDestroyPixmap] = &dispatch_DestroyPixmap;
+    dispatchFuncs[X_GLXDestroyWindow] = &dispatch_DestroyWindow;
+    dispatchFuncs[X_GLXGetDrawableAttributes] = &dispatch_GetDrawableAttributes;
+    dispatchFuncs[X_GLXGetFBConfigs] = &dispatch_GetFBConfigs;
+    dispatchFuncs[X_GLXQueryContext] = &dispatch_QueryContext;
+    dispatchFuncs[X_GLXIsDirect] = &dispatch_IsDirect;
 
     return TRUE;
 }

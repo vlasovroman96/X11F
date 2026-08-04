@@ -36,7 +36,9 @@ import glx.unpack;
 import glx.indirect_size_get;
 import glx.indirect_dispatch;
  import externs.epoxy;
-
+import glx.glxcmds;
+import os.log;
+import glx.vndext;
 
 
 int DoSwapInterval(__GLXclientState* cl, GLbyte* pc, int do_swap)

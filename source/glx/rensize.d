@@ -42,6 +42,7 @@ import glx.indirect_size;
 import glx.indirect_reqsize;
 
  import externs.epoxy;
+import glx.indirect_size_get;
 
 
 enum string SWAPL(string a) = `

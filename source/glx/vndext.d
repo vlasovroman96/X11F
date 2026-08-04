@@ -71,7 +71,7 @@ private int idResourceDeleteCallback(void* value, XID id)
 
 private GlxScreenPriv* xglvGetScreenPrivate(ScreenPtr pScreen)
 {
-    return dixLookupPrivate(&pScreen.devPrivates, &glvXGLVScreenPrivKey);
+    return cast(GlxScreenPriv*)dixLookupPrivate(&pScreen.devPrivates, &glvXGLVScreenPrivKey);
 }
 
 private void xglvSetScreenPrivate(ScreenPtr pScreen, void* priv)

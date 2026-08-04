@@ -47,6 +47,10 @@ import glx.glxext;
 import glx.indirect_dispatch;
 import glx.unpack;
  import externs.epoxy;
+import glx.glxcmds;
+import os.io;
+import externs.gnu;;
+
 
 
 int __glXDisp_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
@@ -59,7 +63,7 @@ int __glXDisp_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
 
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -68,7 +72,7 @@ int __glXDisp_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
     size = *cast(GLsizei*) (pc + 0);
     type = *cast(GLenum*) (pc + 4);
     if (cx.feedbackBufSize < size) {
-        cx.feedbackBuf = reallocarray(cx.feedbackBuf,
+        cx.feedbackBuf = cast(float*)reallocarray(cx.feedbackBuf,
                                        cast(size_t) size, __GLX_SIZE_FLOAT32);
         if (!cx.feedbackBuf) {
             cl.client.errorValue = size;
@@ -89,7 +93,7 @@ int __glXDisp_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
 
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -97,7 +101,7 @@ int __glXDisp_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
     pc += __GLX_SINGLE_HDR_SIZE;
     size = *cast(GLsizei*) (pc + 0);
     if (cx.selectBufSize < size) {
-        cx.selectBuf = reallocarray(cx.selectBuf,
+        cx.selectBuf = cast(uint*)reallocarray(cx.selectBuf,
                                      cast(size_t) size, __GLX_SIZE_CARD32);
         if (!cx.selectBuf) {
             cl.client.errorValue = size;
@@ -119,7 +123,7 @@ int __glXDisp_RenderMode(__GLXclientState* cl, GLbyte* pc)
 
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -183,7 +187,7 @@ int __glXDisp_RenderMode(__GLXclientState* cl, GLbyte* pc)
                 n = *bp;
                 bp += 3 + n;
             }
-            nitems = bp - cx.selectBuf;
+            nitems = cast(int)(bp - cx.selectBuf);
         }
         x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)cx.selectBuf, nitems * __GLX_SIZE_CARD32);
 
@@ -213,7 +217,7 @@ int __glXDisp_Flush(__GLXclientState* cl, GLbyte* pc)
 
     mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -230,7 +234,7 @@ int __glXDisp_Finish(__GLXclientState* cl, GLbyte* pc)
 
     mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -322,7 +326,7 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
     ClientPtr client = cl.client;
     __GLXcontext* cx = void;
     GLenum name = void;
-    const(char)* string = void;
+    const(char)* string_ = void;
 
     int error = void;
     char* buf = null, buf1 = null;
@@ -338,17 +342,17 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
         swapl(cast(CARD32*)(pc + __GLX_SINGLE_HDR_SIZE));
     }
 
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
 
     pc += __GLX_SINGLE_HDR_SIZE;
     name = *cast(GLenum*) (pc + 0);
-    string = cast(const(char)*) glGetString(name);
+    string_ = cast(const(char)*) glGetString(name);
 
-    if (string == null)
-        string = "";
+    if (string_ == null)
+        string_ = "";
 
     /*
      ** Restrict extensions to those that are supported by both the
@@ -356,36 +360,36 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
      ** intersection of client, server, and core extension strings.
      */
     if (name == GL_EXTENSIONS) {
-        buf1 = __glXcombine_strings(string, cl.GLClientextensions);
+        buf1 = __glXcombine_strings(string_, cl.GLClientextensions);
         buf = __glXcombine_strings(buf1, cx.pGlxScreen.GLextensions);
         free(buf1);
-        string = cast(const(char)*) buf;
+        string_ = cast(const(char)*) buf;
     }
     else if (name == GL_VERSION) {
-        if (atof(string) > atof(GLServerVersion)) {
-            if (asprintf(&buf, "%s (%s)", GLServerVersion, string) == -1) {
-                string = GLServerVersion;
+        if (atof(string_) > atof(GLServerVersion.ptr)) {
+            if (asprintf(&buf, "%s (%s)", GLServerVersion.ptr, string_) == -1) {
+                string_ = GLServerVersion.ptr;
             }
             else {
-                string = cast(const(char)*) buf;
+                string_ = cast(const(char)*) buf;
             }
         }
     }
-    if (string) {
-        length = strlen(cast(const(char)*) string) + 1;
+    if (string_) {
+        length = cast(int)strlen(cast(const(char)*) string_) + 1;
     }
 
     xGLXSingleReply reply = { 0 };
     mixin(__GLX_BEGIN_REPLY!("length"));
-    __GLX_PUT_SIZE(length);
+    mixin(__GLX_PUT_SIZE!("length"));
 
     if (need_swap) {
-        __GLX_SWAP_REPLY_SIZE();
-        __GLX_SWAP_REPLY_HEADER();
+        mixin(__GLX_SWAP_REPLY_SIZE!());
+        mixin(__GLX_SWAP_REPLY_HEADER!());
     }
 
     mixin(__GLX_SEND_HEADER!());
-    WriteToClient(client, length, string);
+    WriteToClient(client, length, string_);
     free(buf);
 
     return Success;

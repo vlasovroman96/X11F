@@ -37,6 +37,7 @@ import glx.glxserver;
 import glx.unpack;
 import glx.indirect_dispatch;
  import externs.epoxy;
+ import glx.indirect_dispatch_swap;
 
 
 void __glXDisp_SeparableFilter2D(GLbyte* pc)

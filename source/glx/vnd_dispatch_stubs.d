@@ -2,7 +2,7 @@ module glx.vnd_dispatch_stubs;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
+template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
 }
 
@@ -13,13 +13,16 @@ import dix.screenint_priv;
 
 import include.dix;
 import include.vndserver;
+import glx.vndext;
+import glx.vndserver_priv;;
+
 
 // HACK: The opcode in old glxproto.h has a typo in it.
-static if (!HasVersion!"X_GLXCreateContextAttribsARB") {
-enum X_GLXCreateContextAttribsARB = X_GLXCreateContextAtrribsARB;
-}
+// static if (!HasVersion!"X_GLXCreateContextAttribsARB") {
+// enum X_GLXCreateContextAttribsARB = X_GLXCreateContextAtrribsARB;
+// }
 
-pragma(inline, true) private GlxServerVendor* vendorForScreen(ClientPtr pClient, CARD32 screen)
+pragma(inline, true) GlxServerVendor* vendorForScreen(ClientPtr pClient, CARD32 screen)
 {
     ScreenPtr pScreen = dixGetScreenPtr(screen);
     if (!pScreen)
@@ -28,12 +31,12 @@ pragma(inline, true) private GlxServerVendor* vendorForScreen(ClientPtr pClient,
     return glxServer.getVendorForScreen(pClient, pScreen);
 }
 
-private int dispatch_Render(ClientPtr client)
+int dispatch_Render(ClientPtr client)
 {
     mixin(REQUEST!xGLXRenderReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("glxServer"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, contextTag);
     if (vendor != null) {
@@ -45,12 +48,12 @@ private int dispatch_Render(ClientPtr client)
         return GlxErrorBase + GLXBadContextTag;
     }
 }
-private int dispatch_RenderLarge(ClientPtr client)
+int dispatch_RenderLarge(ClientPtr client)
 {
     mixin(REQUEST!xGLXRenderLargeReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, contextTag);
     if (vendor != null) {
@@ -62,11 +65,11 @@ private int dispatch_RenderLarge(ClientPtr client)
         return GlxErrorBase + GLXBadContextTag;
     }
 }
-private int dispatch_CreateContext(ClientPtr client)
+int dispatch_CreateContext(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreateContextReq);
     CARD32 screen = void, context = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
@@ -87,12 +90,12 @@ private int dispatch_CreateContext(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_DestroyContext(ClientPtr client)
+int dispatch_DestroyContext(ClientPtr client)
 {
     mixin(REQUEST!xGLXDestroyContextReq);
     CARD32 context = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     context = GlxCheckSwap(client, stuff.context);
     vendor = glxServer.getXIDMap(context);
     if (vendor != null) {
@@ -107,12 +110,12 @@ private int dispatch_DestroyContext(ClientPtr client)
         return GlxErrorBase + GLXBadContext;
     }
 }
-private int dispatch_WaitGL(ClientPtr client)
+int dispatch_WaitGL(ClientPtr client)
 {
     mixin(REQUEST!xGLXWaitGLReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, contextTag);
     if (vendor != null) {
@@ -124,12 +127,12 @@ private int dispatch_WaitGL(ClientPtr client)
         return GlxErrorBase + GLXBadContextTag;
     }
 }
-private int dispatch_WaitX(ClientPtr client)
+int dispatch_WaitX(ClientPtr client)
 {
     mixin(REQUEST!xGLXWaitXReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, contextTag);
     if (vendor != null) {
@@ -141,12 +144,12 @@ private int dispatch_WaitX(ClientPtr client)
         return GlxErrorBase + GLXBadContextTag;
     }
 }
-private int dispatch_UseXFont(ClientPtr client)
+int dispatch_UseXFont(ClientPtr client)
 {
     mixin(REQUEST!xGLXUseXFontReq);
     CARD32 contextTag = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, contextTag);
     if (vendor != null) {
@@ -158,11 +161,11 @@ private int dispatch_UseXFont(ClientPtr client)
         return GlxErrorBase + GLXBadContextTag;
     }
 }
-private int dispatch_CreateGLXPixmap(ClientPtr client)
+int dispatch_CreateGLXPixmap(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreateGLXPixmapReq);
     CARD32 screen = void, glxpixmap = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
@@ -183,11 +186,11 @@ private int dispatch_CreateGLXPixmap(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_GetVisualConfigs(ClientPtr client)
+int dispatch_GetVisualConfigs(ClientPtr client)
 {
     mixin(REQUEST!xGLXGetVisualConfigsReq);
     CARD32 screen = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
@@ -200,12 +203,12 @@ private int dispatch_GetVisualConfigs(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_DestroyGLXPixmap(ClientPtr client)
+int dispatch_DestroyGLXPixmap(ClientPtr client)
 {
     mixin(REQUEST!xGLXDestroyGLXPixmapReq);
     CARD32 glxpixmap = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     vendor = glxServer.getXIDMap(glxpixmap);
     if (vendor != null) {
@@ -217,11 +220,11 @@ private int dispatch_DestroyGLXPixmap(ClientPtr client)
         return GlxErrorBase + GLXBadPixmap;
     }
 }
-private int dispatch_QueryExtensionsString(ClientPtr client)
+int dispatch_QueryExtensionsString(ClientPtr client)
 {
     mixin(REQUEST!xGLXQueryExtensionsStringReq);
     CARD32 screen = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
@@ -234,11 +237,11 @@ private int dispatch_QueryExtensionsString(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_QueryServerString(ClientPtr client)
+int dispatch_QueryServerString(ClientPtr client)
 {
     mixin(REQUEST!xGLXQueryServerStringReq);
     CARD32 screen = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
@@ -251,12 +254,12 @@ private int dispatch_QueryServerString(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_ChangeDrawableAttributes(ClientPtr client)
+int dispatch_ChangeDrawableAttributes(ClientPtr client)
 {
     mixin(REQUEST!xGLXChangeDrawableAttributesReq);
     CARD32 drawable = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     drawable = GlxCheckSwap(client, stuff.drawable);
     vendor = glxServer.getXIDMap(drawable);
     if (vendor != null) {
@@ -268,11 +271,11 @@ private int dispatch_ChangeDrawableAttributes(ClientPtr client)
         return BadDrawable;
     }
 }
-private int dispatch_CreateNewContext(ClientPtr client)
+int dispatch_CreateNewContext(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreateNewContextReq);
     CARD32 screen = void, context = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
@@ -293,11 +296,11 @@ private int dispatch_CreateNewContext(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_CreatePbuffer(ClientPtr client)
+int dispatch_CreatePbuffer(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreatePbufferReq);
     CARD32 screen = void, pbuffer = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     pbuffer = GlxCheckSwap(client, stuff.pbuffer);
     mixin(LEGAL_NEW_RESOURCE!("pbuffer", "client"));
@@ -318,11 +321,11 @@ private int dispatch_CreatePbuffer(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_CreatePixmap(ClientPtr client)
+int dispatch_CreatePixmap(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreatePixmapReq);
     CARD32 screen = void, glxpixmap = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
@@ -343,11 +346,11 @@ private int dispatch_CreatePixmap(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_CreateWindow(ClientPtr client)
+int dispatch_CreateWindow(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreateWindowReq);
     CARD32 screen = void, glxwindow = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     glxwindow = GlxCheckSwap(client, stuff.glxwindow);
     mixin(LEGAL_NEW_RESOURCE!("glxwindow", "client"));
@@ -368,11 +371,11 @@ private int dispatch_CreateWindow(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_CreateContextAttribsARB(ClientPtr client)
+int dispatch_CreateContextAttribsARB(ClientPtr client)
 {
     mixin(REQUEST!xGLXCreateContextAttribsARBReq);
     CARD32 screen = void, context = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
@@ -393,12 +396,12 @@ private int dispatch_CreateContextAttribsARB(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_DestroyPbuffer(ClientPtr client)
+int dispatch_DestroyPbuffer(ClientPtr client)
 {
     mixin(REQUEST!xGLXDestroyPbufferReq);
     CARD32 pbuffer = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     pbuffer = GlxCheckSwap(client, stuff.pbuffer);
     vendor = glxServer.getXIDMap(pbuffer);
     if (vendor != null) {
@@ -413,12 +416,12 @@ private int dispatch_DestroyPbuffer(ClientPtr client)
         return GlxErrorBase + GLXBadPbuffer;
     }
 }
-private int dispatch_DestroyPixmap(ClientPtr client)
+int dispatch_DestroyPixmap(ClientPtr client)
 {
     mixin(REQUEST!xGLXDestroyPixmapReq);
     CARD32 glxpixmap = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     vendor = glxServer.getXIDMap(glxpixmap);
     if (vendor != null) {
@@ -433,12 +436,12 @@ private int dispatch_DestroyPixmap(ClientPtr client)
         return GlxErrorBase + GLXBadPixmap;
     }
 }
-private int dispatch_DestroyWindow(ClientPtr client)
+int dispatch_DestroyWindow(ClientPtr client)
 {
     mixin(REQUEST!xGLXDestroyWindowReq);
     CARD32 glxwindow = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     glxwindow = GlxCheckSwap(client, stuff.glxwindow);
     vendor = glxServer.getXIDMap(glxwindow);
     if (vendor != null) {
@@ -453,12 +456,12 @@ private int dispatch_DestroyWindow(ClientPtr client)
         return GlxErrorBase + GLXBadWindow;
     }
 }
-private int dispatch_GetDrawableAttributes(ClientPtr client)
+int dispatch_GetDrawableAttributes(ClientPtr client)
 {
     mixin(REQUEST!xGLXGetDrawableAttributesReq);
     CARD32 drawable = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     drawable = GlxCheckSwap(client, stuff.drawable);
     vendor = glxServer.getXIDMap(drawable);
     if (vendor != null) {
@@ -470,11 +473,11 @@ private int dispatch_GetDrawableAttributes(ClientPtr client)
         return BadDrawable;
     }
 }
-private int dispatch_GetFBConfigs(ClientPtr client)
+int dispatch_GetFBConfigs(ClientPtr client)
 {
     mixin(REQUEST!xGLXGetFBConfigsReq);
     CARD32 screen = void;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
     GlxServerVendor* vendor = vendorForScreen(client, screen);
@@ -487,12 +490,12 @@ private int dispatch_GetFBConfigs(ClientPtr client)
         return BadMatch;
     }
 }
-private int dispatch_QueryContext(ClientPtr client)
+int dispatch_QueryContext(ClientPtr client)
 {
     mixin(REQUEST!xGLXQueryContextReq);
     CARD32 context = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     context = GlxCheckSwap(client, stuff.context);
     vendor = glxServer.getXIDMap(context);
     if (vendor != null) {
@@ -504,12 +507,12 @@ private int dispatch_QueryContext(ClientPtr client)
         return GlxErrorBase + GLXBadContext;
     }
 }
-private int dispatch_IsDirect(ClientPtr client)
+int dispatch_IsDirect(ClientPtr client)
 {
     mixin(REQUEST!xGLXIsDirectReq);
     CARD32 context = void;
     GlxServerVendor* vendor = null;
-    mixin(REQUEST_AT_LEAST_SIZE!(*stuff));
+    mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     context = GlxCheckSwap(client, stuff.context);
     vendor = glxServer.getXIDMap(context);
     if (vendor != null) {

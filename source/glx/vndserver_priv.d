@@ -57,10 +57,10 @@ struct GlxClientPriv {
     GlxServerVendor** vendors;
 }
 
-extern int GlxErrorBase;
+// extern int GlxErrorBase;
 extern RESTYPE idResource;
 
-extern ExtensionEntry* GlxExtensionEntry;
+// extern ExtensionEntry* GlxExtensionEntry;
 Bool GlxDispatchInit();
 void GlxDispatchReset();
 
@@ -104,7 +104,7 @@ Bool GlxSetClientScreenVendor(ClientPtr client, ScreenPtr screen, GlxServerVendo
 GlxScreenPriv* GlxGetScreen(ScreenPtr pScreen);
 GlxServerVendor* GlxGetVendorForScreen(ClientPtr client, ScreenPtr screen);
 
-pragma(inline, true) private CARD32 GlxCheckSwap(ClientPtr client, CARD32 value)
+pragma(inline, true) CARD32 GlxCheckSwap(ClientPtr client, CARD32 value)
 {
     if (client.swapped)
     {

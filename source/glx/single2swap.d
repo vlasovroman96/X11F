@@ -41,8 +41,10 @@ import glx.glxutil;
 import glx.glxext;
 import glx.indirect_dispatch;
 import glx.unpack;
- import externs.epoxy;
-
+import externs.epoxy;
+import glx.glxcmds;
+import os.io;
+import glx.single2;
 
 int __glXDispSwap_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
 {
@@ -55,7 +57,7 @@ int __glXDispSwap_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -66,7 +68,7 @@ int __glXDispSwap_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
     size = *cast(GLsizei*) (pc + 0);
     type = *cast(GLenum*) (pc + 4);
     if (cx.feedbackBufSize < size) {
-        cx.feedbackBuf = reallocarray(cx.feedbackBuf,
+        cx.feedbackBuf = cast(float*)reallocarray(cx.feedbackBuf,
                                        cast(size_t) size, __GLX_SIZE_FLOAT32);
         if (!cx.feedbackBuf) {
             cl.client.errorValue = size;
@@ -88,7 +90,7 @@ int __glXDispSwap_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -97,7 +99,7 @@ int __glXDispSwap_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
     swapl(cast(CARD32*)(pc + 0));
     size = *cast(GLsizei*) (pc + 0);
     if (cx.selectBufSize < size) {
-        cx.selectBuf = reallocarray(cx.selectBuf,
+        cx.selectBuf = cast(uint*)reallocarray(cx.selectBuf,
                                      cast(size_t) size, __GLX_SIZE_CARD32);
         if (!cx.selectBuf) {
             cl.client.errorValue = size;
@@ -124,7 +126,7 @@ int __glXDispSwap_RenderMode(__GLXclientState* cl, GLbyte* pc)
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "4"));
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -189,7 +191,7 @@ int __glXDispSwap_RenderMode(__GLXclientState* cl, GLbyte* pc)
                 n = *bp;
                 bp += 3 + n;
             }
-            nitems = bp - cx.selectBuf;
+            nitems = cast(int)(bp - cx.selectBuf);
         }
         retBytes = nitems * __GLX_SIZE_CARD32;
         retBuffer = cast(GLubyte*) cx.selectBuf;
@@ -205,7 +207,7 @@ int __glXDispSwap_RenderMode(__GLXclientState* cl, GLbyte* pc)
  noChangeAllowed:{}
     xGLXRenderModeReply reply = {
         type: X_Reply,
-        sequenceNumber: client.sequence,
+        sequenceNumber: cast(ushort)client.sequence,
         length: nitems,
         retval: retval,
         size: nitems,
@@ -232,7 +234,7 @@ int __glXDispSwap_Flush(__GLXclientState* cl, GLbyte* pc)
     mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -250,7 +252,7 @@ int __glXDispSwap_Finish(__GLXclientState* cl, GLbyte* pc)
     mixin(REQUEST_AT_LEAST_SIZE!xGLXSingleReq);
 
     swapl(&(cast(xGLXSingleReq*) pc).contextTag);
-    cx = __glXForceCurrent(cl, __GLX_GET_SINGLE_CONTEXT_TAG(pc), &error);
+    cx = __glXForceCurrent(cl, mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc")), &error);
     if (!cx) {
         return error;
     }
@@ -261,8 +263,8 @@ int __glXDispSwap_Finish(__GLXclientState* cl, GLbyte* pc)
     /* Send empty reply packet to indicate finish is finished */
     xGLXSingleReply reply = { 0 };
     mixin(__GLX_BEGIN_REPLY!("0"));
-    __GLX_PUT_RETVAL(0);
-    __GLX_SWAP_REPLY_HEADER();
+    mixin(__GLX_PUT_RETVAL!("0"));
+    mixin(__GLX_SWAP_REPLY_HEADER!());
     mixin(__GLX_SEND_HEADER!());
 
     return Success;
