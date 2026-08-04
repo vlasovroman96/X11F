@@ -39,6 +39,10 @@ import include.mipict;
 import glamor.glamor_priv;
 import include.fbpict;
 import externs.X11.extensions.renderproto;
+import render.picture;;
+import glamor.glamor;
+import externs.attrs;
+
 
 /**
  * Creates an appropriate picture for temp mask use.
@@ -55,7 +59,7 @@ private PicturePtr glamor_create_mask_picture(ScreenPtr screen, PicturePtr dst, 
         else
             pict_format = PictureMatchFormat(screen, 8, PIXMAN_a8);
         if (!pict_format)
-            return 0;
+            return null;
     }
 
     pixmap = glamor_create_pixmap(screen, 0, 0,
@@ -63,9 +67,9 @@ private PicturePtr glamor_create_mask_picture(ScreenPtr screen, PicturePtr dst, 
                                   GLAMOR_CREATE_PIXMAP_CPU);
 
     if (!pixmap)
-        return 0;
+        return null;
     picture = CreatePicture(0, &pixmap.drawable, pict_format,
-                            0, 0, serverClient, &error);
+                            0, null, serverClient, &error);
     glamor_destroy_pixmap(pixmap);
     return picture;
 }
@@ -109,10 +113,10 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
 
     width = bounds.x2 - bounds.x1;
     height = bounds.y2 - bounds.y1;
-    stride = PixmapBytePad(width, mask_format.depth);
+    stride = PixmapBytePad(cast(ushort)width, mask_format.depth);
 
     picture = glamor_create_mask_picture(screen, dst, mask_format,
-                                         width, height);
+                                         cast(ushort)width, cast(ushort)height);
     if (!picture)
         return;
 
@@ -132,19 +136,19 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
 
     screen.ModifyPixmapHeader(pixmap, width, height,
                                mask_format.depth,
-                               BitsPerPixel(mask_format.depth),
+                               mixin(BitsPerPixel!("mask_format.depth")),
                                PixmapBytePad(width,
                                              mask_format.depth),
                                assumeNoGC(&pixman_image_get_data)(image));
 
-    x_rel = bounds.x1 + x_src - x_dst;
-    y_rel = bounds.y1 + y_src - y_dst;
+    x_rel = cast(short)(bounds.x1 + x_src - x_dst);
+    y_rel = cast(short)(bounds.y1 + y_src - y_dst);
 
     CompositePicture(op, src, picture, dst,
                      x_rel, y_rel,
                      0, 0,
-                     bounds.x1, bounds.y1,
-                     bounds.x2 - bounds.x1, bounds.y2 - bounds.y1);
+                     cast(short)bounds.x1, cast(short)bounds.y1,
+                     cast(ushort)(bounds.x2 - bounds.x1), cast(short)(bounds.y2 - bounds.y1));
 
     if (image)
         assumeNoGC(&pixman_image_unref)(image);

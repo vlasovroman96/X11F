@@ -27,6 +27,10 @@ import build.dix_config;
 
 import glamor.glamor_priv;
 import externs.X11.extensions.renderproto;
+import dix.gc;
+
+
+alias UINT16_MAX = core.stdc.stdint.UINT16_MAX;
 
 void glamor_solid_boxes(DrawablePtr drawable, BoxPtr box, int nbox, c_ulong fg_pixel)
 {
@@ -40,16 +44,16 @@ void glamor_solid_boxes(DrawablePtr drawable, BoxPtr box, int nbox, c_ulong fg_p
     for (n = 0; n < nbox; n++) {
         rect[n].x = box[n].x1;
         rect[n].y = box[n].y1;
-        rect[n].width = box[n].x2 - box[n].x1;
-        rect[n].height = box[n].y2 - box[n].y1;
+        rect[n].width = cast(ushort)(box[n].x2 - box[n].x1);
+        rect[n].height = cast(ushort)(box[n].y2 - box[n].y1);
     }
 
     gc = GetScratchGC(drawable.depth, drawable.pScreen);
     if (gc) {
         ChangeGCVal[1] vals = void;
 
-        vals[0].val = fg_pixel;
-        ChangeGC(null, gc, GCForeground, vals.ptr);
+        vals[0].val = cast(uint)fg_pixel;
+        ChangeGC(null, gc, cast(uint)GCForeground, vals.ptr);
         ValidateGC(drawable, gc);
         gc.ops.PolyFillRect(drawable, gc, nbox, rect);
         FreeScratchGC(gc);
@@ -64,16 +68,16 @@ void glamor_solid(PixmapPtr pixmap, int x, int y, int width, int height, c_ulong
     ChangeGCVal[1] vals = void;
     xRectangle rect = void;
 
-    vals[0].val = fg_pixel;
+    vals[0].val = cast(uint)fg_pixel;
     gc = GetScratchGC(drawable.depth, drawable.pScreen);
     if (!gc)
         return;
-    ChangeGC(null, gc, GCForeground, vals.ptr);
+    ChangeGC(null, gc, cast(uint)GCForeground, vals.ptr);
     ValidateGC(drawable, gc);
-    rect.x = x;
-    rect.y = y;
-    rect.width = width;
-    rect.height = height;
+    rect.x = cast(short)x;
+    rect.y = cast(short)y;
+    rect.width = cast(ushort)width;
+    rect.height = cast(ushort)height;
     gc.ops.PolyFillRect(drawable, gc, 1, &rect);
     FreeScratchGC(gc);
 }
@@ -625,7 +629,7 @@ enum string glamor_check_fbo_size(string _glamor_,string _w_, string _h_) = `((`
                                                     && (` ~ _h_ ~ `) <= ` ~ _glamor_ ~ `.max_fbo_size)`;
 
 pragma(inline, true) Bool GLAMOR_PIXMAP_PRIV_HAS_FBO(glamor_pixmap_private* pixmap_priv) {
-    BUG_RETURN_VAL(!pixmap_priv, FALSE);
+    mixin(BUG_RETURN_VAL!("pixmap_priv", "FALSE"));
     return pixmap_priv.gl_fbo == GLAMOR_FBO_NORMAL;
 }
 
@@ -674,7 +678,7 @@ pragma(inline, true) Bool glamor_get_rgba_from_pixel(CARD32 pixel, float* red, f
     }
 enum string COLOR_INT_TO_FLOAT(string _fc_, string _p_, string _s_, string _bits_) = `
   *` ~ _fc_ ~ ` = (((` ~ _p_ ~ `) >> (` ~ _s_ ~ `)) & (( 1 << (` ~ _bits_ ~ `)) - 1))	
-    / cast(float)((1<<(` ~ _bits_ ~ `)) - 1)`;
+    / cast(float)((1<<(` ~ _bits_ ~ `)) - 1);`;
 
     if (rbits)
         mixin(COLOR_INT_TO_FLOAT!(`red`, `pixel`, `rshift`, `rbits`));
@@ -759,18 +763,18 @@ pragma(inline, true) BoxRec glamor_start_rendering_bounds()
 
 pragma(inline, true) void glamor_bounds_union_rect(BoxPtr bounds, xRectangle* rect)
 {
-    bounds.x1 = min(bounds.x1, rect.x);
-    bounds.y1 = min(bounds.y1, rect.y);
-    bounds.x2 = min(SHRT_MAX, max(bounds.x2, rect.x + rect.width));
-    bounds.y2 = min(SHRT_MAX, max(bounds.y2, rect.y + rect.height));
+    bounds.x1 = cast(short)min(bounds.x1, rect.x);
+    bounds.y1 = cast(short)min(bounds.y1, rect.y);
+    bounds.x2 = cast(short)min(SHRT_MAX, max(bounds.x2, rect.x + rect.width));
+    bounds.y2 = cast(short)min(SHRT_MAX, max(bounds.y2, rect.y + rect.height));
 }
 
 pragma(inline, true) void glamor_bounds_union_box(BoxPtr bounds, BoxPtr box)
 {
-    bounds.x1 = min(bounds.x1, box.x1);
-    bounds.y1 = min(bounds.y1, box.y1);
-    bounds.x2 = max(bounds.x2, box.x2);
-    bounds.y2 = max(bounds.y2, box.y2);
+    bounds.x1 = cast(short)min(bounds.x1, box.x1);
+    bounds.y1 = cast(short)min(bounds.y1, box.y1);
+    bounds.x2 = cast(short)max(bounds.x2, box.x2);
+    bounds.y2 = cast(short)max(bounds.y2, box.y2);
 }
 
 /**

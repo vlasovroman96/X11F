@@ -30,6 +30,7 @@ import os.bug_priv;
 
 import glamor.glamor_priv;
 import glamor.glamor_transfer;
+import glamor.glamor;
 
 /*
  * Write a region of bits into a drawable's backing pixmap
@@ -46,7 +47,7 @@ void glamor_upload_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, int
     char* tmp_bits = null;
 
     if (glamor_drawable_effective_depth(drawable) == 24 && pixmap.drawable.depth == 32)
-        tmp_bits = XNFalloc(byte_stride * pixmap.drawable.height);
+        tmp_bits = cast(char*)XNFalloc(byte_stride * pixmap.drawable.height);
 
     glamor_make_current(glamor_priv);
 
@@ -57,7 +58,7 @@ void glamor_upload_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, int
 
     mixin(BUG_RETURN!("!priv"));
 
-    glamor_pixmap_loop(priv, box_index); {
+    mixin(glamor_pixmap_loop!("priv", "box_index", q{
         BoxPtr box = glamor_pixmap_box_at(priv, box_index);
         glamor_pixmap_fbo* fbo = glamor_pixmap_fbo_at(priv, box_index);
         BoxPtr boxes = in_boxes;
@@ -114,7 +115,7 @@ void glamor_upload_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, int
                                     src_line);
             }
         }
-    }
+    }));
 
     free(tmp_bits);
 
@@ -155,7 +156,7 @@ void glamor_download_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, i
 
     mixin(BUG_RETURN!("!priv"));
 
-    glamor_pixmap_loop(priv, box_index); {
+    mixin(glamor_pixmap_loop!("priv", "box_index", q{
         BoxPtr box = glamor_pixmap_box_at(priv, box_index);
         glamor_pixmap_fbo* fbo = glamor_pixmap_fbo_at(priv, box_index);
         BoxPtr boxes = in_boxes;
@@ -188,7 +189,7 @@ void glamor_download_boxes(DrawablePtr drawable, BoxPtr in_boxes, int in_nbox, i
                     glReadPixels(x1 - box.x1, y1 - box.y1, x2 - x1, 1, f.format, f.type, bits + ofs);
             }
         }
-    }
+    }));
     if (glamor_priv.has_pack_subimage)
         glPixelStorei(GL_PACK_ROW_LENGTH, 0);
 }

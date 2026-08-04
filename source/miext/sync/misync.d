@@ -1,4 +1,4 @@
-module misync.c;
+module miext.sync.misync;
 @nogc nothrow:
 extern(C): __gshared:
 /*

@@ -27,6 +27,9 @@ import build.dix_config;
 import glamor.glamor_priv;
 import include.misyncshm;
 import include.misyncstr;
+import glamor.glamor;
+import render.mipict;
+import miext.sync.misync;
 
 static if (XSYNC) {
 /*
@@ -58,7 +61,7 @@ private void glamor_sync_fence_set_triggered(SyncFence* fence)
 	fence.funcs.SetTriggered = glamor_fence.set_triggered;
 	fence.funcs.SetTriggered(fence);
 	glamor_fence.set_triggered = fence.funcs.SetTriggered;
-	fence.funcs.SetTriggered = glamor_sync_fence_set_triggered;
+	fence.funcs.SetTriggered = &glamor_sync_fence_set_triggered;
 }
 
 private void glamor_sync_create_fence(ScreenPtr screen, SyncFence* fence, Bool initially_triggered)
@@ -70,10 +73,10 @@ private void glamor_sync_create_fence(ScreenPtr screen, SyncFence* fence, Bool i
 	screen_funcs.CreateFence = glamor.saved_procs.sync_screen_funcs.CreateFence;
 	screen_funcs.CreateFence(screen, fence, initially_triggered);
 	glamor.saved_procs.sync_screen_funcs.CreateFence = screen_funcs.CreateFence;
-	screen_funcs.CreateFence = glamor_sync_create_fence;
+	screen_funcs.CreateFence = &glamor_sync_create_fence;
 
 	glamor_fence.set_triggered = fence.funcs.SetTriggered;
-	fence.funcs.SetTriggered = glamor_sync_fence_set_triggered;
+	fence.funcs.SetTriggered = &glamor_sync_fence_set_triggered;
 }
 }
 
@@ -100,7 +103,7 @@ version (HAVE_XSHMFENCE) {
 
 	screen_funcs = miSyncGetScreenFuncs(screen);
 	glamor.saved_procs.sync_screen_funcs.CreateFence = screen_funcs.CreateFence;
-	screen_funcs.CreateFence = glamor_sync_create_fence;
+	screen_funcs.CreateFence = &glamor_sync_create_fence;
 }
 	return TRUE;
 }

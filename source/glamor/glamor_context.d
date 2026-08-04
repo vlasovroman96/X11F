@@ -41,7 +41,7 @@ struct glamor_context {
     EGLContext ctx;
     EGLSurface surface;
 
-    void function(glamor_context* glamor_ctx) make_current;
+    void function(glamor_context* glamor_ctx) @nogc nothrow make_current ;
 }
 
 

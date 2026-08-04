@@ -36,6 +36,7 @@ import core.stdc.stdlib;
 import glamor.glamor_priv;
 import os.bug_priv;
 import glamor.glamor;
+import glamor.glamor_pixmap;
 
 void glamor_destroy_fbo(glamor_screen_private* glamor_priv, glamor_pixmap_fbo* fbo)
 {

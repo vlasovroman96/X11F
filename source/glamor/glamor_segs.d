@@ -28,6 +28,7 @@ import glamor.glamor_priv;
 import glamor.glamor_program;
 import glamor.glamor_transform;
 import glamor.glamor_prepare;
+import glamor.glamor;
 
 private const(glamor_facet) glamor_facet_poly_segment = {
     name: "poly_segment",
@@ -69,8 +70,8 @@ private Bool glamor_poly_segment_solid_gl(DrawablePtr drawable, GCPtr gc, int ns
 
     /* Set up the vertex buffers for the points */
 
-    v = glamor_get_vbo_space(drawable.pScreen,
-                             (nseg << add_last) * xSegment.sizeof,
+    v = cast(xSegment*)glamor_get_vbo_space(drawable.pScreen,
+                             cast(uint)((nseg << add_last) * xSegment.sizeof),
                              &vbo_offset);
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
@@ -81,10 +82,10 @@ private Bool glamor_poly_segment_solid_gl(DrawablePtr drawable, GCPtr gc, int ns
         int i = void, j = void;
         for (i = 0, j=0; i < nseg; i++) {
             v[j++] = segs[i];
-            v[j].x1 = segs[i].x2;
-            v[j].y1 = segs[i].y2;
-            v[j].x2 = segs[i].x2+1;
-            v[j].y2 = segs[i].y2;
+            v[j].x1 = cast(short)segs[i].x2;
+            v[j].y1 = cast(short)segs[i].y2;
+            v[j].x2 = cast(short)(segs[i].x2+1);
+            v[j].y2 = cast(short)segs[i].y2;
             j++;
         }
     } else
@@ -94,7 +95,7 @@ private Bool glamor_poly_segment_solid_gl(DrawablePtr drawable, GCPtr gc, int ns
 
     glEnable(GL_SCISSOR_TEST);
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         int nbox = RegionNumRects(gc.pCompositeClip);
         BoxPtr box = RegionRects(gc.pCompositeClip);
 
@@ -110,7 +111,7 @@ private Bool glamor_poly_segment_solid_gl(DrawablePtr drawable, GCPtr gc, int ns
             box++;
             glDrawArrays(GL_LINES, 0, nseg << (1 + add_last));
         }
-    }
+    }));
 
     ret = TRUE;
 
@@ -143,8 +144,8 @@ private Bool glamor_poly_segment_gl(DrawablePtr drawable, GCPtr gc, int nseg, xS
 
 private void glamor_poly_segment_bail(DrawablePtr drawable, GCPtr gc, int nseg, xSegment* segs)
 {
-    glamor_fallback("to %p (%c)\n", drawable,
-                    glamor_get_drawable_location(drawable));
+    // glamor_fallback("to %p (%c)\n", drawable,
+    //                 glamor_get_drawable_location(drawable));
 
     if (gc.lineWidth == 0) {
         if (glamor_prepare_access(drawable, GLAMOR_ACCESS_RW) &&

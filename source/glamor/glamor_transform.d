@@ -26,7 +26,9 @@ import build.dix_config;
 
 import glamor.glamor_priv;
 import glamor.glamor_transform;
-
+import glamor.glamor;
+import glamor.glamor_pixmap;;
+import dix.gc;
 
 /*
  * Set up rendering to target the specified drawable, computing an
@@ -159,7 +161,7 @@ Bool glamor_set_solid(DrawablePtr drawable, GCPtr gc, Bool use_alu, GLint unifor
 
     pixel = gc.fgPixel;
 
-    if (!glamor_set_alu(drawable, alu)) {
+    if (!glamor_set_alu(drawable, cast(ubyte)alu)) {
         switch (gc.alu) {
         case GXclear:
             pixel = 0;
@@ -258,7 +260,7 @@ private PixmapPtr glamor_get_stipple_pixmap(GCPtr gc)
     changes[0].val = 0xff;
     changes[1].val = 0x00;
     if (ChangeGC(null, scratch_gc,
-                 GCForeground|GCBackground, changes.ptr) != Success)
+                 cast(uint)(GCForeground|GCBackground), changes.ptr) != Success)
         goto bail_gc;
     ValidateGC(&pixmap.drawable, scratch_gc);
 

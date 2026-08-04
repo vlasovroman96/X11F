@@ -32,6 +32,9 @@ import include.dixfontstr;
 import glamor.glamor_transform;
 import include.servermd;
 //import externs.X11.X;
+import glamor.glamor;
+import fb.fbglyph;
+import glamor.glamor_pixmap;
 
 /*
  * Fill in the array of charinfo pointers for the provided characters. For
@@ -120,7 +123,7 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
 
     /* Set up the vertex buffers for the font and destination */
 
-    v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(count * (6 * GLshort.sizeof)), &vbo_offset);
+    v = cast(short*)glamor_get_vbo_space(drawable.pScreen, cast(uint)(count * (6 * GLshort.sizeof)), &vbo_offset);
 
     glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
     glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);
@@ -136,11 +139,11 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
     nglyph = 0;
 
     for (c = 0; c < count; c++) {
-        if ((ci = *charinfo++)) {
+        if ((ci = *charinfo++) !is null) {
             int x1 = x + ci.metrics.leftSideBearing;
             int y1 = y - ci.metrics.ascent;
-            int width = GLYPHWIDTHPIXELS(ci);
-            int height = GLYPHHEIGHTPIXELS(ci);
+            int width = mixin(GLYPHWIDTHPIXELS!("ci"));
+            int height = mixin(GLYPHHEIGHTPIXELS!("ci"));
             int tx = void, ty = 0;
             int row = 0, col = void;
             int second_row = 0;
@@ -171,12 +174,12 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
             /* adjust for second row layout */
             tx += second_row * glamor_font.row_width * 8;
 
-            v[ 0] = x1;
-            v[ 1] = y1;
-            v[ 2] = width;
-            v[ 3] = height;
-            v[ 4] = tx;
-            v[ 5] = ty;
+            v[ 0] = cast(short)x1;
+            v[ 1] = cast(short)y1;
+            v[ 2] = cast(short)width;
+            v[ 3] = cast(short)height;
+            v[ 4] = cast(short)tx;
+            v[ 5] = cast(short)ty;
 
             v += 6;
             nglyph++;
@@ -191,7 +194,7 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
 
         mixin(BUG_RETURN_VAL!("!pixmap_priv", "0"));
 
-        glamor_pixmap_loop(pixmap_priv, box_index); {
+        mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
             BoxPtr box = RegionRects(gc.pCompositeClip);
             int nbox = RegionNumRects(gc.pCompositeClip);
 
@@ -211,7 +214,7 @@ private int glamor_text(DrawablePtr drawable, GCPtr gc, glamor_font_t* glamor_fo
                 box++;
                 glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, nglyph);
             }
-        }
+        }));
         glDisable(GL_SCISSOR_TEST);
     }
 
@@ -418,7 +421,7 @@ private Bool glamor_image_text(DrawablePtr drawable, GCPtr gc, int x, int y, int
 
     glamor_make_current(glamor_priv);
 
-    if (TERMINALFONT(gc.font))
+    if (mixin(TERMINALFONT!("gc.font")))
         prog = &glamor_priv.te_text_prog;
     else
         prog = &glamor_priv.image_text_prog;
@@ -427,7 +430,7 @@ private Bool glamor_image_text(DrawablePtr drawable, GCPtr gc, int x, int y, int
         goto bail;
 
     if (!prog.prog) {
-        if (TERMINALFONT(gc.font)) {
+        if (mixin(TERMINALFONT!("gc.font"))) {
             prim_facet = &glamor_facet_te_text;
             fill_facet = null;
         } else {
@@ -439,7 +442,7 @@ private Bool glamor_image_text(DrawablePtr drawable, GCPtr gc, int x, int y, int
             goto bail;
     }
 
-    if (!TERMINALFONT(gc.font)) {
+    if (!mixin(TERMINALFONT!("gc.font"))) {
         int width = 0;
         int c = void;
         RegionRec region = void;
@@ -455,14 +458,14 @@ private Bool glamor_image_text(DrawablePtr drawable, GCPtr gc, int x, int y, int
                 width += charinfo[c].metrics.characterWidth;
 
         if (width >= 0) {
-            box.x1 = drawable.x + x;
-            box.x2 = drawable.x + x + width;
+            box.x1 = cast(short)(drawable.x + x);
+            box.x2 = cast(short)(drawable.x + x + width);
         } else {
-            box.x1 = drawable.x + x + width;
-            box.x2 = drawable.x + x;
+            box.x1 = cast(short)(drawable.x + x + width);
+            box.x2 = cast(short)(drawable.x + x);
         }
-        box.y1 = drawable.y + y - gc.font.info.fontAscent;
-        box.y2 = drawable.y + y + gc.font.info.fontDescent;
+        box.y1 = cast(short)(drawable.y + y - gc.font.info.fontAscent);
+        box.y2 = cast(short)(drawable.y + y + gc.font.info.fontDescent);
         RegionInit(&region, &box, 1);
         RegionIntersect(&region, &region, gc.pCompositeClip);
         RegionTranslate(&region, -drawable.x, -drawable.y);

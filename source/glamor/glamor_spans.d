@@ -27,6 +27,8 @@ import build.dix_config;
 import glamor.glamor_priv;
 import glamor.glamor_transform;
 import glamor.glamor_transfer;
+import glamor.glamor;
+import glamor.glamor_pixmap;
 
 glamor_program[4] fill_spans_progs;
 
@@ -74,7 +76,7 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(n * (4 * GLshort.sizeof)), &vbo_offset);
+        v = cast(short*)glamor_get_vbo_space(drawable.pScreen, cast(uint)(n * (4 * GLshort.sizeof)), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribDivisor(GLAMOR_VERTEX_POS, 1);
@@ -82,9 +84,9 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
                               4 * GLshort.sizeof, vbo_offset);
 
         for (c = 0; c < n; c++) {
-            v[0] = points.x;
-            v[1] = points.y;
-            v[2] = *widths++;
+            v[0] = cast(short)points.x;
+            v[1] = cast(short)points.y;
+            v[2] = cast(short)*widths++;
             points++;
             v += 4;
         }
@@ -99,17 +101,17 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
 
         /* Set up the vertex buffers for the points */
 
-        v = glamor_get_vbo_space(drawable.pScreen, cast(uint)(n * 8 * short.sizeof), &vbo_offset);
+        v = cast(short*)glamor_get_vbo_space(drawable.pScreen, cast(uint)(n * 8 * short.sizeof), &vbo_offset);
 
         glEnableVertexAttribArray(GLAMOR_VERTEX_POS);
         glVertexAttribPointer(GLAMOR_VERTEX_POS, 2, GL_SHORT, GL_FALSE,
                               2 * short.sizeof, vbo_offset);
 
         for (c = 0; c < n; c++) {
-            v[0] = points.x;           v[1] = points.y;
-            v[2] = points.x;           v[3] = points.y + 1;
-            v[4] = points.x + *widths; v[5] = points.y + 1;
-            v[6] = points.x + *widths; v[7] = points.y;
+            v[0] = cast(short)points.x;           v[1] = cast(short)points.y;
+            v[2] = cast(short)points.x;           v[3] = cast(short)(points.y + 1);
+            v[4] = cast(short)(points.x + *widths); v[5] = cast(short)(points.y + 1);
+            v[6] = cast(short)(points.x + *widths); v[7] = cast(short)points.y;
 
             widths++;
             points++;
@@ -121,7 +123,7 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
 
     glEnable(GL_SCISSOR_TEST);
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         int nbox = RegionNumRects(gc.pCompositeClip);
         BoxPtr box = RegionRects(gc.pCompositeClip);
 
@@ -141,7 +143,7 @@ private Bool glamor_fill_spans_gl(DrawablePtr drawable, GCPtr gc, int n, DDXPoin
                 glamor_glDrawArrays_GL_QUADS(glamor_priv, n);
             }
         }
-    }
+    }));
 
     ret = TRUE;
 
@@ -191,7 +193,7 @@ private Bool glamor_get_spans_gl(DrawablePtr drawable, int wmax, DDXPointPtr poi
 
     glamor_make_current(glamor_priv);
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         BoxPtr box = glamor_pixmap_box_at(pixmap_priv, box_index);
         glamor_pixmap_fbo* fbo = glamor_pixmap_fbo_at(pixmap_priv, box_index);
 
@@ -227,7 +229,7 @@ private Bool glamor_get_spans_gl(DrawablePtr drawable, int wmax, DDXPointPtr poi
             glReadPixels(x1 - box.x1, y - box.y1, x2 - x1, 1,
                          f.format, f.type, l);
         }
-    }
+    }));
 
     return TRUE;
 bail:
@@ -276,7 +278,7 @@ private Bool glamor_set_spans_gl(DrawablePtr drawable, GCPtr gc, char* src, DDXP
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-    glamor_pixmap_loop(pixmap_priv, box_index); {
+    mixin(glamor_pixmap_loop!("pixmap_priv", "box_index", q{
         BoxPtr box = glamor_pixmap_box_at(pixmap_priv, box_index);
         glamor_pixmap_fbo* fbo = glamor_pixmap_fbo_at(pixmap_priv, box_index);
 
@@ -336,7 +338,7 @@ private Bool glamor_set_spans_gl(DrawablePtr drawable, GCPtr gc, char* src, DDXP
             }
             s += PixmapBytePad(w, drawable.depth);
         }
-    }
+    }));
 
     return TRUE;
 

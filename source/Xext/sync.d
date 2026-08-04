@@ -87,6 +87,7 @@ import dix.extension;
 import os.utils;
 import os.WaitFor;
 import dix.events;
+import miext.sync.misync;
 // import include.misync_priv;
 
 /*
