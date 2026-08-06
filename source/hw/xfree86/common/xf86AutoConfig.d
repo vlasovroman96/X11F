@@ -48,8 +48,8 @@ import hw.xfree86.common.xf86MatchDrivers;
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
-import xf86platformBus_priv;
-import xf86pciBus;
+// import xf86platformBus_priv;
+// import xf86pciBus;
 version (__sparc__) {
 import hw.xfree86.common.xf86sbusBus_priv;;
 }
@@ -58,6 +58,14 @@ version (__sun) {
 import sys.visual_io;
 import core.stdc.ctype;
 }
+
+import os.log;;
+import xf86Option;
+import externs.gnu;
+import xf86Globals;
+import scan;
+
+
 
 /* Sections for the default built-in configuration. */
 
@@ -110,11 +118,11 @@ private void AppendToList(const(char)* s, const(char)*** list, int* lines)
 {
     char* str = void, newstr = void, p = void;
 
-    str = XNFstrdup(s);
+    str = cast(char*)XNFstrdup(s);
     for (p = strtok(str, "\n"); p; p = strtok(null, "\n")) {
         (*lines)++;
-        *list = XNFreallocarray(*list, *lines + 1, typeof(**list).sizeof);
-        newstr = XNFalloc(strlen(p) + 2);
+        *list = cast(const(char)**)XNFreallocarray(*list, *lines + 1, typeof(**list).sizeof);
+        newstr = cast(char*)XNFalloc(strlen(p) + 2);
         strcpy(newstr, p);
         strcat(newstr, "\n");
         (*list)[*lines - 1] = newstr;
@@ -158,7 +166,7 @@ void xf86AddMatchedDriver(XF86MatchedDrivers* md, const(char)* driver)
     }
 
     if (nmatches < MATCH_DRIVERS_LIMIT) {
-        md.matches[nmatches] = XNFstrdup(driver);
+        md.matches[nmatches] = cast(char*)XNFstrdup(driver);
         md.nmatches++;
     }
     else {
@@ -176,7 +184,7 @@ Bool xf86AutoConfig()
 
     /* Make sure config rec is there */
     if (xf86allocateConfig() != null) {
-        ret = CONFIG_OK;    /* OK so far */
+        ret = _ConfigStatus.CONFIG_OK;    /* OK so far */
     }
     else {
         LogMessageVerb(X_ERROR, 1, "Couldn't allocate Config record.\n");
@@ -212,7 +220,7 @@ Bool xf86AutoConfig()
 
     LogMessageVerb(X_DEFAULT, 3, "--- Start of built-in configuration ---\n");
     for (cp = builtinConfig; *cp; cp++)
-        xf86ErrorFVerb(3, "\t%s", *cp);
+        // xf86ErrorFVerb(3, "\t%s", *cp);
     LogMessageVerb(X_DEFAULT, 3, "--- End of built-in configuration ---\n");
 
     xf86initConfigFiles();
@@ -220,10 +228,10 @@ Bool xf86AutoConfig()
     ret = xf86HandleConfigFile(TRUE);
     FreeConfig();
 
-    if (ret != CONFIG_OK)
+    if (ret != _ConfigStatus.CONFIG_OK)
         LogMessageVerb(X_ERROR, 1, "Error parsing the built-in default configuration.\n");
 
-    return ret == CONFIG_OK;
+    return ret == _ConfigStatus.CONFIG_OK;
 }
 
 private void listPossibleVideoDrivers(XF86MatchedDrivers* md)
@@ -399,7 +407,7 @@ GDevPtr autoConfigDevice(GDevPtr preconf_device)
              * minus one for the already existing first one
              * plus one for the terminating NULL */
             for (; slp[num_screens].screen; num_screens++){}
-            xf86ConfigLayout.screens = XNFcallocarray(num_screens + md.nmatches,
+            xf86ConfigLayout.screens = cast(_screenlayoutrec*)XNFcallocarray(num_screens + md.nmatches,
                                                  screenLayoutRec.sizeof);
             xf86ConfigLayout.screens[0] = slp[0];
 

@@ -1,4 +1,4 @@
-module ephyr;
+module hw.kdrive.ephyr.ephyr;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -37,14 +37,14 @@ import os.client_priv;
 import os.osdep;
 import os.serverlock;
 
-import ephyr;
+import hw.kdrive.ephyr.ephyr;
 import include.inputstr;
 import include.scrnintstr;
-import ephyrlog;
+// import ephyrlog;
 
-version (GLAMOR) {
-import include.glamor;
-}
+// version (GLAMOR) {
+// import include.glamor;
+// }
 import hw.kdrive.ephyr.ephyr_glamor;
 import hw.kdrive.src.kdrive;
 import include.glx_extinit;

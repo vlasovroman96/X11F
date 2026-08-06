@@ -12,6 +12,8 @@ extern(C): __gshared:
 // // public //import stdbool;
 
 public import include.dix;
+public import include.dixstruct;
+
 
 /*
  * Tell damage extension that upcoming damage events for given clients

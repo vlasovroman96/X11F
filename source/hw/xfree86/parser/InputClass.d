@@ -106,7 +106,7 @@ XF86ConfInputClassPtr xf86parseInputClassSection()
     Bool negated = void;
     xf86MatchGroup* group = void;
 
-    parsePrologue(XF86ConfInputClassPtr, XF86ConfInputClassRec);
+    mixin(parsePrologue!("XF86ConfInputClassPtr", "XF86ConfInputClassRec"));
 
     /* Initialize MatchGroup lists */
     xorg_list_init(&ptr.match_product);

@@ -55,7 +55,7 @@ version (WITH_LIBDRM) {
 import externs.drm; /* For DRM_DEV_NAME */
 }
 
-import misc;
+import include.misc;
 
 enum CONFIG_FILE = SYSCONFDIR~ "/X11/Xwrapper.config";
 

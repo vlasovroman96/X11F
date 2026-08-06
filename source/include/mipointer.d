@@ -53,7 +53,7 @@ extern void  miDCInitialize(ScreenPtr, miPointerScreenFuncPtr);
 // extern void  miPointerGetScreen(DeviceIntPtr pDev);
 
 /* Returns the current cursor position. */
-extern void  miPointerGetPosition(DeviceIntPtr pDev, int* x, int* y);
+// extern void  miPointerGetPosition(DeviceIntPtr pDev, int* x, int* y);
 
 /* Moves the cursor to the specified position.  May clip the coordinates:
  * x and y are modified in-place. */

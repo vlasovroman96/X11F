@@ -70,6 +70,7 @@ import dix.extension;
 import os.log;
 import xfixes.xfixes;
 import dix.dixutils;
+import Xext.panoramiXprocs;
 
 struct PanoramiXInfo {
     XID id;
@@ -188,7 +189,7 @@ static void PanoramiXResetProc(_ExtensionEntry *);
  *	External references for functions and data variables
  */
 
-import panoramiXh;
+// import panoramiXh;
 
 int function(ClientPtr client)[256] SavedProcVector = null;
 

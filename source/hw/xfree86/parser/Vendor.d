@@ -90,7 +90,7 @@ private XF86ConfVendSubPtr xf86parseVendorSubSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfVendSubPtr, XF86ConfVendSubRec);
+    mixin(parsePrologue!("XF86ConfVendSubPtr", "XF86ConfVendSubRec"));
 
         while ((token = xf86getToken(VendorSubTab.ptr)) != ENDSUBSECTION) {
         switch (token) {
@@ -142,7 +142,7 @@ XF86ConfVendorPtr xf86parseVendorSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfVendorPtr, XF86ConfVendorRec);
+    mixin(parsePrologue!("XF86ConfVendorPtr", "XF86ConfVendorRec"));
 
         while ((token = xf86getToken(VendorTab.ptr)) != ENDSECTION) {
         switch (token) {

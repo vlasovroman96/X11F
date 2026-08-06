@@ -57,6 +57,45 @@ import xf86platformBus_priv;
 
 import include.xf86_OSproc;;
 import xf86VGAarbiter_priv;
+import os.log;
+import externs.attrs;
+import xf86Globals;
+import xf86platformBus;
+import xf86VGAarbiter;
+import xf86Option;
+import xf86platformBus;
+import externs.gnu;
+import include.optionstr;;
+
+
+// int xf86platformAddGPUDevices(DriverPtr drvp)
+// {
+//     Bool foundScreen = FALSE;
+//     GDevPtr* devList = void;
+//     int j = void;
+
+//     if (!drvp.platformProbe || !xf86Info.autoAddGPU)
+//         return FALSE;
+
+//     xf86MatchDevice(drvp.driverName, &devList);
+
+//     /* if autoaddgpu devices is enabled then go find any unclaimed platform
+//      * devices and add them as GPU screens */
+//     for (j = 0; j < xf86_num_platform_devices; j++) {
+//         if (probeSingleDevice(&xf86_platform_devices[j], drvp,
+//                               devList ?  devList[0] : null,
+//                               PLATFORM_PROBE_GPU_SCREEN))
+//             foundScreen = TRUE;
+//     }
+
+//     free(devList);
+
+//     return foundScreen;
+// }
+
+enum ACCEL_IS_SHARABLE = 0x100;
+enum IS_SHARED_ACCEL = 0x200;
+enum SA_PRIM_INIT_DONE = 0x400;
 
 struct  EntityRec{
     DriverPtr driver;
@@ -119,7 +158,7 @@ version (XSERVER_LIBPCIACCESS) {
     if (!foundScreen && (drv.Probe != null)) {
         LogMessageVerb(X_WARNING, 1, "Falling back to old probe method for %s\n",
                 drv.driverName);
-        foundScreen = (*drv.Probe) (drv, (detect_only) ? PROBE_DETECT
+        foundScreen = assumeNoGC(drv.Probe) (drv, (detect_only) ? PROBE_DETECT
                                      : PROBE_DEFAULT);
     }
 
@@ -177,7 +216,7 @@ Bool xf86BusConfig(Bool singleDriver)
      */
     for (i = 0; i < xf86NumDrivers; i++) {
         /* The order of the && operands below is essential! */
-        if (xf86CallDriverProbe(xf86DriverList[i], FALSE) && singleDriver)
+        if (xf86CallDriverProbe((xf86DriverList[i]), FALSE) && singleDriver)
             break;
     }
 
@@ -190,7 +229,7 @@ Bool xf86BusConfig(Bool singleDriver)
         xf86ProbeIgnorePrimary = TRUE;
         for (i = 0; i < xf86NumDrivers && xf86NumScreens == 0; i++) {
             /* The order of the && operands below is essential! */
-            if (xf86CallDriverProbe(xf86DriverList[i], FALSE) && singleDriver)
+            if (xf86CallDriverProbe((xf86DriverList[i]), FALSE) && singleDriver)
                 break;
         }
         xf86ProbeIgnorePrimary = FALSE;
@@ -295,7 +334,7 @@ BusType StringToBusType(const(char)* busID, const(char)** retID)
         return BUS_PCI;
     }
 
-    s = Xstrdup(busID);
+    s = cast(char*)Xstrdup(busID);
     p = strtok(s, ":");
     if (p == null || *p == 0) {
         free(s);
@@ -324,11 +363,11 @@ BusType StringToBusType(const(char)* busID, const(char)** retID)
 int xf86AllocateEntity()
 {
     xf86NumEntities++;
-    xf86Entities = XNFreallocarray(xf86Entities,
+    xf86Entities = cast(EntityRec*)XNFreallocarray(xf86Entities,
                                    xf86NumEntities, EntityPtr.sizeof);
-    xf86Entities[xf86NumEntities - 1] = XNFcallocarray(1, EntityRec.sizeof);
+    xf86Entities[xf86NumEntities - 1] = *(cast(EntityRec*)XNFcallocarray(1, EntityRec.sizeof));
     xf86Entities[xf86NumEntities - 1].entityPrivates =
-        XNFcallocarray(xf86EntityPrivateCount, DevUnion.sizeof);
+        cast(DevUnion*)XNFcallocarray(xf86EntityPrivateCount, DevUnion.sizeof);
     return xf86NumEntities - 1;
 }
 
@@ -379,11 +418,11 @@ void xf86AddEntityToScreen(ScrnInfoPtr pScrn, int entityIndex)
     }
 
     pScrn.numEntities++;
-    pScrn.entityList = XNFreallocarray(pScrn.entityList,
+    pScrn.entityList = cast(int*)XNFreallocarray(pScrn.entityList,
                                         pScrn.numEntities, int.sizeof);
     pScrn.entityList[pScrn.numEntities - 1] = entityIndex;
     xf86Entities[entityIndex].inUse = TRUE;
-    pScrn.entityInstanceList = XNFreallocarray(pScrn.entityInstanceList,
+    pScrn.entityInstanceList = cast(int*)XNFreallocarray(pScrn.entityInstanceList,
                                                 pScrn.numEntities,
                                                 int.sizeof);
     pScrn.entityInstanceList[pScrn.numEntities - 1] = 0;
@@ -476,7 +515,7 @@ void xf86AddDevToEntity(int entityIndex, GDevPtr dev)
 
     pEnt = xf86Entities[entityIndex];
     pEnt.numInstances++;
-    pEnt.devices = XNFreallocarray(pEnt.devices,
+    pEnt.devices = cast(_GDevRec**)XNFreallocarray(pEnt.devices,
                                     pEnt.numInstances, GDevPtr.sizeof);
     pEnt.devices[pEnt.numInstances - 1] = dev;
     dev.claimed = TRUE;
@@ -517,7 +556,7 @@ EntityInfoPtr xf86GetEntityInfo(int entityIndex)
     if (entityIndex >= xf86NumEntities)
         return null;
 
-    pEnt = XNFcallocarray(1, EntityInfoRec.sizeof);
+    pEnt = cast(_entityInfo*)XNFcallocarray(1, EntityInfoRec.sizeof);
     pEnt.index = entityIndex;
     pEnt.location = xf86Entities[entityIndex].bus;
     pEnt.active = xf86Entities[entityIndex].active;
@@ -634,7 +673,7 @@ int xf86AllocateEntityPrivateIndex()
     idx = xf86EntityPrivateCount++;
     for (i = 0; i < xf86NumEntities; i++) {
         pEnt = xf86Entities[i];
-        nprivs = XNFreallocarray(pEnt.entityPrivates,
+        nprivs = cast(DevUnion*)XNFreallocarray(pEnt.entityPrivates,
                                  xf86EntityPrivateCount, DevUnion.sizeof);
         /* Zero the new private */
         memset(&nprivs[idx], 0, DevUnion.sizeof);
@@ -696,7 +735,7 @@ version (XSERVER_PLATFORM_BUS) {
     * We have to check whether a platform device has previously
     * grabbed the device we are going to claim.
     */
-            msPath = xf86FindOptionValue(fb_ptr.options, "kmsdev");
+            msPath = xf86FindOptionValue(cast(_InputOption*)fb_ptr.options, "kmsdev".ptr);
             if (msPath == null) {
                 /* Autoconfigured */
                 msPath = "/dev/dri/card0";
@@ -709,7 +748,7 @@ version (XSERVER_PLATFORM_BUS) {
     * an autoconfigured device, or the device name can be set
     * via "fbdev" option.
     */
-            fbPath = xf86FindOptionValue(fb_ptr.options, "fbdev");
+            fbPath = xf86FindOptionValue(cast(_InputOption*)fb_ptr.options, "fbdev".ptr);
             if (fbPath == null) {
                 /* Autoconfigured */
                 fbPath = "";
@@ -785,7 +824,7 @@ version (XSERVER_LIBPCIACCESS) {
                     return FALSE;
                 }
                 /* Examine the first device only */
-                fbOther = xf86FindOptionValue(pent.devices[0].options, "fbdev");
+                fbOther = xf86FindOptionValue(cast(_InputOption*)pent.devices[0].options, "fbdev".ptr);
                 if (fbOther == null) {
                     /* Autoconfigured, reject */
                     LogMessageVerb(X_INFO, 1,
@@ -815,7 +854,7 @@ version (XSERVER_PLATFORM_BUS) {
         if (pent.bus.type == BUS_NONE) {
             if (!strcasecmp(pent.driver.driverName, "modesetting")) {
                 /* Examine the first device only */
-                msOther = xf86FindOptionValue(pent.devices[0].options, "kmsdev");
+                msOther = xf86FindOptionValue(cast(_InputOption*)pent.devices[0].options, "kmsdev".ptr);
                 if (msOther == null) {
 version (XSERVER_LIBPCIACCESS) {
                     if (pci_other == null)

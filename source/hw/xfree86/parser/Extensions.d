@@ -53,7 +53,7 @@ XF86ConfExtensionsPtr xf86parseExtensionsSection()
 {
     int token = void;
 
-    parsePrologue(XF86ConfExtensionsPtr, XF86ConfExtensionsRec);
+    mixin(parsePrologue!("XF86ConfExtensionsPtr", "XF86ConfExtensionsRec"));
 
     while ((token = xf86getToken(ExtensionsTab.ptr)) != ENDSECTION) {
         switch (token) {

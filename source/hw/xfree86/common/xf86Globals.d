@@ -41,7 +41,7 @@ import xf86_priv;
 import include.xf86Priv;
 import include.xf86Parser;
 import xf86Xinput;
-import xf86InPriv;
+// import xf86InPriv;
 import xf86Config;
 import include.xf86Xinput;
 

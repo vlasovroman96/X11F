@@ -1,4 +1,4 @@
-module ephyrcursor;
+module hw.kdrive.ephyr.ephyrcursor;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -34,10 +34,12 @@ import externs.xcb.xcb_renderutil;
 
 import mi.mipointer_priv;
 
-import ephyr;
-import ephyrlog;
+import hw.kdrive.ephyr.ephyr;
+// import ephyrlog;
 import hw.kdrive.ephyr.hostx;
 import include.cursorstr;
+import externs.xcb.xcb_image;
+import hw.kdrive.src.kdrive;
 
 private DevPrivateKeyRec ephyrCursorPrivateKey;
 
@@ -48,7 +50,7 @@ alias ephyrCursorPtr = _ephyrCursor*;
 
 private ephyrCursorPtr ephyrGetCursor(CursorPtr cursor)
 {
-    return dixGetPrivateAddr(&cursor.devPrivates, &ephyrCursorPrivateKey);
+    return cast(ephyrCursorPtr)dixGetPrivateAddr(&cursor.devPrivates, &ephyrCursorPrivateKey);
 }
 
 private void ephyrRealizeCoreCursor(EphyrScrPriv* scr, CursorPtr cursor)
@@ -64,7 +66,7 @@ private void ephyrRealizeCoreCursor(EphyrScrPriv* scr, CursorPtr cursor)
                       XCB_GC_FOREGROUND |
                       XCB_GC_BACKGROUND |
                       XCB_GC_CLIP_MASK;
-    uint[6] val = [
+    uint[5] val = [
         XCB_GX_COPY,    /* function */
         ~0,             /* planemask */
         1L,             /* foreground */
@@ -74,19 +76,19 @@ private void ephyrRealizeCoreCursor(EphyrScrPriv* scr, CursorPtr cursor)
 
     source = xcb_generate_id(conn);
     mask = xcb_generate_id(conn);
-    xcb_create_pixmap(conn, 1, source, scr.win, w, h);
-    xcb_create_pixmap(conn, 1, mask, scr.win, w, h);
+    xcb_create_pixmap(conn, 1, source, scr.win, cast(ushort)w, cast(ushort)h);
+    xcb_create_pixmap(conn, 1, mask, scr.win, cast(ushort)w, cast(ushort)h);
 
     gc = xcb_generate_id(conn);
     xcb_create_gc(conn, gc, source, gcmask, val.ptr);
 
-    image = xcb_image_create_native(conn, w, h, XCB_IMAGE_FORMAT_XY_BITMAP,
+    image = xcb_image_create_native(conn, cast(ushort)w, cast(ushort)h, XCB_IMAGE_FORMAT_XY_BITMAP,
                                     1, null, ~0, null);
     image.data = cursor.bits.source;
     xcb_image_put(conn, source, gc, image, 0, 0, 0);
     xcb_image_destroy(image);
 
-    image = xcb_image_create_native(conn, w, h, XCB_IMAGE_FORMAT_XY_BITMAP,
+    image = xcb_image_create_native(conn, cast(ushort)w, cast(ushort)h, XCB_IMAGE_FORMAT_XY_BITMAP,
                                     1, null, ~0, null);
     image.data = cursor.bits.mask;
     xcb_image_put(conn, mask, gc, image, 0, 0, 0);
@@ -138,13 +140,13 @@ private void ephyrRealizeARGBCursor(EphyrScrPriv* scr, CursorPtr cursor)
 
     /* dix' storage is PIXMAN_a8r8g8b8 */
     source = xcb_generate_id(conn);
-    xcb_create_pixmap(conn, 32, source, scr.win, w, h);
+    xcb_create_pixmap(conn, 32, source, scr.win, cast(ushort)w, cast(ushort)h);
 
     gc = xcb_generate_id(conn);
     xcb_create_gc(conn, gc, source, 0, null);
-    image = xcb_image_create_native(conn, w, h, XCB_IMAGE_FORMAT_Z_PIXMAP,
+    image = xcb_image_create_native(conn, cast(ushort)w, cast(ushort)h, XCB_IMAGE_FORMAT_Z_PIXMAP,
                                     32, null, ~0, null);
-    image.data = cast(void*)cursor.bits.argb;
+    image.data = cast(ubyte*)cursor.bits.argb;
     xcb_image_put(conn, source, gc, image, 0, 0, 0);
     xcb_free_gc(conn, gc);
     xcb_image_destroy(image);
@@ -175,7 +177,7 @@ private Bool ephyrRealizeCursor(DeviceIntPtr dev, ScreenPtr screen, CursorPtr cu
 {
     mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kscr = pScreenPriv.screen;
-    EphyrScrPriv* scr = kscr.driver;
+    EphyrScrPriv* scr = cast(EphyrScrPriv*)kscr.driver;
 
     if (cursor.bits.argb && can_argb_cursor())
         ephyrRealizeARGBCursor(scr, cursor);
@@ -202,7 +204,7 @@ private void ephyrSetCursor(DeviceIntPtr dev, ScreenPtr screen, CursorPtr cursor
 {
     mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kscr = pScreenPriv.screen;
-    EphyrScrPriv* scr = kscr.driver;
+    EphyrScrPriv* scr = cast(EphyrScrPriv*)kscr.driver;
     uint attr = None;
 
     if (cursor)

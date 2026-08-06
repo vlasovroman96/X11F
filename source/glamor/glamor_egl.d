@@ -160,6 +160,12 @@ glamor_egl_get_display2(EGLint type, void *native, bool platform_fallback)
     return platform_fallback ? eglGetDisplay(native) : null;
 }
 
+EGLDisplay
+glamor_egl_get_display(EGLint type, void *native)
+{
+    return glamor_egl_get_display2(type, native, true);
+}
+
 void glamor_egl_destroy_display(EGLDisplay dpy)
 {
     int num_found = 0;

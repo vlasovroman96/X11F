@@ -47,6 +47,10 @@ import include.xf86Priv;
 import include.xf86_OSproc;;
 
 import xf86Xinput;
+import hw.xfree86.common.xf86Helper;
+import xf86Globals;
+import dix.events;
+import os.log;
 
 version (XFreeXDGA) {
 import include.dgaproc;
@@ -91,7 +95,7 @@ private xf86ScreenLayoutRec[MAXSCREENS] xf86ScreenLayout;
 void xf86InitViewport(ScrnInfoPtr pScr)
 {
 
-    pScr.PointerMoved = xf86PointerMoved;
+    pScr.PointerMoved = &xf86PointerMoved;
 
     /*
      * Compute the initial Viewport if necessary
@@ -313,7 +317,7 @@ void xf86ZoomViewport(ScreenPtr pScreen, int zoom)
     ScrnInfoPtr pScr = xf86ScreenToScrn(pScreen);
     DisplayModePtr mode = void;
 
-    if (pScr.zoomLocked || ((mode = pScr.currentMode) == 0))
+    if (pScr.zoomLocked || ((mode = pScr.currentMode) is null))
         return;
 
     do {
@@ -357,7 +361,7 @@ private Bool xf86CursorOffScreen(ScreenPtr* pScreen, int* x, int* y)
         if (tmp >= (*pScreen).height)
             tmp = (*pScreen).height - 1;
 
-        if ((edge = xf86ScreenLayout[(*pScreen).myNum].left))
+        if ((edge = xf86ScreenLayout[(*pScreen).myNum].left) !is null)
             edge = FindEdge(edge, tmp);
 
         if (!edge)
@@ -376,7 +380,7 @@ private Bool xf86CursorOffScreen(ScreenPtr* pScreen, int* x, int* y)
         if (tmp >= (*pScreen).height)
             tmp = (*pScreen).height - 1;
 
-        if ((edge = xf86ScreenLayout[(*pScreen).myNum].right))
+        if ((edge = xf86ScreenLayout[(*pScreen).myNum].right)!is null)
             edge = FindEdge(edge, tmp);
 
         if (!edge)
@@ -395,7 +399,7 @@ private Bool xf86CursorOffScreen(ScreenPtr* pScreen, int* x, int* y)
         if (tmp >= (*pScreen).width)
             tmp = (*pScreen).width - 1;
 
-        if ((edge = xf86ScreenLayout[(*pScreen).myNum].up))
+        if ((edge = xf86ScreenLayout[(*pScreen).myNum].up)!is null)
             edge = FindEdge(edge, tmp);
 
         if (!edge)
@@ -414,7 +418,7 @@ private Bool xf86CursorOffScreen(ScreenPtr* pScreen, int* x, int* y)
         if (tmp >= (*pScreen).width)
             tmp = (*pScreen).width - 1;
 
-        if ((edge = xf86ScreenLayout[(*pScreen).myNum].down))
+        if ((edge = xf86ScreenLayout[(*pScreen).myNum].down)!is null)
             edge = FindEdge(edge, tmp);
 
         if (!edge)
@@ -472,7 +476,7 @@ private xf86EdgePtr AddEdge(xf86EdgePtr edge, short min, short max, short dx, sh
         }
 
         if (!pEdge) {
-            if (((pNew = cast(xf86EdgeRec*) calloc(1, xf86EdgeRec.sizeof)) == 0))
+            if (((pNew = cast(xf86EdgeRec*) calloc(1, xf86EdgeRec.sizeof)) is null))
                 break;
 
             pNew.screen = screen;
@@ -490,7 +494,7 @@ private xf86EdgePtr AddEdge(xf86EdgePtr edge, short min, short max, short dx, sh
             break;
         }
         else if (min < pEdge.start) {
-            if (((pNew = cast(xf86EdgeRec*) calloc(1, xf86EdgeRec.sizeof)) == 0))
+            if (((pNew = cast(xf86EdgeRec*) calloc(1, xf86EdgeRec.sizeof)) is null))
                 break;
 
             pNew.screen = screen;
@@ -534,7 +538,7 @@ private void FillOutEdge(xf86EdgePtr pEdge, int limit)
     if (pEdge.start > 0)
         pEdge.start = 0;
 
-    while ((pNext = pEdge.next)) {
+    while ((pNext = pEdge.next) !is null) {
         diff = pNext.start - pEdge.end;
         if (diff > 0) {
             pEdge.end += diff >> 1;
@@ -544,7 +548,7 @@ private void FillOutEdge(xf86EdgePtr pEdge, int limit)
     }
 
     if (pEdge.end < limit)
-        pEdge.end = limit;
+        pEdge.end = cast(short)limit;
 }
 
 /*
@@ -597,7 +601,7 @@ void xf86InitOrigins()
                     pLayout.left = AddEdge(pLayout.left,
                                             0, pScreen.height,
                                             xf86Screens[ref_].pScreen.width, 0,
-                                            ref_);
+                                            cast(short)ref_);
                 }
                 if (screen.right) {
                     ref_ = screen.right.screennum;
@@ -607,7 +611,7 @@ void xf86InitOrigins()
                     }
                     pLayout.right = AddEdge(pLayout.right,
                                              0, pScreen.height,
-                                             -pScreen.width, 0, ref_);
+                                             cast(short)-pScreen.width, 0, cast(short)ref_);
                 }
                 if (screen.top) {
                     ref_ = screen.top.screennum;
@@ -618,7 +622,7 @@ void xf86InitOrigins()
                     pLayout.up = AddEdge(pLayout.up,
                                           0, pScreen.width,
                                           0, xf86Screens[ref_].pScreen.height,
-                                          ref_);
+                                          cast(short)ref_);
                 }
                 if (screen.bottom) {
                     ref_ = screen.bottom.screennum;
@@ -628,15 +632,16 @@ void xf86InitOrigins()
                     }
                     pLayout.down = AddEdge(pLayout.down,
                                             0, pScreen.width, 0,
-                                            -pScreen.height, ref_);
+                                            cast(short)-pScreen.height, cast(short)ref_);
                 }
                 /* we could also try to place it based on those
                    relative locations if we wanted to */
                 screen.x = screen.y = 0;
                 /* FALLTHROUGH */
+                goto case PosAbsolute;
             case PosAbsolute:
-                pScreen.x = screen.x;
-                pScreen.y = screen.y;
+                pScreen.x = cast(short)screen.x;
+                pScreen.y = cast(short)screen.y;
                 screensLeft &= ~(1 << i);
                 break;
             case PosRelative:
@@ -648,8 +653,8 @@ void xf86InitOrigins()
                 if (screensLeft & (1 << ref_))
                     break;
                 refScreen = xf86Screens[ref_].pScreen;
-                pScreen.x = refScreen.x + screen.x;
-                pScreen.y = refScreen.y + screen.y;
+                pScreen.x = cast(short)(refScreen.x + screen.x);
+                pScreen.y = cast(short)(refScreen.y + screen.y);
                 screensLeft &= ~(1 << i);
                 break;
             case PosRightOf:
@@ -661,8 +666,8 @@ void xf86InitOrigins()
                 if (screensLeft & (1 << ref_))
                     break;
                 refScreen = xf86Screens[ref_].pScreen;
-                pScreen.x = refScreen.x + refScreen.width;
-                pScreen.y = refScreen.y;
+                pScreen.x = cast(short)(refScreen.x + refScreen.width);
+                pScreen.y = cast(short)(refScreen.y);
                 screensLeft &= ~(1 << i);
                 break;
             case PosLeftOf:
@@ -674,8 +679,8 @@ void xf86InitOrigins()
                 if (screensLeft & (1 << ref_))
                     break;
                 refScreen = xf86Screens[ref_].pScreen;
-                pScreen.x = refScreen.x - pScreen.width;
-                pScreen.y = refScreen.y;
+                pScreen.x = cast(short)(refScreen.x - pScreen.width);
+                pScreen.y = cast(short)(refScreen.y);
                 screensLeft &= ~(1 << i);
                 break;
             case PosBelow:
@@ -687,8 +692,8 @@ void xf86InitOrigins()
                 if (screensLeft & (1 << ref_))
                     break;
                 refScreen = xf86Screens[ref_].pScreen;
-                pScreen.x = refScreen.x;
-                pScreen.y = refScreen.y + refScreen.height;
+                pScreen.x = cast(short)(refScreen.x);
+                pScreen.y = cast(short)(refScreen.y + refScreen.height);
                 screensLeft &= ~(1 << i);
                 break;
             case PosAbove:
@@ -700,8 +705,8 @@ void xf86InitOrigins()
                 if (screensLeft & (1 << ref_))
                     break;
                 refScreen = xf86Screens[ref_].pScreen;
-                pScreen.x = refScreen.x;
-                pScreen.y = refScreen.y - pScreen.height;
+                pScreen.x = cast(short)(refScreen.x);
+                pScreen.y = cast(short)(refScreen.y - pScreen.height);
                 screensLeft &= ~(1 << i);
                 break;
             default:
@@ -781,14 +786,14 @@ void xf86InitOrigins()
                         max = pScreen.height;
 
                     if (((left - 1) >= x1) && ((left - 1) < x2))
-                        pLayout.left = AddEdge(pLayout.left, min, max,
-                                                pScreen.x - refScreen.x,
-                                                pScreen.y - refScreen.y, j);
+                        pLayout.left = AddEdge(pLayout.left, cast(short)min, cast(short)max,
+                                                cast(short)(pScreen.x - refScreen.x),
+                                                cast(short)(pScreen.y - refScreen.y), cast(short)j);
 
                     if ((right >= x1) && (right < x2))
-                        pLayout.right = AddEdge(pLayout.right, min, max,
-                                                 pScreen.x - refScreen.x,
-                                                 pScreen.y - refScreen.y, j);
+                        pLayout.right = AddEdge(pLayout.right, cast(short)min, cast(short)max,
+                                                 cast(short)(pScreen.x - refScreen.x),
+                                                 cast(short)(pScreen.y - refScreen.y), cast(short)j);
                 }
 
                 if ((left < x2) && (right > x1)) {
@@ -800,14 +805,14 @@ void xf86InitOrigins()
                         max = pScreen.width;
 
                     if (((top - 1) >= y1) && ((top - 1) < y2))
-                        pLayout.up = AddEdge(pLayout.up, min, max,
-                                              pScreen.x - refScreen.x,
-                                              pScreen.y - refScreen.y, j);
+                        pLayout.up = AddEdge(pLayout.up, cast(short)min, cast(short)max,
+                                              cast(short)(pScreen.x - refScreen.x),
+                                              cast(short)(pScreen.y - refScreen.y), cast(short)j);
 
                     if ((bottom >= y1) && (bottom < y2))
-                        pLayout.down = AddEdge(pLayout.down, min, max,
-                                                pScreen.x - refScreen.x,
-                                                pScreen.y - refScreen.y, j);
+                        pLayout.down = AddEdge(pLayout.down, cast(short)min, cast(short)max,
+                                                cast(short)(pScreen.x - refScreen.x),
+                                                cast(short)(pScreen.y - refScreen.y), cast(short)j);
                 }
             }
         }

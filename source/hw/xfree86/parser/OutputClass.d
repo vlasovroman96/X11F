@@ -76,7 +76,7 @@ XF86ConfOutputClassPtr xf86parseOutputClassSection()
     int token = void;
     xf86MatchGroup* group = void;
 
-    parsePrologue(XF86ConfOutputClassPtr, XF86ConfOutputClassRec);
+    mixin(parsePrologue!("XF86ConfOutputClassPtr", "XF86ConfOutputClassRec"));
 
     /* MatchGroup and MatchLayout lists are zeroed by parsePrologue(),
      * which is equivalent to xorg_list_init() */

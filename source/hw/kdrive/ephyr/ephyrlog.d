@@ -49,20 +49,20 @@ LogMessageVerb(X_NOTICE, INFO_LOG_LEVEL, __VA_ARGS__)`;
 }                          /*nomadik_log */
 
 version (EPHYR_LOG_ERROR) {} else {
-enum string EPHYR_LOG_ERROR() = `
-LogMessageVerb(X_NOTICE, ERROR_LOG_LEVEL, "Error:in %s:%d:%s: ",
-                      __FILE__, __LINE__, __FUNCTION__.ptr) ; 
-LogMessageVerb(X_NOTICE, ERROR_LOG_LEVEL, __VA_ARGS__)`;
+enum string EPHYR_LOG_ERROR() = ``;
+// LogMessageVerb(X_NOTICE, ERROR_LOG_LEVEL, "Error:in %s:%d:%s: ",
+//                       __FILE__, __LINE__, __FUNCTION__.ptr) ; 
+// // LogMessageVerb(X_NOTICE, ERROR_LOG_LEVEL, __VA_ARGS__)`;
 }                          /*EPHYR_LOG_ERROR */
 
 version (EPHYR_RETURN_IF_FAIL) {} else {
-enum string EPHYR_RETURN_IF_FAIL(string cond) = `
-if (!(` ~ cond ~ `)) {` ~ EPHYR_LOG_ERROR!(`"condition %s failed\n"`~`, #cond`) ~ `;return;}`;
+enum string EPHYR_RETURN_IF_FAIL(string cond) = ``;
+// if (!(` ~ cond ~ `)) {` ~ EPHYR_LOG_ERROR!(`"condition %s failed\n"`~`, #cond`) ~ `;return;}`;
 }                          /*nomadik_return_if_fail */
 
 version (EPHYR_RETURN_VAL_IF_FAIL) {} else {
-enum string EPHYR_RETURN_VAL_IF_FAIL(string cond,string val) = `
-if (!(` ~ cond ~ `)) {` ~ EPHYR_LOG_ERROR!(`"condition %s failed\n"`~`, #cond`) ~ `;return ` ~ val ~ `;}`;
+enum string EPHYR_RETURN_VAL_IF_FAIL(string cond,string val) = ``;
+// if (!(` ~ cond ~ `)) {` ~ EPHYR_LOG_ERROR!() ~ `;return ` ~ val ~ `;}`;
 }                          /*nomadik_return_val_if_fail */
 
  /*__EPHYRLOG_H__*/

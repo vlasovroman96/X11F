@@ -107,7 +107,7 @@ private XF86ConfDisplayPtr xf86parseDisplaySubSection()
 {
     int token = void;
 
-    parsePrologue(XF86ConfDisplayPtr, XF86ConfDisplayRec);
+    mixin(parsePrologue!("XF86ConfDisplayPtr", "XF86ConfDisplayRec"));
 
         ptr.disp_black.red = ptr.disp_black.green = ptr.disp_black.blue = -1;
     ptr.disp_white.red = ptr.disp_white.green = ptr.disp_white.blue = -1;
@@ -246,7 +246,7 @@ XF86ConfScreenPtr xf86parseScreenSection()
     int has_driver = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfScreenPtr, XF86ConfScreenRec);
+    mixin(parsePrologue!("XF86ConfScreenPtr", "XF86ConfScreenRec"));
 
         while ((token = xf86getToken(ScreenTab.ptr)) != ENDSECTION) {
         switch (token) {

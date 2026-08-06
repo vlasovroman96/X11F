@@ -57,7 +57,7 @@ else
  * The verbosity level of logging to console. All messages with verbosity
  * level below this one will be written to stderr
  */
-extern int xorgLogVerbosity;
+// extern int xorgLogVerbosity;
 
 /**
  * @brief log file verbosity
@@ -72,7 +72,7 @@ extern int xorgLogFileVerbosity;
  *
  * If set to TRUE, force fsync() on each log write.
  */
-extern Bool xorgLogSync;
+// extern Bool xorgLogSync;
 
 /**
  * @brief syslog verbosity

@@ -82,8 +82,8 @@ import hw.kdrive.src.kxv;
 }
 
 }
-import ephyrlog;
-import ephyr;
+// import ephyrlog;
+import hw.kdrive.ephyr.ephyr;
 import externs.xcb.xcbext;
 
 
@@ -1397,7 +1397,7 @@ int hostx_get_visuals_info(EphyrHostVisualInfo** a_visuals, int* a_num_entries)
     xcb_screen_iterator_t screens = void;
     xcb_depth_iterator_t depths = void;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_visuals && a_num_entries, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_visuals && a_num_entries", "FALSE"));
     EPHYR_LOG("enter\n");
 
     screens = xcb_setup_roots_iterator(xcb_get_setup(HostX.conn));
@@ -1452,7 +1452,7 @@ int hostx_create_window(int a_screen_number, EphyrBox* a_geometry, int a_visual_
     int depth = 0;
     EphyrScrPriv* scrpriv = HostX.screens[a_screen_number].driver;
 
-    EPHYR_RETURN_VAL_IF_FAIL(screen && a_geometry, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("screen && a_geometry", "FALSE"));
 
     EPHYR_LOG("enter\n");
 
@@ -1518,7 +1518,7 @@ int hostx_set_window_geometry(int a_win, EphyrBox* a_geo)
                   | XCB_CONFIG_WINDOW_HEIGHT;
     uint[4] values = void;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_geo, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_geo", "FALSE"));
 
     EPHYR_LOG("enter. x,y,w,h:(%d,%d,%d,%d)\n",
               a_geo.x, a_geo.y, a_geo.width, a_geo.height);
@@ -1539,7 +1539,7 @@ int hostx_set_window_bounding_rectangles(int a_window, EphyrRect* a_rects, int a
     int i = 0;
     xcb_rectangle_t* rects = null;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_rects, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_rects", "FALSE"));
 
     EPHYR_LOG("enter. num rects:%d\n", a_num_rects);
 

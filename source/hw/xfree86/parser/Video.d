@@ -89,7 +89,7 @@ private XF86ConfVideoPortPtr xf86parseVideoPortSubSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfVideoPortPtr, XF86ConfVideoPortRec);
+    mixin(parsePrologue!("XF86ConfVideoPortPtr", "XF86ConfVideoPortRec"));
 
         while ((token = xf86getToken(VideoPortTab.ptr)) != ENDSUBSECTION) {
         switch (token) {
@@ -145,7 +145,7 @@ XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfVideoAdaptorPtr, XF86ConfVideoAdaptorRec);
+    mixin(parsePrologue!("XF86ConfVideoAdaptorPtr", "XF86ConfVideoAdaptorRec"));
 
         while ((token = xf86getToken(VideoAdaptorTab.ptr)) != ENDSECTION) {
         switch (token) {

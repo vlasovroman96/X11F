@@ -43,7 +43,7 @@ version (DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
-import xf86VGAarbiter_priv;
+// import xf86VGAarbiter_priv;
 
 version (DPMSExtension) {
 private void xf86DPMS(ScreenPtr pScreen, int level)

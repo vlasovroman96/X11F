@@ -36,10 +36,10 @@ import config.dbus_core;
 import config.hotplug_priv;
 
 import include.os;
-import linux;
+import hw.xfree.os_support.linux.linux;
 import hw.xfree86.os_support.xf86_os_support;
 import xf86_priv;
-import xf86platformBus_priv;
+// import xf86platformBus_priv;
 import xf86Xinput_priv;
 import include.xf86Priv;
 import include.globals;

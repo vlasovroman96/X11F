@@ -30,6 +30,8 @@ from The Open Group.
 
 */
 import include.gc;
+import include.pixmapstr;;
+
  
 extern void  miChangeGC(GCPtr pGC, c_ulong mask);
 

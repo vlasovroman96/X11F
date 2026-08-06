@@ -30,7 +30,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-version (XSERVER_PLATFORM_BUS) {
+// version (XSERVER_PLATFORM_BUS) {
 import core.stdc.errno;
 
 import externs.pciaccess;
@@ -43,10 +43,10 @@ import randr.randrstr_priv;
 import os.osdep;
 
 import include.os;
-import os_support.linux.systemd_logind;
+import hw.xfree86.os_support.linux.systemd_logind;
 
 import xf86_pci_priv;
-import loaderProcs;
+import hw.xfree86.loader.loaderProcs;
 import xf86_priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSproc;;
@@ -59,6 +59,8 @@ import xf86platformBus_priv;
 import xf86Xinput_priv;
 import xf86Config;
 import include.xf86Crtc;
+import include.xf86Parser;
+import hw.xfree86.common.xf86MatchDrivers;
 
 int xf86_num_platform_devices;
 
@@ -121,12 +123,12 @@ private Bool xf86IsPrimaryPlatform(xf86_platform_device* plat)
 
     if (primaryBus.type == BUS_PLATFORM)
         return plat == primaryBus.id.plat;
-version (XSERVER_LIBPCIACCESS) {
-    if (primaryBus.type == BUS_PCI)
-        if (plat.pdev)
-            if (MATCH_PCI_DEVICES(primaryBus.id.pci, plat.pdev))
-                return TRUE;
-}
+// version (XSERVER_LIBPCIACCESS) {
+//     if (primaryBus.type == BUS_PCI)
+//         if (plat.pdev)
+//             if (MATCH_PCI_DEVICES(primaryBus.id.pci, plat.pdev))
+//                 return TRUE;
+// }
     return FALSE;
 }
 
@@ -213,10 +215,10 @@ void xf86PlatformMatchDriver(XF86MatchedDrivers* md)
             xf86OutputClassDriverList(i, md);
 
             info = xf86_platform_devices[i].pdev;
-version (linux) {
-            if (info)
-                xf86MatchDriverFromFiles(info.vendor_id, info.device_id, md);
-}
+// version (linux) {
+//             if (info)
+//                 xf86MatchDriverFromFiles(info.vendor_id, info.device_id, md);
+// }
 
             if (info != null) {
                 xf86VideoPtrToDriverList(info, md);
@@ -864,4 +866,4 @@ int _xf86_get_platform_device_int_attrib(xf86_platform_device* device, int attri
     }
 }
 
-} /* XSERVER_PLATFORM_BUS */
+// } /* XSERVER_PLATFORM_BUS */

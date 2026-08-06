@@ -38,9 +38,12 @@ import externs.xcb.xv;
 import ephyrlog;
 import hw.kdrive.src.kdrive;
 import hw.kdrive.src.kxv;
-import ephyr;
+import hw.kdrive.ephyr.ephyr;
 import hw.kdrive.ephyr.hostx;
 import include.xvdix;
+import externs.X11.extensions.Xv;
+import include.xf86xv;
+
 
 struct _EphyrXVPriv {
     xcb_xv_query_adaptors_reply_t* host_adaptors;
@@ -115,7 +118,7 @@ private Bool ephyrLocalAtomToHost(int a_local_atom, int* a_host_atom)
     xcb_intern_atom_reply_t* reply = void;
     const(char)* atom_name = null;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_host_atom, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_host_atom", "FALSE"));
 
     if (!ValidAtom(a_local_atom))
         return FALSE;
@@ -125,10 +128,10 @@ private Bool ephyrLocalAtomToHost(int a_local_atom, int* a_host_atom)
     if (!atom_name)
         return FALSE;
 
-    cookie = xcb_intern_atom(conn, FALSE, strlen(atom_name), atom_name);
+    cookie = xcb_intern_atom(conn, FALSE, cast(ushort)strlen(atom_name), atom_name);
     reply = xcb_intern_atom_reply(conn, cookie, null);
     if (!reply || reply.atom == None) {
-        EPHYR_LOG_ERROR("no atom for string %s defined in host X\n", atom_name);
+        // EPHYR_LOG_ERROR("no atom for string %s defined in host X\n", atom_name);
         return FALSE;
     }
 
@@ -150,15 +153,15 @@ Bool ephyrInitVideo(ScreenPtr pScreen)
     KdScreenInfo* screen = pScreenPriv.screen;
     static EphyrXVPriv* xv_priv;
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     if (screen.fb.bitsPerPixel == 8) {
-        EPHYR_LOG_ERROR("8 bits depth not supported\n");
+        // EPHYR_LOG_ERROR("8 bits depth not supported\n");
         return FALSE;
     }
 
     if (!hostx_has_extension(&xcb_xv_id)) {
-        EPHYR_LOG_ERROR("Host has no XVideo extension\n");
+        // EPHYR_LOG_ERROR("Host has no XVideo extension\n");
         return FALSE;
     }
 
@@ -166,12 +169,12 @@ Bool ephyrInitVideo(ScreenPtr pScreen)
         xv_priv = ephyrXVPrivNew();
     }
     if (!xv_priv) {
-        EPHYR_LOG_ERROR("failed to create xv_priv\n");
+        // EPHYR_LOG_ERROR("failed to create xv_priv\n");
         goto out_;
     }
 
     if (!ephyrXVPrivRegisterAdaptors(xv_priv, pScreen)) {
-        EPHYR_LOG_ERROR("failed to register adaptors\n");
+        // EPHYR_LOG_ERROR("failed to register adaptors\n");
         goto out_;
     }
     is_ok = TRUE;
@@ -184,24 +187,24 @@ private EphyrXVPriv* ephyrXVPrivNew()
 {
     EphyrXVPriv* xv_priv = null;
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     xv_priv = cast(EphyrXVPriv*) cast(EphyrXVPriv*) calloc(1, EphyrXVPriv.sizeof);
     if (!xv_priv) {
-        EPHYR_LOG_ERROR("failed to create EphyrXVPriv\n");
+        // EPHYR_LOG_ERROR("failed to create EphyrXVPriv\n");
         goto error;
     }
 
     if (!ephyrXVPrivQueryHostAdaptors(xv_priv)) {
-        EPHYR_LOG_ERROR("failed to query the host x for xv properties\n");
+        // EPHYR_LOG_ERROR("failed to query the host x for xv properties\n");
         goto error;
     }
     if (!ephyrXVPrivSetAdaptorsHooks(xv_priv)) {
-        EPHYR_LOG_ERROR("failed to set xv_priv hooks\n");
+        // EPHYR_LOG_ERROR("failed to set xv_priv hooks\n");
         goto error;
     }
 
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
     return xv_priv;
 
  error:
@@ -214,7 +217,7 @@ private EphyrXVPriv* ephyrXVPrivNew()
 
 private void ephyrXVPrivDelete(EphyrXVPriv* a_this)
 {
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     if (!a_this)
         return;
@@ -225,7 +228,7 @@ private void ephyrXVPrivDelete(EphyrXVPriv* a_this)
     free(a_this.adaptors);
     a_this.adaptors = null;
     free(a_this);
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
 }
 
 private Bool translate_video_encodings(KdVideoAdaptorPtr adaptor, xcb_xv_adaptor_info_t* host_adaptor)
@@ -242,7 +245,7 @@ private Bool translate_video_encodings(KdVideoAdaptorPtr adaptor, xcb_xv_adaptor
         return FALSE;
 
     adaptor.nEncodings = reply.num_encodings;
-    adaptor.pEncodings = calloc(adaptor.nEncodings,
+    adaptor.pEncodings = cast(KdVideoEncodingPtr)calloc(adaptor.nEncodings,
                                   typeof(*adaptor.pEncodings).sizeof);
     if (!adaptor.pEncodings) {
         free(reply);
@@ -281,10 +284,10 @@ private Bool translate_xv_attributes(KdVideoAdaptorPtr adaptor, xcb_xv_adaptor_i
         return FALSE;
 
     adaptor.nAttributes = reply.num_attributes;
-    adaptor.pAttributes = calloc(reply.num_attributes,
+    adaptor.pAttributes = cast(_XvAttributeRec*)calloc(reply.num_attributes,
                                   typeof(*adaptor.pAttributes).sizeof);
     if (!adaptor.pAttributes) {
-        EPHYR_LOG_ERROR("failed to allocate attributes\n");
+        // EPHYR_LOG_ERROR("failed to allocate attributes\n");
         free(reply);
         return FALSE;
     }
@@ -321,7 +324,7 @@ private Bool translate_xv_image_formats(KdVideoAdaptorPtr adaptor, xcb_xv_adapto
         return FALSE;
 
     adaptor.nImages = reply.num_formats;
-    adaptor.pImages = calloc(reply.num_formats, XvImageRec.sizeof);
+    adaptor.pImages = cast(_XvImageRec*)calloc(reply.num_formats, XvImageRec.sizeof);
     if (!adaptor.pImages) {
         free(reply);
         return FALSE;
@@ -334,7 +337,7 @@ private Bool translate_xv_image_formats(KdVideoAdaptorPtr adaptor, xcb_xv_adapto
         image.id = formats[i].id;
         image.type = formats[i].type;
         image.byte_order = formats[i].byte_order;
-        memcpy(image.guid, formats[i].guid, 16);
+        memcpy(image.guid.ptr, formats[i].guid.ptr, 16);
         image.bits_per_pixel = formats[i].bpp;
         image.format = formats[i].format;
         image.num_planes = formats[i].num_planes;
@@ -351,7 +354,7 @@ private Bool translate_xv_image_formats(KdVideoAdaptorPtr adaptor, xcb_xv_adapto
         image.vert_y_period = formats[i].vvert_y_period;
         image.vert_u_period = formats[i].vvert_u_period;
         image.vert_v_period = formats[i].vvert_v_period;
-        memcpy(image.component_order, formats[i].vcomp_order, 32);
+        memcpy(image.component_order.ptr, formats[i].vcomp_order.ptr, 32);
         image.scanline_order = formats[i].vscanline_order;
     }
 
@@ -368,16 +371,16 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
     xcb_generic_error_t* e = null;
     xcb_xv_adaptor_info_iterator_t it = void;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_this, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_this", "FALSE"));
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     {
         xcb_xv_query_adaptors_cookie_t cookie = xcb_xv_query_adaptors(conn, xscreen.root);
         a_this.host_adaptors = xcb_xv_query_adaptors_reply(conn, cookie, &e);
         if (e) {
             free(e);
-            EPHYR_LOG_ERROR("failed to query host adaptors\n");
+            // EPHYR_LOG_ERROR("failed to query host adaptors\n");
             goto out_;
         }
     }
@@ -385,18 +388,18 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
     if (a_this.host_adaptors)
         a_this.num_adaptors = a_this.host_adaptors.num_adaptors;
     if (a_this.num_adaptors <= 0) {
-        EPHYR_LOG_ERROR("failed to get number of host adaptors\n");
+        // EPHYR_LOG_ERROR("failed to get number of host adaptors\n");
         goto out_;
     }
-    EPHYR_LOG("host has %d adaptors\n", a_this.num_adaptors);
+    // EPHYR_LOG("host has %d adaptors\n", a_this.num_adaptors);
     /*
      * copy what we can from adaptors into a_this->adaptors
      */
     if (a_this.num_adaptors) {
-        a_this.adaptors = calloc(a_this.num_adaptors,
+        a_this.adaptors = cast(KdVideoAdaptorRec*)calloc(a_this.num_adaptors,
                                   KdVideoAdaptorRec.sizeof);
         if (!a_this.adaptors) {
-            EPHYR_LOG_ERROR("failed to create internal adaptors\n");
+            // EPHYR_LOG_ERROR("failed to create internal adaptors\n");
             goto out_;
         }
     }
@@ -409,7 +412,7 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
 
         a_this.adaptors[i].nPorts = cur_host_adaptor.num_ports;
         if (a_this.adaptors[i].nPorts <= 0) {
-            EPHYR_LOG_ERROR("Could not find any port of adaptor %d\n", i);
+            // EPHYR_LOG_ERROR("Could not find any port of adaptor %d\n", i);
             continue;
         }
         a_this.adaptors[i].type = cur_host_adaptor.type;
@@ -423,7 +426,7 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
             a_this.adaptors[i].name = strdup("Xephyr Video Overlay");
         base_port_id = cur_host_adaptor.base_id;
         if (base_port_id < 0) {
-            EPHYR_LOG_ERROR("failed to get port id for adaptor %d\n", i);
+            // EPHYR_LOG_ERROR("failed to get port id for adaptor %d\n", i);
             continue;
         }
         if (!s_base_port_id)
@@ -431,14 +434,14 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
 
         if (!translate_video_encodings(&a_this.adaptors[i],
                                        cur_host_adaptor)) {
-            EPHYR_LOG_ERROR("failed to get encodings for port port id %d,"
-                            ~ " adaptors %d\n", base_port_id, i);
+            // EPHYR_LOG_ERROR("failed to get encodings for port port id %d,"
+                            // ~ " adaptors %d\n", base_port_id, i);
             continue;
         }
 
         a_this.adaptors[i].nFormats = cur_host_adaptor.num_formats;
         a_this.adaptors[i].pFormats =
-            calloc(cur_host_adaptor.num_formats,
+            cast(KdVideoFormatRec*)calloc(cur_host_adaptor.num_formats,
                    typeof(*a_this.adaptors[i].pFormats).sizeof);
         for (j = 0; j < cur_host_adaptor.num_formats; j++) {
             xcb_visualtype_t* visual = xcb_aux_find_visual_by_id(xscreen, format[j].visual);
@@ -447,8 +450,8 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
         }
 
         a_this.adaptors[i].pPortPrivates =
-            calloc(a_this.adaptors[i].nPorts,
-                   ((DevUnion) + EphyrPortPriv.sizeof).sizeof);
+            cast(DevUnion*)calloc(a_this.adaptors[i].nPorts,
+                   ((DevUnion).sizeof + EphyrPortPriv.sizeof));
         port_priv_offset = a_this.adaptors[i].nPorts;
         for (j = 0; j < a_this.adaptors[i].nPorts; j++) {
             EphyrPortPriv* port_privs_base = cast(EphyrPortPriv*) &a_this.adaptors[i].
@@ -463,15 +466,15 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
 
         if (!translate_xv_attributes(&a_this.adaptors[i], cur_host_adaptor)) {
         {
-            EPHYR_LOG_ERROR("failed to get port attribute "
-                            ~ "for adaptor %d\n", i);
+            // EPHYR_LOG_ERROR("failed to get port attribute "
+                            // ~ "for adaptor %d\n", i);
             continue;
         }
         }
 
         if (!translate_xv_image_formats(&a_this.adaptors[i], cur_host_adaptor)) {
-            EPHYR_LOG_ERROR("failed to get image formats "
-                            ~ "for adaptor %d\n", i);
+            // EPHYR_LOG_ERROR("failed to get image formats "
+                            // ~ "for adaptor %d\n", i);
             continue;
         }
 
@@ -480,7 +483,7 @@ private Bool ephyrXVPrivQueryHostAdaptors(EphyrXVPriv* a_this)
     is_ok = TRUE;
 
  out_:
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
     return is_ok;
 }
 
@@ -489,42 +492,42 @@ private Bool ephyrXVPrivSetAdaptorsHooks(EphyrXVPriv* a_this)
     int i = 0;
     xcb_xv_adaptor_info_iterator_t it = void;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_this, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_this", "FALSE"));
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     it = xcb_xv_query_adaptors_info_iterator(a_this.host_adaptors);
     for (i = 0; i < a_this.num_adaptors; i++) {
         xcb_xv_adaptor_info_t* cur_host_adaptor = it.data;
 
-        a_this.adaptors[i].ReputImage = ephyrReputImage;
-        a_this.adaptors[i].StopVideo = ephyrStopVideo;
-        a_this.adaptors[i].SetPortAttribute = ephyrSetPortAttribute;
-        a_this.adaptors[i].GetPortAttribute = ephyrGetPortAttribute;
-        a_this.adaptors[i].QueryBestSize = ephyrQueryBestSize;
-        a_this.adaptors[i].QueryImageAttributes = ephyrQueryImageAttributes;
+        a_this.adaptors[i].ReputImage = &ephyrReputImage;
+        a_this.adaptors[i].StopVideo = &ephyrStopVideo;
+        a_this.adaptors[i].SetPortAttribute = &ephyrSetPortAttribute;
+        a_this.adaptors[i].GetPortAttribute = &ephyrGetPortAttribute;
+        a_this.adaptors[i].QueryBestSize = &ephyrQueryBestSize;
+        a_this.adaptors[i].QueryImageAttributes = &ephyrQueryImageAttributes;
 
         if (adaptor_has_flags(cur_host_adaptor,
                               XCB_XV_TYPE_IMAGE_MASK | XCB_XV_TYPE_INPUT_MASK))
-            a_this.adaptors[i].PutImage = ephyrPutImage;
+            a_this.adaptors[i].PutImage = &ephyrPutImage;
 
         if (adaptor_has_flags(cur_host_adaptor,
                               XCB_XV_TYPE_VIDEO_MASK | XCB_XV_TYPE_INPUT_MASK))
-            a_this.adaptors[i].PutVideo = ephyrPutVideo;
+            a_this.adaptors[i].PutVideo = &ephyrPutVideo;
 
         if (adaptor_has_flags(cur_host_adaptor,
                               XCB_XV_TYPE_VIDEO_MASK | XCB_XV_TYPE_OUTPUT_MASK))
-            a_this.adaptors[i].GetVideo = ephyrGetVideo;
+            a_this.adaptors[i].GetVideo = &ephyrGetVideo;
 
         if (adaptor_has_flags(cur_host_adaptor,
                               XCB_XV_TYPE_STILL_MASK | XCB_XV_TYPE_INPUT_MASK))
-            a_this.adaptors[i].PutStill = ephyrPutStill;
+            a_this.adaptors[i].PutStill = &ephyrPutStill;
 
         if (adaptor_has_flags(cur_host_adaptor,
                               XCB_XV_TYPE_STILL_MASK | XCB_XV_TYPE_OUTPUT_MASK))
-            a_this.adaptors[i].GetStill = ephyrGetStill;
+            a_this.adaptors[i].GetStill = &ephyrGetStill;
     }
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
     return TRUE;
 }
 
@@ -532,9 +535,9 @@ private Bool ephyrXVPrivRegisterAdaptors(EphyrXVPriv* a_this, ScreenPtr a_screen
 {
     Bool is_ok = FALSE;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_this && a_screen, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_this && a_screen", "FALSE"));
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     if (!a_this.num_adaptors)
         goto out_;
@@ -543,12 +546,12 @@ private Bool ephyrXVPrivRegisterAdaptors(EphyrXVPriv* a_this, ScreenPtr a_screen
         EPHYR_LOG_ERROR("failed to register adaptors\n");
         goto out_;
     }
-    EPHYR_LOG("there are  %d registered adaptors\n", a_this.num_adaptors);
+    // EPHYR_LOG("there are  %d registered adaptors\n", a_this.num_adaptors);
     is_ok = TRUE;
 
  out_:
 
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
     return is_ok;
 }
 
@@ -556,7 +559,7 @@ private Bool ephyrXVPrivIsAttrValueValid(XvAttributePtr a_attrs, int a_attrs_len
 {
     int i = 0;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_attrs && a_attr_name && a_is_valid, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_attrs && a_attr_name && a_is_valid", "FALSE"));
 
     for (i = 0; i < a_attrs_len; i++) {
         if (a_attrs[i].name && strcmp(a_attrs[i].name, a_attr_name))
@@ -584,9 +587,9 @@ private Bool ephyrXVPrivGetImageBufSize(int a_port_id, int a_image_id, ushort a_
     xcb_xv_query_image_attributes_reply_t* reply = void;
     Bool is_ok = FALSE;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_size, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_size", "FALSE"));
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     cookie = xcb_xv_query_image_attributes(conn,
                                            a_port_id, a_image_id,
@@ -601,7 +604,7 @@ private Bool ephyrXVPrivGetImageBufSize(int a_port_id, int a_image_id, ushort a_
     free(reply);
 
  out_:
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
     return is_ok;
 }
 
@@ -609,7 +612,7 @@ private Bool ephyrXVPrivSaveImageToPortPriv(EphyrPortPriv* a_port_priv, const(ub
 {
     Bool is_ok = FALSE;
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
 
     if (a_port_priv.image_buf_size < a_image_len) {
         ubyte* buf = null;
@@ -627,7 +630,7 @@ private Bool ephyrXVPrivSaveImageToPortPriv(EphyrPortPriv* a_port_priv, const(ub
 
  out_:
     return is_ok;
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
 }
 
 private void ephyrStopVideo(KdScreenInfo* a_info, void* a_port_priv, Bool a_exit)
@@ -638,9 +641,9 @@ private void ephyrStopVideo(KdScreenInfo* a_info, void* a_port_priv, Bool a_exit
 
     EPHYR_RETURN_IF_FAIL(port_priv);
 
-    EPHYR_LOG("enter\n");
+    // EPHYR_LOG("enter\n");
     xcb_xv_stop_video(conn, port_priv.port_number, scrpriv.win);
-    EPHYR_LOG("leave\n");
+    // EPHYR_LOG("leave\n");
 }
 
 private int ephyrSetPortAttribute(KdScreenInfo* a_info, Atom a_attr_name, int a_attr_value, void* a_port_priv)
@@ -650,11 +653,11 @@ private int ephyrSetPortAttribute(KdScreenInfo* a_info, Atom a_attr_name, int a_
     EphyrPortPriv* port_priv = a_port_priv;
     Bool is_attr_valid = FALSE;
 
-    EPHYR_RETURN_VAL_IF_FAIL(port_priv, BadMatch);
-    EPHYR_RETURN_VAL_IF_FAIL(port_priv.current_adaptor, BadMatch);
-    EPHYR_RETURN_VAL_IF_FAIL(port_priv.current_adaptor.pAttributes, BadMatch);
-    EPHYR_RETURN_VAL_IF_FAIL(port_priv.current_adaptor.nAttributes, BadMatch);
-    EPHYR_RETURN_VAL_IF_FAIL(ValidAtom(a_attr_name), BadMatch);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("port_priv", "BadMatch"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("port_priv.current_adaptor", "BadMatch"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("port_priv.current_adaptor.pAttributes", "BadMatch"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("port_priv.current_adaptor.nAttributes", "BadMatch"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("ValidAtom(a_attr_name)", "BadMatch"));
 
     EPHYR_LOG("enter, portnum:%d, atomid:%d, attr_name:%s, attr_val:%d\n",
               port_priv.port_number,
@@ -705,8 +708,8 @@ private int ephyrGetPortAttribute(KdScreenInfo* a_screen_info, Atom a_attr_name,
     xcb_xv_get_port_attribute_cookie_t cookie = void;
     xcb_xv_get_port_attribute_reply_t* reply = void;
 
-    EPHYR_RETURN_VAL_IF_FAIL(port_priv, BadMatch);
-    EPHYR_RETURN_VAL_IF_FAIL(ValidAtom(a_attr_name), BadMatch);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("port_priv", "BadMatch"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("ValidAtom(a_attr_name)", "BadMatch"));
 
     EPHYR_LOG("enter, portnum:%d, atomid:%d, attr_name:%s\n",
               port_priv.port_number,
@@ -773,7 +776,7 @@ private Bool ephyrHostXVPutImage(KdScreenInfo* a_info, EphyrPortPriv* port_priv,
     xcb_xv_query_image_attributes_cookie_t image_attr_cookie = void;
     xcb_xv_query_image_attributes_reply_t* image_attr_reply = void;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_buf, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_buf", "FALSE"));
 
     EPHYR_LOG("enter, num_clip_rects: %d\n", a_clip_rect_nums);
 
@@ -840,8 +843,8 @@ private int ephyrPutImage(KdScreenInfo* a_info, DrawablePtr a_drawable, short a_
     Bool is_ok = FALSE;
     int result = BadImplementation, image_size = 0;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_info && a_info.pScreen, BadValue);
-    EPHYR_RETURN_VAL_IF_FAIL(a_drawable, BadValue);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_info && a_info.pScreen", "BadValue"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_drawable", "BadValue"));
 
     EPHYR_LOG("enter\n");
 
@@ -907,8 +910,8 @@ private int ephyrReputImage(KdScreenInfo* a_info, DrawablePtr a_drawable, short 
     EphyrPortPriv* port_priv = a_port_priv;
     int result = BadImplementation;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_info.pScreen, FALSE);
-    EPHYR_RETURN_VAL_IF_FAIL(a_drawable && port_priv, BadValue);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_info.pScreen", "FALSE"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_drawable && port_priv", "BadValue"));
 
     EPHYR_LOG("enter\n");
 
@@ -945,8 +948,8 @@ private int ephyrPutVideo(KdScreenInfo* a_info, DrawablePtr a_drawable, short a_
     xcb_gcontext_t gc = void;
     EphyrPortPriv* port_priv = a_port_priv;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_info.pScreen, BadValue);
-    EPHYR_RETURN_VAL_IF_FAIL(a_drawable && port_priv, BadValue);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_info.pScreen", "BadValue"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_drawable && port_priv", "BadValue"));
 
     EPHYR_LOG("enter\n");
 
@@ -969,8 +972,8 @@ private int ephyrGetVideo(KdScreenInfo* a_info, DrawablePtr a_drawable, short a_
     xcb_gcontext_t gc = void;
     EphyrPortPriv* port_priv = a_port_priv;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_info && a_info.pScreen, BadValue);
-    EPHYR_RETURN_VAL_IF_FAIL(a_drawable && port_priv, BadValue);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_info && a_info.pScreen", "BadValue"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_drawable && port_priv", "BadValue"));
 
     EPHYR_LOG("enter\n");
 
@@ -994,8 +997,8 @@ private int ephyrPutStill(KdScreenInfo* a_info, DrawablePtr a_drawable, short a_
     xcb_gcontext_t gc = void;
     EphyrPortPriv* port_priv = a_port_priv;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_info && a_info.pScreen, BadValue);
-    EPHYR_RETURN_VAL_IF_FAIL(a_drawable && port_priv, BadValue);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_info && a_info.pScreen", "BadValue"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_drawable && port_priv", "BadValue"));
 
     EPHYR_LOG("enter\n");
 
@@ -1018,8 +1021,8 @@ private int ephyrGetStill(KdScreenInfo* a_info, DrawablePtr a_drawable, short a_
     xcb_gcontext_t gc = void;
     EphyrPortPriv* port_priv = a_port_priv;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_info && a_info.pScreen, BadValue);
-    EPHYR_RETURN_VAL_IF_FAIL(a_drawable && port_priv, BadValue);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_info && a_info.pScreen", "BadValue"));
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_drawable && port_priv", "BadValue"));
 
     EPHYR_LOG("enter\n");
 
@@ -1042,7 +1045,7 @@ private int ephyrQueryImageAttributes(KdScreenInfo* a_info, int a_id, ushort* a_
     xcb_xv_query_image_attributes_reply_t* reply = void;
     int image_size = 0;
 
-    EPHYR_RETURN_VAL_IF_FAIL(a_w && a_h, FALSE);
+    mixin(EPHYR_RETURN_VAL_IF_FAIL!("a_w && a_h", "FALSE"));
 
     EPHYR_LOG("enter: dim (%dx%d), pitches: %p, offsets: %p\n",
               *a_w, *a_h, a_pitches, a_offsets);

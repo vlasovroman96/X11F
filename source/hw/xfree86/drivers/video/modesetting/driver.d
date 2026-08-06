@@ -68,7 +68,7 @@ import include.xf86i2c;
 import include.xf86Crtc;
 import include.miscstruct;
 import include.dixstruct;
-import xf86xv;
+// import xf86xv;
 import externs.gbm;
 // import build.xorg_config;
 version (XSERVER_PLATFORM_BUS) {

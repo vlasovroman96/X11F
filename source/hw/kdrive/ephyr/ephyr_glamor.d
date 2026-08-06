@@ -41,9 +41,13 @@ import pixman;
 import glamor.glamor_context;
 import glamor.glamor_egl;
 import glamor.glamor_priv;
-import ephyr;
+import hw.kdrive.ephyr.ephyr;
 import hw.kdrive.ephyr.ephyr_glamor;
 import include.os;
+import hw.kdrive.ephyr.ephyr;
+import hw.kdrive.src.kdrive;
+
+
 
 enum EGL_NO_DISPLAY = cast(EGLDisplay)null;
 
@@ -102,14 +106,14 @@ private void ephyr_glamor_egl_screen_init(ScreenPtr screen, glamor_context* glam
 {
     mixin(KdScreenPriv!("screen"));;
     KdScreenInfo* kd_screen = pScreenPriv.screen;
-    EphyrScrPriv* scrpriv = kd_screen.driver;
+    EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)kd_screen.driver;
     ephyr_glamor* ephyr_glamor = scrpriv.glamor;
 
     glamor_enable_dri3(screen);
     glamor_ctx.display = ephyr_glamor.dpy;
     glamor_ctx.ctx = ephyr_glamor.ctx;
     glamor_ctx.surface = ephyr_glamor.egl_win;
-    glamor_ctx.make_current = glamor_egl_make_current;
+    glamor_ctx.make_current = &glamor_egl_make_current;
 }
 
 private GLuint ephyr_glamor_build_glsl_prog(GLuint vs, GLuint fs)
@@ -167,10 +171,10 @@ private void ephyr_glamor_setup_texturing_shader(ephyr_glamor* glamor)
     fs = glamor_compile_glsl_prog(GL_FRAGMENT_SHADER, fs_source);
     prog = ephyr_glamor_build_glsl_prog(vs, fs);
 
-   glamor.glamor_texture_shader = prog;
-   glamor.glamor_texture_shader_position_loc = glGetAttribLocation(prog, "position");
+   glamor.texture_shader = prog;
+   glamor.texture_shader_position_loc = glGetAttribLocation(prog, "position");
     assert(glamor.texture_shader_position_loc != -1);
-   glamor.glamor_texture_shader_texcoord_loc = glGetAttribLocation(prog, "texcoord");
+   glamor.texture_shader_texcoord_loc = glGetAttribLocation(prog, "texcoord");
     assert(glamor.texture_shader_texcoord_loc != -1);
 }
 
@@ -218,8 +222,8 @@ xcb_connection_t* ephyr_glamor_connect()
         epoxy_has_egl_extension(EGL_NO_DISPLAY, "EGL_KHR_platform_X11")) {
         void* lib = null;
         xcb_connection_t* ret = null;
-        void* function(void*) x_open_display = cast(void* function(void*)) (cast(void*) dlsym(RTLD_DEFAULT, "XOpenDisplay"));
-        xcb_connection_t* function(void*) x_get_xcb_connection = cast(xcb_connection_t* function(void*)) (cast(void*) dlsym(RTLD_DEFAULT, "XGetXCBConnection"));
+        void* function(void*) @nogc nothrow x_open_display = cast(void* function(void*)@nogc nothrow) (cast(void*) dlsym(RTLD_DEFAULT, "XOpenDisplay"));
+        xcb_connection_t* function(void*)@nogc nothrow x_get_xcb_connection = cast(xcb_connection_t* function(void*)@nogc nothrow) (cast(void*) dlsym(RTLD_DEFAULT, "XGetXCBConnection"));
 
         if (x_open_display == null)
             return null;
@@ -227,14 +231,15 @@ xcb_connection_t* ephyr_glamor_connect()
         if (x_get_xcb_connection == null) {
             lib = dlopen("libX11-xcb.so.1", RTLD_LOCAL | RTLD_LAZY);
             x_get_xcb_connection =
-                cast(xcb_connection_t* function(void*)) (cast(void*) dlsym(lib, "XGetXCBConnection"));
+                cast(xcb_connection_t* function(void*)@nogc nothrow) (cast(void*) dlsym(lib, "XGetXCBConnection"));
         }
+        EGLDisplay dpy; 
+        void* xdpy;
 
         if (x_get_xcb_connection == null)
             goto out_;
-
-        void* xdpy = x_open_display(null);
-        EGLDisplay dpy = glamor_egl_get_display(EGL_PLATFORM_X11_KHR, xdpy);
+        xdpy =  x_open_display(null);
+        dpy =  glamor_egl_get_display(EGL_PLATFORM_X11_KHR, xdpy);;
         if (dpy == EGL_NO_DISPLAY)
             goto out_;
 
@@ -253,7 +258,7 @@ out_:
 
 void ephyr_glamor_set_texture(ephyr_glamor* glamor, uint tex)
 {
-   glamor.glamor_tex = tex;
+   glamor.tex = tex;
 }
 
 private void ephyr_glamor_set_vertices(ephyr_glamor* glamor)
@@ -322,7 +327,7 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
         return null;
     }
 
-    const(EGLint)[6] config_attribs = [
+    const(EGLint)[5] config_attribs = [
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
         EGL_NATIVE_VISUAL_ID, vid,
         EGL_NONE,
@@ -362,9 +367,9 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
     if (!eglMakeCurrent(glamor.dpy, egl_win, egl_win, ctx))
         FatalError("eglMakeCurrent failed\n");
 
-   glamor.glamor_ctx = ctx;
-   glamor.glamor_win = win;
-   glamor.glamor_egl_win = egl_win;
+   glamor.ctx = ctx;
+   glamor.win = win;
+   glamor.egl_win = egl_win;
     ephyr_glamor_setup_texturing_shader(glamor);
 
     glGenVertexArrays(1, &glamor.vao);
@@ -373,13 +378,13 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
 
     glGenBuffers(1, &glamor.vbo);
 
-    glBindBuffer(GL_ARRAY_BUFFER,glamor.glamor_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER,glamor.vbo);
     glBufferData(GL_ARRAY_BUFFER, position.sizeof, position.ptr, GL_STATIC_DRAW);
 
     ephyr_glamor_set_vertices(glamor);
     glBindVertexArray(old_vao);
 
-    glamor_egl_screen_init2 = ephyr_glamor_egl_screen_init;
+    glamor_egl_screen_init2 = &ephyr_glamor_egl_screen_init;
 
     return glamor;
 }
@@ -389,8 +394,8 @@ void ephyr_glamor_screen_fini(ephyr_glamor* glamor)
     eglMakeCurrent(glamor.dpy,
                    EGL_NO_SURFACE, EGL_NO_SURFACE,
                    EGL_NO_CONTEXT);
-    eglDestroyContext(glamor.dpy,glamor.glamor_ctx);
-    eglDestroySurface(glamor.dpy,glamor.glamor_egl_win);
+    eglDestroyContext(glamor.dpy,glamor.ctx);
+    eglDestroySurface(glamor.dpy,glamor.egl_win);
 
     free(glamor);
 }
@@ -400,6 +405,6 @@ void ephyr_glamor_set_window_size(ephyr_glamor* glamor, uint width, uint height)
     if (!glamor)
         return;
 
-   glamor.glamor_width = width;
-   glamor.glamor_height = height;
+   glamor.width = width;
+   glamor.height = height;
 }

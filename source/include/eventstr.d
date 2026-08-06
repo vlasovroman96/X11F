@@ -366,9 +366,9 @@ union _InternalEvent {
     DeviceChangedEvent changed_event;
     TouchOwnershipEvent touch_ownership_event;
     BarrierEvent barrier_event;
-version (XFreeXDGA) {
+// version (XFreeXDGA) {
     DGAEvent dga_event;
-}
+// }
     RawDeviceEvent raw_event;
 version (XQUARTZ) {
     XQuartzEvent xquartz_event;

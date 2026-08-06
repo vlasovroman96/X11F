@@ -10,7 +10,7 @@
 	},
 	"targetType": "executable",
 	"dflags": [
-   "-verrors=30",
+   "-verrors=15",
     "-P-I/usr/include/dbus-1.0",
     "-P-I/usr/include/pixman-1",
     "-P-I/usr/lib/dbus-1.0/include",
@@ -24,7 +24,15 @@
 	"-P-D__alignof__(x)=8",
 	"-P=-D__kernel_size_t=size_t"
     ],
-	"importPaths": [
-		"source"
+	"excludedSourceFiles": [
+		"source/hw/kdrive/*",
+		"source/hw/xnest/*",
+		"source/hw/xquartz/*",
+		"source/hw/xwin/*",
+		"source/hw/vfb/*"
+		
+	],
+	"cImportPaths" :[
+		"source/externs"
 	]
 }

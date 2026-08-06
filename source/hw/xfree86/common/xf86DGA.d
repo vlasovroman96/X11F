@@ -45,7 +45,7 @@ import build.xorg_config;
 import core.stdc.string;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-// //import externs.X11.extensions.xf86dgaproto;
+import externs.X11.extensions.xf86dgaproto;
 
 import dix.colormap_priv;
 import dix.dix_priv;
@@ -79,6 +79,14 @@ import dix.swaprep;
 import include.dgaproc;
 import include.protocol_versions;
 import include.events;
+import hw.xfree86.common.xf86Helper;
+import xf86Globals;
+import dix.events;
+import os.log;
+import dix.colormap;
+import os.utils;
+import dix.devices;
+import dix.extension;
 
 private DevPrivateKeyRec DGAScreenKeyRec;
 
@@ -148,16 +156,16 @@ Bool DGAInit(ScreenPtr pScreen, DGAFunctionPtr funcs, DGAModePtr modes, int num)
     pScreenPriv = mixin(DGA_GET_SCREEN_PRIV!(`pScreen`));
 
     if (!pScreenPriv) {
-        if (((pScreenPriv = cast(DGAScreenRec*) calloc(1, DGAScreenRec.sizeof)) == 0))
+        if (((pScreenPriv = cast(DGAScreenRec*) calloc(1, DGAScreenRec.sizeof)) is null))
             return FALSE;
         dixSetPrivate(&pScreen.devPrivates, &DGAScreenKeyRec, pScreenPriv);
-        dixScreenHookClose(pScreen, DGACloseScreen);
+        dixScreenHookClose(pScreen, &DGACloseScreen);
         pScreenPriv.DestroyColormap = pScreen.DestroyColormap;
-        pScreen.DestroyColormap = DGADestroyColormap;
+        pScreen.DestroyColormap = &DGADestroyColormap;
         pScreenPriv.InstallColormap = pScreen.InstallColormap;
-        pScreen.InstallColormap = DGAInstallColormap;
+        pScreen.InstallColormap = &DGAInstallColormap;
         pScreenPriv.UninstallColormap = pScreen.UninstallColormap;
-        pScreen.UninstallColormap = DGAUninstallColormap;
+        pScreen.UninstallColormap = &DGAUninstallColormap;
     }
 
     pScreenPriv.pScrn = pScrn;
@@ -273,7 +281,7 @@ private void DGACloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unus
     pScreenPriv.pScrn.SetDGAMode(pScreenPriv.pScrn, 0, null);
     FreeMarkedVisuals(pScreen);
 
-    dixScreenUnhookClose(pScreen, DGACloseScreen);
+    dixScreenUnhookClose(pScreen, &DGACloseScreen);
     pScreen.DestroyColormap = pScreenPriv.DestroyColormap;
     pScreen.InstallColormap = pScreenPriv.InstallColormap;
     pScreen.UninstallColormap = pScreenPriv.UninstallColormap;
@@ -305,7 +313,7 @@ private void DGADestroyColormap(ColormapPtr pmap)
     if (pScreenPriv.DestroyColormap) {
         pScreen.DestroyColormap = pScreenPriv.DestroyColormap;
         (*pScreen.DestroyColormap) (pmap);
-        pScreen.DestroyColormap = DGADestroyColormap;
+        pScreen.DestroyColormap = &DGADestroyColormap;
     }
 }
 
@@ -323,7 +331,7 @@ private void DGAInstallColormap(ColormapPtr pmap)
 
     pScreen.InstallColormap = pScreenPriv.InstallColormap;
     (*pScreen.InstallColormap) (pmap);
-    pScreen.InstallColormap = DGAInstallColormap;
+    pScreen.InstallColormap = &DGAInstallColormap;
 }
 
 private void DGAUninstallColormap(ColormapPtr pmap)
@@ -339,7 +347,7 @@ private void DGAUninstallColormap(ColormapPtr pmap)
 
     pScreen.UninstallColormap = pScreenPriv.UninstallColormap;
     (*pScreen.UninstallColormap) (pmap);
-    pScreen.UninstallColormap = DGAUninstallColormap;
+    pScreen.UninstallColormap = &DGAUninstallColormap;
 }
 
 int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
@@ -395,7 +403,7 @@ int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
     else
         return BadValue;
 
-    if (((device = cast(DGADeviceRec*) calloc(1, DGADeviceRec.sizeof)) == 0))
+    if (((device = cast(DGADeviceRec*) calloc(1, DGADeviceRec.sizeof)) is null))
         return BadAlloc;
 
     if (!pScreenPriv.current) {
@@ -434,7 +442,7 @@ int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
     }
 
     if (pMode.flags & DGA_PIXMAP_AVAILABLE) {
-        if ((pPix = (*pScreen.CreatePixmap) (pScreen, 0, 0, pMode.depth, 0))) {
+        if ((pPix = (*pScreen.CreatePixmap) (pScreen, 0, 0, pMode.depth, 0)) !is null) {
             (*pScreen.ModifyPixmapHeader) (pPix,
                                             pMode.pixmapWidth,
                                             pMode.pixmapHeight, pMode.depth,
@@ -451,7 +459,7 @@ int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
     pScreenPriv.grabMouse = TRUE;
     pScreenPriv.grabKeyboard = TRUE;
 
-    mieqSetHandler(ET_DGAEvent, DGAHandleEvent);
+    mieqSetHandler(ET_DGAEvent, &DGAHandleEvent);
 
     return Success;
 }
@@ -499,16 +507,16 @@ private Bool DGAChangePixmapMode(int index, int* x, int* y, int mode)
 
         *x = (*x >> shift) << shift;
 
-        pPix.drawable.x = *x;
-        pPix.drawable.y = *y;
-        pPix.drawable.width = pMode.viewportWidth;
-        pPix.drawable.height = pMode.viewportHeight;
+        pPix.drawable.x = cast(short)*x;
+        pPix.drawable.y = cast(short)*y;
+        pPix.drawable.width = cast(ushort)pMode.viewportWidth;
+        pPix.drawable.height = cast(ushort)pMode.viewportHeight;
     }
     else {
-        pPix.drawable.x = 0;
-        pPix.drawable.y = 0;
-        pPix.drawable.width = pMode.pixmapWidth;
-        pPix.drawable.height = pMode.pixmapHeight;
+        pPix.drawable.x = cast(short)0;
+        pPix.drawable.y = cast(short)0;
+        pPix.drawable.width = cast(short)pMode.pixmapWidth;
+        pPix.drawable.height = cast(short)pMode.pixmapHeight;
     }
     pPix.drawable.serialNumber = NEXT_SERIAL_NUMBER;
     pScreenPriv.pixmapMode = mode;
@@ -577,7 +585,7 @@ private void DGASelectInput(int index, ClientPtr client, c_long mask)
 
     /* We rely on the extension to check that DGA is available */
     pScreenPriv.client = client;
-    pScreenPriv.input = mask;
+    pScreenPriv.input = cast(int)mask;
 }
 
 private int DGAGetViewportStatus(int index)
@@ -633,14 +641,14 @@ private int DGACreateColormap(int index, ClientPtr client, int id, int mode, int
 
     pMode = &(pScreenPriv.modes[mode - 1]);
 
-    if (((pVisual = cast(VisualRec*) calloc(1, VisualRec.sizeof)) == 0))
+    if (((pVisual = cast(VisualRec*) calloc(1, VisualRec.sizeof)) is null))
         return BadAlloc;
 
     pVisual.vid = dixAllocServerXID();
     pVisual.class_ = pMode.visualClass;
-    pVisual.nplanes = pMode.depth;
-    pVisual.ColormapEntries = 1 << pMode.depth;
-    pVisual.bitsPerRGBValue = (pMode.depth + 2) / 3;
+    pVisual.nplanes = cast(short)(pMode.depth);
+    pVisual.ColormapEntries = cast(short)(1 << pMode.depth);
+    pVisual.bitsPerRGBValue = cast(short)((pMode.depth + 2) / 3);
 
     switch (pVisual.class_) {
     case PseudoColor:
@@ -656,18 +664,20 @@ private int DGACreateColormap(int index, ClientPtr client, int id, int mode, int
         break;
     case DirectColor:
     case TrueColor:
-        pVisual.ColormapEntries = 1 << pVisual.bitsPerRGBValue;
+        pVisual.ColormapEntries = cast(short)(1 << pVisual.bitsPerRGBValue);
         /* fall through */
+    goto case StaticColor;
     case StaticColor:
-        pVisual.redMask = pMode.red_mask;
-        pVisual.greenMask = pMode.green_mask;
-        pVisual.blueMask = pMode.blue_mask;
+        pVisual.redMask = cast(ubyte)pMode.red_mask;
+        pVisual.greenMask = cast(ubyte)pMode.green_mask;
+        pVisual.blueMask = cast(ubyte)pMode.blue_mask;
         pVisual.offsetRed = BitsClear(pVisual.redMask);
         pVisual.offsetGreen = BitsClear(pVisual.greenMask);
         pVisual.offsetBlue = BitsClear(pVisual.blueMask);
+        goto default;
     default: break;}
 
-    if (((fvlp = cast(FakedVisualList*) cast(FakedVisualList*) calloc(1, FakedVisualList.sizeof)) == 0)) {
+    if (((fvlp = cast(FakedVisualList*) cast(FakedVisualList*) calloc(1, FakedVisualList.sizeof)) is null)) {
         free(pVisual);
         return BadAlloc;
     }
@@ -941,13 +951,13 @@ private void DGAProcessKeyboardEvent(ScreenPtr pScreen, DGAEvent* event, DeviceI
     DeviceIntPtr pointer = GetMaster(keybd, POINTER_OR_FLOAT);
     DeviceEvent ev = {
         header: ET_Internal,
-        length: ev.sizeof,
-        type: event.subtype,
+        length: DeviceEvent.sizeof,
+        type: cast(EventType)event.subtype,
         root_x: 0,
         root_y: 0,
         corestate: XkbStateFieldFromRec(&keyc.xkbInfo.state)
     };
-    ev.detailkey = event.detail,
+    ev.detail.key = event.detail,
 
     ev.corestate |= pointer.button.state;
 
@@ -962,25 +972,25 @@ private void DGAProcessKeyboardEvent(ScreenPtr pScreen, DGAEvent* event, DeviceI
     if (pScreenPriv.client) {
         dgaEvent de = {
         };
-            de.u.event.time = event.time,
-            de.u.event.dx = event.dx,
-            de.u.event.dy = event.dy,
-            de.u.event.screen = pScreen.myNum,
-            de.u.event.state = ev.corestate;
-        de.u.u.type = DGAEventBase + GetCoreType(ev.type);
-        de.u.u.detail = event.detail;
+            de.u.event.time = cast(uint)event.time,
+            de.u.event.dx = cast(short)event.dx,
+            de.u.event.dy = cast(short)event.dy,
+            de.u.event.screen = cast(short)pScreen.myNum,
+            de.u.event.state = cast(ushort)ev.corestate;
+        de.u.u.type = cast(ubyte)(DGAEventBase + GetCoreType(ev.type));
+        de.u.u.detail = cast(ubyte)event.detail;
 
         /* If the DGA client has selected input, then deliver based on the usual filter */
         TryClientEvents(pScreenPriv.client, keybd, cast(xEvent*) &de, 1,
-                        filters[ev.type], pScreenPriv.input, 0);
+                        filters[ev.type], pScreenPriv.input, null);
     }
     else {
         /* If the keyboard is actively grabbed, deliver a grabbed core event */
         if (keybd.deviceGrab.grab && !keybd.deviceGrab.fromPassiveGrab) {
             ev.detail.key = event.detail;
             ev.time = event.time;
-            ev.root_x = event.dx;
-            ev.root_y = event.dy;
+            ev.root_x = cast(short)event.dx;
+            ev.root_y = cast(short)event.dy;
             ev.corestate = event.state;
             ev.deviceid = keybd.id;
             DeliverGrabbedEvent(cast(InternalEvent*) &ev, keybd, FALSE);
@@ -995,8 +1005,8 @@ private void DGAProcessPointerEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIn
     DeviceIntPtr master = GetMaster(mouse, MASTER_KEYBOARD);
     DeviceEvent ev = {
         header: ET_Internal,
-        length: ev.sizeof,
-        type: event.subtype,
+        length: DeviceEvent.sizeof,
+        type: cast(EventType)event.subtype,
         corestate: butc ? butc.state : 0
     };
     ev.detail.key = event.detail;
@@ -1015,26 +1025,26 @@ private void DGAProcessPointerEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIn
     if (pScreenPriv.client) {
         int coreEquiv = GetCoreType(ev.type);
         dgaEvent de;
-            de.u.event.time = event.time;
-            de.u.event.dx = event.dx;
-            de.u.event.dy = event.dy;
-            de.u.event.screen = pScreen.myNum;
-            de.u.event.state = ev.corestate;
+            de.u.event.time = cast(uint)event.time;
+            de.u.event.dx = cast(short)event.dx;
+            de.u.event.dy = cast(short)event.dy;
+            de.u.event.screen = cast(short)pScreen.myNum;
+            de.u.event.state = cast(ushort)ev.corestate;
         // };
-        de.u.u.type = DGAEventBase + coreEquiv;
-        de.u.u.detail = event.detail;
+        de.u.u.type = cast(ubyte)(DGAEventBase + coreEquiv);
+        de.u.u.detail = cast(ubyte)event.detail;
 
         /* If the DGA client has selected input, then deliver based on the usual filter */
         TryClientEvents(pScreenPriv.client, mouse, cast(xEvent*) &de, 1,
-                        filters[coreEquiv], pScreenPriv.input, 0);
+                        filters[coreEquiv], pScreenPriv.input, null);
     }
     else {
         /* If the pointer is actively grabbed, deliver a grabbed core event */
         if (mouse.deviceGrab.grab && !mouse.deviceGrab.fromPassiveGrab) {
             ev.detail.button = event.detail;
             ev.time = event.time;
-            ev.root_x = event.dx;
-            ev.root_y = event.dy;
+            ev.root_x = cast(short)event.dx;
+            ev.root_y = cast(short)event.dy;
             ev.corestate = event.state;
             /* DGA is core only, so valuators.data doesn't actually matter.
              * Mask must be set for EventToCore to create motion events. */
@@ -1104,7 +1114,7 @@ private DevPrivateKeyRec DGAScreenPrivateKeyRec;
 enum DGAScreenPrivateKey = (&DGAScreenPrivateKeyRec);
 @property bool DGAScreenKeyRegistered()
 {
-    return dixPrivateKeyRegistered(&DGAScreenKeyRec);
+    return cast(bool)dixPrivateKeyRegistered(&DGAScreenKeyRec);
 }
 private DevPrivateKeyRec DGAClientPrivateKeyRec;
 
@@ -1121,16 +1131,16 @@ alias DGAPrivPtr = DGAPrivRec*;
 enum string DGA_GETCLIENT(string idx) = `(cast(ClientPtr) 
     dixLookupPrivate(&screenInfo.screens[` ~ idx ~ `].devPrivates, DGAScreenPrivateKey))`;
 enum string DGA_SETCLIENT(string idx,string p) = `
-    dixSetPrivate(&screenInfo.screens[` ~ idx ~ `].devPrivates, DGAScreenPrivateKey, ` ~ p ~ `)`;
+    dixSetPrivate(&screenInfo.screens[` ~ idx ~ `].devPrivates, DGAScreenPrivateKey, ` ~ p ~ `);`;
 
 enum string DGA_GETPRIV(string c) = `(cast(DGAPrivPtr) 
     dixLookupPrivate(&(` ~ c ~ `).devPrivates, DGAClientPrivateKey))`;
 enum string DGA_SETPRIV(string c,string p) = `
-    dixSetPrivate(&(` ~ c ~ `).devPrivates, DGAClientPrivateKey, ` ~ p ~ `)`;
+    dixSetPrivate(&(` ~ c ~ `).devPrivates, DGAClientPrivateKey, ` ~ p ~ `);`;
 
 private void XDGAResetProc(ExtensionEntry* extEntry)
 {
-    DeleteCallback(&ClientStateCallback, DGAClientStateChange, null);
+    DeleteCallback(&ClientStateCallback, &DGAClientStateChange, null);
     DGACallbackRefCount = 0;
 }
 
@@ -1171,7 +1181,7 @@ private int ProcXDGAOpenFramebuffer(ClientPtr client)
         return BadAlloc;
     }
 
-    nameSize = deviceName ? (strlen(deviceName) + 1) : 0;
+    nameSize = deviceName ? cast(int)(strlen(deviceName) + 1) : 0;
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)deviceName, nameSize);
@@ -1218,7 +1228,7 @@ private int ProcXDGAQueryModes(ClientPtr client)
         return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
-    if (((mode = calloc(num, XDGAModeRec.sizeof)) == 0))
+    if (((mode = cast(XDGAModeRec*)calloc(num, XDGAModeRec.sizeof)) is null))
         return BadAlloc;
 
     for (int i = 0; i < num; i++)
@@ -1233,29 +1243,29 @@ private int ProcXDGAQueryModes(ClientPtr client)
     for (int i = 0; i < num; i++) {
         size_t size = strlen(mode[i].name) + 1;
 
-        info.byte_order = mode[i].byteOrder;
-        info.depth = mode[i].depth;
-        info.num = mode[i].num;
-        info.bpp = mode[i].bitsPerPixel;
-        info.name_size = (size + 3) & ~3L;
+        info.byte_order = cast(ubyte)mode[i].byteOrder;
+        info.depth = cast(ubyte)mode[i].depth;
+        info.num = cast(ushort)(mode[i].num);
+        info.bpp = cast(ushort)(mode[i].bitsPerPixel);
+        info.name_size = cast(ushort)((size + 3) & ~3L);
         info.vsync_num = mode[i].VSync_num;
         info.vsync_den = mode[i].VSync_den;
         info.flags = mode[i].flags;
-        info.image_width = mode[i].imageWidth;
-        info.image_height = mode[i].imageHeight;
-        info.pixmap_width = mode[i].pixmapWidth;
-        info.pixmap_height = mode[i].pixmapHeight;
+        info.image_width = cast(ushort)mode[i].imageWidth;
+        info.image_height = cast(ushort)mode[i].imageHeight;
+        info.pixmap_width = cast(ushort)mode[i].pixmapWidth;
+        info.pixmap_height = cast(ushort)mode[i].pixmapHeight;
         info.bytes_per_scanline = mode[i].bytesPerScanline;
-        info.red_mask = mode[i].red_mask;
-        info.green_mask = mode[i].green_mask;
-        info.blue_mask = mode[i].blue_mask;
+        info.red_mask = cast(uint)mode[i].red_mask;
+        info.green_mask = cast(uint)mode[i].green_mask;
+        info.blue_mask = cast(uint)mode[i].blue_mask;
         info.visual_class = mode[i].visualClass;
-        info.viewport_width = mode[i].viewportWidth;
-        info.viewport_height = mode[i].viewportHeight;
-        info.viewport_xstep = mode[i].xViewportStep;
-        info.viewport_ystep = mode[i].yViewportStep;
-        info.viewport_xmax = mode[i].maxViewportX;
-        info.viewport_ymax = mode[i].maxViewportY;
+        info.viewport_width = cast(ushort)mode[i].viewportWidth;
+        info.viewport_height = cast(ushort)mode[i].viewportHeight;
+        info.viewport_xstep = cast(ushort)mode[i].xViewportStep;
+        info.viewport_ystep = cast(ushort)mode[i].yViewportStep;
+        info.viewport_xmax = cast(ushort)mode[i].maxViewportX;
+        info.viewport_ymax = cast(ushort)mode[i].maxViewportY;
         info.viewport_flags = mode[i].viewportFlags;
         info.reserved1 = mode[i].reserved1;
         info.reserved2 = mode[i].reserved2;
@@ -1286,7 +1296,7 @@ private void DGAClientStateChange(CallbackListPtr* pcbl, void* nulldata, void* c
                 DGASetMode(walkScreenIdx, 0, &mode, &pPix);
 
                 if (--DGACallbackRefCount == 0)
-                    DeleteCallback(&ClientStateCallback, DGAClientStateChange, null);
+                    DeleteCallback(&ClientStateCallback, &DGAClientStateChange, null);
             }
             break;
         }
@@ -1345,29 +1355,29 @@ private int ProcXDGASetMode(ClientPtr client)
         }
     }
 
-    info.byte_order = mode.byteOrder;
-    info.depth = mode.depth;
-    info.num = mode.num;
-    info.bpp = mode.bitsPerPixel;
-    info.name_size = ((strlen(mode.name) + 1) + 3) & ~3L;
+    info.byte_order = cast(ubyte)mode.byteOrder;
+    info.depth = cast(ubyte)mode.depth;
+    info.num = cast(ushort)mode.num;
+    info.bpp = cast(ushort)mode.bitsPerPixel;
+    info.name_size = cast(ushort)(((strlen(mode.name) + 1) + 3) & ~3L);
     info.vsync_num = mode.VSync_num;
     info.vsync_den = mode.VSync_den;
     info.flags = mode.flags;
-    info.image_width = mode.imageWidth;
-    info.image_height = mode.imageHeight;
-    info.pixmap_width = mode.pixmapWidth;
-    info.pixmap_height = mode.pixmapHeight;
+    info.image_width = cast(ushort)mode.imageWidth;
+    info.image_height = cast(ushort)mode.imageHeight;
+    info.pixmap_width = cast(ushort)mode.pixmapWidth;
+    info.pixmap_height = cast(ushort)mode.pixmapHeight;
     info.bytes_per_scanline = mode.bytesPerScanline;
-    info.red_mask = mode.red_mask;
-    info.green_mask = mode.green_mask;
-    info.blue_mask = mode.blue_mask;
+    info.red_mask = cast(uint)mode.red_mask;
+    info.green_mask = cast(uint)mode.green_mask;
+    info.blue_mask = cast(uint)mode.blue_mask;
     info.visual_class = mode.visualClass;
-    info.viewport_width = mode.viewportWidth;
-    info.viewport_height = mode.viewportHeight;
-    info.viewport_xstep = mode.xViewportStep;
-    info.viewport_ystep = mode.yViewportStep;
-    info.viewport_xmax = mode.maxViewportX;
-    info.viewport_ymax = mode.maxViewportY;
+    info.viewport_width = cast(ushort)mode.viewportWidth;
+    info.viewport_height = cast(ushort)mode.viewportHeight;
+    info.viewport_xstep = cast(ushort)mode.xViewportStep;
+    info.viewport_ystep = cast(ushort)mode.yViewportStep;
+    info.viewport_xmax = cast(ushort)mode.maxViewportX;
+    info.viewport_ymax = cast(ushort)mode.maxViewportY;
     info.viewport_flags = mode.viewportFlags;
     info.reserved1 = mode.reserved1;
     info.reserved2 = mode.reserved2;
@@ -1582,8 +1592,8 @@ private int ProcXDGAChangePixmapMode(ClientPtr client)
         return BadMatch;
 
     xXDGAChangePixmapModeReply reply = {
-        x: x,
-        y: y
+        x: cast(ushort)x,
+        y: cast(ushort)y
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -1718,7 +1728,7 @@ void XFree86DGAExtensionInit()
                                  XF86DGANumberErrors,
                                  &ProcXDGADispatch,
                                  &ProcXDGADispatch,
-                                 &XDGAResetProc, StandardMinorOpcode))) {
+                                 &XDGAResetProc, &StandardMinorOpcode)) !is null) {
         int i = void;
 
         DGAReqCode = cast(ubyte) extEntry.base;

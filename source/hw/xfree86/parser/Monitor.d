@@ -132,7 +132,7 @@ private XF86ConfModeLinePtr xf86parseModeLine()
 {
     int token = void;
 
-    parsePrologue(XF86ConfModeLinePtr, XF86ConfModeLineRec);
+    mixin(parsePrologue!("XF86ConfModeLinePtr", "XF86ConfModeLineRec"));
 
         /* Identifier */
         if (xf86getSubToken(&(ptr.ml_comment)) != XF86_TOKEN_STRING)
@@ -257,7 +257,7 @@ private XF86ConfModeLinePtr xf86parseVerboseMode()
     int token = void, token2 = void;
     int had_dotclock = 0, had_htimings = 0, had_vtimings = 0;
 
-    parsePrologue(XF86ConfModeLinePtr, XF86ConfModeLineRec);
+    mixin(parsePrologue!("XF86ConfModeLinePtr", "XF86ConfModeLineRec"));
 
         if (xf86getSubToken(&(ptr.ml_comment)) != XF86_TOKEN_STRING)
         Error("Mode name expected");
@@ -403,7 +403,7 @@ XF86ConfMonitorPtr xf86parseMonitorSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfMonitorPtr, XF86ConfMonitorRec);
+    mixin(parsePrologue!("XF86ConfMonitorPtr", "XF86ConfMonitorRec"));
 
         while ((token = xf86getToken(MonitorTab.ptr)) != ENDSECTION) {
         switch (token) {
@@ -589,7 +589,7 @@ XF86ConfModesPtr xf86parseModesSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfModesPtr, XF86ConfModesRec);
+    mixin(parsePrologue!("XF86ConfModesPtr", "XF86ConfModesRec"));
 
         while ((token = xf86getToken(ModesTab.ptr)) != ENDSECTION) {
         switch (token) {

@@ -95,7 +95,7 @@ XF86ConfDevicePtr xf86parseDeviceSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfDevicePtr, XF86ConfDeviceRec);
+    mixin(parsePrologue!("XF86ConfDevicePtr", "XF86ConfDeviceRec"));
 
         /* Zero is a valid value for these */
         ptr.dev_chipid = -1;

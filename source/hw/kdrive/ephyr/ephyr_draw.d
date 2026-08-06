@@ -1,4 +1,4 @@
-module ephyr_draw;
+module hw.kdrive.ephyr.ephyr_draw;
 @nogc nothrow:
 extern(C): __gshared:
 /*
@@ -30,7 +30,7 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
-import ephyr;
+import hw.kdrive.ephyr.ephyr;
 import exa.exa_priv;
 import include.fbpict;
 import hw.kdrive.src.kdrive;

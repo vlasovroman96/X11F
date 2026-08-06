@@ -45,7 +45,7 @@ import xf86Opt_priv;
 import xf86Xinput;
 import include.xf86Optrec;
 import include.xf86Parser;
-import xf86platformBus_priv;
+// import xf86platformBus_priv;
 import include.optionstr;
 
 

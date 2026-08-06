@@ -46,7 +46,7 @@ import   mi.mipointer_priv;
 
 import   include.misc;
 import   include.pixmapstr;
-import   input;
+import   include.input;
 import   include.mi;
 import   include.cursorstr;
 import   include.scrnintstr;

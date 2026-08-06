@@ -95,11 +95,11 @@ struct _InputInfoRec {
 
     int flags;
 
-    Bool function(DeviceIntPtr device, int what) device_control;
-    void function(_InputInfoRec* local) read_input;
-    int function(_InputInfoRec* local, xDeviceCtl* control) control_proc;
-    int function(ClientPtr client, DeviceIntPtr dev, int mode) switch_mode;
-    int function(_InputInfoRec* local, int* valuators, int first_valuator, int num_valuators) set_device_valuators;
+    Bool function(DeviceIntPtr device, int what) @nogc nothrow device_control;
+    void function(_InputInfoRec* local) @nogc nothrow read_input;
+    int function(_InputInfoRec* local, xDeviceCtl* control) @nogc nothrow control_proc;
+    int function(ClientPtr client, DeviceIntPtr dev, int mode) @nogc nothrow switch_mode;
+    int function(_InputInfoRec* local, int* valuators, int first_valuator, int num_valuators) @nogc nothrow set_device_valuators;
 
     int fd;
     int major;
@@ -137,7 +137,7 @@ extern void  xf86DisableDevice(DeviceIntPtr dev, Bool panic);
 
 /* xf86Helper.c */
 extern void  xf86AddInputDriver(InputDriverPtr driver, void* module_, int flags);
-extern void  xf86DeleteInput(InputInfoPtr pInp, int flags);
+// extern void  xf86DeleteInput(InputInfoPtr pInp, int flags);
 extern void  xf86MotionHistoryAllocate(InputInfoPtr pInfo);
 extern void  xf86IDrvMsgVerb(InputInfoPtr dev, MessageType type, int verb, const(char)* format, ...);
 // _X_ATTRIBUTE_PRINTF(4, 5);

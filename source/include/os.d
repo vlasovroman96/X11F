@@ -144,7 +144,7 @@ extern OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCa
 extern void TimerCancel(OsTimerPtr);
 extern void TimerFree(OsTimerPtr);
 
-extern void GiveUp(int);
+// extern void GiveUp(int);
 
 /*
  * This function malloc(3)s buffer, terminating the server if there is not
@@ -220,7 +220,7 @@ extern void strlcat(char* dst, const(char)* src, size_t siz);
 }
 
 version (HAVE_STRNDUP) {} else {
-extern void* strndup(const(char)* str, size_t n);
+// extern void* strndup(const(char)* str, size_t n);
 }
 
 version (HAVE_TIMINGSAFE_MEMCMP) {} else {

@@ -62,6 +62,7 @@ import os.log;
 import include.optionstr;
 import externs.epoxy;
 import dix.dixutils;
+import xf86Option;
 
 enum ALL_DRI_CTX_FLAGS = (__DRI_CTX_FLAG_DEBUG                         
                            | __DRI_CTX_FLAG_FORWARD_COMPATIBLE          

@@ -36,12 +36,21 @@ import os.ddx_priv;
 import os.log_priv;
 import os.osdep;
 
-import ephyr;
-import ephyrlog;
+import hw.kdrive.ephyr.ephyr;
+// import ephyrlog;
 import include.glx_extinit;
 import include.glx_extinit;
 import hw.kdrive.src.kdrive;
 import hw.kdrive.src.kinfo;
+import hw.kdrive.ephyr.hostx;
+import hw.kdrive.src.kinput;
+import os.log;
+import core.sys.posix.libgen;
+import os.utils;;
+import hw.kdrive.ephyr.ephyr_draw;
+import hw.kdrive.ephyr.ephyrcursor;
+
+
 
 
 extern Window EphyrPreExistingHostWin;
@@ -65,8 +74,8 @@ int main(int argc, char** argv, char** envp)
 
 void InitCard(char* name)
 {
-    EPHYR_DBG("mark");
-    KdCardInfoAdd(&ephyrFuncs, 0);
+    // EPHYR_DBG("mark");
+    KdCardInfoAdd(&ephyrFuncs, null);
 }
 
 void InitOutput(int argc, char** argv)
@@ -147,7 +156,7 @@ void processScreenOrOutputArg(const(char)* screen_size, const(char)* output, cha
 {
     KdCardInfo* card = void;
 
-    InitCard(0);                /*Put each screen on a separate card */
+    InitCard(null);                /*Put each screen on a separate card */
     card = KdCardInfoLast();
 
     if (card) {
@@ -166,7 +175,7 @@ void processScreenOrOutputArg(const(char)* screen_size, const(char)* output, cha
         }
 
         use_geometry = (strchr(screen_size, '+') != null);
-        EPHYR_DBG("screen number:%d\n", screen.mynum);
+        // EPHYR_DBG("screen number:%d\n", screen.mynum);
         hostx_add_screen(screen, p_id, screen.mynum, use_geometry, output);
     }
     else {
@@ -188,7 +197,7 @@ int ddxProcessArgument(int argc, char** argv, int i)
 {
     static char* parent = null;
 
-    EPHYR_DBG("mark argv[%d]='%s'", i, argv[i]);
+    // EPHYR_DBG("mark argv[%d]='%s'", i, argv[i]);
 
     if (!strcmp(argv[i], "-parent")) {
         if (i + 1 < argc) {
@@ -250,7 +259,7 @@ int ddxProcessArgument(int argc, char** argv, int i)
         return 1;
     }
 version (GLAMOR) {
-    if(strcmp) {
+    if(!strcmp (argv[i], "-glamor")) {
         ephyr_glamor = TRUE;
         ephyrFuncs.initAccel = ephyr_glamor_init;
         ephyrFuncs.enableAccel = ephyr_glamor_enable;
@@ -258,7 +267,7 @@ version (GLAMOR) {
         ephyrFuncs.finiAccel = ephyr_glamor_fini;
         return 1;
     }
-    else if(strcmp) {
+    else if(!strcmp (argv[i], "-glamor_gles2")) {
         ephyr_glamor = TRUE;
         ephyr_glamor_gles2 = TRUE;
         ephyrFuncs.initAccel = ephyr_glamor_init;
@@ -272,11 +281,11 @@ version (GLAMOR) {
         return 1;
     }
 }
-    else if(strcmp) {
-        ephyrFuncs.initAccel = ephyrDrawInit;
-        ephyrFuncs.enableAccel = ephyrDrawEnable;
-        ephyrFuncs.disableAccel = ephyrDrawDisable;
-        ephyrFuncs.finiAccel = ephyrDrawFini;
+    else if(!strcmp(argv[i], "-fakexa")) {
+        ephyrFuncs.initAccel = &ephyrDrawInit;
+        ephyrFuncs.enableAccel = &ephyrDrawEnable;
+        ephyrFuncs.disableAccel = &ephyrDrawDisable;
+        ephyrFuncs.finiAccel = &ephyrDrawFini;
         return 1;
     }
     /* Xephyr adopted a different spelling before the common -verbose option
@@ -284,7 +293,7 @@ version (GLAMOR) {
     else if(!strcmp(argv[i], "-verbosity")) {
         if (i + 1 < argc && argv[i + 1][0] != '-') {
             xorgLogVerbosity = atoi(argv[i + 1]);
-            EPHYR_LOG("set verbosity to %d\n", xorgLogVerbosity);
+            // EPHYR_LOG("set verbosity to %d\n", xorgLogVerbosity);
             return 2;
         }
         else {
@@ -294,7 +303,7 @@ version (GLAMOR) {
     }
     else if(!strcmp(argv[i], "-noxv")) {
         ephyrNoXV = TRUE;
-        EPHYR_LOG("no XVideo enabled\n");
+        // EPHYR_LOG("no XVideo enabled\n");
         return 1;
     }
     else if(!strcmp(argv[i], "-name")) {
@@ -321,7 +330,7 @@ version (GLAMOR) {
         hostx_set_display_name(argv[i]);
     }
     /* Xnest compatibility */
-    else if(strcmp) {
+    else if(!strcmp(argv[i], "-no-host-grab")) {
         hostx_set_display_name(argv[i + 1]);
         return 2;
     }
@@ -337,7 +346,7 @@ version (GLAMOR) {
     }
     /* end Xnest compat */
     else if (!strcmp(argv[i], "-no-host-grab")) {
-        ephyrSetGrabShortcut(NULL);
+        ephyrSetGrabShortcut(null);
         return 1;
     }
     else if (!strcmp(argv[i], "-host-grab")) {
@@ -381,7 +390,7 @@ KdOsFuncs EphyrOsFuncs = {
 
 void OsVendorInit()
 {
-    EPHYR_DBG("mark");
+    // EPHYR_DBG("mark");
 
     if (dixSettingSeatId)
         hostx_use_sw_cursor();

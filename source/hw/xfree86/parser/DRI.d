@@ -50,7 +50,7 @@ XF86ConfDRIPtr xf86parseDRISection()
 {
     int token = void;
 
-    parsePrologue(XF86ConfDRIPtr, XF86ConfDRIRec);
+    mixin(parsePrologue!("XF86ConfDRIPtr", "XF86ConfDRIRec"));
 
     /* Zero is a valid value for this. */
     ptr.dri_group = -1;

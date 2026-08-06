@@ -46,13 +46,13 @@ import include.xf86Xinput;
 import os.log;
 
 /* General parameters */
-extern bool  xorgHWAccess;
+// extern bool  xorgHWAccess;
 
 extern DevPrivateKeyRec xf86ScreenKeyRec;
 
 enum xf86ScreenKey = (&xf86ScreenKeyRec);
 
-extern ScrnInfoPtr *xf86Screens;      /* List of pointers to ScrnInfoRecs */
+// extern ScrnInfoPtr *xf86Screens;      /* List of pointers to ScrnInfoRecs */
 extern ubyte[256] byte_reversed;
 
 enum string XF86SCRNINFO(string p) = `xf86ScreenToScrn(` ~ p ~ `)`;

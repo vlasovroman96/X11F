@@ -43,7 +43,7 @@ import   dix.screen_hooks_priv;
 import   dix.screenint_priv;
 
 import   include.misc;
-import   input;
+import   include.input;
 import   include.cursorstr;
 import include.windowstr;
 import include.regionstr;

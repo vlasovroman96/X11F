@@ -29,37 +29,39 @@ extern(C): __gshared:
 
  
 public import externs.X11.Xdefs;
+import externs.X11.Xmd;
+import include.misc;
 
-version (SEATD_LIBSEAT) {
+// version (SEATD_LIBSEAT) {
 public import xf86Xinput;
 
 
 
-/**
- * @brief seatd_libseat_open_graphics returns opened fd via rpc call through seatd
- * @param path node path
- * @warning this function returns <0 in case of error (for example -2)
- * @return file descriptior or <0
- *
- * @warning void  is only for internal consuption (currently for modesetting only, because its `open_hw` function calls open directly)
- *
- * @note XXX: maybe in future Xlibre public api could gain function for opening device nodes by path?
- **/
+// /**
+//  * @brief seatd_libseat_open_graphics returns opened fd via rpc call through seatd
+//  * @param path node path
+//  * @warning this function returns <0 in case of error (for example -2)
+//  * @return file descriptior or <0
+//  *
+//  * @warning void  is only for internal consuption (currently for modesetting only, because its `open_hw` function calls open directly)
+//  *
+//  * @note XXX: maybe in future Xlibre public api could gain function for opening device nodes by path?
+//  **/
 
 
 
 
 
-} else {
+// } else {
 
-pragma(inline, true) private int seatd_libseat_init(bool KeepTty_state) {cast(void)KeepTty_state; return -1; }
-pragma(inline, true) private void seatd_libseat_fini() {}
-pragma(inline, true) private int seatd_libseat_open_graphics(const(char)* path) {cast(void)path; return -1; }
-pragma(inline, true) private void seatd_libseat_open_device(void* p, int* fd, Bool* paus) { cast(void)p;cast(void)fd;cast(void)paus; }
-pragma(inline, true) private void seatd_libseat_close_device(void* p) { cast(void)p;}
-pragma(inline, true) private int seatd_libseat_switch_session(int session) { return -1; }
-pragma(inline, true) private Bool seatd_libseat_controls_session() { return FALSE; }
+pragma(inline, true) int seatd_libseat_init(bool KeepTty_state) {cast(void)KeepTty_state; return -1; }
+pragma(inline, true) void seatd_libseat_fini() {}
+pragma(inline, true) int seatd_libseat_open_graphics(const(char)* path) {cast(void)path; return -1; }
+pragma(inline, true) void seatd_libseat_open_device(void* p, int* fd, Bool* paus) { cast(void)p;cast(void)fd;cast(void)paus; }
+pragma(inline, true) void seatd_libseat_close_device(void* p) { cast(void)p;}
+pragma(inline, true) int seatd_libseat_switch_session(int session) { return -1; }
+pragma(inline, true) Bool seatd_libseat_controls_session() { return FALSE; }
 
-}
+// }
 
 

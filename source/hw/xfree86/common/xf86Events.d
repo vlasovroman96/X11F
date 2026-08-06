@@ -73,7 +73,7 @@ import xf86_priv;
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
-import xf86platformBus_priv;
+// import xf86platformBus_priv;
 
 version (XFreeXDGA) {
 import include.dgaproc;
@@ -93,6 +93,15 @@ import Xext.dpmsproc;
 
 import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
+import xf86Globals;
+import os.utils;
+import os.log;
+import dix.events;
+import dix.devices;
+import dix.property;
+import hw.xfree86.common.xf86Helper;
+import externs.X11.Xatom;
+import os.connection;
 
 
 extern void function() xf86OSPMClose;
@@ -243,7 +252,7 @@ void xf86Wakeup(void* blockData, int err)
 
 private void xf86ReadInput(int fd, int ready, void* closure)
 {
-    InputInfoPtr pInfo = closure;
+    InputInfoPtr pInfo = cast(InputInfoPtr)closure;
 
     pInfo.read_input(pInfo);
 }
@@ -370,7 +379,7 @@ void xf86VTLeave()
     IHPtr ih = void;
 
     DebugF("xf86VTSwitch: Leaving, xf86Exiting is %s\n",
-           (dispatchException & DE_TERMINATE) ? "TRUE" : "FALSE");
+           (dispatchException & DE_TERMINATE) ? "TRUE".ptr : "FALSE".ptr);
 version (DPMSExtension) {
     if (DPMSPowerLevel != DPMSModeOn)
         DPMSSet(serverClient, DPMSModeOn);
@@ -542,7 +551,7 @@ version (XFreeXDGA) {
 
 private void xf86InputHandlerNotify(int fd, int ready, void* data)
 {
-    IHPtr ih = data;
+    IHPtr ih = cast(IHPtr)data;
 
     if (ih.enabled && ih.fd >= 0 && ih.ihproc) {
         ih.ihproc(ih.fd, ih.data);
@@ -556,7 +565,7 @@ private void* addInputHandler(int fd, InputHandlerProc proc, void* data)
     if (fd < 0 || !proc)
         return null;
 
-    ih = calloc(1, typeof(*ih).sizeof);
+    ih = cast(IHPtr)calloc(1, typeof(*ih).sizeof);
     if (!ih)
         return null;
 
@@ -578,7 +587,7 @@ private void* addInputHandler(int fd, InputHandlerProc proc, void* data)
 
 void* xf86AddGeneralHandler(int fd, InputHandlerProc proc, void* data)
 {
-    IHPtr ih = addInputHandler(fd, proc, data);
+    IHPtr ih = cast(IHPtr)addInputHandler(fd, proc, data);
 
     return ih;
 }
@@ -598,7 +607,7 @@ InputHandlerProc xf86SetConsoleHandler(InputHandlerProc proc, void* data)
         xf86RemoveGeneralHandler(handler);
     }
 
-    handler = xf86AddGeneralHandler(xf86Info.consoleFd, proc, data);
+    handler = cast(IHPtr)xf86AddGeneralHandler(xf86Info.consoleFd, proc, data);
 
     return old_proc;
 }
@@ -629,7 +638,7 @@ int xf86RemoveGeneralHandler(void* handler)
     if (!handler)
         return -1;
 
-    ih = handler;
+    ih = cast(IHPtr)handler;
     fd = ih.fd;
 
     removeInputHandler(ih);
@@ -644,7 +653,7 @@ private void xf86DisableInputHandler(void* handler)
     if (!handler)
         return;
 
-    ih = handler;
+    ih = cast(IHPtr)handler;
     ih.enabled = FALSE;
     if (ih.fd >= 0)
         RemoveNotifyFd(ih.fd);
@@ -657,7 +666,7 @@ private void _xf86DisableGeneralHandler(void* handler)
     if (!handler)
         return;
 
-    ih = handler;
+    ih = cast(IHPtr)handler;
     ih.enabled = FALSE;
     if (ih.fd >= 0)
         RemoveNotifyFd(ih.fd);
@@ -670,7 +679,7 @@ private void xf86EnableInputHandler(void* handler)
     if (!handler)
         return;
 
-    ih = handler;
+    ih = cast(IHPtr)handler;
     ih.enabled = TRUE;
     if (ih.fd >= 0)
         SetNotifyFd(ih.fd, &xf86InputHandlerNotify, X_NOTIFY_READ, ih);
@@ -683,7 +692,7 @@ private void _xf86EnableGeneralHandler(void* handler)
     if (!handler)
         return;
 
-    ih = handler;
+    ih = cast(IHPtr)handler;
     ih.enabled = TRUE;
     if (ih.fd >= 0)
         SetNotifyFd(ih.fd, &xf86InputHandlerNotify, X_NOTIFY_READ, ih);

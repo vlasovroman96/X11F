@@ -84,7 +84,7 @@ private XF86LoadPtr xf86parseModuleSubSection(XF86LoadPtr head, char* name)
 {
     int token = void;
 
-    parsePrologue(XF86LoadPtr, XF86LoadRec);
+    mixin(parsePrologue!("XF86LoadPtr", "XF86LoadRec"));
 
         ptr.load_name = name;
     ptr.load_type = XF86_LOAD_MODULE;

@@ -11,16 +11,16 @@ public import core.stdc.stdlib;
 
 public import include.xf86Parser;
 
-void xf86initConfigFiles();
-char* xf86openConfigFile(const(char)* path, const(char)* cmdline, const(char)* projroot);
-char* xf86openConfigDirFiles(const(char)* path, const(char)* cmdline, const(char)* projroot);
-void xf86setBuiltinConfig(const(char)** config);
-XF86ConfigPtr xf86readConfigFile();
-void xf86closeConfigFile();
+// void xf86initConfigFiles();
+// char* xf86openConfigFile(const(char)* path, const(char)* cmdline, const(char)* projroot);
+// char* xf86openConfigDirFiles(const(char)* path, const(char)* cmdline, const(char)* projroot);
+// void xf86setBuiltinConfig(const(char)** config);
+// XF86ConfigPtr xf86readConfigFile();
+// void xf86closeConfigFile();
 XF86ConfigPtr xf86allocateConfig();
 void xf86freeConfig(XF86ConfigPtr p);
 int xf86writeConfigFile(const(char)* filename, XF86ConfigPtr cptr);
-int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout);
+// int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout);
 
 pragma(inline, true) private void xf86freeMatchGroup(xf86MatchGroup* group)
 {

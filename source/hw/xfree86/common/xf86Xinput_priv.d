@@ -9,10 +9,10 @@ extern(C): __gshared:
 public import include.xf86Xinput;
 import include.xf86;
 
-extern InputInfoPtr xf86InputDevs;
+// extern InputInfoPtr xf86InputDevs;
 
 int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL is_auto);
-InputInfoPtr xf86AllocateInput();
+// InputInfoPtr xf86AllocateInput();
 
 void xf86InputEnableVTProbe();
 

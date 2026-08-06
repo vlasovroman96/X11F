@@ -643,24 +643,24 @@ enum PROBE_TRYHARD =	  0x02;
 // alias xf86SetOverscanProc = ;
 // alias xf86ModeSetProc = ;
 
-alias xf86ProbeProc = Bool function(DriverPtr, int);
-alias xf86PreInitProc = Bool function(ScrnInfoPtr, int);
-alias xf86ScreenInitProc = Bool function(ScreenPtr, int, char **);
-alias xf86SwitchModeProc = Bool function(ScrnInfoPtr, DisplayModePtr);
-alias xf86AdjustFrameProc = void function(ScrnInfoPtr, int, int);
-alias xf86EnterVTProc = Bool function(ScrnInfoPtr);
-alias xf86LeaveVTProc = void function(ScrnInfoPtr);
-alias xf86FreeScreenProc = void function(ScrnInfoPtr);
-alias xf86ValidModeProc = ModeStatus function(ScrnInfoPtr, DisplayModePtr, Bool, int);
-alias xf86EnableDisableFBAccessProc = void function(ScrnInfoPtr, Bool);
-alias xf86SetDGAModeProc = int function(ScrnInfoPtr, int, DGADevicePtr);
-alias xf86ChangeGammaProc = int function(ScrnInfoPtr, Gamma);
-alias xf86PointerMovedProc = void function(ScrnInfoPtr, int, int);
-alias xf86PMEventProc = Bool function(ScrnInfoPtr, pmEvent, Bool);
-alias xf86DPMSSetProc = void function(ScrnInfoPtr, int, int);
-alias xf86LoadPaletteProc = void function(ScrnInfoPtr, int, int *, LOCO *, VisualPtr);
-alias xf86SetOverscanProc = void function(ScrnInfoPtr, int);
-alias xf86ModeSetProc = void function(ScrnInfoPtr);
+alias xf86ProbeProc = Bool function(DriverPtr, int) @nogc nothrow;
+alias xf86PreInitProc = Bool function(ScrnInfoPtr, int) @nogc nothrow;
+alias xf86ScreenInitProc = Bool function(ScreenPtr, int, char **) @nogc nothrow;
+alias xf86SwitchModeProc = Bool function(ScrnInfoPtr, DisplayModePtr) @nogc nothrow;
+alias xf86AdjustFrameProc = void function(ScrnInfoPtr, int, int) @nogc nothrow;
+alias xf86EnterVTProc = Bool function(ScrnInfoPtr) @nogc nothrow;
+alias xf86LeaveVTProc = void function(ScrnInfoPtr) @nogc nothrow;
+alias xf86FreeScreenProc = void function(ScrnInfoPtr) @nogc nothrow;
+alias xf86ValidModeProc = ModeStatus function(ScrnInfoPtr, DisplayModePtr, Bool, int) @nogc nothrow;
+alias xf86EnableDisableFBAccessProc = void function(ScrnInfoPtr, Bool) @nogc nothrow;
+alias xf86SetDGAModeProc = int function(ScrnInfoPtr, int, DGADevicePtr) @nogc nothrow;
+alias xf86ChangeGammaProc = int function(ScrnInfoPtr, Gamma) @nogc nothrow;
+alias xf86PointerMovedProc = void function(ScrnInfoPtr, int, int) @nogc nothrow;
+alias xf86PMEventProc = Bool function(ScrnInfoPtr, pmEvent, Bool) @nogc nothrow;
+alias xf86DPMSSetProc = void function(ScrnInfoPtr, int, int) @nogc nothrow;
+alias xf86LoadPaletteProc = void function(ScrnInfoPtr, int, int *, LOCO *, VisualPtr) @nogc nothrow;
+alias xf86SetOverscanProc = void function(ScrnInfoPtr, int) @nogc nothrow;
+alias xf86ModeSetProc = void function(ScrnInfoPtr) @nogc nothrow;
 
 /*
  * ScrnInfoRec
@@ -797,15 +797,15 @@ struct _ScrnInfoRec {
 }
 
 struct _DGAFunctionRec {
-    Bool function(ScrnInfoPtr pScrn, char** name, ubyte** mem, int* size, int* offset, int* extra) OpenFramebuffer;
-    void function(ScrnInfoPtr pScrn) CloseFramebuffer;
-    Bool function(ScrnInfoPtr pScrn, DGAModePtr pMode) SetMode;
-    void function(ScrnInfoPtr pScrn, int x, int y, int flags) SetViewport;
-    int function(ScrnInfoPtr pScrn) GetViewport;
-    void function(ScrnInfoPtr) Sync;
-    void function(ScrnInfoPtr pScrn, int x, int y, int w, int h, c_ulong color) FillRect;
-    void function(ScrnInfoPtr pScrn, int srcx, int srcy, int w, int h, int dstx, int dsty) BlitRect;
-    void function(ScrnInfoPtr pScrn, int srcx, int srcy, int w, int h, int dstx, int dsty, c_ulong color) BlitTransRect;
+    Bool function(ScrnInfoPtr pScrn, char** name, ubyte** mem, int* size, int* offset, int* extra) @nogc nothrow OpenFramebuffer;
+    void function(ScrnInfoPtr pScrn) @nogc nothrow CloseFramebuffer;
+    Bool function(ScrnInfoPtr pScrn, DGAModePtr pMode) @nogc nothrow SetMode;
+    void function(ScrnInfoPtr pScrn, int x, int y, int flags) @nogc nothrow SetViewport;
+    int function(ScrnInfoPtr pScrn) @nogc nothrow GetViewport;
+    void function(ScrnInfoPtr) @nogc nothrow Sync;
+    void function(ScrnInfoPtr pScrn, int x, int y, int w, int h, c_ulong color) @nogc nothrow FillRect;
+    void function(ScrnInfoPtr pScrn, int srcx, int srcy, int w, int h, int dstx, int dsty) @nogc nothrow BlitRect;
+    void function(ScrnInfoPtr pScrn, int srcx, int srcy, int w, int h, int dstx, int dsty, c_ulong color) @nogc nothrow BlitTransRect;
 }alias DGAFunctionRec = _DGAFunctionRec;
 alias DGAFunctionPtr = DGAFunctionRec*;
 

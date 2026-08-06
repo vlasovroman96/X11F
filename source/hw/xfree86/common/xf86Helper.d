@@ -66,7 +66,7 @@ import include.xf86_OSlib;
 import mi.micmap;
 import xf86Bus;
 import xf86Xinput_priv;
-import xf86InPriv;
+// import xf86InPriv;
 import xf86Config;
 import xf86Module_priv;
 

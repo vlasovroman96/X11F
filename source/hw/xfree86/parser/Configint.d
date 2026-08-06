@@ -95,8 +95,8 @@ public import core.stdc.stdlib;
 
 enum string TestFree(string a) = `if (` ~ a ~ `) { free (cast(void*) ` ~ a ~ `); ` ~ a ~ ` = null; }`;
 
-enum string parsePrologue(string typeptr,string typerec) = `typeptr ptr = void; 
-if( (ptr=calloc(1,` ~ typerec ~ `.sizeof)) == null ) { return null; }`;
+enum string parsePrologue(string typeptr,string typerec) = typeptr ~` ptr = void; 
+if( (ptr=cast(`~typeptr~`)calloc(1,` ~ typerec ~ `.sizeof)) == null ) { return null; }`;
 
 enum string HANDLE_RETURN(string f,string func) = `
 if ((ptr.` ~ f ~ `=` ~ func ~ `) == null)

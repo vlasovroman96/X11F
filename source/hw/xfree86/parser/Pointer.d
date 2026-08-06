@@ -98,7 +98,7 @@ XF86ConfInputPtr xf86parsePointerSection()
     c_ulong val1 = void;
     int token = void;
 
-    parsePrologue(XF86ConfInputPtr, XF86ConfInputRec);
+    mixin(parsePrologue!("XF86ConfInputPtr", "XF86ConfInputRec"));
 
         while ((token = xf86getToken(PointerTab.ptr)) != ENDSECTION) {
         switch (token) {

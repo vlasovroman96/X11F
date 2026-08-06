@@ -75,7 +75,7 @@ import include.scrnintstr;
 import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
 
-import xf86VGAarbiter_priv;
+// import xf86VGAarbiter_priv;
 import hw.xfree86.loader.loaderProcs;
 
 import xf86Module_priv;
@@ -88,7 +88,7 @@ import xf86cmap;
 import mi.mipointer;
 import xf86Extensions;
 import xf86Xinput;
-import xf86InPriv;
+// import xf86InPriv;
 import include.xf86Crtc;
 import include.picturestr;
 import xf86Bus;

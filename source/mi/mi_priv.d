@@ -24,11 +24,11 @@ public import include.validate;
 public import include.window;
 public import mi.miexpose;
 
-pragma(inline, true) private void SetInstalledmiColormap(ScreenPtr s, ColormapPtr c) {
+pragma(inline, true) void SetInstalledmiColormap(ScreenPtr s, ColormapPtr c) {
     dixSetPrivate(&(s).devPrivates, micmapScrPrivateKey, c);
 }
 
-pragma(inline, true) private ColormapPtr GetInstalledmiColormap(ScreenPtr s) {
+pragma(inline, true) ColormapPtr GetInstalledmiColormap(ScreenPtr s) {
     return cast(ColormapPtr)dixLookupPrivate(&(s).devPrivates, &micmapScrPrivateKeyRec);
 }
 

@@ -67,7 +67,7 @@ import hw.xfree86.common.xf86xvpriv;
 
 struct KdVideoEncodingRec {
     int id;
-    const char *name;
+    const(char)*name;
     ushort width, height;
     XvRationalRec rate;
 } 
@@ -82,7 +82,7 @@ alias KdVideoFormatPtr = KdVideoFormatRec*;
 struct KdVideoAdaptorRec{
     uint type;
     int flags;
-    const char *name;
+    const(char)*name;
     int nEncodings;
     KdVideoEncodingPtr pEncodings;
     int nFormats;

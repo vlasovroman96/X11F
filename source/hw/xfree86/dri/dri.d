@@ -76,7 +76,7 @@ import mi.mipointer;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSproc;;
 import include.inputstr;
-import xf86VGAarbiter_priv;
+// import xf86VGAarbiter_priv;
 import xf86Extensions;
 import xf86Config;
 import hw.xfree86.os_support.linux.lnx_kmod;

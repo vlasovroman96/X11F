@@ -77,7 +77,7 @@ XF86ConfInputPtr xf86parseInputSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfInputPtr, XF86ConfInputRec);
+    mixin(parsePrologue!("XF86ConfInputPtr", "XF86ConfInputRec"));
 
         while ((token = xf86getToken(InputTab.ptr)) != ENDSECTION) {
         switch (token) {

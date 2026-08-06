@@ -63,7 +63,7 @@ import core.stdc.string;
 import include.optionstr;
 
 /* Needed for auto server layout */
-extern int xf86CheckBoolOption(void* optlist, const(char)* name, int deflt);
+// extern int xf86CheckBoolOption(void* optlist, const(char)* name, int deflt);
 
 
 private const(xf86ConfigSymTabRec)[9] LayoutTab = [
@@ -94,7 +94,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
     int has_ident = FALSE;
     int token = void;
 
-    parsePrologue(XF86ConfLayoutPtr, XF86ConfLayoutRec);
+    mixin(parsePrologue!("XF86ConfLayoutPtr", "XF86ConfLayoutRec"));
 
         while ((token = xf86getToken(LayoutTab.ptr)) != ENDSECTION) {
         switch (token) {

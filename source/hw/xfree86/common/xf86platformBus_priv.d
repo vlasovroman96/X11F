@@ -11,7 +11,7 @@ import include.xf86str;
 
 version (XSERVER_PLATFORM_BUS) {
 
-extern int xf86_num_platform_devices;
+// extern int xf86_num_platform_devices;
 extern xf86_platform_device* xf86_platform_devices;
 
 pragma(inline, true) private OdevAttributes* xf86_platform_odev_attributes(int index)
