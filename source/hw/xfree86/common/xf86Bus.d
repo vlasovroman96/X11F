@@ -66,6 +66,7 @@ import xf86Option;
 import xf86platformBus;
 import externs.gnu;
 import include.optionstr;;
+import hw.xfree86.common.xf86Helper;
 
 
 // int xf86platformAddGPUDevices(DriverPtr drvp)
@@ -303,7 +304,7 @@ void xf86BusProbe()
 {
 version (XSERVER_PLATFORM_BUS) {
     xf86platformProbe();
-    if (ServerIsNotSeat0() && xf86_num_platform_devices > 0)
+    if (mixin(ServerIsNotSeat0!()) && xf86_num_platform_devices > 0)
         return;
 }
 version (XSERVER_LIBPCIACCESS) {

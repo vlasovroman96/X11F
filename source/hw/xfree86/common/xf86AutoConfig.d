@@ -1,4 +1,4 @@
-module xf86AutoConfig;
+module xf86AutoConfig_;
 @nogc nothrow:
 extern(C): __gshared:
 

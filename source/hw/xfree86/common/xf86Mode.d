@@ -98,6 +98,13 @@ import include.servermd;
 import include.globals;
 import xf86_priv;
 import include.xf86Priv;
+import os.log;
+import hw.xfree86.common.xf86Helper;
+import xf86Init;
+import xf86Option;
+import xf86Bus;
+
+
 
 private void printModeRejectMessage(int index, DisplayModePtr p, int status)
 {
@@ -113,7 +120,7 @@ private void printModeRejectMessage(int index, DisplayModePtr p, int status)
         type = "";
 
     xf86DrvMsg(index, X_INFO, "Not using %smode \"%s\" (%s)\n", type, p.name,
-               xf86ModeStatusToString(status));
+               xf86ModeStatusToString(cast(ModeStatus)status));
 }
 
 /*
@@ -1094,11 +1101,11 @@ private int inferVirtualSize(ScrnInfoPtr scrp, DisplayModePtr modes, int* vx, in
 
     if (!mon)
         return 0;
-    DDC = mon.DDC;
+    DDC = cast(_Xf86Monitor*)mon.DDC;
 
     if (DDC && DDC.ver.revision >= 4) {
         /* For 1.4, we might actually get native pixel format.  How novel. */
-        if (PREFERRED_TIMING_MODE(DDC.features.msc)) {
+        if (mixin(PREFERRED_TIMING_MODE!("DDC.features.msc"))) {
             for (mode = modes; mode; mode = mode.next) {
                 if (mode.type & (M_T_DRIVER | M_T_PREFERRED)) {
                     x = mode.HDisplay;
@@ -1163,7 +1170,7 @@ private uint LCM(uint x, uint y)
 {
     uint m = x, n = y, o = void;
 
-    while ((o = m % n)) {
+    while ((o = m % n) != 0) {
         m = n;
         n = o;
     }
@@ -1197,7 +1204,7 @@ private int scanLineWidth(uint xsize, uint ysize, uint width, c_ulong BankSize, 
     nBitsPerScanline =
         (((width * pBankFormat.bitsPerPixel) + nBitsPerScanlinePadUnit - 1) /
          nBitsPerScanlinePadUnit) * nBitsPerScanlinePadUnit;
-    width = nBitsPerScanline / pBankFormat.bitsPerPixel;
+    width = cast(uint)(nBitsPerScanline / pBankFormat.bitsPerPixel);
 
     if (!xsize || !(nBitsPerBank % pBankFormat.bitsPerPixel))
         return cast(int) width;
@@ -1251,7 +1258,7 @@ private int scanLineWidth(uint xsize, uint ysize, uint width, c_ulong BankSize, 
                  */
                 y *= nBitsPerScanlinePadUnit;
                 nBitsPerScanline += ((x + y - 1) / y) * nBitsPerScanlinePadUnit;
-                width = nBitsPerScanline / pBankFormat.bitsPerPixel;
+                width = cast(uint)(nBitsPerScanline / pBankFormat.bitsPerPixel);
                 break;
             }
 
@@ -1415,7 +1422,7 @@ int xf86ValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)**
         type = "";
         if (!scrp.monitor.maxPixClock && !specified) {
             type = "default ";
-            scrp.monitor.maxPixClock = 65000.0;
+            scrp.monitor.maxPixClock = cast(int)65000.0;
         }
         if (scrp.monitor.maxPixClock) {
             xf86DrvMsg(scrp.scrnIndex, X_INFO,
@@ -1428,21 +1435,21 @@ int xf86ValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)**
     /*
      * Store the clockRanges for later use by the VidMode extension.
      */
-    mixin(nt_list_for_each_entry!("cp", "clockRanges", "next")); {
-        ClockRangePtr newCR = XNFalloc(ClockRange.sizeof);
+    mixin(nt_list_for_each_entry!("cp", "clockRanges", "next",q{
+        ClockRangePtr newCR = cast(ClockRange*)XNFalloc(ClockRange.sizeof);
         memcpy(newCR, cp, ClockRange.sizeof);
         newCR.next = null;
         if (scrp.clockRanges == null)
             scrp.clockRanges = newCR;
         else
             mixin(nt_list_append!("newCR", "scrp.clockRanges", "ClockRange", "next"));
-    }
+    }));
 
     /* Determine which pixmap format to pass to scanLineWidth() */
     if (scrp.depth > 4)
         BankFormat = &scrp.fbFormat;
     else
-        BankFormat = xf86GetPixFormat(scrp, 1); /* >not< scrp->depth! */
+        BankFormat = cast(PixmapFormatRec*) xf86GetPixFormat(scrp, 1); /* >not< scrp->depth! */
 
     if (scrp.xInc <= 0)
         scrp.xInc = 8;         /* Suitable for VGA and others */
@@ -1546,7 +1553,7 @@ enum string _VIRTUALX(string x) = `((((` ~ x ~ `) + scrp.xInc - 1) / scrp.xInc) 
             }
 
             if (status == MODE_OK) {
-                new_ = XNFalloc(DisplayModeRec.sizeof);
+                new_ = cast(DisplayModeRec*)XNFalloc(DisplayModeRec.sizeof);
                 *new_ = *p;
                 new_.next = null;
                 if (!q) {
@@ -1557,7 +1564,7 @@ enum string _VIRTUALX(string x) = `((((` ~ x ~ `) + scrp.xInc - 1) / scrp.xInc) 
                 }
                 new_.prev = null;
                 q = new_;
-                q.name = XNFstrdup(p.name);
+                q.name = cast(const(char)*)XNFstrdup(p.name);
                 q.status = MODE_OK;
             }
             else {
@@ -1587,10 +1594,10 @@ enum string _VIRTUALX(string x) = `((((` ~ x ~ `) + scrp.xInc - 1) / scrp.xInc) 
     if (modeNames != null) {
         for (i = 0; modeNames[i] != null; i++) {
             userModes = TRUE;
-            new_ = XNFcallocarray(1, DisplayModeRec.sizeof);
+            new_ = cast(DisplayModeRec*)XNFcallocarray(1, DisplayModeRec.sizeof);
             new_.prev = last;
             new_.type = M_T_USERDEF;
-            new_.name = XNFstrdup(modeNames[i]);
+            new_.name = cast(const(char)*)XNFstrdup(modeNames[i]);
             if (new_.prev)
                 new_.prev.next = new_;
             *endp = last = new_;
@@ -1655,9 +1662,9 @@ version (XINERAMA) {
             if (r == null)
                 break;
 
-            p = XNFcallocarray(1, DisplayModeRec.sizeof);
+            p = cast(DisplayModeRec*)XNFcallocarray(1, DisplayModeRec.sizeof);
             p.prev = last;
-            p.name = XNFstrdup(r.name);
+            p.name = cast(const(char)*)XNFstrdup(r.name);
             if (!userModes)
                 p.type = M_T_USERDEF;
             if (p.prev)
@@ -1947,7 +1954,7 @@ void xf86PruneDriverModes(ScrnInfoPtr scrp)
         return;
 
     do {
-        if (((first = scrp.modes) == 0))
+        if (((first = scrp.modes) is null))
             return;
         n = p.next;
         if (p.status != MODE_OK) {
@@ -1993,7 +2000,7 @@ void xf86SetCrtcForModes(ScrnInfoPtr scrp, int adjustFlags)
     do {
         xf86SetModeCrtc(p, adjustFlags);
         DebugF("%sMode %s: %d (%d) %d %d (%d) %d %d (%d) %d %d (%d) %d\n",
-               (p.type & M_T_DEFAULT) ? "Default " : "",
+               (p.type & M_T_DEFAULT) ? "Default ".ptr : "".ptr,
                p.name, p.CrtcHDisplay, p.CrtcHBlankStart,
                p.CrtcHSyncStart, p.CrtcHSyncEnd, p.CrtcHBlankEnd,
                p.CrtcHTotal, p.CrtcVDisplay, p.CrtcVBlankStart,

@@ -131,7 +131,7 @@ import xkb.xkbsrv_priv;
 
 import include.dixstruct;
 import include.picture;
-import miinitext;
+import mi.miinitext;
 import dix.dixstruct_priv;
 import Xext.dpmsproc;
 

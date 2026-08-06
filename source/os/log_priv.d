@@ -24,7 +24,7 @@ public import os.osdep;
  * @param backup name for the old logfile.
  * @return new log file name
  */
-const(char)* LogInit(const(char)* fname, const(char)* backup);
+// const(char)* LogInit(const(char)* fname, const(char)* backup);
 
 /**
  * @brief rename the current log file according display name
@@ -39,7 +39,7 @@ void LogSetDisplay();
  *
  * Logs the exit code (and success/error state), then flush and close log file.
  */
-void LogClose(ExitCode error);
+// void LogClose(ExitCode error);
 
 version (DEBUG)
 {
@@ -65,7 +65,7 @@ else
  * The verbosity level of logging to per-display file. All messages with
  * verbosity level below this one will be written to the log file.
  */
-extern int xorgLogFileVerbosity;
+// extern int xorgLogFileVerbosity;
 
 /**
  * @brief force fsync() on each log write
@@ -94,6 +94,6 @@ extern const(char)* xorgSyslogIdent;
 /*
  * print log markers into the log file
  */
-void LogPrintMarkers();
+// void LogPrintMarkers();
 
  /* __XORG_OS_LOGGING_H */

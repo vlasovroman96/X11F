@@ -16,6 +16,13 @@ import core.stdc.stdlib;
 
 import os.cmdline;
 
+enum string CHECK_FOR_REQUIRED_ARGUMENTS(string num) =`  
+    if (((i + `~num~`) >= argc) || (!argv[i + `~num~`])) {                   
+            UseMsg();                                                       
+        FatalError("Required argument to %s not specified\n", argv[i]); 
+    }`;
+
+
 int ProcessCmdLineMultiInt(int argc, char** argv, int* idx, const(char)* name, int* value)
 {
     if (strcmp(argv[*idx], name))

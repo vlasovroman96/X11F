@@ -205,7 +205,7 @@ log_libseat(libseat_log_level level, const char *fmt, va_list args)
  */
 int seatd_libseat_init(Bool KeepTty_state)
 {
-    if (!ServerIsNotSeat0() && xf86HasTTYs() && !KeepTty_state) {
+    if (!mixin(ServerIsNotSeat0!()) && xf86HasTTYs() && !KeepTty_state) {
         LogMessage(X_WARNING,
             "seat-libseat: libseat integration requires -keeptty which "
             ~ "was not provided, disabling\n");

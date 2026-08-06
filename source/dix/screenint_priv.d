@@ -17,12 +17,12 @@ public import include.scrnintstr; /* for screenInfo */
 
 alias ScreenInitProcPtr = Bool function(ScreenPtr pScreen, int argc, char** argv);
 
-int AddScreen(ScreenInitProcPtr pfnInit, int argc, char** argv);
-int AddGPUScreen(ScreenInitProcPtr pfnInit, int argc, char** argv);
+// int AddScreen(ScreenInitProcPtr pfnInit, int argc, char** argv);
+// int AddGPUScreen(ScreenInitProcPtr pfnInit, int argc, char** argv);
 
 void RemoveGPUScreen(ScreenPtr pScreen);
 
-void AttachUnboundGPU(ScreenPtr pScreen, ScreenPtr newScreen);
+// void AttachUnboundGPU(ScreenPtr pScreen, ScreenPtr newScreen);
 void DetachUnboundGPU(ScreenPtr unbound);
 
 void AttachOffloadGPU(ScreenPtr pScreen, ScreenPtr newScreen);

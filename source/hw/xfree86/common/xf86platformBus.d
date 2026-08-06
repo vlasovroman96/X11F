@@ -426,8 +426,8 @@ void xf86MergeOutputClassOptions(int entityIndex, void** options)
         LogMessageVerb(X_INFO, 1, "Applying OutputClass \"%s\" options to %s\n",
                        cl.identifier, dev.attribs.path);
 
-        classopts = xf86optionListDup(cl.option_lst);
-        *options = xf86optionListMerge(*options, classopts);
+        classopts = xf86optionListDup(cast(_InputOption*)cl.option_lst);
+        *options = xf86optionListMerge(cast(_InputOption*)*options, classopts);
     }
 }
 
@@ -587,7 +587,7 @@ int xf86platformProbeDev(DriverPtr drvp)
             }
             else {
                 /* for non-seat0 servers assume first device is the master */
-                if (ServerIsNotSeat0()) {
+                if (mixin(ServerIsNotSeat0!())) {
                     break;
                 } else {
                     /* Accept the device if the driver is corebootdrm */

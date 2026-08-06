@@ -1525,7 +1525,7 @@ Bool vgaHWGetHWRec(ScrnInfoPtr scrp)
         if (scrp.depth >= 4)
             regp.Attribute[OVERSCAN] = 0xFF;
     }
-    if (xf86FindOption(scrp.confScreen.options, "ShowOverscan")) {
+    if (xf86FindOption(cast(_InputOption*)scrp.confScreen.options, "ShowOverscan")) {
         xf86MarkOptionUsedByName(scrp.confScreen.options, "ShowOverscan");
         xf86DrvMsg(scrp.scrnIndex, X_CONFIG, "Showing overscan area\n");
         regp.DAC[765] = 0x3F;

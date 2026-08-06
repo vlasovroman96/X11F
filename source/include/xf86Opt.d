@@ -89,7 +89,7 @@ struct _OptionInfoRec {
 }alias OptionInfoRec = _OptionInfoRec;
 alias OptionInfoPtr = OptionInfoRec*;
 
-extern void  xf86SetIntOption(XF86OptionPtr optlist, const(char)* name, int deflt);
+// extern void  xf86SetIntOption(XF86OptionPtr optlist, const(char)* name, int deflt);
 extern void  xf86SetRealOption(XF86OptionPtr optlist, const(char)* name, double deflt);
 // extern void * xf86SetStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* deflt);
 extern void  xf86SetBoolOption(XF86OptionPtr list, const(char)* name, int deflt);
@@ -103,7 +103,7 @@ extern void  xf86CheckPercentOption(XF86OptionPtr list, const(char)* name, doubl
 extern void  xf86OptionListCreate(const(char)** options, int count, int used);
 // extern void  xf86OptionListMerge(XF86OptionPtr head, XF86OptionPtr tail);
 extern void  xf86OptionListDuplicate(XF86OptionPtr list);
-extern void  xf86OptionListFree(XF86OptionPtr opt);
+// extern void  xf86OptionListFree(XF86OptionPtr opt);
 // extern void * xf86OptionName(XF86OptionPtr opt);
 // extern void * xf86OptionValue(XF86OptionPtr opt);
 // extern void  xf86FindOption(XF86OptionPtr options, const(char)* name);

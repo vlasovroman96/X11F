@@ -202,7 +202,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
 
     SYSCALL(tcgetattr(fd, &t));
 
-    if ((val = xf86SetIntOption(options, "BaudRate", 0))) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "BaudRate", 0))) {
         if ((baud = GetBaud(val))) {
             cfsetispeed(&t, baud);
             cfsetospeed(&t, baud);
@@ -213,7 +213,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         }
     }
 
-    if ((val = xf86SetIntOption(options, "StopBits", 0))) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "StopBits", 0))) {
         switch (val) {
         case 1:
             t.c_cflag &= ~(CSTOPB);
@@ -228,7 +228,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         }
     }
 
-    if ((val = xf86SetIntOption(options, "DataBits", 0))) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "DataBits", 0))) {
         switch (val) {
         case 5:
             t.c_cflag &= ~(CSIZE);
@@ -272,10 +272,10 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         free(s);
     }
 
-    if ((val = xf86SetIntOption(options, "Vmin", -1)) != -1) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "Vmin", -1)) != -1) {
         t.c_cc[VMIN] = val;
     }
-    if ((val = xf86SetIntOption(options, "Vtime", -1)) != -1) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "Vtime", -1)) != -1) {
         t.c_cc[VTIME] = val;
     }
 

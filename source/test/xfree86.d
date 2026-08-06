@@ -74,8 +74,8 @@ private void xfree86_option_list_duplicate()
     free(val1);
     free(val2);
 
-    a = xf86FindOption(options, o_null);
-    b = xf86FindOption(duplicate, o_null);
+    a = xf86FindOption(cast(_InputOption*)options, o_null);
+    b = xf86FindOption(cast(_InputOption*)duplicate, o_null);
     assert(a);
     assert(b);
 

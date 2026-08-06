@@ -302,7 +302,7 @@ private void init_pointer(InputInfoPtr pInfo)
     Atom[MAX_BUTTONS] btnlabels = void;
     Atom[MAX_POINTER_NUM_AXES] axislabels = void;
 
-    nbuttons = xf86SetIntOption(pInfo.options, "PointerButtonCount", 7);
+    nbuttons = xf86SetIntOption(cast(_InputOption*)pInfo.options, "PointerButtonCount", 7);
     has_pressure = xf86SetBoolOption(pInfo.options, "PointerHasPressure",
                                      false);
 
@@ -355,7 +355,7 @@ private void init_pointer_absolute(InputInfoPtr pInfo)
     Atom[MAX_BUTTONS] btnlabels = void;
     Atom[MAX_POINTER_NUM_AXES] axislabels = void;
 
-    nbuttons = xf86SetIntOption(pInfo.options, "PointerButtonCount", 7);
+    nbuttons = xf86SetIntOption(cast(_InputOption*)pInfo.options, "PointerButtonCount", 7);
     has_pressure = xf86SetBoolOption(pInfo.options, "PointerHasPressure",
                                      false);
 
@@ -467,7 +467,7 @@ private void init_touch(InputInfoPtr pInfo)
                                XIGetKnownProperty(AXIS_LABEL_PROP_ABS_MT_PRESSURE),
                                min, TABLET_PRESSURE_AXIS_MAX, res * 1000, 0, res * 1000, Absolute);
 
-    ntouches = xf86SetIntOption(pInfo.options, "TouchCount", TOUCH_MAX_SLOTS);
+    ntouches = xf86SetIntOption(cast(_InputOption*)pInfo.options, "TouchCount", TOUCH_MAX_SLOTS);
     if (ntouches == 0) /* unknown */
         ntouches = TOUCH_MAX_SLOTS;
     InitTouchClassDeviceStruct(dev, ntouches, XIDirectTouch, 2);

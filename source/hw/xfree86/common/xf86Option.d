@@ -45,10 +45,14 @@ import xf86Opt_priv;
 import xf86Xinput;
 import include.xf86Optrec;
 import include.xf86Parser;
-// import xf86platformBus_priv;
+import xf86platformBus;
+import xf86Bus;
 import include.optionstr;
-
-
+import Flags;
+import hw.xfree86.common.xf86Helper;
+import scan;
+import os.log;
+import externs.gnu;
 
 /*
  * xf86CollectOptions collects the options from each of the config file
@@ -84,38 +88,38 @@ void xf86CollectOptions(ScrnInfoPtr pScrn, XF86OptionPtr extraOpts)
         device = xf86GetDevFromEntity(pScrn.entityList[i],
                                       pScrn.entityInstanceList[i]);
         if (device && device.options) {
-            tmp = xf86optionListDup(device.options);
+            tmp = xf86optionListDup(cast(_InputOption*)device.options);
             if (pScrn.options)
-                pScrn.options = xf86optionListMerge(pScrn.options, tmp);
+                pScrn.options = xf86optionListMerge(cast(_InputOption*)pScrn.options, tmp);
             else
                 pScrn.options = tmp;
         }
     }
     if (pScrn.monitor.options) {
-        tmp = xf86optionListDup(pScrn.monitor.options);
+        tmp = xf86optionListDup(cast(_InputOption*)pScrn.monitor.options);
         if (pScrn.options)
-            pScrn.options = xf86optionListMerge(pScrn.options, tmp);
+            pScrn.options = xf86optionListMerge(cast(_InputOption*)pScrn.options, tmp);
         else
             pScrn.options = tmp;
     }
     if (pScrn.confScreen.options) {
-        tmp = xf86optionListDup(pScrn.confScreen.options);
+        tmp = xf86optionListDup(cast(_InputOption*)pScrn.confScreen.options);
         if (pScrn.options)
-            pScrn.options = xf86optionListMerge(pScrn.options, tmp);
+            pScrn.options = xf86optionListMerge(cast(_InputOption*)pScrn.options, tmp);
         else
             pScrn.options = tmp;
     }
     if (pScrn.display.options) {
-        tmp = xf86optionListDup(pScrn.display.options);
+        tmp = xf86optionListDup(cast(_InputOption*)pScrn.display.options);
         if (pScrn.options)
-            pScrn.options = xf86optionListMerge(pScrn.options, tmp);
+            pScrn.options = xf86optionListMerge(cast(_InputOption*)pScrn.options, tmp);
         else
             pScrn.options = tmp;
     }
     if (extras) {
-        tmp = xf86optionListDup(extras);
+        tmp = xf86optionListDup(cast(_InputOption*)extras);
         if (pScrn.options)
-            pScrn.options = xf86optionListMerge(pScrn.options, tmp);
+            pScrn.options = xf86optionListMerge(cast(_InputOption*)pScrn.options, tmp);
         else
             pScrn.options = tmp;
     }
@@ -134,7 +138,7 @@ void xf86CollectInputOptions(InputInfoPtr pInfo, const(char)** defaultOpts)
         XF86OptionPtr tmp = xf86optionListCreate(defaultOpts, -1, 0);
 
         if (pInfo.options)
-            pInfo.options = xf86optionListMerge(tmp, pInfo.options);
+            pInfo.options = xf86optionListMerge(cast(_InputOption*)tmp, pInfo.options);
         else
             pInfo.options = tmp;
     }
@@ -166,7 +170,7 @@ private int LookupIntOption(XF86OptionPtr optlist, const(char)* name, int deflt,
     o.name = name;
     o.type = OPTV_INTEGER;
     if (ParseOptionValue(-1, optlist, &o, markUsed))
-        deflt = o.value.num;
+        deflt = cast(int)o.value.num;
     return deflt;
 }
 
@@ -311,7 +315,7 @@ XF86OptionPtr xf86OptionListCreate(const(char)** options, int count, int used)
 
 XF86OptionPtr xf86OptionListMerge(XF86OptionPtr head, XF86OptionPtr tail)
 {
-    return xf86optionListMerge(head, tail);
+    return xf86optionListMerge(cast(_InputOption*)head, tail);
 }
 
 void xf86OptionListFree(XF86OptionPtr opt)
@@ -388,7 +392,7 @@ void xf86ShowUnusedOptions(int scrnIndex, XF86OptionPtr opt)
             xf86DrvMsg(scrnIndex, X_WARNING, "Option \"%s\" is not used\n",
                        opt.opt_name);
         }
-        opt = opt.list.next;
+        opt = cast(_InputOption*)opt.list.next;
     }
 }
 
@@ -419,7 +423,7 @@ private Bool ParseOptionValue(int scrnIndex, XF86OptionPtr options, OptionInfoPt
                 p.found = FALSE;
             }
             else {
-                p.value.num = strtoul(s, &end, 0);
+                p.value.num = strtoul(s, cast(const(char)**)&end, 0);
                 if (*end == '\0') {
                     p.found = TRUE;
                 }
@@ -461,7 +465,7 @@ private Bool ParseOptionValue(int scrnIndex, XF86OptionPtr options, OptionInfoPt
                 p.found = FALSE;
             }
             else {
-                p.value.realnum = strtod(s, &end);
+                p.value.realnum = strtod(s, cast(const(char)**)&end);
                 if (*end == '\0') {
                     p.found = TRUE;
                 }
@@ -518,7 +522,7 @@ private Bool ParseOptionValue(int scrnIndex, XF86OptionPtr options, OptionInfoPt
                 p.found = FALSE;
             }
             else {
-                double freq = strtod(s, &end);
+                double freq = strtod(s, cast(const(char)**)&end);
                 int units = 0;
 
                 if (end != s) {
@@ -690,7 +694,7 @@ Bool xf86GetOptValInteger(const(OptionInfoRec)* table, int token, int* value)
 
     p = xf86TokenToOptinfo(table, token);
     if (p && p.found) {
-        *value = p.value.num;
+        *value = cast(int)p.value.num;
         return TRUE;
     }
     else
@@ -749,6 +753,7 @@ Bool xf86GetOptValFreq(const(OptionInfoRec)* table, int token, OptFreqUnits expe
                     *value = p.value.freq.freq / 1000.0;
                 else
                     *value = p.value.freq.freq;
+            goto default;
             default: break;}
         }
         return TRUE;
@@ -806,7 +811,7 @@ char* xf86NormalizeName(const(char)* s)
             continue;
         default:
             if (isupper(cast(ubyte)*p))
-                *q++ = tolower(cast(ubyte)*p);
+                *q++ = cast(char)tolower(cast(ubyte)*p);
             else
                 *q++ = *p;
         }

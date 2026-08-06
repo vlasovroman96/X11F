@@ -2,7 +2,7 @@ module xf86Configure;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
+template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
 }
 /*
@@ -76,25 +76,25 @@ static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__Op
 }alias DevToConfigRec = _DevToConfig;
 alias DevToConfigPtr = _DevToConfig*;
 
-private DevToConfigPtr DevToConfig = null;
-private int nDevToConfig = 0, CurrentDriver;
+DevToConfigPtr DevToConfig = null;
+int nDevToConfig = 0, CurrentDriver;
 
 xf86MonPtr ConfiguredMonitor;
 Bool xf86DoConfigurePass1 = TRUE;
-private Bool foundMouse = FALSE;
+Bool foundMouse = FALSE;
 
 static if   (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__" || HasVersion!"__DragonFly__") {
-private const(char)* DFLT_MOUSE_DEV = "/dev/sysmouse";
-private const(char)* DFLT_MOUSE_PROTO = "auto";
+const(char)* DFLT_MOUSE_DEV = "/dev/sysmouse";
+const(char)* DFLT_MOUSE_PROTO = "auto";
 } else version (linux) {
-private const(char)* DFLT_MOUSE_DEV = "/dev/input/mice";
-private const(char)* DFLT_MOUSE_PROTO = "auto";
+const(char)* DFLT_MOUSE_DEV = "/dev/input/mice";
+const(char)* DFLT_MOUSE_PROTO = "auto";
 } else version (WSCONS_SUPPORT) {
-private const(char)* DFLT_MOUSE_DEV = "/dev/wsmouse";
-private const(char)* DFLT_MOUSE_PROTO = "wsmouse";
+const(char)* DFLT_MOUSE_DEV = "/dev/wsmouse";
+const(char)* DFLT_MOUSE_PROTO = "wsmouse";
 } else {
-private const(char)* DFLT_MOUSE_DEV = "/dev/mouse";
-private const(char)* DFLT_MOUSE_PROTO = "auto";
+const(char)* DFLT_MOUSE_DEV = "/dev/mouse";
+const(char)* DFLT_MOUSE_PROTO = "auto";
 }
 
 /*
@@ -176,7 +176,7 @@ static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__Op
     return null;
 }
 
-private XF86ConfInputPtr configureInputSection()
+XF86ConfInputPtr configureInputSection()
 {
     XF86ConfInputPtr mouse = null;
 
@@ -215,7 +215,7 @@ private XF86ConfInputPtr configureInputSection()
     return ptr;
 }
 
-private XF86ConfScreenPtr configureScreenSection(int screennum)
+XF86ConfScreenPtr configureScreenSection(int screennum)
 {
     int i = void;
     int[6] depths = [ 1, 4, 8, 15, 16, 24 /*, 32 */  ];
@@ -246,7 +246,7 @@ private XF86ConfScreenPtr configureScreenSection(int screennum)
     return ptr;
 }
 
-private const(char)* optionTypeToString(OptionValueType type)
+const(char)* optionTypeToString(OptionValueType type)
 {
     switch (type) {
     case OPTV_NONE:
@@ -270,7 +270,7 @@ private const(char)* optionTypeToString(OptionValueType type)
     }
 }
 
-private XF86ConfDevicePtr configureDeviceSection(int screennum)
+XF86ConfDevicePtr configureDeviceSection(int screennum)
 {
     OptionInfoPtr p = void;
     int i = 0;
@@ -343,7 +343,7 @@ private XF86ConfDevicePtr configureDeviceSection(int screennum)
     return ptr;
 }
 
-private XF86ConfLayoutPtr configureLayoutSection()
+XF86ConfLayoutPtr configureLayoutSection()
 {
     int scrnum = 0;
 
@@ -405,14 +405,14 @@ private XF86ConfLayoutPtr configureLayoutSection()
     return ptr;
 }
 
-private XF86ConfFlagsPtr configureFlagsSection()
+XF86ConfFlagsPtr configureFlagsSection()
 {
     mixin(parsePrologue!("XF86ConfFlagsPtr", "XF86ConfFlagsRec"));
 
     return ptr;
 }
 
-private XF86ConfModulePtr configureModuleSection()
+XF86ConfModulePtr configureModuleSection()
 {
     const(char)** elist = void, el = void;
 
@@ -435,7 +435,7 @@ private XF86ConfModulePtr configureModuleSection()
     return ptr;
 }
 
-private XF86ConfFilesPtr configureFilesSection()
+XF86ConfFilesPtr configureFilesSection()
 {
     mixin(parsePrologue!("XF86ConfFilesPtr", "XF86ConfFilesRec"));
 
@@ -447,7 +447,7 @@ private XF86ConfFilesPtr configureFilesSection()
     return ptr;
 }
 
-private XF86ConfMonitorPtr configureMonitorSection(int screennum)
+XF86ConfMonitorPtr configureMonitorSection(int screennum)
 {
     char* tmp = void;
     mixin(parsePrologue!("XF86ConfMonitorPtr", "XF86ConfMonitorRec"));
@@ -461,7 +461,7 @@ private XF86ConfMonitorPtr configureMonitorSection(int screennum)
 }
 
 /* Initialize Configure Monitor from Detailed Timing Block */
-private void handle_detailed_input(detailed_monitor_section* det_mon, void* data)
+void handle_detailed_input(detailed_monitor_section* det_mon, void* data)
 {
     XF86ConfMonitorPtr ptr = cast(XF86ConfMonitorPtr) data;
 
@@ -486,7 +486,7 @@ private void handle_detailed_input(detailed_monitor_section* det_mon, void* data
     }
 }
 
-private XF86ConfMonitorPtr configureDDCMonitorSection(int screennum)
+XF86ConfMonitorPtr configureDDCMonitorSection(int screennum)
 {
     int len = void, mon_width = void, mon_height = void;
 
@@ -543,7 +543,7 @@ version (CONFIGURE_DISPLAYSIZE) {
     return ptr;
 }
 
-private int is_fallback(const(char)* s)
+int is_fallback(const(char)* s)
 {
     /* later entries are less preferred */
     const(char)*[5] fallback = [ "modesetting".ptr, "fbdev".ptr, "vesa".ptr,  "wsfb".ptr, null ];
@@ -556,7 +556,7 @@ private int is_fallback(const(char)* s)
     return -1;
 }
 
-private int driver_sort(const(void)* _l, const(void)* _r)
+int driver_sort(const(void)* _l, const(void)* _r)
 {
     const(char)* l = *cast(const(char)**)_l;
     const(char)* r = *cast(const(char)**)_r;
@@ -579,7 +579,7 @@ private int driver_sort(const(void)* _l, const(void)* _r)
     return left - right;
 }
 
-private void fixup_video_driver_list(const(char)** drivers)
+void fixup_video_driver_list(const(char)** drivers)
 {
     const(char)** end = void;
 
@@ -589,7 +589,7 @@ private void fixup_video_driver_list(const(char)** drivers)
     qsort(drivers, end - drivers, (const(char)*).sizeof, &driver_sort);
 }
 
-private const(char)** GenerateDriverList()
+const(char)** GenerateDriverList()
 {
     const(char)** ret = void;
     static const(char)*[2] patlist = [ "(.*)_drv\\.so", null ];

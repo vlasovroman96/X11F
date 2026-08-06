@@ -23,9 +23,9 @@ extern Bool xf86DoConfigurePass1;
 extern Bool xf86VidModeDisabled;
 extern Bool xf86VidModeAllowNonLocal;
 // extern Bool xf86fpFlag;
-extern Bool xf86bsEnableFlag;
-extern Bool xf86bsDisableFlag;
-extern Bool xf86silkenMouseDisableFlag;
+// extern Bool xf86bsEnableFlag;
+// extern Bool xf86bsDisableFlag;
+// extern Bool xf86silkenMouseDisableFlag;
 // extern Bool xf86xkbdirFlag;
 extern Bool xf86acpiDisableFlag;
 
@@ -34,31 +34,31 @@ extern Bool xf86acpiDisableFlag;
 // extern char* xf86PointerName;
 // extern char* xf86KeyboardName;
 
-extern rgb xf86Weight;
+// extern rgb xf86Weight;
 
-extern Bool  xf86FlipPixels;
+// extern Bool  xf86FlipPixels;
 
-extern Gamma xf86Gamma;
+// extern Gamma xf86Gamma;
 
 // extern const(char)* xf86ModulePath;
 // extern MessageType xf86ModPathFrom;
 
-extern const(char)* xf86LogFile;
-extern MessageType xf86LogFileFrom;
-extern Bool xf86LogFileWasOpened;
-extern int xf86Verbose;       /* verbosity level */
-extern int xf86LogVerbose;    /* log file verbosity level */
+// extern const(char)* xf86LogFile;
+// extern MessageType xf86LogFileFrom;
+// extern Bool xf86LogFileWasOpened;
+// extern int xf86Verbose;       /* verbosity level */
+// extern int xf86LogVerbose;    /* log file verbosity level */
 
 // extern int xf86NumDrivers;
-extern Bool xf86Resetting;
-extern Bool xf86Initialising;
+// extern Bool xf86Resetting;
+// extern Bool xf86Initialising;
 // extern const(char)*[1] xf86VisualNames;
 
 /* xf86Cursor.c */
 void xf86LockZoom(ScreenPtr pScreen, int lock);
-void xf86InitViewport(ScrnInfoPtr pScr);
+// void xf86InitViewport(ScrnInfoPtr pScr);
 void xf86ZoomViewport(ScreenPtr pScreen, int zoom);
-void xf86InitOrigins();
+// void xf86InitOrigins();
 
 /* xf86Events.c */
 InputHandlerProc xf86SetConsoleHandler(InputHandlerProc handler, void* data);
@@ -73,10 +73,10 @@ extern int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs;
 extern pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs;
 
 /* xf86Helper.c */
-void xf86DeleteDriver(int drvIndex);
-void xf86DeleteScreen(ScrnInfoPtr pScrn);
-void xf86LogInit();
-void xf86CloseLog(ExitCode error);
+// void xf86DeleteDriver(int drvIndex);
+// void xf86DeleteScreen(ScrnInfoPtr pScrn);
+// void xf86LogInit();
+// void xf86CloseLog(ExitCode error);
 
 /* xf86Init.c */
 Bool xf86LoadModules(const(char)** list, void** optlist);
@@ -95,7 +95,7 @@ extern const(int) xf86NumDefaultModes;
 Bool xf86RandRInit(ScreenPtr pScreen);
 
 /* xf86Extensions.c */
-void xf86ExtensionInit();
+// void xf86ExtensionInit();
 
 /* xf86Configure.c */
 void DoConfigure(); 

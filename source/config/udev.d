@@ -47,6 +47,8 @@ import dix.inpututils;
 import externs.gnu;
 import os.string;
 import os.connection;
+import xf86Xinput;
+
 
 
 import hw.xfree86.os_support.linux.systemd_logind;
@@ -438,7 +440,7 @@ version (CONFIG_UDEV_KMS) {
 }
 
 version (HAVE_UDEV_MONITOR_FILTER_ADD_MATCH_TAG) {
-    if (ServerIsNotSeat0())
+    if (mixin(ServerIsNotSeat0!()))
         udev_monitor_filter_add_match_tag(udev_monitor_, dixSettingSeatId);
 }
     if (assumeNoGC(&udev_monitor_enable_receiving)(udev_monitor_)) {
@@ -466,7 +468,7 @@ version (CONFIG_UDEV_KMS) {
 }
 
 version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
-    if (ServerIsNotSeat0())
+    if (mixin(ServerIsNotSeat0!()))
         udev_enumerate_add_match_tag(enumerate, dixSettingSeatId);
 }
 
@@ -605,7 +607,7 @@ void config_udev_odev_probe(config_odev_probe_proc_ptr probe_callback)
     assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "drm");
     udev_enumerate_add_match_sysname(enumerate, "card[0-9]*");
 version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
-    if (ServerIsNotSeat0())
+    if (mixin(ServerIsNotSeat0!()))
         udev_enumerate_add_match_tag(enumerate, dixSettingSeatId);
 }
     assumeNoGC(&udev_enumerate_scan_devices)(enumerate);

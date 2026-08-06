@@ -137,7 +137,7 @@ int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldest);
 alias OsSigHandlerPtr = void function(int sig);
 
 /* install signal handler */
-OsSigHandlerPtr OsSignal(int sig, OsSigHandlerPtr handler);
+// OsSigHandlerPtr OsSignal(int sig, OsSigHandlerPtr handler);
 
 // void OsInit();
 

@@ -94,7 +94,7 @@ import Monitor;
 import read;
 import include.optionstr;
 import os.utils;
-import miinitext;
+import mi.miinitext;
 
 
 import include.picture;
@@ -803,11 +803,11 @@ private void configServerFlags(XF86ConfFlagsPtr flagsconf, XF86OptionPtr layouto
      */
     optp = null;
     if (flagsconf && flagsconf.flg_option_lst)
-        optp = xf86optionListDup(flagsconf.flg_option_lst);
+        optp = xf86optionListDup(cast(_InputOption*)flagsconf.flg_option_lst);
     if (layoutopts) {
-        tmp = xf86optionListDup(layoutopts);
+        tmp = xf86optionListDup(cast(_InputOption*)layoutopts);
         if (optp)
-            optp = xf86optionListMerge(optp, tmp);
+            optp = xf86optionListMerge(cast(_InputOption*)optp, tmp);
         else
             optp = tmp;
     }

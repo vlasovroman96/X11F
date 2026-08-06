@@ -32,7 +32,7 @@ enum __XSERVERNAME__ = "Xorg";
 enum XF86CONFIGFILE = "xorg.conf";
 
 /* Path to configuration file. */
-enum XCONFIGFILE = "xorg.conf";
+// enum XCONFIGFILE = "xorg.conf";
 
 /* Name of configuration directory. */
 enum XCONFIGDIR = "xorg.conf.d";

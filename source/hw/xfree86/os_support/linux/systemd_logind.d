@@ -644,7 +644,7 @@ private dbus_core_hook core_hook = {
 
 int systemd_logind_init()
 {
-    if (!ServerIsNotSeat0() && xf86HasTTYs() && linux_parse_vt_settings(TRUE) && !xf86VTKeepTtyIsSet()) {
+    if (!mixin(ServerIsNotSeat0!()) && xf86HasTTYs() && linux_parse_vt_settings(TRUE) && !xf86VTKeepTtyIsSet()) {
         LogMessage(X_INFO,
             "systemd-logind: logind integration requires -keeptty and "
             ~ "-keeptty was not provided, disabling logind integration\n");

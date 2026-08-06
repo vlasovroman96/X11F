@@ -260,7 +260,7 @@ extern void _X_ATTRIBUTE_PRINTF();
 extern void _X_ATTRIBUTE_PRINTF();
 extern void _X_ATTRIBUTE_PRINTF();
 
-extern void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...);
+// extern void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...);
 
 // extern void _X_NORETURN;
 

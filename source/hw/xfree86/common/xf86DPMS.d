@@ -65,7 +65,7 @@ version (DPMSExtension) {
     MessageType enabled_from = X_DEFAULT;
     Bool enabled = TRUE;
 
-    DPMSOpt = xf86FindOption(pScrn.options, "dpms");
+    DPMSOpt = xf86FindOption(cast(_InputOption*)pScrn.options, "dpms");
     if (DPMSDisabledSwitch) {
         enabled_from = X_CMDLINE;
         enabled = FALSE;

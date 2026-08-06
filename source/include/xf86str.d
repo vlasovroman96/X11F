@@ -206,7 +206,7 @@ alias GET_REQUIRED_HW_INTERFACES = xorgDriverFuncOp.GET_REQUIRED_HW_INTERFACES;
 alias SUPPORTS_SERVER_FDS = xorgDriverFuncOp.SUPPORTS_SERVER_FDS;
 
 
-alias xorgDriverFuncProc = Bool function(ScrnInfoPtr, xorgDriverFuncOp, void *);
+alias xorgDriverFuncProc = Bool function(ScrnInfoPtr, xorgDriverFuncOp, void *) @nogc nothrow;
 
 /* RR_GET_INFO, RR_SET_CONFIG */
 struct xorgRRConfig {
@@ -255,16 +255,16 @@ struct xf86_platform_device;
 struct _DriverRec {
     int driverVersion;
     const(char)* driverName;
-    void function(int flags) Identify;
-    Bool function(_DriverRec* drv, int flags) Probe;
-    const(OptionInfoRec)* function(int chipid, int bustype) AvailableOptions;
+    void function(int flags) @nogc nothrow Identify;
+    Bool function(_DriverRec* drv, int flags) @nogc nothrow Probe;
+    const(OptionInfoRec)* function(int chipid, int bustype) @nogc nothrow AvailableOptions;
     void* module_;
     int refCount;
     xorgDriverFuncProc* driverFunc;
 
     const(pci_id_match)* supported_devices;
-    Bool function(_DriverRec* drv, int entity_num, pci_device* dev, intptr_t match_data) PciProbe;
-    Bool function(_DriverRec* drv, int entity_num, int flags, xf86_platform_device* dev, intptr_t match_data) platformProbe;
+    Bool function(_DriverRec* drv, int entity_num, pci_device* dev, intptr_t match_data) @nogc nothrow PciProbe;
+    Bool function(_DriverRec* drv, int entity_num, int flags, xf86_platform_device* dev, intptr_t match_data) @nogc nothrow platformProbe;
 }alias DriverRec = _DriverRec;
 alias DriverPtr = _DriverRec*;
 

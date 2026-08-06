@@ -36,6 +36,10 @@ import include.xf86Module;
 import xf86Extensions;
 import xf86Opt_priv;
 import include.optionstr;
+import include.xf86Parser;
+import xf86Globals;
+import externs.gnu;
+import mi.miinitext;
 
 version (XSELINUX) {
 import xselinux;
@@ -92,39 +96,39 @@ private void load_extension_config()
     if (!mod_con)
         return;
 
-    mixin(nt_list_for_each_entry!("modp", "mod_con.mod_load_lst", "list.next")); {
+    mixin(nt_list_for_each_entry!("modp", "mod_con.mod_load_lst", "list.next", q{
         InputOption* opt = void;
 
         if (strcasecmp(modp.load_name, "extmod") != 0)
             continue;
 
         /* extmod options are of the form "omit <extension-name>" */
-        mixin(nt_list_for_each_entry!("opt", "modp.load_opt", "list.next")); {
-            const(char)* key = input_option_get_key(opt);
+        mixin(nt_list_for_each_entry!("opt", "modp.load_opt", "list.next", q{
+            const(char)* key = cast(char*)input_option_get_key(opt);
             if (strncasecmp(key, "omit", 4) != 0 || strlen(key) < 5)
                 continue;
             if (EnableDisableExtension(key + 4, FALSE))
                 xf86MarkOptionUsed(opt);
-        }
+        }));
 
 version (XSELINUX) {
-        if ((opt = xf86FindOption(modp.load_opt,
+        if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
                                   "SELinux mode disabled"))) {
             xf86MarkOptionUsed(opt);
             selinuxEnforcingState = SELINUX_MODE_DISABLED;
         }
-        if ((opt = xf86FindOption(modp.load_opt,
+        if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
                                   "SELinux mode permissive"))) {
             xf86MarkOptionUsed(opt);
             selinuxEnforcingState = SELINUX_MODE_PERMISSIVE;
         }
-        if ((opt = xf86FindOption(modp.load_opt,
+        if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
                                   "SELinux mode enforcing"))) {
             xf86MarkOptionUsed(opt);
             selinuxEnforcingState = SELINUX_MODE_ENFORCING;
         }
 }
-    }
+    }));
 }
 
 void xf86ExtensionInit()

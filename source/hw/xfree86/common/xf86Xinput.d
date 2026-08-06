@@ -168,7 +168,7 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
     }
 
     /* select profile by number */
-    tempi = xf86SetIntOption(list, "AccelerationProfile",
+    tempi = xf86SetIntOption(cast(_InputOption*)list, "AccelerationProfile",
                              s.statistics.profile_number);
 
     prop = XIGetKnownProperty(ACCEL_PROP_PROFILE_NUMBER);
@@ -195,11 +195,11 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
                                PropModeReplace, 1, &tempf, FALSE);
     }
 
-    tempi = xf86SetIntOption(list, "VelocityTrackerCount", -1);
+    tempi = xf86SetIntOption(cast(_InputOption*)list, "VelocityTrackerCount", -1);
     if (tempi > 1)
         InitTrackers(s, tempi);
 
-    s.initial_range = xf86SetIntOption(list, "VelocityInitialRange",
+    s.initial_range = xf86SetIntOption(cast(_InputOption*)list, "VelocityInitialRange",
                                         s.initial_range);
 
     s.max_diff = xf86SetRealOption(list, "VelocityAbsDiff", s.max_diff);
@@ -221,7 +221,7 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
     s.average_accel = xf86SetBoolOption(list, "AccelerationProfileAveraging",
                                          s.average_accel);
 
-    s.reset_time = xf86SetIntOption(list, "VelocityReset", s.reset_time);
+    s.reset_time = xf86SetIntOption(cast(_InputOption*)list, "VelocityReset", s.reset_time);
 }
 
 private void ApplyAccelerationSettings(DeviceIntPtr dev)
@@ -277,17 +277,17 @@ private void ApplyAccelerationSettings(DeviceIntPtr dev)
             break;
         default: break;}
 
-        i = xf86SetIntOption(pInfo.options, "AccelerationNumerator",
+        i = xf86SetIntOption(cast(_InputOption*)pInfo.options, "AccelerationNumerator",
                              dev.ptrfeed.ctrl.num);
         if (i >= 0)
             dev.ptrfeed.ctrl.num = i;
 
-        i = xf86SetIntOption(pInfo.options, "AccelerationDenominator",
+        i = xf86SetIntOption(cast(_InputOption*)pInfo.options, "AccelerationDenominator",
                              dev.ptrfeed.ctrl.den);
         if (i > 0)
             dev.ptrfeed.ctrl.den = i;
 
-        i = xf86SetIntOption(pInfo.options, "AccelerationThreshold",
+        i = xf86SetIntOption(cast(_InputOption*)pInfo.options, "AccelerationThreshold",
                              dev.ptrfeed.ctrl.threshold);
         if (i >= 0)
             dev.ptrfeed.ctrl.threshold = i;
@@ -743,7 +743,7 @@ private int MergeInputClasses(const(InputInfoPtr) idev, const(InputAttributes)* 
             continue;
 
         /* Collect class options and driver settings */
-        classopts = xf86optionListDup(cl.option_lst);
+        classopts = xf86optionListDup(cast(_InputOption*)cl.option_lst);
         if (cl.driver) {
             free(cast(void*) idev.driver);
             idev.driver = Xstrdup(cl.driver);
@@ -758,7 +758,7 @@ private int MergeInputClasses(const(InputInfoPtr) idev, const(InputAttributes)* 
         /* Apply options to device with InputClass settings preferred. */
         LogMessageVerb(X_CONFIG, 1, "%s: Applying InputClass \"%s\"\n",
                        idev.name, cl.identifier);
-        idev.options = xf86optionListMerge(idev.options, classopts);
+        idev.options = xf86optionListMerge(cast(_InputOption*)idev.options, classopts);
     }
 
     return Success;

@@ -44,11 +44,12 @@ public import core.stdc.stdarg;
 //public import externs.X11.extensions._randr;
 import include.xf86Xinput;
 import os.log;
+import xf86Globals;
 
 /* General parameters */
 // extern bool  xorgHWAccess;
 
-extern DevPrivateKeyRec xf86ScreenKeyRec;
+// extern DevPrivateKeyRec xf86ScreenKeyRec;
 
 enum xf86ScreenKey = (&xf86ScreenKeyRec);
 
@@ -78,11 +79,11 @@ extern void  xf86ConfigPciEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityInde
 
 extern void  xf86ClaimFbSlot(DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
 extern void  xf86ClaimNoSlot(DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
-extern void  xf86AddEntityToScreen(ScrnInfoPtr pScrn, int entityIndex);
+// extern void  xf86AddEntityToScreen(ScrnInfoPtr pScrn, int entityIndex);
 extern void  xf86SetEntityInstanceForScreen(ScrnInfoPtr pScrn, int entityIndex, int instance);
 extern void  xf86GetNumEntityInstances(int entityIndex);
-extern void  xf86GetDevFromEntity(int entityIndex, int instance);
-extern void  xf86GetEntityInfo(int entityIndex);
+// extern void  xf86GetDevFromEntity(int entityIndex, int instance);
+// extern void  xf86GetEntityInfo(int entityIndex);
 
 enum string xf86SetLastScrnFlag(string e, string s) = `do { } while (0)`;
 
@@ -138,9 +139,9 @@ extern void  xf86SetDefaultVisual(ScrnInfoPtr scrp, int visual);
 extern void  xf86SetGamma(ScrnInfoPtr scrp, Gamma newGamma);
 extern void  xf86SetDpi(ScrnInfoPtr pScrn, int x, int y);
 extern void  xf86SetBlackWhitePixels(ScreenPtr pScreen);
-extern void  xf86EnableDisableFBAccess(ScrnInfoPtr pScrn, Bool enable);
+// extern void  xf86EnableDisableFBAccess(ScrnInfoPtr pScrn, Bool enable);
 extern void  xf86VDrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* format, va_list args);
-extern void  xf86DrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* format, ...);
+// extern void  xf86DrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* format, ...);
 extern void  _X_ATTRIBUTE_PRINTF();
 extern void  _X_ATTRIBUTE_PRINTF();
 extern void  _X_ATTRIBUTE_PRINTF();
@@ -170,7 +171,7 @@ extern void  xf86IsUnblank(int mode);
 
 /* xf86Init.c */
 
-extern void  xf86GetPixFormat(ScrnInfoPtr pScrn, int depth);
+// extern void  xf86GetPixFormat(ScrnInfoPtr pScrn, int depth);
 extern void  xf86GetBppFromDepth(ScrnInfoPtr pScrn, int depth);
 
 /* xf86Mode.c */

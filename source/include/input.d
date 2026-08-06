@@ -429,7 +429,7 @@ extern InputAttributes *DuplicateInputAttributes(InputAttributes *
 extern int FreeInputAttributes(InputAttributes* attrs);
 
 /* Implemented by the DDX. */
-extern int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* dev);
+// extern int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* dev);
 extern int DeleteInputDeviceRequest(DeviceIntPtr dev);
 extern int RemoveInputDeviceTraces(const(char)* config_info);
 extern int DDXRingBell(int volume, int pitch, int duration);

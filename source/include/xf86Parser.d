@@ -517,6 +517,6 @@ extern void  xf86findVideoAdaptor(const(char)* ident, XF86ConfVideoAdaptorPtr p)
 extern void  xf86pathIsAbsolute(const(char)* path);
 // extern void  xf86pathIsSafe(const(char)* path);
 extern void * xf86addComment(char* cur, const(char)* add);
-extern void  xf86getBoolValue(Bool* val, const(char)* str);
+// extern void  xf86getBoolValue(Bool* val, const(char)* str);
 
                           /* _xf86Parser_h_ */

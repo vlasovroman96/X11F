@@ -98,6 +98,6 @@ extern void  InitExtensions(int argc, char** argv);
 
 extern void  CloseDownExtensions();
 
-extern void  LoadExtensionList(const(ExtensionModule)* ext, int listSize, Bool external);
+// extern void  LoadExtensionList(const(ExtensionModule)* ext, int listSize, Bool external);
 
                           /* EXTENSION_H */

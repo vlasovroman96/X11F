@@ -37,7 +37,7 @@ import core.stdc.config: c_long, c_ulong;
  * the sale, use or other dealings in this Software without prior written
  * authorization from the copyright holder(s) and author(s).
  */
-import build.xorg_config;
+// import build.xorg_config;
 
 import core.stdc.stdlib;
 import core.stdc.errno;
@@ -94,6 +94,15 @@ import include.picturestr;
 import xf86Bus;
 import include.globals;
 import include.xserver_properties;
+import os.log;
+import externs.attrs;
+import xf86Globals;
+import dix.property;
+import xf86AutoConfig_;
+import externs.X11.Xatom;
+import xf86VGAarbiter;
+import xf86Option;
+import core.sys.posix.unistd;
 
 version (DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
@@ -104,6 +113,11 @@ version (linux) {
 import externs.linux.major;
 import externs.sys.sysmacros;
 }
+
+import std.conv;
+
+import hw.xfree86.common.xf86Helper;
+import os.utils;
 
 Bool xf86DoShowOptions = FALSE;
 
@@ -129,12 +143,12 @@ private Bool formatsDone = FALSE;
 private void xf86PrintBanner()
 {
     xf86ErrorFVerb(0, "\nXLibre X Server %d.%d.%d",
-                   XORG_VERSION_MAJOR, XORG_VERSION_MINOR, XORG_VERSION_PATCH);
-static if (XORG_VERSION_SNAP > 0) {
-    xf86ErrorFVerb(0, ".%d", XORG_VERSION_SNAP);
+                   XORG_VERSION_MAJOR.ptr, XORG_VERSION_MINOR.ptr, XORG_VERSION_PATCH.ptr);
+static if (mixin(XORG_VERSION_SNAP) > 0) {
+    xf86ErrorFVerb(0, ".%d", mixin(XORG_VERSION_SNAP));
 }
 
-static if (XORG_VERSION_SNAP >= 900) {
+static if (mixin(XORG_VERSION_SNAP) >= 900) {
     /* When the minor number is 99, that signifies that the we are making
      * a release candidate for a major version.  (X.0.0)
      * When the patch number is 99, that signifies that the we are making
@@ -144,14 +158,14 @@ static if (XORG_VERSION_SNAP >= 900) {
      */
 static if (XORG_VERSION_MINOR >= 99) {
     xf86ErrorFVerb(0, " (%d.0.0 RC %d)", XORG_VERSION_MAJOR + 1,
-                   XORG_VERSION_SNAP - 900);
+                   mixin(XORG_VERSION_SNAP) - 900);
 } else static if (XORG_VERSION_PATCH == 99) {
     xf86ErrorFVerb(0, " (%d.%d.0 RC %d)", XORG_VERSION_MAJOR,
-                   XORG_VERSION_MINOR + 1, XORG_VERSION_SNAP - 900);
+                   XORG_VERSION_MINOR + 1, mixin(XORG_VERSION_SNAP) - 900);
 } else {
     xf86ErrorFVerb(0, " (%d.%d.%d RC %d)", XORG_VERSION_MAJOR,
                    XORG_VERSION_MINOR, XORG_VERSION_PATCH + 1,
-                   XORG_VERSION_SNAP - 900);
+                   mixin(XORG_VERSION_SNAP) - 900);
 }
 }
 
@@ -197,7 +211,7 @@ version (linux) {
 Bool xf86HasTTYs()
 {
 version (linux) {
-    stat tty0devAttributes = void;
+    stat_t tty0devAttributes = void;
     return (stat("/dev/tty0", &tty0devAttributes) == 0 && major(tty0devAttributes.st_rdev) == TTY_MAJOR);
 } else {
     return TRUE;
@@ -220,13 +234,13 @@ private void xf86AutoConfigOutputDevices()
 
 private void AddSeatId(CallbackListPtr* pcbl, void* data, void* screen)
 {
-    ScreenPtr pScreen = screen;
+    ScreenPtr pScreen = cast(ScreenPtr)screen;
     Atom SeatAtom = dixAddAtom(SEAT_ATOM_NAME);
     int err = void;
 
     err = dixChangeWindowProperty(serverClient, pScreen.root, SeatAtom,
                                   XA_STRING, 8, PropModeReplace,
-                                  strlen(data) + 1, data, FALSE);
+                                  strlen(cast(char*)data) + 1, data, FALSE);
 
     if (err != Success)
         xf86DrvMsg(pScreen.myNum, X_WARNING,
@@ -237,7 +251,7 @@ private void AddVTAtoms(CallbackListPtr* pcbl, void* data, void* screen)
 {
 enum VT_ATOM_NAME =         "XFree86_VT";
     int err = void, HasVT = 1;
-    ScreenPtr pScreen = screen;
+    ScreenPtr pScreen = cast(ScreenPtr)screen;
     Atom VTAtom = dixAddAtom(VT_ATOM_NAME);
     Atom HasVTAtom = dixAddAtom(HAS_VT_ATOM_NAME);
 
@@ -307,12 +321,12 @@ void InitOutput(int argc, char** argv)
         /* Read and parse the config file */
         if (!xf86DoConfigure && !xf86DoShowOptions) {
             switch (xf86HandleConfigFile(FALSE)) {
-            case CONFIG_OK:
+            case _ConfigStatus.CONFIG_OK:
                 break;
-            case CONFIG_PARSE_ERROR:
+            case _ConfigStatus.CONFIG_PARSE_ERROR:
                 LogMessageVerb(X_ERROR, 1, "Error parsing the config file\n");
                 return;
-            case CONFIG_NOFILE:
+            case _ConfigStatus.CONFIG_NOFILE:
                 autoconfig = TRUE;
                 break;
             default: break;}
@@ -332,7 +346,7 @@ void InitOutput(int argc, char** argv)
             DoShowOptions();
 
         dbus_core_init();
-        seatd_libseat_init(xf86VTKeepTtyIsSet());
+        seatd_libseat_init(cast(bool)xf86VTKeepTtyIsSet());
         systemd_logind_init();
 
         /* Do a general bus probe.  This will be a PCI probe for x86 platforms */
@@ -353,7 +367,7 @@ void InitOutput(int argc, char** argv)
         xf86ExtensionInit();
 
         /* Load all modules specified explicitly in the config file */
-        if ((modulelist = xf86ModulelistFromConfig(&optionlist))) {
+        if ((modulelist = xf86ModulelistFromConfig(&optionlist)) !is null) {
             xf86LoadModules(modulelist, optionlist);
             free(modulelist);
             free(optionlist);
@@ -370,13 +384,13 @@ void InitOutput(int argc, char** argv)
                 return;
             }
         }
-        if ((modulelist = xf86DriverlistFromConfig())) {
+        if ((modulelist = xf86DriverlistFromConfig()) !is null) {
             xf86LoadModules(modulelist, null);
             free(modulelist);
         }
 
         /* Load all input driver modules specified in the config file. */
-        if ((modulelist = xf86InputDriverlistFromConfig())) {
+        if ((modulelist = xf86InputDriverlistFromConfig())!is null) {
             xf86LoadModules(modulelist, null);
             free(modulelist);
         }
@@ -413,16 +427,16 @@ void InitOutput(int argc, char** argv)
             if (xf86DriverList[i].Identify != null)
                 xf86DriverList[i].Identify(0);
 
-            if (xf86DriverList[i].driverFunc)
-                xf86DriverList[i].driverFunc(null,
+            if (xf86DriverList[i].driverFunc !is null)
+                (*xf86DriverList[i].driverFunc)(null,
                                               GET_REQUIRED_HW_INTERFACES,
                                               &flags);
 
-            if (NEED_IO_ENABLED(flags))
+            if (mixin(NEED_IO_ENABLED!("flags")))
                 want_hw_access = TRUE;
 
             /* Non-seat0 X servers should not open console */
-            if (!(flags & HW_SKIP_CONSOLE) && !ServerIsNotSeat0() && xf86HasTTYs())
+            if (!(flags & HW_SKIP_CONSOLE) && !mixin(ServerIsNotSeat0!()) && xf86HasTTYs())
                 xorgHWOpenConsole = TRUE;
         }
 
@@ -599,7 +613,7 @@ void InitOutput(int argc, char** argv)
     screenInfo.bitmapBitOrder = xf86Screens[0].bitmapBitOrder;
     screenInfo.numPixmapFormats = numFormats;
     for (i = 0; i < numFormats; i++)
-        screenInfo.formats[i] = formats[i];
+        screenInfo.formats[i] = cast(_PixmapFormat)formats[i];
 
     /* Make sure the server's VT is active */
 
@@ -628,7 +642,7 @@ version (HAS_USL_VTS) {
          * Almost everything uses these defaults, and many of those that
          * don't, will wrap them.
          */
-        xf86Screens[i].EnableDisableFBAccess = xf86EnableDisableFBAccess;
+        xf86Screens[i].EnableDisableFBAccess = &xf86EnableDisableFBAccess;
 version (XFreeXDGA) {
         xf86Screens[i].SetDGAMode = xf86SetDGAMode;
 }
@@ -675,7 +689,7 @@ version (XFreeXDGA) {
          * Almost everything uses these defaults, and many of those that
          * don't, will wrap them.
          */
-        pScrn.EnableDisableFBAccess = xf86EnableDisableFBAccess;
+        pScrn.EnableDisableFBAccess = &xf86EnableDisableFBAccess;
 version (XFreeXDGA) {
         pScrn.SetDGAMode = xf86SetDGAMode;
 }
@@ -708,7 +722,7 @@ version (XFreeXDGA) {
     xf86Resetting = FALSE;
     xf86Initialising = FALSE;
 
-    RegisterBlockAndWakeupHandlers(cast(ServerBlockHandlerProcPtr) NoopDDA, xf86Wakeup,
+    RegisterBlockAndWakeupHandlers(cast(ServerBlockHandlerProcPtr) &NoopDDA, &xf86Wakeup,
                                    null);
 }
 
@@ -876,12 +890,12 @@ void xf86SetLogVerbosity(int verb)
 
 private void xf86PrintDefaultModulePath()
 {
-    ErrorF("%s\n", DEFAULT_MODULE_PATH);
+    ErrorF("%s\n", DEFAULT_MODULE_PATH.ptr);
 }
 
 private void xf86PrintDefaultLibraryPath()
 {
-    ErrorF("%s\n", DEFAULT_LIBRARY_PATH);
+    ErrorF("%s\n", DEFAULT_LIBRARY_PATH.ptr);
 }
 
 private void xf86CheckPrivs(const(char)* option, const(char)* arg)
@@ -906,7 +920,7 @@ int ddxProcessArgument(int argc, char** argv, int i)
 {
     /* First the options that are not allowed with elevated privileges */
     if (!strcmp(argv[i], "-modulepath")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (PrivsElevated())
               FatalError("\nInvalid argument -modulepath "
                 ~ "with elevated privileges\n");
@@ -915,7 +929,7 @@ int ddxProcessArgument(int argc, char** argv, int i)
         return 2;
     }
     if (!strcmp(argv[i], "-logfile")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (PrivsElevated())
               FatalError("\nInvalid argument -logfile "
                 ~ "with elevated privileges\n");
@@ -924,13 +938,13 @@ int ddxProcessArgument(int argc, char** argv, int i)
         return 2;
     }
     if (!strcmp(argv[i], "-config") || !strcmp(argv[i], "-xf86config")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         xf86CheckPrivs(argv[i], argv[i + 1]);
         xf86ConfigFile = argv[i + 1];
         return 2;
     }
     if (!strcmp(argv[i], "-configdir")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         xf86CheckPrivs(argv[i], argv[i + 1]);
         xf86ConfigDir = argv[i + 1];
         return 2;
@@ -964,11 +978,11 @@ version (XF86VIDMODE) {
 
             val = strtol(argv[i], &end, 0);
             if (*end == '\0') {
-                xf86SetVerbosity(val);
+                xf86SetVerbosity(cast(int)val);
                 return 2;
             }
         }
-        xf86SetVerbosity(++xf86Verbose);
+        xf86SetVerbosity(cast(int)++xf86Verbose);
         return 1;
     }
     if (!strcmp(argv[i], "-logverbose")) {
@@ -978,15 +992,15 @@ version (XF86VIDMODE) {
 
             val = strtol(argv[i], &end, 0);
             if (*end == '\0') {
-                xf86SetLogVerbosity(val);
+                xf86SetLogVerbosity(cast(int)val);
                 return 2;
             }
         }
-        xf86SetLogVerbosity(++xf86LogVerbose);
+        xf86SetLogVerbosity(cast(int)++xf86LogVerbose);
         return 1;
     }
     if (!strcmp(argv[i], "-quiet")) {
-        xf86SetVerbosity(-1);
+        xf86SetVerbosity(cast(int)-1);
         return 1;
     }
     if (!strcmp(argv[i], "-showconfig") || !strcmp(argv[i], "-version")) {
@@ -1023,7 +1037,7 @@ version (XF86VIDMODE) {
     if (!strcmp(argv[i], "-fbbpp")) {
         int bpp = void;
 
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (sscanf(argv[++i], "%d", &bpp) == 1) {
             xf86FbBpp = bpp;
             return 2;
@@ -1036,7 +1050,7 @@ version (XF86VIDMODE) {
     if (!strcmp(argv[i], "-depth")) {
         int depth = void;
 
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (sscanf(argv[++i], "%d", &depth) == 1) {
             xf86Depth = depth;
             return 2;
@@ -1049,7 +1063,7 @@ version (XF86VIDMODE) {
     if (!strcmp(argv[i], "-weight")) {
         int red = void, green = void, blue = void;
 
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (sscanf(argv[++i], "%1d%1d%1d", &red, &green, &blue) == 3) {
             xf86Weight.red = red;
             xf86Weight.green = green;
@@ -1065,7 +1079,7 @@ version (XF86VIDMODE) {
         !strcmp(argv[i], "-ggamma") || !strcmp(argv[i], "-bgamma")) {
         double gamma = void;
 
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (sscanf(argv[++i], "%lf", &gamma) == 1) {
             if (gamma < GAMMA_MIN || gamma > GAMMA_MAX) {
                 ErrorF("gamma out of range, only  %.2f <= gamma_value <= %.1f"
@@ -1084,22 +1098,22 @@ version (XF86VIDMODE) {
         }
     }
     if (!strcmp(argv[i], "-layout")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         xf86LayoutName = argv[++i];
         return 2;
     }
     if (!strcmp(argv[i], "-screen")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         xf86ScreenName = argv[++i];
         return 2;
     }
     if (!strcmp(argv[i], "-pointer")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         xf86PointerName = argv[++i];
         return 2;
     }
     if (!strcmp(argv[i], "-keyboard")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         xf86KeyboardName = argv[++i];
         return 2;
     }
@@ -1132,7 +1146,7 @@ version (HAVE_ACPI) {
     }
 version (XSERVER_LIBPCIACCESS) {
     if (!strcmp(argv[i], "-isolateDevice")) {
-        CHECK_FOR_REQUIRED_ARGUMENTS(1);
+        mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (strncmp(argv[++i], "PCI:", 4)) {
             FatalError("Bus types other than PCI not yet isolable\n");
         }
@@ -1290,14 +1304,14 @@ PixmapFormatPtr xf86GetPixFormat(ScrnInfoPtr pScrn, int depth)
         if (formats[i].depth == depth)
             break;
     if (i != numFormats)
-        return &formats[i];
+        return cast(_PixmapFormat*)&formats[i];
     else if (!formatsDone) {
         /* Check for screen-specified formats */
         for (i = 0; i < pScrn.numFormats; i++)
             if (pScrn.formats[i].depth == depth)
                 break;
         if (i != pScrn.numFormats)
-            return &pScrn.formats[i];
+            return cast(_PixmapFormat*)&pScrn.formats[i];
     }
     return null;
 }

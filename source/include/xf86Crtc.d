@@ -39,9 +39,9 @@ import include.scrintstr;
 
 
 /* Compat definitions for older X Servers. */
-enum M_T_PREFERRED =	0x08;
+// enum M_T_PREFERRED =	0x08;
 
-enum M_T_DRIVER =	0x40;
+// enum M_T_DRIVER =	0x40;
 
 enum M_T_USERPREF =	0x80;
 

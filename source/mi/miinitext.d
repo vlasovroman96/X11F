@@ -1,4 +1,4 @@
-module miinitext;
+module mi.miinitext;
 @nogc nothrow:
 extern(C): __gshared:
 /***********************************************************
@@ -96,7 +96,7 @@ import mi.micmap;
 import include.os;
 import include.globals;
 
-import miinitext;
+import mi.miinitext;
 
 
 private const ExtensionModule[] staticExtensions = () {
