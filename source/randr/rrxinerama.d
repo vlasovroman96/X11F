@@ -132,7 +132,7 @@ int ProcRRXineramaGetState(ClientPtr client)
         return rc;
 
     pScreen = pWin.drawable.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     if (pScrPriv) {
         /* XXX do we need more than this? */
         active = TRUE;

@@ -78,8 +78,8 @@ struct _InputDriverRec {
     int driverVersion;
     const(char)* driverName;
     void function(int flags) Identify;
-    int function(_InputDriverRec* drv, _InputInfoRec* pInfo, int flags) PreInit;
-    void function(_InputDriverRec* drv, _InputInfoRec* pInfo, int flags) UnInit;
+    int function(_InputDriverRec* drv, _InputInfoRec* pInfo, int flags) @nogc nothrow PreInit;
+    void function(_InputDriverRec* drv, _InputInfoRec* pInfo, int flags) @nogc nothrow UnInit;
     void* module_;
     const(char)** default_options;
     int capabilities;
@@ -144,6 +144,6 @@ extern void  xf86IDrvMsgVerb(InputInfoPtr dev, MessageType type, int verb, const
 extern void  _X_ATTRIBUTE_PRINTF();
 
 /* xf86Option.c */
-extern void  xf86CollectInputOptions(InputInfoPtr pInfo, const(char)** defaultOpts);
+// extern void  xf86CollectInputOptions(InputInfoPtr pInfo, const(char)** defaultOpts);
 
                           /* _xf86Xinput_h */

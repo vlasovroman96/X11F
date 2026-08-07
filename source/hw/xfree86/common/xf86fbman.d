@@ -802,7 +802,7 @@ private FBLinearPtr localAllocateOffscreenLinear(ScreenPtr pScreen, int length, 
 
     DebugF("NOPE, ALLOCATING AREA\n");
 
-    if (((link = cast(FBLinearLink*) calloc(1, FBLinearLink.sizeof)) == 0))
+    if (((link = cast(FBLinearLink*) calloc(1, FBLinearLink.sizeof)) is null))
         return null;
 
     /* No linear available, so try and pinch some from the XY areas */

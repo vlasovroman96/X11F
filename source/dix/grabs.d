@@ -76,6 +76,8 @@ import os.access;
 import dix.events;
 import os.auth;
 import dix.dispatch;
+import dix.inpututils;
+
 
 enum MasksPerDetailMask = 8;    /* 256 keycodes and 256 possible;
                                    modifier combinations; modifier MASKWORD(buf, i); */

@@ -379,7 +379,7 @@ breakout:
     pScreen.WakeupHandler = cast(ScreenWakeupHandlerProcPtr) NoopDDA;
 
     miDCInitialize(pScreen, &xnestPointerCursorFuncs);  /* init SW rendering */
-    PointPriv = dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
+    PointPriv = cast(_MiPointerScreenRec*)dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
     xnestCursorFuncs.spriteFuncs = PointPriv.spriteFuncs;
     dixSetPrivate(&pScreen.devPrivates, &xnestScreenCursorFuncKeyRec,
                   &xnestCursorFuncs);

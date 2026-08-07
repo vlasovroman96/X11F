@@ -1296,7 +1296,7 @@ Bool DRICreateDrawable(ScreenPtr pScreen, ClientPtr client, DrawablePtr pDrawabl
         }
         else {
             /* allocate a DRI Window Private record */
-            if (((pDRIDrawablePriv = cast(DRIDrawablePrivRec*) calloc(1, DRIDrawablePrivRec.sizeof)) == 0)) {
+            if (((pDRIDrawablePriv = cast(DRIDrawablePrivRec*) calloc(1, DRIDrawablePrivRec.sizeof)) is null)) {
                 return FALSE;
             }
 

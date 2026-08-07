@@ -40,6 +40,11 @@ import include.xf86Priv;
 import mi.mipointer;
 import include.randrstr;
 import include.inputstr;
+import hw.xfree86.common.xf86Helper;
+import xf86Cursor;
+import dix.events;
+import randr.rrinfo;
+import randr.randr;
 
 struct _xf86RandRInfo {
     int virtualX;
@@ -93,8 +98,8 @@ private Bool xf86RandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
         }
 
         pSize = RRRegisterSize(pScreen,
-                               mode.HDisplay, mode.VDisplay,
-                               RRModeMM.mmWidth, RRModeMM.mmHeight);
+                               cast(short)mode.HDisplay, cast(short)mode.VDisplay,
+                               cast(short)RRModeMM.mmWidth, cast(short)RRModeMM.mmHeight);
         if (!pSize)
             return FALSE;
         RRRegisterRate(pScreen, pSize, refresh);
@@ -120,8 +125,8 @@ private Bool xf86RandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
         }
 
         pSize = RRRegisterSize(pScreen,
-                               randrp.virtualX, randrp.virtualY,
-                               RRModeMM.mmWidth, RRModeMM.mmHeight);
+                               cast(short)randrp.virtualX, cast(short)randrp.virtualY,
+                               cast(short)RRModeMM.mmWidth, cast(short)RRModeMM.mmHeight);
         if (!pSize)
             return FALSE;
         RRRegisterRate(pScreen, pSize, refresh0);
@@ -188,24 +193,24 @@ private Bool xf86RandRSetMode(ScreenPtr pScreen, DisplayModePtr mode, Bool useVi
     }
     if (randrp.rotation & (RR_Rotate_90 | RR_Rotate_270)) {
         /* If the screen is rotated 90 or 270 degrees, swap the sizes. */
-        pScreen.width = scrp.virtualY;
-        pScreen.height = scrp.virtualX;
-        pScreen.mmWidth = mmHeight;
-        pScreen.mmHeight = mmWidth;
+        pScreen.width = cast(short)scrp.virtualY;
+        pScreen.height = cast(short)scrp.virtualX;
+        pScreen.mmWidth = cast(short)mmHeight;
+        pScreen.mmHeight = cast(short)mmWidth;
     }
     else {
-        pScreen.width = scrp.virtualX;
-        pScreen.height = scrp.virtualY;
-        pScreen.mmWidth = mmWidth;
-        pScreen.mmHeight = mmHeight;
+        pScreen.width = cast(short)scrp.virtualX;
+        pScreen.height = cast(short)scrp.virtualY;
+        pScreen.mmWidth = cast(short)mmWidth;
+        pScreen.mmHeight = cast(short)mmHeight;
     }
     if (!xf86SwitchMode(pScreen, mode)) {
-        pScreen.width = oldWidth;
-        pScreen.height = oldHeight;
-        pScreen.mmWidth = oldmmWidth;
-        pScreen.mmHeight = oldmmHeight;
-        scrp.virtualX = oldVirtualX;
-        scrp.virtualY = oldVirtualY;
+        pScreen.width = cast(short)oldWidth;
+        pScreen.height = cast(short)oldHeight;
+        pScreen.mmWidth = cast(short)oldmmWidth;
+        pScreen.mmHeight = cast(short)oldmmHeight;
+        scrp.virtualX = cast(short)oldVirtualX;
+        scrp.virtualY = cast(short)oldVirtualY;
         ret = FALSE;
     }
     /*
@@ -344,11 +349,11 @@ private void xf86RandRCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void
 
     XF86RandRInfoPtr randrp = mixin(XF86RANDRINFO!(`pScreen`));
 
-    scrp.virtualX = pScreen.width = randrp.virtualX;
-    scrp.virtualY = pScreen.height = randrp.virtualY;
+    scrp.virtualX = pScreen.width = cast(short)randrp.virtualX;
+    scrp.virtualY = pScreen.height = cast(short)randrp.virtualY;
     scrp.currentMode = scrp.modes;
 
-    dixScreenUnhookClose(pScreen, xf86RandRCloseScreen);
+    dixScreenUnhookClose(pScreen, &xf86RandRCloseScreen);
     free(randrp);
     dixSetPrivate(&pScreen.devPrivates, xf86RandRKey, null);
 }
@@ -377,9 +382,9 @@ version (XINERAMA) {
         free(randrp);
         return FALSE;
     }
-    rp = rrGetScrPriv(pScreen);
-    rp.rrGetInfo = xf86RandRGetInfo;
-    rp.rrSetConfig = xf86RandRSetConfig;
+    rp = mixin(rrGetScrPriv!("pScreen"));
+    rp.rrGetInfo = &xf86RandRGetInfo;
+    rp.rrSetConfig = &xf86RandRSetConfig;
 
     randrp.virtualX = scrp.virtualX;
     randrp.virtualY = scrp.virtualY;

@@ -45,6 +45,6 @@ alias PredictableAccelSchemePtr = _PredictableAccelSchemeRec*;
 
 // void acceleratePointerLightweight(DeviceIntPtr dev, ValuatorMask* val, CARD32 evtime);
 
-void InitTrackers(DeviceVelocityPtr vel, int ntracker);
+// void InitTrackers(DeviceVelocityPtr vel, int ntracker);
 
  /* _XSERVER_POINTERVELOCITY_PRIV_H */

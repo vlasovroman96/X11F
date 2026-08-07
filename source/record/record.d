@@ -2592,7 +2592,7 @@ private void RecordAClientStateChange(CallbackListPtr* pcbl, void* nulldata, voi
         /* RecordDisableContext modifies contents of ppAllContexts. */
         if (((numContextsCopy = numContexts) == 0))
             break;
-        if (((ppAllContextsCopy = cast(RecordContextPtr*) calloc(numContextsCopy, RecordContextPtr.sizeof)) == 0))
+        if (((ppAllContextsCopy = cast(RecordContextPtr*) calloc(numContextsCopy, RecordContextPtr.sizeof)) is null))
             return;
         assert(ppAllContextsCopy);
         memcpy(ppAllContextsCopy, ppAllContexts,

@@ -134,7 +134,7 @@ private RRCrtcPtr rr_crtc_covering_box(ScreenPtr pScreen, BoxPtr box, Bool scree
     if (!dixPrivateKeyRegistered(rrPrivKey))
         return null;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (!pScrPriv)
         return null;

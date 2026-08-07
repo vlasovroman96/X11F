@@ -154,6 +154,8 @@ import externs.attrs;
 import dix.screen_hooks;
 import os.io;
 import externs.X11.X;
+import dix.inpututils;
+
 /******
  * Window stuff for server
  *

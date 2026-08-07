@@ -886,7 +886,7 @@ version (GLAMOR) {
 
  Bool vfbRRScreenSetSize(ScreenPtr pScreen, CARD16 width, CARD16 height, CARD32 mmWidth, CARD32 mmHeight)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     // Prevent screen updates while we change things around
     SetRootClip(pScreen, ROOT_CLIP_NONE);
@@ -947,7 +947,7 @@ static if (RANDR_12_INTERFACE) {
 
     if (!RRScreenInit(pScreen))
         return FALSE;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     pScrPriv.rrGetInfo = vfbRRGetInfo;
 static if (RANDR_12_INTERFACE) {
     pScrPriv.rrCrtcSet = vfbRRCrtcSet;

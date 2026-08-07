@@ -52,6 +52,8 @@ import Xi.exglobals;
 import include.xkbsrv;
 import dix.events;
 import dix.devices;
+import dix.inpututils;
+
 /**
  * @file
  * This file describes the model for sending core enter/leave events and

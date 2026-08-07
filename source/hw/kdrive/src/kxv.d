@@ -366,7 +366,7 @@ private Bool KdXVInitAdaptors(ScreenPtr pScreen, KdVideoAdaptorPtr infoPtr, int 
             continue;
         }
 
-        if (((adaptorPriv = cast(XvAdaptorRecPrivate*) calloc(1, XvAdaptorRecPrivate.sizeof)) == 0)) {
+        if (((adaptorPriv = cast(XvAdaptorRecPrivate*) calloc(1, XvAdaptorRecPrivate.sizeof)) is null)) {
             KdXVFreeAdaptor(pa);
             continue;
         }
@@ -395,7 +395,7 @@ private Bool KdXVInitAdaptors(ScreenPtr pScreen, KdVideoAdaptorPtr infoPtr, int 
             if (((pp.id = dixAllocServerXID()) == 0))
                 continue;
 
-            if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) == 0))
+            if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) is null))
                 continue;
 
             if (!AddResource(pp.id, PortResource, pp)) {

@@ -280,7 +280,7 @@ private void xf86EnsureRANDR(ScreenPtr pScreen)
 {
 version (RANDR) {
         if (!dixPrivateKeyRegistered(rrPrivKey) ||
-            !rrGetScrPriv(pScreen))
+            !mixin(rrGetScrPriv!("pScreen")))
             xf86RandRInit(pScreen);
 }
 }

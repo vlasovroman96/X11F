@@ -41,33 +41,33 @@ struct _ValuatorMask {
     double[MAX_VALUATORS] unaccelerated = 0;    /* valuator data */
 }
 
-void verify_internal_event(const(InternalEvent)* ev);
-void init_device_event(DeviceEvent* event, DeviceIntPtr dev, Time ms, DeviceEventSource event_source);
-void init_gesture_event(GestureEvent* event, DeviceIntPtr dev, Time ms);
-int event_get_corestate(DeviceIntPtr mouse, DeviceIntPtr kbd);
-void event_set_state(DeviceIntPtr mouse, DeviceIntPtr kbd, DeviceEvent* event);
-void event_set_state_gesture(DeviceIntPtr kbd, GestureEvent* event);
-Mask event_get_filter_from_type(DeviceIntPtr dev, int evtype);
-Mask event_get_filter_from_xi2type(int evtype);
+// void verify_internal_event(const(InternalEvent)* ev);
+// void init_device_event(DeviceEvent* event, DeviceIntPtr dev, Time ms, DeviceEventSource event_source);
+// void init_gesture_event(GestureEvent* event, DeviceIntPtr dev, Time ms);
+// int event_get_corestate(DeviceIntPtr mouse, DeviceIntPtr kbd);
+// void event_set_state(DeviceIntPtr mouse, DeviceIntPtr kbd, DeviceEvent* event);
+// void event_set_state_gesture(DeviceIntPtr kbd, GestureEvent* event);
+// Mask event_get_filter_from_type(DeviceIntPtr dev, int evtype);
+// Mask event_get_filter_from_xi2type(int evtype);
 
-FP3232 double_to_fp3232(double in_);
-FP1616 double_to_fp1616(double in_);
+// FP3232 double_to_fp3232(double in_);
+// FP1616 double_to_fp1616(double in_);
 double fp1616_to_double(FP1616 in_);
 double fp3232_to_double(FP3232 in_);
 
-XI2Mask* xi2mask_new();
+// XI2Mask* xi2mask_new();
 XI2Mask* xi2mask_new_with_size(size_t, size_t); /* don't use it */
-void xi2mask_free(XI2Mask** mask);
-Bool xi2mask_isset(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type);
-Bool xi2mask_isset_for_device(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type);
+// void xi2mask_free(XI2Mask** mask);
+// Bool xi2mask_isset(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type);
+// Bool xi2mask_isset_for_device(XI2Mask* mask, const(DeviceIntPtr) dev, int event_type);
 void xi2mask_set(XI2Mask* mask, int deviceid, int event_type);
-void xi2mask_zero(XI2Mask* mask, int deviceid);
-void xi2mask_merge(XI2Mask* dest, const(XI2Mask)* source);
-size_t xi2mask_num_masks(const(XI2Mask)* mask);
-size_t xi2mask_mask_size(const(XI2Mask)* mask);
-void xi2mask_set_one_mask(XI2Mask* xi2mask, int deviceid, const(ubyte)* mask, size_t mask_size);
-const(ubyte)* xi2mask_get_one_mask(const(XI2Mask)* xi2mask, int deviceid);
+// void xi2mask_zero(XI2Mask* mask, int deviceid);
+// void xi2mask_merge(XI2Mask* dest, const(XI2Mask)* source);
+// size_t xi2mask_num_masks(const(XI2Mask)* mask);
+// size_t xi2mask_mask_size(const(XI2Mask)* mask);
+// void xi2mask_set_one_mask(XI2Mask* xi2mask, int deviceid, const(ubyte)* mask, size_t mask_size);
+// const(ubyte)* xi2mask_get_one_mask(const(XI2Mask)* xi2mask, int deviceid);
 
-Bool CopySprite(SpritePtr src, SpritePtr dst);
+// Bool CopySprite(SpritePtr src, SpritePtr dst);
 
  /* _XSERVER_DIX_INPUTUTILS_PRIV_H */

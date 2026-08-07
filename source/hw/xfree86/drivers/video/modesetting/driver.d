@@ -1399,7 +1399,7 @@ private Bool PreInit(ScrnInfoPtr pScrn, int flags)
 
     /* Process the options */
     xf86CollectOptions(pScrn, null);
-    if (((ms.drmmode.Options = cast(Options*) calloc(1, Options.sizeof)) == 0))
+    if (((ms.drmmode.Options = cast(Options*) calloc(1, Options.sizeof)) is null))
         return FALSE;
     memcpy(ms.drmmode.Options, Options.ptr, Options.sizeof);
     xf86ProcessOptions(pScrn.scrnIndex, pScrn.options, ms.drmmode.Options);
@@ -1628,7 +1628,7 @@ private void msUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
         ty2 = (extents.y2 + TILE - 1) / TILE;
 
         nrects = (tx2 - tx1) * (ty2 - ty1);
-        if (((prect = cast(xRectangle*) calloc(nrects, xRectangle.sizeof)) == 0))
+        if (((prect = cast(xRectangle*) calloc(nrects, xRectangle.sizeof)) is null))
             break;
 
         nrects = 0;
@@ -1847,7 +1847,7 @@ private Bool modesetCreateScreenResources(ScreenPtr pScreen)
     }
 
     if (dixPrivateKeyRegistered(rrPrivKey)) {
-        rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
+        rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
         pScrPriv.rrEnableSharedPixmapFlipping = msEnableSharedPixmapFlipping;
         pScrPriv.rrDisableSharedPixmapFlipping = msDisableSharedPixmapFlipping;
@@ -2156,7 +2156,7 @@ version (GLAMOR) {
     /* If pageflip is enabled hook the screen's cursor-sprite (swcursor) funcs.
      * So that we can disable page-flipping on fallback to a swcursor. */
     if (ms.drmmode.pageflip) {
-        miPointerScreenPtr PointPriv = dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
+        miPointerScreenPtr PointPriv = cast(_MiPointerScreenRec*)dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
 
         if (!dixRegisterScreenPrivateKey(&ms.drmmode.spritePrivateKeyRec,
                                          pScreen, PRIVATE_DEVICE,
@@ -2416,7 +2416,7 @@ else {
 }
 
     if (ms.drmmode.pageflip) {
-        miPointerScreenPtr PointPriv = dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
+        miPointerScreenPtr PointPriv = cast(_MiPointerScreenRec*)dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
 
         if (PointPriv.spriteFuncs == &drmmode_sprite_funcs)
             PointPriv.spriteFuncs = ms.SpriteFuncs;

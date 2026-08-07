@@ -725,8 +725,8 @@ ModuleDescPtr DuplicateModule(ModuleDescPtr mod, ModuleDescPtr parent)
     ret.SetupProc = mod.SetupProc;
     ret.TearDownProc = mod.TearDownProc;
     ret.TearDownData = ModuleDuplicated;
-    ret.child = DuplicateModule(mod.child, ret);
-    ret.sib = DuplicateModule(mod.sib, parent);
+    ret.child = DuplicateModule(cast(module_desc*)mod.child, ret);
+    ret.sib = DuplicateModule(cast(module_desc*)mod.sib, parent);
     ret.parent = parent;
     ret.VersionInfo = mod.VersionInfo;
 
@@ -978,7 +978,7 @@ ModuleDescPtr LoadModule(const(char)* module_, void* options, const(XF86ModReqIn
     goto LoadModule_exit;
 
  LoadModule_fail:
-    UnloadModule(ret);
+    UnloadModule(cast(module_desc*)ret);
     ret = null;
 
  LoadModule_exit:
@@ -1014,9 +1014,9 @@ void UnloadModule(ModuleDescPtr mod)
     }
 
     if (mod.child)
-        UnloadModule(mod.child);
+        UnloadModule(cast(module_desc*)mod.child);
     if (mod.sib)
-        UnloadModule(mod.sib);
+        UnloadModule(cast(module_desc*)mod.sib);
     free(mod);
 }
 
@@ -1026,7 +1026,7 @@ void UnloadSubModule(ModuleDescPtr mod)
     if (mod == cast(ModuleDescPtr) 1)
         return;
     RemoveChild(mod);
-    UnloadModule(mod);
+    UnloadModule(cast(module_desc*)mod);
 }
 
 private void RemoveChild(ModuleDescPtr child)

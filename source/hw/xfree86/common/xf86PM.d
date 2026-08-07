@@ -35,6 +35,9 @@ import xf86_priv;
 import include.xf86Priv;
 import xf86Xinput_priv;
 import include.xf86_OSproc;;
+import xf86Globals;
+import dix.devices;
+import os.log;
 
 int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs = null;
 pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs = null;
@@ -198,7 +201,7 @@ void xf86HandlePMEvents(int fd, void* data)
     if (!xf86PMGetEventFromOs)
         return;
 
-    if ((n = xf86PMGetEventFromOs(fd, events.ptr, MAX_NO_EVENTS))) {
+    if ((n = xf86PMGetEventFromOs(fd, events.ptr, MAX_NO_EVENTS)) != 0) {
         do {
             for (i = 0; i < n; i++) {
                 const(char)* str = null;

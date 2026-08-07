@@ -66,7 +66,7 @@ void miPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, xPoint* pp
     int i = void;
     xPoint* ppt = void;
 
-    if (((pwidthInit = cast(int*) calloc(npt, int.sizeof)) == 0))
+    if (((pwidthInit = cast(int*) calloc(npt, int.sizeof)) is null))
         return;
 
     /* make pointlist origin relative */

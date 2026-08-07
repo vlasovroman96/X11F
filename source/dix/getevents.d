@@ -72,6 +72,9 @@ import dix.devices;
 import os.utils;
 import dix.events;
 import externs.attrs;
+import dix.dixutils;
+import dix.inpututils;
+
 
 /* Number of motion history events to store. */
 enum MOTION_HISTORY_SIZE = 256;

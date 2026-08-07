@@ -854,7 +854,7 @@ version (XINERAMA) {
         free(randrp);
         return FALSE;
     }
-    rp = rrGetScrPriv(pScreen);
+    rp = mixin(rrGetScrPriv!("pScreen"));
     rp.rrGetInfo = xf86RandR12GetInfo;
     rp.rrSetConfig = xf86RandR12SetConfig;
 
@@ -1783,7 +1783,7 @@ private Bool xf86RandR12CreateScreenResources12(ScreenPtr pScreen)
 {
     int c = void;
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
-    rrScrPrivPtr rp = rrGetScrPriv(pScreen);
+    rrScrPrivPtr rp = mixin(rrGetScrPriv!("pScreen"));
     xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(pScrn);
 
     for (c = 0; c < config.num_crtc; c++)
@@ -1988,15 +1988,15 @@ private Bool xf86RandR12EnterVT(ScrnInfoPtr pScrn)
 {
     ScreenPtr pScreen = xf86ScrnToScreen(pScrn);
     XF86RandRInfoPtr randrp = mixin(XF86RANDRINFO!(`pScreen`));
-    rrScrPrivPtr rp = rrGetScrPriv(pScreen);
+    rrScrPrivPtr rp = mixin(rrGetScrPriv!("pScreen"));
     Bool ret = void;
     int i = void;
 
     if (randrp.orig_EnterVT) {
-        pScrn.EnterVT = randrp.orig_EnterVT;
+        pScrn.EnterVT = &randrp.orig_EnterVT;
         ret = pScrn.EnterVT(pScrn);
         randrp.orig_EnterVT = pScrn.EnterVT;
-        pScrn.EnterVT = xf86RandR12EnterVT;
+        pScrn.EnterVT = &xf86RandR12EnterVT;
         if (!ret)
             return FALSE;
     }
@@ -2010,7 +2010,7 @@ private Bool xf86RandR12EnterVT(ScrnInfoPtr pScrn)
 
 private void xf86DetachOutputGPU(ScreenPtr pScreen)
 {
-    rrScrPrivPtr rp = rrGetScrPriv(pScreen);
+    rrScrPrivPtr rp = mixin(rrGetScrPriv!("pScreen"));
     int i = void;
 
     /* make sure there are no attached shared scanout pixmaps first */
@@ -2266,7 +2266,7 @@ private void xf86RandR16TerminateLease(ScreenPtr screen, RRLeasePtr randr_lease)
 private Bool xf86RandR12Init12(ScreenPtr pScreen)
 {
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
-    rrScrPrivPtr rp = rrGetScrPriv(pScreen);
+    rrScrPrivPtr rp = mixin(rrGetScrPriv!("pScreen"));
     XF86RandRInfoPtr randrp = mixin(XF86RANDRINFO!(`pScreen`));
 
     rp.rrGetInfo = xf86RandR12GetInfo12;
@@ -2298,7 +2298,7 @@ static if (RANDR_13_INTERFACE) {
     pScrn.ChangeGamma = xf86RandR12ChangeGamma;
 
     randrp.orig_EnterVT = pScrn.EnterVT;
-    pScrn.EnterVT = xf86RandR12EnterVT;
+    pScrn.EnterVT = &xf86RandR12EnterVT;
 
     randrp.panning = FALSE;
     randrp.orig_ConstrainCursorHarder = pScreen.ConstrainCursorHarder;

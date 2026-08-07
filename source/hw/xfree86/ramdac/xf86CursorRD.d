@@ -96,7 +96,7 @@ Bool xf86InitCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr)
         ScreenPriv.PalettedCursor = TRUE;
     }
 
-    PointPriv = dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
+    PointPriv = cast(_MiPointerScreenRec*)dixLookupPrivate(&pScreen.devPrivates, miPointerScreenKey);
 
     ScreenPriv.showTransparent = PointPriv.showTransparent;
     if (infoPtr.Flags & HARDWARE_CURSOR_SHOW_TRANSPARENT)

@@ -32,19 +32,19 @@ public import include.input;
 public import include.privates;
 
 struct _miPointerSpriteFuncRec {
-    Bool function(DeviceIntPtr, ScreenPtr, CursorPtr) RealizeCursor;
-    Bool function(DeviceIntPtr, ScreenPtr, CursorPtr) UnrealizeCursor;
-    void function(DeviceIntPtr, ScreenPtr, CursorPtr, int, int) SetCursor;
-    void function(DeviceIntPtr, ScreenPtr, int, int) MoveCursor;
-    Bool function(DeviceIntPtr, ScreenPtr) DeviceCursorInitialize;
-    void function(DeviceIntPtr, ScreenPtr) DeviceCursorCleanup;
+    Bool function(DeviceIntPtr, ScreenPtr, CursorPtr) @nogc nothrow RealizeCursor;
+    Bool function(DeviceIntPtr, ScreenPtr, CursorPtr) @nogc nothrow UnrealizeCursor;
+    void function(DeviceIntPtr, ScreenPtr, CursorPtr, int, int) @nogc nothrow SetCursor;
+    void function(DeviceIntPtr, ScreenPtr, int, int) @nogc nothrow MoveCursor;
+    Bool function(DeviceIntPtr, ScreenPtr) @nogc nothrow DeviceCursorInitialize;
+    void function(DeviceIntPtr, ScreenPtr) @nogc nothrow DeviceCursorCleanup;
 }alias miPointerSpriteFuncRec = _miPointerSpriteFuncRec;
 alias miPointerSpriteFuncPtr = _miPointerSpriteFuncRec*;
 
 struct _miPointerScreenFuncRec {
-    Bool function(ScreenPtr*, int*, int*) CursorOffScreen;
-    void function(ScreenPtr, int) CrossScreen;
-    void function(DeviceIntPtr, ScreenPtr, int, int) WarpCursor;
+    Bool function(ScreenPtr*, int*, int*) @nogc nothrow CursorOffScreen;
+    void function(ScreenPtr, int) @nogc nothrow CrossScreen;
+    void function(DeviceIntPtr, ScreenPtr, int, int) @nogc nothrow WarpCursor;
 }alias miPointerScreenFuncRec = _miPointerScreenFuncRec;
 alias miPointerScreenFuncPtr = _miPointerScreenFuncRec*;
 

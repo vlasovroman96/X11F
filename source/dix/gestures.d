@@ -48,6 +48,8 @@ import include.windowstr;
 import dix.events;
 import os.utils;
 import dix.devices;
+import dix.inpututils;
+
 
 enum GESTURE_HISTORY_SIZE = 100;
 

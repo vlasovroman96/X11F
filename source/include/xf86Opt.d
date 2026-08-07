@@ -90,12 +90,12 @@ struct _OptionInfoRec {
 alias OptionInfoPtr = OptionInfoRec*;
 
 // extern void  xf86SetIntOption(XF86OptionPtr optlist, const(char)* name, int deflt);
-extern void  xf86SetRealOption(XF86OptionPtr optlist, const(char)* name, double deflt);
+// extern void  xf86SetRealOption(XF86OptionPtr optlist, const(char)* name, double deflt);
 // extern void * xf86SetStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* deflt);
-extern void  xf86SetBoolOption(XF86OptionPtr list, const(char)* name, int deflt);
+// extern void  xf86SetBoolOption(XF86OptionPtr list, const(char)* name, int deflt);
 extern void  xf86SetPercentOption(XF86OptionPtr list, const(char)* name, double deflt);
 extern void  xf86CheckIntOption(XF86OptionPtr optlist, const(char)* name, int deflt);
-extern void * xf86CheckStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* deflt);
+// extern void * xf86CheckStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* deflt);
 // extern void  xf86CheckBoolOption(XF86OptionPtr list, const(char)* name, int deflt);
 extern void  xf86CheckPercentOption(XF86OptionPtr list, const(char)* name, double deflt);
 // extern void  xf86AddNewOption(XF86OptionPtr head, const(char)* name, const(char)* val);
@@ -122,7 +122,7 @@ extern void  xf86GetOptValULong(const(OptionInfoRec)* table, int token, c_ulong*
 extern void  xf86ReturnOptValBool(const(OptionInfoRec)* table, int token, Bool def);
 // extern void  xf86NameCmp(const(char)* s1, const(char)* s2);
 // extern void * xf86NormalizeName(const(char)* s);
-extern void  xf86ReplaceIntOption(XF86OptionPtr optlist, const(char)* name, const(int) val);
+// extern void  xf86ReplaceIntOption(XF86OptionPtr optlist, const(char)* name, const(int) val);
 extern void  xf86ReplaceBoolOption(XF86OptionPtr optlist, const(char)* name, const(Bool) val);
-extern void  xf86ReplaceStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* val);
+// extern void  xf86ReplaceStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* val);
 

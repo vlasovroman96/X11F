@@ -129,7 +129,7 @@ Bool miInitOverlay(ScreenPtr pScreen, miOverlayInOverlayFunc inOverlayFunc, miOv
     if (!dixRegisterPrivateKey(&miOverlayScreenKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    if (((pScreenPriv = cast(miOverlayScreenRec*) calloc(1, miOverlayScreenRec.sizeof)) == 0))
+    if (((pScreenPriv = cast(miOverlayScreenRec*) calloc(1, miOverlayScreenRec.sizeof)) is null))
         return FALSE;
 
     dixSetPrivate(&pScreen.devPrivates, miOverlayScreenKey, pScreenPriv);

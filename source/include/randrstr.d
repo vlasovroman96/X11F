@@ -466,7 +466,7 @@ extern void  RRTellChanged(ScreenPtr pScreen);
  */
 extern void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
 
-extern void  RRScreenInit(ScreenPtr pScreen);
+// extern void  RRScreenInit(ScreenPtr pScreen);
 
 extern void  RRFirstOutput(ScreenPtr pScreen);
 
@@ -479,15 +479,15 @@ extern void  RRFirstOutput(ScreenPtr pScreen);
  * Then, register the specific size with the screen
  */
 
-extern void  RRRegisterSize(ScreenPtr pScreen, short width, short height, short mmWidth, short mmHeight);
+// extern void  RRRegisterSize(ScreenPtr pScreen, short width, short height, short mmWidth, short mmHeight);
 
-extern void  RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate);
+// extern void  RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate);
 
 /*
  * Finally, set the current configuration of the screen
  */
 
-extern void  RRSetCurrentConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize);
+// extern void  RRSetCurrentConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize);
 
 /* rrcrtc.c */
 

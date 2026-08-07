@@ -694,7 +694,7 @@ private Bool fbdevRandRInit(ScreenPtr pScreen)
     if (!RRScreenInit(pScreen))
         return FALSE;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     pScrPriv.rrGetInfo = fbdevRandRGetInfo;
     pScrPriv.rrSetConfig = fbdevRandRSetConfig;
     return TRUE;

@@ -57,7 +57,7 @@ extern Bool xf86acpiDisableFlag;
 /* xf86Cursor.c */
 void xf86LockZoom(ScreenPtr pScreen, int lock);
 // void xf86InitViewport(ScrnInfoPtr pScr);
-void xf86ZoomViewport(ScreenPtr pScreen, int zoom);
+// void xf86ZoomViewport(ScreenPtr pScreen, int zoom);
 // void xf86InitOrigins();
 
 /* xf86Events.c */

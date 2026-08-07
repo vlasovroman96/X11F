@@ -213,7 +213,7 @@ int ProcRRGetScreenSizeRange(ClientPtr client)
         return rc;
 
     pScreen = pWin.drawable.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     xRRGetScreenSizeRangeReply reply = { 0 };
 
@@ -260,7 +260,7 @@ int ProcRRSetScreenSize(ClientPtr client)
         return rc;
 
     pScreen = pWin.drawable.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     if (!pScrPriv)
         return BadMatch;
 
@@ -391,7 +391,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
     total_modes = 0;
     total_name_len = 0;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (query && pScrPriv)
         if (!RRGetInfo(pScreen, query))
@@ -411,7 +411,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
         mixin(update_totals!(`iter`, `pScrPriv`));
     }));
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     xRRGetScreenResourcesReply reply = {
         timestamp: pScrPriv.lastSetTime.milliseconds,
@@ -447,7 +447,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
     output_count = 0;
     mode_count = 0;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     if (pScrPriv.primaryOutput && pScrPriv.primaryOutput.crtc) {
         has_primary = 1;
         primary_crtc = pScrPriv.primaryOutput.crtc;
@@ -502,7 +502,7 @@ private int rrGetScreenResources(ClientPtr client, Bool query)
         return rc;
 
     pScreen = pWin.drawable.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (query && pScrPriv)
         if (!RRGetInfo(pScreen, query))
@@ -749,7 +749,7 @@ int ProcRRGetScreenInfo(ClientPtr client)
         return rc;
 
     pScreen = pWin.drawable.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (pScrPriv)
         if (!RRGetInfo(pScreen, TRUE))
@@ -904,7 +904,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
 
     pScreen = pDraw.pScreen;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     time = ClientTimeToServerTime(stuff.timestamp);
 

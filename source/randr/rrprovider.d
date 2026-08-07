@@ -74,7 +74,7 @@ int ProcRRGetProviders(ClientPtr client)
 
     pScreen = pWin.drawable.pScreen;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     if (!pScrPriv)
     {
         xRRGetProvidersReply reply = {
@@ -131,7 +131,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
     VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
 
     pScreen = provider.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     xRRGetProviderInfoReply reply = {
         status: RRSetConfigSuccess,
@@ -242,7 +242,7 @@ private void RRInitPrimeSyncProps(ScreenPtr pScreen)
      * with the correct source provider.
      */
 
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     const(char)* syncStr = PRIME_SYNC_PROP;
     Atom syncProp = dixAddAtom(syncStr);
@@ -271,7 +271,7 @@ private void RRFiniPrimeSyncProps(ScreenPtr pScreen)
      * associated with the correct source provider.
      */
 
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     int i = void;
 
     const(char)* syncStr = PRIME_SYNC_PROP;
@@ -312,7 +312,7 @@ int ProcRRSetProviderOutputSource(ClientPtr client)
     }
 
     pScreen = provider.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (!pScreen.isGPU)
         return BadValue;
@@ -356,7 +356,7 @@ int ProcRRSetProviderOffloadSink(ClientPtr client)
             return BadValue;
     }
     pScreen = provider.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     pScrPriv.rrProviderSetOffloadSink(pScreen, provider, sink_provider);
 
@@ -373,7 +373,7 @@ RRProviderPtr RRProviderCreate(ScreenPtr pScreen, const(char)* name, int nameLen
     RRProviderPtr provider = void;
     rrScrPrivPtr pScrPriv = void;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     provider = calloc(1, ((RRProviderRec) + nameLength + 1).sizeof);
     if (!provider)
@@ -461,7 +461,7 @@ void RRProviderAutoConfigGpuScreen(ScreenPtr pScreen, ScreenPtr primaryScreen)
     if (!dixPrivateKeyRegistered(rrPrivKey))
         return;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     primaryPriv = rrGetScrPriv(primaryScreen);
 
     provider = pScrPriv.provider;

@@ -80,7 +80,7 @@ void UndisplayDevices();
 // ValuatorClassPtr AllocValuatorClass(ValuatorClassPtr src, int numAxes);
 void FreeDeviceClass(int type, void** class_);
 
-int ApplyPointerMapping(DeviceIntPtr pDev, CARD8* map, int len, ClientPtr client);
+// int ApplyPointerMapping(DeviceIntPtr pDev, CARD8* map, int len, ClientPtr client);
 
 // Bool BadDeviceMap(BYTE* buff, int length, uint low, uint high, XID* errval);
 
@@ -104,18 +104,18 @@ void ProcessKeyboardEvent(InternalEvent* ev, DeviceIntPtr keybd);
 
 void DeepCopyDeviceClasses(DeviceIntPtr from, DeviceIntPtr to, DeviceChangedEvent* dce);
 
-int change_modmap(ClientPtr client, DeviceIntPtr dev, KeyCode* map, int max_keys_per_mod);
+// int change_modmap(ClientPtr client, DeviceIntPtr dev, KeyCode* map, int max_keys_per_mod);
 
 int AllocXTestDevice(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceIntPtr master_ptr, DeviceIntPtr master_keybd);
 BOOL IsXTestDevice(DeviceIntPtr dev, DeviceIntPtr master);
 DeviceIntPtr GetXTestDevice(DeviceIntPtr master);
 
-void SendDevicePresenceEvent(int deviceid, int type);
+// void SendDevicePresenceEvent(int deviceid, int type);
 // void DeliverDeviceClassesChangedEvent(int sourceid, Time time);
 
 /* touch support */
 // int GetTouchEvents(InternalEvent* events, DeviceIntPtr pDev, uint ddx_touchid, ushort type, uint flags, const(ValuatorMask)* mask);
-void QueueTouchEvents(DeviceIntPtr device, int type, uint ddx_touchid, int flags, const(ValuatorMask)* mask);
+// void QueueTouchEvents(DeviceIntPtr device, int type, uint ddx_touchid, int flags, const(ValuatorMask)* mask);
 // int GetTouchOwnershipEvents(InternalEvent* events, DeviceIntPtr pDev, TouchPointInfoPtr ti, ubyte mode, XID resource, uint flags);
 // void GetDixTouchEnd(InternalEvent* ievent, DeviceIntPtr dev, TouchPointInfoPtr ti, uint flags);
 void TouchInitDDXTouchPoint(DeviceIntPtr dev, DDXTouchPointInfoPtr ddxtouch);
@@ -150,8 +150,8 @@ void TouchAcceptAndEnd(DeviceIntPtr dev, int touchid);
 /* Gesture support */
 // void InitGestureEvent(InternalEvent* ievent, DeviceIntPtr dev, CARD32 ms, int type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
 // int GetGestureEvents(InternalEvent* events, DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
-void QueueGesturePinchEvents(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
-void QueueGestureSwipeEvents(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y);
+// void QueueGesturePinchEvents(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
+// void QueueGestureSwipeEvents(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y);
 Bool GestureInitGestureInfo(GestureInfoPtr gesture);
 void GestureFreeGestureInfo(GestureInfoPtr gesture);
 GestureInfoPtr GestureBeginGesture(DeviceIntPtr dev, InternalEvent* ev);
@@ -228,9 +228,9 @@ extern Bool EnableCursor;
  */
 extern Bool CursorVisible;
 
-void valuator_mask_drop_unaccelerated(ValuatorMask* mask);
+// void valuator_mask_drop_unaccelerated(ValuatorMask* mask);
 
-Bool point_on_screen(ScreenPtr pScreen, int x, int y);
+// Bool point_on_screen(ScreenPtr pScreen, int x, int y);
 void update_desktop_dimensions();
 
 void input_constrain_cursor(DeviceIntPtr pDev, ScreenPtr screen, int current_x, int current_y, int dest_x, int dest_y, int* out_x, int* out_y, int* nevents, InternalEvent* events);
@@ -406,6 +406,6 @@ pragma(inline, true) int CountBits(const(ubyte)* mask, int len)
     return ret;
 }
 
-void AssignTypeAndName(DeviceIntPtr dev, Atom type, const(char)* name);
+// void AssignTypeAndName(DeviceIntPtr dev, Atom type, const(char)* name);
 
  /* _XSERVER_INPUT_PRIV_H */

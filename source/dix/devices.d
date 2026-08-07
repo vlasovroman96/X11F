@@ -102,6 +102,8 @@ import dix.globals;
 import os.utils;
 import externs.gnu;
 import dix.events;
+import dix.inpututils;
+
 /** @file
  * This file handles input device-related stuff.
  */

@@ -44,42 +44,45 @@ public import mi.mipointer;
 public import include.mipointrst;
 public import include.picturestr;
 import include.mipointer;
+import externs.pciaccess;
+import hw.xfree86.common.xf86Helper;
 
-enum string WRAP_SCREEN(string x,string y) = `{pScreenPriv.` ~ x ~ ` = pScreen.` ~ x ~ `; pScreen.` ~ x ~ ` = ` ~ y ~ `;}`;
 
-enum string UNWRAP_SCREEN(string x) = `pScreen.` ~ x ~ ` = pScreenPriv.` ~ x ~ ``;
+enum string WRAP_SCREEN(string x,string y) = `{pScreenPriv.` ~ x ~ ` = pScreen.` ~ x ~ `; pScreen.` ~ x ~ ` = &` ~ y ~ `;}`;
+
+enum string UNWRAP_SCREEN(string x) = `{pScreen.` ~ x ~ ` = pScreenPriv.` ~ x ~ `;}`;
 
 enum string SCREEN_PRIV() = `(cast(VGAarbiterScreenPtr) dixLookupPrivate(&(pScreen).devPrivates, &VGAarbiterScreenKeyRec))`;
 
-enum string SCREEN_PROLOG(string x) = `(pScreen.` ~ x ~ ` = ` ~ SCREEN_PRIV!() ~ `.` ~ x ~ `)`;
+enum string SCREEN_PROLOG(string x) = `{(pScreen.` ~ x ~ ` = ` ~ SCREEN_PRIV!() ~ `.` ~ x ~ `);}`;
 
-enum string SCREEN_EPILOG(string x,string y) = `do {                 
+enum string SCREEN_EPILOG(string x,string y) = `{                 
         ` ~ SCREEN_PRIV!() ~ `.` ~ x ~ ` = pScreen.` ~ x ~ `;          
-        pScreen.` ~ x ~ ` = ` ~ y ~ `;                         
-    } while (0)`;
+        pScreen.` ~ x ~ ` = &` ~ y ~ `;                         
+    }`;
 
 enum string WRAP_PICT(string x,string y) = `if (ps) {pScreenPriv.` ~ x ~ ` = ps.` ~ x ~ `;
-    ps.` ~ x ~ ` = ` ~ y ~ `;}`;
+    ps.` ~ x ~ ` = &` ~ y ~ `;}`;
 
 enum string UNWRAP_PICT(string x) = `if (ps) {ps.` ~ x ~ ` = pScreenPriv.` ~ x ~ `;}`;
 
-enum string PICTURE_PROLOGUE(string field) = `ps.` ~ field ~ ` = 
+enum string PICTURE_PROLOGUE(string field) = `{ps.` ~ field ~ ` = 
     (cast(VGAarbiterScreenPtr)dixLookupPrivate(&(pScreen).devPrivates, 
-    &VGAarbiterScreenKeyRec)).` ~ field ~ ``;
+    &VGAarbiterScreenKeyRec)).` ~ field ~ `;}`;
 
-enum string PICTURE_EPILOGUE(string field, string wrap) = `ps.` ~ field ~ ` = ` ~ wrap ~ ``;
+enum string PICTURE_EPILOGUE(string field, string wrap) = `{ps.` ~ field ~ ` = &` ~ wrap ~ `;}`;
 
-enum string WRAP_SCREEN_INFO(string x,string y) = `do {pScreenPriv.` ~ x ~ ` = pScrn.` ~ x ~ `; pScrn.` ~ x ~ ` = ` ~ y ~ `;} while(0)`;
+enum string WRAP_SCREEN_INFO(string x,string y) = `{pScreenPriv.` ~ x ~ ` = pScrn.` ~ x ~ `; pScrn.` ~ x ~ ` = &` ~ y ~ `;}`;
 
-enum string UNWRAP_SCREEN_INFO(string x) = `pScrn.` ~ x ~ ` = pScreenPriv.` ~ x ~ ``;
+enum string UNWRAP_SCREEN_INFO(string x) = `{pScrn.` ~ x ~ ` = pScreenPriv.` ~ x ~ `;}`;
 
 enum SPRITE_PROLOG = `                                          
     miPointerScreenPtr PointPriv;                               
     VGAarbiterScreenPtr pScreenPriv;                            
     input_lock();                                               
-    PointPriv = dixLookupPrivate(&pScreen.devPrivates,         
+    PointPriv = cast(_MiPointerScreenRec*)dixLookupPrivate(&pScreen.devPrivates,         
                                  miPointerScreenKey);           
-    pScreenPriv = dixLookupPrivate(&(pScreen).devPrivates,     
+    pScreenPriv = cast(_VGAarbiterScreen*)dixLookupPrivate(&(pScreen).devPrivates,     
                                    &VGAarbiterScreenKeyRec);    
     PointPriv.spriteFuncs = pScreenPriv.miSprite;`       
 ;
@@ -93,7 +96,7 @@ pScreenPriv.miSprite = PointPriv.spriteFuncs;
     	PointPriv.spriteFuncs  = &VGAarbiterSpriteFuncs; 		
 `;
 
-enum UNWRAP_SPRITE = `PointPriv.spriteFuncs = pScreenPriv.miSprite`;
+enum UNWRAP_SPRITE = `{PointPriv.spriteFuncs = pScreenPriv.miSprite;}`;
 
 enum string GC_WRAP(string x) = `pGCPriv.wrapOps = (` ~ x ~ `).ops;
     pGCPriv.wrapFuncs = (` ~ x ~ `).funcs; (` ~ x ~ `).ops = &VGAarbiterGCOps;
@@ -102,13 +105,13 @@ enum string GC_WRAP(string x) = `pGCPriv.wrapOps = (` ~ x ~ `).ops;
 enum string GC_UNWRAP(string x) = `VGAarbiterGCPtr pGCPriv = cast(VGAarbiterGCPtr)dixLookupPrivate(&(` ~ x ~ `).devPrivates, &VGAarbiterGCKeyRec);
     (` ~ x ~ `).ops = pGCPriv.wrapOps; (` ~ x ~ `).funcs = pGCPriv.wrapFuncs;`;
 
-pragma(inline, true) private void VGAGet(ScreenPtr pScreen)
+pragma(inline, true) void VGAGet(ScreenPtr pScreen)
 {
     pci_device_vgaarb_set_target(xf86ScreenToScrn(pScreen).vgaDev);
     pci_device_vgaarb_lock();
 }
 
-pragma(inline, true) private void VGAPut()
+pragma(inline, true) void VGAPut()
 {
     pci_device_vgaarb_unlock();
 }
@@ -133,11 +136,11 @@ struct _VGAarbiterScreen {
     UnrealizeCursorProcPtr UnrealizeCursor;
     RecolorCursorProcPtr RecolorCursor;
     SetCursorPositionProcPtr SetCursorPosition;
-    void function(ScrnInfoPtr, int, int) AdjustFrame;
-    Bool function(ScrnInfoPtr, DisplayModePtr) SwitchMode;
-    Bool function(ScrnInfoPtr) EnterVT;
-    void function(ScrnInfoPtr) LeaveVT;
-    void function(ScrnInfoPtr) FreeScreen;
+    void function(ScrnInfoPtr, int, int) @nogc nothrow AdjustFrame;
+    Bool function(ScrnInfoPtr, DisplayModePtr) @nogc nothrow SwitchMode;
+    Bool function(ScrnInfoPtr) @nogc nothrow EnterVT;
+    void function(ScrnInfoPtr) @nogc nothrow LeaveVT;
+    void function(ScrnInfoPtr) @nogc nothrow FreeScreen;
     miPointerSpriteFuncPtr miSprite;
     CompositeProcPtr Composite;
     GlyphsProcPtr Glyphs;

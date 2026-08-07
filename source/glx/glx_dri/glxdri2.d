@@ -863,7 +863,7 @@ private void __glXDRIscreenDestroy(__GLXscreen* baseScreen)
         free(screen.driConfigs);
     }
 
-    pScrn.EnterVT = (*screen.enterVT);
+    pScrn.EnterVT = *(screen.enterVT);
     pScrn.LeaveVT = *screen.leaveVT;
 
     free(screen);

@@ -56,7 +56,7 @@ import core.stdc.string;             /* InputClassMatches */
 ////import externs.X11.Xmd;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -81,6 +81,17 @@ import include.eventstr;
 import include.optionstr;
 import xf86Module_priv;
 import xf86Opt_priv;
+import Xi.xiproperty;
+import os.log;
+import xf86Option;;
+import externs.gnu;
+import externs.regex;
+import xf86Globals;
+import Flags;
+import externs.sys.sysmacros;
+import dix.devices;
+import dix.events;
+import dix.inpututils;
 
 version (HAVE_FNMATCH_H) {
 import fnmatch;
@@ -149,7 +160,7 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
         return;
 
     /* common settings (available via device properties) */
-    tempf = xf86SetRealOption(list, "ConstantDeceleration", 1.0);
+    tempf = xf86SetRealOption(cast(_InputOption*)list, "ConstantDeceleration", 1.0);
     if (tempf != 1.0) {
         LogMessageVerb(X_CONFIG, 1, "%s: (accel) constant deceleration by %.1f\n",
                        devname, tempf);
@@ -158,7 +169,7 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
                                PropModeReplace, 1, &tempf, FALSE);
     }
 
-    tempf = xf86SetRealOption(list, "AdaptiveDeceleration", 1.0);
+    tempf = xf86SetRealOption(cast(_InputOption*)list, "AdaptiveDeceleration", 1.0);
     if (tempf > 1.0) {
         LogMessageVerb(X_CONFIG, 1, "%s: (accel) adaptive deceleration by %.1f\n",
                        devname, tempf);
@@ -182,7 +193,7 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
     }
 
     /* set scaling */
-    tempf = xf86SetRealOption(list, "ExpectedRate", 0);
+    tempf = xf86SetRealOption(cast(_InputOption*)list, "ExpectedRate", 0);
     prop = XIGetKnownProperty(ACCEL_PROP_VELOCITY_SCALING);
     if (tempf > 0) {
         tempf = 1000.0 / tempf;
@@ -190,7 +201,7 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
                                PropModeReplace, 1, &tempf, FALSE);
     }
     else {
-        tempf = xf86SetRealOption(list, "VelocityScale", s.corr_mul);
+        tempf = xf86SetRealOption(cast(_InputOption*)list, "VelocityScale", s.corr_mul);
         XIChangeDeviceProperty(pDev, prop, float_prop, 32,
                                PropModeReplace, 1, &tempf, FALSE);
     }
@@ -202,9 +213,9 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
     s.initial_range = xf86SetIntOption(cast(_InputOption*)list, "VelocityInitialRange",
                                         s.initial_range);
 
-    s.max_diff = xf86SetRealOption(list, "VelocityAbsDiff", s.max_diff);
+    s.max_diff = xf86SetRealOption(cast(_InputOption*)list, "VelocityAbsDiff", s.max_diff);
 
-    tempf = xf86SetRealOption(list, "VelocityRelDiff", -1);
+    tempf = xf86SetRealOption(cast(_InputOption*)list, "VelocityRelDiff", -1);
     if (tempf >= 0) {
         LogMessageVerb(X_CONFIG, 1, "%s: (accel) max rel. velocity difference: %.1f%%\n",
                        devname, tempf * 100.0);
@@ -215,13 +226,13 @@ private void ProcessVelocityConfiguration(DeviceIntPtr pDev, const(char)* devnam
      *  to provide better subpixel information so we enable
      *  softening by default only if ConstantDeceleration is not used
      */
-    s.use_softening = xf86SetBoolOption(list, "Softening",
+    s.use_softening = cast(short)xf86SetBoolOption(cast(_InputOption*)list, "Softening",
                                          s.const_acceleration == 1.0);
 
-    s.average_accel = xf86SetBoolOption(list, "AccelerationProfileAveraging",
+    s.average_accel = cast(short)xf86SetBoolOption(cast(_InputOption*)list, "AccelerationProfileAveraging",
                                          s.average_accel);
 
-    s.reset_time = xf86SetIntOption(cast(_InputOption*)list, "VelocityReset", s.reset_time);
+    s.reset_time = cast(short)xf86SetIntOption(cast(_InputOption*)list, "VelocityReset", s.reset_time);
 }
 
 private void ApplyAccelerationSettings(DeviceIntPtr dev)
@@ -351,8 +362,8 @@ private void ApplyAutoRepeat(DeviceIntPtr dev)
     }
 
     LogMessageVerb(X_CONFIG, 1, "AutoRepeat: %ld %ld\n", delay, rate);
-    xkbi.desc.ctrls.repeat_delay = delay;
-    xkbi.desc.ctrls.repeat_interval = 1000 / rate;
+    xkbi.desc.ctrls.repeat_delay = cast(ushort)(delay);
+    xkbi.desc.ctrls.repeat_interval = cast(ushort)(1000 / rate);
 }
 
 /***********************************************************************
@@ -365,11 +376,11 @@ private void ApplyAutoRepeat(DeviceIntPtr dev)
  */
 void xf86ProcessCommonOptions(InputInfoPtr pInfo, XF86OptionPtr list)
 {
-    if (xf86SetBoolOption(list, "Floating", 0) ||
-        !xf86SetBoolOption(list, "AlwaysCore", 1) ||
-        !xf86SetBoolOption(list, "SendCoreEvents", 1) ||
-        !xf86SetBoolOption(list, "CorePointer", 1) ||
-        !xf86SetBoolOption(list, "CoreKeyboard", 1)) {
+    if (cast(short)xf86SetBoolOption(cast(_InputOption*)list, "Floating", 0) ||
+        !cast(short)xf86SetBoolOption(cast(_InputOption*)list, "AlwaysCore", 1) ||
+        !cast(short)xf86SetBoolOption(cast(_InputOption*)list, "SendCoreEvents", 1) ||
+        !cast(short)xf86SetBoolOption(cast(_InputOption*)list, "CorePointer", 1) ||
+        !cast(short)xf86SetBoolOption(cast(_InputOption*)list, "CoreKeyboard", 1)) {
         LogMessageVerb(X_CONFIG, 1, "%s: doesn't report core events\n", pInfo.name);
     }
     else {
@@ -577,7 +588,7 @@ version (HAVE_FNMATCH_H) {
         default:
             if (pattern.regex == null) {
                 int r = void;
-                if ((pattern.regex = malloc(regex_t.sizeof)) == null) {
+                if ((pattern.regex = cast(regex_t*)malloc(regex_t.sizeof)) == null) {
                     pattern.mode = MATCH_IS_INVALID;
                     return 0;
                 }
@@ -616,7 +627,7 @@ Bool MatchAttrToken(const(char)* attr, xorg_list* groups)
      * match. Each list entry is a list of patterns obtained from
      * a separate Match line.
      */
-    xorg_list_for_each_entry(group, groups, entry); {
+    mixin(xorg_list_for_each_entry!("group", "groups", "entry", q{
         Bool match = FALSE;
 
         mixin(xorg_list_for_each_entry!("pattern", "&group.patterns", "entry", q{
@@ -628,7 +639,7 @@ Bool MatchAttrToken(const(char)* attr, xorg_list* groups)
       group_done:
         if (match == group.is_negated)
             return FALSE;
-    }
+    }));
 
     /* All the entries in the list matched the attribute */
     return TRUE;
@@ -638,7 +649,7 @@ Bool MatchAttrToken(const(char)* attr, xorg_list* groups)
  * Classes without any Match statements match all devices. Otherwise, all
  * statements must match.
  */
-private Bool InputClassMatches(const(XF86ConfInputClassPtr) iclass, const(InputInfoPtr) idev, const(InputAttributes)* attrs)
+private Bool InputClassMatches(XF86ConfInputClassPtr iclass, InputInfoPtr idev, InputAttributes* attrs)
 {
     const(char)* layout = void;
 
@@ -733,12 +744,12 @@ private Bool InputClassMatches(const(XF86ConfInputClassPtr) iclass, const(InputI
  * section have more priority than the original device configuration as
  * well as any previous InputClass sections.
  */
-private int MergeInputClasses(const(InputInfoPtr) idev, const(InputAttributes)* attrs)
+private int MergeInputClasses(InputInfoPtr idev, InputAttributes* attrs)
 {
     XF86ConfInputClassPtr cl = void;
     XF86OptionPtr classopts = void;
 
-    for (cl = xf86configptr.conf_inputclass_lst; cl; cl = cl.list.next) {
+    for (cl = xf86configptr.conf_inputclass_lst; cl; cl = cast(_XF86ConfInputClassRec*)cl.list.next) {
         if (!InputClassMatches(cl, idev, attrs))
             continue;
 
@@ -746,7 +757,7 @@ private int MergeInputClasses(const(InputInfoPtr) idev, const(InputAttributes)* 
         classopts = xf86optionListDup(cast(_InputOption*)cl.option_lst);
         if (cl.driver) {
             free(cast(void*) idev.driver);
-            idev.driver = Xstrdup(cl.driver);
+            idev.driver = cast(char*)Xstrdup(cl.driver);
             if (!idev.driver) {
                 LogMessageVerb(X_ERROR, 1, "Failed to allocate memory while merging "
                                ~ "InputClass configuration");
@@ -768,13 +779,13 @@ private int MergeInputClasses(const(InputInfoPtr) idev, const(InputAttributes)* 
  * Iterate the list of classes and look for Option "Ignore". Return the
  * value of the last matching class and holler when returning TRUE.
  */
-private Bool IgnoreInputClass(const(InputInfoPtr) idev, const(InputAttributes)* attrs)
+private Bool IgnoreInputClass(InputInfoPtr idev, InputAttributes* attrs)
 {
     XF86ConfInputClassPtr cl = void;
     Bool ignore = FALSE;
     const(char)* ignore_class = void;
 
-    for (cl = xf86configptr.conf_inputclass_lst; cl; cl = cl.list.next) {
+    for (cl = xf86configptr.conf_inputclass_lst; cl; cl = cast(_XF86ConfInputClassRec*)cl.list.next) {
         if (!InputClassMatches(cl, idev, attrs))
             continue;
         if (xf86findOption(cl.option_lst, "Ignore")) {
@@ -793,7 +804,7 @@ InputInfoPtr xf86AllocateInput()
 {
     InputInfoPtr pInfo = void;
 
-    pInfo = calloc(1, typeof(*pInfo).sizeof);
+    pInfo = cast(InputInfoPtr)calloc(1, typeof(*pInfo).sizeof);
     if (!pInfo)
         return null;
 
@@ -809,7 +820,7 @@ private void xf86AddInput(InputDriverPtr drv, InputInfoPtr pInfo)
     InputInfoPtr* prev = null;
 
     pInfo.drv = drv;
-    pInfo.module_ = DuplicateModule(drv.module_, null);
+    pInfo.module_ = DuplicateModule(cast(module_desc*)drv.module_, null);
 
     for (prev = &xf86InputDevs; *prev; prev = &(*prev).next){}
 
@@ -831,7 +842,7 @@ void xf86DeleteInput(InputInfoPtr pInp, int flags)
         return;
 
     if (pInp.module_)
-        UnloadModule(pInp.module_);
+        UnloadModule(cast(module_desc*)pInp.module_);
 
     /* This should *really* be handled in drv->UnInit(dev) call instead, but
      * if the driver forgets about it make sure we free it or at least crash
@@ -880,7 +891,7 @@ private int xf86InputDevicePostInit(DeviceIntPtr dev)
 
 private void xf86stat(const(char)* path, int* maj, int* min)
 {
-    stat st = void;
+    stat_t st = void;
 
     if (stat(path, &st) == -1)
         return;
@@ -935,11 +946,11 @@ int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL enable)
 
         if (strlen(FALLBACK_INPUT_DRIVER) > 0) {
             LogMessageVerb(X_INFO, 1, "Falling back to input driver `%s'\n",
-                    FALLBACK_INPUT_DRIVER);
-            drv = xf86LoadInputDriver(FALLBACK_INPUT_DRIVER);
+                    FALLBACK_INPUT_DRIVER.ptr);
+            drv = xf86LoadInputDriver(FALLBACK_INPUT_DRIVER.ptr);
             if (drv) {
                 free(pInfo.driver);
-                pInfo.driver = strdup(FALLBACK_INPUT_DRIVER);
+                pInfo.driver = strdup(FALLBACK_INPUT_DRIVER.ptr);
             }
         }
         if (!drv) {
@@ -970,7 +981,7 @@ int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL enable)
         if (fd != -1) {
             if (paused) {
                 /* Put on new_input_devices list for delayed probe */
-                PausedInputDevicePtr new_device = XNFalloc((*new_device).sizeof);
+                PausedInputDevicePtr new_device = cast(PausedInputDevicePtr)XNFalloc((PausedInputDeviceRec).sizeof);
                 new_device.pInfo = pInfo;
 
                 xorg_list_append(&new_device.node, &new_input_devices_list);
@@ -997,7 +1008,7 @@ int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL enable)
         goto unwind;
     }
 
-    if (((dev = xf86ActivateDevice(pInfo)) == 0)) {
+    if (((dev = xf86ActivateDevice(pInfo)) is null)) {
         rval = BadAlloc;
         goto unwind;
     }
@@ -1056,7 +1067,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
     if (!pInfo)
         return BadAlloc;
 
-    mixin(nt_list_for_each_entry!("option", "options", "list.next")); {
+    mixin(nt_list_for_each_entry!("option", "options", "list.next", q{
         const(char)* key = input_option_get_key(option);
         const(char)* value = input_option_get_value(option);
 
@@ -1065,7 +1076,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
                 rval = BadRequest;
                 goto unwind;
             }
-            pInfo.driver = Xstrdup(value);
+            pInfo.driver = cast(char*)Xstrdup(value);
             if (!pInfo.driver) {
                 rval = BadAlloc;
                 goto unwind;
@@ -1077,7 +1088,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
                 rval = BadRequest;
                 goto unwind;
             }
-            pInfo.name = Xstrdup(value);
+            pInfo.name = cast(char*)Xstrdup(value);
             if (!pInfo.name) {
                 rval = BadAlloc;
                 goto unwind;
@@ -1100,14 +1111,14 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
 
         if (strcmp(key, "minor") == 0)
             pInfo.minor = atoi(value);
-    }
+    }));
 
-    mixin(nt_list_for_each_entry!("option", "options", "list.next")); {
+    mixin(nt_list_for_each_entry!("option", "options", "list.next", q{
         /* Copy option key/value strings from the provided list */
         pInfo.options = xf86AddNewOption(pInfo.options,
                                           input_option_get_key(option),
                                           input_option_get_value(option));
-    }
+    }));
 
     /* Apply InputClass settings */
     if (attrs) {
@@ -1174,7 +1185,7 @@ void RemoveInputDeviceTraces(const(char)* config_info)
 {
     PausedInputDevicePtr d = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("d", "tmp", "new_input_devices_list", "node", q{
+    mixin(xorg_list_for_each_entry_safe!("d", "tmp", "&new_input_devices_list", "node", q{
         const(char)* ci = xf86findOptionValue(d.pInfo.options, "config_info");
         if (!ci || strcmp(ci, config_info) != 0)
             continue;
@@ -1569,7 +1580,7 @@ void xf86InputEnableVTProbe()
     DeviceIntPtr pdev = void;
     PausedInputDevicePtr d = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("d", "tmp", "new_input_devices_list", "node", q{
+    mixin(xorg_list_for_each_entry_safe!("d", "tmp", "&new_input_devices_list", "node", q{
         InputInfoPtr pInfo = d.pInfo;
         const(char)* value = xf86findOptionValue(pInfo.options, "_source");
 

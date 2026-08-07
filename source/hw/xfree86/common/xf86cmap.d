@@ -159,15 +159,15 @@ Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86L
 
     elements = 1 << sigRGBbits;
 
-    if (((gamma = cast(LOCO*) calloc(elements, LOCO.sizeof)) == 0))
+    if (((gamma = cast(LOCO*) calloc(elements, LOCO.sizeof)) is null))
         return FALSE;
 
-    if (((indices = cast(int*) calloc(maxColors, int.sizeof)) == 0)) {
+    if (((indices = cast(int*) calloc(maxColors, int.sizeof)) is null)) {
         free(gamma);
         return FALSE;
     }
 
-    if (((pScreenPriv = cast(CMapScreenRec*) calloc(1, CMapScreenRec.sizeof)) == 0)) {
+    if (((pScreenPriv = cast(CMapScreenRec*) calloc(1, CMapScreenRec.sizeof)) is null)) {
         free(gamma);
         free(indices);
         return FALSE;
@@ -202,7 +202,7 @@ Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86L
     pScreenPriv.ChangeGamma = pScrn.ChangeGamma;
 
     if (!(flags & CMAP_LOAD_EVEN_IF_OFFSCREEN)) {
-        pScrn.EnterVT = CMapEnterVT;
+        pScrn.EnterVT = &CMapEnterVT;
         if ((flags & CMAP_RELOAD_ON_MODE_SWITCH) && pScrn.SwitchMode)
             pScrn.SwitchMode = CMapSwitchMode;
     }
@@ -259,10 +259,10 @@ private Bool CMapAllocateColormapPrivate(ColormapPtr pmap)
     else
         numColors = 1 << pmap.pVisual.nplanes;
 
-    if (((colors = cast(LOCO*) calloc(numColors, LOCO.sizeof)) == 0))
+    if (((colors = cast(LOCO*) calloc(numColors, LOCO.sizeof)) is null))
         return FALSE;
 
-    if (((pColPriv = cast(CMapColormapRec*) calloc(1, CMapColormapRec.sizeof)) == 0)) {
+    if (((pColPriv = cast(CMapColormapRec*) calloc(1, CMapColormapRec.sizeof)) is null)) {
         free(colors);
         return FALSE;
     }
@@ -444,10 +444,10 @@ private Bool CMapEnterVT(ScrnInfoPtr pScrn)
     Bool ret = void;
     CMapScreenPtr pScreenPriv = cast(CMapScreenPtr) dixLookupPrivate(&pScreen.devPrivates, CMapScreenKey);
 
-    pScrn.EnterVT = pScreenPriv.EnterVT;
+    pScrn.EnterVT = &pScreenPriv.EnterVT;
     ret = (*pScreenPriv.EnterVT) (pScrn);
     pScreenPriv.EnterVT = pScrn.EnterVT;
-    pScrn.EnterVT = CMapEnterVT;
+    pScrn.EnterVT = &CMapEnterVT;
     if (ret) {
         if (GetInstalledmiColormap(pScreen))
             CMapReinstallMap(GetInstalledmiColormap(pScreen));
@@ -802,7 +802,7 @@ private void CMapCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unu
     pScreen.InstallColormap = pScreenPriv.InstallColormap;
     pScreen.StoreColors = pScreenPriv.StoreColors;
 
-    pScrn.EnterVT = pScreenPriv.EnterVT;
+    pScrn.EnterVT = &pScreenPriv.EnterVT;
     pScrn.SwitchMode = pScreenPriv.SwitchMode;
     pScrn.SetDGAMode = pScreenPriv.SetDGAMode;
     pScrn.ChangeGamma = pScreenPriv.ChangeGamma;

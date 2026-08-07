@@ -563,7 +563,7 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
     if (count < 3)
         return TRUE;
 
-    if (((pETEs = cast(EdgeTableEntry*) calloc(count, EdgeTableEntry.sizeof)) == 0))
+    if (((pETEs = cast(EdgeTableEntry*) calloc(count, EdgeTableEntry.sizeof)) is null))
         return FALSE;
     ptsOut = FirstPoint;
     width = FirstWidth;

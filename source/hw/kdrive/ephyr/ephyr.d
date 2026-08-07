@@ -659,7 +659,7 @@ Bool ephyrRandRInit(ScreenPtr pScreen)
     if (!RRScreenInit(pScreen))
         return FALSE;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     pScrPriv.rrGetInfo = ephyrRandRGetInfo;
     pScrPriv.rrSetConfig = ephyrRandRSetConfig;
     return TRUE;

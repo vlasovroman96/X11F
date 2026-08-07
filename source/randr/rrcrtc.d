@@ -78,7 +78,7 @@ RRCrtcPtr RRCrtcCreate(ScreenPtr pScreen, void* devPrivate)
     if (!RRInit())
         return null;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     /* make space for the crtc pointer */
     crtcs = reallocarray(pScrPriv.crtcs,
@@ -996,7 +996,7 @@ private Bool RRCrtcInScreen(ScreenPtr pScreen, RRCrtcPtr findCrtc)
     if (!dixPrivateKeyRegistered(rrPrivKey))
         return FALSE;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
     for (c = 0; c < pScrPriv.numCrtcs; c++) {
         if (pScrPriv.crtcs[c] == findCrtc)
             return TRUE;
@@ -1152,7 +1152,7 @@ int ProcRRGetCrtcInfo(ClientPtr client)
      * requests are processed
      */
     ScreenPtr pScreen = crtc.pScreen;
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     RRModePtr mode = crtc.mode;
 
@@ -1337,7 +1337,7 @@ int ProcRRSetCrtcConfig(ClientPtr client)
     }
 
     pScreen = crtc.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     time = ClientTimeToServerTime(stuff.timestamp);
 
@@ -1469,7 +1469,7 @@ int ProcRRGetPanning(ClientPtr client)
      * requests are processed
      */
     pScreen = crtc.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (!pScrPriv)
         return RRErrorBase + BadRRCrtc;
@@ -1553,7 +1553,7 @@ int ProcRRSetPanning(ClientPtr client)
      * requests are processed
      */
     pScreen = crtc.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (!pScrPriv) {
         time = currentTime;
@@ -1976,7 +1976,7 @@ Bool RRHasScanoutPixmap(ScreenPtr pScreen)
     if (!dixPrivateKeyRegistered(rrPrivKey))
         return FALSE;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     if (!pScreen.is_output_secondary)
         return FALSE;

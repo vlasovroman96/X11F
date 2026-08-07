@@ -45,6 +45,8 @@ public import core.stdc.stdarg;
 import include.xf86Xinput;
 import os.log;
 import xf86Globals;
+import dix.events;
+
 
 /* General parameters */
 // extern bool  xorgHWAccess;
@@ -102,10 +104,10 @@ extern void  xf86AddBusDeviceToConfigure(const(char)* driver, BusType bus, void*
 
 /* xf86Cursor.c */
 
-extern void  xf86SetViewport(ScreenPtr pScreen, int x, int y);
-extern void  xf86SwitchMode(ScreenPtr pScreen, DisplayModePtr mode);
+// extern void  xf86SetViewport(ScreenPtr pScreen, int x, int y);
+// extern void  xf86SwitchMode(ScreenPtr pScreen, DisplayModePtr mode);
 extern void * xf86GetPointerScreenFuncs();
-extern void  xf86ReconfigureLayout();
+// extern void  xf86ReconfigureLayout();
 
 /* xf86DPMS.c */
 

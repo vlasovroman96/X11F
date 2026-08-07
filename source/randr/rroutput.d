@@ -54,7 +54,7 @@ void RROutputChanged(RROutputPtr output, Bool configChanged)
         primarysp = rrGetScrPriv(primary);
     }
     else {
-        primarysp = rrGetScrPriv(pScreen);
+        primarysp = mixin(rrGetScrPriv!("pScreen"));
     }
 
     RRSetChanged(pScreen);
@@ -76,7 +76,7 @@ RROutputPtr RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength,
     if (!RRInit())
         return null;
 
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     outputs = reallocarray(pScrPriv.outputs,
                            pScrPriv.numOutputs + 1, RROutputPtr.sizeof);
@@ -460,7 +460,7 @@ int ProcRRGetOutputInfo(ClientPtr client)
     leased = RROutputIsLeased(output);
 
     pScreen = output.pScreen;
-    pScrPriv = rrGetScrPriv(pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
     xRRGetOutputInfoReply reply = {
         status: RRSetConfigSuccess,

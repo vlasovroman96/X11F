@@ -168,6 +168,8 @@ import os.utils;
 import std.conv;
 import include.os;
 import os.io;
+import dix.inpututils;
+
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `
         ((` ~ c ~ `).xkbClientFlags&XkbPCF_DetectableAutoRepeatMask)`;

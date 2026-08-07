@@ -5,23 +5,21 @@ import std.stdio;
 import std.string : stringToCString = representation; // Для передачи char* в C
 
 extern(C) {
-    // Структуры из оригинального <regex.h>
     struct regex_t {
         size_t re_nsub;
-        void* re_g; // Внутренности реализации скрыты
+        void* re_g; 
     }
     
     struct regmatch_t {
-        int rm_so; // Смещение начала совпадения
-        int rm_eo; // Смещение конца совпадения
     }
 
-    // Флаги компиляции и выполнения
     enum REG_EXTENDED = 1;
     enum REG_NOMATCH = 1;
+    enum REG_ICASE    = 0x02;
+    enum REG_NEWLINE  = 0x04;
+    enum REG_NOSUB    = 0x08;
 
-    // Си-функции
-    int regcomp(regex_t* preg, const(char)* regex, int cflags);
-    int regexec(const(regex_t)* preg, const(char)* string, size_t nmatch, regmatch_t* pmatch, int eflags);
-    void regfree(regex_t* preg);
+    int regcomp(regex_t* preg, const(char)* regex, int cflags) @nogc nothrow;
+    int regexec(const(regex_t)* preg, const(char)* string, size_t nmatch, regmatch_t* pmatch, int eflags) @nogc nothrow;
+    void regfree(regex_t* preg) @nogc nothrow;
 }

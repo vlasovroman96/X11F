@@ -387,7 +387,7 @@ private ubyte* RealizeCursorInterleave0(xf86CursorInfoPtr infoPtr, CursorPtr pCu
     /* how many words are in the source or mask */
     int words = size / (CUR_BITMAP_SCANLINE_PAD / 4);
 
-    if (((mem = cast(ubyte*) calloc(1, size)) == 0))
+    if (((mem = cast(ubyte*) calloc(1, size)) is null))
         return null;
 
     if (pCurs == NullCursor) {

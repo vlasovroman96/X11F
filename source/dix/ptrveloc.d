@@ -42,6 +42,10 @@ import include.xserver_properties;
 import Xi.xiproperty;
 import mi.miarc;
 import os.log;
+import dix.dixutils;
+import dix.inpututils;
+
+
 
 /*****************************************************************************
  * Predictable pointer acceleration

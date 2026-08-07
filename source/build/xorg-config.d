@@ -135,5 +135,6 @@ enum XSERVER_PLATFORM_BUS = 1;
 
 /* Define if building the modesetting driver */
 enum HAVE_MODESETTING_DRIVER = 1;
+enum FALLBACK_INPUT_DRIVER = "libinput";
 
  /* _XORG_CONFIG_H_ */

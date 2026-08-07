@@ -242,7 +242,7 @@ Bool xf86XVScreenInit(ScreenPtr pScreen, XF86VideoAdaptorPtr* adaptors, int num)
 
     pScreen.WindowExposures = xf86XVWindowExposures;
     pScreen.ClipNotify = xf86XVClipNotify;
-    pScrn.EnterVT = xf86XVEnterVT;
+    pScrn.EnterVT = &xf86XVEnterVT;
     pScrn.LeaveVT = xf86XVLeaveVT;
     if (pScrn.AdjustFrame)
         pScrn.AdjustFrame = xf86XVAdjustFrame;
@@ -433,7 +433,7 @@ private Bool xf86XVInitAdaptors(ScreenPtr pScreen, XF86VideoAdaptorPtr* infoPtr,
             continue;
         }
 
-        if (((adaptorPriv = cast(XvAdaptorRecPrivate*) calloc(1, XvAdaptorRecPrivate.sizeof)) == 0)) {
+        if (((adaptorPriv = cast(XvAdaptorRecPrivate*) calloc(1, XvAdaptorRecPrivate.sizeof)) is null)) {
             xf86XVFreeAdaptor(pa);
             continue;
         }
@@ -462,7 +462,7 @@ private Bool xf86XVInitAdaptors(ScreenPtr pScreen, XF86VideoAdaptorPtr* infoPtr,
             if (((pp.id = dixAllocServerXID()) == 0))
                 continue;
 
-            if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) == 0))
+            if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) is null))
                 continue;
 
             if (!AddResource(pp.id, PortResource, pp)) {
@@ -1100,7 +1100,7 @@ private void xf86XVCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* u
     pScreen.WindowExposures = ScreenPriv.WindowExposures;
     pScreen.ClipNotify = ScreenPriv.ClipNotify;
 
-    pScrn.EnterVT = ScreenPriv.EnterVT;
+    pScrn.EnterVT = &ScreenPriv.EnterVT;
     pScrn.LeaveVT = ScreenPriv.LeaveVT;
     pScrn.AdjustFrame = ScreenPriv.AdjustFrame;
     pScrn.ModeSet = ScreenPriv.ModeSet;
@@ -1122,10 +1122,10 @@ private Bool xf86XVEnterVT(ScrnInfoPtr pScrn)
     XF86XVScreenPtr ScreenPriv = mixin(GET_XF86XV_SCREEN!(`pScreen`));
     Bool ret = void;
 
-    pScrn.EnterVT = ScreenPriv.EnterVT;
+    pScrn.EnterVT = &ScreenPriv.EnterVT;
     ret = (*ScreenPriv.EnterVT) (pScrn);
     ScreenPriv.EnterVT = pScrn.EnterVT;
-    pScrn.EnterVT = xf86XVEnterVT;
+    pScrn.EnterVT = &xf86XVEnterVT;
 
     if (ret)
         WalkTree(pScreen, &xf86XVReputAllVideo, 0);

@@ -40,6 +40,7 @@ import include.xf86Parser;
 import xf86Globals;
 import externs.gnu;
 import mi.miinitext;
+import dix.inpututils;
 
 version (XSELINUX) {
 import xselinux;
@@ -104,7 +105,7 @@ private void load_extension_config()
 
         /* extmod options are of the form "omit <extension-name>" */
         mixin(nt_list_for_each_entry!("opt", "modp.load_opt", "list.next", q{
-            const(char)* key = cast(char*)input_option_get_key(opt);
+            const(char)* key = input_option_get_key(opt);
             if (strncasecmp(key, "omit", 4) != 0 || strlen(key) < 5)
                 continue;
             if (EnableDisableExtension(key + 4, FALSE))

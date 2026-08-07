@@ -287,9 +287,9 @@ extern int set_button_down(DeviceIntPtr pDev, int button, int type);
 extern int set_button_up(DeviceIntPtr pDev, int button, int type);
 extern int button_is_down(DeviceIntPtr pDev, int button, int type);
 
-extern DeviceIntPtr AddInputDevice(ClientPtr /*client */ ,
-                                             DeviceProc /*deviceProc */ ,
-                                             Bool /*autoStart */ );
+// extern DeviceIntPtr AddInputDevice(ClientPtr /*client */ ,
+                                            //  DeviceProc /*deviceProc */ ,
+                                            //  Bool /*autoStart */ );
 
 // extern int EnableDevice(DeviceIntPtr, BOOL);
 
@@ -309,7 +309,7 @@ extern int InitButtonClassDeviceStruct(DeviceIntPtr, int, Atom*, CARD8*);
 
 extern int InitValuatorClassDeviceStruct(DeviceIntPtr, int, Atom*, int, int);
 
-extern int InitPointerAccelerationScheme(DeviceIntPtr, int);
+// extern int InitPointerAccelerationScheme(DeviceIntPtr, int);
 
 extern int InitFocusClassDeviceStruct(DeviceIntPtr);
 
@@ -381,7 +381,7 @@ extern int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start,
 // extern int AllocDevicePair(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master);
 
 /* Helper functions. */
-extern int generate_modkeymap(ClientPtr client, DeviceIntPtr dev, KeyCode** modkeymap, int* max_keys_per_mod);
+// extern int generate_modkeymap(ClientPtr client, DeviceIntPtr dev, KeyCode** modkeymap, int* max_keys_per_mod);
 
 enum TouchListenerState {
     TOUCH_LISTENER_AWAITING_BEGIN = 0, /**< Waiting for a TouchBegin event */
@@ -423,46 +423,46 @@ alias GESTURE_LISTENER_NONGESTURE_GRAB = GestureListenerType.GESTURE_LISTENER_NO
 alias GESTURE_LISTENER_REGULAR = GestureListenerType.GESTURE_LISTENER_REGULAR;
 
 
-extern InputAttributes *DuplicateInputAttributes(InputAttributes *
-                                                           attrs);
+// extern InputAttributes *DuplicateInputAttributes(InputAttributes *
+                                                        //    attrs);
 
-extern int FreeInputAttributes(InputAttributes* attrs);
+// extern int FreeInputAttributes(InputAttributes* attrs);
 
 /* Implemented by the DDX. */
 // extern int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* dev);
 extern int DeleteInputDeviceRequest(DeviceIntPtr dev);
 extern int RemoveInputDeviceTraces(const(char)* config_info);
 extern int DDXRingBell(int volume, int pitch, int duration);
-extern int* valuator_mask_new(int num_valuators);
-extern int valuator_mask_free(ValuatorMask** mask);
-extern int valuator_mask_set_range(ValuatorMask* mask, int first_valuator, int num_valuators, const(int)* valuators);
-extern int valuator_mask_set(ValuatorMask* mask, int valuator, int data);
-extern int valuator_mask_set_double(ValuatorMask* mask, int valuator, double data);
-extern int valuator_mask_zero(ValuatorMask* mask);
-extern int valuator_mask_size(const(ValuatorMask)* mask);
-extern int valuator_mask_isset(const(ValuatorMask)* mask, int bit);
-extern int valuator_mask_unset(ValuatorMask* mask, int bit);
-extern int valuator_mask_num_valuators(const(ValuatorMask)* mask);
-extern int valuator_mask_copy(ValuatorMask* dest, const(ValuatorMask)* src);
-extern int valuator_mask_get(const(ValuatorMask)* mask, int valnum);
-extern int valuator_mask_get_double(const(ValuatorMask)* mask, int valnum);
+// extern int* valuator_mask_new(int num_valuators);
+// extern int valuator_mask_free(ValuatorMask** mask);
+// extern int valuator_mask_set_range(ValuatorMask* mask, int first_valuator, int num_valuators, const(int)* valuators);
+// extern int valuator_mask_set(ValuatorMask* mask, int valuator, int data);
+// extern int valuator_mask_set_double(ValuatorMask* mask, int valuator, double data);
+// extern int valuator_mask_zero(ValuatorMask* mask);
+// extern int valuator_mask_size(const(ValuatorMask)* mask);
+// extern int valuator_mask_isset(const(ValuatorMask)* mask, int bit);
+// extern int valuator_mask_unset(ValuatorMask* mask, int bit);
+// extern int valuator_mask_num_valuators(const(ValuatorMask)* mask);
+// extern int valuator_mask_copy(ValuatorMask* dest, const(ValuatorMask)* src);
+// extern int valuator_mask_get(const(ValuatorMask)* mask, int valnum);
+// extern int valuator_mask_get_double(const(ValuatorMask)* mask, int valnum);
 extern int valuator_mask_fetch(const(ValuatorMask)* mask, int valnum, int* val);
-extern int valuator_mask_fetch_double(const(ValuatorMask)* mask, int valnum, double* val);
-extern int valuator_mask_has_unaccelerated(const(ValuatorMask)* mask);
+// extern int valuator_mask_fetch_double(const(ValuatorMask)* mask, int valnum, double* val);
+// extern int valuator_mask_has_unaccelerated(const(ValuatorMask)* mask);
 extern int valuator_mask_set_unaccelerated(ValuatorMask* mask, int valuator, double accel, double unaccel);
 extern int valuator_mask_set_absolute_unaccelerated(ValuatorMask* mask, int valuator, int absolute, double unaccel);
 extern int valuator_mask_get_accelerated(const(ValuatorMask)* mask, int valuator);
-extern int valuator_mask_get_unaccelerated(const(ValuatorMask)* mask, int valuator);
+// extern int valuator_mask_get_unaccelerated(const(ValuatorMask)* mask, int valuator);
 extern int valuator_mask_fetch_unaccelerated(const(ValuatorMask)* mask, int valuator, double* accel, double* unaccel);
 /* InputOption handling interface */
 // extern int* input_option_new(InputOption* list, const(char)* key, const(char)* value);
 // extern int input_option_free_list(InputOption** opt);
 extern int* input_option_free_element(InputOption* opt, const(char)* key);
 extern int* input_option_find(InputOption* list, const(char)* key);
-extern const(int)* input_option_get_key(const(InputOption)* opt);
-extern const(int)* input_option_get_value(const(InputOption)* opt);
-extern int input_option_set_key(InputOption* opt, const(char)* key);
-extern int input_option_set_value(InputOption* opt, const(char)* value);
+// extern const(int)* input_option_get_key(const(InputOption)* opt);
+// extern const(int)* input_option_get_value(const(InputOption)* opt);
+// extern int input_option_set_key(InputOption* opt, const(char)* key);
+// extern int input_option_set_value(InputOption* opt, const(char)* value);
 
 extern int input_lock();
 extern int input_unlock();

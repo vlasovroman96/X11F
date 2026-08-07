@@ -55,6 +55,8 @@ import Xi.xiquerydevice;
 import include.xkbsrv;
 import os.log;
 import dix.devices;
+import dix.inpututils;
+
 
 
 

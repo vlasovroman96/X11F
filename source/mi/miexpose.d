@@ -306,7 +306,7 @@ void miSendExposures(WindowPtr pWin, RegionPtr pRgn, int dx, int dy)
 
     pBox = RegionRects(pRgn);
     numRects = RegionNumRects(pRgn);
-    if (((pEvent = cast(xEvent*) calloc(1, numRects * xEvent.sizeof)) == 0))
+    if (((pEvent = cast(xEvent*) calloc(1, numRects * xEvent.sizeof)) is null))
         return;
 
     for (i = numRects, pe = pEvent; --i >= 0; pe++, pBox++) {
