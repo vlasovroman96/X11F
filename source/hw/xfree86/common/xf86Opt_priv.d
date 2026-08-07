@@ -9,6 +9,6 @@ extern(C): __gshared:
 public import include.xf86Opt;
 
 // void xf86OptionListReport(XF86OptionPtr parm);
-void xf86MarkOptionUsed(XF86OptionPtr option);
+// void xf86MarkOptionUsed(XF86OptionPtr option);
 
  /* _XORG_XF86OPTION_PRIV_H */

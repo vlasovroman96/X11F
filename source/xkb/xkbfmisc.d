@@ -244,7 +244,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
         if (wantNames & XkmTypesMask) {
             if (old_names.types != None) {
                 tmp = NameForAtom(old_names.types);
-                names.types = Xstrdup(tmp);
+                names.types = cast(char*)Xstrdup(tmp);
             }
             else {
                 wantDflts |= XkmTypesMask;
@@ -254,7 +254,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
         if (wantNames & XkmCompatMapMask) {
             if (old_names.compat != None) {
                 tmp = NameForAtom(old_names.compat);
-                names.compat = Xstrdup(tmp);
+                names.compat = cast(char*)Xstrdup(tmp);
             }
             else
                 wantDflts |= XkmCompatMapMask;
@@ -264,13 +264,13 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
             if (old_names.symbols == None)
                 return FALSE;
             tmp = NameForAtom(old_names.symbols);
-            names.symbols = Xstrdup(tmp);
+            names.symbols = cast(char*)Xstrdup(tmp);
             complete |= XkmSymbolsMask;
         }
         if (wantNames & XkmKeyNamesMask) {
             if (old_names.keycodes != None) {
                 tmp = NameForAtom(old_names.keycodes);
-                names.keycodes = Xstrdup(tmp);
+                names.keycodes = cast(char*)Xstrdup(tmp);
             }
             else
                 wantDflts |= XkmKeyNamesMask;
@@ -280,7 +280,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
             if (old_names.geometry == None)
                 return FALSE;
             tmp = NameForAtom(old_names.geometry);
-            names.geometry = Xstrdup(tmp);
+            names.geometry = cast(char*)Xstrdup(tmp);
             complete |= XkmGeometryMask;
             wantNames &= ~XkmGeometryMask;
         }

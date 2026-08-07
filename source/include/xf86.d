@@ -46,6 +46,7 @@ import include.xf86Xinput;
 import os.log;
 import xf86Globals;
 import dix.events;
+public import xf86Configure;
 
 
 /* General parameters */
@@ -89,9 +90,9 @@ extern void  xf86GetNumEntityInstances(int entityIndex);
 
 enum string xf86SetLastScrnFlag(string e, string s) = `do { } while (0)`;
 
-extern void  xf86IsEntityShared(int entityIndex);
-extern void  xf86SetEntityShared(int entityIndex);
-extern void  xf86IsEntitySharable(int entityIndex);
+// extern void  xf86IsEntityShared(int entityIndex);
+// extern void  xf86SetEntityShared(int entityIndex);
+// extern void  xf86IsEntitySharable(int entityIndex);
 extern void  xf86SetEntitySharable(int entityIndex);
 extern void  xf86IsPrimInitDone(int entityIndex);
 extern void  xf86SetPrimInitDone(int entityIndex);
@@ -100,7 +101,7 @@ extern void  xf86AllocateEntityPrivateIndex();
 extern void * xf86GetEntityPrivate(int entityIndex, int privIndex);
 
 /* xf86Configure.c */
-extern void  xf86AddBusDeviceToConfigure(const(char)* driver, BusType bus, void* busData, int chipset);
+// extern void  xf86AddBusDeviceToConfigure(const(char)* driver, BusType bus, void* busData, int chipset);
 
 /* xf86Cursor.c */
 
@@ -132,7 +133,7 @@ extern void  xf86RemoveGeneralHandler(void* handler);
 /* xf86Helper.c */
 
 extern void  xf86AddDriver(DriverPtr driver, void* module_, int flags);
-extern void  xf86AllocateScreen(DriverPtr drv, int flags);
+// extern void  xf86AllocateScreen(DriverPtr drv, int flags);
 extern void  xf86AllocateScrnInfoPrivateIndex();
 extern void  xf86SetDepthBpp(ScrnInfoPtr scrp, int depth, int bpp, int fbbpp, int depth24flags);
 extern void  xf86PrintDepthBpp(ScrnInfoPtr scrp);
@@ -150,8 +151,8 @@ extern void  _X_ATTRIBUTE_PRINTF();
 extern const(void )* xf86TokenToString(SymTabPtr table, int token);
 extern void  xf86StringToToken(SymTabPtr table, const(char)* string);
 extern void  xf86ShowClocks(ScrnInfoPtr scrp, MessageType from);
-extern void  xf86PrintChipsets(const(char)* drvname, const(char)* drvmsg, SymTabPtr chips);
-extern void  xf86MatchDevice(const(char)* drivername, GDevPtr** driversectlist);
+// extern void  xf86PrintChipsets(const(char)* drvname, const(char)* drvmsg, SymTabPtr chips);
+// extern void  xf86MatchDevice(const(char)* drivername, GDevPtr** driversectlist);
 extern const(void )* xf86GetVisualName(int visual);
 extern void  xf86GetVerbosity();
 extern void  xf86GetGamma();
@@ -162,7 +163,7 @@ extern void  xorgGetVersion();
 extern void  xf86GetModuleVersion(void* module_);
 extern void * xf86LoadDrvSubModule(DriverPtr drv, const(char)* name);
 extern void * xf86LoadSubModule(ScrnInfoPtr pScrn, const(char)* name);
-extern void * xf86LoadOneModule(const(char)* name, void* optlist);
+// extern void * xf86LoadOneModule(const(char)* name, void* optlist);
 extern void  xf86UnloadSubModule(void* mod);
 extern void  xf86LoaderCheckSymbol(const(char)* name);
 extern void  xf86SetBackingStore(ScreenPtr pScreen);

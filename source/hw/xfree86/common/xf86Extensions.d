@@ -41,6 +41,7 @@ import xf86Globals;
 import externs.gnu;
 import mi.miinitext;
 import dix.inpututils;
+import xf86Option;
 
 version (XSELINUX) {
 import xselinux;

@@ -2,9 +2,9 @@ module hw.xfree86.os_support.bus.Pci;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
+// private template HasVersion(string versionId) {
+// 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
+// }
 /*
  * Copyright 1998 by Concurrent Computer Corporation
  *
@@ -130,6 +130,30 @@ import build.xorg_config;
 
 import hw.xfree86.os_support.bus.Pci;
 import hw.xfree86.os_support.xf86_os_support;
+
+// #if (defined(__alpha__) || defined(__ia64__)) && defined (__linux__)
+enum PCI_DOM_MASK =	0x01ff;
+// #else
+// enum PCI_DOM_MASK = 0x0ffu;
+// #endif
+
+// #ifndef PCI_DOM_MASK
+// enum PCI_DOM_MASK = 0x0ffu;
+// #endif
+enum PCI_DOMBUS_MASK = (((PCI_DOM_MASK) << 8) | 0x0ffu);
+
+/*
+ * "b" contains an optional domain number.
+ */
+enum string PCI_MAKE_TAG(string b,string d,string f) =`  ((((`~b~`) & (PCI_DOMBUS_MASK)) << 16) | 
+			      (((`~d~`) & 0x00001fu) << 11) | 
+			      (((`~f~`) & 0x000007u) << 8))`;
+
+enum string PCI_MAKE_BUS(string d,string b) =`   ((((`~d~`) & (PCI_DOM_MASK)) << 8) | ((`~b~`) & 0xffu))`;
+
+enum string PCI_DOM_FROM_BUS(string bus)  =`(((`~bus~`) >> 8) & (PCI_DOM_MASK))`;
+enum string PCI_BUS_NO_DOMAIN(string bus) =`((`~bus~`) & 0xffu)`;
+enum string PCI_TAG_NO_DOMAIN(string tag) =`((`~tag~`) & 0x00ffff00u)`;
 
 Bool xf86scanpci()
 {

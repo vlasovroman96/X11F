@@ -67,6 +67,7 @@ import xf86platformBus;
 import externs.gnu;
 import include.optionstr;;
 import hw.xfree86.common.xf86Helper;
+import xf86platformBus;
 
 
 // int xf86platformAddGPUDevices(DriverPtr drvp)
@@ -787,7 +788,7 @@ version (XSERVER_LIBPCIACCESS) {
         pci_other = xf86GetPciInfoForEntity(i);
         /* First compare PCI addresses */
         if (pci_ptr && pci_other) {
-            if (MATCH_PCI_DEVICES(pci_other, pci_ptr)) {
+            if (mixin(MATCH_PCI_DEVICES!("pci_other", "pci_ptr"))) {
             /* This PCI slot has been claimed, fail */
                 if (msPath) {
                     LogMessageVerb(X_INFO, 1,

@@ -1053,7 +1053,7 @@ extern void  xf86_crtc_notify(ScreenPtr pScreen);
  * Gamma
  */
 
-extern void  xf86_crtc_supports_gamma(ScrnInfoPtr pScrn);
+// extern void  xf86_crtc_supports_gamma(ScrnInfoPtr pScrn);
 
 extern void  xf86ProviderSetup(ScrnInfoPtr scrn, const(xf86ProviderFuncsRec)* funcs, const(char)* name);
 

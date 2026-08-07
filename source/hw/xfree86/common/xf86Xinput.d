@@ -92,6 +92,18 @@ import externs.sys.sysmacros;
 import dix.devices;
 import dix.events;
 import dix.inpututils;
+import xf86platformBus_priv;
+import xf86Globals;
+import xf86Xinput;
+import os.log;
+import xf86pciBus;
+import xf86Option;
+import drm_platform;
+import core.stdc.string;
+import externs.gnu;
+import Flags;
+import hw.xfree86.common.xf86Helper;
+import dix.events;
 
 version (HAVE_FNMATCH_H) {
 import fnmatch;

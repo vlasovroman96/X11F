@@ -88,7 +88,7 @@ import os.utils;
 import dix.devices;
 import dix.extension;
 
-private DevPrivateKeyRec DGAScreenKeyRec;
+DevPrivateKeyRec DGAScreenKeyRec;
 
 // @property bool DGAScreenKeyRegistered()
 // {

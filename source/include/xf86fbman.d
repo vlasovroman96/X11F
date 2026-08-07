@@ -46,8 +46,8 @@ struct _FBArea {
     ScreenPtr pScreen;
     BoxRec box;
     int granularity;
-    void function(_FBArea*, _FBArea*) MoveAreaCallback;
-    void function(_FBArea*) RemoveAreaCallback;
+    void function(_FBArea*, _FBArea*) @nogc nothrow MoveAreaCallback;
+    void function(_FBArea*) @nogc nothrow RemoveAreaCallback;
     DevUnion devPrivate;
 }alias FBArea = _FBArea;
 alias FBAreaPtr = _FBArea*;
@@ -57,17 +57,17 @@ struct _FBLinear {
     int size;
     int offset;
     int granularity;
-    void function(_FBLinear*, _FBLinear*) MoveLinearCallback;
-    void function(_FBLinear*) RemoveLinearCallback;
+    void function(_FBLinear*, _FBLinear*) @nogc nothrow MoveLinearCallback;
+    void function(_FBLinear*) @nogc nothrow RemoveLinearCallback;
     DevUnion devPrivate;
 }alias FBLinear = _FBLinear;
 alias FBLinearPtr = _FBLinear*;
 
-alias MoveAreaCallbackProcPtr = void function(FBAreaPtr, FBAreaPtr);
-alias RemoveAreaCallbackProcPtr = void function(FBAreaPtr);
+alias MoveAreaCallbackProcPtr = void function(FBAreaPtr, FBAreaPtr) @nogc nothrow;
+alias RemoveAreaCallbackProcPtr = void function(FBAreaPtr) @nogc nothrow;
 
-alias MoveLinearCallbackProcPtr = void function(FBLinearPtr, FBLinearPtr);
-alias RemoveLinearCallbackProcPtr = void function(FBLinearPtr);
+alias MoveLinearCallbackProcPtr = void function(FBLinearPtr, FBLinearPtr) @nogc nothrow;
+alias RemoveLinearCallbackProcPtr = void function(FBLinearPtr) @nogc nothrow;
 
 extern void  xf86InitFBManager(ScreenPtr pScreen, BoxPtr FullBox);
 

@@ -1443,8 +1443,8 @@ private Bool _XkbCopyGeom(XkbDescPtr src, XkbDescPtr dst)
                     strcpy(dprop.value, sprop.value);
                 }
                 else {
-                    dprop.name = Xstrdup(sprop.name);
-                    dprop.value = Xstrdup(sprop.value);
+                    dprop.name = cast(char*)Xstrdup(sprop.name);
+                    dprop.value = cast(char*)Xstrdup(sprop.value);
                 }
             }
 
@@ -1497,7 +1497,7 @@ private Bool _XkbCopyGeom(XkbDescPtr src, XkbDescPtr dst)
                     strcpy(dcolor.spec, scolor.spec);
                 }
                 else {
-                    dcolor.spec = Xstrdup(scolor.spec);
+                    dcolor.spec = cast(char*)Xstrdup(scolor.spec);
                 }
                 dcolor.pixel = scolor.pixel;
             }

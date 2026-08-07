@@ -51,6 +51,7 @@ public import include.xf86Opt;
 public import include.displaymode;
 import externs.pciaccess;
 import include.xf86Xinput;
+public import include.xf86platformBus;
 /**
  * Integer type that is of the size of the addressable memory (machine size).
  * On most platforms \c uintptr_t will suffice.  However, on some mixed
@@ -250,7 +251,7 @@ alias xorgHWFlags = CARD32;
 struct _PciChipsets;
 
 // struct pci_device;
-struct xf86_platform_device;
+// struct xf86_platform_device;
 
 struct _DriverRec {
     int driverVersion;

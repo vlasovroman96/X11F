@@ -53,7 +53,7 @@ import hw.xfree86.common.xf86Helper;
 import scan;
 import os.log;
 import externs.gnu;
-
+import xf86platformBus;
 /*
  * xf86CollectOptions collects the options from each of the config file
  * sections used by the screen and puts the combined list in pScrn->options.

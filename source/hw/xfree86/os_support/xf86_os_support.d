@@ -62,7 +62,7 @@ void xf86OSInitVidMem(VidMemInfoPtr);
 version (XSERVER_PLATFORM_BUS) {
 struct OdevAttributes;
 
-void xf86PlatformDeviceProbe(OdevAttributes* attribs);
+// void xf86PlatformDeviceProbe(OdevAttributes* attribs);
 
 void xf86PlatformReprobeDevice(int index, OdevAttributes* attribs);
 }

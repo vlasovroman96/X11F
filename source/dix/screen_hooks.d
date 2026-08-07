@@ -39,6 +39,8 @@ mixin(DECLARE_HOOK_PROC!(`PostClose`, `hookPostClose`, `XorgScreenCloseProcPtr`)
 mixin(DECLARE_HOOK_PROC!(`PixmapDestroy`, `hookPixmapDestroy`, `XorgScreenPixmapDestroyProcPtr`));
 mixin(DECLARE_HOOK_PROC!(`PostCreateResources`, `hookPostCreateResources`,
                   `XorgScreenPostCreateResourcesProcPtr`));
+// mixin(DECLARE_HOOK_PROC!(``, `hookPostCreateResources`,
+// `XorgScreenPostCreateResourcesProcPtr`));
 
 int dixScreenRaiseWindowDestroy(WindowPtr pWin)
 {

@@ -39,6 +39,8 @@ extern(C): __gshared:
 public import include.xlibre_ptrtypes;
 public import include.include.xf86Privstr;
 public import include.input;
+public import xf86Bus;
+
 
 // extern int xf86FbBpp;
 // extern int  xf86Depth;
@@ -59,6 +61,6 @@ enum DEFAULT_DPI =		96;
 
 /* xf86Bus.c */
 // extern void  xf86BusProbe();
-extern void  xf86AddDevToEntity(int entityIndex, GDevPtr dev);
+// extern void  xf86AddDevToEntity(int entityIndex, GDevPtr dev);
 
                           /* _XF86PRIV_H */

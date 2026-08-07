@@ -2,9 +2,9 @@ module xf86Configure;
 @nogc nothrow:
 extern(C): __gshared:
 
-template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
+// template HasVersion(string versionId) {
+// 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
+// }
 /*
  * Copyright 2000-2002 by Alan Hourihane, Flint Mountain, North Wales.
  *

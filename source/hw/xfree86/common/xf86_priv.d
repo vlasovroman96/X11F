@@ -98,7 +98,7 @@ Bool xf86RandRInit(ScreenPtr pScreen);
 // void xf86ExtensionInit();
 
 /* xf86Configure.c */
-void DoConfigure(); 
-void DoShowOptions(); 
+// void DoConfigure(); 
+// void DoShowOptions(); 
 
  /* _XSERVER_XF86_PRIV_H */

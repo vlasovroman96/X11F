@@ -884,7 +884,7 @@ ModuleDescPtr LoadModule(const(char)* module_, void* options, const(XF86ModReqIn
      * check the elements in the path
      */
     if (PathIsAbsolute(module_))
-        found = Xstrdup(module_);
+        found = cast(char*)Xstrdup(module_);
     path_elem = pathlist;
     while (!found && *path_elem != null) {
         found = FindModule(m, *path_elem, patterns);

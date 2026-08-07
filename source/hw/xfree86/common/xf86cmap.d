@@ -58,6 +58,12 @@ import hw.xfree86.common.dgaproc_priv;
 }
 
 import xf86cmap;
+import xf86DGA;
+import hw.xfree86.common.xf86Helper;
+import hw.xfree86.modes.xf86Crtc;
+import include.xf86cmap;
+import dix.resource;
+import dix.dixutils;
 
 enum string SCREEN_PROLOGUE(string pScreen, string field) = `((` ~ pScreen ~ `).` ~ field ~ ` = 
     (cast(CMapScreenPtr)dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, CMapScreenKey)).` ~ field ~ `)`;
@@ -80,9 +86,9 @@ struct _CMapScreenRec {
     DestroyColormapProcPtr DestroyColormap;
     InstallColormapProcPtr InstallColormap;
     StoreColorsProcPtr StoreColors;
-    Bool function(ScrnInfoPtr) EnterVT;
-    Bool function(ScrnInfoPtr, DisplayModePtr) SwitchMode;
-    int function(ScrnInfoPtr, int, DGADevicePtr) SetDGAMode;
+    Bool function(ScrnInfoPtr) @nogc nothrow EnterVT;
+    Bool function(ScrnInfoPtr, DisplayModePtr) @nogc nothrow SwitchMode;
+    int function(ScrnInfoPtr, int, DGADevicePtr) @nogc nothrow SetDGAMode;
     xf86ChangeGammaProc* ChangeGamma;
     int maxColors;
     int sigRGBbits;
@@ -107,14 +113,14 @@ private DevPrivateKeyRec CMapScreenKeyRec;
 
 @property bool DGAScreenKeyRegistered()
 {
-    return dixPrivateKeyRegistered(&DGAScreenKeyRec);
+    return cast(bool)dixPrivateKeyRegistered(&DGAScreenKeyRec);
 }
 enum CMapScreenKey = (&CMapScreenKeyRec);
 private DevPrivateKeyRec CMapColormapKeyRec;
 
 enum CMapColormapKey = (&CMapColormapKeyRec);
 
-
+enum string CMapScreenKeyRegistered = `dixPrivateKeyRegistered(&CMapScreenKeyRec)`;
 
 
 
@@ -144,7 +150,7 @@ Bool xf86ColormapAllocatePrivates(ScrnInfoPtr pScrn)
     return TRUE;
 }
 
-Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86LoadPaletteProc* loadPalette, xf86SetOverscanProc* setOverscan, uint flags)
+Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86LoadPaletteProc loadPalette, xf86SetOverscanProc setOverscan, uint flags)
 {
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
     ColormapPtr pDefMap = null;
@@ -174,16 +180,16 @@ Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86L
     }
 
     dixSetPrivate(&pScreen.devPrivates, &CMapScreenKeyRec, pScreenPriv);
-    dixScreenHookClose(pScreen, CMapCloseScreen);
+    dixScreenHookClose(pScreen, &CMapCloseScreen);
 
     pScreenPriv.CreateColormap = pScreen.CreateColormap;
     pScreenPriv.DestroyColormap = pScreen.DestroyColormap;
     pScreenPriv.InstallColormap = pScreen.InstallColormap;
     pScreenPriv.StoreColors = pScreen.StoreColors;
-    pScreen.CreateColormap = CMapCreateColormap;
-    pScreen.DestroyColormap = CMapDestroyColormap;
-    pScreen.InstallColormap = CMapInstallColormap;
-    pScreen.StoreColors = CMapStoreColors;
+    pScreen.CreateColormap = &CMapCreateColormap;
+    pScreen.DestroyColormap = &CMapDestroyColormap;
+    pScreen.InstallColormap = &CMapInstallColormap;
+    pScreen.StoreColors = &CMapStoreColors;
 
     pScrn.LoadPalette = loadPalette;
     pScrn.SetOverscan = setOverscan;
@@ -199,17 +205,17 @@ Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86L
     pScreenPriv.EnterVT = pScrn.EnterVT;
     pScreenPriv.SwitchMode = pScrn.SwitchMode;
     pScreenPriv.SetDGAMode = pScrn.SetDGAMode;
-    pScreenPriv.ChangeGamma = pScrn.ChangeGamma;
+    pScreenPriv.ChangeGamma = &pScrn.ChangeGamma;
 
     if (!(flags & CMAP_LOAD_EVEN_IF_OFFSCREEN)) {
         pScrn.EnterVT = &CMapEnterVT;
         if ((flags & CMAP_RELOAD_ON_MODE_SWITCH) && pScrn.SwitchMode)
-            pScrn.SwitchMode = CMapSwitchMode;
+            pScrn.SwitchMode = &CMapSwitchMode;
     }
 version (XFreeXDGA) {
-    pScrn.SetDGAMode = CMapSetDGAMode;
+    pScrn.SetDGAMode = &CMapSetDGAMode;
 }
-    pScrn.ChangeGamma = CMapChangeGamma;
+    pScrn.ChangeGamma = &CMapChangeGamma;
 
     ComputeGamma(pScrn, pScreenPriv);
 
@@ -223,7 +229,7 @@ version (XFreeXDGA) {
     }
 
     if (xf86_crtc_supports_gamma(pScrn)) {
-        pScrn.LoadPalette = xf86RandR12LoadPalette;
+        pScrn.LoadPalette = &xf86RandR12LoadPalette;
 
         if (!xf86RandR12InitGamma(pScrn, elements)) {
             CMapCloseScreen(null, pScreen, null);
@@ -296,7 +302,7 @@ private Bool CMapCreateColormap(ColormapPtr pmap)
         if (CMapAllocateColormapPrivate(pmap))
             ret = TRUE;
     }
-    pScreen.CreateColormap = CMapCreateColormap;
+    pScreen.CreateColormap = &CMapCreateColormap;
 
     return ret;
 }
@@ -330,7 +336,7 @@ private void CMapDestroyColormap(ColormapPtr cmap)
     if (pScreenPriv.DestroyColormap) {
         pScreen.DestroyColormap = pScreenPriv.DestroyColormap;
         (*pScreen.DestroyColormap) (cmap);
-        pScreen.DestroyColormap = CMapDestroyColormap;
+        pScreen.DestroyColormap = &CMapDestroyColormap;
     }
 }
 
@@ -345,7 +351,7 @@ private void CMapStoreColors(ColormapPtr pmap, int ndef, xColorItem* pdefs)
     /* At the moment this isn't necessary since there's nobody below us */
     pScreen.StoreColors = pScreenPriv.StoreColors;
     (*pScreen.StoreColors) (pmap, ndef, pdefs);
-    pScreen.StoreColors = CMapStoreColors;
+    pScreen.StoreColors = &CMapStoreColors;
 
     /* should never get here for these */
     if ((pVisual.class_ == TrueColor) ||
@@ -420,7 +426,7 @@ private void CMapInstallColormap(ColormapPtr pmap)
 
     pScreen.InstallColormap = pScreenPriv.InstallColormap;
     (*pScreen.InstallColormap) (pmap);
-    pScreen.InstallColormap = CMapInstallColormap;
+    pScreen.InstallColormap = &CMapInstallColormap;
 
     /* Important. We let the lower layers, namely DGA,
        overwrite the choice of Colormap to install */
@@ -444,7 +450,7 @@ private Bool CMapEnterVT(ScrnInfoPtr pScrn)
     Bool ret = void;
     CMapScreenPtr pScreenPriv = cast(CMapScreenPtr) dixLookupPrivate(&pScreen.devPrivates, CMapScreenKey);
 
-    pScrn.EnterVT = &pScreenPriv.EnterVT;
+    pScrn.EnterVT = pScreenPriv.EnterVT;
     ret = (*pScreenPriv.EnterVT) (pScrn);
     pScreenPriv.EnterVT = pScrn.EnterVT;
     pScrn.EnterVT = &CMapEnterVT;
@@ -573,7 +579,7 @@ private void CMapRefreshColors(ColormapPtr pmap, int defs, int* indices)
     case GrayScale:
         for (i = 0; i < defs; i++) {
             index = indices[i];
-            entry = (EntryPtr) &pmap.red[index];
+            entry = cast(EntryPtr) &pmap.red[index];
 
             if (entry.fShared) {
                 colors[index].red =
@@ -795,17 +801,17 @@ private void CMapCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unu
     if (!pScrn)
         return;
 
-    dixScreenUnhookClose(pScreen, CMapCloseScreen);
+    dixScreenUnhookClose(pScreen, &CMapCloseScreen);
 
     pScreen.CreateColormap = pScreenPriv.CreateColormap;
     pScreen.DestroyColormap = pScreenPriv.DestroyColormap;
     pScreen.InstallColormap = pScreenPriv.InstallColormap;
     pScreen.StoreColors = pScreenPriv.StoreColors;
 
-    pScrn.EnterVT = &pScreenPriv.EnterVT;
+    pScrn.EnterVT = pScreenPriv.EnterVT;
     pScrn.SwitchMode = pScreenPriv.SwitchMode;
     pScrn.SetDGAMode = pScreenPriv.SetDGAMode;
-    pScrn.ChangeGamma = pScreenPriv.ChangeGamma;
+    pScrn.ChangeGamma = *pScreenPriv.ChangeGamma;
 
     free(pScreenPriv.gamma);
     free(pScreenPriv.PreAllocIndices);
@@ -843,21 +849,21 @@ version (DONT_CHECK_GAMMA) {} else {
 
     for (i = 0; i <= elements; i++) {
         if (RedGamma == 1.0)
-            priv.gamma[i].red = i;
+            priv.gamma[i].red = cast(ushort)i;
         else
             priv.gamma[i].red = cast(CARD16) (pow(cast(double) i / cast(double) elements,
                                                RedGamma) * cast(double) elements +
                                            0.5);
 
         if (GreenGamma == 1.0)
-            priv.gamma[i].green = i;
+            priv.gamma[i].green = cast(ushort)i;
         else
             priv.gamma[i].green = cast(CARD16) (pow(cast(double) i / cast(double) elements,
                                                  GreenGamma) *
                                              cast(double) elements + 0.5);
 
         if (BlueGamma == 1.0)
-            priv.gamma[i].blue = i;
+            priv.gamma[i].blue = cast(ushort)i;
         else
             priv.gamma[i].blue = cast(CARD16) (pow(cast(double) i / cast(double) elements,
                                                 BlueGamma) * cast(double) elements +
@@ -874,7 +880,7 @@ int CMapChangeGamma(ScrnInfoPtr pScrn, Gamma gamma)
     CMapLinkPtr pLink = void;
 
     /* Is this sufficient checking ? */
-    if (!CMapScreenKeyRegistered)
+    if (!mixin(CMapScreenKeyRegistered))
         return BadImplementation;
 
     pScreenPriv = cast(CMapScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
@@ -933,10 +939,10 @@ int CMapChangeGamma(ScrnInfoPtr pScrn, Gamma gamma)
             CMapReinstallMap(pMap);
     }
 
-    pScrn.ChangeGamma = pScreenPriv.ChangeGamma;
+    pScrn.ChangeGamma = *pScreenPriv.ChangeGamma;
     if (pScrn.ChangeGamma)
         ret = pScrn.ChangeGamma(pScrn, gamma);
-    pScrn.ChangeGamma = CMapChangeGamma;
+    pScrn.ChangeGamma = &CMapChangeGamma;
 
     return ret;
 }
@@ -962,7 +968,7 @@ int xf86ChangeGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green,
     CMapScreenPtr pScreenPriv = void;
     CMapLinkPtr pLink = void;
 
-    if (!CMapScreenKeyRegistered)
+    if (!mixin(CMapScreenKeyRegistered))
         return BadImplementation;
 
     pScreenPriv = cast(CMapScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
@@ -1022,7 +1028,7 @@ int xf86GetGammaRampSize(ScreenPtr pScreen)
 {
     CMapScreenPtr pScreenPriv = void;
 
-    if (!CMapScreenKeyRegistered)
+    if (!mixin(CMapScreenKeyRegistered))
         return 0;
 
     pScreenPriv = cast(CMapScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
@@ -1039,7 +1045,7 @@ int xf86GetGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green, us
     LOCO* entry = void;
     int shift = void, sigbits = void;
 
-    if (!CMapScreenKeyRegistered)
+    if (!mixin(CMapScreenKeyRegistered))
         return BadImplementation;
 
     pScreenPriv = cast(CMapScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
@@ -1054,9 +1060,9 @@ int xf86GetGammaRamp(ScreenPtr pScreen, int size, ushort* red, ushort* green, us
     sigbits = pScreenPriv.sigRGBbits;
 
     while (size--) {
-        *red = entry.red << (16 - sigbits);
-        *green = entry.green << (16 - sigbits);
-        *blue = entry.blue << (16 - sigbits);
+        *red = cast(ushort)(entry.red << (16 - sigbits));
+        *green = cast(ushort)(entry.green << (16 - sigbits));
+        *blue = cast(ushort)(entry.blue << (16 - sigbits));
         shift = sigbits;
         while (shift < 16) {
             *red |= *red >> shift;

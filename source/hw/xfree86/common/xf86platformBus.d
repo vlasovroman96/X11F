@@ -61,6 +61,19 @@ import xf86Config;
 import include.xf86Crtc;
 import include.xf86Parser;
 import hw.xfree86.common.xf86MatchDrivers;
+import xf86platformBus_priv;
+import xf86Globals;
+import xf86Xinput;
+import os.log;
+import xf86pciBus;
+import xf86Option;
+import drm_platform;
+import core.stdc.string;
+import externs.gnu;
+import Flags;
+import hw.xfree86.common.xf86Helper;
+import dix.events;
+import include.optionstr;
 
 int xf86_num_platform_devices;
 
@@ -68,7 +81,7 @@ xf86_platform_device* xf86_platform_devices;
 
 int xf86_add_platform_device(OdevAttributes* attribs, Bool unowned)
 {
-    xf86_platform_devices = XNFreallocarray(xf86_platform_devices,
+    xf86_platform_devices = cast(xf86_platform_device*)XNFreallocarray(xf86_platform_devices,
                                             xf86_num_platform_devices + 1,
                                             xf86_platform_device.sizeof);
 
@@ -152,7 +165,7 @@ private void platform_find_pci_info(xf86_platform_device* pd, char* busid)
     pci_iterator_destroy(iter);
 }
 
-private Bool OutputClassMatches(const(XF86ConfOutputClassPtr) oclass, xf86_platform_device* dev)
+private Bool OutputClassMatches(XF86ConfOutputClassPtr oclass, xf86_platform_device* dev)
 {
     char* driver = dev.attribs.driver;
     const(char)* layout = void;
@@ -179,7 +192,7 @@ private void xf86OutputClassDriverList(int index, XF86MatchedDrivers* md)
 {
     XF86ConfOutputClassPtr cl = void;
 
-    for (cl = xf86configptr.conf_outputclass_lst; cl; cl = cl.list.next) {
+    for (cl = xf86configptr.conf_outputclass_lst; cl; cl = cast(_XF86ConfOutputClassRec*)cl.list.next) {
         if (OutputClassMatches(cl, &xf86_platform_devices[index])) {
             char* path = xf86_platform_odev_attributes(index).path;
 
@@ -252,7 +265,7 @@ int xf86platformProbe()
     char* driver_path = void, path = null;
     char* curr = void, next = void, copy = void;
 
-    config_odev_probe(xf86PlatformDeviceProbe);
+    config_odev_probe(&xf86PlatformDeviceProbe);
 
     if (!xf86scanpci()) {
         pci = FALSE;
@@ -269,7 +282,7 @@ int xf86platformProbe()
          * Deal with OutputClass ModulePath directives, these must be
          * processed before we do any module loading.
          */
-        for (cl = cl_head; cl; cl = cl.list.next) {
+        for (cl = cl_head; cl; cl = cast(_XF86ConfOutputClassRec*)cl.list.next) {
             if (!OutputClassMatches(cl, &xf86_platform_devices[i]))
                 continue;
 
@@ -296,7 +309,7 @@ int xf86platformProbe()
                                 cl.modules);
                         XNFasprintf(&copy, "%s", cl.modules);
                         curr = copy;
-                        while ((curr = strtok_r(curr, ",", &next))) {
+                        while ((curr = strtok_r(curr, ",", &next)) !is null) {
                             if (*curr) LoaderSetPath(curr, driver_path);
                             curr = null;
                         }
@@ -322,7 +335,7 @@ int xf86platformProbe()
                     }
                     XNFasprintf(&copy, "%s", cl.modules);
                     curr = copy;
-                    while ((curr = strtok_r(curr, ",", &next))) {
+                    while ((curr = strtok_r(curr, ",", &next))!is null) {
                         if (*curr) LoaderSetPath(curr, driver_path);
                         curr = null;
                     }
@@ -356,7 +369,7 @@ int xf86platformProbe()
     /* First see if there is an OutputClass match marking a device as primary */
     for (i = 0; i < xf86_num_platform_devices; i++) {
         xf86_platform_device* dev = &xf86_platform_devices[i];
-        for (cl = cl_head; cl; cl = cl.list.next) {
+        for (cl = cl_head; cl; cl = cast(_XF86ConfOutputClassRec*)cl.list.next) {
             if (!OutputClassMatches(cl, dev))
                 continue;
 
@@ -390,7 +403,7 @@ int xf86platformProbe()
 
 void xf86MergeOutputClassOptions(int entityIndex, void** options)
 {
-    const(EntityPtr) entity = xf86Entities[entityIndex];
+    EntityPtr entity = xf86Entities[entityIndex];
     xf86_platform_device* dev = null;
     XF86ConfOutputClassPtr cl = void;
     XF86OptionPtr classopts = void;
@@ -403,8 +416,8 @@ void xf86MergeOutputClassOptions(int entityIndex, void** options)
     case BUS_PCI:
         for (i = 0; i < xf86_num_platform_devices; i++) {
             if (xf86_platform_devices[i].pdev) {
-                if (MATCH_PCI_DEVICES(xf86_platform_devices[i].pdev,
-                                      entity.bus.id.pci)) {
+                if (mixin(MATCH_PCI_DEVICES!("xf86_platform_devices[i].pdev",
+                                      "entity.bus.id.pci"))) {
                     dev = &xf86_platform_devices[i];
                     break;
                 }
@@ -419,7 +432,7 @@ void xf86MergeOutputClassOptions(int entityIndex, void** options)
     if (!dev)
         return;
 
-    for (cl = xf86configptr.conf_outputclass_lst; cl; cl = cl.list.next) {
+    for (cl = xf86configptr.conf_outputclass_lst; cl; cl = cast(_XF86ConfOutputClassRec*)cl.list.next) {
         if (!OutputClassMatches(cl, dev) || !cl.option_lst)
             continue;
 
@@ -433,7 +446,7 @@ void xf86MergeOutputClassOptions(int entityIndex, void** options)
 
 private int xf86ClaimPlatformSlot(xf86_platform_device* d, DriverPtr drvp, int chipset, GDevPtr dev, Bool active)
 {
-    EntityPtr p = null;
+    EntityPtr p ;
     int num = void;
 
     if (xf86CheckSlot(d, BUS_PLATFORM)) {
@@ -459,7 +472,7 @@ private int xf86UnclaimPlatformSlot(xf86_platform_device* d, GDevPtr dev)
     int i = void;
 
     for (i = 0; i < xf86NumEntities; i++) {
-        const(EntityPtr) p = xf86Entities[i];
+        EntityPtr p = xf86Entities[i];
 
         if ((p.bus.type == BUS_PLATFORM) && (p.bus.id.plat == d)) {
             if (dev)
@@ -505,7 +518,7 @@ private Bool doPlatformProbe(xf86_platform_device* dev, DriverPtr drvp, GDevPtr 
 
     if (entity != -1) {
         if ((dev.flags & XF86_PDEV_SERVER_FD) && (!drvp.driverFunc ||
-                !drvp.driverFunc(null, SUPPORTS_SERVER_FDS, null))) {
+                !(*drvp.driverFunc)(null, SUPPORTS_SERVER_FDS, null))) {
             systemd_logind_release_fd(dev.attribs.major, dev.attribs.minor, dev.attribs.fd);
             dev.attribs.fd = -1;
             dev.flags &= ~XF86_PDEV_SERVER_FD;
@@ -575,7 +588,7 @@ int xf86platformProbeDev(DriverPtr drvp)
             continue;
 
         /* This is specific to modesetting. */
-        devpath = xf86FindOptionValue(devList[i].options, "kmsdev");
+        devpath = xf86FindOptionValue(cast(XF86OptionPtr)devList[i].options, "kmsdev");
 
         for (j = 0; j < xf86_num_platform_devices; j++) {
             if (devpath && *devpath) {
@@ -658,7 +671,7 @@ const(char)* xf86PlatformFindHotplugDriver(int dev_index)
     const(char)* hp_driver = null;
     xf86_platform_device* dev = &xf86_platform_devices[dev_index];
 
-    for (cl = xf86configptr.conf_outputclass_lst; cl; cl = cl.list.next) {
+    for (cl = xf86configptr.conf_outputclass_lst; cl; cl = cast(_XF86ConfOutputClassRec*)cl.list.next) {
         if (!OutputClassMatches(cl, dev) || !cl.option_lst)
 	    continue;
 

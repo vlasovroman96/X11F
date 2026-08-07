@@ -40,41 +40,59 @@ import xf86Bus;
 import hw.xfree86.common.xf86sbusBus_priv;;
 import hw.xfree86.os_support.bus.xf86Sbus_priv;
 import include.xf86sbusBus;
+import externs.linux.fbio;
+import xf86platformBus_priv;
+import xf86Globals;
+import xf86Xinput;
+import os.log;
+import xf86pciBus;
+import xf86Option;
+import drm_platform;
+import core.stdc.string;
+import externs.gnu;
+import Flags;
+import hw.xfree86.common.xf86Helper;
+import dix.events;
+import include.optionstr;
+import Sbus.c;
+import os.log_priv;
+import dix.screen_hooks;
 
 
 private int xf86nSbusInfo;
 
+
 private void CheckSbusDevice(const(char)* device, int fbNum)
 {
     int fd = void, i = void;
-    fbgattr fbattr = void;
+    fbgattr fbattr_ = void;
     sbusDevicePtr psdp = void;
 
     fd = open(device, O_RDONLY, 0);
     if (fd < 0)
         return;
-    memset(&fbattr, 0, fbattr.sizeof);
-    if (ioctl(fd, FBIOGATTR, &fbattr) < 0) {
-        if (ioctl(fd, FBIOGTYPE, &fbattr.fbtype) < 0) {
+    memset(&fbattr_, 0, fbgattr.sizeof);
+    if (ioctl(fd, FBIOGATTR, &fbattr_) < 0) {
+        if (ioctl(fd, FBIOGTYPE, &fbattr_.fbtype_) < 0) {
             close(fd);
             return;
         }
     }
     close(fd);
     for (i = 0; sbusDeviceTable[i].devId; i++)
-        if (sbusDeviceTable[i].fbType == fbattr.fbtype.fb_type)
+        if (sbusDeviceTable[i].fbType == fbattr_.fbtype_.fb_type)
             break;
     if (!sbusDeviceTable[i].devId)
         return;
     xf86SbusInfo =
-        cast(psdp*) XNFreallocarray(xf86SbusInfo, ++xf86nSbusInfo + 1, psdp.sizeof);
+        cast(sbusDevicePtr*) XNFreallocarray(xf86SbusInfo, ++xf86nSbusInfo + 1, psdp.sizeof);
     xf86SbusInfo[xf86nSbusInfo] = null;
-    xf86SbusInfo[xf86nSbusInfo - 1] = psdp = XNFcallocarray(1, sbusDevice.sizeof);
+    xf86SbusInfo[xf86nSbusInfo - 1] = psdp = cast(sbus_device*)XNFcallocarray(1, sbusDevice.sizeof);
     psdp.devId = sbusDeviceTable[i].devId;
     psdp.fbNum = fbNum;
-    psdp.device = XNFstrdup(device);
-    psdp.width = fbattr.fbtype.fb_width;
-    psdp.height = fbattr.fbtype.fb_height;
+    psdp.device = cast(const(char)*)XNFstrdup(device);
+    psdp.width = fbattr_.fbtype_.fb_width;
+    psdp.height = fbattr_.fbtype_.fb_height;
     psdp.fd = -1;
 }
 
@@ -84,7 +102,7 @@ void xf86SbusProbe()
     char[32] fbDevName = void;
     sbusDevicePtr psdp = void; sbusDevicePtr* psdpp = void;
 
-    xf86SbusInfo = cast(psdp*) calloc(1, psdp.sizeof);
+    xf86SbusInfo = cast(sbusDevicePtr*) calloc(1, sbusDevicePtr.sizeof);
     *xf86SbusInfo = null;
     for (i = 0; i < 32; i++) {
         snprintf(fbDevName.ptr, fbDevName.sizeof, "/dev/fb%d", i);
@@ -94,7 +112,7 @@ void xf86SbusProbe()
         useProm = 1;
         sparcPromAssignNodes();
     }
-    for (psdpp = xf86SbusInfo; ((psdp = *psdpp) != 0); psdpp++) {
+    for (psdpp = xf86SbusInfo; ((psdp = *psdpp) !is null); psdpp++) {
         for (i = 0; sbusDeviceTable[i].devId; i++)
             if (sbusDeviceTable[i].devId == psdp.devId)
                 psdp.descr = sbusDeviceTable[i].descr;
@@ -142,6 +160,7 @@ void xf86SbusProbe()
                         psdp.descr = "Sun Turbo GX";
                         break;
                     }
+                goto default;
                 default: break;}
                 break;
             case SBUS_DEVICE_CG14:
@@ -265,7 +284,7 @@ private Bool xf86ParseSbusBusString(const(char)* busID, int* fbNum)
             int devId = void;
 
             for (i = 0, len = 0; sbusDeviceTable[i].devId; i++) {
-                len = strlen(sbusDeviceTable[i].promName);
+                len = cast(int)strlen(sbusDeviceTable[i].promName);
                 if (!strncmp(sbusDeviceTable[i].promName, id, len)
                     && isdigit(id[len]))
                     break;
@@ -346,7 +365,7 @@ private Bool xf86CheckSbusSlot(int fbNum)
 
 private int xf86ClaimSbusSlot(sbusDevicePtr psdp, DriverPtr drvp, GDevPtr dev, Bool active)
 {
-    EntityPtr p = null;
+    EntityPtr p = void;
 
     int num = void;
 
@@ -391,7 +410,7 @@ int xf86MatchSbusInstances(const(char)* driverName, int sbusDevId, GDevPtr* devL
         if (psdp.fd == -2)
             continue;
         ++allocatedInstances;
-        instances = XNFreallocarray(instances,
+        instances = cast(Inst*)XNFreallocarray(instances,
                                     allocatedInstances, Inst.sizeof);
         instances[allocatedInstances - 1].sbus = psdp;
         instances[allocatedInstances - 1].dev = null;
@@ -555,7 +574,7 @@ void xf86SbusUseBuiltinMode(ScrnInfoPtr pScrn, sbusDevicePtr psdp)
 {
     DisplayModePtr mode = void;
 
-    mode = XNFcallocarray(DisplayModeRec.sizeof, 1);
+    mode = cast(_DisplayModeRec*)XNFcallocarray(DisplayModeRec.sizeof, 1);
     mode.name = "current";
     mode.next = mode;
     mode.prev = mode;
@@ -624,9 +643,9 @@ private void xf86SbusCmapLoadPalette(ScrnInfoPtr pScrn, int numColors, int* indi
             fbcmap.count = 0;
             fbcmap.index = index;
         }
-        fbcmap.red[fbcmap.count] = colors[index].red;
-        fbcmap.green[fbcmap.count] = colors[index].green;
-        fbcmap.blue[fbcmap.count++] = colors[index].blue;
+        fbcmap.red[fbcmap.count] = cast(ubyte)colors[index].red;
+        fbcmap.green[fbcmap.count] = cast(ubyte)colors[index].green;
+        fbcmap.blue[fbcmap.count++] = cast(ubyte)colors[index].blue;
     }
     ioctl(cmap.psdp.fd, FBIOPUTCMAP, &fbcmap);
     free(data);
@@ -637,7 +656,7 @@ private void xf86SbusCmapCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, v
     sbusCmapPtr cmap = void;
     fbcmap fbcmap = void;
 
-    dixScreenUnhook(pScreen, xf86SbusCmapCloseScreen);
+    // dixScreenUnhook(pScreen, xf86SbusCmapCloseScreen);
 
     cmap = mixin(SBUSCMAPPTR!(`pScreen`));
     if (!cmap)
@@ -646,9 +665,9 @@ private void xf86SbusCmapCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, v
     if (cmap.origCmapValid) {
         fbcmap.index = 0;
         fbcmap.count = 16;
-        fbcmap.red = cmap.origRed;
-        fbcmap.green = cmap.origGreen;
-        fbcmap.blue = cmap.origBlue;
+        fbcmap.red = cmap.origRed.ptr;
+        fbcmap.green = cmap.origGreen.ptr;
+        fbcmap.blue = cmap.origBlue.ptr;
         ioctl(cmap.psdp.fd, FBIOPUTCMAP, &fbcmap);
     }
     free(cmap);
@@ -664,21 +683,21 @@ Bool xf86SbusHandleColormaps(ScreenPtr pScreen, sbusDevicePtr psdp)
     if (!dixRegisterPrivateKey(sbusPaletteKey, PRIVATE_SCREEN, 0))
         FatalError("Cannot register sbus private key");
 
-    cmap = XNFcallocarray(1, sbusCmapRec.sizeof);
+    cmap = cast(sbusCmapRec*)XNFcallocarray(1, sbusCmapRec.sizeof);
     dixSetPrivate(&pScreen.devPrivates, sbusPaletteKey, cmap);
     cmap.psdp = psdp;
     fbcmap.index = 0;
     fbcmap.count = 16;
-    fbcmap.red = cmap.origRed;
-    fbcmap.green = cmap.origGreen;
-    fbcmap.blue = cmap.origBlue;
+    fbcmap.red = cmap.origRed.ptr;
+    fbcmap.green = cmap.origGreen.ptr;
+    fbcmap.blue = cmap.origBlue.ptr;
     if (ioctl(psdp.fd, FBIOGETCMAP, &fbcmap) >= 0)
         cmap.origCmapValid = TRUE;
     fbcmap.index = 0;
     fbcmap.count = 2;
-    fbcmap.red = data;
-    fbcmap.green = data;
-    fbcmap.blue = data;
+    fbcmap.red = data.ptr;
+    fbcmap.green = data.ptr;
+    fbcmap.blue = data.ptr;
     if (pScreen.whitePixel == 0) {
         data[0] = 255;
         data[1] = 0;

@@ -62,8 +62,8 @@ extern void  xf86SbusHideOsHwCursor(sbusDevicePtr psdp);
 extern void  xf86SbusSetOsHwCursorCmap(sbusDevicePtr psdp, int bg, int fg);
 extern void  xf86SbusHandleColormaps(ScreenPtr pScreen, sbusDevicePtr psdp);
 
-extern void  sparcPromInit();
-extern void  sparcPromClose();
-extern void  sparcPromGetBool(sbusPromNodePtr pnode, const(char)* prop);
+// extern void  sparcPromInit();
+// extern void  sparcPromClose();
+// extern void  sparcPromGetBool(sbusPromNodePtr pnode, const(char)* prop);
 
                           /* _XF86_SBUSBUS_H */

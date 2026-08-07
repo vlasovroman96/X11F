@@ -59,6 +59,24 @@ import hw.xfree86.common.xf86MatchDrivers;
 import xf86Bus;
 
 import include.xf86_OSproc;;
+import xf86DGA;
+import include.xf86Pci;
+import hw.xfree86.common.xf86Helper;
+import hw.xfree86.modes.xf86Crtc;
+import include.xf86cmap;
+import dix.resource;
+import dix.dixutils;
+import os.log;
+import xf86Globals;
+import xf86Option;
+import core.stdc.stdio;
+import core.stdc.stdlib;
+import externs.gnu;
+
+enum string MATCH_PCI_DEVICES(string x,string  y) = `(((`~x~`).domain == (`~y~`).domain) &&        
+                                 ((`~x~`).bus == (`~y~`).bus) &&              
+                                 ((`~x~`).func == (`~y~`).func) &&            
+                                 ((`~x~`).dev == (`~y~`).dev))`;
 
 enum PCI_VENDOR_GENERIC =		0x00FF;
 
@@ -111,7 +129,7 @@ void xf86PciProbe()
     while ((info = pci_device_next(iter)) != null) {
         if (mixin(PCIINFOCLASSES!(`info.device_class`))) {
             num++;
-            xf86PciVideoInfo = XNFreallocarray(xf86PciVideoInfo,
+            xf86PciVideoInfo = cast(pci_device**)XNFreallocarray(xf86PciVideoInfo,
                                                num + 1,
                                                (pci_device*).sizeof);
             xf86PciVideoInfo[num] = null;
@@ -216,7 +234,7 @@ void xf86PciProbe()
 
 int xf86ClaimPciSlot(pci_device* d, DriverPtr drvp, int chipset, GDevPtr dev, Bool active)
 {
-    EntityPtr p = null;
+    EntityPtr p;
     int num = void;
 
     if (xf86CheckPciSlot(d)) {
@@ -245,7 +263,7 @@ void xf86UnclaimPciSlot(pci_device* d, GDevPtr dev)
     int i = void;
 
     for (i = 0; i < xf86NumEntities; i++) {
-        const(EntityPtr) p = xf86Entities[i];
+        EntityPtr p = xf86Entities[i];
 
         if ((p.bus.type == BUS_PCI) && (p.bus.id.pci == d)) {
             /* Probably the slot should be deallocated? */
@@ -276,7 +294,7 @@ Bool xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func)
     if (StringToBusType(busID, &id) != BUS_PCI)
         return FALSE;
 
-    s = Xstrdup(id);
+    s = cast(char*)Xstrdup(id);
     p = strtok(s, ":");
     if (p == null || *p == 0) {
         free(s);
@@ -562,8 +580,8 @@ void xf86PciIsolateDevice(const(char)* argument)
     int bus = void, device = void, func = void;
 
     if (sscanf(argument, "PCI:%d:%d:%d", &bus, &device, &func) == 3) {
-        xf86IsolateDevice.domain = PCI_DOM_FROM_BUS(bus);
-        xf86IsolateDevice.bus = PCI_BUS_NO_DOMAIN(bus);
+        xf86IsolateDevice.domain = mixin(PCI_DOM_FROM_BUS!("bus"));
+        xf86IsolateDevice.bus = mixin(PCI_BUS_NO_DOMAIN!("bus"));
         xf86IsolateDevice.dev = device;
         xf86IsolateDevice.func = func;
     }
@@ -706,7 +724,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
                         && (match_class == device_class))) {
                     if (instances != null) {
                         instances[allocatedInstances - 1].foundHW = TRUE;
-                        instances[allocatedInstances - 1].chip = id.numChipset;
+                        instances[allocatedInstances - 1].chip = cast(short)id.numChipset;
                     }
 
                     if (xf86DoConfigure && xf86DoConfigurePass1) {
@@ -770,8 +788,8 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
             for (i = 0; i < allocatedInstances; i++) {
                 pPci = instances[i].pci;
                 if (xf86ComparePciBusString(devList[j].busID,
-                                            PCI_MAKE_BUS(pPci.domain,
-                                                         pPci.bus), pPci.dev,
+                                            mixin(PCI_MAKE_BUS!("pPci.domain",
+                                                         "pPci.bus")), pPci.dev,
                                             pPci.func)) {
                     allocatedInstances++;
                     instances[allocatedInstances - 1] = instances[i];
@@ -792,8 +810,8 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
         for (j = 0; j < numDevs; j++) {
             if (devList[j].busID && *devList[j].busID) {
                 if (xf86ComparePciBusString(devList[j].busID,
-                                            PCI_MAKE_BUS(pPci.domain,
-                                                         pPci.bus), pPci.dev,
+                                            mixin(PCI_MAKE_BUS!("pPci.domain",
+                                                         "pPci.bus")), pPci.dev,
                                             pPci.func) &&
                     devList[j].screen == instances[i].screen) {
 
@@ -866,7 +884,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
                                instances[i].dev.identifier);
             }
             else {
-                instances[i].chip = c.token;
+                instances[i].chip = cast(short)c.token;
 
                 for (id = PCIchipsets; id.numChipset >= 0; id++) {
                     if (id.numChipset == instances[i].chip)
@@ -901,7 +919,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
                                instances[i].dev.identifier);
             }
             else {
-                instances[i].chip = id.numChipset;
+                instances[i].chip = cast(short)id.numChipset;
                 LogMessageVerb(X_CONFIG, 1, "ChipID override: 0x%04X\n",
                                instances[i].dev.chipID);
                 from = X_CONFIG;
@@ -988,7 +1006,7 @@ private void xf86ConfigPciEntityInactive(EntityInfoPtr pEnt, PciChipsets* p_chip
 {
     ScrnInfoPtr pScrn = void;
 
-    if ((pScrn = xf86FindScreenForEntity(pEnt.index)))
+    if ((pScrn = xf86FindScreenForEntity(pEnt.index)) !is null)
         xf86RemoveEntityFromScreen(pScrn, pEnt.index);
 }
 
@@ -1284,7 +1302,7 @@ void xf86MatchDriverFromFiles(ushort match_vendor, ushort match_chip, XF86Matche
 
     LogMessageVerb(X_INFO, 1,
                    "Scanning %s directory for additional PCI ID's supported by the drivers\n",
-                   PCI_TXT_IDS_PATH);
+                   PCI_TXT_IDS_PATH.ptr);
     direntry = readdir(idsdir);
     /* Read the directory */
     while (direntry) {
@@ -1292,12 +1310,12 @@ void xf86MatchDriverFromFiles(ushort match_vendor, ushort match_chip, XF86Matche
             direntry = readdir(idsdir);
             continue;
         }
-        len = strlen(direntry.d_name);
+        len = strlen(direntry.d_name.ptr);
         /* A tiny bit of sanity checking. We should probably do better */
         if (strncmp(&(direntry.d_name[len - 4]), ".ids", 4) == 0) {
             /* We need the full path name to open the file */
             snprintf(path_name.ptr, path_name.sizeof, "%s/%s",
-                     PCI_TXT_IDS_PATH, direntry.d_name);
+                     PCI_TXT_IDS_PATH.ptr, direntry.d_name.ptr);
             fp = fopen(path_name.ptr, "r");
             if (fp == null) {
                 LogMessageVerb(X_ERROR, 1, "Could not open %s for reading. Exiting.\n",
@@ -1315,27 +1333,27 @@ version (__GLIBC__) {
                 xchomp(line);
                 if (isdigit(line[0])) {
                     strlcpy(vendor_str.ptr, line, vendor_str.sizeof);
-                    vendor = cast(int) strtol(vendor_str.ptr, null, 16);
+                    vendor = cast(short) strtol(vendor_str.ptr, null, 16);
                     if ((strlen(&line[4])) == 0) {
                         chip_str[0] = '\0';
-                        chip = -1;
+                        chip = cast(short)-1;
                     }
                     else {
                         /* Handle trailing whitespace */
                         if (isspace(line[4])) {
                             chip_str[0] = '\0';
-                            chip = -1;
+                            chip = cast(short)-1;
                         }
                         else {
                             /* Ok, it's a real ID */
                             strlcpy(chip_str.ptr, &line[4], chip_str.sizeof);
-                            chip = cast(int) strtol(chip_str.ptr, null, 16);
+                            chip = cast(short)cast(int) strtol(chip_str.ptr, null, 16);
                         }
                     }
                     if (vendor == match_vendor && chip == match_chip) {
                         tmpMatch =
-                            cast(char*) calloc(1, (cast(char) *
-                                            strlen(direntry.d_name) - 3).sizeof);
+                            cast(char*) calloc(1, (char.sizeof *
+                                            strlen(direntry.d_name.ptr) - 3));
                         if (!tmpMatch) {
                             LogMessageVerb(X_ERROR, 1,
                                            "Could not allocate space for the module name. Exiting.\n");
@@ -1344,7 +1362,7 @@ version (__GLIBC__) {
                         /* hack off the .ids suffix. This should guard
                          * against other problems, but it will end up
                          * taking off anything after the first '.' */
-                        for (j = 0; j < (strlen(direntry.d_name) - 3); j++) {
+                        for (j = 0; j < (strlen(direntry.d_name.ptr) - 3); j++) {
                             if (direntry.d_name[j] == '.') {
                                 tmpMatch[j] = '\0';
                                 break;
@@ -1355,7 +1373,7 @@ version (__GLIBC__) {
                         }
                         xf86AddMatchedDriver(md, tmpMatch);
                         LogMessageVerb(X_INFO, 1, "Matched %s from file name %s\n",
-                                       tmpMatch, direntry.d_name);
+                                       tmpMatch, direntry.d_name.ptr);
                         free(tmpMatch);
                     }
                 }

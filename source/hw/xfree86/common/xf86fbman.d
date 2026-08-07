@@ -43,18 +43,24 @@ import include.xf86;
 import include.scrnintstr;
 import include.regionstr;
 import include.xf86fbman;
+import xf86DGA;
+import hw.xfree86.common.xf86Helper;
+import hw.xfree86.modes.xf86Crtc;
+import include.xf86cmap;
+import dix.resource;
+import dix.dixutils;
 
 struct _FBManagerFuncs {
-    FBAreaPtr function(ScreenPtr pScreen, int w, int h, int granularity, MoveAreaCallbackProcPtr moveCB, RemoveAreaCallbackProcPtr removeCB, void* privData) AllocateOffscreenArea;
-    void function(FBAreaPtr area) FreeOffscreenArea;
-    Bool function(FBAreaPtr area, int w, int h) ResizeOffscreenArea;
-    Bool function(ScreenPtr pScreen, int* width, int* height, int granularity, int preferences, int priority) QueryLargestOffscreenArea;
+    FBAreaPtr function(ScreenPtr pScreen, int w, int h, int granularity, MoveAreaCallbackProcPtr moveCB, RemoveAreaCallbackProcPtr removeCB, void* privData) @nogc nothrow AllocateOffscreenArea;
+    void function(FBAreaPtr area) @nogc nothrow FreeOffscreenArea;
+    Bool function(FBAreaPtr area, int w, int h) @nogc nothrow ResizeOffscreenArea;
+    Bool function(ScreenPtr pScreen, int* width, int* height, int granularity, int preferences, int priority) @nogc nothrow QueryLargestOffscreenArea;
 /* linear functions */
-     FBLinearPtr function(ScreenPtr pScreen, int size, int granularity, MoveLinearCallbackProcPtr moveCB, RemoveLinearCallbackProcPtr removeCB, void* privData) AllocateOffscreenLinear;
-    void function(FBLinearPtr area) FreeOffscreenLinear;
-    Bool function(FBLinearPtr area, int size) ResizeOffscreenLinear;
-    Bool function(ScreenPtr pScreen, int* size, int granularity, int priority) QueryLargestOffscreenLinear;
-    Bool function(ScreenPtr) PurgeOffscreenAreas;
+     FBLinearPtr function(ScreenPtr pScreen, int size, int granularity, MoveLinearCallbackProcPtr moveCB, RemoveLinearCallbackProcPtr removeCB, void* privData) @nogc nothrow AllocateOffscreenLinear;
+    void function(FBLinearPtr area) @nogc nothrow FreeOffscreenLinear;
+    Bool function(FBLinearPtr area, int size) @nogc nothrow ResizeOffscreenLinear;
+    Bool function(ScreenPtr pScreen, int* size, int granularity, int priority) @nogc nothrow QueryLargestOffscreenLinear;
+    Bool function(ScreenPtr) @nogc nothrow PurgeOffscreenAreas;
 }alias FBManagerFuncs = _FBManagerFuncs;
 alias FBManagerFuncsPtr = FBManagerFuncs*;
 
@@ -81,7 +87,7 @@ FBAreaPtr xf86AllocateOffscreenArea(ScreenPtr pScreen, int w, int h, int gran, M
     if (xf86FBManagerKey == null)
         return null;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
-                                                       xf86FBManagerKey)) == 0))
+                                                       xf86FBManagerKey)) is null))
         return null;
 
     return (*funcs.AllocateOffscreenArea) (pScreen, w, h, gran, moveCB,
@@ -95,7 +101,7 @@ FBLinearPtr xf86AllocateOffscreenLinear(ScreenPtr pScreen, int length, int gran,
     if (xf86FBManagerKey == null)
         return null;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
-                                                       xf86FBManagerKey)) == 0))
+                                                       xf86FBManagerKey)) is null))
         return null;
 
     return (*funcs.AllocateOffscreenLinear) (pScreen, length, gran, moveCB,
@@ -114,7 +120,7 @@ void xf86FreeOffscreenArea(FBAreaPtr area)
     if (
         ((funcs =
          cast(FBManagerFuncsPtr) dixLookupPrivate(&area.pScreen.devPrivates,
-                                              xf86FBManagerKey)) == 0))
+                                              xf86FBManagerKey)) is null))
         return;
 
     (*funcs.FreeOffscreenArea) (area);
@@ -134,7 +140,7 @@ void xf86FreeOffscreenLinear(FBLinearPtr linear)
     if (
         ((funcs =
          cast(FBManagerFuncsPtr) dixLookupPrivate(&linear.pScreen.devPrivates,
-                                              xf86FBManagerKey)) == 0))
+                                              xf86FBManagerKey)) is null))
         return;
 
     (*funcs.FreeOffscreenLinear) (linear);
@@ -154,7 +160,7 @@ Bool xf86ResizeOffscreenArea(FBAreaPtr resize, int w, int h)
     if (
         ((funcs =
          cast(FBManagerFuncsPtr) dixLookupPrivate(&resize.pScreen.devPrivates,
-                                              xf86FBManagerKey)) == 0))
+                                              xf86FBManagerKey)) is null))
         return FALSE;
 
     return (*funcs.ResizeOffscreenArea) (resize, w, h);
@@ -172,7 +178,7 @@ Bool xf86ResizeOffscreenLinear(FBLinearPtr resize, int size)
     if (
         ((funcs =
          cast(FBManagerFuncsPtr) dixLookupPrivate(&resize.pScreen.devPrivates,
-                                              xf86FBManagerKey)) == 0))
+                                              xf86FBManagerKey)) is null))
         return FALSE;
 
     return (*funcs.ResizeOffscreenLinear) (resize, size);
@@ -188,7 +194,7 @@ Bool xf86QueryLargestOffscreenArea(ScreenPtr pScreen, int* w, int* h, int gran, 
     if (xf86FBManagerKey == null)
         return FALSE;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
-                                                       xf86FBManagerKey)) == 0))
+                                                       xf86FBManagerKey)) is null))
         return FALSE;
 
     return (*funcs.QueryLargestOffscreenArea) (pScreen, w, h, gran,
@@ -204,7 +210,7 @@ Bool xf86QueryLargestOffscreenLinear(ScreenPtr pScreen, int* size, int gran, int
     if (xf86FBManagerKey == null)
         return FALSE;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
-                                                       xf86FBManagerKey)) == 0))
+                                                       xf86FBManagerKey)) is null))
         return FALSE;
 
     return (*funcs.QueryLargestOffscreenLinear) (pScreen, size, gran,
@@ -218,7 +224,7 @@ Bool xf86PurgeUnlockedOffscreenAreas(ScreenPtr pScreen)
     if (xf86FBManagerKey == null)
         return FALSE;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
-                                                       xf86FBManagerKey)) == 0))
+                                                       xf86FBManagerKey)) is null))
         return FALSE;
 
     return (*funcs.PurgeOffscreenAreas) (pScreen);
@@ -328,10 +334,10 @@ private FBAreaPtr AllocateArea(FBManagerPtr offman, int w, int h, int granularit
     if (area) {
         area.pScreen = pScreen;
         area.granularity = granularity;
-        area.box.x1 = x;
-        area.box.x2 = x + w;
-        area.box.y1 = boxp.y1;
-        area.box.y2 = boxp.y1 + h;
+        area.box.x1 = cast(short)(x);
+        area.box.x2 = cast(short)(x + w);
+        area.box.y1 = cast(short)(boxp.y1);
+        area.box.y2 = cast(short)(boxp.y1 + h);
         area.MoveAreaCallback = moveCB;
         area.RemoveAreaCallback = removeCB;
         area.devPrivate.ptr = privData;
@@ -401,7 +407,7 @@ private Bool localResizeOffscreenArea(FBAreaPtr resize, int w, int h)
     offman = cast(FBManagerPtr) dixLookupPrivate(&pScreen.devPrivates,
                                              xf86FBScreenKey);
     /* find this link */
-    if (((pLink = offman.UsedAreas) == 0))
+    if (((pLink = offman.UsedAreas) is null))
         return FALSE;
 
     while (&(pLink.area) != resize) {
@@ -422,8 +428,8 @@ private Bool localResizeOffscreenArea(FBAreaPtr resize, int w, int h)
         (h <= (resize.box.y2 - resize.box.y1))) {
         RegionRec NewReg = void;
 
-        resize.box.x2 = resize.box.x1 + w;
-        resize.box.y2 = resize.box.y1 + h;
+        resize.box.x2 = cast(short)(resize.box.x1 + w);
+        resize.box.y2 = cast(short)(resize.box.y1 + h);
 
         if ((resize.box.y2 == OrigArea.y2) && (resize.box.x2 == OrigArea.x2))
             return TRUE;
@@ -454,7 +460,7 @@ private Bool localResizeOffscreenArea(FBAreaPtr resize, int w, int h)
     if ((area = AllocateArea(offman, w, h, resize.granularity,
                              resize.MoveAreaCallback,
                              resize.RemoveAreaCallback,
-                             resize.devPrivate.ptr))) {
+                             resize.devPrivate.ptr)) !is null) {
 
         /* copy data over to our link and replace the new with old */
         memcpy(resize, area, FBArea.sizeof);
@@ -541,6 +547,7 @@ private Bool localQueryLargestOffscreenArea(ScreenPtr pScreen, int* width, int* 
             pbox = RegionRects(newRegion);
             break;
         }
+        goto case 1;
     case 1:
         if (offman.NumUsedAreas) {
             FBLinkPtr pLink = void;
@@ -563,6 +570,7 @@ private Bool localQueryLargestOffscreenArea(ScreenPtr pScreen, int* width, int* 
             pbox = RegionRects(newRegion);
             break;
         }
+        goto default;
     default:
         nbox = RegionNumRects(offman.FreeBoxes);
         pbox = RegionRects(offman.FreeBoxes);
@@ -797,7 +805,7 @@ private FBLinearPtr localAllocateOffscreenLinear(ScreenPtr pScreen, int length, 
 
     /* Try to allocate from linear memory first...... */
     DebugF("ALLOCATING LINEAR\n");
-    if ((linear = AllocateLinear(offman, length, gran, privData)))
+    if ((linear = AllocateLinear(offman, length, gran, privData)) !is null)
         return linear;
 
     DebugF("NOPE, ALLOCATING AREA\n");
@@ -834,9 +842,9 @@ private FBLinearPtr localAllocateOffscreenLinear(ScreenPtr pScreen, int length, 
     }
 
     if ((area = localAllocateOffscreenArea(pScreen, w, h, gran,
-                                           moveCB ? LinearMoveCBWrapper : null,
-                                           removeCB ? LinearRemoveCBWrapper :
-                                           null, privData))) {
+                                           moveCB ? &LinearMoveCBWrapper : null,
+                                           removeCB ? &LinearRemoveCBWrapper :
+                                           null, privData)) !is null) {
         link.area = area;
         link.free = 0;
         link.next = offman.LinearAreas;
@@ -1029,7 +1037,7 @@ private void xf86FBCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* u
     FBManagerPtr offman = cast(FBManagerPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                           xf86FBScreenKey);
 
-    dixScreenUnhookClose(pScreen, xf86FBCloseScreen);
+    dixScreenUnhookClose(pScreen, &xf86FBCloseScreen);
 
     if (!offman)
         return;
@@ -1068,8 +1076,8 @@ Bool xf86InitFBManager(ScreenPtr pScreen, BoxPtr FullBox)
 
     ScreenBox.x1 = 0;
     ScreenBox.y1 = 0;
-    ScreenBox.x2 = pScrn.virtualX;
-    ScreenBox.y2 = pScrn.virtualY;
+    ScreenBox.x2 = cast(short)pScrn.virtualX;
+    ScreenBox.y2 = cast(short)pScrn.virtualY;
 
     if ((FullBox.x1 > ScreenBox.x1) || (FullBox.y1 > ScreenBox.y1) ||
         (FullBox.x2 < ScreenBox.x2) || (FullBox.y2 < ScreenBox.y2)) {

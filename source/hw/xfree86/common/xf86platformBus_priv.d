@@ -8,19 +8,21 @@ extern(C): __gshared:
  
 public import xf86platformBus;
 import include.xf86str;
+public import config.hotplug_priv;
 
-version (XSERVER_PLATFORM_BUS) {
+
+// version (XSERVER_PLATFORM_BUS) {
 
 // extern int xf86_num_platform_devices;
 extern xf86_platform_device* xf86_platform_devices;
 
-pragma(inline, true) private OdevAttributes* xf86_platform_odev_attributes(int index)
+pragma(inline, true) OdevAttributes* xf86_platform_odev_attributes(int index)
 {
     xf86_platform_device* device = &xf86_platform_devices[index];
     return device.attribs;
 }
 
-pragma(inline, true) private OdevAttributes* xf86_platform_device_odev_attributes(xf86_platform_device* device)
+pragma(inline, true) OdevAttributes* xf86_platform_device_odev_attributes(xf86_platform_device* device)
 {
     return device.attribs;
 }
@@ -42,11 +44,11 @@ void xf86platformRemoveDevice(int index);
 void xf86platformVTProbe();
 void xf86platformPrimary();
 
-} else { /* XSERVER_PLATFORM_BUS */
+// } else { /* XSERVER_PLATFORM_BUS */
 
-pragma(inline, true) private int xf86platformAddGPUDevices(DriverPtr drvp) { return FALSE; }
-pragma(inline, true) private void xf86MergeOutputClassOptions(int index, void** options) {}
+// pragma(inline, true) int xf86platformAddGPUDevices(DriverPtr drvp) { return FALSE; }
+pragma(inline, true) void xf86MergeOutputClassOptions(int index, void** options) {}
 
-} /* XSERVER_PLATFORM_BUS */
+// } /* XSERVER_PLATFORM_BUS */
 
  /* _XSERVER_XF86_PLATFORM_BUS_PRIV_H */

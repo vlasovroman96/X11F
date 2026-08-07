@@ -3,7 +3,7 @@ module drm_platform;
 extern(C): __gshared:
 import build.xorg_config;
 
-version (XSERVER_PLATFORM_BUS) {
+// version (XSERVER_PLATFORM_BUS) {
 
 import externs.drm;
 import core.sys.posix.fcntl;
@@ -21,8 +21,8 @@ import hw.xfree86.os_support.xf86_os_support;
 import xf86platformBus_priv;
 import xf86Bus;
 
-import linux.systemd_logind;
-import seatd.libseat;
+import hw.xfree86.os_support.linux.systemd_logind;
+import seatd_libseat;
 
 private Bool get_drm_info(OdevAttributes* attribs, char* path, int delayed_index)
 {
@@ -231,4 +231,4 @@ out_:
     config_odev_free_attributes(attribs);
 }
 
-}
+// }

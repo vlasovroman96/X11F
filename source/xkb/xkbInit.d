@@ -233,23 +233,23 @@ void XkbSetRulesDflts(XkbRMLVOSet* rmlvo)
 {
     if (rmlvo.rules) {
         free(XkbRulesDflt);
-        XkbRulesDflt = Xstrdup(rmlvo.rules);
+        XkbRulesDflt = cast(char*)Xstrdup(rmlvo.rules);
     }
     if (rmlvo.model) {
         free(XkbModelDflt);
-        XkbModelDflt = Xstrdup(rmlvo.model);
+        XkbModelDflt = cast(char*)Xstrdup(rmlvo.model);
     }
     if (rmlvo.layout) {
         free(XkbLayoutDflt);
-        XkbLayoutDflt = Xstrdup(rmlvo.layout);
+        XkbLayoutDflt = cast(char*)Xstrdup(rmlvo.layout);
     }
     if (rmlvo.variant) {
         free(XkbVariantDflt);
-        XkbVariantDflt = Xstrdup(rmlvo.variant);
+        XkbVariantDflt = cast(char*)Xstrdup(rmlvo.variant);
     }
     if (rmlvo.options) {
         free(XkbOptionsDflt);
-        XkbOptionsDflt = Xstrdup(rmlvo.options);
+        XkbOptionsDflt = cast(char*)Xstrdup(rmlvo.options);
     }
     return;
 }
