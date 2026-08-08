@@ -46,6 +46,8 @@ import externs.attrs;
 import os.utils;
 import os.WaitFor;
 import render.picture;
+import dix.screen_hooks;
+
 
 // import include.exa_i;
 

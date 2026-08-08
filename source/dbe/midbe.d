@@ -59,6 +59,7 @@ import dbe.dbe;
 import dix.resource;
 import dix.gc;
 import externs.X11.extensions.dbe_;
+import dix.screen_hooks;
 /******************************************************************************
  *
  * DBE MI Procedure: miDbeGetVisualInfo

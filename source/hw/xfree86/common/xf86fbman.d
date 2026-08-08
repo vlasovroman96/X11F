@@ -49,6 +49,7 @@ import hw.xfree86.modes.xf86Crtc;
 import include.xf86cmap;
 import dix.resource;
 import dix.dixutils;
+import dix.screen_hooks;
 
 struct _FBManagerFuncs {
     FBAreaPtr function(ScreenPtr pScreen, int w, int h, int granularity, MoveAreaCallbackProcPtr moveCB, RemoveAreaCallbackProcPtr removeCB, void* privData) @nogc nothrow AllocateOffscreenArea;

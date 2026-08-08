@@ -55,7 +55,7 @@ alias XorgScreenWindowDestroyProcPtr = void function(CallbackListPtr* pcbl, Scre
  * When registration fails, the server aborts.
  *
  **/
-void dixScreenHookWindowDestroy(ScreenPtr pScreen, XorgScreenWindowDestroyProcPtr func);
+// void dixScreenHookWindowDestroy(ScreenPtr pScreen, XorgScreenWindowDestroyProcPtr func);
 
 /**
  * @brief unregister a window destructor on the given screen
@@ -68,7 +68,7 @@ void dixScreenHookWindowDestroy(ScreenPtr pScreen, XorgScreenWindowDestroyProcPt
  *
  * Unregister a window destructor hook registered via @ref dixScreenHookWindowDestroy
  **/
-void dixScreenUnhookWindowDestroy(ScreenPtr pScreen, XorgScreenWindowDestroyProcPtr func);
+// void dixScreenUnhookWindowDestroy(ScreenPtr pScreen, XorgScreenWindowDestroyProcPtr func);
 
 struct XorgScreenWindowPositionParamRec {
     WindowPtr window;
@@ -89,7 +89,7 @@ alias XorgScreenWindowPositionProcPtr = void function(CallbackListPtr* pcbl, Scr
  * When registration fails, the server aborts.
  *
  **/
-void dixScreenHookWindowPosition(ScreenPtr pScreen, XorgScreenWindowPositionProcPtr func);
+// void dixScreenHookWindowPosition(ScreenPtr pScreen, XorgScreenWindowPositionProcPtr func);
 
 /**
  * @brief unregister a window position notify hook on the given screen
@@ -102,7 +102,7 @@ void dixScreenHookWindowPosition(ScreenPtr pScreen, XorgScreenWindowPositionProc
  *
  * Unregister a window position notify hook registered via @ref dixScreenHookWindowPosition
  **/
-void dixScreenUnhookWindowPosition(ScreenPtr pScreen, XorgScreenWindowPositionProcPtr func);
+// void dixScreenUnhookWindowPosition(ScreenPtr pScreen, XorgScreenWindowPositionProcPtr func);
 
 /* prototype of screen close notification handler */
 alias XorgScreenCloseProcPtr = void function(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused);
@@ -117,7 +117,7 @@ alias XorgScreenCloseProcPtr = void function(CallbackListPtr* pcbl, ScreenPtr pS
  *
  * NOTE: only exported for libglamoregl, not supposed to be used by drivers.
  **/
-export void dixScreenHookClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
+// export void dixScreenHookClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
 
 /**
  * @brief unregister a screen close notify hook on the given screen
@@ -132,7 +132,7 @@ export void dixScreenHookClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
  *
  * NOTE: only exported for libglamoregl, not supposed to be used by drivers.
  **/
-export void dixScreenUnhookClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
+// export void dixScreenUnhookClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
 
 /**
  * @brief register a screen post close notify hook on the given screen
@@ -147,7 +147,7 @@ export void dixScreenUnhookClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func)
  *
  * NOTE: only exported for libglamoregl, not supposed to be used by drivers.
  **/
-export void dixScreenHookPostClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
+// export void dixScreenHookPostClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
 
 /**
  * @brief unregister a screen close notify hook on the given screen
@@ -165,7 +165,7 @@ export void dixScreenHookPostClose(ScreenPtr pScreen, XorgScreenCloseProcPtr fun
  *
  * NOTE: only exported for libglamoregl, not supposed to be used by drivers.
  **/
-export void dixScreenUnhookPostClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
+// export void dixScreenUnhookPostClose(ScreenPtr pScreen, XorgScreenCloseProcPtr func);
 
 /* prototype of pixmap destroy notification handler */
 alias XorgScreenPixmapDestroyProcPtr = void function(CallbackListPtr* pcbl, ScreenPtr pScreen, PixmapPtr pPixmap);
@@ -183,7 +183,7 @@ alias XorgScreenPixmapDestroyProcPtr = void function(CallbackListPtr* pcbl, Scre
  *
  * NOTE: only exported for libglamoregl, not supposed to be used by drivers.
  **/
-export void dixScreenHookPixmapDestroy(ScreenPtr pScreen, XorgScreenPixmapDestroyProcPtr func);
+// export void dixScreenHookPixmapDestroy(ScreenPtr pScreen, XorgScreenPixmapDestroyProcPtr func);
 
 /**
  * @brief unregister a pixmap destroy notify hook on the given screen
@@ -198,7 +198,7 @@ export void dixScreenHookPixmapDestroy(ScreenPtr pScreen, XorgScreenPixmapDestro
  *
  * NOTE: only exported for libglamoregl, not supposed to be used by drivers.
  **/
-export void dixScreenUnhookPixmapDestroy(ScreenPtr pScreen, XorgScreenPixmapDestroyProcPtr func);
+// export void dixScreenUnhookPixmapDestroy(ScreenPtr pScreen, XorgScreenPixmapDestroyProcPtr func);
 
 /* prototype of screen close notification handler */
 alias XorgScreenPostCreateResourcesProcPtr = void function(CallbackListPtr* pcbl, ScreenPtr pScreen, Bool* ret);
@@ -213,7 +213,7 @@ alias XorgScreenPostCreateResourcesProcPtr = void function(CallbackListPtr* pcbl
  * This hook is called when CreateScreenResources() had been called
  * and returned TRUE.
  **/
-export void dixScreenHookPostCreateResources(ScreenPtr pScreen, XorgScreenPostCreateResourcesProcPtr func);
+// export void dixScreenHookPostCreateResources(ScreenPtr pScreen, XorgScreenPostCreateResourcesProcPtr func);
 
 /**
  * @brief unregister a post-CreateScreenResources hook on the given screen
@@ -224,6 +224,6 @@ export void dixScreenHookPostCreateResources(ScreenPtr pScreen, XorgScreenPostCr
  *
  * @see dixScreenHookPostCreateResources
  **/
-export void dixScreenUnhookPostCreateResources(ScreenPtr pScreen, XorgScreenPostCreateResourcesProcPtr func);
+// export void dixScreenUnhookPostCreateResources(ScreenPtr pScreen, XorgScreenPostCreateResourcesProcPtr func);
 
  /* DIX_SCREEN_HOOKS_H */

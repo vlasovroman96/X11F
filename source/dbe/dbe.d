@@ -59,6 +59,7 @@ import externs.X11.extensions.dbeproto;
 import dix.dixutils;
 import dix.gc;
 import dix.extension;
+import dix.screen_hooks;
 
 /* GLOBALS */
 Bool noDbeExtension = FALSE;

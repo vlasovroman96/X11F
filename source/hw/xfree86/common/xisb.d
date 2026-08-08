@@ -41,13 +41,40 @@ import include.xf86_OSlib;
 import include.xf86Xinput;
 // import hw.xfree86.common.xisb;
 import include.xisb;
+import hw.xfree86.common.xf86sbusBus_priv;;
+import hw.xfree86.os_support.bus.xf86Sbus_priv;
+import include.xf86sbusBus;
+import externs.linux.fbio;
+import xf86platformBus_priv;
+import xf86Globals;
+import xf86Xinput;
+import os.log;
+import xf86pciBus;
+import xf86Option;
+import drm_platform;
+import core.stdc.string;
+import externs.gnu;
+import Flags;
+import hw.xfree86.common.xf86Helper;
+import dix.events;
+import include.optionstr;
+import Sbus.c;
+import os.log_priv;
+import dix.screen_hooks;
+import Xext.xvmain;
+import externs.X11.extensions.Xv;
+import dix.screen_hooks;
+import dix.resource;
+import Xext.xvmc;
+import posix_tty;
+
 
 XISBuffer* XisbNew(int fd, ssize_t size)
 {
     XISBuffer* b = cast(XISBuffer*) cast(XISBuffer*) calloc(1, XISBuffer.sizeof);
     if (!b)
         return null;
-    b.buf = calloc(ubyte.sizeof, size);
+    b.buf = cast(ubyte*)calloc(ubyte.sizeof, size);
     if (!b.buf) {
         free(b);
         return null;
@@ -86,7 +113,7 @@ int XisbRead(XISBuffer* b)
             b.block_duration = 0;
         }
 
-        ret = xf86ReadSerial(b.fd, b.buf, b.buffer_size);
+        ret = xf86ReadSerial(b.fd, b.buf, cast(int)b.buffer_size);
         switch (ret) {
         case 0:
             return -1;          /* timeout */

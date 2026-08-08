@@ -54,6 +54,8 @@ import glamor.glamor_utils;;
 import include.picturestr;
 import render.picture;
 import glamor.glamor;
+import dix.screen_hooks;
+
 
 
 DevPrivateKeyRec glamor_screen_private_key;

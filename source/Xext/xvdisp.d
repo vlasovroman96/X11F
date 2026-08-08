@@ -62,6 +62,9 @@ import dix.dixutils;
 import dix.gc;
 import include.misc;
 import os.log;
+import Xext.xvmain;
+import dix.screen_hooks;
+
 
 version (XINERAMA) {
 c_ulong XvXRTPort;

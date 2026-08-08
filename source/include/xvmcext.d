@@ -87,8 +87,8 @@ struct _XvMCAdaptorRec {
 }alias XvMCAdaptorRec = _XvMCAdaptorRec;
 alias XvMCAdaptorPtr = XvMCAdaptorRec*;
 
-extern void  XvMCScreenInit(ScreenPtr pScreen, int num, XvMCAdaptorPtr adapt);
+// extern void  XvMCScreenInit(ScreenPtr pScreen, int num, XvMCAdaptorPtr adapt);
 
-extern void  xf86XvMCRegisterDRInfo(ScreenPtr pScreen, const(char)* name, const(char)* busID, int major, int minor, int patchLevel);
+// extern void  xf86XvMCRegisterDRInfo(ScreenPtr pScreen, const(char)* name, const(char)* busID, int major, int minor, int patchLevel);
 
                           /* _XVMC_H */

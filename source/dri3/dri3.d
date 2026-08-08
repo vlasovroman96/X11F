@@ -37,6 +37,8 @@ import os.log;
 import externs.X11.extensions.dri3proto;
 // import externs.drm_fourcc;
 import externs.libdrm;
+import dix.screen_hooks;
+
 
 
 private int dri3_request;

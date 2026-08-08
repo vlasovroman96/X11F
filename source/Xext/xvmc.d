@@ -30,6 +30,9 @@ import externs.X11.extensions.XvMCproto;
 import dix.dixutils;
 import externs.X11.extensions.XvMC;
 import dix.extension;
+import dix.screen_hooks;
+import Xext.xvmain;
+
 
 enum SERVER_XVMC_MAJOR_VERSION =               1;
 enum SERVER_XVMC_MINOR_VERSION =               1;

@@ -87,6 +87,7 @@ import dix.colormap;
 import os.utils;
 import dix.devices;
 import dix.extension;
+import dix.screen_hooks;
 
 DevPrivateKeyRec DGAScreenKeyRec;
 

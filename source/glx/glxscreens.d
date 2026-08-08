@@ -53,6 +53,7 @@ import include.compositeext;
 import glx.glxscreens_h;
  import externs.epoxy;
  import dix.resource;
+import dix.screen_hooks;
 
 
 private DevPrivateKeyRec glxScreenPrivateKeyRec;

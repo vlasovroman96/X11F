@@ -45,6 +45,32 @@ import include.dixstruct;
 
 import hw.xfree86.common.xf86xvpriv;
 import include.xf86xvmc;
+import hw.xfree86.common.xf86sbusBus_priv;;
+import hw.xfree86.os_support.bus.xf86Sbus_priv;
+import include.xf86sbusBus;
+import externs.linux.fbio;
+import xf86platformBus_priv;
+import xf86Globals;
+import xf86Xinput;
+import os.log;
+import xf86pciBus;
+import xf86Option;
+import drm_platform;
+import core.stdc.string;
+import externs.gnu;
+import Flags;
+import hw.xfree86.common.xf86Helper;
+import dix.events;
+import include.optionstr;
+import Sbus.c;
+import os.log_priv;
+import dix.screen_hooks;
+import Xext.xvmain;
+import externs.X11.extensions.Xv;
+import dix.screen_hooks;
+import dix.resource;
+import Xext.xvmc;
+
 
 struct _Xf86XvMCScreenRec {
     int num_adaptors;
@@ -126,7 +152,7 @@ private void xf86XvMCDestroySubpicture(XvMCSubpicturePtr pSubpicture)
 
 private void xf86XvMCCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    dixScreenUnhookClose(pScreen, xf86XvMCCloseScreen);
+    dixScreenUnhookClose(pScreen, &xf86XvMCCloseScreen);
 
     xf86XvMCScreenPtr pScreenPriv = mixin(XF86XVMC_GET_PRIVATE!(`pScreen`));
     if (!pScreenPriv)
@@ -141,13 +167,13 @@ Bool xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* a
 {
     XvMCAdaptorPtr pAdapt = void;
     xf86XvMCScreenPtr pScreenPriv = void;
-    XvScreenPtr pxvs = dixLookupPrivate(&pScreen.devPrivates, XvGetScreenKey());
+    XvScreenPtr pxvs = cast(XvScreenPtr)dixLookupPrivate(&pScreen.devPrivates, XvGetScreenKey());
     int i = void, j = void;
 
     if (noXvExtension)
         return FALSE;
 
-    if (((pAdapt = calloc(num_adaptors, XvMCAdaptorRec.sizeof)) == 0))
+    if (((pAdapt = cast(XvMCAdaptorRec*)calloc(num_adaptors, XvMCAdaptorRec.sizeof)) is null))
         return FALSE;
 
     if (!dixRegisterPrivateKey(&XF86XvMCScreenKeyRec, PRIVATE_SCREEN, 0)) {
@@ -177,7 +203,7 @@ Bool xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* a
         }
         if (!pAdapt[i].xv_adaptor) {
             /* no adaptor by that name */
-            pScreenPriv.dixinfo = FALSE;
+            pScreenPriv.dixinfo = null;
             free(pAdapt);
             return FALSE;
         }
@@ -185,12 +211,12 @@ Bool xf86XvMCScreenInit(ScreenPtr pScreen, int num_adaptors, XF86MCAdaptorPtr* a
         pAdapt[i].surfaces = cast(XvMCSurfaceInfoPtr*) ((*adaptors).surfaces);
         pAdapt[i].num_subpictures = (*adaptors).num_subpictures;
         pAdapt[i].subpictures = cast(XvImagePtr*) ((*adaptors).subpictures);
-        pAdapt[i].CreateContext = xf86XvMCCreateContext;
-        pAdapt[i].DestroyContext = xf86XvMCDestroyContext;
-        pAdapt[i].CreateSurface = xf86XvMCCreateSurface;
-        pAdapt[i].DestroySurface = xf86XvMCDestroySurface;
-        pAdapt[i].CreateSubpicture = xf86XvMCCreateSubpicture;
-        pAdapt[i].DestroySubpicture = xf86XvMCDestroySubpicture;
+        pAdapt[i].CreateContext = &xf86XvMCCreateContext;
+        pAdapt[i].DestroyContext = &xf86XvMCDestroyContext;
+        pAdapt[i].CreateSurface = &xf86XvMCCreateSurface;
+        pAdapt[i].DestroySurface = &xf86XvMCDestroySurface;
+        pAdapt[i].CreateSubpicture = &xf86XvMCCreateSubpicture;
+        pAdapt[i].DestroySubpicture = &xf86XvMCDestroySubpicture;
         adaptors++;
     }
 

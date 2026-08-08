@@ -40,9 +40,9 @@ struct _XF86XVScreenRec {
     ClipNotifyProcPtr ClipNotify;
     WindowExposuresProcPtr WindowExposures;
     PostValidateTreeProcPtr PostValidateTree;
-    void function(ScrnInfoPtr, int, int) AdjustFrame;
-    Bool function(ScrnInfoPtr) EnterVT;
-    void function(ScrnInfoPtr) LeaveVT;
+    void function(ScrnInfoPtr, int, int) @nogc nothrow AdjustFrame;
+    Bool function(ScrnInfoPtr) @nogc nothrow EnterVT;
+    void function(ScrnInfoPtr) @nogc nothrow LeaveVT;
     xf86ModeSetProc* ModeSet;
 }alias XF86XVScreenRec = _XF86XVScreenRec;
 alias XF86XVScreenPtr = XF86XVScreenRec*;

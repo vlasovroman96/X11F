@@ -77,6 +77,7 @@ import glamor.glamor_glx_provider;
 import dri3.dri3;
 import hw.kdrive.ephyr.ephyr_glamor;
 import externs.epoxy;
+import dix.screen_hooks;
 
 /**
  * EGLDeviceEXT's are internally stored as a globals.

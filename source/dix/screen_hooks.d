@@ -39,6 +39,11 @@ mixin(DECLARE_HOOK_PROC!(`PostClose`, `hookPostClose`, `XorgScreenCloseProcPtr`)
 mixin(DECLARE_HOOK_PROC!(`PixmapDestroy`, `hookPixmapDestroy`, `XorgScreenPixmapDestroyProcPtr`));
 mixin(DECLARE_HOOK_PROC!(`PostCreateResources`, `hookPostCreateResources`,
                   `XorgScreenPostCreateResourcesProcPtr`));
+                  pragma(msg, DECLARE_HOOK_PROC!(
+    `Close`,
+    `hookClose`,
+    `XorgScreenCloseProcPtr`
+));
 // mixin(DECLARE_HOOK_PROC!(``, `hookPostCreateResources`,
 // `XorgScreenPostCreateResourcesProcPtr`));
 

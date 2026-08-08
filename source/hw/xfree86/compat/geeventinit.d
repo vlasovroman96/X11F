@@ -26,6 +26,6 @@ void GEInitEvent(xGenericEvent* ev, int extension)
     xf86NVidiaBugObsoleteFunc("GEInitEvent()");
 
     ev.type = GenericEvent;
-    ev.extension = extension;
+    ev.extension = cast(ubyte)extension;
     ev.length = 0;
 }

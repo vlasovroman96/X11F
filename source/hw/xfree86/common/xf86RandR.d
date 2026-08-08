@@ -45,6 +45,7 @@ import xf86Cursor;
 import dix.events;
 import randr.rrinfo;
 import randr.randr;
+import dix.screen_hooks;
 
 struct _xf86RandRInfo {
     int virtualX;
