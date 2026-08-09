@@ -36,9 +36,9 @@ extern void  xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool);
 
 extern void  xf86PrintEDID(xf86MonPtr monPtr);
 
-extern void  xf86InterpretEDID(int screenIndex, ubyte* block);
+// extern void  xf86InterpretEDID(int screenIndex, ubyte* block);
 
-extern void  xf86InterpretEEDID(int screenIndex, ubyte* block);
+// extern void  xf86InterpretEEDID(int screenIndex, ubyte* block);
 
 extern void  xf86SetDDCproperties(ScrnInfoPtr pScreen, xf86MonPtr DDC);
 

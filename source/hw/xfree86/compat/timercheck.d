@@ -8,6 +8,7 @@ import build.dix_config;
 import os.osdep;
 
 import xf86_compat;
+import os.utils;
 
 /*
  * needed for NVidia proprietary driver 340.x versions

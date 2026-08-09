@@ -90,12 +90,12 @@ enum string GET_ARRAY(string y) = `(cast(ubyte*)(c + ` ~ y ~ `))`;
 enum string GET(string y) = `*cast(ubyte*)(c + ` ~ y ~ `)`;
 
 /* extract information from vendor section */
-enum string _PROD_ID(string x) = `` ~ x ~ `[0] + (` ~ x ~ `[1] << 8);`;
+enum string _PROD_ID(string x) = `` ~ x ~ `[0] + (` ~ x ~ `[1] << 8)`;
 enum string _SERIAL_NO(string x) = `` ~ x ~ `[0] + (` ~ x ~ `[1] << 8) + (` ~ x ~ `[2] << 16) + (` ~ x ~ `[3] << 24)`;
 enum string _YEAR(string x) = `(` ~ x ~ ` & 0xFF) + 1990`;
-enum string _L1(string x) = `((` ~ x ~ `[0] & 0x7C) >> 2) + '@'`;
-enum string _L2(string x) = `((` ~ x ~ `[0] & 0x03) << 3) + ((` ~ x ~ `[1] & 0xE0) >> 5) + '@'`;
-enum string _L3(string x) = `(` ~ x ~ `[1] & 0x1F) + '@';`;
+enum string _L1(string x) = `((` ~ x ~ `[0] & 0x7C) >> 2) + cast(char)'@'`;
+enum string _L2(string x) = `((` ~ x ~ `[0] & 0x03) << 3) + ((` ~ x ~ `[1] & 0xE0) >> 5) + cast(char)'@'`;
+enum string _L3(string x) = `(` ~ x ~ `[1] & 0x1F) + cast(char)'@'`;
 
 /* extract information from display section */
 enum string _INPUT_TYPE(string x) = `((` ~ x ~ ` & 0x80) >> 7)`;
@@ -136,14 +136,13 @@ enum string _VSIZE1(string x,string y,string r) = `switch(` ~ RATIO!(x) ~ `){
   case RATIO16_9: ` ~ y ~ ` = ` ~ _HSIZE1!(x) ~ ` * 9 / 16; break; 
   default: break;}`;
 enum string _REFRESH_R(string x) = `(` ~ x ~ `[1] & 0x3F) + 60`;
-enum _ID_LOW(string x) =  x ~ `[0]`;
+enum _ID_LOW(string x) =  `(`~x ~ `[0])`;
 enum ID_LOW = _ID_LOW!"c";
 enum string _ID_HIGH(string x) = `(` ~ x ~ `[1] << 8)`;
 enum ID_HIGH = _ID_HIGH!("c");
-@property auto STD_TIMING_ID() {
-   return (ID_LOW | ID_HIGH);
-}
-enum string _NEXT_STD_TIMING(string x) = `(` ~ x ~ ` = (` ~ x ~ ` + STD_TIMING_INFO_LEN))`;
+enum STD_TIMING_ID =`
+   (`~ID_LOW~` | `~ID_HIGH~`)`;
+enum string _NEXT_STD_TIMING(string x) = `(` ~ x ~ ` = (` ~ x ~ ` + STD_TIMING_INFO_LEN));`;
 
 /* EDID Ver. >= 1.2 */
 /**
@@ -199,24 +198,24 @@ enum string _MIN_V_OFFSET(string x) = `((!!(` ~ x ~ `[4] & 0x01)) * 255)`;
 enum string _MAX_V_OFFSET(string x) = `((!!(` ~ x ~ `[4] & 0x02)) * 255)`;
 enum string _MIN_H_OFFSET(string x) = `((!!(` ~ x ~ `[4] & 0x04)) * 255)`;
 enum string _MAX_H_OFFSET(string x) = `((!!(` ~ x ~ `[4] & 0x08)) * 255)`;
-enum string _MIN_V(string x) = `` ~ x ~ `[5]`;
-@property auto MIN_V() => (_MIN_V!("c") + _MIN_V_OFFSET!("c"));
+enum string _MIN_V(string x) = `(` ~ x ~ `[5])`;
+enum string MIN_V =`(`~_MIN_V!("c")~` + `~_MIN_V_OFFSET!("c")~`)`;
 enum string _MAX_V(string x) = `` ~ x ~ `[6]`;
-@property auto  MAX_V() => (_MAX_V!("c") + _MAX_V_OFFSET!("c"));
+enum string  MAX_V = `(`~_MAX_V!("c")~` + `~_MAX_V_OFFSET!("c")~`)`;
 enum string _MIN_H(string x) = `` ~ x ~ `[7]`;
-@property auto   MIN_H() => (_MIN_H!("c") + _MIN_H_OFFSET!("c"));
+enum string   MIN_H = `(`~_MIN_H!("c")~` + `~_MIN_H_OFFSET!("c")~`)`;
 enum string _MAX_H(string x) = `` ~ x ~ `[8]`;
-@property auto   MAX_H() => (_MAX_H!("c") + _MAX_H_OFFSET!("c"));
+enum string   MAX_H = `(`~_MAX_H!("c")~` + `~_MAX_H_OFFSET!("c")~`)`;
 enum string _MAX_CLOCK(string x) = `` ~ x ~ `[9]`;
-@property auto MAX_CLOCK = _MAX_CLOCK!("c");
+enum string MAX_CLOCK = _MAX_CLOCK!("c");
 enum string _HAVE_2ND_GTF(string x) = `(` ~ x ~ `[10] == 0x02)`;
-@property auto HAVE_2ND_GTF = _HAVE_2ND_GTF!("c");
+enum string HAVE_2ND_GTF = _HAVE_2ND_GTF!("c");
 enum string _F_2ND_GTF(string x) = `(` ~ x ~ `[12] * 2)`;
-@property auto F_2ND_GTF = _F_2ND_GTF!("c");
+enum string F_2ND_GTF = _F_2ND_GTF!("c");
 enum string _C_2ND_GTF(string x) = `(` ~ x ~ `[13] / 2)`;
-@property auto C_2ND_GTF = _C_2ND_GTF!("c");
+enum string C_2ND_GTF = _C_2ND_GTF!("c");
 enum string _M_2ND_GTF(string x) = `(` ~ x ~ `[14] + (` ~ x ~ `[15] << 8))`;
-@property auto M_2ND_GTF = _M_2ND_GTF!("c");
+enum string M_2ND_GTF = _M_2ND_GTF!("c");
 enum string _K_2ND_GTF(string x) = `(` ~ x ~ `[16])`;
 enum K_2ND_GTF = _K_2ND_GTF!("c");
 enum string _J_2ND_GTF(string x) = `(` ~ x ~ `[17] / 2)`;
@@ -224,7 +223,7 @@ enum J_2ND_GTF = _J_2ND_GTF!("c");
 enum string _HAVE_CVT(string x) = `(` ~ x ~ `[10] == 0x04)`;
 enum HAVE_CVT = _HAVE_CVT!("c");
 enum string _MAX_CLOCK_KHZ(string x) = `(` ~ x ~ `[12] >> 2)`;
-@property auto MAX_CLOCK_KHZ() => (mixin(MAX_CLOCK) * 10000) - (mixin(_MAX_CLOCK_KHZ!("c")) * 250);
+enum string MAX_CLOCK_KHZ = `((`~MAX_CLOCK~`) * 10000) - ((`~_MAX_CLOCK_KHZ!("c")~`) * 250)`;
 enum string _MAXWIDTH(string x) = `((` ~ x ~ `[13] == 0 ? 0 : ` ~ x ~ `[13] + ((` ~ x ~ `[12] & 0x03) << 8)) * 8)`;
 enum MAXWIDTH = _MAXWIDTH!("c");
 enum string _SUPPORTED_ASPECT(string x) = `` ~ x ~ `[14]`;
@@ -235,7 +234,7 @@ enum  SUPPORTED_ASPECT_16_10 = 0x20;
 enum  SUPPORTED_ASPECT_5_4 =   0x10;
 enum  SUPPORTED_ASPECT_15_9 =  0x08;
 enum string _PREFERRED_ASPECT(string x) = `((` ~ x ~ `[15] & 0xe0) >> 5)`;
-@property auto PREFERRED_ASPECT = _PREFERRED_ASPECT!("c");
+enum string PREFERRED_ASPECT = _PREFERRED_ASPECT!("c");
 enum  PREFERRED_ASPECT_4_3 =   0;
 enum  PREFERRED_ASPECT_16_9 =  1;
 enum  PREFERRED_ASPECT_16_10 = 2;
@@ -256,8 +255,8 @@ enum PREFERRED_REFRESH = _PREFERRED_REFRESH!("c");
 
 enum MONITOR_NAME = 0xFC;
 enum ADD_COLOR_POINT = 0xFB;
-@property auto WHITEX() => F_CC(I_CC((GET!(D_BW_LOW)),(GET!(D_WHITEX)),2));
-@property auto WHITEY() => F_CC(I_CC((GET!(D_BW_LOW)),(GET!(D_WHITEY)),0));
+enum string WHITEX() = F_CC!(I_CC!((GET!(D_BW_LOW)),(GET!(D_WHITEX)),`2`));
+enum string WHITEY() = F_CC!(I_CC!((GET!(D_BW_LOW)),(GET!(D_WHITEY)),`0`));
 enum string _WHITEX_ADD(string x,string y) = `` ~ F_CC!(I_CC!(`((*(` ~ x ~ ` + ` ~ y ~ `)))`,`(*(` ~ x ~ ` + ` ~ y ~ ` + 1))`,`2`)) ~ ``;
 enum string _WHITEY_ADD(string x,string y) = `` ~ F_CC!(I_CC!(`((*(` ~ x ~ ` + ` ~ y ~ `)))`,`(*(` ~ x ~ ` + ` ~ y ~ ` + 2))`,`0`)) ~ ``;
 enum string _WHITE_INDEX1(string x) = `` ~ x ~ `[5]`;
@@ -268,9 +267,9 @@ enum WHITEX1 = _WHITEX_ADD!("c","6");
 enum WHITEY1 = _WHITEY_ADD!("c","6");
 enum WHITEX2 = _WHITEX_ADD!("c","12");
 enum WHITEY2 = _WHITEY_ADD!("c","12");
-enum string _WHITE_GAMMA1(string x) = `_GAMMA(` ~ x ~ `[9])`;
+enum string _WHITE_GAMMA1(string x) = _GAMMA!(x ~ `[9]`);
 enum WHITE_GAMMA1 = _WHITE_GAMMA1!("c");
-enum string _WHITE_GAMMA2(string x) = `_GAMMA(` ~ x ~ `[14])`;
+enum string _WHITE_GAMMA2(string x) = _GAMMA!(x ~ `[14]`);
 enum WHITE_GAMMA2 = _WHITE_GAMMA2!("c");
 enum ADD_STD_TIMINGS = 0xFA;
 enum COLOR_MANAGEMENT_DATA = 0xF9;

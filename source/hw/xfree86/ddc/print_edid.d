@@ -33,6 +33,8 @@ import include.xf86;
 import include.xf86_OSproc;;
 import xf86DDC_priv;
 import edid_priv;
+import hw.xfree86.common.xf86Helper;
+
 
 /* display type, analog */
 enum DISP_MONO = 0;
@@ -95,7 +97,7 @@ private const(char)*[7] digital_interfaces = [
 
 private void print_input_features(int scrnIndex, disp_features* c, edid_version* v)
 {
-    if (DIGITAL(c.input_type)) {
+    if (mixin(DIGITAL!("c.input_type"))) {
         xf86DrvMsg(scrnIndex, X_INFO, "Digital Display Input\n");
         if (v.revision == 2 || v.revision == 3) {
             if (c.input_dfp)
@@ -187,15 +189,15 @@ private void print_dpms_features(int scrnIndex, disp_features* c, edid_version* 
         xf86ErrorF("\n");
         xf86DrvMsg(scrnIndex, X_INFO, "Supported color encodings: "
                    ~ "RGB 4:4:4 %s%s\n",
-                   enc & DISP_YCRCB444 ? "YCrCb 4:4:4 " : "",
-                   enc & DISP_YCRCB422 ? "YCrCb 4:2:2" : "");
+                   enc & DISP_YCRCB444 ? "YCrCb 4:4:4 ".ptr : "",
+                   enc & DISP_YCRCB422 ? "YCrCb 4:2:2".ptr : "");
     }
 
     if (mixin(STD_COLOR_SPACE!(`c.msc`)))
         xf86DrvMsg(scrnIndex, X_INFO,
                    "Default color space is primary color space\n");
 
-    if (PREFERRED_TIMING_MODE(c.msc) || v.revision >= 4) {
+    if (mixin(PREFERRED_TIMING_MODE!("c.msc")) || v.revision >= 4) {
         xf86DrvMsg(scrnIndex, X_INFO,
                    "First detailed timing is preferred mode\n");
         if (v.revision >= 4)
@@ -331,11 +333,11 @@ private void print_cvt_timings(int si, cvt_timings* t)
         if (t[i].height) {
             xf86DrvMsg(si, X_INFO, "%dx%d @ %s%s%s%s%s Hz\n",
                        t[i].width, t[i].height,
-                       t[i].rates & 0x10 ? "50," : "",
-                       t[i].rates & 0x08 ? "60," : "",
-                       t[i].rates & 0x04 ? "75," : "",
-                       t[i].rates & 0x02 ? "85," : "",
-                       t[i].rates & 0x01 ? "60RB" : "");
+                       t[i].rates & 0x10 ? "50,".ptr : "".ptr,
+                       t[i].rates & 0x08 ? "60,".ptr : "".ptr,
+                       t[i].rates & 0x04 ? "75,".ptr : "".ptr,
+                       t[i].rates & 0x02 ? "85,".ptr : "".ptr,
+                       t[i].rates & 0x01 ? "60RB".ptr : "".ptr);
         }
         else
             break;
@@ -411,14 +413,14 @@ private void handle_detailed_print(detailed_monitor_section* det_mon, void* data
         break;
     case DS_SERIAL:
         xf86DrvMsg(scrnIndex, X_INFO, "Serial No: %s\n",
-                   det_mon.section.serial);
+                   det_mon.section.serial.ptr);
         break;
     case DS_ASCII_STR:
-        xf86DrvMsg(scrnIndex, X_INFO, " %s\n", det_mon.section.ascii_data);
+        xf86DrvMsg(scrnIndex, X_INFO, " %s\n", det_mon.section.ascii_data.ptr);
         break;
     case DS_NAME:
         xf86DrvMsg(scrnIndex, X_INFO, "Monitor name: %s\n",
-                   det_mon.section.name);
+                   det_mon.section.name.ptr);
         break;
     case DS_RANGES:
     {
@@ -436,23 +438,23 @@ private void handle_detailed_print(detailed_monitor_section* det_mon, void* data
             if (r.supported_aspect & SUPPORTED_ASPECT_4_3)
                 xf86ErrorF(" 4:3%s",
                            r.preferred_aspect ==
-                           PREFERRED_ASPECT_4_3 ? "*" : "");
+                           PREFERRED_ASPECT_4_3 ? "*".ptr : "".ptr);
             if (r.supported_aspect & SUPPORTED_ASPECT_16_9)
                 xf86ErrorF(" 16:9%s",
                            r.preferred_aspect ==
-                           PREFERRED_ASPECT_16_9 ? "*" : "");
+                           PREFERRED_ASPECT_16_9 ? "*".ptr : "".ptr);
             if (r.supported_aspect & SUPPORTED_ASPECT_16_10)
                 xf86ErrorF(" 16:10%s",
                            r.preferred_aspect ==
-                           PREFERRED_ASPECT_16_10 ? "*" : "");
+                           PREFERRED_ASPECT_16_10 ? "*".ptr : "".ptr);
             if (r.supported_aspect & SUPPORTED_ASPECT_5_4)
                 xf86ErrorF(" 5:4%s",
                            r.preferred_aspect ==
-                           PREFERRED_ASPECT_5_4 ? "*" : "");
+                           PREFERRED_ASPECT_5_4 ? "*".ptr : "".ptr);
             if (r.supported_aspect & SUPPORTED_ASPECT_15_9)
                 xf86ErrorF(" 15:9%s",
                            r.preferred_aspect ==
-                           PREFERRED_ASPECT_15_9 ? "*" : "");
+                           PREFERRED_ASPECT_15_9 ? "*".ptr : "".ptr);
             xf86ErrorF("\n");
             xf86DrvMsg(scrnIndex, X_INFO, "Supported blankings:");
             if (r.supported_blanking & CVT_STANDARD)
@@ -513,7 +515,7 @@ private void handle_detailed_print(detailed_monitor_section* det_mon, void* data
         break;
     case DS_CVT:
         xf86DrvMsg(scrnIndex, X_INFO, "CVT 3-byte-code modes:\n");
-        print_cvt_timings(scrnIndex, det_mon.section.cvt);
+        print_cvt_timings(scrnIndex, det_mon.section.cvt.ptr);
         break;
     case DS_EST_III:
         xf86DrvMsg(scrnIndex, X_INFO,
@@ -548,11 +550,11 @@ xf86MonPtr xf86PrintEDID(xf86MonPtr m)
     if (!m)
         return null;
 
-    print_vendor(m.scrnIndex, &m.vendor);
+    print_vendor(m.scrnIndex, &m.vendor_);
     print_version(m.scrnIndex, &m.ver);
     print_display(m.scrnIndex, &m.features, &m.ver);
     print_established_timings(m.scrnIndex, &m.timings1);
-    print_std_timings(m.scrnIndex, m.timings2);
+    print_std_timings(m.scrnIndex, m.timings2.ptr);
     p.m = m;
     p.index = 0;
     p.quirks = xf86DDCDetectQuirks(m.scrnIndex, m, FALSE);

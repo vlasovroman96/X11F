@@ -22,6 +22,13 @@ import include.xf86;
 import include.xf86_OSproc;;
 import core.stdc.string;
 import edid_priv;
+import hw.xfree86.common.xf86Helper;
+import xf86Option;
+import interpret_edid;
+import hw.xfree86.i2c.xf86i2c;
+import dix.events;
+import include.optionstr;
+
 
 enum RETRIES = 4;
 
@@ -186,7 +193,7 @@ private ubyte* GetEDID_DDC1(uint* s_ptr)
 }
 
 /* fetch entire EDID record; DDC bit needs to be masked */
-private uint* FetchEDID_DDC1(ScrnInfoPtr pScrn, uint function(ScrnInfoPtr) read_DDC)
+private uint* FetchEDID_DDC1(ScrnInfoPtr pScrn, uint function(ScrnInfoPtr) @nogc nothrow read_DDC)
 {
     int count = NUM;
     uint* ptr = void, xp = void;
@@ -204,7 +211,7 @@ private uint* FetchEDID_DDC1(ScrnInfoPtr pScrn, uint function(ScrnInfoPtr) read_
 }
 
 /* test if DDC1  return 0 if not */
-private Bool TestDDC1(ScrnInfoPtr pScrn, uint function(ScrnInfoPtr) read_DDC)
+private Bool TestDDC1(ScrnInfoPtr pScrn, uint function(ScrnInfoPtr) @nogc nothrow read_DDC)
 {
     int old = void, count = void;
 
@@ -223,7 +230,7 @@ private Bool TestDDC1(ScrnInfoPtr pScrn, uint function(ScrnInfoPtr) read_DDC)
  * callback function will store it for further use by calling
  * function; it will also decide if we need to reread it
  */
-private ubyte* EDIDRead_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDCSpeed, uint function(ScrnInfoPtr) read_DDC)
+private ubyte* EDIDRead_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDCSpeed, uint function(ScrnInfoPtr) @nogc nothrow read_DDC)
 {
     ubyte* EDID_block = null;
     int count = RETRIES;
@@ -262,7 +269,7 @@ private ubyte* EDIDRead_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDCSpeed, uint 
  * @return pointer to a new xf86MonPtr containing the EDID information.
  * @return NULL if no monitor attached or failure to interpret the EDID.
  */
-xf86MonPtr xf86DoEDID_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDC1SetSpeed, uint function(ScrnInfoPtr) DDC1Read)
+xf86MonPtr xf86DoEDID_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDC1SetSpeed, uint function(ScrnInfoPtr) @nogc nothrow DDC1Read)
 {
     ubyte* EDID_block = null;
     xf86MonPtr tmp = null;
@@ -271,9 +278,9 @@ xf86MonPtr xf86DoEDID_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDC1SetSpeed, uin
     Bool noddc = FALSE, noddc1 = FALSE;
     OptionInfoPtr options = void;
 
-    options = XNFalloc(DDCOptions.sizeof);
+    options = cast(_OptionInfoRec*)XNFalloc(DDCOptions.sizeof);
     cast(void) memcpy(options, DDCOptions.ptr, DDCOptions.sizeof);
-    xf86ProcessOptions(pScrn.scrnIndex, pScrn.options, options);
+    xf86ProcessOptions(pScrn.scrnIndex, cast(_InputOption*)pScrn.options, options);
 
     xf86GetOptValBool(options, DDCOPT_NODDC, &noddc);
     xf86GetOptValBool(options, DDCOPT_NODDC1, &noddc1);
@@ -307,10 +314,10 @@ private I2CDevPtr DDC2MakeDevice(I2CBusPtr pBus, int address, const(char)* name)
 {
     I2CDevPtr dev = null;
 
-    if (((dev = xf86I2CFindDev(pBus, address)) == 0)) {
+    if (((dev = xf86I2CFindDev(pBus, cast(short)address)) is null)) {
         dev = xf86CreateI2CDevRec();
         dev.DevName = name;
-        dev.SlaveAddr = address;
+        dev.SlaveAddr = cast(short)address;
         dev.ByteTimeout = 2200;        /* VESA DDC spec 3 p. 43 (+10 %) */
         dev.StartTimeout = 550;
         dev.BitTimeout = 40;
@@ -354,7 +361,7 @@ private Bool DDC2Read(I2CDevPtr dev, int block, ubyte* R_Buffer)
     ubyte[1] W_Buffer = void;
     int i = void, segment = void;
     I2CDevPtr seg = void;
-    void function(I2CDevPtr) stop = void;
+    extern(C) void function(I2CDevPtr) @nogc nothrow stop = void;
 
     for (i = 0; i < RETRIES; i++) {
         /* Stop bits reset the segment pointer to 0, so be careful here. */
@@ -362,13 +369,13 @@ private Bool DDC2Read(I2CDevPtr dev, int block, ubyte* R_Buffer)
         if (segment) {
             Bool b = void;
 
-            if (((seg = xf86I2CFindDev(dev.pI2CBus, 0x0060)) == 0))
+            if (((seg = xf86I2CFindDev(dev.pI2CBus, 0x0060)) is null))
                 return FALSE;
 
-            W_Buffer[0] = segment;
+            W_Buffer[0] = cast(ubyte)segment;
 
             stop = dev.pI2CBus.I2CStop;
-            dev.pI2CBus.I2CStop = EEDIDStop;
+            dev.pI2CBus.I2CStop = &EEDIDStop;
 
             b = xf86I2CWriteRead(seg, W_Buffer.ptr, 1, null, 0);
 
@@ -411,11 +418,11 @@ xf86MonPtr xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool complete)
 
     /* Default DDC and DDC2 to enabled. */
     Bool noddc = FALSE, noddc2 = FALSE;
-    OptionInfoPtr options = cast(DDCOptions*) calloc(1, DDCOptions.sizeof);
+    OptionInfoPtr options = cast(OptionInfoPtr) calloc(1, DDCOptions.sizeof);
     if (!options)
         return null;
     memcpy(options, DDCOptions.ptr, DDCOptions.sizeof);
-    xf86ProcessOptions(pScrn.scrnIndex, pScrn.options, options);
+    xf86ProcessOptions(pScrn.scrnIndex, cast(_InputOption*)pScrn.options, options);
 
     xf86GetOptValBool(options, DDCOPT_NODDC, &noddc);
     xf86GetOptValBool(options, DDCOPT_NODDC2, &noddc2);
@@ -424,7 +431,7 @@ xf86MonPtr xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool complete)
     if (noddc || noddc2)
         return null;
 
-    if (((dev = DDC2Init(pBus)) == 0))
+    if (((dev = DDC2Init(pBus)) is null))
         return null;
 
     EDID_block = cast(ubyte*) calloc(1, EDID1_LEN);
@@ -435,7 +442,7 @@ xf86MonPtr xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool complete)
         int i = void, n = EDID_block[0x7e];
 
         if (complete && n) {
-            EDID_block = reallocarray(EDID_block, 1 + n, EDID1_LEN);
+            EDID_block = cast(ubyte*)reallocarray(EDID_block, 1 + n, EDID1_LEN);
 
             for (i = 0; i < n; i++)
                 DDC2Read(dev, i + 1, EDID_block + (EDID1_LEN * (1 + i)));

@@ -38,6 +38,10 @@ import include.misc;
 import include.xf86;
 import include.xf86_OSproc;;
 import xf86DDC_priv;
+import os.log;
+import include.edid;
+import hw.xfree86.common.xf86Helper;
+
 
 enum EXT_TAG =   0x00;
 enum EXT_REV =   0x01;
@@ -77,20 +81,20 @@ struct cea_ext_body {
 
 
 
-private void find_ranges_section(detailed_monitor_section* det, void* ranges)
+void find_ranges_section(detailed_monitor_section* det, void* ranges)
 {
     if (det.type == DS_RANGES && det.section.ranges.max_clock)
         *cast(monitor_ranges**) ranges = &det.section.ranges;
 }
 
-private void find_max_detailed_clock(detailed_monitor_section* det, void* ret)
+void find_max_detailed_clock(detailed_monitor_section* det, void* ret)
 {
     if (det.type == DT) {
         *cast(int*) ret = max(*(cast(int*) ret), det.section.d_timings.clock);
     }
 }
 
-private void handle_edid_quirks(xf86MonPtr m)
+void handle_edid_quirks(xf86MonPtr m)
 {
     monitor_ranges* ranges = null;
 
@@ -110,7 +114,7 @@ private void handle_edid_quirks(xf86MonPtr m)
         if (clock && (ranges.max_clock * 1e6 < clock)) {
             LogMessageVerb(X_WARNING, 1, "EDID timing clock %.2f exceeds claimed max "
                            ~ "%dMHz, fixing\n", clock / 1.0e6, ranges.max_clock);
-            ranges.max_clock = (clock + 999999) / 1e6;
+            ranges.max_clock = cast(int)((clock + 999999) / 1e6);
         }
     }
 }
@@ -121,7 +125,7 @@ struct det_hv_parameter {
     float target_aspect = 0;
 }
 
-private void handle_detailed_hvsize(detailed_monitor_section* det_mon, void* data)
+void handle_detailed_hvsize(detailed_monitor_section* det_mon, void* data)
 {
     det_hv_parameter* p = cast(det_hv_parameter*) data;
     float timing_aspect = void;
@@ -142,7 +146,7 @@ private void handle_detailed_hvsize(detailed_monitor_section* det_mon, void* dat
     }
 }
 
-private void encode_aspect_ratio(xf86MonPtr m)
+void encode_aspect_ratio(xf86MonPtr m)
 {
     /*
      * some monitors encode the aspect ratio instead of the physical size.
@@ -181,9 +185,9 @@ private void encode_aspect_ratio(xf86MonPtr m)
     }
 }
 
-private xf86MonPtr parseEDID(int scrnIndex, ubyte* block, size_t size, bool copy)
+xf86MonPtr parseEDID(int scrnIndex, ubyte* block, size_t size, bool copy)
 {
-    xf86MonPtr m = cast(xf86MonPtr) calloc(1, ((xf86Monitor) + (copy ? size : 0)).sizeof);
+    xf86MonPtr m = cast(xf86MonPtr) calloc(1, ((xf86Monitor).sizeof + (copy ? size : 0)));
     if (!m)
         return null;
 
@@ -196,17 +200,21 @@ private xf86MonPtr parseEDID(int scrnIndex, ubyte* block, size_t size, bool copy
     m.scrnIndex = scrnIndex;
     m.rawData = block;
 
-    get_vendor_section(SECTION(VENDOR_SECTION, block), &m.vendor);
-    get_version_section(SECTION(VERSION_SECTION, block), &m.ver);
-    if (!validate_version(scrnIndex, &m.ver))
+pragma(msg, SECTION!("VENDOR_SECTION", "block"));
+;
+    get_vendor_section(mixin(SECTION!("VENDOR_SECTION", "block")), &(m.vendor_));
+    pragma(msg, typeof(m));
+    pragma(msg, typeof(m.vendor_));
+    get_version_section(mixin(SECTION!("VERSION_SECTION", "block")), &((m.ver)));
+    if (!validate_version(scrnIndex, &(m.ver)))
         goto error;
-    get_display_section(SECTION(DISPLAY_SECTION, block), &m.features, &m.ver);
-    get_established_timing_section(SECTION(ESTABLISHED_TIMING_SECTION, block),
+    get_display_section(mixin(SECTION!("DISPLAY_SECTION", "block")), &m.features, &m.ver);
+    get_established_timing_section(mixin(SECTION!("ESTABLISHED_TIMING_SECTION", "block")),
                                    &m.timings1);
-    get_std_timing_section(SECTION(STD_TIMING_SECTION, block), m.timings2,
+    get_std_timing_section(mixin(SECTION!("STD_TIMING_SECTION", "block")), m.timings2.ptr,
                            &m.ver);
-    get_dt_md_section(SECTION(DET_TIMING_SECTION, block), &m.ver, m.det_mon);
-    m.no_sections = cast(int) *cast(char*) SECTION(NO_EDID, block);
+    get_dt_md_section(mixin(SECTION!("DET_TIMING_SECTION", "block")), &m.ver, m.det_mon.ptr);
+    m.no_sections = cast(int) *cast(char*) mixin(SECTION!("NO_EDID", "block"));
 
     handle_edid_quirks(m);
     encode_aspect_ratio(m);
@@ -241,7 +249,7 @@ xf86MonPtr xf86InterpretEDID(int scrnIndex, ubyte* block)
     return parseEDID(scrnIndex, block, EDID1_LEN, false);
 }
 
-private int get_cea_detail_timing(ubyte* blk, xf86MonPtr mon, detailed_monitor_section* det_mon)
+int get_cea_detail_timing(ubyte* blk, xf86MonPtr mon, detailed_monitor_section* det_mon)
 {
     int dt_num = void;
     int dt_offset = (cast(cea_ext_body*) blk).dt_offset;
@@ -252,7 +260,7 @@ private int get_cea_detail_timing(ubyte* blk, xf86MonPtr mon, detailed_monitor_s
         return dt_num;
 
     for (; dt_offset < (CEA_EXT_MAX_DATA_OFFSET - DET_TIMING_INFO_LEN) &&
-         dt_num < CEA_EXT_DET_TIMING_NUM; _NEXT_DT_MD_SECTION(dt_offset)) {
+         dt_num < CEA_EXT_DET_TIMING_NUM; mixin(_NEXT_DT_MD_SECTION!("dt_offset"))) {
 
         fetch_detailed_block(blk + dt_offset, &mon.ver, det_mon + dt_num);
         dt_num = dt_num + 1;
@@ -261,7 +269,7 @@ private int get_cea_detail_timing(ubyte* blk, xf86MonPtr mon, detailed_monitor_s
     return dt_num;
 }
 
-private void handle_cea_detail_block(ubyte* ext, xf86MonPtr mon, handle_detailed_fn fn, void* data)
+void handle_cea_detail_block(ubyte* ext, xf86MonPtr mon, handle_detailed_fn fn, void* data)
 {
     int i = void;
     detailed_monitor_section[CEA_EXT_DET_TIMING_NUM] det_mon = void;
@@ -282,7 +290,7 @@ void xf86ForEachDetailedBlock(xf86MonPtr mon, handle_detailed_fn fn, void* data)
         return;
 
     for (i = 0; i < DET_TIMINGS; i++)
-        fn(mon.det_mon + i, data);
+        fn(mon.det_mon.ptr + i, data);
 
     for (i = 0; i < mon.no_sections; i++) {
         ext = mon.rawData + EDID1_LEN * (i + 1);
@@ -299,7 +307,7 @@ void xf86ForEachDetailedBlock(xf86MonPtr mon, handle_detailed_fn fn, void* data)
     }
 }
 
-private cea_data_block* extract_cea_data_block(ubyte* ext, int data_type)
+cea_data_block* extract_cea_data_block(ubyte* ext, int data_type)
 {
     cea_ext_body* cea = void;
     cea_data_block* data_collection = void;
@@ -325,7 +333,7 @@ private cea_data_block* extract_cea_data_block(ubyte* ext, int data_type)
     return null;
 }
 
-private void handle_cea_video_block(ubyte* ext, handle_video_fn fn, void* data)
+void handle_cea_video_block(ubyte* ext, handle_video_fn fn, void* data)
 {
     cea_video_block* video = void;
     cea_video_block* video_end = void;
@@ -367,7 +375,7 @@ void xf86ForEachVideoBlock(xf86MonPtr mon, handle_video_fn fn, void* data)
     }
 }
 
-private Bool cea_db_offsets(ubyte* cea, int* start, int* end)
+Bool cea_db_offsets(ubyte* cea, int* start, int* end)
 {
     /* Data block offset in CEA extension block */
     *start = CEA_EXT_MIN_DATA_OFFSET;
@@ -379,19 +387,19 @@ private Bool cea_db_offsets(ubyte* cea, int* start, int* end)
     return TRUE;
 }
 
-private int cea_db_len(ubyte* db)
+int cea_db_len(ubyte* db)
 {
     return db[0] & 0x1f;
 }
 
-private int cea_db_tag(ubyte* db)
+int cea_db_tag(ubyte* db)
 {
     return db[0] >> 5;
 }
 
 alias handle_cea_db_fn = void function(ubyte*, void*);
 
-private void cea_for_each_db(xf86MonPtr mon, handle_cea_db_fn fn, void* data)
+void cea_for_each_db(xf86MonPtr mon, handle_cea_db_fn fn, void* data)
 {
     int i = void;
 
@@ -429,9 +437,9 @@ struct find_hdmi_block_data {
     cea_data_block* hdmi;
 }
 
-private void find_hdmi_block(ubyte* db, void* data)
+void find_hdmi_block(ubyte* db, void* data)
 {
-    find_hdmi_block_data* result = data;
+    find_hdmi_block_data* result = cast(find_hdmi_block_data*)data;
     int oui = void;
 
     if (cea_db_tag(db) != CEA_VENDOR_BLK)
@@ -459,64 +467,65 @@ xf86MonPtr xf86InterpretEEDID(int scrnIndex, ubyte* block)
     return xf86InterpretEDID(scrnIndex, block);
 }
 
-private void get_vendor_section(ubyte* c, vendor* r)
+
+void get_vendor_section(ubyte* c, vendor* r)
 {
-    r.name[0] = _L1(GET_ARRAY(V_MANUFACTURER));
-    r.name[1] = _L2(GET_ARRAY(V_MANUFACTURER));
-    r.name[2] = _L3(GET_ARRAY(V_MANUFACTURER));
+    r.name[0] = mixin(_L1!(GET_ARRAY!("V_MANUFACTURER")));
+    r.name[1] = mixin(_L2!(GET_ARRAY!("V_MANUFACTURER")));
+    r.name[2] = mixin(_L3!(GET_ARRAY!("V_MANUFACTURER")));
     r.name[3] = '\0';
 
-    r.prod_id = _PROD_ID(GET_ARRAY(V_PROD_ID));
-    r.serial = _SERIAL_NO(GET_ARRAY(V_SERIAL));
-    r.week = _YEAR(GET(V_YEAR));
-    r.year = GET(V_WEEK) & 0xFF;
+    r.prod_id = mixin(_PROD_ID!(GET_ARRAY!("V_PROD_ID")));
+    r.serial = mixin(_SERIAL_NO!(GET_ARRAY!("V_SERIAL")));
+    r.week = mixin(_YEAR!(GET!("V_YEAR")));
+    r.year = mixin(GET!("V_WEEK")) & 0xFF;
 }
 
-private void get_version_section(ubyte* c, edid_version* r)
+void get_version_section(ubyte* c, edid_version* r)
 {
-    r.version_ = GET(V_VERSION);
-    r.revision = GET(V_REVISION);
+    r.version_ = mixin(GET!("V_VERSION"));
+    r.revision = mixin(GET!("V_REVISION"));
 }
 
-private void get_display_section(ubyte* c, disp_features* r, edid_version* v)
+void get_display_section(ubyte* c, disp_features* r, edid_version* v)
 {
-    r.input_type = _INPUT_TYPE(GET(D_INPUT));
-    if (!DIGITAL(r.input_type)) {
-        r.input_voltage = _INPUT_VOLTAGE(GET(D_INPUT));
-        r.input_setup = _SETUP(GET(D_INPUT));
-        r.input_sync = _SYNC(GET(D_INPUT));
+    r.input_type = mixin(_INPUT_TYPE!(GET!("D_INPUT")));
+    if (!mixin(DIGITAL!("r.input_type"))) {
+        r.input_voltage = mixin(_INPUT_VOLTAGE!(GET!("D_INPUT")));
+        r.input_setup = mixin(_SETUP!(GET!("D_INPUT")));
+        r.input_sync = mixin(_SYNC!(GET!("D_INPUT")));
     }
     else if (v.revision == 2 || v.revision == 3) {
-        r.input_dfp = _DFP(GET(D_INPUT));
+        r.input_dfp = mixin(_DFP!(GET!("D_INPUT")));
     }
     else if (v.revision >= 4) {
-        r.input_bpc = _BPC(GET(D_INPUT));
-        r.input_interface = _DIGITAL_INTERFACE(GET(D_INPUT));
+        r.input_bpc = mixin(_BPC!(GET!("D_INPUT")));
+        r.input_interface = mixin(_DIGITAL_INTERFACE!(GET!("D_INPUT")));
     }
-    r.hsize = GET(D_HSIZE);
-    r.vsize = GET(D_VSIZE);
-    r.gamma = _GAMMA(GET(D_GAMMA));
-    r.dpms = _DPMS(GET(FEAT_S));
-    r.display_type = _DISPLAY_TYPE(GET(FEAT_S));
-    r.msc = _MSC(GET(FEAT_S));
-    r.redx = F_CC(I_CC((GET(D_RG_LOW)),(GET(D_REDX)),6));
-    r.redy = F_CC(I_CC((GET(D_RG_LOW)),(GET(D_REDY)),4));
-    r.greenx = F_CC(I_CC((GET(D_RG_LOW)),(GET(D_GREENX)),2));
-    r.greeny = F_CC(I_CC((GET(D_RG_LOW)),(GET(D_GREENY)),0));
-    r.bluex = F_CC(I_CC((GET(D_BW_LOW)),(GET(D_BLUEX)),6));
-    r.bluey = F_CC(I_CC((GET(D_BW_LOW)),(GET(D_BLUEY)),4));
-    r.whitex = F_CC(I_CC((GET(D_BW_LOW)),(GET(D_WHITEX)),2));
-    r.whitey = F_CC(I_CC((GET(D_BW_LOW)),(GET(D_WHITEY)),0));
+    r.hsize = mixin(GET!("D_HSIZE"));
+    r.vsize = mixin(GET!("D_VSIZE"));
+    r.gamma = mixin(_GAMMA!(GET!("D_GAMMA")));
+    r.dpms = mixin(_DPMS!(GET!("FEAT_S")));
+    r.display_type = mixin(_DISPLAY_TYPE!(GET!("FEAT_S")));
+    r.msc = mixin(_MSC!(GET!("FEAT_S")));
+    r.redx = mixin(F_CC!(I_CC!((GET!("D_RG_LOW")),(GET!("D_REDX")),"6")));
+    r.redy = mixin(F_CC!(I_CC!((GET!("D_RG_LOW")),(GET!("D_REDY")),"4")));
+    r.greenx = mixin(F_CC!(I_CC!((GET!("D_RG_LOW")),(GET!("D_GREENX")),"2")));
+    r.greeny = mixin(F_CC!(I_CC!((GET!("D_RG_LOW")),(GET!("D_GREENY")),"0")));
+    r.bluex = mixin(F_CC!(I_CC!((GET!("D_BW_LOW")),(GET!("D_BLUEX")),"6")));
+    r.bluey = mixin(F_CC!(I_CC!((GET!("D_BW_LOW")),(GET!("D_BLUEY")),"4")));
+    r.whitex = mixin(F_CC!(I_CC!((GET!("D_BW_LOW")),(GET!("D_WHITEX")),"2")));
+    r.whitey = mixin(F_CC!(I_CC!((GET!("D_BW_LOW")),(GET!("D_WHITEY")),"0")));
 }
 
-private void get_established_timing_section(ubyte* c, established_timings* r)
+void get_established_timing_section(ubyte* c, established_timings* r)
 {
-    r.t1 = GET(E_T1);
-    r.t2 = GET(E_T2);
-    r.t_manu = GET(E_TMANU);
+    r.t1 = mixin(GET!("E_T1"));
+    r.t2 = mixin(GET!("E_T2"));
+    r.t_manu = mixin(GET!("E_TMANU"));
 }
 
-private void get_cvt_timing_section(ubyte* c, cvt_timings* r)
+void get_cvt_timing_section(ubyte* c, cvt_timings* r)
 {
     int i = void;
 
@@ -560,37 +569,37 @@ private void get_cvt_timing_section(ubyte* c, cvt_timings* r)
     }
 }
 
-private void get_std_timing_section(ubyte* c, std_timings* r, edid_version* v)
+void get_std_timing_section(ubyte* c, std_timings* r, edid_version* v)
 {
     int i = void;
 
     for (i = 0; i < STD_TIMINGS; i++) {
-        if (_VALID_TIMING(c)) {
-            r[i].hsize = _HSIZE1(c);
-            _VSIZE1(c,r[i].vsize,v);
-            r[i].refresh = _REFRESH_R(c);
-            r[i].id = STD_TIMING_ID;
+        if (mixin(_VALID_TIMING!("c"))) {
+            r[i].hsize = mixin(_HSIZE1!("c"));
+            mixin(_VSIZE1!("c","r[i].vsize","v"));
+            r[i].refresh = mixin(_REFRESH_R!("c"));
+            r[i].id = mixin(STD_TIMING_ID);
         }
         else {
             r[i].hsize = r[i].vsize = r[i].refresh = r[i].id = 0;
         }
-        _NEXT_STD_TIMING(c);
+        mixin(_NEXT_STD_TIMING!("c"));
     }
 }
 
-private const(ubyte)[18] empty_block;
+const(ubyte)[18] empty_block;
 
-private void fetch_detailed_block(ubyte* c, edid_version* ver, detailed_monitor_section* det_mon)
+void fetch_detailed_block(ubyte* c, edid_version* ver, detailed_monitor_section* det_mon)
 {
-    if (ver.version_ == 1 && ver.revision >= 1 && _IS_MONITOR_DESC(c)) {
-        switch (_MONITOR_DESC_TYPE(c)) {
+    if (ver.version_ == 1 && ver.revision >= 1 && mixin(_IS_MONITOR_DESC!("c"))) {
+        switch (mixin(_MONITOR_DESC_TYPE!("c"))) {
         case SERIAL_NUMBER:
             det_mon.type = DS_SERIAL;
-            copy_string(c, det_mon.section.serial);
+            copy_string(c, det_mon.section.serial.ptr);
             break;
         case ASCII_STR:
             det_mon.type = DS_ASCII_STR;
-            copy_string(c, det_mon.section.ascii_data);
+            copy_string(c, det_mon.section.ascii_data.ptr);
             break;
         case MONITOR_RANGES:
             det_mon.type = DS_RANGES;
@@ -598,26 +607,26 @@ private void fetch_detailed_block(ubyte* c, edid_version* ver, detailed_monitor_
             break;
         case MONITOR_NAME:
             det_mon.type = DS_NAME;
-            copy_string(c, det_mon.section.name);
+            copy_string(c, det_mon.section.name.ptr);
             break;
         case ADD_COLOR_POINT:
             det_mon.type = DS_WHITE_P;
-            get_whitepoint_section(c, det_mon.section.wp);
+            get_whitepoint_section(c, det_mon.section.wp.ptr);
             break;
         case ADD_STD_TIMINGS:
             det_mon.type = DS_STD_TIMINGS;
-            get_dst_timing_section(c, det_mon.section.std_t, ver);
+            get_dst_timing_section(c, det_mon.section.std_t.ptr, ver);
             break;
         case COLOR_MANAGEMENT_DATA:
             det_mon.type = DS_CMD;
             break;
         case CVT_3BYTE_DATA:
             det_mon.type = DS_CVT;
-            get_cvt_timing_section(c, det_mon.section.cvt);
+            get_cvt_timing_section(c, det_mon.section.cvt.ptr);
             break;
         case ADD_EST_TIMINGS:
             det_mon.type = DS_EST_III;
-            memcpy(det_mon.section.est_iii, c + 6, 6);
+            memcpy(det_mon.section.est_iii.ptr, c + 6, 6);
             break;
         case ADD_DUMMY:
             det_mon.type = DS_DUMMY;
@@ -636,17 +645,17 @@ private void fetch_detailed_block(ubyte* c, edid_version* ver, detailed_monitor_
     }
 }
 
-private void get_dt_md_section(ubyte* c, edid_version* ver, detailed_monitor_section* det_mon)
+void get_dt_md_section(ubyte* c, edid_version* ver, detailed_monitor_section* det_mon)
 {
     int i = void;
 
     for (i = 0; i < DET_TIMINGS; i++) {
         fetch_detailed_block(c, ver, det_mon + i);
-        _NEXT_DT_MD_SECTION(c);
+        mixin(_NEXT_DT_MD_SECTION!("c")~";");
     }
 }
 
-private void copy_string(ubyte* c, ubyte* s)
+void copy_string(ubyte* c, ubyte* s)
 {
     int i = void;
 
@@ -658,94 +667,94 @@ private void copy_string(ubyte* c, ubyte* s)
         *s = 0;
 }
 
-private void get_dst_timing_section(ubyte* c, std_timings* t, edid_version* v)
+void get_dst_timing_section(ubyte* c, std_timings* t, edid_version* v)
 {
     int j = void;
 
     c = c + 5;
     for (j = 0; j < 5; j++) {
-        t[j].hsize = _HSIZE1(c);
-        _VSIZE1(c,t[j].vsize,v);
-        t[j].refresh = _REFRESH_R(c);
-        t[j].id = STD_TIMING_ID;
-        _NEXT_STD_TIMING(c);
+        t[j].hsize = mixin(_HSIZE1!("c"));
+        mixin(_VSIZE1!("c","t[j].vsize","v"));
+        t[j].refresh = mixin(_REFRESH_R!("c"));
+        t[j].id = mixin(STD_TIMING_ID);
+        mixin(_NEXT_STD_TIMING!("c"));
     }
 }
 
-private void get_monitor_ranges(ubyte* c, monitor_ranges* r)
+void get_monitor_ranges(ubyte* c, monitor_ranges* r)
 {
-    r.min_v = MIN_V;
-    r.max_v = MAX_V;
-    r.min_h = MIN_H;
-    r.max_h = MAX_H;
+    r.min_v = mixin(MIN_V);
+    r.max_v = mixin(MAX_V);
+    r.min_h = mixin(MIN_H);
+    r.max_h = mixin(MAX_H);
     r.max_clock = 0;
-    if (MAX_CLOCK != 0xff)      /* is specified? */
-        r.max_clock = MAX_CLOCK * 10 + 5;
+    if (mixin(MAX_CLOCK) != 0xff)      /* is specified? */
+        r.max_clock = mixin(MAX_CLOCK) * 10 + 5;
 
-    r.display_range_timing_flags = c[10];
+    r.display_range_timing_flags = cast(DR_timing_flags)c[10];
 
     if (HAVE_2ND_GTF) {
-        r.gtf_2nd_f = F_2ND_GTF;
-        r.gtf_2nd_c = C_2ND_GTF;
-        r.gtf_2nd_m = M_2ND_GTF;
-        r.gtf_2nd_k = K_2ND_GTF;
-        r.gtf_2nd_j = J_2ND_GTF;
+        r.gtf_2nd_f = mixin(F_2ND_GTF);
+        r.gtf_2nd_c = mixin(C_2ND_GTF);
+        r.gtf_2nd_m = mixin(M_2ND_GTF);
+        r.gtf_2nd_k = mixin(K_2ND_GTF);
+        r.gtf_2nd_j = mixin(J_2ND_GTF);
     }
     else {
         r.gtf_2nd_f = 0;
     }
     if (HAVE_CVT) {
-        r.max_clock_khz = MAX_CLOCK_KHZ;
+        r.max_clock_khz = mixin(MAX_CLOCK_KHZ);
         r.max_clock = r.max_clock_khz / 1000;
-        r.maxwidth = MAXWIDTH;
-        r.supported_aspect = SUPPORTED_ASPECT;
-        r.preferred_aspect = PREFERRED_ASPECT;
-        r.supported_blanking = SUPPORTED_BLANKING;
-        r.supported_scaling = SUPPORTED_SCALING;
-        r.preferred_refresh = PREFERRED_REFRESH;
+        r.maxwidth = mixin(MAXWIDTH);
+        r.supported_aspect = mixin(SUPPORTED_ASPECT);
+        r.preferred_aspect = mixin(PREFERRED_ASPECT);
+        r.supported_blanking = mixin(SUPPORTED_BLANKING);
+        r.supported_scaling = mixin(SUPPORTED_SCALING);
+        r.preferred_refresh = mixin(PREFERRED_REFRESH);
     }
     else {
         r.max_clock_khz = 0;
     }
 }
 
-private void get_whitepoint_section(ubyte* c, whitePoints* wp)
+void get_whitepoint_section(ubyte* c, whitePoints* wp)
 {
-    wp[0].white_x = WHITEX1;
-    wp[0].white_y = WHITEY1;
-    wp[1].white_x = WHITEX2;
-    wp[1].white_y = WHITEY2;
-    wp[0].index = WHITE_INDEX1;
-    wp[1].index = WHITE_INDEX2;
-    wp[0].white_gamma = WHITE_GAMMA1;
-    wp[1].white_gamma = WHITE_GAMMA2;
+    wp[0].white_x = mixin(WHITEX1);
+    wp[0].white_y = mixin(WHITEY1);
+    wp[1].white_x = mixin(WHITEX2);
+    wp[1].white_y = mixin(WHITEY2);
+    wp[0].index = mixin(WHITE_INDEX1);
+    wp[1].index = mixin(WHITE_INDEX2);
+    wp[0].white_gamma = mixin(WHITE_GAMMA1);
+    wp[1].white_gamma = mixin(WHITE_GAMMA2);
 }
 
-private void get_detailed_timing_section(ubyte* c, detailed_timings* r)
+void get_detailed_timing_section(ubyte* c, detailed_timings* r)
 {
-    r.clock = PIXEL_CLOCK;
-    r.h_active = H_ACTIVE;
-    r.h_blanking = H_BLANK;
-    r.v_active = V_ACTIVE;
-    r.v_blanking = V_BLANK;
-    r.h_sync_off = H_SYNC_OFF;
-    r.h_sync_width = H_SYNC_WIDTH;
-    r.v_sync_off = V_SYNC_OFF;
-    r.v_sync_width = V_SYNC_WIDTH;
-    r.h_size = H_SIZE;
-    r.v_size = V_SIZE;
-    r.h_border = H_BORDER;
-    r.v_border = V_BORDER;
-    r.interlaced = INTERLACED;
-    r.stereo = STEREO;
-    r.stereo_1 = STEREO1;
-    r.sync = SYNC_T;
-    r.misc = MISC;
+    r.clock = mixin(PIXEL_CLOCK);
+    r.h_active = mixin(H_ACTIVE);
+    r.h_blanking = mixin(H_BLANK);
+    r.v_active = mixin(V_ACTIVE);
+    r.v_blanking = mixin(V_BLANK);
+    r.h_sync_off = mixin(H_SYNC_OFF);
+    r.h_sync_width = mixin(H_SYNC_WIDTH);
+    r.v_sync_off = mixin(V_SYNC_OFF);
+    r.v_sync_width = mixin(V_SYNC_WIDTH);
+    r.h_size = mixin(H_SIZE);
+    r.v_size = mixin(V_SIZE);
+    r.h_border = mixin(H_BORDER);
+    r.v_border = mixin(V_BORDER);
+    r.interlaced = mixin(INTERLACED);
+    r.stereo = mixin(STEREO);
+    r.stereo_1 = mixin(STEREO1);
+    r.sync = mixin(SYNC_T);
+    r.misc = mixin(MISC);
 }
 
 enum MAX_EDID_MINOR = 4;
 
-private Bool validate_version(int scrnIndex, edid_version* r)
+Bool validate_version(int scrnIndex, edid_version* r)
 {
     if (r.version_ != 1) {
         xf86DrvMsg(scrnIndex, X_ERROR, "Unknown EDID version %d\n", r.version_);
@@ -788,5 +797,5 @@ bool xf86Monitor_gtf_supported(xf86MonPtr monitor)
     if (!monitor)
         return false;
 
-    return GTF_SUPPORTED(monitor.features.msc);
+    return mixin(GTF_SUPPORTED!("monitor.features.msc"));
 }

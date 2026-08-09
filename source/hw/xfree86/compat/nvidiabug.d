@@ -10,6 +10,7 @@ import build.dix_config;
 import include.os;
 
 import xf86_compat;
+import os.log;
 
 void xf86NVidiaBug()
 {

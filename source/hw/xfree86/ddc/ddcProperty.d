@@ -30,10 +30,14 @@ import dix.dix_priv;
 import xf86_priv;
 import xf86DDC_priv;
 import include.xf86Priv;
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
 import include.property;
 import include.propertyst;
 import core.stdc.string;
+import dix.screen_hooks;
+import hw.xfree86.common.xf86Helper;
+import xf86Globals;
+import dix.property;
 
 enum EDID1_ATOM_NAME =         "XFree86_DDC_EDID1_RAWDATA";
 
@@ -58,10 +62,10 @@ private void setRootWindowEDID(ScreenPtr pScreen, xf86MonPtr DDC)
 private void addEDIDProp(CallbackListPtr* pcbl, void* scrn, void* screen)
 {
     ScreenPtr pScreen = cast(ScreenPtr)screen;
-    ScrnInfoPtr pScrn = scrn;
+    ScrnInfoPtr pScrn = cast(ScrnInfoPtr)scrn;
 
     if (xf86ScreenToScrn(pScreen) == pScrn)
-        setRootWindowEDID(pScreen, pScrn.monitor.DDC);
+        setRootWindowEDID(pScreen, cast(_Xf86Monitor*)pScrn.monitor.DDC);
 }
 
 Bool xf86SetDDCproperties(ScrnInfoPtr pScrn, xf86MonPtr DDC)
