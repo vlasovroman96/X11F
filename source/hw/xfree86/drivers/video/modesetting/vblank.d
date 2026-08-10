@@ -109,7 +109,7 @@ private Bool rr_crtc_on(RRCrtcPtr crtc, Bool crtc_is_xf86_hint)
 
 Bool xf86_crtc_on(xf86CrtcPtr crtc)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
 
     return crtc.enabled && drmmode_crtc.dpms_mode == DPMSModeOn;
 }
@@ -224,7 +224,7 @@ private Bool ms_get_kernel_ust_msc(xf86CrtcPtr crtc, ulong* msc, ulong* ust)
     ScreenPtr screen = crtc.randr_crtc.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
     modesettingPtr ms = modesettingPTR(scrn);
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmVBlank vbl = void;
     int ret = void;
 
@@ -271,7 +271,7 @@ private void ms_drm_set_seq_msc(uint seq, ulong msc)
 
 private void ms_drm_set_seq_queued(uint seq, ulong msc)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = void;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) void;
     ms_drm_queue* q = void;
 
     mixin(xorg_list_for_each_entry!("q", "&ms_drm_queue", "list", q{
@@ -288,7 +288,7 @@ private void ms_drm_set_seq_queued(uint seq, ulong msc)
 
 private Bool ms_queue_coalesce(xf86CrtcPtr crtc, uint seq, ulong msc)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
 
     /* If the next MSC is too late, then this event can't be coalesced */
     if (msc < drmmode_crtc.next_msc)
@@ -304,7 +304,7 @@ Bool ms_queue_vblank(xf86CrtcPtr crtc, ms_queue_flag flags, ulong msc, ulong* ms
     ScreenPtr screen = crtc.randr_crtc.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
     modesettingPtr ms = modesettingPTR(scrn);
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmVBlank vbl = void;
     int ret = void;
 
@@ -544,7 +544,7 @@ private void ms_drm_sequence_handler(int fd, ulong frame, ulong ns, Bool is64bit
     ms_drm_queue* q = void, tmp = void;
     uint seq = cast(uint) user_data;
     xf86CrtcPtr crtc = null;
-    drmmode_crtc_private_ptr drmmode_crtc = void;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) void;
     ulong msc = void, next_msc = UINT64_MAX;
 
     /* Handle the seq for this event first in order to get the CRTC */

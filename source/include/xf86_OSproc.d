@@ -145,7 +145,7 @@ extern void  xf86GARTCloseScreen(int screenNum);
    module.  These routines are small, and the code if very POSIX-signal (or
    OS-signal) specific, so it seemed better to provide more complex
    wrappers than to wrap each individual function called. */
-extern void  xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void*);
+// extern void  xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void*);
 
 // _XFUNCPROTOEND
                           /* _XF86_OSPROC_H */

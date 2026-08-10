@@ -80,11 +80,11 @@ extern void  xf86ConfigPciEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityInde
 
 /* xf86Bus.c */
 
-extern void  xf86ClaimFbSlot(DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
+// extern void  xf86ClaimFbSlot(DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
 extern void  xf86ClaimNoSlot(DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
 // extern void  xf86AddEntityToScreen(ScrnInfoPtr pScrn, int entityIndex);
-extern void  xf86SetEntityInstanceForScreen(ScrnInfoPtr pScrn, int entityIndex, int instance);
-extern void  xf86GetNumEntityInstances(int entityIndex);
+// extern void  xf86SetEntityInstanceForScreen(ScrnInfoPtr pScrn, int entityIndex, int instance);
+// extern void  xf86GetNumEntityInstances(int entityIndex);
 // extern void  xf86GetDevFromEntity(int entityIndex, int instance);
 // extern void  xf86GetEntityInfo(int entityIndex);
 
@@ -93,12 +93,12 @@ enum string xf86SetLastScrnFlag(string e, string s) = `do { } while (0)`;
 // extern void  xf86IsEntityShared(int entityIndex);
 // extern void  xf86SetEntityShared(int entityIndex);
 // extern void  xf86IsEntitySharable(int entityIndex);
-extern void  xf86SetEntitySharable(int entityIndex);
-extern void  xf86IsPrimInitDone(int entityIndex);
-extern void  xf86SetPrimInitDone(int entityIndex);
+// extern void  xf86SetEntitySharable(int entityIndex);
+// extern void  xf86IsPrimInitDone(int entityIndex);
+// extern void  xf86SetPrimInitDone(int entityIndex);
 extern void  xf86ClearPrimInitDone(int entityIndex);
-extern void  xf86AllocateEntityPrivateIndex();
-extern void * xf86GetEntityPrivate(int entityIndex, int privIndex);
+// extern void  xf86AllocateEntityPrivateIndex();
+// extern void * xf86GetEntityPrivate(int entityIndex, int privIndex);
 
 /* xf86Configure.c */
 // extern void  xf86AddBusDeviceToConfigure(const(char)* driver, BusType bus, void* busData, int chipset);
@@ -107,7 +107,7 @@ extern void * xf86GetEntityPrivate(int entityIndex, int privIndex);
 
 // extern void  xf86SetViewport(ScreenPtr pScreen, int x, int y);
 // extern void  xf86SwitchMode(ScreenPtr pScreen, DisplayModePtr mode);
-extern void * xf86GetPointerScreenFuncs();
+// extern void * xf86GetPointerScreenFuncs();
 // extern void  xf86ReconfigureLayout();
 
 /* xf86DPMS.c */
@@ -132,18 +132,18 @@ extern void  xf86RemoveGeneralHandler(void* handler);
 
 /* xf86Helper.c */
 
-extern void  xf86AddDriver(DriverPtr driver, void* module_, int flags);
+// extern void  xf86AddDriver(DriverPtr driver, void* module_, int flags);
 // extern void  xf86AllocateScreen(DriverPtr drv, int flags);
 extern void  xf86AllocateScrnInfoPrivateIndex();
-extern void  xf86SetDepthBpp(ScrnInfoPtr scrp, int depth, int bpp, int fbbpp, int depth24flags);
-extern void  xf86PrintDepthBpp(ScrnInfoPtr scrp);
-extern void  xf86SetWeight(ScrnInfoPtr scrp, rgb weight, rgb mask);
-extern void  xf86SetDefaultVisual(ScrnInfoPtr scrp, int visual);
-extern void  xf86SetGamma(ScrnInfoPtr scrp, Gamma newGamma);
-extern void  xf86SetDpi(ScrnInfoPtr pScrn, int x, int y);
-extern void  xf86SetBlackWhitePixels(ScreenPtr pScreen);
+// extern void  xf86SetDepthBpp(ScrnInfoPtr scrp, int depth, int bpp, int fbbpp, int depth24flags);
+// extern void  xf86PrintDepthBpp(ScrnInfoPtr scrp);
+// extern void  xf86SetWeight(ScrnInfoPtr scrp, rgb weight, rgb mask);
+// extern void  xf86SetDefaultVisual(ScrnInfoPtr scrp, int visual);
+// extern void  xf86SetGamma(ScrnInfoPtr scrp, Gamma newGamma);
+// extern void  xf86SetDpi(ScrnInfoPtr pScrn, int x, int y);
+// extern void  xf86SetBlackWhitePixels(ScreenPtr pScreen);
 // extern void  xf86EnableDisableFBAccess(ScrnInfoPtr pScrn, Bool enable);
-extern void  xf86VDrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* format, va_list args);
+// extern void  xf86VDrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* format, va_list args);
 // extern void  xf86DrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* format, ...);
 extern void  _X_ATTRIBUTE_PRINTF();
 extern void  _X_ATTRIBUTE_PRINTF();
@@ -162,13 +162,13 @@ extern void  xf86GetAllowMouseOpenFail();
 extern void  xorgGetVersion();
 extern void  xf86GetModuleVersion(void* module_);
 extern void * xf86LoadDrvSubModule(DriverPtr drv, const(char)* name);
-extern void * xf86LoadSubModule(ScrnInfoPtr pScrn, const(char)* name);
+// extern void * xf86LoadSubModule(ScrnInfoPtr pScrn, const(char)* name);
 // extern void * xf86LoadOneModule(const(char)* name, void* optlist);
 extern void  xf86UnloadSubModule(void* mod);
 extern void  xf86LoaderCheckSymbol(const(char)* name);
-extern void  xf86SetBackingStore(ScreenPtr pScreen);
-extern void  xf86SetSilkenMouse(ScreenPtr pScreen);
-extern void  xf86ConfigFbEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityIndex, EntityProc init, EntityProc enter, EntityProc leave, void* private_);
+// extern void  xf86SetBackingStore(ScreenPtr pScreen);
+// extern void  xf86SetSilkenMouse(ScreenPtr pScreen);
+// extern void  xf86ConfigFbEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityIndex, EntityProc init, EntityProc enter, EntityProc leave, void* private_);
 
 extern void  xf86IsUnblank(int mode);
 
@@ -188,7 +188,7 @@ extern void  xf86PrintModes(ScrnInfoPtr scrp);
 
 /* xf86Option.c */
 
-extern void  xf86CollectOptions(ScrnInfoPtr pScrn, XF86OptionPtr extraOpts);
+// extern void  xf86CollectOptions(ScrnInfoPtr pScrn, XF86OptionPtr extraOpts);
 
 /* convert ScreenPtr to ScrnInfoPtr */
 // extern void  xf86ScreenToScrn(ScreenPtr pScreen);

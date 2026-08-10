@@ -1,9 +1,7 @@
-module glxmodule;
-@nogc nothrow:
-extern(C): __gshared:
 /**************************************************************************
 
 Copyright 1998-1999 Precision Insight, Inc., Cedar Park, Texas.
+Copyright 2000 VA Linux Systems, Inc.
 All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a
@@ -27,59 +25,41 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 **************************************************************************/
-/*
- * Authors:
- *   Kevin E. Martin <kevin@precisioninsight.com>
+
+/**
+ * \file xf86dri.h
+ * Protocol numbers and function prototypes for DRI X protocol.
  *
+ * \author Kevin E. Martin <martin@valinux.com>
+ * \author Jens Owen <jens@tungstengraphics.com>
+ * \author Rickard E. (Rik) Faith <faith@valinux.com>
  */
-import build.xorg_config;
 
-import include.xf86Module;
-import include.xf86Priv;
-import include.xf86;
-import include.colormap;
-import mi.micmap;
-import include.globals;
-import glx.glxserver;
-import include.glx_extinit;
+#ifndef _XF86DRI_H_
+#define _XF86DRI_H_
 
-// private MODULESETUPPROTO glxSetup;
+#include <xf86drm.h>
 
-private XF86ModuleVersionInfo VersRec = {
-    modname: "glx",
-    vendor: MODULEVENDORSTRING,
-    _modinfo1_: MODINFOSTRING1,
-    _modinfo2_: MODINFOSTRING2,
-    xf86version: XORG_VERSION_CURRENT,
-    majorversion: 1,
-    minorversion: 0,
-    patchlevel: 0,
-    abiclass: ABI_CLASS_EXTENSION,
-    abiversion: ABI_EXTENSION_VERSION,
-};
+#define X_XF86DRIQueryVersion			0
+#define X_XF86DRIQueryDirectRenderingCapable	1
+#define X_XF86DRIOpenConnection			2
+#define X_XF86DRICloseConnection		3
+#define X_XF86DRIGetClientDriverName		4
+#define X_XF86DRICreateContext			5
+#define X_XF86DRIDestroyContext			6
+#define X_XF86DRICreateDrawable			7
+#define X_XF86DRIDestroyDrawable		8
+#define X_XF86DRIGetDrawableInfo		9
+#define X_XF86DRIGetDeviceInfo			10
+#define X_XF86DRIAuthConnection                 11
+#define X_XF86DRIOpenFullScreen                 12   /* Deprecated */
+#define X_XF86DRICloseFullScreen                13   /* Deprecated */
 
-XF86ModuleData glxModuleData = {
-    vers: &VersRec,
-    setup: &glxSetup
-};
+#define XF86DRINumberEvents		0
 
-private void* glxSetup(void* module_, void* opts, int* errmaj, int* errmin)
-{
-    static Bool setupDone = FALSE;
-    __GLXprovider* provider = void;
+#define XF86DRIClientNotLocal		0
+#define XF86DRIOperationNotSupported	1
+#define XF86DRINumberErrors		(XF86DRIOperationNotSupported + 1)
 
-    if (setupDone) {
-        if (errmaj)
-            *errmaj = LDR_ONCEONLY;
-        return null;
-    }
+#endif /* _XF86DRI_H_ */
 
-    setupDone = TRUE;
-
-    provider = cast(__GLXprovider*)LoaderSymbol("__glXDRI2Provider");
-    if (provider)
-        GlxPushProvider(provider);
-    xorgGlxCreateVendor();
-
-    return module_;
-}

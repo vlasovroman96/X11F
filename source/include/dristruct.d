@@ -71,7 +71,7 @@ enum string DRI_ENT_PRIV(string pScrn) = `
     ((DRIEntPrivIndex < 0) ? 
      null:		     
      (cast(DRIEntPrivPtr)(xf86GetEntityPrivate((` ~ pScrn ~ `).entityList[0], 
-					   DRIEntPrivIndex).ptr)))`;
+					   DRIEntPrivIndex))))`;
 
 struct _DRIScreenPrivRec {
     Bool directRenderingSupport;

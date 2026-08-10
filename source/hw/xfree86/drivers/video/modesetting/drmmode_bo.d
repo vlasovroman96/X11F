@@ -15,19 +15,29 @@ import include.dix; /* ARRAY_SIZE() */
 
 import dix.dix_priv;
 
-// import externs.libdrm.drm;
+// import externs.libdrm;
 // import externs.drm; 
 // import externs.libdrm_mode;
 import externs.gbm;
 
-import externs.drm;
+import externs.libdrm;
 import include.xf86Crtc;
 
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
+import std.array;
+import hw.xfree86.drivers.video.modesetting.drmmode_display;
 
-struct _drmmode_rec;
-alias drmmode_ptr = _drmmode_rec*;
+enum {
+    GBM_FORMAT_RGB565      = 0x36314752, // 'R' 'G' '1' '6' little-endian
+    GBM_FORMAT_XRGB8888     = 0x34325258, // 'X' 'R' '2' '4'
+    GBM_FORMAT_ARGB8888     = 0x34325241, // 'A' 'R' '2' '4'
+    GBM_FORMAT_ARGB2101010  = 0x30335241, // 'A' 'R' '3' '0'
+    GBM_FORMAT_ARGB1555     = 0x35315241, // 'A' 'R' '1' '5' (мы уже нашли)
+}
+
+// struct _drmmode_rec;
+// alias drmmode_ptr = _drmmode_rec*;
 
 
 struct bo_priv_t {
@@ -56,15 +66,37 @@ enum GBM_MAX_PLANES = 4;
  * and unmapping is handeled automatically by the gbm
  * loader through the destroy_user_data callback.
  */
+enum uint GBM_FORMAT_R8 = 0x20203852; 
+uint
+drmmode_gbm_format_for_depth(int depth)
+{
+    switch (depth) {
+    case 8:
+        return GBM_FORMAT_R8;
+    case 15:
+        return GBM_FORMAT_ARGB1555;
+    case 16:
+        return GBM_FORMAT_RGB565;
+    case 24:
+        return GBM_FORMAT_XRGB8888;
+    case 30:
+        /* XXX Is this format right? https://github.com/X11Libre/xserver/pull/1396/files#r2523698616 XXX */
+        return GBM_FORMAT_ARGB2101010;
+    case 32:
+        return GBM_FORMAT_ARGB8888;
+    default: break;
+    }
 
-enum string TRY_CREATE(string proc, string data, string do_map) = `
-    do { 
-        gbm_bo* ret = cast(` ~ proc ~ `)(__VA_ARGS__); 
-        if (ret && (!(` ~ do_map ~ `) || gbm_bo_map_or_free(ret, (` ~ data ~ `)))) { 
-            return ret; 
-        } 
-    } while (0);`;
+    /* Unsupported depth */
+    return GBM_FORMAT_ARGB8888;
+}
 
+enum string TRY_CREATE(string proc, string data, string do_map, string[] args) = ` {
+    gbm_bo* ret = ` ~ proc ~ `(` ~ args.join(", ") ~ `);
+    if (ret && (!(` ~ do_map ~ `) ||
+                gbm_bo_map_or_free(ret, (` ~ data ~ `)))) {
+        return ret;
+    }}`;
 pragma(inline, true) private uint get_opaque_format(uint format)
 {
     switch (format) {
@@ -79,7 +111,7 @@ pragma(inline, true) private uint get_opaque_format(uint format)
 
 private void destroy_user_data(gbm_bo* bo, void* _data)
 {
-    bo_priv_t* data = _data;
+    bo_priv_t* data = cast(bo_priv_t*)_data;
     if (!data) {
         return;
     }
@@ -92,13 +124,13 @@ private void destroy_user_data(gbm_bo* bo, void* _data)
 
 void* gbm_bo_get_map(gbm_bo* bo)
 {
-    bo_priv_t* data = gbm_bo_get_user_data(bo);
+    bo_priv_t* data = cast(bo_priv_t*)gbm_bo_get_user_data(bo);
     return data ? data.map_addr : null;
 }
 
 Bool gbm_bo_get_used_modifiers(gbm_bo* bo)
 {
-    bo_priv_t* data = gbm_bo_get_user_data(bo);
+    bo_priv_t* data = cast(bo_priv_t*)gbm_bo_get_user_data(bo);
     return data ? data.used_modifiers : FALSE;
 }
 
@@ -160,7 +192,7 @@ version (GBM_BO_WITH_MODIFIERS2) {
 
     data.used_modifiers = FALSE;
     mixin(TRY_CREATE!(`gbm_bo_create`, `data`, `do_map`,
-               `gbm`, `width`, `height`, `format`, `flags`));
+    [`gbm`, `width`, `height`, `format`, `flags`]));
     return null;
 }
 
@@ -257,7 +289,7 @@ pragma(inline, true) private gbm_bo* gbm_create_cursor_bo(drmmode_ptr drmmode, B
 gbm_bo* gbm_create_best_bo(drmmode_ptr drmmode, Bool do_map, uint width, uint height, int type)
 {
     gbm_bo* ret = null;
-    bo_priv_t* data = cast(bo_priv_t*) calloc(1, typeof(*data).sizeof);
+    bo_priv_t* data = cast(bo_priv_t*) calloc(1, bo_priv_t.sizeof);
     if (!data) {
         return null;
     }
@@ -300,7 +332,7 @@ gbm_bo* gbm_back_bo_from_fd(drmmode_ptr drmmode, Bool do_map, int fd_handle, uin
                                              format: format,
                                             };
 
-    bo_priv_t* data = cast(bo_priv_t*) calloc(1, typeof(*data).sizeof);
+    bo_priv_t* data = cast(bo_priv_t*) calloc(1, bo_priv_t.sizeof);
     if (!data) {
         return null;
     }
@@ -308,12 +340,12 @@ gbm_bo* gbm_back_bo_from_fd(drmmode_ptr drmmode, Bool do_map, int fd_handle, uin
     data.used_modifiers = FALSE;
 
     mixin(TRY_CREATE!(`gbm_bo_import`, `data`, `do_map`,
-               `drmmode.gbm`, `GBM_BO_IMPORT_FD`, `&import_data`,
-               `GBM_BO_USE_RENDERING | GBM_BO_USE_SCANOUT`));
+               [`drmmode.gbm`, `GBM_BO_IMPORT_FD`, `&import_data`,
+               `GBM_BO_USE_RENDERING | GBM_BO_USE_SCANOUT`]));
 
     mixin(TRY_CREATE!(`gbm_bo_import`, `data`, `do_map`,
-               `drmmode.gbm`, `GBM_BO_IMPORT_FD`, `&import_data`,
-               `GBM_BO_USE_RENDERING | GBM_BO_USE_SCANOUT | GBM_BO_USE_WRITE`));
+               [`drmmode.gbm`, `GBM_BO_IMPORT_FD`, `&import_data`,
+               `GBM_BO_USE_RENDERING | GBM_BO_USE_SCANOUT | GBM_BO_USE_WRITE`]));
 
     return null;
 }
@@ -356,7 +388,7 @@ version (GBM_BO_WITH_MODIFIERS) {
     }
 }
     return drmModeAddFB(drmmode.fd, width, height,
-                        drmmode.scrn.depth, drmmode.kbpp,
+                        cast(ubyte)drmmode.scrn.depth, cast(ubyte)drmmode.kbpp,
                         gbm_bo_get_stride(bo),
                         gbm_bo_get_handle(bo).u32, fb_id);
 }

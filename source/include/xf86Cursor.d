@@ -72,7 +72,7 @@ extern xf86CursorInfoPtr xf86CreateCursorInfoRec();
 extern void  xf86DestroyCursorInfoRec(xf86CursorInfoPtr);
 extern void  xf86CursorResetCursor(ScreenPtr pScreen);
 extern void  xf86ForceHWCursor(ScreenPtr pScreen, Bool on);
-extern void  xf86CurrentCursor(ScreenPtr pScreen);
+// extern void  xf86CurrentCursor(ScreenPtr pScreen);
 
 enum HARDWARE_CURSOR_INVERT_MASK = 			0x00000001;
 enum HARDWARE_CURSOR_AND_SOURCE_WITH_MASK =		0x00000002;

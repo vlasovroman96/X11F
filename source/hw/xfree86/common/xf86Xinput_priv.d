@@ -20,9 +20,9 @@ void xf86InputEnableVTProbe();
 
 InputInfoPtr xf86LookupInput(const(char)* name);
 
-void xf86AddInputEventDrainCallback(CallbackProcPtr callback, void* param);
+// void xf86AddInputEventDrainCallback(CallbackProcPtr callback, void* param);
 
-void xf86RemoveInputEventDrainCallback(CallbackProcPtr callback, void* param);
+// void xf86RemoveInputEventDrainCallback(CallbackProcPtr callback, void* param);
 
 // Bool MatchAttrToken(const(char)* attr, xorg_list* groups);
 

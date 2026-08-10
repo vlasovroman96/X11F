@@ -523,7 +523,7 @@ private Bool can_exchange(ScrnInfoPtr scrn, DrawablePtr draw, DRI2BufferPtr fron
     int i = void;
 
     for (i = 0; i < config.num_crtc; i++) {
-        drmmode_crtc_private_ptr drmmode_crtc = config.crtc[i].driver_private;
+        drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) config.crtc[i].driver_private;
 
         /* Don't do pageflipping if CRTCs are rotated. */
         if (drmmode_crtc.rotate_bo)
@@ -577,8 +577,8 @@ private void ms_dri2_exchange_buffers(DrawablePtr draw, DRI2BufferPtr front, DRI
     ScreenPtr screen = draw.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
     modesettingPtr ms = modesettingPTR(scrn);
-    msPixmapPrivPtr front_pix = msGetPixmapPriv(&ms.drmmode, front_priv.pixmap);
-    msPixmapPrivPtr back_pix = msGetPixmapPriv(&ms.drmmode, back_priv.pixmap);
+    msPixmapPrivPtr front_pix = mixin(msGetPixmapPriv!("&ms.drmmode", "front_priv.pixmap"));
+    msPixmapPrivPtr back_pix = mixin(msGetPixmapPriv!("&ms.drmmode", "back_priv.pixmap"));
     msPixmapPrivRec tmp_pix = void;
     RegionRec region = void;
     int tmp = void;

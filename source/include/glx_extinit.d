@@ -48,7 +48,7 @@ void GlxPushProvider(__GLXprovider* provider);
 
 // } else { /* GLXEXT */
 
-pragma(inline, true) private void xorgGlxCreateVendor() {}
+pragma(inline, true) void xorgGlxCreateVendor() {}
 
 // } /* GLEXT */
 

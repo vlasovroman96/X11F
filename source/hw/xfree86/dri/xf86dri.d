@@ -66,6 +66,8 @@ import dri_priv;
 import externs.drm;
 import include.protocol_versions;
 import xf86Extensions;
+import os.log;
+import dix.extension;
 
 private int DRIErrorBase;
 
@@ -117,7 +119,7 @@ private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
         isCapable = 0;
 
     xXF86DRIQueryDirectRenderingCapableReply reply = {
-        isCapable: isCapable
+        isCapable: cast(ubyte)isCapable
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -144,7 +146,7 @@ private int ProcXF86DRIOpenConnection(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     if (busIdString) {
-        busIdStringLength = strlen(busIdString);
+        busIdStringLength = cast(uint)strlen(busIdString);
         x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)busIdString, strlen(busIdString));
     }
 
@@ -219,7 +221,7 @@ private int ProcXF86DRIGetClientDriverName(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     if (clientDriverName) {
-        reply.clientDriverNameLength = strlen(clientDriverName);
+        reply.clientDriverNameLength = cast(uint)strlen(clientDriverName);
         x_rpcbuf_write_CARD8s(&rpcbuf, cast(CARD8*)clientDriverName, reply.clientDriverNameLength);
     }
 
@@ -359,12 +361,12 @@ private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
         return BadValue;
     }
 
-    reply.drawableX = X;
-    reply.drawableY = Y;
-    reply.drawableWidth = W;
-    reply.drawableHeight = H;
-    reply.backX = backX;
-    reply.backY = backY;
+    reply.drawableX = cast(short)X;
+    reply.drawableY = cast(short)Y;
+    reply.drawableWidth = cast(short)W;
+    reply.drawableHeight = cast(short)H;
+    reply.backX = cast(short)backX;
+    reply.backY = cast(short)backY;
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -373,10 +375,10 @@ private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
 
         for (int i = 0; i < reply.numClipRects; i++) {
             /* Clip cliprects to screen dimensions (redirected windows) */
-            CARD16 x1 = max(pClipRects[i].x1, 0);
-            CARD16 y1 = max(pClipRects[i].y1, 0);
-            CARD16 x2 = min(pClipRects[i].x2, pScreen.width);
-            CARD16 y2 = min(pClipRects[i].y2, pScreen.height);
+            CARD16 x1 = cast(ushort)max(pClipRects[i].x1, 0);
+            CARD16 y1 = cast(ushort)max(pClipRects[i].y1, 0);
+            CARD16 x2 = cast(ushort)min(pClipRects[i].x2, pScreen.width);
+            CARD16 y2 = cast(ushort)min(pClipRects[i].y2, pScreen.height);
 
             /* only write visible ones */
             if (x1 < x2 && y1 < y2) {
@@ -432,7 +434,7 @@ static if (HasVersion!"LONG64" && !HasVersion!"linux") {
 }
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-    x_rpcbuf_write_CARD8s(&rpcbuf, pDevPrivate, reply.devPrivateSize);
+    x_rpcbuf_write_CARD8s(&rpcbuf, cast(ubyte*)pDevPrivate, reply.devPrivateSize);
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
@@ -488,7 +490,7 @@ void XFree86DRIExtensionInit()
                                  XF86DRINumberErrors,
                                  &ProcXF86DRIDispatch,
                                  &ProcXF86DRIDispatch,
-                                 &XF86DRIResetProc, StandardMinorOpcode))) {
+                                 &XF86DRIResetProc, &StandardMinorOpcode)) !is null) {
         DRIErrorBase = extEntry.errorBase;
     }
 }

@@ -205,7 +205,7 @@ ScrnInfoPtr xf86AllocateScreen(DriverPtr drv, int flags)
     drv.refCount++;
     pScrn.module_ = DuplicateModule(cast(module_desc*)drv.module_, null);
 
-    pScrn.DriverFunc = *drv.driverFunc;
+    pScrn.DriverFunc = drv.driverFunc;
 
     return pScrn;
 }

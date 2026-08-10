@@ -50,7 +50,7 @@ void xf86InitVidMem();
 void xf86OSRingBell(int volume, int pitch, int duration);
 void xf86OSInputThreadInit();
 Bool xf86DeallocateGARTMemory(int screenNum, int key);
-int xf86RemoveSIGIOHandler(int fd);
+// int xf86RemoveSIGIOHandler(int fd);
 
 struct _VidMemInfo {
     Bool initialised;

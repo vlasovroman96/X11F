@@ -551,7 +551,7 @@ extern void  RROutputChanged(RROutputPtr output, Bool configChanged);
  * Create an output
  */
 
-extern void  RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength, void* devPrivate);
+// extern void  RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength, void* devPrivate);
 
 /*
  * Notify extension that output parameters have been changed
@@ -570,11 +570,11 @@ extern void  RROutputDestroy(RROutputPtr output);
 
 extern void  RRDeleteOutputProperty(RROutputPtr output, Atom property);
 
-extern void  RRPostPendingProperties(RROutputPtr output);
+// extern void  RRPostPendingProperties(RROutputPtr output);
 
-extern void  RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int format, int mode, c_ulong len, const(void)* value, Bool sendevent, Bool pending);
+// extern void  RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int format, int mode, c_ulong len, const(void)* value, Bool sendevent, Bool pending);
 
-extern void  RRConfigureOutputProperty(RROutputPtr output, Atom property, Bool pending, Bool range, Bool immutable_, int num_values, const(INT32)* values);
+// extern void  RRConfigureOutputProperty(RROutputPtr output, Atom property, Bool pending, Bool range, Bool immutable_, int num_values, const(INT32)* values);
 
 /* rrprovider.c */
 enum PRIME_SYNC_PROP =         "PRIME Synchronization";

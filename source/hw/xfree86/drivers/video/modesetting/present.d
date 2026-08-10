@@ -243,7 +243,7 @@ private Bool ms_present_check_unflip(RRCrtcPtr crtc, WindowPtr window, PixmapPtr
         return FALSE;
 
     for (i = 0; i < config.num_crtc; i++) {
-        drmmode_crtc_private_ptr drmmode_crtc = config.crtc[i].driver_private;
+        drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) config.crtc[i].driver_private;
 
         /* Don't do pageflipping if CRTCs are rotated. */
         if (drmmode_crtc.rotate_bo)
@@ -355,7 +355,7 @@ no_flip:
     /* Export some info about TearFree if Present can't flip anyway */
     if (reason && *reason == PRESENT_FLIP_REASON_UNKNOWN) {
         xf86CrtcPtr xf86_crtc = crtc.devPrivate;
-        drmmode_crtc_private_ptr drmmode_crtc = xf86_crtc.driver_private;
+        drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) xf86_crtc.driver_private;
         drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
 
         if (ms_tearfree_is_active_on_crtc(xf86_crtc)) {
@@ -458,7 +458,7 @@ private void ms_present_unflip(ScreenPtr screen, ulong event_id)
 
     for (i = 0; i < config.num_crtc; i++) {
         xf86CrtcPtr crtc = config.crtc[i];
-        drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+        drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
 
         if (!crtc.enabled)
             continue;

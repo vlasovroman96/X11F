@@ -45,6 +45,17 @@ import include.xf86;
 import xf86Xinput_priv;
 import include.xserver_properties;
 import include.os;
+import os.log;
+import hw.xfree86.common.xf86Helper;
+import dix.dixutils;
+import os.connection;
+import Xi.xiproperty;
+import xf86Option;
+import include.optionstr;
+import dix.devices;
+import dix.inpututils;
+import xf86Xinput;
+import std.conv;
 
 import hw.xfree86.drivers.input.inputtest.xf86_input_inputtest_protocol;
 
@@ -149,8 +160,8 @@ private Bool notify_sync_finished(ClientPtr ptr, void* closure)
 private void input_drain_callback(CallbackListPtr* callback, void* data, void* call_data)
 {
     void* drain_write_closure = void;
-    InputInfoPtr pInfo = data;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    InputInfoPtr pInfo = cast(_InputInfoRec*)data;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     bool notify_synchronization = false;
 
     pthread_mutex_lock(&driver_data.waiting_for_drain_mutex);
@@ -178,15 +189,15 @@ private void input_drain_callback(CallbackListPtr* callback, void* data, void* c
 private void read_events(int fd, int ready, void* data)
 {
     DeviceIntPtr dev = cast(DeviceIntPtr) data;
-    InputInfoPtr pInfo = dev.public_.devicePrivate;
+    InputInfoPtr pInfo = cast(_InputInfoRec*)dev.public_.devicePrivate;
     read_input_from_connection(pInfo);
 }
 
 private void try_accept_connection(int fd, int ready, void* data)
 {
     DeviceIntPtr dev = cast(DeviceIntPtr) data;
-    InputInfoPtr pInfo = dev.public_.devicePrivate;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    InputInfoPtr pInfo = cast(_InputInfoRec*)dev.public_.devicePrivate;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     int connection_fd = void;
     int flags = void;
 
@@ -215,8 +226,8 @@ private void try_accept_connection(int fd, int ready, void* data)
 
 private int device_on(DeviceIntPtr dev)
 {
-    InputInfoPtr pInfo = dev.public_.devicePrivate;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    InputInfoPtr pInfo = cast(_InputInfoRec*)dev.public_.devicePrivate;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Device turned on\n");
 
@@ -233,7 +244,7 @@ private int device_on(DeviceIntPtr dev)
 
 private void teardown_client_connection(InputInfoPtr pInfo)
 {
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     if (driver_data.client_state != CLIENT_STATE_NOT_CONNECTED) {
         RemoveNotifyFd(driver_data.connection_fd);
         xf86RemoveInputEventDrainCallback(&input_drain_callback, pInfo);
@@ -247,7 +258,7 @@ private void teardown_client_connection(InputInfoPtr pInfo)
 
 private int device_off(DeviceIntPtr dev)
 {
-    InputInfoPtr pInfo = dev.public_.devicePrivate;
+    InputInfoPtr pInfo = cast(_InputInfoRec*)dev.public_.devicePrivate;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Device turned off\n");
 
@@ -269,7 +280,7 @@ private void init_button_map(ubyte* btnmap, size_t size)
 
     memset(btnmap, 0, size);
     for (i = 0; i < size; i++)
-        btnmap[i] = i;
+        btnmap[i] = cast(ubyte)i;
 }
 
 private void init_button_labels(Atom* labels, size_t size)
@@ -303,7 +314,7 @@ private void init_pointer(InputInfoPtr pInfo)
     Atom[MAX_POINTER_NUM_AXES] axislabels = void;
 
     nbuttons = xf86SetIntOption(cast(_InputOption*)pInfo.options, "PointerButtonCount", 7);
-    has_pressure = xf86SetBoolOption(pInfo.options, "PointerHasPressure",
+    has_pressure = cast(bool)xf86SetBoolOption(pInfo.options, "PointerHasPressure",
                                      false);
 
     init_button_map(btnmap.ptr, mixin(ARRAY_SIZE!("btnmap.ptr")));
@@ -356,7 +367,7 @@ private void init_pointer_absolute(InputInfoPtr pInfo)
     Atom[MAX_POINTER_NUM_AXES] axislabels = void;
 
     nbuttons = xf86SetIntOption(cast(_InputOption*)pInfo.options, "PointerButtonCount", 7);
-    has_pressure = xf86SetBoolOption(pInfo.options, "PointerHasPressure",
+    has_pressure = cast(bool)xf86SetBoolOption(pInfo.options, "PointerHasPressure",
                                      false);
 
     init_button_map(btnmap.ptr, mixin(ARRAY_SIZE!("btnmap.ptr")));
@@ -405,8 +416,8 @@ private void init_proximity(InputInfoPtr pInfo)
 private void init_keyboard(InputInfoPtr pInfo)
 {
     DeviceIntPtr dev = pInfo.dev;
-    XkbRMLVOSet rmlvo = {0};
-    XkbRMLVOSet defaults = {0};
+    XkbRMLVOSet rmlvo = void;
+    XkbRMLVOSet defaults = void;
 
     XkbGetRulesDflts(&defaults);
 
@@ -482,8 +493,8 @@ private void init_gesture(InputInfoPtr pInfo)
 
 private void device_init(DeviceIntPtr dev)
 {
-    InputInfoPtr pInfo = dev.public_.devicePrivate;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    InputInfoPtr pInfo = cast(InputInfoPtr)dev.public_.devicePrivate;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     dev.public_.on = FALSE;
 
@@ -513,7 +524,7 @@ private void device_init(DeviceIntPtr dev)
 
 private void device_destroy(DeviceIntPtr dev)
 {
-    InputInfoPtr pInfo = dev.public_.devicePrivate;
+    InputInfoPtr pInfo = cast(_InputInfoRec*)dev.public_.devicePrivate;
     xf86IDrvMsg(pInfo, X_INFO, "Close\n");
 }
 
@@ -554,7 +565,7 @@ private void convert_to_valuator_mask(xf86ITValuatorData* event, ValuatorMask* m
 
 private void handle_client_version(InputInfoPtr pInfo, xf86ITEventClientVersion* event)
 {
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     xf86ITResponseServerVersion response = void;
 
     response.header.length = response.sizeof;
@@ -587,7 +598,7 @@ private void handle_client_version(InputInfoPtr pInfo, xf86ITEventClientVersion*
 
 private void handle_wait_for_sync(InputInfoPtr pInfo)
 {
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     bool notify_synchronization = false;
     void* drain_write_closure = void;
 
@@ -611,7 +622,7 @@ private void handle_wait_for_sync(InputInfoPtr pInfo)
 private void handle_motion(InputInfoPtr pInfo, xf86ITEventMotion* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     ValuatorMask* mask = driver_data.valuators;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling motion event\n");
@@ -625,7 +636,7 @@ private void handle_motion(InputInfoPtr pInfo, xf86ITEventMotion* event)
 private void handle_proximity(InputInfoPtr pInfo, xf86ITEventProximity* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     ValuatorMask* mask = driver_data.valuators;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling proximity event\n");
@@ -639,7 +650,7 @@ private void handle_proximity(InputInfoPtr pInfo, xf86ITEventProximity* event)
 private void handle_button(InputInfoPtr pInfo, xf86ITEventButton* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     ValuatorMask* mask = driver_data.valuators;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling button event\n");
@@ -654,7 +665,7 @@ private void handle_button(InputInfoPtr pInfo, xf86ITEventButton* event)
 private void handle_key(InputInfoPtr pInfo, xf86ITEventKey* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling key event\n");
 
@@ -666,7 +677,7 @@ private void handle_key(InputInfoPtr pInfo, xf86ITEventKey* event)
 private void handle_touch(InputInfoPtr pInfo, xf86ITEventTouch* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     ValuatorMask* mask = driver_data.valuators;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling touch event\n");
@@ -674,13 +685,13 @@ private void handle_touch(InputInfoPtr pInfo, xf86ITEventTouch* event)
     driver_data.last_event_num++;
 
     convert_to_valuator_mask(&event.valuators, mask);
-    xf86PostTouchEvent(dev, event.touchid, event.touch_type, 0, mask);
+    xf86PostTouchEvent(dev, event.touchid, cast(ushort)event.touch_type, 0, mask);
 }
 
 private void handle_gesture_swipe(InputInfoPtr pInfo, xf86ITEventGestureSwipe* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling gesture swipe event\n");
 
@@ -694,7 +705,7 @@ private void handle_gesture_swipe(InputInfoPtr pInfo, xf86ITEventGestureSwipe* e
 private void handle_gesture_pinch(InputInfoPtr pInfo, xf86ITEventGesturePinch* event)
 {
     DeviceIntPtr dev = pInfo.dev;
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     xf86IDrvMsg(pInfo, X_DEBUG, "Handling gesture pinch event\n");
 
@@ -761,7 +772,7 @@ private void client_ready_handle_event(InputInfoPtr pInfo, xf86ITEventAny* event
 
 private void handle_event(InputInfoPtr pInfo, xf86ITEventAny* event)
 {
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     if (!pInfo.dev.public_.on)
         return;
@@ -810,16 +821,17 @@ private int get_event_size(xf86ITEventType type)
         case XF86IT_EVENT_GESTURE_SWIPE: return xf86ITEventGestureSwipe.sizeof;
     default: break;}
     FatalError("xf86-input-inputtest: get_event_size() got undefined event type %d\n", cast(int)type);
+    assert(0);
 }
 
 private void read_input_from_connection(InputInfoPtr pInfo)
 {
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
 
     while (1) {
         int processed_size = 0;
-        int read_size = read(driver_data.connection_fd,
-                             driver_data.buffer.data + driver_data.buffer.valid_length,
+        int read_size = cast(int)read(driver_data.connection_fd,
+                             driver_data.buffer.data.ptr + driver_data.buffer.valid_length,
                              EVENT_BUFFER_SIZE - driver_data.buffer.valid_length);
 
         if (read_size < 0) {
@@ -835,7 +847,7 @@ private void read_input_from_connection(InputInfoPtr pInfo)
 
         while (1) {
             xf86ITEventHeader event_header = void;
-            char* event_begin = driver_data.buffer.data + processed_size;
+            char* event_begin = driver_data.buffer.data.ptr + processed_size;
 
             if (driver_data.buffer.valid_length - processed_size < xf86ITEventHeader.sizeof)
                 break;
@@ -879,8 +891,8 @@ private void read_input_from_connection(InputInfoPtr pInfo)
         }
 
         if (processed_size > 0) {
-            memmove(driver_data.buffer.data,
-                    driver_data.buffer.data + processed_size,
+            memmove(driver_data.buffer.data.ptr,
+                    driver_data.buffer.data.ptr + processed_size,
                     driver_data.buffer.valid_length - processed_size);
             driver_data.buffer.valid_length -= processed_size;
         }
@@ -950,12 +962,12 @@ private int pre_init(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
     char* device_type_option = void;
     sockaddr_un addr = void;
 
-    pInfo.type_name = 0;
-    pInfo.device_control = device_control;
-    pInfo.read_input = read_input;
+    pInfo.type_name = null;
+    pInfo.device_control = &device_control;
+    pInfo.read_input = &read_input;
     pInfo.control_proc = null;
     pInfo.switch_mode = null;
-
+    int fd;
     driver_data = device_alloc();
     if (!driver_data)
         goto fail;
@@ -988,9 +1000,9 @@ private int pre_init(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
     unlink(driver_data.socket_path);
 
 version (SOCK_NONBLOCK) {
-    driver_data.socket_fd = socket(PF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0);
+    driver_data.socket_fd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK, 0);
 } else {
-    int fd = socket(PF_UNIX, SOCK_STREAM, 0);
+    fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (fd >= 0) {
         flags = fcntl(fd, F_GETFL, 0);
         if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
@@ -1008,7 +1020,7 @@ version (SOCK_NONBLOCK) {
 
     memset(&addr, 0, addr.sizeof);
     addr.sun_family = AF_UNIX;
-    strncpy(addr.sun_path, driver_data.socket_path, ((addr.sun_path) - 1).sizeof);
+    strncpy(cast(char*)addr.sun_path.ptr, driver_data.socket_path, ((addr.sun_path).sizeof - 1));
 
     if (bind(driver_data.socket_fd, cast(sockaddr*) &addr, addr.sizeof) < 0) {
         xf86IDrvMsg(pInfo, X_ERROR, "Failed to assign address to the socket\n");
@@ -1062,7 +1074,7 @@ fail:
 
 private void uninit(InputDriverPtr drv, InputInfoPtr pInfo, int flags)
 {
-    xf86ITDevicePtr driver_data = pInfo.private_;
+    xf86ITDevicePtr driver_data = cast(_Xf86ITDevice*)pInfo.private_;
     free_driver_data(driver_data);
     pInfo.private_ = null;
     xf86DeleteInput(pInfo, flags);

@@ -261,7 +261,7 @@ struct _DriverRec {
     const(OptionInfoRec)* function(int chipid, int bustype) @nogc nothrow AvailableOptions;
     void* module_;
     int refCount;
-    xorgDriverFuncProc* driverFunc;
+    xorgDriverFuncProc driverFunc;
 
     const(pci_id_match)* supported_devices;
     Bool function(_DriverRec* drv, int entity_num, pci_device* dev, intptr_t match_data) @nogc nothrow PciProbe;

@@ -48,7 +48,7 @@ static this() {
         VersRec.modname = "wfb";
     }
     else {
-        VersRec.modname = fb;
+        VersRec.modname = "fb";
     }
 }
 

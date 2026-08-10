@@ -143,7 +143,7 @@ version (RANDR_12_INTERFACE) {
 
 void xf86CrtcDestroy(xf86CrtcPtr crtc)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(crtc.scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("crtc.scrn"));
     int c = void;
 
     (*crtc.funcs.destroy) (crtc);

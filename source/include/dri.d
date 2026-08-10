@@ -81,8 +81,8 @@ enum DRI_NO_WINDOWS =       0;
 enum DRI_3D_WINDOWS_ONLY =  1;
 enum DRI_ALL_WINDOWS =      2;
 
-alias ClipNotifyPtr = void function(WindowPtr, int, int);
-alias AdjustFramePtr = void function(ScrnInfoPtr pScrn, int x, int y);
+alias ClipNotifyPtr = void function(WindowPtr, int, int) @nogc nothrow;
+alias AdjustFramePtr = void function(ScrnInfoPtr pScrn, int x, int y) @nogc nothrow;
 
 /*
  * These functions can be wrapped by the DRI.  Each of these have
@@ -116,8 +116,8 @@ enum DRIINFO_MAJOR_VERSION =   5;
 enum DRIINFO_MINOR_VERSION =   4;
 enum DRIINFO_PATCH_VERSION =   0;
 
-alias DRITexOffsetStartProcPtr = ulong function(PixmapPtr pPix);
-alias DRITexOffsetFinishProcPtr = void function(PixmapPtr pPix);
+alias DRITexOffsetStartProcPtr = ulong function(PixmapPtr pPix) @nogc nothrow;
+alias DRITexOffsetFinishProcPtr = void function(PixmapPtr pPix) @nogc nothrow;
 
 struct _DRIInfoRec {
     /* driver call back functions
@@ -127,17 +127,17 @@ struct _DRIInfoRec {
      * Bump the DRIINFO minor number to indicate new fields.
      * Bump the DRIINFO major number to indicate binary-incompatible changes.
      */
-    Bool function(ScreenPtr pScreen, VisualPtr visual, drm_context_t hHWContext, void* pVisualConfigPriv, DRIContextType context) CreateContext;
-    void function(ScreenPtr pScreen, drm_context_t hHWContext, DRIContextType context) DestroyContext;
-    void function(ScreenPtr pScreen, DRISyncType syncType, DRIContextType readContextType, void* readContextStore, DRIContextType writeContextType, void* writeContextStore) SwapContext;
-    void function(WindowPtr pWin, RegionPtr prgn, CARD32 indx) InitBuffers;
-    void function(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc, CARD32 indx) MoveBuffers;
-    void function(ScreenPtr pScreen) TransitionTo3d;
-    void function(ScreenPtr pScreen) TransitionTo2d;
+    Bool function(ScreenPtr pScreen, VisualPtr visual, drm_context_t hHWContext, void* pVisualConfigPriv, DRIContextType context) @nogc nothrow CreateContext;
+    void function(ScreenPtr pScreen, drm_context_t hHWContext, DRIContextType context) @nogc nothrow DestroyContext;
+    void function(ScreenPtr pScreen, DRISyncType syncType, DRIContextType readContextType, void* readContextStore, DRIContextType writeContextType, void* writeContextStore) @nogc nothrow SwapContext;
+    void function(WindowPtr pWin, RegionPtr prgn, CARD32 indx) @nogc nothrow InitBuffers;
+    void function(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc, CARD32 indx) @nogc nothrow MoveBuffers;
+    void function(ScreenPtr pScreen) @nogc nothrow TransitionTo3d;
+    void function(ScreenPtr pScreen) @nogc nothrow TransitionTo2d;
 
-    void function(WindowPtr pWin, CARD32 indx) SetDrawableIndex;
-    Bool function(ScreenPtr pScreen) OpenFullScreen;
-    Bool function(ScreenPtr pScreen) CloseFullScreen;
+    void function(WindowPtr pWin, CARD32 indx) @nogc nothrow SetDrawableIndex;
+    Bool function(ScreenPtr pScreen) @nogc nothrow OpenFullScreen;
+    Bool function(ScreenPtr pScreen) @nogc nothrow CloseFullScreen;
 
     /* wrapped functions */
     DRIWrappedFuncsRec wrap;
@@ -164,11 +164,11 @@ struct _DRIInfoRec {
     Bool createDummyCtxPriv;
 
     /* New with DRI version 4.1.0 */
-    void function(ScreenPtr pScreen) TransitionSingleToMulti3D;
-    void function(ScreenPtr pScreen) TransitionMultiToSingle3D;
+    void function(ScreenPtr pScreen) @nogc nothrow TransitionSingleToMulti3D;
+    void function(ScreenPtr pScreen) @nogc nothrow TransitionMultiToSingle3D;
 
     /* New with DRI version 5.1.0 */
-    void function(ScreenPtr pScreen, WindowPtr* ppWin, int num) ClipNotify;
+    void function(ScreenPtr pScreen, WindowPtr* ppWin, int num) @nogc nothrow ClipNotify;
 
     /* New with DRI version 5.2.0 */
     Bool allocSarea;

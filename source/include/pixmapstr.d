@@ -109,7 +109,7 @@ struct _PixmapDirtyUpdate {
 alias PixmapDirtyUpdateRec = _PixmapDirtyUpdate;
 alias PixmapDirtyUpdatePtr = PixmapDirtyUpdateRec*;
 
-pragma(inline, true) private void PixmapRegionInit(RegionPtr region, PixmapPtr pixmap)
+pragma(inline, true) void PixmapRegionInit(RegionPtr region, PixmapPtr pixmap)
 {
     BoxRec box = {
         x2: cast(short)pixmap.drawable.width,

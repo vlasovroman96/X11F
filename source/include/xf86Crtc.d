@@ -45,7 +45,7 @@ import include.scrintstr;
 
 enum M_T_USERPREF =	0x80;
 
-enum HARDWARE_CURSOR_ARGB =				0x00004000;
+// enum HARDWARE_CURSOR_ARGB =				0x00004000;
 
 
 alias xf86CrtcRec = _xf86Crtc;
@@ -126,28 +126,28 @@ struct _xf86CrtcFuncs {
     * mode is DPMSModeOff, the crtc must be disabled sufficiently for it to
     * be safe to call mode_set.
     */
-    void function(xf86CrtcPtr crtc, int mode) dpms;
+    void function(xf86CrtcPtr crtc, int mode) @nogc nothrow dpms;
 
    /**
     * Saves the crtc's state for restoration on VT switch.
     */
-    void function(xf86CrtcPtr crtc) save;
+    void function(xf86CrtcPtr crtc) @nogc nothrow save;
 
    /**
     * Restore's the crtc's state at VT switch.
     */
-    void function(xf86CrtcPtr crtc) restore;
+    void function(xf86CrtcPtr crtc) @nogc nothrow restore;
 
     /**
      * Lock CRTC prior to mode setting, mostly for DRI.
      * Returns whether unlock is needed
      */
-    Bool function(xf86CrtcPtr crtc) lock;
+    Bool function(xf86CrtcPtr crtc) @nogc nothrow lock;
 
     /**
      * Unlock CRTC after mode setting, mostly for DRI
      */
-    void function(xf86CrtcPtr crtc) unlock;
+    void function(xf86CrtcPtr crtc) @nogc nothrow unlock;
 
     /**
      * Callback to adjust the mode to be set in the CRTC.
@@ -156,93 +156,93 @@ struct _xf86CrtcFuncs {
      * timings, which is used for panels with fixed timings or for
      * buses with clock limitations.
      */
-    Bool function(xf86CrtcPtr crtc, DisplayModePtr mode, DisplayModePtr adjusted_mode) mode_fixup;
+    Bool function(xf86CrtcPtr crtc, DisplayModePtr mode, DisplayModePtr adjusted_mode) @nogc nothrow mode_fixup;
 
     /**
      * Prepare CRTC for an upcoming mode set.
      */
-    void function(xf86CrtcPtr crtc) prepare;
+    void function(xf86CrtcPtr crtc) @nogc nothrow prepare;
 
     /**
      * Callback for setting up a video mode after fixups have been made.
      */
-    void function(xf86CrtcPtr crtc, DisplayModePtr mode, DisplayModePtr adjusted_mode, int x, int y) mode_set;
+    void function(xf86CrtcPtr crtc, DisplayModePtr mode, DisplayModePtr adjusted_mode, int x, int y) @nogc nothrow mode_set;
 
     /**
      * Commit mode changes to a CRTC
      */
-    void function(xf86CrtcPtr crtc) commit;
+    void function(xf86CrtcPtr crtc) @nogc nothrow commit;
 
     /* Set the color ramps for the CRTC to the given values. */
-    void function(xf86CrtcPtr crtc, CARD16* red, CARD16* green, CARD16* blue, int size) gamma_set;
+    void function(xf86CrtcPtr crtc, CARD16* red, CARD16* green, CARD16* blue, int size) @nogc nothrow gamma_set;
 
     /**
      * Allocate the shadow area, delay the pixmap creation until needed
      */
-    void* function(xf86CrtcPtr crtc, int width, int height) shadow_allocate;
+    void* function(xf86CrtcPtr crtc, int width, int height) @nogc nothrow shadow_allocate;
 
     /**
      * Create shadow pixmap for rotation support
      */
-    PixmapPtr function(xf86CrtcPtr crtc, void* data, int width, int height) shadow_create;
+    PixmapPtr function(xf86CrtcPtr crtc, void* data, int width, int height) @nogc nothrow shadow_create;
 
     /**
      * Destroy shadow pixmap
      */
-    void function(xf86CrtcPtr crtc, PixmapPtr pPixmap, void* data) shadow_destroy;
+    void function(xf86CrtcPtr crtc, PixmapPtr pPixmap, void* data) @nogc nothrow shadow_destroy;
 
     /**
      * Set cursor colors
      */
-    void function(xf86CrtcPtr crtc, int bg, int fg) set_cursor_colors;
+    void function(xf86CrtcPtr crtc, int bg, int fg) @nogc nothrow set_cursor_colors;
 
     /**
      * Set cursor position
      */
-    void function(xf86CrtcPtr crtc, int x, int y) set_cursor_position;
+    void function(xf86CrtcPtr crtc, int x, int y) @nogc nothrow set_cursor_position;
 
     /**
      * Show cursor
      */
-    void function(xf86CrtcPtr crtc) show_cursor;
-    Bool function(xf86CrtcPtr crtc) show_cursor_check;
+    void function(xf86CrtcPtr crtc) @nogc nothrow show_cursor;
+    Bool function(xf86CrtcPtr crtc) @nogc nothrow show_cursor_check;
 
     /**
      * Hide cursor
      */
-    void function(xf86CrtcPtr crtc) hide_cursor;
+    void function(xf86CrtcPtr crtc) @nogc nothrow hide_cursor;
 
     /**
      * Load monochrome image
      */
-    void function(xf86CrtcPtr crtc, CARD8* image) load_cursor_image;
-    Bool function(xf86CrtcPtr crtc, CARD8* image) load_cursor_image_check;
+    void function(xf86CrtcPtr crtc, CARD8* image) @nogc nothrow load_cursor_image;
+    Bool function(xf86CrtcPtr crtc, CARD8* image) @nogc nothrow load_cursor_image_check;
 
     /**
      * Load ARGB image
      */
-    void function(xf86CrtcPtr crtc, CARD32* image) load_cursor_argb;
-    Bool function(xf86CrtcPtr crtc, CARD32* image) load_cursor_argb_check;
+    void function(xf86CrtcPtr crtc, CARD32* image) @nogc nothrow load_cursor_argb;
+    Bool function(xf86CrtcPtr crtc, CARD32* image) @nogc nothrow load_cursor_argb_check;
 
     /**
      * Clean up driver-specific bits of the crtc
      */
-    void function(xf86CrtcPtr crtc) destroy;
+    void function(xf86CrtcPtr crtc) @nogc nothrow destroy;
 
     /**
      * Less fine-grained mode setting entry point for kernel modesetting
      */
-    Bool function(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, int x, int y) set_mode_major;
+    Bool function(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, int x, int y) @nogc nothrow set_mode_major;
 
     /**
      * Callback for panning. Doesn't change the mode.
      * Added in ABI version 2
      */
-    void function(xf86CrtcPtr crtc, int x, int y) set_origin;
+    void function(xf86CrtcPtr crtc, int x, int y) @nogc nothrow set_origin;
 
     /**
      */
-    Bool function(xf86CrtcPtr crtc, PixmapPtr pixmap) set_scanout_pixmap;
+    Bool function(xf86CrtcPtr crtc, PixmapPtr pixmap) @nogc nothrow set_scanout_pixmap;
 
 }alias xf86CrtcFuncsRec = _xf86CrtcFuncs;
 alias xf86CrtcFuncsPtr = _xf86CrtcFuncs*;
@@ -308,7 +308,7 @@ struct _xf86Crtc {
      */
     void* driver_private;
 
-version (RANDR_12_INTERFACE) {
+// version (RANDR_12_INTERFACE) {
     /**
      * RandR crtc
      *
@@ -316,9 +316,9 @@ version (RANDR_12_INTERFACE) {
      * points at the associated crtc object
      */
     RRCrtcPtr randr_crtc;
-} else {
-    void* randr_crtc;
-}
+// } else {
+//     void* randr_crtc;
+// }
 
     /**
      * Current cursor is ARGB
@@ -418,7 +418,7 @@ struct _xf86OutputFuncs {
      * Called to allow the output a chance to create properties after the
      * RandR objects have been created.
      */
-    void function(xf86OutputPtr output) create_resources;
+    void function(xf86OutputPtr output) @nogc nothrow create_resources;
 
     /**
      * Turns the output on/off, or sets intermediate power levels if available.
@@ -427,17 +427,17 @@ struct _xf86OutputFuncs {
      * mode is DPMSModeOff, the output must be disabled, as the DPLL may be
      * disabled afterwards.
      */
-    void function(xf86OutputPtr output, int mode) dpms;
+    void function(xf86OutputPtr output, int mode) @nogc nothrow dpms;
 
     /**
      * Saves the output's state for restoration on VT switch.
      */
-    void function(xf86OutputPtr output) save;
+    void function(xf86OutputPtr output) @nogc nothrow save;
 
     /**
      * Restore's the output's state at VT switch.
      */
-    void function(xf86OutputPtr output) restore;
+    void function(xf86OutputPtr output) @nogc nothrow restore;
 
     /**
      * Callback for testing a video mode for a given output.
@@ -447,7 +447,7 @@ struct _xf86OutputFuncs {
      *
      * \return MODE_OK if the mode is valid, or another MODE_* otherwise.
      */
-    int function(xf86OutputPtr output, DisplayModePtr pMode) mode_valid;
+    int function(xf86OutputPtr output, DisplayModePtr pMode) @nogc nothrow mode_valid;
 
     /**
      * Callback to adjust the mode to be set in the CRTC.
@@ -456,17 +456,17 @@ struct _xf86OutputFuncs {
      * timings, which is used for panels with fixed timings or for
      * buses with clock limitations.
      */
-    Bool function(xf86OutputPtr output, DisplayModePtr mode, DisplayModePtr adjusted_mode) mode_fixup;
+    Bool function(xf86OutputPtr output, DisplayModePtr mode, DisplayModePtr adjusted_mode) @nogc nothrow mode_fixup;
 
     /**
      * Callback for preparing mode changes on an output
      */
-    void function(xf86OutputPtr output) prepare;
+    void function(xf86OutputPtr output) @nogc nothrow prepare;
 
     /**
      * Callback for committing mode changes on an output
      */
-    void function(xf86OutputPtr output) commit;
+    void function(xf86OutputPtr output) @nogc nothrow commit;
 
     /**
      * Callback for setting up a video mode after fixups have been made.
@@ -475,12 +475,12 @@ struct _xf86OutputFuncs {
      * must be all that's necessary for the output, to turn the output on
      * after this function is called.
      */
-    void function(xf86OutputPtr output, DisplayModePtr mode, DisplayModePtr adjusted_mode) mode_set;
+    void function(xf86OutputPtr output, DisplayModePtr mode, DisplayModePtr adjusted_mode) @nogc nothrow mode_set;
 
     /**
      * Probe for a connected output, and return detect_status.
      */
-     xf86OutputStatus function(xf86OutputPtr output) detect;
+     xf86OutputStatus function(xf86OutputPtr output) @nogc nothrow detect;
 
     /**
      * Query the device for the modes it provides.
@@ -489,26 +489,26 @@ struct _xf86OutputFuncs {
      *
      * \return singly-linked list of modes or NULL if no modes found.
      */
-     DisplayModePtr function(xf86OutputPtr output) get_modes;
+     DisplayModePtr function(xf86OutputPtr output) @nogc nothrow get_modes;
 
-static if (RANDR_12_INTERFACE) {
+// static if (RANDR_12_INTERFACE) {
     /**
      * Callback when an output's property has changed.
      */
     Bool function(xf86OutputPtr output, Atom property, RRPropertyValuePtr value) set_property;
-}
-static if (RANDR_13_INTERFACE) {
+// }
+// static if (RANDR_13_INTERFACE) {
     /**
      * Callback to get an updated property value
      */
     Bool function(xf86OutputPtr output, Atom property) get_property;
-}
-static if (RANDR_GET_CRTC_INTERFACE) {
+// }
+// static if (RANDR_GET_CRTC_INTERFACE) {
     /**
      * Callback to get current CRTC for a given output
      */
      xf86CrtcPtr function(xf86OutputPtr output) get_crtc;
-}
+// }
     /**
      * Clean up driver-specific bits of the output
      */
@@ -811,7 +811,7 @@ version (RANDR_12_INTERFACE) {
 }alias xf86CrtcConfigRec = _xf86CrtcConfig;
 alias xf86CrtcConfigPtr = _xf86CrtcConfig*;
 
-extern int  xf86CrtcConfigPrivateIndex;
+// extern int  xf86CrtcConfigPrivateIndex;
 
 enum string XF86_CRTC_CONFIG_PTR(string p) = `(cast(xf86CrtcConfigPtr) ((` ~ p ~ `).privates[xf86CrtcConfigPrivateIndex].ptr))`;
 
@@ -849,16 +849,16 @@ private auto xf86CompatRRCrtc(ScrnInfoPtr pScrn)
  * Initialize xf86CrtcConfig structure
  */
 
-extern void  xf86CrtcConfigInit(ScrnInfoPtr scrn, const(xf86CrtcConfigFuncsRec)* funcs);
+// extern void  xf86CrtcConfigInit(ScrnInfoPtr scrn, const(xf86CrtcConfigFuncsRec)* funcs);
 
-extern void  xf86CrtcSetSizeRange(ScrnInfoPtr scrn, int minWidth, int minHeight, int maxWidth, int maxHeight);
+// extern void  xf86CrtcSetSizeRange(ScrnInfoPtr scrn, int minWidth, int minHeight, int maxWidth, int maxHeight);
 
 /*
  * Crtc functions
  */
-extern void  xf86CrtcCreate(ScrnInfoPtr scrn, const(xf86CrtcFuncsRec)* funcs);
+// extern void  xf86CrtcCreate(ScrnInfoPtr scrn, const(xf86CrtcFuncsRec)* funcs);
 
-extern void  xf86CrtcDestroy(xf86CrtcPtr crtc);
+// extern void  xf86CrtcDestroy(xf86CrtcPtr crtc);
 
 /**
  * Sets the given video mode on the given crtc
@@ -873,9 +873,9 @@ extern void  xf86CrtcSetOrigin(xf86CrtcPtr crtc, int x, int y);
 /*
  * Assign crtc rotation during mode set
  */
-extern void  xf86CrtcRotate(xf86CrtcPtr crtc);
+// extern void  xf86CrtcRotate(xf86CrtcPtr crtc);
 
-extern void  xf86RotateCrtcRedisplay(xf86CrtcPtr crtc, PixmapPtr dst_pixmap, DrawableRec* src_drawable, RegionPtr region, Bool transform_src);
+// extern void  xf86RotateCrtcRedisplay(xf86CrtcPtr crtc, PixmapPtr dst_pixmap, DrawableRec* src_drawable, RegionPtr region, Bool transform_src);
 
 /*
  * Clean up any rotation data, used when a crtc is turned off
@@ -901,13 +901,13 @@ extern void  xf86CrtcInUse(xf86CrtcPtr crtc);
 /*
  * Output functions
  */
-extern void  xf86OutputCreate(ScrnInfoPtr scrn, const(xf86OutputFuncsRec)* funcs, const(char)* name);
+// extern void  xf86OutputCreate(ScrnInfoPtr scrn, const(xf86OutputFuncsRec)* funcs, const(char)* name);
 
 extern void  xf86OutputUseScreenMonitor(xf86OutputPtr output, Bool use_screen_monitor);
 
 extern void  xf86OutputRename(xf86OutputPtr output, const(char)* name);
 
-extern void  xf86OutputDestroy(xf86OutputPtr output);
+// extern void  xf86OutputDestroy(xf86OutputPtr output);
 
 extern void  xf86ProbeOutputModes(ScrnInfoPtr pScrn, int maxX, int maxY);
 
@@ -919,33 +919,33 @@ alias ScreenInitRetType =	int;
 alias ScreenInitRetType =	Bool;
 }
 
-extern void  xf86CrtcScreenInit(ScreenPtr pScreen);
+// extern void  xf86CrtcScreenInit(ScreenPtr pScreen);
 
 extern void  xf86AssignNoOutputInitialSize(ScrnInfoPtr scrn, const(OptionInfoRec)* options, int* no_output_width, int* no_output_height);
 
-extern void  xf86InitialConfiguration(ScrnInfoPtr pScrn, Bool canGrow);
+// extern void  xf86InitialConfiguration(ScrnInfoPtr pScrn, Bool canGrow);
 
-extern void  xf86DPMSSet(ScrnInfoPtr pScrn, int PowerManagementMode, int flags);
+// extern void  xf86DPMSSet(ScrnInfoPtr pScrn, int PowerManagementMode, int flags);
 
-extern void  xf86SaveScreen(ScreenPtr pScreen, int mode);
+// extern void  xf86SaveScreen(ScreenPtr pScreen, int mode);
 
-extern void  xf86DisableUnusedFunctions(ScrnInfoPtr pScrn);
+// extern void  xf86DisableUnusedFunctions(ScrnInfoPtr pScrn);
 
-extern void  xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr desired);
+// extern void  xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr desired);
 
-extern void  xf86SetSingleMode(ScrnInfoPtr pScrn, DisplayModePtr desired, Rotation rotation);
+// extern void  xf86SetSingleMode(ScrnInfoPtr pScrn, DisplayModePtr desired, Rotation rotation);
 
 /**
  * Set the EDID information for the specified output
  */
-extern void  xf86OutputSetEDID(xf86OutputPtr output, xf86MonPtr edid_mon);
+// extern void  xf86OutputSetEDID(xf86OutputPtr output, xf86MonPtr edid_mon);
 
 /**
  * Set the TILE information for the specified output
  */
-extern void  xf86OutputSetTile(xf86OutputPtr output, xf86CrtcTileInfo* tile_info);
+// extern void  xf86OutputSetTile(xf86OutputPtr output, xf86CrtcTileInfo* tile_info);
 
-extern void  xf86OutputParseKMSTile(const(char)* tile_data, int tile_length, xf86CrtcTileInfo* tile_info);
+// extern void  xf86OutputParseKMSTile(const(char)* tile_data, int tile_length, xf86CrtcTileInfo* tile_info);
 
 /**
  * Return the list of modes supported by the EDID information
@@ -980,7 +980,7 @@ Bool _xf86_di_dga_reinit_internal(ScreenPtr pScreen);
  * the information from the outputs
  */
 
-extern void  xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen);
+// extern void  xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen);
 
 /*
  * Get a standard string name for a connector type
@@ -1043,11 +1043,11 @@ version (XV) {
 extern void  xf86_crtc_clip_video_helper(ScrnInfoPtr pScrn, xf86CrtcPtr* crtc_ret, xf86CrtcPtr desired_crtc, BoxPtr dst, INT32* xa, INT32* xb, INT32* ya, INT32* yb, RegionPtr reg, INT32 width, INT32 height);
 }
 
-extern void  xf86_wrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr new_);
+// extern void  xf86_wrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr new_);
 
-extern void  xf86_unwrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr old);
+// extern void  xf86_unwrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr old);
 
-extern void  xf86_crtc_notify(ScreenPtr pScreen);
+// extern void  xf86_crtc_notify(ScreenPtr pScreen);
 
 /**
  * Gamma
@@ -1055,7 +1055,7 @@ extern void  xf86_crtc_notify(ScreenPtr pScreen);
 
 // extern void  xf86_crtc_supports_gamma(ScrnInfoPtr pScrn);
 
-extern void  xf86ProviderSetup(ScrnInfoPtr scrn, const(xf86ProviderFuncsRec)* funcs, const(char)* name);
+// extern void  xf86ProviderSetup(ScrnInfoPtr scrn, const(xf86ProviderFuncsRec)* funcs, const(char)* name);
 
 extern void  xf86DetachAllCrtc(ScrnInfoPtr scrn);
 

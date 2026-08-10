@@ -48,7 +48,7 @@ struct _miPointerScreenFuncRec {
 }alias miPointerScreenFuncRec = _miPointerScreenFuncRec;
 alias miPointerScreenFuncPtr = _miPointerScreenFuncRec*;
 
-extern void  miDCInitialize(ScreenPtr, miPointerScreenFuncPtr);
+// extern void  miDCInitialize(ScreenPtr, miPointerScreenFuncPtr);
 
 // extern void  miPointerGetScreen(DeviceIntPtr pDev);
 

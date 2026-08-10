@@ -313,7 +313,7 @@ extern int InitValuatorClassDeviceStruct(DeviceIntPtr, int, Atom*, int, int);
 
 extern int InitFocusClassDeviceStruct(DeviceIntPtr);
 
-extern int InitTouchClassDeviceStruct(DeviceIntPtr, uint, uint, uint);
+// extern int InitTouchClassDeviceStruct(DeviceIntPtr, uint, uint, uint);
 
 // extern int InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches);
 
@@ -341,7 +341,7 @@ alias IntegerCtrlProcPtr = void function(DeviceIntPtr, IntegerCtrl*);
 
 extern int InitIntegerFeedbackClassDeviceStruct(DeviceIntPtr, IntegerCtrlProcPtr);
 
-extern int InitPointerDeviceStruct(DevicePtr, CARD8*, int, Atom*, PtrCtrlProcPtr, int, int, Atom*);
+// extern int InitPointerDeviceStruct(DevicePtr, CARD8*, int, Atom*, PtrCtrlProcPtr, int, int, Atom*);
 
 extern int InitKeyboardDeviceStruct(DeviceIntPtr, XkbRMLVOSet*, BellProcPtr, KbdCtrlProcPtr);
 
@@ -449,7 +449,7 @@ extern int DDXRingBell(int volume, int pitch, int duration);
 extern int valuator_mask_fetch(const(ValuatorMask)* mask, int valnum, int* val);
 // extern int valuator_mask_fetch_double(const(ValuatorMask)* mask, int valnum, double* val);
 // extern int valuator_mask_has_unaccelerated(const(ValuatorMask)* mask);
-extern int valuator_mask_set_unaccelerated(ValuatorMask* mask, int valuator, double accel, double unaccel);
+// extern int valuator_mask_set_unaccelerated(ValuatorMask* mask, int valuator, double accel, double unaccel);
 extern int valuator_mask_set_absolute_unaccelerated(ValuatorMask* mask, int valuator, int absolute, double unaccel);
 extern int valuator_mask_get_accelerated(const(ValuatorMask)* mask, int valuator);
 // extern int valuator_mask_get_unaccelerated(const(ValuatorMask)* mask, int valuator);

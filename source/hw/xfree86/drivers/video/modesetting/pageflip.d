@@ -180,7 +180,7 @@ private void ms_pageflip_abort(void* data)
 
 private Bool do_queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc, uint flags, uint seq, uint fb_id, int x, int y)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
 
     while (drmmode_crtc_flip(crtc, fb_id, x, y, flags, cast(void*)cast(c_long)seq)) {
@@ -322,7 +322,7 @@ private void ms_print_pageflip_error(int screen_index, const(char)* log_prefix, 
 
 private Bool ms_tearfree_dri_flip(modesettingPtr ms, xf86CrtcPtr crtc, void* event, ms_pageflip_handler_proc pageflip_handler, ms_pageflip_abort_proc pageflip_abort)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
     ms_crtc_pageflip* flip = void;
     ms_flipdata* flipdata = void;
@@ -551,7 +551,7 @@ error_free_event:
 
 Bool ms_tearfree_dri_abort(xf86CrtcPtr crtc, Bool function(void* data, void* match_data) match, void* match_data)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
     ms_crtc_pageflip* flip = void;
 
@@ -569,7 +569,7 @@ Bool ms_tearfree_dri_abort(xf86CrtcPtr crtc, Bool function(void* data, void* mat
 
 void ms_tearfree_dri_abort_all(xf86CrtcPtr crtc)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
     ms_crtc_pageflip* flip = void, tmp = void;
     ulong usec = 0, msc = 0;
@@ -611,7 +611,7 @@ private void ms_tearfree_dri_notify(drmmode_tearfree_ptr trf, ulong msc, ulong u
 private void ms_tearfree_flip_abort(void* data)
 {
     xf86CrtcPtr crtc = data;
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
 
     trf.flip_seq = 0;
@@ -621,7 +621,7 @@ private void ms_tearfree_flip_abort(void* data)
 private void ms_tearfree_flip_handler(ulong msc, ulong usec, void* data)
 {
     xf86CrtcPtr crtc = data;
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
 
     /* Swap the buffers and complete the flip */
@@ -634,7 +634,7 @@ private void ms_tearfree_flip_handler(ulong msc, ulong usec, void* data)
 
 Bool ms_do_tearfree_flip(ScreenPtr screen, xf86CrtcPtr crtc)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
     uint idx = trf.back_idx, seq = void;
 
@@ -669,7 +669,7 @@ no_flip:
 
 Bool ms_tearfree_is_active_on_crtc(xf86CrtcPtr crtc)
 {
-    drmmode_crtc_private_ptr drmmode_crtc = crtc.driver_private;
+    drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) crtc.driver_private;
     drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
 
     /* If TearFree is enabled, XServer owns the VT, and the CRTC is active */
