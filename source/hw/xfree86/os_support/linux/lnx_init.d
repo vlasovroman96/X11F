@@ -49,7 +49,36 @@ version (HAVE_SYS_SYSMACROS_H) {
 import sys.sysmacros;
 }
 
+
+import core.sys.posix.sys.ioctl;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.socket;
+import core.sys.posix.sys.un;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import core.stdc.errno;
+
+import os.log_priv;
+
+import include.os;
+import xf86_priv;
+import include.xf86Priv;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSproc;;
+import include.xf86Privstr;
+
+import os.log;
+import xf86Events;
+import xf86Globals;
+import externs.sys.sysmacros;;
+import os.utils;
+
+
+
 enum K_OFF = 0x4;
+
+alias FALSE = include.misc.FALSE;
+alias TRUE = include.misc.TRUE;
 
 
 private Bool KeepTty = FALSE;
@@ -71,13 +100,13 @@ private int switch_to(int vt, const(char)* from)
 {
     int ret = void;
 
-    SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_ACTIVATE, vt));
+    mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_ACTIVATE, vt)"));
     if (ret < 0) {
         LogMessageVerb(X_WARNING, 1, "%s: VT_ACTIVATE failed: %s\n", from, strerror(errno));
         return 0;
     }
 
-    SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_WAITACTIVE, vt));
+    mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_WAITACTIVE, vt)"));
     if (ret < 0) {
         LogMessageVerb(X_WARNING, 1, "%s: VT_WAITACTIVE failed: %s\n", from, strerror(errno));
         return 0;
@@ -93,7 +122,7 @@ int linux_parse_vt_settings(int may_fail)
 {
     int i = void, fd = -1, ret = void, current_vt = -1;
     vt_stat vts = void;
-    stat st = void;
+    stat_t st = void;
     MessageType from = X_PROBED;
 
     /* Only do this once */
@@ -118,7 +147,7 @@ int linux_parse_vt_settings(int may_fail)
         }
 
         if (xf86Info.ShareVTs) {
-            SYSCALL(ret = ioctl(fd, VT_GETSTATE, &vts));
+            mixin(SYSCALL!("ret = ioctl(fd, VT_GETSTATE, &vts)"));
             if (ret < 0) {
                 if (may_fail)
                     return 0;
@@ -128,7 +157,7 @@ int linux_parse_vt_settings(int may_fail)
             xf86Info.vtno = vts.v_active;
         }
         else {
-            SYSCALL(ret = ioctl(fd, VT_OPENQRY, &xf86Info.vtno));
+            mixin(SYSCALL!("ret = ioctl(fd, VT_OPENQRY, &xf86Info.vtno)"));
             if (ret < 0) {
                 if (may_fail)
                     return 0;
@@ -176,7 +205,7 @@ void xf86OpenConsole()
     int i = void, ret = void;
     vt_stat vts = void;
     vt_mode VT = void;
-    const(char)*[3] vcs = [ "/dev/vc/%d", "/dev/tty%d", null ];
+    const(char)*[3] vcs = cast(const(char)*[])[ "/dev/vc/%d", "/dev/tty%d", null ];
 
     if (serverGeneration == 1) {
         linux_parse_vt_settings(FALSE);
@@ -223,7 +252,7 @@ void xf86OpenConsole()
          * Linux doesn't switch to an active vt after the last close of a vt,
          * so we do this ourselves by remembering which is active now.
          */
-        SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_GETSTATE, &vts));
+        mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_GETSTATE, &vts)"));
         if (ret < 0)
             LogMessageVerb(X_WARNING, 1, "xf86OpenConsole: VT_GETSTATE failed: %s\n",
                            strerror(errno));
@@ -239,37 +268,37 @@ void xf86OpenConsole()
             if (!switch_to(xf86Info.vtno, "xf86OpenConsole"))
                 FatalError("xf86OpenConsole: Switching VT failed\n");
 
-            SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_GETMODE, &VT));
+            mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_GETMODE, &VT)"));
             if (ret < 0)
                 FatalError("xf86OpenConsole: VT_GETMODE failed %s\n",
                            strerror(errno));
 
-            OsSignal(SIGUSR1, xf86VTRequest);
+            OsSignal(SIGUSR1, &xf86VTRequest);
 
             VT.mode = VT_PROCESS;
             VT.relsig = SIGUSR1;
             VT.acqsig = SIGUSR1;
 
-            SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_SETMODE, &VT));
+            mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_SETMODE, &VT)"));
             if (ret < 0)
                 FatalError
                     ("xf86OpenConsole: VT_SETMODE VT_PROCESS failed: %s\n",
                      strerror(errno));
 
-            SYSCALL(ret = ioctl(xf86Info.consoleFd, KDSETMODE, KD_GRAPHICS));
+            mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, KDSETMODE, KD_GRAPHICS)"));
             if (ret < 0)
                 FatalError("xf86OpenConsole: KDSETMODE KD_GRAPHICS failed %s\n",
                            strerror(errno));
 
             tcgetattr(xf86Info.consoleFd, &tty_attr);
-            SYSCALL(ioctl(xf86Info.consoleFd, KDGKBMODE, &tty_mode));
+            mixin(SYSCALL!("ioctl(xf86Info.consoleFd, KDGKBMODE, &tty_mode)"));
 
             /* disable kernel special keys and buffering */
-            SYSCALL(ret = ioctl(xf86Info.consoleFd, KDSKBMODE, K_OFF));
+            mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, KDSKBMODE, K_OFF)"));
             if (ret < 0)
             {
                 /* fine, just disable special keys */
-                SYSCALL(ret = ioctl(xf86Info.consoleFd, KDSKBMODE, K_RAW));
+                mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, KDSKBMODE, K_RAW)"));
                 if (ret < 0)
                     FatalError("xf86OpenConsole: KDSKBMODE K_RAW failed %s\n",
                                strerror(errno));
@@ -319,22 +348,22 @@ void xf86CloseConsole()
     xf86SetConsoleHandler(null, null);
 
     /* Back to text mode ... */
-    SYSCALL(ret = ioctl(xf86Info.consoleFd, KDSETMODE, KD_TEXT));
+    mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, KDSETMODE, KD_TEXT)"));
     if (ret < 0)
         LogMessageVerb(X_WARNING, 1, "xf86CloseConsole: KDSETMODE failed: %s\n",
                        strerror(errno));
 
-    SYSCALL(ioctl(xf86Info.consoleFd, KDSKBMODE, tty_mode));
+    mixin(SYSCALL!("ioctl(xf86Info.consoleFd, KDSKBMODE, tty_mode)"));
     tcsetattr(xf86Info.consoleFd, TCSANOW, &tty_attr);
 
-    SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_GETMODE, &VT));
+    mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_GETMODE, &VT)"));
     if (ret < 0)
         LogMessageVerb(X_WARNING, 1, "xf86CloseConsole: VT_GETMODE failed: %s\n",
                        strerror(errno));
     else {
         /* set dflt vt handling */
         VT.mode = VT_AUTO;
-        SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_SETMODE, &VT));
+        mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_SETMODE, &VT)"));
         if (ret < 0)
             LogMessageVerb(X_WARNING, 1, "xf86CloseConsole: VT_SETMODE failed: %s\n",
                            strerror(errno));
@@ -346,7 +375,7 @@ void xf86CloseConsole()
         * vt is active now.
         */
         if (activeVT >= 0) {
-            SYSCALL(ret = ioctl(xf86Info.consoleFd, VT_GETSTATE, &vts));
+            mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_GETSTATE, &vts)"));
             if (ret < 0) {
                 LogMessageVerb(X_WARNING, 1, "xf86OpenConsole: VT_GETSTATE failed: %s\n",
                                strerror(errno));

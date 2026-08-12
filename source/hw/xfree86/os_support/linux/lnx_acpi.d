@@ -19,6 +19,12 @@ import xf86_priv;
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSproc;;
+import include.xf86Privstr;
+
+import os.log;
+import xf86Events;
+import xf86Globals;
+
 
 enum ACPI_SOCKET =  "/var/run/acpid.socket";
 
@@ -64,7 +70,7 @@ private int lnxACPIGetEventFromOs(int fd, pmEvent* events, int num)
     memset(ev.ptr, 0, LINE_LENGTH);
 
     do {
-        n = read(fd, ev.ptr, LINE_LENGTH);
+        n = cast(int)read(fd, ev.ptr, LINE_LENGTH);
     } while ((n == -1) && (errno == EAGAIN || errno == EINTR));
 
     if (n <= 0) {
@@ -84,20 +90,20 @@ private int lnxACPIGetEventFromOs(int fd, pmEvent* events, int num)
 
         strtok(ev.ptr, " ");
 
-        if (((GFX = strtok(null, " ")) == 0))
+        if (((GFX = strtok(null, " ")) is null))
             return 0;
 version (none) {
         ErrorF("GFX: %s\n", GFX);
 }
 
-        if (((notify = strtok(null, " ")) == 0))
+        if (((notify = strtok(null, " ")) is null))
             return 0;
         notify_l = strtoul(notify, null, 16);
 version (none) {
         ErrorF("notify: 0x%lx\n", notify_l);
 }
 
-        if (((data = strtok(null, " ")) == 0))
+        if (((data = strtok(null, " ")) is null))
             return 0;
 version (none) {
         data_l = strtoul(data, null, 16);
@@ -146,11 +152,11 @@ PMClose lnxACPIOpen()
     if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) > -1) {
         memset(&addr, 0, addr.sizeof);
         addr.sun_family = AF_UNIX;
-        strcpy(addr.sun_path, ACPI_SOCKET);
+        strcpy(cast(char*)addr.sun_path.ptr, ACPI_SOCKET.ptr);
         if ((r = connect(fd, cast(sockaddr*) &addr, addr.sizeof)) == -1) {
             if (!warned)
                 LogMessageVerb(X_WARNING, 3, "Open ACPI failed (%s) (%s)\n",
-                            ACPI_SOCKET, strerror(errno));
+                            ACPI_SOCKET.ptr, strerror(errno));
             warned = 1;
             shutdown(fd, 2);
             close(fd);
@@ -158,16 +164,16 @@ PMClose lnxACPIOpen()
         }
     }
 
-    xf86PMGetEventFromOs = lnxACPIGetEventFromOs;
-    xf86PMConfirmEventToOs = lnxACPIConfirmEventToOs;
-    ACPIihPtr = xf86AddGeneralHandler(fd, xf86HandlePMEvents, null);
-    LogMessageVerb(X_INFO, 3, "Open ACPI successful (%s)\n", ACPI_SOCKET);
+    xf86PMGetEventFromOs = &lnxACPIGetEventFromOs;
+    xf86PMConfirmEventToOs = &lnxACPIConfirmEventToOs;
+    ACPIihPtr = xf86AddGeneralHandler(fd, &xf86HandlePMEvents, null);
+    LogMessageVerb(X_INFO, 3, "Open ACPI successful (%s)\n", ACPI_SOCKET.ptr);
     warned = 0;
 
-    return lnxCloseACPI;
+    return &lnxCloseACPI;
 }
 
-private void lnxCloseACPI()
+void lnxCloseACPI()
 {
     int fd = void;
 

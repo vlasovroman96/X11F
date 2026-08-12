@@ -61,7 +61,7 @@ void xf86LockZoom(ScreenPtr pScreen, int lock);
 // void xf86InitOrigins();
 
 /* xf86Events.c */
-InputHandlerProc xf86SetConsoleHandler(InputHandlerProc handler, void* data);
+// InputHandlerProc xf86SetConsoleHandler(InputHandlerProc handler, void* data);
 Bool xf86VTOwner();
 void xf86VTEnter();
 void xf86VTLeave();

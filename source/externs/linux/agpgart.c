@@ -1,2 +1,4 @@
+#pragma attribute(push, nogc, nothrow)
 #include <stddef.h>
-#include <linux/agpgart.h>
+#include "agpgart.h"
+#pragma attribute(pop)

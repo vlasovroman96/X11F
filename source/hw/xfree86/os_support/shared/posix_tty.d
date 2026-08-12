@@ -131,7 +131,7 @@ int xf86OpenSerial(XF86OptionPtr options)
     fd = xf86CheckIntOption(options, "fd", -1);
 
     if (fd == -1)
-        SYSCALL(fd = open(dev, O_RDWR | O_NONBLOCK));
+        mixin(SYSCALL!("fd = open(dev, O_RDWR | O_NONBLOCK)"));
 
     if (fd == -1) {
         LogMessageVerb(X_ERROR, 1,
@@ -148,7 +148,7 @@ int xf86OpenSerial(XF86OptionPtr options)
     }
 
     /* set up default port parameters */
-    SYSCALL(tcgetattr(fd, &t));
+    mixin(SYSCALL!("tcgetattr(fd, &t)"));
     t.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR
                    | IGNCR | ICRNL | IXON);
     t.c_oflag &= ~OPOST;
@@ -161,24 +161,24 @@ int xf86OpenSerial(XF86OptionPtr options)
     t.c_cc[VMIN] = 1;
     t.c_cc[VTIME] = 0;
 
-    SYSCALL(tcsetattr(fd, TCSANOW, &t));
+    mixin(SYSCALL!("tcsetattr(fd, TCSANOW, &t)"));
 
     if (xf86SetSerial(fd, options) == -1) {
-        SYSCALL(close(fd));
+        mixin(SYSCALL!("close(fd)"));
         free(dev);
         return -1;
     }
 
-    SYSCALL(i = fcntl(fd, F_GETFL, 0));
+    mixin(SYSCALL!("i = fcntl(fd, F_GETFL, 0)"));
     if (i == -1) {
-        SYSCALL(close(fd));
+        mixin(SYSCALL!("close(fd)"));
         free(dev);
         return -1;
     }
     i &= ~O_NONBLOCK;
-    SYSCALL(i = fcntl(fd, F_SETFL, i));
+    mixin(SYSCALL!("i = fcntl(fd, F_SETFL, i)"));
     if (i == -1) {
-        SYSCALL(close(fd));
+        mixin(SYSCALL!("close(fd)"));
         free(dev);
         return -1;
     }
@@ -200,7 +200,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
     if (!isatty(fd))
         return 0;
 
-    SYSCALL(tcgetattr(fd, &t));
+    mixin(SYSCALL!("tcgetattr(fd, &t)"));
 
     if ((val = xf86SetIntOption(cast(_InputOption*)options, "BaudRate", 0))) {
         if ((baud = GetBaud(val))) {
@@ -305,9 +305,9 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
 version (CLEARDTR_SUPPORT) {
 version (TIOCMBIC) {
         val = TIOCM_DTR;
-        SYSCALL(ioctl(fd, TIOCMBIC, &val));
+        mixin(SYSCALL!("ioctl(fd, TIOCMBIC, &val)"));
 } else {
-        SYSCALL(ioctl(fd, TIOCCDTR, null));
+        mixin(SYSCALL!("ioctl(fd, TIOCCDTR, null)"));
 }
 } else {
         LogMessageVerb(X_WARNING, 1, "Option ClearDTR not supported on this OS\n");
@@ -322,7 +322,7 @@ version (TIOCMBIC) {
         xf86MarkOptionUsedByName(options, "ClearRTS");
     }
 
-    SYSCALL(r = tcsetattr(fd, TCSANOW, &t));
+    mixin(SYSCALL!("r = tcsetattr(fd, TCSANOW, &t)"));
     return r;
 }
 
@@ -338,7 +338,7 @@ int xf86SetSerialSpeed(int fd, int speed)
     if (!isatty(fd))
         return 0;
 
-    SYSCALL(tcgetattr(fd, &t));
+    mixin(SYSCALL!("tcgetattr(fd, &t)"));
 
     if ((baud = GetBaud(speed))) {
         cfsetispeed(&t, baud);
@@ -349,7 +349,7 @@ int xf86SetSerialSpeed(int fd, int speed)
         return -1;
     }
 
-    SYSCALL(r = tcsetattr(fd, TCSANOW, &t));
+    mixin(SYSCALL!("r = tcsetattr(fd, TCSANOW, &t)"));
     return r;
 }
 
@@ -358,7 +358,7 @@ int xf86ReadSerial(int fd, void* buf, int count)
     int r = void;
     int i = void;
 
-    SYSCALL(r = read(fd, buf, count));
+    mixin(SYSCALL!("r = read(fd, buf, count)"));
     DebugF("ReadingSerial: 0x%x", cast(ubyte) *((cast(ubyte*) buf)));
     for (i = 1; i < r; i++)
         DebugF(", 0x%x", cast(ubyte) *((cast(ubyte*) buf) + i));
@@ -375,7 +375,7 @@ int xf86WriteSerial(int fd, const(void)* buf, int count)
     for (i = 1; i < count; i++)
         DebugF(", 0x%x", cast(ubyte) *((cast(ubyte*) buf) + i));
     DebugF("\n");
-    SYSCALL(r = write(fd, buf, count));
+    mixin(SYSCALL!("r = write(fd, buf, count)"));
     return r;
 }
 
@@ -383,7 +383,7 @@ int xf86CloseSerial(int fd)
 {
     int r = void;
 
-    SYSCALL(r = close(fd));
+    mixin(SYSCALL!("r = close(fd)"));
     return r;
 }
 
@@ -399,10 +399,10 @@ int xf86WaitForInput(int fd, int timeout)
     timeout = (timeout + 999) / 1000;
 
     if (fd >= 0) {
-        SYSCALL(r = xserver_poll(&poll_fd, 1, timeout));
+        mixin(SYSCALL!("r = xserver_poll(&poll_fd, 1, timeout)"));
     }
     else {
-        SYSCALL(r = xserver_poll(&poll_fd, 0, timeout));
+        mixin(SYSCALL!("r = xserver_poll(&poll_fd, 0, timeout)"));
     }
     xf86ErrorFVerb(9, "poll returned %d\n", r);
     return r;
@@ -518,12 +518,12 @@ version (TIOCMGET) {} else {
         osStateMask = getOsStateMask();
 
     state = xf2osState(state);
-    SYSCALL((ret = ioctl(fd, TIOCMGET, &s)));
+    mixin(SYSCALL!("(ret = ioctl(fd, TIOCMGET, &s))"));
     if (ret < 0)
         return -1;
     s &= ~osStateMask;
     s |= state;
-    SYSCALL((ret = ioctl(fd, TIOCMSET, &s)));
+    mixin(SYSCALL!("(ret = ioctl(fd, TIOCMSET, &s))"));
     if (ret < 0)
         return -1;
     else
@@ -546,7 +546,7 @@ int xf86GetSerialModemState(int fd)
 version (TIOCMGET) {} else {
     return -1;
 } version (TIOCMGET) {
-    SYSCALL((ret = ioctl(fd, TIOCMGET, &s)));
+    mixin(SYSCALL!("(ret = ioctl(fd, TIOCMGET, &s))"));
     if (ret < 0)
         return -1;
     return os2xfState(s);
@@ -569,7 +569,7 @@ version (TIOCMGET) {} else {
     return -1;
 } version (TIOCMGET) {
     s = xf2osState(bits);
-    SYSCALL((ret = ioctl(fd, TIOCMBIS, &s)));
+    mixin(SYSCALL!("(ret = ioctl(fd, TIOCMBIS, &s))"));
     return ret;
 }
 }
@@ -590,7 +590,7 @@ version (TIOCMGET) {} else {
     return -1;
 } version (TIOCMGET) {
     s = xf2osState(bits);
-    SYSCALL((ret = ioctl(fd, TIOCMBIC, &s)));
+    mixin(SYSCALL!("(ret = ioctl(fd, TIOCMBIC, &s))"));
     return ret;
 }
 }

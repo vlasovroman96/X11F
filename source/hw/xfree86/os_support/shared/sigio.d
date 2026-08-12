@@ -137,7 +137,7 @@ private void xf86SIGIO(int sig)
 
     inSignalContext = TRUE;
 
-    SYSCALL(r = xserver_poll(xf86SigIOFds, xf86SigIONum, 0));
+    mixin(SYSCALL!("r = xserver_poll(xf86SigIOFds, xf86SigIONum, 0)"));
     for (f = 0; r > 0 && f < xf86SigIONum; f++) {
         if (xf86SigIOFds[f].revents & POLLIN) {
             for (i = 0; i < xf86SigIOMax; i++)

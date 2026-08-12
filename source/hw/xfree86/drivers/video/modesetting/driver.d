@@ -111,7 +111,7 @@ import hw.xfree86.drivers.video.modesetting.vblank;
 import hw.xfree86.modes.xf86Crtc;
 import hw.xfree86.loader.loader;
 import randr.randr;
-
+import xf86Globals;
 
 alias SetupFnPtr = extern(C) Bool function(ScreenPtr) @nogc nothrow;
 alias AddFnPtr = extern(C) Bool function(ScreenPtr, PixmapPtr, ShadowUpdateProc, ShadowWindowProc,

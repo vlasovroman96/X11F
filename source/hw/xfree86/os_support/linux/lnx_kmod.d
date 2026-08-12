@@ -41,7 +41,7 @@ int xf86LoadKernelModule(const(char)* modName)
     /* get the path to the modprobe program */
     fd = open(MODPROBE_PATH_FILE, O_RDONLY);
     if (fd >= 0) {
-        int count = read(fd, mpPath.ptr, MAX_PATH - 1);
+        int count = cast(int)read(fd, mpPath.ptr, MAX_PATH - 1);
 
         if (count <= 0) {
             mpPath[0] = 0;

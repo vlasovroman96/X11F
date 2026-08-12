@@ -127,8 +127,8 @@ extern xf86SetDGAModeProc xf86SetDGAMode;
 alias InputInfoPtr = _InputInfoRec*;
 
 extern void  SetTimeSinceLastInputEvent();
-extern void * xf86AddGeneralHandler(int fd, InputHandlerProc proc, void* data);
-extern void  xf86RemoveGeneralHandler(void* handler);
+// extern void * xf86AddGeneralHandler(int fd, InputHandlerProc proc, void* data);
+// extern void  xf86RemoveGeneralHandler(void* handler);
 
 /* xf86Helper.c */
 

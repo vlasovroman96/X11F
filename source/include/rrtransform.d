@@ -48,6 +48,6 @@ struct _rrTransform {
  *
  * Return TRUE if the resulting transform is not a simple translation.
  */
-extern void  RRTransformCompute(int x, int y, int width, int height, Rotation rotation, RRTransformPtr rr_transform, PictTransformPtr transform, pixman_f_transform* f_transform, pixman_f_transform* f_inverse);
+// extern void  RRTransformCompute(int x, int y, int width, int height, Rotation rotation, RRTransformPtr rr_transform, PictTransformPtr transform, pixman_f_transform* f_transform, pixman_f_transform* f_inverse);
 
                           /* _RRTRANSFORM_H_ */

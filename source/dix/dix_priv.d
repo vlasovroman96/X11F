@@ -133,9 +133,9 @@ enum string VALIDATE_DRAWABLE_AND_GC(string drawID, string pDraw, string mode) =
 
 // Bool CreateConnectionBlock();
 
-void EnableLimitedSchedulingLatency();
+// void EnableLimitedSchedulingLatency();
 
-void DisableLimitedSchedulingLatency();
+// void DisableLimitedSchedulingLatency();
 
 int dix_main(int argc, char** argv, char** envp);
 

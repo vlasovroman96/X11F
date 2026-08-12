@@ -33,6 +33,20 @@ import externs.linux.kd;
 
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
+import os.log_priv;
+
+import include.os;
+import xf86_priv;
+import include.xf86Priv;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSproc;;
+import include.xf86Privstr;
+
+import os.log;
+import xf86Events;
+import xf86Globals;
+import externs.linux.agpgart;
+
 
 void xf86OSRingBell(int loudness, int pitch, int duration)
 {

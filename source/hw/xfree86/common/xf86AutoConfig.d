@@ -249,13 +249,13 @@ version (__sun) {
         const(char)* cp = void;
         int iret = void;
 
-        SYSCALL(iret = ioctl(xf86Info.consoleFd, VIS_GETIDENTIFIER, &visid));
+        mixin(SYSCALL!("iret = ioctl(xf86Info.consoleFd, VIS_GETIDENTIFIER, &visid)"));
         if (iret < 0) {
             int fbfd = void;
 
             fbfd = open(xf86SolarisFbDev, O_RDONLY);
             if (fbfd >= 0) {
-                SYSCALL(iret = ioctl(fbfd, VIS_GETIDENTIFIER, &visid));
+                mixin(SYSCALL!("iret = ioctl(fbfd, VIS_GETIDENTIFIER, &visid)"));
                 close(fbfd);
             }
         }

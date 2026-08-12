@@ -238,8 +238,9 @@ public import core.stdc.limits;
 enum MAP_FAILED = cast(void *)-1;
 
 
-enum string SYSCALL(string call) = `while(((` ~ call ~ `) == -1) && (errno == EINTR)) {}`;
-
+enum string SYSCALL(string call) = `
+    while ((` ~ call ~ `) == -1 && errno == EINTR) {}
+`;
 public import include.xf86_OSproc;;
 
                           /* _XF86_OSLIB_H */

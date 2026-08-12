@@ -100,7 +100,7 @@ enum M_PRIME =           (K/256.0 * M);
 
 DisplayModePtr xf86GTFMode(int h_pixels, int v_lines, float freq, int interlaced, int margins)
 {
-    DisplayModeRec* mode = XNFcallocarray(1, DisplayModeRec.sizeof);
+    DisplayModeRec* mode = cast(_DisplayModeRec*)XNFcallocarray(1, DisplayModeRec.sizeof);
 
     float h_pixels_rnd = void;
     float v_lines_rnd = void;

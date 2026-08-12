@@ -37,7 +37,7 @@ extern(C): __gshared:
 
  
 public import include.xlibre_ptrtypes;
-public import include.include.xf86Privstr;
+public import include.xf86Privstr;
 public import include.input;
 public import xf86Bus;
 
@@ -55,7 +55,7 @@ public import xf86Bus;
 
 // extern ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
 // extern int xf86NumGPUScreens;
-extern int  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
+// extern int  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
 enum DEFAULT_DPI =		96;
 
 

@@ -56,7 +56,7 @@ import include.dixstruct;
 import include.xvdix;
 import hw.xfree86.common.xf86xvpriv;
 
-import hw.xfree86.common.xf86sbusBus_priv;;
+// import hw.xfree86.common.xf86sbusBus_priv;;
 import hw.xfree86.os_support.bus.xf86Sbus_priv;
 import include.xf86sbusBus;
 import externs.linux.fbio;
@@ -73,7 +73,7 @@ import Flags;
 import hw.xfree86.common.xf86Helper;
 import dix.events;
 import include.optionstr;
-import Sbus.c;
+// import Sbus.c;
 import os.log_priv;
 import dix.screen_hooks;
 import Xext.xvmain;

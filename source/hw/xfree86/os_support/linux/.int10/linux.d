@@ -29,6 +29,7 @@ import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;
 import core.sys.posix.unistd;
 import core.stdc.string;
+import xf86Bus;
 
 import include.xf86int10;
 
@@ -67,7 +68,7 @@ private Bool readLegacy(pci_device* dev, ubyte* buf, int base, int len)
         return FALSE;
 
     memcpy(buf, map, len);
-    pci_device_unmap_legacy(dev, man, len);
+    pci_device_unmap_legacy(dev, map, len);
 
     return TRUE;
 }
@@ -83,8 +84,8 @@ xf86Int10InfoPtr xf86ExtendedInitInt10(int entityIndex, int Flags)
     void* options = null;
     int low_mem = void;
     int high_mem = -1;
-    char* base = SHMERRORPTR;
-    char* base_high = SHMERRORPTR;
+    char* base = cast(char*)SHMERRORPTR;
+    char* base_high = cast(char*)SHMERRORPTR;
     int pagesize = void;
     memType cs = void;
     legacyVGARec vga = void;

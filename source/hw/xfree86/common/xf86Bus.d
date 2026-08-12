@@ -52,7 +52,7 @@ import include.xf86Priv;
 /* Bus-specific headers */
 
 import xf86Bus;
-import hw.xfree86.common.xf86sbusBus_priv;;
+// import hw.xfree86.common.xf86sbusBus_priv;;
 import xf86platformBus_priv;
 
 import include.xf86_OSproc;;

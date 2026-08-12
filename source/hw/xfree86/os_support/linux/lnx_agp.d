@@ -30,8 +30,56 @@ import externs.linux.agpgart;
 } 
 static if (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__" || HasVersion!"__NetBSD__" || HasVersion!"__OpenBSD__" || HasVersion!"__DragonFly__") {
 import core.sys.posix.sys.ioctl;
+import core.sys.posix.unistd;
+
 import sys.agpio;
 }
+
+import include.xf86Privstr;
+
+import os.log;
+import core.sys.posix.sys.ioctl;
+
+import xf86Events;
+import core.sys.posix.unistd;
+
+import xf86Globals;
+import hw.xfree86.common.xf86Helper;;
+import os.log;
+import xf86Globals;
+import dix.events;
+public import xf86Configure;
+import core.sys.posix.sys.ioctl;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.socket;
+import core.sys.posix.sys.un;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import core.stdc.errno;
+
+import os.log_priv;
+
+import include.os;
+import xf86_priv;
+import include.xf86Priv;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSproc;;
+import include.xf86Privstr;
+
+import os.log;
+import xf86Events;
+import xf86Globals;
+import externs.linux.agpgart;
+
+enum AGPIOC_INFO = 0x40004100;
+enum AGPIOC_ACQUIRE = 0x00004101;
+enum AGPIOC_RELEASE = 0x00004102;
+enum AGPIOC_ALLOCATE = 0x40104106;
+enum AGPIOC_DEALLOCATE = 0x40104107;
+enum AGPIOC_BIND = 0x40104108;
+enum AGPIOC_UNBIND = 0x40084109;
+
+alias TRUE = include.misc.TRUE;
 
 enum AGP_DEVICE =		"/dev/agpgart";
 
@@ -242,7 +290,7 @@ int xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physi
     if (!GARTInit(screenNum) || acquiredScreen != screenNum)
         return -1;
 
-    pages = (size / AGP_PAGE_SIZE);
+    pages = cast(int)(size / AGP_PAGE_SIZE);
     if (size % AGP_PAGE_SIZE != 0)
         pages++;
 
@@ -286,7 +334,9 @@ version (linux) {
         return FALSE;
     }
 
-    return TRUE;}
+    return TRUE;
+    }
+    assert(0);
 }
 
 /* Bind GART memory with "key" at "offset" */
@@ -310,7 +360,7 @@ Bool xf86BindGARTMemory(int screenNum, int key, c_ulong offset)
                    offset, AGP_PAGE_SIZE);
         return FALSE;
     }
-    pageOffset = offset / AGP_PAGE_SIZE;
+    pageOffset = cast(int)(offset / AGP_PAGE_SIZE);
 
     xf86DrvMsgVerb(screenNum, X_INFO, 3,
                    "xf86BindGARTMemory: bind key %d at 0x%08lx "

@@ -130,6 +130,7 @@ import build.xorg_config;
 
 import hw.xfree86.os_support.bus.Pci;
 import hw.xfree86.os_support.xf86_os_support;
+import externs.pciaccess;
 
 // #if (defined(__alpha__) || defined(__ia64__)) && defined (__linux__)
 enum PCI_DOM_MASK =	0x01ff;
