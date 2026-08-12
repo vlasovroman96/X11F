@@ -30,6 +30,16 @@ import include.xf86Priv;
 import include.compiler;
 import xf86cmap;
 import hw.xfree86.os_support.bus.Pci;
+import hw.xfree86.common.xf86Helper;
+import externs.X11.extensions.dpmsconst;
+import xf86Globals;
+import xf86Option;
+import xf86pciBus;
+import include.optionstr;
+import include.xf86cmap;
+import dix.events;
+
+
 
 enum SAVE_FONT1 = 1;
 
@@ -143,7 +153,8 @@ private CARD8[768] defaultDAC = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 }                          /* NEED_SAVED_CMAP */
-
+enum string slowbcopy_tobus(string src, string dst, string count) = `xf86SlowBcopy(cast(ubyte*)(`~src~`),cast(ubyte*)(`~dst~`),(`~count~`));`;
+enum string slowbcopy_frombus(string src, string dst, string count) = `xf86SlowBcopy(cast(ubyte*)(`~src~`),cast(ubyte*)(`~dst~`),(`~count~`));`;
 /*
  * Standard VGA versions of the register access functions.
  */
@@ -293,30 +304,30 @@ private void stdWriteEnable(vgaHWPtr hwp, CARD8 value)
 
 void vgaHWSetStdFuncs(vgaHWPtr hwp)
 {
-    hwp.writeCrtc = stdWriteCrtc;
-    hwp.readCrtc = stdReadCrtc;
-    hwp.writeGr = stdWriteGr;
-    hwp.readGr = stdReadGr;
-    hwp.readST00 = stdReadST00;
-    hwp.readST01 = stdReadST01;
-    hwp.readFCR = stdReadFCR;
-    hwp.writeFCR = stdWriteFCR;
-    hwp.writeAttr = stdWriteAttr;
-    hwp.readAttr = stdReadAttr;
-    hwp.writeSeq = stdWriteSeq;
-    hwp.readSeq = stdReadSeq;
-    hwp.writeMiscOut = stdWriteMiscOut;
-    hwp.readMiscOut = stdReadMiscOut;
-    hwp.enablePalette = stdEnablePalette;
-    hwp.disablePalette = stdDisablePalette;
-    hwp.writeDacMask = stdWriteDacMask;
-    hwp.readDacMask = stdReadDacMask;
-    hwp.writeDacWriteAddr = stdWriteDacWriteAddr;
-    hwp.writeDacReadAddr = stdWriteDacReadAddr;
-    hwp.writeDacData = stdWriteDacData;
-    hwp.readDacData = stdReadDacData;
-    hwp.readEnable = stdReadEnable;
-    hwp.writeEnable = stdWriteEnable;
+    hwp.writeCrtc = &stdWriteCrtc;
+    hwp.readCrtc = &stdReadCrtc;
+    hwp.writeGr = &stdWriteGr;
+    hwp.readGr = &stdReadGr;
+    hwp.readST00 = &stdReadST00;
+    hwp.readST01 = &stdReadST01;
+    hwp.readFCR = &stdReadFCR;
+    hwp.writeFCR = &stdWriteFCR;
+    hwp.writeAttr = &stdWriteAttr;
+    hwp.readAttr = &stdReadAttr;
+    hwp.writeSeq = &stdWriteSeq;
+    hwp.readSeq = &stdReadSeq;
+    hwp.writeMiscOut = &stdWriteMiscOut;
+    hwp.readMiscOut = &stdReadMiscOut;
+    hwp.enablePalette = &stdEnablePalette;
+    hwp.disablePalette = &stdDisablePalette;
+    hwp.writeDacMask = &stdWriteDacMask;
+    hwp.readDacMask = &stdReadDacMask;
+    hwp.writeDacWriteAddr = &stdWriteDacWriteAddr;
+    hwp.writeDacReadAddr = &stdWriteDacReadAddr;
+    hwp.writeDacData = &stdWriteDacData;
+    hwp.readDacData = &stdReadDacData;
+    hwp.readEnable = &stdReadEnable;
+    hwp.writeEnable = &stdWriteEnable;
 
     hwp.io = pci_legacy_open_io(hwp.dev, 0, 64 * 1024);
 }
@@ -332,37 +343,37 @@ enum string moutb(string p,string v) = `MMIO_OUT8(hwp.MMIOBase, (hwp.MMIOOffset 
 
 private void mmioWriteCrtc(vgaHWPtr hwp, CARD8 index, CARD8 value)
 {
-    mixin(moutb!(`hwp.IOBase + VGA_CRTC_INDEX_OFFSET`, `index`));
-    mixin(moutb!(`hwp.IOBase + VGA_CRTC_DATA_OFFSET`, `value`));
+    mixin(moutb!(`hwp.IOBase + VGA_CRTC_INDEX_OFFSET`, `index`) ~`;`);
+    mixin(moutb!(`hwp.IOBase + VGA_CRTC_DATA_OFFSET`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadCrtc(vgaHWPtr hwp, CARD8 index)
 {
-    mixin(moutb!(`hwp.IOBase + VGA_CRTC_INDEX_OFFSET`, `index`));
+    mixin(moutb!(`hwp.IOBase + VGA_CRTC_INDEX_OFFSET`, `index`) ~`;`);
     return mixin(minb!(`hwp.IOBase + VGA_CRTC_DATA_OFFSET`));
 }
 
 private void mmioWriteGr(vgaHWPtr hwp, CARD8 index, CARD8 value)
 {
-    mixin(moutb!(`VGA_GRAPH_INDEX`, `index`));
-    mixin(moutb!(`VGA_GRAPH_DATA`, `value`));
+    mixin(moutb!(`VGA_GRAPH_INDEX`, `index`) ~`;`);
+    mixin(moutb!(`VGA_GRAPH_DATA`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadGr(vgaHWPtr hwp, CARD8 index)
 {
-    mixin(moutb!(`VGA_GRAPH_INDEX`, `index`));
+    mixin(moutb!(`VGA_GRAPH_INDEX`, `index`) ~`;`);
     return mixin(minb!(`VGA_GRAPH_DATA`));
 }
 
 private void mmioWriteSeq(vgaHWPtr hwp, CARD8 index, CARD8 value)
 {
-    mixin(moutb!(`VGA_SEQ_INDEX`, `index`));
-    mixin(moutb!(`VGA_SEQ_DATA`, `value`));
+    mixin(moutb!(`VGA_SEQ_INDEX`, `index`) ~`;`);
+    mixin(moutb!(`VGA_SEQ_DATA`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadSeq(vgaHWPtr hwp, CARD8 index)
 {
-    mixin(moutb!(`VGA_SEQ_INDEX`, `index`));
+    mixin(moutb!(`VGA_SEQ_INDEX`, `index`) ~`;`);
     return mixin(minb!(`VGA_SEQ_DATA`));
 }
 
@@ -383,7 +394,7 @@ private CARD8 mmioReadFCR(vgaHWPtr hwp)
 
 private void mmioWriteFCR(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`hwp.IOBase + VGA_FEATURE_W_OFFSET`, `value`));
+    mixin(moutb!(`hwp.IOBase + VGA_FEATURE_W_OFFSET`, `value`) ~`;`);
 }
 
 private void mmioWriteAttr(vgaHWPtr hwp, CARD8 index, CARD8 value)
@@ -394,8 +405,8 @@ private void mmioWriteAttr(vgaHWPtr hwp, CARD8 index, CARD8 value)
         index |= 0x20;
 
     cast(void) mixin(minb!(`hwp.IOBase + VGA_IN_STAT_1_OFFSET`));
-    mixin(moutb!(`VGA_ATTR_INDEX`, `index`));
-    mixin(moutb!(`VGA_ATTR_DATA_W`, `value`));
+    mixin(moutb!(`VGA_ATTR_INDEX`, `index`) ~`;`);
+    mixin(moutb!(`VGA_ATTR_DATA_W`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadAttr(vgaHWPtr hwp, CARD8 index)
@@ -406,13 +417,13 @@ private CARD8 mmioReadAttr(vgaHWPtr hwp, CARD8 index)
         index |= 0x20;
 
     cast(void) mixin(minb!(`hwp.IOBase + VGA_IN_STAT_1_OFFSET`));
-    mixin(moutb!(`VGA_ATTR_INDEX`, `index`));
+    mixin(moutb!(`VGA_ATTR_INDEX`, `index`) ~`;`);
     return mixin(minb!(`VGA_ATTR_DATA_R`));
 }
 
 private void mmioWriteMiscOut(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`VGA_MISC_OUT_W`, `value`));
+    mixin(moutb!(`VGA_MISC_OUT_W`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadMiscOut(vgaHWPtr hwp)
@@ -423,20 +434,20 @@ private CARD8 mmioReadMiscOut(vgaHWPtr hwp)
 private void mmioEnablePalette(vgaHWPtr hwp)
 {
     cast(void) mixin(minb!(`hwp.IOBase + VGA_IN_STAT_1_OFFSET`));
-    mixin(moutb!(`VGA_ATTR_INDEX`, `0x00`));
+    mixin(moutb!(`VGA_ATTR_INDEX`, `0x00`) ~`;`);
     hwp.paletteEnabled = TRUE;
 }
 
 private void mmioDisablePalette(vgaHWPtr hwp)
 {
     cast(void) mixin(minb!(`hwp.IOBase + VGA_IN_STAT_1_OFFSET`));
-    mixin(moutb!(`VGA_ATTR_INDEX`, `0x20`));
+    mixin(moutb!(`VGA_ATTR_INDEX`, `0x20`) ~`;`);
     hwp.paletteEnabled = FALSE;
 }
 
 private void mmioWriteDacMask(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`VGA_DAC_MASK`, `value`));
+    mixin(moutb!(`VGA_DAC_MASK`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadDacMask(vgaHWPtr hwp)
@@ -446,17 +457,17 @@ private CARD8 mmioReadDacMask(vgaHWPtr hwp)
 
 private void mmioWriteDacReadAddr(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`VGA_DAC_READ_ADDR`, `value`));
+    mixin(moutb!(`VGA_DAC_READ_ADDR`, `value`) ~`;`);
 }
 
 private void mmioWriteDacWriteAddr(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`VGA_DAC_WRITE_ADDR`, `value`));
+    mixin(moutb!(`VGA_DAC_WRITE_ADDR`, `value`) ~`;`);
 }
 
 private void mmioWriteDacData(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`VGA_DAC_DATA`, `value`));
+    mixin(moutb!(`VGA_DAC_DATA`, `value`) ~`;`);
 }
 
 private CARD8 mmioReadDacData(vgaHWPtr hwp)
@@ -471,37 +482,37 @@ private CARD8 mmioReadEnable(vgaHWPtr hwp)
 
 private void mmioWriteEnable(vgaHWPtr hwp, CARD8 value)
 {
-    mixin(moutb!(`VGA_ENABLE`, `value`));
+    mixin(moutb!(`VGA_ENABLE`, `value`) ~`;`);
 }
 
 void vgaHWSetMmioFuncs(vgaHWPtr hwp, CARD8* base, int offset)
 {
-    hwp.writeCrtc = mmioWriteCrtc;
-    hwp.readCrtc = mmioReadCrtc;
-    hwp.writeGr = mmioWriteGr;
-    hwp.readGr = mmioReadGr;
-    hwp.readST00 = mmioReadST00;
-    hwp.readST01 = mmioReadST01;
-    hwp.readFCR = mmioReadFCR;
-    hwp.writeFCR = mmioWriteFCR;
-    hwp.writeAttr = mmioWriteAttr;
-    hwp.readAttr = mmioReadAttr;
-    hwp.writeSeq = mmioWriteSeq;
-    hwp.readSeq = mmioReadSeq;
-    hwp.writeMiscOut = mmioWriteMiscOut;
-    hwp.readMiscOut = mmioReadMiscOut;
-    hwp.enablePalette = mmioEnablePalette;
-    hwp.disablePalette = mmioDisablePalette;
-    hwp.writeDacMask = mmioWriteDacMask;
-    hwp.readDacMask = mmioReadDacMask;
-    hwp.writeDacWriteAddr = mmioWriteDacWriteAddr;
-    hwp.writeDacReadAddr = mmioWriteDacReadAddr;
-    hwp.writeDacData = mmioWriteDacData;
-    hwp.readDacData = mmioReadDacData;
+    hwp.writeCrtc = &mmioWriteCrtc;
+    hwp.readCrtc = &mmioReadCrtc;
+    hwp.writeGr = &mmioWriteGr;
+    hwp.readGr = &mmioReadGr;
+    hwp.readST00 = &mmioReadST00;
+    hwp.readST01 = &mmioReadST01;
+    hwp.readFCR = &mmioReadFCR;
+    hwp.writeFCR = &mmioWriteFCR;
+    hwp.writeAttr = &mmioWriteAttr;
+    hwp.readAttr = &mmioReadAttr;
+    hwp.writeSeq = &mmioWriteSeq;
+    hwp.readSeq = &mmioReadSeq;
+    hwp.writeMiscOut = &mmioWriteMiscOut;
+    hwp.readMiscOut = &mmioReadMiscOut;
+    hwp.enablePalette = &mmioEnablePalette;
+    hwp.disablePalette = &mmioDisablePalette;
+    hwp.writeDacMask = &mmioWriteDacMask;
+    hwp.readDacMask = &mmioReadDacMask;
+    hwp.writeDacWriteAddr = &mmioWriteDacWriteAddr;
+    hwp.writeDacReadAddr = &mmioWriteDacReadAddr;
+    hwp.writeDacData = &mmioWriteDacData;
+    hwp.readDacData = &mmioReadDacData;
     hwp.MMIOBase = base;
     hwp.MMIOOffset = offset;
-    hwp.readEnable = mmioReadEnable;
-    hwp.writeEnable = mmioWriteEnable;
+    hwp.readEnable = &mmioReadEnable;
+    hwp.writeEnable = &mmioWriteEnable;
 }
 
 /*
@@ -717,7 +728,7 @@ static if (SAVE_FONT1) {
     if (hwp.FontInfo1) {
         hwp.writeSeq(hwp, 0x02, 0x04); /* write to plane 2 */
         hwp.writeGr(hwp, 0x04, 0x02);  /* read plane 2 */
-        slowbcopy_tobus(hwp.FontInfo1, hwp.Base, FONT_AMOUNT);
+        mixin(slowbcopy_tobus!("hwp.FontInfo1", "hwp.Base", "FONT_AMOUNT"));
     }
 }
 
@@ -725,7 +736,7 @@ static if (SAVE_FONT2) {
     if (hwp.FontInfo2) {
         hwp.writeSeq(hwp, 0x02, 0x08); /* write to plane 3 */
         hwp.writeGr(hwp, 0x04, 0x03);  /* read plane 3 */
-        slowbcopy_tobus(hwp.FontInfo2, hwp.Base, FONT_AMOUNT);
+        mixin(slowbcopy_tobus!("hwp.FontInfo2", "hwp.Base", "FONT_AMOUNT"));
     }
 }
 
@@ -733,11 +744,10 @@ static if (SAVE_TEXT) {
     if (hwp.TextInfo) {
         hwp.writeSeq(hwp, 0x02, 0x01); /* write to plane 0 */
         hwp.writeGr(hwp, 0x04, 0x00);  /* read plane 0 */
-        slowbcopy_tobus(hwp.TextInfo, hwp.Base, TEXT_AMOUNT);
+        mixin(slowbcopy_tobus!("hwp.TextInfo", "hwp.Base", "TEXT_AMOUNT"));
         hwp.writeSeq(hwp, 0x02, 0x02); /* write to plane 1 */
         hwp.writeGr(hwp, 0x04, 0x01);  /* read plane 1 */
-        slowbcopy_tobus(cast(ubyte*) hwp.TextInfo + TEXT_AMOUNT,
-                        hwp.Base, TEXT_AMOUNT);
+        mixin(slowbcopy_tobus!("cast(ubyte*) hwp.TextInfo + TEXT_AMOUNT", "hwp.Base", "TEXT_AMOUNT"));
     }
 }
 
@@ -775,20 +785,20 @@ private void vgaHWRestoreMode(ScrnInfoPtr pScrnInfo, vgaRegPtr restore)
     hwp.writeMiscOut(hwp, restore.MiscOutReg);
 
     for (i = 1; i < restore.numSequencer; i++)
-        hwp.writeSeq(hwp, i, restore.Sequencer[i]);
+        hwp.writeSeq(hwp, cast(ubyte)i, restore.Sequencer[i]);
 
     /* Ensure CRTC registers 0-7 are unlocked by clearing bit 7 of CRTC[17] */
     hwp.writeCrtc(hwp, 17, restore.CRTC[17] & ~0x80);
 
     for (i = 0; i < restore.numCRTC; i++)
-        hwp.writeCrtc(hwp, i, restore.CRTC[i]);
+        hwp.writeCrtc(hwp, cast(ubyte)i, restore.CRTC[i]);
 
     for (i = 0; i < restore.numGraphics; i++)
-        hwp.writeGr(hwp, i, restore.Graphics[i]);
+        hwp.writeGr(hwp, cast(ubyte)i, restore.Graphics[i]);
 
     hwp.enablePalette(hwp);
     for (i = 0; i < restore.numAttribute; i++)
-        hwp.writeAttr(hwp, i, restore.Attribute[i]);
+        hwp.writeAttr(hwp, cast(ubyte)i, restore.Attribute[i]);
     hwp.disablePalette(hwp);
 }
 
@@ -805,7 +815,7 @@ version (none) {
     hwp.writeDacWriteAddr(hwp, 0x00);
     for (i = 0; i < 768; i++) {
         hwp.writeDacData(hwp, restore.DAC[i]);
-        DACDelay(hwp);
+        mixin(DACDelay!("hwp"));
     }
 
     hwp.disablePalette(hwp);
@@ -885,29 +895,27 @@ version (none) {
     hwp.writeGr(hwp, 0x06, 0x05);      /* set graphics */
 
 static if (SAVE_FONT1) {
-    if (hwp.FontInfo1 || (hwp.FontInfo1 = calloc(1, FONT_AMOUNT))) {
+    if (hwp.FontInfo1 || (hwp.FontInfo1 = calloc(1, FONT_AMOUNT)) !is null) {
         hwp.writeSeq(hwp, 0x02, 0x04); /* write to plane 2 */
         hwp.writeGr(hwp, 0x04, 0x02);  /* read plane 2 */
-        slowbcopy_frombus(hwp.Base, hwp.FontInfo1, FONT_AMOUNT);
+        mixin(slowbcopy_frombus!("hwp.Base", "hwp.FontInfo1", "FONT_AMOUNT"));
     }
 }                          /* SAVE_FONT1 */
 static if (SAVE_FONT2) {
-    if (hwp.FontInfo2 || (hwp.FontInfo2 = calloc(1, FONT_AMOUNT))) {
+    if (hwp.FontInfo2 || (hwp.FontInfo2 = calloc(1, FONT_AMOUNT))!is null) {
         hwp.writeSeq(hwp, 0x02, 0x08); /* write to plane 3 */
         hwp.writeGr(hwp, 0x04, 0x03);  /* read plane 3 */
-        slowbcopy_frombus(hwp.Base, hwp.FontInfo2, FONT_AMOUNT);
+        mixin(slowbcopy_frombus!("hwp.Base", "hwp.FontInfo2", "FONT_AMOUNT"));
     }
 }                          /* SAVE_FONT2 */
 static if (SAVE_TEXT) {
-    if (hwp.TextInfo || (hwp.TextInfo = calloc(2, TEXT_AMOUNT))) {
+    if (hwp.TextInfo || (hwp.TextInfo = calloc(2, TEXT_AMOUNT))!is null) {
         hwp.writeSeq(hwp, 0x02, 0x01); /* write to plane 0 */
         hwp.writeGr(hwp, 0x04, 0x00);  /* read plane 0 */
-        slowbcopy_frombus(hwp.Base, hwp.TextInfo, TEXT_AMOUNT);
+        mixin(slowbcopy_frombus!("hwp.Base", "hwp.TextInfo", "TEXT_AMOUNT"));
         hwp.writeSeq(hwp, 0x02, 0x02); /* write to plane 1 */
         hwp.writeGr(hwp, 0x04, 0x01);  /* read plane 1 */
-        slowbcopy_frombus(hwp.Base,
-                          cast(ubyte*) hwp.TextInfo + TEXT_AMOUNT,
-                          TEXT_AMOUNT);
+        mixin(slowbcopy_frombus!("hwp.Base", "cast(ubyte*) hwp.TextInfo + TEXT_AMOUNT", "TEXT_AMOUNT"));
     }
 }                          /* SAVE_TEXT */
 
@@ -941,24 +949,24 @@ private void vgaHWSaveMode(ScrnInfoPtr pScrnInfo, vgaRegPtr save)
         hwp.IOBase = VGA_IOBASE_MONO;
 
     for (i = 0; i < save.numCRTC; i++) {
-        save.CRTC[i] = hwp.readCrtc(hwp, i);
+        save.CRTC[i] = hwp.readCrtc(hwp, cast(ubyte)i);
         DebugF("CRTC[0x%02x] = 0x%02x\n", i, save.CRTC[i]);
     }
 
     hwp.enablePalette(hwp);
     for (i = 0; i < save.numAttribute; i++) {
-        save.Attribute[i] = hwp.readAttr(hwp, i);
+        save.Attribute[i] = hwp.readAttr(hwp, cast(ubyte)i);
         DebugF("Attribute[0x%02x] = 0x%02x\n", i, save.Attribute[i]);
     }
     hwp.disablePalette(hwp);
 
     for (i = 0; i < save.numGraphics; i++) {
-        save.Graphics[i] = hwp.readGr(hwp, i);
+        save.Graphics[i] = hwp.readGr(hwp, cast(ubyte)i);
         DebugF("Graphics[0x%02x] = 0x%02x\n", i, save.Graphics[i]);
     }
 
     for (i = 1; i < save.numSequencer; i++) {
-        save.Sequencer[i] = hwp.readSeq(hwp, i);
+        save.Sequencer[i] = hwp.readSeq(hwp, cast(ubyte)i);
         DebugF("Sequencer[0x%02x] = 0x%02x\n", i, save.Sequencer[i]);
     }
 }
@@ -1036,7 +1044,7 @@ version (none) {
         hwp.writeDacReadAddr(hwp, 0x02);
         for (i = 6; i < 768; i++) {
             save.DAC[i] = hwp.readDacData(hwp);
-            DACDelay(hwp);
+            mixin(DACDelay!("hwp"));
             switch (i % 3) {
             case 0:
                 DebugF("DAC[0x%02x] = 0x%02x, ", i / 3, save.DAC[i]);
@@ -1150,50 +1158,50 @@ Bool vgaHWInit(ScrnInfoPtr pScrnInfo, DisplayModePtr mode)
     /*
      * CRTC Controller
      */
-    regp.CRTC[0] = (mode.CrtcHTotal >> 3) - 5;
-    regp.CRTC[1] = (mode.CrtcHDisplay >> 3) - 1;
-    regp.CRTC[2] = (mode.CrtcHBlankStart >> 3) - 1;
-    regp.CRTC[3] = (((mode.CrtcHBlankEnd >> 3) - 1) & 0x1F) | 0x80;
+    regp.CRTC[0] = cast(ubyte)((mode.CrtcHTotal >> 3) - 5);
+    regp.CRTC[1] = cast(ubyte)((mode.CrtcHDisplay >> 3) - 1);
+    regp.CRTC[2] = cast(ubyte)((mode.CrtcHBlankStart >> 3) - 1);
+    regp.CRTC[3] = cast(ubyte)((((mode.CrtcHBlankEnd >> 3) - 1) & 0x1F) | 0x80);
     i = (((mode.CrtcHSkew << 2) + 0x10) & ~0x1F);
     if (i < 0x80)
         regp.CRTC[3] |= i;
-    regp.CRTC[4] = (mode.CrtcHSyncStart >> 3);
-    regp.CRTC[5] = ((((mode.CrtcHBlankEnd >> 3) - 1) & 0x20) << 2)
+    regp.CRTC[4] = cast(ubyte)((mode.CrtcHSyncStart >> 3));
+    regp.CRTC[5] = cast(ubyte)(((((mode.CrtcHBlankEnd >> 3) - 1) & 0x20) << 2))
         | (((mode.CrtcHSyncEnd >> 3)) & 0x1F);
-    regp.CRTC[6] = (mode.CrtcVTotal - 2) & 0xFF;
-    regp.CRTC[7] = (((mode.CrtcVTotal - 2) & 0x100) >> 8)
+    regp.CRTC[6] = cast(ubyte)((mode.CrtcVTotal - 2) & 0xFF);
+    regp.CRTC[7] = cast(ubyte)((((mode.CrtcVTotal - 2) & 0x100) >> 8))
         | (((mode.CrtcVDisplay - 1) & 0x100) >> 7)
         | ((mode.CrtcVSyncStart & 0x100) >> 6)
         | (((mode.CrtcVBlankStart - 1) & 0x100) >> 5)
         | 0x10 | (((mode.CrtcVTotal - 2) & 0x200) >> 4)
         | (((mode.CrtcVDisplay - 1) & 0x200) >> 3)
         | ((mode.CrtcVSyncStart & 0x200) >> 2);
-    regp.CRTC[8] = 0x00;
-    regp.CRTC[9] = (((mode.CrtcVBlankStart - 1) & 0x200) >> 4) | 0x40;
+    regp.CRTC[8] = cast(ubyte)(0x00);
+    regp.CRTC[9] = cast(ubyte)((((mode.CrtcVBlankStart - 1) & 0x200) >> 4) | 0x40);
     if (mode.Flags & V_DBLSCAN)
-        regp.CRTC[9] |= 0x80;
-    if (mode.VScan >= 32)
-        regp.CRTC[9] |= 0x1F;
+        regp.CRTC[9] |= cast(ubyte)(0x80);
+    if (mode.VScan >= cast(ubyte)(32))
+        regp.CRTC[9] |= cast(ubyte)(0x1F);
     else if (mode.VScan > 1)
-        regp.CRTC[9] |= mode.VScan - 1;
-    regp.CRTC[10] = 0x00;
-    regp.CRTC[11] = 0x00;
-    regp.CRTC[12] = 0x00;
-    regp.CRTC[13] = 0x00;
-    regp.CRTC[14] = 0x00;
-    regp.CRTC[15] = 0x00;
-    regp.CRTC[16] = mode.CrtcVSyncStart & 0xFF;
-    regp.CRTC[17] = (mode.CrtcVSyncEnd & 0x0F) | 0x20;
-    regp.CRTC[18] = (mode.CrtcVDisplay - 1) & 0xFF;
-    regp.CRTC[19] = pScrnInfo.displayWidth >> 4;       /* just a guess */
-    regp.CRTC[20] = 0x00;
-    regp.CRTC[21] = (mode.CrtcVBlankStart - 1) & 0xFF;
-    regp.CRTC[22] = (mode.CrtcVBlankEnd - 1) & 0xFF;
+        regp.CRTC[9] |= cast(ubyte)(mode.VScan - 1);
+    regp.CRTC[10] = cast(ubyte)(0x00);
+    regp.CRTC[11] = cast(ubyte)(0x00);
+    regp.CRTC[12] = cast(ubyte)(0x00);
+    regp.CRTC[13] = cast(ubyte)(0x00);
+    regp.CRTC[14] = cast(ubyte)(0x00);
+    regp.CRTC[15] = cast(ubyte)(0x00);
+    regp.CRTC[16] = cast(ubyte)(mode.CrtcVSyncStart & 0xFF);
+    regp.CRTC[17] = cast(ubyte)((mode.CrtcVSyncEnd & 0x0F) | 0x20);
+    regp.CRTC[18] = cast(ubyte)((mode.CrtcVDisplay - 1) & 0xFF);
+    regp.CRTC[19] = cast(ubyte)(pScrnInfo.displayWidth >> 4);       /* just a guess */
+    regp.CRTC[20] = cast(ubyte)(0x00);
+    regp.CRTC[21] = cast(ubyte)((mode.CrtcVBlankStart - 1) & 0xFF);
+    regp.CRTC[22] = cast(ubyte)((mode.CrtcVBlankEnd - 1) & 0xFF);
     if (depth < 8)
-        regp.CRTC[23] = 0xE3;
+        regp.CRTC[23] = cast(ubyte)(0xE3);
     else
-        regp.CRTC[23] = 0xC3;
-    regp.CRTC[24] = 0xFF;
+        regp.CRTC[23] = cast(ubyte)(0xC3);
+    regp.CRTC[24] = cast(ubyte)(0xFF);
 
     vgaHWHBlankKGA(mode, regp, 0, KGA_FIX_OVERSCAN | KGA_ENABLE_ON_ZERO);
     vgaHWVBlankKGA(mode, regp, 0, KGA_FIX_OVERSCAN | KGA_ENABLE_ON_ZERO);
@@ -1463,7 +1471,8 @@ Bool vgaHWGetHWRec(ScrnInfoPtr scrp)
      */
     if (mixin(VGAHWPTR!(`scrp`)))
         return TRUE;
-    hwp = mixin(VGAHWPTRLVAL!(`scrp`)) = XNFcallocarray(1, vgaHWRec.sizeof);
+    hwp = cast(_vgaHWRec*)XNFcallocarray(1, vgaHWRec.sizeof);
+    mixin(VGAHWPTRLVAL!(`scrp`)) = cast(_vgaHWRec*)XNFcallocarray(1, vgaHWRec.sizeof);
     regp = &mixin(VGAHWPTR!(`scrp`)).ModeReg;
 
     if ((!vgaHWAllocDefaultRegs(&mixin(VGAHWPTR!(`scrp`)).SavedReg)) ||
@@ -1505,13 +1514,13 @@ Bool vgaHWGetHWRec(ScrnInfoPtr scrp)
         for (i = 3; i < 768; i++)
             regp.DAC[i] = 0x3F;
         i = BLACK_VALUE * 3;
-        regp.DAC[i++] = blackColour.red;
-        regp.DAC[i++] = blackColour.green;
-        regp.DAC[i] = blackColour.blue;
+        regp.DAC[i++] = cast(ubyte)blackColour.red;
+        regp.DAC[i++] = cast(ubyte)blackColour.green;
+        regp.DAC[i] = cast(ubyte)blackColour.blue;
         i = WHITE_VALUE * 3;
-        regp.DAC[i++] = whiteColour.red;
-        regp.DAC[i++] = whiteColour.green;
-        regp.DAC[i] = whiteColour.blue;
+        regp.DAC[i++] = cast(ubyte)whiteColour.red;
+        regp.DAC[i++] = cast(ubyte)whiteColour.green;
+        regp.DAC[i] = cast(ubyte)whiteColour.blue;
         i = OVERSCAN_VALUE * 3;
         regp.DAC[i++] = 0x00;
         regp.DAC[i++] = 0x00;
@@ -1526,7 +1535,7 @@ Bool vgaHWGetHWRec(ScrnInfoPtr scrp)
             regp.Attribute[OVERSCAN] = 0xFF;
     }
     if (xf86FindOption(cast(_InputOption*)scrp.confScreen.options, "ShowOverscan")) {
-        xf86MarkOptionUsedByName(scrp.confScreen.options, "ShowOverscan");
+        xf86MarkOptionUsedByName(cast(_InputOption*)scrp.confScreen.options, "ShowOverscan");
         xf86DrvMsg(scrp.scrnIndex, X_CONFIG, "Showing overscan area\n");
         regp.DAC[765] = 0x3F;
         regp.DAC[766] = 0x00;
@@ -1643,14 +1652,14 @@ private void vgaHWLoadPalette(ScrnInfoPtr pScrn, int numColors, int* indices, LO
 
     for (i = 0; i < numColors; i++) {
         index = indices[i];
-        hwp.writeDacWriteAddr(hwp, index);
-        DACDelay(hwp);
-        hwp.writeDacData(hwp, colors[index].red);
-        DACDelay(hwp);
-        hwp.writeDacData(hwp, colors[index].green);
-        DACDelay(hwp);
-        hwp.writeDacData(hwp, colors[index].blue);
-        DACDelay(hwp);
+        hwp.writeDacWriteAddr(hwp, cast(ubyte)index);
+        mixin(DACDelay!("hwp"));
+        hwp.writeDacData(hwp, cast(ubyte)colors[index].red);
+        mixin(DACDelay!("hwp"));
+        hwp.writeDacData(hwp, cast(ubyte)colors[index].green);
+        mixin(DACDelay!("hwp"));
+        hwp.writeDacData(hwp, cast(ubyte)colors[index].blue);
+        mixin(DACDelay!("hwp"));
     }
 
     /* This shouldn't be necessary, but we'll play safe. */
@@ -1665,7 +1674,7 @@ private void vgaHWSetOverscan(ScrnInfoPtr pScrn, int overscan)
         return;
 
     hwp.enablePalette(hwp);
-    hwp.writeAttr(hwp, OVERSCAN, overscan);
+    hwp.writeAttr(hwp, OVERSCAN, cast(ubyte)overscan);
 
 version (DEBUGOVERSCAN) {
     {
@@ -1691,7 +1700,7 @@ Bool vgaHWHandleColormaps(ScreenPtr pScreen)
     if (pScrn.depth > 1 && pScrn.depth <= 8) {
         return xf86HandleColormaps(pScreen, 1 << pScrn.depth,
                                    pScrn.rgbBits, &vgaHWLoadPalette,
-                                   pScrn.depth > 4 ? vgaHWSetOverscan : null,
+                                   pScrn.depth > 4 ? &vgaHWSetOverscan : null,
                                    CMAP_RELOAD_ON_MODE_SWITCH);
     }
     return TRUE;
@@ -1789,15 +1798,15 @@ void vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed)
 
 DDC1SetSpeedProc vgaHWddc1SetSpeedWeak()
 {
-    return vgaHWddc1SetSpeed;
+    return &vgaHWddc1SetSpeed;
 }
 
 /*
  * xf86GetClocks -- get the dot-clocks via a BIG BAD hack ...
  */
-void xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) ClockFunc, void function(ScrnInfoPtr, Bool) ProtectRegs, void function(ScrnInfoPtr, Bool) BlankScreen, c_ulong vertsyncreg, int maskval, int knownclkindex, int knownclkvalue)
+void xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) @nogc nothrow ClockFunc, void function(ScrnInfoPtr, Bool) @nogc nothrow ProtectRegs, void function(ScrnInfoPtr, Bool) @nogc nothrow BlankScreen, c_ulong vertsyncreg, int maskval, int knownclkindex, int knownclkvalue)
 {
-    int status = vertsyncreg;
+    int status = cast(int)vertsyncreg;
     c_ulong i = void, cnt = void, rcnt = void, sync = void;
     vgaHWPtr hwp = mixin(VGAHWPTR!(`pScrn`));
 
@@ -1810,7 +1819,7 @@ void xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) C
     for (i = 0; i < num; i++) {
         if (ProtectRegs)
             (*ProtectRegs) (pScrn, TRUE);
-        if (!(*ClockFunc) (pScrn, i)) {
+        if (!(*ClockFunc) (pScrn, cast(int)i)) {
             pScrn.clock[i] = -1;
             continue;
         }
@@ -1846,7 +1855,7 @@ void xf86GetClocks(ScrnInfoPtr pScrn, int num, Bool function(ScrnInfoPtr, int) C
         }
 
  finish:
-        pScrn.clock[i] = cnt ? cnt : -1;
+        pScrn.clock[i] = cnt ? cast(int)cnt : -1;
         if (BlankScreen)
             (*BlankScreen) (pScrn, TRUE);
     }

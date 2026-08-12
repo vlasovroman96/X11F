@@ -220,10 +220,10 @@ enum BITS_PER_GUN = 6;
 enum COLORMAP_SIZE = 256;
 
 enum string DACDelay(string hw) = `
-	do { 
+	{ 
 	    (` ~ hw ~ `).readST01((` ~ hw ~ `)); 
 	    (` ~ hw ~ `).readST01((` ~ hw ~ `)); 
-	} while (0)`;
+	}`;
 
 /* Function Prototypes */
 

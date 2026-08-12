@@ -43,6 +43,7 @@ import xkb.xkbsrv_priv;
 import include.inputstr;
 import include.scrnintstr;
 import include.windowstr;
+import dix.events;
 
 import xf86_priv;
 

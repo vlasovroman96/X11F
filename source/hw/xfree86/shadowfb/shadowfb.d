@@ -31,8 +31,9 @@ import shadowfb;
 
 import include.picturestr;
 import include.shadowfb;
-
-
+import hw.xfree86.common.xf86Helper;
+import dix.screen_hooks;
+import os.log;
 
 
 struct _ShadowScreenRec {
@@ -47,7 +48,7 @@ private DevPrivateKeyRec ShadowScreenKeyRec;
 
 private ShadowScreenPtr shadowfbGetScreenPrivate(ScreenPtr pScreen)
 {
-    return dixLookupPrivate(&(pScreen).devPrivates, &ShadowScreenKeyRec);
+    return cast(_ShadowScreenRec*)dixLookupPrivate(&(pScreen).devPrivates, &ShadowScreenKeyRec);
 }
 
 Bool ShadowFBInit2(ScreenPtr pScreen, RefreshAreaFuncPtr preRefreshArea, RefreshAreaFuncPtr postRefreshArea)
@@ -61,7 +62,7 @@ Bool ShadowFBInit2(ScreenPtr pScreen, RefreshAreaFuncPtr preRefreshArea, Refresh
     if (!dixRegisterPrivateKey(&ShadowScreenKeyRec, PRIVATE_SCREEN, 0))
         return FALSE;
 
-    if (((pPriv = cast(ShadowScreenPtr) cast(ShadowScreenRec*) calloc(1, ShadowScreenRec.sizeof)) == 0))
+    if (((pPriv = cast(ShadowScreenPtr) cast(ShadowScreenRec*) calloc(1, ShadowScreenRec.sizeof)) is null))
         return FALSE;
 
     dixSetPrivate(&pScreen.devPrivates, &ShadowScreenKeyRec, pPriv);
@@ -70,10 +71,10 @@ Bool ShadowFBInit2(ScreenPtr pScreen, RefreshAreaFuncPtr preRefreshArea, Refresh
     pPriv.preRefresh = preRefreshArea;
     pPriv.postRefresh = postRefreshArea;
 
-    dixScreenHookClose(pScreen, ShadowCloseScreen);
+    dixScreenHookClose(pScreen, &ShadowCloseScreen);
 
     pPriv.CreateWindow = pScreen.CreateWindow;
-    pScreen.CreateWindow = ShadowCreateRootWindow;
+    pScreen.CreateWindow = &ShadowCreateRootWindow;
 
     return TRUE;
 }
@@ -94,7 +95,7 @@ Bool ShadowFBInit(ScreenPtr pScreen, RefreshAreaFuncPtr refreshArea)
 
 private void shadowfbReportPre(DamagePtr damage, RegionPtr reg, void* closure)
 {
-    ShadowScreenPtr pPriv = closure;
+    ShadowScreenPtr pPriv = cast(ShadowScreenPtr)closure;
 
     if (!pPriv.pScrn.vtSema)
         return;
@@ -104,7 +105,7 @@ private void shadowfbReportPre(DamagePtr damage, RegionPtr reg, void* closure)
 
 private void shadowfbReportPost(DamagePtr damage, RegionPtr reg, void* closure)
 {
-    ShadowScreenPtr pPriv = closure;
+    ShadowScreenPtr pPriv = cast(ShadowScreenPtr)closure;
 
     if (!pPriv.pScrn.vtSema)
         return;
@@ -155,7 +156,7 @@ private Bool ShadowCreateRootWindow(WindowPtr pWin)
 
 private void ShadowCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    dixScreenUnhookClose(pScreen, ShadowCloseScreen);
+    dixScreenUnhookClose(pScreen, &ShadowCloseScreen);
 
     ShadowScreenPtr pPriv = shadowfbGetScreenPrivate(pScreen);
     if (!pPriv)

@@ -12,6 +12,7 @@ import xkb.xkbsrv_priv;
 import include.windowstr;
 import include.os;
 import xf86_priv;
+import externs.gnu;
 
 int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {
@@ -19,7 +20,7 @@ int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act)
     char[XkbAnyActionDataSize + 1] msgbuf = void;
 
     if (xf86act.type == XkbSA_XFree86Private) {
-        memcpy(msgbuf.ptr, xf86act.data, XkbAnyActionDataSize);
+        memcpy(msgbuf.ptr, xf86act.data.ptr, XkbAnyActionDataSize);
         msgbuf[XkbAnyActionDataSize] = '\0';
         if (strcasecmp(msgbuf.ptr, "-vmode") == 0)
             xf86ProcessActionEvent(ACTION_PREV_MODE, null);
