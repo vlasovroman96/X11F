@@ -42,8 +42,8 @@ import core.stdc.stdlib;
 import core.stdc.string;
 import core.sys.posix.sys.ioctl;
 import core.sys.posix.sys.stat;
+import externs.sys.sysmacros;
 version (HAVE_SYS_SYSMACROS_H) {
-// import sys/sysmacros;
 }
 import core.sys.posix.sys.types;
 static if (HasVersion!"__FreeBSD__" || HasVersion!"__FreeBSD_kernel__") {
@@ -78,7 +78,7 @@ private char* strip(char* s)
         s++;
 
     /* Strip trailing whitespace */
-    i = strlen(s) - 1;
+    i = cast(int)(strlen(s) - 1);
     while (i >= 0 && is_space(s[i])) {
         s[i] = 0;
         i--;
@@ -110,7 +110,7 @@ private void parse_config(int* allowed, int* needs_root_rights)
         equals = strchr(stripped, '=');
         if (!equals) {
             fprintf(stderr, "%s: Syntax error at %s line %d\n", progname,
-                CONFIG_FILE, line);
+                CONFIG_FILE.ptr, line);
             exit(1);
         }
         *equals = 0;
@@ -118,12 +118,12 @@ private void parse_config(int* allowed, int* needs_root_rights)
         value = strip(equals + 1); /* To remove leading whitespace from val */
         if (!key[0]) {
             fprintf(stderr, "%s: Missing key at %s line %d\n", progname,
-                CONFIG_FILE, line);
+                CONFIG_FILE.ptr, line);
             exit(1);
         }
         if (!value[0]) {
             fprintf(stderr, "%s: Missing value at %s line %d\n", progname,
-                CONFIG_FILE, line);
+                CONFIG_FILE.ptr, line);
             exit(1);
         }
 
@@ -138,7 +138,7 @@ private void parse_config(int* allowed, int* needs_root_rights)
             else {
                 fprintf(stderr,
                     "%s: Invalid value '%s' for 'allowed_users' at %s line %d\n",
-                    progname, value, CONFIG_FILE, line);
+                    progname, value, CONFIG_FILE.ptr, line);
                 exit(1);
             }
         }
@@ -152,7 +152,7 @@ private void parse_config(int* allowed, int* needs_root_rights)
             else {
                 fprintf(stderr,
                     "%s: Invalid value '%s' for 'needs_root_rights' at %s line %d\n",
-                    progname, value, CONFIG_FILE, line);
+                    progname, value, CONFIG_FILE.ptr, line);
                 exit(1);
             }
         }
@@ -161,7 +161,7 @@ private void parse_config(int* allowed, int* needs_root_rights)
         }
         else {
             fprintf(stderr, "%s: Invalid key '%s' at %s line %d\n", key,
-                progname, CONFIG_FILE, line);
+                progname, CONFIG_FILE.ptr, line);
             exit(1);
         }
     }
@@ -171,7 +171,7 @@ private void parse_config(int* allowed, int* needs_root_rights)
 private int on_console(int fd)
 {
 version (linux) {
-    stat st = void;
+    stat_t st = void;
     int r = void;
 
     r = fstat(fd, &st);
@@ -275,7 +275,7 @@ version (WITH_LIBDRM) {
         }
     }
 
-    snprintf(buf.ptr, buf.sizeof, "%s/Xorg", SUID_WRAPPER_DIR);
+    snprintf(buf.ptr, buf.sizeof, "%s/Xorg", SUID_WRAPPER_DIR.ptr);
 
     /* Check if the server is executable by our real uid */
     if (access(buf.ptr, X_OK) != 0) {
@@ -284,7 +284,7 @@ version (WITH_LIBDRM) {
         exit(1);
     }
 
-    argv[0] = buf;
+    argv[0] = buf.ptr;
     if (getuid() == geteuid())
         cast(void) execv(argv[0], argv);
     else
