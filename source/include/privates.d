@@ -230,7 +230,7 @@ pragma(inline, true) private void* dixGetScreenPrivate(PrivatePtr* privates, con
     return dixGetPrivate(privates, _dixGetScreenPrivateKey(key, pScreen));
 }
 
-pragma(inline, true) private void dixSetScreenPrivate(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen, void* val)
+pragma(inline, true) void dixSetScreenPrivate(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen, void* val)
 {
     dixSetPrivate(privates, _dixGetScreenPrivateKey(key, pScreen), val);
 }

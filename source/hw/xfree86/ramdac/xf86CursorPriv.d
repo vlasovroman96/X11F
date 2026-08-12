@@ -26,7 +26,7 @@ struct _Xf86CursorScreenRec {
     miPointerSpriteFuncPtr spriteFuncs;
     Bool PalettedCursor;
     ColormapPtr pInstalledMap;
-    Bool function(ScrnInfoPtr, DisplayModePtr) SwitchMode;
+    Bool function(ScrnInfoPtr, DisplayModePtr) @nogc nothrow SwitchMode;
     xf86EnableDisableFBAccessProc* EnableDisableFBAccess;
     CursorPtr SavedCursor;
 

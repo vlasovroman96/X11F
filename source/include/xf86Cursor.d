@@ -11,29 +11,29 @@ struct _xf86CursorInfoRec {
     int Flags;
     int MaxWidth;
     int MaxHeight;
-    void function(ScrnInfoPtr pScrn, int bg, int fg) SetCursorColors;
-    void function(ScrnInfoPtr pScrn, int x, int y) SetCursorPosition;
-    void function(ScrnInfoPtr pScrn, ubyte* bits) LoadCursorImage;
-    Bool function(ScrnInfoPtr pScrn, ubyte* bits) LoadCursorImageCheck;
-    void function(ScrnInfoPtr pScrn) HideCursor;
-    void function(ScrnInfoPtr pScrn) ShowCursor;
-    Bool function(ScrnInfoPtr pScrn) ShowCursorCheck;
-    ubyte* function(_xf86CursorInfoRec*, CursorPtr) RealizeCursor;
-    Bool function(ScreenPtr, CursorPtr) UseHWCursor;
+    void function(ScrnInfoPtr pScrn, int bg, int fg)@nogc nothrow SetCursorColors;
+    void function(ScrnInfoPtr pScrn, int x, int y)@nogc nothrow SetCursorPosition;
+    void function(ScrnInfoPtr pScrn, ubyte* bits)@nogc nothrow LoadCursorImage;
+    Bool function(ScrnInfoPtr pScrn, ubyte* bits)@nogc nothrow LoadCursorImageCheck;
+    void function(ScrnInfoPtr pScrn)@nogc nothrow HideCursor;
+    void function(ScrnInfoPtr pScrn)@nogc nothrow ShowCursor;
+    Bool function(ScrnInfoPtr pScrn)@nogc nothrow ShowCursorCheck;
+    ubyte* function(_xf86CursorInfoRec*, CursorPtr)@nogc nothrow RealizeCursor;
+    Bool function(ScreenPtr, CursorPtr)@nogc nothrow UseHWCursor;
 
-    Bool function(ScreenPtr, CursorPtr) UseHWCursorARGB;
-    void function(ScrnInfoPtr, CursorPtr) LoadCursorARGB;
-    Bool function(ScrnInfoPtr, CursorPtr) LoadCursorARGBCheck;
+    Bool function(ScreenPtr, CursorPtr)@nogc nothrow UseHWCursorARGB;
+    void function(ScrnInfoPtr, CursorPtr)@nogc nothrow LoadCursorARGB;
+    Bool function(ScrnInfoPtr, CursorPtr)@nogc nothrow LoadCursorARGBCheck;
 
 }alias xf86CursorInfoRec = _xf86CursorInfoRec;
 alias xf86CursorInfoPtr = _xf86CursorInfoRec*;
 
-pragma(inline, true) private Bool xf86DriverHasLoadCursorImage(xf86CursorInfoPtr infoPtr)
+pragma(inline, true) Bool xf86DriverHasLoadCursorImage(xf86CursorInfoPtr infoPtr)
 {
     return infoPtr.LoadCursorImageCheck || infoPtr.LoadCursorImage;
 }
 
-pragma(inline, true) private Bool xf86DriverLoadCursorImage(xf86CursorInfoPtr infoPtr, ubyte* bits)
+pragma(inline, true)bool xf86DriverLoadCursorImage(xf86CursorInfoPtr infoPtr, ubyte* bits)
 {
     if(infoPtr.LoadCursorImageCheck)
         return infoPtr.LoadCursorImageCheck(infoPtr.pScrn, bits);
@@ -41,12 +41,12 @@ pragma(inline, true) private Bool xf86DriverLoadCursorImage(xf86CursorInfoPtr in
     return TRUE;
 }
 
-pragma(inline, true) private Bool xf86DriverHasShowCursor(xf86CursorInfoPtr infoPtr)
+pragma(inline, true)bool xf86DriverHasShowCursor(xf86CursorInfoPtr infoPtr)
 {
     return infoPtr.ShowCursorCheck || infoPtr.ShowCursor;
 }
 
-pragma(inline, true) private Bool xf86DriverShowCursor(xf86CursorInfoPtr infoPtr)
+pragma(inline, true)bool xf86DriverShowCursor(xf86CursorInfoPtr infoPtr)
 {
     if(infoPtr.ShowCursorCheck)
         return infoPtr.ShowCursorCheck(infoPtr.pScrn);
@@ -54,12 +54,12 @@ pragma(inline, true) private Bool xf86DriverShowCursor(xf86CursorInfoPtr infoPtr
     return TRUE;
 }
 
-pragma(inline, true) private Bool xf86DriverHasLoadCursorARGB(xf86CursorInfoPtr infoPtr)
+pragma(inline, true)bool xf86DriverHasLoadCursorARGB(xf86CursorInfoPtr infoPtr)
 {
     return infoPtr.LoadCursorARGBCheck || infoPtr.LoadCursorARGB;
 }
 
-pragma(inline, true) private Bool xf86DriverLoadCursorARGB(xf86CursorInfoPtr infoPtr, CursorPtr pCursor)
+pragma(inline, true)bool xf86DriverLoadCursorARGB(xf86CursorInfoPtr infoPtr, CursorPtr pCursor)
 {
     if(infoPtr.LoadCursorARGBCheck)
         return infoPtr.LoadCursorARGBCheck(infoPtr.pScrn, pCursor);

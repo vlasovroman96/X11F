@@ -21,10 +21,13 @@ import include.mi;
 import mi.mipointer;
 import hw.xfree86.ramdac.xf86CursorPriv;
 import include.servermd;
+import include.xf86Cursor;
+import hw.xfree86.common.xf86Helper;
+import xf86CursorRD;
 
 
 
-private CARD32 xf86ReverseBitOrder(CARD32 v)
+CARD32 xf86ReverseBitOrder(CARD32 v)
 {
     return (((0x01010101 & v) << 7) | ((0x02020202 & v) << 5) |
             ((0x04040404 & v) << 3) | ((0x08080808 & v) << 1) |
@@ -47,7 +50,7 @@ enum CUR_LOG2_BITMAP_PAD = LOG2_BITMAP_PAD;
 enum string REVERSE_BIT_ORDER(string w) = `xf86CARD64ReverseBits(` ~ w ~ `)`;
 
 
-private CARD64 xf86CARD64ReverseBits(CARD64 w)
+CARD64 xf86CARD64ReverseBits(CARD64 w)
 {
     ubyte* p = cast(ubyte*) &w;
 
@@ -73,12 +76,12 @@ enum string REVERSE_BIT_ORDER(string w) = `xf86ReverseBitOrder(` ~ w ~ `)`;
 
 }                          /* BITMAP_SCANLINE_PAD == 64 */
 
-private ubyte* RealizeCursorInterleave0(xf86CursorInfoPtr, CursorPtr);
-private ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr, CursorPtr);
-private ubyte* RealizeCursorInterleave8(xf86CursorInfoPtr, CursorPtr);
-private ubyte* RealizeCursorInterleave16(xf86CursorInfoPtr, CursorPtr);
-private ubyte* RealizeCursorInterleave32(xf86CursorInfoPtr, CursorPtr);
-private ubyte* RealizeCursorInterleave64(xf86CursorInfoPtr, CursorPtr);
+ubyte* RealizeCursorInterleave0(xf86CursorInfoPtr, CursorPtr);
+// ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr, CursorPtr);
+ubyte* RealizeCursorInterleave8(xf86CursorInfoPtr, CursorPtr);
+ubyte* RealizeCursorInterleave16(xf86CursorInfoPtr, CursorPtr);
+ubyte* RealizeCursorInterleave32(xf86CursorInfoPtr, CursorPtr);
+ubyte* RealizeCursorInterleave64(xf86CursorInfoPtr, CursorPtr);
 
 Bool xf86InitHardwareCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr)
 {
@@ -97,22 +100,22 @@ Bool xf86InitHardwareCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr)
         /* Don't overwrite a driver provided Realize Cursor function */
     }
     else if (HARDWARE_CURSOR_SOURCE_MASK_INTERLEAVE_1 & infoPtr.Flags) {
-        infoPtr.RealizeCursor = RealizeCursorInterleave1;
+        infoPtr.RealizeCursor = &RealizeCursorInterleave1;
     }
     else if (HARDWARE_CURSOR_SOURCE_MASK_INTERLEAVE_8 & infoPtr.Flags) {
-        infoPtr.RealizeCursor = RealizeCursorInterleave8;
+        infoPtr.RealizeCursor = &RealizeCursorInterleave8;
     }
     else if (HARDWARE_CURSOR_SOURCE_MASK_INTERLEAVE_16 & infoPtr.Flags) {
-        infoPtr.RealizeCursor = RealizeCursorInterleave16;
+        infoPtr.RealizeCursor = &RealizeCursorInterleave16;
     }
     else if (HARDWARE_CURSOR_SOURCE_MASK_INTERLEAVE_32 & infoPtr.Flags) {
-        infoPtr.RealizeCursor = RealizeCursorInterleave32;
+        infoPtr.RealizeCursor = &RealizeCursorInterleave32;
     }
     else if (HARDWARE_CURSOR_SOURCE_MASK_INTERLEAVE_64 & infoPtr.Flags) {
-        infoPtr.RealizeCursor = RealizeCursorInterleave64;
+        infoPtr.RealizeCursor = &RealizeCursorInterleave64;
     }
     else {                      /* not interleaved */
-        infoPtr.RealizeCursor = RealizeCursorInterleave0;
+        infoPtr.RealizeCursor = &RealizeCursorInterleave0;
     }
 
     infoPtr.pScrn = xf86ScreenToScrn(pScreen);
@@ -120,12 +123,12 @@ Bool xf86InitHardwareCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr)
     return TRUE;
 }
 
-private Bool xf86ScreenCheckHWCursor(ScreenPtr pScreen, CursorPtr cursor, xf86CursorInfoPtr infoPtr)
+Bool xf86ScreenCheckHWCursor(ScreenPtr pScreen, CursorPtr cursor, xf86CursorInfoPtr infoPtr)
 {
     return
         (cursor.bits.argb && infoPtr.UseHWCursorARGB &&
          infoPtr.UseHWCursorARGB(pScreen, cursor)) ||
-        (cursor.bits.argb == 0 &&
+        (cursor.bits.argb is null &&
          cursor.bits.height <= infoPtr.MaxHeight &&
          cursor.bits.width <= infoPtr.MaxWidth &&
          (!infoPtr.UseHWCursor || infoPtr.UseHWCursor(pScreen, cursor)));
@@ -150,7 +153,7 @@ Bool xf86CheckHWCursor(ScreenPtr pScreen, CursorPtr cursor, xf86CursorInfoPtr in
         if (!RRHasScanoutPixmap(pSlave))
             continue;
 
-        sPriv = dixLookupPrivate(&pSlave.devPrivates, &xf86CursorScreenKeyRec);
+        sPriv = cast(_Xf86CursorScreenRec*)dixLookupPrivate(&pSlave.devPrivates, &xf86CursorScreenKeyRec);
         if (!sPriv) { /* NULL if Option "SWCursor", possibly other conditions */
             use_hw_cursor = FALSE;
 	        break;
@@ -169,7 +172,7 @@ unlock:
     return use_hw_cursor;
 }
 
-private Bool xf86ScreenSetCursor(ScreenPtr pScreen, CursorPtr pCurs, int x, int y)
+Bool xf86ScreenSetCursor(ScreenPtr pScreen, CursorPtr pCurs, int x, int y)
 {
     xf86CursorScreenPtr ScreenPriv = cast(xf86CursorScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                &xf86CursorScreenKeyRec);
@@ -196,7 +199,7 @@ private Bool xf86ScreenSetCursor(ScreenPtr pScreen, CursorPtr pCurs, int x, int 
     if (!_dixGetScreenPrivateKey(&xf86ScreenCursorBitsKeyRec, pScreen))
         return FALSE;
 
-    bits = dixLookupScreenPrivate(&pCurs.devPrivates,
+    bits = cast(ubyte*)dixLookupScreenPrivate(&pCurs.devPrivates,
                                   &xf86ScreenCursorBitsKeyRec, pScreen);
 
     x -= infoPtr.pScrn.frameX0;
@@ -278,16 +281,16 @@ void xf86SetTransparentCursor(ScreenPtr pScreen)
     if (!(infoPtr.Flags & HARDWARE_CURSOR_UPDATE_UNHIDDEN))
         (*infoPtr.HideCursor) (infoPtr.pScrn);
 
-    if (ScreenPriv.transparentData)
+    if (ScreenPriv.transparentData !is null)
         xf86DriverLoadCursorImage (infoPtr,
-                                   ScreenPriv.transparentData);
+                                   cast(ubyte*)ScreenPriv.transparentData);
 
     xf86DriverShowCursor(infoPtr);
 
     input_unlock();
 }
 
-private void xf86ScreenMoveCursor(ScreenPtr pScreen, int x, int y)
+void xf86ScreenMoveCursor(ScreenPtr pScreen, int x, int y)
 {
     xf86CursorScreenPtr ScreenPriv = cast(xf86CursorScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                &xf86CursorScreenKeyRec);
@@ -323,7 +326,7 @@ void xf86MoveCursor(ScreenPtr pScreen, int x, int y)
     input_unlock();
 }
 
-private void xf86RecolorCursor_locked(xf86CursorScreenPtr ScreenPriv, CursorPtr pCurs)
+void xf86RecolorCursor_locked(xf86CursorScreenPtr ScreenPriv, CursorPtr pCurs)
 {
     xf86CursorInfoPtr infoPtr = ScreenPriv.CursorInfoPtr;
 
@@ -375,7 +378,7 @@ void xf86RecolorCursor(ScreenPtr pScreen, CursorPtr pCurs, Bool displayed)
 }
 
 /* These functions assume that MaxWidth is a multiple of 32 */
-private ubyte* RealizeCursorInterleave0(xf86CursorInfoPtr infoPtr, CursorPtr pCurs)
+ubyte* RealizeCursorInterleave0(xf86CursorInfoPtr infoPtr, CursorPtr pCurs)
 {
 
     SCANLINE* SrcS = void, SrcM = void, DstS = void, DstM = void;
@@ -489,7 +492,7 @@ private ubyte* RealizeCursorInterleave0(xf86CursorInfoPtr infoPtr, CursorPtr pCu
     return mem;
 }
 
-private ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr infoPtr, CursorPtr pCurs)
+ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr infoPtr, CursorPtr pCurs)
 {
     CARD8* DstS = void, DstM = void;
     CARD8* pntr = void;
@@ -498,10 +501,10 @@ private ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr infoPtr, CursorPtr pCu
     int size = (infoPtr.MaxWidth * infoPtr.MaxHeight) >> 2;
 
     /* Realize the cursor without interleaving */
-    if (((mem2 = RealizeCursorInterleave0(infoPtr, pCurs)) == 0))
+    if (((mem2 = RealizeCursorInterleave0(infoPtr, pCurs)) is null))
         return null;
 
-    if (((mem = calloc(1, size)) == 0)) {
+    if (((mem = calloc(1, size)) is null)) {
         free(mem2);
         return null;
     }
@@ -528,7 +531,7 @@ private ubyte* RealizeCursorInterleave1(xf86CursorInfoPtr infoPtr, CursorPtr pCu
     /* Free the uninterleaved cursor */
     free(mem2);
 
-    return mem;
+    return cast(ubyte*)mem;
 }
 
 enum string _RealizeCursorInterleave(string x) = `
@@ -541,20 +544,20 @@ RealizeCursorInterleave`~x~`(xf86CursorInfoPtr infoPtr, CursorPtr pCurs)
     int size = (infoPtr.MaxWidth * infoPtr.MaxHeight) / 4; /* XXX bytes per pixel? XXX */ 
 
     /* Realize the cursor without interleaving */ 
-    if (!(mem2 = RealizeCursorInterleave0(infoPtr, pCurs))) 
-        return NULL; 
+    if ((mem2 = RealizeCursorInterleave0(infoPtr, pCurs)) !is null) 
+        return null; 
 
-    if (!(mem = calloc((size + sizeof(CARD`~x~`) - 1) / sizeof(CARD`~x~`), sizeof(CARD`~x~`)))) { 
+    if ((mem = calloc((size + (CARD`~x~`).sizeof - 1) / (CARD`~x~`).sizeof, (CARD`~x~`).sizeof)) !is null) { 
         free(mem2); 
-        return NULL; 
+        return null; 
     } 
 
     /* x bit interleave */ 
-    size /= sizeof(CARD`~x~`); /* Array size of the hw cursor */ 
+    size /= (CARD`~x~`).sizeof; /* Array size of the hw cursor */ 
     size /= 2; /* Half of the array size */ 
-    DstS = mem2; 
-    DstM = DstS + size; 
-    pntr = mem; 
+    DstS = cast(CARD`~x~`*)mem2; 
+    DstM = cast(CARD`~x~`*)(DstS + size); 
+    pntr = cast(CARD`~x~`*)mem; 
     for (int i = 0; i < size; i++) { 
         *pntr++ = *DstS++; 
         *pntr++ = *DstM++; 
@@ -563,7 +566,7 @@ RealizeCursorInterleave`~x~`(xf86CursorInfoPtr infoPtr, CursorPtr pCurs)
     /* Free the uninterleaved cursor */ 
     free(mem2); 
 
-    return mem; 
+    return cast(char*)mem; 
 } 
 `;
 
