@@ -65,6 +65,10 @@ import os.log;
 import xf86Globals;
 import include.edid;
 import interpret_edid;
+import Monitor;
+import Screen;
+
+
 
 
 struct _DevToConfig {

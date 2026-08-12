@@ -107,7 +107,7 @@ if ((ptr.` ~ f ~ `=` ~ func ~ `) == null)
 
 enum string HANDLE_LIST(string field,string func,string type) = `
 {
-type p = ` ~ func ~ ` ();
+`~type~` p = (` ~ func ~ `) ();
 if (p == null)
 {
 	CLEANUP (ptr);
@@ -115,7 +115,7 @@ if (p == null)
 }
 else
 {
-	ptr.` ~ field ~ ` = cast(type) xf86addListItem (cast(glp) ptr.` ~ field ~ `, cast(glp) p);
+	ptr.` ~ field ~ ` = cast(`~type~`) xf86addListItem (cast(glp) ptr.` ~ field ~ `, cast(glp) p);
 }
 }`;
 

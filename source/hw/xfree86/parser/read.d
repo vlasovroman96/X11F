@@ -60,7 +60,31 @@ import xf86Config;
 import xf86Parser_priv;
 import xf86tokens;
 import Configint;
-
+import include.misc;
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import os.log;
+import Video;
+import Monitor;
+import xf86Globals;
 
 private const(xf86ConfigSymTabRec)[3] TopLevelTab = [
     {SECTION, "section"},
@@ -103,7 +127,7 @@ XF86ConfigPtr xf86readConfigFile()
             break;
         case SECTION:
             if (xf86getSubToken(&(ptr.conf_comment)) != XF86_TOKEN_STRING) {
-                xf86parseError(QUOTE_MSG, "Section");
+                xf86parseError(QUOTE_MSG, "Section".ptr);
                 CLEANUP(ptr);
                 return null;
             }
@@ -111,93 +135,82 @@ XF86ConfigPtr xf86readConfigFile()
             if (xf86nameCompare(xf86_lex_val.str, "files") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_RETURN(conf_files, xf86parseFilesSection(ptr.conf_files));
+                mixin(HANDLE_RETURN!("conf_files", "xf86parseFilesSection(ptr.conf_files)"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "serverflags") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_RETURN(conf_flags, xf86parseFlagsSection(ptr.conf_flags));
+                mixin(HANDLE_RETURN!("conf_flags", "xf86parseFlagsSection(ptr.conf_flags)"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "pointer") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_input_lst, xf86parsePointerSection,
-                            XF86ConfInputPtr);
+                mixin(HANDLE_LIST!("conf_input_lst", "xf86parsePointerSection", "XF86ConfInputPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "videoadaptor") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_videoadaptor_lst, xf86parseVideoAdaptorSection,
-                            XF86ConfVideoAdaptorPtr);
+                mixin(HANDLE_LIST!("conf_videoadaptor_lst", "xf86parseVideoAdaptorSection", "XF86ConfVideoAdaptorPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "device") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_device_lst, xf86parseDeviceSection,
-                            XF86ConfDevicePtr);
+                mixin(HANDLE_LIST!("conf_device_lst", "xf86parseDeviceSection", "XF86ConfDevicePtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "monitor") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_monitor_lst, xf86parseMonitorSection,
-                            XF86ConfMonitorPtr);
+                mixin(HANDLE_LIST!("conf_monitor_lst", "xf86parseMonitorSection", "XF86ConfMonitorPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "modes") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_modes_lst, xf86parseModesSection,
-                            XF86ConfModesPtr);
+                mixin(HANDLE_LIST!("conf_modes_lst", "xf86parseModesSection", "XF86ConfModesPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "screen") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_screen_lst, xf86parseScreenSection,
-                            XF86ConfScreenPtr);
+                mixin(HANDLE_LIST!("conf_screen_lst", "xf86parseScreenSection", "XF86ConfScreenPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "inputdevice") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_input_lst, xf86parseInputSection,
-                            XF86ConfInputPtr);
+                mixin(HANDLE_LIST!("conf_input_lst", "xf86parseInputSection", "XF86ConfInputPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "inputclass") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_inputclass_lst,
-                            xf86parseInputClassSection, XF86ConfInputClassPtr);
+                mixin(HANDLE_LIST!("conf_inputclass_lst", "xf86parseInputClassSection", "XF86ConfInputClassPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "outputclass") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_outputclass_lst, xf86parseOutputClassSection,
-                            XF86ConfOutputClassPtr);
+                mixin(HANDLE_LIST!("conf_outputclass_lst", "xf86parseOutputClassSection", "XF86ConfOutputClassPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "module") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_RETURN(conf_modules, xf86parseModuleSection(ptr.conf_modules));
+                mixin(HANDLE_RETURN!("conf_modules", "xf86parseModuleSection(ptr.conf_modules)"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "serverlayout") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_layout_lst, xf86parseLayoutSection,
-                            XF86ConfLayoutPtr);
+                mixin(HANDLE_LIST!("conf_layout_lst", "xf86parseLayoutSection", "XF86ConfLayoutPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "vendor") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_LIST(conf_vendor_lst, xf86parseVendorSection,
-                            XF86ConfVendorPtr);
+                mixin(HANDLE_LIST!("conf_vendor_lst", "xf86parseVendorSection", "XF86ConfVendorPtr"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "dri") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_RETURN(conf_dri, xf86parseDRISection());
+                mixin(HANDLE_RETURN!("conf_dri", "xf86parseDRISection()"));
             }
             else if (xf86nameCompare(xf86_lex_val.str, "extensions") == 0) {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                HANDLE_RETURN(conf_extensions, xf86parseExtensionsSection());
+                mixin(HANDLE_RETURN!("conf_extensions", "xf86parseExtensionsSection()"));
             }
             else {
                 free(xf86_lex_val.str);
@@ -233,7 +246,7 @@ GenericListPtr xf86addListItem(GenericListPtr head, GenericListPtr new_)
 
     while (p) {
         last = p;
-        p = p.next;
+        p = cast(generic_list_rec*)p.next;
     }
 
     if (last) {
@@ -255,13 +268,13 @@ int xf86itemNotSublist(GenericListPtr list_1, GenericListPtr list_2)
 
     while (p) {
         last_1 = p;
-        p = p.next;
+        p = cast(generic_list_rec*)p.next;
     }
 
     p = list_2;
     while (p) {
         last_2 = p;
-        p = p.next;
+        p = cast(generic_list_rec*)p.next;
     }
 
     return (!(last_1 == last_2));

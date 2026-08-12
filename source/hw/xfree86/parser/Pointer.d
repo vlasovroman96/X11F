@@ -61,7 +61,27 @@ import include.xf86Parser;
 import xf86tokens;
 import Configint;
 import include.Xprintf;
-
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import os.log;
 
 private const(xf86ConfigSymTabRec)[19] PointerTab = [
     {PROTOCOL, "protocol"},

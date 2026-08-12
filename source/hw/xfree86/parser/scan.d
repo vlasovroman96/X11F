@@ -63,6 +63,7 @@ import core.sys.posix.sys.types;
 import core.sys.posix.dirent;
 import core.sys.posix.unistd;
 import core.stdc.stdarg;
+import core.sys.posix.dirent;
 //import externs.X11.Xdefs;
 ////import externs.X11.Xfuncproto;
 import core.stdc.limits;
@@ -76,6 +77,15 @@ import include.misc;
 
 import Configint;
 import xf86tokens;
+import os.log;
+import externs.gnu;
+
+// #define PATHS_H
+enum string DATADIR =          "/usr/share";
+enum string SYSCONFDIR =       "/etc";
+enum string VARRUNDIR =        "/var/run";
+enum string LOCALSTATEDIR =    "/var";
+enum string LIBDIR =           "/usr/lib";
 
 enum CONFIG_BUF_LEN =     1024;
 enum CONFIG_MAX_FILES =   64;
@@ -308,7 +318,7 @@ int xf86getToken(const(xf86ConfigSymTabRec)* tab)
         i = 0;
         for (;;) {
             c = configBuf[configPos++];
-            configRBuf[i++] = c;
+            configRBuf[i++] = cast(char)c;
             switch (c) {
             case ' ':
             case '\t':
@@ -365,16 +375,16 @@ int xf86getToken(const(xf86ConfigSymTabRec)* tab)
                 xf86_lex_val.numType = PARSE_DECIMAL;
             }
 
-            configRBuf[0] = c;
+            configRBuf[0] = cast(char)c;
             i = 1;
             while (isdigit(c = configBuf[configPos++]) ||
                    (c == '.') || (c == 'x') || (c == 'X') ||
                    ((base == 16) && (((c >= 'a') && (c <= 'f')) ||
                                      ((c >= 'A') && (c <= 'F')))))
-                configRBuf[i++] = c;
+                configRBuf[i++] = cast(char)c;
             configPos--;        /* GJA -- one too far */
             configRBuf[i] = '\0';
-            xf86_lex_val.num = strtoul(configRBuf, null, 0);
+            xf86_lex_val.num = cast(int)strtoul(configRBuf, null, 0);
             xf86_lex_val.realnum = atof(configRBuf);
             return NUMBER;
         }
@@ -389,7 +399,7 @@ int xf86getToken(const(xf86ConfigSymTabRec)* tab)
             }
             while ((c != '\"') && (c != '\n') && (c != '\r') && (c != '\0'));
             configRBuf[i] = '\0';
-            xf86_lex_val.str = calloc(1, strlen(configRBuf) + 1);
+            xf86_lex_val.str = cast(char*)calloc(1, strlen(configRBuf) + 1);
             strcpy(xf86_lex_val.str, configRBuf);        /* private copy ! */
             return XF86_TOKEN_STRING;
         }
@@ -399,7 +409,7 @@ int xf86getToken(const(xf86ConfigSymTabRec)* tab)
          * handled later along with the pushed tokens.
          */
         else {
-            configRBuf[0] = c;
+            configRBuf[0] = cast(char)c;
             i = 0;
             do {
                 configRBuf[++i] = (c = configBuf[configPos++]);
@@ -535,25 +545,25 @@ int xf86pathIsSafe(const(char)* path)
 enum XCONFIGSUFFIX =	".conf";
 enum XCONFENV =	"XORGCONFIG";
 
-enum BAIL_OUT =		`do {									
+enum BAIL_OUT =		`{									
 							free(result);				
-							return NULL;						
-						} while (0);`;
+							return null;						
+						} `;
 
-enum CHECK_LENGTH =	`do {									
+enum CHECK_LENGTH =	`{									
 							if (l > PATH_MAX) {					
-								BAIL_OUT;						
+								mixin(BAIL_OUT);						
 							}									
-						} while (0);`;
+						} `;
 
-enum string APPEND_STR(string s) = `do {									
+enum string APPEND_STR(string s) = `{									
 							if (strlen(` ~ s ~ `) + l > PATH_MAX) {		
-								BAIL_OUT;						
+								mixin(BAIL_OUT);						
 							} else {							
 								strcpy(result + l, ` ~ s ~ `);			
 								l += strlen(` ~ s ~ `);					
 							}									
-						} while (0)`;
+						} `;
 
 private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const(char)* projroot, int* cmdlineUsed, int* envUsed, const(char)* XConfigFile)
 {
@@ -577,7 +587,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
     for (i = 0; template_[i]; i++) {
         if (template_[i] != '%') {
             result[l++] = template_[i];
-            CHECK_LENGTH;
+            mixin(CHECK_LENGTH);
         }
         else {
             switch (template_[++i]) {
@@ -588,7 +598,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                         *cmdlineUsed = 1;
                 }
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'R':
                 if (cmdline && !xf86pathIsAbsolute(cmdline)) {
@@ -597,7 +607,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                         *cmdlineUsed = 1;
                 }
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'S':
                 if (cmdline && xf86pathIsSafe(cmdline)) {
@@ -606,7 +616,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                         *cmdlineUsed = 1;
                 }
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'X':
                 mixin(APPEND_STR!(`XConfigFile`));
@@ -615,7 +625,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                 if (!hostname) {
                     xhostname hn = void;
                     if (f_xhostname(&hn))
-                        hostname = strdup(hn.name);
+                        hostname = strdup(hn.name.ptr);
                 }
                 if (hostname)
                     mixin(APPEND_STR!(`hostname`));
@@ -629,7 +639,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                         *envUsed = 1;
                 }
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'F':
                 if (!env)
@@ -640,7 +650,7 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                         *envUsed = 1;
                 }
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'G':
                 if (!env)
@@ -651,13 +661,13 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                         *envUsed = 1;
                 }
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'P':
                 if (projroot && xf86pathIsAbsolute(projroot))
                     mixin(APPEND_STR!(`projroot`));
                 else
-                    BAIL_OUT;
+                    mixin(BAIL_OUT);
                 break;
             case 'C':
                 mixin(APPEND_STR!(`SYSCONFDIR`));
@@ -667,12 +677,12 @@ private char* DoSubstitution(const(char)* template_, const(char)* cmdline, const
                 break;
             case '%':
                 result[l++] = '%';
-                CHECK_LENGTH;
+                mixin(CHECK_LENGTH);
                 break;
             default:
                 fprintf(stderr, "invalid escape %%%c found in path template\n",
                         template_[i]);
-                BAIL_OUT;
+                mixin(BAIL_OUT);
                 break;
             }
         }
@@ -728,7 +738,7 @@ private char* OpenConfigFile(const(char)* path, const(char)* cmdline, const(char
  */
 private int ConfigFilter(const(dirent)* de)
 {
-    const(char)* name = de.d_name;
+    const(char)* name = de.d_name.ptr;
     size_t len = void;
     size_t suflen = strlen(XCONFIGSUFFIX);
 
@@ -760,7 +770,7 @@ private Bool AddConfigDirFiles(const(char)* dirpath, dirent** list, int num)
         }
 
         char* path = cast(char*) calloc(1, PATH_MAX + 1);
-        snprintf(path, PATH_MAX + 1, "%s/%s", dirpath, list[i].d_name);
+        snprintf(path, PATH_MAX + 1, "%s/%s", dirpath, list[i].d_name.ptr);
         file = fopen(path, "r");
         if (!file) {
             free(path);
@@ -804,7 +814,7 @@ private char* OpenConfigDir(const(char)* path, const(char)* cmdline, const(char)
         }
 
         /* match files named *.conf */
-        num = scandir(dirpath, &list, &ConfigFilter, alphasort);
+        num = scandir(dirpath, &list, &ConfigFilter, &alphasort);
         if (num < 0) {
             list = null;
             num = 0;
@@ -1000,8 +1010,8 @@ int xf86nameCompare(const(char)* s1, const(char)* s2)
         s1++;
     while (*s2 == '_' || *s2 == ' ' || *s2 == '\t')
         s2++;
-    c1 = (isupper(cast(ubyte)*s1) ? tolower(cast(ubyte)*s1) : *s1);
-    c2 = (isupper(cast(ubyte)*s2) ? tolower(cast(ubyte)*s2) : *s2);
+    c1 = cast(char)(isupper(cast(ubyte)*s1) ? tolower(cast(ubyte)*s1) : *s1);
+    c2 = cast(char)(isupper(cast(ubyte)*s2) ? tolower(cast(ubyte)*s2) : *s2);
     while (c1 == c2) {
         if (c1 == '\0')
             return 0;
@@ -1011,8 +1021,8 @@ int xf86nameCompare(const(char)* s1, const(char)* s2)
             s1++;
         while (*s2 == '_' || *s2 == ' ' || *s2 == '\t')
             s2++;
-        c1 = (isupper(cast(ubyte)*s1) ? tolower(cast(ubyte)*s1) : *s1);
-        c2 = (isupper(cast(ubyte)*s2) ? tolower(cast(ubyte)*s2) : *s2);
+        c1 = cast(char)(isupper(cast(ubyte)*s1) ? tolower(cast(ubyte)*s1) : *s1);
+        c2 = cast(char)(isupper(cast(ubyte)*s2) ? tolower(cast(ubyte)*s2) : *s2);
     }
     return c1 - c2;
 }
@@ -1027,7 +1037,7 @@ char* xf86addComment(char* cur, const(char)* add)
         return cur;
 
     if (cur) {
-        curlen = strlen(cur);
+        curlen = cast(int)strlen(cur);
         if (curlen)
             hasnewline = cur[curlen - 1] == '\n';
         eol_seen = 0;
@@ -1044,7 +1054,7 @@ char* xf86addComment(char* cur, const(char)* add)
     }
     iscomment = (*cstr == '#');
 
-    len = strlen(add);
+    len = cast(int)strlen(add);
     endnewline = add[len - 1] == '\n';
 
     insnewline = eol_seen || (curlen && !hasnewline);

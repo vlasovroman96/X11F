@@ -59,6 +59,29 @@ import build.xorg_config;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import os.log;
+import Video;
+import Monitor;
 
 
 private const(xf86ConfigSymTabRec)[5] VendorSubTab = [
@@ -78,7 +101,7 @@ private void xf86freeVendorSubList(XF86ConfVendSubPtr ptr)
         mixin(TestFree!(`ptr.vs_comment`));
         xf86optionListFree(ptr.vs_option_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfVendSubRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -166,8 +189,7 @@ XF86ConfVendorPtr xf86parseVendorSection()
             if (xf86getSubToken(&(ptr.vnd_comment)) != XF86_TOKEN_STRING)
                 mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             {
-                HANDLE_LIST(vnd_sub_lst, &xf86parseVendorSubSection,
-                            XF86ConfVendSubPtr);
+                mixin(HANDLE_LIST!("vnd_sub_lst", "&xf86parseVendorSubSection", "XF86ConfVendSubPtr"));
             }
             break;
         case EOF_TOKEN:
@@ -202,7 +224,7 @@ void xf86printVendorSection(FILE* cf, XF86ConfVendorPtr ptr)
             fprintf(cf, "\tIdentifier     \"%s\"\n", ptr.vnd_identifier);
 
         xf86printOptionList(cf, ptr.vnd_option_lst, 1);
-        for (pptr = ptr.vnd_sub_lst; pptr; pptr = pptr.list.next) {
+        for (pptr = ptr.vnd_sub_lst; pptr; pptr = cast(_XF86ConfVendSubRec*)pptr.list.next) {
             fprintf(cf, "\tSubSection \"Vendor\"\n");
             if (pptr.vs_comment)
                 fprintf(cf, "%s", pptr.vs_comment);
@@ -212,7 +234,7 @@ void xf86printVendorSection(FILE* cf, XF86ConfVendorPtr ptr)
             fprintf(cf, "\tEndSubSection\n");
         }
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfVendorRec*)ptr.list.next;
     }
 }
 

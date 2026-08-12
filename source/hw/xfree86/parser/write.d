@@ -64,6 +64,7 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.types;
 import core.sys.posix.sys.wait;
 import core.stdc.errno;
+import os.log;
 
 private int doWriteConfigFile(const(char)* filename, XF86ConfigPtr cptr)
 {

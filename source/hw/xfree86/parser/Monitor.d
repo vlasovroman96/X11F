@@ -59,7 +59,27 @@ import build.xorg_config;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import Monitor;
 
 private const(xf86ConfigSymTabRec)[14] MonitorTab = [
     {ENDSECTION, "endsection"},
@@ -123,7 +143,7 @@ private void xf86freeModeLineList(XF86ConfModeLinePtr ptr)
         mixin(TestFree!(`ptr.ml_identifier`));
         mixin(TestFree!(`ptr.ml_comment`));
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfModeLineRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -431,20 +451,18 @@ XF86ConfMonitorPtr xf86parseMonitorSection()
             ptr.mon_modelname = xf86_lex_val.str;
             break;
         case MODE:
-            HANDLE_LIST(mon_modeline_lst, &xf86parseVerboseMode,
-                        XF86ConfModeLinePtr);
+            mixin(HANDLE_LIST!("mon_modeline_lst", "&xf86parseVerboseMode", "XF86ConfModeLinePtr"));
             break;
         case MODELINE:
-            HANDLE_LIST(mon_modeline_lst, &xf86parseModeLine,
-                        XF86ConfModeLinePtr);
+            mixin(HANDLE_LIST!("mon_modeline_lst", "&xf86parseModeLine", "XF86ConfModeLinePtr"));
             break;
         case DISPLAYSIZE:
             if (xf86getSubToken(&(ptr.mon_comment)) != NUMBER)
                 mixin(ErrorP!(`DISPLAYSIZE_MSG`));
-            ptr.mon_width = xf86_lex_val.realnum;
+            ptr.mon_width = cast(int)xf86_lex_val.realnum;
             if (xf86getSubToken(&(ptr.mon_comment)) != NUMBER)
                 mixin(ErrorP!(`DISPLAYSIZE_MSG`));
-            ptr.mon_height = xf86_lex_val.realnum;
+            ptr.mon_height = cast(int)xf86_lex_val.realnum;
             break;
 
         case HORIZSYNC:
@@ -607,12 +625,10 @@ XF86ConfModesPtr xf86parseModesSection()
             has_ident = TRUE;
             break;
         case MODE:
-            HANDLE_LIST(mon_modeline_lst, &xf86parseVerboseMode,
-                        XF86ConfModeLinePtr);
+            mixin(HANDLE_LIST!("mon_modeline_lst", "&xf86parseVerboseMode", "XF86ConfModeLinePtr"));
             break;
         case MODELINE:
-            HANDLE_LIST(mon_modeline_lst, &xf86parseModeLine,
-                        XF86ConfModeLinePtr);
+            mixin(HANDLE_LIST!("mon_modeline_lst", "&xf86parseModeLine", "XF86ConfModeLinePtr"));
             break;
         default:
             xf86parseError(INVALID_KEYWORD_MSG, xf86tokenString());
@@ -650,7 +666,7 @@ void xf86printMonitorSection(FILE* cf, XF86ConfMonitorPtr ptr)
             fprintf(cf, "\tModelName    \"%s\"\n", ptr.mon_modelname);
         while (mptr) {
             fprintf(cf, "\tUseModes     \"%s\"\n", mptr.ml_modes_str);
-            mptr = mptr.list.next;
+            mptr = cast(_XF86ConfModesLinkRec*)mptr.list.next;
         }
         if (ptr.mon_width)
             fprintf(cf, "\tDisplaySize  %d\t%d\n",
@@ -674,7 +690,7 @@ void xf86printMonitorSection(FILE* cf, XF86ConfMonitorPtr ptr)
                         ptr.mon_gamma_green, ptr.mon_gamma_blue);
             }
         }
-        for (mlptr = ptr.mon_modeline_lst; mlptr; mlptr = mlptr.list.next) {
+        for (mlptr = ptr.mon_modeline_lst; mlptr; mlptr = cast(_XF86ConfModeLineRec*)mlptr.list.next) {
             fprintf(cf, "\tModeLine     \"%s\" %2.1f ",
                     mlptr.ml_identifier, mlptr.ml_clock / 1000.0);
             fprintf(cf, "%d %d %d %d %d %d %d %d",
@@ -708,7 +724,7 @@ void xf86printMonitorSection(FILE* cf, XF86ConfMonitorPtr ptr)
         }
         xf86printOptionList(cf, ptr.mon_option_lst, 1);
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfMonitorRec*)ptr.list.next;
     }
 }
 
@@ -722,7 +738,7 @@ void xf86printModesSection(FILE* cf, XF86ConfModesPtr ptr)
             fprintf(cf, "%s", ptr.modes_comment);
         if (ptr.modes_identifier)
             fprintf(cf, "\tIdentifier     \"%s\"\n", ptr.modes_identifier);
-        for (mlptr = ptr.mon_modeline_lst; mlptr; mlptr = mlptr.list.next) {
+        for (mlptr = ptr.mon_modeline_lst; mlptr; mlptr = cast(_XF86ConfModeLineRec*)mlptr.list.next) {
             fprintf(cf, "\tModeLine     \"%s\" %2.1f ",
                     mlptr.ml_identifier, mlptr.ml_clock / 1000.0);
             fprintf(cf, "%d %d %d %d %d %d %d %d",
@@ -760,7 +776,7 @@ void xf86printModesSection(FILE* cf, XF86ConfModesPtr ptr)
                 fprintf(cf, "\n");
         }
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfModesRec*)ptr.list.next;
     }
 }
 
@@ -776,7 +792,7 @@ void xf86freeMonitorList(XF86ConfMonitorPtr ptr)
         xf86optionListFree(ptr.mon_option_lst);
         xf86freeModeLineList(ptr.mon_modeline_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfMonitorRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -790,7 +806,7 @@ void xf86freeModesList(XF86ConfModesPtr ptr)
         mixin(TestFree!(`ptr.modes_comment`));
         xf86freeModeLineList(ptr.mon_modeline_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfModesRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -801,7 +817,7 @@ XF86ConfMonitorPtr xf86findMonitor(const(char)* ident, XF86ConfMonitorPtr p)
         if (xf86nameCompare(ident, p.mon_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfMonitorRec*)p.list.next;
     }
     return null;
 }
@@ -812,7 +828,7 @@ XF86ConfModesPtr xf86findModes(const(char)* ident, XF86ConfModesPtr p)
         if (xf86nameCompare(ident, p.modes_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfModesRec*)p.list.next;
     }
     return null;
 }
@@ -823,7 +839,7 @@ XF86ConfModeLinePtr xf86findModeLine(const(char)* ident, XF86ConfModeLinePtr p)
         if (xf86nameCompare(ident, p.ml_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfModeLineRec*)p.list.next;
     }
     return null;
 }
@@ -843,7 +859,7 @@ int xf86validateMonitor(XF86ConfigPtr p, XF86ConfScreenPtr screen)
             return FALSE;
         }
         modeslnk.ml_modes = modes;
-        modeslnk = modeslnk.list.next;
+        modeslnk = cast(_XF86ConfModesLinkRec*)modeslnk.list.next;
     }
     return TRUE;
 }

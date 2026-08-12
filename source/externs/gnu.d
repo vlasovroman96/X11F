@@ -2,6 +2,7 @@ module externs.gnu;
 
 import core.stdc.stdio;
 import core.stdc.stdint;
+import core.sys.posix.dirent;
 
 // import core.stdc.ctype;;
 alias ssize_t = long;
@@ -15,6 +16,7 @@ extern(C) @nogc nothrow {
 	char *strtok_r(char *str, const char *delim, char **saveptr);
 	int getpagesize();
 	extern(C) char* index(const(char)* s, int c);
+	extern(C) int alphasort(const dirent** a, const dirent** b);
 	// extern(C) int setenv(const(char)* name, const(char)* value, int overwrite);
 	
 ulong majorDev(ulong dev)
@@ -27,4 +29,11 @@ ulong minorDev(ulong dev)
 {
     return (dev & 0xff) | ((dev >> 12) & 0xfffff00);
 }
+
+extern(C) int scandir(
+    const(char)* dirp, 
+    dirent*** namelist, 
+    int function(const dirent*) filter,
+    int function(const dirent**, const dirent**) compar
+);
 }

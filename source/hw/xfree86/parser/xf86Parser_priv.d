@@ -22,11 +22,11 @@ void xf86freeConfig(XF86ConfigPtr p);
 int xf86writeConfigFile(const(char)* filename, XF86ConfigPtr cptr);
 // int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout);
 
-pragma(inline, true) private void xf86freeMatchGroup(xf86MatchGroup* group)
+pragma(inline, true) void xf86freeMatchGroup(xf86MatchGroup* group)
 {
     xorg_list_del(&group.entry);
     xf86MatchPattern* pattern = void, next_pattern = void;
-    mixin(xorg_list_for_each_entry_safe!("pattern", "next_pattern", "group.patterns", "entry", q{
+    mixin(xorg_list_for_each_entry_safe!("pattern", "next_pattern", "&group.patterns", "entry", q{
         xorg_list_del(&pattern.entry);
         if (pattern.str)
             free(pattern.str);
@@ -37,9 +37,9 @@ pragma(inline, true) private void xf86freeMatchGroup(xf86MatchGroup* group)
 
 pragma(inline, true) void xf86freeMatchGroupList(xorg_list* grouplist) {
     xf86MatchGroup* group = void, next = void;
-    xorg_list_for_each_entry_safe(group, next, grouplist, entry); {
+    mixin(xorg_list_for_each_entry_safe!("group", "next", "grouplist", "entry", q{
         xf86freeMatchGroup(group);
-    }
+    }));
 }
 
  /* _XSERVER_XF86_PARSER_PRIV */

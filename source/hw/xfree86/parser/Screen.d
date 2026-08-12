@@ -59,6 +59,29 @@ import build.xorg_config;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import os.log;
+import Video;
+import Monitor;
 
 
 private const(xf86ConfigSymTabRec)[13] DisplayTab = [
@@ -83,7 +106,7 @@ private void xf86freeModeList(XF86ModePtr ptr)
     while (ptr) {
         mixin(TestFree!(`ptr.mode_name`));
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ModeRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -96,7 +119,7 @@ private void xf86freeDisplayList(XF86ConfDisplayPtr ptr)
         xf86freeModeList(ptr.disp_mode_lst);
         xf86optionListFree(ptr.disp_option_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfDisplayRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -346,8 +369,7 @@ XF86ConfScreenPtr xf86parseScreenSection()
                 mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             {
                 free(xf86_lex_val.str);
-                HANDLE_LIST(scrn_display_lst, &xf86parseDisplaySubSection,
-                            XF86ConfDisplayPtr);
+                mixin(HANDLE_LIST!("scrn_display_lst", "&xf86parseDisplaySubSection", "XF86ConfDisplayPtr"));
             }
             break;
         case EOF_TOKEN:
@@ -397,13 +419,13 @@ void xf86printScreenSection(FILE* cf, XF86ConfScreenPtr ptr)
         if (ptr.scrn_defaultfbbpp)
             fprintf(cf, "\tDefaultFbBPP     %d\n", ptr.scrn_defaultfbbpp);
         xf86printOptionList(cf, ptr.scrn_option_lst, 1);
-        for (aptr = ptr.scrn_adaptor_lst; aptr; aptr = aptr.list.next) {
+        for (aptr = ptr.scrn_adaptor_lst; aptr; aptr = cast(_XF86ConfAdaptorLinkRec*)aptr.list.next) {
             fprintf(cf, "\tVideoAdaptor \"%s\"\n", aptr.al_adaptor_str);
         }
         if (ptr.scrn_virtualX && ptr.scrn_virtualY)
             fprintf(cf, "\tVirtual     %d %d\n",
                     ptr.scrn_virtualX, ptr.scrn_virtualY);
-        for (dptr = ptr.scrn_display_lst; dptr; dptr = dptr.list.next) {
+        for (dptr = ptr.scrn_display_lst; dptr; dptr = cast(_XF86ConfDisplayRec*)dptr.list.next) {
             fprintf(cf, "\tSubSection \"Display\"\n");
             if (dptr.disp_comment)
                 fprintf(cf, "%s", dptr.disp_comment);
@@ -442,7 +464,7 @@ void xf86printScreenSection(FILE* cf, XF86ConfScreenPtr ptr)
             if (dptr.disp_mode_lst) {
                 fprintf(cf, "\t\tModes   ");
             }
-            for (mptr = dptr.disp_mode_lst; mptr; mptr = mptr.list.next) {
+            for (mptr = dptr.disp_mode_lst; mptr; mptr = cast(_XF86ModeRec*)mptr.list.next) {
                 fprintf(cf, " \"%s\"", mptr.mode_name);
             }
             if (dptr.disp_mode_lst) {
@@ -452,7 +474,7 @@ void xf86printScreenSection(FILE* cf, XF86ConfScreenPtr ptr)
             fprintf(cf, "\tEndSubSection\n");
         }
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfScreenRec*)ptr.list.next;
     }
 
 }
@@ -464,7 +486,7 @@ private void xf86freeAdaptorLinkList(XF86ConfAdaptorLinkPtr ptr)
     while (ptr) {
         mixin(TestFree!(`ptr.al_adaptor_str`));
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfAdaptorLinkRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -484,7 +506,7 @@ void xf86freeScreenList(XF86ConfScreenPtr ptr)
         xf86freeAdaptorLinkList(ptr.scrn_adaptor_lst);
         xf86freeDisplayList(ptr.scrn_display_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfScreenRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -536,10 +558,10 @@ int xf86validateScreen(XF86ConfigPtr p)
             }
 
             adaptor.al_adaptor.va_fwdref = strdup(screen.scrn_identifier);
-            adaptor = adaptor.list.next;
+            adaptor = cast(_XF86ConfAdaptorLinkRec*)adaptor.list.next;
         }
 
-        screen = screen.list.next;
+        screen = cast(_XF86ConfScreenRec*)screen.list.next;
     }
 
     return TRUE;
@@ -551,7 +573,7 @@ XF86ConfScreenPtr xf86findScreen(const(char)* ident, XF86ConfScreenPtr p)
         if (xf86nameCompare(ident, p.scrn_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfScreenRec*)p.list.next;
     }
     return null;
 }

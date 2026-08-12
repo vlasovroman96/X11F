@@ -14,6 +14,9 @@ import include.misc;
 import xf86Parser_priv;
 import configProcs;
 import include.os;
+import os.log;
+import xf86Parser_priv;
+
 
 /*
  *  Utilities used by InputClass.c and OutputClass.c
@@ -95,11 +98,11 @@ xf86MatchGroup* xf86createMatchGroup(const(char)* arg, xf86MatchMode pref_mode, 
         str ++;
         if (*str) {
             char* last = void;
-            last = strchr(str+1, *str);
+            last = cast(char*)strchr(str+1, *str);
             if (last)
-                n = last-str-1;
+                n = cast(uint)(last-str-1);
             else
-                n = strlen(str+1);
+                n = cast(uint)strlen(str+1);
             pattern.str = strndup(str+1, n);
             if (pattern.str == null)
                 goto fail;
@@ -118,10 +121,10 @@ xf86MatchGroup* xf86createMatchGroup(const(char)* arg, xf86MatchMode pref_mode, 
         }
     }
     else {
-        n = strcspn(str, sep_or.ptr);
+        n = cast(uint)strcspn(str, sep_or.ptr);
         if (n > strcspn(str, sep_and.ptr)) {
             pattern.mode = MATCH_SUBSTRINGS_SEQUENCE;
-            pattern.str = malloc(n+2);
+            pattern.str = cast(char*)malloc(n+2);
             if (pattern.str) {
                 char* s = void, d = void;
                 strncpy(pattern.str, str, n);
@@ -191,10 +194,10 @@ void xf86printMatchPattern(FILE* cf, const(xf86MatchPattern)* pattern, Bool not_
     else if (pattern.mode == MATCH_REGEX)
     /* FIXME: Hope there is no '~' in the pattern */
         fprintf(cf, "%c%s%c", REGEX_FLAG,
-            pattern.str ? pattern.str : "(none)", REGEX_FLAG);
+            pattern.str ? pattern.str : "(none)".ptr, REGEX_FLAG);
     else if (pattern.mode == MATCH_SUBSTRINGS_SEQUENCE) {
         Bool after = FALSE;
-        char* str = pattern.str;
+        char* str = cast(char*)pattern.str;
         while (*str) {
             if (after)
                 fprintf(cf, "%c", LOG_AND);

@@ -61,6 +61,26 @@ import core.stdc.assert_;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
 
 
 private const(xf86ConfigSymTabRec)[4] SubModuleTab = [
@@ -189,7 +209,7 @@ void xf86printModuleSection(FILE* cf, XF86ConfModulePtr ptr)
 
     if (ptr.mod_comment)
         fprintf(cf, "%s", ptr.mod_comment);
-    for (lptr = ptr.mod_load_lst; lptr; lptr = lptr.list.next) {
+    for (lptr = ptr.mod_load_lst; lptr; lptr = cast(_XF86LoadRec*)lptr.list.next) {
         switch (lptr.load_type) {
         case XF86_LOAD_MODULE:
             if (lptr.load_opt == null) {
@@ -214,11 +234,11 @@ void xf86printModuleSection(FILE* cf, XF86ConfModulePtr ptr)
             else
                 fputc('\n', cf);
             break;
-version (none) {
+// version (none) {
         default:
             fprintf(cf, "#\tUnknown type  \"%s\"\n", lptr.load_name);
             break;
-}
+// }
         }
     }
 }
@@ -259,7 +279,7 @@ void xf86freeModules(XF86ConfModulePtr ptr)
         mixin(TestFree!(`lptr.load_name`));
         mixin(TestFree!(`lptr.load_comment`));
         prev = lptr;
-        lptr = lptr.list.next;
+        lptr = cast(_XF86LoadRec*)lptr.list.next;
         free(prev);
     }
     lptr = ptr.mod_disable_lst;
@@ -267,7 +287,7 @@ void xf86freeModules(XF86ConfModulePtr ptr)
         mixin(TestFree!(`lptr.load_name`));
         mixin(TestFree!(`lptr.load_comment`));
         prev = lptr;
-        lptr = lptr.list.next;
+        lptr = cast(_XF86LoadRec*)lptr.list.next;
         free(prev);
     }
     mixin(TestFree!(`ptr.mod_comment`));

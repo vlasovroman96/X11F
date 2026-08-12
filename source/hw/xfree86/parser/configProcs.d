@@ -37,9 +37,9 @@ extern(C): __gshared:
 import include.xf86Parser;
 
 /* Device.c */
-XF86ConfDevicePtr xf86parseDeviceSection();
+// XF86ConfDevicePtr xf86parseDeviceSection();
 void xf86printDeviceSection(FILE* cf, XF86ConfDevicePtr ptr);
-void xf86freeDeviceList(XF86ConfDevicePtr ptr);
+// void xf86freeDeviceList(XF86ConfDevicePtr ptr);
 int xf86validateDevice(XF86ConfigPtr p);
 
 /* Files.c */
@@ -48,15 +48,15 @@ void xf86printFileSection(FILE* cf, XF86ConfFilesPtr ptr);
 void xf86freeFiles(XF86ConfFilesPtr p);
 
 /* Flags.c */
-XF86ConfFlagsPtr xf86parseFlagsSection(XF86ConfFlagsPtr ptr);
+// XF86ConfFlagsPtr xf86parseFlagsSection(XF86ConfFlagsPtr ptr);
 void xf86printServerFlagsSection(FILE* f, XF86ConfFlagsPtr flags);
-void xf86freeFlags(XF86ConfFlagsPtr flags);
+// void xf86freeFlags(XF86ConfFlagsPtr flags);
 
 /* Input.c */
-XF86ConfInputPtr xf86parseInputSection();
+// XF86ConfInputPtr xf86parseInputSection();
 void xf86printInputSection(FILE* f, XF86ConfInputPtr ptr);
-void xf86freeInputList(XF86ConfInputPtr ptr);
-int xf86validateInput(XF86ConfigPtr p);
+// void xf86freeInputList(XF86ConfInputPtr ptr);
+// int xf86validateInput(XF86ConfigPtr p);
 
 /* InputClass.c */
 XF86ConfInputClassPtr xf86parseInputClassSection();
@@ -79,22 +79,22 @@ extern void  xf86addNewLoadDirective(XF86LoadPtr head, const(char)* name, int ty
 void xf86freeModules(XF86ConfModulePtr ptr);
 
 /* Monitor.c */
-XF86ConfMonitorPtr xf86parseMonitorSection();
-XF86ConfModesPtr xf86parseModesSection();
+// XF86ConfMonitorPtr xf86parseMonitorSection();
+// XF86ConfModesPtr xf86parseModesSection();
 void xf86printMonitorSection(FILE* cf, XF86ConfMonitorPtr ptr);
 void xf86printModesSection(FILE* cf, XF86ConfModesPtr ptr);
-extern void  xf86freeMonitorList(XF86ConfMonitorPtr ptr);
-void xf86freeModesList(XF86ConfModesPtr ptr);
-int xf86validateMonitor(XF86ConfigPtr p, XF86ConfScreenPtr screen);
+// extern void  xf86freeMonitorList(XF86ConfMonitorPtr ptr);
+// void xf86freeModesList(XF86ConfModesPtr ptr);
+// int xf86validateMonitor(XF86ConfigPtr p, XF86ConfScreenPtr screen);
 
 /* Pointer.c */
 XF86ConfInputPtr xf86parsePointerSection();
 
 /* Screen.c */
-XF86ConfScreenPtr xf86parseScreenSection();
+// XF86ConfScreenPtr xf86parseScreenSection();
 void xf86printScreenSection(FILE* cf, XF86ConfScreenPtr ptr);
-extern void  xf86freeScreenList(XF86ConfScreenPtr ptr);
-int xf86validateScreen(XF86ConfigPtr p);
+// extern void  xf86freeScreenList(XF86ConfScreenPtr ptr);
+// int xf86validateScreen(XF86ConfigPtr p);
 
 /* Vendor.c */
 XF86ConfVendorPtr xf86parseVendorSection();
@@ -102,9 +102,9 @@ void xf86freeVendorList(XF86ConfVendorPtr p);
 void xf86printVendorSection(FILE* cf, XF86ConfVendorPtr ptr);
 
 /* Video.c */
-XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection();
+// XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection();
 void xf86printVideoAdaptorSection(FILE* cf, XF86ConfVideoAdaptorPtr ptr);
-void xf86freeVideoAdaptorList(XF86ConfVideoAdaptorPtr ptr);
+// void xf86freeVideoAdaptorList(XF86ConfVideoAdaptorPtr ptr);
 
 /* scan.c */
 // int xf86getToken(const(xf86ConfigSymTabRec)* tab);
@@ -114,8 +114,8 @@ void xf86freeVideoAdaptorList(XF86ConfVideoAdaptorPtr ptr);
 // char* xf86tokenString();
 // void xf86parseError(const(char)* format, ...);
 // void xf86validationError(const(char)* format, ...);
-void xf86setSection(const(char)* section);
-int xf86getStringToken(const(xf86ConfigSymTabRec)* tab);
+// void xf86setSection(const(char)* section);
+// int xf86getStringToken(const(xf86ConfigSymTabRec)* tab);
 
 /* write.c */
 /* DRI.c */

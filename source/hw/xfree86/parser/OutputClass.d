@@ -33,6 +33,27 @@ import include.os;
 import xf86Parser_priv;
 import xf86tokens;
 import Configint;
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import os.log;
 
 private const(xf86ConfigSymTabRec)[10] OutputClassTab = [
     {ENDSECTION, "endsection"},
@@ -63,7 +84,7 @@ private void xf86freeOutputClassList(XF86ConfOutputClassPtr ptr)
         xf86optionListFree(ptr.option_lst);
 
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfOutputClassRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -173,8 +194,8 @@ version (DEBUG) {
 
 void xf86printOutputClassSection(FILE* cf, XF86ConfOutputClassPtr ptr)
 {
-    const(xf86MatchGroup)* group = void;
-    const(xf86MatchPattern)* pattern = void;
+    xf86MatchGroup* group = void;
+    xf86MatchPattern* pattern = void;
     Bool not_first = void;
 
     while (ptr) {
@@ -211,6 +232,6 @@ void xf86printOutputClassSection(FILE* cf, XF86ConfOutputClassPtr ptr)
         }));
 
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfOutputClassRec*)ptr.list.next;
     }
 }

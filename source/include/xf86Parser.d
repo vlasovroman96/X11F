@@ -511,7 +511,7 @@ extern void  xf86findModeLine(const(char)* ident, XF86ConfModeLinePtr p);
 // extern void  xf86findScreen(const(char)* ident, XF86ConfScreenPtr p);
 // extern void  xf86findInput(const(char)* ident, XF86ConfInputPtr p);
 // extern void  xf86findInputByDriver(const(char)* driver, XF86ConfInputPtr p);
-extern void  xf86findVideoAdaptor(const(char)* ident, XF86ConfVideoAdaptorPtr p);
+// extern void  xf86findVideoAdaptor(const(char)* ident, XF86ConfVideoAdaptorPtr p);
 // extern void  xf86addListItem(GenericListPtr head, GenericListPtr c_new);
 // extern void  xf86itemNotSublist(GenericListPtr list_1, GenericListPtr list_2);
 extern void  xf86pathIsAbsolute(const(char)* path);

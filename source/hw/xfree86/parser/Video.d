@@ -59,7 +59,29 @@ import build.xorg_config;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-
+import xf86Parser_priv;
+import xf86tokens;
+import Configint;
+import core.stdc.string;
+import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+import os.log;
+import Video;
+import Monitor;
 
 private const(xf86ConfigSymTabRec)[5] VideoPortTab = [
     {ENDSUBSECTION, "endsubsection"},
@@ -79,7 +101,7 @@ private void xf86freeVideoPortList(XF86ConfVideoPortPtr ptr)
         mixin(TestFree!(`ptr.vp_comment`));
         xf86optionListFree(ptr.vp_option_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfVideoPortRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -189,8 +211,7 @@ XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection()
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
                 mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             {
-                HANDLE_LIST(va_port_lst, &xf86parseVideoPortSubSection,
-                            XF86ConfVideoPortPtr);
+                mixin(HANDLE_LIST!("va_port_lst", "&xf86parseVideoPortSubSection", "XF86ConfVideoPortPtr"));
             }
             break;
 
@@ -232,7 +253,7 @@ void xf86printVideoAdaptorSection(FILE* cf, XF86ConfVideoAdaptorPtr ptr)
         if (ptr.va_driver)
             fprintf(cf, "\tDriver      \"%s\"\n", ptr.va_driver);
         xf86printOptionList(cf, ptr.va_option_lst, 1);
-        for (pptr = ptr.va_port_lst; pptr; pptr = pptr.list.next) {
+        for (pptr = ptr.va_port_lst; pptr; pptr = cast(_XF86ConfVideoPortRec*)pptr.list.next) {
             fprintf(cf, "\tSubSection \"VideoPort\"\n");
             if (pptr.vp_comment)
                 fprintf(cf, "%s", pptr.vp_comment);
@@ -242,7 +263,7 @@ void xf86printVideoAdaptorSection(FILE* cf, XF86ConfVideoAdaptorPtr ptr)
             fprintf(cf, "\tEndSubSection\n");
         }
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfVideoAdaptorRec*)ptr.list.next;
     }
 
 }
@@ -262,7 +283,7 @@ void xf86freeVideoAdaptorList(XF86ConfVideoAdaptorPtr ptr)
         xf86freeVideoPortList(ptr.va_port_lst);
         xf86optionListFree(ptr.va_option_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfVideoAdaptorRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -273,7 +294,7 @@ XF86ConfVideoAdaptorPtr xf86findVideoAdaptor(const(char)* ident, XF86ConfVideoAd
         if (xf86nameCompare(ident, p.va_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(XF86ConfVideoAdaptorPtr)p.list.next;
     }
     return null;
 }
