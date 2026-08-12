@@ -62,10 +62,68 @@ import core.stdc.errno;
 import os.log_priv;
 import os.xserver_poll;
 
+import core.sys.posix.unistd;
+// import core.sys.posix.
 import include.xf86;
 import xf86Opt_priv;
 import include.xf86Priv;
 import include.xf86_OSlib;
+// import xf86Options;
+import config.dbus_core;
+import config.hotplug_priv;
+import dix.input_priv;
+import dix.screenint_priv;
+import include.xf86DDC;
+import include.xorgVersion;
+import mi.mi_priv;
+import os.cmdline;
+import os.ddx_priv;
+import os.log_priv;
+import os.osdep;
+import randr.randrstr_priv;
+
+import include.servermd;
+import include.windowstr;
+import include.scrnintstr;
+import hw.xfree86.os_support.linux.systemd_logind;
+import seatd_libseat;
+
+// import xf86VGAarbiter_priv;
+import hw.xfree86.loader.loaderProcs;
+
+import xf86Module_priv;
+import xf86_priv;
+import include.xf86Priv;
+import xf86Config;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSlib;
+import xf86cmap;
+import mi.mipointer;
+import xf86Extensions;
+import xf86Xinput;
+// import xf86InPriv;
+import include.xf86Crtc;
+import include.picturestr;
+import xf86Bus;
+import include.globals;
+import include.xserver_properties;
+import os.log;
+import externs.attrs;
+import xf86Globals;
+import dix.property;
+import xf86AutoConfig_;
+import externs.X11.Xatom;
+import xf86VGAarbiter;
+import xf86Option;
+import core.sys.posix.unistd;
+import xf86Events;
+import core.stdc.stdlib;
+import core.stdc.errno;
+import core.sys.posix.sys.stat;
+import core.sys.linux.fcntl;
+import include.optionstr;
+import os.xserver_poll;
+import core.sys.posix.poll;
 
 private int GetBaud(int baudrate)
 {
@@ -202,8 +260,8 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
 
     mixin(SYSCALL!("tcgetattr(fd, &t)"));
 
-    if ((val = xf86SetIntOption(cast(_InputOption*)options, "BaudRate", 0))) {
-        if ((baud = GetBaud(val))) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "BaudRate", 0)) != 0) {
+        if ((baud = GetBaud(val)) != 0) {
             cfsetispeed(&t, baud);
             cfsetospeed(&t, baud);
         }
@@ -213,7 +271,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         }
     }
 
-    if ((val = xf86SetIntOption(cast(_InputOption*)options, "StopBits", 0))) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "StopBits", 0)) != 0) {
         switch (val) {
         case 1:
             t.c_cflag &= ~(CSTOPB);
@@ -228,7 +286,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         }
     }
 
-    if ((val = xf86SetIntOption(cast(_InputOption*)options, "DataBits", 0))) {
+    if ((val = xf86SetIntOption(cast(_InputOption*)options, "DataBits", 0)) != 0) {
         switch (val) {
         case 5:
             t.c_cflag &= ~(CSIZE);
@@ -253,7 +311,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         }
     }
 
-    if ((s = xf86SetStrOption(options, "Parity", null))) {
+    if ((s = xf86SetStrOption(options, "Parity", null)) !is null) {
         if (xf86NameCmp(s, "Odd") == 0) {
             t.c_cflag |= PARENB | PARODD;
         }
@@ -273,13 +331,13 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
     }
 
     if ((val = xf86SetIntOption(cast(_InputOption*)options, "Vmin", -1)) != -1) {
-        t.c_cc[VMIN] = val;
+        t.c_cc[VMIN] = cast(ubyte)val;
     }
     if ((val = xf86SetIntOption(cast(_InputOption*)options, "Vtime", -1)) != -1) {
-        t.c_cc[VTIME] = val;
+        t.c_cc[VTIME] = cast(ubyte)val;
     }
 
-    if ((s = xf86SetStrOption(options, "FlowControl", null))) {
+    if ((s = xf86SetStrOption(options, "FlowControl", null))!is null) {
         xf86MarkOptionUsedByName(options, "FlowControl");
         if (xf86NameCmp(s, "Xoff") == 0) {
             t.c_iflag |= IXOFF;
@@ -301,7 +359,7 @@ int xf86SetSerial(int fd, XF86OptionPtr options)
         free(s);
     }
 
-    if ((xf86SetBoolOption(options, "ClearDTR", FALSE))) {
+    if ((xf86SetBoolOption(options, "ClearDTR", FALSE)) != 0) {
 version (CLEARDTR_SUPPORT) {
 version (TIOCMBIC) {
         val = TIOCM_DTR;
@@ -316,7 +374,7 @@ version (TIOCMBIC) {
         xf86MarkOptionUsedByName(options, "ClearDTR");
     }
 
-    if ((xf86SetBoolOption(options, "ClearRTS", FALSE))) {
+    if ((xf86SetBoolOption(options, "ClearRTS", FALSE)) != 0) {
         LogMessageVerb(X_WARNING, 1, "Option ClearRTS not supported on this OS\n");
         return -1;
         xf86MarkOptionUsedByName(options, "ClearRTS");
@@ -340,7 +398,7 @@ int xf86SetSerialSpeed(int fd, int speed)
 
     mixin(SYSCALL!("tcgetattr(fd, &t)"));
 
-    if ((baud = GetBaud(speed))) {
+    if ((baud = GetBaud(speed))!= 0) {
         cfsetispeed(&t, baud);
         cfsetospeed(&t, baud);
     }
@@ -358,7 +416,7 @@ int xf86ReadSerial(int fd, void* buf, int count)
     int r = void;
     int i = void;
 
-    mixin(SYSCALL!("r = read(fd, buf, count)"));
+    mixin(SYSCALL!("r = cast(int)read(fd, buf, count)"));
     DebugF("ReadingSerial: 0x%x", cast(ubyte) *((cast(ubyte*) buf)));
     for (i = 1; i < r; i++)
         DebugF(", 0x%x", cast(ubyte) *((cast(ubyte*) buf) + i));
@@ -375,7 +433,7 @@ int xf86WriteSerial(int fd, const(void)* buf, int count)
     for (i = 1; i < count; i++)
         DebugF(", 0x%x", cast(ubyte) *((cast(ubyte*) buf) + i));
     DebugF("\n");
-    mixin(SYSCALL!("r = write(fd, buf, count)"));
+    mixin(SYSCALL!("r = cast(int)write(fd, buf, count)"));
     return r;
 }
 
@@ -404,7 +462,7 @@ int xf86WaitForInput(int fd, int timeout)
     else {
         mixin(SYSCALL!("r = xserver_poll(&poll_fd, 0, timeout)"));
     }
-    xf86ErrorFVerb(9, "poll returned %d\n", r);
+    // xf86ErrorFVerb(9, "poll returned %d\n", r);
     return r;
 }
 

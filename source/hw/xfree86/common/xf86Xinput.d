@@ -104,6 +104,8 @@ import externs.gnu;
 import Flags;
 import hw.xfree86.common.xf86Helper;
 import dix.events;
+import xf86Events;
+
 
 version (HAVE_FNMATCH_H) {
 import fnmatch;

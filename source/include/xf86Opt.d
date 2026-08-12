@@ -94,7 +94,7 @@ alias OptionInfoPtr = OptionInfoRec*;
 // extern void * xf86SetStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* deflt);
 // extern void  xf86SetBoolOption(XF86OptionPtr list, const(char)* name, int deflt);
 extern void  xf86SetPercentOption(XF86OptionPtr list, const(char)* name, double deflt);
-extern void  xf86CheckIntOption(XF86OptionPtr optlist, const(char)* name, int deflt);
+// extern void  xf86CheckIntOption(XF86OptionPtr optlist, const(char)* name, int deflt);
 // extern void * xf86CheckStrOption(XF86OptionPtr optlist, const(char)* name, const(char)* deflt);
 // extern void  xf86CheckBoolOption(XF86OptionPtr list, const(char)* name, int deflt);
 extern void  xf86CheckPercentOption(XF86OptionPtr list, const(char)* name, double deflt);

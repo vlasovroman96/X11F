@@ -74,6 +74,71 @@ import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 import include.inputstr;
 import os.ospoll;
+import core.sys.posix.unistd;
+// import core.sys.posix.
+import include.xf86;
+import xf86Opt_priv;
+import include.xf86Priv;
+import include.xf86_OSlib;
+// import xf86Options;
+import config.dbus_core;
+import config.hotplug_priv;
+import dix.input_priv;
+import dix.screenint_priv;
+import include.xf86DDC;
+import include.xorgVersion;
+import mi.mi_priv;
+import os.cmdline;
+import os.ddx_priv;
+import os.log_priv;
+import os.osdep;
+import randr.randrstr_priv;
+
+import include.servermd;
+import include.windowstr;
+import include.scrnintstr;
+import hw.xfree86.os_support.linux.systemd_logind;
+import seatd_libseat;
+
+// import xf86VGAarbiter_priv;
+import hw.xfree86.loader.loaderProcs;
+
+import xf86Module_priv;
+import xf86_priv;
+import include.xf86Priv;
+import xf86Config;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSlib;
+import xf86cmap;
+import mi.mipointer;
+import xf86Extensions;
+import xf86Xinput;
+// import xf86InPriv;
+import include.xf86Crtc;
+import include.picturestr;
+import xf86Bus;
+import include.globals;
+import include.xserver_properties;
+import os.log;
+import externs.attrs;
+import xf86Globals;
+import dix.property;
+import xf86AutoConfig_;
+import externs.X11.Xatom;
+import xf86VGAarbiter;
+import xf86Option;
+import core.sys.posix.unistd;
+import xf86Events;
+import core.stdc.stdlib;
+import core.stdc.errno;
+import core.sys.posix.sys.stat;
+import core.sys.linux.fcntl;
+import include.optionstr;
+import os.xserver_poll;
+import core.sys.posix.poll;
+import os.connection;
+import core.sys.posix.signal;
+enum SIGIO = 29;
 
 version (HAVE_STROPTS_H) {
 import stropts;
@@ -89,7 +154,7 @@ enum MAX_FUNCS = 16;
 }
 
 struct Xf86SigIOFunc {
-    void function(int, void*) f;
+    void function(int, void*) @nogc nothrow f;
     int fd;
     void* closure;
 }
@@ -158,7 +223,7 @@ private void xf86SIGIO(int sig)
 
 private int xf86IsPipe(int fd)
 {
-    stat buf = void;
+    stat_t buf = void;
 
     if (fstat(fd, &buf) < 0)
         return 0;
@@ -183,10 +248,10 @@ private void release_sigio()
     xthread_sigmask(SIG_UNBLOCK, &set, null);
 }
 
-int xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void* closure)
+int xf86InstallSIGIOHandler(int fd, void function(int, void*) @nogc nothrow f, void* closure)
 {
-    sigaction sa = void;
-    sigaction osa = void;
+    sigaction_t sa = void;
+    sigaction_t osa = void;
     int i = void;
     int installed = FALSE;
 
@@ -229,7 +294,7 @@ static if (HasVersion!"I_SETSIG" && HasVersion!"HAVE_ISASTREAM") {
             sigemptyset(&sa.sa_mask);
             sigaddset(&sa.sa_mask, SIGIO);
             sa.sa_flags = SA_RESTART;
-            sa.sa_handler = xf86SIGIO;
+            sa.sa_handler = &xf86SIGIO;
             sigaction(SIGIO, &sa, &osa);
             xf86SigIOFuncs[i].fd = fd;
             xf86SigIOFuncs[i].closure = closure;
@@ -252,8 +317,8 @@ static if (HasVersion!"I_SETSIG" && HasVersion!"HAVE_ISASTREAM") {
 
 int xf86RemoveSIGIOHandler(int fd)
 {
-    sigaction sa = void;
-    sigaction osa = void;
+    sigaction_t sa = void;
+    sigaction_t osa = void;
     int i = void;
     int max = void;
     int ret = void;
@@ -263,9 +328,9 @@ int xf86RemoveSIGIOHandler(int fd)
     for (i = 0; i < MAX_FUNCS; i++) {
         if (xf86SigIOFuncs[i].f) {
             if (xf86SigIOFuncs[i].fd == fd) {
-                xf86SigIOFuncs[i].f = 0;
+                xf86SigIOFuncs[i].f = null;
                 xf86SigIOFuncs[i].fd = 0;
-                xf86SigIOFuncs[i].closure = 0;
+                xf86SigIOFuncs[i].closure = null;
                 xf86SigIORemove(fd);
                 ret = 1;
             }

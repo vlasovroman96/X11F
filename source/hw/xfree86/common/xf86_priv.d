@@ -62,11 +62,11 @@ void xf86LockZoom(ScreenPtr pScreen, int lock);
 
 /* xf86Events.c */
 // InputHandlerProc xf86SetConsoleHandler(InputHandlerProc handler, void* data);
-Bool xf86VTOwner();
-void xf86VTEnter();
-void xf86VTLeave();
+// Bool xf86VTOwner();
+// void xf86VTEnter();
+// void xf86VTLeave();
 // void xf86EnableInputDeviceForVTSwitch(InputInfoPtr pInfo);
-void xf86Wakeup(void* blockData, int err);
+// void xf86Wakeup(void* blockData, int err);
 void xf86HandlePMEvents(int fd, void* data);
 
 extern int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs;

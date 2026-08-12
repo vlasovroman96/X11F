@@ -14,7 +14,7 @@ import include.xf86;
 int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL is_auto);
 // InputInfoPtr xf86AllocateInput();
 
-void xf86InputEnableVTProbe();
+// void xf86InputEnableVTProbe();
 
 // InputDriverPtr xf86LookupInputDriver(const(char)* name);
 

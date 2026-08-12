@@ -103,6 +103,8 @@ import externs.X11.Xatom;
 import xf86VGAarbiter;
 import xf86Option;
 import core.sys.posix.unistd;
+import xf86Events;
+
 
 version (DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;

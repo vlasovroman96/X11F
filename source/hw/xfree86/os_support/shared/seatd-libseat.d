@@ -51,6 +51,70 @@ import config.hotplug_priv;
 
 import seatd_libseat;
 
+import core.sys.posix.unistd;
+// import core.sys.posix.
+import include.xf86;
+import xf86Opt_priv;
+import include.xf86Priv;
+import include.xf86_OSlib;
+// import xf86Options;
+import config.dbus_core;
+import config.hotplug_priv;
+import dix.input_priv;
+import dix.screenint_priv;
+import include.xf86DDC;
+import include.xorgVersion;
+import mi.mi_priv;
+import os.cmdline;
+import os.ddx_priv;
+import os.log_priv;
+import os.osdep;
+import randr.randrstr_priv;
+
+import include.servermd;
+import include.windowstr;
+import include.scrnintstr;
+import hw.xfree86.os_support.linux.systemd_logind;
+import seatd_libseat;
+
+// import xf86VGAarbiter_priv;
+import hw.xfree86.loader.loaderProcs;
+
+import xf86Module_priv;
+import xf86_priv;
+import include.xf86Priv;
+import xf86Config;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSlib;
+import xf86cmap;
+import mi.mipointer;
+import xf86Extensions;
+import xf86Xinput;
+// import xf86InPriv;
+import include.xf86Crtc;
+import include.picturestr;
+import xf86Bus;
+import include.globals;
+import include.xserver_properties;
+import os.log;
+import externs.attrs;
+import xf86Globals;
+import dix.property;
+import xf86AutoConfig_;
+import externs.X11.Xatom;
+import xf86VGAarbiter;
+import xf86Option;
+import core.sys.posix.unistd;
+import xf86Events;
+import core.stdc.stdlib;
+import core.stdc.errno;
+import core.sys.posix.sys.stat;
+import core.sys.linux.fcntl;
+import include.optionstr;
+import os.xserver_poll;
+import core.sys.posix.poll;
+import os.connection;
+
 /* ============ libseat client adapter ====================== */
 
 struct libseat_info {
@@ -59,7 +123,7 @@ struct libseat_info {
     Bool vt_active;
     /*
      * This pointer gets initialised to the actual libseat client instance
-     * provided by libseat_open_seat.
+     * provided by assumeNoGC(&libseat_open_seat).
      */
     libseat* client;
     int graphics_id;
@@ -109,7 +173,7 @@ private void disable_seat(libseat* seat, void* userdata)
     LogMessage(X_INFO, "seatd_libseat disable\n");
     xf86VTLeave();
     seat_info.vt_active = FALSE;
-    if (libseat_disable_seat(seat)) {
+    if (assumeNoGC(&libseat_disable_seat)(seat)) {
         LogMessage(X_ERROR, "seatd_libseat disable failed: %d\n", errno);
     }
 }
@@ -145,10 +209,10 @@ private int libseat_handle_events(int timeout)
 {
     int ret = void;
 
-    while ((ret = libseat_dispatch(seat_info.client, timeout)) > 0)
+    while ((ret = assumeNoGC(&libseat_dispatch)(seat_info.client, timeout)) > 0)
         LogMessage(X_INFO, "seatd_libseat handled %i events\n", ret);
     if (ret == -1) {
-        LogMessage(X_ERROR, "libseat_dispatch() failed: %s\n", strerror(errno));
+        LogMessage(X_ERROR, "assumeNoGC(&libseat_dispatch)() failed: %s\n", strerror(errno));
         return -1;
     }
     return ret;
@@ -212,23 +276,23 @@ int seatd_libseat_init(Bool KeepTty_state)
         return 1;
     }
 
-    libseat_set_log_level(LIBSEAT_LOG_LEVEL_DEBUG);
-    libseat_set_log_handler(cast(libseat_log_func)log_libseat);
+    assumeNoGC(&libseat_set_log_level)(LIBSEAT_LOG_LEVEL_DEBUG);
+    assumeNoGC(&libseat_set_log_handler)(cast(libseat_log_func)&log_libseat);
     LogMessage(X_INFO, "seatd_libseat init\n");
-    if (libseat_active()) {
+    if (assumeNoGC(&libseat_active)()) {
         LogMessage(X_ERROR, "seatd_libseat already initialised\n");
         return -EPERM;
     }
     seat_info.graphics_id = -1;
-    seat_info.client = libseat_open_seat(&client_callbacks, null);
+    seat_info.client = assumeNoGC(&libseat_open_seat)(&client_callbacks, null);
     if (!seat_info.client) {
         LogMessage(X_ERROR, "Cannot set up seatd_libseat client\n");
         return -EPIPE;
     }
-    SetNotifyFd(libseat_get_fd(seat_info.client), &event_handler, X_NOTIFY_READ, null);
+    SetNotifyFd(assumeNoGC(&libseat_get_fd)(seat_info.client), &event_handler, X_NOTIFY_READ, null);
 
-    if (libseat_handle_events(100) < 0) {
-        libseat_close_seat(seat_info.client);
+    if (assumeNoGC(&libseat_handle_events)(100) < 0) {
+        assumeNoGC(&libseat_close_seat)(seat_info.client);
         return -EPIPE;
     }
     LogMessage(X_INFO, "seatd_libseat client activated\n");
@@ -242,7 +306,7 @@ void seatd_libseat_fini()
 {
     if (seat_info.client) {
         LogMessage(X_INFO, "seatd_libseat finish\n");
-        libseat_close_seat(seat_info.client);
+        assumeNoGC(&libseat_close_seat)(seat_info.client);
     }
     seat_info.graphics_id = -1;
     seat_info.active = FALSE;
@@ -262,11 +326,11 @@ int seatd_libseat_open_graphics(const(char)* path)
 {
     int fd = void, id = void;
 
-    if (!libseat_active()) {
+    if (!assumeNoGC(&libseat_active)()) {
         return -EPERM;
     }
     LogMessage(X_INFO, "seatd_libseat try open graphics %s\n", path);
-    if ((id = libseat_open_device(seat_info.client, path, &fd)) == -1) {
+    if ((id = assumeNoGC(&libseat_open_device)(seat_info.client, path, &fd)) == -1) {
         fd = -errno;
         LogMessage(X_ERROR, "seatd_libseat open graphics %s (%d) failed: %d\n",
                    path, id, fd);
@@ -307,7 +371,7 @@ void seatd_libseat_open_device(InputInfoPtr p, int* pfd, Bool* paused)
     int id = -1, fd = -1;
     char* path = xf86CheckStrOption(p.options, "Device", null);
 
-    if (!libseat_active()) {
+    if (!assumeNoGC(&libseat_active)()) {
         return;
     }
     if (!seat_info.vt_active) {
@@ -319,7 +383,7 @@ void seatd_libseat_open_device(InputInfoPtr p, int* pfd, Bool* paused)
     fd = check_duplicate_device(p.major,p.minor);
     if (fd < 0) {
         LogMessage(X_INFO, "seatd_libseat try open %s\n", path);
-        if ((id = libseat_open_device(seat_info.client, path, &fd)) == -1) {
+        if ((id = assumeNoGC(&libseat_open_device)(seat_info.client, path, &fd)) == -1) {
             fd = -errno;
             LogMessage(X_ERROR, "seatd_libseat open %s (%d) failed: %d\n",
                        path, id, fd);
@@ -345,7 +409,7 @@ void seatd_libseat_close_device(InputInfoPtr p)
     int fd = xf86CheckIntOption(p.options, "fd", -1);
     int id = xf86CheckIntOption(p.options, "libseat_id", -1);
 
-    if (!libseat_active())
+    if (!assumeNoGC(&libseat_active)())
         return;
     LogMessage(X_INFO, "seatd_libseat try close %s (%d:%d)\n", path, id, fd);
     if (fd < 0) {
@@ -356,7 +420,7 @@ void seatd_libseat_close_device(InputInfoPtr p)
         LogMessage(X_ERROR, "seatd_libseat no libseat ID\n");
         return;
     }
-    if (libseat_close_device(seat_info.client, id)) {
+    if (assumeNoGC(&libseat_close_device)(seat_info.client, id)) {
         LogMessage(X_ERROR, "seatd_libseat close failed %d\n", -errno);
     }
     else {
@@ -371,7 +435,7 @@ void seatd_libseat_close_device(InputInfoPtr p)
  */
 
 Bool seatd_libseat_controls_session(){
-    return libseat_active();
+    return assumeNoGC(&libseat_active)();
 }
 
 /*
@@ -382,7 +446,7 @@ int seatd_libseat_switch_session(int session)
     int ret = 0;
 
     LogMessage(X_INFO, "seatd_libseat switch VT %d\n", session);
-    if ((ret = libseat_switch_session(seat_info.client, session)) < 0) {
+    if ((ret = assumeNoGC(&libseat_switch_session)(seat_info.client, session)) < 0) {
         LogMessage(X_ERROR, "seatd_libseat switch VT failed with %d\n", -errno);
         goto ret;
     }

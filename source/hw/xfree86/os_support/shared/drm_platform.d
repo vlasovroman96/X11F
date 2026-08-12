@@ -23,7 +23,51 @@ import xf86Bus;
 
 import hw.xfree86.os_support.linux.systemd_logind;
 import seatd_libseat;
+import os.osdep;
 
+import include.xf86;
+import include.xf86Priv;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSlib;
+
+import seatd_libseat;
+
+import xf86Events;
+import xf86Globals;
+// import externs.sys.sysmacros;;
+// import os.utils;
+import xf86Option;
+// import config.libhal;
+import include.misc;
+import externs.libdbus;
+import core.sys.posix.sys.select;
+import include.xf86Xinput;
+import config.hotplug_priv;
+
+
+import os.log_priv;
+
+import include.dix;
+import include.os;
+
+// import config.dbus_core;
+import externs.attrs;
+import os.log;
+import config.libhal;
+import os.connection;
+import include.xf86;
+import xf86Xinput;
+import xf86Init;
+import xf86platformBus_priv;
+import lnx_init;
+import os.utils;
+import externs.pciaccess;
+import xf86pciBus;
+import externs.gnu;
+
+alias FALSE = include.misc.FALSE;
+
+alias TRUE = include.misc.TRUE;
 private Bool get_drm_info(OdevAttributes* attribs, char* path, int delayed_index)
 {
     drmVersionPtr v = void;
@@ -55,7 +99,7 @@ private Bool get_drm_info(OdevAttributes* attribs, char* path, int delayed_index
         /* Try opening the path directly */
         fd = open(path, O_RDWR | O_CLOEXEC, 0);
         if (fd == -1) {
-            xf86Msg(X_ERROR, "cannot open %s\n", path);
+            // xf86Msg(X_ERROR, "cannot open %s\n", path);
             return FALSE;
         }
     }
@@ -75,7 +119,7 @@ private Bool get_drm_info(OdevAttributes* attribs, char* path, int delayed_index
         goto out_;
     }
 
-    xf86_platform_odev_attributes(delayed_index).driver = XNFstrdup(v.name);
+    xf86_platform_odev_attributes(delayed_index).driver = cast(char*)XNFstrdup(v.name);
     drmFreeVersion(v);
 
 out_:
@@ -108,10 +152,10 @@ Bool xf86PlatformDeviceCheckBusID(xf86_platform_device* device, const(char)* bus
     }
     else if (bustype == BUS_PLATFORM) {
         /* match on the minimum string */
-        int len = strlen(id);
+        int len = cast(int)strlen(id);
 
         if (strlen(syspath) < strlen(id))
-            len = strlen(syspath);
+            len = cast(int)strlen(syspath);
 
         if (strncmp(id, syspath, len))
             return FALSE;
