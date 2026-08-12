@@ -35,7 +35,11 @@ import xf86cmap;
 import include.fbdevhw;
 import hw.xfree86.fbdevhw.fbpriv;
 import include.globals;
+import hw.xfree86.common.xf86Helper;
 // //import externs.X11.extensions.dpmsconst;
+import externs.sys.sysmacros;
+import externs.attrs;
+import externs.X11.extensions.dpmsproto;
 
 int getpagesize() {
     return cast(int)sysconf(_SC_PAGESIZE);
@@ -267,9 +271,9 @@ private int fbdev_open_device(int scrnIndex, const(char)* dev, char** namep)
         close(fd);
         return -1;
     }
-    *namep = malloc(16);
+    *namep = cast(char*)malloc(16);
     if (*namep) {
-        strncpy(*namep, fix.id, 16);
+        strncpy(*namep, fix.id.ptr, 16);
     }
     return fd;
 }
@@ -342,7 +346,7 @@ private int fbdev_open_pci(int scrnIndex, pci_device* pPci, const(char)* device,
     close(tfd);
 
     if (fd != -1) {
-        stat res = void;
+        stat_t res = void;
         if (fstat(fd, &res) == 0) {
             fbdev_minor = minor(res.st_rdev);
         }
@@ -355,12 +359,12 @@ private int fbdev_open_pci(int scrnIndex, pci_device* pPci, const(char)* device,
     }
 
 enum string FBDEV_CHECK_PCI_GLOB(string glob_pattern) = `
-    do { 
+{ 
         glob_t res = void; 
         snprintf(pattern.ptr, pattern.sizeof, 
-                 "/sys/bus/pci/devices/%04x:%02x:%02x.%d/" glob_pattern ~ "/dev", 
+                 "/sys/bus/pci/devices/%04x:%02x:%02x.%d/`~glob_pattern~`/dev", 
                  pPci.domain, pPci.bus, pPci.dev, pPci.func); 
-        if (!glob(pattern.ptr, GLOB_NOSORT | GLOB_NOESCAPE, null, &res)) { 
+        if (!assumeNoGC(&glob)(pattern.ptr, GLOB_NOSORT | GLOB_NOESCAPE, null, &res)) { 
             char[PATH_MAX] filename = "/dev/"; 
             for (int i = 0; i < res.gl_pathc; i++) { 
                 int maj = void, min = -1; 
@@ -378,8 +382,8 @@ enum string FBDEV_CHECK_PCI_GLOB(string glob_pattern) = `
                     /* Since we already have a filename from the user, use that instead of guessing */ 
                     return fbdev_check_user_devices(scrnIndex, device, namep); 
                 } 
-                char* src = strstr(res.gl_pathv[i], "graphics") + (("graphics/") - 1).sizeof; /* Has to match */ 
-                char* dst = filename.ptr + (("/dev/") - 1).sizeof; 
+                char* src = strstr(res.gl_pathv[i], "graphics") + (("graphics/").sizeof - 1); /* Has to match */ 
+                char* dst = filename.ptr + (("/dev/").sizeof - 1); 
                 while (*src != '/') { 
                     *dst++ = *src++; 
                 } 
@@ -390,13 +394,13 @@ enum string FBDEV_CHECK_PCI_GLOB(string glob_pattern) = `
                 } 
             } 
         } 
-        globfree(&res); 
-    } while(0)`;
+        assumeNoGC(&globfree)(&res); 
+    }`;
 
-    mixin(FBDEV_CHECK_PCI_GLOB!(`"graphics/fb*"`));
-    mixin(FBDEV_CHECK_PCI_GLOB!(`"graphics:fb*"`));
-    mixin(FBDEV_CHECK_PCI_GLOB!(`"*/graphics/fb*"`));
-    mixin(FBDEV_CHECK_PCI_GLOB!(`"*/graphics:fb*"`));
+    mixin(FBDEV_CHECK_PCI_GLOB!(`graphics/fb*`));
+    mixin(FBDEV_CHECK_PCI_GLOB!(`graphics:fb*`));
+    mixin(FBDEV_CHECK_PCI_GLOB!(`*/graphics/fb*`));
+    mixin(FBDEV_CHECK_PCI_GLOB!(`*/graphics:fb*`));
 
     xf86DrvMsg(scrnIndex, X_ERROR, "Unable to find a valid framebuffer device\n");
     return -1;
@@ -496,7 +500,7 @@ char* fbdevHWGetName(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
 
-    return fPtr.fix.id;
+    return fPtr.fix.id.ptr;
 }
 
 int fbdevHWGetDepth(ScrnInfoPtr pScrn, int* fbbpp)
@@ -646,7 +650,7 @@ void fbdevHWUseBuildinMode(ScrnInfoPtr pScrn)
 
 private void calculateFbmem_len(fbdevHWPtr fPtr)
 {
-    fPtr.fboff = cast(c_ulong) fPtr.fix.smem_start & ~PAGE_MASK;
+    fPtr.fboff = cast(uint)(cast(c_ulong) fPtr.fix.smem_start & ~PAGE_MASK);
     fPtr.fbmem_len = (fPtr.fboff + fPtr.fix.smem_len + ~PAGE_MASK) &
         PAGE_MASK;
 }
@@ -711,14 +715,14 @@ void* fbdevHWMapMMIO(ScrnInfoPtr pScrn)
         if (0 != ioctl(fPtr.fd, FBIOPUT_VSCREENINFO, cast(void*) (&fPtr.var))) {
             xf86DrvMsg(pScrn.scrnIndex, X_ERROR,
                        "FBIOPUT_VSCREENINFO: %s\n", strerror(errno));
-            return FALSE;
+            return null;
         }
-        mmio_off = cast(c_ulong) fPtr.fix.mmio_start & ~PAGE_MASK;
+        mmio_off = cast(uint)(cast(c_ulong) fPtr.fix.mmio_start & ~PAGE_MASK);
         fPtr.mmio_len = (mmio_off + fPtr.fix.mmio_len + ~PAGE_MASK) &
             PAGE_MASK;
         if (null == fPtr.fbmem)
             calculateFbmem_len(fPtr);
-        fPtr.mmio = mmap(null, fPtr.mmio_len, PROT_READ | PROT_WRITE,
+        fPtr.mmio = cast(char*)mmap(null, fPtr.mmio_len, PROT_READ | PROT_WRITE,
                           MAP_SHARED, fPtr.fd, fPtr.fbmem_len);
         if (-1 == cast(c_long) fPtr.mmio) {
             xf86DrvMsg(pScrn.scrnIndex, X_ERROR,
@@ -832,9 +836,9 @@ void fbdevHWLoadPalette(ScrnInfoPtr pScrn, int numColors, int* indices, LOCO* co
     cmap.transp = null;
     for (i = 0; i < numColors; i++) {
         cmap.start = indices[i];
-        red = (colors[indices[i]].red << 8) | colors[indices[i]].red;
-        green = (colors[indices[i]].green << 8) | colors[indices[i]].green;
-        blue = (colors[indices[i]].blue << 8) | colors[indices[i]].blue;
+        red = cast(short)((colors[indices[i]].red << 8) | colors[indices[i]].red);
+        green = cast(short)((colors[indices[i]].green << 8) | colors[indices[i]].green);
+        blue = cast(short)((colors[indices[i]].blue << 8) | colors[indices[i]].blue);
         if (-1 == ioctl(fPtr.fd, FBIOPUTCMAP, cast(void*) &cmap))
             xf86DrvMsg(pScrn.scrnIndex, X_ERROR,
                        "FBIOPUTCMAP: %s\n", strerror(errno));
@@ -971,32 +975,32 @@ RETRY:
     return TRUE;
 }
 
-xf86SwitchModeProc* fbdevHWSwitchModeWeak()
+xf86SwitchModeProc fbdevHWSwitchModeWeak()
 {
-    return fbdevHWSwitchMode;
+    return &fbdevHWSwitchMode;
 }
 
-xf86AdjustFrameProc* fbdevHWAdjustFrameWeak()
+xf86AdjustFrameProc fbdevHWAdjustFrameWeak()
 {
-    return fbdevHWAdjustFrame;
+    return &fbdevHWAdjustFrame;
 }
 
-xf86LeaveVTProc* fbdevHWLeaveVTWeak()
+xf86LeaveVTProc fbdevHWLeaveVTWeak()
 {
-    return fbdevHWLeaveVT;
+    return &fbdevHWLeaveVT;
 }
 
-xf86ValidModeProc* fbdevHWValidModeWeak()
+xf86ValidModeProc fbdevHWValidModeWeak()
 {
-    return fbdevHWValidMode;
+    return &fbdevHWValidMode;
 }
 
-xf86DPMSSetProc* fbdevHWDPMSSetWeak()
+xf86DPMSSetProc fbdevHWDPMSSetWeak()
 {
-    return fbdevHWDPMSSet;
+    return &fbdevHWDPMSSet;
 }
 
-xf86LoadPaletteProc* fbdevHWLoadPaletteWeak()
+xf86LoadPaletteProc fbdevHWLoadPaletteWeak()
 {
-    return fbdevHWLoadPalette;
+    return &fbdevHWLoadPalette;
 }

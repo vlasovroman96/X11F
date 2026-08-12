@@ -15,6 +15,12 @@ import include.xf86Priv;
 import include.glamor;
 import glamor.glamor_egl;
 import glamor.glamor_egl_priv;
+import hw.xfree86.common.xf86Helper;
+import xf86Option;
+import externs.gnu;
+import os.log;
+import xf86Globals;
+import include.optionstr;
 
 enum {
     GLAMOREGLOPT_RENDERING_API,
@@ -44,9 +50,10 @@ private void glamor_xf86_egl_free_screen(ScrnInfoPtr scrn)
 {
     glamor_egl_priv_t* glamor_egl = void;
 
+    alias fnType = extern(C) void function(_ScrnInfoRec*) nothrow @nogc;
     glamor_egl = glamor_xf86_egl_get_scrn_private(scrn);
     if (glamor_egl != null) {
-        scrn.FreeScreen = glamor_egl.server_private;
+        scrn.FreeScreen = cast(fnType)glamor_egl.server_private;
         glamor_egl_cleanup(glamor_egl);
         free(glamor_egl);
         scrn.FreeScreen(scrn);
@@ -70,9 +77,9 @@ private Bool _glamor_egl_init(ScrnInfoPtr scrn, int fd, int* caps)
     if (xf86GlamorEGLPrivateIndex == -1)
         xf86GlamorEGLPrivateIndex = xf86AllocateScrnInfoPrivateIndex();
 
-    options = XNFalloc(GlamorEGLOptions.sizeof);
+    options = cast(OptionInfoPtr)XNFalloc(GlamorEGLOptions.sizeof);
     memcpy(options, GlamorEGLOptions.ptr, GlamorEGLOptions.sizeof);
-    xf86ProcessOptions(scrn.scrnIndex, scrn.options, options);
+    xf86ProcessOptions(scrn.scrnIndex, cast(_InputOption*)scrn.options, options);
     glvnd_vendor = xf86GetOptValString(options, GLAMOREGLOPT_VENDOR_LIBRARY);
     if (glvnd_vendor) {
         glamor_egl_conf.glvnd_vendor = strdup(glvnd_vendor);
@@ -87,7 +94,7 @@ private Bool _glamor_egl_init(ScrnInfoPtr scrn, int fd, int* caps)
         glamor_egl_conf.es_disallowed = TRUE;
     free(options);
 
-    glamor_egl_conf.GLAMOR_EGL_PRIV_PROC = glamor_xf86_egl_get_screen_private;
+    glamor_egl_conf.GLAMOR_EGL_PRIV_PROC = &glamor_xf86_egl_get_screen_private;
 
     scrn.privates[xf86GlamorEGLPrivateIndex].ptr = glamor_egl;
 
@@ -102,7 +109,7 @@ private Bool _glamor_egl_init(ScrnInfoPtr scrn, int fd, int* caps)
     glamor_egl_conf.server_private = scrn.FreeScreen;
 
     if (glamor_egl_init_internal(&glamor_egl_conf, caps)) {
-        scrn.FreeScreen = glamor_xf86_egl_free_screen;
+        scrn.FreeScreen = &glamor_xf86_egl_free_screen;
         return TRUE;
     }
 

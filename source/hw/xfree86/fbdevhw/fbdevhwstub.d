@@ -7,6 +7,7 @@ import include.xf86;
 import xf86cmap;
 import include.fbdevhw;
 import externs.pciaccess;
+import os.log;
 
 /* Stubs for the static server on platforms that don't support fbdev */
 
@@ -128,32 +129,32 @@ Bool fbdevHWSaveScreen(ScreenPtr pScreen, int mode)
     return FALSE;
 }
 
-xf86SwitchModeProc* fbdevHWSwitchModeWeak()
+xf86SwitchModeProc fbdevHWSwitchModeWeak()
 {
-    return fbdevHWSwitchMode;
+    return &fbdevHWSwitchMode;
 }
 
-xf86AdjustFrameProc* fbdevHWAdjustFrameWeak()
+xf86AdjustFrameProc fbdevHWAdjustFrameWeak()
 {
-    return fbdevHWAdjustFrame;
+    return &fbdevHWAdjustFrame;
 }
 
-xf86LeaveVTProc* fbdevHWLeaveVTWeak()
+xf86LeaveVTProc fbdevHWLeaveVTWeak()
 {
-    return fbdevHWLeaveVT;
+    return &fbdevHWLeaveVT;
 }
 
-xf86ValidModeProc* fbdevHWValidModeWeak()
+xf86ValidModeProc fbdevHWValidModeWeak()
 {
-    return fbdevHWValidMode;
+    return &fbdevHWValidMode;
 }
 
-xf86DPMSSetProc* fbdevHWDPMSSetWeak()
+xf86DPMSSetProc fbdevHWDPMSSetWeak()
 {
-    return fbdevHWDPMSSet;
+    return &fbdevHWDPMSSet;
 }
 
-xf86LoadPaletteProc* fbdevHWLoadPaletteWeak()
+xf86LoadPaletteProc fbdevHWLoadPaletteWeak()
 {
-    return fbdevHWLoadPalette;
+    return &fbdevHWLoadPalette;
 }

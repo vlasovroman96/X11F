@@ -46,6 +46,13 @@ import include.xf86str;
 
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_display;
+import hw.xfree86.drivers.video.modesetting.vblank;
+import hw.xfree86.common.xf86Helper;
+import xf86Globals;
+import externs.X11.extensions.presenttokens;
+import hw.xfree86.modes.xf86Crtc;
+import present.present_screen;
+
 
 version (none) {
 enum string DebugPresent(string x) = `ErrorF x = void;`;
@@ -65,7 +72,7 @@ private RRCrtcPtr ms_present_get_crtc(WindowPtr window)
 
 private int ms_present_get_ust_msc(RRCrtcPtr crtc, CARD64* ust, CARD64* msc)
 {
-    xf86CrtcPtr xf86_crtc = crtc.devPrivate;
+    xf86CrtcPtr xf86_crtc = cast(xf86CrtcPtr)crtc.devPrivate;
 
     return ms_get_crtc_ust_msc(xf86_crtc, ust, msc);
 }
@@ -75,7 +82,7 @@ private int ms_present_get_ust_msc(RRCrtcPtr crtc, CARD64* ust, CARD64* msc)
  */
 void ms_present_set_screen_vrr(ScrnInfoPtr scrn, Bool vrr_enabled)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CrtcPtr crtc = void;
     int i = void;
 
@@ -90,10 +97,10 @@ void ms_present_set_screen_vrr(ScrnInfoPtr scrn, Bool vrr_enabled)
  */
 private void ms_present_vblank_handler(ulong msc, ulong usec, void* data)
 {
-    ms_present_vblank_event* event = data;
+    ms_present_vblank_event* event = cast(ms_present_vblank_event*)data;
 
-    DebugPresent(("\t\tmh %lld msc %llu\n",
-                 cast(long) event.event_id, cast(long) msc));
+    // DebugPresent(("\t\tmh %lld msc %llu\n",
+    //              cast(long) event.event_id, cast(long) msc));
 
     present_event_notify(event.event_id, usec, msc);
     free(event);
@@ -104,9 +111,9 @@ private void ms_present_vblank_handler(ulong msc, ulong usec, void* data)
  */
 private void ms_present_vblank_abort(void* data)
 {
-    ms_present_vblank_event* event = data;
+    ms_present_vblank_event* event = cast(ms_present_vblank_event*)data;
 
-    DebugPresent(("\t\tma %lld\n", cast(long) event.event_id));
+    // DebugPresent(("\t\tma %lld\n", cast(long) event.event_id));
 
     free(event);
 }
@@ -117,7 +124,7 @@ private void ms_present_vblank_abort(void* data)
  */
 private int ms_present_queue_vblank(RRCrtcPtr crtc, ulong event_id, ulong msc)
 {
-    xf86CrtcPtr xf86_crtc = crtc.devPrivate;
+    xf86CrtcPtr xf86_crtc = cast(xf86CrtcPtr)crtc.devPrivate;
     ms_present_vblank_event* event = void;
     uint seq = void;
 
@@ -136,15 +143,15 @@ private int ms_present_queue_vblank(RRCrtcPtr crtc, ulong event_id, ulong msc)
     if (!ms_queue_vblank(xf86_crtc, MS_QUEUE_ABSOLUTE, msc, null, seq))
         return BadAlloc;
 
-    DebugPresent(("\t\tmq %lld seq %u msc %llu\n",
-                 cast(long) event_id, seq, cast(long) msc));
+    // DebugPresent(("\t\tmq %lld seq %u msc %llu\n",
+    //              cast(long) event_id, seq, cast(long) msc));
     return Success;
 }
 
 private Bool ms_present_event_match(void* data, void* match_data)
 {
-    ms_present_vblank_event* event = data;
-    ulong* match = match_data;
+    ms_present_vblank_event* event = cast(ms_present_vblank_event*)data;
+    ulong* match = cast(ulong*)match_data;
 
     return *match == event.event_id;
 }
@@ -158,7 +165,7 @@ private void ms_present_abort_vblank(RRCrtcPtr crtc, ulong event_id, ulong msc)
     ScreenPtr screen = crtc.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
 version (GLAMOR) {
-    xf86CrtcPtr xf86_crtc = crtc.devPrivate;
+    xf86CrtcPtr xf86_crtc = cast(xf86CrtcPtr)crtc.devPrivate;
 
     /* Check if this is a fake flip routed through TearFree and abort it */
     if (ms_tearfree_dri_abort(xf86_crtc, &ms_present_event_match, &event_id))
@@ -176,7 +183,7 @@ private void ms_present_flush(WindowPtr window)
 version (GLAMOR) {
     ScreenPtr screen = window.drawable.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
 
     if (ms.drmmode.glamor)
         ms.glamor.block_handler(screen);
@@ -192,7 +199,7 @@ version (GLAMOR) {
  */
 private void ms_present_flip_handler(modesettingPtr ms, ulong msc, ulong ust, void* data)
 {
-    ms_present_vblank_event* event = data;
+    ms_present_vblank_event* event = cast(ms_present_vblank_event*)data;
 
     DebugPresent(("\t\tms:fc %lld msc %llu ust %llu\n",
                   cast(long) event.event_id,
@@ -209,7 +216,7 @@ private void ms_present_flip_handler(modesettingPtr ms, ulong msc, ulong ust, vo
  */
 private void ms_present_flip_abort(modesettingPtr ms, void* data)
 {
-    ms_present_vblank_event* event = data;
+    ms_present_vblank_event* event = cast(ms_present_vblank_event*)data;
 
     DebugPresent(("\t\tms:fa %lld\n", cast(long) event.event_id));
 
@@ -227,8 +234,8 @@ private Bool ms_present_check_unflip(RRCrtcPtr crtc, WindowPtr window, PixmapPtr
 {
     ScreenPtr screen = window.drawable.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int num_crtcs_on = 0;
     int i = void;
     gbm_bo* gbm = void;
@@ -300,7 +307,7 @@ private Bool ms_present_check_flip(RRCrtcPtr crtc, WindowPtr window, PixmapPtr p
 {
     ScreenPtr screen = window.drawable.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     Bool async_flip = !sync_flip;
 
     if (reason)
@@ -354,7 +361,7 @@ private Bool ms_present_check_flip(RRCrtcPtr crtc, WindowPtr window, PixmapPtr p
 no_flip:
     /* Export some info about TearFree if Present can't flip anyway */
     if (reason && *reason == PRESENT_FLIP_REASON_UNKNOWN) {
-        xf86CrtcPtr xf86_crtc = crtc.devPrivate;
+        xf86CrtcPtr xf86_crtc = cast(xf86CrtcPtr)crtc.devPrivate;
         drmmode_crtc_private_ptr drmmode_crtc = cast(drmmode_crtc_private_ptr) xf86_crtc.driver_private;
         drmmode_tearfree_ptr trf = &drmmode_crtc.tearfree;
 
@@ -378,8 +385,8 @@ private Bool ms_present_flip(RRCrtcPtr crtc, ulong event_id, ulong target_msc, P
 {
     ScreenPtr screen = crtc.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
-    xf86CrtcPtr xf86_crtc = crtc.devPrivate;
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
+    xf86CrtcPtr xf86_crtc = cast(xf86CrtcPtr)crtc.devPrivate;
     Bool ret = void;
     ms_present_vblank_event* event = void;
 
@@ -430,9 +437,9 @@ private Bool ms_present_flip(RRCrtcPtr crtc, ulong event_id, ulong target_msc, P
 private void ms_present_unflip(ScreenPtr screen, ulong event_id)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     PixmapPtr pixmap = screen.GetScreenPixmap(screen);
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int i = void;
 
     ms_present_set_screen_vrr(scrn, FALSE);
@@ -489,11 +496,11 @@ static this()
     ms_present_screen_info = present_screen_info_rec(
         version_: PRESENT_SCREEN_INFO_VERSION,
 
-        get_crtc: ms_present_get_crtc,
-        get_ust_msc: ms_present_get_ust_msc,
-        queue_vblank: ms_present_queue_vblank,
-        abort_vblank: ms_present_abort_vblank,
-        flush: ms_present_flush,
+        get_crtc: &ms_present_get_crtc,
+        get_ust_msc: &ms_present_get_ust_msc,
+        queue_vblank: &ms_present_queue_vblank,
+        abort_vblank: &ms_present_abort_vblank,
+        flush: &ms_present_flush,
 
         capabilities: PresentCapabilityNone
     );
@@ -510,7 +517,7 @@ static this()
 Bool ms_present_screen_init(ScreenPtr screen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     ulong value = void;
     int ret = void;
 

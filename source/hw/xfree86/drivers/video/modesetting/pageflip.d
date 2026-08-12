@@ -37,6 +37,10 @@ import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 import include.screenint;
 import externs.X11.Xdefs;
 import include.xf86Crtc;
+import hw.xfree86.common.xf86Helper;
+import core.sys.posix.poll;
+import hw.xfree86.drivers.video.modesetting.vblank;
+import hw.xfree86.drivers.video.modesetting.drmmode_display;
 
 /*
  * Flush the DRM event queue when full; makes space for new events.
@@ -47,7 +51,7 @@ import include.xf86Crtc;
 private int ms_flush_drm_events_timeout(ScreenPtr screen, int timeout)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
 
     pollfd p = { fd: ms.fd, events: POLLIN };
     int r = void;
@@ -143,7 +147,7 @@ private void ms_pageflip_handler(ulong msc, ulong ust, void* data)
     ms_flipdata* flipdata = flip.flipdata;
     ScreenPtr screen = flipdata.screen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
 
     if (flip.on_reference_crtc) {
         flipdata.fe_msc = msc;
@@ -170,7 +174,7 @@ private void ms_pageflip_abort(void* data)
     ms_flipdata* flipdata = flip.flipdata;
     ScreenPtr screen = flipdata.screen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
 
     if (flipdata.flip_count == 1)
         flipdata.abort_handler(ms, flipdata.event);
@@ -220,7 +224,7 @@ alias QUEUE_FLIP_DRM_FLUSH_FAILED = queue_flip_status.QUEUE_FLIP_DRM_FLUSH_FAILE
 private int queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc, ms_flipdata* flipdata, xf86CrtcPtr ref_crtc, uint flags)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     ms_crtc_pageflip* flip = void;
     uint seq = void;
 
@@ -379,7 +383,7 @@ private Bool ms_tearfree_dri_flip(modesettingPtr ms, xf86CrtcPtr crtc, void* eve
 Bool ms_do_pageflip(ScreenPtr screen, PixmapPtr new_front, void* event, xf86CrtcPtr ref_crtc, Bool async, ms_pageflip_handler_proc pageflip_handler, ms_pageflip_abort_proc pageflip_abort, const(char)* log_prefix)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
     gbm_bo* new_front_bo = void;
     uint flags = void;

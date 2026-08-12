@@ -33,9 +33,14 @@ import include.gcstruct;
 import include.dixstruct;
 
 import include.xf86i2c;
+import core.sys.posix.sys.time;
+import hw.xfree86.common.xf86Helper;
+import os.log;
 
 //#define I2C_TIMEOUT(x)	/*(x)*/ /* Report timeouts */
 //#define I2C_TRACE(x)    /*(x)*/ /* Report progress */
+
+enum string X_GETTIMEOFDAY(string t) = `gettimeofday(`~t~`, null);`;
 
 /* This is the default I2CUDelay function if not supplied by the driver.
  * High level I2C interfaces implementing the bus protocol in hardware
@@ -52,12 +57,12 @@ private void I2CUDelay(I2CBusPtr b, int usec)
     c_long diff = void;
 
     if (usec > 0) {
-        X_GETTIMEOFDAY(&begin);
+        mixin(X_GETTIMEOFDAY!("&begin"));
         do {
             /* It would be nice to use {xf86}usleep,
              * but usleep (1) takes >10000 usec !
              */
-            X_GETTIMEOFDAY(&cur);
+            mixin(X_GETTIMEOFDAY!("&cur"));
             d_secs = (cur.tv_sec - begin.tv_sec);
             d_usecs = (cur.tv_usec - begin.tv_usec);
             diff = d_secs * 1000000 + d_usecs;
@@ -99,9 +104,9 @@ private Bool I2CRaiseSCL(I2CBusPtr b, int sda, int timeout)
     }
 
     if (i <= 0) {
-        I2C_TIMEOUT(ErrorF
-                    ("[I2CRaiseSCL(<%s>, %d, %d) timeout]", b.BusName, sda,
-                     timeout));
+        // I2C_TIMEOUT(ErrorF
+        //             ("[I2CRaiseSCL(<%s>, %d, %d) timeout]", b.BusName, sda,
+        //              timeout));
         return FALSE;
     }
 
@@ -137,7 +142,7 @@ private Bool I2CStart(I2CBusPtr b, int timeout)
     b.I2CPutBits(b, 0, 0);
     b.I2CUDelay(b, b.HoldTime);
 
-    I2C_TRACE(ErrorF("\ni2c: <"));
+    // I2C_TRACE(ErrorF("\ni2c: <"));
 
     return TRUE;
 }
@@ -161,7 +166,7 @@ private void I2CStop(I2CDevPtr d)
     b.I2CPutBits(b, 1, 1);
     b.I2CUDelay(b, b.HoldTime);
 
-    I2C_TRACE(ErrorF(">\n"));
+    // I2C_TRACE(ErrorF(">\n"));
 }
 
 /* Write/Read a single bit to/from a device.
@@ -243,13 +248,13 @@ private Bool I2CPutByte(I2CDevPtr d, I2CByte data)
         }
 
         if (i <= 0) {
-            I2C_TIMEOUT(ErrorF("[I2CPutByte(<%s>, 0x%02x, %d, %d, %d) timeout]",
-                               b.BusName, data, d.BitTimeout,
-                               d.ByteTimeout, d.AcknTimeout));
+            // I2C_TIMEOUT(ErrorF("[I2CPutByte(<%s>, 0x%02x, %d, %d, %d) timeout]",
+            //                    b.BusName, data, d.BitTimeout,
+            //                    d.ByteTimeout, d.AcknTimeout));
             r = FALSE;
         }
 
-        I2C_TRACE(ErrorF("W%02x%c ", cast(int) data, sda ? '-' : '+'));
+        // I2C_TRACE(ErrorF("W%02x%c ", cast(int) data, sda ? '-' : '+'));
     }
 
     b.I2CPutBits(b, 0, 1);
@@ -297,7 +302,7 @@ private Bool I2CGetByte(I2CDevPtr d, I2CByte* data, Bool last)
     if (!I2CWriteBit(b, last ? 1 : 0, d.BitTimeout))
         return FALSE;
 
-    I2C_TRACE(ErrorF("R%02x%c ", cast(int) *data, last ? '+' : '-'));
+    // I2C_TRACE(ErrorF("R%02x%c ", cast(int) *data, last ? '+' : '-'));
 
     return TRUE;
 }
@@ -702,7 +707,7 @@ Bool xf86I2CBusInit(I2CBusPtr b)
      * function.
      */
     if (b.I2CWriteRead == null) {
-        b.I2CWriteRead = I2CWriteRead;
+        b.I2CWriteRead = &I2CWriteRead;
 
         if (b.I2CPutBits == null || b.I2CGetBits == null) {
             if (b.I2CPutByte == null ||
@@ -712,16 +717,16 @@ Bool xf86I2CBusInit(I2CBusPtr b)
                 return FALSE;
         }
         else {
-            b.I2CPutByte = I2CPutByte;
-            b.I2CGetByte = I2CGetByte;
-            b.I2CAddress = I2CAddress;
-            b.I2CStop = I2CStop;
-            b.I2CStart = I2CStart;
+            b.I2CPutByte = &I2CPutByte;
+            b.I2CGetByte = &I2CGetByte;
+            b.I2CAddress = &I2CAddress;
+            b.I2CStop = &I2CStop;
+            b.I2CStart = &I2CStart;
         }
     }
 
     if (b.I2CUDelay == null)
-        b.I2CUDelay = I2CUDelay;
+        b.I2CUDelay = &I2CUDelay;
 
     if (b.HoldTime < 2)
         b.HoldTime = 5;

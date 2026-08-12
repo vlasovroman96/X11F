@@ -129,7 +129,7 @@ pragma(inline, true) private PixmapPtr get_drawable_pixmap(DrawablePtr drawable)
 private DRI2Buffer2Ptr ms_dri2_create_buffer2(ScreenPtr screen, DrawablePtr drawable, uint attachment, uint format)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     DRI2Buffer2Ptr buffer = void;
     PixmapPtr pixmap = void;
     CARD32 size = void;
@@ -463,7 +463,7 @@ private Bool ms_dri2_schedule_flip(ms_dri2_frame_event_ptr info)
     DrawablePtr draw = info.drawable;
     ScreenPtr screen = draw.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     ms_dri2_buffer_private_ptr back_priv = info.back.driverPrivate;
     ms_dri2_vblank_event* event = void;
 
@@ -560,7 +560,7 @@ private Bool can_exchange(ScrnInfoPtr scrn, DrawablePtr draw, DRI2BufferPtr fron
 
 private Bool can_flip(ScrnInfoPtr scrn, DrawablePtr draw, DRI2BufferPtr front, DRI2BufferPtr back)
 {
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
 
     return draw.type == DRAWABLE_WINDOW &&
         ms.drmmode.pageflip &&
@@ -576,7 +576,7 @@ private void ms_dri2_exchange_buffers(DrawablePtr draw, DRI2BufferPtr front, DRI
     ms_dri2_buffer_private_ptr back_priv = back.driverPrivate;
     ScreenPtr screen = draw.pScreen;
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     msPixmapPrivPtr front_pix = mixin(msGetPixmapPriv!("&ms.drmmode", "front_priv.pixmap"));
     msPixmapPrivPtr back_pix = mixin(msGetPixmapPriv!("&ms.drmmode", "back_priv.pixmap"));
     msPixmapPrivRec tmp_pix = void;
@@ -992,7 +992,7 @@ private Bool ms_dri2_register_frame_event_resource_types()
 Bool ms_dri2_screen_init(ScreenPtr screen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    modesettingPtr ms = modesettingPTR(scrn);
+    modesettingPtr ms = mixin(modesettingPTR!("scrn"));
     DRI2InfoRec info = void;
     const(char)*[2] driver_names = [ null, null ];
 

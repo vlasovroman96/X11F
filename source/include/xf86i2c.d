@@ -49,8 +49,10 @@ struct _I2CBusRec {
 
     I2CDevPtr FirstDev;
     I2CBusPtr NextBus;
-    Bool function(I2CDevPtr d, I2CByte* WriteBuffer, int nWrite, I2CByte* ReadBuffer, int nRead) I2CWriteRead;
+    Bool function(I2CDevPtr d, I2CByte* WriteBuffer, int nWrite, I2CByte* ReadBuffer, int nRead) @nogc nothrow I2CWriteRead;
 }
+
+alias I2CBusRec = _I2CBusRec;
 
 alias CreateI2CBusRec =		xf86CreateI2CBusRec;
 extern void  xf86CreateI2CBusRec();
@@ -78,6 +80,8 @@ struct _I2CDevRec {
     I2CDevPtr NextDev;
     DevUnion DriverPrivate;
 }
+
+alias I2CDevRec = _I2CDevRec;
 
 alias CreateI2CDevRec =		xf86CreateI2CDevRec;
 // extern void  xf86CreateI2CDevRec();

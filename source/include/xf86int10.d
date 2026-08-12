@@ -119,7 +119,7 @@ enum string MEM_WL(string name, string addr, string val) = `(*` ~ name ~ `.mem.w
 extern void  MapCurrentInt10(xf86Int10InfoPtr pInt);
 
 /* x86 executor related functions */
-extern void  xf86Int10ExecSetup(xf86Int10InfoPtr pInt);
+// extern void  xf86Int10ExecSetup(xf86Int10InfoPtr pInt);
 
 /* int.c */
 extern xf86Int10InfoPtr Int10Current;
@@ -128,7 +128,7 @@ version (_PC) {
 extern void  xf86Int10SaveRestoreBIOSVars(xf86Int10InfoPtr pInt, Bool save);
 }
 
-extern void * xf86HandleInt10Options(ScrnInfoPtr pScrn, int entityIndex);
+// extern void * xf86HandleInt10Options(ScrnInfoPtr pScrn, int entityIndex);
 extern void  xf86int10GetBiosLocationType(const(xf86Int10InfoPtr) pInt);
 extern void  xf86int10GetBiosSegment(xf86Int10InfoPtr pInt, void* base);
 

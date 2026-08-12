@@ -31,12 +31,15 @@ import build.xorg_config;
 
 import core.stdc.string;
 
-import dix.screen_hooks_priv;
+import dix.screen_hooks;
 
 import exa.exa_priv;
 
 import include.xf86str;
 import include.xf86;
+import hw.xfree86.common.xf86Helper;
+import xf86Option;
+import include.optionstr;
 
 struct _ExaXorgScreenPrivRec {
     xf86EnableDisableFBAccessProc* SavedEnableDisableFBAccess;
@@ -83,12 +86,12 @@ private void exaXorgCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* 
     ExaXorgScreenPrivPtr pScreenPriv = cast(ExaXorgScreenPrivPtr)
         dixLookupPrivate(&pScreen.devPrivates, exaXorgScreenPrivateKey);
 
-    dixScreenUnhookClose(pScreen, exaXorgCloseScreen);
+    dixScreenUnhookClose(pScreen, &exaXorgCloseScreen);
 
     if (!pScrn)
         return;
 
-    pScrn.EnableDisableFBAccess = pScreenPriv.SavedEnableDisableFBAccess;
+    pScrn.EnableDisableFBAccess = *pScreenPriv.SavedEnableDisableFBAccess;
 
     free(pScreenPriv.options);
     free(pScreenPriv);
@@ -104,8 +107,8 @@ private void exaXorgEnableDisableFBAccess(ScrnInfoPtr pScrn, Bool enable)
     if (!enable)
         exaEnableDisableFBAccess(pScreen, enable);
 
-    if (pScreenPriv.SavedEnableDisableFBAccess)
-        pScreenPriv.SavedEnableDisableFBAccess(pScrn, enable);
+    if (pScreenPriv.SavedEnableDisableFBAccess !is null)
+        (*pScreenPriv.SavedEnableDisableFBAccess)(pScrn, enable);
 
     if (enable)
         exaEnableDisableFBAccess(pScreen, enable);
@@ -128,9 +131,9 @@ void exaDDXDriverInit(ScreenPtr pScreen)
     if (pScreenPriv == null)
         return;
 
-    pScreenPriv.options = XNFalloc(EXAOptions.sizeof);
+    pScreenPriv.options = cast(_OptionInfoRec*)XNFalloc(EXAOptions.sizeof);
     memcpy(pScreenPriv.options, EXAOptions.ptr, EXAOptions.sizeof);
-    xf86ProcessOptions(pScrn.scrnIndex, pScrn.options, pScreenPriv.options);
+    xf86ProcessOptions(pScrn.scrnIndex, cast(_InputOption*)pScrn.options, pScreenPriv.options);
 
     if (pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS) {
         if (!(pExaScr.info.flags & EXA_HANDLES_PIXMAPS) &&
@@ -180,8 +183,8 @@ void exaDDXDriverInit(ScreenPtr pScreen)
 
     dixSetPrivate(&pScreen.devPrivates, exaXorgScreenPrivateKey, pScreenPriv);
 
-    pScreenPriv.SavedEnableDisableFBAccess = pScrn.EnableDisableFBAccess;
-    pScrn.EnableDisableFBAccess = exaXorgEnableDisableFBAccess;
+    pScreenPriv.SavedEnableDisableFBAccess = &pScrn.EnableDisableFBAccess;
+    pScrn.EnableDisableFBAccess = &exaXorgEnableDisableFBAccess;
 
     dixScreenHookClose(pScreen, &exaXorgCloseScreen);
 }

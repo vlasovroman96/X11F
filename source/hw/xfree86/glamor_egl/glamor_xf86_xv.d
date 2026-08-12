@@ -44,6 +44,7 @@ import glamor.glamor_priv;
 
 import include.xf86xv;
 import include.fourcc;
+import externs.X11.extensions.Xv;
 
 enum NUM_FORMATS = 4;
 
@@ -56,17 +57,17 @@ private void glamor_xf86_xv_stop_video(ScrnInfoPtr pScrn, void* data, Bool clean
     if (!cleanup)
         return;
 
-    glamor_xv_stop_video(data);
+    glamor_xv_stop_video(cast(glamor_port_private*)data);
 }
 
 private int glamor_xf86_xv_set_port_attribute(ScrnInfoPtr pScrn, Atom attribute, INT32 value, void* data)
 {
-    return glamor_xv_set_port_attribute(data, attribute, value);
+    return glamor_xv_set_port_attribute(cast(glamor_port_private*)data, attribute, value);
 }
 
 private int glamor_xf86_xv_get_port_attribute(ScrnInfoPtr pScrn, Atom attribute, INT32* value, void* data)
 {
-    return glamor_xv_get_port_attribute(data, attribute, value);
+    return glamor_xv_get_port_attribute(cast(glamor_port_private*)data, attribute, value);
 }
 
 private void glamor_xf86_xv_query_best_size(ScrnInfoPtr pScrn, Bool motion, short vid_w, short vid_h, short drw_w, short drw_h, uint* p_w, uint* p_h, void* data)
@@ -82,7 +83,7 @@ private int glamor_xf86_xv_query_image_attributes(ScrnInfoPtr pScrn, int id, ush
 
 private int glamor_xf86_xv_put_image(ScrnInfoPtr pScrn, short src_x, short src_y, short drw_x, short drw_y, short src_w, short src_h, short drw_w, short drw_h, int id, ubyte* buf, short width, short height, Bool sync, RegionPtr clipBoxes, void* data, DrawablePtr pDrawable)
 {
-    return glamor_xv_put_image(data, pDrawable,
+    return glamor_xv_put_image(cast(glamor_port_private*)data, pDrawable,
                                src_x, src_y,
                                drw_x, drw_y,
                                src_w, src_h,
@@ -107,8 +108,8 @@ XF86VideoAdaptorPtr glamor_xv_init(ScreenPtr screen, int num_texture_ports)
 
     glamor_xv_core_init(screen);
 
-    adapt = calloc(1, (cast(XF86VideoAdaptorRec) + num_texture_ports *
-                   (((glamor_port_private) + DevUnion.sizeof).sizeof)).sizeof);
+    adapt = cast(_XF86VideoAdaptorRec*)calloc(1, (XF86VideoAdaptorRec).sizeof + num_texture_ports *
+                   (((glamor_port_private).sizeof + DevUnion.sizeof)));
     if (adapt == null)
         return null;
 
@@ -116,31 +117,31 @@ XF86VideoAdaptorPtr glamor_xv_init(ScreenPtr screen, int num_texture_ports)
     adapt.flags = 0;
     adapt.name = "GLAMOR Textured Video";
     adapt.nEncodings = 1;
-    adapt.pEncodings = DummyEncodingGLAMOR;
+    adapt.pEncodings = DummyEncodingGLAMOR.ptr;
 
     adapt.nFormats = NUM_FORMATS;
-    adapt.pFormats = Formats;
+    adapt.pFormats = Formats.ptr;
     adapt.nPorts = num_texture_ports;
     adapt.pPortPrivates = cast(DevUnion*) (&adapt[1]);
 
-    adapt.pAttributes = glamor_xv_attributes;
+    adapt.pAttributes = glamor_xv_attributes.ptr;
     adapt.nAttributes = glamor_xv_num_attributes;
 
     port_priv =
         cast(glamor_port_private*) (&adapt.pPortPrivates[num_texture_ports]);
-    adapt.pImages = glamor_xv_images;
+    adapt.pImages = glamor_xv_images.ptr;
     adapt.nImages = glamor_xv_num_images;
     adapt.PutVideo = null;
     adapt.PutStill = null;
     adapt.GetVideo = null;
     adapt.GetStill = null;
-    adapt.StopVideo = glamor_xf86_xv_stop_video;
-    adapt.SetPortAttribute = glamor_xf86_xv_set_port_attribute;
-    adapt.GetPortAttribute = glamor_xf86_xv_get_port_attribute;
-    adapt.QueryBestSize = glamor_xf86_xv_query_best_size;
-    adapt.PutImage = glamor_xf86_xv_put_image;
+    adapt.StopVideo = &glamor_xf86_xv_stop_video;
+    adapt.SetPortAttribute = &glamor_xf86_xv_set_port_attribute;
+    adapt.GetPortAttribute = &glamor_xf86_xv_get_port_attribute;
+    adapt.QueryBestSize = &glamor_xf86_xv_query_best_size;
+    adapt.PutImage = &glamor_xf86_xv_put_image;
     adapt.ReputImage = null;
-    adapt.QueryImageAttributes = glamor_xf86_xv_query_image_attributes;
+    adapt.QueryImageAttributes = &glamor_xf86_xv_query_image_attributes;
 
     for (i = 0; i < num_texture_ports; i++) {
         glamor_port_private* pPriv = &port_priv[i];
@@ -152,7 +153,7 @@ XF86VideoAdaptorPtr glamor_xv_init(ScreenPtr screen, int num_texture_ports)
         pPriv.gamma = 1000;
         pPriv.transform_index = 0;
 
-        REGION_NULL(pScreen, &pPriv.clip);
+        mixin(REGION_NULL!("pScreen", "&pPriv.clip"));
 
         adapt.pPortPrivates[i].ptr = cast(void*) (pPriv);
     }

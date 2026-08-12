@@ -44,7 +44,7 @@ version (GLAMOR_HAS_GBM) {
  * Deinitialize an egl context created by glamor egl
  * and free associated resources.
  */
-void glamor_egl_cleanup(glamor_egl_priv_t* glamor_egl);
+// void glamor_egl_cleanup(glamor_egl_priv_t* glamor_egl);
 
 /**
  * Deinitialize an egl context created by glamor egl

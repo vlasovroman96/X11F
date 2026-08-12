@@ -21,6 +21,8 @@ import xf86int10_priv;
 import hw.xfree86.os_support.int10Defines;
 import hw.xfree86.os_support.bus.Pci;
 import include.xf86int10; 
+import helper_mem;
+
 
 enum string ALLOC_ENTRIES(string x) = `((V_RAM / ` ~ x ~ `) - 1)`;
 

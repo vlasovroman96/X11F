@@ -134,7 +134,7 @@ extern void  xf86RemoveGeneralHandler(void* handler);
 
 // extern void  xf86AddDriver(DriverPtr driver, void* module_, int flags);
 // extern void  xf86AllocateScreen(DriverPtr drv, int flags);
-extern void  xf86AllocateScrnInfoPrivateIndex();
+// extern void  xf86AllocateScrnInfoPrivateIndex();
 // extern void  xf86SetDepthBpp(ScrnInfoPtr scrp, int depth, int bpp, int fbbpp, int depth24flags);
 // extern void  xf86PrintDepthBpp(ScrnInfoPtr scrp);
 // extern void  xf86SetWeight(ScrnInfoPtr scrp, rgb weight, rgb mask);
@@ -170,7 +170,7 @@ extern void  xf86LoaderCheckSymbol(const(char)* name);
 // extern void  xf86SetSilkenMouse(ScreenPtr pScreen);
 // extern void  xf86ConfigFbEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityIndex, EntityProc init, EntityProc enter, EntityProc leave, void* private_);
 
-extern void  xf86IsUnblank(int mode);
+// extern void  xf86IsUnblank(int mode);
 
 /* xf86Init.c */
 

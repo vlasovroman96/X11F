@@ -468,7 +468,7 @@ extern void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
 
 // extern void  RRScreenInit(ScreenPtr pScreen);
 
-extern void  RRFirstOutput(ScreenPtr pScreen);
+// extern void  RRFirstOutput(ScreenPtr pScreen);
 
 /*
  * This is the old interface, deprecated but left

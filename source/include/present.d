@@ -145,6 +145,6 @@ alias present_screen_info_ptr = present_screen_info*;
  */
 extern void  present_event_notify(ulong event_id, ulong ust, ulong msc);
 
-extern void  present_screen_init(ScreenPtr screen, present_screen_info_ptr info);
+// extern void  present_screen_init(ScreenPtr screen, present_screen_info_ptr info);
 
  /* _PRESENT_H_ */
