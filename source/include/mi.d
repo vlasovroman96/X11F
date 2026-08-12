@@ -97,7 +97,7 @@ alias DevicePtr = _DeviceRec*;
 
 // extern void  miHandleExposures(DrawablePtr, DrawablePtr, GCPtr, int, int, int, int, int, int);
 
-extern void  miClearDrawable(DrawablePtr, GCPtr);
+// extern void  miClearDrawable(DrawablePtr, GCPtr);
 
 /* miglblt.c */
 
@@ -150,7 +150,7 @@ extern void  miPolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DD
 
 /* mizerarc.c */
 
-extern void  miZeroPolyArc(DrawablePtr, GCPtr, int, xArc*);
+// extern void  miZeroPolyArc(DrawablePtr, GCPtr, int, xArc*);
 
 void  miZeroLine(DrawablePtr dst, GCPtr gc, int mode, int nptInit, xPoint* pptInit);
 void  miZeroDashLine(DrawablePtr dst, GCPtr pgc, int mode, int nptInit, xPoint* pptInit);

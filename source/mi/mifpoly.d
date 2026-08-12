@@ -50,9 +50,9 @@ SOFTWARE.
  
 // //public import externs.X11.Xfuncproto;
 
-private auto ICEIL(double x)
+auto ICEIL(double x)
 {
-    int _cTmp = x;
+    int _cTmp = cast(int)x;
 
     return ((x == _cTmp) || (x < 0.0)) ? _cTmp : _cTmp + 1;
 }

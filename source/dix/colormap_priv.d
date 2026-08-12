@@ -79,9 +79,9 @@ alias ColormapRec = _ColormapRec;
 /* should only be called via resource type's destructor */
 int FreeColormap(void* pmap, XID mid);
 
-int TellLostMap(WindowPtr pwin, void* value);
+// int TellLostMap(WindowPtr pwin, void* value);
 
-int TellGainedMap(WindowPtr pwin, void* value);
+// int TellGainedMap(WindowPtr pwin, void* value);
 
 // int CopyColormapAndFree(Colormap mid, ColormapPtr pSrc, int client);
 

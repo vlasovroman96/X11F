@@ -45,6 +45,8 @@ import include.scrnintstr;
 import include.resource;
 import include.globals;
 import mi.micmap;
+import dix.resource;
+import dix.colormap;
 
 enum MIN_TRUE_DEPTH =  6;
 
@@ -75,10 +77,10 @@ void miInstallColormap(ColormapPtr pmap)
         /* Uninstall pInstalledMap. No hardware changes required, just
          * notify all interested parties. */
         if (oldpmap != cast(ColormapPtr) None)
-            WalkTree(pmap.pScreen, TellLostMap, cast(char*) &oldpmap.mid);
+            WalkTree(pmap.pScreen, &TellLostMap, cast(char*) &oldpmap.mid);
         /* Install pmap */
         SetInstalledmiColormap(pmap.pScreen, pmap);
-        WalkTree(pmap.pScreen, TellGainedMap, cast(char*) &pmap.mid);
+        WalkTree(pmap.pScreen, &TellGainedMap, cast(char*) &pmap.mid);
 
     }
 }
@@ -105,13 +107,13 @@ void miResolveColor(ushort* pred, ushort* pgreen, ushort* pblue, VisualPtr pVisu
     if ((pVisual.class_ | DynamicClass) == GrayScale) {
         /* rescale to gray then rgb bits */
         *pred = (30L * *pred + 59L * *pgreen + 11L * *pblue) / 100;
-        *pblue = *pgreen = *pred = ((*pred >> shift) * 65535) / lim;
+        *pblue = *pgreen = *pred = cast(ushort)(((*pred >> shift) * 65535) / lim);
     }
     else {
         /* rescale to rgb bits */
-        *pred = ((*pred >> shift) * 65535) / lim;
-        *pgreen = ((*pgreen >> shift) * 65535) / lim;
-        *pblue = ((*pblue >> shift) * 65535) / lim;
+        *pred = cast(ushort)(((*pred >> shift) * 65535) / lim);
+        *pgreen = cast(ushort)(((*pgreen >> shift) * 65535) / lim);
+        *pblue = cast(ushort)(((*pblue >> shift) * 65535) / lim);
     }
 }
 
@@ -134,11 +136,11 @@ Bool miInitializeColormap(ColormapPtr pmap)
         for (i = 0; i <= maxent; i++) {
             /* rescale to [0..65535] then rgb bits */
             pmap.red[i].co.local.red =
-                ((((i * 65535) / limr) >> shift) * 65535) / lim;
+                cast(ushort)(((((i * 65535) / limr) >> shift) * 65535) / lim);
             pmap.green[i].co.local.green =
-                ((((i * 65535) / limg) >> shift) * 65535) / lim;
+                cast(ushort)(((((i * 65535) / limg) >> shift) * 65535) / lim);
             pmap.blue[i].co.local.blue =
-                ((((i * 65535) / limb) >> shift) * 65535) / lim;
+                cast(ushort)(((((i * 65535) / limb) >> shift) * 65535) / lim);
         }
     }
     else if (pVisual.class_ == StaticColor) {
@@ -149,24 +151,24 @@ Bool miInitializeColormap(ColormapPtr pmap)
         limb = pVisual.blueMask >> pVisual.offsetBlue;
         for (i = 0; i <= maxent; i++) {
             /* rescale to [0..65535] then rgb bits */
-            pmap.red[i].co.local.red =
-                ((((((i & pVisual.redMask) >> pVisual.offsetRed)
-                    * 65535) / limr) >> shift) * 65535) / lim;
-            pmap.red[i].co.local.green =
-                ((((((i & pVisual.greenMask) >> pVisual.offsetGreen)
-                    * 65535) / limg) >> shift) * 65535) / lim;
-            pmap.red[i].co.local.blue =
-                ((((((i & pVisual.blueMask) >> pVisual.offsetBlue)
-                    * 65535) / limb) >> shift) * 65535) / lim;
+            pmap.red[i].co.local.red = cast(short)
+                (((((((i & pVisual.redMask) >> pVisual.offsetRed)
+                    * 65535) / limr) >> shift) * 65535) / lim);
+            pmap.red[i].co.local.green = cast(short)
+                (((((((i & pVisual.greenMask) >> pVisual.offsetGreen)
+                   * 65535) / limg) >> shift) * 65535) / lim);
+            pmap.red[i].co.local.blue = cast(short)
+                (((((((i & pVisual.blueMask) >> pVisual.offsetBlue)
+                    * 65535) / limb) >> shift) * 65535) / lim);
         }
     }
     else if (pVisual.class_ == StaticGray) {
         for (i = 0; i <= maxent; i++) {
             /* rescale to [0..65535] then rgb bits */
-            pmap.red[i].co.local.red = ((((i * 65535) / maxent) >> shift)
-                                         * 65535) / lim;
-            pmap.red[i].co.local.green = pmap.red[i].co.local.red;
-            pmap.red[i].co.local.blue = pmap.red[i].co.local.red;
+            pmap.red[i].co.local.red = cast(ushort)(((((i * 65535) / maxent) >> shift)
+                                         * 65535) / lim);
+            pmap.red[i].co.local.green = cast(ushort)(pmap.red[i].co.local.red);
+            pmap.red[i].co.local.blue = cast(ushort)(pmap.red[i].co.local.red);
         }
     }
     return TRUE;
@@ -217,7 +219,7 @@ int miExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorI
             red = indefs.pixel & pVisual.redMask;
             for (green = 0; green <= maxgreen; green += stepgreen) {
                 for (blue = 0; blue <= maxblue; blue += stepblue) {
-                    AddElement(DoRed);
+                    mixin(AddElement!("DoRed"));
                 }
             }
         }
@@ -225,7 +227,7 @@ int miExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorI
             green = indefs.pixel & pVisual.greenMask;
             for (red = 0; red <= maxred; red += stepred) {
                 for (blue = 0; blue <= maxblue; blue += stepblue) {
-                    AddElement(DoGreen);
+                    mixin(AddElement!("DoGreen"));
                 }
             }
         }
@@ -233,7 +235,7 @@ int miExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorI
             blue = indefs.pixel & pVisual.blueMask;
             for (red = 0; red <= maxred; red += stepred) {
                 for (green = 0; green <= maxgreen; green += stepgreen) {
-                    AddElement(DoBlue);
+                    mixin(AddElement!("DoBlue"));
                 }
             }
         }
@@ -265,8 +267,8 @@ Bool miCreateDefColormap(ScreenPtr pScreen)
         return FALSE;
 
     if (pScreen.rootDepth > 1) {
-        wp = pScreen.whitePixel;
-        bp = pScreen.blackPixel;
+        wp = cast(uint)pScreen.whitePixel;
+        bp = cast(uint)pScreen.blackPixel;
         if ((AllocColor(cmap, &ones, &ones, &ones, &wp, 0) !=
              Success) ||
             (AllocColor(cmap, &zero, &zero, &zero, &bp, 0) != Success))
@@ -288,7 +290,7 @@ enum string _RZ(string d) = `((` ~ d ~ ` + 2) / 3)`;
 enum string _RS(string d) = `0`;
 enum string _RM(string d) = `((1U << ` ~ _RZ!(d) ~ `) - 1)`;
 enum string _GZ(string d) = `((` ~ d ~ ` - ` ~ _RZ!(d) ~ ` + 1) / 2)`;
-enum string _GS(string d) = `_RZ(` ~ d ~ `)`;
+enum string _GS(string d) = _RZ!(d);
 enum string _GM(string d) = `(((1U << ` ~ _GZ!(d) ~ `) - 1) << ` ~ _GS!(d) ~ `)`;
 enum string _BZ(string d) = `(` ~ d ~ ` - ` ~ _RZ!(d) ~ ` - ` ~ _GZ!(d) ~ `)`;
 enum string _BS(string d) = `(` ~ _RZ!(d) ~ ` + ` ~ _GZ!(d) ~ `)`;
@@ -318,7 +320,7 @@ void miClearVisualTypes()
 {
     miVisualsPtr v = void;
 
-    while ((v = miVisuals)) {
+    while ((v = miVisuals) !is null) {
         miVisuals = v.next;
         free(v);
     }
@@ -328,7 +330,7 @@ Bool miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int prefer
 {
     miVisualsPtr* prev = void; miVisualsPtr v = void;
 
-    miVisualsPtr new_ = cast(miVisualsPtr) calloc(1, (*new_).sizeof);
+    miVisualsPtr new_ = cast(miVisualsPtr) calloc(1, (_miVisuals*).sizeof);
     if (!new_)
         return FALSE;
     if (!redMask || !greenMask || !blueMask) {
@@ -336,7 +338,7 @@ Bool miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int prefer
         greenMask = mixin(_GM!(`depth`));
         blueMask = mixin(_BM!(`depth`));
     }
-    new_.next = 0;
+    new_.next = null;
     new_.depth = depth;
     new_.visuals = visuals;
     new_.bitsPerRGB = bitsPerRGB;
@@ -345,7 +347,7 @@ Bool miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int prefer
     new_.greenMask = greenMask;
     new_.blueMask = blueMask;
     new_.count = Ones(visuals);
-    for (prev = &miVisuals; ((v = *prev) != 0); prev = &v.next){}
+    for (prev = &miVisuals; ((v = *prev) !is null); prev = &v.next){}
     *prev = new_;
     return TRUE;
 }
@@ -474,21 +476,21 @@ Bool miInitVisuals(VisualPtr* visualp, DepthPtr* depthp, int* nvisualp, int* nde
                 return FALSE;
             }
         }
-        depth.depth = d;
-        depth.numVids = nvtype;
+        depth.depth = cast(ubyte)d;
+        depth.numVids = cast(short)nvtype;
         depth.vids = vid;
         for (i = 0; i < NUM_PRIORITY; i++) {
             if (!(vtype & (1 << miVisualPriority[i])))
                 continue;
-            visual.class_ = miVisualPriority[i];
-            visual.bitsPerRGBValue = visuals.bitsPerRGB;
-            visual.ColormapEntries = 1 << d;
-            visual.nplanes = d;
+            visual.class_ = cast(short)miVisualPriority[i];
+            visual.bitsPerRGBValue = cast(short)visuals.bitsPerRGB;
+            visual.ColormapEntries = cast(short)(1 << d);
+            visual.nplanes = cast(short)d;
             visual.vid = dixAllocServerXID();
             if (vid)
                 *vid = visual.vid;
             else
-                mixin(BUG_WARN!("vid == 0"));
+                mixin(BUG_WARN!("vid is null"));
 
             switch (visual.class_) {
             case PseudoColor:
@@ -501,17 +503,18 @@ Bool miInitVisuals(VisualPtr* visualp, DepthPtr* depthp, int* nvisualp, int* nde
                 visual.offsetGreen = 0;
                 visual.offsetBlue = 0;
                 break;
-            case DirectColor:
-            case TrueColor:
-                visual.ColormapEntries = mixin(_CE!(`d`));
+            case DirectColor, TrueColor:
+                visual.ColormapEntries = cast(short)mixin(_CE!(`d`));
                 /* fall through */
+                goto case;
             case StaticColor:
-                visual.redMask = visuals.redMask;
-                visual.greenMask = visuals.greenMask;
-                visual.blueMask = visuals.blueMask;
+                visual.redMask = cast(ubyte)visuals.redMask;
+                visual.greenMask = cast(ubyte)visuals.greenMask;
+                visual.blueMask = cast(ubyte)visuals.blueMask;
                 visual.offsetRed = maskShift(visuals.redMask);
                 visual.offsetGreen = maskShift(visuals.greenMask);
                 visual.offsetBlue = maskShift(visuals.blueMask);
+            goto default;
             default: break;}
             vid++;
             visual++;

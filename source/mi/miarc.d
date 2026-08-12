@@ -67,6 +67,10 @@ import include.windowstr;
 import mifpoly;
 import mifillarc;
 import mizerarc;
+import mifpoly;
+import dix.gc;
+// module mizerarc;
+
 
 enum string MIWIDEARCSETUP(string x, string y, string dy, string slw, string e, string xk, string xm, string yk, string ym) = `
     (`~x~`) = 0; 
@@ -94,7 +98,7 @@ enum string MIWIDEARCSETUP(string x, string y, string dy, string slw, string e, 
     }`;
 
 
-enum string MIFILLARCSTEP(stirng slw) =`
+enum string MIFILLARCSTEP(string slw) =`
     e += yk;
     while (e >= 0)
     {
@@ -109,19 +113,20 @@ enum string MIFILLARCSTEP(stirng slw) =`
 	    (`~slw~`)--;
 `;
 
-#define MIFILLINARCSTEP(slw) \
-    ine += inyk; \
-    while (ine >= 0) \
-    { \
-	inx++; \
-	inxk -= inxm; \
-	ine += inxk; \
-    } \
-    iny--; \
-    inyk -= inym; \
-    (slw) = (inx << 1) + dx; \
-    if ((ine == inxk) && ((slw) > 1)) \
-	(slw)--
+enum string MIFILLINARCSTEP(string slw) =`
+    ine += inyk;
+    while (ine >= 0)
+    {
+	inx++;
+	inxk -= inxm;
+	ine += inxk;
+    }
+    iny--;
+    inyk -= inym;
+    (`~slw~`) = (inx << 1) + dx;
+    if ((ine == inxk) && ((`~slw~`) > 1))
+	(`~slw~`)--;
+    `;
 
 enum EPSILON =	0.000001;
 enum string ISEQUAL(string a,string b) = `(fabs((` ~ a ~ `) - (` ~ b ~ `)) <= EPSILON)`;
@@ -185,7 +190,7 @@ struct ibound {
 }
 
 enum string boundedLe(string value, string bounds) = `
-	((` ~ bounds ~ `).min <= cast(value) && (` ~ value ~ `) <= (` ~ bounds ~ `).max)`;
+	((` ~ bounds ~ `).min <= (`~value~`)) && ((` ~ value ~ `) <= (` ~ bounds ~ `).max)`;
 
 struct line {
     double m = 0, b = 0;
@@ -459,17 +464,17 @@ private void miComputeCircleSpans(int lw, xArc* parc, miArcSpanData* spdata)
     span = spdata.spans;
     while (y) {
         mixin(MIFILLARCSTEP!("slw"));
-        span.lx = dy - x;
+        span.lx = cast(short)(dy - x);
         if (++doinner <= 0) {
-            span.lw = slw;
-            span.rx = 0;
-            span.rw = span.lx + slw;
+            span.lw = cast(short)(slw);
+            span.rx = cast(short)(0);
+            span.rw = cast(short)(span.lx + slw);
         }
         else {
-            MIFILLINARCSTEP(inslw);
-            span.lw = x - inx;
-            span.rx = dy - inx + inslw;
-            span.rw = inx - x + slw - inslw;
+            mixin(MIFILLINARCSTEP!("inslw"));
+            span.lw = cast(short)(x - inx);
+            span.rx = cast(short)(dy - inx + inslw);
+            span.rw = cast(short)(inx - x + slw - inslw);
         }
         span++;
     }
@@ -478,7 +483,7 @@ private void miComputeCircleSpans(int lw, xArc* parc, miArcSpanData* spdata)
             spdata.count2--;
         else {
             if (lw > cast(int) parc.height)
-                span[-1].rx = span[-1].rw = -((lw - cast(int) parc.height) >> 1);
+                span[-1].rx = span[-1].rw = cast(short)(-((lw - cast(int) parc.height) >> 1));
             else
                 span[-1].rw = 0;
             spdata.count1--;
@@ -612,18 +617,18 @@ private void miComputeEllipseSpans(int lw, xArc* parc, miArcSpanData* spdata)
                     outx = x + t;
             }
         }
-        span.lx = ICEIL(xorg - outx);
+        span.lx = cast(short)ICEIL(xorg - outx);
         if (inx <= 0.0) {
             spdata.count1++;
-            span.lw = ICEIL(xorg + outx) - span.lx;
-            span.rx = ICEIL(xorg + inx);
-            span.rw = -ICEIL(xorg - inx);
+            span.lw = cast(short)(ICEIL(xorg + outx) - span.lx);
+            span.rx = cast(short)ICEIL(xorg + inx);
+            span.rw = cast(short)-ICEIL(xorg - inx);
         }
         else {
             spdata.count2++;
-            span.lw = ICEIL(xorg - inx) - span.lx;
-            span.rx = ICEIL(xorg + inx);
-            span.rw = ICEIL(xorg + outx) - span.rx;
+            span.lw = cast(short)(ICEIL(xorg - inx) - span.lx);
+            span.rx = cast(short)ICEIL(xorg + inx);
+            span.rw = cast(short)(ICEIL(xorg + outx) - span.rx);
         }
         span++;
     }
@@ -638,23 +643,23 @@ private void miComputeEllipseSpans(int lw, xArc* parc, miArcSpanData* spdata)
         }
         else
             inx = w - r;
-        span.lx = ICEIL(xorg - outx);
-        if (inx <= 0.0) {
-            span.lw = ICEIL(xorg + outx) - span.lx;
-            span.rx = ICEIL(xorg + inx);
-            span.rw = -ICEIL(xorg - inx);
+        span.lx = cast(short)(ICEIL(xorg - outx));
+        if (inx <= cast(short)(0.0) ){
+            span.lw = cast(short)(ICEIL(xorg + outx) - span.lx);
+            span.rx = cast(short)(ICEIL(xorg + inx));
+            span.rw = cast(short)(-ICEIL(xorg - inx));
         }
         else {
-            span.lw = ICEIL(xorg - inx) - span.lx;
-            span.rx = ICEIL(xorg + inx);
-            span.rw = ICEIL(xorg + outx) - span.rx;
+            span.lw = cast(short)(ICEIL(xorg - inx) - span.lx);
+            span.rx = cast(short)(ICEIL(xorg + inx));
+            span.rw = cast(short)(ICEIL(xorg + outx) - span.rx);
         }
     }
     if (spdata.hole) {
         span = &spdata.spans[spdata.count1];
-        span.lw = -span.lx;
-        span.rx = 1;
-        span.rw = span.lw;
+        span.lw = cast(short)-span.lx;
+        span.rx = cast(short)1;
+        span.rw = cast(short)span.lw;
         spdata.count1--;
         spdata.count2++;
     }
@@ -670,7 +675,7 @@ private double tailX(double K, arc_def* def, arc_bound* bounds, accelerators* ac
     double* xp = void;
 
     w = def.w;
-    h = def;
+    h = def.h;
     r = def.l;
     rs = r * r;
     Hs = acc.h2;
@@ -699,7 +704,7 @@ private double tailX(double K, arc_def* def, arc_bound* bounds, accelerators* ac
     N = (K * K + Nk) / 6.0;
     Nc = N * N * N;
     Vr = Vk * K;
-    xp = xs;
+    xp = xs.ptr;
     xs[0] = 0.0;
     t = Nc + Vr * Vr;
     d = Nc + t;
@@ -797,7 +802,7 @@ private miArcSpanData* miComputeWideEllipse(int lw, xArc* parc)
     if (!lw)
         lw = 1;
     k = (parc.height >> 1) + ((lw - 1) >> 1);
-    miArcSpanData* spdata = cast(miArcSpanData*) calloc(1, ((miArcSpanData) + ((miArcSpan) * (k + 2)).sizeof).sizeof);
+    miArcSpanData* spdata = cast(miArcSpanData*) calloc(1, ((miArcSpanData).sizeof + ((miArcSpan).sizeof * (k + 2))));
     if (!spdata)
         return null;
     spdata.spans = cast(miArcSpan*) (spdata + 1);
@@ -822,8 +827,8 @@ private void miFillWideEllipse(DrawablePtr pDraw, GCPtr pGC, xArc* parc)
     int n = void;
 
     yorgu = parc.height + pGC.lineWidth;
-    n = (int.sizeof * 2) * yorgu;
-    int* widths = cast(int*) calloc(1, n + (((xPoint) * 2).sizeof) * yorgu);
+    n = cast(int)((int.sizeof * 2) * yorgu);
+    int* widths = cast(int*) calloc(1, n + (((xPoint).sizeof * 2)) * yorgu);
     if (!widths)
         return;
     points = cast(DDXPointPtr) (cast(char*) widths + n);
@@ -846,18 +851,18 @@ private void miFillWideEllipse(DrawablePtr pDraw, GCPtr pGC, xArc* parc)
     yorgu -= spdata.k;
     yorgl += spdata.k;
     if (spdata.top) {
-        pts.x = xorg;
-        pts.y = yorgu - 1;
+        pts.x = cast(short)(xorg);
+        pts.y = cast(short)(yorgu - 1);
         pts++;
         *wids++ = 1;
         span++;
     }
     for (n = spdata.count1; --n >= 0;) {
-        pts[0].x = xorg + span.lx;
-        pts[0].y = yorgu;
+        pts[0].x = cast(short)(xorg + span.lx);
+        pts[0].y = cast(short)(yorgu);
         wids[0] = span.lw;
-        pts[1].x = pts[0].x;
-        pts[1].y = yorgl;
+        pts[1].x = cast(short)pts[0].x;
+        pts[1].y = cast(short)yorgl;
         wids[1] = wids[0];
         yorgu++;
         yorgl--;
@@ -866,24 +871,24 @@ private void miFillWideEllipse(DrawablePtr pDraw, GCPtr pGC, xArc* parc)
         span++;
     }
     if (spdata.hole) {
-        pts[0].x = xorg;
-        pts[0].y = yorgl;
+        pts[0].x = cast(short)xorg;
+        pts[0].y = cast(short)yorgl;
         wids[0] = 1;
         pts++;
         wids++;
     }
     for (n = spdata.count2; --n >= 0;) {
-        pts[0].x = xorg + span.lx;
-        pts[0].y = yorgu;
+        pts[0].x = cast(short)(xorg + span.lx);
+        pts[0].y = cast(short)(yorgu);
         wids[0] = span.lw;
-        pts[1].x = xorg + span.rx;
-        pts[1].y = pts[0].y;
+        pts[1].x = cast(short)(xorg + span.rx);
+        pts[1].y = cast(short)(pts[0].y);
         wids[1] = span.rw;
-        pts[2].x = pts[0].x;
-        pts[2].y = yorgl;
+        pts[2].x = cast(short)(pts[0].x);
+        pts[2].y = cast(short)(yorgl);
         wids[2] = wids[0];
-        pts[3].x = pts[1].x;
-        pts[3].y = pts[2].y;
+        pts[3].x = cast(short)(pts[1].x);
+        pts[3].y = cast(short)(pts[2].y);
         wids[3] = wids[1];
         yorgu++;
         yorgl--;
@@ -893,25 +898,25 @@ private void miFillWideEllipse(DrawablePtr pDraw, GCPtr pGC, xArc* parc)
     }
     if (spdata.bot) {
         if (span.rw <= 0) {
-            pts[0].x = xorg + span.lx;
-            pts[0].y = yorgu;
+            pts[0].x = cast(short)(xorg + span.lx);
+            pts[0].y = cast(short)(yorgu);
             wids[0] = span.lw;
             pts++;
             wids++;
         }
         else {
-            pts[0].x = xorg + span.lx;
-            pts[0].y = yorgu;
+            pts[0].x = cast(short)(xorg + span.lx);
+            pts[0].y = cast(short)(yorgu);
             wids[0] = span.lw;
-            pts[1].x = xorg + span.rx;
-            pts[1].y = pts[0].y;
+            pts[1].x = cast(short)(xorg + span.rx);
+            pts[1].y = cast(short)(pts[0].y);
             wids[1] = span.rw;
             pts += 2;
             wids += 2;
         }
     }
     free(spdata);
-    (*pGC.ops.FillSpans) (pDraw, pGC, pts - points, points, widths, FALSE);
+    (*pGC.ops.FillSpans) (pDraw, pGC, cast(int)(pts - points), points, widths, FALSE);
 
     free(widths);
 }
@@ -1029,9 +1034,9 @@ void miWideArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
             gcvals[3].val = pGC.lineWidth;
             gcvals[4].val = pGC.capStyle;
             gcvals[5].val = pGC.joinStyle;
-            ChangeGC(null, pGCTo, GCFunction |
+            ChangeGC(null, pGCTo, cast(uint)(GCFunction |
                      GCForeground | GCBackground | GCLineWidth |
-                     GCCapStyle | GCJoinStyle, gcvals.ptr);
+                     GCCapStyle | GCJoinStyle), gcvals.ptr);
         }
 
         /* allocate a bitmap of the appropriate size, and validate it */
@@ -1067,12 +1072,12 @@ void miWideArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
 
         if (iphase == 1) {
             gcval.val = bg;
-            ChangeGC(null, pGC, GCForeground, &gcval);
+            ChangeGC(null, pGC, cast(uint)GCForeground, &gcval);
             ValidateGC(pDraw, pGC);
         }
         else if (pGC.lineStyle == LineDoubleDash) {
             gcval.val = fg;
-            ChangeGC(null, pGC, GCForeground, &gcval);
+            ChangeGC(null, pGC, cast(uint)GCForeground, &gcval);
             ValidateGC(pDraw, pGC);
         }
         for (i = 0; i < polyArcs[iphase].narcs; i++) {
@@ -1182,7 +1187,7 @@ private int GetFPolyYBounds(SppPointPtr pts, int n, double yFtrans, int* by, int
 
     *by = ICEIL(ymin + yFtrans);
     *ty = ICEIL(ymax + yFtrans - 1);
-    return ptMin - ptsStart;
+    return cast(int)(ptMin - ptsStart);
 }
 
 /*
@@ -1214,7 +1219,7 @@ private void miFillSppPoly(DrawablePtr dst, GCPtr pgc, int count, SppPointPtr pt
     y = ymax - ymin + 1;
     if ((count < 3) || (y <= 0))
         return;
-    ptsOut = FirstPoint = calloc(y, xPoint.sizeof);
+    ptsOut = FirstPoint = cast(_xPoint*)calloc(y, xPoint.sizeof);
     width = FirstWidth = cast(int*) calloc(y, int.sizeof);
     Marked = cast(int*) calloc(count, int.sizeof);
 
@@ -1298,18 +1303,18 @@ private void miFillSppPoly(DrawablePtr dst, GCPtr pgc, int count, SppPointPtr pt
         while (j > 0) {
             int cxl = void, cxr = void;
 
-            ptsOut.y = (y) + yTrans;
+            ptsOut.y = cast(short)((y) + yTrans);
 
             cxl = ICEIL(xl);
             cxr = ICEIL(xr);
             /* reverse the edges if necessary */
             if (xl < xr) {
                 *(width++) = cxr - cxl;
-                (ptsOut++).x = cxl + xTrans;
+                (ptsOut++).x = cast(short)(cxl + xTrans);
             }
             else {
                 *(width++) = cxl - cxr;
-                (ptsOut++).x = cxr + xTrans;
+                (ptsOut++).x = cast(short)(cxr + xTrans);
             }
             y++;
 
@@ -1322,7 +1327,7 @@ private void miFillSppPoly(DrawablePtr dst, GCPtr pgc, int count, SppPointPtr pt
 
     /* Finally, fill the spans we've collected */
     (*pgc.ops.FillSpans) (dst, pgc,
-                            ptsOut - FirstPoint, FirstPoint, FirstWidth, 1);
+                            cast(int)(ptsOut - FirstPoint), FirstPoint, FirstWidth, 1);
     free(Marked);
     free(FirstWidth);
     free(FirstPoint);
@@ -1409,7 +1414,7 @@ private void miArcJoin(DrawablePtr pDraw, GCPtr pGC, miArcFacePtr pLeft, miArcFa
         arc.height = width;
         arc.angle1 = -miDatan2(corner.y - center.y, corner.x - center.x);
         arc.angle2 = a;
-        pArcPts = calloc(3, SppPointRec.sizeof);
+        pArcPts = cast(_SppPoint*)calloc(3, SppPointRec.sizeof);
         if (!pArcPts)
             return;
         pArcPts[0].x = otherCorner.x;
@@ -1418,7 +1423,7 @@ private void miArcJoin(DrawablePtr pDraw, GCPtr pGC, miArcFacePtr pLeft, miArcFa
         pArcPts[1].y = center.y;
         pArcPts[2].x = corner.x;
         pArcPts[2].y = corner.y;
-        if ((cpt = miGetArcPts(&arc, 3, &pArcPts))) {
+        if ((cpt = miGetArcPts(&arc, 3, &pArcPts)) != 0) {
             /* by drawing with miFillSppPoly and setting the endpoints of the arc
              * to be the corners, we assure that the cap will meet up with the
              * rest of the line */
@@ -1450,6 +1455,7 @@ private void miArcJoin(DrawablePtr pDraw, GCPtr pGC, miArcFacePtr pLeft, miArcFa
             polyLen = 5;
             break;
         }
+        goto case;
     case JoinBevel:
         poly[0] = corner;
         poly[1] = center;
@@ -1524,7 +1530,7 @@ private void miArcJoin(DrawablePtr pDraw, GCPtr pGC, miArcFacePtr pLeft, miArcFa
             arc.angle2 += 360.0;
     }
     pArcPts = cast(SppPointPtr) null;
-    if ((cpt = miGetArcPts(&arc, 0, &pArcPts))) {
+    if ((cpt = miGetArcPts(&arc, 0, &pArcPts))!= 0) {
         /* by drawing with miFillSppPoly and setting the endpoints of the arc
          * to be the corners, we assure that the cap will meet up with the
          * rest of the line */
@@ -1545,7 +1551,7 @@ enum M_PI_2 =	1.57079632679489661923;
 
 enum string Dsin(string d) = `((` ~ d ~ `) == 0.0 ? 0.0 : ((` ~ d ~ `) == 90.0 ? 1.0 : sin(` ~ d ~ `*M_PI/180.0)))`;
 enum string Dcos(string d) = `((` ~ d ~ `) == 0.0 ? 1.0 : ((` ~ d ~ `) == 90.0 ? 0.0 : cos(` ~ d ~ `*M_PI/180.0)))`;
-enum string mod(string a,string b) = `((` ~ a ~ `) >= 0 ? (` ~ a ~ `) % (` ~ b ~ `) : cast(b) - (-(` ~ a ~ `)) % (` ~ b ~ `))`;
+enum string mod(string a,string b) = `((` ~ a ~ `) >= 0 ? (` ~ a ~ `) % (` ~ b ~ `) : cast(typeof(`~b~`)) - (-(` ~ a ~ `)) % (` ~ b ~ `))`;
 
 private double miDcos(double a)
 {
@@ -1667,13 +1673,13 @@ private int miGetArcPts(SppArcPtr parc, int cpt, SppPointPtr* ppPts)
     if (cdt < 1.0)
         cdt = 1.0;
     dt = miDasin(1.0 / cdt);    /* minimum step necessary */
-    count = et / dt;
+    count = cast(int)(et / dt);
     count = abs(count) + 1;
     dt = et / count;
     count++;
 
     cdt = 2 * miDcos(dt);
-    if (((poly = cast(SppPointRec*) reallocarray(*ppPts, cpt + count, SppPointRec.sizeof)) == 0))
+    if (((poly = cast(SppPointRec*) reallocarray(*ppPts, cpt + count, SppPointRec.sizeof)) is null))
         return 0;
     *ppPts = poly;
 
@@ -1729,7 +1735,7 @@ private void addCap(miArcCapPtr* capsp, int* ncapsp, int* sizep, int end, int ar
 
     if (*ncapsp == *sizep) {
         newsize = *sizep + ADD_REALLOC_STEP;
-        cap = reallocarray(*capsp, newsize, typeof(**capsp).sizeof);
+        cap = cast(_miArcCap*)reallocarray(*capsp, newsize, typeof(**capsp).sizeof);
         if (!cap)
             return;
         *sizep = newsize;
@@ -1748,7 +1754,7 @@ private void addJoin(miArcJoinPtr* joinsp, int* njoinsp, int* sizep, int end0, i
 
     if (*njoinsp == *sizep) {
         newsize = *sizep + ADD_REALLOC_STEP;
-        join = reallocarray(*joinsp, newsize, typeof(**joinsp).sizeof);
+        join = cast(_miArcJoin*)reallocarray(*joinsp, newsize, typeof(**joinsp).sizeof);
         if (!join)
             return;
         *sizep = newsize;
@@ -1771,7 +1777,7 @@ private miArcDataPtr addArc(miArcDataPtr* arcsp, int* narcsp, int* sizep, xArc* 
 
     if (*narcsp == *sizep) {
         newsize = *sizep + ADD_REALLOC_STEP;
-        arc = reallocarray(*arcsp, newsize, typeof(**arcsp).sizeof);
+        arc = cast(_miArcData*)reallocarray(*arcsp, newsize, typeof(**arcsp).sizeof);
         if (!arc)
             return null;
         *sizep = newsize;
@@ -1880,7 +1886,7 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
     data = cast(arcData*) calloc(narcs, arcData.sizeof);
     if (!data)
         return null;
-    arcs = calloc(isDoubleDash ? 2 : 1, typeof(*arcs).sizeof);
+    arcs = cast(_miPolyArc*)calloc(isDoubleDash ? 2 : 1, typeof(*arcs).sizeof);
     if (!arcs) {
         free(data);
         return null;
@@ -1906,15 +1912,15 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
 
     for (iphase = 0; iphase < (isDoubleDash ? 2 : 1); iphase++) {
         arcs[iphase].njoins = 0;
-        arcs[iphase].joins = 0;
+        arcs[iphase].joins = null;
         joinSize[iphase] = 0;
 
         arcs[iphase].ncaps = 0;
-        arcs[iphase].caps = 0;
+        arcs[iphase].caps = null;
         capSize[iphase] = 0;
 
         arcs[iphase].narcs = cast(int)0;
-        arcs[iphase].arcs = 0;
+        arcs[iphase].arcs = null;
         arcSize[iphase] = 0;
     }
 
@@ -2021,7 +2027,7 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
             /*
              * add dashed arcs to each bucket
              */
-            arc = 0;
+            arc = null ;
             while (dashAngle != endAngle) {
                 prevDashAngle = dashAngle;
                 if (arcType == OTHER) {
@@ -2038,13 +2044,13 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
                 }
                 else {
                     thisLength = (dashAngle + dashRemaining <= endAngle) ?
-                        dashRemaining : endAngle - dashAngle;
+                        cast(short)dashRemaining : cast(short)(endAngle - dashAngle);
                     if (arcType == VERTICAL) {
-                        xarc.y = dashAngle;
+                        xarc.y = cast(short)dashAngle;
                         xarc.height = thisLength;
                     }
                     else {
-                        xarc.x = dashAngle;
+                        xarc.x = cast(short)dashAngle;
                         xarc.width = thisLength;
                     }
                     dashAngle += thisLength;
@@ -2058,21 +2064,21 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
                             spanAngle = FULLCIRCLE - (-spanAngle) % FULLCIRCLE;
                         if (spanAngle >= FULLCIRCLE)
                             spanAngle = spanAngle % FULLCIRCLE;
-                        xarc.angle1 = spanAngle;
-                        spanAngle = dashAngle - prevDashAngle;
+                        xarc.angle1 = cast(short)spanAngle;
+                        spanAngle = cast(short)dashAngle - prevDashAngle;
                         if (backwards) {
                             if (dashAngle > prevDashAngle)
-                                spanAngle = -FULLCIRCLE + spanAngle;
+                                spanAngle = cast(short)-FULLCIRCLE + spanAngle;
                         }
                         else {
                             if (dashAngle < prevDashAngle)
-                                spanAngle = FULLCIRCLE + spanAngle;
+                                spanAngle = cast(short)FULLCIRCLE + spanAngle;
                         }
                         if (spanAngle > FULLCIRCLE)
-                            spanAngle = FULLCIRCLE;
+                            spanAngle = cast(short)FULLCIRCLE;
                         if (spanAngle < -FULLCIRCLE)
-                            spanAngle = -FULLCIRCLE;
-                        xarc.angle2 = spanAngle;
+                            spanAngle = cast(short)-FULLCIRCLE;
+                        xarc.angle2 = cast(short)spanAngle;
                     }
                     arc = addArc(&arcs[iphase].arcs, &arcs[iphase].narcs,
                                  &arcSize[iphase], &xarc);
@@ -2086,14 +2092,14 @@ private miPolyArcPtr miComputeArcs(xArc* parcs, int narcs, GCPtr pGC)
                             addCap(&arcs[iphase].caps,
                                    &arcs[iphase].ncaps,
                                    &capSize[iphase], RIGHT_END,
-                                   arc - arcs[iphase].arcs);
+                                   cast(int)(arc - arcs[iphase].arcs));
 
                         }
                         if (dashAngle != endAngle) {
                             addCap(&arcs[iphase].caps,
                                    &arcs[iphase].ncaps,
                                    &capSize[iphase], LEFT_END,
-                                   arc - arcs[iphase].arcs);
+                                   cast(int)(arc - arcs[iphase].arcs));
                         }
                     }
                     arc.cap = arcs[iphase].ncaps;
@@ -2269,15 +2275,15 @@ private double angleToLength(int angle, dashMap* map)
         angle = 90 * 64 - angle;
 
     di = mixin(xAngleToDashIndex!(`angle`));
-    excess = angle - mixin(dashIndexToXAngle!(`di`));
+    excess = cast(int)(angle - mixin(dashIndexToXAngle!(`di`)));
 
     len = map.map[di];
     /*
      * linearly interpolate between this point and the next
      */
     if (excess > 0) {
-        excesslen = (map.map[di + 1] - map.map[di]) *
-            (cast(double) excess) / dashXAngleStep;
+        excesslen = cast(int)((map.map[di + 1] - map.map[di]) *
+            (cast(double) excess) / dashXAngleStep);
         len += excesslen;
     }
     if (oddSide)
@@ -2336,7 +2342,7 @@ private int lengthToAngle(double len, dashMap* map)
         else
             a1 = a;
     }
-    angleexcess = mixin(dashIndexToXAngle!(`a0`));
+    angleexcess = cast(int)mixin(dashIndexToXAngle!(`a0`));
     /*
      * linearly interpolate to the next point
      */
@@ -2380,11 +2386,11 @@ private int computeAngleFromPath(int startAngle, int endAngle, dashMap* map, int
     }
     if (a1 < a0)
         a1 += FULLCIRCLE;
-    len0 = angleToLength(a0, map.ptr);
-    a = lengthToAngle(len0 + len, map.ptr);
+    len0 = angleToLength(a0, map);
+    a = lengthToAngle(len0 + len, map);
     if (a > a1) {
         a = a1;
-        len -= angleToLength(a1, map.ptr) - len0;
+        len -= angleToLength(a1, map) - len0;
     }
     else
         len = 0;
@@ -2510,10 +2516,10 @@ private void drawZeroArc(DrawablePtr pDraw, GCPtr pGC, xArc* tarc, int lw, miArc
         maxx = ICEIL(xmax + w) + tarc.x;
         miny = ICEIL(ymin + h) + tarc.y;
         maxy = ICEIL(ymax + h) + tarc.y;
-        rect.x = minx;
-        rect.y = miny;
-        rect.width = maxx - minx;
-        rect.height = maxy - miny;
+        rect.x = cast(short)minx;
+        rect.y = cast(short)miny;
+        rect.width = cast(ushort)(maxx - minx);
+        rect.height = cast(ushort)(maxy - miny);
         (*pGC.ops.PolyFillRect) (pDraw, pGC, 1, &rect);
     }
 }
@@ -2601,7 +2607,7 @@ private void computeAcc(xArc* tarc, int lw, arc_def* def, accelerators* acc)
     def.w = (cast(double) tarc.width) / 2.0;
     def.h = (cast(double) tarc.height) / 2.0;
     def.l = (cast(double) lw) / 2.0;
-    acc.h2 = def.h * def;
+    acc.h2 = def.h * def.h;
     acc.w2 = def.w * def.w;
     acc.h4 = acc.h2 * acc.h2;
     acc.w4 = acc.w2 * acc.w2;
@@ -2621,7 +2627,7 @@ private void computeAcc(xArc* tarc, int lw, arc_def* def, accelerators* acc)
  * the outer edge, the ellipse and the inner edge.
  */
 
-private void computeBound(arc_def* def, arc_bound* bound, accelerators* acc, miArcFacePtr right, miArcFacePtr left)
+private void computeBound(arc_def* def, arc_bound* bound_, accelerators* acc, miArcFacePtr right, miArcFacePtr left)
 {
     double t = void;
     double innerTaily = void;
@@ -2629,25 +2635,25 @@ private void computeBound(arc_def* def, arc_bound* bound, accelerators* acc, miA
     bound innerx = void, outerx = void;
     bound ellipsex = void;
 
-    bound.ellipse.min = mixin(Dsin!(`def.a0`)) * def;
-    bound.ellipse.max = mixin(Dsin!(`def.a1`)) * def;
+    bound_.ellipse.min = mixin(Dsin!(`def.a0`)) * def.h;
+    bound_.ellipse.max = mixin(Dsin!(`def.a1`)) * def.h;
     if (def.a0 == 45 && def.w == def.h)
-        ellipsex.min = bound.ellipse.min;
+        ellipsex.min = bound_.ellipse.min;
     else
         ellipsex.min = mixin(Dcos!(`def.a0`)) * def.w;
     if (def.a1 == 45 && def.w == def.h)
-        ellipsex.max = bound.ellipse.max;
+        ellipsex.max = bound_.ellipse.max;
     else
         ellipsex.max = mixin(Dcos!(`def.a1`)) * def.w;
-    bound.outer.min = outerYfromXY(ellipsex.min, bound.ellipse.min, def, acc);
-    bound.outer.max = outerYfromXY(ellipsex.max, bound.ellipse.max, def, acc);
-    bound.inner.min = innerYfromXY(ellipsex.min, bound.ellipse.min, def, acc);
-    bound.inner.max = innerYfromXY(ellipsex.max, bound.ellipse.max, def, acc);
+    bound_.outer.min = outerYfromXY(ellipsex.min, bound_.ellipse.min, def, acc);
+    bound_.outer.max = outerYfromXY(ellipsex.max, bound_.ellipse.max, def, acc);
+    bound_.inner.min = innerYfromXY(ellipsex.min, bound_.ellipse.min, def, acc);
+    bound_.inner.max = innerYfromXY(ellipsex.max, bound_.ellipse.max, def, acc);
 
-    outerx.min = outerXfromXY(ellipsex.min, bound.ellipse.min, def, acc);
-    outerx.max = outerXfromXY(ellipsex.max, bound.ellipse.max, def, acc);
-    innerx.min = innerXfromXY(ellipsex.min, bound.ellipse.min, def, acc);
-    innerx.max = innerXfromXY(ellipsex.max, bound.ellipse.max, def, acc);
+    outerx.min = outerXfromXY(ellipsex.min, bound_.ellipse.min, def, acc);
+    outerx.max = outerXfromXY(ellipsex.max, bound_.ellipse.max, def, acc);
+    innerx.min = innerXfromXY(ellipsex.min, bound_.ellipse.min, def, acc);
+    innerx.max = innerXfromXY(ellipsex.max, bound_.ellipse.max, def, acc);
 
     /*
      * save the line end points for the
@@ -2658,52 +2664,52 @@ private void computeBound(arc_def* def, arc_bound* bound, accelerators* acc, miA
      */
 
     if (right) {
-        right.counterClock.y = bound.outer.min;
+        right.counterClock.y = bound_.outer.min;
         right.counterClock.x = outerx.min;
-        right.center.y = bound.ellipse.min;
+        right.center.y = bound_.ellipse.min;
         right.center.x = ellipsex.min;
-        right.clock.y = bound.inner.min;
+        right.clock.y = bound_.inner.min;
         right.clock.x = innerx.min;
     }
 
     if (left) {
-        left.clock.y = bound.outer.max;
+        left.clock.y = bound_.outer.max;
         left.clock.x = outerx.max;
-        left.center.y = bound.ellipse.max;
+        left.center.y = bound_.ellipse.max;
         left.center.x = ellipsex.max;
-        left.counterClock.y = bound.inner.max;
+        left.counterClock.y = bound_.inner.max;
         left.counterClock.x = innerx.max;
     }
 
-    bound.left.min = bound.inner.max;
-    bound.left.max = bound.outer.max;
-    bound.right.min = bound.inner.min;
-    bound.right.max = bound.outer.min;
+    bound_.left.min = bound_.inner.max;
+    bound_.left.max = bound_.outer.max;
+    bound_.right.min = bound_.inner.min;
+    bound_.right.max = bound_.outer.min;
 
-    computeLine(innerx.min, bound.inner.min, outerx.min, bound.outer.min,
+    computeLine(innerx.min, bound_.inner.min, outerx.min, bound_.outer.min,
                 &acc.right);
-    computeLine(innerx.max, bound.inner.max, outerx.max, bound.outer.max,
+    computeLine(innerx.max, bound_.inner.max, outerx.max, bound_.outer.max,
                 &acc.left);
 
-    if (bound.inner.min > bound.inner.max) {
-        t = bound.inner.min;
-        bound.inner.min = bound.inner.max;
-        bound.inner.max = t;
+    if (bound_.inner.min > bound_.inner.max) {
+        t = bound_.inner.min;
+        bound_.inner.min = bound_.inner.max;
+        bound_.inner.max = t;
     }
     tail_y = acc.tail_y;
-    if (tail_y > bound.ellipse.max)
-        tail_y = bound.ellipse.max;
-    else if (tail_y < bound.ellipse.min)
-        tail_y = bound.ellipse.min;
+    if (tail_y > bound_.ellipse.max)
+        tail_y = bound_.ellipse.max;
+    else if (tail_y < bound_.ellipse.min)
+        tail_y = bound_.ellipse.min;
     innerTaily = innerYfromY(tail_y, def, acc);
-    if (bound.inner.min > innerTaily)
-        bound.inner.min = innerTaily;
-    if (bound.inner.max < innerTaily)
-        bound.inner.max = innerTaily;
-    bound.inneri.min = ICEIL(bound.inner.min - acc.fromIntY);
-    bound.inneri.max = floor(bound.inner.max - acc.fromIntY);
-    bound.outeri.min = ICEIL(bound.outer.min - acc.fromIntY);
-    bound.outeri.max = floor(bound.outer.max - acc.fromIntY);
+    if (bound_.inner.min > innerTaily)
+        bound_.inner.min = innerTaily;
+    if (bound_.inner.max < innerTaily)
+        bound_.inner.max = innerTaily;
+    bound_.inneri.min = ICEIL(bound_.inner.min - acc.fromIntY);
+    bound_.inneri.max = cast(int)floor(bound_.inner.max - acc.fromIntY);
+    bound_.outeri.min = ICEIL(bound_.outer.min - acc.fromIntY);
+    bound_.outeri.max = cast(int)floor(bound_.outer.max - acc.fromIntY);
 }
 
 /*
@@ -2831,12 +2837,12 @@ private double hookX(double scan_y, arc_def* def, arc_bound* bound, accelerators
  * the given y coordinate
  */
 
-private void arcSpan(int y, int lx, int lw, int rx, int rw, arc_def* def, arc_bound* bounds, accelerators* acc, int mask)
+private void arcSpan(int y, int lx, int lw, int rx, int rw, arc_def* def, arc_bound* bounds_, accelerators* acc, int mask)
 {
     int linx = void, loutx = void, rinx = void, routx = void;
     double x = void, altx = void;
 
-    if (mixin(boundedLe!(`y`, `bounds.inneri`))) {
+    if (mixin(boundedLe!(`y`, `bounds_.inneri`))) {
         linx = -(lx + lw);
         rinx = rx;
     }
@@ -2844,8 +2850,8 @@ private void arcSpan(int y, int lx, int lw, int rx, int rw, arc_def* def, arc_bo
         /*
          * intersection with left face
          */
-        x = hookX(y + acc.fromIntY, def, bounds.ptr, acc, 1);
-        if (acc.right.valid && mixin(boundedLe!(`y + acc.fromIntY`, `bounds.right`))) {
+        x = hookX(y + acc.fromIntY, def, bounds_, acc, 1);
+        if (acc.right.valid && mixin(boundedLe!(`y + acc.fromIntY`, `bounds_.right`))) {
             altx = mixin(intersectLine!(`y + acc.fromIntY`, `acc.right`));
             if (altx < x)
                 x = altx;
@@ -2853,7 +2859,7 @@ private void arcSpan(int y, int lx, int lw, int rx, int rw, arc_def* def, arc_bo
         linx = -ICEIL(acc.fromIntX - x);
         rinx = ICEIL(acc.fromIntX + x);
     }
-    if (mixin(boundedLe!(`y`, `bounds.outeri`))) {
+    if (mixin(boundedLe!(`y`, `bounds_.outeri`))) {
         loutx = -lx;
         routx = rx + rw;
     }
@@ -2861,8 +2867,8 @@ private void arcSpan(int y, int lx, int lw, int rx, int rw, arc_def* def, arc_bo
         /*
          * intersection with right face
          */
-        x = hookX(y + acc.fromIntY, def, bounds.ptr, acc, 0);
-        if (acc.left.valid && mixin(boundedLe!(`y + acc.fromIntY`, `bounds.left`))) {
+        x = hookX(y + acc.fromIntY, def, bounds_, acc, 0);
+        if (acc.left.valid && mixin(boundedLe!(`y + acc.fromIntY`, `bounds_.left`))) {
             altx = x;
             x = mixin(intersectLine!(`y + acc.fromIntY`, `acc.left`));
             if (x < altx)
@@ -2885,12 +2891,12 @@ private void arcSpan(int y, int lx, int lw, int rx, int rw, arc_def* def, arc_bo
     }
 }
 
-private void arcSpan0(int lx, int lw, int rx, int rw, arc_def* def, arc_bound* bounds, accelerators* acc, int mask)
+private void arcSpan0(int lx, int lw, int rx, int rw, arc_def* def, arc_bound* bounds_, accelerators* acc, int mask)
 {
     double x = void;
 
-    if (mixin(boundedLe!(`0`, `bounds.inneri`)) &&
-        acc.left.valid && mixin(boundedLe!(`0`, `bounds.left`)) && acc.left.b > 0) {
+    if (mixin(boundedLe!(`0`, `bounds_.inneri`)) &&
+        acc.left.valid && mixin(boundedLe!(`0`, `bounds_.left`)) && acc.left.b > 0) {
         x = def.w - def.l;
         if (acc.left.b < x)
             x = acc.left.b;
@@ -2899,22 +2905,22 @@ private void arcSpan0(int lx, int lw, int rx, int rw, arc_def* def, arc_bound* b
         rx = ICEIL(acc.fromIntX + x);
         rw -= rx;
     }
-    arcSpan(0, lx, lw, rx, rw, def, bounds.ptr, acc, mask);
+    arcSpan(0, lx, lw, rx, rw, def, bounds_, acc, mask);
 }
 
-private void tailSpan(int y, int lw, int rw, arc_def* def, arc_bound* bounds, accelerators* acc, int mask)
+private void tailSpan(int y, int lw, int rw, arc_def* def, arc_bound* bounds_, accelerators* acc, int mask)
 {
     double yy = void, xalt = void, x = void, lx = void, rx = void;
     int n = void;
 
-    if (mixin(boundedLe!(`y`, `bounds.outeri`)))
-        arcSpan(y, 0, lw, -rw, rw, def, bounds.ptr, acc, mask);
+    if (mixin(boundedLe!(`y`, `bounds_.outeri`)))
+        arcSpan(y, 0, lw, -rw, rw, def, bounds_, acc, mask);
     else if (def.w != def.h) {
         yy = y + acc.fromIntY;
-        x = tailX(yy, def, bounds.ptr, acc);
+        x = tailX(yy, def, bounds_, acc);
         if (yy == 0.0 && x == -rw - acc.fromIntX)
             return;
-        if (acc.right.valid && mixin(boundedLe!(`yy`, `bounds.right`))) {
+        if (acc.right.valid && mixin(boundedLe!(`yy`, `bounds_.right`))) {
             rx = x;
             lx = -x;
             xalt = mixin(intersectLine!(`yy`, `acc.right`));
@@ -2937,7 +2943,7 @@ private void tailSpan(int y, int lw, int rw, arc_def* def, arc_bound* bounds, ac
         }
         arcSpan(y,
                 ICEIL(acc.fromIntX - x), 0,
-                ICEIL(acc.fromIntX + x), 0, def, bounds.ptr, acc, mask);
+                ICEIL(acc.fromIntX + x), 0, def, bounds_, acc, mask);
     }
 }
 
@@ -2959,12 +2965,16 @@ struct finalSpan {
 
 private finalSpan* freeFinalSpans, tmpFinalSpan;
 
-enum string allocFinalSpan() = `(freeFinalSpans ?
-				((tmpFinalSpan = freeFinalSpans), 
-				 (freeFinalSpans = freeFinalSpans.next), 
-				 (tmpFinalSpan.next = 0), 
-				 tmpFinalSpan) : 
-			     realAllocSpan ())`;
+enum string allocFinalSpan() = `(() {
+    if (freeFinalSpans !is null) {
+        tmpFinalSpan = freeFinalSpans;
+        freeFinalSpans = cast(finalSpan*)freeFinalSpans.next;
+        tmpFinalSpan.next = null;
+    } else {
+        tmpFinalSpan = realAllocSpan();
+    }
+    return tmpFinalSpan;
+})()`;
 
 enum SPAN_CHUNK_SIZE =    128;
 
@@ -2985,14 +2995,14 @@ private finalSpan* realAllocSpan()
         return cast(finalSpan*) null;
     newChunk.next = chunks;
     chunks = newChunk;
-    freeFinalSpans = span = newChunk.data + 1;
+    freeFinalSpans = span = newChunk.data.ptr + 1;
     for (i = 1; i < SPAN_CHUNK_SIZE - 1; i++) {
         span.next = span + 1;
         span++;
     }
-    span.next = 0;
-    span = newChunk.data;
-    span.next = 0;
+    span.next = null;
+    span = newChunk.data.ptr;
+    span.next = null;
     return span;
 }
 
@@ -3023,7 +3033,7 @@ private void fillSpans(DrawablePtr pDrawable, GCPtr pGC)
 
     if (nspans == 0)
         return;
-    xSpan = xSpans = calloc(nspans, xPoint.sizeof);
+    xSpan = xSpans = cast(_xPoint*)calloc(nspans, xPoint.sizeof);
     xWidth = xWidths = cast(int*) calloc(nspans, int.sizeof);
     if (xSpans && xWidths) {
         i = 0;
@@ -3032,8 +3042,8 @@ private void fillSpans(DrawablePtr pDrawable, GCPtr pGC)
             for (span = *f; span; span = span.next) {
                 if (span.max <= span.min)
                     continue;
-                xSpan.x = span.min;
-                xSpan.y = spany;
+                xSpan.x = cast(short)span.min;
+                xSpan.y = cast(short)spany;
                 ++xSpan;
                 *xWidth++ = span.max - span.min;
                 ++i;
@@ -3052,7 +3062,7 @@ private void fillSpans(DrawablePtr pDrawable, GCPtr pGC)
 
 enum SPAN_REALLOC =	100;
 
-enum string findSpan(string y) = `((finalMiny <= cast(y) && (` ~ y ~ `) <= finalMaxy) ? 
+enum string findSpan(string y) = `((finalMiny <= (y) && (` ~ y ~ `) <= finalMaxy) ? 
 			  &finalSpans[(` ~ y ~ `) - finalMiny] : 
 			  realFindSpan (` ~ y ~ `))`;
 
@@ -3201,7 +3211,9 @@ private miArcSpanData* drawArc(xArc* tarc, int l, int a0, int a1, miArcFacePtr r
     struct band {
         int a0 = void, a1 = void;
         int mask = void;
-    }band[5] band = void; band[20] sweep = void;
+    }
+    band[5] band_ = void;
+    band[20] sweep = void;
     int bandno = void, sweepno = void;
     int i = void, j = void;
     int flipRight = 0, flipLeft = 0;
@@ -3294,9 +3306,9 @@ private miArcSpanData* drawArc(xArc* tarc, int l, int a0, int a1, miArcFacePtr r
             }
             break;
         default: break;}
-        band[bandno].a0 = q0;
-        band[bandno].a1 = q1;
-        band[bandno].mask = 1 << curq;
+        band_[bandno].a0 = q0;
+        band_[bandno].a1 = q1;
+        band_[bandno].mask = 1 << curq;
         bandno++;
         if (curq == endq)
             break;
@@ -3316,10 +3328,10 @@ private miArcSpanData* drawArc(xArc* tarc, int l, int a0, int a1, miArcFacePtr r
          * find left-most point
          */
         for (i = 0; i < bandno; i++)
-            if (band[i].a0 <= q0) {
-                q0 = band[i].a0;
-                q1 = band[i].a1;
-                mask = band[i].mask;
+            if (band_[i].a0 <= q0) {
+                q0 = band_[i].a0;
+                q1 = band_[i].a1;
+                mask = band_[i].mask;
             }
         if (!mask)
             break;
@@ -3327,14 +3339,14 @@ private miArcSpanData* drawArc(xArc* tarc, int l, int a0, int a1, miArcFacePtr r
          * locate next point of change
          */
         for (i = 0; i < bandno; i++)
-            if (!(mask & band[i].mask)) {
-                if (band[i].a0 == q0) {
-                    if (band[i].a1 < q1)
-                        q1 = band[i].a1;
-                    mask |= band[i].mask;
+            if (!(mask & band_[i].mask)) {
+                if (band_[i].a0 == q0) {
+                    if (band_[i].a1 < q1)
+                        q1 = band_[i].a1;
+                    mask |= band_[i].mask;
                 }
-                else if (band[i].a0 < q1)
-                    q1 = band[i].a0;
+                else if (band_[i].a0 < q1)
+                    q1 = band_[i].a0;
             }
         /*
          * create a new sweep
@@ -3347,19 +3359,19 @@ private miArcSpanData* drawArc(xArc* tarc, int l, int a0, int a1, miArcFacePtr r
          * subtract the sweep from the affected bands
          */
         for (i = 0; i < bandno; i++)
-            if (band[i].a0 == q0) {
-                band[i].a0 = q1;
+            if (band_[i].a0 == q0) {
+                band_[i].a0 = q1;
                 /*
                  * check if this band is empty
                  */
-                if (band[i].a0 == band[i].a1)
-                    band[i].a1 = band[i].a0 = 90 * 64 + 1;
+                if (band_[i].a0 == band_[i].a1)
+                    band_[i].a1 = band_[i].a0 = 90 * 64 + 1;
             }
     }
     computeAcc(tarc, l, &def, &acc);
     for (j = 0; j < sweepno; j++) {
         mask = sweep[j].mask;
-        passRight = passLeft = 0;
+        passRight = passLeft = null;
         if (mask & (1 << rightq)) {
             if (sweep[j].a0 == righta)
                 passRight = right;
@@ -3441,7 +3453,7 @@ private void drawQuadrant(arc_def* def, accelerators* acc, int a0, int a1, int m
     yy = bound.inner.max;
     if (bound.outer.max > yy)
         yy = bound.outer.max;
-    maxy = floor(yy - acc.fromIntY);
+    maxy = cast(int)floor(yy - acc.fromIntY);
     y = spdata.k;
     span = spdata.spans;
     if (spdata.top) {
