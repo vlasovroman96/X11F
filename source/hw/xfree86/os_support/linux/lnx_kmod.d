@@ -10,6 +10,30 @@ import core.sys.posix.sys.wait;
 import core.stdc.signal;
 import include.xf86_OSlib;
 import include.xf86;
+import core.sys.posix.sys.ioctl;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.socket;
+import core.sys.posix.sys.un;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import core.stdc.errno;
+import core.stdc.stdlib;
+import core.sys.posix.stdlib;
+
+import os.log_priv;
+
+import include.os;
+import xf86_priv;
+import include.xf86Priv;
+import hw.xfree86.os_support.xf86_os_support;
+import include.xf86_OSproc;;
+import include.xf86Privstr;
+
+import os.log;
+import xf86Events;
+import xf86Globals;
+import externs.sys.sysmacros;;
+import os.utils;
 
 enum MODPROBE_PATH_FILE =      "/proc/sys/kernel/modprobe";
 enum MAX_PATH =                1024;

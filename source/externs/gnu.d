@@ -14,6 +14,7 @@ extern(C) @nogc nothrow {
 	ssize_t getline(char **lineptr, size_t *n, FILE *stream);
 	char *strtok_r(char *str, const char *delim, char **saveptr);
 	int getpagesize();
+	// extern(C) int setenv(const(char)* name, const(char)* value, int overwrite);
 	
 ulong majorDev(ulong dev)
 {

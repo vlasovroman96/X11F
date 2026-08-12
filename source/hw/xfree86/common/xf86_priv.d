@@ -65,7 +65,7 @@ void xf86LockZoom(ScreenPtr pScreen, int lock);
 Bool xf86VTOwner();
 void xf86VTEnter();
 void xf86VTLeave();
-void xf86EnableInputDeviceForVTSwitch(InputInfoPtr pInfo);
+// void xf86EnableInputDeviceForVTSwitch(InputInfoPtr pInfo);
 void xf86Wakeup(void* blockData, int err);
 void xf86HandlePMEvents(int fd, void* data);
 

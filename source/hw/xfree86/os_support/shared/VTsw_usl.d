@@ -36,6 +36,38 @@ import include.xf86_OSlib;
 
 import seatd_libseat;
 
+import xf86Events;
+import xf86Globals;
+// import externs.sys.sysmacros;;
+// import os.utils;
+import xf86Option;
+// import config.libhal;
+import include.misc;
+import externs.libdbus;
+import core.sys.posix.sys.select;
+import include.xf86Xinput;
+import config.hotplug_priv;
+
+
+import os.log_priv;
+
+import include.dix;
+import include.os;
+
+// import config.dbus_core;
+import externs.attrs;
+import os.log;
+import config.libhal;
+import os.connection;
+import include.xf86;
+import xf86Xinput;
+import xf86Init;
+import xf86platformBus_priv;
+import lnx_init;
+import os.utils;
+alias FALSE = include.misc.FALSE;
+
+alias TRUE = include.misc.TRUE;
 /*
  * Handle the VT-switching interface for OSs that use USL-style ioctl()s
  * (this used to include the sysv, sco, and linux subdirs, but only linux
@@ -48,7 +80,7 @@ import seatd_libseat;
  */
 void xf86VTRequest(int sig)
 {
-    OsSignal(sig, cast(void function(int)) xf86VTRequest);
+    OsSignal(sig, cast(void function(int)) &xf86VTRequest);
     xf86Info.vtRequestsPending = TRUE;
     return;
 }

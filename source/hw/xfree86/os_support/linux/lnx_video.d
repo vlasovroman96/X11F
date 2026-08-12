@@ -174,7 +174,7 @@ private void hwDisableIO()
 } else { /* non-IO architectures */
 
 enum string hwEnableIO() = `TRUE`;
-enum string hwDisableIO() = `do {} while (0)`;
+enum string hwDisableIO() = ``;
 
 }
 

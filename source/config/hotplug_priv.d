@@ -81,7 +81,7 @@ void DeleteGPUDeviceRequest(OdevAttributes* attribs);
 
 enum string ServerIsNotSeat0() = `(dixSettingSeatId && strcmp(dixSettingSeatId, "seat0"))`;
 
-xf86_platform_device* xf86_find_platform_device_by_devnum(uint major, uint minor);
+// xf86_platform_device* xf86_find_platform_device_by_devnum(uint major, uint minor);
 
 void config_pre_init();
 

@@ -25,24 +25,78 @@ extern(C): __gshared:
  *
  * Author: Hans de Goede <hdegoede@redhat.com>
  */
-import build.xorg_config;
+// import build.xorg_config;
 
-import externs.dbus;
-import core.stdc.string;
-import core.sys.posix.sys.types;
+import externs.libdbus;
+// import core.stdc.string;
+// import core.sys.posix.sys.types;
 import core.sys.posix.unistd;
 
 import config.dbus_core;
+// import config.hotplug_priv;
+
+// import include.os;
+// import hw.xfree.os_support.linux.linux;
+// import hw.xfree86.os_support.xf86_os_support;
+// import xf86_priv;
+// // import xf86platformBus_priv;
+// import xf86Xinput_priv;
+// import include.xf86Priv;
+// import include.globals;
+// import core.sys.posix.sys.ioctl;
+// import core.sys.posix.sys.types;
+// import core.sys.posix.sys.socket;
+// import core.sys.posix.sys.un;
+// import core.sys.posix.unistd;
+// import core.sys.posix.fcntl;
+// import core.stdc.errno;
+
+// import os.log_priv;
+
+// import include.os;
+// import xf86_priv;
+// import include.xf86Priv;
+// import hw.xfree86.os_support.xf86_os_support;
+// import include.xf86_OSproc;;
+// import include.xf86Privstr;
+
+// import os.log;
+import xf86Events;
+import xf86Globals;
+// import externs.sys.sysmacros;;
+// import os.utils;
+import xf86Option;
+// import config.libhal;
+import include.misc;
+import externs.libdbus;
+import core.sys.posix.sys.select;
+import include.xf86Xinput;
 import config.hotplug_priv;
 
+
+import os.log_priv;
+
+import include.dix;
 import include.os;
-import hw.xfree.os_support.linux.linux;
-import hw.xfree86.os_support.xf86_os_support;
-import xf86_priv;
-// import xf86platformBus_priv;
-import xf86Xinput_priv;
-import include.xf86Priv;
-import include.globals;
+
+// import config.dbus_core;
+import externs.attrs;
+import os.log;
+import config.libhal;
+import os.connection;
+import include.xf86;
+import xf86Xinput;
+import xf86Init;
+import xf86platformBus_priv;
+import lnx_init;
+
+
+alias FALSE = include.misc.FALSE;
+alias TRUE = include.misc.TRUE;
+
+import externs.attrs;;
+import xf86platformBus;
+
 
 // import systemd_logind;
 
@@ -113,21 +167,21 @@ int systemd_logind_take_fd(int _major, int _minor, const(char)* path, Bool* paus
 
     assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1", info.session,
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "TakeDevice");
     if (!msg) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    if (!dbus_message_append_args(msg, DBUS_TYPE_UINT32, &major,
+    if (!assumeNoGC(&dbus_message_append_args)(msg, DBUS_TYPE_UINT32, &major,
                                        DBUS_TYPE_UINT32, &minor,
-                                       DBUS_TYPE_INVALID)) {
+                                       )) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(info.conn, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(info.conn, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     if (!reply) {
         LogMessage(X_ERROR, "systemd-logind: failed to take device %s: %s\n",
@@ -137,8 +191,8 @@ int systemd_logind_take_fd(int _major, int _minor, const(char)* path, Bool* paus
 
     if (!dbus_message_get_args_d(reply, &error,
                                DBUS_TYPE_UNIX_FD, &fd,
-                               DBUS_TYPE_BOOLEAN, &paused,
-                               DBUS_TYPE_INVALID)) {
+                               DBUS_TYPE_BOOLEAN, &paused
+                               )) {
         LogMessage(X_ERROR, "systemd-logind: TakeDevice %s: %s\n",
                    path, error.message);
         goto cleanup;
@@ -151,9 +205,9 @@ int systemd_logind_take_fd(int _major, int _minor, const(char)* path, Bool* paus
 
 cleanup:
     if (msg)
-        dbus_message_unref(msg);
+        assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
-        dbus_message_unref(reply);
+        assumeNoGC(&dbus_message_unref)(reply);
     assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 
     return fd;
@@ -189,21 +243,21 @@ void systemd_logind_release_fd(int _major, int _minor, int fd)
 
     assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1", info.session,
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "ReleaseDevice");
     if (!msg) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    if (!dbus_message_append_args(msg, DBUS_TYPE_UINT32, &major,
+    if (!assumeNoGC(&dbus_message_append_args)(msg, DBUS_TYPE_UINT32, &major,
                                        DBUS_TYPE_UINT32, &minor,
-                                       DBUS_TYPE_INVALID)) {
+                                       )) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(info.conn, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(info.conn, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     if (!reply)
         LogMessage(X_ERROR, "systemd-logind: failed to release device: %s\n",
@@ -211,9 +265,9 @@ void systemd_logind_release_fd(int _major, int _minor, int fd)
 
 cleanup:
     if (msg)
-        dbus_message_unref(msg);
+        assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
-        dbus_message_unref(reply);
+        assumeNoGC(&dbus_message_unref)(reply);
     assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 close:
     if (fd != -1)
@@ -267,21 +321,21 @@ private void systemd_logind_ack_pause(systemd_logind_info* info, dbus_int32_t mi
 
     assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1", info.session,
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "PauseDeviceComplete");
     if (!msg) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    if (!dbus_message_append_args(msg, DBUS_TYPE_UINT32, &major,
+    if (!assumeNoGC(&dbus_message_append_args)(msg, DBUS_TYPE_UINT32, &major,
                                        DBUS_TYPE_UINT32, &minor,
-                                       DBUS_TYPE_INVALID)) {
+                                       )) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(info.conn, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(info.conn, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     if (!reply)
         LogMessage(X_ERROR, "systemd-logind: failed to ack pause: %s\n",
@@ -289,9 +343,9 @@ private void systemd_logind_ack_pause(systemd_logind_info* info, dbus_int32_t mi
 
 cleanup:
     if (msg)
-        dbus_message_unref(msg);
+        assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
-        dbus_message_unref(reply);
+        assumeNoGC(&dbus_message_unref)(reply);
     assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 }
 
@@ -332,7 +386,7 @@ private Bool are_platform_devices_resumed() {
 
 private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage* message, void* data)
 {
-    systemd_logind_info* info = data;
+    systemd_logind_info* info = cast(systemd_logind_info*)data;
     xf86_platform_device* pdev = null;
     InputInfoPtr pInfo = null;
     int ack = 0, pause = 0, fd = -1;
@@ -340,7 +394,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
     dbus_int32_t major = void, minor = void;
     char* pause_str = void;
 
-    if (strcmp(dbus_message_get_path(message), info.session) != 0)
+    if (strcmp(assumeNoGC(&dbus_message_get_path)(message), info.session) != 0)
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
     assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
@@ -351,7 +405,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
                                DBUS_TYPE_UINT32, &major,
                                DBUS_TYPE_UINT32, &minor,
                                DBUS_TYPE_STRING, &pause_str,
-                               DBUS_TYPE_INVALID)) {
+                               )) {
             LogMessage(X_ERROR, "systemd-logind: PauseDevice: %s\n",
                        error.message);
             assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
@@ -381,7 +435,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
                                    DBUS_TYPE_UINT32, &major,
                                    DBUS_TYPE_UINT32, &minor,
                                    DBUS_TYPE_UNIX_FD, &fd,
-                                   DBUS_TYPE_INVALID)) {
+                                   )) {
             LogMessage(X_ERROR, "systemd-logind: ResumeDevice: %s\n",
                        error.message);
             assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
@@ -396,9 +450,9 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
     LogMessage(X_INFO, "systemd-logind: got %s for %u:%u\n",
-               pause ? "pause" : "resume", major, minor);
+               pause ? "pause".ptr : "resume".ptr, major, minor);
 
-    pdev = xf86_find_platform_device_by_devnum(major, minor);
+    pdev = cast(include.xf86platformBus.xf86_platform_device*)xf86_find_platform_device_by_devnum(major, minor);
     if (!pdev)
         pInfo = systemd_logind_find_info_ptr_by_devnum(xf86InputDevs,
                                                        major, minor);
@@ -441,7 +495,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
 private void connect_hook(DBusConnection* connection, void* data)
 {
     const(char)* session_type = "X11";
-    systemd_logind_info* info = data;
+    systemd_logind_info* info = cast(systemd_logind_info*)data;
     DBusError error = void;
     DBusMessage* msg = null;
     DBusMessage* reply = null;
@@ -450,7 +504,7 @@ private void connect_hook(DBusConnection* connection, void* data)
 
     assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1",
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1",
             "/org/freedesktop/login1", "org.freedesktop.login1.Manager",
             "GetSessionByPID");
     if (!msg) {
@@ -459,23 +513,23 @@ private void connect_hook(DBusConnection* connection, void* data)
     }
 
     arg = getpid();
-    if (!dbus_message_append_args(msg, DBUS_TYPE_UINT32, &arg,
-                                  DBUS_TYPE_INVALID)) {
+    if (!assumeNoGC(&dbus_message_append_args)(msg, DBUS_TYPE_UINT32, &arg,
+                                  )) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(connection, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(connection, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     if (!reply) {
         LogMessage(X_ERROR, "systemd-logind: failed to get session: %s\n",
                    error.message);
         goto cleanup;
     }
-    dbus_message_unref(msg);
+    assumeNoGC(&dbus_message_unref)(msg);
 
     if (!dbus_message_get_args_d(reply, &error, DBUS_TYPE_OBJECT_PATH, &session,
-                               DBUS_TYPE_INVALID)) {
+    )) {
         LogMessage(X_ERROR, "systemd-logind: GetSessionByPID: %s\n",
                    error.message);
         goto cleanup;
@@ -486,11 +540,11 @@ private void connect_hook(DBusConnection* connection, void* data)
         goto cleanup;
     }
 
-    dbus_message_unref(reply);
+    assumeNoGC(&dbus_message_unref)(reply);
     reply = null;
 
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1",
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1",
             session, "org.freedesktop.login1.Session", "TakeControl");
     if (!msg) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
@@ -498,48 +552,48 @@ private void connect_hook(DBusConnection* connection, void* data)
     }
 
     arg = FALSE; /* Don't forcibly take over over the session */
-    if (!dbus_message_append_args(msg, DBUS_TYPE_BOOLEAN, &arg,
-                                  DBUS_TYPE_INVALID)) {
+    if (!assumeNoGC(&dbus_message_append_args)(msg, DBUS_TYPE_BOOLEAN, &arg,
+                                  )) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(connection, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(connection, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     if (!reply) {
         LogMessage(X_ERROR, "systemd-logind: TakeControl failed: %s\n",
                    error.message);
         goto cleanup;
     }
-    dbus_message_unref(msg);
-    dbus_message_unref(reply);
+    assumeNoGC(&dbus_message_unref)(msg);
+    assumeNoGC(&dbus_message_unref)(reply);
     reply = null;
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1",
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1",
             session, "org.freedesktop.login1.Session", "SetType");
     if (!msg) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    if (!dbus_message_append_args(msg, DBUS_TYPE_STRING, &session_type,
-                                  DBUS_TYPE_INVALID)) {
+    if (!assumeNoGC(&dbus_message_append_args)(msg, DBUS_TYPE_STRING, &session_type,
+                                  )) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(connection, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(connection, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     /* Requires systemd >= 246, SetType() is not critical for xserver function */
     if (!reply) {
         /* unprevileged users get access denied rather than unknown method */
-        if (!dbus_error_has_name(&error, DBUS_ERROR_ACCESS_DENIED) &&
-            !dbus_error_has_name(&error, DBUS_ERROR_UNKNOWN_METHOD))
+        if (!assumeNoGC(&dbus_error_has_name)(&error, DBUS_ERROR_ACCESS_DENIED) &&
+            !assumeNoGC(&dbus_error_has_name)(&error, DBUS_ERROR_UNKNOWN_METHOD))
             LogMessage(X_WARNING, "systemd-logind: SetType failed: %s\n", error.message);
         assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
     }
 
-    dbus_bus_add_match(connection,
+    assumeNoGC(&dbus_bus_add_match)(connection,
         "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.login1.Session',member='PauseDevice'",
         &error);
     if (assumeNoGC(&dbus_error_is_set)(&error)) {
@@ -548,7 +602,7 @@ private void connect_hook(DBusConnection* connection, void* data)
         goto cleanup;
     }
 
-    dbus_bus_add_match(connection,
+    assumeNoGC(&dbus_bus_add_match)(connection,
         "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.login1.Session',member='ResumeDevice'",
         &error);
     if (assumeNoGC(&dbus_error_is_set)(&error)) {
@@ -566,7 +620,7 @@ version (none) {
     snprintf(match, match.sizeof,
         "type='signal',sender='org.freedesktop.login1',interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',path='%s'",
         session);
-    dbus_bus_add_match(connection, match, &error);
+    assumeNoGC(&dbus_bus_add_match)(connection, match, &error);
     if (assumeNoGC(&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "systemd-logind: could not add match: %s\n",
                    error.message);
@@ -590,9 +644,9 @@ version (none) {
 cleanup:
     free(session);
     if (msg)
-        dbus_message_unref(msg);
+        assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
-        dbus_message_unref(reply);
+        assumeNoGC(&dbus_message_unref)(reply);
     assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 }
 
@@ -604,14 +658,14 @@ private void systemd_logind_release_control(systemd_logind_info* info)
 
     assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
 
-    msg = dbus_message_new_method_call("org.freedesktop.login1",
+    msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1",
             info.session, "org.freedesktop.login1.Session", "ReleaseControl");
     if (!msg) {
         LogMessage(X_ERROR, "systemd-logind: out of memory\n");
         goto cleanup;
     }
 
-    reply = dbus_connection_send_with_reply_and_block(info.conn, msg,
+    reply = assumeNoGC(&dbus_connection_send_with_reply_and_block)(info.conn, msg,
                                                       DBUS_TIMEOUT_USE_DEFAULT, &error);
     if (!reply) {
         LogMessage(X_ERROR, "systemd-logind: ReleaseControl failed: %s\n",
@@ -621,15 +675,15 @@ private void systemd_logind_release_control(systemd_logind_info* info)
 
 cleanup:
     if (msg)
-        dbus_message_unref(msg);
+        assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
-        dbus_message_unref(reply);
+        assumeNoGC(&dbus_message_unref)(reply);
     assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
 }
 
 private void disconnect_hook(void* data)
 {
-    systemd_logind_info* info = data;
+    systemd_logind_info* info = cast(systemd_logind_info*)data;
 
     free(info.session);
     info.session = null;

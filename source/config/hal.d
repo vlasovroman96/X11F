@@ -31,7 +31,7 @@ import build.dix_config;
 
 import core.stdc.string;
 import core.sys.posix.sys.select;
-import externs.dbus;
+import externs.libdbus;
 import externs.libhal;
 
 import config.hotplug_priv;
@@ -49,7 +49,7 @@ import externs.attrs;
 import os.string;
 import build.dix_config;
 
-import externs.dbus;
+// import externs.libdbus;
 import core.sys.posix.sys.select;
 
 import os.log_priv;
@@ -584,10 +584,10 @@ private DBusHandlerResult ownerchanged_handler(DBusConnection* connection, DBusM
         char* name = void, old_owner = void, new_owner = void;
 
         assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
-        dbus_message_get_args_d2(message, &error,
+        dbus_message_get_args_d(message, &error,
                               DBUS_TYPE_STRING, &name,
                               DBUS_TYPE_STRING, &old_owner,
-                              DBUS_TYPE_STRING, &new_owner, DBUS_TYPE_INVALID);
+                              DBUS_TYPE_STRING, &new_owner);
 
         if (config.libhal.dbus_error_is_set_d(&error)) {
             ErrorF

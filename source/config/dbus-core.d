@@ -28,7 +28,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import externs.dbus;
+import externs.libdbus;
 import core.sys.posix.sys.select;
 
 import os.log_priv;
@@ -36,12 +36,25 @@ import os.log_priv;
 import include.dix;
 import include.os;
 
-import config.dbus_core;
+// import config.dbus_core;
 import externs.attrs;
 import os.log;
 import config.libhal;
 import os.connection;
+import include.misc;
+import externs.libdbus;
+import core.sys.posix.sys.select;
 
+import os.log_priv;
+
+import include.dix;
+import include.os;
+
+// import config.dbus_core;
+import externs.attrs;
+import os.log;
+import config.libhal;
+import os.connection;
 
 /* How often to attempt reconnecting when we get booted off the bus. */
 enum RECONNECT_DELAY = (10 * 1000)     /* in ms */;
@@ -107,40 +120,13 @@ dbus_bool_t dbus_error_is_set_d(DBusError* error) {
         return dbus_message_is_signal_d(msg, iface, name);
     }
 
-int dbus_message_get_args_d(
-    DBusMessage *message,
-    DBusError *error,
-    const char *name,
-    const char *old_owner,
-    const char *new_owner)
+int dbus_message_get_args_d(Args...)(DBusMessage* message, DBusError* error, Args args)
 {
     return assumeNoGC(&dbus_message_get_args)(
         message,
         error,
-        DBUS_TYPE_STRING, &name,
-        DBUS_TYPE_STRING, &old_owner,
-        DBUS_TYPE_STRING, &new_owner,
-        DBUS_TYPE_INVALID);
-}
-
-int dbus_message_get_args_d2(
-    DBusMessage* message,
-    DBusError* error,
-    int type1,
-    char** name,
-    int type2,
-    char** old_owner,
-    int type3,
-    char** new_owner,
-    int type4)
-{
-    return assumeNoGC(&dbus_message_get_args)(
-        message,
-        error,
-        type1, name,
-        type2, old_owner,
-        type3, new_owner,
-        type4
+        args,
+        DBUS_TYPE_INVALID
     );
 }
 
