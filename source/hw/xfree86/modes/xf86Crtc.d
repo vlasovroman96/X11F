@@ -47,6 +47,26 @@ import xf86RandR12_priv;
 //import externs.X11.Xatom;
 import include.picturestr;
 import include.rrtransform;
+import hw.xfree86.common.xf86Helper;;
+import externs.attrs;
+import externs.gnu;;
+import xf86Rotate;
+import xf86Option;
+import os.log;
+import Flags;
+import Monitor;
+import scan;
+import xf86Globals;
+import dix.screen_hooks;
+import include.optionstr;
+import include.xf86Parser;
+import interpret_edid;
+import externs.X11.extensions.dpmsconst;
+import xf86CursorRD;
+import xf86EdidModes;
+import ddc;
+import randr.rrcrtc;
+
 
 version (XV) {
 import xf86xv;
@@ -60,13 +80,24 @@ enum NO_OUTPUT_DEFAULT_HEIGHT = 768;
 
 int xf86CrtcConfigPrivateIndex = -1;
 
+void *
+sreallocarray(void *ptr, size_t nmemb, size_t size)
+{
+    void *ret = reallocarray(ptr, nmemb, size);
+
+    if (!ret && nmemb && size)
+        FatalError("reallocarray failed\n");
+
+    return ret;
+}
+
 void xf86CrtcConfigInit(ScrnInfoPtr scrn, const(xf86CrtcConfigFuncsRec)* funcs)
 {
     xf86CrtcConfigPtr config = void;
 
     if (xf86CrtcConfigPrivateIndex == -1)
         xf86CrtcConfigPrivateIndex = xf86AllocateScrnInfoPrivateIndex();
-    config = XNFcallocarray(1, xf86CrtcConfigRec.sizeof);
+    config = cast(_xf86CrtcConfig*)XNFcallocarray(1, xf86CrtcConfigRec.sizeof);
 
     config.funcs = funcs;
     config.compat_output = -1;
@@ -76,7 +107,7 @@ void xf86CrtcConfigInit(ScrnInfoPtr scrn, const(xf86CrtcConfigFuncsRec)* funcs)
 
 void xf86CrtcSetSizeRange(ScrnInfoPtr scrn, int minWidth, int minHeight, int maxWidth, int maxHeight)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     config.minWidth = minWidth;
     config.minHeight = minHeight;
@@ -89,7 +120,7 @@ void xf86CrtcSetSizeRange(ScrnInfoPtr scrn, int minWidth, int minHeight, int max
  */
 xf86CrtcPtr xf86CrtcCreate(ScrnInfoPtr scrn, const(xf86CrtcFuncsRec)* funcs)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CrtcPtr crtc = void; xf86CrtcPtr* crtcs = void;
 
     crtc = cast(xf86CrtcRec*) calloc(1, xf86CrtcRec.sizeof);
@@ -118,7 +149,7 @@ version (RANDR_12_INTERFACE) {
 
     /* Preallocate gamma at a sensible size. */
     crtc.gamma_size = 256;
-    crtc.gamma_red = calloc(crtc.gamma_size, 3 * CARD16.sizeof);
+    crtc.gamma_red = cast(ushort*)calloc(crtc.gamma_size, 3 * CARD16.sizeof);
     if (!crtc.gamma_red) {
         free(crtc);
         return null;
@@ -127,7 +158,7 @@ version (RANDR_12_INTERFACE) {
     crtc.gamma_blue = crtc.gamma_green + crtc.gamma_size;
 
     if (xf86_config.crtc)
-        crtcs = reallocarray(xf86_config.crtc,
+        crtcs = cast(xf86CrtcPtr*)sreallocarray(xf86_config.crtc,
                              xf86_config.num_crtc + 1, xf86CrtcPtr.sizeof);
     else
         crtcs = cast(xf86CrtcPtr*) calloc(xf86_config.num_crtc + 1, xf86CrtcPtr.sizeof);
@@ -167,7 +198,7 @@ void xf86CrtcDestroy(xf86CrtcPtr crtc)
 Bool xf86CrtcInUse(xf86CrtcPtr crtc)
 {
     ScrnInfoPtr pScrn = crtc.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(pScrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("pScrn"));
     int o = void;
 
     for (o = 0; o < xf86_config.num_output; o++)
@@ -197,7 +228,7 @@ private Bool xf86OutputIsLeased(xf86OutputPtr output)
     /* If the DIX structure hasn't been created, it can't have been leased */
     if (!output.randr_output)
         return FALSE;
-    return RROutputIsLeased(output.randr_output);
+    return RROutputIsLeased(cast(_rrOutput*)output.randr_output);
 }
 
 void xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen)
@@ -205,7 +236,7 @@ void xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen)
     int subpixel_order = SubPixelUnknown;
     Bool has_none = FALSE;
     ScrnInfoPtr scrn = xf86ScreenToScrn(pScreen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int icrtc = void, o = void;
 
     for (icrtc = 0; icrtc < xf86_config.num_crtc; icrtc++) {
@@ -265,7 +296,7 @@ void xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen)
 Bool xf86CrtcSetModeTransform(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, RRTransformPtr transform, int x, int y)
 {
     ScrnInfoPtr scrn = crtc.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int i = void;
     Bool ret = FALSE;
     Bool didLock = FALSE;
@@ -525,18 +556,18 @@ private void xf86OutputSetMonitor(xf86OutputPtr output)
 
     free(output.options);
 
-    output.options = XNFalloc(xf86OutputOptions.sizeof);
+    output.options = cast(_OptionInfoRec*)XNFalloc(xf86OutputOptions.sizeof);
     memcpy(output.options, xf86OutputOptions.ptr, xf86OutputOptions.sizeof);
 
     const(char)* monitor = null;
     char* option_name = null;
     if (asprintf(&option_name, "monitor-%s", output.name) != -1)
-        monitor = xf86findOptionValue(output.scrn.options, option_name);
+        monitor = xf86findOptionValue(cast(_InputOption*)output.scrn.options, option_name);
 
     if (!monitor)
         monitor = output.name;
     else
-        xf86MarkOptionUsedByName(output.scrn.options, option_name);
+        xf86MarkOptionUsedByName(cast(_InputOption*)output.scrn.options, option_name);
     free(option_name);
     output.conf_monitor = xf86findMonitor(monitor,
                                            xf86configptr.conf_monitor_lst);
@@ -595,7 +626,7 @@ private Bool xf86OutputEnabled(xf86OutputPtr output, Bool strict)
     }
 
     xf86DrvMsg(output.scrn.scrnIndex, X_INFO,
-               "Output %s %sconnected\n", output.name, enable ? "" : "dis");
+               "Output %s %sconnected\n", output.name, enable ? "".ptr : "dis".ptr);
     return enable;
 }
 
@@ -625,23 +656,23 @@ private Rotation xf86OutputInitialRotation(xf86OutputPtr output)
 
     for (i = 0; i < 4; i++)
         if (xf86nameCompare(direction[i], rotate_name) == 0)
-            return 1 << i;
+            return cast(ushort)(1 << i);
     return RR_Rotate_0;
 }
 
 xf86OutputPtr xf86OutputCreate(ScrnInfoPtr scrn, const(xf86OutputFuncsRec)* funcs, const(char)* name)
 {
     xf86OutputPtr output = void; xf86OutputPtr* outputs = void;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int len = void;
     Bool primary = void;
 
     if (name)
-        len = strlen(name) + 1;
+        len = cast(int)strlen(name) + 1;
     else
         len = 0;
 
-    output = calloc(1, ((xf86OutputRec) + len).sizeof);
+    output = cast(_xf86Output*)calloc(1, ((xf86OutputRec).sizeof + len));
     if (!output)
         return null;
     output.scrn = scrn;
@@ -662,12 +693,12 @@ version (RANDR_12_INTERFACE) {
         xf86OutputSetMonitor(output);
         if (xf86OutputIgnored(output)) {
             free(output);
-            return FALSE;
+            return null;
         }
     }
 
     if (xf86_config.output)
-        outputs = reallocarray(xf86_config.output,
+        outputs = cast(_xf86Output**)reallocarray(xf86_config.output,
                                xf86_config.num_output + 1,
                                xf86OutputPtr.sizeof);
     else
@@ -720,10 +751,10 @@ void xf86OutputUseScreenMonitor(xf86OutputPtr output, Bool use_screen_monitor)
 void xf86OutputDestroy(xf86OutputPtr output)
 {
     ScrnInfoPtr scrn = output.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void;
 
-    (*output.funcs.destroy) (output);
+    assumeNoGC(output.funcs.destroy) (output);
     while (output.probed_modes)
         xf86DeleteMode(&output.probed_modes, output.probed_modes);
     for (o = 0; o < xf86_config.num_output; o++)
@@ -752,11 +783,11 @@ private void xf86CrtcCreateScreenResources(CallbackListPtr* pcbl, ScreenPtr pScr
  */
 private void xf86CrtcCloseScreen(CallbackListPtr* pcbl, ScreenPtr screen, void* unused)
 {
-    dixScreenUnhookClose(screen, xf86CrtcCloseScreen);
+    dixScreenUnhookClose(screen, &xf86CrtcCloseScreen);
     dixScreenUnhookPostCreateResources(screen, &xf86CrtcCreateScreenResources);
 
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void, c = void;
 
     /* The randr_output and randr_crtc pointers are already invalid as
@@ -781,7 +812,7 @@ private void xf86CrtcCloseScreen(CallbackListPtr* pcbl, ScreenPtr screen, void* 
 
     /* detach any providers */
     if (config.randr_provider) {
-        RRProviderDestroy(config.randr_provider);
+        RRProviderDestroy(cast(_rrProvider*)config.randr_provider);
         config.randr_provider = null;
     }
 }
@@ -797,7 +828,7 @@ alias xf86CrtcScreenInitType = int;
 xf86CrtcScreenInitType xf86CrtcScreenInit(ScreenPtr screen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     /* Rotation */
@@ -847,7 +878,7 @@ private DisplayModePtr xf86DefaultMode(xf86OutputPtr output, int width, int heig
 
     mm_height = output.mm_height;
     if (!mm_height)
-        mm_height = (768 * 25.4) / DEFAULT_DPI;
+        mm_height = cast(int)((768 * 25.4) / DEFAULT_DPI);
     /*
      * Pick a mode closest to DEFAULT_DPI
      */
@@ -940,7 +971,7 @@ private DisplayModePtr xf86OutputHasUserPreferredMode(xf86OutputPtr output)
 
 private int xf86PickCrtcs(ScrnInfoPtr scrn, xf86CrtcPtr* best_crtcs, DisplayModePtr* modes, int n, int width, int height)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void, o = void;
     xf86OutputPtr output = void;
     xf86CrtcPtr crtc = void;
@@ -1029,7 +1060,7 @@ private int xf86PickCrtcs(ScrnInfoPtr scrn, xf86CrtcPtr* best_crtcs, DisplayMode
 
 private void xf86DefaultScreenLimits(ScrnInfoPtr scrn, int* widthp, int* heightp, Bool canGrow)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int width = 0, height = 0;
     int o = void;
     int c = void;
@@ -1094,7 +1125,7 @@ enum POSITION_UNSET =	-100000;
  */
 private Bool xf86UserConfiguredOutputs(ScrnInfoPtr scrn, DisplayModePtr* modes)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void;
     Bool user_conf = FALSE;
 
@@ -1113,7 +1144,7 @@ private Bool xf86UserConfiguredOutputs(ScrnInfoPtr scrn, DisplayModePtr* modes)
         if (position)
             user_conf = TRUE;
 
-        relation = 0;
+        // relation = .init;
         relative_name = null;
         for (r = 0; r < 4; r++) {
             relation = relations[r];
@@ -1134,7 +1165,7 @@ private Bool xf86UserConfiguredOutputs(ScrnInfoPtr scrn, DisplayModePtr* modes)
 
 private Bool xf86InitialOutputPositions(ScrnInfoPtr scrn, DisplayModePtr* modes)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void;
     int min_x = void, min_y = void;
 
@@ -1196,7 +1227,7 @@ private Bool xf86InitialOutputPositions(ScrnInfoPtr scrn, DisplayModePtr* modes)
             /*
              * Next comes relative positions
              */
-            relation = 0;
+            // relation = void;
             relative_name = null;
             for (r = 0; r < 4; r++) {
                 relation = relations[r];
@@ -1321,7 +1352,7 @@ private Bool xf86InitialOutputPositions(ScrnInfoPtr scrn, DisplayModePtr* modes)
 
 private void xf86InitialPanning(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void;
 
     for (o = 0; o < config.num_output; o++) {
@@ -1333,7 +1364,7 @@ private void xf86InitialPanning(ScrnInfoPtr scrn)
 
         memset(&output.initialTotalArea, 0, BoxRec.sizeof);
         memset(&output.initialTrackingArea, 0, BoxRec.sizeof);
-        memset(output.initialBorder, 0, 4 * INT16.sizeof);
+        memset(output.initialBorder.ptr, 0, 4 * INT16.sizeof);
 
         if (!panning)
             continue;
@@ -1343,24 +1374,27 @@ private void xf86InitialPanning(ScrnInfoPtr scrn)
                        &track_width, &track_height, &track_left, &track_top,
                        &brdr[0], &brdr[1], &brdr[2], &brdr[3])) {
         case 12:
-            output.initialBorder[0] = brdr[0];
-            output.initialBorder[1] = brdr[1];
-            output.initialBorder[2] = brdr[2];
-            output.initialBorder[3] = brdr[3];
+            output.initialBorder[0] = cast(short)brdr[0];
+            output.initialBorder[1] = cast(short)brdr[1];
+            output.initialBorder[2] = cast(short)brdr[2];
+            output.initialBorder[3] = cast(short)brdr[3];
             /* fall through */
+            goto case;
         case 8:
-            output.initialTrackingArea.x1 = track_left;
-            output.initialTrackingArea.y1 = track_top;
-            output.initialTrackingArea.x2 = track_left + track_width;
-            output.initialTrackingArea.y2 = track_top + track_height;
+            output.initialTrackingArea.x1 = cast(short)(track_left);
+            output.initialTrackingArea.y1 = cast(short)(track_top);
+            output.initialTrackingArea.x2 = cast(short)(track_left + track_width);
+            output.initialTrackingArea.y2 = cast(short)(track_top + track_height);
             /* fall through */
+            goto case;
         case 4:
-            output.initialTotalArea.x1 = left;
-            output.initialTotalArea.y1 = top;
+            output.initialTotalArea.x1 = cast(short)left;
+            output.initialTotalArea.y1 = cast(short)top;
             /* fall through */
+            goto case;
         case 2:
-            output.initialTotalArea.x2 = output.initialTotalArea.x1 + width;
-            output.initialTotalArea.y2 = output.initialTotalArea.y1 + height;
+            output.initialTotalArea.x2 = cast(short)(output.initialTotalArea.x1 + width);
+            output.initialTotalArea.y2 = cast(short)(output.initialTotalArea.y1 + height);
             break;
         default:
             xf86DrvMsg(scrn.scrnIndex, X_ERROR,
@@ -1397,14 +1431,14 @@ private DisplayModePtr xf86SortModes(DisplayModePtr input)
     while (input) {
         i = input;
         input = input.next;
-        for (op = &output; ((o = *op) != 0); op = &o.next)
+        for (op = &output; ((o = *op) !is null); op = &o.next)
             if (xf86ModeCompare(o, i) > 0)
                 break;
         i.next = *op;
         *op = i;
     }
     /* prune identical modes */
-    for (o = output; o && (n = o.next); o = n) {
+    for (o = output; o && (n = o.next) !is null; o = n) {
         if (!strcmp(o.name, n.name) && xf86ModesEqual(o, n)) {
             o.next = n.next;
             free(cast(void*) n.name);
@@ -1454,10 +1488,10 @@ private const(char)* gettoken(const(char)* src, const(char)** token, int* len)
     if (!src)
         return null;
 
-    skip = strspn(src, delim);
+    skip = cast(int)strspn(src, delim);
     *token = &src[skip];
 
-    *len = strcspn(*token, delim);
+    *len = cast(int)strcspn(*token, delim);
     /* Support for backslash escaped delimiters could be implemented
      * here.
      */
@@ -1608,7 +1642,7 @@ private void handle_detailed_monrec(detailed_monitor_section* det_mon, void* dat
 
 void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void;
 
     /* When canGrow was TRUE in the initial configuration we have to
@@ -1797,7 +1831,7 @@ void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
          */
         for (mode = output.probed_modes; mode != null; mode = mode.next)
             if (mode.status == MODE_OK)
-                mode.status = (*output.funcs.mode_valid) (output, mode);
+                mode.status = cast(ModeStatus)(*output.funcs.mode_valid) (output, mode);
 
         xf86PruneInvalidModes(scrn, &output.probed_modes, debug_modes);
 
@@ -1962,7 +1996,7 @@ private xf86OutputPtr SetCompatOutput(xf86CrtcConfigPtr config)
 
 void xf86SetScrnInfoModes(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86OutputPtr output = void;
     xf86CrtcPtr crtc = void;
     DisplayModePtr last = void, mode = null;
@@ -2085,7 +2119,7 @@ private DisplayModePtr bestModeForAspect(xf86CrtcConfigPtr config, Bool* enabled
 
     if (!nextEnabledOutput(config, enabled, &o))
         return null;
-    while ((mode = nextAspectMode(config.output[o], mode, aspect))) {
+    while ((mode = nextAspectMode(config.output[o], mode, aspect)) !is null) {
         test = mode;
         for (p = o; nextEnabledOutput(config, enabled, &p);) {
             test = xf86OutputFindClosestMode(config.output[p], mode);
@@ -2225,8 +2259,8 @@ private Bool xf86TargetPreferred(ScrnInfoPtr scrn, xf86CrtcConfigPtr config, Dis
     DisplayModePtr* preferred = void, preferred_match = void;
     Bool ret = FALSE;
 
-    preferred = XNFcallocarray(config.num_output, DisplayModePtr.sizeof);
-    preferred_match = XNFcallocarray(config.num_output, DisplayModePtr.sizeof);
+    preferred = cast(_DisplayModeRec**)XNFcallocarray(config.num_output, DisplayModePtr.sizeof);
+    preferred_match = cast(_DisplayModeRec**)XNFcallocarray(config.num_output, DisplayModePtr.sizeof);
 
     /* Check if the preferred mode is available on all outputs */
     for (p = -1; nextEnabledOutput(config, enabled, &p);) {
@@ -2234,7 +2268,7 @@ private Bool xf86TargetPreferred(ScrnInfoPtr scrn, xf86CrtcConfigPtr config, Dis
         DisplayModePtr mode = void;
 
         if ((preferred[p] = xf86OutputHasPreferredMode(config.output[p],
-                                                       width, height))) {
+                                                       width, height)) !is null) {
             int pref_width = xf86ModeWidth(preferred[p], r);
             int pref_height = xf86ModeHeight(preferred[p], r);
             Bool all_match = TRUE;
@@ -2333,7 +2367,7 @@ private Bool xf86TargetAspect(ScrnInfoPtr scrn, xf86CrtcConfigPtr config, Displa
     Bool ret = FALSE;
     DisplayModePtr guess = null, aspect_guess = null, base_guess = null;
 
-    aspects = XNFcallocarray(config.num_output, float.sizeof);
+    aspects = cast(float*)XNFcallocarray(config.num_output, float.sizeof);
 
     /* collect the aspect ratios */
     for (o = -1; nextEnabledOutput(config, enabled, &o);) {
@@ -2469,7 +2503,7 @@ void xf86AssignNoOutputInitialSize(ScrnInfoPtr scrn, const(OptionInfoRec)* optio
 
 Bool xf86InitialConfiguration(ScrnInfoPtr scrn, Bool canGrow)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void, c = void;
     xf86CrtcPtr* crtcs = void;
     DisplayModePtr* modes = void;
@@ -2482,9 +2516,9 @@ Bool xf86InitialConfiguration(ScrnInfoPtr scrn, Bool canGrow)
     Bool success = FALSE;
 
     /* Set up the device options */
-    config.options = XNFalloc(xf86DeviceOptions.sizeof);
+    config.options = cast(_OptionInfoRec*)XNFalloc(xf86DeviceOptions.sizeof);
     memcpy(config.options, xf86DeviceOptions.ptr, xf86DeviceOptions.sizeof);
-    xf86ProcessOptions(scrn.scrnIndex, scrn.options, config.options);
+    xf86ProcessOptions(scrn.scrnIndex, cast(_InputOption*)scrn.options, config.options);
     config.debug_modes = xf86ReturnOptValBool(config.options,
                                                OPTION_MODEDEBUG, FALSE);
 
@@ -2502,9 +2536,9 @@ Bool xf86InitialConfiguration(ScrnInfoPtr scrn, Bool canGrow)
 
     xf86ProbeOutputModes(scrn, width, height);
 
-    crtcs = XNFcallocarray(config.num_output, xf86CrtcPtr.sizeof);
-    modes = XNFcallocarray(config.num_output, DisplayModePtr.sizeof);
-    enabled = XNFcallocarray(config.num_output, Bool.sizeof);
+    crtcs = cast(_xf86Crtc**)XNFcallocarray(config.num_output, xf86CrtcPtr.sizeof);
+    modes = cast(_DisplayModeRec**)XNFcallocarray(config.num_output, DisplayModePtr.sizeof);
+    enabled = cast(int*)XNFcallocarray(config.num_output, Bool.sizeof);
 
     ret = xf86CollectEnabledOutputs(scrn, config, enabled);
     if (ret == FALSE && canGrow) {
@@ -2596,7 +2630,7 @@ Bool xf86InitialConfiguration(ScrnInfoPtr scrn, Bool canGrow)
                    BoxRec.sizeof);
             memcpy(&crtc.panningTrackingArea, &output.initialTrackingArea,
                    BoxRec.sizeof);
-            memcpy(crtc.panningBorder, output.initialBorder,
+            memcpy(crtc.panningBorder.ptr, output.initialBorder.ptr,
                    4 * INT16.sizeof);
             output.crtc = crtc;
         }
@@ -2673,7 +2707,7 @@ private void xf86DisableCrtc(xf86CrtcPtr crtc)
  */
 private void xf86PrepareOutputs(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int o = void;
 
     for (o = 0; o < config.num_output; o++) {
@@ -2685,19 +2719,19 @@ private void xf86PrepareOutputs(ScrnInfoPtr scrn)
 static if (RANDR_GET_CRTC_INTERFACE) {
         /* Disable outputs that are unused or will be re-routed */
         if (!output.funcs.get_crtc ||
-            output.crtc != (*output.funcs.get_crtc) (output) ||
+            output.crtc != assumeNoGC(output.funcs.get_crtc) (output) ||
             output.crtc == null)
-            (*output.funcs.dpms) (output, DPMSModeOff);
+            assumeNoGC(output.funcs.dpms) (output, DPMSModeOff);
 }
 else {
-    (*output.funcs.dpms) (output, DPMSModeOff);
+    assumeNoGC(output.funcs.dpms) (output, DPMSModeOff);
 }
     }
 }
 
 private void xf86PrepareCrtcs(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     for (c = 0; c < config.num_crtc; c++) {
@@ -2719,7 +2753,7 @@ static if (RANDR_GET_CRTC_INTERFACE) {
                 desired_outputs = 0;
                 break;
             }
-            if ((*output.funcs.get_crtc) (output) == crtc)
+            if (assumeNoGC(output.funcs.get_crtc) (output) == crtc)
                 current_outputs |= (1 << o);
         }
 
@@ -2745,7 +2779,7 @@ static if (RANDR_GET_CRTC_INTERFACE) {
 
 Bool xf86SetDesiredModes(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CrtcPtr crtc = config.crtc[0];
     int enabled = 0, failed = 0;
     int c = void;
@@ -2885,7 +2919,7 @@ DisplayModePtr xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr de
 
 Bool xf86SetSingleMode(ScrnInfoPtr pScrn, DisplayModePtr desired, Rotation rotation)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(pScrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("pScrn"));
     Bool ok = TRUE;
     xf86OutputPtr compat_output = void;
     DisplayModePtr compat_mode = null;
@@ -2953,7 +2987,7 @@ version (RANDR_12_INTERFACE) {
  */
 void xf86DPMSSet(ScrnInfoPtr scrn, int mode, int flags)
 {
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int i = void;
 
     if (!scrn.vtSema)
@@ -3008,7 +3042,7 @@ Bool xf86SaveScreen(ScreenPtr pScreen, int mode)
  */
 void xf86DisableUnusedFunctions(ScrnInfoPtr pScrn)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(pScrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("pScrn"));
     int o = void, c = void;
 
     for (o = 0; o < xf86_config.num_output; o++) {
@@ -3162,7 +3196,7 @@ version (RANDR_12_INTERFACE) {
 void xf86OutputSetEDID(xf86OutputPtr output, xf86MonPtr edid_mon)
 {
     ScrnInfoPtr scrn = output.scrn;
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     Bool debug_modes = config.debug_modes || xf86Initialising;
 
 version (RANDR_12_INTERFACE) {
@@ -3296,7 +3330,7 @@ private int xf86_crtc_box_area(BoxPtr box)
 
 private xf86CrtcPtr xf86_covering_crtc(ScrnInfoPtr pScrn, BoxPtr box, xf86CrtcPtr desired, BoxPtr crtc_box_ret)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(pScrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("pScrn"));
     xf86CrtcPtr crtc = void, best_crtc = void;
     int coverage = void, best_coverage = void;
     int c = void;
@@ -3368,7 +3402,7 @@ xf86_crtc_notify_proc_ptr xf86_wrap_crtc_notify(ScreenPtr screen, xf86_crtc_noti
 {
     if (xf86CrtcConfigPrivateIndex != -1) {
         ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-        xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+        xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
         xf86_crtc_notify_proc_ptr old = void;
 
         old = config.xf86_crtc_notify;
@@ -3382,7 +3416,7 @@ void xf86_unwrap_crtc_notify(ScreenPtr screen, xf86_crtc_notify_proc_ptr old)
 {
     if (xf86CrtcConfigPrivateIndex != -1) {
         ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-        xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+        xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
         config.xf86_crtc_notify = old;
     }
@@ -3391,7 +3425,7 @@ void xf86_unwrap_crtc_notify(ScreenPtr screen, xf86_crtc_notify_proc_ptr old)
 void xf86_crtc_notify(ScreenPtr screen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     if (config.xf86_crtc_notify)
         config.xf86_crtc_notify(screen);
@@ -3400,7 +3434,7 @@ void xf86_crtc_notify(ScreenPtr screen)
 Bool xf86_crtc_supports_gamma(ScrnInfoPtr pScrn)
 {
     if (xf86CrtcConfigPrivateIndex != -1) {
-        xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(pScrn);
+        xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("pScrn"));
         xf86CrtcPtr crtc = void;
 
         /* for multiple drivers loaded we need this */
@@ -3418,7 +3452,7 @@ Bool xf86_crtc_supports_gamma(ScrnInfoPtr pScrn)
 
 void xf86ProviderSetup(ScrnInfoPtr scrn, const(xf86ProviderFuncsRec)* funcs, const(char)* name)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     assert(!xf86_config.name);
     assert(name);
@@ -3432,7 +3466,7 @@ version (RANDR_12_INTERFACE) {
 
 void xf86DetachAllCrtc(ScrnInfoPtr scrn)
 {
-        xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+        xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
         int i = void;
 
         for (i = 0; i < xf86_config.num_crtc; i++) {

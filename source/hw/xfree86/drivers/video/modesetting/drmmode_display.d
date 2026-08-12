@@ -88,6 +88,10 @@ import core.sys.posix.strings;
 import hw.xfree86.drivers.video.modesetting.driver;
 import include.xf86cmap;
 import include.privates;
+import randr.rrcrtc;
+import randr.randr;
+import randr.rrinfo;
+
 
 enum string msGetPixmapPriv(string drmmode, string p) =`(cast(msPixmapPrivPtr)dixGetPrivateAddr(&(`~p~`).devPrivates, &(`~drmmode~`).pixmapPrivateKeyRec))`;
 alias uint32_t = core.stdc.stdint.uint32_t;

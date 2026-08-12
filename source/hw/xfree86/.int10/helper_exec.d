@@ -41,6 +41,8 @@ enum string DEBUG_IO_TRACE() = `0`;
 import externs.pciaccess;
 import include.xf86int10;
 
+import generic;
+import hw.xfree86.os_support.int10Defines;
 
 
 
@@ -55,128 +57,128 @@ version (_PC) {
 
 // enum REG = pInt;
 
-int setup_int(xf86Int10InfoPtr pInt)
-{
-    if (pInt != Int10Current) {
-        if (!MapCurrentInt10(pInt))
-            return -1;
-        Int10Current = pInt;
-    }
-    X86_EAX = cast(uint) pInt.ax;
-    X86_EBX = cast(uint) pInt.bx;
-    X86_ECX = cast(uint) pInt.cx;
-    X86_EDX = cast(uint) pInt.dx;
-    X86_ESI = cast(uint) pInt.si;
-    X86_EDI = cast(uint) pInt.di;
-    X86_EBP = cast(uint) pInt.bp;
-    X86_ESP = 0x1000;
-    X86_SS = pInt.stackseg >> 4;
-    X86_EIP = 0x0600;
-    X86_CS = 0x0;               /* address of 'hlt' */
-    X86_DS = 0x40;              /* standard pc ds */
-    X86_ES = pInt.es;
-    X86_FS = 0;
-    X86_GS = 0;
-    X86_EFLAGS = X86_IF_MASK | X86_IOPL_MASK;
-version (_PC) {
-    if (pInt.Flags & SET_BIOS_SCRATCH)
-        SetResetBIOSVars(pInt, TRUE);
-}
-    OsBlockSignals();
-    return 0;
-}
+// int setup_int(xf86Int10InfoPtr pInt)
+// {
+//     if (pInt != Int10Current) {
+//         if (!MapCurrentInt10(pInt))
+//             return -1;
+//         Int10Current = pInt;
+//     }
+//     X86_EAX = cast(uint) pInt.ax;
+//     X86_EBX = cast(uint) pInt.bx;
+//     X86_ECX = cast(uint) pInt.cx;
+//     X86_EDX = cast(uint) pInt.dx;
+//     X86_ESI = cast(uint) pInt.si;
+//     X86_EDI = cast(uint) pInt.di;
+//     X86_EBP = cast(uint) pInt.bp;
+//     X86_ESP = 0x1000;
+//     X86_SS = pInt.stackseg >> 4;
+//     X86_EIP = 0x0600;
+//     X86_CS = 0x0;               /* address of 'hlt' */
+//     X86_DS = 0x40;              /* standard pc ds */
+//     X86_ES = pInt.es;
+//     X86_FS = 0;
+//     X86_GS = 0;
+//     X86_EFLAGS = X86_IF_MASK | X86_IOPL_MASK;
+// version (_PC) {
+//     if (pInt.Flags & SET_BIOS_SCRATCH)
+//         SetResetBIOSVars(pInt, TRUE);
+// }
+//     OsBlockSignals();
+//     return 0;
+// }
 
-void finish_int(xf86Int10InfoPtr pInt, int sig)
-{
-    OsReleaseSignals();
-    pInt.ax = cast(uint) X86_EAX;
-    pInt.bx = cast(uint) X86_EBX;
-    pInt.cx = cast(uint) X86_ECX;
-    pInt.dx = cast(uint) X86_EDX;
-    pInt.si = cast(uint) X86_ESI;
-    pInt.di = cast(uint) X86_EDI;
-    pInt.es = cast(ushort) X86_ES;
-    pInt.bp = cast(uint) X86_EBP;
-    pInt.flags = cast(uint) X86_FLAGS;
-version (_PC) {
-    if (pInt.Flags & RESTORE_BIOS_SCRATCH)
-        SetResetBIOSVars(pInt, FALSE);
-}
-}
+// void finish_int(xf86Int10InfoPtr pInt, int sig)
+// {
+//     OsReleaseSignals();
+//     pInt.ax = cast(uint) X86_EAX;
+//     pInt.bx = cast(uint) X86_EBX;
+//     pInt.cx = cast(uint) X86_ECX;
+//     pInt.dx = cast(uint) X86_EDX;
+//     pInt.si = cast(uint) X86_ESI;
+//     pInt.di = cast(uint) X86_EDI;
+//     pInt.es = cast(ushort) X86_ES;
+//     pInt.bp = cast(uint) X86_EBP;
+//     pInt.flags = cast(uint) X86_FLAGS;
+// version (_PC) {
+//     if (pInt.Flags & RESTORE_BIOS_SCRATCH)
+//         SetResetBIOSVars(pInt, FALSE);
+// }
+// }
 
 /* general software interrupt handler */
-uint getIntVect(xf86Int10InfoPtr pInt, int num)
-{
-    return MEM_RW(pInt, num << 2) + (MEM_RW(pInt, (num << 2) + 2) << 4);
-}
+// uint getIntVect(xf86Int10InfoPtr pInt, int num)
+// {
+//     return MEM_RW(pInt, num << 2) + (MEM_RW(pInt, (num << 2) + 2) << 4);
+// }
 
-void pushw(xf86Int10InfoPtr pInt, ushort val)
-{
-    X86_ESP -= 2;
-    MEM_WW(pInt, (cast(uint) X86_SS << 4) + X86_SP, val);
-}
+// void pushw(xf86Int10InfoPtr pInt, ushort val)
+// {
+//     X86_ESP -= 2;
+//     MEM_WW(pInt, (cast(uint) X86_SS << 4) + X86_SP, val);
+// }
 
-int run_bios_int(int num, xf86Int10InfoPtr pInt)
-{
-    uint eflags = void;
+// int run_bios_int(int num, xf86Int10InfoPtr pInt)
+// {
+//     uint eflags = void;
 
-version (_PC) {} else {
-    /* check if bios vector is initialized */
-    if (MEM_RW(pInt, (num << 2) + 2) == (SYS_BIOS >> 4)) {      /* SYS_BIOS_SEG ? */
+// version (_PC) {} else {
+//     /* check if bios vector is initialized */
+//     if (MEM_RW(pInt, (num << 2) + 2) == (SYS_BIOS >> 4)) {      /* SYS_BIOS_SEG ? */
 
-        if (num == 21 && X86_AH == 0x4e) {
-            xf86DrvMsg(pInt.pScrn.scrnIndex, X_NOTICE,
-                       "Failing Find-Matching-File on non-PC"
-                       ~ " (int 21, func 4e)\n");
-            X86_AX = 2;
-            SET_FLAG(F_CF);
-            return 1;
-        }
-        else {
-            xf86DrvMsgVerb(pInt.pScrn.scrnIndex, X_NOT_IMPLEMENTED, 2,
-                           "Ignoring int 0x%02x call\n", num);
-            if (xf86GetVerbosity() > 3) {
-                dump_registers(pInt);
-                stack_trace(pInt);
-            }
-            return 1;
-        }
-    }
-}
-version (PRINT_INT) {
-    ErrorF("calling card BIOS at: ");
-}
-    eflags = X86_EFLAGS;
-version (none) {
-    eflags = eflags | IF_MASK;
-    X86_EFLAGS = X86_EFLAGS & ~(VIF_MASK | TF_MASK | IF_MASK | NT_MASK);
-}
-    pushw(pInt, eflags);
-    pushw(pInt, X86_CS);
-    pushw(pInt, X86_IP);
-    X86_CS = MEM_RW(pInt, (num << 2) + 2);
-    X86_IP = MEM_RW(pInt, num << 2);
-version (PRINT_INT) {
-    ErrorF("0x%x:%lx\n", X86_CS, X86_EIP);
-}
-    return 1;
-}
+//         if (num == 21 && X86_AH == 0x4e) {
+//             xf86DrvMsg(pInt.pScrn.scrnIndex, X_NOTICE,
+//                        "Failing Find-Matching-File on non-PC"
+//                        ~ " (int 21, func 4e)\n");
+//             X86_AX = 2;
+//             SET_FLAG(F_CF);
+//             return 1;
+//         }
+//         else {
+//             xf86DrvMsgVerb(pInt.pScrn.scrnIndex, X_NOT_IMPLEMENTED, 2,
+//                            "Ignoring int 0x%02x call\n", num);
+//             if (xf86GetVerbosity() > 3) {
+//                 dump_registers(pInt);
+//                 stack_trace(pInt);
+//             }
+//             return 1;
+//         }
+//     }
+// }
+// version (PRINT_INT) {
+//     ErrorF("calling card BIOS at: ");
+// }
+//     eflags = X86_EFLAGS;
+// version (none) {
+//     eflags = eflags | IF_MASK;
+//     X86_EFLAGS = X86_EFLAGS & ~(VIF_MASK | TF_MASK | IF_MASK | NT_MASK);
+// }
+//     pushw(pInt, eflags);
+//     pushw(pInt, X86_CS);
+//     pushw(pInt, X86_IP);
+//     X86_CS = MEM_RW(pInt, (num << 2) + 2);
+//     X86_IP = MEM_RW(pInt, num << 2);
+// version (PRINT_INT) {
+//     ErrorF("0x%x:%lx\n", X86_CS, X86_EIP);
+// }
+//     return 1;
+// }
 
-/* Debugging stuff */
-void dump_code(xf86Int10InfoPtr pInt)
-{
-    int i = void;
-    uint lina = SEG_ADR(X86_CS, IP);
+// /* Debugging stuff */
+// void dump_code(xf86Int10InfoPtr pInt)
+// {
+//     int i = void;
+//     uint lina = SEG_ADR(X86_CS, IP);
 
-    xf86DrvMsgVerb(pInt.pScrn.scrnIndex, X_INFO, 3, "code at 0x%8.8" ~PRIx32 ~ ":\n",
-                   cast(uint) lina);
-    for (i = 0; i < 0x10; i++)
-        xf86ErrorFVerb(3, " %2.2x", MEM_RB(pInt, lina + i));
-    xf86ErrorFVerb(3, "\n");
-    for (; i < 0x20; i++)
-        xf86ErrorFVerb(3, " %2.2x", MEM_RB(pInt, lina + i));
-    xf86ErrorFVerb(3, "\n");
-}
+//     xf86DrvMsgVerb(pInt.pScrn.scrnIndex, X_INFO, 3, "code at 0x%8.8" ~PRIx32 ~ ":\n",
+//                    cast(uint) lina);
+//     for (i = 0; i < 0x10; i++)
+//         xf86ErrorFVerb(3, " %2.2x", MEM_RB(pInt, lina + i));
+//     xf86ErrorFVerb(3, "\n");
+//     for (; i < 0x20; i++)
+//         xf86ErrorFVerb(3, " %2.2x", MEM_RB(pInt, lina + i));
+//     xf86ErrorFVerb(3, "\n");
+// }
 
 void dump_registers(xf86Int10InfoPtr pInt)
 {

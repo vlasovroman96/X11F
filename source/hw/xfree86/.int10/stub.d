@@ -46,10 +46,10 @@ void xf86Int10FreePages(xf86Int10InfoPtr pInt, void* pbase, int num)
     return;
 }
 
-Bool xf86Int10ExecSetup(xf86Int10InfoPtr pInt)
-{
-    return FALSE;
-}
+// Bool xf86Int10ExecSetup(xf86Int10InfoPtr pInt)
+// {
+//     return FALSE;
+// }
 
 void xf86ExecX86int10(xf86Int10InfoPtr pInt)
 {

@@ -36,6 +36,7 @@ import include.rrtransform;
 import include.xf86Parser;
 import include.xf86Cursor;
 import include.scrintstr;
+import hw.xfree86.modes.xf86Crtc;
 
 
 /* Compat definitions for older X Servers. */
@@ -43,7 +44,7 @@ import include.scrintstr;
 
 // enum M_T_DRIVER =	0x40;
 
-enum M_T_USERPREF =	0x80;
+// enum M_T_USERPREF =	0x80;
 
 // enum HARDWARE_CURSOR_ARGB =				0x00004000;
 
@@ -815,7 +816,7 @@ alias xf86CrtcConfigPtr = _xf86CrtcConfig*;
 
 enum string XF86_CRTC_CONFIG_PTR(string p) = `(cast(xf86CrtcConfigPtr) ((` ~ p ~ `).privates[xf86CrtcConfigPrivateIndex].ptr))`;
 
-private auto xf86CompatOutput(ScrnInfoPtr pScrn)
+auto xf86CompatOutput(ScrnInfoPtr pScrn)
 {
     xf86CrtcConfigPtr config = void;
 
@@ -827,7 +828,7 @@ private auto xf86CompatOutput(ScrnInfoPtr pScrn)
     return config.output[config.compat_output];
 }
 
-private auto xf86CompatCrtc(ScrnInfoPtr pScrn)
+auto xf86CompatCrtc(ScrnInfoPtr pScrn)
 {
     xf86OutputPtr compat_output = xf86CompatOutput(pScrn);
 
@@ -836,7 +837,7 @@ private auto xf86CompatCrtc(ScrnInfoPtr pScrn)
     return compat_output.crtc;
 }
 
-private auto xf86CompatRRCrtc(ScrnInfoPtr pScrn)
+auto xf86CompatRRCrtc(ScrnInfoPtr pScrn)
 {
     xf86CrtcPtr compat_crtc = xf86CompatCrtc(pScrn);
 
@@ -864,11 +865,11 @@ private auto xf86CompatRRCrtc(ScrnInfoPtr pScrn)
  * Sets the given video mode on the given crtc
  */
 
-extern void  xf86CrtcSetModeTransform(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, RRTransformPtr transform, int x, int y);
+// extern void  xf86CrtcSetModeTransform(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, RRTransformPtr transform, int x, int y);
 
 extern void  xf86CrtcSetMode(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, int x, int y);
 
-extern void  xf86CrtcSetOrigin(xf86CrtcPtr crtc, int x, int y);
+// extern void  xf86CrtcSetOrigin(xf86CrtcPtr crtc, int x, int y);
 
 /*
  * Assign crtc rotation during mode set
@@ -881,7 +882,7 @@ extern void  xf86CrtcSetOrigin(xf86CrtcPtr crtc, int x, int y);
  * Clean up any rotation data, used when a crtc is turned off
  * as well as when rotation is disabled.
  */
-extern void  xf86RotateDestroy(xf86CrtcPtr crtc);
+// extern void  xf86RotateDestroy(xf86CrtcPtr crtc);
 
 /*
  * free shadow memory allocated for all crtcs
@@ -891,12 +892,12 @@ extern void  xf86RotateFreeShadow(ScrnInfoPtr pScrn);
 /*
  * Clean up rotation during CloseScreen
  */
-extern void  xf86RotateCloseScreen(ScreenPtr pScreen);
+// extern void  xf86RotateCloseScreen(ScreenPtr pScreen);
 
 /**
  * Return whether any output is assigned to the crtc
  */
-extern void  xf86CrtcInUse(xf86CrtcPtr crtc);
+// extern void  xf86CrtcInUse(xf86CrtcPtr crtc);
 
 /*
  * Output functions
@@ -909,9 +910,9 @@ extern void  xf86OutputRename(xf86OutputPtr output, const(char)* name);
 
 // extern void  xf86OutputDestroy(xf86OutputPtr output);
 
-extern void  xf86ProbeOutputModes(ScrnInfoPtr pScrn, int maxX, int maxY);
+// extern void  xf86ProbeOutputModes(ScrnInfoPtr pScrn, int maxX, int maxY);
 
-extern void  xf86SetScrnInfoModes(ScrnInfoPtr pScrn);
+// extern void  xf86SetScrnInfoModes(ScrnInfoPtr pScrn);
 
 version (RANDR_13_INTERFACE) {
 alias ScreenInitRetType =	int;
@@ -1059,5 +1060,5 @@ extern void  xf86_crtc_clip_video_helper(ScrnInfoPtr pScrn, xf86CrtcPtr* crtc_re
 
 extern void  xf86DetachAllCrtc(ScrnInfoPtr scrn);
 
-Bool xf86OutputForceEnabled(xf86OutputPtr output);
+// Bool xf86OutputForceEnabled(xf86OutputPtr output);
                           /* _XF86CRTC_H_ */

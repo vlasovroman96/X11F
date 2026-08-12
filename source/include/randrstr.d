@@ -454,17 +454,17 @@ extern void  RRSendConfigNotify(ScreenPtr pScreen);
 
 /* randr.c */
 /* set a screen change on the primary screen */
-extern void  RRSetChanged(ScreenPtr pScreen);
+// extern void  RRSetChanged(ScreenPtr pScreen);
 
 /*
  * Send all pending events
  */
-extern void  RRTellChanged(ScreenPtr pScreen);
+// extern void  RRTellChanged(ScreenPtr pScreen);
 
 /*
  * Poll the driver for changed information
  */
-extern void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
+// extern void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
 
 // extern void  RRScreenInit(ScreenPtr pScreen);
 
@@ -494,18 +494,18 @@ extern void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
 /*
  * Create a CRTC
  */
-extern void  RRCrtcCreate(ScreenPtr pScreen, void* devPrivate);
+// extern void  RRCrtcCreate(ScreenPtr pScreen, void* devPrivate);
 
 /*
  * Set the allowed rotations on a CRTC
  */
-extern void  RRCrtcSetRotations(RRCrtcPtr crtc, Rotation rotations);
+// extern void  RRCrtcSetRotations(RRCrtcPtr crtc, Rotation rotations);
 
 /*
  * Notify the extension that the Crtc has been reconfigured,
  * the driver calls this whenever it has updated the mode
  */
-extern void  RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, RRTransformPtr transform, int numOutputs, RROutputPtr* outputs);
+// extern void  RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, RRTransformPtr transform, int numOutputs, RROutputPtr* outputs);
 
 /*
  * Request that the Crtc be reconfigured
@@ -516,20 +516,20 @@ extern void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation ro
  * Request that the Crtc gamma be changed
  */
 
-extern void  RRCrtcGammaSet(RRCrtcPtr crtc, CARD16* red, CARD16* green, CARD16* blue);
+// extern void  RRCrtcGammaSet(RRCrtcPtr crtc, CARD16* red, CARD16* green, CARD16* blue);
 
 /*
  * Set the size of the gamma table at server startup time
  */
 
-extern void  RRCrtcGammaSetSize(RRCrtcPtr crtc, int size);
+// extern void  RRCrtcGammaSetSize(RRCrtcPtr crtc, int size);
 
 /* rrmode.c */
 /*
  * Find, and if necessary, create a mode
  */
 
-extern void  RRModeGet(xRRModeInfo* modeInfo, const(char)* name);
+// extern void  RRModeGet(xRRModeInfo* modeInfo, const(char)* name);
 
 /*
  * Destroy a mode.
@@ -545,7 +545,7 @@ extern void  RRModeDestroy(RRModePtr mode);
  * has changed, or whether the change was strictly internal
  * (which crtc is in use)
  */
-extern void  RROutputChanged(RROutputPtr output, Bool configChanged);
+// extern void  RROutputChanged(RROutputPtr output, Bool configChanged);
 
 /*
  * Create an output
@@ -556,15 +556,15 @@ extern void  RROutputChanged(RROutputPtr output, Bool configChanged);
 /*
  * Notify extension that output parameters have been changed
  */
-extern void  RROutputSetClones(RROutputPtr output, RROutputPtr* clones, int numClones);
+// extern void  RROutputSetClones(RROutputPtr output, RROutputPtr* clones, int numClones);
 
-extern void  RROutputSetModes(RROutputPtr output, RRModePtr* modes, int numModes, int numPreferred);
+// extern void  RROutputSetModes(RROutputPtr output, RRModePtr* modes, int numModes, int numPreferred);
 
-extern void  RROutputSetCrtcs(RROutputPtr output, RRCrtcPtr* crtcs, int numCrtcs);
+// extern void  RROutputSetCrtcs(RROutputPtr output, RRCrtcPtr* crtcs, int numCrtcs);
 
-extern void  RROutputSetConnection(RROutputPtr output, CARD8 connection);
+// extern void  RROutputSetConnection(RROutputPtr output, CARD8 connection);
 
-extern void  RROutputSetPhysicalSize(RROutputPtr output, int mmWidth, int mmHeight);
+// extern void  RROutputSetPhysicalSize(RROutputPtr output, int mmWidth, int mmHeight);
 
 extern void  RROutputDestroy(RROutputPtr output);
 
@@ -609,14 +609,14 @@ void  RRCrtcGetScanoutSize(RRCrtcPtr crtc, int* width, int* height);
  * @param crtc    the CRTC to query
  * @return        pointer to CRTCs current transform
  */
-void  RRCrtcGetTransform(RRCrtcPtr crtc);
+// void  RRCrtcGetTransform(RRCrtcPtr crtc);
 
 /*
  * Detach and free a scanout pixmap
  *
  * @param crtc    the CRTC to act on
  */
-void  RRCrtcDetachScanoutPixmap(RRCrtcPtr crtc);
+// void  RRCrtcDetachScanoutPixmap(RRCrtcPtr crtc);
 
 /*
  * Create / allocate new provider structure
@@ -626,7 +626,7 @@ void  RRCrtcDetachScanoutPixmap(RRCrtcPtr crtc);
  * @param nameLen size of the provider name
  * @return new provider structure, or NULL on failure
  */
-void  RRProviderCreate(ScreenPtr pScreen, const(char)* name, int nameLen);
+// void  RRProviderCreate(ScreenPtr pScreen, const(char)* name, int nameLen);
 
 /*
  * Set provider capabilities field
@@ -634,7 +634,7 @@ void  RRProviderCreate(ScreenPtr pScreen, const(char)* name, int nameLen);
  * @param provider      the provider whose capabilities are to be set
  * @param capabilities  the new capabilities
  */
-void  RRProviderSetCapabilities(RRProviderPtr provider, uint capabilities);
+// void  RRProviderSetCapabilities(RRProviderPtr provider, uint capabilities);
 
 /*
  * Check whether client is operating on recent enough protocol version
@@ -656,7 +656,7 @@ void  RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* par
  * @param crtc the CRTC to set the flag on
  * @param transforms TRUE if transforms are allowed
  */
-void  RRCrtcSetTransformSupport(RRCrtcPtr crtc, Bool transforms);
+// void  RRCrtcSetTransformSupport(RRCrtcPtr crtc, Bool transforms);
 
 /*
  * Set subpixel order on given output
@@ -664,7 +664,7 @@ void  RRCrtcSetTransformSupport(RRCrtcPtr crtc, Bool transforms);
  * @param output  the output to set subpixel order on
  * @param order   subpixel order value to set
  */
-void  RROutputSetSubpixelOrder(RROutputPtr output, int order);
+// void  RROutputSetSubpixelOrder(RROutputPtr output, int order);
 
 /*
  * Retrieve output property value

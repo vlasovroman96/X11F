@@ -54,6 +54,10 @@ import core.stdc.string;
 import include.os;
 // import hw.xfree86.loader.loader;
 import hw.xfree86.loader.loaderProcs;
+import os.log;
+import loadmod;
+
+enum RTLD_DEFAULT = null;
 
 version (Posix) {
     version = HAVE_DLFCN_H;
@@ -88,18 +92,18 @@ version (XORG_NO_SDKSYMS) {} else {
     LogMessageVerb(X_INFO, 2, "Loader magic: %p\n", cast(void*) xorg_symbols);
 }
     LogMessageVerb(X_INFO, 2, "Module ABI versions:\n");
-    LogMessageVerb(X_NONE, 2, "\t%s: %d.%d\n", ABI_CLASS_ANSIC,
-                   GET_ABI_MAJOR(LoaderVersionInfo.ansicVersion),
-                   GET_ABI_MINOR(LoaderVersionInfo.ansicVersion));
-    LogMessageVerb(X_NONE, 2, "\t%s: %d.%d\n", ABI_CLASS_VIDEODRV,
-                   GET_ABI_MAJOR(LoaderVersionInfo.videodrvVersion),
-                   GET_ABI_MINOR(LoaderVersionInfo.videodrvVersion));
-    LogMessageVerb(X_NONE, 2, "\t%s : %d.%d\n", ABI_CLASS_XINPUT,
-                   GET_ABI_MAJOR(LoaderVersionInfo.xinputVersion),
-                   GET_ABI_MINOR(LoaderVersionInfo.xinputVersion));
-    LogMessageVerb(X_NONE, 2, "\t%s : %d.%d\n", ABI_CLASS_EXTENSION,
-                   GET_ABI_MAJOR(LoaderVersionInfo.extensionVersion),
-                   GET_ABI_MINOR(LoaderVersionInfo.extensionVersion));
+    LogMessageVerb(X_NONE, 2, "\t%s: %d.%d\n", ABI_CLASS_ANSIC.ptr,
+                   mixin(GET_ABI_MAJOR!("LoaderVersionInfo.ansicVersion").ptr),
+                   mixin(GET_ABI_MINOR!("LoaderVersionInfo.ansicVersion").ptr));
+    LogMessageVerb(X_NONE, 2, "\t%s: %d.%d\n", ABI_CLASS_VIDEODRV.ptr,
+                   mixin(GET_ABI_MAJOR!("LoaderVersionInfo.videodrvVersion").ptr),
+                   mixin(GET_ABI_MINOR!("LoaderVersionInfo.videodrvVersion").ptr));
+    LogMessageVerb(X_NONE, 2, "\t%s : %d.%d\n", ABI_CLASS_XINPUT.ptr,
+                   mixin(GET_ABI_MAJOR!("LoaderVersionInfo.xinputVersion").ptr),
+                   mixin(GET_ABI_MINOR!("LoaderVersionInfo.xinputVersion").ptr));
+    LogMessageVerb(X_NONE, 2, "\t%s : %d.%d\n", ABI_CLASS_EXTENSION.ptr,
+                   mixin(GET_ABI_MAJOR!("LoaderVersionInfo.extensionVersion").ptr),
+                   mixin(GET_ABI_MINOR!("LoaderVersionInfo.extensionVersion").ptr));
 
     LoaderInitPath();
 }
@@ -121,7 +125,7 @@ version (DEBUG) {
 
     LogMessage(X_INFO, "Loading %s\n", module_);
 
-    if (((ret = dlopen(module_, RTLD_LAZY | RTLD_GLOBAL)) == 0)) {
+    if (((ret = dlopen(module_, RTLD_LAZY | RTLD_GLOBAL)) is null)) {
         LogMessage(X_ERROR, "Failed to load %s: %s\n", module_, dlerror());
         if (errmaj)
             *errmaj = LDR_NOLOAD;
@@ -151,7 +155,7 @@ void* LoaderSymbol(const(char)* name)
 
 void* LoaderSymbolFromModule(void* handle, const(char)* name)
 {
-    ModuleDescPtr mod = handle;
+    ModuleDescPtr mod = cast(ModuleDescPtr)handle;
     return dlsym(mod.handle, name);
 }
 

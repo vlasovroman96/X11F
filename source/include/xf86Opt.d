@@ -108,7 +108,7 @@ extern void  xf86OptionListDuplicate(XF86OptionPtr list);
 // extern void * xf86OptionValue(XF86OptionPtr opt);
 // extern void  xf86FindOption(XF86OptionPtr options, const(char)* name);
 // extern const(void )* xf86FindOptionValue(XF86OptionPtr options, const(char)* name);
-extern void  xf86MarkOptionUsedByName(XF86OptionPtr options, const(char)* name);
+// extern void  xf86MarkOptionUsedByName(XF86OptionPtr options, const(char)* name);
 // extern void  xf86ShowUnusedOptions(int scrnIndex, XF86OptionPtr options);
 // extern void  xf86ProcessOptions(int scrnIndex, XF86OptionPtr options, OptionInfoPtr optinfo);
 extern void  xf86TokenToOptinfo(const(OptionInfoRec)* table, int token);

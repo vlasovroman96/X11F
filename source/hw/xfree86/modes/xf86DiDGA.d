@@ -36,11 +36,25 @@ import xf86Modes;
 import include.gcstruct;
 import include.scrnintstr;
 import include.windowstr;
+import hw.xfree86.common.xf86Helper;
+import xf86DGA;
+public import include.edid;
+public import include.randrstr;
+public import xf86Modes;
+public import xf86Cursor;
+public import include.xf86i2c;
+public import include.damage;
+public import include.picturestr;
+import include.rrtransform;
+import include.xf86Parser;
+import include.xf86Cursor;
+import include.scrintstr;
+import hw.xfree86.modes.xf86Crtc;
 
 private Bool xf86_dga_get_modes(ScreenPtr pScreen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(pScreen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     DGAModePtr modes = void, mode = void;
     DisplayModePtr display_mode = void;
     int bpp = scrn.bitsPerPixel >> 3;
@@ -58,7 +72,7 @@ private Bool xf86_dga_get_modes(ScreenPtr pScreen)
     if (!num)
         return FALSE;
 
-    modes = calloc(num, DGAModeRec.sizeof);
+    modes = cast(_DGAModeRec*)calloc(num, DGAModeRec.sizeof);
     if (!modes)
         return FALSE;
 
@@ -86,7 +100,7 @@ private Bool xf86_dga_get_modes(ScreenPtr pScreen)
         mode.yViewportStep = 1;
         mode.viewportFlags = DGA_FLIP_RETRACE;
         mode.offset = 0;
-        mode.address = 0;
+        mode.address = null;
         mode.imageWidth = mode.viewportWidth;
         mode.imageHeight = mode.viewportHeight;
         mode.bytesPerScanline = (mode.imageWidth * scrn.bitsPerPixel) >> 3;
@@ -108,7 +122,7 @@ private Bool xf86_dga_get_modes(ScreenPtr pScreen)
 private Bool xf86_dga_set_mode(ScrnInfoPtr scrn, DGAModePtr display_mode)
 {
     ScreenPtr pScreen = scrn.pScreen;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     if (!display_mode) {
         if (xf86_config.dga_save_mode) {
@@ -164,7 +178,7 @@ Bool xf86DiDGAReInit(ScreenPtr pScreen)
 Bool _xf86_di_dga_reinit_internal(ScreenPtr pScreen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(pScreen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     if (!DGAScreenAvailable(pScreen))
         return TRUE;
@@ -184,7 +198,7 @@ Bool xf86DiDGAInit(ScreenPtr pScreen, c_ulong dga_address)
 Bool _xf86_di_dga_init_internal(ScreenPtr pScreen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(pScreen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     xf86_config.dga_flags = 0;
     xf86_config.dga_address = 0;

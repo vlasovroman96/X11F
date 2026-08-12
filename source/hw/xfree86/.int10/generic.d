@@ -22,7 +22,12 @@ import hw.xfree86.os_support.int10Defines;
 import hw.xfree86.os_support.bus.Pci;
 import include.xf86int10; 
 import helper_mem;
-
+// import stub;
+import core.sys.posix.unistd;
+import xf86pciBus;
+import hw.xfree86.common.xf86Helper;
+import helper_exec;
+import externs.gnu;
 
 enum string ALLOC_ENTRIES(string x) = `((V_RAM / ` ~ x ~ `) - 1)`;
 
@@ -138,7 +143,7 @@ xf86Int10InfoPtr xf86ExtendedInitInt10(int entityIndex, int Flags)
         goto error0;
     pInt.mem = &genericMem;
     pInt.private_ = cast(void*) XNFcallocarray(1, genericInt10Priv.sizeof);
-    mixin(INTPriv!(`pInt`)).alloc = cast(void*) XNFcallocarray(1, mixin(ALLOC_ENTRIES!(`getpagesize()`)));
+    mixin(INTPriv!(`pInt`)).alloc = cast(char*) XNFcallocarray(1, mixin(ALLOC_ENTRIES!(`getpagesize()`)));
     pInt.pScrn = pScrn;
     base = mixin(INTPriv!(`pInt`)).base = XNFalloc(SYS_BIOS);
 
@@ -244,7 +249,7 @@ version (_PC) {
         vbiosMem = cast(ubyte*) base + bios_location;
 
         if (xf86IsEntityPrimary(entityIndex)) {
-            if (int10_check_bios(pScrn.scrnIndex, bios_location >> 4, vbiosMem))
+            if (int10_check_bios(pScrn.scrnIndex, bios_location >> 4, cast(ubyte*)vbiosMem))
                 done = TRUE;
             else
                 xf86DrvMsg(pScrn.scrnIndex, X_INFO,
@@ -356,7 +361,7 @@ void* xf86Int10AllocPages(xf86Int10InfoPtr pInt, int num, int* off)
 void xf86Int10FreePages(xf86Int10InfoPtr pInt, void* pbase, int num)
 {
     int pagesize = getpagesize();
-    int first = ((cast(char*) pbase - cast(char*) mixin(INTPriv!(`pInt`)).base) / pagesize) - 1;
+    int first = cast(int)(((cast(char*) pbase - cast(char*) mixin(INTPriv!(`pInt`)).base) / pagesize) - 1);
     int i = void;
 
     for (i = first; i < (first + num); i++)
@@ -376,7 +381,7 @@ enum string V_ADDR(string addr) = `
 	  (` ~ SYS!(addr) ~ ` ? (cast(char*)` ~ INTPriv!(`pInt`) ~ `.sysMem) + (` ~ addr ~ ` - HIGH_BASE) 
 	   : ((cast(char*)(` ~ INTPriv!(`pInt`) ~ `.base) + ` ~ addr ~ `)))`;
 enum string VRAM_ADDR(string addr) = `(` ~ addr ~ ` - V_RAM)`;
-@property auto VRAM_BASE() => (INTPriv(pInt).vRam);
+enum string VRAM_BASE = `(INTPriv!(pInt).vRam);`;
 
 enum string VRAM(string addr) = `((` ~ addr ~ ` >= V_RAM) && (` ~ addr ~ ` < (V_RAM + VRAM_SIZE)))`;
 enum string V_ADDR_RB(string addr) = `
@@ -384,27 +389,27 @@ enum string V_ADDR_RB(string addr) = `
 	   : *cast(ubyte*) ` ~ V_ADDR!(addr) ~ `)`;
 enum string V_ADDR_RW(string addr) = `
 	((` ~ VRAM!(addr) ~ `) ? MMIO_IN16(cast(ushort*)VRAM_BASE,` ~ VRAM_ADDR!(addr) ~ `) 
-	   : ldw_u(cast(void*)` ~ V_ADDR!(addr) ~ `))`;
+	   : ldw_u(cast(ushort*)` ~ V_ADDR!(addr) ~ `))`;
 enum string V_ADDR_RL(string addr) = `
 	((` ~ VRAM!(addr) ~ `) ? MMIO_IN32(cast(uint*)VRAM_BASE,` ~ VRAM_ADDR!(addr) ~ `) 
-	   : ldl_u(cast(void*)` ~ V_ADDR!(addr) ~ `))`;
+	   : ldl_u(cast(uint*)` ~ V_ADDR!(addr) ~ `))`;
 
 enum string V_ADDR_WB(string addr,string val) = `
 	if(` ~ VRAM!(addr) ~ `) 
-	    MMIO_OUT8(cast(ubyte*)VRAM_BASE,` ~ VRAM_ADDR!(addr) ~ `,` ~ val ~ `); 
+	    MMIO_OUT8(cast(ubyte*)VRAM_BASE,` ~ VRAM_ADDR!(addr) ~ `,cast(ubyte)` ~ val ~ `); 
 	else 
-	    *cast(ubyte*) ` ~ V_ADDR!(addr) ~ ` = ` ~ val ~ `;`;
+	    *cast(ubyte*) ` ~ V_ADDR!(addr) ~ ` = cast(ubyte)(` ~ val ~ `);`;
 enum string V_ADDR_WW(string addr,string val) = `
 	if(` ~ VRAM!(addr) ~ `) 
 	    MMIO_OUT16(cast(ushort*)VRAM_BASE,` ~ VRAM_ADDR!(addr) ~ `,` ~ val ~ `); 
 	else 
-	    stw_u((` ~ val ~ `),cast(void*)(` ~ V_ADDR!(addr) ~ `));`;
+	    stw_u((` ~ val ~ `),cast(ushort*)(` ~ V_ADDR!(addr) ~ `));`;
 
 enum string V_ADDR_WL(string addr,string val) = `
 	if (` ~ VRAM!(addr) ~ `) 
 	    MMIO_OUT32(cast(uint*)VRAM_BASE,` ~ VRAM_ADDR!(addr) ~ `,` ~ val ~ `); 
 	else 
-	    stl_u(` ~ val ~ `,cast(void*)(` ~ V_ADDR!(addr) ~ `));`;
+	    stl_u(` ~ val ~ `,cast(uint*)(` ~ V_ADDR!(addr) ~ `));`;
 
 private ubyte read_b(xf86Int10InfoPtr pInt, int addr)
 {

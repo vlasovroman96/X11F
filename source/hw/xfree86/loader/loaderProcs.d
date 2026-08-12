@@ -76,10 +76,10 @@ ModuleDescPtr DuplicateModule(ModuleDescPtr mod, ModuleDescPtr parent);
 void UnloadDriver(ModuleDescPtr);
 
 void LoaderSetPath(const(char)* driver, const(char)* path);
-void LoaderInitPath();
-void LoaderClosePath();
+// void LoaderInitPath();
+// void LoaderClosePath();
 
-void LoaderUnload(const(char)*, void*);
+// void LoaderUnload(const(char)*, void*);
 c_ulong LoaderGetModuleVersion(ModuleDescPtr mod);
 
 void LoaderResetOptions();

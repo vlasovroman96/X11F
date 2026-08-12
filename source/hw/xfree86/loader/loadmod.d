@@ -63,13 +63,16 @@ import core.sys.posix.sys.types;
 import externs.regex;
 import core.sys.posix.dirent;
 import core.stdc.limits;
+import os.log;
+import externs.gnu;
 
 enum XORG_MODULE_ABI_TAG = "xlibre-25";
 
 struct _pattern {
     const(char)* pattern;
     regex_t rex;
-}alias PatternRec = _pattern;
+}
+alias PatternRec = _pattern;
 alias PatternPtr = _pattern*;
 
 /* Prototypes for static functions */
@@ -118,7 +121,7 @@ void LoaderInitPath() {
 
 void LoaderClosePath() {
     LoaderModulePathListItem* item = void, next = void;
-    mixin(xorg_list_for_each_entry_safe!("item", "next", "modulePathLists", "entry", q{
+    mixin(xorg_list_for_each_entry_safe!("item", "next", "&modulePathLists", "entry", q{
         xorg_list_del(&item.entry);
         free(item.name);
         if (item.paths)
@@ -154,12 +157,12 @@ private char** InitPathList(const(char)* path)
     elem = strtok(fullpath, ",");
     while (elem) {
         if (PathIsAbsolute(elem)) {
-            len = strlen(elem);
+            len = cast(int)strlen(elem);
             addslash = (elem[len - 1] != '/');
             if (addslash)
                 len++;
             save = list;
-            list = reallocarray(list, n + 2, (char*).sizeof);
+            list = cast(char**)reallocarray(list, n + 2, (char*).sizeof);
             if (!list) {
                 if (save) {
                     save[n] = null;
@@ -168,7 +171,7 @@ private char** InitPathList(const(char)* path)
                 free(fullpath);
                 return null;
             }
-            list[n] = calloc(1, len + 1);
+            list[n] = cast(char*)calloc(1, len + 1);
             if (!list[n]) {
                 FreeStringList(list);
                 free(fullpath);
@@ -280,18 +283,18 @@ private PatternRec[7] stdPatterns;
 
 static this() {
 version(_CYGWIN_ ){
-    stdPatterns[0] = PatternRec("^cyg(.*)\\.dll$",0),
-    stdPatterns[1] = PatternRec("(.*)_drv\\.dll$",0),
-    stdPatterns[2] = PatternRec("(.*)\\.dll$",0);
+    stdPatterns[0] = PatternRec("^cyg(.*)\\.dll$",),
+    stdPatterns[1] = PatternRec("(.*)_drv\\.dll$",),
+    stdPatterns[2] = PatternRec("(.*)\\.dll$",);
 
 }
 else {
-    stdPatterns[0] = PatternRec("^lib(.*)\\.so$",0),
-    stdPatterns[1] = PatternRec("(.*)_drv\\.so$",0),
-    stdPatterns[2] = PatternRec("(.*)\\.so$",0);
+    stdPatterns[0] = PatternRec("^lib(.*)\\.so$",),
+    stdPatterns[1] = PatternRec("(.*)_drv\\.so$",),
+    stdPatterns[2] = PatternRec("(.*)\\.so$",);
 }
 // #endif
-    stdPatterns[3] = PatternRec(null, 0); 
+    stdPatterns[3] = PatternRec(null, ); 
     // {null,}
 // ];
 }
@@ -308,7 +311,7 @@ private PatternPtr InitPatterns(const(char)** patternlist)
     if (firstTime) {
         /* precompile stdPatterns */
         firstTime = 0;
-        for (p = stdPatterns; p.pattern; p++)
+        for (p = stdPatterns.ptr; p.pattern; p++)
             if ((e = regcomp(&p.rex, p.pattern, REG_EXTENDED)) != 0) {
                 regerror(e, &p.rex, errmsg.ptr, errmsg.sizeof);
                 FatalError("InitPatterns: regcomp error for `%s': %s\n",
@@ -318,14 +321,14 @@ private PatternPtr InitPatterns(const(char)** patternlist)
 
     if (patternlist) {
         for (i = 0, s = patternlist; *s; i++, s++)
-            if (*s == DEFAULT_LIST)
+            if (*s is cast(char*)DEFAULT_LIST)
                 i += mixin(ARRAY_SIZE!("stdPatterns.ptr")) - 1 - 1;
-        patterns = calloc(i + 1, PatternRec.sizeof);
+        patterns = cast(PatternPtr)calloc(i + 1, PatternRec.sizeof);
         if (!patterns) {
             return null;
         }
         for (i = 0, s = patternlist; *s; i++, s++)
-            if (*s != DEFAULT_LIST) {
+            if (*s !is cast(char*)DEFAULT_LIST) {
                 p = patterns + i;
                 p.pattern = *s;
                 if ((e = regcomp(&p.rex, p.pattern, REG_EXTENDED)) != 0) {
@@ -336,7 +339,7 @@ private PatternPtr InitPatterns(const(char)** patternlist)
                 }
             }
             else {
-                for (p = stdPatterns; p.pattern; p++, i++)
+                for (p = stdPatterns.ptr; p.pattern; p++, i++)
                     patterns[i] = *p;
                 if (p != stdPatterns.ptr)
                     i--;
@@ -344,7 +347,7 @@ private PatternPtr InitPatterns(const(char)** patternlist)
         patterns[i].pattern = null;
     }
     else
-        patterns = stdPatterns;
+        patterns = stdPatterns.ptr;
     return patterns;
 }
 
@@ -359,21 +362,21 @@ private char* FindModuleInSubdir(const(char)* dirpath, const(char)* module_)
     dirent* direntry = null;
     DIR* dir = null;
     char* ret = null; char[PATH_MAX] tmpBuf = void;
-    stat stat_buf = void;
+    stat_t stat_buf = void;
 
     dir = opendir(dirpath);
     if (!dir)
         return null;
 
-    while ((direntry = readdir(dir))) {
+    while ((direntry = readdir(dir)) !is null) {
         if (direntry.d_name[0] == '.')
             continue;
-        snprintf(tmpBuf.ptr, PATH_MAX, "%s%s/", dirpath, direntry.d_name);
+        snprintf(tmpBuf.ptr, PATH_MAX, "%s%s/", dirpath, direntry.d_name.ptr);
         /* the stat with the appended / fails for normal files,
            and works for sub dirs fine, looks a bit strange in strace
            but does seem to work */
         if ((stat(tmpBuf.ptr, &stat_buf) == 0) && S_ISDIR(stat_buf.st_mode)) {
-            if ((ret = FindModuleInSubdir(tmpBuf.ptr, module_)))
+            if ((ret = FindModuleInSubdir(tmpBuf.ptr, module_)) !is null)
                 break;
             continue;
         }
@@ -383,7 +386,7 @@ version (Cygwin) {
 } else {
         snprintf(tmpBuf.ptr, PATH_MAX, "lib%s.so", module_);
 }
-        if (strcmp(direntry.d_name, tmpBuf.ptr) == 0) {
+        if (strcmp(direntry.d_name.ptr, tmpBuf.ptr) == 0) {
             if (asprintf(&ret, "%s%s", dirpath, tmpBuf.ptr) == -1)
                 ret = null;
             break;
@@ -394,7 +397,7 @@ version (Cygwin) {
 } else {
         snprintf(tmpBuf.ptr, PATH_MAX, "%s_drv.so", module_);
 }
-        if (strcmp(direntry.d_name, tmpBuf.ptr) == 0) {
+        if (strcmp(direntry.d_name.ptr, tmpBuf.ptr) == 0) {
             if (asprintf(&ret, "%s%s", dirpath, tmpBuf.ptr) == -1)
                 ret = null;
             break;
@@ -405,7 +408,7 @@ version (Cygwin) {
 } else {
         snprintf(tmpBuf.ptr, PATH_MAX, "%s.so", module_);
 }
-        if (strcmp(direntry.d_name, tmpBuf.ptr) == 0) {
+        if (strcmp(direntry.d_name.ptr, tmpBuf.ptr) == 0) {
             if (asprintf(&ret, "%s%s", dirpath, tmpBuf.ptr) == -1)
                 ret = null;
             break;
@@ -425,9 +428,9 @@ private char* FindModule(const(char)* module_, const(char)* dirname, PatternPtr 
     if (strlen(dirname) > PATH_MAX)
         return null;
 
-    for (s = stdSubdirs; *s; s++) {
+    for (s = stdSubdirs.ptr; *s; s++) {
         snprintf(buf.ptr, PATH_MAX, "%s%s", dirname, *s);
-        if ((name = FindModuleInSubdir(buf.ptr, module_)))
+        if ((name = FindModuleInSubdir(buf.ptr, module_))!is null)
             break;
     }
 
@@ -444,7 +447,7 @@ private const(char)** _LoaderListDir(const(char)* subdir, const(char)** patternl
     DIR* d = void;
     dirent* dp = void;
     regmatch_t[2] match = void;
-    stat stat_buf = void;
+    stat_t stat_buf = void;
     int len = void, dirlen = void;
     char* fp = void;
     char** listing = null;
@@ -452,32 +455,32 @@ private const(char)** _LoaderListDir(const(char)* subdir, const(char)** patternl
     char** ret = null;
     int n = 0;
 
-    if (((pathlist = defaultPathList) == 0))
+    if (((pathlist = defaultPathList)is null))
         return null;
-    if (((patterns = InitPatterns(patternlist)) == 0))
+    if (((patterns = InitPatterns(patternlist)) is null))
         goto bail;
 
     for (elem = pathlist; *elem; elem++) {
         dirlen = snprintf(buf.ptr, PATH_MAX, "%s/%s", *elem, subdir);
         fp = buf.ptr + dirlen;
         if (stat(buf.ptr, &stat_buf) == 0 && S_ISDIR(stat_buf.st_mode) &&
-            (d = opendir(buf.ptr))) {
+            (d = opendir(buf.ptr))!is null) {
             if (buf[dirlen - 1] != '/') {
                 buf[dirlen++] = '/';
                 fp++;
             }
-            while ((dp = readdir(d))) {
-                if (dirlen + strlen(dp.d_name) > PATH_MAX)
+            while ((dp = readdir(d))!is null) {
+                if (dirlen + strlen(dp.d_name.ptr) > PATH_MAX)
                     continue;
-                strcpy(fp, dp.d_name);
+                strcpy(fp, dp.d_name.ptr);
                 if (!(stat(buf.ptr, &stat_buf) == 0 && S_ISREG(stat_buf.st_mode)))
                     continue;
                 for (p = patterns; p.pattern; p++) {
-                    if (regexec(&p.rex, dp.d_name, 2, match.ptr, 0) == 0 &&
+                    if (regexec(&p.rex, dp.d_name.ptr, 2, match.ptr, 0) == 0 &&
                         match[1].rm_so != -1) {
-                        len = match[1].rm_eo - match[1].rm_so;
+                        len = cast(int)(match[1].rm_eo - match[1].rm_so);
                         save = listing;
-                        listing = reallocarray(listing, n + 2, (char*).sizeof);
+                        listing = cast(char**)reallocarray(listing, n + 2, (char*).sizeof);
                         if (!listing) {
                             if (save) {
                                 save[n] = null;
@@ -486,13 +489,13 @@ private const(char)** _LoaderListDir(const(char)* subdir, const(char)** patternl
                             closedir(d);
                             goto bail;
                         }
-                        listing[n] = calloc(1, len + 1);
+                        listing[n] = cast(char*)calloc(1, len + 1);
                         if (!listing[n]) {
                             FreeStringList(listing);
                             closedir(d);
                             goto bail;
                         }
-                        strncpy(listing[n], dp.d_name + match[1].rm_so, len);
+                        strncpy(listing[n], dp.d_name.ptr + match[1].rm_so, len);
                         listing[n][len] = '\0';
                         n++;
                         break;
@@ -516,8 +519,8 @@ const(char)** LoaderListDir(const(char)* subdir, const(char)** patternlist)
 {
     int len = 0;
     const(char)** ret = null;
-    int subdirlen = strlen(subdir);
-    for (int i = 0; i < stdSubdirs.sizeof / typeof(*stdSubdirs).sizeof; i++) {
+    int subdirlen = cast(int)strlen(subdir);
+    for (int i = 0; i < stdSubdirs.sizeof / typeof(*stdSubdirs.ptr).sizeof; i++) {
         int prefixsize = typeof(stdSubdirs[i]).sizeof;
         char* dir = cast(char*) malloc(prefixsize + subdirlen);
         if (!dir) {
@@ -560,10 +563,10 @@ private Bool CheckVersion(const(char)* module_, XF86ModuleVersionInfo* data, con
                data.modname ? data.modname : "UNKNOWN!",
                data.vendor ? data.vendor : "UNKNOWN!");
 
-    vercode[0] = ver / 10000000;
-    vercode[1] = (ver / 100000) % 100;
-    vercode[2] = (ver / 1000) % 100;
-    vercode[3] = ver % 1000;
+    vercode[0] = cast(int)(ver / 10000000);
+    vercode[1] = cast(int)((ver / 100000) % 100);
+    vercode[2] = cast(int)((ver / 1000) % 100);
+    vercode[3] = cast(int)(ver % 1000);
     LogMessageVerb(X_NONE, 1, "\tcompiled for %d.%d.%d", vercode[0], vercode[1], vercode[2]);
     if (vercode[3] != 0)
         LogMessageVerb(X_NONE, 1, ".%d", vercode[3]);
@@ -587,13 +590,13 @@ private Bool CheckVersion(const(char)* module_, XF86ModuleVersionInfo* data, con
         else if (!strcmp(data.abiclass, ABI_CLASS_EXTENSION))
             ver = LoaderVersionInfo.extensionVersion;
 
-        abimaj = GET_ABI_MAJOR(data.abiversion);
-        abimin = GET_ABI_MINOR(data.abiversion);
+        abimaj = mixin(GET_ABI_MAJOR!("data.abiversion"));
+        abimin = mixin(GET_ABI_MINOR!("data.abiversion"));
         LogMessageVerb(X_NONE, 2, "\tABI class: %s, version %d.%d\n",
                        data.abiclass, abimaj, abimin);
         if (ver != -1) {
-            vermaj = GET_ABI_MAJOR(ver);
-            vermin = GET_ABI_MINOR(ver);
+            vermaj = mixin(GET_ABI_MAJOR!("ver"));
+            vermin = mixin(GET_ABI_MINOR!("ver"));
             if (abimaj != vermaj) {
                 LogMessageVerb(LoaderIgnoreAbi ? X_WARNING : X_ERROR, 0,
                                "%s: module ABI major version (%d) "
@@ -656,10 +659,10 @@ private Bool CheckVersion(const(char)* module_, XF86ModuleVersionInfo* data, con
         if (req.abiclass != ABI_CLASS_NONE) {
             int reqmaj = void, reqmin = void, maj = void, min = void;
 
-            reqmaj = GET_ABI_MAJOR(req.abiversion);
-            reqmin = GET_ABI_MINOR(req.abiversion);
-            maj = GET_ABI_MAJOR(data.abiversion);
-            min = GET_ABI_MINOR(data.abiversion);
+            reqmaj = mixin(GET_ABI_MAJOR!("req.abiversion"));
+            reqmin = mixin(GET_ABI_MINOR!("req.abiversion"));
+            maj = mixin(GET_ABI_MAJOR!("data.abiversion"));
+            min = mixin(GET_ABI_MINOR!("data.abiversion"));
             if (maj != reqmaj) {
                 LogMessageVerb(X_WARNING, 2, "%s: ABI major version (%d) "
                                ~ "doesn't match the required ABI major version "
@@ -724,7 +727,7 @@ ModuleDescPtr DuplicateModule(ModuleDescPtr mod, ModuleDescPtr parent)
 
     ret.SetupProc = mod.SetupProc;
     ret.TearDownProc = mod.TearDownProc;
-    ret.TearDownData = ModuleDuplicated;
+    ret.TearDownData = cast(void*)ModuleDuplicated.ptr;
     ret.child = DuplicateModule(cast(module_desc*)mod.child, ret);
     ret.sib = DuplicateModule(cast(module_desc*)mod.sib, parent);
     ret.parent = parent;
@@ -852,7 +855,7 @@ ModuleDescPtr LoadModule(const(char)* module_, void* options, const(XF86ModReqIn
 
     assert(m);
 
-    for (cim = compiled_in_modules; *cim; cim++)
+    for (cim = compiled_in_modules.ptr; *cim; cim++)
         if (!strcmp(m, *cim)) {
             LogMessageVerb(X_INFO, 3, "Module \"%s\" already built-in\n", m);
             ret = cast(ModuleDescPtr) 1;
@@ -927,7 +930,7 @@ ModuleDescPtr LoadModule(const(char)* module_, void* options, const(XF86ModReqIn
             *errmaj = LDR_NOMEM;
         goto LoadModule_fail;
     }
-    initdata = LoaderSymbolFromModule(ret, p);
+    initdata = cast(XF86ModuleData*)LoaderSymbolFromModule(ret, p);
     if (initdata) {
         ModuleSetupProc setup = void;
         ModuleTearDownProc teardown = void;
@@ -1123,7 +1126,7 @@ private char* LoaderGetCanonicalName(const(char)* modname, PatternPtr patterns)
     /* Find the first regex that is matched */
     for (p = patterns; p.pattern; p++)
         if (regexec(&p.rex, s, 2, match.ptr, 0) == 0 && match[1].rm_so != -1) {
-            len = match[1].rm_eo - match[1].rm_so;
+            len = cast(int)(match[1].rm_eo - match[1].rm_so);
             char* str = cast(char*) calloc(1, len + 1);
             if (!str)
                 return null;
@@ -1144,7 +1147,7 @@ c_ulong LoaderGetModuleVersion(ModuleDescPtr mod)
     if (!mod || mod == cast(ModuleDescPtr) 1 || !mod.VersionInfo)
         return 0;
 
-    return MODULE_VERSION_NUMERIC(mod.VersionInfo.majorversion,
-                                  mod.VersionInfo.minorversion,
-                                  mod.VersionInfo.patchlevel);
+    return mixin(MODULE_VERSION_NUMERIC!("mod.VersionInfo.majorversion",
+                                  "mod.VersionInfo.minorversion",
+                                  "mod.VersionInfo.patchlevel"));
 }

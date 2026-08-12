@@ -74,6 +74,8 @@ import Flags;
 import hw.xfree86.common.xf86Helper;
 import dix.events;
 import include.optionstr;
+import randr.randr;
+
 
 int xf86_num_platform_devices;
 

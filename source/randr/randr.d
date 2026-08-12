@@ -40,7 +40,7 @@ import randr.randrstr_priv;
 import randr.rrdispatch_priv;
 
 /* From render.h */
-enum SubPixelUnknown = 0;
+// enum SubPixelUnknown = 0;
 
 
 Bool noRRExtension = FALSE;

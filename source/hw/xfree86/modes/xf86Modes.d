@@ -36,7 +36,11 @@ import xf86Config;
 import xf86Modes;
 import include.xf86Priv;
 import include.xf86Parser;
-
+import hw.xfree86.common.xf86Helper;
+import Monitor;
+import externs.gnu;
+import os.log;
+import xf86Globals;
 /**
  * Calculates the horizontal sync rate of a mode.
  */
@@ -127,7 +131,7 @@ void xf86SetModeDefaultName(DisplayModePtr mode)
     free(cast(void*) mode.name);
 
     if (asprintf(&tmp, "%dx%d%s", mode.HDisplay, mode.VDisplay,
-                   interlaced ? "i" : "") == -1)
+                   interlaced ? "i".ptr : "".ptr) == -1)
         LogMessage(X_ERROR, "xf86SetModeDefaultName() failed to allocate memory\n");
 
     mode.name = tmp;
@@ -190,7 +194,7 @@ void xf86SetModeCrtc(DisplayModePtr p, int adjustFlags)
  * Fills in a copy of mode, removing all stale pointer references.
  * xf86ModesEqual will return true when comparing with original mode.
  */
-void xf86SaveModeContents(DisplayModePtr intern, const(DisplayModeRec)* mode)
+void xf86SaveModeContents(DisplayModePtr intern, DisplayModeRec* mode)
 {
     *intern = *mode;
     intern.prev = intern.next = null;
@@ -203,11 +207,11 @@ void xf86SaveModeContents(DisplayModePtr intern, const(DisplayModeRec)* mode)
 /**
  * Allocates and returns a copy of pMode, including pointers within pMode.
  */
-DisplayModePtr xf86DuplicateMode(const(DisplayModeRec)* pMode)
+DisplayModePtr xf86DuplicateMode(DisplayModeRec* pMode)
 {
     DisplayModePtr pNew = void;
 
-    pNew = XNFalloc(DisplayModeRec.sizeof);
+    pNew = cast(DisplayModeRec*)XNFalloc(DisplayModeRec.sizeof);
     *pNew = *pMode;
     pNew.next = null;
     pNew.prev = null;
@@ -215,7 +219,7 @@ DisplayModePtr xf86DuplicateMode(const(DisplayModeRec)* pMode)
     if (pMode.name == null)
         xf86SetModeDefaultName(pNew);
     else
-        pNew.name = XNFstrdup(pMode.name);
+        pNew.name = cast(const(char)*)XNFstrdup(pMode.name);
 
     return pNew;
 }
@@ -280,7 +284,7 @@ Bool xf86ModesEqual(const(DisplayModeRec)* pMode1, const(DisplayModeRec)* pMode2
 
 private void add(char** p, const(char)* new_)
 {
-    *p = XNFrealloc(*p, strlen(*p) + strlen(new_) + 2);
+    *p = cast(char*)XNFrealloc(*p, strlen(*p) + strlen(new_) + 2);
     strcat(*p, " ");
     strcat(*p, new_);
 }
@@ -313,7 +317,7 @@ private void add(char** p, const(char)* new_)
 void xf86PrintModeline(int scrnIndex, DisplayModePtr mode)
 {
     char[256] tmp = void;
-    char* flags = XNFcallocarray(1, 1);
+    char* flags = cast(char*)XNFcallocarray(1, 1);
 
 enum TBITS = 6;
     const(char)[TBITS + 1] tchar = "UezdPb";
@@ -701,7 +705,7 @@ DisplayModePtr xf86GetMonitorModes(ScrnInfoPtr pScrn, XF86ConfMonitorPtr conf_mo
      * first we collect the mode lines from the UseModes directive
      */
     for (modes_link = conf_monitor.mon_modes_sect_lst;
-         modes_link; modes_link = modes_link.list.next) {
+         modes_link; modes_link = cast(_XF86ConfModesLinkRec*)modes_link.list.next) {
         /* If this modes link hasn't been resolved, go look it up now */
         if (!modes_link.ml_modes)
             modes_link.ml_modes = xf86findModes(modes_link.ml_modes_str,
@@ -725,7 +729,7 @@ DisplayModePtr xf86GetDefaultModes()
     int i = void;
 
     for (i = 0; i < xf86NumDefaultModes; i++) {
-        const(DisplayModeRec)* defMode = &xf86DefaultModes[i];
+        DisplayModeRec* defMode = cast(_DisplayModeRec*)&xf86DefaultModes[i];
 
         mode = xf86DuplicateMode(defMode);
         head = xf86ModesAdd(head, mode);
@@ -772,27 +776,27 @@ DisplayModePtr xf86PruneDuplicateModes(DisplayModePtr modes)
 DisplayModePtr xf86CVTMode(int HDisplay, int VDisplay, float VRefresh, Bool Reduced, Bool Interlaced)
 {
     libxcvt_mode_info* libxcvt_mode_info = void;
-    DisplayModeRec* Mode = XNFcallocarray(1, DisplayModeRec.sizeof);
+    DisplayModeRec* Mode = cast(DisplayModeRec*)XNFcallocarray(1, DisplayModeRec.sizeof);
     char* tmp = null;
 
     libxcvt_mode_info =
-        libxcvt_gen_mode_info(HDisplay, VDisplay, VRefresh, Reduced, Interlaced);
+        libxcvt_gen_mode_info(HDisplay, VDisplay, VRefresh, cast(bool)Reduced, cast(bool)Interlaced);
 
     if (asprintf(&tmp, "%dx%d", HDisplay, VDisplay) == -1)
         return null;
     Mode.name = tmp;
 
-    Mode.VDisplay   = libxcvt_mode_info.vdisplay;
-    Mode.HDisplay   = libxcvt_mode_info.hdisplay;
-    Mode.Clock      = libxcvt_mode_info.dot_clock;
-    Mode.HSyncStart = libxcvt_mode_info.hsync_start;
-    Mode.HSyncEnd   = libxcvt_mode_info.hsync_end;
-    Mode.HTotal     = libxcvt_mode_info.htotal;
-    Mode.VSyncStart = libxcvt_mode_info.vsync_start;
-    Mode.VSyncEnd   = libxcvt_mode_info.vsync_end;
-    Mode.VTotal     = libxcvt_mode_info.vtotal;
-    Mode.VRefresh   = libxcvt_mode_info.vrefresh;
-    Mode.Flags      = libxcvt_mode_info.mode_flags;
+    Mode.VDisplay   = cast(int)libxcvt_mode_info.vdisplay;
+    Mode.HDisplay   = cast(int)libxcvt_mode_info.hdisplay;
+    Mode.Clock      = cast(int)libxcvt_mode_info.dot_clock;
+    Mode.HSyncStart = cast(int)libxcvt_mode_info.hsync_start;
+    Mode.HSyncEnd   = cast(int)libxcvt_mode_info.hsync_end;
+    Mode.HTotal     = cast(int)libxcvt_mode_info.htotal;
+    Mode.VSyncStart = cast(int)libxcvt_mode_info.vsync_start;
+    Mode.VSyncEnd   = cast(int)libxcvt_mode_info.vsync_end;
+    Mode.VTotal     = cast(int)libxcvt_mode_info.vtotal;
+    Mode.VRefresh   = cast(int)libxcvt_mode_info.vrefresh;
+    Mode.Flags      = cast(int)libxcvt_mode_info.mode_flags;
 
     free(libxcvt_mode_info);
 

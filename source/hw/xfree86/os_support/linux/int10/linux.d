@@ -13,7 +13,7 @@ import include.xf86_OSproc;;
 import include.xf86Pci;
 import include.compiler;
 version = _INT10_PRIVATE;
-import xf86int10;
+// import xf86int10;
 version (__sparc__) {
 enum DEV_MEM = "/dev/fb";
 } else {

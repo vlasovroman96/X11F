@@ -2316,7 +2316,7 @@ private Bool addDefaultModes(MonPtr monitorp)
     int i = 0;
 
     for (i = 0; i < xf86NumDefaultModes; i++) {
-        mode = xf86DuplicateMode(&xf86DefaultModes[i]);
+        mode = xf86DuplicateMode(cast(_DisplayModeRec*)&xf86DefaultModes[i]);
         if (!modeIsPresent(mode, monitorp)) {
             monitorp.Modes = xf86ModesAdd(monitorp.Modes, mode);
             last = mode;

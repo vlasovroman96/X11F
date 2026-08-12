@@ -57,8 +57,8 @@ alias VisualPtr = _Visual*;
 alias DepthPtr = _Depth*;
 alias ScreenPtr = _Screen*;
 
-extern void AttachOutputGPU(ScreenPtr pScreen, ScreenPtr newScreen);
-extern void DetachOutputGPU(ScreenPtr output);
+// extern void AttachOutputGPU(ScreenPtr pScreen, ScreenPtr newScreen);
+// extern void DetachOutputGPU(ScreenPtr output);
 
 alias ColormapPtr = _ColormapRec*;
 

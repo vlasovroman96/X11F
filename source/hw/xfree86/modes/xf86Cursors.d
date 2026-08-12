@@ -44,6 +44,10 @@ import hw.xfree86.ramdac.xf86CursorPriv;
 import include.picturestr;
 import include.cursorstr;
 import include.inputstr;
+import hw.xfree86.common.xf86Helper;
+import hw.xfree86.modes.xf86Crtc;
+import xf86Globals;
+import xf86CursorRD;
 
 /*
  * Returns the rotation being performed by the server.  If the driver indicates
@@ -237,7 +241,7 @@ pragma(inline, true) private Bool xf86_driver_load_cursor_argb(xf86CrtcPtr crtc,
 private Bool xf86_crtc_convert_cursor_to_argb(xf86CrtcPtr crtc, ubyte* src)
 {
     ScrnInfoPtr scrn = crtc.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
     CARD32* cursor_image = cast(CARD32*) xf86_config.cursor_image;
     int x = void, y = void;
@@ -273,11 +277,11 @@ private Bool xf86_crtc_convert_cursor_to_argb(xf86CrtcPtr crtc, ubyte* src)
 private void xf86_set_cursor_colors(ScrnInfoPtr scrn, int bg, int fg)
 {
     ScreenPtr screen = scrn.pScreen;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     CursorPtr cursor = xf86CurrentCursor(screen);
     int c = void;
     CARD8* bits = cursor ?
-        dixLookupScreenPrivate(&cursor.devPrivates,
+        cast(ubyte*)dixLookupScreenPrivate(&cursor.devPrivates,
                                &xf86ScreenCursorBitsKeyRec, screen)
         : null;
 
@@ -307,7 +311,7 @@ void xf86_crtc_hide_cursor(xf86CrtcPtr crtc)
 
 void xf86_hide_cursors(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     xf86_config.cursor_on = FALSE;
@@ -334,7 +338,7 @@ Bool xf86_crtc_show_cursor(xf86CrtcPtr crtc)
 
 Bool xf86_show_cursors(ScrnInfoPtr scrn)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     xf86_config.cursor_on = TRUE;
@@ -352,7 +356,7 @@ private void xf86_crtc_transform_cursor_position(xf86CrtcPtr crtc, int* x, int* 
 {
     ScrnInfoPtr scrn = crtc.scrn;
     ScreenPtr screen = scrn.pScreen;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
     xf86CursorScreenPtr ScreenPriv = cast(xf86CursorScreenPtr) dixLookupPrivate(&screen.devPrivates,
                                                &xf86CursorScreenKeyRec);
@@ -408,7 +412,7 @@ private void xf86_crtc_transform_cursor_position(xf86CrtcPtr crtc, int* x, int* 
 private void xf86_crtc_set_cursor_position(xf86CrtcPtr crtc, int x, int y)
 {
     ScrnInfoPtr scrn = crtc.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
     DisplayModePtr mode = &crtc.mode;
     int crtc_x = x, crtc_y = y;
@@ -442,7 +446,7 @@ private void xf86_crtc_set_cursor_position(xf86CrtcPtr crtc, int x, int y)
 
 private void xf86_set_cursor_position(ScrnInfoPtr scrn, int x, int y)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     /* undo what xf86HWCurs did to the coordinates */
@@ -462,7 +466,7 @@ private void xf86_set_cursor_position(ScrnInfoPtr scrn, int x, int y)
 private Bool xf86_crtc_load_cursor_image(xf86CrtcPtr crtc, CARD8* src)
 {
     ScrnInfoPtr scrn = crtc.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
     CARD8* cursor_image = void;
     const(Rotation) rotation = xf86_crtc_cursor_rotation(crtc);
@@ -499,7 +503,7 @@ private Bool xf86_crtc_load_cursor_image(xf86CrtcPtr crtc, CARD8* src)
  */
 private Bool xf86_load_cursor_image(ScrnInfoPtr scrn, ubyte* src)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     xf86_config.cursor = xf86CurrentCursor(scrn.pScreen);
@@ -523,7 +527,7 @@ private Bool xf86_load_cursor_image(ScrnInfoPtr scrn, ubyte* src)
 private Bool xf86_use_hw_cursor(ScreenPtr screen, CursorPtr cursor)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
     int c = void;
 
@@ -547,7 +551,7 @@ private Bool xf86_use_hw_cursor(ScreenPtr screen, CursorPtr cursor)
 private Bool xf86_use_hw_cursor_argb(ScreenPtr screen, CursorPtr cursor)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
 
     if (!xf86_use_hw_cursor(screen, cursor))
@@ -563,7 +567,7 @@ private Bool xf86_use_hw_cursor_argb(ScreenPtr screen, CursorPtr cursor)
 private Bool xf86_crtc_load_cursor_argb(xf86CrtcPtr crtc, CursorPtr cursor)
 {
     ScrnInfoPtr scrn = crtc.scrn;
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = xf86_config.cursor_info;
     CARD32* cursor_image = cast(CARD32*) xf86_config.cursor_image;
     CARD32* cursor_source = cast(CARD32*) cursor.bits.argb;
@@ -592,7 +596,7 @@ private Bool xf86_crtc_load_cursor_argb(xf86CrtcPtr crtc, CursorPtr cursor)
 
 private Bool xf86_load_cursor_argb(ScrnInfoPtr scrn, CursorPtr cursor)
 {
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     int c = void;
 
     xf86_config.cursor = cursor;
@@ -609,14 +613,14 @@ private Bool xf86_load_cursor_argb(ScrnInfoPtr scrn, CursorPtr cursor)
 Bool xf86_cursors_init(ScreenPtr screen, int max_width, int max_height, int flags)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
     xf86CursorInfoPtr cursor_info = void;
 
     cursor_info = xf86CreateCursorInfoRec();
     if (!cursor_info)
         return FALSE;
 
-    xf86_config.cursor_image = calloc(max_width * max_height, 4);
+    xf86_config.cursor_image = cast(ubyte*)calloc(max_width * max_height, 4);
 
     if (!xf86_config.cursor_image) {
         xf86DestroyCursorInfoRec(cursor_info);
@@ -629,15 +633,15 @@ Bool xf86_cursors_init(ScreenPtr screen, int max_width, int max_height, int flag
     cursor_info.MaxHeight = max_height;
     cursor_info.Flags = flags;
 
-    cursor_info.SetCursorColors = xf86_set_cursor_colors;
-    cursor_info.SetCursorPosition = xf86_set_cursor_position;
-    cursor_info.LoadCursorImageCheck = xf86_load_cursor_image;
-    cursor_info.HideCursor = xf86_hide_cursors;
-    cursor_info.ShowCursorCheck = xf86_show_cursors;
-    cursor_info.UseHWCursor = xf86_use_hw_cursor;
+    cursor_info.SetCursorColors = &xf86_set_cursor_colors;
+    cursor_info.SetCursorPosition = &xf86_set_cursor_position;
+    cursor_info.LoadCursorImageCheck = &xf86_load_cursor_image;
+    cursor_info.HideCursor = &xf86_hide_cursors;
+    cursor_info.ShowCursorCheck = &xf86_show_cursors;
+    cursor_info.UseHWCursor = &xf86_use_hw_cursor;
     if (flags & HARDWARE_CURSOR_ARGB) {
-        cursor_info.UseHWCursorARGB = xf86_use_hw_cursor_argb;
-        cursor_info.LoadCursorARGBCheck = xf86_load_cursor_argb;
+        cursor_info.UseHWCursorARGB = &xf86_use_hw_cursor_argb;
+        cursor_info.LoadCursorARGBCheck = &xf86_load_cursor_argb;
     }
 
     xf86_hide_cursors(scrn);
@@ -651,7 +655,7 @@ Bool xf86_cursors_init(ScreenPtr screen, int max_width, int max_height, int flag
 void xf86_cursors_fini(ScreenPtr screen)
 {
     ScrnInfoPtr scrn = xf86ScreenToScrn(screen);
-    xf86CrtcConfigPtr xf86_config = XF86_CRTC_CONFIG_PTR(scrn);
+    xf86CrtcConfigPtr xf86_config = mixin(XF86_CRTC_CONFIG_PTR!("scrn"));
 
     if (xf86_config.cursor_info) {
         xf86DestroyCursorInfoRec(xf86_config.cursor_info);

@@ -143,14 +143,14 @@ void RRDeliverScreenEvent(ClientPtr pClient, WindowPtr pWin, ScreenPtr pScreen);
  *
  * @param pScreen the screen where changes occoured
  */
-void RRResourcesChanged(ScreenPtr pScreen);
+// void RRResourcesChanged(ScreenPtr pScreen);
 
 /*
  * Initialize randr subsystem
  *
  * @return TRUE on success
  */
-Bool RRInit();
+// Bool RRInit();
 
 /*
  * Retrieve the first enabled CRTC on given screen
@@ -440,7 +440,7 @@ void RRXineramaExtensionInit();
  *
  * @param transform   the transform structure to initialized
  */
-void RRTransformInit(RRTransformPtr transform);
+// void RRTransformInit(RRTransformPtr transform);
 
 /*
  * Compare two transform structures
@@ -449,7 +449,7 @@ void RRTransformInit(RRTransformPtr transform);
  * @param b   second transform
  * @return TRUE if both transforms are equal
  */
-Bool RRTransformEqual(RRTransformPtr a, RRTransformPtr b);
+// Bool RRTransformEqual(RRTransformPtr a, RRTransformPtr b);
 
 /*
  * Copy transform structure to another
@@ -458,6 +458,6 @@ Bool RRTransformEqual(RRTransformPtr a, RRTransformPtr b);
  * @param src source structure pointer
  * @return TRUE on success
  */
-Bool RRTransformCopy(RRTransformPtr dst, RRTransformPtr src);
+// Bool RRTransformCopy(RRTransformPtr dst, RRTransformPtr src);
 
  /* _XSERVER_RANDRSTR_PRIV_H_ */

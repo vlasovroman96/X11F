@@ -50,17 +50,17 @@ alias DDC_QUIRK_DVI_SINGLE_LINK = ddc_quirk_t.DDC_QUIRK_DVI_SINGLE_LINK;
 
 alias handle_detailed_fn = void function(detailed_monitor_section*, void*);
 
-void xf86ForEachDetailedBlock(xf86MonPtr mon, handle_detailed_fn, void* data);
+// void xf86ForEachDetailedBlock(xf86MonPtr mon, handle_detailed_fn, void* data);
 
-ddc_quirk_t xf86DDCDetectQuirks(int scrnIndex, xf86MonPtr DDC, Bool verbose);
+// ddc_quirk_t xf86DDCDetectQuirks(int scrnIndex, xf86MonPtr DDC, Bool verbose);
 
-void xf86DetTimingApplyQuirks(detailed_monitor_section* det_mon, ddc_quirk_t quirks, int hsize, int vsize);
+// void xf86DetTimingApplyQuirks(detailed_monitor_section* det_mon, ddc_quirk_t quirks, int hsize, int vsize);
 
 alias handle_video_fn = void function(cea_video_block*, void*);
 
-void xf86ForEachVideoBlock(xf86MonPtr, handle_video_fn, void*);
+// void xf86ForEachVideoBlock(xf86MonPtr, handle_video_fn, void*);
 
-cea_data_block* xf86MonitorFindHDMIBlock(xf86MonPtr mon);
+// cea_data_block* xf86MonitorFindHDMIBlock(xf86MonPtr mon);
 
 void xf86EdidMonitorSet(int scrnIndex, MonPtr Monitor, xf86MonPtr DDC);
 

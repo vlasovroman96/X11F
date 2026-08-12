@@ -64,6 +64,7 @@ import Flags;
 import os.log;
 import xf86Globals;
 import include.edid;
+import interpret_edid;
 
 
 struct _DevToConfig {

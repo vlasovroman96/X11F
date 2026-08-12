@@ -60,8 +60,8 @@ enum ABI_CLASS_EXTENSION =	"X.Org Server Extension";
 
 enum ABI_MINOR_MASK =		0x0000FFFF;
 enum ABI_MAJOR_MASK =		0xFFFF0000;
-enum string GET_ABI_MINOR(alias v) = `((` ~ v.stringof ~ `) & ABI_MINOR_MASK)`;
-enum string GET_ABI_MAJOR(alias v) = `(((` ~ v.stringof ~ `) & ABI_MAJOR_MASK) >> 16)`;
+enum string GET_ABI_MINOR(alias v) = `((` ~ v ~ `) & ABI_MINOR_MASK)`;
+enum string GET_ABI_MAJOR(alias v) = `(((` ~ v ~ `) & ABI_MAJOR_MASK) >> 16)`;
 // enum string SET_ABI_VERSION(alias maj, alias min) = `
 // 		((((` ~ maj.stringof ~ `) << 16) & ABI_MAJOR_MASK) | ((` ~ min.stringof ~ `) & ABI_MINOR_MASK))`;
 auto SET_ABI_VERSION(T)(T maj, T min) {
@@ -170,7 +170,7 @@ enum string MODULE_VERSION_NUMERIC(string maj, string min, string patch) = `
 /* Prototypes for Loader functions that are exported to modules */
 extern void * LoadSubModule(void*, const(char)*, const(char)**, const(char)**, void*, const(XF86ModReqInfo)*, int*, int*);
 extern void * LoaderSymbol(const(char)*);
-extern void * LoaderSymbolFromModule(void*, const(char)*);
+// extern void * LoaderSymbolFromModule(void*, const(char)*);
 extern void  LoaderErrorMsg(const(char)*, const(char)*, int, int);
 
 /* deprecated, only kept for backwards compat w/ proprietary NVidia driver */

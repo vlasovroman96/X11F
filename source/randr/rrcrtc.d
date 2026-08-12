@@ -1022,7 +1022,7 @@ Bool RRCrtcExists(ScreenPtr pScreen, RRCrtcPtr findCrtc)
     return FALSE;
 }
 
-private void RRModeGetScanoutSize(RRModePtr mode, PictTransformPtr transform, int* width, int* height)
+void RRModeGetScanoutSize(RRModePtr mode, PictTransformPtr transform, int* width, int* height)
 {
     if (mode == null) {
         *width = 0;

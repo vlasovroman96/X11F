@@ -109,6 +109,8 @@ import core.sys.posix.stdlib;
 import mi.midispcur;
 import hw.xfree86.drivers.video.modesetting.vblank;
 import hw.xfree86.modes.xf86Crtc;
+import hw.xfree86.loader.loader;
+import randr.randr;
 
 
 alias SetupFnPtr = extern(C) Bool function(ScreenPtr) @nogc nothrow;

@@ -505,7 +505,7 @@ alias xf86ConfigSymTabPtr = xf86ConfigSymTabRec*;
  */
 extern void  xf86findDevice(const(char)* ident, XF86ConfDevicePtr p);
 // extern void  xf86findLayout(const(char)* name, XF86ConfLayoutPtr list);
-extern void  xf86findMonitor(const(char)* ident, XF86ConfMonitorPtr p);
+// extern void  xf86findMonitor(const(char)* ident, XF86ConfMonitorPtr p);
 // extern void  xf86findModes(const(char)* ident, XF86ConfModesPtr p);
 extern void  xf86findModeLine(const(char)* ident, XF86ConfModeLinePtr p);
 // extern void  xf86findScreen(const(char)* ident, XF86ConfScreenPtr p);

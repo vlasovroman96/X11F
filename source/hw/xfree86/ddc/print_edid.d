@@ -34,6 +34,9 @@ import include.xf86_OSproc;;
 import xf86DDC_priv;
 import edid_priv;
 import hw.xfree86.common.xf86Helper;
+import interpret_edid;
+import xf86EdidModes;
+
 
 
 /* display type, analog */

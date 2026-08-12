@@ -32,7 +32,7 @@ extern void  xf86DoEDID_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDC1SetSpeed, u
 
 extern void  xf86DoEDID_DDC2(ScrnInfoPtr pScrn, I2CBusPtr pBus);
 
-extern void  xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool);
+// extern void  xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool);
 
 extern void  xf86PrintEDID(xf86MonPtr monPtr);
 

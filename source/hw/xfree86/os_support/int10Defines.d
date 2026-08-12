@@ -28,61 +28,64 @@ extern(C): __gshared:
  * authorization from the copyright holder(s) and author(s).
  */
 
-version (_INT10DEFINES_H_) {} else {
-enum _INT10DEFINES_H_ = 1;
+// version (_INT10DEFINES_H_) {} else {
+// enum _INT10DEFINES_H_ = 1;
 
-version (_VM86_LINUX) {
+// version (_VM86_LINUX) {
 
-public import c_asmvm86;
+public import externs.c_asm.vm86;
+import externs.X11.Xdefs;
+import externs.X11.Xmd;
 
-enum string CPU_R(string type,string name,string num) = `
-	((cast(type*)&((cast(vm86_struct*)REG.cpuRegs).regs.` ~ name ~ `))[` ~ num ~ `])`;
-enum string CPU_RD(string name,string num) = `` ~ CPU_R!(`CARD32`,name,num) ~ ``;
-enum string CPU_RW(string name,string num) = `` ~ CPU_R!(`CARD16`,name,num) ~ ``;
-enum string CPU_RB(string name,string num) = `` ~ CPU_R!(`CARD8`,name,num) ~ ``;
 
-enum X86_EAX = CPU_RD(eax,0);
-enum X86_EBX = CPU_RD(ebx,0);
-enum X86_ECX = CPU_RD(ecx,0);
-enum X86_EDX = CPU_RD(edx,0);
-enum X86_ESI = CPU_RD(esi,0);
-enum X86_EDI = CPU_RD(edi,0);
-enum X86_EBP = CPU_RD(ebp,0);
-enum X86_EIP = CPU_RD(eip,0);
-enum X86_ESP = CPU_RD(esp,0);
-enum X86_EFLAGS = CPU_RD(eflags,0);
+// enum string CPU_R(string type,string name,string num) = `
+// 	((cast(`~type~`*)&((cast(vm86_struct*)REG.cpuRegs).regs.` ~ name ~ `))[` ~ num ~ `])`;
+// enum string CPU_RD(string name,string num) = `` ~ CPU_R!(`CARD32`,name,num) ~ ``;
+// enum string CPU_RW(string name,string num) = `` ~ CPU_R!(`CARD16`,name,num) ~ ``;
+// enum string CPU_RB(string name,string num) = `` ~ CPU_R!(`CARD8`,name,num) ~ ``;
 
-enum X86_FLAGS = CPU_RW(eflags,0);
-enum X86_AX = CPU_RW(eax,0);
-enum X86_BX = CPU_RW(ebx,0);
-enum X86_CX = CPU_RW(ecx,0);
-enum X86_DX = CPU_RW(edx,0);
-enum X86_SI = CPU_RW(esi,0);
-enum X86_DI = CPU_RW(edi,0);
-enum X86_BP = CPU_RW(ebp,0);
-enum X86_IP = CPU_RW(eip,0);
-enum X86_SP = CPU_RW(esp,0);
-enum X86_CS = CPU_RW(cs,0);
-enum X86_DS = CPU_RW(ds,0);
-enum X86_ES = CPU_RW(es,0);
-enum X86_SS = CPU_RW(ss,0);
-enum X86_FS = CPU_RW(fs,0);
-enum X86_GS = CPU_RW(gs,0);
+// auto X86_EAX = mixin(CPU_RD!("eax","0"));
+// auto X86_EBX = mixin(CPU_RD!("ebx","0"));
+// auto X86_ECX = mixin(CPU_RD!("ecx","0"));
+// auto X86_EDX = mixin(CPU_RD!("edx","0"));
+// auto X86_ESI = mixin(CPU_RD!("esi","0"));
+// auto X86_EDI = mixin(CPU_RD!("edi","0"));
+// auto X86_EBP = mixin(CPU_RD!("ebp","0"));
+// auto X86_EIP = mixin(CPU_RD!("eip","0"));
+// auto X86_ESP = mixin(CPU_RD!("esp","0"));
+// auto X86_EFLAGS = mixin(CPU_RD!("eflags","0"));
 
-enum X86_AL = CPU_RB(eax,0);
-enum X86_BL = CPU_RB(ebx,0);
-enum X86_CL = CPU_RB(ecx,0);
-enum X86_DL = CPU_RB(edx,0);
+// auto X86_FLAGS = mixin(CPU_RW!("eflags","0"));
+// auto X86_AX = mixin(CPU_RW!("eax","0"));
+// auto X86_BX = mixin(CPU_RW!("ebx","0"));
+// auto X86_CX = mixin(CPU_RW!("ecx","0"));
+// auto X86_DX = mixin(CPU_RW!("edx","0"));
+// auto X86_SI = mixin(CPU_RW!("esi","0"));
+// auto X86_DI = mixin(CPU_RW!("edi","0"));
+// auto X86_BP = mixin(CPU_RW!("ebp","0"));
+// auto X86_IP = mixin(CPU_RW!("eip","0"));
+// auto X86_SP = mixin(CPU_RW!("esp","0"));
+// auto X86_CS = mixin(CPU_RW!("cs","0"));
+// auto X86_DS = mixin(CPU_RW!("ds","0"));
+// auto X86_ES = mixin(CPU_RW!("es","0"));
+// auto X86_SS = mixin(CPU_RW!("ss","0"));
+// auto X86_FS = mixin(CPU_RW!("fs","0"));
+// auto X86_GS = mixin(CPU_RW!("gs","0"));
 
-enum X86_AH = CPU_RB(eax,1);
-enum X86_BH = CPU_RB(ebx,1);
-enum X86_CH = CPU_RB(ecx,1);
-enum X86_DH = CPU_RB(edx,1);
+// auto X86_AL = mixin(CPU_RB!("eax","0"));
+// auto X86_BL = mixin(CPU_RB!("ebx","0"));
+// auto X86_CL = mixin(CPU_RB!("ecx","0"));
+// auto X86_DL = mixin(CPU_RB!("edx","0"));
 
-} else version (_X86EMU) {
+// auto X86_AH = mixin(CPU_RB!("eax","1"));
+// auto X86_BH = mixin(CPU_RB!("ebx","1"));
+// auto X86_CH = mixin(CPU_RB!("ecx","1"));
+// auto X86_DH = mixin(CPU_RB!("edx","1"));
 
-public import xf86x86emu;
+// } else version (_X86EMU) {
 
-}
+// public import xf86x86emu;
 
-}
+// }
+
+// }

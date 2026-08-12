@@ -73,7 +73,7 @@ extern void  xf86Int10FreePages(xf86Int10InfoPtr pInt, void* pbase, int num);
 extern void * xf86int10Addr(xf86Int10InfoPtr pInt, uint addr);
 
 /* x86 executor related functions */
-extern void  xf86ExecX86int10(xf86Int10InfoPtr pInt);
+// extern void  xf86ExecX86int10(xf86Int10InfoPtr pInt);
 
 // version (_INT10_PRIVATE) {
 
@@ -116,13 +116,13 @@ enum string MEM_WW(string name, string addr, string val) = `(*` ~ name ~ `.mem.w
 enum string MEM_WL(string name, string addr, string val) = `(*` ~ name ~ `.mem.wl)(` ~ name ~ `, ` ~ addr ~ `, ` ~ val ~ `)`;
 
 /* OS dependent functions */
-extern void  MapCurrentInt10(xf86Int10InfoPtr pInt);
+// extern void  MapCurrentInt10(xf86Int10InfoPtr pInt);
 
 /* x86 executor related functions */
 // extern void  xf86Int10ExecSetup(xf86Int10InfoPtr pInt);
 
 /* int.c */
-extern xf86Int10InfoPtr Int10Current;
+// extern xf86Int10InfoPtr Int10Current;
 
 version (_PC) {
 extern void  xf86Int10SaveRestoreBIOSVars(xf86Int10InfoPtr pInt, Bool save);

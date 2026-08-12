@@ -13,6 +13,7 @@ extern(C) @nogc nothrow {
 	char *strcasestr(const char *haystack, const char *needle);
 	ssize_t getline(char **lineptr, size_t *n, FILE *stream);
 	char *strtok_r(char *str, const char *delim, char **saveptr);
+	int getpagesize();
 	
 ulong majorDev(ulong dev)
 {
