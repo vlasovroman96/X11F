@@ -1,5 +1,6 @@
 module include.compiler;
 
+@nogc: nothrow:
 import core.stdc.stdint;
 import core.volatile;
 
@@ -14,7 +15,7 @@ version (X86)
     @nogc nothrow
     void memBarrier()
     {
-        asm
+        asm @nogc nothrow
         {
             mfence;
         }
@@ -23,7 +24,7 @@ version (X86)
     @nogc nothrow
     void writeMemBarrier()
     {
-        asm
+        asm @nogc nothrow
         {
             sfence;
         }
@@ -36,7 +37,7 @@ else version (X86_64)
     @nogc nothrow
     void memBarrier()
     {
-        asm
+        asm @nogc nothrow
         {
             mfence;
         }
@@ -45,7 +46,7 @@ else version (X86_64)
     @nogc nothrow
     void writeMemBarrier()
     {
-        asm
+        asm @nogc nothrow
         {
             sfence;
         }
@@ -56,7 +57,7 @@ else version (ARM)
     @nogc nothrow
     void memBarrier()
     {
-        asm
+        asm @nogc nothrow
         {
             dmb;
         }
@@ -147,7 +148,7 @@ version (X86_64)
     @nogc nothrow
     void outb(ushort port, ubyte value)
     {
-        asm
+        asm @nogc nothrow
         {
             mov DX, port;
             mov AL, value;
@@ -160,7 +161,7 @@ version (X86_64)
     {
         ubyte value;
 
-        asm
+        asm @nogc nothrow
         {
             mov DX, port;
             in AL, DX;

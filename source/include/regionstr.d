@@ -2,6 +2,7 @@ module include.regionstr;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
+
 /***********************************************************
 
 Copyright 1987, 1998  The Open Group
@@ -54,6 +55,7 @@ alias RegionPtr = pixman_region16*;
 
 public import include.miscstruct;
 public import externs.X11.X;
+import externs.attrs;
 
 
 /* Return values from RectIn() */
@@ -124,7 +126,7 @@ pragma(inline, true) BoxPtr RegionEnd(RegionPtr reg)
 pragma(inline, true) size_t RegionSizeof(size_t n)
 {
     if (n < ((INT_MAX - RegDataRec.sizeof) / BoxRec.sizeof))
-        return (((RegDataRec) + ((n) * BoxRec.sizeof)).sizeof);
+        return (((RegDataRec).sizeof + ((n) * BoxRec.sizeof)));
     else
         return 0;
 }

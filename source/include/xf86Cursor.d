@@ -36,7 +36,7 @@ pragma(inline, true) Bool xf86DriverHasLoadCursorImage(xf86CursorInfoPtr infoPtr
 pragma(inline, true)bool xf86DriverLoadCursorImage(xf86CursorInfoPtr infoPtr, ubyte* bits)
 {
     if(infoPtr.LoadCursorImageCheck)
-        return infoPtr.LoadCursorImageCheck(infoPtr.pScrn, bits);
+        return cast(bool)infoPtr.LoadCursorImageCheck(infoPtr.pScrn, bits);
     infoPtr.LoadCursorImage(infoPtr.pScrn, bits);
     return TRUE;
 }
@@ -49,7 +49,7 @@ pragma(inline, true)bool xf86DriverHasShowCursor(xf86CursorInfoPtr infoPtr)
 pragma(inline, true)bool xf86DriverShowCursor(xf86CursorInfoPtr infoPtr)
 {
     if(infoPtr.ShowCursorCheck)
-        return infoPtr.ShowCursorCheck(infoPtr.pScrn);
+        return cast(bool)infoPtr.ShowCursorCheck(infoPtr.pScrn);
     infoPtr.ShowCursor(infoPtr.pScrn);
     return TRUE;
 }
@@ -62,7 +62,7 @@ pragma(inline, true)bool xf86DriverHasLoadCursorARGB(xf86CursorInfoPtr infoPtr)
 pragma(inline, true)bool xf86DriverLoadCursorARGB(xf86CursorInfoPtr infoPtr, CursorPtr pCursor)
 {
     if(infoPtr.LoadCursorARGBCheck)
-        return infoPtr.LoadCursorARGBCheck(infoPtr.pScrn, pCursor);
+        return cast(bool)infoPtr.LoadCursorARGBCheck(infoPtr.pScrn, pCursor);
     infoPtr.LoadCursorARGB(infoPtr.pScrn, pCursor);
     return TRUE;
 }

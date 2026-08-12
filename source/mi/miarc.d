@@ -66,6 +66,62 @@ import include.pixmapstr;
 import include.windowstr;
 import mifpoly;
 import mifillarc;
+import mizerarc;
+
+enum string MIWIDEARCSETUP(string x, string y, string dy, string slw, string e, string xk, string xm, string yk, string ym) = `
+    (`~x~`) = 0; 
+    (`~y~`) = (`~slw~`) >> 1; 
+    (`~yk~`) = (`~y~`) << 3; 
+    (`~xm~`) = 8; 
+    (`~ym~`) = 8; 
+    if ((`~dy~`)) 
+    { 
+	(`~xk~`) = 0; 
+	if ((`~slw~`) & 1) 
+	    (`~e~`) = -1; 
+	else 
+	    (`~e~`) = -((`~y~`) << 2) - 2; 
+    } 
+    else 
+    { 
+	(`~y~`)++; 
+	(`~yk~`) += 4; 
+	(`~xk~`) = -4; 
+	if ((`~slw~`) & 1) 
+	    (`~e~`) = -((`~y~`) << 2) - 3; 
+	else 
+	    (`~e~`) = -((`~y~`) << 3); 
+    }`;
+
+
+enum string MIFILLARCSTEP(stirng slw) =`
+    e += yk;
+    while (e >= 0)
+    {
+	x++;
+	xk -= xm;
+	e += xk;
+    }
+    y--;
+    yk -= ym;
+    (`~slw~`) = (x << 1) + dx;
+    if ((e == xk) && ((`~slw~`) > 1))
+	    (`~slw~`)--;
+`;
+
+#define MIFILLINARCSTEP(slw) \
+    ine += inyk; \
+    while (ine >= 0) \
+    { \
+	inx++; \
+	inxk -= inxm; \
+	ine += inxk; \
+    } \
+    iny--; \
+    inyk -= inym; \
+    (slw) = (inx << 1) + dx; \
+    if ((ine == inxk) && ((slw) > 1)) \
+	(slw)--
 
 enum EPSILON =	0.000001;
 enum string ISEQUAL(string a,string b) = `(fabs((` ~ a ~ `) - (` ~ b ~ `)) <= EPSILON)`;
@@ -388,11 +444,11 @@ private void miComputeCircleSpans(int lw, xArc* parc, miArcSpanData* spdata)
     y = parc.height >> 1;
     dy = parc.height & 1;
     dx = 1 - dy;
-    MIWIDEARCSETUP(x, y, dy, slw, e, xk, xm, yk, ym);
+    mixin(MIWIDEARCSETUP!("x", "y", "dy", "slw", "e", "xk", "xm", "yk", "ym"));
     inslw = parc.width + doinner;
     if (inslw > 0) {
         spdata.hole = spdata.top;
-        MIWIDEARCSETUP(inx, iny, dy, inslw, ine, inxk, inxm, inyk, inym);
+        mixin(MIWIDEARCSETUP!("inx", "iny", "dy", "inslw", "ine", "inxk", "inxm", "inyk", "inym"));
     }
     else {
         spdata.hole = FALSE;
@@ -402,7 +458,7 @@ private void miComputeCircleSpans(int lw, xArc* parc, miArcSpanData* spdata)
     spdata.count2 = y + doinner;
     span = spdata.spans;
     while (y) {
-        MIFILLARCSTEP(slw);
+        mixin(MIFILLARCSTEP!("slw"));
         span.lx = dy - x;
         if (++doinner <= 0) {
             span.lw = slw;

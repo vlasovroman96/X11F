@@ -8,6 +8,7 @@ extern(C): __gshared:
  
 public import include.dix;
 public import dix.dispatch;
+import include.xlibre_ptrtypes;
 
 int PanoramiXCreateWindow(ClientPtr client);
 int PanoramiXChangeWindowAttributes(ClientPtr client);

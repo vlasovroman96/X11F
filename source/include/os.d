@@ -66,6 +66,7 @@ public import core.stdc.time;
 public import include.xlibre_ptrtypes;
 public import include.callback;
 public import include.misc;
+import os.connection;
 
 /*
  * @brief macro for specifying non-null arguments

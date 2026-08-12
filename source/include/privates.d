@@ -218,29 +218,29 @@ pragma(inline, true) void** dixLookupPrivateAddr(PrivatePtr* privates, const(Dev
 
 extern int dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr key, ScreenPtr pScreen, DevPrivateType type, uint size);
 
-extern int _dixGetScreenPrivateKey(const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen);
+// extern int _dixGetScreenPrivateKey(const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen);
 
-pragma(inline, true) private void* dixGetScreenPrivateAddr(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen)
+pragma(inline, true) private void* dixGetScreenPrivateAddr(PrivatePtr* privates, DevScreenPrivateKeyPtr key, ScreenPtr pScreen)
 {
     return dixGetPrivateAddr(privates, _dixGetScreenPrivateKey(key, pScreen));
 }
 
-pragma(inline, true) private void* dixGetScreenPrivate(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen)
+pragma(inline, true) private void* dixGetScreenPrivate(PrivatePtr* privates, DevScreenPrivateKeyPtr key, ScreenPtr pScreen)
 {
     return dixGetPrivate(privates, _dixGetScreenPrivateKey(key, pScreen));
 }
 
-pragma(inline, true) void dixSetScreenPrivate(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen, void* val)
+pragma(inline, true) void dixSetScreenPrivate(PrivatePtr* privates, DevScreenPrivateKeyPtr key, ScreenPtr pScreen, void* val)
 {
     dixSetPrivate(privates, _dixGetScreenPrivateKey(key, pScreen), val);
 }
 
-pragma(inline, true) void* dixLookupScreenPrivate(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen)
+pragma(inline, true) void* dixLookupScreenPrivate(PrivatePtr* privates, DevScreenPrivateKeyPtr key, ScreenPtr pScreen)
 {
     return dixLookupPrivate(privates, _dixGetScreenPrivateKey(key, pScreen));
 }
 
-pragma(inline, true) private void** dixLookupScreenPrivateAddr(PrivatePtr* privates, const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen)
+pragma(inline, true) private void** dixLookupScreenPrivateAddr(PrivatePtr* privates, DevScreenPrivateKeyPtr key, ScreenPtr pScreen)
 {
     return dixLookupPrivateAddr(privates,
                                 _dixGetScreenPrivateKey(key, pScreen));
