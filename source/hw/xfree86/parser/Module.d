@@ -139,36 +139,36 @@ XF86ConfModulePtr xf86parseModuleSection(XF86ConfModulePtr ptr)
             break;
         case LOAD:
             if (xf86getSubToken(&(ptr.mod_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Load");
+                mixin(ErrorP!(`QUOTE_MSG, "Load"`));
             ptr.mod_load_lst =
                 xf86addNewLoadDirective(ptr.mod_load_lst, xf86_lex_val.str,
                                         XF86_LOAD_MODULE, null);
             break;
         case DISABLE:
             if (xf86getSubToken(&(ptr.mod_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Disable");
+                mixin(ErrorP!(`QUOTE_MSG, "Disable"`));
             ptr.mod_disable_lst =
                 xf86addNewLoadDirective(ptr.mod_disable_lst, xf86_lex_val.str,
                                         XF86_DISABLE_MODULE, null);
             break;
         case LOAD_DRIVER:
             if (xf86getSubToken(&(ptr.mod_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "LoadDriver");
+                mixin(ErrorP!(`QUOTE_MSG, "LoadDriver"`));
             ptr.mod_load_lst =
                 xf86addNewLoadDirective(ptr.mod_load_lst, xf86_lex_val.str,
                                         XF86_LOAD_DRIVER, null);
             break;
         case SUBSECTION:
             if (xf86getSubToken(&(ptr.mod_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "SubSection");
+                mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             ptr.mod_load_lst =
                 xf86parseModuleSubSection(ptr.mod_load_lst, xf86_lex_val.str);
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
@@ -256,20 +256,20 @@ void xf86freeModules(XF86ConfModulePtr ptr)
         return;
     lptr = ptr.mod_load_lst;
     while (lptr) {
-        TestFree(lptr.load_name);
-        TestFree(lptr.load_comment);
+        mixin(TestFree!(`lptr.load_name`));
+        mixin(TestFree!(`lptr.load_comment`));
         prev = lptr;
         lptr = lptr.list.next;
         free(prev);
     }
     lptr = ptr.mod_disable_lst;
     while (lptr) {
-        TestFree(lptr.load_name);
-        TestFree(lptr.load_comment);
+        mixin(TestFree!(`lptr.load_name`));
+        mixin(TestFree!(`lptr.load_comment`));
         prev = lptr;
         lptr = lptr.list.next;
         free(prev);
     }
-    TestFree(ptr.mod_comment);
+    mixin(TestFree!(`ptr.mod_comment`));
     free(ptr);
 }

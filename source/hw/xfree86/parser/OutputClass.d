@@ -51,11 +51,11 @@ private void xf86freeOutputClassList(XF86ConfOutputClassPtr ptr)
     XF86ConfOutputClassPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.identifier);
-        TestFree(ptr.comment);
-        TestFree(ptr.driver);
-        TestFree(ptr.modules);
-        TestFree(ptr.modulepath);
+        mixin(TestFree!(`ptr.identifier`));
+        mixin(TestFree!(`ptr.comment`));
+        mixin(TestFree!(`ptr.driver`));
+        mixin(TestFree!(`ptr.modules`));
+        mixin(TestFree!(`ptr.modulepath`));
 
         xf86freeMatchGroupList(&ptr.match_driver);
         xf86freeMatchGroupList(&ptr.match_layout);
@@ -90,21 +90,21 @@ XF86ConfOutputClassPtr xf86parseOutputClassSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
         case DRIVER:
             if (xf86getSubToken(&(ptr.comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Driver");
+                mixin(ErrorP!(`QUOTE_MSG, "Driver"`));
             else
                 ptr.driver = xf86_lex_val.str;
             break;
         case MODULE:
             if (xf86getSubToken(&(ptr.comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Module");
+                mixin(ErrorP!(`QUOTE_MSG, "Module"`));
             if (ptr.modules) {
                 char* path = void;
                 XNFasprintf(&path, "%s,%s", ptr.modules, xf86_lex_val.str);
@@ -117,7 +117,7 @@ XF86ConfOutputClassPtr xf86parseOutputClassSection()
             break;
         case MODULEPATH:
             if (xf86getSubToken(&(ptr.comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "ModulePath");
+                mixin(ErrorP!(`QUOTE_MSG, "ModulePath"`));
             if (ptr.modulepath) {
                 char* path = null;
                 if (asprintf(&path, "%s,%s", ptr.modulepath, xf86_lex_val.str) == -1)
@@ -134,7 +134,7 @@ XF86ConfOutputClassPtr xf86parseOutputClassSection()
             break;
         case MATCH_DRIVER:
             if (xf86getSubToken(&(ptr.comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "MatchDriver");
+                mixin(ErrorP!(`QUOTE_MSG, "MatchDriver"`));
             else {
                 group = xf86createMatchGroup(xf86_lex_val.str, MATCH_EXACT, FALSE);
                 if (group)
@@ -144,7 +144,7 @@ XF86ConfOutputClassPtr xf86parseOutputClassSection()
             break;
         case MATCH_LAYOUT:
             if (xf86getSubToken(&(ptr.comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "MatchLayout");
+                mixin(ErrorP!(`QUOTE_MSG, "MatchLayout"`));
             else {
                 group = xf86createMatchGroup(xf86_lex_val.str, MATCH_EXACT, FALSE);
                 if (group)
@@ -153,16 +153,16 @@ XF86ConfOutputClassPtr xf86parseOutputClassSection()
             }
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
 
     if (!has_ident)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("OutputClass section parsed\n");

@@ -202,13 +202,13 @@ XF86ConfigPtr xf86readConfigFile()
             else {
                 free(xf86_lex_val.str);
                 xf86_lex_val.str = null;
-                Error(INVALID_SECTION_MSG, xf86tokenString());
+                mixin(ErrorP!(`INVALID_SECTION_MSG, xf86tokenString()`));
             }
             break;
         default:
             free(xf86_lex_val.str);
             xf86_lex_val.str = null;
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
         }
     }
 
@@ -298,7 +298,7 @@ void xf86freeConfig(XF86ConfigPtr p)
     xf86freeVendorList(p.conf_vendor_lst);
     xf86freeDRI(p.conf_dri);
     xf86freeExtensions(p.conf_extensions);
-    TestFree(p.conf_comment);
+    mixin(TestFree!(`p.conf_comment`));
 
     free(p);
 }

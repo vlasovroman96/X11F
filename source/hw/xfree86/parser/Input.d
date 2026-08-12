@@ -60,6 +60,17 @@ import include.os;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
 
 
 private const(xf86ConfigSymTabRec)[6] InputTab = [
@@ -88,15 +99,15 @@ XF86ConfInputPtr xf86parseInputSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.inp_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.inp_identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
         case DRIVER:
             if (xf86getSubToken(&(ptr.inp_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Driver");
+                mixin(ErrorP!(`QUOTE_MSG, "Driver"`));
             if (strcmp(xf86_lex_val.str, "keyboard") == 0) {
                 ptr.inp_driver = strdup("kbd");
                 free(xf86_lex_val.str);
@@ -108,16 +119,16 @@ XF86ConfInputPtr xf86parseInputSection()
             ptr.inp_option_lst = xf86parseOption(ptr.inp_option_lst);
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
 
     if (!has_ident)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("InputDevice section parsed\n");
@@ -138,7 +149,7 @@ void xf86printInputSection(FILE* cf, XF86ConfInputPtr ptr)
             fprintf(cf, "\tDriver      \"%s\"\n", ptr.inp_driver);
         xf86printOptionList(cf, ptr.inp_option_lst, 1);
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfInputRec*)ptr.list.next;
     }
 }
 
@@ -147,13 +158,13 @@ void xf86freeInputList(XF86ConfInputPtr ptr)
     XF86ConfInputPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.inp_identifier);
-        TestFree(ptr.inp_driver);
-        TestFree(ptr.inp_comment);
+        mixin(TestFree!(`ptr.inp_identifier`));
+        mixin(TestFree!(`ptr.inp_driver`));
+        mixin(TestFree!(`ptr.inp_comment`));
         xf86optionListFree(ptr.inp_option_lst);
 
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfInputRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -168,7 +179,7 @@ int xf86validateInput(XF86ConfigPtr p)
                                 input.inp_identifier);
             return FALSE;
         }
-        input = input.list.next;
+        input = cast(_XF86ConfInputRec*)input.list.next;
     }
     return TRUE;
 }
@@ -179,7 +190,7 @@ XF86ConfInputPtr xf86findInput(const(char)* ident, XF86ConfInputPtr p)
         if (xf86nameCompare(ident, p.inp_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfInputRec*)p.list.next;
     }
     return null;
 }
@@ -190,7 +201,7 @@ XF86ConfInputPtr xf86findInputByDriver(const(char)* driver, XF86ConfInputPtr p)
         if (xf86nameCompare(driver, p.inp_driver) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfInputRec*)p.list.next;
     }
     return null;
 }

@@ -107,13 +107,13 @@ void xf86printVideoAdaptorSection(FILE* cf, XF86ConfVideoAdaptorPtr ptr);
 void xf86freeVideoAdaptorList(XF86ConfVideoAdaptorPtr ptr);
 
 /* scan.c */
-int xf86getToken(const(xf86ConfigSymTabRec)* tab);
-int xf86getSubToken(char** comment);
-int xf86getSubTokenWithTab(char** comment, const(xf86ConfigSymTabRec)* tab);
-void xf86unGetToken(int token);
-char* xf86tokenString();
-void xf86parseError(const(char)* format, ...);
-void xf86validationError(const(char)* format, ...);
+// int xf86getToken(const(xf86ConfigSymTabRec)* tab);
+// int xf86getSubToken(char** comment);
+// int xf86getSubTokenWithTab(char** comment, const(xf86ConfigSymTabRec)* tab);
+// void xf86unGetToken(int token);
+// char* xf86tokenString();
+// void xf86parseError(const(char)* format, ...);
+// void xf86validationError(const(char)* format, ...);
 void xf86setSection(const(char)* section);
 int xf86getStringToken(const(xf86ConfigSymTabRec)* tab);
 

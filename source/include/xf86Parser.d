@@ -503,7 +503,7 @@ alias xf86ConfigSymTabPtr = xf86ConfigSymTabRec*;
 /*
  * prototypes for public functions
  */
-extern void  xf86findDevice(const(char)* ident, XF86ConfDevicePtr p);
+// extern void  xf86findDevice(const(char)* ident, XF86ConfDevicePtr p);
 // extern void  xf86findLayout(const(char)* name, XF86ConfLayoutPtr list);
 // extern void  xf86findMonitor(const(char)* ident, XF86ConfMonitorPtr p);
 // extern void  xf86findModes(const(char)* ident, XF86ConfModesPtr p);
@@ -516,7 +516,7 @@ extern void  xf86findVideoAdaptor(const(char)* ident, XF86ConfVideoAdaptorPtr p)
 // extern void  xf86itemNotSublist(GenericListPtr list_1, GenericListPtr list_2);
 extern void  xf86pathIsAbsolute(const(char)* path);
 // extern void  xf86pathIsSafe(const(char)* path);
-extern void * xf86addComment(char* cur, const(char)* add);
+// extern void * xf86addComment(char* cur, const(char)* add);
 // extern void  xf86getBoolValue(Bool* val, const(char)* str);
 
                           /* _xf86Parser_h_ */

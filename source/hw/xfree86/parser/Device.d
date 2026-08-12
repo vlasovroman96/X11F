@@ -59,7 +59,11 @@ import build.xorg_config;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
 
 private const(xf86ConfigSymTabRec)[24] DeviceTab = [
     {ENDSECTION, "endsection"},
@@ -104,53 +108,53 @@ XF86ConfDevicePtr xf86parseDeviceSection()
     while ((token = xf86getToken(DeviceTab.ptr)) != ENDSECTION) {
         switch (token) {
         case COMMENT:
-            ptr.dev_comment = xf86addComment(ptr.dev_comment, xf86_lex_val.str);
+            ptr.dev_comment = cast(char*)xf86addComment(ptr.dev_comment, xf86_lex_val.str);
             free(xf86_lex_val.str);
             xf86_lex_val.str = null;
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.dev_identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
         case VENDOR:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Vendor");
+                mixin(ErrorP!(`QUOTE_MSG, "Vendor"`));
             ptr.dev_vendor = xf86_lex_val.str;
             break;
         case BOARD:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Board");
+                mixin(ErrorP!(`QUOTE_MSG, "Board"`));
             ptr.dev_board = xf86_lex_val.str;
             break;
         case CHIPSET:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Chipset");
+                mixin(ErrorP!(`QUOTE_MSG, "Chipset"`));
             ptr.dev_chipset = xf86_lex_val.str;
             break;
         case CARD:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Card");
+                mixin(ErrorP!(`QUOTE_MSG, "Card"`));
             ptr.dev_card = xf86_lex_val.str;
             break;
         case DRIVER:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Driver");
+                mixin(ErrorP!(`QUOTE_MSG, "Driver"`));
             ptr.dev_driver = xf86_lex_val.str;
             break;
         case RAMDAC:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Ramdac");
+                mixin(ErrorP!(`QUOTE_MSG, "Ramdac"`));
             ptr.dev_ramdac = xf86_lex_val.str;
             break;
         case DACSPEED:
             for (i = 0; i < CONF_MAXDACSPEEDS; i++)
                 ptr.dev_dacSpeeds[i] = 0;
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER) {
-                Error(DACSPEED_MSG, CONF_MAXDACSPEEDS);
+                mixin(ErrorP!(`DACSPEED_MSG, CONF_MAXDACSPEEDS`));
             }
             else {
                 ptr.dev_dacSpeeds[0] = cast(int) (xf86_lex_val.realnum * 1000.0 + 0.5);
@@ -167,37 +171,37 @@ XF86ConfDevicePtr xf86parseDeviceSection()
             break;
         case VIDEORAM:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "VideoRam");
+                mixin(ErrorP!(`NUMBER_MSG, "VideoRam"`));
             ptr.dev_videoram = xf86_lex_val.num;
             break;
         case BIOSBASE:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "BIOSBase");
+                mixin(ErrorP!(`NUMBER_MSG, "BIOSBase"`));
             /* ignored */
             break;
         case MEMBASE:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "MemBase");
+                mixin(ErrorP!(`NUMBER_MSG, "MemBase"`));
             ptr.dev_mem_base = xf86_lex_val.num;
             break;
         case XF86_TOKEN_IOBASE:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "IOBase");
+                mixin(ErrorP!(`NUMBER_MSG, "IOBase"`));
             ptr.dev_io_base = xf86_lex_val.num;
             break;
         case CLOCKCHIP:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "ClockChip");
+                mixin(ErrorP!(`QUOTE_MSG, "ClockChip"`));
             ptr.dev_clockchip = xf86_lex_val.str;
             break;
         case CHIPID:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "ChipID");
+                mixin(ErrorP!(`NUMBER_MSG, "ChipID"`));
             ptr.dev_chipid = xf86_lex_val.num;
             break;
         case CHIPREV:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "ChipRev");
+                mixin(ErrorP!(`NUMBER_MSG, "ChipRev"`));
             ptr.dev_chiprev = xf86_lex_val.num;
             break;
 
@@ -209,13 +213,13 @@ XF86ConfDevicePtr xf86parseDeviceSection()
                 token = xf86getSubToken(&(ptr.dev_comment));
             }
             if (token == NUMBER && i >= CONF_MAXCLOCKS)
-                Error(CLOCKS_TOO_MANY, CONF_MAXCLOCKS);
+                mixin(ErrorP!(`CLOCKS_TOO_MANY, CONF_MAXCLOCKS`));
             ptr.dev_clocks = i;
             xf86unGetToken(token);
             break;
         case MATCHSEAT:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "MatchSeat");
+                mixin(ErrorP!(`QUOTE_MSG, "MatchSeat"`));
             ptr.match_seat = xf86_lex_val.str;
             break;
         case OPTION:
@@ -223,30 +227,30 @@ XF86ConfDevicePtr xf86parseDeviceSection()
             break;
         case BUSID:
             if (xf86getSubToken(&(ptr.dev_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "BusID");
+                mixin(ErrorP!(`QUOTE_MSG, "BusID"`));
             ptr.dev_busid = xf86_lex_val.str;
             break;
         case IRQ:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(QUOTE_MSG, "IRQ");
+                mixin(ErrorP!(`QUOTE_MSG, "IRQ"`));
             ptr.dev_irq = xf86_lex_val.num;
             break;
         case SCREEN:
             if (xf86getSubToken(&(ptr.dev_comment)) != NUMBER)
-                Error(NUMBER_MSG, "Screen");
+                mixin(ErrorP!(`NUMBER_MSG, "Screen"`));
             ptr.dev_screen = xf86_lex_val.num;
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
 
     if (!has_ident)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("Device section parsed\n");
@@ -310,7 +314,7 @@ void xf86printDeviceSection(FILE* cf, XF86ConfDevicePtr ptr)
         if (ptr.dev_irq >= 0)
             fprintf(cf, "\tIRQ         %d\n", ptr.dev_irq);
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfDeviceRec*)ptr.list.next;
     }
 }
 
@@ -319,19 +323,19 @@ void xf86freeDeviceList(XF86ConfDevicePtr ptr)
     XF86ConfDevicePtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.dev_identifier);
-        TestFree(ptr.dev_vendor);
-        TestFree(ptr.dev_board);
-        TestFree(ptr.dev_chipset);
-        TestFree(ptr.dev_card);
-        TestFree(ptr.dev_driver);
-        TestFree(ptr.dev_ramdac);
-        TestFree(ptr.dev_clockchip);
-        TestFree(ptr.dev_comment);
+        mixin(TestFree!(`ptr.dev_identifier`));
+        mixin(TestFree!(`ptr.dev_vendor`));
+        mixin(TestFree!(`ptr.dev_board`));
+        mixin(TestFree!(`ptr.dev_chipset`));
+        mixin(TestFree!(`ptr.dev_card`));
+        mixin(TestFree!(`ptr.dev_driver`));
+        mixin(TestFree!(`ptr.dev_ramdac`));
+        mixin(TestFree!(`ptr.dev_clockchip`));
+        mixin(TestFree!(`ptr.dev_comment`));
         xf86optionListFree(ptr.dev_option_lst);
 
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfDeviceRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -342,7 +346,7 @@ XF86ConfDevicePtr xf86findDevice(const(char)* ident, XF86ConfDevicePtr p)
         if (xf86nameCompare(ident, p.dev_identifier) == 0)
             return p;
 
-        p = p.list.next;
+        p = cast(_XF86ConfDeviceRec*)p.list.next;
     }
     return null;
 }

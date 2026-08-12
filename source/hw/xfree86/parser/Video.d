@@ -75,8 +75,8 @@ private void xf86freeVideoPortList(XF86ConfVideoPortPtr ptr)
     XF86ConfVideoPortPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.vp_identifier);
-        TestFree(ptr.vp_comment);
+        mixin(TestFree!(`ptr.vp_identifier`));
+        mixin(TestFree!(`ptr.vp_comment`));
         xf86optionListFree(ptr.vp_option_lst);
         prev = ptr;
         ptr = ptr.list.next;
@@ -100,9 +100,9 @@ private XF86ConfVideoPortPtr xf86parseVideoPortSubSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.vp_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.vp_identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
@@ -111,10 +111,10 @@ private XF86ConfVideoPortPtr xf86parseVideoPortSubSection()
             break;
 
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
@@ -156,30 +156,30 @@ XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             ptr.va_identifier = xf86_lex_val.str;
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             has_ident = TRUE;
             break;
         case VENDOR:
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Vendor");
+                mixin(ErrorP!(`QUOTE_MSG, "Vendor"`));
             ptr.va_vendor = xf86_lex_val.str;
             break;
         case BOARD:
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Board");
+                mixin(ErrorP!(`QUOTE_MSG, "Board"`));
             ptr.va_board = xf86_lex_val.str;
             break;
         case BUSID:
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "BusID");
+                mixin(ErrorP!(`QUOTE_MSG, "BusID"`));
             ptr.va_busid = xf86_lex_val.str;
             break;
         case DRIVER:
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Driver");
+                mixin(ErrorP!(`QUOTE_MSG, "Driver"`));
             ptr.va_driver = xf86_lex_val.str;
             break;
         case OPTION:
@@ -187,7 +187,7 @@ XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection()
             break;
         case SUBSECTION:
             if (xf86getSubToken(&(ptr.va_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "SubSection");
+                mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             {
                 HANDLE_LIST(va_port_lst, &xf86parseVideoPortSubSection,
                             XF86ConfVideoPortPtr);
@@ -195,16 +195,16 @@ XF86ConfVideoAdaptorPtr xf86parseVideoAdaptorSection()
             break;
 
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
 
     if (!has_ident)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("VideoAdaptor section parsed\n");
@@ -252,13 +252,13 @@ void xf86freeVideoAdaptorList(XF86ConfVideoAdaptorPtr ptr)
     XF86ConfVideoAdaptorPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.va_identifier);
-        TestFree(ptr.va_vendor);
-        TestFree(ptr.va_board);
-        TestFree(ptr.va_busid);
-        TestFree(ptr.va_driver);
-        TestFree(ptr.va_fwdref);
-        TestFree(ptr.va_comment);
+        mixin(TestFree!(`ptr.va_identifier`));
+        mixin(TestFree!(`ptr.va_vendor`));
+        mixin(TestFree!(`ptr.va_board`));
+        mixin(TestFree!(`ptr.va_busid`));
+        mixin(TestFree!(`ptr.va_driver`));
+        mixin(TestFree!(`ptr.va_fwdref`));
+        mixin(TestFree!(`ptr.va_comment`));
         xf86freeVideoPortList(ptr.va_port_lst);
         xf86optionListFree(ptr.va_option_lst);
         prev = ptr;

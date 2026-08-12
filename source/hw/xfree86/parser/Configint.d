@@ -82,7 +82,7 @@ struct _LexRec {
 }alias LexRec = _LexRec;
 alias LexPtr = LexRec*;
 
-extern LexRec xf86_lex_val;
+// extern LexRec xf86_lex_val;
 
 // enum TRUE = 1;
 
@@ -119,9 +119,9 @@ else
 }
 }`;
 
-enum string Error() = `do { 
-		xf86parseError (__VA_ARGS__); CLEANUP (ptr); return null; 
-		   } while (0)`;
+enum string ErrorP(Args...) = `{ 
+		return null; 
+		   } `;
 
 /*
  * These are defines for error messages to promote consistency.

@@ -80,7 +80,7 @@ extern XF86OptionPtr xf86newOption(char *name, ubyte *value);
 // extern void  xf86optionListMerge(XF86OptionPtr head, XF86OptionPtr tail);
 // extern void  xf86nameCompare(const(char)* s1, const(char)* s2);
 extern void * xf86uLongToString(c_ulong i);
-extern void  xf86parseOption(XF86OptionPtr head);
-extern void  xf86printOptionList(FILE* fp, XF86OptionPtr list, int tabs);
+// extern void  xf86parseOption(XF86OptionPtr head);
+// extern void  xf86printOptionList(FILE* fp, XF86OptionPtr list, int tabs);
 
                           /* _xf86Optrec_h_ */

@@ -61,6 +61,22 @@ import xf86tokens;
 import Configint;
 import core.stdc.string;
 import include.optionstr;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
+import core.stdc.string;
+import externs.gnu;
+import read;
+import xf86Option;
+import Input;
+import Screen;
+import Device;
+
 
 /* Needed for auto server layout */
 // extern int xf86CheckBoolOption(void* optlist, const(char)* name, int deflt);
@@ -105,15 +121,15 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.lay_identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
         case MATCHSEAT:
             if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "MatchSeat");
+                mixin(ErrorP!(`QUOTE_MSG, "MatchSeat"`));
             ptr.match_seat = xf86_lex_val.str;
             break;
         case INACTIVE:
@@ -124,7 +140,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
             iptr.list.next = null;
             if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
                 free(iptr);
-                Error(INACTIVE_MSG);
+                mixin(ErrorP!(`INACTIVE_MSG`));
             }
             iptr.inactive_device_str = xf86_lex_val.str;
             ptr.lay_inactive_lst = cast(XF86ConfInactivePtr)
@@ -150,7 +166,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
             token = xf86getSubToken(&(ptr.lay_comment));
             if (token != XF86_TOKEN_STRING) {
                 free(aptr);
-                Error(SCREEN_MSG);
+                mixin(ErrorP!(`SCREEN_MSG`));
             }
             aptr.adj_screen_str = xf86_lex_val.str;
 
@@ -177,7 +193,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
                 break;
             case EOF_TOKEN:
                 free(aptr);
-                Error(UNEXPECTED_EOF_MSG);
+                mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
                 break;
             default:
                 xf86unGetToken(token);
@@ -196,14 +212,14 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
                     token = xf86getSubToken(&(ptr.lay_comment));
                     if (token != NUMBER) {
                         free(aptr);
-                        Error(INVALID_SCR_MSG);
+                        mixin(ErrorP!(`INVALID_SCR_MSG`));
                     }
                     aptr.adj_y = xf86_lex_val.num;
                 }
                 else {
                     if (absKeyword) {
                         free(aptr);
-                        Error(INVALID_SCR_MSG);
+                        mixin(ErrorP!(`INVALID_SCR_MSG`));
                     }
                     else
                         xf86unGetToken(token);
@@ -217,20 +233,20 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
                 token = xf86getSubToken(&(ptr.lay_comment));
                 if (token != XF86_TOKEN_STRING) {
                     free(aptr);
-                    Error(INVALID_SCR_MSG);
+                    mixin(ErrorP!(`INVALID_SCR_MSG`));
                 }
                 aptr.adj_refscreen = xf86_lex_val.str;
                 if (aptr.adj_where == CONF_ADJ_RELATIVE) {
                     token = xf86getSubToken(&(ptr.lay_comment));
                     if (token != NUMBER) {
                         free(aptr);
-                        Error(INVALID_SCR_MSG);
+                        mixin(ErrorP!(`INVALID_SCR_MSG`));
                     }
                     aptr.adj_x = xf86_lex_val.num;
                     token = xf86getSubToken(&(ptr.lay_comment));
                     if (token != NUMBER) {
                         free(aptr);
-                        Error(INVALID_SCR_MSG);
+                        mixin(ErrorP!(`INVALID_SCR_MSG`));
                     }
                     aptr.adj_y = xf86_lex_val.num;
                 }
@@ -242,24 +258,24 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
                 /* bottom */
                 if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
                     free(aptr);
-                    Error(SCREEN_MSG);
+                    mixin(ErrorP!(`SCREEN_MSG`));
                 }
                 aptr.adj_bottom_str = xf86_lex_val.str;
 
                 /* left */
                 if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
                     free(aptr);
-                    Error(SCREEN_MSG);
+                    mixin(ErrorP!(`SCREEN_MSG`));
                 }
                 aptr.adj_left_str = xf86_lex_val.str;
 
                 /* right */
                 if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
                     free(aptr);
-                    Error(SCREEN_MSG);
+                    mixin(ErrorP!(`SCREEN_MSG`));
                 }
                 aptr.adj_right_str = xf86_lex_val.str;
-
+            goto default;
             default: break;}
             ptr.lay_adjacency_lst = cast(XF86ConfAdjacencyPtr)
                 xf86addListItem(cast(glp) ptr.lay_adjacency_lst, cast(glp) aptr);
@@ -274,7 +290,7 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
             iptr.iref_option_lst = null;
             if (xf86getSubToken(&(ptr.lay_comment)) != XF86_TOKEN_STRING) {
                 free(iptr);
-                Error(INPUTDEV_MSG);
+                mixin(ErrorP!(`INPUTDEV_MSG`));
             }
             iptr.iref_inputdev_str = xf86_lex_val.str;
             while ((token = xf86getSubToken(&(ptr.lay_comment))) == XF86_TOKEN_STRING) {
@@ -290,16 +306,16 @@ XF86ConfLayoutPtr xf86parseLayoutSection()
             ptr.lay_option_lst = xf86parseOption(ptr.lay_option_lst);
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
 
     if (!has_ident)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("Layout section parsed\n");
@@ -322,7 +338,7 @@ void xf86printLayoutSection(FILE* cf, XF86ConfLayoutPtr ptr)
         if (ptr.lay_identifier)
             fprintf(cf, "\tIdentifier     \"%s\"\n", ptr.lay_identifier);
 
-        for (aptr = ptr.lay_adjacency_lst; aptr; aptr = aptr.list.next) {
+        for (aptr = ptr.lay_adjacency_lst; aptr; aptr = cast(_XF86ConfAdjacencyRec*)aptr.list.next) {
             fprintf(cf, "\tScreen     ");
             if (aptr.adj_scrnum >= 0)
                 fprintf(cf, "%2d", aptr.adj_scrnum);
@@ -360,18 +376,18 @@ void xf86printLayoutSection(FILE* cf, XF86ConfLayoutPtr ptr)
                 break;
             default: break;}
         }
-        for (iptr = ptr.lay_inactive_lst; iptr; iptr = iptr.list.next)
+        for (iptr = ptr.lay_inactive_lst; iptr; iptr = cast(_XF86ConfInactiveRec*)iptr.list.next)
             fprintf(cf, "\tInactive       \"%s\"\n", iptr.inactive_device_str);
-        for (inptr = ptr.lay_input_lst; inptr; inptr = inptr.list.next) {
+        for (inptr = ptr.lay_input_lst; inptr; inptr = cast(_XF86ConfInputrefRec*)inptr.list.next) {
             fprintf(cf, "\tInputDevice    \"%s\"", inptr.iref_inputdev_str);
-            for (optr = inptr.iref_option_lst; optr; optr = optr.list.next) {
+            for (optr = inptr.iref_option_lst; optr; optr = cast(_InputOption*)optr.list.next) {
                 fprintf(cf, " \"%s\"", optr.opt_name);
             }
             fprintf(cf, "\n");
         }
         xf86printOptionList(cf, ptr.lay_option_lst, 1);
         fprintf(cf, "EndSection\n\n");
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfLayoutRec*)ptr.list.next;
     }
 }
 
@@ -380,14 +396,14 @@ private void xf86freeAdjacencyList(XF86ConfAdjacencyPtr ptr)
     XF86ConfAdjacencyPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.adj_screen_str);
-        TestFree(ptr.adj_top_str);
-        TestFree(ptr.adj_bottom_str);
-        TestFree(ptr.adj_left_str);
-        TestFree(ptr.adj_right_str);
+        mixin(TestFree!(`ptr.adj_screen_str`));
+        mixin(TestFree!(`ptr.adj_top_str`));
+        mixin(TestFree!(`ptr.adj_bottom_str`));
+        mixin(TestFree!(`ptr.adj_left_str`));
+        mixin(TestFree!(`ptr.adj_right_str`));
 
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfAdjacencyRec*)ptr.list.next;
         free(prev);
     }
 
@@ -398,10 +414,10 @@ private void xf86freeInputrefList(XF86ConfInputrefPtr ptr)
     XF86ConfInputrefPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.iref_inputdev_str);
+        mixin(TestFree!(`ptr.iref_inputdev_str`));
         xf86optionListFree(ptr.iref_option_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfInputrefRec*)ptr.list.next;
         free(prev);
     }
 
@@ -412,12 +428,12 @@ void xf86freeLayoutList(XF86ConfLayoutPtr ptr)
     XF86ConfLayoutPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.lay_identifier);
-        TestFree(ptr.lay_comment);
+        mixin(TestFree!(`ptr.lay_identifier`));
+        mixin(TestFree!(`ptr.lay_comment`));
         xf86freeAdjacencyList(ptr.lay_adjacency_lst);
         xf86freeInputrefList(ptr.lay_input_lst);
         prev = ptr;
-        ptr = ptr.list.next;
+        ptr = cast(_XF86ConfLayoutRec*)ptr.list.next;
         free(prev);
     }
 }
@@ -438,7 +454,7 @@ int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout)
             while (iref) {
                 if (strcmp(iref.iref_inputdev_str, input.inp_identifier) == 0)
                     break;
-                iref = iref.list.next;
+                iref = cast(_XF86ConfInputrefRec*)iref.list.next;
             }
 
             if (!iref) {
@@ -451,7 +467,7 @@ int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout)
                 count++;
             }
         }
-        input = input.list.next;
+        input = cast(_XF86ConfInputRec*)input.list.next;
     }
 
     inptr = layout.lay_input_lst;
@@ -465,7 +481,7 @@ int xf86layoutAddInputDevices(XF86ConfigPtr config, XF86ConfLayoutPtr layout)
         }
         else
             inptr.iref_inputdev = input;
-        inptr = inptr.list.next;
+        inptr = cast(_XF86ConfInputrefRec*)inptr.list.next;
     }
 
     return count;
@@ -493,7 +509,7 @@ int xf86validateLayout(XF86ConfigPtr p)
             else
                 adj.adj_screen = screen;
 
-            adj = adj.list.next;
+            adj = cast(_XF86ConfAdjacencyRec*)adj.list.next;
         }
         iptr = layout.lay_inactive_lst;
         while (iptr) {
@@ -507,13 +523,13 @@ int xf86validateLayout(XF86ConfigPtr p)
             }
             else
                 iptr.inactive_device = device;
-            iptr = iptr.list.next;
+            iptr = cast(_XF86ConfInactiveRec*)iptr.list.next;
         }
 
         if (xf86layoutAddInputDevices(p, layout) == -1)
             return FALSE;
 
-        layout = layout.list.next;
+        layout = cast(_XF86ConfLayoutRec*)layout.list.next;
     }
     return TRUE;
 }
@@ -523,7 +539,7 @@ XF86ConfLayoutPtr xf86findLayout(const(char)* name, XF86ConfLayoutPtr list)
     while (list) {
         if (xf86nameCompare(list.lay_identifier, name) == 0)
             return list;
-        list = list.list.next;
+        list = cast(_XF86ConfLayoutRec*)list.list.next;
     }
     return null;
 }

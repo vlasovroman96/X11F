@@ -109,13 +109,13 @@ XF86ConfInputPtr xf86parsePointerSection()
             break;
         case PROTOCOL:
             if (xf86getSubToken(&(ptr.inp_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Protocol");
+                mixin(ErrorP!(`QUOTE_MSG, "Protocol"`));
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("Protocol"), xf86_lex_val.str);
             break;
         case PDEVICE:
             if (xf86getSubToken(&(ptr.inp_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Device");
+                mixin(ErrorP!(`QUOTE_MSG, "Device"`));
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("Device"), xf86_lex_val.str);
             break;
@@ -126,7 +126,7 @@ XF86ConfInputPtr xf86parsePointerSection()
             break;
         case EM3TIMEOUT:
             if (xf86getSubToken(&(ptr.inp_comment)) != NUMBER || xf86_lex_val.num < 0)
-                Error(POSITIVE_INT_MSG, "Emulate3Timeout");
+                mixin(ErrorP!(`POSITIVE_INT_MSG, "Emulate3Timeout"`));
             s = xf86uLongToString(xf86_lex_val.num);
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("Emulate3Timeout"),
@@ -138,28 +138,28 @@ XF86ConfInputPtr xf86parsePointerSection()
             break;
         case PBUTTONS:
             if (xf86getSubToken(&(ptr.inp_comment)) != NUMBER || xf86_lex_val.num < 0)
-                Error(POSITIVE_INT_MSG, "Buttons");
+                mixin(ErrorP!(`POSITIVE_INT_MSG, "Buttons"`));
             s = xf86uLongToString(xf86_lex_val.num);
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("Buttons"), s);
             break;
         case BAUDRATE:
             if (xf86getSubToken(&(ptr.inp_comment)) != NUMBER || xf86_lex_val.num < 0)
-                Error(POSITIVE_INT_MSG, "BaudRate");
+                mixin(ErrorP!(`POSITIVE_INT_MSG, "BaudRate"`));
             s = xf86uLongToString(xf86_lex_val.num);
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("BaudRate"), s);
             break;
         case SAMPLERATE:
             if (xf86getSubToken(&(ptr.inp_comment)) != NUMBER || xf86_lex_val.num < 0)
-                Error(POSITIVE_INT_MSG, "SampleRate");
+                mixin(ErrorP!(`POSITIVE_INT_MSG, "SampleRate"`));
             s = xf86uLongToString(xf86_lex_val.num);
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("SampleRate"), s);
             break;
         case PRESOLUTION:
             if (xf86getSubToken(&(ptr.inp_comment)) != NUMBER || xf86_lex_val.num < 0)
-                Error(POSITIVE_INT_MSG, "Resolution");
+                mixin(ErrorP!(`POSITIVE_INT_MSG, "Resolution"`));
             s = xf86uLongToString(xf86_lex_val.num);
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
                                                    strdup("Resolution"), s);
@@ -176,11 +176,11 @@ XF86ConfInputPtr xf86parsePointerSection()
             switch (xf86getToken(ZMapTab.ptr)) {
             case NUMBER:
                 if (xf86_lex_val.num < 0)
-                    Error(ZAXISMAPPING_MSG);
+                    mixin(ErrorP!(`ZAXISMAPPING_MSG`));
                 val1 = xf86_lex_val.num;
                 if (xf86getSubToken(&(ptr.inp_comment)) != NUMBER ||
                     xf86_lex_val.num < 0) {
-                    Error(ZAXISMAPPING_MSG);
+                    mixin(ErrorP!(`ZAXISMAPPING_MSG`));
                 }
                 if (asprintf(&s, "%lu %u", val1, xf86_lex_val.num) == -1)
                     s = null;
@@ -192,7 +192,7 @@ XF86ConfInputPtr xf86parsePointerSection()
                 s = strdup("y");
                 break;
             default:
-                Error(ZAXISMAPPING_MSG);
+                mixin(ErrorP!(`ZAXISMAPPING_MSG`));
                 break;
             }
             ptr.inp_option_lst = xf86addNewOption(ptr.inp_option_lst,
@@ -201,10 +201,10 @@ XF86ConfInputPtr xf86parsePointerSection()
         case ALWAYSCORE:
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }

@@ -35,7 +35,7 @@ import include.os;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-
+import scan;
 
 private const(xf86ConfigSymTabRec)[5] DRITab = [
     {ENDSECTION, "endsection"},
@@ -62,25 +62,25 @@ XF86ConfDRIPtr xf86parseDRISection()
             else if (token == NUMBER)
                 ptr.dri_group = xf86_lex_val.num;
             else
-                Error(GROUP_MSG);
+                mixin(ErrorP!("GROUP_MSG"));
             break;
         case MODE:
             if (xf86getSubToken(&(ptr.dri_comment)) != NUMBER)
-                Error(NUMBER_MSG, "Mode");
+                mixin(ErrorP!("NUMBER_MSG", "Mode"));
             if (xf86_lex_val.numType != PARSE_OCTAL)
-                Error(MUST_BE_OCTAL_MSG, xf86_lex_val.num);
+                mixin(ErrorP!("MUST_BE_OCTAL_MSG", "xf86_lex_val.num"));
             ptr.dri_mode = xf86_lex_val.num;
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!("UNEXPECTED_EOF_MSG"));
             break;
         case COMMENT:
-            ptr.dri_comment = xf86addComment(ptr.dri_comment, xf86_lex_val.str);
+            ptr.dri_comment = cast(char*)xf86addComment(ptr.dri_comment, xf86_lex_val.str);
             free(xf86_lex_val.str);
             xf86_lex_val.str = null;
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!("INVALID_KEYWORD_MSG", "xf86tokenString()"));
             break;
         }
     }
@@ -114,6 +114,6 @@ void xf86freeDRI(XF86ConfDRIPtr ptr)
     if (ptr == null)
         return;
 
-    TestFree(ptr.dri_comment);
+    mixin(TestFree!("ptr.dri_comment"));
     free(ptr);
 }

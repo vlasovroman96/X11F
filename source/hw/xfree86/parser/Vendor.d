@@ -73,9 +73,9 @@ private void xf86freeVendorSubList(XF86ConfVendSubPtr ptr)
     XF86ConfVendSubPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.vs_identifier);
-        TestFree(ptr.vs_name);
-        TestFree(ptr.vs_comment);
+        mixin(TestFree!(`ptr.vs_identifier`));
+        mixin(TestFree!(`ptr.vs_name`));
+        mixin(TestFree!(`ptr.vs_comment`));
         xf86optionListFree(ptr.vs_option_lst);
         prev = ptr;
         ptr = ptr.list.next;
@@ -101,9 +101,9 @@ private XF86ConfVendSubPtr xf86parseVendorSubSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.vs_comment)))
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.vs_identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
@@ -112,10 +112,10 @@ private XF86ConfVendSubPtr xf86parseVendorSubSection()
             break;
 
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
@@ -153,9 +153,9 @@ XF86ConfVendorPtr xf86parseVendorSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.vnd_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             if (has_ident == TRUE)
-                Error(MULTIPLE_MSG, "Identifier");
+                mixin(ErrorP!(`MULTIPLE_MSG, "Identifier"`));
             ptr.vnd_identifier = xf86_lex_val.str;
             has_ident = TRUE;
             break;
@@ -164,24 +164,24 @@ XF86ConfVendorPtr xf86parseVendorSection()
             break;
         case SUBSECTION:
             if (xf86getSubToken(&(ptr.vnd_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "SubSection");
+                mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             {
                 HANDLE_LIST(vnd_sub_lst, &xf86parseVendorSubSection,
                             XF86ConfVendSubPtr);
             }
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
 
     }
 
     if (!has_ident)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("Vendor section parsed\n");
@@ -221,8 +221,8 @@ void xf86freeVendorList(XF86ConfVendorPtr p)
     if (p == null)
         return;
     xf86freeVendorSubList(p.vnd_sub_lst);
-    TestFree(p.vnd_identifier);
-    TestFree(p.vnd_comment);
+    mixin(TestFree!(`p.vnd_identifier`));
+    mixin(TestFree!(`p.vnd_comment`));
     xf86optionListFree(p.vnd_option_lst);
     free(p);
 }

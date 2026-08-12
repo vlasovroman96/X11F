@@ -39,6 +39,14 @@ import include.os;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
+import include.xf86Parser;
+import xf86tokens;
+import Configint;
+import externs.X11.Xmd;
+import externs.X11.Xdefs;
+import include.misc;
+import Flags;
+import scan;
 
 
 private const(xf86ConfigSymTabRec)[4] ExtensionsTab = [
@@ -61,7 +69,7 @@ XF86ConfExtensionsPtr xf86parseExtensionsSection()
             ptr.ext_option_lst = xf86parseOption(ptr.ext_option_lst);
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         case COMMENT:
             ptr.extensions_comment =
@@ -70,7 +78,7 @@ XF86ConfExtensionsPtr xf86parseExtensionsSection()
             xf86_lex_val.str = null;
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
@@ -103,6 +111,6 @@ void xf86freeExtensions(XF86ConfExtensionsPtr ptr)
         return;
 
     xf86optionListFree(ptr.ext_option_lst);
-    TestFree(ptr.extensions_comment);
+    mixin(TestFree!(`ptr.extensions_comment`));
     free(ptr);
 }

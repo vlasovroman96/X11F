@@ -81,7 +81,7 @@ private void xf86freeModeList(XF86ModePtr ptr)
     XF86ModePtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.mode_name);
+        mixin(TestFree!(`ptr.mode_name`));
         prev = ptr;
         ptr = ptr.list.next;
         free(prev);
@@ -121,66 +121,66 @@ private XF86ConfDisplayPtr xf86parseDisplaySubSection()
             break;
         case VIEWPORT:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(VIEWPORT_MSG);
+                mixin(ErrorP!(`VIEWPORT_MSG`));
             ptr.disp_frameX0 = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(VIEWPORT_MSG);
+                mixin(ErrorP!(`VIEWPORT_MSG`));
             ptr.disp_frameY0 = xf86_lex_val.num;
             break;
         case VIRTUAL:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(VIRTUAL_MSG);
+                mixin(ErrorP!(`VIRTUAL_MSG`));
             ptr.disp_virtualX = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(VIRTUAL_MSG);
+                mixin(ErrorP!(`VIRTUAL_MSG`));
             ptr.disp_virtualY = xf86_lex_val.num;
             break;
         case DEPTH:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(NUMBER_MSG, "Display");
+                mixin(ErrorP!(`NUMBER_MSG, "Display"`));
             ptr.disp_depth = xf86_lex_val.num;
             break;
         case BPP:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(NUMBER_MSG, "Display");
+                mixin(ErrorP!(`NUMBER_MSG, "Display"`));
             ptr.disp_bpp = xf86_lex_val.num;
             break;
         case VISUAL:
             if (xf86getSubToken(&(ptr.disp_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Display");
+                mixin(ErrorP!(`QUOTE_MSG, "Display"`));
             ptr.disp_visual = xf86_lex_val.str;
             break;
         case WEIGHT:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(WEIGHT_MSG);
+                mixin(ErrorP!(`WEIGHT_MSG`));
             ptr.disp_weight.red = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(WEIGHT_MSG);
+                mixin(ErrorP!(`WEIGHT_MSG`));
             ptr.disp_weight.green = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(WEIGHT_MSG);
+                mixin(ErrorP!(`WEIGHT_MSG`));
             ptr.disp_weight.blue = xf86_lex_val.num;
             break;
         case BLACK_TOK:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(BLACK_MSG);
+                mixin(ErrorP!(`BLACK_MSG`));
             ptr.disp_black.red = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(BLACK_MSG);
+                mixin(ErrorP!(`BLACK_MSG`));
             ptr.disp_black.green = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(BLACK_MSG);
+                mixin(ErrorP!(`BLACK_MSG`));
             ptr.disp_black.blue = xf86_lex_val.num;
             break;
         case WHITE_TOK:
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(WHITE_MSG);
+                mixin(ErrorP!(`WHITE_MSG`));
             ptr.disp_white.red = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(WHITE_MSG);
+                mixin(ErrorP!(`WHITE_MSG`));
             ptr.disp_white.green = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.disp_comment)) != NUMBER)
-                Error(WHITE_MSG);
+                mixin(ErrorP!(`WHITE_MSG`));
             ptr.disp_white.blue = xf86_lex_val.num;
             break;
         case MODES:
@@ -204,10 +204,10 @@ private XF86ConfDisplayPtr xf86parseDisplaySubSection()
             break;
 
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
@@ -257,55 +257,55 @@ XF86ConfScreenPtr xf86parseScreenSection()
             break;
         case IDENTIFIER:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Identifier");
+                mixin(ErrorP!(`QUOTE_MSG, "Identifier"`));
             ptr.scrn_identifier = xf86_lex_val.str;
             if (has_ident || has_driver)
-                Error(ONLY_ONE_MSG, "Identifier or Driver");
+                mixin(ErrorP!(`ONLY_ONE_MSG, "Identifier or Driver"`));
             has_ident = TRUE;
             break;
         case MATCHSEAT:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "MatchSeat");
+                mixin(ErrorP!(`QUOTE_MSG, "MatchSeat"`));
             ptr.match_seat = xf86_lex_val.str;
             break;
         case OBSDRIVER:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Driver");
+                mixin(ErrorP!(`QUOTE_MSG, "Driver"`));
             ptr.scrn_obso_driver = xf86_lex_val.str;
             if (has_ident || has_driver)
-                Error(ONLY_ONE_MSG, "Identifier or Driver");
+                mixin(ErrorP!(`ONLY_ONE_MSG, "Identifier or Driver"`));
             has_driver = TRUE;
             break;
         case DEFAULTDEPTH:
             if (xf86getSubToken(&(ptr.scrn_comment)) != NUMBER)
-                Error(NUMBER_MSG, "DefaultDepth");
+                mixin(ErrorP!(`NUMBER_MSG, "DefaultDepth"`));
             ptr.scrn_defaultdepth = xf86_lex_val.num;
             break;
         case DEFAULTBPP:
             if (xf86getSubToken(&(ptr.scrn_comment)) != NUMBER)
-                Error(NUMBER_MSG, "DefaultBPP");
+                mixin(ErrorP!(`NUMBER_MSG, "DefaultBPP"`));
             ptr.scrn_defaultbpp = xf86_lex_val.num;
             break;
         case DEFAULTFBBPP:
             if (xf86getSubToken(&(ptr.scrn_comment)) != NUMBER)
-                Error(NUMBER_MSG, "DefaultFbBPP");
+                mixin(ErrorP!(`NUMBER_MSG, "DefaultFbBPP"`));
             ptr.scrn_defaultfbbpp = xf86_lex_val.num;
             break;
         case MDEVICE:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Device");
+                mixin(ErrorP!(`QUOTE_MSG, "Device"`));
             ptr.scrn_device_str = xf86_lex_val.str;
             break;
         case GDEVICE:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "GPUDevice");
+                mixin(ErrorP!(`QUOTE_MSG, "GPUDevice"`));
             if (ptr.num_gpu_devices == CONF_MAXGPUDEVICES)
-                Error(GPU_DEVICE_TOO_MANY, CONF_MAXGPUDEVICES);
+                mixin(ErrorP!(`GPU_DEVICE_TOO_MANY, CONF_MAXGPUDEVICES`));
             ptr.scrn_gpu_device_str[ptr.num_gpu_devices++] = xf86_lex_val.str;
             break;
         case MONITOR:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "Monitor");
+                mixin(ErrorP!(`QUOTE_MSG, "Monitor"`));
             ptr.scrn_monitor_str = xf86_lex_val.str;
             break;
         case VIDEOADAPTOR:
@@ -313,7 +313,7 @@ XF86ConfScreenPtr xf86parseScreenSection()
             XF86ConfAdaptorLinkPtr aptr = void;
 
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "VideoAdaptor");
+                mixin(ErrorP!(`QUOTE_MSG, "VideoAdaptor"`));
 
             /* Don't allow duplicates */
             for (aptr = ptr.scrn_adaptor_lst; aptr;
@@ -332,10 +332,10 @@ XF86ConfScreenPtr xf86parseScreenSection()
             break;
         case VIRTUAL:
             if (xf86getSubToken(&(ptr.scrn_comment)) != NUMBER)
-                Error(VIRTUAL_MSG);
+                mixin(ErrorP!(`VIRTUAL_MSG`));
             ptr.scrn_virtualX = xf86_lex_val.num;
             if (xf86getSubToken(&(ptr.scrn_comment)) != NUMBER)
-                Error(VIRTUAL_MSG);
+                mixin(ErrorP!(`VIRTUAL_MSG`));
             ptr.scrn_virtualY = xf86_lex_val.num;
             break;
         case OPTION:
@@ -343,7 +343,7 @@ XF86ConfScreenPtr xf86parseScreenSection()
             break;
         case SUBSECTION:
             if (xf86getSubToken(&(ptr.scrn_comment)) != XF86_TOKEN_STRING)
-                Error(QUOTE_MSG, "SubSection");
+                mixin(ErrorP!(`QUOTE_MSG, "SubSection"`));
             {
                 free(xf86_lex_val.str);
                 HANDLE_LIST(scrn_display_lst, &xf86parseDisplaySubSection,
@@ -351,16 +351,16 @@ XF86ConfScreenPtr xf86parseScreenSection()
             }
             break;
         case EOF_TOKEN:
-            Error(UNEXPECTED_EOF_MSG);
+            mixin(ErrorP!(`UNEXPECTED_EOF_MSG`));
             break;
         default:
-            Error(INVALID_KEYWORD_MSG, xf86tokenString());
+            mixin(ErrorP!(`INVALID_KEYWORD_MSG, xf86tokenString()`));
             break;
         }
     }
 
     if (!has_ident && !has_driver)
-        Error(NO_IDENT_MSG);
+        mixin(ErrorP!(`NO_IDENT_MSG`));
 
 version (DEBUG) {
     printf("Screen section parsed\n");
@@ -462,7 +462,7 @@ private void xf86freeAdaptorLinkList(XF86ConfAdaptorLinkPtr ptr)
     XF86ConfAdaptorLinkPtr prev = void;
 
     while (ptr) {
-        TestFree(ptr.al_adaptor_str);
+        mixin(TestFree!(`ptr.al_adaptor_str`));
         prev = ptr;
         ptr = ptr.list.next;
         free(prev);
@@ -474,12 +474,12 @@ void xf86freeScreenList(XF86ConfScreenPtr ptr)
     XF86ConfScreenPtr prev = void;
     int i = void;
     while (ptr) {
-        TestFree(ptr.scrn_identifier);
-        TestFree(ptr.scrn_monitor_str);
-        TestFree(ptr.scrn_device_str);
+        mixin(TestFree!(`ptr.scrn_identifier`));
+        mixin(TestFree!(`ptr.scrn_monitor_str`));
+        mixin(TestFree!(`ptr.scrn_device_str`));
         for (i = 0; i < ptr.num_gpu_devices; i++)
-            TestFree(ptr.scrn_gpu_device_str[i]);
-        TestFree(ptr.scrn_comment);
+            mixin(TestFree!(`ptr.scrn_gpu_device_str[i]`));
+        mixin(TestFree!(`ptr.scrn_comment`));
         xf86optionListFree(ptr.scrn_option_lst);
         xf86freeAdaptorLinkList(ptr.scrn_adaptor_lst);
         xf86freeDisplayList(ptr.scrn_display_lst);
