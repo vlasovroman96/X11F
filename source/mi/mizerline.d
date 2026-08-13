@@ -1,6 +1,8 @@
 module mizerline;
 @nogc nothrow:
 extern(C): __gshared:
+import core.stdc.config: c_long, c_ulong;
+
 /***********************************************************
 
 Copyright 1987, 1998  The Open Group
@@ -57,6 +59,7 @@ import include.windowstr;
 import include.pixmap;
 import include.mi;
 import include.miline;
+import mi.mizerclip;
 
 /* Draw lineSolid, fillStyle-independent zero width lines.
  *
@@ -81,7 +84,7 @@ enum string MI_OUTPUT_POINT(string xx, string yy) = `
     if ( !new_span && ` ~ yy ~ ` == current_y)
     {
         if (` ~ xx ~ ` < spans.x)
-	    spans.x = ` ~ xx ~ `;
+	    spans.x = cast(short)` ~ xx ~ `;
 	++*widths;
     }
     else
@@ -89,8 +92,8 @@ enum string MI_OUTPUT_POINT(string xx, string yy) = `
         ++Nspans;
 	++spans;
 	++widths;
-	spans.x = ` ~ xx ~ `;
-	spans.y = ` ~ yy ~ `;
+	spans.x = cast(short)(` ~ xx ~ `);
+	spans.y = cast(short)(` ~ yy ~ `);
 	*widths = 1;
 	current_y = ` ~ yy ~ `;
         new_span = FALSE;
@@ -115,7 +118,7 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
     int width = void, height = void;
     int adx = void, ady = void;
     int octant = void;
-    uint bias = miGetZeroLineBias(pDraw.pScreen);
+    uint bias = cast(uint)mixin(miGetZeroLineBias!("pDraw.pScreen"));
     int e = void, e1 = void, e2 = void, e3 = void;          /* Bresenham error terms */
     int length = void;                 /* length of lines == # of pixels on major axis */
 
@@ -148,7 +151,7 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
     width = xright - xleft + 1;
     height = ybottom - ytop + 1;
     list_len = (height >= width) ? height : width;
-    pspanInit = calloc(list_len, xPoint.sizeof);
+    pspanInit = cast(_xPoint*)calloc(list_len, xPoint.sizeof);
     pwidthInit = cast(int*) calloc(list_len, int.sizeof);
     if (!pspanInit || !pwidthInit) {
         free(pspanInit);
@@ -174,7 +177,7 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
     x2 = xstart;
     y2 = ystart;
     oc2 = 0;
-    MIOUTCODES(oc2, x2, y2, xleft, ytop, xright, ybottom);
+    mixin(MIOUTCODES!("oc2", "x2", "y2", "xleft", "ytop", "xright", "ybottom"));
 
     while (--npt > 0) {
         x1 = x2;
@@ -194,9 +197,9 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
         }
 
         oc2 = 0;
-        MIOUTCODES(oc2, x2, y2, xleft, ytop, xright, ybottom);
+        mixin(MIOUTCODES!("oc2", "x2", "y2", "xleft", "ytop", "xright", "ybottom"));
 
-        CalcLineDeltas(x1, y1, x2, y2, adx, ady, signdx, signdy, 1, 1, octant);
+        mixin(CalcLineDeltas!("x1", "y1", "x2", "y2", "adx", "ady", "signdx", "signdy", "1", "1", "octant"));
 
         if (ady + 1 > (list_len - Nspans)) {
             (*pGC.ops.FillSpans) (pDraw, pGC, Nspans, pspanInit,
@@ -212,7 +215,7 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
             e = e1 - adx;
             length = adx;       /* don't draw endpoint in main loop */
 
-            FIXUP_ERROR(e, octant, bias);
+            mixin(FIXUP_ERROR!("e", "octant", "bias"));
 
             new_x1 = x1;
             new_y1 = y1;
@@ -271,8 +274,8 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
             e = e1 - ady;
             length = ady;       /* don't draw endpoint in main loop */
 
-            SetYMajorOctant(octant);
-            FIXUP_ERROR(e, octant, bias);
+            mixin(SetYMajorOctant!("octant"));
+            mixin(FIXUP_ERROR!("e", "octant", "bias"));
 
             new_x1 = x1;
             new_y1 = y1;

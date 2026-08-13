@@ -28,7 +28,7 @@ public import include.gcstruct;
 public import include.privates;
 public import include.picturestr;
 
-struct DamageRec {
+struct _damage {
     DamagePtr pNext;
     DamagePtr pNextWin;
     RegionRec damage;
@@ -46,6 +46,8 @@ struct DamageRec {
     RegionRec pendingDamage;    /* will be flushed post submission at the latest */
     ScreenPtr pScreen;
 }
+
+alias DamageRec = _damage;
 
 struct _damageScrPriv {
     int internalLevel;
@@ -94,7 +96,7 @@ enum string damagePixPriv(string pPix) = `
     DamagePtr pDamage = ` ~ damageGetPixPriv!(pPix) ~ `;`;
 
 enum string damageGetGCPriv(string pGC) = `
-    dixLookupPrivate(&(` ~ pGC ~ `).devPrivates, damageGCPrivateKey)`;
+    cast(_damageGCPriv*)dixLookupPrivate(&(` ~ pGC ~ `).devPrivates, damageGCPrivateKey)`;
 
 enum string damageGCPriv(string pGC) = `
     DamageGCPrivPtr pGCPriv = ` ~ damageGetGCPriv!(pGC) ~ `;`;

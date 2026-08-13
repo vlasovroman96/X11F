@@ -127,11 +127,11 @@ alias RootlessScreenPtr = _RootlessScreenRec*;
 // screen->CreateGC changes after a call to cfbCreateGC.
 
 enum string SCREEN_UNWRAP(string screen, string fn) = `
-    ` ~ screen ~ `.` ~ fn ~ ` = SCREENREC(` ~ screen ~ `).` ~ fn ~ `;`;
+    ` ~ screen ~ `.` ~ fn ~ ` = `~SCREENREC!(screen)~`.`~fn ~ `;`;
 
-enum string SCREEN_WRAP(string screen, string fn) = `\
-    SCREENREC(screen)->fn = screen->fn; \
-    screen->fn = Rootless##fn`;
+enum string SCREEN_WRAP(string screen, string fn) = `
+    `~SCREENREC!(screen)~`.`~fn~` = `~screen~`.`~fn~`; 
+    `~screen~`.`~fn~` = &Rootless`~fn~`;`;
 
 // Accessors for screen and window privates
 
@@ -139,7 +139,7 @@ enum string SCREENREC(string pScreen) = `(cast(RootlessScreenRec*)
     dixLookupPrivate(&(` ~ pScreen ~ `).devPrivates, rootlessScreenPrivateKey))`;
 
 enum string SETSCREENREC(string pScreen, string v) = `
-    dixSetPrivate(&(` ~ pScreen ~ `).devPrivates, rootlessScreenPrivateKey, ` ~ v ~ `)`;
+    dixSetPrivate(&(` ~ pScreen ~ `).devPrivates, rootlessScreenPrivateKey, ` ~ v ~ `);`;
 
 enum string WINREC(string pWin) = `(cast(RootlessWindowRec*) 
     dixLookupPrivate(&(` ~ pWin ~ `).devPrivates, rootlessWindowPrivateKey))`;
@@ -151,7 +151,7 @@ enum string SETWINREC(string pWin, string v) = `
 // Many rootless implementation functions are allowed to be NULL.
 enum string CallFrameProc(string pScreen, string proc, string params) = `\
     if (SCREENREC(pScreen)->frameProcs.proc) {          \
-        RL_DEBUG_MSG("calling frame proc " #proc " ");  \
+        //RL_DEBUG_MSG("calling frame proc " #proc " ");  \
         SCREENREC(pScreen)->frameProcs.proc params;     \
     }`;
 
@@ -191,21 +191,21 @@ enum string BOX_NOT_EMPTY(string box) = `
 extern RegionRec rootlessHugeRoot;
 
 enum string HUGE_ROOT(string pWin) = `
-    do {                                        
+    {                                        
         WindowPtr _w = ` ~ pWin ~ `;                     
         while (_w.parent)                       
             _w = _w.parent;                      
         saveRoot = _w.winSize;                  
         _w.winSize = rootlessHugeRoot;          
-    } while (0)`;
+    }`;
 
 enum string NORMAL_ROOT(string pWin) = `
-    do {                                        
+     {                                        
         WindowPtr _w = ` ~ pWin ~ `;                     
         while (_w.parent)                       
             _w = _w.parent;                      
         _w.winSize = saveRoot;                  
-    } while (0)`;
+    }`;
 
 // Returns TRUE if this window is a top-level window (i.e. child of the root)
 // The root is not a top-level window.

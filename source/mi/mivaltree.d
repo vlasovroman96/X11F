@@ -104,6 +104,7 @@ import    include.windowstr;
 import    include.regionstr;
 import    include.globals;
 import    composite.compint;
+import composite.compwindow;
 
 /*
  * Compute the visibility of a shaped window
@@ -126,16 +127,16 @@ int miShapedWindowIn(RegionPtr universe, RegionPtr bounding, BoxPtr rect, int x,
     while (nbox--) {
         if ((t = boundBox.x1 + x) < x1)
             t = x1;
-        box.x1 = t;
+        box.x1 = cast(short)t;
         if ((t = boundBox.y1 + y) < y1)
             t = y1;
-        box.y1 = t;
+        box.y1 = cast(short)t;
         if ((t = boundBox.x2 + x) > x2)
             t = x2;
-        box.x2 = t;
+        box.x2 = cast(short)t;
         if ((t = boundBox.y2 + y) > y2)
             t = y2;
-        box.y2 = t;
+        box.y2 = cast(short)t;
         if (box.x1 > box.x2)
             box.x2 = box.x1;
         if (box.y1 > box.y2)
@@ -169,7 +170,7 @@ int miShapedWindowIn(RegionPtr universe, RegionPtr bounding, BoxPtr rect, int x,
 enum string TreatAsTransparent(string w) = `((` ~ w ~ `).redirectDraw == RedirectDrawManual)`;
 
 enum string HasParentRelativeBorder(string w) = `(!(` ~ w ~ `).borderIsPixel && 
-				    HasBorder(` ~ w ~ `) && 
+				    `~HasBorder!(w)~` && 
 				    (` ~ w ~ `).backgroundState == ParentRelative)`;
 
 /*
@@ -207,9 +208,9 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
      * completely). If the window is completely obscured, none of the
      * universe will cover the rectangle.
      */
-    borderSize.x1 = pParent.drawable.x - mixin(wBorderWidth!("pParent"));
+    borderSize.x1 = cast(short)(pParent.drawable.x - mixin(wBorderWidth!("pParent")));
         dy = 32767;
-    borderSize.y2 = dy;
+    borderSize.y2 = cast(short)dy;
 
     /*
      * In redirected drawing case, reset universe to borderSize
@@ -231,7 +232,7 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
         {
             RegionPtr pBounding = void;
 
-            if ((pBounding = wBoundingShape(pParent))) {
+            if ((pBounding = mixin(wBoundingShape!("pParent")))!is null) {
                 switch (miShapedWindowIn(universe, pBounding,
                                          &borderSize,
                                          pParent.drawable.x,
@@ -305,6 +306,7 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
             }
             return;
         }
+        goto default;
         /* fall through */
     default:
         /*
@@ -340,7 +342,7 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
      * This leaves a region of pieces that weren't exposed before.
      */
 
-    if (HasBorder(pParent)) {
+    if (mixin(HasBorder!("pParent"))) {
         if (borderVisible) {
             /*
              * when the border changes shape, the old visible portions
@@ -373,7 +375,7 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
     else
         RegionCopy(&pParent.borderClip, universe);
 
-    if ((pChild = pParent.firstChild) && pParent.mapped) {
+    if ((pChild = pParent.firstChild) !is null && pParent.mapped) {
         RegionNull(&childUniverse);
         RegionNull(&childUnion);
         if ((pChild.drawable.y < pParent.lastChild.drawable.y) ||
@@ -696,6 +698,7 @@ private RegionPtr getBorderClip(WindowPtr pWin)
         RegionSubtract(&pParent.valdata.after.exposed,
                        &totalClip, &pParent.clipList);
         /* fall through */
+        goto case;
     case VTMap:
         RegionCopy(&pParent.clipList, &totalClip);
         pParent.drawable.serialNumber = NEXT_SERIAL_NUMBER;

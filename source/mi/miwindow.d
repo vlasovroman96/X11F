@@ -63,6 +63,9 @@ import include.windowstr;
 import include.scrnintstr;
 import include.pixmapstr;
 import include.inputstr;
+import dix.screen_hooks;
+import dix.events;
+import externs.X11.extensions.shapeconst;
 
 void miClearToBackground(WindowPtr pWin, int x, int y, int w, int h, Bool generateExposures)
 {
@@ -105,10 +108,10 @@ void miClearToBackground(WindowPtr pWin, int x, int y, int w, int h, Bool genera
         y2 = y1 = 0;
     }
 
-    box.x1 = x1;
-    box.x2 = x2;
-    box.y1 = y1;
-    box.y2 = y2;
+    box.x1 = cast(short)x1;
+    box.x2 = cast(short)x2;
+    box.y1 = cast(short)y1;
+    box.y2 = cast(short)y2;
 
     RegionInit(&reg, &box, 1);
 
@@ -174,7 +177,7 @@ Bool miMarkOverlappedWindows(WindowPtr pWin, WindowPtr pFirst, WindowPtr* ppLaye
         anyMarked = TRUE;
         pFirst = pFirst.nextSib;
     }
-    if ((pChild = pFirst)) {
+    if ((pChild = pFirst) !is null) {
         box = RegionExtents(&pWin.borderSize);
         pLast = pChild.parent.lastChild;
         while (1) {
@@ -219,7 +222,7 @@ void miHandleValidateExposures(WindowPtr pWin)
     pChild = pWin;
     WindowExposures = pChild.drawable.pScreen.WindowExposures;
     while (1) {
-        if ((val = pChild.valdata)) {
+        if ((val = pChild.valdata)!is null) {
             if (RegionNotEmpty(&val.after.borderExposed))
                 pWin.drawable.pScreen.PaintWindow(pChild,
                                                     &val.after.borderExposed,
@@ -255,7 +258,7 @@ void miMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pNextSib, VTKind kind)
     WindowPtr pLayerWin = void;
 
     /* if this is a root window, can't be moved */
-    if (((pParent = pWin.parent) == 0))
+    if (((pParent = pWin.parent) is null))
         return;
     pScreen = pWin.drawable.pScreen;
     bw = mixin(wBorderWidth!("pWin"));
@@ -267,10 +270,10 @@ void miMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pNextSib, VTKind kind)
         RegionCopy(oldRegion, &pWin.borderClip);
         anyMarked = (*pScreen.MarkOverlappedWindows) (pWin, pWin, &pLayerWin);
     }
-    pWin.origin.x = x + cast(int) bw;
-    pWin.origin.y = y + cast(int) bw;
-    x = pWin.drawable.x = pParent.drawable.x + x + cast(int) bw;
-    y = pWin.drawable.y = pParent.drawable.y + y + cast(int) bw;
+    pWin.origin.x = cast(short)(x + cast(int) bw);
+    pWin.origin.y = cast(short)(y + cast(int) bw);
+    x = pWin.drawable.x = cast(short)(pParent.drawable.x + x + cast(int) bw);
+    y = pWin.drawable.y = cast(short)(pParent.drawable.y + y + cast(int) bw);
 
     SetWinSize(pWin);
     SetBorderSize(pWin);
@@ -363,7 +366,7 @@ void miResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib
     WindowPtr pLayerWin = void;
 
     /* if this is a root window, can't be resized */
-    if (((pParent = pWin.parent) == 0))
+    if (((pParent = pWin.parent) is null))
         return;
 
     pScreen = pWin.drawable.pScreen;
@@ -412,7 +415,7 @@ void miResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib
             moved = TRUE;
 
         if ((pWin.drawable.height != h || pWin.drawable.width != w) &&
-            HasBorder(pWin)) {
+            mixin(HasBorder!("pWin"))) {
             borderVisible = RegionCreate(NullBox, 1);
             /* for tiled borders, we punt and draw the whole thing */
             if (pWin.borderIsPixel || !moved) {
@@ -424,19 +427,19 @@ void miResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib
             }
         }
     }
-    pWin.origin.x = x + bw;
-    pWin.origin.y = y + bw;
-    pWin.drawable.height = h;
-    pWin.drawable.width = w;
+    pWin.origin.x = cast(short)(x + bw);
+    pWin.origin.y = cast(short)(y + bw);
+    pWin.drawable.height = cast(ushort)h;
+    pWin.drawable.width = cast(ushort)w;
 
-    x = pWin.drawable.x = newx;
-    y = pWin.drawable.y = newy;
+    x = pWin.drawable.x = cast(short)newx;
+    y = pWin.drawable.y = cast(short)newy;
 
     SetWinSize(pWin);
     SetBorderSize(pWin);
 
-    dw = cast(int) w - cast(int) width;
-    dh = cast(int) h - cast(int) height;
+    dw = cast(short)(cast(int) w - cast(int) width);
+    dh = cast(short)(cast(int) h - cast(int) height);
     ResizeChildrenWinSize(pWin, x - oldx, y - oldy, dw, dh);
 
     /* let the hardware adjust background and border pixmaps, if any */
@@ -472,7 +475,7 @@ void miResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib
 
     if (WasViewable) {
         /* avoid the border */
-        if (HasBorder(pWin)) {
+        if (mixin(HasBorder!("pWin"))) {
             int offx = void, offy = void, dx = void, dy = void;
 
             /* kruft to avoid double translates for each gravity */
@@ -542,8 +545,8 @@ void miResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib
 
             GravityTranslate(x, y, oldx, oldy, dw, dh, g, &nx, &ny);
 
-            oldpt.x = oldx + (x - nx);
-            oldpt.y = oldy + (y - ny);
+            oldpt.x = cast(short)(oldx + (x - nx));
+            oldpt.y = cast(short)(oldy + (y - ny));
 
             /* Note that gravitate[g] is *translated* by CopyWindow */
 
@@ -636,7 +639,7 @@ void miSetShape(WindowPtr pWin, int kind)
             anyMarked = (*pScreen.MarkOverlappedWindows) (pWin, pWin,
                                                            &pLayerWin);
             if (pWin.valdata) {
-                if (HasBorder(pWin)) {
+                if (mixin(HasBorder!("pWin"))) {
                     RegionPtr borderVisible = void;
 
                     borderVisible = RegionCreate(NullBox, 1);
@@ -685,12 +688,12 @@ void miChangeBorderWidth(WindowPtr pWin, uint width)
     oldwidth = mixin(wBorderWidth!("pWin"));
     if (oldwidth == width)
         return;
-    HadBorder = HasBorder(pWin);
+    HadBorder = mixin(HasBorder!("pWin"));
     pScreen = pWin.drawable.pScreen;
     if (WasViewable && width < oldwidth)
         anyMarked = (*pScreen.MarkOverlappedWindows) (pWin, pWin, &pLayerWin);
 
-    pWin.borderWidth = width;
+    pWin.borderWidth = cast(ushort)width;
     SetBorderSize(pWin);
 
     if (WasViewable) {
@@ -765,7 +768,7 @@ WindowPtr miSpriteTrace(SpritePtr pSprite, int x, int y)
                 WindowPtr* newTrace = void;
                 int newSize = pSprite.spriteTraceSize + 10;
 
-                newTrace = reallocarray(pSprite.spriteTrace,
+                newTrace = cast(_Window**)reallocarray(pSprite.spriteTrace,
                                         newSize,
                                         WindowPtr.sizeof);
                 if (!newTrace)

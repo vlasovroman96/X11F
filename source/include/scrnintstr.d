@@ -223,7 +223,7 @@ alias GetScreenPixmapProcPtr = PixmapPtr function(ScreenPtr);
 
 alias SetScreenPixmapProcPtr = void function(PixmapPtr);
 
-alias MarkWindowProcPtr = void function(WindowPtr);
+// alias MarkWindowProcPtr = void function(WindowPtr);
 
 // alias MarkOverlappedWindowsProcPtr = Bool function(WindowPtr, WindowPtr, WindowPtr*);
 

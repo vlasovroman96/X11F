@@ -57,7 +57,10 @@ import include.picturestr;
 import miext.rootless.rootlessCommon;
 import miext.rootless.rootlessWindow;
 import externs.X11.extensions.renderproto;
-
+import dix.screen_hooks;
+import render.picture;
+import mi.miexpose;
+import dix.dixutils;
 
 extern int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind);
 extern Bool RootlessCreateGC(GCPtr pGC);
@@ -79,7 +82,7 @@ DevPrivateKeyRec rootlessWindowOldPixmapPrivateKeyRec;
  */
 void RootlessUpdateScreenPixmap(ScreenPtr pScreen)
 {
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
     PixmapPtr pPix = void;
     uint rowbytes = void;
 
@@ -103,7 +106,7 @@ void RootlessUpdateScreenPixmap(ScreenPtr pScreen)
 
         pScreen.ModifyPixmapHeader(pPix, pScreen.width, pScreen.height,
                                     pScreen.rootDepth,
-                                    BitsPerPixel(pScreen.rootDepth),
+                                    mixin(BitsPerPixel!("pScreen.rootDepth")),
                                     0, s.pixmap_data);
         /* ModifyPixmapHeader ignores zero arguments, so install rowbytes
            by hand. */
@@ -124,10 +127,10 @@ private void RootlessCreateScreenResources(CallbackListPtr* pcbl, ScreenPtr pScr
 
 private void RootlessCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    dixScreenUnhookClose(pScreen, RootlessCloseScreen);
+    dixScreenUnhookClose(pScreen, &RootlessCloseScreen);
     dixScreenUnhookPostCreateResources(pScreen, &RootlessCreateScreenResources);
 
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
 
     if (s.pixmap_data != null) {
         free(s.pixmap_data);
@@ -143,7 +146,7 @@ private void RootlessGetImage(DrawablePtr pDrawable, int sx, int sy, int w, int 
 {
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    SCREEN_UNWRAP(pScreen, GetImage);
+    mixin(SCREEN_UNWRAP!("pScreen", "GetImage"));
 
     if (pDrawable.type == DRAWABLE_WINDOW) {
         int x0 = void, y0 = void, x1 = void, y1 = void;
@@ -157,7 +160,7 @@ private void RootlessGetImage(DrawablePtr pDrawable, int sx, int sy, int w, int 
         RootlessStartDrawing(cast(WindowPtr) pDrawable);
 
         /* Check that we have some place to read from. */
-        winRec = WINREC(TopLevelParent(cast(WindowPtr) pDrawable));
+        winRec = mixin(WINREC!("TopLevelParent(cast(WindowPtr) pDrawable)"));
         if (winRec == null)
             goto out_;
 
@@ -188,7 +191,7 @@ private void RootlessGetImage(DrawablePtr pDrawable, int sx, int sy, int w, int 
     pScreen.GetImage(pDrawable, sx, sy, w, h, format, planeMask, pdstLine);
 
  out_:
-    SCREEN_WRAP(pScreen, GetImage);
+    mixin(SCREEN_WRAP!("pScreen", "GetImage"));
 }
 
 /*
@@ -200,7 +203,7 @@ private void RootlessGetImage(DrawablePtr pDrawable, int sx, int sy, int w, int 
  */
 private void RootlessSourceValidate(DrawablePtr pDrawable, int x, int y, int w, int h, uint subWindowMode)
 {
-    SCREEN_UNWRAP(pDrawable.pScreen, SourceValidate);
+    mixin(SCREEN_UNWRAP!("pDrawable.pScreen", "SourceValidate"));
     if (pDrawable.type == DRAWABLE_WINDOW) {
         WindowPtr pWin = cast(WindowPtr) pDrawable;
 
@@ -208,7 +211,7 @@ private void RootlessSourceValidate(DrawablePtr pDrawable, int x, int y, int w, 
     }
     pDrawable.pScreen.SourceValidate(pDrawable, x, y, w, h,
                                        subWindowMode);
-    SCREEN_WRAP(pDrawable.pScreen, SourceValidate);
+    mixin(SCREEN_WRAP!("pDrawable.pScreen", "SourceValidate"));
 }
 
 private void RootlessComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height)
@@ -228,7 +231,7 @@ private void RootlessComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pict
         cast(WindowPtr) pDst.pDrawable : null;
 
     // SCREEN_UNWRAP(ps, Composite);
-    ps.Composite = SCREENREC(pScreen).Composite;
+    ps.Composite = mixin(SCREENREC!("pScreen")).Composite;
 
     if (srcWin && IsFramedWindow(srcWin))
         RootlessStartDrawing(srcWin);
@@ -244,7 +247,7 @@ private void RootlessComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pict
         RootlessDamageRect(dstWin, xDst, yDst, width, height);
     }
 
-    ps.Composite = RootlessComposite;
+    ps.Composite = &RootlessComposite;
     // SCREEN_WRAP(ps, Composite);
 }
 
@@ -268,9 +271,9 @@ private void RootlessGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictForm
         RootlessStartDrawing(dstWin);
 
     //SCREEN_UNWRAP(ps, Glyphs);
-    ps.Glyphs = SCREENREC(pScreen).Glyphs;
+    ps.Glyphs = mixin(SCREENREC!("pScreen")).Glyphs;
     ps.Glyphs(op, pSrc, pDst, maskFormat, xSrc, ySrc, nlist, list, glyphs);
-    ps.Glyphs = RootlessGlyphs;
+    ps.Glyphs = &RootlessGlyphs;
     //SCREEN_WRAP(ps, Glyphs);
 
     if (dstWin && IsFramedWindow(dstWin)) {
@@ -291,10 +294,10 @@ private void RootlessGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictForm
 
                 glyph = *glyphs++;
 
-                box.x1 = x - glyph.info.x;
-                box.y1 = y - glyph.info.y;
-                box.x2 = box.x1 + glyph.info.width;
-                box.y2 = box.y1 + glyph.info.height;
+                box.x1 = cast(short)(x - glyph.info.x);
+                box.y1 = cast(short)(y - glyph.info.y);
+                box.x2 = cast(short)(box.x1 + glyph.info.width);
+                box.y2 = cast(short)(box.y1 + glyph.info.height);
 
                 x += glyph.info.xOff;
                 y += glyph.info.yOff;
@@ -304,15 +307,15 @@ private void RootlessGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictForm
 
                     glyph = *glyphs++;
 
-                    x1 = x - glyph.info.x;
-                    y1 = y - glyph.info.y;
-                    x2 = x1 + glyph.info.width;
-                    y2 = y1 + glyph.info.height;
+                    x1 = cast(short)(x - glyph.info.x);
+                    y1 = cast(short)(y - glyph.info.y);
+                    x2 = cast(short)(x1 + glyph.info.width);
+                    y2 = cast(short)(y1 + glyph.info.height);
 
-                    box.x1 = min(box.x1, x1);
-                    box.y1 = min(box.y1, y1);
-                    box.x2 = max(box.x2, x2);
-                    box.y2 = max(box.y2, y2);
+                    box.x1 = cast(short)(min(box.x1, x1));
+                    box.y1 = cast(short)(min(box.y1, y1));
+                    box.x2 = cast(short)(max(box.x2, x2));
+                    box.y2 = cast(short)(max(box.y2, y2));
 
                     x += glyph.info.xOff;
                     y += glyph.info.yOff;
@@ -336,7 +339,7 @@ private void RootlessTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, Pict
     dstWin = (pDst.pDrawable.type == DRAWABLE_WINDOW) ?
         cast(WindowPtr) pDst.pDrawable : null;
 
-    ps.Trapezoids = SCREENREC(pScreen).Trapezoids;
+    ps.Trapezoids = mixin(SCREENREC!("pScreen")).Trapezoids;
 
     if (srcWin && IsFramedWindow(srcWin))
         RootlessStartDrawing(srcWin);
@@ -359,7 +362,7 @@ private void RootlessTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, Pict
         }
     }
 
-    ps.Trapezoids = RootlessTrapezoids;
+    ps.Trapezoids = &RootlessTrapezoids;
 }
 
 private void RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int ntri, xTriangle* tris)
@@ -373,7 +376,7 @@ private void RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictF
     dstWin = (pDst.pDrawable.type == DRAWABLE_WINDOW) ?
         cast(WindowPtr) pDst.pDrawable : null;
 
-    ps.Triangles = SCREENREC(pScreen).Triangles;
+    ps.Triangles = mixin(SCREENREC!("pScreen")).Triangles;
 
     if (srcWin && IsFramedWindow(srcWin))
         RootlessStartDrawing(srcWin);
@@ -396,7 +399,7 @@ private void RootlessTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictF
         }
     }
 
-    ps.Triangles = RootlessTriangles;
+    ps.Triangles = &RootlessTriangles;
 }
 
 private void RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects)
@@ -408,7 +411,7 @@ private void RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* col
     dstWin = (pDst.pDrawable.type == DRAWABLE_WINDOW) ?
         cast(WindowPtr) pDst.pDrawable : null;
 
-    ps.CompositeRects = SCREENREC(pScreen).CompositeRects;
+    ps.CompositeRects = mixin(SCREENREC!("pScreen")).CompositeRects;
 
     if (dstWin && IsFramedWindow(dstWin))
         RootlessStartDrawing(dstWin);
@@ -419,21 +422,21 @@ private void RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* col
         int i = void;
         BoxRec box = void;
 
-        box.x1 = rects[0].x;
-        box.y1 = rects[0].y;
-        box.x2 = rects[0].x + rects[0].width;
-        box.y2 = rects[0].y + rects[0].height;
+        box.x1 = cast(short)(rects[0].x);
+        box.y1 = cast(short)(rects[0].y);
+        box.x2 = cast(short)(rects[0].x + rects[0].width);
+        box.y2 = cast(short)(rects[0].y + rects[0].height);
 
         for (i = 1; i < nRect; i++) {
-            short x1 = rects[i].x;
-            short y1 = rects[i].y;
-            short x2 = x1 + rects[i].width;
-            short y2 = y1 + rects[i].height;
+            short x1 = cast(short)(rects[i].x);
+            short y1 = cast(short)(rects[i].y);
+            short x2 = cast(short)(x1 + rects[i].width);
+            short y2 = cast(short)(y1 + rects[i].height);
 
-            if (x1 < box.x1) box.x1 = x1;
-            if (y1 < box.y1) box.y1 = y1;
-            if (x2 > box.x2) box.x2 = x2;
-            if (y2 > box.y2) box.y2 = y2;
+            if (x1 < box.x1) box.x1 = cast(short)(x1);
+            if (y1 < box.y1) box.y1 = cast(short)(y1);
+            if (x2 > box.x2) box.x2 = cast(short)(x2);
+            if (y2 > box.y2) box.y2 = cast(short)(y2);
         }
 
         if (box.x1 < box.x2 && box.y1 < box.y2) {
@@ -443,7 +446,7 @@ private void RootlessCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* col
         }
     }
 
-    ps.CompositeRects = RootlessCompositeRects;
+    ps.CompositeRects = &RootlessCompositeRects;
 }
 
 /*
@@ -459,22 +462,22 @@ private int RootlessValidateTree(WindowPtr pParent, WindowPtr pChild, VTKind kin
     RegionRec saveRoot = void;
     ScreenPtr pScreen = pParent.drawable.pScreen;
 
-    SCREEN_UNWRAP(pScreen, ValidateTree);
-    RL_DEBUG_MSG("VALIDATETREE start ");
+    mixin(SCREEN_UNWRAP!("pScreen", "ValidateTree"));
+    //RL_DEBUG_MSG("VALIDATETREE start ");
 
     // Use our custom version to validate from root
-    if (IsRoot(pParent)) {
-        RL_DEBUG_MSG("custom ");
+    if (mixin(IsRoot!("pParent"))) {
+        //RL_DEBUG_MSG("custom ");
         result = RootlessMiValidateTree(pParent, pChild, kind);
     }
     else {
-        HUGE_ROOT(pParent);
+        mixin(HUGE_ROOT!("pParent"));
         result = pScreen.ValidateTree(pParent, pChild, kind);
-        NORMAL_ROOT(pParent);
+        mixin(NORMAL_ROOT!("pParent"));
     }
 
-    SCREEN_WRAP(pScreen, ValidateTree);
-    RL_DEBUG_MSG("VALIDATETREE end\n");
+    mixin(SCREEN_WRAP!("pScreen", "ValidateTree"));
+    //RL_DEBUG_MSG("VALIDATETREE end\n");
 
     return result;
 }
@@ -490,16 +493,16 @@ private Bool RootlessMarkOverlappedWindows(WindowPtr pWin, WindowPtr pFirst, Win
     Bool result = void;
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    SCREEN_UNWRAP(pScreen, MarkOverlappedWindows);
-    RL_DEBUG_MSG("MARKOVERLAPPEDWINDOWS start ");
+    mixin(SCREEN_UNWRAP!("pScreen", "MarkOverlappedWindows"));
+    //RL_DEBUG_MSG("MARKOVERLAPPEDWINDOWS start ");
 
-    HUGE_ROOT(pWin);
-    if (IsRoot(pWin)) {
+    mixin(HUGE_ROOT!("pWin"));
+    if (mixin(IsRoot!("pWin"))) {
         // root - mark nothing
-        RL_DEBUG_MSG("is root not marking ");
+        //RL_DEBUG_MSG("is root not marking ");
         result = FALSE;
     }
-    else if (!IsTopLevel(pWin)) {
+    else if (!mixin(IsTopLevel!("pWin"))) {
         // not top-level window - mark normally
         result = pScreen.MarkOverlappedWindows(pWin, pFirst, ppLayerWin);
     }
@@ -511,7 +514,7 @@ private Bool RootlessMarkOverlappedWindows(WindowPtr pWin, WindowPtr pFirst, Win
         Bool anyMarked = FALSE;
         MarkWindowProcPtr MarkWindow = pScreen.MarkWindow;
 
-        RL_DEBUG_MSG("is top level! ");
+        //RL_DEBUG_MSG("is top level! ");
         /* single layered systems are easy */
         if (ppLayerWin)
             *ppLayerWin = pWin;
@@ -546,9 +549,9 @@ private Bool RootlessMarkOverlappedWindows(WindowPtr pWin, WindowPtr pFirst, Win
             (*MarkWindow) (pWin.parent);
         result = anyMarked;
     }
-    NORMAL_ROOT(pWin);
-    SCREEN_WRAP(pScreen, MarkOverlappedWindows);
-    RL_DEBUG_MSG("MARKOVERLAPPEDWINDOWS end\n");
+    mixin(NORMAL_ROOT!("pWin"));
+    mixin(SCREEN_WRAP!("pScreen", "MarkOverlappedWindows"));
+    //RL_DEBUG_MSG("MARKOVERLAPPEDWINDOWS end\n");
 
     return result;
 }
@@ -580,7 +583,7 @@ void RootlessScreenExpose(ScreenPtr pScreen)
 
 ColormapPtr RootlessGetColormap(ScreenPtr pScreen)
 {
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
 
     return s.colormap;
 }
@@ -588,9 +591,9 @@ ColormapPtr RootlessGetColormap(ScreenPtr pScreen)
 private void RootlessInstallColormap(ColormapPtr pMap)
 {
     ScreenPtr pScreen = pMap.pScreen;
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
 
-    SCREEN_UNWRAP(pScreen, InstallColormap);
+    mixin(SCREEN_UNWRAP!("pScreen", "InstallColormap"));
 
     if (s.colormap != pMap) {
         s.colormap = pMap;
@@ -600,30 +603,30 @@ private void RootlessInstallColormap(ColormapPtr pMap)
 
     pScreen.InstallColormap(pMap);
 
-    SCREEN_WRAP(pScreen, InstallColormap);
+    mixin(SCREEN_WRAP!("pScreen", "InstallColormap"));
 }
 
 private void RootlessUninstallColormap(ColormapPtr pMap)
 {
     ScreenPtr pScreen = pMap.pScreen;
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
 
-    SCREEN_UNWRAP(pScreen, UninstallColormap);
+    mixin(SCREEN_UNWRAP!("pScreen", "UninstallColormap"));
 
     if (s.colormap == pMap)
         s.colormap = null;
 
     pScreen.UninstallColormap(pMap);
 
-    SCREEN_WRAP(pScreen, UninstallColormap);
+    mixin(SCREEN_WRAP!("pScreen", "UninstallColormap"));
 }
 
 private void RootlessStoreColors(ColormapPtr pMap, int ndef, xColorItem* pdef)
 {
     ScreenPtr pScreen = pMap.pScreen;
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
 
-    SCREEN_UNWRAP(pScreen, StoreColors);
+    mixin(SCREEN_UNWRAP!("pScreen", "StoreColors"));
 
     if (s.colormap == pMap && ndef > 0) {
         s.colormap_changed = TRUE;
@@ -632,12 +635,12 @@ private void RootlessStoreColors(ColormapPtr pMap, int ndef, xColorItem* pdef)
 
     pScreen.StoreColors(pMap, ndef, pdef);
 
-    SCREEN_WRAP(pScreen, StoreColors);
+    mixin(SCREEN_WRAP!("pScreen", "StoreColors"));
 }
 
 private CARD32 RootlessRedisplayCallback(OsTimerPtr timer, CARD32 time, void* arg)
 {
-    RootlessScreenRec* screenRec = arg;
+    RootlessScreenRec* screenRec = cast(RootlessScreenRec*)arg;
 
     if (!screenRec.redisplay_queued) {
         /* No update needed. Stop the timer. */
@@ -664,14 +667,14 @@ private CARD32 RootlessRedisplayCallback(OsTimerPtr timer, CARD32 time, void* ar
  */
 void RootlessQueueRedisplay(ScreenPtr pScreen)
 {
-    RootlessScreenRec* screenRec = SCREENREC(pScreen);
+    RootlessScreenRec* screenRec = mixin(SCREENREC!("pScreen"));
 
     screenRec.redisplay_queued = TRUE;
 
     if (screenRec.redisplay_timer_set)
         return;
 
-    screenRec.redisplay_timer = TimerSet(screenRec.redisplay_timer,
+    screenRec.redisplay_timer = TimerSet(cast(_OsTimerRec*)screenRec.redisplay_timer,
                                           0, ROOTLESS_REDISPLAY_DELAY,
                                           &RootlessRedisplayCallback, screenRec);
     screenRec.redisplay_timer_set = TRUE;
@@ -684,8 +687,8 @@ void RootlessQueueRedisplay(ScreenPtr pScreen)
  */
 private void RootlessBlockHandler(void* pbdata, void* ptimeout)
 {
-    ScreenPtr pScreen = pbdata;
-    RootlessScreenRec* screenRec = SCREENREC(pScreen);
+    ScreenPtr pScreen = cast(ScreenPtr)pbdata;
+    RootlessScreenRec* screenRec = mixin(SCREENREC!("pScreen"));
 
     if (screenRec.redisplay_expired) {
         screenRec.redisplay_expired = FALSE;
@@ -715,28 +718,29 @@ private Bool RootlessAllocatePrivates(ScreenPtr pScreen)
     RootlessScreenRec* s = cast(RootlessScreenRec*) cast(RootlessScreenRec*) calloc(1, RootlessScreenRec.sizeof);
     if (!s)
         return FALSE;
-    SETSCREENREC(pScreen, s);
+    mixin(SETSCREENREC!("pScreen", "s"));
 
     return TRUE;
 }
 
 private void RootlessWrap(ScreenPtr pScreen)
 {
-    RootlessScreenRec* s = SCREENREC(pScreen);
+    RootlessScreenRec* s = mixin(SCREENREC!("pScreen"));
 
     dixScreenHookClose(pScreen, &RootlessCloseScreen);
-    dixScreenHookWindowDestroy(pScreen, RootlessWindowDestroy);
-    dixScreenHookWindowPosition(pScreen, RootlessWindowPosition);
+    dixScreenHookWindowDestroy(pScreen, &RootlessWindowDestroy);
+    dixScreenHookWindowPosition(pScreen, &RootlessWindowPosition);
     dixScreenHookPostCreateResources(pScreen, &RootlessCreateScreenResources);
 
-enum string WRAP(string a) = `\
-    if (pScreen->a) { \
-        s->a = pScreen->a; \
-    } else { \
-        RL_DEBUG_MSG("null screen fn " #a "\n"); \
-        s->a = NULL; \
-    } \
-    pScreen->a = Rootless##a`;
+enum string WRAP(string a) = `{
+    if (pScreen.`~a~`) { 
+        s.`~a~` = pScreen.`~a~`; 
+    } else { 
+        //RL_DEBUG_MSG("null screen fn " `~a~` "n"); 
+        s.`~a~` = null; 
+    }
+    pScreen.`~a~` = &Rootless`~a~`;
+}`;
 
     mixin(WRAP!(`CreateGC`));
     mixin(WRAP!(`CopyWindow`));
@@ -765,15 +769,15 @@ enum string WRAP(string a) = `\
         PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
         s.Composite = ps.Composite;
-        ps.Composite = RootlessComposite;
+        ps.Composite = &RootlessComposite;
         s.Glyphs = ps.Glyphs;
-        ps.Glyphs = RootlessGlyphs;
+        ps.Glyphs = &RootlessGlyphs;
         s.Trapezoids = ps.Trapezoids;
-        ps.Trapezoids = RootlessTrapezoids;
+        ps.Trapezoids = &RootlessTrapezoids;
         s.Triangles = ps.Triangles;
-        ps.Triangles = RootlessTriangles;
+        ps.Triangles = &RootlessTriangles;
         s.CompositeRects = ps.CompositeRects;
-        ps.CompositeRects = RootlessCompositeRects;
+        ps.CompositeRects = &RootlessCompositeRects;
     }
 
     // WRAP(ClearToBackground); fixme put this back? useful for shaped wins?
@@ -792,7 +796,7 @@ Bool RootlessInit(ScreenPtr pScreen, RootlessFrameProcsPtr procs)
     if (!RootlessAllocatePrivates(pScreen))
         return FALSE;
 
-    s = SCREENREC(pScreen);
+    s = mixin(SCREENREC!("pScreen"));
 
     s.imp = procs;
     s.colormap = null;

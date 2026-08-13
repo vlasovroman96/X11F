@@ -122,10 +122,10 @@ enum string CalcLineDeltas(string _x1,string _y1,string _x2,string _y2,string _a
 	(` ~ _octant ~ `) |= YDECREASING;		
     }`;
 
-enum string SetYMajorOctant(string _octant) = `((` ~ _octant ~ `) |= YMAJOR)`;
+enum string SetYMajorOctant(string _octant) = `((` ~ _octant ~ `) |= YMAJOR);`;
 
 enum string FIXUP_ERROR(string _e, string _octant, string _bias) = `
-    (` ~ _e ~ `) -= (((` ~ _bias ~ `) >> (` ~ _octant ~ `)) & 1)`;
+    (` ~ _e ~ `) -= (((` ~ _bias ~ `) >> (` ~ _octant ~ `)) & 1);`;
 
 extern DevPrivateKeyRec miZeroLineScreenKeyRec;
 

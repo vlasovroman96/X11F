@@ -54,7 +54,7 @@ void mieqRemoveCallbackOnDrained(CallbackProcPtr callback, void* param);
 alias mieqHandler = void function(int screen, InternalEvent* event, DeviceIntPtr dev);
 void mieqSetHandler(int event, mieqHandler handler);
 
-void miSendExposures(WindowPtr pWin, RegionPtr pRgn, int dx, int dy);
+// void miSendExposures(WindowPtr pWin, RegionPtr pRgn, int dx, int dy);
 
 // void  miWindowExposures(WindowPtr pWin, RegionPtr prgn);
 

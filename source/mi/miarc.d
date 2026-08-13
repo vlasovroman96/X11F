@@ -64,10 +64,10 @@ import include.gcstruct;
 import include.scrnintstr;
 import include.pixmapstr;
 import include.windowstr;
-import mifpoly;
+import mi.mifpoly;
 import mifillarc;
 import mizerarc;
-import mifpoly;
+import mi.mifpoly;
 import dix.gc;
 // module mizerarc;
 

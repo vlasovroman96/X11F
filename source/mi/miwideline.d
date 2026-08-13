@@ -74,6 +74,29 @@ import include.windowstr;
 import include.gcstruct;
 import include.regionstr;
 import miwideline;
+import dix.gc;;
+import mi.mifpoly;
+
+enum string MILINESETPIXEL(string pDrawable, string pGC, string pixel, string oldPixel) =
+`{ 
+    (`~oldPixel~`) = (`~pGC~`).fgPixel; 
+    if ((`~pixel~`) != (`~oldPixel~`)) { 
+        ChangeGCVal gcval; 
+        gcval.val = cast(uint)(`~pixel~`); 
+        ChangeGC (null, (`~pGC~`), cast(uint)GCForeground, &gcval); 
+        ValidateGC ((`~pDrawable~`), (`~pGC~`)); 
+    }
+}`;
+
+enum string MILINERESETPIXEL(string pDrawable, string pGC, string pixel, string oldPixel) =
+`{ 
+    if ((`~pixel~`) != (`~oldPixel~`)) { 
+        ChangeGCVal gcval; 
+        gcval.val = cast(uint)(`~oldPixel~`); 
+        ChangeGC (null, (`~pGC~`), cast(uint)GCForeground, &gcval); 
+        ValidateGC ((`~pDrawable~`), (`~pGC~`)); 
+    } 
+}`;
 
 struct _PolyEdge {
     int height;                 /* number of scanlines to process */
@@ -86,7 +109,7 @@ struct _PolyEdge {
 }
 
 alias PolyEdgeRec = _PolyEdge;
-alias PolyEdgePtr = PolyEdgeRec;
+alias PolyEdgePtr = PolyEdgeRec*;
 
 enum SQSECANT = 108.856472512142;       /* 1/sin^2(11/2) - miter limit constant */
 
@@ -117,8 +140,8 @@ struct _LineFace {
     int x, y;
     double k;
 } 
-alias LineFaceRec = _PolySlope;
-alias LineFacePtr = _PolySlope*;
+alias LineFaceRec = _LineFace;
+alias LineFacePtr = LineFaceRec*;
 
 struct Spans {
     int count;                  /* number of spans                  */
@@ -203,9 +226,9 @@ private void miSubtractSpans(SpanGroup* spanGroup, Spans* sub)
                     else if (xmin <= spansPt.x) {
                         if (xmax >= spansPt.x + *spansWid) {
                             memmove(spansPt, spansPt + 1,
-                                    (*spansPt * (spansCount - 1)).sizeof);
+                                    ((*spansPt).sizeof * (spansCount - 1)));
                             memmove(spansWid, spansWid + 1,
-                                    (*spansWid * (spansCount - 1)).sizeof);
+                                    ((*spansWid).sizeof * (spansCount - 1)));
                             spansPt--;
                             spansWid--;
                             spans.count--;
@@ -213,7 +236,7 @@ private void miSubtractSpans(SpanGroup* spanGroup, Spans* sub)
                         }
                         else {
                             *spansWid = *spansWid - (xmax - spansPt.x);
-                            spansPt.x = xmax;
+                            spansPt.x = cast(short)xmax;
                         }
                     }
                     else {
@@ -226,14 +249,14 @@ private void miSubtractSpans(SpanGroup* spanGroup, Spans* sub)
                                 int* newwid = void;
 
 enum EXTRA = 8;
-                                newPt = reallocarray(spans.points,
+                                newPt = cast(_xPoint*)reallocarray(spans.points,
                                                      spans.count + EXTRA,
                                                      xPoint.sizeof);
                                 if (!newPt)
                                     break;
                                 spansPt = newPt + (spansPt - spans.points);
                                 spans.points = newPt;
-                                newwid = reallocarray(spans.widths,
+                                newwid = cast(int*)reallocarray(spans.widths,
                                                       spans.count + EXTRA,
                                                       int.sizeof);
                                 if (!newwid)
@@ -243,16 +266,16 @@ enum EXTRA = 8;
                                 extra = EXTRA;
                             }
                             memmove(spansPt + 1, spansPt,
-                                    (*spansPt * (spansCount)).sizeof);
+                                    ((*spansPt).sizeof * (spansCount)));
                             memmove(spansWid + 1, spansWid,
-                                    (*spansWid * (spansCount)).sizeof);
+                                    ((*spansWid).sizeof * (spansCount)));
                             spans.count++;
                             extra--;
                             *spansWid = xmin - spansPt.x;
                             spansWid++;
                             spansPt++;
                             *spansWid = *spansWid - (xmax - spansPt.x);
-                            spansPt.x = xmax;
+                            spansPt.x = cast(short)xmax;
                         }
                     }
                 }
@@ -273,7 +296,7 @@ private void miAppendSpans(SpanGroup* spanGroup, SpanGroup* otherGroup, Spans* s
     if (spansCount > 0) {
         if (spanGroup.size == spanGroup.count) {
             spanGroup.size = (spanGroup.size + 8) * 2;
-            spanGroup.group = XNFreallocarray(spanGroup.group,
+            spanGroup.group = cast(Spans*)XNFreallocarray(spanGroup.group,
                                                Spans.sizeof, spanGroup.size);
         }
 
@@ -414,8 +437,8 @@ private int UniquifySpansX(Spans* spans, xPoint* newPoints, int* newWidths)
         oldpt = oldPoints.x;
         if (oldpt > newx2) {
             /* Write current span, start a new one */
-            newPoints.x = newx1;
-            newPoints.y = y;
+            newPoints.x = cast(short)newx1;
+            newPoints.y = cast(short)y;
             *newWidths = newx2 - newx1;
             newPoints++;
             newWidths++;
@@ -431,11 +454,11 @@ private int UniquifySpansX(Spans* spans, xPoint* newPoints, int* newWidths)
     }                           /* for */
 
     /* Write final span */
-    newPoints.x = newx1;
+    newPoints.x = cast(short)newx1;
     *newWidths = newx2 - newx1;
-    newPoints.y = y;
+    newPoints.y = cast(short)y;
 
-    return (newWidths - startNewWidths) + 1;
+    return cast(int)((newWidths - startNewWidths) + 1);
 }                               /* UniquifySpansX */
 
 private void miDisposeSpanGroup(SpanGroup* spanGroup)
@@ -519,10 +542,10 @@ private void miFillUniqueSpanGroup(DrawablePtr pDraw, GCPtr pGC, SpanGroup* span
                         int* newwidths = void;
 
                         ysizes[index] = (ysizes[index] + 8) * 2;
-                        newpoints = reallocarray(newspans.points,
+                        newpoints = cast(_xPoint*)reallocarray(newspans.points,
                                                  ysizes[index],
                                                  xPoint.sizeof);
-                        newwidths = reallocarray(newspans.widths,
+                        newwidths = cast(int*)reallocarray(newspans.widths,
                                                  ysizes[index], int.sizeof);
                         if (!newpoints || !newwidths) {
                             for (i = 0; i < ylength; i++) {
@@ -552,7 +575,7 @@ private void miFillUniqueSpanGroup(DrawablePtr pDraw, GCPtr pGC, SpanGroup* span
         }                       /* for i thorough Spans */
 
         /* Now sort by x and uniquify each bucket into the final array */
-        points = calloc(count, xPoint.sizeof);
+        points = cast(_xPoint*)calloc(count, xPoint.sizeof);
         widths = cast(int*) calloc(count, int.sizeof);
         if (!points || !widths) {
             for (i = 0; i < ylength; i++) {
@@ -599,10 +622,10 @@ private void miFillUniqueSpanGroup(DrawablePtr pDraw, GCPtr pGC, SpanGroup* span
 
 private Bool InitSpans(Spans* spans, size_t nspans)
 {
-    spans.points = calloc(nspans, typeof(*spans.points).sizeof);
+    spans.points = cast(_xPoint*)calloc(nspans, typeof(*spans.points).sizeof);
     if (!spans.points)
         return FALSE;
-    spans.widths = calloc(nspans, typeof(*spans.widths).sizeof);
+    spans.widths = cast(int*)calloc(nspans, typeof(*spans.widths).sizeof);
     if (!spans.widths) {
         free(spans.points);
         return FALSE;
@@ -648,8 +671,8 @@ private void fillSpans(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, Spans* s
 
         oldPixel.val = pGC.fgPixel;
         if (pixel != oldPixel.val) {
-            tmpPixel.val = cast(XID) pixel;
-            ChangeGC(null, pGC, GCForeground, &tmpPixel);
+            tmpPixel.val = cast(uint) pixel;
+            ChangeGC(null, pGC, cast(uint)GCForeground, &tmpPixel);
             ValidateGC(pDrawable, pGC);
         }
         (*pGC.ops.FillSpans) (pDrawable, pGC, spans.count, spans.points,
@@ -657,7 +680,7 @@ private void fillSpans(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, Spans* s
         free(spans.widths);
         free(spans.points);
         if (pixel != oldPixel.val) {
-            ChangeGC(null, pGC, GCForeground, &oldPixel);
+            ChangeGC(null, pGC, cast(uint)GCForeground, &oldPixel);
             ValidateGC(pDrawable, pGC);
         }
     }
@@ -729,8 +752,8 @@ private void miFillPolyHelper(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, S
 
         while (--height >= 0) {
             if (right_x >= left_x) {
-                ppt.y = y;
-                ppt.x = left_x + xorg;
+                ppt.y = cast(short)(y);
+                ppt.x = cast(short)(left_x + xorg);
                 ppt++;
                 *pwidth++ = right_x - left_x + 1;
             }
@@ -751,7 +774,7 @@ private void miFillPolyHelper(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, S
             }
         }
     }
-    spanRec.count = ppt - spanRec.points;
+    spanRec.count = cast(int)(ppt - spanRec.points);
     fillSpans(pDrawable, pGC, pixel, &spanRec, spanData);
 }
 
@@ -764,19 +787,19 @@ private void miFillRectPolyHelper(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixe
     xRectangle rect = void;
 
     if (!spanData) {
-        rect.x = x;
-        rect.y = y;
-        rect.width = w;
-        rect.height = h;
+        rect.x = cast(short)x;
+        rect.y = cast(short)y;
+        rect.width = cast(ushort)w;
+        rect.height = cast(ushort)h;
         oldPixel.val = pGC.fgPixel;
         if (pixel != oldPixel.val) {
-            tmpPixel.val = cast(XID) pixel;
-            ChangeGC(null, pGC, GCForeground, &tmpPixel);
+            tmpPixel.val = cast(uint) pixel;
+            ChangeGC(null, pGC, cast(uint)GCForeground, &tmpPixel);
             ValidateGC(pDrawable, pGC);
         }
         (*pGC.ops.PolyFillRect) (pDrawable, pGC, 1, &rect);
         if (pixel != oldPixel.val) {
-            ChangeGC(null, pGC, GCForeground, &oldPixel);
+            ChangeGC(null, pGC, cast(uint)GCForeground, &oldPixel);
             ValidateGC(pDrawable, pGC);
         }
     }
@@ -791,13 +814,13 @@ private void miFillRectPolyHelper(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixe
             x += pDrawable.x;
         }
         while (h--) {
-            ppt.x = x;
-            ppt.y = y;
+            ppt.x = cast(short)x;
+            ppt.y = cast(short)y;
             ppt++;
             *pwidth++ = w;
             y++;
         }
-        spanRec.count = ppt - spanRec.points;
+        spanRec.count = cast(int)(ppt - spanRec.points);
         AppendSpanGroup(pGC, pixel, &spanRec, spanData);
     }
 }
@@ -952,10 +975,10 @@ private void miLineOnePoint(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, Spa
     int wid = void;
     c_ulong oldPixel = void;
 
-    MILINESETPIXEL(pDrawable, pGC, pixel, oldPixel);
+    mixin(MILINESETPIXEL!("pDrawable", "pGC", "pixel", "oldPixel"));
     if (pGC.fillStyle == FillSolid) {
-        pt.x = x;
-        pt.y = y;
+        pt.x = cast(short)x;
+        pt.y = cast(short)y;
         (*pGC.ops.PolyPoint) (pDrawable, pGC, CoordModeOrigin, 1, &pt);
     }
     else {
@@ -964,11 +987,11 @@ private void miLineOnePoint(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, Spa
             x += pDrawable.x;
             y += pDrawable.y;
         }
-        pt.x = x;
-        pt.y = y;
+        pt.x = cast(short)x;
+        pt.y = cast(short)y;
         (*pGC.ops.FillSpans) (pDrawable, pGC, 1, &pt, &wid, TRUE);
     }
-    MILINERESETPIXEL(pDrawable, pGC, pixel, oldPixel);
+    mixin(MILINERESETPIXEL!("pDrawable", "pGC", "pixel", "oldPixel"));
 }
 
 private void miLineJoin(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, SpanDataPtr spanData, LineFacePtr pLeft, LineFacePtr pRight)
@@ -1095,8 +1118,8 @@ private void miLineJoin(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, SpanDat
         scale = ady;
         if (adx > ady)
             scale = adx;
-        slopes[2].dx = (dx * 65536) / scale;
-        slopes[2].dy = (dy * 65536) / scale;
+        slopes[2].dx = cast(int)((dx * 65536) / scale);
+        slopes[2].dy = cast(int)((dy * 65536) / scale);
         slopes[2].k = ((pLeft.xa + pRight.xa) * slopes[2].dy -
                        (pLeft.ya + pRight.ya) * slopes[2].dx) / 2.0;
         edgecount = 3;
@@ -1122,8 +1145,8 @@ private int miLineArcI(DrawablePtr pDraw, GCPtr pGC, int xorg, int yorg, DDXPoin
     }
     slw = pGC.lineWidth;
     if (slw == 1) {
-        tpts.x = xorg;
-        tpts.y = yorg;
+        tpts.x = cast(short)xorg;
+        tpts.y = cast(short)yorg;
         *twids = 1;
         return 1;
     }
@@ -1146,14 +1169,14 @@ private int miLineArcI(DrawablePtr pDraw, GCPtr pGC, int xorg, int yorg, DDXPoin
         slw = (x << 1) + 1;
         if ((e == ex) && (slw > 1))
             slw--;
-        tpts.x = xorg - x;
-        tpts.y = yorg - y;
+        tpts.x = cast(short)(xorg - x);
+        tpts.y = cast(short)(yorg - y);
         tpts++;
         *twids++ = slw;
         if ((y != 0) && ((slw > 1) || (e != ex))) {
             bpts--;
-            bpts.x = xorg - x;
-            bpts.y = yorg + y;
+            bpts.x = cast(short)(xorg - x);
+            bpts.y = cast(short)(yorg + y);
             *--bwids = slw;
         }
     }
@@ -1195,7 +1218,7 @@ private int miLineArcD(DrawablePtr pDraw, GCPtr pGC, double xorg, double yorg, D
 
     pts = points;
     wids = widths;
-    xbase = floor(xorg);
+    xbase = cast(int)floor(xorg);
     x0 = xorg - xbase;
     ybase = ICEIL(yorg);
     y0 = yorg - ybase;
@@ -1211,7 +1234,7 @@ private int miLineArcD(DrawablePtr pDraw, GCPtr pGC, double xorg, double yorg, D
     xrk = x0 + x0 - 1.0;
     yk = y0 + y0 - 1.0;
     radius = (cast(double) pGC.lineWidth) / 2.0;
-    y = floor(radius - y0 + 1.0);
+    y = cast(int)floor(radius - y0 + 1.0);
     ybase -= y;
     ymin = ybase;
     ymax = 65536;
@@ -1284,15 +1307,15 @@ private int miLineArcD(DrawablePtr pDraw, GCPtr pGC, double xorg, double yorg, D
         mixin(CLIPSTEPEDGE!(`edgey1`, `edge1`, `edgeleft1`));
         mixin(CLIPSTEPEDGE!(`edgey2`, `edge2`, `edgeleft2`));
         if (xcr >= xcl) {
-            pts.x = xcl;
-            pts.y = ybase;
+            pts.x = cast(short)xcl;
+            pts.y = cast(short)ybase;
             pts++;
             *wids++ = xcr - xcl + 1;
         }
     }
     er = xrk - (xr << 1) - er;
     el = (xl << 1) - xlk - el;
-    boty = floor(-y0 - radius + 1.0);
+    boty = cast(int)floor(-y0 - radius + 1.0);
     if (ybase + y - boty > ymax)
         boty = ymax - ybase - y;
     while (y > boty) {
@@ -1316,13 +1339,13 @@ private int miLineArcD(DrawablePtr pDraw, GCPtr pGC, double xorg, double yorg, D
         mixin(CLIPSTEPEDGE!(`edgey1`, `edge1`, `edgeleft1`));
         mixin(CLIPSTEPEDGE!(`edgey2`, `edge2`, `edgeleft2`));
         if (xcr >= xcl) {
-            pts.x = xcl;
-            pts.y = ybase;
+            pts.x = cast(short)xcl;
+            pts.y = cast(short)ybase;
             pts++;
             *wids++ = xcr - xcl + 1;
         }
     }
-    return pts - points;
+    return cast(int)(pts - points);
 }
 
 private int miRoundJoinFace(LineFacePtr face, PolyEdgePtr edge, Bool* leftEdge)
@@ -1842,13 +1865,13 @@ private void miCleanupSpanData(DrawablePtr pDrawable, GCPtr pGC, SpanDataPtr spa
         pixel.val = pGC.bgPixel;
         oldPixel.val = pGC.fgPixel;
         if (pixel.val != oldPixel.val) {
-            ChangeGC(null, pGC, GCForeground, &pixel);
+            ChangeGC(null, pGC, cast(uint)GCForeground, &pixel);
             ValidateGC(pDrawable, pGC);
         }
         miFillUniqueSpanGroup(pDrawable, pGC, &spanData.bgGroup);
         miFreeSpanGroup(&spanData.bgGroup);
         if (pixel.val != oldPixel.val) {
-            ChangeGC(null, pGC, GCForeground, &oldPixel);
+            ChangeGC(null, pGC, cast(uint)GCForeground, &oldPixel);
             ValidateGC(pDrawable, pGC);
         }
     }
@@ -2254,7 +2277,7 @@ private void miWideDashSegment(DrawablePtr pDrawable, GCPtr pGC, SpanDataPtr spa
                       &lcapFace, cast(LineFacePtr) null, rcenterx, rcentery, FALSE);
         }
     }
-    dashRemain = (cast(double) dashRemain) - LRemain;
+    dashRemain = cast(int)((cast(double) dashRemain) - LRemain);
     if (dashRemain == 0) {
         dashIndex++;
         if (dashIndex == pGC.numInDashList)

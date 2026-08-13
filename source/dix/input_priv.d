@@ -173,7 +173,7 @@ Mask GetEventMask(DeviceIntPtr dev, xEvent* ev, InputClientsPtr clients);
 Bool WindowXI2MaskIsset(DeviceIntPtr dev, WindowPtr win, xEvent* ev);
 int GetXI2MaskByte(XI2Mask* mask, DeviceIntPtr dev, int event_type);
 // void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window child, Bool calcChild, InputLevel XILevel);
-Bool PointInBorderSize(WindowPtr pWin, int x, int y);
+// Bool PointInBorderSize(WindowPtr pWin, int x, int y);
 // WindowPtr XYToWindow(SpritePtr pSprite, int x, int y);
 // int EventIsDeliverable(DeviceIntPtr dev, int evtype, WindowPtr win);
 // Bool ActivatePassiveGrab(DeviceIntPtr dev, GrabPtr grab, InternalEvent* ev, InternalEvent* real_event);

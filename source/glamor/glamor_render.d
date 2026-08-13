@@ -70,17 +70,17 @@ enum string PIXMAN_FORMAT_A(string f) = 	PIXMAN_FORMAT_RESHIFT!(f, "12", "4");
 // 				 PIXMAN_FORMAT_G(f) +	\
 // 				 PIXMAN_FORMAT_B(f))
 
-enum pixman_fixed_e =			(cast(pixman_fixed_t) 1);
-enum pixman_fixed_1 =			(pixman_int_to_fixed!("1"));
-enum pixman_fixed_1_minus_e =		(mixin(pixman_fixed_1) - pixman_fixed_e);
+// enum pixman_fixed_e =			(cast(pixman_fixed_t) 1);
+// enum pixman_fixed_1 =			(pixman_int_to_fixed!("1"));
+// enum pixman_fixed_1_minus_e =		(mixin(pixman_fixed_1) - pixman_fixed_e);
 // alias pixman_fixed_minus_1		(pixman_int_to_fixed(-1))
 enum string pixman_fixed_to_int(string f) = `(cast(int) ((`~f~`) >> 16))`;
 enum string pixman_int_to_fixed(string i) =		`(cast(pixman_fixed_t) (cast(uint32_t) (`~i~`) << 16))`;
 // alias pixman_fixed_to_double(f)	(double) ((f) / (double) pixman_fixed_1)
 // alias pixman_double_to_fixed(d)	((pixman_fixed_t) ((d) * 65536.0))
 enum string pixman_fixed_frac(string f) = 		`((`~f~`) & pixman_fixed_1_minus_e)`;
-// alias pixman_fixed_floor(f)		((f) & ~pixman_fixed_1_minus_e)
-// alias pixman_fixed_ceil(f)		pixman_fixed_floor ((f) + pixman_fixed_1_minus_e)
+enum string pixman_fixed_floor(string f1) =		`((`~f1~`) & ~pixman_fixed_1_minus_e)`;
+enum string pixman_fixed_ceil(string st) =		(pixman_fixed_floor!(`((`~st~`) + pixman_fixed_1_minus_e)`));
 // alias pixman_fixed_fraction(f)	((f) & pixman_fixed_1_minus_e)
 // alias pixman_fixed_mod_2(f)		((f) & (pixman_fixed1 | pixman_fixed_1_minus_e))
 // alias pixman_max_fixed_48_16		((pixman_fixed_48_16_t) 0x7fffffff)

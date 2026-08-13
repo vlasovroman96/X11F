@@ -46,6 +46,12 @@ import    include.gcstruct;
 import    include.damage;
 import    include.damagestr;
 import    render.glyphstr_priv;
+import render.mipict;
+import externs.attrs;
+import Xext.xf86bigfont;
+import dix.screen_hooks;
+import miext.rootless.rootlessCommon;
+
 
 enum string wrap(string priv, string real_, string mem, string func) = `{
     ` ~ priv ~ `.` ~ mem ~ ` = ` ~ real_ ~ `.` ~ mem ~ `; 
@@ -92,20 +98,20 @@ private DamagePtr* getDrawableDamageRef(DrawablePtr pDrawable)
 {
     PixmapPtr pPixmap = void;
 
-    if (WindowDrawable(pDrawable.type)) {
+    if (mixin(WindowDrawable!("pDrawable.type"))) {
         ScreenPtr pScreen = pDrawable.pScreen;
 
-        bool cond = pScreen.GetWindowPixmap;
-static if(ROOTLESS_WORKAROUND) {
-        cond = cond && (cast(WindowPtr) pDrawable).viewable;
-}
+        pPixmap = null;
+        bool cond = pScreen.GetWindowPixmap !is null;
+// static if(ROOTLESS_WORKAROUND) {
+        // cond = cond && (cast(WindowPtr) pDrawable).viewable;
+// }
 
-        pPixmap = 0;
         if (cond)
             pPixmap = (*pScreen.GetWindowPixmap) (cast(WindowPtr) pDrawable);
 
         if (!pPixmap) {
-            damageScrPriv(pScreen);
+            mixin(damageScrPriv!("pScreen"));
 
             return &pScrPriv.pScreenDamage;
         }
@@ -131,12 +137,12 @@ enum string winDamageRef(string pWindow) = `
 // private void _damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool clip, int subWindowMode, const(char)* where);
 // enum string damageRegionAppend(string d,string r,string c,string m) = `_damageRegionAppend(` ~ d ~ `,` ~ r ~ `,` ~ c ~ `,` ~ m ~ `,__FUNCTION__.ptr)`;
 // } else {
-private void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool clip, int subWindowMode)
+void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool clip, int subWindowMode)
 // #endif
 {
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
     mixin(drawableDamage!(`pDrawable`));
     DamagePtr pNext = void;
     RegionRec clippedRec = void;
@@ -184,8 +190,8 @@ private void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool c
          * Check for internal damage and don't send events
          */
         if (pScrPriv.internalLevel > 0 && !pDamage.isInternal) {
-            DAMAGE_DEBUG(("non internal damage, skipping at %d\n",
-                          pScrPriv.internalLevel));
+            // DAMAGE_DEBUG(("non internal damage, skipping at %d\n",
+                        //   pScrPriv.internalLevel));
             continue;
         }
         /*
@@ -202,7 +208,7 @@ private void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool c
          * Need to move everyone to screen coordinates
          * XXX what about off-screen pixmaps with non-zero x/y?
          */
-        if (!WindowDrawable(pDamage.pDrawable.type)) {
+        if (!mixin(WindowDrawable!("pDamage.pDrawable.type"))) {
             draw_x += (cast(PixmapPtr) pDamage.pDrawable).screen_x;
             draw_y += (cast(PixmapPtr) pDamage.pDrawable).screen_y;
         }
@@ -222,10 +228,10 @@ private void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool c
             else {
                 BoxRec box = void;
 
-                box.x1 = draw_x;
-                box.y1 = draw_y;
-                box.x2 = draw_x + pDamage.pDrawable.width;
-                box.y2 = draw_y + pDamage.pDrawable.height;
+                box.x1 = cast(short)(draw_x);
+                box.y1 = cast(short)(draw_y);
+                box.x2 = cast(short)(draw_x + pDamage.pDrawable.width);
+                box.y2 = cast(short)(draw_y + pDamage.pDrawable.height);
                 RegionInit(&pixClip, &box, 1);
                 RegionIntersect(pDamageRegion, pRegion, &pixClip);
                 RegionUninit(&pixClip);
@@ -237,12 +243,12 @@ private void damageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion, Bool c
                 continue;
         }
 
-        DAMAGE_DEBUG(("%s %d x %d +%d +%d (target 0x%lx monitor 0x%lx)\n",
-                      where,
-                      pDamageRegion.extents.x2 - pDamageRegion.extents.x1,
-                      pDamageRegion.extents.y2 - pDamageRegion.extents.y1,
-                      pDamageRegion.extents.x1, pDamageRegion.extents.y1,
-                      pDrawable.id, pDamage.pDrawable.id));
+        // DAMAGE_DEBUG(("%s %d x %d +%d +%d (target 0x%lx monitor 0x%lx)\n",
+        //               where,
+        //               pDamageRegion.extents.x2 - pDamageRegion.extents.x1,
+        //               pDamageRegion.extents.y2 - pDamageRegion.extents.y1,
+        //               pDamageRegion.extents.x1, pDamageRegion.extents.y1,
+        //               pDrawable.id, pDamage.pDrawable.id));
 
         /*
          * Move region to target coordinate space
@@ -306,9 +312,9 @@ private void damageDamageBox(DrawablePtr pDrawable, BoxPtr pBox, int subWindowMo
 
     RegionInit(&region, pBox, 1);
 static if (DAMAGE_DEBUG_ENABLE) {
-    _damageRegionAppend(pDrawable, &region, TRUE, subWindowMode, where);
+    _damageRegionAppend(pDrawable, &region, TRUE, subWindowMode, __FUNC__);
 } else {
-    mixin(damageRegionAppend!(`pDrawable`, `&region`, `TRUE`, `subWindowMode`));
+    damageRegionAppend(pDrawable, &region, TRUE, subWindowMode);
 }
     RegionUninit(&region);
 }
@@ -332,39 +338,41 @@ private Bool damageCreateGC(GCPtr pGC)
 {
     ScreenPtr pScreen = pGC.pScreen;
 
-    damageScrPriv(pScreen);
-    damageGCPriv(pGC);
+    mixin(damageScrPriv!("pScreen"));
+    mixin(damageGCPriv!("pGC"));
     Bool ret = void;
 
     mixin(unwrap!(`pScrPriv`, `pScreen`, `CreateGC`));
-    if ((ret = (*pScreen.CreateGC) (pGC))) {
+    if ((ret = (*pScreen.CreateGC) (pGC)) != 0) {
         pGCPriv.ops = null;
         pGCPriv.funcs = pGC.funcs;
         pGC.funcs = &damageGCFuncs;
     }
-    mixin(wrap!(`pScrPriv`, `pScreen`, `CreateGC`, `damageCreateGC`));
+    mixin(wrap!(`pScrPriv`, `pScreen`, `CreateGC`, `&damageCreateGC`));
 
     return ret;
 }
 
-enum string DAMAGE_GC_OP_PROLOGUE(string pGC, string pDrawable) = `
-    damageGCPriv(` ~ pGC ~ `);  
+enum string DAMAGE_GC_OP_PROLOGUE(string pGC, string pDrawable) =
+    damageGCPriv!(pGC)~`  
     const(GCFuncs)* oldFuncs = ` ~ pGC ~ `.funcs; 
-    ` ~ unwrap!(`pGCPriv`, pGC, `funcs`) ~ `;  
-    ` ~ unwrap!(`pGCPriv`, pGC, `ops`) ~ `; 
-`;
-enum string DAMAGE_GC_OP_EPILOGUE(string pGC, string pDrawable) = `
-    ` ~ wrap!(`pGCPriv`, pGC, `funcs`, `oldFuncs`) ~ `; 
-    ` ~ wrap!(`pGCPriv`, pGC, `ops`, `&damageGCOps`) ~ ``;
+    ` ~ unwrap!(`pGCPriv`, pGC, `funcs`) ~ `  
+    ` ~ unwrap!(`pGCPriv`, pGC, `ops`);
 
-enum string DAMAGE_GC_FUNC_PROLOGUE(string pGC) = `
-    damageGCPriv(` ~ pGC ~ `); 
-    ` ~ unwrap!(`pGCPriv`, pGC, `funcs`) ~ `; 
-    if (pGCPriv.ops) ` ~ unwrap!(`pGCPriv`, pGC, `ops`) ~ ``;
+enum string DAMAGE_GC_OP_EPILOGUE(string pGC, string pDrawable) = `
+    ` ~ wrap!(`pGCPriv`, pGC, `funcs`, `oldFuncs`) ~ ` 
+    ` ~ wrap!(`pGCPriv`, pGC, `ops`, `&damageGCOps`);
+
+enum string DAMAGE_GC_FUNC_PROLOGUE(string pGC) = 
+    damageGCPriv!(pGC)~`
+    ` ~ unwrap!(`pGCPriv`, pGC, `funcs`)~` 
+    if (pGCPriv.ops) ` ~ 
+        unwrap!(`pGCPriv`, pGC, `ops`);
 
 enum string DAMAGE_GC_FUNC_EPILOGUE(string pGC) = `
-    ` ~ wrap!(`pGCPriv`, pGC, `funcs`, `&damageGCFuncs`) ~ `;  
-    if (pGCPriv.ops) ` ~ wrap!(`pGCPriv`, pGC, `ops`, `&damageGCOps`) ~ ``;
+    ` ~ wrap!(`pGCPriv`, pGC, `funcs`, `&damageGCFuncs`)
+     ~ `  if (pGCPriv.ops)
+    ` ~     wrap!(`pGCPriv`, pGC, `ops`, `&damageGCOps`);
 
 private void damageValidateGC(GCPtr pGC, c_ulong changes, DrawablePtr pDrawable)
 {
@@ -416,13 +424,13 @@ private void damageDestroyClip(GCPtr pGC)
     mixin(DAMAGE_GC_FUNC_EPILOGUE!(`pGC`));
 }
 
-enum string TRIM_BOX(string box, string pGC) = `if (` ~ pGC ~ `.pCompositeClip) { 
-    BoxPtr extents = &` ~ pGC ~ `.pCompositeClip.extents;
-    if(` ~ box ~ `.x1 < extents.x1) ` ~ box ~ `.x1 = extents.x1; 
-    if(` ~ box ~ `.x2 > extents.x2) ` ~ box ~ `.x2 = extents.x2; 
-    if(` ~ box ~ `.y1 < extents.y1) ` ~ box ~ `.y1 = extents.y1; 
-    if(` ~ box ~ `.y2 > extents.y2) ` ~ box ~ `.y2 = extents.y2; 
-    }`;
+// enum string TRIM_BOX(string box, string pGC) = `if (` ~ pGC ~ `.pCompositeClip) { 
+//     BoxPtr extents = &` ~ pGC ~ `.pCompositeClip.extents;
+//     if(` ~ box ~ `.x1 < extents.x1) ` ~ box ~ `.x1 = extents.x1; 
+//     if(` ~ box ~ `.x2 > extents.x2) ` ~ box ~ `.x2 = extents.x2; 
+//     if(` ~ box ~ `.y1 < extents.y1) ` ~ box ~ `.y1 = extents.y1; 
+//     if(` ~ box ~ `.y2 > extents.y2) ` ~ box ~ `.y2 = extents.y2; 
+//     }`;
 
 enum string TRANSLATE_BOX(string box, string pDrawable) = `{ 
     ` ~ box ~ `.x1 += ` ~ pDrawable ~ `.x; 
@@ -431,13 +439,13 @@ enum string TRANSLATE_BOX(string box, string pDrawable) = `{
     ` ~ box ~ `.y2 += ` ~ pDrawable ~ `.y; 
     }`;
 
-enum string TRIM_AND_TRANSLATE_BOX(string box, string pDrawable, string pGC) = `{ 
-    ` ~ TRANSLATE_BOX!(box, pDrawable) ~ `; 
-    ` ~ TRIM_BOX!(box, pGC) ~ `; 
-    }`;
+// enum string TRIM_AND_TRANSLATE_BOX(string box, string pDrawable, string pGC) = `{ 
+//     ` ~ TRANSLATE_BOX!(box, pDrawable) ~ `; 
+//     ` ~ TRIM_BOX!(box, pGC) ~ `; 
+//     }`;
 
-enum string BOX_NOT_EMPTY(string box) = `
-    (((` ~ box ~ `.x2 - ` ~ box ~ `.x1) > 0) && ((` ~ box ~ `.y2 - ` ~ box ~ `.y1) > 0))`;
+// enum string BOX_NOT_EMPTY(string box) = `
+//     (((` ~ box ~ `.x2 - ` ~ box ~ `.x1) > 0) && ((` ~ box ~ `.y2 - ` ~ box ~ `.y1) > 0))`;
 
 enum string checkGCDamage(string d,string g) = `(` ~ getDrawableDamage!(d) ~ ` && 
 				 (!` ~ g ~ `.pCompositeClip ||
@@ -459,27 +467,27 @@ private void damageComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pictur
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     if (mixin(checkPictureDamage!(`pDst`))) {
         BoxRec box = void;
 
-        box.x1 = xDst + pDst.pDrawable.x;
-        box.y1 = yDst + pDst.pDrawable.y;
-        box.x2 = box.x1 + width;
-        box.y2 = box.y1 + height;
+        box.x1 = cast(short)(xDst + pDst.pDrawable.x);
+        box.y1 = cast(short)(yDst + pDst.pDrawable.y);
+        box.x2 = cast(short)(box.x1 + width);
+        box.y2 = cast(short)(box.y1 + height);
         mixin(TRIM_PICTURE_BOX!(`box`, `pDst`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDst.pDrawable`, `&box`, `pDst.subWindowMode`));
+            damageDamageBox(pDst.pDrawable, &box, pDst.subWindowMode);
     }
     /*
      * Validating a source picture bound to a window may trigger other
      * composite operations. Do it before unwrapping to make sure damage
      * is reported correctly.
      */
-    if (pSrc.pDrawable && WindowDrawable(pSrc.pDrawable.type))
+    if (pSrc.pDrawable && mixin(WindowDrawable!("pSrc.pDrawable.type")))
         miCompositeSourceValidate(pSrc);
-    if (pMask && pMask.pDrawable && WindowDrawable(pMask.pDrawable.type))
+    if (pMask && pMask.pDrawable && mixin(WindowDrawable!("pMask.pDrawable.type")))
         miCompositeSourceValidate(pMask);
     mixin(unwrap!(`pScrPriv`, `ps`, `Composite`));
     (*ps.Composite) (op,
@@ -488,7 +496,7 @@ private void damageComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pictur
                       pDst,
                       xSrc, ySrc, xMask, yMask, xDst, yDst, width, height);
     damageRegionProcessPending(pDst.pDrawable);
-    mixin(wrap!(`pScrPriv`, `ps`, `Composite`, `damageComposite`));
+    mixin(wrap!(`pScrPriv`, `ps`, `Composite`, `&damageComposite`));
 }
 
 private void damageGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs)
@@ -496,7 +504,7 @@ private void damageGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormat
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     if (mixin(checkPictureDamage!(`pDst`))) {
         int nlistTmp = nlist;
@@ -525,13 +533,13 @@ private void damageGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormat
                 x2 = x1 + glyph.info.width;
                 y2 = y1 + glyph.info.height;
                 if (x1 < box.x1)
-                    box.x1 = x1;
+                    box.x1 = cast(short)x1;
                 if (y1 < box.y1)
-                    box.y1 = y1;
+                    box.y1 = cast(short)y1;
                 if (x2 > box.x2)
-                    box.x2 = x2;
+                    box.x2 = cast(short)x2;
                 if (y2 > box.y2)
-                    box.y2 = y2;
+                    box.y2 = cast(short)y2;
                 x += glyph.info.xOff;
                 y += glyph.info.yOff;
             }
@@ -539,12 +547,12 @@ private void damageGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormat
         }
         mixin(TRIM_PICTURE_BOX!(`box`, `pDst`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDst.pDrawable`, `&box`, `pDst.subWindowMode`));
+            damageDamageBox(pDst.pDrawable, &box, pDst.subWindowMode);
     }
     mixin(unwrap!(`pScrPriv`, `ps`, `Glyphs`));
     (*ps.Glyphs) (op, pSrc, pDst, maskFormat, xSrc, ySrc, nlist, list, glyphs);
     damageRegionProcessPending(pDst.pDrawable);
-    mixin(wrap!(`pScrPriv`, `ps`, `Glyphs`, `damageGlyphs`));
+    mixin(wrap!(`pScrPriv`, `ps`, `Glyphs`, `&damageGlyphs`));
 }
 
 private void damageAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int ntrap, xTrap* traps)
@@ -552,7 +560,7 @@ private void damageAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int n
     ScreenPtr pScreen = pPicture.pDrawable.pScreen;
     PictureScreenPtr ps = mixin(GetPictureScreen!("pScreen"));
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     if (mixin(checkPictureDamage!(`pPicture`))) {
         BoxRec box = void;
@@ -569,28 +577,28 @@ private void damageAddTraps(PicturePtr pPicture, INT16 x_off, INT16 y_off, int n
         for (i = 0; i < ntrap; i++) {
             pixman_fixed_t l = min(t.top.l, t.bot.l);
             pixman_fixed_t r = max(t.top.r, t.bot.r);
-            int x1 = x + assumeNoGC(&pixman_fixed_to_int)(l);
-            int x2 = x + assumeNoGC(&pixman_fixed_to_int)(assumeNoGC(&pixman_fixed_to_int)(r));
-            int y1 = y + assumeNoGC(&pixman_fixed_to_int)(t.top.y);
-            int y2 = y + assumeNoGC(&pixman_fixed_to_int)(assumeNoGC(&pixman_fixed_to_int)(t.bot.y));
+            int x1 = x + mixin(pixman_fixed_to_int!("l"));
+            int x2 = x + mixin(pixman_fixed_to_int!(pixman_fixed_ceil!(`r`)));
+            int y1 = y + mixin(pixman_fixed_to_int!("t.top.y"));
+            int y2 = y + mixin(pixman_fixed_to_int!(pixman_fixed_ceil!(`t.bot.y`)));
 
             if (x1 < box.x1)
-                box.x1 = x1;
+                box.x1 = cast(short)x1;
             if (x2 > box.x2)
-                box.x2 = x2;
+                box.x2 = cast(short)x2;
             if (y1 < box.y1)
-                box.y1 = y1;
+                box.y1 = cast(short)y1;
             if (y2 > box.y2)
-                box.y2 = y2;
+                box.y2 = cast(short)y2;
         }
         mixin(TRIM_PICTURE_BOX!(`box`, `pPicture`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pPicture.pDrawable`, `&box`, `pPicture.subWindowMode`));
+            damageDamageBox(pPicture.pDrawable, &box, pPicture.subWindowMode);
     }
     mixin(unwrap!(`pScrPriv`, `ps`, `AddTraps`));
     (*ps.AddTraps) (pPicture, x_off, y_off, ntrap, traps);
     damageRegionProcessPending(pPicture.pDrawable);
-    mixin(wrap!(`pScrPriv`, `ps`, `AddTraps`, `damageAddTraps`));
+    mixin(wrap!(`pScrPriv`, `ps`, `AddTraps`, `&damageAddTraps`));
 }
 
 /**********************************************************/
@@ -605,21 +613,21 @@ private void damageFillSpans(DrawablePtr pDrawable, GCPtr pGC, int npt, DDXPoint
         int* pwidthTmp = pwidth;
         BoxRec box = void;
 
-        box.x1 = pptTmp.x;
-        box.x2 = box.x1 + *pwidthTmp;
-        box.y2 = box.y1 = pptTmp.y;
+        box.x1 = cast(short)pptTmp.x;
+        box.x2 = cast(short)(box.x1 + *pwidthTmp);
+        box.y2 = box.y1 = cast(short)pptTmp.y;
 
         while (--nptTmp) {
             pptTmp++;
             pwidthTmp++;
             if (box.x1 > pptTmp.x)
-                box.x1 = pptTmp.x;
+                box.x1 = cast(short)(pptTmp.x);
             if (box.x2 < (pptTmp.x + *pwidthTmp))
-                box.x2 = pptTmp.x + *pwidthTmp;
+                box.x2 = cast(short)(pptTmp.x + *pwidthTmp);
             if (box.y1 > pptTmp.y)
-                box.y1 = pptTmp.y;
+                box.y1 = cast(short)(pptTmp.y);
             else if (box.y2 < pptTmp.y)
-                box.y2 = pptTmp.y;
+                box.y2 = cast(short)(pptTmp.y);
         }
 
         box.y2++;
@@ -630,7 +638,7 @@ private void damageFillSpans(DrawablePtr pDrawable, GCPtr pGC, int npt, DDXPoint
         mixin(TRIM_BOX!(`box`, `pGC`));
 
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
 
     (*pGC.ops.FillSpans) (pDrawable, pGC, npt, ppt, pwidth, fSorted);
@@ -649,21 +657,21 @@ private void damageSetSpans(DrawablePtr pDrawable, GCPtr pGC, char* pcharsrc, DD
         int nptTmp = npt;
         BoxRec box = void;
 
-        box.x1 = pptTmp.x;
-        box.x2 = box.x1 + *pwidthTmp;
-        box.y2 = box.y1 = pptTmp.y;
+        box.x1 = cast(short)pptTmp.x;
+        box.x2 = cast(short)(box.x1 + *pwidthTmp);
+        box.y2 = box.y1 = cast(short)pptTmp.y;
 
         while (--nptTmp) {
             pptTmp++;
             pwidthTmp++;
             if (box.x1 > pptTmp.x)
-                box.x1 = pptTmp.x;
+                box.x1 = cast(short)(pptTmp.x);
             if (box.x2 < (pptTmp.x + *pwidthTmp))
-                box.x2 = pptTmp.x + *pwidthTmp;
+                box.x2 = cast(short)(pptTmp.x + *pwidthTmp);
             if (box.y1 > pptTmp.y)
-                box.y1 = pptTmp.y;
+                box.y1 = cast(short)(pptTmp.y);
             else if (box.y2 < pptTmp.y)
-                box.y2 = pptTmp.y;
+                box.y2 = cast(short)(pptTmp.y);
         }
 
         box.y2++;
@@ -674,7 +682,7 @@ private void damageSetSpans(DrawablePtr pDrawable, GCPtr pGC, char* pcharsrc, DD
         mixin(TRIM_BOX!(`box`, `pGC`));
 
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.SetSpans) (pDrawable, pGC, pcharsrc, ppt, pwidth, npt, fSorted);
     damageRegionProcessPending(pDrawable);
@@ -687,14 +695,14 @@ private void damagePutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, 
     if (mixin(checkGCDamage!(`pDrawable`, `pGC`))) {
         BoxRec box = void;
 
-        box.x1 = x + pDrawable.x;
-        box.x2 = box.x1 + w;
-        box.y1 = y + pDrawable.y;
-        box.y2 = box.y1 + h;
+        box.x1 = cast(short)(x + pDrawable.x);
+        box.x2 = cast(short)(box.x1 + w);
+        box.y1 = cast(short)(y + pDrawable.y);
+        box.y2 = cast(short)(box.y1 + h);
 
         mixin(TRIM_BOX!(`box`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PutImage) (pDrawable, pGC, depth, x, y, w, h,
                            leftPad, format, pImage);
@@ -711,14 +719,14 @@ private RegionPtr damageCopyArea(DrawablePtr pSrc, DrawablePtr pDst, GCPtr pGC, 
     if (mixin(checkGCDamage!(`pDst`, `pGC`))) {
         BoxRec box = void;
 
-        box.x1 = dstx + pDst.x;
-        box.x2 = box.x1 + width;
-        box.y1 = dsty + pDst.y;
-        box.y2 = box.y1 + height;
+        box.x1 = cast(short)(dstx + pDst.x);
+        box.x2 = cast(short)(box.x1 + width);
+        box.y1 = cast(short)(dsty + pDst.y);
+        box.y2 = cast(short)(box.y1 + height);
 
         mixin(TRIM_BOX!(`box`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDst`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDst, &box, pGC.subWindowMode);
     }
 
     ret = (*pGC.ops.CopyArea) (pSrc, pDst,
@@ -737,14 +745,14 @@ private RegionPtr damageCopyPlane(DrawablePtr pSrc, DrawablePtr pDst, GCPtr pGC,
     if (mixin(checkGCDamage!(`pDst`, `pGC`))) {
         BoxRec box = void;
 
-        box.x1 = dstx + pDst.x;
-        box.x2 = box.x1 + width;
-        box.y1 = dsty + pDst.y;
-        box.y2 = box.y1 + height;
+        box.x1 = cast(short)(dstx + pDst.x);
+        box.x2 = cast(short)(box.x1 + width);
+        box.y1 = cast(short)(dsty + pDst.y);
+        box.y2 = cast(short)(box.y1 + height);
 
         mixin(TRIM_BOX!(`box`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDst`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDst, &box, pGC.subWindowMode);
     }
 
     ret = (*pGC.ops.CopyPlane) (pSrc, pDst,
@@ -778,13 +786,13 @@ private void damagePolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt
                 x += pptTmp.x;
                 y += pptTmp.y;
                 if (box.x1 > x)
-                    box.x1 = x;
+                    box.x1 = cast(short)x;
                 else if (box.x2 < x)
-                    box.x2 = x;
+                    box.x2 = cast(short)x;
                 if (box.y1 > y)
-                    box.y1 = y;
+                    box.y1 = cast(short)y;
                 else if (box.y2 < y)
-                    box.y2 = y;
+                    box.y2 = cast(short)y;
             }
         }
         else {
@@ -806,7 +814,7 @@ private void damagePolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PolyPoint) (pDrawable, pGC, mode, npt, ppt);
     damageRegionProcessPending(pDrawable);
@@ -842,13 +850,13 @@ private void damagePolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt
                 x += pptTmp.x;
                 y += pptTmp.y;
                 if (box.x1 > x)
-                    box.x1 = x;
+                    box.x1 = cast(short)x;
                 else if (box.x2 < x)
-                    box.x2 = x;
+                    box.x2 = cast(short)x;
                 if (box.y1 > y)
-                    box.y1 = y;
+                    box.y1 = cast(short)y;
                 else if (box.y2 < y)
-                    box.y2 = y;
+                    box.y2 = cast(short)y;
             }
         }
         else {
@@ -877,7 +885,7 @@ private void damagePolylines(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.Polylines) (pDrawable, pGC, mode, npt, ppt);
     damageRegionProcessPending(pDrawable);
@@ -955,7 +963,7 @@ private void damagePolySegment(DrawablePtr pDrawable, GCPtr pGC, int nSeg, xSegm
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PolySegment) (pDrawable, pGC, nSeg, pSeg);
     damageRegionProcessPending(pDrawable);
@@ -979,37 +987,37 @@ private void damagePolyRectangle(DrawablePtr pDrawable, GCPtr pGC, int nRects, x
         offset3 = offset2 - offset1;
 
         while (nRectsTmp--) {
-            box.x1 = pRectsTmp.x - offset1;
-            box.y1 = pRectsTmp.y - offset1;
-            box.x2 = box.x1 + pRectsTmp.width + offset2;
-            box.y2 = box.y1 + offset2;
+            box.x1 = cast(short)(pRectsTmp.x - offset1);
+            box.y1 = cast(short)(pRectsTmp.y - offset1);
+            box.x2 = cast(short)(box.x1 + pRectsTmp.width + offset2);
+            box.y2 = cast(short)(box.y1 + offset2);
             mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
             if (mixin(BOX_NOT_EMPTY!(`box`)))
-                mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+                damageDamageBox(pDrawable, &box, pGC.subWindowMode);
 
-            box.x1 = pRectsTmp.x - offset1;
-            box.y1 = pRectsTmp.y + offset3;
-            box.x2 = box.x1 + offset2;
-            box.y2 = box.y1 + pRectsTmp.height - offset2;
+            box.x1 = cast(short)(pRectsTmp.x - offset1);
+            box.y1 = cast(short)(pRectsTmp.y + offset3);
+            box.x2 = cast(short)(box.x1 + offset2);
+            box.y2 = cast(short)(box.y1 + pRectsTmp.height - offset2);
             mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
             if (mixin(BOX_NOT_EMPTY!(`box`)))
-                mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+                damageDamageBox(pDrawable, &box, pGC.subWindowMode);
 
-            box.x1 = pRectsTmp.x + pRectsTmp.width - offset1;
-            box.y1 = pRectsTmp.y + offset3;
-            box.x2 = box.x1 + offset2;
-            box.y2 = box.y1 + pRectsTmp.height - offset2;
+            box.x1 = cast(short)(pRectsTmp.x + pRectsTmp.width - offset1);
+            box.y1 = cast(short)(pRectsTmp.y + offset3);
+            box.x2 = cast(short)(box.x1 + offset2);
+            box.y2 = cast(short)(box.y1 + pRectsTmp.height - offset2);
             mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
             if (mixin(BOX_NOT_EMPTY!(`box`)))
-                mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+                damageDamageBox(pDrawable, &box, pGC.subWindowMode);
 
-            box.x1 = pRectsTmp.x - offset1;
-            box.y1 = pRectsTmp.y + pRectsTmp.height - offset1;
-            box.x2 = box.x1 + pRectsTmp.width + offset2;
-            box.y2 = box.y1 + offset2;
+            box.x1 = cast(short)(pRectsTmp.x - offset1);
+            box.y1 = cast(short)(pRectsTmp.y + pRectsTmp.height - offset1);
+            box.x2 = cast(short)(box.x1 + pRectsTmp.width + offset2);
+            box.y2 = cast(short)(box.y1 + offset2);
             mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
             if (mixin(BOX_NOT_EMPTY!(`box`)))
-                mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+                damageDamageBox(pDrawable, &box, pGC.subWindowMode);
 
             pRectsTmp++;
         }
@@ -1029,21 +1037,21 @@ private void damagePolyArc(DrawablePtr pDrawable, GCPtr pGC, int nArcs, xArc* pA
         int nArcsTmp = nArcs;
         xArc* pArcsTmp = pArcs;
 
-        box.x1 = pArcsTmp.x;
-        box.x2 = box.x1 + pArcsTmp.width;
-        box.y1 = pArcsTmp.y;
-        box.y2 = box.y1 + pArcsTmp.height;
+        box.x1 = cast(short)(pArcsTmp.x);
+        box.x2 = cast(short)(box.x1 + pArcsTmp.width);
+        box.y1 = cast(short)(pArcsTmp.y);
+        box.y2 = cast(short)(box.y1 + pArcsTmp.height);
 
         while (--nArcsTmp) {
             pArcsTmp++;
             if (box.x1 > pArcsTmp.x)
-                box.x1 = pArcsTmp.x;
+                box.x1 = cast(short)(pArcsTmp.x);
             if (box.x2 < (pArcsTmp.x + pArcsTmp.width))
-                box.x2 = pArcsTmp.x + pArcsTmp.width;
+                box.x2 = cast(short)(pArcsTmp.x + pArcsTmp.width);
             if (box.y1 > pArcsTmp.y)
-                box.y1 = pArcsTmp.y;
+                box.y1 = cast(short)(pArcsTmp.y);
             if (box.y2 < (pArcsTmp.y + pArcsTmp.height))
-                box.y2 = pArcsTmp.y + pArcsTmp.height;
+                box.y2 = cast(short)(pArcsTmp.y + pArcsTmp.height);
         }
 
         if (extra) {
@@ -1058,7 +1066,7 @@ private void damagePolyArc(DrawablePtr pDrawable, GCPtr pGC, int nArcs, xArc* pA
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PolyArc) (pDrawable, pGC, nArcs, pArcs);
     damageRegionProcessPending(pDrawable);
@@ -1074,8 +1082,8 @@ private void damageFillPolygon(DrawablePtr pDrawable, GCPtr pGC, int shape, int 
         int nptTmp = npt;
         BoxRec box = void;
 
-        box.x2 = box.x1 = pptTmp.x;
-        box.y2 = box.y1 = pptTmp.y;
+        box.x2 = box.x1 = cast(short)pptTmp.x;
+        box.y2 = box.y1 = cast(short)pptTmp.y;
 
         if (mode != CoordModeOrigin) {
             int x = box.x1;
@@ -1086,26 +1094,26 @@ private void damageFillPolygon(DrawablePtr pDrawable, GCPtr pGC, int shape, int 
                 x += pptTmp.x;
                 y += pptTmp.y;
                 if (box.x1 > x)
-                    box.x1 = x;
+                    box.x1 = cast(short)x;
                 else if (box.x2 < x)
-                    box.x2 = x;
+                    box.x2 = cast(short)x;
                 if (box.y1 > y)
-                    box.y1 = y;
+                    box.y1 = cast(short)y;
                 else if (box.y2 < y)
-                    box.y2 = y;
+                    box.y2 = cast(short)y;
             }
         }
         else {
             while (--nptTmp) {
                 pptTmp++;
                 if (box.x1 > pptTmp.x)
-                    box.x1 = pptTmp.x;
+                    box.x1 = cast(short)pptTmp.x;
                 else if (box.x2 < pptTmp.x)
-                    box.x2 = pptTmp.x;
+                    box.x2 = cast(short)pptTmp.x;
                 if (box.y1 > pptTmp.y)
-                    box.y1 = pptTmp.y;
+                    box.y1 = cast(short)pptTmp.y;
                 else if (box.y2 < pptTmp.y)
-                    box.y2 = pptTmp.y;
+                    box.y2 = cast(short)pptTmp.y;
             }
         }
 
@@ -1114,7 +1122,7 @@ private void damageFillPolygon(DrawablePtr pDrawable, GCPtr pGC, int shape, int 
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
 
     (*pGC.ops.FillPolygon) (pDrawable, pGC, shape, mode, npt, ppt);
@@ -1130,26 +1138,26 @@ private void damagePolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nRects, xR
         xRectangle* pRectsTmp = pRects;
         int nRectsTmp = nRects;
 
-        box.x1 = pRectsTmp.x;
-        box.x2 = box.x1 + pRectsTmp.width;
-        box.y1 = pRectsTmp.y;
-        box.y2 = box.y1 + pRectsTmp.height;
+        box.x1 = cast(short)(pRectsTmp.x);
+        box.x2 = cast(short)(box.x1 + pRectsTmp.width);
+        box.y1 = cast(short)(pRectsTmp.y);
+        box.y2 = cast(short)(box.y1 + pRectsTmp.height);
 
         while (--nRectsTmp) {
             pRectsTmp++;
             if (box.x1 > pRectsTmp.x)
-                box.x1 = pRectsTmp.x;
+                box.x1 = cast(short)(pRectsTmp.x);
             if (box.x2 < (pRectsTmp.x + pRectsTmp.width))
-                box.x2 = pRectsTmp.x + pRectsTmp.width;
+                box.x2 = cast(short)(pRectsTmp.x + pRectsTmp.width);
             if (box.y1 > pRectsTmp.y)
-                box.y1 = pRectsTmp.y;
+                box.y1 = cast(short)(pRectsTmp.y);
             if (box.y2 < (pRectsTmp.y + pRectsTmp.height))
-                box.y2 = pRectsTmp.y + pRectsTmp.height;
+                box.y2 = cast(short)(pRectsTmp.y + pRectsTmp.height);
         }
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PolyFillRect) (pDrawable, pGC, nRects, pRects);
     damageRegionProcessPending(pDrawable);
@@ -1165,26 +1173,26 @@ private void damagePolyFillArc(DrawablePtr pDrawable, GCPtr pGC, int nArcs, xArc
         int nArcsTmp = nArcs;
         xArc* pArcsTmp = pArcs;
 
-        box.x1 = pArcsTmp.x;
-        box.x2 = box.x1 + pArcsTmp.width;
-        box.y1 = pArcsTmp.y;
-        box.y2 = box.y1 + pArcsTmp.height;
+        box.x1 = cast(short)(pArcsTmp.x);
+        box.x2 = cast(short)(box.x1 + pArcsTmp.width);
+        box.y1 = cast(short)(pArcsTmp.y);
+        box.y2 = cast(short)(box.y1 + pArcsTmp.height);
 
         while (--nArcsTmp) {
             pArcsTmp++;
             if (box.x1 > pArcsTmp.x)
-                box.x1 = pArcsTmp.x;
+                box.x1 = cast(short)(pArcsTmp.x);
             if (box.x2 < (pArcsTmp.x + pArcsTmp.width))
-                box.x2 = pArcsTmp.x + pArcsTmp.width;
+                box.x2 = cast(short)(pArcsTmp.x + pArcsTmp.width);
             if (box.y1 > pArcsTmp.y)
-                box.y1 = pArcsTmp.y;
+                box.y1 = cast(short)(pArcsTmp.y);
             if (box.y2 < (pArcsTmp.y + pArcsTmp.height))
-                box.y2 = pArcsTmp.y + pArcsTmp.height;
+                box.y2 = cast(short)(pArcsTmp.y + pArcsTmp.height);
         }
 
         mixin(TRIM_AND_TRANSLATE_BOX!(`box`, `pDrawable`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PolyFillArc) (pDrawable, pGC, nArcs, pArcs);
     damageRegionProcessPending(pDrawable);
@@ -1201,7 +1209,7 @@ private void damageDamageChars(DrawablePtr pDrawable, FontPtr font, int x, int y
     ExtentInfoRec extents = void;
     BoxRec box = void;
 
-    xfont2_query_glyph_extents(font, charinfo, n, &extents);
+    assumeNoGC(&xfont2_query_glyph_extents)(font, charinfo, n, &extents);
     if (imageblt) {
         if (extents.overallWidth > extents.overallRight)
             extents.overallRight = extents.overallWidth;
@@ -1214,11 +1222,11 @@ private void damageDamageChars(DrawablePtr pDrawable, FontPtr font, int x, int y
         if (extents.fontDescent > extents.overallDescent)
             extents.overallDescent = extents.fontDescent;
     }
-    box.x1 = x + extents.overallLeft;
-    box.y1 = y - extents.overallAscent;
-    box.x2 = x + extents.overallRight;
-    box.y2 = y + extents.overallDescent;
-    mixin(damageDamageBox!(`pDrawable`, `&box`, `subWindowMode`));
+    box.x1 = cast(short)(x + extents.overallLeft);
+    box.y1 = cast(short)(y - extents.overallAscent);
+    box.x2 = cast(short)(x + extents.overallRight);
+    box.y2 = cast(short)(y + extents.overallDescent);
+    damageDamageBox(pDrawable, &box, subWindowMode);
 }
 
 /*
@@ -1327,20 +1335,20 @@ private void damagePushPixels(GCPtr pGC, PixmapPtr pBitMap, DrawablePtr pDrawabl
     if (mixin(checkGCDamage!(`pDrawable`, `pGC`))) {
         BoxRec box = void;
 
-        box.x1 = xOrg;
-        box.y1 = yOrg;
+        box.x1 = cast(short)(xOrg);
+        box.y1 = cast(short)(yOrg);
 
         if (!pGC.miTranslate) {
             box.x1 += pDrawable.x;
             box.y1 += pDrawable.y;
         }
 
-        box.x2 = box.x1 + dx;
-        box.y2 = box.y1 + dy;
+        box.x2 = cast(short)(box.x1 + dx);
+        box.y2 = cast(short)(box.y1 + dy);
 
         mixin(TRIM_BOX!(`box`, `pGC`));
         if (mixin(BOX_NOT_EMPTY!(`box`)))
-            mixin(damageDamageBox!(`pDrawable`, `&box`, `pGC.subWindowMode`));
+            damageDamageBox(pDrawable, &box, pGC.subWindowMode);
     }
     (*pGC.ops.PushPixels) (pGC, pBitMap, pDrawable, dx, dy, xOrg, yOrg);
     damageRegionProcessPending(pDrawable);
@@ -1382,7 +1390,7 @@ private void damagePixmapDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, Pixma
     DamagePtr* pPrev = mixin(getPixmapDamageRef!(`pPixmap`));
     DamagePtr pDamage = void;
 
-    while ((pDamage = *pPrev)) {
+    while ((pDamage = *pPrev) !is null) {
         damageRemoveDamage(pPrev, pDamage);
         if (!pDamage.isWindow)
             DamageDestroy(pDamage);
@@ -1393,7 +1401,7 @@ private void damageCopyWindow(WindowPtr pWindow, xPoint ptOldOrg, RegionPtr prgn
 {
     ScreenPtr pScreen = pWindow.drawable.pScreen;
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     if (mixin(getWindowDamage!(`pWindow`))) {
         int dx = pWindow.drawable.x - ptOldOrg.x;
@@ -1404,13 +1412,13 @@ private void damageCopyWindow(WindowPtr pWindow, xPoint ptOldOrg, RegionPtr prgn
          * at the destination location.  Translate back and forth.
          */
         RegionTranslate(prgnSrc, dx, dy);
-        mixin(damageRegionAppend!(`&pWindow.drawable`, `prgnSrc`, `FALSE`, `-1`));
+        damageRegionAppend(&pWindow.drawable, prgnSrc, FALSE, -1);
         RegionTranslate(prgnSrc, -dx, -dy);
     }
     mixin(unwrap!(`pScrPriv`, `pScreen`, `CopyWindow`));
     (*pScreen.CopyWindow) (pWindow, ptOldOrg, prgnSrc);
     damageRegionProcessPending(&pWindow.drawable);
-    mixin(wrap!(`pScrPriv`, `pScreen`, `CopyWindow`, `damageCopyWindow`));
+    mixin(wrap!(`pScrPriv`, `pScreen`, `CopyWindow`, `&damageCopyWindow`));
 }
 
 private GCOps damageGCOps = {
@@ -1431,9 +1439,9 @@ private void damageSetWindowPixmap(WindowPtr pWindow, PixmapPtr pPixmap)
     DamagePtr pDamage = void;
     ScreenPtr pScreen = pWindow.drawable.pScreen;
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
-    if ((pDamage = damageGetWinPriv(pWindow))) {
+    if ((pDamage = mixin(damageGetWinPriv!("pWindow"))) !is null) {
         PixmapPtr pOldPixmap = (*pScreen.GetWindowPixmap) (pWindow);
         DamagePtr* pPrev = mixin(getPixmapDamageRef!(`pOldPixmap`));
 
@@ -1444,8 +1452,8 @@ private void damageSetWindowPixmap(WindowPtr pWindow, PixmapPtr pPixmap)
     }
     mixin(unwrap!(`pScrPriv`, `pScreen`, `SetWindowPixmap`));
     (*pScreen.SetWindowPixmap) (pWindow, pPixmap);
-    mixin(wrap!(`pScrPriv`, `pScreen`, `SetWindowPixmap`, `damageSetWindowPixmap`));
-    if ((pDamage = damageGetWinPriv(pWindow))) {
+    mixin(wrap!(`pScrPriv`, `pScreen`, `SetWindowPixmap`, `&damageSetWindowPixmap`));
+    if ((pDamage = mixin(damageGetWinPriv!("pWindow"))) !is null) {
         DamagePtr* pPrev = mixin(getPixmapDamageRef!(`pPixmap`));
 
         while (pDamage) {
@@ -1459,18 +1467,18 @@ private void damageWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, Windo
 {
     DamagePtr pDamage = void;
 
-    while ((pDamage = damageGetWinPriv(pWindow))) {
+    while ((pDamage = mixin(damageGetWinPriv!("pWindow"))) !is null) {
         DamageDestroy(pDamage);
     }
 }
 
 private void damageCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    dixScreenUnhookPostClose(pScreen, damageCloseScreen);
+    dixScreenUnhookPostClose(pScreen, &damageCloseScreen);
     dixScreenUnhookWindowDestroy(pScreen, &damageWindowDestroy);
     dixScreenUnhookPixmapDestroy(pScreen, &damagePixmapDestroy);
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
     if (!pScrPriv)
         return;
 
@@ -1532,7 +1540,7 @@ Bool DamageSetup(ScreenPtr pScreen)
     PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("pScreen"));
 
     const(DamageScreenFuncsRec) miFuncs = {
-        miDamageCreate, miDamageRegister, miDamageUnregister, miDamageDestroy
+        &miDamageCreate, &miDamageRegister, &miDamageUnregister, &miDamageDestroy
     };
 
     if (!dixRegisterPrivateKey(&damageScrPrivateKeyRec, PRIVATE_SCREEN, 0))
@@ -1556,19 +1564,19 @@ Bool DamageSetup(ScreenPtr pScreen)
         return FALSE;
 
     pScrPriv.internalLevel = 0;
-    pScrPriv.pScreenDamage = 0;
+    pScrPriv.pScreenDamage = null;
 
     dixScreenHookPostClose(pScreen, &damageCloseScreen);
     dixScreenHookWindowDestroy(pScreen, &damageWindowDestroy);
     dixScreenHookPixmapDestroy(pScreen, &damagePixmapDestroy);
 
-    mixin(wrap!(`pScrPriv`, `pScreen`, `CreateGC`, `damageCreateGC`));
-    mixin(wrap!(`pScrPriv`, `pScreen`, `SetWindowPixmap`, `damageSetWindowPixmap`));
-    mixin(wrap!(`pScrPriv`, `pScreen`, `CopyWindow`, `damageCopyWindow`));
+    mixin(wrap!(`pScrPriv`, `pScreen`, `CreateGC`, `&damageCreateGC`));
+    mixin(wrap!(`pScrPriv`, `pScreen`, `SetWindowPixmap`, `&damageSetWindowPixmap`));
+    mixin(wrap!(`pScrPriv`, `pScreen`, `CopyWindow`, `&damageCopyWindow`));
     if (ps) {
-        mixin(wrap!(`pScrPriv`, `ps`, `Glyphs`, `damageGlyphs`));
-        mixin(wrap!(`pScrPriv`, `ps`, `Composite`, `damageComposite`));
-        mixin(wrap!(`pScrPriv`, `ps`, `AddTraps`, `damageAddTraps`));
+        mixin(wrap!(`pScrPriv`, `ps`, `Glyphs`, `&damageGlyphs`));
+        mixin(wrap!(`pScrPriv`, `ps`, `Composite`, `&damageComposite`));
+        mixin(wrap!(`pScrPriv`, `ps`, `AddTraps`, `&damageAddTraps`));
     }
 
     pScrPriv.funcs = miFuncs;
@@ -1579,14 +1587,14 @@ Bool DamageSetup(ScreenPtr pScreen)
 
 DamagePtr DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDestroy, DamageReportLevel damageLevel, Bool isInternal, ScreenPtr pScreen, void* closure)
 {
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
     DamagePtr pDamage = void;
 
     pDamage = cast(DamageRec*) calloc(1, DamageRec.sizeof);
     if (!pDamage)
-        return 0;
-    pDamage.pNext = 0;
-    pDamage.pNextWin = 0;
+        return null;
+    pDamage.pNext = null;
+    pDamage.pNextWin = null;
     RegionNull(&pDamage.damage);
     RegionNull(&pDamage.pendingDamage);
 
@@ -1594,7 +1602,7 @@ DamagePtr DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDe
     pDamage.isInternal = isInternal;
     pDamage.closure = closure;
     pDamage.isWindow = FALSE;
-    pDamage.pDrawable = 0;
+    pDamage.pDrawable = null;
     pDamage.reportAfter = FALSE;
 
     pDamage.damageReport = damageReport;
@@ -1611,7 +1619,7 @@ void DamageRegister(DrawablePtr pDrawable, DamagePtr pDamage)
 {
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
 static if (DAMAGE_VALIDATE_ENABLE) {
     if (pDrawable.pScreen != pDamage.pScreen) {
@@ -1648,7 +1656,7 @@ static if (DAMAGE_VALIDATE_ENABLE) {
 
 void DamageDrawInternal(ScreenPtr pScreen, Bool enable)
 {
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     pScrPriv.internalLevel += enable ? 1 : -1;
 }
@@ -1658,7 +1666,7 @@ void DamageUnregister(DamagePtr pDamage)
     DrawablePtr pDrawable = pDamage.pDrawable;
     ScreenPtr pScreen = pDrawable.pScreen;
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     if (pScrPriv && pScrPriv.funcs.Unregister)
         pScrPriv.funcs.Unregister (pDrawable, pDamage);
@@ -1688,7 +1696,7 @@ static if (DAMAGE_VALIDATE_ENABLE) {
         }
 }
     }
-    pDamage.pDrawable = 0;
+    pDamage.pDrawable = null;
     damageRemoveDamage(getDrawableDamageRef(pDrawable), pDamage);
 }
 
@@ -1696,7 +1704,7 @@ void DamageDestroy(DamagePtr pDamage)
 {
     ScreenPtr pScreen = pDamage.pScreen;
 
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
 
     if (pDamage.pDrawable)
         DamageUnregister(pDamage);
@@ -1712,7 +1720,7 @@ void DamageDestroy(DamagePtr pDamage)
     free(pDamage);
 }
 
-Bool DamageSubtract(DamagePtr pDamage, const(RegionPtr) pRegion)
+Bool DamageSubtract(DamagePtr pDamage, RegionPtr pRegion)
 {
     RegionPtr pClip = void;
     RegionRec pixmapClip = void;
@@ -1725,10 +1733,10 @@ Bool DamageSubtract(DamagePtr pDamage, const(RegionPtr) pRegion)
         else {
             BoxRec box = void;
 
-            box.x1 = pDrawable.x;
-            box.y1 = pDrawable.y;
-            box.x2 = pDrawable.x + pDrawable.width;
-            box.y2 = pDrawable.y + pDrawable.height;
+            box.x1 = cast(short)(pDrawable.x);
+            box.y1 = cast(short)(pDrawable.y);
+            box.x2 = cast(short)(pDrawable.x + pDrawable.width);
+            box.y2 = cast(short)(pDrawable.y + pDrawable.height);
             RegionInit(&pixmapClip, &box, 1);
             pClip = &pixmapClip;
         }
@@ -1758,7 +1766,7 @@ RegionPtr DamagePendingRegion(DamagePtr pDamage)
 
 void DamageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion)
 {
-    mixin(damageRegionAppend!(`pDrawable`, `pRegion`, `FALSE`, `-1`));
+    damageRegionAppend(pDrawable, pRegion, FALSE, -1);
 }
 
 void DamageRegionProcessPending(DrawablePtr pDrawable)
@@ -1769,7 +1777,7 @@ void DamageRegionProcessPending(DrawablePtr pDrawable)
 /* This call is very odd, i'm leaving it intact for API sake, but please don't use it. */
 void DamageDamageRegion(DrawablePtr pDrawable, RegionPtr pRegion)
 {
-    mixin(damageRegionAppend!(`pDrawable`, `pRegion`, `FALSE`, `-1`));
+    damageRegionAppend(pDrawable, pRegion, FALSE, -1);
 
     /* Go back and report this damage for DamagePtrs with reportAfter set, since
      * this call isn't part of an in-progress drawing op in the call chain and
@@ -1785,7 +1793,7 @@ void DamageSetReportAfterOp(DamagePtr pDamage, Bool reportAfter)
 
 DamageScreenFuncsPtr DamageGetScreenFuncs(ScreenPtr pScreen)
 {
-    damageScrPriv(pScreen);
+    mixin(damageScrPriv!("pScreen"));
     return &pScrPriv.funcs;
 }
 

@@ -30,6 +30,8 @@ public import include.privates;
 import include.picturestr;
 
 public import externs.pixman;
+public import glamor.glamor_render;
+
 
 alias DirectFormatPtr = _DirectFormat*;
 alias PictFormatPtr = _PictFormat*;
@@ -183,15 +185,15 @@ alias uint32_t = core.stdc.stdint.uint32_t;
 
 enum XFIXED_BITS =	16;
 
-enum pixman_fixed_e =			(cast(pixman_fixed_t) 1);
-enum pixman_fixed_1 =			(pixman_int_to_fixed!("1"));
-enum pixman_fixed_1_minus_e =		(mixin(pixman_fixed_1) - pixman_fixed_e);
+// enum pixman_fixed_e =			(cast(pixman_fixed_t) 1);
+// enum pixman_fixed_1 =			(pixman_int_to_fixed!("1"));
+// enum pixman_fixed_1_minus_e =		(mixin(pixman_fixed_1) - pixman_fixed_e);
 // alias pixman_fixed_minus_1		(pixman_int_to_fixed(-1))
-enum string pixman_fixed_to_int(string f) = `(cast(int) ((`~f~`) >> 16))`;
-enum string pixman_int_to_fixed(string i) =		`(cast(pixman_fixed_t) (cast(uint32_t) (`~i~`) << 16))`;
+// enum string pixman_fixed_to_int(string f) = `(cast(int) ((`~f~`) >> 16))`;
+// enum string pixman_int_to_fixed(string i) =		`(cast(pixman_fixed_t) (cast(uint32_t) (`~i~`) << 16))`;
 // alias pixman_fixed_to_double(f)	(double) ((f) / (double) pixman_fixed_1)
 // alias pixman_double_to_fixed(d)	((pixman_fixed_t) ((d) * 65536.0))
-enum string pixman_fixed_frac(string f) = 		`((`~f~`) & pixman_fixed_1_minus_e)`;
+// enum string pixman_fixed_frac(string f) = 		`((`~f~`) & pixman_fixed_1_minus_e)`;
 
 // import glamor.glamor_render;
 enum string xFixedToInt(string f) = pixman_fixed_to_int!(f);
@@ -201,7 +203,7 @@ enum xFixed1 =		pixman_fixed_1;
 enum xFixed1MinusE =	pixman_fixed_1_minus_e;
 enum string xFixedFrac(string f) = pixman_fixed_frac!(f);
 enum string xFixedFloor(string f) = `assumeNoGC(&pixman_fixed_floor)(` ~ f ~ `)`;
-enum string xFixedCeil(string f) = `assumeNoGC(&pixman_fixed_ceil)(` ~ f ~ `)`;
+// enum string xFixedCeil(string f) = `assumeNoGC(&pixman_fixed_ceil)(` ~ f ~ `)`;
 
 enum string xFixedFraction(string f) = `assumeNoGC(&pixman_fixed_fraction)(` ~ f ~ `)`;
 enum string xFixedMod2(string f) = `assumeNoGC(&pixman_fixed_mod2)(` ~ f ~ `)`;

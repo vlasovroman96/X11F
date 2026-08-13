@@ -358,11 +358,11 @@ void fbSegment(DrawablePtr pDrawable, GCPtr pGC, int x1, int y1, int x2, int y2,
         e1 = adx << 1;
         e2 = e1 - (ady << 1);
         e = e1 - ady;
-        mixin(SetYMajorOctant!("octant")~";");
+        mixin(SetYMajorOctant!("octant"));
         len = ady;
     }
 
-    mixin(FIXUP_ERROR!("e", "octant", "bias")~";");
+    mixin(FIXUP_ERROR!("e", "octant", "bias"));
 
     /*
      * Adjust error terms to compare against zero

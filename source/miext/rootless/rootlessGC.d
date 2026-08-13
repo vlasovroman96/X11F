@@ -49,6 +49,8 @@ import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
 
 import miext.rootless.rootlessCommon;
+import dix.gc;
+import Xext.xf86bigfont;
 
 // GC functions
 
@@ -164,42 +166,42 @@ enum string GC_SAVE(string pGC) = `
     Bool _changed = FALSE;`;
 
 enum string GC_RESTORE(string pGC, string pDraw) = `
-    do {							
+    {							
         if (_changed) {						
             uint depth = (` ~ pDraw ~ `).depth;		
-            (` ~ pGC ~ `).fgPixel = _save_fg;				
-            (` ~ pGC ~ `).bgPixel = _save_bg;				
-            (` ~ pGC ~ `).planemask = _save_pm;			
+            (` ~ pGC ~ `).fgPixel = cast(uint)_save_fg;				
+            (` ~ pGC ~ `).bgPixel = cast(uint)_save_bg;				
+            (` ~ pGC ~ `).planemask = cast(uint)_save_pm;			
             (` ~ pDraw ~ `).depth = (` ~ pDraw ~ `).bitsPerPixel;		
-            VALIDATE_GC(` ~ pGC ~ `, GCForeground | GCBackground |	
-                        GCPlaneMask, ` ~ pDraw ~ `);			
-            (` ~ pDraw ~ `).depth = depth;				
+            `~VALIDATE_GC!(pGC, `GCForeground | GCBackground |	
+                        GCPlaneMask`,pDraw)~`;			
+            (` ~ pDraw ~ `).depth = cast(ubyte)depth;				
         }							
-    } while (0)`;
+    }`;
 
 enum string GC_UNSET_PM(string pGC, string pDraw) = `
-    do {								
-        uint mask = RootlessAlphaMask ((` ~ pDraw ~ `).bitsPerPixel);	
+    {								
+        uint mask = `~RootlessAlphaMask!(`(` ~ pDraw ~ `).bitsPerPixel`)~`;
         if (((` ~ pGC ~ `).planemask & mask) != mask) {			
             uint depth = (` ~ pDraw ~ `).depth;			
             (` ~ pGC ~ `).fgPixel |= mask;					
             (` ~ pGC ~ `).bgPixel |= mask;					
             (` ~ pGC ~ `).planemask |= mask;					
             (` ~ pDraw ~ `).depth = (` ~ pDraw ~ `).bitsPerPixel;			
-            VALIDATE_GC(` ~ pGC ~ `, GCForeground |				
-                        GCBackground | GCPlaneMask, ` ~ pDraw ~ `);		
-            (` ~ pDraw ~ `).depth = depth;					
+            `~VALIDATE_GC!(pGC, `GCForeground |				
+                        GCBackground | GCPlaneMask`,pDraw)~`;		
+            (` ~ pDraw ~ `).depth = cast(ubyte)depth;					
             _changed = TRUE;						
         }								
-    } while (0)`;
+    }`;
 
 enum string VALIDATE_GC(string pGC, string changes, string pDrawable) = `
-    do {								
+    {								
         ` ~ pGC ~ `.funcs.ValidateGC(` ~ pGC ~ `, ` ~ changes ~ `, ` ~ pDrawable ~ `);		
         if ((cast(WindowPtr) ` ~ pDrawable ~ `).viewable) {			
             gcrec.originalOps = ` ~ pGC ~ `.ops;				
         }								
-    } while(0)`;
+    }`;
 
 private RootlessWindowRec* canAccelBlit(DrawablePtr pDraw, GCPtr pGC)
 {
@@ -213,7 +215,7 @@ private RootlessWindowRec* canAccelBlit(DrawablePtr pDraw, GCPtr pGC)
     if (pDraw.type != DRAWABLE_WINDOW)
         return null;
 
-    pm = ~RootlessAlphaMask(pDraw.bitsPerPixel);
+    pm = ~mixin(RootlessAlphaMask!("pDraw.bitsPerPixel"));
     if ((pGC.planemask & pm) != pm)
         return null;
 
@@ -221,7 +223,7 @@ private RootlessWindowRec* canAccelBlit(DrawablePtr pDraw, GCPtr pGC)
     if (pTop == null)
         return null;
 
-    winRec = WINREC(pTop);
+    winRec = mixin(WINREC!("pTop"));
     if (winRec == null)
         return null;
 
@@ -245,8 +247,8 @@ Bool RootlessCreateGC(GCPtr pGC)
     RootlessScreenRec* s = void;
     Bool result = void;
 
-    SCREEN_UNWRAP(pGC.pScreen, CreateGC);
-    s = SCREENREC(pGC.pScreen);
+    mixin(SCREEN_UNWRAP!("pGC.pScreen", "CreateGC"));
+    s = mixin(SCREENREC!("pGC.pScreen"));
     result = s.CreateGC(pGC);
 
     gcrec = cast(RootlessGCRec*)
@@ -255,7 +257,7 @@ Bool RootlessCreateGC(GCPtr pGC)
     gcrec.originalFuncs = pGC.funcs;
     pGC.funcs = &rootlessGCFuncs;
 
-    SCREEN_WRAP(pGC.pScreen, CreateGC);
+    mixin(SCREEN_WRAP!("pGC.pScreen", "CreateGC"));
     return result;
 }
 
@@ -298,7 +300,7 @@ version (ROOTLESS_PROTECT_ALPHA) {
         // We force a planemask so fb doesn't overwrite the alpha channel.
         // Left to its own devices, fb will optimize away the planemask.
         pDrawable.depth = pDrawable.bitsPerPixel;
-        pGC.planemask &= ~RootlessAlphaMask(pDrawable.bitsPerPixel);
+        pGC.planemask &= ~mixin(RootlessAlphaMask!("pDrawable.bitsPerPixel"));
         mixin(VALIDATE_GC!(`pGC`, `changes | GCPlaneMask`, `pDrawable`));
         pDrawable.depth = depth;
 } else {
@@ -379,7 +381,7 @@ private void RootlessFillSpans(DrawablePtr dst, GCPtr pGC, int nInit, DDXPointPt
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("fill spans start ");
+    // RL_DEBUG_MSG("fill spans start ");
 
     if (nInit <= 0) {
         pGC.ops.FillSpans(dst, pGC, nInit, pptInit, pwidthInit, sorted);
@@ -390,21 +392,21 @@ private void RootlessFillSpans(DrawablePtr dst, GCPtr pGC, int nInit, DDXPointPt
         int i = nInit;
         BoxRec box = void;
 
-        box.x1 = ppt.x;
-        box.x2 = box.x1 + *pwidth;
-        box.y2 = box.y1 = ppt.y;
+        box.x1 = cast(short)ppt.x;
+        box.x2 = cast(short)(box.x1 + *pwidth);
+        box.y2 = box.y1 = cast(short)ppt.y;
 
         while (--i) {
             ppt++;
             pwidth++;
             if (box.x1 > ppt.x)
-                box.x1 = ppt.x;
+                box.x1 = cast(short)ppt.x;
             if (box.x2 < (ppt.x + *pwidth))
-                box.x2 = ppt.x + *pwidth;
+                box.x2 = cast(short)(ppt.x + *pwidth);
             if (box.y1 > ppt.y)
-                box.y1 = ppt.y;
+                box.y1 = cast(short)ppt.y;
             else if (box.y2 < ppt.y)
-                box.y2 = ppt.y;
+                box.y2 = cast(short)ppt.y;
         }
 
         box.y2++;
@@ -417,20 +419,20 @@ private void RootlessFillSpans(DrawablePtr dst, GCPtr pGC, int nInit, DDXPointPt
 
         pGC.ops.FillSpans(dst, pGC, nInit, pptInit, pwidthInit, sorted);
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("fill spans end\n");
+    // RL_DEBUG_MSG("fill spans end\n");
 }
 
 private void RootlessSetSpans(DrawablePtr dst, GCPtr pGC, char* pSrc, DDXPointPtr pptInit, int* pwidthInit, int nspans, int sorted)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("set spans start ");
+    // RL_DEBUG_MSG("set spans start ");
 
     if (nspans <= 0) {
         pGC.ops.SetSpans(dst, pGC, pSrc, pptInit, pwidthInit, nspans, sorted);
@@ -441,21 +443,21 @@ private void RootlessSetSpans(DrawablePtr dst, GCPtr pGC, char* pSrc, DDXPointPt
         int i = nspans;
         BoxRec box = void;
 
-        box.x1 = ppt.x;
-        box.x2 = box.x1 + *pwidth;
-        box.y2 = box.y1 = ppt.y;
+        box.x1 = cast(short)ppt.x;
+        box.x2 = cast(short)(box.x1 + *pwidth);
+        box.y2 = box.y1 = cast(short)ppt.y;
 
         while (--i) {
             ppt++;
             pwidth++;
             if (box.x1 > ppt.x)
-                box.x1 = ppt.x;
+                box.x1 = cast(short)ppt.x;
             if (box.x2 < (ppt.x + *pwidth))
-                box.x2 = ppt.x + *pwidth;
+                box.x2 = cast(short)(ppt.x + *pwidth);
             if (box.y1 > ppt.y)
-                box.y1 = ppt.y;
+                box.y1 = cast(short)ppt.y;
             else if (box.y2 < ppt.y)
-                box.y2 = ppt.y;
+                box.y2 = cast(short)ppt.y;
         }
 
         box.y2++;
@@ -463,12 +465,12 @@ private void RootlessSetSpans(DrawablePtr dst, GCPtr pGC, char* pSrc, DDXPointPt
         RootlessStartDrawing(cast(WindowPtr) dst);
         pGC.ops.SetSpans(dst, pGC, pSrc, pptInit, pwidthInit, nspans, sorted);
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("set spans end\n");
+    // RL_DEBUG_MSG("set spans end\n");
 }
 
 private void RootlessPutImage(DrawablePtr dst, GCPtr pGC, int depth, int x, int y, int w, int h, int leftPad, int format, char* pBits)
@@ -476,22 +478,22 @@ private void RootlessPutImage(DrawablePtr dst, GCPtr pGC, int depth, int x, int 
     BoxRec box = void;
 
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("put image start ");
+    // RL_DEBUG_MSG("put image start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PutImage(dst, pGC, depth, x, y, w, h, leftPad, format, pBits);
 
-    box.x1 = x + dst.x;
-    box.x2 = box.x1 + w;
-    box.y1 = y + dst.y;
-    box.y2 = box.y1 + h;
+    box.x1 = cast(short)(x + dst.x);
+    box.x2 = cast(short)(box.x1 + w);
+    box.y1 = cast(short)(y + dst.y);
+    box.y2 = cast(short)(box.y1 + h);
 
-    TRIM_BOX(box, pGC);
-    if (BOX_NOT_EMPTY(box))
+    mixin(TRIM_BOX!("box", "pGC"));
+    if (mixin(BOX_NOT_EMPTY!("box")))
         RootlessDamageBox(cast(WindowPtr) dst, &box);
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("put image end\n");
+    //RL_DEBUG_MSG("put image end\n");
 }
 
 /* changed area is *dest* rect */
@@ -503,7 +505,7 @@ private RegionPtr RootlessCopyArea(DrawablePtr pSrc, DrawablePtr dst, GCPtr pGC,
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
 
-    RL_DEBUG_MSG("copy area start (src %p, dst %p)", pSrc, dst);
+    //RL_DEBUG_MSG("copy area start (src %p, dst %p)", pSrc, dst);
 
     if (pSrc.type == DRAWABLE_WINDOW && IsFramedWindow(cast(WindowPtr) pSrc)) {
         /* If both source and dest are windows, and we're doing
@@ -519,18 +521,18 @@ private RegionPtr RootlessCopyArea(DrawablePtr pSrc, DrawablePtr dst, GCPtr pGC,
     RootlessStartDrawing(cast(WindowPtr) dst);
     result = pGC.ops.CopyArea(pSrc, dst, pGC, srcx, srcy, w, h, dstx, dsty);
 
-    box.x1 = dstx + dst.x;
-    box.x2 = box.x1 + w;
-    box.y1 = dsty + dst.y;
-    box.y2 = box.y1 + h;
+    box.x1 = cast(short)(dstx + dst.x);
+    box.x2 = cast(short)(box.x1 + w);
+    box.y1 = cast(short)(dsty + dst.y);
+    box.y2 = cast(short)(box.y1 + h);
 
-    TRIM_BOX(box, pGC);
-    if (BOX_NOT_EMPTY(box))
+    mixin(TRIM_BOX!("box", "pGC"));
+    if (mixin(BOX_NOT_EMPTY!("box")))
         RootlessDamageBox(cast(WindowPtr) dst, &box);
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("copy area end\n");
+    //RL_DEBUG_MSG("copy area end\n");
     return result;
 }
 
@@ -542,7 +544,7 @@ private RegionPtr RootlessCopyPlane(DrawablePtr pSrc, DrawablePtr dst, GCPtr pGC
 
     mixin(GCOP_UNWRAP!(`pGC`));
 
-    RL_DEBUG_MSG("copy plane start ");
+    //RL_DEBUG_MSG("copy plane start ");
 
     if (pSrc.type == DRAWABLE_WINDOW && IsFramedWindow(cast(WindowPtr) pSrc)) {
         RootlessStartDrawing(cast(WindowPtr) pSrc);
@@ -551,17 +553,17 @@ private RegionPtr RootlessCopyPlane(DrawablePtr pSrc, DrawablePtr dst, GCPtr pGC
     result = pGC.ops.CopyPlane(pSrc, dst, pGC, srcx, srcy, w, h,
                                  dstx, dsty, plane);
 
-    box.x1 = dstx + dst.x;
-    box.x2 = box.x1 + w;
-    box.y1 = dsty + dst.y;
-    box.y2 = box.y1 + h;
+    box.x1 = cast(short)(dstx + dst.x);
+    box.x2 = cast(short)(box.x1 + w);
+    box.y1 = cast(short)(dsty + dst.y);
+    box.y2 = cast(short)(box.y1 + h);
 
-    TRIM_BOX(box, pGC);
-    if (BOX_NOT_EMPTY(box))
+    mixin(TRIM_BOX!("box", "pGC"));
+    if (mixin(BOX_NOT_EMPTY!("box")))
         RootlessDamageBox(cast(WindowPtr) dst, &box);
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("copy plane end\n");
+    //RL_DEBUG_MSG("copy plane end\n");
     return result;
 }
 
@@ -576,7 +578,7 @@ enum string abs(string a) = `((` ~ a ~ `) > 0 ? (` ~ a ~ `) : -(` ~ a ~ `))`;
 private void RootlessPolyPoint(DrawablePtr dst, GCPtr pGC, int mode, int npt, DDXPointPtr pptInit)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("polypoint start ");
+    //RL_DEBUG_MSG("polypoint start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PolyPoint(dst, pGC, mode, npt, pptInit);
@@ -592,8 +594,8 @@ static if (ROOTLESS_CHANGED_AREA==0) {
             box.x2 = box.x1 + 1;
             box.y2 = box.y1 + 1;
 
-            TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-            if (BOX_NOT_EMPTY(box))
+            mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+            if (mixin(BOX_NOT_EMPTY!("box")))
                 RootlessDamageBox(cast(WindowPtr) dst, &box);
 
             npt--;
@@ -621,8 +623,8 @@ static if (ROOTLESS_CHANGED_AREA==0) {
         box.x2++;
         box.y2++;
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
 
 } else static if (ROOTLESS_CHANGED_AREA==2) {
@@ -637,8 +639,8 @@ static if (ROOTLESS_CHANGED_AREA==0) {
             if (mixin(abs!(`pptInit.x - firstx`)) > 20 || mixin(abs!(`pptInit.y - firsty`)) > 20) {
                 box.x2++;
                 box.y2++;
-                TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-                if (BOX_NOT_EMPTY(box))
+                mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+                if (mixin(BOX_NOT_EMPTY!("box")))
                     RootlessDamageBox(cast(WindowPtr) dst, &box);
                 box.x2 = box.x1 = firstx = pptInit.x;
                 box.y2 = box.y1 = firsty = pptInit.y;
@@ -656,21 +658,21 @@ static if (ROOTLESS_CHANGED_AREA==0) {
         }
         box.x2++;
         box.y2++;
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
 }                          /* ROOTLESS_CHANGED_AREA */
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("polypoint end\n");
+    //RL_DEBUG_MSG("polypoint end\n");
 }
 
 /* changed area is box around each line */
 private void RootlessPolylines(DrawablePtr dst, GCPtr pGC, int mode, int npt, DDXPointPtr pptInit)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("poly lines start ");
+    //RL_DEBUG_MSG("poly lines start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.Polylines(dst, pGC, mode, npt, pptInit);
@@ -698,26 +700,26 @@ private void RootlessPolylines(DrawablePtr dst, GCPtr pGC, int mode, int npt, DD
                 x += pptInit.x;
                 y += pptInit.y;
                 if (box.x1 > x)
-                    box.x1 = x;
+                    box.x1 = cast(short)x;
                 else if (box.x2 < x)
-                    box.x2 = x;
+                    box.x2 = cast(short)x;
                 if (box.y1 > y)
-                    box.y1 = y;
+                    box.y1 = cast(short)y;
                 else if (box.y2 < y)
-                    box.y2 = y;
+                    box.y2 = cast(short)y;
             }
         }
         else {
             while (--npt) {
                 pptInit++;
                 if (box.x1 > pptInit.x)
-                    box.x1 = pptInit.x;
+                    box.x1 = cast(short)pptInit.x;
                 else if (box.x2 < pptInit.x)
-                    box.x2 = pptInit.x;
+                    box.x2 = cast(short)pptInit.x;
                 if (box.y1 > pptInit.y)
-                    box.y1 = pptInit.y;
+                    box.y1 = cast(short)pptInit.y;
                 else if (box.y2 < pptInit.y)
-                    box.y2 = pptInit.y;
+                    box.y2 = cast(short)pptInit.y;
             }
         }
 
@@ -731,20 +733,20 @@ private void RootlessPolylines(DrawablePtr dst, GCPtr pGC, int mode, int npt, DD
             box.y2 += extra;
         }
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("poly lines end\n");
+    //RL_DEBUG_MSG("poly lines end\n");
 }
 
 /* changed area is box around each line segment */
 private void RootlessPolySegment(DrawablePtr dst, GCPtr pGC, int nseg, xSegment* pSeg)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("poly segment start (dst %p)", dst);
+    //RL_DEBUG_MSG("poly segment start (dst %p)", dst);
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PolySegment(dst, pGC, nseg, pSeg);
@@ -812,20 +814,20 @@ private void RootlessPolySegment(DrawablePtr dst, GCPtr pGC, int nseg, xSegment*
             box.y2 += extra;
         }
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("poly segment end\n");
+    //RL_DEBUG_MSG("poly segment end\n");
 }
 
 /* changed area is box around each line (not entire rects) */
 private void RootlessPolyRectangle(DrawablePtr dst, GCPtr pGC, int nRects, xRectangle* pRects)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("poly rectangle start ");
+    //RL_DEBUG_MSG("poly rectangle start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PolyRectangle(dst, pGC, nRects, pRects);
@@ -841,36 +843,36 @@ private void RootlessPolyRectangle(DrawablePtr dst, GCPtr pGC, int nRects, xRect
         offset3 = offset2 - offset1;
 
         while (nRects--) {
-            box.x1 = pRects.x - offset1;
-            box.y1 = pRects.y - offset1;
-            box.x2 = box.x1 + pRects.width + offset2;
-            box.y2 = box.y1 + offset2;
-            TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-            if (BOX_NOT_EMPTY(box))
+            box.x1 = cast(short)(pRects.x - offset1);
+            box.y1 = cast(short)(pRects.y - offset1);
+            box.x2 = cast(short)(box.x1 + pRects.width + offset2);
+            box.y2 = cast(short)(box.y1 + offset2);
+            mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+            if (mixin(BOX_NOT_EMPTY!("box")))
                 RootlessDamageBox(cast(WindowPtr) dst, &box);
 
-            box.x1 = pRects.x - offset1;
-            box.y1 = pRects.y + offset3;
-            box.x2 = box.x1 + offset2;
-            box.y2 = box.y1 + pRects.height - offset2;
-            TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-            if (BOX_NOT_EMPTY(box))
+            box.x1 = cast(short)(pRects.x - offset1);
+            box.y1 = cast(short)(pRects.y + offset3);
+            box.x2 = cast(short)(box.x1 + offset2);
+            box.y2 = cast(short)(box.y1 + pRects.height - offset2);
+            mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+            if (mixin(BOX_NOT_EMPTY!("box")))
                 RootlessDamageBox(cast(WindowPtr) dst, &box);
 
-            box.x1 = pRects.x + pRects.width - offset1;
-            box.y1 = pRects.y + offset3;
-            box.x2 = box.x1 + offset2;
-            box.y2 = box.y1 + pRects.height - offset2;
-            TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-            if (BOX_NOT_EMPTY(box))
+            box.x1 = cast(short)(pRects.x + pRects.width - offset1);
+            box.y1 = cast(short)(pRects.y + offset3);
+            box.x2 = cast(short)(box.x1 + offset2);
+            box.y2 = cast(short)(box.y1 + pRects.height - offset2);
+            mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+            if (mixin(BOX_NOT_EMPTY!("box")))
                 RootlessDamageBox(cast(WindowPtr) dst, &box);
 
-            box.x1 = pRects.x - offset1;
-            box.y1 = pRects.y + pRects.height - offset1;
-            box.x2 = box.x1 + pRects.width + offset2;
-            box.y2 = box.y1 + offset2;
-            TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-            if (BOX_NOT_EMPTY(box))
+            box.x1 = cast(short)(pRects.x - offset1);
+            box.y1 = cast(short)(pRects.y + pRects.height - offset1);
+            box.x2 = cast(short)(box.x1 + pRects.width + offset2);
+            box.y2 = cast(short)(box.y1 + offset2);
+            mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+            if (mixin(BOX_NOT_EMPTY!("box")))
                 RootlessDamageBox(cast(WindowPtr) dst, &box);
 
             pRects++;
@@ -878,14 +880,14 @@ private void RootlessPolyRectangle(DrawablePtr dst, GCPtr pGC, int nRects, xRect
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("poly rectangle end\n");
+    //RL_DEBUG_MSG("poly rectangle end\n");
 }
 
 /* changed area is box around each arc (assumes all arcs are 360 degrees) */
 private void RootlessPolyArc(DrawablePtr dst, GCPtr pGC, int narcs, xArc* parcs)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("poly arc start ");
+    //RL_DEBUG_MSG("poly arc start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PolyArc(dst, pGC, narcs, parcs);
@@ -894,23 +896,23 @@ private void RootlessPolyArc(DrawablePtr dst, GCPtr pGC, int narcs, xArc* parcs)
         int extra = pGC.lineWidth >> 1;
         BoxRec box = void;
 
-        box.x1 = parcs.x;
-        box.x2 = box.x1 + parcs.width;
-        box.y1 = parcs.y;
-        box.y2 = box.y1 + parcs.height;
+        box.x1 = cast(short)(parcs.x);
+        box.x2 = cast(short)(box.x1 + parcs.width);
+        box.y1 = cast(short)(parcs.y);
+        box.y2 = cast(short)(box.y1 + parcs.height);
 
         /* should I break these up instead ? */
 
         while (--narcs) {
             parcs++;
             if (box.x1 > parcs.x)
-                box.x1 = parcs.x;
+                box.x1 = cast(short)(parcs.x);
             if (box.x2 < (parcs.x + parcs.width))
-                box.x2 = parcs.x + parcs.width;
+                box.x2 = cast(short)(parcs.x + parcs.width);
             if (box.y1 > parcs.y)
-                box.y1 = parcs.y;
+                box.y1 = cast(short)(parcs.y);
             if (box.y2 < (parcs.y + parcs.height))
-                box.y2 = parcs.y + parcs.height;
+                box.y2 = cast(short)(parcs.y + parcs.height);
         }
 
         if (extra) {
@@ -923,13 +925,13 @@ private void RootlessPolyArc(DrawablePtr dst, GCPtr pGC, int narcs, xArc* parcs)
         box.x2++;
         box.y2++;
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("poly arc end\n");
+    //RL_DEBUG_MSG("poly arc end\n");
 }
 
 /* changed area is box around each poly */
@@ -937,8 +939,8 @@ private void RootlessFillPolygon(DrawablePtr dst, GCPtr pGC, int shape, int mode
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("fill poly start (dst %p, fillStyle 0x%x)", dst,
-                 pGC.fillStyle);
+    //RL_DEBUG_MSG("fill poly start (dst %p, fillStyle 0x%x)", dst,
+                //  pGC.fillStyle);
 
     if (count <= 2) {
         pGC.ops.FillPolygon(dst, pGC, shape, mode, count, pptInit);
@@ -960,26 +962,26 @@ private void RootlessFillPolygon(DrawablePtr dst, GCPtr pGC, int shape, int mode
                 x += ppt.x;
                 y += ppt.y;
                 if (box.x1 > x)
-                    box.x1 = x;
+                    box.x1 = cast(short)x;
                 else if (box.x2 < x)
-                    box.x2 = x;
+                    box.x2 = cast(short)x;
                 if (box.y1 > y)
-                    box.y1 = y;
+                    box.y1 = cast(short)y;
                 else if (box.y2 < y)
-                    box.y2 = y;
+                    box.y2 = cast(short)y;
             }
         }
         else {
             while (--i) {
                 ppt++;
                 if (box.x1 > ppt.x)
-                    box.x1 = ppt.x;
+                    box.x1 = cast(short)ppt.x;
                 else if (box.x2 < ppt.x)
-                    box.x2 = ppt.x;
+                    box.x2 = cast(short)ppt.x;
                 if (box.y1 > ppt.y)
-                    box.y1 = ppt.y;
+                    box.y1 = cast(short)ppt.y;
                 else if (box.y2 < ppt.y)
-                    box.y2 = ppt.y;
+                    box.y2 = cast(short)ppt.y;
             }
         }
 
@@ -994,14 +996,14 @@ private void RootlessFillPolygon(DrawablePtr dst, GCPtr pGC, int shape, int mode
 
         pGC.ops.FillPolygon(dst, pGC, shape, mode, count, pptInit);
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("fill poly end\n");
+    //RL_DEBUG_MSG("fill poly end\n");
 }
 
 /* changed area is the rects */
@@ -1009,8 +1011,8 @@ private void RootlessPolyFillRect(DrawablePtr dst, GCPtr pGC, int nRectsInit, xR
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("fill rect start (dst %p, fillStyle 0x%x)", dst,
-                 pGC.fillStyle);
+    //RL_DEBUG_MSG("fill rect start (dst %p, fillStyle 0x%x)", dst,
+                //  pGC.fillStyle);
 
     if (nRectsInit <= 0) {
         pGC.ops.PolyFillRect(dst, pGC, nRectsInit, pRectsInit);
@@ -1020,21 +1022,21 @@ private void RootlessPolyFillRect(DrawablePtr dst, GCPtr pGC, int nRectsInit, xR
         xRectangle* pRects = pRectsInit;
         int nRects = nRectsInit;
 
-        box.x1 = pRects.x;
-        box.x2 = box.x1 + pRects.width;
-        box.y1 = pRects.y;
-        box.y2 = box.y1 + pRects.height;
+        box.x1 = cast(short)(pRects.x);
+        box.x2 = cast(short)(box.x1 + pRects.width);
+        box.y1 = cast(short)(pRects.y);
+        box.y2 = cast(short)(box.y1 + pRects.height);
 
         while (--nRects) {
             pRects++;
             if (box.x1 > pRects.x)
-                box.x1 = pRects.x;
+                box.x1 = cast(short)(pRects.x);
             if (box.x2 < (pRects.x + pRects.width))
-                box.x2 = pRects.x + pRects.width;
+                box.x2 = cast(short)(pRects.x + pRects.width);
             if (box.y1 > pRects.y)
-                box.y1 = pRects.y;
+                box.y1 = cast(short)(pRects.y);
             if (box.y2 < (pRects.y + pRects.height))
-                box.y2 = pRects.y + pRects.height;
+                box.y2 = cast(short)(pRects.y + pRects.height);
         }
 
         RootlessStartDrawing(cast(WindowPtr) dst);
@@ -1045,14 +1047,14 @@ private void RootlessPolyFillRect(DrawablePtr dst, GCPtr pGC, int nRectsInit, xR
 
         pGC.ops.PolyFillRect(dst, pGC, nRectsInit, pRectsInit);
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("fill rect end\n");
+    //RL_DEBUG_MSG("fill rect end\n");
 }
 
 /* changed area is box around each arc (assuming arcs are all 360 degrees) */
@@ -1060,30 +1062,30 @@ private void RootlessPolyFillArc(DrawablePtr dst, GCPtr pGC, int narcsInit, xArc
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("fill arc start ");
+    //RL_DEBUG_MSG("fill arc start ");
 
     if (narcsInit > 0) {
         BoxRec box = void;
         int narcs = cast(int)narcsInit;
         xArc* parcs = parcsInit;
 
-        box.x1 = parcs.x;
-        box.x2 = box.x1 + parcs.width;
-        box.y1 = parcs.y;
-        box.y2 = box.y1 + parcs.height;
+        box.x1 = cast(short)(parcs.x);
+        box.x2 = cast(short)(box.x1 + parcs.width);
+        box.y1 = cast(short)(parcs.y);
+        box.y2 = cast(short)(box.y1 + parcs.height);
 
         /* should I break these up instead ? */
 
         while (--narcs) {
             parcs++;
             if (box.x1 > parcs.x)
-                box.x1 = parcs.x;
+                box.x1 = cast(short)(parcs.x);
             if (box.x2 < (parcs.x + parcs.width))
-                box.x2 = parcs.x + parcs.width;
+                box.x2 = cast(short)(parcs.x + parcs.width);
             if (box.y1 > parcs.y)
-                box.y1 = parcs.y;
+                box.y1 = cast(short)(parcs.y);
             if (box.y2 < (parcs.y + parcs.height))
-                box.y2 = parcs.y + parcs.height;
+                box.y2 = cast(short)(parcs.y + parcs.height);
         }
 
         RootlessStartDrawing(cast(WindowPtr) dst);
@@ -1094,8 +1096,8 @@ private void RootlessPolyFillArc(DrawablePtr dst, GCPtr pGC, int narcsInit, xArc
 
         pGC.ops.PolyFillArc(dst, pGC, narcsInit, parcsInit);
 
-        TRIM_AND_TRANSLATE_BOX(box, dst, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_AND_TRANSLATE_BOX!("box", "dst", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
     else {
@@ -1104,14 +1106,14 @@ private void RootlessPolyFillArc(DrawablePtr dst, GCPtr pGC, int narcsInit, xArc
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("fill arc end\n");
+    //RL_DEBUG_MSG("fill arc end\n");
 }
 
 private void RootlessImageText8(DrawablePtr dst, GCPtr pGC, int x, int y, int count, char* chars)
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("imagetext8 start ");
+    //RL_DEBUG_MSG("imagetext8 start ");
 
     if (count > 0) {
         int top = void, bot = void, Min = void, Max = void;
@@ -1127,11 +1129,11 @@ private void RootlessImageText8(DrawablePtr dst, GCPtr pGC, int x, int y, int co
             Max = 0;
 
         /* ugh */
-        box.x1 = dst.x + x + Min + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
-        box.x2 = dst.x + x + Max + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
+        box.x1 = cast(short)(dst.x + x + Min + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing")));
+        box.x2 = cast(short)(dst.x + x + Max + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing")));
 
-        box.y1 = dst.y + y - top;
-        box.y2 = dst.y + y + bot;
+        box.y1 = cast(short)(dst.y + y - top);
+        box.y2 = cast(short)(dst.y + y + bot);
 
         RootlessStartDrawing(cast(WindowPtr) dst);
 
@@ -1141,8 +1143,8 @@ private void RootlessImageText8(DrawablePtr dst, GCPtr pGC, int x, int y, int co
 
         pGC.ops.ImageText8(dst, pGC, x, y, count, chars);
 
-        TRIM_BOX(box, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_BOX!("box", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
     else {
@@ -1151,7 +1153,7 @@ private void RootlessImageText8(DrawablePtr dst, GCPtr pGC, int x, int y, int co
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("imagetext8 end\n");
+    //RL_DEBUG_MSG("imagetext8 end\n");
 }
 
 private int RootlessPolyText8(DrawablePtr dst, GCPtr pGC, int x, int y, int count, char* chars)
@@ -1160,7 +1162,7 @@ private int RootlessPolyText8(DrawablePtr dst, GCPtr pGC, int x, int y, int coun
 
     mixin(GCOP_UNWRAP!(`pGC`));
 
-    RL_DEBUG_MSG("polytext8 start ");
+    //RL_DEBUG_MSG("polytext8 start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     width = pGC.ops.PolyText8(dst, pGC, x, y, count, chars);
@@ -1170,23 +1172,23 @@ private int RootlessPolyText8(DrawablePtr dst, GCPtr pGC, int x, int y, int coun
         BoxRec box = void;
 
         /* ugh */
-        box.x1 = dst.x + x + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
-        box.x2 = dst.x + x + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
+        box.x1 = cast(short)(dst.x + x + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing")));
+        box.x2 = cast(short)(dst.x + x + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing")));
 
         if (count > 1) {
             box.x2 += width;
         }
 
-        box.y1 = dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent"));
-        box.y2 = dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent"));
+        box.y1 = cast(short)(dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent")));
+        box.y2 = cast(short)(dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent")));
 
-        TRIM_BOX(box, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_BOX!("box", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("polytext8 end\n");
+    //RL_DEBUG_MSG("polytext8 end\n");
     return width + x;
 }
 
@@ -1194,7 +1196,7 @@ private void RootlessImageText16(DrawablePtr dst, GCPtr pGC, int x, int y, int c
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("imagetext16 start ");
+    //RL_DEBUG_MSG("imagetext16 start ");
 
     if (count > 0) {
         int top = void, bot = void, Min = void, Max = void;
@@ -1211,11 +1213,11 @@ private void RootlessImageText16(DrawablePtr dst, GCPtr pGC, int x, int y, int c
             Max = 0;
 
         /* ugh */
-        box.x1 = dst.x + x + Min + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
-        box.x2 = dst.x + x + Max + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
+        box.x1 = cast(short)(dst.x + x + Min + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing")));
+        box.x2 = cast(short)(dst.x + x + Max + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing")));
 
-        box.y1 = dst.y + y - top;
-        box.y2 = dst.y + y + bot;
+        box.y1 = cast(short)(dst.y + y - top);
+        box.y2 = cast(short)(dst.y + y + bot);
 
         RootlessStartDrawing(cast(WindowPtr) dst);
 
@@ -1225,8 +1227,8 @@ private void RootlessImageText16(DrawablePtr dst, GCPtr pGC, int x, int y, int c
 
         pGC.ops.ImageText16(dst, pGC, x, y, count, chars);
 
-        TRIM_BOX(box, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_BOX!("box", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
     else {
@@ -1235,7 +1237,7 @@ private void RootlessImageText16(DrawablePtr dst, GCPtr pGC, int x, int y, int c
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("imagetext16 end\n");
+    //RL_DEBUG_MSG("imagetext16 end\n");
 }
 
 private int RootlessPolyText16(DrawablePtr dst, GCPtr pGC, int x, int y, int count, ushort* chars)
@@ -1244,7 +1246,7 @@ private int RootlessPolyText16(DrawablePtr dst, GCPtr pGC, int x, int y, int cou
 
     mixin(GCOP_UNWRAP!(`pGC`));
 
-    RL_DEBUG_MSG("polytext16 start ");
+    //RL_DEBUG_MSG("polytext16 start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     width = pGC.ops.PolyText16(dst, pGC, x, y, count, chars);
@@ -1254,23 +1256,23 @@ private int RootlessPolyText16(DrawablePtr dst, GCPtr pGC, int x, int y, int cou
         BoxRec box = void;
 
         /* ugh */
-        box.x1 = dst.x + x + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
-        box.x2 = dst.x + x + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
+        box.x1 = cast(short)(dst.x + x + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing")));
+        box.x2 = cast(short)(dst.x + x + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing")));
 
         if (count > 1) {
             box.x2 += width;
         }
 
-        box.y1 = dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent"));
-        box.y2 = dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent"));
+        box.y1 = cast(short)(dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent")));
+        box.y2 = cast(short)(dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent")));
 
-        TRIM_BOX(box, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_BOX!("box", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("polytext16 end\n");
+    //RL_DEBUG_MSG("polytext16 end\n");
     return width + x;
 }
 
@@ -1278,7 +1280,7 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
 {
     mixin(GC_SAVE!(`pGC`));
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("imageglyph start ");
+    //RL_DEBUG_MSG("imageglyph start ");
 
     if (nglyphInit > 0) {
         int top = void, bot = void, width = 0;
@@ -1291,11 +1293,11 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
 
         box.x1 = ppci[0].metrics.leftSideBearing;
         if (box.x1 > 0)
-            box.x1 = 0;
-        box.x2 = ppci[nglyph - 1].metrics.rightSideBearing -
-            ppci[nglyph - 1].metrics.characterWidth;
+            box.x1 = cast(short)0;
+        box.x2 = cast(short)(ppci[nglyph - 1].metrics.rightSideBearing -
+            ppci[nglyph - 1].metrics.characterWidth);
         if (box.x2 < 0)
-            box.x2 = 0;
+            box.x2 = cast(short)0;
 
         box.x2 += dst.x + x;
         box.x1 += dst.x + x;
@@ -1310,8 +1312,8 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
         else
             box.x1 += width;
 
-        box.y1 = dst.y + y - top;
-        box.y2 = dst.y + y + bot;
+        box.y1 = cast(short)(dst.y + y - top);
+        box.y2 = cast(short)(dst.y + y + bot);
 
         RootlessStartDrawing(cast(WindowPtr) dst);
 
@@ -1321,8 +1323,8 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
 
         pGC.ops.ImageGlyphBlt(dst, pGC, x, y, nglyphInit, ppciInit, unused);
 
-        TRIM_BOX(box, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_BOX!("box", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
     else {
@@ -1331,13 +1333,13 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
 
     mixin(GC_RESTORE!(`pGC`, `dst`));
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("imageglyph end\n");
+    //RL_DEBUG_MSG("imageglyph end\n");
 }
 
 private void RootlessPolyGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uint nglyph, CharInfoPtr* ppci, void* pglyphBase)
 {
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("polyglyph start ");
+    //RL_DEBUG_MSG("polyglyph start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PolyGlyphBlt(dst, pGC, x, y, nglyph, ppci, pglyphBase);
@@ -1346,8 +1348,8 @@ private void RootlessPolyGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uint
         BoxRec box = void;
 
         /* ugh */
-        box.x1 = dst.x + x + ppci[0].metrics.leftSideBearing;
-        box.x2 = dst.x + x + ppci[nglyph - 1].metrics.rightSideBearing;
+        box.x1 = cast(short)(dst.x + x + ppci[0].metrics.leftSideBearing);
+        box.x2 = cast(short)(dst.x + x + ppci[nglyph - 1].metrics.rightSideBearing);
 
         if (nglyph > 1) {
             int width = 0;
@@ -1363,16 +1365,16 @@ private void RootlessPolyGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uint
                 box.x1 += width;
         }
 
-        box.y1 = dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent"));
-        box.y2 = dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent"));
+        box.y1 = cast(short)(dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent")));
+        box.y2 = cast(short)(dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent")));
 
-        TRIM_BOX(box, pGC);
-        if (BOX_NOT_EMPTY(box))
+        mixin(TRIM_BOX!("box", "pGC"));
+        if (mixin(BOX_NOT_EMPTY!("box")))
             RootlessDamageBox(cast(WindowPtr) dst, &box);
     }
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("polyglyph end\n");
+    //RL_DEBUG_MSG("polyglyph end\n");
 }
 
 /* changed area is in dest */
@@ -1381,20 +1383,20 @@ private void RootlessPushPixels(GCPtr pGC, PixmapPtr pBitMap, DrawablePtr dst, i
     BoxRec box = void;
 
     mixin(GCOP_UNWRAP!(`pGC`));
-    RL_DEBUG_MSG("push pixels start ");
+    //RL_DEBUG_MSG("push pixels start ");
 
     RootlessStartDrawing(cast(WindowPtr) dst);
     pGC.ops.PushPixels(pGC, pBitMap, dst, dx, dy, xOrg, yOrg);
 
-    box.x1 = xOrg + dst.x;
-    box.x2 = box.x1 + dx;
-    box.y1 = yOrg + dst.y;
-    box.y2 = box.y1 + dy;
+    box.x1 = cast(short)(xOrg + dst.x);
+    box.x2 = cast(short)(box.x1 + dx);
+    box.y1 = cast(short)(yOrg + dst.y);
+    box.y2 = cast(short)(box.y1 + dy);
 
-    TRIM_BOX(box, pGC);
-    if (BOX_NOT_EMPTY(box))
+    mixin(TRIM_BOX!("box", "pGC"));
+    if (mixin(BOX_NOT_EMPTY!("box")))
         RootlessDamageBox(cast(WindowPtr) dst, &box);
 
     mixin(GCOP_WRAP!(`pGC`));
-    RL_DEBUG_MSG("push pixels end\n");
+    //RL_DEBUG_MSG("push pixels end\n");
 }

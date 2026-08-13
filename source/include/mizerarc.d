@@ -53,7 +53,7 @@ struct miZeroArcRec {
 enum string miCanZeroArc(string arc) = `(((` ~ arc ~ `).width == (` ~ arc ~ `).height) || 
 			   (((` ~ arc ~ `).width <= 800) && ((` ~ arc ~ `).height <= 800)))`;
 
-enum string MIARCSETUP() = `
+enum string MIARCSETUP = `
     x = info.x; 
     y = info.y; 
     k1 = info.k1; 
@@ -62,7 +62,7 @@ enum string MIARCSETUP() = `
     b = info.b; 
     d = info.d; 
     dx = info.dx; 
-    dy = info.dy`;
+    dy = info.dy;`;
 
 enum string MIARCOCTANTSHIFT(string clause) = `
     if (a < 0) 

@@ -47,6 +47,7 @@ import include.regionstr;
 import include.gcstruct;
 import include.pixmapstr;
 import include.mizerarc;
+import dix.gc;
 
 enum FULLCIRCLE = (360 * 64);
 enum OCTANT = (45 * 64);
@@ -217,13 +218,13 @@ Bool miZeroArcSetup(xArc* arc, miZeroArcRec* info, Bool ok360)
     }
     startseg = startAngle / OCTANT;
     if (!arc.height || (((startseg + 1) & 2) && arc.width)) {
-        start.x = mixin(Dcos!(`startAngle`)) * ((arc.width + 1) / 2.0);
+        start.x = cast(int)(mixin(Dcos!(`startAngle`)) * ((arc.width + 1) / 2.0));
         if (start.x < 0)
             start.x = -start.x;
         start.y = -1;
     }
     else {
-        start.y = mixin(Dsin!(`startAngle`)) * (arc.height / 2.0);
+        start.y = cast(int)(mixin(Dsin!(`startAngle`)) * (arc.height / 2.0));
         if (start.y < 0)
             start.y = -start.y;
         start.y = info.h - start.y;
@@ -231,13 +232,13 @@ Bool miZeroArcSetup(xArc* arc, miZeroArcRec* info, Bool ok360)
     }
     endseg = endAngle / OCTANT;
     if (!arc.height || (((endseg + 1) & 2) && arc.width)) {
-        end.x = mixin(Dcos!(`endAngle`)) * ((arc.width + 1) / 2.0);
+        end.x = cast(int)(mixin(Dcos!(`endAngle`)) * ((arc.width + 1) / 2.0));
         if (end.x < 0)
             end.x = -end.x;
         end.y = -1;
     }
     else {
-        end.y = mixin(Dsin!(`endAngle`)) * (arc.height / 2.0);
+        end.y = cast(int)(mixin(Dsin!(`endAngle`)) * (arc.height / 2.0));
         if (end.y < 0)
             end.y = -end.y;
         end.y = info.h - end.y;
@@ -295,14 +296,14 @@ Bool miZeroArcSetup(xArc* arc, miZeroArcRec* info, Bool ok360)
             i = (endAngle + OCTANT) % OCTANT;
             if (i < EPSILON45 || i > OCTANT - EPSILON45) {
                 if (start.y < 0) {
-                    i = mixin(Dsin!(`startAngle`)) * (arc.height / 2.0);
+                    i = cast(int)(mixin(Dsin!(`startAngle`)) * (arc.height / 2.0));
                     if (i < 0)
                         i = -i;
                     if (info.h - i == end.y)
                         start.mask = end.mask;
                 }
                 else {
-                    i = mixin(Dsin!(`endAngle`)) * (arc.height / 2.0);
+                    i = cast(int)(mixin(Dsin!(`endAngle`)) * (arc.height / 2.0));
                     if (i < 0)
                         i = -i;
                     if (info.h - i == start.y)
@@ -358,12 +359,14 @@ Bool miZeroArcSetup(xArc* arc, miZeroArcRec* info, Bool ok360)
 
 enum string Pixelate(string xval,string yval) = `
     { 
-	pts.x = ` ~ xval ~ `; 
-	pts.y = ` ~ yval ~ `; 
+	pts.x = cast(short)(` ~ xval ~ `); 
+	pts.y = cast(short)(` ~ yval ~ `); 
 	pts++; 
     }`;
 
-enum string DoPix(string idx,string xval,string yval) = `if (mask & (1 << ` ~ idx ~ `)) ` ~ Pixelate!(xval, yval) ~ `;`;
+enum string DoPix(string idx,string xval,string yval) = `
+    if (mask & (1 << ` ~ idx ~ `)) `
+        ~ Pixelate!(xval, yval);
 
 private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
 {
@@ -373,7 +376,7 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
     Bool do360 = void;
 
     do360 = miZeroArcSetup(arc, &info, TRUE);
-    MIARCSETUP();
+    mixin(MIARCSETUP);
     mask = info.initialMask;
     if (!(arc.width & 1)) {
         mixin(DoPix!(`1`, `info.xorgo`, `info.yorg`));
@@ -384,9 +387,9 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
         info.end = info.altend;
     }
     if (do360 && (arc.width == arc.height) && !(arc.width & 1)) {
-        int yorgh = info.yorg + info;
-        int xorghp = info.xorg + info;
-        int xorghn = info.xorg - info;
+        int yorgh = info.yorg + info.h;
+        int xorghp = info.xorg + info.h;
+        int xorghn = info.xorg - info.h;
 
         while (1) {
             mixin(Pixelate!(`info.xorg + x`, `info.yorg + y`));
@@ -399,30 +402,27 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
             mixin(Pixelate!(`xorghn + y`, `yorgh - x`));
             mixin(Pixelate!(`xorghn + y`, `yorgh + x`));
             mixin(Pixelate!(`xorghp - y`, `yorgh + x`));
-            MIARCCIRCLESTEP({}
-                );
+            mixin(MIARCCIRCLESTEP!(`{}`));
         }
         if (x > 1 && pts[-1].x == pts[-5].x && pts[-1].y == pts[-5].y)
             pts -= 4;
         x = info.w;
-        y = info;
+        y = info.h;
     }
     else if (do360) {
         while (y < info.h || x < info.w) {
-            MIARCOCTANTSHIFT({}
-                );
+            mixin(MIARCOCTANTSHIFT!("{}"
+                ));
             mixin(Pixelate!(`info.xorg + x`, `info.yorg + y`));
             mixin(Pixelate!(`info.xorgo - x`, `info.yorg + y`));
             mixin(Pixelate!(`info.xorgo - x`, `info.yorgo - y`));
             mixin(Pixelate!(`info.xorg + x`, `info.yorgo - y`));
-            MIARCSTEP({}, {}
-                );
+            mixin(MIARCSTEP!("{}", "{}"));
         }
     }
     else {
         while (y < info.h || x < info.w) {
-            MIARCOCTANTSHIFT({}
-                );
+            mixin(MIARCOCTANTSHIFT!("{}"));
             if ((x == info.start.x) || (y == info.start.y)) {
                 mask = info.start.mask;
                 info.start = info.altstart;
@@ -435,8 +435,7 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
                 mask = info.end.mask;
                 info.end = info.altend;
             }
-            MIARCSTEP({}, {}
-                );
+            mixin(MIARCSTEP!("{}", "{}"));
         }
     }
     if ((x == info.start.x) || (y == info.start.y))
@@ -450,11 +449,11 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
     return pts;
 }
 
-enum string DoPix(string idx,string xval,string yval) = `
+enum string DoPix2(string idx,string xval,string yval) = `
     if (mask & (1 << ` ~ idx ~ `)) 
     { 
-	arcPts[` ~ idx ~ `].x = ` ~ xval ~ `; 
-	arcPts[` ~ idx ~ `].y = ` ~ yval ~ `; 
+	arcPts[` ~ idx ~ `].x = cast(short)(` ~ xval ~ `); 
+	arcPts[` ~ idx ~ `].y = cast(short)(` ~ yval ~ `); 
 	arcPts[` ~ idx ~ `]++; 
     }`;
 
@@ -473,48 +472,45 @@ private void miZeroArcDashPts(GCPtr pGC, xArc* arc, DashInfo* dinfo, DDXPointPtr
     for (i = 0; i < 4; i++)
         arcPts[i] = points + (i * maxPts);
     cast(void) miZeroArcSetup(arc, &info, FALSE);
-    MIARCSETUP();
+    mixin(MIARCSETUP);
     mask = info.initialMask;
     startseg = info.startAngle / QUADRANT;
     startPt = arcPts[startseg];
     if (!(arc.width & 1)) {
-        mixin(DoPix!(`1`, `info.xorgo`, `info.yorg`));
-        mixin(DoPix!(`3`, `info.xorgo`, `info.yorgo`));
+        mixin(DoPix2!(`1`, `info.xorgo`, `info.yorg`));
+        mixin(DoPix2!(`3`, `info.xorgo`, `info.yorgo`));
     }
     if (!info.end.x || !info.end.y) {
         mask = info.end.mask;
         info.end = info.altend;
     }
     while (y < info.h || x < info.w) {
-        MIARCOCTANTSHIFT({}
-            );
+        mixin(MIARCOCTANTSHIFT!("{}"));
         if ((x == info.firstx) || (y == info.firsty))
             startPt = arcPts[startseg];
         if ((x == info.start.x) || (y == info.start.y)) {
             mask = info.start.mask;
             info.start = info.altstart;
         }
-        mixin(DoPix!(`0`, `info.xorg + x`, `info.yorg + y`));
-        mixin(DoPix!(`1`, `info.xorgo - x`, `info.yorg + y`));
-        mixin(DoPix!(`2`, `info.xorgo - x`, `info.yorgo - y`));
-        mixin(DoPix!(`3`, `info.xorg + x`, `info.yorgo - y`));
+        mixin(DoPix2!(`0`, `info.xorg + x`, `info.yorg + y`));
+        mixin(DoPix2!(`1`, `info.xorgo - x`, `info.yorg + y`));
+        mixin(DoPix2!(`2`, `info.xorgo - x`, `info.yorgo - y`));
+        mixin(DoPix2!(`3`, `info.xorg + x`, `info.yorgo - y`));
         if ((x == info.end.x) || (y == info.end.y)) {
             mask = info.end.mask;
             info.end = info.altend;
         }
-        MIARCSTEP({}
-                  ,{}
-            );
+        mixin(MIARCSTEP!("{}","{}"));
     }
     if ((x == info.firstx) || (y == info.firsty))
         startPt = arcPts[startseg];
     if ((x == info.start.x) || (y == info.start.y))
         mask = info.start.mask;
-    mixin(DoPix!(`0`, `info.xorg + x`, `info.yorg + y`));
-    mixin(DoPix!(`2`, `info.xorgo - x`, `info.yorgo - y`));
+    mixin(DoPix2!(`0`, `info.xorg + x`, `info.yorg + y`));
+    mixin(DoPix2!(`2`, `info.xorgo - x`, `info.yorgo - y`));
     if (arc.height & 1) {
-        mixin(DoPix!(`1`, `info.xorgo - x`, `info.yorg + y`));
-        mixin(DoPix!(`3`, `info.xorg + x`, `info.yorgo - y`));
+        mixin(DoPix2!(`1`, `info.xorgo - x`, `info.yorg + y`));
+        mixin(DoPix2!(`3`, `info.xorg + x`, `info.yorgo - y`));
     }
     for (i = 0; i < 4; i++) {
         seg = (startseg + i) & 3;
@@ -646,7 +642,7 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
     DashInfo dinfo = void;
 
     for (arc = parcs, i = narcs; --i >= 0; arc++) {
-        if (!miCanZeroArc(arc))
+        if (!mixin(miCanZeroArc!("arc")))
             miWideArc(pDraw, pGC, 1, arc);
         else {
             if (arc.width > arc.height)
@@ -678,7 +674,7 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
                    cast(ubyte*) pGC.dash, cast(int) pGC.numInDashList,
                    &dinfo.dashOffsetInit);
     }
-    points = calloc(numPts, xPoint.sizeof);
+    points = cast(_xPoint*)calloc(numPts, xPoint.sizeof);
     if (!points) {
         if (dospans) {
             free(widths);
@@ -686,7 +682,7 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
         return;
     }
     for (arc = parcs, i = narcs; --i >= 0; arc++) {
-        if (miCanZeroArc(arc)) {
+        if (mixin(miCanZeroArc!("arc"))) {
             if (pGC.lineStyle == LineSolid)
                 pts = miZeroArcPts(arc, points);
             else {
@@ -697,7 +693,7 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
                                  oddPts + 1, maxPts, &pts, &oddPts);
                 dinfo.skipStart = TRUE;
             }
-            n = pts - points;
+            n = cast(int)(pts - points);
             if (!dospans)
                 (*pGC.ops.PolyPoint) (pDraw, pGC, CoordModeOrigin, n, points);
             else {
@@ -720,12 +716,12 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
                 ChangeGCVal gcval = void;
 
                 gcval.val = pGC.bgPixel;
-                ChangeGC(null, pGC, GCForeground, &gcval);
+                ChangeGC(null, pGC, cast(uint)GCForeground, &gcval);
                 ValidateGC(pDraw, pGC);
             }
             pts = &points[numPts >> 1];
             oddPts++;
-            n = pts - oddPts;
+            n = cast(int)(pts - oddPts);
             if (!dospans)
                 (*pGC.ops.PolyPoint) (pDraw, pGC, CoordModeOrigin, n, oddPts);
             else {
@@ -745,13 +741,14 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
                 (pGC.fillStyle == FillStippled)) {
                 ChangeGCVal gcval = void;
 
-                gcval.val = fgPixel;
-                ChangeGC(null, pGC, GCForeground, &gcval);
+                gcval.val = cast(uint)fgPixel;
+                ChangeGC(null, pGC, cast(uint)GCForeground, &gcval);
                 ValidateGC(pDraw, pGC);
             }
         }
     }
     free(points);
+    
     if (dospans) {
         free(widths);
     }

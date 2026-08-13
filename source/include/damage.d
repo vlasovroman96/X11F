@@ -28,9 +28,10 @@ import include.regionstr;
 import include.screenint;
 import include.privates;
 public import miext.damage.damage_;
+import include.damagestr;
 
-struct _Damage;
-alias DamagePtr = _Damage*;
+// struct _Damage;
+alias DamagePtr = _damage*;
 
 enum DamageReportLevel : ubyte {
     DamageReportRawRegion,

@@ -607,7 +607,7 @@ int miZeroClipLine(int xmin, int ymin, int xmax, int ymax, int* new_x1, int* new
                 y1 = anchorval + utmp;
 
             oc1 = 0;
-            MIOUTCODES(oc1, x1, y1, xmin, ymin, xmax, ymax);
+            mixin(MIOUTCODES!("oc1", "x1", "y1", "xmin", "ymin", "xmax", "ymax"));
         }
     }
 

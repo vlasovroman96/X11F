@@ -691,9 +691,9 @@ RegionPtr glamor_bitmap_to_region(PixmapPtr pixmap);
 void glamor_track_stipple(GCPtr gc);
 
 /* glamor_render.c */
-Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mask, PicturePtr dest, PixmapPtr source_pixmap, PixmapPtr mask_pixmap, PixmapPtr dest_pixmap, RegionPtr region, int x_source, int y_source, int x_mask, int y_mask, int x_dest, int y_dest);
+// Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mask, PicturePtr dest, PixmapPtr source_pixmap, PixmapPtr mask_pixmap, PixmapPtr dest_pixmap, RegionPtr region, int x_source, int y_source, int x_mask, int y_mask, int x_dest, int y_dest);
 
-void glamor_composite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
+// void glamor_composite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
 void glamor_composite_rects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
 
