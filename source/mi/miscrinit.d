@@ -44,6 +44,7 @@ import include.scrnintstr;
 import include.pixmapstr;
 import include.dix;
 import include.miline;
+import dix.dixutils;
 
 /* We use this structure to propagate some information from miScreenInit to
  * miCreateScreenResources.  miScreenInit allocates the structure, fills it
@@ -76,13 +77,13 @@ Bool miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth, i
      */
     if ((width > 0) && (height > 0) && (depth > 0) && (bitsPerPixel > 0) &&
         (devKind > 0) && pPixData) {
-        pPixmap.drawable.depth = depth;
-        pPixmap.drawable.bitsPerPixel = bitsPerPixel;
+        pPixmap.drawable.depth = cast(ubyte)depth;
+        pPixmap.drawable.bitsPerPixel = cast(ubyte)bitsPerPixel;
         pPixmap.drawable.id = 0;
         pPixmap.drawable.x = 0;
         pPixmap.drawable.y = 0;
-        pPixmap.drawable.width = width;
-        pPixmap.drawable.height = height;
+        pPixmap.drawable.width = cast(ushort)width;
+        pPixmap.drawable.height = cast(ushort)height;
         pPixmap.devKind = devKind;
         pPixmap.refcnt = 1;
         pPixmap.devPrivate.ptr = pPixData;
@@ -93,18 +94,18 @@ Bool miModifyPixmapHeader(PixmapPtr pPixmap, int width, int height, int depth, i
          */
 
         if (width > 0)
-            pPixmap.drawable.width = width;
+            pPixmap.drawable.width = cast(ushort)width;
 
         if (height > 0)
-            pPixmap.drawable.height = height;
+            pPixmap.drawable.height = cast(ushort)height;
 
         if (depth > 0)
-            pPixmap.drawable.depth = depth;
+            pPixmap.drawable.depth = cast(ubyte)depth;
 
         if (bitsPerPixel > 0)
-            pPixmap.drawable.bitsPerPixel = bitsPerPixel;
+            pPixmap.drawable.bitsPerPixel = cast(ubyte)bitsPerPixel;
         else if ((bitsPerPixel < 0) && (depth > 0))
-            pPixmap.drawable.bitsPerPixel = mixin(BitsPerPixel!("depth"));
+            pPixmap.drawable.bitsPerPixel = cast(ubyte)mixin(BitsPerPixel!("depth"));
 
         /*
          * CAVEAT:  Non-SI DDXen may use devKind and devPrivate fields for
@@ -170,7 +171,7 @@ Bool miCreateScreenResources(ScreenPtr pScreen)
         if (!(*pScreen.ModifyPixmapHeader) (pPixmap, pScrInitParms.xsize,
                                              pScrInitParms.ysize,
                                              pScreen.rootDepth,
-                                             BitsPerPixel(pScreen.rootDepth),
+                                             mixin(BitsPerPixel!("pScreen.rootDepth")),
                                              PixmapBytePad(pScrInitParms.width,
                                                            pScreen.rootDepth),
                                              pScrInitParms.pbits))
@@ -215,12 +216,12 @@ private void miSetScreenPixmap(PixmapPtr pPix)
 
 Bool miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int rootDepth, int numDepths, DepthRec* depths, VisualID rootVisual, int numVisuals, VisualRec* visuals)
 {
-    pScreen.width = xsize;
-    pScreen.height = ysize;
-    pScreen.mmWidth = (xsize * 254 + dpix * 5) / (dpix * 10);
-    pScreen.mmHeight = (ysize * 254 + dpiy * 5) / (dpiy * 10);
-    pScreen.numDepths = numDepths;
-    pScreen.rootDepth = rootDepth;
+    pScreen.width = cast(short)xsize;
+    pScreen.height = cast(short)ysize;
+    pScreen.mmWidth = cast(short)((xsize * 254 + dpix * 5) / (dpix * 10));
+    pScreen.mmHeight = cast(short)((ysize * 254 + dpiy * 5) / (dpiy * 10));
+    pScreen.numDepths = cast(short)numDepths;
+    pScreen.rootDepth = cast(ubyte)rootDepth;
     pScreen.allowedDepths = depths;
     pScreen.rootVisual = rootVisual;
     /* defColormap */
@@ -229,52 +230,52 @@ Bool miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix
     pScreen.backingStoreSupport = NotUseful;
     pScreen.saveUnderSupport = NotUseful;
     /* whitePixel, blackPixel */
-    pScreen.ModifyPixmapHeader = miModifyPixmapHeader;
-    pScreen.CreateScreenResources = miCreateScreenResources;
-    pScreen.GetScreenPixmap = miGetScreenPixmap;
-    pScreen.SetScreenPixmap = miSetScreenPixmap;
-    pScreen.numVisuals = numVisuals;
+    pScreen.ModifyPixmapHeader = &miModifyPixmapHeader;
+    pScreen.CreateScreenResources = &miCreateScreenResources;
+    pScreen.GetScreenPixmap = &miGetScreenPixmap;
+    pScreen.SetScreenPixmap = &miSetScreenPixmap;
+    pScreen.numVisuals = cast(short)numVisuals;
     pScreen.visuals = visuals;
     if (width) {
 version (CONFIG_MITSHM) {
         ShmRegisterFbFuncs(pScreen);
 } /* CONFIG_MITSHM */
-        pScreen.CloseScreen = miCloseScreen;
+        pScreen.CloseScreen = &miCloseScreen;
     }
     /* else CloseScreen */
     /* QueryBestSize */
-    pScreen.SaveScreen = miSaveScreen;
+    pScreen.SaveScreen = &miSaveScreen;
     /* GetImage, GetSpans */
-    pScreen.SourceValidate = miSourceValidate;
+    pScreen.SourceValidate = &miSourceValidate;
     /* CreateWindow, DestroyWindow, PositionWindow, ChangeWindowAttributes */
     /* RealizeWindow, UnrealizeWindow */
-    pScreen.ValidateTree = miValidateTree;
+    pScreen.ValidateTree = &miValidateTree;
     pScreen.PostValidateTree = cast(PostValidateTreeProcPtr) 0;
-    pScreen.WindowExposures = miWindowExposures;
+    pScreen.WindowExposures = &miWindowExposures;
     /* CopyWindow */
-    pScreen.ClearToBackground = miClearToBackground;
+    pScreen.ClearToBackground = &miClearToBackground;
     pScreen.ClipNotify = cast(ClipNotifyProcPtr) 0;
     pScreen.RestackWindow = cast(RestackWindowProcPtr) 0;
-    pScreen.PaintWindow = miPaintWindow;
+    pScreen.PaintWindow = &miPaintWindow;
     /* CreatePixmap, DestroyPixmap */
     /* RealizeFont, UnrealizeFont */
     /* CreateGC */
     /* CreateColormap, DestroyColormap, InstallColormap, UninstallColormap */
     /* ListInstalledColormaps, StoreColors, ResolveColor */
     /* BitmapToRegion */
-    pScreen.BlockHandler = cast(ScreenBlockHandlerProcPtr) NoopDDA;
-    pScreen.WakeupHandler = cast(ScreenWakeupHandlerProcPtr) NoopDDA;
-    pScreen.MarkWindow = miMarkWindow;
-    pScreen.MarkOverlappedWindows = miMarkOverlappedWindows;
-    pScreen.MoveWindow = miMoveWindow;
-    pScreen.ResizeWindow = miResizeWindow;
-    pScreen.GetLayerWindow = miGetLayerWindow;
-    pScreen.HandleExposures = miHandleValidateExposures;
+    pScreen.BlockHandler = cast(ScreenBlockHandlerProcPtr) &NoopDDA;
+    pScreen.WakeupHandler = cast(ScreenWakeupHandlerProcPtr) &NoopDDA;
+    pScreen.MarkWindow = &miMarkWindow;
+    pScreen.MarkOverlappedWindows = &miMarkOverlappedWindows;
+    pScreen.MoveWindow = &miMoveWindow;
+    pScreen.ResizeWindow = &miResizeWindow;
+    pScreen.GetLayerWindow = &miGetLayerWindow;
+    pScreen.HandleExposures = &miHandleValidateExposures;
     pScreen.ReparentWindow = cast(ReparentWindowProcPtr) 0;
-    pScreen.ChangeBorderWidth = miChangeBorderWidth;
-    pScreen.SetShape = miSetShape;
-    pScreen.MarkUnrealizedWindow = miMarkUnrealizedWindow;
-    pScreen.XYToWindow = miXYToWindow;
+    pScreen.ChangeBorderWidth = &miChangeBorderWidth;
+    pScreen.SetShape = &miSetShape;
+    pScreen.MarkUnrealizedWindow = &miMarkUnrealizedWindow;
+    pScreen.XYToWindow = &miXYToWindow;
 
     miSetZeroLineBias(pScreen, DEFAULTZEROLINEBIAS);
 

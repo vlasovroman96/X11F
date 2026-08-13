@@ -82,13 +82,13 @@ enum string BRESINITPGON(string dy, string x1, string x2, string xStart, string 
             ` ~ m1 ~ ` = ` ~ m ~ ` - 1; 
             ` ~ incr1 ~ ` = -2 * dx + 2 * (` ~ dy ~ `) * ` ~ m1 ~ `; 
             ` ~ incr2 ~ ` = -2 * dx + 2 * (` ~ dy ~ `) * ` ~ m ~ `; 
-            ` ~ d ~ ` = 2 * ` ~ m ~ ` * cast(dy) - 2 * dx - 2 * (` ~ dy ~ `); 
+            ` ~ d ~ ` = 2 * ` ~ m ~ ` * cast(typeof(`~dy~`)) - 2 * dx - 2 * (` ~ dy ~ `); 
         } else { 
             ` ~ m ~ ` = dx / (` ~ dy ~ `); 
             ` ~ m1 ~ ` = ` ~ m ~ ` + 1; 
             ` ~ incr1 ~ ` = 2 * dx - 2 * (` ~ dy ~ `) * ` ~ m1 ~ `; 
             ` ~ incr2 ~ ` = 2 * dx - 2 * (` ~ dy ~ `) * ` ~ m ~ `; 
-            ` ~ d ~ ` = -2 * ` ~ m ~ ` * cast(dy) + 2 * dx; 
+            ` ~ d ~ ` = -2 * ` ~ m ~ ` * cast(typeof(`~dy~`)) + 2 * dx; 
         } 
     } 
 }`;
@@ -129,9 +129,9 @@ struct BRESINFO {
     int incr1, incr2;           /* error increments */
 }
 
-enum string BRESINITPGONSTRUCT(string dmaj, string min1, string min2, string bres) = `
-	` ~ BRESINITPGON!(dmaj, min1, min2, `` ~ bres ~ `.minor`, `` ~ bres ~ `.d`, 
-                     `` ~ bres ~ `.m`, `` ~ bres ~ `.m1`, `` ~ bres ~ `.incr1`, `` ~ bres ~ `.incr2`) ~ ``;
+enum string BRESINITPGONSTRUCT(string dmaj, string min1, string min2, string bres) = 
+    BRESINITPGON!(dmaj, min1, min2, bres ~ `.minor`, bres ~ `.d`, 
+                     bres ~ `.m`, bres ~ `.m1`,bres ~ `.incr1`, bres ~ `.incr2`) ~ ``;
 
 enum string BRESINCRPGONSTRUCT(string bres) = `
         ` ~ BRESINCRPGON!(`` ~ bres ~ `.d`, `` ~ bres ~ `.minor`, `` ~ bres ~ `.m`, `` ~ bres ~ `.m1`, `` ~ bres ~ `.incr1`, `` ~ bres ~ `.incr2`) ~ ``;

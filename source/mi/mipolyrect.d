@@ -65,17 +65,17 @@ void miPolyRectangle(DrawablePtr pDraw, GCPtr pGC, int nrects, xRectangle* pRect
 enum string MINBOUND(string dst,string eqn) = `bound_tmp = ` ~ eqn ~ `; 
 				if (bound_tmp < -32768) 
 				    bound_tmp = -32768; 
-				` ~ dst ~ ` = bound_tmp;`;
+				` ~ dst ~ ` = cast(typeof(`~dst~`))bound_tmp;`;
 
 enum string MAXBOUND(string dst,string eqn) = `bound_tmp = ` ~ eqn ~ `; 
 				if (bound_tmp > 32767) 
 				    bound_tmp = 32767; 
-				` ~ dst ~ ` = bound_tmp;`;
+				` ~ dst ~ ` = cast(typeof(`~dst~`))bound_tmp;`;
 
 enum string MAXUBOUND(string dst,string eqn) = `bound_tmp = ` ~ eqn ~ `; 
 				if (bound_tmp > 65535) 
 				    bound_tmp = 65535; 
-				` ~ dst ~ ` = bound_tmp;`;
+				` ~ dst ~ ` = cast(typeof(`~dst~`))bound_tmp;`;
 
     if (pGC.lineStyle == LineSolid && pGC.joinStyle == JoinMiter &&
         pGC.lineWidth != 0) {
@@ -99,24 +99,24 @@ enum string MAXUBOUND(string dst,string eqn) = `bound_tmp = ` ~ eqn ~ `;
             height = pR.height;
             pR++;
             if (width == 0 && height == 0) {
-                rect[0].x = x;
-                rect[0].y = y;
-                rect[1].x = x;
-                rect[1].y = y;
-                (*pGC.ops.Polylines) (pDraw, pGC, CoordModeOrigin, 2, rect);
+                rect[0].x = cast(short)x;
+                rect[0].y = cast(short)y;
+                rect[1].x = cast(short)x;
+                rect[1].y = cast(short)y;
+                (*pGC.ops.Polylines) (pDraw, pGC, CoordModeOrigin, 2, rect.ptr);
             }
             else if (height < offset2 || width < offset1) {
                 if (height == 0) {
-                    t.x = x;
-                    t.width = width;
+                    t.x = cast(short)x;
+                    t.width = cast(ushort)width;
                 }
                 else {
                     mixin(MINBOUND!(`t.x`, `x - offset1`));
                         mixin(MAXUBOUND!(`t.width`, `width + offset2`));
                 }
                 if (width == 0) {
-                    t.y = y;
-                    t.height = height;
+                    t.y = cast(short)y;
+                    t.height = cast(ushort)height;
                 }
                 else {
                     mixin(MINBOUND!(`t.y`, `y - offset1`));
@@ -128,26 +128,26 @@ enum string MAXUBOUND(string dst,string eqn) = `bound_tmp = ` ~ eqn ~ `;
                 mixin(MINBOUND!(`t.x`, `x - offset1`));
                     mixin(MINBOUND!(`t.y`, `y - offset1`));
                     mixin(MAXUBOUND!(`t.width`, `width + offset2`));
-                    t.height = offset2;
+                    t.height = cast(ushort)(offset2);
                 t++;
                 mixin(MINBOUND!(`t.x`, `x - offset1`));
                     mixin(MAXBOUND!(`t.y`, `y + offset3`));;
-                t.width = offset2;
-                t.height = height - offset2;
+                t.width = cast(ushort)(offset2);
+                t.height = cast(ushort)(height - offset2);
                 t++;
                 mixin(MAXBOUND!(`t.x`, `x + width - offset1`));
                 mixin(MAXBOUND!(`t.y`, `y + offset3`));
-                    t.width = offset2;
-                t.height = height - offset2;
+                    t.width = cast(ushort)(offset2);
+                t.height = cast(ushort)(height - offset2);
                 t++;
                 mixin(MINBOUND!(`t.x`, `x - offset1`));
                     mixin(MAXBOUND!(`t.y`, `y + height - offset1`));
                     mixin(MAXUBOUND!(`t.width`, `width + offset2`));
-                    t.height = offset2;
+                    t.height = cast(ushort)(offset2);
                 t++;
             }
         }
-        (*pGC.ops.PolyFillRect) (pDraw, pGC, t - tmp, tmp);
+        (*pGC.ops.PolyFillRect) (pDraw, pGC, cast(int)(t - tmp), tmp);
         free(cast(void*) tmp);
     }
     else {
@@ -168,7 +168,7 @@ enum string MAXUBOUND(string dst,string eqn) = `bound_tmp = ` ~ eqn ~ `;
             rect[4].x = rect[0].x;
             rect[4].y = rect[0].y;
 
-            (*pGC.ops.Polylines) (pDraw, pGC, CoordModeOrigin, 5, rect);
+            (*pGC.ops.Polylines) (pDraw, pGC, CoordModeOrigin, 5, rect.ptr);
             pR++;
         }
     }

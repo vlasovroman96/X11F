@@ -89,6 +89,6 @@ enum miPointerScreenKey = (&miPointerScreenKeyRec);
                         but wait for somebody else triggering it explicitly
  * @return TRUE on success, FALSE usually indicates allocation failure
  */
- Bool miPointerInitialize(ScreenPtr pScreen, miPointerSpriteFuncPtr spriteFuncs, miPointerScreenFuncPtr screenFuncs, Bool waitForUpdate);
+//  Bool miPointerInitialize(ScreenPtr pScreen, miPointerSpriteFuncPtr spriteFuncs, miPointerScreenFuncPtr screenFuncs, Bool waitForUpdate);
 
                           /* MIPOINTER_H */

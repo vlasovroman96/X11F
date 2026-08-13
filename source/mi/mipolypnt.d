@@ -54,6 +54,7 @@ import include.pixmapstr;
 import include.gcstruct;
 import include.windowstr;
 import include.mi;
+import dix.gc;
 
 void miPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, xPoint* pptInit)
 {
@@ -95,7 +96,7 @@ void miPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, xPoint* pp
     fsOld.val = pGC.fillStyle;
     fsNew.val = FillSolid;
     if (pGC.fillStyle != FillSolid) {
-        ChangeGC(null, pGC, GCFillStyle, &fsNew);
+        ChangeGC(null, pGC, cast(int)GCFillStyle, &fsNew);
         ValidateGC(pDrawable, pGC);
     }
     pwidth = pwidthInit;
@@ -104,7 +105,7 @@ void miPolyPoint(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, xPoint* pp
     (*pGC.ops.FillSpans) (pDrawable, pGC, npt, pptInit, pwidthInit, FALSE);
 
     if (fsOld.val != FillSolid) {
-        ChangeGC(null, pGC, GCFillStyle, &fsOld);
+        ChangeGC(null, pGC, cast(int)GCFillStyle, &fsOld);
         ValidateGC(pDrawable, pGC);
     }
     free(pwidthInit);

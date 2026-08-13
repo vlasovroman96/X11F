@@ -144,16 +144,16 @@ static if (1) {
             for (ib = 0; ib < PPW; ib++) {
                 if (w & msk) {
                     if (!fInBox) {
-                        pt[ipt].x = ((pw - pwLineStart) << PWSH) + ib + xOrg;
-                        pt[ipt].y = h + yOrg;
+                        pt[ipt].x = cast(short)(((pw - pwLineStart) << PWSH) + ib + xOrg);
+                        pt[ipt].y = cast(short)(h + yOrg);
                         /* start new box */
                         fInBox = TRUE;
                     }
                 }
                 else {
                     if (fInBox) {
-                        width[ipt] = ((pw - pwLineStart) << PWSH) +
-                            ib + xOrg - pt[ipt].x;
+                        width[ipt] = cast(int)(((pw - pwLineStart) << PWSH) +
+                            ib + xOrg - pt[ipt].x);
                         if (++ipt >= NPT) {
                             (*pGC.ops.FillSpans) (pDrawable, pGC,
                                                     NPT, pt.ptr, width.ptr, TRUE);
@@ -168,15 +168,15 @@ static if (1) {
                 if (screenInfo.bitmapBitOrder == IMAGE_BYTE_ORDER) {
                     if (screenInfo.bitmapBitOrder == LSBFirst)
                         msk =
-                            mixin(LONG2CHARSSAMEORDER!(mixin(LONG2CHARSSAMEORDER!(`msk`)) << 1));
+                            mixin(LONG2CHARSSAMEORDER!(LONG2CHARSSAMEORDER!(`msk`) ~ ` << 1`));
                     else
                         msk =
-                            mixin(LONG2CHARSSAMEORDER!(mixin(LONG2CHARSSAMEORDER!(`msk`)) >> 1));
+                            mixin(LONG2CHARSSAMEORDER!(LONG2CHARSSAMEORDER!(`msk`) ~`>> 1`));
                 }
                 else if (screenInfo.bitmapBitOrder == LSBFirst)
-                    msk = mixin(LONG2CHARSDIFFORDER!(mixin(LONG2CHARSDIFFORDER!(`msk`)) << 1));
+                    msk = mixin(LONG2CHARSDIFFORDER!(LONG2CHARSDIFFORDER!(`msk`) ~`<< 1`));
                 else
-                    msk = mixin(LONG2CHARSDIFFORDER!(mixin(LONG2CHARSDIFFORDER!(`msk`)) >> 1));
+                    msk = mixin(LONG2CHARSDIFFORDER!(LONG2CHARSDIFFORDER!(`msk`) ~`>> 1`));
 } else {
                 msk = SCRRIGHT(msk, 1);
 }
@@ -196,16 +196,16 @@ static if (1) {
                 if (w & msk) {
                     if (!fInBox) {
                         /* start new box */
-                        pt[ipt].x = ((pw - pwLineStart) << PWSH) + ib + xOrg;
-                        pt[ipt].y = h + yOrg;
+                        pt[ipt].x = cast(short)(((pw - pwLineStart) << PWSH) + ib + xOrg);
+                        pt[ipt].y = cast(short)(h + yOrg);
                         fInBox = TRUE;
                     }
                 }
                 else {
                     if (fInBox) {
                         /* end box */
-                        width[ipt] = ((pw - pwLineStart) << PWSH) +
-                            ib + xOrg - pt[ipt].x;
+                        width[ipt] = cast(int)(((pw - pwLineStart) << PWSH) +
+                            ib + xOrg - pt[ipt].x);
                         if (++ipt >= NPT) {
                             (*pGC.ops.FillSpans) (pDrawable,
                                                     pGC, NPT, pt.ptr, width.ptr, TRUE);
@@ -219,15 +219,15 @@ static if (1) {
                 if (screenInfo.bitmapBitOrder == IMAGE_BYTE_ORDER) {
                     if (screenInfo.bitmapBitOrder == LSBFirst)
                         msk =
-                            mixin(LONG2CHARSSAMEORDER!(mixin(LONG2CHARSSAMEORDER!(`msk`)) << 1));
+                            mixin(LONG2CHARSSAMEORDER!(LONG2CHARSSAMEORDER!(`msk`) ~ `<< 1`));
                     else
                         msk =
-                            mixin(LONG2CHARSSAMEORDER!(mixin(LONG2CHARSSAMEORDER!(`msk`)) >> 1));
+                            mixin(LONG2CHARSSAMEORDER!(LONG2CHARSSAMEORDER!(`msk`) ~ `>> 1`));
                 }
                 else if (screenInfo.bitmapBitOrder == LSBFirst)
-                    msk = mixin(LONG2CHARSDIFFORDER!(mixin(LONG2CHARSDIFFORDER!(`msk`)) << 1));
+                    msk = mixin(LONG2CHARSDIFFORDER!(LONG2CHARSDIFFORDER!(`msk`) ~`<< 1`));
                 else
-                    msk = mixin(LONG2CHARSDIFFORDER!(mixin(LONG2CHARSDIFFORDER!(`msk`)) >> 1));
+                    msk = mixin(LONG2CHARSDIFFORDER!(LONG2CHARSDIFFORDER!(`msk`) ~`>> 1`));
 } else {
                 msk = SCRRIGHT(msk, 1);
 }

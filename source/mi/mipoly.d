@@ -62,6 +62,39 @@ import miscanfill;
 import mipoly;
 import include.regionstr;
 
+enum NUMPTSTOBUFFER = 200;
+
+enum string EVALUATEEDGEEVENODD(string pAET, string pPrevAET, string y) =`
+{ 
+   if ((`~pAET~`).ymax == (`~y~`)) {          /* leaving this edge */ 
+      (`~pPrevAET~`).next = (`~pAET~`).next; 
+      (`~pAET~`) = (`~pPrevAET~`).next; 
+      if ((`~pAET~`)) 
+         (`~pAET~`).back = (`~pPrevAET~`); 
+   } 
+   else { 
+      `~BRESINCRPGONSTRUCT!(`(`~pAET~`).bres`)~`; 
+      (`~pPrevAET~`) = (`~pAET~`); 
+      (`~pAET~`) = (`~pAET~`).next; 
+   } 
+}`;
+
+enum string EVALUATEEDGEWINDING(string pAET, string pPrevAET, string y, string fixWAET) =`
+{ 
+   if ((`~pAET~`).ymax == (`~y~`)) {          /* leaving this edge */ 
+      (`~pPrevAET~`).next = (`~pAET~`).next; 
+      (`~pAET~`) = (`~pPrevAET~`).next; 
+      (`~fixWAET~`) = 1; 
+      if ((`~pAET~`)) 
+         (`~pAET~`).back = (`~pPrevAET~`); 
+   } 
+   else { 
+      `~BRESINCRPGONSTRUCT!(`(`~pAET~`).bres`)~`; 
+      (`~pPrevAET~`) = (`~pAET~`); 
+      (`~pAET~`) = (`~pAET~`).next; 
+   } 
+}`;
+
 struct EdgeTable{
     int ymax;                   /* ymax for the polygon     */
     int ymin;                   /* ymin for the polygon     */
@@ -465,9 +498,9 @@ private Bool miFillConvexPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPtr
              *  now compute all of the random information
              *  needed to run the iterative algorithm.
              */
-            BRESINITPGON(ptsIn[nextleft].y - ptsIn[left].y,
-                         ptsIn[left].x, ptsIn[nextleft].x,
-                         xl, dl, ml, m1l, incr1l, incr2l);
+            mixin(BRESINITPGON!("ptsIn[nextleft].y - ptsIn[left].y",
+                         "ptsIn[left].x", "ptsIn[nextleft].x",
+                         "xl", "dl", "ml", "m1l", "incr1l", "incr2l"));
         }
 
         /*
@@ -488,9 +521,9 @@ private Bool miFillConvexPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPtr
              *  now compute all of the random information
              *  needed to run the iterative algorithm.
              */
-            BRESINITPGON(ptsIn[nextright].y - ptsIn[right].y,
-                         ptsIn[right].x, ptsIn[nextright].x,
-                         xr, dr, mr, m1r, incr1r, incr2r);
+            mixin(BRESINITPGON!("ptsIn[nextright].y - ptsIn[right].y",
+                         "ptsIn[right].x", "ptsIn[nextright].x",
+                         "xr", "dr", "mr", "m1r", "incr1r", "incr2r"));
         }
 
         /*
@@ -505,24 +538,24 @@ private Bool miFillConvexPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPtr
             return TRUE;
         }
         while (i-- > 0) {
-            ptsOut.y = y;
+            ptsOut.y = cast(short)y;
 
             /*
              *  reverse the edges if necessary
              */
             if (xl < xr) {
                 *(width++) = xr - xl;
-                (ptsOut++).x = xl;
+                (ptsOut++).x = cast(short)xl;
             }
             else {
                 *(width++) = xl - xr;
-                (ptsOut++).x = xr;
+                (ptsOut++).x = cast(short)xr;
             }
             y++;
 
             /* increment down the edges */
-            BRESINCRPGON(dl, xl, ml, m1l, incr1l, incr2l);
-            BRESINCRPGON(dr, xr, mr, m1r, incr1r, incr2r);
+            mixin(BRESINCRPGON!("dl", "xl", "ml", "m1l", "incr1l", "incr2l"));
+            mixin(BRESINCRPGON!("dr", "xr", "mr", "m1r", "incr1r", "incr2r"));
         }
     } while (y != ymax);
 
@@ -530,7 +563,7 @@ private Bool miFillConvexPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPtr
      * Finally, fill the <remaining> spans
      */
     (*pgc.ops.FillSpans) (dst, pgc,
-                            ptsOut - FirstPoint, FirstPoint, FirstWidth, 1);
+                            cast(int)(ptsOut - FirstPoint), FirstPoint, FirstWidth, 1);
     free(FirstWidth);
     free(FirstPoint);
     return TRUE;
@@ -565,8 +598,8 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
 
     if (((pETEs = cast(EdgeTableEntry*) calloc(count, EdgeTableEntry.sizeof)) is null))
         return FALSE;
-    ptsOut = FirstPoint;
-    width = FirstWidth;
+    ptsOut = FirstPoint.ptr;
+    width = FirstWidth.ptr;
     if (!miCreateETandAET(count, ptsIn, &ET, &AET, pETEs, &SLLBlock)) {
         free(pETEs);
         return FALSE;
@@ -593,8 +626,8 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
              *  for each active edge
              */
             while (pAET) {
-                ptsOut.x = pAET.bres.minor;
-                ptsOut++.y = y;
+                ptsOut.x = cast(short)pAET.bres.minor;
+                ptsOut++.y = cast(short)y;
                 *width++ = pAET.next.bres.minor - pAET.bres.minor;
                 nPts++;
 
@@ -604,13 +637,13 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
                 if (nPts == NUMPTSTOBUFFER) {
                     (*pgc.ops.FillSpans) (dst, pgc,
                                             nPts, FirstPoint.ptr, FirstWidth.ptr, 1);
-                    ptsOut = FirstPoint;
-                    width = FirstWidth;
+                    ptsOut = FirstPoint.ptr;
+                    width = FirstWidth.ptr;
                     nPts = 0;
                 }
                 if (pAET != null) { // FIXME: somewhow analyzer still complains
-                    EVALUATEEDGEEVENODD(pAET, pPrevAET, y);
-                    EVALUATEEDGEEVENODD(pAET, pPrevAET, y);
+                    mixin(EVALUATEEDGEEVENODD!("pAET", "pPrevAET", "y"));
+                    mixin(EVALUATEEDGEEVENODD!("pAET", "pPrevAET", "y"));
                 }
             }
             miInsertionSort(&AET);
@@ -645,8 +678,8 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
                  *  table.
                  */
                 if (pWETE == pAET) {
-                    ptsOut.x = pAET.bres.minor;
-                    ptsOut++.y = y;
+                    ptsOut.x = cast(short)pAET.bres.minor;
+                    ptsOut++.y = cast(short)y;
                     *width++ = pAET.nextWETE.bres.minor - pAET.bres.minor;
                     nPts++;
 
@@ -656,17 +689,17 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
                     if (nPts == NUMPTSTOBUFFER) {
                         (*pgc.ops.FillSpans) (dst, pgc, nPts, FirstPoint.ptr,
                                                 FirstWidth.ptr, 1);
-                        ptsOut = FirstPoint;
-                        width = FirstWidth;
+                        ptsOut = FirstPoint.ptr;
+                        width = FirstWidth.ptr;
                         nPts = 0;
                     }
 
                     pWETE = pWETE.nextWETE;
                     while (pWETE != pAET)
-                        EVALUATEEDGEWINDING(pAET, pPrevAET, y, fixWAET);
+                        mixin(EVALUATEEDGEWINDING!("pAET", "pPrevAET", "y", "fixWAET"));
                     pWETE = pWETE.nextWETE;
                 }
-                EVALUATEEDGEWINDING(pAET, pPrevAET, y, fixWAET);
+                mixin(EVALUATEEDGEWINDING!("pAET", "pPrevAET", "y", "fixWAET"));
             }
 
             /*

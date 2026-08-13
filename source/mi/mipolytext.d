@@ -66,6 +66,7 @@ import	include.misc;
 import	include.gcstruct;
 import	include.dixfontstr;
 import	include.mi;
+import Xext.xf86bigfont;
 
 int miPolyText8(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, char* chars)
 {
@@ -79,8 +80,8 @@ int miPolyText8(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, char* cha
     for (i = 0; i < n; i++)
         w += charinfo[i].metrics.characterWidth;
     if (n != 0)
-        (*pGC.ops.PolyGlyphBlt) (pDraw, pGC, x, y, n, charinfo.ptr,
-                                   FONTGLYPHS(pGC.font));
+        (*pGC.ops.PolyGlyphBlt) (pDraw, pGC, x, y, cast(uint)n, charinfo.ptr,
+                                   mixin(FONTGLYPHS!("pGC.font")));
     return x + w;
 }
 
@@ -97,8 +98,8 @@ int miPolyText16(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, ushort* 
     for (i = 0; i < n; i++)
         w += charinfo[i].metrics.characterWidth;
     if (n != 0)
-        (*pGC.ops.PolyGlyphBlt) (pDraw, pGC, x, y, n, charinfo.ptr,
-                                   FONTGLYPHS(pGC.font));
+        (*pGC.ops.PolyGlyphBlt) (pDraw, pGC, x, y, cast(uint)n, charinfo.ptr,
+                                   mixin(FONTGLYPHS!("pGC.font")));
     return x + w;
 }
 
@@ -111,8 +112,8 @@ void miImageText8(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, char* c
     GetGlyphs(font, cast(c_ulong) count, cast(ubyte*) chars,
               Linear8Bit, &n, charinfo.ptr);
     if (n != 0)
-        (*pGC.ops.ImageGlyphBlt) (pDraw, pGC, x, y, n, charinfo.ptr,
-                                    FONTGLYPHS(font));
+        (*pGC.ops.ImageGlyphBlt) (pDraw, pGC, x, y, cast(uint)n, charinfo.ptr,
+                                    mixin(FONTGLYPHS!("font")));
 }
 
 void miImageText16(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, ushort* chars)
@@ -125,6 +126,6 @@ void miImageText16(DrawablePtr pDraw, GCPtr pGC, int x, int y, int count, ushort
               (mixin(FONTLASTROW!("pGC.font")) == 0) ? Linear16Bit : TwoD16Bit,
               &n, charinfo.ptr);
     if (n != 0)
-        (*pGC.ops.ImageGlyphBlt) (pDraw, pGC, x, y, n, charinfo.ptr,
-                                    FONTGLYPHS(font));
+        (*pGC.ops.ImageGlyphBlt) (pDraw, pGC, x, y, cast(uint)n, charinfo.ptr,
+                                    mixin(FONTGLYPHS!("font")));
 }
