@@ -32,6 +32,8 @@ import fb.fb_priv;
 import include.dixfontstr;
 import fb.fbbits;
 import fb.fbpush;
+import Xext.xf86bigfont;
+
 
 enum string GLYPHWIDTHPIXELS(string pci) = 
     "(" ~ pci ~ ".metrics.rightSideBearing - " ~

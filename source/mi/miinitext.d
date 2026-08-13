@@ -97,6 +97,8 @@ import include.os;
 import include.globals;
 
 import mi.miinitext;
+import os.log;
+import externs.gnu;
 
 
 private const ExtensionModule[] staticExtensions = () {
@@ -170,11 +172,11 @@ void ListStaticExtensions()
 
 Bool EnableDisableExtension(const(char)* name, Bool enable)
 {
-    const(ExtensionModule)* ext = void;
+    ExtensionModule* ext = void;
     int i = void;
 
     for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
-        ext = &staticExtensions[i];
+        ext = cast(ExtensionModule*)&staticExtensions[i];
         if (strcasecmp(name, ext.name) == 0) {
             if (ext.disablePtr != null) {
                 *ext.disablePtr = !enable;
@@ -226,7 +228,7 @@ private void AddStaticExtensions()
     listInitialised = TRUE;
 
     /* Add built-in extensions to the list. */
-    LoadExtensionList(staticExtensions.ptr, mixin(ARRAY_SIZE!("staticExtensions.ptr")), TRUE);
+    LoadExtensionList(cast(ExtensionModule*)staticExtensions.ptr, mixin(ARRAY_SIZE!("staticExtensions.ptr")), TRUE);
 }
 
 void InitExtensions(int argc, char** argv)
@@ -258,7 +260,7 @@ private ExtensionModule* NewExtensionModuleList(int size)
         numExtensionModules = 0;
 
     n = numExtensionModules + size;
-    ExtensionModuleList = reallocarray(ExtensionModuleList, n,
+    ExtensionModuleList = cast(ExtensionModule*)reallocarray(ExtensionModuleList, n,
                                        ExtensionModule.sizeof);
     if (ExtensionModuleList == null) {
         ExtensionModuleList = save;
@@ -270,7 +272,7 @@ private ExtensionModule* NewExtensionModuleList(int size)
     }
 }
 
-void LoadExtensionList(const(ExtensionModule)* ext, int size, Bool builtin)
+void LoadExtensionList(ExtensionModule* ext, int size, Bool builtin)
 {
     ExtensionModule* newext = void;
     int i = void;
@@ -279,7 +281,7 @@ void LoadExtensionList(const(ExtensionModule)* ext, int size, Bool builtin)
      * in modules. */
     AddStaticExtensions();
 
-    if (((newext = NewExtensionModuleList(size)) == 0))
+    if (((newext = NewExtensionModuleList(size)) is null))
         return;
 
     for (i = 0; i < size; i++, newext++) {

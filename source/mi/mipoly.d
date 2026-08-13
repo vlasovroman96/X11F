@@ -244,7 +244,7 @@ private Bool miCreateETandAET(int count, DDXPointPtr pts, EdgeTable* ET, EdgeTab
              *  initialize integer edge algorithm
              */
             dy = bottom.y - top.y;
-            BRESINITPGONSTRUCT(dy, top.x, bottom.x, pETEs.bres);
+            mixin(BRESINITPGONSTRUCT!("dy", "top.x", "bottom.x", "pETEs.bres"));
 
             if (!miInsertEdgeInET(ET, pETEs, top.y, &pSLLBlock, &iSLLBlock)) {
                 miFreeStorage(pSLLBlock.next);
@@ -391,7 +391,7 @@ private int getPolyYBounds(DDXPointPtr pts, int n, int* by, int* ty)
 
     *by = ymin;
     *ty = ymax;
-    return ptMin - ptsStart;
+    return cast(int)(ptMin - ptsStart);
 }
 
 /*
@@ -432,7 +432,7 @@ private Bool miFillConvexPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPtr
     dy = ymax - ymin + 1;
     if ((count < 3) || (dy < 0))
         return TRUE;
-    ptsOut = FirstPoint = calloc(dy, xPoint.sizeof);
+    ptsOut = FirstPoint = cast(_xPoint*)calloc(dy, xPoint.sizeof);
     width = FirstWidth = cast(int*) calloc(dy, int.sizeof);
     if (!FirstPoint || !FirstWidth) {
         free(FirstWidth);

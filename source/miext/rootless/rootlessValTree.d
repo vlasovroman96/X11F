@@ -147,16 +147,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
      * completely). If the window is completely obscured, none of the
      * universe will cover the rectangle.
      */
-    borderSize.x1 = pParent.drawable.x - wBorderWidth(pParent);
-    borderSize.y1 = pParent.drawable.y - wBorderWidth(pParent);
-    dx = cast(int) pParent.drawable.x + cast(int) pParent.drawable.width +
-        wBorderWidth(pParent);
-    if (dx > 32767)
-        dx = 32767;
-    borderSize.x2 = dx;
-    dy = cast(int) pParent.drawable.y + cast(int) pParent.drawable.height +
-        wBorderWidth(pParent);
-    if (dy > 32767)
+    borderSize.x1 = pParent.drawable.x - mixin(wBorderWidth!("pParent"));
         dy = 32767;
     borderSize.y2 = dy;
 

@@ -1117,19 +1117,18 @@ private void RootlessImageText8(DrawablePtr dst, GCPtr pGC, int x, int y, int co
         int top = void, bot = void, Min = void, Max = void;
         BoxRec box = void;
 
-        top = max(FONTMAXBOUNDS(pGC.font, ascent), mixin(FONTASCENT!("pGC.font")));
-        bot = max(FONTMAXBOUNDS(pGC.font, descent), mixin(FONTDESCENT!("pGC.font")));
+        top = max(mixin(FONTMAXBOUNDS!("pGC.font", "ascent")), mixin(FONTASCENT!("pGC.font")));
+        bot = max(mixin(FONTMAXBOUNDS!("pGC.font", "descent")), mixin(FONTDESCENT!("pGC.font")));
 
-        Min = count * FONTMINBOUNDS(pGC.font, characterWidth);
-        if (Min > 0)
+        Min = count * mixin(FONTMINBOUNDS!("pGC.font", "characterWidth"));
             Min = 0;
-        Max = count * FONTMAXBOUNDS(pGC.font, characterWidth);
+        Max = count * mixin(FONTMAXBOUNDS!("pGC.font", "characterWidth"));
         if (Max < 0)
             Max = 0;
 
         /* ugh */
-        box.x1 = dst.x + x + Min + FONTMINBOUNDS(pGC.font, leftSideBearing);
-        box.x2 = dst.x + x + Max + FONTMAXBOUNDS(pGC.font, rightSideBearing);
+        box.x1 = dst.x + x + Min + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
+        box.x2 = dst.x + x + Max + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
 
         box.y1 = dst.y + y - top;
         box.y2 = dst.y + y + bot;
@@ -1171,15 +1170,15 @@ private int RootlessPolyText8(DrawablePtr dst, GCPtr pGC, int x, int y, int coun
         BoxRec box = void;
 
         /* ugh */
-        box.x1 = dst.x + x + FONTMINBOUNDS(pGC.font, leftSideBearing);
-        box.x2 = dst.x + x + FONTMAXBOUNDS(pGC.font, rightSideBearing);
+        box.x1 = dst.x + x + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
+        box.x2 = dst.x + x + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
 
         if (count > 1) {
             box.x2 += width;
         }
 
-        box.y1 = dst.y + y - FONTMAXBOUNDS(pGC.font, ascent);
-        box.y2 = dst.y + y + FONTMAXBOUNDS(pGC.font, descent);
+        box.y1 = dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent"));
+        box.y2 = dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent"));
 
         TRIM_BOX(box, pGC);
         if (BOX_NOT_EMPTY(box))
@@ -1201,19 +1200,19 @@ private void RootlessImageText16(DrawablePtr dst, GCPtr pGC, int x, int y, int c
         int top = void, bot = void, Min = void, Max = void;
         BoxRec box = void;
 
-        top = max(FONTMAXBOUNDS(pGC.font, ascent), mixin(FONTASCENT!("pGC.font")));
-        bot = max(FONTMAXBOUNDS(pGC.font, descent), mixin(FONTDESCENT!("pGC.font")));
+        top = max(mixin(FONTMAXBOUNDS!("pGC.font", "ascent")), mixin(FONTASCENT!("pGC.font")));
+        bot = max(mixin(FONTMAXBOUNDS!("pGC.font", "descent")), mixin(FONTDESCENT!("pGC.font")));
 
-        Min = count * FONTMINBOUNDS(pGC.font, characterWidth);
+        Min = count * mixin(FONTMINBOUNDS!("pGC.font", "characterWidth"));
         if (Min > 0)
             Min = 0;
-        Max = count * FONTMAXBOUNDS(pGC.font, characterWidth);
+        Max = count * mixin(FONTMAXBOUNDS!("pGC.font", "characterWidth"));
         if (Max < 0)
             Max = 0;
 
         /* ugh */
-        box.x1 = dst.x + x + Min + FONTMINBOUNDS(pGC.font, leftSideBearing);
-        box.x2 = dst.x + x + Max + FONTMAXBOUNDS(pGC.font, rightSideBearing);
+        box.x1 = dst.x + x + Min + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
+        box.x2 = dst.x + x + Max + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
 
         box.y1 = dst.y + y - top;
         box.y2 = dst.y + y + bot;
@@ -1255,15 +1254,15 @@ private int RootlessPolyText16(DrawablePtr dst, GCPtr pGC, int x, int y, int cou
         BoxRec box = void;
 
         /* ugh */
-        box.x1 = dst.x + x + FONTMINBOUNDS(pGC.font, leftSideBearing);
-        box.x2 = dst.x + x + FONTMAXBOUNDS(pGC.font, rightSideBearing);
+        box.x1 = dst.x + x + mixin(FONTMINBOUNDS!("pGC.font", "leftSideBearing"));
+        box.x2 = dst.x + x + mixin(FONTMAXBOUNDS!("pGC.font", "rightSideBearing"));
 
         if (count > 1) {
             box.x2 += width;
         }
 
-        box.y1 = dst.y + y - FONTMAXBOUNDS(pGC.font, ascent);
-        box.y2 = dst.y + y + FONTMAXBOUNDS(pGC.font, descent);
+        box.y1 = dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent"));
+        box.y2 = dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent"));
 
         TRIM_BOX(box, pGC);
         if (BOX_NOT_EMPTY(box))
@@ -1287,8 +1286,8 @@ private void RootlessImageGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uin
         uint nglyph = nglyphInit;
         CharInfoPtr* ppci = ppciInit;
 
-        top = max(FONTMAXBOUNDS(pGC.font, ascent), mixin(FONTASCENT!("pGC.font")));
-        bot = max(FONTMAXBOUNDS(pGC.font, descent), mixin(FONTDESCENT!("pGC.font")));
+        top = max(mixin(FONTMAXBOUNDS!("pGC.font", "ascent")), mixin(FONTASCENT!("pGC.font")));
+        bot = max(mixin(FONTMAXBOUNDS!("pGC.font", "descent")), mixin(FONTDESCENT!("pGC.font")));
 
         box.x1 = ppci[0].metrics.leftSideBearing;
         if (box.x1 > 0)
@@ -1364,8 +1363,8 @@ private void RootlessPolyGlyphBlt(DrawablePtr dst, GCPtr pGC, int x, int y, uint
                 box.x1 += width;
         }
 
-        box.y1 = dst.y + y - FONTMAXBOUNDS(pGC.font, ascent);
-        box.y2 = dst.y + y + FONTMAXBOUNDS(pGC.font, descent);
+        box.y1 = dst.y + y - mixin(FONTMAXBOUNDS!("pGC.font", "ascent"));
+        box.y2 = dst.y + y + mixin(FONTMAXBOUNDS!("pGC.font", "descent"));
 
         TRIM_BOX(box, pGC);
         if (BOX_NOT_EMPTY(box))

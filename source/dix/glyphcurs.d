@@ -64,6 +64,7 @@ import include.cursorstr;
 import include.opaque;
 import include.servermd;
 import dix.gc;
+import Xext.xf86bigfont;
 import externs.attrs;
 
 /*

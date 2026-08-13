@@ -92,7 +92,7 @@ enum string BRESINITPGON(string dy, string x1, string x2, string xStart, string 
         } 
     } 
 }`;
-
+
 enum string BRESINCRPGON(string d, string minval, string m, string m1, string incr1, string incr2) = `{ 
     if (` ~ m1 ~ ` > 0) { 
         if (` ~ d ~ ` > 0) { 
@@ -114,7 +114,7 @@ enum string BRESINCRPGON(string d, string minval, string m, string m1, string in
         } 
     } 
 }`;
-
+
 /*
  *     This structure contains all of the information needed
  *     to run the bresenham algorithm.

@@ -58,7 +58,7 @@ void miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC,
 
         if (nbox > 1) {
             /* keep ordering in each band, reverse order of bands */
-            pboxNew1 = calloc(nbox, BoxRec.sizeof);
+            pboxNew1 = cast(pixman_box16*)calloc(nbox, BoxRec.sizeof);
             if (!pboxNew1)
                 return;
             pboxBase = pboxNext = pbox + nbox - 1;
@@ -89,7 +89,7 @@ void miCopyRegion(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC,
 
         if (nbox > 1) {
             /* reverse order of rects in each band */
-            pboxNew2 = calloc(nbox, BoxRec.sizeof);
+            pboxNew2 = cast(pixman_box16*)calloc(nbox, BoxRec.sizeof);
             if (!pboxNew2) {
                 free(pboxNew1);
                 return;
@@ -154,7 +154,7 @@ RegionPtr miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
     /* Compute source clip region */
     if (pSrcDrawable.type == DRAWABLE_PIXMAP) {
         if ((pSrcDrawable == pDstDrawable) && (!pGC.clientClip))
-            prgnSrcClip = miGetCompositeClip(pGC);
+            prgnSrcClip = mixin(miGetCompositeClip!("pGC"));
         else
             fastSrc = TRUE;
     }
@@ -173,7 +173,7 @@ RegionPtr miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
                 fastSrc = TRUE;
             }
             else if ((pSrcDrawable == pDstDrawable) && (!pGC.clientClip)) {
-                prgnSrcClip = miGetCompositeClip(pGC);
+                prgnSrcClip = mixin(miGetCompositeClip!("pGC"));
             }
             else {
                 prgnSrcClip = NotClippedByChildren(cast(WindowPtr) pSrcDrawable);
@@ -235,7 +235,7 @@ RegionPtr miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
            do the clip directly.  Otherwise we have to create a full
            blown region and call intersect */
 
-        cclip = miGetCompositeClip(pGC);
+        cclip = mixin(miGetCompositeClip!("pGC"));
         if (RegionNumRects(cclip) == 1) {
             BoxPtr pBox = RegionRects(cclip);
 
@@ -258,10 +258,10 @@ RegionPtr miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
     else {
         BoxRec box = void;
 
-        box.x1 = box_x1;
-        box.y1 = box_y1;
-        box.x2 = box_x2;
-        box.y2 = box_y2;
+        box.x1 = cast(short)box_x1;
+        box.y1 = cast(short)box_y1;
+        box.x2 = cast(short)box_x2;
+        box.y2 = cast(short)box_y2;
         RegionInit(&rgnDst, &box, 1);
     }
 
@@ -273,7 +273,7 @@ RegionPtr miDoCopy(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
 
     /* Clip against complex dest if needed */
     if (!fastDst) {
-        RegionIntersect(&rgnDst, &rgnDst, miGetCompositeClip(pGC));
+        RegionIntersect(&rgnDst, &rgnDst, mixin(miGetCompositeClip!("pGC")));
     }
 
     /* Do bit blitting */

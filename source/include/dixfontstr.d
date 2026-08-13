@@ -27,30 +27,17 @@ SOFTWARE.
  
 public import include.servermd;
 public import include.dixfont;
+import Xext.xf86bigfont;
+// import ;
 // //public import externs.X11.fonts.fontstruct;
 //public import externs.X11.Xproto;         /* for xQueryFontReply */
 import fb.fbglyph;
 
-enum string FONTCHARSET(string font) = `(` ~ font ~ `)`;
-enum string FONTMAXBOUNDS(string font,string field) = `(` ~ font ~ `).info.maxbounds.` ~ field ~ ``;
-enum string FONTMINBOUNDS(string font,string field) = `(` ~ font ~ `).info.minbounds.` ~ field ~ ``;
-enum string TERMINALFONT(string font) = `(` ~ font ~ `).info.terminalFont`;
-enum string FONTASCENT(string font) = `(` ~ font ~ `).info.fontAscent`;
-enum string FONTDESCENT(string font) = `(` ~ font ~ `).info.fontDescent`;
-enum string FONTGLYPHS(string font) = `0`;
-enum string FONTCONSTMETRICS(string font) = `(` ~ font ~ `).info.constantMetrics`;
-enum string FONTCONSTWIDTH(string font) = `(` ~ font ~ `).info.constantWidth`;
-enum string FONTALLEXIST(string font) = `(` ~ font ~ `).info.allExist`;
-enum string FONTFIRSTCOL(string font) = `(` ~ font ~ `).info.firstCol`;
-enum string FONTLASTCOL(string font) = `(` ~ font ~ `).info.lastCol`;
-enum string FONTFIRSTROW(string font) = `(` ~ font ~ `).info.firstRow`;
-enum string FONTLASTROW(string font) = `(` ~ font ~ `).info.lastRow`;
-enum string FONTDEFAULTCH(string font) = `(` ~ font ~ `).info.defaultCh`;
-enum string FONTINKMIN(string font) = `(&((` ~ font ~ `).info.ink_minbounds))`;
-enum string FONTINKMAX(string font) = `(&((` ~ font ~ `).info.ink_maxbounds))`;
-enum string FONTPROPS(string font) = `(` ~ font ~ `).info.props`;
-enum string FONTGLYPHBITS(string base,string pci) = `(cast(ubyte*) (` ~ pci ~ `).bits)`;
-enum string FONTINFONPROPS(string font) = `(` ~ font ~ `).info.nprops`;
+// enum string FONTCHARSET(string font) = `(` ~ font ~ `)`;
+// enum string FONTMAXBOUNDS(string font, string field) = `(` ~ font ~ `")).info.maxbounds.` ~ field ~ ``;
+// enum string FONTMINBOUNDS(string font, string field) = `(` ~ font ~ `")).info.props`;
+// enum string FONTGLYPHBITS(string base,string pci) = `(cast(ubyte*) (` ~ pci ~ `).bits)`;
+// enum string FONTINFONPROPS(string font) = `(` ~ font ~ `).info.nprops`;
 
 /* some things haven't changed names, but we'll be careful anyway */
 

@@ -67,7 +67,7 @@ void miChangeClip(GCPtr pGC, int type, void* pvalue, int nrects)
     }
     else if (type == CT_REGION) {
         /* stuff the region in the GC */
-        pGC.clientClip = pvalue;
+        pGC.clientClip = cast(pixman_region16*)pvalue;
     }
     else if (type != CT_NONE) {
         pGC.clientClip = RegionFromRects(nrects, cast(xRectangle*) pvalue, type);
@@ -161,10 +161,10 @@ void miComputeCompositeClip(GCPtr pGC, DrawablePtr pDrawable)
 
         /* XXX should we translate by drawable.x/y here ? */
         /* If you want pixmaps in offscreen memory, yes */
-        pixbounds.x1 = pDrawable.x;
-        pixbounds.y1 = pDrawable.y;
-        pixbounds.x2 = pDrawable.x + pDrawable.width;
-        pixbounds.y2 = pDrawable.y + pDrawable.height;
+        pixbounds.x1 = cast(short)pDrawable.x;
+        pixbounds.y1 = cast(short)pDrawable.y;
+        pixbounds.x2 = cast(short)(pDrawable.x + pDrawable.width);
+        pixbounds.y2 = cast(short)(pDrawable.y + pDrawable.height);
 
         if (pGC.freeCompClip) {
             RegionReset(pGC.pCompositeClip, &pixbounds);

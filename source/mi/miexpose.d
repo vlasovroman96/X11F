@@ -98,6 +98,8 @@ import include.pixmap;
 import include.input;
 import include.dixstruct;
 import include.globals;
+import dix.events;
+import dix.gc;
 
 /*
     machine-independent graphics exposure code.  any device that uses
@@ -136,18 +138,18 @@ RegionPtr miHandleExposures(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, 
     if (!pGC.graphicsExposures && pDstDrawable.type == DRAWABLE_PIXMAP)
         return null;
 
-    srcBox.x1 = srcx;
-    srcBox.y1 = srcy;
-    srcBox.x2 = srcx + width;
-    srcBox.y2 = srcy + height;
+    srcBox.x1 = cast(short)(srcx);
+    srcBox.y1 = cast(short)(srcy);
+    srcBox.x2 = cast(short)(srcx + width);
+    srcBox.y2 = cast(short)(srcy + height);
 
     if (pSrcDrawable.type != DRAWABLE_PIXMAP) {
         BoxRec TsrcBox = void;
 
-        TsrcBox.x1 = srcx + pSrcDrawable.x;
-        TsrcBox.y1 = srcy + pSrcDrawable.y;
-        TsrcBox.x2 = TsrcBox.x1 + width;
-        TsrcBox.y2 = TsrcBox.y1 + height;
+        TsrcBox.x1 = cast(short)(srcx + pSrcDrawable.x);
+        TsrcBox.y1 = cast(short)(srcy + pSrcDrawable.y);
+        TsrcBox.x2 = cast(short)(TsrcBox.x1 + width);
+        TsrcBox.y2 = cast(short)(TsrcBox.y1 + height);
         pSrcWin = cast(WindowPtr) pSrcDrawable;
         if (pGC.subWindowMode == IncludeInferiors) {
             prgnSrcClip = NotClippedByChildren(pSrcWin);
@@ -236,7 +238,7 @@ RegionPtr miHandleExposures(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, 
     if (pSrcWin) {
         RegionPtr region = void;
 
-        if (((region = mixin(wClipShape!("pSrcWin"))) == 0))
+        if (((region = mixin(wClipShape!("pSrcWin"))) is null))
             region = mixin(wBoundingShape!("pSrcWin"));
         /*
          * If you try to CopyArea the extents of a shaped window, compacting the
@@ -311,12 +313,12 @@ void miSendExposures(WindowPtr pWin, RegionPtr pRgn, int dx, int dy)
 
     for (i = numRects, pe = pEvent; --i >= 0; pe++, pBox++) {
         pe.u.u.type = Expose;
-        pe.u.expose.window = pWin.drawable.id;
-        pe.u.expose.x = pBox.x1 - dx;
-        pe.u.expose.y = pBox.y1 - dy;
-        pe.u.expose.width = pBox.x2 - pBox.x1;
-        pe.u.expose.height = pBox.y2 - pBox.y1;
-        pe.u.expose.count = i;
+        pe.u.expose.window = cast(uint)pWin.drawable.id;
+        pe.u.expose.x = cast(ushort)(pBox.x1 - dx);
+        pe.u.expose.y = cast(ushort)(pBox.y1 - dy);
+        pe.u.expose.width = cast(ushort)(pBox.x2 - pBox.x1);
+        pe.u.expose.height = cast(ushort)(pBox.y2 - pBox.y1);
+        pe.u.expose.count = cast(ushort)i;
     }
 
 version (XINERAMA) {
@@ -363,7 +365,7 @@ void miWindowExposures(WindowPtr pWin, RegionPtr prgn)
 
     if (prgn && !RegionNil(prgn)) {
         RegionRec expRec = void;
-        int clientInterested = (pWin.eventMask | mixin(wOtherEventMasks!("pWin"))) & ExposureMask;
+        int clientInterested = cast(int)((pWin.eventMask | mixin(wOtherEventMasks!("pWin"))) & ExposureMask);
         if (clientInterested && (RegionNumRects(prgn) > RECTLIMIT)) {
             /*
              * If we have LOTS of rectangles, we decide to take the extents
@@ -459,7 +461,7 @@ void miPaintWindow(WindowPtr pWin, RegionPtr prgn, int what)
     }
 
     gcval[0].val = GXcopy;
-    gcmask = GCFunction;
+    gcmask = cast(uint)GCFunction;
 
 version (ROOTLESS_SAFEALPHA) {
 /* Bit mask for alpha channel with a particular number of bits per
@@ -494,9 +496,9 @@ version (ROOTLESS_SAFEALPHA) {
             if (effective_depth == 24)
                 fill.pixel |= 0xff000000;
         }
-        gcval[1].val = fill.pixel;
+        gcval[1].val = cast(uint)fill.pixel;
 }
-        gcval[2].val = FillSolid;
+        gcval[2].val = cast(uint)FillSolid;
         gcmask |= GCForeground | GCFillStyle;
     }
     else {
@@ -517,7 +519,7 @@ version (ROOTLESS_SAFEALPHA) {
     regionnumrects = RegionNumRects(prgn);
     if (regionnumrects == 0)
         return;
-    prect = calloc(regionnumrects, xRectangle.sizeof);
+    prect = cast(_xRectangle*)calloc(regionnumrects, xRectangle.sizeof);
     if (!prect)
         return;
 
@@ -527,16 +529,16 @@ version (ROOTLESS_SAFEALPHA) {
         return;
     }
 
-    ChangeGC(null, pGC, gcmask, gcval);
+    ChangeGC(null, pGC, gcmask, gcval.ptr);
     ValidateGC(drawable, pGC);
 
     numRects = RegionNumRects(prgn);
     pbox = RegionRects(prgn);
     for (i = numRects; --i >= 0; pbox++, prect++) {
-        prect.x = pbox.x1 - draw_x_off;
-        prect.y = pbox.y1 - draw_y_off;
-        prect.width = pbox.x2 - pbox.x1;
-        prect.height = pbox.y2 - pbox.y1;
+        prect.x = cast(short)(pbox.x1 - draw_x_off);
+        prect.y = cast(short)(pbox.y1 - draw_y_off);
+        prect.width = cast(ushort)(pbox.x2 - pbox.x1);
+        prect.height = cast(ushort)(pbox.y2 - pbox.y1);
     }
     prect -= numRects;
     (*pGC.ops.PolyFillRect) (drawable, pGC, numRects, prect);
@@ -559,9 +561,9 @@ void miClearDrawable(DrawablePtr pDraw, GCPtr pGC)
     rect.y = 0;
     rect.width = pDraw.width;
     rect.height = pDraw.height;
-    ChangeGC(null, pGC, GCForeground, &bg);
+    ChangeGC(null, pGC, cast(uint)GCForeground, &bg);
     ValidateGC(pDraw, pGC);
     (*pGC.ops.PolyFillRect) (pDraw, pGC, 1, &rect);
-    ChangeGC(null, pGC, GCForeground, &fg);
+    ChangeGC(null, pGC,cast(uint) GCForeground, &fg);
     ValidateGC(pDraw, pGC);
 }

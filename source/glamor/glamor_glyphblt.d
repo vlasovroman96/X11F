@@ -37,6 +37,8 @@ import include.dixfontstr;
 import glamor.glamor_transform;
 import glamor.glamor;
 import fb.fbglyph;
+import Xext.xf86bigfont;
+
 
 private const(glamor_facet) glamor_facet_poly_glyph_blt = {
     name: "poly_glyph_blt",

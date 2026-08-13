@@ -48,6 +48,7 @@ import include.dixfontstr;
 import fb.fbglyph;
 import externs.attrs;
 import glx.glxext;
+import Xext.xf86bigfont;
 
 
 /*

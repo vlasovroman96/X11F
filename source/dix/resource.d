@@ -155,6 +155,7 @@ import core.stdc.assert_;
 import include.gcstruct;
 import os.log;
 import dix.cursor;
+import dix.gc;
 
 version (XSERVER_DTRACE) {
 

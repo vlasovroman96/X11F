@@ -73,6 +73,14 @@ import   include.cursorstr;
 import include.dixstruct;
 import   include.inputstr;
 import   include.eventstr;
+import dix.screen_hooks;
+import dix.events;
+import dix.devices;
+import dix.enterleave;
+import dix.inpututils;
+import os.log;
+
+
 
 struct _MiPointerRec {
     ScreenPtr pScreen;          /* current screen */
@@ -133,20 +141,20 @@ Bool miPointerInitialize(ScreenPtr pScreen, miPointerSpriteFuncPtr spriteFuncs, 
     pScreenPriv.screenFuncs = screenFuncs;
     pScreenPriv.waitForUpdate = waitForUpdate;
     pScreenPriv.showTransparent = FALSE;
-    dixScreenHookPostClose(pScreen, miPointerCloseScreen);
+    dixScreenHookPostClose(pScreen, &miPointerCloseScreen);
     dixSetPrivate(&pScreen.devPrivates, miPointerScreenKey, pScreenPriv);
     /*
      * set up screen cursor method table
      */
-    pScreen.ConstrainCursor = miPointerConstrainCursor;
-    pScreen.CursorLimits = miPointerCursorLimits;
-    pScreen.DisplayCursor = miPointerDisplayCursor;
-    pScreen.RealizeCursor = miPointerRealizeCursor;
-    pScreen.UnrealizeCursor = miPointerUnrealizeCursor;
-    pScreen.SetCursorPosition = miPointerSetCursorPosition;
-    pScreen.RecolorCursor = miRecolorCursor;
-    pScreen.DeviceCursorInitialize = miPointerDeviceInitialize;
-    pScreen.DeviceCursorCleanup = miPointerDeviceCleanup;
+    pScreen.ConstrainCursor = &miPointerConstrainCursor;
+    pScreen.CursorLimits = &miPointerCursorLimits;
+    pScreen.DisplayCursor = &miPointerDisplayCursor;
+    pScreen.RealizeCursor = &miPointerRealizeCursor;
+    pScreen.UnrealizeCursor = &miPointerUnrealizeCursor;
+    pScreen.SetCursorPosition = &miPointerSetCursorPosition;
+    pScreen.RecolorCursor = &miRecolorCursor;
+    pScreen.DeviceCursorInitialize = &miPointerDeviceInitialize;
+    pScreen.DeviceCursorCleanup = &miPointerDeviceCleanup;
 
     mipointermove_events = null;
     return TRUE;
@@ -161,7 +169,7 @@ private void miPointerCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void
 {
     mixin(SetupScreen!(`pScreen`));
 
-    dixScreenUnhookPostClose(pScreen, miPointerCloseScreen);
+    dixScreenUnhookPostClose(pScreen, &miPointerCloseScreen);
     free(cast(void*) pScreenPriv);
     dixSetPrivate(&pScreen.devPrivates, miPointerScreenKey, null);
     FreeEventList(mipointermove_events, GetMaximumEventsNum());
@@ -627,8 +635,8 @@ ScreenPtr miPointerSetPosition(DeviceIntPtr pDev, int mode, double* screenx, dou
     pPointer = mixin(MIPOINTER!(`pDev`));
     pScreen = pPointer.pScreen;
 
-    x = floor(*screenx);
-    y = floor(*screeny);
+    x = cast(int)floor(*screenx);
+    y = cast(int)floor(*screeny);
 
     switch_screen = !point_on_screen(pScreen, x, y);
 

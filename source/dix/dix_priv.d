@@ -171,7 +171,7 @@ Bool DeliverGestureEventToOwner(DeviceIntPtr dev, GestureInfoPtr gi, InternalEve
 
 // void InitializeSprite(DeviceIntPtr pDev, WindowPtr pWin);
 // void FreeSprite(DeviceIntPtr pDev);
-void UpdateSpriteForScreen(DeviceIntPtr pDev, ScreenPtr pScreen);
+// void UpdateSpriteForScreen(DeviceIntPtr pDev, ScreenPtr pScreen);
 
 // Bool CheckDeviceGrabs(DeviceIntPtr device, InternalEvent* event, WindowPtr ancestor);
 

@@ -64,6 +64,12 @@ import	include.pixmap;
 import	include.servermd;
 import        include.mi;
 import include.dixfontstr;
+import Xext.xf86bigfont;
+import dix.gc;
+import fb.fbglyph;
+import externs.X11.fonts.fontstruct;
+import externs.X11.fonts.libxfont2;
+import externs.attrs;
 
 /*
     machine-independent glyph blt.
@@ -108,9 +114,9 @@ void miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph,
     }
 
     pfont = pGC.font;
-    width = FONTMAXBOUNDS(pfont, rightSideBearing) -
-        FONTMINBOUNDS(pfont, leftSideBearing);
-    height = FONTMAXBOUNDS(pfont, ascent) + FONTMAXBOUNDS(pfont, descent);
+    width = mixin(FONTMAXBOUNDS!("pfont", "rightSideBearing")) -
+        mixin(FONTMINBOUNDS!("pfont", "leftSideBearing"));
+    height = mixin(FONTMAXBOUNDS!("pfont", "ascent")) + mixin(FONTMAXBOUNDS!("pfont", "descent"));
 
     pPixmap = (*pDrawable.pScreen.CreatePixmap) (pDrawable.pScreen,
                                                    width, height, 1,
@@ -128,7 +134,7 @@ void miPolyGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph,
     gcvals[1].val = 1;
     gcvals[2].val = 0;
 
-    ChangeGC(null, pGCtmp, GCFunction | GCForeground | GCBackground, gcvals.ptr);
+    ChangeGC(null, pGCtmp, cast(uint)(GCFunction | GCForeground | GCBackground), gcvals.ptr);
 
     nbyLine = mixin(BitmapBytePad!("width"));
     pbits = cast(ubyte*) calloc(height, nbyLine);
@@ -192,18 +198,18 @@ void miImageGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph
     c_ulong oldFG = void;
     xRectangle backrect = void;
 
-    xfont2_query_glyph_extents(pGC.font, ppci, cast(c_ulong) nglyph, &info);
+    assumeNoGC(&xfont2_query_glyph_extents)(pGC.font, ppci, cast(c_ulong) nglyph, &info);
 
     if (info.overallWidth >= 0) {
-        backrect.x = x;
-        backrect.width = info.overallWidth;
+        backrect.x = cast(short)(x);
+        backrect.width = cast(short)(info.overallWidth);
     }
     else {
-        backrect.x = x + info.overallWidth;
-        backrect.width = -info.overallWidth;
+        backrect.x = cast(short)(x + info.overallWidth);
+        backrect.width = cast(short)(-info.overallWidth);
     }
-    backrect.y = y - mixin(FONTASCENT!("pGC.font"));
-    backrect.height = mixin(FONTASCENT!("pGC.font")) + mixin(FONTDESCENT!("pGC.font"));
+    backrect.y = cast(short)(y - mixin(FONTASCENT!("pGC.font")));
+    backrect.height = cast(short)(mixin(FONTASCENT!("pGC.font")) + mixin(FONTDESCENT!("pGC.font")));
 
     oldAlu = pGC.alu;
     oldFG = pGC.fgPixel;
@@ -213,21 +219,21 @@ void miImageGlyphBlt(DrawablePtr pDrawable, GCPtr pGC, int x, int y, uint nglyph
     gcvals[0].val = GXcopy;
     gcvals[1].val = pGC.bgPixel;
     gcvals[2].val = FillSolid;
-    ChangeGC(null, pGC, GCFunction | GCForeground | GCFillStyle, gcvals.ptr);
+    ChangeGC(null, pGC, cast(uint)cast(uint)(GCFunction | GCForeground | GCFillStyle), gcvals.ptr);
     ValidateGC(pDrawable, pGC);
     (*pGC.ops.PolyFillRect) (pDrawable, pGC, 1, &backrect);
 
     /* put down the glyphs */
-    gcvals[0].val = oldFG;
-    ChangeGC(null, pGC, GCForeground, gcvals.ptr);
+    gcvals[0].val = cast(uint)oldFG;
+    ChangeGC(null, pGC, cast(uint)GCForeground, gcvals.ptr);
     ValidateGC(pDrawable, pGC);
     (*pGC.ops.PolyGlyphBlt) (pDrawable, pGC, x, y, nglyph, ppci, pglyphBase);
 
     /* put all the toys away when done playing */
-    gcvals[0].val = oldAlu;
-    gcvals[1].val = oldFG;
-    gcvals[2].val = oldFS;
-    ChangeGC(null, pGC, GCFunction | GCForeground | GCFillStyle, gcvals.ptr);
+    gcvals[0].val = cast(uint)oldAlu;
+    gcvals[1].val = cast(uint)oldFG;
+    gcvals[2].val = cast(uint)oldFS;
+    ChangeGC(null, pGC, cast(uint)(GCFunction | GCForeground | GCFillStyle), gcvals.ptr);
     ValidateGC(pDrawable, pGC);
 
 }

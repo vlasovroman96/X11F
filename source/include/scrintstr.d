@@ -169,7 +169,7 @@ alias UnrealizeWindowProcPtr = Bool function(WindowPtr /*pWindow */ )  @nogc not
 alias RestackWindowProcPtr = void function(WindowPtr /*pWindow */ ,
                                       WindowPtr /*pOldNextSib */ )  @nogc nothrow;
 
-alias ValidateTreeProcPtr = void function(WindowPtr /*pParent */ ,
+alias ValidateTreeProcPtr = int function(WindowPtr /*pParent */ ,
                                     WindowPtr /*pChild */ ,
                                     VTKind /*kind */ )  @nogc nothrow;
 

@@ -18,7 +18,7 @@ enum GCAllBits = ((1 << (GCLastBit + 1)) - 1);
 
 // int CopyGC(GCPtr pgcSrc, GCPtr pgcDst, BITS32 mask);
 
-int FreeGC(void* pGC, XID gid);
+// int FreeGC(void* pGC, XID gid);
 
 void FreeGCperDepth(ScreenPtr pScreen);
 

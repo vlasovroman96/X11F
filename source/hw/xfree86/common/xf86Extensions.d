@@ -137,5 +137,5 @@ void xf86ExtensionInit()
 {
     load_extension_config();
 
-    LoadExtensionList(extensionModules.ptr, mixin(ARRAY_SIZE!("extensionModules.ptr")), TRUE);
+    LoadExtensionList(cast(ExtensionModule*)extensionModules.ptr, mixin(ARRAY_SIZE!("extensionModules.ptr")), TRUE);
 }

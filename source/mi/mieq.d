@@ -62,6 +62,10 @@ import   include.cursorstr;
 import   mi.mipointer;
 import   include.scrnintstr;
 import   include.eventstr;
+import os.utils;
+import dix.inpututils;
+import dix.events;
+import dix.devices;
 
 version (DPMSExtension) {
 import Xext.dpmsproc;
@@ -161,7 +165,7 @@ private Bool mieqGrowQueue(EventQueuePtr eventQueue, size_t new_nevents)
     }
 
     /* And update our record */
-    eventQueue.tail = n_enqueued;
+    eventQueue.tail = cast(int)n_enqueued;
     eventQueue.head = 0;
     eventQueue.nevents = new_nevents;
     free(eventQueue.events);
@@ -263,14 +267,14 @@ void mieqEnqueue(DeviceIntPtr pDev, InternalEvent* e)
      * is "unnecessary", but very useful. */
     if (time < miEventQueue.lastEventTime &&
         miEventQueue.lastEventTime - time < 10000)
-        e.any.time = miEventQueue.lastEventTime;
+        e.any.time = cast(uint)miEventQueue.lastEventTime;
 
-    miEventQueue.lastEventTime = evt.any.time;
+    miEventQueue.lastEventTime = cast(uint)evt.any.time;
     miEventQueue.events[oldtail].pScreen = pDev ? mixin(EnqueueScreen!(`pDev`)) : null;
     miEventQueue.events[oldtail].pDev = pDev;
 
     miEventQueue.lastMotion = isMotion;
-    miEventQueue.tail = (oldtail + 1) % miEventQueue.nevents;
+    miEventQueue.tail = cast(int)((oldtail + 1) % miEventQueue.nevents);
 }
 
 /**
@@ -525,7 +529,7 @@ void mieqProcessInputEvents()
      * this can happen, e.g., if something in the mieqProcessDeviceEvent()
      * call chain calls UpdateCurrentTime() instead of UpdateCurrentTimeIf()
      */
-    BUG_WARN_MSG(inProcessInputEvents, "[mi] mieqProcessInputEvents() called recursively.\n");
+    mixin(BUG_WARN_MSG!("inProcessInputEvents", "[mi] mieqProcessInputEvents() called recursively.\n"));
     inProcessInputEvents = TRUE;
 
     if (miEventQueue.dropped) {
@@ -543,7 +547,7 @@ void mieqProcessInputEvents()
         dev = e.pDev;
         screen = e.pScreen;
 
-        miEventQueue.head = (miEventQueue.head + 1) % miEventQueue.nevents;
+        miEventQueue.head = cast(uint)((miEventQueue.head + 1) % miEventQueue.nevents);
 
         input_unlock();
 
