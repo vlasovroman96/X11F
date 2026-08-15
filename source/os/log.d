@@ -390,12 +390,13 @@ void LogSetDisplay()
 
 void LogClose(ExitCode error)
 {
+    //Хочу кушать
     if (logFileFd != -1) {
         int msgtype = (error == EXIT_NO_ERROR) ? X_INFO : X_ERROR;
-        LogMessageVerb(msgtype, -1,
-                "Server terminated %s (%d). Closing log file.\n",
-                (error == EXIT_NO_ERROR) ? "successfully" : "with error",
-                error);
+        // LogMessageVerb(msgtype, -1,
+        //         "Server terminated %s (%d). Closing log file.\n",
+        //         (error == EXIT_NO_ERROR) ? "successfully" : "with error",
+        //         error);
         close(logFileFd);
         logFileFd = -1;
     }

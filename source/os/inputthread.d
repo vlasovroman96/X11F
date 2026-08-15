@@ -44,6 +44,16 @@ import os.ossock;
 import include.inputstr;
 import include.opaque;
 import os.osdep;
+import os.log;
+import os.connection;
+import core.sys.posix.fcntl;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.ipc;
+import core.sys.posix.sys.shm;
+import core.sys.posix.sys.mman;
+import core.sys.posix.unistd;
+import core.sys.posix.sys.stat;
+import core.sys.posix.fcntl;
 
 static if (INPUTTHREAD) {
 
@@ -153,7 +163,7 @@ private void InputThreadFillPipe(int writeHead)
     char byte_ = 0;
 
     do {
-        ret = write(writeHead, &byte_, 1);
+        ret = cast(int)write(writeHead, &byte_, 1);
     } while (ret < 0 && ossock_wouldblock(errno));
 }
 
@@ -167,7 +177,7 @@ private int InputThreadReadPipe(int readHead)
 {
     int ret = void; int[10] array = void;
 
-    ret = read(readHead, &array, array.sizeof);
+    ret = cast(int)read(readHead, &array, array.sizeof);
     if (ret >= 0)
         return ret;
 
@@ -179,7 +189,7 @@ private int InputThreadReadPipe(int readHead)
 
 private void InputReady(int fd, int xevents, void* data)
 {
-    InputThreadDevice* dev = data;
+    InputThreadDevice* dev = cast(InputThreadDevice*)data;
 
     input_lock();
     if (dev.state == device_state_running)
@@ -330,7 +340,7 @@ version (HAVE_PTHREAD_SETNAME_NP_WITH_TID) {
 }
 
     ospoll_add(inputThreadInfo.fds, hotplugPipeRead,
-               ospoll_trigger_level,
+               _ospoll_trigger.ospoll_trigger_level,
                &InputThreadPipeNotify,
                null);
     ospoll_listen(inputThreadInfo.fds, hotplugPipeRead, X_NOTIFY_READ);
@@ -345,11 +355,11 @@ version (HAVE_PTHREAD_SETNAME_NP_WITH_TID) {
 
             input_lock();
             inputThreadInfo.changed = FALSE;
-            mixin(xorg_list_for_each_entry_safe!("dev", "tmp", "inputThreadInfo.devs", "node", q{
+            mixin(xorg_list_for_each_entry_safe!("dev", "tmp", "&inputThreadInfo.devs", "node", q{
                 switch (dev.state) {
                 case device_state_added:
                     ospoll_add(inputThreadInfo.fds, dev.fd,
-                               ospoll_trigger_level,
+                               _ospoll_trigger.ospoll_trigger_level,
                                &InputReady,
                                dev);
                     ospoll_listen(inputThreadInfo.fds, dev.fd, X_NOTIFY_READ);
@@ -401,10 +411,10 @@ void InputThreadPreInit()
     if (!InputThreadEnable)
         return;
 
-    if (pipe(fds.ptr) < 0)
+    if (pipe(fds) < 0)
         FatalError("input-thread: could not create pipe");
 
-     if (pipe(hotplugPipe.ptr) < 0)
+     if (pipe(hotplugPipe) < 0)
         FatalError("input-thread: could not create pipe");
 
     inputThreadInfo = cast(InputThreadInfo*) cast(InputThreadInfo*) calloc(1, InputThreadInfo.sizeof);
@@ -501,7 +511,7 @@ void InputThreadFini()
     input_force_unlock();
     pthread_join(inputThreadInfo.thread, null);
 
-    mixin(xorg_list_for_each_entry_safe!("dev", "next", "inputThreadInfo.devs", "node", q{
+    mixin(xorg_list_for_each_entry_safe!("dev", "next", "&inputThreadInfo.devs", "node", q{
         ospoll_remove(inputThreadInfo.fds, dev.fd);
         free(dev);
     }));

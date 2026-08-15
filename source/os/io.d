@@ -89,6 +89,13 @@ import include.os;
 import include.opaque;
 import include.dixstruct;
 import include.misc;
+import externs.X11.extensions.bigreqsproto;
+import core.stdc.stdio;
+import core.stdc.errno;
+import core.stdc.stdlib;
+import core.sys.posix.unistd;
+import core.sys.posix.pthread;
+import os.Xtransint;
 
 CallbackListPtr ReplyCallback = null;
 CallbackListPtr FlushCallback;
@@ -199,7 +206,7 @@ private void YieldControl()
 
 private void YieldControlNoInput(ClientPtr client)
 {
-    OsCommPtr oc = client.osPrivate;
+    OsCommPtr oc = cast(OsCommPtr)client.osPrivate;
     YieldControl();
     if (oc.trans_conn)
         ospoll_reset_events(server_poll, oc.fd);
@@ -250,10 +257,10 @@ int ReadRequestFromClient(ClientPtr client)
     /* make sure we have an input buffer */
 
     if (!oci) {
-        if ((oci = FreeInputs)) {
+        if ((oci = FreeInputs) !is null) {
             FreeInputs = oci.next;
         }
-        else if (((oci = AllocateInputBuffer()) == 0)) {
+        else if (((oci = AllocateInputBuffer()) is null)) {
             YieldControlDeath();
             return -1;
         }
@@ -274,7 +281,7 @@ static if (XTRANS_SEND_FDS) {
 
     need_header = FALSE;
     move_header = FALSE;
-    gotnow = oci.bufcnt + oci.buffer - oci.bufptr;
+    gotnow = cast(uint)(oci.bufcnt + oci.buffer - oci.bufptr);
 
     if (oci.ignoreBytes > 0) {
         if (oci.ignoreBytes > oci.size)
@@ -453,16 +460,16 @@ static if (XTRANS_SEND_FDS) {
     if (!gotnow && !oci.ignoreBytes)
         AvailableInput = oc;
     if (move_header) {
-        if (client.req_len < bytes_to_int32(((xBigReq) - xReq.sizeof).sizeof)) {
+        if (client.req_len < bytes_to_int32(((xBigReq).sizeof - xReq.sizeof))) {
             YieldControlDeath();
             return -1;
         }
 
         request = cast(xReq*) oci.bufptr;
-        oci.bufptr += (((xBigReq) - xReq.sizeof).sizeof);
+        oci.bufptr += (((xBigReq).sizeof - xReq.sizeof));
         *cast(xReq*) oci.bufptr = *request;
-        oci.lenLastReq -= (((xBigReq) - xReq.sizeof).sizeof);
-        client.req_len -= bytes_to_int32(((xBigReq) - xReq.sizeof).sizeof);
+        oci.lenLastReq -= (((xBigReq).sizeof - xReq.sizeof));
+        client.req_len -= bytes_to_int32(((xBigReq).sizeof - xReq.sizeof));
     }
     client.requestBuffer = cast(void*) oci.bufptr;
 version (DEBUG_COMMUNICATION) {
@@ -519,15 +526,15 @@ Bool InsertFakeRequest(ClientPtr client, char* data, int count)
     NextAvailableInput(oc);
 
     if (!oci) {
-        if ((oci = FreeInputs))
+        if ((oci = FreeInputs) !is null)
             FreeInputs = oci.next;
-        else if (((oci = AllocateInputBuffer()) == 0))
+        else if (((oci = AllocateInputBuffer()) is null))
             return FALSE;
         oc.input = oci;
     }
     oci.bufptr += oci.lenLastReq;
     oci.lenLastReq = 0;
-    gotnow = oci.bufcnt + oci.buffer - oci.bufptr;
+    gotnow = cast(uint)(oci.bufcnt + oci.buffer - oci.bufptr);
     if ((gotnow + count) > oci.size) {
         char* ibuf = void;
 
@@ -538,7 +545,7 @@ Bool InsertFakeRequest(ClientPtr client, char* data, int count)
         oci.buffer = ibuf;
         oci.bufptr = ibuf + oci.bufcnt - gotnow;
     }
-    moveup = count - (oci.bufptr - oci.buffer);
+    moveup = cast(int)(count - (oci.bufptr - oci.buffer));
     if (moveup > 0) {
         if (gotnow > 0)
             memmove(oci.bufptr + moveup, oci.bufptr, gotnow);
@@ -577,7 +584,7 @@ void ResetCurrentRequest(ClientPtr client)
     if (AvailableInput == oc)
         AvailableInput = cast(OsCommPtr) null;
     oci.lenLastReq = 0;
-    gotnow = oci.bufcnt + oci.buffer - oci.bufptr;
+    gotnow = cast(int)(oci.bufcnt + oci.buffer - oci.bufptr);
     if (gotnow < xReq.sizeof) {
         YieldControlNoInput(client);
     }
@@ -585,7 +592,7 @@ void ResetCurrentRequest(ClientPtr client)
         request = cast(xReq*) oci.bufptr;
         needed = mixin(get_req_len!(`request`, `client`));
         if (!needed && client.big_requests) {
-            oci.bufptr -= ((xBigReq) - xReq.sizeof).sizeof;
+            oci.bufptr -= ((xBigReq).sizeof - xReq.sizeof);
             *cast(xReq*) oci.bufptr = *request;
             (cast(xBigReq*) oci.bufptr).length = client.req_len;
             if (client.swapped) {
@@ -629,7 +636,7 @@ void FlushAllOutput()
     CriticalOutputPending = FALSE;
     NewOutputPending = FALSE;
 
-    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "output_pending_clients", "output_pending", q{
+    mixin(xorg_list_for_each_entry_safe!("client", "tmp", "&output_pending_clients", "output_pending", q{
         if (client.clientGone)
             continue;
         if (!client_is_ready(client)) {
@@ -662,7 +669,7 @@ void SetCriticalOutputPending()
 
 private void AbortClient(ClientPtr client)
 {
-    OsCommPtr oc = client.osPrivate;
+    OsCommPtr oc = cast(OsCommPtr)client.osPrivate;
 
     if (oc.trans_conn) {
         CloseDownFileDescriptor(oc);
@@ -678,12 +685,12 @@ private bool OutputEnsureBuffer(ClientPtr who, OsCommPtr oc)
     if (oc.output)
         return true;
 
-    if ((oc.output = FreeOutputs)) {
+    if ((oc.output = FreeOutputs) !is null) {
         FreeOutputs = oc.output.next;
         return true;
     }
 
-    if ((oc.output = AllocateOutputBuffer()))
+    if ((oc.output = AllocateOutputBuffer())!is null)
         return true;
 
     AbortClient(who);
@@ -699,7 +706,7 @@ pragma(inline, true) private int memcpy_and_flush(ClientPtr who, OsCommPtr oc, c
     oco.count += extra_size;
     memset(oco.buf + oco.count, 0, padsize);
     oco.count += padsize;
-    return (FlushClient(who, oc) == -1) ? -1 : extra_size; /* return the requested size, or fail */
+    return (FlushClient(who, oc) == -1) ? -1 : cast(int)extra_size; /* return the requested size, or fail */
 }
 
 /*
@@ -709,7 +716,7 @@ pragma(inline, true) private int memcpy_and_flush(ClientPtr who, OsCommPtr oc, c
  */
 private int OutputBufferMakeRoomAndFlush(ClientPtr who, OsCommPtr oc, const(void)* extra_buf, size_t extra_size)
 {
-    const(size_t) padsize = padding_for_int32(extra_size);
+    const(size_t) padsize = padding_for_int32(cast(int)extra_size);
     const(size_t) needed = extra_size + padsize;
 
     if (oc.output) {
@@ -738,7 +745,7 @@ private int OutputBufferMakeRoomAndFlush(ClientPtr who, OsCommPtr oc, const(void
 
     /* still not enough */
     /* try to resize the buffer */
-    const(int) newsize = oco.count + (((needed / BUFSIZE)+1)*BUFSIZE);
+    int newsize = cast(int)(oco.count + (((needed / BUFSIZE)+1)*BUFSIZE));
 
     void* newbuf = realloc(oco.buf, newsize);
     if (!newbuf) {
@@ -748,7 +755,7 @@ private int OutputBufferMakeRoomAndFlush(ClientPtr who, OsCommPtr oc, const(void
         return -1;
     }
 
-    oco.buf = newbuf;
+    oco.buf = cast(ubyte*)newbuf;
     oco.size = newsize;
 
     return memcpy_and_flush(who, oc, extra_buf, extra_size, padsize);
@@ -769,17 +776,18 @@ int WriteToClient(ClientPtr who, int count, const(void)* __buf)
 {
     OsCommPtr oc = void;
     int padBytes = void;
-    const(char)* buf = __buf;
+    const(char)* buf = cast(char*)__buf;
 
-    BUG_RETURN_VAL_MSG(in_input_thread(), 0,
-                       "******** %s called from input thread *********\n", __FUNCTION__.ptr);
+    // BUG_RETURN_VAL_MSG(in_input_thread(), 0,
+    //                    "******** %s called from input thread *********\n", __FUNCTION__.ptr);
+    return 0;
 
 version (DEBUG_COMMUNICATION) {
     Bool multicount = FALSE;
 }
     if (!count || !who || who == serverClient || who.clientGone)
         return 0;
-    oc = who.osPrivate;
+    oc = cast(OsCommPtr)who.osPrivate;
 version (DEBUG_COMMUNICATION) {
     {
         char[128] info = void;
@@ -843,9 +851,9 @@ version (DEBUG_COMMUNICATION) {
             replylen = (cast(const(xGenericReply)*) buf).length;
             if (who.swapped)
                 swapl(&replylen);
-            bytesleft = (replylen * 4) + SIZEOF(xReply) - count - padBytes;
+            bytesleft = (replylen * 4) + xReply.sizeof - count - padBytes;
             replyinfo.startOfReply = TRUE;
-            replyinfo.bytesRemaining = who.replyBytesRemaining = bytesleft;
+            replyinfo.bytesRemaining = who.replyBytesRemaining = cast(int)bytesleft;
             CallCallbacks((&ReplyCallback), cast(void*) &replyinfo);
         }
     }
@@ -908,13 +916,14 @@ int FlushClient(ClientPtr who, OsCommPtr oc)
     if (!oco)
 	return 0;
 
+    size_t notWritten = oco.count;
+    size_t written = 0;
+    size_t todo = notWritten; /* trying to write that much this time */
     if (!trans_conn) {
         /* uh, transport not connected ? can only kill the client :( */
         goto abortClient;
     }
 
-    size_t written = 0;
-    size_t notWritten = oco.count;
 
     /* do nothing if we haven't anything to write */
     if (!notWritten)
@@ -923,7 +932,6 @@ int FlushClient(ClientPtr who, OsCommPtr oc)
     if (FlushCallback)
         CallCallbacks(&FlushCallback, who);
 
-    size_t todo = notWritten; /* trying to write that much this time */
     while (notWritten) {
         errno = 0;
         ssize_t len = _XSERVTransWrite(trans_conn, (cast(const(char)*)oco.buf) + written, todo);
@@ -945,7 +953,7 @@ int FlushClient(ClientPtr who, OsCommPtr oc)
                 written = 0;
             }
 
-            oco.count = notWritten;
+            oco.count = cast(int)notWritten;
             ospoll_listen(server_poll, oc.fd, X_NOTIFY_WRITE);
 
             /* return only the amount explicitly requested */
@@ -989,7 +997,7 @@ private ConnectionInputPtr AllocateInputBuffer()
     ConnectionInputPtr oci = cast(ConnectionInput*) calloc(1, ConnectionInput.sizeof);
     if (!oci)
         return null;
-    oci.buffer = calloc(1, BUFSIZE);
+    oci.buffer = cast(char*)calloc(1, BUFSIZE);
     if (!oci.buffer) {
         free(oci);
         return null;
@@ -1007,7 +1015,7 @@ private ConnectionOutputPtr AllocateOutputBuffer()
     ConnectionOutputPtr oco = cast(ConnectionOutput*) calloc(1, ConnectionOutput.sizeof);
     if (!oco)
         return null;
-    oco.buf = calloc(1, BUFSIZE);
+    oco.buf = cast(ubyte*)calloc(1, BUFSIZE);
     if (!oco.buf) {
         free(oco);
         return null;
@@ -1024,7 +1032,7 @@ void FreeOsBuffers(OsCommPtr oc)
 
     if (AvailableInput == oc)
         AvailableInput = cast(OsCommPtr) null;
-    if ((oci = oc.input)) {
+    if ((oci = oc.input) !is null) {
         if (FreeInputs) {
             free(oci.buffer);
             free(oci);
@@ -1038,7 +1046,7 @@ void FreeOsBuffers(OsCommPtr oc)
             oci.ignoreBytes = 0;
         }
     }
-    if ((oco = oc.output)) {
+    if ((oco = oc.output)!is null) {
         if (FreeOutputs) {
             free(oco.buf);
             free(oco);
@@ -1056,12 +1064,12 @@ void ResetOsBuffers()
     ConnectionInputPtr oci = void;
     ConnectionOutputPtr oco = void;
 
-    while ((oci = FreeInputs)) {
+    while ((oci = FreeInputs)!is null) {
         FreeInputs = oci.next;
         free(oci.buffer);
         free(oci);
     }
-    while ((oco = FreeOutputs)) {
+    while ((oco = FreeOutputs)!is null) {
         FreeOutputs = oco.next;
         free(oco.buf);
         free(oco);

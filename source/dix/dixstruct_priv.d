@@ -52,16 +52,16 @@ enum SmartScheduleSignalEnable = FALSE;
 /* Client has no requests queued and no data on network */
 // void mark_client_not_ready(ClientPtr client);
 
-pragma(inline, true) private Bool client_is_ready(ClientPtr client)
+pragma(inline, true) Bool client_is_ready(ClientPtr client)
 {
     return !xorg_list_is_empty(&client.ready);
 }
 
 // Bool clients_are_ready();
 
-extern xorg_list output_pending_clients;
+// extern xorg_list output_pending_clients;
 
-pragma(inline, true) private void output_pending_mark(ClientPtr client)
+pragma(inline, true) void output_pending_mark(ClientPtr client)
 {
     if (!client.clientGone && xorg_list_is_empty(&client.output_pending))
         xorg_list_append(&client.output_pending, &output_pending_clients);
@@ -72,7 +72,7 @@ pragma(inline, true) void output_pending_clear(ClientPtr client)
     xorg_list_del(&client.output_pending);
 }
 
-pragma(inline, true) private Bool any_output_pending() {
+pragma(inline, true) Bool any_output_pending() {
     return !xorg_list_is_empty(&output_pending_clients);
 }
 
