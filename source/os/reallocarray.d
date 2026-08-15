@@ -32,6 +32,8 @@ import include.os;
  */
 enum MUL_NO_OVERFLOW =	(cast(size_t)1 << (size_t.sizeof * 4));
 
+alias SIZE_MAX = core.stdc.stdint.SIZE_MAX;
+
 void* reallocarray(void* optr, size_t nmemb, size_t size)
 {
 	if ((nmemb >= MUL_NO_OVERFLOW || size >= MUL_NO_OVERFLOW) &&

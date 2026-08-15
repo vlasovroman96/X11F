@@ -18,6 +18,7 @@ import core.sys.posix.sys.ioctl;
 }
 
 import os.ossock;
+import core.stdc.errno;
 
 void ossock_init()
 {
