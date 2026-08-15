@@ -89,7 +89,8 @@ import build.dix_config;
 version (Windows) {
 //import externs.X11.Xwinsock;
 }
-
+import core.sys.posix.pwd ;
+import core.sys.posix.unistd;
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import os.Xtrans;
@@ -103,7 +104,12 @@ import core.sys.posix.sys.types;
 import dix.server_priv;
 import os.io_priv;
 import os.xhostname;
-
+import externs.gnu;
+import os.log;
+import trutils = os.Xtransutil;
+import os.Xtranssock;
+import os.Xtransint;
+alias sockaddr_in = core.sys.posix.netinet.in_.sockaddr_in;
 version (Windows) {} else {
 import core.sys.posix.sys.socket;
 import core.sys.posix.sys.ioctl;
@@ -223,7 +229,7 @@ struct _host {
 
 alias HOST = _host;
 
-enum string MakeHost(string h,string l) = `(` ~ h ~ `)=calloc(1, (*(` ~ h ~ `)+(` ~ l ~ `)).sizeof);
+enum string MakeHost(string h,string l) = `(` ~ h ~ `)=cast(typeof(`~h~`))calloc(1, ((*` ~ h ~ `).sizeof+(` ~ l ~ `)));
 			if (` ~ h ~ `) { 
 			   (` ~ h ~ `).addr=cast(ubyte*) ((` ~ h ~ `) + 1);
 			   (` ~ h ~ `).requested = FALSE; 
@@ -235,6 +241,8 @@ private int AccessEnabled = TRUE;
 private int LocalHostEnabled = FALSE;
 private int LocalHostRequested = FALSE;
 private int UsingXdmcp = FALSE;
+
+alias in_addr = core.sys.posix.arpa.inet.in_addr;
 
 enum _LocalAccessScope {
     LOCAL_ACCESS_SCOPE_HOST = 0,
@@ -266,11 +274,11 @@ version (NO_LOCAL_CLIENT_CRED) {} else {
 void EnableLocalAccess()
 {
     switch (LocalAccessScope) {
-        case LOCAL_ACCESS_SCOPE_HOST:
+        case _LocalAccessScope.LOCAL_ACCESS_SCOPE_HOST:
             EnableLocalHost();
             break;
 version (NO_LOCAL_CLIENT_CRED) {} else {
-        case LOCAL_ACCESS_SCOPE_USER:
+        case _LocalAccessScope.LOCAL_ACCESS_SCOPE_USER:
             EnableLocalUser();
             break;
 }
@@ -291,11 +299,11 @@ private void EnableLocalHost()
 void DisableLocalAccess()
 {
     switch (LocalAccessScope) {
-        case LOCAL_ACCESS_SCOPE_HOST:
+        case _LocalAccessScope.LOCAL_ACCESS_SCOPE_HOST:
             DisableLocalHost();
             break;
 version (NO_LOCAL_CLIENT_CRED) {} else {
-        case LOCAL_ACCESS_SCOPE_USER:
+        case _LocalAccessScope.LOCAL_ACCESS_SCOPE_USER:
             DisableLocalUser();
             break;
 }
@@ -376,7 +384,7 @@ private void DisableLocalUser()
 
 void LocalAccessScopeUser()
 {
-    LocalAccessScope = LOCAL_ACCESS_SCOPE_USER;
+    LocalAccessScope =  _LocalAccessScope.LOCAL_ACCESS_SCOPE_USER;
 }
 }
 
@@ -436,7 +444,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
     //     xhostname hn = void;
     //     f_xhostname(&hn);
 
-    //     hp = _XGethostbyname(hn.name, hparams);
+    //     hp = _XGethostbyname(hn.name.ptr);
     //     if (hp != null) {
     //         saddr.sa.sa_family = hp.h_addrtype;
     //         switch (hp.h_addrtype) {
@@ -907,7 +915,7 @@ void ResetHosts(const(char)* display)
 {
     HOST* host = void;
     char[120] lhostname = void, ohostname = void;
-    char* hostname = ohostname;
+    char* hostname = ohostname.ptr;
     char[PATH_MAX + 1] fname = void;
     int fnamelen = void;
     FILE* fd = void;
@@ -920,9 +928,9 @@ void ResetHosts(const(char)* display)
     siTypesInitialize();
     AccessEnabled = !defeatAccessControl;
     LocalHostEnabled = FALSE;
-    while ((host = validhosts) != 0) {
+    while ((host = validhosts) !is null) {
         validhosts = host.next;
-        mixin(FreeHost!(`host`));
+        mixin(FreeHost!(`host`)~`;`);
     }
 
 static if (HasVersion!"Windows" && HasVersion!"Windows") {
@@ -931,27 +939,27 @@ enum ETC_HOST_PREFIX = "X";
 enum ETC_HOST_PREFIX = "/etc/X";
 }
 enum ETC_HOST_SUFFIX = ".hosts";
-    fnamelen = strlen(ETC_HOST_PREFIX) + strlen(ETC_HOST_SUFFIX) +
-        strlen(display) + 1;
+    fnamelen = cast(int)(strlen(ETC_HOST_PREFIX) + strlen(ETC_HOST_SUFFIX) +
+        strlen(display) + 1);
     if (fnamelen > fname.sizeof)
         FatalError("Display name `%s' is too long\n", display);
     snprintf(fname.ptr, fname.sizeof, ETC_HOST_PREFIX~ "%s"~ ETC_HOST_SUFFIX,
              display);
 
-    if ((fd = fopen(fname.ptr, "r")) != 0) {
+    if ((fd = fopen(fname.ptr, "r")) !is null) {
         while (fgets(ohostname.ptr, ohostname.sizeof, fd)) {
-            family = FamilyWild;
-            if (*ohostname == '#')
+            family = trutils.FamilyWild;
+            if (ohostname[0] == '#')
                 continue;
-            if ((ptr = strchr(ohostname.ptr, '\n')) != 0)
+            if ((ptr = cast(char*)strchr(ohostname.ptr, '\n')) !is null)
                 *ptr = 0;
-            hostlen = strlen(ohostname.ptr) + 1;
+            hostlen = cast(int)(strlen(ohostname.ptr) + 1);
             for (i = 0; i < hostlen; i++)
-                lhostname[i] = tolower(cast(ubyte)ohostname[i]);
-            hostname = ohostname;
+                lhostname[i] = cast(char)tolower(cast(ubyte)ohostname[i]);
+            hostname = ohostname.ptr;
             if (!strncmp("local:", lhostname.ptr, 6)) {
-                family = FamilyLocalHost;
-                NewHost(family, "", 0, FALSE);
+                family = trutils.FamilyLocalHost;
+                NewHost(family, cast(void*)"".ptr, 0, FALSE);
                 LocalHostRequested = TRUE;      /* Fix for XFree86 bug #156 */
             }
             else if (!strncmp("inet:", lhostname.ptr, 5)) {
@@ -964,7 +972,7 @@ version (IPv6) {
                 hostname = ohostname.ptr + 6;
             }
 }
-            else if (!strncmp("si:", lhostname, 3)) {
+            else if (!strncmp("si:".ptr, lhostname.ptr, 3)) {
                 family = FamilyServerInterpreted;
                 hostname = ohostname.ptr + 3;
                 hostlen -= 3;
@@ -1011,10 +1019,10 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
                 /* host name */
                 if ((family == FamilyInternet &&
-                     ((hp = _XGethostbyname(hostname, hparams)) != 0)) ||
-                    ((hp = _XGethostbyname(hostname, hparams)) != 0)) {
+                     ((hp = trutils._XGethostbyname(hostname)) !is null)) ||
+                    ((hp = trutils._XGethostbyname(hostname)) !is null)) {
                     sockaddr sa = {
-                        sa_family: hp.h_addrtype
+                        sa_family: cast(ushort)hp.h_addrtype
                     };
                     len = sa.sizeof;
                     if ((family =
@@ -1033,7 +1041,7 @@ version (h_addr) {                   /* new 4.3bsd version of gethostent */
                 }
 }                          /* HAVE_GETADDRINFO */
             }
-            family = FamilyWild;
+            family = trutils.FamilyWild;
         }
         fclose(fd);
     }
@@ -1057,7 +1065,7 @@ private Bool xtransLocalClient(ClientPtr client)
             free(from);
             return FALSE;
         }
-        if (family == FamilyLocal) {
+        if (family == trutils.FamilyLocal) {
             free(from);
             return TRUE;
         }
@@ -1285,7 +1293,7 @@ int AddHost(ClientPtr client, int family, uint length, const(void)* pAddr)
     if (rc != Success)
         return rc;
     switch (family) {
-    case FamilyLocalHost:
+    case trutils.FamilyLocalHost:
         len = length;
         LocalHostEnabled = TRUE;
         break;
@@ -1301,7 +1309,7 @@ version (IPv6) {
             return BadValue;
         }
         break;
-    case FamilyLocal:
+    case trutils.FamilyLocal:
     default:
         client.errorValue = family;
         return BadValue;
@@ -1311,7 +1319,7 @@ version (IPv6) {
     return BadAlloc;
 }
 
-Bool ForEachHostInFamily(int family, Bool function(ubyte* addr, short len, void* closure) func, void* closure)
+Bool ForEachHostInFamily(int family, Bool function(ubyte* addr, short len, void* closure) @nogc nothrow func, void* closure)
 {
     HOST* host = void;
 
@@ -1342,8 +1350,8 @@ private Bool NewHost(int family, const(void)* addr, int len, int addingLocalHost
     mixin(MakeHost!(`host`, `len`));
         if (!host)
         return FALSE;
-    host.family = family;
-    host.len = len;
+    host.family = cast(ushort)family;
+    host.len = cast(short)len;
     memcpy(host.addr, addr, len);
     host.next = validhosts;
     validhosts = host;
@@ -1361,7 +1369,7 @@ int RemoveHost(ClientPtr client, int family, uint length, void* pAddr)
     if (rc != Success)
         return rc;
     switch (family) {
-    case FamilyLocalHost:
+    case trutils.FamilyLocalHost:
         len = length;
         LocalHostEnabled = FALSE;
         break;
@@ -1378,18 +1386,18 @@ version (IPv6) {
             return BadValue;
         }
         break;
-    case FamilyLocal:
+    case trutils.FamilyLocal:
     default:
         if (client)
             client.errorValue = family;
         return BadValue;
     }
     for (prev = &validhosts;
-         (host = *prev) && (!mixin(addrEqual!(`family`, `pAddr`, `len`, `host`)));
+         (host = *prev) !is null && (!mixin(addrEqual!(`family`, `pAddr`, `len`, `host`)));
          prev = &host.next){}
     if (host) {
         *prev = host.next;
-        mixin(FreeHost!(`host`));
+        mixin(FreeHost!(`host`)~`;`);
     }
     return Success;
 }
@@ -1419,10 +1427,10 @@ int GetHosts(void** data, int* pnHosts, int* pLen, BOOL* pEnabled)
         }
         for (host = validhosts; host; host = host.next) {
             len = host.len;
-            if ((ptr + ((xHostEntry) + len).sizeof) > (cast(ubyte*) *data + n))
+            if ((ptr + ((xHostEntry).sizeof + len)) > (cast(ubyte*) *data + n))
                 break;
-            (cast(xHostEntry*) ptr).family = host.family;
-            (cast(xHostEntry*) ptr).length = len;
+            (cast(xHostEntry*) ptr).family = cast(ubyte)host.family;
+            (cast(xHostEntry*) ptr).length = cast(ushort)len;
             ptr += xHostEntry.sizeof;
             memcpy(ptr, host.addr, len);
             ptr += pad_to_int32(len);
@@ -1458,7 +1466,7 @@ version (IPv6) {
         break;
 }
     case FamilyServerInterpreted:
-        len = siCheckAddr(pAddr, length);
+        len = siCheckAddr(cast(char*)pAddr, length);
         break;
     default:
         len = -1;
@@ -1480,7 +1488,7 @@ int InvalidHost(sockaddr* saddr, int len, ClientPtr client)
     family = ConvertAddr(saddr, &len, cast(void**) &addr);
     if (family == -1)
         return 1;
-    if (family == FamilyLocal) {
+    if (family == trutils.FamilyLocal) {
         if (!LocalHostEnabled) {
             /*
              * check to see if any local address is enabled.  This
@@ -1515,17 +1523,17 @@ int InvalidHost(sockaddr* saddr, int len, ClientPtr client)
 private int ConvertAddr(sockaddr* saddr, int* len, void** addr)
 {
     if (*len == 0)
-        return FamilyLocal;
+        return trutils.FamilyLocal;
     switch (saddr.sa_family) {
     case AF_UNSPEC:
 version (UNIXCONN) {
     case AF_UNIX:
 }
-        return FamilyLocal;
+        return trutils.FamilyLocal;
     case AF_INET:
 version (Windows) {
         if (16777343 == *cast(c_long*) &(cast(sockaddr_in*) saddr).sin_addr)
-            return FamilyLocal;
+            return trutils.FamilyLocal;
 }
         *len = in_addr.sizeof;
         *addr = cast(void*) &((cast(sockaddr_in*) saddr).sin_addr);
@@ -1650,7 +1658,7 @@ private Bool siAddrMatch(int family, void* addr, int len, HOST* host, ClientPtr 
     if (valueString != null) {
         for (s = siTypeList; s != null; s = s.next) {
             if (strcmp(cast(char*) host.addr, s.typeName) == 0) {
-                addrlen = host.len - (strlen(cast(char*) host.addr) + 1);
+                addrlen = cast(int)(host.len - (strlen(cast(char*) host.addr) + 1));
                 matches = s.addrMatch(family, addr, len,
                                        valueString + 1, addrlen, client,
                                        s.typePriv);
@@ -1680,7 +1688,7 @@ private int siCheckAddr(const(char)* addrString, int length)
         /* Make sure the first string is a recognized address type,
          * and the second string is a valid address of that type.
          */
-        typelen = strlen(addrString) + 1;
+        typelen = cast(int)(strlen(addrString) + 1);
         addrlen = length - typelen;
 
         for (s = siTypeList; s != null; s = s.next) {
@@ -1795,7 +1803,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
         strlcpy(hostname.ptr, siAddr, siAddrLen + 1);
 
-        if ((hp = _XGethostbyname(hostname.ptr, hparams)) != null) {
+        if ((hp = trutils._XGethostbyname(hostname.ptr)) != null) {
 version (h_addr) {                   /* new 4.3bsd version of gethostent */
             /* iterate over the addresses */
             for (addrlist = hp.h_addr_list; *addrlist; addrlist++)
@@ -1805,7 +1813,7 @@ version (h_addr) {                   /* new 4.3bsd version of gethostent */
             {
                 sockaddr_in sin = void;
 
-                sin.sin_family = hp.h_addrtype;
+                sin.sin_family = cast(short)hp.h_addrtype;
                 memcpy(&(sin.sin_addr), *addrlist, hp.h_length);
                 hostaddrlen = sin.sizeof;
                 f = ConvertAddr(cast(sockaddr*) &sin,
@@ -1958,7 +1966,7 @@ static if (!HasVersion!"NO_LOCAL_CLIENT_CRED") {
 void DefineSelf(int fd)
 {
     int len = void;
-    caddr_t addr = void;
+    __caddr_t addr = void;
     int family = void;
     HOST* host = void;
     hostent* hp = void;
@@ -1994,14 +2002,14 @@ void DefineSelf(int fd)
     xhostname hn = void;
     f_xhostname(&hn);
 
-    hp = _XGethostbyname(hn.name, hparams);
+    hp = trutils._XGethostbyname(hn.name.ptr);
     enum string IPv6_STR = "        case AF_INET6:
             inet6addr = cast(sockaddr_in6*) (&(saddr.sa));
             memcpy(&(inet6addr.sin6_addr), hp.h_addr, hp.h_length);
             len = typeof(saddr.in6).sizeof;
             break;";
     if (hp != null) {
-        saddr.sa.sa_family = hp.h_addrtype;
+        saddr.sa.sa_family = cast(ushort)hp.h_addrtype;
         switch (hp.h_addrtype) {
         case AF_INET:
             inetaddr = cast(sockaddr_in*) (&(saddr.sa));
@@ -2017,7 +2025,7 @@ void DefineSelf(int fd)
             goto DefineLocalHost;
         }
         family = ConvertAddr(&(saddr.sa), &len, cast(void**) &addr);
-        if (family != -1 && family != FamilyLocal) {
+        if (family != -1 && family != trutils.FamilyLocal) {
             for (host = selfhosts;
                  host && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
                  host = host.next){}
@@ -2025,8 +2033,8 @@ void DefineSelf(int fd)
                 /* add this host to the host list.      */
                 mixin(MakeHost!(`host`, `len`));
                     if (host) {
-                    host.family = family;
-                    host.len = len;
+                    host.family = cast(short)family;
+                    host.len = cast(short)len;
                     memcpy(host.addr, addr, len);
                     host.next = selfhosts;
                     selfhosts = host;
@@ -2065,11 +2073,11 @@ version (IPv6) {
      */
  DefineLocalHost:
     for (host = selfhosts;
-         host && !mixin(addrEqual!(`FamilyLocalHost`, `""`, `0`, `host`)); host = host.next){}
+         host && !mixin(addrEqual!(`trutils.FamilyLocalHost`, `"".ptr`, `0`, `host`)); host = host.next){}
     if (!host) {
         mixin(MakeHost!(`host`, `0`));
         if (host) {
-            host.family = FamilyLocalHost;
+            host.family = trutils.FamilyLocalHost;
             host.len = 0;
             /* Nothing to store in host->addr */
             host.next = selfhosts;
@@ -2554,8 +2562,8 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
                 /* host name */
                 if ((family == FamilyInternet &&
-                     ((hp = _XGethostbyname(hostname, hparams)) != 0)) ||
-                    ((hp = _XGethostbyname(hostname, hparams)) != 0)) {
+                     ((hp = _XGethostbyname(hostname)) != 0)) ||
+                    ((hp = _XGethostbyname(hostname)) != 0)) {
                     sockaddr sa = {
                         sa_family: hp.h_addrtype
                     };
@@ -3339,7 +3347,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
         strlcpy(hostname.ptr, siAddr, siAddrLen + 1);
 
-        if ((hp = _XGethostbyname(hostname.ptr, hparams)) != null) {
+        if ((hp = _XGethostbyname(hostname.ptr)) != null) {
 version (h_addr) {                   /* new 4.3bsd version of gethostent */
             /* iterate over the addresses */
             for (addrlist = hp.h_addr_list; *addrlist; addrlist++)
@@ -3618,7 +3626,7 @@ private int siLocalCredCheckAddr(const(char)* addrString, int length, void* type
 }
 }                          /* localuser */
 
-private void siTypesInitialize()
+void siTypesInitialize()
 {
     siTypeAdd("hostname", &siHostnameAddrMatch, &siHostnameCheckAddr, null);
 version (IPv6) {
@@ -3631,7 +3639,7 @@ static if (!HasVersion!"NO_LOCAL_CLIENT_CRED") {
               &siLocalGroupPriv);
 }
 }
-
+}
 
 import core.sys.posix.pwd;
 import core.sys.posix.grp;
@@ -3663,7 +3671,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
         char* cp = void;
 
         errno = 0;
-        *id = strtol(addrbuf + 1, &cp, 0);
+        *id = cast(int)strtol(addrbuf + 1, &cp, 0);
         if ((errno == 0) && (cp != (addrbuf + 1))) {
             parsedOK = TRUE;
         }
@@ -3751,7 +3759,8 @@ private int siLocalCredCheckAddr(const(char)* addrString, int length, void* type
     return len;
 }                   /* localuser */
 
-private void siTypesInitialize()
+
+void siTypesInitialize()
 {
     siTypeAdd("hostname", &siHostnameAddrMatch, &siHostnameCheckAddr, null);
 version (IPv6) {
@@ -3762,5 +3771,11 @@ static if (!HasVersion!"NO_LOCAL_CLIENT_CRED") {
               &siLocalUserPriv);
     siTypeAdd("localgroup", &siLocalCredAddrMatch, &siLocalCredCheckAddr,
               &siLocalGroupPriv);
-}}}
+}
+}
+
+
+
+
+
 }

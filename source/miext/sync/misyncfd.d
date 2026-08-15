@@ -33,6 +33,8 @@ import miext.sync.misync_priv;
 import miext.sync.misyncfd;
 import include.pixmapstr;
 import include.misyncfd;
+import miext.sync.misync;
+
 
 private DevPrivateKeyRec syncFdScreenPrivateKey;
 
@@ -45,7 +47,7 @@ pragma(inline, true) private SyncFdScreenPrivatePtr sync_fd_screen_priv(ScreenPt
 {
     if (!dixPrivateKeyRegistered(&syncFdScreenPrivateKey))
         return null;
-    return dixLookupPrivate(&pScreen.devPrivates, &syncFdScreenPrivateKey);
+    return cast(SyncFdScreenPrivatePtr)dixLookupPrivate(&pScreen.devPrivates, &syncFdScreenPrivateKey);
 }
 
 int miSyncInitFenceFromFD(DrawablePtr pDraw, SyncFence* pFence, int fd, BOOL initially_triggered)

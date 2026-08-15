@@ -37,8 +37,8 @@ extern Bool SmartScheduleSignalEnable;
 } else {
 enum SmartScheduleSignalEnable = FALSE;
 }
-void SmartScheduleStartTimer();
-void SmartScheduleStopTimer();
+// void SmartScheduleStartTimer();
+// void SmartScheduleStopTimer();
 
 /* Client has requests queued or data on the network */
 void mark_client_ready(ClientPtr client);
@@ -57,7 +57,7 @@ pragma(inline, true) private Bool client_is_ready(ClientPtr client)
     return !xorg_list_is_empty(&client.ready);
 }
 
-Bool clients_are_ready();
+// Bool clients_are_ready();
 
 extern xorg_list output_pending_clients;
 

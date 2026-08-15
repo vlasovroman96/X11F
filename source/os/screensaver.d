@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-void SetScreenSaverTimer();
-void FreeScreenSaverTimer();
+// void SetScreenSaverTimer();
+// void FreeScreenSaverTimer();
 
  /* _XSERVER_OS_SCREENSAVER_H */

@@ -76,6 +76,11 @@ import include.misc;
 import os.osdep;
 import dix.dixstruct_priv;
 import include.globals;
+import os.utils;
+import os.io;
+import os.log;
+import dix.events;
+
 version (DPMSExtension) {
 import Xext.dpmsproc;
 }
@@ -115,7 +120,7 @@ pragma(inline, true) private OsTimerPtr first_timer()
     /* inline xorg_list_is_empty which can't handle volatile */
     if (timers.next == &timers)
         return null;
-    return xorg_list_first_entry(&timers, _OsTimerRec, list);
+    return mixin(xorg_list_first_entry!("timers", "_OsTimerRec", "list"));
 }
 
 /*
@@ -230,7 +235,7 @@ Bool WaitForSomething(Bool are_ready)
 
 void AdjustWaitForDelay(void* waitTime, int newdelay)
 {
-    int* timeoutp = waitTime;
+    int* timeoutp = cast(int*)waitTime;
     int timeout = *timeoutp;
 
     if (timeout < 0 || newdelay < timeout)
@@ -276,7 +281,7 @@ void DoTimers(CARD32 now)
     OsTimerPtr timer = void;
 
     input_lock();
-    while ((timer = first_timer())) {
+    while ((timer = first_timer()) !is null) {
         if (cast(int) (timer.expires - now) > 0)
             break;
         DoTimer(timer, now);
@@ -373,7 +378,7 @@ void TimerInit()
         xorg_list_init(cast(xorg_list*) &timers);
     }
 
-    mixin(xorg_list_for_each_entry_safe!("timer", "tmp", "timers", "list", q{
+    mixin(xorg_list_for_each_entry_safe!("timer", "tmp", "&timers", "list", q{
         xorg_list_del(&timer.list);
         free(timer);
     }));

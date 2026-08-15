@@ -67,6 +67,7 @@ public import include.xlibre_ptrtypes;
 public import include.callback;
 public import include.misc;
 import os.connection;
+import os.WaitFor;
 
 /*
  * @brief macro for specifying non-null arguments
@@ -132,7 +133,7 @@ extern void AttendClient(ClientPtr);
 
 // extern void AdjustWaitForDelay(void* waitTime, int newdelay);
 
-struct _OsTimerRec;
+// struct _OsTimerRec;
 alias OsTimerPtr = _OsTimerRec*;
 
 alias OsTimerCallback = CARD32 function(OsTimerPtr timer, CARD32 time, void* arg);
@@ -140,10 +141,10 @@ alias OsTimerCallback = CARD32 function(OsTimerPtr timer, CARD32 time, void* arg
 enum TimerAbsolute = (1<<0);
 enum TimerForceOld = (1<<1);
 
-extern OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
+// extern OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
 
-extern void TimerCancel(OsTimerPtr);
-extern void TimerFree(OsTimerPtr);
+// extern void TimerCancel(OsTimerPtr);
+// extern void TimerFree(OsTimerPtr);
 
 // extern void GiveUp(int);
 

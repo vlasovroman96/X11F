@@ -87,6 +87,33 @@ version (XTHREADS) {
 
 import sock = core.sys.posix.sys.socket;
 import os.Xtransint;
+import core.sys.posix.unistd;
+alias rindex = strrchr;
+import core.sys.posix.netdb;
+import os.ossock;
+
+alias sockaddr_in = core.sys.posix.netinet.in_.sockaddr_in;
+alias _XGetservbyname = getservbyname;
+alias iovec = core.sys.posix.sys.uio.iovec;
+alias msghdr = core.sys.posix.sys.socket.msghdr;
+alias htons = core.sys.posix.arpa.inet.htons;
+alias htonl = core.sys.posix.arpa.inet.htonl;
+
+alias INADDR_ANY = core.sys.posix.netinet.in_.INADDR_ANY;
+alias accept = sock.accept;
+alias CMSG_LEN = core.sys.posix.sys.socket.CMSG_LEN;
+alias CMSG_DATA = core.sys.posix.sys.socket.CMSG_DATA;
+
+alias CMSG_FIRSTHDR = core.sys.posix.sys.socket.CMSG_FIRSTHDR;
+alias CMSG_NXTHDR = core.sys.posix.sys.socket.CMSG_NXTHDR;
+alias SOL_SOCKET = core.sys.posix.sys.socket.SOL_SOCKET;
+alias SCM_RIGHTS = core.sys.posix.sys.socket.SCM_RIGHTS;
+    alias shutdown = core.sys.posix.sys.socket.shutdown;
+
+
+
+
+alias cmsghdr = core.sys.posix.sys.socket.cmsghdr;
 version (Windows) {} else {
 
 version (UNIXCONN) {
@@ -324,7 +351,7 @@ private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
 {
     int i = void;
 
-    prmsg (3,"SocketSelectFamily(%s)\n", family);
+    // prmsg (3,"SocketSelectFamily(%s)\n", family);
 
     for (i = first + 1; i < cast(int)NUMSOCKETFAMILIES; i++)
     {
@@ -346,9 +373,9 @@ private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
 private int _XSERVTransSocketINETGetAddr(XtransConnInfo ciptr)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
-    sock.sockaddr_storage sockname = void;
+    sockaddr_storage sockname = void;
 } else {
-    sock.sockaddr_in sockname = void;
+    core.sys.posix.netinet.in_.sockaddr_in sockname = void;
 }
     void* socknamePtr = &sockname;
     SOCKLEN_T namelen = sockname.sizeof;
@@ -357,14 +384,14 @@ version (HAVE_STRUCT_SOCKADDR_STORAGE) {
 
     memset(socknamePtr, 0, namelen);
 
-    if (getsockname (ciptr.fd,cast(sock.sockaddr*) socknamePtr,
-		     cast(void*)&namelen) < 0)
+    if (sock.getsockname (ciptr.fd,cast(sock.sockaddr*) socknamePtr,
+		     cast(uint*)&namelen) < 0)
     {
 version (Windows) {
 	errno = WSAGetLastError();
 }
 	prmsg (1,"SocketINETGetAddr: getsockname() failed: %d\n",
-	    EGET());
+	    mixin(EGET!()));
 	return -1;
     }
 
@@ -372,7 +399,7 @@ version (Windows) {
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr.addr = malloc (namelen)) == null)
+    if ((ciptr.addr = cast(char*)malloc (namelen)) == null)
     {
         prmsg (1,
 	    "SocketINETGetAddr: Can't allocate space for the addr\n");
@@ -395,9 +422,9 @@ version (Windows) {
 private int _XSERVTransSocketINETGetPeerAddr(XtransConnInfo ciptr)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
-    sock.sockaddr_storage sockname = void;
+    sockaddr_storage sockname = void;
 } else {
-    sock.sockaddr_in sockname = void;
+    core.sys.posix.netinet.in_.sockaddr_in sockname = void;
 }
     void* socknamePtr = &sockname;
     SOCKLEN_T namelen = sockname.sizeof;
@@ -406,14 +433,14 @@ version (HAVE_STRUCT_SOCKADDR_STORAGE) {
 
     prmsg (3,"SocketINETGetPeerAddr(%p)\n", cast(void*) ciptr);
 
-    if (getpeername (ciptr.fd, cast(sock.sockaddr*) socknamePtr,
-		     cast(void*)&namelen) < 0)
+    if (sock.getpeername (ciptr.fd, cast(sock.sockaddr*) socknamePtr,
+		     cast(uint*)&namelen) < 0)
     {
 version (Windows) {
 	errno = WSAGetLastError();
 }
 	prmsg (1,"SocketINETGetPeerAddr: getpeername() failed: %d\n",
-	    EGET());
+	    mixin(EGET!()));
 	return -1;
     }
 
@@ -421,7 +448,7 @@ version (Windows) {
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr.peeraddr = malloc (namelen)) == null)
+    if ((ciptr.peeraddr = cast(char*)malloc (namelen)) == null)
     {
         prmsg (1,
 	   "SocketINETGetPeerAddr: Can't allocate space for the addr\n");
@@ -441,13 +468,13 @@ private XtransConnInfo _XSERVTransSocketOpen(int i, int type)
 
     prmsg (3,"SocketOpen(%d,%d)\n", i, type);
 
-    if ((ciptr = calloc (1, _XtransConnInfo.sizeof)) == null)
+    if ((ciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) == null)
     {
 	prmsg (1, "SocketOpen: malloc failed\n");
 	return null;
     }
 
-    ciptr.fd = socket(Sockettrans2devtab[i].family, type,
+    ciptr.fd = sock.socket(Sockettrans2devtab[i].family, type,
                        Sockettrans2devtab[i].protocol);
 
     if (ciptr.fd < 0) {
@@ -542,7 +569,7 @@ version (SOCK_MAXADDRLEN) {
     }
 } /*SOCK_MAXADDRLEN*/
 
-    if ((ciptr = calloc (1, _XtransConnInfo.sizeof)) == null)
+    if ((ciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) == null)
     {
 	prmsg (1, "SocketReopen: malloc(ciptr) failed\n");
 	return null;
@@ -550,22 +577,22 @@ version (SOCK_MAXADDRLEN) {
 
     ciptr.fd = fd;
 
-    addrlen = portlen + offsetof(sock.sockaddr, sa_data);
+    addrlen = portlen + offsetof!(sock.sockaddr, "sa_data");
     if ((addr = cast(sock.sockaddr*) calloc (1, addrlen)) == null) {
 	prmsg (1, "SocketReopen: malloc(addr) failed\n");
 	free (ciptr);
 	return null;
     }
     ciptr.addr = cast(char*) addr;
-    ciptr.addrlen = addrlen;
+    ciptr.addrlen = cast(int)addrlen;
 
-    if ((ciptr.peeraddr = calloc (1, addrlen)) == null) {
+    if ((ciptr.peeraddr = cast(char*)calloc (1, addrlen)) == null) {
 	prmsg (1, "SocketReopen: malloc(portaddr) failed\n");
 	free (addr);
 	free (ciptr);
 	return null;
     }
-    ciptr.peeraddrlen = addrlen;
+    ciptr.peeraddrlen = cast(int)addrlen;
 
     /* Initialize ciptr structure as if it were a normally-opened unix socket */
     ciptr.flags = TRANS_LOCAL | TRANS_NOUNLINK;
@@ -574,14 +601,14 @@ version (BSD44SOCKETS) {
 }
     addr.sa_family = AF_UNIX;
 
-    memcpy(addr.sa_data, port, portnamelen);
+    memcpy(addr.sa_data.ptr, port, portnamelen);
 
     ciptr.family = AF_UNIX;
     memcpy(ciptr.peeraddr, ciptr.addr, addrlen);
-    ciptr.port = rindex(addr.sa_data, ':');
+    ciptr.port = rindex(cast(char*)addr.sa_data.ptr, ':');
     if (ciptr.port == null) {
-	if (is_numeric(addr.sa_data)) {
-	    ciptr.port = addr.sa_data;
+	if (is_numeric(cast(char*)addr.sa_data.ptr)) {
+	    ciptr.port = cast(char*)addr.sa_data.ptr;
 	}
     } else if (ciptr.port[0] == ':') {
 	ciptr.port++;
@@ -601,7 +628,7 @@ private XtransConnInfo _XSERVTransSocketOpenCOTSServer(Xtransport* thistrans, co
 
     prmsg (2,"SocketOpenCOTSServer(%s,%s,%s)\n", protocol, host, port);
 
-    SocketInitOnce();
+    // SocketInitOnce();
 
     while ((i = _XSERVTransSocketSelectFamily (i, thistrans.TransName)) >= 0) {
 	if ((ciptr = _XSERVTransSocketOpen (
@@ -681,7 +708,7 @@ private XtransConnInfo _XSERVTransSocketReopenCOTSServer(Xtransport* thistrans, 
     prmsg (2,
 	"SocketReopenCOTSServer(%d, %s)\n", fd, port);
 
-    SocketInitOnce();
+    // SocketInitOnce();
 
     while ((i = _XSERVTransSocketSelectFamily (i, thistrans.TransName)) >= 0) {
 	if ((ciptr = _XSERVTransSocketReopen (
@@ -819,7 +846,7 @@ private int _XSERVTransSocketCreateListener(
         }
     }
 
-    if (listen(fd, BACKLOG) < 0)
+    if (sock.listen(fd, BACKLOG) < 0)
     {
         prmsg(1,
             "SocketCreateListener: listen() failed\n");
@@ -840,7 +867,7 @@ private int _XSERVTransSocketINETCreateListener(XtransConnInfo ciptr, const(char
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
     sock.sockaddr_storage sockname = void;
 } else {
-    sock.sockaddr_in sockname = void;
+    core.sys.posix.netinet.in_.sockaddr_in sockname = void;
 }
     ushort sport = void;
     SOCKLEN_T namelen = sockname.sizeof;
@@ -869,7 +896,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 	/* fixup the server port address */
 	tmpport = X_TCP_PORT + strtol (port, cast(char**)null, 10);
 	snprintf (portbuf.ptr, portbuf.sizeof, "%lu", tmpport);
-	port = portbuf;
+	port = portbuf.ptr;
     }
 
     if (port && *port)
@@ -878,7 +905,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
 	if (!is_numeric (port))
 	{
-	    if ((servp = _XGetservbyname (port,"tcp",sparams)) == null)
+	    if ((servp = _XGetservbyname (port,"tcp".ptr)) is null)
 	    {
 		prmsg (1,
 	     "SocketINETCreateListener: Unable to get service for %s\n",
@@ -886,7 +913,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 		return TRANS_CREATE_LISTENER_FAILED;
 	    }
 	    /* we trust getservbyname to return a valid number */
-	    sport = servp.s_port;
+	    sport = cast(ushort)servp.s_port;
 	}
 	else
 	{
@@ -908,22 +935,22 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
     memset(&sockname, 0, sockname.sizeof);
     if (Sockettrans2devtab[ciptr.index].family == AF_INET) {
-	namelen = sock.sockaddr_in.sizeof;
+	namelen = sockaddr_in.sizeof;
 version (BSD44SOCKETS) {
-	(cast(sock.sockaddr_in*)&sockname).sin_len = namelen;
+	(cast(sockaddr_in*)&sockname).sin_len = namelen;
 }
-	(cast(sock.sockaddr_in*)&sockname).sin_family = AF_INET;
-	(cast(sock.sockaddr_in*)&sockname).sin_port = htons(sport);
-	(cast(sock.sockaddr_in*)&sockname).sin_addr.s_addr = htonl(INADDR_ANY);
+	(cast(sockaddr_in*)&sockname).sin_family = AF_INET;
+	(cast(sockaddr_in*)&sockname).sin_port = htons(sport);
+	(cast(sockaddr_in*)&sockname).sin_addr.s_addr = htonl(INADDR_ANY);
     } else {
 version (IPv6) {
-	namelen = sock.sockaddr_in6.sizeof;
+	namelen = sockaddr_in6.sizeof;
 version (SIN6_LEN) {
-	(cast(sock.sockaddr_in6*)&sockname).sin6_len = sockname.sizeof;
+	(cast(sockaddr_in6*)&sockname).sin6_len = sockname.sizeof;
 }
-	(cast(sock.sockaddr_in6*)&sockname).sin6_family = AF_INET6;
-	(cast(sock.sockaddr_in6*)&sockname).sin6_port = htons(sport);
-	(cast(sock.sockaddr_in6*)&sockname).sin6_addr = in6addr_any;
+	(cast(sockaddr_in6*)&sockname).sin6_family = AF_INET6;
+	(cast(sockaddr_in6*)&sockname).sin6_port = htons(sport);
+	(cast(sockaddr_in6*)&sockname).sin6_addr = in6addr_any;
 } else {
         prmsg (1,
                "SocketINETCreateListener: unsupported address family %d\n",
@@ -1139,19 +1166,19 @@ version (HAS_STICKY_DIR_BIT) {
 private XtransConnInfo _XSERVTransSocketINETAccept(XtransConnInfo ciptr)
 {
     XtransConnInfo newciptr = void;
-    sock.sockaddr_in sockname = void;
+    sockaddr_in sockname = void;
     SOCKLEN_T namelen = sockname.sizeof;
 
     prmsg (2, "SocketINETAccept(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
 
-    if ((newciptr = calloc (1, _XtransConnInfo.sizeof)) == null)
+    if ((newciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) is null)
     {
 	prmsg (1, "SocketINETAccept: malloc failed\n");
 	return null;
     }
 
     if ((newciptr.fd = accept (ciptr.fd,
-	cast(sock.sockaddr*) &sockname, cast(void*)&namelen)) < 0)
+	cast(sock.sockaddr*) &sockname, cast(uint*)&(namelen))) < 0)
     {
 version (Windows) {
 	errno = WSAGetLastError();
@@ -1272,17 +1299,17 @@ private void appendFd(_XtransConnFd** prev, int fd, int do_close)
 {
     _XtransConnFd* cf = void, new_ = void;
 
-    new_ = malloc (_XtransConnFd.sizeof);
+    new_ = cast(_XtransConnFd*)malloc (_XtransConnFd.sizeof);
     if (!new_) {
         /* XXX mark connection as broken */
         ossock_close(fd);
         return;
     }
-    new_.next = 0;
+    new_.next = null;
     new_.fd = fd;
     new_.do_close = do_close;
     /* search to end of list */
-    for (; ((cf = *prev) != 0); prev = &(cf.next)){}
+    for (; ((cf = *prev) !is null); prev = &(cf.next)){}
     *prev = new_;
 }
 
@@ -1291,7 +1318,7 @@ private int removeFd(_XtransConnFd** prev)
     _XtransConnFd* cf = void;
     int fd = void;
 
-    if ((cf = *prev)) {
+    if ((cf = *prev) !is null) {
         *prev = cf.next;
         fd = cf.fd;
         free(cf);
@@ -1389,17 +1416,17 @@ static if (XTRANS_SEND_FDS) {
             msg_namelen: 0,
             msg_iov: &iov,
             msg_iovlen: 1,
-            msg_control: cmsgbuf.buf,
-            msg_controllen: CMSG_LEN(MAX_FDS * int.sizeof)
+            msg_control: cast(void*)cmsgbuf.buf.ptr,
+            msg_controllen: cast(int)CMSG_LEN(MAX_FDS * int.sizeof)
         };
 
-        size = recvmsg(ciptr.fd, &msg, 0);
+        size = cast(int)recvmsg(ciptr.fd, &msg, 0);
         if (size >= 0) {
             cmsghdr* hdr = void;
 
             for (hdr = CMSG_FIRSTHDR(&msg); hdr; hdr = CMSG_NXTHDR(&msg, hdr)) {
                 if (hdr.cmsg_level == SOL_SOCKET && hdr.cmsg_type == SCM_RIGHTS) {
-                    int nfd = (hdr.cmsg_len - CMSG_LEN(0)) / int.sizeof;
+                    int nfd = cast(int)((hdr.cmsg_len - CMSG_LEN(0)) / int.sizeof);
                     int i = void;
                     int* fd = cast(int*) CMSG_DATA(hdr);
 
@@ -1435,7 +1462,7 @@ static if (XTRANS_SEND_FDS) {
             msg_namelen: 0,
             msg_iov: &iov,
             msg_iovlen: 1,
-            msg_control: cmsgbuf.buf,
+            msg_control: cmsgbuf.buf.ptr,
             msg_controllen: CMSG_LEN(nfd * int.sizeof)
         };
         cmsghdr* hdr = CMSG_FIRSTHDR(&msg);
@@ -1465,7 +1492,7 @@ version (Windows) {
     if (ret == SOCKET_ERROR) errno = WSAGetLastError();
     return ret;
 } else {
-    return write (ciptr.fd, buf.ptr, size);
+    return write (ciptr.fd, buf, size);
 }
 }
 

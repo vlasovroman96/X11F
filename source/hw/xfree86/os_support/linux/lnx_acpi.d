@@ -24,6 +24,7 @@ import include.xf86Privstr;
 import os.log;
 import xf86Events;
 import xf86Globals;
+import os.WaitFor;
 
 
 enum ACPI_SOCKET =  "/var/run/acpid.socket";

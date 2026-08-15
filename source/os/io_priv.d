@@ -7,10 +7,14 @@ extern(C): __gshared:
  */
  
 public import externs.X11.Xdefs;
+// public import externs.X11.Xdefs;
+
 
 public import include.dix; /* ClientPtr */
 import os.io;
-struct _XtransConnInfo;
+import os.Xtransint;
+
+// struct _XtransConnInfo;
 
 // alias XtransConnInfo = _XtransConnInfo*;
 

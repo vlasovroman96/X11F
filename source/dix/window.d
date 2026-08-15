@@ -143,6 +143,7 @@ import include.globals;
 import composite.compint;
 import include.privates;
 import Xext.xace;
+import os.WaitFor;
 
 import externs.X11.Xatom;          /* must come after server includes */
 import os.log;

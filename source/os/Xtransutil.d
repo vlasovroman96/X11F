@@ -76,6 +76,40 @@ import os.xhostname;
 static if (HasVersion!"IPv6" && !HasVersion!"AF_INET6") {
 static assert(0, "Cannot build IPv6 support without AF_INET6");
 }
+import os.Xtransint;
+import sock = core.sys.posix.sys.socket;
+import os.Xtransint;
+import core.sys.posix.unistd;
+import core.stdc.stdlib;
+import core.stdc.stdio;
+import core.stdc.string;
+
+// import core.sys.posix.sys.
+// alias rindex = strrchr;
+import core.sys.posix.netdb;
+import os.ossock;
+
+// alias sock = 
+alias sockaddr_in = core.sys.posix.netinet.in_.sockaddr_in;
+alias _XGetservbyname = getservbyname;
+alias _XGethostbyaddr =	gethostbyaddr;
+alias _XGethostbyname = gethostbyname;
+// alias _XGetservbyname = getservbyname;
+alias iovec = core.sys.posix.sys.uio.iovec;
+alias msghdr = core.sys.posix.sys.socket.msghdr;
+alias htons = core.sys.posix.arpa.inet.htons;
+alias htonl = core.sys.posix.arpa.inet.htonl;
+
+alias INADDR_ANY = core.sys.posix.netinet.in_.INADDR_ANY;
+alias accept = sock.accept;
+alias CMSG_LEN = core.sys.posix.sys.socket.CMSG_LEN;
+alias CMSG_DATA = core.sys.posix.sys.socket.CMSG_DATA;
+
+alias CMSG_FIRSTHDR = core.sys.posix.sys.socket.CMSG_FIRSTHDR;
+alias CMSG_NXTHDR = core.sys.posix.sys.socket.CMSG_NXTHDR;
+alias SOL_SOCKET = core.sys.posix.sys.socket.SOL_SOCKET;
+alias SCM_RIGHTS = core.sys.posix.sys.socket.SCM_RIGHTS;
+    alias shutdown = core.sys.posix.sys.socket.shutdown;
 
 /* Temporary workaround for consumers whose configure scripts were
    generated with pre-1.6 versions of xtrans.m4 */
@@ -200,7 +234,7 @@ version (UNIXCONN) {
 
         xhostname hn = void;
         f_xhostname(&hn);
-        int len = strlen(hn.name);
+        int len = cast(int)strlen(hn.name.ptr);
 
 	if (len > 0) {
 	    if (*addrp && *addrlenp < (len + 1))
@@ -209,9 +243,9 @@ version (UNIXCONN) {
 		*addrp = null;
 	    }
 	    if (!*addrp)
-		*addrp = malloc (len + 1);
+		*addrp = cast(Xtransaddr*)malloc (len + 1);
 	    if (*addrp) {
-		strcpy (cast(char*) *addrp, hn.name);
+		strcpy (cast(char*) *addrp, hn.name.ptr);
 		*addrlenp = len;
 	    } else {
 		*addrlenp = 0;

@@ -56,6 +56,8 @@ struct _shadowBuf {
     ScreenBlockHandlerProcPtr BlockHandler;
 }
 
+alias shadowBufRec = _shadowBuf; 
+
 /* Match defines from randr extension */
 enum SHADOW_ROTATE_0 =	    1;
 enum SHADOW_ROTATE_90 =    2;

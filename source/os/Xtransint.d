@@ -107,7 +107,7 @@ public import core.stdc.stddef;
 
 alias ssize_t = core.sys.posix.sys.types.ssize_t;
 
-enum X_TCP_PORT =	6000;
+// enum X_TCP_PORT =	6000;
 
 static if (XTRANS_SEND_FDS) {
 
@@ -139,41 +139,41 @@ alias XtransConnInfo = _XtransConnInfo*;
 
 enum XTRANS_OPEN_COTS_CLIENT =       1;
 enum XTRANS_OPEN_COTS_SERVER =       2;
+enum ADDR_IN_USE_ALLOWED =	1;
 
 struct _Xtransport {
     const(char)* TransName;
     int flags;
     const(char)** nolisten;
-    XtransConnInfo function(_Xtransport*, const(char)*, const(char)*, const(char)*) OpenCOTSServer;
+    XtransConnInfo function(_Xtransport*, const(char)*, const(char)*, const(char)*) @nogc nothrow OpenCOTSServer;
 
-    XtransConnInfo function(_Xtransport*, int, const(char)*) ReopenCOTSServer;
+    XtransConnInfo function(_Xtransport*, int, const(char)*) @nogc nothrow ReopenCOTSServer;
 
     int function(XtransConnInfo, int, int) SetOption;
 
 /* Flags */
-enum ADDR_IN_USE_ALLOWED =	1;
 
-    int function(XtransConnInfo, const(char)*, uint) CreateListener;
+    int function(XtransConnInfo, const(char)*, uint) @nogc nothrow CreateListener;
 
-    int function(XtransConnInfo) ResetListener;
+    int function(XtransConnInfo) @nogc nothrow ResetListener;
 
-    XtransConnInfo function(XtransConnInfo ciptr) Accept;
+    XtransConnInfo function(XtransConnInfo ciptr) @nogc nothrow Accept;
 
-    int function(XtransConnInfo, char*, int) Read;
+    int function(XtransConnInfo, char*, int) @nogc nothrow Read;
 
-    ssize_t function(XtransConnInfo ciptr, const(char)* buf, size_t size) Write;
+    ssize_t function(XtransConnInfo ciptr, const(char)* buf, size_t size) @nogc nothrow Write;
 
 static if (XTRANS_SEND_FDS) {
-    int function(XtransConnInfo, int, int) SendFd;
+    int function(XtransConnInfo, int, int) @nogc nothrow SendFd;
 
-    int function(XtransConnInfo) RecvFd;
+    int function(XtransConnInfo) @nogc nothrow RecvFd;
 }
 
-    int function(XtransConnInfo) Disconnect;
+    int function(XtransConnInfo) @nogc nothrow Disconnect;
 
-    int function(XtransConnInfo) Close;
+    int function(XtransConnInfo) @nogc nothrow Close;
 
-    int function(XtransConnInfo) CloseForCloning;
+    int function(XtransConnInfo) @nogc nothrow CloseForCloning;
 
 }
 alias Xtransport = _Xtransport;
@@ -202,8 +202,8 @@ enum TRANS_RECEIVED =	(1<<7) ; /* The fd for this has already been opened by som
 /* Flags to preserve when setting others */
 enum TRANS_KEEPFLAGS =	(TRANS_NOUNLINK|TRANS_ABSTRACT);
 
-version (XTRANS_TRANSPORT_C) { /* only provide static function prototypes when
-			     building the transport.c file that has them in */
+// version (XTRANS_TRANSPORT_C) { /* only provide static function prototypes when
+			    //  building the transport.c file that has them in */
 
 version (__clang__) {
 /* Not all clients make use of all provided statics */
@@ -229,7 +229,7 @@ public import core.stdc.stdarg;
 public import include.os;
 } /* XTRANSDEBUG */
 
-pragma(inline, true) private void prmsg(int lvl, const(char)* f, ...)
+pragma(inline, true) void prmsg(int lvl, const(char)* f, ...)
 {
 version (XTRANSDEBUG) {
     va_list args = void;
@@ -255,6 +255,6 @@ version (XTRANSDEBUGTIMESTAMP) {
 } /* XTRANSDEBUG */
 }
 
-} /* XTRANS_TRANSPORT_C */
+// } /* XTRANS_TRANSPORT_C */
 
  /* _XTRANSINT_H_ */

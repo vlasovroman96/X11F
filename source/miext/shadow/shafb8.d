@@ -68,7 +68,7 @@ private void c2p_32x8(CARD32* d)
 
 pragma(inline, true) private void store_afb8(void* dst, uint stride, const(CARD32)* d)
 {
-    CARD8* p = dst;
+    CARD8* p = cast(ubyte*)dst;
 
     *cast(CARD32*)p = d[7]; p += stride;
     *cast(CARD32*)p = d[5]; p += stride;
@@ -101,10 +101,10 @@ void shadowUpdateAfb8(ScreenPtr pScreen, shadowBufPtr pBuf)
         CARD32[8] words = void;
     }_D d = void;
 
-    fbGetDrawable(&pShadow.drawable, shaBase, shaStride, shaBpp, shaXoff,
-                  shaYoff);
+        mixin(fbGetDrawable!("(&pShadow.drawable)", "shaBase", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
     if (FbBits.sizeof != CARD32.sizeof)
-        shaStride = shaStride * FbBits.sizeof / CARD32.sizeof;
+        shaStride = cast(int)(shaStride * FbBits.sizeof / CARD32.sizeof);
 
     while (nbox--) {
         x = pbox.x1;
@@ -129,10 +129,10 @@ void shadowUpdateAfb8(ScreenPtr pScreen, shadowBufPtr pBuf)
             if (!win)
                 return;
             for (i = 0; i < n; i++) {
-                memcpy(d.bytes, sha, typeof(d.bytes).sizeof);
-                c2p_32x8(d.words);
-                store_afb8(win++, winStride, d.words);
-                sha += ((d.bytes) / typeof(*sha).sizeof).sizeof;
+                memcpy(d.bytes.ptr, sha, typeof(d.bytes).sizeof);
+                c2p_32x8(d.words.ptr);
+                store_afb8(win++, winStride, d.words.ptr);
+                sha += cast(ulong)((d.bytes).sizeof / typeof(*sha).sizeof);
             }
             shaLine += shaStride;
             y++;

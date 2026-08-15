@@ -62,6 +62,8 @@ import os.log;
 import dix.dixutils;
 import dix.extension;
 import dix.events;
+import os.WaitFor;
+
 enum XSecurityAllEventMasks = 1<<0;
 
 Bool noSecurityExtension = FALSE;

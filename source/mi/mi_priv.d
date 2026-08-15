@@ -64,8 +64,8 @@ void miSourceValidate(DrawablePtr pDrawable, int x, int y, int w, int h, uint su
 /* only exported for modesetting, not for external drivers (yet) */
 // Bool miCreateScreenResources(ScreenPtr pScreen);
 
-int miShapedWindowIn(RegionPtr universe, RegionPtr bounding, BoxPtr rect, int x, int y);
-int miValidateTree(WindowPtr pParent, WindowPtr pChild, VTKind kind);
+// int miShapedWindowIn(RegionPtr universe, RegionPtr bounding, BoxPtr rect, int x, int y);
+// int miValidateTree(WindowPtr pParent, WindowPtr pChild, VTKind kind);
 
 void miClearToBackground(WindowPtr pWin, int x, int y, int w, int h, Bool generateExposures);
 void miMarkWindow(WindowPtr pWin);

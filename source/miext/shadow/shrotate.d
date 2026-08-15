@@ -38,6 +38,8 @@ import    dix.globals;
 import    include.gcstruct;
 import include.shadow;
 import    include.fb;
+public import fb.fballpriv;
+
 
 /*
  * These indicate which way the source (shadow) is scanned when
@@ -78,11 +80,11 @@ void shadowUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
     int x_dir = void;
     int y_dir = void;
 
-    fbGetDrawable(&pShadow.drawable, shaBits, shaStride, shaBpp, shaXoff,
-                  shaYoff);
-    pixelsPerBits = (((FbBits) * 8).sizeof) / shaBpp;
+    mixin(fbGetDrawable!("(&pShadow.drawable)", "shaBits", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
+    pixelsPerBits = (((FbBits).sizeof * 8)) / shaBpp;
     pixelsMask = ~(pixelsPerBits - 1);
-    shaMask = FbBitsMask(FB_UNIT - shaBpp, shaBpp);
+    shaMask = mixin(FbBitsMask!("FB_UNIT - shaBpp", "shaBpp"));
     /*
      * Compute rotation related constants to walk the shadow
      */
@@ -265,8 +267,8 @@ void shadowUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
                      * This is probably not very efficient.
                      */
                     while (p--) {
-                        bits = FbScrLeft(bits, shaBpp);
-                        bits |= FbScrRight(*sha, shaShift) & shaMask;
+                        bits = mixin(FbScrLeft!("bits", "shaBpp"));
+                        bits |= mixin(FbScrRight!("*sha", "shaShift")) & shaMask;
 
                         shaShift -= shaStepOverX;
                         if (shaShift >= FB_UNIT) {

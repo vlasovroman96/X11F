@@ -28,19 +28,35 @@ import build.dix_config;
 
 import include.shadow;
 import include.fb;
+import fb.fballpriv;
 
-enum string Get8(string a) = `(cast(CARD32) READ(` ~ a ~ `))`;
+
+enum string Get8(string a) = `(cast(CARD32) `~READ!(a)~`)`;
 
 static if (BITMAP_BIT_ORDER == MSBFirst) {
 enum string Get24(string a) = `((` ~ Get8!(a) ~ ` << 16) | (` ~ Get8!(`(` ~ a ~ `)+1`) ~ ` << 8) | ` ~ Get8!(`(` ~ a ~ `)+2`) ~ `)`;
-enum string Put24(string a,string p) = `((WRITE((` ~ a ~ `+0), cast(CARD8) ((` ~ p ~ `) >> 16))), 
-		     (WRITE((` ~ a ~ `+1), cast(CARD8) ((` ~ p ~ `) >> 8))), 
-		     (WRITE((` ~ a ~ `+2), cast(CARD8) (` ~ p ~ `))))`;
+enum string Put24(string a, string p) = `(
+    ` ~ WRITE!((a ~ `+0`), `cast(CARD8)(` ~ p ~ ` >> 16)`) ~ `;
+    ` ~ WRITE!((a ~ `+1`), `cast(CARD8)(` ~ p ~ ` >> 8)`) ~ `;
+    ` ~ WRITE!((a ~ `+2`), `cast(CARD8)(` ~ p ~ `)`) ~ `;
+`;
+
 } else {
 enum string Get24(string a) = `(` ~ Get8!(a) ~ ` | (` ~ Get8!(`(` ~ a ~ `)+1`) ~ ` << 8) | (` ~ Get8!(`(` ~ a ~ `)+2`) ~ `<<16))`;
-enum string Put24(string a,string p) = `((WRITE((` ~ a ~ `+0), cast(CARD8) (` ~ p ~ `))), 
-		     (WRITE((` ~ a ~ `+1), cast(CARD8) ((` ~ p ~ `) >> 8))), 
-		     (WRITE((` ~ a ~ `+2), cast(CARD8) ((` ~ p ~ `) >> 16))))`;
+enum string Put24(string a,string p) = `
+
+    (`~WRITE!(
+        (a ~ `+0`),
+        `cast(CARD8) (` ~ p ~ `)`)~`
+    ); 
+    (`~WRITE!(
+        (a ~ `+1`),
+        `cast(CARD8) ((` ~ p ~ `) >> 8)`)~
+    `);
+    (`~WRITE!(
+        (a~`+2`),
+        `cast(CARD8) ((` ~ p ~ `) >> 16)`)~
+    `);`;
 }
 
 private void sh24_32BltLine(CARD8* srcLine, CARD8* dstLine, int width)
@@ -56,7 +72,7 @@ private void sh24_32BltLine(CARD8* srcLine, CARD8* dstLine, int width)
 
     while ((cast(c_long)dst & 3) && w) {
 	w--;
-	pixel = READ(src++);
+	pixel = mixin(READ!("src++"));
 	mixin(Put24!(`dst`, `pixel`));
 	dst += 3;
     }
@@ -64,33 +80,33 @@ private void sh24_32BltLine(CARD8* srcLine, CARD8* dstLine, int width)
     while (w >= 4) {
 	CARD32 s0 = void, s1 = void;
 
-	s0 = READ(src++);
-	s1 = READ(src++);
+	s0 = mixin(READ!("src++"));
+	s1 = mixin(READ!("src++"));
 static if (BITMAP_BIT_ORDER == LSBFirst) {
-	WRITE(cast(CARD32*) dst, (s0 & 0xffffff) | (s1 << 24));
+	mixin(WRITE!("cast(CARD32*) dst", "(s0 & 0xffffff) | (s1 << 24)")~";");
 } else {
-	WRITE(cast(CARD32*) dst, (s0 << 8) | ((s1 & 0xffffff) >> 16));
+	mixin(WRITE!("cast(CARD32*) dst", "(s0 << 8) | ((s1 & 0xffffff) >> 16)")~";");
 }
-	s0 = READ(src++);
+	s0 = mixin(READ!("src++"));
 static if (BITMAP_BIT_ORDER == LSBFirst) {
-	WRITE(cast(CARD32*) (dst + 4),
-	      ((s1 & 0xffffff) >> 8) | (s0 << 16));
+	mixin(WRITE!("cast(CARD32*) (dst + 4)",
+	      "((s1 & 0xffffff) >> 8) | (s0 << 16)")~";");
 } else {
-	WRITE(cast(CARD32*) (dst + 4),
-	      (s1 << 16) | ((s0 & 0xffffff) >> 8));
+	mixin(WRITE!("cast(CARD32*) (dst + 4)",
+	      "(s1 << 16) | ((s0 & 0xffffff) >> 8)")~";");
 }
-	s1 = READ(src++);
+	s1 = mixin(READ!("src++"));
 static if (BITMAP_BIT_ORDER == LSBFirst) {
-	WRITE(cast(CARD32*) (dst + 8),
-	      ((s0 & 0xffffff) >> 16) | (s1 << 8));
+	mixin(WRITE!("cast(CARD32*) (dst + 8)",
+	      "((s0 & 0xffffff) >> 16) | (s1 << 8)")~";");
 } else {
-	WRITE(cast(CARD32*) (dst + 8), (s0 << 24) | (s1 & 0xffffff));
+	mixin(WRITE!("cast(CARD32*) (dst + 8)", "(s0 << 24) | (s1 & 0xffffff)")~";");
 }
 	dst += 12;
 	w -= 4;
     }
     while (w--) {
-	pixel = READ(src++);
+	pixel = mixin(READ!("src++"));
 	mixin(Put24!(`dst`, `pixel`));
 	dst += 3;
     }
@@ -110,11 +126,11 @@ void shadowUpdate32to24(ScreenPtr pScreen, shadowBufPtr pBuf)
     FbBits* shaBase = void, shaLine = void;
     CARD8* winBase = null, winLine = void;
 
-    fbGetDrawable(&pShadow.drawable, shaBase, shaStride, shaBpp, shaXoff,
-                  shaYoff);
+    mixin(fbGetDrawable!("(&pShadow.drawable)", "shaBase", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
 
     /* just get the initial window base + stride */
-    winBase = (*pBuf.window)(pScreen, 0, 0, SHADOW_WINDOW_WRITE,
+    winBase = cast(ubyte*)(*pBuf.window)(pScreen, 0, 0, SHADOW_WINDOW_WRITE,
 			      &winSize, pBuf.closure);
 
     while (nbox--) {

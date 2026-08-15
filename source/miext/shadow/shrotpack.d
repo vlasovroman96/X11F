@@ -45,56 +45,57 @@ public import    include.fb;
 
 enum DANDEBUG =         0;
 
-enum ROTATE = 0;
+// enum ROTATE = 0;
 
-static if (ROTATE == 270) {
+mixin template ROTFUNCS(ushort ROTATE, DATA) {
 
-enum string SCRLEFT(string x,string y,string w,string h) = `(pScreen.height - ((` ~ y ~ `) + (` ~ h ~ `)))`;
-enum string SCRY(string x,string y,string w,string h) = `(` ~ x ~ `)`;
-enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ h ~ `)`;
-enum string FIRSTSHA(string x,string y,string w,string h) = `(((` ~ y ~ `) + (` ~ h ~ `) - 1) * shaStride + (` ~ x ~ `))`;
-enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ w ~ `)--)`;
-enum string NEXTY(string x,string y,string w,string h) = `((` ~ x ~ `)++)`;
-enum string SHASTEPX(string stride) = `-(` ~ stride ~ `)`;
-enum string SHASTEPY(string stride) = `(1)`;
+    static if (ROTATE == 270) {
+    enum string SCRLEFT(string x,string y,string w,string h) = `(pScreen.height - ((` ~ y ~ `) + (` ~ h ~ `)))`;
+    enum string SCRY(string x,string y,string w,string h) = `(` ~ x ~ `)`;
+    enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ h ~ `)`;
+    enum string FIRSTSHA(string x,string y,string w,string h) = `(((` ~ y ~ `) + (` ~ h ~ `) - 1) * shaStride + (` ~ x ~ `))`;
+    enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ w ~ `)--)`;
+    enum string NEXTY(string x,string y,string w,string h) = `((` ~ x ~ `)++)`;
+    enum string SHASTEPX(string stride) = `-(` ~ stride ~ `)`;
+    enum string SHASTEPY(string stride) = `(1)`;
 
-} else static if (ROTATE == 90) {
+    } else static if (ROTATE == 90) {
 
-enum string SCRLEFT(string x,string y,string w,string h) = `(` ~ y ~ `)`;
-enum string SCRY(string x,string y,string w,string h) = `(pScreen.width - ((` ~ x ~ `) + (` ~ w ~ `)) - 1)`;
-enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ h ~ `)`;
-enum string FIRSTSHA(string x,string y,string w,string h) = `((` ~ y ~ `) * shaStride + (` ~ x ~ ` + ` ~ w ~ ` - 1))`;
-enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ w ~ `)--)`;
-enum string NEXTY(string x,string y,string w,string h) = `(cast(void)(` ~ x ~ `))`;
-enum string SHASTEPX(string stride) = `(` ~ stride ~ `)`;
-enum string SHASTEPY(string stride) = `(-1)`;
+    enum string SCRLEFT(string x,string y,string w,string h) = `(` ~ y ~ `)`;
+    enum string SCRY(string x,string y,string w,string h) = `(pScreen.width - ((` ~ x ~ `) + (` ~ w ~ `)) - 1)`;
+    enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ h ~ `)`;
+    enum string FIRSTSHA(string x,string y,string w,string h) = `((` ~ y ~ `) * shaStride + (` ~ x ~ ` + ` ~ w ~ ` - 1))`;
+    enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ w ~ `)--)`;
+    enum string NEXTY(string x,string y,string w,string h) = `(cast(void)(` ~ x ~ `))`;
+    enum string SHASTEPX(string stride) = `(` ~ stride ~ `)`;
+    enum string SHASTEPY(string stride) = `(-1)`;
 
-} else static if (ROTATE == 180) {
+    } else static if (ROTATE == 180) {
 
-enum string SCRLEFT(string x,string y,string w,string h) = `(pScreen.width - ((` ~ x ~ `) + (` ~ w ~ `)))`;
-enum string SCRY(string x,string y,string w,string h) = `(pScreen.height - ((` ~ y ~ `) + (` ~ h ~ `)) - 1)`;
-enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ w ~ `)`;
-enum string FIRSTSHA(string x,string y,string w,string h) = `((` ~ y ~ ` + ` ~ h ~ ` - 1) * shaStride + (` ~ x ~ ` + ` ~ w ~ ` - 1))`;
-enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ h ~ `)--)`;
-enum string NEXTY(string x,string y,string w,string h) = `(cast(void)(` ~ y ~ `))`;
-enum string SHASTEPX(string stride) = `(-1)`;
-enum string SHASTEPY(string stride) = `-(` ~ stride ~ `)`;
+    enum string SCRLEFT(string x,string y,string w,string h) = `(pScreen.width - ((` ~ x ~ `) + (` ~ w ~ `)))`;
+    enum string SCRY(string x,string y,string w,string h) = `(pScreen.height - ((` ~ y ~ `) + (` ~ h ~ `)) - 1)`;
+    enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ w ~ `)`;
+    enum string FIRSTSHA(string x,string y,string w,string h) = `((` ~ y ~ ` + ` ~ h ~ ` - 1) * shaStride + (` ~ x ~ ` + ` ~ w ~ ` - 1))`;
+    enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ h ~ `)--)`;
+    enum string NEXTY(string x,string y,string w,string h) = `(cast(void)(` ~ y ~ `))`;
+    enum string SHASTEPX(string stride) = `(-1)`;
+    enum string SHASTEPY(string stride) = `-(` ~ stride ~ `)`;
 
-} else {
+    } else {
 
-enum string SCRLEFT(string x,string y,string w,string h) = `(` ~ x ~ `)`;
-enum string SCRY(string x,string y,string w,string h) = `(` ~ y ~ `)`;
-enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ w ~ `)`;
-enum string FIRSTSHA(string x,string y,string w,string h) = `((` ~ y ~ `) * shaStride + (` ~ x ~ `))`;
-enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ h ~ `)--)`;
-enum string NEXTY(string x,string y,string w,string h) = `((` ~ y ~ `)++)`;
-enum string SHASTEPX(string stride) = `(1)`;
-enum string SHASTEPY(string stride) = `(` ~ stride ~ `)`;
+    enum string SCRLEFT(string x,string y,string w,string h) = `(` ~ x ~ `)`;
+    enum string SCRY(string x,string y,string w,string h) = `(` ~ y ~ `)`;
+    enum string SCRWIDTH(string x,string y,string w,string h) = `(` ~ w ~ `)`;
+    enum string FIRSTSHA(string x,string y,string w,string h) = `((` ~ y ~ `) * shaStride + (` ~ x ~ `))`;
+    enum string STEPDOWN(string x,string y,string w,string h) = `((` ~ h ~ `)--)`;
+    enum string NEXTY(string x,string y,string w,string h) = `((` ~ y ~ `)++)`;
+    enum string SHASTEPX(string stride) = `(1)`;
+    enum string SHASTEPY(string stride) = `(` ~ stride ~ `)`;
 
-}
+    }
 
-void FUNC(ScreenPtr pScreen, shadowBufPtr pBuf)
-{
+    void FUNC(DATA) (ScreenPtr pScreen, shadowBufPtr pBuf)
+{  
     RegionPtr damage = DamageRegion(pBuf.pDamage);
     PixmapPtr pShadow = pBuf.pPixmap;
     int nbox = RegionNumRects(damage);
@@ -191,3 +192,6 @@ static if((DANDEBUG > 6)) {
         pbox++;
     }                           /*  nbox */
 }
+
+}
+

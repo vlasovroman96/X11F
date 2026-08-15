@@ -56,6 +56,9 @@ import os.log;
 import config.libhal;
 import os.connection;
 
+import os.WaitFor;
+
+
 /* How often to attempt reconnecting when we get booted off the bus. */
 enum RECONNECT_DELAY = (10 * 1000)     /* in ms */;
 

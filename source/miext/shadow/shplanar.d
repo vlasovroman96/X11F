@@ -41,6 +41,9 @@ import    include.gcstruct;
 import include.shadow;
 import    include.fb;
 
+public import fb.fballpriv;
+
+
 /*
  * 32 4-bit pixels per write
  */
@@ -76,14 +79,14 @@ enum string GetBits(string p,string o,string d) = `{
     m4 = m2 & 0x40404040; 
     m5 = m3 | m4; 
     m6 = m5 | (m5 >> 20); 
-    ` ~ d ~ ` = m6 | (m6 >> 10); 
+    ` ~ d ~ ` = cast(ubyte)(m6 | (m6 >> 10)); 
 }`;
 } else {
 enum string GetBits(string p,string o,string d) = `{
     m = sha[` ~ o ~ `]; 
     m5 = ((m << (7 - (` ~ p ~ `))) & 0x80808080) | (((m >> (` ~ p ~ `)) << 2) & 0x40404040); 
     m6 = m5 | (m5 >> 20); 
-    ` ~ d ~ ` = m6 | (m6 >> 10); 
+    ` ~ d ~ ` = cast(ubyte)(m6 | (m6 >> 10)); 
 }`;
 }
 
@@ -106,8 +109,8 @@ void shadowUpdatePlanar4(ScreenPtr pScreen, shadowBufPtr pBuf)
     CARD32 m = void, m5 = void, m6 = void;
     CARD8 s1 = void, s2 = void, s3 = void, s4 = void;
 
-    fbGetStipDrawable(&pShadow.drawable, shaBase, shaStride, shaBpp, shaXoff,
-                      shaYoff);
+        mixin(fbGetStipDrawable!("(&pShadow.drawable)", "shaBase", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
     while (nbox--) {
         x = (pbox.x1) * shaBpp;
         y = (pbox.y1);

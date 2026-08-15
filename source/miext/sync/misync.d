@@ -28,6 +28,7 @@ import build.dix_config;
 
 import include.scrnintstr;
 import miext.sync.misync_priv;
+import include.misyncstr;
 // import miext.sync.misync;
 
 DevPrivateKeyRec miSyncScreenPrivateKey;
@@ -79,7 +80,7 @@ void miSyncFenceDeleteTrigger(SyncTrigger* pTrigger)
 /* Machine independent portion of the fence sync object implementation */
 void miSyncInitFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered)
 {
-    SyncScreenPrivPtr pScreenPriv = SYNC_SCREEN_PRIV(pScreen);
+    SyncScreenPrivPtr pScreenPriv = mixin(SYNC_SCREEN_PRIV!("pScreen"));
 
     static const(SyncFenceFuncsRec) miSyncFenceFuncs = {
         &miSyncFenceSetTriggered,
@@ -103,7 +104,7 @@ void miSyncDestroyFence(SyncFence* pFence)
 
     if (pFence.sync.initialized) {
         ScreenPtr pScreen = pFence.pScreen;
-        SyncScreenPrivPtr pScreenPriv = SYNC_SCREEN_PRIV(pScreen);
+        SyncScreenPrivPtr pScreenPriv = mixin(SYNC_SCREEN_PRIV!("pScreen"));
         SyncTriggerList* ptl = void, pNext = void;
 
         /* tell all the fence's triggers that the counter has been destroyed */
@@ -141,7 +142,7 @@ void miSyncTriggerFence(SyncFence* pFence)
 
 SyncScreenFuncsPtr miSyncGetScreenFuncs(ScreenPtr pScreen)
 {
-    SyncScreenPrivPtr pScreenPriv = SYNC_SCREEN_PRIV(pScreen);
+    SyncScreenPrivPtr pScreenPriv = mixin(SYNC_SCREEN_PRIV!("pScreen"));
 
     return &pScreenPriv.funcs;
 }
@@ -161,7 +162,7 @@ Bool miSyncSetup(ScreenPtr pScreen)
             return FALSE;
     }
 
-    pScreenPriv = SYNC_SCREEN_PRIV(pScreen);
+    pScreenPriv = mixin(SYNC_SCREEN_PRIV!("pScreen"));
 
     if (!pScreenPriv.funcs.CreateFence) {
         pScreenPriv.funcs = miSyncScreenFuncs;

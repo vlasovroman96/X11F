@@ -39,6 +39,7 @@ import    include.regionstr;
 import    dix.globals;
 import    include.gcstruct;
 import include.shadow;
+import dix.screen_hooks;
 
 private DevPrivateKeyRec shadowScrPrivateKeyRec;
 enum shadowScrPrivateKey = (&shadowScrPrivateKeyRec);
@@ -49,7 +50,7 @@ enum string shadowBuf(string pScr) = `shadowBufPtr pBuf = ` ~ shadowGetBuf!(pScr
 
 enum string wrap(string priv, string real_, string mem) = `{
     ` ~ priv ~ `.` ~ mem ~ ` = ` ~ real_ ~ `.` ~ mem ~ `; 
-    ` ~ real_ ~ `.` ~ mem ~ ` = shadow##mem; 
+    ` ~ real_ ~ `.` ~ mem ~ ` = &shadow`~mem~`; 
 }`;
 
 enum string unwrap(string priv, string real_, string mem) = `{
@@ -97,7 +98,7 @@ private void shadowGetImage(DrawablePtr pDrawable, int sx, int sy, int w, int h,
 
 private void shadowCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    dixScreenUnhookClose(pScreen, shadowCloseScreen);
+    dixScreenUnhookClose(pScreen, &shadowCloseScreen);
 
     mixin(shadowBuf!(`pScreen`));
     mixin(unwrap!(`pBuf`, `pScreen`, `GetImage`));
@@ -132,10 +133,10 @@ Bool shadowSetup(ScreenPtr pScreen)
 
     mixin(wrap!(`pBuf`, `pScreen`, `GetImage`));
     mixin(wrap!(`pBuf`, `pScreen`, `BlockHandler`));
-    pBuf.update = 0;
-    pBuf.window = 0;
-    pBuf.pPixmap = 0;
-    pBuf.closure = 0;
+    pBuf.update = null;
+    pBuf.window = null;
+    pBuf.pPixmap = null;
+    pBuf.closure = null;
     pBuf.randr = 0;
 
     dixSetPrivate(&pScreen.devPrivates, shadowScrPrivateKey, pBuf);
@@ -179,10 +180,10 @@ void shadowRemove(ScreenPtr pScreen, PixmapPtr pPixmap)
 
     if (pBuf.pPixmap) {
         DamageUnregister(pBuf.pDamage);
-        pBuf.update = 0;
-        pBuf.window = 0;
+        pBuf.update = null;
+        pBuf.window = null;
         pBuf.randr = 0;
-        pBuf.closure = 0;
-        pBuf.pPixmap = 0;
+        pBuf.closure = null;
+        pBuf.pPixmap = null;
     }
 }

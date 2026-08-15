@@ -33,12 +33,14 @@ extern(C): __gshared:
  
 public import os.bug_priv;
 import externs.X11.Xmd;
+public import fb.fballpriv;
+
 
     /*
      *  Basic transpose step
      */
 
-pragma(inline, true) private void _transp(CARD32* d, uint i1, uint i2, uint shift, CARD32 mask)
+pragma(inline, true)void _transp(CARD32* d, uint i1, uint i2, uint shift, CARD32 mask)
 {
     CARD32 t = (d[i1] ^ (d[i2] >> shift)) & mask;
 
@@ -47,11 +49,11 @@ pragma(inline, true) private void _transp(CARD32* d, uint i1, uint i2, uint shif
 }
 
 
-pragma(inline, true) private void c2p_unsupported() {
+pragma(inline, true)void c2p_unsupported() {
     mixin(BUG_WARN!("1"));
 }
 
-pragma(inline, true) private CARD32 get_mask(uint n)
+pragma(inline, true)CARD32 get_mask(uint n)
 {
     switch (n) {
     case 1:
@@ -79,7 +81,7 @@ pragma(inline, true) private CARD32 get_mask(uint n)
      *  Transpose operations on 8 32-bit words
      */
 
-pragma(inline, true) private void transp8(CARD32* d, uint n, uint m)
+pragma(inline, true) void transp8(CARD32* d, uint n, uint m)
 {
     CARD32 mask = get_mask(n);
 
@@ -121,7 +123,7 @@ pragma(inline, true) private void transp8(CARD32* d, uint n, uint m)
      *  Transpose operations on 4 32-bit words
      */
 
-pragma(inline, true) private void transp4(CARD32* d, uint n, uint m)
+pragma(inline, true) void transp4(CARD32* d, uint n, uint m)
 {
     CARD32 mask = get_mask(n);
 
@@ -148,7 +150,7 @@ pragma(inline, true) private void transp4(CARD32* d, uint n, uint m)
      *  Transpose operations on 4 32-bit words (reverse order)
      */
 
-pragma(inline, true) private void transp4x(CARD32* d, uint n, uint m)
+pragma(inline, true) void transp4x(CARD32* d, uint n, uint m)
 {
     CARD32 mask = get_mask(n);
 
@@ -168,7 +170,7 @@ pragma(inline, true) private void transp4x(CARD32* d, uint n, uint m)
      *  Transpose operations on 2 32-bit words
      */
 
-pragma(inline, true) private void transp2(CARD32* d, uint n)
+pragma(inline, true)void transp2(CARD32* d, uint n)
 {
     CARD32 mask = get_mask(n);
 
@@ -182,7 +184,7 @@ pragma(inline, true) private void transp2(CARD32* d, uint n)
      *  Transpose operations on 2 32-bit words (reverse order)
      */
 
-pragma(inline, true) private void transp2x(CARD32* d, uint n)
+pragma(inline, true)void transp2x(CARD32* d, uint n)
 {
     CARD32 mask = get_mask(n);
 

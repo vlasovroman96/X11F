@@ -24,11 +24,11 @@ enum string SYNC_SCREEN_PRIV(string pScreen) = `
     cast(SyncScreenPrivPtr) dixLookupPrivate(&` ~ pScreen ~ `.devPrivates, 
                                          &miSyncScreenPrivateKey)`;
 
-Bool miSyncFenceCheckTriggered(SyncFence* pFence);
-void miSyncFenceSetTriggered(SyncFence* pFence);
-void miSyncFenceReset(SyncFence* pFence);
-void miSyncFenceAddTrigger(SyncTrigger* pTrigger);
-void miSyncFenceDeleteTrigger(SyncTrigger* pTrigger);
+// Bool miSyncFenceCheckTriggered(SyncFence* pFence);
+// void miSyncFenceSetTriggered(SyncFence* pFence);
+// void miSyncFenceReset(SyncFence* pFence);
+// void miSyncFenceAddTrigger(SyncTrigger* pTrigger);
+// void miSyncFenceDeleteTrigger(SyncTrigger* pTrigger);
 int miSyncInitFenceFromFD(DrawablePtr pDraw, SyncFence* pFence, int fd, BOOL initially_triggered);
 int miSyncFDFromFence(DrawablePtr pDraw, SyncFence* pFence);
 

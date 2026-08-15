@@ -57,6 +57,7 @@ import externs.X11.extensions.dpmsconst;
 import externs.X11.extensions.dpmsproto;
 import dix.extension;
 
+import os.WaitFor;
 import dix.events;
 
 Bool noDPMSExtension = FALSE;

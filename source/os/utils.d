@@ -141,6 +141,8 @@ version = X_INCLUDE_NETDB_H;
 import core.stdc.errno;
 import Xext.dpms;
 
+
+
 Bool CoreDump;
 
 Bool enableIndirectGLX = FALSE;

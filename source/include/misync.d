@@ -41,8 +41,8 @@ struct _syncScreenFuncs {
 }alias SyncScreenFuncsRec = _syncScreenFuncs;
 alias SyncScreenFuncsPtr = _syncScreenFuncs*;
 
-extern void miSyncScreenCreateFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered);
-extern void miSyncScreenDestroyFence(ScreenPtr pScreen, SyncFence* pFence);
+// extern void miSyncScreenCreateFence(ScreenPtr pScreen, SyncFence* pFence, Bool initially_triggered);
+// extern void miSyncScreenDestroyFence(ScreenPtr pScreen, SyncFence* pFence);
 
 alias SyncFenceSetTriggeredFunc = void function(SyncFence* pFence);
 alias SyncFenceResetFunc = void function(SyncFence* pFence);

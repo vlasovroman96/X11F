@@ -51,20 +51,22 @@ public import fb.fbcmap_mi;
 public import fb.fbwindow;
 
 
-version (FB_ACCESS_WRAPPER) {
+// version (FB_ACCESS_WRAPPER) {
 
-public import wfbrename;
-enum string FBPREFIX(string x) = `wfb##x`;
-enum string WRITE(string ptr, string val) = `((*wfbWriteMemory)((` ~ ptr ~ `), (` ~ val ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
-enum string READ(string ptr) = `((*wfbReadMemory)((` ~ ptr ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
+// public import wfbrename;
+// enum string FBPREFIX(string x) = `wfb##x`;
+// enum string WRITE(string ptr, string val) = `((*wfbWriteMemory)((` ~ ptr ~ `), (` ~ val ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
+// enum string READ(string ptr) = `((*wfbReadMemory)((` ~ ptr ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
 
-} else {
+// } else {
 
 enum string FBPREFIX(string x) = `fb##x`;
-enum string WRITE(string ptr, string val) = `(*(` ~ ptr ~ `) = (` ~ val ~ `))`;
+enum string WRITE(string ptr, string val) = `
+	(*(` ~ ptr ~ `) = (` ~ val ~ `))`
+;
 enum string READ(string ptr) = `(*(` ~ ptr ~ `))`;
 
-}
+// }
 
 /*
  * This single define controls the basic size of data manipulated
@@ -216,7 +218,7 @@ enum string FbDoLeftMaskByteRRop(string dst,string lb,string l,string and,string
     } 
 }`;
 
-enum string FbDoRightMaskByteRRop(string dst,string rb,string r,string and,string xor) = `{ 
+enum string FbDoRightMaskByteRRop(string dst,string rb,string r,string and,string xor) = ` 
     switch (` ~ rb ~ `) { 
     case 1: 
 	` ~ FbStorePart!(dst,`0`,`CARD8`,xor) ~ `; 
@@ -229,9 +231,9 @@ enum string FbDoRightMaskByteRRop(string dst,string rb,string r,string and,strin
 	` ~ FbStorePart!(dst,`2`,`CARD8`,xor) ~ `; 
 	break; 
     default: 
-	` ~ WRITE!(dst, FbDoMaskRRop!(READ!(dst), and , xor, r)) ~ `; 
+	` ~ WRITE!(dst, FbDoMaskRRop!(READ!(dst), and , xor, r)) ~ `;
     } 
-}`;
+`;
 
 /* Framebuffer access wrapper */
 alias ReadMemoryProcPtr = FbBits function(const(void)* src, int size);

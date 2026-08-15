@@ -20,6 +20,7 @@
  * OF THIS SOFTWARE.
  */
 
+ #pragma attribute(push, nogc, nothrow)
 #ifndef _XSHMFENCE_H_
 #define _XSHMFENCE_H_
 
@@ -51,3 +52,4 @@ _X_EXPORT void
 xshmfence_unmap_shm(struct xshmfence *f);
 
 #endif /* _XSHMFENCE_H_ */
+#pragma attribute(pop)

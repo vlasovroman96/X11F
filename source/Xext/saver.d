@@ -50,6 +50,7 @@ import os.osdep;
 import os.screensaver;
 import Xext.panoramiX;
 import Xext.panoramiXsrv;
+import os.WaitFor;
 
 import include.misc;
 import include.os;

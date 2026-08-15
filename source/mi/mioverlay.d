@@ -29,6 +29,8 @@ import include.mioverlay;
 import dix.screen_hooks;
 import dix.events;
 import externs.X11.extensions.shapeconst;
+import mi.mivaltree;
+
 
 struct _MiOverlayValDataRec {
     RegionRec exposed;

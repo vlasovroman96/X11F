@@ -105,12 +105,14 @@ import include.validate;
 import    include.windowstr;
 import    include.regionstr;
 import    dix.globals;
+import mi.mivaltree;
+import os.log;
 
 
 
-enum string HasParentRelativeBorder(string w) = `(!(` ~ w ~ `).borderIsPixel && 
-				    HasBorder(` ~ w ~ `) && 
-				    (` ~ w ~ `).backgroundState == ParentRelative)`;
+// enum string HasParentRelativeBorder(string w) = `(!(` ~ w ~ `).borderIsPixel && 
+// 				    HasBorder(` ~ w ~ `) && 
+// 				    (` ~ w ~ `).backgroundState == ParentRelative)`;
 
 /*
  *-----------------------------------------------------------------------
@@ -147,7 +149,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
      * completely). If the window is completely obscured, none of the
      * universe will cover the rectangle.
      */
-    borderSize.x1 = cast(short)pParent.drawable.x - mixin(wBorderWidth!("pParent"));
+    borderSize.x1 = cast(short)(pParent.drawable.x - mixin(wBorderWidth!("pParent")));
         dy = cast(short)32767;
     borderSize.y2 = cast(short)dy;
 
@@ -161,7 +163,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
         {
             RegionPtr pBounding = void;
 
-            if ((pBounding = wBoundingShape(pParent))) {
+            if ((pBounding = mixin(wBoundingShape!("pParent"))) !is null) {
                 switch (miShapedWindowIn(universe, pBounding, &borderSize,
                                          pParent.drawable.x,
                                          pParent.drawable.y)) {
@@ -236,6 +238,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
             return;
         }
         /* fall through */
+        goto default;
     default:
         /*
          * To calculate exposures correctly, we have to translate the old
@@ -270,7 +273,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
      * This leaves a region of pieces that weren't exposed before.
      */
 
-    if (HasBorder(pParent)) {
+    if (mixin(HasBorder!("pParent"))) {
         if (borderVisible) {
             /*
              * when the border changes shape, the old visible portions
@@ -305,7 +308,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
     else
         RegionCopy(&pParent.borderClip, universe);
 
-    if ((pChild = pParent.firstChild) && pParent.mapped) {
+    if ((pChild = pParent.firstChild) !is null && pParent.mapped) {
         RegionNull(&childUniverse);
         RegionNull(&childUnion);
         if ((pChild.drawable.y < pParent.lastChild.drawable.y) ||

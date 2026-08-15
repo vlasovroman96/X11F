@@ -40,6 +40,8 @@ import    dix.globals;
 import    include.gcstruct;
 import include.shadow;
 import    include.fb;
+public import fb.fballpriv;
+
 
 void shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
 {
@@ -57,8 +59,8 @@ void shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
     FbBits* winBase = null, win = void;
     CARD32 winSize = void;
 
-    fbGetDrawable(&pShadow.drawable, shaBase, shaStride, shaBpp, shaXoff,
-                  shaYoff);
+        mixin(fbGetDrawable!("(&pShadow.drawable)", "shaBase", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
     while (nbox--) {
         x = pbox.x1 * shaBpp;
         y = pbox.y1;
@@ -83,7 +85,7 @@ void shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
                 if (i <= 0 || scr < scrBase) {
                     winBase = cast(FbBits*) (*pBuf.window) (pScreen,
                                                           y,
-                                                          scr * FbBits.sizeof,
+                                                          cast(uint)(scr * FbBits.sizeof),
                                                           SHADOW_WINDOW_WRITE,
                                                           &winSize,
                                                           pBuf.closure);

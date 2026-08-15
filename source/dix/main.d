@@ -129,6 +129,7 @@ import os.log;
 import dix.dix_priv;
 import externs.attrs;
 import os.connection;
+import os.WaitFor;
 
 version (DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;

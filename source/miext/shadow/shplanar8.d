@@ -40,6 +40,8 @@ import    dix.globals;
 import    include.gcstruct;
 import include.shadow;
 import    include.fb;
+public import fb.fballpriv;
+
 
 /*
  * Expose 8bpp depth 4
@@ -79,14 +81,14 @@ enum string GetBits(string p,string o,string d) = `{
     m6 = m5 >> 9; 
     m7 = m5 | m6; 
     m8 = m7 >> 18; 
-    ` ~ d ~ ` = m7 | m8; 
+    ` ~ d ~ ` = cast(ubyte)(m7 | m8); 
 }`;
 } else {
 enum string GetBits(string p,string o,string d) = `{ 
     CARD32 m5 = void, m7 = void; 
     m5 = ((sha[` ~ o ~ `] << (7 - (` ~ p ~ `))) & 0x80808080) | ((sha[(` ~ o ~ `)+1] << (3 - (` ~ p ~ `))) & 0x08080808); 
     m7 = m5 | (m5 >> 9); 
-    ` ~ d ~ ` = m7 | (m7 >> 18); 
+    ` ~ d ~ ` = cast(ubyte)(m7 | (m7 >> 18)); 
 }`;
 }
 
@@ -108,8 +110,8 @@ void shadowUpdatePlanar4x8(ScreenPtr pScreen, shadowBufPtr pBuf)
     CARD32 winSize = void;
     int plane = void;
 
-    fbGetStipDrawable(&pShadow.drawable, shaBase, shaStride, shaBpp, shaXoff,
-                      shaYoff);
+        mixin(fbGetStipDrawable!("(&pShadow.drawable)", "shaBase", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
     while (nbox--) {
         x = pbox.x1 * shaBpp;
         y = pbox.y1;

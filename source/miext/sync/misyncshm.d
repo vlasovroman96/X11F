@@ -39,6 +39,8 @@ import miext.sync.misyncshm;
 import miext.sync.misyncfd;
 import include.pixmapstr;
 import include.misyncfd;
+import miext.sync.misync;
+
 
 private DevPrivateKeyRec syncShmFencePrivateKey;
 
@@ -174,8 +176,8 @@ Bool miSyncShmScreenInit(ScreenPtr pScreen)
 
     funcs = miSyncGetScreenFuncs(pScreen);
 
-    funcs.CreateFence = miSyncShmScreenCreateFence;
-    funcs.DestroyFence = miSyncShmScreenDestroyFence;
+    funcs.CreateFence = &miSyncShmScreenCreateFence;
+    funcs.DestroyFence = &miSyncShmScreenDestroyFence;
 
     return TRUE;
 }

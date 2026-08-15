@@ -34,7 +34,9 @@ public import    include.gcstruct;
 public import include.shadow;
 public import    include.fb;
 
-enum ROTATE = 90;
+// enum ROTATE = 90;
+
+mixin template SHROTPACK_YX(ushort ROTATE, DATA) {
 
 static if (ROTATE == 270) {
 
@@ -58,7 +60,7 @@ version (__arm__) {
 version = PREFETCH;
 }
 
-void FUNC(ScreenPtr pScreen, shadowBufPtr pBuf)
+void FUNC(Data)(ScreenPtr pScreen, shadowBufPtr pBuf)
 {
     RegionPtr damage = DamageRegion(pBuf.pDamage);
     PixmapPtr pShadow = pBuf.pPixmap;
@@ -153,4 +155,5 @@ version (PREFETCH) {
         }
         pbox++;
     }                           /*  nbox */
+}
 }

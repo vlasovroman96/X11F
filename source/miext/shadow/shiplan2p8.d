@@ -45,6 +45,8 @@ import    include.fb;
 import    miext.shadow.c2p_core;
 
 
+
+
     /*
      *  Perform a full C2P step on 16 8-bit pixels, stored in 4 32-bit words
      *  containing
@@ -68,7 +70,7 @@ private void c2p_16x8(CARD32* d)
 
 pragma(inline, true) private void store_iplan2p8(void* dst, const(CARD32)* d)
 {
-    CARD32* p = dst;
+    CARD32* p = cast(uint*)dst;
 
     *p++ = d[1];
     *p++ = d[3];
@@ -97,8 +99,8 @@ void shadowUpdateIplan2p8(ScreenPtr pScreen, shadowBufPtr pBuf)
         CARD32[4] words = void;
     }_D d = void;
 
-    fbGetDrawable(&pShadow.drawable, shaBase, shaStride, shaBpp, shaXoff,
-                  shaYoff);
+        mixin(fbGetDrawable!("(&pShadow.drawable)", "shaBase", "shaStride", "shaBpp", "shaXoff",
+                  "shaYoff"));
     shaStride *= FbBits.sizeof / CARD16.sizeof;
 
     while (nbox--) {
@@ -123,11 +125,11 @@ void shadowUpdateIplan2p8(ScreenPtr pScreen, shadowBufPtr pBuf)
             if (!win)
                 return;
             for (i = 0; i < n; i++) {
-                memcpy(d.bytes, sha, typeof(d.bytes).sizeof);
-                c2p_16x8(d.words);
-                store_iplan2p8(win, d.words);
-                sha += ((d.bytes) / typeof(*sha).sizeof).sizeof;
-                win += ((d.bytes) / typeof(*win).sizeof).sizeof;
+                memcpy(d.bytes.ptr, sha, typeof(d.bytes).sizeof);
+                c2p_16x8(d.words.ptr);
+                store_iplan2p8(win, d.words.ptr);
+                sha += cast(ulong)((d.bytes).sizeof / typeof(*sha).sizeof);
+                win += cast(ulong)((d.bytes).sizeof / typeof(*win).sizeof);
             }
             shaLine += shaStride;
             y++;
