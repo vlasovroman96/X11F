@@ -41,6 +41,13 @@ import include.os;
 import os.osdep;
 import os.mitauth;
 import include.dixstruct;
+import externs.gnu;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import os.WaitFor;
+import dix.resource;
+import os.timingsafe_memcmp;
+
 
 struct auth {
     auth* next;
@@ -63,7 +70,7 @@ XID MitAddCookie(ushort data_length, const(char)* data)
     new_ = cast(auth*) calloc(1, auth.sizeof);
     if (!new_)
         return 0;
-    new_.data = calloc(1, cast(uint) data_length);
+    new_.data = cast(char*)calloc(1, cast(uint) data_length);
     if (!new_.data) {
         free(new_);
         return 0;
@@ -76,7 +83,7 @@ XID MitAddCookie(ushort data_length, const(char)* data)
     return new_.id;
 }
 
-XID MitCheckCookie(ushort data_length, const(char)* data, ClientPtr client, const(char**) reason)
+XID MitCheckCookie(ushort data_length, const(char)* data, ClientPtr client, const(char*)* reason)
 {
     auth* auth = void;
 
@@ -85,7 +92,7 @@ XID MitCheckCookie(ushort data_length, const(char)* data, ClientPtr client, cons
             timingsafe_memcmp(data, auth.data, cast(int) data_length) == 0)
             return auth.id;
     }
-    *reason = "Invalid MIT-MAGIC-COOKIE-1 key";
+    reason = cast(const(char*)*)"Invalid MIT-MAGIC-COOKIE-1 key".ptr;
     return (XID) -1;
 }
 
@@ -152,7 +159,7 @@ XID MitGenerateCookie(uint data_length, const(char)* data, uint* data_length_ret
     if (!id)
         return 0;
 
-    *data_return = cookie;
+    *data_return = cookie.ptr;
     *data_length_return = cookie.sizeof;
     return id;
 }

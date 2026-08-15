@@ -56,6 +56,7 @@ import build.dix_config;
 import core.stdc.errno;
 import core.stdc.stdio;
 import core.stdc.signal;
+import core.sys.posix.string;
 //import externs.X11.X;
 // //import externs.X11.Xos;
 version (HAVE_DLFCN_H) {
@@ -77,6 +78,15 @@ import include.os;
 import include.opaque;
 import include.dixstruct;
 import dix.dixstruct_priv;
+import os.log;
+import externs.gnu;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import os.WaitFor;
+import dix.resource;
+import os.timingsafe_memcmp;
+import std.conv;
+//public import ext
 
 static if (!HasVersion!"Windows") {
 import core.sys.posix.sys.resource;
@@ -221,7 +231,7 @@ void OsInit()
 
     if (!been_here) {
 static if (!HasVersion!"Windows" || HasVersion!"Cygwin") {
-        sigaction act = void, oact = void;
+        sigaction_t act = void, oact = void;
         int i = void;
 
         int[11] siglist = [ SIGSEGV, SIGQUIT, SIGILL, SIGFPE, SIGBUS,
@@ -229,9 +239,10 @@ static if (!HasVersion!"Windows" || HasVersion!"Cygwin") {
             SIGSYS,
             SIGXCPU,
             SIGXFSZ,
-// #ifdef SIGEMT
-            SIGEMT,
-// #endif
+            0,
+// // #ifdef SIGEMT
+//             SIGEMT,
+// // #endif
             0 /* must be last */
         ];
         sigemptyset(&act.sa_mask);
@@ -239,7 +250,7 @@ version (SA_SIGINFO) {
         act.sa_sigaction = OsSigHandler;
         act.sa_flags = SA_SIGINFO;
 } else {
-        act.sa_handler = OsSigHandler;
+        act.sa_handler = &OsSigHandler;
         act.sa_flags = 0;
 }
         for (i = 0; siglist[i] != 0; i++) {

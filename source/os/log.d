@@ -92,6 +92,12 @@ import core.sys.posix.sys.stat;
 import core.stdc.time;
 // //import externs.X11.Xfuncproto;
 // //import externs.X11.Xos;
+import externs.gnu;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import os.WaitFor;
+
+
 
 version (CONFIG_SYSLOG) {
 import core.sys.posix.syslog;
@@ -186,7 +192,7 @@ private char* LogFilePrep(const(char)* fname, const(char)* backup, const(char)* 
         FatalError("Cannot allocate space for the log file name\n");
 
     if (backup && *backup) {
-        stat buf = void;
+        stat_t buf = void;
 
         if (!stat(logFileName, &buf) && S_ISREG(buf.st_mode)) {
             char* suffix = void;
@@ -257,10 +263,10 @@ version (Windows) {} else {
         cast(void) !strerror_r(errno,dsc.ptr,dsc.sizeof);
 } version (Windows) {
         char* dsc = void;
-        dsc=strerror(errno);
+        dsc=strerror(errno.ptr);
 }
-        LogFailedWriteStdout(dsc,strlen(dsc));
-        LogFailedWriteStdout("\n",1);
+        LogFailedWriteStdout(dsc.ptr,strlen(dsc.ptr));
+        LogFailedWriteStdout("\n".ptr,1);
         {
 	    char[44] error = "Intended to write the following to stderr:\n";
             LogFailedWriteStdout(error.ptr,error.sizeof);
@@ -287,8 +293,8 @@ version (Windows) {} else {
         char* dsc = void;
         dsc=strerror(errno);
 }
-        LogFailedWrite(dsc,strlen(dsc));
-        LogFailedWrite("\n",1);
+        LogFailedWrite(dsc.ptr,strlen(dsc.ptr));
+        LogFailedWrite("\n".ptr,1);
         {
             char[46] error = "Intended to write the following to log file:\n";
             LogFailedWrite(error.ptr,error.sizeof);
@@ -459,7 +465,7 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
 {
     int f_idx = 0;
     int s_idx = 0;
-    int f_len = strlen_sigsafe(f);
+    int f_len = cast(int)strlen_sigsafe(f);
     char* string_arg = void;
     char[21] number = void;
     int p_len = void;
@@ -496,7 +502,7 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
         }
 
         /* is there a precision? */
-        precision = size;
+        precision = cast(int)size;
         if (f[f_idx] == '.') {
             f_idx++;
             if (f[f_idx] == '*') {
@@ -539,10 +545,10 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
             else if (length_modifier & LMOD_SIZET)
                 ui = va_arg!size_t(args);
             else
-                ui = va_arg!unsigned(args);
+                ui = va_arg!uint(args);
 
             FormatUInt64(ui, number.ptr);
-            p_len = strlen_sigsafe(number.ptr);
+            p_len = cast(int)strlen_sigsafe(number.ptr);
 
             for (i = 0; i < p_len && s_idx < size - 1; i++)
                 string[s_idx++] = number[i];
@@ -559,7 +565,7 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
                 si = va_arg!int(args);
 
             FormatInt64(si, number.ptr);
-            p_len = strlen_sigsafe(number.ptr);
+            p_len = cast(int)strlen_sigsafe(number.ptr);
 
             for (i = 0; i < p_len && s_idx < size - 1; i++)
                 string[s_idx++] = number[i];
@@ -569,9 +575,9 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
             string[s_idx++] = '0';
             if (s_idx < size - 1)
                 string[s_idx++] = 'x';
-            ui = cast(uintptr_t)va_arg!void*(args);
+            ui = cast(uintptr_t)va_arg!(void*)(args);
             FormatUInt64Hex(ui, number.ptr);
-            p_len = strlen_sigsafe(number.ptr);
+            p_len = cast(int)strlen_sigsafe(number.ptr);
 
             for (i = 0; i < p_len && s_idx < size - 1; i++)
                 string[s_idx++] = number[i];
@@ -586,10 +592,10 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
             else if (length_modifier & LMOD_SIZET)
                 ui = va_arg!size_t(args);
             else
-                ui = va_arg!unsigned(args);
+                ui = va_arg!uint(args);
 
             FormatUInt64Hex(ui, number.ptr);
-            p_len = strlen_sigsafe(number.ptr);
+            p_len = cast(int)strlen_sigsafe(number.ptr);
 
             for (i = 0; i < p_len && s_idx < size - 1; i++)
                 string[s_idx++] = number[i];
@@ -598,7 +604,7 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
             {
                 double d = va_arg!double(args);
                 FormatDouble(d, number.ptr);
-                p_len = strlen_sigsafe(number.ptr);
+                p_len = cast(int)strlen_sigsafe(number.ptr);
 
                 for (i = 0; i < p_len && s_idx < size - 1; i++)
                     string[s_idx++] = number[i];
@@ -606,7 +612,7 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
             break;
         case 'c':
             {
-                char c = va_arg!int(args);
+                char c = va_arg!char(args);
                 if (s_idx < size - 1)
                     string[s_idx++] = c;
             }
@@ -615,8 +621,8 @@ private int vpnprintf(char* string, int size_in, const(char)* f, va_list args)
             string[s_idx++] = '%';
             break;
         default:
-            BUG_WARN_MSG(f[f_idx], "Unsupported printf directive '%c'\n", f[f_idx]);
-            va_arg!char*(args);
+            // BUG_WARN_MSG(f[f_idx], "Unsupported printf directive '%c'\n", f[f_idx]);
+            va_arg!(char*)(args);
             string[s_idx++] = '%';
             if (s_idx < size - 1)
                 string[s_idx++] = f[f_idx];
@@ -776,7 +782,7 @@ void LogVMessageVerb(MessageType type, int verb, const(char)* format, va_list ar
 
     len += vpnprintf(&buf[len], ((buf).ptr - len).sizeof, format, args);
 
-    writeLog(verb, buf.ptr, len);
+    writeLog(verb, buf.ptr, cast(int)len);
 }
 
 /* Log message with verbosity level specified. -- signal safe */
@@ -814,7 +820,7 @@ private void LogVHdrMessageVerb(MessageType type, int verb, const(char)* msg_for
     if (msg_format && ((buf).ptr - len).sizeof > 1)
         len += vpnprintf(&buf[len], ((buf).ptr - len).sizeof, msg_format, msg_args);
 
-    writeLog(verb, buf.ptr, len);
+    writeLog(verb, buf.ptr, cast(int)len);
 }
 
 void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...)
@@ -854,9 +860,9 @@ private char* AuditPrefix()
 
     time(&tm);
     autime = ctime(&tm);
-    if ((s = strchr(autime, '\n')))
+    if ((s = strchr(autime, '\n')) !is null)
         *s = '\0';
-    len = strlen(AUDIT_PREFIX) + strlen(autime) + 10 + 1;
+    len = cast(int)(strlen(AUDIT_PREFIX) + strlen(autime) + 10 + 1);
     char* tmpBuf = cast(char*) calloc(1, len);
     if (!tmpBuf)
         return null;

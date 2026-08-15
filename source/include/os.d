@@ -226,7 +226,7 @@ version (HAVE_STRNDUP) {} else {
 }
 
 version (HAVE_TIMINGSAFE_MEMCMP) {} else {
-extern void timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
+// extern void timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
 }
 
 /* Flags for log messages. */

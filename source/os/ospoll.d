@@ -43,6 +43,7 @@ import os.xserver_poll;
 
 import os.ospoll;
 import include.list;
+import core.sys.linux.epoll;
 
 static if (!HAVE_OSPOLL && HasVersion!"HAVE_POLLSET_CREATE") {
 import sys.pollset;
@@ -80,8 +81,8 @@ struct ospollfd {
     int fd;
     int xevents;
     short revents;
-    ospoll_trigger trigger;
-    void function(int fd, int xevents, void* data) callback;
+    _ospoll_trigger trigger;
+    void function(int fd, int xevents, void* data) @nogc nothrow callback;
     void* data;
 };
 
@@ -101,7 +102,7 @@ struct ospoll_trigger
 }
 alias ospoll_trigger_ptr = ospoll_trigger*;
 
-// --- Прототипы функций управления триггером (extern(C) для совместимости) ---
+// //--- Прототипы функций управления триггером (extern(C) для совместимости) ---
 extern (C):
 
 // Создание и инициализация триггера
@@ -119,8 +120,8 @@ static if (EPOLL || PORT) {
 struct ospollfd {
     int fd;
     int xevents;
-    ospoll_trigger trigger;
-    void function(int fd, int xevents, void* data) callback;
+    _ospoll_trigger trigger;
+    void function(int fd, int xevents, void* data) @nogc nothrow callback;
     void* data;
     xorg_list deleted;
 };
@@ -195,7 +196,7 @@ private void ospoll_clean_deleted(ospoll* ospoll)
 {
     ospollfd* osfd = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("osfd", "tmp", "ospoll.deleted", "deleted", q{
+    mixin(xorg_list_for_each_entry_safe!("osfd", "tmp", "&ospoll.deleted", "deleted", q{
         xorg_list_del(&osfd.deleted);
         free(osfd);
     }));
@@ -211,7 +212,7 @@ private void ospoll_clean_deleted(ospoll* ospoll)
  */
 pragma(inline, true) private void array_insert(void* base, size_t num, size_t size, size_t pos)
 {
-    char* b = base;
+    char* b = cast(char*)base;
 
     memmove(b + (pos+1) * size,
             b + pos * size,
@@ -227,7 +228,7 @@ pragma(inline, true) private void array_insert(void* base, size_t num, size_t si
  */
 pragma(inline, true) private void array_delete(void* base, size_t num, size_t size, size_t pos)
 {
-    char* b = base;
+    char* b = cast(char*)base;
 
     memmove(b + pos * size, b + (pos + 1) * size,
             (num - pos - 1) * size);
@@ -303,7 +304,7 @@ static if (POLL) {
 }
 }
 
-bool ospoll_add(ospoll* ospoll, int fd, _ospoll_trigger trigger, void function(int fd, int xevents, void* data) callback, void* data)
+bool ospoll_add(ospoll* ospoll, int fd, _ospoll_trigger trigger, void function(int fd, int xevents, void* data) @nogc nothrow callback, void* data)
 {
     int pos = ospoll_find(ospoll, fd);
 static if (POLLSET) {
@@ -391,7 +392,7 @@ static if (EPOLL) {
 
         ev.events = 0;
         ev.data.ptr = osfd;
-        if (trigger == ospoll_trigger_edge)
+        if (trigger == _ospoll_trigger.ospoll_trigger_edge)
             ev.events |= EPOLLET;
         if (epoll_ctl(ospoll.epoll_fd, EPOLL_CTL_ADD, fd, &ev) == -1) {
             free(osfd);
@@ -513,7 +514,7 @@ private void epoll_mod(ospoll* ospoll, ospollfd* osfd)
         ev.events |= EPOLLIN;
     if (osfd.xevents & X_NOTIFY_WRITE)
         ev.events |= EPOLLOUT;
-    if (osfd.trigger == ospoll_trigger_edge)
+    if (osfd.trigger == _ospoll_trigger.ospoll_trigger_edge)
         ev.events |= EPOLLET;
     ev.data.ptr = osfd;
     cast(void) epoll_ctl(ospoll.epoll_fd, EPOLL_CTL_MOD, osfd.fd, &ev);
@@ -608,7 +609,7 @@ enum MAX_EVENTS =      256;
         short oldevents = osfd.revents;
 
         osfd.revents = (revents & (POLLIN|POLLOUT));
-        if (osfd.trigger == ospoll_trigger_edge)
+        if (osfd.trigger == _ospoll_trigger.ospoll_trigger_edge)
             revents &= ~oldevents;
         if (revents) {
             int xevents = 0;
@@ -667,7 +668,7 @@ enum MAX_EVENTS =      256;
     nready = epoll_wait(ospoll.epoll_fd, events.ptr, MAX_EVENTS, timeout);
     for (i = 0; i < nready; i++) {
         epoll_event* ev = &events[i];
-        ospollfd* osfd = ev.data.ptr;
+        ospollfd* osfd = cast(ospollfd*)ev.data.ptr;
         uint revents = ev.events;
         int xevents = 0;
 
@@ -693,7 +694,7 @@ static if (POLL) {
             short oldevents = ospoll.osfds[f].revents;
 
             ospoll.osfds[f].revents = (revents & (POLLIN|POLLOUT));
-            if (ospoll.osfds[f].trigger == ospoll_trigger_edge)
+            if (ospoll.osfds[f].trigger == _ospoll_trigger.ospoll_trigger_edge)
                 revents &= ~oldevents;
             if (revents) {
                 int xevents = 0;

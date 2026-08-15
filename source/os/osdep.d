@@ -61,6 +61,13 @@ public import build.dix_config;
 public import core.stdc.limits;
 public import core.stdc.signal;
 public import core.stdc.stddef;
+import externs.gnu;
+import core.sys.posix.unistd;
+import core.sys.posix.fcntl;
+import os.WaitFor;
+import dix.resource;
+import os.timingsafe_memcmp;
+import std.conv;
 //public import externs.X11.X;
 //public import externs.X11.Xmd;
 //public import externs.X11.Xdefs;
@@ -101,12 +108,12 @@ pragma(inline, true) void arc4random_buf(void* buf, size_t nbytes)
 } /* HAVE_ARC4RANDOM_BUF */
 
 /* OsTimer functions */
-void TimerInit();
+// void TimerInit();
 
 /* must be exported for backwards compatibility with legacy nvidia390,
  * not for use in maintained drivers
  */
-Bool TimerForce(OsTimerPtr);
+// Bool TimerForce(OsTimerPtr);
 
 // static if (HasVersion!"Windows" && ! HasVersion!"Cygwin") {
 //public import externs.X11.Xwinsock;
@@ -115,8 +122,8 @@ Bool TimerForce(OsTimerPtr);
 
 // const(char)* Win32TempDir();
 
-pragma(inline, true) void Fclose(void* f) { fclose(f); }
-pragma(inline, true) void* Fopen(const(char)* a, const(char)* b) { return fopen(a,b); }
+pragma(inline, true) void Fclose(void* f) { fclose(cast(FILE*)f); }
+pragma(inline, true) void* Fopen(const(char)* a, const(char)* b) { return cast(void*)fopen(a,b); }
 
 // } else { /* WIN32 */
 
