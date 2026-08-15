@@ -200,7 +200,7 @@ enum string unwrap(string priv,string real_,string mem) = `{
     ` ~ real_ ~ `.` ~ mem ~ ` = ` ~ priv ~ `.` ~ mem ~ `; 
 }`;
 
-pragma(inline, true) private present_screen_priv_ptr present_screen_priv(ScreenPtr screen)
+pragma(inline, true)present_screen_priv_ptr present_screen_priv(ScreenPtr screen)
 {
     return cast(present_screen_priv_ptr)dixLookupPrivate(&(screen).devPrivates, &present_screen_private_key);
 }
@@ -216,6 +216,7 @@ struct present_event{
     XID id;
     int mask;
 }
+alias present_event_rec = present_event;
 alias present_event_ptr = present_event*;
 
 struct present_window_priv_t {
@@ -232,7 +233,7 @@ enum PresentCrtcNeverSet =     cast(RRCrtcPtr) 1;
 
 extern DevPrivateKeyRec present_window_private_key;
 
-pragma(inline, true) private present_window_priv_ptr present_window_priv(WindowPtr window)
+pragma(inline, true)present_window_priv_ptr present_window_priv(WindowPtr window)
 {
     return cast(present_window_priv_ptr)dixGetPrivate(&(window).devPrivates, &present_window_private_key);
 }
@@ -244,7 +245,7 @@ present_window_priv_ptr present_get_window_priv(WindowPtr window, Bool create);
  * TRUE if the first MSC value is after the second one
  * FALSE if the first MSC value is equal to or before the second one
  */
-pragma(inline, true) private Bool msc_is_after(ulong test, ulong reference)
+pragma(inline, true)Bool msc_is_after(ulong test, ulong reference)
 {
     return cast(long)(test - reference) > 0;
 }
@@ -273,7 +274,9 @@ int present_pixmap(WindowPtr window,
     short y_off, 
     RRCrtcPtr target_crtc, 
     SyncFence* wait_fence, 
-    SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong target_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies);
+    // SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong target_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies);
+    SyncFence* idle_fence, ulong acquire_point, ulong release_point, uint options, ulong target_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies);
+
 
 int present_notify_msc(WindowPtr window, CARD32 serial, ulong target_msc, ulong divisor, ulong remainder);
 
@@ -322,13 +325,13 @@ present_fence* present_fence_create(SyncFence* sync_fence);
 
 void present_fence_destroy(present_fence* present_fence);
 
-void present_fence_set_triggered(present_fence* present_fence);
+// void present_fence_set_triggered(present_fence* present_fence);
 
 Bool present_fence_check_triggered(present_fence* present_fence);
 
 void present_fence_set_callback(present_fence* present_fence, void function(void* param) callback, void* param);
 
-XID present_fence_id(present_fence* present_fence);
+// XID present_fence_id(present_fence* present_fence);
 
 /*
  * present_notify.c

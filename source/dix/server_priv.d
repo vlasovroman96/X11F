@@ -8,6 +8,7 @@ extern(C): __gshared:
  
 public import include.callback;
 public import include.dix;
+import include.dixstruct;
 
 struct ServerAccessCallbackParam {
     ClientPtr client;

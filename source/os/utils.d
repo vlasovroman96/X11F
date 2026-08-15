@@ -57,7 +57,12 @@ OR PERFORMANCE OF THIS SOFTWARE.
 */
 
 import build.dix_config;
-
+import hw.xfree86.i2c.xf86i2c;
+import os.access;
+import externs.X11.fonts.libxfont2;
+import externs.attrs;
+import os.osinit;
+import os.Xtransutil;
 version (Cygwin) {
 import core.stdc.stdlib;
 import core.stdc.signal;
@@ -134,14 +139,29 @@ import include.picture;
 import mi.miinitext;
 import dix.dixstruct_priv;
 import Xext.dpmsproc;
+import core.sys.posix.fcntl;
+import core.sys.posix.sys.types;
+import core.sys.posix.sys.ipc;
+import core.sys.posix.sys.shm;
+import core.sys.posix.sys.mman;
+import core.sys.posix.unistd;
+import core.sys.posix.sys.stat;
+import core.sys.posix.fcntl;
+import core.sys.posix.stdio;
+import core.stdc.stdio;
+// import core.sys.posix.stdio;
+import os.connection;
 
 version = X_INCLUDE_NETDB_H;
 // //import externs.X11.Xos_r;
 
 import core.stdc.errno;
 import Xext.dpms;
+import std.stdio;
+import core.stdc.stdio;
 
-
+alias timeval = core.sys.posix.sys.time.timeval;
+alias fopen = core.stdc.stdio.fopen;
 
 Bool CoreDump;
 
@@ -162,7 +182,7 @@ OsSigHandlerPtr OsSignal(int sig, OsSigHandlerPtr handler)
 static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
     return signal(sig, handler);
 } else {
-    sigaction act = void, oact = void;
+    sigaction_t act = void, oact = void;
 
     sigemptyset(&act.sa_mask);
     if (handler != SIG_IGN)
@@ -171,7 +191,7 @@ static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
     act.sa_handler = handler;
     if (sigaction(sig, &act, &oact))
         perror("sigaction");
-    return oact.sa_handler;
+    return assumeNoGC(oact.sa_handler);
 }
 }
 
@@ -237,8 +257,8 @@ version (CLOCK_MONOTONIC_COARSE) {
         return (tp.tv_sec * 1000) + (tp.tv_nsec / 1000000L);
 }
 
-    X_GETTIMEOFDAY(&tv);
-    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+    mixin(X_GETTIMEOFDAY!("&tv"));
+    return cast(uint)((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
 CARD64 GetTimeInMicros()
@@ -258,7 +278,7 @@ version (MONOTONIC_CLOCK) {
         return cast(CARD64) tp.tv_sec * cast(CARD64)1000000 + tp.tv_nsec / 1000;
 }
 
-    X_GETTIMEOFDAY(&tv);
+    mixin(X_GETTIMEOFDAY!("&tv"));
     return cast(CARD64) tv.tv_sec * cast(CARD64)1000000 + cast(CARD64) tv.tv_usec;
 }
 }
@@ -427,7 +447,7 @@ version (CONFIG_SYSLOG) {
 
     for (i = 1; i < argc; i++) {
         /* call ddx first, so it can peek/override if it wants */
-        if ((skip = ddxProcessArgument(argc, argv, i))) {
+        if ((skip = ddxProcessArgument(argc, argv, i)) != 0) {
             i += (skip - 1);
         }
         else if (argv[i][0] == ':') {
@@ -521,7 +541,7 @@ version (DPMSExtension) {
             DPMSDisabledSwitch = TRUE;
 }
         else if (strcmp(argv[i], "-deferglyphs") == 0) {
-            if (++i >= argc || !xfont2_parse_glyph_caching_mode(argv[i]))
+            if (++i >= argc || !assumeNoGC(&xfont2_parse_glyph_caching_mode)(argv[i]))
                 UseMsg();
         }
         else if (strcmp(argv[i], "-f") == 0) {
@@ -671,7 +691,7 @@ version( LOCK_SERVER) {
 
                 val = strtol(argv[n], &end, 0);
                 if (*end == '\0') {
-                    verbosity = val;
+                    verbosity = cast(int)val;
                     i = n;
                 }
             }
@@ -836,15 +856,15 @@ version (HAVE_GETADDRINFO) {
             hnameptr = hn.name;
         }
 } else {
-        host = _XGethostbyname(hn.name, hparams);
+        host = _XGethostbyname(hn.name.ptr);
         if (host == null)
-            hnameptr = hn.name;
+            hnameptr = hn.name.ptr;
         else
             hnameptr = host.h_name;
 }
 
-        len = strlen(hnameptr) + 1;
-        result = cast(char*) calloc(1, len + ((AUTHORIZATION_NAME) + 4).sizeof);
+        len = cast(uint)(strlen(hnameptr) + 1);
+        result = cast(char*) calloc(1, len + ((AUTHORIZATION_NAME.length) + 4));
         if (result == null) {
 version (HAVE_GETADDRINFO) {
             if (ai) {
@@ -857,10 +877,10 @@ version (HAVE_GETADDRINFO) {
         p = result;
         *p++ = AUTHORIZATION_NAME.sizeof >> 8;
         *p++ = AUTHORIZATION_NAME.sizeof & 0xff;
-        *p++ = (len) >> 8;
+        *p++ = cast(char)((len) >> 8);
         *p++ = (len & 0xff);
 
-        memcpy(p, AUTHORIZATION_NAME, AUTHORIZATION_NAME.sizeof);
+        memcpy(p, AUTHORIZATION_NAME.ptr, AUTHORIZATION_NAME.sizeof);
         p += AUTHORIZATION_NAME.sizeof;
         memcpy(p, hnameptr, len);
         p += len;
@@ -870,7 +890,7 @@ version (HAVE_GETADDRINFO) {
         }
 }
     }
-    *authlen = p - result;
+    *authlen = cast(int)(p - result);
     *authorizations = result;
     return 1;
 }
@@ -1034,7 +1054,7 @@ static if (!HasVersion!"Windows") {
 struct pid {
     pid* next;
     FILE* fp;
-    int id;
+    int pid_;
 }
 
 private pid* pidlist;
@@ -1043,7 +1063,7 @@ void* Popen(const(char)* command, const(char)* type)
 {
     pid* cur = void;
     FILE* iop = void;
-    int[2] pdes = void; int pid = void;
+    int[2] pdes = void; int pid_ = void;
 
     if (command == null || type == null)
         return null;
@@ -1051,10 +1071,10 @@ void* Popen(const(char)* command, const(char)* type)
     if ((*type != 'r' && *type != 'w') || type[1])
         return null;
 
-    if ((cur = cast(pid*) cast(pid*) calloc(1, pid.sizeof)) == null)
+    if ((cur = cast(pid*) calloc(1, pid.sizeof)) == null)
         return null;
 
-    if (pipe(pdes.ptr) < 0) {
+    if (pipe(pdes) < 0) {
         free(cur);
         return null;
     }
@@ -1070,7 +1090,7 @@ version (HAVE_SETITIMER) {
     }
 }
 
-    switch (pid = fork()) {
+    switch (pid_ = fork()) {
     case -1:                   /* error */
         close(pdes[0]);
         close(pdes[1]);
@@ -1101,7 +1121,7 @@ version (HAVE_SETITIMER) {
             }
             close(pdes[1]);
         }
-        execl("/bin/sh", "sh", "-c", command, cast(char*) null);
+        execl("/bin/sh".ptr, "sh".ptr, "-c".ptr, command, cast(char*) null);
         _exit(127);
     default: break;}
 
@@ -1119,13 +1139,13 @@ version (HAVE_SETITIMER) {
     }
 
     cur.fp = iop;
-    cur.pid = pid;
+    cur.pid_ = pid_;
     cur.next = pidlist;
     pidlist = cur;
 
     DebugF("Popen: `%s', fp = %p\n", command, iop);
 
-    return iop;
+    return cast(void*)iop;
 }
 
 /* fopen that drops privileges */
@@ -1148,7 +1168,7 @@ void* Fopen(const(char)* file, const(char)* type)
         }
         return null;
     }
-    return iop;
+    return cast(void*)iop;
 }
 
 int Pclose(void* iop)
@@ -1158,7 +1178,7 @@ int Pclose(void* iop)
     int pid = void;
 
     DebugF("Pclose: fp = %p\n", iop);
-    fclose(iop);
+    fclose(cast(FILE*)iop);
 
     for (last = null, cur = pidlist; cur; last = cur, cur = cur.next)
         if (cur.fp == iop)
@@ -1167,7 +1187,7 @@ int Pclose(void* iop)
         return -1;
 
     do {
-        pid = waitpid(cur.pid, &pstat, 0);
+        pid = waitpid(cast(int)cur.pid_, &pstat, 0);
     } while (pid == -1 && errno == EINTR);
 
     if (last == null)
@@ -1191,7 +1211,7 @@ version (HAVE_SETITIMER) {
 
 int Fclose(void* iop)
 {
-    return fclose(iop);
+    return fclose(cast(FILE*)iop);
 }
 
 }                          /* !WIN32 */
@@ -1488,7 +1508,7 @@ version (XF86BIGFONT) {
     UnlockServer();
     AbortDevices();
     ddxGiveUp(EXIT_ERR_ABORT);
-    fflush(stderr);
+    fflush(core.stdc.stdio.stderr);
     if (CoreDump)
         OsAbort();
     exit(1);

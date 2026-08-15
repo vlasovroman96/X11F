@@ -69,7 +69,10 @@ import core.stdc.string;
 
 import include.os;
 import include.Xprintf;
+import externs.gnu;
+import os.log;
 
+extern(C) int vasprintf(char** strp, const(char)* fmt, va_list ap);
 /**
  * Varargs sprintf that allocates a string buffer the right size for
  * the pattern & data provided and prints the requested data to it.
@@ -81,7 +84,7 @@ import include.Xprintf;
  * @param va      variable argument list
  * @return        size of allocated buffer
  */
-int XNFvasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, va_list va)
+int XNFvasprintf(char** ret, const(char)* format, va_list va)
 {
     int size = vasprintf(ret, format, va);
 
@@ -102,7 +105,7 @@ int XNFvasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, va_list va)
  * @param ...     arguments for specified format
  * @return        size of allocated buffer
  */
-int XNFasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, ...)
+int XNFasprintf(char** ret, const(char)* format, ...)
 {
     int size = void;
     va_list va = void;

@@ -79,9 +79,9 @@ alias FbBits = CARD32;
 // } else {
 // static assert(0, "Unsupported FB_SHIFT");
 // }
-static if (LOG2_BITMAP_PAD == FB_SHIFT) {
+// static if (LOG2_BITMAP_PAD == FB_SHIFT) {
 alias FbStip = FbBits;
-}
+// }
 
 
 enum FB_UNIT =	    (1 << FB_SHIFT);

@@ -39,6 +39,7 @@ import core.stdc.ctype;
 import core.stdc.string;
 
 import include.os;
+import externs.gnu;
 
 /*
  * Find the first occurrence of find in s, ignore case.
@@ -50,7 +51,7 @@ char* xstrcasestr(const(char)* s, const(char)* find)
     size_t len = void;
 
     if ((c = *find++) != 0) {
-        c = tolower(cast(ubyte) c);
+        c = cast(char)tolower(cast(ubyte) c);
         len = strlen(find);
         do {
             do {

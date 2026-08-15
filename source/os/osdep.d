@@ -170,7 +170,7 @@ void ForceClockId(clockid_t forced_clockid);
 void CloseDownConnection(ClientPtr client);
 
 // extern int LimitClients;
-extern Bool PartialNetwork;
+// extern Bool PartialNetwork;
 
 extern Bool CoreDump;
 extern Bool NoListenAll;

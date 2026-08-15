@@ -30,6 +30,10 @@ import present.present_fence;
 
 import include.gcstruct;
 import include.dri3;
+import dix.gc;
+import externs.X11.extensions.presenttokens;
+import externs.X11.extensions.presentproto;
+
 
 uint present_query_capabilities(RRCrtcPtr crtc)
 {
@@ -80,7 +84,7 @@ void present_copy_region(DrawablePtr drawable, PixmapPtr pixmap, RegionPtr updat
         changes[0].val = x_off;
         changes[1].val = y_off;
         ChangeGC(serverClient, gc,
-                 GCClipXOrigin|GCClipYOrigin,
+                 cast(uint)(GCClipXOrigin|GCClipYOrigin),
                  changes.ptr);
         (*gc.funcs.ChangeClip)(gc, CT_REGION, update, 0);
     }
@@ -101,7 +105,7 @@ void present_pixmap_idle(PixmapPtr pixmap, WindowPtr window, CARD32 serial, pres
     if (present_fence_)
         present_fence_set_triggered(present_fence_);
     if (window) {
-        DebugPresent(("\ti %08"~ PRIx32 ~ "\n", pixmap ? pixmap.drawable.id : 0));
+        // DebugPresent(("\ti %08"~ PRIx32 ~ "\n", pixmap ? pixmap.drawable.id : 0));
         present_send_idle_notify(window, serial, pixmap, present_fence_);
     }
 }
@@ -113,7 +117,7 @@ struct pixmap_visit {
 
 private int present_set_tree_pixmap_visit(WindowPtr window, void* data)
 {
-    pixmap_visit* visit = data;
+    pixmap_visit* visit = cast(pixmap_visit*)data;
     ScreenPtr screen = window.drawable.pScreen;
 
     if ((*screen.GetWindowPixmap)(window) == visit.old)
@@ -219,7 +223,29 @@ int present_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr 
     ScreenPtr screen = window.drawable.pScreen;
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
 
-version(DRI3) {
+// version(DRI3) {
+//         return screen_priv.present_pixmap(window,
+//                                        pixmap,
+//                                        serial,
+//                                        valid,
+//                                        update,
+//                                        x_off,
+//                                        y_off,
+//                                        target_crtc,
+//                                        wait_fence,
+//                                        idle_fence,
+//                                        acquire_syncobj,
+//                                        release_syncobj,
+//                                        acquire_point,
+//                                        release_point,
+//                                        options,
+//                                        window_msc,
+//                                        divisor,
+//                                        remainder,
+//                                        notifies,
+//                                        num_notifies);
+// }
+// else {
         return screen_priv.present_pixmap(window,
                                        pixmap,
                                        serial,
@@ -230,39 +256,22 @@ version(DRI3) {
                                        target_crtc,
                                        wait_fence,
                                        idle_fence,
-                                       acquire_syncobj,
-                                       release_syncobj,
-                                       acquire_point,
-                                       release_point,
+                                       null, 
+                                       null, 
+                                       0,
+                                       0,
                                        options,
                                        window_msc,
                                        divisor,
                                        remainder,
                                        notifies,
                                        num_notifies);
-}
-else {
-        return screen_priv.present_pixmap(window,
-                                       pixmap,
-                                       serial,
-                                       valid,
-                                       update,
-                                       x_off,
-                                       y_off,
-                                       target_crtc,
-                                       wait_fence,
-                                       idle_fence,
-                                       options,
-                                       window_msc,
-                                       divisor,
-                                       remainder,
-                                       notifies,
-                                       num_notifies);
+// }
 }
 
 int present_notify_msc(WindowPtr window, CARD32 serial, ulong target_msc, ulong divisor, ulong remainder)
 {
-    version(DRI3) {
+    // version(DRI3) {
     return present_pixmap(window,
                           null,
                           serial,
@@ -273,17 +282,17 @@ int present_notify_msc(WindowPtr window, CARD32 serial, ulong target_msc, ulong 
                           null, null, 0, 0,
                           divisor == 0 ? PresentOptionAsync : 0,
                           target_msc, divisor, remainder, null, 0);
-    }
-    else {
-            return present_pixmap(window,
-                          null,
-                          serial,
-                          null, null,
-                          0, 0,
-                          null,
-                          null, null,
-                          divisor == 0 ? PresentOptionAsync : 0,
-                          target_msc, divisor, remainder, null, 0);
-    }
-    }
+    // }
+    // else {
+    //         return present_pixmap(window,
+    //                       null,
+    //                       serial,
+    //                       null, null,
+    //                       0, 0,
+    //                       null,
+    //                       null, null,
+    //                       divisor == 0 ? PresentOptionAsync : 0,
+    //                       target_msc, divisor, remainder, null, 0);
+    // }
 }
+

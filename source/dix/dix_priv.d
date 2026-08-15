@@ -60,8 +60,8 @@ mixin template XTYPE_SIZE_ASSERT(alias typename) {
 enum MAX_BIG_REQUEST_SIZE = 4194303;
 // extern c_long maxBigRequestSize;
 
-extern char dispatchExceptionAtReset;
-extern int terminateDelay;
+// extern char dispatchExceptionAtReset;
+// extern int terminateDelay;
 extern Bool touchEmulatePointer;
 
 alias HWEventQueueType = int;

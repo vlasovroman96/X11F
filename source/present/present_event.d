@@ -28,6 +28,10 @@ import dix.dix_priv;
 import present.present_priv;
 import Xext.geext_priv;
 import present.present_fence;
+import externs.X11.extensions.presenttokens;
+import externs.X11.extensions.presentproto;
+import dix.events;
+import present.present_priv;
 
 private RESTYPE present_event_type;
 
@@ -37,7 +41,7 @@ private int present_free_event(void* data, XID id)
     present_window_priv_ptr window_priv = present_window_priv(present_event.window);
     present_event_ptr* previous = void; present_event_ptr current = void;
 
-    for (previous = &window_priv.events; ((current = *previous) != 0); previous = &current.next) {
+    for (previous = &window_priv.events; ((current = *previous) !is null); previous = &current.next) {
         if (current == present_event) {
             *previous = present_event.next;
             break;
@@ -56,7 +60,7 @@ void present_free_events(WindowPtr window)
     if (!window_priv)
         return;
 
-    while ((event = window_priv.events))
+    while ((event = window_priv.events) !is null)
         FreeResource(event.id, X11_RESTYPE_NONE);
 }
 
@@ -112,26 +116,26 @@ void present_send_config_notify(WindowPtr window, int x, int y, int w, int h, in
     if (window_priv) {
         xPresentConfigureNotify cn = {
             type: GenericEvent,
-            extension: present_request,
-            length: (((xPresentConfigureNotify) - 32).sizeof) >> 2,
+            extension: cast(ubyte)present_request,
+            length: (((xPresentConfigureNotify).sizeof - 32)) >> 2,
             evtype: PresentConfigureNotify,
             eid: 0,
-            window: window.drawable.id,
-            x: x,
-            y: y,
-            width: w,
-            height: h,
-            off_x: 0,
-            off_y: 0,
-            pixmap_width: w,
-            pixmap_height: h,
+            window: cast(uint)window.drawable.id,
+            x: cast(short)x,
+            y: cast(short)y,
+            width: cast(ushort)w,
+            height: cast(ushort)h,
+            off_x: cast(ushort)0,
+            off_y: cast(ushort)0,
+            pixmap_width: cast(ushort)w,
+            pixmap_height: cast(ushort)h,
             pixmap_flags: flags
         };
         present_event_ptr event = void;
 
         for (event = window_priv.events; event; event = event.next) {
             if (event.mask & (1 << PresentConfigureNotify)) {
-                cn.eid = event.id;
+                cn.eid = cast(uint)event.id;
                 WriteEventsToClient(event.client, 1, cast(xEvent*) &cn);
             }
         }
@@ -152,13 +156,13 @@ void present_send_complete_notify(WindowPtr window, CARD8 kind, CARD8 mode, CARD
     if (window_priv) {
         xPresentCompleteNotify cn = {
             type: GenericEvent,
-            extension: present_request,
-            length: (((xPresentCompleteNotify) - 32).sizeof) >> 2,
+            extension: cast(ubyte)present_request,
+            length: (((xPresentCompleteNotify).sizeof - 32)) >> 2,
             evtype: PresentCompleteNotify,
             kind: cast(ubyte)kind,
             mode: mode,
             eid: 0,
-            window: window.drawable.id,
+            window: cast(uint)window.drawable.id,
             serial: serial,
             ust: ust,
             msc: msc,
@@ -167,7 +171,7 @@ void present_send_complete_notify(WindowPtr window, CARD8 kind, CARD8 mode, CARD
 
         for (event = window_priv.events; event; event = event.next) {
             if (event.mask & PresentCompleteNotifyMask) {
-                cn.eid = event.id;
+                cn.eid = cast(uint)event.id;
                 WriteEventsToClient(event.client, 1, cast(xEvent*) &cn);
             }
         }
@@ -183,20 +187,20 @@ void present_send_idle_notify(WindowPtr window, CARD32 serial, PixmapPtr pixmap,
     if (window_priv) {
         xPresentIdleNotify in_ = {
             type: GenericEvent,
-            extension: present_request,
-            length: (((xPresentIdleNotify) - 32).sizeof) >> 2,
+            extension: cast(ubyte)present_request,
+            length: (((xPresentIdleNotify).sizeof - 32)) >> 2,
             evtype: PresentIdleNotify,
             eid: 0,
-            window: window.drawable.id,
+            window: cast(uint)window.drawable.id,
             serial: serial,
-            pixmap: pixmap.drawable.id,
-            idle_fence: present_fence_id(idle_fence)
+            pixmap: cast(uint)pixmap.drawable.id,
+            idle_fence: cast(uint)present_fence_id(idle_fence)
         };
         present_event_ptr event = void;
 
         for (event = window_priv.events; event; event = event.next) {
             if (event.mask & PresentIdleNotifyMask) {
-                in_.eid = event.id;
+                in_.eid = cast(uint)event.id;
                 WriteEventsToClient(event.client, 1, cast(xEvent*) &in_);
             }
         }
@@ -237,7 +241,7 @@ int present_select_input(ClientPtr client, XID eid, WindowPtr window, CARD32 mas
     if (!window_priv)
         return BadAlloc;
 
-    event = calloc (1, present_event_rec.sizeof);
+    event = cast(present_event_rec*)calloc (1, present_event_rec.sizeof);
     if (!event)
         return BadAlloc;
 

@@ -255,37 +255,37 @@ static if (OPENSSL_VERSION_MAJOR >= 3) {
 }
 version = USE_EVP;
 
-version (USE_EVP) {
-import externs.openssl.evp;
-} else {
+// version (USE_EVP) {
+// import externs.openssl.evp;
+// } else {
 import core.stdc.stddef;             /* buggy externs.openssl/sha.h wants size_t */
 import externs.openssl.sha;
-}
+// }
 
-version (USE_EVP) {
-private EVP_MD* sha1 = null;
-}
+// version (USE_EVP) {
+// private EVP_MD* sha1 = null;
+// }
 
 void* x_sha1_init()
 {
     int ret = void;
-version (USE_EVP) {
-    EVP_MD_CTX* ctx = void;
+// version (USE_EVP) {
+//     EVP_MD_CTX* ctx = void;
 
-    if (sha1 == null) {
-        sha1 = EVP_MD_fetch(null, "SHA1", null);
-        if (sha1 == null)
-            return null;
-    }
-    ctx = EVP_MD_CTX_new();
-    if (ctx == null)
-        return null;
-    ret = EVP_DigestInit_ex2(ctx, sha1, null);
-    if (!ret) {
-        EVP_MD_CTX_free(ctx);
-        return null;
-    }
-} else {
+//     if (sha1 == null) {
+//         sha1 = EVP_MD_fetch(null, "SHA1", null);
+//         if (sha1 == null)
+//             return null;
+//     }
+//     ctx = EVP_MD_CTX_new();
+//     if (ctx == null)
+//         return null;
+//     ret = EVP_DigestInit_ex2(ctx, sha1, null);
+//     if (!ret) {
+//         EVP_MD_CTX_free(ctx);
+//         return null;
+//     }
+// } else {
     SHA_CTX* ctx = cast(SHA_CTX*) cast(SHA_CTX*) calloc(1, SHA_CTX.sizeof);
 
     if (!ctx)
@@ -295,44 +295,44 @@ version (USE_EVP) {
         free(ctx);
         return null;
     }
-}
+// }
     return ctx;
 }
 
 int x_sha1_update(void* ctx, void* data, int size)
 {
     int ret = void;
-version (USE_EVP) {
-    EVP_MD_CTX* sha_ctx = ctx;
+// version (USE_EVP) {
+//     EVP_MD_CTX* sha_ctx = ctx;
 
-    ret = EVP_DigestUpdate(sha_ctx, data, size);
-    if (!ret)
-        EVP_MD_CTX_free(sha_ctx);
-} else {
-    SHA_CTX* sha_ctx = ctx;
+//     ret = EVP_DigestUpdate(sha_ctx, data, size);
+//     if (!ret)
+//         EVP_MD_CTX_free(sha_ctx);
+// } else {
+    SHA_CTX* sha_ctx = cast(SHA_CTX*)ctx;
 
     ret = SHA1_Update(sha_ctx, data, size);
     if (!ret)
         free(sha_ctx);
-}
+// }
     return ret;
 }
 
 int x_sha1_final(void* ctx, ubyte* result)
 {
     int ret = void;
-version (USE_EVP) {
-    EVP_MD_CTX* sha_ctx = ctx;
-    uint result_len = 20; /* size of result buffer */
+// version (USE_EVP) {
+//     EVP_MD_CTX* sha_ctx = ctx;
+//     uint result_len = 20; /* size of result buffer */
 
-    ret = EVP_DigestFinal_ex(sha_ctx, result, &result_len);
-    EVP_MD_CTX_free(sha_ctx);
-} else {
-    SHA_CTX* sha_ctx = ctx;
+//     ret = EVP_DigestFinal_ex(sha_ctx, result, &result_len);
+//     EVP_MD_CTX_free(sha_ctx);
+// } else {
+    SHA_CTX* sha_ctx = cast(SHA_CTX*)ctx;
 
     ret = SHA1_Final(result, sha_ctx);
     free(sha_ctx);
-}
+// }
     return ret;
 }
 

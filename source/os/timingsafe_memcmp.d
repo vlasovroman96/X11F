@@ -25,7 +25,7 @@ import include.os;
 
 int timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len)
 {
-        const(ubyte)* p1 = b1, p2 = b2;
+        const(ubyte)* p1 = cast(ubyte*)b1, p2 = cast(ubyte*)b2;
         size_t i = void;
         int res = 0, done = 0;
 

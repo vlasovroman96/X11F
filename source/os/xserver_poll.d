@@ -83,14 +83,31 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 
-import core.sys.posix.unistd;			     /* standard Unix definitions */
-import core.sys.posix.sys.types;                       /* system types */
-import core.sys.posix.sys.time;                        /* time definitions */
-import core.stdc.assert_;                          /* assertion macros */
+import core.sys.posix.unistd;			     
+import core.sys.posix.sys.types;                      
+import core.sys.posix.sys.time;                        
+import core.stdc.assert_;                          
 import core.stdc.string;
-import core.sys.posix.poll : pollfd;        // Даст структуру pollfd
-import core.sys.posix.sys.select : fd_set;  // Даст структуру fd_set
-import core.stdc.stddef;         // Даст тип size_t                          /* string functions */
+import core.sys.posix.poll : pollfd;        
+import core.sys.posix.sys.select : fd_set;  
+import core.stdc.stddef;               
+
+import core.stdc.assert_;
+import core.stdc.string;
+import core.stdc.stdlib;
+import core.sys.posix.unistd;
+import core.sys.posix.poll;
+
+version (Windows) {
+import core.sys.windows.winsock2;
+}
+
+import include.fd_notify;
+import os.xserver_poll;
+
+import os.ospoll;
+import include.list;
+import core.sys.linux.epoll;                   
 
 static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
 //import externs.X11.Xwinsock;

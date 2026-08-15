@@ -92,7 +92,7 @@ struct ExtensionModule {
 
 // extern void  EnableDisableExtension(const(char)* name, Bool enable);
 
-extern void  EnableDisableExtensionError(const(char)* name, Bool enable);
+// extern void  EnableDisableExtensionError(const(char)* name, Bool enable);
 
 extern void  InitExtensions(int argc, char** argv);
 

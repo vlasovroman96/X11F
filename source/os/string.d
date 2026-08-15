@@ -14,6 +14,7 @@ import core.stdc.string;
 import os.fmt;
 
 import include.os;
+import os.log;
 
 char* Xstrdup(const(char)* s)
 {
@@ -54,7 +55,7 @@ char** xstrtokenize(const(char)* str, const(char)* separators)
     if (!tmp)
         goto error;
     for (tok = strtok(tmp, separators); tok; tok = strtok(null, separators)) {
-        nlist = reallocarray(list, num + 2, typeof(*list).sizeof);
+        nlist = cast(char**)reallocarray(list, num + 2, typeof(*list).sizeof);
         if (!nlist)
             goto error;
         list = nlist;

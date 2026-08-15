@@ -29,9 +29,9 @@ pragma(inline, true) void SetReqFds(ClientPtr client, int req_fds) {
  * Scheduling interface
  */
 extern c_long SmartScheduleTime;
-extern c_long SmartScheduleInterval;
-extern c_long SmartScheduleSlice;
-extern c_long SmartScheduleMaxSlice;
+// extern c_long SmartScheduleInterval;
+// extern c_long SmartScheduleSlice;
+// extern c_long SmartScheduleMaxSlice;
 version (HAVE_SETITIMER) {
 extern Bool SmartScheduleSignalEnable;
 } else {
