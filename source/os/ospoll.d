@@ -155,6 +155,11 @@ struct ospoll {
 
 }
 
+enum _ospoll_trigger {
+    ospoll_trigger_edge,
+    ospoll_trigger_level
+};
+
 /* Binary search for the specified file descriptor
  *
  * Returns position if found
@@ -298,7 +303,7 @@ static if (POLL) {
 }
 }
 
-bool ospoll_add(ospoll* ospoll, int fd, ospoll_trigger trigger, void function(int fd, int xevents, void* data) callback, void* data)
+bool ospoll_add(ospoll* ospoll, int fd, _ospoll_trigger trigger, void function(int fd, int xevents, void* data) callback, void* data)
 {
     int pos = ospoll_find(ospoll, fd);
 static if (POLLSET) {

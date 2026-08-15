@@ -34,7 +34,7 @@ int ProcessCmdLineMultiInt(int argc, char** argv, int* idx, const(char)* name, i
         c_long val = strtol(argv[i2], &end, 0);
         if (*end == '\0') {
             (*idx)++;
-            (*value) = val;
+            (*value) = cast(int)val;
             return 1;
         }
     }

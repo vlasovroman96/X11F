@@ -32,7 +32,7 @@ public import os.osdep;
  * Renames the current log file with per display prefix (e.g. "Xorg.log.0")
  *
  */
-void LogSetDisplay();
+// void LogSetDisplay();
 
 /**
  * @brief log exit code, then flush and close log file and write

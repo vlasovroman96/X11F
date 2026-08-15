@@ -70,7 +70,7 @@ void FormatDouble(double dbl, char* string)
     int slen = 0;
     ulong frac = void;
 
-    frac = (dbl > 0 ? dbl : -dbl) * 100.0 + 0.5;
+    frac = cast(ulong)((dbl > 0 ? dbl : -dbl) * 100.0 + 0.5);
     frac %= 100;
 
     /* write decimal part to string */
@@ -95,7 +95,7 @@ void FormatDouble(double dbl, char* string)
 
 /* Format a number into a hexadecimal string in a signal safe manner. The string
  * should be at least 17 characters in order to handle all uint64_t values. */
-void FormatUInt64Hex(ulong num, char* string)
+void FormatUInt64Hex(ulong num, char* string_)
 {
     ulong divisor = void;
     int len = void;
@@ -109,10 +109,10 @@ void FormatUInt64Hex(ulong num, char* string)
         int val = (num / divisor) % 0x10;
 
         if (val < 10)
-            string[i - 1] = '0' + val;
+            string_[i - 1] = cast(char)(cast(int)'0' + val);
         else
-            string[i - 1] = 'a' + val - 10;
+            string_[i - 1] = cast(char)(cast(int)'a' + val - 10);
     }
 
-    string[len] = '\0';
+    string_[len] = '\0';
 }

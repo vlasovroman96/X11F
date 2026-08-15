@@ -96,6 +96,8 @@ import sys.sysctl;
 
 import os.auth;
 import os.log_priv;
+import os.access;
+
 
 // alias _Client = externs.X11.Xdefs._Client;
 
@@ -380,7 +382,7 @@ version (__sun) {
 
     /* Read the contents of /proc/pid/cmdline. It should contain the
      * process name and arguments. */
-    totsize = read(fd, path.ptr, path.sizeof);
+    totsize = cast(int)read(fd, path.ptr, path.sizeof);
     close(fd);
     if (totsize <= 0)
         return;
@@ -393,7 +395,7 @@ version (__sun) {
 
     /* Construct the arguments for client process. */
     if (cmdargs) {
-        int cmdsize = strlen(path.ptr) + 1;
+        int cmdsize = cast(int)(strlen(path.ptr) + 1);
         int argsize = totsize - cmdsize;
         char* args = null;
 

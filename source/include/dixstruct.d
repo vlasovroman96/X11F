@@ -37,6 +37,7 @@ public import include.gc;
 public import include.pixmap;
 public import include.privates;
 public import dix.globals;
+import os.client_priv;
 /*
  * 	direct-mapped hash table, used by resource manager to store
  *      translation from client ids to server addresses.

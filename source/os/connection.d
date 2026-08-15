@@ -81,14 +81,21 @@ import core.stdc.errno;
 import core.stdc.signal;
 import core.stdc.stdio;
 import core.stdc.stdlib;
-
+import os.utils;
+import os.log;
+import core.sys.posix.unistd;
+import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
+import os.access;
+import externs.attrs;
+
+alias sockaddr_in = os.access.sockaddr_in;
 
 version (Windows) {} else {
 import core.sys.posix.sys.socket;
 
 import externs.netinet.in_;
-import externs.arpa.inet;
+static import externs.arpa.inet;
 version (CSRG_BASED) {
 import sys.param;
 }
@@ -116,6 +123,9 @@ import include.globals;
 import Xext.xace;
 
 alias sockaddr = core.sys.posix.sys.socket.sockaddr;
+alias in_addr = core.sys.posix.arpa.inet.in_addr;
+// module ;
+alias inet_ntoa = core.sys.posix.arpa.inet.inet_ntoa;
 
 version (HAVE_GETPEERUCRED) {
 import ucred;
@@ -210,7 +220,7 @@ static if (!HasVersion!"Windows") {
     if (displayfd >= 0) {
         if (write(displayfd, display, strlen(display)) != strlen(display))
             FatalError("Cannot write display number to fd %d\n", displayfd);
-        if (write(displayfd, "\n", 1) != 1)
+        if (write(displayfd, "\n".ptr, 1) != 1)
             FatalError("Cannot write display number to fd %d\n", displayfd);
         close(displayfd);
         displayfd = -1;
@@ -274,7 +284,7 @@ void CreateWellKnownSockets()
         if (!found)
             FatalError("Failed to find a socket to listen on");
         snprintf(dynamic_display.ptr, dynamic_display.sizeof, "%d", i);
-        display = dynamic_display;
+        display = dynamic_display.ptr;
         LogSetDisplay();
     }
 
@@ -291,7 +301,7 @@ void CreateWellKnownSockets()
         int fd = _XSERVTransGetConnectionNumber(ListenTransConns[i]);
 
         ListenTransFds[i] = fd;
-        SetNotifyFd(fd, EstablishNewConnections, X_NOTIFY_READ, null);
+        SetNotifyFd(fd, &EstablishNewConnections, X_NOTIFY_READ, null);
 
         if (!_XSERVTransIsLocal(ListenTransConns[i]))
             DefineSelf (fd);
@@ -304,8 +314,8 @@ void CreateWellKnownSockets()
 static if (!HasVersion!"Windows") {
     OsSignal(SIGPIPE, SIG_IGN);
 }
-    OsSignal(SIGINT, GiveUp);
-    OsSignal(SIGTERM, GiveUp);
+    OsSignal(SIGINT, &GiveUp);
+    OsSignal(SIGTERM, &GiveUp);
     ResetHosts(display);
 
     InitParentProcess();
@@ -358,7 +368,7 @@ version (HAVE_INET_NTOP) {
             inet_ntop(AF_INET, &(cast(sockaddr_in*) saddr).sin_addr,
                       ipaddr.ptr, ipaddr.sizeof);
 } else {
-            const(char)* ipaddr = inet_ntoa((cast(sockaddr_in*) saddr).sin_addr);
+            const(char)* ipaddr = inet_ntoa((cast(sockaddr_in*)addr).sin_addr);
 }
             snprintf(addr.ptr, addr.sizeof, "IP %s", ipaddr);
         }
@@ -387,14 +397,14 @@ version (IPv6) {
             snprintf(client_uid_string.ptr + slen,
                      ((client_uid_string).ptr - slen).sizeof,
                      "uid=%ld ", cast(c_long) lcc.euid);
-            slen = strlen(client_uid_string.ptr);
+            slen = cast(int)strlen(client_uid_string.ptr);
         }
 
         if (lcc.fieldsSet & LCC_GID_SET) {
             snprintf(client_uid_string.ptr + slen,
                      ((client_uid_string).ptr - slen).sizeof,
                      "gid=%ld ", cast(c_long) lcc.egid);
-            slen = strlen(client_uid_string.ptr);
+            slen = cast(int)strlen(client_uid_string.ptr);
         }
 
         if (lcc.fieldsSet & LCC_PID_SET) {
@@ -404,7 +414,7 @@ version (XSERVER_DTRACE) {
             snprintf(client_uid_string.ptr + slen,
                      ((client_uid_string).ptr - slen).sizeof,
                      "pid=%ld ", cast(c_long) lcc.pid);
-            slen = strlen(client_uid_string.ptr);
+            slen = cast(int)strlen(client_uid_string.ptr);
         }
 
         if (lcc.fieldsSet & LCC_ZID_SET) {
@@ -414,7 +424,7 @@ version (XSERVER_DTRACE) {
             snprintf(client_uid_string.ptr + slen,
                      ((client_uid_string).ptr - slen).sizeof,
                      "zoneid=%ld ", cast(c_long) lcc.zoneid);
-            slen = strlen(client_uid_string.ptr);
+            slen = cast(int)strlen(client_uid_string.ptr);
         }
 
         snprintf(client_uid_string.ptr + slen, ((client_uid_string).ptr - slen).sizeof,
@@ -431,11 +441,11 @@ version (XSERVER_DTRACE) {
     if (auditTrailLevel > 1) {
         if (proto_n)
             AuditF("client %d %s from %s%s\n  Auth name: %.*s ID: %d\n",
-                   client.index, letin ? "connected" : "rejected", addr.ptr,
+                   client.index, letin ? "connected".ptr : "rejected.ptr", addr.ptr,
                    client_uid_string.ptr, cast(int) proto_n, auth_proto, auth_id);
         else
             AuditF("client %d %s from %s%s\n",
-                   client.index, letin ? "connected" : "rejected", addr.ptr,
+                   client.index, letin ? "connected".ptr : "rejected".ptr, addr.ptr,
                    client_uid_string.ptr);
 
     }
@@ -496,13 +506,13 @@ const(char)* ClientAuthorized(ClientPtr client, uint proto_n, char* auth_proto, 
         dtrace2 = (auditTrailLevel > 1) || XSERVER_CLIENT_AUTH_ENABLED();
     }
     else {
-        dtrace2 = auditTrailLevel;
+        dtrace2 = cast(bool)auditTrailLevel;
     }
     if (auth_id == cast(XID) ~0L) {
         if (_XSERVTransGetPeerAddr(trans_conn, &family, &fromlen, &from) != -1) {
             if (InvalidHost(cast(sockaddr*) from, fromlen, client))
                 AuthAudit(client, FALSE, cast(sockaddr*) from,
-                          fromlen, proto_n, auth_proto, auth_id);
+                          fromlen, proto_n, auth_proto, cast(int)auth_id);
             else {
                 auth_id = cast(XID) 0;
                 bool dtrace;
@@ -514,7 +524,7 @@ version (XSERVER_DTRACE) {
                 if(dtrace) 
                     AuthAudit(client, TRUE,
                               cast(sockaddr*) from, fromlen,
-                              proto_n, auth_proto, auth_id);
+                              proto_n, auth_proto, cast(int)auth_id);
             }
 
             free(from);
@@ -531,7 +541,7 @@ version (XSERVER_DTRACE) {
     {
         if (_XSERVTransGetPeerAddr(trans_conn, &family, &fromlen, &from) != -1) {
             AuthAudit(client, TRUE, cast(sockaddr*) from, fromlen,
-                      proto_n, auth_proto, auth_id);
+                      proto_n, auth_proto, cast(int)auth_id);
 
             free(from);
         }
@@ -555,7 +565,7 @@ version (XDMCP) {
 
 private void ClientReady(int fd, int xevents, void* data)
 {
-    ClientPtr client = data;
+    ClientPtr client = cast(ClientPtr)data;
 
     if (xevents & X_NOTIFY_ERROR) {
         CloseDownClient(client);
@@ -579,13 +589,13 @@ private ClientPtr AllocNewConnection(XtransConnInfo trans_conn, int fd, CARD32 c
     oc.trans_conn = trans_conn;
     oc.fd = fd;
     oc.conn_time = conn_time;
-    if (((client = NextAvailableClient(cast(void*) oc)) == 0)) {
+    if (((client = NextAvailableClient(cast(void*) oc)) is null)) {
         free(oc);
         return null;
     }
     client.local = ComputeLocalClient(client);
     ospoll_add(server_poll, fd,
-               ospoll_trigger_edge,
+               _ospoll_trigger.ospoll_trigger_edge,
                &ClientReady,
                client);
     set_poll_client(client);
@@ -619,7 +629,7 @@ private void EstablishNewConnections(int curconn, int ready, void* data)
     connect_time = GetTimeInMillis();
     /* kill off stragglers */
     for (i = 1; i < currentMaxClients; i++) {
-        if ((client = clients[i])) {
+        if ((client = clients[i]) !is null) {
             oc = cast(OsCommPtr) (client.osPrivate);
             if ((oc && (oc.conn_time != 0) &&
                  (connect_time - oc.conn_time) >= TimeOutValue) ||
@@ -654,7 +664,7 @@ private void EstablishNewConnections(int curconn, int ready, void* data)
 
 private void ConnMaxNotify(int fd, int events, void* data)
 {
-    XtransConnInfo trans_conn = data;
+    XtransConnInfo trans_conn = cast(XtransConnInfo)data;
     char order = 0;
 
     /* try to read the byte-order of the connection */
@@ -763,7 +773,7 @@ Bool SetNotifyFd(int fd, NotifyFdProcPtr notify, int mask, void* data)
 {
     notify_fd* n = void;
 
-    n = ospoll_data(server_poll, fd);
+    n = cast(notify_fd*)ospoll_data(server_poll, fd);
     if (!n) {
         if (mask == 0)
             return TRUE;
@@ -772,7 +782,7 @@ Bool SetNotifyFd(int fd, NotifyFdProcPtr notify, int mask, void* data)
         if (!n)
             return FALSE;
         ospoll_add(server_poll, fd,
-                   ospoll_trigger_level,
+                   _ospoll_trigger.ospoll_trigger_level,
                    &HandleNotifyFd,
                    n);
     }
@@ -933,7 +943,7 @@ void ListenOnOpenFD(int fd, int noxauth)
 
     /* First check if display_env matches a <absolute path to unix socket>[.<screen number>] scheme (eg: launchd) */
     if (display_env && display_env[0] == '/') {
-        stat sbuf = void;
+        stat_t sbuf = void;
 
         strlcpy(port.ptr, display_env, port.sizeof);
 
@@ -973,9 +983,9 @@ void ListenOnOpenFD(int fd, int noxauth)
 
     /* Allocate space to store it */
     ListenTransFds =
-        cast(int*) XNFreallocarray(ListenTransFds, ListenTransCount + 1, int.sizeof);
+        cast(int*)XNFreallocarray(ListenTransFds, (ListenTransCount + 1), int.sizeof);
     ListenTransConns =
-        XNFreallocarray(ListenTransConns, ListenTransCount + 1,
+        cast(_XtransConnInfo**)XNFreallocarray(ListenTransConns, ListenTransCount + 1,
                         XtransConnInfo.sizeof);
 
     /* Store it */

@@ -2,6 +2,7 @@ module include.xlibre_ptrtypes;
 
 public import externs.X11.Xdefs;
 import include.xf86str;
+import os.client_priv;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -26,7 +27,7 @@ alias ClientRec = _Client;
 
 public import dix.window_priv;
 
-struct _ClientId;
+// struct _ClientId;
 alias ClientIdPtr = _ClientId*;
 
 // struct _Window;

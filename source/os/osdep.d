@@ -2,9 +2,9 @@ module os.osdep;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
+// template HasVersion(string versionId) {
+// 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
+// }
 import core.stdc.config: c_long, c_ulong;
 /***********************************************************
 
@@ -92,7 +92,7 @@ extern Bool NewOutputPending;
 
 /* for platforms lacking arc4random_buf() libc function */
 version (HAVE_ARC4RANDOM_BUF) {} else {
-pragma(inline, true) private void arc4random_buf(void* buf, size_t nbytes)
+pragma(inline, true) void arc4random_buf(void* buf, size_t nbytes)
 {
     int fd = open("/dev/urandom", O_RDONLY);
     read(fd, buf, nbytes);
@@ -108,24 +108,24 @@ void TimerInit();
  */
 Bool TimerForce(OsTimerPtr);
 
-static if (HasVersion!"Windows" && ! HasVersion!"Cygwin") {
+// static if (HasVersion!"Windows" && ! HasVersion!"Cygwin") {
 //public import externs.X11.Xwinsock;
 
-alias sigset_t = _sigset_t;
+// alias sigset_t = _sigset_t;
 
-const(char)* Win32TempDir();
+// const(char)* Win32TempDir();
 
-pragma(inline, true) private void Fclose(void* f) { fclose(f); }
-pragma(inline, true) private void* Fopen(const(char)* a, const(char)* b) { return fopen(a,b); }
+pragma(inline, true) void Fclose(void* f) { fclose(f); }
+pragma(inline, true) void* Fopen(const(char)* a, const(char)* b) { return fopen(a,b); }
 
-} else { /* WIN32 */
+// } else { /* WIN32 */
 
 void* Popen(const(char)*, const(char)*);
-void* Fopen(const(char)*, const(char)*);
+// void* Fopen(const(char)*, const(char)*);
 
 int Pclose(void* f);
 
-} /* WIN32 */
+// } /* WIN32 */
 
 /* clone fd so it gets out of our select mask */
 int os_move_fd(int fd);
@@ -201,7 +201,7 @@ pragma(inline, true) int Ones(c_ulong mask)
 /*
  * like strlen(), but checking for NULL and return 0 in this case
  */
-pragma(inline, true) private size_t x_safe_strlen(const(char)* str) {
+pragma(inline, true) size_t x_safe_strlen(const(char)* str) {
     return (str ? strlen(str) : 0);
 }
 

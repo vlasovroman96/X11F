@@ -15,7 +15,7 @@ public import include.os;
 
 // void FreeAuditTimer();
 
-void AuditF(const(char)* f, ...);
+// void AuditF(const(char)* f, ...);
 // void VAuditF(const(char)* f, va_list args);
 
  /* _XSERVER_OS_AUDIT_H */

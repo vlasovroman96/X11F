@@ -37,6 +37,8 @@ import core.stdc.stdlib;
 import core.stdc.stdint;
 import core.sys.posix.sys.mman;
 import core.stdc.signal;
+import os.log;
+import externs.attrs;
 
 alias busfault_notify_ptr = void function(void *context);
 
@@ -57,20 +59,20 @@ private xorg_list busfaults;
 
 busfault* busfault_register_mmap(void* addr, size_t size, busfault_notify_ptr notify, void* context)
 {
-    busfault* busfault = void;
+    busfault* busfault_ = void;
 
-    busfault = cast(busfault*) cast(busfault*) calloc(1, busfault.sizeof);
-    if (!busfault)
+    busfault_ = cast(busfault*) cast(busfault*) calloc(1, busfault.sizeof);
+    if (!busfault_)
         return null;
 
-    busfault.addr = addr;
-    busfault.size = size;
-    busfault.notify = notify;
-    busfault.context = context;
-    busfault.valid = TRUE;
+    busfault_.addr = addr;
+    busfault_.size = size;
+    busfault_.notify = notify;
+    busfault_.context = context;
+    busfault_.valid = TRUE;
 
-    xorg_list_add(&busfault.list, &busfaults);
-    return busfault;
+    xorg_list_add(&busfault_.list, &busfaults);
+    return busfault_;
 }
 
 void busfault_unregister(busfault* busfault)
@@ -88,7 +90,7 @@ void busfault_check()
 
     busfaulted = FALSE;
 
-    mixin(xorg_list_for_each_entry_safe!("busfault", "tmp", "busfaults", "list", q{
+    mixin(xorg_list_for_each_entry_safe!("busfault", "tmp", "&busfaults", "list", q{
         if (!busfault.valid)
             (*busfault.notify)(busfault.context);
     }));
@@ -139,14 +141,14 @@ panic_:
 
 Bool busfault_init()
 {
-    sigaction act = void, old_act = void;
+    sigaction_t act = void, old_act = void;
 
-    act.sa_sigaction = busfault_sigaction;
+    act.sa_sigaction = &busfault_sigaction;
     act.sa_flags = SA_SIGINFO;
     sigemptyset(&act.sa_mask);
     if (sigaction(SIGBUS, &act, &old_act) < 0)
         return FALSE;
-    previous_busfault_sigaction = old_act.sa_sigaction;
+    previous_busfault_sigaction = assumeNoGC(old_act.sa_sigaction);
     xorg_list_init(&busfaults);
     return TRUE;
 }

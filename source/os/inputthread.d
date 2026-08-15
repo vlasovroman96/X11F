@@ -86,6 +86,9 @@ struct InputThreadInfo {
     Bool running;
 }
 
+
+alias sigset_t = core.sys.posix.signal.sigset_t;
+
 private InputThreadInfo* inputThreadInfo;
 
 private int hotplugPipeRead = -1;

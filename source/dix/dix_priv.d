@@ -244,7 +244,7 @@ enum DE_PRIORITYCHANGE = 4     /* set when a client's priority changes */;
 // extern int defaultScreenSaverAllowExposures;
 extern const(char)* display;
 extern int displayfd;
-extern Bool explicit_display;
+// extern Bool explicit_display;
 
 extern Bool disableBackingStore;
 extern Bool enableBackingStore;
@@ -375,7 +375,7 @@ Bool dixScreenRaiseCreateResources(ScreenPtr pScreen);
  * @param ospriv pointer to OS layer's internal data
  * @return pointer to new ClientRec or NULL on failure
  */
-ClientPtr NextAvailableClient(void* ospriv);
+// ClientPtr NextAvailableClient(void* ospriv);
 
 /*
  * @brief mark exception on client - will be closed down later

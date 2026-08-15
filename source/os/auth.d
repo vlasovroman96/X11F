@@ -37,19 +37,21 @@ from The Open Group.
 import build.dix_config;
 
 //import   externs.X11.X;
-// //import   externs.X11.Xauth;
+static import   externs.X11.Xauth;
 import   include.misc;
 import os.osdep;
 import include.dixstruct;
 import   core.sys.posix.sys.types;
 import   core.sys.posix.sys.stat;
 import   core.stdc.errno;
+import os.log;
 version (Windows) {
 import    X11.Xw32defs;
 }
 import   core.stdc.stdlib;       /* for arc4random_buf() */
-
+import os.access;
 import os.auth;
+import externs.attrs;
 
 version (XDMCP) {
 import os.xdmcp;
@@ -61,6 +63,12 @@ enum XAUTH_PROTO_XDM = "XDM-AUTHORIZATION-1";
 import externs.X11.X;
 import externs.X11.Xmd;
 import externs.X11.Xdefs;
+
+alias FILE = core.stdc.stdio.FILE;
+alias _IO_FILE = externs.X11.Xauth._IO_FILE*;
+alias strerror = core.stdc.string.strerror;
+alias strlen = core.stdc.string.strlen;
+alias memcmp = core.stdc.string.memcmp;
 
 enum LCC_UID_SET =     (1 << 0);
 enum LCC_GID_SET =     (1 << 1);
@@ -78,25 +86,25 @@ struct LocalClientCredRec{
     int zoneid;                 /* Only set on Solaris 10 & later */
 } ;
 
-alias AuthInitFunc = void function();
+alias AuthInitFunc = void function() @nogc nothrow;
 
 // enum AuthAddCArgs = "ushort data, const char *data";
-alias AuthAddCFunc = XID function(ushort, const char*);
+alias AuthAddCFunc = XID function(ushort, const char*) @nogc nothrow;
 
 // enum AuthCheckArgs = "ushort , const char *data, ClientPtr client, const char **reason";
-alias AuthCheckFunc = XID function(ushort, const char*, ClientPtr, const char**);
+alias AuthCheckFunc = XID function(ushort, const char*, ClientPtr, const char**) @nogc nothrow;
 
 enum AuthFromIDArgs = "XID, ushort *, char **";
-alias AuthFromIDFunc = int function(XID, ushort *, char **);
+alias AuthFromIDFunc = int function(XID, ushort *, char **) @nogc nothrow;
 
 enum AuthGenCArgs = "uint, const char *data, uint *_return, char **data_return";
-alias AuthGenCFunc = XID function(uint, const char *, uint *, char **);
+alias AuthGenCFunc = XID function(uint, const char *, uint *, char **) @nogc nothrow;
 
 enum AuthRemCArgs = "ushort , const char *data";
-alias AuthRemCFunc = int function(ushort, const char *);
+alias AuthRemCFunc = int function(ushort, const char *) @nogc nothrow;
 
 enum AuthRstCArgs = "";
-alias AuthRstCFunc = int function();
+alias AuthRstCFunc = int function() @nogc nothrow;
 
 import os.xdmauth;
 import os.mitauth;
@@ -167,7 +175,7 @@ void InitAuthorization(const(char)* file_name)
 private int LoadAuthorization()
 {
     FILE* f = void;
-    Xauth* auth = void;
+    externs.X11.Xauth.Xauth* auth = void;
     int i = void;
     int count = 0;
 
@@ -176,7 +184,7 @@ private int LoadAuthorization()
         return 0;
 
     errno = 0;
-    f = Fopen(authorization_file, "r");
+    f = cast(FILE*)Fopen(authorization_file, "r");
     if (!f) {
         LogMessageVerb(X_ERROR, 0,
                        "Failed to open authorization file \"%s\": %s\n",
@@ -185,7 +193,7 @@ private int LoadAuthorization()
         return -1;
     }
 
-    while ((auth = XauReadAuth(f)) != 0) {
+    while ((auth = externs.X11.Xauth.XauReadAuth(cast(_IO_FILE)f)) !is null) {
         for (i = 0; i < NUM_AUTHORIZATION; i++) {
             if (strlen(protocols[i].name) == auth.name_length &&
                 memcmp(protocols[i].name, auth.name,
@@ -194,10 +202,10 @@ private int LoadAuthorization()
                     count++;
             }
         }
-        XauDisposeAuth(auth);
+        externs.X11.Xauth.XauDisposeAuth(auth);
     }
 
-    Fclose(f);
+    Fclose(cast(_IO_FILE)f);
     return count;
 }
 
@@ -218,7 +226,7 @@ void RegisterAuthorizations()
 XID CheckAuthorization(uint name_length, const(char)* name, uint data_length, const(char)* data, ClientPtr client, const(char)** reason)
 {                               /* failure message.  NULL for default msg */
     int i = void;
-    stat buf = void;
+    stat_t buf = void;
     static time_t lastmod = 0;
     static Bool loaded = FALSE;
 
@@ -228,8 +236,8 @@ XID CheckAuthorization(uint name_length, const(char)* name, uint data_length, co
             ShouldLoadAuth = TRUE;      /* stat lost, so force reload */
         }
     }
-    else if (buf.st_mtime > lastmod) {
-        lastmod = buf.st_mtime;
+    else if (buf.st_mtim.tv_sec > lastmod) {
+        lastmod = buf.st_mtim.tv_sec;
         ShouldLoadAuth = TRUE;
     }
     if (ShouldLoadAuth) {
@@ -260,7 +268,7 @@ XID CheckAuthorization(uint name_length, const(char)* name, uint data_length, co
         for (i = 0; i < NUM_AUTHORIZATION; i++) {
             if (strlen(protocols[i].name) == name_length &&
                 memcmp(protocols[i].name, name, cast(int) name_length) == 0) {
-                return (*protocols[i].Check) (data_length, data, client,
+                return (*protocols[i].Check) (cast(ushort)data_length, data, client,
                                               reason);
             }
             *reason = "Authorization protocol not supported by server\n";
@@ -288,7 +296,7 @@ int AuthorizationFromID(XID id, ushort* name_lenp, const(char)** namep, ushort* 
     for (i = 0; i < NUM_AUTHORIZATION; i++) {
         if (protocols[i].FromID &&
             (*protocols[i].FromID) (id, data_lenp, datap)) {
-            *name_lenp = strlen(protocols[i].name);
+            *name_lenp = cast(ushort)strlen(protocols[i].name);
             *namep = protocols[i].name;
             return 1;
         }
@@ -318,7 +326,7 @@ int AddAuthorization(uint name_length, const(char)* name, uint data_length, char
         if (strlen(protocols[i].name) == name_length &&
             memcmp(protocols[i].name, name, cast(int) name_length) == 0 &&
             protocols[i].Add) {
-            return protocols[i].Add(data_length, data);
+            return cast(int)protocols[i].Add(cast(ushort)data_length, data);
         }
     }
     return 0;

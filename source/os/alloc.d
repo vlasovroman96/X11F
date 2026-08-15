@@ -13,6 +13,8 @@ import core.stdc.stdlib;
 
 import include.os;
 import os.osdep;
+import os.log;
+import os.access;
 
 void* XNFalloc(c_ulong amount)
 {
