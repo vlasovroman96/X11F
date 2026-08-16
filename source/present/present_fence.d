@@ -30,6 +30,9 @@ import include.gcstruct;
 import include.misync;
 import include.misyncstr;
 
+import include.list;
+
+
 /*
  * Wraps SyncFence objects so we can add a SyncTrigger to find out
  * when the SyncFence gets destroyed and clean up appropriately
@@ -38,7 +41,7 @@ import include.misyncstr;
 struct present_fence {
     SyncTrigger trigger;
     SyncFence* fence;
-    void function(void* param) callback;
+    void function(void* param) @nogc nothrow callback;
     void* param;
 }
 
@@ -47,14 +50,14 @@ struct present_fence {
  */
 private Bool present_fence_sync_check_trigger(SyncTrigger* trigger, long oldval)
 {
-    present_fence* present_fence = container_of(trigger, present_fence, trigger);
+    present_fence* present_fence = mixin(xorg_list_entry!("trigger", "present_fence", "trigger"));
 
     return present_fence.callback != null;
 }
 
 private void present_fence_sync_trigger_fired(SyncTrigger* trigger)
 {
-    present_fence* present_fence = container_of(trigger, present_fence, trigger);
+    present_fence* present_fence = mixin(xorg_list_entry!("trigger", "present_fence", "trigger"));
 
     if (present_fence.callback)
         (*present_fence.callback)(present_fence.param);
@@ -62,38 +65,38 @@ private void present_fence_sync_trigger_fired(SyncTrigger* trigger)
 
 private void present_fence_sync_counter_destroyed(SyncTrigger* trigger)
 {
-    present_fence* present_fence = container_of(trigger, present_fence, trigger);
+    present_fence* present_fence = mixin(xorg_list_entry!("trigger", "present_fence", "trigger"));
 
     present_fence.fence = null;
 }
 
 present_fence* present_fence_create(SyncFence* fence)
 {
-    present_fence* present_fence = void;
+    present_fence* present_fence_ = void;
 
-    present_fence = cast(present_fence*) calloc (1, present_fence.sizeof);
-    if (!present_fence)
+    present_fence_ = cast(present_fence*) calloc (1, present_fence.sizeof);
+    if (!present_fence_)
         return null;
 
-    present_fence.fence = fence;
-    present_fence.trigger.pSync = cast(SyncObject*) fence;
-    present_fence.trigger.CheckTrigger = present_fence_sync_check_trigger;
-    present_fence.trigger.TriggerFired = present_fence_sync_trigger_fired;
-    present_fence.trigger.CounterDestroyed = present_fence_sync_counter_destroyed;
+    present_fence_.fence = fence;
+    present_fence_.trigger.pSync = cast(SyncObject*) fence;
+    present_fence_.trigger.CheckTrigger = &present_fence_sync_check_trigger;
+    present_fence_.trigger.TriggerFired = &present_fence_sync_trigger_fired;
+    present_fence_.trigger.CounterDestroyed = &present_fence_sync_counter_destroyed;
 
-    if (SyncAddTriggerToSyncObject(&present_fence.trigger) != Success) {
-        free (present_fence);
+    if (SyncAddTriggerToSyncObject(&present_fence_.trigger) != Success) {
+        free (present_fence_);
         return null;
     }
-    return present_fence;
+    return present_fence_;
 }
 
-void present_fence_destroy(present_fence* present_fence)
+void present_fence_destroy(present_fence* present_fence_)
 {
-    if (present_fence) {
-        if (present_fence.fence)
-            SyncDeleteTriggerFromSyncObject(&present_fence.trigger);
-        free(present_fence);
+    if (present_fence_) {
+        if (present_fence_.fence)
+            SyncDeleteTriggerFromSyncObject(&present_fence_.trigger);
+        free(present_fence_);
     }
 }
 
@@ -113,7 +116,7 @@ Bool present_fence_check_triggered(present_fence* present_fence)
     return (*present_fence.fence.funcs.CheckTriggered)(present_fence.fence);
 }
 
-void present_fence_set_callback(present_fence* present_fence, void function(void* param) callback, void* param)
+void present_fence_set_callback(present_fence* present_fence, void function(void* param) @nogc nothrow callback, void* param)
 {
     present_fence.callback = callback;
     present_fence.param = param;

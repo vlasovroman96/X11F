@@ -53,7 +53,7 @@ x_io_error_handler(Display *dpy)
 {
     /* We lost our connection to the server. */
 
-    TRACE();
+    // TRACE();
 
     /* trigger the thread to restart?
      *   NO - this would be to a "deeper" problem, and restarts would just

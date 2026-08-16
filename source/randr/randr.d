@@ -38,6 +38,12 @@ import dix.screenint_priv;
 import miext.extinit_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
+import dix.screen_hooks;
+import dix.resource;
+import dix.dixutils;
+import dix.extension;
+import os.io;
+import dix.events;
 
 /* From render.h */
 // enum SubPixelUnknown = 0;
@@ -69,14 +75,14 @@ private void RRClientCallback(CallbackListPtr* list, void* closure, void* data)
     NewClientInfoRec* clientinfo = cast(NewClientInfoRec*) data;
     ClientPtr pClient = clientinfo.client;
 
-    rrClientPriv(pClient);
+    mixin(rrClientPriv!("pClient"));
     RRTimesPtr pTimes = cast(RRTimesPtr) (pRRClient + 1);
 
     pRRClient.major_version = 0;
     pRRClient.minor_version = 0;
 
     mixin(DIX_FOR_EACH_SCREEN!q{
-        rrScrPriv(walkScreen);
+        mixin(rrScrPriv!("walkScreen"));
         if (pScrPriv) {
             pTimes[walkScreenIdx].setTime = pScrPriv.lastSetTime;
             pTimes[walkScreenIdx].configTime = pScrPriv.lastConfigTime;
@@ -86,13 +92,13 @@ private void RRClientCallback(CallbackListPtr* list, void* closure, void* data)
 
 private void RRCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     int j = void;
     RRLeasePtr lease = void, next = void;
 
-    dixScreenUnhookClose(pScreen, RRCloseScreen);
+    dixScreenUnhookClose(pScreen, &RRCloseScreen);
 
-    mixin(xorg_list_for_each_entry_safe!("lease", "next", "pScrPriv.leases", "list", q{
+    mixin(xorg_list_for_each_entry_safe!("lease", "next", "&pScrPriv.leases", "list", q{
         RRTerminateLease(lease);
     }));
     for (j = pScrPriv.numCrtcs - 1; j >= 0; j--)
@@ -296,7 +302,7 @@ Bool RRScreenInit(ScreenPtr pScreen)
     if (!pScrPriv)
         return FALSE;
 
-    SetRRScreen(pScreen, pScrPriv);
+    mixin(SetRRScreen!("pScreen", "pScrPriv"));
 
     /*
      * Calling function best set these function vectors
@@ -323,8 +329,8 @@ Bool RRScreenInit(ScreenPtr pScreen)
 
     dixScreenHookClose(pScreen, &RRCloseScreen);
 
-    pScreen.ConstrainCursorHarder = RRConstrainCursorHarder;
-    pScreen.ReplaceScanoutPixmap = RRReplaceScanoutPixmap;
+    pScreen.ConstrainCursorHarder = &RRConstrainCursorHarder;
+    pScreen.ReplaceScanoutPixmap = &RRReplaceScanoutPixmap;
 
     xorg_list_init(&pScrPriv.leases);
 
@@ -345,7 +351,7 @@ Bool RRScreenInit(ScreenPtr pScreen)
     dixLookupResourceByType(cast(void**) &pHead, pWin.drawable.id,
                             RREventType, serverClient, DixDestroyAccess);
     if (pHead) {
-        pPrev = 0;
+        pPrev = null;
         for (pCur = *pHead; pCur && pCur != pRREvent; pCur = pCur.next)
             pPrev = pCur;
         if (pCur) {
@@ -381,10 +387,10 @@ void RRExtensionInit()
         return;
 
     if (!dixRegisterPrivateKey(&RRClientPrivateKeyRec, PRIVATE_CLIENT,
-                               (cast(RRClientRec) +
-                               screenInfo.numScreens * RRTimesRec.sizeof).sizeof))
+                               cast(uint)((RRClientRec).sizeof +
+                               screenInfo.numScreens * RRTimesRec.sizeof)))
         return;
-    if (!AddCallback(&ClientStateCallback, &RRClientCallback, 0))
+    if (!AddCallback(&ClientStateCallback, &RRClientCallback, null))
         return;
 
     RRClientType = CreateNewResourceType(&RRFreeClient, "RandRClient");
@@ -394,16 +400,16 @@ void RRExtensionInit()
     if (!RREventType)
         return;
     extEntry = AddExtension(RANDR_NAME, RRNumberEvents, RRNumberErrors,
-                            ProcRRDispatch, ProcRRDispatch,
-                            null, StandardMinorOpcode);
+                            &ProcRRDispatch, &ProcRRDispatch,
+                            null, &StandardMinorOpcode);
     if (!extEntry)
         return;
     RRErrorBase = extEntry.errorBase;
     RREventBase = extEntry.eventBase;
     EventSwapVector[RREventBase + RRScreenChangeNotify] = cast(EventSwapPtr)
-        SRRScreenChangeNotifyEvent;
+        &SRRScreenChangeNotifyEvent;
     EventSwapVector[RREventBase + RRNotify] = cast(EventSwapPtr)
-        SRRNotifyEvent;
+        &SRRNotifyEvent;
 
     RRModeInitErrorValue();
     RRCrtcInitErrorValue();
@@ -416,7 +422,7 @@ version (XINERAMA) {
 
 void RRResourcesChanged(ScreenPtr pScreen)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     pScrPriv.resourcesChanged = TRUE;
 
     RRSetChanged(pScreen);
@@ -426,10 +432,10 @@ private void RRDeliverResourceEvent(ClientPtr client, WindowPtr pWin)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
 
     xRRResourceChangeNotifyEvent re = {
-        type: RRNotify + RREventBase,
+        type: cast(ubyte)(RRNotify + RREventBase),
         subCode: RRNotify_ResourceChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
         window: cast(uint)pWin.drawable.id
@@ -446,7 +452,7 @@ private int TellChanged(WindowPtr pWin, void* value)
     ScreenPtr iter = void;
     rrScrPrivPtr pSecondaryScrPriv = void;
 
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     int i = void;
 
     dixLookupResourceByType(cast(void**) &pHead, pWin.drawable.id,
@@ -474,7 +480,7 @@ private int TellChanged(WindowPtr pWin, void* value)
                 if (!iter.is_output_secondary)
                     continue;
 
-                pSecondaryScrPriv = rrGetScrPriv(iter);
+                pSecondaryScrPriv = mixin(rrGetScrPriv!("iter"));
                 for (i = 0; i < pSecondaryScrPriv.numCrtcs; i++) {
                     RRCrtcPtr crtc = pSecondaryScrPriv.crtcs[i];
 
@@ -496,7 +502,7 @@ private int TellChanged(WindowPtr pWin, void* value)
                 if (!iter.is_output_secondary)
                     continue;
 
-                pSecondaryScrPriv = rrGetScrPriv(iter);
+                pSecondaryScrPriv = mixin(rrGetScrPriv!("iter"));
                 for (i = 0; i < pSecondaryScrPriv.numOutputs; i++) {
                     RROutputPtr output = pSecondaryScrPriv.outputs[i];
 
@@ -508,7 +514,7 @@ private int TellChanged(WindowPtr pWin, void* value)
 
         if (pRREvent.mask & RRProviderChangeNotifyMask) {
             mixin(xorg_list_for_each_entry!("iter", "&pScreen.secondary_list", "secondary_head", q{
-                pSecondaryScrPriv = rrGetScrPriv(iter);
+                pSecondaryScrPriv = mixin(rrGetScrPriv!("iter"));
                 if (pSecondaryScrPriv.provider.changed)
                     RRDeliverProviderEvent(client, pWin, pSecondaryScrPriv.provider);
             }));
@@ -533,14 +539,14 @@ void RRSetChanged(ScreenPtr pScreen)
 {
     /* set changed bits on the primary screen only */
     ScreenPtr primary = void;
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     rrScrPrivPtr primarysp = void;
 
     if (pScreen.isGPU) {
         primary = pScreen.current_primary;
         if (!primary)
             return;
-        primarysp = rrGetScrPriv(primary);
+        primarysp = mixin(rrGetScrPriv!("primary"));
     }
     else {
         primary = pScreen;
@@ -556,7 +562,7 @@ void RRSetChanged(ScreenPtr pScreen)
 void RRTellChanged(ScreenPtr pScreen)
 {
     ScreenPtr primary = void;
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     rrScrPrivPtr primarysp = void;
     int i = void;
     ScreenPtr iter = void;
@@ -566,7 +572,7 @@ void RRTellChanged(ScreenPtr pScreen)
         primary = pScreen.current_primary;
         if (!primary)
             return;
-        primarysp = rrGetScrPriv(primary);
+        primarysp = mixin(rrGetScrPriv!("primary"));
     }
     else {
         primary = pScreen;
@@ -578,7 +584,7 @@ void RRTellChanged(ScreenPtr pScreen)
         return;
 
     mixin(xorg_list_for_each_entry!("iter", "&primary.secondary_list", "secondary_head", q{
-        pSecondaryScrPriv = rrGetScrPriv(iter);
+        pSecondaryScrPriv = mixin(rrGetScrPriv!("iter"));
 
         if (!iter.is_output_secondary)
             continue;
@@ -608,7 +614,7 @@ void RRTellChanged(ScreenPtr pScreen)
             pScrPriv.crtcs[i].changed = FALSE;
 
         mixin(xorg_list_for_each_entry!("iter", "&primary.secondary_list", "secondary_head", q{
-            pSecondaryScrPriv = rrGetScrPriv(iter);
+            pSecondaryScrPriv = mixin(rrGetScrPriv!("iter"));
             pSecondaryScrPriv.provider.changed = FALSE;
             if (iter.is_output_secondary) {
                 for (i = 0; i < pSecondaryScrPriv.numOutputs; i++)
@@ -632,7 +638,7 @@ void RRTellChanged(ScreenPtr pScreen)
  */
 RROutputPtr RRFirstOutput(ScreenPtr pScreen)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     RROutputPtr output = void;
     int i = void, j = void;
 
@@ -656,7 +662,7 @@ RROutputPtr RRFirstOutput(ScreenPtr pScreen)
 
 RRCrtcPtr RRFirstEnabledCrtc(ScreenPtr pScreen)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     RROutputPtr output = void;
     int i = void, j = void;
 

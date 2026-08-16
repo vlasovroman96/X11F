@@ -28,11 +28,18 @@ import dix.screen_hooks_priv;
 import dix.screenint_priv;
 import miext.extinit_priv;
 import present.present_priv;
+import dix.screen_hooks;
+import dix.extension;
+import externs.X11.extensions.presenttokens;
+import os.log;
+
 
 int present_request;
 DevPrivateKeyRec present_screen_private_key;
 DevPrivateKeyRec present_window_private_key;
 
+alias unwrap = present.present_priv.unwrap;
+alias wrap = present.present_priv.wrap;
 /*
  * Get a pointer to a present window private, creating if necessary
  */
@@ -42,7 +49,7 @@ present_window_priv_ptr present_get_window_priv(WindowPtr window, Bool create)
 
     if (!create || window_priv != null)
         return window_priv;
-    window_priv = calloc (1, present_window_priv_rec.sizeof);
+    window_priv = cast(present_window_priv_t*)calloc (1, present_window_priv_rec.sizeof);
     if (!window_priv)
         return null;
     xorg_list_init(&window_priv.vblank);
@@ -66,7 +73,7 @@ private void present_close_screen(CallbackListPtr* pcbl, ScreenPtr screen, void*
     if (screen_priv.flip_destroy)
         screen_priv.flip_destroy(screen);
 
-    dixScreenUnhookClose(screen, present_close_screen);
+    dixScreenUnhookClose(screen, &present_close_screen);
     dixSetPrivate(&screen.devPrivates, &present_screen_private_key, null);
     free(screen_priv);
 }
@@ -81,7 +88,7 @@ private void present_free_window_vblank(WindowPtr window)
     present_window_priv_ptr window_priv = present_window_priv(window);
     present_vblank_ptr vblank = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("vblank", "tmp", "window_priv.vblank", "window_list", q{
+    mixin(xorg_list_for_each_entry_safe!("vblank", "tmp", "&window_priv.vblank", "window_list", q{
         screen_priv.abort_vblank(window.drawable.pScreen, window, vblank.crtc, vblank.event_id, vblank.target_msc);
         present_vblank_destroy(vblank);
     }));
@@ -127,12 +134,12 @@ private int present_config_notify(WindowPtr window, int x, int y, int w, int h, 
 
     present_send_config_notify(window, x, y, w, h, bw, sibling, 0);
 
-    unwrap(screen_priv, screen, ConfigNotify);
+    mixin(unwrap!("screen_priv", "screen", "ConfigNotify"));
     if (screen.ConfigNotify)
         ret = screen.ConfigNotify (window, x, y, w, h, bw, sibling);
     else
         ret = 0;
-    wrap(screen_priv, screen, ConfigNotify, present_config_notify);
+    mixin(wrap!("screen_priv", "screen", "ConfigNotify", "&present_config_notify"));
     return ret;
 }
 
@@ -146,10 +153,10 @@ private void present_clip_notify(WindowPtr window, int dx, int dy)
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
 
     screen_priv.check_flip_window(window);
-    unwrap(screen_priv, screen, ClipNotify);
+    mixin(unwrap!("screen_priv", "screen", "ClipNotify"));
     if (screen.ClipNotify)
         screen.ClipNotify (window, dx, dy);
-    wrap(screen_priv, screen, ClipNotify, present_clip_notify);
+    mixin(wrap!("screen_priv", "screen", "ClipNotify", "&present_clip_notify"));
 }
 
 Bool present_screen_register_priv_keys()
@@ -174,8 +181,8 @@ present_screen_priv_ptr present_screen_priv_init(ScreenPtr screen)
     dixScreenHookWindowDestroy(screen, &present_destroy_window);
     dixScreenHookClose(screen, &present_close_screen);
 
-    wrap(screen_priv, screen, ConfigNotify, &present_config_notify);
-    wrap(screen_priv, screen, ClipNotify, &present_clip_notify);
+    mixin(wrap!("screen_priv", "screen", "ConfigNotify", "&present_config_notify"));
+    mixin(wrap!("screen_priv", "screen", "ClipNotify", "&present_clip_notify"));
 
     dixSetPrivate(&screen.devPrivates, &present_screen_private_key, screen_priv);
     screen_priv.pScreen = screen;
@@ -236,8 +243,8 @@ version (XINERAMA) {
 } /* XINERAMA */
 
     extension = AddExtension(PRESENT_NAME, PresentNumberEvents, PresentNumberErrors,
-                             proc_present_dispatch, sproc_present_dispatch,
-                             null, StandardMinorOpcode);
+                             &proc_present_dispatch, &sproc_present_dispatch,
+                             null, &StandardMinorOpcode);
     if (!extension)
         goto bail;
 

@@ -27,6 +27,7 @@ import build.dix_config;
 import core.sys.posix.unistd;
 
 import present.present_priv;
+import externs.X11.extensions.presenttokens;
 
 version (DRI3) {
 import sys.eventfd;
@@ -39,7 +40,7 @@ import sys.eventfd;
  */
 private void present_wait_fence_triggered(void* param)
 {
-    present_vblank_ptr vblank = param;
+    present_vblank_ptr vblank = cast(present_vblank_ptr)param;
     ScreenPtr screen = vblank.screen;
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
 
@@ -160,6 +161,6 @@ void present_execute_post(present_vblank_ptr vblank, ulong ust, ulong crtc_msc)
     else
         mode = PresentCompleteModeCopy;
 
-    present_vblank_notify(vblank, vblank.kind, mode, ust, crtc_msc);
+    present_vblank_notify(vblank, cast(ubyte)vblank.kind, mode, ust, crtc_msc);
     present_vblank_destroy(vblank);
 }

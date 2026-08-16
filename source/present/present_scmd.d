@@ -31,6 +31,8 @@ import randr.randrstr_priv;
 import include.misync;
 import include.misyncstr;
 import include.dri3;
+import externs.X11.extensions.presentproto;
+
 
 /*
  * Screen flip mode
@@ -90,7 +92,7 @@ private Bool present_check_flip(RRCrtcPtr crtc, WindowPtr window, PixmapPtr pixm
     /* Ask the driver for permission. Do this now to see if there's TearFree. */
     if (screen_priv.info.version_ >= 1 && screen_priv.info.check_flip2) {
         if (!(*screen_priv.info.check_flip2) (crtc, window, pixmap, sync_flip, &tmp_reason)) {
-            DebugPresent("\td %08" ~ PRIx32 ~ " -> %08" ~PRIx32 ~ "\n", window.drawable.id, pixmap ? pixmap.drawable.id : 0);
+            // DebugPresent("\td %08" ~ PRIx32 ~ " -> %08" ~PRIx32 ~ "\n", window.drawable.id, pixmap ? pixmap.drawable.id : 0);
             /* It's fine to return now unless the page flip failure reason is
              * PRESENT_FLIP_REASON_BUFFER_FORMAT; we must only output that
              * reason if all the other checks pass.
@@ -103,7 +105,7 @@ private Bool present_check_flip(RRCrtcPtr crtc, WindowPtr window, PixmapPtr pixm
         }
     } else if (screen_priv.info.check_flip) {
         if (!(*screen_priv.info.check_flip) (crtc, window, pixmap, sync_flip)) {
-            DebugPresent(("\td %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ "\n", window.drawable.id, pixmap ? pixmap.drawable.id : 0));
+            // DebugPresent(("\td %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ "\n", window.drawable.id, pixmap ? pixmap.drawable.id : 0));
             return FALSE;
         }
     }
@@ -315,7 +317,7 @@ private void present_unflip(ScreenPtr screen)
     present_restore_screen_pixmap(screen);
 
     screen_priv.unflip_event_id = ++present_scmd_event_id;
-    DebugPresent(("u %"~ PRIu64 ~ "\n", screen_priv.unflip_event_id));
+    // DebugPresent(("u %"~ PRIu64 ~ "\n", screen_priv.unflip_event_id));
     (*screen_priv.info.unflip) (screen, screen_priv.unflip_event_id);
 }
 
@@ -324,10 +326,10 @@ private void present_flip_notify(present_vblank_ptr vblank, ulong ust, ulong crt
     ScreenPtr screen = vblank.screen;
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
 
-    DebugPresent(("\tn %"~ PRIu64 ~ " %p %" ~PRIu64 ~ " %" ~PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ "\n",
-                  vblank.event_id, vblank, vblank.exec_msc, vblank.target_msc,
-                  vblank.pixmap ? vblank.pixmap.drawable.id : 0,
-                  vblank.window ? vblank.window.drawable.id : 0));
+    // DebugPresent(("\tn %"~ PRIu64 ~ " %p %" ~PRIu64 ~ " %" ~PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ "\n",
+                //   vblank.event_id, vblank, vblank.exec_msc, vblank.target_msc,
+                //   vblank.pixmap ? vblank.pixmap.drawable.id : 0,
+                //   vblank.window ? vblank.window.drawable.id : 0));
 
     assert (vblank == screen_priv.flip_pending);
 
@@ -363,7 +365,7 @@ void present_event_notify(ulong event_id, ulong ust, ulong msc)
 
     if (!event_id)
         return;
-    DebugPresent(("\te %" ~PRIu64 ~ " ust %" ~PRIu64 ~ " msc %" ~PRIu64 ~ "\n", event_id, ust, msc));
+    // DebugPresent(("\te %" ~PRIu64 ~ " ust %" ~PRIu64 ~ " msc %" ~PRIu64 ~ "\n", event_id, ust, msc));
     mixin(xorg_list_for_each_entry!("vblank", "&present_exec_queue", "event_queue", q{
         long match = event_id - vblank.event_id;
         if (match == 0) {
@@ -385,7 +387,7 @@ void present_event_notify(ulong event_id, ulong ust, ulong msc)
         present_screen_priv_ptr screen_priv = present_screen_priv(walkScreen);
 
         if (event_id == screen_priv.unflip_event_id) {
-            DebugPresent(("\tun %"~ PRIu64 ~ "\n", event_id));
+            // DebugPresent(("\tun %"~ PRIu64 ~ "\n", event_id));
             screen_priv.unflip_event_id = 0;
             present_flip_idle(walkScreen);
             present_flip_try_ready(walkScreen);
@@ -528,9 +530,9 @@ private void present_execute(present_vblank_ptr vblank, ulong ust, ulong crtc_ms
 
     if (vblank.flip && vblank.pixmap && vblank.window) {
         if (screen_priv.flip_pending || screen_priv.unflip_event_id) {
-            DebugPresent(("\tr %"~ PRIu64 ~ " %p (pending %p unflip %"~ PRIu64 ~ ")\n",
-                          vblank.event_id, vblank,
-                          screen_priv.flip_pending, screen_priv.unflip_event_id));
+            // DebugPresent(("\tr %"~ PRIu64 ~ " %p (pending %p unflip %"~ PRIu64 ~ ")\n",
+            //               vblank.event_id, vblank,
+            //               screen_priv.flip_pending, screen_priv.unflip_event_id));
             xorg_list_del(&vblank.event_queue);
             xorg_list_append(&vblank.event_queue, &present_flip_queue);
             vblank.flip_ready = TRUE;
@@ -548,9 +550,9 @@ private void present_execute(present_vblank_ptr vblank, ulong ust, ulong crtc_ms
 
         if (vblank.flip) {
 
-            DebugPresent(("\tf %" ~PRIu64 ~ " %p %"~ PRIu64 ~ ": %08"~ PRIx32 ~ " -> %08"~ PRIx32 ~ "\n",
-                          vblank.event_id, vblank, crtc_msc,
-                          vblank.pixmap.drawable.id, vblank.window.drawable.id));
+            // DebugPresent(("\tf %" ~PRIu64 ~ " %p %"~ PRIu64 ~ ": %08"~ PRIx32 ~ " -> %08"~ PRIx32 ~ "\n",
+            //               vblank.event_id, vblank, crtc_msc,
+            //               vblank.pixmap.drawable.id, vblank.window.drawable.id));
 
             /* Prepare to flip by placing it in the flip queue and
              * and sticking it into the flip_pending field
@@ -593,8 +595,8 @@ private void present_execute(present_vblank_ptr vblank, ulong ust, ulong crtc_ms
             vblank.flip = FALSE;
             vblank.exec_msc = vblank.target_msc;
         }
-        DebugPresent(("\tc %p %" ~PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ "\n",
-                      vblank, crtc_msc, vblank.pixmap.drawable.id, vblank.window.drawable.id));
+        // DebugPresent(("\tc %p %" ~PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ "\n",
+                    //   vblank, crtc_msc, vblank.pixmap.drawable.id, vblank.window.drawable.id));
         if (screen_priv.flip_pending) {
 
             /* Check pending flip
@@ -745,7 +747,7 @@ version (DRI3) {
      */
 
     if (!update && pixmap) {
-        mixin(xorg_list_for_each_entry_safe!("vblank", "tmp", "window_priv.vblank", "window_list", q{
+        mixin(xorg_list_for_each_entry_safe!("vblank", "tmp", "&window_priv.vblank", "window_list", q{
 
             if (!vblank.pixmap)
                 continue;
@@ -768,7 +770,7 @@ version (DRI3) {
     }
 
     uint inf = screen_priv.info ? screen_priv.info.capabilities : 0;
-    version(DRI3) {
+    // version(DRI3) {
         vblank = present_vblank_create(window,
                                     pixmap,
                                     serial,
@@ -789,25 +791,25 @@ version (DRI3) {
                                     num_notifies,
                                     target_msc,
                                     crtc_msc);
-    }
-    else {
-        vblank = present_vblank_create(window,
-                                pixmap,
-                                serial,
-                                valid,
-                                update,
-                                x_off,
-                                y_off,
-                                target_crtc,
-                                wait_fence,
-                                idle_fence,
-                                options,
-                                inf,
-                                notifies,
-                                num_notifies,
-                                target_msc,
-                                crtc_msc);
-    }
+    // }
+    // else {
+    //     vblank = present_vblank_create(window,
+    //                             pixmap,
+    //                             serial,
+    //                             valid,
+    //                             update,
+    //                             x_off,
+    //                             y_off,
+    //                             target_crtc,
+    //                             wait_fence,
+    //                             idle_fence,
+    //                             options,
+    //                             inf,
+    //                             notifies,
+    //                             num_notifies,
+    //                             target_msc,
+    //                             crtc_msc);
+    // }
 
     if (!vblank)
         return BadAlloc;
@@ -829,7 +831,7 @@ version (DRI3) {
         if (ret == Success)
             return Success;
 
-        DebugPresent(("present_queue_vblank failed\n"));
+        // DebugPresent(("present_queue_vblank failed\n"));
     }
 
     present_execute(vblank, ust, crtc_msc);

@@ -97,13 +97,13 @@ struct present_vblank {
     Bool abort_flip;     /* aborting this flip */
     PresentFlipReason reason;         /* reason for which flip is not possible */
     Bool has_suboptimal; /* whether client can support SuboptimalCopy mode */
-version (DRI3) {
+// version (DRI3) {
     dri3_syncobj* acquire_syncobj;
     dri3_syncobj* release_syncobj;
     ulong acquire_point;
     ulong release_point;
     int efd;
-} /* DRI3 */
+// } /* DRI3 */
 }
 
 alias present_screen_priv_rec = present_screen_priv_t;

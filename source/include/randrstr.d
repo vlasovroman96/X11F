@@ -394,7 +394,7 @@ enum rrPrivKey = (&rrPrivKeyRec);
 
 enum string rrGetScrPriv(string pScr) = `(cast(rrScrPrivPtr)dixLookupPrivate(&(` ~ pScr ~ `).devPrivates, rrPrivKey))`;
 enum string rrScrPriv(string pScr) = `rrScrPrivPtr pScrPriv = ` ~ rrGetScrPriv!(pScr) ~ `;`;
-enum string SetRRScreen(string s,string p) = `dixSetPrivate(&(` ~ s ~ `).devPrivates, rrPrivKey, ` ~ p ~ `)`;
+enum string SetRRScreen(string s,string p) = `dixSetPrivate(&(` ~ s ~ `).devPrivates, rrPrivKey, ` ~ p ~ `);`;
 
 /*
  * each window has a list of clients requesting

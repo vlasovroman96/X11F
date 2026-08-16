@@ -48,8 +48,10 @@ import pseudoramiX;
 import include.extnsionst;
 import include.dixstruct;
 import include.window;
-////import externs.X11.extensions.panoramiXproto;
+import externs.X11.extensions.panoramiXproto;
 import include.globals;
+import os.log;
+import dix.extension;
 
 // enum TRACE = LogMessageVerb(X_NONE, 10, "TRACE " ~ __FILE__ ~":%s", __FUNCTION__.ptr);
 // enum string DEBUG_LOG(__VA_ARGS__) = `LogMessageVerb(X_NONE, 3, `~__VA_ARGS__~`);`;
@@ -91,12 +93,12 @@ void PseudoramiXAddScreen(int x, int y, int w, int h)
 
     if (pseudoramiXNumScreens == pseudoramiXScreensAllocated) {
         pseudoramiXScreensAllocated += pseudoramiXScreensAllocated + 1;
-        pseudoramiXScreens = reallocarray(pseudoramiXScreens,
+        pseudoramiXScreens = cast(PseudoramiXScreenRec*)reallocarray(pseudoramiXScreens,
                                           pseudoramiXScreensAllocated,
                                           PseudoramiXScreenRec.sizeof);
     }
 
-    mixin(DEBUG_LOG!(`"x: %d, y: %d, w: %d, h: %d\n"`, `x`, `y`, `w`, `h`));
+    // mixin(DEBUG_LOG!(`"x: %d, y: %d, w: %d, h: %d\n"`, `x`, `y`, `w`, `h`));
 
     s = &pseudoramiXScreens[pseudoramiXNumScreens++];
     s.x = x;
@@ -114,7 +116,7 @@ void PseudoramiXExtensionInit()
 
     if (noPseudoramiXExtension) return;
 
-    TRACE;
+    // TRACE;
 
     /* Even with only one screen we need to enable PseudoramiX to allow
        dynamic screen configuration changes. */
@@ -127,10 +129,10 @@ version (none) {
 }
 
     extEntry = AddExtension(PANORAMIX_PROTOCOL_NAME, 0, 0,
-                            ProcPseudoramiXDispatch,
-                            ProcPseudoramiXDispatch,
-                            PseudoramiXResetProc,
-                            StandardMinorOpcode);
+                            &ProcPseudoramiXDispatch,
+                            &ProcPseudoramiXDispatch,
+                            &PseudoramiXResetProc,
+                            &StandardMinorOpcode);
     if (!extEntry) {
         ErrorF("PseudoramiXExtensionInit(): AddExtension failed\n");
     }
@@ -143,21 +145,21 @@ version (none) {
 
     if (!success) {
         ErrorF("%s Extension (PseudoramiX) failed to initialize\n",
-               PANORAMIX_PROTOCOL_NAME);
+               PANORAMIX_PROTOCOL_NAME.ptr);
         return;
     }
 }
 
 void PseudoramiXResetScreens()
 {
-    TRACE;
+    // TRACE;
 
     pseudoramiXNumScreens = 0;
 }
 
 private void PseudoramiXResetProc(ExtensionEntry* extEntry)
 {
-    TRACE;
+    // TRACE;
 
     PseudoramiXResetScreens();
 }
@@ -174,7 +176,7 @@ private int ProcPseudoramiXGetState(ClientPtr client)
     WindowPtr pWin = void;
     int rc = void;
 
-    TRACE;
+    // TRACE;
 
     rc = dixLookupWindow(&pWin, stuff.window, client, DixGetAttrAccess);
     if (rc != Success)
@@ -204,14 +206,14 @@ private int ProcPseudoramiXGetScreenCount(ClientPtr client)
     WindowPtr pWin = void;
     int rc = void;
 
-    TRACE;
+    // TRACE;
 
     rc = dixLookupWindow(&pWin, stuff.window, client, DixGetAttrAccess);
     if (rc != Success)
         return rc;
 
     xPanoramiXGetScreenCountReply reply = {
-        ScreenCount: pseudoramiXNumScreens,
+        ScreenCount: cast(ubyte)pseudoramiXNumScreens,
         window: stuff.window
     };
 
@@ -236,7 +238,7 @@ private int ProcPseudoramiXGetScreenSize(ClientPtr client)
     WindowPtr pWin = void;
     int rc = void;
 
-    TRACE;
+    // TRACE;
 
     if (stuff.screen >= pseudoramiXNumScreens)
       return BadMatch;
@@ -266,7 +268,7 @@ private int ProcPseudoramiXGetScreenSize(ClientPtr client)
 private int ProcPseudoramiXIsActive(ClientPtr client)
 {
     /* mixin(REQUEST!xXineramaIsActiveReq); */
-    TRACE;
+    // TRACE;
     mixin(REQUEST_AT_LEAST_SIZE!xXineramaIsActiveReq);
 
     xXineramaIsActiveReply reply = {
@@ -285,9 +287,9 @@ private int ProcPseudoramiXQueryScreens(ClientPtr client)
 {
     /* mixin(REQUEST!xXineramaQueryScreensReq); */
 
-    mixin(DEBUG_LOG!(`"noPseudoramiXExtension=%d, pseudoramiXNumScreens=%d\n"`,
-              `noPseudoramiXExtension`,
-              `pseudoramiXNumScreens`));
+    // mixin(DEBUG_LOG!(`"noPseudoramiXExtension=%d, pseudoramiXNumScreens=%d\n"`,
+    //           `noPseudoramiXExtension`,
+    //           `pseudoramiXNumScreens`));
 
     mixin(REQUEST_AT_LEAST_SIZE!xXineramaQueryScreensReq);
 
@@ -297,10 +299,10 @@ private int ProcPseudoramiXQueryScreens(ClientPtr client)
         for (int i = 0; i < pseudoramiXNumScreens; i++) {
             /* xXineramaScreenInfo is the same as xRectangle */
             x_rpcbuf_write_rect(&rpcbuf,
-                                pseudoramiXScreens[i].x,
-                                pseudoramiXScreens[i].y,
-                                pseudoramiXScreens[i].w,
-                                pseudoramiXScreens[i].h);
+                                cast(short)pseudoramiXScreens[i].x,
+                                cast(short)pseudoramiXScreens[i].y,
+                                cast(short)pseudoramiXScreens[i].w,
+                                cast(short)pseudoramiXScreens[i].h);
         }
     }
 
@@ -318,7 +320,7 @@ private int ProcPseudoramiXQueryScreens(ClientPtr client)
 private int ProcPseudoramiXDispatch(ClientPtr client)
 {
     mixin(REQUEST!xReq);
-    TRACE;
+    // TRACE;
     switch (stuff.data) {
     case X_PanoramiXQueryVersion:
         return ProcPanoramiXQueryVersion(client);

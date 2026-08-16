@@ -33,6 +33,8 @@ import randr.randrstr_priv;
 import include.protocol_versions;
 import externs.X11.extensions.presentproto;
 import include.dri3;
+import xfixes.region;
+import Xext.sync;
 alias XSyncFence = CARD32;
 
 private int proc_present_query_version(ClientPtr client)
@@ -65,7 +67,7 @@ private int proc_present_query_version(ClientPtr client)
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
-enum string VERIFY_FENCE_OR_NONE(string fence_ptr, string fence_id, string client, string access) = `do {  
+enum string VERIFY_FENCE_OR_NONE(string fence_ptr, string fence_id, string client, string access) = `{  
         if ((` ~ fence_id ~ `) == None)                                         
             (` ~ fence_ptr ~ `) = null;                                         
         else {                                                          
@@ -73,15 +75,15 @@ enum string VERIFY_FENCE_OR_NONE(string fence_ptr, string fence_id, string clien
             if (__rc__ != Success)                                      
                 return __rc__;                                          
         }                                                               
-    } while (0)`;
+    } `;
 
-enum string VERIFY_CRTC_OR_NONE(string crtc_ptr, string crtc_id, string client, string access) = `do {     
+enum string VERIFY_CRTC_OR_NONE(string crtc_ptr, string crtc_id, string client, string access) = `{     
         if ((` ~ crtc_id ~ `) == None)                                          
             (` ~ crtc_ptr ~ `) = null;                                          
         else {                                                          
-            VERIFY_RR_CRTC(` ~ crtc_id ~ `, ` ~ crtc_ptr ~ `, ` ~ access ~ `);                  
+            `~VERIFY_RR_CRTC!(crtc_id, crtc_ptr, access)~`;                  
         }                                                               
-    } while (0)`;
+    }`;
 
 private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixmap req_pixmap, CARD32 req_serial, CARD32 req_valid, CARD32 req_update, INT16 req_x_off, INT16 req_y_off, CARD32 req_target_crtc, XSyncFence req_wait_fence, XSyncFence req_idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, CARD64 req_acquire_point, CARD64 req_release_point, CARD32 req_options, CARD64 req_target_msc, CARD64 req_divisor, CARD64 req_remainder, size_t base_req_size, xPresentNotify* req_notifies)
 {
@@ -106,8 +108,8 @@ private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixm
     if (window.drawable.depth != pixmap.drawable.depth)
         return BadMatch;
 
-    VERIFY_REGION_OR_NONE(valid, req_valid, client, DixReadAccess);
-    VERIFY_REGION_OR_NONE(update, req_update, client, DixReadAccess);
+    mixin(VERIFY_REGION_OR_NONE!("valid", "req_valid", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION_OR_NONE!("update", "req_update", "client", "DixReadAccess"));
 
     mixin(VERIFY_CRTC_OR_NONE!(`target_crtc`, `req_target_crtc`, `client`, `DixReadAccess`));
 
@@ -134,7 +136,7 @@ private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixm
         }
     }
 
-    nnotifies = (client.req_len << 2) - base_req_size;
+    nnotifies = cast(int)((client.req_len << 2) - base_req_size);
     if (nnotifies % xPresentNotify.sizeof)
         return BadLength;
 
@@ -145,22 +147,22 @@ private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixm
             return ret;
     }
 
-    version(DRI3) {
+    // version(DRI3) {
             ret = present_pixmap(window, pixmap, req_serial,
                          valid, update, req_x_off, req_y_off, target_crtc,
                          wait_fence, idle_fence,
-                         acquire_syncobj, release_syncobj,
+                        //  acquire_syncobj, release_syncobj,
                          req_acquire_point, req_release_point,
                          req_options, req_target_msc, req_divisor, req_remainder,
                          notifies, nnotifies);
-    }
-    else {
-            ret = present_pixmap(window, pixmap, req_serial,
-                         valid, update, req_x_off, req_y_off, target_crtc,
-                         wait_fence, idle_fence,
-                         req_options, req_target_msc, req_divisor, req_remainder,
-                         notifies, nnotifies);
-    }
+    // }
+    // else {
+    //         ret = present_pixmap(window, pixmap, req_serial,
+    //                      valid, update, req_x_off, req_y_off, target_crtc,
+    //                      wait_fence, idle_fence,
+    //                      req_options, req_target_msc, req_divisor, req_remainder,
+    //                      notifies, nnotifies);
+    // }
 
     if (ret != Success)
         present_destroy_notifies(notifies, nnotifies);
@@ -172,30 +174,30 @@ private int proc_present_pixmap(ClientPtr client)
     mixin(REQUEST!xPresentPixmapReq);
     mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapReq);
 
-    version(DRI3) {
+    // version(DRI3) {
         return proc_present_pixmap_common(client, stuff.window, stuff.pixmap, stuff.serial,
                                     stuff.valid, stuff.update, stuff.x_off, stuff.y_off,
                                     stuff.target_crtc,
                                     stuff.wait_fence, stuff.idle_fence,
 // #ifdef DRI3
-                                    None, None, 0, 0,
+                                    null, null, 0, 0,
 // #endif /* DRI3 */
                                     stuff.options, stuff.target_msc,
                                     stuff.divisor, stuff.remainder,
                                     xPresentPixmapReq.sizeof,
                                     cast(xPresentNotify*)(stuff + 1));
-    }
-    else {
+    // }
+    // else {
 
-        return proc_present_pixmap_common(client, stuff.window, stuff.pixmap, stuff.serial,
-                                        stuff.valid, stuff.update, stuff.x_off, stuff.y_off,
-                                        stuff.target_crtc,
-                                        stuff.wait_fence, stuff.idle_fence,
-                                        stuff.options, stuff.target_msc,
-                                        stuff.divisor, stuff.remainder,
-                                        xPresentPixmapReq.sizeof,
-                                        cast(xPresentNotify*)(stuff + 1));
-    }
+    //     return proc_present_pixmap_common(client, stuff.window, stuff.pixmap, stuff.serial,
+    //                                     stuff.valid, stuff.update, stuff.x_off, stuff.y_off,
+    //                                     stuff.target_crtc,
+    //                                     stuff.wait_fence, stuff.idle_fence,
+    //                                     stuff.options, stuff.target_msc,
+    //                                     stuff.divisor, stuff.remainder,
+    //                                     xPresentPixmapReq.sizeof,
+    //                                     cast(xPresentNotify*)(stuff + 1));
+    // }
 }
 
 private int proc_present_notify_msc(ClientPtr client)
@@ -261,7 +263,7 @@ private int proc_present_query_capabilities(ClientPtr client)
         crtc = present_get_crtc(window);
         break;
     case BadWindow:
-        VERIFY_RR_CRTC(stuff.target, crtc, DixGetAttrAccess);
+        mixin(VERIFY_RR_CRTC!("stuff.target", "crtc", "DixGetAttrAccess"));
         break;
     default:
         return r;

@@ -28,6 +28,10 @@ import core.sys.posix.unistd;
 
 import present.present_priv;
 import include.dri3;
+import dix.screen_hooks;
+import dix.extension;
+import externs.X11.extensions.presenttokens;
+import os.log;
 
 void present_vblank_notify(present_vblank_ptr vblank, CARD8 kind, CARD8 mode, ulong ust, ulong crtc_msc)
 {
@@ -153,10 +157,10 @@ version (DRI3) {
 } /* DRI3 */
 
     if (pixmap)
-        DebugPresent(("q %" ~PRIu64 ~ " %p %"~ PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ " (crtc %p) flip %d vsync %d serial %d\n",
-                      vblank.event_id, vblank, target_msc,
-                      vblank.pixmap.drawable.id, vblank.window.drawable.id,
-                      target_crtc, vblank.flip, vblank.sync_flip, vblank.serial));
+        // DebugPresent(("q %" ~PRIu64 ~ " %p %"~ PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ " (crtc %p) flip %d vsync %d serial %d\n",
+        //               vblank.event_id, vblank, target_msc,
+        //               vblank.pixmap.drawable.id, vblank.window.drawable.id,
+        //               target_crtc, vblank.flip, vblank.sync_flip, vblank.serial));
     return TRUE;
 
 no_mem:
@@ -172,20 +176,20 @@ present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CAR
         return null;
 
     bool init;
-    version(DRI3) {
-    init = present_vblank_init(vblank, window, pixmap, serial, valid, update,
+    // version(DRI3) {
+    init = cast(bool)present_vblank_init(vblank, window, pixmap, serial, valid, update,
                             x_off, y_off, target_crtc, wait_fence, idle_fence,
                             acquire_syncobj, release_syncobj,
                             acquire_point, release_point,
                             options, capabilities, notifies, num_notifies,
                             target_msc, crtc_msc);
-    }
-    else {
-        present_vblank_init(vblank, window, pixmap, serial, valid, update,
-                            x_off, y_off, target_crtc, wait_fence, idle_fence,
-                            options, capabilities, notifies, num_notifies,
-                            target_msc, crtc_msc);
-    }
+    // }
+    // else {
+    //     present_vblank_init(vblank, window, pixmap, serial, valid, update,
+    //                         x_off, y_off, target_crtc, wait_fence, idle_fence,
+    //                         options, capabilities, notifies, num_notifies,
+    //                         target_msc, crtc_msc);
+    // }
 
     if (init)
         return vblank;
@@ -196,20 +200,20 @@ present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CAR
 
 void present_vblank_scrap(present_vblank_ptr vblank)
 {
-    DebugPresent(("\tx %"~ PRIu64 ~ " %p %"~ PRIu64 ~ " %" ~PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08"~ PRIx32 ~ " (crtc %p)\n",
-                  vblank.event_id, vblank, vblank.exec_msc, vblank.target_msc,
-                  vblank.pixmap.drawable.id, vblank.window.drawable.id,
-                  vblank.crtc));
+    // DebugPresent(("\tx %"~ PRIu64 ~ " %p %"~ PRIu64 ~ " %" ~PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08"~ PRIx32 ~ " (crtc %p)\n",
+    //               vblank.event_id, vblank, vblank.exec_msc, vblank.target_msc,
+    //               vblank.pixmap.drawable.id, vblank.window.drawable.id,
+    //               vblank.crtc));
 
-version (DRI3) {
+// version (DRI3) {
     if (vblank.release_syncobj)
         vblank.release_syncobj.signal(vblank.release_syncobj,
                                         vblank.release_point);
     else
         present_pixmap_idle(vblank.pixmap, vblank.window, vblank.serial, vblank.idle_fence);
-} /* DRI3 */
-else
-        present_pixmap_idle(vblank.pixmap, vblank.window, vblank.serial, vblank.idle_fence);
+// } /* DRI3 */
+// else
+//         present_pixmap_idle(vblank.pixmap, vblank.window, vblank.serial, vblank.idle_fence);
 
     present_fence_destroy(vblank.idle_fence);
     dixDestroyPixmap(vblank.pixmap, vblank.pixmap.drawable.id);
@@ -226,10 +230,10 @@ void present_vblank_destroy(present_vblank_ptr vblank)
     /* Also make sure vblank is removed from event queue (wnmd) */
     xorg_list_del(&vblank.event_queue);
 
-    DebugPresent(("\td %" ~PRIu64 ~ " %p %" ~PRIu64 ~ " %" ~PRIu64 ~ ": %08"~ PRIx32 ~ " -> %08"~PRIx32 ~ "\n",
-                  vblank.event_id, vblank, vblank.exec_msc, vblank.target_msc,
-                  vblank.pixmap ? vblank.pixmap.drawable.id : 0,
-                  vblank.window ? vblank.window.drawable.id : 0));
+    // // DebugPresent(("\td %" ~PRIu64 ~ " %p %" ~PRIu64 ~ " %" ~PRIu64 ~ ": %08"~ PRIx32 ~ " -> %08"~PRIx32 ~ "\n",
+    //               vblank.event_id, vblank, vblank.exec_msc, vblank.target_msc,
+    //               vblank.pixmap ? vblank.pixmap.drawable.id : 0,
+    //               vblank.window ? vblank.window.drawable.id : 0));
 
     /* Drop pixmap reference */
     if (vblank.pixmap)

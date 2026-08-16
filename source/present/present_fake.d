@@ -26,6 +26,9 @@ import build.dix_config;
 
 import include.list;
 import present.present_priv;
+import os.utils;
+import os.WaitFor;
+
 
 private xorg_list fake_vblank_queue;
 
@@ -56,7 +59,7 @@ private void present_fake_notify(ScreenPtr screen, ulong event_id)
 
 private CARD32 present_fake_do_timer(OsTimerPtr timer, CARD32 time, void* arg)
 {
-    present_fake_vblank_ptr fake_vblank = arg;
+    present_fake_vblank_ptr fake_vblank = cast(present_fake_vblank_ptr)arg;
 
     present_fake_notify(fake_vblank.screen, fake_vblank.event_id);
     xorg_list_del(&fake_vblank.list);
@@ -69,7 +72,7 @@ void present_fake_abort_vblank(ScreenPtr screen, ulong event_id, ulong msc)
 {
     present_fake_vblank_ptr fake_vblank = void, tmp = void;
 
-    mixin(xorg_list_for_each_entry_safe!("fake_vblank", "tmp", "fake_vblank_queue", "list", q{
+    mixin(xorg_list_for_each_entry_safe!("fake_vblank", "tmp", "&fake_vblank_queue", "list", q{
         if (fake_vblank.event_id == event_id) {
             TimerFree(fake_vblank.timer); /* TimerFree will call TimerCancel() */
             xorg_list_del(&fake_vblank.list);
@@ -84,7 +87,7 @@ int present_fake_queue_vblank(ScreenPtr screen, ulong event_id, ulong msc)
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
     ulong ust = msc * screen_priv.fake_interval;
     ulong now = GetTimeInMicros();
-    INT32 delay = (cast(long) (ust - now)) / 1000;
+    INT32 delay = cast(int)((cast(long) (ust - now)) / 1000);
     present_fake_vblank_ptr fake_vblank = void;
 
     if (delay <= 0) {
@@ -92,7 +95,7 @@ int present_fake_queue_vblank(ScreenPtr screen, ulong event_id, ulong msc)
         return Success;
     }
 
-    fake_vblank = calloc (1, present_fake_vblank_rec.sizeof);
+    fake_vblank = cast(present_fake_vblank_ptr)calloc (1, present_fake_vblank_rec.sizeof);
     if (!fake_vblank)
         return BadAlloc;
 

@@ -85,7 +85,7 @@ int present_create_notifies(ClientPtr client, int num_notifies, xPresentNotify* 
             return BadLength;
     }
 
-    notifies = calloc (num_notifies, present_notify_rec.sizeof);
+    notifies = cast(present_notify_ptr)calloc (num_notifies, present_notify_rec.sizeof);
     if (!notifies)
         return BadAlloc;
 
