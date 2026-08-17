@@ -55,15 +55,35 @@ import os.fmt;
 import xfixes.xfixesint;
 import externs.X11.extensions.xfixeswire;
 import xfixes.region;
+import xfixes.xfixesint;
+import include.scrnintstr;
+import include.cursorstr;
+import include.servermd;
+import mi.mipointer;
+import include.inputstr;
+import include.windowstr;
+import Xext.xace;
+import include.list;
+import Xi.xibarriers;
+import externs.X11.extensions.xfixeswire;
+import externs.X11.extensions.xfixesproto;
+import dix.events;
+import os.io;
+import dix.screen_hooks;
+import dix.swapreq;
+import cursor;
+import disconnect;
+import dix.extension;
 // import externs.X11.extensions.Xfixeenum string
 enum string VERIFY_REGION(string pRegion, string rid, string client, string mode)	=
-	`int err;					
+	`{int err;					
 	err = dixLookupResourceByType(cast(void **) &`~pRegion~`,`~ rid~`,
 				      RegionResType,`~ client~`,`~ mode~`);
 	if (err != Success) {				
 	    `~client~`.errorValue = `~rid~`;			
 	    return err;					
-	}`;			
+	}
+    }`;			
 
 enum string VERIFY_REGION_OR_NONE(string pRegion,string  rid,string  client,string  mode) =
     pRegion ~` = null; 
@@ -88,7 +108,7 @@ private int ProcXFixesQueryVersion(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"minorVersion");
 
     int major = void, minor = void;
-    XFixesClientPtr pXFixesClient = GetXFixesClient(client);
+    XFixesClientPtr pXFixesClient = mixin(GetXFixesClient!("client"));
     if (version_compare(stuff.majorVersion, stuff.minorVersion,
                         SERVER_XFIXES_MAJOR_VERSION,
                         SERVER_XFIXES_MINOR_VERSION) < 0) {
@@ -127,7 +147,7 @@ private const(int)[8] version_requests = [
 private int ProcXFixesDispatch(ClientPtr client)
 {
     mixin(REQUEST!xReq);
-    XFixesClientPtr pXFixesClient = GetXFixesClient(client);
+    XFixesClientPtr pXFixesClient = mixin(GetXFixesClient!("client"));
 
     if (pXFixesClient.major_version >= mixin(ARRAY_SIZE!("version_requests.ptr")))
         return BadRequest;
@@ -233,14 +253,14 @@ void XFixesExtensionInit()
         (extEntry = AddExtension(XFIXES_NAME, XFixesNumberEvents,
                                  XFixesNumberErrors,
                                  &ProcXFixesDispatch, &ProcXFixesDispatch,
-                                 null, StandardMinorOpcode)) != 0) {
+                                 null, &StandardMinorOpcode)) !is null) {
         XFixesReqCode = cast(ubyte) extEntry.base;
         XFixesEventBase = extEntry.eventBase;
         XFixesErrorBase = extEntry.errorBase;
         EventSwapVector[XFixesEventBase + XFixesSelectionNotify] =
-            cast(EventSwapPtr) SXFixesSelectionNotifyEvent;
+            cast(EventSwapPtr) &SXFixesSelectionNotifyEvent;
         EventSwapVector[XFixesEventBase + XFixesCursorNotify] =
-            cast(EventSwapPtr) SXFixesCursorNotifyEvent;
+            cast(EventSwapPtr) &SXFixesCursorNotifyEvent;
         SetResourceTypeErrorValue(RegionResType, XFixesErrorBase + BadRegion);
         SetResourceTypeErrorValue(PointerBarrierType,
                                   XFixesErrorBase + BadBarrier);

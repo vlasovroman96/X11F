@@ -53,16 +53,24 @@ import render.mipict;
 
 alias uint32_t = core.stdc.stdint.uint32_t;
 
+enum string PIXMAN_FORMAT(string bpp,string type,string a,string r,string g,string b)= `
+	(((`~bpp~`) << 24) | 
+					 ((`~type~`) << 16) |
+					 ((`~a~`) << 12) |	 
+					 ((`~r~`) << 8) |	 
+					 ((`~g~`) << 4) |	 
+				 ((`~b~`)))`;
+
 enum string PIXMAN_FORMAT_RESHIFT(string val,string  ofs,string  num) = `
 	(((`~val~` >> (`~ofs~`)) & ((1 << (`~num~`)) - 1)) << ((`~val~` >> 22) & 3))`;
 
-// enum string PIXMAN_FORMAT_BPP(f)	PIXMAN_FORMAT_RESHIFT(f, 24, 8)
+enum string PIXMAN_FORMAT_BPP(string f) =	PIXMAN_FORMAT_RESHIFT!(f, "24", "8");
 // enum string PIXMAN_FORMAT_SHIFT(f)	((uint32_t)((f >> 22) & 3))
-// enum string PIXMAN_FORMAT_TYPE(f)	((f >> 16) & 0x3f)
+enum string PIXMAN_FORMAT_TYPE(string f) =	`((`~f~` >> 16) & 0x3f)`;
 enum string PIXMAN_FORMAT_A(string f) = 	PIXMAN_FORMAT_RESHIFT!(f, "12", "4");
-// enum string PIXMAN_FORMAT_R(f)	PIXMAN_FORMAT_RESHIFT(f, 8, 4)
-// enum string PIXMAN_FORMAT_G(f)	PIXMAN_FORMAT_RESHIFT(f, 4, 4)
-// enum string PIXMAN_FORMAT_B(f)	PIXMAN_FORMAT_RESHIFT(f, 0, 4)
+enum string PIXMAN_FORMAT_R(string f) =	PIXMAN_FORMAT_RESHIFT!(f, "8", "4");
+enum string PIXMAN_FORMAT_G(string f) =	PIXMAN_FORMAT_RESHIFT!(f, "4", "4");
+enum string PIXMAN_FORMAT_B(string f) =	PIXMAN_FORMAT_RESHIFT!(f, "0", "4");
 // enum string PIXMAN_FORMAT_RGB(f)	(((f)      ) & 0xfff)
 // enum string PIXMAN_FORMAT_VIS(f)	(((f)      ) & 0xffff)
 // enum string PIXMAN_FORMAT_DEPTH(f)	(PIXMAN_FORMAT_A(f) +	\
@@ -756,29 +764,29 @@ private Bool combine_pict_format(pixman_format_code_t* des, const(pixman_format_
         *des = src;
         return TRUE;
     }
-    src_bpp = PIXMAN_FORMAT_BPP(src);
+    src_bpp = mixin(PIXMAN_FORMAT_BPP!("src"));
 
-    assert(src_bpp == PIXMAN_FORMAT_BPP(mask));
+    assert(src_bpp == mixin(PIXMAN_FORMAT_BPP!("mask")));
 
     new_vis = cast(pixman_format_code_t)PIXMAN_FORMAT_VIS(src) | cast(pixman_format_code_t)PIXMAN_FORMAT_VIS(mask);
 
     switch (in_ca) {
     case glamor_program_alpha_normal:
-        src_type = PIXMAN_FORMAT_TYPE(src);
+        src_type = mixin(PIXMAN_FORMAT_TYPE!("src"));
         mask_type = PIXMAN_TYPE_A;
         break;
     case glamor_program_alpha_ca_first:
-        src_type = PIXMAN_FORMAT_TYPE(src);
-        mask_type = PIXMAN_FORMAT_TYPE(mask);
+        src_type = mixin(PIXMAN_FORMAT_TYPE!("src"));
+        mask_type = mixin(PIXMAN_FORMAT_TYPE!("mask"));
         break;
     case glamor_program_alpha_ca_second:
         src_type = PIXMAN_TYPE_A;
-        mask_type = PIXMAN_FORMAT_TYPE(mask);
+        mask_type = mixin(PIXMAN_FORMAT_TYPE!("mask"));
         break;
     case glamor_program_alpha_dual_blend:
     case glamor_program_alpha_dual_blend_gles2:
-        src_type = PIXMAN_FORMAT_TYPE(src);
-        mask_type = PIXMAN_FORMAT_TYPE(mask);
+        src_type = mixin(PIXMAN_FORMAT_TYPE!("src"));
+        mask_type = mixin(PIXMAN_FORMAT_TYPE!("mask"));
         break;
     default:
         return FALSE;
@@ -1501,12 +1509,12 @@ Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mas
              && (source.format == dest.format
                  || (PIXMAN_FORMAT_COLOR(dest.format)
                      && PIXMAN_FORMAT_COLOR(source.format)
-                     && dest.format == PIXMAN_FORMAT(PIXMAN_FORMAT_BPP(source.format),
-                                                    PIXMAN_FORMAT_TYPE(source.format),
-                                                    0,
-                                                    PIXMAN_FORMAT_R(source.format),
-                                                    PIXMAN_FORMAT_G(source.format),
-                                                    PIXMAN_FORMAT_B(source.format)))))
+                     && dest.format == mixin(PIXMAN_FORMAT!(PIXMAN_FORMAT_BPP!("source.format"),
+                                                    PIXMAN_FORMAT_TYPE!("source.format"),
+                                                    "0",
+                                                    PIXMAN_FORMAT_R!("source.format"),
+                                                    PIXMAN_FORMAT_G!("source.format"),
+                                                    PIXMAN_FORMAT_B!("source.format"))))))
             || (op == PictOpOver
                 && source.format == dest.format
                 && !mixin(PIXMAN_FORMAT_A!("source.format"))))

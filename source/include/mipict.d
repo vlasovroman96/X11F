@@ -48,7 +48,7 @@ enum string miCvtR8G8B8to15(string s) = `((((` ~ s ~ `) >> 3) & 0x001f) |
 enum string miIndexToEnt15(string mif,string rgb15) = `((` ~ mif ~ `).ent[` ~ rgb15 ~ `])`;
 enum string miIndexToEnt24(string mif,string rgb24) = `` ~ miIndexToEnt15!(mif,miCvtR8G8B8to15!(rgb24)) ~ ``;
 
-enum string miIndexToEntY24(string mif,string rgb24) = `((` ~ mif ~ `).ent[CvtR8G8B8toY15(` ~ rgb24 ~ `)])`;
+enum string miIndexToEntY24(string mif,string rgb24) = `((` ~ mif ~ `).ent[`~CvtR8G8B8toY15!(rgb24)~`])`;
 
 extern void  miCreatePicture(PicturePtr pPicture);
 
@@ -62,28 +62,28 @@ extern void  miDestroyPicture(PicturePtr pPicture);
 
 extern void  miRealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
-extern void  miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
+// extern void  miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
 // extern void  miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs);
 
 // extern void  miRenderColorToPixel(PictFormatPtr pPict, xRenderColor* color, CARD32* pixel);
 
-extern void  miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, xRenderColor* color);
+// extern void  miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, xRenderColor* color);
 
-extern void  miIsSolidAlpha(PicturePtr pSrc);
+// extern void  miIsSolidAlpha(PicturePtr pSrc);
 
-extern void  miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
+// extern void  miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
 
-extern void  miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box);
+// extern void  miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box);
 
-extern void  miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds);
+// extern void  miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds);
 
-extern void  miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds);
+// extern void  miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds);
 
-extern void  miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
+// extern void  miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
 
-extern void  miCloseIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
+// extern void  miCloseIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
 
-extern void  miUpdateIndexed(ScreenPtr pScreen, PictFormatPtr pFormat, int ndef, xColorItem* pdef);
+// extern void  miUpdateIndexed(ScreenPtr pScreen, PictFormatPtr pFormat, int ndef, xColorItem* pdef);
 
                           /* _MIPICT_H_ */

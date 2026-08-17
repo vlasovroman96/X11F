@@ -132,6 +132,7 @@ private Bool miBuildRenderColormap(ColormapPtr pColormap, Pixel* pixels, int* nu
     case PictureCmapPolicyColor:
         cube = NUM_CUBE_LEVELS;
         /* fall through ... */
+        goto case;
     case PictureCmapPolicyGray:
         gray = NUM_GRAY_LEVELS;
         break;
@@ -156,7 +157,7 @@ private Bool miBuildRenderColormap(ColormapPtr pColormap, Pixel* pixels, int* nu
             }
     for (g = 0; g < gray; g++) {
         pixel = 0;
-        red = green = blue = (g * 65535 + (gray - 1) / 2) / (gray - 1);
+        red = green = blue = cast(ubyte)((g * 65535 + (gray - 1) / 2) / (gray - 1));
         if (AllocColor(pColormap, &red, &green, &blue, &pixel, 0) != Success)
             return FALSE;
         used[pixel] = TRUE;
@@ -251,7 +252,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
         return FALSE;
 
     pFormat.index.nvalues = num;
-    pFormat.index.pValues = calloc(num, xIndexValue.sizeof);
+    pFormat.index.pValues = cast(xIndexValue*)calloc(num, xIndexValue.sizeof);
     if (!pFormat.index.pValues) {
         free(pIndexed);
         return FALSE;

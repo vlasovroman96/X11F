@@ -62,6 +62,11 @@ import render.picture;
 import mi.miexpose;
 import dix.dixutils;
 import os.WaitFor;
+import mitrap;
+import mirect;
+import mitrap;
+import mitri;
+
 
 extern int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind);
 extern Bool RootlessCreateGC(GCPtr pGC);

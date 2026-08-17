@@ -30,6 +30,8 @@ import dix.request_priv;
 import dix.resource_priv;
 
 import xfixes.xfixesint;
+import externs.X11.extensions.xfixesproto;
+
 
 int ProcXFixesChangeSaveSet(ClientPtr client)
 {

@@ -36,6 +36,7 @@ import include.servermd;
 import include.mi;
 import include.picturestr;
 import externs.X11.extensions.renderproto;
+import externs.attrs;
 
 
 private XFixed miLineFixedX(xLineFixed* l, XFixed y, Bool ceil)
@@ -58,25 +59,25 @@ void miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box)
     for (; ntrap; ntrap--, traps++) {
         INT16 x1 = void, y1 = void, x2 = void, y2 = void;
 
-        if (!xTrapezoidValid(traps))
+        if (!mixin(xTrapezoidValid!("traps")))
             continue;
-        y1 = XFixedToInt(traps.top);
+        y1 = mixin(xFixedToInt!("traps.top"));
         if (y1 < box.y1)
             box.y1 = y1;
 
-        y2 = XFixedToInt(XFixedCeil(traps.bottom));
+        y2 = mixin(xFixedToInt!(xFixedCeil!("traps.bottom")));
         if (y2 > box.y2)
             box.y2 = y2;
 
-        x1 = XFixedToInt(min(miLineFixedX(&traps.left, traps.top, FALSE),
-                             miLineFixedX(&traps.left, traps.bottom, FALSE)));
+        x1 = mixin(xFixedToInt!("min(miLineFixedX(&traps.left, traps.top, FALSE),
+                             miLineFixedX(&traps.left, traps.bottom, FALSE))"));
         if (x1 < box.x1)
             box.x1 = x1;
 
-        x2 = XFixedToInt(XFixedCeil
-                         (max
+        x2 = mixin(xFixedToInt!(xFixedCeil!
+                         ("max
                           (miLineFixedX(&traps.right, traps.top, TRUE),
-                           miLineFixedX(&traps.right, traps.bottom, TRUE))));
+                           miLineFixedX(&traps.right, traps.bottom, TRUE))")));
         if (x2 > box.x2)
             box.x2 = x2;
     }

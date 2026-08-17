@@ -165,6 +165,7 @@ import os.io;
 import dix.events;
 import Xext.xf86bigfont;
 import os.WaitFor;
+import disconnect;
 
 
 alias INT32_MAX = core.stdc.stdint.INT32_MAX;

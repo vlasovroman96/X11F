@@ -15,12 +15,12 @@ public import include.privates;
 
 enum PICT_GRADIENT_STOPTABLE_SIZE = 1024;
 
-extern RESTYPE PictureType;
-extern RESTYPE PictFormatType;
-extern RESTYPE GlyphSetType;
+// extern RESTYPE PictureType;
+// extern RESTYPE PictFormatType;
+// extern RESTYPE GlyphSetType;
 
 enum string VERIFY_PICTURE(string pPicture, string pid, string client, string mode) = `{
-    int tmprc = dixLookupResourceByType(cast(void*)&(` ~ pPicture ~ `), ` ~ pid ~ `,
+    int tmprc = dixLookupResourceByType(cast(void**)&(` ~ pPicture ~ `), ` ~ pid ~ `,
 	                                PictureType, ` ~ client ~ `, ` ~ mode ~ `);
     if (tmprc != Success)
 	return tmprc;
@@ -28,7 +28,7 @@ enum string VERIFY_PICTURE(string pPicture, string pid, string client, string mo
 
 enum string VERIFY_ALPHA(string pPicture, string pid, string client, string mode) = `{
     if (` ~ pid ~ ` == None) 
-	` ~ pPicture ~ ` = 0; 
+	` ~ pPicture ~ ` = null; 
     else { 
 	` ~ VERIFY_PICTURE!(pPicture, pid, client, mode) ~ `; 
     } 

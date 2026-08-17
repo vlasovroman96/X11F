@@ -51,6 +51,7 @@ import dix.dix_priv;
 import dix.request_priv;
 
 import xfixes.xfixesint;
+import externs.X11.extensions.xfixesproto;
 
 private DevPrivateKeyRec ClientDisconnectPrivateKeyRec;
 
@@ -99,7 +100,7 @@ Bool XFixesShouldDisconnectClient(ClientPtr client)
         return FALSE;
 
     if (dispatchExceptionAtReset & DE_TERMINATE)
-        return (pDisconnect.disconnect_mode & XFixesClientDisconnectFlagTerminate);
+        return cast(int)(pDisconnect.disconnect_mode & XFixesClientDisconnectFlagTerminate);
 
     return FALSE;
 }

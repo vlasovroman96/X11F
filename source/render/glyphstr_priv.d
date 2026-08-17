@@ -55,16 +55,16 @@ enum string GlyphSetGetPrivate(string pGlyphSet,string k) = `
 enum string GlyphSetSetPrivate(string pGlyphSet,string k,string ptr) = `
     dixSetPrivate(&(` ~ pGlyphSet ~ `).devPrivates, ` ~ k ~ `, ` ~ ptr ~ `)`;
 
-void GlyphUninit(ScreenPtr pScreen);
-GlyphPtr FindGlyphByHash(ubyte* sha1, int format);
-int HashGlyph(xGlyphInfo* gi, CARD8* bits, c_ulong size, ubyte* sha1);
-void AddGlyph(GlyphSetPtr glyphSet, GlyphPtr glyph, Glyph id);
-Bool DeleteGlyph(GlyphSetPtr glyphSet, Glyph id);
-GlyphPtr FindGlyph(GlyphSetPtr glyphSet, Glyph id);
-GlyphPtr AllocateGlyph(xGlyphInfo* gi, int format);
-void FreeGlyph(GlyphPtr glyph, int format);
-Bool ResizeGlyphSet(GlyphSetPtr glyphSet, CARD32 change);
-GlyphSetPtr AllocateGlyphSet(int fdepth, PictFormatPtr format);
-int FreeGlyphSet(void* value, XID gid);
+// void GlyphUninit(ScreenPtr pScreen);
+// GlyphPtr FindGlyphByHash(ubyte* sha1, int format);
+// int HashGlyph(xGlyphInfo* gi, CARD8* bits, c_ulong size, ubyte* sha1);
+// void AddGlyph(GlyphSetPtr glyphSet, GlyphPtr glyph, Glyph id);
+// Bool DeleteGlyph(GlyphSetPtr glyphSet, Glyph id);
+// GlyphPtr FindGlyph(GlyphSetPtr glyphSet, Glyph id);
+// GlyphPtr AllocateGlyph(xGlyphInfo* gi, int format);
+// void FreeGlyph(GlyphPtr glyph, int format);
+// Bool ResizeGlyphSet(GlyphSetPtr glyphSet, CARD32 change);
+// GlyphSetPtr AllocateGlyphSet(int fdepth, PictFormatPtr format);
+// int FreeGlyphSet(void* value, XID gid);
 
  /* _XSERVER_GLYPHSTR_PRIV_H_ */

@@ -35,7 +35,10 @@ public import glamor.glamor_render;
 
 alias DirectFormatPtr = _DirectFormat*;
 alias PictFormatPtr = _PictFormat*;
+alias PictFormatRec = _PictFormat;
 alias PicturePtr = _Picture*;
+alias PictureRec = _Picture;
+
 
 /*
  * While the protocol is generous in format support, the
@@ -203,7 +206,7 @@ enum xFixed1 =		pixman_fixed_1;
 enum xFixed1MinusE =	pixman_fixed_1_minus_e;
 enum string xFixedFrac(string f) = pixman_fixed_frac!(f);
 enum string xFixedFloor(string f) = `assumeNoGC(&pixman_fixed_floor)(` ~ f ~ `)`;
-// enum string xFixedCeil(string f) = `assumeNoGC(&pixman_fixed_ceil)(` ~ f ~ `)`;
+enum string xFixedCeil(string f) = `pixman_fixed_ceil(` ~ f ~ `)`;
 
 enum string xFixedFraction(string f) = `assumeNoGC(&pixman_fixed_fraction)(` ~ f ~ `)`;
 enum string xFixedMod2(string f) = `assumeNoGC(&pixman_fixed_mod2)(` ~ f ~ `)`;

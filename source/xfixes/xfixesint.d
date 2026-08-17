@@ -80,91 +80,91 @@ void SXFixesSelectionNotifyEvent(xXFixesSelectionNotifyEvent* from, xXFixesSelec
 Bool XFixesSelectionInit();
 
 /* Cursor notification */
-Bool XFixesCursorInit();
+// Bool XFixesCursorInit();
 
-int ProcXFixesSelectCursorInput(ClientPtr client);
+// int ProcXFixesSelectCursorInput(ClientPtr client);
 
 void SXFixesCursorNotifyEvent(xXFixesCursorNotifyEvent* from, xXFixesCursorNotifyEvent* to);
 
-int ProcXFixesGetCursorImage(ClientPtr client);
+// int ProcXFixesGetCursorImage(ClientPtr client);
 
 /* Cursor names (Version 2) */
 
-int ProcXFixesSetCursorName(ClientPtr client);
+// int ProcXFixesSetCursorName(ClientPtr client);
 
-int ProcXFixesGetCursorName(ClientPtr client);
+// int ProcXFixesGetCursorName(ClientPtr client);
 
-int ProcXFixesGetCursorImageAndName(ClientPtr client);
+// int ProcXFixesGetCursorImageAndName(ClientPtr client);
 
 /* Cursor replacement (Version 2) */
 
-int ProcXFixesChangeCursor(ClientPtr client);
+// int ProcXFixesChangeCursor(ClientPtr client);
 
-int ProcXFixesChangeCursorByName(ClientPtr client);
+// int ProcXFixesChangeCursorByName(ClientPtr client);
 
 /* Region objects (Version 2* */
-Bool XFixesRegionInit();
+// Bool XFixesRegionInit();
 
-int ProcXFixesCreateRegion(ClientPtr client);
+// int ProcXFixesCreateRegion(ClientPtr client);
 
-int ProcXFixesCreateRegionFromBitmap(ClientPtr client);
+// int ProcXFixesCreateRegionFromBitmap(ClientPtr client);
 
-int ProcXFixesCreateRegionFromWindow(ClientPtr client);
+// int ProcXFixesCreateRegionFromWindow(ClientPtr client);
 
-int ProcXFixesCreateRegionFromGC(ClientPtr client);
+// int ProcXFixesCreateRegionFromGC(ClientPtr client);
 
-int ProcXFixesCreateRegionFromPicture(ClientPtr client);
+// int ProcXFixesCreateRegionFromPicture(ClientPtr client);
 
-int ProcXFixesDestroyRegion(ClientPtr client);
+// int ProcXFixesDestroyRegion(ClientPtr client);
 
-int ProcXFixesSetRegion(ClientPtr client);
+// int ProcXFixesSetRegion(ClientPtr client);
 
-int ProcXFixesCopyRegion(ClientPtr client);
+// int ProcXFixesCopyRegion(ClientPtr client);
 
-int ProcXFixesCombineRegion(ClientPtr client);
+// int ProcXFixesCombineRegion(ClientPtr client);
 
-int ProcXFixesInvertRegion(ClientPtr client);
+// int ProcXFixesInvertRegion(ClientPtr client);
 
-int ProcXFixesTranslateRegion(ClientPtr client);
+// int ProcXFixesTranslateRegion(ClientPtr client);
 
-int ProcXFixesRegionExtents(ClientPtr client);
+// int ProcXFixesRegionExtents(ClientPtr client);
 
-int ProcXFixesFetchRegion(ClientPtr client);
+// int ProcXFixesFetchRegion(ClientPtr client);
 
-int ProcXFixesSetGCClipRegion(ClientPtr client);
+// int ProcXFixesSetGCClipRegion(ClientPtr client);
 
-int ProcXFixesSetWindowShapeRegion(ClientPtr client);
+// int ProcXFixesSetWindowShapeRegion(ClientPtr client);
 
-int ProcXFixesSetPictureClipRegion(ClientPtr client);
+// int ProcXFixesSetPictureClipRegion(ClientPtr client);
 
-int ProcXFixesExpandRegion(ClientPtr client);
+// int ProcXFixesExpandRegion(ClientPtr client);
 
-/* Cursor Visibility (Version 4) */
+// /* Cursor Visibility (Version 4) */
 
-int ProcXFixesHideCursor(ClientPtr client);
+// int ProcXFixesHideCursor(ClientPtr client);
 
-int ProcXFixesShowCursor(ClientPtr client);
+// int ProcXFixesShowCursor(ClientPtr client);
 
-/* Version 5 */
+// /* Version 5 */
 
-int ProcXFixesCreatePointerBarrier(ClientPtr client);
+// int ProcXFixesCreatePointerBarrier(ClientPtr client);
 
-int ProcXFixesDestroyPointerBarrier(ClientPtr client);
+// int ProcXFixesDestroyPointerBarrier(ClientPtr client);
 
-/* Version 6 */
+// /* Version 6 */
 
-Bool XFixesClientDisconnectInit();
+// Bool XFixesClientDisconnectInit();
 
-int ProcXFixesSetClientDisconnectMode(ClientPtr client);
+// int ProcXFixesSetClientDisconnectMode(ClientPtr client);
 
-int ProcXFixesGetClientDisconnectMode(ClientPtr client);
+// int ProcXFixesGetClientDisconnectMode(ClientPtr client);
 
-Bool XFixesShouldDisconnectClient(ClientPtr client);
+// Bool XFixesShouldDisconnectClient(ClientPtr client);
 
 /* Xinerama */
 version (XINERAMA) {
-void PanoramiXFixesInit();
-void PanoramiXFixesReset();
+// void PanoramiXFixesInit();
+// void PanoramiXFixesReset();
 } /* XINERAMA */
 
                           /* _XFIXESINT_H_ */

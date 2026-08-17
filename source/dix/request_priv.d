@@ -170,7 +170,7 @@ enum string X_REQUEST_REST_CARD32() = `
 enum string X_REQUEST_REST_COUNT_CARD16(string count) = `
     mixin(REQUEST_FIXED_SIZE!("*stuff", "` ~ count ~ ` * CARD16.sizeof")); 
     CARD16* request_rest = cast(CARD16*) (&stuff[1]); 
-    do { if (client.swapped) SwapShorts(cast(short*)request_rest, ` ~ count ~ `); } while (0)`;
+    { if (client.swapped) SwapShorts(cast(short*)request_rest, ` ~ count ~ `); } `;
 
 /* swap CARD32 rest of request (after the struct) - check fixed count */
 enum string X_REQUEST_REST_COUNT_CARD32(string count) = `

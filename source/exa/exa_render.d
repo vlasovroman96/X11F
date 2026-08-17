@@ -36,6 +36,9 @@ import exa.exa;
 import render.picture;
 import render.mipict;
 import dix.gc;
+import mirect;
+import mitrap;
+import mitri;
 
 static if (DEBUG_TRACE_FALL) {
 private void exaCompositeFallbackPictDesc(PicturePtr pict, char* string, int n)

@@ -36,6 +36,11 @@ import include.windowstr;
 import include.mi;
 import include.picturestr;
 import externs.X11.extensions.renderproto;
+import render.picture;
+import externs.attrs;
+import miindex;
+import mirect;
+
 
 
 int miCreatePicture(PicturePtr pPicture)
@@ -71,10 +76,10 @@ private int miChangePictureClip(PicturePtr pPicture, int type, void* value, int 
         dixDestroyPixmap(cast(PixmapPtr) value, 0);
         break;
     case CT_REGION:
-        clientClip = value;
+        clientClip = cast(pixman_region16*)value;
         break;
     case CT_NONE:
-        clientClip = 0;
+        clientClip = null;
         break;
     default:
         clientClip = RegionFromRects(n, cast(xRectangle*) value, type);
@@ -169,10 +174,10 @@ private void miValidatePicture(PicturePtr pPicture, Mask mask)
 
             /* XXX should we translate by drawable.x/y here ? */
             /* If you want pixmaps in offscreen memory, yes */
-            pixbounds.x1 = pDrawable.x;
-            pixbounds.y1 = pDrawable.y;
-            pixbounds.x2 = pDrawable.x + pDrawable.width;
-            pixbounds.y2 = pDrawable.y + pDrawable.height;
+            pixbounds.x1 = cast(short)(pDrawable.x);
+            pixbounds.y1 = cast(short)(pDrawable.y);
+            pixbounds.x2 = cast(short)(pDrawable.x + pDrawable.width);
+            pixbounds.y2 = cast(short)(pDrawable.y + pDrawable.height);
 
             if (pPicture.freeCompClip) {
                 RegionReset(pPicture.pCompositeClip, &pixbounds);
@@ -313,7 +318,7 @@ Bool miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMa
     pRegion.extents.y1 = yDst;
     v = yDst + height;
     pRegion.extents.y2 = mixin(BOUND!(`v`));
-    pRegion.data = 0;
+    pRegion.data = null;
     /* Check for empty operation */
     if (pRegion.extents.x1 >= pRegion.extents.x2 ||
         pRegion.extents.y1 >= pRegion.extents.y2) {
@@ -391,13 +396,13 @@ void miRenderColorToPixel(PictFormatPtr format, xRenderColor* color, CARD32* pix
             r = color.red >> 11;
             g = color.green >> 11;
             b = color.blue >> 11;
-            *pixel = miIndexToEnt15(pIndexed, (r << 10) | (g << 5) | b);
+            *pixel = mixin(miIndexToEnt15!("pIndexed", "(r << 10) | (g << 5) | b"));
         }
         else {
             r = color.red >> 8;
             g = color.green >> 8;
             b = color.blue >> 8;
-            *pixel = miIndexToEntY24(pIndexed, (r << 16) | (g << 8) | b);
+            *pixel = mixin(miIndexToEntY24!("pIndexed", "(r << 16) | (g << 8) | b"));
         }
         break;
     default: break;}
@@ -522,33 +527,33 @@ Bool miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
     if (!PictureInit(pScreen, formats, nformats))
         return FALSE;
     ps = mixin(GetPictureScreen!("pScreen"));
-    ps.CreatePicture = miCreatePicture;
-    ps.DestroyPicture = miDestroyPicture;
-    ps.ChangePictureClip = miChangePictureClip;
-    ps.DestroyPictureClip = miDestroyPictureClip;
-    ps.ChangePicture = miChangePicture;
-    ps.ValidatePicture = miValidatePicture;
-    ps.InitIndexed = miInitIndexed;
-    ps.CloseIndexed = miCloseIndexed;
-    ps.UpdateIndexed = miUpdateIndexed;
-    ps.ChangePictureTransform = miChangePictureTransform;
-    ps.ChangePictureFilter = miChangePictureFilter;
-    ps.RealizeGlyph = miRealizeGlyph;
-    ps.UnrealizeGlyph = miUnrealizeGlyph;
+    ps.CreatePicture = &miCreatePicture;
+    ps.DestroyPicture = &miDestroyPicture;
+    ps.ChangePictureClip = &miChangePictureClip;
+    ps.DestroyPictureClip = &miDestroyPictureClip;
+    ps.ChangePicture = &miChangePicture;
+    ps.ValidatePicture = &miValidatePicture;
+    ps.InitIndexed = &miInitIndexed;
+    ps.CloseIndexed = &miCloseIndexed;
+    ps.UpdateIndexed = &miUpdateIndexed;
+    ps.ChangePictureTransform = &miChangePictureTransform;
+    ps.ChangePictureFilter = &miChangePictureFilter;
+    ps.RealizeGlyph = &miRealizeGlyph;
+    ps.UnrealizeGlyph = &miUnrealizeGlyph;
 
     /* MI rendering routines */
-    ps.Composite = 0;          /* requires DDX support */
-    ps.Glyphs = miGlyphs;
-    ps.CompositeRects = miCompositeRects;
-    ps.Trapezoids = 0;
-    ps.Triangles = 0;
+    ps.Composite = null;          /* requires DDX support */
+    ps.Glyphs = &miGlyphs;
+    ps.CompositeRects = &miCompositeRects;
+    ps.Trapezoids = null;
+    ps.Triangles = null;
 
-    ps.RasterizeTrapezoid = 0; /* requires DDX support */
-    ps.AddTraps = 0;           /* requires DDX support */
-    ps.AddTriangles = 0;       /* requires DDX support */
+    ps.RasterizeTrapezoid = null; /* requires DDX support */
+    ps.AddTraps = null;           /* requires DDX support */
+    ps.AddTriangles = null;       /* requires DDX support */
 
-    ps.TriStrip = miTriStrip;  /* converts call to CompositeTriangles */
-    ps.TriFan = miTriFan;
+    ps.TriStrip = &miTriStrip;  /* converts call to CompositeTriangles */
+    ps.TriFan = &miTriFan;
 
     return TRUE;
 }

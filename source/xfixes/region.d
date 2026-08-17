@@ -40,6 +40,11 @@ import include.regionstr;
 import include.gcstruct;
 import include.window;
 import externs.X11.extensions.xfixesproto;
+import externs.X11.extensions.render_;
+
+import dix.swapreq;
+import render.picture;
+import dix.gc;
 
 
 RESTYPE RegionResType;
@@ -58,10 +63,10 @@ RegionPtr XFixesRegionCopy(RegionPtr pRegion)
                                   RegionNumRects(pRegion));
 
     if (!pNew)
-        return 0;
+        return null;
     if (!RegionCopy(pNew, pRegion)) {
         RegionDestroy(pNew);
-        return 0;
+        return null;
     }
     return pNew;
 }
@@ -84,7 +89,7 @@ int ProcXFixesCreateRegion(ClientPtr client)
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
-    things = cast(int)(client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
+    things = cast(int)((client.req_len << 2) - xXFixesCreateRegionReq.sizeof);
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -219,7 +224,7 @@ int ProcXFixesCreateRegionFromPicture(ClientPtr client)
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.region", "client"));
 
-    VERIFY_PICTURE(pPicture, stuff.picture, client, DixGetAttrAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixGetAttrAccess"));
 
     if (!pPicture.pDrawable)
         return RenderErrBase + BadPicture;
@@ -245,7 +250,7 @@ int ProcXFixesDestroyRegion(ClientPtr client)
 
     RegionPtr pRegion = void;
 
-    VERIFY_REGION(pRegion, stuff.region, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixWriteAccess"));
     FreeResource(stuff.region, X11_RESTYPE_NONE);
     return Success;
 }
@@ -259,9 +264,9 @@ int ProcXFixesSetRegion(ClientPtr client)
     int things = void;
     RegionPtr pRegion = void, pNew = void;
 
-    VERIFY_REGION(pRegion, stuff.region, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixWriteAccess"));
 
-    things = cast(int)(client.req_len << 2) - xXFixesCreateRegionReq.sizeof;
+    things = cast(int)((client.req_len << 2) - xXFixesCreateRegionReq.sizeof);
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -285,8 +290,8 @@ int ProcXFixesCopyRegion(ClientPtr client)
 
     RegionPtr pSource = void, pDestination = void;
 
-    VERIFY_REGION(pSource, stuff.source, client, DixReadAccess);
-    VERIFY_REGION(pDestination, stuff.destination, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pSource", "stuff.source", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION!("pDestination", "stuff.destination", "client", "DixWriteAccess"));
 
     if (!RegionCopy(pDestination, pSource))
         return BadAlloc;
@@ -303,9 +308,9 @@ int ProcXFixesCombineRegion(ClientPtr client)
 
     RegionPtr pSource1 = void, pSource2 = void, pDestination = void;
 
-    VERIFY_REGION(pSource1, stuff.source1, client, DixReadAccess);
-    VERIFY_REGION(pSource2, stuff.source2, client, DixReadAccess);
-    VERIFY_REGION(pDestination, stuff.destination, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pSource1", "stuff.source1", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION!("pSource2", "stuff.source2", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION!("pDestination", "stuff.destination", "client", "DixWriteAccess"));
 
     switch (stuff.xfixesReqType) {
     case X_XFixesUnionRegion:
@@ -338,21 +343,21 @@ int ProcXFixesInvertRegion(ClientPtr client)
     RegionPtr pSource = void, pDestination = void;
     BoxRec bounds = void;
 
-    VERIFY_REGION(pSource, stuff.source, client, DixReadAccess);
-    VERIFY_REGION(pDestination, stuff.destination, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pSource", "stuff.source", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION!("pDestination", "stuff.destination", "client", "DixWriteAccess"));
 
     /* Compute bounds, limit to 16 bits */
     bounds.x1 = stuff.x;
     bounds.y1 = stuff.y;
     if (cast(int) stuff.x + cast(int) stuff.width > MAXSHORT)
-        bounds.x2 = MAXSHORT;
+        bounds.x2 = cast(short)(MAXSHORT);
     else
-        bounds.x2 = stuff.x + stuff.width;
+        bounds.x2 = cast(short)(stuff.x + stuff.width);
 
     if (cast(int) stuff.y + cast(int) stuff.height > MAXSHORT)
-        bounds.y2 = MAXSHORT;
+        bounds.y2 = cast(short)(MAXSHORT);
     else
-        bounds.y2 = stuff.y + stuff.height;
+        bounds.y2 = cast(short)(stuff.y + stuff.height);
 
     if (!RegionInverse(pDestination, pSource, &bounds))
         return BadAlloc;
@@ -369,7 +374,7 @@ int ProcXFixesTranslateRegion(ClientPtr client)
 
     RegionPtr pRegion = void;
 
-    VERIFY_REGION(pRegion, stuff.region, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixWriteAccess"));
 
     RegionTranslate(pRegion, stuff.dx, stuff.dy);
     return Success;
@@ -383,8 +388,8 @@ int ProcXFixesRegionExtents(ClientPtr client)
 
     RegionPtr pSource = void, pDestination = void;
 
-    VERIFY_REGION(pSource, stuff.source, client, DixReadAccess);
-    VERIFY_REGION(pDestination, stuff.destination, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pSource", "stuff.source", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION!("pDestination", "stuff.destination", "client", "DixWriteAccess"));
 
     RegionReset(pDestination, RegionExtents(pSource));
 
@@ -397,7 +402,7 @@ int ProcXFixesFetchRegion(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"region");
 
     RegionPtr pRegion = void;
-    VERIFY_REGION(pRegion, stuff.region, client, DixReadAccess);
+    mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixReadAccess"));
 
     BoxPtr pExtent = RegionExtents(pRegion);
     BoxPtr pBox = RegionRects(pRegion);
@@ -409,15 +414,15 @@ int ProcXFixesFetchRegion(ClientPtr client)
         x_rpcbuf_write_rect(&rpcbuf,
                             pBox[i].x1,
                             pBox[i].y1,
-                            pBox[i].x2 - pBox[i].x1,
-                            pBox[i].y2 - pBox[i].y1);
+                            cast(ushort)(pBox[i].x2 - pBox[i].x1),
+                            cast(ushort)(pBox[i].y2 - pBox[i].y1));
     }
 
     xXFixesFetchRegionReply reply = {
         x: pExtent.x1,
         y: pExtent.y1,
-        width: pExtent.x2 - pExtent.x1,
-        height: pExtent.y2 - pExtent.y1,
+        width: cast(ushort)(pExtent.x2 - pExtent.x1),
+        height: cast(ushort)(pExtent.y2 - pExtent.y1),
     };
 
     mixin(X_REPLY_FIELD_CARD16!"x");
@@ -457,7 +462,7 @@ private int SingleXFixesSetGCClipRegion(ClientPtr client, xXFixesSetGCClipRegion
         return rc;
 
     RegionPtr pRegion = void;
-    VERIFY_REGION_OR_NONE(pRegion, stuff.region, client, DixReadAccess);
+    mixin(VERIFY_REGION_OR_NONE!("pRegion", "stuff.region", "client", "DixReadAccess"));
 
     if (pRegion) {
         pRegion = XFixesRegionCopy(pRegion);
@@ -468,7 +473,7 @@ private int SingleXFixesSetGCClipRegion(ClientPtr client, xXFixesSetGCClipRegion
     ChangeGCVal[2] vals = void;
     vals[0].val = stuff.xOrigin;
     vals[1].val = stuff.yOrigin;
-    ChangeGC(null, pGC, GCClipXOrigin | GCClipYOrigin, vals.ptr);
+    ChangeGC(null, pGC, cast(uint)(GCClipXOrigin | GCClipYOrigin), vals.ptr);
     (*pGC.funcs.ChangeClip) (pGC, pRegion ? CT_REGION : CT_NONE,
                                cast(void*) pRegion, 0);
 
@@ -489,7 +494,7 @@ private int SingleXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindowS
     }
 
     RegionPtr pRegion = void;
-    VERIFY_REGION_OR_NONE(pRegion, stuff.region, client, DixWriteAccess);
+    mixin(VERIFY_REGION_OR_NONE!("pRegion", "stuff.region", "client", "DixWriteAccess"));
     switch (stuff.destKind) {
     case ShapeBounding:
     case ShapeClip:
@@ -594,8 +599,8 @@ private int SingleXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPicture
     PicturePtr pPicture = void;
     RegionPtr pRegion = void;
 
-    VERIFY_PICTURE(pPicture, stuff.picture, client, DixSetAttrAccess);
-    VERIFY_REGION_OR_NONE(pRegion, stuff.region, client, DixReadAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixSetAttrAccess"));
+    mixin(VERIFY_REGION_OR_NONE!("pRegion", "stuff.region", "client", "DixReadAccess"));
 
     if (!pPicture.pDrawable)
         return RenderErrBase + BadPicture;
@@ -615,8 +620,8 @@ int ProcXFixesExpandRegion(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"bottom");
 
     RegionPtr pSource = void, pDestination = void;
-    VERIFY_REGION(pSource, stuff.source, client, DixReadAccess);
-    VERIFY_REGION(pDestination, stuff.destination, client, DixWriteAccess);
+    mixin(VERIFY_REGION!("pSource", "stuff.source", "client", "DixReadAccess"));
+    mixin(VERIFY_REGION!("pDestination", "stuff.destination", "client", "DixWriteAccess"));
 
     int nBoxes = RegionNumRects(pSource);
     BoxPtr pSrc = RegionRects(pSource);
@@ -625,10 +630,10 @@ int ProcXFixesExpandRegion(ClientPtr client)
         if (!pTmp)
             return BadAlloc;
         for (int i = 0; i < nBoxes; i++) {
-            pTmp[i].x1 = pSrc[i].x1 - stuff.left;
-            pTmp[i].x2 = pSrc[i].x2 + stuff.right;
-            pTmp[i].y1 = pSrc[i].y1 - stuff.top;
-            pTmp[i].y2 = pSrc[i].y2 + stuff.bottom;
+            pTmp[i].x1 = cast(short)(pSrc[i].x1 - stuff.left);
+            pTmp[i].x2 = cast(short)(pSrc[i].x2 + stuff.right);
+            pTmp[i].y1 = cast(short)(pSrc[i].y1 - stuff.top);
+            pTmp[i].y2 = cast(short)(pSrc[i].y2 + stuff.bottom);
         }
         RegionEmpty(pDestination);
         for (int i = 0; i < nBoxes; i++) {
@@ -678,7 +683,7 @@ private int PanoramiXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindo
     }
 
     if (win.u.win.root)
-        VERIFY_REGION_OR_NONE(reg, stuff.region, client, DixReadAccess);
+        mixin(VERIFY_REGION_OR_NONE!("reg", "stuff.region", "client", "DixReadAccess"));
 
     mixin(XINERAMA_FOR_EACH_SCREEN_FORWARD!(q{
         stuff.dest = win.info[walkScreenIdx].id;
@@ -712,7 +717,7 @@ private int PanoramiXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPictu
     }
 
     if (pict.u.pict.root)
-        VERIFY_REGION_OR_NONE(reg, stuff.region, client, DixReadAccess);
+        mixin(VERIFY_REGION_OR_NONE!("reg", "stuff.region", "client", "DixReadAccess"));
 
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         stuff.picture = pict.info[walkScreenIdx].id;

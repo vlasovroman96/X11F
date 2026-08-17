@@ -1157,5 +1157,7 @@
 //        int32_t y_off,
 //        int n_tris,
 //        const pixman_triangle_t *tris);
-
+#pragma attribute(push, nogc, nothrow)
 #include <pixman-1/pixman.h>
+#pragma attribute(pop)
+

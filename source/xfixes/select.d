@@ -32,7 +32,8 @@ import dix.selection_priv;
 import xfixes.xfixesint;
 import Xext.xace;
 import externs.X11.extensions.xfixesproto;
-
+import externs.X11.extensions.xfixeswire;
+import dix.events;
 
 private RESTYPE SelectionClientType, SelectionWindowType;
 private Bool SelectionCallbackRegistered = FALSE;
@@ -69,16 +70,16 @@ private void XFixesSelectionCallback(CallbackListPtr* callbacks, void* data, voi
 
     switch (info.kind) {
     case SelectionSetOwner:
-        subtype = XFixesSetSelectionOwnerNotify;
-        eventMask = XFixesSetSelectionOwnerNotifyMask;
+        subtype = cast(uint)XFixesSetSelectionOwnerNotify;
+        eventMask = cast(uint)XFixesSetSelectionOwnerNotifyMask;
         break;
     case SelectionWindowDestroy:
-        subtype = XFixesSelectionWindowDestroyNotify;
-        eventMask = XFixesSelectionWindowDestroyNotifyMask;
+        subtype = cast(uint)XFixesSelectionWindowDestroyNotify;
+        eventMask = cast(uint)XFixesSelectionWindowDestroyNotifyMask;
         break;
     case SelectionClientClose:
-        subtype = XFixesSelectionClientCloseNotify;
-        eventMask = XFixesSelectionClientCloseNotifyMask;
+        subtype = cast(uint)XFixesSelectionClientCloseNotify;
+        eventMask = cast(uint)XFixesSelectionClientCloseNotifyMask;
         break;
     default:
         return;
@@ -100,11 +101,11 @@ private void XFixesSelectionCallback(CallbackListPtr* callbacks, void* data, voi
                 continue;
 
             xXFixesSelectionNotifyEvent ev = {
-                type: XFixesEventBase + XFixesSelectionNotify,
-                subtype: subtype,
-                window: e.pWindow.drawable.id,
-                owner: param.owner,
-                selection: param.selection,
+                type: cast(ubyte)XFixesEventBase + XFixesSelectionNotify,
+                subtype: cast(ubyte)subtype,
+                window: cast(uint)e.pWindow.drawable.id,
+                owner: cast(uint)param.owner,
+                selection: cast(uint)param.selection,
                 timestamp: currentTime.milliseconds,
                 selectionTimestamp: selection.lastTimeChanged.milliseconds
             };
@@ -190,7 +191,7 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
         if (!e)
             return BadAlloc;
 
-        e.next = 0;
+        e.next = null;
         e.selection = selection;
         e.pClient = param.client;
         e.pWindow = pWindow;

@@ -36,6 +36,9 @@ import include.windowstr;
 import include.mi;
 import include.picturestr;
 import externs.X11.extensions.renderproto;
+import render.mipict;
+import dix.gc;
+import render.picture;
 
 
 private void miColorRects(PicturePtr pDst, PicturePtr pClipPict, xRenderColor* color, int nRect, xRectangle* rects, int xoff, int yoff)
@@ -65,7 +68,7 @@ private void miColorRects(PicturePtr pDst, PicturePtr pClipPict, xRenderColor* c
         (*pGC.funcs.ChangeClip) (pGC, CT_REGION, pClip, 0);
     }
 
-    ChangeGC(null, pGC, mask, tmpval.ptr);
+    ChangeGC(null, pGC, cast(uint)mask, tmpval.ptr);
     ValidateGC(pDst.pDrawable, pGC);
     if (xoff || yoff) {
         int i = void;
@@ -109,7 +112,7 @@ void miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect,
 
         if (pSrc) {
             while (nRect--) {
-                CompositePicture(op, pSrc, 0, pDst, 0, 0, 0, 0,
+                CompositePicture(op, pSrc, null, pDst, 0, 0, 0, 0,
                                  rects.x, rects.y,
                                  rects.width, rects.height);
                 rects++;

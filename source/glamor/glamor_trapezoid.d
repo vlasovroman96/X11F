@@ -42,6 +42,9 @@ import externs.X11.extensions.renderproto;
 import render.picture;;
 import glamor.glamor;
 import externs.attrs;
+import mirect;
+import mitrap;
+import mitri;
 
 
 /**

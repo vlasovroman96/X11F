@@ -59,6 +59,11 @@ import render.glyphstr_priv;
 import include.cursorstr;
 import Xext.xace;
 import include.protocol_versions;
+import dix.extension;
+import dix.pixmap;
+import dix.swapreq;
+
+alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 
 Bool noRenderExtension = FALSE;
 Bool usePanoramiX = FALSE;
@@ -125,8 +130,8 @@ void RenderExtensionInit()
         return;
 
     extEntry = AddExtension(RENDER_NAME, 0, RenderNumberErrors,
-                            ProcRenderDispatch, ProcRenderDispatch,
-                            null, StandardMinorOpcode);
+                            &ProcRenderDispatch, &ProcRenderDispatch,
+                            null, &StandardMinorOpcode);
     if (!extEntry)
         return;
     RenderErrBase = extEntry.errorBase;
@@ -182,7 +187,7 @@ private VisualPtr findVisual(ScreenPtr pScreen, VisualID vid)
         if (pVisual.vid == vid)
             return pVisual;
     }
-    return 0;
+    return null;
 }
 
 private int ProcRenderQueryPictFormats(ClientPtr client)
@@ -237,14 +242,14 @@ version (XINERAMA) {
     else
         numSubpixel = numScreens;
 
-    rlength = (nformat * (cast(xPictFormInfo) +
-               numScreens * (cast(xPictScreen) +
-               ndepth * (cast(xPictDepth) +
-               nvisual * (cast(xPictVisual) + numSubpixel * CARD32.sizeof).sizeof).sizeof).sizeof).sizeof);
+    rlength = cast(int)(nformat * ((xPictFormInfo).sizeof +
+               numScreens * ((xPictScreen).sizeof +
+               ndepth * ((xPictDepth).sizeof +
+               nvisual * ((xPictVisual).sizeof + numSubpixel * CARD32.sizeof)))));
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    xPictFormInfo* pictForm = x_rpcbuf_reserve(&rpcbuf, rlength);
+    xPictFormInfo* pictForm = cast(xPictFormInfo*)x_rpcbuf_reserve(&rpcbuf, rlength);
     if (!pictForm)
         return BadAlloc;
 
@@ -269,7 +274,7 @@ version (XINERAMA) {
                 pictForm.direct.alphaMask = pFormat.direct.alphaMask;
                 if (pFormat.type == PictTypeIndexed &&
                     pFormat.index.pColormap)
-                    pictForm.colormap = pFormat.index.pColormap.mid;
+                    pictForm.colormap = cast(uint)pFormat.index.pColormap.mid;
                 else
                     pictForm.colormap = None;
                 if (client.swapped) {
@@ -304,8 +309,8 @@ version (XINERAMA) {
                 pVisual = findVisual(walkScreen, pDepth.vids[v]);
                 if (pVisual && (pFormat = PictureMatchVisual(walkScreen,
                                                              pDepth.depth,
-                                                             pVisual))) {
-                    pictVisual.visual = pVisual.vid;
+                                                             pVisual)) !is null) {
+                    pictVisual.visual = cast(uint)pVisual.vid;
                     pictVisual.format = pFormat.id;
                     if (client.swapped) {
                         swapl(&pictVisual.visual);
@@ -451,7 +456,7 @@ private int SingleRenderChangePicture(ClientPtr client, xRenderChangePictureReq*
 
     int len = void;
 
-    VERIFY_PICTURE(pPicture, pictID, client, DixSetAttrAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "pictID", "client", "DixSetAttrAccess"));
 
     len = client.req_len - bytes_to_int32(xRenderChangePictureReq.sizeof);
     if (Ones(stuff.mask) != len)
@@ -466,11 +471,11 @@ private int SingleRenderSetPictureClipRectangles(ClientPtr client, xRenderSetPic
     PicturePtr pPicture = void;
     int nr = void;
 
-    VERIFY_PICTURE(pPicture, pictID, client, DixSetAttrAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "pictID", "client", "DixSetAttrAccess"));
     if (!pPicture.pDrawable)
         return RenderErrBase + BadPicture;
 
-    nr = (client.req_len << 2) - xRenderSetPictureClipRectanglesReq.sizeof;
+    nr = cast(int)((client.req_len << 2) - xRenderSetPictureClipRectanglesReq.sizeof);
     if (nr & 4)
         return BadLength;
     nr >>= 3;
@@ -485,7 +490,7 @@ private int SingleRenderFreePicture(ClientPtr client)
 
     mixin(REQUEST!xRenderFreePictureReq);
 
-    VERIFY_PICTURE(pPicture, stuff.picture, client, DixDestroyAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixDestroyAccess"));
     FreeResource(stuff.picture, X11_RESTYPE_NONE);
     return Success;
 }
@@ -511,11 +516,11 @@ private int SingleRenderComposite(ClientPtr client, xRenderCompositeReq* stuff)
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
-    VERIFY_ALPHA(pMask, stuff.mask, client, DixReadAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
+    mixin(VERIFY_ALPHA!("pMask", "stuff.mask", "client", "DixReadAccess"));
     if ((pSrc.pDrawable &&
          pSrc.pDrawable.pScreen != pDst.pDrawable.pScreen) || (pMask &&
                                                                    pMask.
@@ -549,8 +554,8 @@ private int SingleRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* stuff
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
     if (pSrc.pDrawable && pSrc.pDrawable.pScreen != pDst.pDrawable.pScreen)
@@ -562,8 +567,8 @@ private int SingleRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* stuff
             return rc;
     }
     else
-        pFormat = 0;
-    ntraps = (client.req_len << 2) - xRenderTrapezoidsReq.sizeof;
+        pFormat = null;
+    ntraps = cast(int)((client.req_len << 2) - xRenderTrapezoidsReq.sizeof);
     if (ntraps % xTrapezoid.sizeof)
         return BadLength;
     ntraps /= xTrapezoid.sizeof;
@@ -584,8 +589,8 @@ private int SingleRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuff)
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
     if (pSrc.pDrawable && pSrc.pDrawable.pScreen != pDst.pDrawable.pScreen)
@@ -597,8 +602,8 @@ private int SingleRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuff)
             return rc;
     }
     else
-        pFormat = 0;
-    ntris = (client.req_len << 2) - xRenderTrianglesReq.sizeof;
+        pFormat = null;
+    ntris = cast(int)((client.req_len << 2) - xRenderTrianglesReq.sizeof);
     if (ntris % xTriangle.sizeof)
         return BadLength;
     ntris /= xTriangle.sizeof;
@@ -619,8 +624,8 @@ private int SingleRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
     if (pSrc.pDrawable && pSrc.pDrawable.pScreen != pDst.pDrawable.pScreen)
@@ -632,8 +637,8 @@ private int SingleRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
             return rc;
     }
     else
-        pFormat = 0;
-    npoints = ((client.req_len << 2) - xRenderTriStripReq.sizeof);
+        pFormat = null;
+    npoints = cast(int)(((client.req_len << 2) - xRenderTriStripReq.sizeof));
     if (npoints & 4)
         return BadLength;
     npoints >>= 3;
@@ -654,8 +659,8 @@ private int SingleRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
     if (pSrc.pDrawable && pSrc.pDrawable.pScreen != pDst.pDrawable.pScreen)
@@ -667,8 +672,8 @@ private int SingleRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
             return rc;
     }
     else
-        pFormat = 0;
-    npoints = ((client.req_len << 2) - xRenderTriStripReq.sizeof);
+        pFormat = null;
+    npoints = cast(int)(((client.req_len << 2) - xRenderTriStripReq.sizeof));
     if (npoints & 4)
         return BadLength;
     npoints >>= 3;
@@ -853,7 +858,7 @@ private int ProcRenderAddGlyphs(ClientPtr client)
 
     if (nglyphs <= NLOCALGLYPH) {
         memset(glyphsLocal.ptr, 0, glyphsLocal.sizeof);
-        glyphsBase = glyphsLocal;
+        glyphsBase = glyphsLocal.ptr;
     }
     else {
         glyphsBase = cast(GlyphNewPtr) calloc(nglyphs, GlyphNewRec.sizeof);
@@ -861,7 +866,7 @@ private int ProcRenderAddGlyphs(ClientPtr client)
             return BadAlloc;
     }
 
-    remain = (client.req_len << 2) - xRenderAddGlyphsReq.sizeof;
+    remain = cast(int)((client.req_len << 2) - xRenderAddGlyphsReq.sizeof);
 
     glyphs = glyphsBase;
 
@@ -890,15 +895,15 @@ private int ProcRenderAddGlyphs(ClientPtr client)
             padded_width > (UINT32_MAX - GlyphRec.sizeof) / gi[i].height)
             break;
 
-        size = gi[i].height * padded_width;
+        size = cast(uint)(gi[i].height * padded_width);
         if (remain < size)
             break;
 
-        err = HashGlyph(&gi[i], bits, size, glyph_new.sha1);
+        err = HashGlyph(&gi[i], bits, size, glyph_new.sha1.ptr);
         if (err)
             goto bail;
 
-        glyph_new.glyph = FindGlyphByHash(glyph_new.sha1, glyphSet.fdepth);
+        glyph_new.glyph = FindGlyphByHash(glyph_new.sha1.ptr, glyphSet.fdepth);
 
         if (glyph_new.glyph && glyph_new.glyph != DeletedGlyph) {
             glyph_new.found = TRUE;
@@ -920,7 +925,6 @@ private int ProcRenderAddGlyphs(ClientPtr client)
                 int depth = glyphSet.format.depth;
                 int error = void;
 
-                /* Skip work if it's invisibly small anyway */
                 if (!width || !height)
                     break;
 
@@ -954,7 +958,7 @@ private int ProcRenderAddGlyphs(ClientPtr client)
 
                 PicturePtr pDst = CreatePicture(0, &pDstPix.drawable,
                                   glyphSet.format,
-                                  CPComponentAlpha, &component_alpha,
+                                  CPComponentAlpha, cast(ulong*)&component_alpha,
                                   serverClient, &error);
                 SetGlyphPicture(glyph, walkScreen, pDst);
 
@@ -972,13 +976,13 @@ private int ProcRenderAddGlyphs(ClientPtr client)
 
                 CompositePicture(PictOpSrc,
                                  pSrc,
-                                 None, pDst, 0, 0, 0, 0, 0, 0, width, height);
+                                 null, pDst, 0, 0, 0, 0, 0, 0, cast(ushort)width, cast(ushort)height);
 
                 FreePicture(cast(void*) pSrc, 0);
                 FreeScratchPixmapHeader(pSrcPix);
             });
 
-            memcpy(glyph_new.glyph.sha1, glyph_new.sha1, 20);
+            memcpy(glyph_new.glyph.sha1.ptr, glyph_new.sha1.ptr, 20);
         }
 
         glyph_new.id = gids[i];
@@ -1086,8 +1090,8 @@ private int SingleRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGlyphs
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
     if (pSrc.pDrawable && pSrc.pDrawable.pScreen != pDst.pDrawable.pScreen)
@@ -1099,7 +1103,7 @@ private int SingleRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGlyphs
             return rc;
     }
     else
-        pFormat = 0;
+        pFormat = null;
 
     rc = dixLookupResourceByType(cast(void**) &glyphSet, stuff.glyphset,
                                  GlyphSetType, client, DixUseAccess);
@@ -1127,16 +1131,16 @@ private int SingleRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGlyphs
         }
     }
     if (nglyph <= NLOCALGLYPH)
-        glyphsBase = glyphsLocal;
+        glyphsBase = glyphsLocal.ptr;
     else {
         glyphsBase = cast(GlyphPtr*) calloc(nglyph, GlyphPtr.sizeof);
         if (!glyphsBase)
             return BadAlloc;
     }
     if (nlist <= NLOCALDELTA)
-        listsBase = listsLocal;
+        listsBase = listsLocal.ptr;
     else {
-        listsBase = calloc(nlist, GlyphListRec.sizeof);
+        listsBase = cast(_GlyphList*)calloc(nlist, GlyphListRec.sizeof);
         if (!listsBase) {
             rc = BadAlloc;
             goto bail;
@@ -1180,7 +1184,7 @@ private int SingleRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGlyphs
                         glyph = *(cast(CARD32*) buffer);
                         break;
                     }
-                    if ((*glyphs = FindGlyph(glyphSet, glyph))) {
+                    if ((*glyphs = FindGlyph(glyphSet, glyph)) !is null) {
                         lists.len++;
                         glyphs++;
                     }
@@ -1222,11 +1226,11 @@ private int SingleRenderFillRectangles(ClientPtr client, xRenderFillRectanglesRe
         client.errorValue = stuff.op;
         return BadValue;
     }
-    VERIFY_PICTURE(pDst, stuff.dst, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
     if (!pDst.pDrawable)
         return BadDrawable;
 
-    things = cast(int)(client.req_len << 2) - xRenderFillRectanglesReq.sizeof;
+    things = cast(int)((client.req_len << 2) - xRenderFillRectanglesReq.sizeof);
     if (things & 4)
         return BadLength;
     things >>= 3;
@@ -1290,7 +1294,7 @@ private int ProcRenderCreateCursor(ClientPtr client)
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.cid", "client"));
 
-    VERIFY_PICTURE(pSrc, stuff.src, client, DixReadAccess);
+    mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
     if (!pSrc.pDrawable)
         return BadDrawable;
     pScreen = pSrc.pDrawable.pScreen;
@@ -1329,7 +1333,7 @@ private int ProcRenderCreateCursor(ClientPtr client)
     if (pSrc.format == PIXMAN_a8r8g8b8) {
         (*pScreen.GetImage) (pSrc.pDrawable,
                               0, 0, width, height, ZPixmap,
-                              0xffffffff, cast(void*) argbbits);
+                              0xffffffff, cast(char*) argbbits);
     }
     else {
         PixmapPtr pPixmap = void;
@@ -1352,7 +1356,7 @@ private int ProcRenderCreateCursor(ClientPtr client)
             free(mskbits);
             return BadAlloc;
         }
-        pPicture = CreatePicture(0, &pPixmap.drawable, pFormat, 0, 0,
+        pPicture = CreatePicture(0, &pPixmap.drawable, pFormat, 0, null,
                                  client, &error);
         if (!pPicture) {
             free(argbbits);
@@ -1362,10 +1366,10 @@ private int ProcRenderCreateCursor(ClientPtr client)
         }
         dixDestroyPixmap(pPixmap, 0);
         CompositePicture(PictOpSrc,
-                         pSrc, 0, pPicture, 0, 0, 0, 0, 0, 0, width, height);
+                         pSrc, null, pPicture, 0, 0, 0, 0, 0, 0, cast(ushort)width, cast(ushort)height);
         (*pScreen.GetImage) (pPicture.pDrawable,
                               0, 0, width, height, ZPixmap,
-                              0xffffffff, cast(void*) argbbits);
+                              0xffffffff, cast(char*) argbbits);
         FreePicture(pPicture, 0);
     }
     /*
@@ -1413,7 +1417,7 @@ private int ProcRenderCreateCursor(ClientPtr client)
             }
             else {
                 CARD32 a = ((p >> 24) * DITHER_SIZE + 127) / 255;
-                CARD32 i = ((CvtR8G8B8toY15(p) >> 7) * DITHER_SIZE + 127) / 255;
+                CARD32 i = ((mixin(CvtR8G8B8toY15!("p")) >> 7) * DITHER_SIZE + 127) / 255;
                 CARD32 d = orderedDither[y & (DITHER_DIM - 1)][x & (DITHER_DIM - 1)];
                 /* Set mask from dithered alpha value */
                 RenderSetBit(mskline, x, a > d);
@@ -1469,7 +1473,7 @@ private int SingleRenderSetPictureTransform(ClientPtr client, xRenderSetPictureT
 {
     PicturePtr pPicture = void;
 
-    VERIFY_PICTURE(pPicture, stuff.picture, client, DixSetAttrAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixSetAttrAccess"));
     return SetPictureTransform(pPicture, cast(PictTransform*) &stuff.transform);
 }
 
@@ -1536,21 +1540,21 @@ private int ProcRenderQueryFilters(ClientPtr client)
                 else
                     j = j + ps.nfilters;
             }
-            aliases[i + ps.nfilters] = j;
+            aliases[i + ps.nfilters] = cast(short)j;
         }
 
         /* fill in filter names */
         for (i = 0; i < ps.nfilters; i++) {
-            j = strlen(ps.filters[i].name);
-            *names++ = j;
+            j = cast(int)strlen(ps.filters[i].name);
+            *names++ = cast(char)j;
             memcpy(names, ps.filters[i].name, j);
             names += j;
         }
 
         /* fill in filter alias names */
         for (i = 0; i < ps.nfilterAliases; i++) {
-            j = strlen(ps.filterAliases[i].alias_);
-            *names++ = j;
+            j = cast(int)strlen(ps.filterAliases[i].alias_);
+            *names++ = cast(char)j;
             memcpy(names, ps.filterAliases[i].alias_, j);
             names += j;
         }
@@ -1580,10 +1584,10 @@ private int SingleRenderSetPictureFilter(ClientPtr client, xRenderSetPictureFilt
     int nparams = void;
     char* name = void;
 
-    VERIFY_PICTURE(pPicture, stuff.picture, client, DixSetAttrAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixSetAttrAccess"));
     name = cast(char*) (stuff + 1);
     params = cast(XFixed*) (name + pad_to_int32(stuff.nbytes));
-    nparams = (cast(XFixed*) stuff + client.req_len) - params;
+    nparams = cast(int)((cast(XFixed*) stuff + client.req_len) - params);
     if (nparams < 0)
 	return BadLength;
 
@@ -1647,10 +1651,10 @@ private int SingleRenderAddTraps(ClientPtr client, xRenderAddTrapsReq* stuff)
     int ntraps = void;
     PicturePtr pPicture = void;
 
-    VERIFY_PICTURE(pPicture, stuff.picture, client, DixWriteAccess);
+    mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixWriteAccess"));
     if (!pPicture.pDrawable)
         return BadDrawable;
-    ntraps = (client.req_len << 2) - xRenderAddTrapsReq.sizeof;
+    ntraps = cast(int)((client.req_len << 2) - xRenderAddTrapsReq.sizeof);
     if (ntraps % xTrap.sizeof)
         return BadLength;
     ntraps /= xTrap.sizeof;
@@ -1690,7 +1694,7 @@ private int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLine
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
-    len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
+    len = cast(int)((client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof);
     if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
     if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -1724,7 +1728,7 @@ private int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadi
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
-    len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
+    len = cast(int)((client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof);
     if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
     if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -1759,7 +1763,7 @@ private int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateCon
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
-    len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
+    len = cast(int)((client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof);
     if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
         return BadLength;
     if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -2786,7 +2790,7 @@ private int ProcRenderSetPictureTransform(ClientPtr client)
 
     if (client.swapped) {
         swapl(&stuff.picture);
-        swapl(&stuff.transform.matriX11);
+        swapl(&stuff.transform.matrix11);
         swapl(&stuff.transform.matrix12);
         swapl(&stuff.transform.matrix13);
         swapl(&stuff.transform.matrix21);
@@ -2877,7 +2881,7 @@ private int ProcRenderCreateLinearGradient(ClientPtr client)
         swapl(&stuff.p2.y);
         swapl(&stuff.nStops);
 
-        int len = (client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof;
+        int len = cast(int)((client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof);
         if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
         if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -2909,7 +2913,7 @@ private int ProcRenderCreateRadialGradient(ClientPtr client)
         swapl(&stuff.outer_radius);
         swapl(&stuff.nStops);
 
-        int len = (client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof;
+        int len = cast(int)((client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof);
         if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
         if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
@@ -2938,7 +2942,7 @@ private int ProcRenderCreateConicalGradient(ClientPtr client)
         swapl(&stuff.angle);
         swapl(&stuff.nStops);
 
-        int len = (client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof;
+        int len = cast(int)((client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof);
         if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
         if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))

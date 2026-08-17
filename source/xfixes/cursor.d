@@ -67,7 +67,10 @@ import include.list;
 import Xi.xibarriers;
 import externs.X11.extensions.xfixeswire;
 import externs.X11.extensions.xfixesproto;
-
+import dix.events;
+import os.io;
+import dix.screen_hooks;
+import dix.swapreq;
 
 private RESTYPE CursorClientType;
 private RESTYPE CursorHideCountType;
@@ -80,7 +83,7 @@ enum CursorScreenPrivateKey = (&CursorScreenPrivateKeyRec);
 
 
 enum string VERIFY_CURSOR(string pCursor, string cursor, string client, string access) = `
-    do {								
+    {								
 	int err = void;							
 	err = dixLookupResourceByType(cast(void**) &` ~ pCursor ~ `, ` ~ cursor ~ `,	
 				      X11_RESTYPE_CURSOR, ` ~ client ~ `, ` ~ access ~ `);	
@@ -88,7 +91,7 @@ enum string VERIFY_CURSOR(string pCursor, string cursor, string client, string a
 	    ` ~ client ~ `.errorValue = ` ~ cursor ~ `;				
 	    return err;							
 	}								
-    } while (0)`;
+    }`;
 
 /*
  * There is a global list of windows selecting for cursor events
@@ -137,8 +140,8 @@ struct _CursorScreen {
 alias CursorScreenPtr = _CursorScreen*;
 
 enum string GetCursorScreen(string s) = `(cast(CursorScreenPtr)dixLookupPrivate(&(` ~ s ~ `).devPrivates, CursorScreenPrivateKey))`;
-enum string Wrap(string as,string s,string elt,string func) = `(((` ~ as ~ `).` ~ elt ~ ` = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = ` ~ func ~ `)`;
-enum string Unwrap(string as,string s,string elt,string backup) = `(((` ~ backup ~ `) = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = (` ~ as ~ `).` ~ elt ~ `)`;
+enum string Wrap(string as,string s,string elt,string func) = `(((` ~ as ~ `).` ~ elt ~ ` = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = ` ~ func ~ `);`;
+enum string Unwrap(string as,string s,string elt,string backup) = `(((` ~ backup ~ `) = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = (` ~ as ~ `).` ~ elt ~ `);`;
 
 /* The cursor doesn't show up until the first XDefineCursor() */
 Bool CursorVisible = FALSE;
@@ -185,12 +188,12 @@ private Bool CursorDisplayCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr
         for (e = cursorEvents; e; e = e.next) {
             if ((e.eventMask & XFixesDisplayCursorNotifyMask)) {
                 xXFixesCursorNotifyEvent ev = {
-                    type: XFixesEventBase + XFixesCursorNotify,
+                    type: cast(ubyte)(XFixesEventBase + XFixesCursorNotify),
                     subtype: XFixesDisplayCursorNotify,
-                    window: e.pWindow.drawable.id,
+                    window: cast(uint)e.pWindow.drawable.id,
                     cursorSerial: pCursor ? pCursor.serialNumber : 0,
                     timestamp: currentTime.milliseconds,
-                    name: pCursor ? pCursor.name : None
+                    name: cast(uint)(pCursor ? pCursor.name : None)
                 };
                 WriteEventsToClient(e.pClient, 1, cast(xEvent*) &ev);
             }
@@ -205,9 +208,9 @@ private void CursorScreenClose(CallbackListPtr* pcbl, ScreenPtr pScreen, void* u
 {
     CursorScreenPtr cs = mixin(GetCursorScreen!(`pScreen`));
 
-     DisplayCursorProcPtr = void; display_proc;
+     DisplayCursorProcPtr display_proc;
 
-    dixScreenUnhookClose(pScreen, CursorScreenClose);
+    dixScreenUnhookClose(pScreen, &CursorScreenClose);
     mixin(Unwrap!(`cs`, `pScreen`, `DisplayCursor`, `display_proc`));
     deleteCursorHideCountsForScreen(pScreen);
 }
@@ -366,7 +369,7 @@ int ProcXFixesGetCursorImage(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    CARD32* image = x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
+    CARD32* image = cast(CARD32*)x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
     if (!image)
         return BadAlloc;
 
@@ -375,10 +378,10 @@ int ProcXFixesGetCursorImage(ClientPtr client)
         SwapLongs(image, npixels);
 
     xXFixesGetCursorImageReply reply = {
-        width: width,
-        height: height,
-        x: x,
-        y: y,
+        width: cast(ushort)width,
+        height: cast(ushort)height,
+        x: cast(short)x,
+        y: cast(short)y,
         xhot: pCursor.bits.xhot,
         yhot: pCursor.bits.yhot,
         cursorSerial: pCursor.serialNumber,
@@ -427,8 +430,8 @@ int ProcXFixesGetCursorName(ClientPtr client)
     x_rpcbuf_write_string_pad(&rpcbuf, str);
 
     xXFixesGetCursorNameReply reply = {
-        atom: pCursor.name,
-        nbytes: strlen(str)
+        atom: cast(int)pCursor.name,
+        nbytes: cast(ushort)strlen(str)
     };
 
     mixin(X_REPLY_FIELD_CARD32!"atom");
@@ -459,7 +462,7 @@ int ProcXFixesGetCursorImageAndName(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    CARD32* image = x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
+    CARD32* image = cast(uint*)x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
     if (!image)
         return BadAlloc;
 
@@ -473,15 +476,15 @@ int ProcXFixesGetCursorImageAndName(ClientPtr client)
         return BadAlloc;
 
     xXFixesGetCursorImageAndNameReply reply = {
-        width: width,
-        height: height,
-        x: x,
-        y: y,
+        width: cast(ushort)width,
+        height: cast(ushort)height,
+        x: cast(short)x,
+        y: cast(short)y,
         xhot: pCursor.bits.xhot,
         yhot: pCursor.bits.yhot,
         cursorSerial: pCursor.serialNumber,
-        cursorName: pCursor.name,
-        nbytes: strlen(name),
+        cursorName: cast(uint)pCursor.name,
+        nbytes: cast(ushort)strlen(name),
     };
 
     mixin(X_REPLY_FIELD_CARD16!"x");
@@ -521,7 +524,7 @@ private const(RESTYPE)[3] CursorRestypes = [
 private Bool ReplaceCursorLookup(void* value, XID id, void* closure)
 {
     ReplaceCursorLookupPtr rcl = cast(ReplaceCursorLookupPtr) closure;
-    CursorPtr pCursor = 0; CursorPtr* pCursorRef = null;
+    CursorPtr pCursor = null; CursorPtr* pCursorRef = null;
     XID cursor = 0;
 
     switch (rcl.type) {
@@ -875,7 +878,7 @@ int ProcXFixesCreatePointerBarrier(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"x2");
     mixin(X_REQUEST_FIELD_CARD16!"y2");
     mixin(X_REQUEST_FIELD_CARD32!"directions");
-    X_REQUEST_REST_COUNT_CARD16(stuff.num_devices);
+    mixin(X_REQUEST_REST_COUNT_CARD16!("stuff.num_devices"));
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.barrier", "client"));
 
@@ -902,7 +905,7 @@ Bool XFixesCursorInit()
     mixin(DIX_FOR_EACH_SCREEN!q{
         CursorScreenPtr cs = mixin(GetCursorScreen!(`walkScreen`));
         dixScreenHookClose(walkScreen, &CursorScreenClose);
-        mixin(Wrap!(`cs`, `walkScreen`, `DisplayCursor`, `CursorDisplayCursor`));
+        mixin(Wrap!(`cs`, `walkScreen`, `DisplayCursor`, `&CursorDisplayCursor`));
         cs.pCursorHideCounts = null;
     });
 
