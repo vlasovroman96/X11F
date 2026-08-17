@@ -414,7 +414,7 @@ private int RRProviderDestroyResource(void* value, XID pid)
 
     if (pScreen)
     {
-        rrScrPriv(pScreen);
+        mixin(rrScrPriv!("pScreen"));
 
         if (pScrPriv.rrProviderDestroy)
             (*pScrPriv.rrProviderDestroy)(pScreen, provider);
@@ -437,7 +437,7 @@ void RRDeliverProviderEvent(ClientPtr client, WindowPtr pWin, RRProviderPtr prov
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
 
     xRRProviderChangeNotifyEvent pe = {
         type: RRNotify + RREventBase,

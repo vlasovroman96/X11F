@@ -32,6 +32,21 @@ import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
 import os.client_priv;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
 
 import dix.swaprep;
 
@@ -43,7 +58,7 @@ RESTYPE RRLeaseType;
 void RRDeliverLeaseEvent(ClientPtr client, WindowPtr window)
 {
     ScreenPtr screen = window.drawable.pScreen;
-    rrScrPrivPtr scr_priv = rrGetScrPriv(screen);
+    rrScrPrivPtr scr_priv = mixin(rrGetScrPriv!("screen"));
     RRLeasePtr lease = void;
 
     UpdateCurrentTimeIf();
@@ -52,11 +67,11 @@ void RRDeliverLeaseEvent(ClientPtr client, WindowPtr window)
                                   lease.state == RRLeaseTerminating))
         {
             xRRLeaseNotifyEvent le = xRRLeaseNotifyEvent (
-                type: RRNotify + RREventBase,
+                type: cast(ubyte)(RRNotify + RREventBase),
                 subCode: RRNotify_Lease,
                 timestamp: currentTime.milliseconds,
-                window: window.drawable.id,
-                lease: lease.id,
+                window: cast(uint)window.drawable.id,
+                lease: cast(uint)lease.id,
                 created: lease.state == RRLeaseCreating,
             );
             WriteEventsToClient(client, 1, cast(xEvent*) &le);
@@ -70,7 +85,7 @@ void RRDeliverLeaseEvent(ClientPtr client, WindowPtr window)
 private void RRLeaseChangeState(RRLeasePtr lease, RRLeaseState old, RRLeaseState new_)
 {
     ScreenPtr screen = lease.screen;
-    rrScrPrivPtr scr_priv = rrGetScrPriv(screen);
+    rrScrPrivPtr scr_priv = mixin(rrGetScrPriv!("screen"));
 
     lease.state = old;
     scr_priv.leasesChanged = TRUE;
@@ -86,10 +101,10 @@ private void RRLeaseChangeState(RRLeasePtr lease, RRLeaseState old, RRLeaseState
 private RRLeasePtr RRLeaseAlloc(ScreenPtr screen, RRLease lid, int numCrtcs, int numOutputs)
 {
     RRLeasePtr lease = void;
-    lease = calloc(1,
-                   (cast(RRLeaseRec) +
-                   numCrtcs * (cast(RRCrtcPtr) +
-                   numOutputs * RROutputPtr.sizeof).sizeof).sizeof);
+    lease = cast(RRLeasePtr)calloc(1,
+                   ((RRLeaseRec).sizeof +
+                   numCrtcs * (RRCrtcPtr.sizeof +
+                   numOutputs * RROutputPtr.sizeof)));
     if (!lease)
         return null;
     lease.screen = screen;
@@ -109,7 +124,7 @@ private RRLeasePtr RRLeaseAlloc(ScreenPtr screen, RRLease lid, int numCrtcs, int
 Bool RRCrtcIsLeased(RRCrtcPtr crtc)
 {
     ScreenPtr screen = crtc.pScreen;
-    rrScrPrivPtr scr_priv = rrGetScrPriv(screen);
+    rrScrPrivPtr scr_priv = mixin(rrGetScrPriv!("screen"));
     RRLeasePtr lease = void;
     int c = void;
 
@@ -127,7 +142,7 @@ Bool RRCrtcIsLeased(RRCrtcPtr crtc)
 Bool RROutputIsLeased(RROutputPtr output)
 {
     ScreenPtr screen = output.pScreen;
-    rrScrPrivPtr scr_priv = rrGetScrPriv(screen);
+    rrScrPrivPtr scr_priv = mixin(rrGetScrPriv!("screen"));
     RRLeasePtr lease = void;
     int o = void;
 
@@ -176,7 +191,7 @@ void RRLeaseFree(RRLeasePtr lease)
 void RRTerminateLease(RRLeasePtr lease)
 {
     ScreenPtr screen = lease.screen;
-    rrScrPrivPtr scr_priv = rrGetScrPriv(screen);
+    rrScrPrivPtr scr_priv = mixin(rrGetScrPriv!("screen"));
 
     scr_priv.rrTerminateLease(screen, lease);
 }
@@ -188,7 +203,7 @@ void RRTerminateLease(RRLeasePtr lease)
  */
 private int RRLeaseDestroyResource(void* value, XID pid)
 {
-    RRLeasePtr lease = value;
+    RRLeasePtr lease = cast(RRLeasePtr)value;
 
     lease.id = None;
     return 1;
@@ -241,7 +256,11 @@ int ProcRRCreateLease(ClientPtr client)
         return BadLength;
 
     screen = window.drawable.pScreen;
-    scr_priv = rrGetScrPriv(screen);
+    scr_priv = mixin(rrGetScrPriv!("screen"));
+
+    xRRCreateLeaseReply reply = {
+        nfd: 1,
+    };
 
     if (!scr_priv)
         return BadMatch;
@@ -336,9 +355,7 @@ leaseReturned:
 
     RRLeaseChangeState(lease, RRLeaseCreating, RRLeaseRunning);
 
-    xRRCreateLeaseReply reply = {
-        nfd: 1,
-    };
+    
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 
@@ -356,7 +373,7 @@ int ProcRRFreeLease(ClientPtr client)
         swapl(&stuff.lid);
 
     RRLeasePtr lease = void;
-    VERIFY_RR_LEASE(stuff.lid, lease, DixDestroyAccess);
+    mixin(VERIFY_RR_LEASE!("stuff.lid", "lease", "DixDestroyAccess"));
 
     if (stuff.terminate)
         RRTerminateLease(lease);

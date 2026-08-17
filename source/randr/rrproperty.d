@@ -25,7 +25,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.dix_config;
 
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -34,10 +34,26 @@ import randr.rrdispatch_priv;
 import randr.randrstr_priv;
 import include.propertyst;
 import dix.swaprep;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
 
 private int DeliverPropertyEvent(WindowPtr pWin, void* value)
 {
-    xRROutputPropertyNotifyEvent* event = value;
+    xRROutputPropertyNotifyEvent* event = cast(xRROutputPropertyNotifyEvent*)value;
     RREventPtr* pHead = void; RREventPtr pRREvent = void;
 
     dixLookupResourceByType(cast(void**) &pHead, pWin.drawable.id,
@@ -49,7 +65,7 @@ private int DeliverPropertyEvent(WindowPtr pWin, void* value)
         if (!(pRREvent.mask & RROutputPropertyNotifyMask))
             continue;
 
-        event.window = pRREvent.window.drawable.id;
+        event.window = cast(uint)pRREvent.window.drawable.id;
         WriteEventsToClient(pRREvent.client, 1, cast(xEvent*) event);
     }
 
@@ -73,9 +89,9 @@ private void RRDestroyOutputProperty(RRPropertyPtr prop)
 private void RRDeleteProperty(RROutputRec* output, RRPropertyRec* prop)
 {
     xRROutputPropertyNotifyEvent event = {
-        type: RREventBase + RRNotify,
+        type: cast(ubyte)(RREventBase + RRNotify),
         subCode: RRNotify_OutputProperty,
-        output: output.id,
+        output: cast(ubyte)output.id,
         state: PropertyDelete,
         atom: prop.propertyName,
         timestamp: currentTime.milliseconds
@@ -110,7 +126,7 @@ private RRPropertyPtr RRCreateOutputProperty(Atom property)
     if (!prop)
         return null;
     prop.next = null;
-    prop.propertyName = property;
+    prop.propertyName = cast(uint)property;
     prop.is_pending = FALSE;
     prop.range = FALSE;
     prop.immutable_ = FALSE;
@@ -125,7 +141,7 @@ void RRDeleteOutputProperty(RROutputPtr output, Atom property)
 {
     RRPropertyRec* prop = void; RRPropertyRec** prev = void;
 
-    for (prev = &output.properties; ((prop = *prev) != 0); prev = &(prop.next))
+    for (prev = &output.properties; ((prop = *prev) !is null); prev = &(prop.next))
         if (prop.propertyName == property) {
             *prev = prop.next;
             RRDeleteProperty(output, prop);
@@ -158,7 +174,7 @@ private void RRNoticePropertyChange(RROutputPtr output, Atom property, RRPropert
 int RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int format, int mode, c_ulong len, const(void)* value, Bool sendevent, Bool pending)
 {
     RRPropertyPtr prop = void;
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(output.pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("output.pScreen"));
     int size_in_bytes = void;
     c_ulong total_len = void;
     RRPropertyValuePtr prop_value = void;
@@ -207,7 +223,7 @@ int RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int for
         }
         new_value.size = total_len;
         new_value.type = type;
-        new_value.format = format;
+        new_value.format = cast(short)format;
 
         switch (mode) {
         case PropModeReplace:
@@ -260,9 +276,9 @@ int RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int for
 
     if (sendevent) {
         xRROutputPropertyNotifyEvent event = {
-            type: RREventBase + RRNotify,
+            type: cast(ubyte)(RREventBase + RRNotify),
             subCode: RRNotify_OutputProperty,
-            output: output.id,
+            output: cast(uint)output.id,
             state: PropertyNewValue,
             atom: prop.propertyName,
             timestamp: currentTime.milliseconds
@@ -324,7 +340,7 @@ RRPropertyPtr RRQueryOutputProperty(RROutputPtr output, Atom property)
 RRPropertyValuePtr RRGetOutputProperty(RROutputPtr output, Atom property, Bool pending)
 {
     RRPropertyPtr prop = RRQueryOutputProperty(output, property);
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(output.pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("output.pScreen"));
 
     if (!prop)
         return null;
@@ -409,7 +425,8 @@ int ProcRRListOutputProperties(ClientPtr client)
         swapl(&stuff.output);
 
     RROutputPtr output = void;
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
+;
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -420,7 +437,7 @@ int ProcRRListOutputProperties(ClientPtr client)
     }
 
     xRRListOutputPropertiesReply reply = {
-        nAtoms: numProps
+        nAtoms: cast(ushort)numProps
     };
 
     if (client.swapped) {
@@ -443,7 +460,8 @@ int ProcRRQueryOutputProperty(ClientPtr client)
     RROutputPtr output = void;
     RRPropertyPtr prop = void;
 
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
+;
 
     prop = RRQueryOutputProperty(output, stuff.property);
     if (!prop)
@@ -453,9 +471,9 @@ int ProcRRQueryOutputProperty(ClientPtr client)
     x_rpcbuf_write_CARD32s(&rpcbuf, cast(CARD32*)prop.valid_values, prop.num_valid);
 
     xRRQueryOutputPropertyReply reply = {
-        pending: prop.is_pending,
-        range: prop.range,
-        immutable_: prop.immutable_
+        pending: cast(ubyte)prop.is_pending,
+        range: cast(ubyte)prop.range,
+        immutable_: cast(ubyte)prop.immutable_
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -475,7 +493,8 @@ int ProcRRConfigureOutputProperty(ClientPtr client)
     RROutputPtr output = void;
     int num_valid = void;
 
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
+;
 
     if (RROutputIsLeased(output))
         return BadAccess;
@@ -538,7 +557,8 @@ int ProcRRChangeOutputProperty(ClientPtr client)
     totalSize = len * sizeInBytes;
     mixin(REQUEST_FIXED_SIZE!("xRRChangeOutputPropertyReq", "totalSize"));
 
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
+;
 
     if (!ValidAtom(stuff.property)) {
         client.errorValue = stuff.property;
@@ -573,7 +593,8 @@ int ProcRRDeleteOutputProperty(ClientPtr client)
     RRPropertyPtr prop = void;
 
     UpdateCurrentTime();
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
+;
 
     if (RROutputIsLeased(output))
         return BadAccess;
@@ -616,17 +637,17 @@ int ProcRRGetOutputProperty(ClientPtr client)
     c_ulong n = void, ind = void;
     RROutputPtr output = void;
 
-    if (stuff.c_delete)
+    if (stuff.delete_)
         UpdateCurrentTime();
-    VERIFY_RR_OUTPUT(stuff.output, output,
-                     stuff.c_delete ? DixWriteAccess : DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output",
+                     "stuff.delete_ ? DixWriteAccess : DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
         client.errorValue = stuff.property;
         return BadAtom;
     }
-    if ((stuff.c_delete != xTrue) && (stuff.c_delete != xFalse)) {
-        client.errorValue = stuff.c_delete;
+    if ((stuff.delete_ != xTrue) && (stuff.delete_ != xFalse)) {
+        client.errorValue = stuff.delete_;
         return BadValue;
     }
     if ((stuff.type != AnyPropertyType) && !ValidAtom(stuff.type)) {
@@ -634,7 +655,7 @@ int ProcRRGetOutputProperty(ClientPtr client)
         return BadAtom;
     }
 
-    for (prev = &output.properties; ((prop = *prev) != 0); prev = &prop.next)
+    for (prev = &output.properties; ((prop = *prev) !is null); prev = &prop.next)
         if (prop.propertyName == stuff.property)
             break;
 
@@ -642,10 +663,11 @@ int ProcRRGetOutputProperty(ClientPtr client)
 
     xRRGetOutputPropertyReply reply = { 0 };
 
+    size_t len; 
     if (!prop)
         goto sendout;
 
-    if (prop.immutable_ && stuff.c_delete)
+    if (prop.immutable_ && stuff.delete_)
         return BadAccess;
 
     prop_value = RRGetOutputProperty(output, stuff.property, stuff.pending);
@@ -657,9 +679,9 @@ int ProcRRGetOutputProperty(ClientPtr client)
 
     if (((stuff.type != prop_value.type) && (stuff.type != AnyPropertyType))
         ) {
-        reply.bytesAfter = prop_value.size;
-        reply.format = prop_value.format;
-        reply.propertyType = prop_value.type;
+        reply.bytesAfter = cast(uint)prop_value.size;
+        reply.format = cast(ubyte)prop_value.format;
+        reply.propertyType = cast(uint)prop_value.type;
         goto sendout;
     }
 
@@ -676,20 +698,20 @@ int ProcRRGetOutputProperty(ClientPtr client)
         client.errorValue = stuff.longOffset;
         return BadValue;
     }
+    
+    len = min(n - ind, 4 * stuff.longLength);
 
-    size_t len = min(n - ind, 4 * stuff.longLength);
-
-    reply.bytesAfter = n - (ind + len);
-    reply.format = prop_value.format;
+    reply.bytesAfter = cast(uint)(n - (ind + len));
+    reply.format = cast(ubyte)prop_value.format;
     if (prop_value.format)
-        reply.nItems = len / (prop_value.format / 8);
-    reply.propertyType = prop_value.type;
+        reply.nItems = cast(uint)(len / (prop_value.format / 8));
+    reply.propertyType = cast(uint)prop_value.type;
 
-    if (stuff.c_delete && (reply.bytesAfter == 0)) {
+    if (stuff.delete_ && (reply.bytesAfter == 0)) {
         xRROutputPropertyNotifyEvent event = {
-            type: RREventBase + RRNotify,
+            type: cast(ubyte)(RREventBase + RRNotify),
             subCode: RRNotify_OutputProperty,
-            output: output.id,
+            output: cast(uint)output.id,
             state: PropertyDelete,
             atom: prop.propertyName,
             timestamp: currentTime.milliseconds
@@ -722,7 +744,7 @@ sendout:
         swapl(&reply.nItems);
     }
 
-    if (prop && stuff.c_delete && (reply.bytesAfter == 0)) {     /* delete the Property */
+    if (prop && stuff.delete_ && (reply.bytesAfter == 0)) {     /* delete the Property */
         *prev = prop.next;
         RRDestroyOutputProperty(prop);
     }

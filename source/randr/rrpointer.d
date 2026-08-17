@@ -30,13 +30,29 @@ import randr.randrstr_priv;
 
 import include.randrstr;
 import include.inputstr;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
 
 /*
  * Find the CRTC nearest the specified position, ignoring 'skip'
  */
 private void RRPointerToNearestCrtc(DeviceIntPtr pDev, ScreenPtr pScreen, int x, int y, RRCrtcPtr skip)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     int c = void;
     RRCrtcPtr nearest = null;
     int best = 0;

@@ -25,12 +25,18 @@ extern(C): __gshared:
 import build.dix_config;
 
 import randr.randrstr_priv;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+
 
 private RRModePtr RROldModeAdd(RROutputPtr output, RRScreenSizePtr size, int refresh)
 {
     ScreenPtr pScreen = output.pScreen;
 
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     xRRModeInfo modeInfo = void;
     char[100] name = void;
     RRModePtr mode = void;
@@ -46,7 +52,7 @@ private RRModePtr RROldModeAdd(RROutputPtr output, RRScreenSizePtr size, int ref
     modeInfo.vTotal = size.height;
     modeInfo.dotClock = (cast(CARD32) size.width * cast(CARD32) size.height *
                          cast(CARD32) refresh);
-    modeInfo.nameLength = strlen(name.ptr);
+    modeInfo.nameLength = cast(ushort)strlen(name.ptr);
     mode = RRModeGet(&modeInfo, name.ptr);
     if (!mode)
         return null;
@@ -57,7 +63,7 @@ private RRModePtr RROldModeAdd(RROutputPtr output, RRScreenSizePtr size, int ref
         }
 
     if (output.numModes)
-        modes = reallocarray(output.modes,
+        modes = cast(_rrMode**)reallocarray(output.modes,
                              output.numModes + 1, RRModePtr.sizeof);
     else
         modes = cast(RRModePtr*) cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
@@ -76,7 +82,7 @@ private RRModePtr RROldModeAdd(RROutputPtr output, RRScreenSizePtr size, int ref
 
 private void RRScanOldConfig(ScreenPtr pScreen, Rotation rotations)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     RROutputPtr output = void;
     RRCrtcPtr crtc = void;
     RRModePtr mode = void, newMode = null;
@@ -171,7 +177,7 @@ private void RRScanOldConfig(ScreenPtr pScreen, Rotation rotations)
  */
 Bool RRGetInfo(ScreenPtr pScreen, Bool force_query)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     Rotation rotations = void;
     int i = void;
 
@@ -207,7 +213,7 @@ Bool RRGetInfo(ScreenPtr pScreen, Bool force_query)
  */
 void RRScreenSetSizeRange(ScreenPtr pScreen, CARD16 minWidth, CARD16 minHeight, CARD16 maxWidth, CARD16 maxHeight)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
 
     if (!pScrPriv)
         return;
@@ -239,12 +245,12 @@ private Bool RRScreenSizeMatches(RRScreenSizePtr a, RRScreenSizePtr b)
 
 RRScreenSizePtr RRRegisterSize(ScreenPtr pScreen, short width, short height, short mmWidth, short mmHeight)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     int i = void;
     RRScreenSizePtr pNew = void;
 
     if (!pScrPriv)
-        return 0;
+        return null;
 
     RRScreenSize tmp = {
         width: width,
@@ -256,10 +262,10 @@ RRScreenSizePtr RRRegisterSize(ScreenPtr pScreen, short width, short height, sho
     for (i = 0; i < pScrPriv.nSizes; i++)
         if (RRScreenSizeMatches(&tmp, &pScrPriv.pSizes[i]))
             return &pScrPriv.pSizes[i];
-    pNew = reallocarray(pScrPriv.pSizes,
+    pNew = cast(_rrScreenSize*)reallocarray(pScrPriv.pSizes,
                         pScrPriv.nSizes + 1, RRScreenSize.sizeof);
     if (!pNew)
-        return 0;
+        return null;
     pNew[pScrPriv.nSizes++] = tmp;
     pScrPriv.pSizes = pNew;
     return &pNew[pScrPriv.nSizes - 1];
@@ -267,7 +273,7 @@ RRScreenSizePtr RRRegisterSize(ScreenPtr pScreen, short width, short height, sho
 
 Bool RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     int i = void;
     RRScreenRatePtr pNew = void, pRate = void;
 
@@ -282,18 +288,18 @@ Bool RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate)
     if (!pNew)
         return FALSE;
     pRate = &pNew[pSize.nRates++];
-    pRate.rate = rate;
+    pRate.rate = cast(ushort)rate;
     pSize.pRates = pNew;
     return TRUE;
 }
 
 void RRSetCurrentConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
 
     if (!pScrPriv)
         return;
-    pScrPriv.size = pSize - pScrPriv.pSizes;
+    pScrPriv.size = cast(int)(pSize - pScrPriv.pSizes);
     pScrPriv.rotation = rotation;
     pScrPriv.rate = rate;
 }

@@ -106,7 +106,7 @@ void RRSendConfigNotify(ScreenPtr pScreen)
 
 void RRDeliverScreenEvent(ClientPtr client, WindowPtr pWin, ScreenPtr pScreen)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     RRCrtcPtr crtc = pScrPriv.numCrtcs ? pScrPriv.crtcs[0] : null;
     WindowPtr pRoot = pScreen.root;
 
@@ -145,7 +145,7 @@ void RRDeliverScreenEvent(ClientPtr client, WindowPtr pWin, ScreenPtr pScreen)
  */
 void RRScreenSizeNotify(ScreenPtr pScreen)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     /*
      * Deliver ConfigureNotify events when root changes
      * pixel size
@@ -179,7 +179,7 @@ void RRScreenSizeNotify(ScreenPtr pScreen)
  */
 Bool RRScreenSizeSet(ScreenPtr pScreen, CARD16 width, CARD16 height, CARD32 mmWidth, CARD32 mmHeight)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
 
 static if (RANDR_12_INTERFACE) {
     if (pScrPriv.rrScreenSetSize) {

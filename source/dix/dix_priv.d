@@ -638,7 +638,7 @@ pragma(inline, true) Atom dixAddAtom(const(char)* name) {
  * @param name  the atom name
  * @return atom ID
  */
-pragma(inline, true) private Atom dixGetAtomID(const(char)* name) {
+pragma(inline, true) Atom dixGetAtomID(const(char)* name) {
     return MakeAtom(name, cast(uint)strlen(name), FALSE);
 }
 

@@ -413,6 +413,8 @@ struct _RREvent {
     XID clientResource;
     int mask;
 }
+alias RREventRec = _RREvent;
+// alias RREventPtr = RREventRec*;
 
 struct _RRTimes {
     TimeStamp setTime;
@@ -535,7 +537,7 @@ extern void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation ro
  * Destroy a mode.
  */
 
-extern void  RRModeDestroy(RRModePtr mode);
+// extern void  RRModeDestroy(RRModePtr mode);
 
 /* rroutput.c */
 
@@ -582,9 +584,9 @@ enum PRIME_SYNC_PROP =         "PRIME Synchronization";
 
 /* *just* for backwards compat with legacy proprietary NVidia driver */
 
-extern RESTYPE  RRCrtcType;      /* X resource type: Randr CRTC */
-extern RESTYPE  RRModeType;      /* X resource type: Randr MODE */
-extern RESTYPE  RROutputType;    /* X resource type: Randr OUTPUT */
+// extern RESTYPE  RRCrtcType;      /* X resource type: Randr CRTC */
+// extern RESTYPE  RRModeType;      /* X resource type: Randr MODE */
+// extern RESTYPE  RROutputType;    /* X resource type: Randr OUTPUT */
 
 /*
  * Set non-desktop property on given output. This flag should be TRUE on
@@ -601,7 +603,7 @@ void  RROutputSetNonDesktop(RROutputPtr output, Bool non_desktop);
  * @param width   return buffer for width value
  * @param height  return buffer for height value
  */
-void  RRCrtcGetScanoutSize(RRCrtcPtr crtc, int* width, int* height);
+// void  RRCrtcGetScanoutSize(RRCrtcPtr crtc, int* width, int* height);
 
 /*
  * Retrieve CRTCs current transform
@@ -648,7 +650,7 @@ void  RRClientKnowsRates(ClientPtr pClient);
 /*
  * Set filter on transform structure
  */
-void  RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* params, int nparams, int width, int height);
+// void  RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* params, int nparams, int width, int height);
 
 /*
  * Set whether transforms are allowed on a CRTC
@@ -674,7 +676,7 @@ void  RRTransformSetFilter(RRTransformPtr dst, PictFilterPtr filter, XFixed* par
  * @param pending  retrieve pending instead of current value
  * @return pointer to property value or NULL (if not found)
  */
-void  RRGetOutputProperty(RROutputPtr output, Atom property, Bool pending);
+// void  RRGetOutputProperty(RROutputPtr output, Atom property, Bool pending);
 
                           /* _RANDRSTR_H_ */
 

@@ -29,6 +29,21 @@ import dix.dix_priv;
 import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
 
 RESTYPE RRModeType;
 
@@ -74,7 +89,7 @@ private RRModePtr RRModeCreate(xRRModeInfo* modeInfo, const(char)* name, ScreenP
     if (!RRInit())
         return null;
 
-    mode = calloc(1, ((RRModeRec) + modeInfo.nameLength + 1).sizeof);
+    mode = cast(RRModePtr)calloc(1, ((RRModeRec).sizeof + modeInfo.nameLength + 1));
     if (!mode)
         return null;
     mode.refcnt = 1;
@@ -94,7 +109,7 @@ private RRModePtr RRModeCreate(xRRModeInfo* modeInfo, const(char)* name, ScreenP
         return null;
     }
 
-    mode.mode.id = dixAllocServerXID();
+    mode.mode.id = cast(uint)dixAllocServerXID();
     if (!AddResource(mode.mode.id, RRModeType, cast(void*) mode)) {
         free(newModes);
         return null;
@@ -162,7 +177,7 @@ private RRModePtr RRModeCreateUser(ScreenPtr pScreen, xRRModeInfo* modeInfo, con
 
 RRModePtr* RRModesForScreen(ScreenPtr pScreen, int* num_ret)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     int o = void, c = void, m = void;
     RRModePtr* screen_modes = void;
     int num_screen_modes = 0;
@@ -349,7 +364,7 @@ int ProcRRDestroyMode(ClientPtr client)
         swapl(&stuff.mode);
 
     RRModePtr mode = void;
-    VERIFY_RR_MODE(stuff.mode, mode, DixDestroyAccess);
+    mixin(VERIFY_RR_MODE!("stuff.mode", "mode", "DixDestroyAccess"));
 
     if (!mode.userScreen)
         return BadMatch;
@@ -370,10 +385,10 @@ int ProcRRAddOutputMode(ClientPtr client)
     }
 
     RROutputPtr output = void;
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
 
     RRModePtr mode = void;
-    VERIFY_RR_MODE(stuff.mode, mode, DixUseAccess);
+    mixin(VERIFY_RR_MODE!("stuff.mode", "mode", "DixUseAccess"));
 
     if (RROutputIsLeased(output))
         return BadAccess;
@@ -392,10 +407,10 @@ int ProcRRDeleteOutputMode(ClientPtr client)
     }
 
     RROutputPtr output = void;
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
 
     RRModePtr mode = void;
-    VERIFY_RR_MODE(stuff.mode, mode, DixUseAccess);
+    mixin(VERIFY_RR_MODE!("stuff.mode", "mode", "DixUseAccess"));
 
     if (RROutputIsLeased(output))
         return BadAccess;

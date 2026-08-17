@@ -35,6 +35,8 @@ import externs.X11.extensions.presentproto;
 import include.dri3;
 import xfixes.region;
 import Xext.sync;
+import randr.rrcrtc;
+
 alias XSyncFence = CARD32;
 
 private int proc_present_query_version(ClientPtr client)

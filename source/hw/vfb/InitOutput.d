@@ -873,7 +873,7 @@ version (GLAMOR) {
 
  Bool vfbRROutputValidateMode(ScreenPtr pScreen, RROutputPtr output, RRModePtr mode)
 {
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
 
     if (pScrPriv.minWidth <= mode.mode.width &&
         pScrPriv.maxWidth >= mode.mode.width &&
@@ -994,7 +994,7 @@ static if (RANDR_13_INTERFACE) {
             memset(&modeInfo, '\0', modeInfo.sizeof);
             modeInfo.width = pvci.width;
             modeInfo.height = pvci.height;
-            modeInfo.nameLength = strlen(name.ptr);
+            modeInfo.nameLength = cast(ushort)strlen(name.ptr);
 
             mode = RRModeGet(&modeInfo, name.ptr);
             if (!mode)

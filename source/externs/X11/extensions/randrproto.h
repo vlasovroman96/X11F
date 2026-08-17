@@ -326,7 +326,7 @@ typedef struct {
     CARD32	length;
     BOOL	pending;
     BOOL	range;
-    BOOL	immutable;
+    BOOL	immutable_;
     BYTE	pad1;
     CARD32	pad2;
     CARD32	pad3;
@@ -383,7 +383,7 @@ typedef struct {
 #ifdef __cplusplus
     BOOL	_delete;
 #else
-    BOOL	delete;
+    BOOL	delete_;
 #endif
     BOOL	pending;
     CARD16	pad1;

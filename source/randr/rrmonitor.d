@@ -29,6 +29,22 @@ import dix.dix_priv;
 import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
 
 import dix.swaprep;
 
@@ -47,7 +63,7 @@ private Atom RRMonitorCrtcName(RRCrtcPtr crtc)
 private Bool RRMonitorCrtcPrimary(RRCrtcPtr crtc)
 {
     ScreenPtr screen = crtc.pScreen;
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     int o = void;
 
     for (o = 0; o < crtc.numOutputs; o++)
@@ -61,7 +77,7 @@ enum DEFAULT_PIXELS_PER_MM =   (96.0 / 25.4);
 private void RRMonitorGetCrtcGeometry(RRCrtcPtr crtc, RRMonitorGeometryPtr geometry)
 {
     ScreenPtr screen = crtc.pScreen;
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     BoxRec panned_area = void;
 
     /* Check to see if crtc is panned and return the full area when applicable. */
@@ -75,18 +91,18 @@ private void RRMonitorGetCrtcGeometry(RRCrtcPtr crtc, RRMonitorGeometryPtr geome
         int width = void, height = void;
 
         RRCrtcGetScanoutSize(crtc, &width, &height);
-        geometry.box.x1 = crtc.x;
-        geometry.box.y1 = crtc.y;
-        geometry.box.x2 = geometry.box.x1 + width;
-        geometry.box.y2 = geometry.box.y1 + height;
+        geometry.box.x1 = cast(short)crtc.x;
+        geometry.box.y1 = cast(short)crtc.y;
+        geometry.box.x2 = cast(short)(geometry.box.x1 + width);
+        geometry.box.y2 = cast(short)(geometry.box.y1 + height);
     }
     if (crtc.numOutputs && crtc.outputs[0].mmWidth && crtc.outputs[0].mmHeight) {
         RROutputPtr output = crtc.outputs[0];
         geometry.mmWidth = output.mmWidth;
         geometry.mmHeight = output.mmHeight;
     } else {
-        geometry.mmWidth = floor ((geometry.box.x2 - geometry.box.x1) / DEFAULT_PIXELS_PER_MM + 0.5);
-        geometry.mmHeight = floor ((geometry.box.y2 - geometry.box.y1) / DEFAULT_PIXELS_PER_MM + 0.5);
+        geometry.mmWidth = cast(uint)(floor ((geometry.box.x2 - geometry.box.x1) / DEFAULT_PIXELS_PER_MM + 0.5));
+        geometry.mmHeight = cast(uint)(floor ((geometry.box.y2 - geometry.box.y1) / DEFAULT_PIXELS_PER_MM + 0.5));
     }
 }
 
@@ -97,7 +113,7 @@ private Bool RRMonitorSetFromServer(RRCrtcPtr crtc, RRMonitorPtr monitor)
     monitor.name = RRMonitorCrtcName(crtc);
     monitor.pScreen = crtc.pScreen;
     monitor.numOutputs = crtc.numOutputs;
-    monitor.outputs = calloc(crtc.numOutputs, RROutput.sizeof);
+    monitor.outputs = cast(ulong*)calloc(crtc.numOutputs, RROutput.sizeof);
     if (!monitor.outputs)
         return FALSE;
     for (o = 0; o < crtc.numOutputs; o++)
@@ -120,7 +136,7 @@ private void RRMonitorGetGeometry(RRMonitorPtr monitor, RRMonitorGeometryPtr geo
 {
     if (RRMonitorAutomaticGeometry(monitor) && monitor.numOutputs > 0) {
         ScreenPtr screen = monitor.pScreen;
-        rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+        rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
         RRMonitorGeometryRec first = { box: { 0, 0, 0, 0 }, mmWidth: 0, mmHeight: 0 };
         RRMonitorGeometryRec this_ = void;
         int c = void, o = void, co = void;
@@ -159,8 +175,8 @@ private void RRMonitorGetGeometry(RRMonitorPtr monitor, RRMonitorGeometryPtr geo
 
         /* Adjust physical sizes to account for total area */
         if (active_crtcs > 1 && first.box.x2 != first.box.x1 && first.box.y2 != first.box.y1) {
-            geometry.mmWidth = (cast(double)(geometry.box.x2 - geometry.box.x1) / (first.box.x2 - first.box.x1)) * first.mmWidth;
-            geometry.mmHeight = (cast(double)(geometry.box.y2 - geometry.box.y1) / (first.box.y2 - first.box.y1)) * first.mmHeight;
+            geometry.mmWidth = cast(uint)((cast(double)(geometry.box.x2 - geometry.box.x1) / (first.box.x2 - first.box.x1)) * first.mmWidth);
+            geometry.mmHeight = cast(uint)((cast(double)(geometry.box.y2 - geometry.box.y1) / (first.box.y2 - first.box.y1)) * first.mmHeight);
         }
     } else {
         *geometry = monitor.geometry;
@@ -172,7 +188,7 @@ private Bool RRMonitorSetFromClient(RRMonitorPtr client_monitor, RRMonitorPtr mo
     monitor.name = client_monitor.name;
     monitor.pScreen = client_monitor.pScreen;
     monitor.numOutputs = client_monitor.numOutputs;
-    monitor.outputs = calloc(client_monitor.numOutputs, RROutput.sizeof);
+    monitor.outputs = cast(ulong*)calloc(client_monitor.numOutputs, RROutput.sizeof);
     if (!monitor.outputs && client_monitor.numOutputs)
         return FALSE;
     memcpy(monitor.outputs, client_monitor.outputs, client_monitor.numOutputs * RROutput.sizeof);
@@ -194,7 +210,7 @@ alias RRMonitorListPtr = _rrMonitorList*;
 
 private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool get_active)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     int m = void, o = void, c = void, sc = void;
     int numCrtcs = void;
     ScreenPtr secondary = void;
@@ -210,12 +226,12 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
         if (!secondary.is_output_secondary)
             continue;
 
-        pSecondaryPriv = rrGetScrPriv(secondary);
+        pSecondaryPriv = mixin(rrGetScrPriv!("secondary"));
         numCrtcs += pSecondaryPriv.numCrtcs;
     }));
     mon_list.num_crtcs = numCrtcs;
 
-    mon_list.server_crtc = calloc(numCrtcs * 2, RRCrtcPtr.sizeof);
+    mon_list.server_crtc = cast(_rrCrtc**)calloc(numCrtcs * 2, RRCrtcPtr.sizeof);
     if (!mon_list.server_crtc)
         return FALSE;
 
@@ -232,7 +248,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
         if (!secondary.is_output_secondary)
             continue;
 
-        pSecondaryPriv = rrGetScrPriv(secondary);
+        pSecondaryPriv = mixin(rrGetScrPriv!("secondary"));
         for (sc = 0; sc < pSecondaryPriv.numCrtcs; sc++, c++) {
             if (pSecondaryPriv.crtcs[sc].mode != null)
                 mon_list.server_crtc[c] = pSecondaryPriv.crtcs[sc];
@@ -308,7 +324,7 @@ private void RRMonitorFiniList(RRMonitorListPtr list)
 
 Bool RRMonitorMakeList(ScreenPtr screen, Bool get_active, RRMonitorPtr* monitors_ret, int* nmon_ret)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     RRMonitorListRec list = void;
     int m = void, c = void;
     RRMonitorPtr mon = void, monitors = void;
@@ -320,7 +336,7 @@ Bool RRMonitorMakeList(ScreenPtr screen, Bool get_active, RRMonitorPtr* monitors
     if (!RRMonitorInitList(screen, &list, get_active))
         return FALSE;
 
-    monitors = calloc(list.num_client + list.num_server, RRMonitorRec.sizeof);
+    monitors = cast(_rrMonitor*)calloc(list.num_client + list.num_server, RRMonitorRec.sizeof);
     if (!monitors) {
         RRMonitorFiniList(&list);
         return FALSE;
@@ -405,7 +421,7 @@ RRMonitorPtr RRMonitorAlloc(int noutput)
 {
     RRMonitorPtr monitor = void;
 
-    monitor = calloc(1, (cast(RRMonitorRec) + noutput * RROutput.sizeof).sizeof);
+    monitor = cast(_rrMonitor*)calloc(1, (RRMonitorRec).sizeof + noutput * RROutput.sizeof);
     if (!monitor)
         return null;
     monitor.numOutputs = noutput;
@@ -415,7 +431,7 @@ RRMonitorPtr RRMonitorAlloc(int noutput)
 
 private int RRMonitorDelete(ClientPtr client, ScreenPtr screen, Atom name)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     int m = void;
 
     if (!pScrPriv) {
@@ -440,10 +456,10 @@ private int RRMonitorDelete(ClientPtr client, ScreenPtr screen, Atom name)
 
 private Bool RRMonitorMatchesOutputName(ScreenPtr screen, Atom name)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     int o = void;
     const(char)* str = NameForAtom(name);
-    int len = strlen(str);
+    int len = cast(int)strlen(str);
 
     for (o = 0; o < pScrPriv.numOutputs; o++) {
         RROutputPtr output = pScrPriv.outputs[o];
@@ -456,7 +472,7 @@ private Bool RRMonitorMatchesOutputName(ScreenPtr screen, Atom name)
 
 int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     int m = void;
     ScreenPtr secondary = void;
     RRMonitorPtr* monitors = void;
@@ -488,7 +504,7 @@ int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
      * needs to not have any side-effects on failure
      */
     if (pScrPriv.numMonitors)
-        monitors = reallocarray(pScrPriv.monitors,
+        monitors = cast(_rrMonitor**)reallocarray(pScrPriv.monitors,
                                 pScrPriv.numMonitors + 1,
                                 RRMonitorPtr.sizeof);
     else
@@ -532,7 +548,7 @@ void RRMonitorFreeList(RRMonitorPtr monitors, int nmon)
 
 void RRMonitorInit(ScreenPtr screen)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
 
     if (!pScrPriv)
         return;
@@ -543,7 +559,7 @@ void RRMonitorInit(ScreenPtr screen)
 
 void RRMonitorClose(ScreenPtr screen)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
     int m = void;
 
     if (!pScrPriv)
@@ -558,7 +574,7 @@ void RRMonitorClose(ScreenPtr screen)
 
 private CARD32 RRMonitorTimestamp(ScreenPtr screen)
 {
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(screen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("screen"));
 
     /* XXX should take client monitor changes into account */
     return pScrPriv.lastConfigTime.milliseconds;
@@ -593,19 +609,19 @@ int ProcRRGetMonitors(ClientPtr client)
 
     for (size_t m = 0; m < nmonitors; m++) {
         RRMonitorPtr monitor = &monitors[m];
-        xRRMonitorInfo* info = x_rpcbuf_reserve(&rpcbuf, xRRMonitorInfo.sizeof);
+        xRRMonitorInfo* info = cast(xRRMonitorInfo*)x_rpcbuf_reserve(&rpcbuf, xRRMonitorInfo.sizeof);
 
         noutputs += monitors[m].numOutputs;
 
         *info = xRRMonitorInfo (
-            name: monitor.name,
-            primary: monitor.primary,
-            automatic: monitor.automatic,
-            noutput: monitor.numOutputs,
+            name: cast(uint)monitor.name,
+            primary: cast(ubyte)monitor.primary,
+            automatic: cast(ubyte)monitor.automatic,
+            noutput: cast(ushort)monitor.numOutputs,
             x: monitor.geometry.box.x1,
             y: monitor.geometry.box.y1,
-            width: monitor.geometry.box.x2 - monitor.geometry.box.x1,
-            height: monitor.geometry.box.y2 - monitor.geometry.box.y1,
+            width: cast(ushort)(monitor.geometry.box.x2 - monitor.geometry.box.x1),
+            height: cast(ushort)(monitor.geometry.box.y2 - monitor.geometry.box.y1),
             widthInMillimeters: monitor.geometry.mmWidth,
             heightInMillimeters: monitor.geometry.mmHeight,
         );
@@ -621,14 +637,14 @@ int ProcRRGetMonitors(ClientPtr client)
             swapl(&info.heightInMillimeters);
         }
 
-        x_rpcbuf_write_CARD32s(&rpcbuf, monitor.outputs, monitor.numOutputs);
+        x_rpcbuf_write_CARD32s(&rpcbuf, cast(uint*)monitor.outputs, monitor.numOutputs);
     }
     RRMonitorFreeList(monitors, nmonitors);
 
     xRRGetMonitorsReply reply = {
         timestamp: RRMonitorTimestamp(screen),
         nmonitors: nmonitors,
-        noutputs: noutputs,
+        noutputs: cast(uint)noutputs,
     };
 
     if (client.swapped) {
@@ -685,10 +701,10 @@ int ProcRRSetMonitor(ClientPtr client)
     monitor.primary = stuff.monitor.primary;
     monitor.automatic = FALSE;
     memcpy(monitor.outputs, stuff + 1, stuff.monitor.noutput * RROutput.sizeof);
-    monitor.geometry.box.x1 = stuff.monitor.x;
-    monitor.geometry.box.y1 = stuff.monitor.y;
-    monitor.geometry.box.x2 = stuff.monitor.x + stuff.monitor.width;
-    monitor.geometry.box.y2 = stuff.monitor.y + stuff.monitor.height;
+    monitor.geometry.box.x1 = cast(short)(stuff.monitor.x);
+    monitor.geometry.box.y1 = cast(short)(stuff.monitor.y);
+    monitor.geometry.box.x2 = cast(short)(stuff.monitor.x + stuff.monitor.width);
+    monitor.geometry.box.y2 = cast(short)(stuff.monitor.y + stuff.monitor.height);
     monitor.geometry.mmWidth = stuff.monitor.widthInMillimeters;
     monitor.geometry.mmHeight = stuff.monitor.heightInMillimeters;
 

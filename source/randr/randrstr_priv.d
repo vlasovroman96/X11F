@@ -37,9 +37,9 @@ public import include.randrstr;
 import externs.X11.extensions.randrproto;
 import include.rrtransform;
 
-extern int RREventBase, RRErrorBase;
+// extern int RREventBase, RRErrorBase;
 
-extern RESTYPE RRClientType, RREventType;     /* resource types for event masks */
+// extern RESTYPE RRClientType, RREventType;     /* resource types for event masks */
 extern DevPrivateKeyRec RRClientPrivateKeyRec;
 
 /* see also randr/randrstr.h: some still need to be exported for legacy Nvidia */
@@ -166,7 +166,7 @@ RRCrtcPtr RRFirstEnabledCrtc(ScreenPtr pScreen);
  * @param mode pointer to randr mode info
  * @return vertical refresh rate
  */
-CARD16 RRVerticalRefresh(xRRModeInfo* mode);
+// CARD16 RRVerticalRefresh(xRRModeInfo* mode);
 
 /*
  * Tests if findCrtc belongs to pScreen or secondary screens
@@ -281,7 +281,7 @@ void RRModeInitErrorValue();
  * @param mode    the mode to add to the output
  * @return X error code
  */
-int RROutputAddUserMode(RROutputPtr output, RRModePtr mode);
+// int RROutputAddUserMode(RROutputPtr output, RRModePtr mode);
 
 /*
  * Delete user-given mode (that had been added via RROutputAddUserMode)
@@ -291,7 +291,7 @@ int RROutputAddUserMode(RROutputPtr output, RRModePtr mode);
  * @param mode    the mode to be removed from output
  * @return X error code
  */
-int RROutputDeleteUserMode(RROutputPtr output, RRModePtr mode);
+// int RROutputDeleteUserMode(RROutputPtr output, RRModePtr mode);
 
 /*
  * Deliver RROutputChangeNotify event to client
@@ -329,14 +329,14 @@ void RRPointerScreenConfigured(ScreenPtr pScreen);
  * @param property  Atom ID of the property to query
  * @return pointer to property structure, or NULL if not found
  */
-RRPropertyPtr RRQueryOutputProperty(RROutputPtr output, Atom property);
+// RRPropertyPtr RRQueryOutputProperty(RROutputPtr output, Atom property);
 
 /*
  * Delete all properties on given output
  *
  * @param output  the output whose properties shall be deleted
  */
-void RRDeleteAllOutputProperties(RROutputPtr output);
+// void RRDeleteAllOutputProperties(RROutputPtr output);
 
 /*
  * Initialize render provider resource type

@@ -1,4 +1,4 @@
-module filter;
+module render.filter;
 @nogc nothrow:
 extern(C): __gshared:
 /*

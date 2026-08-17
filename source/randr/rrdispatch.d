@@ -29,12 +29,13 @@ import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
 import os.fmt;
+import randr.randr;
 
 import include.protocol_versions;
 
 Bool RRClientKnowsRates(ClientPtr pClient)
 {
-    rrClientPriv(pClient);
+    mixin(rrClientPriv!("pClient"));
 
     return version_compare(pRRClient.major_version, pRRClient.minor_version,
                            1, 1) >= 0;
@@ -50,7 +51,7 @@ int ProcRRQueryVersion(ClientPtr client)
         swapl(&stuff.minorVersion);
     }
 
-    rrClientPriv(client);
+    mixin(rrClientPriv!("client"));
 
     pRRClient.major_version = stuff.majorVersion;
     pRRClient.minor_version = stuff.minorVersion;
@@ -85,7 +86,7 @@ int ProcRRSelectInput(ClientPtr client)
         swaps(&stuff.enable);
     }
 
-    rrClientPriv(client);
+    mixin(rrClientPriv!("client"));
     RRTimesPtr pTimes = void;
     WindowPtr pWin = void;
     RREventPtr pRREvent = void; RREventPtr* pHead = void;
@@ -109,7 +110,7 @@ int ProcRRSelectInput(ClientPtr client)
                          RRResourceChangeNotifyMask)) {
         ScreenPtr pScreen = pWin.drawable.pScreen;
 
-        rrScrPriv(pScreen);
+        mixin(rrScrPriv!("pScreen"));
 
         pRREvent = null;
         if (pHead) {
@@ -124,7 +125,7 @@ int ProcRRSelectInput(ClientPtr client)
             pRREvent = cast(RREventRec*) calloc(1, RREventRec.sizeof);
             if (!pRREvent)
                 return BadAlloc;
-            pRREvent.next = 0;
+            pRREvent.next = null;
             pRREvent.client = client;
             pRREvent.window = pWin;
             pRREvent.mask = stuff.enable;
@@ -150,7 +151,7 @@ int ProcRRSelectInput(ClientPtr client)
                     FreeResource(clientResource, X11_RESTYPE_NONE);
                     return BadAlloc;
                 }
-                *pHead = 0;
+                *pHead = null;
             }
             pRREvent.next = *pHead;
             *pHead = pRREvent;
@@ -195,7 +196,7 @@ int ProcRRSelectInput(ClientPtr client)
     else if (stuff.enable == 0) {
         /* delete the interest */
         if (pHead) {
-            RREventPtr pNewRREvent = 0;
+            RREventPtr pNewRREvent = null;
 
             for (pRREvent = *pHead; pRREvent; pRREvent = pRREvent.next) {
                 if (pRREvent.client == client)

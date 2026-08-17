@@ -25,12 +25,28 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
 
 RESTYPE RROutputType;
 
@@ -51,7 +67,7 @@ void RROutputChanged(RROutputPtr output, Bool configChanged)
         ScreenPtr primary = pScreen.current_primary;
         if (!primary)
             return;
-        primarysp = rrGetScrPriv(primary);
+        primarysp = mixin(rrGetScrPriv!("primary"));
     }
     else {
         primarysp = mixin(rrGetScrPriv!("pScreen"));
@@ -78,14 +94,14 @@ RROutputPtr RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength,
 
     pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
-    outputs = reallocarray(pScrPriv.outputs,
+    outputs = cast(_rrOutput**)reallocarray(pScrPriv.outputs,
                            pScrPriv.numOutputs + 1, RROutputPtr.sizeof);
     if (!outputs)
         return null;
 
     pScrPriv.outputs = outputs;
 
-    output = calloc(1, ((RROutputRec) + nameLength + 1).sizeof);
+    output = cast(_rrOutput*)calloc(1, ((RROutputRec).sizeof + nameLength + 1));
     if (!output)
         return null;
     output.id = dixAllocServerXID();
@@ -197,7 +213,7 @@ int RROutputAddUserMode(RROutputPtr output, RRModePtr mode)
     int m = void;
     ScreenPtr pScreen = output.pScreen;
 
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     RRModePtr* newModes = void;
 
     /* Check to see if this mode is already listed for this output */
@@ -215,7 +231,7 @@ int RROutputAddUserMode(RROutputPtr output, RRModePtr mode)
             return BadMatch;
 
     if (output.userModes)
-        newModes = reallocarray(output.userModes,
+        newModes = cast(_rrMode**)reallocarray(output.userModes,
                                 output.numUserModes + 1, RRModePtr.sizeof);
     else
         newModes = cast(RRModePtr*) cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
@@ -297,7 +313,7 @@ void RROutputSetSubpixelOrder(RROutputPtr output, int subpixelOrder)
     if (output.subpixelOrder == subpixelOrder)
         return;
 
-    output.subpixelOrder = subpixelOrder;
+    output.subpixelOrder = cast(ubyte)subpixelOrder;
     RROutputChanged(output, FALSE);
 }
 
@@ -328,18 +344,18 @@ void RRDeliverOutputEvent(ClientPtr client, WindowPtr pWin, RROutputPtr output)
 {
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    rrScrPriv(pScreen);
+    mixin(rrScrPriv!("pScreen"));
     RRCrtcPtr crtc = output.crtc;
     RRModePtr mode = crtc ? crtc.mode : null;
 
     xRROutputChangeNotifyEvent oe = {
-        type: RRNotify + RREventBase,
+        type: cast(ubyte)(RRNotify + RREventBase),
         subCode: RRNotify_OutputChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
         configTimestamp: pScrPriv.lastConfigTime.milliseconds,
         window: cast(uint)pWin.drawable.id,
-        output: output.id,
-        crtc: crtc ? crtc.id : None,
+        output: cast(uint)output.id,
+        crtc: cast(uint)(crtc ? crtc.id : None),
         mode: mode ? mode.mode.id : None,
         rotation: crtc ? crtc.rotation : RR_Rotate_0,
         connection: output.nonDesktop ? RR_Disconnected : output.connection,
@@ -365,11 +381,11 @@ private int RROutputDestroyResource(void* value, XID pid)
     int m = void;
 
     if (pScreen) {
-        rrScrPriv(pScreen);
+        mixin(rrScrPriv!("pScreen"));
         int i = void;
         RRLeasePtr lease = void, next = void;
 
-        mixin(xorg_list_for_each_entry_safe!("lease", "next", "pScrPriv.leases", "list", q{
+        mixin(xorg_list_for_each_entry_safe!("lease", "next", "&pScrPriv.leases", "list", q{
             int o = void;
             for (o = 0; o < lease.numOutputs; o++) {
                 if (lease.outputs[o] == output) {
@@ -385,7 +401,7 @@ private int RROutputDestroyResource(void* value, XID pid)
         if (pScreen.isGPU) {
             primary = pScreen.current_primary;
             if (primary) {
-                primarysp = rrGetScrPriv(primary);
+                primarysp = mixin(rrGetScrPriv!("primary"));
                 if (primarysp.primaryOutput == output)
                     primarysp.primaryOutput = null;
             }
@@ -455,7 +471,7 @@ int ProcRRGetOutputInfo(ClientPtr client)
     int i = void;
     Bool leased = void;
 
-    VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+    mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
 
     leased = RROutputIsLeased(output);
 
@@ -465,7 +481,7 @@ int ProcRRGetOutputInfo(ClientPtr client)
     xRRGetOutputInfoReply reply = {
         status: RRSetConfigSuccess,
         timestamp: pScrPriv.lastSetTime.milliseconds,
-        nameLength: output.nameLength,
+        nameLength: cast(ushort)output.nameLength,
     };
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
@@ -474,18 +490,18 @@ int ProcRRGetOutputInfo(ClientPtr client)
         reply.connection = RR_Disconnected;
         reply.subpixelOrder = SubPixelUnknown;
     } else {
-        reply.crtc = output.crtc ? output.crtc.id : None;
+        reply.crtc = cast(uint)(output.crtc ? output.crtc.id : None);
         reply.mmWidth = output.mmWidth;
         reply.mmHeight = output.mmHeight;
         reply.connection = output.nonDesktop ? RR_Disconnected : output.connection;
         reply.subpixelOrder = output.subpixelOrder;
-        reply.nCrtcs = output.numCrtcs;
-        reply.nModes = output.numModes + output.numUserModes;
-        reply.nPreferred = output.numPreferred;
-        reply.nClones = output.numClones;
+        reply.nCrtcs = cast(ushort)output.numCrtcs;
+        reply.nModes = cast(ushort)(output.numModes + output.numUserModes);
+        reply.nPreferred = cast(ushort)(output.numPreferred);
+        reply.nClones = cast(ushort)output.numClones;
 
         for (i = 0; i < output.numCrtcs; i++)
-            x_rpcbuf_write_CARD32(&rpcbuf, output.crtcs[i].id);
+            x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)output.crtcs[i].id);
 
         for (i = 0; i < output.numModes + output.numUserModes; i++) {
             if (i < output.numModes)
@@ -495,7 +511,7 @@ int ProcRRGetOutputInfo(ClientPtr client)
         }
 
         for (i = 0; i < output.numClones; i++)
-            x_rpcbuf_write_CARD32(&rpcbuf, output.clones[i].id);
+            x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)output.clones[i].id);
     }
 
     x_rpcbuf_write_string_pad(&rpcbuf, output.name); /* indeed 0-terminated */
@@ -558,7 +574,8 @@ int ProcRRSetOutputPrimary(ClientPtr client)
         return ret;
 
     if (stuff.output) {
-        VERIFY_RR_OUTPUT(stuff.output, output, DixReadAccess);
+        mixin(VERIFY_RR_OUTPUT!("stuff.output", "output", "DixReadAccess"));
+;
 
         if (RROutputIsLeased(output))
             return BadAccess;
@@ -573,17 +590,17 @@ int ProcRRSetOutputPrimary(ClientPtr client)
         }
     }
 
-    pScrPriv = rrGetScrPriv(pWin.drawable.pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pWin.drawable.pScreen"));
     if (pScrPriv)
     {
         RRSetPrimaryOutput(pWin.drawable.pScreen, pScrPriv, output);
 
-        xorg_list_for_each_entry(secondary,
-                                 &pWin.drawable.pScreen.secondary_list,
-                                 secondary_head); {
+        mixin(xorg_list_for_each_entry!("secondary",
+                                 "&pWin.drawable.pScreen.secondary_list",
+                                 "secondary_head", q{
             if (secondary.is_output_secondary)
-                RRSetPrimaryOutput(secondary, rrGetScrPriv(secondary), output);
-        }
+                RRSetPrimaryOutput(secondary, mixin(rrGetScrPriv!("secondary")), output);
+        }));
     }
 
     return Success;
@@ -606,12 +623,12 @@ int ProcRRGetOutputPrimary(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    pScrPriv = rrGetScrPriv(pWin.drawable.pScreen);
+    pScrPriv = mixin(rrGetScrPriv!("pWin.drawable.pScreen"));
     if (pScrPriv)
         primary = pScrPriv.primaryOutput;
 
     xRRGetOutputPrimaryReply reply = {
-        output: primary ? primary.id : None
+        output: cast(uint)(primary ? primary.id : None)
     };
 
     if (client.swapped) {

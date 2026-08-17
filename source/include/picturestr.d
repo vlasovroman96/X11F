@@ -349,7 +349,7 @@ extern int PictureSetDefaultFilters(ScreenPtr pScreen);
 
 extern int PictureResetFilters(ScreenPtr pScreen);
 
-extern int PictureFindFilter(ScreenPtr pScreen, char* name, int len);
+// extern int PictureFindFilter(ScreenPtr pScreen, char* name, int len);
 
 extern int SetPicturePictFilter(PicturePtr pPicture, PictFilterPtr pFilter, XFixed* params, int nparams);
 
