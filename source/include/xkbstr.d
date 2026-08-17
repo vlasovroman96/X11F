@@ -33,11 +33,12 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-//public import externs.X11.Xdefs;
+public import externs.X11.Xdefs;
 //import externs.X11.X;
 import externs.X11.extensions.XKB;
-import externs.X11.extensions.XKBgeom;
-
+// import externs.X11.extensions.XKBgeom;
+import include.input;
+import xkb.xkbgeom_priv;
 // //public import externs.X11.extensions.XKB;
 
 enum string	XkbCharToInt(string v) = `(cast(int) ((` ~ v ~ `) & 0x80 ? ((` ~ v ~ `) | (~0xff)) : ((` ~ v ~ `) & 0x7f)))`;
@@ -463,6 +464,34 @@ struct _XkbNamesRec {
     ushort num_rg;
 }alias XkbNamesRec = _XkbNamesRec;
 alias XkbNamesPtr = _XkbNamesRec*;
+
+struct _XkbGeometry {
+	Atom		 name;
+	ushort	 width_mm;
+	ushort	 height_mm;
+	char *		 label_font;
+	XkbColorPtr	 label_color;
+	XkbColorPtr	 base_color;
+	ushort	 sz_properties;
+	ushort	 sz_colors;
+	ushort	 sz_shapes;
+	ushort   sz_sections;
+	ushort	 sz_doodads;
+	ushort	 sz_key_aliases;
+	ushort	 num_properties;
+	ushort	 num_colors;
+	ushort	 num_shapes;
+	ushort	 num_sections;
+	ushort	 num_doodads;
+	ushort	 num_key_aliases;
+	XkbPropertyPtr	 properties;
+	XkbColorPtr	 colors;
+	XkbShapePtr	 shapes;
+	XkbSectionPtr	 sections;
+	XkbDoodadPtr	 doodads;
+	XkbKeyAliasPtr	 key_aliases;
+} 
+alias XkbGeometryRec = _XkbGeometry;
 
 alias XkbGeometryPtr = _XkbGeometry*;
 

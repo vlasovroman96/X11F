@@ -30,7 +30,7 @@ import core.stdc.config: c_long, c_ulong;
 import config.kdrive_config;
 import hw.kdrive.src.kdrive;
 
-import externs.X11.extensions.XKBstr; 
+// import externs.X11.extensions.XKBstr; 
 
 import core.stdc.stdlib;
 import core.stdc.stdio;

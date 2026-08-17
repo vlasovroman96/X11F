@@ -28,7 +28,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #define	_XKBSTR_H_
 
 #include <X11/Xfuncproto.h>
-// #include <XKB.h>
+#include "XKB.h"
 #include <X11/Xdefs.h>
 #include <X11/extensions/XKB.h>
 #include <X11/X.h>
