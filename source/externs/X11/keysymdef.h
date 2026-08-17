@@ -190,10 +190,10 @@ SOFTWARE.
 
 #define XK_VoidSymbol                  0xffffff  /* Void symbol */
 
-#define XK_MISCELLANY  /* Void symbol */
+// #define XK_MISCELLANY  /* Void symbol */
 
 
-#ifdef XK_MISCELLANY
+// #ifdef XK_MISCELLANY
 /*
  * TTY function keys, cleverly chosen to map to ASCII, for convenience of
  * programming, but could have been arbitrary (at the cost of lookup
@@ -406,7 +406,7 @@ SOFTWARE.
 #define XK_Super_R                       0xffec  /* Right super */
 #define XK_Hyper_L                       0xffed  /* Left hyper */
 #define XK_Hyper_R                       0xffee  /* Right hyper */
-#endif /* XK_MISCELLANY */
+// #endif /* XK_MISCELLANY */
 
 /*
  * Keyboard (XKB) Extension function and modifier keys
@@ -624,7 +624,7 @@ SOFTWARE.
  * (ISO/IEC 8859-1 = Unicode U+0020..U+00FF)
  * Byte 3 = 0
  */
-#ifdef XK_LATIN1
+// #ifdef XK_LATIN1
 #define XK_space                         0x0020  /* U+0020 SPACE */
 #define XK_exclam                        0x0021  /* U+0021 EXCLAMATION MARK */
 #define XK_quotedbl                      0x0022  /* U+0022 QUOTATION MARK */
@@ -826,7 +826,7 @@ SOFTWARE.
 #define XK_yacute                        0x00fd  /* U+00FD LATIN SMALL LETTER Y WITH ACUTE */
 #define XK_thorn                         0x00fe  /* U+00FE LATIN SMALL LETTER THORN */
 #define XK_ydiaeresis                    0x00ff  /* U+00FF LATIN SMALL LETTER Y WITH DIAERESIS */
-#endif /* XK_LATIN1 */
+// #endif /* XK_LATIN1 */
 
 /*
  * Latin 2

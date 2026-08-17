@@ -512,7 +512,7 @@ extern void  RRSendConfigNotify(ScreenPtr pScreen);
 /*
  * Request that the Crtc be reconfigured
  */
-extern void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, int numOutput, RROutputPtr* outputs);
+// extern void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, int numOutput, RROutputPtr* outputs);
 
 /*
  * Request that the Crtc gamma be changed
@@ -570,7 +570,7 @@ extern void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation ro
 
 extern void  RROutputDestroy(RROutputPtr output);
 
-extern void  RRDeleteOutputProperty(RROutputPtr output, Atom property);
+// extern void  RRDeleteOutputProperty(RROutputPtr output, Atom property);
 
 // extern void  RRPostPendingProperties(RROutputPtr output);
 
@@ -645,7 +645,7 @@ void  RROutputSetNonDesktop(RROutputPtr output, Bool non_desktop);
  * @param pClient the client to check
  * @return TRUE if client using recent enough protocol version
  */
-void  RRClientKnowsRates(ClientPtr pClient);
+// void  RRClientKnowsRates(ClientPtr pClient);
 
 /*
  * Set filter on transform structure

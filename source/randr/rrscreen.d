@@ -30,7 +30,28 @@ import dix.request_priv;
 import dix.server_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
-
+import randr.randrstr_priv;
+import include.propertyst;
+import dix.swaprep;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
+import externs.attrs;
+import os.log;
+import randr.rrdispatch;
 
 
 /*
@@ -56,8 +77,8 @@ private void RREditConnectionInfo(ScreenPtr pScreen)
     formats = cast(xPixmapFormat*) (cast(char*) vendor +
                                  pad_to_int32(connSetup.nbytesVendor));
     root = cast(xWindowRoot*) (cast(char*) formats +
-                            ((xPixmapFormat) *
-                            screenInfo.numPixmapFormats).sizeof);
+                            ((xPixmapFormat).sizeof *
+                            screenInfo.numPixmapFormats));
     while (screen != pScreen.myNum) {
         depth = cast(xDepth*) (cast(char*) root + xWindowRoot.sizeof);
         for (d = 0; d < root.nDepths; d++) {
@@ -89,15 +110,15 @@ void RRSendConfigNotify(ScreenPtr pScreen)
     //     u:configureNotify:override: pWin.overrideRedirect
     // };
         xEvent event;
-        event.configureNotify.window = pWin.drawable.id,
-        event.configureNotify.aboveSibling = None,
+        event.u.configureNotify.window = cast(uint)pWin.drawable.id,
+        event.u.configureNotify.aboveSibling = None,
 
     /* XXX xinerama stuff ? */
 
-        event.configureNotify.width = pWin.drawable.width,
-        event.configureNotify.height = pWin.drawable.height,
-        event.configureNotify.borderWidth = mixin(wBorderWidth!("pWin")),
-        event.configureNotify.c_override = pWin.overrideRedirect;
+        event.u.configureNotify.width = pWin.drawable.width,
+        event.u.configureNotify.height = pWin.drawable.height,
+        event.u.configureNotify.borderWidth = mixin(wBorderWidth!("pWin")),
+        event.u.configureNotify.override_ = cast(ubyte)pWin.overrideRedirect;
     // };
 
     event.u.u.type = ConfigureNotify;
@@ -111,13 +132,13 @@ void RRDeliverScreenEvent(ClientPtr client, WindowPtr pWin, ScreenPtr pScreen)
     WindowPtr pRoot = pScreen.root;
 
     xRRScreenChangeNotifyEvent se = {
-        type: RRScreenChangeNotify + RREventBase,
+        type: cast(ubyte)(RRScreenChangeNotify + RREventBase),
         rotation: cast(CARD8) (crtc ? crtc.rotation : RR_Rotate_0),
         timestamp: pScrPriv.lastSetTime.milliseconds,
         configTimestamp: pScrPriv.lastConfigTime.milliseconds,
         root: cast(uint)pRoot.drawable.id,
         window: cast(uint)pWin.drawable.id,
-        subpixelOrder: PictureGetSubpixelOrder(pScreen),
+        subpixelOrder: cast(ushort)PictureGetSubpixelOrder(pScreen),
 
         sizeID: RR10CurrentSizeID(pScreen)
     };
@@ -303,7 +324,7 @@ int ProcRRSetScreenSize(ClientPtr client)
 }
 
 
-enum string update_totals(string gpuscreen, string pScrPriv) = `do {       
+enum string update_totals(string gpuscreen, string pScrPriv) = `{       
     total_crtcs += ` ~ pScrPriv ~ `.numCrtcs;                
     total_outputs += ` ~ pScrPriv ~ `.numOutputs;            
     modes = RRModesForScreen(` ~ gpuscreen ~ `, &num_modes);  
@@ -313,7 +334,7 @@ enum string update_totals(string gpuscreen, string pScrPriv) = `do {
         total_name_len += modes[j].mode.nameLength;  
     total_modes += num_modes;                         
     free(modes);                                      
-} while(0)`;
+}`;
 
 pragma(inline, true) private void swap_modeinfos(xRRModeInfo* modeinfos, int i)
 {
@@ -332,7 +353,7 @@ pragma(inline, true) private void swap_modeinfos(xRRModeInfo* modeinfos, int i)
     swapl(&modeinfos[i].modeFlags);
 }
 
-enum string update_arrays(string gpuscreen, string pScrPriv, string primary_crtc, string has_primary) = `do {            
+enum string update_arrays(string gpuscreen, string pScrPriv, string primary_crtc, string has_primary) = `{            
     for (j = 0; j < ` ~ pScrPriv ~ `.numCrtcs; j++) {             
         if (` ~ has_primary ~ ` && 
             ` ~ primary_crtc ~ ` == ` ~ pScrPriv ~ `.crtcs[j]) { 
@@ -365,7 +386,7 @@ enum string update_arrays(string gpuscreen, string pScrPriv, string primary_crtc
         }                                                  
         free(modes);                                       
     }                                                      
-    } while (0)`;
+    }`;
 
 private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pScreen)
 {
@@ -403,7 +424,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
         if (!iter.is_output_secondary)
             continue;
 
-        pScrPriv = rrGetScrPriv(iter);
+        pScrPriv = mixin(rrGetScrPriv!("iter"));
 
         if (query)
           if (!RRGetInfo(iter, query))
@@ -416,21 +437,21 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
     xRRGetScreenResourcesReply reply = {
         timestamp: pScrPriv.lastSetTime.milliseconds,
         configTimestamp: pScrPriv.lastConfigTime.milliseconds,
-        nCrtcs: total_crtcs,
-        nOutputs: total_outputs,
-        nModes: total_modes,
-        nbytesNames: total_name_len
+        nCrtcs: cast(ushort)total_crtcs,
+        nOutputs: cast(ushort)total_outputs,
+        nModes: cast(ushort)total_modes,
+        nbytesNames: cast(ushort)total_name_len
     };
 
     reply.length = (total_crtcs + total_outputs +
-                  total_modes * bytes_to_int32(SIZEOF(xRRModeInfo)) +
+                  total_modes * bytes_to_int32((xRRModeInfo).sizeof) +
                   bytes_to_int32(total_name_len));
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
     extraLen = reply.length << 2;
     if (extraLen) {
-        extra = x_rpcbuf_reserve(&rpcbuf, extraLen);
+        extra = cast(ubyte*)x_rpcbuf_reserve(&rpcbuf, extraLen);
         if (!extra) {
             return BadAlloc;
         }
@@ -462,7 +483,7 @@ private int rrGetMultiScreenResources(ClientPtr client, Bool query, ScreenPtr pS
         if (!iter.is_output_secondary)
             continue;
 
-        pScrPriv = rrGetScrPriv(iter);
+        pScrPriv = mixin(rrGetScrPriv!("iter"));
 
         mixin(update_arrays!(`iter`, `pScrPriv`, `primary_crtc`, `has_primary`));
     }));
@@ -530,33 +551,39 @@ private int rrGetScreenResources(ClientPtr client, Bool query)
         reply = xRRGetScreenResourcesReply (
             timestamp: pScrPriv.lastSetTime.milliseconds,
             configTimestamp: pScrPriv.lastConfigTime.milliseconds,
-            nCrtcs: pScrPriv.numCrtcs,
-            nOutputs: pScrPriv.numOutputs,
-            nModes: num_modes,
+            nCrtcs: cast(ushort)pScrPriv.numCrtcs,
+            nOutputs: cast(ushort)pScrPriv.numOutputs,
+            nModes: cast(ushort)num_modes,
         );
 
         for (i = 0; i < num_modes; i++)
             reply.nbytesNames += modes[i].mode.nameLength;
 
-        reply.length = (pScrPriv.numCrtcs +
+        reply.length = pScrPriv.numCrtcs +
                       pScrPriv.numOutputs +
-                      num_modes * bytes_to_int32(SIZEOF(xRRModeInfo)) +
+                      num_modes * bytes_to_int32((xRRModeInfo).sizeof +
                       bytes_to_int32(reply.nbytesNames));
+
+        RRCrtc* crtcs;
+        RROutput* outputs;
+        xRRModeInfo* modeinfos;
+        CARD8* names;
+
 
         extraLen = reply.length << 2;
         if (!extraLen)
             goto finish;
 
-        extra = x_rpcbuf_reserve(&rpcbuf, extraLen);
+        extra = cast(ubyte*)x_rpcbuf_reserve(&rpcbuf, extraLen);
         if (!extra) {
             free(modes);
             return BadAlloc;
         }
 
-        RRCrtc* crtcs = cast(RRCrtc*) extra;
-        RROutput* outputs = cast(RROutput*) (crtcs + pScrPriv.numCrtcs);
-        xRRModeInfo* modeinfos = cast(xRRModeInfo*) (outputs + pScrPriv.numOutputs);
-        CARD8* names = cast(CARD8*) (modeinfos + num_modes);
+        crtcs = cast(RRCrtc*) extra;
+        outputs = cast(RROutput*) (crtcs + pScrPriv.numCrtcs);
+        modeinfos = cast(xRRModeInfo*) (outputs + pScrPriv.numOutputs);
+        names = cast(CARD8*) (modeinfos + num_modes);
 
         if (pScrPriv.primaryOutput && pScrPriv.primaryOutput.crtc) {
             has_primary = 1;
@@ -653,15 +680,15 @@ private RR10DataPtr RR10GetData(ScreenPtr pScreen, RROutputPtr output)
     Bool* used = void;
 
     /* Make sure there is plenty of space for any combination */
-    RR10DataPtr data = cast(RR10DataPtr) calloc(1, ((RR10DataRec) +
-                  ((RRScreenSize) * nmode +
-                  ((RRScreenRate) * nmode + ((Bool) * nmode).sizeof).sizeof).sizeof).sizeof);
+    RR10DataPtr data = cast(RR10DataPtr) calloc(1, ((RR10DataRec).sizeof +
+                  ((RRScreenSize).sizeof * nmode +
+                  ((RRScreenRate).sizeof * nmode + ((Bool).sizeof * nmode)))));
     if (!data)
         return null;
     size = cast(RRScreenSizePtr) (data + 1);
     refresh = cast(RRScreenRatePtr) (size + nmode);
     used = cast(Bool*) (refresh + nmode);
-    memset(used, '\0', ((Bool) * nmode).sizeof);
+    memset(used, '\0', ((Bool).sizeof * nmode));
     data.sizes = size;
     data.nsize = 0;
     data.nrefresh = 0;
@@ -682,11 +709,11 @@ private RR10DataPtr RR10GetData(ScreenPtr pScreen, RROutputPtr output)
 
         l = data.nsize;
         size[l].id = data.nsize;
-        size[l].width = mode.mode.width;
-        size[l].height = mode.mode.height;
+        size[l].width = cast(short)mode.mode.width;
+        size[l].height = cast(short)mode.mode.height;
         if (output.mmWidth && output.mmHeight) {
-            size[l].mmWidth = output.mmWidth;
-            size[l].mmHeight = output.mmHeight;
+            size[l].mmWidth = cast(short)output.mmWidth;
+            size[l].mmHeight = cast(short)output.mmHeight;
         }
         else {
             size[l].mmWidth = pScreen.mmWidth;
@@ -780,16 +807,19 @@ int ProcRRGetScreenInfo(ClientPtr client)
             return BadAlloc;
 
         reply = xRRGetScreenInfoReply (
-            setOfRotations: output.crtc.rotations,
+            setOfRotations: cast(ubyte)output.crtc.rotations,
             root: cast(uint)pWin.drawable.pScreen.root.drawable.id,
             timestamp: pScrPriv.lastSetTime.milliseconds,
             configTimestamp: pScrPriv.lastConfigTime.milliseconds,
             rotation: output.crtc.rotation,
-            nSizes: pData.nsize,
-            nrateEnts: pData.nrefresh + pData.nsize,
-            sizeID: pData.size,
+            nSizes: cast(ushort)pData.nsize,
+            nrateEnts: cast(ushort)(pData.nrefresh + pData.nsize),
+            sizeID: cast(ushort)pData.size,
             rate: pData.refresh
         );
+
+        CARD16* rates;
+        xScreenSizes* size;
 
         extraLen = reply.nSizes * xScreenSizes.sizeof;
         if (has_rate)
@@ -798,7 +828,7 @@ int ProcRRGetScreenInfo(ClientPtr client)
         if (!extraLen)
             goto finish; // no extra payload
 
-        extra = x_rpcbuf_reserve(&rpcbuf, extraLen);
+        extra = cast(ubyte*)x_rpcbuf_reserve(&rpcbuf, extraLen);
         if (!extra) {
             free(pData);
             return BadAlloc;
@@ -807,8 +837,8 @@ int ProcRRGetScreenInfo(ClientPtr client)
         /*
          * First comes the size information
          */
-        xScreenSizes* size = cast(xScreenSizes*) extra;
-        CARD16* rates = cast(CARD16*) (size + reply.nSizes);
+        size = cast(xScreenSizes*) extra;
+        rates = cast(CARD16*) (size + reply.nSizes);
         for (i = 0; i < pData.nsize; i++) {
             pSize = &pData.sizes[i];
             size.widthInPixels = pSize.width;
@@ -823,7 +853,7 @@ int ProcRRGetScreenInfo(ClientPtr client)
             }
             size++;
             if (has_rate) {
-                *rates = pSize.nRates;
+                *rates = cast(ushort)pSize.nRates;
                 if (client.swapped) {
                     swaps(rates);
                 }
@@ -1043,8 +1073,8 @@ int ProcRRSetScreenConfig(ClientPtr client)
                 goto sendReply;
             }
         }
-        if (!RRScreenSizeSet(pScreen, width, height,
-                             pScreen.mmWidth, pScreen.mmHeight)) {
+        if (!RRScreenSizeSet(pScreen, cast(ushort)width, cast(ushort)height,
+                             cast(ushort)pScreen.mmWidth, cast(ushort)pScreen.mmHeight)) {
             status = RRSetConfigFailed;
             /* XXX recover from failure */
             goto sendReply;

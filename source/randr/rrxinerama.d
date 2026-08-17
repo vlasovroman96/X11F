@@ -73,7 +73,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 //import externs.X11.Xmd;
-////import externs.X11.extensions.panoramiXproto;
+import externs.X11.extensions.panoramiXproto;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -83,6 +83,29 @@ import randr.randrstr_priv;
 
 import dix.swaprep;
 import include.protocol_versions;
+import randr.randrstr_priv;
+import include.propertyst;
+import dix.swaprep;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
+import externs.attrs;
+import os.log;
+import randr.rrdispatch;
+import dix.extension;
 
 /* Xinerama is not multi-screen capable; just report about screen 0 */
 enum RR_XINERAMA_SCREEN =  0;
@@ -139,7 +162,7 @@ int ProcRRXineramaGetState(ClientPtr client)
     }
 
     xPanoramiXGetStateReply reply = {
-        state: active,
+        state: cast(ubyte)active,
         window: stuff.window
     };
     if (client.swapped) {
@@ -174,7 +197,7 @@ int ProcRRXineramaGetScreenCount(ClientPtr client)
         return rc;
 
     xPanoramiXGetScreenCountReply reply = {
-        ScreenCount: RRXineramaScreenCount(pWin.drawable.pScreen),
+        ScreenCount: cast(ubyte)RRXineramaScreenCount(pWin.drawable.pScreen),
         window: stuff.window
     };
     if (client.swapped) {
@@ -262,8 +285,8 @@ int ProcRRXineramaQueryScreens(ClientPtr client)
         x_rpcbuf_write_rect(&rpcbuf,
                             box.x1,
                             box.y1,
-                            box.x2 - box.x1,
-                            box.y2 - box.y1);
+                            cast(ushort)(box.x2 - box.x1),
+                            cast(ushort)(box.y2 - box.y1));
     }
 
     if (monitors)
@@ -314,5 +337,5 @@ version (XINERAMA) {
                         &ProcRRXineramaDispatch,
                         &ProcRRXineramaDispatch,
                         null,
-                        StandardMinorOpcode);
+                        &StandardMinorOpcode);
 }

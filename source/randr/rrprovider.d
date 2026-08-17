@@ -27,12 +27,31 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-//import externs.X11.Xatom;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;
 import randr.randrstr_priv;
 import randr.rrdispatch_priv;
+import randr.randrstr_priv;
+import include.propertyst;
+import dix.swaprep;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
 
 import dix.swaprep;
 
@@ -46,13 +65,13 @@ void RRProviderInitErrorValue()
     SetResourceTypeErrorValue(RRProviderType, RRErrorBase + BadRRProvider);
 }
 
-enum string ADD_PROVIDER(string _pScreen) = `do {                                 
-    pScrPriv = rrGetScrPriv((` ~ _pScreen ~ `));                            
+enum string ADD_PROVIDER(string _pScreen) = `{                                 
+    pScrPriv = mixin(rrGetScrPriv!("` ~ _pScreen ~ `"));                            
     if (pScrPriv.provider) {                                   
-        x_rpcbuf_write_CARD32(&rpcbuf, pScrPriv.provider.id); 
+        x_rpcbuf_write_CARD32(&rpcbuf, cast(uint)pScrPriv.provider.id); 
         count_providers++;                                      
     }                                                           
-    } while(0)`;
+    }`;
 
 int ProcRRGetProviders(ClientPtr client)
 {
@@ -128,7 +147,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
     RRProvider* providers = void;
     uint* prov_cap = void;
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     pScreen = provider.pScreen;
     pScrPriv = mixin(rrGetScrPriv!("pScreen"));
@@ -136,10 +155,10 @@ int ProcRRGetProviderInfo(ClientPtr client)
     xRRGetProviderInfoReply reply = {
         status: RRSetConfigSuccess,
         capabilities: provider.capabilities,
-        nameLength: provider.nameLength,
+        nameLength: cast(ushort)provider.nameLength,
         timestamp: pScrPriv.lastSetTime.milliseconds,
-        nCrtcs: pScrPriv.numCrtcs,
-        nOutputs: pScrPriv.numOutputs,
+        nCrtcs: cast(ushort)pScrPriv.numCrtcs,
+        nOutputs: cast(ushort)pScrPriv.numOutputs,
     };
 
     /* count associated providers */
@@ -160,7 +179,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
 
     extraLen = reply.length << 2;
     if (extraLen) {
-        extra = x_rpcbuf_reserve(&rpcbuf, extraLen);
+        extra = cast(ubyte*)x_rpcbuf_reserve(&rpcbuf, extraLen);
         if (!extra)
             return BadAlloc;
     }
@@ -207,7 +226,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
     mixin(xorg_list_for_each_entry!("provscreen", "&pScreen.secondary_list", "secondary_head", q{
         if (!provscreen.is_output_secondary && !provscreen.is_offload_secondary)
             continue;
-        pScrProvPriv = rrGetScrPriv(provscreen);
+        pScrProvPriv = mixin(rrGetScrPriv!("provscreen"));
         providers[i] = pScrProvPriv.provider.id;
         if (client.swapped)
             swapl(&providers[i]);
@@ -299,13 +318,13 @@ int ProcRRSetProviderOutputSource(ClientPtr client)
     RRProviderPtr provider = void, source_provider = null;
     ScreenPtr pScreen = void;
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     if (!(provider.capabilities & RR_Capability_SinkOutput))
         return BadValue;
 
     if (stuff.source_provider) {
-        VERIFY_RR_PROVIDER(stuff.source_provider, source_provider, DixReadAccess);
+        mixin(VERIFY_RR_PROVIDER!("stuff.source_provider", "source_provider", "DixReadAccess"));
 
         if (!(source_provider.capabilities & RR_Capability_SourceOutput))
             return BadValue;
@@ -344,14 +363,14 @@ int ProcRRSetProviderOffloadSink(ClientPtr client)
     RRProviderPtr provider = void, sink_provider = null;
     ScreenPtr pScreen = void;
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
     if (!(provider.capabilities & RR_Capability_SourceOffload))
         return BadValue;
     if (!provider.pScreen.isGPU)
         return BadValue;
 
     if (stuff.sink_provider) {
-        VERIFY_RR_PROVIDER(stuff.sink_provider, sink_provider, DixReadAccess);
+        mixin(VERIFY_RR_PROVIDER!("stuff.sink_provider", "sink_provider", "DixReadAccess"));
         if (!(sink_provider.capabilities & RR_Capability_SinkOffload))
             return BadValue;
     }
@@ -375,7 +394,7 @@ RRProviderPtr RRProviderCreate(ScreenPtr pScreen, const(char)* name, int nameLen
 
     pScrPriv = mixin(rrGetScrPriv!("pScreen"));
 
-    provider = calloc(1, ((RRProviderRec) + nameLength + 1).sizeof);
+    provider = cast(RRProviderPtr)calloc(1, ((RRProviderRec).sizeof + nameLength + 1));
     if (!provider)
         return null;
 
@@ -440,11 +459,11 @@ void RRDeliverProviderEvent(ClientPtr client, WindowPtr pWin, RRProviderPtr prov
     mixin(rrScrPriv!("pScreen"));
 
     xRRProviderChangeNotifyEvent pe = {
-        type: RRNotify + RREventBase,
+        type: cast(ubyte)(RRNotify + RREventBase),
         subCode: RRNotify_ProviderChange,
         timestamp: pScrPriv.lastSetTime.milliseconds,
         window: cast(uint)pWin.drawable.id,
-        provider: provider.id
+        provider: cast(uint)provider.id
     };
 
     WriteEventsToClient(client, 1, cast(xEvent*) &pe);
@@ -462,7 +481,7 @@ void RRProviderAutoConfigGpuScreen(ScreenPtr pScreen, ScreenPtr primaryScreen)
         return;
 
     pScrPriv = mixin(rrGetScrPriv!("pScreen"));
-    primaryPriv = rrGetScrPriv(primaryScreen);
+    primaryPriv = mixin(rrGetScrPriv!("primaryScreen"));
 
     provider = pScrPriv.provider;
     primary_provider = primaryPriv.provider;

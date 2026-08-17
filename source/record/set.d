@@ -60,6 +60,13 @@ import core.stdc.string;
 import include.misc;
 import set;
 
+enum string RecordIsMemberOfSet(string _pSet, string _m) = `
+(*(`~_pSet~`).ops.IsMemberOfSet)((`~_pSet~`), (`~_m~`))`;
+
+enum string RecordIterateSet(string _pSet, string _pIter, string _interval) =`
+ (*(`~_pSet~`).ops.IterateSet)((`~_pSet~`),
+	(`~_pIter~`), (`~_interval~`))`;
+
 /* an interval of set members */
 struct  RecordSetInterval{
     CARD16 first;
@@ -74,11 +81,11 @@ alias RecordSetRec = _RecordSetRec;
 alias RecordSetPtr = RecordSetRec*;
 
 struct RecordSetOperations{
-    void function(RecordSetPtr pSet) DestroySet;
-    c_ulong function (RecordSetPtr pSet, int possible_member) IsMemberOfSet;
+    void function(RecordSetPtr pSet) @nogc nothrow DestroySet;
+    c_ulong function (RecordSetPtr pSet, int possible_member) @nogc nothrow IsMemberOfSet;
     RecordSetIteratePtr function(RecordSetPtr pSet,
                                        RecordSetIteratePtr pIter,
-                                       RecordSetInterval * interval) IterateSet;
+                                       RecordSetInterval * interval) @nogc nothrow IterateSet;
 } ;
 
 alias RecordSetIteratePtr = void*;
@@ -91,7 +98,7 @@ alias RecordSetIteratePtr = void*;
 static if (HasVersion!"__STDC__" && (__STDC_VERSION__ - 0 >= 201112L)) {
 enum string MinSetAlignment(string type) = `max(_Alignof(` ~ type ~ `), _Alignof(unsigned long))`;
 } else {
-enum string MinSetAlignment(string type) = `max((void*).sizeof, c_ulong.sizeof)`;
+enum string MinSetAlignment(string type) = `cast(int)max((void*).sizeof, c_ulong.sizeof)`;
 }
 
 private int maxMemberInInterval(RecordSetInterval* pIntervals, int nIntervals)
@@ -152,9 +159,9 @@ private int BitVectorFindBit(RecordSetPtr pSet, int iterbit, Bool bitval)
     c_ulong bits = void;
     c_ulong usefulbits = void;
 
-    startlong = iterbit / BITS_PER_LONG;
-    pbitvec += startlong;
-    startbit = startlong * BITS_PER_LONG;
+    startlong = cast(int)(iterbit / BITS_PER_LONG);
+    pbitvec += cast(int)startlong;
+    startbit = cast(int)(startlong * BITS_PER_LONG);
     skipval = bitval ? 0L : ~0L;
     maxMember = pbvs.maxMember;
 
@@ -192,10 +199,10 @@ private RecordSetIteratePtr BitVectorIterateSet(RecordSetPtr pSet, RecordSetIter
     b = BitVectorFindBit(pSet, iterbit, TRUE);
     if (b == -1)
         return cast(RecordSetIteratePtr) 0;
-    pInterval.first = b;
+    pInterval.first = cast(ushort)b;
 
     b = BitVectorFindBit(pSet, b, FALSE);
-    pInterval.last = (b < 0) ? (cast(BitVectorSetPtr) pSet).maxMember : b - 1;
+    pInterval.last = cast(ushort)((b < 0) ? (cast(BitVectorSetPtr) pSet).maxMember : b - 1);
     return cast(RecordSetIteratePtr)(pInterval.last + 1);
 }
 
@@ -212,8 +219,8 @@ private int BitVectorSetMemoryRequirements(RecordSetInterval* pIntervals, int nI
     int nlongs = void;
 
     *alignment = mixin(MinSetAlignment!(`BitVectorSet`));
-    nlongs = (maxMember + BITS_PER_LONG) / BITS_PER_LONG;
-    return ((cast(BitVectorSet) + nlongs * c_ulong.sizeof).sizeof);
+    nlongs = cast(int)((maxMember + BITS_PER_LONG) / BITS_PER_LONG);
+    return cast(int)(((BitVectorSet).sizeof + nlongs * c_ulong.sizeof));
 }
 
 private RecordSetPtr BitVectorCreateSet(RecordSetInterval* pIntervals, int nIntervals, void* pMem, int memsize)
@@ -315,7 +322,7 @@ private RecordSetOperations IntervalListNoFreeOperations = {
 private int IntervalListMemoryRequirements(RecordSetInterval* pIntervals, int nIntervals, int maxMember, int* alignment)
 {
     *alignment = mixin(MinSetAlignment!(`IntervalListSet`));
-    return (cast(IntervalListSet) + nIntervals * RecordSetInterval.sizeof).sizeof;
+    return cast(int)((IntervalListSet).sizeof + nIntervals * RecordSetInterval.sizeof);
 }
 
 private RecordSetPtr IntervalListCreateSet(RecordSetInterval* pIntervals, int nIntervals, void* pMem, int memsize)
@@ -369,8 +376,8 @@ private RecordSetPtr IntervalListCreateSet(RecordSetInterval* pIntervals, int nI
     }
     else {
         prls = cast(IntervalListSetPtr)
-            calloc(1, (cast(IntervalListSet) +
-                   nIntervals * RecordSetInterval.sizeof).sizeof);
+            calloc(1, ((IntervalListSet).sizeof +
+                   nIntervals * RecordSetInterval.sizeof));
         if (!prls)
             goto bailout;
         prls.baseSet.ops = &IntervalListSetOperations;
@@ -400,12 +407,12 @@ private int _RecordSetMemoryRequirements(RecordSetInterval* pIntervals, int nInt
     if (((nIntervals > 1) && (maxMember <= 255))
         || (bmsize < rlsize)) {
         *alignment = bma;
-        *ppCreateSet = BitVectorCreateSet;
+        *ppCreateSet = &BitVectorCreateSet;
         return bmsize;
     }
     else {
         *alignment = rla;
-        *ppCreateSet = IntervalListCreateSet;
+        *ppCreateSet = &IntervalListCreateSet;
         return rlsize;
     }
 }

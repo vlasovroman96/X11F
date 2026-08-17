@@ -38,12 +38,13 @@ import include.dixstruct;
 import include.gcstruct;
 import include.servermd;
 import include.picturestr;
+import externs.attrs;
 
 import externs.X11.extensions.renderproto;
 
 void PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform* render)
 {
-    pict.matrix[0][0] = render.matriX11;
+    pict.matrix[0][0] = render.matrix11;
     pict.matrix[0][1] = render.matrix12;
     pict.matrix[0][2] = render.matrix13;
 
@@ -58,7 +59,7 @@ void PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform
 
 void xRenderTransform_from_PictTransform(xRenderTransform* render, PictTransformPtr pict)
 {
-    render.matriX11 = pict.matrix[0][0];
+    render.matrix11 = pict.matrix[0][0];
     render.matrix12 = pict.matrix[0][1];
     render.matrix13 = pict.matrix[0][2];
 

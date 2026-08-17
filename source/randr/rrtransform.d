@@ -26,6 +26,9 @@ import build.dix_config;
 
 import include.rrtransform;
 import randr.randrstr_priv;
+import externs.attrs;
+import include.picture;
+
 
 void RRTransformInit(RRTransformPtr transform)
 {
@@ -103,7 +106,7 @@ Bool RRTransformCopy(RRTransformPtr dst, RRTransformPtr src)
     return TRUE;
 }
 
-enum string F(string x) = `IntToXFixed(` ~ x ~ `)`;
+enum string F(string x) = IntToxFixed!(x);
 
 private void RRTransformRescale(pixman_f_transform* f_transform, double limit)
 {

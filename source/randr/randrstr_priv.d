@@ -258,7 +258,7 @@ Bool RROutputIsLeased(RROutputPtr output);
  * @param num_ret return buffer for number of returned modes
  * @return pointer to array of RRModePtr's
  */
-RRModePtr* RRModesForScreen(ScreenPtr pScreen, int* num_ret);
+// RRModePtr* RRModesForScreen(ScreenPtr pScreen, int* num_ret);
 
 /*
  * Initialize mode resource type

@@ -197,7 +197,7 @@ enum XFIXED_BITS =	16;
 
 // import glamor.glamor_render;
 enum string xFixedToInt(string f) = pixman_fixed_to_int!(f);
-enum string IntToxFixed(string i) = `&pixman_int_to_fixed(` ~ i ~ `)`;
+enum string IntToxFixed(string i) = `pixman_int_to_fixed(` ~ i ~ `)`;
 enum xFixedE =		pixman_fixed_e;
 enum xFixed1 =		pixman_fixed_1;
 enum xFixed1MinusE =	pixman_fixed_1_minus_e;

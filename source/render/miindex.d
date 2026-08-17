@@ -27,6 +27,8 @@ extern(C): __gshared:
 import build.dix_config;
 
 import dix.colormap_priv;
+import dix.colormap;
+
 import include.mipict;
 
 import include.scrnintstr;
@@ -35,6 +37,8 @@ import include.pixmapstr;
 import include.windowstr;
 import include.mi;
 import include.picturestr;
+import externs.X11.extensions.renderproto;
+
 
 enum NUM_CUBE_LEVELS =	4;
 enum NUM_GRAY_LEVELS =	13;
@@ -142,9 +146,9 @@ private Bool miBuildRenderColormap(ColormapPtr pColormap, Pixel* pixels, int* nu
         for (g = 0; g < cube; g++)
             for (b = 0; b < cube; b++) {
                 pixel = 0;
-                red = (r * 65535 + (cube - 1) / 2) / (cube - 1);
-                green = (g * 65535 + (cube - 1) / 2) / (cube - 1);
-                blue = (b * 65535 + (cube - 1) / 2) / (cube - 1);
+                red = cast(ushort)((r * 65535 + (cube - 1) / 2) / (cube - 1));
+                green = cast(ushort)((g * 65535 + (cube - 1) / 2) / (cube - 1));
+                blue = cast(ushort)((b * 65535 + (cube - 1) / 2) / (cube - 1));
                 if (AllocColor(pColormap, &red, &green,
                                &blue, &pixel, 0) != Success)
                     return FALSE;
@@ -195,7 +199,7 @@ private Pixel FindBestColor(miIndexedPtr pIndexed, Pixel* pixels, int num, int r
 }
 
 /* 0 <= gray < 32768 */
-private Pixel FindBestGray(miIndexedPtr pIndexed, Pixel* pixels, int num, int gray)
+Pixel FindBestGray(miIndexedPtr pIndexed, Pixel* pixels, int num, int gray)
 {
     Pixel best = pixels[0];
     int bestDist = 1 << 30;
@@ -278,7 +282,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
     case GrayScale:
         pIndexed.color = FALSE;
         for (r = 0; r < 32768; r++)
-            pIndexed.ent[r] = FindBestGray(pIndexed, pixels.ptr, num, r);
+            pIndexed.ent[r] = cast(ubyte)FindBestGray(pIndexed, pixels.ptr, num, r);
         break;
     case PseudoColor:
         pIndexed.color = TRUE;
@@ -286,7 +290,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
         for (r = 0; r < 32; r++)
             for (g = 0; g < 32; g++)
                 for (b = 0; b < 32; b++) {
-                    pIndexed.ent[p] = FindBestColor(pIndexed, pixels.ptr, num,
+                    pIndexed.ent[p] = cast(ubyte)FindBestColor(pIndexed, pixels.ptr, num,
                                                      r, g, b);
                     p++;
                 }
@@ -306,7 +310,7 @@ void miCloseIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
 
 void miUpdateIndexed(ScreenPtr pScreen, PictFormatPtr pFormat, int ndef, xColorItem* pdef)
 {
-    miIndexedPtr pIndexed = pFormat.index.devPrivate;
+    miIndexedPtr pIndexed = cast(_miIndexed*)pFormat.index.devPrivate;
 
     if (pIndexed) {
         while (ndef--) {

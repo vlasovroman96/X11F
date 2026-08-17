@@ -52,6 +52,9 @@ import include.opaque;
 import render.picturestr_priv;
 import include.inputstr;
 import Xext.xace;
+import dix.screen_hooks;
+import os.WaitFor;
+import dix.events;
 
 struct AnimCurElt {
     CursorPtr pCursor;          /* cursor to show */
@@ -87,14 +90,14 @@ enum string IsAnimCur(string c) = `((` ~ c ~ `) && ((` ~ c ~ `).bits == &animCur
 enum string GetAnimCur(string c) = `(cast(AnimCurPtr) (((cast(char*)(` ~ c ~ `) + CURSOR_REC_SIZE))))`;
 enum string GetAnimCurScreen(string s) = `(cast(AnimCurScreenPtr)dixLookupPrivate(&(` ~ s ~ `).devPrivates, &AnimCurScreenPrivateKeyRec))`;
 
-enum string Wrap(string as,string s,string elt,string func) = `(((` ~ as ~ `).` ~ elt ~ ` = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = ` ~ func ~ `)`;
-enum string Unwrap(string as,string s,string elt) = `((` ~ s ~ `).` ~ elt ~ ` = (` ~ as ~ `).` ~ elt ~ `)`;
+enum string Wrap(string as,string s,string elt,string func) = `(((` ~ as ~ `).` ~ elt ~ ` = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = ` ~ func ~ `);`;
+enum string Unwrap(string as,string s,string elt) = `((` ~ s ~ `).` ~ elt ~ ` = (` ~ as ~ `).` ~ elt ~ `);`;
 
 private void AnimCurScreenClose(CallbackListPtr* pcbl, ScreenPtr pScreen, void* unused)
 {
     AnimCurScreenPtr as = mixin(GetAnimCurScreen!(`pScreen`));
 
-    dixScreenUnhookClose(pScreen, AnimCurScreenClose);
+    dixScreenUnhookClose(pScreen, &AnimCurScreenClose);
 
     mixin(Unwrap!(`as`, `pScreen`, `CursorLimits`));
     mixin(Unwrap!(`as`, `pScreen`, `DisplayCursor`));
@@ -118,7 +121,7 @@ private void AnimCurCursorLimits(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr
     else {
         (*pScreen.CursorLimits) (pDev, pScreen, pCursor, pHotBox, pTopLeftBox);
     }
-    mixin(Wrap!(`as`, `pScreen`, `CursorLimits`, `AnimCurCursorLimits`));
+    mixin(Wrap!(`as`, `pScreen`, `CursorLimits`, `&AnimCurCursorLimits`));
 }
 
 /*
@@ -128,7 +131,7 @@ private void AnimCurCursorLimits(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr
 
 private CARD32 AnimCurTimerNotify(OsTimerPtr timer, CARD32 now, void* arg)
 {
-    DeviceIntPtr dev = arg;
+    DeviceIntPtr dev = cast(DeviceIntPtr)arg;
     ScreenPtr pScreen = dev.spriteInfo.anim.pScreen;
     AnimCurScreenPtr as = mixin(GetAnimCurScreen!(`pScreen`));
 
@@ -189,11 +192,11 @@ private Bool AnimCurDisplayCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPt
     }
     else {
         AnimCurCancelTimer(pDev);
-        pDev.spriteInfo.anim.pCursor = 0;
-        pDev.spriteInfo.anim.pScreen = 0;
+        pDev.spriteInfo.anim.pCursor = null;
+        pDev.spriteInfo.anim.pScreen = null;
         ret = (*pScreen.DisplayCursor) (pDev, pScreen, pCursor);
     }
-    mixin(Wrap!(`as`, `pScreen`, `DisplayCursor`, `AnimCurDisplayCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `DisplayCursor`, `&AnimCurDisplayCursor`));
     return ret;
 }
 
@@ -207,7 +210,7 @@ private Bool AnimCurSetCursorPosition(DeviceIntPtr pDev, ScreenPtr pScreen, int 
         pDev.spriteInfo.anim.pScreen = pScreen;
     }
     ret = (*pScreen.SetCursorPosition) (pDev, pScreen, x, y, generateEvent);
-    mixin(Wrap!(`as`, `pScreen`, `SetCursorPosition`, `AnimCurSetCursorPosition`));
+    mixin(Wrap!(`as`, `pScreen`, `SetCursorPosition`, `&AnimCurSetCursorPosition`));
     return ret;
 }
 
@@ -221,7 +224,7 @@ private Bool AnimCurRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPt
         ret = TRUE;
     else
         ret = (*pScreen.RealizeCursor) (pDev, pScreen, pCursor);
-    mixin(Wrap!(`as`, `pScreen`, `RealizeCursor`, `AnimCurRealizeCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `RealizeCursor`, `&AnimCurRealizeCursor`));
     return ret;
 }
 
@@ -242,7 +245,7 @@ private Bool AnimCurUnrealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, Cursor
     }
     else
         ret = (*pScreen.UnrealizeCursor) (pDev, pScreen, pCursor);
-    mixin(Wrap!(`as`, `pScreen`, `UnrealizeCursor`, `AnimCurUnrealizeCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `UnrealizeCursor`, `&AnimCurUnrealizeCursor`));
     return ret;
 }
 
@@ -262,7 +265,7 @@ private void AnimCurRecolorCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPt
     }
     else
         (*pScreen.RecolorCursor) (pDev, pScreen, pCursor, displayed);
-    mixin(Wrap!(`as`, `pScreen`, `RecolorCursor`, `AnimCurRecolorCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `RecolorCursor`, `&AnimCurRecolorCursor`));
 }
 
 Bool AnimCurInit(ScreenPtr pScreen)
@@ -277,12 +280,12 @@ Bool AnimCurInit(ScreenPtr pScreen)
 
     dixScreenHookClose(pScreen, &AnimCurScreenClose);
 
-    mixin(Wrap!(`as`, `pScreen`, `CursorLimits`, `AnimCurCursorLimits`));
-    mixin(Wrap!(`as`, `pScreen`, `DisplayCursor`, `AnimCurDisplayCursor`));
-    mixin(Wrap!(`as`, `pScreen`, `SetCursorPosition`, `AnimCurSetCursorPosition`));
-    mixin(Wrap!(`as`, `pScreen`, `RealizeCursor`, `AnimCurRealizeCursor`));
-    mixin(Wrap!(`as`, `pScreen`, `UnrealizeCursor`, `AnimCurUnrealizeCursor`));
-    mixin(Wrap!(`as`, `pScreen`, `RecolorCursor`, `AnimCurRecolorCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `CursorLimits`, `&AnimCurCursorLimits`));
+    mixin(Wrap!(`as`, `pScreen`, `DisplayCursor`, `&AnimCurDisplayCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `SetCursorPosition`, `&AnimCurSetCursorPosition`));
+    mixin(Wrap!(`as`, `pScreen`, `RealizeCursor`, `&AnimCurRealizeCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `UnrealizeCursor`, `&AnimCurUnrealizeCursor`));
+    mixin(Wrap!(`as`, `pScreen`, `RecolorCursor`, `&AnimCurRecolorCursor`));
     return TRUE;
 }
 
@@ -305,8 +308,8 @@ int AnimCursorCreate(CursorPtr* cursors, CARD32* deltas, int ncursor, CursorPtr*
             return BadMatch;
 
     pCursor = cast(CursorPtr) calloc(CURSOR_REC_SIZE +
-                                 (cast(AnimCurRec) +
-                                 ncursor * AnimCurElt.sizeof).sizeof, 1);
+                                 ((AnimCurRec).sizeof +
+                                 ncursor * AnimCurElt.sizeof), 1);
     if (!pCursor)
         return rc;
     mixin(dixInitPrivates!("pCursor", "pCursor + 1", "PRIVATE_CURSOR"));

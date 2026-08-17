@@ -540,7 +540,7 @@ private XIPropertyPtr XICreateDeviceProperty(Atom property)
         return null;
 
     prop.next = null;
-    prop.propertyName = property;
+    prop.propertyName = cast(uint)property;
     prop.value.type = None;
     prop.value.format = 0;
     prop.value.size = 0;

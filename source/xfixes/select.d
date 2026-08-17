@@ -173,7 +173,7 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    for (prev = &selectionEvents; ((e = *prev) != 0); prev = &e.next) {
+    for (prev = &selectionEvents; ((e = *prev) !is null); prev = &e.next) {
         if (e.selection == selection &&
             e.pClient == param.client && e.pWindow == pWindow) {
             break;
@@ -239,7 +239,7 @@ private int SelectionFreeClient(void* data, XID id)
     SelectionEventPtr old = cast(SelectionEventPtr) data;
     SelectionEventPtr* prev = void; SelectionEventPtr e = void;
 
-    for (prev = &selectionEvents; ((e = *prev) != 0); prev = &e.next) {
+    for (prev = &selectionEvents; ((e = *prev) !is null); prev = &e.next) {
         if (e == old) {
             *prev = e.next;
             free(e);

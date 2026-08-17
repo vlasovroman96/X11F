@@ -47,6 +47,7 @@ import include.gcstruct;
 import include.servermd;
 import include.picturestr;
 import render.glyphstr_priv;
+import dix.gc;
 
 /*
  * From Knuth -- a good choice for hash/rehash values is p, p-2 where
@@ -115,7 +116,7 @@ private GlyphHashSetPtr FindGlyphHashSet(CARD32 filled)
     for (i = 0; i < NGLYPHHASHSETS; i++)
         if (glyphHashSets[i].entries >= filled)
             return &glyphHashSets[i];
-    return 0;
+    return null;
 }
 
 private GlyphRefPtr FindGlyphRef(GlyphHashPtr hash, CARD32 signature, Bool match, ubyte* sha1)
@@ -132,7 +133,7 @@ private GlyphRefPtr FindGlyphRef(GlyphHashPtr hash, CARD32 signature, Bool match
     table = hash.table;
     elt = signature % tableSize;
     step = 0;
-    del = 0;
+    del = null;
     for (;;) {
         gr = &table[elt];
         s = gr.signature;
@@ -149,7 +150,7 @@ private GlyphRefPtr FindGlyphRef(GlyphHashPtr hash, CARD32 signature, Bool match
                 break;
         }
         else if (s == signature &&
-                 (!match || memcmp(glyph.sha1, sha1, 20) == 0)) {
+                 (!match || memcmp(glyph.sha1.ptr, sha1, 20) == 0)) {
             break;
         }
         if (!step) {
@@ -175,7 +176,7 @@ int HashGlyph(xGlyphInfo* gi, CARD8* bits, c_ulong size, ubyte* sha1)
     success = x_sha1_update(ctx, gi, xGlyphInfo.sizeof);
     if (!success)
         return BadAlloc;
-    success = x_sha1_update(ctx, bits, size);
+    success = x_sha1_update(ctx, bits, cast(int)size);
     if (!success)
         return BadAlloc;
     success = x_sha1_final(ctx, sha1);
@@ -200,7 +201,7 @@ GlyphPtr FindGlyphByHash(ubyte* sha1, int format)
         return null;
 }
 
-version (CHECK_DUPLICATES) {
+// version (CHECK_DUPLICATES) {
 void DuplicateRef(GlyphPtr glyph, char* where)
 {
     ErrorF("Duplicate Glyph 0x%x from %s\n", glyph, where);
@@ -220,10 +221,10 @@ void CheckDuplicates(GlyphHashPtr hash, char* where)
                 DuplicateRef(g, where);
     }
 }
-} else {
-//#define CheckDuplicates(a,b)
-//#define DuplicateRef(a,b)
-}
+// } else {
+// //#define CheckDuplicatescast(char*)(a,.ptrb)
+// //#define DuplicateRef(a,b)
+// }
 
 private void FreeGlyphPicture(GlyphPtr glyph)
 {
@@ -239,7 +240,7 @@ private void FreeGlyphPicture(GlyphPtr glyph)
 
 void FreeGlyph(GlyphPtr glyph, int format)
 {
-    CheckDuplicates(&globalGlyphs[format], "FreeGlyph");
+    CheckDuplicates(&globalGlyphs[format], cast(char*)"FreeGlyph".ptr);
     mixin(BUG_RETURN!("glyph.refcnt == 0"));
     if (--glyph.refcnt == 0) {
         GlyphRefPtr gr = void;
@@ -251,14 +252,14 @@ void FreeGlyph(GlyphPtr glyph, int format)
         for (i = 0; i < globalGlyphs[format].hashSet.size; i++)
             if (globalGlyphs[format].table[i].glyph == glyph) {
                 if (first != -1)
-                    DuplicateRef(glyph, "FreeGlyph check");
+                    DuplicateRef(glyph, cast(char*)"FreeGlyph check".ptr);
                 first = i;
             }
 
         signature = *cast(CARD32*) glyph.sha1;
-        gr = FindGlyphRef(&globalGlyphs[format], signature, TRUE, glyph.sha1);
+        gr = FindGlyphRef(&globalGlyphs[format], signature, TRUE, glyph.sha1.ptr);
         if (gr - globalGlyphs[format].table != first)
-            DuplicateRef(glyph, "Found wrong one");
+            DuplicateRef(glyph, cast(char*)"Found wrong one".ptr);
         if (gr && gr.glyph && gr.glyph != DeletedGlyph) {
             gr.glyph = DeletedGlyph;
             gr.signature = 0;
@@ -275,11 +276,11 @@ void AddGlyph(GlyphSetPtr glyphSet, GlyphPtr glyph, Glyph id)
     GlyphRefPtr gr = void;
     CARD32 signature = void;
 
-    CheckDuplicates(&globalGlyphs[glyphSet.fdepth], "AddGlyph top global");
+    CheckDuplicates(&globalGlyphs[glyphSet.fdepth], cast(char*)"AddGlyph topcast(char*) global".ptr);
     /* Locate existing matching glyph */
     signature = *cast(CARD32*) glyph.sha1;
     gr = FindGlyphRef(&globalGlyphs[glyphSet.fdepth], signature,
-                      TRUE, glyph.sha1);
+                      TRUE, glyph.sha1.ptr);
     if (gr.glyph && gr.glyph != DeletedGlyph && gr.glyph != glyph) {
         glyph = gr.glyph;
     }
@@ -290,15 +291,15 @@ void AddGlyph(GlyphSetPtr glyphSet, GlyphPtr glyph, Glyph id)
     }
 
     /* Insert/replace glyphset value */
-    gr = FindGlyphRef(&glyphSet.hash, id, FALSE, 0);
+    gr = FindGlyphRef(&glyphSet.hash, cast(uint)id, FALSE, null);
     ++glyph.refcnt;
     if (gr.glyph && gr.glyph != DeletedGlyph)
         FreeGlyph(gr.glyph, glyphSet.fdepth);
     else
         glyphSet.hash.tableEntries++;
     gr.glyph = glyph;
-    gr.signature = id;
-    CheckDuplicates(&globalGlyphs[glyphSet.fdepth], "AddGlyph bottom");
+    gr.signature = cast(uint)id;
+    CheckDuplicates(&globalGlyphs[glyphSet.fdepth], cast(char*)"AddGlyphcast(char*) bottom".ptr);
 }
 
 Bool DeleteGlyph(GlyphSetPtr glyphSet, Glyph id)
@@ -306,7 +307,7 @@ Bool DeleteGlyph(GlyphSetPtr glyphSet, Glyph id)
     GlyphRefPtr gr = void;
     GlyphPtr glyph = void;
 
-    gr = FindGlyphRef(&glyphSet.hash, id, FALSE, 0);
+    gr = FindGlyphRef(&glyphSet.hash, cast(uint)id, FALSE, null);
     glyph = gr.glyph;
     if (glyph && glyph != DeletedGlyph) {
         gr.glyph = DeletedGlyph;
@@ -321,9 +322,9 @@ GlyphPtr FindGlyph(GlyphSetPtr glyphSet, Glyph id)
 {
     GlyphPtr glyph = void;
 
-    glyph = FindGlyphRef(&glyphSet.hash, id, FALSE, 0).glyph;
+    glyph = FindGlyphRef(&glyphSet.hash, cast(uint)id, FALSE, null).glyph;
     if (glyph == DeletedGlyph)
-        glyph = 0;
+        glyph = null;
     return glyph;
 }
 
@@ -332,19 +333,19 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
     int size = void;
     int head_size = void;
 
-    head_size = (cast(GlyphRec) + screenInfo.numScreens * PicturePtr.sizeof).sizeof;
+    head_size = cast(int)((GlyphRec).sizeof + screenInfo.numScreens * PicturePtr.sizeof);
     size = (head_size + dixPrivatesSize(PRIVATE_GLYPH));
     GlyphPtr glyph = cast(GlyphPtr) calloc(1, size);
     if (!glyph)
-        return 0;
+        return null;
     glyph.refcnt = 1;
-    glyph.size = size + xGlyphInfo.sizeof;
+    glyph.size = cast(uint)(size + xGlyphInfo.sizeof);
     glyph.info = *gi;
     mixin(dixInitPrivates!("glyph", "cast(char*) glyph + head_size", "PRIVATE_GLYPH"));
 
     uint i = 0;
     mixin(DIX_FOR_EACH_SCREEN!q{
-        SetGlyphPicture(glyph, walkScreen, NULL);
+        SetGlyphPicture(glyph, walkScreen, null);
         PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps) {
             if (!(ps.RealizeGlyph(walkScreen, glyph))) {
@@ -365,14 +366,14 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
     }
 
     mixin(dixFreeObjectWithPrivatesM!("glyph", "PRIVATE_GLYPH"));
-    return 0;
+    return null;
 }
 
 private Bool AllocateGlyphHash(GlyphHashPtr hash, GlyphHashSetPtr hashSet)
 {
     if (hashSet == null)
         return FALSE;
-    hash.table = calloc(hashSet.size, GlyphRefRec.sizeof);
+    hash.table = cast(_GlyphRefRec*)calloc(hashSet.size, GlyphRefRec.sizeof);
     if (!hash.table)
         return FALSE;
     hash.hashSet = hashSet;
@@ -396,7 +397,7 @@ private Bool ResizeGlyphHash(GlyphHashPtr hash, CARD32 change, Bool global)
     if (hashSet == hash.hashSet)
         return TRUE;
     if (global)
-        CheckDuplicates(hash, "ResizeGlyphHash top");
+        CheckDuplicates(hash, cast(char*)"ResizeGlyphHashcast top".ptr);
     if (!AllocateGlyphHash(&newHash, hashSet))
         return FALSE;
     if (hash.table) {
@@ -405,7 +406,7 @@ private Bool ResizeGlyphHash(GlyphHashPtr hash, CARD32 change, Bool global)
             glyph = hash.table[i].glyph;
             if (glyph && glyph != DeletedGlyph) {
                 s = hash.table[i].signature;
-                if ((gr = FindGlyphRef(&newHash, s, global, glyph.sha1))) {
+                if ((gr = FindGlyphRef(&newHash, s, global, glyph.sha1.ptr)) !is null) {
                     gr.signature = s;
                     gr.glyph = glyph;
                 }
@@ -416,7 +417,7 @@ private Bool ResizeGlyphHash(GlyphHashPtr hash, CARD32 change, Bool global)
     }
     *hash = newHash;
     if (global)
-        CheckDuplicates(hash, "ResizeGlyphHash bottom");
+        CheckDuplicates(hash, cast(char*)"ResizeGlyphHashcast(char*) bottom".ptr);
     return TRUE;
 }
 
@@ -432,16 +433,16 @@ GlyphSetPtr AllocateGlyphSet(int fdepth, PictFormatPtr format)
 
     if (!globalGlyphs[fdepth].hashSet) {
         if (!AllocateGlyphHash(&globalGlyphs[fdepth], &glyphHashSets[0]))
-            return FALSE;
+            return null;
     }
 
     glyphSet = mixin(dixAllocateObjectWithPrivates!("GlyphSetRec", "PRIVATE_GLYPHSET"));
     if (!glyphSet)
-        return FALSE;
+        return null;
 
     if (!AllocateGlyphHash(&glyphSet.hash, &glyphHashSets[0])) {
         free(glyphSet);
-        return FALSE;
+        return null;
     }
     glyphSet.refcnt = 1;
     glyphSet.fdepth = fdepth;
@@ -465,8 +466,8 @@ int FreeGlyphSet(void* value, XID gid)
         }
         if (!globalGlyphs[glyphSet.fdepth].tableEntries) {
             free(globalGlyphs[glyphSet.fdepth].table);
-            globalGlyphs[glyphSet.fdepth].table = 0;
-            globalGlyphs[glyphSet.fdepth].hashSet = 0;
+            globalGlyphs[glyphSet.fdepth].table = null;
+            globalGlyphs[glyphSet.fdepth].hashSet = null;
         }
         else
             ResizeGlyphHash(&globalGlyphs[glyphSet.fdepth], 0, TRUE);
@@ -509,13 +510,13 @@ private void GlyphExtents(int nlist, GlyphListPtr list, GlyphPtr* glyphs, BoxPtr
             if (y2 > MAXSHORT)
                 y2 = MAXSHORT;
             if (x1 < extents.x1)
-                extents.x1 = x1;
+                extents.x1 = cast(short)x1;
             if (x2 > extents.x2)
-                extents.x2 = x2;
+                extents.x2 = cast(short)x2;
             if (y1 < extents.y1)
-                extents.y1 = y1;
+                extents.y1 = cast(short)y1;
             if (y2 > extents.y2)
-                extents.y2 = y2;
+                extents.y2 = cast(short)y2;
             x += glyph.info.xOff;
             y += glyph.info.yOff;
         }
@@ -526,7 +527,7 @@ enum string NeedsComponent(string f) = `(PIXMAN_FORMAT_A(` ~ f ~ `) != 0 && PIXM
 
 void CompositeGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr lists, GlyphPtr* glyphs)
 {
-    PictureScreenPtr ps = GetPictureScreen(pDst.pDrawable.pScreen);
+    PictureScreenPtr ps = mixin(GetPictureScreen!("pDst.pDrawable.pScreen"));
 
     ValidatePicture(pSrc);
     ValidatePicture(pDst);
@@ -546,7 +547,7 @@ void miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph)
 void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs)
 {
     PicturePtr pPicture = void;
-    PixmapPtr pMaskPixmap = 0;
+    PixmapPtr pMaskPixmap = null;
     PicturePtr pMask = void;
     ScreenPtr pScreen = pDst.pDrawable.pScreen;
     int width = 0, height = 0;
@@ -575,7 +576,7 @@ void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskForm
             return;
         component_alpha = mixin(NeedsComponent!(`maskFormat.format`));
         pMask = CreatePicture(0, &pMaskPixmap.drawable,
-                              maskFormat, CPComponentAlpha, &component_alpha,
+                              maskFormat, CPComponentAlpha, cast(ulong*)&component_alpha,
                               serverClient, &error);
         if (!pMask) {
             dixDestroyPixmap(pMaskPixmap, 0);
@@ -585,8 +586,8 @@ void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskForm
         ValidateGC(&pMaskPixmap.drawable, pGC);
         rect.x = 0;
         rect.y = 0;
-        rect.width = width;
-        rect.height = height;
+        rect.width = cast(ushort)width;
+        rect.height = cast(ushort)height;
         (*pGC.ops.PolyFillRect) (&pMaskPixmap.drawable, pGC, 1, &rect);
         FreeScratchGC(pGC);
         x = -extents.x1;
@@ -609,12 +610,12 @@ void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskForm
                 if (maskFormat) {
                     CompositePicture(PictOpAdd,
                                      pPicture,
-                                     None,
+                                     null,
                                      pMask,
                                      0, 0,
                                      0, 0,
-                                     x - glyph.info.x,
-                                     y - glyph.info.y,
+                                     cast(short)(x - glyph.info.x),
+                                     cast(short)(y - glyph.info.y),
                                      glyph.info.width, glyph.info.height);
                 }
                 else {
@@ -622,11 +623,11 @@ void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskForm
                                      pSrc,
                                      pPicture,
                                      pDst,
-                                     xSrc + (x - glyph.info.x) - xDst,
-                                     ySrc + (y - glyph.info.y) - yDst,
+                                     cast(short)(xSrc + (x - glyph.info.x) - xDst),
+                                     cast(short)(ySrc + (y - glyph.info.y) - yDst),
                                      0, 0,
-                                     x - glyph.info.x,
-                                     y - glyph.info.y,
+                                     cast(short)(x - glyph.info.x),
+                                     cast(short)(y - glyph.info.y),
                                      glyph.info.width, glyph.info.height);
                 }
             }
@@ -643,8 +644,8 @@ void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskForm
                          pSrc,
                          pMask,
                          pDst,
-                         xSrc + x - xDst,
-                         ySrc + y - yDst, 0, 0, x, y, width, height);
+                         cast(short)(xSrc + x - xDst),
+                         cast(short)(ySrc + y - yDst), 0, 0, cast(short)x, cast(short)y, cast(ushort)width, cast(ushort)height);
         FreePicture(cast(void*) pMask, cast(XID) 0);
         dixDestroyPixmap(pMaskPixmap, 0);
     }
@@ -654,10 +655,10 @@ PicturePtr GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen)
 {
     if (pScreen.isGPU)
         return null;
-    return GlyphPicture(glyph)[pScreen.myNum];
+    return mixin(GlyphPicture!("glyph"))[pScreen.myNum];
 }
 
 void SetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen, PicturePtr picture)
 {
-    GlyphPicture(glyph)[pScreen.myNum] = picture;
+    mixin(GlyphPicture!("glyph"))[pScreen.myNum] = picture;
 }

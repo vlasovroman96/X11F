@@ -183,7 +183,7 @@ struct ServerGrabInfoRec {
  *  EventCallback stuff
  */
 
-extern CallbackListPtr EventCallback;
+// extern CallbackListPtr EventCallback;
 
 struct EventInfoRec {
     ClientPtr client;

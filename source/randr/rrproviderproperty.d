@@ -32,10 +32,29 @@ import randr.rrdispatch_priv;
 
 import include.propertyst;
 import dix.swaprep;
+import randr.randrstr_priv;
+import include.propertyst;
+import dix.swaprep;
+import randr.rrcrtc;
+import dix.resource;
+import randr.rroutput;
+import randr.rrmode;
+import randr.randr;
+import randr.randr;
+import randr.rroutput;
+import randr.rroutput;
+import os.io;
+import dix.events;
+import dix.pixmap;
+import randr.rrproperty;
+import render.filter;
+import dix.swapreq;
+import randr.rrmode;
+import randr.rrinfo;
 
 private int DeliverPropertyEvent(WindowPtr pWin, void* value)
 {
-    xRRProviderPropertyNotifyEvent* event = value;
+    xRRProviderPropertyNotifyEvent* event = cast(xRRProviderPropertyNotifyEvent*)value;
     RREventPtr* pHead = void; RREventPtr pRREvent = void;
 
     dixLookupResourceByType(cast(void**) &pHead, pWin.drawable.id,
@@ -47,7 +66,7 @@ private int DeliverPropertyEvent(WindowPtr pWin, void* value)
         if (!(pRREvent.mask & RRProviderPropertyNotifyMask))
             continue;
 
-        event.window = pRREvent.window.drawable.id;
+        event.window = cast(uint)pRREvent.window.drawable.id;
         WriteEventsToClient(pRREvent.client, 1, cast(xEvent*) event);
     }
 
@@ -71,9 +90,9 @@ private void RRDestroyProviderProperty(RRPropertyPtr prop)
 private void RRDeleteProperty(RRProviderRec* provider, RRPropertyRec* prop)
 {
     xRRProviderPropertyNotifyEvent event = {
-        type: RREventBase + RRNotify,
+        type: cast(ubyte)(RREventBase + RRNotify),
         subCode: RRNotify_ProviderProperty,
-        provider: provider.id,
+        provider: cast(uint)provider.id,
         state: PropertyDelete,
         atom: prop.propertyName,
         timestamp: currentTime.milliseconds
@@ -99,7 +118,7 @@ private RRPropertyPtr RRCreateProviderProperty(Atom property)
     prop = cast(RRPropertyPtr) cast(RRPropertyRec*) calloc(1, RRPropertyRec.sizeof);
     if (!prop)
         return null;
-    prop.propertyName = property;
+    prop.propertyName = cast(uint)property;
     RRInitProviderPropertyValue(&prop.current);
     RRInitProviderPropertyValue(&prop.pending);
     return prop;
@@ -109,7 +128,7 @@ void RRDeleteProviderProperty(RRProviderPtr provider, Atom property)
 {
     RRPropertyRec* prop = void; RRPropertyRec** prev = void;
 
-    for (prev = &provider.properties; ((prop = *prev) != 0); prev = &(prop.next))
+    for (prev = &provider.properties; ((prop = *prev) !is null); prev = &(prop.next))
         if (prop.propertyName == property) {
             *prev = prop.next;
             RRDeleteProperty(provider, prop);
@@ -126,7 +145,7 @@ pragma(inline, true) private void cleanupProperty(RRPropertyPtr prop, Bool added
 int RRChangeProviderProperty(RRProviderPtr provider, Atom property, Atom type, int format, int mode, c_ulong len, void* value, Bool sendevent, Bool pending)
 {
     RRPropertyPtr prop = void;
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(provider.pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("provider.pScreen"));
     int size_in_bytes = void;
     int total_size = void;
     c_ulong total_len = void;
@@ -171,7 +190,7 @@ int RRChangeProviderProperty(RRProviderPtr provider, Atom property, Atom type, i
             cleanupProperty(prop, add);
             return BadValue;
         }
-        total_size = total_len * size_in_bytes;
+        total_size = cast(int)(total_len * size_in_bytes);
         new_value.data = calloc(1, total_size);
         if (!new_value.data && total_size) {
             cleanupProperty(prop, add);
@@ -179,7 +198,7 @@ int RRChangeProviderProperty(RRProviderPtr provider, Atom property, Atom type, i
         }
         new_value.size = len;
         new_value.type = type;
-        new_value.format = format;
+        new_value.format = cast(short)format;
 
         switch (mode) {
         case PropModeReplace:
@@ -228,9 +247,9 @@ int RRChangeProviderProperty(RRProviderPtr provider, Atom property, Atom type, i
 
     if (sendevent) {
         xRRProviderPropertyNotifyEvent event = {
-            type: RREventBase + RRNotify,
+            type: cast(ubyte)(RREventBase + RRNotify),
             subCode: RRNotify_ProviderProperty,
-            provider: provider.id,
+            provider: cast(uint)provider.id,
             state: PropertyNewValue,
             atom: prop.propertyName,
             timestamp: currentTime.milliseconds
@@ -253,7 +272,7 @@ RRPropertyPtr RRQueryProviderProperty(RRProviderPtr provider, Atom property)
 RRPropertyValuePtr RRGetProviderProperty(RRProviderPtr provider, Atom property, Bool pending)
 {
     RRPropertyPtr prop = RRQueryProviderProperty(provider, property);
-    rrScrPrivPtr pScrPriv = rrGetScrPriv(provider.pScreen);
+    rrScrPrivPtr pScrPriv = mixin(rrGetScrPriv!("provider.pScreen"));
 
     if (!prop)
         return null;
@@ -338,7 +357,7 @@ int ProcRRListProviderProperties(ClientPtr client)
     RRProviderPtr provider = void;
     RRPropertyPtr prop = void;
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
@@ -348,7 +367,7 @@ int ProcRRListProviderProperties(ClientPtr client)
     }
 
     xRRListProviderPropertiesReply reply = {
-        nAtoms: numProps
+        nAtoms: cast(ushort)numProps
     };
 
     if (client.swapped)
@@ -370,7 +389,7 @@ int ProcRRQueryProviderProperty(ClientPtr client)
     RRProviderPtr provider = void;
     RRPropertyPtr prop = void;
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     prop = RRQueryProviderProperty(provider, stuff.property);
     if (!prop)
@@ -380,9 +399,9 @@ int ProcRRQueryProviderProperty(ClientPtr client)
     x_rpcbuf_write_INT32s(&rpcbuf, prop.valid_values, prop.num_valid);
 
     xRRQueryProviderPropertyReply reply = {
-        pending: prop.is_pending,
-        range: prop.range,
-        c_immutable: prop.immutable_
+        pending: cast(ubyte)prop.is_pending,
+        range: cast(ubyte)prop.range,
+        immutable_: cast(ubyte)prop.immutable_
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -403,7 +422,7 @@ int ProcRRConfigureProviderProperty(ClientPtr client)
     RRProviderPtr provider = void;
     int num_valid = void;
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     num_valid =
         client.req_len - bytes_to_int32(xRRConfigureProviderPropertyReq.sizeof);
@@ -460,7 +479,7 @@ int ProcRRChangeProviderProperty(ClientPtr client)
     totalSize = len * sizeInBytes;
     mixin(REQUEST_FIXED_SIZE!("xRRChangeProviderPropertyReq", "totalSize"));
 
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
         client.errorValue = stuff.property;
@@ -495,7 +514,7 @@ int ProcRRDeleteProviderProperty(ClientPtr client)
     RRPropertyPtr prop = void;
 
     UpdateCurrentTime();
-    VERIFY_RR_PROVIDER(stuff.provider, provider, DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
         client.errorValue = stuff.property;
@@ -535,17 +554,17 @@ int ProcRRGetProviderProperty(ClientPtr client)
     c_ulong n = void, len = void, ind = void;
     RRProviderPtr provider = void;
 
-    if (stuff.c_delete)
+    if (stuff.delete_)
         UpdateCurrentTime();
-    VERIFY_RR_PROVIDER(stuff.provider, provider,
-                     stuff.c_delete ? DixWriteAccess : DixReadAccess);
+    mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider",
+                     "stuff.delete_ ? DixWriteAccess : DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
         client.errorValue = stuff.property;
         return BadAtom;
     }
-    if ((stuff.c_delete != xTrue) && (stuff.c_delete != xFalse)) {
-        client.errorValue = stuff.c_delete;
+    if ((stuff.delete_ != xTrue) && (stuff.delete_ != xFalse)) {
+        client.errorValue = stuff.delete_;
         return BadValue;
     }
     if ((stuff.type != AnyPropertyType) && !ValidAtom(stuff.type)) {
@@ -553,7 +572,7 @@ int ProcRRGetProviderProperty(ClientPtr client)
         return BadAtom;
     }
 
-    for (prev = &provider.properties; ((prop = *prev) != 0); prev = &prop.next)
+    for (prev = &provider.properties; ((prop = *prev) !is null); prev = &prop.next)
         if (prop.propertyName == stuff.property)
             break;
 
@@ -564,7 +583,7 @@ int ProcRRGetProviderProperty(ClientPtr client)
     if (!prop)
         goto sendout;
 
-    if (prop.immutable_ && stuff.c_delete)
+    if (prop.immutable_ && stuff.delete_)
         return BadAccess;
 
     prop_value = RRGetProviderProperty(provider, stuff.property, stuff.pending);
@@ -576,9 +595,9 @@ int ProcRRGetProviderProperty(ClientPtr client)
 
     if (((stuff.type != prop_value.type) && (stuff.type != AnyPropertyType))
         ) {
-        reply.bytesAfter = prop_value.size;
-        reply.format = prop_value.format;
-        reply.propertyType = prop_value.type;
+        reply.bytesAfter = cast(uint)prop_value.size;
+        reply.format = cast(ubyte)prop_value.format;
+        reply.propertyType = cast(uint)prop_value.type;
         if (client.swapped) {
             swapl(&reply.propertyType);
             swapl(&reply.bytesAfter);
@@ -603,17 +622,17 @@ int ProcRRGetProviderProperty(ClientPtr client)
 
     len = min(n - ind, 4 * stuff.longLength);
 
-    reply.bytesAfter = n - (ind + len);
-    reply.format = prop_value.format;
+    reply.bytesAfter = cast(uint)(n - (ind + len));
+    reply.format = cast(ubyte)prop_value.format;
     if (prop_value.format)
-        reply.nItems = len / (prop_value.format / 8);
-    reply.propertyType = prop_value.type;
+        reply.nItems = cast(uint)(len / (prop_value.format / 8));
+    reply.propertyType = cast(uint)prop_value.type;
 
-    if (stuff.c_delete && (reply.bytesAfter == 0)) {
+    if (stuff.delete_ && (reply.bytesAfter == 0)) {
         xRRProviderPropertyNotifyEvent event = {
-            type: RREventBase + RRNotify,
+            type: cast(ubyte)(RREventBase + RRNotify),
             subCode: RRNotify_ProviderProperty,
-            provider: provider.id,
+            provider: cast(uint)provider.id,
             state: PropertyDelete,
             atom: prop.propertyName,
             timestamp: currentTime.milliseconds
@@ -642,7 +661,7 @@ int ProcRRGetProviderProperty(ClientPtr client)
         }
     }
 
-    if (stuff.c_delete && (reply.bytesAfter == 0)) {     /* delete the Property */
+    if (stuff.delete_ && (reply.bytesAfter == 0)) {     /* delete the Property */
         *prev = prop.next;
         RRDestroyProviderProperty(prop);
     }

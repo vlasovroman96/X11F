@@ -196,7 +196,7 @@ extern void OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
 // extern void GetClientFd(ClientPtr);
 
 /* stuff for FlushCallback */
-extern CallbackListPtr FlushCallback;
+// extern CallbackListPtr FlushCallback;
 
 extern void TimeSinceLastInputEvent();
 

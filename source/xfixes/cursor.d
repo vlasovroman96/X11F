@@ -220,7 +220,7 @@ private int XFixesSelectCursorInput(ClientPtr pClient, WindowPtr pWindow, CARD32
     void* val = void;
     int rc = void;
 
-    for (prev = &cursorEvents; ((e = *prev) != 0); prev = &e.next) {
+    for (prev = &cursorEvents; ((e = *prev) !is null); prev = &e.next) {
         if (e.pClient == pClient && e.pWindow == pWindow) {
             break;
         }
@@ -824,7 +824,7 @@ private int CursorFreeClient(void* data, XID id)
     CursorEventPtr old = cast(CursorEventPtr) data;
     CursorEventPtr* prev = void; CursorEventPtr e = void;
 
-    for (prev = &cursorEvents; ((e = *prev) != 0); prev = &e.next) {
+    for (prev = &cursorEvents; ((e = *prev) !is null); prev = &e.next) {
         if (e == old) {
             *prev = e.next;
             free(e);

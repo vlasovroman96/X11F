@@ -88,6 +88,7 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
 import os.access;
 import externs.attrs;
+import os.io;
 
 alias sockaddr_in = os.access.sockaddr_in;
 

@@ -26,7 +26,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 version =  XK_LATIN1;
-//import externs.X11.keysymdef;
+import externs.X11.keysymdef;
 
 import dix.screenint_priv;
 
@@ -43,6 +43,8 @@ import include.dixstruct;
 import include.gcstruct;
 import include.servermd;
 import include.picturestr;
+import externs.X11.extensions.render_;
+import render.picture;
 
 private char** filterNames;
 private int nfilterNames;
@@ -59,11 +61,11 @@ private ubyte ISOLatin1ToLower(ubyte source)
     ubyte dest = void;
 
     if ((source >= XK_A) && (source <= XK_Z))
-        dest = source + (XK_a - XK_A);
+        dest = cast(ubyte)(source + (XK_a - XK_A));
     else if ((source >= XK_Agrave) && (source <= XK_Odiaeresis))
-        dest = source + (XK_agrave - XK_Agrave);
+        dest = cast(ubyte)(source + (XK_agrave - XK_Agrave));
     else if ((source >= XK_Ooblique) && (source <= XK_Thorn))
-        dest = source + (XK_oslash - XK_Ooblique);
+        dest = cast(ubyte)(source + (XK_oslash - XK_Ooblique));
     else
         dest = source;
     return dest;
@@ -95,7 +97,7 @@ int PictureGetFilterId(const(char)* filter, int len, Bool makeit)
     char** names = void;
 
     if (len < 0)
-        len = strlen(filter);
+        len = cast(uint)strlen(filter);
     for (i = 0; i < nfilterNames; i++)
         if (!CompareISOLatin1Lowered(cast(const(ubyte)*) filterNames[i], -1,
                                      cast(const(ubyte)*) filter, len))
@@ -108,7 +110,7 @@ int PictureGetFilterId(const(char)* filter, int len, Bool makeit)
     memcpy(name, filter, len);
     name[len] = '\0';
     if (filterNames)
-        names = reallocarray(filterNames, nfilterNames + 1, (char*).sizeof);
+        names = cast(char**)reallocarray(filterNames, nfilterNames + 1, (char*).sizeof);
     else
         names = cast(char**) calloc(1, (char*).sizeof);
     if (!names) {
@@ -148,7 +150,7 @@ char* PictureGetFilterName(int id)
     if (0 <= id && id < nfilterNames)
         return filterNames[id];
     else
-        return 0;
+        return null;
 }
 
 private void PictureFreeFilterIds()
@@ -210,7 +212,7 @@ Bool PictureSetFilterAlias(ScreenPtr pScreen, const(char)* filter, const(char)* 
         PictFilterAliasPtr aliases = void;
 
         if (ps.filterAliases)
-            aliases = reallocarray(ps.filterAliases,
+            aliases = cast(_PictFilterAliasRec*)reallocarray(ps.filterAliases,
                                    ps.nfilterAliases + 1,
                                    PictFilterAliasRec.sizeof);
         else
@@ -233,7 +235,7 @@ PictFilterPtr PictureFindFilter(ScreenPtr pScreen, char* name, int len)
     int i = void;
 
     if (id < 0)
-        return 0;
+        return null;
     /* Check for an alias, allow them to recurse */
     for (i = 0; i < ps.nfilterAliases; i++)
         if (ps.filterAliases[i].alias_id == id) {
@@ -244,7 +246,7 @@ PictFilterPtr PictureFindFilter(ScreenPtr pScreen, char* name, int len)
     for (i = 0; i < ps.nfilters; i++)
         if (ps.filters[i].id == id)
             return &ps.filters[i];
-    return 0;
+    return null;
 }
 
 private Bool convolutionFilterValidateParams(ScreenPtr pScreen, int filter, XFixed* params, int nparams, int* width, int* height)
@@ -254,11 +256,11 @@ private Bool convolutionFilterValidateParams(ScreenPtr pScreen, int filter, XFix
     if (nparams < 3)
         return FALSE;
 
-    if (XFixedFrac(params[0]) || XFixedFrac(params[1]))
+    if (mixin(xFixedFrac!("params[0]")) || mixin(xFixedFrac!("params[1]")))
         return FALSE;
 
-    w = XFixedToInt(params[0]);
-    h = XFixedToInt(params[1]);
+    w = mixin(xFixedToInt!("params[0]"));
+    h = mixin(xFixedToInt!("params[1]"));
 
     nparams -= 2;
     if (w * h > nparams)
@@ -274,9 +276,9 @@ Bool PictureSetDefaultFilters(ScreenPtr pScreen)
     if (!filterNames)
         if (!PictureSetDefaultIds())
             return FALSE;
-    if (PictureAddFilter(pScreen, FilterNearest, 0, 1, 1) < 0)
+    if (PictureAddFilter(pScreen, FilterNearest, null, 1, 1) < 0)
         return FALSE;
-    if (PictureAddFilter(pScreen, FilterBilinear, 0, 2, 2) < 0)
+    if (PictureAddFilter(pScreen, FilterBilinear, null, 2, 2) < 0)
         return FALSE;
 
     if (!PictureSetFilterAlias(pScreen, FilterNearest, FilterFast))
