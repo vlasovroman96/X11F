@@ -42,6 +42,8 @@ import externs.X11.extensions.XKB;
 import include.input;
 import include.xkbstr;
 
+enum string XkbBuildCoreState(string m, string g)=`	((((`~g~`)&0x3)<<13)|((`~m~`)&0xff))`;
+
 struct _XkbInterest {
     DeviceIntPtr dev;
     ClientPtr client;

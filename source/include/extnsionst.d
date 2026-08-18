@@ -81,7 +81,7 @@ alias EventSwapPtr = void function(xEvent*, xEvent*);
 
 extern EventSwapPtr[128] EventSwapVector;
 
-extern noreturn NotImplemented(xEvent*, xEvent*);
+// extern noreturn NotImplemented(xEvent*, xEvent*);
 
 // extern int* AddExtension(const(char)*, int, int, int function(ClientPtr), int function(ClientPtr), void function(_ExtensionEntry*), ushort function(ClientPtr));
 

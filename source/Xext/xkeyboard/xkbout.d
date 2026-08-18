@@ -36,7 +36,7 @@ import core.stdc.stdlib;
 //import externs.X11.X;
 //import externs.X11.keysym;
 //import externs.X11.Xproto;
-// //import externs.X11.extensions.XKMformat;
+import externs.X11.extensions.XKM;
 
 import xkb.xkbfmisc_priv;
 import xkb.xkbout_priv;
@@ -48,11 +48,12 @@ import include.inputstr;
 import include.dix;
 import include.xkbsrv;
 import xkb.xkbgeom_priv;
-// import externs.X11.extensions.XKBstr;
+import externs.X11.extensions.XKB;
 // import externs.X11.extensions.XKBgeom;
 import include.xkbstr;
+import xkb.XKBMAlloc;
 
-
+alias XkbNumRequiredTypes = xkb.XKBMAlloc.XkbNumRequiredTypes;
 
 enum	VMOD_HIDE_VALUE =	0;
 enum	VMOD_SHOW_VALUE =	1;
@@ -66,7 +67,7 @@ private Bool WriteXKBVModDecl(FILE* file, XkbDescPtr xkb, int showValue)
     if (xkb == null)
         return FALSE;
     if (xkb.names != null)
-        vmodNames = xkb.names.vmods;
+        vmodNames = xkb.names.vmods.ptr;
     else
         vmodNames = null;
 
@@ -113,7 +114,7 @@ Bool XkbWriteXKBKeycodes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
     const(char)* alternate = void;
 
     if ((!xkb) || (!xkb.names) || (!xkb.names.keys)) {
-        _XkbLibError(_XkbErrMissingNames, "XkbWriteXKBKeycodes", 0);
+        //_XkbLibError(_XkbErrMissingNames, "XkbWriteXKBKeycodes", 0);
         return FALSE;
     }
     kcName = xkb.names.keycodes;
@@ -126,12 +127,12 @@ Bool XkbWriteXKBKeycodes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
     fprintf(file, "    maximum = %d;\n", xkb.max_key_code);
     for (i = xkb.min_key_code; i <= xkb.max_key_code; i++) {
         if (xkb.names.keys[i].name[0] != '\0') {
-            if (XkbFindKeycodeByName(xkb, xkb.names.keys[i].name, TRUE) != i)
+            if (XkbFindKeycodeByName(xkb, xkb.names.keys[i].name.ptr, TRUE) != i)
                 alternate = "alternate ";
             else
                 alternate = "";
             fprintf(file, "    %s%6s = %d;\n", alternate,
-                    XkbKeyNameText(xkb.names.keys[i].name, XkbXKBFile), i);
+                    XkbKeyNameText(xkb.names.keys[i].name.ptr, XkbXKBFile), i);
         }
     }
     if (xkb.indicators != null) {
@@ -154,8 +155,8 @@ Bool XkbWriteXKBKeycodes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
         pAl = xkb.names.key_aliases;
         for (i = 0; i < xkb.names.num_key_aliases; i++, pAl++) {
             fprintf(file, "    alias %6s = %6s;\n",
-                    XkbKeyNameText(pAl.alias_, XkbXKBFile),
-                    XkbKeyNameText(pAl.real_, XkbXKBFile));
+                    XkbKeyNameText(pAl.alias_.ptr, XkbXKBFile),
+                    XkbKeyNameText(pAl.real_.ptr, XkbXKBFile));
         }
     }
     if (addOn)
@@ -171,11 +172,11 @@ Bool XkbWriteXKBKeyTypes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
     XkbKTMapEntryPtr entry = void;
 
     if ((!xkb) || (!xkb.map) || (!xkb.map.types)) {
-        _XkbLibError(_XkbErrMissingTypes, "XkbWriteXKBKeyTypes", 0);
+        //_XkbLibError(_XkbErrMissingTypes, "XkbWriteXKBKeyTypes", 0);
         return FALSE;
     }
     if (xkb.map.num_types < XkbNumRequiredTypes) {
-        _XkbLibError(_XkbErrMissingReqTypes, "XkbWriteXKBKeyTypes", 0);
+        //_XkbLibError(_XkbErrMissingReqTypes, "XkbWriteXKBKeyTypes", 0);
         return 0;
     }
     if ((xkb.names == null) || (xkb.names.types == None))
@@ -269,7 +270,7 @@ Bool XkbWriteXKBCompatMap(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showIm
     XkbSymInterpretPtr interp = void;
 
     if ((!xkb) || (!xkb.compat) || (!xkb.compat.sym_interpret)) {
-        _XkbLibError(_XkbErrMissingCompatMap, "XkbWriteXKBCompatMap", 0);
+        //_XkbLibError(_XkbErrMissingCompatMap, "XkbWriteXKBCompatMap", 0);
         return FALSE;
     }
     if ((xkb.names == null) || (xkb.names.compat == None))
@@ -344,17 +345,17 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
     Bool showActions = void;
 
     if (!xkb) {
-        _XkbLibError(_XkbErrMissingSymbols, "XkbWriteXKBSymbols", 0);
+        //_XkbLibError(_XkbErrMissingSymbols, "XkbWriteXKBSymbols", 0);
         return FALSE;
     }
 
     map = xkb.map;
     if ((!map) || (!map.syms) || (!map.key_sym_map)) {
-        _XkbLibError(_XkbErrMissingSymbols, "XkbWriteXKBSymbols", 0);
+        //_XkbLibError(_XkbErrMissingSymbols, "XkbWriteXKBSymbols", 0);
         return FALSE;
     }
     if ((!xkb.names) || (!xkb.names.keys)) {
-        _XkbLibError(_XkbErrMissingNames, "XkbWriteXKBSymbols", 0);
+        //_XkbLibError(_XkbErrMissingNames, "XkbWriteXKBSymbols", 0);
         return FALSE;
     }
     if ((xkb.names == null) || (xkb.names.symbols == None))
@@ -375,13 +376,13 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
     for (i = xkb.min_key_code; i <= xkb.max_key_code; i++) {
         Bool simple = void;
 
-        if (cast(int) XkbKeyNumSyms(xkb, i) < 1)
+        if (cast(int) mixin(XkbKeyNumSyms!("xkb", "i")) < 1)
             continue;
-        if (XkbFindKeycodeByName(xkb, xkb.names.keys[i].name, TRUE) != i)
+        if (XkbFindKeycodeByName(xkb, xkb.names.keys[i].name.ptr, TRUE) != i)
             continue;
         simple = TRUE;
         fprintf(file, "    key %6s {",
-                XkbKeyNameText(xkb.names.keys[i].name, XkbXKBFile));
+                XkbKeyNameText(xkb.names.keys[i].name.ptr, XkbXKBFile));
         if (srv.explicit) {
             if (((srv.explicit[i] & XkbExplicitKeyTypesMask) != 0) ||
                 (showImplicit)) {
@@ -392,14 +393,14 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
                 if ((srv.explicit[i] & XkbExplicitKeyTypesMask) == 0)
                     comment = "//";
                 multi = FALSE;
-                typeNdx = XkbKeyKeyTypeIndex(xkb, i, 0);
-                for (g = 1; (g < XkbKeyNumGroups(xkb, i)) && (!multi); g++) {
-                    if (XkbKeyKeyTypeIndex(xkb, i, g) != typeNdx)
+                typeNdx = mixin(XkbKeyKeyTypeIndex!("xkb", "i", "0"));
+                for (g = 1; (g < mixin(XkbKeyNumGroups!("xkb", "i"))) && (!multi); g++) {
+                    if (mixin(XkbKeyKeyTypeIndex!("xkb", "i", "g")) != typeNdx)
                         multi = TRUE;
                 }
                 if (multi) {
-                    for (g = 0; g < XkbKeyNumGroups(xkb, i); g++) {
-                        typeNdx = XkbKeyKeyTypeIndex(xkb, i, g);
+                    for (g = 0; g < mixin(XkbKeyNumGroups!("xkb", "i")); g++) {
+                        typeNdx = mixin(XkbKeyKeyTypeIndex!("xkb", "i", "g"));
                         if (srv.explicit[i] & (1 << g)) {
                             fprintf(file, "\n%s      type[group%d]= \"%s\",",
                                     comment, g + 1,
@@ -443,13 +444,13 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
                 }
             }
         }
-        switch (XkbOutOfRangeGroupAction(XkbKeyGroupInfo(xkb, i))) {
+        switch (mixin(XkbOutOfRangeGroupAction!(XkbKeyGroupInfo!("xkb", "i")))) {
         case XkbClampIntoRange:
             fprintf(file, "\n        groupsClamp,");
             break;
         case XkbRedirectIntoRange:
             fprintf(file, "\n        groupsRedirect= Group%d,",
-                    XkbOutOfRangeGroupNumber(XkbKeyGroupInfo(xkb, i)) + 1);
+                    mixin(XkbOutOfRangeGroupNumber!(XkbKeyGroupInfo!("xkb", "i"))) + 1);
             break;
         default: break;}
         if (srv.behaviors != null) {
@@ -469,15 +470,15 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
         else
             showActions = FALSE;
 
-        if ((cast(uint) XkbKeyNumGroups(xkb, i) > 1) || showActions)
+        if ((cast(uint) mixin(XkbKeyNumGroups!("xkb", "i")) > 1) || showActions)
             simple = FALSE;
         if (simple) {
             KeySym* syms = void;
             uint s = void;
 
-            syms = XkbKeySymsPtr(xkb, i);
+            syms = mixin(XkbKeySymsPtr!("xkb", "i"));
             fprintf(file, "         [ ");
-            for (s = 0; s < XkbKeyGroupWidth(xkb, i, XkbGroup1Index); s++) {
+            for (s = 0; s < mixin(XkbKeyGroupWidth!("xkb", "i", "XkbGroup1Index")); s++) {
                 if (s != 0)
                     fprintf(file, ", ");
                 fprintf(file, "%15s", XkbKeysymText(*syms++, XkbXKBFile));
@@ -489,28 +490,28 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
             KeySym* syms = void;
             XkbAction* acts = void;
 
-            syms = XkbKeySymsPtr(xkb, i);
-            acts = XkbKeyActionsPtr(xkb, i);
-            for (g = 0; g < XkbKeyNumGroups(xkb, i); g++) {
+            syms = mixin(XkbKeySymsPtr!("xkb", "i"));
+            acts = mixin(XkbKeyActionsPtr!("xkb", "i"));
+            for (g = 0; g < mixin(XkbKeyNumGroups!("xkb", "i")); g++) {
                 if (g != 0)
                     fprintf(file, ",");
                 fprintf(file, "\n        symbols[Group%d]= [ ", g + 1);
-                for (s = 0; s < XkbKeyGroupWidth(xkb, i, g); s++) {
+                for (s = 0; s < mixin(XkbKeyGroupWidth!("xkb", "i", "g")); s++) {
                     if (s != 0)
                         fprintf(file, ", ");
                     fprintf(file, "%15s", XkbKeysymText(syms[s], XkbXKBFile));
                 }
                 fprintf(file, " ]");
-                syms += XkbKeyGroupsWidth(xkb, i);
+                syms += mixin(XkbKeyGroupsWidth!("xkb", "i"));
                 if (showActions) {
                     fprintf(file, ",\n        actions[Group%d]= [ ", g + 1);
-                    for (s = 0; s < XkbKeyGroupWidth(xkb, i, g); s++) {
+                    for (s = 0; s < mixin(XkbKeyGroupWidth!("xkb", "i", "g")); s++) {
                         if (s != 0)
                             fprintf(file, ", ");
                         WriteXKBAction(file, xkb, cast(XkbAnyAction*) &acts[s]);
                     }
                     fprintf(file, " ]");
-                    acts += XkbKeyGroupsWidth(xkb, i);
+                    acts += mixin(XkbKeyGroupsWidth!("xkb", "i"));
                 }
             }
             fprintf(file, "\n    };\n");
@@ -525,7 +526,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
                     if (map.modmap[i] & bit) {
                         char[5] buf = void;
 
-                        memcpy(buf.ptr, xkb.names.keys[i].name, 4);
+                        memcpy(buf.ptr, xkb.names.keys[i].name.ptr, 4);
                         buf[4] = '\0';
                         fprintf(file, "    modifier_map %s { <%s> };\n",
                                 XkbModIndexText(n, XkbXKBFile), buf.ptr);
@@ -601,9 +602,9 @@ private Bool WriteXKBDoodad(FILE* file, uint indent, XkbGeometryPtr geom, XkbDoo
         }
         if (doodad.shape.color_ndx != 0) {
             fprintf(file, "%s    color= \"%s\";\n", i_str,
-                    XkbShapeDoodadColor(geom, &doodad.shape).spec);
+                    mixin(XkbShapeDoodadColor!("geom", "&doodad.shape")).spec);
         }
-        shape = XkbShapeDoodadShape(geom, &doodad.shape);
+        shape = mixin(XkbShapeDoodadShape!("geom", "&doodad.shape"));
         fprintf(file, "%s    shape= \"%s\";\n", i_str,
                 XkbAtomText(shape.name, XkbXKBFile));
         break;
@@ -623,7 +624,7 @@ private Bool WriteXKBDoodad(FILE* file, uint indent, XkbGeometryPtr geom, XkbDoo
 
         }
         if (doodad.text.color_ndx != 0) {
-            color = XkbTextDoodadColor(geom, &doodad.text);
+            color = mixin(XkbTextDoodadColor!("geom", "&doodad.text"));
             fprintf(file, "%s    color= \"%s\";\n", i_str,
                     XkbStringText(color.spec, XkbXKBFile));
         }
@@ -633,11 +634,11 @@ private Bool WriteXKBDoodad(FILE* file, uint indent, XkbGeometryPtr geom, XkbDoo
                 XkbStringText(doodad.text.text, XkbXKBFile));
         break;
     case XkbIndicatorDoodad:
-        shape = XkbIndicatorDoodadShape(geom, &doodad.indicator);
-        color = XkbIndicatorDoodadOnColor(geom, &doodad.indicator);
+        shape = mixin(XkbIndicatorDoodadShape!("geom", "&doodad.indicator"));
+        color = mixin(XkbIndicatorDoodadOnColor!("geom", "&doodad.indicator"));
         fprintf(file, "%s    onColor= \"%s\";\n", i_str,
                 XkbStringText(color.spec, XkbXKBFile));
-        color = XkbIndicatorDoodadOffColor(geom, &doodad.indicator);
+        color = mixin(XkbIndicatorDoodadOffColor!("geom", "&doodad.indicator"));
         fprintf(file, "%s    offColor= \"%s\";\n", i_str,
                 XkbStringText(color.spec, XkbXKBFile));
         fprintf(file, "%s    shape= \"%s\";\n", i_str,
@@ -652,9 +653,9 @@ private Bool WriteXKBDoodad(FILE* file, uint indent, XkbGeometryPtr geom, XkbDoo
         }
         if (doodad.shape.color_ndx != 0) {
             fprintf(file, "%s    color= \"%s\";\n", i_str,
-                    XkbLogoDoodadColor(geom, &doodad.logo).spec);
+                    mixin(XkbLogoDoodadColor!("geom", "&doodad.logo")).spec);
         }
-        shape = XkbLogoDoodadShape(geom, &doodad.logo);
+        shape = mixin(XkbLogoDoodadShape!("geom", "&doodad.logo"));
         fprintf(file, "%s    shape= \"%s\";\n", i_str,
                 XkbAtomText(shape.name, XkbXKBFile));
         break;
@@ -681,8 +682,8 @@ private Bool WriteXKBDoodad(FILE* file, uint indent, XkbGeometryPtr geom, XkbDoo
         for (k = 0, key = row.keys; k < row.num_keys; k++, key++) {
             char* over = void, under = void;
 
-            over = XkbKeyNameText(key.over.name, XkbXKBFile);
-            under = XkbKeyNameText(key.under.name, XkbXKBFile);
+            over = XkbKeyNameText(key.over.name.ptr, XkbXKBFile);
+            under = XkbKeyNameText(key.under.name.ptr, XkbXKBFile);
             if (nOut == 0)
                 fprintf(file, "%s    %6s=%6s", i_str, under, over);
             else if ((nOut % 4) == 0)
@@ -753,14 +754,14 @@ private Bool WriteXKBSection(FILE* file, XkbSectionPtr s, XkbGeometryPtr geom)
                     fprintf(file, ", ");
                     nThisLine++;
                 }
-                shape = XkbKeyShape(geom, key);
+                shape = mixin(XkbKeyShape!("geom", "key"));
                 fprintf(file, "{ %6s, \"%s\", %3s",
-                        XkbKeyNameText(key.name.name, XkbXKBFile),
+                        XkbKeyNameText(key.name.name.ptr, XkbXKBFile),
                         XkbAtomText(shape.name, XkbXKBFile),
                         XkbGeomFPText(key.gap, XkbXKBFile));
                 if (key.color_ndx != dfltKeyColor) {
                     fprintf(file, ", color=\"%s\"",
-                            XkbKeyColor(geom, key).spec);
+                            mixin(XkbKeyColor!("geom", "key")).spec);
                     forceNL = 1;
                 }
                 fprintf(file, " }");
@@ -794,7 +795,7 @@ Bool XkbWriteXKBGeometry(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
     XkbGeometryPtr geom = void;
 
     if ((!xkb) || (!xkb.geom)) {
-        _XkbLibError(_XkbErrMissingGeometry, "XkbWriteXKBGeometry", 0);
+        //_XkbLibError(_XkbErrMissingGeometry, "XkbWriteXKBGeometry", 0);
         return FALSE;
     }
     geom = xkb.geom;
@@ -814,8 +815,8 @@ Bool XkbWriteXKBGeometry(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
         pAl = geom.key_aliases;
         for (i = 0; i < geom.num_key_aliases; i++, pAl++) {
             fprintf(file, "    alias %6s = %6s;\n",
-                    XkbKeyNameText(pAl.alias_, XkbXKBFile),
-                    XkbKeyNameText(pAl.real_, XkbXKBFile));
+                    XkbKeyNameText(pAl.alias_.ptr, XkbXKBFile),
+                    XkbKeyNameText(pAl.real_.ptr, XkbXKBFile));
         }
         fprintf(file, "\n");
     }

@@ -317,10 +317,14 @@ private const(__DRIswrastLoaderExtension) swrastLoaderExtension = {
     &swrastGetImage
 };
 
-private const(__DRIextension)*[2] loader_extensions = [
+private const(__DRIextension)*[2] loader_extensions;
+
+shared static this() {
+    loader_extensions = [
     &swrastLoaderExtension.base,
     null
 ];
+}
 
 private void initializeExtensions(__GLXscreen* screen)
 {

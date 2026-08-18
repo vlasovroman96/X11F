@@ -49,6 +49,7 @@ import os.utils;
 import dix.events;
 import dix.devices;
 import externs.attrs;
+import include.xkbstr;
 
 
 /* Check if a button map change is okay with the device.
@@ -203,10 +204,10 @@ private int check_modmap_change_slave(ClientPtr client, DeviceIntPtr master, Dev
         /* If we have different symbols for any modifier on an
          * extended keyboard, ignore the whole remap request. */
         for (int j = 0;
-             j < XkbKeyNumSyms(slave_xkb, i) &&
-             j < XkbKeyNumSyms(master_xkb, i); j++)
-            if (XkbKeySymsPtr(slave_xkb, i)[j] !=
-                XkbKeySymsPtr(master_xkb, i)[j])
+             j < mixin(XkbKeyNumSyms!("slave_xkb", "i")) &&
+             j < mixin(XkbKeyNumSyms!("master_xkb", "i")); j++)
+            if (mixin(XkbKeySymsPtr!("slave_xkb", "i"))[j] !=
+                mixin(XkbKeySymsPtr!("master_xkb", "i"))[j])
                 return 0;
     }
 
@@ -703,8 +704,8 @@ int event_get_corestate(DeviceIntPtr mouse, DeviceIntPtr kbd)
 
     /* core state needs to be assembled BEFORE the device is updated. */
     corestate = (kbd &&
-                 kbd.key) ? XkbStateFieldFromRec(&kbd.key.xkbInfo.
-                                                  state) : 0;
+                 kbd.key) ? mixin(XkbStateFieldFromRec!("&kbd.key.xkbInfo.
+                                                  state")) : 0;
     corestate |= (mouse && mouse.button) ? (mouse.button.state) : 0;
     corestate |= (mouse && mouse.touch) ? (mouse.touch.state) : 0;
 

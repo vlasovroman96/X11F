@@ -61,6 +61,8 @@ import include.misc;
 import include.dixstruct;
 import include.extnsionst;         /* for SendEvent */
 import std.conv;
+import dix.events;
+
 // import swapreq;
 
 /* Thanks to Jack Palevich for testing and subsequently rewriting all this */

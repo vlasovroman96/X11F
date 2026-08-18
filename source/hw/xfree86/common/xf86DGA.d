@@ -88,6 +88,7 @@ import os.utils;
 import dix.devices;
 import dix.extension;
 import dix.screen_hooks;
+import include.xkbstr;
 
 DevPrivateKeyRec DGAScreenKeyRec;
 
@@ -956,7 +957,7 @@ private void DGAProcessKeyboardEvent(ScreenPtr pScreen, DGAEvent* event, DeviceI
         type: cast(EventType)event.subtype,
         root_x: 0,
         root_y: 0,
-        corestate: XkbStateFieldFromRec(&keyc.xkbInfo.state)
+        corestate: mixin(XkbStateFieldFromRec!("&keyc.xkbInfo.state"))
     };
     ev.detail.key = event.detail,
 
@@ -1013,7 +1014,7 @@ private void DGAProcessPointerEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIn
     ev.detail.key = event.detail;
 
     if (master && master.key)
-        ev.corestate |= XkbStateFieldFromRec(&master.key.xkbInfo.state);
+        ev.corestate |= mixin(XkbStateFieldFromRec!("&master.key.xkbInfo.state"));
 
     UpdateDeviceState(mouse, &ev);
 

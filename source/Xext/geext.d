@@ -41,6 +41,7 @@ import include.windowstr;
 import include.protocol_versions;
 import os.log;
 import dix.extension;
+import dix.events;
 
 enum MAXEXTENSIONS =   128;
 

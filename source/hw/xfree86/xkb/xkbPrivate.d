@@ -13,7 +13,7 @@ import include.windowstr;
 import include.os;
 import xf86_priv;
 import externs.gnu;
-// import externs.X11.extensions.XKBstr;
+import externs.X11.extensions.XKB;
 import include.xkbstr;
 
 

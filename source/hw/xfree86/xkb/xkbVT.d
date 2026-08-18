@@ -42,13 +42,13 @@ import include.scrnintstr;
 import include.windowstr;
 
 import xf86_priv;
-// import externs.X11.extensions.XKBstr;
+import externs.X11.extensions.XKB;
 import include.xkbstr;
 
 
 int XkbDDXSwitchScreen(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {
-    int scrnnum = XkbSAScreen(&act.screen);
+    int scrnnum = mixin(XkbSAScreen!("&act.screen"));
 
     if (act.screen.flags & XkbSA_SwitchApplication) {
         if (act.screen.flags & XkbSA_SwitchAbsolute)

@@ -52,7 +52,7 @@ int AddExtensionClient(WindowPtr pWin, ClientPtr client, Mask mask, int mskidx);
 
 void RecalculateDeviceDeliverableEvents(WindowPtr pWin);
 
-int InputClientGone(WindowPtr pWin, XID id);
+// int InputClientGone(WindowPtr pWin, XID id);
 
 void WindowGone(WindowPtr win);
 

@@ -727,11 +727,15 @@ private const(__DRIuseInvalidateExtension) dri2UseInvalidate = {
     {__DRI_USE_INVALIDATE, 1}
 };
 
-private const __DRIextension*[3] loader_extensions = [
+private const __DRIextension*[3] loader_extensions;
+
+shared static this() {
+    loader_extensions = [
     &loaderExtension.base,
     &dri2UseInvalidate.base,
     null
 ];
+}
 
 private Bool glxDRIEnterVT(ScrnInfoPtr scrn)
 {

@@ -833,7 +833,7 @@ SOFTWARE.
  * Byte 3 = 1
  */
 
-#ifdef XK_LATIN2
+// #ifdef XK_LATIN2
 #define XK_Aogonek                       0x01a1  /* U+0104 LATIN CAPITAL LETTER A WITH OGONEK */
 #define XK_breve                         0x01a2  /* U+02D8 BREVE */
 #define XK_Lstroke                       0x01a3  /* U+0141 LATIN CAPITAL LETTER L WITH STROKE */
@@ -891,14 +891,14 @@ SOFTWARE.
 #define XK_udoubleacute                  0x01fb  /* U+0171 LATIN SMALL LETTER U WITH DOUBLE ACUTE */
 #define XK_tcedilla                      0x01fe  /* U+0163 LATIN SMALL LETTER T WITH CEDILLA */
 #define XK_abovedot                      0x01ff  /* U+02D9 DOT ABOVE */
-#endif /* XK_LATIN2 */
+// #endif /* XK_LATIN2 */
 
 /*
  * Latin 3
  * Byte 3 = 2
  */
 
-#ifdef XK_LATIN3
+// #ifdef XK_LATIN3
 #define XK_Hstroke                       0x02a1  /* U+0126 LATIN CAPITAL LETTER H WITH STROKE */
 #define XK_Hcircumflex                   0x02a6  /* U+0124 LATIN CAPITAL LETTER H WITH CIRCUMFLEX */
 #define XK_Iabovedot                     0x02a9  /* U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE */
@@ -921,7 +921,7 @@ SOFTWARE.
 #define XK_gcircumflex                   0x02f8  /* U+011D LATIN SMALL LETTER G WITH CIRCUMFLEX */
 #define XK_ubreve                        0x02fd  /* U+016D LATIN SMALL LETTER U WITH BREVE */
 #define XK_scircumflex                   0x02fe  /* U+015D LATIN SMALL LETTER S WITH CIRCUMFLEX */
-#endif /* XK_LATIN3 */
+// #endif /* XK_LATIN3 */
 
 
 /*
@@ -929,7 +929,7 @@ SOFTWARE.
  * Byte 3 = 3
  */
 
-#ifdef XK_LATIN4
+// #ifdef XK_LATIN4
 #define XK_kra                           0x03a2  /* U+0138 LATIN SMALL LETTER KRA */
 #define XK_kappa                         0x03a2  /* deprecated */
 #define XK_Rcedilla                      0x03a3  /* U+0156 LATIN CAPITAL LETTER R WITH CEDILLA */
@@ -966,12 +966,12 @@ SOFTWARE.
 #define XK_uogonek                       0x03f9  /* U+0173 LATIN SMALL LETTER U WITH OGONEK */
 #define XK_utilde                        0x03fd  /* U+0169 LATIN SMALL LETTER U WITH TILDE */
 #define XK_umacron                       0x03fe  /* U+016B LATIN SMALL LETTER U WITH MACRON */
-#endif /* XK_LATIN4 */
+// #endif /* XK_LATIN4 */
 
 /*
  * Latin 8
  */
-#ifdef XK_LATIN8
+// #ifdef XK_LATIN8
 #define XK_Wcircumflex                0x1000174  /* U+0174 LATIN CAPITAL LETTER W WITH CIRCUMFLEX */
 #define XK_wcircumflex                0x1000175  /* U+0175 LATIN SMALL LETTER W WITH CIRCUMFLEX */
 #define XK_Ycircumflex                0x1000176  /* U+0176 LATIN CAPITAL LETTER Y WITH CIRCUMFLEX */
@@ -998,18 +998,18 @@ SOFTWARE.
 #define XK_wdiaeresis                 0x1001e85  /* U+1E85 LATIN SMALL LETTER W WITH DIAERESIS */
 #define XK_Ygrave                     0x1001ef2  /* U+1EF2 LATIN CAPITAL LETTER Y WITH GRAVE */
 #define XK_ygrave                     0x1001ef3  /* U+1EF3 LATIN SMALL LETTER Y WITH GRAVE */
-#endif /* XK_LATIN8 */
+// #endif /* XK_LATIN8 */
 
 /*
  * Latin 9
  * Byte 3 = 0x13
  */
 
-#ifdef XK_LATIN9
+// #ifdef XK_LATIN9
 #define XK_OE                            0x13bc  /* U+0152 LATIN CAPITAL LIGATURE OE */
 #define XK_oe                            0x13bd  /* U+0153 LATIN SMALL LIGATURE OE */
 #define XK_Ydiaeresis                    0x13be  /* U+0178 LATIN CAPITAL LETTER Y WITH DIAERESIS */
-#endif /* XK_LATIN9 */
+// #endif /* XK_LATIN9 */
 
 /*
  * Katakana
@@ -1192,7 +1192,7 @@ SOFTWARE.
  * Cyrillic
  * Byte 3 = 6
  */
-#ifdef XK_CYRILLIC
+// #ifdef XK_CYRILLIC
 #define XK_Cyrillic_GHE_bar           0x1000492  /* U+0492 CYRILLIC CAPITAL LETTER GHE WITH STROKE */
 #define XK_Cyrillic_ghe_bar           0x1000493  /* U+0493 CYRILLIC SMALL LETTER GHE WITH STROKE */
 #define XK_Cyrillic_ZHE_descender     0x1000496  /* U+0496 CYRILLIC CAPITAL LETTER ZHE WITH DESCENDER */
@@ -1334,7 +1334,7 @@ SOFTWARE.
 #define XK_Cyrillic_SHCHA                0x06fd  /* U+0429 CYRILLIC CAPITAL LETTER SHCHA */
 #define XK_Cyrillic_CHE                  0x06fe  /* U+0427 CYRILLIC CAPITAL LETTER CHE */
 #define XK_Cyrillic_HARDSIGN             0x06ff  /* U+042A CYRILLIC CAPITAL LETTER HARD SIGN */
-#endif /* XK_CYRILLIC */
+// #endif /* XK_CYRILLIC */
 
 /*
  * Greek
@@ -1342,7 +1342,7 @@ SOFTWARE.
  * Byte 3 = 7
  */
 
-#ifdef XK_GREEK
+// #ifdef XK_GREEK
 #define XK_Greek_ALPHAaccent             0x07a1  /* U+0386 GREEK CAPITAL LETTER ALPHA WITH TONOS */
 #define XK_Greek_EPSILONaccent           0x07a2  /* U+0388 GREEK CAPITAL LETTER EPSILON WITH TONOS */
 #define XK_Greek_ETAaccent               0x07a3  /* U+0389 GREEK CAPITAL LETTER ETA WITH TONOS */
@@ -1418,7 +1418,7 @@ SOFTWARE.
 #define XK_Greek_psi                     0x07f8  /* U+03C8 GREEK SMALL LETTER PSI */
 #define XK_Greek_omega                   0x07f9  /* U+03C9 GREEK SMALL LETTER OMEGA */
 #define XK_Greek_switch                  0xff7e  /* non-deprecated alias for Mode_switch */
-#endif /* XK_GREEK */
+// #endif /* XK_GREEK */
 
 /*
  * Technical

@@ -142,8 +142,7 @@ int selabel_lookup_raw_d(
     return selabel_lookup_raw(hnd, ctx, name, map);
 }
 
-void freecon(char* con)
-@nogc nothrow;;
+void freecon(char* con) @nogc nothrow;;
 
 void freecon_d(char* con)
 {

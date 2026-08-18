@@ -103,6 +103,8 @@ import os.utils;
 import externs.gnu;
 import dix.events;
 import dix.inpututils;
+import include.xkbstr;
+
 
 /** @file
  * This file handles input device-related stuff.

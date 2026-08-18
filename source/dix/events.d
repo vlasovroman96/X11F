@@ -109,7 +109,7 @@ import build.dix_config;
 
 import externs.X11.X;
 // //import externs.X11.extensions.ge;
-// //import externs.X11.extensions.XKBproto;
+import externs.X11.extensions.XKB;
 // //import externs.X11.extensions.XIproto;
 import externs.X11.extensions.XI2proto;
 // //import externs.X11.extensions.XI;
@@ -169,6 +169,7 @@ import std.conv;
 import include.os;
 import os.io;
 import dix.inpututils;
+import include.xkbstr;
 
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `
@@ -4619,7 +4620,7 @@ void CoreEnterLeaveEvent(DeviceIntPtr mouse, int type, int mode, int detail, Win
         mouse.button ? (mouse.button.state & 0x1f00) : 0;
     if (keybd)
         event.u.enterLeave.state |=
-            XkbGrabStateFromRec(&keybd.key.xkbInfo.state);
+            mixin(XkbGrabStateFromRec!("&keybd.key.xkbInfo.state"));
     event.u.enterLeave.mode = cast(ubyte)mode;
     focus = (keybd) ? keybd.focus.win : null;
     if ((focus != NoneWin) &&

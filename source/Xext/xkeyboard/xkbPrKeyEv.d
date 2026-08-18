@@ -45,24 +45,27 @@ import include.inputstr;
 import include.exevents;
 import include.eventstr;
 import include.events;
+import include.xkbstr;
+import externs.X11.extensions.XKB;
+import os.log;
 
 void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
 {
     KeyClassPtr keyc = keybd.key;
     XkbSrvInfoPtr xkbi = void;
     int key = void;
-    XkbBehavior behavior = { 0 };
+    XkbBehavior behavior;
     uint ndx = void;
 
     xkbi = keyc.xkbInfo;
     key = event.detail.key;
     if (xkbDebugFlags & 0x8)
         DebugF("[xkb] XkbPKE: Key %d %s\n", key,
-               (event.type == ET_KeyPress ? "down" : "up"));
+               (event.type == ET_KeyPress ? "down".ptr : "up".ptr));
 
     if (xkbi.repeatKey == key && event.type == ET_KeyRelease &&
         !(xkbi.desc.ctrls.enabled_ctrls & XkbRepeatKeysMask))
-        AccessXCancelRepeatKey(xkbi, key);
+        AccessXCancelRepeatKey(xkbi, cast(ubyte)key);
 
     behavior = xkbi.desc.server.behaviors[key];
     /* The "permanent" flag indicates a hard-wired behavior that occurs */
@@ -114,7 +117,7 @@ void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
                     event.type = ET_KeyPress;
                     event.detail.key = tmpkey;
                 }
-                rg.currentDown = key;
+                rg.currentDown = cast(ubyte)key;
             }
             else
                 ErrorF("[xkb] InternalError! Illegal radio group %d\n", ndx);
@@ -130,9 +133,9 @@ void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
             uint key_was_overlaid = 0;
 
             if (behavior.type == XkbKB_Overlay1)
-                which = XkbOverlay1Mask;
+                which = cast(uint)XkbOverlay1Mask;
             else
-                which = XkbOverlay2Mask;
+                which = cast(uint)XkbOverlay2Mask;
             overlay_active_now = (xkbi.desc.ctrls.enabled_ctrls & which) ? 1 : 0;
 
             if (cast(ubyte)key == key) {
@@ -168,7 +171,7 @@ void ProcessKeyboardEvent(InternalEvent* ev, DeviceIntPtr keybd)
     KeyClassPtr keyc = keybd.key;
     XkbSrvInfoPtr xkbi = null;
     ProcessInputProc backup_proc = void;
-    xkbDeviceInfoPtr xkb_priv = XKBDEVICEINFO(keybd);
+    xkbDeviceInfoPtr xkb_priv = mixin(XKBDEVICEINFO!("keybd"));
     DeviceEvent* event = &ev.device_event;
     int is_press = (event.type == ET_KeyPress);
     int is_release = (event.type == ET_KeyRelease);
@@ -177,8 +180,8 @@ void ProcessKeyboardEvent(InternalEvent* ev, DeviceIntPtr keybd)
     if (!is_press && !is_release) {
         mixin(UNWRAP_PROCESS_INPUT_PROC!("keybd", "xkb_priv", "backup_proc"));
         keybd.public_.processInputProc(ev, keybd);
-        COND_WRAP_PROCESS_INPUT_PROC(keybd, xkb_priv, backup_proc,
-                                     xkbUnwrapProc);
+        mixin(COND_WRAP_PROCESS_INPUT_PROC!("keybd", "xkb_priv", "backup_proc",
+                                     "&xkbUnwrapProc"));
         return;
     }
 

@@ -34,9 +34,9 @@ import core.stdc.ctype;
 import core.stdc.stdlib;
 // //import externs.X11.Xos;
 // //import externs.X11.Xfuncs;
-// //import externs.X11.extensions.XKMformat;
+import externs.X11.extensions.XKM;
 //import externs.X11.X;
-//import externs.X11.keysym;
+import externs.X11.keysymdef;
 //import externs.X11.Xproto;
 
 import xkb.xkbfmisc_priv;
@@ -48,15 +48,17 @@ import include.dix;
 import include.xkbsrv;
 import include.xkbsrv;
 import xkb.xkbgeom_priv;
-// import externs.X11.extensions.XKBstr;
+import externs.X11.extensions.XKB;
 import include.xkbstr;
+import xkb.XKBMAlloc;
 
+alias XkbNumRequiredTypes = xkb.XKBMAlloc.XkbNumRequiredTypes;
 
 uint _XkbKSCheckCase(KeySym ks)
 {
     uint set = void, rtrn = void;
 
-    set = (ks & (~0xff)) >> 8;
+    set = cast(uint)((ks & (~0xff)) >> 8);
     rtrn = 0;
     switch (set) {
     case 0:                    /* latin 1 */
@@ -364,7 +366,7 @@ int XkbFindKeycodeByName(XkbDescPtr xkb, char* name, Bool use_aliases)
     if ((!xkb) || (!xkb.names) || (!xkb.names.keys))
         return 0;
     for (i = xkb.min_key_code; i <= xkb.max_key_code; i++) {
-        if (strncmp(xkb.names.keys[i].name, name, XkbKeyNameLength) == 0)
+        if (strncmp(xkb.names.keys[i].name.ptr, name, XkbKeyNameLength) == 0)
             return i;
     }
     if (!use_aliases)
@@ -374,8 +376,8 @@ int XkbFindKeycodeByName(XkbDescPtr xkb, char* name, Bool use_aliases)
 
         a = xkb.geom.key_aliases;
         for (i = 0; i < xkb.geom.num_key_aliases; i++, a++) {
-            if (strncmp(name, a.alias_, XkbKeyNameLength) == 0)
-                return XkbFindKeycodeByName(xkb, a.real_, FALSE);
+            if (strncmp(name, a.alias_.ptr, XkbKeyNameLength) == 0)
+                return XkbFindKeycodeByName(xkb, a.real_.ptr, FALSE);
         }
     }
     if (xkb.names && xkb.names.key_aliases) {
@@ -383,8 +385,8 @@ int XkbFindKeycodeByName(XkbDescPtr xkb, char* name, Bool use_aliases)
 
         a = xkb.names.key_aliases;
         for (i = 0; i < xkb.names.num_key_aliases; i++, a++) {
-            if (strncmp(name, a.alias_, XkbKeyNameLength) == 0)
-                return XkbFindKeycodeByName(xkb, a.real_, FALSE);
+            if (strncmp(name, a.alias_.ptr, XkbKeyNameLength) == 0)
+                return XkbFindKeycodeByName(xkb, a.real_.ptr, FALSE);
         }
     }
     return 0;

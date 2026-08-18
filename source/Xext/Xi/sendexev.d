@@ -70,6 +70,7 @@ import Xi.grabdev;
 import std.conv;
 import externs.X11.extensions.XI;
 import dix.devices;
+import dix.events;
 
 extern int lastEvent;           /* Defined in extension.c */
 

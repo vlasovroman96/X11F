@@ -353,8 +353,8 @@ private void SELinuxFreeItems(SELinuxListItemRec* items, int count)
     }
         
     for (k = 0; k < count; k++) {
-        assumeNoGC(cast(FreeConnFn)&freecon)(items[k].octx);
-        assumeNoGC(cast(FreeConnFn)&freecon)(items[k].dctx);
+        assumeNoGC(cast(FreeConnFn)&freecon_d)(items[k].octx);
+        assumeNoGC(cast(FreeConnFn)&freecon_d)(items[k].dctx);
     }
     free(items);
 }

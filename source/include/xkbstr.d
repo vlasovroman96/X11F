@@ -85,8 +85,8 @@ struct _XkbStateRec {
 }alias XkbStateRec = _XkbStateRec;
 alias XkbStatePtr = _XkbStateRec*;
 
-enum string	XkbStateFieldFromRec(string s) = `XkbBuildCoreState((` ~ s ~ `).lookup_mods,(` ~ s ~ `).group)`;
-enum string	XkbGrabStateFromRec(string s) = `XkbBuildCoreState((` ~ s ~ `).grab_mods,(` ~ s ~ `).group)`;
+enum string	XkbStateFieldFromRec(string s) = XkbBuildCoreState!(`(`~s~`).lookup_mods`,`(` ~ s ~ `).group`);
+enum string	XkbGrabStateFromRec(string s) = XkbBuildCoreState!(`(` ~ s ~ `).grab_mods`,`(` ~ s ~ `).group`);
 
 struct _XkbMods {
     ubyte mask;         /* effective mods */
@@ -380,7 +380,12 @@ alias XkbClientMapPtr = _XkbClientMapRec*;
 
 enum string	XkbCMKeyGroupInfo(string m, string k) = `((` ~ m ~ `).key_sym_map[(` ~ k ~ `)].group_info)`;
 enum string	XkbCMKeyNumGroups(string m, string k) = `(` ~ XkbNumGroups!(`(` ~ m ~ `).key_sym_map[(` ~ k ~ `)].group_info`) ~ `)`;
-enum string	XkbCMKeyGroupWidth(string m, string k, string g) = `(XkbCMKeyType((` ~ m ~ `), (` ~ k ~ `), (` ~ g ~ `)).num_levels)`;
+enum string XkbCMKeyGroupWidth(string m, string k, string g) =
+    `(` ~ XkbCMKeyType!(
+        m,
+        k,
+        `(` ~ g ~ `)`
+    ) ~ `.num_levels)`;
 enum string	XkbCMKeyGroupsWidth(string m, string k) = `((` ~ m ~ `).key_sym_map[(` ~ k ~ `)].width)`;
 enum string	XkbCMKeyTypeIndex(string m, string k, string g) = `((` ~ m ~ `).key_sym_map[(` ~ k ~ `)].kt_index[(` ~ g ~ `) & 0x3])`;
 enum string	XkbCMKeyType(string m, string k, string g) = `(&(` ~ m ~ `).types[` ~ XkbCMKeyTypeIndex!(`(` ~ m ~ `)`, `(` ~ k ~ `)`, `(` ~ g ~ `)`) ~ `])`;

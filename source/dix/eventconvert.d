@@ -56,6 +56,7 @@ import include.xkbsrv;
 import os.log;
 import dix.devices;
 import dix.inpututils;
+import include.xkbstr;
 
 
 
@@ -439,8 +440,8 @@ private int getValuatorEvents(DeviceEvent* ev, deviceValuator* xv)
         dixLookupDevice(&dev, ev.deviceid, serverClient, DixUseAccess);
         /* State needs to be assembled BEFORE the device is updated. */
         state = (dev &&
-                 dev.key) ? XkbStateFieldFromRec(&dev.key.xkbInfo.
-                                                  state) : 0;
+                 dev.key) ? mixin(XkbStateFieldFromRec!("&dev.key.xkbInfo.
+                                                  state")) : 0;
         state |= (dev && dev.button) ? (dev.button.state) : 0;
     }
 

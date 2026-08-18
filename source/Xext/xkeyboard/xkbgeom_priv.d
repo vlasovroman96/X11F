@@ -348,7 +348,7 @@ extern void XkbFreeGeomShapes(XkbGeometryPtr, int, int, Bool);
 
 // extern void XkbFreeGeometry(XkbGeometryPtr, uint, Bool);
 
-extern Bool XkbGeomRealloc(void**, int, int, int, XkbGeomClearance);
+// extern Bool XkbGeomRealloc(void**, int, int, int, XkbGeomClearance);
 
 // extern Status XkbAllocGeometry(XkbDescPtr, XkbGeometrySizesPtr);
 

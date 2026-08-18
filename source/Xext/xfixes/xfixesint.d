@@ -84,7 +84,7 @@ Bool XFixesSelectionInit();
 
 // int ProcXFixesSelectCursorInput(ClientPtr client);
 
-void SXFixesCursorNotifyEvent(xXFixesCursorNotifyEvent* from, xXFixesCursorNotifyEvent* to);
+// void SXFixesCursorNotifyEvent(xXFixesCursorNotifyEvent* from, xXFixesCursorNotifyEvent* to);
 
 // int ProcXFixesGetCursorImage(ClientPtr client);
 
