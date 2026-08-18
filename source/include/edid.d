@@ -211,7 +211,7 @@ struct _Xf86Monitor {
 }alias xf86Monitor = _Xf86Monitor;
 alias xf86MonPtr = xf86Monitor*;
 
-extern xf86MonPtr ConfiguredMonitor;
+xf86MonPtr ConfiguredMonitor;
 
 /*
  * check whether monitor supports Generalized Timing Formula

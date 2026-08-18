@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_XKB_MAJOR_VERSION = 1;
 enum XCB_XKB_MINOR_VERSION = 0;
 
-extern xcb_extension_t xcb_xkb_id;
+xcb_extension_t xcb_xkb_id;
 
 enum xcb_xkb_const_t {
     XCB_XKB_CONST_MAX_LEGAL_KEY_CODE = 255,

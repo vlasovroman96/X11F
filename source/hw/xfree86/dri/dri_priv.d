@@ -8,6 +8,6 @@ extern(C): __gshared:
  
 public import include.dri;
 
-extern Bool DRIExtensionInit();
+Bool DRIExtensionInit();
 
  /* _XSERVER_DRI_PRIV_H */

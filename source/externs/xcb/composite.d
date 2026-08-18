@@ -23,7 +23,7 @@ import externs.xcb.xcbext;
 enum XCB_COMPOSITE_MAJOR_VERSION = 0;
 enum XCB_COMPOSITE_MINOR_VERSION = 4;
 
-extern xcb_extension_t xcb_composite_id;
+xcb_extension_t xcb_composite_id;
 
 enum xcb_composite_redirect_t {
     XCB_COMPOSITE_REDIRECT_AUTOMATIC = 0,

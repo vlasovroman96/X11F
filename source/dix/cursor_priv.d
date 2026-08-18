@@ -26,7 +26,7 @@ public import dix.cursor;
 }
 @property size_t CURSOR_REC_SIZE() => CursorRec.sizeof + cast(size_t)dixPrivatesSize(PRIVATE_CURSOR);
 
-// extern CursorPtr rootCursor;
+// CursorPtr rootCursor;
 
 /* reference counting */
 // CursorPtr RefCursor(CursorPtr cursor);

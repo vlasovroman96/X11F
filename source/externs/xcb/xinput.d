@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_INPUT_MAJOR_VERSION = 2;
 enum XCB_INPUT_MINOR_VERSION = 4;
 
-extern xcb_extension_t xcb_input_id;
+xcb_extension_t xcb_input_id;
 
 alias xcb_input_event_class_t = uint;
 

@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_DBE_MAJOR_VERSION = 1;
 enum XCB_DBE_MINOR_VERSION = 0;
 
-extern xcb_extension_t xcb_dbe_id;
+xcb_extension_t xcb_dbe_id;
 
 alias xcb_dbe_back_buffer_t = uint;
 

@@ -34,33 +34,33 @@ public import include.dix;
 public import externs.X11.fonts.font;
 // //public import externs.X11.fonts.fontstruct;
 
-extern int SetDefaultFont(const(char)*);
+int SetDefaultFont(const(char)*);
 
-// extern int OpenFont(ClientPtr, XID, Mask, uint, const(char)*);
+// int OpenFont(ClientPtr, XID, Mask, uint, const(char)*);
 
-// extern int CloseFont(void* pfont, XID fid);
+// int CloseFont(void* pfont, XID fid);
 
-// extern int ListFonts(ClientPtr, ubyte*, uint, uint);
+// int ListFonts(ClientPtr, ubyte*, uint, uint);
 
-// extern int PolyText(ClientPtr, DrawablePtr, GCPtr, ubyte*, ubyte*, int, int, int, XID);
+// int PolyText(ClientPtr, DrawablePtr, GCPtr, ubyte*, ubyte*, int, int, int, XID);
 
-// extern int ImageText(ClientPtr, DrawablePtr, GCPtr, int, ubyte*, int, int, int, XID);
+// int ImageText(ClientPtr, DrawablePtr, GCPtr, int, ubyte*, int, int, int, XID);
 
-// extern int SetFontPath(ClientPtr, int, ubyte*);
+// int SetFontPath(ClientPtr, int, ubyte*);
 
-extern int SetDefaultFontPath(const(char)*);
+int SetDefaultFontPath(const(char)*);
 
-// extern int DeleteClientFontStuff(ClientPtr);
+// int DeleteClientFontStuff(ClientPtr);
 
 /* Quartz support on Mac OS X pulls in the QuickDraw
    framework whose InitFonts function conflicts here. */
 version (OSX) {
 enum InitFonts = Darwin_X_InitFonts;
 }
-extern int InitFonts();
+int InitFonts();
 
-extern int FreeFonts();
+int FreeFonts();
 
-extern int GetGlyphs(FontPtr, c_ulong, ubyte*, FontEncoding, c_ulong*, CharInfoPtr*);
+int GetGlyphs(FontPtr, c_ulong, ubyte*, FontEncoding, c_ulong*, CharInfoPtr*);
 
 }                          /* DIXFONT_H */

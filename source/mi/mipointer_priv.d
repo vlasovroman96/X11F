@@ -24,7 +24,7 @@ void miPointerInvalidateSprite(DeviceIntPtr pDev);
 /* Sets whether the sprite should be updated immediately on pointer moves */
 // Bool miPointerSetWaitForUpdate(ScreenPtr pScreen, Bool wait);
 
-extern DevPrivateKeyRec miPointerPrivKeyRec;
+DevPrivateKeyRec miPointerPrivKeyRec;
 
 enum miPointerPrivKey = (&miPointerPrivKeyRec);
 

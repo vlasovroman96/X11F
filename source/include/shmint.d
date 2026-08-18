@@ -75,7 +75,7 @@ enum string SHMDESC_IS_FD(string shmdesc) = `(0)`;
 void ShmRegisterFuncs(ScreenPtr pScreen, ShmFuncsPtr funcs);
 void ShmRegisterFbFuncs(ScreenPtr pScreen);
 
-extern int ShmCompletionCode;
-extern int BadShmSegCode;
+int ShmCompletionCode;
+int BadShmSegCode;
 
                           /* _SHMINT_H_ */

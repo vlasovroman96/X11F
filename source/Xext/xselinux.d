@@ -147,7 +147,7 @@ enum SELINUX_MODE_DEFAULT =    0;
 enum SELINUX_MODE_DISABLED =   1;
 enum SELINUX_MODE_PERMISSIVE = 2;
 enum SELINUX_MODE_ENFORCING =  3;
-// extern int selinuxEnforcingState;
+// int selinuxEnforcingState;
 // }
 
                           /* _XSELINUX_H */

@@ -23,7 +23,7 @@ import externs.xcb.xcbext;
 enum XCB_DAMAGE_MAJOR_VERSION = 1;
 enum XCB_DAMAGE_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_damage_id;
+xcb_extension_t xcb_damage_id;
 
 alias xcb_damage_damage_t = uint;
 

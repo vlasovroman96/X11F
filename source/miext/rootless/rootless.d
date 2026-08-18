@@ -72,13 +72,13 @@ struct _RootlessWindowRec {
 alias RootlessWindowPtr = _RootlessWindowRec*;
 
 /* Offset for screen-local to global coordinate transforms */
-extern int rootlessGlobalOffsetX;
-extern int rootlessGlobalOffsetY;
+int rootlessGlobalOffsetX;
+int rootlessGlobalOffsetY;
 
 /* The minimum number of bytes or pixels for which to use the
    implementation's accelerated functions. */
-extern uint rootless_CopyBytes_threshold;
-extern uint rootless_CopyWindow_threshold;
+uint rootless_CopyBytes_threshold;
+uint rootless_CopyWindow_threshold;
 
 /* Gravity for window contents during resizing */
 enum rl_gravity_enum {

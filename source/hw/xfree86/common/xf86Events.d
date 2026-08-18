@@ -106,7 +106,7 @@ import externs.X11.Xatom;
 import os.connection;
 
 
-extern void function() xf86OSPMClose;
+void function() xf86OSPMClose;
 
 
 

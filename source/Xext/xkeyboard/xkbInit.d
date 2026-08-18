@@ -729,13 +729,13 @@ void XkbFreeInfo(XkbSrvInfoPtr xkbi)
 
 /***====================================================================***/
 
-extern int XkbDfltRepeatDelay;
-extern int XkbDfltRepeatInterval;
+int XkbDfltRepeatDelay;
+int XkbDfltRepeatInterval;
 
-extern ushort XkbDfltAccessXTimeout;
-extern uint XkbDfltAccessXTimeoutMask;
-extern uint XkbDfltAccessXFeedback;
-extern ushort XkbDfltAccessXOptions;
+ushort XkbDfltAccessXTimeout;
+uint XkbDfltAccessXTimeoutMask;
+uint XkbDfltAccessXFeedback;
+ushort XkbDfltAccessXOptions;
 
 int XkbProcessArguments(int argc, char** argv, int i)
 {

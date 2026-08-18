@@ -42,6 +42,7 @@ import include.window;
 import externs.X11.extensions.xfixesproto;
 import externs.X11.extensions.render_;
 
+import region;
 import dix.swapreq;
 import render.picture;
 import dix.gc;

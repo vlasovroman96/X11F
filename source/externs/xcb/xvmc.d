@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_XVMC_MAJOR_VERSION = 1;
 enum XCB_XVMC_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_xvmc_id;
+xcb_extension_t xcb_xvmc_id;
 
 alias xcb_xvmc_context_t = uint;
 

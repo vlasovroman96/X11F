@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_SELINUX_MAJOR_VERSION = 1;
 enum XCB_SELINUX_MINOR_VERSION = 0;
 
-extern xcb_extension_t xcb_selinux_id;
+xcb_extension_t xcb_selinux_id;
 
 /**
  * @brief xcb_selinux_query_version_cookie_t

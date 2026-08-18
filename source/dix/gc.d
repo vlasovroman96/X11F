@@ -73,7 +73,7 @@ import dix.dixutils;
 import dix.resource;
 import os.log;
 
-extern FontPtr defaultFont;
+FontPtr defaultFont;
 
 
 

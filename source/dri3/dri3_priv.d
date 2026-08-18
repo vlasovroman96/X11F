@@ -34,9 +34,9 @@ public import include.randrstr;
 public import dri3.dri3;
 import include.dri3;
 
-extern DevPrivateKeyRec dri3_screen_private_key;
+DevPrivateKeyRec dri3_screen_private_key;
 
-extern RESTYPE dri3_syncobj_type;
+RESTYPE dri3_syncobj_type;
 
 struct dri3_dmabuf_format {
     uint format;

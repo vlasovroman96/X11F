@@ -43,7 +43,7 @@ import os.client_priv;
  *      translation from client ids to server addresses.
  */
 
-// extern CallbackListPtr ClientStateCallback;
+// CallbackListPtr ClientStateCallback;
 
 struct NewClientInfoRec {
     ClientPtr client;
@@ -118,19 +118,19 @@ struct _Client {
 
 alias ClientPtr = _Client*;
 
-// extern TimeStamp currentTime;
+// TimeStamp currentTime;
 
-// extern int CompareTimeStamps(TimeStamp, TimeStamp);
+// int CompareTimeStamps(TimeStamp, TimeStamp);
 
-// extern TimeStamp ClientTimeToServerTime(CARD32);
+// TimeStamp ClientTimeToServerTime(CARD32);
 
 /* proc vectors */
 
-extern  int function(ClientPtr)[256] ProcVector;
+ int function(ClientPtr)[256] ProcVector;
 
-extern  int function(ClientPtr)[256] SwappedProcVector;
+ int function(ClientPtr)[256] SwappedProcVector;
 
 /* fixme: still needed by (public) dix.h */
-extern ReplySwapPtr[256] ReplySwapVector;
+ReplySwapPtr[256] ReplySwapVector;
 
                           /* DIXSTRUCT_H */

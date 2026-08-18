@@ -243,142 +243,142 @@ void InitRegions()
  *     REGION of "size" number of rectangles.
  *****************************************************************/
 
-// RegionPtr RegionCreate(BoxPtr rect, int size)
-// {
-//     RegionPtr pReg = cast(RegionRec*) calloc(1, RegionRec.sizeof);
-//     if (!pReg)
-//         return &RegionBrokenRegion;
+RegionPtr RegionCreate(BoxPtr rect, int size)
+{
+    RegionPtr pReg = cast(RegionRec*) calloc(1, RegionRec.sizeof);
+    if (!pReg)
+        return &RegionBrokenRegion;
 
-//     RegionInit(pReg, rect, size);
+    RegionInit(pReg, rect, size);
 
-//     return pReg;
-// }
+    return pReg;
+}
 
-// void RegionDestroy(RegionPtr pReg)
-// {
-//     assumeNoGC(&pixman_region_fini)(pReg);
-//     if (pReg != &RegionBrokenRegion)
-//         free(pReg);
-// }
+void RegionDestroy(RegionPtr pReg)
+{
+    assumeNoGC(&pixman_region_fini)(pReg);
+    if (pReg != &RegionBrokenRegion)
+        free(pReg);
+}
 
-// RegionPtr RegionDuplicate(RegionPtr pOld)
-// {
-//     RegionPtr pNew = void;
+RegionPtr RegionDuplicate(RegionPtr pOld)
+{
+    RegionPtr pNew = void;
 
-//     pNew = RegionCreate(&pOld.extents, 0);
-//     if (!pNew)
-//         return null;
-//     if (!RegionCopy(pNew, pOld)) {
-//         RegionDestroy(pNew);
-//         return null;
-//     }
-//     return pNew;
-// }
+    pNew = RegionCreate(&pOld.extents, 0);
+    if (!pNew)
+        return null;
+    if (!RegionCopy(pNew, pOld)) {
+        RegionDestroy(pNew);
+        return null;
+    }
+    return pNew;
+}
 
-// void RegionPrint(RegionPtr rgn)
-// {
-//     int num = void, size = void;
-//     BoxPtr rects = void;
+void RegionPrint(RegionPtr rgn)
+{
+    int num = void, size = void;
+    BoxPtr rects = void;
 
-//     num = RegionNumRects(rgn);
-//     size = RegionSize(rgn);
-//     rects = RegionRects(rgn);
-//     ErrorF("[mi] num: %d size: %d\n", num, size);
-//     ErrorF("[mi] extents: %d %d %d %d\n",
-//            rgn.extents.x1, rgn.extents.y1, rgn.extents.x2, rgn.extents.y2);
-//     for (int i = 0; i < num; i++)
-//         ErrorF("[mi] %d %d %d %d \n",
-//                rects[i].x1, rects[i].y1, rects[i].x2, rects[i].y2);
-//     ErrorF("[mi] \n");
-// }
+    num = RegionNumRects(rgn);
+    size = RegionSize(rgn);
+    rects = RegionRects(rgn);
+    ErrorF("[mi] num: %d size: %d\n", num, size);
+    ErrorF("[mi] extents: %d %d %d %d\n",
+           rgn.extents.x1, rgn.extents.y1, rgn.extents.x2, rgn.extents.y2);
+    for (int i = 0; i < num; i++)
+        ErrorF("[mi] %d %d %d %d \n",
+               rects[i].x1, rects[i].y1, rects[i].x2, rects[i].y2);
+    ErrorF("[mi] \n");
+}
 
 // // version (DEBUG) {
-// Bool RegionIsValid(RegionPtr reg)
-// {
-//     int numRects = void;
+Bool RegionIsValid(RegionPtr reg)
+{
+    int numRects = void;
 
-//     if ((reg.extents.x1 > reg.extents.x2) ||
-//         (reg.extents.y1 > reg.extents.y2))
-//         return FALSE;
-//     numRects = RegionNumRects(reg);
-//     if (!numRects)
-//         return ((reg.extents.x1 == reg.extents.x2) &&
-//                 (reg.extents.y1 == reg.extents.y2) &&
-//                 (reg.data.size || (reg.data == &RegionEmptyData)));
-//     else if (numRects == 1)
-//         return !reg.data;
-//     else {
-//         BoxPtr pboxP = void, pboxN = void;
-//         BoxRec box = void;
+    if ((reg.extents.x1 > reg.extents.x2) ||
+        (reg.extents.y1 > reg.extents.y2))
+        return FALSE;
+    numRects = RegionNumRects(reg);
+    if (!numRects)
+        return ((reg.extents.x1 == reg.extents.x2) &&
+                (reg.extents.y1 == reg.extents.y2) &&
+                (reg.data.size || (reg.data == &RegionEmptyData)));
+    else if (numRects == 1)
+        return !reg.data;
+    else {
+        BoxPtr pboxP = void, pboxN = void;
+        BoxRec box = void;
 
-//         pboxP = RegionRects(reg);
-//         box = *pboxP;
-//         box.y2 = pboxP[numRects - 1].y2;
-//         pboxN = pboxP + 1;
-//         for (int i = numRects; --i > 0; pboxP++, pboxN++) {
-//             if ((pboxN.x1 >= pboxN.x2) || (pboxN.y1 >= pboxN.y2))
-//                 return FALSE;
-//             if (pboxN.x1 < box.x1)
-//                 box.x1 = pboxN.x1;
-//             if (pboxN.x2 > box.x2)
-//                 box.x2 = pboxN.x2;
-//             if ((pboxN.y1 < pboxP.y1) ||
-//                 ((pboxN.y1 == pboxP.y1) &&
-//                  ((pboxN.x1 < pboxP.x2) || (pboxN.y2 != pboxP.y2))))
-//                 return FALSE;
-//         }
-//         return ((box.x1 == reg.extents.x1) &&
-//                 (box.x2 == reg.extents.x2) &&
-//                 (box.y1 == reg.extents.y1) && (box.y2 == reg.extents.y2));
-//     }
-// }
-// // }                          /* DEBUG */
+        pboxP = RegionRects(reg);
+        box = *pboxP;
+        box.y2 = pboxP[numRects - 1].y2;
+        pboxN = pboxP + 1;
+        for (int i = numRects; --i > 0; pboxP++, pboxN++) {
+            if ((pboxN.x1 >= pboxN.x2) || (pboxN.y1 >= pboxN.y2))
+                return FALSE;
+            if (pboxN.x1 < box.x1)
+                box.x1 = pboxN.x1;
+            if (pboxN.x2 > box.x2)
+                box.x2 = pboxN.x2;
+            if ((pboxN.y1 < pboxP.y1) ||
+                ((pboxN.y1 == pboxP.y1) &&
+                 ((pboxN.x1 < pboxP.x2) || (pboxN.y2 != pboxP.y2))))
+                return FALSE;
+        }
+        return ((box.x1 == reg.extents.x1) &&
+                (box.x2 == reg.extents.x2) &&
+                (box.y1 == reg.extents.y1) && (box.y2 == reg.extents.y2));
+    }
+}
+// }                          /* DEBUG */
 
-// Bool RegionBreak(RegionPtr pReg)
-// {
-//     xfreeData(pReg);
-//     pReg.extents = RegionEmptyBox;
-//     pReg.data = &RegionBrokenData;
-//     return FALSE;
-// }
+Bool RegionBreak(RegionPtr pReg)
+{
+    xfreeData(pReg);
+    pReg.extents = RegionEmptyBox;
+    pReg.data = &RegionBrokenData;
+    return FALSE;
+}
 
-// Bool RegionRectAlloc(RegionPtr pRgn, int n)
-// {
-//     RegDataPtr data = void;
-//     size_t rgnSize = void;
+Bool RegionRectAlloc(RegionPtr pRgn, int n)
+{
+    RegDataPtr data = void;
+    size_t rgnSize = void;
 
-//     if (!pRgn.data) {
-//         n++;
-//         rgnSize = RegionSizeof(n);
-//         pRgn.data = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
-//         if (!pRgn.data)
-//             return RegionBreak(pRgn);
-//         pRgn.data.numRects = 1;
-//         *RegionBoxptr(pRgn) = pRgn.extents;
-//     }
-//     else if (!pRgn.data.size) {
-//         rgnSize = RegionSizeof(n);
-//         pRgn.data = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
-//         if (!pRgn.data)
-//             return RegionBreak(pRgn);
-//         pRgn.data.numRects = 0;
-//     }
-//     else {
-//         if (n == 1) {
-//             n = cast(int)pRgn.data.numRects;
-//             if (n > 500)        /* XXX pick numbers out of a hat */
-//                 n = 250;
-//         }
-//         n += pRgn.data.numRects;
-//         rgnSize = RegionSizeof(n);
-//         data = (rgnSize > 0) ? cast(pixman_region16_data*)realloc(pRgn.data, rgnSize) : null;
-//         if (!data)
-//             return RegionBreak(pRgn);
-//         pRgn.data = data;
-//     }
-//     pRgn.data.size = n;
-//     return TRUE;
-// }
+    if (!pRgn.data) {
+        n++;
+        rgnSize = RegionSizeof(n);
+        pRgn.data = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
+        if (!pRgn.data)
+            return RegionBreak(pRgn);
+        pRgn.data.numRects = 1;
+        *RegionBoxptr(pRgn) = pRgn.extents;
+    }
+    else if (!pRgn.data.size) {
+        rgnSize = RegionSizeof(n);
+        pRgn.data = (rgnSize > 0) ? cast(pixman_region16_data*)calloc(1, rgnSize) : null;
+        if (!pRgn.data)
+            return RegionBreak(pRgn);
+        pRgn.data.numRects = 0;
+    }
+    else {
+        if (n == 1) {
+            n = cast(int)pRgn.data.numRects;
+            if (n > 500)        /* XXX pick numbers out of a hat */
+                n = 250;
+        }
+        n += pRgn.data.numRects;
+        rgnSize = RegionSizeof(n);
+        data = (rgnSize > 0) ? cast(pixman_region16_data*)realloc(pRgn.data, rgnSize) : null;
+        if (!data)
+            return RegionBreak(pRgn);
+        pRgn.data = data;
+    }
+    pRgn.data.size = n;
+    return TRUE;
+}
 
 // /*======================================================================
 //  *	    Generic Region Operator
@@ -1106,182 +1106,182 @@ void InitRegions()
 //  *-----------------------------------------------------------------------
 //  */
 
-// Bool RegionValidate(RegionPtr badreg, Bool* pOverlap)
-// {
-//     /* Descriptor for regions under construction  in Step 2. */
-//     struct RegionInfo {
-//         RegionRec reg = void;
-//         int prevBand = void;
-//         int curBand = void;
-//     }
+Bool RegionValidate(RegionPtr badreg, Bool* pOverlap)
+{
+    /* Descriptor for regions under construction  in Step 2. */
+    struct RegionInfo {
+        RegionRec reg = void;
+        int prevBand = void;
+        int curBand = void;
+    }
 
-//     int numRects = void;               /* Original numRects for badreg         */
-//     int numRI = void;                  /* Number of entries used in ri         */
-//     int sizeRI = void;                 /* Number of entries available in ri    */
-//     RegionInfo* rit = void;            /* &ri[j]                                */
-//     RegionPtr reg = void;              /* ri[j].reg                     */
-//     BoxPtr box = void;                 /* Current box in rects                 */
-//     BoxPtr riBox = void;               /* Last box in ri[j].reg                */
-//     RegionPtr hreg = void;             /* ri[j_half].reg                        */
-//     Bool ret = TRUE;
+    int numRects = void;               /* Original numRects for badreg         */
+    int numRI = void;                  /* Number of entries used in ri         */
+    int sizeRI = void;                 /* Number of entries available in ri    */
+    RegionInfo* rit = void;            /* &ri[j]                                */
+    RegionPtr reg = void;              /* ri[j].reg                     */
+    BoxPtr box = void;                 /* Current box in rects                 */
+    BoxPtr riBox = void;               /* Last box in ri[j].reg                */
+    RegionPtr hreg = void;             /* ri[j_half].reg                        */
+    Bool ret = TRUE;
 
-//     *pOverlap = FALSE;
-//     if (!badreg.data) {
-//         mixin(good!(`badreg`));
-//         return TRUE;
-//     }
-//     numRects = cast(int)badreg.data.numRects;
-//     if (!numRects) {
-//         if (RegionNar(badreg))
-//             return FALSE;
-//         mixin(good!(`badreg`));
-//         return TRUE;
-//     }
-//     if (badreg.extents.x1 < badreg.extents.x2) {
-//         if ((numRects) == 1) {
-//             xfreeData(badreg);
-//             badreg.data = cast(RegDataPtr) null;
-//         }
-//         else {
-//             mixin(DOWNSIZE!(`badreg`, `numRects`));
-//         }
-//         mixin(good!(`badreg`));
-//         return TRUE;
-//     }
+    *pOverlap = FALSE;
+    if (!badreg.data) {
+        mixin(good!(`badreg`));
+        return TRUE;
+    }
+    numRects = cast(int)badreg.data.numRects;
+    if (!numRects) {
+        if (RegionNar(badreg))
+            return FALSE;
+        mixin(good!(`badreg`));
+        return TRUE;
+    }
+    if (badreg.extents.x1 < badreg.extents.x2) {
+        if ((numRects) == 1) {
+            xfreeData(badreg);
+            badreg.data = cast(RegDataPtr) null;
+        }
+        else {
+            mixin(DOWNSIZE!(`badreg`, `numRects`));
+        }
+        mixin(good!(`badreg`));
+        return TRUE;
+    }
 
-//     /* Step 1: Sort the rects array into ascending (y1, x1) order */
-//     QuickSortRects(RegionBoxptr(badreg), numRects);
+    /* Step 1: Sort the rects array into ascending (y1, x1) order */
+    QuickSortRects(RegionBoxptr(badreg), numRects);
 
-//     /* Step 2: Scatter the sorted array into the minimum number of regions */
+    /* Step 2: Scatter the sorted array into the minimum number of regions */
 
-//     /* Set up the first region to be the first rectangle in badreg */
-//     /* Note that step 2 code will never overflow the ri[0].reg rects array */
-//     RegionInfo* ri = cast(RegionInfo*) calloc(4, RegionInfo.sizeof);
-//     if (!ri)
-//         return RegionBreak(badreg);
-//     sizeRI = 4;
-//     numRI = 1;
-//     ri[0].prevBand = 0;
-//     ri[0].curBand = 0;
-//     ri[0].reg = *badreg;
-//     box = RegionBoxptr(&ri[0].reg);
-//     ri[0].reg.extents = *box;
-//     ri[0].reg.data.numRects = 1;
+    /* Set up the first region to be the first rectangle in badreg */
+    /* Note that step 2 code will never overflow the ri[0].reg rects array */
+    RegionInfo* ri = cast(RegionInfo*) calloc(4, RegionInfo.sizeof);
+    if (!ri)
+        return RegionBreak(badreg);
+    sizeRI = 4;
+    numRI = 1;
+    ri[0].prevBand = 0;
+    ri[0].curBand = 0;
+    ri[0].reg = *badreg;
+    box = RegionBoxptr(&ri[0].reg);
+    ri[0].reg.extents = *box;
+    ri[0].reg.data.numRects = 1;
 
-//     /* Now scatter rectangles into the minimum set of valid regions.  If the
-//        next rectangle to be added to a region would force an existing rectangle
-//        in the region to be split up in order to maintain y-x banding, just
-//        forget it.  Try the next region.  If it doesn't fit cleanly into any
-//        region, make a new one. */
+    /* Now scatter rectangles into the minimum set of valid regions.  If the
+       next rectangle to be added to a region would force an existing rectangle
+       in the region to be split up in order to maintain y-x banding, just
+       forget it.  Try the next region.  If it doesn't fit cleanly into any
+       region, make a new one. */
 
-//     for (int i = numRects; --i > 0;) {
-//         box++;
-//         /* Look for a region to append box to */
-// 	rit = ri;
-//         for (int j = numRI; --j >= 0; rit++) {
-//             reg = &rit.reg;
-//             riBox = RegionEnd(reg);
+    for (int i = numRects; --i > 0;) {
+        box++;
+        /* Look for a region to append box to */
+	rit = ri;
+        for (int j = numRI; --j >= 0; rit++) {
+            reg = &rit.reg;
+            riBox = RegionEnd(reg);
 
-//             if (box.y1 == riBox.y1 && box.y2 == riBox.y2) {
-//                 /* box is in same band as riBox.  Merge or append it */
-//                 if (box.x1 <= riBox.x2) {
-//                     /* Merge it with riBox */
-//                     if (box.x1 < riBox.x2)
-//                         *pOverlap = TRUE;
-//                     if (box.x2 > riBox.x2)
-//                         riBox.x2 = box.x2;
-//                 }
-//                 else {
-//                     mixin(RECTALLOC_BAIL!(`reg`, `1`, `bail`));
-//                     *RegionTop(reg) = *box;
-//                     reg.data.numRects++;
-//                 }
-//                 goto NextRect;  /* So sue me */
-//             }
-//             else if (box.y1 >= riBox.y2) {
-//                 /* Put box into new band */
-//                 if (reg.extents.x2 < riBox.x2)
-//                     reg.extents.x2 = riBox.x2;
-//                 if (reg.extents.x1 > box.x1)
-//                     reg.extents.x1 = box.x1;
-//                 mixin(Coalesce!(`reg`, `rit.prevBand`, `rit.curBand`));
-//                 rit.curBand = cast(int)reg.data.numRects;
-//                 mixin(RECTALLOC_BAIL!(`reg`, `1`, `bail`));
-//                 *RegionTop(reg) = *box;
-//                 reg.data.numRects++;
-//                 goto NextRect;
-//             }
-//             /* Well, this region was inappropriate.  Try the next one. */
-//         }                       /* for j */
+            if (box.y1 == riBox.y1 && box.y2 == riBox.y2) {
+                /* box is in same band as riBox.  Merge or append it */
+                if (box.x1 <= riBox.x2) {
+                    /* Merge it with riBox */
+                    if (box.x1 < riBox.x2)
+                        *pOverlap = TRUE;
+                    if (box.x2 > riBox.x2)
+                        riBox.x2 = box.x2;
+                }
+                else {
+                    mixin(RECTALLOC_BAIL!(`reg`, `1`, `bail`));
+                    *RegionTop(reg) = *box;
+                    reg.data.numRects++;
+                }
+                goto NextRect;  /* So sue me */
+            }
+            else if (box.y1 >= riBox.y2) {
+                /* Put box into new band */
+                if (reg.extents.x2 < riBox.x2)
+                    reg.extents.x2 = riBox.x2;
+                if (reg.extents.x1 > box.x1)
+                    reg.extents.x1 = box.x1;
+                mixin(Coalesce!(`reg`, `rit.prevBand`, `rit.curBand`));
+                rit.curBand = cast(int)reg.data.numRects;
+                mixin(RECTALLOC_BAIL!(`reg`, `1`, `bail`));
+                *RegionTop(reg) = *box;
+                reg.data.numRects++;
+                goto NextRect;
+            }
+            /* Well, this region was inappropriate.  Try the next one. */
+        }                       /* for j */
 
-//         /* Uh-oh.  No regions were appropriate.  Create a new one. */
-//         if (sizeRI == numRI) {
-//             /* Oops, allocate space for new region information */
-//             sizeRI <<= 1;
-//             rit = cast(RegionInfo*) cast(RegionInfo*) reallocarray(ri, sizeRI, RegionInfo.sizeof);
-//             if (!rit)
-//                 goto bail;
-//             ri = rit;
-//             rit = &ri[numRI];
-//         }
-//         numRI++;
-//         rit.prevBand = 0;
-//         rit.curBand = 0;
-//         rit.reg.extents = *box;
-//         rit.reg.data = null;
-//         if (!RegionRectAlloc(&rit.reg, (i + numRI) / numRI))   /* MUST force allocation */
-//             goto bail;
-//  NextRect:{}
-//     }                           /* for i */
+        /* Uh-oh.  No regions were appropriate.  Create a new one. */
+        if (sizeRI == numRI) {
+            /* Oops, allocate space for new region information */
+            sizeRI <<= 1;
+            rit = cast(RegionInfo*) cast(RegionInfo*) reallocarray(ri, sizeRI, RegionInfo.sizeof);
+            if (!rit)
+                goto bail;
+            ri = rit;
+            rit = &ri[numRI];
+        }
+        numRI++;
+        rit.prevBand = 0;
+        rit.curBand = 0;
+        rit.reg.extents = *box;
+        rit.reg.data = null;
+        if (!RegionRectAlloc(&rit.reg, (i + numRI) / numRI))   /* MUST force allocation */
+            goto bail;
+ NextRect:{}
+    }                           /* for i */
 
-//     /* Make a final pass over each region in order to Coalesce and set
-//        extents.x2 and extents.y2 */
+    /* Make a final pass over each region in order to Coalesce and set
+       extents.x2 and extents.y2 */
 
-//     rit = ri;
-//     for (int j = numRI; --j >= 0; rit++) {
-//         reg = &rit.reg;
-//         riBox = RegionEnd(reg);
-//         reg.extents.y2 = riBox.y2;
-//         if (reg.extents.x2 < riBox.x2)
-//             reg.extents.x2 = riBox.x2;
-//         mixin(Coalesce!(`reg`, `rit.prevBand`, `rit.curBand`));
-//         if (reg.data.numRects == 1) { /* keep unions happy below */
-//             xfreeData(reg);
-//             reg.data = null;
-//         }
-//     }
+    rit = ri;
+    for (int j = numRI; --j >= 0; rit++) {
+        reg = &rit.reg;
+        riBox = RegionEnd(reg);
+        reg.extents.y2 = riBox.y2;
+        if (reg.extents.x2 < riBox.x2)
+            reg.extents.x2 = riBox.x2;
+        mixin(Coalesce!(`reg`, `rit.prevBand`, `rit.curBand`));
+        if (reg.data.numRects == 1) { /* keep unions happy below */
+            xfreeData(reg);
+            reg.data = null;
+        }
+    }
 
-//     /* Step 3: Union all regions into a single region */
-//     while (numRI > 1) {
-//         int half = numRI / 2;
+    /* Step 3: Union all regions into a single region */
+    while (numRI > 1) {
+        int half = numRI / 2;
 
-//         for (int j = numRI & 1; j < (half + (numRI & 1)); j++) {
-//             reg = &ri[j].reg;
-//             hreg = &ri[j + half].reg;
-//             if (!RegionOp(reg, reg, hreg, &RegionUnionO, TRUE, TRUE, pOverlap))
-//                 ret = FALSE;
-//             if (hreg.extents.x1 < reg.extents.x1)
-//                 reg.extents.x1 = hreg.extents.x1;
-//             if (hreg.extents.y1 < reg.extents.y1)
-//                 reg.extents.y1 = hreg.extents.y1;
-//             if (hreg.extents.x2 > reg.extents.x2)
-//                 reg.extents.x2 = hreg.extents.x2;
-//             if (hreg.extents.y2 > reg.extents.y2)
-//                 reg.extents.y2 = hreg.extents.y2;
-//             xfreeData(hreg);
-//         }
-//         numRI -= half;
-//     }
-//     *badreg = ri[0].reg;
-//     free(ri);
-//     mixin(good!(`badreg`));
-//     return ret;
-//  bail:
-//     for (int i = 0; i < numRI; i++)
-//         xfreeData(&ri[i].reg);
-//     free(ri);
-//     return RegionBreak(badreg);
-// }
+        for (int j = numRI & 1; j < (half + (numRI & 1)); j++) {
+            reg = &ri[j].reg;
+            hreg = &ri[j + half].reg;
+            if (!RegionOp(reg, reg, hreg, &RegionUnionO, TRUE, TRUE, pOverlap))
+                ret = FALSE;
+            if (hreg.extents.x1 < reg.extents.x1)
+                reg.extents.x1 = hreg.extents.x1;
+            if (hreg.extents.y1 < reg.extents.y1)
+                reg.extents.y1 = hreg.extents.y1;
+            if (hreg.extents.x2 > reg.extents.x2)
+                reg.extents.x2 = hreg.extents.x2;
+            if (hreg.extents.y2 > reg.extents.y2)
+                reg.extents.y2 = hreg.extents.y2;
+            xfreeData(hreg);
+        }
+        numRI -= half;
+    }
+    *badreg = ri[0].reg;
+    free(ri);
+    mixin(good!(`badreg`));
+    return ret;
+ bail:
+    for (int i = 0; i < numRI; i++)
+        xfreeData(&ri[i].reg);
+    free(ri);
+    return RegionBreak(badreg);
+}
 
 // RegionPtr RegionFromRects(int nrects, xRectangle* prect, int ctype)
 // {

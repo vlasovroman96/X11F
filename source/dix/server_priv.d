@@ -16,7 +16,7 @@ struct ServerAccessCallbackParam {
     int status;
 }
 
-// extern CallbackListPtr ServerAccessCallback;
+// CallbackListPtr ServerAccessCallback;
 
 pragma(inline, true) int dixCallServerAccessCallback(ClientPtr client, Mask access_mode)
 {
@@ -26,6 +26,6 @@ pragma(inline, true) int dixCallServerAccessCallback(ClientPtr client, Mask acce
 }
 
 /* NVidia v.390 proprietary driver needs this */
-// extern void * ConnectionInfo;
+// void * ConnectionInfo;
 
  /* _XSERVER_DIX_SERVER_PRIV_H */

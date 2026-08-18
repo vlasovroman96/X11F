@@ -13,10 +13,10 @@ import include.screenint;
 import include.pixmap;
 import dix.resource;
 
-// extern int PanoramiXNumScreens;
-// extern int PanoramiXPixWidth;
-// extern int PanoramiXPixHeight;
-extern RegionRec PanoramiXScreenRegion;
+// int PanoramiXNumScreens;
+// int PanoramiXPixWidth;
+// int PanoramiXPixHeight;
+RegionRec PanoramiXScreenRegion;
 
 // exported for nvidia
 // export VisualID PanoramiXTranslateVisualID(int screen, VisualID orig);
@@ -28,13 +28,13 @@ Bool XineramaRegisterConnectionBlockCallback(void function() func);
 int XineramaDeleteResource(void*, XID);
 
 /* only exported for Nvidia legacy. This really shouldn't be used by drivers */
-// extern RESTYPE XRC_DRAWABLE;
+// RESTYPE XRC_DRAWABLE;
 
-// extern RESTYPE XRT_WINDOW;
-// extern RESTYPE XRT_PIXMAP;
-// extern RESTYPE XRT_GC;
-// extern RESTYPE XRT_COLORMAP;
-extern RESTYPE XRT_PICTURE;
+// RESTYPE XRT_WINDOW;
+// RESTYPE XRT_PIXMAP;
+// RESTYPE XRT_GC;
+// RESTYPE XRT_COLORMAP;
+RESTYPE XRT_PICTURE;
 
 /*
  * Drivers are allowed to wrap this function.  Each wrapper can decide that the

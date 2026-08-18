@@ -20,7 +20,7 @@ import externs.xcb.xcbext;
 enum XCB_XCMISC_MAJOR_VERSION = 1;
 enum XCB_XCMISC_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_xc_misc_id;
+xcb_extension_t xcb_xc_misc_id;
 
 /**
  * @brief xcb_xc_misc_get_version_cookie_t

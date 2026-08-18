@@ -109,29 +109,29 @@ enum string xnfstrdup(string s) = `XNFstrdup(` ~ s ~ `)`;
 public import core.stdc.stdio;
 public import core.stdc.stdarg;
 
-// extern void ReadFdFromClient(ClientPtr client);
+// void ReadFdFromClient(ClientPtr client);
 
-// extern void WriteToClient(ClientPtr, int, const(void)*);
+// void WriteToClient(ClientPtr, int, const(void)*);
 
 alias NotifyFdProcPtr = void function(int fd, int ready, void* data);
 
 public import include.fd_notify;
 
-// extern void SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
+// void SetNotifyFd(int fd, NotifyFdProcPtr notify_fd, int mask, void* data);
 
 pragma(inline, true) void RemoveNotifyFd(int fd)
 {
     cast(void) SetNotifyFd(fd, null, X_NOTIFY_NONE, null);
 }
 
-extern void IgnoreClient(ClientPtr);
+void IgnoreClient(ClientPtr);
 
-extern void AttendClient(ClientPtr);
+void AttendClient(ClientPtr);
 
-// extern uint GetTimeInMillis();
-// extern ulong GetTimeInMicros();
+// uint GetTimeInMillis();
+// ulong GetTimeInMicros();
 
-// extern void AdjustWaitForDelay(void* waitTime, int newdelay);
+// void AdjustWaitForDelay(void* waitTime, int newdelay);
 
 // struct _OsTimerRec;
 alias OsTimerPtr = _OsTimerRec*;
@@ -141,64 +141,64 @@ alias OsTimerCallback = CARD32 function(OsTimerPtr timer, CARD32 time, void* arg
 enum TimerAbsolute = (1<<0);
 enum TimerForceOld = (1<<1);
 
-// extern OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
+// OsTimerPtr TimerSet(OsTimerPtr timer, int flags, CARD32 millis, OsTimerCallback func, void* arg);
 
-// extern void TimerCancel(OsTimerPtr);
-// extern void TimerFree(OsTimerPtr);
+// void TimerCancel(OsTimerPtr);
+// void TimerFree(OsTimerPtr);
 
-// extern void GiveUp(int);
+// void GiveUp(int);
 
 /*
  * This function malloc(3)s buffer, terminating the server if there is not
  * enough memory.
  */
-extern void* XNFalloc(c_ulong);
+void* XNFalloc(c_ulong);
 
 /*
  * This function calloc(3)s buffer, terminating the server if there is not
  * enough memory.
  */
-extern void* XNFcalloc(c_ulong);
+void* XNFcalloc(c_ulong);
 
 /*
  * This function calloc(3)s buffer, terminating the server if there is not
  * enough memory or the arguments overflow when multiplied
  */
-extern void* XNFcallocarray(size_t nmemb, size_t size);
+void* XNFcallocarray(size_t nmemb, size_t size);
 
 /*
  * This function realloc(3)s passed buffer, terminating the server if there is
  * not enough memory.
  */
-extern void* XNFrealloc(void*, c_ulong);
+void* XNFrealloc(void*, c_ulong);
 
 /*
  * This function strdup(3)s passed string. The only difference from the library
  * function that it is safe to pass NULL, as NULL will be returned.
  */
-extern void* Xstrdup(const(char)* s);
+void* Xstrdup(const(char)* s);
 
 /*
  * This function strdup(3)s passed string, terminating the server if there is
  * not enough memory. If NULL is passed to this function, NULL is returned.
  */
-extern void* XNFstrdup(const(char)* s);
+void* XNFstrdup(const(char)* s);
 
 /* Include new X*asprintf API */
 public import include.Xprintf;
 
 alias OsSigWrapperPtr = int function(int);
 
-extern void OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
+void OsRegisterSigWrapper(OsSigWrapperPtr newWrap);
 
-// extern void PrivsElevated();
+// void PrivsElevated();
 
-// extern void GetClientFd(ClientPtr);
+// void GetClientFd(ClientPtr);
 
 /* stuff for FlushCallback */
-// extern CallbackListPtr FlushCallback;
+// CallbackListPtr FlushCallback;
 
-extern void TimeSinceLastInputEvent();
+void TimeSinceLastInputEvent();
 
 /* Function fallbacks provided by AC_REPLACE_FUNCS in configure.ac */
 
@@ -206,27 +206,27 @@ version (HAVE_REALLOCARRAY) {
 
 enum reallocarray = xreallocarray;
 } else {
-extern void* reallocarray(void* optr, size_t nmemb, size_t size);
+void* reallocarray(void* optr, size_t nmemb, size_t size);
 }
 
 version (HAVE_STRCASESTR) {
 enum strcasestr = xstrcasestr;
 
 } else {
-extern void* xstrcasestr(const(char)* s, const(char)* find);
+void* xstrcasestr(const(char)* s, const(char)* find);
 }
 
 version (HAVE_STRLCPY) {} else {
-extern ulong strlcpy(char* dst, const(char)* src, size_t siz);
-extern void strlcat(char* dst, const(char)* src, size_t siz);
+ulong strlcpy(char* dst, const(char)* src, size_t siz);
+void strlcat(char* dst, const(char)* src, size_t siz);
 }
 
 version (HAVE_STRNDUP) {} else {
-// extern void* strndup(const(char)* str, size_t n);
+// void* strndup(const(char)* str, size_t n);
 }
 
 version (HAVE_TIMINGSAFE_MEMCMP) {} else {
-// extern void timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
+// void timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
 }
 
 /* Flags for log messages. */
@@ -258,17 +258,17 @@ alias X_DEBUG = MessageType.X_DEBUG;
 alias X_UNKNOWN = MessageType.X_UNKNOWN;
 
 
-extern void _X_ATTRIBUTE_PRINTF();
-extern void _X_ATTRIBUTE_PRINTF();
-extern void _X_ATTRIBUTE_PRINTF();
+void _X_ATTRIBUTE_PRINTF();
+void _X_ATTRIBUTE_PRINTF();
+void _X_ATTRIBUTE_PRINTF();
 
-// extern void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...);
+// void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_list msg_args, const(char)* hdr_format, ...);
 
-// extern void _X_NORETURN;
+// void _X_NORETURN;
 
-extern void _X_ATTRIBUTE_PRINTF();
+void _X_ATTRIBUTE_PRINTF();
 
-extern void xorg_backtrace();
+void xorg_backtrace();
 
 /* should not be used anymore, just for backwards compat with drivers */
 // enum string LogVMessageVerbSigSafe(...) = `LogVMessageVerb(__VA_ARGS__)`;

@@ -101,8 +101,8 @@ enum GLAMOR_GL_CORE_VER_MINOR = 1;
  * be called after the DDX's screen initialization or at the last
  * step of the DDX's screen initialization.
  */
-extern int glamor_init(ScreenPtr screen, uint flags);
-extern int glamor_fini(ScreenPtr screen);
+int glamor_init(ScreenPtr screen, uint flags);
+int glamor_fini(ScreenPtr screen);
 
 /* This function is used to free the glamor private screen's
  * resources. If the DDX driver is not set GLAMOR_USE_SCREEN,
@@ -114,13 +114,13 @@ extern int glamor_fini(ScreenPtr screen);
  * the internal data structure still exist at that time.
  * Otherwise, the glamor internal structure will not be freed.*/
 
-extern int glamor_get_pixmap_texture(PixmapPtr pixmap);
+int glamor_get_pixmap_texture(PixmapPtr pixmap);
 
-extern int glamor_clear_pixmap(PixmapPtr pixmap);
+int glamor_clear_pixmap(PixmapPtr pixmap);
 
-// extern int glamor_block_handler(ScreenPtr screen);
+// int glamor_block_handler(ScreenPtr screen);
 
-// extern int glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint usage);
+// int glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint usage);
 
 /* needed by Xrdp module include.*/
 enum GLAMOR_CREATE_PIXMAP_CPU =        0x100;
@@ -138,9 +138,9 @@ enum GLAMOR_CREATE_FORMAT_CBCR =       0x107;
  * Used by the DRI2 page flip. This function will exchange the KHR images and
  * fbos of the two pixmaps.
  * */
-extern int glamor_egl_exchange_buffers(PixmapPtr front, PixmapPtr back);
+int glamor_egl_exchange_buffers(PixmapPtr front, PixmapPtr back);
 
-extern gbm_device* glamor_egl_get_gbm_device(ScreenPtr screen);
+gbm_device* glamor_egl_get_gbm_device(ScreenPtr screen);
 
 /* @glamor_supports_pixmap_import_export: Returns whether
  * glamor_fds_from_pixmap(), glamor_name_from_pixmap(), and
@@ -155,7 +155,7 @@ extern gbm_device* glamor_egl_get_gbm_device(ScreenPtr screen);
  *
  * .EGL_KHR_surfaceless_context
  * */
-extern int glamor_supports_pixmap_import_export(ScreenPtr screen);
+int glamor_supports_pixmap_import_export(ScreenPtr screen);
 
 /* @glamor_fds_from_pixmap: Get a dma-buf fd from a pixmap.
  *
@@ -183,7 +183,7 @@ extern int glamor_supports_pixmap_import_export(ScreenPtr screen);
  * content.
  * Returns the fd on success, -1 on error.
  * */
-extern int glamor_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, CARD16* stride, CARD32* size);
+int glamor_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, CARD16* stride, CARD32* size);
 
 /* @glamor_shareable_fd_from_pixmap: Get a dma-buf fd suitable for sharing
  *				     with other GPUs from a pixmap.
@@ -200,7 +200,7 @@ extern int glamor_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, CARD16* str
  * The pixmap's stride may be modified by this function.
  * Returns the fd on success, -1 on error.
  * */
-extern int glamor_shareable_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, CARD16* stride, CARD32* size);
+int glamor_shareable_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, CARD16* stride, CARD32* size);
 
 /**
  * @glamor_name_from_pixmap: Gets a gem name from a pixmap.
@@ -214,7 +214,7 @@ extern int glamor_shareable_fd_from_pixmap(ScreenPtr screen, PixmapPtr pixmap, C
  *
  * Returns the name on success, -1 on error.
  * */
-extern int glamor_name_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* size);
+int glamor_name_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* size);
 
 /* @glamor_gbm_bo_from_pixmap: Get a GBM bo from a pixmap.
  *
@@ -228,7 +228,7 @@ extern int glamor_name_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* siz
  *
  * Returns the gbm_bo on success, NULL on error.
  * */
-extern gbm_bo* glamor_gbm_bo_from_pixmap(ScreenPtr screen, PixmapPtr pixmap);
+gbm_bo* glamor_gbm_bo_from_pixmap(ScreenPtr screen, PixmapPtr pixmap);
 
 /* @glamor_pixmap_from_fds: Creates a pixmap to wrap a dma-buf fds.
  *
@@ -260,7 +260,7 @@ extern gbm_bo* glamor_gbm_bo_from_pixmap(ScreenPtr screen, PixmapPtr pixmap);
  *
  * Returns a valid pixmap if the import succeeded, else NULL.
  * */
-extern int glamor_pixmap_from_fd(ScreenPtr screen, int fd, CARD16 width, CARD16 height, CARD16 stride, CARD8 depth, CARD8 bpp);
+int glamor_pixmap_from_fd(ScreenPtr screen, int fd, CARD16 width, CARD16 height, CARD16 stride, CARD8 depth, CARD8 bpp);
 
 /* @glamor_back_pixmap_from_fd: Backs an existing pixmap with a dma-buf fd.
  *
@@ -274,7 +274,7 @@ extern int glamor_pixmap_from_fd(ScreenPtr screen, int fd, CARD16 width, CARD16 
  *
  * Returns TRUE if successful, FALSE on failure.
  * */
-extern int glamor_back_pixmap_from_fd(PixmapPtr pixmap, int fd, CARD16 width, CARD16 height, CARD16 stride, CARD8 depth, CARD8 bpp);
+int glamor_back_pixmap_from_fd(PixmapPtr pixmap, int fd, CARD16 width, CARD16 height, CARD16 stride, CARD8 depth, CARD8 bpp);
 
 /* for xorgrdp */ Bool glamor_get_formats(ScreenPtr screen, CARD32* num_formats, CARD32** formats);
 
@@ -282,7 +282,7 @@ extern int glamor_back_pixmap_from_fd(PixmapPtr pixmap, int fd, CARD16 width, CA
 
 /* for xorgrdp */ Bool glamor_get_drawable_modifiers(DrawablePtr draw, uint format, uint* num_modifiers, ulong** modifiers);
 
-extern int glamor_set_drawable_modifiers_func(ScreenPtr screen, GetDrawableModifiersFuncPtr func);
+int glamor_set_drawable_modifiers_func(ScreenPtr screen, GetDrawableModifiersFuncPtr func);
 
 
 enum GLAMOR_EGL_MODULE_NAME =  "glamoregl";
@@ -296,7 +296,7 @@ enum GLAMOR_EGL_MODULE_NAME =  "glamoregl";
  * Should be called from DDX's preInit function.
  * Return TRUE if success, otherwise return FALSE.
  * */
-extern int glamor_egl_init(ScrnInfoPtr scrn, int fd);
+int glamor_egl_init(ScrnInfoPtr scrn, int fd);
 
 enum {
     GLAMOR_EGL_CAP_NONE = 0,
@@ -325,9 +325,9 @@ enum GLAMOR_EGL_DEFAULT_CAPS = (GLAMOR_EGL_CAP_DRI3 | GLAMOR_EGL_CAP_DRI3_IMPORT
  * If caps is not NULL, it is set to a bitmask
  * describing what glamor capabilites are available.
  * */
-extern int glamor_egl_init2(ScrnInfoPtr scrn, int fd, int* caps, int flags);
+int glamor_egl_init2(ScrnInfoPtr scrn, int fd, int* caps, int flags);
 
-extern int glamor_egl_init_textured_pixmap(ScreenPtr screen);
+int glamor_egl_init_textured_pixmap(ScreenPtr screen);
 
 /*
  * @glamor_egl_create_textured_pixmap: Try to create a textured pixmap from
@@ -341,7 +341,7 @@ extern int glamor_egl_init_textured_pixmap(ScreenPtr screen);
  * the texture to the pixmap , thus glamor can render to this pixmap
  * as well. Return true if successful, otherwise return FALSE.
  */
-extern int glamor_egl_create_textured_pixmap(PixmapPtr pixmap, int handle, int stride);
+int glamor_egl_create_textured_pixmap(PixmapPtr pixmap, int handle, int stride);
 
 /*
  * @glamor_egl_create_textured_pixmap_from_bo: Try to create a textured pixmap
@@ -352,22 +352,22 @@ extern int glamor_egl_create_textured_pixmap(PixmapPtr pixmap, int handle, int s
  *
  * This function is similar to glamor_egl_create_textured_pixmap.
  */
-extern int glamor_egl_create_textured_pixmap_from_gbm_bo(PixmapPtr pixmap, gbm_bo* bo, Bool used_modifiers);
+int glamor_egl_create_textured_pixmap_from_gbm_bo(PixmapPtr pixmap, gbm_bo* bo, Bool used_modifiers);
 
-extern int* glamor_egl_get_driver_name(ScreenPtr screen);
+int* glamor_egl_get_driver_name(ScreenPtr screen);
 
 
-extern int glamor_create_gc(GCPtr gc);
+int glamor_create_gc(GCPtr gc);
 
-extern int glamor_validate_gc(GCPtr gc, c_ulong changes, DrawablePtr drawable);
+int glamor_validate_gc(GCPtr gc, c_ulong changes, DrawablePtr drawable);
 
 enum HAS_GLAMOR_DESTROY_GC = 1;
 
-extern int glamor_finish(ScreenPtr screen);
+int glamor_finish(ScreenPtr screen);
 enum HAS_GLAMOR_TEXT = 1;
 
 version (GLAMOR_FOR_XORG) {
-extern int glamor_xv_init(ScreenPtr pScreen, int num_texture_ports);
+int glamor_xv_init(ScreenPtr pScreen, int num_texture_ports);
 }
 
                           /* GLAMOR_H */

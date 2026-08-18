@@ -2740,7 +2740,7 @@ private void drmmode_crtc_create_planes(xf86CrtcPtr crtc, int num)
     uint blob_id = void, async_blob_id = void;
     int best_plane = 0;
 
-    __gsharedSHA1_Final drmmode_prop_enum_info_rec[4] plane_type_enums = [
+    __gshared drmmode_prop_enum_info_rec[4] plane_type_enums = [
         DRMMODE_PLANE_TYPE_PRIMARY: {
             name: "Primary",
         },

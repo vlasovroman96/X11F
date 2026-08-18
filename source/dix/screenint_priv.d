@@ -108,7 +108,7 @@ enum string DIX_FOR_EACH_GPU_SCREEN(string __LAMBDA__) = `
         } 
     } while (0);`;
 
-extern CallbackListPtr ScreenAccessCallback;
+CallbackListPtr ScreenAccessCallback;
 
 struct ScreenAccessCallbackParam {
     ClientPtr client;

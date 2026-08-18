@@ -55,15 +55,15 @@ struct _I2CBusRec {
 alias I2CBusRec = _I2CBusRec;
 
 alias CreateI2CBusRec =		xf86CreateI2CBusRec;
-extern void  xf86CreateI2CBusRec();
+void  xf86CreateI2CBusRec();
 
 alias DestroyI2CBusRec =	xf86DestroyI2CBusRec;
-extern void  xf86DestroyI2CBusRec(I2CBusPtr pI2CBus, Bool unalloc, Bool devs_too);
+void  xf86DestroyI2CBusRec(I2CBusPtr pI2CBus, Bool unalloc, Bool devs_too);
 alias I2CBusInit =		xf86I2CBusInit;
-extern void  xf86I2CBusInit(I2CBusPtr pI2CBus);
+void  xf86I2CBusInit(I2CBusPtr pI2CBus);
 
-extern void  xf86I2CFindBus(int scrnIndex, const(char)* name);
-extern void  xf86I2CGetScreenBuses(int scrnIndex, I2CBusPtr** pppI2CBus);
+void  xf86I2CFindBus(int scrnIndex, const(char)* name);
+void  xf86I2CGetScreenBuses(int scrnIndex, I2CBusPtr** pppI2CBus);
 
 /* I2C slave devices */
 
@@ -84,26 +84,26 @@ struct _I2CDevRec {
 alias I2CDevRec = _I2CDevRec;
 
 alias CreateI2CDevRec =		xf86CreateI2CDevRec;
-// extern void  xf86CreateI2CDevRec();
-extern void  xf86DestroyI2CDevRec(I2CDevPtr pI2CDev, Bool unalloc);
+// void  xf86CreateI2CDevRec();
+void  xf86DestroyI2CDevRec(I2CDevPtr pI2CDev, Bool unalloc);
 
 alias I2CDevInit =		xf86I2CDevInit;
-// extern void  xf86I2CDevInit(I2CDevPtr pI2CDev);
-// extern void  xf86I2CFindDev(I2CBusPtr, I2CSlaveAddr);
+// void  xf86I2CDevInit(I2CDevPtr pI2CDev);
+// void  xf86I2CFindDev(I2CBusPtr, I2CSlaveAddr);
 
 /* See descriptions of these functions in xf86i2c.c */
 
 alias I2CProbeAddress =		xf86I2CProbeAddress;
-// extern void  xf86I2CProbeAddress(I2CBusPtr pI2CBus, I2CSlaveAddr);
+// void  xf86I2CProbeAddress(I2CBusPtr pI2CBus, I2CSlaveAddr);
 
 alias		I2C_WriteRead = xf86I2CWriteRead;
-// extern void  xf86I2CWriteRead(I2CDevPtr d, I2CByte* WriteBuffer, int nWrite, I2CByte* ReadBuffer, int nRead);
+// void  xf86I2CWriteRead(I2CDevPtr d, I2CByte* WriteBuffer, int nWrite, I2CByte* ReadBuffer, int nRead);
 enum string 	xf86I2CRead(string d, string rb, string nr) = `xf86I2CWriteRead(` ~ d ~ `, null, 0, ` ~ rb ~ `, ` ~ nr ~ `)`;
 
-extern void  xf86I2CReadByte(I2CDevPtr d, I2CByte subaddr, I2CByte* pbyte);
-extern void  xf86I2CReadBytes(I2CDevPtr d, I2CByte subaddr, I2CByte* pbyte, int n);
+void  xf86I2CReadByte(I2CDevPtr d, I2CByte subaddr, I2CByte* pbyte);
+void  xf86I2CReadBytes(I2CDevPtr d, I2CByte subaddr, I2CByte* pbyte, int n);
 enum string 	xf86I2CWrite(string d, string wb, string nw) = `xf86I2CWriteRead(` ~ d ~ `, ` ~ wb ~ `, ` ~ nw ~ `, null, 0)`;
-extern void  xf86I2CWriteByte(I2CDevPtr d, I2CByte subaddr, I2CByte byte_);
-extern void  xf86I2CWriteVec(I2CDevPtr d, I2CByte* vec, int nValues);
+void  xf86I2CWriteByte(I2CDevPtr d, I2CByte subaddr, I2CByte byte_);
+void  xf86I2CWriteVec(I2CDevPtr d, I2CByte* vec, int nValues);
 
  /*_XF86I2C_H */

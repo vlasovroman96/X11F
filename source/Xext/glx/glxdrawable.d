@@ -78,6 +78,6 @@ struct __GLXdrawable {
     c_ulong eventMask;
 }
 
-extern int validGlxDrawable(ClientPtr client, XID id, int type, int access_mode, __GLXdrawable** drawable, int* err);
+int validGlxDrawable(ClientPtr client, XID id, int type, int access_mode, __GLXdrawable** drawable, int* err);
 
                           /* !__GLX_drawable_h__ */

@@ -103,7 +103,7 @@ struct ospoll_trigger
 alias ospoll_trigger_ptr = ospoll_trigger*;
 
 // //--- Прототипы функций управления триггером (extern(C) для совместимости) ---
-extern (C):
+extern(C):
 
 // Создание и инициализация триггера
 // bool ospoll_trigger_create(ospoll_index_ptr ospoll, ospoll_trigger_ptr trigger);

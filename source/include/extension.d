@@ -88,16 +88,16 @@ struct ExtensionModule {
     Bool* disablePtr;
 }
 
-// extern ubyte StandardMinorOpcode(ClientPtr);
+// ubyte StandardMinorOpcode(ClientPtr);
 
-// extern void  EnableDisableExtension(const(char)* name, Bool enable);
+// void  EnableDisableExtension(const(char)* name, Bool enable);
 
-// extern void  EnableDisableExtensionError(const(char)* name, Bool enable);
+// void  EnableDisableExtensionError(const(char)* name, Bool enable);
 
-extern void  InitExtensions(int argc, char** argv);
+void  InitExtensions(int argc, char** argv);
 
-extern void  CloseDownExtensions();
+void  CloseDownExtensions();
 
-// extern void  LoadExtensionList(const(ExtensionModule)* ext, int listSize, Bool external);
+// void  LoadExtensionList(const(ExtensionModule)* ext, int listSize, Bool external);
 
                           /* EXTENSION_H */

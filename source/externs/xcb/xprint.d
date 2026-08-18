@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_XPRINT_MAJOR_VERSION = 1;
 enum XCB_XPRINT_MINOR_VERSION = 0;
 
-extern xcb_extension_t xcb_x_print_id;
+xcb_extension_t xcb_x_print_id;
 
 alias xcb_x_print_string8_t = char;
 

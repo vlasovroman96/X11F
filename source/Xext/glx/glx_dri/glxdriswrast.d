@@ -90,7 +90,7 @@ struct __GLXDRIdrawable {
 }
 
 /* white lie */
-extern glx_func_ptr glXGetProcAddressARB(const(char)*);
+glx_func_ptr glXGetProcAddressARB(const(char)*);
 
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {

@@ -101,23 +101,23 @@ public import externs.X11.Xmd;
 
 
 
-extern Bool xf86EnableIO();
-extern void  xf86DisableIO();
+Bool xf86EnableIO();
+void  xf86DisableIO();
 
-extern void  xf86SlowBcopy(ubyte*, ubyte*, int);
-extern void  xf86OpenSerial(XF86OptionPtr options);
-extern void  xf86SetSerial(int fd, XF86OptionPtr options);
-extern void  xf86SetSerialSpeed(int fd, int speed);
-// extern void  xf86ReadSerial(int fd, void* buf, int count);
-extern void  xf86WriteSerial(int fd, const(void)* buf, int count);
-extern void  xf86CloseSerial(int fd);
-extern void  xf86FlushInput(int fd);
-// extern void  xf86WaitForInput(int fd, int timeout);
-extern void  xf86SetSerialModemState(int fd, int state);
-extern void  xf86GetSerialModemState(int fd);
-extern void  xf86SerialModemSetBits(int fd, int bits);
-extern void  xf86SerialModemClearBits(int fd, int bits);
-// extern void  xf86LoadKernelModule(const(char)* pathname);
+void  xf86SlowBcopy(ubyte*, ubyte*, int);
+void  xf86OpenSerial(XF86OptionPtr options);
+void  xf86SetSerial(int fd, XF86OptionPtr options);
+void  xf86SetSerialSpeed(int fd, int speed);
+// void  xf86ReadSerial(int fd, void* buf, int count);
+void  xf86WriteSerial(int fd, const(void)* buf, int count);
+void  xf86CloseSerial(int fd);
+void  xf86FlushInput(int fd);
+// void  xf86WaitForInput(int fd, int timeout);
+void  xf86SetSerialModemState(int fd, int state);
+void  xf86GetSerialModemState(int fd);
+void  xf86SerialModemSetBits(int fd, int bits);
+void  xf86SerialModemClearBits(int fd, int bits);
+// void  xf86LoadKernelModule(const(char)* pathname);
 
 /* AGP GART interface */
 
@@ -132,20 +132,20 @@ struct _AgpInfo {
 }alias AgpInfo = _AgpInfo;
 alias AgpInfoPtr = _AgpInfo*;
 
-extern void  xf86AgpGARTSupported();
-extern void  xf86GetAGPInfo(int screenNum);
-extern void  xf86AcquireGART(int screenNum);
-extern void  xf86ReleaseGART(int screenNum);
-extern void  xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical);
-extern void  xf86BindGARTMemory(int screenNum, int key, c_ulong offset);
-extern void  xf86UnbindGARTMemory(int screenNum, int key);
-extern void  xf86GARTCloseScreen(int screenNum);
+void  xf86AgpGARTSupported();
+void  xf86GetAGPInfo(int screenNum);
+void  xf86AcquireGART(int screenNum);
+void  xf86ReleaseGART(int screenNum);
+void  xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical);
+void  xf86BindGARTMemory(int screenNum, int key, c_ulong offset);
+void  xf86UnbindGARTMemory(int screenNum, int key);
+void  xf86GARTCloseScreen(int screenNum);
 
 /* These routines are in shared/sigio.c and are not loaded as part of the
    module.  These routines are small, and the code if very POSIX-signal (or
    OS-signal) specific, so it seemed better to provide more complex
    wrappers than to wrap each individual function called. */
-// extern void  xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void*);
+// void  xf86InstallSIGIOHandler(int fd, void function(int, void*) f, void*);
 
 // _XFUNCPROTOEND
                           /* _XF86_OSPROC_H */

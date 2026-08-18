@@ -11,7 +11,7 @@ import externs.X11.Xmd;
 import externs.X11.Xdefs;
 
 
-extern CARD8 dri2_major;        /* version of DRI2 supported by DDX */
-extern CARD8 dri2_minor;
+CARD8 dri2_major;        /* version of DRI2 supported by DDX */
+CARD8 dri2_minor;
 
  /* _XSERVER_DRI2_PRIV_H_ */

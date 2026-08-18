@@ -29,6 +29,7 @@ import core.stdc.stdlib;
 
 import fb.fb_priv;
 import dix.pixmap;
+import region;
 
 version (FB_DEBUG) {
 

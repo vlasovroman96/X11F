@@ -56,7 +56,7 @@ struct ExtensionAccessCallbackParam {
     int status;
 }
 
-// extern CallbackListPtr ExtensionAccessCallback;
-// extern CallbackListPtr ExtensionDispatchCallback;
+// CallbackListPtr ExtensionAccessCallback;
+// CallbackListPtr ExtensionDispatchCallback;
 
  /* _XSERVER_EXTENSION_PRIV_H */

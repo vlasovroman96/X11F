@@ -147,14 +147,14 @@ private EphyrHostXVars HostX;
 
 private int HostXWantDamageDebug = 0;
 
-extern Bool EphyrWantResize;
+Bool EphyrWantResize;
 
 char* ephyrResName = null;
 int ephyrResNameFromCmd = 0;
 char* ephyrTitle = null;
 Bool ephyr_glamor = FALSE;
-extern Bool ephyrNoXV;
-extern Bool ephyr_glamor_skip_present;
+Bool ephyrNoXV;
+Bool ephyr_glamor_skip_present;
 
 Bool hostx_has_extension(xcb_extension_t* extension)
 {

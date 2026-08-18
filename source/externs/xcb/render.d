@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_RENDER_MAJOR_VERSION = 0;
 enum XCB_RENDER_MINOR_VERSION = 11;
 
-extern xcb_extension_t xcb_render_id;
+xcb_extension_t xcb_render_id;
 
 enum xcb_render_pict_type_t {
     XCB_RENDER_PICT_TYPE_INDEXED = 0,

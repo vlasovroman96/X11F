@@ -61,7 +61,7 @@ struct _GlyphList {
 alias GlyphListPtr = _GlyphList*;
 
 enum GLYPH_HAS_GLYPH_PICTURE_ACCESSOR = 1 /* used for api compat */;
-// extern void GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen);
-extern void SetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen, PicturePtr picture);
+// void GetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen);
+void SetGlyphPicture(GlyphPtr glyph, ScreenPtr pScreen, PicturePtr picture);
 
                           /* _GLYPHSTR_H_ */

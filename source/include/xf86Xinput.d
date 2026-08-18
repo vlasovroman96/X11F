@@ -114,36 +114,36 @@ struct _InputInfoRec {
 }
 
 /* xf86Xinput.c */
-extern void  xf86PostMotionEvent(DeviceIntPtr device, int is_absolute, int first_valuator, int num_valuators, ...);
-// extern void  xf86PostMotionEventM(DeviceIntPtr device, int is_absolute, const(ValuatorMask)* mask);
-extern void  xf86PostProximityEvent(DeviceIntPtr device, int is_in, int first_valuator, int num_valuators, ...);
-// extern void  xf86PostProximityEventM(DeviceIntPtr device, int is_in, const(ValuatorMask)* mask);
-extern void  xf86PostButtonEvent(DeviceIntPtr device, int is_absolute, int button, int is_down, int first_valuator, int num_valuators, ...);
-extern void  xf86PostButtonEventP(DeviceIntPtr device, int is_absolute, int button, int is_down, int first_valuator, int num_valuators, const(int)* valuators);
-// extern void  xf86PostButtonEventM(DeviceIntPtr device, int is_absolute, int button, int is_down, const(ValuatorMask)* mask);
-// extern void  xf86PostKeyboardEvent(DeviceIntPtr device, uint key_code, int is_down);
-// extern void  xf86PostTouchEvent(DeviceIntPtr dev, uint touchid, ushort type, uint flags, const(ValuatorMask)* mask);
-// extern void  xf86PostGesturePinchEvent(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
-// extern void  xf86PostGestureSwipeEvent(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y);
+void  xf86PostMotionEvent(DeviceIntPtr device, int is_absolute, int first_valuator, int num_valuators, ...);
+// void  xf86PostMotionEventM(DeviceIntPtr device, int is_absolute, const(ValuatorMask)* mask);
+void  xf86PostProximityEvent(DeviceIntPtr device, int is_in, int first_valuator, int num_valuators, ...);
+// void  xf86PostProximityEventM(DeviceIntPtr device, int is_in, const(ValuatorMask)* mask);
+void  xf86PostButtonEvent(DeviceIntPtr device, int is_absolute, int button, int is_down, int first_valuator, int num_valuators, ...);
+void  xf86PostButtonEventP(DeviceIntPtr device, int is_absolute, int button, int is_down, int first_valuator, int num_valuators, const(int)* valuators);
+// void  xf86PostButtonEventM(DeviceIntPtr device, int is_absolute, int button, int is_down, const(ValuatorMask)* mask);
+// void  xf86PostKeyboardEvent(DeviceIntPtr device, uint key_code, int is_down);
+// void  xf86PostTouchEvent(DeviceIntPtr dev, uint touchid, ushort type, uint flags, const(ValuatorMask)* mask);
+// void  xf86PostGesturePinchEvent(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y, double scale, double delta_angle);
+// void  xf86PostGestureSwipeEvent(DeviceIntPtr dev, ushort type, ushort num_touches, uint flags, double delta_x, double delta_y, double delta_unaccel_x, double delta_unaccel_y);
 
-extern InputInfoPtr xf86FirstLocalDevice();
-extern void  xf86ScaleAxis(int Cx, int to_max, int to_min, int from_max, int from_min);
-extern void  xf86ProcessCommonOptions(InputInfoPtr pInfo, XF86OptionPtr options);
-// extern void  xf86InitValuatorAxisStruct(DeviceIntPtr dev, int axnum, Atom label, int minval, int maxval, int resolution, int min_res, int max_res, int mode);
-extern void  xf86InitValuatorDefaults(DeviceIntPtr dev, int axnum);
-extern void  xf86AddEnabledDevice(InputInfoPtr pInfo);
-extern void  xf86RemoveEnabledDevice(InputInfoPtr pInfo);
-extern void  xf86DisableDevice(DeviceIntPtr dev, Bool panic);
+InputInfoPtr xf86FirstLocalDevice();
+void  xf86ScaleAxis(int Cx, int to_max, int to_min, int from_max, int from_min);
+void  xf86ProcessCommonOptions(InputInfoPtr pInfo, XF86OptionPtr options);
+// void  xf86InitValuatorAxisStruct(DeviceIntPtr dev, int axnum, Atom label, int minval, int maxval, int resolution, int min_res, int max_res, int mode);
+void  xf86InitValuatorDefaults(DeviceIntPtr dev, int axnum);
+void  xf86AddEnabledDevice(InputInfoPtr pInfo);
+void  xf86RemoveEnabledDevice(InputInfoPtr pInfo);
+void  xf86DisableDevice(DeviceIntPtr dev, Bool panic);
 
 /* xf86Helper.c */
-// extern void  xf86AddInputDriver(InputDriverPtr driver, void* module_, int flags);
-// extern void  xf86DeleteInput(InputInfoPtr pInp, int flags);
-extern void  xf86MotionHistoryAllocate(InputInfoPtr pInfo);
-extern void  xf86IDrvMsgVerb(InputInfoPtr dev, MessageType type, int verb, const(char)* format, ...);
+// void  xf86AddInputDriver(InputDriverPtr driver, void* module_, int flags);
+// void  xf86DeleteInput(InputInfoPtr pInp, int flags);
+void  xf86MotionHistoryAllocate(InputInfoPtr pInfo);
+void  xf86IDrvMsgVerb(InputInfoPtr dev, MessageType type, int verb, const(char)* format, ...);
 // _X_ATTRIBUTE_PRINTF(4, 5);
-extern void  _X_ATTRIBUTE_PRINTF();
+void  _X_ATTRIBUTE_PRINTF();
 
 /* xf86Option.c */
-// extern void  xf86CollectInputOptions(InputInfoPtr pInfo, const(char)** defaultOpts);
+// void  xf86CollectInputOptions(InputInfoPtr pInfo, const(char)** defaultOpts);
 
                           /* _xf86Xinput_h */

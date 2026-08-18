@@ -72,16 +72,16 @@ enum V_MODETYPE_VBE =		0x01;
 enum V_MODETYPE_VGA =		0x02;
 enum V_MODETYPE_BAD =		0x04;
 
-extern void  VBEFindSupportedDepths(vbeInfoPtr pVbe, VbeInfoBlock* vbe, int* flags24, int modeTypes);
-extern void  VBEGetModePool(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBlock* vbe, int modeTypes);
-extern void  VBESetModeNames(DisplayModePtr pMode);
-extern void  VBESetModeParameters(ScrnInfoPtr pScrn, vbeInfoPtr pVbe);
+void  VBEFindSupportedDepths(vbeInfoPtr pVbe, VbeInfoBlock* vbe, int* flags24, int modeTypes);
+void  VBEGetModePool(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBlock* vbe, int modeTypes);
+void  VBESetModeNames(DisplayModePtr pMode);
+void  VBESetModeParameters(ScrnInfoPtr pScrn, vbeInfoPtr pVbe);
 
 /*
  * Note: These are alternatives to the standard helpers.  They should
  * usually just wrap the standard helpers.
  */
-extern void  VBEValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)** modeNames, ClockRangePtr clockRanges, int* linePitches, int minPitch, int maxPitch, int pitchInc, int minHeight, int maxHeight, int virtualX, int virtualY, int apertureSize, LookupModeFlags strategy);
-extern void  VBEPrintModes(ScrnInfoPtr scrp);
+void  VBEValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)** modeNames, ClockRangePtr clockRanges, int* linePitches, int minPitch, int maxPitch, int pitchInc, int minHeight, int maxHeight, int virtualX, int virtualY, int apertureSize, LookupModeFlags strategy);
+void  VBEPrintModes(ScrnInfoPtr scrp);
 
                           /* VBE_MODES_H */

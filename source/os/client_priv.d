@@ -61,7 +61,7 @@ void ListenOnOpenFD(int fd, int noxauth);
 // void ResetCurrentRequest(_Client* client);
 
 /* stuff for ReplyCallback */
-// extern CallbackListPtr ReplyCallback;
+// CallbackListPtr ReplyCallback;
 struct ReplyInfoRec {
     ClientPtr client;
     const(void)* replyData;

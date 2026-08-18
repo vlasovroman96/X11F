@@ -57,7 +57,7 @@ else
  * The verbosity level of logging to console. All messages with verbosity
  * level below this one will be written to stderr
  */
-// extern int xorgLogVerbosity;
+// int xorgLogVerbosity;
 
 /**
  * @brief log file verbosity
@@ -65,14 +65,14 @@ else
  * The verbosity level of logging to per-display file. All messages with
  * verbosity level below this one will be written to the log file.
  */
-// extern int xorgLogFileVerbosity;
+// int xorgLogFileVerbosity;
 
 /**
  * @brief force fsync() on each log write
  *
  * If set to TRUE, force fsync() on each log write.
  */
-// extern Bool xorgLogSync;
+// Bool xorgLogSync;
 
 /**
  * @brief syslog verbosity
@@ -80,7 +80,7 @@ else
  * The verbosity level of logging to syslog. All messages with
  * verbosity level below this one will be sent to local syslog daemon.
  */
-extern int xorgSyslogVerbosity;
+int xorgSyslogVerbosity;
 
 /**
  * @brief syslog identifier
@@ -89,7 +89,7 @@ extern int xorgSyslogVerbosity;
  * Per default will be filled with basename(argv[0]). DDX'es can override
  * this before calling LogInit()
  */
-extern const(char)* xorgSyslogIdent;
+const(char)* xorgSyslogIdent;
 
 /*
  * print log markers into the log file

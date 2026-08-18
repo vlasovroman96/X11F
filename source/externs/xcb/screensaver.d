@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_SCREENSAVER_MAJOR_VERSION = 1;
 enum XCB_SCREENSAVER_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_screensaver_id;
+xcb_extension_t xcb_screensaver_id;
 
 enum xcb_screensaver_kind_t {
     XCB_SCREENSAVER_KIND_BLANKED = 0,

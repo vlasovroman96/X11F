@@ -21,7 +21,7 @@ import include.screenint;
 
 public import externs.xcb.xcb;
 
-extern int xnestFontPrivateIndex;
+int xnestFontPrivateIndex;
 
 enum string xnestFontPriv(string pFont) = `
   (cast(xnestPrivFont*)FontGetPrivate(` ~ pFont ~ `, xnestFontPrivateIndex))`;

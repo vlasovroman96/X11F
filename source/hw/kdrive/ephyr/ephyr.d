@@ -71,7 +71,7 @@ struct EphyrPriv {
     int bytes_per_line;
 } ;
 
-extern Bool ephyr_glamor;
+Bool ephyr_glamor;
 
 KdKeyboardInfo* ephyrKbd;
 KdPointerInfo* ephyrMouse;

@@ -101,6 +101,7 @@ Equipment Corporation.
 ******************************************************************/
 
 import build.dix_config;
+import region;
 
 import dix.colormap_priv;
 import dix.cursor_priv;

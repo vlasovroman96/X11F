@@ -96,30 +96,30 @@ enum string OnScreenDrawable(string type) = `
 enum string WindowDrawable(string type) = `
 	((` ~ type ~ ` == DRAWABLE_WINDOW) || (` ~ type ~ ` == UNDRAWABLE_WINDOW))`;
 
-// extern int GetScratchPixmapHeader(ScreenPtr pScreen, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
+// int GetScratchPixmapHeader(ScreenPtr pScreen, int width, int height, int depth, int bitsPerPixel, int devKind, void* pPixData);
 
-// extern int FreeScratchPixmapHeader(PixmapPtr);
+// int FreeScratchPixmapHeader(PixmapPtr);
 
-extern int PixmapScreenInit(ScreenPtr);
+int PixmapScreenInit(ScreenPtr);
 
-// extern int AllocatePixmap(ScreenPtr, int);
+// int AllocatePixmap(ScreenPtr, int);
 
-// extern int FreePixmap(PixmapPtr);
+// int FreePixmap(PixmapPtr);
 
-// extern int PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary);
+// int PixmapShareToSecondary(PixmapPtr pixmap, ScreenPtr secondary);
 
-// extern int PixmapUnshareSecondaryPixmap(PixmapPtr secondary_pixmap);
+// int PixmapUnshareSecondaryPixmap(PixmapPtr secondary_pixmap);
 
 enum HAS_DIRTYTRACKING_ROTATION = 1;
 enum HAS_DIRTYTRACKING_DRAWABLE_SRC = 1;
-extern int PixmapStartDirtyTracking(DrawablePtr src, PixmapPtr slave_dst, int x, int y, int dst_x, int dst_y, Rotation rotation);
+int PixmapStartDirtyTracking(DrawablePtr src, PixmapPtr slave_dst, int x, int y, int dst_x, int dst_y, Rotation rotation);
 
-extern int PixmapStopDirtyTracking(DrawablePtr src, PixmapPtr slave_dst);
+int PixmapStopDirtyTracking(DrawablePtr src, PixmapPtr slave_dst);
 
 /* helper function, drivers can do this themselves if they can do it more
    efficiently */
-extern int PixmapSyncDirtyHelper(PixmapDirtyUpdatePtr dirty);
+int PixmapSyncDirtyHelper(PixmapDirtyUpdatePtr dirty);
 
-extern int PixmapDirtyCopyArea(PixmapPtr dst, DrawablePtr src, int x, int y, int dst_x, int dst_y, RegionPtr dirty_region);
+int PixmapDirtyCopyArea(PixmapPtr dst, DrawablePtr src, int x, int y, int dst_x, int dst_y, RegionPtr dirty_region);
 
                           /* PIXMAP_H */

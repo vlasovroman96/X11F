@@ -44,7 +44,7 @@ import core.sys.posix.sys.ioctl;
 
 import os.xserver_poll;
 
-extern int LinuxConsoleFd;
+int LinuxConsoleFd;
 
 /*
  * We need these to handle extended scancodes correctly (I could just use the

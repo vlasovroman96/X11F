@@ -29,7 +29,7 @@ extern(C): __gshared:
 public import include.privates;
 import include.mi;
 
-extern DevPrivateKey fbOverlayGetScreenPrivateKey();
+DevPrivateKey fbOverlayGetScreenPrivateKey();
 
 enum FB_OVERLAY_MAX =	2;
 
@@ -62,6 +62,6 @@ alias FbOverlayScrPrivPtr = _fbOverlayScrPriv*;
 enum string fbOverlayGetScrPriv(string s) = `
     cast(_fbOverlayScrPriv*)dixLookupPrivate((&` ~ s ~ `.devPrivates), fbOverlayGetScreenPrivateKey())`;
 
-extern int fbOverlayFinishScreenInit(ScreenPtr pScreen, void* pbits1, void* pbits2, int xsize, int ysize, int dpix, int dpiy, int width1, int width2, int bpp1, int bpp2, int depth1, int depth2);
+int fbOverlayFinishScreenInit(ScreenPtr pScreen, void* pbits1, void* pbits2, int xsize, int ysize, int dpix, int dpiy, int width1, int width2, int bpp1, int bpp2, int depth1, int depth2);
 
                           /* _FBOVERLAY_H_ */

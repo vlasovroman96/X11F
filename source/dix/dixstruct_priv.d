@@ -28,12 +28,12 @@ pragma(inline, true) void SetReqFds(ClientPtr client, int req_fds) {
 /*
  * Scheduling interface
  */
-extern c_long SmartScheduleTime;
-// extern c_long SmartScheduleInterval;
-// extern c_long SmartScheduleSlice;
-// extern c_long SmartScheduleMaxSlice;
+c_long SmartScheduleTime;
+// c_long SmartScheduleInterval;
+// c_long SmartScheduleSlice;
+// c_long SmartScheduleMaxSlice;
 version (HAVE_SETITIMER) {
-extern Bool SmartScheduleSignalEnable;
+Bool SmartScheduleSignalEnable;
 } else {
 enum SmartScheduleSignalEnable = FALSE;
 }
@@ -59,7 +59,7 @@ pragma(inline, true) Bool client_is_ready(ClientPtr client)
 
 // Bool clients_are_ready();
 
-// extern xorg_list output_pending_clients;
+// xorg_list output_pending_clients;
 
 pragma(inline, true) void output_pending_mark(ClientPtr client)
 {
@@ -86,6 +86,6 @@ enum string DISPATCH_PROC(string func) = `int func(ClientPtr);`;
 
 /* proc vectors */
 
-extern int function(ClientPtr)[3] InitialVector;
+int function(ClientPtr)[3] InitialVector;
 
  /* _XSERVER_DIXSTRUCT_PRIV_H */

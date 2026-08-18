@@ -69,57 +69,57 @@ enum SHADOW_REFLECT_X =    16;
 enum SHADOW_REFLECT_Y =    32;
 enum SHADOW_REFLECT_ALL =  (SHADOW_REFLECT_X|SHADOW_REFLECT_Y);
 
-// extern void  shadowSetup(ScreenPtr pScreen);
+// void  shadowSetup(ScreenPtr pScreen);
 
-extern void  shadowAdd(ScreenPtr pScreen, PixmapPtr pPixmap, ShadowUpdateProc update, ShadowWindowProc window, int randr, void* closure);
+void  shadowAdd(ScreenPtr pScreen, PixmapPtr pPixmap, ShadowUpdateProc update, ShadowWindowProc window, int randr, void* closure);
 
-extern void  shadowRemove(ScreenPtr pScreen, PixmapPtr pPixmap);
+void  shadowRemove(ScreenPtr pScreen, PixmapPtr pPixmap);
 
-extern void  shadowUpdateAfb4(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateAfb4(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateAfb8(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateAfb8(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateIplan2p4(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateIplan2p4(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateIplan2p8(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateIplan2p8(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdatePlanar4(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdatePlanar4(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdatePlanar4x8(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdatePlanar4x8(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate8_90(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate8_90(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate16_90(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate16_90(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate16_90YX(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate16_90YX(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate32_90(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate32_90(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate8_180(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate8_180(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate16_180(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate16_180(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate32_180(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate32_180(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate8_270(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate8_270(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate16_270(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate16_270(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate16_270YX(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate16_270YX(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate32_270(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate32_270(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate8(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate8(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate16(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate16(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdateRotate32(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdateRotate32(ScreenPtr pScreen, shadowBufPtr pBuf);
 
-extern void  shadowUpdate32to24(ScreenPtr pScreen, shadowBufPtr pBuf);
+void  shadowUpdate32to24(ScreenPtr pScreen, shadowBufPtr pBuf);
 
 alias shadowUpdateProc = void function(ScreenPtr, shadowBufPtr);
 

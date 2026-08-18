@@ -11,34 +11,34 @@ public import include.extinit;
 
 version (DRI2) {
 //public import externs.X11.extensions.dri2proto;
-extern Bool noDRI2Extension;
+Bool noDRI2Extension;
 void DRI2ExtensionInit();
 }
 
 /* required by: the 470 and 390 nvidia DDX drivers */
-extern Bool  noDamageExtension;
+Bool  noDamageExtension;
 
-extern Bool noDbeExtension;
-extern Bool noDPMSExtension;
-extern Bool noGlxExtension;
-extern Bool noMITShmExtension;
-extern Bool noRenderExtension;
-extern Bool noResExtension;
-extern Bool noRRExtension;
-extern Bool noScreenSaverExtension;
-extern Bool noSecurityExtension;
-extern Bool noSELinuxExtension;
-extern Bool noShapeExtension;
-extern Bool noTestExtensions;
-extern Bool noXFixesExtension;
-extern Bool noXFree86BigfontExtension;
-extern Bool noNamespaceExtension;
+Bool noDbeExtension;
+Bool noDPMSExtension;
+Bool noGlxExtension;
+Bool noMITShmExtension;
+Bool noRenderExtension;
+Bool noResExtension;
+Bool noRRExtension;
+Bool noScreenSaverExtension;
+Bool noSecurityExtension;
+Bool noSELinuxExtension;
+Bool noShapeExtension;
+Bool noTestExtensions;
+Bool noXFixesExtension;
+Bool noXFree86BigfontExtension;
+Bool noNamespaceExtension;
 
-extern Bool PanoramiXExtensionDisabledHack;
+Bool PanoramiXExtensionDisabledHack;
 
-extern Bool noPseudoramiXExtension;
+Bool noPseudoramiXExtension;
 
-extern char* namespaceConfigFile;
+char* namespaceConfigFile;
 
 void CompositeExtensionInit();
 void DamageExtensionInit();

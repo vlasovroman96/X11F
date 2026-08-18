@@ -94,7 +94,7 @@ struct PropertyFilterParam {
     CARD32 longLength;
 }
 
-extern CallbackListPtr PropertyFilterCallback;
+CallbackListPtr PropertyFilterCallback;
 
 int dixLookupProperty(PropertyPtr* result, WindowPtr pWin, Atom proprty, ClientPtr pClient, Mask access_mode);
 

@@ -96,9 +96,9 @@ enum string REQUEST_FIXED_SIZE(alias req, string n) = `
 
 alias TimeStampPtr = _TimeStamp*;
 
-// extern ClientPtr[1] clients;
-// extern ClientPtr serverClient;
-// extern int currentMaxClients;
+// ClientPtr[1] clients;
+// ClientPtr serverClient;
+// int currentMaxClients;
 
 struct _TimeStamp {
     CARD32 months;              /* really ~49.7 days */
@@ -108,9 +108,9 @@ struct _TimeStamp {
 alias TimeStamp = _TimeStamp;
 
 /* dispatch.c */
-// extern int UpdateCurrentTime();
+// int UpdateCurrentTime();
 
-// extern int UpdateCurrentTimeIf();
+// int UpdateCurrentTimeIf();
 
 /*
  * @brief dereference a pixmap and destroy it when not used anymore
@@ -129,41 +129,41 @@ alias TimeStamp = _TimeStamp;
 
 /* dixutils.c */
 
-// extern int dixLookupWindow(WindowPtr* result, XID id, ClientPtr client, Mask access_mode);
+// int dixLookupWindow(WindowPtr* result, XID id, ClientPtr client, Mask access_mode);
 
-// extern int dixLookupDrawable(DrawablePtr* result, XID id, ClientPtr client, Mask type_mask, Mask access_mode);
+// int dixLookupDrawable(DrawablePtr* result, XID id, ClientPtr client, Mask type_mask, Mask access_mode);
 
-// extern int dixLookupFontable(FontPtr* result, XID id, ClientPtr client, Mask access_mode);
+// int dixLookupFontable(FontPtr* result, XID id, ClientPtr client, Mask access_mode);
 
-// extern int NoopDDA();
+// int NoopDDA();
 
 alias ServerBlockHandlerProcPtr = void function(void* blockData, void* timeout);
 
 alias ServerWakeupHandlerProcPtr = void function(void* blockData, int result);
 
-// extern int RegisterBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
+// int RegisterBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
 
-// extern int RemoveBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
+// int RemoveBlockAndWakeupHandlers(ServerBlockHandlerProcPtr blockHandler, ServerWakeupHandlerProcPtr wakeupHandler, void* blockData);
 
-// extern int QueueWorkProc(Bool function(ClientPtr clientUnused, void* closure) function_, ClientPtr client, void* closure);
+// int QueueWorkProc(Bool function(ClientPtr clientUnused, void* closure) function_, ClientPtr client, void* closure);
 
 /* atom.c */
 
-extern ulong MakeAtom(const(char)*, uint, Bool);
+ulong MakeAtom(const(char)*, uint, Bool);
 
-extern int ValidAtom(Atom);
+int ValidAtom(Atom);
 
-extern const(char*) NameForAtom(Atom);
+const(char*) NameForAtom(Atom);
 
 /* events.c */
 
-// extern int WriteEventsToClient(ClientPtr, int, xEventPtr);
+// int WriteEventsToClient(ClientPtr, int, xEventPtr);
 
 /*
  *  ServerGrabCallback stuff
  */
 
-extern CallbackListPtr ServerGrabCallback;
+CallbackListPtr ServerGrabCallback;
 
 enum ServerGrabState { SERVER_GRABBED, SERVER_UNGRABBED,
     CLIENT_PERVIOUS, CLIENT_IMPERVIOUS
@@ -183,7 +183,7 @@ struct ServerGrabInfoRec {
  *  EventCallback stuff
  */
 
-// extern CallbackListPtr EventCallback;
+// CallbackListPtr EventCallback;
 
 struct EventInfoRec {
     ClientPtr client;
@@ -196,7 +196,7 @@ struct DeviceEventInfoRec {
     DeviceIntPtr device;
 }
 
-// extern void* lastGLContext;
+// void* lastGLContext;
 
 /**
  * @brief get display string for given screen

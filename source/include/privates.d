@@ -216,9 +216,9 @@ pragma(inline, true) void** dixLookupPrivateAddr(PrivatePtr* privates, const(Dev
     return cast(void**) dixGetPrivateAddr(privates, key);
 }
 
-extern int dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr key, ScreenPtr pScreen, DevPrivateType type, uint size);
+int dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr key, ScreenPtr pScreen, DevPrivateType type, uint size);
 
-// extern int _dixGetScreenPrivateKey(const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen);
+// int _dixGetScreenPrivateKey(const(DevScreenPrivateKeyPtr) key, ScreenPtr pScreen);
 
 pragma(inline, true) private void* dixGetScreenPrivateAddr(PrivatePtr* privates, DevScreenPrivateKeyPtr key, ScreenPtr pScreen)
 {
@@ -262,24 +262,24 @@ pragma(inline, true) private void** dixLookupScreenPrivateAddr(PrivatePtr* priva
 
 enum HAVE_SCREEN_SPECIFIC_PRIVATE_KEYS =       1;
 
-extern int dixRegisterScreenSpecificPrivateKey(ScreenPtr pScreen, DevPrivateKey key, DevPrivateType type, uint size);
+int dixRegisterScreenSpecificPrivateKey(ScreenPtr pScreen, DevPrivateKey key, DevPrivateType type, uint size);
 
 /* Clean up screen-specific privates before CloseScreen */
-extern void dixFreeScreenSpecificPrivates(ScreenPtr pScreen);
+void dixFreeScreenSpecificPrivates(ScreenPtr pScreen);
 
 /* Initialize screen-specific privates in AddScreen */
-extern void dixInitScreenSpecificPrivates(ScreenPtr pScreen);
+void dixInitScreenSpecificPrivates(ScreenPtr pScreen);
 
 /* is this private created - so hotplug can avoid crashing */
 Bool dixPrivatesCreated(DevPrivateType type);
 
-// extern int* _dixAllocateScreenObjectWithPrivates(ScreenPtr pScreen, uint size, uint offset, DevPrivateType type);
+// int* _dixAllocateScreenObjectWithPrivates(ScreenPtr pScreen, uint size, uint offset, DevPrivateType type);
 
 enum string dixAllocateScreenObjectWithPrivates(string s, string t, string type) = `_dixAllocateScreenObjectWithPrivates(cast(ScreenPtr)` ~ s ~ `, ` ~ t ~ `.sizeof, `~t~`.devPrivates.offsetof, ` ~ type ~ `)`;
 
-extern int dixScreenSpecificPrivatesSize(ScreenPtr pScreen, DevPrivateType type);
+int dixScreenSpecificPrivatesSize(ScreenPtr pScreen, DevPrivateType type);
 
-extern int _dixInitScreenPrivates(ScreenPtr pScreen, PrivatePtr* privates, void* addr, DevPrivateType type);
+int _dixInitScreenPrivates(ScreenPtr pScreen, PrivatePtr* privates, void* addr, DevPrivateType type);
 
 enum string dixInitScreenPrivates(string s, string o, string v, string type) = `_dixInitScreenPrivates(` ~ s ~ `, &(` ~ o ~ `).devPrivates, (` ~ v ~ `), ` ~ type ~ `);`;
 
@@ -292,24 +292,24 @@ enum string dixInitScreenPrivates(string s, string o, string v, string type) = `
  * This includes screens, the serverClient, default colormaps and
  * extensions entries.
  */
-extern int dixAllocatePrivates(PrivatePtr* privates, DevPrivateType type);
+int dixAllocatePrivates(PrivatePtr* privates, DevPrivateType type);
 
 /*
  * Frees separately allocated private data
  */
-extern int dixFreePrivates(PrivatePtr privates, DevPrivateType type);
+int dixFreePrivates(PrivatePtr privates, DevPrivateType type);
 
 /*
  * Initialize privates by zeroing them
  */
-extern int _dixInitPrivates(PrivatePtr* privates, void* addr, DevPrivateType type);
+int _dixInitPrivates(PrivatePtr* privates, void* addr, DevPrivateType type);
 
 enum string dixInitPrivates(string o, string v, string type) = `_dixInitPrivates(&(` ~ o ~ `).devPrivates, (` ~ v ~ `), ` ~ type ~ `);`;
 
 /*
  * Clean up privates
  */
-// extern int _dixFiniPrivates(PrivatePtr privates, DevPrivateType type);
+// int _dixFiniPrivates(PrivatePtr privates, DevPrivateType type);
 
 enum string dixFiniPrivates(string o,string t) = `_dixFiniPrivates((` ~ o ~ `).devPrivates,` ~ t ~ `);`;
 
@@ -318,29 +318,29 @@ enum string dixFiniPrivates(string o,string t) = `_dixFiniPrivates((` ~ o ~ `).d
  * for almost all objects, except for the list described
  * above for dixAllocatePrivates.
  */
-// extern int* _dixAllocateObjectWithPrivates(uint size, uint clear, uint offset, DevPrivateType type);
+// int* _dixAllocateObjectWithPrivates(uint size, uint clear, uint offset, DevPrivateType type);
 
 enum string dixAllocateObjectWithPrivates(string t, string type) = `cast(`~t~`*) _dixAllocateObjectWithPrivates(` ~ t ~ `.sizeof, ` ~ t ~ `.sizeof, `~t~`.devPrivates.offsetof, ` ~ type ~ `)`;
 
-// extern int _mixin(dixFreeObjectWithPrivatesM!("void* object", "PrivatePtr privates, DevPrivateType type"));
+// int _mixin(dixFreeObjectWithPrivatesM!("void* object", "PrivatePtr privates, DevPrivateType type"));
 
 enum string dixFreeObjectWithPrivatesM(string o, string t) = `dixFreeObjectWithPrivates(` ~ o ~ `, ` ~ o ~ `.devPrivates, ` ~ t ~ `);`;
 
 /*
  * Return size of privates for the specified type
  */
-extern int dixPrivatesSize(DevPrivateType type);
+int dixPrivatesSize(DevPrivateType type);
 
 /*
  * Dump out private stats to ErrorF
  */
-extern void dixPrivateUsage();
+void dixPrivateUsage();
 
 /*
  * Resets the privates subsystem.  dixResetPrivates is called from the main loop
  * before each server generation.  This function must only be called by main().
  */
-extern int dixResetPrivates();
+int dixResetPrivates();
 
 /*
  * Looks up the offset where the devPrivates field is located.
@@ -350,7 +350,7 @@ extern int dixResetPrivates();
  * and calling code might only know the resource type, not the
  * structure definition.
  */
-extern int dixLookupPrivateOffset(RESTYPE type);
+int dixLookupPrivateOffset(RESTYPE type);
 
 /*
  * Convenience macro for adding an offset to an object pointer

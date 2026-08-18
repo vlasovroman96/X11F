@@ -376,6 +376,6 @@ version (XQUARTZ) {
     GestureEvent gesture_event;
 }
 
-// extern void LeaveWindow(DeviceIntPtr dev);
+// void LeaveWindow(DeviceIntPtr dev);
 
 

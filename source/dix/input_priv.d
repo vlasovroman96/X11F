@@ -221,12 +221,12 @@ enum VALUATOR_MODE_ALL_AXES = -1;
 
 /* Set to TRUE by default - os/utils.c sets it to FALSE on user request,
    xfixes/cursor.c uses it to determine if the cursor is enabled */
-extern Bool EnableCursor;
+Bool EnableCursor;
 
 /* Set to FALSE by default - ChangeWindowAttributes sets it to TRUE on
  * CWCursor, xfixes/cursor.c uses it to determine if the cursor is enabled
  */
-extern Bool CursorVisible;
+Bool CursorVisible;
 
 // void valuator_mask_drop_unaccelerated(ValuatorMask* mask);
 
@@ -296,7 +296,7 @@ void InputThreadFini();
 /*
  * @brief callback on input device events
  */
-// extern CallbackListPtr DeviceEventCallback;
+// CallbackListPtr DeviceEventCallback;
 
 /*
  * @brief pick an appropriate pointer for the given client.

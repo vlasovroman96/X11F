@@ -138,12 +138,12 @@ struct __GLXcontext {
 
 void __glXContextDestroy(__GLXcontext* context);
 
-extern int validGlxScreen(ClientPtr client, int screen, __GLXscreen** pGlxScreen, int* err);
+int validGlxScreen(ClientPtr client, int screen, __GLXscreen** pGlxScreen, int* err);
 
-extern int validGlxFBConfig(ClientPtr client, __GLXscreen* pGlxScreen, XID id, __GLXconfig** config, int* err);
+int validGlxFBConfig(ClientPtr client, __GLXscreen* pGlxScreen, XID id, __GLXconfig** config, int* err);
 
-extern int validGlxContext(ClientPtr client, XID id, int access_mode, __GLXcontext** context, int* err);
+int validGlxContext(ClientPtr client, XID id, int access_mode, __GLXcontext** context, int* err);
 
-extern __GLXcontext* __glXdirectContextCreate(__GLXscreen* screen, __GLXconfig* modes, __GLXcontext* shareContext);
+__GLXcontext* __glXdirectContextCreate(__GLXscreen* screen, __GLXconfig* modes, __GLXcontext* shareContext);
 
                           /* !__GLX_context_h__ */

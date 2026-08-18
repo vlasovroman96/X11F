@@ -69,8 +69,8 @@ import glx.glxscreens_h;
  import externs.epoxy;
 
 
-extern __GLXscreen* glxGetScreen(ScreenPtr pScreen);
-// extern __GLXclientState* glxGetClient(ClientPtr pClient);
+__GLXscreen* glxGetScreen(ScreenPtr pScreen);
+// __GLXclientState* glxGetClient(ClientPtr pClient);
 
 /************************************************************************/
 
@@ -79,7 +79,7 @@ void __glXScreenInitVisuals(__GLXscreen* screen);
 /*
 ** The last context used (from the server's perspective) is cached.
 */
-// extern __GLXcontext* __glXForceCurrent(__GLXclientState*, GLXContextTag, int*);
+// __GLXcontext* __glXForceCurrent(__GLXclientState*, GLXContextTag, int*);
 
 // int __glXError(int error);
 
@@ -145,9 +145,9 @@ struct __GLXrenderSizeData {
 /*
 ** X resources.
 */
-// extern RESTYPE __glXContextRes;
-extern RESTYPE __glXClientRes;
-// extern RESTYPE __glXDrawableRes;
+// RESTYPE __glXContextRes;
+RESTYPE __glXClientRes;
+// RESTYPE __glXDrawableRes;
 
 /************************************************************************/
 
@@ -193,12 +193,12 @@ auto safe_pad(int a)
     return ret & cast(GLuint)~3;
 }
 
-extern int __glXTypeSize(GLenum enm);
-extern int __glXImageSize(GLenum format, GLenum type, GLenum target, GLsizei w, GLsizei h, GLsizei d, GLint imageHeight, GLint rowLength, GLint skipImages, GLint skipRows, GLint alignment);
+int __glXTypeSize(GLenum enm);
+int __glXImageSize(GLenum format, GLenum type, GLenum target, GLsizei w, GLsizei h, GLsizei d, GLint imageHeight, GLint rowLength, GLint skipImages, GLint skipRows, GLint alignment);
 
-extern uint glxMajorVersion;
-extern uint glxMinorVersion;
+uint glxMajorVersion;
+uint glxMinorVersion;
 
-// extern int __glXEventBase;
+// int __glXEventBase;
 
                           /* !__GLX_server_h__ */

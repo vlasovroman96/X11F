@@ -40,14 +40,14 @@ import glx.glxcontext;
 import glx.glxserver;
 import externs.epoxy;
 
-extern GLboolean __glXDrawableInit(__GLXdrawable* drawable, __GLXscreen* screen, DrawablePtr pDraw, int type, XID drawID, __GLXconfig* config);
-extern void __glXDrawableRelease(__GLXdrawable* drawable);
+GLboolean __glXDrawableInit(__GLXdrawable* drawable, __GLXscreen* screen, DrawablePtr pDraw, int type, XID drawID, __GLXconfig* config);
+void __glXDrawableRelease(__GLXdrawable* drawable);
 
 /* context helper routines */
-// extern __GLXcontext* __glXLookupContextByTag(__GLXclientState*, GLXContextTag);
+// __GLXcontext* __glXLookupContextByTag(__GLXclientState*, GLXContextTag);
 
 /* init helper routines */
-extern void* __glXglDDXScreenInfo();
-extern void* __glXglDDXExtensionInfo();
+void* __glXglDDXScreenInfo();
+void* __glXglDDXExtensionInfo();
 
                           /* _glxcmds_h_ */

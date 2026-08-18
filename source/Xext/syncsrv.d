@@ -129,14 +129,14 @@ union SyncAwaitUnion {
     _SyncAwait await;
 }
 
-extern SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial_value, long resolution, SyncCounterType counterType, SyncSystemCounterQueryValue QueryValue, SyncSystemCounterBracketValues BracketValues);
+SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial_value, long resolution, SyncCounterType counterType, SyncSystemCounterQueryValue QueryValue, SyncSystemCounterBracketValues BracketValues);
 
-extern void SyncChangeCounter(SyncCounter* pCounter, long new_value);
+void SyncChangeCounter(SyncCounter* pCounter, long new_value);
 
-extern void SyncDestroySystemCounter(void* pCounter);
+void SyncDestroySystemCounter(void* pCounter);
 
-extern SyncCounter* SyncInitDeviceIdleTime(DeviceIntPtr dev);
-extern void SyncRemoveDeviceIdleTime(SyncCounter* counter);
+SyncCounter* SyncInitDeviceIdleTime(DeviceIntPtr dev);
+void SyncRemoveDeviceIdleTime(SyncCounter* counter);
 
 // int SyncCreateFenceFromFD(ClientPtr client, DrawablePtr pDraw, XID id, int fd, BOOL initially_triggered);
 

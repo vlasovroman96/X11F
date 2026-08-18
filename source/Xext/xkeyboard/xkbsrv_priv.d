@@ -103,7 +103,7 @@ enum string UNWRAP_PROCESS_INPUT_PROC(string device, string oldprocs, string bac
         ` ~ device ~ `.public_.realInputProc = ` ~ oldprocs ~ `.realInputProc; 
         ` ~ device ~ `.unwrapProc = ` ~ oldprocs ~ `.unwrapProc;`;
 
-extern RESTYPE RT_XKBCLIENT;
+RESTYPE RT_XKBCLIENT;
 
 void xkbUnwrapProc(DeviceIntPtr, DeviceHandleProc, void*);
 
@@ -167,16 +167,16 @@ Bool XkbDeviceApplyKeymap(DeviceIntPtr dst, XkbDescPtr src);
 void XkbCopyControls(XkbDescPtr dst, XkbDescPtr src);
 
 
-extern DevPrivateKeyRec xkbDevicePrivateKeyRec;
+DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
 enum string XKBDEVICEINFO(string dev) = `(cast(xkbDeviceInfoPtr)dixLookupPrivate(&(` ~ dev ~ `).devPrivates, &xkbDevicePrivateKeyRec))`;
 
-extern int XkbReqCode;
-extern int XkbEventBase;
-extern int XkbKeyboardErrorCode;
-extern const(char)* XkbBaseDirectory;
-extern const(char)* XkbBinDirectory;
-extern CARD32 xkbDebugFlags;
+int XkbReqCode;
+int XkbEventBase;
+int XkbKeyboardErrorCode;
+const(char)* XkbBaseDirectory;
+const(char)* XkbBinDirectory;
+CARD32 xkbDebugFlags;
 
 /* AccessX functions */
 void XkbSendAccessXNotify(DeviceIntPtr kbd, xkbAccessXNotify* pEv);

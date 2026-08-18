@@ -19,8 +19,8 @@ struct sbus_devtable {
     const(char)* descr;
 }
 
-// extern sbusDevicePtr* xf86SbusInfo;
-// extern sbus_devtable[1] sbusDeviceTable;
+// sbusDevicePtr* xf86SbusInfo;
+// sbus_devtable[1] sbusDeviceTable;
 
 Bool xf86SbusConfigure(void* busData, sbusDevicePtr sBus);
 void xf86SbusConfigureNewDev(void* busData, sbusDevicePtr sBus, GDevRec* GDev);

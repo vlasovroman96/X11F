@@ -28,6 +28,6 @@ public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 import include.screenint;
 
-extern void  miSyncShmScreenInit(ScreenPtr pScreen);
+void  miSyncShmScreenInit(ScreenPtr pScreen);
 
  /* _MISYNCSHM_H_ */

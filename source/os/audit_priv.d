@@ -11,7 +11,7 @@ public import core.stdc.stdarg;
 
 public import include.os;
 
-// extern int auditTrailLevel;
+// int auditTrailLevel;
 
 // void FreeAuditTimer();
 

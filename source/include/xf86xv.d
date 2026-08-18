@@ -140,30 +140,30 @@ struct _XF86OffscreenImageRec {
 }alias XF86OffscreenImageRec = _XF86OffscreenImageRec;
 alias XF86OffscreenImagePtr = XF86OffscreenImageRec*;
 
-extern void  xf86XVScreenInit(ScreenPtr pScreen, XF86VideoAdaptorPtr* Adaptors, int num);
+void  xf86XVScreenInit(ScreenPtr pScreen, XF86VideoAdaptorPtr* Adaptors, int num);
 
 alias xf86XVInitGenericAdaptorPtr = int function(ScrnInfoPtr pScrn, XF86VideoAdaptorPtr** Adaptors);
 
-extern void  xf86XVRegisterGenericAdaptorDriver(xf86XVInitGenericAdaptorPtr InitFunc);
+void  xf86XVRegisterGenericAdaptorDriver(xf86XVInitGenericAdaptorPtr InitFunc);
 
-extern void  xf86XVListGenericAdaptors(ScrnInfoPtr pScrn, XF86VideoAdaptorPtr** Adaptors);
+void  xf86XVListGenericAdaptors(ScrnInfoPtr pScrn, XF86VideoAdaptorPtr** Adaptors);
 
-extern void  xf86XVRegisterOffscreenImages(ScreenPtr pScreen, XF86OffscreenImagePtr images, int num);
+void  xf86XVRegisterOffscreenImages(ScreenPtr pScreen, XF86OffscreenImagePtr images, int num);
 
-extern void  xf86XVQueryOffscreenImages(ScreenPtr pScreen, int* num);
+void  xf86XVQueryOffscreenImages(ScreenPtr pScreen, int* num);
 
-extern void  xf86XVAllocateVideoAdaptorRec(ScrnInfoPtr pScrn);
+void  xf86XVAllocateVideoAdaptorRec(ScrnInfoPtr pScrn);
 
-extern void  xf86XVFreeVideoAdaptorRec(XF86VideoAdaptorPtr ptr);
+void  xf86XVFreeVideoAdaptorRec(XF86VideoAdaptorPtr ptr);
 
-extern void  xf86XVFillKeyHelper(ScreenPtr pScreen, CARD32 key, RegionPtr clipboxes);
+void  xf86XVFillKeyHelper(ScreenPtr pScreen, CARD32 key, RegionPtr clipboxes);
 
-extern void  xf86XVFillKeyHelperDrawable(DrawablePtr pDraw, CARD32 key, RegionPtr clipboxes);
+void  xf86XVFillKeyHelperDrawable(DrawablePtr pDraw, CARD32 key, RegionPtr clipboxes);
 
-extern void  xf86XVClipVideoHelper(BoxPtr dst, INT32* xa, INT32* xb, INT32* ya, INT32* yb, RegionPtr reg, INT32 width, INT32 height);
+void  xf86XVClipVideoHelper(BoxPtr dst, INT32* xa, INT32* xb, INT32* ya, INT32* yb, RegionPtr reg, INT32 width, INT32 height);
 
-extern void  xf86XVCopyYUV12ToPacked(const(void)* srcy, const(void)* srcv, const(void)* srcu, void* dst, int srcPitchy, int srcPitchuv, int dstPitch, int h, int w);
+void  xf86XVCopyYUV12ToPacked(const(void)* srcy, const(void)* srcv, const(void)* srcu, void* dst, int srcPitchy, int srcPitchuv, int dstPitch, int h, int w);
 
-extern void  xf86XVCopyPacked(const(void)* src, void* dst, int srcPitch, int dstPitch, int h, int w);
+void  xf86XVCopyPacked(const(void)* src, void* dst, int srcPitch, int dstPitch, int h, int w);
 
                           /* _XF86XV_H_ */

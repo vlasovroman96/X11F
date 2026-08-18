@@ -55,15 +55,15 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 public import include.extnsionst;
 
 /* required by: libglx */
-extern export bool noCompositeExtension;
+export bool noCompositeExtension;
 
 /* required by: several video drivers (eg. vmware, sis and nvidia proprietary) */
 version (XINERAMA) {
-extern void  noPanoramiXExtension;
+void  noPanoramiXExtension;
 } /* XINERAMA */
 
 version (XV) {
-extern void  noXvExtension;
+void  noXvExtension;
 }
 
 

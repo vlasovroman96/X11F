@@ -50,19 +50,19 @@ enum RL_DEBUG_MSG = ErrorF;
 }
 
 // Global variables
-extern DevPrivateKeyRec rootlessGCPrivateKeyRec;
+DevPrivateKeyRec rootlessGCPrivateKeyRec;
 
 enum rootlessGCPrivateKey = (&rootlessGCPrivateKeyRec);
 
-extern DevPrivateKeyRec rootlessScreenPrivateKeyRec;
+DevPrivateKeyRec rootlessScreenPrivateKeyRec;
 
 enum rootlessScreenPrivateKey = (&rootlessScreenPrivateKeyRec);
 
-extern DevPrivateKeyRec rootlessWindowPrivateKeyRec;
+DevPrivateKeyRec rootlessWindowPrivateKeyRec;
 
 enum rootlessWindowPrivateKey = (&rootlessWindowPrivateKeyRec);
 
-extern DevPrivateKeyRec rootlessWindowOldPixmapPrivateKeyRec;
+DevPrivateKeyRec rootlessWindowOldPixmapPrivateKeyRec;
 
 enum rootlessWindowOldPixmapPrivateKey = (&rootlessWindowOldPixmapPrivateKeyRec);
 
@@ -188,7 +188,7 @@ enum string BOX_NOT_EMPTY(string box) = `
 // SetWinSize or SetBorderSize which clip a window against its
 // parents, including the root.
 
-extern RegionRec rootlessHugeRoot;
+RegionRec rootlessHugeRoot;
 
 enum string HUGE_ROOT(string pWin) = `
     {                                        

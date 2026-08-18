@@ -64,8 +64,8 @@ struct __GLXpixel3DHeader {
 
 // alias _GLXpixel3DHeader = __GLX_PIXEL_3D_HDR;
 
-// extern GLboolean __glXErrorOccured();
-// extern void __glXClearErrorOccured();
+// GLboolean __glXErrorOccured();
+// void __glXClearErrorOccured();
 
 private const(uint)[2] dummy_answer = [ 0, 0 ];
 

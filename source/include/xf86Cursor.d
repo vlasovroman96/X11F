@@ -67,12 +67,12 @@ pragma(inline, true)bool xf86DriverLoadCursorARGB(xf86CursorInfoPtr infoPtr, Cur
     return TRUE;
 }
 
-// extern void  xf86InitCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr);
-// extern xf86CursorInfoPtr xf86CreateCursorInfoRec();
-// extern void  xf86DestroyCursorInfoRec(xf86CursorInfoPtr);
-extern void  xf86CursorResetCursor(ScreenPtr pScreen);
-extern void  xf86ForceHWCursor(ScreenPtr pScreen, Bool on);
-// extern void  xf86CurrentCursor(ScreenPtr pScreen);
+// void  xf86InitCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr);
+// xf86CursorInfoPtr xf86CreateCursorInfoRec();
+// void  xf86DestroyCursorInfoRec(xf86CursorInfoPtr);
+void  xf86CursorResetCursor(ScreenPtr pScreen);
+void  xf86ForceHWCursor(ScreenPtr pScreen, Bool on);
+// void  xf86CurrentCursor(ScreenPtr pScreen);
 
 enum HARDWARE_CURSOR_INVERT_MASK = 			0x00000001;
 enum HARDWARE_CURSOR_AND_SOURCE_WITH_MASK =		0x00000002;

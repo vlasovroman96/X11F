@@ -318,7 +318,7 @@ void cpswaps(T, U)(ref T src, ref U dst) {
 		dst = bswap_16(src); 
 }
 
-// extern void SwapShorts(short* list, c_ulong count);
+// void SwapShorts(short* list, c_ulong count);
 
 alias DDXPointPtr = _xPoint*;
 alias BoxPtr = pixman_box16*;
@@ -330,6 +330,6 @@ alias GrabPtr = GrabRec*;
 alias x_server_generation_t = c_ulong;
 
 // static ulong globalSerialNumber = 0;
-// extern x_server_generation_t serverGeneration;
+// x_server_generation_t serverGeneration;
 
 }                          /* MISC_H */

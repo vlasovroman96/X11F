@@ -41,7 +41,7 @@ public import include.inputstr;              /* for DeviceIntPtr */
 
 
 /* resource type to pass in LookupIDByType for authorizations */
-extern RESTYPE SecurityAuthorizationResType;
+RESTYPE SecurityAuthorizationResType;
 
 /* this is what we store for an authorization */
 struct _SecurityAuthorizationRec {

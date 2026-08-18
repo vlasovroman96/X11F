@@ -382,7 +382,7 @@ struct glamor_screen_private {
 }
 
 /* Allow overriding the default glamor screen init proc */
-extern void function(ScreenPtr screen, glamor_context* glamor_ctx) glamor_egl_screen_init2;
+void function(ScreenPtr screen, glamor_context* glamor_ctx) glamor_egl_screen_init2;
 
 enum glamor_access_t {
     GLAMOR_ACCESS_RO,
@@ -476,7 +476,7 @@ version (GLAMOR_HAS_GBM) {
     Bool is_cbcr;
 }
 
-extern DevPrivateKeyRec glamor_pixmap_private_key;
+DevPrivateKeyRec glamor_pixmap_private_key;
 
 pragma(inline, true) glamor_pixmap_private* glamor_get_pixmap_private(PixmapPtr pixmap)
 {
@@ -610,12 +610,12 @@ struct glamor_gc_private {
     DamagePtr stipple_damage;
 }
 
-extern DevPrivateKeyRec glamor_gc_private_key;
-extern DevPrivateKeyRec glamor_screen_private_key;
+DevPrivateKeyRec glamor_gc_private_key;
+DevPrivateKeyRec glamor_screen_private_key;
 
-// extern glamor_screen_private* glamor_get_screen_private(ScreenPtr screen);
+// glamor_screen_private* glamor_get_screen_private(ScreenPtr screen);
 
-extern void glamor_set_screen_private(ScreenPtr screen, glamor_screen_private* priv);
+void glamor_set_screen_private(ScreenPtr screen, glamor_screen_private* priv);
 
 pragma(inline, true) glamor_gc_private* glamor_get_gc_private(GCPtr gc)
 {
@@ -632,7 +632,7 @@ pragma(inline, true) Bool glamor_pm_is_solid(int depth, c_ulong planemask)
         mixin(FbFullMask!("depth"));
 }
 
-extern int glamor_debug_level;
+int glamor_debug_level;
 
 /*import glamor.glamor_c */
 // PixmapPtr glamor_get_drawable_pixmap(DrawablePtr drawable);
@@ -840,10 +840,10 @@ struct glamor_port_private {
     glamor_program xv_prog;
 }
 
-extern XvAttributeRec[1] glamor_xv_attributes;
-extern int glamor_xv_num_attributes;
-extern XvImageRec[1] glamor_xv_images;
-extern int glamor_xv_num_images;
+XvAttributeRec[1] glamor_xv_attributes;
+int glamor_xv_num_attributes;
+XvImageRec[1] glamor_xv_images;
+int glamor_xv_num_images;
 
 void glamor_xv_init_port(glamor_port_private* port_priv);
 void glamor_xv_stop_video(glamor_port_private* port_priv);

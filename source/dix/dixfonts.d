@@ -175,7 +175,7 @@ struct image_text_closure {
     XID did;
 }
 
-extern FontPtr defaultFont;
+FontPtr defaultFont;
 
 private FontPathElementPtr* font_path_elements = cast(FontPathElementPtr*) 0;
 private int num_fpes = 0;

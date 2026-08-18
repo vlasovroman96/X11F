@@ -75,7 +75,7 @@ import Xi.extinit;
 import dix.events;
 
 
-// extern CARD8[1] event_base;
+// CARD8[1] event_base;
 
 /***********************************************************************
  *

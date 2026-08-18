@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_DPMS_MAJOR_VERSION = 1;
 enum XCB_DPMS_MINOR_VERSION = 2;
 
-extern xcb_extension_t xcb_dpms_id;
+xcb_extension_t xcb_dpms_id;
 
 /**
  * @brief xcb_dpms_get_version_cookie_t

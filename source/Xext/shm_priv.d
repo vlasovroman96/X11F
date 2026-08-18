@@ -27,6 +27,6 @@ struct _ShmDesc {
 }alias ShmDescRec = _ShmDesc;
 alias ShmDescPtr = _ShmDesc*;
 
-extern RESTYPE ShmSegType;
+RESTYPE ShmSegType;
 
  /* _XSERVER_XEXT_SHM_PRIV_H */

@@ -37,14 +37,14 @@ public import include.randrstr;
 import externs.X11.extensions.randrproto;
 import include.rrtransform;
 
-// extern int RREventBase, RRErrorBase;
+// int RREventBase, RRErrorBase;
 
-// extern RESTYPE RRClientType, RREventType;     /* resource types for event masks */
-extern DevPrivateKeyRec RRClientPrivateKeyRec;
+// RESTYPE RRClientType, RREventType;     /* resource types for event masks */
+DevPrivateKeyRec RRClientPrivateKeyRec;
 
 /* see also randr/randrstr.h: some still need to be exported for legacy Nvidia */
-extern RESTYPE RRProviderType;  /* X resource type: Randr PROVIDER */
-extern RESTYPE RRLeaseType;     /* X resource type: Randr LEASE */
+RESTYPE RRProviderType;  /* X resource type: Randr PROVIDER */
+RESTYPE RRLeaseType;     /* X resource type: Randr LEASE */
 
 enum RRClientPrivateKey = (&RRClientPrivateKeyRec);
 

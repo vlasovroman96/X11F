@@ -50,40 +50,40 @@ enum string miIndexToEnt24(string mif,string rgb24) = `` ~ miIndexToEnt15!(mif,m
 
 enum string miIndexToEntY24(string mif,string rgb24) = `((` ~ mif ~ `).ent[`~CvtR8G8B8toY15!(rgb24)~`])`;
 
-extern void  miCreatePicture(PicturePtr pPicture);
+void  miCreatePicture(PicturePtr pPicture);
 
-extern void  miDestroyPicture(PicturePtr pPicture);
+void  miDestroyPicture(PicturePtr pPicture);
 
-// extern void  miCompositeSourceValidate(PicturePtr pPicture);
+// void  miCompositeSourceValidate(PicturePtr pPicture);
 
-// extern void  miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
+// void  miComputeCompositeRegion(RegionPtr pRegion, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
-// extern void  miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats);
+// void  miPictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats);
 
-extern void  miRealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
+void  miRealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
-// extern void  miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
+// void  miUnrealizeGlyph(ScreenPtr pScreen, GlyphPtr glyph);
 
-// extern void  miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs);
+// void  miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFormat, INT16 xSrc, INT16 ySrc, int nlist, GlyphListPtr list, GlyphPtr* glyphs);
 
-// extern void  miRenderColorToPixel(PictFormatPtr pPict, xRenderColor* color, CARD32* pixel);
+// void  miRenderColorToPixel(PictFormatPtr pPict, xRenderColor* color, CARD32* pixel);
 
-// extern void  miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, xRenderColor* color);
+// void  miRenderPixelToColor(PictFormatPtr pPict, CARD32 pixel, xRenderColor* color);
 
-// extern void  miIsSolidAlpha(PicturePtr pSrc);
+// void  miIsSolidAlpha(PicturePtr pSrc);
 
-// extern void  miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
+// void  miCompositeRects(CARD8 op, PicturePtr pDst, xRenderColor* color, int nRect, xRectangle* rects);
 
-// extern void  miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box);
+// void  miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box);
 
-// extern void  miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds);
+// void  miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds);
 
-// extern void  miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds);
+// void  miTriangleBounds(int ntri, xTriangle* tris, BoxPtr bounds);
 
-// extern void  miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
+// void  miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
 
-// extern void  miCloseIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
+// void  miCloseIndexed(ScreenPtr pScreen, PictFormatPtr pFormat);
 
-// extern void  miUpdateIndexed(ScreenPtr pScreen, PictFormatPtr pFormat, int ndef, xColorItem* pdef);
+// void  miUpdateIndexed(ScreenPtr pScreen, PictFormatPtr pFormat, int ndef, xColorItem* pdef);
 
                           /* _MIPICT_H_ */

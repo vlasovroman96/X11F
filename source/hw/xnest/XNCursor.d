@@ -27,16 +27,16 @@ struct _XnestCursorFuncRec {
 alias xnestCursorFuncPtr = xnestCursorFuncRec*;
 
 // stores xnestCursorFuncRec in screen
-extern DevPrivateKeyRec xnestScreenCursorFuncKeyRec;
+DevPrivateKeyRec xnestScreenCursorFuncKeyRec;
 
-extern xnestCursorFuncRec xnestCursorFuncs;
+xnestCursorFuncRec xnestCursorFuncs;
 
 struct xnestPrivCursor {
     Cursor cursor;
 }
 
 // stores xnestPrivCursor per screen's cursor
-extern DevScreenPrivateKeyRec xnestScreenCursorPrivKeyRec;
+DevScreenPrivateKeyRec xnestScreenCursorPrivKeyRec;
 
 enum string xnestGetCursorPriv(string pCursor, string pScreen) = `(cast(xnestPrivCursor*) 
     dixLookupScreenPrivate(&(` ~ pCursor ~ `).devPrivates, 

@@ -26,7 +26,7 @@ struct xnestPrivGC {
     uint gc;
 }
 
-extern DevPrivateKeyRec xnestGCPrivateKeyRec;
+DevPrivateKeyRec xnestGCPrivateKeyRec;
 
 enum xnestGCPrivateKey = (&xnestGCPrivateKeyRec);
 

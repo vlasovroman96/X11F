@@ -48,10 +48,10 @@ alias vbeInfoPtr = vbeInfoRec*;
 enum string VBE_VERSION_MAJOR(string x) = `*(cast(CARD8*)(&` ~ x ~ `) + 1)`;
 enum string VBE_VERSION_MINOR(string x) = `cast(CARD8)(` ~ x ~ `)`;
 
-extern void  VBEInit(xf86Int10InfoPtr pInt, int entityIndex);
-extern void  VBEExtendedInit(xf86Int10InfoPtr pInt, int entityIndex, int Flags);
-extern void  vbeFree(vbeInfoPtr pVbe);
-extern void  vbeDoEDID(vbeInfoPtr pVbe, void* pDDCModule);
+void  VBEInit(xf86Int10InfoPtr pInt, int entityIndex);
+void  VBEExtendedInit(xf86Int10InfoPtr pInt, int entityIndex, int Flags);
+void  vbeFree(vbeInfoPtr pVbe);
+void  vbeDoEDID(vbeInfoPtr pVbe, void* pDDCModule);
 
 // #pragma pack(1)
 
@@ -113,8 +113,8 @@ struct _VbeInfoBlock {
 };
 
 /* Return Super VGA Information */
-extern void * VBEGetVBEInfo(vbeInfoPtr pVbe);
-extern void  VBEFreeVBEInfo(VbeInfoBlock* block);
+void * VBEGetVBEInfo(vbeInfoPtr pVbe);
+void  VBEFreeVBEInfo(VbeInfoBlock* block);
 
 /*
  * INT 1
@@ -177,8 +177,8 @@ struct _VbeModeInfoBlock {
 };
 
 /* Return VBE Mode Information */
-extern int* VBEGetModeInfo(vbeInfoPtr pVbe, int mode);
-extern int VBEFreeModeInfo(VbeModeInfoBlock* block);
+int* VBEGetModeInfo(vbeInfoPtr pVbe, int mode);
+int VBEFreeModeInfo(VbeModeInfoBlock* block);
 
 /*
  * INT2
@@ -204,13 +204,13 @@ struct _VbeCRTCInfoBlock {
 
 /* VbeCRTCInfoBlock is in the VESA 3.0 specs */
 
-extern int VBESetVBEMode(vbeInfoPtr pVbe, int mode, VbeCRTCInfoBlock* crtc);
+int VBESetVBEMode(vbeInfoPtr pVbe, int mode, VbeCRTCInfoBlock* crtc);
 
 /*
  * INT 3
  */
 
-extern int VBEGetVBEMode(vbeInfoPtr pVbe, int* mode);
+int VBEGetVBEMode(vbeInfoPtr pVbe, int* mode);
 
 /*
  * INT 4
@@ -236,13 +236,13 @@ alias MODE_SAVE = vbeSaveRestoreFunction.MODE_SAVE;
 alias MODE_RESTORE = vbeSaveRestoreFunction.MODE_RESTORE;
 
 
-extern int VBESaveRestore(vbeInfoPtr pVbe, vbeSaveRestoreFunction function_, void** memory, int* size, int* real_mode_pages);
+int VBESaveRestore(vbeInfoPtr pVbe, vbeSaveRestoreFunction function_, void** memory, int* size, int* real_mode_pages);
 
 /*
  * INT 5
  */
 
-extern int VBEBankSwitch(vbeInfoPtr pVbe, uint iBank, int window);
+int VBEBankSwitch(vbeInfoPtr pVbe, uint iBank, int window);
 
 /*
  * INT 6
@@ -272,21 +272,21 @@ enum string VBEGetLogicalScanline(string pVbe, string pixels, string bytes, stri
 enum string VBEGetMaxLogicalScanline(string pVbe, string pixels, string bytes, string max) = `
 	VBESetGetLogicalScanlineLength(` ~ pVbe ~ `, SCANWID_GET_MAX, 0, 
 					` ~ pixels ~ `, ` ~ bytes ~ `, ` ~ max ~ `)`;
-extern int VBESetGetLogicalScanlineLength(vbeInfoPtr pVbe, vbeScanwidthCommand command, int width, int* pixels, int* bytes, int* max);
+int VBESetGetLogicalScanlineLength(vbeInfoPtr pVbe, vbeScanwidthCommand command, int width, int* pixels, int* bytes, int* max);
 
 /*
  * INT 7
  */
 
 /* 16 bit code */
-extern int VBESetDisplayStart(vbeInfoPtr pVbe, int x, int y, Bool wait_retrace);
+int VBESetDisplayStart(vbeInfoPtr pVbe, int x, int y, Bool wait_retrace);
 
 /*
  * INT 8
  */
 
 /* if bits is 0, then it is a GET */
-extern int VBESetGetDACPaletteFormat(vbeInfoPtr pVbe, int bits);
+int VBESetGetDACPaletteFormat(vbeInfoPtr pVbe, int bits);
 
 /*
  * INT 9
@@ -298,7 +298,7 @@ extern int VBESetGetDACPaletteFormat(vbeInfoPtr pVbe, int bits);
  *  If setting a palette, it will return the pointer received on success,
  * NULL on failure.
  */
-extern int* VBESetGetPaletteData(vbeInfoPtr pVbe, Bool set, int first, int num, CARD32* data, Bool secondary, Bool wait_retrace);
+int* VBESetGetPaletteData(vbeInfoPtr pVbe, Bool set, int first, int num, CARD32* data, Bool secondary, Bool wait_retrace);
 enum string VBEFreePaletteData(string data) = `free(` ~ data ~ `)`;
 
 /*
@@ -333,10 +333,10 @@ struct _VbeSaveRestoreRec {
 }alias vbeSaveRestoreRec = _VbeSaveRestoreRec;
 alias vbeSaveRestorePtr = vbeSaveRestoreRec*;
 
-extern int VBEVesaSaveRestore(vbeInfoPtr pVbe, vbeSaveRestorePtr vbe_sr, vbeSaveRestoreFunction function_);
+int VBEVesaSaveRestore(vbeInfoPtr pVbe, vbeSaveRestorePtr vbe_sr, vbeSaveRestoreFunction function_);
 
-extern int VBEGetPixelClock(vbeInfoPtr pVbe, int mode, int Clock);
-extern int VBEDPMSSet(vbeInfoPtr pVbe, int mode);
+int VBEGetPixelClock(vbeInfoPtr pVbe, int mode, int Clock);
+int VBEDPMSSet(vbeInfoPtr pVbe, int mode);
 
 struct vbePanelID {
     short hsize;
@@ -351,7 +351,7 @@ struct vbePanelID {
     char[14] reserved = 0;
 }
 
-extern int VBEInterpretPanelID(ScrnInfoPtr pScrn, vbePanelID* data);
-extern vbePanelID* VBEReadPanelID(vbeInfoPtr pVbe);
+int VBEInterpretPanelID(ScrnInfoPtr pScrn, vbePanelID* data);
+vbePanelID* VBEReadPanelID(vbeInfoPtr pVbe);
 
 

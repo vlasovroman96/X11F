@@ -935,7 +935,7 @@ version (IPv6) {
 }
 
 version (XQUARTZ_EXPORTS_LAUNCHD_FD) {
-extern int xquartz_launchd_fd;
+int xquartz_launchd_fd;
 }
 
 int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint* count_ret, XtransConnInfo** ciptrs_ret)

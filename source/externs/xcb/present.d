@@ -25,7 +25,7 @@ import externs.xcb.xcbext;
 enum XCB_PRESENT_MAJOR_VERSION = 1;
 enum XCB_PRESENT_MINOR_VERSION = 4;
 
-extern xcb_extension_t xcb_present_id;
+xcb_extension_t xcb_present_id;
 
 enum xcb_present_event_enum_t {
     XCB_PRESENT_EVENT_CONFIGURE_NOTIFY = 0,

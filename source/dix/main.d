@@ -136,7 +136,7 @@ version (DPMSExtension) {
 import Xext.dpmsproc;
 }
 
-extern void Dispatch();
+void Dispatch();
 
 CallbackListPtr RootWindowFinalizeCallback = null;
 CallbackListPtr PostInitRootWindowCallback = null;

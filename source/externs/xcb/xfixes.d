@@ -24,7 +24,7 @@ import externs.xcb.xcbext;
 enum XCB_XFIXES_MAJOR_VERSION = 6;
 enum XCB_XFIXES_MINOR_VERSION = 0;
 
-extern xcb_extension_t xcb_xfixes_id;
+xcb_extension_t xcb_xfixes_id;
 
 /**
  * @brief xcb_xfixes_query_version_cookie_t

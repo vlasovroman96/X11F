@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_DRI3_MAJOR_VERSION = 1;
 enum XCB_DRI3_MINOR_VERSION = 4;
 
-extern xcb_extension_t xcb_dri3_id;
+xcb_extension_t xcb_dri3_id;
 
 alias xcb_dri3_syncobj_t = uint;
 

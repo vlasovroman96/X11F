@@ -302,54 +302,54 @@ alias XKB_GEOM_CLEAR_EXCESS = XkbGeomClearance.XKB_GEOM_CLEAR_EXCESS;
 alias XKB_GEOM_CLEAR_ALL = XkbGeomClearance.XKB_GEOM_CLEAR_ALL;
 
 
-// extern XkbPropertyPtr XkbAddGeomProperty(XkbGeometryPtr, char*, char*);
+// XkbPropertyPtr XkbAddGeomProperty(XkbGeometryPtr, char*, char*);
 
-// extern XkbKeyAliasPtr XkbAddGeomKeyAlias(XkbGeometryPtr, char*, char*);
+// XkbKeyAliasPtr XkbAddGeomKeyAlias(XkbGeometryPtr, char*, char*);
 
-// extern XkbColorPtr XkbAddGeomColor(XkbGeometryPtr, char*, uint);
+// XkbColorPtr XkbAddGeomColor(XkbGeometryPtr, char*, uint);
 
-// extern XkbOutlinePtr XkbAddGeomOutline(XkbShapePtr, int);
+// XkbOutlinePtr XkbAddGeomOutline(XkbShapePtr, int);
 
-// extern XkbShapePtr XkbAddGeomShape(XkbGeometryPtr, Atom, int);
+// XkbShapePtr XkbAddGeomShape(XkbGeometryPtr, Atom, int);
 
-// extern XkbKeyPtr XkbAddGeomKey(XkbRowPtr);
+// XkbKeyPtr XkbAddGeomKey(XkbRowPtr);
 
-// extern XkbRowPtr XkbAddGeomRow(XkbSectionPtr, int);
+// XkbRowPtr XkbAddGeomRow(XkbSectionPtr, int);
 
-// extern XkbSectionPtr XkbAddGeomSection(XkbGeometryPtr, Atom, int, int, int);
+// XkbSectionPtr XkbAddGeomSection(XkbGeometryPtr, Atom, int, int, int);
 
-// extern XkbOverlayPtr XkbAddGeomOverlay(XkbSectionPtr, Atom, int);
+// XkbOverlayPtr XkbAddGeomOverlay(XkbSectionPtr, Atom, int);
 
-// extern XkbOverlayRowPtr XkbAddGeomOverlayRow(XkbOverlayPtr, int, int);
+// XkbOverlayRowPtr XkbAddGeomOverlayRow(XkbOverlayPtr, int, int);
 
-// extern XkbOverlayKeyPtr XkbAddGeomOverlayKey(XkbOverlayPtr, XkbOverlayRowPtr, char*, char*);
+// XkbOverlayKeyPtr XkbAddGeomOverlayKey(XkbOverlayPtr, XkbOverlayRowPtr, char*, char*);
 
-// extern XkbDoodadPtr XkbAddGeomDoodad(XkbGeometryPtr, XkbSectionPtr, Atom);
+// XkbDoodadPtr XkbAddGeomDoodad(XkbGeometryPtr, XkbSectionPtr, Atom);
 
-extern void XkbFreeGeomKeyAliases(XkbGeometryPtr, int, int, Bool);
+void XkbFreeGeomKeyAliases(XkbGeometryPtr, int, int, Bool);
 
-extern void XkbFreeGeomColors(XkbGeometryPtr, int, int, Bool);
+void XkbFreeGeomColors(XkbGeometryPtr, int, int, Bool);
 
-extern void XkbFreeGeomDoodads(XkbDoodadPtr, int, Bool);
+void XkbFreeGeomDoodads(XkbDoodadPtr, int, Bool);
 
-extern void XkbFreeGeomProperties(XkbGeometryPtr, int, int, Bool);
+void XkbFreeGeomProperties(XkbGeometryPtr, int, int, Bool);
 
-extern void XkbFreeGeomKeys(XkbRowPtr, int, int, Bool);
+void XkbFreeGeomKeys(XkbRowPtr, int, int, Bool);
 
-extern void XkbFreeGeomRows(XkbSectionPtr, int, int, Bool);
+void XkbFreeGeomRows(XkbSectionPtr, int, int, Bool);
 
-extern void XkbFreeGeomSections(XkbGeometryPtr, int, int, Bool);
+void XkbFreeGeomSections(XkbGeometryPtr, int, int, Bool);
 
-extern void XkbFreeGeomPoints(XkbOutlinePtr, int, int, Bool);
+void XkbFreeGeomPoints(XkbOutlinePtr, int, int, Bool);
 
-extern void XkbFreeGeomOutlines(XkbShapePtr, int, int, Bool);
+void XkbFreeGeomOutlines(XkbShapePtr, int, int, Bool);
 
-extern void XkbFreeGeomShapes(XkbGeometryPtr, int, int, Bool);
+void XkbFreeGeomShapes(XkbGeometryPtr, int, int, Bool);
 
-// extern void XkbFreeGeometry(XkbGeometryPtr, uint, Bool);
+// void XkbFreeGeometry(XkbGeometryPtr, uint, Bool);
 
-// extern Bool XkbGeomRealloc(void**, int, int, int, XkbGeomClearance);
+// Bool XkbGeomRealloc(void**, int, int, int, XkbGeomClearance);
 
-// extern Status XkbAllocGeometry(XkbDescPtr, XkbGeometrySizesPtr);
+// Status XkbAllocGeometry(XkbDescPtr, XkbGeometrySizesPtr);
 
                           /* _XKBGEOM_H_ */

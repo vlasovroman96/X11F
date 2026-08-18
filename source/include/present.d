@@ -143,8 +143,8 @@ alias present_screen_info_ptr = present_screen_info*;
  * Called when 'event_id' occurs. 'ust' and 'msc' indicate when the
  * event actually happened
  */
-extern void  present_event_notify(ulong event_id, ulong ust, ulong msc);
+void  present_event_notify(ulong event_id, ulong ust, ulong msc);
 
-// extern void  present_screen_init(ScreenPtr screen, present_screen_info_ptr info);
+// void  present_screen_init(ScreenPtr screen, present_screen_info_ptr info);
 
  /* _PRESENT_H_ */

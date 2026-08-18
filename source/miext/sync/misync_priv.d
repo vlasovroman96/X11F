@@ -12,7 +12,7 @@ public import include.misync;
 import include.privates;
 
 
-extern DevPrivateKeyRec miSyncScreenPrivateKey;
+DevPrivateKeyRec miSyncScreenPrivateKey;
 
 struct _syncScreenPriv {
     /* Wrappable sync-specific screen functions */

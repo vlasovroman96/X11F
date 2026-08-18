@@ -58,22 +58,22 @@ mixin template XTYPE_SIZE_ASSERT(alias typename) {
 
 /* server setting: maximum size for big requests */
 enum MAX_BIG_REQUEST_SIZE = 4194303;
-// extern c_long maxBigRequestSize;
+// c_long maxBigRequestSize;
 
-// extern char dispatchExceptionAtReset;
-// extern int terminateDelay;
-extern Bool touchEmulatePointer;
+// char dispatchExceptionAtReset;
+// int terminateDelay;
+Bool touchEmulatePointer;
 
 alias HWEventQueueType = int;
 alias HWEventQueuePtr = HWEventQueueType*;
 
-extern HWEventQueuePtr[2] checkForInput;
+HWEventQueuePtr[2] checkForInput;
 
  /* -retro mode */
-// extern Bool party_like_its_1989;
+// Bool party_like_its_1989;
 
 /* needed by libglx and libglamor (server modules) */
-extern bool enableIndirectGLX;
+bool enableIndirectGLX;
 
 /*
  * @brief callback right after one screen's root window has been initialized
@@ -86,7 +86,7 @@ extern bool enableIndirectGLX;
  * Not for DDXs / drivers: those already informed by screen's CreateWindow
  * proc being called on the root window.
  */
-extern CallbackListPtr PostInitRootWindowCallback;
+CallbackListPtr PostInitRootWindowCallback;
 
 pragma(inline, true) bool InputCheckPending()
 {
@@ -228,26 +228,26 @@ void CopyKeyClass(DeviceIntPtr device, DeviceIntPtr master);
 alias xQueryFontReplyPtr = _xQueryFontReply*;
 // void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
 
-// extern Bool whiteRoot;
+// Bool whiteRoot;
 
-// extern /*volatile*/ char isItTimeToYield;
+// /*volatile*/ char isItTimeToYield;
 
 /* bit values for dispatchException */
 enum DE_TERMINATE = 2;
 enum DE_PRIORITYCHANGE = 4     /* set when a client's priority changes */;
 
-// extern /*volatile*/ char dispatchException;
+// /*volatile*/ char dispatchException;
 
-// extern int ScreenSaverBlanking;
-// extern int ScreenSaverAllowExposures;
-// extern int defaultScreenSaverBlanking;
-// extern int defaultScreenSaverAllowExposures;
-extern const(char)* display;
-extern int displayfd;
-// extern Bool explicit_display;
+// int ScreenSaverBlanking;
+// int ScreenSaverAllowExposures;
+// int defaultScreenSaverBlanking;
+// int defaultScreenSaverAllowExposures;
+const(char)* display;
+int displayfd;
+// Bool explicit_display;
 
-extern Bool disableBackingStore;
-extern Bool enableBackingStore;
+Bool disableBackingStore;
+Bool enableBackingStore;
 
 /* in generated BuiltInAtoms.c */
 void MakePredeclaredAtoms();
@@ -543,7 +543,7 @@ int ClientSignalAll(ClientPtr pClient, ClientSleepProcPtr func, void* closure);
  * @brief callback when root window has is finalized
  */
 /* only exported temporariy for Nvidia legacy */
-extern CallbackListPtr RootWindowFinalizeCallback;
+CallbackListPtr RootWindowFinalizeCallback;
 
 /*
  * @brief do post actions necessary when window got a new cursor

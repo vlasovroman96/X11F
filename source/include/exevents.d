@@ -60,25 +60,25 @@ alias SCROLL_FLAG_DONT_EMULATE = ScrollFlags.SCROLL_FLAG_DONT_EMULATE;
 alias SCROLL_FLAG_PREFERRED = ScrollFlags.SCROLL_FLAG_PREFERRED;
 
 
-extern int InitProximityClassDeviceStruct(DeviceIntPtr);
+int InitProximityClassDeviceStruct(DeviceIntPtr);
 
-extern int InitValuatorAxisStruct(DeviceIntPtr, int, Atom, int, int, int, int, int, int);
+int InitValuatorAxisStruct(DeviceIntPtr, int, Atom, int, int, int, int, int, int);
 
-extern int SetScrollValuator(DeviceIntPtr, int, ScrollType, double, int);
+int SetScrollValuator(DeviceIntPtr, int, ScrollType, double, int);
 
-// extern int XIDeleteDeviceProperty(DeviceIntPtr, Atom, Bool);
+// int XIDeleteDeviceProperty(DeviceIntPtr, Atom, Bool);
 
-// extern int XIChangeDeviceProperty(DeviceIntPtr, Atom, Atom, int, int, c_ulong, const(void)*, Bool);
+// int XIChangeDeviceProperty(DeviceIntPtr, Atom, Atom, int, int, c_ulong, const(void)*, Bool);
 
-extern int XIGetDeviceProperty(DeviceIntPtr, Atom, XIPropertyValuePtr*);
+int XIGetDeviceProperty(DeviceIntPtr, Atom, XIPropertyValuePtr*);
 
-// extern int XISetDevicePropertyDeletable(DeviceIntPtr, Atom, Bool);
+// int XISetDevicePropertyDeletable(DeviceIntPtr, Atom, Bool);
 
-// extern int XIRegisterPropertyHandler(DeviceIntPtr dev, int function(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) SetProperty, int function(DeviceIntPtr dev, Atom property) GetProperty, int function(DeviceIntPtr dev, Atom property) DeleteProperty);
+// int XIRegisterPropertyHandler(DeviceIntPtr dev, int function(DeviceIntPtr dev, Atom property, XIPropertyValuePtr prop, BOOL checkonly) SetProperty, int function(DeviceIntPtr dev, Atom property) GetProperty, int function(DeviceIntPtr dev, Atom property) DeleteProperty);
 
-// extern int XIGetKnownProperty(const(char)* name);
+// int XIGetKnownProperty(const(char)* name);
 
-extern DeviceIntPtr XIGetDevice(xEvent *ev);
+DeviceIntPtr XIGetDevice(xEvent *ev);
 
 /****************************************************************************
  *                      End of driver interface                             *

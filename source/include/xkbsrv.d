@@ -200,7 +200,7 @@ alias xkbDeviceInfoPtr = xkbDeviceInfoRec*;
 
 alias	Status =		int;
 
-extern void XkbFreeKeyboard(XkbDescPtr, uint, Bool);
+void XkbFreeKeyboard(XkbDescPtr, uint, Bool);
 
 /**
  * @brief get the current keysym map
@@ -216,12 +216,12 @@ extern void XkbFreeKeyboard(XkbDescPtr, uint, Bool);
  *
  * @return keysym map, or NULL if an error occurs
  */
-extern KeySymsPtr XkbGetCoreMap(DeviceIntPtr  /* keybd */
+KeySymsPtr XkbGetCoreMap(DeviceIntPtr  /* keybd */
     );
 
-extern void XkbApplyMappingChange(DeviceIntPtr, KeySymsPtr, KeyCode, CARD8, CARD8*, ClientPtr);
+void XkbApplyMappingChange(DeviceIntPtr, KeySymsPtr, KeyCode, CARD8, CARD8*, ClientPtr);
 
-extern void XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsPtr);
+void XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsPtr);
 
 /**
  * @brief Set global autorepeat / sync core protocol repeat flags
@@ -242,13 +242,13 @@ extern void XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsPtr);
  *              Used only if key == -1
  *
  */
-extern void XkbSetRepeatKeys(DeviceIntPtr, int, int);
+void XkbSetRepeatKeys(DeviceIntPtr, int, int);
 
-extern void XkbGetRulesDflts(XkbRMLVOSet*);
+void XkbGetRulesDflts(XkbRMLVOSet*);
 
-extern void XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
+void XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
 
-extern void XkbCopyDeviceKeymap(DeviceIntPtr, DeviceIntPtr);
+void XkbCopyDeviceKeymap(DeviceIntPtr, DeviceIntPtr);
 
 public import include.xkbsrv;
 public import include.xkbrules;

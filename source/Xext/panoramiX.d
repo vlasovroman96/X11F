@@ -847,7 +847,7 @@ private void PanoramiXMaybeAddVisual(VisualPtr pVisual)
     }
 }
 
-extern void PanoramiXConsolidate()
+void PanoramiXConsolidate()
 {
     ScreenPtr masterScreen = dixGetMasterScreen();
     DepthPtr pDepth = masterScreen.allowedDepths;

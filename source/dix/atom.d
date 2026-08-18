@@ -79,9 +79,9 @@ private NodePtr atomRoot = null;
 private c_ulong tableLength;
 private NodePtr* nodeTable;
 
-extern Atom MakeAtom(const(char)* string, uint len, Bool makeit);
+Atom MakeAtom(const(char)* string, uint len, Bool makeit);
 
-extern Bool ValidAtom(Atom atom);
+Bool ValidAtom(Atom atom);
 
 const(char)* NameForAtom(Atom atom)
 {

@@ -56,6 +56,7 @@ alias RegionPtr = pixman_region16*;
 public import include.miscstruct;
 public import externs.X11.X;
 import externs.attrs;
+public import region;
 
 
 /* Return values from RectIn() */
@@ -73,9 +74,9 @@ enum NullRegion = cast(RegionPtr)0;
 alias RegDataRec = pixman_region16_data;
 alias RegDataPtr = pixman_region16_data*;
 
-extern BoxRec RegionEmptyBox;
-extern RegDataRec RegionEmptyData;
-extern RegDataRec RegionBrokenData;
+BoxRec RegionEmptyBox;
+RegDataRec RegionEmptyData;
+RegDataRec RegionBrokenData;
 pragma(inline, true) Bool RegionNil(RegionPtr reg)
 {
     return ((reg).data && !(reg).data.numRects);
@@ -200,13 +201,13 @@ pragma(inline, true) void RegionNull(RegionPtr _pReg)
     (_pReg).data = &RegionEmptyData;
 }
 
-extern void InitRegions();
+void InitRegions();
 
-extern RegionPtr RegionCreate(BoxPtr, int);
+// RegionPtr RegionCreate(BoxPtr, int);
 
-extern void RegionDestroy(RegionPtr);
+void RegionDestroy(RegionPtr);
 
-extern RegionPtr RegionDuplicate(RegionPtr);
+RegionPtr RegionDuplicate(RegionPtr);
 
 pragma(inline, true) Bool RegionCopy(RegionPtr dst, RegionPtr src)
 {
@@ -223,11 +224,11 @@ pragma(inline, true) Bool RegionUnion(RegionPtr newReg, RegionPtr reg1, RegionPt
     return assumeNoGC(&pixman_region_union)(newReg, reg1, reg2);
 }
 
-extern void RegionAppend(RegionPtr, RegionPtr);
+void RegionAppend(RegionPtr, RegionPtr);
 
-extern void RegionValidate(RegionPtr, Bool*);
+void RegionValidate(RegionPtr, Bool*);
 
-extern RegionPtr RegionFromRects(int, xRectanglePtr, int);
+RegionPtr RegionFromRects(int, xRectanglePtr, int);
 
 /*-
  *-----------------------------------------------------------------------
@@ -283,7 +284,7 @@ pragma(inline, true) void RegionTranslate(RegionPtr pReg, int x, int y)
     assumeNoGC(&pixman_region_translate)(pReg, x, y);
 }
 
-extern void RegionBreak(RegionPtr);
+// void RegionBreak(RegionPtr);
 
 pragma(inline, true) Bool RegionContainsPoint(RegionPtr pReg, int x, int y, BoxPtr box)
 {
@@ -295,13 +296,13 @@ pragma(inline, true) Bool RegionEqual(RegionPtr reg1, RegionPtr reg2)
     return assumeNoGC(&pixman_region_equal)(reg1, reg2);
 }
 
-extern void RegionRectAlloc(RegionPtr, int);
+// void RegionRectAlloc(RegionPtr, int);
 
 version (DEBUG) {
-extern void RegionIsValid(RegionPtr);
+void RegionIsValid(RegionPtr);
 }
 
-extern void RegionPrint(RegionPtr);
+void RegionPrint(RegionPtr);
 
 version = INCLUDE_LEGACY_REGION_DEFINES;
 version (INCLUDE_LEGACY_REGION_DEFINES) {

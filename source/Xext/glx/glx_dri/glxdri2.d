@@ -126,7 +126,7 @@ private void copy_box(__GLXdrawable* drawable, int dst, int src, int x, int y, i
 }
 
 /* white lie */
-extern glx_func_ptr glXGetProcAddressARB(const(char)*);
+glx_func_ptr glXGetProcAddressARB(const(char)*);
 
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {

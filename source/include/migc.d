@@ -33,18 +33,18 @@ import include.gc;
 import include.pixmapstr;;
 
  
-extern void  miChangeGC(GCPtr pGC, c_ulong mask);
+void  miChangeGC(GCPtr pGC, c_ulong mask);
 
-extern void  miDestroyGC(GCPtr pGC);
+void  miDestroyGC(GCPtr pGC);
 
-extern void  miDestroyClip(GCPtr pGC);
+void  miDestroyClip(GCPtr pGC);
 
-extern void  miChangeClip(GCPtr pGC, int type, void* pvalue, int nrects);
+void  miChangeClip(GCPtr pGC, int type, void* pvalue, int nrects);
 
-extern void  miCopyClip(GCPtr pgcDst, GCPtr pgcSrc);
+void  miCopyClip(GCPtr pgcDst, GCPtr pgcSrc);
 
-extern void  miCopyGC(GCPtr pGCSrc, c_ulong changes, GCPtr pGCDst);
+void  miCopyGC(GCPtr pGCSrc, c_ulong changes, GCPtr pGCDst);
 
-extern void  miComputeCompositeClip(GCPtr pGC, DrawablePtr pDrawable);
+void  miComputeCompositeClip(GCPtr pGC, DrawablePtr pDrawable);
 
 

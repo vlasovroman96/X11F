@@ -30,7 +30,7 @@ extern(C): __gshared:
  import include.xf86Xinput;
 
 /* xf86Globals.c */
-extern InputDriverPtr* xf86InputDriverList;
-extern int xf86NumInputDrivers;
+InputDriverPtr* xf86InputDriverList;
+int xf86NumInputDrivers;
 
                           /* _xf86InPriv_h */

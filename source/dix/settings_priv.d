@@ -15,7 +15,7 @@ extern(C): __gshared:
  * config files.
  */
 
-extern bool dixSettingAllowByteSwappedClients;
-extern char* dixSettingSeatId;
+bool dixSettingAllowByteSwappedClients;
+char* dixSettingSeatId;
 
 

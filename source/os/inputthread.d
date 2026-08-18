@@ -557,7 +557,7 @@ int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldset)
 //     return SetNotifyFd(fd, readInputProc, X_NOTIFY_READ, readInputArgs);
 // }
 
-// extern int InputThreadUnregisterDev(int fd)
+// int InputThreadUnregisterDev(int fd)
 // {
 //     RemoveNotifyFd(fd);
 //     return 1;

@@ -53,14 +53,14 @@ import hw.kdrive.ephyr.ephyrcursor;
 
 
 
-extern Window EphyrPreExistingHostWin;
-extern Bool EphyrWantGrayScale;
-extern Bool EphyrWantResize;
-extern Bool kdHasPointer;
-extern Bool kdHasKbd;
-extern Bool ephyr_glamor, ephyr_glamor_gles2, ephyr_glamor_skip_present;
+Window EphyrPreExistingHostWin;
+Bool EphyrWantGrayScale;
+Bool EphyrWantResize;
+Bool kdHasPointer;
+Bool kdHasKbd;
+Bool ephyr_glamor, ephyr_glamor_gles2, ephyr_glamor_skip_present;
 
-extern Bool ephyrNoXV;
+Bool ephyrNoXV;
 
 
 

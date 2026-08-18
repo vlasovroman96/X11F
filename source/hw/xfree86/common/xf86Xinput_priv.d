@@ -9,7 +9,7 @@ extern(C): __gshared:
 public import include.xf86Xinput;
 import include.xf86;
 
-// extern InputInfoPtr xf86InputDevs;
+// InputInfoPtr xf86InputDevs;
 
 int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL is_auto);
 // InputInfoPtr xf86AllocateInput();

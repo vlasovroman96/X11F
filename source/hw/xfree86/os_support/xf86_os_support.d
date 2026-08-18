@@ -68,7 +68,7 @@ void xf86PlatformReprobeDevice(int index, OdevAttributes* attribs);
 }
 
 version (__sun) {
-extern char[PATH_MAX] xf86SolarisFbDev = 0;
+char[PATH_MAX] xf86SolarisFbDev = 0;
 
 /* these are only used inside sun-specific os-support */
 void xf86VTAcquire(int);

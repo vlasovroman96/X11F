@@ -60,8 +60,8 @@ public import include.windowstr;
 public import xfixes.xfixes;
 import externs.X11.extensions.xfixesproto;
 
-extern int XFixesEventBase;
-extern int XFixesUseXinerama;
+int XFixesEventBase;
+int XFixesUseXinerama;
 
 struct _XFixesClient {
     CARD32 major_version;

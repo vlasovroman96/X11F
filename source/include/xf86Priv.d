@@ -42,25 +42,25 @@ public import include.input;
 public import xf86Bus;
 
 
-// extern int xf86FbBpp;
-// extern int  xf86Depth;
+// int xf86FbBpp;
+// int  xf86Depth;
 
 /* Other parameters */
 
-// extern xf86InfoRec xf86Info;
-// extern serverLayoutRec xf86ConfigLayout;
+// xf86InfoRec xf86Info;
+// serverLayoutRec xf86ConfigLayout;
 
-// extern void * xf86DriverList;
-// extern int  xf86NumScreens;
+// void * xf86DriverList;
+// int  xf86NumScreens;
 
-// extern ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
-// extern int xf86NumGPUScreens;
-// extern int  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
+// ScrnInfoPtr *xf86GPUScreens;      /* List of pointers to ScrnInfoRecs */
+// int xf86NumGPUScreens;
+// int  xf86DRMMasterFd;              /* Command line argument for DRM master file descriptor */
 enum DEFAULT_DPI =		96;
 
 
 /* xf86Bus.c */
-// extern void  xf86BusProbe();
-// extern void  xf86AddDevToEntity(int entityIndex, GDevPtr dev);
+// void  xf86BusProbe();
+// void  xf86AddDevToEntity(int entityIndex, GDevPtr dev);
 
                           /* _XF86PRIV_H */

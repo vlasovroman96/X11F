@@ -20,7 +20,7 @@ alias RefreshAreaFuncPtr = void function(ScrnInfoPtr, int, BoxPtr);
  *
  * Returns FALSE in the event of an error.
  */
-extern void  ShadowFBInit(ScreenPtr pScreen, RefreshAreaFuncPtr refreshArea);
+void  ShadowFBInit(ScreenPtr pScreen, RefreshAreaFuncPtr refreshArea);
 
 /*
  * ShadowFBInit2 is a more featureful refinement of the original shadowfb.
@@ -30,6 +30,6 @@ extern void  ShadowFBInit(ScreenPtr pScreen, RefreshAreaFuncPtr refreshArea);
  *
  * Returns FALSE in the event of an error
  */
-extern void  ShadowFBInit2(ScreenPtr pScreen, RefreshAreaFuncPtr preRefreshArea, RefreshAreaFuncPtr postRefreshArea);
+void  ShadowFBInit2(ScreenPtr pScreen, RefreshAreaFuncPtr preRefreshArea, RefreshAreaFuncPtr postRefreshArea);
 
                           /* _SHADOWFB_H */

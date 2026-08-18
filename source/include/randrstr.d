@@ -388,7 +388,7 @@ static if (RANDR_12_INTERFACE) {
 }alias rrScrPrivRec = _rrScrPriv;
 alias rrScrPrivPtr = _rrScrPriv*;
 
-extern DevPrivateKeyRec rrPrivKeyRec;
+DevPrivateKeyRec rrPrivKeyRec;
 
 enum rrPrivKey = (&rrPrivKeyRec);
 
@@ -433,7 +433,7 @@ version (RANDR_12_INTERFACE) {
 /*
  * Set the range of sizes for the screen
  */
-extern void  RRScreenSetSizeRange(ScreenPtr pScreen, CARD16 minWidth, CARD16 minHeight, CARD16 maxWidth, CARD16 maxHeight);
+void  RRScreenSetSizeRange(ScreenPtr pScreen, CARD16 minWidth, CARD16 minHeight, CARD16 maxWidth, CARD16 maxHeight);
 }
 
 /* rrscreen.c */
@@ -442,35 +442,35 @@ extern void  RRScreenSetSizeRange(ScreenPtr pScreen, CARD16 minWidth, CARD16 min
  * The driver is responsible for calling this whenever it has changed
  * the size of the screen
  */
-extern void  RRScreenSizeNotify(ScreenPtr pScreen);
+void  RRScreenSizeNotify(ScreenPtr pScreen);
 
 /*
  * Request that the screen be resized
  */
-extern void  RRScreenSizeSet(ScreenPtr pScreen, CARD16 width, CARD16 height, CARD32 mmWidth, CARD32 mmHeight);
+void  RRScreenSizeSet(ScreenPtr pScreen, CARD16 width, CARD16 height, CARD32 mmWidth, CARD32 mmHeight);
 
 /*
  * Send ConfigureNotify event to root window when 'something' happens
  */
-extern void  RRSendConfigNotify(ScreenPtr pScreen);
+void  RRSendConfigNotify(ScreenPtr pScreen);
 
 /* randr.c */
 /* set a screen change on the primary screen */
-// extern void  RRSetChanged(ScreenPtr pScreen);
+// void  RRSetChanged(ScreenPtr pScreen);
 
 /*
  * Send all pending events
  */
-// extern void  RRTellChanged(ScreenPtr pScreen);
+// void  RRTellChanged(ScreenPtr pScreen);
 
 /*
  * Poll the driver for changed information
  */
-// extern void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
+// void  RRGetInfo(ScreenPtr pScreen, Bool force_query);
 
-// extern void  RRScreenInit(ScreenPtr pScreen);
+// void  RRScreenInit(ScreenPtr pScreen);
 
-// extern void  RRFirstOutput(ScreenPtr pScreen);
+// void  RRFirstOutput(ScreenPtr pScreen);
 
 /*
  * This is the old interface, deprecated but left
@@ -481,63 +481,63 @@ extern void  RRSendConfigNotify(ScreenPtr pScreen);
  * Then, register the specific size with the screen
  */
 
-// extern void  RRRegisterSize(ScreenPtr pScreen, short width, short height, short mmWidth, short mmHeight);
+// void  RRRegisterSize(ScreenPtr pScreen, short width, short height, short mmWidth, short mmHeight);
 
-// extern void  RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate);
+// void  RRRegisterRate(ScreenPtr pScreen, RRScreenSizePtr pSize, int rate);
 
 /*
  * Finally, set the current configuration of the screen
  */
 
-// extern void  RRSetCurrentConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize);
+// void  RRSetCurrentConfig(ScreenPtr pScreen, Rotation rotation, int rate, RRScreenSizePtr pSize);
 
 /* rrcrtc.c */
 
 /*
  * Create a CRTC
  */
-// extern void  RRCrtcCreate(ScreenPtr pScreen, void* devPrivate);
+// void  RRCrtcCreate(ScreenPtr pScreen, void* devPrivate);
 
 /*
  * Set the allowed rotations on a CRTC
  */
-// extern void  RRCrtcSetRotations(RRCrtcPtr crtc, Rotation rotations);
+// void  RRCrtcSetRotations(RRCrtcPtr crtc, Rotation rotations);
 
 /*
  * Notify the extension that the Crtc has been reconfigured,
  * the driver calls this whenever it has updated the mode
  */
-// extern void  RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, RRTransformPtr transform, int numOutputs, RROutputPtr* outputs);
+// void  RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, RRTransformPtr transform, int numOutputs, RROutputPtr* outputs);
 
 /*
  * Request that the Crtc be reconfigured
  */
-// extern void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, int numOutput, RROutputPtr* outputs);
+// void  RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, int numOutput, RROutputPtr* outputs);
 
 /*
  * Request that the Crtc gamma be changed
  */
 
-// extern void  RRCrtcGammaSet(RRCrtcPtr crtc, CARD16* red, CARD16* green, CARD16* blue);
+// void  RRCrtcGammaSet(RRCrtcPtr crtc, CARD16* red, CARD16* green, CARD16* blue);
 
 /*
  * Set the size of the gamma table at server startup time
  */
 
-// extern void  RRCrtcGammaSetSize(RRCrtcPtr crtc, int size);
+// void  RRCrtcGammaSetSize(RRCrtcPtr crtc, int size);
 
 /* rrmode.c */
 /*
  * Find, and if necessary, create a mode
  */
 
-// extern void  RRModeGet(xRRModeInfo* modeInfo, const(char)* name);
+// void  RRModeGet(xRRModeInfo* modeInfo, const(char)* name);
 
 /*
  * Destroy a mode.
  */
 
-// extern void  RRModeDestroy(RRModePtr mode);
+// void  RRModeDestroy(RRModePtr mode);
 
 /* rroutput.c */
 
@@ -547,36 +547,36 @@ extern void  RRSendConfigNotify(ScreenPtr pScreen);
  * has changed, or whether the change was strictly internal
  * (which crtc is in use)
  */
-// extern void  RROutputChanged(RROutputPtr output, Bool configChanged);
+// void  RROutputChanged(RROutputPtr output, Bool configChanged);
 
 /*
  * Create an output
  */
 
-// extern void  RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength, void* devPrivate);
+// void  RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength, void* devPrivate);
 
 /*
  * Notify extension that output parameters have been changed
  */
-// extern void  RROutputSetClones(RROutputPtr output, RROutputPtr* clones, int numClones);
+// void  RROutputSetClones(RROutputPtr output, RROutputPtr* clones, int numClones);
 
-// extern void  RROutputSetModes(RROutputPtr output, RRModePtr* modes, int numModes, int numPreferred);
+// void  RROutputSetModes(RROutputPtr output, RRModePtr* modes, int numModes, int numPreferred);
 
-// extern void  RROutputSetCrtcs(RROutputPtr output, RRCrtcPtr* crtcs, int numCrtcs);
+// void  RROutputSetCrtcs(RROutputPtr output, RRCrtcPtr* crtcs, int numCrtcs);
 
-// extern void  RROutputSetConnection(RROutputPtr output, CARD8 connection);
+// void  RROutputSetConnection(RROutputPtr output, CARD8 connection);
 
-// extern void  RROutputSetPhysicalSize(RROutputPtr output, int mmWidth, int mmHeight);
+// void  RROutputSetPhysicalSize(RROutputPtr output, int mmWidth, int mmHeight);
 
-extern void  RROutputDestroy(RROutputPtr output);
+void  RROutputDestroy(RROutputPtr output);
 
-// extern void  RRDeleteOutputProperty(RROutputPtr output, Atom property);
+// void  RRDeleteOutputProperty(RROutputPtr output, Atom property);
 
-// extern void  RRPostPendingProperties(RROutputPtr output);
+// void  RRPostPendingProperties(RROutputPtr output);
 
-// extern void  RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int format, int mode, c_ulong len, const(void)* value, Bool sendevent, Bool pending);
+// void  RRChangeOutputProperty(RROutputPtr output, Atom property, Atom type, int format, int mode, c_ulong len, const(void)* value, Bool sendevent, Bool pending);
 
-// extern void  RRConfigureOutputProperty(RROutputPtr output, Atom property, Bool pending, Bool range, Bool immutable_, int num_values, const(INT32)* values);
+// void  RRConfigureOutputProperty(RROutputPtr output, Atom property, Bool pending, Bool range, Bool immutable_, int num_values, const(INT32)* values);
 
 /* rrprovider.c */
 enum PRIME_SYNC_PROP =         "PRIME Synchronization";
@@ -584,9 +584,9 @@ enum PRIME_SYNC_PROP =         "PRIME Synchronization";
 
 /* *just* for backwards compat with legacy proprietary NVidia driver */
 
-// extern RESTYPE  RRCrtcType;      /* X resource type: Randr CRTC */
-// extern RESTYPE  RRModeType;      /* X resource type: Randr MODE */
-// extern RESTYPE  RROutputType;    /* X resource type: Randr OUTPUT */
+// RESTYPE  RRCrtcType;      /* X resource type: Randr CRTC */
+// RESTYPE  RRModeType;      /* X resource type: Randr MODE */
+// RESTYPE  RROutputType;    /* X resource type: Randr OUTPUT */
 
 /*
  * Set non-desktop property on given output. This flag should be TRUE on

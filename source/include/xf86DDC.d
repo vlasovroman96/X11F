@@ -28,19 +28,19 @@ alias DDC_FAST = xf86ddcSpeed.DDC_FAST;
 
 alias DDC1SetSpeedProc = void function(ScrnInfoPtr, xf86ddcSpeed);
 
-extern void  xf86DoEDID_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDC1SetSpeed, uint function(ScrnInfoPtr) DDC1Read);
+void  xf86DoEDID_DDC1(ScrnInfoPtr pScrn, DDC1SetSpeedProc DDC1SetSpeed, uint function(ScrnInfoPtr) DDC1Read);
 
-extern void  xf86DoEDID_DDC2(ScrnInfoPtr pScrn, I2CBusPtr pBus);
+void  xf86DoEDID_DDC2(ScrnInfoPtr pScrn, I2CBusPtr pBus);
 
-// extern void  xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool);
+// void  xf86DoEEDID(ScrnInfoPtr pScrn, I2CBusPtr pBus, Bool);
 
-extern void  xf86PrintEDID(xf86MonPtr monPtr);
+void  xf86PrintEDID(xf86MonPtr monPtr);
 
-// extern void  xf86InterpretEDID(int screenIndex, ubyte* block);
+// void  xf86InterpretEDID(int screenIndex, ubyte* block);
 
-// extern void  xf86InterpretEEDID(int screenIndex, ubyte* block);
+// void  xf86InterpretEEDID(int screenIndex, ubyte* block);
 
-extern void  xf86SetDDCproperties(ScrnInfoPtr pScreen, xf86MonPtr DDC);
+void  xf86SetDDCproperties(ScrnInfoPtr pScreen, xf86MonPtr DDC);
 
 /*
  * parse EDID block and return a newly allocated xf86Monitor

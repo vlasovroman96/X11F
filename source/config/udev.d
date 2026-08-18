@@ -59,7 +59,7 @@ import sys.sysmacros;
 }
 
 // struct udev_enumerate;
-extern udev_enumerate* udev_enumerate_unref(udev_enumerate *p);
+udev_enumerate* udev_enumerate_unref(udev_enumerate *p);
 
 auto cstr(T)(T value)
 {

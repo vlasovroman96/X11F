@@ -50,7 +50,7 @@ import include.inputstr;
 import Xi.exglobals;
 import include.misc;
 
-extern XExtensionVersion XIVersion;     /* defined in getvers.c */
+XExtensionVersion XIVersion;     /* defined in getvers.c */
 
 /**
  * Return the supported XI version.

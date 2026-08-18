@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_XINERAMA_MAJOR_VERSION = 1;
 enum XCB_XINERAMA_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_xinerama_id;
+xcb_extension_t xcb_xinerama_id;
 
 /**
  * @brief xcb_xinerama_screen_info_t

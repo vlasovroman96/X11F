@@ -238,7 +238,7 @@ private int[DNPMCOUNT] DontPropagateRefCnts;
 
 
 /** Key repeat hack. Do not use but in TryClientEvents */
-extern BOOL EventIsKeyRepeat(xEvent* event);
+BOOL EventIsKeyRepeat(xEvent* event);
 
 /**
  * Main input device struct.
@@ -362,7 +362,7 @@ Bool InputDevIsFloating(DeviceIntPtr dev)
 /**
  * Max event opcode.
  */
-extern int lastEvent;
+int lastEvent;
 
 enum CantBeFiltered = NoEventMask;
 /**

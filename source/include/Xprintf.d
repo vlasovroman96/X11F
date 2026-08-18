@@ -55,8 +55,8 @@ enum _X_RESTRICT_KYWD = __restrict__;
  * argument.   The return value is the size of the allocated buffer, or -1
  * on failure.
  */
-extern void XNFasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, ...);
+void XNFasprintf(char** ret, const(char)* _X_RESTRICT_KYWD, ...);
 // _X_ATTRIBUTE_PRINTF(2, 3);
-// extern void _X_ATTRIBUTE_VPRINTF();
+// void _X_ATTRIBUTE_VPRINTF();
 
                           /* XPRINTF_H */

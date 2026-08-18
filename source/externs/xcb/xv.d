@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_XV_MAJOR_VERSION = 2;
 enum XCB_XV_MINOR_VERSION = 2;
 
-extern xcb_extension_t xcb_xv_id;
+xcb_extension_t xcb_xv_id;
 
 alias xcb_xv_port_t = uint;
 

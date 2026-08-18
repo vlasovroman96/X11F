@@ -27,7 +27,7 @@ struct xnest_upstream_info {
     xnest_event_queue eventQueue;
 }
 
-extern xnest_upstream_info xnestUpstreamInfo;
+xnest_upstream_info xnestUpstreamInfo;
 
 /* connect to upstream X server */
 bool xnest_upstream_setup(const(char)* displayName);
@@ -43,8 +43,8 @@ struct xnest_visual_t {
     VisualPtr ourVisual;
 }
 
-extern xnest_visual_t* xnestVisualMap;
-extern int xnestNumVisualMap;
+xnest_visual_t* xnestVisualMap;
+int xnestNumVisualMap;
 
 void xnest_wm_colormap_windows(xcb_connection_t* conn, xcb_window_t w, xcb_window_t* windows, int count);
 

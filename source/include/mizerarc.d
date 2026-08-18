@@ -126,6 +126,6 @@ enum string MIARCCIRCLESTEP(string clause) = `
 
 /* mizerarc.c */
 
-extern void  miZeroArcSetup(xArc*, miZeroArcRec*, Bool);
+void  miZeroArcSetup(xArc*, miZeroArcRec*, Bool);
 
  /* XSERVER_MIZERARC_H */

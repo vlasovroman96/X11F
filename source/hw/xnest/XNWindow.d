@@ -39,7 +39,7 @@ struct xnestWindowMatch {
     xcb_window_t window;
 }
 
-extern DevPrivateKeyRec xnestWindowPrivateKeyRec;
+DevPrivateKeyRec xnestWindowPrivateKeyRec;
 
 enum xnestWindowPrivateKey = (&xnestWindowPrivateKeyRec);
 

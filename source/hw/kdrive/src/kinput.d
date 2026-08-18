@@ -118,13 +118,13 @@ struct KdInputFd {
 KdInputFd[KD_MAX_INPUT_FDS] kdInputFds;
 int kdNumInputFds = 0;
 
-extern Bool kdRawPointerCoordinates;
+Bool kdRawPointerCoordinates;
 
-extern const(char)* kdGlobalXkbRules;
-extern const(char)* kdGlobalXkbModel;
-extern const(char)* kdGlobalXkbLayout;
-extern const(char)* kdGlobalXkbVariant;
-extern const(char)* kdGlobalXkbOptions;
+const(char)* kdGlobalXkbRules;
+const(char)* kdGlobalXkbModel;
+const(char)* kdGlobalXkbLayout;
+const(char)* kdGlobalXkbVariant;
+const(char)* kdGlobalXkbOptions;
 
 version (FNONBLOCK) {
 enum NOBLOCK = FNONBLOCK;

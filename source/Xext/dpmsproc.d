@@ -8,14 +8,14 @@ public import build.dix_config;
 
 public import include.dixstruct;
 
-extern int DPMSSet(ClientPtr client, int level);
-extern Bool DPMSSupported();
+int DPMSSet(ClientPtr client, int level);
+Bool DPMSSupported();
 
-extern CARD32 DPMSStandbyTime;
-extern CARD32 DPMSSuspendTime;
-extern CARD32 DPMSOffTime;
-extern CARD16 DPMSPowerLevel;
-extern Bool DPMSEnabled;
-extern Bool DPMSDisabledSwitch;
+CARD32 DPMSStandbyTime;
+CARD32 DPMSSuspendTime;
+CARD32 DPMSOffTime;
+CARD16 DPMSPowerLevel;
+Bool DPMSEnabled;
+Bool DPMSDisabledSwitch;
 
 

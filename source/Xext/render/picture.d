@@ -53,6 +53,8 @@ import externs.X11.Xdefs;
 import dix.resource;
 import dix.screen_hooks;
 import dix.colormap;
+import region;
+
 version (XINERAMA) {
 import panoramiXsrv;
 } /* XINERAMA */

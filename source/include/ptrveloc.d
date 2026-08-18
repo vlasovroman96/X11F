@@ -82,8 +82,8 @@ struct _DeviceVelocityRec {
 }alias DeviceVelocityRec = _DeviceVelocityRec;
 alias DeviceVelocityPtr = _DeviceVelocityRec*;
 
-// extern void  GetDevicePredictableAccelData(DeviceIntPtr dev);
+// void  GetDevicePredictableAccelData(DeviceIntPtr dev);
 
-extern void  SetDeviceSpecificAccelerationProfile(DeviceVelocityPtr vel, PointerAccelerationProfileFunc profile);
+void  SetDeviceSpecificAccelerationProfile(DeviceVelocityPtr vel, PointerAccelerationProfileFunc profile);
 
                           /* POINTERVELOCITY_H */

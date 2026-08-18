@@ -64,11 +64,11 @@ alias CallbackListPtr = CallbackListRec*;
 
 alias CallbackProcPtr = void function(CallbackListPtr*, void*, void*) @nogc nothrow;
 
-// extern void AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+// void AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
 
-// extern void DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+// void DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
 
-// extern void _CallCallbacks(CallbackListPtr* pcbl, void* call_data);
+// void _CallCallbacks(CallbackListPtr* pcbl, void* call_data);
 
 pragma(inline, true) void CallCallbacks(CallbackListPtr* pcbl, void* call_data)
 {

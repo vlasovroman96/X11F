@@ -64,10 +64,10 @@ struct _SelectionFilterParamRec {
 }alias SelectionFilterParamRec = _SelectionFilterParamRec;
 alias SelectionFilterParamPtr = SelectionFilterParamRec*;
 
-extern _Selection* CurrentSelections;
+_Selection* CurrentSelections;
 
-extern CallbackListPtr SelectionCallback;
-extern CallbackListPtr SelectionFilterCallback;
+CallbackListPtr SelectionCallback;
+CallbackListPtr SelectionFilterCallback;
 
 int dixLookupSelection(_Selection** result, Atom name, ClientPtr client, Mask access_mode);
 

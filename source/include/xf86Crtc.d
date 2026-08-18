@@ -741,9 +741,9 @@ alias xf86CrtcConfigFuncsPtr = _xf86CrtcConfigFuncs*;
  * The driver calls this when it detects that a lease
  * has been terminated
  */
-extern void  xf86CrtcLeaseTerminated(RRLeasePtr lease);
+void  xf86CrtcLeaseTerminated(RRLeasePtr lease);
 
-extern void  xf86CrtcLeaseStarted(RRLeasePtr lease);
+void  xf86CrtcLeaseStarted(RRLeasePtr lease);
 
 alias xf86_crtc_notify_proc_ptr = void function(ScreenPtr pScreen);
 
@@ -812,7 +812,7 @@ version (RANDR_12_INTERFACE) {
 }alias xf86CrtcConfigRec = _xf86CrtcConfig;
 alias xf86CrtcConfigPtr = _xf86CrtcConfig*;
 
-// extern int  xf86CrtcConfigPrivateIndex;
+// int  xf86CrtcConfigPrivateIndex;
 
 enum string XF86_CRTC_CONFIG_PTR(string p) = `(cast(xf86CrtcConfigPtr) ((` ~ p ~ `).privates[xf86CrtcConfigPrivateIndex].ptr))`;
 
@@ -850,69 +850,69 @@ auto xf86CompatRRCrtc(ScrnInfoPtr pScrn)
  * Initialize xf86CrtcConfig structure
  */
 
-// extern void  xf86CrtcConfigInit(ScrnInfoPtr scrn, const(xf86CrtcConfigFuncsRec)* funcs);
+// void  xf86CrtcConfigInit(ScrnInfoPtr scrn, const(xf86CrtcConfigFuncsRec)* funcs);
 
-// extern void  xf86CrtcSetSizeRange(ScrnInfoPtr scrn, int minWidth, int minHeight, int maxWidth, int maxHeight);
+// void  xf86CrtcSetSizeRange(ScrnInfoPtr scrn, int minWidth, int minHeight, int maxWidth, int maxHeight);
 
 /*
  * Crtc functions
  */
-// extern void  xf86CrtcCreate(ScrnInfoPtr scrn, const(xf86CrtcFuncsRec)* funcs);
+// void  xf86CrtcCreate(ScrnInfoPtr scrn, const(xf86CrtcFuncsRec)* funcs);
 
-// extern void  xf86CrtcDestroy(xf86CrtcPtr crtc);
+// void  xf86CrtcDestroy(xf86CrtcPtr crtc);
 
 /**
  * Sets the given video mode on the given crtc
  */
 
-// extern void  xf86CrtcSetModeTransform(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, RRTransformPtr transform, int x, int y);
+// void  xf86CrtcSetModeTransform(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, RRTransformPtr transform, int x, int y);
 
-extern void  xf86CrtcSetMode(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, int x, int y);
+void  xf86CrtcSetMode(xf86CrtcPtr crtc, DisplayModePtr mode, Rotation rotation, int x, int y);
 
-// extern void  xf86CrtcSetOrigin(xf86CrtcPtr crtc, int x, int y);
+// void  xf86CrtcSetOrigin(xf86CrtcPtr crtc, int x, int y);
 
 /*
  * Assign crtc rotation during mode set
  */
-// extern void  xf86CrtcRotate(xf86CrtcPtr crtc);
+// void  xf86CrtcRotate(xf86CrtcPtr crtc);
 
-// extern void  xf86RotateCrtcRedisplay(xf86CrtcPtr crtc, PixmapPtr dst_pixmap, DrawableRec* src_drawable, RegionPtr region, Bool transform_src);
+// void  xf86RotateCrtcRedisplay(xf86CrtcPtr crtc, PixmapPtr dst_pixmap, DrawableRec* src_drawable, RegionPtr region, Bool transform_src);
 
 /*
  * Clean up any rotation data, used when a crtc is turned off
  * as well as when rotation is disabled.
  */
-// extern void  xf86RotateDestroy(xf86CrtcPtr crtc);
+// void  xf86RotateDestroy(xf86CrtcPtr crtc);
 
 /*
  * free shadow memory allocated for all crtcs
  */
-extern void  xf86RotateFreeShadow(ScrnInfoPtr pScrn);
+void  xf86RotateFreeShadow(ScrnInfoPtr pScrn);
 
 /*
  * Clean up rotation during CloseScreen
  */
-// extern void  xf86RotateCloseScreen(ScreenPtr pScreen);
+// void  xf86RotateCloseScreen(ScreenPtr pScreen);
 
 /**
  * Return whether any output is assigned to the crtc
  */
-// extern void  xf86CrtcInUse(xf86CrtcPtr crtc);
+// void  xf86CrtcInUse(xf86CrtcPtr crtc);
 
 /*
  * Output functions
  */
-// extern void  xf86OutputCreate(ScrnInfoPtr scrn, const(xf86OutputFuncsRec)* funcs, const(char)* name);
+// void  xf86OutputCreate(ScrnInfoPtr scrn, const(xf86OutputFuncsRec)* funcs, const(char)* name);
 
-extern void  xf86OutputUseScreenMonitor(xf86OutputPtr output, Bool use_screen_monitor);
+void  xf86OutputUseScreenMonitor(xf86OutputPtr output, Bool use_screen_monitor);
 
-extern void  xf86OutputRename(xf86OutputPtr output, const(char)* name);
+void  xf86OutputRename(xf86OutputPtr output, const(char)* name);
 
-// extern void  xf86OutputDestroy(xf86OutputPtr output);
+// void  xf86OutputDestroy(xf86OutputPtr output);
 
-// extern void  xf86ProbeOutputModes(ScrnInfoPtr pScrn, int maxX, int maxY);
+// void  xf86ProbeOutputModes(ScrnInfoPtr pScrn, int maxX, int maxY);
 
-// extern void  xf86SetScrnInfoModes(ScrnInfoPtr pScrn);
+// void  xf86SetScrnInfoModes(ScrnInfoPtr pScrn);
 
 version (RANDR_13_INTERFACE) {
 alias ScreenInitRetType =	int;
@@ -920,48 +920,48 @@ alias ScreenInitRetType =	int;
 alias ScreenInitRetType =	Bool;
 }
 
-// extern void  xf86CrtcScreenInit(ScreenPtr pScreen);
+// void  xf86CrtcScreenInit(ScreenPtr pScreen);
 
-extern void  xf86AssignNoOutputInitialSize(ScrnInfoPtr scrn, const(OptionInfoRec)* options, int* no_output_width, int* no_output_height);
+void  xf86AssignNoOutputInitialSize(ScrnInfoPtr scrn, const(OptionInfoRec)* options, int* no_output_width, int* no_output_height);
 
-// extern void  xf86InitialConfiguration(ScrnInfoPtr pScrn, Bool canGrow);
+// void  xf86InitialConfiguration(ScrnInfoPtr pScrn, Bool canGrow);
 
-// extern void  xf86DPMSSet(ScrnInfoPtr pScrn, int PowerManagementMode, int flags);
+// void  xf86DPMSSet(ScrnInfoPtr pScrn, int PowerManagementMode, int flags);
 
-// extern void  xf86SaveScreen(ScreenPtr pScreen, int mode);
+// void  xf86SaveScreen(ScreenPtr pScreen, int mode);
 
-// extern void  xf86DisableUnusedFunctions(ScrnInfoPtr pScrn);
+// void  xf86DisableUnusedFunctions(ScrnInfoPtr pScrn);
 
-// extern void  xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr desired);
+// void  xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr desired);
 
-// extern void  xf86SetSingleMode(ScrnInfoPtr pScrn, DisplayModePtr desired, Rotation rotation);
+// void  xf86SetSingleMode(ScrnInfoPtr pScrn, DisplayModePtr desired, Rotation rotation);
 
 /**
  * Set the EDID information for the specified output
  */
-// extern void  xf86OutputSetEDID(xf86OutputPtr output, xf86MonPtr edid_mon);
+// void  xf86OutputSetEDID(xf86OutputPtr output, xf86MonPtr edid_mon);
 
 /**
  * Set the TILE information for the specified output
  */
-// extern void  xf86OutputSetTile(xf86OutputPtr output, xf86CrtcTileInfo* tile_info);
+// void  xf86OutputSetTile(xf86OutputPtr output, xf86CrtcTileInfo* tile_info);
 
-// extern void  xf86OutputParseKMSTile(const(char)* tile_data, int tile_length, xf86CrtcTileInfo* tile_info);
+// void  xf86OutputParseKMSTile(const(char)* tile_data, int tile_length, xf86CrtcTileInfo* tile_info);
 
 /**
  * Return the list of modes supported by the EDID information
  * stored in 'output'
  */
-extern void  xf86OutputGetEDIDModes(xf86OutputPtr output);
+void  xf86OutputGetEDIDModes(xf86OutputPtr output);
 
-extern void  xf86OutputGetEDID(xf86OutputPtr output, I2CBusPtr pDDCBus);
+void  xf86OutputGetEDID(xf86OutputPtr output, I2CBusPtr pDDCBus);
 
 /**
  * Initialize dga for this screen
  */
 
 version (XFreeXDGA) {
-extern void  xf86DiDGAInit(ScreenPtr pScreen, c_ulong dga_address);
+void  xf86DiDGAInit(ScreenPtr pScreen, c_ulong dga_address);
 
 /* this is the real function, used only internally */
 Bool _xf86_di_dga_init_internal(ScreenPtr pScreen);
@@ -970,7 +970,7 @@ Bool _xf86_di_dga_init_internal(ScreenPtr pScreen);
  * Re-initialize dga for this screen (as when the set of modes changes)
  */
 
-extern void  xf86DiDGAReInit(ScreenPtr pScreen);
+void  xf86DiDGAReInit(ScreenPtr pScreen);
 }
 
 /* This is the real function, used only internally */
@@ -981,19 +981,19 @@ Bool _xf86_di_dga_reinit_internal(ScreenPtr pScreen);
  * the information from the outputs
  */
 
-// extern void  xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen);
+// void  xf86CrtcSetScreenSubpixelOrder(ScreenPtr pScreen);
 
 /*
  * Get a standard string name for a connector type
  */
-extern const(void )* xf86ConnectorGetName(xf86ConnectorType connector);
+const(void )* xf86ConnectorGetName(xf86ConnectorType connector);
 
 /*
  * Using the desired mode information in each crtc, set
  * modes (used in EnterVT functions, or at server startup)
  */
 
-extern void  xf86SetDesiredModes(ScrnInfoPtr pScrn);
+void  xf86SetDesiredModes(ScrnInfoPtr pScrn);
 
 /**
  * Initialize the CRTC-based cursor code. CRTC function vectors must
@@ -1001,7 +1001,7 @@ extern void  xf86SetDesiredModes(ScrnInfoPtr pScrn);
  *
  * Driver should call this from ScreenInit function
  */
-extern void  xf86_cursors_init(ScreenPtr screen, int max_width, int max_height, int flags);
+void  xf86_cursors_init(ScreenPtr screen, int max_width, int max_height, int flags);
 
 /**
  * Superseded by xf86CursorResetCursor, which is getting called
@@ -1012,27 +1012,27 @@ private void xf86_reload_cursors(ScreenPtr screen) {}
 /**
  * Called from EnterVT to turn the cursors back on
  */
-extern void  xf86_show_cursors(ScrnInfoPtr scrn);
+void  xf86_show_cursors(ScrnInfoPtr scrn);
 
 /**
  * Called by the driver to turn a single crtc's cursor off
  */
-extern void  xf86_crtc_hide_cursor(xf86CrtcPtr crtc);
+void  xf86_crtc_hide_cursor(xf86CrtcPtr crtc);
 
 /**
  * Called by the driver to turn a single crtc's cursor on
  */
-extern void  xf86_crtc_show_cursor(xf86CrtcPtr crtc);
+void  xf86_crtc_show_cursor(xf86CrtcPtr crtc);
 
 /**
  * Called by the driver to turn cursors off
  */
-extern void  xf86_hide_cursors(ScrnInfoPtr scrn);
+void  xf86_hide_cursors(ScrnInfoPtr scrn);
 
 /**
  * Clean up CRTC-based cursor code. Driver must call this at CloseScreen time.
  */
-extern void  xf86_cursors_fini(ScreenPtr screen);
+void  xf86_cursors_fini(ScreenPtr screen);
 
 version (XV) {
 /*
@@ -1041,24 +1041,24 @@ version (XV) {
  * wraps xf86XVClipVideoHelper()
  */
 
-extern void  xf86_crtc_clip_video_helper(ScrnInfoPtr pScrn, xf86CrtcPtr* crtc_ret, xf86CrtcPtr desired_crtc, BoxPtr dst, INT32* xa, INT32* xb, INT32* ya, INT32* yb, RegionPtr reg, INT32 width, INT32 height);
+void  xf86_crtc_clip_video_helper(ScrnInfoPtr pScrn, xf86CrtcPtr* crtc_ret, xf86CrtcPtr desired_crtc, BoxPtr dst, INT32* xa, INT32* xb, INT32* ya, INT32* yb, RegionPtr reg, INT32 width, INT32 height);
 }
 
-// extern void  xf86_wrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr new_);
+// void  xf86_wrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr new_);
 
-// extern void  xf86_unwrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr old);
+// void  xf86_unwrap_crtc_notify(ScreenPtr pScreen, xf86_crtc_notify_proc_ptr old);
 
-// extern void  xf86_crtc_notify(ScreenPtr pScreen);
+// void  xf86_crtc_notify(ScreenPtr pScreen);
 
 /**
  * Gamma
  */
 
-// extern void  xf86_crtc_supports_gamma(ScrnInfoPtr pScrn);
+// void  xf86_crtc_supports_gamma(ScrnInfoPtr pScrn);
 
-// extern void  xf86ProviderSetup(ScrnInfoPtr scrn, const(xf86ProviderFuncsRec)* funcs, const(char)* name);
+// void  xf86ProviderSetup(ScrnInfoPtr scrn, const(xf86ProviderFuncsRec)* funcs, const(char)* name);
 
-extern void  xf86DetachAllCrtc(ScrnInfoPtr scrn);
+void  xf86DetachAllCrtc(ScrnInfoPtr scrn);
 
 // Bool xf86OutputForceEnabled(xf86OutputPtr output);
                           /* _XF86CRTC_H_ */

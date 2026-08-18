@@ -72,8 +72,8 @@ import externs.X11.extensions.XIproto;
 import dix.devices;
 import dix.dixutils;
 
-extern XExtEventInfo[1] EventInfo;
-extern int ExtEventIndex;
+XExtEventInfo[1] EventInfo;
+int ExtEventIndex;
 
 /***********************************************************************
  *

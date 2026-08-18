@@ -118,7 +118,7 @@ enum RT_LASTPREDEF =	X11_RESTYPE_LASTPREDEF;
 enum RT_NONE =		X11_RESTYPE_NONE;
 
 
-// extern uint ResourceClientBits();
+// uint ResourceClientBits();
 
 enum BAD_RESOURCE = 0xe0000000;
 
@@ -147,63 +147,63 @@ alias ResourceSizePtr = ResourceSizeRec*;
 
 alias SizeType = void function(void* value, XID id, ResourceSizePtr size);
 
-// extern void CreateNewResourceType(DeleteType deleteFunc, const(char)* name);
+// void CreateNewResourceType(DeleteType deleteFunc, const(char)* name);
 
 alias FindTypeSubResources = void function(void* value, FindAllRes func, void* cdata);
 
-// extern void GetResourceTypeSizeFunc(RESTYPE);
+// void GetResourceTypeSizeFunc(RESTYPE);
 
-extern void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
+void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
 
-// extern void SetResourceTypeSizeFunc(RESTYPE, SizeType);
+// void SetResourceTypeSizeFunc(RESTYPE, SizeType);
 
-// extern void SetResourceTypeErrorValue(RESTYPE, int);
+// void SetResourceTypeErrorValue(RESTYPE, int);
 
-// extern void CreateNewResourceClass();
+// void CreateNewResourceClass();
 
-// extern void InitClientResources(ClientPtr);
+// void InitClientResources(ClientPtr);
 
-// extern void FakeClientID(int);
+// void FakeClientID(int);
 
 /* Quartz support on Mac OS X uses the CarbonCore
    framework whose AddResource function conflicts here. */
 version (OSX) {
 enum AddResource = Darwin_X_AddResource;
 }
-// extern int AddResource(XID id, RESTYPE type, void* value);
+// int AddResource(XID id, RESTYPE type, void* value);
 
-// extern void FreeResource(XID, RESTYPE);
+// void FreeResource(XID, RESTYPE);
 
-// extern void FreeResourceByType(XID, RESTYPE, Bool);
+// void FreeResourceByType(XID, RESTYPE, Bool);
 
-// extern void ChangeResourceValue(XID id, RESTYPE rtype, void* value);
+// void ChangeResourceValue(XID id, RESTYPE rtype, void* value);
 
-// extern void FindClientResourcesByType(ClientPtr client, RESTYPE type, FindResType func, void* cdata);
+// void FindClientResourcesByType(ClientPtr client, RESTYPE type, FindResType func, void* cdata);
 
-// extern void FindAllClientResources(ClientPtr client, FindAllRes func, void* cdata);
+// void FindAllClientResources(ClientPtr client, FindAllRes func, void* cdata);
 
 /** @brief Iterate through all subresources of a resource.
 
     @note The XID argument provided to the FindAllRes function
           may be 0 for subresources that don't have an XID */
-// extern void FindSubResources(void* resource, RESTYPE type, FindAllRes func, void* cdata);
+// void FindSubResources(void* resource, RESTYPE type, FindAllRes func, void* cdata);
 
-// extern void FreeClientNeverRetainResources(ClientPtr);
+// void FreeClientNeverRetainResources(ClientPtr);
 
-// extern void FreeClientResources(ClientPtr);
+// void FreeClientResources(ClientPtr);
 
-// extern void FreeAllResources();
+// void FreeAllResources();
 
-// extern void LegalNewID(XID, ClientPtr);
+// void LegalNewID(XID, ClientPtr);
 
-// extern void* LookupClientResourceComplex(ClientPtr client, RESTYPE type, FindComplexResType func, void* cdata);
+// void* LookupClientResourceComplex(ClientPtr client, RESTYPE type, FindComplexResType func, void* cdata);
 
-// extern void dixLookupResourceByType(void** result, XID id, RESTYPE rtype, ClientPtr client, Mask access_mode);
+// void dixLookupResourceByType(void** result, XID id, RESTYPE rtype, ClientPtr client, Mask access_mode);
 
-// extern void dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr client, Mask access_mode);
+// void dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr client, Mask access_mode);
 
-// extern RESTYPE lastResourceType;
-// extern RESTYPE TypeMask;
+// RESTYPE lastResourceType;
+// RESTYPE TypeMask;
 
 /*
  * @brief allocate a XID (resource ID) for the server itself

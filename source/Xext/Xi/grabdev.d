@@ -72,8 +72,8 @@ import dix.dixutils;
 import dix.devices;
 import dix.events;
 
-extern XExtEventInfo[1] EventInfo;
-extern int ExtEventIndex;
+XExtEventInfo[1] EventInfo;
+int ExtEventIndex;
 
 /***********************************************************************
  *

@@ -65,15 +65,15 @@ struct _LegacyVGARec {
 alias legacyVGAPtr = legacyVGARec*;
 
 /* OS dependent functions */
-extern void  xf86InitInt10(int entityIndex);
-extern void  xf86ExtendedInitInt10(int entityIndex, int Flags);
-extern void  xf86FreeInt10(xf86Int10InfoPtr pInt);
-extern void * xf86Int10AllocPages(xf86Int10InfoPtr pInt, int num, int* off);
-extern void  xf86Int10FreePages(xf86Int10InfoPtr pInt, void* pbase, int num);
-extern void * xf86int10Addr(xf86Int10InfoPtr pInt, uint addr);
+void  xf86InitInt10(int entityIndex);
+void  xf86ExtendedInitInt10(int entityIndex, int Flags);
+void  xf86FreeInt10(xf86Int10InfoPtr pInt);
+void * xf86Int10AllocPages(xf86Int10InfoPtr pInt, int num, int* off);
+void  xf86Int10FreePages(xf86Int10InfoPtr pInt, void* pbase, int num);
+void * xf86int10Addr(xf86Int10InfoPtr pInt, uint addr);
 
 /* x86 executor related functions */
-// extern void  xf86ExecX86int10(xf86Int10InfoPtr pInt);
+// void  xf86ExecX86int10(xf86Int10InfoPtr pInt);
 
 // version (_INT10_PRIVATE) {
 
@@ -116,21 +116,21 @@ enum string MEM_WW(string name, string addr, string val) = `(*` ~ name ~ `.mem.w
 enum string MEM_WL(string name, string addr, string val) = `(*` ~ name ~ `.mem.wl)(` ~ name ~ `, ` ~ addr ~ `, ` ~ val ~ `)`;
 
 /* OS dependent functions */
-// extern void  MapCurrentInt10(xf86Int10InfoPtr pInt);
+// void  MapCurrentInt10(xf86Int10InfoPtr pInt);
 
 /* x86 executor related functions */
-// extern void  xf86Int10ExecSetup(xf86Int10InfoPtr pInt);
+// void  xf86Int10ExecSetup(xf86Int10InfoPtr pInt);
 
 /* int.c */
-// extern xf86Int10InfoPtr Int10Current;
+// xf86Int10InfoPtr Int10Current;
 
 version (_PC) {
-extern void  xf86Int10SaveRestoreBIOSVars(xf86Int10InfoPtr pInt, Bool save);
+void  xf86Int10SaveRestoreBIOSVars(xf86Int10InfoPtr pInt, Bool save);
 }
 
-// extern void * xf86HandleInt10Options(ScrnInfoPtr pScrn, int entityIndex);
-extern void  xf86int10GetBiosLocationType(const(xf86Int10InfoPtr) pInt);
-extern void  xf86int10GetBiosSegment(xf86Int10InfoPtr pInt, void* base);
+// void * xf86HandleInt10Options(ScrnInfoPtr pScrn, int entityIndex);
+void  xf86int10GetBiosLocationType(const(xf86Int10InfoPtr) pInt);
+void  xf86int10GetBiosSegment(xf86Int10InfoPtr pInt, void* base);
 
 // }                          /* _INT10_PRIVATE */
                           /* _XF86INT10_H */

@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_SYNC_MAJOR_VERSION = 3;
 enum XCB_SYNC_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_sync_id;
+xcb_extension_t xcb_sync_id;
 
 alias xcb_sync_alarm_t = uint;
 

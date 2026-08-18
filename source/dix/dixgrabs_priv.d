@@ -17,7 +17,7 @@ public import include.cursor;
  *
  * used by OS layer and screensaver
  */
-extern int GrabInProgress;
+int GrabInProgress;
 
 // struct _GrabParameters;
 import dix.exevents_priv;

@@ -661,7 +661,7 @@ struct InputInfo {
     DeviceIntPtr all_master_devices;
 }
 
-// extern InputInfo inputInfo;
+// InputInfo inputInfo;
 
 /* for keeping the events for devices grabbed synchronously */
 struct _QdEvent {
@@ -704,7 +704,7 @@ struct _EventSyncInfo {
 }alias EventSyncInfoRec = _EventSyncInfo;
 alias EventSyncInfoPtr = _EventSyncInfo*;
 
-// extern EventSyncInfoRec syncEvents;
+// EventSyncInfoRec syncEvents;
 
 /**
  * Given a sprite, returns the window at the bottom of the trace (i.e. the

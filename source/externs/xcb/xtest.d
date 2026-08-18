@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_TEST_MAJOR_VERSION = 2;
 enum XCB_TEST_MINOR_VERSION = 2;
 
-extern xcb_extension_t xcb_test_id;
+xcb_extension_t xcb_test_id;
 
 /**
  * @brief xcb_test_get_version_cookie_t

@@ -45,8 +45,8 @@ void xf86RecolorCursor(ScreenPtr pScreen, CursorPtr pCurs, Bool displayed);
 Bool xf86InitHardwareCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr);
 
 Bool xf86CheckHWCursor(ScreenPtr pScreen, CursorPtr cursor, xf86CursorInfoPtr infoPtr);
-// extern export DevPrivateKeyRec xf86CursorScreenKeyRec;
+// export DevPrivateKeyRec xf86CursorScreenKeyRec;
 
-// extern DevScreenPrivateKeyRec xf86ScreenCursorBitsKeyRec;
+// DevScreenPrivateKeyRec xf86ScreenCursorBitsKeyRec;
 
                           /* _XF86CURSORPRIV_H */

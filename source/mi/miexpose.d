@@ -80,6 +80,7 @@ import build.dix_config;
 //import externs.X11.Xmd;
 //import externs.X11.Xproto;
 //import externs.X11.Xprotostr;
+import region;
 
 import dix.dix_priv;
 import dix.screenint_priv;

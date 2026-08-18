@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_XF86DRI_MAJOR_VERSION = 4;
 enum XCB_XF86DRI_MINOR_VERSION = 1;
 
-extern xcb_extension_t xcb_xf86dri_id;
+xcb_extension_t xcb_xf86dri_id;
 
 /**
  * @brief xcb_xf86dri_drm_clip_rect_t

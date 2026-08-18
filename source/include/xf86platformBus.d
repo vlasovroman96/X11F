@@ -85,7 +85,7 @@ enum string _ODEV_ATTRIB_INT_CHECK(string x,string def) = `(cast(int[` ~ _ODEV_A
 
 enum string xf86_get_platform_device_int_attrib(string device, string attrib, string def) = `_xf86_get_platform_device_int_attrib(` ~ device ~ `,` ~ attrib ~ `,` ~ _ODEV_ATTRIB_INT_CHECK!(attrib,def) ~ `)`;
 
-// extern void  xf86PlatformDeviceCheckBusID(xf86_platform_device* device, const(char)* busid);
+// void  xf86PlatformDeviceCheckBusID(xf86_platform_device* device, const(char)* busid);
 
 // }
 

@@ -263,7 +263,7 @@ RESTYPE RT_INPUTCLIENT;
  *
  */
 
-extern XExtensionVersion XIVersion;
+XExtensionVersion XIVersion;
 
 /*****************************************************************
  *

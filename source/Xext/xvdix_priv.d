@@ -33,10 +33,10 @@ struct XvPortNotifyRec {
     c_ulong id;
 }
 
-extern int XvReqCode;
-extern int XvErrorBase;
+int XvReqCode;
+int XvErrorBase;
 
-// extern RESTYPE XvRTPort;
+// RESTYPE XvRTPort;
 
 /* dispatch functions */
 // int ProcXvDispatch(ClientPtr);

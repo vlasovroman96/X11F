@@ -37,6 +37,7 @@ import exa.exa_priv;
 import include.dixfontstr;
 import include.exa_i;
 import exa.exa;
+import region;
 
 private void exaFillSpans(DrawablePtr pDrawable, GCPtr pGC, int n, DDXPointPtr ppt, int* pwidth, int fSorted)
 {

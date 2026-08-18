@@ -159,11 +159,11 @@ enum PictureCmapPolicyGray =	    2;
 enum PictureCmapPolicyColor =	    3;
 enum PictureCmapPolicyAll =	    4;
 
-extern int PictureCmapPolicy;
+int PictureCmapPolicy;
 
-extern int PictureParseCmapPolicy(const(char)* name);
+int PictureParseCmapPolicy(const(char)* name);
 
-extern int RenderErrBase;
+int RenderErrBase;
 
 /* Fixed point updates from Carl Worth, USC, Information Sciences Institute */
 

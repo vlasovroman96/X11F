@@ -20,7 +20,7 @@ import externs.xcb.xcbext;
 enum XCB_XEVIE_MAJOR_VERSION = 1;
 enum XCB_XEVIE_MINOR_VERSION = 0;
 
-extern xcb_extension_t xcb_xevie_id;
+xcb_extension_t xcb_xevie_id;
 
 /**
  * @brief xcb_xevie_query_version_cookie_t

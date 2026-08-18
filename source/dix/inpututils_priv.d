@@ -31,7 +31,7 @@ import dix.inpututils_priv;
 import externs.X11.extensions.XI2proto;
 // public // //import externs.X11.extensions.XI2proto;
 
-// extern Mask[MAXEVENTS][MAXDEVICES] event_filters;
+// Mask[MAXEVENTS][MAXDEVICES] event_filters;
 
 struct _ValuatorMask {
     byte last_bit;            /* highest bit set in mask */

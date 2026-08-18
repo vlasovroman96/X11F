@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_DRI2_MAJOR_VERSION = 1;
 enum XCB_DRI2_MINOR_VERSION = 4;
 
-extern xcb_extension_t xcb_dri2_id;
+xcb_extension_t xcb_dri2_id;
 
 enum xcb_dri2_attachment_t {
     XCB_DRI2_ATTACHMENT_BUFFER_FRONT_LEFT = 0,

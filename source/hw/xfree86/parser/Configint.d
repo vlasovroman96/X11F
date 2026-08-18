@@ -82,7 +82,7 @@ struct _LexRec {
 }alias LexRec = _LexRec;
 alias LexPtr = LexRec*;
 
-// extern LexRec xf86_lex_val;
+// LexRec xf86_lex_val;
 
 // enum TRUE = 1;
 

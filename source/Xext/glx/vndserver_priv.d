@@ -57,10 +57,10 @@ struct GlxClientPriv {
     GlxServerVendor** vendors;
 }
 
-// extern int GlxErrorBase;
-extern RESTYPE idResource;
+// int GlxErrorBase;
+RESTYPE idResource;
 
-// extern ExtensionEntry* GlxExtensionEntry;
+// ExtensionEntry* GlxExtensionEntry;
 Bool GlxDispatchInit();
 void GlxDispatchReset();
 

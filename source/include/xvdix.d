@@ -183,8 +183,8 @@ struct _XvScreenRec {
 }alias XvScreenRec = _XvScreenRec;
 alias XvScreenPtr = XvScreenRec*;
 
-// extern void  XvScreenInit(ScreenPtr);
-// extern DevPrivateKey XvGetScreenKey();
-// extern ulong XvGetRTPort();
+// void  XvScreenInit(ScreenPtr);
+// DevPrivateKey XvGetScreenKey();
+// ulong XvGetRTPort();
 
                           /* XVDIX_H */

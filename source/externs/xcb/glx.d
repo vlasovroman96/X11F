@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_GLX_MAJOR_VERSION = 1;
 enum XCB_GLX_MINOR_VERSION = 4;
 
-extern xcb_extension_t xcb_glx_id;
+xcb_extension_t xcb_glx_id;
 
 alias xcb_glx_pixmap_t = uint;
 

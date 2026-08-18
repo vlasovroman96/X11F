@@ -91,11 +91,11 @@ enum MILLI_PER_SECOND = (1000);
 public import include.dix;
 public import os.ospoll;
 
-extern ospoll* server_poll;
+ospoll* server_poll;
 
 Bool listen_to_client(ClientPtr client);
 
-extern Bool NewOutputPending;
+Bool NewOutputPending;
 
 /* for platforms lacking arc4random_buf() libc function */
 version (HAVE_ARC4RANDOM_BUF) {} else {
@@ -169,11 +169,11 @@ void ForceClockId(clockid_t forced_clockid);
 // Bool WaitForSomething(Bool clients_are_ready);
 void CloseDownConnection(ClientPtr client);
 
-// extern int LimitClients;
-// extern Bool PartialNetwork;
+// int LimitClients;
+// Bool PartialNetwork;
 
-extern Bool CoreDump;
-extern Bool NoListenAll;
+Bool CoreDump;
+Bool NoListenAll;
 
 /*
  * This function reallocarray(3)s passed buffer, terminating the server if
@@ -224,7 +224,7 @@ alias EXIT_ERR_CONFIGURE = ExitCode.EXIT_ERR_CONFIGURE;
 alias EXIT_ERR_DRIVERS = ExitCode.EXIT_ERR_DRIVERS;
 
 
-extern sig_atomic_t inSignalContext;
+sig_atomic_t inSignalContext;
 
 /* run timers that are expired at timestamp `now` */
 void DoTimers(CARD32 now);

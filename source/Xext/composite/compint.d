@@ -167,15 +167,15 @@ struct _CompScreen {
 }alias CompScreenRec = _CompScreen;
 alias CompScreenPtr = _CompScreen*;
 
-extern DevPrivateKeyRec CompScreenPrivateKeyRec;
+DevPrivateKeyRec CompScreenPrivateKeyRec;
 
 enum CompScreenPrivateKey = (&CompScreenPrivateKeyRec);
 
-extern DevPrivateKeyRec CompWindowPrivateKeyRec;
+DevPrivateKeyRec CompWindowPrivateKeyRec;
 
 enum CompWindowPrivateKey = (&CompWindowPrivateKeyRec);
 
-extern DevPrivateKeyRec CompSubwindowsPrivateKeyRec;
+DevPrivateKeyRec CompSubwindowsPrivateKeyRec;
 
 enum CompSubwindowsPrivateKey = (&CompSubwindowsPrivateKeyRec);
 
@@ -186,8 +186,8 @@ enum string GetCompWindow(string w) = `(cast(CompWindowPtr)
 enum string GetCompSubwindows(string w) = `(cast(CompSubwindowsPtr) 
     dixLookupPrivate(&(` ~ w ~ `).devPrivates, CompSubwindowsPrivateKey))`;
 
-extern RESTYPE CompositeClientSubwindowsType;
-extern RESTYPE CompositeClientOverlayType;
+RESTYPE CompositeClientSubwindowsType;
+RESTYPE CompositeClientOverlayType;
 
 /*
  * compalloc.c

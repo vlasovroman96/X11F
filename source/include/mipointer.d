@@ -48,18 +48,18 @@ struct _miPointerScreenFuncRec {
 }alias miPointerScreenFuncRec = _miPointerScreenFuncRec;
 alias miPointerScreenFuncPtr = _miPointerScreenFuncRec*;
 
-// extern void  miDCInitialize(ScreenPtr, miPointerScreenFuncPtr);
+// void  miDCInitialize(ScreenPtr, miPointerScreenFuncPtr);
 
-// extern void  miPointerGetScreen(DeviceIntPtr pDev);
+// void  miPointerGetScreen(DeviceIntPtr pDev);
 
 /* Returns the current cursor position. */
-// extern void  miPointerGetPosition(DeviceIntPtr pDev, int* x, int* y);
+// void  miPointerGetPosition(DeviceIntPtr pDev, int* x, int* y);
 
 /* Moves the cursor to the specified position.  May clip the coordinates:
  * x and y are modified in-place. */
-extern void  miPointerSetPosition(DeviceIntPtr pDev, int mode, double* x, double* y, int* nevents, InternalEvent* events);
+void  miPointerSetPosition(DeviceIntPtr pDev, int mode, double* x, double* y, int* nevents, InternalEvent* events);
 
-extern DevPrivateKeyRec miPointerScreenKeyRec;
+DevPrivateKeyRec miPointerScreenKeyRec;
 
 enum miPointerScreenKey = (&miPointerScreenKeyRec);
 

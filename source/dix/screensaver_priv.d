@@ -16,13 +16,13 @@ public import include.screenint;
 public import include.scrnintstr;
 public import dix.globals;
 
-// extern CARD32 defaultScreenSaverTime;
-// extern CARD32 defaultScreenSaverInterval;
-// extern CARD32 ScreenSaverTime;
-// extern CARD32 ScreenSaverInterval;
-extern Bool screenSaverSuspended;
+// CARD32 defaultScreenSaverTime;
+// CARD32 defaultScreenSaverInterval;
+// CARD32 ScreenSaverTime;
+// CARD32 ScreenSaverInterval;
+Bool screenSaverSuspended;
 
-extern CallbackListPtr ScreenSaverAccessCallback;
+CallbackListPtr ScreenSaverAccessCallback;
 
 struct ScreenSaverAccessCallbackParam {
     ClientPtr client;
@@ -38,7 +38,7 @@ pragma(inline, true) int dixCallScreensaverAccessCallback(ClientPtr client, Scre
     return rec.status;
 }
 
-extern int screenIsSaved;
+int screenIsSaved;
 
 pragma(inline, true) bool HasSaverWindow(ScreenPtr pScreen) {
     return (pScreen.screensaver.pWindow != NullWindow);

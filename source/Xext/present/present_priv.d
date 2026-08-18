@@ -54,9 +54,9 @@ enum string DebugPresent(string x) = `ErrorF x = void;`;
 enum PresentWindowDestroyed = (1 << 0);
 
 
-extern int present_request;
+int present_request;
 
-extern DevPrivateKeyRec present_screen_private_key;
+DevPrivateKeyRec present_screen_private_key;
 
 alias present_fence_ptr = present_fence*;
 
@@ -231,7 +231,7 @@ struct present_window_priv_t {
 
 enum PresentCrtcNeverSet =     cast(RRCrtcPtr) 1;
 
-extern DevPrivateKeyRec present_window_private_key;
+DevPrivateKeyRec present_window_private_key;
 
 pragma(inline, true)present_window_priv_ptr present_window_priv(WindowPtr window)
 {
@@ -402,6 +402,6 @@ alias present_complete_notify_proc = void function(WindowPtr window, CARD8 kind,
 
 /* only for in-tree modesetting */ Bool present_can_window_flip(WindowPtr window);
 
-extern uint FakeScreenFps;
+uint FakeScreenFps;
 
  /*  _PRESENT_PRIV_H_ */

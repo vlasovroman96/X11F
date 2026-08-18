@@ -37,6 +37,7 @@ import build.xorg_config;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.Xv;
 // //import externs.X11.extensions.Xvproto;
+import region;
 
 import dix.screen_hooks_priv;
 import include.extinit;

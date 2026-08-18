@@ -34,6 +34,6 @@ from The Open Group.
 
 public import include.globals;
 
-extern bool bgNoneRoot;
+bool bgNoneRoot;
 
                           /* OPAQUE_H */

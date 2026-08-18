@@ -53,10 +53,10 @@ struct XISBuffer {
  *											of globals.
  *											put locals in the .c file.
  *****************************************************************************/
-extern void * XisbNew(int fd, ssize_t size);
-extern void  XisbFree(XISBuffer* b);
-extern void  XisbRead(XISBuffer* b);
-extern void  XisbBlockDuration(XISBuffer* b, int block_duration);
+void * XisbNew(int fd, ssize_t size);
+void  XisbFree(XISBuffer* b);
+void  XisbRead(XISBuffer* b);
+void  XisbBlockDuration(XISBuffer* b, int block_duration);
 
 /*
  *	DO NOT PUT ANYTHING AFTER THIS ENDIF

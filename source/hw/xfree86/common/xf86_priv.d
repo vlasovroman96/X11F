@@ -9,50 +9,50 @@ extern(C): __gshared:
 public import os.osdep;
 public import include.xf86;
 
-// extern Bool xf86DoConfigure;
-extern Bool xf86DoConfigurePass1;
-// extern Bool xf86ProbeIgnorePrimary;
+// Bool xf86DoConfigure;
+Bool xf86DoConfigurePass1;
+// Bool xf86ProbeIgnorePrimary;
 
 /*
  * Parameters set ONLY from the command line options
  * The global state of these things is held in xf86InfoRec (when appropriate).
  */
 /* globals.c */
-// extern Bool xf86AllowMouseOpenFail;
-// extern Bool xf86AutoBindGPUDisabled;
-extern Bool xf86VidModeDisabled;
-extern Bool xf86VidModeAllowNonLocal;
-// extern Bool xf86fpFlag;
-// extern Bool xf86bsEnableFlag;
-// extern Bool xf86bsDisableFlag;
-// extern Bool xf86silkenMouseDisableFlag;
-// extern Bool xf86xkbdirFlag;
-extern Bool xf86acpiDisableFlag;
+// Bool xf86AllowMouseOpenFail;
+// Bool xf86AutoBindGPUDisabled;
+Bool xf86VidModeDisabled;
+Bool xf86VidModeAllowNonLocal;
+// Bool xf86fpFlag;
+// Bool xf86bsEnableFlag;
+// Bool xf86bsDisableFlag;
+// Bool xf86silkenMouseDisableFlag;
+// Bool xf86xkbdirFlag;
+Bool xf86acpiDisableFlag;
 
-// extern char* xf86LayoutName;
-// extern char* xf86ScreenName;
-// extern char* xf86PointerName;
-// extern char* xf86KeyboardName;
+// char* xf86LayoutName;
+// char* xf86ScreenName;
+// char* xf86PointerName;
+// char* xf86KeyboardName;
 
-// extern rgb xf86Weight;
+// rgb xf86Weight;
 
-// extern Bool  xf86FlipPixels;
+// Bool  xf86FlipPixels;
 
-// extern Gamma xf86Gamma;
+// Gamma xf86Gamma;
 
-// extern const(char)* xf86ModulePath;
-// extern MessageType xf86ModPathFrom;
+// const(char)* xf86ModulePath;
+// MessageType xf86ModPathFrom;
 
-// extern const(char)* xf86LogFile;
-// extern MessageType xf86LogFileFrom;
-// extern Bool xf86LogFileWasOpened;
-// extern int xf86Verbose;       /* verbosity level */
-// extern int xf86LogVerbose;    /* log file verbosity level */
+// const(char)* xf86LogFile;
+// MessageType xf86LogFileFrom;
+// Bool xf86LogFileWasOpened;
+// int xf86Verbose;       /* verbosity level */
+// int xf86LogVerbose;    /* log file verbosity level */
 
-// extern int xf86NumDrivers;
-// extern Bool xf86Resetting;
-// extern Bool xf86Initialising;
-// extern const(char)*[1] xf86VisualNames;
+// int xf86NumDrivers;
+// Bool xf86Resetting;
+// Bool xf86Initialising;
+// const(char)*[1] xf86VisualNames;
 
 /* xf86Cursor.c */
 void xf86LockZoom(ScreenPtr pScreen, int lock);
@@ -69,8 +69,8 @@ void xf86LockZoom(ScreenPtr pScreen, int lock);
 // void xf86Wakeup(void* blockData, int err);
 void xf86HandlePMEvents(int fd, void* data);
 
-extern int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs;
-extern pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs;
+int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs;
+pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs;
 
 /* xf86Helper.c */
 // void xf86DeleteDriver(int drvIndex);
@@ -88,8 +88,8 @@ const(void )* xf86ModeStatusToString(ModeStatus status);
 ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int flags);
 
 /* xf86DefaultModes (auto-generated) */
-extern const(DisplayModeRec)[1] xf86DefaultModes;
-extern const(int) xf86NumDefaultModes;
+const(DisplayModeRec)[1] xf86DefaultModes;
+const(int) xf86NumDefaultModes;
 
 /* xf86RandR.c */
 Bool xf86RandRInit(ScreenPtr pScreen);

@@ -21,7 +21,7 @@ import externs.xcb.xcbext;
 enum XCB_SHM_MAJOR_VERSION = 1;
 enum XCB_SHM_MINOR_VERSION = 2;
 
-extern xcb_extension_t xcb_shm_id;
+xcb_extension_t xcb_shm_id;
 
 alias xcb_shm_seg_t = uint;
 

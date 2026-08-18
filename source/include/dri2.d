@@ -223,23 +223,23 @@ struct _DRI2InfoRec {
 }alias DRI2InfoRec = _DRI2InfoRec;
 alias DRI2InfoPtr = DRI2InfoRec*;
 
-extern void  DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info);
+void  DRI2ScreenInit(ScreenPtr pScreen, DRI2InfoPtr info);
 
-extern void  DRI2CloseScreen(ScreenPtr pScreen);
+void  DRI2CloseScreen(ScreenPtr pScreen);
 
-// extern void  DRI2HasSwapControl(ScreenPtr pScreen);
+// void  DRI2HasSwapControl(ScreenPtr pScreen);
 
-// extern void  DRI2Connect(ClientPtr client, ScreenPtr pScreen, uint driverType, int* fd, const(char)** driverName, const(char)** deviceName);
+// void  DRI2Connect(ClientPtr client, ScreenPtr pScreen, uint driverType, int* fd, const(char)** driverName, const(char)** deviceName);
 
-// extern void  DRI2Authenticate(ClientPtr client, ScreenPtr pScreen, uint magic);
+// void  DRI2Authenticate(ClientPtr client, ScreenPtr pScreen, uint magic);
 
-// extern void  DRI2CreateDrawable(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv);
+// void  DRI2CreateDrawable(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv);
 
-// extern void  DRI2CreateDrawable2(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv, XID* dri2_id_out);
+// void  DRI2CreateDrawable2(ClientPtr client, DrawablePtr pDraw, XID id, DRI2InvalidateProcPtr invalidate, void* priv, XID* dri2_id_out);
 
-// extern void * DRI2GetBuffers(DrawablePtr pDraw, int* width, int* height, uint* attachments, int count, int* out_count);
+// void * DRI2GetBuffers(DrawablePtr pDraw, int* width, int* height, uint* attachments, int count, int* out_count);
 
-// extern void  DRI2CopyRegion(DrawablePtr pDraw, RegionPtr pRegion, uint dest, uint src);
+// void  DRI2CopyRegion(DrawablePtr pDraw, RegionPtr pRegion, uint dest, uint src);
 
 /**
  * Determine the major and minor version of the DRI2 extension.
@@ -257,32 +257,32 @@ extern void  DRI2CloseScreen(ScreenPtr pScreen);
  * module.  Layered modules that wish to use this interface must first test
  * its existence by calling \c xf86LoaderCheckSymbol.
  */
-extern void  DRI2Version(int* major, int* minor);
+void  DRI2Version(int* major, int* minor);
 
-// extern void * DRI2GetBuffersWithFormat(DrawablePtr pDraw, int* width, int* height, uint* attachments, int count, int* out_count);
+// void * DRI2GetBuffersWithFormat(DrawablePtr pDraw, int* width, int* height, uint* attachments, int count, int* out_count);
 
-// extern void  DRI2SwapInterval(DrawablePtr pDrawable, int interval);
-extern void  DRI2SwapLimit(DrawablePtr pDraw, int swap_limit);
-// extern void  DRI2SwapBuffers(ClientPtr client, DrawablePtr pDrawable, CARD64 target_msc, CARD64 divisor, CARD64 remainder, CARD64* swap_target, DRI2SwapEventPtr func, void* data);
-// extern void  DRI2WaitSwap(ClientPtr client, DrawablePtr pDrawable);
+// void  DRI2SwapInterval(DrawablePtr pDrawable, int interval);
+void  DRI2SwapLimit(DrawablePtr pDraw, int swap_limit);
+// void  DRI2SwapBuffers(ClientPtr client, DrawablePtr pDrawable, CARD64 target_msc, CARD64 divisor, CARD64 remainder, CARD64* swap_target, DRI2SwapEventPtr func, void* data);
+// void  DRI2WaitSwap(ClientPtr client, DrawablePtr pDrawable);
 
-// extern void  DRI2GetMSC(DrawablePtr pDrawable, CARD64* ust, CARD64* msc, CARD64* sbc);
-// extern void  DRI2WaitMSC(ClientPtr client, DrawablePtr pDrawable, CARD64 target_msc, CARD64 divisor, CARD64 remainder);
-extern void  ProcDRI2WaitMSCReply(ClientPtr client, CARD64 ust, CARD64 msc, CARD64 sbc);
-// extern void  DRI2WaitSBC(ClientPtr client, DrawablePtr pDraw, CARD64 target_sbc);
-// extern void  DRI2ThrottleClient(ClientPtr client, DrawablePtr pDraw);
+// void  DRI2GetMSC(DrawablePtr pDrawable, CARD64* ust, CARD64* msc, CARD64* sbc);
+// void  DRI2WaitMSC(ClientPtr client, DrawablePtr pDrawable, CARD64 target_msc, CARD64 divisor, CARD64 remainder);
+void  ProcDRI2WaitMSCReply(ClientPtr client, CARD64 ust, CARD64 msc, CARD64 sbc);
+// void  DRI2WaitSBC(ClientPtr client, DrawablePtr pDraw, CARD64 target_sbc);
+// void  DRI2ThrottleClient(ClientPtr client, DrawablePtr pDraw);
 
-extern void  DRI2CanFlip(DrawablePtr pDraw);
+void  DRI2CanFlip(DrawablePtr pDraw);
 
-extern void  DRI2CanExchange(DrawablePtr pDraw);
+void  DRI2CanExchange(DrawablePtr pDraw);
 
 /* Note: use *only* for MSC related waits */
-extern void  DRI2BlockClient(ClientPtr client, DrawablePtr pDraw);
+void  DRI2BlockClient(ClientPtr client, DrawablePtr pDraw);
 
-extern void  DRI2SwapComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec, int type, DRI2SwapEventPtr swap_complete, void* swap_data);
-extern void  DRI2WaitMSCComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec);
+void  DRI2SwapComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec, int type, DRI2SwapEventPtr swap_complete, void* swap_data);
+void  DRI2WaitMSCComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec);
 
-// extern void  DRI2GetParam(ClientPtr client, DrawablePtr pDrawable, CARD64 param, BOOL* is_param_recognized, CARD64* value);
+// void  DRI2GetParam(ClientPtr client, DrawablePtr pDrawable, CARD64 param, BOOL* is_param_recognized, CARD64* value);
 
-extern void  DRI2UpdatePrime(DrawablePtr pDraw, DRI2BufferPtr pDest);
+void  DRI2UpdatePrime(DrawablePtr pDraw, DRI2BufferPtr pDest);
 

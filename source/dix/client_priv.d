@@ -13,7 +13,7 @@ public import include.dix;
  * called right before ClientRec is about to be destroyed,
  * after resources have been freed. argument is ClientPtr
  */
-extern CallbackListPtr ClientDestroyCallback;
+CallbackListPtr ClientDestroyCallback;
 
 struct ClientAccessCallbackParam {
     ClientPtr client;
@@ -25,7 +25,7 @@ struct ClientAccessCallbackParam {
 /*
  * called when a client tries to access another client
  */
-// extern CallbackListPtr ClientAccessCallback;
+// CallbackListPtr ClientAccessCallback;
 
 pragma(inline, true) int dixCallClientAccessCallback(ClientPtr client, ClientPtr target, Mask access_mode)
 {

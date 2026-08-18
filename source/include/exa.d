@@ -743,35 +743,35 @@ enum EXA_MIXED_PIXMAPS = (1 << 6);
 /** @} */
 
 /* in exa.c */
-// extern ExaDriverPtr exaDriverAlloc();
+// ExaDriverPtr exaDriverAlloc();
 
-// extern int exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo);
+// int exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo);
 
-extern int exaDriverFini(ScreenPtr pScreen);
+int exaDriverFini(ScreenPtr pScreen);
 
-// extern int exaMarkSync(ScreenPtr pScreen);
-// extern v exaWaitSync(ScreenPtr pScreen);
+// int exaMarkSync(ScreenPtr pScreen);
+// v exaWaitSync(ScreenPtr pScreen);
 
-// extern ulong exaGetPixmapOffset(PixmapPtr pPix);
+// ulong exaGetPixmapOffset(PixmapPtr pPix);
 
-// extern ulong exaGetPixmapPitch(PixmapPtr pPix);
+// ulong exaGetPixmapPitch(PixmapPtr pPix);
 
-extern int* exaGetPixmapDriverPrivate(PixmapPtr p);
+int* exaGetPixmapDriverPrivate(PixmapPtr p);
 
 /* in exa_offscreen.c */
-// extern int* exaOffscreenAlloc(ScreenPtr pScreen, int size, int align_, Bool locked, ExaOffscreenSaveProc save, void* privData);
+// int* exaOffscreenAlloc(ScreenPtr pScreen, int size, int align_, Bool locked, ExaOffscreenSaveProc save, void* privData);
 
-extern int* exaOffscreenFree(ScreenPtr pScreen, ExaOffscreenArea* area);
+int* exaOffscreenFree(ScreenPtr pScreen, ExaOffscreenArea* area);
 
-extern int exaEnableDisableFBAccess(ScreenPtr pScreen, Bool enable);
+int exaEnableDisableFBAccess(ScreenPtr pScreen, Bool enable);
 
-extern int exaDrawableIsOffscreen(DrawablePtr pDrawable);
+int exaDrawableIsOffscreen(DrawablePtr pDrawable);
 
 /* in exa.c */
-// extern int exaMoveInPixmap(PixmapPtr pPixmap);
+// int exaMoveInPixmap(PixmapPtr pPixmap);
 
 /* in exa_unaccel.c */
-extern int exaGetPixmapFirstPixel(PixmapPtr pPixmap);
+int exaGetPixmapFirstPixel(PixmapPtr pPixmap);
 
 /**
  * Returns TRUE if the given planemask covers all the significant bits in the

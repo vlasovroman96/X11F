@@ -12,7 +12,7 @@ public import include.dix;
 /*
  * called when a client tries to access devices
  */
-extern CallbackListPtr DeviceAccessCallback;
+CallbackListPtr DeviceAccessCallback;
 
 struct DeviceAccessCallbackParam {
     ClientPtr client;

@@ -22,7 +22,7 @@ import externs.xcb.xcbext;
 enum XCB_RANDR_MAJOR_VERSION = 1;
 enum XCB_RANDR_MINOR_VERSION = 6;
 
-extern xcb_extension_t xcb_randr_id;
+xcb_extension_t xcb_randr_id;
 
 alias xcb_randr_mode_t = uint;
 

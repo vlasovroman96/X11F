@@ -67,8 +67,8 @@ static if (!HasVersion!"__powerpc__" &&
  * Due to conflicts with "compiler.h", don't rely on <sys/io.h> to declare
  * these.
  */
-extern int ioperm(c_ulong __from, c_ulong __num, int __turn_on);
-extern int iopl(int __level);
+int ioperm(c_ulong __from, c_ulong __num, int __turn_on);
+int iopl(int __level);
 
 }
 

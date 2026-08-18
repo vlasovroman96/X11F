@@ -79,7 +79,7 @@ import Device;
 
 
 /* Needed for auto server layout */
-// extern int xf86CheckBoolOption(void* optlist, const(char)* name, int deflt);
+// int xf86CheckBoolOption(void* optlist, const(char)* name, int deflt);
 
 
 private const(xf86ConfigSymTabRec)[9] LayoutTab = [

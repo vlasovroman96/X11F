@@ -65,13 +65,13 @@ struct SELinuxObjectRec {
  * Globals
  */
 
-extern DevPrivateKeyRec subjectKeyRec;
+DevPrivateKeyRec subjectKeyRec;
 
 enum subjectKey = (&subjectKeyRec);
-extern DevPrivateKeyRec objectKeyRec;
+DevPrivateKeyRec objectKeyRec;
 
 enum objectKey = (&objectKeyRec);
-extern DevPrivateKeyRec dataKeyRec;
+DevPrivateKeyRec dataKeyRec;
 
 enum dataKey = (&dataKeyRec);
 

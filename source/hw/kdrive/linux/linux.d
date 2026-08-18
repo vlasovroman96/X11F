@@ -44,19 +44,19 @@ import os.log;
 
 
 version (KDRIVE_MOUSE) {
-extern KdPointerDriver LinuxMouseDriver;
-extern KdPointerDriver Ps2MouseDriver;
-extern KdPointerDriver MsMouseDriver;
+KdPointerDriver LinuxMouseDriver;
+KdPointerDriver Ps2MouseDriver;
+KdPointerDriver MsMouseDriver;
 }
 version (KDRIVE_TSLIB) {
-extern KdPointerDriver TsDriver;
+KdPointerDriver TsDriver;
 }
 version (KDRIVE_EVDEV) {
-extern KdPointerDriver LinuxEvdevMouseDriver;
-extern KdKeyboardDriver LinuxEvdevKeyboardDriver;
+KdPointerDriver LinuxEvdevMouseDriver;
+KdKeyboardDriver LinuxEvdevKeyboardDriver;
 }
 version (KDRIVE_KBD) {
-extern KdKeyboardDriver LinuxKeyboardDriver;
+KdKeyboardDriver LinuxKeyboardDriver;
 }
 
 private int vtno;

@@ -16,7 +16,7 @@ public import fb.fballpriv;
 enum string FbBitsStrideToStipStride(string s) = `(((` ~ s ~ `) << (FB_SHIFT - FB_STIP_SHIFT)))`;
 
 /* NVidia v.340 legacy driver needs this symbol */
-// extern void  fbGetGCPrivateKey(GCPtr pGC);
+// void  fbGetGCPrivateKey(GCPtr pGC);
 
 enum string fbGetGCPrivate(string pGC) = `(cast(FbGCPrivPtr)dixLookupPrivate(&(` ~ pGC ~ `).devPrivates, fbGetGCPrivateKey(` ~ pGC ~ `)))`;
 
@@ -32,7 +32,7 @@ void fbSetBits(FbStip* bits, int stride, FbStip data);
 
 } else {
 
-extern void fbValidateDrawable(DrawablePtr d) {}
+void fbValidateDrawable(DrawablePtr d) {}
 
 } /* FB_DEBUG */
 

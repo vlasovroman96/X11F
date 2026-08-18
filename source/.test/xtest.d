@@ -51,7 +51,7 @@ import test.tests;
  */
 
 /* from Xext/xtest.c */
-extern DeviceIntPtr xtestpointer, xtestkeyboard;
+DeviceIntPtr xtestpointer, xtestkeyboard;
 
 /* Needed for the screen setup, otherwise we crash during sprite initialization */
 private Bool device_cursor_init(DeviceIntPtr dev, ScreenPtr screen)

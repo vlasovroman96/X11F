@@ -74,7 +74,7 @@ static assert(0, "i have no dynamic linker and i must scream");
 }
 
 version (XORG_NO_SDKSYMS) {} else {
-extern void*[1] xorg_symbols;
+void*[1] xorg_symbols;
 }
 
 struct  ModuleVersions{

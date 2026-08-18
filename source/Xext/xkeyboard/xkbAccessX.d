@@ -712,7 +712,7 @@ Bool AccessXFilterReleaseEvent(DeviceEvent* event, DeviceIntPtr keybd)
 /* don't accidentally turn on StickyKeys or the Keyboard Response Group.*/
 /*									*/
 /************************************************************************/
-extern int xkbDevicePrivateIndex;
+int xkbDevicePrivateIndex;
 void ProcessPointerEvent(InternalEvent* ev, DeviceIntPtr mouse)
 {
     XkbSrvInfoPtr xkbi = null;

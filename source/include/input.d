@@ -174,7 +174,7 @@ alias GrabMask = _GrabMask;
 alias ValuatorMask = _ValuatorMask;
 
 /* The DIX stores incoming input events in this list */
-extern InternalEvent* InputEventList;
+InternalEvent* InputEventList;
 
 alias DeviceProc = int function(DeviceIntPtr, int);
 
@@ -248,8 +248,8 @@ struct LedCtrl {
     ubyte id;
 }
 
-// extern DeviceIntPtr defaultKeyboardControl;
-// extern int defaultPointerControl;
+// DeviceIntPtr defaultKeyboardControl;
+// int defaultPointerControl;
 
 alias InputOption = _InputOption;
 alias XI2Mask = _XI2Mask;
@@ -280,42 +280,42 @@ enum BUTTON_PROCESSED = 1;
 enum KEY_POSTED = 2;
 enum BUTTON_POSTED = 2;
 
-extern int set_key_down(DeviceIntPtr pDev, int key_code, int type);
-extern int set_key_up(DeviceIntPtr pDev, int key_code, int type);
-extern int key_is_down(DeviceIntPtr pDev, int key_code, int type);
-extern int set_button_down(DeviceIntPtr pDev, int button, int type);
-extern int set_button_up(DeviceIntPtr pDev, int button, int type);
-extern int button_is_down(DeviceIntPtr pDev, int button, int type);
+int set_key_down(DeviceIntPtr pDev, int key_code, int type);
+int set_key_up(DeviceIntPtr pDev, int key_code, int type);
+int key_is_down(DeviceIntPtr pDev, int key_code, int type);
+int set_button_down(DeviceIntPtr pDev, int button, int type);
+int set_button_up(DeviceIntPtr pDev, int button, int type);
+int button_is_down(DeviceIntPtr pDev, int button, int type);
 
-// extern DeviceIntPtr AddInputDevice(ClientPtr /*client */ ,
+// DeviceIntPtr AddInputDevice(ClientPtr /*client */ ,
                                             //  DeviceProc /*deviceProc */ ,
                                             //  Bool /*autoStart */ );
 
-// extern int EnableDevice(DeviceIntPtr, BOOL);
+// int EnableDevice(DeviceIntPtr, BOOL);
 
-// extern int ActivateDevice(DeviceIntPtr, BOOL);
+// int ActivateDevice(DeviceIntPtr, BOOL);
 
-// extern int DisableDevice(DeviceIntPtr, BOOL);
+// int DisableDevice(DeviceIntPtr, BOOL);
 
-// extern int RemoveDevice(DeviceIntPtr, BOOL);
+// int RemoveDevice(DeviceIntPtr, BOOL);
 
-extern int NumMotionEvents();
+int NumMotionEvents();
 
-// extern int dixLookupDevice(DeviceIntPtr*, int, ClientPtr, Mask);
+// int dixLookupDevice(DeviceIntPtr*, int, ClientPtr, Mask);
 
-extern int QueryMinMaxKeyCodes(KeyCode*, KeyCode*);
+int QueryMinMaxKeyCodes(KeyCode*, KeyCode*);
 
-extern int InitButtonClassDeviceStruct(DeviceIntPtr, int, Atom*, CARD8*);
+int InitButtonClassDeviceStruct(DeviceIntPtr, int, Atom*, CARD8*);
 
-extern int InitValuatorClassDeviceStruct(DeviceIntPtr, int, Atom*, int, int);
+int InitValuatorClassDeviceStruct(DeviceIntPtr, int, Atom*, int, int);
 
-// extern int InitPointerAccelerationScheme(DeviceIntPtr, int);
+// int InitPointerAccelerationScheme(DeviceIntPtr, int);
 
-// extern int InitFocusClassDeviceStruct(DeviceIntPtr);
+// int InitFocusClassDeviceStruct(DeviceIntPtr);
 
-// extern int InitTouchClassDeviceStruct(DeviceIntPtr, uint, uint, uint);
+// int InitTouchClassDeviceStruct(DeviceIntPtr, uint, uint, uint);
 
-// extern int InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches);
+// int InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches);
 
 alias BellProcPtr = void function(int percent, DeviceIntPtr device, void* ctrl, int feedbackClass);
 
@@ -323,65 +323,65 @@ alias KbdCtrlProcPtr = void function(DeviceIntPtr, KeybdCtrl*);
 
 alias PtrCtrlProcPtr = void function(DeviceIntPtr, PtrCtrl*);
 
-extern int InitPtrFeedbackClassDeviceStruct(DeviceIntPtr, PtrCtrlProcPtr);
+int InitPtrFeedbackClassDeviceStruct(DeviceIntPtr, PtrCtrlProcPtr);
 
 alias StringCtrlProcPtr = void function(DeviceIntPtr, StringCtrl*);
 
-extern int InitStringFeedbackClassDeviceStruct(DeviceIntPtr, StringCtrlProcPtr, int, int, KeySym*);
+int InitStringFeedbackClassDeviceStruct(DeviceIntPtr, StringCtrlProcPtr, int, int, KeySym*);
 
 alias BellCtrlProcPtr = void function(DeviceIntPtr, BellCtrl*);
 
-extern int InitBellFeedbackClassDeviceStruct(DeviceIntPtr, BellProcPtr, BellCtrlProcPtr);
+int InitBellFeedbackClassDeviceStruct(DeviceIntPtr, BellProcPtr, BellCtrlProcPtr);
 
 alias LedCtrlProcPtr = void function(DeviceIntPtr, LedCtrl*);
 
-extern int InitLedFeedbackClassDeviceStruct(DeviceIntPtr, LedCtrlProcPtr);
+int InitLedFeedbackClassDeviceStruct(DeviceIntPtr, LedCtrlProcPtr);
 
 alias IntegerCtrlProcPtr = void function(DeviceIntPtr, IntegerCtrl*);
 
-extern int InitIntegerFeedbackClassDeviceStruct(DeviceIntPtr, IntegerCtrlProcPtr);
+int InitIntegerFeedbackClassDeviceStruct(DeviceIntPtr, IntegerCtrlProcPtr);
 
-// extern int InitPointerDeviceStruct(DevicePtr, CARD8*, int, Atom*, PtrCtrlProcPtr, int, int, Atom*);
+// int InitPointerDeviceStruct(DevicePtr, CARD8*, int, Atom*, PtrCtrlProcPtr, int, int, Atom*);
 
-extern int InitKeyboardDeviceStruct(DeviceIntPtr, XkbRMLVOSet*, BellProcPtr, KbdCtrlProcPtr);
+int InitKeyboardDeviceStruct(DeviceIntPtr, XkbRMLVOSet*, BellProcPtr, KbdCtrlProcPtr);
 
-extern int InitKeyboardDeviceStructFromString(DeviceIntPtr dev, const(char)* keymap, int keymap_length, BellProcPtr bell_func, KbdCtrlProcPtr ctrl_func);
+int InitKeyboardDeviceStructFromString(DeviceIntPtr dev, const(char)* keymap, int keymap_length, BellProcPtr bell_func, KbdCtrlProcPtr ctrl_func);
 
-extern int ProcessInputEvents();
+int ProcessInputEvents();
 
-extern int InitInput(int, char**);
-extern int CloseInput();
+int InitInput(int, char**);
+int CloseInput();
 
-extern int GetMaximumEventsNum();
+int GetMaximumEventsNum();
 
-// extern int* InitEventList(int num_events);
-extern int FreeEventList(InternalEvent* list, int num_events);
+// int* InitEventList(int num_events);
+int FreeEventList(InternalEvent* list, int num_events);
 
-extern int GetPointerEvents(InternalEvent* events, DeviceIntPtr pDev, int type, int buttons, int flags, const(ValuatorMask)* mask);
+int GetPointerEvents(InternalEvent* events, DeviceIntPtr pDev, int type, int buttons, int flags, const(ValuatorMask)* mask);
 
-extern int QueuePointerEvents(DeviceIntPtr pDev, int type, int buttons, int flags, const(ValuatorMask)* mask);
+int QueuePointerEvents(DeviceIntPtr pDev, int type, int buttons, int flags, const(ValuatorMask)* mask);
 
-extern int GetKeyboardEvents(InternalEvent* events, DeviceIntPtr pDev, int type, int key_code);
+int GetKeyboardEvents(InternalEvent* events, DeviceIntPtr pDev, int type, int key_code);
 
-extern int QueueKeyboardEvents(DeviceIntPtr pDev, int type, int key_code);
+int QueueKeyboardEvents(DeviceIntPtr pDev, int type, int key_code);
 
-extern int GetProximityEvents(InternalEvent* events, DeviceIntPtr pDev, int type, const(ValuatorMask)* mask);
+int GetProximityEvents(InternalEvent* events, DeviceIntPtr pDev, int type, const(ValuatorMask)* mask);
 
-extern int QueueProximityEvents(DeviceIntPtr pDev, int type, const(ValuatorMask)* mask);
+int QueueProximityEvents(DeviceIntPtr pDev, int type, const(ValuatorMask)* mask);
 
-extern int GetMotionHistorySize();
+int GetMotionHistorySize();
 
-extern int AllocateMotionHistory(DeviceIntPtr pDev);
+int AllocateMotionHistory(DeviceIntPtr pDev);
 
-extern int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulong stop, ScreenPtr pScreen, BOOL core);
+int GetMotionHistory(DeviceIntPtr pDev, xTimecoord** buff, c_ulong start, c_ulong stop, ScreenPtr pScreen, BOOL core);
 
-// extern int GetPairedDevice(DeviceIntPtr kbd);
-// extern int GetMaster(DeviceIntPtr dev, int type);
+// int GetPairedDevice(DeviceIntPtr kbd);
+// int GetMaster(DeviceIntPtr dev, int type);
 
-// extern int AllocDevicePair(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master);
+// int AllocDevicePair(ClientPtr client, const(char)* name, DeviceIntPtr* ptr, DeviceIntPtr* keybd, DeviceProc ptr_proc, DeviceProc keybd_proc, Bool master);
 
 /* Helper functions. */
-// extern int generate_modkeymap(ClientPtr client, DeviceIntPtr dev, KeyCode** modkeymap, int* max_keys_per_mod);
+// int generate_modkeymap(ClientPtr client, DeviceIntPtr dev, KeyCode** modkeymap, int* max_keys_per_mod);
 
 enum TouchListenerState {
     TOUCH_LISTENER_AWAITING_BEGIN = 0, /**< Waiting for a TouchBegin event */
@@ -423,52 +423,52 @@ alias GESTURE_LISTENER_NONGESTURE_GRAB = GestureListenerType.GESTURE_LISTENER_NO
 alias GESTURE_LISTENER_REGULAR = GestureListenerType.GESTURE_LISTENER_REGULAR;
 
 
-// extern InputAttributes *DuplicateInputAttributes(InputAttributes *
+// InputAttributes *DuplicateInputAttributes(InputAttributes *
                                                         //    attrs);
 
-// extern int FreeInputAttributes(InputAttributes* attrs);
+// int FreeInputAttributes(InputAttributes* attrs);
 
 /* Implemented by the DDX. */
-// extern int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* dev);
-extern int DeleteInputDeviceRequest(DeviceIntPtr dev);
-extern int RemoveInputDeviceTraces(const(char)* config_info);
-extern int DDXRingBell(int volume, int pitch, int duration);
-// extern int* valuator_mask_new(int num_valuators);
-// extern int valuator_mask_free(ValuatorMask** mask);
-// extern int valuator_mask_set_range(ValuatorMask* mask, int first_valuator, int num_valuators, const(int)* valuators);
-// extern int valuator_mask_set(ValuatorMask* mask, int valuator, int data);
-// extern int valuator_mask_set_double(ValuatorMask* mask, int valuator, double data);
-// extern int valuator_mask_zero(ValuatorMask* mask);
-// extern int valuator_mask_size(const(ValuatorMask)* mask);
-// extern int valuator_mask_isset(const(ValuatorMask)* mask, int bit);
-// extern int valuator_mask_unset(ValuatorMask* mask, int bit);
-// extern int valuator_mask_num_valuators(const(ValuatorMask)* mask);
-// extern int valuator_mask_copy(ValuatorMask* dest, const(ValuatorMask)* src);
-// extern int valuator_mask_get(const(ValuatorMask)* mask, int valnum);
-// extern int valuator_mask_get_double(const(ValuatorMask)* mask, int valnum);
-extern int valuator_mask_fetch(const(ValuatorMask)* mask, int valnum, int* val);
-// extern int valuator_mask_fetch_double(const(ValuatorMask)* mask, int valnum, double* val);
-// extern int valuator_mask_has_unaccelerated(const(ValuatorMask)* mask);
-// extern int valuator_mask_set_unaccelerated(ValuatorMask* mask, int valuator, double accel, double unaccel);
-extern int valuator_mask_set_absolute_unaccelerated(ValuatorMask* mask, int valuator, int absolute, double unaccel);
-extern int valuator_mask_get_accelerated(const(ValuatorMask)* mask, int valuator);
-// extern int valuator_mask_get_unaccelerated(const(ValuatorMask)* mask, int valuator);
-extern int valuator_mask_fetch_unaccelerated(const(ValuatorMask)* mask, int valuator, double* accel, double* unaccel);
+// int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* dev);
+int DeleteInputDeviceRequest(DeviceIntPtr dev);
+int RemoveInputDeviceTraces(const(char)* config_info);
+int DDXRingBell(int volume, int pitch, int duration);
+// int* valuator_mask_new(int num_valuators);
+// int valuator_mask_free(ValuatorMask** mask);
+// int valuator_mask_set_range(ValuatorMask* mask, int first_valuator, int num_valuators, const(int)* valuators);
+// int valuator_mask_set(ValuatorMask* mask, int valuator, int data);
+// int valuator_mask_set_double(ValuatorMask* mask, int valuator, double data);
+// int valuator_mask_zero(ValuatorMask* mask);
+// int valuator_mask_size(const(ValuatorMask)* mask);
+// int valuator_mask_isset(const(ValuatorMask)* mask, int bit);
+// int valuator_mask_unset(ValuatorMask* mask, int bit);
+// int valuator_mask_num_valuators(const(ValuatorMask)* mask);
+// int valuator_mask_copy(ValuatorMask* dest, const(ValuatorMask)* src);
+// int valuator_mask_get(const(ValuatorMask)* mask, int valnum);
+// int valuator_mask_get_double(const(ValuatorMask)* mask, int valnum);
+int valuator_mask_fetch(const(ValuatorMask)* mask, int valnum, int* val);
+// int valuator_mask_fetch_double(const(ValuatorMask)* mask, int valnum, double* val);
+// int valuator_mask_has_unaccelerated(const(ValuatorMask)* mask);
+// int valuator_mask_set_unaccelerated(ValuatorMask* mask, int valuator, double accel, double unaccel);
+int valuator_mask_set_absolute_unaccelerated(ValuatorMask* mask, int valuator, int absolute, double unaccel);
+int valuator_mask_get_accelerated(const(ValuatorMask)* mask, int valuator);
+// int valuator_mask_get_unaccelerated(const(ValuatorMask)* mask, int valuator);
+int valuator_mask_fetch_unaccelerated(const(ValuatorMask)* mask, int valuator, double* accel, double* unaccel);
 /* InputOption handling interface */
-// extern int* input_option_new(InputOption* list, const(char)* key, const(char)* value);
-// extern int input_option_free_list(InputOption** opt);
-extern int* input_option_free_element(InputOption* opt, const(char)* key);
-extern int* input_option_find(InputOption* list, const(char)* key);
-// extern const(int)* input_option_get_key(const(InputOption)* opt);
-// extern const(int)* input_option_get_value(const(InputOption)* opt);
-// extern int input_option_set_key(InputOption* opt, const(char)* key);
-// extern int input_option_set_value(InputOption* opt, const(char)* value);
+// int* input_option_new(InputOption* list, const(char)* key, const(char)* value);
+// int input_option_free_list(InputOption** opt);
+int* input_option_free_element(InputOption* opt, const(char)* key);
+int* input_option_find(InputOption* list, const(char)* key);
+// const(int)* input_option_get_key(const(InputOption)* opt);
+// const(int)* input_option_get_value(const(InputOption)* opt);
+// int input_option_set_key(InputOption* opt, const(char)* key);
+// int input_option_set_value(InputOption* opt, const(char)* value);
 
-// extern int input_lock();
-// extern int input_unlock();
-extern int input_force_unlock();
-extern int in_input_thread();
+// int input_lock();
+// int input_unlock();
+int input_force_unlock();
+int in_input_thread();
 
-extern int InputThreadEnable;
+int InputThreadEnable;
 
                           /* INPUT_H */

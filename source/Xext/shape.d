@@ -33,6 +33,7 @@ import core.stdc.stdlib;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.shapeproto;
+import region;
 
 import dix.client_priv;
 import dix.dix_priv;

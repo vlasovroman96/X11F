@@ -29,10 +29,10 @@ import externs.X11.extensions.renderproto;
 
 /* fbpict.c */
 
-extern void  fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
+void  fbComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
 /* fbtrap.c */
 
-extern void  fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, xTrap* traps);
+void  fbAddTraps(PicturePtr pPicture, INT16 xOff, INT16 yOff, int ntrap, xTrap* traps);
 
                           /* _FBPICT_H_ */

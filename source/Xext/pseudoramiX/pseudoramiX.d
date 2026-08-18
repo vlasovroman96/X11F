@@ -57,9 +57,9 @@ import dix.extension;
 // enum string DEBUG_LOG(__VA_ARGS__) = `LogMessageVerb(X_NONE, 3, `~__VA_ARGS__~`);`;
 
 Bool noPseudoramiXExtension = FALSE;
-extern Bool noRRXineramaExtension;
+Bool noRRXineramaExtension;
 
-extern int ProcPanoramiXQueryVersion(ClientPtr client);
+int ProcPanoramiXQueryVersion(ClientPtr client);
 
 
 

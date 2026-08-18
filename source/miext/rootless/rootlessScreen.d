@@ -68,8 +68,8 @@ import mitrap;
 import mitri;
 
 
-extern int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind);
-extern Bool RootlessCreateGC(GCPtr pGC);
+int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind);
+Bool RootlessCreateGC(GCPtr pGC);
 
 // Initialize globals
 DevPrivateKeyRec rootlessGCPrivateKeyRec;

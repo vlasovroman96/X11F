@@ -13,6 +13,7 @@ import glamor.glamor_priv;
 import externs.X11.extensions.render_;
 import glamor.glamor;
 import externs.attrs;
+import region;
 
 alias INT16_MAX = core.stdc.stdint.INT16_MAX;
 

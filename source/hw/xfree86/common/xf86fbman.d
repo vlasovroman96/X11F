@@ -37,6 +37,7 @@ import dix.screen_hooks_priv;
 //import externs.X11.X;
 
 import os.log_priv;
+import region;
 
 import include.misc;
 import include.xf86;

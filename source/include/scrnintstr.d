@@ -616,6 +616,6 @@ pragma(inline, true) private RegionPtr BitmapToRegion(ScreenPtr _pScreen, Pixmap
 //     int height;                 /* total height of all screens together */
 // }
 
-// extern ScreenInfo screenInfo;
+// ScreenInfo screenInfo;
 
                           /* SCREENINTSTRUCT_H */
