@@ -39,6 +39,7 @@ import externs.X11.extensions.XKB;
 // import externs.X11.extensions.XKBgeom;
 import include.input;
 import xkb.xkbgeom_priv;
+import include.xkbstr;
 // //public import externs.X11.extensions.XKB;
 
 enum string	XkbCharToInt(string v) = `(cast(int) ((` ~ v ~ `) & 0x80 ? ((` ~ v ~ `) | (~0xff)) : ((` ~ v ~ `) & 0x7f)))`;
@@ -124,10 +125,11 @@ enum string	XkbSetNumGroups(string g,string n) = `(((` ~ g ~ `)&0xf0)|((` ~ n ~ 
          * Structures and access macros used primarily by the server
          */
 
-struct XkbBehavior {
+struct _XkbBehavior {
     ubyte type;
     ubyte data;
 }
+alias XkbBehavior = _XkbBehavior;
 
 enum	XkbAnyActionDataSize = 7;
 struct XkbAnyAction {
@@ -157,8 +159,8 @@ struct XkbGroupAction {
     char group_XXX = 0;
 }
 
-enum string	XkbSAGroup(string a) = `(` ~ XkbCharToInt!(`(` ~ a ~ `).group_XXX`) ~ `)`;
-enum string	XkbSASetGroup(string a,string g) = `((` ~ a ~ `).group_XXX=(` ~ g ~ `))`;
+enum string	XkbSAGroup(string a) = `(cast(ubyte)` ~ XkbCharToInt!(`(` ~ a ~ `).group_XXX`) ~ `)`;
+enum string	XkbSASetGroup(string a,string g) = `((` ~ a ~ `).group_XXX=cast(char)(` ~ g ~ `));`;
 
 struct XkbISOAction {
     ubyte type;
@@ -279,7 +281,7 @@ struct XkbDeviceValuatorAction {
     ubyte v2_value;
 }
 
-union XkbAction {
+union _XkbAction {
     XkbAnyAction any;
     XkbModAction mods;
     XkbGroupAction group;
@@ -295,6 +297,9 @@ union XkbAction {
     XkbDeviceValuatorAction devval;
     ubyte type;
 }
+alias XkbAction = _XkbAction;
+// alias XkbAction = _XkbAction;
+
 
 struct _XkbControls {
     ubyte mk_dflt_btn;

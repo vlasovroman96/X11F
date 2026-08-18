@@ -1,4 +1,4 @@
-module xkbLEDs.c;
+module xkb.xkbLEDs;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,21 +28,25 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.math;
-import X11/X;
-import X11/Xproto;
-import X11/extensions/XI;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.extensions.XI;
 
 import dix.input_priv;
-import include.misc;
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
+import include.misc;
+import include.inputstr;
+import externs.X11.extensions.XKBproto;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+
+
 
         /*
          * unsigned
@@ -94,7 +98,7 @@ uint XkbIndicatorsToUpdate(DeviceIntPtr dev, c_ulong state_changes, Bool enable_
          */
 private Bool XkbApplyLEDChangeToKeyboard(XkbSrvInfoPtr xkbi, XkbIndicatorMapPtr map, Bool on, XkbChangesPtr change)
 {
-    bool ctrlChange = void, stateChange = void;
+    Bool ctrlChange = void, stateChange = void;
     XkbStatePtr state = void;
 
     if ((map.flags & XkbIM_NoExplicit) ||
@@ -111,7 +115,7 @@ private Bool XkbApplyLEDChangeToKeyboard(XkbSrvInfoPtr xkbi, XkbIndicatorMapPtr 
         else
             ctrls.enabled_ctrls &= ~map.ctrls;
         if (old != ctrls.enabled_ctrls) {
-            change.ctrls.changed_ctrls = XkbControlsEnabledMask;
+            change.ctrls.changed_ctrls = cast(uint)XkbControlsEnabledMask;
             change.ctrls.enabled_ctrls_changes = old ^ ctrls.enabled_ctrls;
             ctrlChange = TRUE;
         }
@@ -186,7 +190,7 @@ private Bool XkbApplyLEDChangeToKeyboard(XkbSrvInfoPtr xkbi, XkbIndicatorMapPtr 
 
 private Bool ComputeAutoState(XkbIndicatorMapPtr map, XkbStatePtr state, XkbControlsPtr ctrls)
 {
-    bool on = void;
+    Bool on = void;
     CARD8 mods = void, group = void;
 
     on = FALSE;
@@ -445,13 +449,13 @@ void XkbForceUpdateDeviceLEDs(DeviceIntPtr dev)
 
     if (InputDevIsMaster(dev)) {
         master = dev;
-        nt_list_for_each_entry(dev, inputInfo.devices, next) {
+        mixin(nt_list_for_each_entry!("dev", "inputInfo.devices", "next", q{
             if (!dev.key || GetMaster(dev, MASTER_KEYBOARD) != master)
                 continue;
 
             sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId, 0);
             XkbDDXUpdateDeviceIndicators(dev, sli, sli.effectiveState);
-        }
+        }));
     }
 }
 
@@ -544,13 +548,13 @@ void XkbCheckIndicatorMaps(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint which)
 XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeedbackPtr lf, uint needed_parts)
 {
     XkbSrvLedInfoPtr sli = void;
-    bool checkAccel = void;
-    bool checkNames = void;
+    Bool checkAccel = void;
+    Bool checkNames = void;
 
     sli = null;
     checkAccel = checkNames = FALSE;
     if ((kf != null) && (kf.xkb_sli == null)) {
-        kf.xkb_sli = sli = calloc(1, XkbSrvLedInfoRec.sizeof);
+        kf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
         if (sli == null)
             return null;        /* ALLOCATION ERROR */
         if (dev.key && dev.key.xkbInfo)
@@ -597,7 +601,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
         }
     }
     else if ((lf != null) && (lf.xkb_sli == null)) {
-        lf.xkb_sli = sli = calloc(1, XkbSrvLedInfoRec.sizeof);
+        lf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
         if (sli == null)
             return null;        /* ALLOCATION ERROR */
         if (dev.key && dev.key.xkbInfo)
@@ -662,7 +666,7 @@ XkbSrvLedInfoPtr XkbCopySrvLedInfo(DeviceIntPtr from, XkbSrvLedInfoPtr src, KbdF
     if (!src)
         goto finish;
 
-    sli_new = calloc(1, XkbSrvLedInfoRec.sizeof);
+    sli_new = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
     if (!sli_new)
         goto finish;
 
@@ -922,7 +926,7 @@ void XkbApplyLedStateChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint change
     uint i = void, bit = void, affected = void;
     XkbIndicatorMapPtr map = void;
     uint oldState = void;
-    bool kb_changed = void;
+    Bool kb_changed = void;
 
     if (changed_leds == 0)
         return;

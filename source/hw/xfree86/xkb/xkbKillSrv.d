@@ -44,6 +44,9 @@ import include.inputstr;
 import include.scrnintstr;
 import include.windowstr;
 import dix.events;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+
 
 import xf86_priv;
 

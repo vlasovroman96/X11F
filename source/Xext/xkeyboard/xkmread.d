@@ -1,4 +1,4 @@
-module xkmread.c;
+module xkb.xkmread;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,26 +27,32 @@ extern(C): __gshared:
 
  ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
 import core.stdc.stdio;
-import X11/Xos;
-import X11/Xfuncs;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
-import X11/extensions/XKMformat;
+// //import externs.X11.Xos;
+// //import externs.X11.Xfuncs;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+// //import externs.X11.extensions.XKMformat;
+// import externs.X11.extensions.XKBgeom;
+
+import os.log_priv;
+import xkb.xkbfile_priv;
+import xkb.xkbfmisc_priv;
+import xkb.xkbsrv_priv;
 
 import include.misc;
-import os.log_priv;
+import include.inputstr;
+import include.xkbsrv;
+import xkb.xkbgeom_priv;
+import externs.X11.extensions.XKMformat;
+import externs.X11.extensions.XKB;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
 
-import xkbfile_priv;
-import xkbfmisc_priv;
-import xkbsrv_priv;
 
-import inputstr;
-import xkbstr;
-import xkbgeom_priv;
 
 private Atom XkbInternAtom(char* str, Bool only_if_exists)
 {
@@ -296,18 +302,18 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
         _XkbLibError(_XkbErrBadAlloc, "ReadXkmKeyTypes", 0);
         return nRead;
     }
-    xkb.map.num_types = num_types;
+    xkb.map.num_types = cast(ubyte)(num_types);
     if (num_types < XkbNumRequiredTypes) {
         _XkbLibError(_XkbErrMissingReqTypes, "ReadXkmKeyTypes", 0);
         return -1;
     }
     type = xkb.map.types;
     for (i = 0; i < num_types; i++, type++) {
-        if (cast(int) fread(&wire, SIZEOF(xkmKeyTypeDesc), 1, file) < 1) {
+        if (cast(int) fread(&wire, xkmKeyTypeDesc.sizeof, 1, file) < 1) {
             _XkbLibError(_XkbErrBadLength, "ReadXkmKeyTypes", 0);
             return -1;
         }
-        nRead += SIZEOF(xkmKeyTypeDesc);
+        nRead += xkmKeyTypeDesc.sizeof;
         if (((i == XkbOneLevelIndex) && (wire.numLevels != 1)) ||
             (((i == XkbTwoLevelIndex) || (i == XkbAlphabeticIndex) ||
               ((i) == XkbKeypadIndex)) && (wire.numLevels != 2))) {
@@ -321,12 +327,12 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
             return -1;
         }
         for (n = 0, entry = type.map; n < wire.nMapEntries; n++, entry++) {
-            if (fread(&wire_entry, SIZEOF(xkmKTMapEntryDesc), 1, file) <
+            if (fread(&wire_entry, xkmKTMapEntryDesc.sizeof, 1, file) <
                 cast(int) 1) {
                 _XkbLibError(_XkbErrBadLength, "ReadXkmKeyTypes", 0);
                 return -1;
             }
-            nRead += SIZEOF(xkmKTMapEntryDesc);
+            nRead += xkmKTMapEntryDesc.sizeof;
             entry.active = (wire_entry.virtualMods == 0);
             entry.level = wire_entry.level;
             entry.mods.mask = wire_entry.realMods;
@@ -358,11 +364,11 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
                 return -1;
             }
             for (n = 0, pre = type.preserve; n < wire.nMapEntries; n++, pre++) {
-                if (fread(&p_entry, SIZEOF(xkmModsDesc), 1, file) < 1) {
+                if (fread(&p_entry, xkmModsDesc.sizeof, 1, file) < 1) {
                     _XkbLibError(_XkbErrBadLength, "ReadXkmKeycodes", 0);
                     return -1;
                 }
-                nRead += SIZEOF(xkmModsDesc);
+                nRead += xkmModsDesc.sizeof;
                 pre.mask = p_entry.realMods;
                 pre.real_mods = p_entry.realMods;
                 pre.vmods = p_entry.virtualMods;
@@ -392,13 +398,13 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
         type.mods.mask = wire.realMods;
         type.mods.real_mods = wire.realMods;
         type.mods.vmods = wire.virtualMods;
-        type.num_levels = wire.numLevels;
-        type.map_count = wire.nMapEntries;
+        type.num_levels = cast(ubyte*)wire.numLevels;
+        type.map_count = cast(ubyte)cast(ubyte*)wire.nMapEntries;
     }
     if (changes) {
         changes.map.changed |= XkbKeyTypesMask;
-        changes.map.first_type = 0;
-        changes.map.num_types = xkb.map.num_types;
+        changes.map.first_type = cast(ubyte)(0);
+        changes.map.num_types = cast(ubyte)(xkb.map.num_types);
     }
     return nRead;
 }
@@ -438,8 +444,8 @@ private int ReadXkmCompatMap(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
     compat.num_si = 0;
     interp = compat.sym_interpret;
     for (i = 0; i < num_si; i++) {
-        tmp = fread(&wire, SIZEOF(xkmSymInterpretDesc), 1, file);
-        nRead += tmp * SIZEOF(xkmSymInterpretDesc);
+        tmp = fread(&wire, xkmSymInterpretDesc.sizeof, 1, file);
+        nRead += tmp * xkmSymInterpretDesc.sizeof;
         interp.sym = wire.sym;
         interp.mods = wire.mods;
         interp.match = wire.match;
@@ -578,8 +584,8 @@ private int ReadXkmCompatMap(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
             xkmModsDesc md = void;
 
             if (groups & bit) {
-                tmp = fread(&md, SIZEOF(xkmModsDesc), 1, file);
-                nRead += tmp * SIZEOF(xkmModsDesc);
+                tmp = fread(&md, xkmModsDesc.sizeof, 1, file);
+                nRead += tmp * xkmModsDesc.sizeof;
                 xkb.compat.groups[i].real_mods = md.realMods;
                 xkb.compat.groups[i].vmods = md.virtualMods;
                 if (md.virtualMods != 0) {
@@ -630,18 +636,11 @@ private int ReadXkmIndicators(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
             name = XkbInternAtom(buf.ptr, FALSE);
         else
             name = None;
-        if ((tmp = fread(&wire, SIZEOF(xkmIndicatorMapDesc), 1, file)) < 1) {
+        if ((tmp = fread(&wire, xkmIndicatorMapDesc.sizeof, 1, file)) < 1) {
             _XkbLibError(_XkbErrBadLength, "ReadXkmIndicators", 0);
             return -1;
         }
-        nRead += tmp * SIZEOF(xkmIndicatorMapDesc);
-        /* wire.indicator is an untrusted CARD8 used as (indicator - 1) to
-         * index the fixed-size indicators[] and maps[] arrays; reject
-         * out-of-range values to avoid an out-of-bounds access. */
-        if (wire.indicator < 1 || wire.indicator > XkbNumIndicators) {
-            _XkbLibError(_XkbErrBadValue, "ReadXkmIndicators", wire.indicator);
-            return -1;
-        }
+        nRead += tmp * xkmIndicatorMapDesc.sizeof;
         if (xkb.names) {
             xkb.names.indicators[wire.indicator - 1] = name;
             if (changes)
@@ -762,11 +761,11 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
         Atom[XkbNumKbdGroups] typeName = void;
         XkbKeyTypePtr[XkbNumKbdGroups] type = void;
 
-        if ((tmp = fread(&wireMap, SIZEOF(xkmKeySymMapDesc), 1, file)) < 1) {
+        if ((tmp = fread(&wireMap, xkmKeySymMapDesc.sizeof, 1, file)) < 1) {
             _XkbLibError(_XkbErrBadLength, "ReadXkmSymbols", 0);
             return -1;
         }
-        nRead += tmp * SIZEOF(xkmKeySymMapDesc);
+        nRead += tmp * xkmKeySymMapDesc.sizeof;
         memset(cast(char*) typeName, 0, XkbNumKbdGroups * Atom.sizeof);
         memset(cast(char*) type, 0, XkbNumKbdGroups * XkbKeyTypePtr.sizeof);
         if (wireMap.flags & XkmKeyHasTypes) {
@@ -799,7 +798,7 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
             int nSyms = void;
 
             if (XkbNumGroups(wireMap.num_groups) > xkb.ctrls.num_groups)
-                xkb.ctrls.num_groups = wireMap.num_groups;
+                xkb.ctrls.num_groups = cast(ubyte)(wireMap.num_groups);
             nSyms = XkbNumGroups(wireMap.num_groups) * wireMap.width;
             sym = XkbResizeKeySyms(xkb, i, nSyms);
             if (!sym)
@@ -812,8 +811,8 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
 
                 act = XkbResizeKeyActions(xkb, i, nSyms);
                 for (s = 0; s < nSyms; s++, act++) {
-                    tmp = fread(act, SIZEOF(xkmActionDesc), 1, file);
-                    nRead += tmp * SIZEOF(xkmActionDesc);
+                    tmp = fread(act, xkmActionDesc.sizeof, 1, file);
+                    nRead += tmp * xkmActionDesc.sizeof;
                 }
                 xkb.server.explicit[i] |= XkbExplicitInterpretMask;
             }
@@ -834,8 +833,8 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
         if (wireMap.flags & XkmKeyHasBehavior) {
             xkmBehaviorDesc b = void;
 
-            tmp = fread(&b, SIZEOF(xkmBehaviorDesc), 1, file);
-            nRead += tmp * SIZEOF(xkmBehaviorDesc);
+            tmp = fread(&b, xkmBehaviorDesc.sizeof, 1, file);
+            nRead += tmp * xkmBehaviorDesc.sizeof;
             xkb.server.behaviors[i].type = b.type;
             xkb.server.behaviors[i].data = b.data;
             xkb.server.explicit[i] |= XkbExplicitBehaviorMask;
@@ -845,8 +844,8 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
         xkmVModMapDesc v = void;
 
         for (i = 0; i < totalVModMaps; i++) {
-            tmp = fread(&v, SIZEOF(xkmVModMapDesc), 1, file);
-            nRead += tmp * SIZEOF(xkmVModMapDesc);
+            tmp = fread(&v, xkmVModMapDesc.sizeof, 1, file);
+            nRead += tmp * xkmVModMapDesc.sizeof;
             if (tmp > 0)
                 xkb.server.vmodmap[v.key] = v.vmods;
         }
@@ -863,8 +862,8 @@ private int ReadXkmGeomDoodad(FILE* file, XkbGeometryPtr geom, XkbSectionPtr sec
     int nRead = 0;
 
     nRead += XkmGetCountedString(file, buf.ptr, 100);
-    tmp = fread(&doodadWire, SIZEOF(xkmDoodadDesc), 1, file);
-    nRead += SIZEOF(xkmDoodadDesc) * tmp;
+    tmp = fread(&doodadWire, xkmDoodadDesc.sizeof, 1, file);
+    nRead += xkmDoodadDesc.sizeof * tmp;
     doodad = XkbAddGeomDoodad(geom, section, XkbInternAtom(buf.ptr, FALSE));
     if (!doodad)
         return nRead;
@@ -885,9 +884,9 @@ private int ReadXkmGeomDoodad(FILE* file, XkbGeometryPtr geom, XkbSectionPtr sec
         doodad.text.height = doodadWire.text.height;
         doodad.text.color_ndx = doodadWire.text.color_ndx;
         nRead += XkmGetCountedString(file, buf.ptr, 100);
-        doodad.text.text = Xstrdup(buf.ptr);
+        doodad.text.text = cast(char*)Xstrdup(buf.ptr);
         nRead += XkmGetCountedString(file, buf.ptr, 100);
-        doodad.text.font = Xstrdup(buf.ptr);
+        doodad.text.font = cast(char*)Xstrdup(buf.ptr);
         break;
     case XkbIndicatorDoodad:
         doodad.indicator.shape_ndx = doodadWire.indicator.shape_ndx;
@@ -899,7 +898,7 @@ private int ReadXkmGeomDoodad(FILE* file, XkbGeometryPtr geom, XkbSectionPtr sec
         doodad.logo.color_ndx = doodadWire.logo.color_ndx;
         doodad.logo.shape_ndx = doodadWire.logo.shape_ndx;
         nRead += XkmGetCountedString(file, buf.ptr, 100);
-        doodad.logo.logo_name = Xstrdup(buf.ptr);
+        doodad.logo.logo_name = cast(char*)Xstrdup(buf.ptr);
         break;
     default:
         /* report error? */
@@ -920,8 +919,8 @@ private int ReadXkmGeomOverlay(FILE* file, XkbGeometryPtr geom, XkbSectionPtr se
     int r = void;
 
     nRead += XkmGetCountedString(file, buf.ptr, 100);
-    tmp = fread(&olWire, SIZEOF(xkmOverlayDesc), 1, file);
-    nRead += tmp * SIZEOF(xkmOverlayDesc);
+    tmp = fread(&olWire, xkmOverlayDesc.sizeof, 1, file);
+    nRead += tmp * xkmOverlayDesc.sizeof;
     ol = XkbAddGeomOverlay(section, XkbInternAtom(buf.ptr, FALSE), olWire.num_rows);
     if (!ol)
         return nRead;
@@ -929,16 +928,16 @@ private int ReadXkmGeomOverlay(FILE* file, XkbGeometryPtr geom, XkbSectionPtr se
         int k = void;
         xkmOverlayKeyDesc keyWire = void;
 
-        tmp = fread(&rowWire, SIZEOF(xkmOverlayRowDesc), 1, file);
-        nRead += tmp * SIZEOF(xkmOverlayRowDesc);
+        tmp = fread(&rowWire, xkmOverlayRowDesc.sizeof, 1, file);
+        nRead += tmp * xkmOverlayRowDesc.sizeof;
         row = XkbAddGeomOverlayRow(ol, rowWire.row_under, rowWire.num_keys);
         if (!row) {
             _XkbLibError(_XkbErrBadAlloc, "ReadXkmGeomOverlay", 0);
             return nRead;
         }
         for (k = 0; k < rowWire.num_keys; k++) {
-            tmp = fread(&keyWire, SIZEOF(xkmOverlayKeyDesc), 1, file);
-            nRead += tmp * SIZEOF(xkmOverlayKeyDesc);
+            tmp = fread(&keyWire, xkmOverlayKeyDesc.sizeof, 1, file);
+            nRead += tmp * xkmOverlayKeyDesc.sizeof;
             memcpy(row.keys[k].over.name, keyWire.over, XkbKeyNameLength);
             memcpy(row.keys[k].under.name, keyWire.under, XkbKeyNameLength);
         }
@@ -959,8 +958,8 @@ private int ReadXkmGeomSection(FILE* file, XkbGeometryPtr geom)
 
     nRead += XkmGetCountedString(file, buf.ptr, 100);
     nameAtom = XkbInternAtom(buf.ptr, FALSE);
-    tmp = fread(&sectionWire, SIZEOF(xkmSectionDesc), 1, file);
-    nRead += SIZEOF(xkmSectionDesc) * tmp;
+    tmp = fread(&sectionWire, xkmSectionDesc.sizeof, 1, file);
+    nRead += xkmSectionDesc.sizeof * tmp;
     section = XkbAddGeomSection(geom, nameAtom, sectionWire.num_rows,
                                 sectionWire.num_doodads,
                                 sectionWire.num_overlays);
@@ -982,8 +981,8 @@ private int ReadXkmGeomSection(FILE* file, XkbGeometryPtr geom)
         xkmKeyDesc keyWire = { 0 };
 
         for (i = 0; i < sectionWire.num_rows; i++) {
-            tmp = fread(&rowWire, SIZEOF(xkmRowDesc), 1, file);
-            nRead += SIZEOF(xkmRowDesc) * tmp;
+            tmp = fread(&rowWire, xkmRowDesc.sizeof, 1, file);
+            nRead += xkmRowDesc.sizeof * tmp;
             row = XkbAddGeomRow(section, rowWire.num_keys);
             if (!row) {
                 _XkbLibError(_XkbErrBadAlloc, "ReadXkmKeycodes", 0);
@@ -993,8 +992,8 @@ private int ReadXkmGeomSection(FILE* file, XkbGeometryPtr geom)
             row.left = rowWire.left;
             row.vertical = rowWire.vertical;
             for (k = 0; k < rowWire.num_keys; k++) {
-                tmp = fread(&keyWire, SIZEOF(xkmKeyDesc), 1, file);
-                nRead += SIZEOF(xkmKeyDesc) * tmp;
+                tmp = fread(&keyWire, xkmKeyDesc.sizeof, 1, file);
+                nRead += xkmKeyDesc.sizeof * tmp;
                 key = XkbAddGeomKey(row);
                 if (!key) {
                     _XkbLibError(_XkbErrBadAlloc, "ReadXkmGeomSection", 0);
@@ -1037,8 +1036,8 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
     XkbGeometrySizesRec sizes = { 0 };
 
     nRead += XkmGetCountedString(file, buf.ptr, 100);
-    tmp = fread(&wireGeom, SIZEOF(xkmGeometryDesc), 1, file);
-    nRead += tmp * SIZEOF(xkmGeometryDesc);
+    tmp = fread(&wireGeom, xkmGeometryDesc.sizeof, 1, file);
+    nRead += tmp * xkmGeometryDesc.sizeof;
     sizes.which = XkbGeomAllMask;
     sizes.num_properties = wireGeom.num_properties;
     sizes.num_colors = wireGeom.num_colors;
@@ -1055,7 +1054,7 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
     geom.width_mm = wireGeom.width_mm;
     geom.height_mm = wireGeom.height_mm;
     nRead += XkmGetCountedString(file, buf.ptr, 100);
-    geom.label_font = Xstrdup(buf.ptr);
+    geom.label_font = cast(char*)Xstrdup(buf.ptr);
     if (wireGeom.num_properties > 0) {
         char[1024] val = void;
 
@@ -1091,8 +1090,8 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
 
             nRead += XkmGetCountedString(file, buf.ptr, 100);
             nameAtom = XkbInternAtom(buf.ptr, FALSE);
-            tmp = fread(&shapeWire, SIZEOF(xkmShapeDesc), 1, file);
-            nRead += tmp * SIZEOF(xkmShapeDesc);
+            tmp = fread(&shapeWire, xkmShapeDesc.sizeof, 1, file);
+            nRead += tmp * xkmShapeDesc.sizeof;
             shape = XkbAddGeomShape(geom, nameAtom, shapeWire.num_outlines);
             if (!shape) {
                 _XkbLibError(_XkbErrBadAlloc, "ReadXkmGeometry", 0);
@@ -1102,8 +1101,8 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
                 int p = void;
                 xkmPointDesc ptWire = void;
 
-                tmp = fread(&olWire, SIZEOF(xkmOutlineDesc), 1, file);
-                nRead += tmp * SIZEOF(xkmOutlineDesc);
+                tmp = fread(&olWire, xkmOutlineDesc.sizeof, 1, file);
+                nRead += tmp * xkmOutlineDesc.sizeof;
                 ol = XkbAddGeomOutline(shape, olWire.num_points);
                 if (!ol) {
                     _XkbLibError(_XkbErrBadAlloc, "ReadXkmGeometry", 0);
@@ -1112,8 +1111,8 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
                 ol.num_points = olWire.num_points;
                 ol.corner_radius = olWire.corner_radius;
                 for (p = 0; p < olWire.num_points; p++) {
-                    tmp = fread(&ptWire, SIZEOF(xkmPointDesc), 1, file);
-                    nRead += tmp * SIZEOF(xkmPointDesc);
+                    tmp = fread(&ptWire, xkmPointDesc.sizeof, 1, file);
+                    nRead += tmp * xkmPointDesc.sizeof;
                     ol.points[p].x = ptWire.x;
                     ol.points[p].y = ptWire.y;
                     if (ptWire.x < shape.bounds.x1)
@@ -1126,11 +1125,9 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
                         shape.bounds.y2 = ptWire.y;
                 }
             }
-            if (shapeWire.primary_ndx != XkbNoShape &&
-                shapeWire.primary_ndx < shapeWire.num_outlines)
+            if (shapeWire.primary_ndx != XkbNoShape)
                 shape.primary = &shape.outlines[shapeWire.primary_ndx];
-            if (shapeWire.approx_ndx != XkbNoShape &&
-                shapeWire.approx_ndx < shapeWire.num_outlines)
+            if (shapeWire.approx_ndx != XkbNoShape)
                 shape.approx = &shape.outlines[shapeWire.approx_ndx];
         }
     }
@@ -1181,7 +1178,7 @@ private Bool XkmReadTOC(FILE* file, xkmFileInfo* file_info, int max_toc, xkmSect
         }
         return 0;
     }
-    if (fread(file_info, SIZEOF(xkmFileInfo), 1, file) != 1)
+    if (fread(file_info, xkmFileInfo.sizeof, 1, file) != 1)
         return 0;
     size_toc = file_info.num_toc;
     if (size_toc > max_toc) {
@@ -1190,7 +1187,7 @@ private Bool XkmReadTOC(FILE* file, xkmFileInfo* file_info, int max_toc, xkmSect
         size_toc = max_toc;
     }
     for (i = 0; i < size_toc; i++) {
-        if (fread(&toc[i], SIZEOF(xkmSectionInfo), 1, file) != 1)
+        if (fread(&toc[i], xkmSectionInfo.sizeof, 1, file) != 1)
             return 0;
     }
     return 1;
@@ -1218,8 +1215,8 @@ uint XkmReadFile(FILE* file, uint need, uint want, XkbDescPtr* xkb)
         *xkb = XkbAllocKeyboard();
     for (i = 0; i < fileInfo.num_toc; i++) {
         fseek(file, toc[i].offset, SEEK_SET);
-        tmp = fread(&tmpTOC, SIZEOF(xkmSectionInfo), 1, file);
-        nRead = tmp * SIZEOF(xkmSectionInfo);
+        tmp = fread(&tmpTOC, xkmSectionInfo.sizeof, 1, file);
+        nRead = tmp * xkmSectionInfo.sizeof;
         if ((tmpTOC.type != toc[i].type) || (tmpTOC.format != toc[i].format) ||
             (tmpTOC.size != toc[i].size) || (tmpTOC.offset != toc[i].offset)) {
             return which;

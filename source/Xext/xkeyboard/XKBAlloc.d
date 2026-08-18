@@ -1,4 +1,4 @@
-module XKBAlloc.c;
+module xkb.XKBAlloc;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,22 +27,28 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix_config;
+import build.dix_config;
 
-// import core.stdc.stdio;
-// import X11/X;
-// import X11/Xproto;
-// import core.stdc.string;
+import core.stdc.stdio;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+import core.stdc.string;
 
-// import include.misc;
+import xkb.xkbsrv_priv;
 
-// import xkbsrv_priv;
+import include.misc;
+import include.inputstr;
+import xkb.xkbgeom_priv;
+import include.os;
+import include.xkbstr;
 
-// import inputstr;
-// import xkbgeom_priv;
-// import os;
+import xkb.xkbsrv_priv;
+import include.xkbstr;
+// import include.xkbstr;
+import externs.X11.extensions.XKB;
+// import externs.X11.extensions.XKBgeom;
+import xkb.XKBGAlloc;
 
-// import xkbsrv_priv;
 
 /***===================================================================***/
 
@@ -57,11 +63,11 @@ import dix_config;
         if (xkb.compat.size_si >= nSI)
             return Success;
         compat = xkb.compat;
-        compat.size_si = nSI;
+        compat.size_si = cast(ushort)nSI;
         if (compat.sym_interpret == null)
             compat.num_si = 0;
         prev_interpret = compat.sym_interpret;
-        compat.sym_interpret = reallocarray(compat.sym_interpret,
+        compat.sym_interpret = cast(_XkbSymInterpretRec*)reallocarray(compat.sym_interpret,
                                              nSI, XkbSymInterpretRec.sizeof);
         if (compat.sym_interpret == null) {
             free(prev_interpret);
@@ -75,17 +81,17 @@ import dix_config;
         }
         return Success;
     }
-    compat = calloc(1, XkbCompatMapRec.sizeof);
+    compat = cast(XkbCompatMapRec*) calloc(1, XkbCompatMapRec.sizeof);
     if (compat == null)
         return BadAlloc;
     if (nSI > 0) {
-        compat.sym_interpret = calloc(nSI, XkbSymInterpretRec.sizeof);
+        compat.sym_interpret = cast(_XkbSymInterpretRec*)calloc(nSI, XkbSymInterpretRec.sizeof);
         if (!compat.sym_interpret) {
             free(compat);
             return BadAlloc;
         }
     }
-    compat.size_si = nSI;
+    compat.size_si = cast(ushort)nSI;
     compat.num_si = 0;
     memset(cast(char*) &compat.groups[0], 0,
            XkbNumKbdGroups * XkbModsRec.sizeof);
@@ -127,7 +133,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
     if (xkb == null)
         return BadMatch;
     if (xkb.names == null) {
-        xkb.names = calloc(1, XkbNamesRec.sizeof);
+        xkb.names = cast(XkbNamesRec*) calloc(1, XkbNamesRec.sizeof);
         if (xkb.names == null)
             return BadAlloc;
     }
@@ -140,7 +146,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
         type = xkb.map.types;
         for (i = 0; i < xkb.map.num_types; i++, type++) {
             if (type.level_names == null) {
-                type.level_names = calloc(type.num_levels, Atom.sizeof);
+                type.level_names = cast(ulong*)cast(ulong*)calloc(type.num_levels, Atom.sizeof);
                 if (type.level_names == null)
                     return BadAlloc;
             }
@@ -151,18 +157,18 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
             (!XkbIsLegalKeycode(xkb.max_key_code)) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadValue;
-        names.keys = calloc((xkb.max_key_code + 1), XkbKeyNameRec.sizeof);
+        names.keys = cast(_XkbKeyNameRec*)calloc((xkb.max_key_code + 1), XkbKeyNameRec.sizeof);
         if (names.keys == null)
             return BadAlloc;
     }
     if ((which & XkbKeyAliasesMask) && (nTotalAliases > 0)) {
         if (names.key_aliases == null) {
-            names.key_aliases = calloc(nTotalAliases, XkbKeyAliasRec.sizeof);
+            names.key_aliases = cast(_XkbKeyAliasRec*)calloc(nTotalAliases, XkbKeyAliasRec.sizeof);
         }
         else if (nTotalAliases > names.num_key_aliases) {
             XkbKeyAliasRec* prev_aliases = names.key_aliases;
 
-            names.key_aliases = reallocarray(names.key_aliases,
+            names.key_aliases = cast(_XkbKeyAliasRec*)reallocarray(names.key_aliases,
                                               nTotalAliases,
                                               XkbKeyAliasRec.sizeof);
             if (names.key_aliases != null) {
@@ -175,19 +181,19 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
             }
         }
         if (names.key_aliases == null) {
-            names.num_key_aliases = 0;
+            names.num_key_aliases = cast(ubyte)0;
             return BadAlloc;
         }
-        names.num_key_aliases = nTotalAliases;
+        names.num_key_aliases = cast(ubyte)nTotalAliases;
     }
     if ((which & XkbRGNamesMask) && (nTotalRG > 0)) {
         if (names.radio_groups == null) {
-            names.radio_groups = calloc(nTotalRG, Atom.sizeof);
+            names.radio_groups = cast(ulong*)calloc(nTotalRG, Atom.sizeof);
         }
         else if (nTotalRG > names.num_rg) {
             Atom* prev_radio_groups = names.radio_groups;
 
-            names.radio_groups = reallocarray(names.radio_groups,
+            names.radio_groups = cast(ulong*)reallocarray(names.radio_groups,
                                                nTotalRG, Atom.sizeof);
             if (names.radio_groups != null) {
                 memset(&names.radio_groups[names.num_rg], 0,
@@ -198,10 +204,10 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
             }
         }
         if (names.radio_groups == null) {
-            names.num_rg = 0;
+            names.num_rg = cast(ushort)0;
             return BadAlloc;
         }
-        names.num_rg = nTotalRG;
+        names.num_rg = cast(ushort)nTotalRG;
     }
     return Success;
 }
@@ -225,7 +231,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
             type = map.types;
             for (i = 0; i < map.num_types; i++, type++) {
                 free(type.level_names);
-                type.level_names = null;
+                type.level_names = cast(ulong*)null;
             }
         }
     }
@@ -237,12 +243,12 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
     if ((which & XkbKeyAliasesMask) && (names.key_aliases)) {
         free(names.key_aliases);
         names.key_aliases = null;
-        names.num_key_aliases = 0;
+        names.num_key_aliases = cast(ubyte)0;
     }
     if ((which & XkbRGNamesMask) && (names.radio_groups)) {
         free(names.radio_groups);
         names.radio_groups = null;
-        names.num_rg = 0;
+        names.num_rg = cast(ushort)0;
     }
     if (freeMap) {
         free(names);
@@ -259,7 +265,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
         return BadMatch;
 
     if (xkb.ctrls == null) {
-        xkb.ctrls = calloc(1, XkbControlsRec.sizeof);
+        xkb.ctrls = cast(XkbControlsRec*) calloc(1, XkbControlsRec.sizeof);
         if (!xkb.ctrls)
             return BadAlloc;
     }
@@ -282,7 +288,7 @@ int XkbAllocIndicatorMaps(XkbDescPtr xkb)
     if (xkb == null)
         return BadMatch;
     if (xkb.indicators == null) {
-        xkb.indicators = calloc(1, XkbIndicatorRec.sizeof);
+        xkb.indicators = cast(XkbIndicatorRec*) calloc(1, XkbIndicatorRec.sizeof);
         if (!xkb.indicators)
             return BadAlloc;
     }
@@ -304,7 +310,7 @@ XkbDescRec* XkbAllocKeyboard()
 {
     XkbDescRec* xkb = void;
 
-    xkb = cast(XkbDescRec*) calloc(1, XkbDescRec.sizeof);
+    xkb = cast(XkbDescRec*) cast(XkbDescRec*) calloc(1, XkbDescRec.sizeof);
     if (xkb)
         xkb.device_spec = XkbUseCoreKbd;
     return xkb;

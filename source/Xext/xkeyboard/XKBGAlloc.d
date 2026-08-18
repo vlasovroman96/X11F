@@ -1,4 +1,4 @@
-module XKBGAlloc.c;
+module xkb.XKBGAlloc;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,18 +27,22 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-
+import core.stdc.string;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 import include.misc;
+import include.inputstr;
+import include.xkbsrv;
+import xkb.xkbgeom_priv;
+import include.xkbstr;
+// import externs.X11.extensions.XKBgeom;
+import externs.X11.extensions.XKB;
 
-import inputstr;
-import xkbsrv;
-import xkbgeom_priv;
+import externs.gnu;
+
 
 /***====================================================================***/
 
@@ -56,7 +60,7 @@ private void _XkbFreeGeomLeafElems(Bool freeAll, int first, int count, ushort* n
 
     if (first + count >= (*num_inout)) {
         /* truncating the array is easy */
-        (*num_inout) = first;
+        (*num_inout) = cast(ushort)first;
     }
     else {
         char* ptr = void;
@@ -104,7 +108,7 @@ private void _XkbFreeGeomNonLeafElems(Bool freeAll, int first, int count, ushort
         *elems = null;
     }
     else if (first + count >= (*num_inout))
-        *num_inout = first;
+        *num_inout = cast(ushort)first;
     else {
         i = ((*num_inout) - (first + count)) * elem_sz;
         ptr = *elems;
@@ -368,7 +372,7 @@ Bool XkbGeomRealloc(void** buffer, int szItems, int nrItems, int itemSize, XkbGe
         return FALSE;
     /* Check if there is need to resize. */
     if (nrItems != szItems)
-        if (((items = reallocarray(items, nrItems, itemSize)) == 0))
+        if (((items = reallocarray(items, nrItems, itemSize)) is null))
             return FALSE;
     /* Clear specified items to zero. */
     switch (clearance) {
@@ -390,7 +394,7 @@ Bool XkbGeomRealloc(void** buffer, int szItems, int nrItems, int itemSize, XkbGe
     return TRUE;
 }
 
-private int _XkbGeomAlloc(void** old, ushort* num, ushort* total, int num_new, size_t sz_elem)
+private Status _XkbGeomAlloc(void** old, ushort* num, ushort* total, int num_new, size_t sz_elem)
 {
     if (num_new < 1)
         return Success;
@@ -400,9 +404,9 @@ private int _XkbGeomAlloc(void** old, ushort* num, ushort* total, int num_new, s
     if ((*num) + num_new <= (*total))
         return Success;
 
-    *total = (*num) + num_new;
+    *total = cast(ushort)((*num) + num_new);
 
-    if (!XkbGeomRealloc(old, *num, *total, sz_elem, XKB_GEOM_CLEAR_EXCESS)) {
+    if (!XkbGeomRealloc(old, *num, *total, cast(uint)sz_elem, XKB_GEOM_CLEAR_EXCESS)) {
         free(*old);
         (*old) = null;
         *total = *num = 0;
@@ -412,54 +416,54 @@ private int _XkbGeomAlloc(void** old, ushort* num, ushort* total, int num_new, s
     return Success;
 }
 
-enum string	_XkbAllocProps(string g,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ g ~ `).properties,
+enum string	_XkbAllocProps(string g,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ g ~ `).properties,
 				&(` ~ g ~ `).num_properties,&(` ~ g ~ `).sz_properties,
 				(` ~ n ~ `),XkbPropertyRec.sizeof)`;
-enum string	_XkbAllocColors(string g,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ g ~ `).colors,
+enum string	_XkbAllocColors(string g,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ g ~ `).colors,
 				&(` ~ g ~ `).num_colors,&(` ~ g ~ `).sz_colors,
 				(` ~ n ~ `),XkbColorRec.sizeof)`;
-enum string	_XkbAllocShapes(string g,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ g ~ `).shapes,
+enum string	_XkbAllocShapes(string g,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ g ~ `).shapes,
 				&(` ~ g ~ `).num_shapes,&(` ~ g ~ `).sz_shapes,
 				(` ~ n ~ `),XkbShapeRec.sizeof)`;
-enum string	_XkbAllocSections(string g,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ g ~ `).sections,
+enum string	_XkbAllocSections(string g,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ g ~ `).sections,
 				&(` ~ g ~ `).num_sections,&(` ~ g ~ `).sz_sections,
 				(` ~ n ~ `),XkbSectionRec.sizeof)`;
-enum string	_XkbAllocDoodads(string g,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ g ~ `).doodads,
+enum string	_XkbAllocDoodads(string g,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ g ~ `).doodads,
 				&(` ~ g ~ `).num_doodads,&(` ~ g ~ `).sz_doodads,
 				(` ~ n ~ `),XkbDoodadRec.sizeof)`;
-enum string	_XkbAllocKeyAliases(string g,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ g ~ `).key_aliases,
+enum string	_XkbAllocKeyAliases(string g,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ g ~ `).key_aliases,
 				&(` ~ g ~ `).num_key_aliases,&(` ~ g ~ `).sz_key_aliases,
 				(` ~ n ~ `),XkbKeyAliasRec.sizeof)`;
 
-enum string	_XkbAllocOutlines(string s,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ s ~ `).outlines,
+enum string	_XkbAllocOutlines(string s,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ s ~ `).outlines,
 				&(` ~ s ~ `).num_outlines,&(` ~ s ~ `).sz_outlines,
 				(` ~ n ~ `),XkbOutlineRec.sizeof)`;
-enum string	_XkbAllocRows(string s,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ s ~ `).rows,
+enum string	_XkbAllocRows(string s,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ s ~ `).rows,
 				&(` ~ s ~ `).num_rows,&(` ~ s ~ `).sz_rows,
 				(` ~ n ~ `),XkbRowRec.sizeof)`;
-enum string	_XkbAllocPoints(string o,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ o ~ `).points,
+enum string	_XkbAllocPoints(string o,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ o ~ `).points,
 				&(` ~ o ~ `).num_points,&(` ~ o ~ `).sz_points,
 				(` ~ n ~ `),XkbPointRec.sizeof)`;
-enum string	_XkbAllocKeys(string r,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ r ~ `).keys,
+enum string	_XkbAllocKeys(string r,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ r ~ `).keys,
 				&(` ~ r ~ `).num_keys,&(` ~ r ~ `).sz_keys,
 				(` ~ n ~ `),XkbKeyRec.sizeof)`;
-enum string	_XkbAllocOverlays(string s,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ s ~ `).overlays,
+enum string	_XkbAllocOverlays(string s,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ s ~ `).overlays,
 				&(` ~ s ~ `).num_overlays,&(` ~ s ~ `).sz_overlays,
 				(` ~ n ~ `),XkbOverlayRec.sizeof)`;
-enum string	_XkbAllocOverlayRows(string o,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ o ~ `).rows,
+enum string	_XkbAllocOverlayRows(string o,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ o ~ `).rows,
 				&(` ~ o ~ `).num_rows,&(` ~ o ~ `).sz_rows,
 				(` ~ n ~ `),XkbOverlayRowRec.sizeof)`;
-enum string	_XkbAllocOverlayKeys(string r,string n) = `_XkbGeomAlloc(cast(void*)&(` ~ r ~ `).keys,
+enum string	_XkbAllocOverlayKeys(string r,string n) = `_XkbGeomAlloc(cast(void**)&(` ~ r ~ `).keys,
 				&(` ~ r ~ `).num_keys,&(` ~ r ~ `).sz_keys,
 				(` ~ n ~ `),XkbOverlayKeyRec.sizeof)`;
 
-int XkbAllocGeometry(XkbDescPtr xkb, XkbGeometrySizesPtr sizes)
+Status XkbAllocGeometry(XkbDescPtr xkb, XkbGeometrySizesPtr sizes)
 {
     XkbGeometryPtr geom = void;
-    int rtrn = void;
+    Status rtrn = void;
 
     if (xkb.geom == null) {
-        xkb.geom = calloc(1, XkbGeometryRec.sizeof);
+        xkb.geom = cast(XkbGeometryRec*) calloc(1, XkbGeometryRec.sizeof);
         if (!xkb.geom)
             return BadAlloc;
     }
@@ -508,7 +512,7 @@ XkbPropertyPtr XkbAddGeomProperty(XkbGeometryPtr geom, char* name, char* value)
     for (i = 0, prop = geom.properties; i < geom.num_properties; i++, prop++) {
         if ((prop.name) && (strcmp(name, prop.name) == 0)) {
             free(prop.value);
-            if (((prop.value = strdup(value)) == 0))
+            if (((prop.value = strdup(value)) is null))
                 return null;
             return prop;
         }
@@ -540,9 +544,9 @@ XkbKeyAliasPtr XkbAddGeomKeyAlias(XkbGeometryPtr geom, char* aliasStr, char* rea
         return null;
     for (i = 0, alias_ = geom.key_aliases; i < geom.num_key_aliases;
          i++, alias_++) {
-        if (strncmp(alias_.alias_, aliasStr, XkbKeyNameLength) == 0) {
-            memset(alias_.real_, 0, XkbKeyNameLength);
-            memcpy(alias_.real_, realStr, strnlen(realStr, XkbKeyNameLength));
+        if (strncmp(alias_.alias_.ptr, aliasStr, XkbKeyNameLength) == 0) {
+            memset(alias_.real_.ptr, 0, XkbKeyNameLength);
+            memcpy(alias_.real_.ptr, realStr, strnlen(realStr, XkbKeyNameLength));
             return alias_;
         }
     }
@@ -552,8 +556,8 @@ XkbKeyAliasPtr XkbAddGeomKeyAlias(XkbGeometryPtr geom, char* aliasStr, char* rea
     }
     alias_ = &geom.key_aliases[geom.num_key_aliases];
     memset(alias_, 0, XkbKeyAliasRec.sizeof);
-    memcpy(alias_.alias_, aliasStr, strnlen(aliasStr, XkbKeyNameLength));
-    memcpy(alias_.real_, realStr, strnlen(realStr, XkbKeyNameLength));
+    memcpy(alias_.alias_.ptr, aliasStr, strnlen(aliasStr, XkbKeyNameLength));
+    memcpy(alias_.real_.ptr, realStr, strnlen(realStr, XkbKeyNameLength));
     geom.num_key_aliases++;
     return alias_;
 }
@@ -738,7 +742,7 @@ XkbOverlayKeyPtr XkbAddGeomOverlayKey(XkbOverlayPtr overlay, XkbOverlayRowPtr ro
     XkbOverlayKeyPtr key = void;
     XkbSectionPtr section = void;
     XkbRowPtr row_under = void;
-    bool found = void;
+    Bool found = void;
 
     if ((!overlay) || (!row) || (!over) || (!under))
         return null;
@@ -747,7 +751,7 @@ XkbOverlayKeyPtr XkbAddGeomOverlayKey(XkbOverlayPtr overlay, XkbOverlayRowPtr ro
         return null;
     row_under = &section.rows[row.row_under];
     for (i = 0, found = FALSE; i < row_under.num_keys; i++) {
-        if (strncmp(under, row_under.keys[i].name.name, XkbKeyNameLength) == 0) {
+        if (strncmp(under, row_under.keys[i].name.name.ptr, XkbKeyNameLength) == 0) {
             found = TRUE;
             break;
         }
@@ -758,8 +762,8 @@ XkbOverlayKeyPtr XkbAddGeomOverlayKey(XkbOverlayPtr overlay, XkbOverlayRowPtr ro
         (mixin(_XkbAllocOverlayKeys!(`row`, `1`)) != Success))
         return null;
     key = &row.keys[row.num_keys];
-    memcpy(key.under.name, under, strnlen(under, XkbKeyNameLength));
-    memcpy(key.over.name, over, strnlen(over, XkbKeyNameLength));
+    memcpy(key.under.name.ptr, under, strnlen(under, XkbKeyNameLength));
+    memcpy(key.over.name.ptr, over, strnlen(over, XkbKeyNameLength));
     row.num_keys++;
     return key;
 }
@@ -790,7 +794,7 @@ XkbOverlayRowPtr XkbAddGeomOverlayRow(XkbOverlayPtr overlay, int row_under, int 
     memset(row, 0, XkbOverlayRowRec.sizeof);
     if ((sz_keys > 0) && (mixin(_XkbAllocOverlayKeys!(`row`, `sz_keys`)) != Success))
         return null;
-    row.row_under = row_under;
+    row.row_under = cast(ushort)row_under;
     overlay.num_rows++;
     return row;
 }

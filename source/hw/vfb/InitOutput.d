@@ -687,8 +687,8 @@ version (CONFIG_MITSHM) {
 
     /* add extra bytes for XWDFileHeader, window name, and colormap */
 
-    pvfb.sizeInBytes += SIZEOF(XWDheader) + XWD_WINDOW_NAME_LEN +
-        pvfb.ncolors * SIZEOF(XWDColor);
+    pvfb.sizeInBytes += XWDheader.sizeof + XWD_WINDOW_NAME_LEN +
+        pvfb.ncolors * XWDColor.sizeof;
 
     pvfb.pXWDHeader = null;
     switch (fbmemtype) {
@@ -717,7 +717,7 @@ version (CONFIG_MITSHM) {
 
     if (pvfb.pXWDHeader) {
         pvfb.pXWDCmap = cast(XWDColor*) (cast(char*) pvfb.pXWDHeader
-                                       + SIZEOF(XWDheader) +
+                                       + XWDheader.sizeof +
                                        XWD_WINDOW_NAME_LEN);
         pvfb.pfbMemory = cast(char*) (pvfb.pXWDCmap + pvfb.ncolors);
 
@@ -780,7 +780,7 @@ version (INTERNAL_VS_EXTERNAL_PADDING) {} else {
     /* byte swap to most significant byte first */
 
     if (needswap) {
-        SwapLongs(cast(CARD32*) pXWDHeader, SIZEOF(XWDheader) / 4);
+        SwapLongs(cast(CARD32*) pXWDHeader, XWDheader.sizeof / 4);
         for (i = 0; i < pvfb.ncolors; i++) {
             swapl(&pvfb.pXWDCmap[i].pixel);
         }

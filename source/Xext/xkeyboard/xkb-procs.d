@@ -1,6 +1,9 @@
-#ifndef _XKB_H
-#define _XKB_H
+module xkb.xkb_procs;
+@nogc nothrow:
+extern(C): __gshared:
 
+import include.xlibre_ptrtypes;
+ 
 extern int ProcXkbUseExtension(ClientPtr client);
 extern int ProcXkbSelectEvents(ClientPtr client);
 extern int ProcXkbBell(ClientPtr client);
@@ -28,4 +31,4 @@ extern int ProcXkbGetDeviceInfo(ClientPtr client);
 extern int ProcXkbSetDeviceInfo(ClientPtr client);
 extern int ProcXkbSetDebuggingFlags(ClientPtr client);
 
-#endif
+

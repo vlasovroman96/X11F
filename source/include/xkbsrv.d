@@ -40,6 +40,8 @@ public import include.inputstr;
 // public import include.events;
 import externs.X11.extensions.XKB;
 import include.input;
+import include.xkbstr;
+
 struct _XkbInterest {
     DeviceIntPtr dev;
     ClientPtr client;
@@ -86,7 +88,7 @@ struct _XkbFilter {
     CARD8 filterOthers;
     CARD32 priv;
     XkbAction upAction;
-    int function(_XkbSrvInfo*, _XkbFilter*, uint, XkbAction*) filter;
+    int function(_XkbSrvInfo*, _XkbFilter*, uint, XkbAction*) @nogc nothrow filter;
     _XkbFilter* next;
 }alias XkbFilterRec = _XkbFilter;
 alias XkbFilterPtr = _XkbFilter*;

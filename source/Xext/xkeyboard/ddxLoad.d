@@ -1,4 +1,4 @@
-module ddxLoad.c;
+module xkb.ddxLoad;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,32 +27,38 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
-import xkb-config;
+import config.xkb_config;
 
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import core.stdc.ctype;
-import X11/X;
-import X11/Xos;
-import X11/Xproto;
-import X11/keysym;
-import X11/extensions/XI;
-import X11/extensions/XKM;
+import core.sys.posix.unistd;
+
+//import externs.X11.X;
+// //import externs.X11.Xos;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+//import externs.X11.extensions.XI;
+import externs.X11.extensions.XKM;
 
 import dix.dix_priv;
 import os.log_priv;
 import os.osdep;
-import xkbfile_priv;
-import xkbfmisc_priv;
-import xkbrules_priv;
-import xkbsrv_priv;
+import xkb.xkbfile_priv;
+import xkb.xkbfmisc_priv;
+import xkb.xkbrules_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import scrnintstr;
-import windowstr;
+import include.inputstr;
+import include.scrnintstr;
+import include.windowstr;
+import include.xkbstr;
+import externs.gnu;
+import os.log;
+import xkb.maprules;
+
 
 enum	PRE_ERROR_MSG = "\"The XKEYBOARD keymap compiler (xkbcomp) reports:\"";
 enum	ERROR_PREFIX =	"\"> \"";
@@ -147,8 +153,8 @@ version (Windows) {
     }
 
     if (XkbBinDirectory != null) {
-        int ld = strlen(XkbBinDirectory);
-        int lps = strlen(PATHSEPARATOR);
+        int ld = cast(int)strlen(XkbBinDirectory);
+        int lps = cast(int)strlen(PATHSEPARATOR);
 
         xkbbindir = XkbBinDirectory;
 
@@ -163,8 +169,8 @@ version (Windows) {
                  xkbbindir, xkbbindirsep,
                  ((xkbDebugFlags < 2) ? 1 :
                   ((xkbDebugFlags > 10) ? 10 : cast(int) xkbDebugFlags)),
-                 xkbbasedirflag ? xkbbasedirflag : "", xkmfile,
-                 PRE_ERROR_MSG, ERROR_PREFIX, POST_ERROR_MSG1,
+                 xkbbasedirflag ? xkbbasedirflag : "".ptr, xkmfile,
+                 PRE_ERROR_MSG.ptr, ERROR_PREFIX.ptr, POST_ERROR_MSG1.ptr,
                  xkm_output_dir.ptr, keymap.ptr) == -1)
         buf = null;
 
@@ -177,7 +183,7 @@ version (Windows) {
     }
 
 version (Windows) {} else {
-    out_ = Popen(buf, "w");
+    out_ = cast(FILE*)Popen(cast(char*)buf, "w");
 } version (Windows) {
     out_ = fopen(tmpname.ptr, "w");
 }
@@ -186,11 +192,14 @@ version (Windows) {} else {
         /* Now write to xkbcomp */
         (*callback)(out_, userdata);
 
-version (Windows) {} else {
-        if (Pclose(out_) == 0)
-#else
-        if (fclose(out_) == 0 && system(buf) >= 0)
-#endif
+        int cls;
+
+version (Windows) {
+        cls = Pclose(out_);
+
+} else {
+    cls = fclose(out_) == 0 && system(buf) >= 0;
+        if (cls)
         {
             if (xkbDebugFlags)
                 DebugF("[xkb] xkb executes: %s\n", buf);
@@ -229,7 +238,7 @@ struct XkbKeymapNamesCtx {
 
 private void xkb_write_keymap_for_names_cb(FILE* out_, void* userdata)
 {
-    XkbKeymapNamesCtx* ctx = userdata;
+    XkbKeymapNamesCtx* ctx = cast(XkbKeymapNamesCtx*)userdata;
 version (DEBUG) {
     if (xkbDebugFlags) {
         ErrorF("[xkb] XkbDDXCompileKeymapByNames compiling keymap:\n");
@@ -242,7 +251,7 @@ version (DEBUG) {
 private Bool XkbDDXCompileKeymapByNames(XkbDescPtr xkb, XkbComponentNamesPtr names, uint want, uint need, char* nameRtrn, int nameRtrnLen)
 {
     char* keymap = void;
-    bool rc = FALSE;
+    Bool rc = FALSE;
     XkbKeymapNamesCtx ctx = {
         xkb: xkb,
         names: names,
@@ -271,7 +280,7 @@ struct XkbKeymapString {
 
 private void xkb_write_keymap_string_cb(FILE* out_, void* userdata)
 {
-    XkbKeymapString* s = userdata;
+    XkbKeymapString* s = cast(XkbKeymapString*)userdata;
     fwrite(s.keymap, s.len, 1, out_);
 }
 
@@ -304,14 +313,15 @@ private FILE* XkbDDXOpenConfigFile(const(char)* mapName, char* fileNameRtrn, int
     char[PATH_MAX] xkm_output_dir = 0;
     FILE* file = void;
 
+
     buf[0] = '\0';
     if (mapName != null) {
         OutputDirectory(xkm_output_dir.ptr, xkm_output_dir.sizeof);
-        if ((XkbBaseDirectory != null) && (xkm_output_dir[0] != '/')
-#ifdef WIN32
-            && (!isalpha(xkm_output_dir[0]) || xkm_output_dir[1] != ':')
-#endif
-            ) {
+            bool cond = (XkbBaseDirectory != null) && (xkm_output_dir[0] != '/');
+version(WIN32) {
+            cond = cond && (!isalpha(xkm_output_dir[0]) || xkm_output_dir[1] != ':');
+}
+        if (cond) {
             if (snprintf(buf.ptr, PATH_MAX, "%s/%s%s.xkm", XkbBaseDirectory,
                          xkm_output_dir.ptr, mapName) >= PATH_MAX)
                 buf[0] = '\0';
@@ -392,7 +402,7 @@ Bool XkbDDXNamesFromRules(DeviceIntPtr keybd, const(char)* rules_name, XkbRF_Var
 {
     char[PATH_MAX] buf = 0;
     FILE* file = void;
-    bool complete = void;
+    Bool complete = void;
     XkbRF_RulesPtr rules = void;
 
     if (!rules_name)
@@ -456,7 +466,7 @@ private XkbDescPtr XkbCompileKeymapForDevice(DeviceIntPtr dev, XkbRMLVOSet* rmlv
 {
     XkbDescPtr xkb = null;
     uint provided = void;
-    XkbComponentNamesRec kccgst = { 0 };
+    XkbComponentNamesRec kccgst = { null };
     char[PATH_MAX] name = 0;
 
     if (XkbRMLVOtoKcCGST(dev, rmlvo, &kccgst)) {

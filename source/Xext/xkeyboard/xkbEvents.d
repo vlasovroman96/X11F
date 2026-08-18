@@ -1,4 +1,4 @@
-module xkbEvents.c;
+module xkb.xkbEvents;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,25 +28,42 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
-import X11/extensions/XI;
-import X11/extensions/XIproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+//import externs.X11.extensions.XI;
+// //import externs.X11.extensions.XIproto;
 
 import dix.dix_priv;
 import dix.exevents_priv;
 import dix.input_priv;
 import os.log_priv;
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import Xext.xinput.exglobals;
-import windowstr;
+import include.inputstr;
+import Xi.exglobals;
+import include.windowstr;
+import externs.X11.extensions.XKBproto;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+import include.misc;
+import include.inputstr;
+import include.exevents;
+import include.eventstr;
+import mi.mipointer;
+import include.xkbstr;
+import os.WaitFor;
+import include.xkbstr;
+import os.log;
+import os.utils;
+import dix.events;
+import externs.gnu;
+import dix.devices;
+import dix.inpututils;
+
 
 /***====================================================================***/
 
@@ -104,29 +121,29 @@ private void XkbSendLegacyMapNotify(DeviceIntPtr kbd, CARD16 xkb_event, CARD16 c
             continue;
 
         if (keymap_changed) {
-            xEvent core_mn = { u:u:type: MappingNotify };
+            xEvent core_mn;
+            core_mn.u.u.type = MappingNotify ;
             core_mn.u.mappingNotify.request = MappingKeyboard;
 
             /* Clip the keycode range to what the client knows about, so it
              * doesn't freak out. */
             if (first_key >= clients[i].minKC)
-                core_mn.u.mappingNotify.firstKeyCode = first_key;
+                core_mn.u.mappingNotify.firstKeyCode = cast(ubyte)first_key;
             else
                 core_mn.u.mappingNotify.firstKeyCode = clients[i].minKC;
             if (first_key + num_keys - 1 <= clients[i].maxKC)
-                core_mn.u.mappingNotify.count = num_keys;
+                core_mn.u.mappingNotify.count = cast(ubyte)num_keys;
             else
-                core_mn.u.mappingNotify.count = clients[i].maxKC -
-                    clients[i].minKC + 1;
+                core_mn.u.mappingNotify.count = cast(ubyte)(clients[i].maxKC -
+                    clients[i].minKC + 1);
 
             WriteEventsToClient(clients[i], 1, &core_mn);
         }
         if (modmap_changed) {
-            xEvent core_mn = {
-                u:mappingNotify:request: MappingModifier,
-                u:mappingNotify:firstKeyCode: 0,
-                u:mappingNotify:count: 0
-            };
+            xEvent core_mn;
+                core_mn.u.mappingNotify.request = MappingModifier;
+                core_mn.u.mappingNotify.firstKeyCode = 0;
+                core_mn.u.mappingNotify.count = 0;
             core_mn.u.u.type = MappingNotify;
             WriteEventsToClient(clients[i], 1, &core_mn);
         }
@@ -137,11 +154,11 @@ private void XkbSendLegacyMapNotify(DeviceIntPtr kbd, CARD16 xkb_event, CARD16 c
      * alternative of stale keymaps. -ds */
     if (keymap_changed) {
         deviceMappingNotify xi_mn = {
-            type: DeviceMappingNotify,
-            deviceid: kbd.id,
+            type: cast(ubyte)DeviceMappingNotify,
+            deviceid: cast(ubyte)cast(ubyte)kbd.id,
             request: MappingKeyboard,
-            firstKeyCode: first_key,
-            count: num_keys,
+            firstKeyCode:cast(ubyte) first_key,
+            count: cast(ubyte)num_keys,
             time: time
         };
         SendEventToAllWindows(kbd, DeviceMappingNotifyMask, cast(xEvent*) &xi_mn,
@@ -149,8 +166,8 @@ private void XkbSendLegacyMapNotify(DeviceIntPtr kbd, CARD16 xkb_event, CARD16 c
     }
     if (modmap_changed) {
         deviceMappingNotify xi_mn = {
-            type: DeviceMappingNotify,
-            deviceid: kbd.id,
+            type: cast(ubyte)DeviceMappingNotify,
+            deviceid: cast(ubyte)cast(ubyte)kbd.id,
             request: MappingModifier,
             firstKeyCode: 0,
             count: 0,
@@ -167,9 +184,9 @@ void XkbSendNewKeyboardNotify(DeviceIntPtr kbd, xkbNewKeyboardNotify* pNKN)
 {
     int i = void;
     Time time = GetTimeInMillis();
-    CARD16 changed = pNKN.changed;
+    CARD16 changed = cast(ushort)pNKN.changed;
 
-    pNKN.type = XkbEventCode + XkbEventBase;
+    pNKN.type = cast(ubyte)(cast(ubyte)(XkbEventCode + XkbEventBase));
     pNKN.xkbType = XkbNewKeyboardNotify;
 
     for (i = 1; i < currentMaxClients; i++) {
@@ -179,7 +196,7 @@ void XkbSendNewKeyboardNotify(DeviceIntPtr kbd, xkbNewKeyboardNotify* pNKN)
         if (!(clients[i].newKeyboardNotifyMask & changed))
             continue;
 
-        pNKN.time = time;
+        pNKN.time = cast(uint)time;
         pNKN.changed = changed;
         if (clients[i].swapped) {
             swapl(&pNKN.time);
@@ -204,7 +221,7 @@ void XkbSendNewKeyboardNotify(DeviceIntPtr kbd, xkbNewKeyboardNotify* pNKN)
 void XkbSendStateNotify(DeviceIntPtr kbd, xkbStateNotify* pSN)
 {
     XkbSrvInfoPtr xkbi = void;
-    XkbStatePtr state = { 0 };
+    XkbStatePtr state;
     XkbInterestPtr interest = void;
     Time time = void;
     CARD16 changed = void, bState = void;
@@ -215,9 +232,9 @@ void XkbSendStateNotify(DeviceIntPtr kbd, xkbStateNotify* pSN)
     xkbi = kbd.key.xkbInfo;
     state = &xkbi.state;
 
-    pSN.type = XkbEventCode + XkbEventBase;
+    pSN.type = cast(ubyte)(cast(ubyte)(XkbEventCode + XkbEventBase));
     pSN.xkbType = XkbStateNotify;
-    pSN.deviceID = kbd.id;
+    pSN.deviceID = cast(ubyte)cast(ubyte)kbd.id;
     pSN.time = time = GetTimeInMillis();
     pSN.mods = state.mods;
     pSN.baseMods = state.base_mods;
@@ -240,7 +257,7 @@ void XkbSendStateNotify(DeviceIntPtr kbd, xkbStateNotify* pSN)
         if ((!interest.client.clientGone) &&
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.stateNotifyMask & changed)) {
-            pSN.time = time;
+            pSN.time = cast(uint)time;
             pSN.changed = changed;
             pSN.ptrBtnState = bState;
             if (interest.client.swapped) {
@@ -265,14 +282,14 @@ void XkbSendMapNotify(DeviceIntPtr kbd, xkbMapNotify* pMN)
 {
     int i = void;
     CARD32 time = GetTimeInMillis();
-    CARD16 changed = pMN.changed;
+    CARD16 changed = cast(ushort)pMN.changed;
     XkbSrvInfoPtr xkbi = kbd.key.xkbInfo;
 
     pMN.minKeyCode = xkbi.desc.min_key_code;
     pMN.maxKeyCode = xkbi.desc.max_key_code;
-    pMN.type = XkbEventCode + XkbEventBase;
+    pMN.type = cast(ubyte)(cast(ubyte)(XkbEventCode + XkbEventBase));
     pMN.xkbType = XkbMapNotify;
-    pMN.deviceID = kbd.id;
+    pMN.deviceID = cast(ubyte)cast(ubyte)kbd.id;
 
     /* 0 is serverClient. */
     for (i = 1; i < currentMaxClients; i++) {
@@ -393,9 +410,9 @@ void XkbSendControlsNotify(DeviceIntPtr kbd, xkbControlsNotify* pCN)
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.ctrlsNotifyMask & changedControls)) {
             if (!initialized) {
-                pCN.type = XkbEventCode + XkbEventBase;
+                pCN.type = cast(ubyte)(cast(ubyte)(XkbEventCode + XkbEventBase));
                 pCN.xkbType = XkbControlsNotify;
-                pCN.deviceID = kbd.id;
+                pCN.deviceID = cast(ubyte)cast(ubyte)kbd.id;
                 pCN.time = time = GetTimeInMillis();
                 enabledChanges = pCN.enabledControlChanges;
                 initialized = 1;
@@ -403,7 +420,7 @@ void XkbSendControlsNotify(DeviceIntPtr kbd, xkbControlsNotify* pCN)
             pCN.changedControls = changedControls;
             pCN.enabledControls = enabledControls;
             pCN.enabledControlChanges = enabledChanges;
-            pCN.time = time;
+            pCN.time = cast(uint)time;
             if (interest.client.swapped) {
                 swapl(&pCN.changedControls);
                 swapl(&pCN.enabledControls);
@@ -439,13 +456,13 @@ private void XkbSendIndicatorNotify(DeviceIntPtr kbd, int xkbType, xkbIndicatorN
              ((xkbType == XkbIndicatorMapNotify) &&
               (interest.iMapNotifyMask & changed)))) {
             if (!initialized) {
-                pEv.type = XkbEventCode + XkbEventBase;
-                pEv.xkbType = xkbType;
-                pEv.deviceID = kbd.id;
+                pEv.type = cast(ubyte)(cast(ubyte)(XkbEventCode + XkbEventBase));
+                pEv.xkbType = cast(ubyte)xkbType;
+                pEv.deviceID = cast(ubyte)cast(ubyte)kbd.id;
                 pEv.time = time = GetTimeInMillis();
                 initialized = 1;
             }
-            pEv.time = time;
+            pEv.time = cast(uint)time;
             pEv.changed = changed;
             pEv.state = state;
             if (interest.client.swapped) {
@@ -489,15 +506,15 @@ void XkbHandleBell(BOOL force, BOOL eventOnly, DeviceIntPtr kbd, CARD8 percent, 
         KeybdCtrl* pKeyCtrl = cast(KeybdCtrl*) pCtrl;
 
         id = pKeyCtrl.id;
-        pitch = pKeyCtrl.bell_pitch;
-        duration = pKeyCtrl.bell_duration;
+        pitch = cast(ushort)pKeyCtrl.bell_pitch;
+        duration = cast(ushort)pKeyCtrl.bell_duration;
     }
     else if (class_ == BellFeedbackClass) {
         BellCtrl* pBellCtrl = cast(BellCtrl*) pCtrl;
 
         id = pBellCtrl.id;
-        pitch = pBellCtrl.pitch;
-        duration = pBellCtrl.duration;
+        pitch = cast(ushort)pBellCtrl.pitch;
+        duration = cast(ushort)pBellCtrl.duration;
     }
     else
         return;
@@ -509,21 +526,21 @@ void XkbHandleBell(BOOL force, BOOL eventOnly, DeviceIntPtr kbd, CARD8 percent, 
             (interest.bellNotifyMask)) {
             if (!initialized) {
                 time = GetTimeInMillis();
-                bn.type = XkbEventCode + XkbEventBase;
+                bn.type = cast(ubyte)(cast(ubyte)(XkbEventCode + XkbEventBase));
                 bn.xkbType = XkbBellNotify;
-                bn.deviceID = kbd.id;
-                bn.bellClass = class_;
+                bn.deviceID = cast(ubyte)cast(ubyte)kbd.id;
+                bn.bellClass =
                 bn.bellID = id;
                 bn.percent = percent;
                 bn.eventOnly = (eventOnly != 0);
                 winID = (pWin ? pWin.drawable.id : None);
                 initialized = 1;
             }
-            bn.time = time;
+            bn.time = cast(uint)time;
             bn.pitch = pitch;
             bn.duration = duration;
-            bn.name = name;
-            bn.window = winID;
+            bn.name = cast(uint)name;
+            bn.window = cast(uint)winID;
             if (interest.client.swapped) {
                 swapl(&bn.time);
                 swaps(&bn.pitch);
@@ -557,13 +574,13 @@ void XkbSendAccessXNotify(DeviceIntPtr kbd, xkbAccessXNotify* pEv)
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.accessXNotifyMask & (1 << pEv.detail))) {
             if (!initialized) {
-                pEv.type = XkbEventCode + XkbEventBase;
+                pEv.type = cast(ubyte)(XkbEventCode + XkbEventBase);
                 pEv.xkbType = XkbAccessXNotify;
-                pEv.deviceID = kbd.id;
+                pEv.deviceID = cast(ubyte)kbd.id;
                 pEv.time = time = GetTimeInMillis();
                 initialized = 1;
             }
-            pEv.time = time;
+            pEv.time = cast(uint)time;
             pEv.slowKeysDelay = sk_delay;
             pEv.debounceDelay = db_delay;
             if (interest.client.swapped) {
@@ -599,14 +616,14 @@ void XkbSendNamesNotify(DeviceIntPtr kbd, xkbNamesNotify* pEv)
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.namesNotifyMask & pEv.changed)) {
             if (!initialized) {
-                pEv.type = XkbEventCode + XkbEventBase;
+                pEv.type = cast(ubyte)(XkbEventCode + XkbEventBase);
                 pEv.xkbType = XkbNamesNotify;
-                pEv.deviceID = kbd.id;
+                pEv.deviceID = cast(ubyte)kbd.id;
                 pEv.time = time = GetTimeInMillis();
                 initialized = 1;
             }
-            pEv.sequenceNumber = interest.client.sequence;
-            pEv.time = time;
+            pEv.sequenceNumber = cast(ushort)interest.client.sequence;
+            pEv.time = cast(uint)time;
             pEv.changed = changed;
             pEv.changedIndicators = changedIndicators;
             pEv.changedVirtualMods = changedVirtualMods;
@@ -641,16 +658,16 @@ void XkbSendCompatMapNotify(DeviceIntPtr kbd, xkbCompatMapNotify* pEv)
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.compatNotifyMask)) {
             if (!initialized) {
-                pEv.type = XkbEventCode + XkbEventBase;
+                pEv.type = cast(ubyte)(XkbEventCode + XkbEventBase);
                 pEv.xkbType = XkbCompatMapNotify;
-                pEv.deviceID = kbd.id;
+                pEv.deviceID = cast(ubyte)kbd.id;
                 pEv.time = time = GetTimeInMillis();
                 firstSI = pEv.firstSI;
                 nSI = pEv.nSI;
                 nTotalSI = pEv.nTotalSI;
                 initialized = 1;
             }
-            pEv.time = time;
+            pEv.time = cast(uint)time;
             pEv.firstSI = firstSI;
             pEv.nSI = nSI;
             pEv.nTotalSI = nTotalSI;
@@ -688,13 +705,13 @@ void XkbSendActionMessage(DeviceIntPtr kbd, xkbActionMessage* pEv)
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.actionMessageMask)) {
             if (!initialized) {
-                pEv.type = XkbEventCode + XkbEventBase;
+                pEv.type = cast(ubyte)(XkbEventCode + XkbEventBase);
                 pEv.xkbType = XkbActionMessage;
-                pEv.deviceID = kbd.id;
+                pEv.deviceID = cast(ubyte)kbd.id;
                 pEv.time = time = GetTimeInMillis();
                 initialized = 1;
             }
-            pEv.time = time;
+            pEv.time = cast(uint)time;
             if (interest.client.swapped) {
                 swapl(&pEv.time);
             }
@@ -726,18 +743,18 @@ void XkbSendExtensionDeviceNotify(DeviceIntPtr dev, ClientPtr client, xkbExtensi
             (interest.client.xkbClientFlags & _XkbClientInitialized) &&
             (interest.extDevNotifyMask & reason)) {
             if (!initialized) {
-                pEv.type = XkbEventCode + XkbEventBase;
+                pEv.type = cast(ubyte)(XkbEventCode + XkbEventBase);
                 pEv.xkbType = XkbExtensionDeviceNotify;
-                pEv.deviceID = dev.id;
+                pEv.deviceID = cast(ubyte)dev.id;
                 pEv.time = time = GetTimeInMillis();
                 initialized = 1;
             }
             else {
-                pEv.time = time;
+                pEv.time = cast(uint)time;
                 pEv.ledsDefined = defined;
                 pEv.ledState = state;
                 pEv.reason = reason;
-                pEv.supported = XkbXI_AllFeaturesMask;
+                pEv.supported = cast(ushort)XkbXI_AllFeaturesMask;
             }
             if (interest.client.swapped) {
                 swapl(&pEv.time);
@@ -760,11 +777,11 @@ void XkbSendNotification(DeviceIntPtr kbd, XkbChangesPtr pChanges, XkbEventCause
     sli = null;
     if (pChanges.state_changes) {
         xkbStateNotify sn = {
-            sn.changed = pChanges.state_changes,
-            sn.keycode = cause.kc,
-            sn.eventType = cause.event,
-            sn.requestMajor = cause.mjr,
-            sn.requestMinor = cause.mnr,
+            changed: pChanges.state_changes,
+            keycode: cause.kc,
+            eventType: cause.event,
+            requestMajor: cause.mjr,
+            requestMinor: cause.mnr,
         };
         XkbSendStateNotify(kbd, &sn);
     }
@@ -796,7 +813,7 @@ void XkbSendNotification(DeviceIntPtr kbd, XkbChangesPtr pChanges, XkbEventCause
             enabledControlChanges: pChanges.ctrls.enabled_ctrls_changes,
             keycode: cause.kc,
             eventType: cause.event,
-            requestMajor: cause.mjr,
+            requestMajor: cast(ubyte)cause.mjr,
             requestMinor: cause.mnr
         };
         XkbSendControlsNotify(kbd, &cn);
@@ -821,14 +838,14 @@ void XkbSendNotification(DeviceIntPtr kbd, XkbChangesPtr pChanges, XkbEventCause
     }
     if (pChanges.names.changed) {
         xkbNamesNotify nn = {
-            changed: pChanges.names.changed,
+            changed: cast(ushort)pChanges.names.changed,
             firstType: pChanges.names.first_type,
             nTypes: pChanges.names.num_types,
             firstLevelName: pChanges.names.first_lvl,
             nLevelNames: pChanges.names.num_lvls,
             nRadioGroups: pChanges.names.num_rg,
             changedVirtualMods: pChanges.names.changed_vmods,
-            changedIndicators: pChanges.names.changed_indicators,
+            changedIndicators: cast(uint)pChanges.names.changed_indicators,
         };
         XkbSendNamesNotify(kbd, &nn);
     }
@@ -895,7 +912,7 @@ void XkbFilterEvents(ClientPtr client, int nEvents, xEvent* xE)
             else if (flags & XkbPCF_LookupStateWhenGrabbed) {
                 state = xkbi.state.compat_lookup_mods;
             }
-            xE[0].u.keyButtonPointer.state = state;
+            xE[0].u.keyButtonPointer.state = cast(ushort)state;
         }
     }
     else {
@@ -917,7 +934,7 @@ void XkbFilterEvents(ClientPtr client, int nEvents, xEvent* xE)
             old = xE[0].u.keyButtonPointer.state & ~0x1f00;
             new_ = xE[0].u.keyButtonPointer.state & 0x1F00;
 
-            if (old == XkbStateFieldFromRec(&xkbi.state))
+            if (old == mixin(XkbStateFieldFromRec!("&xkbi.state")))
                 new_ |= xkbi.state.compat_lookup_mods;
             else
                 new_ |= xkbi.state.compat_grab_mods;
@@ -933,7 +950,7 @@ void XkbFilterEvents(ClientPtr client, int nEvents, xEvent* xE)
 
             old = kbp.state & ~0x1F00;
             new_ = kbp.state & 0x1F00;
-            if (old == XkbStateFieldFromRec(&xkbi.state))
+            if (old == mixin(XkbStateFieldFromRec!("&xkbi.state")))
                 new_ |= xkbi.state.compat_lookup_mods;
             else
                 new_ |= xkbi.state.compat_grab_mods;
@@ -972,7 +989,7 @@ XkbInterestPtr XkbAddClientResource(DevicePtr inDev, ClientPtr client, XID id)
             return ((interest.resource == id) ? interest : null);
         interest = interest.next;
     }
-    interest = calloc(1, XkbInterestRec.sizeof);
+    interest = cast(XkbInterestRec*) calloc(1, XkbInterestRec.sizeof);
     if (interest) {
         interest.dev = dev;
         interest.client = client;
@@ -989,7 +1006,7 @@ int XkbRemoveResourceClient(DevicePtr inDev, XID id)
     XkbSrvInfoPtr xkbi = void;
     DeviceIntPtr dev = cast(DeviceIntPtr) inDev;
     XkbInterestPtr interest = void;
-    bool found = void;
+    Bool found = void;
     c_ulong autoCtrls = void, autoValues = void;
     ClientPtr client = null;
 
@@ -1029,7 +1046,7 @@ int XkbRemoveResourceClient(DevicePtr inDev, XID id)
         XkbEventCauseRec cause = { 0 };
 
         xkbi = dev.key.xkbInfo;
-        XkbSetCauseXkbReq(&cause, X_kbPerClientFlags, client);
+        mixin(XkbSetCauseXkbReq!("&cause", "X_kbPerClientFlags", "client"));
         XkbEnableDisableControls(xkbi, autoCtrls, autoValues, null, &cause);
     }
     return found;

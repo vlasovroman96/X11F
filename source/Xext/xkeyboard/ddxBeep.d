@@ -1,4 +1,4 @@
-module ddxBeep.c;
+module xkb.ddxBeep;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,22 +27,24 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
-import X11/extensions/XI;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+import externs.X11.extensions.XKB;
 
 import dix.dix_priv;
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import scrnintstr;
-import windowstr;
-import xkbsrv;
-
+import include.inputstr;
+import include.scrnintstr;
+import include.windowstr;
+import include.xkbsrv;
+import os.log;
+import os.utils;
+import os.WaitFor;
 /*#define FALLING_TONE	1*/
 /*#define RISING_TONE	1*/
 enum FALLING_TONE =	10;
@@ -140,6 +142,7 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
     switch (xkbInfo.beepType) {
     default:
         ErrorF("[xkb] Unknown beep type %d\n", xkbInfo.beepType);
+        goto case;
     case _BEEP_NONE:
         duration = 0;
         break;
@@ -208,6 +211,7 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
     case _BEEP_LED_CHANGE:
         if (name == None)
             name = ledChange;
+            goto case;
     case _BEEP_FEATURE_CHANGE:
         if (name == None)
             name = featureChange;
@@ -238,9 +242,11 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
     case _BEEP_SLOW_PRESS:
         if (name == None)
             name = slowPress;
+            goto case;
     case _BEEP_SLOW_ACCEPT:
         if (name == None)
             name = slowAccept;
+            goto case;
     case _BEEP_SLOW_RELEASE:
         if (name == None)
             name = slowRelease;
@@ -250,6 +256,7 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
     case _BEEP_BOUNCE_REJECT:
         if (name == None)
             name = bounceReject;
+            goto case;
     case _BEEP_SLOW_REJECT:
         if (name == None)
             name = slowReject;
@@ -298,8 +305,8 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
         ctrl.bell_duration = duration;
         ctrl.bell_pitch = pitch;
         if (xkbInfo.beepCount == 0) {
-            XkbHandleBell(0, 0, dev, ctrl.bell, cast(void*) ctrl,
-                          KbdFeedbackClass, name, None, null);
+            XkbHandleBell(0, 0, dev, cast(ubyte)ctrl.bell, cast(void*) ctrl,
+                          KbdFeedbackClass, name, null, null);
         }
         else if (xkbInfo.desc.ctrls.enabled_ctrls & XkbAudibleBellMask) {
             (*dev.kbdfeed.BellProc) (ctrl.bell, dev, cast(void*) ctrl,
@@ -335,7 +342,7 @@ int XkbDDXAccessXBeep(DeviceIntPtr dev, uint what, uint which)
     XkbSrvInfoRec* xkbInfo = dev.key.xkbInfo;
     CARD32 next = void;
 
-    xkbInfo.beepType = what;
+    xkbInfo.beepType = cast(ubyte)what;
     xkbInfo.beepCount = 0;
     next = _XkbDDXBeepExpire(null, 0, cast(void*) dev);
     if (next > 0) {

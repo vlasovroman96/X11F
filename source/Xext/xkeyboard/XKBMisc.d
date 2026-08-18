@@ -1,4 +1,4 @@
-module XKBMisc.c;
+module xkb.XKBMisc;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,24 +27,26 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+
+import xkb.xkbfmisc_priv;
+import xkb.xkbsrv_priv;
 
 import include.misc;
+import include.inputstr;
+import include.xkbstr;
+import externs.X11.extensions.XKB;
+import xkb.XKBMAlloc;
 
-import xkbfmisc_priv;
-import xkbsrv_priv;
-
-import inputstr;
 
 /***====================================================================***/
 
-enum string	CORE_SYM(string i) = `((` ~ i ~ `)<map_width?core_syms[(` ~ i ~ `)]:NoSymbol)`;
+enum string	CORE_SYM(string i) = `(` ~ i ~ `<map_width?core_syms[` ~ i ~ `]:NoSymbol)`;
 enum string	XKB_OFFSET(string g,string l) = `(((` ~ g ~ `)*groupsWidth)+(` ~ l ~ `))`;
 
 int XkbKeyTypesForCoreSymbols(XkbDescPtr xkb, int map_width, KeySym* core_syms, uint protected_, int* types_inout, KeySym* xkb_syms_rtrn)
@@ -178,7 +180,7 @@ int XkbKeyTypesForCoreSymbols(XkbDescPtr xkb, int map_width, KeySym* core_syms, 
             }
         }
         if (syms[0] == NoSymbol) {
-            bool found = FALSE;
+            Bool found = FALSE;
 
             for (int n = 1; (!found) && (n < nSyms[i]); n++) {
                 found = (syms[n] != NoSymbol);
@@ -235,7 +237,7 @@ int XkbKeyTypesForCoreSymbols(XkbDescPtr xkb, int map_width, KeySym* core_syms, 
         if (((sameType) || canonical) &&
             (!(protected_ &
                (XkbExplicitKeyTypesMask & ~XkbExplicitKeyType1Mask)))) {
-            bool identical = TRUE;
+            Bool identical = TRUE;
 
             for (int i = 1; identical && (i < nGroups); i++) {
                 KeySym* syms = void;
@@ -277,7 +279,7 @@ private XkbSymInterpretPtr _XkbFindMatchingInterp(XkbDescPtr xkb, KeySym sym, ui
             int match = void;
 
             if ((level == 0) || ((interp.match & XkbSI_LevelOneOnly) == 0))
-                mods = real_mods;
+                mods = cast(ubyte)real_mods;
             else
                 mods = 0;
             switch (interp.match & XkbSI_OpMask) {
@@ -317,13 +319,13 @@ private void _XkbAddKeyChange(KeyCode* pFirst, ubyte* pNum, KeyCode newKey)
 {
     KeyCode last = void;
 
-    last = (*pFirst) + (*pNum);
+    last = cast(ubyte)((*pFirst) + (*pNum));
     if (newKey < *pFirst) {
         *pFirst = newKey;
-        *pNum = (last - newKey) + 1;
+        *pNum = cast(ubyte)((last - newKey) + 1);
     }
     else if (newKey > last) {
-        *pNum = (last - *pFirst) + 1;
+        *pNum = cast(ubyte)((last - *pFirst) + 1);
     }
     return;
 }
@@ -337,16 +339,16 @@ private void _XkbSetActionKeyMods(XkbDescPtr xkb, XkbAction* act, uint mods)
     case XkbSA_LatchMods:
     case XkbSA_LockMods:
         if (act.mods.flags & XkbSA_UseModMapMods)
-            act.mods.real_mods = act.mods.mask = mods;
-        if ((tmp = XkbModActionVMods(&act.mods)) != 0) {
+            act.mods.real_mods = act.mods.mask = cast(ubyte)mods;
+        if ((tmp = mixin(XkbModActionVMods!("&act.mods"))) != 0) {
             XkbVirtualModsToReal(xkb, tmp, &tmp);
             act.mods.mask |= tmp;
         }
         break;
     case XkbSA_ISOLock:
         if (act.iso.flags & XkbSA_UseModMapMods)
-            act.iso.real_mods = act.iso.mask = mods;
-        if ((tmp = XkbModActionVMods(&act.iso)) != 0) {
+            act.iso.real_mods = act.iso.mask = cast(ubyte)mods;
+        if ((tmp = mixin(XkbModActionVMods!("&act.iso"))) != 0) {
             XkbVirtualModsToReal(xkb, tmp, &tmp);
             act.iso.mask |= tmp;
         }
@@ -376,25 +378,25 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
         return TRUE;
 
     ubyte mods = (xkb.map.modmap ? xkb.map.modmap[key] : 0);
-    int nSyms = XkbKeyNumSyms(xkb, key);
-    KeySym* syms = XkbKeySymsPtr(xkb, key);
+    int nSyms = mixin(XkbKeyNumSyms!("xkb", "key"));
+    KeySym* syms = mixin(XkbKeySymsPtr!("xkb", "key"));
 
     XkbSymInterpretPtr* interps = void;
-    XkbSymInterpretPtr[IBUF_SIZE] ibuf = 0;
+    XkbSymInterpretPtr[IBUF_SIZE] ibuf;
     if (nSyms > IBUF_SIZE) {
         interps = cast(XkbSymInterpretPtr*) calloc(nSyms, XkbSymInterpretPtr.sizeof);
         if (interps == null) {
-            interps = ibuf;
+            interps = ibuf.ptr;
             nSyms = IBUF_SIZE;
         }
     }
     else {
-        interps = ibuf;
+        interps = ibuf.ptr;
     }
 
     int found = 0;
     for (int n = 0; n < nSyms; n++) {
-        uint level = (n % XkbKeyGroupsWidth(xkb, key));
+        uint level = (n % mixin(XkbKeyGroupsWidth!("xkb", "key")));
 
         interps[n] = null;
         if (syms[n] != NoSymbol) {
@@ -440,7 +442,7 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
         if (((explicit & XkbExplicitVModMapMask) == 0) &&
             (xkb.server.vmodmap[key] != new_vmodmask)) {
             changed |= XkbVirtualModMapMask;
-            xkb.server.vmodmap[key] = new_vmodmask;
+            xkb.server.vmodmap[key] = cast(ushort)new_vmodmask;
         }
         if (interps[0]) {
             if ((interps[0].flags & XkbSI_LockingKey) &&
@@ -449,22 +451,22 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
                 changed |= XkbKeyBehaviorsMask;
             }
             if (((explicit & XkbExplicitAutoRepeatMask) == 0) && (xkb.ctrls)) {
-                CARD8 old = BitIsOn(xkb.ctrls.per_key_repeat, key);
+                CARD8 old = mixin(BitIsOn!("xkb.ctrls.per_key_repeat", "key"));
                 if (interps[0].flags & XkbSI_AutoRepeat)
-                    SetBit(xkb.ctrls.per_key_repeat, key);
+                    mixin(SetBit!("xkb.ctrls.per_key_repeat", "key"));
                 else
-                    ClearBit(xkb.ctrls.per_key_repeat, key);
-                if (changes && old != BitIsOn(xkb.ctrls.per_key_repeat, key))
+                    mixin(ClearBit!("xkb.ctrls.per_key_repeat", "key"));
+                if (changes && old != mixin(BitIsOn!("xkb.ctrls.per_key_repeat", "key")))
                     changes.ctrls.changed_ctrls |= XkbPerKeyRepeatMask;
             }
         }
     }
     if ((!found) || (interps[0] == null)) {
         if (((explicit & XkbExplicitAutoRepeatMask) == 0) && (xkb.ctrls)) {
-            CARD8 old = BitIsOn(xkb.ctrls.per_key_repeat, key);
+            CARD8 old = mixin(BitIsOn!("xkb.ctrls.per_key_repeat", "key"));
 
-            SetBit(xkb.ctrls.per_key_repeat, key);
-            if (changes && (old != BitIsOn(xkb.ctrls.per_key_repeat, key)))
+            mixin(SetBit!("xkb.ctrls.per_key_repeat", "key"));
+            if (changes && (old != mixin(BitIsOn!("xkb.ctrls.per_key_repeat", "key"))))
                 changes.ctrls.changed_ctrls |= XkbPerKeyRepeatMask;
         }
         if (((explicit & XkbExplicitBehaviorMask) == 0) &&
@@ -508,13 +510,13 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
     return TRUE;
 }
 
-int XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* newTypesIn, XkbMapChangesPtr changes)
+Status XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* newTypesIn, XkbMapChangesPtr changes)
 {
     XkbKeyTypePtr pOldType = void, pNewType = void;
     int i = void;
     int width = void, nOldGroups = void, oldWidth = void;
 
-    if ((!xkb) || (!XkbKeycodeInRange(xkb, key)) || (!xkb.map) ||
+    if ((!xkb) || (!mixin(XkbKeycodeInRange!("xkb", "key"))) || (!xkb.map) ||
         (!xkb.map.types) || (!newTypesIn) ||
         ((groups & XkbAllGroupsMask) == 0) || (nGroups > XkbNumKbdGroups)) {
         return BadMatch;
@@ -524,24 +526,24 @@ int XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* 
             xkb.map.key_sym_map[key].kt_index[i] = XkbOneLevelIndex;
         }
         i = xkb.map.key_sym_map[key].group_info;
-        i = XkbSetNumGroups(i, 0);
-        xkb.map.key_sym_map[key].group_info = i;
+        i = mixin(XkbSetNumGroups!("i", "0"));
+        xkb.map.key_sym_map[key].group_info = cast(ubyte)i;
         XkbResizeKeySyms(xkb, key, 0);
         XkbResizeKeyActions(xkb, key, 0);
         return Success;
     }
 
-    nOldGroups = XkbKeyNumGroups(xkb, key);
-    oldWidth = XkbKeyGroupsWidth(xkb, key);
+    nOldGroups = mixin(XkbKeyNumGroups!("xkb", "key"));
+    oldWidth = mixin(XkbKeyGroupsWidth!("xkb", "key"));
 
     int[XkbNumKbdGroups] newTypes = 0;
     for (width = i = 0; i < nGroups; i++) {
         if (groups & (1 << i))
             newTypes[i] = newTypesIn[i];
         else if (i < nOldGroups)
-            newTypes[i] = XkbKeyKeyTypeIndex(xkb, key, i);
+            newTypes[i] = mixin(XkbKeyKeyTypeIndex!("xkb", "key", "i"));
         else if (nOldGroups > 0)
-            newTypes[i] = XkbKeyKeyTypeIndex(xkb, key, XkbGroup1Index);
+            newTypes[i] = mixin(XkbKeyKeyTypeIndex!("xkb", "key", "XkbGroup1Index"));
         else
             newTypes[i] = XkbTwoLevelIndex;
         if (newTypes[i] > xkb.map.num_types)
@@ -551,7 +553,7 @@ int XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* 
             width = pNewType.num_levels;
     }
     if ((xkb.ctrls) && (nGroups > xkb.ctrls.num_groups))
-        xkb.ctrls.num_groups = nGroups;
+        xkb.ctrls.num_groups = cast(ubyte)(cast(ubyte)nGroups);
     if ((width != oldWidth) || (nGroups != nOldGroups)) {
         KeySym[XkbMaxSymsPerKey] oldSyms = void; KeySym* pSyms = void;
         int nCopy = void;
@@ -560,24 +562,24 @@ int XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* 
             pSyms = XkbResizeKeySyms(xkb, key, width * nGroups);
             if (pSyms != null) {
                 i = xkb.map.key_sym_map[key].group_info;
-                i = XkbSetNumGroups(i, nGroups);
-                xkb.map.key_sym_map[key].group_info = i;
-                xkb.map.key_sym_map[key].width = width;
+                i = mixin(XkbSetNumGroups!("i", "nGroups"));
+                xkb.map.key_sym_map[key].group_info = cast(ubyte)i;
+                xkb.map.key_sym_map[key].width = cast(ubyte)width;
                 for (i = 0; i < nGroups; i++) {
-                    xkb.map.key_sym_map[key].kt_index[i] = newTypes[i];
+                    xkb.map.key_sym_map[key].kt_index[i] = cast(ubyte)newTypes[i];
                 }
                 return Success;
             }
             return BadAlloc;
         }
-        pSyms = XkbKeySymsPtr(xkb, key);
-        memcpy(oldSyms.ptr, pSyms, XkbKeyNumSyms(xkb, key) * KeySym.sizeof);
+        pSyms = mixin(XkbKeySymsPtr!("xkb", "key"));
+        memcpy(oldSyms.ptr, pSyms, mixin(XkbKeyNumSyms!("xkb", "key")) * KeySym.sizeof);
         pSyms = XkbResizeKeySyms(xkb, key, width * nGroups);
         if (pSyms == null)
             return BadAlloc;
         memset(pSyms, 0, width * nGroups * KeySym.sizeof);
         for (i = 0; (i < nGroups) && (i < nOldGroups); i++) {
-            pOldType = XkbKeyKeyType(xkb, key, i);
+            pOldType = mixin(XkbKeyKeyType!("xkb", "key", "i"));
             pNewType = &xkb.map.types[newTypes[i]];
             if (pNewType.num_levels > pOldType.num_levels)
                 nCopy = pOldType.num_levels;
@@ -586,17 +588,17 @@ int XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* 
             memcpy(&pSyms[i * width], &oldSyms[i * oldWidth],
                    nCopy * KeySym.sizeof);
         }
-        if (XkbKeyHasActions(xkb, key)) {
+        if (mixin(XkbKeyHasActions!("xkb", "key"))) {
             XkbAction[XkbMaxSymsPerKey] oldActs = void; XkbAction* pActs = void;
 
-            pActs = XkbKeyActionsPtr(xkb, key);
-            memcpy(oldActs.ptr, pActs, XkbKeyNumSyms(xkb, key) * XkbAction.sizeof);
+            pActs = mixin(XkbKeyActionsPtr!("xkb", "key"));
+            memcpy(oldActs.ptr, pActs, mixin(XkbKeyNumSyms!("xkb", "key")) * XkbAction.sizeof);
             pActs = XkbResizeKeyActions(xkb, key, width * nGroups);
             if (pActs == null)
                 return BadAlloc;
             memset(pActs, 0, width * nGroups * XkbAction.sizeof);
             for (i = 0; (i < nGroups) && (i < nOldGroups); i++) {
-                pOldType = XkbKeyKeyType(xkb, key, i);
+                pOldType = mixin(XkbKeyKeyType!("xkb", "key", "i"));
                 pNewType = &xkb.map.types[newTypes[i]];
                 if (pNewType.num_levels > pOldType.num_levels)
                     nCopy = pOldType.num_levels;
@@ -607,25 +609,25 @@ int XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, int* 
             }
         }
         i = xkb.map.key_sym_map[key].group_info;
-        i = XkbSetNumGroups(i, nGroups);
-        xkb.map.key_sym_map[key].group_info = i;
-        xkb.map.key_sym_map[key].width = width;
+        i = mixin(XkbSetNumGroups!("i", "nGroups"));
+        xkb.map.key_sym_map[key].group_info = cast(ubyte)i;
+        xkb.map.key_sym_map[key].width = cast(ubyte)width;
     }
     width = 0;
     for (i = 0; i < nGroups; i++) {
-        xkb.map.key_sym_map[key].kt_index[i] = newTypes[i];
+        xkb.map.key_sym_map[key].kt_index[i] = cast(ubyte)newTypes[i];
         if (xkb.map.types[newTypes[i]].num_levels > width)
             width = xkb.map.types[newTypes[i]].num_levels;
     }
-    xkb.map.key_sym_map[key].width = width;
+    xkb.map.key_sym_map[key].width = cast(ubyte)width;
     if (changes != null) {
         if (changes.changed & XkbKeySymsMask) {
             _XkbAddKeyChange(&changes.first_key_sym, &changes.num_key_syms,
-                             key);
+                             cast(ubyte)key);
         }
         else {
             changes.changed |= XkbKeySymsMask;
-            changes.first_key_sym = key;
+            changes.first_key_sym = cast(ubyte)key;
             changes.num_key_syms = 1;
         }
     }
@@ -665,7 +667,7 @@ private Bool XkbUpdateActionVirtualMods(XkbDescPtr xkb, XkbAction* act, uint cha
     case XkbSA_SetMods:
     case XkbSA_LatchMods:
     case XkbSA_LockMods:
-        if (((tmp = XkbModActionVMods(&act.mods)) & changed) != 0) {
+        if (((tmp = mixin(XkbModActionVMods!("&act.mods"))) & changed) != 0) {
             XkbVirtualModsToReal(xkb, tmp, &tmp);
             act.mods.mask = act.mods.real_mods;
             act.mods.mask |= tmp;
@@ -673,7 +675,7 @@ private Bool XkbUpdateActionVirtualMods(XkbDescPtr xkb, XkbAction* act, uint cha
         }
         break;
     case XkbSA_ISOLock:
-        if ((((tmp = XkbModActionVMods(&act.iso)) != 0) & changed) != 0) {
+        if ((((tmp = mixin(XkbModActionVMods!("&act.iso"))) != 0) & changed) != 0) {
             XkbVirtualModsToReal(xkb, tmp, &tmp);
             act.iso.mask = act.iso.real_mods;
             act.iso.mask |= tmp;
@@ -689,14 +691,14 @@ private void XkbUpdateKeyTypeVirtualMods(XkbDescPtr xkb, XkbKeyTypePtr type, uin
     uint mask = void;
 
     XkbVirtualModsToReal(xkb, type.mods.vmods, &mask);
-    type.mods.mask = type.mods.real_mods | mask;
+    type.mods.mask = cast(ubyte)(type.mods.real_mods | mask);
     if ((type.map_count > 0) && (type.mods.vmods != 0)) {
         XkbKTMapEntryPtr entry = type.map;
 
         for (uint i = 0; i < type.map_count; i++, entry++) {
             if (entry.mods.vmods != 0) {
                 XkbVirtualModsToReal(xkb, entry.mods.vmods, &mask);
-                entry.mods.mask = entry.mods.real_mods | mask;
+                entry.mods.mask = cast(ubyte)(entry.mods.real_mods | mask);
                 /* entry is active if vmods are bound */
                 entry.active = (mask != 0);
             }
@@ -705,25 +707,25 @@ private void XkbUpdateKeyTypeVirtualMods(XkbDescPtr xkb, XkbKeyTypePtr type, uin
         }
     }
     if (changes) {
-        int type_ndx = type - xkb.map.types;
+        int type_ndx = cast(int)(type - xkb.map.types);
 
         if ((type_ndx < 0) || (type_ndx > xkb.map.num_types))
             return;
         if (changes.map.changed & XkbKeyTypesMask) {
             int last = changes.map.first_type + changes.map.num_types - 1;
             if (type_ndx < changes.map.first_type) {
-                changes.map.first_type = type_ndx;
-                changes.map.num_types = (last - type_ndx) + 1;
+                changes.map.first_type = cast(ubyte)type_ndx;
+                changes.map.num_types = cast(ubyte)(cast(ubyte)((last - type_ndx) + 1));
             }
             else if (type_ndx > last) {
                 changes.map.num_types =
-                    (type_ndx - changes.map.first_type) + 1;
+                    cast(ubyte)((type_ndx - changes.map.first_type) + 1);
             }
         }
         else {
             changes.map.changed |= XkbKeyTypesMask;
-            changes.map.first_type = type_ndx;
-            changes.map.num_types = 1;
+            changes.map.first_type = cast(ubyte)type_ndx;
+            changes.map.num_types = cast(ubyte)(1);
         }
     }
     return;
@@ -746,7 +748,7 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
         XkbVirtualModsToReal(xkb, xkb.ctrls.internal.vmods, &newMask);
         newMask |= xkb.ctrls.internal.real_mods;
         if (xkb.ctrls.internal.mask != newMask) {
-            xkb.ctrls.internal.mask = newMask;
+            xkb.ctrls.internal.mask = cast(ubyte)newMask;
             if (changes) {
                 changes.ctrls.changed_ctrls |= XkbInternalModsMask;
                 checkState = TRUE;
@@ -759,7 +761,7 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
         XkbVirtualModsToReal(xkb, xkb.ctrls.ignore_lock.vmods, &newMask);
         newMask |= xkb.ctrls.ignore_lock.real_mods;
         if (xkb.ctrls.ignore_lock.mask != newMask) {
-            xkb.ctrls.ignore_lock.mask = newMask;
+            xkb.ctrls.ignore_lock.mask = cast(ubyte)newMask;
             if (changes) {
                 changes.ctrls.changed_ctrls |= XkbIgnoreLockModsMask;
                 checkState = TRUE;
@@ -776,7 +778,7 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
                 XkbVirtualModsToReal(xkb, map.mods.vmods, &newMask);
                 newMask |= map.mods.real_mods;
                 if (newMask != map.mods.mask) {
-                    map.mods.mask = newMask;
+                    map.mods.mask = cast(ubyte)newMask;
                     if (changes) {
                         changes.indicators.map_changes |= (1 << i);
                         checkState = TRUE;
@@ -794,7 +796,7 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
             XkbVirtualModsToReal(xkb, compat.groups[i].vmods, &newMask);
             newMask |= compat.groups[i].real_mods;
             if (compat.groups[i].mask != newMask) {
-                compat.groups[i].mask = newMask;
+                compat.groups[i].mask = cast(ubyte)newMask;
                 if (changes) {
                     changes.compat.changed_groups |= (1 << i);
                     checkState = TRUE;
@@ -806,9 +808,9 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
         int highChange = 0, lowChange = -1;
 
         for (int i = xkb.min_key_code; i <= xkb.max_key_code; i++) {
-            if (XkbKeyHasActions(xkb, i)) {
-                XkbAction* pAct = XkbKeyActionsPtr(xkb, i);
-                for (int n = XkbKeyNumActions(xkb, i); n > 0; n--, pAct++) {
+            if (mixin(XkbKeyHasActions!("xkb", "i"))) {
+                XkbAction* pAct = mixin(XkbKeyActionsPtr!("xkb", "i"));
+                for (int n = mixin(XkbKeyNumActions!("xkb", "i")); n > 0; n--, pAct++) {
                     if ((pAct.type != XkbSA_NoAction) &&
                         XkbUpdateActionVirtualMods(xkb, pAct, changed)) {
                         if (lowChange < 0)
@@ -827,8 +829,8 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
                     highChange = last;
             }
             changes.map.changed |= XkbKeyActionsMask;
-            changes.map.first_key_act = lowChange;
-            changes.map.num_key_acts = (highChange - lowChange) + 1;
+            changes.map.first_key_act = cast(ubyte)(cast(ubyte)lowChange);
+            changes.map.num_key_acts = cast(ubyte)(cast(ubyte)((highChange - lowChange) + 1));
         }
     }
     return checkState;

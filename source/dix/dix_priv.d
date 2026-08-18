@@ -181,7 +181,7 @@ Bool DeliverGestureEventToOwner(DeviceIntPtr dev, GestureInfoPtr gi, InternalEve
 
 // void FreezeThisEventIfNeededForSyncGrab(DeviceIntPtr thisDev, InternalEvent* event);
 
-void FixKeyState(DeviceEvent* event, DeviceIntPtr keybd);
+// void FixKeyState(DeviceEvent* event, DeviceIntPtr keybd);
 
 // void RecalculateDeliverableEvents(WindowPtr pWin);
 
@@ -653,7 +653,7 @@ pragma(inline, true) Atom dixGetAtomID(const(char)* name) {
  * @param event       pointer to the event
  * @return            return value of WriteToClient
  */
-pragma(inline, true) private int xmitClientEvent(ClientPtr pClient, xEvent ev)
+pragma(inline, true) int xmitClientEvent(ClientPtr pClient, xEvent ev)
 {
     ev.u.u.sequenceNumber = cast(CARD16)pClient.sequence; /* shouldn't go above 64k */
 

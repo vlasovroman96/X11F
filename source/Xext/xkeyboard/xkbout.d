@@ -1,4 +1,4 @@
-module xkbout.c;
+module xkb.xkbout;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,29 +27,32 @@ extern(C): __gshared:
 
  ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-import X11/Xfuncs;
-import X11/X;
-import X11/keysym;
-import X11/Xproto;
-import X11/extensions/XKMformat;
+// //import externs.X11.Xfuncs;
+//import externs.X11.X;
+//import externs.X11.keysym;
+//import externs.X11.Xproto;
+// //import externs.X11.extensions.XKMformat;
+
+import xkb.xkbfmisc_priv;
+import xkb.xkbout_priv;
+import xkb.xkbsrv_priv;
+import xkb.xkbtext_priv;
 
 import include.misc;
+import include.inputstr;
+import include.dix;
+import include.xkbsrv;
+import xkb.xkbgeom_priv;
+// import externs.X11.extensions.XKBstr;
+// import externs.X11.extensions.XKBgeom;
+import include.xkbstr;
 
-import xkbfmisc_priv;
-import xkbout_priv;
-import xkbsrv_priv;
-import xkbtext_priv;
 
-import inputstr;
-import dix;
-import xkbstr;
-import xkbgeom_priv;
 
 enum	VMOD_HIDE_VALUE =	0;
 enum	VMOD_SHOW_VALUE =	1;
@@ -338,7 +341,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
     uint i = void, tmp = void;
     XkbClientMapPtr map = void;
     XkbServerMapPtr srv = void;
-    bool showActions = void;
+    Bool showActions = void;
 
     if (!xkb) {
         _XkbLibError(_XkbErrMissingSymbols, "XkbWriteXKBSymbols", 0);
@@ -370,7 +373,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
         fprintf(file, "\n");
     srv = xkb.server;
     for (i = xkb.min_key_code; i <= xkb.max_key_code; i++) {
-        bool simple = void;
+        Bool simple = void;
 
         if (cast(int) XkbKeyNumSyms(xkb, i) < 1)
             continue;
@@ -383,7 +386,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
             if (((srv.explicit[i] & XkbExplicitKeyTypesMask) != 0) ||
                 (showImplicit)) {
                 int typeNdx = void, g = void;
-                bool multi = void;
+                Bool multi = void;
                 const(char)* comment = "  ";
 
                 if ((srv.explicit[i] & XkbExplicitKeyTypesMask) == 0)
@@ -462,7 +465,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
         }
         if ((srv.explicit == null) || showImplicit ||
             ((srv.explicit[i] & XkbExplicitInterpretMask) != 0))
-            showActions = XkbKeyHasActions(xkb, i);
+            showActions = mixin(XkbKeyHasActions!("xkb", "i"));
         else
             showActions = FALSE;
 

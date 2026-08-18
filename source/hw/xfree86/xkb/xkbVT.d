@@ -42,6 +42,9 @@ import include.scrnintstr;
 import include.windowstr;
 
 import xf86_priv;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+
 
 int XkbDDXSwitchScreen(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {

@@ -343,7 +343,7 @@ pragma(inline, true) void x_rpcbuf_pad(x_rpcbuf_t* rpcbuf) {
  * @param rpcbuf    pointer to the x_rpcbuf_t to operate on
  * @param str       zero-terminated string to write into the buffer
  */
-pragma(inline, true) private void x_rpcbuf_write_counted_string_pad(x_rpcbuf_t* rpcbuf, const(char)* str)
+pragma(inline, true) void x_rpcbuf_write_counted_string_pad(x_rpcbuf_t* rpcbuf, const(char)* str)
 {
     if (str) {
         CARD16 len = cast(CARD16)strlen(str); /* 64k should really be enough */
@@ -359,7 +359,7 @@ pragma(inline, true) private void x_rpcbuf_write_counted_string_pad(x_rpcbuf_t* 
  * @param rpcbuf    pointer to the x_rpcbuf_t to operate on
  * @param source    pointer to source x_rpcbuf_t
  */
-pragma(inline, true) private void x_rpcbuf_write_rpcbuf_pad(x_rpcbuf_t* rpcbuf, x_rpcbuf_t* source)
+pragma(inline, true) void x_rpcbuf_write_rpcbuf_pad(x_rpcbuf_t* rpcbuf, x_rpcbuf_t* source)
 {
     if (!source)
         return;

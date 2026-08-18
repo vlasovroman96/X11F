@@ -45,6 +45,9 @@ import core.sys.posix.sys.shm;
 import core.sys.posix.sys.mman;
 } /* MITSHM */
 import core.sys.posix.sys.time;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+
 
 // workaround for name clash between Xlib and Xserver:
 // GL might pull in Xlib.h (why ?), which is definining a type "GC", that's

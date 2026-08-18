@@ -1,4 +1,4 @@
-module maprules.c;
+module xkb.maprules;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,34 +27,47 @@ extern(C): __gshared:
 
  ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
 
 version = X_INCLUDE_STRING_H;
 version = XOS_USE_NO_LOCKING;
-import X11/Xos_r;
+// //import externs.X11.Xos_r;
 
-import X11/Xproto;
-import X11/X;
-import X11/Xos;
-import X11/Xfuncs;
-import X11/Xatom;
-import X11/keysym;
+//import externs.X11.Xproto;
+//import externs.X11.X;
+import externs.X11.Xos_r;
+// //import externs.X11.Xfuncs;
+//import externs.X11.Xatom;
+import externs.X11.extensions.XKB;
+
+import os.log_priv;
+import xkb.xkbrules_priv;
 
 import include.misc;
-import os.log_priv;
+import include.inputstr;
+import include.dix;
+import include.os;
+import include.xkbsrv;
+import include.xkbsrv;
+import include.xkbstr;
+import os.log;
+import externs.gnu;
+alias memcpy = core.stdc.string.memcpy;
+alias strchr = core.stdc.string.strchr;
+alias memset = core.stdc.string.memset;
+alias strcmp = core.stdc.string.strcmp;
+alias strlen = core.stdc.string.strlen;
+alias strncmp = core.stdc.string.strncmp;
+alias strcat = core.stdc.string.strcat;
 
-import xkbrules_priv;
-import inputstr;
-import dix;
-import os;
-import xkbstr;
-import xkbsrv;
+alias strcpy = core.stdc.string.strcpy;
 
+alias _Xstrtokparams = char *;
+alias _XStrtok = strtok_r;
 
 enum XkbRF_PendingMatch =      (1L<<1);
 enum XkbRF_Option =            (1L<<2);
@@ -76,47 +89,47 @@ private void InitInputLine(InputLine* line)
     line.line_num = 1;
     line.num_line = 0;
     line.sz_line = DFLT_LINE_SIZE;
-    line.line = line.buf;
+    line.line = line.buf.ptr;
     return;
 }
 
 private void FreeInputLine(InputLine* line)
 {
-    if (line.line != line.buf)
+    if (line.line !is line.buf.ptr)
         free(line.line);
     line.line_num = 1;
     line.num_line = 0;
     line.sz_line = DFLT_LINE_SIZE;
-    line.line = line.buf;
+    line.line = line.buf.ptr;
     return;
 }
 
 private int InputLineAddChar(InputLine* line, int ch)
 {
     if (line.num_line >= line.sz_line) {
-        if (line.line == line.buf) {
-            line.line = calloc(line.sz_line, 2);
+        if (line.line is line.buf.ptr) {
+            line.line = cast(char*)calloc(line.sz_line, 2);
             if (line.line == null)
                 return -1;
-            memcpy(line.line, line.buf, line.sz_line);
+            memcpy(line.line, line.buf.ptr, line.sz_line);
         }
         else {
-            line.line = reallocarray(line.line, line.sz_line, 2);
+            line.line = cast(char*)reallocarray(line.line, line.sz_line, 2);
         }
         line.sz_line *= 2;
     }
-    line.line[line.num_line++] = ch;
+    line.line[line.num_line++] = cast(char)ch;
     return ch;
 }
 
-enum string	ADD_CHAR(string l,string c) = `(((` ~ l ~ `).num_line<(` ~ l ~ `).sz_line?
-				cast(int)((` ~ l ~ `).line[(` ~ l ~ `).num_line++]= (` ~ c ~ `)):
-				InputLineAddChar((` ~ l ~ `),(` ~ c ~ `))))`;
+enum string	ADD_CHAR(string l,string c) = `((` ~ l ~ `).num_line<(` ~ l ~ `).sz_line?
+				cast(int)((` ~ l ~ `).line[(` ~ l ~ `).num_line++]= cast(char)(` ~ c ~ `)):
+				InputLineAddChar(` ~ l ~ `,` ~ c ~ `));`;
 
 private Bool GetInputLine(FILE* file, InputLine* line, Bool checkbang)
 {
     int ch = void;
-    bool endOfFile = void, spacePending = void, slashPending = void, inComment = void;
+    Bool endOfFile = void, spacePending = void, slashPending = void, inComment = void;
 
     endOfFile = FALSE;
     while ((!endOfFile) && (line.num_line == 0)) {
@@ -219,10 +232,12 @@ struct RemapSpec {
     }_Remap[MAX_WORDS] remap;
 }
 
-struct FileSpec {
+struct _FileSpec {
     char*[MAX_WORDS] name;
     _FileSpec* pending;
 }
+// FileSpec
+alias FileSpec = _FileSpec;
 
 struct _XkbRF_MultiDefsRec {
     const(char)* model;
@@ -230,7 +245,7 @@ struct _XkbRF_MultiDefsRec {
     const(char)*[XkbNumKbdGroups + 1] variant;
     const(char)* options;
 }alias XkbRF_MultiDefsRec = _XkbRF_MultiDefsRec;
-alias XkbRF_MultiDefsPtr = *;
+alias XkbRF_MultiDefsPtr = XkbRF_MultiDefsRec*;
 
 enum NDX_BUFF_SIZE =	4;
 
@@ -273,13 +288,13 @@ private void SetUpRemap(InputLine* line, RemapSpec* remap)
 
     memset(cast(char*) remap, 0, RemapSpec.sizeof);
     remap.number = len;
-    while ((tok = _XStrtok(str, " ", strtok_buf)) != null) {
-        bool found = FALSE;
+    while ((tok = _XStrtok(str, " ", &strtok_buf)) != null) {
+        Bool found = FALSE;
         str = null;
         if (strcmp(tok, "=") == 0)
             continue;
         for (int i = 0; i < MAX_WORDS; i++) {
-            len = strlen(cname[i]);
+            len = cast(int)strlen(cname[i]);
             if (strncmp(cname[i], tok, len) == 0) {
                 int ndx = void;
                 if (strlen(tok) > len) {
@@ -350,7 +365,7 @@ private void SetUpRemap(InputLine* line, RemapSpec* remap)
 
 private Bool MatchOneOf(const(char)* wanted, const(char)* vals_defined)
 {
-    int want_len = strlen(wanted);
+    int want_len = cast(int)strlen(wanted);
 
     const(char)* str = void, next = null;
     for (str = vals_defined; str != null; str = next) {
@@ -358,11 +373,11 @@ private Bool MatchOneOf(const(char)* wanted, const(char)* vals_defined)
 
         next = strchr(str, ',');
         if (next) {
-            len = next - str;
+            len = cast(int)(next - str);
             next++;
         }
         else {
-            len = strlen(str);
+            len = cast(int)strlen(str);
         }
         if ((len == want_len) && (strncmp(wanted, str, len) == 0))
             return TRUE;
@@ -389,8 +404,8 @@ private Bool CheckLine(InputLine* line, RemapSpec* remap, XkbRF_RulePtr rule, Xk
             }
             if (*words == '\0')
                 return FALSE;
-            group.name = Xstrdup(gname);
-            group.words = Xstrdup(words);
+            group.name = cast(char*)Xstrdup(gname);
+            group.words = cast(char*)Xstrdup(words);
 
             int i = void;
             for (i = 1, words = group.words; *words; words++) {
@@ -403,7 +418,7 @@ private Bool CheckLine(InputLine* line, RemapSpec* remap, XkbRF_RulePtr rule, Xk
             return TRUE;
         }
         else {
-            SetUpRemap(line, remap.ptr);
+            SetUpRemap(line, remap);
             return FALSE;
         }
     }
@@ -414,16 +429,16 @@ private Bool CheckLine(InputLine* line, RemapSpec* remap, XkbRF_RulePtr rule, Xk
         return FALSE;
     }
 
-    FileSpec tmp = { 0 };
+    FileSpec tmp = { null };
 
     char* str = line.line;
 
     int nread = void;
     _Xstrtokparams strtok_buf = void;
     char* tok = void;
-    bool append = FALSE;
+    Bool append = FALSE;
 
-    for (nread = 0; (tok = _XStrtok(str, " ", strtok_buf)) != null; nread++) {
+    for (nread = 0; (tok = _XStrtok(str, " ", &strtok_buf)) != null; nread++) {
         str = null;
         if (strcmp(tok, "=") == 0) {
             nread--;
@@ -452,16 +467,16 @@ private Bool CheckLine(InputLine* line, RemapSpec* remap, XkbRF_RulePtr rule, Xk
         rule.flags |= XkbRF_Append;
     else
         rule.flags |= XkbRF_Normal;
-    rule.model = Xstrdup(tmp.name[MODEL]);
-    rule.layout = Xstrdup(tmp.name[LAYOUT]);
-    rule.variant = Xstrdup(tmp.name[VARIANT]);
-    rule.option = Xstrdup(tmp.name[OPTION]);
+    rule.model = cast(char*)Xstrdup(tmp.name[MODEL]);
+    rule.layout = cast(char*)Xstrdup(tmp.name[LAYOUT]);
+    rule.variant = cast(char*)Xstrdup(tmp.name[VARIANT]);
+    rule.option = cast(char*)Xstrdup(tmp.name[OPTION]);
 
-    rule.keycodes = Xstrdup(tmp.name[KEYCODES]);
-    rule.symbols = Xstrdup(tmp.name[SYMBOLS]);
-    rule.types = Xstrdup(tmp.name[TYPES]);
-    rule.compat = Xstrdup(tmp.name[COMPAT]);
-    rule.geometry = Xstrdup(tmp.name[GEOMETRY]);
+    rule.keycodes = cast(char*)Xstrdup(tmp.name[KEYCODES]);
+    rule.symbols = cast(char*)Xstrdup(tmp.name[SYMBOLS]);
+    rule.types = cast(char*)Xstrdup(tmp.name[TYPES]);
+    rule.compat = cast(char*)Xstrdup(tmp.name[COMPAT]);
+    rule.geometry = cast(char*)Xstrdup(tmp.name[GEOMETRY]);
 
     rule.layout_num = rule.variant_num = 0;
     for (int i = 0; i < nread; i++) {
@@ -479,13 +494,11 @@ private char* _Concat(char* str1, const(char)* str2)
 {
     if ((!str1) || (!str2))
         return str1;
-    int len = strlen(str1) + strlen(str2) + 1;
-    char* tmp = cast(char*) realloc(str1, len);
-    if (!tmp)
-        return str1;
-
-    strcat(tmp, str2);
-    return tmp;
+    int len = cast(int)(strlen(str1) + strlen(str2) + 1);
+    str1 = cast(char*)realloc(str1, len * char.sizeof);
+    if (str1)
+        strcat(str1, str2);
+    return str1;
 }
 
 private void squeeze_spaces(char* p1)
@@ -503,7 +516,7 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
     memset(cast(char*) mdefs, 0, XkbRF_MultiDefsRec.sizeof);
     mdefs.model = defs.model;
 
-    char* options = Xstrdup(defs.options);
+    char* options = cast(char*)Xstrdup(defs.options);
     if (options)
         squeeze_spaces(options);
     mdefs.options = options;
@@ -513,14 +526,14 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
             mdefs.layout[0] = defs.layout;
         }
         else {
-            char* layout = Xstrdup(defs.layout);
+            char* layout = cast(char*)Xstrdup(defs.layout);
             if (layout == null)
                 return FALSE;
             squeeze_spaces(layout);
             mdefs.layout[1] = layout;
             char* p = layout;
             for (int i = 2; i <= XkbNumKbdGroups; i++) {
-                if ((p = strchr(p, ','))) {
+                if ((p = strchr(p, ',')) !is null) {
                     *p++ = '\0';
                     mdefs.layout[i] = p;
                 }
@@ -528,7 +541,7 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
                     break;
                 }
             }
-            if (p && (p = strchr(p, ',')))
+            if (p && (p = strchr(p, ',')) !is null)
                 *p = '\0';
         }
     }
@@ -538,14 +551,14 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
             mdefs.variant[0] = defs.variant;
         }
         else {
-            char* variant = Xstrdup(defs.variant);
+            char* variant = cast(char*)Xstrdup(defs.variant);
             if (variant == null)
                 return FALSE;
             squeeze_spaces(variant);
             mdefs.variant[1] = variant;
             char* p = variant;
             for (int i = 2; i <= XkbNumKbdGroups; i++) {
-                if ((p = strchr(p, ','))) {
+                if ((p = strchr(p, ','))!is null) {
                     *p++ = '\0';
                     mdefs.variant[i] = p;
                 }
@@ -553,7 +566,7 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
                     break;
                 }
             }
-            if (p && (p = strchr(p, ',')))
+            if (p && (p = strchr(p, ','))!is null)
                 *p = '\0';
         }
     }
@@ -575,7 +588,7 @@ private void Apply(const(char)* src, char** dst)
         }
         else {
             if (*dst == null)
-                *dst = Xstrdup(src);
+                *dst = cast(char*)Xstrdup(src);
         }
     }
 }
@@ -605,7 +618,7 @@ private Bool CheckGroup(XkbRF_RulesPtr rules, const(char)* group_name, const(cha
     if (i == rules.num_groups)
         return FALSE;
     for (i = 0, p = group.words; i < group.number; i++, p += strlen(p) + 1) {
-        if (!strcmp(p, name.ptr)) {
+        if (!strcmp(p, name)) {
             return TRUE;
         }
     }
@@ -614,7 +627,7 @@ private Bool CheckGroup(XkbRF_RulesPtr rules, const(char)* group_name, const(cha
 
 private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, XkbComponentNamesPtr names, XkbRF_RulesPtr rules)
 {
-    bool pending = FALSE;
+    Bool pending = FALSE;
 
     if (rule.model != null) {
         if (mdefs.model == null)
@@ -737,10 +750,10 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
     int len = void, ndx = void;
 
     orig = name;
-    str = index(name.ptr, '%');
+    str = externs.gnu.index(name, '%');
     if (str == null)
         return name;
-    len = strlen(name.ptr);
+    len = cast(int)strlen(name);
     while (str != null) {
         char pfx = str[1];
         int extra_len = 0;
@@ -756,7 +769,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
         var = str + 1;
         str = get_index(var + 1, &ndx);
         if (ndx == -1) {
-            str = index(str, '%');
+            str = externs.gnu.index(str, '%');
             continue;
         }
         if ((*var == 'l') && mdefs.layout[ndx] && *mdefs.layout[ndx])
@@ -768,9 +781,9 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
         if ((pfx == '(') && (*str == ')')) {
             str++;
         }
-        str = index(&str[0], '%');
+        str = externs.gnu.index(&str[0], '%');
     }
-    name = calloc(1, len + 1);
+    name = cast(char*)calloc(1, len + 1);
     str = orig;
     outstr = name;
     while (*str != '\0') {
@@ -828,7 +841,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
         }
     }
     *outstr++ = '\0';
-    if (orig != name.ptr)
+    if (orig != name)
         free(orig);
     return name;
 }
@@ -837,7 +850,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
 
 Bool XkbRF_GetComponents(XkbRF_RulesPtr rules, XkbRF_VarDefsPtr defs, XkbComponentNamesPtr names)
 {
-    XkbRF_MultiDefsRec mdefs = { 0 };
+    XkbRF_MultiDefsRec mdefs = { null };
 
     MakeMultiDefs(&mdefs, defs);
 
@@ -871,13 +884,13 @@ private XkbRF_RulePtr XkbRF_AddRule(XkbRF_RulesPtr rules)
     if (rules.sz_rules < 1) {
         rules.sz_rules = 16;
         rules.num_rules = 0;
-        if (((rules.rules = calloc(rules.sz_rules, XkbRF_RuleRec.sizeof)) == 0))
+        if (((rules.rules = cast(_XkbRF_Rule*)calloc(rules.sz_rules, XkbRF_RuleRec.sizeof)) is null))
             return null;
     }
     else if (rules.num_rules >= rules.sz_rules) {
         rules.sz_rules *= 2;
-        if (((rules.rules = reallocarray(rules.rules,
-                                    rules.sz_rules, XkbRF_RuleRec.sizeof)) == 0))
+        if (((rules.rules = cast(_XkbRF_Rule*)reallocarray(rules.rules,
+                                    rules.sz_rules, XkbRF_RuleRec.sizeof)) is null))
             return null;
     }
     if (!rules.rules) {
@@ -894,13 +907,13 @@ private XkbRF_GroupPtr XkbRF_AddGroup(XkbRF_RulesPtr rules)
     if (rules.sz_groups < 1) {
         rules.sz_groups = 16;
         rules.num_groups = 0;
-        if (((rules.groups = calloc(rules.sz_groups, XkbRF_GroupRec.sizeof)) == 0))
+        if (((rules.groups = cast(_XkbRF_Group*)calloc(rules.sz_groups, XkbRF_GroupRec.sizeof)) is null))
             return null;
     }
     else if (rules.num_groups >= rules.sz_groups) {
         rules.sz_groups *= 2;
-        if (((rules.groups = reallocarray(rules.groups,
-                                     rules.sz_groups, XkbRF_GroupRec.sizeof)) == 0))
+        if (((rules.groups = cast(_XkbRF_Group*)reallocarray(rules.groups,
+                                     rules.sz_groups, XkbRF_GroupRec.sizeof)) is null))
             return null;
     }
     if (!rules.groups) {

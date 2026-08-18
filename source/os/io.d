@@ -867,7 +867,7 @@ version (DEBUG_COMMUNICATION) {
 
             replylen = (cast(xGenericReply*) buf).length;
             who.replyBytesRemaining =
-                (replylen * 4) + SIZEOF(xReply) - count - padBytes;
+                (replylen * 4) + xReply.sizeof - count - padBytes;
         }
     }
 }

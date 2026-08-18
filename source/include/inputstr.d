@@ -63,6 +63,8 @@ public import include.cursorstr;
 public import include.privates;
 import include.xkbsrv;
 import include.misyncstr;
+import include.xkbstr;
+
 
 alias CARD8 = externs.X11.Xmd.CARD8;
 

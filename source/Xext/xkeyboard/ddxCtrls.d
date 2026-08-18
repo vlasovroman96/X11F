@@ -1,4 +1,4 @@
-module ddxCtrls.c;
+module xkb.ddxCtrls;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,19 +27,21 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
-import X11/extensions/XI;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+import externs.X11.extensions.XKB;
 
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import scrnintstr;
-import windowstr;
+import include.inputstr;
+import include.scrnintstr;
+import include.windowstr;
+import include.xkbstr;
+
 
 void XkbDDXKeybdCtrlProc(DeviceIntPtr dev, KeybdCtrl* ctrl)
 {
@@ -65,9 +67,9 @@ void XkbDDXChangeControls(DeviceIntPtr dev, XkbControlsPtr old, XkbControlsPtr n
     ubyte* rep_old = void, rep_new = void, rep_fb = void;
 
     changed = new_.enabled_ctrls ^ old.enabled_ctrls;
-    for (rep_old = old.per_key_repeat,
-         rep_new = new_.per_key_repeat,
-         rep_fb = dev.kbdfeed.ctrl.autoRepeats,
+    for (rep_old = old.per_key_repeat.ptr,
+         rep_new = new_.per_key_repeat.ptr,
+         rep_fb = dev.kbdfeed.ctrl.autoRepeats.ptr,
          i = 0; i < XkbPerKeyBitArraySize; i++) {
         if (rep_old[i] != rep_new[i]) {
             rep_fb[i] = rep_new[i];

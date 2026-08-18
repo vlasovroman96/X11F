@@ -1,4 +1,4 @@
-module ddxVT.c;
+module xkb.ddxVT;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,18 +27,20 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
 
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import scrnintstr;
-import windowstr;
+import include.inputstr;
+import include.scrnintstr;
+import include.windowstr;
+import include.xkbstr;
+
 
 int XkbDDXSwitchScreen(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {

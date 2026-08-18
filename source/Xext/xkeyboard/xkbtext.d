@@ -1,4 +1,4 @@
-module xkbtext.c;
+module xkb.xkbtext;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,34 +28,36 @@ import core.stdc.config: c_long, c_ulong;
 
  ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-import X11/Xos;
-import X11/X;
-import X11/Xproto;
-import X11/extensions/XKMformat;
+// //import externs.X11.Xos;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+// //import externs.X11.extensions.XKMformat;
+
+import xkb.xkbtext_priv;
 
 import include.misc;
+import include.inputstr;
+import include.dix;
+import include.xkbsrv;
+import include.xkbsrv;
+import xkb.xkbgeom_priv;
+import externs.X11.extensions.XKB;
 
-import xkbtext_priv;
-
-import inputstr;
-import dix;
-import xkbstr;
-import xkbsrv;
-import xkbgeom_priv;
+import include.xkbstr;
 
 /***====================================================================***/
 
 enum NUM_BUFFER =      8;
-struct textBuffer {
+struct textBuffer_t {
     int size;
     char* buffer;
-}private textBuffer[NUM_BUFFER] textBuffer;
+}
+private textBuffer_t[NUM_BUFFER] textBuffer;
 private int textBufferIndex;
 
 private char* tbGetBuffer(uint size)
@@ -551,7 +553,7 @@ char* XkbStringText(char* str, uint format)
     char* buf = void;
     char* in_ = void, out_ = void;
     int len = void;
-    bool ok = void;
+    Bool ok = void;
 
     if (str == null) {
         buf = tbGetBuffer(2);
@@ -771,11 +773,11 @@ private Bool CopyModActionArgs(XkbDescPtr xkb, XkbAction* action, char* buf, int
     act = &action.group;
     TryCopyStr(buf, "group=", sz);
     if (act.flags & XkbSA_GroupAbsolute)
-        snprintf(tbuf.ptr, tbuf.sizeof, "%d", XkbSAGroup(act) + 1);
-    else if (XkbSAGroup(act) < 0)
-        snprintf(tbuf.ptr, tbuf.sizeof, "%d", XkbSAGroup(act));
+        snprintf(tbuf.ptr, tbuf.sizeof, "%d", mixin(XkbSAGroup!("act")) + 1);
+    else if (mixin(XkbSAGroup!("act")) < 0)
+        snprintf(tbuf.ptr, tbuf.sizeof, "%d", mixin(XkbSAGroup!("act")));
     else
-        snprintf(tbuf.ptr, tbuf.sizeof, "+%d", XkbSAGroup(act));
+        snprintf(tbuf.ptr, tbuf.sizeof, "+%d", mixin(XkbSAGroup!("act")));
     TryCopyStr(buf, tbuf.ptr, sz);
     if (act.type == XkbSA_LockGroup)
         return TRUE;
@@ -874,11 +876,11 @@ private Bool CopyISOLockArgs(XkbDescPtr xkb, XkbAction* action, char* buf, int* 
     if (act.flags & XkbSA_ISODfltIsGroup) {
         TryCopyStr(tbuf.ptr, "group=", sz);
         if (act.flags & XkbSA_GroupAbsolute)
-            snprintf(tbuf.ptr, tbuf.sizeof, "%d", XkbSAGroup(act) + 1);
-        else if (XkbSAGroup(act) < 0)
-            snprintf(tbuf.ptr, tbuf.sizeof, "%d", XkbSAGroup(act));
+            snprintf(tbuf.ptr, tbuf.sizeof, "%d", mixin(XkbSAGroup!("act")) + 1);
+        else if (mixin(XkbSAGroup!("act")) < 0)
+            snprintf(tbuf.ptr, tbuf.sizeof, "%d", mixin(XkbSAGroup!("act")));
         else
-            snprintf(tbuf.ptr, tbuf.sizeof, "+%d", XkbSAGroup(act));
+            snprintf(tbuf.ptr, tbuf.sizeof, "+%d", mixin(XkbSAGroup!("act")));
         TryCopyStr(buf, tbuf.ptr, sz);
     }
     else {
@@ -1178,26 +1180,26 @@ private Bool CopyRedirectKeyArgs(XkbDescPtr xkb, XkbAction* action, char* buf, i
 alias actionCopy = Bool function(XkbDescPtr, XkbAction*, char*, int*);
 
 private actionCopy[XkbSA_NumActions] copyActionArgs = [
-    CopyNoActionArgs /* NoAction     */ ,
-    CopyModActionArgs /* SetMods      */ ,
-    CopyModActionArgs /* LatchMods    */ ,
-    CopyModActionArgs /* LockMods     */ ,
-    CopyGroupActionArgs /* SetGroup     */ ,
-    CopyGroupActionArgs /* LatchGroup   */ ,
-    CopyGroupActionArgs /* LockGroup    */ ,
-    CopyMovePtrArgs /* MovePtr      */ ,
-    CopyPtrBtnArgs /* PtrBtn       */ ,
-    CopyPtrBtnArgs /* LockPtrBtn   */ ,
-    CopySetPtrDfltArgs /* SetPtrDflt   */ ,
-    CopyISOLockArgs /* ISOLock      */ ,
-    CopyNoActionArgs /* Terminate    */ ,
-    CopySwitchScreenArgs /* SwitchScreen */ ,
-    CopySetLockControlsArgs /* SetControls  */ ,
-    CopySetLockControlsArgs /* LockControls */ ,
-    CopyActionMessageArgs /* ActionMessage */ ,
-    CopyRedirectKeyArgs /* RedirectKey  */ ,
-    CopyDeviceBtnArgs /* DeviceBtn    */ ,
-    CopyDeviceBtnArgs           /* LockDeviceBtn */
+    &CopyNoActionArgs /* NoAction     */ ,
+    &CopyModActionArgs /* SetMods      */ ,
+    &CopyModActionArgs /* LatchMods    */ ,
+    &CopyModActionArgs /* LockMods     */ ,
+    &CopyGroupActionArgs /* SetGroup     */ ,
+    &CopyGroupActionArgs /* LatchGroup   */ ,
+    &CopyGroupActionArgs /* LockGroup    */ ,
+    &CopyMovePtrArgs /* MovePtr      */ ,
+    &CopyPtrBtnArgs /* PtrBtn       */ ,
+    &CopyPtrBtnArgs /* LockPtrBtn   */ ,
+    &CopySetPtrDfltArgs /* SetPtrDflt   */ ,
+    &CopyISOLockArgs /* ISOLock      */ ,
+    &CopyNoActionArgs /* Terminate    */ ,
+    &CopySwitchScreenArgs /* SwitchScreen */ ,
+    &CopySetLockControlsArgs /* SetControls  */ ,
+    &CopySetLockControlsArgs /* LockControls */ ,
+    &CopyActionMessageArgs /* ActionMessage */ ,
+    &CopyRedirectKeyArgs /* RedirectKey  */ ,
+    &CopyDeviceBtnArgs /* DeviceBtn    */ ,
+    &CopyDeviceBtnArgs           /* LockDeviceBtn */
 ];
 
 enum	ACTION_SZ =	256;

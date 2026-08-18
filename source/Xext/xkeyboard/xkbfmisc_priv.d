@@ -1,25 +1,29 @@
+module xkb.xkbfmisc_priv;
+@nogc nothrow:
+extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
  *
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
-#ifndef _XSERVER_XKB_XKBFMISC_PRIV_H
-#define _XSERVER_XKB_XKBFMISC_PRIV_H
-
+ 
 /* needed for X11/keysymdef.h to define all symdefs */
-#define XK_MISCELLANY
+version = XK_MISCELLANY;
 
-#include <stdio.h>
-#include <X11/X.h>
-#include <X11/Xdefs.h>
-#include <X11/keysymdef.h>
+public import core.stdc.stdio;
+//public import externs.X11.X;
+//public import externs.X11.Xdefs;
+//public import externs.X11.keysymdef;
+import include.xkbstr;
+import include.xkbstr;
 
-#include "xkbstr.h"
+
+public import include.xkbsrv;
 
 /*
  * return mask bits for _XkbKSCheckCase()
  */
-#define _XkbKSLower     (1<<0)
-#define _XkbKSUpper     (1<<1)
+enum _XkbKSLower =     (1<<0);
+enum _XkbKSUpper =     (1<<1);
 
 /*
  * check whether given KeySym is a upper or lower case key
@@ -27,7 +31,7 @@
  * @param sym the KeySym to check
  * @return mask of _XkbKS* flags
  */
-unsigned int _XkbKSCheckCase(KeySym sym);
+uint _XkbKSCheckCase(KeySym sym);
 
 /*
  * check whether given KeySym is an lower case key
@@ -35,7 +39,7 @@ unsigned int _XkbKSCheckCase(KeySym sym);
  * @param k the KeySym to check
  * @return TRUE if k is a lower case key
  */
-static inline Bool XkbKSIsLower(KeySym k) { return _XkbKSCheckCase(k)&_XkbKSLower; }
+pragma(inline, true) Bool XkbKSIsLower(KeySym k) { return _XkbKSCheckCase(k)&_XkbKSLower; }
 
 /*
  * check whether given KeySym is an upper case key
@@ -43,7 +47,7 @@ static inline Bool XkbKSIsLower(KeySym k) { return _XkbKSCheckCase(k)&_XkbKSLowe
  * @param k the KeySym to check
  * @return TRUE if k is a upper case key
  */
-static inline Bool XkbKSIsUpper(KeySym k) { return _XkbKSCheckCase(k)&_XkbKSUpper; }
+pragma(inline, true) Bool XkbKSIsUpper(KeySym k) { return _XkbKSCheckCase(k)&_XkbKSUpper; }
 
 /*
  * check whether given KeySym is an keypad key
@@ -51,7 +55,7 @@ static inline Bool XkbKSIsUpper(KeySym k) { return _XkbKSCheckCase(k)&_XkbKSUppe
  * @param k the KeySym to check
  * @return TRUE if k is a keypad key
  */
-static inline Bool XkbKSIsKeypad(KeySym k) { return (((k)>=XK_KP_Space)&&((k)<=XK_KP_Equal)); }
+pragma(inline, true) Bool XkbKSIsKeypad(KeySym k) { return (((k)>=XK_KP_Space)&&((k)<=XK_KP_Equal)); }
 
 /*
  * find a keycode by its name
@@ -61,7 +65,7 @@ static inline Bool XkbKSIsKeypad(KeySym k) { return (((k)>=XK_KP_Space)&&((k)<=X
  * @param use_aliases TRUE if aliases should be resolved
  * @return keycode ID
  */
-int XkbFindKeycodeByName(XkbDescPtr xkb, char *name, Bool use_aliases);
+int XkbFindKeycodeByName(XkbDescPtr xkb, char* name, Bool use_aliases);
 
 /*
  * write keymap for given component names
@@ -73,7 +77,6 @@ int XkbFindKeycodeByName(XkbDescPtr xkb, char *name, Bool use_aliases);
  * @param need bitmask of needed elements
  * @return TRUE if succeeded
 */
-Bool XkbWriteXKBKeymapForNames(FILE *file, XkbComponentNamesPtr names,
-                               XkbDescPtr xkb, unsigned want, unsigned need);
+Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPtr xkb, uint want, uint need);
 
-#endif /* _XSERVER_XKB_XKBFMISC_PRIV_H */
+ /* _XSERVER_XKB_XKBFMISC_PRIV_H */

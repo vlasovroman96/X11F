@@ -1,14 +1,16 @@
-module ddxPrivate.c;
+module xkb.ddxPrivate;
 @nogc nothrow:
 extern(C): __gshared:
 
-import dix-config;
+import build.dix_config;
 
-import X11/X;
+//import externs.X11.X;
 
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import windowstr;
+import include.windowstr;
+import include.xkbstr;
+
 
 int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {

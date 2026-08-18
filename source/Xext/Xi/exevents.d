@@ -121,6 +121,7 @@ import dix.devices;
 import os.log;
 import os.log_priv;
 import dix.dixutils;
+import include.xkbstr;
 
 import externs.X11.extensions.XI2proto;
 import externs.X11.extensions.XI;

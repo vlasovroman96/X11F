@@ -13,6 +13,9 @@ import include.windowstr;
 import include.os;
 import xf86_priv;
 import externs.gnu;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+
 
 int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {

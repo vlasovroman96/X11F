@@ -1,4 +1,4 @@
-module xkbUtils.c;
+module xkb.xkbUtils;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -52,26 +52,28 @@ DEALINGS IN THE SOFTWARE.
 
 */
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.math;
-import X11/X;
-import X11/Xproto;
+//import externs.X11.X;
+//import externs.X11.Xproto;
 version =	XK_CYRILLIC;
-import X11/keysym;
+//import externs.X11.keysym;
 
 import dix.input_priv;
-import include.misc;
 import os.log_priv;
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import os;
-import inputstr;
-import eventstr;
-import xkbgeom_priv;
+import include.os;
+import include.misc;
+import include.inputstr;
+import include.eventstr;
+import xkb.xkbgeom_priv;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
+
 
 /***====================================================================***/
 
@@ -179,13 +181,13 @@ void XkbSetActionKeyMods(XkbDescPtr xkb, XkbAction* act, uint mods)
     case XkbSA_LockMods:
         if (act.mods.flags & XkbSA_UseModMapMods)
             act.mods.real_mods = act.mods.mask = mods;
-        if ((tmp = XkbModActionVMods(&act.mods)) != 0)
+        if ((tmp = mixin(XkbModActionVMods!("&act.mods"))) != 0)
             act.mods.mask |= XkbMaskForVMask(xkb, tmp);
         break;
     case XkbSA_ISOLock:
         if (act.iso.flags & XkbSA_UseModMapMods)
             act.iso.real_mods = act.iso.mask = mods;
-        if ((tmp = XkbModActionVMods(&act.iso)) != 0)
+        if ((tmp = mixin(XkbModActionVMods!("&act.iso"))) != 0)
             act.iso.mask |= XkbMaskForVMask(xkb, tmp);
         break;
     default: break;}
@@ -232,8 +234,8 @@ private void XkbUpdateKeyTypesFromCore(DeviceIntPtr pXDev, KeySymsPtr pCore, Key
         nG = XkbKeyTypesForCoreSymbols(xkb, pCore.mapWidth, syms, explicit,
                                        types.ptr, tsyms.ptr);
         XkbChangeTypesOfKey(xkb, key, nG, XkbAllGroupsMask, types.ptr, mc);
-        memcpy(cast(char*) XkbKeySymsPtr(xkb, key), cast(char*) tsyms,
-               XkbKeyNumSyms(xkb, key) * KeySym.sizeof);
+        memcpy(cast(char*) mixin(XkbKeySymsPtr!("xkb", "key")), cast(char*) tsyms,
+               mixin(XkbKeyNumSyms!("xkb", "key")) * KeySym.sizeof);
     }
     if (changes.map.changed & XkbKeySymsMask) {
         CARD8 oldLast = void, newLast = void;
@@ -242,15 +244,15 @@ private void XkbUpdateKeyTypesFromCore(DeviceIntPtr pXDev, KeySymsPtr pCore, Key
         newLast = first + num - 1;
 
         if (first < changes.map.first_key_sym)
-            changes.map.first_key_sym = first;
+            changes.map.first_key_sym = cast(ubyte)(first);
         if (oldLast > newLast)
             newLast = oldLast;
-        changes.map.num_key_syms = newLast - changes.map.first_key_sym + 1;
+        changes.map.num_key_syms = cast(ubyte)(newLast - changes.map.first_key_sym + 1);
     }
     else {
         changes.map.changed |= XkbKeySymsMask;
-        changes.map.first_key_sym = first;
-        changes.map.num_key_syms = num;
+        changes.map.first_key_sym = cast(ubyte)(first);
+        changes.map.num_key_syms = cast(ubyte)(num);
     }
     return;
 }
@@ -298,15 +300,15 @@ void XkbUpdateDescActions(XkbDescPtr xkb, KeyCode first, CARD8 num, XkbChangesPt
         newLast = first + num - 1;
 
         if (first < changes.map.first_key_act)
-            changes.map.first_key_act = first;
+            changes.map.first_key_act = cast(ubyte)(first);
         if (newLast > oldLast)
             newLast = oldLast;
-        changes.map.num_key_acts = newLast - changes.map.first_key_act + 1;
+        changes.map.num_key_acts = cast(ubyte)(newLast - changes.map.first_key_act + 1);
     }
     else {
         changes.map.changed |= XkbKeyActionsMask;
-        changes.map.first_key_act = first;
-        changes.map.num_key_acts = num;
+        changes.map.first_key_act = cast(ubyte)(first);
+        changes.map.num_key_acts = cast(ubyte)(num);
     }
     return;
 }
@@ -356,11 +358,11 @@ KeySymsPtr XkbGetCoreMap(DeviceIntPtr keybd)
 
     /* determine sizes */
     for (key = xkb.min_key_code; key <= xkb.max_key_code; key++) {
-        if (XkbKeycodeInRange(xkb, key)) {
+        if (mixin(XkbKeycodeInRange!("xkb", "key"))) {
             int nGroups = void;
             int w = void;
 
-            nGroups = XkbKeyNumGroups(xkb, key);
+            nGroups = mixin(XkbKeyNumGroups!("xkb", "key"));
             tmp = 0;
             if (nGroups > 0) {
                 if ((w = XkbKeyGroupWidth(xkb, key, XkbGroup1Index)) <= 2)
@@ -424,10 +426,10 @@ KeySymsPtr XkbGetCoreMap(DeviceIntPtr keybd)
         KeySym* pCore = void, pXKB = void;
         uint nGroups = void, groupWidth = void, n = void, nOut = void;
 
-        nGroups = XkbKeyNumGroups(xkb, key);
+        nGroups = mixin(XkbKeyNumGroups!("xkb", "key"));
         n = (key - xkb.min_key_code) * syms.mapWidth;
         pCore = &syms.map[n];
-        pXKB = XkbKeySymsPtr(xkb, key);
+        pXKB = mixin(XkbKeySymsPtr!("xkb", "key"));
         nOut = 2;
         if (nGroups > 0) {
             groupWidth = XkbKeyGroupWidth(xkb, key, XkbGroup1Index);
@@ -472,7 +474,7 @@ KeySymsPtr XkbGetCoreMap(DeviceIntPtr keybd)
                     pCore[idx++] = pXKB[n];
         }
 
-        pXKB += XkbKeyGroupsWidth(xkb, key);
+        pXKB += mixin(XkbKeyGroupsWidth!("xkb", "key"));
         nOut += 2;
         if (nGroups > 1) {
             groupWidth = XkbKeyGroupWidth(xkb, key, XkbGroup2Index);
@@ -486,7 +488,7 @@ KeySymsPtr XkbGetCoreMap(DeviceIntPtr keybd)
             if (groupWidth > 2)
                 nOut += (groupWidth - 2);
         }
-        pXKB += XkbKeyGroupsWidth(xkb, key);
+        pXKB += mixin(XkbKeyGroupsWidth!("xkb", "key"));
         for (n = XkbGroup3Index; n < nGroups; n++) {
             int s = void;
 
@@ -494,7 +496,7 @@ KeySymsPtr XkbGetCoreMap(DeviceIntPtr keybd)
             for (s = 0; s < groupWidth; s++) {
                 pCore[nOut++] = pXKB[s];
             }
-            pXKB += XkbKeyGroupsWidth(xkb, key);
+            pXKB += mixin(XkbKeyGroupsWidth!("xkb", "key"));
         }
     }
 
@@ -537,7 +539,7 @@ void XkbApplyMappingChange(DeviceIntPtr kbd, KeySymsPtr map, KeyCode first_key, 
 
     if (map && first_key && num_keys) {
         check = 0;
-        XkbSetCauseCoreReq(&cause, X_ChangeKeyboardMapping, client);
+        mixin(XkbSetCauseCoreReq!("&cause", "X_ChangeKeyboardMapping", "client"));
 
         XkbUpdateKeyTypesFromCore(kbd, map, first_key, num_keys, &changes);
         XkbUpdateActions(kbd, first_key, num_keys, &changes, &check, &cause);
@@ -550,13 +552,13 @@ void XkbApplyMappingChange(DeviceIntPtr kbd, KeySymsPtr map, KeyCode first_key, 
         /* A keymap change can imply a modmap change, se we prefer the
          * former. */
         if (!cause.mjr)
-            XkbSetCauseCoreReq(&cause, X_SetModifierMapping, client);
+            mixin(XkbSetCauseCoreReq!("&cause", "X_SetModifierMapping", "client"));
 
         check = 0;
         num_keys = xkb.max_key_code - xkb.min_key_code + 1;
         changes.map.changed |= XkbModifierMapMask;
-        changes.map.first_modmap_key = xkb.min_key_code;
-        changes.map.num_modmap_keys = num_keys;
+        changes.map.first_modmap_key = cast(ubyte)(xkb.min_key_code);
+        changes.map.num_modmap_keys = cast(ubyte)(num_keys);
         memcpy(kbd.key.xkbInfo.desc.map.modmap, modmap, MAP_LENGTH);
         XkbUpdateActions(kbd, xkb.min_key_code, num_keys, &changes, &check,
                          &cause);
@@ -898,7 +900,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
     /* client map */
     if (src.map) {
         if (!dst.map) {
-            tmp = calloc(1, XkbClientMapRec.sizeof);
+            tmp = cast(XkbClientMapRec*) calloc(1, XkbClientMapRec.sizeof);
             if (!tmp)
                 return FALSE;
             dst.map = tmp;
@@ -910,7 +912,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                                    src.map.size_syms, KeySym.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.map.syms = tmp;
+                dst.map.syms = cast(ulong*)tmp;
 
             }
             memcpy(dst.map.syms, src.map.syms,
@@ -918,7 +920,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
         }
         else {
             free(dst.map.syms);
-            dst.map.syms = null;
+            dst.map.syms = cast(ulong*)null;
         }
         dst.map.num_syms = src.map.num_syms;
         dst.map.size_syms = src.map.size_syms;
@@ -930,7 +932,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                                    MAP_LENGTH, XkbSymMapRec.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.map.key_sym_map = tmp;
+                dst.map.key_sym_map = cast(_XkbSymMapRec*)tmp;
             }
             if (gap > 0) {
                 memset(cast(char*) &dst.map.key_sym_map[gap], 0,
@@ -941,7 +943,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
         }
         else {
             free(dst.map.key_sym_map);
-            dst.map.key_sym_map = null;
+            dst.map.key_sym_map = cast(_XkbSymMapRec*)null;
         }
 
         if (src.map.types && src.map.num_types) {
@@ -969,8 +971,8 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                 for (i = src.map.num_types, dtype = (dst.map.types + i);
                      i < dst.map.num_types; i++, dtype++) {
                     free(dtype.level_names);
-                    dtype.level_names = null;
-                    dtype.num_levels = 0;
+                    dtype.level_names = cast(ulong*)null;
+                    dtype.num_levels = cast(ubyte*)0;
                     if (dtype.map_count) {
                         free(dtype.map);
                         free(dtype.preserve);
@@ -989,16 +991,16 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                                            stype.num_levels, Atom.sizeof);
                         if (!tmp)
                             continue;
-                        dtype.level_names = tmp;
+                        dtype.level_names = cast(ulong*)tmp;
                     }
                     else if (!dtype.num_levels || !dtype.level_names ||
                              i >= dst.map.num_types) {
                         tmp = calloc(stype.num_levels, Atom.sizeof);
                         if (!tmp)
                             continue;
-                        dtype.level_names = tmp;
+                        dtype.level_names = cast(ulong*)tmp;
                     }
-                    dtype.num_levels = stype.num_levels;
+                    dtype.num_levels = cast(ubyte*)stype.num_levels;
                     memcpy(dtype.level_names, stype.level_names,
                            stype.num_levels * Atom.sizeof);
                 }
@@ -1006,8 +1008,8 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                     if (dtype.num_levels && dtype.level_names &&
                         i < dst.map.num_types)
                         free(dtype.level_names);
-                    dtype.num_levels = stype.num_levels;
-                    dtype.level_names = null;
+                    dtype.num_levels = cast(ubyte*)stype.num_levels;
+                    dtype.level_names = cast(ulong*)null;
                 }
 
                 dtype.name = stype.name;
@@ -1052,14 +1054,14 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                                                XkbModsRec.sizeof);
                             if (!tmp)
                                 return FALSE;
-                            dtype.preserve = tmp;
+                            dtype.preserve = cast(_XkbMods*)tmp;
                         }
                         else if (!dtype.preserve || !dtype.map_count ||
                                  i >= dst.map.num_types) {
                             tmp = calloc(stype.map_count, XkbModsRec.sizeof);
                             if (!tmp)
                                 return FALSE;
-                            dtype.preserve = tmp;
+                            dtype.preserve = cast(_XkbMods*)tmp;
                         }
 
                         memcpy(dtype.preserve, stype.preserve,
@@ -1068,23 +1070,23 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                     else {
                         if (dtype.preserve && i < dst.map.num_types)
                             free(dtype.preserve);
-                        dtype.preserve = null;
+                        dtype.preserve = cast(_XkbMods*)null;
                     }
 
-                    dtype.map_count = stype.map_count;
+                    dtype.map_count = cast(ubyte)cast(ubyte*)stype.map_count;
                 }
                 else {
                     if (dtype.map_count && i < dst.map.num_types) {
                         free(dtype.map);
                         free(dtype.preserve);
                     }
-                    dtype.map_count = 0;
+                    dtype.map_count = cast(ubyte)cast(ubyte*)0;
                     dtype.map = null;
-                    dtype.preserve = null;
+                    dtype.preserve = cast(_XkbMods*)null;
                 }
             }
 
-            dst.map.size_types = src.map.num_types;
+            dst.map.size_types = cast(ubyte)src.map.num_types;
             dst.map.num_types = src.map.num_types;
         }
         else {
@@ -1101,7 +1103,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
             free(dst.map.types);
             dst.map.types = null;
             dst.map.num_types = 0;
-            dst.map.size_types = 0;
+            dst.map.size_types = cast(ubyte)0;
         }
 
         if (src.map.modmap) {
@@ -1109,7 +1111,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                 tmp = realloc(dst.map.modmap, MAP_LENGTH);
                 if (!tmp)
                     return FALSE;
-                dst.map.modmap = tmp;
+                dst.map.modmap = cast(ubyte*)tmp;
             }
             if (gap > 0) {
                 memset(dst.map.modmap + gap, 0, gap);
@@ -1118,7 +1120,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
         }
         else {
             free(dst.map.modmap);
-            dst.map.modmap = null;
+            dst.map.modmap = cast(ubyte*)null;
         }
     }
     else {
@@ -1137,7 +1139,7 @@ private Bool _XkbCopyServerMap(XkbDescPtr src, XkbDescPtr dst)
     /* server map */
     if (src.server) {
         if (!dst.server) {
-            tmp = calloc(1, XkbServerMapRec.sizeof);
+            tmp = cast(XkbServerMapRec*) calloc(1, XkbServerMapRec.sizeof);
             if (!tmp)
                 return FALSE;
             dst.server = tmp;
@@ -1251,7 +1253,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
     /* names */
     if (src.names) {
         if (!dst.names) {
-            dst.names = calloc(1, XkbNamesRec.sizeof);
+            dst.names = cast(XkbNamesRec*) calloc(1, XkbNamesRec.sizeof);
             if (!dst.names)
                 return FALSE;
         }
@@ -1263,7 +1265,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
                                    XkbKeyNameRec.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.names.keys = tmp;
+                dst.names.keys = cast(_XkbKeyNameRec*)tmp;
             }
             if (gap > 0)
                 memset(cast(char*) &dst.names.keys[gap], 0, gap * XkbKeyNameRec.sizeof);
@@ -1282,7 +1284,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
                                    XkbKeyAliasRec.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.names.key_aliases = tmp;
+                dst.names.key_aliases = cast(_XkbKeyAliasRec*)tmp;
             }
             memcpy(dst.names.key_aliases, src.names.key_aliases,
                    src.names.num_key_aliases * XkbKeyAliasRec.sizeof);
@@ -1291,7 +1293,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
             free(dst.names.key_aliases);
             dst.names.key_aliases = null;
         }
-        dst.names.num_key_aliases = src.names.num_key_aliases;
+        dst.names.num_key_aliases = cast(ubyte)src.names.num_key_aliases;
 
         if (src.names.num_rg) {
             if (src.names.num_rg != dst.names.num_rg) {
@@ -1299,7 +1301,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
                                    src.names.num_rg, Atom.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.names.radio_groups = tmp;
+                dst.names.radio_groups = cast(ulong*)tmp;
             }
             memcpy(dst.names.radio_groups, src.names.radio_groups,
                    src.names.num_rg * Atom.sizeof);
@@ -1308,7 +1310,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
             free(dst.names.radio_groups);
             dst.names.radio_groups = null;
         }
-        dst.names.num_rg = src.names.num_rg;
+        dst.names.num_rg = cast(ushort)src.names.num_rg;
 
         dst.names.keycodes = src.names.keycodes;
         dst.names.geometry = src.names.geometry;
@@ -1339,7 +1341,7 @@ private Bool _XkbCopyCompat(XkbDescPtr src, XkbDescPtr dst)
     /* compat */
     if (src.compat) {
         if (!dst.compat) {
-            dst.compat = calloc(1, XkbCompatMapRec.sizeof);
+            dst.compat = cast(XkbCompatMapRec*) calloc(1, XkbCompatMapRec.sizeof);
             if (!dst.compat)
                 return FALSE;
         }
@@ -1351,7 +1353,7 @@ private Bool _XkbCopyCompat(XkbDescPtr src, XkbDescPtr dst)
                                    XkbSymInterpretRec.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.compat.sym_interpret = tmp;
+                dst.compat.sym_interpret = cast(_XkbSymInterpretRec*)tmp;
             }
             memcpy(dst.compat.sym_interpret, src.compat.sym_interpret,
                    src.compat.num_si * XkbSymInterpretRec.sizeof);
@@ -1444,8 +1446,8 @@ private Bool _XkbCopyGeom(XkbDescPtr src, XkbDescPtr dst)
                     strcpy(dprop.value, sprop.value);
                 }
                 else {
-                    dprop.name = Xstrdup(sprop.name);
-                    dprop.value = Xstrdup(sprop.value);
+                    dprop.name = cast(char*)Xstrdup(sprop.name);
+                    dprop.value = cast(char*)Xstrdup(sprop.value);
                 }
             }
 
@@ -1498,7 +1500,7 @@ private Bool _XkbCopyGeom(XkbDescPtr src, XkbDescPtr dst)
                     strcpy(dcolor.spec, scolor.spec);
                 }
                 else {
-                    dcolor.spec = Xstrdup(scolor.spec);
+                    dcolor.spec = cast(char*)Xstrdup(scolor.spec);
                 }
                 dcolor.pixel = scolor.pixel;
             }
@@ -1881,7 +1883,7 @@ private Bool _XkbCopyIndicators(XkbDescPtr src, XkbDescPtr dst)
     /* indicators */
     if (src.indicators) {
         if (!dst.indicators) {
-            dst.indicators = calloc(1, XkbIndicatorRec.sizeof);
+            dst.indicators = cast(XkbIndicatorRec*) calloc(1, XkbIndicatorRec.sizeof);
             if (!dst.indicators)
                 return FALSE;
         }
@@ -1899,7 +1901,7 @@ private Bool _XkbCopyControls(XkbDescPtr src, XkbDescPtr dst)
     /* controls */
     if (src.ctrls) {
         if (!dst.ctrls) {
-            dst.ctrls = calloc(1, XkbControlsRec.sizeof);
+            dst.ctrls = cast(XkbControlsRec*) calloc(1, XkbControlsRec.sizeof);
             if (!dst.ctrls)
                 return FALSE;
         }
@@ -1975,7 +1977,7 @@ Bool XkbCopyKeymap(XkbDescPtr dst, XkbDescPtr src)
 
 Bool XkbDeviceApplyKeymap(DeviceIntPtr dst, XkbDescPtr desc)
 {
-    bool ret = void;
+    Bool ret = void;
 
     if (!dst.key || !desc)
         return FALSE;
@@ -1983,11 +1985,11 @@ Bool XkbDeviceApplyKeymap(DeviceIntPtr dst, XkbDescPtr desc)
     xkbNewKeyboardNotify nkn = {
         oldMinKeyCode: dst.key.xkbInfo.desc.min_key_code,
         oldMaxKeyCode: dst.key.xkbInfo.desc.max_key_code,
-        deviceID: dst.id,
+        deviceID: cast(ubyte)dst.id,
         oldDeviceID: dst.id,
         minKeyCode: desc.min_key_code,
         maxKeyCode: desc.max_key_code,
-        requestMajor: XkbReqCode,
+        requestMajor: cast(ubyte)XkbReqCode,
         requestMinor: X_kbSetMap,      /* Near enough's good enough. */
         changed: XkbNKN_KeycodesMask,
     };

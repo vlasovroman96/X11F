@@ -9,6 +9,7 @@ alias ssize_t = long;
 extern(C) @nogc nothrow
 int asprintf(char** strp, const(char)* fmt, ...);
 extern(C) @nogc nothrow {
+	size_t strnlen(const char *s, size_t maxlen);
 	int strncasecmp(const char *s1, const char *s2, size_t n);
 	int strcasecmp(const(char)* s1, const(char)* s2);
 	char *strcasestr(const char *haystack, const char *needle);

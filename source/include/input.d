@@ -311,7 +311,7 @@ extern int InitValuatorClassDeviceStruct(DeviceIntPtr, int, Atom*, int, int);
 
 // extern int InitPointerAccelerationScheme(DeviceIntPtr, int);
 
-extern int InitFocusClassDeviceStruct(DeviceIntPtr);
+// extern int InitFocusClassDeviceStruct(DeviceIntPtr);
 
 // extern int InitTouchClassDeviceStruct(DeviceIntPtr, uint, uint, uint);
 

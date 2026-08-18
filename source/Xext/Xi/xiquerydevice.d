@@ -60,6 +60,7 @@ import dix.devices;
 import os.log;
 import dix.events;
 import dix.inpututils;
+import include.xkbstr;
 
 
 // static Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr d);

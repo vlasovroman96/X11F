@@ -1,4 +1,4 @@
-module xkbInit.c;
+module xkb.xkbInit;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -32,33 +32,59 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import xkb-config;
+import config.xkb_config;
 
 import core.stdc.stdio;
 import core.stdc.stdlib;
 import core.stdc.ctype;
 import core.sys.posix.unistd;
 import core.stdc.math;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
-import X11/Xatom;
-import X11/extensions/XKMformat;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
+import externs.X11.Xatom;
+// //import externs.X11.extensions.XKMformat;
+import externs.X11.extensions.XKB;
+import externs.X11.extensions.XKM;
+
+
 
 import dix.screenint_priv;
-import include.misc;
 import os.bug_priv;
 import os.cmdline;
 import os.log_priv;
-import xkbsrv_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import opaque;
-import property;
-import scrnintstr;
-import xkbgeom_priv;
+import include.misc;
+import include.inputstr;
+import include.opaque;
+import include.property;
+import include.scrnintstr;
+import xkb.xkbgeom_priv;
+import include.xkbstr;
+import include.xkbstr;
+import include.misc;
+import include.inputstr;
+import include.exevents;
+import include.eventstr;
+import mi.mipointer;
+import include.xkbstr;
+import os.WaitFor;
+import include.xkbstr;
+import os.log;
+import os.utils;
+import dix.events;
+import externs.gnu;
+import dix.devices;
+import dix.inpututils;
+import dix.property;
+import xkb.xkbDflts;
+import xkb.XKBMAlloc;
+
+
+// import externs.X11.extensions.XKBstr;
 
 enum      _XKB_RF_NAMES_PROP_ATOM =         "_XKB_RULES_NAMES";
 
@@ -108,6 +134,8 @@ private XkbDescPtr xkb_cached_map = null;
 
 private Bool XkbWantRulesProp = XKB_DFLT_RULES_PROP;
 
+alias XKB_DFLT_RULES = build.dix_config.XKB_DFLT_RULES;
+
 /***====================================================================***/
 
 /**
@@ -116,11 +144,11 @@ private Bool XkbWantRulesProp = XKB_DFLT_RULES_PROP;
  */
 void XkbGetRulesDflts(XkbRMLVOSet* rmlvo)
 {
-    rmlvo.rules = XNFstrdup(XkbRulesDflt ? XkbRulesDflt : XKB_DFLT_RULES);
-    rmlvo.model = XNFstrdup(XkbModelDflt ? XkbModelDflt : XKB_DFLT_MODEL);
-    rmlvo.layout = XNFstrdup(XkbLayoutDflt ? XkbLayoutDflt : XKB_DFLT_LAYOUT);
-    rmlvo.variant = XNFstrdup(XkbVariantDflt ? XkbVariantDflt : XKB_DFLT_VARIANT);
-    rmlvo.options = XNFstrdup(XkbOptionsDflt ? XkbOptionsDflt : XKB_DFLT_OPTIONS);
+    rmlvo.rules = cast(char*)XNFstrdup(XkbRulesDflt ? XkbRulesDflt : XKB_DFLT_RULES);
+    rmlvo.model = cast(char*)XNFstrdup(XkbModelDflt ? XkbModelDflt : XKB_DFLT_MODEL);
+    rmlvo.layout = cast(char*)XNFstrdup(XkbLayoutDflt ? XkbLayoutDflt : XKB_DFLT_LAYOUT);
+    rmlvo.variant = cast(char*)XNFstrdup(XkbVariantDflt ? XkbVariantDflt : XKB_DFLT_VARIANT);
+    rmlvo.options = cast(char*)XNFstrdup(XkbOptionsDflt ? XkbOptionsDflt : XKB_DFLT_OPTIONS);
 }
 
 void XkbFreeRMLVOSet(XkbRMLVOSet* rmlvo, Bool freeRMLVO)
@@ -145,7 +173,7 @@ private Bool XkbWriteRulesProp()
     int len = void, out_ = void;
     Atom name = void;
 
-    len = (XkbRulesUsed ? strlen(XkbRulesUsed) : 0);
+    len = cast(int)(XkbRulesUsed ? strlen(XkbRulesUsed) : 0);
     len += (XkbModelUsed ? strlen(XkbModelUsed) : 0);
     len += (XkbLayoutUsed ? strlen(XkbLayoutUsed) : 0);
     len += (XkbVariantUsed ? strlen(XkbVariantUsed) : 0);
@@ -156,15 +184,15 @@ private Bool XkbWriteRulesProp()
     len += 5;                   /* trailing NULs */
 
     name =
-        MakeAtom(_XKB_RF_NAMES_PROP_ATOM, strlen(_XKB_RF_NAMES_PROP_ATOM), 1);
+        MakeAtom(_XKB_RF_NAMES_PROP_ATOM.ptr, cast(uint)strlen(_XKB_RF_NAMES_PROP_ATOM.ptr), 1);
     if (name == None) {
-        ErrorF("[xkb] Atom error: %s not created\n", _XKB_RF_NAMES_PROP_ATOM);
+        ErrorF("[xkb] Atom error: %s not created\n", _XKB_RF_NAMES_PROP_ATOM.ptr);
         return TRUE;
     }
     char* pval = cast(char*) calloc(1, len);
     if (!pval) {
         ErrorF("[xkb] Allocation error: %s proprerty not created\n",
-               _XKB_RF_NAMES_PROP_ATOM);
+               _XKB_RF_NAMES_PROP_ATOM.ptr);
         return TRUE;
     }
     out_ = 0;
@@ -205,25 +233,25 @@ private Bool XkbWriteRulesProp()
 
 void XkbInitRules(XkbRMLVOSet* rmlvo, const(char)* rules, const(char)* model, const(char)* layout, const(char)* variant, const(char)* options)
 {
-    rmlvo.rules = rules ? strdup(rules) : null;
-    rmlvo.model = model ? strdup(model) : null;
-    rmlvo.layout = layout ? strdup(layout) : null;
-    rmlvo.variant = variant ? strdup(variant) : null;
-    rmlvo.options = options ? strdup(options) : null;
+    rmlvo.rules = cast(char*)(rules ? strdup(rules) : null);
+    rmlvo.model = cast(char*)(model ? strdup(model) : null);
+    rmlvo.layout = cast(char*)(layout ? strdup(layout) : null);
+    rmlvo.variant = cast(char*)(variant ? strdup(variant) : null);
+    rmlvo.options = cast(char*)(options ? strdup(options) : null);
 }
 
 private void XkbSetRulesUsed(XkbRMLVOSet* rmlvo)
 {
     free(XkbRulesUsed);
-    XkbRulesUsed = (rmlvo.rules ? Xstrdup(rmlvo.rules) : null);
+    XkbRulesUsed = cast(char*)(rmlvo.rules ? Xstrdup(rmlvo.rules) : null);
     free(XkbModelUsed);
-    XkbModelUsed = (rmlvo.model ? Xstrdup(rmlvo.model) : null);
+    XkbModelUsed = cast(char*)(rmlvo.model ? Xstrdup(rmlvo.model) : null);
     free(XkbLayoutUsed);
-    XkbLayoutUsed = (rmlvo.layout ? Xstrdup(rmlvo.layout) : null);
+    XkbLayoutUsed = cast(char*)(rmlvo.layout ? Xstrdup(rmlvo.layout) : null);
     free(XkbVariantUsed);
-    XkbVariantUsed = (rmlvo.variant ? Xstrdup(rmlvo.variant) : null);
+    XkbVariantUsed = cast(char*)(rmlvo.variant ? Xstrdup(rmlvo.variant) : null);
     free(XkbOptionsUsed);
-    XkbOptionsUsed = (rmlvo.options ? Xstrdup(rmlvo.options) : null);
+    XkbOptionsUsed = cast(char*)(rmlvo.options ? Xstrdup(rmlvo.options) : null);
     if (XkbWantRulesProp)
         XkbWriteRulesProp();
     return;
@@ -233,23 +261,23 @@ void XkbSetRulesDflts(XkbRMLVOSet* rmlvo)
 {
     if (rmlvo.rules) {
         free(XkbRulesDflt);
-        XkbRulesDflt = Xstrdup(rmlvo.rules);
+        XkbRulesDflt = cast(char*)Xstrdup(rmlvo.rules);
     }
     if (rmlvo.model) {
         free(XkbModelDflt);
-        XkbModelDflt = Xstrdup(rmlvo.model);
+        XkbModelDflt = cast(char*)Xstrdup(rmlvo.model);
     }
     if (rmlvo.layout) {
         free(XkbLayoutDflt);
-        XkbLayoutDflt = Xstrdup(rmlvo.layout);
+        XkbLayoutDflt = cast(char*)Xstrdup(rmlvo.layout);
     }
     if (rmlvo.variant) {
         free(XkbVariantDflt);
-        XkbVariantDflt = Xstrdup(rmlvo.variant);
+        XkbVariantDflt = cast(char*)Xstrdup(rmlvo.variant);
     }
     if (rmlvo.options) {
         free(XkbOptionsDflt);
-        XkbOptionsDflt = Xstrdup(rmlvo.options);
+        XkbOptionsDflt = cast(char*)Xstrdup(rmlvo.options);
     }
     return;
 }
@@ -300,7 +328,7 @@ private Bool XkbCompareUsedRMLVO(XkbRMLVOSet* rmlvo)
 
 /***====================================================================***/
 
-import xkbDflts;
+import xkb.xkbDflts;
 
 private Bool XkbInitKeyTypes(XkbDescPtr xkb)
 {
@@ -310,10 +338,10 @@ private Bool XkbInitKeyTypes(XkbDescPtr xkb)
     initTypeNames(null);
     if (XkbAllocClientMap(xkb, XkbKeyTypesMask, num_dflt_types) != Success)
         return FALSE;
-    if (XkbCopyKeyTypes(dflt_types, xkb.map.types, num_dflt_types) != Success) {
+    if (XkbCopyKeyTypes(dflt_types.ptr, xkb.map.types, num_dflt_types) != Success) {
         return FALSE;
     }
-    xkb.map.size_types = xkb.map.num_types = num_dflt_types;
+    xkb.map.size_types = cast(ubyte)xkb.map.num_types = cast(ubyte)(num_dflt_types);
     return TRUE;
 }
 
@@ -324,7 +352,7 @@ private void XkbInitRadioGroups(XkbSrvInfoPtr xkbi)
     return;
 }
 
-private int XkbInitCompatStructs(XkbDescPtr xkb)
+private Status XkbInitCompatStructs(XkbDescPtr xkb)
 {
     int i = void;
     XkbCompatMapPtr compat = void;
@@ -345,10 +373,10 @@ private int XkbInitCompatStructs(XkbDescPtr xkb)
             uint mask = void;
 
             mask = XkbMaskForVMask(xkb, compat.groups[i].vmods);
-            compat.groups[i].mask = compat.groups[i].real_mods | mask;
+            compat.groups[i].mask = cast(ubyte)(compat.groups[i].real_mods | mask);
         }
         else
-            compat.groups[i].mask = compat.groups[i].real_mods;
+            compat.groups[i].mask = cast(ubyte)(compat.groups[i].real_mods);
     }
     return Success;
 }
@@ -360,11 +388,13 @@ private void XkbInitSemantics(XkbDescPtr xkb)
     return;
 }
 
-private int XkbInitNames(XkbSrvInfoPtr xkbi)
+/***====================================================================***/
+
+private Status XkbInitNames(XkbSrvInfoPtr xkbi)
 {
     XkbDescPtr xkb = void;
     XkbNamesPtr names = void;
-    int rtrn = void;
+    Status rtrn = void;
     Atom unknown = void;
 
     xkb = xkbi.desc;
@@ -416,7 +446,7 @@ version (LED_COMPOSE) {
     return Success;
 }
 
-private int XkbInitIndicatorMap(XkbSrvInfoPtr xkbi)
+private Status XkbInitIndicatorMap(XkbSrvInfoPtr xkbi)
 {
     XkbDescPtr xkb = void;
     XkbIndicatorPtr map = void;
@@ -429,21 +459,21 @@ private int XkbInitIndicatorMap(XkbSrvInfoPtr xkbi)
     if (!(xkb.defined & XkmIndicatorsMask)) {
         map = xkb.indicators;
         map.phys_indicators = PHYS_LEDS;
-        map.maps[LED_CAPS - 1].flags = XkbIM_NoExplicit;
-        map.maps[LED_CAPS - 1].which_mods = XkbIM_UseLocked;
-        map.maps[LED_CAPS - 1].mods.mask = LockMask;
-        map.maps[LED_CAPS - 1].mods.real_mods = LockMask;
+        map.maps[LED_CAPS - 1].flags = cast(ubyte)XkbIM_NoExplicit;
+        map.maps[LED_CAPS - 1].which_mods = cast(ubyte)XkbIM_UseLocked;
+        map.maps[LED_CAPS - 1].mods.mask = cast(ubyte)LockMask;
+        map.maps[LED_CAPS - 1].mods.real_mods = cast(ubyte)LockMask;
 
-        map.maps[LED_NUM - 1].flags = XkbIM_NoExplicit;
-        map.maps[LED_NUM - 1].which_mods = XkbIM_UseLocked;
-        map.maps[LED_NUM - 1].mods.mask = 0;
-        map.maps[LED_NUM - 1].mods.real_mods = 0;
-        map.maps[LED_NUM - 1].mods.vmods = vmod_NumLockMask;
+        map.maps[LED_NUM - 1].flags = cast(ubyte)XkbIM_NoExplicit;
+        map.maps[LED_NUM - 1].which_mods = cast(ubyte)XkbIM_UseLocked;
+        map.maps[LED_NUM - 1].mods.mask = cast(ubyte)0;
+        map.maps[LED_NUM - 1].mods.real_mods = cast(ubyte)0;
+        map.maps[LED_NUM - 1].mods.vmods = cast(ubyte)vmod_NumLockMask;
 
-        map.maps[LED_SCROLL - 1].flags = XkbIM_NoExplicit;
-        map.maps[LED_SCROLL - 1].which_mods = XkbIM_UseLocked;
-        map.maps[LED_SCROLL - 1].mods.mask = Mod3Mask;
-        map.maps[LED_SCROLL - 1].mods.real_mods = Mod3Mask;
+        map.maps[LED_SCROLL - 1].flags = cast(ubyte)XkbIM_NoExplicit;
+        map.maps[LED_SCROLL - 1].which_mods = cast(ubyte)XkbIM_UseLocked;
+        map.maps[LED_SCROLL - 1].mods.mask = cast(ubyte)Mod3Mask;
+        map.maps[LED_SCROLL - 1].mods.real_mods = cast(ubyte)Mod3Mask;
     }
 
     sli = XkbFindSrvLedInfo(xkbi.device, XkbDfltXIClass, XkbDfltXIId, 0);
@@ -453,7 +483,7 @@ private int XkbInitIndicatorMap(XkbSrvInfoPtr xkbi)
     return Success;
 }
 
-private int XkbInitControls(DeviceIntPtr pXDev, XkbSrvInfoPtr xkbi)
+private Status XkbInitControls(DeviceIntPtr pXDev, XkbSrvInfoPtr xkbi)
 {
     XkbDescPtr xkb = void;
     XkbControlsPtr ctrls = void;
@@ -465,24 +495,24 @@ private int XkbInitControls(DeviceIntPtr pXDev, XkbSrvInfoPtr xkbi)
     ctrls = xkb.ctrls;
     if (!(xkb.defined & XkmSymbolsMask))
         ctrls.num_groups = 1;
-    ctrls.groups_wrap = XkbSetGroupInfo(1, XkbWrapIntoRange, 0);
+    ctrls.groups_wrap = mixin(XkbSetGroupInfo!("1", "XkbWrapIntoRange", "0"));
     ctrls.internal.mask = 0;
     ctrls.internal.real_mods = 0;
     ctrls.internal.vmods = 0;
     ctrls.ignore_lock.mask = 0;
     ctrls.ignore_lock.real_mods = 0;
     ctrls.ignore_lock.vmods = 0;
-    ctrls.enabled_ctrls = XkbAccessXTimeoutMask | XkbRepeatKeysMask |
-        XkbMouseKeysAccelMask | XkbAudibleBellMask | XkbIgnoreGroupLockMask;
+    ctrls.enabled_ctrls = cast(ubyte)(XkbAccessXTimeoutMask | XkbRepeatKeysMask |
+        XkbMouseKeysAccelMask | XkbAudibleBellMask | XkbIgnoreGroupLockMask);
     if (XkbWantAccessX)
         ctrls.enabled_ctrls |= XkbAccessXKeysMask;
     AccessXInit(pXDev);
     return Success;
 }
 
-private int XkbInitOverlayState(XkbSrvInfoPtr xkbi)
+private Status XkbInitOverlayState(XkbSrvInfoPtr xkbi)
 {
-    memset(xkbi.overlay_perkey_state, 0, typeof(xkbi.overlay_perkey_state).sizeof);
+    memset(xkbi.overlay_perkey_state.ptr, 0, typeof(xkbi.overlay_perkey_state).sizeof);
     return Success;
 }
 
@@ -497,10 +527,10 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
     XkbEventCauseRec cause = { 0 };
     XkbRMLVOSet rmlvo_dflts = { null };
 
-    BUG_RETURN_VAL(dev == null, FALSE);
-    BUG_RETURN_VAL(dev.key != null, FALSE);
-    BUG_RETURN_VAL(dev.kbdfeed != null, FALSE);
-    BUG_RETURN_VAL(rmlvo && keymap, FALSE);
+    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.key != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.kbdfeed != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("rmlvo && keymap", "FALSE"));
 
     if (!rmlvo && !keymap) {
         rmlvo = &rmlvo_dflts;
@@ -508,22 +538,22 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
     }
 
     memset(&changes, 0, changes.sizeof);
-    XkbSetCauseUnknown(&cause);
+    mixin(XkbSetCauseUnknown!("&cause"));
 
-    dev.key = calloc(1, typeof(*dev.key).sizeof);
+    dev.key = cast(_KeyClassRec*)calloc(1, typeof(*dev.key).sizeof);
     if (!dev.key) {
         ErrorF("XKB: Failed to allocate key class\n");
         goto unwind_rmlvo;
     }
     dev.key.sourceid = dev.id;
 
-    dev.kbdfeed = calloc(1, typeof(*dev.kbdfeed).sizeof);
+    dev.kbdfeed = cast(_KbdFeedbackClassRec*)calloc(1, typeof(*dev.kbdfeed).sizeof);
     if (!dev.kbdfeed) {
         ErrorF("XKB: Failed to allocate key feedback class\n");
         goto unwind_key;
     }
 
-    xkbi = calloc(1, typeof(*xkbi).sizeof);
+    xkbi = cast(_XkbSrvInfo*)calloc(1, typeof(*xkbi).sizeof);
     if (!xkbi) {
         ErrorF("XKB: Failed to allocate XKB info\n");
         goto unwind_kbdfeed;
@@ -569,7 +599,7 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
     if (xkb.max_key_code == 0)
         xkb.max_key_code = 255;
 
-    i = XkbNumKeys(xkb) / 3 + 1;
+    i = mixin(XkbNumKeys!("xkb")) / 3 + 1;
     if (XkbAllocClientMap(xkb, XkbAllClientInfoMask, 0) != Success)
         goto unwind_desc;
     if (XkbAllocServerMap(xkb, XkbAllServerInfoMask, i) != Success)
@@ -588,7 +618,7 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
 
     XkbInitOverlayState(xkbi);
 
-    XkbUpdateActions(dev, xkb.min_key_code, XkbNumKeys(xkb), &changes,
+    XkbUpdateActions(dev, xkb.min_key_code, cast(ubyte)mixin(XkbNumKeys!("xkb")), &changes,
                      &check, &cause);
 
     if (!dev.focus)
@@ -596,13 +626,13 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
 
     xkbi.kbdProc = ctrl_func;
     dev.kbdfeed.BellProc = bell_func;
-    dev.kbdfeed.CtrlProc = XkbDDXKeybdCtrlProc;
+    dev.kbdfeed.CtrlProc = &XkbDDXKeybdCtrlProc;
 
     dev.kbdfeed.ctrl = defaultKeyboardControl;
     if (dev.kbdfeed.ctrl.autoRepeat)
         xkb.ctrls.enabled_ctrls |= XkbRepeatKeysMask;
 
-    memcpy(dev.kbdfeed.ctrl.autoRepeats, xkb.ctrls.per_key_repeat,
+    memcpy(dev.kbdfeed.ctrl.autoRepeats.ptr, xkb.ctrls.per_key_repeat.ptr,
            XkbPerKeyBitArraySize);
 
     sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId, 0);
@@ -718,7 +748,6 @@ static if (!HasVersion!"Windows" && !HasVersion!"Cygwin") {
                 return -1;
             }
             else
-}
             {
                 if (strlen(argv[i]) < PATH_MAX) {
                     XkbBaseDirectory = argv[i];
@@ -729,6 +758,17 @@ static if (!HasVersion!"Windows" && !HasVersion!"Cygwin") {
                     return -1;
                 }
             }
+}
+else {
+                if (strlen(argv[i]) < PATH_MAX) {
+                    XkbBaseDirectory = argv[i];
+                    return 2;
+                }
+                else {
+                    LogMessage(X_ERROR, "-xkbdir pathname too long\n");
+                    return -1;
+                }
+}
         }
         else {
             return -1;
@@ -744,7 +784,7 @@ static if (!HasVersion!"Windows" && !HasVersion!"Cygwin") {
             XkbWantAccessX = 1;
 
             if (((i + 1) < argc) && (isdigit(cast(ubyte)argv[i + 1][0]))) {
-                XkbDfltAccessXTimeout = atoi(argv[++i]);
+                XkbDfltAccessXTimeout = cast(ushort)atoi(argv[++i]);
                 j++;
 
                 if (((i + 1) < argc) && (isdigit(cast(ubyte)argv[i + 1][0]))) {
@@ -759,7 +799,7 @@ static if (!HasVersion!"Windows" && !HasVersion!"Cygwin") {
                 }
                 if (((i + 1) < argc) && (isdigit(cast(ubyte)argv[i + 1][0]))) {
                     if (argv[++i][0] == '1')
-                        XkbDfltAccessXFeedback = XkbAccessXFeedbackMask;
+                        XkbDfltAccessXFeedback = cast(uint)XkbAccessXFeedbackMask;
                     else
                         XkbDfltAccessXFeedback = 0;
                     j++;

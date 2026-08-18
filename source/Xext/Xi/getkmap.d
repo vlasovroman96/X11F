@@ -69,6 +69,7 @@ import include.xkbsrv;
 import include.xkbsrv;
 import externs.X11.extensions.XIproto;
 import dix.devices;
+import include.xkbstr;
 
 /***********************************************************************
  *

@@ -1,4 +1,4 @@
-module xkbfmisc.c;
+module xkb.xkbfmisc;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,28 +27,30 @@ extern(C): __gshared:
 
  ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-import X11/Xos;
-import X11/Xfuncs;
-import X11/extensions/XKMformat;
-import X11/X;
-import X11/keysym;
-import X11/Xproto;
+// //import externs.X11.Xos;
+// //import externs.X11.Xfuncs;
+// //import externs.X11.extensions.XKMformat;
+//import externs.X11.X;
+//import externs.X11.keysym;
+//import externs.X11.Xproto;
+
+import xkb.xkbfmisc_priv;
+import xkb.xkbout_priv;
 
 import include.misc;
+import include.inputstr;
+import include.dix;
+import include.xkbsrv;
+import include.xkbsrv;
+import xkb.xkbgeom_priv;
+// import externs.X11.extensions.XKBstr;
+import include.xkbstr;
 
-import xkbfmisc_priv;
-import xkbout_priv;
-
-import inputstr;
-import dix;
-import xkbstr;
-import xkbsrv;
-import xkbgeom_priv;
 
 uint _XkbKSCheckCase(KeySym ks)
 {
@@ -150,8 +152,8 @@ private Bool XkbWriteSectionFromName(FILE* file, const(char)* sectionName, const
     return TRUE;
 }
 
-enum string	NEED_DESC(string n) = `((!(` ~ n ~ `))||((` ~ n ~ `)[0]=='+')||((` ~ n ~ `)[0]=='|')||(strchr((` ~ n ~ `),'%')))`;
-enum string	COMPLETE(string n) = `((` ~ n ~ `)&&(!` ~ NEED_DESC!(`(` ~ n ~ `)`) ~ `))`;
+enum string	NEED_DESC(string n) = `((!` ~ n ~ `)||((` ~ n ~ `)[0]=='+')||((` ~ n ~ `)[0]=='|')||(strchr((` ~ n ~ `),'%')))`;
+enum string	COMPLETE(string n) = `((` ~ n ~ `)&&(!` ~ NEED_DESC!(n) ~ `))`;
 
 /* ARGSUSED */
 private void _AddIncl(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImplicit, int index, void* priv)
@@ -245,7 +247,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
         if (wantNames & XkmTypesMask) {
             if (old_names.types != None) {
                 tmp = NameForAtom(old_names.types);
-                names.types = Xstrdup(tmp);
+                names.types = cast(char*)Xstrdup(tmp);
             }
             else {
                 wantDflts |= XkmTypesMask;
@@ -255,7 +257,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
         if (wantNames & XkmCompatMapMask) {
             if (old_names.compat != None) {
                 tmp = NameForAtom(old_names.compat);
-                names.compat = Xstrdup(tmp);
+                names.compat = cast(char*)Xstrdup(tmp);
             }
             else
                 wantDflts |= XkmCompatMapMask;
@@ -265,13 +267,13 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
             if (old_names.symbols == None)
                 return FALSE;
             tmp = NameForAtom(old_names.symbols);
-            names.symbols = Xstrdup(tmp);
+            names.symbols = cast(char*)Xstrdup(tmp);
             complete |= XkmSymbolsMask;
         }
         if (wantNames & XkmKeyNamesMask) {
             if (old_names.keycodes != None) {
                 tmp = NameForAtom(old_names.keycodes);
-                names.keycodes = Xstrdup(tmp);
+                names.keycodes = cast(char*)Xstrdup(tmp);
             }
             else
                 wantDflts |= XkmKeyNamesMask;
@@ -281,7 +283,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
             if (old_names.geometry == None)
                 return FALSE;
             tmp = NameForAtom(old_names.geometry);
-            names.geometry = Xstrdup(tmp);
+            names.geometry = cast(char*)Xstrdup(tmp);
             complete |= XkmGeometryMask;
             wantNames &= ~XkmGeometryMask;
         }

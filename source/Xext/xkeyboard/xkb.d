@@ -1,4 +1,4 @@
-module xkb.c;
+module xkb.xkb.xkb;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,14 +28,16 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
-import stdbool;
 import core.stdc.stdio;
-import X11/X;
-import X11/Xproto;
-import X11/extensions/XI;
-import X11/extensions/XKMformat;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.extensions.XI;
+import externs.X11.extensions.XKB;
+import externs.X11.extensions.XKM;
+
+import xkb.XKBMAlloc;
 
 import dix.devices_priv;
 import dix.dix_priv;
@@ -43,16 +45,37 @@ import dix.request_priv;
 import dix.rpcbuf_priv;
 import dix.server_priv;
 import miext.extinit_priv;
-import include.misc;
 import os.osdep;
-import xkbfmisc_priv;
-import xkbsrv_priv;
+import xkb.xkbfmisc_priv;
+import xkb.xkbsrv_priv;
 
-import inputstr;
-import extnsionst;
-import xkb-procs;
-import protocol-versions;
+import include.misc;
+import include.inputstr;
+import include.extnsionst;
+import xkb.xkb_procs;
+import include.protocol_versions;
+import include.xkbstr;
+import os.log;
+import dix.events;
+import dix.devices;
 
+import externs.X11.extensions.XKBproto;
+import xkb.XKBGAlloc;
+import dix.extension;
+
+// import externs.X11.extensions.XKBgeom;
+
+public enum XkbSA_DeviceValuator = 0x14;
+public enum XkbSA_LastAction = 0x14;
+
+enum XkbAllStateEventsMask =		XkbAllStateComponentsMask;
+enum XkbAllMapEventsMask =		XkbAllMapComponentsMask;
+enum XkbAllControlEventsMask =		XkbAllControlsMask;
+enum XkbAllIndicatorEventsMask =	XkbAllIndicatorsMask;
+enum XkbAllNameEventsMask =		XkbAllNamesMask;
+enum XkbAllCompatMapEventsMask =	XkbAllCompatMask;
+enum XkbAllBellEventsMask =		(1L << 0);
+enum XkbAllActionMessagesMask =	(1L << 0);
 
 int XkbEventBase;
 private int XkbErrorBase;
@@ -63,102 +86,106 @@ private CARD32 xkbDebugCtrls = 0;
 
 RESTYPE RT_XKBCLIENT = 0;
 
+alias XkbNumRequiredTypes = xkb.XKBMAlloc.XkbNumRequiredTypes;
+alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
+
 enum string	CHK_DEVICE(string dev, string id, string client, string access_mode, string lf) = `{
     int why = void;
-    int tmprc = cast(` ~ lf ~ `)(&(` ~ dev ~ `), (` ~ id ~ `), (` ~ client ~ `), (` ~ access_mode ~ `), &why);
+    int tmprc = ` ~ lf ~ `(&(` ~ dev ~ `), ` ~ id ~ `, ` ~ client ~ `, ` ~ access_mode ~ `, &why);
     if (tmprc != Success) {
-	(` ~ client ~ `).errorValue = _XkbErrCode2(why, (` ~ id ~ `));
+	` ~ client ~ `.errorValue = mixin(_XkbErrCode2!("why", "` ~ id ~ `"));
 	return tmprc;
     }
 }`;
 
 enum string	CHK_KBD_DEVICE(string dev, string id, string client, string mode) = `
-    ` ~ CHK_DEVICE!(`(` ~ dev ~ `)`, `(` ~ id ~ `)`, `(` ~ client ~ `)`, `(` ~ mode ~ `)`, `_XkbLookupKeyboard`) ~ ``;
+    ` ~ CHK_DEVICE!(dev, id, client, mode, `_XkbLookupKeyboard`) ~ ``;
 enum string	CHK_LED_DEVICE(string dev, string id, string client, string mode) = `
-    ` ~ CHK_DEVICE!(`(` ~ dev ~ `)`, `(` ~ id ~ `)`, `(` ~ client ~ `)`, `(` ~ mode ~ `)`, `_XkbLookupLedDevice`) ~ ``;
+    ` ~ CHK_DEVICE!(dev, id, client, mode, `_XkbLookupLedDevice`) ~ ``;
 enum string	CHK_BELL_DEVICE(string dev, string id, string client, string mode) = `
-    ` ~ CHK_DEVICE!(`(` ~ dev ~ `)`, `(` ~ id ~ `)`, `(` ~ client ~ `)`, `(` ~ mode ~ `)`, `_XkbLookupBellDevice`) ~ ``;
+    ` ~ CHK_DEVICE!(dev, id, client, mode, `_XkbLookupBellDevice`) ~ ``;
 enum string	CHK_ANY_DEVICE(string dev, string id, string client, string mode) = `
-    ` ~ CHK_DEVICE!(`(` ~ dev ~ `)`, `(` ~ id ~ `)`, `(` ~ client ~ `)`, `(` ~ mode ~ `)`, `_XkbLookupAnyDevice`) ~ ``;
+    ` ~ CHK_DEVICE!(dev, id, client, mode, `_XkbLookupAnyDevice`) ~ ``;
 
 enum string	CHK_ATOM_ONLY2(string a,string ev,string er) = `{
 	if (((` ~ a ~ `)==None)||(!ValidAtom((` ~ a ~ `)))) {
 	    (` ~ ev ~ `)= cast(XID)(` ~ a ~ `);
-	    return (` ~ er ~ `);
+	    return ` ~ er ~ `;
 	}
 }`;
 enum string	CHK_ATOM_ONLY(string a) = `
-	` ~ CHK_ATOM_ONLY2!(`(` ~ a ~ `)`,`client.errorValue`,`BadAtom`) ~ ``;
+	` ~ CHK_ATOM_ONLY2!(a,`client.errorValue`,`BadAtom`) ~ ``;
 
 enum string	CHK_ATOM_OR_NONE3(string a,string ev,string er,string ret) = `{
 	if (((` ~ a ~ `)!=None)&&(!ValidAtom((` ~ a ~ `)))) {
 	    (` ~ ev ~ `)= cast(XID)(` ~ a ~ `);
 	    (` ~ er ~ `)= BadAtom;
-	    return (` ~ ret ~ `);
+	    return ` ~ ret ~ `;
 	}
 }`;
 enum string	CHK_ATOM_OR_NONE2(string a,string ev,string er) = `{
 	if (((` ~ a ~ `)!=None)&&(!ValidAtom((` ~ a ~ `)))) {
 	    (` ~ ev ~ `)= cast(XID)(` ~ a ~ `);
-	    return (` ~ er ~ `);
+	    return ` ~ er ~ `;
 	}
 }`;
 enum string	CHK_ATOM_OR_NONE(string a) = `
-	` ~ CHK_ATOM_OR_NONE2!(`(` ~ a ~ `)`,`client.errorValue`,`BadAtom`) ~ ``;
+	` ~ CHK_ATOM_OR_NONE2!(a,`client.errorValue`,`BadAtom`) ~ ``;
 
 enum string	CHK_MASK_LEGAL3(string err,string mask,string legal,string ev,string er,string ret) = `{
 	if ((` ~ mask ~ `)&(~(` ~ legal ~ `))) { 
-	    (` ~ ev ~ `)= _XkbErrCode2((` ~ err ~ `),((` ~ mask ~ `)&(~(` ~ legal ~ `))));
+	    (` ~ ev ~ `)= `~_XkbErrCode2!(err,`((` ~ mask ~ `)&(~(` ~ legal ~ `)))`)~`;
 	    (` ~ er ~ `)= BadValue;
-	    return (` ~ ret ~ `);
+	    return ` ~ ret ~ `;
 	}
 }`;
 enum string	CHK_MASK_LEGAL2(string err,string mask,string legal,string ev,string er) = `{
 	if ((` ~ mask ~ `)&(~(` ~ legal ~ `))) { 
-	    (` ~ ev ~ `)= _XkbErrCode2((` ~ err ~ `),((` ~ mask ~ `)&(~(` ~ legal ~ `))));
+	    (` ~ ev ~ `)= `~_XkbErrCode2!(err,`((`~mask~`)&(~(` ~ legal ~ `)))`)~`;
 	    return (` ~ er ~ `);
 	}
 }`;
 enum string	CHK_MASK_LEGAL(string err,string mask,string legal) = `
-	` ~ CHK_MASK_LEGAL2!(`(` ~ err ~ `)`,`(` ~ mask ~ `)`,`(` ~ legal ~ `)`,`client.errorValue`,`BadValue`) ~ ``;
+	` ~ CHK_MASK_LEGAL2!(err,mask,legal,`client.errorValue`,`BadValue`) ~ ``;
 
 enum string	CHK_MASK_MATCH(string err,string affect,string value) = `{
 	if ((` ~ value ~ `)&(~(` ~ affect ~ `))) { 
-	    client.errorValue= _XkbErrCode2((` ~ err ~ `),((` ~ value ~ `)&(~(` ~ affect ~ `))));
+	    client.errorValue= `~_XkbErrCode2!(err,value ~`&(~(` ~ affect ~ `))`)~`;
 	    return BadMatch;
 	}
 }`;
 enum string	CHK_MASK_OVERLAP(string err,string m1,string m2) = `{
 	if ((` ~ m1 ~ `)&(` ~ m2 ~ `)) { 
-	    client.errorValue= _XkbErrCode2((` ~ err ~ `),((` ~ m1 ~ `)&(` ~ m2 ~ `)));
+	    client.errorValue= `~_XkbErrCode2!((err),`((` ~ m1 ~ `)&(` ~ m2 ~ `))`)~`;
 	    return BadMatch;
 	}
 }`;
 enum string	CHK_KEY_RANGE2(string err,string first,string num,string x,string ev,string er) = `{
 	if ((cast(uint)(` ~ first ~ `)+(` ~ num ~ `)-1)>(((` ~ x ~ `).max_key_code))) {
-	    (` ~ ev ~ `)=_XkbErrCode4((` ~ err ~ `),(` ~ first ~ `),(` ~ num ~ `),(` ~ x ~ `).max_key_code);
+	    (` ~ ev ~ `)=`~_XkbErrCode4!(err,first,num,`(` ~ x ~ `).max_key_code`)~`;
 	    return (` ~ er ~ `);
 	}
 	else if ( (` ~ first ~ `)<(((` ~ x ~ `).min_key_code)) ) {
-	    (` ~ ev ~ `)=_XkbErrCode3((` ~ err ~ `)+1,(` ~ first ~ `),xkb.min_key_code);
+	    (` ~ ev ~ `)=`~_XkbErrCode3!(`(` ~ err ~ `)+1`,first,`xkb.min_key_code`)~`;
 	    return (` ~ er ~ `);
 	}
 }`;
+
 enum string	CHK_KEY_RANGE(string err,string first,string num,string x) = `
-	` ~ CHK_KEY_RANGE2!(`(` ~ err ~ `)`,`(` ~ first ~ `)`,`(` ~ num ~ `)`,`(` ~ x ~ `)`,`client.errorValue`,`BadValue`) ~ ``;
+	` ~ CHK_KEY_RANGE2!(err,first,num,x,`client.errorValue`,`BadValue`);
 
 enum string	CHK_REQ_KEY_RANGE2(string err,string first,string num,string r,string ev,string er) = `{
 	if ((cast(uint)(` ~ first ~ `)+(` ~ num ~ `)-1)>(((` ~ r ~ `).maxKeyCode))) {
-	    (` ~ ev ~ `)=_XkbErrCode4((` ~ err ~ `),(` ~ first ~ `),(` ~ num ~ `),(` ~ r ~ `).maxKeyCode);
+	    (` ~ ev ~ `)=`~_XkbErrCode4!(err,first,num,`(` ~ r ~ `).maxKeyCode`)~`;
 	    return (` ~ er ~ `);
 	}
 	else if ( (` ~ first ~ `)<(((` ~ r ~ `).minKeyCode)) ) {
-	    (` ~ ev ~ `)=_XkbErrCode3((` ~ err ~ `)+1,(` ~ first ~ `),(` ~ r ~ `).minKeyCode);
+	    (` ~ ev ~ `)=`~_XkbErrCode3!((err~`+1`),first,`(` ~ r ~ `).minKeyCode`)~`;
 	    return (` ~ er ~ `);
 	}
 }`;
 enum string	CHK_REQ_KEY_RANGE(string err,string first,string num,string r) = `
-	` ~ CHK_REQ_KEY_RANGE2!(`(` ~ err ~ `)`,`(` ~ first ~ `)`,`(` ~ num ~ `)`,`(` ~ r ~ `)`,`client.errorValue`,`BadValue`) ~ ``;
+	` ~ CHK_REQ_KEY_RANGE2!(err,first,num,r,`client.errorValue`,`BadValue`) ~ ``;
 
 private Bool _XkbCheckRequestBounds(ClientPtr client, void* stuff, void* from, void* to) {
     char* cstuff = cast(char*)stuff;
@@ -174,9 +201,9 @@ private Bool _XkbCheckRequestBounds(ClientPtr client, void* stuff, void* from, v
 
 int ProcXkbUseExtension(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbUseExtensionReq);
-    X_REQUEST_FIELD_CARD16(wantedMajor);
-    X_REQUEST_FIELD_CARD16(wantedMinor);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbUseExtensionReq);
+    mixin(X_REQUEST_FIELD_CARD16!"wantedMajor");
+    mixin(X_REQUEST_FIELD_CARD16!"wantedMinor");
 
     int supported = void;
 
@@ -202,26 +229,26 @@ int ProcXkbUseExtension(ClientPtr client)
     }
 
     xkbUseExtensionReply reply = {
-        supported: supported,
+        supported: cast(ubyte)supported,
         serverMajor: SERVER_XKB_MAJOR_VERSION,
         serverMinor: SERVER_XKB_MINOR_VERSION
     };
 
-    X_REPLY_FIELD_CARD16(serverMajor);
-    X_REPLY_FIELD_CARD16(serverMinor);
+    mixin(X_REPLY_FIELD_CARD16!"serverMajor");
+    mixin(X_REPLY_FIELD_CARD16!"serverMinor");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbSelectEvents(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSelectEventsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(affectWhich);
-    X_REQUEST_FIELD_CARD16(clear);
-    X_REQUEST_FIELD_CARD16(selectAll);
-    X_REQUEST_FIELD_CARD16(affectMap);
-    X_REQUEST_FIELD_CARD16(map);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSelectEventsReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"affectWhich");
+    mixin(X_REQUEST_FIELD_CARD16!"clear");
+    mixin(X_REQUEST_FIELD_CARD16!"selectAll");
+    mixin(X_REQUEST_FIELD_CARD16!"affectMap");
+    mixin(X_REQUEST_FIELD_CARD16!"map");
     /* more swapping done down below */
 
     if (client.swapped) {
@@ -235,7 +262,7 @@ int ProcXkbSelectEvents(ClientPtr client)
             uint bit = void, ndx = void, maskLeft = void, dataLeft = void;
 
             from.c8 = cast(CARD8*) &stuff[1];
-            dataLeft = (client.req_len * 4) - xkbSelectEventsReq.sizeof;
+            dataLeft = cast(uint)((client.req_len * 4) - xkbSelectEventsReq.sizeof);
             maskLeft = (stuff.affectWhich & (~XkbMapNotifyMask));
             for (ndx = 0, bit = 1; (maskLeft != 0); ndx++, bit <<= 1) {
                 if (((bit & maskLeft) == 0) || (ndx == XkbMapNotify))
@@ -261,12 +288,12 @@ int ProcXkbSelectEvents(ClientPtr client)
                     case XkbControlsNotify:
                     case XkbIndicatorStateNotify:
                     case XkbIndicatorMapNotify:
-                        if (dataLeft < ((CARD32)*2).sizeof)
+                        if (dataLeft < ((CARD32).sizeof*2))
                             return BadLength;
                         swapl(&from.c32[0]);
                         swapl(&from.c32[1]);
-                        from.c8 += ((CARD32)*2).sizeof;
-                        dataLeft -= ((CARD32)*2).sizeof;
+                        from.c8 += ((CARD32).sizeof*2);
+                        dataLeft -= ((CARD32).sizeof*2);
                     break;
                     // CARD8
                     case XkbBellNotify:
@@ -278,7 +305,7 @@ int ProcXkbSelectEvents(ClientPtr client)
                         dataLeft -= 4;
                     break;
                     default:
-                        client.errorValue = _XkbErrCode2(0x1, bit);
+                        client.errorValue = mixin(_XkbErrCode2!("0x1", "bit"));
                         return BadValue;
                 }
             }
@@ -318,11 +345,11 @@ int ProcXkbSelectEvents(ClientPtr client)
             CARD8* c8 = void;
             CARD16* c16 = void;
             CARD32* c32 = void;
-        }_From from = void;  to = void;
+        }_From from = void,  to = void;
         uint bit = void, ndx = void, maskLeft = void, dataLeft = void, size = void;
 
         from.c8 = cast(CARD8*) &stuff[1];
-        dataLeft = (client.req_len * 4) - xkbSelectEventsReq.sizeof;
+        dataLeft = cast(uint)((client.req_len * 4) - xkbSelectEventsReq.sizeof);
         maskLeft = (stuff.affectWhich & (~XkbMapNotifyMask));
         for (ndx = 0, bit = 1; (maskLeft != 0); ndx++, bit <<= 1) {
             if ((bit & maskLeft) == 0)
@@ -366,12 +393,12 @@ int ProcXkbSelectEvents(ClientPtr client)
                 break;
             case XkbBellNotify:
                 to.c8 = &masks.bellNotifyMask;
-                legal = XkbAllBellEventsMask;
+                legal = cast(uint)XkbAllBellEventsMask;
                 size = 1;
                 break;
             case XkbActionMessage:
                 to.c8 = &masks.actionMessageMask;
-                legal = XkbAllActionMessagesMask;
+                legal = cast(uint)XkbAllActionMessagesMask;
                 size = 1;
                 break;
             case XkbAccessXNotify:
@@ -385,7 +412,7 @@ int ProcXkbSelectEvents(ClientPtr client)
                 size = 2;
                 break;
             default:
-                client.errorValue = _XkbErrCode2(33, bit);
+                client.errorValue = mixin(_XkbErrCode2!("33", "bit"));
                 return BadValue;
             }
 
@@ -399,11 +426,11 @@ int ProcXkbSelectEvents(ClientPtr client)
             }
             else if (stuff.selectAll & bit) {
                 if (size == 2)
-                    to.c16[0] = ~0;
+                    to.c16[0] = cast(ushort)~0;
                 else if (size == 4)
                     to.c32[0] = ~0;
                 else
-                    to.c8[0] = ~0;
+                    to.c8[0] = cast(ubyte)~0;
             }
             else {
                 if (dataLeft < (size * 2))
@@ -463,7 +490,7 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
             }
         }
         if (!k) {
-            client.errorValue = _XkbErrCode2(0x5, bellID);
+            client.errorValue = mixin(_XkbErrCode2!("0x5", "bellID"));
             return BadValue;
         }
         base = k.ctrl.bell;
@@ -495,7 +522,7 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
             }
         }
         if (!b) {
-            client.errorValue = _XkbErrCode2(0x6, bellID);
+            client.errorValue = mixin(_XkbErrCode2!("0x6", "bellID"));
             return BadValue;
         }
         base = b.ctrl.percent;
@@ -516,7 +543,7 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
         }
     }
     else {
-        client.errorValue = _XkbErrCode2(0x7, bellClass);
+        client.errorValue = mixin(_XkbErrCode2!("0x7", "bellClass"));
         return BadValue;
     }
 
@@ -526,8 +553,8 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
     else
         newPercent = base - newPercent + percent;
 
-    XkbHandleBell(forceSound, eventOnly,
-                  dev, newPercent, ctrl, bellClass, name, pWin, client);
+    XkbHandleBell(cast(ubyte)forceSound, cast(ubyte)eventOnly,
+                  dev, cast(ubyte)newPercent, ctrl, cast(ubyte)bellClass, name, pWin, client);
     if ((pitch != 0) || (duration != 0)) {
         if (bellClass == KbdFeedbackClass) {
             KbdFeedbackPtr k = void;
@@ -554,14 +581,14 @@ private int _XkbBell(ClientPtr client, DeviceIntPtr dev, WindowPtr pWin, int bel
 
 int ProcXkbBell(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbBellReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(bellClass);
-    X_REQUEST_FIELD_CARD16(bellID);
-    X_REQUEST_FIELD_CARD32(name);
-    X_REQUEST_FIELD_CARD32(window);
-    X_REQUEST_FIELD_CARD16(pitch);
-    X_REQUEST_FIELD_CARD16(duration);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbBellReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"bellClass");
+    mixin(X_REQUEST_FIELD_CARD16!"bellID");
+    mixin(X_REQUEST_FIELD_CARD32!"name");
+    mixin(X_REQUEST_FIELD_CARD32!"window");
+    mixin(X_REQUEST_FIELD_CARD16!"pitch");
+    mixin(X_REQUEST_FIELD_CARD16!"duration");
 
     DeviceIntPtr dev = void;
     WindowPtr pWin = void;
@@ -576,19 +603,19 @@ int ProcXkbBell(ClientPtr client)
     /* device-independent checks request for sane values */
     if ((stuff.forceSound) && (stuff.eventOnly)) {
         client.errorValue =
-            _XkbErrCode3(0x1, stuff.forceSound, stuff.eventOnly);
+            mixin(_XkbErrCode3!(`0x1`, `stuff.forceSound`, `stuff.eventOnly`));
         return BadMatch;
     }
     if (stuff.percent < -100 || stuff.percent > 100) {
-        client.errorValue = _XkbErrCode2(0x2, stuff.percent);
+        client.errorValue = mixin(_XkbErrCode2!("0x2", "stuff.percent"));
         return BadValue;
     }
     if (stuff.duration < -1) {
-        client.errorValue = _XkbErrCode2(0x3, stuff.duration);
+        client.errorValue = mixin(_XkbErrCode2!("0x3", "stuff.duration"));
         return BadValue;
     }
     if (stuff.pitch < -1) {
-        client.errorValue = _XkbErrCode2(0x4, stuff.pitch);
+        client.errorValue = mixin(_XkbErrCode2!("0x4", "stuff.pitch"));
         return BadValue;
     }
 
@@ -645,8 +672,8 @@ int ProcXkbBell(ClientPtr client)
 
 int ProcXkbGetState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetStateReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetStateReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
 
     DeviceIntPtr dev = void;
     XkbStateRec* xkb = void;
@@ -659,8 +686,8 @@ int ProcXkbGetState(ClientPtr client)
     xkb = &dev.key.xkbInfo.state;
 
     xkbGetStateReply reply = {
-        deviceID: dev.id,
-        mods: XkbStateFieldFromRec(xkb) & 0xff,
+        deviceID: cast(ubyte)dev.id,
+        mods: mixin(XkbStateFieldFromRec!("xkb")) & 0xff,
         baseMods: xkb.base_mods,
         latchedMods: xkb.latched_mods,
         lockedMods: xkb.locked_mods,
@@ -672,16 +699,16 @@ int ProcXkbGetState(ClientPtr client)
         ptrBtnState: xkb.ptr_buttons
     };
 
-    X_REPLY_FIELD_CARD16(ptrBtnState);
+    mixin(X_REPLY_FIELD_CARD16!"ptrBtnState");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbLatchLockState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbLatchLockStateReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(groupLatch);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbLatchLockStateReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"groupLatch");
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -719,21 +746,21 @@ int ProcXkbLatchLockState(ClientPtr client)
 
             XkbComputeDerivedState(tmpd.key.xkbInfo);
 
-            CARD16 changed = XkbStateChangedFlags(&oldState, newState);
+            CARD16 changed = cast(ushort)XkbStateChangedFlags(&oldState, newState);
             if (changed) {
 				xkbStateNotify sn = {
 					keycode: 0,
 					eventType: 0,
-					requestMajor: XkbReqCode,
+					requestMajor: cast(ubyte)XkbReqCode,
 					requestMinor: X_kbLatchLockState,
 					changed: changed
 				};
                 XkbSendStateNotify(tmpd, &sn);
-                changed = XkbIndicatorsToUpdate(tmpd, changed, FALSE);
+                changed = cast(short)XkbIndicatorsToUpdate(tmpd, changed, FALSE);
                 if (changed) {
                     XkbEventCauseRec cause = { 0 };
-                    XkbSetCauseXkbReq(&cause, X_kbLatchLockState, client);
-                    XkbUpdateIndicators(tmpd, changed, TRUE, null, &cause);
+                    mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbLatchLockState`, `client`));
+                    XkbUpdateIndicators(tmpd, cast(ubyte)changed, TRUE, null, &cause);
                 }
             }
         }
@@ -744,8 +771,8 @@ int ProcXkbLatchLockState(ClientPtr client)
 
 int ProcXkbGetControls(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetControlsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetControlsReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
 
     XkbControlsPtr xkb = void;
     DeviceIntPtr dev = void;
@@ -758,7 +785,7 @@ int ProcXkbGetControls(ClientPtr client)
     xkb = dev.key.xkbInfo.desc.ctrls;
 
     xkbGetControlsReply reply = {
-        deviceID: (cast(DeviceIntPtr) dev).id,
+        deviceID: cast(ubyte)(cast(DeviceIntPtr) dev).id,
         mkDfltBtn: xkb.mk_dflt_btn,
         numGroups: xkb.num_groups,
         groupsWrap: xkb.groups_wrap,
@@ -785,56 +812,56 @@ int ProcXkbGetControls(ClientPtr client)
         axtCtrlsValues: xkb.axt_ctrls_values,
         enabledCtrls: xkb.enabled_ctrls,
     };
-    memcpy(reply.perKeyRepeat, xkb.per_key_repeat, XkbPerKeyBitArraySize);
+    memcpy(reply.perKeyRepeat.ptr, xkb.per_key_repeat.ptr, XkbPerKeyBitArraySize);
 
-    X_REPLY_FIELD_CARD16(internalVMods);
-    X_REPLY_FIELD_CARD16(ignoreLockVMods);
-    X_REPLY_FIELD_CARD32(enabledCtrls);
-    X_REPLY_FIELD_CARD16(repeatDelay);
-    X_REPLY_FIELD_CARD16(repeatInterval);
-    X_REPLY_FIELD_CARD16(slowKeysDelay);
-    X_REPLY_FIELD_CARD16(debounceDelay);
-    X_REPLY_FIELD_CARD16(mkDelay);
-    X_REPLY_FIELD_CARD16(mkInterval);
-    X_REPLY_FIELD_CARD16(mkTimeToMax);
-    X_REPLY_FIELD_CARD16(mkMaxSpeed);
-    X_REPLY_FIELD_CARD16(mkCurve);
-    X_REPLY_FIELD_CARD16(axTimeout);
-    X_REPLY_FIELD_CARD32(axtCtrlsMask);
-    X_REPLY_FIELD_CARD32(axtCtrlsValues);
-    X_REPLY_FIELD_CARD16(axtOptsMask);
-    X_REPLY_FIELD_CARD16(axtOptsValues);
-    X_REPLY_FIELD_CARD16(axOptions);
+    mixin(X_REPLY_FIELD_CARD16!"internalVMods");
+    mixin(X_REPLY_FIELD_CARD16!"ignoreLockVMods");
+    mixin(X_REPLY_FIELD_CARD32!"enabledCtrls");
+    mixin(X_REPLY_FIELD_CARD16!"repeatDelay");
+    mixin(X_REPLY_FIELD_CARD16!"repeatInterval");
+    mixin(X_REPLY_FIELD_CARD16!"slowKeysDelay");
+    mixin(X_REPLY_FIELD_CARD16!"debounceDelay");
+    mixin(X_REPLY_FIELD_CARD16!"mkDelay");
+    mixin(X_REPLY_FIELD_CARD16!"mkInterval");
+    mixin(X_REPLY_FIELD_CARD16!"mkTimeToMax");
+    mixin(X_REPLY_FIELD_CARD16!"mkMaxSpeed");
+    mixin(X_REPLY_FIELD_CARD16!"mkCurve");
+    mixin(X_REPLY_FIELD_CARD16!"axTimeout");
+    mixin(X_REPLY_FIELD_CARD32!"axtCtrlsMask");
+    mixin(X_REPLY_FIELD_CARD32!"axtCtrlsValues");
+    mixin(X_REPLY_FIELD_CARD16!"axtOptsMask");
+    mixin(X_REPLY_FIELD_CARD16!"axtOptsValues");
+    mixin(X_REPLY_FIELD_CARD16!"axOptions");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 int ProcXkbSetControls(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbSetControlsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(affectInternalVMods);
-    X_REQUEST_FIELD_CARD16(internalVMods);
-    X_REQUEST_FIELD_CARD16(affectIgnoreLockVMods);
-    X_REQUEST_FIELD_CARD16(ignoreLockVMods);
-    X_REQUEST_FIELD_CARD16(axOptions);
-    X_REQUEST_FIELD_CARD32(affectEnabledCtrls);
-    X_REQUEST_FIELD_CARD32(enabledCtrls);
-    X_REQUEST_FIELD_CARD32(changeCtrls);
-    X_REQUEST_FIELD_CARD16(repeatDelay);
-    X_REQUEST_FIELD_CARD16(repeatInterval);
-    X_REQUEST_FIELD_CARD16(slowKeysDelay);
-    X_REQUEST_FIELD_CARD16(debounceDelay);
-    X_REQUEST_FIELD_CARD16(mkDelay);
-    X_REQUEST_FIELD_CARD16(mkInterval);
-    X_REQUEST_FIELD_CARD16(mkTimeToMax);
-    X_REQUEST_FIELD_CARD16(mkMaxSpeed);
-    X_REQUEST_FIELD_CARD16(mkCurve);
-    X_REQUEST_FIELD_CARD16(axTimeout);
-    X_REQUEST_FIELD_CARD32(axtCtrlsMask);
-    X_REQUEST_FIELD_CARD32(axtCtrlsValues);
-    X_REQUEST_FIELD_CARD16(axtOptsMask);
-    X_REQUEST_FIELD_CARD16(axtOptsValues);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbSetControlsReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"affectInternalVMods");
+    mixin(X_REQUEST_FIELD_CARD16!"internalVMods");
+    mixin(X_REQUEST_FIELD_CARD16!"affectIgnoreLockVMods");
+    mixin(X_REQUEST_FIELD_CARD16!"ignoreLockVMods");
+    mixin(X_REQUEST_FIELD_CARD16!"axOptions");
+    mixin(X_REQUEST_FIELD_CARD32!"affectEnabledCtrls");
+    mixin(X_REQUEST_FIELD_CARD32!"enabledCtrls");
+    mixin(X_REQUEST_FIELD_CARD32!"changeCtrls");
+    mixin(X_REQUEST_FIELD_CARD16!"repeatDelay");
+    mixin(X_REQUEST_FIELD_CARD16!"repeatInterval");
+    mixin(X_REQUEST_FIELD_CARD16!"slowKeysDelay");
+    mixin(X_REQUEST_FIELD_CARD16!"debounceDelay");
+    mixin(X_REQUEST_FIELD_CARD16!"mkDelay");
+    mixin(X_REQUEST_FIELD_CARD16!"mkInterval");
+    mixin(X_REQUEST_FIELD_CARD16!"mkTimeToMax");
+    mixin(X_REQUEST_FIELD_CARD16!"mkMaxSpeed");
+    mixin(X_REQUEST_FIELD_CARD16!"mkCurve");
+    mixin(X_REQUEST_FIELD_CARD16!"axTimeout");
+    mixin(X_REQUEST_FIELD_CARD32!"axtCtrlsMask");
+    mixin(X_REQUEST_FIELD_CARD32!"axtCtrlsValues");
+    mixin(X_REQUEST_FIELD_CARD16!"axtOptsMask");
+    mixin(X_REQUEST_FIELD_CARD16!"axtOptsValues");
 
     DeviceIntPtr dev = void, tmpd = void;
     XkbSrvInfoPtr xkbi = void;
@@ -859,7 +886,7 @@ int ProcXkbSetControls(ClientPtr client)
             xkbi = tmpd.key.xkbInfo;
             ctrl = xkbi.desc.ctrls;
             new_ = *ctrl;
-            XkbSetCauseXkbReq(&cause, X_kbSetControls, client);
+            mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbSetControls`, `client`));
 
             if (stuff.changeCtrls & XkbInternalModsMask) {
                 mixin(CHK_MASK_MATCH!(`0x02`, `stuff.affectInternalMods`,
@@ -873,8 +900,8 @@ int ProcXkbSetControls(ClientPtr client)
                 new_.internal.vmods &= ~(stuff.affectInternalVMods);
                 new_.internal.vmods |= (stuff.affectInternalVMods &
                                        stuff.internalVMods);
-                new_.internal.mask = new_.internal.real_mods |
-                    XkbMaskForVMask(xkbi.desc, new_.internal.vmods);
+                new_.internal.mask = cast(ubyte)(new_.internal.real_mods |
+                    XkbMaskForVMask(xkbi.desc, new_.internal.vmods));
             }
 
             if (stuff.changeCtrls & XkbIgnoreLockModsMask) {
@@ -889,8 +916,8 @@ int ProcXkbSetControls(ClientPtr client)
                 new_.ignore_lock.vmods &= ~(stuff.affectIgnoreLockVMods);
                 new_.ignore_lock.vmods |= (stuff.affectIgnoreLockVMods &
                                           stuff.ignoreLockVMods);
-                new_.ignore_lock.mask = new_.ignore_lock.real_mods |
-                    XkbMaskForVMask(xkbi.desc, new_.ignore_lock.vmods);
+                new_.ignore_lock.mask = cast(ubyte)(new_.ignore_lock.real_mods |
+                    XkbMaskForVMask(xkbi.desc, new_.ignore_lock.vmods));
             }
 
             mixin(CHK_MASK_MATCH!(`0x06`, `stuff.affectEnabledCtrls`,
@@ -906,8 +933,8 @@ int ProcXkbSetControls(ClientPtr client)
 
             if (stuff.changeCtrls & XkbRepeatKeysMask) {
                 if (stuff.repeatDelay < 1 || stuff.repeatInterval < 1) {
-                    client.errorValue = _XkbErrCode3(0x08, stuff.repeatDelay,
-                                                      stuff.repeatInterval);
+                    client.errorValue = mixin(_XkbErrCode3!("0x08", "stuff.repeatDelay",
+                                                      "stuff.repeatInterval"));
                     return BadValue;
                 }
 
@@ -917,8 +944,8 @@ int ProcXkbSetControls(ClientPtr client)
 
             if (stuff.changeCtrls & XkbSlowKeysMask) {
                 if (stuff.slowKeysDelay < 1) {
-                    client.errorValue = _XkbErrCode2(0x09,
-                                                      stuff.slowKeysDelay);
+                    client.errorValue = mixin(_XkbErrCode2!("0x09",
+"                                                      stuff.slowKeysDelay"));
                     return BadValue;
                 }
 
@@ -927,8 +954,8 @@ int ProcXkbSetControls(ClientPtr client)
 
             if (stuff.changeCtrls & XkbBounceKeysMask) {
                 if (stuff.debounceDelay < 1) {
-                    client.errorValue = _XkbErrCode2(0x0A,
-                                                      stuff.debounceDelay);
+                    client.errorValue = mixin(_XkbErrCode2!("0x0A",
+"                                                      stuff.debounceDelay"));
                     return BadValue;
                 }
 
@@ -937,7 +964,7 @@ int ProcXkbSetControls(ClientPtr client)
 
             if (stuff.changeCtrls & XkbMouseKeysMask) {
                 if (stuff.mkDfltBtn > XkbMaxMouseKeysBtn) {
-                    client.errorValue = _XkbErrCode2(0x0B, stuff.mkDfltBtn);
+                    client.errorValue = mixin(_XkbErrCode2!("0x0B", "stuff.mkDfltBtn"));
                     return BadValue;
                 }
 
@@ -948,7 +975,7 @@ int ProcXkbSetControls(ClientPtr client)
                 if (stuff.mkDelay < 1 || stuff.mkInterval < 1 ||
                     stuff.mkTimeToMax < 1 || stuff.mkMaxSpeed < 1 ||
                     stuff.mkCurve < -1000) {
-                    client.errorValue = _XkbErrCode2(0x0C, 0);
+                    client.errorValue = mixin(_XkbErrCode2!("0x0C", "0"));
                     return BadValue;
                 }
 
@@ -963,20 +990,22 @@ int ProcXkbSetControls(ClientPtr client)
             if (stuff.changeCtrls & XkbGroupsWrapMask) {
                 uint act = void, num = void;
 
-                act = XkbOutOfRangeGroupAction(stuff.groupsWrap);
+                act = mixin(XkbOutOfRangeGroupAction!("stuff.groupsWrap"));
                 switch (act) {
                 case XkbRedirectIntoRange:
-                    num = XkbOutOfRangeGroupNumber(stuff.groupsWrap);
+                    num = mixin(XkbOutOfRangeGroupNumber!("stuff.groupsWrap"));
                     if (num >= new_.num_groups) {
-                        client.errorValue = _XkbErrCode3(0x0D, new_.num_groups,
-                                                          num);
+                        client.errorValue = mixin(_XkbErrCode3!("0x0D", "new_.num_groups",
+                                                          "num"));
                         return BadValue;
                     }
+                goto case;
+                // goto
                 case XkbWrapIntoRange:
                 case XkbClampIntoRange:
                     break;
                 default:
-                    client.errorValue = _XkbErrCode2(0x0E, act);
+                    client.errorValue = mixin(_XkbErrCode2!("0x0E", "act"));
                     return BadValue;
                 }
 
@@ -1001,10 +1030,10 @@ int ProcXkbSetControls(ClientPtr client)
 
             if (stuff.changeCtrls & XkbAccessXTimeoutMask) {
                 if (stuff.axTimeout < 1) {
-                    client.errorValue = _XkbErrCode2(0x10, stuff.axTimeout);
+                    client.errorValue = mixin(_XkbErrCode2!("0x10", "stuff.axTimeout"));
                     return BadValue;
                 }
-                mixin(CHK_MASK_MATCH!(`0x11`, `stuff.axtCtrlsMask`,
+                mixin(CHK_MASK_MATCH!(`0X11`, `stuff.axtCtrlsMask`,
                                `stuff.axtCtrlsValues`));
                 mixin(CHK_MASK_LEGAL!(`0x12`, `stuff.axtCtrlsMask`,
                                `XkbAllBooleanCtrlsMask`));
@@ -1020,10 +1049,10 @@ int ProcXkbSetControls(ClientPtr client)
             }
 
             if (stuff.changeCtrls & XkbPerKeyRepeatMask) {
-                memcpy(new_.per_key_repeat, stuff.perKeyRepeat,
+                memcpy(new_.per_key_repeat.ptr, stuff.perKeyRepeat.ptr,
                        XkbPerKeyBitArraySize);
                 if (xkbi.repeatKey &&
-                    !BitIsOn(new_.per_key_repeat, xkbi.repeatKey)) {
+                    !mixin(BitIsOn!("new_.per_key_repeat", "xkbi.repeatKey"))) {
                     AccessXCancelRepeatKey(xkbi, xkbi.repeatKey);
                 }
             }
@@ -1035,7 +1064,7 @@ int ProcXkbSetControls(ClientPtr client)
             if (XkbComputeControlsNotify(tmpd, &old, ctrl, &cn, FALSE)) {
                 cn.keycode = 0;
                 cn.eventType = 0;
-                cn.requestMajor = XkbReqCode;
+                cn.requestMajor = cast(ubyte)XkbReqCode;
                 cn.requestMinor = X_kbSetControls;
                 XkbSendControlsNotify(tmpd, &cn);
             }
@@ -1069,11 +1098,11 @@ private int XkbSizeKeyTypes(XkbDescPtr xkb, xkbGetMapReply* rep)
     }
     type = &xkb.map.types[rep.firstType];
     for (i = 0; i < rep.nTypes; i++, type++) {
-        len += SIZEOF(xkbKeyTypeWireDesc);
+        len += xkbKeyTypeWireDesc.sizeof;
         if (type.map_count > 0) {
-            len += (type.map_count * SIZEOF(xkbKTMapEntryWireDesc));
+            len += (type.map_count * (xkbKTMapEntryWireDesc).sizeof);
             if (type.preserve)
-                len += (type.map_count * SIZEOF(xkbModsWireDesc));
+                len += (type.map_count * (xkbModsWireDesc).sizeof);
         }
     }
     return len;
@@ -1083,7 +1112,7 @@ private void XkbWriteKeyTypes(XkbDescPtr xkb, CARD8 firstType, CARD8 nTypes, x_r
 {
     XkbKeyTypePtr type = &xkb.map.types[firstType];
     for (int i = 0; i < nTypes; i++, type++) {
-        xkbKeyTypeWireDesc* wire = x_rpcbuf_reserve0(rpcbuf, xkbKeyTypeWireDesc.sizeof);
+        xkbKeyTypeWireDesc* wire = cast(xkbKeyTypeWireDesc*)x_rpcbuf_reserve(rpcbuf, xkbKeyTypeWireDesc.sizeof);
         wire.mask = type.mods.mask;
         wire.realMods = type.mods.real_mods;
         wire.virtualMods = type.mods.vmods;
@@ -1095,15 +1124,15 @@ private void XkbWriteKeyTypes(XkbDescPtr xkb, CARD8 firstType, CARD8 nTypes, x_r
         }
 
         if (type.map_count > 0) {
-            void* space = x_rpcbuf_reserve0(
-                rpcbuf, ((xkbKTMapEntryWireDesc) * type.map_count).sizeof);
+            void* space = x_rpcbuf_reserve(
+                rpcbuf, ((xkbKTMapEntryWireDesc).sizeof * type.map_count));
             xkbKTMapEntryWireDesc* ewire = cast(xkbKTMapEntryWireDesc*) space;
             XkbKTMapEntryPtr entry = type.map;
 
             size_t n = void;
 
             for (n = 0; n < type.map_count; n++, ewire++, entry++) {
-                ewire.active = entry.active;
+                ewire.active = cast(ubyte)entry.active;
                 ewire.mask = entry.mods.mask;
                 ewire.level = entry.level;
                 ewire.realMods = entry.mods.real_mods;
@@ -1114,8 +1143,8 @@ private void XkbWriteKeyTypes(XkbDescPtr xkb, CARD8 firstType, CARD8 nTypes, x_r
             }
 
             if (type.preserve != null) {
-                xkbModsWireDesc* pwire = x_rpcbuf_reserve(
-                    rpcbuf, ((xkbModsWireDesc) * type.map_count).sizeof);
+                xkbModsWireDesc* pwire = cast(xkbModsWireDesc*)x_rpcbuf_reserve(
+                    rpcbuf, ((xkbModsWireDesc).sizeof * type.map_count));
                 XkbModsPtr preserve = type.preserve;
 
                 for (n = 0; n < type.map_count; n++, pwire++, preserve++) {
@@ -1144,16 +1173,16 @@ private int XkbSizeKeySyms(XkbDescPtr xkb, xkbGetMapReply* rep)
         rep.totalSyms = 0;
         return 0;
     }
-    len = rep.nKeySyms * SIZEOF(xkbSymMapWireDesc);
+    len = rep.nKeySyms * (xkbSymMapWireDesc).sizeof;
     symMap = &xkb.map.key_sym_map[rep.firstKeySym];
     for (i = nSyms = 0; i < rep.nKeySyms; i++, symMap++) {
-        nSymsThisKey = XkbNumGroups(symMap.group_info) * symMap.width;
+        nSymsThisKey = mixin(XkbNumGroups!("symMap.group_info")) * symMap.width;
         if (nSymsThisKey == 0)
             continue;
         nSyms += nSymsThisKey;
     }
     len += nSyms * 4;
-    rep.totalSyms = nSyms;
+    rep.totalSyms = cast(ushort)nSyms;
     return len;
 }
 
@@ -1178,22 +1207,22 @@ private void XkbWriteKeySyms(XkbDescPtr xkb, KeyCode firstKeySym, CARD8 nKeySyms
 {
     XkbSymMapPtr symMap = &xkb.map.key_sym_map[firstKeySym];
     for (int i = 0; i < nKeySyms; i++, symMap++) {
-        size_t nSyms = symMap.width * XkbNumGroups(symMap.group_info);
-        xkbSymMapWireDesc* outMap = x_rpcbuf_reserve(rpcbuf, xkbSymMapWireDesc.sizeof);
+        size_t nSyms = symMap.width * mixin(XkbNumGroups!("symMap.group_info"));
+        xkbSymMapWireDesc* outMap = cast(xkbSymMapWireDesc*)x_rpcbuf_reserve(rpcbuf, xkbSymMapWireDesc.sizeof);
         outMap.ktIndex[0] = symMap.kt_index[0];
         outMap.ktIndex[1] = symMap.kt_index[1];
         outMap.ktIndex[2] = symMap.kt_index[2];
         outMap.ktIndex[3] = symMap.kt_index[3];
         outMap.groupInfo = symMap.group_info;
         outMap.width = symMap.width;
-        outMap.nSyms = nSyms;
+        outMap.nSyms = cast(ushort)nSyms;
 
         if (client.swapped)
             swaps(&outMap.nSyms);
 
         if (outMap.nSyms) {
             KeySym* pSym = &xkb.map.syms[symMap.offset];
-            x_rpcbuf_write_CARD32s(rpcbuf, pSym, nSyms);
+            x_rpcbuf_write_CARD32s(rpcbuf, cast(uint*)pSym, cast(uint*)nSyms);
         }
     }
 }
@@ -1213,30 +1242,30 @@ private int XkbSizeKeyActions(XkbDescPtr xkb, xkbGetMapReply* rep)
     firstKey = rep.firstKeyAct;
     for (nActs = i = 0; i < rep.nKeyActs; i++) {
         if (xkb.server.key_acts[i + firstKey] != 0)
-            nActs += XkbKeyNumActions(xkb, i + firstKey);
+            nActs += mixin(XkbKeyNumActions!("xkb"," i + firstKey"));
     }
-    len = XkbPaddedSize(rep.nKeyActs) + (nActs * SIZEOF(xkbActionWireDesc));
-    rep.totalActs = nActs;
+    len = cast(uint)(XkbPaddedSize(rep.nKeyActs) + (nActs * (xkbActionWireDesc).sizeof));
+    rep.totalActs = cast(ushort)nActs;
     return len;
 }
 
 private void XkbWriteKeyActions(XkbDescPtr xkb, KeyCode firstKeyAct, CARD8 nKeyActs, x_rpcbuf_t* rpcbuf)
 {
-    CARD8* numDesc = x_rpcbuf_reserve0(rpcbuf, XkbPaddedSize(nKeyActs));
+    CARD8* numDesc = cast(ubyte*)x_rpcbuf_reserve(rpcbuf, XkbPaddedSize(nKeyActs));
 
     for (int i = 0; i < nKeyActs; i++) {
         if (xkb.server.key_acts[i + firstKeyAct] == 0)
             numDesc[i] = 0;
         else
-            numDesc[i] = XkbKeyNumActions(xkb, (i + firstKeyAct));
+            numDesc[i] =cast(ubyte) mixin(XkbKeyNumActions!("xkb"," (i + firstKeyAct)"));
     }
 
     for (int i = 0; i < nKeyActs; i++) {
         if (xkb.server.key_acts[i + firstKeyAct] != 0) {
-            size_t num = XkbKeyNumActions(xkb, (i + firstKeyAct));
+            size_t num = mixin(XkbKeyNumActions!("xkb"," (i + firstKeyAct)"));
             x_rpcbuf_write_CARD8s(rpcbuf,
-                                  cast(CARD8*)XkbKeyActionsPtr(xkb, (i + firstKeyAct)),
-                                  num * SIZEOF(xkbActionWireDesc));
+                                  cast(CARD8*)mixin(XkbKeyActionsPtr!("xkb", "(i + firstKeyAct)")),
+                                  cast(ubyte)(num * (xkbActionWireDesc).sizeof));
         }
     }
 }
@@ -1250,7 +1279,7 @@ private int XkbSizeKeyBehaviors(XkbDescPtr xkb, xkbGetMapReply* rep)
         || (!xkb) || (!xkb.server) || (!xkb.server.behaviors)) {
         rep.present &= ~XkbKeyBehaviorsMask;
         rep.firstKeyBehavior = rep.nKeyBehaviors = 0;
-        rep.totalKeyBehaviors = 0;
+        rep.totalKeyBehaviors = cast(ubyte)0;
         return 0;
     }
     bhv = &xkb.server.behaviors[rep.firstKeyBehavior];
@@ -1258,8 +1287,8 @@ private int XkbSizeKeyBehaviors(XkbDescPtr xkb, xkbGetMapReply* rep)
         if (bhv.type != XkbKB_Default)
             nBhvr++;
     }
-    len = nBhvr * SIZEOF(xkbBehaviorWireDesc);
-    rep.totalKeyBehaviors = nBhvr;
+    len = cast(uint)(nBhvr * (xkbBehaviorWireDesc).sizeof);
+    rep.totalKeyBehaviors = cast(ubyte)nBhvr;
     return len;
 }
 
@@ -1268,8 +1297,8 @@ private void XkbWriteKeyBehaviors(XkbDescPtr xkb, KeyCode firstKeyBehavior, CARD
     XkbBehavior* pBhvr = &xkb.server.behaviors[firstKeyBehavior];
     for (int i = 0; i < nKeyBehaviors; i++, pBhvr++) {
         if (pBhvr.type != XkbKB_Default) {
-            xkbBehaviorWireDesc* wire = x_rpcbuf_reserve0(rpcbuf, xkbBehaviorWireDesc.sizeof);
-            wire.key = i + firstKeyBehavior;
+            xkbBehaviorWireDesc* wire = cast(xkbBehaviorWireDesc*)x_rpcbuf_reserve(rpcbuf, xkbBehaviorWireDesc.sizeof);
+            wire.key = cast(ubyte)(i + firstKeyBehavior);
             wire.type = pBhvr.type;
             wire.data = pBhvr.data;
         }
@@ -1292,7 +1321,7 @@ private int XkbSizeExplicit(XkbDescPtr xkb, xkbGetMapReply* rep)
         if (xkb.server.explicit[i + rep.firstKeyExplicit] != 0)
             nRtrn++;
     }
-    rep.totalKeyExplicit = nRtrn;
+    rep.totalKeyExplicit = cast(ubyte)nRtrn;
     len = XkbPaddedSize(nRtrn * 2);     /* two bytes per non-zero explicit component */
     return len;
 }
@@ -1309,12 +1338,12 @@ private void XkbWriteExplicit(XkbDescPtr xkb, KeyCode firstKeyExplicit, CARD8 nK
     }
 
     /* reserve buffer space (with padding) */
-    char* buf = x_rpcbuf_reserve0(rpcbuf, XkbPaddedSize(count * 2));
+    char* buf = cast(char*)x_rpcbuf_reserve(rpcbuf, XkbPaddedSize(count * 2));
 
     /* copy over the active entries */
     for (int i = 0; i < nKeyExplicit; i++) {
         if (pExp[i] != 0) {
-            *buf++ = i + firstKeyExplicit;
+            *buf++ = cast(char)(i + firstKeyExplicit);
             *buf++ = pExp[i];
         }
     }
@@ -1328,14 +1357,14 @@ private int XkbSizeModifierMap(XkbDescPtr xkb, xkbGetMapReply* rep)
         (!xkb) || (!xkb.map) || (!xkb.map.modmap)) {
         rep.present &= ~XkbModifierMapMask;
         rep.firstModMapKey = rep.nModMapKeys = 0;
-        rep.totalModMapKeys = 0;
+        rep.totalModMapKeys = cast(uint)0;
         return 0;
     }
     for (nRtrn = i = 0; i < rep.nModMapKeys; i++) {
         if (xkb.map.modmap[i + rep.firstModMapKey] != 0)
             nRtrn++;
     }
-    rep.totalModMapKeys = nRtrn;
+    rep.totalModMapKeys = cast(ubyte)nRtrn;
     len = XkbPaddedSize(nRtrn * 2);     /* two bytes per non-zero modmap component */
     return len;
 }
@@ -1346,8 +1375,8 @@ private void XkbWriteModifierMap(XkbDescPtr xkb, KeyCode firstModMapKey, CARD8 n
 
     for (int i = 0; i < nModMapKeys; i++) {
         if (pMap[i] != 0) {
-            x_rpcbuf_write_CARD8(rpcbuf, i + firstModMapKey);
-            x_rpcbuf_write_CARD8(rpcbuf, pMap[i]);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)(i + firstModMapKey));
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)pMap[i]);
         }
     }
 
@@ -1363,15 +1392,15 @@ private int XkbSizeVirtualModMap(XkbDescPtr xkb, xkbGetMapReply* rep)
         || (!xkb) || (!xkb.server) || (!xkb.server.vmodmap)) {
         rep.present &= ~XkbVirtualModMapMask;
         rep.firstVModMapKey = rep.nVModMapKeys = 0;
-        rep.totalVModMapKeys = 0;
+        rep.totalVModMapKeys = cast(ubyte)0;
         return 0;
     }
     for (nRtrn = i = 0; i < rep.nVModMapKeys; i++) {
         if (xkb.server.vmodmap[i + rep.firstVModMapKey] != 0)
             nRtrn++;
     }
-    rep.totalVModMapKeys = nRtrn;
-    len = nRtrn * SIZEOF(xkbVModMapWireDesc);
+    rep.totalVModMapKeys = cast(ubyte)nRtrn;
+    len = cast(uint)(nRtrn * (xkbVModMapWireDesc).sizeof);
     return len;
 }
 
@@ -1380,14 +1409,14 @@ private void XkbWriteVirtualModMap(XkbDescPtr xkb, KeyCode firstVModMapKey, CARD
     ushort* pMap = &xkb.server.vmodmap[firstVModMapKey];
     for (int i = 0; i < nVModMapKeys; i++, pMap++) {
         if (*pMap != 0) {
-            xkbVModMapWireDesc* wire = x_rpcbuf_reserve0(rpcbuf, xkbVModMapWireDesc.sizeof);
-            wire.key = i + firstVModMapKey;
+            xkbVModMapWireDesc* wire = cast(xkbVModMapWireDesc*)x_rpcbuf_reserve(rpcbuf, xkbVModMapWireDesc.sizeof);
+            wire.key = cast(ubyte)(i + firstVModMapKey);
             wire.vmods = *pMap;
         }
     }
 }
 
-private int XkbComputeGetMapReplySize(XkbDescPtr xkb, xkbGetMapReply* rep)
+private Status XkbComputeGetMapReplySize(XkbDescPtr xkb, xkbGetMapReply* rep)
 {
     int len = void;
 
@@ -1434,11 +1463,11 @@ private void XkbAssembleMap(ClientPtr client, XkbDescPtr xkb, xkbGetMapReply rep
 
 int ProcXkbGetMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(full);
-    X_REQUEST_FIELD_CARD16(partial);
-    X_REQUEST_FIELD_CARD16(virtualMods);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"full");
+    mixin(X_REQUEST_FIELD_CARD16!"partial");
+    mixin(X_REQUEST_FIELD_CARD16!"virtualMods");
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -1452,7 +1481,7 @@ int ProcXkbGetMap(ClientPtr client)
     XkbDescRec* xkb = dev.key.xkbInfo.desc;
 
     xkbGetMapReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         present: stuff.partial | stuff.full,
         minKeyCode: xkb.min_key_code,
         maxKeyCode: xkb.max_key_code,
@@ -1464,78 +1493,78 @@ int ProcXkbGetMap(ClientPtr client)
     }
     else if (stuff.partial & XkbKeyTypesMask) {
         if ((cast(uint) stuff.firstType + stuff.nTypes) > xkb.map.num_types) {
-            client.errorValue = _XkbErrCode4(0x04, xkb.map.num_types,
-                                              stuff.firstType, stuff.nTypes);
+            client.errorValue = mixin(_XkbErrCode4!("0x04", "xkb.map.num_types",
+                                              "stuff.firstType", "stuff.nTypes"));
             return BadValue;
         }
         reply.firstType = stuff.firstType;
         reply.nTypes = stuff.nTypes;
     }
 
-    int numKeys = XkbNumKeys(xkb);
+    int numKeys = mixin(XkbNumKeys!("xkb"));
     if (stuff.full & XkbKeySymsMask) {
         reply.firstKeySym = xkb.min_key_code;
-        reply.nKeySyms = numKeys;
+        reply.nKeySyms = cast(ubyte)numKeys;
     }
     else if (stuff.partial & XkbKeySymsMask) {
         mixin(CHK_KEY_RANGE!(`0x05`, `stuff.firstKeySym`, `stuff.nKeySyms`, `xkb`));
         reply.firstKeySym = stuff.firstKeySym;
-        reply.nKeySyms = stuff.nKeySyms;
+        reply.nKeySyms = cast(ubyte)stuff.nKeySyms;
     }
 
     if (stuff.full & XkbKeyActionsMask) {
         reply.firstKeyAct = xkb.min_key_code;
-        reply.nKeyActs = numKeys;
+        reply.nKeyActs = cast(ubyte)numKeys;
     }
     else if (stuff.partial & XkbKeyActionsMask) {
         mixin(CHK_KEY_RANGE!(`0x07`, `stuff.firstKeyAct`, `stuff.nKeyActs`, `xkb`));
         reply.firstKeyAct = stuff.firstKeyAct;
-        reply.nKeyActs = stuff.nKeyActs;
+        reply.nKeyActs = cast(ubyte)stuff.nKeyActs;
     }
 
     if (stuff.full & XkbKeyBehaviorsMask) {
         reply.firstKeyBehavior = xkb.min_key_code;
-        reply.nKeyBehaviors = numKeys;
+        reply.nKeyBehaviors = cast(ubyte)numKeys;
     }
     else if (stuff.partial & XkbKeyBehaviorsMask) {
         mixin(CHK_KEY_RANGE!(`0x09`, `stuff.firstKeyBehavior`, `stuff.nKeyBehaviors`, `xkb`));
         reply.firstKeyBehavior = stuff.firstKeyBehavior;
-        reply.nKeyBehaviors = stuff.nKeyBehaviors;
+        reply.nKeyBehaviors = cast(ubyte)stuff.nKeyBehaviors;
     }
 
     if (stuff.full & XkbVirtualModsMask)
-        reply.virtualMods = ~0;
+        reply.virtualMods = cast(ushort)~0;
     else if (stuff.partial & XkbVirtualModsMask)
-        reply.virtualMods = stuff.virtualMods;
+        reply.virtualMods = cast(ushort)stuff.virtualMods;
 
     if (stuff.full & XkbExplicitComponentsMask) {
         reply.firstKeyExplicit = xkb.min_key_code;
-        reply.nKeyExplicit = numKeys;
+        reply.nKeyExplicit = cast(ubyte)numKeys;
     }
     else if (stuff.partial & XkbExplicitComponentsMask) {
         mixin(CHK_KEY_RANGE!(`0x0B`, `stuff.firstKeyExplicit`, `stuff.nKeyExplicit`, `xkb`));
         reply.firstKeyExplicit = stuff.firstKeyExplicit;
-        reply.nKeyExplicit = stuff.nKeyExplicit;
+        reply.nKeyExplicit = cast(ubyte)stuff.nKeyExplicit;
     }
 
     if (stuff.full & XkbModifierMapMask) {
         reply.firstModMapKey = xkb.min_key_code;
-        reply.nModMapKeys = numKeys;
+        reply.nModMapKeys = cast(ubyte)numKeys;
     }
     else if (stuff.partial & XkbModifierMapMask) {
         mixin(CHK_KEY_RANGE!(`0x0D`, `stuff.firstModMapKey`, `stuff.nModMapKeys`, `xkb`));
         reply.firstModMapKey = stuff.firstModMapKey;
-        reply.nModMapKeys = stuff.nModMapKeys;
+        reply.nModMapKeys = cast(ubyte)stuff.nModMapKeys;
     }
 
     if (stuff.full & XkbVirtualModMapMask) {
         reply.firstVModMapKey = xkb.min_key_code;
-        reply.nVModMapKeys = numKeys;
+        reply.nVModMapKeys = cast(ubyte)numKeys;
     }
     else if (stuff.partial & XkbVirtualModMapMask) {
         mixin(CHK_KEY_RANGE!(`0x0F`, `stuff.firstVModMapKey`, `stuff.nVModMapKeys`, `xkb`));
         reply.firstVModMapKey = stuff.firstVModMapKey;
-        reply.nVModMapKeys = stuff.nVModMapKeys;
+        reply.nVModMapKeys = cast(ubyte)stuff.nVModMapKeys;
     }
 
     int rc = XkbComputeGetMapReplySize(xkb, &reply);
@@ -1548,11 +1577,11 @@ int ProcXkbGetMap(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD16(present);
-    X_REPLY_FIELD_CARD16(totalSyms);
-    X_REPLY_FIELD_CARD16(totalActs);
+    mixin(X_REPLY_FIELD_CARD16!"present");
+    mixin(X_REPLY_FIELD_CARD16!"totalSyms");
+    mixin(X_REPLY_FIELD_CARD16!"totalActs");
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, xkbKeyTypeWireDesc** wireRtrn, int* nMapsRtrn, CARD8* mapWidthRtrn, Bool doswap)
@@ -1563,18 +1592,13 @@ private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, x
     xkbKeyTypeWireDesc* wire = *wireRtrn;
 
     if (req.firstType > (cast(uint) xkb.map.num_types)) {
-        *nMapsRtrn = _XkbErrCode3(0x01, req.firstType, xkb.map.num_types);
+        *nMapsRtrn = mixin(_XkbErrCode3!("0x01", "req.firstType", "xkb.map.num_types"));
         return 0;
     }
     if (req.flags & XkbSetMapResizeTypes) {
         nMaps = req.firstType + req.nTypes;
         if (nMaps < XkbNumRequiredTypes) {      /* canonical types must be there */
-            *nMapsRtrn = _XkbErrCode4(0x02, req.firstType, req.nTypes, 4);
-            return 0;
-        }
-        if (nMaps > XkbMaxLegalKeyCode + 1) {
-            *nMapsRtrn = _XkbErrCode4(0x02, req.firstType, req.nTypes,
-                                      XkbMaxLegalKeyCode + 1);
+            *nMapsRtrn = mixin(_XkbErrCode4!("0x02", "req.firstType", "req.nTypes", "4"));
             return 0;
         }
     }
@@ -1600,7 +1624,7 @@ private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, x
         uint width = void;
 
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 1)) {
-            *nMapsRtrn = _XkbErrCode3(0x0b, req.nTypes, i);
+            *nMapsRtrn = mixin(_XkbErrCode3!("0x0b", "req.nTypes", "i"));
             return 0;
         }
         if (client.swapped && doswap) {
@@ -1608,19 +1632,19 @@ private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, x
         }
         n = i + req.firstType;
         width = wire.numLevels;
-        if (width < 1 || width > XkbMaxShiftLevel) {
-            *nMapsRtrn = _XkbErrCode3(0x04, n, width);
+        if (width < 1) {
+            *nMapsRtrn = mixin(_XkbErrCode3!("0x04", "n", "width"));
             return 0;
         }
         else if ((n == XkbOneLevelIndex) && (width != 1)) {     /* must be width 1 */
-            *nMapsRtrn = _XkbErrCode3(0x05, n, width);
+            *nMapsRtrn = mixin(_XkbErrCode3!("0x05", "n", "width"));
             return 0;
         }
         else if ((width != 2) &&
                  ((n == XkbTwoLevelIndex) || (n == XkbKeypadIndex) ||
                   (n == XkbAlphabeticIndex))) {
             /* TWO_LEVEL, ALPHABETIC and KEYPAD must be width 2 */
-            *nMapsRtrn = _XkbErrCode3(0x05, n, width);
+            *nMapsRtrn = mixin(_XkbErrCode3!("0x05", "n", "width"));
             return 0;
         }
         if (wire.nMapEntries > 0) {
@@ -1630,14 +1654,14 @@ private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, x
             mapWire = cast(xkbKTSetMapEntryWireDesc*) &wire[1];
             if (!_XkbCheckRequestBounds(client, req, mapWire,
                                         &mapWire[wire.nMapEntries])) {
-                *nMapsRtrn = _XkbErrCode3(0x0c, i, wire.nMapEntries);
+                *nMapsRtrn = mixin(_XkbErrCode3!("0x0c", "i", "wire.nMapEntries"));
                 return 0;
             }
             preWire = cast(xkbModsWireDesc*) &mapWire[wire.nMapEntries];
             if (wire.preserve &&
                 !_XkbCheckRequestBounds(client, req, preWire,
                                         &preWire[wire.nMapEntries])) {
-                *nMapsRtrn = _XkbErrCode3(0x0d, i, wire.nMapEntries);
+                *nMapsRtrn = mixin(_XkbErrCode3!("0x0d", "i", "wire.nMapEntries"));
                 return 0;
             }
             for (n = 0; n < wire.nMapEntries; n++) {
@@ -1645,17 +1669,15 @@ private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, x
                     swaps(&mapWire[n].virtualMods);
                 }
                 if (mapWire[n].realMods & (~wire.realMods)) {
-                    *nMapsRtrn = _XkbErrCode4(0x06, n, mapWire[n].realMods,
-                                              wire.realMods);
+                    *nMapsRtrn = mixin(_XkbErrCode4!("0x06", "n", "mapWire[n].realMods", "wire.realMods"));
                     return 0;
                 }
                 if (mapWire[n].virtualMods & (~wire.virtualMods)) {
-                    *nMapsRtrn = _XkbErrCode3(0x07, n, mapWire[n].virtualMods);
+                    *nMapsRtrn = mixin(_XkbErrCode3!("0x07", "n", "mapWire[n].virtualMods"));
                     return 0;
                 }
                 if (mapWire[n].level >= wire.numLevels) {
-                    *nMapsRtrn = _XkbErrCode4(0x08, n, wire.numLevels,
-                                              mapWire[n].level);
+                    *nMapsRtrn = mixin(_XkbErrCode4!("0x08", "n", "wire.numLevels", "mapWire[n].level"));
                     return 0;
                 }
                 if (wire.preserve) {
@@ -1663,13 +1685,12 @@ private int CheckKeyTypes(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, x
                         swaps(&preWire[n].virtualMods);
                     }
                     if (preWire[n].realMods & (~mapWire[n].realMods)) {
-                        *nMapsRtrn = _XkbErrCode4(0x09, n, preWire[n].realMods,
-                                                  mapWire[n].realMods);
+                        *nMapsRtrn = mixin(_XkbErrCode4!("0x09", "n", "preWire[n].realMods", "mapWire[n].realMods"));
                         return 0;
                     }
                     if (preWire[n].virtualMods & (~mapWire[n].virtualMods)) {
                         *nMapsRtrn =
-                            _XkbErrCode3(0x0a, n, preWire[n].virtualMods);
+                            mixin(_XkbErrCode3!(`0x0a`, `n`, `preWire[n].virtualMods`));
                         return 0;
                     }
                 }
@@ -1700,7 +1721,7 @@ private int CheckKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, in
 
     if (!(XkbKeySymsMask & req.present))
         return 1;
-    mixin(CHK_REQ_KEY_RANGE2!(`0x11`, `req.firstKeySym`, `req.nKeySyms`, `req`, `(*errorRtrn)`,
+    mixin(CHK_REQ_KEY_RANGE2!(`0X11`, `req.firstKeySym`, `req.nKeySyms`, `req`, `(*errorRtrn)`,
                        `0`));
     for (i = 0; i < req.nKeySyms; i++) {
         KeySym* pSyms = void;
@@ -1708,15 +1729,15 @@ private int CheckKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, in
 
         /* Check we received enough data to read the next xkbSymMapWireDesc */
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 1)) {
-            *errorRtrn = _XkbErrCode3(0x18, i + req.firstKeySym, i);
+            *errorRtrn = mixin(_XkbErrCode3!("0x18", "i + req.firstKeySym", "i"));
             return 0;
         }
         if (client.swapped && doswap) {
             swaps(&wire.nSyms);
         }
-        nG = XkbNumGroups(wire.groupInfo);
+        nG = mixin(XkbNumGroups!("wire.groupInfo"));
         if (nG > XkbNumKbdGroups) {
-            *errorRtrn = _XkbErrCode3(0x14, i + req.firstKeySym, nG);
+            *errorRtrn = mixin(_XkbErrCode3!("0x14", "i + req.firstKeySym", "nG"));
             return 0;
         }
         if (nG > 0) {
@@ -1724,8 +1745,7 @@ private int CheckKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, in
 
             for (g = w = 0; g < nG; g++) {
                 if (wire.ktIndex[g] >= cast(uint) nTypes) {
-                    *errorRtrn = _XkbErrCode4(0x15, i + req.firstKeySym, g,
-                                              wire.ktIndex[g]);
+                    *errorRtrn = mixin(_XkbErrCode4!("0x15", "i + req.firstKeySym", "g", "wire.ktIndex[g]"));
                     return 0;
                 }
                 if (mapWidths[wire.ktIndex[g]] > w)
@@ -1733,25 +1753,25 @@ private int CheckKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, in
             }
             if (wire.width != w) {
                 *errorRtrn =
-                    _XkbErrCode3(0x16, i + req.firstKeySym, wire.width);
+                    mixin(_XkbErrCode3!(`0x16`, `i + req.firstKeySym`, `wire.width`));
                 return 0;
             }
             w *= nG;
-            symsPerKey[i + req.firstKeySym] = w;
+            symsPerKey[i + req.firstKeySym] = cast(ushort)w;
             if (w != wire.nSyms) {
                 *errorRtrn =
-                    _XkbErrCode4(0x16, i + req.firstKeySym, wire.nSyms, w);
+                    mixin(_XkbErrCode4!("0x16", "i + req.firstKeySym", "wire.nSyms", "w"));
                 return 0;
             }
         }
         else if (wire.nSyms != 0) {
-            *errorRtrn = _XkbErrCode3(0x17, i + req.firstKeySym, wire.nSyms);
+            *errorRtrn = mixin(_XkbErrCode3!("0x17", "i + req.firstKeySym", "wire.nSyms"));
             return 0;
         }
         pSyms = cast(KeySym*) &wire[1];
         if (wire.nSyms != 0) {
             if (!_XkbCheckRequestBounds(client, req, pSyms, &pSyms[wire.nSyms])) {
-                *errorRtrn = _XkbErrCode3(0x19, i + req.firstKeySym, wire.nSyms);
+                *errorRtrn = mixin(_XkbErrCode3!("0x19", "i + req.firstKeySym", "wire.nSyms"));
                 return 0;
             }
         }
@@ -1762,16 +1782,16 @@ private int CheckKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, in
     for (; i <= cast(uint) xkb.max_key_code; i++, map++) {
         int g = void, nG = void, w = void;
 
-        nG = XkbKeyNumGroups(xkb, i);
+        nG = mixin(XkbKeyNumGroups!("xkb", "i"));
         for (w = g = 0; g < nG; g++) {
             if (map.kt_index[g] >= cast(uint) nTypes) {
-                *errorRtrn = _XkbErrCode4(0x18, i, g, map.kt_index[g]);
+                *errorRtrn = mixin(_XkbErrCode4!("0x18", "i", "g", "map.kt_index[g]"));
                 return 0;
             }
             if (mapWidths[map.kt_index[g]] > w)
                 w = mapWidths[map.kt_index[g]];
         }
-        symsPerKey[i] = w * nG;
+        symsPerKey[i] = cast(ushort)(w * nG);
     }
     *wireRtrn = wire;
     return 1;
@@ -1790,14 +1810,14 @@ private int CheckKeyActions(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req,
     for (nActs = i = 0; i < req.nKeyActs; i++) {
         /* Check we received enough data to read the next byte on the wire */
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 1)) {
-            *nActsRtrn = _XkbErrCode3(0x24, i + req.firstKeyAct, i);
+            *nActsRtrn = mixin(_XkbErrCode3!("0x24", "i + req.firstKeyAct", "i"));
             return 0;
         }
         if (wire[0] != 0) {
             if (wire[0] == symsPerKey[i + req.firstKeyAct])
                 nActs += wire[0];
             else {
-                *nActsRtrn = _XkbErrCode3(0x23, i + req.firstKeyAct, wire[0]);
+                *nActsRtrn = mixin(_XkbErrCode3!("0x23", "i + req.firstKeyAct", "wire[0]"));
                 return 0;
             }
         }
@@ -1806,11 +1826,6 @@ private int CheckKeyActions(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req,
     if (req.nKeyActs % 4)
         wire += 4 - (req.nKeyActs % 4);
     *wireRtrn = cast(CARD8*) ((cast(XkbAnyAction*) wire) + nActs);
-    if (nActs > 0 &&
-        !_XkbCheckRequestBounds(client, req, wire, *wireRtrn)) {
-        *nActsRtrn = _XkbErrCode2(0x25, nActs);
-        return 0;
-    }
     *nActsRtrn = nActs;
     return 1;
 }
@@ -1830,34 +1845,33 @@ private int CheckKeyBehaviors(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* re
     first = req.firstKeyBehavior;
     last = req.firstKeyBehavior + req.nKeyBehaviors - 1;
     if (first < req.minKeyCode) {
-        *errorRtrn = _XkbErrCode3(0x31, first, req.minKeyCode);
+        *errorRtrn = mixin(_XkbErrCode3!("0x31", "first", "req.minKeyCode"));
         return 0;
     }
     if (last > req.maxKeyCode) {
-        *errorRtrn = _XkbErrCode3(0x32, last, req.maxKeyCode);
+        *errorRtrn = mixin(_XkbErrCode3!("0x32", "last", "req.maxKeyCode"));
         return 0;
     }
 
     for (i = 0; i < req.totalKeyBehaviors; i++, wire++) {
         /* Check we received enough data to read the next behavior */
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 1)) {
-            *errorRtrn = _XkbErrCode3(0x36, first, i);
+            *errorRtrn = mixin(_XkbErrCode3!("0x36", "first", "i"));
             return 0;
         }
         if ((wire.key < first) || (wire.key > last)) {
-            *errorRtrn = _XkbErrCode4(0x33, first, last, wire.key);
+            *errorRtrn = mixin(_XkbErrCode4!("0x33", "first", "last", "wire.key"));
             return 0;
         }
         if ((wire.type & XkbKB_Permanent) &&
             ((server.behaviors[wire.key].type != wire.type) ||
              (server.behaviors[wire.key].data != wire.data))) {
-            *errorRtrn = _XkbErrCode3(0x33, wire.key, wire.type);
+            *errorRtrn = mixin(_XkbErrCode3!("0x33", "wire.key", "wire.type"));
             return 0;
         }
         if ((wire.type == XkbKB_RadioGroup) &&
             ((wire.data & (~XkbKB_RGAllowNone)) > XkbMaxRadioGroups)) {
-            *errorRtrn = _XkbErrCode4(0x34, wire.key, wire.data,
-                                      XkbMaxRadioGroups);
+            *errorRtrn = mixin(_XkbErrCode4!("0x34", "wire.key", "wire.data", "XkbMaxRadioGroups"));
             return 0;
         }
         if ((wire.type == XkbKB_Overlay1) || (wire.type == XkbKB_Overlay2)) {
@@ -1881,7 +1895,7 @@ private int CheckVirtualMods(ClientPtr client, XkbDescRec* xkb, xkbSetMapReq* re
     }
     /* Check we received enough data for the number of virtual mods expected */
     if (!_XkbCheckRequestBounds(client, req, wire, wire + XkbPaddedSize(nMods))) {
-        *errorRtrn = _XkbErrCode3(0x37, nMods, i);
+        *errorRtrn = mixin(_XkbErrCode3!("0x37", "nMods", "i"));
         return 0;
     }
     *wireRtrn = (wire + XkbPaddedSize(nMods));
@@ -1904,26 +1918,26 @@ private int CheckKeyExplicit(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req
     first = req.firstKeyExplicit;
     last = first + req.nKeyExplicit - 1;
     if (first < req.minKeyCode) {
-        *errorRtrn = _XkbErrCode3(0x51, first, req.minKeyCode);
+        *errorRtrn = mixin(_XkbErrCode3!("0x51", "first", "req.minKeyCode"));
         return 0;
     }
     if (last > req.maxKeyCode) {
-        *errorRtrn = _XkbErrCode3(0x52, last, req.maxKeyCode);
+        *errorRtrn = mixin(_XkbErrCode3!("0x52", "last", "req.maxKeyCode"));
         return 0;
     }
     start = wire;
     for (i = 0; i < req.totalKeyExplicit; i++, wire += 2) {
         /* Check we received enough data to read the next two bytes */
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 2)) {
-            *errorRtrn = _XkbErrCode4(0x54, first, last, i);
+            *errorRtrn = mixin(_XkbErrCode4!("0x54", "first", "last", "i"));
             return 0;
         }
         if ((wire[0] < first) || (wire[0] > last)) {
-            *errorRtrn = _XkbErrCode4(0x53, first, last, wire[0]);
+            *errorRtrn = mixin(_XkbErrCode4!("0x53", "first", "last", "wire[0]"));
             return 0;
         }
         if (wire[1] & (~XkbAllExplicitMask)) {
-            *errorRtrn = _XkbErrCode3(0x52, ~XkbAllExplicitMask, wire[1]);
+            *errorRtrn = mixin(_XkbErrCode3!("0x52", "~XkbAllExplicitMask", "wire[1]"));
             return 0;
         }
     }
@@ -1947,21 +1961,21 @@ private int CheckModifierMap(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req
     first = req.firstModMapKey;
     last = first + req.nModMapKeys - 1;
     if (first < req.minKeyCode) {
-        *errRtrn = _XkbErrCode3(0x61, first, req.minKeyCode);
+        *errRtrn = mixin(_XkbErrCode3!("0x61", "first", "req.minKeyCode"));
         return 0;
     }
     if (last > req.maxKeyCode) {
-        *errRtrn = _XkbErrCode3(0x62, last, req.maxKeyCode);
+        *errRtrn = mixin(_XkbErrCode3!("0x62", "last", "req.maxKeyCode"));
         return 0;
     }
     start = wire;
     for (i = 0; i < req.totalModMapKeys; i++, wire += 2) {
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 2)) {
-            *errRtrn = _XkbErrCode3(0x64, req.totalModMapKeys, i);
+            *errRtrn = mixin(_XkbErrCode3!("0x64", "req.totalModMapKeys", "i"));
             return 0;
         }
         if ((wire[0] < first) || (wire[0] > last)) {
-            *errRtrn = _XkbErrCode4(0x63, first, last, wire[0]);
+            *errRtrn = mixin(_XkbErrCode4!("0x63", "first", "last", "wire[0]"));
             return 0;
         }
     }
@@ -1984,21 +1998,21 @@ private int CheckVirtualModMap(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* r
     first = req.firstVModMapKey;
     last = first + req.nVModMapKeys - 1;
     if (first < req.minKeyCode) {
-        *errRtrn = _XkbErrCode3(0x71, first, req.minKeyCode);
+        *errRtrn = mixin(_XkbErrCode3!("0x71", "first", "req.minKeyCode"));
         return 0;
     }
     if (last > req.maxKeyCode) {
-        *errRtrn = _XkbErrCode3(0x72, last, req.maxKeyCode);
+        *errRtrn = mixin(_XkbErrCode3!("0x72", "last", "req.maxKeyCode"));
         return 0;
     }
     for (i = 0; i < req.totalVModMapKeys; i++, wire++) {
         /* Check we received enough data to read the next virtual mod map key */
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 1)) {
-            *errRtrn = _XkbErrCode3(0x74, first, i);
+            *errRtrn = mixin(_XkbErrCode3!("0x74", "first", "i"));
             return 0;
         }
         if ((wire.key < first) || (wire.key > last)) {
-            *errRtrn = _XkbErrCode4(0x73, first, last, wire.key);
+            *errRtrn = mixin(_XkbErrCode4!("0x73", "first", "last", "wire.key"));
             return 0;
         }
     }
@@ -2019,7 +2033,7 @@ private char* SetKeyTypes(XkbDescPtr xkb, xkbSetMapReq* req, xkbKeyTypeWireDesc*
         }
     }
     if (cast(uint) (req.firstType + req.nTypes) > xkb.map.num_types)
-        xkb.map.num_types = req.firstType + req.nTypes;
+        xkb.map.num_types = cast(ubyte)(req.firstType + req.nTypes);
 
     for (i = 0; i < req.nTypes; i++) {
         XkbKeyTypePtr pOld = void;
@@ -2037,8 +2051,8 @@ private char* SetKeyTypes(XkbDescPtr xkb, xkbSetMapReq* req, xkbKeyTypeWireDesc*
         pOld.num_levels = wire.numLevels;
         pOld.map_count = wire.nMapEntries;
 
-        pOld.mods.mask = pOld.mods.real_mods |
-            XkbMaskForVMask(xkb, pOld.mods.vmods);
+        pOld.mods.mask = cast(ubyte)(pOld.mods.real_mods |
+            XkbMaskForVMask(xkb, pOld.mods.vmods));
 
         if (wire.nMapEntries) {
             xkbKTSetMapEntryWireDesc* mapWire = void;
@@ -2062,7 +2076,7 @@ private char* SetKeyTypes(XkbDescPtr xkb, xkbSetMapReq* req, xkbKeyTypeWireDesc*
                     pOld.preserve[n].real_mods = preWire[n].realMods;
                     pOld.preserve[n].vmods = preWire[n].virtualMods;
                     tmp = XkbMaskForVMask(xkb, preWire[n].virtualMods);
-                    pOld.preserve[n].mask = preWire[n].realMods | tmp;
+                    pOld.preserve[n].mask = cast(ubyte)(preWire[n].realMods | tmp);
                 }
             }
             if (wire.preserve)
@@ -2086,8 +2100,8 @@ private char* SetKeyTypes(XkbDescPtr xkb, xkbSetMapReq* req, xkbKeyTypeWireDesc*
             last = oldLast;
     }
     changes.map.changed |= XkbKeyTypesMask;
-    changes.map.first_type = first;
-    changes.map.num_types = (last - first) + 1;
+    changes.map.first_type = cast(ubyte)(first);
+    changes.map.num_types = cast(ubyte)((last - first) + 1);
     return cast(char*) wire;
 }
 
@@ -2113,9 +2127,9 @@ private char* SetKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, xk
                 }
             }
         }
-        if (XkbKeyHasActions(xkb, i + req.firstKeySym))
+        if (mixin(XkbKeyHasActions!("xkb", "i + req.firstKeySym")))
             XkbResizeKeyActions(xkb, i + req.firstKeySym,
-                                XkbNumGroups(wire.groupInfo) * wire.width);
+                                mixin(XkbNumGroups!("wire.groupInfo")) * wire.width);
         oldMap.kt_index[0] = wire.ktIndex[0];
         oldMap.kt_index[1] = wire.ktIndex[1];
         oldMap.kt_index[2] = wire.ktIndex[2];
@@ -2134,21 +2148,21 @@ private char* SetKeySyms(ClientPtr client, XkbDescPtr xkb, xkbSetMapReq* req, xk
             last = oldLast;
     }
     changes.map.changed |= XkbKeySymsMask;
-    changes.map.first_key_sym = first;
-    changes.map.num_key_syms = (last - first + 1);
+    changes.map.first_key_sym = cast(ubyte)(first);
+    changes.map.num_key_syms = cast(ubyte)((last - first + 1));
 
     s = 0;
     for (i = xkb.min_key_code; i <= xkb.max_key_code; i++) {
-        if (XkbKeyNumGroups(xkb, i) > s)
-            s = XkbKeyNumGroups(xkb, i);
+        if (mixin(XkbKeyNumGroups!("xkb", "i")) > s)
+            s = mixin(XkbKeyNumGroups!("xkb", "i"));
     }
     if (s != xkb.ctrls.num_groups) {
         xkbControlsNotify cn = {
-            requestMajor: XkbReqCode,
+            requestMajor: cast(ubyte)XkbReqCode,
             requestMinor: X_kbSetMap,
         };
         XkbControlsRec old = *xkb.ctrls;
-        xkb.ctrls.num_groups = s;
+        xkb.ctrls.num_groups = cast(ubyte)(s);
         if (XkbComputeControlsNotify(dev, &old, xkb.ctrls, &cn, FALSE))
             XkbSendControlsNotify(dev, &cn);
     }
@@ -2168,8 +2182,8 @@ private char* SetKeyActions(XkbDescPtr xkb, xkbSetMapReq* req, CARD8* wire, XkbC
         else {
             newActs = XkbResizeKeyActions(xkb, i + req.firstKeyAct, nActs[i]);
             memcpy(cast(char*) newActs, cast(char*) wire,
-                   nActs[i] * SIZEOF(xkbActionWireDesc));
-            wire += nActs[i] * SIZEOF(xkbActionWireDesc);
+                   nActs[i] * xkbActionWireDesc.sizeof);
+            wire += nActs[i] * xkbActionWireDesc.sizeof;
         }
     }
     first = req.firstKeyAct;
@@ -2184,8 +2198,8 @@ private char* SetKeyActions(XkbDescPtr xkb, xkbSetMapReq* req, CARD8* wire, XkbC
             last = oldLast;
     }
     changes.map.changed |= XkbKeyActionsMask;
-    changes.map.first_key_act = first;
-    changes.map.num_key_acts = (last - first + 1);
+    changes.map.first_key_act = cast(ubyte)(first);
+    changes.map.num_key_acts = cast(ubyte)((last - first + 1));
     return cast(char*) wire;
 }
 
@@ -2214,15 +2228,15 @@ private char* SetKeyBehaviors(XkbSrvInfoPtr xkbi, xkbSetMapReq* req, xkbBehavior
 
     if (maxRG > cast(int) xkbi.nRadioGroups) {
         if (xkbi.radioGroups)
-            xkbi.radioGroups = reallocarray(xkbi.radioGroups, maxRG,
+            xkbi.radioGroups = cast(_XkbRadioGroup*)reallocarray(xkbi.radioGroups, maxRG,
                                              XkbRadioGroupRec.sizeof);
         else
-            xkbi.radioGroups = calloc(maxRG, XkbRadioGroupRec.sizeof);
+            xkbi.radioGroups = cast(_XkbRadioGroup*)calloc(maxRG, XkbRadioGroupRec.sizeof);
         if (xkbi.radioGroups) {
             if (xkbi.nRadioGroups)
                 memset(&xkbi.radioGroups[xkbi.nRadioGroups], 0,
                        (maxRG - xkbi.nRadioGroups) * XkbRadioGroupRec.sizeof);
-            xkbi.nRadioGroups = maxRG;
+            xkbi.nRadioGroups = cast(ubyte)maxRG;
         }
         else
             xkbi.nRadioGroups = 0;
@@ -2239,8 +2253,8 @@ private char* SetKeyBehaviors(XkbSrvInfoPtr xkbi, xkbSetMapReq* req, xkbBehavior
             last = oldLast;
     }
     changes.map.changed |= XkbKeyBehaviorsMask;
-    changes.map.first_key_behavior = first;
-    changes.map.num_key_behaviors = (last - first + 1);
+    changes.map.first_key_behavior = cast(ubyte)(first);
+    changes.map.num_key_behaviors = cast(ubyte)((last - first + 1));
     return cast(char*) wire;
 }
 
@@ -2288,8 +2302,8 @@ private char* SetKeyExplicit(XkbSrvInfoPtr xkbi, xkbSetMapReq* req, CARD8* wire,
             if (oldLast > last)
                 last = oldLast;
         }
-        changes.map.first_key_explicit = first;
-        changes.map.num_key_explicit = (last - first) + 1;
+        changes.map.first_key_explicit = cast(ubyte)(first);
+        changes.map.num_key_explicit = cast(ubyte)((last - first) + 1);
     }
     wire += XkbPaddedSize(wire - start) - (wire - start);
     return cast(char*) wire;
@@ -2319,8 +2333,8 @@ private char* SetModifierMap(XkbSrvInfoPtr xkbi, xkbSetMapReq* req, CARD8* wire,
             if (oldLast > last)
                 last = oldLast;
         }
-        changes.map.first_modmap_key = first;
-        changes.map.num_modmap_keys = (last - first) + 1;
+        changes.map.first_modmap_key = cast(ubyte)(first);
+        changes.map.num_modmap_keys = cast(ubyte)((last - first) + 1);
     }
     wire += XkbPaddedSize(wire - start) - (wire - start);
     return cast(char*) wire;
@@ -2348,15 +2362,15 @@ private char* SetVirtualModMap(XkbSrvInfoPtr xkbi, xkbSetMapReq* req, xkbVModMap
             if (oldLast > last)
                 last = oldLast;
         }
-        changes.map.first_vmodmap_key = first;
-        changes.map.num_vmodmap_keys = (last - first) + 1;
+        changes.map.first_vmodmap_key = cast(ubyte)(first);
+        changes.map.num_vmodmap_keys = cast(ubyte)((last - first) + 1);
     }
     return cast(char*) wire;
 }
 
 enum string _add_check_len(string new_) = `
     if (len > UINT32_MAX - (` ~ new_ ~ `) || len > req_len - (` ~ new_ ~ `)) goto bad; 
-    else len += (` ~ new_ ~ `)`;
+    else len += ` ~ new_ ~ `;`;
 
 /**
  * Check the length of the SetMap request
@@ -2469,12 +2483,12 @@ private int _XkbSetMapChecks(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* r
         else {
             if (!XkbIsLegalKeycode(req.minKeyCode)) {
                 client.errorValue =
-                    _XkbErrCode3(2, req.minKeyCode, req.maxKeyCode);
+                    mixin(_XkbErrCode3!(`2`, `req.minKeyCode`, `req.maxKeyCode`));
                 return BadValue;
             }
             if (req.minKeyCode > req.maxKeyCode) {
                 client.errorValue =
-                    _XkbErrCode3(3, req.minKeyCode, req.maxKeyCode);
+                    mixin(_XkbErrCode3!(`3`, `req.minKeyCode`, `req.maxKeyCode`));
                 return BadMatch;
             }
         }
@@ -2493,16 +2507,16 @@ private int _XkbSetMapChecks(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* r
     for (i = xkb.min_key_code; i < xkb.max_key_code; i++, map++) {
         int g = void, ng = void, w = void;
 
-        ng = XkbNumGroups(map.group_info);
+        ng = mixin(XkbNumGroups!("map.group_info"));
         for (w = g = 0; g < ng; g++) {
             if (map.kt_index[g] >= cast(uint) nTypes) {
-                client.errorValue = _XkbErrCode4(0x13, i, g, map.kt_index[g]);
+                client.errorValue = mixin(_XkbErrCode4!("0x13", "i", "g", "map.kt_index[g]"));
                 return BadValue;
             }
             if (mapWidths[map.kt_index[g]] > w)
                 w = mapWidths[map.kt_index[g]];
         }
-        symsPerKey[i] = w * ng;
+        symsPerKey[i] = cast(ushort)(w * ng);
     }
 
     if ((req.present & XkbKeySymsMask) &&
@@ -2564,7 +2578,7 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
 {
     XkbEventCauseRec cause = { 0 };
     XkbChangesRec change = { 0 };
-    bool sentNKN = void;
+    Bool sentNKN = void;
     XkbSrvInfoPtr xkbi = void;
     XkbDescPtr xkb = void;
 
@@ -2574,15 +2588,15 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
     xkbi = dev.key.xkbInfo;
     xkb = xkbi.desc;
 
-    XkbSetCauseXkbReq(&cause, X_kbSetMap, client);
+    mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbSetMap`, `client`));
     memset(&change, 0, change.sizeof);
     sentNKN = FALSE;
     if ((xkb.min_key_code != req.minKeyCode) ||
         (xkb.max_key_code != req.maxKeyCode)) {
-        int status = void;
+        Status status = void;
         xkbNewKeyboardNotify nkn = { 0 };
 
-        nkn.deviceID = nkn.oldDeviceID = dev.id;
+        nkn.deviceID = nkn.oldDeviceID = cast(ubyte)dev.id;
         nkn.oldMinKeyCode = xkb.min_key_code;
         nkn.oldMaxKeyCode = xkb.max_key_code;
         status = XkbChangeKeycodeRange(xkb, req.minKeyCode,
@@ -2591,9 +2605,9 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
             return status;      /* oh-oh. what about the other keyboards? */
         nkn.minKeyCode = xkb.min_key_code;
         nkn.maxKeyCode = xkb.max_key_code;
-        nkn.requestMajor = XkbReqCode;
+        nkn.requestMajor = cast(ubyte)(XkbReqCode);
         nkn.requestMinor = X_kbSetMap;
-        nkn.changed = XkbNKN_KeycodesMask;
+        nkn.changed = cast(ushort)XkbNKN_KeycodesMask;
         XkbSendNewKeyboardNotify(dev, &nkn);
         sentNKN = TRUE;
     }
@@ -2640,13 +2654,13 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
 
         if (change.map.num_key_syms > 0) {
             first = change.map.first_key_sym;
-            last = first + change.map.num_key_syms - 1;
+            last = cast(ubyte)(first + change.map.num_key_syms - 1);
         }
         else
             first = last = 0;
         if (change.map.num_modmap_keys > 0) {
             firstMM = change.map.first_modmap_key;
-            lastMM = firstMM + change.map.num_modmap_keys - 1;
+            lastMM = cast(ubyte)(firstMM + change.map.num_modmap_keys - 1);
         }
         else
             firstMM = lastMM = 0;
@@ -2663,7 +2677,7 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
         if (last > 0) {
             uint check = 0;
 
-            XkbUpdateActions(dev, first, (last - first + 1), &change, &check,
+            XkbUpdateActions(dev, first, cast(ubyte)(last - first + 1), &change, &check,
                              &cause);
             if (check)
                 XkbCheckSecondaryEffects(xkbi, check, &change, &cause);
@@ -2679,13 +2693,13 @@ private int _XkbSetMap(ClientPtr client, DeviceIntPtr dev, xkbSetMapReq* req, ch
 
 int ProcXkbSetMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(present);
-    X_REQUEST_FIELD_CARD16(flags);
-    X_REQUEST_FIELD_CARD16(totalSyms);
-    X_REQUEST_FIELD_CARD16(totalActs);
-    X_REQUEST_FIELD_CARD16(virtualMods);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"present");
+    mixin(X_REQUEST_FIELD_CARD16!"flags");
+    mixin(X_REQUEST_FIELD_CARD16!"totalSyms");
+    mixin(X_REQUEST_FIELD_CARD16!"totalActs");
+    mixin(X_REQUEST_FIELD_CARD16!"virtualMods");
 
     DeviceIntPtr dev = void, master = void;
     char* tmp = void;
@@ -2777,7 +2791,7 @@ int ProcXkbSetMap(ClientPtr client)
     return Success;
 }
 
-private int XkbComputeGetCompatMapReplySize(XkbCompatMapPtr compat, xkbGetCompatMapReply* rep)
+private Status XkbComputeGetCompatMapReplySize(XkbCompatMapPtr compat, xkbGetCompatMapReply* rep)
 {
     uint size = void, nGroups = void;
 
@@ -2790,9 +2804,9 @@ private int XkbComputeGetCompatMapReplySize(XkbCompatMapPtr compat, xkbGetCompat
                 nGroups++;
         }
     }
-    size = nGroups * SIZEOF(xkbModsWireDesc);
-    size += (rep.nSI * SIZEOF(xkbSymInterpretWireDesc));
-    rep.length = size / 4;
+    size = cast(uint)(nGroups * xkbModsWireDesc.sizeof);
+    size += (rep.nSI * xkbSymInterpretWireDesc.sizeof);
+    rep.length= cast(uint)(size / 4);
     return Success;
 }
 
@@ -2803,7 +2817,7 @@ private void XkbAssembleCompatMap(ClientPtr client, XkbCompatMapPtr compat, xkbG
 
         for (i = 0; i < rep.nSI; i++, sym++) {
             /* write xkbSymInterpretWireDesc */
-            x_rpcbuf_write_CARD32(rpcbuf, sym.sym);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sym.sym);
             x_rpcbuf_write_CARD8(rpcbuf, sym.mods);
             x_rpcbuf_write_CARD8(rpcbuf, sym.match);
             x_rpcbuf_write_CARD8(rpcbuf, sym.virtual_mod);
@@ -2827,10 +2841,10 @@ private void XkbAssembleCompatMap(ClientPtr client, XkbCompatMapPtr compat, xkbG
 
 int ProcXkbGetCompatMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetCompatMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(firstSI);
-    X_REQUEST_FIELD_CARD16(nSI);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetCompatMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"firstSI");
+    mixin(X_REQUEST_FIELD_CARD16!"nSI");
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -2849,12 +2863,12 @@ int ProcXkbGetCompatMap(ClientPtr client)
     }
     else if (((cast(uint) stuff.nSI) > 0) &&
              (cast(uint) (stuff.firstSI + stuff.nSI - 1) >= compat.num_si)) {
-        client.errorValue = _XkbErrCode2(0x05, compat.num_si);
+        client.errorValue = mixin(_XkbErrCode2!("0x05", "compat.num_si"));
         return BadValue;
     }
 
     xkbGetCompatMapReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         firstSI: firstSI,
         nSI: nSI,
         nTotalSI: compat.num_si,
@@ -2867,11 +2881,11 @@ int ProcXkbGetCompatMap(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD16(firstSI);
-    X_REPLY_FIELD_CARD16(nSI);
-    X_REPLY_FIELD_CARD16(nTotalSI);
+    mixin(X_REPLY_FIELD_CARD16!"firstSI");
+    mixin(X_REPLY_FIELD_CARD16!"nSI");
+    mixin(X_REPLY_FIELD_CARD16!"nTotalSI");
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /**
@@ -2895,7 +2909,7 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
         xkbSymInterpretWireDesc* wire = void;
 
         if (req.firstSI > compat.num_si) {
-            client.errorValue = _XkbErrCode2(0x02, compat.num_si);
+            client.errorValue = mixin(_XkbErrCode2!("0x02", "compat.num_si"));
             return BadValue;
         }
         wire = cast(xkbSymInterpretWireDesc*) data;
@@ -2910,7 +2924,7 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
                 nGroups++;
         }
     }
-    data += nGroups * SIZEOF(xkbModsWireDesc);
+    data += nGroups * xkbModsWireDesc.sizeof;
     if (((data - (cast(char*) req)) / 4) != req.length) {
         return BadLength;
     }
@@ -2928,8 +2942,8 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
         if (cast(uint) (req.firstSI + req.nSI) > USHRT_MAX)
             return BadValue;
         if (cast(uint) (req.firstSI + req.nSI) > compat.size_si) {
-            compat.num_si = compat.size_si = req.firstSI + req.nSI;
-            compat.sym_interpret = reallocarray(compat.sym_interpret,
+            compat.num_si = compat.size_si = cast(ushort)(req.firstSI + req.nSI);
+            compat.sym_interpret = cast(_XkbSymInterpretRec*)reallocarray(compat.sym_interpret,
                                                  compat.size_si,
                                                  XkbSymInterpretRec.sizeof);
             if (!compat.sym_interpret) {
@@ -2938,7 +2952,7 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
             }
         }
         else if (req.truncateSI || req.firstSI + req.nSI > compat.num_si) {
-            compat.num_si = req.firstSI + req.nSI;
+            compat.num_si = cast(ushort)(req.firstSI + req.nSI);
         }
         sym = &compat.sym_interpret[req.firstSI];
         for (i = 0; i < req.nSI; i++, wire++) {
@@ -2959,7 +2973,7 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
             sym.flags = wire.flags;
             sym.virtual_mod = wire.virtualMod;
             memcpy(cast(char*) &sym.act, cast(char*) &wire.act,
-                   SIZEOF(xkbActionWireDesc));
+                   xkbActionWireDesc.sizeof);
             sym++;
         }
         if (skipped) {
@@ -2992,7 +3006,7 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
                     tmp = XkbMaskForVMask(xkb, wire.virtualMods);
                     compat.groups[i].mask |= tmp;
                 }
-                data += SIZEOF(xkbModsWireDesc);
+                data += xkbModsWireDesc.sizeof;
                 wire = cast(xkbModsWireDesc*) data;
             }
         }
@@ -3006,7 +3020,7 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
     if (dev.xkb_interest) {
         xkbCompatMapNotify ev = void;
 
-        ev.deviceID = dev.id;
+        ev.deviceID= cast(ubyte)(dev.id);
         ev.changedGroups = req.groups;
         ev.firstSI = req.firstSI;
         ev.nSI = req.nSI;
@@ -3019,8 +3033,8 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
         uint check = void;
         XkbEventCauseRec cause = { 0 };
 
-        XkbSetCauseXkbReq(&cause, X_kbSetCompatMap, client);
-        XkbUpdateActions(dev, xkb.min_key_code, XkbNumKeys(xkb), &change,
+        mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbSetCompatMap`, `client`));
+        XkbUpdateActions(dev, xkb.min_key_code, cast(ubyte)mixin(XkbNumKeys!("xkb")), &change,
                          &check, &cause);
         if (check)
             XkbCheckSecondaryEffects(xkbi, check, &change, &cause);
@@ -3031,10 +3045,10 @@ private int _XkbSetCompatMap(ClientPtr client, DeviceIntPtr dev, xkbSetCompatMap
 
 int ProcXkbSetCompatMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetCompatMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(firstSI);
-    X_REQUEST_FIELD_CARD16(nSI);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetCompatMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"firstSI");
+    mixin(X_REQUEST_FIELD_CARD16!"nSI");
 
     DeviceIntPtr dev = void;
     char* data = void;
@@ -3093,8 +3107,8 @@ int ProcXkbSetCompatMap(ClientPtr client)
 
 int ProcXkbGetIndicatorState(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetIndicatorStateReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetIndicatorStateReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
 
     XkbSrvLedInfoPtr sli = void;
     DeviceIntPtr dev = void;
@@ -3105,32 +3119,32 @@ int ProcXkbGetIndicatorState(ClientPtr client)
     mixin(CHK_KBD_DEVICE!(`dev`, `stuff.deviceSpec`, `client`, `DixReadAccess`));
 
     sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId,
-                            XkbXI_IndicatorStateMask);
+                            cast(uint)XkbXI_IndicatorStateMask);
     if (!sli)
         return BadAlloc;
 
     xkbGetIndicatorStateReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         state: sli.effectiveState
     };
 
-    X_REPLY_FIELD_CARD32(state);
+    mixin(X_REPLY_FIELD_CARD32!"state");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
-private int XkbComputeGetIndicatorMapReplySize(XkbIndicatorPtr indicators, xkbGetIndicatorMapReply* rep)
+private Status XkbComputeGetIndicatorMapReplySize(XkbIndicatorPtr indicators, xkbGetIndicatorMapReply* rep)
 {
     int i = void, bit = void;
     int nIndicators = void;
 
-    rep.realIndicators = indicators.phys_indicators;
+    rep.realIndicators= cast(uint)(indicators.phys_indicators);
     for (i = nIndicators = 0, bit = 1; i < XkbNumIndicators; i++, bit <<= 1) {
         if (rep.which & bit)
             nIndicators++;
     }
-    rep.length = (nIndicators * SIZEOF(xkbIndicatorMapWireDesc)) / 4;
-    rep.nIndicators = nIndicators;
+    rep.length= cast(uint)((nIndicators * xkbIndicatorMapWireDesc.sizeof) / 4);
+    rep.nIndicators= cast(ubyte)(nIndicators);
     return Success;
 }
 
@@ -3156,9 +3170,9 @@ private void XkbAssembleIndicatorMap(ClientPtr client, XkbIndicatorPtr indicator
 
 int ProcXkbGetIndicatorMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetIndicatorMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(which);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetIndicatorMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD32!"which");
 
     DeviceIntPtr dev = void;
     XkbDescPtr xkb = void;
@@ -3173,7 +3187,7 @@ int ProcXkbGetIndicatorMap(ClientPtr client)
     leds = xkb.indicators;
 
     xkbGetIndicatorMapReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         which: stuff.which
     };
     XkbComputeGetIndicatorMapReplySize(leds, &reply);
@@ -3185,10 +3199,10 @@ int ProcXkbGetIndicatorMap(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD32(which);
-    X_REPLY_FIELD_CARD32(realIndicators);
+    mixin(X_REPLY_FIELD_CARD32!"which");
+    mixin(X_REPLY_FIELD_CARD32!"realIndicators");
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 /**
@@ -3205,7 +3219,7 @@ private int _XkbSetIndicatorMap(ClientPtr client, DeviceIntPtr dev, int which, x
     xkbi = dev.key.xkbInfo;
 
     sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId,
-                            XkbXI_IndicatorMapsMask);
+                            cast(uint)XkbXI_IndicatorMapsMask);
     if (!sli)
         return BadAlloc;
 
@@ -3223,13 +3237,13 @@ private int _XkbSetIndicatorMap(ClientPtr client, DeviceIntPtr dev, int which, x
                 uint tmp = void;
 
                 tmp = XkbMaskForVMask(xkbi.desc, desc.virtualMods);
-                sli.maps[i].mods.mask = desc.mods | tmp;
+                sli.maps[i].mods.mask = cast(ubyte)(desc.mods | tmp);
             }
             desc++;
         }
     }
 
-    XkbSetCauseXkbReq(&cause, X_kbSetIndicatorMap, client);
+    mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbSetIndicatorMap`, `client`));
     XkbApplyLedMapChanges(dev, sli, which, null, null, &cause);
 
     return Success;
@@ -3237,9 +3251,9 @@ private int _XkbSetIndicatorMap(ClientPtr client, DeviceIntPtr dev, int which, x
 
 int ProcXkbSetIndicatorMap(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetIndicatorMapReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(which);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetIndicatorMapReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD32!"which");
 
     int i = void, bit = void;
     int nIndicators = void;
@@ -3259,8 +3273,8 @@ int ProcXkbSetIndicatorMap(ClientPtr client)
         if (stuff.which & bit)
             nIndicators++;
     }
-    if (client.req_len != ((((xkbSetIndicatorMapReq) +
-                           (nIndicators * SIZEOF(xkbIndicatorMapWireDesc))).sizeof) /
+    if (client.req_len != ((((xkbSetIndicatorMapReq).sizeof +
+                           (nIndicators * xkbIndicatorMapWireDesc.sizeof))) /
                           4)) {
         return BadLength;
     }
@@ -3301,11 +3315,11 @@ int ProcXkbSetIndicatorMap(ClientPtr client)
 
 int ProcXkbGetNamedIndicator(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetNamedIndicatorReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(ledClass);
-    X_REQUEST_FIELD_CARD16(ledID);
-    X_REQUEST_FIELD_CARD32(indicator);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetNamedIndicatorReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"ledClass");
+    mixin(X_REQUEST_FIELD_CARD16!"ledID");
+    mixin(X_REQUEST_FIELD_CARD32!"indicator");
 
     DeviceIntPtr dev = void;
     int i = 0;
@@ -3334,31 +3348,31 @@ int ProcXkbGetNamedIndicator(ClientPtr client)
     }
 
     xkbGetNamedIndicatorReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         indicator: stuff.indicator,
-        supported: TRUE,
+        supported: cast(ubyte)TRUE,
         ndx: XkbNoIndicator,
     };
     if (map != null) {
         reply.found = TRUE;
         reply.on = ((sli.effectiveState & (1 << i)) != 0);
         reply.realIndicator = ((sli.physIndicators & (1 << i)) != 0);
-        reply.ndx = i;
+        reply.ndx = cast(ubyte)i;
         reply.flags = map.flags;
         reply.whichGroups = map.which_groups;
         reply.groups = map.groups;
         reply.whichMods = map.which_mods;
         reply.mods = map.mods.mask;
         reply.realMods = map.mods.real_mods;
-        reply.virtualMods = map.mods.vmods;
+        reply.virtualMods = cast(ushort)map.mods.vmods;
         reply.ctrls = map.ctrls;
     }
 
-    X_REPLY_FIELD_CARD32(indicator);
-    X_REPLY_FIELD_CARD16(virtualMods);
-    X_REPLY_FIELD_CARD32(ctrls);
+    mixin(X_REPLY_FIELD_CARD32!"indicator");
+    mixin(X_REPLY_FIELD_CARD16!"virtualMods");
+    mixin(X_REPLY_FIELD_CARD32!"ctrls");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /**
@@ -3409,7 +3423,7 @@ private int _XkbCreateIndicatorMap(DeviceIntPtr dev, Atom indicator, int ledClas
         for (led = 0, map = null; (led < XkbNumIndicators) && (map == null);
              led++) {
             if ((sli.names) && (sli.maps) && (sli.names[led] == None) &&
-                (!XkbIM_InUse(&sli.maps[led]))) {
+                (!mixin(XkbIM_InUse!("&sli.maps[led]")))) {
                 map = &sli.maps[led];
                 if (!dryRun)
                     sli.names[led] = indicator;
@@ -3473,7 +3487,7 @@ private int _XkbSetNamedIndicator(ClientPtr client, DeviceIntPtr dev, xkbSetName
         statec |= ((sli.effectiveState ^ sli.explicitState) & (1 << led));
     }
 
-    XkbSetCauseXkbReq(&cause, X_kbSetNamedIndicator, client);
+    mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbSetNamedIndicator`, `client`));
     if (namec)
         XkbApplyLedNameChanges(dev, sli, namec, &ed, &changes, &cause);
     if (mapc)
@@ -3491,13 +3505,13 @@ private int _XkbSetNamedIndicator(ClientPtr client, DeviceIntPtr dev, xkbSetName
 
 int ProcXkbSetNamedIndicator(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbSetNamedIndicatorReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(ledClass);
-    X_REQUEST_FIELD_CARD16(ledID);
-    X_REQUEST_FIELD_CARD32(indicator);
-    X_REQUEST_FIELD_CARD16(virtualMods);
-    X_REQUEST_FIELD_CARD32(ctrls);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbSetNamedIndicatorReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"ledClass");
+    mixin(X_REQUEST_FIELD_CARD16!"ledID");
+    mixin(X_REQUEST_FIELD_CARD32!"indicator");
+    mixin(X_REQUEST_FIELD_CARD16!"virtualMods");
+    mixin(X_REQUEST_FIELD_CARD32!"ctrls");
 
     int rc = void;
     DeviceIntPtr dev = void;
@@ -3510,7 +3524,7 @@ int ProcXkbSetNamedIndicator(ClientPtr client)
     mixin(CHK_LED_DEVICE!(`dev`, `stuff.deviceSpec`, `client`, `DixSetAttrAccess`));
     mixin(CHK_ATOM_ONLY!(`stuff.indicator`));
     mixin(CHK_MASK_LEGAL!(`0x10`, `stuff.whichGroups`, `XkbIM_UseAnyGroup`));
-    mixin(CHK_MASK_LEGAL!(`0x11`, `stuff.whichMods`, `XkbIM_UseAnyMods`));
+    mixin(CHK_MASK_LEGAL!(`0X11`, `stuff.whichMods`, `XkbIM_UseAnyMods`));
 
     /* Dry-run for checks */
     rc = _XkbCreateIndicatorMap(dev, stuff.indicator,
@@ -3581,11 +3595,11 @@ private void __rpcbuf_write_atoms(x_rpcbuf_t* rpcbuf, Atom* atoms, size_t maxAto
 {
     for (size_t i = 0; i < maxAtoms; i++) {
         if (atoms[i] != None)
-            x_rpcbuf_write_CARD32(rpcbuf, atoms[i]);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)atoms[i]);
     }
 }
 
-private int XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
+private Status XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
 {
     uint which = void, length = void;
     int i = void;
@@ -3624,7 +3638,7 @@ private int XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
                 if (pType.level_names != null)
                     nKTLevels += pType.num_levels;
             }
-            rep.nKTLevels = nKTLevels;
+            rep.nKTLevels = cast(ushort)nKTLevels;
             length += nKTLevels;
         }
     }
@@ -3644,7 +3658,7 @@ private int XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
             int nLeds = void;
 
             rep.indicators =
-                _XkbCountAtoms(xkb.names.indicators, XkbNumIndicators,
+                _XkbCountAtoms(xkb.names.indicators.ptr, XkbNumIndicators,
                                &nLeds);
             length += nLeds;
             if (nLeds == 0)
@@ -3655,7 +3669,7 @@ private int XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
             int nVMods = void;
 
             rep.virtualMods =
-                _XkbCountAtoms(xkb.names.vmods, XkbNumVirtualMods, &nVMods);
+                cast(ushort)_XkbCountAtoms(xkb.names.vmods.ptr, XkbNumVirtualMods, &nVMods);
             length += nVMods;
             if (nVMods == 0)
                 which &= ~XkbVirtualModNamesMask;
@@ -3665,7 +3679,7 @@ private int XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
             int nGroups = void;
 
             rep.groupNames =
-                _XkbCountAtoms(xkb.names.groups, XkbNumKbdGroups, &nGroups);
+                cast(ubyte)_XkbCountAtoms(xkb.names.groups.ptr, XkbNumKbdGroups, &nGroups);
             length += nGroups;
             if (nGroups == 0)
                 which &= ~XkbGroupNamesMask;
@@ -3697,7 +3711,7 @@ private int XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep)
         which &= ~XkbRGNamesMask;
     }
 
-    rep.length = length;
+    rep.length= cast(uint)(length);
     rep.which = which;
     return Success;
 }
@@ -3710,26 +3724,26 @@ private void XkbAssembleNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply
 
     if (xkb.names) {
         if (which & XkbKeycodesNameMask) {
-            x_rpcbuf_write_CARD32(rpcbuf, xkb.names.keycodes);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.names.keycodes);
         }
         if (which & XkbGeometryNameMask) {
-            x_rpcbuf_write_CARD32(rpcbuf, xkb.names.geometry);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.names.geometry);
         }
         if (which & XkbSymbolsNameMask) {
-            x_rpcbuf_write_CARD32(rpcbuf, xkb.names.symbols);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.names.symbols);
         }
         if (which & XkbPhysSymbolsNameMask) {
-            x_rpcbuf_write_CARD32(rpcbuf, xkb.names.phys_symbols);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.names.phys_symbols);
         }
         if (which & XkbTypesNameMask) {
-            x_rpcbuf_write_CARD32(rpcbuf, xkb.names.types);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.names.types);
         }
         if (which & XkbCompatNameMask) {
-            x_rpcbuf_write_CARD32(rpcbuf, xkb.names.compat);
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.names.compat);
         }
         if (which & XkbKeyTypeNamesMask) {
             for (i = 0; i < xkb.map.num_types; i++) {
-                x_rpcbuf_write_CARD32(rpcbuf, xkb.map.types[i].name);
+                x_rpcbuf_write_CARD32(rpcbuf, cast(uint)xkb.map.types[i].name);
             }
         }
         if (which & XkbKTLevelNamesMask && xkb.map) {
@@ -3744,40 +3758,40 @@ private void XkbAssembleNames(ClientPtr client, XkbDescPtr xkb, xkbGetNamesReply
             type = xkb.map.types;
             for (i = 0; i < xkb.map.num_types; i++, type++) {
                 for (int l = 0; l < type.num_levels; l++) {
-                    x_rpcbuf_write_CARD32(rpcbuf, type.level_names[l]);
+                    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)type.level_names[l]);
                 }
             }
         }
         if (which & XkbIndicatorNamesMask) {
-            __rpcbuf_write_atoms(rpcbuf, xkb.names.indicators, XkbNumIndicators);
+            __rpcbuf_write_atoms(rpcbuf, xkb.names.indicators.ptr, XkbNumIndicators);
         }
         if (which & XkbVirtualModNamesMask) {
-            __rpcbuf_write_atoms(rpcbuf, xkb.names.vmods, XkbNumVirtualMods);
+            __rpcbuf_write_atoms(rpcbuf, xkb.names.vmods.ptr, XkbNumVirtualMods);
         }
         if (which & XkbGroupNamesMask) {
-            __rpcbuf_write_atoms(rpcbuf, xkb.names.groups, XkbNumKbdGroups);
+            __rpcbuf_write_atoms(rpcbuf, xkb.names.groups.ptr, XkbNumKbdGroups);
         }
         if (which & XkbKeyNamesMask) {
             x_rpcbuf_write_binary_pad(rpcbuf,
                                       &(xkb.names.keys[rep.firstKey]),
-                                      ((XkbKeyNameRec) * rep.nKeys).sizeof);
+                                      ((XkbKeyNameRec).sizeof * rep.nKeys));
         }
         if (which & XkbKeyAliasesMask) {
             x_rpcbuf_write_binary_pad(rpcbuf,
                                       xkb.names.key_aliases,
-                                      ((XkbKeyAliasRec) * rep.nKeyAliases).sizeof);
+                                      ((XkbKeyAliasRec).sizeof * rep.nKeyAliases));
         }
         if ((which & XkbRGNamesMask) && (rep.nRadioGroups > 0)) {
-            x_rpcbuf_write_CARD32s(rpcbuf, xkb.names.radio_groups, rep.nRadioGroups);
+            x_rpcbuf_write_CARD32s(rpcbuf, cast(uint*)xkb.names.radio_groups, rep.nRadioGroups);
         }
     }
 }
 
 int ProcXkbGetNames(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetNamesReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(which);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetNamesReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD32!"which");
 
     DeviceIntPtr dev = void;
     XkbDescPtr xkb = void;
@@ -3791,13 +3805,13 @@ int ProcXkbGetNames(ClientPtr client)
     xkb = dev.key.xkbInfo.desc;
 
     xkbGetNamesReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         which: stuff.which,
         nTypes: xkb.map.num_types,
         firstKey: xkb.min_key_code,
-        nKeys: XkbNumKeys(xkb),
+        nKeys: cast(ubyte)mixin(XkbNumKeys!("xkb")),
         nKeyAliases: xkb.names ? xkb.names.num_key_aliases : 0,
-        nRadioGroups: xkb.names ? xkb.names.num_rg : 0
+        nRadioGroups: cast(ubyte)(xkb.names ? xkb.names.num_rg : 0)
     };
     XkbComputeGetNamesReplySize(xkb, &reply);
 
@@ -3808,11 +3822,11 @@ int ProcXkbGetNames(ClientPtr client)
     if (rpcbuf.error)
         return BadAlloc;
 
-    X_REPLY_FIELD_CARD32(which);
-    X_REPLY_FIELD_CARD16(virtualMods);
-    X_REPLY_FIELD_CARD32(indicators);
+    mixin(X_REPLY_FIELD_CARD32!"which");
+    mixin(X_REPLY_FIELD_CARD16!"virtualMods");
+    mixin(X_REPLY_FIELD_CARD32!"indicators");
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private CARD32* _XkbCheckAtoms(CARD32* wire, int nAtoms, int swapped, Atom* pError)
@@ -3823,8 +3837,8 @@ private CARD32* _XkbCheckAtoms(CARD32* wire, int nAtoms, int swapped, Atom* pErr
         if (swapped) {
             swapl(wire);
         }
-        if ((((Atom) *wire) != None) && (!ValidAtom((Atom) *wire))) {
-            *pError = ((Atom) *wire);
+        if (((cast(Atom) (*wire)) != None) && (!ValidAtom(cast(Atom) (*wire)))) {
+            *pError = (cast(Atom) (*wire));
             return null;
         }
     }
@@ -3841,8 +3855,8 @@ private CARD32* _XkbCheckMaskedAtoms(CARD32* wire, int nAtoms, CARD32 present, i
         if (swapped) {
             swapl(wire);
         }
-        if ((((Atom) *wire) != None) && (!ValidAtom(((Atom) *wire)))) {
-            *pError = (Atom) *wire;
+        if (((cast(Atom) (*wire)) != None) && (!ValidAtom((cast(Atom) (*wire))))) {
+            *pError = cast(Atom) (*wire);
             return null;
         }
         wire++;
@@ -3891,18 +3905,17 @@ private int _XkbSetNamesCheck(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq
         CARD32* old = void;
 
         if (stuff.nTypes < 1) {
-            client.errorValue = _XkbErrCode2(0x02, stuff.nTypes);
+            client.errorValue = mixin(_XkbErrCode2!("0x02", "stuff.nTypes"));
             return BadValue;
         }
         if (cast(uint) (stuff.firstType + stuff.nTypes - 1) >=
             xkb.map.num_types) {
             client.errorValue =
-                _XkbErrCode4(0x03, stuff.firstType, stuff.nTypes,
-                             xkb.map.num_types);
+                mixin(_XkbErrCode4!("0x03", "stuff.firstType", "stuff.nTypes", "xkb.map.num_types"));
             return BadValue;
         }
         if ((cast(uint) stuff.firstType) <= XkbLastRequiredType) {
-            client.errorValue = _XkbErrCode2(0x04, stuff.firstType);
+            client.errorValue = mixin(_XkbErrCode2!("0x04", "stuff.firstType"));
             return BadAccess;
         }
         if (!_XkbCheckRequestBounds(client, stuff, tmp, tmp + stuff.nTypes))
@@ -3914,8 +3927,8 @@ private int _XkbSetNamesCheck(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq
             return BadAtom;
         }
         for (i = 0; i < stuff.nTypes; i++, old++) {
-            if (!_XkbCheckTypeName((Atom) *old, stuff.firstType + i))
-                client.errorValue = _XkbErrCode2(0x05, i);
+            if (!_XkbCheckTypeName(cast(Atom)( *old), stuff.firstType + i))
+                client.errorValue = mixin(_XkbErrCode2!("0x05", "i"));
         }
     }
     if (stuff.which & XkbKTLevelNamesMask) {
@@ -3924,14 +3937,12 @@ private int _XkbSetNamesCheck(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq
         CARD8* width = void;
 
         if (stuff.nKTLevels < 1) {
-            client.errorValue = _XkbErrCode2(0x05, stuff.nKTLevels);
+            client.errorValue = mixin(_XkbErrCode2!("0x05", "stuff.nKTLevels"));
             return BadValue;
         }
         if (cast(uint) (stuff.firstKTLevel + stuff.nKTLevels - 1) >=
             xkb.map.num_types) {
-            client.errorValue = _XkbErrCode4(0x06, stuff.firstKTLevel,
-                                              stuff.nKTLevels,
-                                              xkb.map.num_types);
+            client.errorValue = mixin(_XkbErrCode4!("0x06", "stuff.firstKTLevel", "stuff.nKTLevels", "xkb.map.num_types"));
             return BadValue;
         }
         width = cast(CARD8*) tmp;
@@ -3943,8 +3954,7 @@ private int _XkbSetNamesCheck(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq
             if (width[i] == 0)
                 continue;
             else if (width[i] != type.num_levels) {
-                client.errorValue = _XkbErrCode4(0x07, i + stuff.firstKTLevel,
-                                                  type.num_levels, width[i]);
+                client.errorValue = mixin(_XkbErrCode4!("0x07", "i + stuff.firstKTLevel", "type.num_levels", "width[i]"));
                 return BadMatch;
             }
             if (!_XkbCheckRequestBounds(client, stuff, tmp, tmp + width[i]))
@@ -4005,15 +4015,14 @@ private int _XkbSetNamesCheck(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq
     }
     if (stuff.which & XkbKeyNamesMask) {
         if (stuff.firstKey < cast(uint) xkb.min_key_code) {
-            client.errorValue = _XkbErrCode3(0x0b, xkb.min_key_code,
-                                              stuff.firstKey);
+            client.errorValue = mixin(_XkbErrCode3!("0x0b", "xkb.min_key_code",
+                                              "stuff.firstKey"));
             return BadValue;
         }
         if ((cast(uint) (stuff.firstKey + stuff.nKeys - 1) >
              xkb.max_key_code) || (stuff.nKeys < 1)) {
             client.errorValue =
-                _XkbErrCode4(0x0c, xkb.max_key_code, stuff.firstKey,
-                             stuff.nKeys);
+                mixin(_XkbErrCode4!("0x0c", "xkb.max_key_code", "stuff.firstKey", "stuff.nKeys"));
             return BadValue;
         }
         if (!_XkbCheckRequestBounds(client, stuff, tmp, tmp + stuff.nKeys))
@@ -4028,7 +4037,7 @@ private int _XkbSetNamesCheck(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq
     }
     if (stuff.which & XkbRGNamesMask) {
         if (stuff.nRadioGroups < 1) {
-            client.errorValue = _XkbErrCode2(0x0d, stuff.nRadioGroups);
+            client.errorValue = mixin(_XkbErrCode2!("0x0d", "stuff.nRadioGroups"));
             return BadValue;
         }
         if (!_XkbCheckRequestBounds(client, stuff, tmp,
@@ -4065,7 +4074,7 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
     }
 
     memset(&nn, 0, xkbNamesNotify.sizeof);
-    nn.changed = stuff.which;
+    nn.changed = cast(ushort)stuff.which;
     tmp = cast(CARD32*) &stuff[1];
     if (stuff.which & XkbKeycodesNameMask)
         names.keycodes = *tmp++;
@@ -4114,17 +4123,17 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
         nn.nLevelNames = stuff.nTypes;
     }
     if (stuff.which & XkbIndicatorNamesMask) {
-        tmp = _XkbCopyMaskedAtoms(tmp, names.indicators, XkbNumIndicators,
+        tmp = cast(uint*)_XkbCopyMaskedAtoms(cast(ulong*)tmp, names.indicators.ptr, XkbNumIndicators,
                                   stuff.indicators);
         nn.changedIndicators = stuff.indicators;
     }
     if (stuff.which & XkbVirtualModNamesMask) {
-        tmp = _XkbCopyMaskedAtoms(tmp, names.vmods, XkbNumVirtualMods,
+        tmp = cast(uint*)_XkbCopyMaskedAtoms(cast(ulong*)tmp, names.vmods.ptr, XkbNumVirtualMods,
                                   stuff.virtualMods);
         nn.changedVirtualMods = stuff.virtualMods;
     }
     if (stuff.which & XkbGroupNamesMask) {
-        tmp = _XkbCopyMaskedAtoms(tmp, names.groups, XkbNumKbdGroups,
+        tmp = cast(uint*)_XkbCopyMaskedAtoms(cast(ulong*)tmp, names.groups.ptr, XkbNumKbdGroups,
                                   stuff.groupNames);
         nn.changedVirtualMods = stuff.groupNames;
     }
@@ -4148,7 +4157,7 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
         else if (names.key_aliases != null) {
             free(names.key_aliases);
             names.key_aliases = null;
-            names.num_key_aliases = 0;
+            names.num_key_aliases = cast(ubyte)0;
         }
         nn.nAliases = names.num_key_aliases;
     }
@@ -4168,12 +4177,12 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
         else if (names.radio_groups) {
             free(names.radio_groups);
             names.radio_groups = null;
-            names.num_rg = 0;
+            names.num_rg = cast(ushort)0;
         }
-        nn.nRadioGroups = names.num_rg;
+        nn.nRadioGroups = cast(ubyte)names.num_rg;
     }
     if (nn.changed) {
-        bool needExtEvent = void;
+        Bool needExtEvent = void;
 
         needExtEvent = (nn.changed & XkbIndicatorNamesMask) != 0;
         XkbSendNamesNotify(dev, &nn);
@@ -4191,14 +4200,14 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
                     sli.namesPresent |= bit;
             }
             memset(&edev, 0, xkbExtensionDeviceNotify.sizeof);
-            edev.reason = XkbXI_IndicatorNamesMask;
+            edev.reason = cast(ushort)XkbXI_IndicatorNamesMask;
             edev.ledClass = KbdFeedbackClass;
             edev.ledID = dev.kbdfeed.ctrl.id;
             edev.ledsDefined = sli.namesPresent | sli.mapsPresent;
             edev.ledState = sli.effectiveState;
             edev.firstBtn = 0;
             edev.nBtns = 0;
-            edev.supported = XkbXI_AllFeaturesMask;
+            edev.supported = cast(ushort)XkbXI_AllFeaturesMask;
             edev.unsupported = 0;
             XkbSendExtensionDeviceNotify(dev, client, &edev);
         }
@@ -4208,12 +4217,12 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
 
 int ProcXkbSetNames(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetNamesReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(virtualMods);
-    X_REQUEST_FIELD_CARD32(which);
-    X_REQUEST_FIELD_CARD32(indicators);
-    X_REQUEST_FIELD_CARD16(totalKTLevelNames);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetNamesReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"virtualMods");
+    mixin(X_REQUEST_FIELD_CARD32!"which");
+    mixin(X_REQUEST_FIELD_CARD32!"indicators");
+    mixin(X_REQUEST_FIELD_CARD16!"totalKTLevelNames");
 
     DeviceIntPtr dev = void;
     CARD32* tmp = void;
@@ -4331,9 +4340,9 @@ int ProcXkbSetNames(ClientPtr client)
     return Success;
 }
 
-import xkbgeom_priv;
+import xkb.xkbgeom_priv;
 
-enum string	XkbSizeCountedString(string s) = `((` ~ s ~ `)?((((2+strlen((` ~ s ~ `)))+3)/4)*4):4)`;
+enum string	XkbSizeCountedString(string s) = `((` ~ s ~ `)?((((2+strlen(` ~ s ~ `))+3)/4)*4):4)`;
 
 /**
  * Write the zero-terminated string str into wire as a pascal string with a
@@ -4353,13 +4362,13 @@ private char* XkbWriteCountedString(char* wire, const(char)* str, Bool swap)
     if (!str)
         return wire;
 
-    len = strlen(str);
+    len = cast(ushort)strlen(str);
     pLen = cast(CARD16*) wire;
     *pLen = len;
     if (swap) {
         swaps(pLen);
     }
-    paddedLen = pad_to_int32(((len) + len).sizeof) - len.sizeof;
+    paddedLen = cast(ushort)(pad_to_int32(((len) + len).sizeof) - len.sizeof);
     strncpy(&wire[len.sizeof], str, paddedLen);
     wire += ((len) + paddedLen).sizeof;
     return wire;
@@ -4431,10 +4440,10 @@ private int XkbSizeGeomShapes(XkbGeometryPtr geom)
         int n = void;
         XkbOutlinePtr ol = void;
 
-        size += SIZEOF(xkbShapeWireDesc);
+        size += xkbShapeWireDesc.sizeof;
         for (n = 0, ol = shape.outlines; n < shape.num_outlines; n++, ol++) {
-            size += SIZEOF(xkbOutlineWireDesc);
-            size += ol.num_points * SIZEOF(xkbPointWireDesc);
+            size += xkbOutlineWireDesc.sizeof;
+            size += ol.num_points * xkbPointWireDesc.sizeof;
         }
     }
     return size;
@@ -4450,28 +4459,28 @@ private void XkbWriteGeomShapes(x_rpcbuf_t* rpcbuf, XkbGeometryPtr geom)
         XkbOutlinePtr ol = void;
 
         /* write xkbShapeWireDesc */
-        x_rpcbuf_write_CARD32(rpcbuf, shape.name);
-        x_rpcbuf_write_CARD8(rpcbuf, shape.num_outlines);
+        x_rpcbuf_write_CARD32(rpcbuf, cast(uint)shape.name);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)shape.num_outlines);
         x_rpcbuf_write_CARD8(
             rpcbuf,
-            shape.primary ? XkbOutlineIndex(shape, shape.primary) : XkbNoShape);
+            cast(ubyte)(shape.primary ? mixin(XkbOutlineIndex!("shape", "shape.primary")) : XkbNoShape));
         x_rpcbuf_write_CARD8(rpcbuf,
-            shape.approx ? XkbOutlineIndex(shape, shape.approx) : XkbNoShape);
-        x_rpcbuf_write_CARD8(rpcbuf, 0); /* pad1 */
+            cast(ubyte)(shape.approx ? mixin(XkbOutlineIndex!("shape", "shape.approx")) : XkbNoShape));
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)0); /* pad1 */
 
         for (o = 0, ol = shape.outlines; o < shape.num_outlines; o++, ol++) {
             int p = void;
             XkbPointPtr pt = void;
 
             /* write xkbOutlineWireDesc */
-            x_rpcbuf_write_CARD8(rpcbuf, ol.num_points);
-            x_rpcbuf_write_CARD8(rpcbuf, ol.corner_radius);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)ol.num_points);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)ol.corner_radius);
             x_rpcbuf_pad(rpcbuf);
 
             for (p = 0, pt = ol.points; p < ol.num_points; p++, pt++) {
                 /* write xkbPointWireDesc */
-                x_rpcbuf_write_INT16(rpcbuf, pt.x);
-                x_rpcbuf_write_INT16(rpcbuf, pt.y);
+                x_rpcbuf_write_INT16(rpcbuf, cast(short)pt.x);
+                x_rpcbuf_write_INT16(rpcbuf, cast(short)pt.y);
             }
         }
     }
@@ -4482,7 +4491,7 @@ private int XkbSizeGeomDoodads(int num_doodads, XkbDoodadPtr doodad)
     int i = void, size = void;
 
     for (i = size = 0; i < num_doodads; i++, doodad++) {
-        size += SIZEOF(xkbAnyDoodadWireDesc);
+        size += xkbAnyDoodadWireDesc.sizeof;
         if (doodad.any.type == XkbTextDoodad) {
             size += mixin(XkbSizeCountedString!(`doodad.text.text`));
             size += mixin(XkbSizeCountedString!(`doodad.text.font`));
@@ -4500,46 +4509,46 @@ private void XkbWriteGeomDoodads(x_rpcbuf_t* rpcbuf, int num_doodads, XkbDoodadP
 
     for (i = 0; i < num_doodads; i++, doodad++) {
         /* write xkbAnyDoodadWireDesc head part */
-        x_rpcbuf_write_CARD32(rpcbuf, doodad.any.name);
-        x_rpcbuf_write_CARD8(rpcbuf, doodad.any.type);
-        x_rpcbuf_write_CARD8(rpcbuf, doodad.any.priority);
-        x_rpcbuf_write_INT16(rpcbuf, doodad.any.top);
-        x_rpcbuf_write_INT16(rpcbuf, doodad.any.left);
-        x_rpcbuf_write_INT16(rpcbuf, doodad.any.angle);
+        x_rpcbuf_write_CARD32(rpcbuf, cast(uint)doodad.any.name);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.any.type);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.any.priority);
+        x_rpcbuf_write_INT16(rpcbuf, cast(short)doodad.any.top);
+        x_rpcbuf_write_INT16(rpcbuf, cast(short)doodad.any.left);
+        x_rpcbuf_write_INT16(rpcbuf, cast(short)doodad.any.angle);
 
         switch (doodad.any.type) {
         case XkbOutlineDoodad:
         case XkbSolidDoodad:
             /* write xkbShapeDoodadWireDesc head part */
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.shape.color_ndx);
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.shape.shape_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.shape.color_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.shape.shape_ndx);
             x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
-            x_rpcbuf_write_CARD32(rpcbuf, 0); /* pad2 */
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)0); /* pad2 */
             break;
         case XkbTextDoodad:
             /* write xkbTextDoodadWireDesc head part */
             x_rpcbuf_write_CARD16(rpcbuf, doodad.text.width);
             x_rpcbuf_write_CARD16(rpcbuf, doodad.text.height);
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.text.color_ndx);
-            x_rpcbuf_write_CARD8(rpcbuf, 0); /* pad1 */
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.text.color_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)0); /* pad1 */
             x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad2 */
             x_rpcbuf_write_counted_string_pad(rpcbuf, doodad.text.text);
             x_rpcbuf_write_counted_string_pad(rpcbuf, doodad.text.font);
             break;
         case XkbIndicatorDoodad:
             /* write xkbIndicatorDoodadWireDesc head part */
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.indicator.shape_ndx);
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.indicator.on_color_ndx);
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.indicator.off_color_ndx);
-            x_rpcbuf_write_CARD8(rpcbuf, 0); /* pad1 */
-            x_rpcbuf_write_CARD32(rpcbuf, 0); /* pad2 */
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.indicator.shape_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.indicator.on_color_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.indicator.off_color_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)0); /* pad1 */
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)0); /* pad2 */
             break;
         case XkbLogoDoodad:
             /* write xkbLogoDoodadWireDesc head part */
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.logo.color_ndx);
-            x_rpcbuf_write_CARD8(rpcbuf, doodad.logo.shape_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.logo.color_ndx);
+            x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)doodad.logo.shape_ndx);
             x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
-            x_rpcbuf_write_CARD32(rpcbuf, 0); /* pad2 */
+            x_rpcbuf_write_CARD32(rpcbuf, cast(uint)0); /* pad2 */
             x_rpcbuf_write_counted_string_pad(rpcbuf, doodad.logo.logo_name);
             break;
         default:
@@ -4557,9 +4566,9 @@ private void XkbWriteGeomOverlay(x_rpcbuf_t* rpcbuf, XkbOverlayPtr ol)
     XkbOverlayRowPtr row = void;
 
     /* write xkbOverlayWireDesc */
-    x_rpcbuf_write_CARD32(rpcbuf, ol.name);
-    x_rpcbuf_write_CARD8(rpcbuf, ol.num_rows);
-    x_rpcbuf_write_CARD8(rpcbuf, 0); /* pad1 */
+    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)ol.name);
+    x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)ol.num_rows);
+    x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)0); /* pad1 */
     x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad2 */
 
     for (r = 0, row = ol.rows; r < ol.num_rows; r++, row++) {
@@ -4567,8 +4576,8 @@ private void XkbWriteGeomOverlay(x_rpcbuf_t* rpcbuf, XkbOverlayPtr ol)
         XkbOverlayKeyPtr key = void;
 
         /* write xkbOverlayRowWireDesc */
-        x_rpcbuf_write_CARD8(rpcbuf, row.row_under);
-        x_rpcbuf_write_CARD8(rpcbuf, row.num_keys);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)row.row_under);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)row.num_keys);
         x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
 
         for (k = 0, key = row.keys; k < row.num_keys; k++, key++) {
@@ -4586,14 +4595,14 @@ private int XkbSizeGeomSections(XkbGeometryPtr geom)
 
     for (i = size = 0, section = geom.sections; i < geom.num_sections;
          i++, section++) {
-        size += SIZEOF(xkbSectionWireDesc);
+        size += xkbSectionWireDesc.sizeof;
         if (section.rows) {
             int r = void;
             XkbRowPtr row = void;
 
             for (r = 0, row = section.rows; r < section.num_rows; row++, r++) {
-                size += SIZEOF(xkbRowWireDesc);
-                size += row.num_keys * SIZEOF(xkbKeyWireDesc);
+                size += xkbRowWireDesc.sizeof;
+                size += row.num_keys * xkbKeyWireDesc.sizeof;
             }
         }
         if (section.doodads)
@@ -4607,10 +4616,10 @@ private int XkbSizeGeomSections(XkbGeometryPtr geom)
                 int r = void;
                 XkbOverlayRowPtr row = void;
 
-                size += SIZEOF(xkbOverlayWireDesc);
+                size += xkbOverlayWireDesc.sizeof;
                 for (r = 0, row = ol.rows; r < ol.num_rows; r++, row++) {
-                    size += SIZEOF(xkbOverlayRowWireDesc);
-                    size += row.num_keys * SIZEOF(xkbOverlayKeyWireDesc);
+                    size += xkbOverlayRowWireDesc.sizeof;
+                    size += row.num_keys * xkbOverlayKeyWireDesc.sizeof;
                 }
             }
         }
@@ -4627,16 +4636,16 @@ private void XkbWriteGeomSections(x_rpcbuf_t* rpcbuf, XkbGeometryPtr geom)
          i++, section++) {
 
         /* write xkbSectionWireDesc */
-        x_rpcbuf_write_CARD32(rpcbuf, section.name);
-        x_rpcbuf_write_INT16(rpcbuf, section.top);
-        x_rpcbuf_write_INT16(rpcbuf, section.left);
+        x_rpcbuf_write_CARD32(rpcbuf, cast(uint)section.name);
+        x_rpcbuf_write_INT16(rpcbuf, cast(short)section.top);
+        x_rpcbuf_write_INT16(rpcbuf, cast(short)section.left);
         x_rpcbuf_write_CARD16(rpcbuf, section.width);
         x_rpcbuf_write_CARD16(rpcbuf, section.height);
-        x_rpcbuf_write_INT16(rpcbuf, section.angle);
-        x_rpcbuf_write_CARD8(rpcbuf, section.priority);
-        x_rpcbuf_write_CARD8(rpcbuf, section.num_rows);
-        x_rpcbuf_write_CARD8(rpcbuf, section.num_doodads);
-        x_rpcbuf_write_CARD8(rpcbuf, section.num_overlays);
+        x_rpcbuf_write_INT16(rpcbuf, cast(short)section.angle);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)section.priority);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)section.num_rows);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)section.num_doodads);
+        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)section.num_overlays);
         x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
 
         if (section.rows) {
@@ -4645,10 +4654,10 @@ private void XkbWriteGeomSections(x_rpcbuf_t* rpcbuf, XkbGeometryPtr geom)
 
             for (r = 0, row = section.rows; r < section.num_rows; r++, row++) {
                 /* write xkbRowWireDesc */
-                x_rpcbuf_write_INT16(rpcbuf, row.top);
-                x_rpcbuf_write_INT16(rpcbuf, row.left),
-                x_rpcbuf_write_CARD8(rpcbuf, row.num_keys);
-                x_rpcbuf_write_CARD8(rpcbuf, row.vertical);
+                x_rpcbuf_write_INT16(rpcbuf, cast(short)row.top);
+                x_rpcbuf_write_INT16(rpcbuf, cast(short)row.left),
+                x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)row.num_keys);
+                x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)row.vertical);
                 x_rpcbuf_write_CARD16(rpcbuf, 0); /* pad1 */
 
                 if (row.keys) {
@@ -4658,9 +4667,9 @@ private void XkbWriteGeomSections(x_rpcbuf_t* rpcbuf, XkbGeometryPtr geom)
                     for (k = 0, key = row.keys; k < row.num_keys; k++, key++) {
                         /* xkbKeyWireDesc */
                         x_rpcbuf_write_CARD8s(rpcbuf, cast(CARD8*)key.name.name, XkbKeyNameLength);
-                        x_rpcbuf_write_INT16(rpcbuf, key.gap);
-                        x_rpcbuf_write_CARD8(rpcbuf, key.shape_ndx);
-                        x_rpcbuf_write_CARD8(rpcbuf, key.color_ndx);
+                        x_rpcbuf_write_INT16(rpcbuf, cast(short)key.gap);
+                        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)key.shape_ndx);
+                        x_rpcbuf_write_CARD8(rpcbuf, cast(ubyte)key.color_ndx);
                     }
                 }
             }
@@ -4678,21 +4687,21 @@ private void XkbWriteGeomSections(x_rpcbuf_t* rpcbuf, XkbGeometryPtr geom)
     }
 }
 
-private int XkbComputeGetGeometryReplySize(XkbGeometryPtr geom, xkbGetGeometryReply* rep, Atom name)
+private Status XkbComputeGetGeometryReplySize(XkbGeometryPtr geom, xkbGetGeometryReply* rep, Atom name)
 {
     int len = void;
 
     if (geom != null) {
-        len = mixin(XkbSizeCountedString!(`geom.label_font`));
+        len = cast(uint)mixin(XkbSizeCountedString!(`geom.label_font`));
         len += XkbSizeGeomProperties(geom);
         len += XkbSizeGeomColors(geom);
         len += XkbSizeGeomShapes(geom);
         len += XkbSizeGeomSections(geom);
         len += XkbSizeGeomDoodads(geom.num_doodads, geom.doodads);
         len += XkbSizeGeomKeyAliases(geom);
-        rep.length = len / 4;
+        rep.length= cast(uint)(len / 4);
         rep.found = TRUE;
-        rep.name = geom.name;
+        rep.name = cast(uint)geom.name;
         rep.widthMM = geom.width_mm;
         rep.heightMM = geom.height_mm;
         rep.nProperties = geom.num_properties;
@@ -4701,13 +4710,13 @@ private int XkbComputeGetGeometryReplySize(XkbGeometryPtr geom, xkbGetGeometryRe
         rep.nSections = geom.num_sections;
         rep.nDoodads = geom.num_doodads;
         rep.nKeyAliases = geom.num_key_aliases;
-        rep.baseColorNdx = XkbGeomColorIndex(geom, geom.base_color);
-        rep.labelColorNdx = XkbGeomColorIndex(geom, geom.label_color);
+        rep.baseColorNdx = cast(ubyte)mixin(XkbGeomColorIndex!("geom", "geom.base_color"));
+        rep.labelColorNdx = cast(ubyte)mixin(XkbGeomColorIndex!("geom", "geom.label_color"));
     }
     else {
-        rep.length = 0;
+        rep.length= cast(uint)(0);
         rep.found = FALSE;
-        rep.name = name;
+        rep.name = cast(uint)name;
         rep.widthMM = rep.heightMM = 0;
         rep.nProperties = rep.nColors = rep.nShapes = 0;
         rep.nSections = rep.nDoodads = 0;
@@ -4746,14 +4755,14 @@ private void XkbAssembleGeometry(ClientPtr client, XkbGeometryPtr geom, xkbGetGe
 
 int ProcXkbGetGeometry(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetGeometryReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(name);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetGeometryReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD32!"name");
 
     DeviceIntPtr dev = void;
     XkbGeometryPtr geom = void;
     Bool shouldFree = void;
-    int status = void;
+    Status status = void;
 
     if (!(client.xkbClientFlags & _XkbClientInitialized))
         return BadAccess;
@@ -4762,28 +4771,29 @@ int ProcXkbGetGeometry(ClientPtr client)
     mixin(CHK_ATOM_OR_NONE!(`stuff.name`));
 
     geom = XkbLookupNamedGeometry(dev, stuff.name, &shouldFree);
-
+    x_rpcbuf_t rpcbuf;
     xkbGetGeometryReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
     };
     status = XkbComputeGetGeometryReplySize(geom, &reply, stuff.name);
     if (status != Success)
         goto free_out;
 
-    x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
+    rpcbuf.swapped = client.swapped;
+    rpcbuf.err_clear = TRUE;
     XkbAssembleGeometry(client, geom, reply, &rpcbuf);
 
-    X_REPLY_FIELD_CARD32(name);
-    X_REPLY_FIELD_CARD16(widthMM);
-    X_REPLY_FIELD_CARD16(heightMM);
-    X_REPLY_FIELD_CARD16(nProperties);
-    X_REPLY_FIELD_CARD16(nColors);
-    X_REPLY_FIELD_CARD16(nShapes);
-    X_REPLY_FIELD_CARD16(nSections);
-    X_REPLY_FIELD_CARD16(nDoodads);
-    X_REPLY_FIELD_CARD16(nKeyAliases);
+    mixin(X_REPLY_FIELD_CARD32!"name");
+    mixin(X_REPLY_FIELD_CARD16!"widthMM");
+    mixin(X_REPLY_FIELD_CARD16!"heightMM");
+    mixin(X_REPLY_FIELD_CARD16!"nProperties");
+    mixin(X_REPLY_FIELD_CARD16!"nColors");
+    mixin(X_REPLY_FIELD_CARD16!"nShapes");
+    mixin(X_REPLY_FIELD_CARD16!"nSections");
+    mixin(X_REPLY_FIELD_CARD16!"nDoodads");
+    mixin(X_REPLY_FIELD_CARD16!"nKeyAliases");
 
-    status = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    status = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
 free_out:
     if (shouldFree)
@@ -4792,7 +4802,7 @@ free_out:
     return status;
 }
 
-private int _GetCountedString(char** wire_inout, ClientPtr client, char** str)
+private Status _GetCountedString(char** wire_inout, ClientPtr client, char** str)
 {
     char* wire = void, next = void;
     CARD16 len = void;
@@ -4812,7 +4822,7 @@ private int _GetCountedString(char** wire_inout, ClientPtr client, char** str)
     if (client.req_len <
         bytes_to_int32(next - cast(char*) client.requestBuffer))
         return BadValue;
-    *str = calloc(1, len + 1);
+    *str = cast(char*)calloc(1, len + 1);
     if (!*str)
         return BadAlloc;
     memcpy(*str, &wire[2], len);
@@ -4821,14 +4831,14 @@ private int _GetCountedString(char** wire_inout, ClientPtr client, char** str)
     return Success;
 }
 
-private int _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeometryPtr geom, XkbSectionPtr section, ClientPtr client)
+private Status _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeometryPtr geom, XkbSectionPtr section, ClientPtr client)
 {
     char* wire = void;
     xkbDoodadWireDesc* dWire = void;
     xkbAnyDoodadWireDesc any = void;
     xkbTextDoodadWireDesc text = void;
     XkbDoodadPtr doodad = void;
-    int status = void;
+    Status status = void;
 
     dWire = cast(xkbDoodadWireDesc*) (*wire_inout);
     if (!_XkbCheckRequestBounds(client, req, dWire, dWire + 1))
@@ -4855,13 +4865,13 @@ private int _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeomet
     case XkbOutlineDoodad:
     case XkbSolidDoodad:
         if (dWire.shape.colorNdx >= geom.num_colors) {
-            client.errorValue = _XkbErrCode3(0x40, geom.num_colors,
-                                              dWire.shape.colorNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x40", "geom.num_colors",
+                                              "dWire.shape.colorNdx"));
             return BadMatch;
         }
         if (dWire.shape.shapeNdx >= geom.num_shapes) {
-            client.errorValue = _XkbErrCode3(0x41, geom.num_shapes,
-                                              dWire.shape.shapeNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x41", "geom.num_shapes",
+                                              "dWire.shape.shapeNdx"));
             return BadMatch;
         }
         doodad.shape.color_ndx = dWire.shape.colorNdx;
@@ -4869,8 +4879,8 @@ private int _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeomet
         break;
     case XkbTextDoodad:
         if (dWire.text.colorNdx >= geom.num_colors) {
-            client.errorValue = _XkbErrCode3(0x42, geom.num_colors,
-                                              dWire.text.colorNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x42", "geom.num_colors",
+                                              "dWire.text.colorNdx"));
             return BadMatch;
         }
         text = dWire.text;
@@ -4892,18 +4902,18 @@ private int _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeomet
         break;
     case XkbIndicatorDoodad:
         if (dWire.indicator.onColorNdx >= geom.num_colors) {
-            client.errorValue = _XkbErrCode3(0x43, geom.num_colors,
-                                              dWire.indicator.onColorNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x43", "geom.num_colors",
+                                              "dWire.indicator.onColorNdx"));
             return BadMatch;
         }
         if (dWire.indicator.offColorNdx >= geom.num_colors) {
-            client.errorValue = _XkbErrCode3(0x44, geom.num_colors,
-                                              dWire.indicator.offColorNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x44", "geom.num_colors",
+                                              "dWire.indicator.offColorNdx"));
             return BadMatch;
         }
         if (dWire.indicator.shapeNdx >= geom.num_shapes) {
-            client.errorValue = _XkbErrCode3(0x45, geom.num_shapes,
-                                              dWire.indicator.shapeNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x45", "geom.num_shapes",
+                                              "dWire.indicator.shapeNdx"));
             return BadMatch;
         }
         doodad.indicator.shape_ndx = dWire.indicator.shapeNdx;
@@ -4912,13 +4922,13 @@ private int _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeomet
         break;
     case XkbLogoDoodad:
         if (dWire.logo.colorNdx >= geom.num_colors) {
-            client.errorValue = _XkbErrCode3(0x46, geom.num_colors,
-                                              dWire.logo.colorNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x46", "geom.num_colors",
+                                              "dWire.logo.colorNdx"));
             return BadMatch;
         }
         if (dWire.logo.shapeNdx >= geom.num_shapes) {
-            client.errorValue = _XkbErrCode3(0x47, geom.num_shapes,
-                                              dWire.logo.shapeNdx);
+            client.errorValue = mixin(_XkbErrCode3!("0x47", "geom.num_shapes",
+                                              "dWire.logo.shapeNdx"));
             return BadMatch;
         }
         doodad.logo.color_ndx = dWire.logo.colorNdx;
@@ -4928,14 +4938,14 @@ private int _CheckSetDoodad(char** wire_inout, xkbSetGeometryReq* req, XkbGeomet
             return status;
         break;
     default:
-        client.errorValue = _XkbErrCode2(0x4F, dWire.any.type);
+        client.errorValue = mixin(_XkbErrCode2!("0x4F", "dWire.any.type"));
         return BadValue;
     }
     *wire_inout = wire;
     return Success;
 }
 
-private int _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGeometryPtr geom, XkbSectionPtr section, ClientPtr client)
+private Status _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGeometryPtr geom, XkbSectionPtr section, ClientPtr client)
 {
     int r = void;
     char* wire = void;
@@ -4953,8 +4963,6 @@ private int _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGeome
     }
     mixin(CHK_ATOM_ONLY!(`olWire.name`));
     ol = XkbAddGeomOverlay(section, olWire.name, olWire.nRows);
-    if (!ol)
-        return BadAlloc;
     rWire = cast(xkbOverlayRowWireDesc*) &olWire[1];
     for (r = 0; r < olWire.nRows; r++) {
         int k = void;
@@ -4964,14 +4972,11 @@ private int _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGeome
         if (!_XkbCheckRequestBounds(client, req, rWire, rWire + 1))
             return BadLength;
 
-        if (rWire.rowUnder >= section.num_rows) {
-            client.errorValue = _XkbErrCode4(0x20, r, section.num_rows,
-                                              rWire.rowUnder);
+        if (rWire.rowUnder > section.num_rows) {
+            client.errorValue = mixin(_XkbErrCode4!("0x20", "r", "section.num_rows", "rWire.rowUnder"));
             return BadMatch;
         }
         row = XkbAddGeomOverlayRow(ol, rWire.rowUnder, rWire.nKeys);
-        if (!row)
-            return BadAlloc;
         kWire = cast(xkbOverlayKeyWireDesc*) &rWire[1];
         for (k = 0; k < rWire.nKeys; k++, kWire++) {
             if (!_XkbCheckRequestBounds(client, req, kWire, kWire + 1))
@@ -4980,7 +4985,7 @@ private int _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGeome
             if (XkbAddGeomOverlayKey(ol, row,
                                      cast(char*) kWire.over,
                                      cast(char*) kWire.under) == null) {
-                client.errorValue = _XkbErrCode3(0x21, r, k);
+                client.errorValue = mixin(_XkbErrCode3!("0x21", "r", "k"));
                 return BadMatch;
             }
         }
@@ -4992,9 +4997,9 @@ private int _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGeome
     return Success;
 }
 
-private int _CheckSetSections(XkbGeometryPtr geom, xkbSetGeometryReq* req, char** wire_inout, ClientPtr client)
+private Status _CheckSetSections(XkbGeometryPtr geom, xkbSetGeometryReq* req, char** wire_inout, ClientPtr client)
 {
-    int status = void;
+    Status status = void;
     int s = void;
     char* wire = void;
     xkbSectionWireDesc* sWire = void;
@@ -5059,18 +5064,18 @@ private int _CheckSetSections(XkbGeometryPtr geom, xkbSetGeometryReq* req, char*
                 key = XkbAddGeomKey(row);
                 if (!key)
                     return BadAlloc;
-                memcpy(key.name.name, kWire.name, XkbKeyNameLength);
+                memcpy(key.name.name.ptr, kWire.name.ptr, XkbKeyNameLength);
                 key.gap = kWire.gap;
                 key.shape_ndx = kWire.shapeNdx;
                 key.color_ndx = kWire.colorNdx;
                 if (key.shape_ndx >= geom.num_shapes) {
-                    client.errorValue = _XkbErrCode3(0x10, key.shape_ndx,
-                                                      geom.num_shapes);
+                    client.errorValue = mixin(_XkbErrCode3!("0x10", "key.shape_ndx",
+                                                      "geom.num_shapes"));
                     return BadMatch;
                 }
                 if (key.color_ndx >= geom.num_colors) {
-                    client.errorValue = _XkbErrCode3(0x11, key.color_ndx,
-                                                      geom.num_colors);
+                    client.errorValue = mixin(_XkbErrCode3!("0X11", "key.color_ndx",
+                                                      "geom.num_colors"));
                     return BadMatch;
                 }
             }
@@ -5102,14 +5107,14 @@ private int _CheckSetSections(XkbGeometryPtr geom, xkbSetGeometryReq* req, char*
     return Success;
 }
 
-private int _CheckSetShapes(XkbGeometryPtr geom, xkbSetGeometryReq* req, char** wire_inout, ClientPtr client)
+private Status _CheckSetShapes(XkbGeometryPtr geom, xkbSetGeometryReq* req, char** wire_inout, ClientPtr client)
 {
     int i = void;
     char* wire = void;
 
     wire = *wire_inout;
     if (req.nShapes < 1) {
-        client.errorValue = _XkbErrCode2(0x06, req.nShapes);
+        client.errorValue = mixin(_XkbErrCode2!("0x06", "req.nShapes"));
         return BadValue;
     }
     else {
@@ -5157,28 +5162,16 @@ private int _CheckSetShapes(XkbGeometryPtr geom, xkbSetGeometryReq* req, char** 
                 ol.num_points = olWire.nPoints;
                 olWire = cast(xkbOutlineWireDesc*)ptWire;
             }
-            if (shapeWire.primaryNdx != XkbNoShape) {
-                if (shapeWire.primaryNdx >= shapeWire.nOutlines) {
-                    client.errorValue = _XkbErrCode3(0x08, shapeWire.primaryNdx,
-                                                      shapeWire.nOutlines);
-                    return BadValue;
-                }
+            if (shapeWire.primaryNdx != XkbNoShape)
                 shape.primary = &shape.outlines[shapeWire.primaryNdx];
-            }
-            if (shapeWire.approxNdx != XkbNoShape) {
-                if (shapeWire.approxNdx >= shapeWire.nOutlines) {
-                    client.errorValue = _XkbErrCode3(0x08, shapeWire.approxNdx,
-                                                      shapeWire.nOutlines);
-                    return BadValue;
-                }
+            if (shapeWire.approxNdx != XkbNoShape)
                 shape.approx = &shape.outlines[shapeWire.approxNdx];
-            }
             shapeWire = cast(xkbShapeWireDesc*) olWire;
         }
         wire = cast(char*) shapeWire;
     }
     if (geom.num_shapes != req.nShapes) {
-        client.errorValue = _XkbErrCode3(0x07, geom.num_shapes, req.nShapes);
+        client.errorValue = mixin(_XkbErrCode3!("0x07", "geom.num_shapes", "req.nShapes"));
         return BadMatch;
     }
 
@@ -5186,10 +5179,10 @@ private int _CheckSetShapes(XkbGeometryPtr geom, xkbSetGeometryReq* req, char** 
     return Success;
 }
 
-private int _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, ClientPtr client)
+private Status _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, ClientPtr client)
 {
     int i = void;
-    int status = void;
+    Status status = void;
     char* wire = void;
 
     wire = cast(char*) &req[1];
@@ -5218,22 +5211,22 @@ private int _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, ClientPtr
     }
 
     if (req.nColors < 2) {
-        client.errorValue = _XkbErrCode3(0x01, 2, req.nColors);
+        client.errorValue = mixin(_XkbErrCode3!("0x01", "2", "req.nColors"));
         return BadValue;
     }
-    if (req.baseColorNdx >= req.nColors) {
+    if (req.baseColorNdx > req.nColors) {
         client.errorValue =
-            _XkbErrCode3(0x03, req.nColors, req.baseColorNdx);
+            mixin(_XkbErrCode3!(`0x03`, `req.nColors`, `req.baseColorNdx`));
         return BadMatch;
     }
-    if (req.labelColorNdx >= req.nColors) {
+    if (req.labelColorNdx > req.nColors) {
         client.errorValue =
-            _XkbErrCode3(0x03, req.nColors, req.labelColorNdx);
+            mixin(_XkbErrCode3!(`0x03`, `req.nColors`, `req.labelColorNdx`));
         return BadMatch;
     }
     if (req.labelColorNdx == req.baseColorNdx) {
-        client.errorValue = _XkbErrCode3(0x04, req.baseColorNdx,
-                                          req.labelColorNdx);
+        client.errorValue = mixin(_XkbErrCode3!("0x04", "req.baseColorNdx",
+                                          "req.labelColorNdx"));
         return BadMatch;
     }
 
@@ -5250,7 +5243,7 @@ private int _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, ClientPtr
         free(name);
     }
     if (req.nColors != geom.num_colors) {
-        client.errorValue = _XkbErrCode3(0x05, req.nColors, geom.num_colors);
+        client.errorValue = mixin(_XkbErrCode3!("0x05", "req.nColors", "geom.num_colors"));
         return BadMatch;
     }
     geom.label_color = &geom.colors[req.labelColorNdx];
@@ -5282,9 +5275,9 @@ private int _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, ClientPtr
 private int _XkbSetGeometry(ClientPtr client, DeviceIntPtr dev, xkbSetGeometryReq* stuff)
 {
     XkbDescPtr xkb = void;
-    bool new_name = void;
+    Bool new_name = void;
     XkbGeometryPtr geom = void, old = void;
-    int status = void;
+    Status status = void;
 
     xkb = dev.key.xkbInfo.desc;
     old = xkb.geom;
@@ -5319,19 +5312,22 @@ private int _XkbSetGeometry(ClientPtr client, DeviceIntPtr dev, xkbSetGeometryRe
         XkbFreeGeometry(old, XkbGeomAllMask, TRUE);
     if (new_name) {
         xkbNamesNotify nn = {
-            changed: XkbGeometryNameMask,
+            changed: cast(ushort)XkbGeometryNameMask,
         };
         XkbSendNamesNotify(dev, &nn);
     }
 
     xkbNewKeyboardNotify nkn = {
-        deviceID: nkn.oldDeviceID = dev.id,
-        minKeyCode: nkn.oldMinKeyCode = xkb.min_key_code,
-        maxKeyCode: nkn.oldMaxKeyCode = xkb.max_key_code,
-        requestMajor: XkbReqCode,
+        deviceID: cast(ubyte)dev.id,
+        minKeyCode: cast(ubyte)xkb.min_key_code,
+        maxKeyCode: cast(ubyte)xkb.max_key_code,
+        requestMajor: cast(ubyte)XkbReqCode,
         requestMinor: X_kbSetGeometry,
-        changed: XkbNKN_GeometryMask,
+        changed: cast(ushort)XkbNKN_GeometryMask,
     };
+    nkn.oldDeviceID = cast(ubyte)dev.id;
+    nkn.oldMinKeyCode = cast(ubyte)xkb.min_key_code;
+    nkn.oldMaxKeyCode = cast(ubyte)xkb.max_key_code;
 
     XkbSendNewKeyboardNotify(dev, &nkn);
     return Success;
@@ -5339,15 +5335,15 @@ private int _XkbSetGeometry(ClientPtr client, DeviceIntPtr dev, xkbSetGeometryRe
 
 int ProcXkbSetGeometry(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetGeometryReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(name);
-    X_REQUEST_FIELD_CARD16(widthMM);
-    X_REQUEST_FIELD_CARD16(heightMM);
-    X_REQUEST_FIELD_CARD16(nProperties);
-    X_REQUEST_FIELD_CARD16(nColors);
-    X_REQUEST_FIELD_CARD16(nDoodads);
-    X_REQUEST_FIELD_CARD16(nKeyAliases);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetGeometryReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD32!"name");
+    mixin(X_REQUEST_FIELD_CARD16!"widthMM");
+    mixin(X_REQUEST_FIELD_CARD16!"heightMM");
+    mixin(X_REQUEST_FIELD_CARD16!"nProperties");
+    mixin(X_REQUEST_FIELD_CARD16!"nColors");
+    mixin(X_REQUEST_FIELD_CARD16!"nDoodads");
+    mixin(X_REQUEST_FIELD_CARD16!"nKeyAliases");
 
     DeviceIntPtr dev = void;
     int rc = void;
@@ -5380,13 +5376,13 @@ int ProcXkbSetGeometry(ClientPtr client)
 
 int ProcXkbPerClientFlags(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbPerClientFlagsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD32(change);
-    X_REQUEST_FIELD_CARD32(value);
-    X_REQUEST_FIELD_CARD32(ctrlsToChange);
-    X_REQUEST_FIELD_CARD32(autoCtrls);
-    X_REQUEST_FIELD_CARD32(autoCtrlValues);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbPerClientFlagsReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD32!"change");
+    mixin(X_REQUEST_FIELD_CARD32!"value");
+    mixin(X_REQUEST_FIELD_CARD32!"ctrlsToChange");
+    mixin(X_REQUEST_FIELD_CARD32!"autoCtrls");
+    mixin(X_REQUEST_FIELD_CARD32!"autoCtrlValues");
 
     DeviceIntPtr dev = void;
     XkbInterestPtr interest = void;
@@ -5405,9 +5401,9 @@ int ProcXkbPerClientFlags(ClientPtr client)
         client.xkbClientFlags |= stuff.value;
     }
     if (stuff.change & XkbPCF_AutoResetControlsMask) {
-        bool want = void;
+        Bool want = void;
 
-        want = stuff.value & XkbPCF_AutoResetControlsMask;
+        want = cast(int)(stuff.value & XkbPCF_AutoResetControlsMask);
         if (interest && !want) {
             interest.autoCtrls = interest.autoCtrlValues = 0;
         }
@@ -5437,18 +5433,18 @@ int ProcXkbPerClientFlags(ClientPtr client)
     }
 
     xkbPerClientFlagsReply reply = {
-        supported: XkbPCF_AllFlagsMask,
+        supported: cast(ubyte)XkbPCF_AllFlagsMask,
         value: client.xkbClientFlags & XkbPCF_AllFlagsMask,
         autoCtrls: interest ? interest.autoCtrls : 0,
         autoCtrlValues:  interest ? interest.autoCtrlValues : 0,
     };
 
-    X_REPLY_FIELD_CARD32(supported);
-    X_REPLY_FIELD_CARD32(value);
-    X_REPLY_FIELD_CARD32(autoCtrls);
-    X_REPLY_FIELD_CARD32(autoCtrlValues);
+    mixin(X_REPLY_FIELD_CARD32!"supported");
+    mixin(X_REPLY_FIELD_CARD32!"value");
+    mixin(X_REPLY_FIELD_CARD32!"autoCtrls");
+    mixin(X_REPLY_FIELD_CARD32!"autoCtrlValues");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 /* all latin-1 alphanumerics, plus parens, minus, underscore, slash */
@@ -5476,9 +5472,9 @@ private char* GetComponentSpec(ClientPtr client, xkbGetKbdByNameReq* stuff, ubyt
     const(ubyte)* legal = void;
 
     if (allowExpr)
-        legal = &componentExprLegal[0];
+        legal = cast(ubyte*)&componentExprLegal[0];
     else
-        legal = &componentSpecLegal[0];
+        legal = cast(ubyte*)&componentSpecLegal[0];
 
     wire = *pWire;
     if (!_XkbCheckRequestBounds(client, stuff, wire, wire + 1)) {
@@ -5520,9 +5516,9 @@ private char* GetComponentSpec(ClientPtr client, xkbGetKbdByNameReq* stuff, ubyt
 
 int ProcXkbListComponents(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbListComponentsReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(maxNames);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbListComponentsReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"maxNames");
 
     DeviceIntPtr dev = void;
     uint len = void;
@@ -5544,7 +5540,7 @@ int ProcXkbListComponents(ClientPtr client)
         if (!_XkbCheckRequestBounds(client, stuff, str, str + 1))
             return BadLength;
         size = *(cast(ubyte*)str);
-        len = (str + size + 1) - (cast(ubyte*) stuff);
+        len = cast(uint)((str + size + 1) - (cast(ubyte*) stuff));
         if ((XkbPaddedSize(len) / 4) > client.req_len)
             return BadLength;
         str += (size + 1);
@@ -5553,10 +5549,10 @@ int ProcXkbListComponents(ClientPtr client)
         return BadLength;
 
     xkbListComponentsReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
     };
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private uint XkbConvertGetByNameComponents(Bool toXkm, uint orig)
@@ -5599,10 +5595,10 @@ private uint XkbConvertGetByNameComponents(Bool toXkm, uint orig)
 
 int ProcXkbGetKbdByName(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbGetKbdByNameReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(want);
-    X_REQUEST_FIELD_CARD16(need);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbGetKbdByNameReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"want");
+    mixin(X_REQUEST_FIELD_CARD16!"need");
 
     DeviceIntPtr dev = void;
     DeviceIntPtr tmpd = void;
@@ -5614,7 +5610,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
     uint len = void;
     uint fwant = void, fneed = void;
     int status = void;
-    bool geom_changed = void;
+    Bool geom_changed = void;
     XkbSrvLedInfoPtr old_sli = void;
     XkbSrvLedInfoPtr sli = void;
     Mask access_mode = DixGetAttrAccess | DixManageAccess;
@@ -5648,7 +5644,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
     };
 
     if (status == Success) {
-        len = str - (cast(ubyte*) stuff);
+        len = cast(uint)(str - (cast(ubyte*) stuff));
         if ((XkbPaddedSize(len) / 4) != client.req_len)
             status = BadLength;
     }
@@ -5668,18 +5664,18 @@ int ProcXkbGetKbdByName(ClientPtr client)
         fwant = stuff.want | stuff.need;
     if ((!names.compat) &&
         (fwant & (XkbGBN_CompatMapMask | XkbGBN_IndicatorMapMask))) {
-        names.compat = Xstrdup("%");
+        names.compat = cast(char*)Xstrdup("%");
     }
     if ((!names.types) && (fwant & (XkbGBN_TypesMask))) {
-        names.types = Xstrdup("%");
+        names.types = cast(char*)Xstrdup("%");
     }
     if ((!names.symbols) && (fwant & XkbGBN_SymbolsMask)) {
-        names.symbols = Xstrdup("%");
+        names.symbols = cast(char*)Xstrdup("%");
     }
     geom_changed = ((names.geometry != null) &&
                     (strcmp(names.geometry, "%") != 0));
     if ((!names.geometry) && (fwant & XkbGBN_GeometryMask)) {
-        names.geometry = Xstrdup("%");
+        names.geometry = cast(char*)Xstrdup("%");
         geom_changed = FALSE;
     }
 
@@ -5703,15 +5699,15 @@ int ProcXkbGetKbdByName(ClientPtr client)
     if (new_ == null)
         reported = 0;
 
-    bool loaded = 0;
+    Bool loaded = 0;
 
     stuff.want |= stuff.need;
 
-    xkbGetMapReply mrep = { type: X_Reply, sequenceNumber: client.sequence };
-    xkbGetCompatMapReply crep = { type: X_Reply, sequenceNumber: client.sequence };
-    xkbGetIndicatorMapReply irep = { type: X_Reply, sequenceNumber: client.sequence };
-    xkbGetNamesReply nrep = { type: X_Reply, sequenceNumber: client.sequence };
-    xkbGetGeometryReply grep = { type: X_Reply, sequenceNumber: client.sequence };
+    xkbGetMapReply mrep = { type: X_Reply, sequenceNumber: cast(ushort)client.sequence };
+    xkbGetCompatMapReply crep = { type: X_Reply, sequenceNumber: cast(ushort)client.sequence };
+    xkbGetIndicatorMapReply irep = { type: X_Reply, sequenceNumber: cast(ushort)client.sequence };
+    xkbGetNamesReply nrep = { type: X_Reply, sequenceNumber: cast(ushort)client.sequence };
+    xkbGetGeometryReply grep = { type: X_Reply, sequenceNumber: cast(ushort)client.sequence };
 
     if (new_) {
         if (stuff.load)
@@ -5720,19 +5716,19 @@ int ProcXkbGetKbdByName(ClientPtr client)
             ((reported & XkbGBN_SymbolsMask) && (new_.compat))) {
             XkbChangesRec changes = { 0 };
             XkbUpdateDescActions(new_,
-                                 new_.min_key_code, XkbNumKeys(new_), &changes);
+                                 new_.min_key_code,cast(ubyte) mixin(XkbNumKeys!("new_")), &changes);
         }
 
         if (new_.map == null)
             reported &= ~(XkbGBN_SymbolsMask | XkbGBN_TypesMask);
         else if (reported & (XkbGBN_SymbolsMask | XkbGBN_TypesMask)) {
-            mrep.deviceID = dev.id;
-            mrep.length = X_REPLY_HEADER_UNITS(xkbGetMapReply);
+            mrep.deviceID = cast(ubyte)dev.id;
+            mrep.length= cast(uint)(mixin(X_REPLY_HEADER_UNITS!("xkbGetMapReply")));
             mrep.minKeyCode = new_.min_key_code;
             mrep.maxKeyCode = new_.max_key_code;
             mrep.totalSyms = mrep.totalActs =
                 mrep.totalKeyBehaviors = mrep.totalKeyExplicit =
-                mrep.totalModMapKeys = mrep.totalVModMapKeys = 0;
+                mrep.totalModMapKeys = mrep.totalVModMapKeys = cast(ubyte)0;
             if (reported & (XkbGBN_TypesMask | XkbGBN_ClientSymbolsMask)) {
                 mrep.present |= XkbKeyTypesMask;
                 mrep.nTypes = mrep.totalTypes = new_.map.num_types;
@@ -5740,54 +5736,54 @@ int ProcXkbGetKbdByName(ClientPtr client)
             if (reported & XkbGBN_ClientSymbolsMask) {
                 mrep.present |= (XkbKeySymsMask | XkbModifierMapMask);
                 mrep.firstKeySym = mrep.firstModMapKey = new_.min_key_code;
-                mrep.nKeySyms = mrep.nModMapKeys = XkbNumKeys(new_);
+                mrep.nKeySyms = mrep.nModMapKeys = cast(ubyte)mixin(XkbNumKeys!("new_"));
             }
             if (reported & XkbGBN_ServerSymbolsMask) {
                 mrep.present |= XkbAllServerInfoMask;
-                mrep.virtualMods = ~0;
+                mrep.virtualMods = cast(ushort)~0;
                 mrep.firstKeyAct = mrep.firstKeyBehavior =
                     mrep.firstKeyExplicit = new_.min_key_code;
                 mrep.nKeyActs = mrep.nKeyBehaviors =
-                    mrep.nKeyExplicit = XkbNumKeys(new_);
+                    mrep.nKeyExplicit = cast(ubyte)mixin(XkbNumKeys!("new_"));
                 mrep.firstVModMapKey = new_.min_key_code;
-                mrep.nVModMapKeys = XkbNumKeys(new_);
+                mrep.nVModMapKeys = cast(ubyte)mixin(XkbNumKeys!("new_"));
             }
             XkbComputeGetMapReplySize(new_, &mrep);
         }
         if (new_.compat == null)
             reported &= ~XkbGBN_CompatMapMask;
         else if (reported & XkbGBN_CompatMapMask) {
-            crep.deviceID = dev.id;
-            crep.groups = XkbAllGroupsMask;
+            crep.deviceID = cast(ubyte)dev.id;
+            crep.groups = cast(ubyte)XkbAllGroupsMask;
             crep.nSI = crep.nTotalSI = new_.compat.num_si;
             XkbComputeGetCompatMapReplySize(new_.compat, &crep);
         }
         if (new_.indicators == null)
             reported &= ~XkbGBN_IndicatorMapMask;
         else if (reported & XkbGBN_IndicatorMapMask) {
-            irep.deviceID = dev.id;
+            irep.deviceID = cast(ubyte)dev.id;
             irep.which = XkbAllIndicatorsMask;
             XkbComputeGetIndicatorMapReplySize(new_.indicators, &irep);
         }
         if (new_.names == null)
             reported &= ~(XkbGBN_OtherNamesMask | XkbGBN_KeyNamesMask);
         else if (reported & (XkbGBN_OtherNamesMask | XkbGBN_KeyNamesMask)) {
-            nrep.deviceID = dev.id;
+            nrep.deviceID = cast(ubyte)dev.id;
             nrep.minKeyCode = new_.min_key_code;
             nrep.maxKeyCode = new_.max_key_code;
             if (reported & XkbGBN_OtherNamesMask) {
                 nrep.which = XkbAllNamesMask;
                 if (new_.map != null)
                     nrep.nTypes = new_.map.num_types;
-                nrep.groupNames = XkbAllGroupsMask;
+                nrep.groupNames = cast(ubyte)XkbAllGroupsMask;
                 nrep.virtualMods = XkbAllVirtualModsMask;
                 nrep.indicators = XkbAllIndicatorsMask;
-                nrep.nRadioGroups = new_.names.num_rg;
+                nrep.nRadioGroups = cast(ubyte)new_.names.num_rg;
             }
             if (reported & XkbGBN_KeyNamesMask) {
                 nrep.which |= XkbKeyNamesMask;
                 nrep.firstKey = new_.min_key_code;
-                nrep.nKeys = XkbNumKeys(new_);
+                nrep.nKeys = cast(ubyte)mixin(XkbNumKeys!("new_"));
                 nrep.nKeyAliases = new_.names.num_key_aliases;
                 if (nrep.nKeyAliases)
                     nrep.which |= XkbKeyAliasesMask;
@@ -5800,19 +5796,19 @@ int ProcXkbGetKbdByName(ClientPtr client)
         if (new_.geom == null)
             reported &= ~XkbGBN_GeometryMask;
         else if (reported & XkbGBN_GeometryMask) {
-            grep.deviceID = dev.id;
+            grep.deviceID = cast(ubyte)dev.id;
             grep.found = TRUE;
             XkbComputeGetGeometryReplySize(new_.geom, &grep, None);
         }
     }
 
     xkbGetKbdByNameReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         minKeyCode: xkb.min_key_code,
         maxKeyCode: xkb.max_key_code,
-        reported: reported,
-        found: found,
-        loaded: loaded,
+        reported: cast(ushort)reported,
+        found: cast(ushort)found,
+        loaded: cast(ubyte)loaded,
     };
 
     if (client.swapped) {
@@ -5831,7 +5827,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
             return BadAlloc;
 
         if (childbuf.wpos != (mrep.length * 4))
-            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch after XkbAssembleMap(): mrep size (%ld // %ld units)\n",
+            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch mrep size (%ld // %ld units)\n",
                        cast(c_ulong)childbuf.wpos, cast(c_ulong)mrep.length * 4, cast(c_ulong)mrep.length);
 
         if (client.swapped) {
@@ -5852,7 +5848,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
         XkbAssembleCompatMap(client, new_.compat, crep, &childbuf);
 
         if (childbuf.wpos != (crep.length * 4))
-            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch after XkbAssembleCompatMap(): crep size (%ld // %ld units)\n",
+            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch crep size (%ld // %ld units)\n",
                        cast(c_ulong)childbuf.wpos, cast(c_ulong)crep.length * 4, cast(c_ulong)crep.length);
 
         if (client.swapped) {
@@ -5876,7 +5872,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
             return BadAlloc;
 
         if (childbuf.wpos != (irep.length * 4))
-            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch after XkbAssembleIndicatorMap(): irep size (%ld // %ld units)\n",
+            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch irep size (%ld // %ld units)\n",
                        cast(c_ulong)childbuf.wpos, cast(c_ulong)irep.length * 4, cast(c_ulong)irep.length);
 
         if (client.swapped) {
@@ -5896,7 +5892,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
         XkbAssembleNames(client, new_, nrep, &childbuf);
 
         if (childbuf.wpos != (nrep.length * 4))
-            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch after XkbAssembleNames(): nrep size (%ld // %ld units)\n",
+            LogMessage(X_WARNING, "ProcXkbGetKbdByName() childbuf size (%ld) mismatch nrep size (%ld // %ld units)\n",
                        cast(c_ulong)childbuf.wpos, cast(c_ulong)nrep.length * 4, cast(c_ulong)nrep.length);
 
         if (client.swapped) {
@@ -5934,10 +5930,10 @@ int ProcXkbGetKbdByName(ClientPtr client)
         x_rpcbuf_write_rpcbuf_pad(&rpcbuf, &childbuf);
     }
 
-    X_REPLY_FIELD_CARD16(found);
-    X_REPLY_FIELD_CARD16(reported);
+    mixin(X_REPLY_FIELD_CARD16!"found");
+    mixin(X_REPLY_FIELD_CARD16!"reported");
 
-    status = X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    status = mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 
     if (loaded) {
         XkbDescPtr old_xkb = void;
@@ -5950,15 +5946,17 @@ int ProcXkbGetKbdByName(ClientPtr client)
         XkbCopyControls(xkb, old_xkb);
 
         xkbNewKeyboardNotify nkn = {
-            deviceID: nkn.oldDeviceID = dev.id,
+            deviceID: cast(ubyte)dev.id,
             minKeyCode: new_.min_key_code,
             maxKeyCode: new_.max_key_code,
             oldMinKeyCode: xkb.min_key_code,
             oldMaxKeyCode: xkb.max_key_code,
-            requestMajor: XkbReqCode,
+            requestMajor: cast(ubyte)XkbReqCode,
             requestMinor: X_kbGetKbdByName,
-            changed: XkbNKN_KeycodesMask,
+            changed: cast(ushort)XkbNKN_KeycodesMask,
         };
+        nkn.oldDeviceID = cast(ubyte)dev.id;
+
         if (geom_changed)
             nkn.changed |= XkbNKN_GeometryMask;
         XkbSendNewKeyboardNotify(dev, &nkn);
@@ -5992,7 +5990,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
         new_ = null;
     }
     XkbFreeComponentNames(&names, FALSE);
-    XkbSetCauseXkbReq(&cause, X_kbGetKbdByName, client);
+    mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbGetKbdByName`, `client`));
     XkbUpdateAllDeviceIndicators(null, &cause);
 
     return status;
@@ -6016,19 +6014,19 @@ private int ComputeDeviceLedInfoSize(DeviceIntPtr dev, uint what, XkbSrvLedInfoP
             sli.namesPresent |= bit;
             nNames++;
         }
-        if (sli.maps && XkbIM_InUse(&sli.maps[n])) {
+        if (sli.maps && mixin(XkbIM_InUse!("&sli.maps[n]"))) {
             sli.mapsPresent |= bit;
             nMaps++;
         }
     }
-    return (nNames * 4) + (nMaps * SIZEOF(xkbIndicatorMapWireDesc));
+    return cast(int)((nNames * 4) + (nMaps * xkbIndicatorMapWireDesc.sizeof));
 }
 
 private int CheckDeviceLedFBs(DeviceIntPtr dev, int class_, int id, int present, ClientPtr client, int* r_length, int* r_nFBs)
 {
     int nFBs = 0;
     int length = 0;
-    bool classOk = FALSE;
+    Bool classOk = FALSE;
 
     if (class_ == XkbDfltXIClass) {
         if (dev.kbdfeed)
@@ -6036,7 +6034,7 @@ private int CheckDeviceLedFBs(DeviceIntPtr dev, int class_, int id, int present,
         else if (dev.leds)
             class_ = LedFeedbackClass;
         else {
-            client.errorValue = _XkbErrCode2(XkbErr_BadClass, class_);
+            client.errorValue = mixin(_XkbErrCode2!("XkbErr_BadClass", "class_"));
             return XkbKeyboardErrorCode;
         }
     }
@@ -6051,7 +6049,7 @@ private int CheckDeviceLedFBs(DeviceIntPtr dev, int class_, int id, int present,
                 (id != kf.ctrl.id))
                 continue;
             nFBs++;
-            length += SIZEOF(xkbDeviceLedsWireDesc);
+            length += xkbDeviceLedsWireDesc.sizeof;
             if (!kf.xkb_sli)
                 kf.xkb_sli = XkbAllocSrvLedInfo(dev, kf, null, 0);
             length += ComputeDeviceLedInfoSize(dev, present, kf.xkb_sli);
@@ -6069,7 +6067,7 @@ private int CheckDeviceLedFBs(DeviceIntPtr dev, int class_, int id, int present,
                 (id != lf.ctrl.id))
                 continue;
             nFBs++;
-            length += SIZEOF(xkbDeviceLedsWireDesc);
+            length += xkbDeviceLedsWireDesc.sizeof;
             if (!lf.xkb_sli)
                 lf.xkb_sli = XkbAllocSrvLedInfo(dev, null, lf, 0);
             length += ComputeDeviceLedInfoSize(dev, present, lf.xkb_sli);
@@ -6083,9 +6081,9 @@ private int CheckDeviceLedFBs(DeviceIntPtr dev, int class_, int id, int present,
         return Success;
     }
     if (classOk)
-        client.errorValue = _XkbErrCode2(XkbErr_BadId, id);
+        client.errorValue = mixin(_XkbErrCode2!("XkbErr_BadId", "id"));
     else
-        client.errorValue = _XkbErrCode2(XkbErr_BadClass, class_);
+        client.errorValue = mixin(_XkbErrCode2!("XkbErr_BadClass", "class_"));
     return XkbKeyboardErrorCode;
 }
 
@@ -6096,10 +6094,10 @@ private int FillDeviceLedInfo(XkbSrvLedInfoPtr sli, x_rpcbuf_t* rpcbuf, ClientPt
     /* write xkbDeviceLedsWireDesc */
     x_rpcbuf_write_CARD16(rpcbuf, sli.class_);
     x_rpcbuf_write_CARD16(rpcbuf, sli.id);
-    x_rpcbuf_write_CARD32(rpcbuf, sli.namesPresent);
-    x_rpcbuf_write_CARD32(rpcbuf, sli.mapsPresent);
-    x_rpcbuf_write_CARD32(rpcbuf, sli.physIndicators);
-    x_rpcbuf_write_CARD32(rpcbuf, sli.effectiveState);
+    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sli.namesPresent);
+    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sli.mapsPresent);
+    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sli.physIndicators);
+    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sli.effectiveState);
 
     if (sli.namesPresent | sli.mapsPresent) {
         uint i = void, bit = void;
@@ -6107,7 +6105,7 @@ private int FillDeviceLedInfo(XkbSrvLedInfoPtr sli, x_rpcbuf_t* rpcbuf, ClientPt
         if (sli.namesPresent) {
             for (i = 0, bit = 1; i < XkbNumIndicators; i++, bit <<= 1) {
                 if (sli.namesPresent & bit) {
-                    x_rpcbuf_write_CARD32(rpcbuf, sli.names[i]);
+                    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sli.names[i]);
                 }
             }
         }
@@ -6122,12 +6120,12 @@ private int FillDeviceLedInfo(XkbSrvLedInfoPtr sli, x_rpcbuf_t* rpcbuf, ClientPt
                     x_rpcbuf_write_CARD8(rpcbuf, sli.maps[i].mods.mask);
                     x_rpcbuf_write_CARD8(rpcbuf, sli.maps[i].mods.real_mods);
                     x_rpcbuf_write_CARD16(rpcbuf, sli.maps[i].mods.vmods);
-                    x_rpcbuf_write_CARD32(rpcbuf, sli.maps[i].ctrls);
+                    x_rpcbuf_write_CARD32(rpcbuf, cast(uint)sli.maps[i].ctrls);
                 }
             }
         }
     }
-    return rpcbuf.wpos - oldpos;
+    return cast(int)(rpcbuf.wpos - oldpos);
 }
 
 private int FillDeviceLedFBs(DeviceIntPtr dev, int class_, int id, uint wantLength, char* buffer, ClientPtr client)
@@ -6187,11 +6185,11 @@ private int FillDeviceLedFBs(DeviceIntPtr dev, int class_, int id, uint wantLeng
 
 int ProcXkbGetDeviceInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_STRUCT(xkbGetDeviceInfoReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(wanted);
-    X_REQUEST_FIELD_CARD16(ledClass);
-    X_REQUEST_FIELD_CARD16(ledID);
+    mixin(X_REQUEST_HEAD_STRUCT!xkbGetDeviceInfoReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"wanted");
+    mixin(X_REQUEST_FIELD_CARD16!"ledClass");
+    mixin(X_REQUEST_FIELD_CARD16!"ledID");
 
     DeviceIntPtr dev = void;
     int status = void;
@@ -6212,18 +6210,18 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
     if ((!dev.kbdfeed) && (!dev.leds))
         wanted &= ~XkbXI_IndicatorsMask;
 
-    nameLen = mixin(XkbSizeCountedString!(`dev.name`));
+    nameLen = cast(uint)mixin(XkbSizeCountedString!(`dev.name`));
 
     xkbGetDeviceInfoReply reply = {
-        deviceID: dev.id,
+        deviceID: cast(ubyte)dev.id,
         length: bytes_to_int32(nameLen),
-        present: wanted,
-        supported: XkbXI_AllDeviceFeaturesMask,
+        present: cast(ushort)wanted,
+        supported: cast(ubyte)XkbXI_AllDeviceFeaturesMask,
         totalBtns: dev.button ? dev.button.numButtons : 0,
         hasOwnState: (dev.key && dev.key.xkbInfo),
         dfltKbdFB: dev.kbdfeed ? dev.kbdfeed.ctrl.id : XkbXINone,
         dfltLedFB: dev.leds ? dev.leds.ctrl.id : XkbXINone,
-        devType: dev.xinput_type
+        devType: cast(uint)dev.xinput_type
     };
 
     ledClass = stuff.ledClass;
@@ -6236,8 +6234,7 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
         }
 
         if ((stuff.firstBtn + stuff.nBtns) > dev.button.numButtons) {
-            client.errorValue = _XkbErrCode4(0x02, dev.button.numButtons,
-                                              stuff.firstBtn, stuff.nBtns);
+            client.errorValue = mixin(_XkbErrCode4!("0x02", "dev.button.numButtons", "stuff.firstBtn", "stuff.nBtns"));
             return BadValue;
         }
         else {
@@ -6264,7 +6261,7 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
                 }
                 reply.nBtnsRtrn -= i;
             }
-            reply.length += (reply.nBtnsRtrn * SIZEOF(xkbActionWireDesc)) / 4;
+            reply.length += (reply.nBtnsRtrn * xkbActionWireDesc.sizeof) / 4;
         }
     }
 
@@ -6275,7 +6272,7 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
         status = CheckDeviceLedFBs(dev, ledClass, ledID, reply.present, client, &led_len, &nDeviceLedFBs);
         if (status != Success)
             return status;
-        reply.nDeviceLedFBs = nDeviceLedFBs;
+        reply.nDeviceLedFBs = cast(ushort)nDeviceLedFBs;
         reply.length += bytes_to_int32(led_len);
     }
 
@@ -6293,8 +6290,8 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
         swapl(&reply.devType);
     }
 
-    int sz = nameLen + reply.nBtnsRtrn * ((xkbActionWireDesc) + led_len).sizeof;
-    char* buf = x_rpcbuf_reserve(&rpcbuf, sz);
+    int sz = cast(int)(nameLen + reply.nBtnsRtrn * ((xkbActionWireDesc).sizeof + led_len));
+    char* buf = cast(char*)x_rpcbuf_reserve(&rpcbuf, sz);
     if (!buf)
         return BadAlloc;
     char* walk = buf;
@@ -6305,8 +6302,8 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
     if (reply.nBtnsRtrn > 0) {
         memcpy(walk,
                &dev.button.xkb_acts[reply.firstBtnRtrn],
-               ((xkbActionWireDesc)*reply.nBtnsRtrn).sizeof);
-        walk += ((xkbActionWireDesc)*reply.nBtnsRtrn).sizeof;
+               ((xkbActionWireDesc).sizeof * reply.nBtnsRtrn));
+        walk += ((xkbActionWireDesc).sizeof * reply.nBtnsRtrn);
     }
 
     length -= walk - buf;
@@ -6326,15 +6323,15 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
         return BadLength;
     }
 
-    X_REPLY_FIELD_CARD16(present);
-    X_REPLY_FIELD_CARD16(supported);
-    X_REPLY_FIELD_CARD16(unsupported);
-    X_REPLY_FIELD_CARD16(nDeviceLedFBs);
-    X_REPLY_FIELD_CARD16(dfltKbdFB);
-    X_REPLY_FIELD_CARD16(dfltLedFB);
-    X_REPLY_FIELD_CARD32(devType);
+    mixin(X_REPLY_FIELD_CARD16!"present");
+    mixin(X_REPLY_FIELD_CARD16!"supported");
+    mixin(X_REPLY_FIELD_CARD16!"unsupported");
+    mixin(X_REPLY_FIELD_CARD16!"nDeviceLedFBs");
+    mixin(X_REPLY_FIELD_CARD16!"dfltKbdFB");
+    mixin(X_REPLY_FIELD_CARD16!"dfltLedFB");
+    mixin(X_REPLY_FIELD_CARD32!"devType");
 
-    return X_SEND_REPLY_WITH_RPCBUF(client, reply, rpcbuf);
+    return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
 private char* CheckSetDeviceIndicators(char* wire, DeviceIntPtr dev, int num, int* status_rtrn, ClientPtr client, xkbSetDeviceInfoReq* stuff)
@@ -6431,7 +6428,7 @@ private char* SetDeviceIndicators(char* wire, DeviceIntPtr dev, uint changed, in
 
     memset(cast(char*) &ed, 0, xkbExtensionDeviceNotify.sizeof);
     memset(cast(char*) &changes, 0, XkbChangesRec.sizeof);
-    XkbSetCauseXkbReq(&cause, X_kbSetDeviceInfo, client);
+    mixin(XkbSetCauseXkbReq!(`&cause`, `X_kbSetDeviceInfo`, `client`));
     ledWire = cast(xkbDeviceLedsWireDesc*) wire;
     for (i = 0; i < num; i++) {
         int n = void;
@@ -6442,7 +6439,7 @@ private char* SetDeviceIndicators(char* wire, DeviceIntPtr dev, uint changed, in
 
         namec = mapc = statec = 0;
         sli = XkbFindSrvLedInfo(dev, ledWire.ledClass, ledWire.ledID,
-                                XkbXI_IndicatorMapsMask);
+                                cast(uint)XkbXI_IndicatorMapsMask);
         if (!sli) {
             /* SHOULD NEVER HAPPEN!! */
             return cast(char*) ledWire;
@@ -6458,7 +6455,7 @@ private char* SetDeviceIndicators(char* wire, DeviceIntPtr dev, uint changed, in
             memset(cast(char*) sli.names, 0, XkbNumIndicators * Atom.sizeof);
             for (n = 0, bit = 1; n < XkbNumIndicators; n++, bit <<= 1) {
                 if (ledWire.namesPresent & bit) {
-                    sli.names[n] = (Atom) *atomWire;
+                    sli.names[n] = cast(Atom)( *atomWire);
                     if (sli.names[n] == None)
                         ledWire.namesPresent &= ~bit;
                     atomWire++;
@@ -6515,18 +6512,17 @@ private int _XkbSetDeviceInfoCheck(ClientPtr client, DeviceIntPtr dev, xkbSetDev
 
     wire = cast(char*) &stuff[1];
     if (stuff.change & XkbXI_ButtonActionsMask) {
-        int sz = stuff.nBtns * SIZEOF(xkbActionWireDesc);
+        int sz = stuff.nBtns * xkbActionWireDesc.sizeof;
         if (!_XkbCheckRequestBounds(client, stuff, wire, cast(char*) wire + sz))
             return BadLength;
 
         if (!dev.button) {
-            client.errorValue = _XkbErrCode2(XkbErr_BadClass, ButtonClass);
+            client.errorValue = mixin(_XkbErrCode2!("XkbErr_BadClass", "ButtonClass"));
             return XkbKeyboardErrorCode;
         }
         if ((stuff.firstBtn + stuff.nBtns) > dev.button.numButtons) {
             client.errorValue =
-                _XkbErrCode4(0x02, stuff.firstBtn, stuff.nBtns,
-                             dev.button.numButtons);
+                mixin(_XkbErrCode4!("0x02", "stuff.firstBtn", "stuff.nBtns", "dev.button.numButtons"));
             return BadMatch;
         }
         wire += sz;
@@ -6550,7 +6546,7 @@ private int _XkbSetDeviceInfo(ClientPtr client, DeviceIntPtr dev, xkbSetDeviceIn
     char* wire = void;
     xkbExtensionDeviceNotify ed = { 0 };
 
-    ed.deviceID = dev.id;
+    ed.deviceID = cast(ubyte)dev.id;
     wire = cast(char*) &stuff[1];
     if (stuff.change & XkbXI_ButtonActionsMask) {
         int nBtns = void, sz = void, i = void;
@@ -6567,7 +6563,7 @@ private int _XkbSetDeviceInfo(ClientPtr client, DeviceIntPtr dev, xkbSetDeviceIn
         }
         if (stuff.firstBtn + stuff.nBtns > nBtns)
             return BadValue;
-        sz = stuff.nBtns * SIZEOF(xkbActionWireDesc);
+        sz = stuff.nBtns * xkbActionWireDesc.sizeof;
         memcpy(cast(char*) &acts[stuff.firstBtn], cast(char*) wire, sz);
         wire += sz;
         ed.reason |= XkbXI_ButtonActionsMask;
@@ -6600,10 +6596,10 @@ private int _XkbSetDeviceInfo(ClientPtr client, DeviceIntPtr dev, xkbSetDeviceIn
 
 int ProcXkbSetDeviceInfo(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetDeviceInfoReq);
-    X_REQUEST_FIELD_CARD16(deviceSpec);
-    X_REQUEST_FIELD_CARD16(change);
-    X_REQUEST_FIELD_CARD16(nDeviceLedFBs);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetDeviceInfoReq);
+    mixin(X_REQUEST_FIELD_CARD16!"deviceSpec");
+    mixin(X_REQUEST_FIELD_CARD16!"change");
+    mixin(X_REQUEST_FIELD_CARD16!"nDeviceLedFBs");
 
     DeviceIntPtr dev = void;
     int rc = void;
@@ -6667,12 +6663,12 @@ int ProcXkbSetDeviceInfo(ClientPtr client)
 
 int ProcXkbSetDebuggingFlags(ClientPtr client)
 {
-    X_REQUEST_HEAD_AT_LEAST(xkbSetDebuggingFlagsReq);
-    X_REQUEST_FIELD_CARD32(affectFlags);
-    X_REQUEST_FIELD_CARD32(flags);
-    X_REQUEST_FIELD_CARD32(affectCtrls);
-    X_REQUEST_FIELD_CARD32(ctrls);
-    X_REQUEST_FIELD_CARD16(msgLength);
+    mixin(X_REQUEST_HEAD_AT_LEAST!xkbSetDebuggingFlagsReq);
+    mixin(X_REQUEST_FIELD_CARD32!"affectFlags");
+    mixin(X_REQUEST_FIELD_CARD32!"flags");
+    mixin(X_REQUEST_FIELD_CARD32!"affectCtrls");
+    mixin(X_REQUEST_FIELD_CARD32!"ctrls");
+    mixin(X_REQUEST_FIELD_CARD16!"msgLength");
 
     CARD32 newFlags = void, newCtrls = void, extraLength = void;
     int rc = void;
@@ -6720,17 +6716,17 @@ int ProcXkbSetDebuggingFlags(ClientPtr client)
         supportedCtrls: ~0
     };
 
-    X_REPLY_FIELD_CARD32(currentFlags);
-    X_REPLY_FIELD_CARD32(currentCtrls);
-    X_REPLY_FIELD_CARD32(supportedFlags);
-    X_REPLY_FIELD_CARD32(supportedCtrls);
+    mixin(X_REPLY_FIELD_CARD32!"currentFlags");
+    mixin(X_REPLY_FIELD_CARD32!"currentCtrls");
+    mixin(X_REPLY_FIELD_CARD32!"supportedFlags");
+    mixin(X_REPLY_FIELD_CARD32!"supportedCtrls");
 
-    return X_SEND_REPLY_SIMPLE(client, reply);
+    return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
 private int ProcXkbDispatch(ClientPtr client)
 {
-    REQUEST(xReq);
+    mixin(REQUEST!xReq);
     switch (stuff.data) {
     case X_kbUseExtension:
         return ProcXkbUseExtension(client);
@@ -6813,7 +6809,7 @@ void XkbExtensionInit()
 
     if ((extEntry = AddExtension(XkbName, XkbNumberEvents, XkbNumberErrors,
                                  &ProcXkbDispatch, &ProcXkbDispatch,
-                                 null, StandardMinorOpcode))) {
+                                 null, &StandardMinorOpcode))!is null) {
         XkbReqCode = cast(ubyte) extEntry.base;
         XkbEventBase = cast(ubyte) extEntry.eventBase;
         XkbErrorBase = cast(ubyte) extEntry.errorBase;

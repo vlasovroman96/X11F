@@ -1,4 +1,4 @@
-module xkbPrKeyEv.c;
+module xkb.xkbPrKeyEv;
 @nogc nothrow:
 extern(C): __gshared:
 /************************************************************
@@ -27,25 +27,24 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ********************************************************/
 
-import dix-config;
+import build.dix_config;
 
 import core.stdc.ctype;
 import core.stdc.stdio;
 import core.stdc.math;
-import X11/X;
-import X11/Xproto;
-import X11/keysym;
+//import externs.X11.X;
+//import externs.X11.Xproto;
+//import externs.X11.keysym;
 
 import dix.input_priv;
-import include.misc;
 import os.log_priv;
+import xkb.xkbsrv_priv;
 
-import xkbsrv_priv;
-
-import inputstr;
-import exevents;
-import eventstr;
-import events;
+import include.misc;
+import include.inputstr;
+import include.exevents;
+import include.eventstr;
+import include.events;
 
 void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
 {
@@ -137,13 +136,13 @@ void XkbProcessKeyboardEvent(DeviceEvent* event, DeviceIntPtr keybd)
             overlay_active_now = (xkbi.desc.ctrls.enabled_ctrls & which) ? 1 : 0;
 
             if (cast(ubyte)key == key) {
-                key_was_overlaid = BitIsOn(xkbi.overlay_perkey_state, key);
+                key_was_overlaid = mixin(BitIsOn!("xkbi.overlay_perkey_state", "key"));
                 if (!is_keyrelease) {
                     if (overlay_active_now)
-                        SetBit(xkbi.overlay_perkey_state, key);
+                        mixin(SetBit!("xkbi.overlay_perkey_state", "key"));
                 } else {
                     if (key_was_overlaid)
-                        ClearBit(xkbi.overlay_perkey_state, key);
+                        mixin(ClearBit!("xkbi.overlay_perkey_state", "key"));
                 }
             }
 
@@ -176,7 +175,7 @@ void ProcessKeyboardEvent(InternalEvent* ev, DeviceIntPtr keybd)
 
     /* We're only interested in key events. */
     if (!is_press && !is_release) {
-        UNWRAP_PROCESS_INPUT_PROC(keybd, xkb_priv, backup_proc);
+        mixin(UNWRAP_PROCESS_INPUT_PROC!("keybd", "xkb_priv", "backup_proc"));
         keybd.public_.processInputProc(ev, keybd);
         COND_WRAP_PROCESS_INPUT_PROC(keybd, xkb_priv, backup_proc,
                                      xkbUnwrapProc);
