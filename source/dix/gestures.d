@@ -27,6 +27,7 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
+import os.inputthread;
 
 import dix.dix_priv;
 import dix.dixgrabs_priv;

@@ -63,6 +63,7 @@ import   dix.screen_hooks_priv;
 import   include.extinit;
 import   mi.mi_priv;
 import   mi.mipointer_priv;
+import os.inputthread;
 
 import   include.misc;
 import include.windowstr;

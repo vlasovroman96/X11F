@@ -110,8 +110,8 @@ int XNFasprintf(char** ret, const(char)* format, ...)
     int size = void;
     va_list va = void;
 
-    va_start(va, format);
+    core.stdc.stdarg.va_start(va, format);
     size = XNFvasprintf(ret, format, va);
-    va_end(va);
+    core.stdc.stdarg.va_end(va);
     return size;
 }

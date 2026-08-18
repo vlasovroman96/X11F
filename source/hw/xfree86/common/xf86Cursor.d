@@ -33,6 +33,7 @@ import build.xorg_config;
 //import externs.X11.X;
 ////import externs.X11.Xmd;
 // //import externs.X11.extensions.XIproto;
+import os.inputthread;
 
 import dix.input_priv;
 import mi.mipointer_priv;

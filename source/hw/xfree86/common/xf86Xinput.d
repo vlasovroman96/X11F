@@ -105,6 +105,8 @@ import Flags;
 import hw.xfree86.common.xf86Helper;
 import dix.events;
 import xf86Events;
+import os.inputthread;
+import os.inputthread;
 
 
 version (HAVE_FNMATCH_H) {
@@ -1222,11 +1224,11 @@ void xf86PostMotionEvent(DeviceIntPtr device, int is_absolute, int first_valuato
     mixin(XI_VERIFY_VALUATORS!(`num_valuators`));
 
     valuator_mask_zero(&mask);
-    va_start(var, num_valuators);
+    core.stdc.stdarg.va_start(var, num_valuators);
     for (i = 0; i < num_valuators; i++)
         valuator_mask_set(&mask, first_valuator + i, va_arg!int(var));
 
-    va_end(var);
+    core.stdc.stdarg.va_end(var);
 
     xf86PostMotionEventM(device, is_absolute, &mask);
 }
@@ -1342,11 +1344,11 @@ void xf86PostProximityEvent(DeviceIntPtr device, int is_in, int first_valuator, 
     mixin(XI_VERIFY_VALUATORS!(`num_valuators`));
 
     valuator_mask_zero(&mask);
-    va_start(var, num_valuators);
+    core.stdc.stdarg.va_start(var, num_valuators);
     for (i = 0; i < num_valuators; i++)
         valuator_mask_set(&mask, first_valuator + i, va_arg!int(var));
 
-    va_end(var);
+    core.stdc.stdarg.va_end(var);
 
     xf86PostProximityEventM(device, is_in, &mask);
 }
@@ -1366,11 +1368,11 @@ void xf86PostButtonEvent(DeviceIntPtr device, int is_absolute, int button, int i
 
     valuator_mask_zero(&mask);
 
-    va_start(var, num_valuators);
+    core.stdc.stdarg.va_start(var, num_valuators);
     for (i = 0; i < num_valuators; i++)
         valuator_mask_set(&mask, first_valuator + i, va_arg!int(var));
 
-    va_end(var);
+    core.stdc.stdarg.va_end(var);
 
     xf86PostButtonEventM(device, is_absolute, button, is_down, &mask);
 }

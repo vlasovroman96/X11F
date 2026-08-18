@@ -179,9 +179,9 @@ x86emu_decode_printf(const char *x, ...)
     va_list ap;
     char temp[100];
 
-    va_start(ap, x);
+    core.stdc.stdarg.va_start(ap, x);
     vsnprintf(temp, sizeof(temp), x, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
     sprintf(M.x86.decoded_buf + M.x86.enc_str_pos, "%s", temp);
     M.x86.enc_str_pos += strlen(temp);
 }

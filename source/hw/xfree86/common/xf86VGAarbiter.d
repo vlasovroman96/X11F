@@ -47,6 +47,7 @@ import hw.xfree86.common.xf86Helper;
 import render.picture;
 import xf86VGAarbiterPriv;
 import xf86Globals;
+import os.inputthread;
 
 private GCFuncs VGAarbiterGCFuncs = {
     &VGAarbiterValidateGC, &VGAarbiterChangeGC, &VGAarbiterCopyGC,

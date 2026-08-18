@@ -44,6 +44,7 @@ import build.dix_config;
 //import   externs.X11.extensions.XI;
 // //import   externs.X11.extensions.XIproto;
 // //import   externs.X11.extensions.geproto;
+import os.inputthread;
 
 import   dix.cursor_priv;
 import   dix.dix_priv;

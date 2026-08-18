@@ -57,6 +57,8 @@ import config.libhal;
 import os.connection;
 
 import os.WaitFor;
+DBusErrorFn dbusErrorFunc = cast(DBusErrorFn)&__traits(getOverloads, mixin(__MODULE__), "dbus_error_init")[0];
+DBusErrorFn dbusFreeFunc = cast(DBusErrorFn)&__traits(getOverloads, mixin(__MODULE__), "dbus_error_free")[0];
 
 
 /* How often to attempt reconnecting when we get booted off the bus. */
@@ -236,7 +238,7 @@ private int connect_to_bus()
     DBusError error = void;
     dbus_core_hook* hook = void;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
     bus_info.connection = assumeNoGC(&dbus_bus_get)(DBUS_BUS_SYSTEM, &error);
     if (!bus_info.connection || assumeNoGC(&dbus_error_is_set)(&error)) {
         LogMessage(X_ERROR, "dbus-core: error connecting to system bus: %s (%s)\n",
@@ -259,7 +261,7 @@ private int connect_to_bus()
         goto err_fd;
     }
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
     SetNotifyFd(bus_info.fd, &socket_handler, X_NOTIFY_READ, &bus_info);
 
     for (hook = bus_info.hooks; hook; hook = hook.next) {
@@ -275,7 +277,7 @@ private int connect_to_bus()
     assumeNoGC(&dbus_connection_unref)(bus_info.connection);
     bus_info.connection = null;
  err_begin:
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 
     return 0;
 }

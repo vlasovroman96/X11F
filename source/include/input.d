@@ -464,8 +464,8 @@ extern int* input_option_find(InputOption* list, const(char)* key);
 // extern int input_option_set_key(InputOption* opt, const(char)* key);
 // extern int input_option_set_value(InputOption* opt, const(char)* value);
 
-extern int input_lock();
-extern int input_unlock();
+// extern int input_lock();
+// extern int input_unlock();
 extern int input_force_unlock();
 extern int in_input_thread();
 

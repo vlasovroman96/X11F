@@ -48,6 +48,7 @@ import externs.gnu;
 import os.string;
 import os.connection;
 import xf86Xinput;
+import os.inputthread;
 
 
 

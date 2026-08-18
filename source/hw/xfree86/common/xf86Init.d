@@ -48,6 +48,7 @@ static if (!HasVersion!"Windows") {
 enum HAS_UTSNAME = 1;
 import core.sys.posix.sys.utsname;
 }
+import os.inputthread;
 
 //import externs.X11.X;
 ////import externs.X11.Xmd;

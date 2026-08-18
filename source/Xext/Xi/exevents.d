@@ -129,6 +129,8 @@ import externs.X11.X;
 import dix.events;
 import dix.enterleave;
 import dix.inpututils;
+import os.inputthread;
+
 
 
 enum string WID(string w) = `((` ~ w ~ `) ? ((` ~ w ~ `).drawable.id) : 0)`;

@@ -135,6 +135,7 @@ import include.extinit;
 import os.osdep;
 import os.probes_priv;
 import os.osinit;
+import dix.dixfonts;
 
 import Xext.panoramiX;
 import Xext.panoramiXsrv;

@@ -23,9 +23,9 @@ void xf86Msg(MessageType type, const(char)* format, ...)
 
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(type, 1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 
@@ -45,7 +45,7 @@ void xf86MsgVerb(MessageType type, int verb, const(char)* format, ...)
     }
 
     va_list ap = void;
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(type, verb, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }

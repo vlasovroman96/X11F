@@ -629,10 +629,10 @@ DarwinSendDDXEvent(int type, int argc, ...)
     e.subtype = type;
 
     if (argc > 0 && argc < XQUARTZ_EVENT_MAXARGS) {
-        va_start(args, argc);
+        core.stdc.stdarg.va_start(args, argc);
         for (i = 0; i < argc; i++)
             e.data[i] = (uint32_t)va_arg(args, uint32_t);
-        va_end(args);
+        core.stdc.stdarg.va_end(args);
     }
 
     wait_for_mieq_init();

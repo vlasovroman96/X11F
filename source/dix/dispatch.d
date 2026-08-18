@@ -166,7 +166,9 @@ import dix.events;
 import Xext.xf86bigfont;
 import os.WaitFor;
 import disconnect;
+import dix.dixfonts;
 
+import externs.libdbus;
 
 alias INT32_MAX = core.stdc.stdint.INT32_MAX;
 
@@ -1436,7 +1438,7 @@ int ProcListFontsWithInfo(ClientPtr client)
 
     mixin(REQUEST_FIXED_SIZE!("xListFontsWithInfoReq", "stuff.nbytes"));
 
-    return assumeNoGC(cast(StartListFontsWithInfoFn)&StartListFontsWithInfo)(client, stuff.nbytes,
+    return dix.dixfonts.StartListFontsWithInfo(client, stuff.nbytes,
                                   cast(ubyte*) &stuff[1], stuff.maxNames);
 }
 

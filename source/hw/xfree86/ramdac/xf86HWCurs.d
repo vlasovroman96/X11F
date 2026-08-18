@@ -24,6 +24,7 @@ import include.servermd;
 import include.xf86Cursor;
 import hw.xfree86.common.xf86Helper;
 import xf86CursorRD;
+import os.inputthread;
 
 
 

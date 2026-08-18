@@ -127,9 +127,9 @@ private void SecurityAudit(const(char)* format, ...)
 
     if (auditTrailLevel < SECURITY_AUDIT_LEVEL)
         return;
-    va_start(args, format);
+    core.stdc.stdarg.va_start(args, format);
     VAuditF(format, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 }                               /* SecurityAudit */
 
 /*

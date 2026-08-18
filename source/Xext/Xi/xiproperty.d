@@ -53,6 +53,8 @@ import include.xserver_properties;
 import externs.X11.Xatom;
 import dix.devices;
 import dix.events;
+import os.inputthread;
+
 
 /**
  * Properties used or alloced from inside the server.

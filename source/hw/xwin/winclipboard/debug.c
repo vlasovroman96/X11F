@@ -31,16 +31,16 @@
 void winDebug(const char *format, ...)
 {
   va_list ap;
-  va_start(ap, format);
+  core.stdc.stdarg.va_start(ap, format);
   fprintf(stderr, "xwinclip: ");
   vfprintf(stderr, format, ap);
-  va_end(ap);
+  core.stdc.stdarg.va_end(ap);
 }
 
 void ErrorF(const char *format, ...)
 {
   va_list ap;
-  va_start(ap, format);
+  core.stdc.stdarg.va_start(ap, format);
   vfprintf(stderr, format, ap);
-  va_end(ap);
+  core.stdc.stdarg.va_end(ap);
 }

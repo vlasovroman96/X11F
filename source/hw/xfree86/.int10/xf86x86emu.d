@@ -122,7 +122,7 @@ void printk(const(char)* fmt, ...)
 {
     va_list argptr = void;
 
-    va_start(argptr, fmt);
+    core.stdc.stdarg.va_start(argptr, fmt);
     LogVMessageVerb(X_NONE, -1, fmt, argptr);
-    va_end(argptr);
+    core.stdc.stdarg.va_end(argptr);
 }

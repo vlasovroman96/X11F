@@ -1209,10 +1209,10 @@ version (HAVE_SETITIMER) {
     return pid == -1 ? -1 : pstat;
 }
 
-int Fclose(void* iop)
-{
-    return fclose(cast(FILE*)iop);
-}
+// int Fclose(void* iop)
+// {
+//     return fclose(cast(FILE*)iop);
+// }
 
 }                          /* !WIN32 */
 

@@ -234,7 +234,7 @@ pragma(inline, true) void prmsg(int lvl, const(char)* f, ...)
 version (XTRANSDEBUG) {
     va_list args = void;
 
-    va_start(args, f);
+    core.stdc.stdarg.va_start(args, f);
     if (lvl <= XTRANSDEBUG) {
 	int saveerrno = errno;
 
@@ -251,7 +251,7 @@ version (XTRANSDEBUGTIMESTAMP) {
 }
 	errno = saveerrno;
     }
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 } /* XTRANSDEBUG */
 }
 

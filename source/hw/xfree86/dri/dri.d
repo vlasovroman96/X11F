@@ -149,9 +149,9 @@ private void DRIDrvMsg(int scrnIndex, MessageType type, const(char)* format, ...
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     xf86VDrvMsgVerb(scrnIndex, type, DRI_MSG_VERBOSITY, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 private void DRIOpenDRMCleanup(DRIEntPrivPtr pDRIEntPriv)

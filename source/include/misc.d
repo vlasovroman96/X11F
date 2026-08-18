@@ -109,6 +109,9 @@ enum EXTENSION_BASE = 128;
 
 alias ATOM = uint;
 
+public import externs.libdbus;
+
+
 /* @brief generic X return code
  *
  * this type is should be used instead of plain int for all functions
@@ -120,8 +123,8 @@ alias ATOM = uint;
 alias XRetCode = int;
 
 version (TRUE) {} else {
-enum TRUE = 1;
-enum FALSE = 0;
+// enum TRUE = 1;
+// enum FALSE = 0;
 }
 
 public import include.os;                 /* for ALLOCATE_LOCAL and DEALLOCATE_LOCAL */

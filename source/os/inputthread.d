@@ -54,6 +54,8 @@ import core.sys.posix.sys.mman;
 import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
+import sigio;
+
 
 static if (INPUTTHREAD) {
 
@@ -539,35 +541,35 @@ int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldset)
 
 } else { /* INPUTTHREAD */
 
-Bool InputThreadEnable = FALSE;
+// Bool InputThreadEnable = FALSE;
 
-void input_lock() {}
-void input_unlock() {}
-void input_force_unlock() {}
+// void input_lock() {}
+// void input_unlock() {}
+// void input_force_unlock() {}
 
-void InputThreadPreInit() {}
-void InputThreadInit() {}
-void InputThreadFini() {}
-int in_input_thread() { return 0; }
+// void InputThreadPreInit() {}
+// void InputThreadInit() {}
+// void InputThreadFini() {}
+// int in_input_thread() { return 0; }
 
-int InputThreadRegisterDev(int fd, NotifyFdProcPtr readInputProc, void* readInputArgs)
-{
-    return SetNotifyFd(fd, readInputProc, X_NOTIFY_READ, readInputArgs);
-}
+// int InputThreadRegisterDev(int fd, NotifyFdProcPtr readInputProc, void* readInputArgs)
+// {
+//     return SetNotifyFd(fd, readInputProc, X_NOTIFY_READ, readInputArgs);
+// }
 
-extern int InputThreadUnregisterDev(int fd)
-{
-    RemoveNotifyFd(fd);
-    return 1;
-}
+// extern int InputThreadUnregisterDev(int fd)
+// {
+//     RemoveNotifyFd(fd);
+//     return 1;
+// }
 
-int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldset)
-{
-version (HAVE_SIGPROCMASK) {
-    return sigprocmask(how, set, oldset);
-} else {
-    return 0;
-}
-}
+// int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldset)
+// {
+// version (HAVE_SIGPROCMASK) {
+//     return sigprocmask(how, set, oldset);
+// } else {
+//     return 0;
+// }
+// }
 
 }

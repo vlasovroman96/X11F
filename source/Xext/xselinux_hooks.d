@@ -348,9 +348,9 @@ private int SELinuxLog(int type, const(char)* fmt, ...)
         break;
     }
 
-    stdarg.va_start(ap, fmt);
+    core.stdc.stdarg.va_start(ap, fmt);
     vsnprintf(buf.ptr, MAX_AUDIT_MESSAGE_LENGTH, fmt, ap);
-    stdarg.va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 
     if (aut != -1) {
         cast(void) audit_log_user_avc_message_d(audit_fd, aut, buf.ptr, null, null, null, 0);

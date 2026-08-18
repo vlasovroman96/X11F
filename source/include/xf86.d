@@ -48,6 +48,7 @@ import xf86Globals;
 import dix.events;
 public import xf86Configure;
 
+import os.inputthread;
 
 /* General parameters */
 // extern bool  xorgHWAccess;

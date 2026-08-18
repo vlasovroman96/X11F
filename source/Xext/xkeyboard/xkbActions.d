@@ -33,6 +33,8 @@ import core.stdc.ctype;
 import core.stdc.stdio;
 import core.stdc.math;
 import core.stdc.ctype;
+import os.inputthread;
+
 // import 
 //import externs.X11.X;
 //import externs.X11.Xproto;

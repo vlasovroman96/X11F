@@ -790,9 +790,9 @@ void LogMessageVerb(MessageType type, int verb, const(char)* format, ...)
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(type, verb, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 /* Log a message with the standard verbosity level of 1. */
@@ -800,9 +800,9 @@ void LogMessage(MessageType type, const(char)* format, ...)
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(type, 1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 
@@ -827,9 +827,9 @@ void LogHdrMessageVerb(MessageType type, int verb, const(char)* msg_format, va_l
 {
     va_list hdr_args = void;
 
-    va_start(hdr_args, hdr_format);
+    core.stdc.stdarg.va_start(hdr_args, hdr_format);
     LogVHdrMessageVerb(type, verb, msg_format, msg_args, hdr_format, hdr_args);
-    va_end(hdr_args);
+    core.stdc.stdarg.va_end(hdr_args);
 }
 
 enum AUDIT_PREFIX = "AUDIT: %s: %ld: ";
@@ -874,10 +874,10 @@ void AuditF(const(char)* f, ...)
 {
     va_list args = void;
 
-    va_start(args, f);
+    core.stdc.stdarg.va_start(args, f);
 
     VAuditF(f, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 }
 
 private CARD32 AuditFlush(OsTimerPtr timer, CARD32 now, void* arg)
@@ -937,27 +937,27 @@ void FatalError(const(char)* f, ...)
     else
         ErrorF("\nFatal server error:\n");
 
-    va_start(args, f);
+    core.stdc.stdarg.va_start(args, f);
 
     /* Make a copy for OsVendorFatalError */
-    va_copy(args2, args);
+    core.stdc.stdarg.va_copy(args2, args);
 
 version (OSX) {
     {
         va_list apple_args = void;
 
-        va_copy(apple_args, args);
+        core.stdc.stdarg.va_copy(apple_args, args);
         cast(void)vsnprintf(__crashreporter_info_buff__.ptr,
                         __crashreporter_info_buff__.sizeof, f, apple_args);
-        va_end(apple_args);
+        core.stdc.stdarg.va_end(apple_args);
     }
 }
     LogVMessageVerb(X_NONE, -1, f, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
     ErrorF("\n");
     if (!beenhere)
         OsVendorFatalError(f, args2);
-    va_end(args2);
+    core.stdc.stdarg.va_end(args2);
     if (!beenhere) {
         beenhere = TRUE;
         AbortServer();
@@ -970,9 +970,9 @@ void ErrorF(const(char)* f, ...)
 {
     va_list args = void;
 
-    va_start(args, f);
+    core.stdc.stdarg.va_start(args, f);
     LogVMessageVerb(X_NONE, -1, f, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 }
 
 void LogPrintMarkers()

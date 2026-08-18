@@ -217,7 +217,7 @@ extern void* xstrcasestr(const(char)* s, const(char)* find);
 }
 
 version (HAVE_STRLCPY) {} else {
-extern void strlcpy(char* dst, const(char)* src, size_t siz);
+extern ulong strlcpy(char* dst, const(char)* src, size_t siz);
 extern void strlcat(char* dst, const(char)* src, size_t siz);
 }
 

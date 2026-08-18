@@ -165,7 +165,7 @@ int systemd_logind_take_fd(int _major, int _minor, const(char)* path, Bool* paus
         return pInfo.fd;
     }
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "TakeDevice");
@@ -208,7 +208,7 @@ cleanup:
         assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
         assumeNoGC(&dbus_message_unref)(reply);
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 
     return fd;
 }
@@ -241,7 +241,7 @@ void systemd_logind_release_fd(int _major, int _minor, int fd)
 
     LogMessage(X_INFO, "systemd-logind: releasing fd for %u:%u\n", major, minor);
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "ReleaseDevice");
@@ -268,7 +268,7 @@ cleanup:
         assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
         assumeNoGC(&dbus_message_unref)(reply);
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 close:
     if (fd != -1)
         close(fd);
@@ -319,7 +319,7 @@ private void systemd_logind_ack_pause(systemd_logind_info* info, dbus_int32_t mi
     DBusMessage* msg = null;
     DBusMessage* reply = null;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1", info.session,
             "org.freedesktop.login1.Session", "PauseDeviceComplete");
@@ -346,7 +346,7 @@ cleanup:
         assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
         assumeNoGC(&dbus_message_unref)(reply);
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 }
 
 /*
@@ -397,7 +397,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
     if (strcmp(assumeNoGC(&dbus_message_get_path)(message), info.session) != 0)
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     if (assumeNoGC(&dbus_message_is_signal)(message, "org.freedesktop.login1.Session",
                                "PauseDevice")) {
@@ -408,7 +408,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
                                )) {
             LogMessage(X_ERROR, "systemd-logind: PauseDevice: %s\n",
                        error.message);
-            assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+            resolve!"dbus_error_free"()(&error);
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
 
@@ -438,7 +438,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
                                    )) {
             LogMessage(X_ERROR, "systemd-logind: ResumeDevice: %s\n",
                        error.message);
-            assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+            resolve!"dbus_error_free"()(&error);
             return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
         }
 
@@ -502,7 +502,7 @@ private void connect_hook(DBusConnection* connection, void* data)
     dbus_int32_t arg = void;
     char* session = null;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1",
             "/org/freedesktop/login1", "org.freedesktop.login1.Manager",
@@ -590,7 +590,7 @@ private void connect_hook(DBusConnection* connection, void* data)
         if (!assumeNoGC(&dbus_error_has_name)(&error, DBUS_ERROR_ACCESS_DENIED) &&
             !assumeNoGC(&dbus_error_has_name)(&error, DBUS_ERROR_UNKNOWN_METHOD))
             LogMessage(X_WARNING, "systemd-logind: SetType failed: %s\n", error.message);
-        assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+        resolve!"dbus_error_free"()(&error);
     }
 
     assumeNoGC(&dbus_bus_add_match)(connection,
@@ -647,7 +647,7 @@ cleanup:
         assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
         assumeNoGC(&dbus_message_unref)(reply);
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 }
 
 private void systemd_logind_release_control(systemd_logind_info* info)
@@ -656,7 +656,7 @@ private void systemd_logind_release_control(systemd_logind_info* info)
     DBusMessage* msg = null;
     DBusMessage* reply = null;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     msg = assumeNoGC(&dbus_message_new_method_call)("org.freedesktop.login1",
             info.session, "org.freedesktop.login1.Session", "ReleaseControl");
@@ -678,7 +678,7 @@ cleanup:
         assumeNoGC(&dbus_message_unref)(msg);
     if (reply)
         assumeNoGC(&dbus_message_unref)(reply);
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 }
 
 private void disconnect_hook(void* data)

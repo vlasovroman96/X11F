@@ -41,9 +41,9 @@ winErrorFVerb(int verb, const char *format, ...)
 {
     va_list ap;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(X_NONE, verb, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 void
@@ -51,9 +51,9 @@ winDebug(const char *format, ...)
 {
     va_list ap;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(X_NONE, 3, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 void
@@ -61,9 +61,9 @@ winTrace(const char *format, ...)
 {
     va_list ap;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(X_NONE, 10, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 void

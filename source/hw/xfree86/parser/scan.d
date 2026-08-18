@@ -953,9 +953,9 @@ void xf86parseError(const(char)* format, ...)
 
     ErrorF("Parse error on line %d of section %s in file %s\n\t",
            configLineNo, configSection, filename);
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(X_NONE, -1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 
     ErrorF("\n");
 }
@@ -967,9 +967,9 @@ void xf86validationError(const(char)* format, ...)
         : "<builtin configuration>";
 
     ErrorF("Data incomplete in file %s\n\t", filename);
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     LogVMessageVerb(X_NONE, -1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 
     ErrorF("\n");
 }

@@ -67,6 +67,7 @@ import include.property;
 import hw.xfree86.common.action_priv;
 import mi.mi_priv;
 import os.log_priv;
+import os.inputthread;
 
 import include.misc;
 import xf86_priv;

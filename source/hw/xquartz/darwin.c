@@ -110,9 +110,9 @@ xq_asl_log(int level, const char *subsystem, const char *file,
             asl_set(msg, "Subsystem", subsystem);
     }
 
-    va_start(args, fmt);
+    core.stdc.stdarg.va_start(args, fmt);
     asl_vlog(aslc, msg, level, fmt, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 
     if (msg)
         asl_free(msg);

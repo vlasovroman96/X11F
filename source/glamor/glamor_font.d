@@ -169,7 +169,7 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
                 for (y = 0; y < mixin(GLYPHHEIGHTPIXELS!("glyph")); y++) {
                     memcpy(dst, src, mixin(GLYPHWIDTHBYTES!("glyph")));
                     dst += overall_width;
-                    src += cast(ptrdiff_t)GLYPHWIDTHBYTESPADDED!("glyph");
+                    src += cast(ptrdiff_t)mixin(GLYPHWIDTHBYTESPADDED!("glyph"));
                 }
             }
         }

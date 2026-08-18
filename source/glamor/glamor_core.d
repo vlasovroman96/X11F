@@ -104,15 +104,15 @@ Bool glamor_link_glsl_prog(ScreenPtr screen, GLint prog, const(char)* format, ..
         char* label = void;
         va_list va = void;
 
-        va_start(va, format);
+        core.stdc.stdarg.va_start(va, format);
         if (vasprintf(&label, format, va) == -1) {
             ErrorF("glamor_link_glsl_prog() memory allocation failed\n");
-            va_end(va);
+            core.stdc.stdarg.va_end(va);
             return FALSE;
         }
         glObjectLabel(GL_PROGRAM, prog, -1, label);
         free(label);
-        va_end(va);
+        core.stdc.stdarg.va_end(va);
     }
 
     glLinkProgram(prog);

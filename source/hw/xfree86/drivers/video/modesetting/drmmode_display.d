@@ -2740,7 +2740,7 @@ private void drmmode_crtc_create_planes(xf86CrtcPtr crtc, int num)
     uint blob_id = void, async_blob_id = void;
     int best_plane = 0;
 
-    immutable drmmode_prop_enum_info_rec[4] plane_type_enums = [
+    __gsharedSHA1_Final drmmode_prop_enum_info_rec[4] plane_type_enums = [
         DRMMODE_PLANE_TYPE_PRIMARY: {
             name: "Primary",
         },
@@ -2751,10 +2751,10 @@ private void drmmode_crtc_create_planes(xf86CrtcPtr crtc, int num)
             name: "Cursor",
         },
     ];
-    static const(drmmode_prop_info_rec)[14] plane_props = [
+    __gshared drmmode_prop_info_rec[14] plane_props = [
         DRMMODE_PLANE_TYPE: {
             name: "type",
-            enum_values: cast(const)plane_type_enums.ptr,
+            enum_values: plane_type_enums.ptr,
             num_enum_values: DRMMODE_PLANE_TYPE__COUNT,
         },
         DRMMODE_PLANE_FB_ID: { name: "FB_ID", },

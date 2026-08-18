@@ -93,7 +93,7 @@ XID MitCheckCookie(ushort data_length, const(char)* data, ClientPtr client, cons
             return auth.id;
     }
     reason = cast(const(char*)*)"Invalid MIT-MAGIC-COOKIE-1 key".ptr;
-    return (XID) -1;
+    return cast(XID) -1;
 }
 
 int MitResetCookie()

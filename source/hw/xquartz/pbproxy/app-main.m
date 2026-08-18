@@ -52,9 +52,9 @@ ErrorF(const char * f, ...)
 {
     va_list args;
 
-    va_start(args, f);
+    core.stdc.stdarg.va_start(args, f);
     vfprintf(stderr, f, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 }
 
 /* TODO: Have this actually log to ASL */
@@ -66,9 +66,9 @@ xq_asl_log(int level, const char *subsystem, const char *file,
 #ifdef DEBUG
     va_list args;
 
-    va_start(args, fmt);
+    core.stdc.stdarg.va_start(args, fmt);
     vfprintf(stderr, fmt, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
 #endif
 }
 

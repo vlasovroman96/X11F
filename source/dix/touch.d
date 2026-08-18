@@ -52,6 +52,7 @@ import include.input;
 import dix.events;
 import os.utils;
 import dix.inpututils;
+import os.inputthread;
 
 
 enum TOUCH_HISTORY_SIZE = 100;

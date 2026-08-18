@@ -107,7 +107,7 @@ void ProcessWorkQueue();
 ClientPtr GetCurrentClient();
 // void InitClient(ClientPtr client, int i, void* ospriv);
 
-int FillFontPath(x_rpcbuf_t* rpcbuf);
+// int FillFontPath(x_rpcbuf_t* rpcbuf);
 
 /* lookup builtin color by name */
 Bool dixLookupBuiltinColor(char* name, uint len, ushort* pred, ushort* pgreen, ushort* pblue);
@@ -226,7 +226,7 @@ void CopyKeyClass(DeviceIntPtr device, DeviceIntPtr master);
 // int CoreKeyboardProc(DeviceIntPtr dev, int what);
 
 alias xQueryFontReplyPtr = _xQueryFontReply*;
-void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
+// void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
 
 // extern Bool whiteRoot;
 

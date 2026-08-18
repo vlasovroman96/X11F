@@ -36,21 +36,21 @@ public import externs.X11.fonts.font;
 
 extern int SetDefaultFont(const(char)*);
 
-extern int OpenFont(ClientPtr, XID, Mask, uint, const(char)*);
+// extern int OpenFont(ClientPtr, XID, Mask, uint, const(char)*);
 
-extern int CloseFont(void* pfont, XID fid);
+// extern int CloseFont(void* pfont, XID fid);
 
-extern int ListFonts(ClientPtr, ubyte*, uint, uint);
+// extern int ListFonts(ClientPtr, ubyte*, uint, uint);
 
-extern int PolyText(ClientPtr, DrawablePtr, GCPtr, ubyte*, ubyte*, int, int, int, XID);
+// extern int PolyText(ClientPtr, DrawablePtr, GCPtr, ubyte*, ubyte*, int, int, int, XID);
 
-extern int ImageText(ClientPtr, DrawablePtr, GCPtr, int, ubyte*, int, int, int, XID);
+// extern int ImageText(ClientPtr, DrawablePtr, GCPtr, int, ubyte*, int, int, int, XID);
 
-extern int SetFontPath(ClientPtr, int, ubyte*);
+// extern int SetFontPath(ClientPtr, int, ubyte*);
 
 extern int SetDefaultFontPath(const(char)*);
 
-extern int DeleteClientFontStuff(ClientPtr);
+// extern int DeleteClientFontStuff(ClientPtr);
 
 /* Quartz support on Mac OS X pulls in the QuickDraw
    framework whose InitFonts function conflicts here. */

@@ -557,9 +557,9 @@ struct PciChipsets {
     int PCIid;
 
 /* dummy place holders for drivers to build against old/new servers */
-enum RES_UNDEFINED = NULL;
-enum RES_EXCLUSIVE_VGA = NULL;
-enum RES_SHARED_VGA = NULL;
+// enum RES_UNDEFINED = NULL;
+// enum RES_EXCLUSIVE_VGA = NULL;
+// enum RES_SHARED_VGA = NULL;
     void* dummy;
 }
 

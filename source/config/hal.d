@@ -163,8 +163,8 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
     LibHalPropertySetIterator set_iter = void;
     char* psi_key = null, tmp_val = void;
 
-    alias dbuserrorFn = @nogc nothrow extern(C) void function(DBusError*);
-    assumeNoGC(cast(dbuserrorFn)&dbus_error_init)(&error);
+    // alias dbuserrorFn = @nogc nothrow extern(C) void function(DBusError*);
+    assumeNoGC(dbusErrorFunc)(&error);
 
     driver = get_prop_string(hal_ctx, udi, "input.X11_driver");
     if (!driver) {
@@ -458,7 +458,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
     free(xkb_opts.variant);
     free(xkb_opts.options);
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    assumeNoGC(dbusFreeFunc)(&error);
 
     return;
 }
@@ -469,13 +469,13 @@ private void disconnect_hook(void* data)
     config_hal_info* info = cast(config_hal_info*)data;
 
     if (info.hal_ctx) {
-        if (assumeNoGC(cast(HalConfigFn)&dbus_connection_get_is_connected)(info.system_bus)) {
-            assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+        if (resolve!"dbus_connection_get_is_connected"()(info.system_bus)) {
+            resolve!"dbus_error_init"()(&error);
             if (!assumeNoGC(&libhal_ctx_shutdown)(info.hal_ctx, &error))
                 LogMessage(X_WARNING,
                            "config/hal: disconnect_hook couldn't shut down context: %s (%s)\n",
                            error.name, error.message);
-            assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+            resolve!"dbus_error_free"()(&error);
         }
         assumeNoGC(&libhal_ctx_free)(info.hal_ctx);
     }
@@ -495,7 +495,7 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
 
     info.system_bus = connection;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
 
     info.hal_ctx = assumeNoGC(&libhal_ctx_new)();
     if (!info.hal_ctx) {
@@ -528,7 +528,7 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
     devices = assumeNoGC(&libhal_find_device_by_capability)(info.hal_ctx, "input",
                                                &num_devices, &error);
     /* FIXME: Get default devices if error is set. */
-    if (assumeNoGC(cast(DBusErrorBoolFn)&dbus_error_is_set)(&error)) {
+    if (resolve!"dbus_error_is_set"()(&error)) {
         LogMessage(X_ERROR, "config/hal: couldn't find input device: %s (%s)\n",
                    error.name ? error.name : "unknown error",
                    error.message ? error.message : "null");
@@ -538,23 +538,23 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
         device_added(info.hal_ctx, devices[i]);
     assumeNoGC(&libhal_free_string_array)(devices);
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 
     return 1;
 
  out_ctx:
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 
     if (!assumeNoGC(&libhal_ctx_shutdown)(info.hal_ctx, &error)) {
         LogMessage(X_WARNING,
                    "config/hal: couldn't shut down context: %s (%s)\n",
                    error.name ? error.name : "unknown error",
                    error.message ? error.message : "null");
-        assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+        resolve!"dbus_error_free"()(&error);
     }
 
  out_err:
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 
     if (info.hal_ctx) {
         assumeNoGC(&libhal_ctx_free)(info.hal_ctx);
@@ -583,7 +583,7 @@ private DBusHandlerResult ownerchanged_handler(DBusConnection* connection, DBusM
         DBusError error = void;
         char* name = void, old_owner = void, new_owner = void;
 
-        assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+        resolve!"dbus_error_init"()(&error);
         dbus_message_get_args_d(message, &error,
                               DBUS_TYPE_STRING, &name,
                               DBUS_TYPE_STRING, &old_owner,
@@ -609,7 +609,7 @@ private DBusHandlerResult ownerchanged_handler(DBusConnection* connection, DBusM
 
             ret = DBUS_HANDLER_RESULT_HANDLED;
         }
-        assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+        resolve!"dbus_error_free"()(&error);
     }
 
     return cast(DBusHandlerResult)ret;
@@ -628,7 +628,7 @@ private BOOL listen_for_startup(DBusConnection* connection, void* data)
         ~ "path='/org/freedesktop/DBus'," ~ "member='NameOwnerChanged'";
     int rc = 0;
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_init)(&error);
+    resolve!"dbus_error_init"()(&error);
     dbus_bus_add_match_d(connection, MATCH_RULE.ptr, &error);
     if (!dbus_error_is_set_d(&error)) {
         if (dbus_connection_register_object_path_d(connection,
@@ -644,7 +644,7 @@ private BOOL listen_for_startup(DBusConnection* connection, void* data)
         ErrorF("[config/hal] cannot detect a HAL startup.\n");
     }
 
-    assumeNoGC(cast(DBusErrorFn)&dbus_error_free)(&error);
+    resolve!"dbus_error_free"()(&error);
 
     return cast(BOOL)rc;
 }

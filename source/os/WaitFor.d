@@ -56,6 +56,7 @@ SOFTWARE.
  *****************************************************************/
 
 import build.dix_config;
+import os.inputthread;
 
 import core.stdc.errno;
 import core.stdc.stdio;

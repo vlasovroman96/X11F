@@ -54,6 +54,7 @@ import core.stdc.assert_;
 //import externs.X11.X;
 //import externs.X11.Xmd;
 //import externs.X11.Xproto;
+import dix.dixfonts;
 
 import dix.gc_priv;
 import os.osdep;

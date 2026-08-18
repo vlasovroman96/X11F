@@ -33,6 +33,7 @@ import core.sys.posix.sys.socket;
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.un;
 // //import stdbool;
+import os.inputthread;
 
 //import externs.X11.Xatom;
 

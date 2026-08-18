@@ -15,3 +15,4 @@ if (isFunctionPointer!T)
 
     return cast(NewFT*) t;
 }
+

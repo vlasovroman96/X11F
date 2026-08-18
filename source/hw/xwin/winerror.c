@@ -96,9 +96,9 @@ winMessageBoxF(const char *pszError, UINT uType, ...)
     va_list args;
     int size;
 
-    va_start(args, uType);
+    core.stdc.stdarg.va_start(args, uType);
     size = vasprintf(&pszErrorF, pszError, args);
-    va_end(args);
+    core.stdc.stdarg.va_end(args);
     if (size == -1) {
         pszErrorF = NULL;
         goto winMessageBoxF_Cleanup;

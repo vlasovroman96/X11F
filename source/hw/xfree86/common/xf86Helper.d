@@ -1015,9 +1015,9 @@ void xf86DrvMsgVerb(int scrnIndex, MessageType type, int verb, const(char)* form
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     xf86VDrvMsgVerb(scrnIndex, type, verb, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 /* Print driver messages, with verbose level of 1 (default) */
@@ -1025,9 +1025,9 @@ void xf86DrvMsg(int scrnIndex, MessageType type, const(char)* format, ...)
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     xf86VDrvMsgVerb(scrnIndex, type, 1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 private void xf86VIDrvMsgVerb(InputInfoPtr dev, MessageType type, int verb, const(char)* format, va_list args);
@@ -1055,9 +1055,9 @@ void xf86IDrvMsgVerb(InputInfoPtr dev, MessageType type, int verb, const(char)* 
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     xf86VIDrvMsgVerb(dev, type, verb, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 /* Print input driver messages, with verbose level of 1 (default) */
@@ -1065,9 +1065,9 @@ void xf86IDrvMsg(InputInfoPtr dev, MessageType type, const(char)* format, ...)
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     xf86VIDrvMsgVerb(dev, type, 1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 /* Just like ErrorF, but with the verbose level checked */
@@ -1075,10 +1075,10 @@ void xf86ErrorFVerb(int verb, const(char)* format, ...)
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     if (xf86Verbose >= verb || xf86LogVerbose >= verb)
         LogVMessageVerb(X_NONE, verb, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 /* Like xf86ErrorFVerb, but with an implied verbose level of 1 */
@@ -1086,10 +1086,10 @@ void xf86ErrorF(const(char)* format, ...)
 {
     va_list ap = void;
 
-    va_start(ap, format);
+    core.stdc.stdarg.va_start(ap, format);
     if (xf86Verbose >= 1 || xf86LogVerbose >= 1)
         LogVMessageVerb(X_NONE, 1, format, ap);
-    va_end(ap);
+    core.stdc.stdarg.va_end(ap);
 }
 
 /* Note temporarily modifies the passed in buffer! */

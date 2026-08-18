@@ -59,6 +59,7 @@ import externs.X11.Xatom;
 import externs.X11.extensions.XI;
 import externs.X11.extensions.XI2;
 // //import externs.X11.extensions.XIproto;
+import os.inputthread;
 
 import dix.devices_priv;
 import dix.dix_priv;
