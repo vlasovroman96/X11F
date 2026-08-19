@@ -157,6 +157,7 @@ import include.gcstruct;
 import os.log;
 import dix.cursor;
 import dix.gc;
+import registry;
 
 version (XSERVER_DTRACE) {
 

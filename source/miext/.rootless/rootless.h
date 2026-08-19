@@ -1,6 +1,3 @@
-module miext.rootless.rootless_;
-@nogc nothrow:
-extern(C): __gshared:
 /*
  * External interface to generic rootless mode
  */
@@ -30,55 +27,56 @@ extern(C): __gshared:
  * holders shall not be used in advertising or otherwise to promote the sale,
  * use or other dealings in this Software without prior written authorization.
  */
- 
-public import miext.rootless.rootlessConfig;
-import include.mi;
-public import include.gcstruct;
+#ifndef _ROOTLESS_H
+#define _ROOTLESS_H
+
+#include "rootlessConfig.h"
+#include "mi.h"
+#include "gcstruct.h"
 
 /*
    Each top-level rootless window has a one-to-one correspondence to a physical
    on-screen window. The physical window is referred to as a "frame".
  */
 
-alias RootlessFrameID = void*;
+typedef void *RootlessFrameID;
 
 /*
  * RootlessWindowRec
  *  This structure stores the per-frame data used by the rootless code.
  *  Each top-level X window has one RootlessWindowRec associated with it.
  */
-struct _RootlessWindowRec {
+typedef struct _RootlessWindowRec {
     // Position and size includes the window border
     // Position is in per-screen coordinates
     int x, y;
-    uint width, height;
-    uint borderWidth;
+    unsigned int width, height;
+    unsigned int borderWidth;
     int level;
 
     RootlessFrameID wid;        // implementation specific frame id
     WindowPtr win;              // underlying X window
 
     // Valid only when drawing (ie. is_drawing is set)
-    char* pixelData;
+    char *pixelData;
     int bytesPerRow;
 
     PixmapPtr pixmap;
 
-    uint is_drawing;/*:1 !!*/  // Currently drawing?
-    uint is_reorder_pending;/*:1 !!*/
-    uint is_offscreen;/*:1 !!*/
-    uint is_obscured;/*:1 !!*/
-}alias RootlessWindowRec = _RootlessWindowRec;
-alias RootlessWindowPtr = _RootlessWindowRec*;
+    unsigned int is_drawing:1;  // Currently drawing?
+    unsigned int is_reorder_pending:1;
+    unsigned int is_offscreen:1;
+    unsigned int is_obscured:1;
+} RootlessWindowRec, *RootlessWindowPtr;
 
 /* Offset for screen-local to global coordinate transforms */
-int rootlessGlobalOffsetX;
-int rootlessGlobalOffsetY;
+extern int rootlessGlobalOffsetX;
+extern int rootlessGlobalOffsetY;
 
 /* The minimum number of bytes or pixels for which to use the
    implementation's accelerated functions. */
-uint rootless_CopyBytes_threshold;
-uint rootless_CopyWindow_threshold;
+extern unsigned int rootless_CopyBytes_threshold;
+extern unsigned int rootless_CopyWindow_threshold;
 
 /* Gravity for window contents during resizing */
 enum rl_gravity_enum {
@@ -87,13 +85,7 @@ enum rl_gravity_enum {
     RL_GRAVITY_NORTH_EAST = 2,  /* anchor to top-right corner */
     RL_GRAVITY_SOUTH_EAST = 3,  /* anchor to bottom-right corner */
     RL_GRAVITY_SOUTH_WEST = 4,  /* anchor to bottom-left corner */
-}
-alias RL_GRAVITY_NONE = rl_gravity_enum.RL_GRAVITY_NONE;
-alias RL_GRAVITY_NORTH_WEST = rl_gravity_enum.RL_GRAVITY_NORTH_WEST;
-alias RL_GRAVITY_NORTH_EAST = rl_gravity_enum.RL_GRAVITY_NORTH_EAST;
-alias RL_GRAVITY_SOUTH_EAST = rl_gravity_enum.RL_GRAVITY_SOUTH_EAST;
-alias RL_GRAVITY_SOUTH_WEST = rl_gravity_enum.RL_GRAVITY_SOUTH_WEST;
-
+};
 
 /*------------------------------------------
    Rootless Implementation Functions
@@ -111,7 +103,9 @@ alias RL_GRAVITY_SOUTH_WEST = rl_gravity_enum.RL_GRAVITY_SOUTH_WEST;
  *  pNewShape   Shape for the frame (in frame-local coordinates). NULL for
  *              unshaped frames.
  */
-alias RootlessCreateFrameProc = Bool function(RootlessWindowPtr pFrame, ScreenPtr pScreen, int newX, int newY, RegionPtr pNewShape);
+typedef Bool (*RootlessCreateFrameProc)
+ (RootlessWindowPtr pFrame, ScreenPtr pScreen, int newX, int newY,
+  RegionPtr pNewShape);
 
 /*
  * Destroy a frame.
@@ -119,7 +113,8 @@ alias RootlessCreateFrameProc = Bool function(RootlessWindowPtr pFrame, ScreenPt
  *
  *  wid         Frame id
  */
-alias RootlessDestroyFrameProc = void function(RootlessFrameID wid);
+typedef void (*RootlessDestroyFrameProc)
+ (RootlessFrameID wid);
 
 /*
  * Move a frame on screen.
@@ -129,7 +124,8 @@ alias RootlessDestroyFrameProc = void function(RootlessFrameID wid);
  *  pScreen     Screen to move the new frame to
  *  newX, newY  New position of the frame
  */
-alias RootlessMoveFrameProc = void function(RootlessFrameID wid, ScreenPtr pScreen, int newX, int newY);
+typedef void (*RootlessMoveFrameProc)
+ (RootlessFrameID wid, ScreenPtr pScreen, int newX, int newY);
 
 /*
  * Resize and move a frame.
@@ -141,7 +137,10 @@ alias RootlessMoveFrameProc = void function(RootlessFrameID wid, ScreenPtr pScre
  *  newW, newH  New size of the frame
  *  gravity     Gravity for window contents (rl_gravity_enum).
  */
-alias RootlessResizeFrameProc = void function(RootlessFrameID wid, ScreenPtr pScreen, int newX, int newY, uint newW, uint newH, uint gravity);
+typedef void (*RootlessResizeFrameProc)
+ (RootlessFrameID wid, ScreenPtr pScreen,
+  int newX, int newY, unsigned int newW, unsigned int newH,
+  unsigned int gravity);
 
 /*
  * Change frame ordering (AKA stacking, layering).
@@ -152,7 +151,8 @@ alias RootlessResizeFrameProc = void function(RootlessFrameID wid, ScreenPtr pSc
  *  nextWid     Frame id of frame that is now above this one or NULL if this
  *              frame is at the top.
  */
-alias RootlessRestackFrameProc = void function(RootlessFrameID wid, RootlessFrameID nextWid);
+typedef void (*RootlessRestackFrameProc)
+ (RootlessFrameID wid, RootlessFrameID nextWid);
 
 /*
  * Change frame's shape.
@@ -162,14 +162,16 @@ alias RootlessRestackFrameProc = void function(RootlessFrameID wid, RootlessFram
  *  pNewShape   New shape for the frame (in frame-local coordinates)
  *              or NULL if now unshaped.
  */
-alias RootlessReshapeFrameProc = void function(RootlessFrameID wid, RegionPtr pNewShape);
+typedef void (*RootlessReshapeFrameProc)
+ (RootlessFrameID wid, RegionPtr pNewShape);
 
 /*
  * Unmap a frame.
  *
  *  wid         Frame id
  */
-alias RootlessUnmapFrameProc = void function(RootlessFrameID wid);
+typedef void (*RootlessUnmapFrameProc)
+ (RootlessFrameID wid);
 
 /*
  * Start drawing to a frame.
@@ -179,7 +181,8 @@ alias RootlessUnmapFrameProc = void function(RootlessFrameID wid);
  *  pixelData   Address of the backing buffer (returned)
  *  bytesPerRow Width in bytes of the backing buffer (returned)
  */
-alias RootlessStartDrawingProc = void function(RootlessFrameID wid, char** pixelData, int* bytesPerRow);
+typedef void (*RootlessStartDrawingProc)
+ (RootlessFrameID wid, char **pixelData, int *bytesPerRow);
 
 /*
  * Stop drawing to a frame.
@@ -189,7 +192,8 @@ alias RootlessStartDrawingProc = void function(RootlessFrameID wid, char** pixel
  *  wid         Frame id
  *  flush       Flush drawing updates for this frame to the screen.
  */
-alias RootlessStopDrawingProc = void function(RootlessFrameID wid, Bool flush);
+typedef void (*RootlessStopDrawingProc)
+ (RootlessFrameID wid, Bool flush);
 
 /*
  * Flush drawing updates to the screen.
@@ -199,7 +203,8 @@ alias RootlessStopDrawingProc = void function(RootlessFrameID wid, Bool flush);
  *  pDamage     Region containing all the changed pixels in frame-local
  *              coordinates. This is clipped to the window's clip.
  */
-alias RootlessUpdateRegionProc = void function(RootlessFrameID wid, RegionPtr pDamage);
+typedef void (*RootlessUpdateRegionProc)
+ (RootlessFrameID wid, RegionPtr pDamage);
 
 /*
  * Mark damaged rectangles as requiring redisplay to screen.
@@ -210,7 +215,9 @@ alias RootlessUpdateRegionProc = void function(RootlessFrameID wid, RegionPtr pD
  *  shift_x,    Vector to shift rectangles by
  *   shift_y
  */
-alias RootlessDamageRectsProc = void function(RootlessFrameID wid, int nrects, const(BoxRec)* rects, int shift_x, int shift_y);
+typedef void (*RootlessDamageRectsProc)
+ (RootlessFrameID wid, int nrects, const BoxRec * rects,
+  int shift_x, int shift_y);
 
 /*
  * Switch the window associated with a frame. (Optional)
@@ -221,7 +228,8 @@ alias RootlessDamageRectsProc = void function(RootlessFrameID wid, int nrects, c
  *  pFrame      Frame whose window has switched
  *  oldWin      Previous window wrapped by this frame
  */
-alias RootlessSwitchWindowProc = void function(RootlessWindowPtr pFrame, WindowPtr oldWin);
+typedef void (*RootlessSwitchWindowProc)
+ (RootlessWindowPtr pFrame, WindowPtr oldWin);
 
 /*
  * Check if window should be reordered. (Optional)
@@ -234,7 +242,8 @@ alias RootlessSwitchWindowProc = void function(RootlessWindowPtr pFrame, WindowP
  *
  *  pFrame      Frame to reorder
  */
-alias RootlessDoReorderWindowProc = Bool function(RootlessWindowPtr pFrame);
+typedef Bool (*RootlessDoReorderWindowProc)
+ (RootlessWindowPtr pFrame);
 
 /*
  * Copy bytes. (Optional)
@@ -247,7 +256,10 @@ alias RootlessDoReorderWindowProc = Bool function(RootlessWindowPtr pFrame);
  *  dst         Destination data
  *  dstRowBytes Width of destination in bytes
  */
-alias RootlessCopyBytesProc = void function(uint width, uint height, const(void)* src, uint srcRowBytes, void* dst, uint dstRowBytes);
+typedef void (*RootlessCopyBytesProc)
+ (unsigned int width, unsigned int height,
+  const void *src, unsigned int srcRowBytes,
+  void *dst, unsigned int dstRowBytes);
 
 /*
  * Copy area in frame to another part of frame. (Optional)
@@ -257,16 +269,19 @@ alias RootlessCopyBytesProc = void function(uint width, uint height, const(void)
  *  dstRects    Array of rectangles to copy
  *  dx, dy      Number of pixels away to copy area
  */
-alias RootlessCopyWindowProc = void function(RootlessFrameID wid, int dstNrects, const(BoxRec)* dstRects, int dx, int dy);
+typedef void (*RootlessCopyWindowProc)
+ (RootlessFrameID wid, int dstNrects, const BoxRec * dstRects, int dx, int dy);
 
-alias RootlessHideWindowProc = void function(RootlessFrameID wid);
+typedef void (*RootlessHideWindowProc)
+ (RootlessFrameID wid);
 
-alias RootlessUpdateColormapProc = void function(RootlessFrameID wid, ScreenPtr pScreen);
+typedef void (*RootlessUpdateColormapProc)
+ (RootlessFrameID wid, ScreenPtr pScreen);
 
 /*
  * Rootless implementation function list
  */
-struct _RootlessFrameProcs {
+typedef struct _RootlessFrameProcs {
     RootlessCreateFrameProc CreateFrame;
     RootlessDestroyFrameProc DestroyFrame;
 
@@ -290,8 +305,7 @@ struct _RootlessFrameProcs {
     /* Optional acceleration functions */
     RootlessCopyBytesProc CopyBytes;
     RootlessCopyWindowProc CopyWindow;
-}alias RootlessFrameProcsRec = _RootlessFrameProcs;
-alias RootlessFrameProcsPtr = _RootlessFrameProcs*;
+} RootlessFrameProcsRec, *RootlessFrameProcsPtr;
 
 /*
  * Initialize rootless mode on the given screen.
@@ -340,4 +354,4 @@ void RootlessRepositionWindows(ScreenPtr pScreen);
  * Bring all windows to the front of the native stack
  */
 void RootlessOrderAllWindows(Bool include_unhitable);
-                          /* _ROOTLESS_H */
+#endif                          /* _ROOTLESS_H */

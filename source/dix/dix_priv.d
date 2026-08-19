@@ -33,6 +33,8 @@ public import include.window;
 public import dix.resource;
 public import dix.dixutils;
 public import dix.globals;
+public import dix.events;
+
 import os.io;
 
 /* pad scanline to a longword */
@@ -250,7 +252,7 @@ Bool disableBackingStore;
 Bool enableBackingStore;
 
 /* in generated BuiltInAtoms.c */
-void MakePredeclaredAtoms();
+// void MakePredeclaredAtoms();
 
 void dixFreeScreen(ScreenPtr pScreen);
 
@@ -566,7 +568,7 @@ CallbackListPtr RootWindowFinalizeCallback;
  *
  * currently eg. fixing up cursors and their confinements (randr)
  */
-void ScreenRestructured(ScreenPtr pScreen);
+// void ScreenRestructured(ScreenPtr pScreen);
 
 /*
  * @brief destructor for X11_RESTYPE_OTHERCLIENT resources

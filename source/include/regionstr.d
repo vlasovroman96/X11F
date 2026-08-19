@@ -205,7 +205,7 @@ void InitRegions();
 
 // RegionPtr RegionCreate(BoxPtr, int);
 
-void RegionDestroy(RegionPtr);
+// void RegionDestroy(RegionPtr);
 
 RegionPtr RegionDuplicate(RegionPtr);
 
@@ -224,11 +224,11 @@ pragma(inline, true) Bool RegionUnion(RegionPtr newReg, RegionPtr reg1, RegionPt
     return assumeNoGC(&pixman_region_union)(newReg, reg1, reg2);
 }
 
-void RegionAppend(RegionPtr, RegionPtr);
+// void RegionAppend(RegionPtr, RegionPtr);
 
-void RegionValidate(RegionPtr, Bool*);
+// void RegionValidate(RegionPtr, Bool*);
 
-RegionPtr RegionFromRects(int, xRectanglePtr, int);
+// RegionPtr RegionFromRects(int, xRectanglePtr, int);
 
 /*-
  *-----------------------------------------------------------------------

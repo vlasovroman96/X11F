@@ -62,6 +62,8 @@ public import include.globals;
 public import include.picturestr;
 public import include.extnsionst;
 public import include.privates;
+public import composite.compext;
+
 // public import mi.mi;
 public import include.damage;
 public import xfixes.xfixes;
@@ -288,6 +290,6 @@ void compCheckTree(ScreenPtr pScreen);
 // int compConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw, WindowPtr pSib);
 
 void PanoramiXCompositeInit();
-void PanoramiXCompositeReset();
+// void PanoramiXCompositeReset();
 
                           /* _COMPINT_H_ */

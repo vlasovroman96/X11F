@@ -26,43 +26,51 @@ extern(C): __gshared:
 import build.dix_config;
 import include.wfbrename;
 import include.fb;
+public import include.miline;
+
 
 mixin template Iteration8() {
-    alias BRESSOLID   = fbBresSolid8;
-    alias BRESDASH    = fbBresDash8;
-    alias DOTS        = fbDots8;
-    alias ARC         = fbArc8;
-    alias GLYPH       = fbGlyph8;
-    alias POLYLINE    = fbPolyline8;
-    alias POLYSEGMENT = fbPolySegment8;
-    alias BITS  = BYTE;
+	import fb.fbbits_h;
+    alias fbBresSolid8 = BRESSOLID!(UNIT, BITS);
+    alias fbBresDash8 = BRESDASH!(UNIT, BITS);
+    alias fbDots8 = DOTS!(UNIT, BITS);
+    alias fbArc8 = ARC!(UNIT, BITS);
+    alias fbGlyph8 = GLYPH!(UNIT, BITS);
+    alias fbPolyline8 = POLYLINE!(UNIT, BITS);
+    alias fbPolySegment8 = POLYSEGMENT!(UNIT, BITS);
+    alias BITS = BYTE;
+    alias UNIT = BITS;
+
     alias BITS2 = CARD16;
     alias BITS4 = CARD32;
-	import fb.fbbits_h;
 }
 
 mixin template Iteration16() {
 	import fb.fbbits_h;
-    alias BRESSOLID   = fbBresSolid16;
-    alias BRESDASH    = fbBresDash16;
-    alias DOTS        = fbDots16;
-    alias ARC         = fbArc16;
-    alias GLYPH       = fbGlyph16;
-    alias POLYLINE    = fbPolyline16;
-    alias POLYSEGMENT = fbPolySegment16;
-    alias BITS  = CARD16;
+    alias fbBresSolid16 = BRESSOLID!(UNIT, BITS);
+    alias fbBresDash16 = BRESDASH!(UNIT, BITS);
+    alias fbDots16 = DOTS!(UNIT, BITS);
+    alias fbArc16 = ARC!(UNIT, BITS);
+    alias fbGlyph16 = GLYPH!(UNIT, BITS);
+    alias fbPolyline16 = POLYLINE!(UNIT, BITS);
+    alias fbPolySegment16 = POLYSEGMENT!(UNIT, BITS);
+    alias BITS = CARD16;
     alias BITS2 = CARD32;
+alias UNIT = BITS;
+
 }
 
 mixin template Iteration32() {
-    alias BRESSOLID   = fbBresSolid32;
-    alias BRESDASH    = fbBresDash32;
-    alias DOTS        = fbDots32;
-    alias ARC         = fbArc32;
-    alias GLYPH       = fbGlyph32;
-    alias POLYLINE    = fbPolyline32;
-    alias POLYSEGMENT = fbPolySegment32;
-    alias BITS  = CARD32;
+    alias fbBresSolid32 = BRESSOLID!(UNIT, BITS);
+    alias fbBresDash32 = BRESDASH!(UNIT, BITS);
+    alias fbDots32 = DOTS!(UNIT, BITS);
+    alias fbArc32 = ARC!(UNIT, BITS);
+    alias fbGlyph32 = GLYPH!(UNIT, BITS);
+    alias fbPolyline32 = POLYLINE!(UNIT, BITS);
+    alias fbPolySegment32 = POLYSEGMENT!(UNIT, BITS);
+    alias BITS = CARD32 ;
+alias UNIT = BITS;
+
 
 	import fb.fbbits_h;
 }

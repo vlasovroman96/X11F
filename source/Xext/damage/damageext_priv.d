@@ -13,6 +13,7 @@ extern(C): __gshared:
 
 public import include.dix;
 public import include.dixstruct;
+public import damageext.c;
 
 
 /*
@@ -32,12 +33,12 @@ void DamageExtSetCritical(ClientPtr pClient, bool critical);
  * Initialize PanoramiX specific data structures for the damage extension.
  * Only called by PanoramiX extension, when it's initialized and ready run.
  */
-void PanoramiXDamageInit();
+// void PanoramiXDamageInit();
 
 /*
  * Reset/De-Init PanoramiX specific data strucures for the damage extension.
  * Only called by PanoramiX extension, right before it's shutting down.
  */
-void PanoramiXDamageReset();
+// void PanoramiXDamageReset();
 
  /* __XLIBRE_XEXT_DAMAGEEXT_PRIV_H */

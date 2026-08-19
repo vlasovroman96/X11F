@@ -63,6 +63,8 @@ import dix.dixutils;
 import dix.extension;
 import dix.events;
 import os.WaitFor;
+import registry;
+
 
 enum XSecurityAllEventMasks = 1<<0;
 

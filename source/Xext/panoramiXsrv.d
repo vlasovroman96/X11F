@@ -21,11 +21,11 @@ RegionRec PanoramiXScreenRegion;
 // exported for nvidia
 // export VisualID PanoramiXTranslateVisualID(int screen, VisualID orig);
 
-void PanoramiXConsolidate();
-Bool PanoramiXCreateConnectionBlock();
-PanoramiXRes* PanoramiXFindIDByScrnum(RESTYPE, XID, int);
-Bool XineramaRegisterConnectionBlockCallback(void function() func);
-int XineramaDeleteResource(void*, XID);
+// void PanoramiXConsolidate();
+// Bool PanoramiXCreateConnectionBlock();
+// PanoramiXRes* PanoramiXFindIDByScrnum(RESTYPE, XID, int);
+// Bool XineramaRegisterConnectionBlockCallback(void function() func);
+// int XineramaDeleteResource(void*, XID);
 
 /* only exported for Nvidia legacy. This really shouldn't be used by drivers */
 // RESTYPE XRC_DRAWABLE;

@@ -72,6 +72,8 @@ import xfixes.xfixes;
 import dix.dixutils;
 import Xext.panoramiXprocs;
 import dix.screen_hooks;
+import render.render;
+
 
 
 struct PanoramiXInfo {

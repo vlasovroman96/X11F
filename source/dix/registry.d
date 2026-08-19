@@ -2,7 +2,7 @@ module registry;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
+template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
 }
 /************************************************************
@@ -31,13 +31,18 @@ import core.stdc.string;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 
+import registry;
+
 import dix.registry_priv;
 
 import include.resource;
+import dix.resource;
+import os.log;
+import dix.extension;
 
 enum BASE_SIZE = 16;
 
-version (X_REGISTRY_REQUEST) {
+// version (X_REGISTRY_REQUEST) {
 enum CORE = "X11";
 enum FILENAME = SERVER_MISC_CONFIG_PATH ~ "/protocol.txt";
 
@@ -46,22 +51,22 @@ enum PROT_REQUEST = 'R';
 enum PROT_EVENT = 'V';
 enum PROT_ERROR = 'E';
 
-private FILE* fh;
+FILE* fh;
 
-private char*** requests; private char** events, errors;
-private uint nmajor; private uint* nminor; private uint nevent, nerror;
-}
+char*** requests; char** events, errors;
+uint nmajor; uint* nminor; uint nevent, nerror;
+// }
 
-version (X_REGISTRY_RESOURCE) {
-private const(char)** resources;
-private uint nresource;
-}
+// version (X_REGISTRY_RESOURCE) {
+const(char)** resources;
+uint nresource;
+// }
 
-static if (HasVersion!"X_REGISTRY_RESOURCE" || HasVersion!"X_REGISTRY_REQUEST") {
+// static if (HasVersion!"X_REGISTRY_RESOURCE" || HasVersion!"X_REGISTRY_REQUEST") {
 /*
  * File parsing routines
  */
-private int double_size(void* p, uint n, uint size)
+int double_size(void* p, uint n, uint size)
 {
     char** ptr = cast(char**) p;
     uint s = void, f = void;
@@ -84,13 +89,13 @@ private int double_size(void* p, uint n, uint size)
     memset(*ptr + s, 0, f - s);
     return TRUE;
 }
-}
+// }MakePredeclaredAtoms
 
-version (X_REGISTRY_REQUEST) {
+// version (X_REGISTRY_REQUEST) {
 /*
  * Request/event/error registry functions
  */
-private void RegisterRequestName(uint major, uint minor, char* name)
+void RegisterRequestName(uint major, uint minor, char* name)
 {
     while (major >= nmajor) {
         if (!double_size(&requests, nmajor, (char**).sizeof))
@@ -109,7 +114,7 @@ private void RegisterRequestName(uint major, uint minor, char* name)
     requests[major][minor] = name;
 }
 
-private void RegisterEventName(uint event, char* name)
+void RegisterEventName(uint event, char* name)
 {
     while (event >= nevent) {
         if (!double_size(&events, nevent, (char*).sizeof))
@@ -121,7 +126,7 @@ private void RegisterEventName(uint event, char* name)
     events[event] = name;
 }
 
-private void RegisterErrorName(uint error, char* name)
+void RegisterErrorName(uint error, char* name)
 {
     while (error >= nerror) {
         if (!double_size(&errors, nerror, (char*).sizeof))
@@ -183,7 +188,7 @@ void RegisterExtensionNames(ExtensionEntry* extEntry)
             goto skip;
 
         /* Get the opcode for the request, event, or error */
-        offset = strtol(buf.ptr + 1, &ptr, 10);
+        offset = cast(uint)strtol(buf.ptr + 1, &ptr, 10);
         if (offset == 0 && ptr == buf.ptr + 1)
             goto invalid;
 
@@ -256,9 +261,9 @@ const(char)* LookupErrorName(int error)
 
     return errors[error] ? errors[error] : XREGISTRY_UNKNOWN;
 }
-} /* X_REGISTRY_REQUEST */
+// } /* X_REGISTRY_REQUEST */
 
-pragma(inline, true) private void __accbit(Mask val, Mask mask, const(char)* name, char* buf, int sz) {
+pragma(inline, true) void __accbit(Mask val, Mask mask, const(char)* name, char* buf, int sz) {
     if ((val & mask) == mask) {
         if (buf[0])
             strncat(buf, ",", sz);
@@ -300,7 +305,7 @@ void LookupDixAccessName(Mask acc, char* buf, int sz) {
     buf[sz-1] = 0;
 }
 
-version (X_REGISTRY_RESOURCE) {
+// version (X_REGISTRY_RESOURCE) {
 /*
  * Resource registry functions
  */
@@ -326,7 +331,7 @@ const(char)* LookupResourceName(RESTYPE resource)
 
     return resources[resource] ? resources[resource] : XREGISTRY_UNKNOWN;
 }
-} /* X_REGISTRY_RESOURCE */
+// } /* X_REGISTRY_RESOURCE */
 
 void dixFreeRegistry()
 {

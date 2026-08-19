@@ -49,6 +49,7 @@ import dix.selection_priv;
 import dix.server_priv;
 import os.client_priv;
 
+import registry;
 import include.inputstr;
 import include.scrnintstr;
 import include.windowstr;

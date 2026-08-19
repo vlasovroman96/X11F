@@ -10,7 +10,7 @@
 	},
 	"targetType": "executable",
 	"dflags": [
-   "-verrors=30",
+   	"-verrors=30",
     "-P-I/usr/include/dbus-1.0",
     "-P-I/usr/include/pixman-1",
     "-P-I/usr/lib/dbus-1.0/include",
@@ -44,5 +44,16 @@
 		"-lXfont2",
 		"-lXau",
 		"-lxshmfence",
+		"-lpciaccess",
+		"-lseat",
+		"-lxcvt",
+		"-lepoxy",
+		"-lxcb",
+		"-lxcb-ewmh",
+		"-lselinux",
+		"-laudit",
+		"-ludev",
+		"-lhal",
+		"-lGL",
     ]
 }

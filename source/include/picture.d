@@ -163,7 +163,7 @@ int PictureCmapPolicy;
 
 int PictureParseCmapPolicy(const(char)* name);
 
-int RenderErrBase;
+// int RenderErrBase;
 
 /* Fixed point updates from Carl Worth, USC, Information Sciences Institute */
 

@@ -33,6 +33,7 @@ import stdc = core.stdc.stdlib, core.stdc.errno;
 import cerrno = core.stdc.errno;
 import externs.attrs;
 import dix.resource;
+import registry;
 
 import os.log;
 

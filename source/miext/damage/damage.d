@@ -50,7 +50,7 @@ import render.mipict;
 import externs.attrs;
 import Xext.xf86bigfont;
 import dix.screen_hooks;
-import miext.rootless.rootlessCommon;
+// import miext.rootless.rootlessCommon;
 
 
 enum string wrap(string priv, string real_, string mem, string func) = `{
@@ -424,13 +424,13 @@ private void damageDestroyClip(GCPtr pGC)
     mixin(DAMAGE_GC_FUNC_EPILOGUE!(`pGC`));
 }
 
-// enum string TRIM_BOX(string box, string pGC) = `if (` ~ pGC ~ `.pCompositeClip) { 
-//     BoxPtr extents = &` ~ pGC ~ `.pCompositeClip.extents;
-//     if(` ~ box ~ `.x1 < extents.x1) ` ~ box ~ `.x1 = extents.x1; 
-//     if(` ~ box ~ `.x2 > extents.x2) ` ~ box ~ `.x2 = extents.x2; 
-//     if(` ~ box ~ `.y1 < extents.y1) ` ~ box ~ `.y1 = extents.y1; 
-//     if(` ~ box ~ `.y2 > extents.y2) ` ~ box ~ `.y2 = extents.y2; 
-//     }`;
+enum string TRIM_BOX(string box, string pGC) = `if (` ~ pGC ~ `.pCompositeClip) { 
+    BoxPtr extents = &` ~ pGC ~ `.pCompositeClip.extents;
+    if(` ~ box ~ `.x1 < extents.x1) ` ~ box ~ `.x1 = extents.x1; 
+    if(` ~ box ~ `.x2 > extents.x2) ` ~ box ~ `.x2 = extents.x2; 
+    if(` ~ box ~ `.y1 < extents.y1) ` ~ box ~ `.y1 = extents.y1; 
+    if(` ~ box ~ `.y2 > extents.y2) ` ~ box ~ `.y2 = extents.y2; 
+    }`;
 
 enum string TRANSLATE_BOX(string box, string pDrawable) = `{ 
     ` ~ box ~ `.x1 += ` ~ pDrawable ~ `.x; 
@@ -439,13 +439,13 @@ enum string TRANSLATE_BOX(string box, string pDrawable) = `{
     ` ~ box ~ `.y2 += ` ~ pDrawable ~ `.y; 
     }`;
 
-// enum string TRIM_AND_TRANSLATE_BOX(string box, string pDrawable, string pGC) = `{ 
-//     ` ~ TRANSLATE_BOX!(box, pDrawable) ~ `; 
-//     ` ~ TRIM_BOX!(box, pGC) ~ `; 
-//     }`;
+enum string TRIM_AND_TRANSLATE_BOX(string box, string pDrawable, string pGC) = `{ 
+    ` ~ TRANSLATE_BOX!(box, pDrawable) ~ `; 
+    ` ~ TRIM_BOX!(box, pGC) ~ `; 
+    }`;
 
-// enum string BOX_NOT_EMPTY(string box) = `
-//     (((` ~ box ~ `.x2 - ` ~ box ~ `.x1) > 0) && ((` ~ box ~ `.y2 - ` ~ box ~ `.y1) > 0))`;
+enum string BOX_NOT_EMPTY(string box) = `
+    (((` ~ box ~ `.x2 - ` ~ box ~ `.x1) > 0) && ((` ~ box ~ `.y2 - ` ~ box ~ `.y1) > 0))`;
 
 enum string checkGCDamage(string d,string g) = `(` ~ getDrawableDamage!(d) ~ ` && 
 				 (!` ~ g ~ `.pCompositeClip ||

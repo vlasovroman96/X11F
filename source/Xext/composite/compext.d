@@ -65,9 +65,9 @@ import render.picture;
 private CARD8 CompositeReqCode;
 private DevPrivateKeyRec CompositeClientPrivateKeyRec;
 
-version (XINERAMA) {
+// version (XINERAMA) {
 private int compositeUseXinerama = 0;
-}
+// }
 
 enum CompositeClientPrivateKey = (&CompositeClientPrivateKeyRec);
 RESTYPE CompositeClientWindowType;
@@ -773,7 +773,7 @@ version (XINERAMA) {
 } /* XINERAMA */
 }
 
-version (XINERAMA) {
+// version (XINERAMA) {
 void PanoramiXCompositeInit()
 {
     compositeUseXinerama = 1;
@@ -783,4 +783,4 @@ void PanoramiXCompositeReset()
 {
     compositeUseXinerama = 0;
 }
-} /* XINERAMA */
+// } /* XINERAMA */

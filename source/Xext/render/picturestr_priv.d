@@ -12,6 +12,7 @@ public import include.scrnintstr;
 public import include.glyphstr;
 public import include.resource;
 public import include.privates;
+public import render.render;
 
 enum PICT_GRADIENT_STOPTABLE_SIZE = 1024;
 
@@ -39,8 +40,8 @@ Bool AnimCurInit(ScreenPtr pScreen);
 int AnimCursorCreate(CursorPtr* cursors, CARD32* deltas, int ncursor, CursorPtr* ppCursor, ClientPtr client, XID cid);
 
 // version (XINERAMA) {
-void PanoramiXRenderInit();
-void PanoramiXRenderReset();
+// void PanoramiXRenderInit();
+// void PanoramiXRenderReset();
 // } /* XINERAMA */
 
  /* _XSERVER_PICTURESTR_PRIV_H_ */

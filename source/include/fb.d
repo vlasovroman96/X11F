@@ -106,7 +106,7 @@ static if (BITMAP_BIT_ORDER == LSBFirst) {
 enum string FbScrLeft(string x,string n) = `((` ~ x ~ `) >> (` ~ n ~ `))`;
 enum string FbScrRight(string x,string n) = `((` ~ x ~ `) << (` ~ n ~ `))`;
 enum string FbLeftStipBits(string x,string n) = `((` ~ x ~ `) & (((cast(FbStip) 1) << (` ~ n ~ `)) - 1))`;
-enum string FbStipMoveLsb(string x,string s,string n) = `(FbStipRight (` ~ x ~ `,(` ~ s ~ `)-(` ~ n ~ `)))`;
+enum string FbStipMoveLsb(string x,string s,string n) = `(`~FbStipRight !(x,`(` ~ s ~ `)-(` ~ n ~ `)`)~`)`;
 enum FbPatternOffsetBits =	0;
 } else {
 enum string FbScrLeft(string x,string n) = `((` ~ x ~ `) << (` ~ n ~ `))`;
@@ -364,46 +364,46 @@ void fbPolyArc(DrawablePtr pDrawable, GCPtr pGC, int narcs, xArc* parcs);
  * fb.fbbits;.c
  */
 
-void fbBresSolid8(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
+// void fbBresSolid8(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
 
-void fbBresDash8(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
+// void fbBresDash8(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
 
-void fbDots8(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
+// void fbDots8(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
 
-void fbArc8(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
+// void fbArc8(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
 
-extern(C) void fbGlyph8(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
+// extern(C) void fbGlyph8(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
 
-void fbPolyline8(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
+// void fbPolyline8(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
 
-void fbPolySegment8(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg);
+// void fbPolySegment8(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg);
 
-void fbBresSolid16(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
+// void fbBresSolid16(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
 
-void fbBresDash16(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
+// void fbBresDash16(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
 
-void fbDots16(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
+// void fbDots16(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
 
-void fbArc16(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
+// void fbArc16(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
 
-void fbGlyph16(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
+// void fbGlyph16(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
 
-void fbPolyline16(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
+// void fbPolyline16(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
 
-void fbPolySegment16(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg);
+// void fbPolySegment16(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg);
 
-void fbBresSolid32(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
+// void fbBresSolid32(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
 
-void fbBresDash32(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
+// void fbBresDash32(DrawablePtr pDrawable, GCPtr pGC, int dashOffset, int signdx, int signdy, int axis, int x, int y, int e, int e1, int e3, int len);
 
-void fbDots32(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
+// void fbDots32(FbBits* dst, FbStride dstStride, int dstBpp, BoxPtr pBox, xPoint* pts, int npt, int xorg, int yorg, int xoff, int yoff, FbBits and, FbBits xor);
 
-void fbArc32(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
+// void fbArc32(FbBits* dst, FbStride dstStride, int dstBpp, xArc* arc, int dx, int dy, FbBits and, FbBits xor);
 
-void fbGlyph32(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
-void fbPolyline32(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
+// void fbGlyph32(FbBits* dstLine, FbStride dstStride, int dstBpp, FbStip* stipple, FbBits fg, int height, int shift);
+// void fbPolyline32(DrawablePtr pDrawable, GCPtr pGC, int mode, int npt, DDXPointPtr ptsOrig);
 
-void fbPolySegment32(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg);
+// void fbPolySegment32(DrawablePtr pDrawable, GCPtr pGC, int nseg, xSegment* pseg);
 
 /*
  * fbblt.c

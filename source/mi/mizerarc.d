@@ -417,7 +417,7 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
             mixin(Pixelate!(`info.xorgo - x`, `info.yorg + y`));
             mixin(Pixelate!(`info.xorgo - x`, `info.yorgo - y`));
             mixin(Pixelate!(`info.xorg + x`, `info.yorgo - y`));
-            mixin(MIARCSTEP!("{}", "{}"));
+            mixin(MIARCSTEP!("", ""));
         }
     }
     else {
@@ -435,7 +435,7 @@ private DDXPointPtr miZeroArcPts(xArc* arc, DDXPointPtr pts)
                 mask = info.end.mask;
                 info.end = info.altend;
             }
-            mixin(MIARCSTEP!("{}", "{}"));
+            mixin(MIARCSTEP!("", ""));
         }
     }
     if ((x == info.start.x) || (y == info.start.y))

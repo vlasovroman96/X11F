@@ -1,6 +1,3 @@
-module miext.rootless.rootlessConfig;
-@nogc nothrow:
-extern(C): __gshared:
 /*
  * Platform specific rootless configuration
  */
@@ -29,17 +26,17 @@ extern(C): __gshared:
  * holders shall not be used in advertising or otherwise to promote the sale,
  * use or other dealings in this Software without prior written authorization.
  */
+#ifndef _ROOTLESSCONFIG_H
+#define _ROOTLESSCONFIG_H
 
- import include.misc;
- 
 /*# define ROOTLESSDEBUG*/
 
-enum ROOTLESS_PROTECT_ALPHA = TRUE;
-enum ROOTLESS_REDISPLAY_DELAY = 10;
+#define ROOTLESS_PROTECT_ALPHA TRUE
+#define ROOTLESS_REDISPLAY_DELAY 10
 
 /* Bit mask for alpha channel with a particular number of bits per
    pixel. Note that we only care for 32bpp data. Mac OS X uses planar
    alpha for 16bpp. */
-enum string RootlessAlphaMask(string bpp) = `((` ~ bpp ~ `) == 32 ? 0xFF000000 : 0)`;
+#define RootlessAlphaMask(bpp) ((bpp) == 32 ? 0xFF000000 : 0)
 
-                          /* _ROOTLESSCONFIG_H */
+#endif                          /* _ROOTLESSCONFIG_H */

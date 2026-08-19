@@ -1,6 +1,3 @@
-module rootlessValTree.c;
-@nogc nothrow:
-extern(C): __gshared:
 /*
  * Calculate window clip lists for rootless mode
  *
@@ -92,27 +89,25 @@ Equipment Corporation.
   *             Bob Scheifler -- avoid miComputeClips for unmapped windows,
   *                              valdata changes
   */
-import build.dix_config;
+#include <dix-config.h>
 
-import core.stdc.stddef;             /* For NULL */
-import externs.X11.X;
+#include <stddef.h>             /* For NULL */
+#include <X11/X.h>
 
-import dix.window_priv;
-import mi.mi_priv;
+#include "dix/window_priv.h"
+#include "mi/mi_priv.h"
 
-import    include.scrnintstr;
-import include.validate;
-import    include.windowstr;
-import    include.regionstr;
-import    dix.globals;
-import mi.mivaltree;
-import os.log;
+#include    "scrnintstr.h"
+#include    "validate.h"
+#include    "windowstr.h"
+#include    "regionstr.h"
+#include    "globals.h"
 
+int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind);
 
-
-// enum string HasParentRelativeBorder(string w) = `(!(` ~ w ~ `).borderIsPixel && 
-// 				    HasBorder(` ~ w ~ `) && 
-// 				    (` ~ w ~ `).backgroundState == ParentRelative)`;
+#define HasParentRelativeBorder(w) (!(w)->borderIsPixel && \
+				    HasBorder((w)) && \
+				    (w)->backgroundState == ParentRelative)
 
 /*
  *-----------------------------------------------------------------------
@@ -130,16 +125,18 @@ import os.log;
  *
  *-----------------------------------------------------------------------
  */
-private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr universe, VTKind kind, RegionPtr exposed)
+static void
+RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen,
+                     RegionPtr universe, VTKind kind, RegionPtr exposed)
 {
-    int dx = void, dy = void;
-    RegionRec childUniverse = void;
-    WindowPtr pChild = void;
-    int oldVis = void, newVis = void;
-    BoxRec borderSize = void;
-    RegionRec childUnion = void;
-    Bool overlap = void;
-    RegionPtr borderVisible = void;
+    int dx, dy;
+    RegionRec childUniverse;
+    register WindowPtr pChild;
+    int oldVis, newVis;
+    BoxRec borderSize;
+    RegionRec childUnion;
+    Bool overlap;
+    RegionPtr borderVisible;
 
     /*
      * Figure out the new visibility of this window.
@@ -149,11 +146,20 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
      * completely). If the window is completely obscured, none of the
      * universe will cover the rectangle.
      */
-    borderSize.x1 = cast(short)(pParent.drawable.x - mixin(wBorderWidth!("pParent")));
-        dy = cast(short)32767;
-    borderSize.y2 = cast(short)dy;
+    borderSize.x1 = pParent->drawable.x - wBorderWidth(pParent);
+    borderSize.y1 = pParent->drawable.y - wBorderWidth(pParent);
+    dx = (int) pParent->drawable.x + (int) pParent->drawable.width +
+        wBorderWidth(pParent);
+    if (dx > 32767)
+        dx = 32767;
+    borderSize.x2 = dx;
+    dy = (int) pParent->drawable.y + (int) pParent->drawable.height +
+        wBorderWidth(pParent);
+    if (dy > 32767)
+        dy = 32767;
+    borderSize.y2 = dy;
 
-    oldVis = pParent.visibility;
+    oldVis = pParent->visibility;
     switch (RegionContainsRect(universe, &borderSize)) {
     case rgnIN:
         newVis = VisibilityUnobscured;
@@ -161,19 +167,19 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
     case rgnPART:
         newVis = VisibilityPartiallyObscured;
         {
-            RegionPtr pBounding = void;
+            RegionPtr pBounding;
 
-            if ((pBounding = mixin(wBoundingShape!("pParent"))) !is null) {
+            if ((pBounding = wBoundingShape(pParent))) {
                 switch (miShapedWindowIn(universe, pBounding, &borderSize,
-                                         pParent.drawable.x,
-                                         pParent.drawable.y)) {
+                                         pParent->drawable.x,
+                                         pParent->drawable.y)) {
                 case rgnIN:
                     newVis = VisibilityUnobscured;
                     break;
                 case rgnOUT:
                     newVis = VisibilityFullyObscured;
                     break;
-                default: break;}
+                }
             }
         }
         break;
@@ -182,14 +188,14 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
         break;
     }
 
-    pParent.visibility = newVis;
+    pParent->visibility = newVis;
     if (oldVis != newVis &&
-        ((pParent.
-          eventMask | mixin(wOtherEventMasks!("pParent"))) & VisibilityChangeMask))
+        ((pParent->
+          eventMask | wOtherEventMasks(pParent)) & VisibilityChangeMask))
         SendVisibilityNotify(pParent);
 
-    dx = pParent.drawable.x - pParent.valdata.before.oldAbsCorner.x;
-    dy = pParent.drawable.y - pParent.valdata.before.oldAbsCorner.y;
+    dx = pParent->drawable.x - pParent->valdata->before.oldAbsCorner.x;
+    dy = pParent->drawable.y - pParent->valdata->before.oldAbsCorner.y;
 
     /*
      * avoid computations when dealing with simple operations
@@ -206,39 +212,38 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
              (oldVis == VisibilityUnobscured))) {
             pChild = pParent;
             while (1) {
-                if (pChild.viewable) {
-                    if (pChild.visibility != VisibilityFullyObscured) {
-                        RegionTranslate(&pChild.borderClip, dx, dy);
-                        RegionTranslate(&pChild.clipList, dx, dy);
-                        pChild.drawable.serialNumber = NEXT_SERIAL_NUMBER;
-                        if (pScreen.ClipNotify)
-                            (*pScreen.ClipNotify) (pChild, dx, dy);
+                if (pChild->viewable) {
+                    if (pChild->visibility != VisibilityFullyObscured) {
+                        RegionTranslate(&pChild->borderClip, dx, dy);
+                        RegionTranslate(&pChild->clipList, dx, dy);
+                        pChild->drawable.serialNumber = NEXT_SERIAL_NUMBER;
+                        if (pScreen->ClipNotify)
+                            (*pScreen->ClipNotify) (pChild, dx, dy);
 
                     }
-                    if (pChild.valdata) {
-                        RegionNull(&pChild.valdata.after.borderExposed);
-                        if (mixin(HasParentRelativeBorder!(`pChild`))) {
-                            RegionSubtract(&pChild.valdata.after.
-                                           borderExposed, &pChild.borderClip,
-                                           &pChild.winSize);
+                    if (pChild->valdata) {
+                        RegionNull(&pChild->valdata->after.borderExposed);
+                        if (HasParentRelativeBorder(pChild)) {
+                            RegionSubtract(&pChild->valdata->after.
+                                           borderExposed, &pChild->borderClip,
+                                           &pChild->winSize);
                         }
-                        RegionNull(&pChild.valdata.after.exposed);
+                        RegionNull(&pChild->valdata->after.exposed);
                     }
-                    if (pChild.firstChild) {
-                        pChild = pChild.firstChild;
+                    if (pChild->firstChild) {
+                        pChild = pChild->firstChild;
                         continue;
                     }
                 }
-                while (!pChild.nextSib && (pChild != pParent))
-                    pChild = pChild.parent;
+                while (!pChild->nextSib && (pChild != pParent))
+                    pChild = pChild->parent;
                 if (pChild == pParent)
                     break;
-                pChild = pChild.nextSib;
+                pChild = pChild->nextSib;
             }
             return;
         }
         /* fall through */
-        goto default;
     default:
         /*
          * To calculate exposures correctly, we have to translate the old
@@ -250,19 +255,19 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
              * We translate the old clipList because that will be exposed or copied
              * if gravity is right.
              */
-            RegionTranslate(&pParent.borderClip, dx, dy);
-            RegionTranslate(&pParent.clipList, dx, dy);
+            RegionTranslate(&pParent->borderClip, dx, dy);
+            RegionTranslate(&pParent->clipList, dx, dy);
         }
         break;
     case VTBroken:
-        RegionEmpty(&pParent.borderClip);
-        RegionEmpty(&pParent.clipList);
+        RegionEmpty(&pParent->borderClip);
+        RegionEmpty(&pParent->clipList);
         break;
     }
 
-    borderVisible = pParent.valdata.before.borderVisible;
-    RegionNull(&pParent.valdata.after.borderExposed);
-    RegionNull(&pParent.valdata.after.exposed);
+    borderVisible = pParent->valdata->before.borderVisible;
+    RegionNull(&pParent->valdata->after.borderExposed);
+    RegionNull(&pParent->valdata->after.exposed);
 
     /*
      * Since the borderClip must not be clipped by the children, we do
@@ -273,7 +278,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
      * This leaves a region of pieces that weren't exposed before.
      */
 
-    if (mixin(HasBorder!("pParent"))) {
+    if (HasBorder(pParent)) {
         if (borderVisible) {
             /*
              * when the border changes shape, the old visible portions
@@ -284,18 +289,18 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
             RegionDestroy(borderVisible);
         }
         else {
-            RegionSubtract(exposed, universe, &pParent.borderClip);
+            RegionSubtract(exposed, universe, &pParent->borderClip);
         }
-        if (mixin(HasParentRelativeBorder!(`pParent`)) && (dx || dy)) {
-            RegionSubtract(&pParent.valdata.after.borderExposed,
-                           universe, &pParent.winSize);
+        if (HasParentRelativeBorder(pParent) && (dx || dy)) {
+            RegionSubtract(&pParent->valdata->after.borderExposed,
+                           universe, &pParent->winSize);
         }
         else {
-            RegionSubtract(&pParent.valdata.after.borderExposed,
-                           exposed, &pParent.winSize);
+            RegionSubtract(&pParent->valdata->after.borderExposed,
+                           exposed, &pParent->winSize);
         }
 
-        RegionCopy(&pParent.borderClip, universe);
+        RegionCopy(&pParent->borderClip, universe);
 
         /*
          * To get the right clipList for the parent, and to make doubly sure
@@ -303,44 +308,44 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
          * border from the universe before proceeding.
          */
 
-        RegionIntersect(universe, universe, &pParent.winSize);
+        RegionIntersect(universe, universe, &pParent->winSize);
     }
     else
-        RegionCopy(&pParent.borderClip, universe);
+        RegionCopy(&pParent->borderClip, universe);
 
-    if ((pChild = pParent.firstChild) !is null && pParent.mapped) {
+    if ((pChild = pParent->firstChild) && pParent->mapped) {
         RegionNull(&childUniverse);
         RegionNull(&childUnion);
-        if ((pChild.drawable.y < pParent.lastChild.drawable.y) ||
-            ((pChild.drawable.y == pParent.lastChild.drawable.y) &&
-             (pChild.drawable.x < pParent.lastChild.drawable.x))) {
-            for (; pChild; pChild = pChild.nextSib) {
-                if (pChild.viewable)
-                    RegionAppend(&childUnion, &pChild.borderSize);
+        if ((pChild->drawable.y < pParent->lastChild->drawable.y) ||
+            ((pChild->drawable.y == pParent->lastChild->drawable.y) &&
+             (pChild->drawable.x < pParent->lastChild->drawable.x))) {
+            for (; pChild; pChild = pChild->nextSib) {
+                if (pChild->viewable)
+                    RegionAppend(&childUnion, &pChild->borderSize);
             }
         }
         else {
-            for (pChild = pParent.lastChild; pChild; pChild = pChild.prevSib) {
-                if (pChild.viewable)
-                    RegionAppend(&childUnion, &pChild.borderSize);
+            for (pChild = pParent->lastChild; pChild; pChild = pChild->prevSib) {
+                if (pChild->viewable)
+                    RegionAppend(&childUnion, &pChild->borderSize);
             }
         }
         RegionValidate(&childUnion, &overlap);
 
-        for (pChild = pParent.firstChild; pChild; pChild = pChild.nextSib) {
-            if (pChild.viewable) {
+        for (pChild = pParent->firstChild; pChild; pChild = pChild->nextSib) {
+            if (pChild->viewable) {
                 /*
                  * If the child is viewable, we want to remove its extents
                  * from the current universe, but we only re-clip it if
                  * it's been marked.
                  */
-                if (pChild.valdata) {
+                if (pChild->valdata) {
                     /*
                      * Figure out the new universe from the child's
                      * perspective and recurse.
                      */
                     RegionIntersect(&childUniverse,
-                                    universe, &pChild.borderSize);
+                                    universe, &pChild->borderSize);
                     RootlessComputeClips(pChild, pScreen, &childUniverse,
                                          kind, exposed);
                 }
@@ -350,7 +355,7 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
                  * other sibling.
                  */
                 if (overlap)
-                    RegionSubtract(universe, universe, &pChild.borderSize);
+                    RegionSubtract(universe, universe, &pChild->borderSize);
             }
         }
         if (!overlap)
@@ -367,56 +372,57 @@ private void RootlessComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPt
      */
 
     if (oldVis == VisibilityFullyObscured || oldVis == VisibilityNotViewable) {
-        RegionCopy(&pParent.valdata.after.exposed, universe);
+        RegionCopy(&pParent->valdata->after.exposed, universe);
     }
     else if (newVis != VisibilityFullyObscured &&
              newVis != VisibilityNotViewable) {
-        RegionSubtract(&pParent.valdata.after.exposed,
-                       universe, &pParent.clipList);
+        RegionSubtract(&pParent->valdata->after.exposed,
+                       universe, &pParent->clipList);
     }
 
     /* HACK ALERT - copying contents of regions, instead of regions */
     {
-        RegionRec tmp = void;
+        RegionRec tmp;
 
-        tmp = pParent.clipList;
-        pParent.clipList = *universe;
+        tmp = pParent->clipList;
+        pParent->clipList = *universe;
         *universe = tmp;
     }
 
-version (NOTDEF) {
-    RegionCopy(&pParent.clipList, universe);
+#ifdef NOTDEF
+    RegionCopy(&pParent->clipList, universe);
+#endif
+
+    pParent->drawable.serialNumber = NEXT_SERIAL_NUMBER;
+
+    if (pScreen->ClipNotify)
+        (*pScreen->ClipNotify) (pParent, dx, dy);
 }
 
-    pParent.drawable.serialNumber = NEXT_SERIAL_NUMBER;
-
-    if (pScreen.ClipNotify)
-        (*pScreen.ClipNotify) (pParent, dx, dy);
-}
-
-private void RootlessTreeObscured(WindowPtr pParent)
+static void
+RootlessTreeObscured(WindowPtr pParent)
 {
-    WindowPtr pChild = void;
-    int oldVis = void;
+    register WindowPtr pChild;
+    register int oldVis;
 
     pChild = pParent;
     while (1) {
-        if (pChild.viewable) {
-            oldVis = pChild.visibility;
-            if (oldVis != (pChild.visibility = VisibilityFullyObscured) &&
-                ((pChild.
-                  eventMask | mixin(wOtherEventMasks!("pChild"))) & VisibilityChangeMask))
+        if (pChild->viewable) {
+            oldVis = pChild->visibility;
+            if (oldVis != (pChild->visibility = VisibilityFullyObscured) &&
+                ((pChild->
+                  eventMask | wOtherEventMasks(pChild)) & VisibilityChangeMask))
                 SendVisibilityNotify(pChild);
-            if (pChild.firstChild) {
-                pChild = pChild.firstChild;
+            if (pChild->firstChild) {
+                pChild = pChild->firstChild;
                 continue;
             }
         }
-        while (!pChild.nextSib && (pChild != pParent))
-            pChild = pChild.parent;
+        while (!pChild->nextSib && (pChild != pParent))
+            pChild = pChild->parent;
         if (pChild == pParent)
             break;
-        pChild = pChild.nextSib;
+        pChild = pChild->nextSib;
     }
 }
 
@@ -457,25 +463,30 @@ private void RootlessTreeObscured(WindowPtr pParent)
  /*ARGSUSED*/
 // fixme this is ugly
 // Xprint/ValTree.c doesn't work, but maybe that method can?
-    int RootlessMiValidateTree(WindowPtr pRoot, WindowPtr pChild, VTKind kind)
+    int
+RootlessMiValidateTree(WindowPtr pRoot, /* Parent to validate */
+                       WindowPtr pChild,        /* First child of pRoot that was
+                                                 * affected */
+                       VTKind kind /* What kind of configuration caused call */
+                       )
 {
-    RegionRec childClip = void;        /* The new borderClip for the current
+    RegionRec childClip;        /* The new borderClip for the current
                                  * child */
-    RegionRec exposed = void;          /* For intermediate calculations */
-    ScreenPtr pScreen = void;
-    WindowPtr pWin = void;
+    RegionRec exposed;          /* For intermediate calculations */
+    register ScreenPtr pScreen;
+    register WindowPtr pWin;
 
-    pScreen = pRoot.drawable.pScreen;
+    pScreen = pRoot->drawable.pScreen;
     if (pChild == NullWindow)
-        pChild = pRoot.firstChild;
+        pChild = pRoot->firstChild;
 
     RegionNull(&childClip);
     RegionNull(&exposed);
 
-    if (RegionBroken(&pRoot.clipList) && !RegionBroken(&pRoot.borderClip)) {
+    if (RegionBroken(&pRoot->clipList) && !RegionBroken(&pRoot->borderClip)) {
         // fixme this might not work, but hopefully doesn't happen anyway.
         kind = VTBroken;
-        RegionNull(&pRoot.clipList);
+        RegionNull(&pRoot->clipList);
         ErrorF("ValidateTree: BUSTED!\n");
     }
 
@@ -485,23 +496,23 @@ private void RootlessTreeObscured(WindowPtr pParent)
      * childClip is always reset to that child's size.
      */
 
-    for (pWin = pChild; pWin != NullWindow; pWin = pWin.nextSib) {
-        if (pWin.viewable) {
-            if (pWin.valdata) {
-                RegionCopy(&childClip, &pWin.borderSize);
+    for (pWin = pChild; pWin != NullWindow; pWin = pWin->nextSib) {
+        if (pWin->viewable) {
+            if (pWin->valdata) {
+                RegionCopy(&childClip, &pWin->borderSize);
                 RootlessComputeClips(pWin, pScreen, &childClip, kind, &exposed);
             }
-            else if (pWin.visibility == VisibilityNotViewable) {
+            else if (pWin->visibility == VisibilityNotViewable) {
                 RootlessTreeObscured(pWin);
             }
         }
         else {
-            if (pWin.valdata) {
-                RegionEmpty(&pWin.clipList);
-                if (pScreen.ClipNotify)
-                    (*pScreen.ClipNotify) (pWin, 0, 0);
-                RegionEmpty(&pWin.borderClip);
-                pWin.valdata = null;
+            if (pWin->valdata) {
+                RegionEmpty(&pWin->clipList);
+                if (pScreen->ClipNotify)
+                    (*pScreen->ClipNotify) (pWin, 0, 0);
+                RegionEmpty(&pWin->borderClip);
+                pWin->valdata = NULL;
             }
         }
     }
@@ -510,8 +521,8 @@ private void RootlessTreeObscured(WindowPtr pParent)
 
     /* The root is never clipped by its children, so nothing on the root
        is ever exposed by moving or mapping its children. */
-    RegionNull(&pRoot.valdata.after.exposed);
-    RegionNull(&pRoot.valdata.after.borderExposed);
+    RegionNull(&pRoot->valdata->after.exposed);
+    RegionNull(&pRoot->valdata->after.borderExposed);
 
     return 1;
 }

@@ -1386,7 +1386,7 @@ private void ComputeFreezes()
     }
 }
 
-version (RANDR) {
+// version (RANDR) {
 void ScreenRestructured(ScreenPtr pScreen)
 {
     GrabPtr grab = void;
@@ -1397,7 +1397,7 @@ void ScreenRestructured(ScreenPtr pScreen)
 
         /* GrabDevice doesn't have a confineTo field, so we don't need to
          * worry about it. */
-        if ((grab = pDev.deviceGrab.grab) && grab.confineTo) {
+        if ((grab = pDev.deviceGrab.grab) !is null && grab.confineTo) {
             if (grab.confineTo.drawable.pScreen
                 != pDev.spriteInfo.sprite.hotPhys.pScreen)
                 pDev.spriteInfo.sprite.hotPhys.x =
@@ -1410,7 +1410,7 @@ void ScreenRestructured(ScreenPtr pScreen)
                                   root, TRUE, FALSE);
     }
 }
-}
+// }
 
 private void CheckGrabForSyncs(DeviceIntPtr thisDev, Bool thisMode, Bool otherMode)
 {

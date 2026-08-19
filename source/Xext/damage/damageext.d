@@ -54,6 +54,7 @@ import dix.extension;
 import dix.dixutils;
 import dix.events;
 import os.io;
+import os.log;
 
 struct _DamageClient {
     CARD32 major_version;
@@ -81,25 +82,25 @@ enum string VERIFY_DAMAGEEXT(string pDamageExt, string rid, string client, strin
 
 enum string GetDamageClient(string pClient) = `(cast(DamageClientPtr)dixLookupPrivate(&(` ~ pClient ~ `).devPrivates, DamageClientPrivateKey))`;
 
-version (XINERAMA) {
+// version (XINERAMA) {
 
 struct PanoramiXDamageRes {
     DamageExtPtr ext;
     DamagePtr[MAXSCREENS] damage;
 }
 
-private RESTYPE XRT_DAMAGE;
-private int damageUseXinerama = 0;
+RESTYPE XRT_DAMAGE;
+int damageUseXinerama = 0;
 
 
 
-} /* XINERAMA */
+// } /* XINERAMA */
 
-private ubyte DamageReqCode;
-private int DamageEventBase;
-private RESTYPE DamageExtType;
+ubyte DamageReqCode;
+int DamageEventBase;
+RESTYPE DamageExtType;
 
-private DevPrivateKeyRec DamageClientPrivateKeyRec;
+DevPrivateKeyRec DamageClientPrivateKeyRec;
 
 enum DamageClientPrivateKey = (&DamageClientPrivateKeyRec);
 
@@ -546,11 +547,11 @@ private void SDamageNotifyEvent(xDamageNotifyEvent* from, xDamageNotifyEvent* to
     cpswaps(from.geometry.height, to.geometry.height);
 }
 
-version (XINERAMA) {
+// version (XINERAMA) {
 
 private void PanoramiXDamageReport(DamagePtr pDamage, RegionPtr pRegion, void* closure)
 {
-    PanoramiXDamageRes* res = closure;
+    PanoramiXDamageRes* res = cast(PanoramiXDamageRes*)closure;
     DamageExtPtr pDamageExt = res.ext;
     WindowPtr pWin = cast(WindowPtr)pDamage.pDrawable;
     ScreenPtr pScreen = pDamage.pScreen;
@@ -572,7 +573,7 @@ private void PanoramiXDamageReport(DamagePtr pDamage, RegionPtr pRegion, void* c
 
 private void PanoramiXDamageExtDestroy(DamagePtr pDamage, void* closure)
 {
-    PanoramiXDamageRes* damage = closure;
+    PanoramiXDamageRes* damage = cast(PanoramiXDamageRes*)closure;
     damage.damage[pDamage.pScreen.myNum] = null;
 }
 
@@ -587,7 +588,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
     if (rc != Success)
         return rc;
 
-    if (((damage = cast(PanoramiXDamageRes*) cast(PanoramiXDamageRes*) calloc(1, PanoramiXDamageRes.sizeof)) == 0))
+    if (((damage = cast(PanoramiXDamageRes*) cast(PanoramiXDamageRes*) calloc(1, PanoramiXDamageRes.sizeof)) is null))
         return BadAlloc;
 
     if (!AddResource(stuff.damage, XRT_DAMAGE, damage))
@@ -626,7 +627,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
 
 private int PanoramiXDamageDelete(void* res, XID id)
 {
-    PanoramiXDamageRes* damage = res;
+    PanoramiXDamageRes* damage = cast(PanoramiXDamageRes*)res;
 
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (damage.damage[walkScreenIdx]) {
@@ -653,7 +654,7 @@ void PanoramiXDamageReset()
     damageUseXinerama = 0;
 }
 
-} /* XINERAMA */
+// } /* XINERAMA */
 
 void DamageExtensionInit()
 {

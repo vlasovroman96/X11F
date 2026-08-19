@@ -31,6 +31,6 @@ bool CompositeRegisterAlternateVisuals(ScreenPtr pScreen, VisualID* vids, int nV
 
 bool compIsAlternateVisual(ScreenPtr pScreen, XID visual);
 
-RESTYPE CompositeClientWindowType;
+// RESTYPE CompositeClientWindowType;
 
                           /* _COMPOSITEEXT_H_ */

@@ -85,7 +85,7 @@ enum string MIARCOCTANTSHIFT(string clause) = `
 		a = (dx >> 1) - a; 
 	    dx = 0; 
 	    dy = 1; 
-	    ` ~ clause ~ ` 
+	    ` ~ clause ~ `;
 	} 
     }`;
 
@@ -97,7 +97,7 @@ enum string MIARCSTEP(string move1,string move2) = `
 	y += dy; 
 	a += k1; 
 	d += b; 
-	` ~ move1 ~ ` 
+	` ~ move1 ~ `; 
     } 
     else 
     { 
@@ -105,7 +105,7 @@ enum string MIARCSTEP(string move1,string move2) = `
 	y++; 
 	a += k3; 
 	d -= a; 
-	` ~ move2 ~ ` 
+	` ~ move2 ~ `; 
     }`;
 
 enum string MIARCCIRCLESTEP(string clause) = `
@@ -120,12 +120,11 @@ enum string MIARCCIRCLESTEP(string clause) = `
     { 
 	y++; 
 	a += k3; 
-	d -= a; 
-	` ~ clause ~ ` 
-    }`;
+	d -= a; }
+	{` ~ clause ~ `}`;
 
 /* mizerarc.c */
 
-void  miZeroArcSetup(xArc*, miZeroArcRec*, Bool);
+// void  miZeroArcSetup(xArc*, miZeroArcRec*, Bool);
 
  /* XSERVER_MIZERARC_H */
