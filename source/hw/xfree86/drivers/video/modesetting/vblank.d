@@ -39,7 +39,7 @@ import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_display;
 import externs.X11.extensions.dpmsconst;
 import hw.xfree86.common.xf86Helper;
-import externs.libdrm;
+import externs.libdrm;;
 import randr.randr;
 import pageflip;
 import os.connection;
@@ -631,7 +631,7 @@ Bool ms_vblank_screen_init(ScreenPtr screen)
     modesettingEntPtr ms_ent = ms_ent_priv(scrn);
     xorg_list_init(&ms_drm_queue_);
 
-    ms.event_context.version_ = 4;
+    __traits(getMember, ms.event_context, "version") = 4;
     ms.event_context.vblank_handler = &ms_drm_handler;
     ms.event_context.page_flip_handler = &ms_drm_handler;
     ms.event_context.sequence_handler = &ms_drm_sequence_handler_64bit;

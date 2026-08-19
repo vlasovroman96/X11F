@@ -25,7 +25,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.dix_config;
 
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 
 import dix.dix_priv;
 import dix.request_priv;

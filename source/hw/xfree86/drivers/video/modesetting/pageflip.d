@@ -30,7 +30,7 @@ import core.stdc.errno;
 
 import os.xserver_poll;
 
-import externs.drm;
+import externs.libdrm;
 
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;

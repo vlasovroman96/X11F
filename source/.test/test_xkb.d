@@ -37,7 +37,7 @@ import core.stdc.math;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 //import externs.X11.keysym;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 
 import xkb.xkbsrv_priv;
 

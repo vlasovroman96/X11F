@@ -25,7 +25,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.assert_;
-// import externs.libdrm;
+// import externs.libdrm;;
 import core.sys.posix.unistd;
 
 import include.syncsdk;
@@ -34,7 +34,7 @@ import dri3.dri3_priv;
 import include.misync;
 import include.misyncshm;
 import include.randrstr;
-import externs.libdrm;
+import externs.libdrm;;
 import include.dri3;
 import dix.resource;
 

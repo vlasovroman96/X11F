@@ -60,7 +60,7 @@ import include.extinit;
 import include.sarea;
 
 import include.xf86;
-import externs.drm;
+import externs.libdrm;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;
@@ -81,7 +81,7 @@ import xf86Extensions;
 import xf86Config;
 import hw.xfree86.os_support.linux.lnx_kmod;
 // import externs.drm_fourcc;
-import externs.libdrm;
+import externs.libdrm;;
 import 	core.stdc.stdarg;
 alias ssize_t = ulong;
 import xf86Bus;

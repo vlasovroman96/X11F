@@ -33,7 +33,7 @@ import core.stdc.stdio;
 import core.stdc.stdarg;
 import stdctypes = core.sys.posix.sys.types;
 // import libaudit;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 // //import externs.X11.Xfuncproto;
 
 import dix.client_priv;
@@ -63,7 +63,7 @@ import os.log;
 import os.access;
 import externs.selinux.selinux_;
 import externs.libaudit;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import dix.property;
 import dix.dixutils;
 import dix.extension;

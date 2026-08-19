@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 import externs.X11.extensions.XI2proto;
@@ -50,7 +50,7 @@ import Xi.exglobals;
 import dix.swaprep;
 import Xi.xiproperty;
 import include.xserver_properties;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import dix.devices;
 import dix.events;
 import os.inputthread;

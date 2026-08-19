@@ -41,7 +41,7 @@ import dix.dix_priv;
 import os.client_priv;
 
 version (WITH_LIBDRM) {
-import externs.drm;
+import externs.libdrm;;
 }
 import include.list;
 import include.scrnintstr;

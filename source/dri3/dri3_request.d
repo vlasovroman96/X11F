@@ -36,12 +36,12 @@ import dri3.dri3_priv;
 import Xext.syncsrv;
 import Xext.xace;
 import include.protocol_versions;
-// import externs.libdrm;
+// import externs.libdrm;;
 import randr.randrstr_priv;
 import dix.dixstruct_priv;
 import externs.X11.extensions.dri3proto;
 import os.io;
-import externs.libdrm;
+import externs.libdrm;;
 import Xext.sync;
 import include.dri3;
 

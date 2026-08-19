@@ -2,4 +2,4 @@
 __module externs.X11.Xdefs_;
 #endif
 
-#import "Xdefs.h"
+#include "Xdefs.h"

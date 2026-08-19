@@ -29,14 +29,14 @@ import dix.screenint_priv;
 import miext.extinit_priv;
 
 import dri3.dri3_priv;
-// import externs.libdrm;
+// import externs.libdrm;;
 import include.dri3;
 import dix.extension;
 import dix.resource;
 import os.log;
 import externs.X11.extensions.dri3proto;
 // import externs.drm_fourcc;
-import externs.libdrm;
+import externs.libdrm;;
 import dix.screen_hooks;
 
 

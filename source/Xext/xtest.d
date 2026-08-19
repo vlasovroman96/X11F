@@ -35,7 +35,7 @@ import build.dix_config;
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 // //import externs.X11.extensions.xtestproto;
 import externs.X11.extensions.XI;
 // // //import externs.X11.extensions.XIproto;
@@ -75,7 +75,7 @@ import dix.dixutils;
 import std.conv;
 import os.log;
 import externs.gnu;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import dix.extension;
 import dix.devices;
 import Xi.xiproperty;

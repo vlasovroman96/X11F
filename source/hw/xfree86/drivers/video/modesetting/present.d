@@ -41,7 +41,7 @@ import include.present;
 
 import include.xf86;
 import include.xf86Crtc;
-import externs.drm;
+import externs.libdrm;
 import include.xf86str;
 
 import hw.xfree86.drivers.video.modesetting.driver;

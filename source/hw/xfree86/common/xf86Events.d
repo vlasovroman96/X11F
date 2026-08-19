@@ -56,7 +56,7 @@ import build.xorg_config;
 import core.stdc.errno;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 //import externs.X11.keysym;
@@ -102,7 +102,7 @@ import dix.events;
 import dix.devices;
 import dix.property;
 import hw.xfree86.common.xf86Helper;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import os.connection;
 
 

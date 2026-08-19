@@ -5,7 +5,7 @@ import build.xorg_config;
 
 // version (XSERVER_PLATFORM_BUS) {
 
-import externs.drm;
+import externs.libdrm;
 import core.sys.posix.fcntl;
 import core.sys.posix.unistd;
 import core.stdc.errno;

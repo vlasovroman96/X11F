@@ -6,7 +6,7 @@
 import atom;
 import os.log;;
 
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 
 void MakePredeclaredAtoms()
 {

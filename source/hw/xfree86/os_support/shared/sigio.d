@@ -124,7 +124,7 @@ import externs.attrs;
 import xf86Globals;
 import dix.property;
 import xf86AutoConfig_;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import xf86VGAarbiter;
 import xf86Option;
 import core.sys.posix.unistd;

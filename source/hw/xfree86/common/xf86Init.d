@@ -53,7 +53,7 @@ import os.inputthread;
 //import externs.X11.X;
 ////import externs.X11.Xmd;
 //import externs.X11.Xproto;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 
@@ -100,7 +100,7 @@ import externs.attrs;
 import xf86Globals;
 import dix.property;
 import xf86AutoConfig_;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import xf86VGAarbiter;
 import xf86Option;
 import core.sys.posix.unistd;

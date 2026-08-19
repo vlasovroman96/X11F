@@ -56,7 +56,7 @@ import core.stdc.string;             /* InputClassMatches */
 ////import externs.X11.Xmd;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 
 import dix.dix_priv;
 import dix.input_priv;

@@ -35,7 +35,7 @@ import os.cmdline;
 import os.osdep;
 
 import include.compiler;
-import hw.kdrive.linux.linux;
+// import hw.kdrive.linux.linux;
 import xf86_priv;
 import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;

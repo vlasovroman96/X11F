@@ -20,7 +20,7 @@ public import include.scrnintstr;
 public import glamor.glamor_egl_ext;
 
 version (GLAMOR_HAS_GBM) {
-public import gbm;
+public import externs.libdrm;
 }
 
 struct glamor_egl_priv_t {

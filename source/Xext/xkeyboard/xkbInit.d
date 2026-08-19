@@ -44,7 +44,7 @@ import core.stdc.math;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 //import externs.X11.keysym;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 // //import externs.X11.extensions.XKMformat;
 import externs.X11.extensions.XKB;
 import externs.X11.extensions.XKM;

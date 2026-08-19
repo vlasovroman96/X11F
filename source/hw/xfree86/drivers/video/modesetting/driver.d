@@ -69,7 +69,7 @@ import include.xf86Crtc;
 import include.miscstruct;
 import include.dixstruct;
 // import xf86xv;
-import externs.gbm;
+import externs.libdrm;
 // import build.xorg_config;
 version (XSERVER_PLATFORM_BUS) {
 import xf86platformBus_priv;
@@ -85,12 +85,12 @@ import seatd_libseat;
 import hw.xfree86.drivers.video.modesetting.driver;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 // import hw.xfree86.drivers.video.modesetting
-// import externs.libdrm;
+// import externs.libdrm;;
 import include.shadow;
 import hw.xfree86.common.xf86Helper;
 import include.mipointer;
 import hw.xfree86.drivers.video.modesetting.drmmode_display;
-import externs.libdrm;
+import externs.libdrm;;
 import xf86Option;
 import externs.gnu;
 import include.inputstr;

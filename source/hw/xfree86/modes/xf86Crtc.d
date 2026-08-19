@@ -44,7 +44,7 @@ import include.xf86Priv;
 import xf86RandR12_priv;
 //import externs.X11.extensions._render;
 // //import externs.X11.extensions.dpmsconst;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 import include.picturestr;
 import include.rrtransform;
 import hw.xfree86.common.xf86Helper;;

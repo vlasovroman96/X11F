@@ -44,18 +44,18 @@ import present.present_priv;
 
 import include.inputstr;
 import include.xf86str;
-//import externs.X11.Xatom;
+//import externs.X11.Xatom_;
 import include.mi;
 import mi.micmap;
 import xf86cmap;
 import xf86DDC_priv;
-// import externs.libdrm;
-// import externs.libdrm;
+// import externs.libdrm;;
+// import externs.libdrm;;
 
-import externs.libdrm;
+import externs.libdrm;;
 import include.mipointer;
 // import externs.drmMode;
-import externs.gbm;
+import externs.libdrm;
 
 import include.xf86Crtc;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
@@ -76,7 +76,7 @@ import include.xf86Cursor;
 import dix.gc;
 import xf86CursorRD;
 import xf86Option;
-import externs.X11.Xatom;
+import externs.X11.Xatom_;
 import randr.rrproperty;
 import externs.gnu;
 import xf86Rotate;

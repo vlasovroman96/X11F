@@ -50,19 +50,21 @@ import sys.sysmacros; /* for major() & minor() */
 import core.sys.linux.sys.s;
 
 }
+
+enum EGL_NO_DISPLAY = cast(EGLDisplay)null;
 version (HAVE_SYS_MKDEV_H) {
 import sys.mkdev;          /* for major() & minor() on Solaris */
 }
 
 version (WITH_LIBDRM) {
-import externs.drm;
+import externs.libdrm;
 // import drm.drm_fourcc;
 }
 
 version = EGL_DISPLAY_NO_X_MESA;
 
 version (GLAMOR_HAS_GBM) {
-import gbm;
+import externs.libdrm;
 }
 
 import dix.screen_hooks_priv;
@@ -75,7 +77,7 @@ import glamor.glamor_egl_ext;
 import glamor.glamor_egl_priv;
 import glamor.glamor_glx_provider;
 import dri3.dri3;
-import hw.kdrive.ephyr.ephyr_glamor;
+// import hw.kdrive.ephyr.ephyr_glamor;
 import externs.epoxy;
 import dix.screen_hooks;
 
