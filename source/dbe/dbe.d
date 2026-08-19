@@ -62,7 +62,7 @@ import dix.extension;
 import dix.screen_hooks;
 
 /* GLOBALS */
-Bool noDbeExtension = FALSE;
+// Bool noDbeExtension = FALSE;
 
 /* These are globals for use by DDX */
 DevPrivateKeyRec dbeScreenPrivKeyRec;

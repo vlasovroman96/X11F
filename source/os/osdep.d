@@ -95,7 +95,7 @@ ospoll* server_poll;
 
 Bool listen_to_client(ClientPtr client);
 
-Bool NewOutputPending;
+// Bool NewOutputPending;
 
 /* for platforms lacking arc4random_buf() libc function */
 version (HAVE_ARC4RANDOM_BUF) {} else {
@@ -123,7 +123,7 @@ pragma(inline, true) void arc4random_buf(void* buf, size_t nbytes)
 // const(char)* Win32TempDir();
 
 pragma(inline, true) void Fclose(void* f) { fclose(cast(FILE*)f); }
-pragma(inline, true) void* Fopen(const(char)* a, const(char)* b) { return cast(void*)fopen(a,b); }
+// pragma(inline, true) void* Fopen(const(char)* a, const(char)* b) { return cast(void*)fopen(a,b); }
 
 // } else { /* WIN32 */
 
@@ -173,7 +173,7 @@ void CloseDownConnection(ClientPtr client);
 // Bool PartialNetwork;
 
 Bool CoreDump;
-Bool NoListenAll;
+// Bool NoListenAll;
 
 /*
  * This function reallocarray(3)s passed buffer, terminating the server if
@@ -224,7 +224,7 @@ alias EXIT_ERR_CONFIGURE = ExitCode.EXIT_ERR_CONFIGURE;
 alias EXIT_ERR_DRIVERS = ExitCode.EXIT_ERR_DRIVERS;
 
 
-sig_atomic_t inSignalContext;
+// sig_atomic_t inSignalContext;
 
 /* run timers that are expired at timestamp `now` */
 void DoTimers(CARD32 now);

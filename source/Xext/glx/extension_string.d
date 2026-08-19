@@ -38,6 +38,7 @@ import build.dix_config;
 
 import dix.dix_priv;
 import include.extinit;
+import os.utils;
 
 import glx.extension_string;
 import include.opaque;

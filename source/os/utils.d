@@ -163,7 +163,7 @@ import core.stdc.stdio;
 alias timeval = core.sys.posix.sys.time.timeval;
 alias fopen = core.stdc.stdio.fopen;
 
-Bool CoreDump;
+// Bool CoreDump;
 
 Bool enableIndirectGLX = FALSE;
 

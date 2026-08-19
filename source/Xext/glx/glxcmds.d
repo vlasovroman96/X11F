@@ -38,6 +38,7 @@ import core.stdc.string;
 import core.stdc.assert_;
 import externs.glxtokens;
 // //import externs.X11.extensions.presenttokens;
+import os.utils;
 
 import dix.dix_priv;
 import dix.resource_priv;

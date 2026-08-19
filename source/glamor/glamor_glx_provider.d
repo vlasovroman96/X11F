@@ -36,6 +36,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import dix.dix_priv;
+import os.utils;
 
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;

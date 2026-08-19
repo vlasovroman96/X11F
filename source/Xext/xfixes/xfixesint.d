@@ -60,7 +60,7 @@ public import include.windowstr;
 public import xfixes.xfixes;
 import externs.X11.extensions.xfixesproto;
 
-int XFixesEventBase;
+// int XFixesEventBase;
 int XFixesUseXinerama;
 
 struct _XFixesClient {

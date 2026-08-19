@@ -167,16 +167,16 @@ Bool XkbDeviceApplyKeymap(DeviceIntPtr dst, XkbDescPtr src);
 void XkbCopyControls(XkbDescPtr dst, XkbDescPtr src);
 
 
-DevPrivateKeyRec xkbDevicePrivateKeyRec;
+// DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
 enum string XKBDEVICEINFO(string dev) = `(cast(xkbDeviceInfoPtr)dixLookupPrivate(&(` ~ dev ~ `).devPrivates, &xkbDevicePrivateKeyRec))`;
 
-int XkbReqCode;
-int XkbEventBase;
-int XkbKeyboardErrorCode;
-const(char)* XkbBaseDirectory;
-const(char)* XkbBinDirectory;
-CARD32 xkbDebugFlags;
+// int XkbReqCode;
+// int XkbEventBase;
+// int XkbKeyboardErrorCode;
+// const(char)* XkbBaseDirectory;
+// const(char)* XkbBinDirectory;
+// CARD32 xkbDebugFlags;
 
 /* AccessX functions */
 void XkbSendAccessXNotify(DeviceIntPtr kbd, xkbAccessXNotify* pEv);

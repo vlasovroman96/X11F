@@ -37,6 +37,8 @@ import include.opaque;
 import glx.glxext;
 // import externs.xorg.glx_extinit;
 import glx.glxscreens_h;
+import os.utils;
+
 
 enum GLX_RGBA_FLOAT_BIT_ARB =             0x00000004;
 enum GLX_RGBA_FLOAT_TYPE_ARB =            0x20B9;

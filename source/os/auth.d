@@ -52,6 +52,7 @@ import   core.stdc.stdlib;       /* for arc4random_buf() */
 import os.access;
 import os.auth;
 import externs.attrs;
+import os.utils;
 
 version (XDMCP) {
 import os.xdmcp;

@@ -75,7 +75,7 @@ HWEventQueuePtr[2] checkForInput;
 // Bool party_like_its_1989;
 
 /* needed by libglx and libglamor (server modules) */
-bool enableIndirectGLX;
+// bool enableIndirectGLX;
 
 /*
  * @brief callback right after one screen's root window has been initialized
