@@ -33,7 +33,7 @@
 		
 	],
 	"cImportPaths" :[
-		"source/externs"
+		"source/externs/X11/"
 	],
 	"lflags-posix-dmd": [
         "-ldbus-1",

@@ -64,7 +64,7 @@ import core.sys.posix.dirent;
 import core.sys.posix.unistd;
 import core.stdc.stdarg;
 import core.sys.posix.dirent;
-//import externs.X11.Xdefs;
+//import externs.X11.Xdefs_d;
 ////import externs.X11.Xfuncproto;
 import core.stdc.limits;
 

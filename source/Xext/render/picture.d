@@ -49,7 +49,7 @@ import render.picturestr_priv;
 import render.glyphstr_priv;
 import Xext.xace;
 import externs.X11.extensions.renderproto;
-import externs.X11.Xdefs;
+import externs.X11.Xdefs_d;
 import dix.resource;
 import dix.screen_hooks;
 import dix.colormap;

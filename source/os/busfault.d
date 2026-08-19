@@ -26,7 +26,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 // //import externs.X11.Xos;
-//import externs.X11.Xdefs;
+//import externs.X11.Xdefs_d;
 
 import os.busfault;
 

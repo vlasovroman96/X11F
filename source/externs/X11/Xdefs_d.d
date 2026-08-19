@@ -8,7 +8,7 @@ import xdefs_c = externs.X11.Xdefs;
 import include.dixstruct : _Client; 
 
 // 3. Перевыпускаем все сишные символы наружу (mixin)
-public import externs.X11.Xdefs;
+public import externs.X11.Xdefs_;
 
 // 4. ГЛАВНАЯ ПОДМЕНА: Переопределяем ClientPtr для D-пространства
 // Теперь для всех, кто импортирует этот бридж, ClientPtr — это D-указатель

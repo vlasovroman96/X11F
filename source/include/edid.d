@@ -17,7 +17,7 @@ import core.stdc.config: c_long, c_ulong;
 // public //import stdbool;
 public import core.stdc.stdint;
 public import externs.X11.Xmd;
-public import externs.X11.Xdefs;
+public import externs.X11.Xdefs_d;
 
 enum STD_TIMINGS = 8;
 enum DET_TIMINGS = 4;

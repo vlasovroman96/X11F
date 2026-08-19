@@ -35,7 +35,7 @@ import core.stdc.config: c_long, c_ulong;
 
 //import externs.GL.glx;
 //import externs.GL.gl;
-import externs.X11.Xdefs;
+import externs.X11.Xdefs_d;
 import include.pixmap;
 import glx.glxscreens_h;
 import externs.epoxy;

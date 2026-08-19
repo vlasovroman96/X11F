@@ -16,7 +16,7 @@ is" without express or implied warranty.
 */
 
  
-public import externs.X11.Xdefs;
+public import externs.X11.Xdefs_d;
 import include.screenint;
 
 public import externs.xcb.xcb;

@@ -10,7 +10,7 @@ extern(C): __gshared:
 
  
 //public import externs.X11.Xmd;
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 public import include.xf86Pci;
 
 enum string SEG_ADDR(string x) = `(((` ~ x ~ `) >> 4) & 0x00F000)`;

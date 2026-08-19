@@ -33,7 +33,7 @@ import core.stdc.config: c_long, c_ulong;
  * Silicon Graphics, Inc.
  */
 
- import externs.X11.Xdefs;
+ import externs.X11.Xdefs_d;
  import glx.glxserver;
  import glx.glxscreens_h;
  import externs.epoxy;

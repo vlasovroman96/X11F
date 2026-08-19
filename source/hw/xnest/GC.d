@@ -21,7 +21,7 @@ import core.stdc.stdint;
 
 // //import externs.X11.fonts.fontstruct;
 //import externs.X11.X;
-//import externs.X11.Xdefs;
+//import externs.X11.Xdefs_d;
 //import externs.X11.Xproto;
 
 import externs.xcb.xcb;

@@ -56,7 +56,7 @@ enum _OSDEP_H_ = 1;
 
 public import build.dix_config;
 
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 
 public import core.stdc.limits;
 public import core.stdc.signal;
@@ -70,7 +70,7 @@ import os.timingsafe_memcmp;
 import std.conv;
 //public import externs.X11.X;
 //public import externs.X11.Xmd;
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 
 /*
  * return the least significant bit in x which is set

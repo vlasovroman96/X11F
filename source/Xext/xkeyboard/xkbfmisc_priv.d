@@ -11,7 +11,7 @@ version = XK_MISCELLANY;
 
 public import core.stdc.stdio;
 //public import externs.X11.X;
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 public import externs.X11.keysymdef;
 import include.xkbstr;
 import include.xkbstr;

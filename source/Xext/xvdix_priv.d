@@ -8,7 +8,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 
 public import include.pixmap;
 public import include.regionstr;

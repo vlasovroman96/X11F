@@ -23,7 +23,7 @@ version (Windows) {
 }
 
 //import externs.X11.X;
-//import externs.X11.Xdefs;
+//import externs.X11.Xdefs_d;
 //import externs.X11.Xproto;
 //import externs.X11.keysym;
 // //import externs.X11.extensions.XKB;

@@ -50,7 +50,7 @@ SOFTWARE.
 version (CMAPSTRUCT_H) {} else {
 enum CMAPSTRUCT_H = 1;
 
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 
 /* LOCO -- a local color for a PseudoColor cell. DirectColor maps always
  * use the first value (called red) in the structure.  What channel they

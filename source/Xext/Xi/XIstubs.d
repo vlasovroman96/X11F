@@ -32,7 +32,7 @@ enum XI_STUBS_H = 1;
 public import externs.X11.extensions.XIproto;
 
 public import include.dix;
-public import externs.X11.Xdefs; 
+public import externs.X11.Xdefs_d; 
 
 int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode);
 

@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 public import include.callback;
-import externs.X11.Xdefs;
+import externs.X11.Xdefs_d;
 
 // void InitCallbackManager();
 // void DeleteCallbackManager();

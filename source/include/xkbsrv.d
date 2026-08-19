@@ -30,7 +30,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
  
 alias SrvXkbFreeKeyboard = XkbFreeKeyboard;			
 
-//public import externs.X11.Xdefs;
+//public import externs.X11.Xdefs_d;
 // public // //import externs.X11.extensions.XKBproto;
 
 public import include.xlibre_ptrtypes;
