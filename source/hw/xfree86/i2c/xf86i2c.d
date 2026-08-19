@@ -49,6 +49,8 @@ enum string X_GETTIMEOFDAY(string t) = `gettimeofday(`~t~`, null);`;
  * Delay execution at least usec microseconds.
  * All values 0 to 1e6 inclusive must be expected.
  */
+alias timeval = core.sys.posix.sys.time.timeval;
+
 
 private void I2CUDelay(I2CBusPtr b, int usec)
 {

@@ -1972,7 +1972,7 @@ void DRICopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
         pScreen.CopyWindow = &DRICopyWindow;
     }
 }
-
+alias timeval = core.sys.posix.sys.time.timeval;
 private void DRIGetSecs(c_long* secs, c_long* usecs)
 {
     timeval tv = void;
