@@ -42,7 +42,7 @@ import dix.screen_hooks;
 
 
 private int dri3_request;
-DevPrivateKeyRec dri3_screen_private_key;
+// DevPrivateKeyRec dri3_screen_private_key;
 
 private x_server_generation_t dri3_screen_generation;
 
@@ -84,7 +84,7 @@ Bool dri3_screen_init(ScreenPtr screen, const(dri3_screen_info_rec)* info)
     return TRUE;
 }
 
-RESTYPE dri3_syncobj_type;
+// RESTYPE dri3_syncobj_type;
 
 private int dri3_syncobj_free(void* data, XID id)
 {

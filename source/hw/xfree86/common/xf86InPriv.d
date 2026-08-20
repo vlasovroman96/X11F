@@ -28,9 +28,10 @@ extern(C): __gshared:
  * authorization from the copyright holder(s) and author(s).
  */
  import include.xf86Xinput;
+ public import xf86Globals;
 
 /* xf86Globals.c */
-InputDriverPtr* xf86InputDriverList;
-int xf86NumInputDrivers;
+// InputDriverPtr* xf86InputDriverList;
+// int xf86NumInputDrivers;
 
                           /* _xf86InPriv_h */

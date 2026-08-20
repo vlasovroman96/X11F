@@ -64,8 +64,10 @@ import Xi.handlers;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import Xi.exglobals;
+public import Xi.extinit;
 
-XExtensionVersion XIVersion;
+
+// XExtensionVersion XIVersion;
 
 /***********************************************************************
  *

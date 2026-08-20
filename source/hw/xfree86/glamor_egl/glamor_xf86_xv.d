@@ -41,6 +41,7 @@ import build.dix_config;
 
 version = GLAMOR_FOR_XORG;
 import glamor.glamor_priv;
+import glamor.glamor_xv;
 
 import include.xf86xv;
 import include.fourcc;

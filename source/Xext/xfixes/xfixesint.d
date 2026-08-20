@@ -61,7 +61,7 @@ public import xfixes.xfixes;
 import externs.X11.extensions.xfixesproto;
 
 // int XFixesEventBase;
-int XFixesUseXinerama;
+// int XFixesUseXinerama;
 
 struct _XFixesClient {
     CARD32 major_version;

@@ -51,6 +51,9 @@ version = EGL_NO_X11;
 public import externs.epoxy;
 }
 
+public import glamor.glamor_xv;
+
+
 enum GLAMOR_DEFAULT_PRECISION = 
     "#ifdef GL_ES\n"             ~
     "precision mediump float;\n" ~
@@ -840,19 +843,19 @@ struct glamor_port_private {
     glamor_program xv_prog;
 }
 
-XvAttributeRec[1] glamor_xv_attributes;
-int glamor_xv_num_attributes;
-XvImageRec[1] glamor_xv_images;
-int glamor_xv_num_images;
+// XvAttributeRec[1] glamor_xv_attributes;
+// int glamor_xv_num_attributes;
+// XvImageRec[1] glamor_xv_images;
+// int glamor_xv_num_images;
 
 void glamor_xv_init_port(glamor_port_private* port_priv);
-void glamor_xv_stop_video(glamor_port_private* port_priv);
-int glamor_xv_set_port_attribute(glamor_port_private* port_priv, Atom attribute, INT32 value);
-int glamor_xv_get_port_attribute(glamor_port_private* port_priv, Atom attribute, INT32* value);
-int glamor_xv_query_image_attributes(int id, ushort* w, ushort* h, int* pitches, int* offsets);
-int glamor_xv_put_image(glamor_port_private* port_priv, DrawablePtr pDrawable, short src_x, short src_y, short drw_x, short drw_y, short src_w, short src_h, short drw_w, short drw_h, int id, ubyte* buf, short width, short height, Bool sync, RegionPtr clipBoxes);
-void glamor_xv_core_init(ScreenPtr screen);
-void glamor_xv_render(glamor_port_private* port_priv, int id);
+// void glamor_xv_stop_video(glamor_port_private* port_priv);
+// int glamor_xv_set_port_attribute(glamor_port_private* port_priv, Atom attribute, INT32 value);
+// int glamor_xv_get_port_attribute(glamor_port_private* port_priv, Atom attribute, INT32* value);
+// int glamor_xv_query_image_attributes(int id, ushort* w, ushort* h, int* pitches, int* offsets);
+// int glamor_xv_put_image(glamor_port_private* port_priv, DrawablePtr pDrawable, short src_x, short src_y, short drw_x, short drw_y, short src_w, short src_h, short drw_w, short drw_h, int id, ubyte* buf, short width, short height, Bool sync, RegionPtr clipBoxes);
+// void glamor_xv_core_init(ScreenPtr screen);
+// void glamor_xv_render(glamor_port_private* port_priv, int id);
 
 Bool glamor_set_pixmap_texture(PixmapPtr pixmap, uint tex);
 

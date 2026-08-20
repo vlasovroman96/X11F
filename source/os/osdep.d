@@ -68,6 +68,8 @@ import os.WaitFor;
 import dix.resource;
 import os.timingsafe_memcmp;
 import std.conv;
+public import os.utils;
+
 //public import externs.X11.X;
 //public import externs.X11.Xmd;
 //public import externs.X11.Xdefs_d;
@@ -139,7 +141,7 @@ int os_move_fd(int fd);
 
 /* set signal mask - either on current thread or whole process,
    depending on whether multithreading is used */
-int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldest);
+// int xthread_sigmask(int how, const(sigset_t)* set, sigset_t* oldest);
 
 alias OsSigHandlerPtr = void function(int sig);
 
@@ -224,7 +226,8 @@ alias EXIT_ERR_CONFIGURE = ExitCode.EXIT_ERR_CONFIGURE;
 alias EXIT_ERR_DRIVERS = ExitCode.EXIT_ERR_DRIVERS;
 
 
-sig_atomic_t inSignalContext;
+// sig_atomic_t inSignalContext;
+
 
 /* run timers that are expired at timestamp `now` */
 void DoTimers(CARD32 now);

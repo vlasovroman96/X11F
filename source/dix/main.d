@@ -138,8 +138,8 @@ import Xext.dpmsproc;
 
 void Dispatch();
 
-CallbackListPtr RootWindowFinalizeCallback = null;
-CallbackListPtr PostInitRootWindowCallback = null;
+// CallbackListPtr RootWindowFinalizeCallback = null;
+// CallbackListPtr PostInitRootWindowCallback = null;
 
 int dix_main(int argc, char** argv, char** envp)
 {

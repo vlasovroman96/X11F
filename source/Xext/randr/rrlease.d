@@ -50,7 +50,7 @@ import randr.rrmode;
 
 import dix.swaprep;
 
-RESTYPE RRLeaseType;
+// RESTYPE RRLeaseType;
 
 /*
  * Notify of some lease change

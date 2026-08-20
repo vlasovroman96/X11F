@@ -10,7 +10,7 @@ import build.xorg_config;
 
 import include.xf86Module;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecInt10 = {
     modname: "int10",
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
@@ -24,5 +24,5 @@ private XF86ModuleVersionInfo VersRec = {
 };
 
 export XF86ModuleData int10ModuleData = {
-    vers: &VersRec
+    vers: &VersRecInt10
 };

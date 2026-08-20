@@ -236,8 +236,8 @@ void update_desktop_dimensions();
 void input_constrain_cursor(DeviceIntPtr pDev, ScreenPtr screen, int current_x, int current_y, int dest_x, int dest_y, int* out_x, int* out_y, int* nevents, InternalEvent* events);
 
 // void InputThreadPreInit();
-void InputThreadInit();
-void InputThreadFini();
+// void InputThreadInit();
+// void InputThreadFini();
 
 // int InputThreadRegisterDev(int fd, NotifyFdProcPtr readInputProc, void* readInputArgs);
 

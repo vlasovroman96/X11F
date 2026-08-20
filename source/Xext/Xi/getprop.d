@@ -63,6 +63,7 @@ import dix.request_priv;
 import dix.rpcbuf_priv;
 import dix.window_priv;
 import Xi.handlers;
+public import Xi.extinit;
 
 import include.inputstr;           /* DeviceIntPtr      */
 import include.windowstr;          /* window structs    */
@@ -72,8 +73,8 @@ import externs.X11.extensions.XIproto;
 import dix.devices;
 import dix.dixutils;
 
-XExtEventInfo[1] EventInfo;
-int ExtEventIndex;
+// XExtEventInfo[1] EventInfo;
+// int ExtEventIndex;
 
 /***********************************************************************
  *

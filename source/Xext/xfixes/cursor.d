@@ -144,8 +144,8 @@ enum string Wrap(string as,string s,string elt,string func) = `(((` ~ as ~ `).` 
 enum string Unwrap(string as,string s,string elt,string backup) = `(((` ~ backup ~ `) = (` ~ s ~ `).` ~ elt ~ `), (` ~ s ~ `).` ~ elt ~ ` = (` ~ as ~ `).` ~ elt ~ `);`;
 
 /* The cursor doesn't show up until the first XDefineCursor() */
-Bool CursorVisible = FALSE;
-Bool EnableCursor = TRUE;
+// Bool CursorVisible = FALSE;
+// Bool EnableCursor = TRUE;
 
 private CursorPtr CursorForDevice(DeviceIntPtr pDev)
 {

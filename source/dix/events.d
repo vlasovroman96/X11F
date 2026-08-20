@@ -170,6 +170,7 @@ import include.os;
 import os.io;
 import dix.inpututils;
 import include.xkbstr;
+import dix.extension;
 
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `
@@ -362,7 +363,7 @@ Bool InputDevIsFloating(DeviceIntPtr dev)
 /**
  * Max event opcode.
  */
-int lastEvent;
+// int lastEvent;
 
 enum CantBeFiltered = NoEventMask;
 /**

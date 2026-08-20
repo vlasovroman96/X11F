@@ -33,7 +33,7 @@ struct _mergeRopBits {
 }alias FbMergeRopRec = _mergeRopBits;
 alias FbMergeRopPtr = _mergeRopBits*;
 
-FbMergeRopRec[16] FbMergeRopBits;
+// FbMergeRopRec[16] FbMergeRopBits;
 
 enum string FbDeclareMergeRop() = `FbBits _ca1 = void, _cx1 = void, _ca2 = void, _cx2 = void;`;
 enum string FbDeclarePrebuiltMergeRop() = `FbBits _cca = void, _ccx = void;`;

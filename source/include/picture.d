@@ -31,6 +31,7 @@ import include.picturestr;
 
 public import externs.pixman;
 public import glamor.glamor_render;
+import render.picture;
 
 
 alias DirectFormatPtr = _DirectFormat*;
@@ -159,9 +160,9 @@ enum PictureCmapPolicyGray =	    2;
 enum PictureCmapPolicyColor =	    3;
 enum PictureCmapPolicyAll =	    4;
 
-int PictureCmapPolicy;
+// int PictureCmapPolicy;
 
-int PictureParseCmapPolicy(const(char)* name);
+// int PictureParseCmapPolicy(const(char)* name);
 
 // int RenderErrBase;
 

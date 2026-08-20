@@ -51,7 +51,7 @@ import dix.screen_hooks;
 
 // import include.exa_i;
 
-DevPrivateKeyRec exaScreenPrivateKeyRec;
+// DevPrivateKeyRec exaScreenPrivateKeyRec;
 
 version (CONFIG_MITSHM) {
 private ShmFuncs exaShmFuncs = { null, null };

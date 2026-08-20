@@ -112,7 +112,7 @@ int present_fake_queue_vblank(ScreenPtr screen, ulong event_id, ulong msc)
     return Success;
 }
 
-uint FakeScreenFps = 0;
+// uint FakeScreenFps = 0;
 
 void present_fake_screen_init(ScreenPtr screen)
 {

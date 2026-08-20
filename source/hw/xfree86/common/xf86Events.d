@@ -104,9 +104,10 @@ import dix.property;
 import hw.xfree86.common.xf86Helper;
 import externs.X11.Xatom_;
 import os.connection;
+public import xf86Init;
 
 
-void function() xf86OSPMClose;
+// void function() xf86OSPMClose;
 
 
 

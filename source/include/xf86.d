@@ -58,7 +58,7 @@ import os.inputthread;
 enum xf86ScreenKey = (&xf86ScreenKeyRec);
 
 // ScrnInfoPtr *xf86Screens;      /* List of pointers to ScrnInfoRecs */
-ubyte[256] byte_reversed;
+// ubyte[256] byte_reversed;
 
 enum string XF86SCRNINFO(string p) = `xf86ScreenToScrn(` ~ p ~ `)`;
 

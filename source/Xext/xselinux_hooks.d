@@ -72,6 +72,7 @@ import Xext.xselinux_ext;
 import Xext.xselinux;
 import os.connection;
 import dix.events;
+public import Xext.xselinuxint;
 
 import stdc = core.stdc.errno;
 
@@ -91,9 +92,9 @@ struct SELinuxAuditRec {
 }
 
 /* private state keys */
-DevPrivateKeyRec subjectKeyRec;
-DevPrivateKeyRec objectKeyRec;
-DevPrivateKeyRec dataKeyRec;
+// DevPrivateKeyRec subjectKeyRec;
+// DevPrivateKeyRec objectKeyRec;
+// DevPrivateKeyRec dataKeyRec;
 
 /* audit file descriptor */
 private int audit_fd;

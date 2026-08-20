@@ -38,10 +38,11 @@ public import include.input;              /* for DeviceIntPtr */
 public import include.pixmap;             /* for DrawablePtr */
 public import include.resource;           /* for RESTYPE */
 public import include.inputstr;              /* for DeviceIntPtr */
+import security;              /* for DeviceIntPtr */
 
 
 /* resource type to pass in LookupIDByType for authorizations */
-RESTYPE SecurityAuthorizationResType;
+// RESTYPE SecurityAuthorizationResType;
 
 /* this is what we store for an authorization */
 struct _SecurityAuthorizationRec {

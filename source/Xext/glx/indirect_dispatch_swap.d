@@ -52,7 +52,7 @@ alias _GLXpixel3DHeader = __GLX_PIXEL_3D_HDR;
 // GLboolean __glXErrorOccured();
 // void __glXClearErrorOccured();
 
-private const(uint)[2] dummy_answer = [ 0, 0 ];
+private const(uint)[2] dummy_answer_swap = [ 0, 0 ];
 
 private GLsizei bswap_CARD32(const(void)* src)
 {
@@ -240,7 +240,7 @@ int __glXDispSwap_GenLists(__GLXclientState* cl, GLbyte* pc)
         GLuint retval = void;
 
         retval = glGenLists(cast(GLsizei) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -1602,7 +1602,7 @@ int __glXDispSwap_GetError(__GLXclientState* cl, GLbyte* pc)
         GLenum retval = void;
 
         retval = glGetError();
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -2213,7 +2213,7 @@ int __glXDispSwap_IsEnabled(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = glIsEnabled(cast(GLenum) bswap_ENUM(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -2231,7 +2231,7 @@ int __glXDispSwap_IsList(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = glIsList(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -2626,7 +2626,7 @@ int __glXDispSwap_IsTexture(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = glIsTexture(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -2644,7 +2644,7 @@ int __glXDispSwap_IsTextureEXT(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = glIsTexture(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -3960,7 +3960,7 @@ int __glXDispSwap_IsQuery(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = IsQuery(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -4332,7 +4332,7 @@ int __glXDispSwap_IsProgramARB(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = IsProgramARB(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -4469,7 +4469,7 @@ int __glXDispSwap_CheckFramebufferStatus(__GLXclientState* cl, GLbyte* pc)
         GLenum retval = void;
 
         retval = CheckFramebufferStatus(cast(GLenum) bswap_ENUM(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -4662,7 +4662,7 @@ int __glXDispSwap_IsFramebuffer(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = IsFramebuffer(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 
@@ -4681,7 +4681,7 @@ int __glXDispSwap_IsRenderbuffer(__GLXclientState* cl, GLbyte* pc)
         GLboolean retval = void;
 
         retval = IsRenderbuffer(cast(GLuint) bswap_CARD32(pc + 0));
-        __glXSendReplySwap(cl.client, dummy_answer.ptr, 0, 0, GL_FALSE, retval);
+        __glXSendReplySwap(cl.client, dummy_answer_swap.ptr, 0, 0, GL_FALSE, retval);
         error = Success;
     }
 

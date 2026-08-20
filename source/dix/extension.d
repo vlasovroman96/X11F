@@ -56,6 +56,7 @@ import dix.dix_priv;
 import dix.extension_priv;
 import dix.registry_priv;
 import dix.request_priv;
+import tables;
 
 import include.misc;
 import include.dixstruct;

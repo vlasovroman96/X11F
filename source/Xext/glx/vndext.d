@@ -63,7 +63,7 @@ private DevPrivateKeyRec glvXGLVScreenPrivKey;
 private DevPrivateKeyRec glvXGLVClientPrivKey;
 
 // The resource type used to keep track of the vendor library for XID's.
-RESTYPE idResource;
+// RESTYPE idResource;
 
 private int idResourceDeleteCallback(void* value, XID id)
 {

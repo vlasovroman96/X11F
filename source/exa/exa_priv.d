@@ -49,6 +49,8 @@ public import include.fboverlay;
 public import include.fbpict;
 public import include.glyphstr;
 public import include.damage;
+public import exa_accel;
+
 import include.exa_i;
 import include.gc;
 import include.privates;
@@ -410,7 +412,7 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
 
 void exaCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC, BoxPtr pbox, int nbox, int dx, int dy, Bool reverse, Bool upsidedown, Pixel bitplane, void* closure);
 
-const(GCOps) exaOps;
+// const(GCOps) exaOps;
 
 void ExaCheckComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr pDst, INT16 xSrc, INT16 ySrc, INT16 xMask, INT16 yMask, INT16 xDst, INT16 yDst, CARD16 width, CARD16 height);
 
@@ -454,7 +456,7 @@ void ExaOffscreenFini(ScreenPtr pScreen);
 
 // Bool exaPixmapIsPinned(PixmapPtr pPix);
 
-const(GCFuncs) exaGCFuncs;
+// const(GCFuncs) exaGCFuncs;
 
 /* exa_classic.c */
 PixmapPtr exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth, uint usage_hint);

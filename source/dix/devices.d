@@ -111,7 +111,7 @@ import include.xkbstr;
  * This file handles input device-related stuff.
  */
 
-CallbackListPtr DeviceAccessCallback = null;
+// CallbackListPtr DeviceAccessCallback = null;
 
 
 

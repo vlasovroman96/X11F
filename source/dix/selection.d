@@ -71,9 +71,9 @@ import dix.events;
  *
  *****************************************************************/
 
-Selection* CurrentSelections;
-CallbackListPtr SelectionCallback;
-CallbackListPtr SelectionFilterCallback = null;
+// Selection* CurrentSelections;
+// CallbackListPtr SelectionCallback;
+// CallbackListPtr SelectionFilterCallback = null;
 
 int dixLookupSelection(Selection** result, Atom selectionName, ClientPtr client, Mask access_mode)
 {

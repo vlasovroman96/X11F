@@ -38,6 +38,7 @@ import include.windowstr;
 import include.mi;
 import include.picturestr;
 import externs.X11.extensions.renderproto;
+import render.picture;
 
 
 enum NUM_CUBE_LEVELS =	4;

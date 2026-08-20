@@ -199,7 +199,7 @@ enum GrabActive = 1;
 private int grabState = GrabNone;
 private c_long[mskcnt] grabWaiters;
 CallbackListPtr ServerGrabCallback = null;
-HWEventQueuePtr[2] checkForInput;
+// HWEventQueuePtr[2] checkForInput;
 int connBlockScreenStart;
 
 
@@ -282,7 +282,7 @@ Bool SmartScheduleSignalEnable = TRUE;
 c_long SmartScheduleSlice = SMART_SCHEDULE_DEFAULT_INTERVAL;
 c_long SmartScheduleInterval = SMART_SCHEDULE_DEFAULT_INTERVAL;
 c_long SmartScheduleMaxSlice = SMART_SCHEDULE_MAX_SLICE;
-c_long SmartScheduleTime;
+// c_long SmartScheduleTime;
 int SmartScheduleLatencyLimited = 0;
 private ClientPtr SmartLastClient;
 private int[SMART_MAX_PRIORITY - SMART_MIN_PRIORITY + 1] SmartLastIndex;

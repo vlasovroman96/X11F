@@ -18,5 +18,5 @@ import core.stdc.stddef;
 
 import dix.settings_priv;
 
-bool dixSettingAllowByteSwappedClients = false;
-char* dixSettingSeatId = null;
+// bool dixSettingAllowByteSwappedClients = false;
+// char* dixSettingSeatId = null;

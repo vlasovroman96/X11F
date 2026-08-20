@@ -100,6 +100,22 @@ import mi.miinitext;
 import os.log;
 import externs.gnu;
 
+import Xext.shape;
+import xfixes.xfixes;
+import render.render;
+import damageext.c;
+import geext;
+import Xi.extinit;
+;
+
+import Xext.bigreq;
+
+import Xext.sync;
+
+// import Xext.geext;
+import xkb.xkb.xkb;
+import xcmisc;
+
 
 private const ExtensionModule[] staticExtensions = () {
     ExtensionModule[] result;

@@ -27,6 +27,7 @@ import build.dix_config;
 
 import core.stdc.string;
 import include.fb;
+import fb.fbutil;
 
 version (FB_ACCESS_WRAPPER) {
 

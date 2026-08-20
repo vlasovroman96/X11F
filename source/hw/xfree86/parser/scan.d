@@ -67,6 +67,7 @@ import core.sys.posix.dirent;
 //import externs.X11.Xdefs_d;
 ////import externs.X11.Xfuncproto;
 import core.stdc.limits;
+import xf86AutoConfig_;
 
 import os.xhostname;
 
@@ -94,7 +95,7 @@ struct _ConfigFiles {
     FILE* file;
     char* path;
 }private _ConfigFiles[CONFIG_MAX_FILES] configFiles;
-private const(char)** builtinConfig = null;
+// private const(char)** builtinConfig = null;
 private int builtinIndex = 0;
 private int configPos = 0;       /* current readers position */
 private int configLineNo = 0;    /* linenumber */

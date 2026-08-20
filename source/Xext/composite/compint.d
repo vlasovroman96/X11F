@@ -63,6 +63,7 @@ public import include.picturestr;
 public import include.extnsionst;
 public import include.privates;
 public import composite.compext;
+public import  composite.compinit;
 
 // public import mi.mi;
 public import include.damage;
@@ -169,15 +170,15 @@ struct _CompScreen {
 }alias CompScreenRec = _CompScreen;
 alias CompScreenPtr = _CompScreen*;
 
-DevPrivateKeyRec CompScreenPrivateKeyRec;
+// DevPrivateKeyRec CompScreenPrivateKeyRec;
 
 enum CompScreenPrivateKey = (&CompScreenPrivateKeyRec);
 
-DevPrivateKeyRec CompWindowPrivateKeyRec;
+// DevPrivateKeyRec CompWindowPrivateKeyRec;
 
 enum CompWindowPrivateKey = (&CompWindowPrivateKeyRec);
 
-DevPrivateKeyRec CompSubwindowsPrivateKeyRec;
+// DevPrivateKeyRec CompSubwindowsPrivateKeyRec;
 
 enum CompSubwindowsPrivateKey = (&CompSubwindowsPrivateKeyRec);
 
@@ -225,7 +226,7 @@ void compMarkAncestors(WindowPtr pWin);
  * compinit.c
  */
 
-Bool compScreenInit(ScreenPtr pScreen);
+// Bool compScreenInit(ScreenPtr pScreen);
 
 /*
  * compoverlay.c

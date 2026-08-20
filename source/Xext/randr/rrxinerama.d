@@ -105,6 +105,7 @@ import randr.rrinfo;
 import externs.attrs;
 import os.log;
 import randr.rrdispatch;
+public import pseudoramiX;
 import dix.extension;
 
 /* Xinerama is not multi-screen capable; just report about screen 0 */
@@ -117,7 +118,7 @@ enum RR_XINERAMA_SCREEN =  0;
 
 
 
-Bool noRRXineramaExtension = FALSE;
+// Bool noRRXineramaExtension = FALSE;
 
 /* Proc */
 

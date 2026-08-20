@@ -66,9 +66,9 @@ enum string unwrap(string priv,string real_,string mem) = `{
 int RREventBase;
 int RRErrorBase;
 RESTYPE RRClientType, RREventType;      /* resource types for event masks */
-DevPrivateKeyRec RRClientPrivateKeyRec;
+// DevPrivateKeyRec RRClientPrivateKeyRec;
 
-DevPrivateKeyRec rrPrivKeyRec;
+// DevPrivateKeyRec rrPrivKeyRec;
 
 private void RRClientCallback(CallbackListPtr* list, void* closure, void* data)
 {

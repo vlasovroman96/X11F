@@ -2,9 +2,9 @@ module os.ospoll;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
+// private template HasVersion(string versionId) {
+// 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
+// }
 /*
  * Copyright © 2016 Keith Packard
  *

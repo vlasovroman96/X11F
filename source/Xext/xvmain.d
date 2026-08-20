@@ -136,9 +136,9 @@ private x_server_generation_t XvExtensionGeneration = 0;
 private x_server_generation_t XvScreenGeneration = 0;
 private x_server_generation_t XvResourceGeneration = 0;
 
-int XvReqCode;
+// int XvReqCode;
 private int XvEventBase;
-int XvErrorBase;
+// int XvErrorBase;
 
 int xvUseXinerama = 0;
 

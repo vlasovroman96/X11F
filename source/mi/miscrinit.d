@@ -284,7 +284,7 @@ version (CONFIG_MITSHM) {
     return miScreenDevPrivateInit(pScreen, width, pbits, xsize, ysize);
 }
 
-DevPrivateKeyRec miZeroLineScreenKeyRec;
+// DevPrivateKeyRec miZeroLineScreenKeyRec;
 
 void miSetZeroLineBias(ScreenPtr pScreen, uint bias)
 {

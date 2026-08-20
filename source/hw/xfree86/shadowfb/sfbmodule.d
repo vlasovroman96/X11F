@@ -5,7 +5,7 @@ import build.xorg_config;
 
 import include.xf86Module;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecShwdwFB = {
     modname: "shadowfb",
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
@@ -19,5 +19,5 @@ private XF86ModuleVersionInfo VersRec = {
 };
 
 export XF86ModuleData shadowfbModuleData = {
-    vers: &VersRec
+    vers: &VersRecShwdwFB
 };

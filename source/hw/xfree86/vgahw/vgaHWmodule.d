@@ -8,7 +8,7 @@ import build.xorg_config;
 
 import include.xf86Module;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecVga = {
     modname: "vgahw",
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
@@ -22,5 +22,5 @@ private XF86ModuleVersionInfo VersRec = {
 };
 
 export XF86ModuleData vgahwModuleData = {
-    vers: &VersRec
+    vers: &VersRecVga
 };

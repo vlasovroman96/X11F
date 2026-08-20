@@ -45,7 +45,7 @@ import include.glx_extinit;
 
 // private MODULESETUPPROTO glxSetup;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecGLX = {
     modname: "glx",
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
@@ -59,7 +59,7 @@ private XF86ModuleVersionInfo VersRec = {
 };
 
 XF86ModuleData glxModuleData = {
-    vers: &VersRec,
+    vers: &VersRecGLX,
     setup: &glxSetup
 };
 

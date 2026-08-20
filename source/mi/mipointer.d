@@ -96,13 +96,13 @@ struct _MiPointerRec {
 }alias miPointerRec = _MiPointerRec;
 alias miPointerPtr = miPointerRec*;
 
-DevPrivateKeyRec miPointerScreenKeyRec;
+// DevPrivateKeyRec miPointerScreenKeyRec;
 
 enum string GetScreenPrivate(string s) = `(cast(miPointerScreenPtr) 
     dixLookupPrivate(&(` ~ s ~ `).devPrivates, miPointerScreenKey))`;
 enum string SetupScreen(string s) = `miPointerScreenPtr pScreenPriv = ` ~ GetScreenPrivate!(s) ~ `;`;
 
-DevPrivateKeyRec miPointerPrivKeyRec;
+// DevPrivateKeyRec miPointerPrivKeyRec;
 
 enum string MIPOINTER(string dev) = `
     (InputDevIsFloating(` ~ dev ~ `) ? 

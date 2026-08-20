@@ -58,7 +58,7 @@ enum ALL_VISUALS =     (StaticGrayMask|GrayScaleMask|StaticColorMask|
 enum LARGE_VISUALS =   (TrueColorMask|DirectColorMask);
 enum SMALL_VISUALS =   (StaticGrayMask|GrayScaleMask|StaticColorMask|PseudoColorMask);
 
-DevPrivateKeyRec micmapScrPrivateKeyRec;
+// DevPrivateKeyRec micmapScrPrivateKeyRec;
 
 int miListInstalledColormaps(ScreenPtr pScreen, Colormap* pmaps)
 {

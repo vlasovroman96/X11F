@@ -180,7 +180,7 @@ CARD32 xkbDebugFlags;
 
 /* AccessX functions */
 void XkbSendAccessXNotify(DeviceIntPtr kbd, xkbAccessXNotify* pEv);
-void AccessXInit(DeviceIntPtr dev);
+// void AccessXInit(DeviceIntPtr dev);
 Bool AccessXFilterPressEvent(DeviceEvent* event, DeviceIntPtr keybd);
 Bool AccessXFilterReleaseEvent(DeviceEvent* event, DeviceIntPtr keybd);
 void AccessXCancelRepeatKey(XkbSrvInfoPtr xkbi, KeyCode key);

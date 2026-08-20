@@ -33,6 +33,7 @@ import glamor.glamor_transform;
 import glamor.glamor;
 import externs.gnu;
 import include.picture;
+import glamor.glamor_render;
 // import glamor.glamor_program;
 
 alias glamor_program_location = int;
@@ -543,21 +544,21 @@ glamor_program* glamor_use_program_fill(DrawablePtr drawable, GCPtr gc, glamor_p
     return prog;
 }
 
-private blendinfo[14] composite_op_info = [
-    PictOpClear: {0, 0, GL_ZERO, GL_ZERO},
-    PictOpSrc: {0, 0, GL_ONE, GL_ZERO},
-    PictOpDst: {0, 0, GL_ZERO, GL_ONE},
-    PictOpOver: {0, 1, GL_ONE, GL_ONE_MINUS_SRC_ALPHA},
-    PictOpOverReverse: {1, 0, GL_ONE_MINUS_DST_ALPHA, GL_ONE},
-    PictOpIn: {1, 0, GL_DST_ALPHA, GL_ZERO},
-    PictOpInReverse: {0, 1, GL_ZERO, GL_SRC_ALPHA},
-    PictOpOut: {1, 0, GL_ONE_MINUS_DST_ALPHA, GL_ZERO},
-    PictOpOutReverse: {0, 1, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA},
-    PictOpAtop: {1, 1, GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
-    PictOpAtopReverse: {1, 1, GL_ONE_MINUS_DST_ALPHA, GL_SRC_ALPHA},
-    PictOpXor: {1, 1, GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
-    PictOpAdd: {0, 0, GL_ONE, GL_ONE},
-];
+// private blendinfo[14] composite_op_info = [
+//     PictOpClear: {0, 0, GL_ZERO, GL_ZERO},
+//     PictOpSrc: {0, 0, GL_ONE, GL_ZERO},
+//     PictOpDst: {0, 0, GL_ZERO, GL_ONE},
+//     PictOpOver: {0, 1, GL_ONE, GL_ONE_MINUS_SRC_ALPHA},
+//     PictOpOverReverse: {1, 0, GL_ONE_MINUS_DST_ALPHA, GL_ONE},
+//     PictOpIn: {1, 0, GL_DST_ALPHA, GL_ZERO},
+//     PictOpInReverse: {0, 1, GL_ZERO, GL_SRC_ALPHA},
+//     PictOpOut: {1, 0, GL_ONE_MINUS_DST_ALPHA, GL_ZERO},
+//     PictOpOutReverse: {0, 1, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA},
+//     PictOpAtop: {1, 1, GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
+//     PictOpAtopReverse: {1, 1, GL_ONE_MINUS_DST_ALPHA, GL_SRC_ALPHA},
+//     PictOpXor: {1, 1, GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA},
+//     PictOpAdd: {0, 0, GL_ONE, GL_ONE},
+// ];
 
 private void glamor_set_blend(CARD8 op, glamor_program_alpha alpha, PicturePtr dst)
 {

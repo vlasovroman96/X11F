@@ -103,8 +103,8 @@ enum BUILTIN_LAYOUT_SCREEN_LINE =
 enum BUILTIN_LAYOUT_SECTION_POST = 
 	"EndSection\n\n";
 
-private const(char)** builtinConfig = null;
-private int builtinLines = 0;
+const(char)** builtinConfig = null;
+int builtinLines = 0;
 
 
 

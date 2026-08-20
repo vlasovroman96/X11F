@@ -74,9 +74,9 @@ enum NullRegion = cast(RegionPtr)0;
 alias RegDataRec = pixman_region16_data;
 alias RegDataPtr = pixman_region16_data*;
 
-BoxRec RegionEmptyBox;
-RegDataRec RegionEmptyData;
-RegDataRec RegionBrokenData;
+// BoxRec RegionEmptyBox;
+// RegDataRec RegionEmptyData;
+// RegDataRec RegionBrokenData;
 pragma(inline, true) Bool RegionNil(RegionPtr reg)
 {
     return ((reg).data && !(reg).data.numRects);

@@ -90,34 +90,34 @@ alias ROOT_CLIP_INPUT_ONLY = RootClipMode.ROOT_CLIP_INPUT_ONLY;
 
 alias VisitWindowProcPtr = int function(WindowPtr pWin, void* data) @nogc nothrow;
 
-int TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
+// int TraverseTree(WindowPtr pWin, VisitWindowProcPtr func, void* data);
 
-int WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data);
+// int WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data);
 
-bool CreateRootWindow(ScreenPtr);
+// bool CreateRootWindow(ScreenPtr);
 
-void InitRootWindow(WindowPtr);
+// void InitRootWindow(WindowPtr);
 
 alias RealChildHeadProc = WindowPtr function(WindowPtr pWin) @nogc nothrow;
 
-void RegisterRealChildHeadProc(RealChildHeadProc proc);
+// void RegisterRealChildHeadProc(RealChildHeadProc proc);
 
-WindowPtr RealChildHead(WindowPtr);
+// WindowPtr RealChildHead(WindowPtr);
 
 int DeleteWindow(void* pWin, XID wid);
 
-int DestroySubwindows(WindowPtr, ClientPtr);
+// int DestroySubwindows(WindowPtr, ClientPtr);
 
 /* Quartz support on Mac OS X uses the HIToolbox
    framework whose ChangeWindowAttributes function conflicts here. */
 version (OSX) {
 enum ChangeWindowAttributes = Darwin_X_ChangeWindowAttributes;
 }
-int ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
+// int ChangeWindowAttributes(WindowPtr, Mask, XID*, ClientPtr);
 
-int ChangeWindowDeviceCursor(WindowPtr, DeviceIntRec*, _Cursor*);
+// int ChangeWindowDeviceCursor(WindowPtr, DeviceIntRec*, _Cursor*);
 
-_Cursor* WindowGetDeviceCursor(WindowPtr, DeviceIntRec*);
+// _Cursor* WindowGetDeviceCursor(WindowPtr, DeviceIntRec*);
 
 /* Quartz support on Mac OS X uses the HIToolbox
    framework whose GetWindowAttributes function conflicts here. */
@@ -138,45 +138,45 @@ else {
                                              /* wa */ );
 }
 
-void GravityTranslate(int, int, int, int, int, int, uint, int*, int*);
+// void GravityTranslate(int, int, int, int, int, int, uint, int*, int*);
 
-int ConfigureWindow(WindowPtr, Mask, XID*, ClientPtr);
+// int ConfigureWindow(WindowPtr, Mask, XID*, ClientPtr);
 
-int CirculateWindow(WindowPtr, int, ClientPtr);
+// int CirculateWindow(WindowPtr, int, ClientPtr);
 
-int ReparentWindow(WindowPtr, WindowPtr, int, int, ClientPtr);
+// int ReparentWindow(WindowPtr, WindowPtr, int, int, ClientPtr);
 
-int MapWindow(WindowPtr, ClientPtr);
+// int MapWindow(WindowPtr, ClientPtr);
 
-void MapSubwindows(WindowPtr, ClientPtr);
+// void MapSubwindows(WindowPtr, ClientPtr);
 
-int UnmapWindow(WindowPtr, Bool);
+// int UnmapWindow(WindowPtr, Bool);
 
-void UnmapSubwindows(WindowPtr);
+// void UnmapSubwindows(WindowPtr);
 
-void HandleSaveSet(ClientPtr);
+// void HandleSaveSet(ClientPtr);
 
-bool PointInWindowIsVisible(WindowPtr, int, int);
+// bool PointInWindowIsVisible(WindowPtr, int, int);
 
-RegionPtr NotClippedByChildren(WindowPtr);
+// RegionPtr NotClippedByChildren(WindowPtr);
 
-void SendVisibilityNotify(WindowPtr);
+// void SendVisibilityNotify(WindowPtr);
 
-int dixSaveScreens(ClientPtr client, int on, int mode);
+// int dixSaveScreens(ClientPtr client, int on, int mode);
 
 int SaveScreens(int on, int mode);
 
-WindowPtr FindWindowWithOptional(WindowPtr);
+// WindowPtr FindWindowWithOptional(WindowPtr);
 
-void CheckWindowOptionalNeed(WindowPtr);
+// void CheckWindowOptionalNeed(WindowPtr);
 
-WindowPtr MoveWindowInStack(WindowPtr, WindowPtr);
+// WindowPtr MoveWindowInStack(WindowPtr, WindowPtr);
 
-void SetWinSize(WindowPtr);
+// void SetWinSize(WindowPtr);
 
-void SetBorderSize(WindowPtr);
+// void SetBorderSize(WindowPtr);
 
-void ResizeChildrenWinSize(WindowPtr, int, int, int, int);
+// void ResizeChildrenWinSize(WindowPtr, int, int, int, int);
 
 void SendShapeNotify(WindowPtr, int);
 
@@ -184,6 +184,6 @@ RegionPtr CreateBoundingShape(WindowPtr);
 
 RegionPtr CreateClipShape(WindowPtr);
 
-void SetRootClip(ScreenPtr pScreen, int enable);
+// void SetRootClip(ScreenPtr pScreen, int enable);
 
-VisualPtr WindowGetVisual(WindowPtr);                         /* WINDOW_H */
+// VisualPtr WindowGetVisual(WindowPtr);                         /* WINDOW_H */

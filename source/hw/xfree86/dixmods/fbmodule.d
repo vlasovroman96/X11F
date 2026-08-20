@@ -31,7 +31,7 @@ import build.xorg_config;
 import include.xf86Module;
 import include.fb;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecFb = {
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
     _modinfo2_: MODINFOSTRING2,
@@ -45,13 +45,13 @@ private XF86ModuleVersionInfo VersRec = {
 
 static this() {
     version(FB_ACCESS_WRAPPER) {
-        VersRec.modname = "wfb";
+        VersRecFb.modname = "wfb";
     }
     else {
-        VersRec.modname = "fb";
+        VersRecFb.modname = "fb";
     }
 }
 
 export XF86ModuleData ModuleData = {
-    vers: &VersRec
+    vers: &VersRecFb
 };

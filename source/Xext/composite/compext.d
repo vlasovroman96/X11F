@@ -59,6 +59,7 @@ import externs.X11.extensions.compositeproto;
 import xfixes.region;
 import dix.extension;
 import render.picture;
+public import composite.compint;
 
 
 
@@ -71,8 +72,8 @@ private int compositeUseXinerama = 0;
 
 enum CompositeClientPrivateKey = (&CompositeClientPrivateKeyRec);
 RESTYPE CompositeClientWindowType;
-RESTYPE CompositeClientSubwindowsType;
-RESTYPE CompositeClientOverlayType;
+// RESTYPE CompositeClientSubwindowsType;
+// RESTYPE CompositeClientOverlayType;
 
 struct _CompositeClient {
     int major_version;

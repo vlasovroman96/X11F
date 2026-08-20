@@ -11,4 +11,4 @@ import core.stdc.stddef;
 
 import include.callback;
 
-CallbackListPtr ClientDestroyCallback = null;
+// CallbackListPtr ClientDestroyCallback = null;

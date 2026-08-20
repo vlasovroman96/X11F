@@ -34,9 +34,9 @@ import externs.X11.extensions.presenttokens;
 import os.log;
 
 
-int present_request;
-DevPrivateKeyRec present_screen_private_key;
-DevPrivateKeyRec present_window_private_key;
+// int present_request;
+// DevPrivateKeyRec present_screen_private_key;
+// DevPrivateKeyRec present_window_private_key;
 
 alias unwrap = present.present_priv.unwrap;
 alias wrap = present.present_priv.wrap;

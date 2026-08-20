@@ -14,8 +14,8 @@ import dix.screensaver_priv;
 import include.screenint;
 import include.scrnintstr;
 
-CallbackListPtr ScreenSaverAccessCallback = null;
-CallbackListPtr ScreenAccessCallback = null;
+// CallbackListPtr ScreenSaverAccessCallback = null;
+// CallbackListPtr ScreenAccessCallback = null;
 
 void dixFreeScreen(ScreenPtr pScreen)
 {

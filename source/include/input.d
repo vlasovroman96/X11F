@@ -174,7 +174,8 @@ alias GrabMask = _GrabMask;
 alias ValuatorMask = _ValuatorMask;
 
 /* The DIX stores incoming input events in this list */
-InternalEvent* InputEventList;
+// InternalEvent* InputEventList;
+import dix.getevents;
 
 alias DeviceProc = int function(DeviceIntPtr, int);
 
@@ -469,6 +470,7 @@ int* input_option_find(InputOption* list, const(char)* key);
 int input_force_unlock();
 int in_input_thread();
 
-int InputThreadEnable;
+// int InputThreadEnable;
+public import os.inputthread;
 
                           /* INPUT_H */

@@ -8,9 +8,11 @@ extern(C): __gshared:
  
 public import os.osdep;
 public import include.xf86;
+public import xf86Configure;
+
 
 // Bool xf86DoConfigure;
-Bool xf86DoConfigurePass1;
+// Bool xf86DoConfigurePass1;
 // Bool xf86ProbeIgnorePrimary;
 
 /*
@@ -67,10 +69,10 @@ void xf86LockZoom(ScreenPtr pScreen, int lock);
 // void xf86VTLeave();
 // void xf86EnableInputDeviceForVTSwitch(InputInfoPtr pInfo);
 // void xf86Wakeup(void* blockData, int err);
-void xf86HandlePMEvents(int fd, void* data);
+// void xf86HandlePMEvents(int fd, void* data);
 
-int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs;
-pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs;
+// int function(int fd, pmEvent* events, int num) xf86PMGetEventFromOs;
+// pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs;
 
 /* xf86Helper.c */
 // void xf86DeleteDriver(int drvIndex);
@@ -80,7 +82,7 @@ pmWait function(int fd, pmEvent event) xf86PMConfirmEventToOs;
 
 /* xf86Init.c */
 Bool xf86LoadModules(const(char)** list, void** optlist);
-Bool xf86HasTTYs();
+// Bool xf86HasTTYs();
 
 /* xf86Mode.c */
 const(void )* xf86ModeStatusToString(ModeStatus status);

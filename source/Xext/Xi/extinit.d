@@ -159,7 +159,7 @@ import Xi.setmmap;
 import Xi.xichangehierarchy;
 import Xi.xisetclientpointer;
 import dix.events;
-
+import tables;
 import include.misc;
 import os.log;
 import std.conv;

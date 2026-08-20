@@ -95,6 +95,7 @@ import read;
 import include.optionstr;
 import os.utils;
 import mi.miinitext;
+import render.picture;
 
 
 import include.picture;

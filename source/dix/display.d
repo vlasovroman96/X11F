@@ -1,6 +1,7 @@
 module dix.display;
 @nogc nothrow:
 extern(C): __gshared:
+public import dix.dix_priv;
 /* SPDX-License-Identifier: MIT OR X11
  *
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
@@ -11,8 +12,8 @@ extern(C): __gshared:
 // import include.dix;
 // import include.screenint;
 
-const(char)* display = "0";
-int displayfd = -1;
+// const(char)* display = "0";
+// int displayfd = -1;
 
 // const(char)* dixGetDisplayName(ScreenPtr* pScreen)
 // {

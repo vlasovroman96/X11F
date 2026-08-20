@@ -58,11 +58,11 @@ import dix.screen_hooks;
 
 
 
-DevPrivateKeyRec glamor_screen_private_key;
-DevPrivateKeyRec glamor_pixmap_private_key;
-DevPrivateKeyRec glamor_gc_private_key;
+// DevPrivateKeyRec glamor_screen_private_key;
+// DevPrivateKeyRec glamor_pixmap_private_key;
+// DevPrivateKeyRec glamor_gc_private_key;
 
-void function(ScreenPtr screen, glamor_context* glamor_ctx) glamor_egl_screen_init2 = &glamor_egl_screen_init;
+// void function(ScreenPtr screen, glamor_context* glamor_ctx) glamor_egl_screen_init2 = &glamor_egl_screen_init;
 
 glamor_screen_private* glamor_get_screen_private(ScreenPtr screen)
 {
@@ -316,7 +316,7 @@ private void glamor_set_debug_level(int* debug_level)
     *debug_level = 0;
 }
 
-int glamor_debug_level;
+// int glamor_debug_level;
 
 void glamor_gldrawarrays_quads_using_indices(glamor_screen_private* glamor_priv, uint count)
 {

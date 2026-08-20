@@ -101,7 +101,7 @@ enum string DEBUGF(string str) = `ErrorF(` ~ str ~ `, ##__VA_ARGS__)`;
 enum DEBUGRegionPrint = RegionPrint;
 }
 
-private blendinfo[14] composite_op_info = [
+blendinfo[14] composite_op_info = [
     PictOpClear: {0, 0, GL_ZERO, GL_ZERO},
     PictOpSrc: {0, 0, GL_ONE, GL_ZERO},
     PictOpDst: {0, 0, GL_ZERO, GL_ONE},

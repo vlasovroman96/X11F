@@ -57,7 +57,7 @@ import os.inputthread;
 
 enum TOUCH_HISTORY_SIZE = 100;
 
-Bool touchEmulatePointer = TRUE;
+// Bool touchEmulatePointer = TRUE;
 
 /**
  * Some documentation about touch points:

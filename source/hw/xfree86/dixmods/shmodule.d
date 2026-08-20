@@ -37,7 +37,7 @@ import    include.globals;
 import    include.gcstruct;
 import include.shadow;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecShadow = {
     modname: "shadow",
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
@@ -51,5 +51,5 @@ private XF86ModuleVersionInfo VersRec = {
 };
 
 export XF86ModuleData shadowModuleData = {
-    vers: &VersRec
+    vers: &VersRecShadow
 };

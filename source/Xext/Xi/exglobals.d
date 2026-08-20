@@ -46,38 +46,38 @@ public import Xi.extinit;
 // int BadClass;
 
 /* Note: only the ones needed in files other than extinit.c are declared */
-const(Mask) DevicePointerMotionHintMask;
-const(Mask) DeviceFocusChangeMask;
-const(Mask) DeviceStateNotifyMask;
-const(Mask) DeviceMappingNotifyMask;
-const(Mask) DeviceOwnerGrabButtonMask;
-const(Mask) DeviceButtonGrabMask;
-const(Mask) DeviceButtonMotionMask;
-const(Mask) DevicePresenceNotifyMask;
-const(Mask) DevicePropertyNotifyMask;
-const(Mask) XIAllMasks;
+// const(Mask) DevicePointerMotionHintMask;
+// const(Mask) DeviceFocusChangeMask;
+// const(Mask) DeviceStateNotifyMask;
+// const(Mask) DeviceMappingNotifyMask;
+// const(Mask) DeviceOwnerGrabButtonMask;
+// const(Mask) DeviceButtonGrabMask;
+// const(Mask) DeviceButtonMotionMask;
+// const(Mask) DevicePresenceNotifyMask;
+// const(Mask) DevicePropertyNotifyMask;
+// const(Mask) XIAllMasks;
 
-int DeviceValuator;
-int DeviceKeyPress;
-int DeviceKeyRelease;
-int DeviceButtonPress;
-int DeviceButtonRelease;
-int DeviceMotionNotify;
-int DeviceFocusIn;
-int DeviceFocusOut;
-int ProximityIn;
-int ProximityOut;
-int DeviceStateNotify;
-int DeviceKeyStateNotify;
-int DeviceButtonStateNotify;
-int DeviceMappingNotify;
-int ChangeDeviceNotify;
-int DevicePresenceNotify;
-int DevicePropertyNotify;
+// int DeviceValuator;
+// int DeviceKeyPress;
+// int DeviceKeyRelease;
+// int DeviceButtonPress;
+// int DeviceButtonRelease;
+// int DeviceMotionNotify;
+// int DeviceFocusIn;
+// int DeviceFocusOut;
+// int ProximityIn;
+// int ProximityOut;
+// int DeviceStateNotify;
+// int DeviceKeyStateNotify;
+// int DeviceButtonStateNotify;
+// int DeviceMappingNotify;
+// int ChangeDeviceNotify;
+// int DevicePresenceNotify;
+// int DevicePropertyNotify;
 
-RESTYPE RT_INPUTCLIENT;
+// RESTYPE RT_INPUTCLIENT;
 
-DevPrivateKeyRec XIClientPrivateKeyRec;
+// DevPrivateKeyRec XIClientPrivateKeyRec;
 
 pragma(inline, true) XIClientPtr XIClientPriv(ClientPtr client) {
     return cast(XIClientPtr)dixLookupPrivate(&client.devPrivates, &XIClientPrivateKeyRec);

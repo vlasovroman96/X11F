@@ -47,7 +47,7 @@ import dix.server_priv;
 import miext.extinit_priv;
 import os.osdep;
 import xkb.xkbfmisc_priv;
-import xkb.xkbsrv_priv;
+public import xkb.xkbsrv_priv;
 
 import include.misc;
 import include.inputstr;
@@ -77,14 +77,14 @@ enum XkbAllCompatMapEventsMask =	XkbAllCompatMask;
 enum XkbAllBellEventsMask =		(1L << 0);
 enum XkbAllActionMessagesMask =	(1L << 0);
 
-int XkbEventBase;
+// int XkbEventBase;
 private int XkbErrorBase;
-int XkbReqCode;
-int XkbKeyboardErrorCode;
-CARD32 xkbDebugFlags = 0;
+// int XkbReqCode;
+// int XkbKeyboardErrorCode;
+// CARD32 xkbDebugFlags = 0;
 private CARD32 xkbDebugCtrls = 0;
 
-RESTYPE RT_XKBCLIENT = 0;
+// RESTYPE RT_XKBCLIENT = 0;
 
 alias XkbNumRequiredTypes = xkb.XKBMAlloc.XkbNumRequiredTypes;
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;

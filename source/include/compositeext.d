@@ -27,7 +27,7 @@ extern(C): __gshared:
 public import include.misc;
 public import include.scrnintstr;
 
-bool CompositeRegisterAlternateVisuals(ScreenPtr pScreen, VisualID* vids, int nVisuals);
+// bool CompositeRegisterAlternateVisuals(ScreenPtr pScreen, VisualID* vids, int nVisuals);
 
 bool compIsAlternateVisual(ScreenPtr pScreen, XID visual);
 

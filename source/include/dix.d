@@ -59,6 +59,8 @@ public import include.input;
 public import include.cursor;
 public import include.events;
 public import dix.dispatch;
+// public import dix.dispatch;
+
 
 enum EARLIER = -1;
 enum SAMETIME = 0;
@@ -163,7 +165,7 @@ const(char*) NameForAtom(Atom);
  *  ServerGrabCallback stuff
  */
 
-CallbackListPtr ServerGrabCallback;
+// CallbackListPtr ServerGrabCallback;
 
 enum ServerGrabState { SERVER_GRABBED, SERVER_UNGRABBED,
     CLIENT_PERVIOUS, CLIENT_IMPERVIOUS

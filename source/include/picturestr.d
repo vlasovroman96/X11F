@@ -318,7 +318,9 @@ enum PICTURE_SCREEN_VERSION = 2;
 alias PictureScreenPtr = _PictureScreen*;
 
 // DevPrivateKeyRec PictureScreenPrivateKeyRec;
-DevPrivateKeyRec PictureWindowPrivateKeyRec;
+// DevPrivateKeyRec PictureWindowPrivateKeyRec;
+import render.picture;
+
 
 enum string GetPictureScreen(string s) = `(cast(PictureScreenPtr)dixLookupPrivate(&(` ~ s ~ `).devPrivates, &PictureScreenPrivateKeyRec))`;
 enum string GetPictureScreenIfSet(string s) = `(dixPrivateKeyRegistered(&PictureScreenPrivateKeyRec) ? ` ~ GetPictureScreen!(s) ~ ` : null)`;

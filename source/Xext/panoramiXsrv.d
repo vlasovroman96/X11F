@@ -16,7 +16,7 @@ import dix.resource;
 // int PanoramiXNumScreens;
 // int PanoramiXPixWidth;
 // int PanoramiXPixHeight;
-RegionRec PanoramiXScreenRegion;
+// RegionRec PanoramiXScreenRegion;
 
 // exported for nvidia
 // export VisualID PanoramiXTranslateVisualID(int screen, VisualID orig);

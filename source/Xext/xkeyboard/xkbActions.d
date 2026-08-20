@@ -70,7 +70,7 @@ import dix.inpututils;
 
 enum EXTENSION_EVENT_BASE = 64;
 
-DevPrivateKeyRec xkbDevicePrivateKeyRec;
+// DevPrivateKeyRec xkbDevicePrivateKeyRec;
 
 enum string XkbIsPtrAction(string a) =	`(((`~a~`).type>=XkbSA_MovePtr)&&((`~a~`).type<=XkbSA_SetPtrDflt))`;
 

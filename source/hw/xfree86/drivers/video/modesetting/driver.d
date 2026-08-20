@@ -374,7 +374,7 @@ private DevPrivateKeyRec asyncFlipPrivateKeyRec;
 
 // private MODULESETUPPROTO Setup;
 
-private XF86ModuleVersionInfo VersRec = {
+private XF86ModuleVersionInfo VersRecMS = {
     modname: "modesetting",
     vendor: MODULEVENDORSTRING,
     _modinfo1_: MODINFOSTRING1,
@@ -389,7 +389,7 @@ private XF86ModuleVersionInfo VersRec = {
 };
 
 export XF86ModuleData modesettingModuleData = {
-    vers: &VersRec,
+    vers: &VersRecMS,
     setup: &Setup
 };
 

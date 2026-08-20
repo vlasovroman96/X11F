@@ -129,9 +129,9 @@ static void SShmCompletionEvent(xShmCompletionEvent *from,
                                 xShmCompletionEvent *to);
 
 private ubyte ShmReqCode;
-int ShmCompletionCode;
-int BadShmSegCode;
-RESTYPE ShmSegType;
+// int ShmCompletionCode;
+// int BadShmSegCode;
+// RESTYPE ShmSegType;
 private ShmDescPtr Shmsegs;
 private Bool sharedPixmaps;
 private DevPrivateKeyRec shmScrPrivateKeyRec;

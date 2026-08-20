@@ -317,10 +317,10 @@ private const(__DRIswrastLoaderExtension) swrastLoaderExtension = {
     &swrastGetImage
 };
 
-private const(__DRIextension)*[2] loader_extensions;
+private const(__DRIextension)*[2] loader_extensions_swrast;
 
 shared static this() {
-    loader_extensions = [
+    loader_extensions_swrast = [
     &swrastLoaderExtension.base,
     null
 ];
@@ -423,9 +423,10 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
         goto handle_error;
     }
 
+    //!FIX THIS HACK
     screen.driScreen =
         assumeNoGC(screen.swrast.createNewScreen) (pScreen.myNum,
-                                            cast(__DRIextensionRec**)loader_extensions.ptr,
+                                            cast(__DRIextensionRec**)loader_extensions_swrast.ptr,
                                             &screen.driConfigs, screen);
 
     if (screen.driScreen == null) {

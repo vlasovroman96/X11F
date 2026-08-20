@@ -55,6 +55,7 @@ public import include.screenint;
 public import include.extension;
 public import include.gc;
 public import include.privates;
+public import  tables;
 
 struct _ExtensionEntry {
     int index;
@@ -79,7 +80,7 @@ alias ExtensionEntry = _ExtensionEntry;
  */
 alias EventSwapPtr = void function(xEvent*, xEvent*);
 
-EventSwapPtr[128] EventSwapVector;
+// EventSwapPtr[128] EventSwapVector;
 
 // noreturn NotImplemented(xEvent*, xEvent*);
 

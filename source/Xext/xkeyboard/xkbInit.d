@@ -82,6 +82,7 @@ import dix.inpututils;
 import dix.property;
 import xkb.xkbDflts;
 import xkb.XKBMAlloc;
+public import xkb.xkbAccessX;
 
 
 // import externs.X11.extensions.XKBstr;
@@ -114,8 +115,8 @@ enum	PHYS_LEDS =	0x07;
 enum	XKB_DFLT_RULES_PROP =	TRUE;
 
 
-const(char)* XkbBaseDirectory = XKB_BASE_DIRECTORY;
-const(char)* XkbBinDirectory = XKB_BIN_DIRECTORY;
+// const(char)* XkbBaseDirectory = XKB_BASE_DIRECTORY;
+// const(char)* XkbBinDirectory = XKB_BIN_DIRECTORY;
 private int XkbWantAccessX = 0;
 
 private char* XkbRulesDflt = null;
@@ -729,13 +730,13 @@ void XkbFreeInfo(XkbSrvInfoPtr xkbi)
 
 /***====================================================================***/
 
-int XkbDfltRepeatDelay;
-int XkbDfltRepeatInterval;
+// int XkbDfltRepeatDelay;
+// int XkbDfltRepeatInterval;
 
-ushort XkbDfltAccessXTimeout;
-uint XkbDfltAccessXTimeoutMask;
-uint XkbDfltAccessXFeedback;
-ushort XkbDfltAccessXOptions;
+// ushort XkbDfltAccessXTimeout;
+// uint XkbDfltAccessXTimeoutMask;
+// uint XkbDfltAccessXFeedback;
+// ushort XkbDfltAccessXOptions;
 
 int XkbProcessArguments(int argc, char** argv, int i)
 {

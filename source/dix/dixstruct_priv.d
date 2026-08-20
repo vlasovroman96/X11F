@@ -18,6 +18,7 @@ public import include.pixmap;
 public import include.privates;
 public import include.dixstruct;
 import os.log;
+public import tables;
 
 pragma(inline, true) void SetReqFds(ClientPtr client, int req_fds) {
     if (client.req_fds != 0 && req_fds != client.req_fds)
@@ -79,13 +80,13 @@ pragma(inline, true) Bool any_output_pending() {
 enum SMART_MAX_PRIORITY =  (20);
 enum SMART_MIN_PRIORITY =  (-20);
 
-void SmartScheduleInit();
+// void SmartScheduleInit();
 
 /* This prototype is used pervasively in Xext, dix */
 enum string DISPATCH_PROC(string func) = `int func(ClientPtr);`;
 
 /* proc vectors */
 
-int function(ClientPtr)[3] InitialVector;
+// int function(ClientPtr)[3] InitialVector;
 
  /* _XSERVER_DIXSTRUCT_PRIV_H */

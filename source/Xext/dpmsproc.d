@@ -7,15 +7,17 @@ extern(C): __gshared:
 public import build.dix_config;
 
 public import include.dixstruct;
+public import Xext.dpms;
+
 
 int DPMSSet(ClientPtr client, int level);
 Bool DPMSSupported();
 
-CARD32 DPMSStandbyTime;
-CARD32 DPMSSuspendTime;
-CARD32 DPMSOffTime;
-CARD16 DPMSPowerLevel;
-Bool DPMSEnabled;
-Bool DPMSDisabledSwitch;
+// CARD32 DPMSStandbyTime;
+// CARD32 DPMSSuspendTime;
+// CARD32 DPMSOffTime;
+// CARD16 DPMSPowerLevel;
+// Bool DPMSEnabled;
+// Bool DPMSDisabledSwitch;
 
 

@@ -176,7 +176,7 @@ private const(ubyte)[4] _back_msb = [ 0X11, 0x44, 0x22, 0x88 ];
 
 
 
-int screenIsSaved = SCREEN_SAVER_OFF;
+// int screenIsSaved = SCREEN_SAVER_OFF;
 
 
 
@@ -473,8 +473,8 @@ int WalkTree(ScreenPtr pScreen, VisitWindowProcPtr func, void* data)
 }
 
 /* hack to force no backing store */
-Bool disableBackingStore = FALSE;
-Bool enableBackingStore = FALSE;
+// Bool disableBackingStore = FALSE;
+// Bool enableBackingStore = FALSE;
 
 void SetWindowToDefaults(WindowPtr pWin)
 {

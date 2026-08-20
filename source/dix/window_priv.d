@@ -47,7 +47,7 @@ enum string SameBorder(string as, string a, string bs, string b) = `EqualPixUnio
  *
  * @return pointer to new Window or NULL on error (see error pointer)
  */
-WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, uint h, uint bw, uint windowclass, Mask vmask, XID* vlist, int depth, ClientPtr client, VisualID visual, int* error);
+// WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, uint h, uint bw, uint windowclass, Mask vmask, XID* vlist, int depth, ClientPtr client, VisualID visual, int* error);
 /*
  * @brief Make sure the window->optional structure exists.
  *
@@ -56,7 +56,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
  * @param pWin the window to operate on
  * @return FALSE if allocation failed, otherwise TRUE
  */
-Bool MakeWindowOptional(WindowPtr pWin);
+// Bool MakeWindowOptional(WindowPtr pWin);
 
 /*
  * @brief check whether a window (ID) is a screen root window

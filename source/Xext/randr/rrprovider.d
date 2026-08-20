@@ -55,7 +55,7 @@ import randr.rrinfo;
 
 import dix.swaprep;
 
-RESTYPE RRProviderType = 0;
+// RESTYPE RRProviderType = 0;
 
 /*
  * Initialize provider type error value

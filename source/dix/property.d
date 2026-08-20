@@ -154,7 +154,7 @@ no_panoramix:
     setVRRMode(pWindow, mode);
 }
 
-CallbackListPtr PropertyFilterCallback;
+// CallbackListPtr PropertyFilterCallback;
 
 private void deliverPropertyNotifyEvent(WindowPtr pWin, int state, PropertyPtr pProp)
 {

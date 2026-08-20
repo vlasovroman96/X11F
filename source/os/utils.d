@@ -63,6 +63,8 @@ import externs.X11.fonts.libxfont2;
 import externs.attrs;
 import os.osinit;
 import os.Xtransutil;
+import Xext.xtest;
+import render.picture;
 version (Cygwin) {
 import core.stdc.stdlib;
 import core.stdc.signal;
@@ -167,9 +169,9 @@ alias fopen = core.stdc.stdio.fopen;
 
 Bool enableIndirectGLX = FALSE;
 
-version (XINERAMA) {
+// version (XINERAMA) {
 Bool PanoramiXExtensionDisabledHack = FALSE;
-} /* XINERAMA */
+// } /* XINERAMA */
 
 sig_atomic_t inSignalContext = FALSE;
 

@@ -126,11 +126,11 @@ alias ClientPtr = _Client*;
 
 /* proc vectors */
 
- int function(ClientPtr)[256] ProcVector;
+//  int function(ClientPtr)[256] ProcVector;
 
- int function(ClientPtr)[256] SwappedProcVector;
+//  int function(ClientPtr)[256] SwappedProcVector;
 
 /* fixme: still needed by (public) dix.h */
-ReplySwapPtr[256] ReplySwapVector;
+// ReplySwapPtr[256] ReplySwapVector;
 
                           /* DIXSTRUCT_H */

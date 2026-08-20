@@ -49,8 +49,10 @@ import Xi.handlers;
 import include.inputstr;
 import Xi.exglobals;
 import include.misc;
+import Xi.extinit;
+public import Xi.extinit;
 
-XExtensionVersion XIVersion;     /* defined in getvers.c */
+// XExtensionVersion XIVersion;     /* defined in getvers.c */
 
 /**
  * Return the supported XI version.
