@@ -85,6 +85,7 @@ struct xkb_options {
     char* options;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void device_removed(LibHalContext* ctx, const(char)* udi)
 {
     char* value = void;
@@ -148,6 +149,7 @@ private char* get_prop_string_array(LibHalContext* hal_ctx, const(char)* udi, co
     return ret;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void device_added(LibHalContext* hal_ctx, const(char)* udi)
 {
     char* path = null, driver = null, name = null, config_info = null;
@@ -463,6 +465,7 @@ private void device_added(LibHalContext* hal_ctx, const(char)* udi)
     return;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void disconnect_hook(void* data)
 {
     DBusError error = void;
@@ -649,6 +652,7 @@ private BOOL listen_for_startup(DBusConnection* connection, void* data)
     return cast(BOOL)rc;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void connect_hook(DBusConnection* connection, void* data)
 {
     config_hal_info* info = cast(config_hal_info*)data;

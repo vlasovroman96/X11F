@@ -21,11 +21,17 @@ version (XSERVER_LIBPCIACCESS) {
 
 } else { /* XSERVER_LIBPCIACCESS */
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterInit() {}
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterFini() {}
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterScrnInit(ScrnInfoPtr pScrn) {}
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterWrapFunctions() {}
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterLock(ScrnInfoPtr pScrn) {}
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterUnlock(ScrnInfoPtr pScrn) {}
 
 } /* XSERVER_LIBPCIACCESS */

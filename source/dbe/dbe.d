@@ -958,6 +958,7 @@ private void miDbeWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, Window
  *
  * Description:
  *
+ pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  *     Called from InitExtensions in main()
  *
  *****************************************************************************/

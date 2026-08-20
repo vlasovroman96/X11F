@@ -136,6 +136,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
         if (client.swapped) {
             SwapLongs(cast(CARD32*) (r + 1), r.num_valuators);
         }
+        pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
         int status = ChangeDeviceControl(client, dev, cast(xDeviceCtl*) r);
         if (status == Success) {
             AxisInfoPtr a = &dev.valuator.axes[r.first_valuator];

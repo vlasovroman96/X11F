@@ -85,11 +85,13 @@ void xf86VTRequest(int sig)
     return;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchPending()
 {
     return xf86Info.vtRequestsPending ? TRUE : FALSE;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchAway()
 {
     xf86Info.vtRequestsPending = FALSE;
@@ -101,6 +103,7 @@ Bool xf86VTSwitchAway()
         return TRUE;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchTo()
 {
     xf86Info.vtRequestsPending = FALSE;

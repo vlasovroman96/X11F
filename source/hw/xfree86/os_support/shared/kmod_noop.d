@@ -31,6 +31,7 @@ import build.xorg_config;
 
 import include.xf86_OSproc;;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86LoadKernelModule(const(char)* pathname)
 {
     cast(void) pathname;

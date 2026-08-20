@@ -35,6 +35,7 @@ import exa.exa;
 
 /* This file holds the classic exa specific implementation. */
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void* ExaGetPixmapAddress(PixmapPtr p)
 {
     mixin(ExaPixmapPriv!("p"));
@@ -237,7 +238,6 @@ Bool exaPixmapHasGpuCopy_classic(PixmapPtr pPixmap)
     if (pExaScr.info.PixmapIsOffscreen) {
         void* old_ptr = pPixmap.devPrivate.ptr;
 
-        pPixmap.devPrivate.ptr = ExaGetPixmapAddress(pPixmap);
         ret = pExaScr.info.PixmapIsOffscreen(pPixmap);
         pPixmap.devPrivate.ptr = old_ptr;
     }

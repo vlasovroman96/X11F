@@ -16,3 +16,4 @@ x12-test-*
 *.obj
 *.lst
 log.txt
+fixer.py

@@ -21,6 +21,7 @@ public import include.xkbsrv;
 public import include.xkbsrv;
 import externs.X11.extensions.XKBproto;
 import include.xkbstr;
+public import build.dix_config;
 
 
 enum _BEEP_NONE =              0;
@@ -188,8 +189,11 @@ void AccessXComputeCurveFactor(XkbSrvInfoPtr xkbi, XkbControlsPtr ctrls);
 int XkbDDXAccessXBeep(DeviceIntPtr dev, uint what, uint which);
 
 /* DDX entry points - DDX needs to implement these */
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXTerminateServer(DeviceIntPtr dev, KeyCode key, XkbAction* act);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXSwitchScreen(DeviceIntPtr dev, KeyCode key, XkbAction* act);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act);
 
 /* client resources */

@@ -1180,6 +1180,8 @@ version (XSERVER_LIBPCIACCESS) {
     }
 
     /* OS-specific processing */
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return xf86ProcessArgument(argc, argv, i);
 }
 

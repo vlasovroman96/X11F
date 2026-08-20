@@ -87,6 +87,7 @@ private void RRDestroyProviderProperty(RRPropertyPtr prop)
     free(prop);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void RRDeleteProperty(RRProviderRec* provider, RRPropertyRec* prop)
 {
     xRRProviderPropertyNotifyEvent event = {

@@ -248,6 +248,7 @@ private void release_sigio()
     xthread_sigmask(SIG_UNBLOCK, &set, null);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86InstallSIGIOHandler(int fd, void function(int, void*) @nogc nothrow f, void* closure)
 {
     sigaction_t sa = void;
@@ -315,6 +316,7 @@ static if (HasVersion!"I_SETSIG" && HasVersion!"HAVE_ISASTREAM") {
     return 0;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86RemoveSIGIOHandler(int fd)
 {
     sigaction_t sa = void;

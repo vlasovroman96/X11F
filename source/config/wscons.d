@@ -250,6 +250,7 @@ nameint[2] kbdmodel = [
 
 //  kbd_config_done:
 //     attrs.flags |= ATTR_KEY | ATTR_KEYBOARD;
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 //     rc = NewInputDeviceRequest(input_options, &attrs, &dev);
 //     if (rc != Success)
 //         goto unwind;
@@ -282,6 +283,7 @@ nameint[2] kbdmodel = [
 //     input_options = input_option_new(input_options, "device", strdup(path));
 //     LogMessage(X_INFO, "config/wscons: checking input device %s\n", path);
 //     attrs.flags |= flags;
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 //     rc = NewInputDeviceRequest(input_options, &attrs, &dev);
 //     if (rc != Success)
 //         goto unwind;

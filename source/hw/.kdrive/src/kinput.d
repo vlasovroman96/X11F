@@ -2325,16 +2325,19 @@ void ProcessInputEvents()
 }
 
 /* At the moment, absolute/relative is up to the client. */
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceMode(ClientPtr client, DeviceIntPtr pDev, int mode)
 {
     return BadMatch;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceValuators(ClientPtr client, DeviceIntPtr pDev, int* valuators, int first_valuator, int num_valuators)
 {
     return BadMatch;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int ChangeDeviceControl(ClientPtr client, DeviceIntPtr pDev, xDeviceCtl* control)
 {
     switch (control.control) {
@@ -2357,6 +2360,7 @@ int ChangeDeviceControl(ClientPtr client, DeviceIntPtr pDev, xDeviceCtl* control
     return BadImplementation;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* pdev)
 {
     InputOption* option = null, optionsdup = null;
@@ -2499,11 +2503,13 @@ version(CONFIG_UDEV) {
     return Success;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void DeleteInputDeviceRequest(DeviceIntPtr pDev)
 {
     RemoveDevice(pDev, TRUE);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void RemoveInputDeviceTraces(const(char)* config_info_){
 }
 

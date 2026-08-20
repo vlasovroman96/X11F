@@ -32,12 +32,15 @@ enum XI_STUBS_H = 1;
 public import externs.X11.extensions.XIproto;
 
 public import include.dix;
-public import externs.X11.Xdefs_d; 
+public import externs.X11.Xdefs_d; public import build.dix_config;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode);
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int first_valuator, int num_valuators);
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control);
 
 }                          /* XI_STUBS_H */

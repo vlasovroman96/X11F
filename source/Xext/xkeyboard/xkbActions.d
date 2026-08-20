@@ -1024,6 +1024,7 @@ private int XkbHandlePrivate(DeviceIntPtr dev, KeyCode keycode, XkbAction* pActi
         }
     }
 
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return XkbDDXPrivate(dev, keycode, pAction);
 }
 

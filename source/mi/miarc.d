@@ -3020,6 +3020,7 @@ private void disposeFinalSpans()
     finalSpans = null;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void fillSpans(DrawablePtr pDrawable, GCPtr pGC)
 {
     finalSpan* span = void;

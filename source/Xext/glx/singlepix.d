@@ -197,6 +197,7 @@ int __glXDisp_GetPolygonStipple(__GLXclientState* cl, GLbyte* pc)
     return Success;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int GetSeparableFilter(__GLXclientState* cl, GLbyte* pc, GLXContextTag tag)
 {
     GLint compsize = void, compsize2 = void;
@@ -262,6 +263,8 @@ int __glXDisp_GetSeparableFilter(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetSeparableFilter(cl, pc + __GLX_SINGLE_HDR_SIZE, tag);
 }
 
@@ -270,9 +273,12 @@ int __glXDisp_GetSeparableFilterEXT(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_VENDPRIV_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetSeparableFilter(cl, pc + __GLX_VENDPRIV_HDR_SIZE, tag);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int GetConvolutionFilter(__GLXclientState* cl, GLbyte* pc, GLXContextTag tag)
 {
     GLint compsize = void;
@@ -347,6 +353,7 @@ int __glXDisp_GetConvolutionFilterEXT(__GLXclientState* cl, GLbyte* pc)
     return GetConvolutionFilter(cl, pc + __GLX_VENDPRIV_HDR_SIZE, tag);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int GetHistogram(__GLXclientState* cl, GLbyte* pc, GLXContextTag tag)
 {
     GLint compsize = void;
@@ -403,6 +410,8 @@ int __glXDisp_GetHistogram(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetHistogram(cl, pc + __GLX_SINGLE_HDR_SIZE, tag);
 }
 
@@ -411,9 +420,12 @@ int __glXDisp_GetHistogramEXT(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_VENDPRIV_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetHistogram(cl, pc + __GLX_VENDPRIV_HDR_SIZE, tag);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int GetMinmax(__GLXclientState* cl, GLbyte* pc, GLXContextTag tag)
 {
     GLint compsize = void;
@@ -463,6 +475,8 @@ int __glXDisp_GetMinmax(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetMinmax(cl, pc + __GLX_SINGLE_HDR_SIZE, tag);
 }
 
@@ -471,9 +485,12 @@ int __glXDisp_GetMinmaxEXT(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_VENDPRIV_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetMinmax(cl, pc + __GLX_VENDPRIV_HDR_SIZE, tag);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int GetColorTable(__GLXclientState* cl, GLbyte* pc, GLXContextTag tag)
 {
     GLint compsize = void;
@@ -530,6 +547,8 @@ int __glXDisp_GetColorTable(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_SINGLE_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetColorTable(cl, pc + __GLX_SINGLE_HDR_SIZE, tag);
 }
 
@@ -538,5 +557,7 @@ int __glXDisp_GetColorTableSGI(__GLXclientState* cl, GLbyte* pc)
     const(GLXContextTag) tag = mixin(__GLX_GET_VENDPRIV_CONTEXT_TAG!("pc"));
     ClientPtr client = cl.client;
     mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateReq", "16"));
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return GetColorTable(cl, pc + __GLX_VENDPRIV_HDR_SIZE, tag);
 }

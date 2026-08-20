@@ -11,13 +11,14 @@ extern(C): __gshared:
 
  
 public import build.dix_config;
+public import cFix;
 // public import build.xkb_config;
 
 /* Building Xorg server. */
 /* #undef XORGSERVER */
 
 /* Current X.Org version. */
-enum XORG_VERSION_CURRENT = 12501000;
+// enum XORG_VERSION_CURRENT = 12501000;
 
 /* Name of X server. */
 enum __XSERVERNAME__ = "Xorg";

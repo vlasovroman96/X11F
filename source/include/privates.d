@@ -338,6 +338,7 @@ void dixPrivateUsage();
 
 /*
  * Resets the privates subsystem.  dixResetPrivates is called from the main loop
+ pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  * before each server generation.  This function must only be called by main().
  */
 int dixResetPrivates();

@@ -454,6 +454,7 @@ private int ms_try_open(const(char)* dev)
     }
 
 version (SEATD_LIBSEAT) {
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return seatd_libseat_open_graphics(dev);
 } else {
     return -1;

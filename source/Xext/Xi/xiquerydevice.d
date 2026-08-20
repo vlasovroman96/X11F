@@ -63,9 +63,11 @@ import dix.inpututils;
 import include.xkbstr;
 
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 // static Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr d);
 // static int
 //  ListDeviceInfo(ClientPtr client, DeviceIntPtr dev, xXIDeviceInfo * info);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 // static int SizeDeviceInfo(DeviceIntPtr dev);
 // static void SwapDeviceInfo(DeviceIntPtr dev, xXIDeviceInfo * info);
 
@@ -159,6 +161,7 @@ int ProcXIQueryDevice(ClientPtr client)
 /**
  * @return Whether the device should be included in the returned list.
  */
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr dev)
 {
     /* if all devices are not being queried, only master devices are */
@@ -174,6 +177,7 @@ private Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr dev)
  * @return The number of bytes needed to store this device's xXIDeviceInfo
  * (and its classes).
  */
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int SizeDeviceInfo(DeviceIntPtr dev)
 {
     int len = xXIDeviceInfo.sizeof;
@@ -505,6 +509,7 @@ int GetDeviceUse(DeviceIntPtr dev, ushort* attachment)
  *
  * @return The number of bytes used.
  */
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int ListDeviceInfo(ClientPtr client, DeviceIntPtr dev, xXIDeviceInfo* info)
 {
     char* any = cast(char*) &info[1];

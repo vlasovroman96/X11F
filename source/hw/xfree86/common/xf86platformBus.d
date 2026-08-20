@@ -403,6 +403,7 @@ int xf86platformProbe()
     return 0;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86MergeOutputClassOptions(int entityIndex, void** options)
 {
     EntityPtr entity = xf86Entities[entityIndex];

@@ -121,6 +121,7 @@ import externs.X11.extensions.XI2proto;
 // //import externs.X11.extensions.XKBproto;
 // //import externs.X11.extensions.XIproto;
 // //import externs.X11.extensions.XI2proto;
+import dix.extension;
 
 import dix.cursor_priv;
 import dix.devices_priv;

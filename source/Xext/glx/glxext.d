@@ -341,6 +341,7 @@ private int maybe_swap32(ClientPtr client, int x)
     return client.swapped ? bswap_32(x) : x;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private GlxServerVendor* vendorForScreen(ClientPtr client, int screen)
 {
     screen = maybe_swap32(client, screen);
@@ -547,6 +548,7 @@ private void xorgGlxServerInit(CallbackListPtr* pcbl, void* param, void* ext)
     });
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xorgGlxCreateVendor()
 {
     AddCallback(glxServer.extensionInitCallback, &xorgGlxServerInit, null);

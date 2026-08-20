@@ -43,36 +43,43 @@ import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 import hw.xfree86.os_support.xf86_os_support;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86GARTCloseScreen(int screenNum)
 {
     return FALSE;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86AgpGARTSupported()
 {
     return FALSE;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 AgpInfoPtr xf86GetAGPInfo(int screenNum)
 {
     return null;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86AcquireGART(int screenNum)
 {
     return FALSE;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86ReleaseGART(int screenNum)
 {
     return FALSE;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical)
 {
     return -1;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86DeallocateGARTMemory(int screenNum, int key)
 {
     return FALSE;

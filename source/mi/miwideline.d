@@ -664,6 +664,7 @@ private void AppendSpanGroup(GCPtr pGC, c_ulong pixel, Spans* spanPtr, SpanDataP
  * spans-based polygon filler
  */
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void fillSpans(DrawablePtr pDrawable, GCPtr pGC, c_ulong pixel, Spans* spans, SpanDataPtr spanData)
 {
     if (!spanData) {

@@ -14,6 +14,8 @@ import std.system;
 // //import externs.X11.Xmd;
 
 import std.system : Endian;
+public import cFix;
+
 enum X_LITTLE_ENDIAN = (std.system.endian == Endian.littleEndian);
 enum X_BIG_ENDIAN    = (std.system.endian == Endian.bigEndian);
 

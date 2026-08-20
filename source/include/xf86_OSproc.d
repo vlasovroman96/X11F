@@ -98,10 +98,13 @@ public import include.opaque;
 public import include.xf86Optionstr;
 public import externs.X11.Xdefs_d;
 public import externs.X11.Xmd;
+public import build.dix_config;
 
 
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86EnableIO();
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86DisableIO();
 
 void  xf86SlowBcopy(ubyte*, ubyte*, int);
@@ -132,13 +135,19 @@ struct _AgpInfo {
 }alias AgpInfo = _AgpInfo;
 alias AgpInfoPtr = _AgpInfo*;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86AgpGARTSupported();
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86GetAGPInfo(int screenNum);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86AcquireGART(int screenNum);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86ReleaseGART(int screenNum);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical);
 void  xf86BindGARTMemory(int screenNum, int key, c_ulong offset);
 void  xf86UnbindGARTMemory(int screenNum, int key);
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void  xf86GARTCloseScreen(int screenNum);
 
 /* These routines are in shared/sigio.c and are not loaded as part of the

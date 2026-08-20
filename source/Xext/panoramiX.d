@@ -494,6 +494,7 @@ private void XineramaInitData()
 
 /*
  *	PanoramiXExtensionInit():
+ pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  *		Called from InitExtensions in main().
  *		Register PanoramiXeen Extension
  *		Initialize global variables.

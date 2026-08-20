@@ -670,6 +670,7 @@ options* parse_command_line(int argc, char** argv)
 
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int main(int argc, char** argv)
 {
     mode* m = void;

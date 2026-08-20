@@ -22,6 +22,7 @@ import glx.vndserver_priv;;
 // enum X_GLXCreateContextAttribsARB = X_GLXCreateContextAtrribsARB;
 // }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) GlxServerVendor* vendorForScreen(ClientPtr pClient, CARD32 screen)
 {
     ScreenPtr pScreen = dixGetScreenPtr(screen);
@@ -74,6 +75,7 @@ int dispatch_CreateContext(ClientPtr client)
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -170,6 +172,7 @@ int dispatch_CreateGLXPixmap(ClientPtr client)
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -193,6 +196,7 @@ int dispatch_GetVisualConfigs(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -227,6 +231,7 @@ int dispatch_QueryExtensionsString(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -244,6 +249,7 @@ int dispatch_QueryServerString(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -280,6 +286,7 @@ int dispatch_CreateNewContext(ClientPtr client)
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -305,6 +312,7 @@ int dispatch_CreatePbuffer(ClientPtr client)
     pbuffer = GlxCheckSwap(client, stuff.pbuffer);
     mixin(LEGAL_NEW_RESOURCE!("pbuffer", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -330,6 +338,7 @@ int dispatch_CreatePixmap(ClientPtr client)
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -355,6 +364,7 @@ int dispatch_CreateWindow(ClientPtr client)
     glxwindow = GlxCheckSwap(client, stuff.glxwindow);
     mixin(LEGAL_NEW_RESOURCE!("glxwindow", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -380,6 +390,7 @@ int dispatch_CreateContextAttribsARB(ClientPtr client)
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -480,6 +491,7 @@ int dispatch_GetFBConfigs(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;

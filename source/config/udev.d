@@ -127,6 +127,7 @@ private Bool check_seat(udev_device* udev_device)
 
 alias dev_t = core.sys.posix.sys.types.dev_t;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void device_added(udev_device* udev_device_)
 {
     const(char)* path = void, name = null;
@@ -350,6 +351,7 @@ version (CONFIG_UDEV_KMS) {
     return;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void device_removed(udev_device* device)
 {
     char* value = void;
@@ -384,6 +386,7 @@ version (CONFIG_UDEV_KMS) {
     free(value);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void socket_handler(int fd, int ready, void* data)
 {
     cast(void) fd;

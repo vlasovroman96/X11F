@@ -147,6 +147,7 @@ private void ephyr_glamor_setup_texturing_shader(ephyr_glamor* glamor)
         ~ "attribute vec2 position;\n"
         ~ "varying vec2 t;\n"
         ~ "\n"
+        pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
         ~ "void main()\n"
         ~ "{\n"
         ~ "    t = texcoord;\n"
@@ -160,6 +161,7 @@ private void ephyr_glamor_setup_texturing_shader(ephyr_glamor* glamor)
         ~ "varying vec2 t;\n"
         ~ "uniform sampler2D s; /* initially 0 */\n"
         ~ "\n"
+        pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
         ~ "void main()\n"
         ~ "{\n"
         ~ "    gl_FragColor = texture2D(s, t);\n"

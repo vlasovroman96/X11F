@@ -255,6 +255,7 @@ private GLuint glamor_create_composite_fs(glamor_screen_private* glamor_priv, sh
         ~ "	return vec4(color.xyz, 1.0);"
         ~ "}";
 
+    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     const(char)* in_normal = "void main()\n"
         ~ "{\n"
         ~ "	frag_color = dest_swizzle(get_source() * get_mask().a);\n"

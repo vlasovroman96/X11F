@@ -178,6 +178,7 @@ enum string hwDisableIO() = ``;
 
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86EnableIO()
 {
     if (ExtendedEnabled)
@@ -188,6 +189,7 @@ Bool xf86EnableIO()
     return ExtendedEnabled;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86DisableIO()
 {
     if (!ExtendedEnabled)

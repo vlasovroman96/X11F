@@ -57,6 +57,7 @@ import build.dix_config;
 
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
+import dix.extension;
 
 import dix.dix_priv;
 import dix.exevents_priv;
@@ -73,7 +74,7 @@ import dix.devices;
 import dix.events;
 import tables;
 
-int lastEvent;           /* Defined in extension.c */
+// int lastEvent;           /* Defined in extension.c */
 
 /***********************************************************************
  *

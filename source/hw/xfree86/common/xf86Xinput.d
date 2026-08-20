@@ -458,6 +458,7 @@ private DeviceIntPtr xf86ActivateDevice(InputInfoPtr pInfo)
  ***********************************************************************
  */
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
 {
     InputInfoPtr pInfo = cast(InputInfoPtr) dev.public_.devicePrivate;
@@ -482,6 +483,7 @@ int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
  ***********************************************************************
  */
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int first_valuator, int num_valuators)
 {
     InputInfoPtr pInfo = cast(InputInfoPtr) dev.public_.devicePrivate;
@@ -502,6 +504,7 @@ int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int f
  ***********************************************************************
  */
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control)
 {
     InputInfoPtr pInfo = cast(InputInfoPtr) dev.public_.devicePrivate;
@@ -1072,6 +1075,7 @@ int xf86NewInputDevice(InputInfoPtr pInfo, DeviceIntPtr* pdev, BOOL enable)
     return rval;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* pdev)
 {
     InputInfoPtr pInfo = null;
@@ -1176,6 +1180,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
     return rval;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void DeleteInputDeviceRequest(DeviceIntPtr pDev)
 {
     InputInfoPtr pInfo = cast(InputInfoPtr) pDev.public_.devicePrivate;
@@ -1197,6 +1202,7 @@ void DeleteInputDeviceRequest(DeviceIntPtr pDev)
     input_unlock();
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void RemoveInputDeviceTraces(const(char)* config_info)
 {
     PausedInputDevicePtr d = void, tmp = void;

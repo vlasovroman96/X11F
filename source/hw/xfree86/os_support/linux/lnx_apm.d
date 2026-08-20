@@ -159,6 +159,7 @@ private pmWait lnxPMConfirmEventToOs(int fd, pmEvent event)
 
 }                          // HAVE_APM
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 PMClose xf86OSPMOpen()
 {
     PMClose ret = null;

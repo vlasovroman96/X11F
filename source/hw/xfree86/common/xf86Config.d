@@ -564,6 +564,7 @@ const(char)** xf86InputDriverlistFromConfig()
     return modulearray;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void configFiles(XF86ConfFilesPtr fileconf)
 {
     MessageType pathFrom = void;

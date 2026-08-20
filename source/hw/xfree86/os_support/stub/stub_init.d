@@ -6,25 +6,30 @@ import build.xorg_config;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSlib;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OpenConsole()
 {
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86CloseConsole()
 {
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTKeepTtyIsSet()
 {
      return FALSE;
 }
 
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86ProcessArgument(int argc, char** argv, int i)
 {
     return 0;
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86UseMsg()
 {
 }

@@ -288,6 +288,7 @@ void XF86BigfontCleanup() { }
 private void XF86BigfontResetProc(ExtensionEntry* extEntry)
 {
     /* This function is normally called from CloseDownExtensions(), called
+     pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
      * from main(). It will be followed by a call to FreeAllResources(),
      * which will call XF86BigfontFreeFontShm() for each font. Thus it
      * appears that we do not need to do anything in this function. --

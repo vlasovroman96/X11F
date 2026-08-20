@@ -86,6 +86,7 @@ private void RRDestroyOutputProperty(RRPropertyPtr prop)
     free(prop);
 }
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void RRDeleteProperty(RROutputRec* output, RRPropertyRec* prop)
 {
     xRROutputPropertyNotifyEvent event = {

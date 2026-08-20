@@ -5,6 +5,7 @@ import build.xorg_config;
 
 import hw.xfree86.os_support.xf86_os_support;
 
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OSRingBell(int loudness, int pitch, int duration)
 {
 }
