@@ -33,8 +33,8 @@ struct XvPortNotifyRec {
     c_ulong id;
 }
 
-// int XvReqCode;
-// int XvErrorBase;
+int XvReqCode;
+int XvErrorBase;
 
 // RESTYPE XvRTPort;
 

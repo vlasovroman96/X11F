@@ -95,7 +95,7 @@ ospoll* server_poll;
 
 Bool listen_to_client(ClientPtr client);
 
-// Bool NewOutputPending;
+Bool NewOutputPending;
 
 /* for platforms lacking arc4random_buf() libc function */
 version (HAVE_ARC4RANDOM_BUF) {} else {
@@ -224,7 +224,7 @@ alias EXIT_ERR_CONFIGURE = ExitCode.EXIT_ERR_CONFIGURE;
 alias EXIT_ERR_DRIVERS = ExitCode.EXIT_ERR_DRIVERS;
 
 
-// sig_atomic_t inSignalContext;
+sig_atomic_t inSignalContext;
 
 /* run timers that are expired at timestamp `now` */
 void DoTimers(CARD32 now);

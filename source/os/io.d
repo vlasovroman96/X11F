@@ -62,6 +62,8 @@ SOFTWARE.
 import build.dix_config;
 
 import dix.dixstruct_priv;
+import os.connection;
+
 
 version (Windows) {
 //import externs.X11.Xwinsock;
