@@ -93,7 +93,7 @@ public import os.ospoll;
 
 ospoll* server_poll;
 
-Bool listen_to_client(ClientPtr client);
+// Bool listen_to_client(ClientPtr client);
 
 Bool NewOutputPending;
 

@@ -34,6 +34,6 @@ alias OsCommPtr = OsCommRec*;
 
 // int FlushClient(ClientPtr who, OsCommPtr oc);
 // void FreeOsBuffers(OsCommPtr oc);
-void CloseDownFileDescriptor(OsCommPtr oc);
+// void CloseDownFileDescriptor(OsCommPtr oc);
 
  /* __XORG_OS_IO_H */
