@@ -120,7 +120,11 @@ struct Xtransaddr {
 Xtransport_table[] Xtransport_tabletab;
 Xtransport_table[] Xtransports;
 
-static this()
+
+import core.attribute : standalone;
+@standalone
+@trusted
+shared static this()
 {
     enum size_t maxElements = 2; // TCP + INET
     version(IPv6) {

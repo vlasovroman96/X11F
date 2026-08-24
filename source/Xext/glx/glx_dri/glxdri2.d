@@ -137,7 +137,7 @@ private void copy_box(__GLXdrawable* drawable, int dst, int src, int x, int y, i
 /* white lie */
 glx_func_ptr glXGetProcAddressARB(const(char)*);
 
-//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;

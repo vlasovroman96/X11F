@@ -57,7 +57,7 @@ extern(C): __gshared:
 public import include.xlibre_ptrtypes;
 public import include.xf86;
 public import include.xf86str;
-public import include.inputstr;
+// public import include.inputstr;
 //public import externs.X11.extensions.XI;
 public import externs.X11.extensions.XIproto;
 

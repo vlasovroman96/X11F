@@ -161,7 +161,7 @@ int ProcXIQueryDevice(ClientPtr client)
 /**
  * @return Whether the device should be included in the returned list.
  */
-//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private Bool ShouldSkipDevice(ClientPtr client, int deviceid, DeviceIntPtr dev)
 {
     /* if all devices are not being queried, only master devices are */

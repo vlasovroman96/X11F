@@ -150,7 +150,7 @@ import include.xkbsrv;
 import xfixes.xfixesint;
 import dix.dixstruct_priv;
 import os.log;
-import os.utils;
+// import os.utils;
 import dix.dix_priv;
 import dix.extension;
 import dix.dixutils;

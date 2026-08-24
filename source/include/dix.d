@@ -55,7 +55,7 @@ public import include.xlibre_ptrtypes;
 public import include.callback;
 public import include.gc;
 public import include.window;
-public import include.input;
+// public import include.input;
 public import include.cursor;
 public import include.events;
 public import dix.dispatch;

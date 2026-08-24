@@ -31,37 +31,35 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import externs.X11.Xdefs;
-import include.callback;
+import externs.X11.X;
+// import include.callback;
 import include.privates;
 import glx.vndserver_priv;
 
-// import core.stdc.string;
-import include.scrnintstr;
-// import include.windowstr;
-// import include.dixstruct;
-// import include.extnsionst;
+// // import core.stdc.string;
+// import include.scrnintstr;
+// // import include.windowstr;
+// // import include.dixstruct;
+import include.extnsionst;
 import include.glx_extinit;
 
-// import externs.glxproto;
+// // import externs.glxproto;
 import glx.vndservervendor;
-import dix.resource;
+// import dix.resource;
 import dix.callback_priv;
 import dix.dix_priv;
 import dix.screenint_priv;
-// import miext.extinit_priv;
+import miext.extinit_priv;
 import dix.extension;
+
 
 Bool noGlxExtension = FALSE;
 
 ExtensionEntry* GlxExtensionEntry;
 int GlxErrorBase = 0;
 private CallbackListRec vndInitCallbackList;
-private CallbackListPtr vndInitCallbackListPtr;
+private CallbackListPtr vndInitCallbackListPtr = &vndInitCallbackList;
 
-static this() {
-    vndInitCallbackListPtr = &vndInitCallbackList;
-} ;
 private DevPrivateKeyRec glvXGLVScreenPrivKey;
 private DevPrivateKeyRec glvXGLVClientPrivKey;
 

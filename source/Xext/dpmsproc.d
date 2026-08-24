@@ -7,7 +7,7 @@ extern(C): __gshared:
 public import build.dix_config;
 
 public import include.dixstruct;
-public import Xext.dpms;
+// public import Xext.dpms;
 
 
 int DPMSSet(ClientPtr client, int level);

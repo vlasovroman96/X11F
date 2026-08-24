@@ -45,10 +45,10 @@ public import core.stdc.stdarg;
 import include.xf86Xinput;
 import os.log;
 import xf86Globals;
-import dix.events;
-public import xf86Configure;
+// import dix.events;
+// import xf86Configure;
 
-import os.inputthread;
+// import os.inputthread;
 
 /* General parameters */
 // bool  xorgHWAccess;

@@ -33,17 +33,22 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 
-//import externs.X11.X;
-import include.os;
-import include.windowstr;
-import include.propertyst;
-import xf86_priv;
-import include.xf86Priv;
+import externs.X11.X;
+// import include.os;
+// import include.windowstr;
+// import include.propertyst;
+// import xf86_priv;
+// import include.xf86Priv;
 import include.xf86Parser;
-import xf86Xinput;
-// import xf86InPriv;
-import xf86Config;
+// import include.privates;
+// import xf86Xinput;
+// // import xf86InPriv;
+// import xf86Config;
 import include.xf86Xinput;
+import include.xf86Privstr;
+// import include.xlibre_ptrtypes;
+// import include.xf86;
+
 
 /* Globals that video drivers may access */
 

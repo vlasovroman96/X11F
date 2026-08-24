@@ -491,7 +491,10 @@ private void ms_present_unflip(ScreenPtr screen, ulong event_id)
 
 private present_screen_info_rec ms_present_screen_info;
 
-static this()
+import core.attribute : standalone;
+@standalone
+@trusted
+shared static this()
 {
     ms_present_screen_info = present_screen_info_rec(
         version_: PRESENT_SCREEN_INFO_VERSION,

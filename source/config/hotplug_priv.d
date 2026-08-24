@@ -36,7 +36,7 @@ public import dix.settings_priv;
 
 public import include.list;
 
-import hw.xfree86.drivers.video.modesetting.driver;
+// import hw.xfree86.drivers.video.modesetting.driver;
 
 /* Bump this each time you add something to the struct
  * so that drivers can easily tell what is available

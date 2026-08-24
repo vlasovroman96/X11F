@@ -85,12 +85,14 @@ version (XTHREADS) {
 
 // import os.ossock;
 
+import core.stdc.string;
 import sock = core.sys.posix.sys.socket;
 import os.Xtransint;
 import core.sys.posix.unistd;
 alias rindex = strrchr;
 import core.sys.posix.netdb;
 import os.ossock;
+ import os.io_priv;
 
 alias sockaddr_in = core.sys.posix.netinet.in_.sockaddr_in;
 alias _XGetservbyname = getservbyname;
@@ -368,7 +370,6 @@ private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
  * XtransConnInfo structure for the connection.
  */
 
- import os.io_priv;
 
 private int _XSERVTransSocketINETGetAddr(XtransConnInfo ciptr)
 {
