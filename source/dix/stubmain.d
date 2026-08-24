@@ -1,5 +1,4 @@
 module stubmain;
-@nogc nothrow:
 extern(C): __gshared:
 /***********************************************************
 
@@ -33,7 +32,13 @@ int dix_main(int argc, char** argv, char** envp);
   A default implementation of main, which can be overridden by the DDX
  */
 // //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+import core.runtime : rt_init, rt_term;
 int main(int argc, char** argv, char** envp)
 {
+    if (!rt_init())
+        return 1;
+
+    scope(exit)
+        rt_term();
     return dix_main(argc, argv, envp);
 }

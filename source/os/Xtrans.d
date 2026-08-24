@@ -117,15 +117,22 @@ struct Xtransaddr {
     ubyte[XTRANS_MAX_ADDR_LEN]	addr;
 } 
 
-Xtransport_table[] Xtransport_tabletab;
-Xtransport_table[] Xtransports;
+__gshared Xtransport_table[] Xtransport_tabletab;
+__gshared Xtransport_table[] Xtransports;
 
-
+// static this() {
+//     Xtransports = Xtransport_tabletab;
+// }
 import core.attribute : standalone;
+extern(D)
 @standalone
-@trusted
+// // @trusted
+// // shared static this()
+@system
 shared static this()
 {
+    import core.stdc.stdio : fprintf, stderr;
+    fprintf(stderr, "!!! XTRANS STATIC CTOR !!!\n");
     enum size_t maxElements = 2; // TCP + INET
     version(IPv6) {
         maxElements += 1;   // INET6
@@ -134,7 +141,7 @@ shared static this()
         maxElements += 2;   // LOCAL + UNIX
     }
 
-    Xtransport_table[maxElements] arr;
+    __gshared Xtransport_table[maxElements] arr;
     size_t count = 0;
 
     arr[count++] = Xtransport_table(
@@ -172,6 +179,7 @@ shared static this()
     Xtransports = Xtransport_tabletab;
 }
 
+extern(C):
 
 enum NUMTRANS =	Xtransports.sizeof/Xtransport_table.sizeof;
 

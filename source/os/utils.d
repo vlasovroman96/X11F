@@ -68,6 +68,7 @@ import render.picture;
 version (Cygwin) {
 import core.stdc.stdlib;
 import core.stdc.signal;
+import os.Xtrans;
 /*
    Sigh... We really need a prototype for this to know it is stdcall,
    but #include-ing <windows.h> here is not a good idea...

@@ -102,7 +102,10 @@ InputInfoPtr xf86InputDevs = null;
 
 xf86InfoRec xf86Info;
 
+extern(D)
 static this() {
+         import core.stdc.stdio : fprintf, stderr;
+    fprintf(stderr, "!!! GLOBALS STATIC CTOR !!!\n");
     with(xf86Info) {
     consoleFd = -1;
     vtno = -1;
