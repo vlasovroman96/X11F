@@ -114,7 +114,7 @@ import externs.X11.extensions.XKB;
 import externs.X11.extensions.XI2proto;
 // //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XI2;
-// //import externs.X11.Xproto;
+import externs.X11.Xproto;
 // //import externs.X11.extensions.ge;
 // //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XI2;
@@ -624,12 +624,12 @@ private void XineramaConfineCursorToWindow(DeviceIntPtr pDev, WindowPtr pWin, Bo
 
     RegionCopy(&pSprite.Reg1, &pSprite.windows[walkScreenIdx].borderSize);
 
-    ScreenPtr walkScreen = dixGetScreenPtr(walkScreenIdx);
+    ScreenPtr walkScreen = dixGetScreenPtr(cast(uint)walkScreenIdx);
     off_x = walkScreen.x;
     off_y = walkScreen.y;
 
     while (walkScreenIdx--) {
-        walkScreen = dixGetScreenPtr(walkScreenIdx);
+        walkScreen = dixGetScreenPtr(cast(uint)walkScreenIdx);
 
         x = off_x - walkScreen.x;
         y = off_y - walkScreen.y;
@@ -850,12 +850,12 @@ version (XINERAMA) {
             uint walkScreenIdx = PanoramiXNumScreens - 1;
 
             RegionCopy(&pSprite.Reg2, &pSprite.windows[walkScreenIdx].borderSize);
-            ScreenPtr walkScreen = dixGetScreenPtr(walkScreenIdx);
+            ScreenPtr walkScreen = dixGetScreenPtr(cast(uint)walkScreenIdx);
             off_x = walkScreen.x;
             off_y = walkScreen.y;
 
             while (walkScreenIdx--) {
-                walkScreen = dixGetScreenPtr(walkScreenIdx);
+                walkScreen = dixGetScreenPtr(cast(uint)walkScreenIdx);
                 x = off_x - walkScreen.x;
                 y = off_y - walkScreen.y;
 
@@ -1107,7 +1107,7 @@ private void NoticeTimeMillis(const(DeviceIntPtr) dev, CARD32* ms)
 void NoticeEventTime(InternalEvent* ev, DeviceIntPtr dev)
 {
     if (!syncEvents.playingEvents)
-        NoticeTimeMillis(dev, cast(uint*)&ev.any.time);
+        NoticeTimeMillis(dev, &ev.any.time);
 }
 
 TimeStamp LastEventTime(int deviceid)
@@ -1154,7 +1154,7 @@ void EnqueueEvent(InternalEvent* ev, DeviceIntPtr device)
     if (!xorg_list_is_empty(&syncEvents.pending))
         tail = mixin(xorg_list_last_entry!("&syncEvents.pending", "QdEventRec", "next"));
 
-    NoticeTimeMillis(device, cast(uint*)&ev.any.time);
+    NoticeTimeMillis(device, &ev.any.time);
 
     /* Fix for key repeating bug. */
     if (device.key != null && device.key.xkbInfo != null &&
@@ -4671,7 +4671,7 @@ void DeviceEnterLeaveEvent(DeviceIntPtr mouse, int sourceid, int type, int mode,
         return;
 
     btlen = (mouse.button) ? bits_to_bytes(mouse.button.numButtons) : 0;
-    btlen = bytes_to_int32(btlen);
+    btlen = cast(int)bytes_to_int32(btlen);
     len = cast(int)((xXIEnterEvent).sizeof + btlen * 4);
 
     xXIEnterEvent* event = cast(xXIEnterEvent*) calloc(1, len);

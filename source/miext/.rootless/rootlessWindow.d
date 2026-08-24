@@ -39,7 +39,7 @@ import stdbool;
 import core.stdc.stddef;             /* For NULL */
 import core.stdc.limits;             /* For CHAR_BIT */
 import core.stdc.assert_;
-import X11/Xatom;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.property_priv;

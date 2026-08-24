@@ -151,7 +151,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
             /* check for existing entry. */
             for (pEvent = *pHead; pEvent; pEvent = pEvent.next) {
                 if (pEvent.client == client) {
-                    pEvent.mask = stuff.eventMask;
+                    pEvent.mask = cast(uint)stuff.eventMask;
                     return Success;
                 }
             }
@@ -162,7 +162,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
         if (!pNewEvent)
             return BadAlloc;
         pNewEvent.client = client;
-        pNewEvent.mask = stuff.eventMask;
+        pNewEvent.mask = cast(uint)stuff.eventMask;
         /*
          * add a resource that will be deleted when
          * the client goes away

@@ -119,7 +119,7 @@ void XISendDeviceHierarchyEvent(int* flags)
         }
     }
 
-    ev.length = bytes_to_int32(ev.num_info * xXIHierarchyInfo.sizeof);
+    ev.length = cast(uint)bytes_to_int32(ev.num_info * xXIHierarchyInfo.sizeof);
 
     memset(&dummyDev, 0, dummyDev.sizeof);
     dummyDev.id = XIAllDevices;

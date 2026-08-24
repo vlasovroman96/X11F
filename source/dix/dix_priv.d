@@ -13,7 +13,7 @@ import core.stdc.config: c_long, c_ulong;
  *  Xserver's module API/ABI.
  */
 
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 // // //public import externs.X11.Xfuncproto;
 //public import externs.X11.extensions.XI;
 
@@ -52,7 +52,7 @@ version (__size_assert) {} else {
     import std.conv;
     import std.string;
 enum __size_assert(alias what, size_t howmuch) = `
-  alias _size_wrong_ = char[(xPanoramiXQueryVersionReply.sizeof == 32) ? 1 : -1];`;
+  alias _size_wrong_ = char[(`~what.stringof~`.sizeof == `~howmuch.stringof~`) ? 1 : -1];`;
 }
 mixin template XTYPE_SIZE_ASSERT(alias typename) {
     mixin(__size_assert!(typename, typename.sizeof));
@@ -227,7 +227,7 @@ void CopyKeyClass(DeviceIntPtr device, DeviceIntPtr master);
 
 // int CoreKeyboardProc(DeviceIntPtr dev, int what);
 
-alias xQueryFontReplyPtr = _xQueryFontReply*;
+alias xQueryFontReplyPtr = xQueryFontReply*;
 // void QueryFont(FontPtr pFont, xQueryFontReplyPtr pReply, int nProtoCCIStructs);
 
 // Bool whiteRoot;

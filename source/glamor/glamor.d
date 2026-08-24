@@ -48,7 +48,7 @@ import glamor.glamor_egl_priv;
 //import externs.GL.gl;
 import externs.attrs;
 import fb.fbpixmap;
- import externs.epoxy;
+ import Xext.glx.fix;
 import glamor.glamor_utils;;
 //import externs.GL.glext;
 import include.picturestr;

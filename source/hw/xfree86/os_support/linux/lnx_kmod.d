@@ -56,7 +56,7 @@ version (execl) {
  * Return:
  *    0 for failure, 1 for success
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86LoadKernelModule(const(char)* modName)
 {
     char[MAX_PATH] mpPath = "";

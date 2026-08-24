@@ -38,7 +38,7 @@ import glx.glxdrawable;
 import glx.glxscreens_h;
 import glx.glxcontext;
 import glx.glxserver;
-import externs.epoxy;
+import Xext.glx.fix;
 
 GLboolean __glXDrawableInit(__GLXdrawable* drawable, __GLXscreen* screen, DrawablePtr pDraw, int type, XID drawID, __GLXconfig* config);
 void __glXDrawableRelease(__GLXdrawable* drawable);

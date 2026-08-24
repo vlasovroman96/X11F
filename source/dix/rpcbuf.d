@@ -138,7 +138,7 @@ Bool x_rpcbuf_write_CARD16(x_rpcbuf_t* rpcbuf, CARD16 value)
 
 int x_rpcbuf_write_CARD32(x_rpcbuf_t* rpcbuf, CARD32 value)
 {
-    CARD32* reserved = cast(uint*)x_rpcbuf_reserve(rpcbuf, value.sizeof);
+    CARD32* reserved = cast(ulong*)x_rpcbuf_reserve(rpcbuf, value.sizeof);
     if (!reserved)
         return FALSE;
 
@@ -200,11 +200,11 @@ Bool  x_rpcbuf_write_CARD32s(x_rpcbuf_t* rpcbuf, const(CARD32)* values, size_t c
     if ((!values) || (!count))
         return TRUE;
 
-    CARD32* reserved = cast(uint*)x_rpcbuf_reserve(rpcbuf, ((CARD32) * count).sizeof);
+    CARD32* reserved = cast(ulong*)x_rpcbuf_reserve(rpcbuf, ((CARD32).sizeof * count));
     if (!reserved)
         return FALSE;
 
-    memcpy(reserved, values, ((CARD32) * count).sizeof);
+    memcpy(reserved, values, ((CARD32).sizeof * count));
 
     if (rpcbuf.swapped)
         SwapLongs(reserved, count);

@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;

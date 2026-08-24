@@ -9,7 +9,7 @@ int verbose = 0;
 
 alias testfunc_t = void function();
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int main(int argc, char** argv)
 {
     run_test(list_test);

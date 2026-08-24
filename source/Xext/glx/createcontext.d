@@ -33,7 +33,7 @@ import glx.glxserver;
 import glx.glxext;
 import glx.indirect_dispatch;
 import include.opaque;
- import externs.epoxy;
+ import Xext.glx.fix;
 import glx.glxext;
 // import externs.xorg.glx_extinit;
 import glx.glxscreens_h;
@@ -47,6 +47,15 @@ enum GLX_RGBA_UNSIGNED_FLOAT_TYPE_EXT =   0x20B1;
 enum GLX_CONTEXT_RELEASE_BEHAVIOR_ARB =   0x2097;
 enum GLX_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB = 0x2098;
 enum GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB = 0;
+
+alias BadLength = externs.X11.X.BadLength;
+alias BadAlloc = externs.X11.X.BadAlloc;
+alias BadMatch = externs.X11.X.BadMatch;
+alias None = externs.X11.X.None;
+alias Success = externs.X11.X.Success;
+alias BadValue = externs.X11.X.BadValue;
+alias BadRequest = externs.X11.X.BadRequest;
+// alias BadRequest = externs.X11.X.BadRequest;
 
 
 enum ALL_VALID_FLAGS = 
@@ -364,7 +373,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
     ctx.id = req.context;
     ctx.share_id = req.shareList;
     ctx.idExists = TRUE;
-    ctx.isDirect = req.isDirect;
+    ctx.isDirect = cast(ubyte)req.isDirect;
     ctx.renderMode = GL_RENDER;
     ctx.resetNotificationStrategy = reset;
     ctx.releaseBehavior = flush;

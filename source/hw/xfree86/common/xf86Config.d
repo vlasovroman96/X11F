@@ -137,7 +137,9 @@ enum SYS_CONFIGDIRPATH =	"%D/X11/%X";
 enum PROJECTROOT =	"/usr/X11R6";
 
 
-private ModuleDefault[4] ModuleDefaults;
+private ModuleDefault[4] ModuleDefaults = [
+    ModuleDefault("glx",TRUE,null)
+];
 // #ifdef GLXEXT
 //     ModuleDefaults[0] = ModuleDefault("glx",toLoad: TRUE,load_opt: null},
 // #endif
@@ -149,17 +151,17 @@ private ModuleDefault[4] ModuleDefaults;
 //     {name: null,toLoad: FALSE,load_opt: null}
 // ];
 
-static this() {
-version(GLXEXT) {
-    ModuleDefaults[0] = ModuleDefault("glx",TRUE,null);
-}
-version(__CYGWIN__) {
-    /* load DIX modules used by drivers first */
-    ModuleDefaults[1] = ModuleDefault("fb",TRUE,null);   
-    ModuleDefaults[2] = ModuleDefault("shadow",TRUE,null);
-}
-    ModuleDefaults[3] = ModuleDefault( null,FALSE,null);
-}
+// static this() {
+// version(GLXEXT) {
+//     ModuleDefaults[0] = ModuleDefault("glx",TRUE,null);
+// }
+// version(__CYGWIN__) {
+//     /* load DIX modules used by drivers first */
+//     ModuleDefaults[1] = ModuleDefault("fb",TRUE,null);   
+//     ModuleDefaults[2] = ModuleDefault("shadow",TRUE,null);
+// }
+//     ModuleDefaults[3] = ModuleDefault( null,FALSE,null);
+// }
 /* Forward declarations */
 
 enum _ConfigStatus {
@@ -564,7 +566,7 @@ const(char)** xf86InputDriverlistFromConfig()
     return modulearray;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void configFiles(XF86ConfFilesPtr fileconf)
 {
     MessageType pathFrom = void;

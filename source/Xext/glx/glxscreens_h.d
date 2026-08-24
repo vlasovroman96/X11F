@@ -39,7 +39,7 @@ public import include.glxvndabi;
 // //import externs.GL.glx;
 import glx.glxcontext;
 import glx.glxdrawable;
- import externs.epoxy;
+ import Xext.glx.fix;
 
 
 struct __GLXconfig {

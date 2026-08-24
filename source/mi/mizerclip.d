@@ -602,9 +602,9 @@ int miZeroClipLine(int xmin, int ymin, int xmax, int ymax, int* new_x1, int* new
                 utmp = -utmp;
 
             if (eqn & T_2NDX)   /* We are calculating X steps */
-                x1 = anchorval + utmp;
+                x1 = cast(int)(anchorval + utmp);
             else                /* else, Y steps */
-                y1 = anchorval + utmp;
+                y1 = cast(int)(anchorval + utmp);
 
             oc1 = 0;
             mixin(MIOUTCODES!("oc1", "x1", "y1", "xmin", "ymin", "xmax", "ymax"));

@@ -462,7 +462,7 @@ int ProcXFixesGetCursorImageAndName(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    CARD32* image = cast(uint*)x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
+    CARD32* image = cast(ulong*)x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
     if (!image)
         return BadAlloc;
 

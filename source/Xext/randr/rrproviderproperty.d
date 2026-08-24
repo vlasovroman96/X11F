@@ -87,7 +87,7 @@ private void RRDestroyProviderProperty(RRPropertyPtr prop)
     free(prop);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void RRDeleteProperty(RRProviderRec* provider, RRPropertyRec* prop)
 {
     xRRProviderPropertyNotifyEvent event = {
@@ -426,7 +426,7 @@ int ProcRRConfigureProviderProperty(ClientPtr client)
     mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     num_valid =
-        client.req_len - bytes_to_int32(xRRConfigureProviderPropertyReq.sizeof);
+        cast(int)(client.req_len - bytes_to_int32(xRRConfigureProviderPropertyReq.sizeof));
     return RRConfigureProviderProperty(provider, stuff.property, stuff.pending,
                                      stuff.range, FALSE, num_valid,
                                      cast(INT32*) (stuff + 1));

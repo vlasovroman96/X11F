@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xdefs_d;
+public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 import include.screenint;
 

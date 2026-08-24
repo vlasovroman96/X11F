@@ -58,7 +58,7 @@ import dix.screen_hooks_priv;
 import dbe.dbe;
 import dix.resource;
 import dix.gc;
-import externs.X11.extensions.dbe_;
+import externs.X11.extensions.dbe;
 import dix.screen_hooks;
 /******************************************************************************
  *

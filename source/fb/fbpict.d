@@ -224,10 +224,10 @@ private pixman_image_t* create_linear_gradient_image(PictGradient* gradient)
     pixman_point_fixed_t p1 = void;
     pixman_point_fixed_t p2 = void;
 
-    p1.x = linear.p1.x;
-    p1.y = linear.p1.y;
-    p2.x = linear.p2.x;
-    p2.y = linear.p2.y;
+    p1.x = cast(int)linear.p1.x;
+    p1.y = cast(int)linear.p1.y;
+    p2.x = cast(int)linear.p2.x;
+    p2.y = cast(int)linear.p2.y;
 
     return assumeNoGC(&pixman_image_create_linear_gradient)(&p1, &p2,
                                                cast(pixman_gradient_stop_t*)
@@ -258,8 +258,8 @@ private pixman_image_t* create_conical_gradient_image(PictGradient* gradient)
     PictConicalGradient* conical = cast(PictConicalGradient*) gradient;
     pixman_point_fixed_t center = void;
 
-    center.x = conical.center.x;
-    center.y = conical.center.y;
+    center.x = cast(int)conical.center.x;
+    center.y = cast(int)conical.center.y;
 
     return assumeNoGC(&pixman_image_create_conical_gradient)(&center, conical.angle,
                                                 cast(pixman_gradient_stop_t*)

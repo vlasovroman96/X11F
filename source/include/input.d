@@ -431,11 +431,11 @@ alias GESTURE_LISTENER_REGULAR = GestureListenerType.GESTURE_LISTENER_REGULAR;
 // int FreeInputAttributes(InputAttributes* attrs);
 
 /* Implemented by the DDX. */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 // int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* dev);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int DeleteInputDeviceRequest(DeviceIntPtr dev);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int RemoveInputDeviceTraces(const(char)* config_info);
 int DDXRingBell(int volume, int pitch, int duration);
 // int* valuator_mask_new(int num_valuators);

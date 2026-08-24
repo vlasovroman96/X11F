@@ -354,7 +354,7 @@ void xf86RecolorCursor_locked(xf86CursorScreenPtr ScreenPriv, CursorPtr pCurs)
         FakeFreeColor(pmap, sourceColor.pixel);
         FakeFreeColor(pmap, maskColor.pixel);
         (*infoPtr.SetCursorColors) (infoPtr.pScrn,
-                                     maskColor.pixel, sourceColor.pixel);
+                                     cast(int)maskColor.pixel, cast(int)sourceColor.pixel);
     }
     else {                      /* Pass colors in 8-8-8 RGB format */
         (*infoPtr.SetCursorColors) (infoPtr.pScrn,

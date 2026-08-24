@@ -235,7 +235,7 @@ private void parse_args(int argc, char** argv, char*** out_client_args, char*** 
     *out_server_args = server_args;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int main(int argc, char** argv)
 {
     char** client_args = void;

@@ -44,7 +44,7 @@ import present.present_priv;
 
 import include.inputstr;
 import include.xf86str;
-//import externs.X11.Xatom_;
+//import externs.X11.Xatom;
 import include.mi;
 import mi.micmap;
 import xf86cmap;
@@ -76,7 +76,7 @@ import include.xf86Cursor;
 import dix.gc;
 import xf86CursorRD;
 import xf86Option;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import randr.rrproperty;
 import externs.gnu;
 import xf86Rotate;
@@ -2083,7 +2083,7 @@ private void drmmode_paint_cursor(gbm_bo* cursor_bo, int cursor_pitch, int curso
     int width_todo = void;
     int height_todo = void;
 
-    CARD32* cursor = cast(uint*)gbm_bo_get_map(cursor_bo);
+    CARD32* cursor = cast(ulong*)gbm_bo_get_map(cursor_bo);
 
     /* Clamp to the source image bounds to avoid pointer UB and OOB reads. */
     src_x = mixin(MAX!(MIN!(`src_x`, `(image_width - 1)`), `0`));

@@ -313,7 +313,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
              ((complete & (~XkmLayoutLegal)) == 0)) {
         fprintf(file, "xkb_layout \"default\" {\n");
     }
-    else if (XkmSingleSection(complete & (~XkmVirtualModsMask))) {
+    else if (mixin(XkmSingleSection!("complete & (~XkmVirtualModsMask)"))) {
         multi_section = 0;
     }
     else {

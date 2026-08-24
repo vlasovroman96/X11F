@@ -17,7 +17,7 @@ import externs.X11.extensions.XKB;
 import include.xkbstr;
 
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {
     XkbAnyAction* xf86act = &(act.any);

@@ -47,11 +47,22 @@ import glx.glxext;
 import glx.indirect_dispatch;
 import glx.indirect_table;
 import glx.indirect_util;
- import externs.epoxy;
+ import Xext.glx.fix;
 import glx.glxcmds;
 import glx.xfont;
 
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
+// alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
+alias CARD32 = externs.X11.Xmd.CARD32;
+alias BadLength = externs.X11.X.BadLength;
+alias BadAlloc = externs.X11.X.BadAlloc;
+alias BadMatch = externs.X11.X.BadMatch;
+alias None = externs.X11.X.None;
+alias Success = externs.X11.X.Success;
+alias BadValue = externs.X11.X.BadValue;
+alias BadRequest = externs.X11.X.BadRequest;
+alias INT32 = externs.X11.Xmd.INT32;
+alias BadImplementation = externs.X11.X.BadImplementation;
 /************************************************************************/
 
 /*

@@ -39,17 +39,17 @@ import externs.X11.extensions.renderproto;
 
 void miPointFixedBounds(int npoint, xPointFixed* points, BoxPtr bounds)
 {
-    bounds.x1 = mixin(xFixedToInt!("points.x"));
-    bounds.x2 = mixin(xFixedToInt!(xFixedCeil!("points.x")));
-    bounds.y1 = mixin(xFixedToInt!("points.y"));
-    bounds.y2 = mixin(xFixedToInt!(xFixedCeil!("points.y")));
+    bounds.x1 = cast(short)mixin(xFixedToInt!("points.x"));
+    bounds.x2 = cast(short)mixin(xFixedToInt!(xFixedCeil!("points.x")));
+    bounds.y1 = cast(short)mixin(xFixedToInt!("points.y"));
+    bounds.y2 = cast(short)mixin(xFixedToInt!(xFixedCeil!("points.y")));
     points++;
     npoint--;
     while (npoint-- > 0) {
-        INT16 x1 = mixin(xFixedToInt!("points.x"));
-        INT16 x2 = mixin(xFixedToInt!(xFixedCeil!("points.x")));
-        INT16 y1 = mixin(xFixedToInt!("points.y"));
-        INT16 y2 = mixin(xFixedToInt!(xFixedCeil!("points.y")));
+        INT16 x1 = cast(short)mixin(xFixedToInt!("points.x"));
+        INT16 x2 = cast(short)mixin(xFixedToInt!(xFixedCeil!("points.x")));
+        INT16 y1 = cast(short)mixin(xFixedToInt!("points.y"));
+        INT16 y2 = cast(short)mixin(xFixedToInt!(xFixedCeil!("points.y")));
 
         if (x1 < bounds.x1)
             bounds.x1 = x1;

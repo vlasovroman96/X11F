@@ -92,7 +92,7 @@ import os.log;
 import externs.gnu;
 import os.connection;
 import os.WaitFor;
-// alias ClientPtr = include.dixstruct.ClientPtr;
+alias ClientPtr = include.dixstruct.ClientPtr;
 
 version (XF86BIGFONT) {
 import Xext.xf86bigfontsrv;
@@ -1938,7 +1938,7 @@ private void fs_block_handler(void* blockData, void* timeout)
 {
     alias FnType = extern(C) void function(void*); 
 
-    FontBlockHandlerProcPtr block_handler = cast(FnType)blockData;
+    FontBlockHandlerProcPtr block_handler = cast(FontBlockHandlerProcPtr)blockData;
 
     assumeNoGC(block_handler)(timeout);
 }
@@ -2028,7 +2028,7 @@ private void _remove_fs_handlers(FontPathElementPtr fpe, FontBlockHandlerProcPtr
 
 private uint wrap_time_in_millis()
 {
-    return GetTimeInMillis();
+    return cast(uint)GetTimeInMillis();
 }
 
 private void verrorf(const(char)* f, va_list args)

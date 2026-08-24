@@ -226,7 +226,7 @@ private int ProcVidModeGetModeLine(ClientPtr client)
 
     ver = ClientMajorVersion(client);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -344,7 +344,7 @@ private int ProcVidModeGetAllModeLines(ClientPtr client)
 
     DEBUG_P("XF86VidModeGetAllModelines");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -503,7 +503,7 @@ private int VidModeAddModeLine(ClientPtr client, xXF86VidModeAddModeLineReq* stu
            stuff.after_vsyncend, stuff.after_vtotal,
            cast(c_ulong) stuff.after_flags);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -697,7 +697,7 @@ private int VidModeDeleteModeLine(ClientPtr client, xXF86VidModeDeleteModeLineRe
            stuff.vdisplay, stuff.vsyncstart, stuff.vsyncend, stuff.vtotal,
            cast(c_ulong) stuff.flags);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -846,7 +846,7 @@ private int VidModeModModeLine(ClientPtr client, xXF86VidModeModModeLineReq* stu
         stuff.vsyncend < stuff.vsyncstart || stuff.vtotal < stuff.vsyncend)
         return BadValue;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1005,7 +1005,7 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
            stuff.vdisplay, stuff.vsyncstart, stuff.vsyncend, stuff.vtotal,
            cast(c_ulong) stuff.flags);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1083,7 +1083,7 @@ private int ProcVidModeSwitchMode(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1164,7 +1164,7 @@ private int VidModeSwitchToMode(ClientPtr client, xXF86VidModeSwitchToModeReq* s
            stuff.vdisplay, stuff.vsyncstart, stuff.vsyncend, stuff.vtotal,
            cast(c_ulong) stuff.flags);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1225,7 +1225,7 @@ private int ProcVidModeLockModeSwitch(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1253,7 +1253,7 @@ private int ProcVidModeGetMonitor(ClientPtr client)
 
     DEBUG_P("XF86VidModeGetMonitor");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1306,7 +1306,7 @@ private int ProcVidModeGetViewPort(ClientPtr client)
 
     DEBUG_P("XF86VidModeGetViewPort");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1342,7 +1342,7 @@ private int ProcVidModeSetViewPort(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1367,7 +1367,7 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
 
     DEBUG_P("XF86VidModeGetDotClocks");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1423,7 +1423,7 @@ private int ProcVidModeSetGamma(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1449,7 +1449,7 @@ private int ProcVidModeGetGamma(ClientPtr client)
 
     DEBUG_P("XF86VidModeGetGamma");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1490,7 +1490,7 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1521,7 +1521,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"size");
     mixin(X_REQUEST_FIELD_CARD16!"screen");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1568,7 +1568,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
 
     VidModePtr pVidMode = void;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 

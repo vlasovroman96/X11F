@@ -637,7 +637,7 @@ int ProcRRGetMonitors(ClientPtr client)
             swapl(&info.heightInMillimeters);
         }
 
-        x_rpcbuf_write_CARD32s(&rpcbuf, cast(uint*)monitor.outputs, monitor.numOutputs);
+        x_rpcbuf_write_CARD32s(&rpcbuf, monitor.outputs, monitor.numOutputs);
     }
     RRMonitorFreeList(monitors, nmonitors);
 

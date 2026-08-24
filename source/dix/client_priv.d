@@ -8,6 +8,7 @@ extern(C): __gshared:
  
 public import include.callback;
 public import include.dix;
+import include.dixstruct;
 
 /*
  * called right before ClientRec is about to be destroyed,

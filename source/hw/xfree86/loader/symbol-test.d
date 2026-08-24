@@ -33,7 +33,7 @@ import core.stdc.stdlib;
 import core.sys.posix.dlfcn;
 import build.dix_config;
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int main(int argc, char** argv)
 {
     void* ret = void;

@@ -135,7 +135,7 @@ private int ProcSELinuxSetCreateContext(ClientPtr client, uint offset)
     char* ptr = void;
 
     if (stuff.context_len > 0) {
-        ctx = SELinuxCopyContext(cast(char*) (stuff + 1), stuff.context_len);
+        ctx = SELinuxCopyContext(cast(char*) (stuff + 1), cast(uint)stuff.context_len);
         if (!ctx) {
             return BadAlloc;
         }
@@ -194,12 +194,12 @@ private int ProcSELinuxSetDeviceContext(ClientPtr client)
         return BadLength;
     }
 
-    ctx = SELinuxCopyContext(cast(char*) (stuff + 1), stuff.context_len);
+    ctx = SELinuxCopyContext(cast(char*) (stuff + 1), cast(uint)stuff.context_len);
     if (!ctx) {
         return BadAlloc;
     }
 
-    int rc = dixLookupDevice(&dev, stuff.id, client, DixManageAccess);
+    int rc = dixLookupDevice(&dev, cast(int)stuff.id, client, DixManageAccess);
     if (rc != Success) {
         goto out_;
     }
@@ -229,7 +229,7 @@ private int ProcSELinuxGetDeviceContext(ClientPtr client)
     DeviceIntPtr dev = void;
     SELinuxSubjectRec* subj = void;
 
-    int rc = dixLookupDevice(&dev, stuff.id, client, DixGetAttrAccess);
+    int rc = dixLookupDevice(&dev, cast(int)stuff.id, client, DixGetAttrAccess);
     if (rc != Success) {
         return rc;
     }

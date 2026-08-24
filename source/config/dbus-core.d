@@ -157,7 +157,7 @@ private dbus_core_info bus_info = { fd: -1 };
 
 
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void socket_handler(int fd, int ready, void* data)
 {
     dbus_core_info* info = cast(dbus_core_info*)data;
@@ -208,7 +208,7 @@ nothrow @nogc private void teardown()
  * precedence over the message handling function, so have have to be
  * careful to ignore anything we don't want to deal with here.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage* message, void* data)
 {
     /* If we get disconnected, then take everything down, and attempt to

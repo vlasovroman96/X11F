@@ -352,7 +352,7 @@ private Bool xf86CursorOffScreen(ScreenPtr* pScreen, int* x, int* y)
     xf86EdgePtr edge = void;
     int tmp = void;
 
-    if (!dixGetScreenPtr(1))
+    if (!dixGetScreenPtr(cast(uint)1))
         return FALSE;
 
     if (*x < 0) {

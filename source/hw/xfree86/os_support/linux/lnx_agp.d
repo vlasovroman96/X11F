@@ -99,7 +99,7 @@ private Bool initDone = FALSE;
  * Close /dev/agpgart.  This frees all associated memory allocated during
  * this server generation.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86GARTCloseScreen(int screenNum)
 {
     if (gartFd != -1) {
@@ -172,13 +172,13 @@ static if(HasVersion!"linux") {
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86AgpGARTSupported()
 {
     return GARTInit(-1);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 AgpInfoPtr xf86GetAGPInfo(int screenNum)
 {
     _agp_info agpinf = void;
@@ -222,7 +222,7 @@ AgpInfoPtr xf86GetAGPInfo(int screenNum)
  * count instead of using acquiredScreen?
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86AcquireGART(int screenNum)
 {
     if (screenNum != -1 && !GARTInit(screenNum))
@@ -240,7 +240,7 @@ Bool xf86AcquireGART(int screenNum)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86ReleaseGART(int screenNum)
 {
     if (screenNum != -1 && !GARTInit(screenNum))
@@ -281,7 +281,7 @@ else
     return FALSE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physical)
 {
     _agp_allocate alloc = void;
@@ -318,7 +318,7 @@ int xf86AllocateGARTMemory(int screenNum, c_ulong size, int type, c_ulong* physi
     return alloc.key;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86DeallocateGARTMemory(int screenNum, int key)
 {
     if (!GARTInit(screenNum) || acquiredScreen != screenNum)

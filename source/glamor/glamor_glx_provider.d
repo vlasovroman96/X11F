@@ -40,7 +40,7 @@ import os.utils;
 
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-import externs.epoxy;
+import Xext.glx.fix;
 import glx.glxserver;
 import glx.glxutil;
 import composite.compint;

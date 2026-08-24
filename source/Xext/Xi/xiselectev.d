@@ -104,7 +104,7 @@ private int check_for_touch_selection_conflicts(ClientPtr B, WindowPtr win, int 
  */
 int XICheckInvalidMaskBits(ClientPtr client, ubyte* mask, int len)
 {
-    if (len >= XIMaskLen(XI2LASTEVENT)) {
+    if (len >= mixin(XIMaskLen!("XI2LASTEVENT"))) {
         int i = void;
 
         for (i = XI2LASTEVENT + 1; i < len * 8; i++) {
@@ -125,7 +125,7 @@ int ProcXISelectEvents(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"num_masks");
 
     if (client.swapped) {
-        int len = client.req_len - bytes_to_int32(xXISelectEventsReq.sizeof);
+        int len = cast(int)(client.req_len - bytes_to_int32(xXISelectEventsReq.sizeof));
         xXIEventMask* evmask = cast(xXIEventMask*) &stuff[1];
         for (int i = 0; i < stuff.num_masks; i++) {
             if (len < bytes_to_int32(xXIEventMask.sizeof))

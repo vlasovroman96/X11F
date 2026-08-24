@@ -99,7 +99,7 @@ void SwapFont(xQueryFontReply* pr, Bool hasGlyphs)
 
     swaps(&pr.sequenceNumber);
     swapl(&pr.length);
-    nchars = pr.nCharInfos;
+    nchars = cast(uint)pr.nCharInfos;
     nprops = pr.nFontProps;
     SwapFontInfo(pr);
     pby = cast(char*) &pr[1];

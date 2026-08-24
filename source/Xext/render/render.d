@@ -156,8 +156,8 @@ int ProcRenderQueryVersion(ClientPtr client)
         swapl(&stuff.minorVersion);
     }
 
-    pRenderClient.major_version = stuff.majorVersion;
-    pRenderClient.minor_version = stuff.minorVersion;
+    pRenderClient.major_version = cast(int)stuff.majorVersion;
+    pRenderClient.minor_version = cast(int)stuff.minorVersion;
 
     xRenderQueryVersionReply reply = {
         majorVersion: SERVER_RENDER_MAJOR_VERSION,
@@ -435,7 +435,7 @@ int SingleRenderCreatePicture(ClientPtr client, xRenderCreatePictureReq* stuff)
 
     if (pFormat.depth != pDrawable.depth)
         return BadMatch;
-    len = client.req_len - bytes_to_int32(xRenderCreatePictureReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xRenderCreatePictureReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -458,7 +458,7 @@ int SingleRenderChangePicture(ClientPtr client, xRenderChangePictureReq* stuff, 
 
     mixin(VERIFY_PICTURE!("pPicture", "pictID", "client", "DixSetAttrAccess"));
 
-    len = client.req_len - bytes_to_int32(xRenderChangePictureReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xRenderChangePictureReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -850,7 +850,7 @@ int ProcRenderAddGlyphs(ClientPtr client)
     }
 
     err = BadAlloc;
-    nglyphs = stuff.nglyphs;
+    nglyphs = cast(int)stuff.nglyphs;
     if (nglyphs > UINT32_MAX / GlyphNewRec.sizeof)
         return BadAlloc;
 
@@ -1043,7 +1043,7 @@ int ProcRenderFreeGlyphs(ClientPtr client)
         return rc;
     }
     nglyph =
-        bytes_to_int32((client.req_len << 2) - xRenderFreeGlyphsReq.sizeof);
+        cast(int)bytes_to_int32((client.req_len << 2) - xRenderFreeGlyphsReq.sizeof);
     gids = cast(CARD32*) (stuff + 1);
     while (nglyph-- > 0) {
         glyph = *gids++;
@@ -1510,7 +1510,7 @@ int ProcRenderQueryFilters(ClientPtr client)
             nbytesName += 1 + strlen(ps.filterAliases[i].alias_);
         nnames = ps.nfilters + ps.nfilterAliases;
     }
-    len = ((nnames + 1) >> 1) + bytes_to_int32(nbytesName);
+    len = cast(int)(((nnames + 1) >> 1) + bytes_to_int32(nbytesName));
     total_bytes = (len << 2);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
@@ -1615,7 +1615,7 @@ int ProcRenderCreateAnimCursor(ClientPtr client)
     if (client.req_len & 1)
         return BadLength;
 
-    int ncursor = (client.req_len -
+    int ncursor = cast(int)(client.req_len -
          (bytes_to_int32(xRenderCreateAnimCursorReq.sizeof))) >> 1;
     if (ncursor <= 0)
         return BadValue;
@@ -1704,7 +1704,7 @@ int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLinearGradie
     colors = cast(xRenderColor*) (stops + stuff.nStops);
 
     pPicture = CreateLinearGradientPicture(stuff.pid, &stuff.p1, &stuff.p2,
-                                           stuff.nStops, stops, colors,
+                                           cast(int)stuff.nStops, stops, colors,
                                            &error);
     if (!pPicture)
         return error;
@@ -1739,8 +1739,8 @@ int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadialGradie
 
     pPicture =
         CreateRadialGradientPicture(stuff.pid, &stuff.inner, &stuff.outer,
-                                    stuff.inner_radius, stuff.outer_radius,
-                                    stuff.nStops, stops, colors, &error);
+                                    cast(int)stuff.inner_radius, cast(int)stuff.outer_radius,
+                                    cast(int)stuff.nStops, stops, colors, &error);
     if (!pPicture)
         return error;
     /* security creation/labeling check */
@@ -1773,8 +1773,8 @@ int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateConicalGrad
     colors = cast(xRenderColor*) (stops + stuff.nStops);
 
     pPicture =
-        CreateConicalGradientPicture(stuff.pid, &stuff.center, stuff.angle,
-                                     stuff.nStops, stops, colors, &error);
+        CreateConicalGradientPicture(stuff.pid, &stuff.center, cast(int)stuff.angle,
+                                     cast(int)stuff.nStops, stops, colors, &error);
     if (!pPicture)
         return error;
     /* security creation/labeling check */
@@ -2887,7 +2887,7 @@ int ProcRenderCreateLinearGradient(ClientPtr client)
         if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
 
-        swapStops(stuff + 1, stuff.nStops);
+        swapStops(stuff + 1, cast(int)stuff.nStops);
     }
 
 version (XINERAMA) {
@@ -2919,7 +2919,7 @@ int ProcRenderCreateRadialGradient(ClientPtr client)
         if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
 
-        swapStops(stuff + 1, stuff.nStops);
+        swapStops(stuff + 1, cast(int)stuff.nStops);
     }
 
 version (XINERAMA) {
@@ -2948,7 +2948,7 @@ int ProcRenderCreateConicalGradient(ClientPtr client)
         if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
             return BadLength;
 
-        swapStops(stuff + 1, stuff.nStops);
+        swapStops(stuff + 1, cast(int)stuff.nStops);
     }
 
 version (XINERAMA) {

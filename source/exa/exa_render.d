@@ -154,10 +154,10 @@ private Bool exaGetPixelFromRGBA(CARD32* pixel, CARD16 red, CARD16 green, CARD16
         PIXMAN_FORMAT_TYPE(pFormat.format) != PIXMAN_TYPE_A)
         return FALSE;
 
-    int rbits = PIXMAN_FORMAT_R(pFormat.format);
-    int gbits = PIXMAN_FORMAT_G(pFormat.format);
-    int bbits = PIXMAN_FORMAT_B(pFormat.format);
-    int abits = PIXMAN_FORMAT_A(pFormat.format);
+    int rbits = cast(int)PIXMAN_FORMAT_R(pFormat.format);
+    int gbits = cast(int)PIXMAN_FORMAT_G(pFormat.format);
+    int bbits = cast(int)PIXMAN_FORMAT_B(pFormat.format);
+    int abits = cast(int)PIXMAN_FORMAT_A(pFormat.format);
 
     rshift = pFormat.direct.red;
     gshift = pFormat.direct.green;
@@ -1079,8 +1079,8 @@ void exaTrapezoids(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mas
         if (bounds.y1 >= bounds.y2 || bounds.x1 >= bounds.x2)
             return;
 
-        xDst = traps[0].left.p1.x >> 16;
-        yDst = traps[0].left.p1.y >> 16;
+        xDst = cast(short)traps[0].left.p1.x >> 16;
+        yDst = cast(short)traps[0].left.p1.y >> 16;
 
         pPicture = exaCreateAlphaPicture(pScreen, pDst, maskFormat,
                                          cast(short)(bounds.x2 - bounds.x1),
@@ -1140,8 +1140,8 @@ void exaTriangles(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr mask
         if (bounds.y1 >= bounds.y2 || bounds.x1 >= bounds.x2)
             return;
 
-        xDst = tris[0].p1.x >> 16;
-        yDst = tris[0].p1.y >> 16;
+        xDst = cast(short)tris[0].p1.x >> 16;
+        yDst = cast(short)tris[0].p1.y >> 16;
 
         pPicture = exaCreateAlphaPicture(pScreen, pDst, maskFormat,
                                          cast(short)(bounds.x2 - bounds.x1),

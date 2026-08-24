@@ -58,7 +58,7 @@ public import include.validate;
 //public import externs.X11.Xproto;
 public import include.dix;
 public import include.privates;
-public import externs.X11.extensions._randr;
+public import externs.X11.extensions.randr;
 import include.scrnintstr;
 
 struct PixmapFormatRec {

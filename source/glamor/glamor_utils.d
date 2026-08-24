@@ -647,10 +647,10 @@ pragma(inline, true) Bool glamor_get_rgba_from_pixel(CARD32 pixel, float* red, f
 {
     int rshift = void, bshift = void, gshift = void, ashift = void;
 
-    int rbits = PIXMAN_FORMAT_R(format);
-    int gbits = PIXMAN_FORMAT_G(format);
-    int bbits = PIXMAN_FORMAT_B(format);
-    int abits = PIXMAN_FORMAT_A(format);
+    int rbits = cast(int)PIXMAN_FORMAT_R(format);
+    int gbits = cast(int)PIXMAN_FORMAT_G(format);
+    int bbits = cast(int)PIXMAN_FORMAT_B(format);
+    int abits = cast(int)PIXMAN_FORMAT_A(format);
 
     if (PIXMAN_FORMAT_TYPE(format) == PIXMAN_TYPE_A) {
         rshift = gshift = bshift = ashift = 0;
@@ -671,7 +671,7 @@ pragma(inline, true) Bool glamor_get_rgba_from_pixel(CARD32 pixel, float* red, f
         ashift = 0;
         rshift = abits;
         if (abits == 0)
-            rshift = PIXMAN_FORMAT_BPP(format) - (rbits + gbits + bbits);
+            rshift = cast(int)(PIXMAN_FORMAT_BPP(format) - (rbits + gbits + bbits));
         gshift = rshift + rbits;
         bshift = gshift + gbits;
     }

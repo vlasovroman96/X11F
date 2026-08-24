@@ -53,6 +53,5 @@
 		"-ludev",
 		"-lhal",
 		"-lGL",
-		"--unresolved-symbols=ignore-all"
-    ]
+	]
 }

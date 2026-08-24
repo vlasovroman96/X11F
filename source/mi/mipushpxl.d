@@ -135,7 +135,7 @@ static if (1) {
         fInBox = FALSE;
         pwEnd = pwLineStart + dxDivPPW;
         while (pw < pwEnd) {
-            w = *pw;
+            w = cast(int)*pw;
 static if (1) {
             msk = startmask;
 } else {
@@ -186,7 +186,7 @@ static if (1) {
         ibEnd = dx & PIM;
         if (ibEnd) {
             /* Process final partial word on line */
-            w = *pw;
+            w = cast(int)*pw;
 static if (1) {
             msk = startmask;
 } else {

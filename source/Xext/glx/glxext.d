@@ -53,7 +53,7 @@ import glx.indirect_util;
 import include.glxvndabi;
 import include.glx_extinit;
 import glx.glx_dri.glxdriswrast;
- import externs.epoxy;
+//  import Xext.glx.fix;
  import dix.dixutils;
 import glx.vndext;
 import glx.glxcmds;
@@ -104,6 +104,22 @@ private int ContextGone(__GLXcontext* cx, XID id)
 private __GLXcontext* glxPendingDestroyContexts;
 private __GLXcontext* glxAllContexts;
 private int glxBlockClients;
+
+import Xext.glx.fix;
+
+alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
+alias CARD32 = externs.X11.Xmd.CARD32;
+alias BadLength = externs.X11.X.BadLength;
+alias BadAlloc = externs.X11.X.BadAlloc;
+alias BadMatch = externs.X11.X.BadMatch;
+alias None = externs.X11.X.None;
+alias Success = externs.X11.X.Success;
+alias BadValue = externs.X11.X.BadValue;
+alias BadRequest = externs.X11.X.BadRequest;
+alias INT32 = externs.X11.Xmd.INT32;
+alias BadImplementation = externs.X11.X.BadImplementation;
+alias TrueColor = externs.X11.X.TrueColor;
+
 
 /*
 ** Destroy routine that gets called when a drawable is freed.  A drawable
@@ -341,12 +357,12 @@ private int maybe_swap32(ClientPtr client, int x)
     return client.swapped ? bswap_32(x) : x;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private GlxServerVendor* vendorForScreen(ClientPtr client, int screen)
 {
     screen = maybe_swap32(client, screen);
 
-    return glxServer.getVendorForScreen(client, dixGetScreenPtr(screen));
+    return glxServer.getVendorForScreen(client, dixGetScreenPtr(cast(uint)screen));
 }
 
 /* this ought to be generated */
@@ -444,6 +460,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     return ret;
 }
+// alias CARD32 = externs.X11.Xmd.CARD32;
 
 private GlxServerDispatchProc xorgGlxGetDispatchAddress(CARD8 minorOpcode, CARD32 vendorCode)
 {
@@ -453,7 +470,7 @@ private GlxServerDispatchProc xorgGlxGetDispatchAddress(CARD8 minorOpcode, CARD3
         return null;
 
     /* we only support some vendor private requests */
-    if (!__glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info, vendorCode,
+    if (!__glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info, cast(int)vendorCode,
                                         FALSE))
         return null;
 
@@ -548,7 +565,7 @@ private void xorgGlxServerInit(CallbackListPtr* pcbl, void* param, void* ext)
     });
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xorgGlxCreateVendor()
 {
     AddCallback(glxServer.extensionInitCallback, &xorgGlxServerInit, null);

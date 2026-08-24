@@ -53,7 +53,7 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.string;
 //import externs.X11.X;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import os.log;
 import externs.gnu;
 
@@ -68,6 +68,14 @@ import atoms;
 alias strncmp = core.stdc.string.strncmp;
 
 
+// enum Atom : int {
+//     ATOM
+// }
+// alias Atom = uint;
+// enum None = 0;
+// enum XA_LAST_PREDEFINED = 68;
+// enum BAD_RESOURCE = 0;
+
 enum InitialTableSize = 256;
 
 struct _Node {
@@ -78,7 +86,7 @@ struct _Node {
 }alias NodeRec = _Node;
 alias NodePtr = _Node*;
 
-private Atom lastAtom = None;
+private Atom lastAtom = 0;
 private NodePtr atomRoot = null;
 private c_ulong tableLength;
 private NodePtr* nodeTable;

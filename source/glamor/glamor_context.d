@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.epoxy;
+public import Xext.glx.fix;
 
 /**
  * @file glamor_context.h

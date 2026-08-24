@@ -284,7 +284,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
     case GrayScale:
         pIndexed.color = FALSE;
         for (r = 0; r < 32768; r++)
-            pIndexed.ent[r] = cast(ubyte)FindBestGray(pIndexed, pixels.ptr, num, r);
+            pIndexed.ent[r] = cast(ubyte)FindBestGray(pIndexed, pixels.ptr, num, cast(int)r);
         break;
     case PseudoColor:
         pIndexed.color = TRUE;
@@ -293,7 +293,7 @@ Bool miInitIndexed(ScreenPtr pScreen, PictFormatPtr pFormat)
             for (g = 0; g < 32; g++)
                 for (b = 0; b < 32; b++) {
                     pIndexed.ent[p] = cast(ubyte)FindBestColor(pIndexed, pixels.ptr, num,
-                                                     r, g, b);
+                                                     cast(int)r, cast(int)g, cast(int)b);
                     p++;
                 }
         break;

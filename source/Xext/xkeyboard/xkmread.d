@@ -158,7 +158,7 @@ private int XkmGetCountedString(FILE* file, char* str, int max_len)
         str[max_len - 1] = '\0';
     else
         str[count] = '\0';
-    count = XkbPaddedSize(nRead) - nRead;
+    count = mixin(XkbPaddedSize!("nRead")) - nRead;
     if (count > 0)
         nRead += XkmSkipPadding(file, count);
     return nRead;
@@ -186,7 +186,7 @@ private int ReadXkmVirtualMods(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes
             tmp++;
         }
     }
-    if ((i = XkbPaddedSize(tmp) - tmp) > 0)
+    if ((i = mixin(XkbPaddedSize!("tmp")) - tmp) > 0)
         nRead += XkmSkipPadding(file, i);
     if (XkbAllocNames(xkb, XkbVirtualModNamesMask, 0, 0) != Success) {
         //_XkbLibError(_XkbErrBadAlloc, "ReadXkmVirtualMods", 0);
@@ -659,7 +659,7 @@ private int ReadXkmIndicators(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
         map.mods.mask = wire.real_mods;
         map.mods.real_mods = wire.real_mods;
         map.mods.vmods = wire.vmods;
-        map.ctrls = wire.ctrls;
+        map.ctrls = cast(uint)wire.ctrls;
     }
     return nRead;
 }
@@ -1172,7 +1172,7 @@ private Bool XkmReadTOC(FILE* file, xkmFileInfo* file_info, int max_toc, xkmSect
     uint i = void, size_toc = void;
 
     hdr = (('x' << 24) | ('k' << 16) | ('m' << 8) | XkmFileVersion);
-    tmp = XkmGetCARD32(file, &nRead);
+    tmp = cast(uint)XkmGetCARD32(file, &nRead);
     if (tmp != hdr) {
         if ((tmp & (~0xff)) == (hdr & (~0xff))) {
             //_XkbLibError(_XkbErrBadFileVersion, "XkmReadTOC", tmp & 0xff);

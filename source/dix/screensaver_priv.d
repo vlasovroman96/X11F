@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 // // public //import stdbool;
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 //public import externs.X11.Xmd;
 
 public import include.callback;

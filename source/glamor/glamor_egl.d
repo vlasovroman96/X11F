@@ -78,7 +78,7 @@ import glamor.glamor_egl_priv;
 import glamor.glamor_glx_provider;
 import dri3.dri3;
 // import hw.kdrive.ephyr.ephyr_glamor;
-import externs.epoxy;
+import Xext.glx.fix;
 import dix.screen_hooks;
 
 /**
@@ -2127,7 +2127,7 @@ version (GLAMOR_HAS_GBM) {
     for (uint i = 0; i < num_formats; i++) {
         ulong* modifiers = null;
         uint num_modifiers = 0;
-        if (glamor_get_modifiers_internal(glamor_egl, formats[i],
+        if (glamor_get_modifiers_internal(glamor_egl, cast(uint)formats[i],
                                           &num_modifiers, &modifiers)) {
             found = TRUE;
             free(modifiers);

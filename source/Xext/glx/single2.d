@@ -46,7 +46,7 @@ import glx.glxutil;
 import glx.glxext;
 import glx.indirect_dispatch;
 import glx.unpack;
- import externs.epoxy;
+ import Xext.glx.fix;
 import glx.glxcmds;
 import os.io;
 import externs.gnu;;

@@ -655,7 +655,7 @@ private void ExaBlockHandler(ScreenPtr pScreen, void* pTimeout)
 
         pExaScr.nextDefragment = now +
             max(100, cast(INT32) (pExaScr.lastDefragment + 1000 - now));
-        AdjustWaitForDelay(pTimeout, pExaScr.nextDefragment - now);
+        AdjustWaitForDelay(pTimeout, cast(int)(pExaScr.nextDefragment - now));
     }
 }
 

@@ -37,10 +37,13 @@ import glx.indirect_dispatch;
 import glx.indirect_util;
 import include.misc;
 import glx.singlesize;
- import externs.epoxy;
+ import Xext.glx.fix;
 import glx.glxext; 
 import glx.glxcmds;
 import glx.indirect_size_get;
+alias CARD32 = externs.X11.Xmd.CARD32;
+alias BOOL = externs.X11.Xmd.BOOL;
+
 
 // enum string __GLX_PAD(string x) = `(((` ~ x ~ `) + 3) & ~3)`;
 

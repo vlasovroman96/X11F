@@ -35,7 +35,7 @@ import build.dix_config;
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.Xatom_;
+//import externs.X11.Xatom;
 // //import externs.X11.extensions.xtestproto;
 import externs.X11.extensions.XI;
 // // //import externs.X11.extensions.XIproto;
@@ -75,7 +75,7 @@ import dix.dixutils;
 import std.conv;
 import os.log;
 import externs.gnu;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import dix.extension;
 import dix.devices;
 import Xi.xiproperty;
@@ -302,22 +302,22 @@ private int ProcXTestFakeInput(ClientPtr client)
             }
             switch (dv.num_valuators) {
             case 6:
-                valuators[base + 5] = dv.valuator5;
+                valuators[base + 5] = cast(int)dv.valuator5;
                 goto case 5;
             case 5:
-                valuators[base + 4] = dv.valuator4;
+                valuators[base + 4] = cast(int)dv.valuator4;
                 goto case 4;
             case 4:
-                valuators[base + 3] = dv.valuator3;
+                valuators[base + 3] = cast(int)dv.valuator3;
                 goto case 3;
             case 3:
-                valuators[base + 2] = dv.valuator2;
+                valuators[base + 2] = cast(int)dv.valuator2;
                 goto case 2;
             case 2:
-                valuators[base + 1] = dv.valuator1;
+                valuators[base + 1] = cast(int)dv.valuator1;
                 goto case 1;
             case 1:
-                valuators[base] = dv.valuator0;
+                valuators[base] = cast(int)dv.valuator0;
                 break;
             default:
                 client.errorValue = dv.num_valuators;

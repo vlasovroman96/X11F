@@ -893,7 +893,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         *pgreen = pmap.red[pixR].co.local.green;
         *pblue = pmap.red[pixR].co.local.blue;
         npix = pmap.numPixelsRed[client];
-        ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
+        ppix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
@@ -915,21 +915,21 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         *pgreen = pmap.green[pixG].co.local.green;
         *pblue = pmap.blue[pixB].co.local.blue;
         npix = pmap.numPixelsRed[client];
-        ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
+        ppix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
         ppix[npix] = pixR;
         pmap.clientPixelsRed[client] = ppix;
         npix = pmap.numPixelsGreen[client];
-        ppix = cast(uint*)reallocarray(pmap.clientPixelsGreen[client],
+        ppix = cast(ulong*)reallocarray(pmap.clientPixelsGreen[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
         ppix[npix] = pixG;
         pmap.clientPixelsGreen[client] = ppix;
         npix = pmap.numPixelsBlue[client];
-        ppix = cast(uint*)reallocarray(pmap.clientPixelsBlue[client],
+        ppix = cast(ulong*)reallocarray(pmap.clientPixelsBlue[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
@@ -1570,17 +1570,17 @@ private int AllocDirect(int client, ColormapPtr pmap, int c, int r, int g, int b
     Pixel* rpix = null, gpix = null, bpix = null;
 
     if (okR && okG && okB) {
-        rpix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
+        rpix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
                             pmap.numPixelsRed[client] + (c << r),
                             Pixel.sizeof);
         if (rpix)
             pmap.clientPixelsRed[client] = rpix;
-        gpix = cast(uint*)reallocarray(pmap.clientPixelsGreen[client],
+        gpix = cast(ulong*)reallocarray(pmap.clientPixelsGreen[client],
                             pmap.numPixelsGreen[client] + (c << g),
                             Pixel.sizeof);
         if (gpix)
             pmap.clientPixelsGreen[client] = gpix;
-        bpix = cast(uint*)reallocarray(pmap.clientPixelsBlue[client],
+        bpix = cast(ulong*)reallocarray(pmap.clientPixelsBlue[client],
                             pmap.numPixelsBlue[client] + (c << b),
                             Pixel.sizeof);
         if (bpix)
@@ -1665,7 +1665,7 @@ private int AllocPseudo(int client, ColormapPtr pmap, int c, int r, Bool contig,
 
         /* all the allocated pixels are added to the client pixel list,
          * but only the unique ones are returned to the client */
-        Pixel* ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
+        Pixel* ppix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
                             pmap.numPixelsRed[client] + npix, Pixel.sizeof);
         if (!ppix) {
             for (Pixel* p = ppixTemp; p < ppixTemp + npix; p++)
@@ -2030,7 +2030,7 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
         cmask = pmap.pVisual.redMask;
         rgbbad = ~mixin(RGBMASK!(`pmap.pVisual`));
         offset = pmap.pVisual.offsetRed;
-        numents = (cmask >> offset) + 1;
+        numents = cast(int)(cmask >> offset) + 1;
         ppixClient = pmap.clientPixelsRed[client];
         npixClient = pmap.numPixelsRed[client];
         break;
@@ -2038,7 +2038,7 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
         cmask = pmap.pVisual.greenMask;
         rgbbad = ~mixin(RGBMASK!(`pmap.pVisual`));
         offset = pmap.pVisual.offsetGreen;
-        numents = (cmask >> offset) + 1;
+        numents = cast(int)(cmask >> offset) + 1;
         ppixClient = pmap.clientPixelsGreen[client];
         npixClient = pmap.numPixelsGreen[client];
         break;
@@ -2046,7 +2046,7 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
         cmask = pmap.pVisual.blueMask;
         rgbbad = ~mixin(RGBMASK!(`pmap.pVisual`));
         offset = pmap.pVisual.offsetBlue;
-        numents = (cmask >> offset) + 1;
+        numents = cast(int)(cmask >> offset) + 1;
         ppixClient = pmap.clientPixelsBlue[client];
         npixClient = pmap.numPixelsBlue[client];
         break;
@@ -2055,7 +2055,7 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
         cmask = ~(cast(Pixel) 0);
         rgbbad = 0;
         offset = 0;
-        numents = pmap.pVisual.ColormapEntries;
+        numents = cast(int)pmap.pVisual.ColormapEntries;
         ppixClient = pmap.clientPixelsRed[client];
         npixClient = pmap.numPixelsRed[client];
         break;

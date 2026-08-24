@@ -27,7 +27,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -177,7 +177,7 @@ int ProcRRGetProviderInfo(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    extraLen = reply.length << 2;
+    extraLen = cast(uint)(reply.length << 2);
     if (extraLen) {
         extra = cast(ubyte*)x_rpcbuf_reserve(&rpcbuf, extraLen);
         if (!extra)

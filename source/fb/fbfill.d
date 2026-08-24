@@ -85,7 +85,7 @@ void fbFill(DrawablePtr pDrawable, GCPtr pGC, int x, int y, int width, int heigh
 // } else {
         if (pPriv.and || !assumeNoGC(&pixman_fill)(cast(uint*) dst, dstStride, dstBpp,
                                        x + dstXoff, y + dstYoff,
-                                       width, height, pPriv.xor))
+                                       width, height, cast(uint)pPriv.xor))
             fbSolid(dst + (y + dstYoff) * dstStride,
                     dstStride,
                     (x + dstXoff) * dstBpp,
@@ -227,12 +227,12 @@ version (FB_ACCESS_WRAPPER) {
 } else {
         if (and || !assumeNoGC(&pixman_fill)(cast(uint*) dst, dstStride, dstBpp,
                                 partX1 + dstXoff, partY1 + dstYoff,
-                                (partX2 - partX1), (partY2 - partY1), xor))
+                                (partX2 - partX1), (partY2 - partY1), cast(uint)xor))
             fbSolid(dst + (partY1 + dstYoff) * dstStride,
                     dstStride,
                     (partX1 + dstXoff) * dstBpp,
                     dstBpp,
-                    (partX2 - partX1) * dstBpp, (partY2 - partY1), and, xor);
+                    (partX2 - partX1) * dstBpp, (partY2 - partY1), and, cast(uint)xor);
     }
     mixin(fbFinishAccess!("pDrawable"));
 }

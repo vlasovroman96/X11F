@@ -234,7 +234,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
     pContext.pScreen = pScreen;
     pContext.adapt_num = adapt_num;
     pContext.context_id = stuff.context_id;
-    pContext.surface_type_id = stuff.surface_type_id;
+    pContext.surface_type_id = cast(int)stuff.surface_type_id;
     pContext.width = stuff.width;
     pContext.height = stuff.height;
     pContext.flags = stuff.flags;
@@ -416,7 +416,7 @@ private int ProcXvMCCreateSubpicture(ClientPtr client)
         return BadAlloc;
 
     pSubpicture.subpicture_id = stuff.subpicture_id;
-    pSubpicture.xvimage_id = stuff.xvimage_id;
+    pSubpicture.xvimage_id = cast(int)stuff.xvimage_id;
     pSubpicture.width = stuff.width;
     pSubpicture.height = stuff.height;
     pSubpicture.num_palette_entries = 0;       /* overwritten by DDX */

@@ -37,7 +37,7 @@ import glx.indirect_size_get;
 import glx.glxserver;
 import glx.indirect_util;
 import glx.indirect_size;
- import externs.epoxy;
+ import Xext.glx.fix;
 
 
 // version (__GNUC__) {

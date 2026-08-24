@@ -836,7 +836,7 @@ private int SyncChangeAlarmAttributes(ClientPtr client, SyncAlarm* pAlarm, Mask 
         case XSyncCAValueType:
             mask &= ~XSyncCAValueType;
             /* sanity check in SyncInitTrigger */
-            trigger.value_type = *values++;
+            trigger.value_type = cast(uint)*values++;
             break;
 
         case XSyncCAValue:
@@ -848,7 +848,7 @@ private int SyncChangeAlarmAttributes(ClientPtr client, SyncAlarm* pAlarm, Mask 
         case XSyncCATestType:
             mask &= ~XSyncCATestType;
             /* sanity check in SyncInitTrigger */
-            trigger.test_type = *values++;
+            trigger.test_type = cast(uint)*values++;
             break;
 
         case XSyncCADelta:
@@ -1314,7 +1314,7 @@ private int ProcSyncSetPriority(ClientPtr client)
     }
 
     if (priorityclient.priority != stuff.priority) {
-        priorityclient.priority = stuff.priority;
+        priorityclient.priority = cast(int)stuff.priority;
 
         /*  The following will force the server back into WaitForSomething
          *  so that the change in this client's priority is immediately
@@ -1532,7 +1532,7 @@ private int ProcSyncAwait(ClientPtr client)
     SyncAwait* pAwait = void;
     int status = void;
 
-    len = client.req_len << 2;
+    len = cast(int)client.req_len << 2;
     len -= sz_xSyncAwaitReq;
     items = len / sz_xSyncWaitCondition;
 
@@ -1564,11 +1564,11 @@ private int ProcSyncAwait(ClientPtr client)
 
         /* sanity checks are in SyncInitTrigger */
         pAwait.trigger.pSync = null;
-        pAwait.trigger.value_type = pProtocolWaitConds.value_type;
+        pAwait.trigger.value_type = cast(uint)pProtocolWaitConds.value_type;
         pAwait.trigger.wait_value =
             (cast(long)pProtocolWaitConds.wait_value_hi << 32) |
             pProtocolWaitConds.wait_value_lo;
-        pAwait.trigger.test_type = pProtocolWaitConds.test_type;
+        pAwait.trigger.test_type = cast(uint)pProtocolWaitConds.test_type;
 
         status = SyncInitTrigger(client, &pAwait.trigger,
                                  pProtocolWaitConds.counter, RTCounter,
@@ -1646,7 +1646,7 @@ private int ProcSyncCreateAlarm(ClientPtr client)
     mixin(LEGAL_NEW_RESOURCE!("stuff.id", "client"));
 
     vmask = stuff.valueMask;
-    len = client.req_len - bytes_to_int32(xSyncCreateAlarmReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xSyncCreateAlarmReq.sizeof));
     /* the "extra" call to Ones accounts for the presence of 64 bit values */
     if (len != (Ones(vmask) + Ones(vmask & (XSyncCAValue | XSyncCADelta))))
         return BadLength;
@@ -1733,7 +1733,7 @@ private int ProcSyncChangeAlarm(ClientPtr client)
         return status;
 
     vmask = stuff.valueMask;
-    len = client.req_len - bytes_to_int32(xSyncChangeAlarmReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xSyncChangeAlarmReq.sizeof));
     /* the "extra" call to Ones accounts for the presence of 64 bit values */
     if (len != (Ones(vmask) + Ones(vmask & (XSyncCAValue | XSyncCADelta))))
         return BadLength;
@@ -1953,7 +1953,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
     int items = void;
     int i = void;
 
-    len = client.req_len << 2;
+    len = cast(int)client.req_len << 2;
     len -= sz_xSyncAwaitFenceReq;
     items = cast(uint)(len / CARD32.sizeof);
 

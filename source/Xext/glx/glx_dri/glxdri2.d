@@ -50,7 +50,7 @@ import glx.glx_dri.glxdricommon;
 
 import glx.extension_string;
 import glx.glxscreens_h;
- import externs.epoxy;
+ import Xext.glx.fix;
 import dix.resource;
 import externs.attrs;
 import externs.X11.extensions.dri2tokens;
@@ -60,9 +60,18 @@ import include.dri2;
 import hw.xfree86.common.xf86Helper;
 import os.log;
 import include.optionstr;
-import externs.epoxy;
+import Xext.glx.fix;
 import dix.dixutils;
 import xf86Option;
+
+alias BadLength = externs.X11.X.BadLength;
+alias BadAlloc = externs.X11.X.BadAlloc;
+alias BadMatch = externs.X11.X.BadMatch;
+alias None = externs.X11.X.None;
+alias Success = externs.X11.X.Success;
+alias BadValue = externs.X11.X.BadValue;
+alias BadImplementation = externs.X11.X.BadImplementation;
+
 
 enum ALL_DRI_CTX_FLAGS = (__DRI_CTX_FLAG_DEBUG                         
                            | __DRI_CTX_FLAG_FORWARD_COMPATIBLE          
@@ -128,7 +137,7 @@ private void copy_box(__GLXdrawable* drawable, int dst, int src, int x, int y, i
 /* white lie */
 glx_func_ptr glXGetProcAddressARB(const(char)*);
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;
@@ -143,7 +152,7 @@ private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
     free(private_);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableCopySubBuffer(__GLXdrawable* drawable, int x, int y, int w, int h)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;
@@ -167,6 +176,7 @@ private void __glXDRIdrawableWaitGL(__GLXdrawable* drawable)
 
     copy_box(drawable, DRI2BufferFrontLeft, DRI2BufferFakeFrontLeft,
              0, 0, private_.width, private_.height);
+alias CARD32 = externs.X11.Xmd.CARD32;
 }
 
 private void __glXdriSwapEvent(ClientPtr client, void* data, int type, CARD64 ust, CARD64 msc, CARD32 sbc)
@@ -199,7 +209,7 @@ private void __glXdriSwapEvent(ClientPtr client, void* data, int type, CARD64 us
  * If the kernel supports it, we request an event for the frame when the
  * swap should happen, then perform the copy when we receive it.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private GLboolean __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable* drawable)
 {
     __GLXDRIdrawable* priv = cast(__GLXDRIdrawable*) drawable;
@@ -239,7 +249,7 @@ private int __glXDRIdrawableSwapInterval(__GLXdrawable* drawable, int interval)
     return 0;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIcontextDestroy(__GLXcontext* baseContext)
 {
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
@@ -250,7 +260,7 @@ private void __glXDRIcontextDestroy(__GLXcontext* baseContext)
     free(context);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int __glXDRIcontextMakeCurrent(__GLXcontext* baseContext)
 {
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
@@ -262,7 +272,7 @@ private int __glXDRIcontextMakeCurrent(__GLXcontext* baseContext)
                                          draw.driDrawable, read.driDrawable);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int __glXDRIcontextLoseCurrent(__GLXcontext* baseContext)
 {
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
@@ -271,7 +281,7 @@ private int __glXDRIcontextLoseCurrent(__GLXcontext* baseContext)
     return assumeNoGC(screen.core.unbindContext) (context.driContext);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int __glXDRIcontextCopy(__GLXcontext* baseDst, __GLXcontext* baseSrc, c_ulong mask)
 {
     __GLXDRIcontext* dst = cast(__GLXDRIcontext*) baseDst;
@@ -515,7 +525,7 @@ private void create_driver_context(__GLXDRIcontext* context, __GLXDRIscreen* scr
                                            driShare, context);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLXconfig* glxConfig, __GLXcontext* baseShareContext, uint num_attribs, const(uint)* attribs, int* error)
 {
     __GLXDRIscreen* screen = cast(__GLXDRIscreen*) baseScreen;
@@ -563,7 +573,7 @@ private void __glXDRIinvalidateBuffers(DrawablePtr pDraw, void* priv, XID id)
         assumeNoGC(screen.flush.invalidate) (private_.driDrawable);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXdrawable* __glXDRIscreenCreateDrawable(ClientPtr client, __GLXscreen* screen, DrawablePtr pDraw, XID drawId, int type, XID glxDrawId, __GLXconfig* glxConfig)
 {
     __GLXDRIscreen* driScreen = cast(__GLXDRIscreen*) screen;
@@ -789,7 +799,7 @@ private void glxDRILeaveVT(ScrnInfoPtr scrn)
  *
  * @param screen The screen where glx_enable_bits are to be set.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void initializeExtensions(__GLXscreen* screen)
 {
     ScreenPtr pScreen = screen.pScreen;
@@ -858,7 +868,7 @@ version (__DRI2_FLUSH_CONTROL) {
     }
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIscreenDestroy(__GLXscreen* baseScreen)
 {
     int i = void;
@@ -893,7 +903,7 @@ private const(OptionInfoRec)[3] GLXOptions = [
     { -1, null, OPTV_NONE, {0}, FALSE },
 ];
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
 {
     const(char)* driverName = void, deviceName = void;

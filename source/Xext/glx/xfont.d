@@ -44,7 +44,7 @@ import glx.indirect_dispatch;
 import include.pixmapstr;
 import include.windowstr;
 import include.dixfontstr;
- import externs.epoxy;
+ import Xext.glx.fix;
 import fb.fbglyph;
 import externs.attrs;
 import glx.glxext;

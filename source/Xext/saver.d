@@ -748,7 +748,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
         return ret;
     }
 
-    len = client.req_len - bytes_to_int32(xScreenSaverSetAttributesReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xScreenSaverSetAttributesReq.sizeof));
     if (Ones(stuff.mask) != len) {
         return BadLength;
     }

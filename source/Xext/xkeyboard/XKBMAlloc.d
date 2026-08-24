@@ -44,7 +44,7 @@ import externs.X11.extensions.XKB;
 
 // import externs.X11.extensions.XKB;
 enum XkbNumRequiredTypes = 4;
-enum XkbLastRequiredType = 3;
+// enum XkbLastRequiredType = 3;
 /***====================================================================***/
 
 int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
@@ -55,8 +55,8 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
         ((nTotalTypes > 0) && (nTotalTypes < XkbNumRequiredTypes)))
         return BadValue;
     if ((which & XkbKeySymsMask) &&
-        ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-         (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+         (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
          (xkb.max_key_code < xkb.min_key_code))) {
         DebugF("bad keycode (%d,%d) in XkbAllocClientMap\n",
                xkb.min_key_code, xkb.max_key_code);
@@ -116,8 +116,8 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
         }
     }
     if (which & XkbModifierMapMask) {
-        if ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-            (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+            (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
         if (map.modmap == null) {
@@ -148,8 +148,8 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
     else
         map = xkb.server;
     if (which & XkbExplicitComponentsMask) {
-        if ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-            (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+            (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
         if (map.explicit == null) {
@@ -159,8 +159,8 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
         }
     }
     if (which & XkbKeyActionsMask) {
-        if ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-            (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+            (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
         if (nNewActions < 1)
@@ -194,8 +194,8 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
         }
     }
     if (which & XkbKeyBehaviorsMask) {
-        if ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-            (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+            (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
         if (map.behaviors == null) {
@@ -205,8 +205,8 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
         }
     }
     if (which & XkbVirtualModMapMask) {
-        if ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-            (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+            (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
         if (map.vmodmap == null) {

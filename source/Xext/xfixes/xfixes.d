@@ -109,11 +109,11 @@ private int ProcXFixesQueryVersion(ClientPtr client)
 
     int major = void, minor = void;
     XFixesClientPtr pXFixesClient = mixin(GetXFixesClient!("client"));
-    if (version_compare(stuff.majorVersion, stuff.minorVersion,
+    if (version_compare(cast(uint)stuff.majorVersion, cast(uint)stuff.minorVersion,
                         SERVER_XFIXES_MAJOR_VERSION,
                         SERVER_XFIXES_MINOR_VERSION) < 0) {
-        major = max(pXFixesClient.major_version, stuff.majorVersion);
-        minor = stuff.minorVersion;
+        major = cast(int)max(cast(int)pXFixesClient.major_version, cast(int)stuff.majorVersion);
+        minor = cast(int)stuff.minorVersion;
     }
     else {
         major = SERVER_XFIXES_MAJOR_VERSION;

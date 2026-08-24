@@ -111,8 +111,8 @@ void glamor_trapezoids(CARD8 op, PicturePtr src, PicturePtr dst, PictFormatPtr m
     if (bounds.y1 >= bounds.y2 || bounds.x1 >= bounds.x2)
         return;
 
-    x_dst = traps[0].left.p1.x >> 16;
-    y_dst = traps[0].left.p1.y >> 16;
+    x_dst = cast(short)traps[0].left.p1.x >> 16;
+    y_dst = cast(short)traps[0].left.p1.y >> 16;
 
     width = bounds.x2 - bounds.x1;
     height = bounds.y2 - bounds.y1;

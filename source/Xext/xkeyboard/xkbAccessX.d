@@ -410,7 +410,7 @@ private CARD32 AccessXTimeoutExpire(OsTimerPtr timer, CARD32 now, void* arg)
 
     if (xkbi.lastPtrEventTime) {
         uint timeToWait = (ctrls.ax_timeout * 1000);
-        uint timeElapsed = (now - xkbi.lastPtrEventTime);
+        uint timeElapsed = cast(uint)(now - xkbi.lastPtrEventTime);
 
         if (timeToWait > timeElapsed)
             return timeToWait - timeElapsed;

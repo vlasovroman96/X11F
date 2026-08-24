@@ -359,7 +359,7 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
 
  bail:
     while (i--) {
-        ScreenPtr walkScreen = dixGetScreenPtr(i);
+        ScreenPtr walkScreen = dixGetScreenPtr(cast(uint)i);
         PictureScreenPtr ps = mixin(GetPictureScreenIfSet!("walkScreen"));
         if (ps)
             ps.UnrealizeGlyph(walkScreen, glyph);
@@ -401,7 +401,7 @@ private Bool ResizeGlyphHash(GlyphHashPtr hash, CARD32 change, Bool global)
     if (!AllocateGlyphHash(&newHash, hashSet))
         return FALSE;
     if (hash.table) {
-        oldSize = hash.hashSet.size;
+        oldSize = cast(int)hash.hashSet.size;
         for (i = 0; i < oldSize; i++) {
             glyph = hash.table[i].glyph;
             if (glyph && glyph != DeletedGlyph) {

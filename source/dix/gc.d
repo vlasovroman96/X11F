@@ -157,11 +157,11 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
             break;
         }
         case GCPlaneMask:
-            mixin(NEXTVAL!("ulong", "pGC.planemask"));
+            mixin(NEXTVAL!("uint", "pGC.planemask"));
 
             break;
         case GCForeground:
-            mixin(NEXTVAL!("ulong", "pGC.fgPixel"));
+            mixin(NEXTVAL!("uint", "pGC.fgPixel"));
 
             /*
              * this is for CreateGC
@@ -172,7 +172,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
             }
             break;
         case GCBackground:
-            mixin(NEXTVAL!("ulong", "pGC.bgPixel"));
+            mixin(NEXTVAL!("uint", "pGC.bgPixel"));
 
             break;
         case GCLineWidth:      /* ??? line width is a CARD16 */
@@ -555,7 +555,7 @@ GCPtr CreateGC(DrawablePtr pDrawable, BITS32 mask, XID* pval, int* pStatus, XID 
     if (!(*pGC.pScreen.CreateGC) (pGC))
         *pStatus = BadAlloc;
     else if (mask)
-        *pStatus = ChangeGCXIDs(client, pGC, mask, cast(uint*)pval);
+        *pStatus = ChangeGCXIDs(client, pGC, mask, pval);
     else
         *pStatus = Success;
 

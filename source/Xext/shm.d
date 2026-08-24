@@ -361,9 +361,9 @@ private int ProcShmAttach(ClientPtr client)
 version (SHM_FD_PASSING) {
         shmdesc.is_fd = FALSE;
 }
-        shmdesc.addr = cast(char*)shmat(cast(void*)stuff.shmid, null,
+        shmdesc.addr = cast(char*)shmat(cast(int)stuff.shmid, null,
                               stuff.readOnly ? SHM_RDONLY : 0);
-        if ((shmdesc.addr == (cast(char*) -1)) || mixin(SHMSTAT!(`stuff.shmid`, `&buf`))) {
+        if ((shmdesc.addr == (cast(char*) -1)) || mixin(SHMSTAT!(`cast(int)stuff.shmid`, `&buf`))) {
             free(shmdesc);
             return BadAccess;
         }
@@ -378,7 +378,7 @@ version (SHM_FD_PASSING) {
             return BadAccess;
         }
 
-        shmdesc.shmid = stuff.shmid;
+        shmdesc.shmid = cast(int)stuff.shmid;
         shmdesc.refcnt = 1;
         shmdesc.writable = !stuff.readOnly;
         shmdesc.size = mixin(SHM_SEGSZ!(`buf`));

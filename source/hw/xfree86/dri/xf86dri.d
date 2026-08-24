@@ -45,7 +45,9 @@ import build.xorg_config;
 import core.stdc.string;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-// //import externs.X11.driproto;
+import externs.X11.dri.xf86driproto;
+import externs.X11.dri.xf86dri_;
+
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -101,7 +103,7 @@ private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIQueryDirectRenderingCapableReq);
     mixin(X_REQUEST_FIELD_CARD32!"screen");
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
 
     if (!pScreen) {
         client.errorValue = stuff.screen;
@@ -133,7 +135,7 @@ private int ProcXF86DRIOpenConnection(ClientPtr client)
     char* busIdString = void;
     CARD32 busIdStringLength = 0;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -166,14 +168,14 @@ private int ProcXF86DRIAuthConnection(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIAuthConnectionReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
     }
 
     CARD8 authenticated = 1;
-    if (!DRIAuthConnection(pScreen, stuff.magic)) {
+    if (!DRIAuthConnection(pScreen, cast(int)stuff.magic)) {
         ErrorF("Failed to authenticate %lu\n", cast(c_ulong) stuff.magic);
         authenticated = 0;
     }
@@ -189,7 +191,7 @@ private int ProcXF86DRICloseConnection(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRICloseConnectionReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -203,7 +205,7 @@ private int ProcXF86DRIGetClientDriverName(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIGetClientDriverNameReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -232,7 +234,7 @@ private int ProcXF86DRICreateContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRICreateContextReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -254,7 +256,7 @@ private int ProcXF86DRIDestroyContext(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86DRIDestroyContextReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -274,7 +276,7 @@ private int ProcXF86DRICreateDrawable(ClientPtr client)
     DrawablePtr pDrawable = void;
     int rc = void;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -302,7 +304,7 @@ private int ProcXF86DRIDestroyDrawable(ClientPtr client)
     DrawablePtr pDrawable = void;
     int rc = void;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -331,7 +333,7 @@ private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
     drm_clip_rect_t* pBackClipRects = void;
     int backX = void, backY = void, rc = void;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;
@@ -410,7 +412,7 @@ private int ProcXF86DRIGetDeviceInfo(ClientPtr client)
     drm_handle_t hFrameBuffer = void;
     void* pDevPrivate = void;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
         client.errorValue = stuff.screen;
         return BadValue;

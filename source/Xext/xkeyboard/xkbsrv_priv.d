@@ -8,7 +8,7 @@ import core.stdc.config: c_long, c_ulong;
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 //public import externs.X11.Xmd;
 
 public import xkb.xkbrules_priv;
@@ -189,11 +189,11 @@ void AccessXComputeCurveFactor(XkbSrvInfoPtr xkbi, XkbControlsPtr ctrls);
 int XkbDDXAccessXBeep(DeviceIntPtr dev, uint what, uint which);
 
 /* DDX entry points - DDX needs to implement these */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXTerminateServer(DeviceIntPtr dev, KeyCode key, XkbAction* act);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXSwitchScreen(DeviceIntPtr dev, KeyCode key, XkbAction* act);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXPrivate(DeviceIntPtr dev, KeyCode key, XkbAction* act);
 
 /* client resources */

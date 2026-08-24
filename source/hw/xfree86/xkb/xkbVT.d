@@ -46,7 +46,7 @@ import externs.X11.extensions.XKB;
 import include.xkbstr;
 
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int XkbDDXSwitchScreen(DeviceIntPtr dev, KeyCode key, XkbAction* act)
 {
     int scrnnum = mixin(XkbSAScreen!("&act.screen"));

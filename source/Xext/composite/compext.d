@@ -127,8 +127,8 @@ private int ProcCompositeQueryVersion(ClientPtr client)
         reply.minorVersion = stuff.minorVersion;
     }
 
-    pCompositeClient.major_version = reply.majorVersion;
-    pCompositeClient.minor_version = reply.minorVersion;
+    pCompositeClient.major_version = cast(int)reply.majorVersion;
+    pCompositeClient.minor_version = cast(int)reply.minorVersion;
 
     mixin(X_REPLY_FIELD_CARD32!"majorVersion");
     mixin(X_REPLY_FIELD_CARD32!"minorVersion");

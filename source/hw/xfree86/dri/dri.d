@@ -368,7 +368,7 @@ private int drmInstallSIGIOHandler(int fd, void function(int, void*, void*) @nog
     entry = drmGetEntry(fd);
     entry.f = f;
 
-    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return xf86InstallSIGIOHandler(fd, &drmSIGIOHandler, null);
 }
 
@@ -378,7 +378,7 @@ private int drmRemoveSIGIOHandler(int fd)
 
     entry.f = null;
 
-    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return xf86RemoveSIGIOHandler(fd);
 }
 

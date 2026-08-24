@@ -59,7 +59,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-import externs.X11.Xdefs_d;
+import externs.X11.Xdefs;
 //import externs.X11.Xproto;
 import include.inputstr;
 //import externs.X11.extensions.XI;
@@ -80,7 +80,7 @@ import dix.devices;
  *
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
 {
     return BadMatch;
@@ -98,7 +98,7 @@ int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
  *
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int first_valuator, int num_valuators)
 {
     return BadMatch;
@@ -112,7 +112,7 @@ int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int f
  *
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control)
 {
     return BadMatch;
@@ -125,7 +125,7 @@ int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control)
  * Add a new device with the specified options.
  *
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* pdev)
 {
     return BadValue;
@@ -138,7 +138,7 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
  * Remove the specified device previously added.
  *
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void DeleteInputDeviceRequest(DeviceIntPtr dev)
 {
     RemoveDevice(dev, TRUE);
@@ -153,7 +153,7 @@ void DeleteInputDeviceRequest(DeviceIntPtr dev)
  * the NewInputDeviceRequest/DeleteInputDeviceRequest
  *
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void RemoveInputDeviceTraces(const(char)* config_info)
 {
 }

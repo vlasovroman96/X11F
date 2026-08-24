@@ -56,7 +56,7 @@ import build.xorg_config;
 import core.stdc.errno;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.Xatom_;
+//import externs.X11.Xatom;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 //import externs.X11.keysym;
@@ -102,7 +102,7 @@ import dix.events;
 import dix.devices;
 import dix.property;
 import hw.xfree86.common.xf86Helper;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import os.connection;
 public import xf86Init;
 
@@ -135,9 +135,9 @@ private IHPtr InputHandlers = null;
 int TimeSinceLastInputEvent()
 {
     if (xf86Info.lastEventTime == 0) {
-        xf86Info.lastEventTime = GetTimeInMillis();
+        xf86Info.lastEventTime = cast(int)GetTimeInMillis();
     }
-    return GetTimeInMillis() - xf86Info.lastEventTime;
+    return cast(int)(GetTimeInMillis() - xf86Info.lastEventTime);
 }
 
 /*
@@ -146,7 +146,7 @@ int TimeSinceLastInputEvent()
  */
 void SetTimeSinceLastInputEvent()
 {
-    xf86Info.lastEventTime = GetTimeInMillis();
+    xf86Info.lastEventTime = cast(int)GetTimeInMillis();
 }
 
 /*

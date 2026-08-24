@@ -56,13 +56,23 @@ import glx.glx_dri.glxdricommon;
 
 import glx.extension_string;
 import glx.glxscreens_h;
- import externs.epoxy;
+ import Xext.glx.fix;
  import externs.attrs;
 import dix.gc;
 import os.log;
 import glx.glxext;
 import dix.dixutils;
 
+//!! EDX: Duuuude...
+alias BadLength = externs.X11.X.BadLength;
+alias BadAlloc = externs.X11.X.BadAlloc;
+alias BadMatch = externs.X11.X.BadMatch;
+alias None = externs.X11.X.None;
+alias Success = externs.X11.X.Success;
+alias BadValue = externs.X11.X.BadValue;
+alias BadImplementation = externs.X11.X.BadImplementation;
+alias ZPixmap = externs.X11.X.ZPixmap;
+alias IncludeInferiors = externs.X11.X.IncludeInferiors;
 
 
 
@@ -92,7 +102,7 @@ struct __GLXDRIdrawable {
 /* white lie */
 glx_func_ptr glXGetProcAddressARB(const(char)*);
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;
@@ -105,7 +115,7 @@ private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
     free(private_);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private GLboolean __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable* drawable)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;
@@ -116,7 +126,7 @@ private GLboolean __glXDRIdrawableSwapBuffers(ClientPtr client, __GLXdrawable* d
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableCopySubBuffer(__GLXdrawable* basePrivate, int x, int y, int w, int h)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) basePrivate;
@@ -126,7 +136,7 @@ private void __glXDRIdrawableCopySubBuffer(__GLXdrawable* basePrivate, int x, in
         assumeNoGC(copySubBuffer.copySubBuffer) (private_.driDrawable, x, y, w, h);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIcontextDestroy(__GLXcontext* baseContext)
 {
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
@@ -137,7 +147,7 @@ private void __glXDRIcontextDestroy(__GLXcontext* baseContext)
     free(context);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int __glXDRIcontextMakeCurrent(__GLXcontext* baseContext)
 {
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
@@ -149,7 +159,7 @@ private int __glXDRIcontextMakeCurrent(__GLXcontext* baseContext)
                                          draw.driDrawable, read.driDrawable);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int __glXDRIcontextLoseCurrent(__GLXcontext* baseContext)
 {
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
@@ -158,7 +168,7 @@ private int __glXDRIcontextLoseCurrent(__GLXcontext* baseContext)
     return assumeNoGC(screen.core.unbindContext) (context.driContext);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private int __glXDRIcontextCopy(__GLXcontext* baseDst, __GLXcontext* baseSrc, c_ulong mask)
 {
     __GLXDRIcontext* dst = cast(__GLXDRIcontext*) baseDst;
@@ -202,7 +212,7 @@ private int __glXDRIreleaseTexImage(__GLXcontext* baseContext, int buffer, __GLX
     return Success;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLXconfig* glxConfig, __GLXcontext* baseShareContext, uint num_attribs, const(uint)* attribs, int* error)
 {
     __GLXDRIscreen* screen = cast(__GLXDRIscreen*) baseScreen;
@@ -244,7 +254,7 @@ private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLX
     return &context.base;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXdrawable* __glXDRIscreenCreateDrawable(ClientPtr client, __GLXscreen* screen, DrawablePtr pDraw, XID drawId, int type, XID glxDrawId, __GLXconfig* glxConfig)
 {
     __GLXDRIscreen* driScreen = cast(__GLXDRIscreen*) screen;
@@ -335,7 +345,7 @@ shared static this() {
 ];
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void initializeExtensions(__GLXscreen* screen)
 {
     __DRIextension** extensions = void;
@@ -386,7 +396,7 @@ version (__DRI2_FLUSH_CONTROL) {
     }
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIscreenDestroy(__GLXscreen* baseScreen)
 {
     int i = void;
@@ -408,7 +418,7 @@ private void __glXDRIscreenDestroy(__GLXscreen* baseScreen)
     free(screen);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
 {
     const(char)* driverName = "swrast";

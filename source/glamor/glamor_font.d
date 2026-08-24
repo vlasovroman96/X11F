@@ -77,7 +77,7 @@ glamor_font_t* glamor_font_get(ScreenPtr screen, FontPtr font)
     if (!glamor_glsl_has_ints(glamor_priv))
         return null;
 
-    privates = cast(glamor_font_t*)FontGetPrivate(font, glamor_font_private_index);
+    privates = cast(glamor_font_t*)mixin(FontGetPrivate!("font", "glamor_font_private_index"));
     if (!privates) {
         privates = cast(glamor_font_t*) calloc(glamor_font_screen_count, glamor_font_t.sizeof);
         if (!privates)
@@ -199,7 +199,7 @@ private Bool glamor_realize_font(ScreenPtr screen, FontPtr font)
 private Bool glamor_unrealize_font(ScreenPtr screen, FontPtr font)
 {
     glamor_screen_private* glamor_priv = void;
-    glamor_font_t* privates = cast(glamor_font_t*)FontGetPrivate(font, glamor_font_private_index);
+    glamor_font_t* privates = cast(glamor_font_t*)mixin(FontGetPrivate!("font", "glamor_font_private_index"));
     glamor_font_t* glamor_font = void;
     int s = void;
 

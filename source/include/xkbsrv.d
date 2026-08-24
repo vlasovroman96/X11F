@@ -30,7 +30,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
  
 alias SrvXkbFreeKeyboard = XkbFreeKeyboard;			
 
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 // public // //import externs.X11.extensions.XKBproto;
 
 public import include.xlibre_ptrtypes;
@@ -42,7 +42,7 @@ import externs.X11.extensions.XKB;
 import include.input;
 import include.xkbstr;
 
-enum string XkbBuildCoreState(string m, string g)=`	((((`~g~`)&0x3)<<13)|((`~m~`)&0xff))`;
+// enum string XkbBuildCoreState(string m, string g)=`	((((`~g~`)&0x3)<<13)|((`~m~`)&0xff))`;
 
 struct _XkbInterest {
     DeviceIntPtr dev;

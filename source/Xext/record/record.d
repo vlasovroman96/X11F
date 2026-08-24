@@ -368,7 +368,7 @@ private void RecordAProtocolElement(RecordContextPtr pContext, ClientPtr pClient
 
         /* adjust reply length */
 
-        replylen = pRep.length;
+        replylen = cast(int)pRep.length;
         if (recordingClientSwapped)
             swapl(&replylen);
         replylen += numElemHeaders + bytes_to_int32(datalen) +
@@ -468,7 +468,7 @@ private void RecordABigRequest(RecordContextPtr pContext, ClientPtr client, xReq
      */
 
     /* record the request header */
-    bytesLeft = client.req_len << 2;
+    bytesLeft = cast(int)client.req_len << 2;
     RecordAProtocolElement(pContext, client, XRecordFromClient,
                            cast(void*) stuff, xReq.sizeof, 0, bytesLeft);
 
@@ -527,7 +527,7 @@ private int RecordARequest(ClientPtr client)
                 else
                     RecordAProtocolElement(pContext, client, XRecordFromClient,
                                            cast(void*) stuff,
-                                           client.req_len << 2, 0, 0);
+                                           cast(int)client.req_len << 2, 0, 0);
             }
             else {              /* extension, check minor opcode */
 
@@ -550,7 +550,7 @@ private int RecordARequest(ClientPtr client)
                             RecordAProtocolElement(pContext, client,
                                                    XRecordFromClient,
                                                    cast(void*) stuff,
-                                                   client.req_len << 2, 0, 0);
+                                                   cast(int)client.req_len << 2, 0, 0);
                         break;
                     }
                 }               /* end for each minor op info */
@@ -1304,7 +1304,7 @@ private int RecordSanityCheckRegisterClients(RecordContextPtr pContext, ClientPt
     recordingClient = pContext.pRecordingClient ?
         pContext.pRecordingClient.clientAsMask : 0;
     err = RecordSanityCheckClientSpecifiers(client, cast(XID*) &stuff[1],
-                                            stuff.nClients, recordingClient);
+                                            cast(int)stuff.nClients, recordingClient);
     if (err != Success)
         return err;
 
@@ -1545,7 +1545,7 @@ private int RecordRegisterClients(RecordContextPtr pContext, ClientPtr client, x
         pContext.elemHeaders = stuff.elementHeader;
     }
 
-    nClients = stuff.nClients;
+    nClients = cast(int)stuff.nClients;
     if (!nClients)
         /* if empty clients list, we're done. */
         return Success;
@@ -1562,7 +1562,7 @@ private int RecordRegisterClients(RecordContextPtr pContext, ClientPtr client, x
      * protocol types, plus one per range for extension requests, plus one per
      * range for extension replies.
      */
-    maxSets = RI_PREDEFSETS + 2 * stuff.nRanges;
+    maxSets = cast(int)(RI_PREDEFSETS + 2 * stuff.nRanges);
     RecordClientsAndProtocolPtr pRCAP;
     si = cast(_SetInfoRec*)calloc(maxSets, SetInfoRec.sizeof);
     if (!si) {
@@ -1580,43 +1580,43 @@ private int RecordRegisterClients(RecordContextPtr pContext, ClientPtr client, x
 
     pRanges = cast(xRecordRange*) ((cast(XID*) &stuff[1]) + stuff.nClients);
 
-    err = RecordConvertRangesToIntervals(&si[REQ], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[REQ], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `coreRequestsFirst`)), null,
                                          null);
     if (err != Success)
         goto bailout;
 
-    err = RecordConvertRangesToIntervals(&si[REQ], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[REQ], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `extRequestsMajorFirst`)),
                                          pExtReqSets, &nExtReqSets);
     if (err != Success)
         goto bailout;
 
-    err = RecordConvertRangesToIntervals(&si[RI_REP], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[RI_REP], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `coreRepliesFirst`)), null,
                                          null);
     if (err != Success)
         goto bailout;
 
-    err = RecordConvertRangesToIntervals(&si[RI_REP], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[RI_REP], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `extRepliesMajorFirst`)),
                                          pExtRepSets, &nExtRepSets);
     if (err != Success)
         goto bailout;
 
-    err = RecordConvertRangesToIntervals(&si[RI_ERR], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[RI_ERR], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `errorsFirst`)), null,
                                          null);
     if (err != Success)
         goto bailout;
 
-    err = RecordConvertRangesToIntervals(&si[RI_DLEV], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[RI_DLEV], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `deliveredEventsFirst`)),
                                          null, null);
     if (err != Success)
         goto bailout;
 
-    err = RecordConvertRangesToIntervals(&si[RI_DEV], pRanges, stuff.nRanges,
+    err = RecordConvertRangesToIntervals(&si[RI_DEV], pRanges, cast(int)stuff.nRanges,
                                          cast(int)mixin(offset_of!(`rr`, `deviceEventsFirst`)), null,
                                          null);
     if (err != Success)
@@ -1915,11 +1915,11 @@ private int ProcRecordUnregisterClients(ClientPtr client)
         return BadLength;
     mixin(VERIFY_CONTEXT!(`pContext`, `stuff.context`, `client`));
     err = RecordSanityCheckClientSpecifiers(client, cast(XID*) &stuff[1],
-                                            stuff.nClients, 0);
+                                            cast(int)stuff.nClients, 0);
     if (err != Success)
         return err;
 
-    nClients = stuff.nClients;
+    nClients = cast(int)stuff.nClients;
     pCanonClients = RecordCanonicalizeClientSpecifiers(cast(XID*) &stuff[1],
                                                        &nClients, 0);
     if (!pCanonClients)
@@ -2500,7 +2500,7 @@ private int SwapCreateRegister(ClientPtr client, xRecordRegisterClientsReq* stuf
         (client.req_len - bytes_to_int32(sz_xRecordRegisterClientsReq)
         - stuff.nClients) / bytes_to_int32(sz_xRecordRange))
         return BadLength;
-    RecordSwapRanges(cast(xRecordRange*) pClientID, stuff.nRanges);
+    RecordSwapRanges(cast(xRecordRange*) pClientID, cast(int)stuff.nRanges);
     return Success;
 }                               /* SwapCreateRegister */
 

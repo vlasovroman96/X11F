@@ -101,8 +101,8 @@ private int dispatch_GLXQueryVersion(ClientPtr client)
     xGLXQueryVersionReply reply = void;
     mixin(REQUEST_AT_LEAST_SIZE!xGLXQueryVersionReq);
 
-    reply.majorVersion = GlxCheckSwap(client, 1);
-    reply.minorVersion = GlxCheckSwap(client, 4);
+    reply.majorVersion = cast(uint)GlxCheckSwap(client, 1);
+    reply.minorVersion = cast(uint)GlxCheckSwap(client, 4);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -191,13 +191,13 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
     GlxContextTagInfo* oldTag = null;
     GlxServerVendor* newVendor = null;
 
-    oldContextTag = GlxCheckSwap(client, oldContextTag);
+    oldContextTag = cast(uint)GlxCheckSwap(client, oldContextTag);
     drawable = GlxCheckSwap(client, drawable);
     readdrawable = GlxCheckSwap(client, readdrawable);
     context = GlxCheckSwap(client, context);
 
     if (oldContextTag != 0) {
-        oldTag = GlxLookupContextTag(client, oldContextTag);
+        oldTag = GlxLookupContextTag(client, cast(uint)oldContextTag);
         if (oldTag == null) {
             return GlxErrorBase + GLXBadContextTag;
         }
@@ -253,7 +253,7 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
         oldTag = null;
     }
 
-    reply.contextTag = GlxCheckSwap(client, reply.contextTag);
+    reply.contextTag = cast(uint)GlxCheckSwap(client, reply.contextTag);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -300,7 +300,7 @@ private int dispatch_GLXCopyContext(ClientPtr client)
     // case, it's up to the vendor library to make sure that the context ID's
     // are valid.
     if (stuff.contextTag != 0) {
-        GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, GlxCheckSwap(client, stuff.contextTag));
+        GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)cast(uint)GlxCheckSwap(client, stuff.contextTag));
         if (tagInfo == null) {
             return GlxErrorBase + GLXBadContextTag;
         }
@@ -324,7 +324,7 @@ private int dispatch_GLXSwapBuffers(ClientPtr client)
     if (stuff.contextTag != 0) {
         // If the request has a context tag, then look up a vendor from that.
         // The vendor library is then responsible for validating the drawable.
-        GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, GlxCheckSwap(client, stuff.contextTag));
+        GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)cast(uint)GlxCheckSwap(client, stuff.contextTag));
         if (tagInfo == null) {
             return GlxErrorBase + GLXBadContextTag;
         }
@@ -351,7 +351,7 @@ private int dispatch_GLXSingle(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
 
 
-    tagInfo = GlxLookupContextTag(client, GlxCheckSwap(client, stuff.contextTag));
+    tagInfo = GlxLookupContextTag(client, cast(uint)GlxCheckSwap(client, stuff.contextTag));
     if (tagInfo != null) {
         return tagInfo.vendor.glxvc.handleRequest(client);
     } else {

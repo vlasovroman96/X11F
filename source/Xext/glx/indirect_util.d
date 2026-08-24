@@ -46,7 +46,7 @@ import glx.glxext;
 import glx.indirect_table;
 import glx.indirect_util;
 import include.misc;
- import externs.epoxy;
+ import Xext.glx.fix;
  import core.stdc.stdint;
  import os.io;
 
@@ -138,7 +138,7 @@ void __glXSendReply(ClientPtr client, const(void)* data, size_t elements, size_t
 
     xGLXSingleReply reply = {
         size: cast(uint)elements,
-        retval: retval,
+        retval: cast(uint)retval,
     };
 
     /* Single element goes in reply padding; don't leak uninitialized data. */
@@ -162,6 +162,8 @@ void __glXSendReply(ClientPtr client, const(void)* data, size_t elements, size_t
  * This function assumes that values stored in \c data will be byte-swapped
  * by the caller if necessary.
  */
+alias CARD32 = externs.X11.Xmd.CARD32;
+
 void __glXSendReplySwap(ClientPtr client, const(void)* data, size_t elements, size_t element_size, GLboolean always_array, CARD32 retval)
 {
     size_t reply_ints = 0;

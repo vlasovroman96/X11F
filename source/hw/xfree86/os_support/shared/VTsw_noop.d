@@ -36,19 +36,19 @@ import include.xf86_OSlib;
  * No-op functions for OSs without VTs
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchPending()
 {
     return FALSE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchAway()
 {
     return FALSE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchTo()
 {
     return TRUE;

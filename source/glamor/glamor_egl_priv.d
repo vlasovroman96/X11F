@@ -13,8 +13,8 @@ extern(C): __gshared:
  
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-public import externs.epoxy;
-// public import externs.epoxy;
+public import Xext.glx.fix;
+// public import Xext.glx.fix;
 
 public import include.scrnintstr;
 public import glamor.glamor_egl_ext;

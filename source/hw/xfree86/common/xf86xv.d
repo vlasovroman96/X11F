@@ -1734,7 +1734,7 @@ void xf86XVCopyYUV12ToPacked(const(void)* srcy, const(void)* srcv, const(void)* 
     w >>= 1;
 
     for (j = 0; j < h; j++) {
-        Dst = cast(uint*)dst;
+        Dst = cast(ulong*)dst;
         Y = cast(const(ubyte)*)srcy;
         V = cast(const(ubyte)*)srcv;
         U = cast(const(ubyte)*)srcu;
@@ -1790,8 +1790,8 @@ void xf86XVCopyPacked(const(void)* src, void* dst, int srcPitch, int dstPitch, i
     w >>= 1;
     while (--h >= 0) {
         do {
-            Dst = cast(uint*)dst;
-            Src = cast(const(uint)*)src;
+            Dst = cast(ulong*)dst;
+            Src = cast(const(ulong)*)src;
             i = w;
             while (i >= 4) {
                 Dst[0] = Src[0];

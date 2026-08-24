@@ -48,8 +48,9 @@ import dix.screenint_priv;
 import dix.window_priv;
 import os.bug_priv;
 import present.present_priv;
- import externs.epoxy;
-
+//  import Xext.glx.fix;
+// public import externs.glxproto;
+public import externs.glxtokens;
 
 import glx.glxserver;
 import glx.unpack;
@@ -67,14 +68,36 @@ import glx.glxscreens_h;
 import glx.vndext;
 import externs.attrs;
 import os.io;
-import externs.glxproto;
+// import externs.glxproto;
 import dix.events;
 import externs.X11.extensions.presenttokens;
+import Xext.glx.fix;
 
 alias __GLX_SINGLE_HDR_SIZE = sz_xGLXSingleReq;
 alias __GLX_VENDPRIV_HDR_SIZE = sz_xGLXVendorPrivateReq;
 
+// //!! EDX: Duuuude...
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
+alias INT32 = externs.X11.Xmd.INT32;
+
+// alias CARD32 = externs.X11.Xmd.CARD32;
+// alias BadLength = externs.X11.X.BadLength;
+// alias BadAlloc = externs.X11.X.BadAlloc;
+// alias BadMatch = externs.X11.X.BadMatch;
+// alias None = externs.X11.X.None;
+// alias Success = externs.X11.X.Success;
+// alias BadValue = externs.X11.X.BadValue;
+// alias BadRequest = externs.X11.X.BadRequest;
+// alias INT32 = externs.X11.Xmd.INT32;
+// alias BadImplementation = externs.X11.X.BadImplementation;
+// alias ZPixmap = externs.X11.X.ZPixmap;
+// alias IncludeInferiors = externs.X11.X.IncludeInferiors;
+// alias BadAccess = externs.X11.X.BadAccess;
+// alias BadPixmap = externs.X11.X.BadPixmap;
+// alias BadPixmap = externs.X11.X.BadPixmap;
+
+
+
 
 private char[4] GLXServerVendorName = "SGI";
 
@@ -83,7 +106,7 @@ int validGlxScreen(ClientPtr client, int screen, __GLXscreen** pGlxScreen, int* 
     /*
      ** Check if screen exists.
      */
-    ScreenPtr pScreen = dixGetScreenPtr(screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)screen);
     if (!pScreen) {
         client.errorValue = screen;
         *err = BadValue;
@@ -392,7 +415,7 @@ int __glXDisp_CreateContext(__GLXclientState* cl, GLbyte* pc)
         return err;
 
     return DoCreateContext(cl, req.context, req.shareList,
-                           config, pGlxScreen, req.isDirect,
+                           config, pGlxScreen, cast(ubyte)req.isDirect,
                            GLX_RGBA_TYPE);
 }
 
@@ -409,7 +432,7 @@ int __glXDisp_CreateNewContext(__GLXclientState* cl, GLbyte* pc)
         return err;
 
     return DoCreateContext(cl, req.context, req.shareList,
-                           config, pGlxScreen, req.isDirect,
+                           config, pGlxScreen, cast(ubyte)req.isDirect,
                            req.renderType);
 }
 
@@ -429,7 +452,7 @@ int __glXDisp_CreateContextWithConfigSGIX(__GLXclientState* cl, GLbyte* pc)
         return err;
 
     return DoCreateContext(cl, req.context, req.shareList,
-                           config, pGlxScreen, req.isDirect,
+                           config, pGlxScreen, cast(ubyte)req.isDirect,
                            req.renderType);
 }
 
@@ -1183,7 +1206,7 @@ private void determineTextureTarget(ClientPtr client, XID glxDrawableID, CARD32*
         }
 
         if (attribs[2 * i] == GLX_TEXTURE_FORMAT_EXT)
-            format = attribs[2 * i + 1];
+            format = cast(uint)attribs[2 * i + 1];
     }
 
     if (!target) {
@@ -1356,10 +1379,10 @@ int __glXDisp_CreatePbuffer(__GLXclientState* cl, GLbyte* pc)
     for (i = 0; i < req.numAttribs; i++) {
         switch (attrs[i * 2]) {
         case GLX_PBUFFER_WIDTH:
-            width = attrs[i * 2 + 1];
+            width = cast(int)attrs[i * 2 + 1];
             break;
         case GLX_PBUFFER_HEIGHT:
-            height = attrs[i * 2 + 1];
+            height = cast(int)attrs[i * 2 + 1];
             break;
         case GLX_LARGEST_PBUFFER:
             /* FIXME: huh... */
@@ -1634,7 +1657,7 @@ int __glXDisp_BindTexImageEXT(__GLXclientState* cl, GLbyte* pc)
     pc += __GLX_VENDPRIV_HDR_SIZE;
 
     drawId = *(cast(CARD32*) (pc));
-    buffer = *(cast(INT32*) (pc + 4));
+    buffer = cast(int)*(cast(INT32*) (pc + 4));
     num_attribs = *(cast(CARD32*) (pc + 8));
     if (num_attribs > (UINT32_MAX >> 3)) {
         client.errorValue = num_attribs;
@@ -1674,7 +1697,7 @@ int __glXDisp_ReleaseTexImageEXT(__GLXclientState* cl, GLbyte* pc)
     pc += __GLX_VENDPRIV_HDR_SIZE;
 
     drawId = *(cast(CARD32*) (pc));
-    buffer = *(cast(INT32*) (pc + 4));
+    buffer = cast(int)*(cast(INT32*) (pc + 4));
 
     context = __glXForceCurrent(cl, req.contextTag, &error);
     if (!context)
@@ -1709,10 +1732,10 @@ int __glXDisp_CopySubBufferMESA(__GLXclientState* cl, GLbyte* pc)
     pc += __GLX_VENDPRIV_HDR_SIZE;
 
     drawId = *(cast(CARD32*) (pc));
-    x = *(cast(INT32*) (pc + 4));
-    y = *(cast(INT32*) (pc + 8));
-    width = *(cast(INT32*) (pc + 12));
-    height = *(cast(INT32*) (pc + 16));
+    x = cast(int)*(cast(INT32*) (pc + 4));
+    y = cast(int)*(cast(INT32*) (pc + 8));
+    width = cast(int)*(cast(INT32*) (pc + 12));
+    height = cast(int)*(cast(INT32*) (pc + 16));
 
     if (tag) {
         glxc = __glXLookupContextByTag(cl, tag);
@@ -2364,7 +2387,7 @@ void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 ms
     wire.ust_lo = ust & 0xffffffff;
     wire.msc_hi = msc >> 32;
     wire.msc_lo = msc & 0xffffffff;
-    wire.sbc = sbc;
+    wire.sbc = cast(uint)sbc;
 
     WriteEventsToClient(client, 1, cast(xEvent*) &wire);
 }

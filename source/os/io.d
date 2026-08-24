@@ -138,7 +138,7 @@ enum string get_req_len(string req,string cli) = `((` ~ cli ~ `).swapped ?
 //import externs.X11.extensions.bigreqsproto;
 
 enum string get_big_req_len(string req,string cli) = `((` ~ cli ~ `).swapped ? 
-				  bswap_32((cast(xBigReq*)(` ~ req ~ `)).length) : 
+				  bswap_32(cast(uint)(cast(xBigReq*)(` ~ req ~ `)).length) : 
 				  (cast(xBigReq*)(` ~ req ~ `)).length)`;
 
 enum BUFSIZE = 16384;
@@ -309,11 +309,11 @@ static if (XTRANS_SEND_FDS) {
             move_header = TRUE;
             if (gotnow < xBigReq.sizeof) {
                 /* Still need more data to tell just how big. */
-                needed = bytes_to_int32(xBigReq.sizeof);       /* needed is in CARD32s now */
+                needed = cast(uint)bytes_to_int32(xBigReq.sizeof);       /* needed is in CARD32s now */
                 need_header = TRUE;
             }
             else
-                needed = mixin(get_big_req_len!(`request`, `client`));
+                needed = cast(uint)mixin(get_big_req_len!(`request`, `client`));
         }
         client.req_len = needed;
         if (needed > MAXINT >> 2) {
@@ -405,9 +405,9 @@ static if (XTRANS_SEND_FDS) {
             if (!needed && client.big_requests) {
                 move_header = TRUE;
                 if (gotnow < xBigReq.sizeof)
-                    needed = bytes_to_int32(xBigReq.sizeof);
+                    needed = cast(uint)bytes_to_int32(xBigReq.sizeof);
                 else
-                    needed = mixin(get_big_req_len!(`request`, `client`));
+                    needed = cast(int)mixin(get_big_req_len!(`request`, `client`));
             }
             client.req_len = needed;
             if (needed > MAXINT >> 2)

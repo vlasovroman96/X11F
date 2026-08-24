@@ -35,7 +35,7 @@ import core.stdc.stdint;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.XI2proto;
-//import externs.X11.Xatom_;
+//import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.dixgrabs_priv;

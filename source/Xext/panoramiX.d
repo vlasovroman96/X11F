@@ -494,7 +494,7 @@ private void XineramaInitData()
 
 /*
  *	PanoramiXExtensionInit():
- pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+ //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  *		Called from InitExtensions in main().
  *		Register PanoramiXeen Extension
  *		Initialize global variables.
@@ -902,7 +902,7 @@ void PanoramiXConsolidate()
 
 VisualID PanoramiXTranslateVisualID(int screen, VisualID orig)
 {
-    ScreenPtr pOtherScreen = dixGetScreenPtr(screen);
+    ScreenPtr pOtherScreen = dixGetScreenPtr(cast(uint)screen);
     VisualPtr pVisual = null;
     int i = void;
 
@@ -1018,7 +1018,7 @@ int ProcPanoramiXGetScreenSize(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
 
     xPanoramiXGetScreenSizeReply reply = {
         /* screen dimensions */

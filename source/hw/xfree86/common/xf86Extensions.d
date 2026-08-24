@@ -63,30 +63,36 @@ Bool noXFree86DRIExtension = FALSE;
 /*
  * DDX-specific extensions.
  */
-private const(ExtensionModule)[4] extensionModules;
-static this() {
-version(XF86VIDMODE) {
-    extensionModules[0] = ExtensionModule (
-	XFree86VidModeExtensionInit,
-	XF86VIDMODENAME,
-	&noXFree86VidModeExtension
-    );
-}
-version(XFreeXDGA) {
-    extensionModules[1] = ExtensionModule (
-	XFree86DGAExtensionInit,
-	XF86DGANAME,
-	&noXFree86DGAExtension
-    );
-}
-version(XF86DRI) {
-    extensionModules[2] = ExtensionModule (
-        XFree86DRIExtensionInit,
-        "XFree86-DRI",
-        &noXFree86DRIExtension
-    );
-}
-}
+private const(ExtensionModule)[4] extensionModules = [
+    // ExtensionModule (
+	// XFree86VidModeExtensionInit,
+	// XF86VIDMODENAME,
+	// &noXFree86VidModeExtension
+    // )
+];
+// static this() {
+// version(XF86VIDMODE) {
+//     extensionModules[0] = ExtensionModule (
+// 	XFree86VidModeExtensionInit,
+// 	XF86VIDMODENAME,
+// 	&noXFree86VidModeExtension
+//     );
+// }
+// version(XFreeXDGA) {
+//     extensionModules[1] = ExtensionModule (
+// 	XFree86DGAExtensionInit,
+// 	XF86DGANAME,
+// 	&noXFree86DGAExtension
+//     );
+// }
+// version(XF86DRI) {
+//     extensionModules[2] = ExtensionModule (
+//         XFree86DRIExtensionInit,
+//         "XFree86-DRI",
+//         &noXFree86DRIExtension
+//     );
+// }
+// }
     
 
 private void load_extension_config()

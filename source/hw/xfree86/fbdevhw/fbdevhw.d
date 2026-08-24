@@ -149,9 +149,9 @@ private void xfree2fbdev_fblayout(ScrnInfoPtr pScrn, fb_var_screeninfo* var)
     var.bits_per_pixel = pScrn.bitsPerPixel;
     if (pScrn.defaultVisual == TrueColor ||
         pScrn.defaultVisual == DirectColor) {
-        var.red.length = pScrn.weight.red;
-        var.green.length = pScrn.weight.green;
-        var.blue.length = pScrn.weight.blue;
+        var.red.length = cast(uint)pScrn.weight.red;
+        var.green.length = cast(uint)pScrn.weight.green;
+        var.blue.length = cast(uint)pScrn.weight.blue;
     }
     else {
         var.red.length = 8;
@@ -438,7 +438,7 @@ private int fbdev_open(int scrnIndex, const(char)* dev, char** namep)
 
 /* -------------------------------------------------------------------- */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWProbe(pci_device* pPci, const(char)* device, char** namep)
 {
     int fd = void;
@@ -454,7 +454,7 @@ Bool fbdevHWProbe(pci_device* pPci, const(char)* device, char** namep)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWInit(ScrnInfoPtr pScrn, pci_device* pPci, const(char)* device)
 {
     fbdevHWPtr fPtr = void;
@@ -498,7 +498,7 @@ Bool fbdevHWInit(ScrnInfoPtr pScrn, pci_device* pPci, const(char)* device)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 char* fbdevHWGetName(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -506,7 +506,7 @@ char* fbdevHWGetName(ScrnInfoPtr pScrn)
     return fPtr.fix.id.ptr;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int fbdevHWGetDepth(ScrnInfoPtr pScrn, int* fbbpp)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -522,7 +522,7 @@ int fbdevHWGetDepth(ScrnInfoPtr pScrn, int* fbbpp)
         return fPtr.var.bits_per_pixel;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int fbdevHWGetLineLength(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -533,7 +533,7 @@ int fbdevHWGetLineLength(ScrnInfoPtr pScrn)
         return fPtr.var.xres_virtual * fPtr.var.bits_per_pixel / 8;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int fbdevHWGetType(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -541,7 +541,7 @@ int fbdevHWGetType(ScrnInfoPtr pScrn)
     return fPtr.fix.type;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int fbdevHWGetVidmem(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -589,7 +589,7 @@ version (DEBUG) {
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWSetVideoModes(ScrnInfoPtr pScrn)
 {
     const(char)** modename = void;
@@ -641,7 +641,7 @@ void fbdevHWSetVideoModes(ScrnInfoPtr pScrn)
     }
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWUseBuildinMode(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -664,7 +664,7 @@ private void calculateFbmem_len(fbdevHWPtr fPtr)
         PAGE_MASK;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void* fbdevHWMapVidmem(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -681,7 +681,7 @@ void* fbdevHWMapVidmem(ScrnInfoPtr pScrn)
         else {
             /* Perhaps we'd better add fboff to fbmem and return 0 in
                fbdevHWLinearOffset()? Of course we then need to mask
-               pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+               //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
                fPtr->fbmem with PAGE_MASK in fbdevHWUnmapVidmem() as
                well. [geert] */
         }
@@ -693,7 +693,7 @@ void* fbdevHWMapVidmem(ScrnInfoPtr pScrn)
     return fPtr.fbmem;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int fbdevHWLinearOffset(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -701,7 +701,7 @@ int fbdevHWLinearOffset(ScrnInfoPtr pScrn)
     return fPtr.fboff;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWUnmapVidmem(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -715,7 +715,7 @@ Bool fbdevHWUnmapVidmem(ScrnInfoPtr pScrn)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void* fbdevHWMapMMIO(ScrnInfoPtr pScrn)
 {
     uint mmio_off = void;
@@ -749,7 +749,7 @@ void* fbdevHWMapMMIO(ScrnInfoPtr pScrn)
     return fPtr.mmio;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWUnmapMMIO(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -773,7 +773,7 @@ Bool fbdevHWUnmapMMIO(ScrnInfoPtr pScrn)
 
 /* -------------------------------------------------------------------- */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -817,7 +817,7 @@ Bool fbdevHWModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
 
 /* -------------------------------------------------------------------- */
 /* video mode save/restore                                              */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWSave(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -827,7 +827,7 @@ void fbdevHWSave(ScrnInfoPtr pScrn)
                    "FBIOGET_VSCREENINFO: %s\n", strerror(errno));
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWRestore(ScrnInfoPtr pScrn)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -840,7 +840,7 @@ void fbdevHWRestore(ScrnInfoPtr pScrn)
 /* -------------------------------------------------------------------- */
 /* callback for xf86HandleColormaps                                     */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWLoadPalette(ScrnInfoPtr pScrn, int numColors, int* indices, LOCO* colors, VisualPtr pVisual)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -867,7 +867,7 @@ void fbdevHWLoadPalette(ScrnInfoPtr pScrn, int numColors, int* indices, LOCO* co
 /* -------------------------------------------------------------------- */
 /* these can be hooked directly into ScrnInfoRec                        */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 ModeStatus fbdevHWValidMode(ScrnInfoPtr pScrn, DisplayModePtr mode, Bool verbose, int flags)
 {
     if (!fbdevHWSetMode(pScrn, mode, TRUE))
@@ -876,7 +876,7 @@ ModeStatus fbdevHWValidMode(ScrnInfoPtr pScrn, DisplayModePtr mode, Bool verbose
     return MODE_OK;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode)
 {
     if (!fbdevHWSetMode(pScrn, mode, FALSE))
@@ -885,7 +885,7 @@ Bool fbdevHWSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWAdjustFrame(ScrnInfoPtr pScrn, int x, int y)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -901,7 +901,7 @@ void fbdevHWAdjustFrame(ScrnInfoPtr pScrn, int x, int y)
                        "FBIOPAN_DISPLAY: %s\n", strerror(errno));
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWEnterVT(ScrnInfoPtr pScrn)
 {
     if (!fbdevHWModeInit(pScrn, pScrn.currentMode))
@@ -910,13 +910,13 @@ Bool fbdevHWEnterVT(ScrnInfoPtr pScrn)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWLeaveVT(ScrnInfoPtr pScrn)
 {
     fbdevHWRestore(pScrn);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void fbdevHWDPMSSet(ScrnInfoPtr pScrn, int mode, int flags)
 {
     fbdevHWPtr fPtr = mixin(FBDEVHWPTR!(`pScrn`));
@@ -964,7 +964,7 @@ RETRY:
     }
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool fbdevHWSaveScreen(ScreenPtr pScreen, int mode)
 {
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);

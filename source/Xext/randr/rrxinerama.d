@@ -331,7 +331,7 @@ version (XINERAMA) {
      * with their own output geometry.  So if there's more than one protocol
      * screen, just don't even try.
      */
-    if (dixGetScreenPtr(1))
+    if (dixGetScreenPtr(cast(uint)1))
         return;
 
     cast(void) AddExtension(PANORAMIX_PROTOCOL_NAME, 0, 0,

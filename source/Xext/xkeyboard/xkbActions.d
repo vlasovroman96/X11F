@@ -730,7 +730,7 @@ private int _XkbFilterControls(XkbSrvInfoPtr xkbi, XkbFilterPtr filter, uint key
         }
     }
     else if (filter.keycode == keycode) {
-        change = filter.priv;
+        change = cast(uint)filter.priv;
         if (change) {
             xkbControlsNotify cn = { 0 };
             XkbSrvLedInfoPtr sli = void;
@@ -862,7 +862,7 @@ private int _XkbFilterRedirectKey(XkbSrvInfoPtr xkbi, XkbFilterPtr filter, uint 
      * correct: */
     ev.deviceid = xkbi.device.id;
     /* filter->priv must be set up by the caller for the initial press. */
-    ev.sourceid = filter.priv;
+    ev.sourceid = cast(int)filter.priv;
 
     if (filter.keycode == 0) { /* initial press */
         if ((pAction.redirect.new_key < xkbi.desc.min_key_code) ||
@@ -1024,7 +1024,7 @@ private int XkbHandlePrivate(DeviceIntPtr dev, KeyCode keycode, XkbAction* pActi
         }
     }
 
-    // pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    // //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return XkbDDXPrivate(dev, keycode, pAction);
 }
 

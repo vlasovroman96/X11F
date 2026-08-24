@@ -272,7 +272,7 @@ private void XkbUpdateLedAutoState(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint 
     state = &kbd.key.xkbInfo.state;
     ctrls = kbd.key.xkbInfo.desc.ctrls;
     affected = maps_to_check;
-    oldState = sli.effectiveState;
+    oldState = cast(uint)sli.effectiveState;
     sli.autoState &= ~affected;
     for (i = 0, bit = 1; (i < XkbNumIndicators) && (affected); i++, bit <<= 1) {
         if ((affected & bit) == 0)
@@ -284,7 +284,7 @@ private void XkbUpdateLedAutoState(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint 
             sli.autoState |= bit;
     }
     sli.effectiveState = (sli.autoState | sli.explicitState);
-    affected = sli.effectiveState ^ oldState;
+    affected = cast(uint)(sli.effectiveState ^ oldState);
     if (affected == 0)
         return;
 
@@ -335,7 +335,7 @@ void XkbUpdateAllDeviceIndicators(XkbChangesPtr changes, XkbEventCausePtr cause)
                 if ((kf.xkb_sli == null) || (kf.xkb_sli.maps == null))
                     continue;
                 sli = kf.xkb_sli;
-                XkbUpdateLedAutoState(edev, sli, sli.mapsPresent, null,
+                XkbUpdateLedAutoState(edev, sli, cast(uint)sli.mapsPresent, null,
                                       changes, cause);
 
             }
@@ -347,7 +347,7 @@ void XkbUpdateAllDeviceIndicators(XkbChangesPtr changes, XkbEventCausePtr cause)
                 if ((lf.xkb_sli == null) || (lf.xkb_sli.maps == null))
                     continue;
                 sli = lf.xkb_sli;
-                XkbUpdateLedAutoState(edev, sli, sli.mapsPresent, null,
+                XkbUpdateLedAutoState(edev, sli, cast(uint)sli.mapsPresent, null,
                                       changes, cause);
 
             }
@@ -392,7 +392,7 @@ void XkbSetIndicators(DeviceIntPtr dev, CARD32 affect, CARD32 values, XkbEventCa
     sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId, 0);
     sli.explicitState &= ~affect;
     sli.explicitState |= (affect & values);
-    XkbApplyLedStateChanges(dev, sli, affect, &ed, &changes, cause);
+    XkbApplyLedStateChanges(dev, sli, cast(uint)affect, &ed, &changes, cause);
 
     side_affected = 0;
     if (changes.state_changes != 0)
@@ -438,7 +438,7 @@ void XkbUpdateIndicators(DeviceIntPtr dev, CARD32 update, Bool check_edevs, XkbC
     XkbSrvLedInfoPtr sli = void;
 
     sli = XkbFindSrvLedInfo(dev, XkbDfltXIClass, XkbDfltXIId, 0);
-    XkbUpdateLedAutoState(dev, sli, update, null, changes, cause);
+    XkbUpdateLedAutoState(dev, sli, cast(uint)update, null, changes, cause);
     if (check_edevs)
         XkbUpdateAllDeviceIndicators(changes, cause);
     return;
@@ -967,7 +967,7 @@ void XkbApplyLedStateChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint change
 
     kb_changed = FALSE;
     affected = changed_leds;
-    oldState = sli.effectiveState;
+    oldState = cast(uint)sli.effectiveState;
     for (i = 0, bit = 1; (i < XkbNumIndicators) && (affected); i++, bit <<= 1) {
         if ((affected & bit) == 0)
             continue;
@@ -985,7 +985,7 @@ void XkbApplyLedStateChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint change
         }
     }
     sli.effectiveState = (sli.autoState | sli.explicitState);
-    affected = sli.effectiveState ^ oldState;
+    affected = cast(uint)(sli.effectiveState ^ oldState);
 
     if (ed == null) {
         ed = &my_ed;
@@ -1010,7 +1010,7 @@ void XkbApplyLedStateChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint change
 
     if (kb_changed) {
         XkbComputeDerivedState(kbd.key.xkbInfo);
-        XkbUpdateLedAutoState(dev, sli, sli.mapsPresent, ed, changes, cause);
+        XkbUpdateLedAutoState(dev, sli, cast(uint)sli.mapsPresent, ed, changes, cause);
     }
 
     if (changes != &my_changes)

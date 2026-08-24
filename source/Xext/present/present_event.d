@@ -224,7 +224,7 @@ int present_select_input(ClientPtr client, XID eid, WindowPtr window, CARD32 mas
             return BadMatch;
 
         if (mask)
-            event.mask = mask;
+            event.mask = cast(int)mask;
         else
             FreeResource(eid, X11_RESTYPE_NONE);
         return Success;
@@ -248,7 +248,7 @@ int present_select_input(ClientPtr client, XID eid, WindowPtr window, CARD32 mas
     event.client = client;
     event.window = window;
     event.id = eid;
-    event.mask = mask;
+    event.mask = cast(int)mask;
 
     event.next = window_priv.events;
     window_priv.events = event;

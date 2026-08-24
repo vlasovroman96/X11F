@@ -63,7 +63,7 @@ enum XAUTH_PROTO_XDM = "XDM-AUTHORIZATION-1";
 
 import externs.X11.X;
 import externs.X11.Xmd;
-import externs.X11.Xdefs_d;
+import externs.X11.Xdefs;
 
 alias FILE = core.stdc.stdio.FILE;
 alias _IO_FILE = externs.X11.Xauth._IO_FILE*;
@@ -194,7 +194,7 @@ private int LoadAuthorization()
         return -1;
     }
 
-    while ((auth = externs.X11.Xauth.XauReadAuth(cast(_IO_FILE)f)) !is null) {
+    while ((auth = externs.X11.Xauth.XauReadAuth(cast(FILE*)f)) !is null) {
         for (i = 0; i < NUM_AUTHORIZATION; i++) {
             if (strlen(protocols[i].name) == auth.name_length &&
                 memcmp(protocols[i].name, auth.name,

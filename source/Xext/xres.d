@@ -471,7 +471,7 @@ private int ProcXResQueryClientIds(ClientPtr client)
     ctx.rpcbuf.swapped = client.swapped;
     ctx.rpcbuf.swapped = TRUE;
 
-    int rc = ConstructClientIds(client, stuff.numSpecs, specs, &ctx);
+    int rc = ConstructClientIds(client, cast(int)stuff.numSpecs, specs, &ctx);
     if (rc == Success) {
         xXResQueryClientIdsReply reply = {
             numIds: ctx.numIds
@@ -713,8 +713,8 @@ private void ConstructClientResourceBytes(ClientPtr aboutClient, ConstructResour
         if (spec.resource) {
             /* these specs are handled elsewhere */
         } else if (spec.type) {
-            ctx.resType = spec.type;
-            FindClientResourcesByType(aboutClient, spec.type,
+            ctx.resType = cast(uint)spec.type;
+            FindClientResourcesByType(aboutClient, cast(uint)spec.type,
                                       &AddResourceSizeValueWithResType, ctx);
         } else {
             FindAllClientResources(aboutClient, &AddResourceSizeValue, ctx);
@@ -810,7 +810,7 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
     ConstructResourceBytesCtx ctx = void;
     if (!InitConstructResourceBytesCtx(&ctx, client,
                                        stuff.numSpecs,
-                                       cast(_XResResourceIdSpec*) (cast(char*) stuff +
+                                       cast(xXResResourceIdSpec*) (cast(char*) stuff +
                                                 sz_xXResQueryResourceBytesReq))) {
         return BadAlloc;
     }

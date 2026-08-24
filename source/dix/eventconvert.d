@@ -487,7 +487,7 @@ private int appendButtonInfo(DeviceChangedEvent* dce, xXIButtonInfo* info)
     ubyte* bits = void;
     int mask_len = void;
 
-    mask_len = bytes_to_int32(bits_to_bytes(dce.buttons.num_buttons));
+    mask_len = cast(int)bytes_to_int32(bits_to_bytes(dce.buttons.num_buttons));
 
     info.type = XIButtonClass;
     info.num_buttons = cast(ushort)dce.buttons.num_buttons;
@@ -599,7 +599,7 @@ private int eventToDeviceChanged(DeviceChangedEvent* dce, xEvent** xi)
     dcce.reason =
         (dce.flags & DEVCHANGE_DEVICE_CHANGE) ? XIDeviceChange : XISlaveSwitch;
     dcce.num_classes = 0;
-    dcce.length = bytes_to_int32(len - xEvent.sizeof);
+    dcce.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
 
     ptr = cast(char*) &dcce[1];
     if (dce.buttons.num_buttons) {
@@ -656,12 +656,12 @@ private int eventToDeviceEvent(DeviceEvent* ev, xEvent** xi)
     /* FIXME: this should just send the buttons we have, not MAX_BUTTONs. Same
      * with MAX_VALUATORS below */
     /* btlen is in 4 byte units */
-    btlen = bytes_to_int32(bits_to_bytes(MAX_BUTTONS));
+    btlen = cast(int)bytes_to_int32(bits_to_bytes(MAX_BUTTONS));
     len += btlen * 4;           /* buttonmask len */
 
     vallen = count_bits(ev.valuators.mask.ptr, mixin(ARRAY_SIZE!("ev.valuators.mask")));
     len += vallen * 2 * uint.sizeof;       /* axisvalues */
-    vallen = bytes_to_int32(bits_to_bytes(MAX_VALUATORS));
+    vallen = cast(int)bytes_to_int32(bits_to_bytes(MAX_VALUATORS));
     len += vallen * 4;          /* valuators mask */
 
     *xi = cast(_xEvent*)calloc(1, len);
@@ -672,7 +672,7 @@ private int eventToDeviceEvent(DeviceEvent* ev, xEvent** xi)
     xde.extension = EXTENSION_MAJOR_XINPUT;
     xde.evtype = cast(ushort)GetXI2Type(ev.type);
     xde.time = cast(uint)ev.time;
-    xde.length = bytes_to_int32(len - xEvent.sizeof);
+    xde.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     if (IsTouchEvent(cast(InternalEvent*) ev))
         xde.detail = ev.touchid;
     else
@@ -739,7 +739,7 @@ private int eventToTouchOwnershipEvent(TouchOwnershipEvent* ev, xEvent** xi)
     xtoe = cast(xXITouchOwnershipEvent*) * xi;
     xtoe.type = GenericEvent;
     xtoe.extension = EXTENSION_MAJOR_XINPUT;
-    xtoe.length = bytes_to_int32(len - xEvent.sizeof);
+    xtoe.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     xtoe.evtype = cast(ushort)GetXI2Type(ev.type);
     xtoe.deviceid = cast(ushort)ev.deviceid;
     xtoe.time = cast(uint)ev.time;
@@ -761,7 +761,7 @@ private int eventToRawEvent(RawDeviceEvent* ev, xEvent** xi)
     nvals = count_bits(ev.valuators.mask.ptr, typeof(ev.valuators.mask).sizeof);
     len += nvals * ((FP3232).sizeof * 2);  /* 8 byte per valuator, once
                                            raw, once processed */
-    vallen = bytes_to_int32(bits_to_bytes(MAX_VALUATORS));
+    vallen = cast(int)bytes_to_int32(bits_to_bytes(MAX_VALUATORS));
     len += vallen * 4;          /* valuators mask */
 
     *xi = cast(_xEvent*)calloc(1, len);
@@ -772,7 +772,7 @@ private int eventToRawEvent(RawDeviceEvent* ev, xEvent** xi)
     raw.extension = EXTENSION_MAJOR_XINPUT;
     raw.evtype = cast(ushort)GetXI2Type(ev.type);
     raw.time = cast(uint)ev.time;
-    raw.length = bytes_to_int32(len - xEvent.sizeof);
+    raw.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     raw.detail = ev.detail.button;
     raw.deviceid = cast(ushort)ev.deviceid;
     raw.sourceid = cast(ushort)ev.sourceid;
@@ -807,7 +807,7 @@ private int eventToBarrierEvent(BarrierEvent* ev, xEvent** xi)
     barrier.type = GenericEvent;
     barrier.extension = EXTENSION_MAJOR_XINPUT;
     barrier.evtype = cast(ushort)GetXI2Type(ev.type);
-    barrier.length = bytes_to_int32(len - xEvent.sizeof);
+    barrier.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     barrier.deviceid = cast(ushort)ev.deviceid;
     barrier.sourceid = cast(ushort)ev.sourceid;
     barrier.time = cast(uint)ev.time;
@@ -838,7 +838,7 @@ int eventToGesturePinchEvent(GestureEvent* ev, xEvent** xi)
     xpe.extension = EXTENSION_MAJOR_XINPUT;
     xpe.evtype = cast(ushort)GetXI2Type(ev.type);
     xpe.time = cast(uint)ev.time;
-    xpe.length = bytes_to_int32(len - xEvent.sizeof);
+    xpe.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     xpe.detail = ev.num_touches;
 
     xpe.root = cast(uint)ev.root;
@@ -881,7 +881,7 @@ int eventToGestureSwipeEvent(GestureEvent* ev, xEvent** xi)
     xde.extension = EXTENSION_MAJOR_XINPUT;
     xde.evtype = cast(ushort)GetXI2Type(ev.type);
     xde.time = cast(uint)ev.time;
-    xde.length = bytes_to_int32(len - xEvent.sizeof);
+    xde.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     xde.detail = ev.num_touches;
 
     xde.root = cast(uint)ev.root;

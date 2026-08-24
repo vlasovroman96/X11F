@@ -989,7 +989,7 @@ private Bool exaFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, Pixel 
     }
 
     if (exaPixmapHasGpuCopy(pPixmap) &&
-        (*pExaScr.info.PrepareSolid) (pPixmap, alu, planemask, pixel)) {
+        (*pExaScr.info.PrepareSolid) (pPixmap, cast(int)alu, planemask, pixel)) {
         int nbox = void;
         BoxPtr pBox = void;
 
@@ -1094,7 +1094,7 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
     if (!pPixmap || !exaPixmapHasGpuCopy(pTile))
         return FALSE;
 
-    if ((*pExaScr.info.PrepareCopy) (pTile, pPixmap, 1, 1, alu, planemask)) {
+    if ((*pExaScr.info.PrepareCopy) (pTile, pPixmap, 1, 1, cast(int)alu, planemask)) {
         if (xoff || yoff)
             RegionTranslate(pRegion, xoff, yoff);
 
@@ -1169,7 +1169,7 @@ Bool exaFillRegionTiled(DrawablePtr pDrawable, RegionPtr pRegion, PixmapPtr pTil
                 ret = TRUE;
 
             if (more_copy && (*pExaScr.info.PrepareCopy) (pPixmap, pPixmap,
-                                                            1, 1, alu,
+                                                            1, 1, cast(int)alu,
                                                             planemask)) {
                 for (i = 0; i < nbox; i++) {
                     int dstX = pBox[i].x1 + tileWidth;

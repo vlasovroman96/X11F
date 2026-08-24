@@ -448,7 +448,7 @@ private int ProcDbeSwapBuffers(ClientPtr client)
 
     int error = Success;
 
-    uint nStuff = stuff.n; /* use local variable for performance. */
+    uint nStuff = cast(uint)stuff.n; /* use local variable for performance. */
 
     /* Get to the swap info appended to the end of the request. */
     xDbeSwapInfo* dbeSwapInfo = cast(xDbeSwapInfo*) &stuff[1];
@@ -580,7 +580,7 @@ private int ProcDbeGetVisualInfo(ClientPtr client)
         }
     }
 
-    count = (stuff.n == 0) ? screenInfo.numScreens : stuff.n;
+    count = cast(int)((stuff.n == 0) ? screenInfo.numScreens : stuff.n);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
         xDbeGetVisualInfoReply reply = {
@@ -588,7 +588,7 @@ private int ProcDbeGetVisualInfo(ClientPtr client)
         };
 
     for (int i = 0; i < count; i++) {
-        ScreenPtr pScreen = (stuff.n == 0) ? dixGetScreenPtr(i) : pDrawables[i].pScreen;
+        ScreenPtr pScreen = (stuff.n == 0) ? dixGetScreenPtr(cast(uint)i) : pDrawables[i].pScreen;
         pDbeScreenPriv = mixin(DBE_SCREEN_PRIV!("pScreen"));
 
         XdbeScreenVisualInfo visualInfo = { 0 };
@@ -958,7 +958,7 @@ private void miDbeWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, Window
  *
  * Description:
  *
- pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+ //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  *     Called from InitExtensions in main()
  *
  *****************************************************************************/
@@ -997,7 +997,7 @@ version (XINERAMA) {
         if (((pDbeScreenPriv = cast(DbeScreenPrivRec*) calloc(1, DbeScreenPrivRec.sizeof)) is null)) {
 
             for (int j = 0; j < walkScreenIdx; j++) {
-                ScreenPtr pScreen = dixGetScreenPtr(j);
+                ScreenPtr pScreen = dixGetScreenPtr(cast(uint)j);
                 free(dixLookupPrivate(&pScreen.devPrivates, &dbeScreenPrivKeyRec));
                 dixSetPrivate(&pScreen.devPrivates, &dbeScreenPrivKeyRec, null);
             }

@@ -63,8 +63,8 @@ public import externs.X11.X;
 public import externs.X11.Xfuncproto;
 public import externs.X11.Xmd;
 public import externs.X11.X;
-import externs.X11.Xdefs_d;
-// public import externs.X11.Xdefs_d;
+import externs.X11.Xdefs;
+// public import externs.X11.Xdefs;
 public import externs.X11.Xprotostr;
 import include.dixstruct;
 // import 

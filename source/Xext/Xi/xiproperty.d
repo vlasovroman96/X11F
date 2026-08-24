@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
 
 import build.dix_config;
 
-//import externs.X11.Xatom_;
+import externs.X11.Xatom;
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 import externs.X11.extensions.XI2proto;
@@ -50,7 +50,7 @@ import Xi.exglobals;
 import dix.swaprep;
 import Xi.xiproperty;
 import include.xserver_properties;
-import externs.X11.Xatom_;
+// import externs.X11.Xatom;
 import dix.devices;
 import dix.events;
 import os.inputthread;
@@ -431,7 +431,7 @@ int XIPropToInt(XIPropertyValuePtr val, int* nelem_return, int** buf_return)
             buf[i] = (cast(CARD16*) val.data)[i];
             break;
         case 32:
-            buf[i] = (cast(CARD32*) val.data)[i];
+            buf[i] = cast(int)(cast(CARD32*) val.data)[i];
             break;
         default: break;}
     }
@@ -855,7 +855,7 @@ int ProcXChangeDeviceProperty(ClientPtr client)
         return rc;
 
     rc = check_change_property(client, stuff.property, stuff.type,
-                               stuff.format, stuff.mode, stuff.nUnits);
+                               stuff.format, stuff.mode, cast(int)stuff.nUnits);
     if (rc != Success)
         return rc;
 
@@ -915,7 +915,7 @@ int ProcXGetDeviceProperty(ClientPtr client)
         return rc;
 
     rc = get_property(client, dev, stuff.property, stuff.type,
-                      stuff.delete_, stuff.longOffset, stuff.longLength,
+                      stuff.delete_, cast(int)stuff.longOffset, cast(int)stuff.longLength,
                       &bytes_after, &type, &format, &nitems, &length, &data);
 
     if (rc != Success)

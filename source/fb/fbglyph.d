@@ -35,12 +35,12 @@ import fb.fbpush;
 import Xext.xf86bigfont;
 
 
-enum string GLYPHWIDTHPIXELS(string pci) = 
-    "(" ~ pci ~ ".metrics.rightSideBearing - " ~
-    pci ~ ".metrics.leftSideBearing)";
-    enum string GLYPHHEIGHTPIXELS(string pci) =
-    `(` ~ pci ~ `.metrics.ascent + ` ~ pci ~ `.metrics.descent)`;
-enum string GLYPHWIDTHBYTES(string pci) = `(((`~GLYPHWIDTHPIXELS!(pci) ~`)+7) >> 3)`;
+// enum string GLYPHWIDTHPIXELS(string pci) = 
+//     "(" ~ pci ~ ".metrics.rightSideBearing - " ~
+//     pci ~ ".metrics.leftSideBearing)";
+    // enum string GLYPHHEIGHTPIXELS(string pci) =
+    // `(` ~ pci ~ `.metrics.ascent + ` ~ pci ~ `.metrics.descent)`;
+// enum string GLYPHWIDTHBYTES(string pci) = `(((`~GLYPHWIDTHPIXELS!(pci) ~`)+7) >> 3)`;
 
 private Bool fbGlyphIn(RegionPtr pRegion, int x, int y, int width, int height)
 {

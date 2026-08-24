@@ -86,7 +86,7 @@ enum VPC =        20              /* Max # valuators per chunk */;
  *
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void SizeDeviceInfo(DeviceIntPtr d, int* namesize, int* size)
 {
     int chunks = void;
@@ -279,7 +279,7 @@ private void CopySwapClasses(ClientPtr client, DeviceIntPtr dev, CARD8* num_clas
  *
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void ListDeviceInfo(ClientPtr client, DeviceIntPtr d, xDeviceInfoPtr dev, char** devbuf, char** classbuf, char** namebuf)
 {
     CopyDeviceName(namebuf, d.name);
@@ -293,7 +293,7 @@ private void ListDeviceInfo(ClientPtr client, DeviceIntPtr d, xDeviceInfoPtr dev
  *
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private Bool ShouldSkipDevice(ClientPtr client, DeviceIntPtr d)
 {
     /* don't send master devices other than VCP/VCK */

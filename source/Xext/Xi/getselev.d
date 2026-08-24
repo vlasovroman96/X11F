@@ -137,7 +137,7 @@ int ProcXGetSelectedExtensionEvents(ClientPtr client)
                 aclient =
                     ClassFromMask(aclient, others.mask[i], i, null, CREATE);
 
-        x_rpcbuf_write_CARD32s(&rpcbuf, cast(const uint*)buf, total_count);
+        x_rpcbuf_write_CARD32s(&rpcbuf, buf, total_count);
         free(buf);
     }
 

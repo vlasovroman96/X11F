@@ -708,11 +708,11 @@ Bool xf86SetWeight(ScrnInfoPtr scrp, rgb weight, rgb mask)
          * If not, we shouldn't even be setting it here.  However, this
          * matches the behaviour of 3.x versions of XFree86.
          */
-        scrp.rgbBits = scrp.weight.red;
+        scrp.rgbBits = cast(int)scrp.weight.red;
         if (scrp.weight.green > scrp.rgbBits)
-            scrp.rgbBits = scrp.weight.green;
+            scrp.rgbBits = cast(int)scrp.weight.green;
         if (scrp.weight.blue > scrp.rgbBits)
-            scrp.rgbBits = scrp.weight.blue;
+            scrp.rgbBits = cast(int)scrp.weight.blue;
     }
 
     /* Set the mask and offsets */
@@ -731,9 +731,9 @@ Bool xf86SetWeight(ScrnInfoPtr scrp, rgb weight, rgb mask)
         scrp.mask.red = mask.red;
         scrp.mask.green = mask.green;
         scrp.mask.blue = mask.blue;
-        scrp.offset.red = ffs(mask.red) - 1;
-        scrp.offset.green = ffs(mask.green) - 1;
-        scrp.offset.blue = ffs(mask.blue) - 1;
+        scrp.offset.red = ffs(cast(int)mask.red) - 1;
+        scrp.offset.green = ffs(cast(int)mask.green) - 1;
+        scrp.offset.blue = ffs(cast(int)mask.blue) - 1;
     }
     return TRUE;
 }

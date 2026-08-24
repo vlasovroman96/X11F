@@ -238,6 +238,8 @@ enum vs_exec_text = "       vec2 pos = primitive.zw * vec2(gl_VertexID&1, (gl_Ve
 
 enum fs_vars_text = "in vec2 glyph_pos;\n";
 
+alias MSBFirst  =externs.X11.X.MSBFirst;
+
 static if(BITMAP_BIT_ORDER == MSBFirst) {
     enum fs_exec_text = "       ivec2 itile_texture = ivec2(glyph_pos);\n"
     ~ "       uint x = uint(7) - uint(itile_texture.x & 7);\n"

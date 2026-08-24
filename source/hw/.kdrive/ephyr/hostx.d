@@ -75,7 +75,7 @@ import externs.xcb.xkb;
 version (GLAMOR) {
 import externs.xcb.glx;
 import epoxy.common;
-import externs.epoxy;
+import Xext.glx.fix;
 import glamor.glamor_glx_provider;
 import hw.kdrive.ephyr.ephyr_glamor;
 import glamor.glamor_priv;

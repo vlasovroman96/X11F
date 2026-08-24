@@ -384,7 +384,7 @@ private Bool are_platform_devices_resumed() {
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage* message, void* data)
 {
     systemd_logind_info* info = cast(systemd_logind_info*)data;
@@ -493,7 +493,7 @@ private DBusHandlerResult message_filter(DBusConnection* connection, DBusMessage
     return DBUS_HANDLER_RESULT_HANDLED;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void connect_hook(DBusConnection* connection, void* data)
 {
     const(char)* session_type = "X11";
@@ -683,7 +683,7 @@ cleanup:
     resolve!"dbus_error_free"()(&error);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void disconnect_hook(void* data)
 {
     systemd_logind_info* info = cast(systemd_logind_info*)data;

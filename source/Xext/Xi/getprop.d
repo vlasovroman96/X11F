@@ -117,7 +117,7 @@ int ProcXGetDeviceDontPropagateList(ClientPtr client)
                 tbuf = ClassFromMask(tbuf, others.dontPropagateMask[i], i,
                                      null, CREATE);
 
-            x_rpcbuf_write_CARD32s(&rpcbuf, cast(uint*)buf, count);
+            x_rpcbuf_write_CARD32s(&rpcbuf, buf, count);
             free(buf);
         }
     }

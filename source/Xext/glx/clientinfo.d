@@ -29,8 +29,14 @@ import include.misc;
 import glx.glxserver;
 import glx.indirect_dispatch;
 import glx.unpack;
- import externs.epoxy;
+ import Xext.glx.fix;
  import glx.indirect_util;
+
+
+alias BadLength = externs.X11.X.BadLength;
+alias BadAlloc = externs.X11.X.BadAlloc;
+alias BadMatch = externs.X11.X.BadMatch;
+
 
 
 private int set_client_info(__GLXclientState* cl, xGLXSetClientInfoARBReq* req, uint bytes_per_version)

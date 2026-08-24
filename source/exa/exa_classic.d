@@ -35,7 +35,7 @@ import exa.exa;
 
 /* This file holds the classic exa specific implementation. */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void* ExaGetPixmapAddress(PixmapPtr p)
 {
     mixin(ExaPixmapPriv!("p"));

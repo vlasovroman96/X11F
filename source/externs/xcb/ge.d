@@ -1,4 +1,4 @@
-module ge.h;
+module externs.xcb.ge;
 @nogc nothrow:
 extern(C): __gshared:
 /*

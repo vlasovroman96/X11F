@@ -37,7 +37,7 @@ import exa.exa_migration_mixed;
 /* This file holds the driver allocated pixmaps + better initial placement code.
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void* ExaGetPixmapAddress(PixmapPtr p)
 {
     mixin(ExaPixmapPriv!("p"));

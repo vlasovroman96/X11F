@@ -83,7 +83,7 @@ enum MISC_H = 1;
 public import externs.X11.Xfuncproto;
 public import externs.X11.Xmd;
 public import externs.X11.X;
-// public import externs.X11.Xdefs_d;
+// public import externs.X11.Xdefs;
 public import externs.X11.Xprotostr;
 import include.dixstruct;
 
@@ -295,7 +295,7 @@ void swaps(T)(T* x) {
 void cpswapl(T, U)(ref T src, ref U dst) {
     if (typeof(src).sizeof != 4 || typeof(dst).sizeof != 4)
 			wrong_size(); 
-		dst = bswap_32(src); 
+		dst = bswap_32(cast(uint)src); 
 }
 
 /* copy short from src to dst byteswapping on the way */
@@ -323,7 +323,7 @@ void cpswaps(T, U)(ref T src, ref U dst) {
 alias DDXPointPtr = _xPoint*;
 alias BoxPtr = pixman_box16*;
 alias xEventPtr = _xEvent*;
-alias xRectanglePtr = _xRectangle*;
+alias xRectanglePtr = xRectangle*;
 // struct _GrabRec;
 alias GrabPtr = GrabRec*;
 

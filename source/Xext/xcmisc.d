@@ -99,7 +99,7 @@ private int ProcXCMiscGetXIDList(ClientPtr client)
         return BadAlloc;
     }
 
-    size_t count = GetXIDList(client, stuff.count, pids);
+    size_t count = GetXIDList(client, cast(uint)stuff.count, pids);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 

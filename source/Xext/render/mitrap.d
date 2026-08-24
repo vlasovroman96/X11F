@@ -41,13 +41,13 @@ import externs.attrs;
 
 private XFixed miLineFixedX(xLineFixed* l, XFixed y, Bool ceil)
 {
-    XFixed dx = l.p2.x - l.p1.x;
+    XFixed dx = cast(int)(l.p2.x - l.p1.x);
     XFixed_32_32 ex = cast(XFixed_32_32) (y - l.p1.y) * dx;
-    XFixed dy = l.p2.y - l.p1.y;
+    XFixed dy = cast(int)(l.p2.y - l.p1.y);
 
     if (ceil)
         ex += (dy - 1);
-    return l.p1.x + cast(XFixed) (ex / dy);
+    return cast(int)(l.p1.x + cast(XFixed) (ex / dy));
 }
 
 void miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box)
@@ -61,23 +61,23 @@ void miTrapezoidBounds(int ntrap, xTrapezoid* traps, BoxPtr box)
 
         if (!mixin(xTrapezoidValid!("traps")))
             continue;
-        y1 = mixin(xFixedToInt!("traps.top"));
+        y1 = cast(short)mixin(xFixedToInt!("traps.top"));
         if (y1 < box.y1)
             box.y1 = y1;
 
-        y2 = mixin(xFixedToInt!(xFixedCeil!("traps.bottom")));
+        y2 = cast(short)mixin(xFixedToInt!(xFixedCeil!("traps.bottom")));
         if (y2 > box.y2)
             box.y2 = y2;
 
-        x1 = mixin(xFixedToInt!("min(miLineFixedX(&traps.left, traps.top, FALSE),
-                             miLineFixedX(&traps.left, traps.bottom, FALSE))"));
+        x1 = cast(short)mixin(xFixedToInt!("min(miLineFixedX(&traps.left, cast(int)traps.top, FALSE),
+                             miLineFixedX(&traps.left, cast(int)traps.bottom, FALSE))"));
         if (x1 < box.x1)
             box.x1 = x1;
 
-        x2 = mixin(xFixedToInt!(xFixedCeil!
+        x2 = cast(short)mixin(xFixedToInt!(xFixedCeil!
                          ("max
-                          (miLineFixedX(&traps.right, traps.top, TRUE),
-                           miLineFixedX(&traps.right, traps.bottom, TRUE))")));
+                          (miLineFixedX(&traps.right, cast(int)traps.top, TRUE),
+                           miLineFixedX(&traps.right, cast(int)traps.bottom, TRUE))")));
         if (x2 > box.x2)
             box.x2 = x2;
     }

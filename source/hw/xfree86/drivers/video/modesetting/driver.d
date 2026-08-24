@@ -113,6 +113,8 @@ import hw.xfree86.loader.loader;
 import randr.randr;
 import xf86Globals;
 
+alias CARD32 = externs.X11.Xmd.CARD32;
+
 alias SetupFnPtr = extern(C) Bool function(ScreenPtr) @nogc nothrow;
 alias AddFnPtr = extern(C) Bool function(ScreenPtr, PixmapPtr, ShadowUpdateProc, ShadowWindowProc,
             int, void *)  @nogc nothrow;
@@ -454,7 +456,7 @@ private int ms_try_open(const(char)* dev)
     }
 
 version (SEATD_LIBSEAT) {
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     return seatd_libseat_open_graphics(dev);
 } else {
     return -1;
@@ -2246,9 +2248,9 @@ version (GLAMOR) {
         visual = pScreen.visuals + pScreen.numVisuals;
         while (--visual >= pScreen.visuals) {
             if ((visual.class_ | DynamicClass) == DirectColor) {
-                visual.offsetRed = pScrn.offset.red;
-                visual.offsetGreen = pScrn.offset.green;
-                visual.offsetBlue = pScrn.offset.blue;
+                visual.offsetRed = cast(int)pScrn.offset.red;
+                visual.offsetGreen = cast(int)pScrn.offset.green;
+                visual.offsetBlue = cast(int)pScrn.offset.blue;
                 visual.redMask = cast(ubyte)pScrn.mask.red;
                 visual.greenMask = cast(ubyte)pScrn.mask.green;
                 visual.blueMask = cast(ubyte)pScrn.mask.blue;

@@ -55,7 +55,7 @@ import pixman;
 // //import stdbool;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import externs.X11.extensions.XI;
 import externs.X11.extensions.XI2;
 // //import externs.X11.extensions.XIproto;
@@ -1713,7 +1713,7 @@ int ProcChangeKeyboardMapping(ClientPtr client)
     mixin(REQUEST!xChangeKeyboardMappingReq);
     mixin(REQUEST_AT_LEAST_SIZE!xChangeKeyboardMappingReq);
 
-    uint len = client.req_len - bytes_to_int32(xChangeKeyboardMappingReq.sizeof);
+    uint len = cast(int)(client.req_len - bytes_to_int32(xChangeKeyboardMappingReq.sizeof));
     if (len != (stuff.keyCodes * stuff.keySymsPerKeyCode))
         return BadLength;
 
@@ -1846,7 +1846,7 @@ int ProcGetKeyboardMapping(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD32s(
         &rpcbuf,
-        cast(uint*)&syms.map[syms.mapWidth * (stuff.firstKeyCode - syms.minKeyCode)],
+        &syms.map[syms.mapWidth * (stuff.firstKeyCode - syms.minKeyCode)],
         count);
 
     free(syms.map);
@@ -1893,7 +1893,7 @@ private int DoChangeKeyboardControl(ClientPtr client, DeviceIntPtr keybd, XID* v
 {
 enum DO_ALL =    (-1);
     int key = DO_ALL;
-    int mask = vmask;
+    int mask = cast(int)vmask;
     KeybdCtrl ctrl = keybd.kbdfeed.ctrl;
 
     while (vmask) {

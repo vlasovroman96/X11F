@@ -91,7 +91,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
         swaps(&ctl.length);
     }
 
-    uint len = client.req_len - bytes_to_int32(xChangeDeviceControlReq.sizeof);
+    uint len = cast(uint)(client.req_len - bytes_to_int32(xChangeDeviceControlReq.sizeof));
 
     xChangeDeviceControlReply reply = {
         RepType: X_ChangeDeviceControl,
@@ -136,7 +136,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
         if (client.swapped) {
             SwapLongs(cast(CARD32*) (r + 1), r.num_valuators);
         }
-        pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+        //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
         int status = ChangeDeviceControl(client, dev, cast(xDeviceCtl*) r);
         if (status == Success) {
             AxisInfoPtr a = &dev.valuator.axes[r.first_valuator];
@@ -145,7 +145,7 @@ int ProcXChangeDeviceControl(ClientPtr client)
                     *(resolution + i) > (a + i).max_resolution)
                     return BadValue;
             for (int i = 0; i < r.num_valuators; i++)
-                (a++).resolution = *resolution++;
+                (a++).resolution = cast(int)*resolution++;
 
             ret = Success;
         }

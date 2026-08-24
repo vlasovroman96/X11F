@@ -95,7 +95,7 @@ Equipment Corporation.
 import dix-config;
 
 import core.stdc.stddef;             /* For NULL */
-import X11/X;
+import externs.X11.X;
 
 import dix.window_priv;
 import mi.mi_priv;

@@ -70,7 +70,7 @@ private void c2p_16x8(CARD32* d)
 
 pragma(inline, true) private void store_iplan2p8(void* dst, const(CARD32)* d)
 {
-    CARD32* p = cast(uint*)dst;
+    CARD32* p = cast(ulong*)dst;
 
     *p++ = d[1];
     *p++ = d[3];

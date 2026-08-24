@@ -411,7 +411,7 @@ private void CMapStoreColors(ColormapPtr pmap, int ndef, xColorItem* pdefs)
     }
     else {
         while (ndef--)
-            indices[ndef] = pdefs[ndef].pixel;
+            indices[ndef] = cast(int)pdefs[ndef].pixel;
     }
 
     CMapRefreshColors(pmap, num, indices);

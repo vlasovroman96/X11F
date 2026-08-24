@@ -1,3 +1,8 @@
+#ifdef __IMPORTC
+	__module externs.epoxygl_;
+#endif
+
+#pragma once
 #pragma attribute(push, nogc, nothrow)
 #include <epoxy/gl.h>
 #include <epoxy/egl.h>

@@ -645,7 +645,7 @@ private int SingleXvPutImage(ClientPtr client)
     size = (*pPort.pAdaptor.ddQueryImageAttributes) (pPort, pImage, &width,
                                                        &height, null, null);
     size += xvPutImageReq.sizeof;
-    size = bytes_to_int32(size);
+    size = cast(int)bytes_to_int32(size);
 
     if ((width < stuff.width) || (height < stuff.height))
         return BadValue;

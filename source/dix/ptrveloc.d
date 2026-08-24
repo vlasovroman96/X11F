@@ -35,7 +35,7 @@ import dix.ptrveloc_priv;
 import os.bug_priv;
 
 import include.ptrveloc;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import include.os;
 
 import include.xserver_properties;
@@ -1047,7 +1047,7 @@ void acceleratePointerPredictable(DeviceIntPtr dev, ValuatorMask* val, CARD32 ev
 
     if (dx != 0.0 || dy != 0.0) {
         /* reset non-visible state? */
-        if (ProcessVelocityData2D(velocitydata, dx, dy, evtime)) {
+        if (ProcessVelocityData2D(velocitydata, dx, dy, cast(int)evtime)) {
             soften = FALSE;
         }
 

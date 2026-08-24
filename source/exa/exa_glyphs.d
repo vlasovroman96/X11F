@@ -258,7 +258,7 @@ private int exaGlyphCacheHashLookup(ExaGlyphCachePtr cache, GlyphPtr pGlyph)
 {
     int slot = void;
 
-    slot = (*cast(CARD32*) pGlyph.sha1) % cache.hashSize;
+    slot = cast(int)(*cast(CARD32*) pGlyph.sha1) % cache.hashSize;
 
     while (TRUE) {              /* hash table can never be full */
         int entryPos = cache.hashEntries[slot];
@@ -284,7 +284,7 @@ private void exaGlyphCacheHashInsert(ExaGlyphCachePtr cache, GlyphPtr pGlyph, in
 
     memcpy(cache.glyphs[pos].sha1.ptr, pGlyph.sha1.ptr, typeof(pGlyph.sha1).sizeof);
 
-    slot = (*cast(CARD32*) pGlyph.sha1) % cache.hashSize;
+    slot = cast(int)(*cast(CARD32*) pGlyph.sha1) % cache.hashSize;
 
     while (TRUE) {              /* hash table can never be full */
         if (cache.hashEntries[slot] == -1) {
@@ -303,7 +303,7 @@ private void exaGlyphCacheHashRemove(ExaGlyphCachePtr cache, int pos)
     int slot = void;
     int emptiedSlot = -1;
 
-    slot = (*cast(CARD32*) cache.glyphs[pos].sha1) % cache.hashSize;
+    slot = cast(int)(*cast(CARD32*) cache.glyphs[pos].sha1) % cache.hashSize;
 
     while (TRUE) {              /* hash table can never be full */
         int entryPos = cache.hashEntries[slot];
@@ -332,7 +332,7 @@ private void exaGlyphCacheHashRemove(ExaGlyphCachePtr cache, int pos)
              * (Knuth 6.4R)
              */
 
-            int entrySlot = (*cast(CARD32*) cache.glyphs[entryPos].sha1) % cache.hashSize;
+            int entrySlot = cast(int)(*cast(CARD32*) cache.glyphs[entryPos].sha1) % cache.hashSize;
 
             if (!((entrySlot >= slot && entrySlot < emptiedSlot) ||
                   (emptiedSlot < slot &&

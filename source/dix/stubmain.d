@@ -32,7 +32,7 @@ int dix_main(int argc, char** argv, char** envp);
 /*
   A default implementation of main, which can be overridden by the DDX
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int main(int argc, char** argv, char** envp)
 {
     return dix_main(argc, argv, envp);

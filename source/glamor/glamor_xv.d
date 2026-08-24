@@ -288,17 +288,17 @@ private void glamor_xv_free_port_data(glamor_port_private* port_priv)
 int glamor_xv_set_port_attribute(glamor_port_private* port_priv, Atom attribute, INT32 value)
 {
     if (attribute == glamorBrightness)
-        port_priv.brightness = mixin(ClipValue!(`value`, `-1000`, `1000`));
+        port_priv.brightness = cast(int)mixin(ClipValue!(`value`, `-1000`, `1000`));
     else if (attribute == glamorHue)
-        port_priv.hue = mixin(ClipValue!(`value`, `-1000`, `1000`));
+        port_priv.hue = cast(int)mixin(ClipValue!(`value`, `-1000`, `1000`));
     else if (attribute == glamorContrast)
-        port_priv.contrast = mixin(ClipValue!(`value`, `-1000`, `1000`));
+        port_priv.contrast = cast(int)mixin(ClipValue!(`value`, `-1000`, `1000`));
     else if (attribute == glamorSaturation)
-        port_priv.saturation = mixin(ClipValue!(`value`, `-1000`, `1000`));
+        port_priv.saturation = cast(int)mixin(ClipValue!(`value`, `-1000`, `1000`));
     else if (attribute == glamorGamma)
-        port_priv.gamma = mixin(ClipValue!(`value`, `100`, `10000`));
+        port_priv.gamma = cast(int)mixin(ClipValue!(`value`, `100`, `10000`));
     else if (attribute == glamorColorspace)
-        port_priv.transform_index = mixin(ClipValue!(`value`, `0`, `1`));
+        port_priv.transform_index = cast(int)mixin(ClipValue!(`value`, `0`, `1`));
     else
         return BadMatch;
     return Success;

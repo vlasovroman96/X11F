@@ -44,17 +44,17 @@ import externs.X11.extensions.renderproto;
 
 void PictTransform_from_xRenderTransform(PictTransformPtr pict, xRenderTransform* render)
 {
-    pict.matrix[0][0] = render.matrix11;
-    pict.matrix[0][1] = render.matrix12;
-    pict.matrix[0][2] = render.matrix13;
+    pict.matrix[0][0] = cast(int)render.matrix11;
+    pict.matrix[0][1] = cast(int)render.matrix12;
+    pict.matrix[0][2] = cast(int)render.matrix13;
 
-    pict.matrix[1][0] = render.matrix21;
-    pict.matrix[1][1] = render.matrix22;
-    pict.matrix[1][2] = render.matrix23;
+    pict.matrix[1][0] = cast(int)render.matrix21;
+    pict.matrix[1][1] = cast(int)render.matrix22;
+    pict.matrix[1][2] = cast(int)render.matrix23;
 
-    pict.matrix[2][0] = render.matrix31;
-    pict.matrix[2][1] = render.matrix32;
-    pict.matrix[2][2] = render.matrix33;
+    pict.matrix[2][0] = cast(int)render.matrix31;
+    pict.matrix[2][1] = cast(int)render.matrix32;
+    pict.matrix[2][2] = cast(int)render.matrix33;
 }
 
 void xRenderTransform_from_PictTransform(xRenderTransform* render, PictTransformPtr pict)

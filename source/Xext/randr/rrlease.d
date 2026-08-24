@@ -250,7 +250,7 @@ int ProcRRCreateLease(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    len = client.req_len - bytes_to_int32(xRRCreateLeaseReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xRRCreateLeaseReq.sizeof));
 
     if (len != stuff.nCrtcs + stuff.nOutputs)
         return BadLength;

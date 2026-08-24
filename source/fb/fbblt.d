@@ -163,12 +163,16 @@ void fbBlt(FbBits* srcLine, FbStride srcStride, int srcX, FbBits* dstLine, FbStr
                 if (startmask) {
                     bits = mixin(READ!("--src"));
                     --dst;
+                    pragma(msg, "FbBits.sizeof = ", FbBits.sizeof);
+pragma(msg, "FB_SHIFT = ", FB_SHIFT);
                     mixin(FbDoLeftMaskByteMergeRop!("dst", "bits", "startbyte", "startmask"));
                 }
             }
             else {
                 if (startmask) {
                     bits = mixin(READ!("src++"));
+                    pragma(msg, "FbBits.sizeof = ", FbBits.sizeof);
+pragma(msg, "FB_SHIFT = ", FB_SHIFT);
                     mixin(FbDoLeftMaskByteMergeRop!("dst", "bits", "startbyte", "startmask"));
                     dst++;
                 }

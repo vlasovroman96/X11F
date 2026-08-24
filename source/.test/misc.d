@@ -39,7 +39,7 @@ import include.dix;
 import include.dixstruct;
 import test.tests_common;
 // import externs.X11.Xmd;
-// import externs.X11.Xdefs_d;
+// import externs.X11.Xdefs;
 // import externs.X11.X;
 import include.xlibre_ptrtypes;
 import test.tests;
@@ -73,7 +73,7 @@ private void dix_version_compare()
 
 pragma(inline, true) private void set_screen(uint idx, short x, short y, short w, short h)
 {
-    ScreenPtr pScreen = dixGetScreenPtr(idx);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)idx);
     pScreen.x = x;
     pScreen.y = y;
     pScreen.width = w;

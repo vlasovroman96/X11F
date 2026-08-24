@@ -90,7 +90,7 @@ Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, PixmapPtr 
     } else
         vblank.kind = PresentCompleteKindNotifyMSC;
 
-    vblank.serial = serial;
+    vblank.serial = cast(uint)serial;
 
     if (valid) {
         vblank.valid = RegionDuplicate(valid);

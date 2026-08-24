@@ -48,7 +48,7 @@ import xf86Globals;
 import externs.linux.agpgart;
 
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OSRingBell(int loudness, int pitch, int duration)
 {
     if (xf86Info.consoleFd == -1 || !pitch || !loudness)

@@ -1308,6 +1308,8 @@ Bool vgaHWInit(ScrnInfoPtr pScrnInfo, DisplayModePtr mode)
      * --  TSI @ UQV,  1998.08.21
      */
 
+alias CARD32 = externs.X11.Xmd.CARD32;
+
 CARD32 vgaHWHBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags)
 {
     int nExtBits = (nBits < 6) ? 0 : nBits - 6;
@@ -1323,9 +1325,9 @@ CARD32 vgaHWHBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags
     /* First the horizontal case */
     if ((Flags & KGA_FIX_OVERSCAN)
         && ((mode.CrtcHBlankEnd >> 3) == (mode.CrtcHTotal >> 3))) {
-        int i = (regp.CRTC[3] & 0x1F)
+        int i = cast(int)((regp.CRTC[3] & 0x1F)
             | ((regp.CRTC[5] & 0x80) >> 2)
-            | ExtBits;
+            | ExtBits);
 
         if (Flags & KGA_ENABLE_ON_ZERO) {
             if ((i-- > (((mode.CrtcHBlankStart >> 3) - 1)
@@ -1366,7 +1368,7 @@ CARD32 vgaHWVBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags
         && (mode.CrtcVBlankEnd == mode.CrtcVTotal))
         /* Null top overscan */
     {
-        int i = regp.CRTC[22] | ExtBits;
+        int i = cast(int)(regp.CRTC[22] | ExtBits);
 
         if (Flags & KGA_ENABLE_ON_ZERO) {
             if (((BitMask && ((i & BitMask) > (VBlankStart & BitMask)))

@@ -75,7 +75,7 @@ private DevPrivateKeyRec VGAarbiterScreenKeyRec;
 private DevPrivateKeyRec VGAarbiterGCKeyRec;
 
 private int vga_no_arb = 0;
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86VGAarbiterInit()
 {
     if (pci_device_vgaarb_init() != 0) {
@@ -85,7 +85,7 @@ void xf86VGAarbiterInit()
     }
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86VGAarbiterFini()
 {
     if (vga_no_arb)
@@ -93,7 +93,7 @@ void xf86VGAarbiterFini()
     pci_device_vgaarb_fini();
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86VGAarbiterLock(ScrnInfoPtr pScrn)
 {
     if (vga_no_arb)
@@ -102,7 +102,7 @@ void xf86VGAarbiterLock(ScrnInfoPtr pScrn)
     pci_device_vgaarb_lock();
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86VGAarbiterUnlock(ScrnInfoPtr pScrn)
 {
     if (vga_no_arb)
@@ -128,7 +128,7 @@ Bool xf86VGAarbiterAllowDRI(ScreenPtr pScreen)
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86VGAarbiterScrnInit(ScrnInfoPtr pScrn)
 {
     pci_device* dev = void;
@@ -145,7 +145,7 @@ void xf86VGAarbiterScrnInit(ScrnInfoPtr pScrn)
     pScrn.vgaDev = dev;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VGAarbiterWrapFunctions()
 {
     ScrnInfoPtr pScrn = void;

@@ -18,8 +18,6 @@ __module externs.drm_;
 #include "xf86drmMode.h"
 #include "xf86drm.h"
 #include "gbm.h"
-#include "X11/dri/xf86driproto.h"
-#include "X11/dri/xf86dri.h"
 
 #pragma attribute(pop)
 

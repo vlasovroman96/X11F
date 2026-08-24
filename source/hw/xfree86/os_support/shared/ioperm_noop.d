@@ -35,13 +35,13 @@ import include.xf86;
 import include.xf86Priv;
 import include.xf86_OSlib;
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86EnableIO()
 {
     return TRUE;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86DisableIO()
 {
     return;

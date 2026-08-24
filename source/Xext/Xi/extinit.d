@@ -1178,7 +1178,7 @@ private void SEventIDispatch(xEvent* from, xEvent* to)
  *
  * IExtensionInit - initialize the input extension.
  *
- pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+ //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  * Called from InitExtensions in main() or from QueryExtension() if the
  * extension is dynamically loaded.
  *

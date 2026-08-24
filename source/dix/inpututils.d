@@ -124,7 +124,7 @@ int ApplyPointerMapping(DeviceIntPtr dev, CARD8* map, int len, ClientPtr client)
     int ret = void;
 
     /* If we can't perform the change on the requested device, bail out. */
-    ret = check_butmap_change(dev, map, len, cast(uint*)&client.errorValue, client);
+    ret = check_butmap_change(dev, map, len, &client.errorValue, client);
     if (ret != Success)
         return ret;
     do_butmap_change(dev, map, len, client);

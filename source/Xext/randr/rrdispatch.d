@@ -53,15 +53,15 @@ int ProcRRQueryVersion(ClientPtr client)
 
     mixin(rrClientPriv!("client"));
 
-    pRRClient.major_version = stuff.majorVersion;
-    pRRClient.minor_version = stuff.minorVersion;
+    pRRClient.major_version = cast(int)stuff.majorVersion;
+    pRRClient.minor_version = cast(int)stuff.minorVersion;
 
     xRRQueryVersionReply reply = {
         majorVersion: SERVER_RANDR_MAJOR_VERSION,
         minorVersion: SERVER_RANDR_MINOR_VERSION
     };
 
-    if (version_compare(stuff.majorVersion, stuff.minorVersion,
+    if (version_compare(cast(uint)stuff.majorVersion, cast(uint)stuff.minorVersion,
                         SERVER_RANDR_MAJOR_VERSION,
                         SERVER_RANDR_MINOR_VERSION) < 0) {
         reply.majorVersion = stuff.majorVersion;

@@ -33,10 +33,10 @@ import core.stdc.config: c_long, c_ulong;
  * Silicon Graphics, Inc.
  */
 
- import externs.X11.Xdefs_d;
+ import externs.X11.Xdefs;
  import glx.glxserver;
  import glx.glxscreens_h;
- import externs.epoxy;
+ import Xext.glx.fix;
 
 
 struct __GLXcontext {

@@ -15,7 +15,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 version (PRIVATES_H) {} else {
 enum PRIVATES_H = 1;
 
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 // //public import externs.X11.Xosdefs;
 // //public import externs.X11.Xfuncproto;
 public import core.stdc.assert_;
@@ -338,7 +338,7 @@ void dixPrivateUsage();
 
 /*
  * Resets the privates subsystem.  dixResetPrivates is called from the main loop
- pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+ //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  * before each server generation.  This function must only be called by main().
  */
 int dixResetPrivates();

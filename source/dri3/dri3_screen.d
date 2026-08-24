@@ -190,7 +190,7 @@ private int cache_formats_and_modifiers(ScreenPtr screen)
     for (i = 0; i < num_formats; i++) {
         dri3_dmabuf_format_ptr iter = &ds.formats[i];
 
-        if (!info.get_modifiers(screen, formats[i],
+        if (!info.get_modifiers(screen, cast(uint)formats[i],
                                  &num_modifiers,
                                  &modifiers))
             continue;
@@ -198,7 +198,7 @@ private int cache_formats_and_modifiers(ScreenPtr screen)
         if (!num_modifiers)
             continue;
 
-        iter.format = formats[i];
+        iter.format = cast(uint)formats[i];
         iter.num_modifiers = num_modifiers;
         iter.modifiers = modifiers;
     }
@@ -253,7 +253,7 @@ int dri3_get_supported_modifiers(ScreenPtr screen, DrawablePtr drawable, CARD8 d
            screen_format.num_modifiers * CARD64.sizeof);
 
     if (!info.get_drawable_modifiers ||
-        !info.get_drawable_modifiers(drawable, format,
+        !info.get_drawable_modifiers(drawable, cast(uint)format,
                                       &num_drawable_mods,
                                       &drawable_mods)) {
         num_drawable_mods = 0;

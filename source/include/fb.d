@@ -145,8 +145,8 @@ enum string FbPatternOffset(string o,string t) = `(` ~ o ~ ` ^ (FbPatternOffsetB
 
 enum string FbPtrOffset(string p,string o,string t) = `(cast(`~t~`*) ((` ~ p ~ `) + (` ~ o ~ `)))`;
 enum string FbSelectPatternPart(string xor,string o,string t) = `cast(ubyte)((` ~ xor ~ `) >> (` ~ FbPatternOffset! (o,t) ~ ` << 3))`;
-enum string FbStorePart(string dst,string off,string t,string xor) = `(` ~ WRITE!(FbPtrOffset!(dst,off,t), 
-					 FbSelectPart!(xor, off, t)) ~ `)`;
+enum string FbStorePart(string dst,string off,string t,string xor) = WRITE!(FbPtrOffset!(dst,off,t), 
+					 FbSelectPart!(xor, off, t));
 version (FbSelectPart) {} else {
 enum string FbSelectPart(string x,string o,string t) = `` ~ FbSelectPatternPart!(x,o,t) ~ ``;
 }
@@ -191,6 +191,8 @@ enum string FbMaskBitsBytes(string x,string w,string copy,string l,string lb,str
     ` ~ n ~ ` >>= FB_SHIFT; 
 }`;
 
+pragma(msg, "FbBits.sizeof = ", FbBits.sizeof);
+pragma(msg, "FB_SHIFT = ", FB_SHIFT);
 enum string FbDoLeftMaskByteRRop(string dst,string lb,string l,string and,string xor) = `{ 
     switch (` ~ lb ~ `) { 
     case (((FbBits).sizeof - 3)) | (1 << (FB_SHIFT - 3)): 
@@ -203,15 +205,15 @@ enum string FbDoLeftMaskByteRRop(string dst,string lb,string l,string and,string
     case (((FbBits).sizeof - 2)) | (1 << (FB_SHIFT - 3)): 
 	` ~ FbStorePart!(dst,`((FbBits).sizeof - 2)`,`CARD8`,xor) ~ `; 
 	break; 
-    case ((FbBits).sizeof - 3): 
-	` ~ FbStorePart!(dst,`((FbBits).sizeof - 3)`,`CARD8`,xor) ~ `;
-	goto case  ((FbBits).sizeof - 2);
-    case ((FbBits).sizeof - 2): 
-	` ~ FbStorePart!(dst,`((FbBits).sizeof - 2)`,`CARD16`,xor) ~ `; 
-	break; 
-    case ((FbBits).sizeof - 1): 
-	` ~ FbStorePart!(dst,`((FbBits).sizeof - 1)`,`CARD8`,xor) ~ `; 
-	break; 
+    // case ((FbBits).sizeof - 3): 
+	// ` ~ FbStorePart!(dst,`((FbBits).sizeof - 3)`,`CARD8`,xor) ~ `;
+	// goto case  ((FbBits).sizeof - 2);
+    // case ((FbBits).sizeof - 2): 
+	// ` ~ FbStorePart!(dst,`((FbBits).sizeof - 2)`,`CARD16`,xor) ~ `; 
+	// break; 
+    // case ((FbBits).sizeof - 1): 
+	// ` ~ FbStorePart!(dst,`((FbBits).sizeof - 1)`,`CARD8`,xor) ~ `; 
+	// break; 
     default: 
 	` ~ WRITE!(dst, FbDoMaskRRop!(READ!(dst), and, xor, l)) ~ `; 
 	break; 

@@ -28,7 +28,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 
 public import include.xkbsrv;
 import include.xkbstr;

@@ -49,7 +49,7 @@ SOFTWARE.
 
  
 //public import externs.X11.X;              /* for GContext, Mask */
-//public import externs.X11.Xdefs_d;          /* for Bool */
+//public import externs.X11.Xdefs;          /* for Bool */
 //public import externs.X11.Xproto;
 public import include.screenint;          /* for ScreenPtr */
 public import include.pixmap;             /* for DrawablePtr */

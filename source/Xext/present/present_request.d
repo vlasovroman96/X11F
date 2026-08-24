@@ -155,7 +155,7 @@ private int proc_present_pixmap_common(ClientPtr client, Window req_window, Pixm
                          wait_fence, idle_fence,
                         //  acquire_syncobj, release_syncobj,
                          req_acquire_point, req_release_point,
-                         req_options, req_target_msc, req_divisor, req_remainder,
+                         cast(uint)req_options, req_target_msc, req_divisor, req_remainder,
                          notifies, nnotifies);
     // }
     // else {

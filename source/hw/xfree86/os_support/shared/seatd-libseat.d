@@ -101,7 +101,7 @@ import externs.attrs;
 import xf86Globals;
 import dix.property;
 import xf86AutoConfig_;
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 import xf86VGAarbiter;
 import xf86Option;
 import core.sys.posix.unistd;
@@ -267,7 +267,7 @@ log_libseat(libseat_log_level level, const char *fmt, va_list args)
  *   -EPERM (-1) if it was already initialised
  *   -EPIPE (-32) if the seat opening failed.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int seatd_libseat_init(Bool KeepTty_state)
 {
     if (!mixin(ServerIsNotSeat0!()) && xf86HasTTYs() && !KeepTty_state) {
@@ -303,7 +303,7 @@ int seatd_libseat_init(Bool KeepTty_state)
 /*
  * Shutdown the libseat client.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void seatd_libseat_fini()
 {
     if (seat_info.client) {
@@ -324,7 +324,7 @@ void seatd_libseat_fini()
  *   -EAGAIN (-11) if the VT is not active
  *   -errno from libseat_open_device if device access failed
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int seatd_libseat_open_graphics(const(char)* path)
 {
     int fd = void, id = void;
@@ -369,7 +369,7 @@ private int check_duplicate_device(int maj, int min) {
  * The function sets the p->options "libseat_id" for the device when
  * successful.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void seatd_libseat_open_device(InputInfoPtr p, int* pfd, Bool* paused)
 {
     int id = -1, fd = -1;
@@ -407,7 +407,7 @@ void seatd_libseat_open_device(InputInfoPtr p, int* pfd, Bool* paused)
 /*
  * Release an input device.
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void seatd_libseat_close_device(InputInfoPtr p)
 {
     char* path = xf86CheckStrOption(p.options, "Device", null);
@@ -439,7 +439,7 @@ void seatd_libseat_close_device(InputInfoPtr p)
  * Libseat controls session
  */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool seatd_libseat_controls_session(){
     return assumeNoGC(&libseat_active)();
 }
@@ -447,7 +447,7 @@ Bool seatd_libseat_controls_session(){
 /*
  * Switch VT
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int seatd_libseat_switch_session(int session)
 {
     int ret = 0;

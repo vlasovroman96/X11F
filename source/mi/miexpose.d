@@ -520,7 +520,7 @@ version (ROOTLESS_SAFEALPHA) {
     regionnumrects = RegionNumRects(prgn);
     if (regionnumrects == 0)
         return;
-    prect = cast(_xRectangle*)calloc(regionnumrects, xRectangle.sizeof);
+    prect = cast(xRectangle*)calloc(regionnumrects, xRectangle.sizeof);
     if (!prect)
         return;
 

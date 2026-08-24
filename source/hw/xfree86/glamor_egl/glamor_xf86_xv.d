@@ -49,6 +49,8 @@ import externs.X11.extensions.Xv;
 
 enum NUM_FORMATS = 4;
 
+alias TrueColor = externs.X11.X.TrueColor;
+
 private XF86VideoFormatRec[NUM_FORMATS] Formats = [
     {15, TrueColor}, {16, TrueColor}, {24, TrueColor}, {30, TrueColor}
 ];

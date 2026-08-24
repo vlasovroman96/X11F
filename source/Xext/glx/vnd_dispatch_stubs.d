@@ -22,10 +22,10 @@ import glx.vndserver_priv;;
 // enum X_GLXCreateContextAttribsARB = X_GLXCreateContextAtrribsARB;
 // }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) GlxServerVendor* vendorForScreen(ClientPtr pClient, CARD32 screen)
 {
-    ScreenPtr pScreen = dixGetScreenPtr(screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)cast(uint)screen);
     if (!pScreen)
         return null;
 
@@ -39,7 +39,7 @@ int dispatch_Render(ClientPtr client)
     GlxServerVendor* vendor = null;
     mixin(REQUEST_AT_LEAST_SIZE!("glxServer"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
-    vendor = glxServer.getContextTag(client, contextTag);
+    vendor = glxServer.getContextTag(client, cast(uint)contextTag);
     if (vendor != null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
@@ -56,7 +56,7 @@ int dispatch_RenderLarge(ClientPtr client)
     GlxServerVendor* vendor = null;
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
-    vendor = glxServer.getContextTag(client, contextTag);
+    vendor = glxServer.getContextTag(client, cast(uint)contextTag);
     if (vendor != null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
@@ -75,7 +75,7 @@ int dispatch_CreateContext(ClientPtr client)
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -119,7 +119,7 @@ int dispatch_WaitGL(ClientPtr client)
     GlxServerVendor* vendor = null;
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
-    vendor = glxServer.getContextTag(client, contextTag);
+    vendor = glxServer.getContextTag(client, cast(uint)contextTag);
     if (vendor != null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
@@ -136,7 +136,7 @@ int dispatch_WaitX(ClientPtr client)
     GlxServerVendor* vendor = null;
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
-    vendor = glxServer.getContextTag(client, contextTag);
+    vendor = glxServer.getContextTag(client, cast(uint)contextTag);
     if (vendor != null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
@@ -153,7 +153,7 @@ int dispatch_UseXFont(ClientPtr client)
     GlxServerVendor* vendor = null;
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
-    vendor = glxServer.getContextTag(client, contextTag);
+    vendor = glxServer.getContextTag(client, cast(uint)contextTag);
     if (vendor != null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
@@ -172,7 +172,7 @@ int dispatch_CreateGLXPixmap(ClientPtr client)
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -196,7 +196,7 @@ int dispatch_GetVisualConfigs(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -231,7 +231,7 @@ int dispatch_QueryExtensionsString(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -249,7 +249,7 @@ int dispatch_QueryServerString(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -286,7 +286,7 @@ int dispatch_CreateNewContext(ClientPtr client)
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -312,7 +312,7 @@ int dispatch_CreatePbuffer(ClientPtr client)
     pbuffer = GlxCheckSwap(client, stuff.pbuffer);
     mixin(LEGAL_NEW_RESOURCE!("pbuffer", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -338,7 +338,7 @@ int dispatch_CreatePixmap(ClientPtr client)
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     mixin(LEGAL_NEW_RESOURCE!("glxpixmap", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -364,7 +364,7 @@ int dispatch_CreateWindow(ClientPtr client)
     glxwindow = GlxCheckSwap(client, stuff.glxwindow);
     mixin(LEGAL_NEW_RESOURCE!("glxwindow", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -390,7 +390,7 @@ int dispatch_CreateContextAttribsARB(ClientPtr client)
     context = GlxCheckSwap(client, stuff.context);
     mixin(LEGAL_NEW_RESOURCE!("context", "client"));
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;
@@ -491,7 +491,7 @@ int dispatch_GetFBConfigs(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     screen = GlxCheckSwap(client, stuff.screen);
 
-    pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+    //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
     if (vendor != null) {
         int ret = void;

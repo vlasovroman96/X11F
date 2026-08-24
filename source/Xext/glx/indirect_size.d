@@ -33,7 +33,7 @@ private template HasVersion(string versionId) {
  */
 
  //import externs.GL.gl;
- import externs.epoxy;
+ import Xext.glx.fix;
 
 static if (!HasVersion!"_INDIRECT_SIZE_H_") {
 // version = _INDIRECT_SIZE_H_;

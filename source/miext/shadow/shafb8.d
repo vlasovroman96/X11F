@@ -131,7 +131,7 @@ void shadowUpdateAfb8(ScreenPtr pScreen, shadowBufPtr pBuf)
             for (i = 0; i < n; i++) {
                 memcpy(d.bytes.ptr, sha, typeof(d.bytes).sizeof);
                 c2p_32x8(d.words.ptr);
-                store_afb8(win++, winStride, d.words.ptr);
+                store_afb8(win++, cast(uint)winStride, d.words.ptr);
                 sha += cast(ulong)((d.bytes).sizeof / typeof(*sha).sizeof);
             }
             shaLine += shaStride;

@@ -81,7 +81,7 @@ void shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
             sha = shaLine;
             while (width) {
                 /* how much remains in this window */
-                i = scrBase + winSize - scr;
+                i = cast(int)(scrBase + winSize - scr);
                 if (i <= 0 || scr < scrBase) {
                     winBase = cast(FbBits*) (*pBuf.window) (pScreen,
                                                           y,
@@ -93,7 +93,7 @@ void shadowUpdatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
                         return;
                     scrBase = scr;
                     winSize /= FbBits.sizeof;
-                    i = winSize;
+                    i = cast(int)winSize;
                 }
                 win = winBase + (scr - scrBase);
                 if (i > width)

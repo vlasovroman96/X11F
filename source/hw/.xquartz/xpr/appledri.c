@@ -119,7 +119,7 @@ ProcAppleDRIQueryDirectRenderingCapable(register ClientPtr client)
 
     Bool isCapable;
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff->screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff->screen);
     if (!pScreen) {
         return BadValue;
     }

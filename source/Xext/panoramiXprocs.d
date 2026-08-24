@@ -78,7 +78,7 @@ int PanoramiXCreateWindow(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreateWindowReq);
 
-    len = client.req_len - bytes_to_int32(xCreateWindowReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xCreateWindowReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -187,7 +187,7 @@ int PanoramiXChangeWindowAttributes(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xChangeWindowAttributesReq);
 
-    len = client.req_len - bytes_to_int32(xChangeWindowAttributesReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xChangeWindowAttributesReq.sizeof));
     if (Ones(stuff.valueMask) != len)
         return BadLength;
 
@@ -476,7 +476,7 @@ int PanoramiXConfigureWindow(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xConfigureWindowReq);
 
-    len = client.req_len - bytes_to_int32(xConfigureWindowReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xConfigureWindowReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -509,11 +509,11 @@ int PanoramiXConfigureWindow(ClientPtr client)
                          (pWin.parent.drawable.id == masterScreen.screensaver.wid))) {
         if (cast(Mask) stuff.mask & CWX) {
             x_offset = 0;
-            x = *(cast(CARD32*) &stuff[1]);
+            x = cast(int)*(cast(CARD32*) &stuff[1]);
         }
         if (cast(Mask) stuff.mask & CWY) {
             y_offset = (x_offset == -1) ? 0 : 1;
-            y = *(cast(CARD32*) &stuff[1] + y_offset);
+            y = cast(int)*(cast(CARD32*) &stuff[1] + y_offset);
         }
     }
 
@@ -777,7 +777,7 @@ int PanoramiXCreateGC(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xCreateGCReq);
 
     client.errorValue = stuff.gc;
-    len = client.req_len - bytes_to_int32(xCreateGCReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xCreateGCReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -856,7 +856,7 @@ int PanoramiXChangeGC(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xChangeGCReq);
 
-    len = client.req_len - bytes_to_int32(xChangeGCReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xChangeGCReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -1398,7 +1398,7 @@ int PanoramiXPolyPoint(ClientPtr client)
         return result;
 
     isRoot = (draw.type == XRT_WINDOW) && draw.u.win.root;
-    npoint = bytes_to_int32((client.req_len << 2) - xPolyPointReq.sizeof);
+    npoint = cast(int)bytes_to_int32((client.req_len << 2) - xPolyPointReq.sizeof);
     if (npoint > 0) {
         xPoint* origPts = cast(xPoint*) calloc(npoint, xPoint.sizeof);
         if (!origPts)
@@ -1464,7 +1464,7 @@ int PanoramiXPolyLine(ClientPtr client)
         return result;
 
     isRoot = mixin(IS_ROOT_DRAWABLE!"draw");
-    npoint = bytes_to_int32((client.req_len << 2) - xPolyLineReq.sizeof);
+    npoint = cast(int)bytes_to_int32((client.req_len << 2) - xPolyLineReq.sizeof);
     if (npoint > 0) {
         xPoint* origPts = cast(xPoint*) calloc(npoint, xPoint.sizeof);
         if (!origPts)
@@ -1733,7 +1733,7 @@ int PanoramiXFillPoly(ClientPtr client)
 
     isRoot = mixin(IS_ROOT_DRAWABLE!"draw");
 
-    count = bytes_to_int32((client.req_len << 2) - xFillPolyReq.sizeof);
+    count = cast(int)bytes_to_int32((client.req_len << 2) - xFillPolyReq.sizeof);
     if (count > 0) {
         DDXPointPtr locPts = cast(DDXPointPtr)calloc(count, xPoint.sizeof);
         if (!locPts)
@@ -2312,7 +2312,7 @@ int PanoramiXCreateColormap(ClientPtr client)
     newCmap.type = XRT_COLORMAP;
     panoramix_setup_ids(newCmap, client, stuff.mid);
 
-    orig_visual = stuff.visual;
+    orig_visual = cast(int)stuff.visual;
 
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         stuff.mid = cast(uint)newCmap.info[walkScreenIdx].id;

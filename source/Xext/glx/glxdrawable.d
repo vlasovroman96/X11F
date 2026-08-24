@@ -35,10 +35,10 @@ import core.stdc.config: c_long, c_ulong;
 
 //import externs.GL.glx;
 //import externs.GL.gl;
-import externs.X11.Xdefs_d;
+import externs.X11.Xdefs;
 import include.pixmap;
 import glx.glxscreens_h;
-import externs.epoxy;
+import Xext.glx.fix;
 
 /* We just need to avoid clashing with DRAWABLE_{WINDOW,PIXMAP} */
 enum {

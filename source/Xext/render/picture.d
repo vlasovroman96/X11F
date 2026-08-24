@@ -49,7 +49,7 @@ import render.picturestr_priv;
 import render.glyphstr_priv;
 import Xext.xace;
 import externs.X11.extensions.renderproto;
-import externs.X11.Xdefs_d;
+import externs.X11.Xdefs;
 import dix.resource;
 import dix.screen_hooks;
 import dix.colormap;
@@ -924,11 +924,11 @@ PicturePtr CreateRadialGradientPicture(Picture pid, xPointFixed* inner, xPointFi
     radial = &pPicture.pSourcePict.radial;
 
     radial.type = SourcePictTypeRadial;
-    radial.c1.x = inner.x;
-    radial.c1.y = inner.y;
+    radial.c1.x = cast(int)inner.x;
+    radial.c1.y = cast(int)inner.y;
     radial.c1.radius = innerRadius;
-    radial.c2.x = outer.x;
-    radial.c2.y = outer.y;
+    radial.c2.x = cast(int)outer.x;
+    radial.c2.y = cast(int)outer.y;
     radial.c2.radius = outerRadius;
 
     initGradient(pPicture.pSourcePict, nStops, stops, colors, error);

@@ -66,7 +66,7 @@ public import glx.glxdrawable;
 public import glx.glxcontext;
 public import include.glx_extinit;
 import glx.glxscreens_h;
- import externs.epoxy;
+ import Xext.glx.fix;
 
 
 __GLXscreen* glxGetScreen(ScreenPtr pScreen);
@@ -98,6 +98,7 @@ alias glx_func_ptr = void function();
 alias glx_gpa_proc = glx_func_ptr function(const(char)*);
 // void __glXsetGetProcAddress(glx_gpa_proc get_proc_address);
 // void* __glGetProcAddress(const(char)*);
+alias CARD32 = externs.X11.Xmd.CARD32;
 
 void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 msc, CARD32 sbc);
 

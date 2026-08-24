@@ -767,7 +767,7 @@ int ProcCreateWindow(ClientPtr client)
     mixin(REQUEST!xCreateWindowReq);
     mixin(REQUEST_AT_LEAST_SIZE!xCreateWindowReq);
 
-    int len = client.req_len - bytes_to_int32(xCreateWindowReq.sizeof);
+    int len = cast(int)(client.req_len - bytes_to_int32(xCreateWindowReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
 
@@ -785,7 +785,7 @@ int ProcChangeWindowAttributes(ClientPtr client)
     int rc = dixLookupWindow(&pWin, stuff.window, client, access_mode);
     if (rc != Success)
         return rc;
-    int len = client.req_len - bytes_to_int32(xChangeWindowAttributesReq.sizeof);
+    int len = cast(int)(client.req_len - bytes_to_int32(xChangeWindowAttributesReq.sizeof));
     if (len != Ones(stuff.valueMask))
         return BadLength;
     return ChangeWindowAttributes(pWin,
@@ -970,7 +970,7 @@ int ProcConfigureWindow(ClientPtr client)
                          DixManageAccess | DixSetAttrAccess);
     if (rc != Success)
         return rc;
-    len = client.req_len - bytes_to_int32(xConfigureWindowReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xConfigureWindowReq.sizeof));
     if (Ones(cast(Mask) stuff.mask) != len)
         return BadLength;
     return ConfigureWindow(pWin, cast(Mask) stuff.mask, cast(XID*) &stuff[1], client);
@@ -1561,7 +1561,7 @@ int ProcCreateGC(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    len = client.req_len - bytes_to_int32(xCreateGCReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xCreateGCReq.sizeof));
     if (len != Ones(stuff.mask))
         return BadLength;
     pGC = cast(GCPtr) CreateGC(pDraw, stuff.mask, cast(XID*) &stuff[1], &error,
@@ -1586,7 +1586,7 @@ int ProcChangeGC(ClientPtr client)
     if (result != Success)
         return result;
 
-    len = client.req_len - bytes_to_int32(xChangeGCReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xChangeGCReq.sizeof));
     if (len != Ones(stuff.mask))
         return BadLength;
 
@@ -1860,7 +1860,7 @@ int ProcPolyPoint(ClientPtr client)
         return BadValue;
     }
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    npoint = bytes_to_int32(((client.req_len << 2)) - xPolyPointReq.sizeof);
+    npoint = cast(int)bytes_to_int32(((client.req_len << 2)) - xPolyPointReq.sizeof);
     if (npoint)
         (*pGC.ops.PolyPoint) (pDraw, pGC, stuff.coordMode, npoint,
                                 cast(xPoint*) &stuff[1]);
@@ -1888,7 +1888,7 @@ int ProcPolyLine(ClientPtr client)
         return BadValue;
     }
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
-    npoint = bytes_to_int32(((client.req_len << 2)) - xPolyLineReq.sizeof);
+    npoint = cast(int)bytes_to_int32(((client.req_len << 2)) - xPolyLineReq.sizeof);
     if (npoint > 1)
         (*pGC.ops.Polylines) (pDraw, pGC, stuff.coordMode, npoint,
                                 cast(DDXPointPtr) &stuff[1]);
@@ -2608,7 +2608,7 @@ int ProcListInstalledColormaps(ClientPtr client)
     const(int) nummaps = pScreen.ListInstalledColormaps(pScreen, cm);
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-    x_rpcbuf_write_CARD32s(&rpcbuf, cast(uint*)cm, nummaps); /* Colormap is an XID, thus CARD32  */
+    x_rpcbuf_write_CARD32s(&rpcbuf, cm, nummaps); /* Colormap is an XID, thus CARD32  */
     free(cm);
 
     xListInstalledColormapsReply reply = {
@@ -2753,7 +2753,7 @@ int ProcAllocColorCells(ClientPtr client)
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-        Pixel* ppixels = cast(uint*)x_rpcbuf_reserve(&rpcbuf, length);
+        Pixel* ppixels = cast(ulong*)x_rpcbuf_reserve(&rpcbuf, length);
         if (!ppixels)
             return BadAlloc;
         pmasks = ppixels + npixels;
@@ -2832,7 +2832,7 @@ int ProcAllocColorPlanes(ClientPtr client)
         length = cast(c_long) npixels *Pixel.sizeof;
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-        Pixel* ppixels = cast(uint*)x_rpcbuf_reserve(&rpcbuf, length);
+        Pixel* ppixels = cast(ulong*)x_rpcbuf_reserve(&rpcbuf, length);
         if (!ppixels)
             return BadAlloc;
         if ((rc = AllocColorPlanes(client.index, pcmp, npixels,
@@ -2886,7 +2886,7 @@ int ProcFreeColors(ClientPtr client)
 
         if (pcmp.flags & CM_AllAllocated)
             return BadAccess;
-        count = bytes_to_int32(((client.req_len << 2)) - xFreeColorsReq.sizeof);
+        count = cast(int)bytes_to_int32(((client.req_len << 2)) - xFreeColorsReq.sizeof);
         return FreeColors(pcmp, client.index, count,
                           cast(Pixel*) &stuff[1], cast(Pixel) stuff.planeMask);
     }
@@ -2969,7 +2969,7 @@ int ProcQueryColors(ClientPtr client)
     if (rc == Success) {
         int count = void;
         count =
-            bytes_to_int32(((client.req_len << 2)) - xQueryColorsReq.sizeof);
+            cast(int)bytes_to_int32(((client.req_len << 2)) - xQueryColorsReq.sizeof);
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
         xrgb* prgbs = cast(xrgb*)x_rpcbuf_reserve(&rpcbuf, count * xrgb.sizeof);

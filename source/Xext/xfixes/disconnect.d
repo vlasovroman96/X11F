@@ -72,7 +72,7 @@ int ProcXFixesSetClientDisconnectMode(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"disconnect_mode");
 
     ClientDisconnectPtr pDisconnect = mixin(GetClientDisconnect!(`client`));
-    pDisconnect.disconnect_mode = stuff.disconnect_mode;
+    pDisconnect.disconnect_mode = cast(int)stuff.disconnect_mode;
 
     return Success;
 }

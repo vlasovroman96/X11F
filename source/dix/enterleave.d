@@ -749,7 +749,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
     /* XI 2 event contains the logical button map - maps are CARD8
      * so we need 256 bits for the possibly maximum mapping */
     btlen = (mouse.button) ? bits_to_bytes(256) : 0;
-    btlen = bytes_to_int32(btlen);
+    btlen = cast(int)bytes_to_int32(btlen);
     len = cast(int)(xXIFocusInEvent.sizeof + btlen * 4);
 
     xXIFocusInEvent* xi2event = cast(xXIFocusInEvent*) calloc(1, len);
@@ -758,7 +758,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
     xi2event.type = GenericEvent;
     xi2event.extension = EXTENSION_MAJOR_XINPUT;
     xi2event.evtype = cast(ushort)type;
-    xi2event.length = bytes_to_int32(len - xEvent.sizeof);
+    xi2event.length = cast(uint)bytes_to_int32(len - xEvent.sizeof);
     xi2event.buttons_len = cast(ushort)btlen;
     xi2event.detail = cast(ubyte)detail;
     xi2event.time = currentTime.milliseconds;

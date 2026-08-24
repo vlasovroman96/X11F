@@ -280,7 +280,7 @@ private CARD32 SecurityComputeAuthorizationTimeout(SecurityAuthorizationPtr pAut
     CARD32 maxSecs = cast(CARD32) (~0) / cast(CARD32) MILLI_PER_SECOND;
 
     if (seconds > maxSecs) {    /* only come here if we want to wait more than 49 days */
-        pAuth.secondsRemaining = seconds - maxSecs;
+        pAuth.secondsRemaining = cast(int)(seconds - maxSecs);
         return maxSecs * MILLI_PER_SECOND;
     }
     else {                      /* by far the common case */
@@ -341,7 +341,7 @@ private void SecurityStartAuthorizationTimer(SecurityAuthorizationPtr pAuth)
 {
     pAuth.timer = TimerSet(pAuth.timer, 0,
                             SecurityComputeAuthorizationTimeout(pAuth,
-                                                                pAuth.timeout),
+                                                                cast(uint)pAuth.timeout),
                             &SecurityAuthorizationExpired, pAuth);
 }                               /* SecurityStartAuthorizationTimer */
 
@@ -419,7 +419,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
     /* check request length */
 
-    len = bytes_to_int32(xSecurityGenerateAuthorizationReq.sizeof);
+    len = cast(int)(bytes_to_int32(xSecurityGenerateAuthorizationReq.sizeof));
     len += bytes_to_int32(stuff.nbytesAuthProto);
     len += bytes_to_int32(stuff.nbytesAuthData);
     values = (cast(CARD32*) stuff) + len;
@@ -447,7 +447,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
     /* check trustLevel */
     trustLevel = XSecurityClientUntrusted;
     if (stuff.valueMask & XSecurityTrustLevel) {
-        trustLevel = *values++;
+        trustLevel = cast(uint)*values++;
         if (trustLevel != XSecurityClientTrusted &&
             trustLevel != XSecurityClientUntrusted) {
             client.errorValue = trustLevel;

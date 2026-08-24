@@ -66,7 +66,7 @@ Bool ephyrNoXV;
 
 
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int main(int argc, char** argv, char** envp)
 {
     hostx_use_resname(basename(argv[0]), 0);

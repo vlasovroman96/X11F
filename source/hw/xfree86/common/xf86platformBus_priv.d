@@ -47,7 +47,7 @@ void xf86platformPrimary();
 // } else { /* XSERVER_PLATFORM_BUS */
 
 // pragma(inline, true) int xf86platformAddGPUDevices(DriverPtr drvp) { return FALSE; }
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) void xf86MergeOutputClassOptions(int index, void** options) {}
 
 // } /* XSERVER_PLATFORM_BUS */

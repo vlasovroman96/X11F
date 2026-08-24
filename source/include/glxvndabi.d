@@ -78,6 +78,8 @@ import glx.vndservervendor;
  * number is incremented when there's a change but existing vendor libraries
  * will still work.
  */
+
+ alias CARD32 = externs.X11.Xmd.CARD32;
 enum GLXSERVER_VENDOR_ABI_MAJOR_VERSION = 0;
 enum GLXSERVER_VENDOR_ABI_MINOR_VERSION = 1;
 

@@ -266,7 +266,7 @@ private int ChangeIntegerFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong ma
         swapl(&f.int_to_display);
     }
 
-    i.ctrl.integer_displayed = f.int_to_display;
+    i.ctrl.integer_displayed = cast(int)f.int_to_display;
     (*i.CtrlProc) (dev, &i.ctrl);
     return Success;
 }
@@ -412,7 +412,7 @@ int ProcXChangeFeedbackControl(ClientPtr client)
     LedFeedbackPtr l = void;
     int rc = void;
 
-    len = client.req_len - bytes_to_int32(xChangeFeedbackControlReq.sizeof);
+    len = cast(int)(cast(uint)(client.req_len - bytes_to_int32(xChangeFeedbackControlReq.sizeof)));
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixManageAccess);
     if (rc != Success)
         return rc;

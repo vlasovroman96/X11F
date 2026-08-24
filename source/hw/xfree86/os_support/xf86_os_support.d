@@ -9,7 +9,7 @@ extern(C): __gshared:
 /* prototypes for the os-support layer of xfree86 DDX */
 
  
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 
 public import include.os;
 public import dix.dix_priv;
@@ -30,37 +30,37 @@ enum string xf86FatalError(string a, string b) = `
 
 alias PMClose = void function();
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OpenConsole();
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86CloseConsole();
 
 /**
  * @brief get keeptty switch state
  **/
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTKeepTtyIsSet();
 
 Bool xf86VTActivate(int vtno);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchPending();
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchAway();
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTSwitchTo();
 void xf86VTRequest(int sig);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86ProcessArgument(int argc, char** argv, int i);
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86UseMsg();
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 PMClose xf86OSPMOpen();
 void xf86InitVidMem();
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OSRingBell(int volume, int pitch, int duration);
 void xf86OSInputThreadInit();
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86DeallocateGARTMemory(int screenNum, int key);
 // int xf86RemoveSIGIOHandler(int fd);
 

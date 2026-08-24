@@ -114,7 +114,7 @@ int ProcXGetDeviceKeyMapping(ClientPtr client)
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     x_rpcbuf_write_CARD32s(
         &rpcbuf,
-        cast(uint*)&syms.map[mapWidth * (stuff.firstKeyCode - syms.minKeyCode)],
+        &syms.map[mapWidth * (stuff.firstKeyCode - syms.minKeyCode)],
         numKeySyms);
 
     free(syms.map);

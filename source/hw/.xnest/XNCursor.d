@@ -16,7 +16,7 @@ is" without express or implied warranty.
 */
 
  
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 
 public import include.mipointrst;
 import include.mipointer;

@@ -35,7 +35,7 @@ import core.sys.posix.sys.un;
 // //import stdbool;
 import os.inputthread;
 
-//import externs.X11.Xatom_;
+//import externs.X11.Xatom;
 
 import include.xorgVersion;
 

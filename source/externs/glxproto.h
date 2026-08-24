@@ -35,7 +35,17 @@
 
 /*****************************************************************************/
 
-#include "X11/Xmd.h"
+// #include "X11/Xmd.h"
+
+typedef unsigned int CARD32;
+typedef unsigned char CARD8;
+typedef unsigned short CARD16;
+typedef short BYTE;
+typedef int BOOL;
+typedef int INT32;
+
+
+
 /*
 ** Errors.
 */

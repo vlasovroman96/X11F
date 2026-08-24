@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.X11.Xdefs_d;
+//public import externs.X11.Xdefs;
 
 public import include.xf86str;
 
@@ -21,17 +21,17 @@ version (XSERVER_LIBPCIACCESS) {
 
 } else { /* XSERVER_LIBPCIACCESS */
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterInit() {}
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterFini() {}
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterScrnInit(ScrnInfoPtr pScrn) {}
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterWrapFunctions() {}
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterLock(ScrnInfoPtr pScrn) {}
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 pragma(inline, true) private void xf86VGAarbiterUnlock(ScrnInfoPtr pScrn) {}
 
 } /* XSERVER_LIBPCIACCESS */

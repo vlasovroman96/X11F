@@ -28,7 +28,7 @@ extern(C): __gshared:
  
 public import include.list;
 import include.input;
-import externs.X11.Xdefs_d;
+import externs.X11.Xdefs;
 import externs.X11.Xmd;
 
 

@@ -25,7 +25,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.X11.Xmd;
+public import externs.X11.Xmd;
 
 public import include.xlibre_ptrtypes;
 
@@ -116,7 +116,8 @@ struct _Client {
     int req_fds;
 }
 
-alias ClientPtr = _Client*;
+public import externs.X11.fonts.fontproto;
+// alias ClientPtr = ._Client*;
 
 // TimeStamp currentTime;
 

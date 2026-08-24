@@ -123,7 +123,7 @@ private int ShapeDelClientFromWin(WindowPtr pWin, void* value) {
 /****************
  * ShapeExtensionInit
  *
- pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+ //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
  * Called from InitExtensions in main() or from QueryExtension() if the
  * extension is dynamically loaded.
  *

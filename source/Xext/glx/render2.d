@@ -38,7 +38,7 @@ import glx.glxserver;
 import glx.unpack;
 import glx.indirect_size;
 import glx.indirect_dispatch;
- import externs.epoxy;
+ import Xext.glx.fix;
  import glx.indirect_size_get;
  import glx.indirect_dispatch_swap;
  import glx.glxext;

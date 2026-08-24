@@ -1166,16 +1166,16 @@ private int ProcXDGAOpenFramebuffer(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGAOpenFramebufferReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
-    if (!DGAAvailable(stuff.screen))
+    if (!DGAAvailable(cast(int)stuff.screen))
         return DGAErrorBase + XF86DGANoDirectVideoMode;
 
     xXDGAOpenFramebufferReply reply = { 0 };
 
-    if (!DGAOpenFramebuffer(stuff.screen, &deviceName,
+    if (!DGAOpenFramebuffer(cast(int)stuff.screen, &deviceName,
                             cast(ubyte**) (&reply.mem1),
                             cast(int*) &reply.size,
                             cast(int*) &reply.offset,
@@ -1197,14 +1197,14 @@ private int ProcXDGACloseFramebuffer(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGACloseFramebufferReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
-    if (!DGAAvailable(stuff.screen))
+    if (!DGAAvailable(cast(int)stuff.screen))
         return DGAErrorBase + XF86DGANoDirectVideoMode;
 
-    DGACloseFramebuffer(stuff.screen);
+    DGACloseFramebuffer(cast(int)stuff.screen);
 
     return Success;
 }
@@ -1219,12 +1219,12 @@ private int ProcXDGAQueryModes(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGAQueryModesReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
-    if ((!DGAAvailable(stuff.screen)) ||
-        (((num = DGAGetModes(stuff.screen)) == 0)))
+    if ((!DGAAvailable(cast(int)stuff.screen)) ||
+        (((num = DGAGetModes(cast(int)stuff.screen)) == 0)))
     {
         xXDGAQueryModesReply reply = { 0 };
         return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -1234,7 +1234,7 @@ private int ProcXDGAQueryModes(ClientPtr client)
         return BadAlloc;
 
     for (int i = 0; i < num; i++)
-        DGAGetModeInfo(stuff.screen, mode + i, i + 1);
+        DGAGetModeInfo(cast(int)stuff.screen, mode + i, i + 1);
 
     xXDGAQueryModesReply reply = {
         number: num
@@ -1295,7 +1295,7 @@ private void DGAClientStateChange(CallbackListPtr* pcbl, void* nulldata, void* c
 
                 mixin(DGA_SETCLIENT!(`walkScreenIdx`, `null`));
                 DGASelectInput(walkScreenIdx, null, 0);
-                DGASetMode(walkScreenIdx, 0, &mode, &pPix);
+                DGASetMode(cast(int)walkScreenIdx, 0, &mode, &pPix);
 
                 if (--DGACallbackRefCount == 0)
                     DeleteCallback(&ClientStateCallback, &DGAClientStateChange, null);
@@ -1315,12 +1315,12 @@ private int ProcXDGASetMode(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGASetModeReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
     owner = mixin(DGA_GETCLIENT!(`stuff.screen`));
 
-    if (!DGAAvailable(stuff.screen))
+    if (!DGAAvailable(cast(int)stuff.screen))
         return DGAErrorBase + XF86DGANoDirectVideoMode;
 
     if (owner && owner != client)
@@ -1335,12 +1335,12 @@ private int ProcXDGASetMode(ClientPtr client)
                                null);
         }
         mixin(DGA_SETCLIENT!(`stuff.screen`, `null`));
-        DGASelectInput(stuff.screen, null, 0);
-        DGASetMode(stuff.screen, 0, &mode, &pPix);
+        DGASelectInput(cast(int)stuff.screen, null, 0);
+        DGASetMode(cast(int)stuff.screen, cast(int)0, &mode, &pPix);
         return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     }
 
-    if (Success != DGASetMode(stuff.screen, stuff.mode, &mode, &pPix))
+    if (Success != DGASetMode(cast(int)stuff.screen, cast(int)stuff.mode, &mode, &pPix))
         return BadValue;
 
     if (!owner) {
@@ -1397,14 +1397,14 @@ private int ProcXDGASetViewport(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGASetViewportReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
     if (mixin(DGA_GETCLIENT!(`stuff.screen`)) != client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
-    DGASetViewport(stuff.screen, stuff.x, stuff.y, stuff.flags);
+    DGASetViewport(cast(int)stuff.screen, stuff.x, stuff.y, cast(int)stuff.flags);
 
     return Success;
 }
@@ -1418,7 +1418,7 @@ private int ProcXDGAInstallColormap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGAInstallColormapReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1439,7 +1439,7 @@ private int ProcXDGASelectInput(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGASelectInputReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1447,7 +1447,7 @@ private int ProcXDGASelectInput(ClientPtr client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
     if (mixin(DGA_GETCLIENT!(`stuff.screen`)) == client)
-        DGASelectInput(stuff.screen, client, stuff.mask);
+        DGASelectInput(cast(int)stuff.screen, client, stuff.mask);
 
     return Success;
 }
@@ -1458,14 +1458,14 @@ private int ProcXDGAFillRectangle(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGAFillRectangleReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
     if (mixin(DGA_GETCLIENT!(`stuff.screen`)) != client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
-    if (Success != DGAFillRect(stuff.screen, stuff.x, stuff.y,
+    if (Success != DGAFillRect(cast(int)stuff.screen, stuff.x, stuff.y,
                                stuff.width, stuff.height, stuff.color))
         return BadMatch;
 
@@ -1478,14 +1478,14 @@ private int ProcXDGACopyArea(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGACopyAreaReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (pScreen)
         return BadValue;
 
     if (mixin(DGA_GETCLIENT!(`stuff.screen`)) != client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
-    if (Success != DGABlitRect(stuff.screen, stuff.srcx, stuff.srcy,
+    if (Success != DGABlitRect(cast(int)stuff.screen, stuff.srcx, stuff.srcy,
                                stuff.width, stuff.height, stuff.dstx,
                                stuff.dsty))
         return BadMatch;
@@ -1499,14 +1499,14 @@ private int ProcXDGACopyTransparentArea(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGACopyTransparentAreaReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
     if (mixin(DGA_GETCLIENT!(`stuff.screen`)) != client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
-    if (Success != DGABlitTransRect(stuff.screen, stuff.srcx, stuff.srcy,
+    if (Success != DGABlitTransRect(cast(int)stuff.screen, stuff.srcx, stuff.srcy,
                                     stuff.width, stuff.height, stuff.dstx,
                                     stuff.dsty, stuff.key))
         return BadMatch;
@@ -1520,7 +1520,7 @@ private int ProcXDGAGetViewportStatus(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGAGetViewportStatusReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1528,7 +1528,7 @@ private int ProcXDGAGetViewportStatus(ClientPtr client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
     xXDGAGetViewportStatusReply reply = {
-        status: DGAGetViewportStatus(stuff.screen)
+        status: DGAGetViewportStatus(cast(int)stuff.screen)
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -1540,7 +1540,7 @@ private int ProcXDGASync(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGASyncReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (pScreen)
         return BadValue;
 
@@ -1548,7 +1548,7 @@ private int ProcXDGASync(ClientPtr client)
         return DGAErrorBase + XF86DGADirectNotActivated;
 
     xXDGASyncReply reply = { 0 };
-    DGASync(stuff.screen);
+    DGASync(cast(int)stuff.screen);
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
@@ -1580,7 +1580,7 @@ private int ProcXDGAChangePixmapMode(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGAChangePixmapModeReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1590,7 +1590,7 @@ private int ProcXDGAChangePixmapMode(ClientPtr client)
     x = stuff.x;
     y = stuff.y;
 
-    if (!DGAChangePixmapMode(stuff.screen, &x, &y, stuff.flags))
+    if (!DGAChangePixmapMode(cast(int)stuff.screen, &x, &y, cast(int)stuff.flags))
         return BadMatch;
 
     xXDGAChangePixmapModeReply reply = {
@@ -1608,7 +1608,7 @@ private int ProcXDGACreateColormap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGACreateColormapReq);
 
-    ScreenPtr pScreen = dixGetScreenPtr(stuff.screen);
+    ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
         return BadValue;
 
@@ -1618,8 +1618,8 @@ private int ProcXDGACreateColormap(ClientPtr client)
     if (!stuff.mode)
         return BadValue;
 
-    result = DGACreateColormap(stuff.screen, client, stuff.id,
-                               stuff.mode, stuff.alloc);
+    result = DGACreateColormap(cast(int)stuff.screen, client, cast(int)stuff.id,
+                               cast(int)stuff.mode, stuff.alloc);
     if (result != Success)
         return result;
 

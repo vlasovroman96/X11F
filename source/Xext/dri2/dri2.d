@@ -1188,7 +1188,7 @@ Bool DRI2HasSwapControl(ScreenPtr pScreen)
 
 Bool DRI2Connect(ClientPtr client, ScreenPtr pScreen, uint driverType, int* fd, const(char)** driverName, const(char)** deviceName)
 {
-    uint prime_id = DRI2DriverPrimeId(driverType);
+    uint prime_id = mixin(DRI2DriverPrimeId!("driverType"));
     uint driver_id = driverType & 0xffff;
 
     if (!dixPrivateKeyRegistered(&dri2ScreenPrivateKeyRec))

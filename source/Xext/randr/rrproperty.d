@@ -25,7 +25,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.dix_config;
 
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -86,7 +86,7 @@ private void RRDestroyOutputProperty(RRPropertyPtr prop)
     free(prop);
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void RRDeleteProperty(RROutputRec* output, RRPropertyRec* prop)
 {
     xRROutputPropertyNotifyEvent event = {
@@ -501,7 +501,7 @@ int ProcRRConfigureOutputProperty(ClientPtr client)
         return BadAccess;
 
     num_valid =
-        client.req_len - bytes_to_int32(xRRConfigureOutputPropertyReq.sizeof);
+        cast(int)(client.req_len - bytes_to_int32(xRRConfigureOutputPropertyReq.sizeof));
     return RRConfigureOutputProperty(output, stuff.property, stuff.pending,
                                      stuff.range, FALSE, num_valid,
                                      cast(INT32*) (stuff + 1));

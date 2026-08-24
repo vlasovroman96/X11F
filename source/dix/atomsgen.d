@@ -8,7 +8,7 @@ import std.string : splitLines, strip, indexOf;
 import std.conv : to;
 import build.dix_config;
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void main(string[] args)
 {
     if (args.length != 3)

@@ -248,7 +248,7 @@ void shadowUpdateRotatePacked(ScreenPtr pScreen, shadowBufPtr pBuf)
                                                   scr_x << 2,
                                                   SHADOW_WINDOW_WRITE,
                                                   &winSize, pBuf.closure);
-                i = (winSize >> 2);
+                i = cast(int)(winSize >> 2);
                 if (i > w)
                     i = w;
                 w -= i;

@@ -87,6 +87,7 @@ import externs.attrs;
 import os.log;
 import dix.extension;
 import dix.dixutils;
+import externs.X11.fonts.fontproto;
 
 enum string FONTCHARSET(string font)	 = font;
 enum string FONTMAXBOUNDS(string font,string field) = `(`~font~`).info.maxbounds.`~field;
@@ -263,7 +264,7 @@ void XF86BigfontFreeFontShm(FontPtr pFont)
     if (!ShmList)
         return;
 
-    pDesc = cast(ShmDescPtr) FontGetPrivate(pFont, FontShmdescIndex);
+    pDesc = cast(ShmDescPtr) mixin(FontGetPrivate!("pFont", "FontShmdescIndex"));
     if (pDesc) {
         shmdealloc(pDesc);
     }
@@ -288,7 +289,7 @@ void XF86BigfontCleanup() { }
 private void XF86BigfontResetProc(ExtensionEntry* extEntry)
 {
     /* This function is normally called from CloseDownExtensions(), called
-     pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
      * from main(). It will be followed by a call to FreeAllResources(),
      * which will call XF86BigfontFreeFontShm() for each font. Thus it
      * appears that we do not need to do anything in this function. --
@@ -300,6 +301,7 @@ private void XF86BigfontResetProc(ExtensionEntry* extEntry)
 }
 
 /* ========== Handling of extension specific requests ========== */
+
 
 private int ProcXF86BigfontQueryVersion(ClientPtr client)
 {

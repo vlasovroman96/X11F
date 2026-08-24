@@ -132,7 +132,7 @@ void shadowUpdatePlanar4(ScreenPtr pScreen, shadowBufPtr pBuf)
                 scrBase = 0;
                 while (width) {
                     /* how much remains in this window */
-                    i = scrBase + winSize - scr;
+                    i = cast(int)(scrBase + winSize - scr);
                     if (i <= 0 || scr < scrBase) {
                         winBase = cast(CARD32*) (*pBuf.window) (pScreen,
                                                               y,
@@ -145,7 +145,7 @@ void shadowUpdatePlanar4(ScreenPtr pScreen, shadowBufPtr pBuf)
                             return;
                         winSize >>= 2;
                         scrBase = scr;
-                        i = winSize;
+                        i = cast(int)winSize;
                     }
                     win = winBase + (scr - scrBase);
                     if (i > width)

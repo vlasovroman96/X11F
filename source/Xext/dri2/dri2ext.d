@@ -112,7 +112,7 @@ private int ProcDRI2Connect(ClientPtr client)
     xDRI2ConnectReply reply = { 0 };
 
     if (DRI2Connect(client, pDraw.pScreen,
-                    stuff.driverType, &fd, &driverName, &deviceName)) {
+                    cast(uint)stuff.driverType, &fd, &driverName, &deviceName)) {
         reply.driverNameLength = cast(uint)strlen(driverName);
         reply.deviceNameLength = cast(uint)strlen(deviceName);
 
@@ -138,7 +138,7 @@ private int ProcDRI2Authenticate(ClientPtr client)
         return status;
 
     xDRI2AuthenticateReply reply = {
-        authenticated: DRI2Authenticate(client, pDraw.pScreen, stuff.magic)
+        authenticated: DRI2Authenticate(client, pDraw.pScreen, cast(uint)stuff.magic)
     };
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -261,7 +261,7 @@ private int ProcDRI2GetBuffers(ClientPtr client)
 
     attachments = cast(uint*) &stuff[1];
     buffers = DRI2GetBuffers(pDrawable, &width, &height,
-                             attachments, stuff.count, &count);
+                             attachments, cast(int)stuff.count, &count);
 
     return send_buffers_reply(client, pDrawable, buffers, count, width, height);
 
@@ -291,7 +291,7 @@ private int ProcDRI2GetBuffersWithFormat(ClientPtr client)
 
     attachments = cast(uint*) &stuff[1];
     buffers = DRI2GetBuffersWithFormat(pDrawable, &width, &height,
-                                       attachments, stuff.count, &count);
+                                       attachments, cast(int)stuff.count, &count);
 
     return send_buffers_reply(client, pDrawable, buffers, count, width, height);
 }
@@ -311,7 +311,7 @@ private int ProcDRI2CopyRegion(ClientPtr client)
 
     mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixReadAccess"));
 
-    status = DRI2CopyRegion(pDrawable, pRegion, stuff.dest, stuff.src);
+    status = DRI2CopyRegion(pDrawable, pRegion, cast(uint)stuff.dest, cast(uint)stuff.src);
     if (status != Success)
         return status;
 
@@ -468,7 +468,7 @@ private int ProcDRI2SwapInterval(ClientPtr client)
                        &pDrawable, &status))
         return status;
 
-    DRI2SwapInterval(pDrawable, stuff.interval);
+    DRI2SwapInterval(pDrawable, cast(int)stuff.interval);
 
     return Success;
 }

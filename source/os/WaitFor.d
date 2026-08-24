@@ -134,7 +134,7 @@ private int check_timers()
 
     if ((timer = first_timer()) != null) {
         CARD32 now = GetTimeInMillis();
-        int timeout = timer.expires - now;
+        int timeout = cast(int)(timer.expires - now);
 
         if (timeout <= 0) {
             DoTimers(now);

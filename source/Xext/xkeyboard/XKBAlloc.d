@@ -153,8 +153,8 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
         }
     }
     if ((which & XkbKeyNamesMask) && (names.keys == null)) {
-        if ((!XkbIsLegalKeycode(xkb.min_key_code)) ||
-            (!XkbIsLegalKeycode(xkb.max_key_code)) ||
+        if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
+            (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadValue;
         names.keys = cast(_XkbKeyNameRec*)calloc((xkb.max_key_code + 1), XkbKeyNameRec.sizeof);

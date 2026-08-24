@@ -31,22 +31,25 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
+import externs.X11.Xdefs;
+import include.callback;
+import include.privates;
 import glx.vndserver_priv;
 
-import core.stdc.string;
+// import core.stdc.string;
 import include.scrnintstr;
-import include.windowstr;
-import include.dixstruct;
-import include.extnsionst;
+// import include.windowstr;
+// import include.dixstruct;
+// import include.extnsionst;
 import include.glx_extinit;
 
-import externs.glxproto;
+// import externs.glxproto;
 import glx.vndservervendor;
-
+import dix.resource;
 import dix.callback_priv;
 import dix.dix_priv;
 import dix.screenint_priv;
-import miext.extinit_priv;
+// import miext.extinit_priv;
 import dix.extension;
 
 Bool noGlxExtension = FALSE;
@@ -254,7 +257,7 @@ private int GlxForwardRequest(GlxServerVendor* vendor, ClientPtr client)
 
 private GlxServerVendor* GlxGetContextTag(ClientPtr client, GLXContextTag tag)
 {
-    GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, tag);
+    GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)tag);
 
     if (tagInfo != null) {
         return tagInfo.vendor;
@@ -265,7 +268,7 @@ private GlxServerVendor* GlxGetContextTag(ClientPtr client, GLXContextTag tag)
 
 private Bool GlxSetContextTagPrivate(ClientPtr client, GLXContextTag tag, void* data)
 {
-    GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, tag);
+    GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)tag);
     if (tagInfo != null) {
         tagInfo.data = data;
         return TRUE;
@@ -276,7 +279,7 @@ private Bool GlxSetContextTagPrivate(ClientPtr client, GLXContextTag tag, void* 
 
 private void* GlxGetContextTagPrivate(ClientPtr client, GLXContextTag tag)
 {
-    GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, tag);
+    GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)tag);
     if (tagInfo != null) {
         return tagInfo.data;
     } else {

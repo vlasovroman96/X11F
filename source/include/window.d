@@ -104,7 +104,7 @@ alias RealChildHeadProc = WindowPtr function(WindowPtr pWin) @nogc nothrow;
 
 // WindowPtr RealChildHead(WindowPtr);
 
-int DeleteWindow(void* pWin, XID wid);
+// int DeleteWindow(void* pWin, XID wid);
 
 // int DestroySubwindows(WindowPtr, ClientPtr);
 

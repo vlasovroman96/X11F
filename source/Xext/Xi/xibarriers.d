@@ -283,7 +283,7 @@ private BOOL barrier_inside_hit_box(PointerBarrier* barrier, int x, int y)
     x2 = barrier.x2;
     y1 = barrier.y1;
     y2 = barrier.y2;
-    dir = ~(barrier.directions);
+    dir = cast(int)~(barrier.directions);
 
     if (barrier_is_vertical(barrier)) {
         if (dir & BarrierPositiveX)
@@ -891,7 +891,7 @@ int ProcXIBarrierReleasePointer(ClientPtr client)
         }
 
         if (pbd.barrier_event_id == event_id)
-            pbd.release_event_id = event_id;
+            pbd.release_event_id = cast(int)event_id;
     }
 
     return Success;

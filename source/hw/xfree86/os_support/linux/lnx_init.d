@@ -195,13 +195,13 @@ int linux_parse_vt_settings(int may_fail)
     return 1;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86VTKeepTtyIsSet()
 {
     return KeepTty;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OpenConsole()
 {
     int i = void, ret = void;
@@ -332,7 +332,7 @@ void xf86OpenConsole()
 
 // #pragma GCC diagnostic pop
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86CloseConsole()
 {
     vt_mode VT = void;
@@ -400,7 +400,7 @@ enum string CHECK_FOR_REQUIRED_ARGUMENT() = `
       FatalError("Required argument to %s not specified\n", argv[i]);	
     }`;
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int xf86ProcessArgument(int argc, char** argv, int i)
 {
     /*
@@ -436,7 +436,7 @@ int xf86ProcessArgument(int argc, char** argv, int i)
     return 0;
 }
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86UseMsg()
 {
     ErrorF("vtXX                   use the specified VT number\n");

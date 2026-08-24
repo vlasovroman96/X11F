@@ -907,7 +907,7 @@ void XkbFilterEvents(ClientPtr client, int nEvents, xEvent* xE)
                     if (group < 0 || group >= xkbi.desc.ctrls.num_groups)
                         group = XkbAdjustGroup(group, xkbi.desc.ctrls);
                 }
-                state = XkbBuildCoreState(state, group);
+                state = mixin(XkbBuildCoreState!("state", "group"));
             }
             else if (flags & XkbPCF_LookupStateWhenGrabbed) {
                 state = xkbi.state.compat_lookup_mods;

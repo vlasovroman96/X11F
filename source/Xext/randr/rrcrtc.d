@@ -26,7 +26,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.dix_config;
 
-import externs.X11.Xatom_;
+import externs.X11.Xatom;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -1270,7 +1270,7 @@ int ProcRRSetCrtcConfig(ClientPtr client)
     int ret = void, i = void, j = void;
     CARD8 status = void;
 
-    numOutputs = (client.req_len - bytes_to_int32(xRRSetCrtcConfigReq.sizeof));
+    numOutputs = cast(uint)(client.req_len - bytes_to_int32(xRRSetCrtcConfigReq.sizeof));
 
     mixin(VERIFY_RR_CRTC!("stuff.crtc", "crtc", "DixSetAttrAccess"));
 
@@ -1687,7 +1687,7 @@ int ProcRRSetCrtcGamma(ClientPtr client)
     if (RRCrtcIsLeased(crtc))
         return BadAccess;
 
-    len = client.req_len - bytes_to_int32(xRRSetCrtcGammaReq.sizeof);
+    len = cast(int)(client.req_len - bytes_to_int32(xRRSetCrtcGammaReq.sizeof));
     if (len < (stuff.size * 3 + 1) >> 1)
         return BadLength;
 

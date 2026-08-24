@@ -66,7 +66,7 @@ uint nresource;
 /*
  * File parsing routines
  */
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+//pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 int double_size(void* p, uint n, uint size)
 {
     char** ptr = cast(char**) p;

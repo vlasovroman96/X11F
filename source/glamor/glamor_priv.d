@@ -44,11 +44,11 @@ public import include.misyncshm;
 public import include.misyncstr;
 }
 
-public import externs.epoxy;
+public import Xext.glx.fix;
 version (GLAMOR_HAS_GBM) {
 version = MESA_EGL_NO_X11_HEADERS;
 version = EGL_NO_X11;
-public import externs.epoxy;
+public import Xext.glx.fix;
 }
 
 public import glamor.glamor_xv;

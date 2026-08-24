@@ -32,7 +32,7 @@ import core.stdc.config: c_long, c_ulong;
 /* Option handling things that ModuleSetup procs can use */
 
  
-public import externs.X11.Xdefs_d;
+public import externs.X11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 
 public import include.xf86Optionstr;

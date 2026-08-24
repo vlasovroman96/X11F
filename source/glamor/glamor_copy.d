@@ -367,7 +367,7 @@ private Bool glamor_copy_fbo_fbo_draw(DrawablePtr src, DrawablePtr dst, GCPtr gc
     }
 
     args.src_drawable = src;
-    args.bitplane = bitplane;
+    args.bitplane = cast(uint)bitplane;
 
     /* Set up the vertex buffers for the points */
 

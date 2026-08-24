@@ -7,10 +7,10 @@ template cFixer(string moduleName, size_t line)
 }
 
 //USING:
-// pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 // extern(C)
 // private void fillSpans(...)
 // {
 //  	......
 // }
-// pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))

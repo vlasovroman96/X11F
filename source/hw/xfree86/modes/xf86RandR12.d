@@ -1105,7 +1105,7 @@ private void xf86RandRModeConvert(ScrnInfoPtr scrn, RRModePtr randr_mode, Displa
     memset(mode, 0, DisplayModeRec.sizeof);
     mode.status = MODE_OK;
 
-    mode.Clock = randr_mode.mode.dotClock / 1000;
+    mode.Clock = cast(int)(randr_mode.mode.dotClock / 1000);
 
     mode.HDisplay = randr_mode.mode.width;
     mode.HSyncStart = randr_mode.mode.hSyncStart;

@@ -160,14 +160,14 @@ version (FB_ACCESS_WRAPPER) {} else {
         if (!try_mmx || !assumeNoGC(&pixman_fill)(cast(uint*) dst, dstStride, dstBpp,
                                      pbox.x1 + dstXoff, pbox.y1 + dstYoff,
                                      (pbox.x2 - pbox.x1),
-                                     (pbox.y2 - pbox.y1), xor)) {
+                                     (pbox.y2 - pbox.y1), cast(uint)xor)) {
 //! #endif
             fbSolid(dst + (pbox.y1 + dstYoff) * dstStride,
                     dstStride,
                     (pbox.x1 + dstXoff) * dstBpp,
                     dstBpp,
                     (pbox.x2 - pbox.x1) * dstBpp,
-                    pbox.y2 - pbox.y1, and, xor);
+                    pbox.y2 - pbox.y1, and, cast(uint)xor);
 
 version (FB_ACCESS_WRAPPER) {} else {}
         }
