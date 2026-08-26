@@ -144,7 +144,7 @@ void Dispatch();
 int dix_main(int argc, char** argv, char** envp)
 {
 
-    display = "0";
+    display = "1";
 
     InitRegions();
 

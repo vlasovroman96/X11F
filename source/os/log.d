@@ -131,27 +131,27 @@ private int logFileFd = -1;
 Bool xorgLogSync = FALSE;
 int xorgLogVerbosity = DEFAULT_LOG_VERBOSITY;
 int xorgLogFileVerbosity = DEFAULT_LOG_FILE_VERBOSITY;
-version (CONFIG_SYSLOG) {
-int xorgSyslogVerbosity = DEFAULT_SYSLOG_VERBOSITY;
-const(char)* xorgSyslogIdent = "X";
-}
+// version (CONFIG_SYSLOG) {
+// int xorgSyslogVerbosity = DEFAULT_SYSLOG_VERBOSITY;
+// const(char)* xorgSyslogIdent = "X";
+// }
 
 /* Buffer to information logged before the log file is opened. */
 private char* saveBuffer = null;
 private int bufferSize = 0, bufferUnused = 0, bufferPos = 0;
 private Bool needBuffer = TRUE;
 
-version (OSX) {
-private char[4096] __crashreporter_info_buff__ = 0;
+// version (OSX) {
+// private char[4096] __crashreporter_info_buff__ = 0;
 
-// private const(char)* __crashreporter_info__; __attribute__ ((__used__)) =
-    __gshared const(char)* __crashreporter_info__;
+// // private const(char)* __crashreporter_info__; __attribute__ ((__used__)) =
+//     __gshared const(char)* __crashreporter_info__;
 
-    static this()
-    {
-        __crashreporter_info__ = &__crashreporter_info_buff__[0];
-    }
-}
+//     static this()
+//     {
+//         __crashreporter_info__ = &__crashreporter_info_buff__[0];
+//     }
+// }
 
 /* Prefix strings for log messages. */
 enum X_UNKNOWN_STRING =		"(\?\?)";
@@ -297,7 +297,7 @@ version (Windows) {} else {
         LogFailedWrite("\n".ptr,1);
         {
             char[46] error = "Intended to write the following to log file:\n";
-            LogFailedWrite(error.ptr,error.sizeof);
+            LogFailedWrite(error.ptr,error.length);
         }
         LogFailedWrite(buf,len);
     }
@@ -677,7 +677,7 @@ private void LogSWrite(int verb, const(char)* buf, size_t len, Bool end_line)
                 localtime_r(&t, &tm);
                 fmt_len = strftime(
                                 fmt_tm.ptr,
-                                fmt_tm.sizeof,
+                                fmt_tm.length,
                                 "[%Y-%m-%d %H:%M:%S] ",
                                 &tm);
                 LogWrite(logFileFd, fmt_tm.ptr, fmt_len);
@@ -780,7 +780,7 @@ void LogVMessageVerb(MessageType type, int verb, const(char)* format, va_list ar
     if (len == -1)
         return;
 
-    len += vpnprintf(&buf[len], ((buf).ptr - len).sizeof, format, args);
+    len += vpnprintf(&buf[len], cast(int)((buf).length - len), format, args);
 
     writeLog(verb, buf.ptr, cast(int)len);
 }

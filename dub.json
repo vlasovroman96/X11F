@@ -48,10 +48,11 @@
 		"-lepoxy",
 		"-lxcb",
 		"-lxcb-ewmh",
-		"-lselinux",
 		"-laudit",
 		"-ludev",
 		"-lhal",
 		"-lGL",
+	],
+	"preBuildCommands": [
 	]
 }

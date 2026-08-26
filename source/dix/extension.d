@@ -99,7 +99,7 @@ struct _ReservedExt { const(char)* name; int id; }private _ReservedExt[37] reser
     { "RECORD",                     EXTENSION_MAJOR_RECORD },
     { "RENDER",                     EXTENSION_MAJOR_RENDER },
     { "SECURITY",                   EXTENSION_MAJOR_SECURITY },
-    { "SELinux",                    EXTENSION_MAJOR_SELINUX },
+    // { "SELinux",                    EXTENSION_MAJOR_SELINUX },
     { "SHAPE",                      EXTENSION_MAJOR_SHAPE },
     { "MIT-SHM",                    EXTENSION_MAJOR_SHM },
     { "SYNC",                       EXTENSION_MAJOR_SYNC },

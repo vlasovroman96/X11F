@@ -289,6 +289,7 @@ void CreateWellKnownSockets()
         LogSetDisplay();
     }
 
+    printf("%d, %d", ListenTransCount, MAX_CONNECTIONS);
     if (ListenTransCount >= MAX_CONNECTIONS) {
         FatalError ("Tried to clear too many listening sockets - OOM");
         return; // mostly to keep GCC from complaining about too large alloc

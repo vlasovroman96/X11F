@@ -166,7 +166,7 @@ private const ExtensionModule[] staticExtensions = () {
         result ~= ExtensionModule(&XvMCExtensionInit, "XVideo-MotionCompensation", &noXvExtension);
     }
 
-    version (XSELINUX) result ~= ExtensionModule(&SELinuxExtensionInit, "SELinux", &noSELinuxExtension);
+    // version (XSELINUX) result ~= ExtensionModule(&SELinuxExtensionInit, "SELinux", &noSELinuxExtension);
     version (GLXEXT) result ~= ExtensionModule(&GlxExtensionInit, "GLX", &noGlxExtension);
 
     return result;
@@ -174,16 +174,16 @@ private const ExtensionModule[] staticExtensions = () {
 
 void ListStaticExtensions()
 {
-    const(ExtensionModule)* ext = void;
-    int i = void;
+    // const(ExtensionModule)* ext = void;
+    // int i = void;
 
-    ErrorF(" Only the following extensions can be run-time enabled/disabled:\n");
-    for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
-        ext = &staticExtensions[i];
-        if (ext.disablePtr != null) {
-            ErrorF("\t%s\n", ext.name);
-        }
-    }
+    // ErrorF(" Only the following extensions can be run-time enabled/disabled:\n");
+    // for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")) - 1; i++) {
+    //     ext = &staticExtensions[i];
+    //     if (ext.disablePtr != null) {
+    //         ErrorF("\t%s\n", ext.name);
+    //     }
+    // }
 }
 
 Bool EnableDisableExtension(const(char)* name, Bool enable)

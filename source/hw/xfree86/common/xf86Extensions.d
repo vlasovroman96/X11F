@@ -119,23 +119,23 @@ private void load_extension_config()
                 xf86MarkOptionUsed(opt);
         }));
 
-version (XSELINUX) {
-        if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
-                                  "SELinux mode disabled"))) {
-            xf86MarkOptionUsed(opt);
-            selinuxEnforcingState = SELINUX_MODE_DISABLED;
-        }
-        if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
-                                  "SELinux mode permissive"))) {
-            xf86MarkOptionUsed(opt);
-            selinuxEnforcingState = SELINUX_MODE_PERMISSIVE;
-        }
-        if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
-                                  "SELinux mode enforcing"))) {
-            xf86MarkOptionUsed(opt);
-            selinuxEnforcingState = SELINUX_MODE_ENFORCING;
-        }
-}
+// version (XSELINUX) {
+//         if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
+//                                   "SELinux mode disabled"))) {
+//             xf86MarkOptionUsed(opt);
+//             selinuxEnforcingState = SELINUX_MODE_DISABLED;
+//         }
+//         if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
+//                                   "SELinux mode permissive"))) {
+//             xf86MarkOptionUsed(opt);
+//             selinuxEnforcingState = SELINUX_MODE_PERMISSIVE;
+//         }
+//         if ((opt = xf86FindOption(cast(_InputOption*)modp.load_opt,
+//                                   "SELinux mode enforcing"))) {
+//             xf86MarkOptionUsed(opt);
+//             selinuxEnforcingState = SELINUX_MODE_ENFORCING;
+//         }
+// }
     }));
 }
 
