@@ -435,7 +435,7 @@ int ms_get_crtc_ust_msc(xf86CrtcPtr crtc, CARD64* ust, CARD64* msc)
  */
 private void ms_drm_socket_handler(int fd, int ready, void* data)
 {
-    if (data == null)
+    if (data is null)
         return;
 
     ScreenPtr screen = cast(ScreenPtr)data;

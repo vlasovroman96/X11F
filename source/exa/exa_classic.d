@@ -109,7 +109,7 @@ PixmapPtr exaCreatePixmap_classic(ScreenPtr pScreen, int w, int h, int depth, ui
                                        DamageReportNone, TRUE,
                                        pScreen, pPixmap);
 
-    if (pExaPixmap.pDamage == null) {
+    if (pExaPixmap.pDamage is null) {
         // don't need to protect from calling our own (wrapped) DestroyPixmap
         // handler, because it can deal with half-initialized state
         dixDestroyPixmap(pPixmap, 0);

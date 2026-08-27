@@ -87,7 +87,7 @@ int ProcXGetDeviceButtonMapping(ClientPtr client)
         return rc;
 
     b = dev.button;
-    if (b == null)
+    if (b is null)
         return BadMatch;
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };

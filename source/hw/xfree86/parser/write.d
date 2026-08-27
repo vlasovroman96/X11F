@@ -70,7 +70,7 @@ private int doWriteConfigFile(const(char)* filename, XF86ConfigPtr cptr)
 {
     FILE* cf = void;
 
-    if ((cf = fopen(filename, "w")) == null) {
+    if ((cf = fopen(filename, "w")) is null) {
         return 0;
     }
 

@@ -332,7 +332,7 @@ const(char)* LogInit(const(char)* fname, const(char)* backup)
 
             /* Save the patterns for use when the display is named. */
             saved_log_fname = strdup(fname);
-            if (backup == null)
+            if (backup is null)
                 saved_log_backup = null;
             else
                 saved_log_backup = strdup(backup);

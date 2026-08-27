@@ -965,7 +965,7 @@ version (GLAMOR_HAS_EGL_QUERY_DMABUF) {
         return TRUE;
 
     *formats = calloc(num, CARD32.sizeof);
-    if (*formats == null)
+    if (*formats is null)
         return FALSE;
 
     if (!eglQueryDmaBufFormatsEXT(glamor_egl.display, num,
@@ -1051,7 +1051,7 @@ version (GLAMOR_HAS_EGL_QUERY_DMABUF) {
         return TRUE;
 
     *modifiers = calloc(num, ulong.sizeof);
-    if (*modifiers == null)
+    if (*modifiers is null)
         return FALSE;
 
     external_only = cast(EGLBoolean*) calloc(num, EGLBoolean.sizeof);
@@ -1374,7 +1374,7 @@ Bool glamor_query_devices_ext(EGLDeviceEXT** devices, EGLint* num_devices)
     }
 
     *devices = cast(void**)calloc(max_devices, typeof(**devices).sizeof);
-    if (*devices == null) {
+    if (*devices is null) {
          return FALSE;
     }
 
@@ -1565,7 +1565,7 @@ pragma(inline, true) Bool glamor_egl_device_matches_config(EGLDeviceEXT device, 
     }
 
     /* From here on, strict >= 1, we want the device to have a name */
-    if (*driver_name == null) {
+    if (*driver_name is null) {
         return FALSE;
     }
 
@@ -1663,7 +1663,7 @@ void glamor_egl_chose_configs(EGLDisplay display, const(EGLint)* attrib_list, EG
         return;
     }
     *configs = cast(void**)calloc(max_configs, EGLConfig.sizeof);
-    if (*configs == null) {
+    if (*configs is null) {
         return;
     }
     if (!eglChooseConfig(display, attrib_list, *configs, max_configs, num_configs) || *num_configs == 0) {
@@ -1979,7 +1979,7 @@ version (GLAMOR_HAS_GBM) {
             glamor_egl.gbm = gbm_create_device_by_name(glamor_egl.fd, "dumb");
         }
 
-        if (glamor_egl.gbm == null) {
+        if (glamor_egl.gbm is null) {
             ErrorF("couldn't create gbm device\n");
             glamor_egl.fd = -1;
         }
@@ -2008,7 +2008,7 @@ version (GLAMOR_HAS_GBM) {
             glamor_egl.gbm = gbm_create_device_by_name(glamor_egl.fd, "dumb");
         }
 
-        if (glamor_egl.gbm == null) {
+        if (glamor_egl.gbm is null) {
             ErrorF("couldn't create gbm device\n");
             glamor_egl.fd = -1;
         }

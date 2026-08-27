@@ -216,7 +216,7 @@ private void parse_args(int argc, char** argv, char*** out_client_args, char*** 
         next_arg++;
     }
 
-    if (client_args[0] == null || !server_args || server_args[0] == null)
+    if (client_args[0] is null || !server_args || server_args[0] is null)
         usage(argc, argv);
 
     /* Give the server -displayfd X */

@@ -65,7 +65,7 @@ private int set_client_info(__GLXclientState* cl, xGLXSetClientInfoARBReq* req, 
     gl_extensions = cast(char*) (req + 1) + (req.numVersions * bytes_per_version);
     if (req.numGLExtensionBytes != 0
         && memchr(gl_extensions, 0,
-                  mixin(__GLX_PAD!("req.numGLExtensionBytes"))) == null)
+                  mixin(__GLX_PAD!("req.numGLExtensionBytes"))) is null)
         return BadLength;
 
     /* Verify that the actual length of the GLX extension string matches
@@ -74,7 +74,7 @@ private int set_client_info(__GLXclientState* cl, xGLXSetClientInfoARBReq* req, 
     glx_extensions = gl_extensions + mixin(__GLX_PAD!("req.numGLExtensionBytes"));
     if (req.numGLXExtensionBytes != 0
         && memchr(glx_extensions, 0,
-                  mixin(__GLX_PAD!("req.numGLXExtensionBytes"))) == null)
+                  mixin(__GLX_PAD!("req.numGLXExtensionBytes"))) is null)
         return BadLength;
 
     free(cl.GLClientextensions);

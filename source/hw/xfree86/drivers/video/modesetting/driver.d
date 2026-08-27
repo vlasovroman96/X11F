@@ -1658,7 +1658,7 @@ static if (HasVersion!"GLAMOR" && HasVersion!"GBM_HAVE_BO_USE_LINEAR") {
         }
     }
 
-    if (!(pScrn.is_gpu && connector_count == 0) && pScrn.modes == null) {
+    if (!(pScrn.is_gpu && connector_count == 0) && pScrn.modes is null) {
         xf86DrvMsg(pScrn.scrnIndex, X_ERROR, "No modes.\n");
         return FALSE;
     }
@@ -2139,7 +2139,7 @@ private int modesetting_get_cursor_interleave(int fd)
 {
     drmVersionPtr version_ = drmGetVersion(fd);
     int ret = HARDWARE_CURSOR_SOURCE_MASK_NOT_INTERLEAVED;
-    if (version_ == null || version_.name == null) {
+    if (version_ is null || version_.name is null) {
         /* no operation */
     } else if (strstr(version_.name, "gma500") ||
                strstr(version_.name, "i915") ||

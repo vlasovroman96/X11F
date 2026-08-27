@@ -351,13 +351,13 @@ private uint LoadXKM(uint want, uint need, const(char)* keymap, XkbDescPtr* xkbR
     uint missing = void;
 
     file = XkbDDXOpenConfigFile(keymap, fileName.ptr, PATH_MAX);
-    if (file == null) {
+    if (file is null) {
         LogMessage(X_ERROR, "Couldn't open compiled keymap file %s\n",
                    fileName.ptr);
         return 0;
     }
     missing = XkmReadFile(file, need, want, xkbRtrn);
-    if (*xkbRtrn == null) {
+    if (*xkbRtrn is null) {
         LogMessage(X_ERROR, "Error loading keymap %s\n", fileName.ptr);
         fclose(file);
         cast(void) unlink(fileName.ptr);
@@ -377,14 +377,14 @@ uint XkbDDXLoadKeymapByNames(DeviceIntPtr keybd, XkbComponentNamesPtr names, uin
     XkbDescPtr xkb = void;
 
     *xkbRtrn = null;
-    if ((keybd == null) || (keybd.key == null) ||
-        (keybd.key.xkbInfo == null))
+    if ((keybd is null) || (keybd.key is null) ||
+        (keybd.key.xkbInfo is null))
         xkb = null;
     else
         xkb = keybd.key.xkbInfo.desc;
-    if ((names.keycodes == null) && (names.types == null) &&
-        (names.compat == null) && (names.symbols == null) &&
-        (names.geometry == null)) {
+    if ((names.keycodes is null) && (names.types is null) &&
+        (names.compat is null) && (names.symbols is null) &&
+        (names.geometry is null)) {
         LogMessage(X_ERROR, "XKB: No components provided for device %s\n",
                    keybd && keybd.name ? keybd.name : "(unnamed keyboard)");
         return 0;

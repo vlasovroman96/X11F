@@ -671,7 +671,7 @@ private int createCursorHideCount(ClientPtr pClient, ScreenPtr pScreen)
 {
     CursorScreenPtr cs = mixin(GetCursorScreen!(`pScreen`));
     CursorHideCountPtr pChc = cast(CursorHideCountRec*) calloc(1, CursorHideCountRec.sizeof);
-    if (pChc == null) {
+    if (pChc is null) {
         return BadAlloc;
     }
     pChc.pClient = pClient;
@@ -705,7 +705,7 @@ private void deleteCursorHideCount(CursorHideCountPtr pChcToDel, ScreenPtr pScre
         pNext = pChc.pNext;
         if (pChc == pChcToDel) {
             free(pChc);
-            if (pChcLast == null) {
+            if (pChcLast is null) {
                 cs.pCursorHideCounts = pNext;
             }
             else {
@@ -806,7 +806,7 @@ int ProcXFixesShowCursor(ClientPtr client)
      * If not, generate an error.
      */
     pChc = findCursorHideCount(client, pWin.drawable.pScreen);
-    if (pChc == null) {
+    if (pChc is null) {
         return BadMatch;
     }
 

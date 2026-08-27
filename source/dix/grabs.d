@@ -351,7 +351,7 @@ private Mask* DeleteDetailFromMask(Mask* pDetailMask, uint detail)
 private Bool IsInGrabMask(DetailRec firstDetail, DetailRec secondDetail, uint exception)
 {
     if (firstDetail.exact == exception) {
-        if (firstDetail.pMask == null)
+        if (firstDetail.pMask is null)
             return TRUE;
 
         /* (at present) never called with two non-null pMasks */

@@ -108,7 +108,7 @@ void RootlessUpdateScreenPixmap(ScreenPtr pScreen)
     uint rowbytes = void;
 
     pPix = (*pScreen.GetScreenPixmap) (pScreen);
-    if (pPix == null) {
+    if (pPix is null) {
         pPix = (*pScreen.CreatePixmap) (pScreen, 0, 0, pScreen.rootDepth, 0);
         (*pScreen.SetScreenPixmap) (pPix);
     }
@@ -128,7 +128,7 @@ void RootlessUpdateScreenPixmap(ScreenPtr pScreen)
          * dangling state permanently.
          */
         void* new_data = calloc(1, rowbytes);
-        if (new_data == null)
+        if (new_data is null)
             return;
 
         free(s.pixmap_data);
@@ -194,7 +194,7 @@ private void RootlessGetImage(DrawablePtr pDrawable, int sx, int sy, int w, int 
 
         /* Check that we have some place to read from. */
         winRec = WINREC(TopLevelParent(cast(WindowPtr) pDrawable));
-        if (winRec == null)
+        if (winRec is null)
             goto out;
 
         /* Clip to top-level window bounds. */

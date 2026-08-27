@@ -173,7 +173,7 @@ private Bool xf86VidModeGetFirstModeline(ScreenPtr pScreen, DisplayModePtr* mode
     VidModePtr pVidMode = void;
 
     pScrn = xf86ScreenToScrn(pScreen);
-    if (pScrn.modes == null)
+    if (pScrn.modes is null)
         return FALSE;
 
     pVidMode = VidModeGetPtr(pScreen);
@@ -193,7 +193,7 @@ private Bool xf86VidModeDeleteModeline(ScreenPtr pScreen, DisplayModePtr mode)
 {
     ScrnInfoPtr pScrn = void;
 
-    if (mode == null)
+    if (mode is null)
         return FALSE;
 
     pScrn = xf86ScreenToScrn(pScreen);
@@ -265,7 +265,7 @@ private ModeStatus xf86VidModeCheckModeForMonitor(ScreenPtr pScreen, DisplayMode
 {
     ScrnInfoPtr pScrn = void;
 
-    if (mode == null)
+    if (mode is null)
         return MODE_ERROR;
 
     pScrn = xf86ScreenToScrn(pScreen);
@@ -277,7 +277,7 @@ private ModeStatus xf86VidModeCheckModeForDriver(ScreenPtr pScreen, DisplayModeP
 {
     ScrnInfoPtr pScrn = void;
 
-    if (mode == null)
+    if (mode is null)
         return MODE_ERROR;
 
     pScrn = xf86ScreenToScrn(pScreen);
@@ -290,7 +290,7 @@ private void xf86VidModeSetCrtcForMode(ScreenPtr pScreen, DisplayModePtr mode)
     ScrnInfoPtr pScrn = void;
     DisplayModePtr ScreenModes = void;
 
-    if (mode == null)
+    if (mode is null)
         return;
 
     /* Ugly hack so that the xf86Mode.c function can be used without change */
@@ -307,7 +307,7 @@ private Bool xf86VidModeAddModeline(ScreenPtr pScreen, DisplayModePtr mode)
 {
     ScrnInfoPtr pScrn = void;
 
-    if (mode == null)
+    if (mode is null)
         return FALSE;
 
     pScrn = xf86ScreenToScrn(pScreen);

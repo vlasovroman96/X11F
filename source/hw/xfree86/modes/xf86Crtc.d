@@ -896,7 +896,7 @@ private DisplayModePtr xf86DefaultMode(xf86OutputPtr output, int width, int heig
         dpi = (mode.VDisplay * 254) / (mm_height * 10);
         diff = dpi - DEFAULT_DPI;
         diff = diff < 0 ? -diff : diff;
-        if (target_mode == null || (preferred > target_preferred) ||
+        if (target_mode is null || (preferred > target_preferred) ||
             (preferred == target_preferred && diff < target_diff)) {
             target_mode = mode;
             target_diff = diff;
@@ -935,7 +935,7 @@ private DisplayModePtr xf86ClosestMode(xf86OutputPtr output, DisplayModePtr matc
                                                                     output.
                                                                     initial_rotation);
         diff = dx * dx + dy * dy;
-        if (target_mode == null || diff < target_diff) {
+        if (target_mode is null || diff < target_diff) {
             target_mode = mode;
             target_diff = diff;
         }
@@ -989,7 +989,7 @@ private int xf86PickCrtcs(ScrnInfoPtr scrn, xf86CrtcPtr* best_crtcs, DisplayMode
      */
     best_crtcs[n] = null;
     best_score = xf86PickCrtcs(scrn, best_crtcs, modes, n + 1, width, height);
-    if (modes[n] == null)
+    if (modes[n] is null)
         return best_score;
 
     crtcs = cast(xf86CrtcPtr*) calloc(config.num_output, xf86CrtcPtr.sizeof);
@@ -1719,7 +1719,7 @@ void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
          */
         if (!xf86GetOptValBool(output.options, OPTION_DEFAULT_MODES,
                                &add_default_modes))
-            add_default_modes = (output_modes == null);
+            add_default_modes = (output_modes is null);
 
         edid_monitor = output.MonInfo;
 
@@ -2472,7 +2472,7 @@ void xf86AssignNoOutputInitialSize(ScrnInfoPtr scrn, const(OptionInfoRec)* optio
     *no_output_width = NO_OUTPUT_DEFAULT_WIDTH;
     *no_output_height = NO_OUTPUT_DEFAULT_HEIGHT;
 
-    if (no_output_size == null) {
+    if (no_output_size is null) {
         return;
     }
 
@@ -2720,7 +2720,7 @@ static if (RANDR_GET_CRTC_INTERFACE) {
         /* Disable outputs that are unused or will be re-routed */
         if (!output.funcs.get_crtc ||
             output.crtc != assumeNoGC(output.funcs.get_crtc) (output) ||
-            output.crtc == null)
+            output.crtc is null)
             assumeNoGC(output.funcs.dpms) (output, DPMSModeOff);
 }
 else {
@@ -2880,7 +2880,7 @@ DisplayModePtr xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr de
          * If we haven't picked a best mode yet, use the first
          * one in the size range
          */
-        if (best == null) {
+        if (best is null) {
             best = scan;
             continue;
         }
@@ -3086,7 +3086,7 @@ private void xf86OutputSetEDIDProperty(xf86OutputPtr output, void* data, int dat
     Atom edid_atom = dixAddAtom(EDID_ATOM_NAME);
 
     /* This may get called before the RandR resources have been created */
-    if (output.randr_output == null)
+    if (output.randr_output is null)
         return;
 
     if (data_len != 0) {
@@ -3106,7 +3106,7 @@ private void xf86OutputSetTileProperty(xf86OutputPtr output)
     Atom tile_atom = dixAddAtom(TILE_ATOM_NAME);
 
     /* This may get called before the RandR resources have been created */
-    if (output.randr_output == null)
+    if (output.randr_output is null)
         return;
 
     if (output.tile_info.group_id != 0) {

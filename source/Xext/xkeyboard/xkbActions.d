@@ -802,7 +802,7 @@ private int _XkbFilterActionMessage(XkbSrvInfoPtr xkbi, XkbFilterPtr filter, uin
     }
     else if (filter.keycode == keycode) {
         pMsg = &filter.upAction.msg;
-	if (pAction == null) {
+	if (pAction is null) {
 	    if (pMsg.flags & XkbSA_MessageOnRelease) {
 		xkbActionMessage msg = void;
 
@@ -916,7 +916,7 @@ private int _XkbFilterRedirectKey(XkbSrvInfoPtr xkbi, XkbFilterPtr filter, uint 
 	/* If it is a key release, or we redirect to another key, release the
 	   previous new_key.  Otherwise, repeat. */
 	ev.detail.key = filter.upAction.redirect.new_key;
-	if (pAction == null ||  ev.detail.key != pAction.redirect.new_key) {
+	if (pAction is null ||  ev.detail.key != pAction.redirect.new_key) {
 	    ev.type = ET_KeyRelease;
 	    filter.active = 0;
 	}

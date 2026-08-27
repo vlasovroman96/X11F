@@ -142,9 +142,9 @@ XF86ConfModulePtr xf86parseModuleSection(XF86ConfModulePtr ptr)
 {
     int token = void;
 
-    if (ptr == null)
+    if (ptr is null)
     {
-        if((ptr=cast(XF86ConfModuleRec*) calloc(1, XF86ConfModuleRec.sizeof)) == null)
+        if((ptr=cast(XF86ConfModuleRec*) calloc(1, XF86ConfModuleRec.sizeof)) is null)
         {
             return null;
         }
@@ -204,7 +204,7 @@ void xf86printModuleSection(FILE* cf, XF86ConfModulePtr ptr)
 {
     XF86LoadPtr lptr = void;
 
-    if (ptr == null)
+    if (ptr is null)
         return;
 
     if (ptr.mod_comment)
@@ -212,7 +212,7 @@ void xf86printModuleSection(FILE* cf, XF86ConfModulePtr ptr)
     for (lptr = ptr.mod_load_lst; lptr; lptr = cast(_XF86LoadRec*)lptr.list.next) {
         switch (lptr.load_type) {
         case XF86_LOAD_MODULE:
-            if (lptr.load_opt == null) {
+            if (lptr.load_opt is null) {
                 fprintf(cf, "\tLoad  \"%s\"", lptr.load_name);
                 if (lptr.load_comment)
                     fprintf(cf, "%s", lptr.load_comment);
@@ -272,7 +272,7 @@ void xf86freeModules(XF86ConfModulePtr ptr)
     XF86LoadPtr lptr = void;
     XF86LoadPtr prev = void;
 
-    if (ptr == null)
+    if (ptr is null)
         return;
     lptr = ptr.mod_load_lst;
     while (lptr) {

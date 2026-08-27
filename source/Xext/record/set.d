@@ -299,7 +299,7 @@ private RecordSetIteratePtr IntervalListIterateSet(RecordSetPtr pSet, RecordSetI
     RecordSetInterval* pInterval = cast(RecordSetInterval*) pIter;
     IntervalListSetPtr prls = cast(IntervalListSetPtr) pSet;
 
-    if (pInterval == null) {
+    if (pInterval is null) {
         pInterval = cast(RecordSetInterval*) (&prls[1]);
     }
 

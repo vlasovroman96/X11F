@@ -297,9 +297,9 @@ enum string _XGetpwnam(string u,string p) = `
 ((getpwnam_r((` ~ u ~ `),&(` ~ p ~ `).pws,(` ~ p ~ `).pwbuf,typeof((` ~ p ~ `).pwbuf).sizeof) == -1) ? null : &(` ~ p ~ `).pws)`;
 } else { /* SVR4 */
 enum string _XGetpwuid(string u,string p) = `
-((getpwuid_r((` ~ u ~ `),&(` ~ p ~ `).pws,(` ~ p ~ `).pwbuf,typeof((` ~ p ~ `).pwbuf).sizeof) == null) ? null : &(` ~ p ~ `).pws)`;
+((getpwuid_r((` ~ u ~ `),&(` ~ p ~ `).pws,(` ~ p ~ `).pwbuf,typeof((` ~ p ~ `).pwbuf).sizeof) is null) ? null : &(` ~ p ~ `).pws)`;
 enum string _XGetpwnam(string u,string p) = `
-((getpwnam_r((` ~ u ~ `),&(` ~ p ~ `).pws,(` ~ p ~ `).pwbuf,typeof((` ~ p ~ `).pwbuf).sizeof) == null) ? null : &(` ~ p ~ `).pws)`;
+((getpwnam_r((` ~ u ~ `),&(` ~ p ~ `).pws,(` ~ p ~ `).pwbuf,typeof((` ~ p ~ `).pwbuf).sizeof) is null) ? null : &(` ~ p ~ `).pws)`;
 } /* SVR4 */
 
 } else { /* _POSIX_THREAD_SAFE_FUNCTIONS */

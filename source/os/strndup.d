@@ -45,7 +45,7 @@ char* strndup(const(char)* str, size_t n)
     for (len = 0; len < n && str[len]; len++)
         continue;
 
-    if ((copy = cast(char*) calloc(1, len + 1)) == null)
+    if ((copy = cast(char*) calloc(1, len + 1)) is null)
         return (null);
     memcpy(copy, str, len);
     copy[len] = '\0';

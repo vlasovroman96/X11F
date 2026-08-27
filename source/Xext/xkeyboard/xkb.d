@@ -3390,7 +3390,7 @@ private XkbIndicatorMapPtr _XkbFindNamedIndicatorMap(XkbSrvLedInfoPtr sli, Atom 
     if (sli.names && sli.maps) {
         int led = void;
 
-        for (led = 0; (led < XkbNumIndicators) && (map == null); led++) {
+        for (led = 0; (led < XkbNumIndicators) && (map is null); led++) {
             if (sli.names[led] == indicator) {
                 map = &sli.maps[led];
                 *led_return = led;
@@ -3420,7 +3420,7 @@ private int _XkbCreateIndicatorMap(DeviceIntPtr dev, Atom indicator, int ledClas
 
     if (!map) {
         /* find first unused indicator maps and assign the name to it */
-        for (led = 0, map = null; (led < XkbNumIndicators) && (map == null);
+        for (led = 0, map = null; (led < XkbNumIndicators) && (map is null);
              led++) {
             if ((sli.names) && (sli.maps) && (sli.names[led] == None) &&
                 (!mixin(XkbIM_InUse!("&sli.maps[led]")))) {
@@ -4728,7 +4728,7 @@ private Status XkbComputeGetGeometryReplySize(XkbGeometryPtr geom, xkbGetGeometr
 
 private void XkbAssembleGeometry(ClientPtr client, XkbGeometryPtr geom, xkbGetGeometryReply rep, x_rpcbuf_t* rpcbuf)
 {
-    if (geom == null)
+    if (geom is null)
         return;
 
     x_rpcbuf_write_counted_string_pad(rpcbuf, geom.label_font);
@@ -4984,7 +4984,7 @@ private Status _CheckSetOverlay(char** wire_inout, xkbSetGeometryReq* req, XkbGe
 
             if (XkbAddGeomOverlayKey(ol, row,
                                      cast(char*) kWire.over,
-                                     cast(char*) kWire.under) == null) {
+                                     cast(char*) kWire.under) is null) {
                 client.errorValue = mixin(_XkbErrCode3!("0x21", "r", "k"));
                 return BadMatch;
             }
@@ -5201,7 +5201,7 @@ private Status _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, Client
             free(name);
             return status;
         }
-        if (XkbAddGeomProperty(geom, name, val) == null) {
+        if (XkbAddGeomProperty(geom, name, val) is null) {
             free(name);
             free(val);
             return BadAlloc;
@@ -5265,7 +5265,7 @@ private Status _CheckSetGeom(XkbGeometryPtr geom, xkbSetGeometryReq* req, Client
         if (!_XkbCheckRequestBounds(client, req, wire, wire + 2 * XkbKeyNameLength))
                 return BadLength;
 
-        if (XkbAddGeomKeyAlias(geom, &wire[XkbKeyNameLength], wire) == null)
+        if (XkbAddGeomKeyAlias(geom, &wire[XkbKeyNameLength], wire) is null)
             return BadAlloc;
         wire += 2 * XkbKeyNameLength;
     }
@@ -5696,7 +5696,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
     uint found = XkbDDXLoadKeymapByNames(dev, &names, fwant, fneed, &new_,
                                          mapFile.ptr, PATH_MAX);
     uint reported = XkbConvertGetByNameComponents(FALSE, fwant | fneed);
-    if (new_ == null)
+    if (new_ is null)
         reported = 0;
 
     Bool loaded = 0;
@@ -5719,7 +5719,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
                                  new_.min_key_code,cast(ubyte) mixin(XkbNumKeys!("new_")), &changes);
         }
 
-        if (new_.map == null)
+        if (new_.map is null)
             reported &= ~(XkbGBN_SymbolsMask | XkbGBN_TypesMask);
         else if (reported & (XkbGBN_SymbolsMask | XkbGBN_TypesMask)) {
             mrep.deviceID = cast(ubyte)dev.id;
@@ -5750,7 +5750,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
             }
             XkbComputeGetMapReplySize(new_, &mrep);
         }
-        if (new_.compat == null)
+        if (new_.compat is null)
             reported &= ~XkbGBN_CompatMapMask;
         else if (reported & XkbGBN_CompatMapMask) {
             crep.deviceID = cast(ubyte)dev.id;
@@ -5758,14 +5758,14 @@ int ProcXkbGetKbdByName(ClientPtr client)
             crep.nSI = crep.nTotalSI = new_.compat.num_si;
             XkbComputeGetCompatMapReplySize(new_.compat, &crep);
         }
-        if (new_.indicators == null)
+        if (new_.indicators is null)
             reported &= ~XkbGBN_IndicatorMapMask;
         else if (reported & XkbGBN_IndicatorMapMask) {
             irep.deviceID = cast(ubyte)dev.id;
             irep.which = XkbAllIndicatorsMask;
             XkbComputeGetIndicatorMapReplySize(new_.indicators, &irep);
         }
-        if (new_.names == null)
+        if (new_.names is null)
             reported &= ~(XkbGBN_OtherNamesMask | XkbGBN_KeyNamesMask);
         else if (reported & (XkbGBN_OtherNamesMask | XkbGBN_KeyNamesMask)) {
             nrep.deviceID = cast(ubyte)dev.id;
@@ -5793,7 +5793,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
             }
             XkbComputeGetNamesReplySize(new_, &nrep);
         }
-        if (new_.geom == null)
+        if (new_.geom is null)
             reported &= ~XkbGBN_GeometryMask;
         else if (reported & XkbGBN_GeometryMask) {
             grep.deviceID = cast(ubyte)dev.id;
@@ -6001,7 +6001,7 @@ private int ComputeDeviceLedInfoSize(DeviceIntPtr dev, uint what, XkbSrvLedInfoP
     int nNames = 0, nMaps = 0;
     uint n = void, bit = void;
 
-    if (sli == null)
+    if (sli is null)
         return 0;
 
     if ((what & XkbXI_IndicatorNamesMask) == 0)
@@ -6555,7 +6555,7 @@ private int _XkbSetDeviceInfo(ClientPtr client, DeviceIntPtr dev, xkbSetDeviceIn
 
         nBtns = dev.button.numButtons;
         acts = dev.button.xkb_acts;
-        if (acts == null) {
+        if (acts is null) {
             acts = cast(XkbAction*) calloc(nBtns, XkbAction.sizeof);
             if (!acts)
                 return BadAlloc;

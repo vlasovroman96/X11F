@@ -103,7 +103,7 @@ int ProcXOpenDevice(ClientPtr client)
         for (dev = inputInfo.off_devices; dev; dev = dev.next)
             if (dev.id == stuff.deviceid)
                 break;
-        if (dev == null)
+        if (dev is null)
             return BadDevice;
     }
     else if (status != Success)

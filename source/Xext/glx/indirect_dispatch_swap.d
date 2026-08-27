@@ -1533,7 +1533,7 @@ int __glXDispSwap_GetBooleanv(__GLXclientState* cl, GLbyte* pc)
         GLboolean* params = cast(ubyte*)__glXGetAnswerBuffer(cl, compsize, answerBuffer.ptr,
                                  answerBuffer.sizeof, 1);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1579,7 +1579,7 @@ int __glXDispSwap_GetDoublev(__GLXclientState* cl, GLbyte* pc)
         GLdouble* params = cast(GLdouble*)__glXGetAnswerBuffer(cl, compsize * 8, answerBuffer.ptr,
                                  answerBuffer.sizeof, 8);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1625,7 +1625,7 @@ int __glXDispSwap_GetFloatv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1653,7 +1653,7 @@ int __glXDispSwap_GetIntegerv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1681,7 +1681,7 @@ int __glXDispSwap_GetLightfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1709,7 +1709,7 @@ int __glXDispSwap_GetLightiv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1738,7 +1738,7 @@ int __glXDispSwap_GetMapdv(__GLXclientState* cl, GLbyte* pc)
         GLdouble* v = cast(GLdouble*)__glXGetAnswerBuffer(cl, compsize * 8, answerBuffer.ptr,
                                  answerBuffer.sizeof, 8);
 
-        if (v == null)
+        if (v is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1767,7 +1767,7 @@ int __glXDispSwap_GetMapfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* v = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (v == null)
+        if (v is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1796,7 +1796,7 @@ int __glXDispSwap_GetMapiv(__GLXclientState* cl, GLbyte* pc)
         GLint* v = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (v == null)
+        if (v is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1824,7 +1824,7 @@ int __glXDispSwap_GetMaterialfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1852,7 +1852,7 @@ int __glXDispSwap_GetMaterialiv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1880,7 +1880,7 @@ int __glXDispSwap_GetPixelMapfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* values = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (values == null)
+        if (values is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1908,7 +1908,7 @@ int __glXDispSwap_GetPixelMapuiv(__GLXclientState* cl, GLbyte* pc)
         GLuint* values = cast(GLuint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (values == null)
+        if (values is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1936,7 +1936,7 @@ int __glXDispSwap_GetPixelMapusv(__GLXclientState* cl, GLbyte* pc)
         GLushort* values = cast(GLushort*)__glXGetAnswerBuffer(cl, compsize * 2, answerBuffer.ptr,
                                  answerBuffer.sizeof, 2);
 
-        if (values == null)
+        if (values is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1964,7 +1964,7 @@ int __glXDispSwap_GetTexEnvfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -1992,7 +1992,7 @@ int __glXDispSwap_GetTexEnviv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2020,7 +2020,7 @@ int __glXDispSwap_GetTexGendv(__GLXclientState* cl, GLbyte* pc)
         GLdouble* params = cast(GLdouble*)__glXGetAnswerBuffer(cl, compsize * 8, answerBuffer.ptr,
                                  answerBuffer.sizeof, 8);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2048,7 +2048,7 @@ int __glXDispSwap_GetTexGenfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2076,7 +2076,7 @@ int __glXDispSwap_GetTexGeniv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2104,7 +2104,7 @@ int __glXDispSwap_GetTexParameterfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2132,7 +2132,7 @@ int __glXDispSwap_GetTexParameteriv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2160,7 +2160,7 @@ int __glXDispSwap_GetTexLevelParameterfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2189,7 +2189,7 @@ int __glXDispSwap_GetTexLevelParameteriv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2441,7 +2441,7 @@ int __glXDispSwap_AreTexturesResident(__GLXclientState* cl, GLbyte* pc)
         GLboolean[200] answerBuffer = void;
         GLboolean* residences = cast(GLboolean*)__glXGetAnswerBuffer(cl, n, answerBuffer.ptr, answerBuffer.sizeof, 1);
 
-        if (residences == null)
+        if (residences is null)
             return BadAlloc;
         retval =
             glAreTexturesResident(n,
@@ -2469,7 +2469,7 @@ int __glXDispSwap_AreTexturesResidentEXT(__GLXclientState* cl, GLbyte* pc)
         GLboolean[200] answerBuffer = void;
         GLboolean* residences = cast(ubyte*)__glXGetAnswerBuffer(cl, n, answerBuffer.ptr, answerBuffer.sizeof, 1);
 
-        if (residences == null)
+        if (residences is null)
             return BadAlloc;
         retval =
             glAreTexturesResident(n,
@@ -2580,7 +2580,7 @@ int __glXDispSwap_GenTextures(__GLXclientState* cl, GLbyte* pc)
         GLuint* textures = cast(GLuint*)__glXGetAnswerBuffer(cl, n * 4, answerBuffer.ptr, answerBuffer.sizeof,
                                  4);
 
-        if (textures == null)
+        if (textures is null)
             return BadAlloc;
         glGenTextures(n, textures);
         cast(void) bswap_32_array(cast(uint*) textures, n);
@@ -2605,7 +2605,7 @@ int __glXDispSwap_GenTexturesEXT(__GLXclientState* cl, GLbyte* pc)
         GLuint* textures = cast(GLuint*)__glXGetAnswerBuffer(cl, n * 4, answerBuffer.ptr, answerBuffer.sizeof,
                                  4);
 
-        if (textures == null)
+        if (textures is null)
             return BadAlloc;
         glGenTextures(n, textures);
         cast(void) bswap_32_array(cast(uint*) textures, n);
@@ -2788,7 +2788,7 @@ int __glXDispSwap_GetColorTableParameterfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2816,7 +2816,7 @@ int __glXDispSwap_GetColorTableParameterfvSGI(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2844,7 +2844,7 @@ int __glXDispSwap_GetColorTableParameteriv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -2872,7 +2872,7 @@ int __glXDispSwap_GetColorTableParameterivSGI(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3028,7 +3028,7 @@ int __glXDispSwap_GetConvolutionParameterfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3056,7 +3056,7 @@ int __glXDispSwap_GetConvolutionParameterfvEXT(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3084,7 +3084,7 @@ int __glXDispSwap_GetConvolutionParameteriv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3112,7 +3112,7 @@ int __glXDispSwap_GetConvolutionParameterivEXT(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3140,7 +3140,7 @@ int __glXDispSwap_GetHistogramParameterfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3168,7 +3168,7 @@ int __glXDispSwap_GetHistogramParameterfvEXT(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3196,7 +3196,7 @@ int __glXDispSwap_GetHistogramParameteriv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3224,7 +3224,7 @@ int __glXDispSwap_GetHistogramParameterivEXT(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3252,7 +3252,7 @@ int __glXDispSwap_GetMinmaxParameterfv(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3280,7 +3280,7 @@ int __glXDispSwap_GetMinmaxParameterfvEXT(__GLXclientState* cl, GLbyte* pc)
         GLfloat* params = cast(GLfloat*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3308,7 +3308,7 @@ int __glXDispSwap_GetMinmaxParameteriv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3336,7 +3336,7 @@ int __glXDispSwap_GetMinmaxParameterivEXT(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3850,7 +3850,7 @@ int __glXDispSwap_GenQueries(__GLXclientState* cl, GLbyte* pc)
         GLuint[200] answerBuffer = void;
         GLuint* ids = cast(GLuint*)__glXGetAnswerBuffer(cl, n * 4, answerBuffer.ptr, answerBuffer.sizeof,
                                  4);
-        if (ids == null)
+        if (ids is null)
             return BadAlloc;
 
         GenQueries(n, ids);
@@ -3878,7 +3878,7 @@ int __glXDispSwap_GetQueryObjectiv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3907,7 +3907,7 @@ int __glXDispSwap_GetQueryObjectuiv(__GLXclientState* cl, GLbyte* pc)
         GLuint* params = cast(GLuint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -3936,7 +3936,7 @@ int __glXDispSwap_GetQueryiv(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -4196,7 +4196,7 @@ int __glXDispSwap_GenProgramsARB(__GLXclientState* cl, GLbyte* pc)
         GLuint[200] answerBuffer = void;
         GLuint* programs = cast(GLuint*)__glXGetAnswerBuffer(cl, n * 4, answerBuffer.ptr, answerBuffer.sizeof,
                                  4);
-        if (programs == null)
+        if (programs is null)
             return BadAlloc;
 
         GenProgramsARB(n, programs);
@@ -4308,7 +4308,7 @@ int __glXDispSwap_GetProgramivARB(__GLXclientState* cl, GLbyte* pc)
         GLint* params = cast(GLint*)__glXGetAnswerBuffer(cl, compsize * 4, answerBuffer.ptr,
                                  answerBuffer.sizeof, 4);
 
-        if (params == null)
+        if (params is null)
             return BadAlloc;
         __glXClearErrorOccured();
 
@@ -4562,7 +4562,7 @@ int __glXDispSwap_GenFramebuffers(__GLXclientState* cl, GLbyte* pc)
         GLuint* framebuffers = cast(GLuint*)__glXGetAnswerBuffer(cl, n * 4, answerBuffer.ptr, answerBuffer.sizeof,
                                  4);
 
-        if (framebuffers == null)
+        if (framebuffers is null)
             return BadAlloc;
 
         GenFramebuffers(n, framebuffers);
@@ -4589,7 +4589,7 @@ int __glXDispSwap_GenRenderbuffers(__GLXclientState* cl, GLbyte* pc)
         GLuint* renderbuffers = cast(GLuint*)__glXGetAnswerBuffer(cl, n * 4, answerBuffer.ptr, answerBuffer.sizeof,
                                  4);
 
-        if (renderbuffers == null)
+        if (renderbuffers is null)
             return BadAlloc;
 
         GenRenderbuffers(n, renderbuffers);

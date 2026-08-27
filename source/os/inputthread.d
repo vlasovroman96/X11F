@@ -230,7 +230,7 @@ int InputThreadRegisterDev(int fd, NotifyFdProcPtr readInputProc, void* readInpu
         dev.readInputArgs = readInputArgs;
     } else {
         dev = cast(InputThreadDevice*) cast(InputThreadDevice*) calloc(1, InputThreadDevice.sizeof);
-        if (dev == null) {
+        if (dev is null) {
             DebugF("input-thread: could not register device\n");
             input_unlock();
             return 0;

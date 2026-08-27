@@ -171,7 +171,7 @@ const(char)* NameForAtom(Atom atom)
     if (atom > lastAtom)
         return null;
 
-    if (nodeTable[atom] == null)
+    if (nodeTable[atom] is null)
         return null;
 
     return nodeTable[atom].string_;
@@ -195,7 +195,7 @@ private void FreeAtom(NodePtr patom)
 
 void FreeAllAtoms()
 {
-    if (atomRoot == null)
+    if (atomRoot is null)
         return;
     FreeAtom(atomRoot);
     atomRoot = null;

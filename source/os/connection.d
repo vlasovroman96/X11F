@@ -243,7 +243,7 @@ private Bool TryCreateSocket(int num, int* partial)
 {
     char[20] port = void;
 
-    snprintf(port.ptr, port.sizeof, "%d", num);
+    snprintf(port.ptr, port.length, "%d", num);
 
     return (_XSERVTransMakeAllCOTSServerListeners(port.ptr, partial,
                                                   &ListenTransCount,
@@ -257,6 +257,8 @@ private Bool TryCreateSocket(int num, int* partial)
 
 void CreateWellKnownSockets()
 {
+    // fprintf(stderr, "%d", NUMTRANS);
+    // fflush();
     int i = void;
     int partial = 0;
 
@@ -274,6 +276,10 @@ void CreateWellKnownSockets()
     }
     else { /* -displayfd and no explicit display number */
         Bool found = 0;
+        import os.utils;
+        for (i = 0; defaultNoListenList[i] != null; i++)
+    fprintf(stderr, "DEFAULT NOLISTEN: %s\n",
+            defaultNoListenList[i]);
         for (i = 0; i < 65536 - X_TCP_PORT; i++) {
             if (TryCreateSocket(i, &partial) && !partial) {
                 found = 1;
@@ -284,19 +290,20 @@ void CreateWellKnownSockets()
         }
         if (!found)
             FatalError("Failed to find a socket to listen on");
-        snprintf(dynamic_display.ptr, dynamic_display.sizeof, "%d", i);
+        snprintf(dynamic_display.ptr, dynamic_display.length, "%d", i);
+        fprintf(stderr, "%s", dynamic_display.ptr);
         display = dynamic_display.ptr;
         LogSetDisplay();
     }
 
-    printf("%d, %d", ListenTransCount, MAX_CONNECTIONS);
+    fprintf(stderr, "%d, %d", ListenTransCount, MAX_CONNECTIONS);
     if (ListenTransCount >= MAX_CONNECTIONS) {
         FatalError ("Tried to clear too many listening sockets - OOM");
         return; // mostly to keep GCC from complaining about too large alloc
     }
 
     ListenTransFds = cast(int*) calloc(ListenTransCount, int.sizeof);
-    if (ListenTransFds == null)
+    if (ListenTransFds is null)
         FatalError ("Failed to create listening socket array");
 
     for (i = 0; i < ListenTransCount; i++) {
@@ -640,10 +647,10 @@ private void EstablishNewConnections(int curconn, int ready, void* data)
         }
     }
 
-    if ((trans_conn = lookup_trans_conn(curconn)) == null)
+    if ((trans_conn = lookup_trans_conn(curconn)) is null)
         return;
 
-    if ((new_trans_conn = _XSERVTransAccept(trans_conn)) == null)
+    if ((new_trans_conn = _XSERVTransAccept(trans_conn)) is null)
         return;
 
     newconn = _XSERVTransGetConnectionNumber(new_trans_conn);
@@ -975,7 +982,7 @@ void ListenOnOpenFD(int fd, int noxauth)
      * TRANS_SOCKET_LOCAL_INDEX = 5 from Xtrans.c
      */
     ciptr = _XSERVTransReopenCOTSServer(5, fd, port.ptr);
-    if (ciptr == null) {
+    if (ciptr is null) {
         ErrorF("Got NULL while trying to Reopen listen port.\n");
         return;
     }
@@ -1008,7 +1015,7 @@ Bool AddClientOnOpenFD(int fd)
 
     snprintf(port.ptr, port.sizeof, ":%d", atoi(display));
     ciptr = _XSERVTransReopenCOTSServer(5, fd, port.ptr);
-    if (ciptr == null)
+    if (ciptr is null)
         return FALSE;
 
     _XSERVTransNonBlock(ciptr);

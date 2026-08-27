@@ -183,7 +183,7 @@ private int present_get_ust_msc(ScreenPtr screen, RRCrtcPtr crtc, ulong* ust, ul
     if (crtc)
         crtc_screen_priv = present_screen_priv(crtc.pScreen);
 
-    if (crtc == null)
+    if (crtc is null)
         return present_fake_get_ust_msc(screen, ust, msc);
     else
         return (*crtc_screen_priv.info.get_ust_msc)(crtc, ust, msc);
@@ -210,7 +210,7 @@ private int present_queue_vblank(ScreenPtr screen, WindowPtr window, RRCrtcPtr c
 {
     Bool ret = void;
 
-    if (crtc == null)
+    if (crtc is null)
         ret = present_fake_queue_vblank(screen, event_id, msc);
     else
     {
@@ -843,7 +843,7 @@ private void present_scmd_abort_vblank(ScreenPtr screen, WindowPtr window, RRCrt
 {
     present_vblank_ptr vblank = void;
 
-    if (crtc == null)
+    if (crtc is null)
         present_fake_abort_vblank(screen, event_id, msc);
     else
     {

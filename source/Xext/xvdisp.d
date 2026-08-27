@@ -1245,7 +1245,7 @@ private XvAdaptorPtr matchAdaptor(ScreenPtr pScreen, XvAdaptorPtr refAdapt, Bool
     int i = void;
     XvScreenPtr xvsp = dixLookupPrivate(&pScreen.devPrivates, XvGetScreenKey());
     /* Do not try to go on if xv is not supported on this screen */
-    if (xvsp == null)
+    if (xvsp is null)
         return null;
 
     /* if the adaptor has the same name it's a perfect match */

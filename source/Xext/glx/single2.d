@@ -351,7 +351,7 @@ int DoGetString(__GLXclientState* cl, GLbyte* pc, GLboolean need_swap)
     name = *cast(GLenum*) (pc + 0);
     string_ = cast(const(char)*) glGetString(name);
 
-    if (string_ == null)
+    if (string_ is null)
         string_ = "";
 
     /*

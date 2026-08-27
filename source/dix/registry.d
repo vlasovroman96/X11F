@@ -144,7 +144,7 @@ void RegisterExtensionNames(ExtensionEntry* extEntry)
     char[256] buf = void; char* lineobj = void, ptr = void;
     uint offset = void;
 
-    if (fh == null)
+    if (fh is null)
         return;
 
     rewind(fh);

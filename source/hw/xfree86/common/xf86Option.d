@@ -797,7 +797,7 @@ char* xf86NormalizeName(const(char)* s)
     char* q = void;
     const(char)* p = void;
 
-    if (s == null)
+    if (s is null)
         return null;
 
     char* ret = cast(char*) calloc(1, strlen(s) + 1);

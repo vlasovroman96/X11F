@@ -823,7 +823,7 @@ auto xf86CompatOutput(ScrnInfoPtr pScrn)
     if (xf86CrtcConfigPrivateIndex == -1)
         return null;
     config = mixin(XF86_CRTC_CONFIG_PTR!(`pScrn`));
-    if ((config == null) || (config.compat_output < 0))
+    if ((config is null) || (config.compat_output < 0))
         return null;
     return config.output[config.compat_output];
 }

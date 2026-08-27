@@ -275,7 +275,7 @@ int ephyrBufferHeight(KdScreenInfo* screen)
 {
     int buffer_height = void;
 
-    if (ephyrFuncs.initAccel == null)
+    if (ephyrFuncs.initAccel is null)
         buffer_height = screen.height;
     else
         buffer_height = 3 * screen.height;
@@ -709,7 +709,7 @@ Bool ephyrCreateColormap(ColormapPtr pmap)
 
 Bool ephyrSetGrabShortcut(const(char*) desc)
 {
-    if (desc == null || !strcmp(desc, "NULL")) {
+    if (desc is null || !strcmp(desc, "NULL")) {
         EphyrKeybindToggleHostGrabModMask = cast(xcb_mod_mask_t)0;
         EphyrKeybindToggleHostGrabKey = 0;
         EphyrTitleHostGrabKeyComboHint = null;
@@ -782,7 +782,7 @@ private void ephyrPrintGrabShortcut(char* out_, const(size_t) out_size, const(Bo
             EphyrKeybindToggleHostGrabModMask == 0 &&
             EphyrKeybindToggleHostGrabKey == 0
         ) || (
-            EphyrTitleHostGrabKeyComboHint == null ||
+            EphyrTitleHostGrabKeyComboHint is null ||
             EphyrTitleHostGrabKeyComboHintLen == 0
         )
     ) {

@@ -89,7 +89,7 @@ int ProcXGetDeviceMotionEvents(ClientPtr client)
         return rc;
 
     const(ValuatorClassPtr) v = dev.valuator;
-    if (v == null || v.numAxes == 0)
+    if (v is null || v.numAxes == 0)
         return BadMatch;
 
     if (dev.valuator.motionHintWindow)

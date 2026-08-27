@@ -231,7 +231,7 @@ private int ProcVidModeGetModeLine(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.GetCurrentModeline(pScreen, &mode, &dotClock))
@@ -350,7 +350,7 @@ private int ProcVidModeGetAllModeLines(ClientPtr client)
 
     ver = ClientMajorVersion(client);
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     modecount = pVidMode.GetNumOfModes(pScreen);
@@ -523,7 +523,7 @@ private int VidModeAddModeLine(ClientPtr client, xXF86VidModeAddModeLineReq* stu
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (stuff.after_htotal != 0 || stuff.after_vtotal != 0) {
@@ -543,7 +543,7 @@ private int VidModeAddModeLine(ClientPtr client, xXF86VidModeAddModeLineReq* stu
     }
 
     mode = VidModeCreateMode();
-    if (mode == null)
+    if (mode is null)
         return BadValue;
 
     VidModeSetModeValue(mode, VIDMODE_CLOCK, stuff.dotclock);
@@ -702,7 +702,7 @@ private int VidModeDeleteModeLine(ClientPtr client, xXF86VidModeDeleteModeLineRe
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.GetCurrentModeline(pScreen, &mode, &dotClock))
@@ -851,7 +851,7 @@ private int VidModeModModeLine(ClientPtr client, xXF86VidModeModModeLineReq* stu
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.GetCurrentModeline(pScreen, &mode, &dotClock))
@@ -1022,7 +1022,7 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
     }
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.GetCurrentModeline(pScreen, &mode, &dotClock))
@@ -1088,7 +1088,7 @@ private int ProcVidModeSwitchMode(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     pVidMode.ZoomViewport(pScreen, cast(short) stuff.zoom);
@@ -1169,7 +1169,7 @@ private int VidModeSwitchToMode(ClientPtr client, xXF86VidModeSwitchToModeReq* s
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.GetCurrentModeline(pScreen, &mode, &dotClock))
@@ -1230,7 +1230,7 @@ private int ProcVidModeLockModeSwitch(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.LockZoom(pScreen, cast(short) stuff.lock))
@@ -1258,7 +1258,7 @@ private int ProcVidModeGetMonitor(ClientPtr client)
         return BadValue;
 
     VidModePtr pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     const(int) nHsync = pVidMode.GetMonitorValue(pScreen, VIDMODE_MON_NHSYNC, 0).i;
@@ -1311,7 +1311,7 @@ private int ProcVidModeGetViewPort(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     pVidMode.GetViewPort(pScreen, &x, &y);
@@ -1347,7 +1347,7 @@ private int ProcVidModeSetViewPort(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.SetViewPort(pScreen, stuff.x, stuff.y))
@@ -1372,7 +1372,7 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     numClocks = pVidMode.GetNumOfClocks(pScreen, &ClockProg);
@@ -1428,7 +1428,7 @@ private int ProcVidModeSetGamma(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.SetGamma(pScreen, (cast(float) stuff.red) / 10000.,
@@ -1454,7 +1454,7 @@ private int ProcVidModeGetGamma(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (!pVidMode.GetGamma(pScreen, &red, &green, &blue))
@@ -1495,7 +1495,7 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (stuff.size != pVidMode.GetGammaRampSize(pScreen))
@@ -1526,7 +1526,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
         return BadValue;
 
     VidModePtr pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     if (stuff.size != pVidMode.GetGammaRampSize(pScreen))
@@ -1573,7 +1573,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
         return BadValue;
 
     pVidMode = VidModeGetPtr(pScreen);
-    if (pVidMode == null)
+    if (pVidMode is null)
         return BadImplementation;
 
     xXF86VidModeGetGammaRampSizeReply reply = {
@@ -1614,7 +1614,7 @@ private int ProcVidModeSetClientVersion(ClientPtr client)
 
     DEBUG_P("XF86VidModeSetClientVersion");
 
-    if ((pPriv = mixin(VM_GETPRIV!(`client`))) == null) {
+    if ((pPriv = mixin(VM_GETPRIV!(`client`))) is null) {
         pPriv = cast(VidModePrivRec*) calloc(1, VidModePrivRec.sizeof);
         if (!pPriv)
             return BadAlloc;

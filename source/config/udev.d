@@ -365,7 +365,7 @@ version (CONFIG_UDEV_KMS) {
         const(char)* path = assumeNoGC(&udev_device_get_devnode)(device);
         dev_t devnum = assumeNoGC(&udev_device_get_devnum)(device);
 
-        if ((strncmp(sysname,"card", 4) != 0) || (path == null))
+        if ((strncmp(sysname,"card", 4) != 0) || (path is null))
             return;
 
         LogMessage(X_INFO, "config/udev: removing GPU device %s %s\n",
@@ -551,7 +551,7 @@ private char* config_udev_get_fallback_bus_id(udev_device* udev_device)
     char* busid = void;
 
     udev_device = assumeNoGC(&udev_device_get_parent)(udev_device);
-    if (udev_device == null)
+    if (udev_device is null)
         return null;
 
     if (strcmp(assumeNoGC(&udev_device_get_subsystem)(udev_device), "pci") != 0)

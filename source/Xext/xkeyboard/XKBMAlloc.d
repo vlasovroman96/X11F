@@ -51,7 +51,7 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
 {
     XkbClientMapPtr map = void;
 
-    if ((xkb == null) ||
+    if ((xkb is null) ||
         ((nTotalTypes > 0) && (nTotalTypes < XkbNumRequiredTypes)))
         return BadValue;
     if ((which & XkbKeySymsMask) &&
@@ -63,9 +63,9 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
         return BadValue;
     }
 
-    if (xkb.map == null) {
+    if (xkb.map is null) {
         map = cast(XkbClientMapRec*) calloc(1, XkbClientMapRec.sizeof);
-        if (map == null)
+        if (map is null)
             return BadAlloc;
         xkb.map = map;
     }
@@ -73,9 +73,9 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
         map = xkb.map;
 
     if ((which & XkbKeyTypesMask) && (nTotalTypes > 0)) {
-        if (map.types == null) {
+        if (map.types is null) {
             map.types = cast(_XkbKeyType*)calloc(nTotalTypes, XkbKeyTypeRec.sizeof);
-            if (map.types == null)
+            if (map.types is null)
                 return BadAlloc;
             map.num_types = 0;
             map.size_types = cast(ubyte)nTotalTypes;
@@ -85,7 +85,7 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
 
             map.types =
                 cast(XkbKeyTypeRec*) reallocarray(map.types, nTotalTypes, XkbKeyTypeRec.sizeof);
-            if (map.types == null) {
+            if (map.types is null) {
                 free(prev_types);
                 map.num_types = map.size_types = cast(ubyte)0;
                 return BadAlloc;
@@ -99,7 +99,7 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
     if (which & XkbKeySymsMask) {
         int nKeys = mixin(XkbNumKeys!("xkb"));
 
-        if (map.syms == null) {
+        if (map.syms is null) {
             map.size_syms = cast(ushort)((nKeys * 15) / 10);
             map.syms = cast(ulong*)calloc(map.size_syms, KeySym.sizeof);
             if (!map.syms) {
@@ -109,9 +109,9 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
             map.num_syms = 1;
             map.syms[0] = NoSymbol;
         }
-        if (map.key_sym_map == null) {
+        if (map.key_sym_map is null) {
             map.key_sym_map = cast(_XkbSymMapRec*)calloc(MAP_LENGTH, XkbSymMapRec.sizeof);
-            if (map.key_sym_map == null)
+            if (map.key_sym_map is null)
                 return BadAlloc;
         }
     }
@@ -120,9 +120,9 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
             (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
-        if (map.modmap == null) {
+        if (map.modmap is null) {
             map.modmap = cast(ubyte*)calloc(MAP_LENGTH, ubyte.sizeof);
-            if (map.modmap == null)
+            if (map.modmap is null)
                 return BadAlloc;
         }
     }
@@ -134,11 +134,11 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
     int i = void;
     XkbServerMapPtr map = void;
 
-    if (xkb == null)
+    if (xkb is null)
         return BadMatch;
-    if (xkb.server == null) {
+    if (xkb.server is null) {
         map = cast(XkbServerMapRec*) calloc(1, XkbServerMapRec.sizeof);
-        if (map == null)
+        if (map is null)
             return BadAlloc;
         for (i = 0; i < XkbNumVirtualMods; i++) {
             map.vmods[i] = XkbNoModifierMask;
@@ -152,9 +152,9 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
             (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
-        if (map.explicit == null) {
+        if (map.explicit is null) {
             map.explicit =  cast(ubyte*)calloc(MAP_LENGTH, ubyte.sizeof);
-            if (map.explicit == null)
+            if (map.explicit is null)
                 return BadAlloc;
         }
     }
@@ -165,9 +165,9 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
             return BadMatch;
         if (nNewActions < 1)
             nNewActions = 1;
-        if (map.acts == null) {
+        if (map.acts is null) {
             map.acts = cast(_XkbAction*)calloc((nNewActions + 1), XkbAction.sizeof);
-            if (map.acts == null)
+            if (map.acts is null)
                 return BadAlloc;
             map.num_acts = 1;
             map.size_acts = cast(ushort)cast(ushort)(nNewActions + 1);
@@ -178,7 +178,7 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
 
             need = map.num_acts + nNewActions;
             map.acts = cast(XkbAction*) reallocarray(map.acts, need, XkbAction.sizeof);
-            if (map.acts == null) {
+            if (map.acts is null) {
                 free(prev_acts);
                 map.num_acts = map.size_acts = cast(ushort)0;
                 return BadAlloc;
@@ -187,9 +187,9 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
             memset(&map.acts[map.num_acts], 0,
                    ((map.size_acts - map.num_acts) * XkbAction.sizeof));
         }
-        if (map.key_acts == null) {
+        if (map.key_acts is null) {
             map.key_acts = cast(ushort*)calloc(MAP_LENGTH, ushort.sizeof);
-            if (map.key_acts == null)
+            if (map.key_acts is null)
                 return BadAlloc;
         }
     }
@@ -198,9 +198,9 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
             (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
-        if (map.behaviors == null) {
+        if (map.behaviors is null) {
             map.behaviors =  cast(_XkbBehavior*)calloc(MAP_LENGTH, XkbBehavior.sizeof);
-            if (map.behaviors == null)
+            if (map.behaviors is null)
                 return BadAlloc;
         }
     }
@@ -209,9 +209,9 @@ int XkbAllocServerMap(XkbDescPtr xkb, uint which, uint nNewActions)
             (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadMatch;
-        if (map.vmodmap == null) {
+        if (map.vmodmap is null) {
             map.vmodmap =  cast(ushort*)calloc(MAP_LENGTH, ushort.sizeof);
-            if (map.vmodmap == null)
+            if (map.vmodmap is null)
                 return BadAlloc;
         }
     }
@@ -299,7 +299,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
     else {
         XkbKTMapEntryRec* prev_map = type.map;
 
-        if ((map_count > type.map_count) || (type.map == null))
+        if ((map_count > type.map_count) || (type.map is null))
             type.map =
                 cast(XkbKTMapEntryRec*) reallocarray(type.map, map_count, XkbKTMapEntryRec.sizeof);
         if (!type.map) {
@@ -309,7 +309,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
         if (want_preserve) {
             XkbModsRec* prev_preserve = type.preserve;
 
-            if ((map_count > type.map_count) || (type.preserve == null)) {
+            if ((map_count > type.map_count) || (type.preserve is null)) {
                 type.preserve = cast(_XkbMods*)reallocarray(type.preserve,
                                               map_count, XkbModsRec.sizeof);
             }
@@ -325,7 +325,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
         type.map_count = cast(ubyte)cast(ubyte*)map_count;
     }
 
-    if ((new_num_lvls > type.num_levels) || (type.level_names == null)) {
+    if ((new_num_lvls > type.num_levels) || (type.level_names is null)) {
         Atom* prev_level_names = type.level_names;
 
         type.level_names = cast(ulong*)reallocarray(type.level_names,
@@ -390,7 +390,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
 
             xkb.map.size_syms = cast(short)((nTotal * 15) / 10);
             newSyms = cast(KeySym*) calloc(xkb.map.size_syms, KeySym.sizeof);
-            if (newSyms == null)
+            if (newSyms is null)
                 return BadAlloc;
             nextMatch = 0;
             nSyms = 1;
@@ -498,7 +498,7 @@ KeySym* XkbResizeKeySyms(XkbDescPtr xkb, int key, int needed)
     }
     xkb.map.size_syms += (needed > 32 ? needed : 32);
     newSyms = cast(KeySym*) calloc(xkb.map.size_syms, KeySym.sizeof);
-    if (newSyms == null)
+    if (newSyms is null)
         return null;
     newSyms[0] = NoSymbol;
     nSyms = 1;
@@ -742,7 +742,7 @@ XkbAction* XkbResizeKeyActions(XkbDescPtr xkb, int key, int needed)
     }
     xkb.server.size_acts = cast(ushort)(xkb.server.num_acts + needed + 8);
     newActs = cast(XkbAction*) calloc(xkb.server.size_acts, XkbAction.sizeof);
-    if (newActs == null)
+    if (newActs is null)
         return null;
     newActs[0].type = XkbSA_NoAction;
     nActs = 1;
@@ -778,7 +778,7 @@ void XkbFreeClientMap(XkbDescPtr xkb, uint what, Bool freeMap)
 {
     XkbClientMapPtr map = void;
 
-    if ((xkb == null) || (xkb.map == null))
+    if ((xkb is null) || (xkb.map is null))
         return;
     if (freeMap)
         what = XkbAllClientInfoMask;
@@ -828,7 +828,7 @@ void XkbFreeServerMap(XkbDescPtr xkb, uint what, Bool freeMap)
 {
     XkbServerMapPtr map = void;
 
-    if ((xkb == null) || (xkb.server == null))
+    if ((xkb is null) || (xkb.server is null))
         return;
     if (freeMap)
         what = XkbAllServerInfoMask;

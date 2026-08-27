@@ -770,7 +770,7 @@ version (HAVE_GETADDRINFO) {
     if (state == XDM_COLLECT_QUERY || state == XDM_COLLECT_INDIRECT_QUERY) {
         /* Try next address */
         for (mgrAddr = mgrAddr.ai_next;; mgrAddr = mgrAddr.ai_next) {
-            if (mgrAddr == null) {
+            if (mgrAddr is null) {
                 mgrAddr = mgrAddrFirst;
             }
             if (mgrAddr.ai_family == AF_INET)
@@ -861,7 +861,7 @@ version (SO_BROADCAST) {
         XdmcpWarning("UDP set broadcast socket-option failed");
 }                          /* SO_BROADCAST */
 
-    if (xdm_from == null)
+    if (xdm_from is null)
         return;
 
     if (mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET)
@@ -1308,7 +1308,7 @@ version (IPv6) {
                 break;
 }
         }
-        if ((ai == null) || (ai.ai_addrlen > SOCKADDR_TYPE.sizeof)) {
+        if ((ai is null) || (ai.ai_addrlen > SOCKADDR_TYPE.sizeof)) {
             FatalError("Xserver: %s host %s not on supported network type\n",
                        argtype, namestr);
         }
@@ -1418,7 +1418,7 @@ private int get_mcast_options(int argc, char** argv, int i)
                                           .sin6_addr)))
                 break;
         }
-        if (ai == null) {
+        if (ai is null) {
             FatalError("Xserver: address not supported multicast type %s\n",
                        address);
         }
@@ -1432,7 +1432,7 @@ private int get_mcast_options(int argc, char** argv, int i)
             mcastinfo.ai = firstai;
             mcastinfo.hops = hopcount;
 
-            if (mcastlist == null) {
+            if (mcastlist is null) {
                 mcastlist = mcastinfo;
             }
             else {

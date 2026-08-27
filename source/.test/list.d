@@ -227,8 +227,8 @@ private void test_nt_list_init()
 
     assert(foo.a == 10);
     assert(foo.b == 20);
-    assert(foo.next == null);
-    assert(nt_list_next(&foo, next) == null);
+    assert(foo.next is null);
+    assert(nt_list_next(&foo, next) is null);
 }
 
 private void test_nt_list_append()
@@ -359,7 +359,7 @@ private void test_nt_list_delete()
     mixin(nt_list_del!("foo", "foo", "foo", "next"));
 
     assert(item != foo);
-    assert(item.next == null);
+    assert(item.next is null);
     assert(foo.a == 3);
     assert(foo.next.a == 4);
 

@@ -420,7 +420,7 @@ private DeviceIntPtr xf86ActivateDevice(InputInfoPtr pInfo)
 
     dev = AddInputDevice(serverClient, pInfo.device_control, TRUE);
 
-    if (dev == null) {
+    if (dev is null) {
         LogMessageVerb(X_ERROR, 1, "Too many input devices. Ignoring %s\n", pInfo.name);
         pInfo.dev = null;
         return null;
@@ -605,9 +605,9 @@ version (HAVE_FNMATCH_H) {
             return -1;
         case MATCH_REGEX:
         default:
-            if (pattern.regex == null) {
+            if (pattern.regex is null) {
                 int r = void;
-                if ((pattern.regex = cast(regex_t*)malloc(regex_t.sizeof)) == null) {
+                if ((pattern.regex = cast(regex_t*)malloc(regex_t.sizeof)) is null) {
                     pattern.mode = MATCH_IS_INVALID;
                     return 0;
                 }
@@ -857,7 +857,7 @@ private void xf86AddInput(InputDriverPtr drv, InputInfoPtr pInfo)
 void xf86DeleteInput(InputInfoPtr pInp, int flags)
 {
     /* First check if the inputdev is valid. */
-    if (pInp == null)
+    if (pInp is null)
         return;
 
     if (pInp.module_)

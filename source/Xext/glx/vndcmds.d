@@ -69,7 +69,7 @@ private GlxVendorPrivDispatch* LookupVendorPrivDispatch(CARD32 vendorCode, Bool 
     GlxVendorPrivDispatch* disp = null;
 
     disp = cast(GlxVendorPrivDispatch*)ht_find(vendorPrivHash, &vendorCode);
-    if (disp == null && create) {
+    if (disp is null && create) {
         if ((disp = cast(GlxVendorPrivDispatch*)ht_add(vendorPrivHash, &vendorCode)) !is null) {
             disp.vendorCode = vendorCode;
             disp.proc = null;
@@ -134,7 +134,7 @@ private int dispatch_GLXClientInfo(ClientPtr client)
     // modify the request data in place (e.g., for byte swapping), make a copy
     // of the request first.
     void* requestCopy = calloc(1, requestSize);
-    if (requestCopy == null) {
+    if (requestCopy is null) {
         return BadAlloc;
     }
     memcpy(requestCopy, client.requestBuffer, requestSize);
@@ -198,18 +198,18 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
 
     if (oldContextTag != 0) {
         oldTag = GlxLookupContextTag(client, cast(uint)oldContextTag);
-        if (oldTag == null) {
+        if (oldTag is null) {
             return GlxErrorBase + GLXBadContextTag;
         }
     }
     if (context != 0) {
         newVendor = GlxGetXIDMap(context);
-        if (newVendor == null) {
+        if (newVendor is null) {
             return GlxErrorBase + GLXBadContext;
         }
     }
 
-    if (oldTag == null && newVendor == null) {
+    if (oldTag is null && newVendor is null) {
         // Nothing to do here. Just send a successful reply.
         reply.contextTag = 0;
     } else if (oldTag != null && newVendor != null
@@ -301,13 +301,13 @@ private int dispatch_GLXCopyContext(ClientPtr client)
     // are valid.
     if (stuff.contextTag != 0) {
         GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)cast(uint)GlxCheckSwap(client, stuff.contextTag));
-        if (tagInfo == null) {
+        if (tagInfo is null) {
             return GlxErrorBase + GLXBadContextTag;
         }
         vendor = tagInfo.vendor;
     } else {
         vendor = GlxGetXIDMap(GlxCheckSwap(client, stuff.source));
-        if (vendor == null) {
+        if (vendor is null) {
             return GlxErrorBase + GLXBadContext;
         }
     }
@@ -325,7 +325,7 @@ private int dispatch_GLXSwapBuffers(ClientPtr client)
         // If the request has a context tag, then look up a vendor from that.
         // The vendor library is then responsible for validating the drawable.
         GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)cast(uint)GlxCheckSwap(client, stuff.contextTag));
-        if (tagInfo == null) {
+        if (tagInfo is null) {
             return GlxErrorBase + GLXBadContextTag;
         }
         vendor = tagInfo.vendor;
@@ -333,7 +333,7 @@ private int dispatch_GLXSwapBuffers(ClientPtr client)
         // We don't have a context tag, so look up the vendor from the
         // drawable.
         vendor = GlxGetXIDMap(GlxCheckSwap(client, stuff.drawable));
-        if (vendor == null) {
+        if (vendor is null) {
             return GlxErrorBase + GLXBadDrawable;
         }
     }
@@ -367,11 +367,11 @@ private int dispatch_GLXVendorPriv(ClientPtr client)
 
 
     disp = LookupVendorPrivDispatch(GlxCheckSwap(client, stuff.vendorCode), TRUE);
-    if (disp == null) {
+    if (disp is null) {
         return BadAlloc;
     }
 
-    if (disp.proc == null) {
+    if (disp.proc is null) {
         // We don't have a dispatch function for this request yet. Check with
         // each vendor library to find one.
         // Note that even if none of the vendors provides a dispatch stub,
@@ -399,7 +399,7 @@ Bool GlxDispatchInit()
     // Assign a custom dispatch stub GLXMakeCurrentReadSGI. This is the only
     // vendor private request that we need to deal with in libglvnd itself.
     disp = LookupVendorPrivDispatch(X_GLXvop_MakeCurrentReadSGI, TRUE);
-    if (disp == null) {
+    if (disp is null) {
         return FALSE;
     }
     disp.proc = &dispatch_GLXMakeCurrentReadSGI;
@@ -467,7 +467,7 @@ int GlxDispatchRequest(ClientPtr client)
     GlxSetRequestClient(client);
 
     if (stuff.data < OPCODE_ARRAY_LEN) {
-        if (dispatchFuncs[stuff.data] == null) {
+        if (dispatchFuncs[stuff.data] is null) {
             // Try to find a dispatch stub.
             dispatchFuncs[stuff.data] = GetVendorDispatchFunc(stuff.data, 0);
         }

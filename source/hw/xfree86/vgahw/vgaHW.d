@@ -673,7 +673,7 @@ static if (SAVE_TEXT || SAVE_FONT1 || SAVE_FONT2) {
     if (!hwp.FontInfo1 && !hwp.FontInfo2 && !hwp.TextInfo)
         return;
 
-    if (hwp.Base == null) {
+    if (hwp.Base is null) {
         doMap = TRUE;
         if (!vgaHWMapMem(pScrnInfo)) {
             xf86DrvMsg(pScrnInfo.scrnIndex, X_ERROR,
@@ -846,7 +846,7 @@ static if  (SAVE_TEXT || SAVE_FONT1 || SAVE_FONT2) {
     ubyte miscOut = void, attr10 = void, gr4 = void, gr5 = void, gr6 = void, seq2 = void, seq4 = void;
     Bool doMap = FALSE;
 
-    if (hwp.Base == null) {
+    if (hwp.Base is null) {
         doMap = TRUE;
         if (!vgaHWMapMem(pScrnInfo)) {
             xf86DrvMsg(pScrnInfo.scrnIndex, X_ERROR,
@@ -1070,7 +1070,7 @@ version (none) {
 
 void vgaHWSave(ScrnInfoPtr pScrnInfo, vgaRegPtr save, int flags)
 {
-    if (save == null)
+    if (save is null)
         return;
 
     if (flags & VGA_SR_CMAP)
@@ -1609,7 +1609,7 @@ void vgaHWUnmapMem(ScrnInfoPtr scrp)
 {
     vgaHWPtr hwp = mixin(VGAHWPTR!(`scrp`));
 
-    if (hwp.Base == null)
+    if (hwp.Base is null)
         return;
 
     DebugF("Unmapping VGAMem\n");
@@ -1776,7 +1776,7 @@ void vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed)
         hwp.writeMiscOut(hwp, ((save.msr & 0xF3) | 0x80));
         break;
     case DDC_SLOW:
-        if (hwp.ddc == null)
+        if (hwp.ddc is null)
             break;
         save = cast(_vgaDdcSave*) hwp.ddc;
         hwp.writeMiscOut(hwp, save.msr);

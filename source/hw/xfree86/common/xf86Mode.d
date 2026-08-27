@@ -348,7 +348,7 @@ private ModeStatus xf86HandleBuiltinMode(ScrnInfoPtr scrp, DisplayModePtr p, Dis
     if ((p.type & M_T_CLOCK_C) == M_T_CLOCK_C) {
         /* Check clock is in range */
         cp = xf86FindClockRangeForMode(clockRanges, p);
-        if (cp == null) {
+        if (cp is null) {
             modep.type = p.type;
             p.status = MODE_CLOCK_RANGE;
             return MODE_CLOCK_RANGE;
@@ -484,12 +484,12 @@ private ModeStatus xf86LookupMode(ScrnInfoPtr scrp, DisplayModePtr modep, ClockR
     strategy &= ~(LOOKUP_CLKDIV2 | LOOKUP_OPTIONAL_TOLERANCES);
 
     /* Some sanity checking */
-    if (scrp == null || scrp.modePool == null ||
+    if (scrp is null || scrp.modePool is null ||
         (!scrp.progClock && scrp.numClocks == 0)) {
         ErrorF("xf86LookupMode: called with invalid scrnInfoRec\n");
         return MODE_ERROR;
     }
-    if (modep == null || modep.name == null) {
+    if (modep is null || modep.name is null) {
         ErrorF("xf86LookupMode: called with invalid modep\n");
         return MODE_ERROR;
     }
@@ -508,7 +508,7 @@ private ModeStatus xf86LookupMode(ScrnInfoPtr scrp, DisplayModePtr modep, ClockR
             /* scan through the modes in the sort order above */
             if ((p.type & type) != type)
                 continue;
-            if (p.name == null)
+            if (p.name is null)
                 continue;
 
             if (strcmp(p.name, modep.name) == 0) {
@@ -531,7 +531,7 @@ private ModeStatus xf86LookupMode(ScrnInfoPtr scrp, DisplayModePtr modep, ClockR
 
                 /* Check clock is in range */
                 cp = xf86FindClockRangeForMode(clockRanges, p);
-                if (cp == null) {
+                if (cp is null) {
                     /*
                      * XXX Could do more here to provide a more detailed
                      * reason for not finding a mode.
@@ -640,7 +640,7 @@ private ModeStatus xf86LookupMode(ScrnInfoPtr scrp, DisplayModePtr modep, ClockR
         if (found)
             break;
     }
-    if (!found || bestMode == null)
+    if (!found || bestMode is null)
         return status;
 
     /* Fill in the mode parameters */
@@ -707,7 +707,7 @@ ModeStatus xf86CheckModeForMonitor(DisplayModePtr mode, MonPtr monitor)
     int i = void;
 
     /* Sanity checks */
-    if (mode == null || monitor == null) {
+    if (mode is null || monitor is null) {
         ErrorF("xf86CheckModeForMonitor: called with invalid parameters\n");
         return MODE_ERROR;
     }
@@ -992,11 +992,11 @@ ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int fla
     ModeStatus status = MODE_NOMODE;
 
     /* Some sanity checking */
-    if (scrp == null || (!scrp.progClock && scrp.numClocks == 0)) {
+    if (scrp is null || (!scrp.progClock && scrp.numClocks == 0)) {
         ErrorF("xf86CheckModeForDriver: called with invalid scrnInfoRec\n");
         return MODE_ERROR;
     }
-    if (mode == null) {
+    if (mode is null) {
         ErrorF("xf86CheckModeForDriver: called with invalid modep\n");
         return MODE_ERROR;
     }
@@ -1020,7 +1020,7 @@ ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int fla
             if (modeInClockRange(cp, mode))
                 break;
         }
-        if (cp == null) {
+        if (cp is null) {
             return MODE_CLOCK_RANGE;
         }
         /*
@@ -1068,7 +1068,7 @@ ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int fla
                 break;
             }
         }
-        if (cp == null)
+        if (cp is null)
             return status;
     }
 
@@ -1344,7 +1344,7 @@ int xf86ValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)**
          apertureSize, strategy);
 
     /* Some sanity checking */
-    if (scrp == null || scrp.name == null || !scrp.monitor ||
+    if (scrp is null || scrp.name is null || !scrp.monitor ||
         (!scrp.progClock && scrp.numClocks == 0)) {
         ErrorF("xf86ValidateModes: called with invalid scrnInfoRec\n");
         return -1;
@@ -1439,7 +1439,7 @@ int xf86ValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)**
         ClockRangePtr newCR = cast(ClockRange*)XNFalloc(ClockRange.sizeof);
         memcpy(newCR, cp, ClockRange.sizeof);
         newCR.next = null;
-        if (scrp.clockRanges == null)
+        if (scrp.clockRanges is null)
             scrp.clockRanges = newCR;
         else
             mixin(nt_list_append!("newCR", "scrp.clockRanges", "ClockRange", "next"));
@@ -1541,7 +1541,7 @@ enum string _VIRTUALX(string x) = `((((` ~ x ~ `) + scrp.xInc - 1) / scrp.xInc) 
      * that a modePool mode's prev field is used to hold a pointer to the
      * member of the scrp->modes list for which a match was considered.
      */
-    if (scrp.modePool == null) {
+    if (scrp.modePool is null) {
         q = null;
         for (p = availModes; p != null; p = p.next) {
             status = xf86InitialCheckModeForDriver(scrp, p, clockRanges,
@@ -1572,7 +1572,7 @@ enum string _VIRTUALX(string x) = `((((` ~ x ~ `) + scrp.xInc - 1) / scrp.xInc) 
             }
         }
 
-        if (scrp.modePool == null) {
+        if (scrp.modePool is null) {
             xf86DrvMsg(scrp.scrnIndex, X_WARNING, "Mode pool is empty\n");
             return 0;
         }
@@ -1620,7 +1620,7 @@ version (XINERAMA) {
          * is done in decreasing order by mode pixel area.
          */
 
-        if (p == null) {
+        if (p is null) {
             if ((numModes > 0) && !validateAllDefaultModes)
                 break;
 
@@ -1628,7 +1628,7 @@ version (XINERAMA) {
             r = null;
             modeSize = 0;
             for (q = scrp.modePool; q != null; q = q.next) {
-                if ((q.prev == null) && (q.status == MODE_OK)) {
+                if ((q.prev is null) && (q.status == MODE_OK)) {
                     /*
                      * Deal with the case where this mode wasn't considered
                      * because of a builtin mode of the same name.
@@ -1659,7 +1659,7 @@ version (XINERAMA) {
                 }
             }
 
-            if (r == null)
+            if (r is null)
                 break;
 
             p = cast(DisplayModeRec*)XNFcallocarray(1, DisplayModeRec.sizeof);
@@ -1916,7 +1916,7 @@ version (XINERAMA) {
 void xf86DeleteMode(DisplayModePtr* modeList, DisplayModePtr mode)
 {
     /* Catch the easy/insane cases */
-    if (modeList == null || *modeList == null || mode == null)
+    if (modeList is null || *modeList is null || mode is null)
         return;
 
     /* If the mode is at the start of the list, move the start of the list */
@@ -1950,7 +1950,7 @@ void xf86PruneDriverModes(ScrnInfoPtr scrp)
     DisplayModePtr first = void, p = void, n = void;
 
     p = scrp.modes;
-    if (p == null)
+    if (p is null)
         return;
 
     do {
@@ -1994,7 +1994,7 @@ void xf86SetCrtcForModes(ScrnInfoPtr scrp, int adjustFlags)
     scrp.adjustFlags = adjustFlags;
 
     p = scrp.modes;
-    if (p == null)
+    if (p is null)
         return;
 
     do {
@@ -2016,14 +2016,14 @@ void xf86PrintModes(ScrnInfoPtr scrp)
     float hsync = void, refresh = 0;
     const(char)* desc = void, desc2 = void, prefix = void, uprefix = void;
 
-    if (scrp == null)
+    if (scrp is null)
         return;
 
     xf86DrvMsg(scrp.scrnIndex, X_INFO, "Virtual size is %dx%d (pitch %d)\n",
                scrp.virtualX, scrp.virtualY, scrp.displayWidth);
 
     p = scrp.modes;
-    if (p == null)
+    if (p is null)
         return;
 
     do {

@@ -455,7 +455,7 @@ private int ProcDbeSwapBuffers(ClientPtr client)
 
     /* Allocate array to record swap information. */
     DbeSwapInfoPtr swapInfo = cast(DbeSwapInfoPtr)calloc(nStuff, DbeSwapInfoRec.sizeof);
-    if (swapInfo == null) {
+    if (swapInfo is null) {
         return BadAlloc;
     }
 
@@ -472,7 +472,7 @@ private int ProcDbeSwapBuffers(ClientPtr client)
         }
 
         /* Each window must be double-buffered - BadMatch. */
-        if (mixin(DBE_WINDOW_PRIV!("pWin")) == null) {
+        if (mixin(DBE_WINDOW_PRIV!("pWin")) is null) {
             free(swapInfo);
             return BadMatch;
         }

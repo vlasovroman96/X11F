@@ -91,7 +91,7 @@ int ProcXSetDeviceMode(ClientPtr client)
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixSetAttrAccess);
     if (rc != Success)
         return rc;
-    if (dev.valuator == null)
+    if (dev.valuator is null)
         return BadMatch;
 
     if (IsXTestDevice(dev, null))

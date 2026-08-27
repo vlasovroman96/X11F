@@ -76,7 +76,7 @@ xf86MatchGroup* xf86createMatchGroup(const(char)* arg, xf86MatchMode pref_mode, 
 
   again:
     /* start new pattern */
-    if ((pattern = cast(xf86MatchPattern*) malloc(typeof(*pattern).sizeof)) == null)
+    if ((pattern = cast(xf86MatchPattern*) malloc(typeof(*pattern).sizeof)) is null)
         goto fail;
 
     xorg_list_add(&pattern.entry, &group.patterns);
@@ -104,7 +104,7 @@ xf86MatchGroup* xf86createMatchGroup(const(char)* arg, xf86MatchMode pref_mode, 
             else
                 n = cast(uint)strlen(str+1);
             pattern.str = strndup(str+1, n);
-            if (pattern.str == null)
+            if (pattern.str is null)
                 goto fail;
             *(pattern.str+n) = '\0';
             str += n+1;
@@ -161,7 +161,7 @@ xf86MatchGroup* xf86createMatchGroup(const(char)* arg, xf86MatchMode pref_mode, 
         else {
             pattern.mode = pref_mode;
             pattern.str = strndup(str, n);
-            if (pattern.str == null)
+            if (pattern.str is null)
                 goto fail;
             *(pattern.str+n) = '\0'; /* should already be, but to be sure */
             str += n;

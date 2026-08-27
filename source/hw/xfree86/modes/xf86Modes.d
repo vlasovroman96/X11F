@@ -145,7 +145,7 @@ void xf86SetModeDefaultName(DisplayModePtr mode)
  */
 void xf86SetModeCrtc(DisplayModePtr p, int adjustFlags)
 {
-    if ((p == null) || ((p.type & M_T_CRTC_C) == M_T_BUILTIN))
+    if ((p is null) || ((p.type & M_T_CRTC_C) == M_T_BUILTIN))
         return;
 
     p.CrtcHDisplay = p.HDisplay;
@@ -216,7 +216,7 @@ DisplayModePtr xf86DuplicateMode(DisplayModeRec* pMode)
     pNew.next = null;
     pNew.prev = null;
 
-    if (pMode.name == null)
+    if (pMode.name is null)
         xf86SetModeDefaultName(pNew);
     else
         pNew.name = cast(const(char)*)XNFstrdup(pMode.name);
@@ -532,7 +532,7 @@ void xf86ValidateModesUserConfig(ScrnInfoPtr pScrn, DisplayModePtr modeList)
 {
     DisplayModePtr mode = void;
 
-    if (pScrn.display.modes[0] == null)
+    if (pScrn.display.modes[0] is null)
         return;
 
     for (mode = modeList; mode != null; mode = mode.next) {
@@ -633,7 +633,7 @@ void xf86PruneInvalidModes(ScrnInfoPtr pScrn, DisplayModePtr* modeList, Bool ver
  */
 DisplayModePtr xf86ModesAdd(DisplayModePtr modes, DisplayModePtr new_)
 {
-    if (modes == null)
+    if (modes is null)
         return new_;
 
     if (new_) {

@@ -753,7 +753,7 @@ void DeviceFocusEvent(DeviceIntPtr dev, int type, int mode, int detail, WindowPt
     len = cast(int)(xXIFocusInEvent.sizeof + btlen * 4);
 
     xXIFocusInEvent* xi2event = cast(xXIFocusInEvent*) calloc(1, len);
-    mixin(BUG_RETURN!("xi2event == null"));
+    mixin(BUG_RETURN!("xi2event is null"));
 
     xi2event.type = GenericEvent;
     xi2event.extension = EXTENSION_MAJOR_XINPUT;

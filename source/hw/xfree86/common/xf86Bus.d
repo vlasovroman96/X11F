@@ -338,7 +338,7 @@ BusType StringToBusType(const(char)* busID, const(char)** retID)
 
     s = cast(char*)Xstrdup(busID);
     p = strtok(s, ":");
-    if (p == null || *p == 0) {
+    if (p is null || *p == 0) {
         free(s);
         return BUS_NONE;
     }
@@ -490,7 +490,7 @@ void xf86ClearEntityListForScreen(ScrnInfoPtr pScrn)
 {
     int i = void, entityIndex = void;
 
-    if (pScrn.entityList == null || pScrn.numEntities == 0)
+    if (pScrn.entityList is null || pScrn.numEntities == 0)
         return;
 
     for (i = 0; i < pScrn.numEntities; i++) {
@@ -715,7 +715,7 @@ version (XSERVER_PLATFORM_BUS) {
     const(char)* msPath = null;
     const(char)* fbPath = null;
 
-    if (ptr == null) {
+    if (ptr is null) {
         return FALSE;
     }
 
@@ -738,7 +738,7 @@ version (XSERVER_PLATFORM_BUS) {
     * grabbed the device we are going to claim.
     */
             msPath = xf86FindOptionValue(cast(_InputOption*)fb_ptr.options, "kmsdev".ptr);
-            if (msPath == null) {
+            if (msPath is null) {
                 /* Autoconfigured */
                 msPath = "/dev/dri/card0";
             }
@@ -751,7 +751,7 @@ version (XSERVER_PLATFORM_BUS) {
     * via "fbdev" option.
     */
             fbPath = xf86FindOptionValue(cast(_InputOption*)fb_ptr.options, "fbdev".ptr);
-            if (fbPath == null) {
+            if (fbPath is null) {
                 /* Autoconfigured */
                 fbPath = "";
             }
@@ -818,7 +818,7 @@ version (XSERVER_LIBPCIACCESS) {
 
         if (pent.bus.type == BUS_NONE) {
             if (!strcasecmp(pent.driver.driverName, "fbdev")) {
-                if ((type != BUS_NONE) || (fbPath == null)) {
+                if ((type != BUS_NONE) || (fbPath is null)) {
                     /* fbdev without busID is incompatible with other types */
                     LogMessageVerb(X_INFO, 1,
                         " Only fbdev without PCI bus id can be claimed after \"%s\".\n",
@@ -827,7 +827,7 @@ version (XSERVER_LIBPCIACCESS) {
                 }
                 /* Examine the first device only */
                 fbOther = xf86FindOptionValue(cast(_InputOption*)pent.devices[0].options, "fbdev".ptr);
-                if (fbOther == null) {
+                if (fbOther is null) {
                     /* Autoconfigured, reject */
                     LogMessageVerb(X_INFO, 1,
                         " Can\'t claim anything after \"%s\".\n",
@@ -857,9 +857,9 @@ version (XSERVER_PLATFORM_BUS) {
             if (!strcasecmp(pent.driver.driverName, "modesetting")) {
                 /* Examine the first device only */
                 msOther = xf86FindOptionValue(cast(_InputOption*)pent.devices[0].options, "kmsdev".ptr);
-                if (msOther == null) {
+                if (msOther is null) {
 version (XSERVER_LIBPCIACCESS) {
-                    if (pci_other == null)
+                    if (pci_other is null)
                     msOther = "/dev/dri/card0";
 }
 else {

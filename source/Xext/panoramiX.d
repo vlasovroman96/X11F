@@ -447,7 +447,7 @@ Bool XineramaRegisterConnectionBlockCallback(void function() @nogc nothrow func)
 {
     XineramaConnectionCallbackList* newlist = void;
 
-    if (((newlist = cast(XineramaConnectionCallbackList*) cast(XineramaConnectionCallbackList*) calloc(1, XineramaConnectionCallbackList.sizeof)) == null))
+    if (((newlist = cast(XineramaConnectionCallbackList*) cast(XineramaConnectionCallbackList*) calloc(1, XineramaConnectionCallbackList.sizeof)) is null))
         return FALSE;
 
     newlist.next = ConnectionCallbackList;

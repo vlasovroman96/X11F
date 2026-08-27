@@ -257,7 +257,7 @@ __GLXconfig* glxConvertConfigs(__DRIcoreExtension* core, __DRIconfig** configs)
     for (i = 0; configs[i]; i++) {
         tail.next = createModeFromConfig(core, configs[i], GLX_TRUE_COLOR,
                                           GL_FALSE);
-        if (tail.next == null)
+        if (tail.next is null)
             break;
         tail = tail.next;
     }
@@ -265,7 +265,7 @@ __GLXconfig* glxConvertConfigs(__DRIcoreExtension* core, __DRIconfig** configs)
     for (i = 0; configs[i]; i++) {
         tail.next = createModeFromConfig(core, configs[i], GLX_DIRECT_COLOR,
                                           GL_FALSE);
-        if (tail.next == null)
+        if (tail.next is null)
             break;
 
         tail = tail.next;
@@ -276,7 +276,7 @@ __GLXconfig* glxConvertConfigs(__DRIcoreExtension* core, __DRIconfig** configs)
         for (i = 0; configs[i]; i++) {
             tail.next = createModeFromConfig(core, configs[i], GLX_TRUE_COLOR,
                                             GL_TRUE);
-            if (tail.next == null)
+            if (tail.next is null)
                 continue;
 
             tail = tail.next;
@@ -336,7 +336,7 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
         path = next;
     } while (path);
 
-    if (driver == null) {
+    if (driver is null) {
         LogMessage(X_ERROR, "AIGLX error: unable to load driver %s\n",
                   driverName);
         goto cleanup_failure;
@@ -363,7 +363,7 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
 
     if (!extensions)
         extensions = cast(__DRIextensionRec**)dlsym(driver, __DRI_DRIVER_EXTENSIONS);
-    if (extensions == null) {
+    if (extensions is null) {
         LogMessage(X_ERROR, "AIGLX error: %s exports no extensions (%s)\n",
                    driverName, dlerror());
         goto cleanup_failure;
@@ -381,7 +381,7 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
         }
     }
 
-    if (*coreExt == null || *renderExt == null) {
+    if (*coreExt is null || *renderExt is null) {
         LogMessage(X_ERROR,
                    "AIGLX error: %s does not export required DRI extension\n",
                    driverName);

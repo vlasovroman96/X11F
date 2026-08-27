@@ -48,7 +48,7 @@ import externs.gnu;
 
 private void _XkbFreeGeomLeafElems(Bool freeAll, int first, int count, ushort* num_inout, ushort* sz_inout, char** elems, uint elem_sz)
 {
-    if ((freeAll) || (*elems == null)) {
+    if ((freeAll) || (*elems is null)) {
         *num_inout = *sz_inout = 0;
         free(*elems);
         *elems = null;
@@ -91,7 +91,7 @@ private void _XkbFreeGeomNonLeafElems(Bool freeAll, int first, int count, ushort
         return;
     else if (first + count > (*num_inout))
         count = (*num_inout) - first;
-    if (*elems == null)
+    if (*elems is null)
         return;
 
     if (freeFunc) {
@@ -315,7 +315,7 @@ void XkbFreeGeomDoodads(XkbDoodadPtr doodads, int nDoodads, Bool freeAll)
 
 void XkbFreeGeometry(XkbGeometryPtr geom, uint which, Bool freeMap)
 {
-    if (geom == null)
+    if (geom is null)
         return;
     if (freeMap)
         which = XkbGeomAllMask;
@@ -398,7 +398,7 @@ private Status _XkbGeomAlloc(void** old, ushort* num, ushort* total, int num_new
 {
     if (num_new < 1)
         return Success;
-    if ((*old) == null)
+    if ((*old) is null)
         *num = *total = 0;
 
     if ((*num) + num_new <= (*total))
@@ -462,7 +462,7 @@ Status XkbAllocGeometry(XkbDescPtr xkb, XkbGeometrySizesPtr sizes)
     XkbGeometryPtr geom = void;
     Status rtrn = void;
 
-    if (xkb.geom == null) {
+    if (xkb.geom is null) {
         xkb.geom = cast(XkbGeometryRec*) calloc(1, XkbGeometryRec.sizeof);
         if (!xkb.geom)
             return BadAlloc;

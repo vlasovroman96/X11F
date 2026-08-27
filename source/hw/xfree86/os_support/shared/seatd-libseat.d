@@ -235,7 +235,7 @@ log_libseat(libseat_log_level level, const char *fmt, va_list args)
     char* xfmt;
 
     xfmt = cast(char*) malloc(xfmt_size);
-    if (xfmt == null)
+    if (xfmt is null)
         return;
     snprintf(xfmt, xfmt_size, "%s\n", fmt);
 

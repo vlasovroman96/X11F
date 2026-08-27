@@ -358,7 +358,7 @@ Bool InputDevIsMaster(DeviceIntPtr dev)
 
 Bool InputDevIsFloating(DeviceIntPtr dev)
 {
-    return !InputDevIsMaster(dev) && GetMaster(dev, MASTER_KEYBOARD) == null;
+    return !InputDevIsMaster(dev) && GetMaster(dev, MASTER_KEYBOARD) is null;
 }
 
 /**
@@ -3997,7 +3997,7 @@ GrabPtr CheckPassiveGrabsOnWindow(WindowPtr pWin, DeviceIntPtr device, InternalE
         return null;
 
     tempGrab = AllocGrab(null);
-    if (tempGrab == null)
+    if (tempGrab is null)
         return null;
 
     /* Fill out the grab details, but leave the type for later before
@@ -4453,7 +4453,7 @@ int OtherClientGone(void* value, XID id)
             if (prev)
                 prev.next = other.next;
             else {
-                if (((pWin.optional.otherClients = other.next) == null))
+                if (((pWin.optional.otherClients = other.next) is null))
                     CheckWindowOptionalNeed(pWin);
             }
             free(other);
@@ -5151,7 +5151,7 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
         GrabPtr tempGrab = void;
 
         tempGrab = AllocGrab(null);
-        if (tempGrab == null)
+        if (tempGrab is null)
             return BadAlloc;
 
         tempGrab.next = null;

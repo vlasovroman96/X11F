@@ -96,10 +96,10 @@ public import core.stdc.stdlib;
 enum string TestFree(string a) = `if (` ~ a ~ `) { free (cast(void*) ` ~ a ~ `); ` ~ a ~ ` = null; }`;
 
 enum string parsePrologue(string typeptr,string typerec) = typeptr ~` ptr = void; 
-if( (ptr=cast(`~typeptr~`)calloc(1,` ~ typerec ~ `.sizeof)) == null ) { return null; }`;
+if( (ptr=cast(`~typeptr~`)calloc(1,` ~ typerec ~ `.sizeof)) is null ) { return null; }`;
 
 enum string HANDLE_RETURN(string f,string func) = `
-if ((ptr.` ~ f ~ `=` ~ func ~ `) == null)
+if ((ptr.` ~ f ~ `=` ~ func ~ `) is null)
 {
 	CLEANUP (ptr);
 	return null;
@@ -108,7 +108,7 @@ if ((ptr.` ~ f ~ `=` ~ func ~ `) == null)
 enum string HANDLE_LIST(string field,string func,string type) = `
 {
 `~type~` p = (` ~ func ~ `) ();
-if (p == null)
+if (p is null)
 {
 	CLEANUP (ptr);
 	return null;

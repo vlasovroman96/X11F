@@ -144,7 +144,7 @@ private int RegionOperate(ClientPtr client, WindowPtr pWin, int kind, RegionPtr*
      * removed (and so the op-code has no meaning in such removal);
      * see shape.PS, page 3, ShapeMask.
      */
-    if (srcRgn == null) {
+    if (srcRgn is null) {
         if (*destRgnp != null) {
             RegionDestroy(*destRgnp);
             *destRgnp = null;

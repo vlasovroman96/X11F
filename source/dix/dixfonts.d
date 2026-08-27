@@ -1761,7 +1761,7 @@ int SetDefaultFontPath(const(char)* path)
     start = path;
     while (1) {
         start = strstr(start, "built-ins");
-        if (start == null)
+        if (start is null)
             break;
         end = start + strlen("built-ins");
         if ((start == path || start[-1] == ',') && (!*end || *end == ','))

@@ -64,7 +64,7 @@ private Bool WriteXKBVModDecl(FILE* file, XkbDescPtr xkb, int showValue)
     int i = void, nMods = void;
     Atom* vmodNames = void;
 
-    if (xkb == null)
+    if (xkb is null)
         return FALSE;
     if (xkb.names != null)
         vmodNames = xkb.names.vmods.ptr;
@@ -179,7 +179,7 @@ Bool XkbWriteXKBKeyTypes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
         //_XkbLibError(_XkbErrMissingReqTypes, "XkbWriteXKBKeyTypes", 0);
         return 0;
     }
-    if ((xkb.names == null) || (xkb.names.types == None))
+    if ((xkb.names is null) || (xkb.names.types == None))
         fprintf(file, "xkb_types {\n\n");
     else
         fprintf(file, "xkb_types \"%s\" {\n\n",
@@ -273,7 +273,7 @@ Bool XkbWriteXKBCompatMap(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showIm
         //_XkbLibError(_XkbErrMissingCompatMap, "XkbWriteXKBCompatMap", 0);
         return FALSE;
     }
-    if ((xkb.names == null) || (xkb.names.compat == None))
+    if ((xkb.names is null) || (xkb.names.compat == None))
         fprintf(file, "xkb_compatibility {\n\n");
     else
         fprintf(file, "xkb_compatibility \"%s\" {\n\n",
@@ -358,7 +358,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
         //_XkbLibError(_XkbErrMissingNames, "XkbWriteXKBSymbols", 0);
         return FALSE;
     }
-    if ((xkb.names == null) || (xkb.names.symbols == None))
+    if ((xkb.names is null) || (xkb.names.symbols == None))
         fprintf(file, "xkb_symbols {\n\n");
     else
         fprintf(file, "xkb_symbols \"%s\" {\n\n",
@@ -464,7 +464,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
                         XkbBehaviorText(xkb, &srv.behaviors[i], XkbXKBFile));
             }
         }
-        if ((srv.explicit == null) || showImplicit ||
+        if ((srv.explicit is null) || showImplicit ||
             ((srv.explicit[i] & XkbExplicitInterpretMask) != 0))
             showActions = mixin(XkbKeyHasActions!("xkb", "i"));
         else

@@ -89,7 +89,7 @@ int ProcXGetDeviceKeyMapping(ClientPtr client)
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixGetAttrAccess);
     if (rc != Success)
         return rc;
-    if (dev.key == null)
+    if (dev.key is null)
         return BadMatch;
     xkb = dev.key.xkbInfo.desc;
 

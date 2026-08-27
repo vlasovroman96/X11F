@@ -272,13 +272,13 @@ void* x_sha1_init()
 // version (USE_EVP) {
 //     EVP_MD_CTX* ctx = void;
 
-//     if (sha1 == null) {
+//     if (sha1 is null) {
 //         sha1 = EVP_MD_fetch(null, "SHA1", null);
-//         if (sha1 == null)
+//         if (sha1 is null)
 //             return null;
 //     }
 //     ctx = EVP_MD_CTX_new();
-//     if (ctx == null)
+//     if (ctx is null)
 //         return null;
 //     ret = EVP_DigestInit_ex2(ctx, sha1, null);
 //     if (!ret) {

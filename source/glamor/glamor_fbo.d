@@ -103,7 +103,7 @@ glamor_pixmap_fbo* glamor_create_fbo_from_tex(glamor_screen_private* glamor_priv
     glamor_pixmap_fbo* fbo = void;
 
     fbo = cast(glamor_pixmap_fbo*) calloc(1, typeof(*fbo).sizeof);
-    if (fbo == null)
+    if (fbo is null)
         return null;
 
     fbo.tex = tex;
@@ -185,11 +185,11 @@ glamor_pixmap_fbo* glamor_create_fbo_array(glamor_screen_private* glamor_priv, P
     block_hcnt = (h + block_h - 1) / block_h;
 
     box_array = cast(pixman_box16*)calloc(block_wcnt * block_hcnt, typeof(box_array[0]).sizeof);
-    if (box_array == null)
+    if (box_array is null)
         return null;
 
     fbo_array = cast(glamor_pixmap_fbo**) calloc(block_wcnt * block_hcnt, (glamor_pixmap_fbo*).sizeof);
-    if (fbo_array == null) {
+    if (fbo_array is null) {
         free(box_array);
         return null;
     }
@@ -214,7 +214,7 @@ glamor_pixmap_fbo* glamor_create_fbo_array(glamor_screen_private* glamor_priv, P
                                                               pixmap,
                                                               fbo_w, fbo_h,
                                                               GLAMOR_CREATE_PIXMAP_FIXUP);
-            if (fbo_array[i * block_wcnt + j] == null)
+            if (fbo_array[i * block_wcnt + j] is null)
                 goto cleanup;
         }
     }
@@ -256,11 +256,11 @@ glamor_pixmap_fbo* glamor_pixmap_detach_fbo(glamor_pixmap_private* pixmap_priv)
 {
     glamor_pixmap_fbo* fbo = void;
 
-    if (pixmap_priv == null)
+    if (pixmap_priv is null)
         return null;
 
     fbo = pixmap_priv.fbo;
-    if (fbo == null)
+    if (fbo is null)
         return null;
 
     pixmap_priv.fbo = null;
@@ -325,11 +325,11 @@ Bool glamor_pixmap_ensure_fbo(PixmapPtr pixmap, int flag)
 
     mixin(BUG_RETURN_VAL!("!pixmap_priv", "FALSE"));
 
-    if (pixmap_priv.fbo == null) {
+    if (pixmap_priv.fbo is null) {
 
         fbo = glamor_create_fbo(glamor_priv, pixmap, pixmap.drawable.width,
                                 pixmap.drawable.height, flag);
-        if (fbo == null)
+        if (fbo is null)
             return FALSE;
 
         glamor_pixmap_attach_fbo(pixmap, fbo);

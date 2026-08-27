@@ -1619,7 +1619,7 @@ private PixmapPtr create_pixmap_for_fbcon(drmmode_ptr drmmode, ScrnInfoPtr pScrn
         return pixmap;
 
     fbcon = drmModeGetFB(drmmode.fd, fbcon_id);
-    if (fbcon == null)
+    if (fbcon is null)
         return null;
 
     if (fbcon.depth != pScrn.depth ||
@@ -2435,7 +2435,7 @@ private gbm_bo* drmmode_shadow_fb_allocate(xf86CrtcPtr crtc, int width, int heig
     drmmode_ptr drmmode = drmmode_crtc.drmmode;
 
     gbm_bo* ret = gbm_create_best_bo(drmmode, !drmmode.glamor_gbm, width, height, DRMMODE_FRONT_BO);
-    if (ret == null) {
+    if (ret is null) {
         xf86DrvMsg(crtc.scrn.scrnIndex, X_ERROR,
                "Couldn't allocate shadow memory for rotated CRTC\n");
         return null;
@@ -2497,7 +2497,7 @@ private PixmapPtr drmmode_shadow_fb_create(xf86CrtcPtr crtc, void* data, int wid
         }
     }
 
-    if (*bo == null) {
+    if (*bo is null) {
         xf86DrvMsg(scrn.scrnIndex, X_ERROR,
                    "Couldn't allocate shadow pixmap for CRTC\n");
         return null;
@@ -2513,7 +2513,7 @@ private PixmapPtr drmmode_shadow_fb_create(xf86CrtcPtr crtc, void* data, int wid
                                           pitch,
                                           pPixData);
 
-    if (pixmap == null) {
+    if (pixmap is null) {
         xf86DrvMsg(scrn.scrnIndex, X_ERROR,
                    "Couldn't allocate shadow pixmap for CRTC\n");
         return null;
@@ -3027,7 +3027,7 @@ private uint drmmode_crtc_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, drmModeRe
     ];
 
     crtc = xf86CrtcCreate(pScrn, &drmmode_crtc_funcs);
-    if (crtc == null)
+    if (crtc is null)
         return 0;
     drmmode_crtc = cast(drmmode_crtc_private_rec*)XNFcallocarray(1, drmmode_crtc_private_rec.sizeof);
     crtc.driver_private = drmmode_crtc;
@@ -3041,7 +3041,7 @@ private uint drmmode_crtc_init(ScrnInfoPtr pScrn, drmmode_ptr drmmode, drmModeRe
 
     /* Setup the fallback cursor immediately. */
     drmmode_crtc.cursor.dimensions = cast(drmmode_cursor_dim_rec*)malloc(drmmode_cursor_dim_rec.sizeof);
-    if (drmmode_crtc.cursor.dimensions == null)
+    if (drmmode_crtc.cursor.dimensions is null)
         return 0;
 
     drmmode_crtc.cursor.num_dimensions = 1;
@@ -4111,7 +4111,7 @@ private Bool drmmode_xf86crtc_resize(ScrnInfoPtr scrn, int width, int height)
     if (drmmode.shadow_enable) {
         uint size = scrn.displayWidth * scrn.virtualY * cpp;
         new_pixels = calloc(1, size);
-        if (new_pixels == null)
+        if (new_pixels is null)
             goto fail;
         free(drmmode.shadow_fb);
         drmmode.shadow_fb = new_pixels;

@@ -225,10 +225,10 @@ xcb_connection_t* ephyr_glamor_connect()
         void* function(void*) @nogc nothrow x_open_display = cast(void* function(void*)@nogc nothrow) (cast(void*) dlsym(RTLD_DEFAULT, "XOpenDisplay"));
         xcb_connection_t* function(void*)@nogc nothrow x_get_xcb_connection = cast(xcb_connection_t* function(void*)@nogc nothrow) (cast(void*) dlsym(RTLD_DEFAULT, "XGetXCBConnection"));
 
-        if (x_open_display == null)
+        if (x_open_display is null)
             return null;
 
-        if (x_get_xcb_connection == null) {
+        if (x_get_xcb_connection is null) {
             lib = dlopen("libX11-xcb.so.1", RTLD_LOCAL | RTLD_LAZY);
             x_get_xcb_connection =
                 cast(xcb_connection_t* function(void*)@nogc nothrow) (cast(void*) dlsym(lib, "XGetXCBConnection"));
@@ -236,7 +236,7 @@ xcb_connection_t* ephyr_glamor_connect()
         EGLDisplay dpy; 
         void* xdpy;
 
-        if (x_get_xcb_connection == null)
+        if (x_get_xcb_connection is null)
             goto out_;
         xdpy =  x_open_display(null);
         dpy =  glamor_egl_get_display(EGL_PLATFORM_X11_KHR, xdpy);;
@@ -361,7 +361,7 @@ ephyr_glamor* ephyr_glamor_screen_init(xcb_window_t win, xcb_visualid_t vid)
     ctx = eglCreateContext(glamor.dpy, EGL_NO_CONFIG_KHR, EGL_NO_CONTEXT,
                            context_attribs.ptr);
 
-    if (ctx == null)
+    if (ctx is null)
         FatalError("eglCreateContext failed\n");
 
     if (!eglMakeCurrent(glamor.dpy, egl_win, egl_win, ctx))

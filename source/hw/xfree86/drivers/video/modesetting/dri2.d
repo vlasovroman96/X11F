@@ -104,7 +104,7 @@ private ms_dri2_resource* ms_get_resource(XID id, RESTYPE type)
         return ptr;
 
     ms_dri2_resource* resource = cast(ms_dri2_resource*) calloc(1, typeof(*resource).sizeof);
-    if (resource == null)
+    if (resource is null)
         return null;
 
     if (!AddResource(id, type, resource))
@@ -137,11 +137,11 @@ private DRI2Buffer2Ptr ms_dri2_create_buffer2(ScreenPtr screen, DrawablePtr draw
     ms_dri2_buffer_private_ptr private_ = void;
 
     buffer = calloc(1, (*buffer).sizeof);
-    if (buffer == null)
+    if (buffer is null)
         return null;
 
     private_ = calloc(1, typeof(*private_).sizeof);
-    if (private_ == null) {
+    if (private_ is null) {
         free(buffer);
         return null;
     }
@@ -155,7 +155,7 @@ private DRI2Buffer2Ptr ms_dri2_create_buffer2(ScreenPtr screen, DrawablePtr draw
             pixmap.refcnt++;
     }
 
-    if (pixmap == null) {
+    if (pixmap is null) {
         int pixmap_width = drawable.width;
         int pixmap_height = drawable.height;
         int pixmap_cpp = (format != 0) ? format : drawable.depth;
@@ -192,7 +192,7 @@ private DRI2Buffer2Ptr ms_dri2_create_buffer2(ScreenPtr screen, DrawablePtr draw
                                       pixmap_height,
                                       pixmap_cpp,
                                       0);
-        if (pixmap == null) {
+        if (pixmap is null) {
             free(private_);
             free(buffer);
             return null;
@@ -347,7 +347,7 @@ private int ms_dri2_get_msc(DrawablePtr draw, CARD64* ust, CARD64* msc)
     xf86CrtcPtr crtc = ms_dri2_crtc_covering_drawable(draw);
 
     /* Drawable not displayed, make up a *monotonic* value */
-    if (crtc == null) {
+    if (crtc is null) {
         *ust = gettime_us();
         *msc = 0;
         return TRUE;
@@ -380,13 +380,13 @@ private Bool ms_dri2_add_frame_event(ms_dri2_frame_event_ptr info)
 
     resource = ms_get_resource(get_client_id(info.client),
                                frame_event_client_type);
-    if (resource == null)
+    if (resource is null)
         return FALSE;
 
     xorg_list_add(&info.client_resource, &resource.list);
 
     resource = ms_get_resource(info.drawable.id, frame_event_drawable_type);
-    if (resource == null) {
+    if (resource is null) {
         xorg_list_del(&info.client_resource);
         return FALSE;
     }

@@ -313,7 +313,7 @@ const(char)** xf86ModulelistFromConfig(void*** optlist)
      * ModulePath set; if no ModulePath was given, use the default
      * ModulePath
      */
-    if (xf86configptr == null) {
+    if (xf86configptr is null) {
         LogMessageVerb(X_ERROR, 1, "Cannot access global config data structure\n");
         return null;
     }
@@ -444,7 +444,7 @@ const(char)** xf86DriverlistFromConfig()
      * ModulePath set; if no ModulePath was given, use the default
      * ModulePath
      */
-    if (xf86configptr == null) {
+    if (xf86configptr is null) {
         LogMessageVerb(X_ERROR, 1, "Cannot access global config data structure\n");
         return null;
     }
@@ -520,7 +520,7 @@ const(char)** xf86InputDriverlistFromConfig()
      * ModulePath set; if no ModulePath was given, use the default
      * ModulePath
      */
-    if (xf86configptr == null) {
+    if (xf86configptr is null) {
         LogMessageVerb(X_ERROR, 1, "Cannot access global config data structure\n");
         return null;
     }
@@ -569,6 +569,7 @@ const(char)** xf86InputDriverlistFromConfig()
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void configFiles(XF86ConfFilesPtr fileconf)
 {
+    fprintf(stderr, "INTO configFiles\n");
     MessageType pathFrom = void;
     Bool must_copy = void;
     int size = void, countDirs = void;
@@ -1689,7 +1690,7 @@ private Bool configImpliedLayout(serverLayoutPtr servlayoutp, XF86ConfScreenPtr 
 
     from = X_CONFIG;
     if (xf86ScreenName != null) {
-        if ((s = xf86findScreen(xf86ScreenName, conf_screen)) == null) {
+        if ((s = xf86findScreen(xf86ScreenName, conf_screen)) is null) {
             LogMessageVerb(X_ERROR, 1, "No Screen section called \"%s\"\n",
                            xf86ScreenName);
             return FALSE;
@@ -2380,10 +2381,10 @@ private void checkInput(serverLayoutPtr layout, Bool implicit_layout)
  */
 ConfigStatus xf86HandleConfigFile(Bool autoconfig)
 {
-version (XSERVER_LIBPCIACCESS) {
-    const(char)* scanptr = void;
-    Bool singlecard = 0;
-}
+// version (XSERVER_LIBPCIACCESS) {
+//     const(char)* scanptr = void;
+//     Bool singlecard = 0;
+// }
     Bool implicit_layout = FALSE;
     XF86ConfLayoutPtr layout = void;
 
@@ -2465,10 +2466,10 @@ version (XSERVER_LIBPCIACCESS) {
 
     /* Check if a layout section is present, and if it is valid. */
     mixin(FIND_SUITABLE!(`XF86ConfLayoutPtr`, `xf86configptr.conf_layout_lst`, `layout`));
-    if (layout == null || xf86ScreenName != null) {
+    if (layout is null || xf86ScreenName != null) {
         XF86ConfScreenPtr screen = void;
 
-        if (xf86ScreenName == null) {
+        if (xf86ScreenName is null) {
             LogMessageVerb(X_DEFAULT, 1,
                            "No Layout section.  Using the first Screen section.\n");
         }
@@ -2503,24 +2504,24 @@ version (XSERVER_LIBPCIACCESS) {
     }
 
     xf86ProcessOptions(-1, cast(_InputOption*)xf86ConfigLayout.options, LayoutOptions.ptr);
-version (XSERVER_LIBPCIACCESS) {
-    if ((scanptr = xf86GetOptValString(LayoutOptions.ptr, LAYOUT_ISOLATEDEVICE))) {
-        {}                       /* IsolateDevice specified; overrides SingleCard */
-    }
-    else {
-        xf86GetOptValBool(LayoutOptions.ptr, LAYOUT_SINGLECARD, &singlecard);
-        if (singlecard)
-            scanptr = xf86ConfigLayout.screens.screen.device.busID;
-    }
-    if (scanptr) {
-        if (strncmp(scanptr, "PCI:", 4) != 0) {
-            LogMessageVerb(X_WARNING, 1, "Bus types other than PCI not yet isolable.\n"
-                           ~ "\tIgnoring IsolateDevice option.\n");
-        }
-        else
-            xf86PciIsolateDevice(scanptr);
-    }
-}
+// version (XSERVER_LIBPCIACCESS) {
+//     if ((scanptr = xf86GetOptValString(LayoutOptions.ptr, LAYOUT_ISOLATEDEVICE))) {
+//         {}                       /* IsolateDevice specified; overrides SingleCard */
+//     }
+//     else {
+//         xf86GetOptValBool(LayoutOptions.ptr, LAYOUT_SINGLECARD, &singlecard);
+//         if (singlecard)
+//             scanptr = xf86ConfigLayout.screens.screen.device.busID;
+//     }
+//     if (scanptr) {
+//         if (strncmp(scanptr, "PCI:", 4) != 0) {
+//             LogMessageVerb(X_WARNING, 1, "Bus types other than PCI not yet isolable.\n"
+//                            ~ "\tIgnoring IsolateDevice option.\n");
+//         }
+//         else
+//             xf86PciIsolateDevice(scanptr);
+//     }
+// }
     /* Now process everything else */
     configFiles(xf86configptr.conf_files);
     configExtensions(xf86configptr.conf_extensions);

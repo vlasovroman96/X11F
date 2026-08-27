@@ -112,7 +112,7 @@ private const(char)* WARN_INVALID_COUNTER_ALARM = "Warning: Non-counter XSync ob
     ~ "         the result of a programming error in the X server.\n";
 
 enum string IsSystemCounter(string pCounter) = `
-    (` ~ pCounter ~ ` && (` ~ pCounter ~ `.sync.client == null))`;
+    (` ~ pCounter ~ ` && (` ~ pCounter ~ `.sync.client is null))`;
 
 /* these are all the alarm attributes that pertain to the alarm's trigger */
 enum XSyncCAAllTrigger = 
@@ -253,7 +253,7 @@ private Bool SyncCheckTriggerPositiveComparison(SyncTrigger* pTrigger, long oldv
 
     pCounter = cast(SyncCounter*) pTrigger.pSync;
 
-    return pCounter == null || pCounter.value >= pTrigger.test_value;
+    return pCounter is null || pCounter.value >= pTrigger.test_value;
 }
 
 private Bool SyncCheckTriggerNegativeComparison(SyncTrigger* pTrigger, long oldval)
@@ -267,7 +267,7 @@ private Bool SyncCheckTriggerNegativeComparison(SyncTrigger* pTrigger, long oldv
 
     pCounter = cast(SyncCounter*) pTrigger.pSync;
 
-    return pCounter == null || pCounter.value <= pTrigger.test_value;
+    return pCounter is null || pCounter.value <= pTrigger.test_value;
 }
 
 private Bool SyncCheckTriggerPositiveTransition(SyncTrigger* pTrigger, long oldval)
@@ -281,7 +281,7 @@ private Bool SyncCheckTriggerPositiveTransition(SyncTrigger* pTrigger, long oldv
 
     pCounter = cast(SyncCounter*) pTrigger.pSync;
 
-    return (pCounter == null ||
+    return (pCounter is null ||
             (oldval < pTrigger.test_value &&
              pCounter.value >= pTrigger.test_value));
 }
@@ -297,7 +297,7 @@ private Bool SyncCheckTriggerNegativeTransition(SyncTrigger* pTrigger, long oldv
 
     pCounter = cast(SyncCounter*) pTrigger.pSync;
 
-    return (pCounter == null ||
+    return (pCounter is null ||
             (oldval > pTrigger.test_value &&
              pCounter.value <= pTrigger.test_value));
 }
@@ -308,7 +308,7 @@ private Bool SyncCheckTriggerFence(SyncTrigger* pTrigger, long unused)
 
     cast(void) unused;
 
-    return (pFence == null || pFence.funcs.CheckTriggered(pFence));
+    return (pFence is null || pFence.funcs.CheckTriggered(pFence));
 }
 
 pragma(inline, true) private Bool checked_int64_add(long* out_, long a, long b)
@@ -382,7 +382,7 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
         else {                  /* relative */
             Bool overflow = void;
 
-            if (pCounter == null)
+            if (pCounter is null)
                 return BadMatch;
 
             overflow = checked_int64_add(&pTrigger.test_value,
@@ -566,7 +566,7 @@ private void SyncAlarmTriggerFired(SyncTrigger* pTrigger)
      *    no change is made to value (test-value) and the alarm
      *    state is changed to Inactive before the event is generated."
      */
-    if (pCounter == null || (pAlarm.delta == 0
+    if (pCounter is null || (pAlarm.delta == 0
                              && (pAlarm.trigger.test_type ==
                                  XSyncPositiveComparison ||
                                  pAlarm.trigger.test_type ==
@@ -2136,7 +2136,7 @@ void SyncExtensionInit()
         (extEntry = AddExtension(SYNC_NAME,
                                  cast(int)XSyncNumberEvents, cast(int)XSyncNumberErrors,
                                  &ProcSyncDispatch, &ProcSyncDispatch,
-                                 &SyncResetProc, &StandardMinorOpcode)) == null) {
+                                 &SyncResetProc, &StandardMinorOpcode)) is null) {
         ErrorF("Sync Extension %d.%d failed to Initialise\n",
                SYNC_MAJOR_VERSION, SYNC_MINOR_VERSION);
         return;

@@ -128,7 +128,7 @@ void exaDDXDriverInit(ScreenPtr pScreen)
         return;
 
     pScreenPriv = cast(ExaXorgScreenPrivRec*) calloc(1, ExaXorgScreenPrivRec.sizeof);
-    if (pScreenPriv == null)
+    if (pScreenPriv is null)
         return;
 
     pScreenPriv.options = cast(_OptionInfoRec*)XNFalloc(EXAOptions.sizeof);

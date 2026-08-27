@@ -67,6 +67,7 @@ import os.xhostname;
 import os.Xtranssock;
 import core.sys.posix.fcntl;
 import core.stdc.stdio;
+import os.Xtranssock;
 
 /*
  * The transport table contains a definition for every transport (protocol)
@@ -132,16 +133,21 @@ extern(D)
 shared static this()
 {
     import core.stdc.stdio : fprintf, stderr;
-    fprintf(stderr, "!!! XTRANS STATIC CTOR !!!\n");
-    enum size_t maxElements = 2; // TCP + INET
-    version(IPv6) {
-        maxElements += 1;   // INET6
-    }
-    version(UNIXCONN) {
-        maxElements += 2;   // LOCAL + UNIX
-    }
+    //fprintf(stderr, "!!! XTRANS STATIC CTOR !!!\n");
+    size_t maxElements = 2; // TCP + INET
+    // version(IPv6) {
+    //     maxElements += 1;   // INET6
+    // }
+    // // version(UNIXCONN) {
+    //     maxElements += 2;   // LOCAL + UNIX
+    // // }
 
-    __gshared Xtransport_table[maxElements] arr;
+    auto ptr = cast(Xtransport_table*)calloc(
+        maxElements,
+        Xtransport_table.sizeof
+    );
+
+    Xtransport_table[] arr = ptr[0 .. maxElements];
     size_t count = 0;
 
     arr[count++] = Xtransport_table(
@@ -149,39 +155,41 @@ shared static this()
         TRANS_SOCKET_TCP_INDEX
     );
 
-    version (IPv6)
-    {
-        arr[count++] = Xtransport_table(
-            &_XSERVTransSocketINET6Funcs,
-            TRANS_SOCKET_INET6_INDEX
-        );
-    }
+    // version (IPv6)
+    // {
+    //     arr[count++] = Xtransport_table(
+    //         &_XSERVTransSocketINET6Funcs,
+    //         TRANS_SOCKET_INET6_INDEX
+    //     );
+    // }
 
     arr[count++] = Xtransport_table(
         &_XSERVTransSocketINETFuncs,
         TRANS_SOCKET_INET_INDEX
     );
 
-    version (UNIXCONN)
-    {
-        arr[count++] = Xtransport_table(
-            &_XSERVTransSocketLocalFuncs,
-            TRANS_SOCKET_LOCAL_INDEX
-        );
+    // // version (UNIXCONN)
+    // // {
+    //     arr[count++] = Xtransport_table(
+    //         &_XSERVTransSocketLocalFuncs,
+    //         TRANS_SOCKET_LOCAL_INDEX
+    //     );
 
-        arr[count++] = Xtransport_table(
-            &_XSERVTransSocketUNIXFuncs,
-            TRANS_SOCKET_UNIX_INDEX
-        );
-    }
+    //     arr[count++] = Xtransport_table(
+    //         &_XSERVTransSocketUNIXFuncs,
+    //         TRANS_SOCKET_UNIX_INDEX
+    //     );
+    // }
 
     Xtransport_tabletab = arr;
     Xtransports = Xtransport_tabletab;
+
+    // fprintf(stderr, "%d, %d", Xtransport_tabletab.length, Xtransports.length);
 }
 
 extern(C):
 
-enum NUMTRANS =	Xtransports.sizeof/Xtransport_table.sizeof;
+enum string NUMTRANS =	"Xtransports.sizeof/Xtransport_table.sizeof";
 
 /*
  * These are a few utility function used by the public interface functions.
@@ -207,45 +215,69 @@ void _XSERVTransFreeConnInfo(XtransConnInfo ciptr)
 enum PROTOBUFSIZE =	20;
 
 private Xtransport* _XSERVTransSelectTransport(const(char)* protocol)
-
 {
-version (HAVE_STRCASECMP) {} else {
-    char[PROTOBUFSIZE] protobuf = void;
-}
-
-    // prmsg (3,"SelectTransport(%s)\n", protocol);
-
-version (HAVE_STRCASECMP) {} else {
-    /*
-     * Force Protocol to be lowercase as a way of doing
-     * a case insensitive match.
-     */
-
-    strncpy (protobuf.ptr, protocol, PROTOBUFSIZE - 1);
-    protobuf[PROTOBUFSIZE-1] = '\0';
-
-    for (uint i = 0; i < PROTOBUFSIZE && protobuf[i] != '\0'; i++)
-	if (isupper (cast(ubyte)protobuf[i]))
-	    protobuf[i] = cast(char)tolower (cast(ubyte)protobuf[i]);
-}
-
-    /* Look at all of the configured protocols */
-
-    for (uint i = 0; i < NUMTRANS; i++)
+    for (uint i = 0; i < Xtransports.length; i++)
     {
-version (HAVE_STRCASECMP) {
-    if (!strcmp (protobuf.ptr, Xtransports[i].transport.TransName)) {
-        return Xtransports[i].transport;
+        if (Xtransports[i].transport is null)
+            continue;
+
+        fprintf(stderr,
+            "SELECT: '%s' vs '%s'\n",
+            protocol,
+            Xtransports[i].transport.TransName);
+
+        if (strcasecmp(
+                protocol,
+                Xtransports[i].transport.TransName) == 0)
+        {
+            fprintf(stderr, "SELECT: FOUND\n");
+            return Xtransports[i].transport;
+        }
     }
-} else {
-	if (!strcasecmp (protocol, Xtransports[i].transport.TransName)) {
-	    return Xtransports[i].transport;
-    }
-}
+
+    fprintf(stderr, "SELECT: NOT FOUND '%s'\n", protocol);
     return null;
-    }
-    assert(0);
 }
+
+// private Xtransport* _XSERVTransSelectTransport(const(char)* protocol)
+
+// {
+// version (HAVE_STRCASECMP) {} else {
+//     char[PROTOBUFSIZE] protobuf = void;
+// }
+
+//     // prmsg (3,"SelectTransport(%s)\n", protocol);
+
+// version (HAVE_STRCASECMP) {} else {
+//     /*
+//      * Force Protocol to be lowercase as a way of doing
+//      * a case insensitive match.
+//      */
+
+//     strncpy (protobuf.ptr, protocol, PROTOBUFSIZE - 1);
+//     protobuf[PROTOBUFSIZE-1] = '\0';
+
+//     for (uint i = 0; i < PROTOBUFSIZE && protobuf[i] != '\0'; i++)
+// 	if (isupper (cast(ubyte)protobuf[i]))
+// 	    protobuf[i] = cast(char)tolower (cast(ubyte)protobuf[i]);
+// }
+
+//     /* Look at all of the configured protocols */
+
+//     for (uint i = 0; i < Xtransports.length; i++)
+//     {
+// version (HAVE_STRCASECMP) {
+//     if (!strcmp (protobuf.ptr, Xtransports[i].transport.TransName)) {
+//         return Xtransports[i].transport;
+//     }
+// } else {
+// 	if (!strcasecmp (protocol, Xtransports[i].transport.TransName)) {
+// 	    return Xtransports[i].transport;
+//     }
+// }
+//     }
+//     return null;
+// }
 
 int _XSERVTransParseAddress(const(char)* address, char** protocol, char** host, char** port)
 
@@ -307,9 +339,9 @@ version (HAVE_LAUNCHD) {
     _protocol = cast(const(char)*) mybuf;
 
 
-    if ((mybuf == null) ||
-        ( ((mybuf = strchr (mybuf, '/')) == null) &&
-          ((mybuf = strrchr (tmpptr, ':')) == null) ) )
+    if ((mybuf is null) ||
+        ( ((mybuf = strchr (mybuf, '/')) is null) &&
+          ((mybuf = strrchr (tmpptr, ':')) is null) ) )
     {
 	/* address is in a bad format */
 	*protocol = null;
@@ -360,7 +392,7 @@ version (HAVE_LAUNCHD) {
 
     _host = _host_buf = mybuf;
 
-    if ((mybuf = strrchr (mybuf,':')) == null)
+    if ((mybuf = strrchr (mybuf,':')) is null)
     {
 	*protocol = null;
 	*host = null;
@@ -415,7 +447,7 @@ done_parsing:
      * string space for them.
      */
 
-    if ((*protocol = strdup (_protocol)) == null)
+    if ((*protocol = strdup (_protocol)) is null)
     {
     	/* Malloc failed */
         *port = null;
@@ -425,7 +457,7 @@ done_parsing:
         return 0;
     }
 
-    if ((*host = strdup (_host)) == null)
+    if ((*host = strdup (_host)) is null)
     {
 	    /* Malloc failed */ 
         *port = null;
@@ -436,7 +468,7 @@ done_parsing:
         return 0;
     }
 
-    if ((*port = strdup (_port)) == null)
+    if ((*port = strdup (_port)) is null)
     {
         /* Malloc failed */
         *port = null;
@@ -450,9 +482,9 @@ done_parsing:
 
     free (tmpptr);
 
-    // return 1;
+    return 1;
 
-    assert(0);
+    // assert(0);
 }
 
 
@@ -469,7 +501,7 @@ private XtransConnInfo _XSERVTransOpen(int type, const(char)* address)
     XtransConnInfo ciptr = null;
     Xtransport* thistrans = void;
 
-    // prmsg (2,"Open(%d,%s)\n", type, address);
+    prmsg (2,"Open(%d,%s)\n", type, address);
 
     ossock_init();
 
@@ -477,16 +509,16 @@ private XtransConnInfo _XSERVTransOpen(int type, const(char)* address)
 
     if (_XSERVTransParseAddress (address, &protocol, &host, &port) == 0)
     {
-	// prmsg (1,"Open: Unable to Parse address %s\n", address);
+	prmsg (1,"Open: Unable to Parse address %s\n", address);
 	return null;
     }
 
     /* Determine the transport type */
 
-    if ((thistrans = _XSERVTransSelectTransport (protocol)) == null)
+    if ((thistrans = _XSERVTransSelectTransport (protocol)) is null)
     {
-	// prmsg (1,"Open: Unable to find transport for %s\n",
-	//        protocol);
+	prmsg (1,"Open: Unable to find transport for %s\n",
+	       protocol);
 
 	free (protocol);
 	free (host);
@@ -504,15 +536,16 @@ private XtransConnInfo _XSERVTransOpen(int type, const(char)* address)
 	ciptr = thistrans.OpenCOTSServer(thistrans, protocol, host, port);
 	break;
     default: break;
-	// prmsg (1,"Open: Unknown Open type %d\n", type);
+	prmsg (1,"Open: Unknown Open type %d\n", type);
     }
 
-    if (ciptr == null)
+    if (ciptr is null)
     {
 	if (!(thistrans.flags & TRANS_DISABLED))
 	{
-	    // prmsg (1,"Open: transport open failed for %s/%s:%s\n",
-	    //        protocol, host, port);
+	    prmsg (1,"Open: transport open failed for %s/%s:%s\n",
+	           protocol, host, port);
+        prmsg(1, "flags=%d", thistrans.flags);
 	}
 	free (protocol);
 	free (host);
@@ -546,7 +579,7 @@ private XtransConnInfo _XSERVTransReopen(int type, int trans_id, int fd, const(c
 
     /* Determine the transport type */
 
-    for (uint i = 0; i < NUMTRANS; i++)
+    for (uint i = 0; i < mixin(NUMTRANS); i++)
     {
 	if (Xtransports[i].transport_id == trans_id)
 	{
@@ -555,7 +588,7 @@ private XtransConnInfo _XSERVTransReopen(int type, int trans_id, int fd, const(c
 	}
     }
 
-    if (thistrans == null)
+    if (thistrans is null)
     {
 	// prmsg (1,"Reopen: Unable to find transport id %d\n",
 	//        trans_id);
@@ -563,7 +596,7 @@ private XtransConnInfo _XSERVTransReopen(int type, int trans_id, int fd, const(c
 	return null;
     }
 
-    if ((save_port = strdup (port)) == null)
+    if ((save_port = strdup (port)) is null)
     {
 	// prmsg (1,"Reopen: Unable to malloc port string\n");
 
@@ -581,7 +614,7 @@ private XtransConnInfo _XSERVTransReopen(int type, int trans_id, int fd, const(c
 	// prmsg (1,"Reopen: Bad Open type %d\n", type);
     }
 
-    if (ciptr == null)
+    if (ciptr is null)
     {
 	// prmsg (1,"Reopen: transport open failed\n");
 	free (save_port);
@@ -603,7 +636,7 @@ private XtransConnInfo _XSERVTransReopen(int type, int trans_id, int fd, const(c
 XtransConnInfo _XSERVTransOpenCOTSServer(const(char)* address)
 
 {
-    // prmsg (2,"OpenCOTSServer(%s)\n", address);
+    prmsg (2,"OpenCOTSServer(%s)\n", address);
     return _XSERVTransOpen (XTRANS_OPEN_COTS_SERVER, address);
 }
 
@@ -650,6 +683,10 @@ version (Windows) {
 
 int _XSERVTransCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
 {
+//     fprintf(stderr, "ciptr=%p\n", cast(void*)ciptr);
+// fprintf(stderr, "transptr=%p\n", cast(void*)ciptr.transptr);
+// fprintf(stderr, "CreateListener=%p\n",
+        // cast(void*)ciptr.transptr.CreateListener);
     return ciptr.transptr.CreateListener (ciptr, port, flags);
 }
 
@@ -660,7 +697,7 @@ int _XSERVTransReceived(const(char)* protocol)
 
 //    prmsg (5, "Received(%s)\n", protocol);
 
-   if ((trans = _XSERVTransSelectTransport(protocol)) == null)
+   if ((trans = _XSERVTransSelectTransport(protocol)) is null)
    {
 	// prmsg (1,"Received: unable to find transport: %s\n",
 	//        protocol);
@@ -684,7 +721,7 @@ int _XSERVTransNoListen(const(char)* protocol)
    Xtransport* trans = void;
    int i = 0, ret = 0;
 
-   if ((trans = _XSERVTransSelectTransport(protocol)) == null)
+   if ((trans = _XSERVTransSelectTransport(protocol)) is null)
    {
 	// prmsg (1,"TransNoListen: unable to find transport: %s\n",
 	//        protocol);
@@ -708,7 +745,7 @@ int _XSERVTransListen(const(char)* protocol)
    Xtransport* trans = void;
    int i = 0, ret = 0;
 
-   if ((trans = _XSERVTransSelectTransport(protocol)) == null)
+   if ((trans = _XSERVTransSelectTransport(protocol)) is null)
    {
 	// prmsg (1,"TransListen: unable to find transport: %s\n",
 	//        protocol);
@@ -731,7 +768,7 @@ int _XSERVTransIsListening(const(char)* protocol)
 {
    Xtransport* trans = void;
 
-   if ((trans = _XSERVTransSelectTransport(protocol)) == null)
+   if ((trans = _XSERVTransSelectTransport(protocol)) is null)
    {
 	// prmsg (1,"TransIsListening: unable to find transport: %s\n",
 	//        protocol);
@@ -858,7 +895,7 @@ private int complete_network_count()
      * For a complete network, we only need one LOCALCONN transport to work
      */
 
-    for (uint i = 0; i < NUMTRANS; i++)
+    for (uint i = 0; i < mixin(NUMTRANS); i++)
     {
 	if (Xtransports[i].transport.flags & TRANS_ALIAS
    	 || Xtransports[i].transport.flags & TRANS_NOLISTEN)
@@ -877,72 +914,72 @@ private int complete_network_count()
 private int receive_listening_fds(const(char)* port, XtransConnInfo* temp_ciptrs, uint* count_ret)
 
 {
-version (HAVE_SYSTEMD_DAEMON) {
-    XtransConnInfo ciptr = void;
-    int i = void, systemd_listen_fds = void;
+// version (HAVE_SYSTEMD_DAEMON) {
+//     XtransConnInfo ciptr = void;
+//     int i = void, systemd_listen_fds = void;
 
-    systemd_listen_fds = sd_listen_fds(1);
-    if (systemd_listen_fds < 0)
-    {
-        // prmsg (1, "receive_listening_fds: sd_listen_fds error: %s\n",
-        //        strerror(-systemd_listen_fds));
-        return -1;
-    }
+//     systemd_listen_fds = sd_listen_fds(1);
+//     if (systemd_listen_fds < 0)
+//     {
+//         // prmsg (1, "receive_listening_fds: sd_listen_fds error: %s\n",
+//         //        strerror(-systemd_listen_fds));
+//         return -1;
+//     }
 
-    for (i = 0; i < systemd_listen_fds && *count_ret < cast(int)NUMTRANS; i++)
-    {
-        sockaddr_storage a = void;
-        int ti = void;
-        const(char)* tn = void;
-        socklen_t al = void;
+//     for (i = 0; i < systemd_listen_fds && *count_ret < cast(int)NUMTRANS; i++)
+//     {
+//         sockaddr_storage a = void;
+//         int ti = void;
+//         const(char)* tn = void;
+//         socklen_t al = void;
 
-        al = a.sizeof;
-        if (getsockname(i + SD_LISTEN_FDS_START, cast(sockaddr*)&a, &al) < 0) {
-            // prmsg (1, "receive_listening_fds: getsockname error: %s\n",
-            //        strerror(errno));
-            return -1;
-        }
+//         al = a.sizeof;
+//         if (getsockname(i + SD_LISTEN_FDS_START, cast(sockaddr*)&a, &al) < 0) {
+//             // prmsg (1, "receive_listening_fds: getsockname error: %s\n",
+//             //        strerror(errno));
+//             return -1;
+//         }
 
-        switch (a.ss_family)
-        {
-        case AF_UNIX:
-            ti = TRANS_SOCKET_UNIX_INDEX;
-            if (*(cast(sockaddr_un*)&a).sun_path == '\0' &&
-                al > sa_family_t.sizeof)
-                tn = "local";
-            else
-                tn = "unix";
-            break;
-        case AF_INET:
-            ti = TRANS_SOCKET_INET_INDEX;
-            tn = "inet";
-            break;
-version (IPv6) {
-        case AF_INET6:
-            ti = TRANS_SOCKET_INET6_INDEX;
-            tn = "inet6";
-            break;
-} /* IPv6 */
-        default:
-            // prmsg (1, "receive_listening_fds:"
-            //        ~ "Got unknown socket address family\n");
-            return -1;
-        }
+//         switch (a.ss_family)
+//         {
+//         case AF_UNIX:
+//             ti = TRANS_SOCKET_UNIX_INDEX;
+//             if (*(cast(sockaddr_un*)&a).sun_path == '\0' &&
+//                 al > sa_family_t.sizeof)
+//                 tn = "local";
+//             else
+//                 tn = "unix";
+//             break;
+//         case AF_INET:
+//             ti = TRANS_SOCKET_INET_INDEX;
+//             tn = "inet";
+//             break;
+// version (IPv6) {
+//         case AF_INET6:
+//             ti = TRANS_SOCKET_INET6_INDEX;
+//             tn = "inet6";
+//             break;
+// } /* IPv6 */
+//         default:
+//             // prmsg (1, "receive_listening_fds:"
+//             //        ~ "Got unknown socket address family\n");
+//             return -1;
+//         }
 
-        ciptr = _XSERVTransReopenCOTSServer(ti, i + SD_LISTEN_FDS_START, port);
-        if (!ciptr)
-        {
-            // prmsg (1, "receive_listening_fds:"
-            //        ~ "Got NULL while trying to reopen socket received from systemd.\n");
-            return -1;
-        }
+//         ciptr = _XSERVTransReopenCOTSServer(ti, i + SD_LISTEN_FDS_START, port);
+//         if (!ciptr)
+//         {
+//             // prmsg (1, "receive_listening_fds:"
+//             //        ~ "Got NULL while trying to reopen socket received from systemd.\n");
+//             return -1;
+//         }
 
-        // prmsg (5, "receive_listening_fds: received listener for %s, %d\n",
-        //        tn, ciptr.fd);
-        temp_ciptrs[(*count_ret)++] = ciptr;
-        _XSERVTransReceived(tn);
-    }
-} /* HAVE_SYSTEMD_DAEMON */
+//         // prmsg (5, "receive_listening_fds: received listener for %s, %d\n",
+//         //        tn, ciptr.fd);
+//         temp_ciptrs[(*count_ret)++] = ciptr;
+//         _XSERVTransReceived(tn);
+//     }
+// } /* HAVE_SYSTEMD_DAEMON */
     return 0;
 }
 
@@ -953,37 +990,45 @@ int xquartz_launchd_fd;
 int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint* count_ret, XtransConnInfo** ciptrs_ret)
 {
     char[256] buffer = void; /* ??? What size ?? */
-    XtransConnInfo ciptr = void; XtransConnInfo[NUMTRANS] temp_ciptrs = [ null ];
+    XtransConnInfo ciptr = void; 
+    XtransConnInfo[mixin(NUMTRANS)] temp_ciptrs = null;
     int status = void, j = void;
 
-version (IPv6) {
-    int ipv6_succ = 0;
-}
-    // prmsg (2,"MakeAllCOTSServerListeners(%s,%p)\n",
-	//    port ? port : "NULL", cast(void*) ciptrs_ret);
+// version (IPv6) {
+//     int ipv6_succ = 0;
+// }
+    prmsg (2,"MakeAllCOTSServerListeners(%s,%p)\n",
+	   port ? port : "NULL", cast(void*) ciptrs_ret);
 
     *count_ret = 0;
 
-version (XQUARTZ_EXPORTS_LAUNCHD_FD) {
-    fprintf(stderr, "Launchd socket fd: %d\n", xquartz_launchd_fd);
-    if(xquartz_launchd_fd != -1) {
-        auto ciptr = _XSERVTransReopenCOTSServer(TRANS_SOCKET_LOCAL_INDEX,
-                                           xquartz_launchd_fd, getenv("DISPLAY"));
-        if(ciptr is null)
-            fprintf(stderr,"Got NULL while trying to Reopen launchd port\n");
-        else
-            temp_ciptrs[(*count_ret)++] = ciptr;
-    }
-}
+// version (XQUARTZ_EXPORTS_LAUNCHD_FD) {
+//     fprintf(stderr, "Launchd socket fd: %d\n", xquartz_launchd_fd);
+//     if(xquartz_launchd_fd != -1) {
+//         auto ciptr = _XSERVTransReopenCOTSServer(TRANS_SOCKET_LOCAL_INDEX,
+//                                            xquartz_launchd_fd, getenv("DISPLAY"));
+//         if(ciptr is null)
+//             fprintf(stderr,"Got NULL while trying to Reopen launchd port\n");
+//         else
+//             temp_ciptrs[(*count_ret)++] = ciptr;
+//     }
+// }
 
     if (receive_listening_fds(port, temp_ciptrs.ptr, count_ret) < 0)
 	return -1;
 
-    for (uint i = 0; i < NUMTRANS; i++)
+    for (uint i = 0; i < Xtransports.length; i++)
     {
 	Xtransport* trans = Xtransports[i].transport;
 	uint flags = 0;
 
+        fprintf(stderr,
+        "\nALIAS=%u NOLISTEN=%u RECEIVED=%u DISABLED=%u\n",
+        (trans.flags & TRANS_ALIAS) != 0,
+        (trans.flags & TRANS_NOLISTEN) != 0,
+        (trans.flags & TRANS_RECEIVED) != 0,
+        (trans.flags & TRANS_DISABLED) != 0
+    );
 	if (trans.flags&TRANS_ALIAS || trans.flags&TRANS_NOLISTEN ||
 	    trans.flags&TRANS_RECEIVED)
 	    continue;
@@ -991,24 +1036,24 @@ version (XQUARTZ_EXPORTS_LAUNCHD_FD) {
 	snprintf(buffer.ptr, buffer.sizeof, "%s/:%s",
 		 trans.TransName, port ? port : "");
 
-	// prmsg (5,"MakeAllCOTSServerListeners: opening %s\n",
-	//        buffer.ptr);
+	prmsg (5,"MakeAllCOTSServerListeners: opening %s\n",
+	       buffer.ptr);
 
-	if ((ciptr = _XSERVTransOpenCOTSServer(buffer.ptr)) == null)
+	if ((ciptr = _XSERVTransOpenCOTSServer(buffer.ptr)) is null)
 	{
 	    if (trans.flags & TRANS_DISABLED)
 		continue;
 
-	//     prmsg (1,
-	//   "MakeAllCOTSServerListeners: failed to open listener for %s\n",
-	// 	  trans.TransName);
+	    prmsg (1,
+	  "MakeAllCOTSServerListeners: failed to open listener for %s\n",
+		  trans.TransName);
 	    continue;
 	}
-version (IPv6) {
-		if ((Xtransports[i].transport_id == TRANS_SOCKET_INET_INDEX
-		     && ipv6_succ))
-		    flags |= ADDR_IN_USE_ALLOWED;
-}
+// version (IPv6) {
+// 		if ((Xtransports[i].transport_id == TRANS_SOCKET_INET_INDEX
+// 		     && ipv6_succ))
+// 		    flags |= ADDR_IN_USE_ALLOWED;
+// }
 
 	if ((status = _XSERVTransCreateListener (ciptr, port, flags)) < 0)
 	{
@@ -1023,8 +1068,8 @@ version (IPv6) {
 		 * running at this address, and this function should fail.
 		 */
 
-		// prmsg (1,
-		// "MakeAllCOTSServerListeners: server already running\n");
+		prmsg (1,
+		"MakeAllCOTSServerListeners: server already running\n");
 
 		for (j = 0; j < *count_ret; j++)
 		    if (temp_ciptrs[j] != null)
@@ -1037,18 +1082,18 @@ version (IPv6) {
 	    }
 	    else
 	    {
-	// 	prmsg (1,
-	// "MakeAllCOTSServerListeners: failed to create listener for %s\n",
-	// 	  trans.TransName);
+		prmsg (1,
+	"MakeAllCOTSServerListeners: failed to create listener for %s\n",
+		  trans.TransName);
 
 		continue;
 	    }
 	}
 
-version (IPv6) {
-	if (Xtransports[i].transport_id == TRANS_SOCKET_INET6_INDEX)
-	    ipv6_succ = 1;
-}
+// version (IPv6) {
+// 	if (Xtransports[i].transport_id == TRANS_SOCKET_INET6_INDEX)
+// 	    ipv6_succ = 1;
+// }
 
 	// prmsg (5,
 	//       "MakeAllCOTSServerListeners: opened listener for %s, %d\n",
@@ -1067,7 +1112,7 @@ version (IPv6) {
     if (*count_ret > 0)
     {
 	if ((*ciptrs_ret = cast(_XtransConnInfo**)malloc (
-	    *count_ret * XtransConnInfo.sizeof)) == null)
+	    *count_ret * XtransConnInfo.sizeof)) is null)
 	{
 	    return -1;
 	}

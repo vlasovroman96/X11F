@@ -317,7 +317,7 @@ private int __glXDRIbindTexImage(__GLXcontext* baseContext, int buffer, __GLXdra
     const(__DRItexBufferExtension)* texBuffer = drawable.screen.texBuffer;
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
 
-    if (texBuffer == null)
+    if (texBuffer is null)
         return Success;
 
     if (texBuffer.base.version_ >= 2 && texBuffer.setTexBuffer2 != null) {
@@ -347,7 +347,7 @@ private Bool dri2_convert_glx_attribs(__GLXDRIscreen* screen, uint num_attribs, 
     if (num_attribs == 0)
         return TRUE;
 
-    if (attribs == null) {
+    if (attribs is null) {
         *error = BadImplementation;
         return FALSE;
     }
@@ -540,7 +540,7 @@ private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLX
         driShare = null;
 
     context = cast(__GLXDRIcontext*) calloc(1, (*context).sizeof);
-    if (context == null) {
+    if (context is null) {
         *error = BadAlloc;
         return null;
     }
@@ -556,7 +556,7 @@ private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLX
 
     create_driver_context(context, screen, config, driShare, num_attribs,
                           attribs, error);
-    if (context.driContext == null) {
+    if (context.driContext is null) {
         free(context);
         return null;
     }
@@ -583,7 +583,7 @@ private __GLXdrawable* __glXDRIscreenCreateDrawable(ClientPtr client, __GLXscree
     Bool ret = void;
 
     private_ = cast(__GLXDRIdrawable*)calloc(1, (*private_).sizeof);
-    if (private_ == null)
+    if (private_ is null)
         return null;
 
     private_.screen = driScreen;
@@ -913,7 +913,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
     OptionInfoPtr options = void;
 
     screen = cast(__GLXDRIscreen*) calloc(1, (*screen).sizeof);
-    if (screen == null)
+    if (screen is null)
         return null;
 
     if (!DRI2Connect(serverClient, pScreen, DRI2DriverDRI,
@@ -934,7 +934,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
     screen.driver =
         glxProbeDriver(driverName, cast(void**) &screen.core, __DRI_CORE, 1,
                        cast(void**) &screen.dri2, __DRI_DRI2, 1);
-    if (screen.driver == null) {
+    if (screen.driver is null) {
         goto handle_error;
     }
 
@@ -944,7 +944,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
                                           cast(__DRIextensionRec**)loader_extensions.ptr,
                                           &screen.driConfigs, screen);
 
-    if (screen.driScreen == null) {
+    if (screen.driScreen is null) {
         LogMessage(X_ERROR, "AIGLX error: Calling driver entry point failed\n");
         goto handle_error;
     }

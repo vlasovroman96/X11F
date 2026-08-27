@@ -69,7 +69,7 @@ private Bool _pixman_region_init_clipped_rectangles(pixman_region16_t* region, u
 
     if (num_rects > mixin(ARRAY_SIZE!("stack_boxes.ptr"))) {
         boxes = cast(pixman_box16_t*) calloc(num_rects, pixman_box16_t.sizeof);
-        if (boxes == null)
+        if (boxes is null)
             return FALSE;
     }
 

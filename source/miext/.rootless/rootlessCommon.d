@@ -104,7 +104,7 @@ Bool RootlessResolveColormap(ScreenPtr pScreen, int first_color, int n_colors, u
     ColormapPtr map = void;
 
     map = RootlessGetColormap(pScreen);
-    if (map == null || map.class_ != PseudoColor)
+    if (map is null || map.class_ != PseudoColor)
         return FALSE;
 
     last = MIN(map.pVisual.ColormapEntries, first_color + n_colors);
@@ -138,11 +138,11 @@ c_ulong RootlessWID(WindowPtr pWindow) {
     WindowPtr top = TopLevelParent(pWindow);
     RootlessWindowRec* winRec = void;
 
-    if (top == null) {
+    if (top is null) {
         return 0;
     }
     winRec = WINREC(top);
-    if (winRec == null) {
+    if (winRec is null) {
         return 0;
     }
 
@@ -162,12 +162,12 @@ void RootlessStartDrawing(WindowPtr pWindow)
     RootlessWindowRec* winRec = void;
     PixmapPtr curPixmap = void;
 
-    if (top == null) {
+    if (top is null) {
         RL_DEBUG_MSG("RootlessStartDrawing is a no-op because top == NULL.\n");
         return;
     }
     winRec = WINREC(top);
-    if (winRec == null) {
+    if (winRec is null) {
         RL_DEBUG_MSG("RootlessStartDrawing is a no-op because winRec == NULL.\n");
         return;
     }
@@ -242,7 +242,7 @@ private int RestorePreDrawingPixmapVisitor(WindowPtr pWindow, void* data)
     PixmapPtr exPixmap = pScreen.GetWindowPixmap(pWindow);
     PixmapPtr oldPixmap = dixLookupPrivate(&pWindow.devPrivates,
                          rootlessWindowOldPixmapPrivateKey);
-    if (oldPixmap == null) {
+    if (oldPixmap is null) {
         if (exPixmap == winRec.pixmap)
             RL_DEBUG_MSG
                 ("Window %p appears to be in drawing mode (ex-pixmap %p equals winRec->pixmap, which is being freed) but has no oldPixmap!\n",
@@ -270,10 +270,10 @@ void RootlessStopDrawing(WindowPtr pWindow, Bool flush)
     WindowPtr top = TopLevelParent(pWindow);
     RootlessWindowRec* winRec = void;
 
-    if (top == null)
+    if (top is null)
         return;
     winRec = WINREC(top);
-    if (winRec == null)
+    if (winRec is null)
         return;
 
     if (winRec.is_drawing) {
@@ -310,11 +310,11 @@ void RootlessDamageRegion(WindowPtr pWindow, RegionPtr pRegion)
     RL_DEBUG_MSG("Damaged win %p\n", pWindow);
 
     pTop = TopLevelParent(pWindow);
-    if (pTop == null)
+    if (pTop is null)
         return;
 
     winRec = WINREC(pTop);
-    if (winRec == null)
+    if (winRec is null)
         return;
 
     /* We need to intersect the drawn region with the clip of the window

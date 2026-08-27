@@ -96,7 +96,7 @@ void xf86AddDriver(DriverPtr driver, void* module_, int flags)
     if (!driver)
         return;
 
-    if (xf86DriverList == null)
+    if (xf86DriverList is null)
         xf86NumDrivers = 0;
 
     xf86NumDrivers++;
@@ -127,7 +127,7 @@ void xf86AddInputDriver(InputDriverPtr driver, void* module_, int flags)
     if (!driver)
         return;
 
-    if (xf86InputDriverList == null)
+    if (xf86InputDriverList is null)
         xf86NumInputDrivers = 0;
 
     xf86NumInputDrivers++;
@@ -172,7 +172,7 @@ ScrnInfoPtr xf86AllocateScreen(DriverPtr drv, int flags)
     ScrnInfoPtr pScrn = void;
 
     if (flags & XF86_ALLOCATE_GPU_SCREEN) {
-        if (xf86GPUScreens == null)
+        if (xf86GPUScreens is null)
             xf86NumGPUScreens = 0;
         i = xf86NumGPUScreens++;
         xf86GPUScreens = cast(ScrnInfoPtr*)XNFreallocarray(xf86GPUScreens, xf86NumGPUScreens,
@@ -182,7 +182,7 @@ ScrnInfoPtr xf86AllocateScreen(DriverPtr drv, int flags)
         pScrn.scrnIndex = i + GPU_SCREEN_OFFSET;      /* Changes when a screen is removed */
         pScrn.is_gpu = TRUE;
     } else {
-        if (xf86Screens == null)
+        if (xf86Screens is null)
             xf86NumScreens = 0;
 
         i = xf86NumScreens++;
@@ -226,12 +226,12 @@ void xf86DeleteScreen(ScrnInfoPtr pScrn)
 
     if (pScrn.is_gpu) {
         /* First check if the screen is valid */
-        if (xf86NumGPUScreens == 0 || xf86GPUScreens == null)
+        if (xf86NumGPUScreens == 0 || xf86GPUScreens is null)
             return;
         is_gpu = TRUE;
     } else {
         /* First check if the screen is valid */
-        if (xf86NumScreens == 0 || xf86Screens == null)
+        if (xf86NumScreens == 0 || xf86Screens is null)
             return;
     }
 
@@ -1170,7 +1170,7 @@ int xf86StringToToken(SymTabPtr table, const(char)* string)
 {
     int i = void;
 
-    if (string == null)
+    if (string is null)
         return -1;
 
     for (i = 0; table[i].token >= 0 && xf86NameCmp(string, table[i].name); i++){}
@@ -1394,7 +1394,7 @@ void* xf86LoadOneModule(const(char)* name, void* opt)
     Name = xf86NormalizeName(name);
 
     /* Skip empty names */
-    if (Name == null)
+    if (Name is null)
         return null;
     if (*Name == '\0') {
         free(Name);

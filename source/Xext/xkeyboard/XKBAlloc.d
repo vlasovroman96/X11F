@@ -64,12 +64,12 @@ import xkb.XKBGAlloc;
             return Success;
         compat = xkb.compat;
         compat.size_si = cast(ushort)nSI;
-        if (compat.sym_interpret == null)
+        if (compat.sym_interpret is null)
             compat.num_si = 0;
         prev_interpret = compat.sym_interpret;
         compat.sym_interpret = cast(_XkbSymInterpretRec*)reallocarray(compat.sym_interpret,
                                              nSI, XkbSymInterpretRec.sizeof);
-        if (compat.sym_interpret == null) {
+        if (compat.sym_interpret is null) {
             free(prev_interpret);
             compat.size_si = compat.num_si = 0;
             return BadAlloc;
@@ -82,7 +82,7 @@ import xkb.XKBGAlloc;
         return Success;
     }
     compat = cast(XkbCompatMapRec*) calloc(1, XkbCompatMapRec.sizeof);
-    if (compat == null)
+    if (compat is null)
         return BadAlloc;
     if (nSI > 0) {
         compat.sym_interpret = cast(_XkbSymInterpretRec*)calloc(nSI, XkbSymInterpretRec.sizeof);
@@ -103,7 +103,7 @@ void XkbFreeCompatMap(XkbDescPtr xkb, uint which, Bool freeMap)
 {
     XkbCompatMapPtr compat = void;
 
-    if ((xkb == null) || (xkb.compat == null))
+    if ((xkb is null) || (xkb.compat is null))
         return;
     compat = xkb.compat;
     if (freeMap)
@@ -130,11 +130,11 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
 {
     XkbNamesPtr names = void;
 
-    if (xkb == null)
+    if (xkb is null)
         return BadMatch;
-    if (xkb.names == null) {
+    if (xkb.names is null) {
         xkb.names = cast(XkbNamesRec*) calloc(1, XkbNamesRec.sizeof);
-        if (xkb.names == null)
+        if (xkb.names is null)
             return BadAlloc;
     }
     names = xkb.names;
@@ -145,24 +145,24 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
 
         type = xkb.map.types;
         for (i = 0; i < xkb.map.num_types; i++, type++) {
-            if (type.level_names == null) {
+            if (type.level_names is null) {
                 type.level_names = cast(ulong*)cast(ulong*)calloc(type.num_levels, Atom.sizeof);
-                if (type.level_names == null)
+                if (type.level_names is null)
                     return BadAlloc;
             }
         }
     }
-    if ((which & XkbKeyNamesMask) && (names.keys == null)) {
+    if ((which & XkbKeyNamesMask) && (names.keys is null)) {
         if ((!mixin(XkbIsLegalKeycode!("xkb.min_key_code"))) ||
             (!mixin(XkbIsLegalKeycode!("xkb.max_key_code"))) ||
             (xkb.max_key_code < xkb.min_key_code))
             return BadValue;
         names.keys = cast(_XkbKeyNameRec*)calloc((xkb.max_key_code + 1), XkbKeyNameRec.sizeof);
-        if (names.keys == null)
+        if (names.keys is null)
             return BadAlloc;
     }
     if ((which & XkbKeyAliasesMask) && (nTotalAliases > 0)) {
-        if (names.key_aliases == null) {
+        if (names.key_aliases is null) {
             names.key_aliases = cast(_XkbKeyAliasRec*)calloc(nTotalAliases, XkbKeyAliasRec.sizeof);
         }
         else if (nTotalAliases > names.num_key_aliases) {
@@ -180,14 +180,14 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
                 free(prev_aliases);
             }
         }
-        if (names.key_aliases == null) {
+        if (names.key_aliases is null) {
             names.num_key_aliases = cast(ubyte)0;
             return BadAlloc;
         }
         names.num_key_aliases = cast(ubyte)nTotalAliases;
     }
     if ((which & XkbRGNamesMask) && (nTotalRG > 0)) {
-        if (names.radio_groups == null) {
+        if (names.radio_groups is null) {
             names.radio_groups = cast(ulong*)calloc(nTotalRG, Atom.sizeof);
         }
         else if (nTotalRG > names.num_rg) {
@@ -203,7 +203,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
                 free(prev_radio_groups);
             }
         }
-        if (names.radio_groups == null) {
+        if (names.radio_groups is null) {
             names.num_rg = cast(ushort)0;
             return BadAlloc;
         }
@@ -216,7 +216,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
 {
     XkbNamesPtr names = void;
 
-    if ((xkb == null) || (xkb.names == null))
+    if ((xkb is null) || (xkb.names is null))
         return;
     names = xkb.names;
     if (freeMap)
@@ -261,10 +261,10 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
 
  /*ARGSUSED*/ int XkbAllocControls(XkbDescPtr xkb, uint which)
 {
-    if (xkb == null)
+    if (xkb is null)
         return BadMatch;
 
-    if (xkb.ctrls == null) {
+    if (xkb.ctrls is null) {
         xkb.ctrls = cast(XkbControlsRec*) calloc(1, XkbControlsRec.sizeof);
         if (!xkb.ctrls)
             return BadAlloc;
@@ -285,9 +285,9 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
 
 int XkbAllocIndicatorMaps(XkbDescPtr xkb)
 {
-    if (xkb == null)
+    if (xkb is null)
         return BadMatch;
-    if (xkb.indicators == null) {
+    if (xkb.indicators is null) {
         xkb.indicators = cast(XkbIndicatorRec*) calloc(1, XkbIndicatorRec.sizeof);
         if (!xkb.indicators)
             return BadAlloc;
@@ -318,7 +318,7 @@ XkbDescRec* XkbAllocKeyboard()
 
 void XkbFreeKeyboard(XkbDescPtr xkb, uint which, Bool freeAll)
 {
-    if (xkb == null)
+    if (xkb is null)
         return;
     if (freeAll)
         which = XkbAllComponentsMask;

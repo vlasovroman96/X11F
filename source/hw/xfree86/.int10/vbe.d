@@ -599,7 +599,7 @@ Bool VBESaveRestore(vbeInfoPtr pVbe, vbeSaveRestoreFunction function_, void** me
                 int npages = (mixin(R16!(`pVbe.pInt10.bx`)) * 64) / 4096 + 1;
 
                 if ((*memory = xf86Int10AllocPages(pVbe.pInt10, npages,
-                                                   real_mode_pages)) == null) {
+                                                   real_mode_pages)) is null) {
                     xf86DrvMsg(screen, X_ERROR,
                                "Cannot allocate memory to save SVGA state.\n");
                     return FALSE;
@@ -819,7 +819,7 @@ void VBEVesaSaveRestore(vbeInfoPtr pVbe, vbeSaveRestorePtr vbe_sr, vbeSaveRestor
                 SaveSucc = TRUE;
                 vbe_sr.stateMode = -1; /* invalidate */
                 /* don't rely on the memory not being touched */
-                if (vbe_sr.pstate == null)
+                if (vbe_sr.pstate is null)
                     vbe_sr.pstate = calloc(1, vbe_sr.stateSize);
                 assert(vbe_sr.pstate);
                 memcpy(vbe_sr.pstate, vbe_sr.state, vbe_sr.stateSize);

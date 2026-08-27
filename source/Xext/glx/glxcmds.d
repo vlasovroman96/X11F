@@ -167,7 +167,7 @@ private int validGlxFBConfigForWindow(ClientPtr client, __GLXconfig* config, Dra
     mixin(BUG_RETURN_VAL!("!pVisual", "FALSE"));
 
     /* FIXME: What exactly should we check here... */
-    if (pVisual == null ||
+    if (pVisual is null ||
         pVisual.class_ != glxConvertToXVisualType(config.visualType) ||
         !(config.drawableType & GLX_WINDOW_BIT)) {
         client.errorValue = pDraw.id;
@@ -257,7 +257,7 @@ __GLXcontext* __glXdirectContextCreate(__GLXscreen* screen, __GLXconfig* modes, 
     __GLXcontext* context = void;
 
     context = cast(__GLXcontext*) cast(__GLXcontext*) calloc(1, __GLXcontext.sizeof);
-    if (context == null)
+    if (context is null)
         return null;
 
     context.config = modes;
@@ -532,7 +532,7 @@ private __GLXdrawable* __glXGetDrawable(__GLXcontext* glxc, GLXDrawable drawId, 
     }
 
     /* No active context and an unknown drawable, bail. */
-    if (glxc == null) {
+    if (glxc is null) {
         client.errorValue = drawId;
         *error = BadMatch;
         return null;
@@ -636,14 +636,14 @@ int xorgGlxMakeCurrent(ClientPtr client, GLXContextTag tag, XID drawId, XID read
         if (drawId) {
             int status = 0;
             drawPriv = __glXGetDrawable(glxc, drawId, client, &status);
-            if (drawPriv == null)
+            if (drawPriv is null)
                 return status;
         }
 
         if (readId) {
             int status = 0;
             readPriv = __glXGetDrawable(glxc, readId, client, &status);
-            if (readPriv == null)
+            if (readPriv is null)
                 return status;
         }
     }
@@ -1140,7 +1140,7 @@ private int DoCreateGLXDrawable(ClientPtr client, __GLXscreen* pGlxScreen, __GLX
     pGlxDraw = pGlxScreen.createDrawable(client, pGlxScreen, pDraw,
                                           drawableId, type,
                                           glxDrawableId, config);
-    if (pGlxDraw == null)
+    if (pGlxDraw is null)
         return BadAlloc;
 
     if (!AddResource(glxDrawableId, __glXDrawableRes, pGlxDraw))
@@ -1580,7 +1580,7 @@ int __glXDisp_SwapBuffers(__GLXclientState* cl, GLbyte* pc)
     }
 
     pGlxDraw = __glXGetDrawable(glxc, drawId, client, &error);
-    if (pGlxDraw == null)
+    if (pGlxDraw is null)
         return error;
 
     if (pGlxDraw.type == DRAWABLE_WINDOW &&
@@ -1763,9 +1763,9 @@ int __glXDisp_CopySubBufferMESA(__GLXclientState* cl, GLbyte* pc)
     if (!pGlxDraw)
         return error;
 
-    if (pGlxDraw == null ||
+    if (pGlxDraw is null ||
         pGlxDraw.type != GLX_DRAWABLE_WINDOW ||
-        pGlxDraw.copySubBuffer == null)
+        pGlxDraw.copySubBuffer is null)
         return __glXError(GLXBadDrawable);
 
     assumeNoGC(pGlxDraw.copySubBuffer) (pGlxDraw, x, y, width, height);
@@ -1944,7 +1944,7 @@ int __glXDisp_Render(__GLXclientState* cl, GLbyte* pc)
             __glXGetProtocolDecodeFunction(&Render_dispatch_info,
                                            opcode, client.swapped);
 
-        if ((err < 0) || (proc == null)) {
+        if ((err < 0) || (proc is null)) {
             client.errorValue = commandsDone;
             return __glXError(GLXBadRenderRequest);
         }
@@ -2175,7 +2175,7 @@ int __glXDisp_RenderLarge(__GLXclientState* cl, GLbyte* pc)
             proc = cast(__GLXdispatchRenderProcPtr)
                 __glXGetProtocolDecodeFunction(&Render_dispatch_info, opcode,
                                                client.swapped);
-            if (proc == null) {
+            if (proc is null) {
                 client.errorValue = opcode;
                 return __glXError(GLXBadLargeRequest);
             }
@@ -2321,7 +2321,7 @@ int __glXDisp_QueryServerString(__GLXclientState* cl, GLbyte* pc)
     };
 
     buf = cast(char*) calloc(length, 4);
-    if (buf == null) {
+    if (buf is null) {
         return BadAlloc;
     }
     memcpy(buf, ptr, n);

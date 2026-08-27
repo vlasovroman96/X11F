@@ -134,7 +134,7 @@ char* XkbVModIndexText(XkbDescPtr xkb, uint ndx, uint format)
         tmp = "illegal";
     else if (vmodNames && (vmodNames[ndx] != None))
         tmp = NameForAtom(vmodNames[ndx]);
-    if (tmp == null) {
+    if (tmp is null) {
         snprintf(numBuf.ptr, numBuf.sizeof, "%d", ndx);
         tmp = numBuf.ptr;
     }
@@ -211,7 +211,7 @@ char* XkbVModMaskText(XkbDescPtr xkb, uint modMask, uint mask, uint format)
     else
         len = 0;
     if (str)
-        len += strlen(str) + (mm == null ? 0 : 1);
+        len += strlen(str) + (mm is null ? 0 : 1);
     rtrn = tbGetBuffer(len + 1);
     rtrn[0] = '\0';
 
@@ -555,7 +555,7 @@ char* XkbStringText(char* str, uint format)
     int len = void;
     Bool ok = void;
 
-    if (str == null) {
+    if (str is null) {
         buf = tbGetBuffer(2);
         buf[0] = '\0';
         return buf;

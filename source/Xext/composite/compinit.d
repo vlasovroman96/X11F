@@ -197,7 +197,7 @@ private Bool compRegisterAlternateVisuals(CompScreenPtr cs, VisualID* vids, int 
 
     p = cast(ulong*)reallocarray(cs.alternateVisuals,
                      cs.numAlternateVisuals + nVisuals, VisualID.sizeof);
-    if (p == null)
+    if (p is null)
         return FALSE;
 
     memcpy(&p[cs.numAlternateVisuals], vids, ((VisualID).sizeof * nVisuals));

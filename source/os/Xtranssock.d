@@ -2,7 +2,7 @@ module os.Xtranssock;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
+template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
 }
 import core.stdc.config: c_long, c_ulong;
@@ -93,6 +93,11 @@ alias rindex = strrchr;
 import core.sys.posix.netdb;
 import os.ossock;
  import os.io_priv;
+ import externs.attrs;
+
+
+alias listen = core.sys.posix.sys.socket.listen;
+alias socket = core.sys.posix.sys.socket.socket;
 
 alias sockaddr_in = core.sys.posix.netinet.in_.sockaddr_in;
 alias _XGetservbyname = getservbyname;
@@ -116,19 +121,20 @@ alias SCM_RIGHTS = core.sys.posix.sys.socket.SCM_RIGHTS;
 
 
 alias cmsghdr = core.sys.posix.sys.socket.cmsghdr;
+alias ssize_t = core.sys.posix.sys.types.ssize_t;
 version (Windows) {} else {
 
-version (UNIXCONN) {
-// import core.sys.posix.sys.un;
-// import externs.netinet.in_;
-// import externs.arpa.inet;
-}
+// version (UNIXCONN) {
+import sock_ = core.sys.posix.sys.un;
+import externs.netinet.in_;
+import externs.arpa.inet;
+// }
 
-version (UNIXCONN) {
+// version (UNIXCONN) {
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_NO_LOCKING;
-//import externs.X11.Xos_r;
-}
+import externs.X11.Xos_r;
+// }
 
 version (NO_TCP_H) {} else {
 static if (HasVersion!"linux" || HasVersion!"__GLIBC__") {
@@ -219,18 +225,18 @@ struct Sockettrans2dev {
  *  unix    UNIX Domain Sockets (same host only)
  *  local   Platform preferred local connection method
  */
-private immutable Sockettrans2dev[] Sockettrans2devtab = () {
+immutable Sockettrans2dev[] Sockettrans2devtab = () {
     // Вычисляем точный размер внутри лямбды времени компиляции
     enum size_t maxElements = () {
         size_t count = 1; // inet
-        version(IPv6) {
-            count += 3;
-        } else {
-            count += 1;
-        }
-        version(UNIXCONN) {
-            count += 2;
-        }
+        // version(IPv6) {
+        //     count += 3;
+        // } else {
+        //     count += 1;
+        // }
+        // // version(UNIXCONN) {
+        //     count += 2;
+        // // }
         return count;
     }();
 
@@ -248,62 +254,62 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
         0
     );
 
-    version (IPv6)
-    {
-        arr[count++] = Sockettrans2dev(
-            "tcp",
-            AF_INET6,
-            sock.SOCK_STREAM,
-            sock.SOCK_DGRAM,
-            0
-        );
+    // version (IPv6)
+    // {
+    //     arr[count++] = Sockettrans2dev(
+    //         "tcp",
+    //         AF_INET6,
+    //         sock.SOCK_STREAM,
+    //         sock.SOCK_DGRAM,
+    //         0
+    //     );
 
-        // IPv4 fallback
-        arr[count++] = Sockettrans2dev(
-            "tcp",
-            AF_INET,
-            sock.SOCK_STREAM,
-            sock.SOCK_DGRAM,
-            0
-        );
+    //     // IPv4 fallback
+    //     arr[count++] = Sockettrans2dev(
+    //         "tcp",
+    //         AF_INET,
+    //         sock.SOCK_STREAM,
+    //         sock.SOCK_DGRAM,
+    //         0
+    //     );
 
-        arr[count++] = Sockettrans2dev(
-            "inet6",
-            AF_INET6,
-            sock.SOCK_STREAM,
-            sock.SOCK_DGRAM,
-            0
-        );
-    }
-    else
-    {
-        arr[count++] = Sockettrans2dev(
-            "tcp",
-            AF_INET,
-            sock.SOCK_STREAM,
-            sock.SOCK_DGRAM,
-            0
-        );
-    }
+    //     arr[count++] = Sockettrans2dev(
+    //         "inet6",
+    //         AF_INET6,
+    //         sock.SOCK_STREAM,
+    //         sock.SOCK_DGRAM,
+    //         0
+    //     );
+    // }
+    // else
+    // {
+    //     arr[count++] = Sockettrans2dev(
+    //         "tcp",
+    //         AF_INET,
+    //         sock.SOCK_STREAM,
+    //         sock.SOCK_DGRAM,
+    //         0
+    //     );
+    // }
 
-    version (UNIXCONN)
-    {
-        arr[count++] = Sockettrans2dev(
-            "unix",
-            AF_UNIX,
-            sock.SOCK_STREAM,
-            sock.SOCK_DGRAM,
-            0
-        );
+    // version (UNIXCONN)
+    // {
+        // arr[count++] = Sockettrans2dev(
+        //     "unix",
+        //     AF_UNIX,
+        //     sock.SOCK_STREAM,
+        //     sock.SOCK_DGRAM,
+        //     0
+        // );
 
-        arr[count++] = Sockettrans2dev(
-            "local",
-            AF_UNIX,
-            sock.SOCK_STREAM,
-            sock.SOCK_DGRAM,
-            0
-        );
-    }
+        // arr[count++] = Sockettrans2dev(
+        //     "local",
+        //     AF_UNIX,
+        //     sock.SOCK_STREAM,
+        //     sock.SOCK_DGRAM,
+        //     0
+        // );
+    // }
 
     // Возвращаем динамический срез. 
     // Компилятор превратит его в immutable(Sockettrans2dev)[] в секции данных.
@@ -311,11 +317,11 @@ private immutable Sockettrans2dev[] Sockettrans2devtab = () {
 }();
 
 
-enum NUMSOCKETFAMILIES = Sockettrans2devtab.sizeof / Sockettrans2dev.sizeof;
+enum string NUMSOCKETFAMILIES = "Sockettrans2devtab.sizeof / Sockettrans2dev.sizeof";
 
 
 
-private int is_numeric(const(char)* str)
+int is_numeric(const(char)* str)
 {
     for (uint i = 0; i < cast(int) strlen (str); i++)
 	if (!isdigit (cast(ubyte)(str[i])))
@@ -324,13 +330,13 @@ private int is_numeric(const(char)* str)
     return (1);
 }
 
-version (UNIXCONN) {
+// version (UNIXCONN) {
 
 
 enum UNIX_PATH = "/tmp/.X11-unix/X";
 enum UNIX_DIR = "/tmp/.X11-unix";
 
-} /* UNIXCONN */
+// } /* UNIXCONN */
 
 enum PORTBUFSIZE =	32;
 
@@ -349,14 +355,15 @@ alias SOCKLEN_T = int;
  * These are some utility function used by the real interface function below.
  */
 
-private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
+int _XSERVTransSocketSelectFamily(int first, const(char)* family)
 {
-    int i = void;
+    int i = 0;
 
-    // prmsg (3,"SocketSelectFamily(%s)\n", family);
+    prmsg (3,"SocketSelectFamily(%s)\n", family);
 
-    for (i = first + 1; i < cast(int)NUMSOCKETFAMILIES; i++)
+    for (i = first + 1; i < cast(int)Sockettrans2devtab.length; i++)
     {
+        prmsg(1, "TEST FAMILY %s", Sockettrans2devtab[i].transname);
         if (!strcmp (family, Sockettrans2devtab[i].transname))
 	    return i;
     }
@@ -371,7 +378,7 @@ private int _XSERVTransSocketSelectFamily(int first, const(char)* family)
  */
 
 
-private int _XSERVTransSocketINETGetAddr(XtransConnInfo ciptr)
+int _XSERVTransSocketINETGetAddr(XtransConnInfo ciptr)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
     sockaddr_storage sockname = void;
@@ -400,7 +407,7 @@ version (Windows) {
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr.addr = cast(char*)malloc (namelen)) == null)
+    if ((ciptr.addr = cast(char*)malloc (namelen)) is null)
     {
         prmsg (1,
 	    "SocketINETGetAddr: Can't allocate space for the addr\n");
@@ -420,7 +427,7 @@ version (Windows) {
  * XtransConnInfo structure for the connection.
  */
 
-private int _XSERVTransSocketINETGetPeerAddr(XtransConnInfo ciptr)
+int _XSERVTransSocketINETGetPeerAddr(XtransConnInfo ciptr)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
     sockaddr_storage sockname = void;
@@ -449,7 +456,7 @@ version (Windows) {
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr.peeraddr = cast(char*)malloc (namelen)) == null)
+    if ((ciptr.peeraddr = cast(char*)malloc (namelen)) is null)
     {
         prmsg (1,
 	   "SocketINETGetPeerAddr: Can't allocate space for the addr\n");
@@ -463,13 +470,13 @@ version (Windows) {
 }
 
 
-private XtransConnInfo _XSERVTransSocketOpen(int i, int type)
+XtransConnInfo _XSERVTransSocketOpen(int i, int type)
 {
     XtransConnInfo ciptr = void;
 
     prmsg (3,"SocketOpen(%d,%d)\n", i, type);
 
-    if ((ciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) == null)
+    if ((ciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) is null)
     {
 	prmsg (1, "SocketOpen: malloc failed\n");
 	return null;
@@ -542,7 +549,7 @@ version (SO_SNDBUF) {
     return ciptr;
 }
 
-private XtransConnInfo _XSERVTransSocketReopen(int _X_UNUSED, int type, int fd, const(char)* port)
+XtransConnInfo _XSERVTransSocketReopen(int _X_UNUSED, int type, int fd, const(char)* port)
 {
     XtransConnInfo ciptr = void;
     sock.sockaddr* addr = void;
@@ -550,7 +557,7 @@ private XtransConnInfo _XSERVTransSocketReopen(int _X_UNUSED, int type, int fd, 
 
     prmsg (3,"SocketReopen(%d,%d,%s)\n", type, fd, port);
 
-    if (port == null) {
+    if (port is null) {
       prmsg (1, "SocketReopen: port was null!\n");
       return null;
     }
@@ -570,7 +577,7 @@ version (SOCK_MAXADDRLEN) {
     }
 } /*SOCK_MAXADDRLEN*/
 
-    if ((ciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) == null)
+    if ((ciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) is null)
     {
 	prmsg (1, "SocketReopen: malloc(ciptr) failed\n");
 	return null;
@@ -579,7 +586,7 @@ version (SOCK_MAXADDRLEN) {
     ciptr.fd = fd;
 
     addrlen = portlen + offsetof!(sock.sockaddr, "sa_data");
-    if ((addr = cast(sock.sockaddr*) calloc (1, addrlen)) == null) {
+    if ((addr = cast(sock.sockaddr*) calloc (1, addrlen)) is null) {
 	prmsg (1, "SocketReopen: malloc(addr) failed\n");
 	free (ciptr);
 	return null;
@@ -587,7 +594,7 @@ version (SOCK_MAXADDRLEN) {
     ciptr.addr = cast(char*) addr;
     ciptr.addrlen = cast(int)addrlen;
 
-    if ((ciptr.peeraddr = cast(char*)calloc (1, addrlen)) == null) {
+    if ((ciptr.peeraddr = cast(char*)calloc (1, addrlen)) is null) {
 	prmsg (1, "SocketReopen: malloc(portaddr) failed\n");
 	free (addr);
 	free (ciptr);
@@ -607,7 +614,7 @@ version (BSD44SOCKETS) {
     ciptr.family = AF_UNIX;
     memcpy(ciptr.peeraddr, ciptr.addr, addrlen);
     ciptr.port = rindex(cast(char*)addr.sa_data.ptr, ':');
-    if (ciptr.port == null) {
+    if (ciptr.port is null) {
 	if (is_numeric(cast(char*)addr.sa_data.ptr)) {
 	    ciptr.port = cast(char*)addr.sa_data.ptr;
 	}
@@ -622,7 +629,7 @@ version (BSD44SOCKETS) {
  * These functions are the interface supplied in the Xtransport structure
  */
 
-private XtransConnInfo _XSERVTransSocketOpenCOTSServer(Xtransport* thistrans, const(char)* protocol, const(char)* host, const(char)* port)
+XtransConnInfo _XSERVTransSocketOpenCOTSServer(Xtransport* thistrans, const(char)* protocol, const(char)* host, const(char)* port)
 {
     XtransConnInfo ciptr = null;
     int i = -1;
@@ -701,7 +708,7 @@ version (IPV6_V6ONLY) {
     return ciptr;
 }
 
-private XtransConnInfo _XSERVTransSocketReopenCOTSServer(Xtransport* thistrans, int fd, const(char)* port)
+XtransConnInfo _XSERVTransSocketReopenCOTSServer(Xtransport* thistrans, int fd, const(char)* port)
 {
     XtransConnInfo ciptr = void;
     int i = -1;
@@ -733,17 +740,17 @@ private XtransConnInfo _XSERVTransSocketReopenCOTSServer(Xtransport* thistrans, 
     return ciptr;
 }
 
-private int _XSERVTransSocketSetOption(XtransConnInfo ciptr, int option, int arg)
+int _XSERVTransSocketSetOption(XtransConnInfo ciptr, int option, int arg)
 {
     prmsg (2,"SocketSetOption(%d,%d,%d)\n", ciptr.fd, option, arg);
     return -1;
 }
 
-version (UNIXCONN) {
-private int set_sun_path(const(char)* port, const(char)* upath, char* path, int abstract_)
+// version (UNIXCONN) {
+int set_sun_path(const(char)* port, const(char)* upath, char* path, int abstract_)
 {
-    sock.sockaddr_un s = void;
-    ssize_t maxlen = ((s.sun_path) - 1).sizeof;
+    sock_.sockaddr_un s = void;
+    ssize_t maxlen = ((s.sun_path).sizeof - 1);
     const(char)* at = "";
 
     if (!port || !*port || !path)
@@ -764,9 +771,9 @@ version (HAVE_ABSTRACT_SOCKETS) {
     snprintf(path, typeof(s.sun_path).sizeof, "%s%s%s", at, upath, port);
     return 0;
 }
-}
+// }
 
-private int _XSERVTransSocketCreateListener(
+int _XSERVTransSocketCreateListener(
     XtransConnInfo ciptr,
     sock.sockaddr* sockname,
     int socknamelen,
@@ -863,7 +870,7 @@ private int _XSERVTransSocketCreateListener(
     return 0;
 }
 
-private int _XSERVTransSocketINETCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
+int _XSERVTransSocketINETCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
 {
 version (HAVE_STRUCT_SOCKADDR_STORAGE) {
     sock.sockaddr_storage sockname = void;
@@ -978,11 +985,11 @@ version (SIN6_LEN) {
     return 0;
 }
 
-version (UNIXCONN) {
+// version (UNIXCONN) {
 
-private int _XSERVTransSocketUNIXCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
+int _XSERVTransSocketUNIXCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
 {
-    sock.sockaddr_un sockname = void;
+    sock_.sockaddr_un sockname = void;
     int namelen = void;
     int oldUmask = void;
     int status = void;
@@ -1019,10 +1026,10 @@ version (HAS_STICKY_DIR_BIT) {
     sockname.sun_family = AF_UNIX;
 
     if (!(port && *port)) {
-	snprintf (tmpport.ptr, tmpport.sizeof, "%s%ld", UNIX_PATH, cast(c_long)getpid());
-	port = tmpport;
+	snprintf (tmpport.ptr, tmpport.sizeof, "%s%ld", UNIX_PATH.ptr, cast(c_long)getpid());
+	port = tmpport.ptr;
     }
-    if (set_sun_path(port, UNIX_PATH, sockname.sun_path, abstract_) != 0) {
+    if (set_sun_path(port, UNIX_PATH, cast(char*)sockname.sun_path.ptr, abstract_) != 0) {
 	prmsg (1, "SocketUNIXCreateListener: path too long\n");
 	return TRANS_CREATE_LISTENER_FAILED;
     }
@@ -1034,15 +1041,15 @@ version (BSD44SOCKETS) {
 static if (HasVersion!"BSD44SOCKETS" || HasVersion!"SUN_LEN") {
     namelen = SUN_LEN(&sockname);
 } else {
-    namelen = strlen(sockname.sun_path) + offsetof(sock.sockaddr_un, sun_path);
+    namelen = cast(int)(strlen(cast(char*)sockname.sun_path.ptr) + offsetof!(sock_.sockaddr_un, "sun_path"));
 }
 
     if (abstract_) {
 	sockname.sun_path[0] = '\0';
-	namelen = offsetof(sock.sockaddr_un, sun_path) + 1 + strlen(&sockname.sun_path[1]);
+	namelen = cast(int)(offsetof!(sock_.sockaddr_un, "sun_path") + 1 + strlen(cast(char*)sockname.sun_path.ptr));
     }
     else
-	unlink (sockname.sun_path);
+	unlink (cast(char*)sockname.sun_path.ptr);
 
     if ((status = _XSERVTransSocketCreateListener (ciptr,
 	cast(sock.sockaddr*) &sockname, namelen, flags)) < 0)
@@ -1062,7 +1069,7 @@ static if (HasVersion!"BSD44SOCKETS" || HasVersion!"SUN_LEN") {
 
     namelen = sockname.sizeof; /* this will always make it the same size */
 
-    if ((ciptr.addr = malloc (namelen)) == null)
+    if ((ciptr.addr = cast(char*)malloc (namelen)) is null)
     {
         prmsg (1,
         "SocketUNIXCreateListener: Can't allocate space for the addr\n");
@@ -1083,14 +1090,14 @@ static if (HasVersion!"BSD44SOCKETS" || HasVersion!"SUN_LEN") {
 }
 
 
-private int _XSERVTransSocketUNIXResetListener(XtransConnInfo ciptr)
+int _XSERVTransSocketUNIXResetListener(XtransConnInfo ciptr)
 {
     /*
      * See if the unix domain socket has disappeared.  If it has, recreate it.
      */
 
-    sock.sockaddr_un* unsock = cast(sock.sockaddr_un*) ciptr.addr;
-    stat statb = void;
+    sock_.sockaddr_un* unsock = cast(sock_.sockaddr_un*) ciptr.addr;
+    stat_t statb = void;
     int status = TRANS_RESET_NOOP;
     uint mode = void;
     int abstract_ = 0;
@@ -1101,7 +1108,7 @@ version (HAVE_ABSTRACT_SOCKETS) {
     prmsg (3, "SocketUNIXResetListener(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
 
     if (!abstract_ && (
-	stat (unsock.sun_path, &statb) == -1 ||
+	stat (cast(char*)unsock.sun_path.ptr, &statb) == -1 ||
         ((statb.st_mode & S_IFMT) !=
 // #if !defined(S_IFSOCK)
 // 	  		S_IFIFO
@@ -1127,9 +1134,9 @@ version (HAS_STICKY_DIR_BIT) {
 }
 
 	ossock_close(ciptr.fd);
-	unlink (unsock.sun_path);
+	unlink (cast(char*)unsock.sun_path.ptr);
 
-	if ((ciptr.fd = socket (AF_UNIX, sock.SOCK_STREAM, 0)) < 0)
+	if ((ciptr.fd = assumeNoGC(&socket) (AF_UNIX, sock.SOCK_STREAM, 0)) < 0)
 	{
 	    _XSERVTransFreeConnInfo (ciptr);
 	    cast(void) umask (oldUmask);
@@ -1143,7 +1150,7 @@ version (HAS_STICKY_DIR_BIT) {
 	    return TRANS_RESET_FAILURE;
 	}
 
-	if (listen (ciptr.fd, BACKLOG) < 0)
+	if (assumeNoGC(&listen) (ciptr.fd, BACKLOG) < 0)
 	{
 	    ossock_close(ciptr.fd);
 	    _XSERVTransFreeConnInfo (ciptr);
@@ -1158,13 +1165,13 @@ version (HAS_STICKY_DIR_BIT) {
 
     return status;
 }
-}
+// }
 
 
 /* UNIXCONN */
 
 
-private XtransConnInfo _XSERVTransSocketINETAccept(XtransConnInfo ciptr)
+XtransConnInfo _XSERVTransSocketINETAccept(XtransConnInfo ciptr)
 {
     XtransConnInfo newciptr = void;
     sockaddr_in sockname = void;
@@ -1228,23 +1235,23 @@ version (TCP_NODELAY) {
     return newciptr;
 }
 
-version (UNIXCONN) {
-private XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
+// version (UNIXCONN) {
+XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
 {
     XtransConnInfo newciptr = void;
-    sock.sockaddr_un sockname = void;
+    sock_.sockaddr_un sockname = void;
     SOCKLEN_T namelen = sockname.sizeof;
 
     prmsg (2, "SocketUNIXAccept(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
 
-    if ((newciptr = calloc (1, _XtransConnInfo.sizeof)) == null)
+    if ((newciptr = cast(_XtransConnInfo*)calloc (1, _XtransConnInfo.sizeof)) is null)
     {
 	prmsg (1, "SocketUNIXAccept: malloc() failed\n");
 	return null;
     }
 
     if ((newciptr.fd = accept (ciptr.fd,
-	cast(sock.sockaddr*) &sockname, cast(void*)&namelen)) < 0)
+	cast(sock.sockaddr*) &sockname, cast(uint*)&namelen)) < 0)
     {
 	prmsg (1, "SocketUNIXAccept: accept() failed\n");
 	free (newciptr);
@@ -1257,7 +1264,7 @@ private XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
      * since this is unix domain.
      */
 
-    if ((newciptr.addr = malloc (ciptr.addrlen)) == null)
+    if ((newciptr.addr = cast(char*)malloc (ciptr.addrlen)) is null)
     {
         prmsg (1,
         "SocketUNIXAccept: Can't allocate space for the addr\n");
@@ -1274,7 +1281,7 @@ private XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
     newciptr.addrlen = ciptr.addrlen;
     memcpy (newciptr.addr, ciptr.addr, newciptr.addrlen);
 
-    if ((newciptr.peeraddr = malloc (ciptr.addrlen)) == null)
+    if ((newciptr.peeraddr = cast(char*)malloc (ciptr.addrlen)) is null)
     {
         prmsg (1,
 	      "SocketUNIXAccept: Can't allocate space for the addr\n");
@@ -1292,11 +1299,11 @@ private XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
     return newciptr;
 }
 
-} /* UNIXCONN */
+// } /* UNIXCONN */
 
 static if (XTRANS_SEND_FDS) {
 
-private void appendFd(_XtransConnFd** prev, int fd, int do_close)
+void appendFd(_XtransConnFd** prev, int fd, int do_close)
 {
     _XtransConnFd* cf = void, new_ = void;
 
@@ -1314,7 +1321,7 @@ private void appendFd(_XtransConnFd** prev, int fd, int do_close)
     *prev = new_;
 }
 
-private int removeFd(_XtransConnFd** prev)
+int removeFd(_XtransConnFd** prev)
 {
     _XtransConnFd* cf = void;
     int fd = void;
@@ -1328,7 +1335,7 @@ private int removeFd(_XtransConnFd** prev)
     return fd;
 }
 
-private void discardFd(_XtransConnFd** prev, _XtransConnFd* upto, int do_close)
+void discardFd(_XtransConnFd** prev, _XtransConnFd* upto, int do_close)
 {
     _XtransConnFd* cf = void, next = void;
 
@@ -1341,7 +1348,7 @@ private void discardFd(_XtransConnFd** prev, _XtransConnFd* upto, int do_close)
     *prev = upto;
 }
 
-private void cleanupFds(XtransConnInfo ciptr)
+void cleanupFds(XtransConnInfo ciptr)
 {
     /* Clean up the send list but don't close the fds */
     discardFd(&ciptr.send_fds, null, 0);
@@ -1349,7 +1356,7 @@ private void cleanupFds(XtransConnInfo ciptr)
     discardFd(&ciptr.recv_fds, null, 1);
 }
 
-private int nFd(_XtransConnFd** prev)
+int nFd(_XtransConnFd** prev)
 {
     _XtransConnFd* cf = void;
     int n = 0;
@@ -1359,25 +1366,25 @@ private int nFd(_XtransConnFd** prev)
     return n;
 }
 
-private int _XSERVTransSocketRecvFd(XtransConnInfo ciptr)
+int _XSERVTransSocketRecvFd(XtransConnInfo ciptr)
 {
     prmsg (2, "SocketRecvFd(%d)\n", ciptr.fd);
     return removeFd(&ciptr.recv_fds);
 }
 
-private int _XSERVTransSocketSendFd(XtransConnInfo ciptr, int fd, int do_close)
+int _XSERVTransSocketSendFd(XtransConnInfo ciptr, int fd, int do_close)
 {
     appendFd(&ciptr.send_fds, fd, do_close);
     return 0;
 }
 
-private int _XSERVTransSocketRecvFdInvalid(XtransConnInfo ciptr)
+int _XSERVTransSocketRecvFdInvalid(XtransConnInfo ciptr)
 {
     errno = EINVAL;
     return -1;
 }
 
-private int _XSERVTransSocketSendFdInvalid(XtransConnInfo ciptr, int fd, int do_close)
+int _XSERVTransSocketSendFdInvalid(XtransConnInfo ciptr, int fd, int do_close)
 {
     errno = EINVAL;
     return -1;
@@ -1392,7 +1399,7 @@ union fd_pass {
 
 } /* XTRANS_SEND_FDS */
 
-private int _XSERVTransSocketRead(XtransConnInfo ciptr, char* buf, int size)
+int _XSERVTransSocketRead(XtransConnInfo ciptr, char* buf, int size)
 {
     prmsg (2,"SocketRead(%d,%p,%d)\n", ciptr.fd, cast(void*) buf, size);
 
@@ -1444,7 +1451,7 @@ static if (XTRANS_SEND_FDS) {
 } /* WIN32 */
 }
 
-private ssize_t _XSERVTransSocketWrite(XtransConnInfo ciptr, const(char)* buf, size_t size)
+ssize_t _XSERVTransSocketWrite(XtransConnInfo ciptr, const(char)* buf, size_t size)
 {
     prmsg (2,"SocketWrite(%d,%p,%lu)\n", ciptr.fd, cast(void*) buf, cast(c_ulong)size);
 
@@ -1497,7 +1504,7 @@ version (Windows) {
 }
 }
 
-private int _XSERVTransSocketDisconnect(XtransConnInfo ciptr)
+int _XSERVTransSocketDisconnect(XtransConnInfo ciptr)
 {
     prmsg (2,"SocketDisconnect(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
 
@@ -1512,15 +1519,15 @@ version (Windows) {
 }
 }
 
-version (UNIXCONN) {
-private int _XSERVTransSocketUNIXClose(XtransConnInfo ciptr)
+// version (UNIXCONN) {
+int _XSERVTransSocketUNIXClose(XtransConnInfo ciptr)
 {
     /*
      * If this is the server side, then once the socket is closed,
      * it must be unlinked to completely close it
      */
 
-    sock.sockaddr_un* sockname = cast(sock.sockaddr_un*) ciptr.addr;
+    sock_.sockaddr_un* sockname = cast(sock_.sockaddr_un*) ciptr.addr;
     int ret = void;
 
     prmsg (2,"SocketUNIXClose(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
@@ -1537,13 +1544,13 @@ static if (XTRANS_SEND_FDS) {
     {
 	if (!(ciptr.flags & TRANS_NOUNLINK
 	    || ciptr.transptr.flags & TRANS_ABSTRACT))
-		unlink (sockname.sun_path);
+		unlink (cast(char*)sockname.sun_path.ptr);
     }
 
     return ret;
 }
 
-private int _XSERVTransSocketUNIXCloseForCloning(XtransConnInfo ciptr)
+int _XSERVTransSocketUNIXCloseForCloning(XtransConnInfo ciptr)
 {
     /*
      * Don't unlink path.
@@ -1557,9 +1564,9 @@ static if (XTRANS_SEND_FDS) {
     return ossock_close(ciptr.fd);
 }
 
-} /* UNIXCONN */
+// } /* UNIXCONN */
 
-private int _XSERVTransSocketINETClose(XtransConnInfo ciptr)
+int _XSERVTransSocketINETClose(XtransConnInfo ciptr)
 {
     prmsg (2,"SocketINETClose(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
     return ossock_close(ciptr.fd);
@@ -1618,7 +1625,7 @@ Xtransport _XSERVTransSocketINETFuncs = {
 };
 
 version (IPv6) {
-private Xtransport _XSERVTransSocketINET6Funcs = {
+Xtransport _XSERVTransSocketINET6Funcs = {
 	/* Socket Interface */
 	"inet6",
 	0,
@@ -1641,8 +1648,8 @@ private Xtransport _XSERVTransSocketINET6Funcs = {
 };
 } /* IPv6 */
 
-version (UNIXCONN) {
-private Xtransport _XSERVTransSocketLocalFuncs = {
+// version (UNIXCONN) {
+Xtransport _XSERVTransSocketLocalFuncs = {
 	/* Socket Interface */
 	"local",
 // #ifdef HAVE_ABSTRACT_SOCKETS
@@ -1668,9 +1675,9 @@ private Xtransport _XSERVTransSocketLocalFuncs = {
 	&_XSERVTransSocketUNIXCloseForCloning,
 };
 
-private const(char)*[2] unix_nolisten = [ "local" , null ];
+enum const(char)*[2] unix_nolisten = [ "local" , null ];
 
-private Xtransport _XSERVTransSocketUNIXFuncs = {
+Xtransport _XSERVTransSocketUNIXFuncs = {
 	/* Socket Interface */
 	"unix",
 // #if !defined(HAVE_ABSTRACT_SOCKETS)
@@ -1678,22 +1685,22 @@ private Xtransport _XSERVTransSocketUNIXFuncs = {
 // #else
 	// 0,
 // #endif
-	unix_nolisten,
-	_XSERVTransSocketOpenCOTSServer,
-	_XSERVTransSocketReopenCOTSServer,
-	_XSERVTransSocketSetOption,
-	_XSERVTransSocketUNIXCreateListener,
-	_XSERVTransSocketUNIXResetListener,
-	_XSERVTransSocketUNIXAccept,
-	_XSERVTransSocketRead,
-	_XSERVTransSocketWrite,
+	unix_nolisten.ptr,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketUNIXCreateListener,
+	&_XSERVTransSocketUNIXResetListener,
+	&_XSERVTransSocketUNIXAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
 // #if XTRANS_SEND_FDS
-	_XSERVTransSocketSendFd,
-	_XSERVTransSocketRecvFd,
+	&_XSERVTransSocketSendFd,
+	&_XSERVTransSocketRecvFd,
 // #endif
-	_XSERVTransSocketDisconnect,
-	_XSERVTransSocketUNIXClose,
-	_XSERVTransSocketUNIXCloseForCloning,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketUNIXClose,
+	&_XSERVTransSocketUNIXCloseForCloning,
 };
 
-} /* UNIXCONN */
+// } /* UNIXCONN */

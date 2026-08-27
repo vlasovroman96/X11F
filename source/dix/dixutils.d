@@ -660,7 +660,7 @@ private Bool _DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, vo
             cbr.deleted = TRUE;
         }
         else {
-            if (pcbr == null)
+            if (pcbr is null)
                 cbl.list = cbr.next;
             else
                 pcbr.next = cbr.next;

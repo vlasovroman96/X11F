@@ -96,7 +96,7 @@ void* __glXGetAnswerBuffer(__GLXclientState* cl, size_t required_size, void* loc
         if (cl.returnBufSize < worst_case_size) {
             void* temp = realloc(cl.returnBuf, worst_case_size);
 
-            if (temp == null) {
+            if (temp is null) {
                 return null;
             }
 

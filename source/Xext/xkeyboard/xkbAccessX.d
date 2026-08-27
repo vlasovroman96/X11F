@@ -331,7 +331,7 @@ private CARD32 AccessXRepeatKeyExpire(OsTimerPtr timer, CARD32 now, void* arg)
     if (xkbi.repeatKey == 0)
         return 0;
 
-    if (xkbi.checkRepeat == null || xkbi.checkRepeat (dev, xkbi, xkbi.repeatKey))
+    if (xkbi.checkRepeat is null || xkbi.checkRepeat (dev, xkbi, xkbi.repeatKey))
         AccessXKeyboardEvent(dev, ET_KeyPress, xkbi.repeatKey, TRUE);
 
     return xkbi.desc.ctrls.repeat_interval;

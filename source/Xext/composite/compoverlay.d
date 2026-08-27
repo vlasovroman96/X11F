@@ -79,7 +79,7 @@ void compFreeOverlayClient(CompOverlayClientPtr pOcToDel)
     }
 
     /* Destroy overlay window when there are no more clients using it */
-    if (cs.pOverlayClients == null)
+    if (cs.pOverlayClients is null)
         compDestroyOverlayWindow(pScreen);
 }
 
@@ -105,7 +105,7 @@ CompOverlayClientPtr compCreateOverlayClient(ScreenPtr pScreen, ClientPtr pClien
 {
     CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     CompOverlayClientPtr pOc = cast(CompOverlayClientRec*) calloc(1, CompOverlayClientRec.sizeof);
-    if (pOc == null)
+    if (pOc is null)
         return null;
 
     pOc.pClient = pClient;
@@ -152,7 +152,7 @@ version (XINERAMA) {
                      InputOutput, CWBackPixmap | CWOverrideRedirect, &attrs[0],
                      pRoot.drawable.depth,
                      serverClient, pScreen.rootVisual, &result);
-    if (pWin == null)
+    if (pWin is null)
         return FALSE;
 
     if (!AddResource(pWin.drawable.id, X11_RESTYPE_WINDOW, cast(void*) pWin))

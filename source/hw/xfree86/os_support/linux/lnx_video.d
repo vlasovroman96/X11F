@@ -97,7 +97,7 @@ private Bool hwEnableIO()
     uint ioBase_phys = syscall(__NR_pciconfig_iobase, 2, 0, 0);
 
     fd = open("/dev/mem", O_RDWR);
-    if (ioBase == null) {
+    if (ioBase is null) {
         ioBase = cast(/*volatile*/ ubyte*) mmap(0, 0x20000,
                                                  PROT_READ | PROT_WRITE,
                                                  MAP_SHARED, fd, ioBase_phys);

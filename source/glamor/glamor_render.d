@@ -678,10 +678,10 @@ private void glamor_set_composite_solid(float* color, GLint uniform_location)
 
 private char glamor_get_picture_location(PicturePtr picture)
 {
-    if (picture == null)
+    if (picture is null)
         return ' ';
 
-    if (picture.pDrawable == null) {
+    if (picture.pDrawable is null) {
         switch (picture.pSourcePict.type) {
         case SourcePictTypeSolidFill:
             return 'c';

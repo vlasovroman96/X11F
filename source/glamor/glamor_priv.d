@@ -483,7 +483,7 @@ DevPrivateKeyRec glamor_pixmap_private_key;
 
 pragma(inline, true) glamor_pixmap_private* glamor_get_pixmap_private(PixmapPtr pixmap)
 {
-    if (pixmap == null)
+    if (pixmap is null)
         return null;
 
     return cast(glamor_pixmap_private*)dixLookupPrivate(&pixmap.devPrivates, &glamor_pixmap_private_key);

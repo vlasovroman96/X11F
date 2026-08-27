@@ -365,7 +365,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
                                        &err);
     }
 
-    if (ctx == null)
+    if (ctx is null)
         return err;
 
     ctx.pGlxScreen = glxScreen;

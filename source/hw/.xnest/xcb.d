@@ -51,10 +51,10 @@ bool xnest_upstream_setup(const(char)* displayName)
 
 /* retrieve upstream GC XID for our xserver GC */
 uint xnest_upstream_gc(GCPtr pGC) {
-    if (pGC == null) return 0;
+    if (pGC is null) return 0;
 
     xnestPrivGC* priv = dixLookupPrivate(&(pGC).devPrivates, xnestGCPrivateKey);
-    if (priv == null) return 0;
+    if (priv is null) return 0;
 
     return priv.gc;
 }
@@ -329,7 +329,7 @@ int xnest_parse_geometry(const(char)* string, xRectangle* geometry)
     const(char)* next = void;
     xRectangle temp = { 0 };
 
-    if ((string == null) || (*string == '\0')) return 0;
+    if ((string is null) || (*string == '\0')) return 0;
 
     if (*string == '=')
         string++;  /* ignore possible '=' at beg of geometry spec */
@@ -442,7 +442,7 @@ enum string XN_CI_GET_CHAR_INFO_1D(string font,string col,string def,string cs) 
 do { 
     ` ~ cs ~ ` = ` ~ def ~ `; 
     if (` ~ col ~ ` >= ` ~ font ~ `.font_reply.min_char_or_byte2 && ` ~ col ~ ` <= ` ~ font ~ `.font_reply.max_char_or_byte2) { 
-        if (` ~ font ~ `.chars == null) { 
+        if (` ~ font ~ `.chars is null) { 
             ` ~ cs ~ ` = &` ~ font ~ `.font_reply.min_bounds; 
         } else { 
             ` ~ cs ~ ` = cast(xcb_charinfo_t*)&` ~ font ~ `.chars[(` ~ col ~ ` - ` ~ font ~ `.font_reply.min_char_or_byte2)]; 
@@ -456,7 +456,7 @@ do {
     ` ~ cs ~ ` = ` ~ def ~ `; 
     if (` ~ row ~ ` >= ` ~ font ~ `.font_reply.min_byte1 && ` ~ row ~ ` <= ` ~ font ~ `.font_reply.max_byte1 && 
         ` ~ col ~ ` >= ` ~ font ~ `.font_reply.min_char_or_byte2 && ` ~ col ~ ` <= ` ~ font ~ `.font_reply.max_char_or_byte2) { 
-        if (` ~ font ~ `.chars == null) { 
+        if (` ~ font ~ `.chars is null) { 
             ` ~ cs ~ ` = &` ~ font ~ `.font_reply.min_bounds; 
         } else { 
             ` ~ cs ~ ` = cast(xcb_charinfo_t*)&` ~ font ~ `.chars[((` ~ row ~ ` - ` ~ font ~ `.font_reply.min_byte1) * 
@@ -480,7 +480,7 @@ do {
     ` ~ cs ~ ` = ` ~ def ~ `; 
     if (` ~ font ~ `.font_reply.min_byte1 == 0 && 
         ` ~ col ~ ` >= ` ~ font ~ `.font_reply.min_char_or_byte2 && ` ~ col ~ ` <= ` ~ font ~ `.font_reply.max_char_or_byte2) { 
-        if (` ~ font ~ `.chars == null) { 
+        if (` ~ font ~ `.chars is null) { 
             ` ~ cs ~ ` = &` ~ font ~ `.font_reply.min_bounds; 
         } else { 
             ` ~ cs ~ ` = cast(xcb_charinfo_t*)&` ~ font ~ `.chars[(` ~ col ~ ` - ` ~ font ~ `.font_reply.min_char_or_byte2)]; 

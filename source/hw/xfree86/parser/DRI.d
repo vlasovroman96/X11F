@@ -94,7 +94,7 @@ version (DEBUG) {
 
 void xf86printDRISection(FILE* cf, XF86ConfDRIPtr ptr)
 {
-    if (ptr == null)
+    if (ptr is null)
         return;
 
     fprintf(cf, "Section \"DRI\"\n");
@@ -111,7 +111,7 @@ void xf86printDRISection(FILE* cf, XF86ConfDRIPtr ptr)
 
 void xf86freeDRI(XF86ConfDRIPtr ptr)
 {
-    if (ptr == null)
+    if (ptr is null)
         return;
 
     mixin(TestFree!("ptr.dri_comment"));

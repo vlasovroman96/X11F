@@ -126,8 +126,8 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
     int oldPitch = void, oldDuration = void;
     Atom name = void;
 
-    if ((dev == null) || (dev.key == null) || (dev.key.xkbInfo == null) ||
-        (dev.kbdfeed == null))
+    if ((dev is null) || (dev.key is null) || (dev.key.xkbInfo is null) ||
+        (dev.kbdfeed is null))
         return 0;
 
     _XkbDDXBeepInitAtoms();
@@ -298,7 +298,7 @@ private CARD32 _XkbDDXBeepExpire(OsTimerPtr timer, CARD32 now, void* arg)
             next = SHORT_DELAY;
         break;
     }
-    if (timer == null && duration > 0) {
+    if (timer is null && duration > 0) {
         CARD32 starttime = GetTimeInMillis();
         CARD32 elapsedtime = void;
 

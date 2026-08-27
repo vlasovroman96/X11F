@@ -512,7 +512,7 @@ private void SELinuxExtension(CallbackListPtr* pcbl, void* unused, void* calldat
 
     /* If this is a new object that needs labeling, do it now */
     /* XXX there should be a separate callback for this */
-    if (obj.sid == null) {
+    if (obj.sid is null) {
         security_id_t sid = void;
 
         serv = cast(SELinuxSubjectRec*)dixLookupPrivate(&serverClient.devPrivates, subjectKey);
@@ -569,7 +569,7 @@ private void SELinuxSelection(CallbackListPtr* pcbl, void* unused, void* calldat
             return;
         }
         while (pSel.selection != name || obj.sid != tsid) {
-            if ((pSel = pSel.next) == null) {
+            if ((pSel = pSel.next) is null) {
                 break;
             }
             obj = cast(SELinuxObjectRec*)dixLookupPrivate(&pSel.devPrivates, objectKey);
@@ -635,7 +635,7 @@ private void SELinuxProperty(CallbackListPtr* pcbl, void* unused, void* calldata
             return;
         }
         while (pProp.propertyName != name || obj.sid != tsid) {
-            if ((pProp = pProp.next) == null) {
+            if ((pProp = pProp.next) is null) {
                 break;
             }
             obj = cast(SELinuxObjectRec*)dixLookupPrivate(&pProp.devPrivates, objectKey);

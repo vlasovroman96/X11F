@@ -75,7 +75,7 @@ private Bool exaPixmapIsDirty(PixmapPtr pPix)
 {
     mixin(ExaPixmapPriv!("pPix"));
 
-    if (pExaPixmap == null)
+    if (pExaPixmap is null)
         // EXA_FatalErrorDebugWithRet(("EXA bug: exaPixmapIsDirty was called on a non-exa pixmap.\n"), TRUE);
 
     if (!pExaPixmap.pDamage)
@@ -341,12 +341,12 @@ private void exaDoMoveInPixmap(ExaMigrationPtr migrate)
     if (pExaPixmap.accel_blocked)
         return;
 
-    if (pExaPixmap.area == null) {
+    if (pExaPixmap.area is null) {
         pExaPixmap.area =
             exaOffscreenAlloc(pScreen, pExaPixmap.fb_size,
                               pExaScr.info.pixmapOffsetAlign, FALSE,
                               &exaPixmapSave, cast(void*) pPixmap);
-        if (pExaPixmap.area == null)
+        if (pExaPixmap.area is null)
             return;
 
         pExaPixmap.fb_ptr = cast(CARD8*) pExaScr.info.memoryBase +
@@ -529,7 +529,7 @@ private Bool exaAssertNotDirty(PixmapPtr pPixmap)
     BoxPtr pBox = void;
     Bool ret = TRUE, save_use_gpu_copy = void;
 
-    if (exaPixmapIsPinned(pPixmap) || pExaPixmap.area == null)
+    if (exaPixmapIsPinned(pPixmap) || pExaPixmap.area is null)
         return ret;
 
     RegionNull(&ValidReg);

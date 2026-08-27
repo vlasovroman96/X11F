@@ -260,7 +260,7 @@ static if (PORT) {
 }
 static if (EPOLL) {
     ospoll* ospoll = cast(ospoll*) cast(ospoll*) calloc(1, ospoll.sizeof);
-    if (ospoll == null)
+    if (ospoll is null)
         return null;
     ospoll.epoll_fd = epoll_create1(EPOLL_CLOEXEC);
     if (ospoll.epoll_fd < 0) {

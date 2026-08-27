@@ -204,7 +204,7 @@ private VisualPtr AddScreenVisuals(ScreenPtr pScreen, int count, int d)
             break;
         }
     }
-    if (depth == null)
+    if (depth is null)
         return null;
 
     if (ResizeVisualArray(pScreen, count, depth) == FALSE)
@@ -394,7 +394,7 @@ void __glXScreenInit(__GLXscreen* pGlxScreen, ScreenPtr pScreen)
 
         /* Create a new X visual for our FBconfig. */
         visual = AddScreenVisuals(pScreen, 1, depth);
-        if (visual == null)
+        if (visual is null)
             continue;
 
         if (!noCompositeExtension) {

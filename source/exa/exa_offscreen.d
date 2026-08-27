@@ -107,7 +107,7 @@ private ExaOffscreenArea* exaFindAreaToEvict(ExaScreenPrivPtr pExaScr, int size,
         while (begin != null && begin.state == ExaOffscreenLocked)
             begin = end = begin.next;
 
-        if (begin == null)
+        if (begin is null)
             break;
 
         /* adjust size needed to account for alignment loss for this area */
@@ -331,7 +331,7 @@ private void ExaOffscreenEjectPixmaps(ScreenPtr pScreen)
                 break;
             }
         }
-        if (area == null)
+        if (area is null)
             break;
     }
     ExaOffscreenValidate(pScreen);

@@ -226,7 +226,7 @@ void xnestChangeClip(GCPtr pGC, int type, void* pValue, int nRects)
         {
             nRects = RegionNumRects(cast(RegionPtr) pValue);
             xcb_rectangle_t* rects = cast(xcb_rectangle_t*) calloc(nRects, xcb_rectangle_t.sizeof);
-            if (rects == null) {
+            if (rects is null) {
                 ErrorF("xnestChangeClip: memory alloc failure");
                 return;
             }

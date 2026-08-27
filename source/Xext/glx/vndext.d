@@ -85,9 +85,9 @@ GlxScreenPriv* GlxGetScreen(ScreenPtr pScreen)
 {
     if (pScreen != null) {
         GlxScreenPriv* priv = xglvGetScreenPrivate(pScreen);
-        if (priv == null) {
+        if (priv is null) {
             priv = cast(GlxScreenPriv*) cast(GlxScreenPriv*) calloc(1, GlxScreenPriv.sizeof);
-            if (priv == null) {
+            if (priv is null) {
                 return null;
             }
 
@@ -113,7 +113,7 @@ private void GlxMappingReset()
 private Bool GlxMappingInit()
 {
     mixin(DIX_FOR_EACH_SCREEN!q{
-        if (GlxGetScreen(walkScreen) == null) {
+        if (GlxGetScreen(walkScreen) is null) {
             GlxMappingReset();
             return FALSE;
         }
@@ -142,7 +142,7 @@ private void xglvSetClientPrivate(ClientPtr pClient, void* priv)
 GlxClientPriv* GlxGetClientData(ClientPtr client)
 {
     GlxClientPriv* cl = xglvGetClientPrivate(client);
-    if (cl == null) {
+    if (cl is null) {
         cl = cast(GlxClientPriv*) calloc(1, ((GlxClientPriv).sizeof
                 + screenInfo.numScreens * (GlxServerVendor*).sizeof));
         if (cl != null) {

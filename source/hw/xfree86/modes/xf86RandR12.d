@@ -1351,7 +1351,7 @@ private Bool xf86RandR12CrtcSetGamma(ScreenPtr pScreen, RRCrtcPtr randr_crtc)
     xf86CrtcPtr crtc = cast(_xf86Crtc*)randr_crtc.devPrivate;
     int max_size = crtc.gamma_size;
 
-    if (crtc.funcs.gamma_set == null)
+    if (crtc.funcs.gamma_set is null)
         return FALSE;
 
     if (randrp.palette_size) {
@@ -1503,7 +1503,7 @@ private Bool xf86RandR12OutputSetProperty(ScreenPtr pScreen, RROutputPtr randr_o
     /* If we don't have any property handler, then we don't care what the
      * user is setting properties to.
      */
-    if (output.funcs.set_property == null)
+    if (output.funcs.set_property is null)
         return TRUE;
 
     /*
@@ -1518,7 +1518,7 @@ private Bool xf86RandR13OutputGetProperty(ScreenPtr pScreen, RROutputPtr randr_o
 {
     xf86OutputPtr output = cast(_xf86Output*)randr_output.devPrivate;
 
-    if (output.funcs.get_property == null)
+    if (output.funcs.get_property is null)
         return TRUE;
 
     /* Should be safe even w/o vtSema */
@@ -2091,8 +2091,8 @@ private Bool xf86RandR14ProviderSetProperty(ScreenPtr pScreen, RRProviderPtr ran
     /* If we don't have any property handler, then we don't care what the
      * user is setting properties to.
      */
-    if (config.provider_funcs == null ||
-        config.provider_funcs.set_property == null)
+    if (config.provider_funcs is null ||
+        config.provider_funcs.set_property is null)
         return TRUE;
 
     /*
@@ -2108,8 +2108,8 @@ private Bool xf86RandR14ProviderGetProperty(ScreenPtr pScreen, RRProviderPtr ran
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
     xf86CrtcConfigPtr config = mixin(XF86_CRTC_CONFIG_PTR!("pScrn"));
 
-    if (config.provider_funcs == null ||
-        config.provider_funcs.get_property == null)
+    if (config.provider_funcs is null ||
+        config.provider_funcs.get_property is null)
         return TRUE;
 
     /* Should be safe even w/o vtSema */

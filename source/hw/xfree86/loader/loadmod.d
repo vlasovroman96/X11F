@@ -720,7 +720,7 @@ ModuleDescPtr DuplicateModule(ModuleDescPtr mod, ModuleDescPtr parent)
         return null;
 
     ret = cast(ModuleDesc*) calloc(1, ModuleDesc.sizeof);
-    if (ret == null)
+    if (ret is null)
         return null;
 
     ret.handle = mod.handle;
@@ -912,7 +912,7 @@ ModuleDescPtr LoadModule(const(char)* module_, void* options, const(XF86ModReqIn
         goto LoadModule_fail;
     }
     ret.handle = LoaderOpen(found, errmaj);
-    if (ret.handle == null)
+    if (ret.handle is null)
         goto LoadModule_fail;
 
     /* drop any explicit suffix from the module name */
@@ -998,7 +998,7 @@ void UnloadModule(ModuleDescPtr mod)
     if (mod == cast(ModuleDescPtr) 1)
         return;
 
-    if (mod == null)
+    if (mod is null)
         return;
 
     if (mod.VersionInfo) {
@@ -1118,7 +1118,7 @@ private char* LoaderGetCanonicalName(const(char)* modname, PatternPtr patterns)
 
     /* Strip off any leading path */
     s = strrchr(modname, '/');
-    if (s == null)
+    if (s is null)
         s = modname;
     else
         s++;

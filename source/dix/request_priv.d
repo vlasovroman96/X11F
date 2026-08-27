@@ -138,13 +138,13 @@ enum string X_REQUEST_HEAD_STRUCT(alias T) =
 /* declare request struct and check size (at least as big) */
 enum string X_REQUEST_HEAD_AT_LEAST(alias type) = `
     mixin(REQUEST!` ~ type.stringof ~ `); 
-    if (stuff == null) return (BadLength); 
+    if (stuff is null) return (BadLength); 
     mixin(REQUEST_AT_LEAST_SIZE!` ~ type.stringof ~ `); 
 `;
 /* declare request struct, do NOT check size !*/
 enum string X_REQUEST_HEAD_NO_CHECK(string type) = `
     mixin(REQUEST!` ~ type ~ `); 
-    if (stuff == null) return (BadLength); 
+    if (stuff is null) return (BadLength); 
 `;
 /* swap a CARD16 request struct field if necessary */
 enum string X_REQUEST_FIELD_CARD16(string field) = `

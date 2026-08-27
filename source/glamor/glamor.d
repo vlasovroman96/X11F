@@ -139,7 +139,7 @@ Bool glamor_set_pixmap_texture(PixmapPtr pixmap, uint tex)
                                      pixmap.drawable.width,
                                      pixmap.drawable.height, tex, 0);
 
-    if (fbo == null) {
+    if (fbo is null) {
         ErrorF("XXX fail to create fbo.\n");
         return FALSE;
     }
@@ -268,7 +268,7 @@ PixmapPtr glamor_create_pixmap(ScreenPtr screen, int w, int h, int depth, uint u
                                       tile_size, tile_size, pixmap_priv);
     }
 
-    if (fbo == null) {
+    if (fbo is null) {
         fbDestroyPixmap(pixmap);
         return fbCreatePixmap(screen, w, h, depth, usage);
     }
@@ -639,7 +639,7 @@ Bool glamor_init(ScreenPtr screen, uint flags)
         return FALSE;
     }
     glamor_priv = cast(glamor_screen_private*) calloc(1, typeof(*glamor_priv).sizeof);
-    if (glamor_priv == null) {
+    if (glamor_priv is null) {
         if (flags & GLAMOR_USE_EGL_SCREEN) {
             glamor_egl_cleanup_screen(screen);
         }

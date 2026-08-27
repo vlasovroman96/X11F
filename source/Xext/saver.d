@@ -374,7 +374,7 @@ private int ScreenSaverFreeSuspend(void* value, XID id)
     }
 
     /* Re-enable the screensaver if this was the last client suspending it. */
-    if (screenSaverSuspended && suspendingClients == null) {
+    if (screenSaverSuspended && suspendingClients is null) {
         screenSaverSuspended = FALSE;
 
     void checkSuspend() {

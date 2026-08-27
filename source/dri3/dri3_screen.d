@@ -43,7 +43,7 @@ int dri3_open(ClientPtr client, ScreenPtr screen, RRProviderPtr provider, int* f
     dri3_screen_priv_ptr ds = dri3_screen_priv(screen);
     const(dri3_screen_info_rec)* info = ds.info;
 
-    if (info == null)
+    if (info is null)
         return BadMatch;
 
     if (info.version_ >= 1 && info.open_client != null)
@@ -129,7 +129,7 @@ int dri3_fd_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* size)
     if (info.fd_from_pixmap != null)
         return (*info.fd_from_pixmap)(screen, pixmap, stride, size);
 
-    if (info.version_ < 2 || info.fds_from_pixmap == null)
+    if (info.version_ < 2 || info.fds_from_pixmap is null)
         return -1;
 
     /* If using the new interface, make sure that it's a single plane starting
@@ -238,7 +238,7 @@ int dri3_get_supported_modifiers(ScreenPtr screen, DrawablePtr drawable, CARD8 d
             break;
         }
     }
-    if (screen_format == null)
+    if (screen_format is null)
         return BadMatch;
 
     if (screen_format.num_modifiers == 0) {

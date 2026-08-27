@@ -289,7 +289,7 @@ int xf86getToken(const(xf86ConfigSymTabRec)* tab)
             if (numFiles > 0)
                 ret = xf86getNextLine();
             else {
-                if (builtinConfig[builtinIndex] == null)
+                if (builtinConfig[builtinIndex] is null)
                     ret = null;
                 else {
                     strlcpy(configBuf,
@@ -298,7 +298,7 @@ int xf86getToken(const(xf86ConfigSymTabRec)* tab)
                     builtinIndex++;
                 }
             }
-            if (ret == null) {
+            if (ret is null) {
                 /*
                  * if necessary, move to the next file and
                  * read the first line
@@ -1034,7 +1034,7 @@ char* xf86addComment(char* cur, const(char)* add)
     const(char)* cstr = void;
     int len = void, curlen = void, iscomment = void, hasnewline = 0, insnewline = void, endnewline = void;
 
-    if (add == null || add[0] == '\0')
+    if (add is null || add[0] == '\0')
         return cur;
 
     if (cur) {

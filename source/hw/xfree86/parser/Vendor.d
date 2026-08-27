@@ -240,7 +240,7 @@ void xf86printVendorSection(FILE* cf, XF86ConfVendorPtr ptr)
 
 void xf86freeVendorList(XF86ConfVendorPtr p)
 {
-    if (p == null)
+    if (p is null)
         return;
     xf86freeVendorSubList(p.vnd_sub_lst);
     mixin(TestFree!(`p.vnd_identifier`));

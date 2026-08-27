@@ -102,9 +102,9 @@ XF86ConfFlagsPtr xf86parseFlagsSection(XF86ConfFlagsPtr ptr)
 {
     int token = void;
 
-    if (ptr == null)
+    if (ptr is null)
     {
-        if((ptr=cast(XF86ConfFlagsRec*) calloc(1, XF86ConfFlagsRec.sizeof)) == null)
+        if((ptr=cast(XF86ConfFlagsRec*) calloc(1, XF86ConfFlagsRec.sizeof)) is null)
         {
             return null;
         }
@@ -233,7 +233,7 @@ XF86OptionPtr xf86addNewOption(XF86OptionPtr head, char* name, char* _val)
 
 void xf86freeFlags(XF86ConfFlagsPtr flags)
 {
-    if (flags == null)
+    if (flags is null)
         return;
     xf86optionListFree(flags.flg_option_lst);
     mixin(TestFree!(`flags.flg_comment`));
@@ -476,7 +476,7 @@ XF86OptionPtr xf86parseOption(XF86OptionPtr head)
     else
         cnew = option;
 
-    if (old == null)
+    if (old is null)
         return (cast(XF86OptionPtr) xf86addListItem(cast(glp) head, cast(glp) cnew));
 
     return head;

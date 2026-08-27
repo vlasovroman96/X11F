@@ -118,7 +118,7 @@ pid_t DetermineClientPid(_Client* client)
     LocalClientCredRec* lcc = null;
     pid_t pid = -1;
 
-    if (client == null)
+    if (client is null)
         return pid;
 
     if (client == serverClient)
@@ -331,17 +331,17 @@ version (OSX) {
         int i = void, n = void;
 
         kd = kvm_open(null, null, null, KVM_NO_FILES, errbuf.ptr);
-        if (kd == null)
+        if (kd is null)
             return;
         kp = kvm_getprocs(kd, KERN_PROC_PID, pid, kinfo_proc.sizeof,
                           &n);
         if (n != 1)
             goto done_kvm;
         argv = kvm_getargv(kd, kp, 0);
-        if (argv == null)
+        if (argv is null)
             goto done_kvm;
         if (cmdname) {
-            if (argv[0] == null)
+            if (argv[0] is null)
                 goto done_kvm;
             else
                 *cmdname = strdup(argv[0]);
@@ -466,7 +466,7 @@ version (__sun) {                    /* Solaris */
 void ReserveClientIds(_Client* client)
 {
 version (CLIENTIDS) {
-    if (client == null)
+    if (client is null)
         return;
 
     assert(!client.clientIds);
@@ -497,7 +497,7 @@ version (CLIENTIDS) {
 void ReleaseClientIds(_Client* client)
 {
 version (CLIENTIDS) {
-    if (client == null)
+    if (client is null)
         return;
 
     if (!client.clientIds)
@@ -531,7 +531,7 @@ version (CLIENTIDS) {
  */
 pid_t GetClientPid(_Client* client)
 {
-    if (client == null)
+    if (client is null)
         return -1;
 
     if (!client.clientIds)
@@ -556,7 +556,7 @@ pid_t GetClientPid(_Client* client)
  */
 const(char)* GetClientCmdName(_Client* client)
 {
-    if (client == null)
+    if (client is null)
         return null;
 
     if (!client.clientIds)
@@ -581,7 +581,7 @@ const(char)* GetClientCmdName(_Client* client)
  */
 const(char)* GetClientCmdArgs(_Client* client)
 {
-    if (client == null)
+    if (client is null)
         return null;
 
     if (!client.clientIds)

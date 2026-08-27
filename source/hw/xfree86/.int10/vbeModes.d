@@ -48,7 +48,7 @@ private int GetDepthFlag(vbeInfoPtr pVbe, int id)
     VbeModeInfoBlock* mode = void;
     int bpp = void;
 
-    if ((mode = VBEGetModeInfo(pVbe, id)) == null)
+    if ((mode = VBEGetModeInfo(pVbe, id)) is null)
         return 0;
 
     if (VBE_MODE_USABLE(mode, 0)) {
@@ -132,7 +132,7 @@ private DisplayModePtr CheckMode(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBloc
 
     major = cast(uint) (vbe.VESAVersion >> 8);
 
-    if ((mode = VBEGetModeInfo(pVbe, id)) == null)
+    if ((mode = VBEGetModeInfo(pVbe, id)) is null)
         return null;
 
     /* Does the mode match the depth/bpp? */
@@ -290,7 +290,7 @@ DisplayModePtr VBEGetModePool(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBlock* 
                                xf86ModeStatusToString(status));
                 }
                 else {
-                    if (p == null) {
+                    if (p is null) {
                         modePool = pMode;
                     }
                     else {
@@ -323,7 +323,7 @@ DisplayModePtr VBEGetModePool(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBlock* 
                                xf86ModeStatusToString(status));
                 }
                 else {
-                    if (p == null) {
+                    if (p is null) {
                         modePool = pMode;
                     }
                     else {

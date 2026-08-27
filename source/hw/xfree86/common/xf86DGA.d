@@ -1560,7 +1560,7 @@ private int ProcXDGASetClientVersion(ClientPtr client)
     DGAPrivPtr pPriv = void;
 
     mixin(REQUEST_AT_LEAST_SIZE!xXDGASetClientVersionReq);
-    if ((pPriv = mixin(DGA_GETPRIV!(`client`))) == null) {
+    if ((pPriv = mixin(DGA_GETPRIV!(`client`))) is null) {
         pPriv = cast(DGAPrivRec*) calloc(1, DGAPrivRec.sizeof);
         /* XXX Need to look into freeing this */
         if (!pPriv)

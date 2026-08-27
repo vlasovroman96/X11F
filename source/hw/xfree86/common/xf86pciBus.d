@@ -296,7 +296,7 @@ Bool xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func)
 
     s = cast(char*)Xstrdup(id);
     p = strtok(s, ":");
-    if (p == null || *p == 0) {
+    if (p is null || *p == 0) {
         free(s);
         return FALSE;
     }
@@ -320,7 +320,7 @@ Bool xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func)
     if (d != null && *d != 0)
         *bus += atoi(d) << 8;
     p = strtok(null, ":");
-    if (p == null || *p == 0) {
+    if (p is null || *p == 0) {
         free(s);
         return FALSE;
     }
@@ -333,7 +333,7 @@ Bool xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func)
     *device = atoi(p);
     *func = 0;
     p = strtok(null, ":");
-    if (p == null || *p == 0) {
+    if (p is null || *p == 0) {
         free(s);
         return TRUE;
     }
@@ -508,7 +508,7 @@ Bool xf86PciProbeDev(DriverPtr drvp)
 
         pci_iterator_destroy(iter);
 
-        if (pPci == null) {
+        if (pPci is null) {
             continue;
         }
         device_id = (devList[i].chipID > 0)
@@ -759,7 +759,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
     /* In "probe only" or "configure" mode (signaled by instances being NULL),
      * our work is done.  Return the number of detected devices.
      */
-    if (instances == null) {
+    if (instances is null) {
         return numFound;
     }
 
@@ -1317,7 +1317,7 @@ void xf86MatchDriverFromFiles(ushort match_vendor, ushort match_chip, XF86Matche
             snprintf(path_name.ptr, path_name.sizeof, "%s/%s",
                      PCI_TXT_IDS_PATH.ptr, direntry.d_name.ptr);
             fp = fopen(path_name.ptr, "r");
-            if (fp == null) {
+            if (fp is null) {
                 LogMessageVerb(X_ERROR, 1, "Could not open %s for reading. Exiting.\n",
                                path_name.ptr);
                 goto end;

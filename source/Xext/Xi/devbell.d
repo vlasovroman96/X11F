@@ -132,7 +132,7 @@ int ProcXDeviceBell(ClientPtr client)
         newpercent = base + newpercent;
     else
         newpercent = base - newpercent + stuff.percent;
-    if (proc == null)
+    if (proc is null)
         return BadValue;
     (*proc) (newpercent, dev, ctrl, class_);
     return Success;

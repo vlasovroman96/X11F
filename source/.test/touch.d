@@ -151,12 +151,12 @@ private void touch_find_ddxid()
 
     /* non-existing */
     ti = TouchFindByDDXID(&dev, 20, FALSE);
-    assert(ti == null);
+    assert(ti is null);
 
     /* Non-active */
     dev.last.touches[0].active = FALSE;
     ti = TouchFindByDDXID(&dev, 10, FALSE);
-    assert(ti == null);
+    assert(ti is null);
 
     /* create on number 2 */
     dev.last.touches[0].active = TRUE;

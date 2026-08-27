@@ -344,7 +344,7 @@ XF86ConfScreenPtr xf86parseScreenSection()
                 if (xf86nameCompare(xf86_lex_val.str, aptr.al_adaptor_str) == 0)
                     break;
 
-            if (aptr == null) {
+            if (aptr is null) {
                 aptr = cast(XF86ConfAdaptorLinkRec*) calloc(1, XF86ConfAdaptorLinkRec.sizeof);
                 aptr.list.next = null;
                 aptr.al_adaptor_str = xf86_lex_val.str;

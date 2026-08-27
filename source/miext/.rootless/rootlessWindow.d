@@ -86,11 +86,11 @@ void RootlessNativeWindowStateChanged(WindowPtr pWin, uint state)
 {
     RootlessWindowRec* winRec = void;
 
-    if (pWin == null)
+    if (pWin is null)
         return;
 
     winRec = WINREC(pWin);
-    if (winRec == null)
+    if (winRec is null)
         return;
 
     winRec.is_offscreen = ((state & XP_WINDOW_STATE_OFFSCREEN) != 0);
@@ -199,7 +199,7 @@ void RootlessWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr p
 
 private Bool RootlessGetShape(WindowPtr pWin, RegionPtr pShape)
 {
-    if (wBoundingShape(pWin) == null)
+    if (wBoundingShape(pWin) is null)
         return FALSE;
 
     /* wBoundingShape is relative to *inner* origin of window.
@@ -223,7 +223,7 @@ private void RootlessReshapeFrame(WindowPtr pWin)
     RegionPtr pShape = void;
 
     // If the window is not yet framed, do nothing
-    if (winRec == null)
+    if (winRec is null)
         return;
 
     if (IsRoot(pWin))
@@ -422,7 +422,7 @@ Bool RootlessRealizeWindow(WindowPtr pWin)
         RootlessWindowRec* winRec = void;
 
         winRec = RootlessEnsureFrame(pWin);
-        if (winRec == null)
+        if (winRec is null)
             return FALSE;
 
         winRec.is_reorder_pending = TRUE;
@@ -461,16 +461,16 @@ RootlessFrameID RootlessFrameForWindow(WindowPtr pWin, Bool create)
     RootlessWindowRec* winRec = void;
 
     pTopWin = TopLevelParent(pWin);
-    if (pTopWin == null)
+    if (pTopWin is null)
         return null;
 
     winRec = WINREC(pTopWin);
 
-    if (winRec == null && create && pWin.drawable.class_ == InputOutput) {
+    if (winRec is null && create && pWin.drawable.class_ == InputOutput) {
         winRec = RootlessEnsureFrame(pTopWin);
     }
 
-    if (winRec == null)
+    if (winRec is null)
         return null;
 
     return winRec.wid;
@@ -540,7 +540,7 @@ void RootlessReorderWindow(WindowPtr pWin)
 
         newPrevW = pWin.prevSib;
         while (newPrevW &&
-               (WINREC(newPrevW) == null || !newPrevW.realized ||
+               (WINREC(newPrevW) is null || !newPrevW.realized ||
                 newPrevW.unhittable != pWin.unhittable))
             newPrevW = newPrevW.prevSib;
 
@@ -651,13 +651,13 @@ void RootlessCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
         WindowPtr top = void;
 
         top = TopLevelParent(pWin);
-        if (top == null) {
+        if (top is null) {
             RL_DEBUG_MSG("no parent\n");
             goto out;
         }
 
         winRec = WINREC(top);
-        if (winRec == null) {
+        if (winRec is null) {
             RL_DEBUG_MSG("not framed\n");
             goto out;
         }
@@ -980,7 +980,7 @@ void RootlessRepositionWindow(WindowPtr pWin)
     RootlessWindowRec* winRec = WINREC(pWin);
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    if (winRec == null)
+    if (winRec is null)
         return;
 
     RootlessStopDrawing(pWin, FALSE);
@@ -1008,7 +1008,7 @@ void RootlessReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
 
     /* Check that window is not top-level now, but used to be. */
     if (IsRoot(pWin) || IsRoot(pWin.parent)
-        || IsTopLevel(pWin) || winRec == null) {
+        || IsTopLevel(pWin) || winRec is null) {
         goto out;
     }
 
@@ -1067,7 +1067,7 @@ void RootlessFlushWindowColormap(WindowPtr pWin)
     RootlessWindowRec* winRec = WINREC(pWin);
     ScreenPtr pScreen = pWin.drawable.pScreen;
 
-    if (winRec == null)
+    if (winRec is null)
         return;
 
     RootlessStopDrawing(pWin, FALSE);
@@ -1142,13 +1142,13 @@ void RootlessOrderAllWindows(Bool include_unhitable)
 
     DIX_FOR_EACH_SCREEN({
         WindowPtr pWin = walkScreen.root;
-        if (pWin == null)
+        if (pWin is null)
             continue;
 
         for (pWin = pWin.firstChild; pWin != null; pWin = pWin.nextSib) {
             if (!pWin.realized)
                 continue;
-            if (RootlessEnsureFrame(pWin) == null)
+            if (RootlessEnsureFrame(pWin) is null)
                 continue;
             if (!include_unhitable && pWin.unhittable)
                 continue;
@@ -1196,7 +1196,7 @@ void RootlessHideAllWindows()
 
     DIX_FOR_EACH_SCREEN({
         WindowPtr pWin = walkScreen.root;
-        if (pWin == null)
+        if (pWin is null)
             continue;
 
         for (pWin = pWin.firstChild; pWin != null; pWin = pWin.nextSib) {
@@ -1225,7 +1225,7 @@ void RootlessShowAllWindows()
 
     DIX_FOR_EACH_SCREEN({
         WindowPtr pWin = walkScreen.root;
-        if (pWin == null)
+        if (pWin is null)
             continue;
 
         for (pWin = pWin.firstChild; pWin != null; pWin = pWin.nextSib) {
@@ -1233,7 +1233,7 @@ void RootlessShowAllWindows()
                 continue;
 
             winRec = RootlessEnsureFrame(pWin);
-            if (winRec == null)
+            if (winRec is null)
                 continue;
 
             RootlessReorderWindow(pWin);

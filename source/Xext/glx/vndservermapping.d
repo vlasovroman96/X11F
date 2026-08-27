@@ -64,7 +64,7 @@ GlxServerVendor* GlxGetXIDMap(XID id)
 {
     GlxServerVendor* vendor = LookupXIDMapResource(id);
 
-    if (vendor == null) {
+    if (vendor is null) {
         // If we haven't seen this XID before, then it may be a drawable that
         // wasn't created through GLX, like a regular X window or pixmap. Try
         // to look up a matching drawable to find a screen number for it.
@@ -81,7 +81,7 @@ GlxServerVendor* GlxGetXIDMap(XID id)
 
 Bool GlxAddXIDMap(XID id, GlxServerVendor* vendor)
 {
-    if (id == 0 || vendor == null) {
+    if (id == 0 || vendor is null) {
         return FALSE;
     }
     if (LookupXIDMapResource(id) != null) {
@@ -100,18 +100,18 @@ GlxContextTagInfo* GlxAllocContextTag(ClientPtr client, GlxServerVendor* vendor)
     GlxClientPriv* cl = void;
     uint index = void;
 
-    if (vendor == null) {
+    if (vendor is null) {
         return null;
     }
 
     cl = GlxGetClientData(client);
-    if (cl == null) {
+    if (cl is null) {
         return null;
     }
 
     // Look for a free tag index.
     for (index=0; index<cl.contextTagCount; index++) {
-        if (cl.contextTags[index].vendor == null) {
+        if (cl.contextTags[index].vendor is null) {
             break;
         }
     }
@@ -126,7 +126,7 @@ GlxContextTagInfo* GlxAllocContextTag(ClientPtr client, GlxServerVendor* vendor)
 
         newTags = cast(GlxContextTagInfo*)
             realloc(cl.contextTags, newSize * GlxContextTagInfo.sizeof);
-        if (newTags == null) {
+        if (newTags is null) {
             return null;
         }
 
@@ -149,7 +149,7 @@ GlxContextTagInfo* GlxAllocContextTag(ClientPtr client, GlxServerVendor* vendor)
 GlxContextTagInfo* GlxLookupContextTag(ClientPtr client, GLXContextTag tag)
 {
     GlxClientPriv* cl = GlxGetClientData(client);
-    if (cl == null) {
+    if (cl is null) {
         return null;
     }
 
@@ -178,12 +178,12 @@ Bool GlxSetScreenVendor(ScreenPtr screen, GlxServerVendor* vendor)
 {
     GlxScreenPriv* priv = void;
 
-    if (vendor == null) {
+    if (vendor is null) {
         return FALSE;
     }
 
     priv = GlxGetScreen(screen);
-    if (priv == null) {
+    if (priv is null) {
         return FALSE;
     }
 
@@ -199,12 +199,12 @@ Bool GlxSetClientScreenVendor(ClientPtr client, ScreenPtr screen, GlxServerVendo
 {
     GlxClientPriv* cl = void;
 
-    if (screen == null || screen.isGPU) {
+    if (screen is null || screen.isGPU) {
         return FALSE;
     }
 
     cl = GlxGetClientData(client);
-    if (cl == null) {
+    if (cl is null) {
         return FALSE;
     }
 

@@ -194,7 +194,7 @@ private int send_buffers_reply(ClientPtr client, DrawablePtr pDrawable, DRI2Buff
     int skip = 0;
     int i = void;
 
-    if (buffers == null)
+    if (buffers is null)
         return BadAlloc;
 
     if (pDrawable.type == DRAWABLE_WINDOW) {

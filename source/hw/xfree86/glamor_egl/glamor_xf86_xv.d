@@ -113,7 +113,7 @@ XF86VideoAdaptorPtr glamor_xv_init(ScreenPtr screen, int num_texture_ports)
 
     adapt = cast(_XF86VideoAdaptorRec*)calloc(1, (XF86VideoAdaptorRec).sizeof + num_texture_ports *
                    (((glamor_port_private).sizeof + DevUnion.sizeof)));
-    if (adapt == null)
+    if (adapt is null)
         return null;
 
     adapt.type = XvWindowMask | XvInputMask | XvImageMask;

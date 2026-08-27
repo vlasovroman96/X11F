@@ -229,7 +229,7 @@ private int queue_flip_on_crtc(ScreenPtr screen, xf86CrtcPtr crtc, ms_flipdata* 
     uint seq = void;
 
     flip = cast(ms_crtc_pageflip*) cast(ms_crtc_pageflip*) calloc(1, ms_crtc_pageflip.sizeof);
-    if (flip == null) {
+    if (flip is null) {
         return QUEUE_FLIP_ALLOC_FAILED;
     }
 

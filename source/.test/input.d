@@ -1078,7 +1078,7 @@ private void xi_unregister_handlers()
     XIUnregisterPropertyHandler(&dev, 2);
     assert(dev.properties.handlers.id == 1);
     XIUnregisterPropertyHandler(&dev, 1);
-    assert(dev.properties.handlers == null);
+    assert(dev.properties.handlers is null);
 
     handler = XIRegisterPropertyHandler(&dev, null, null, null);
     assert(handler == 4);
@@ -1087,13 +1087,13 @@ private void xi_unregister_handlers()
     handler = XIRegisterPropertyHandler(&dev, null, null, null);
     assert(handler == 6);
     XIUnregisterPropertyHandler(&dev, 3);       /* NOOP */
-    assert(dev.properties.handlers.next.next.next == null);
+    assert(dev.properties.handlers.next.next.next is null);
     XIUnregisterPropertyHandler(&dev, 4);
-    assert(dev.properties.handlers.next.next == null);
+    assert(dev.properties.handlers.next.next is null);
     XIUnregisterPropertyHandler(&dev, 5);
-    assert(dev.properties.handlers.next == null);
+    assert(dev.properties.handlers.next is null);
     XIUnregisterPropertyHandler(&dev, 6);
-    assert(dev.properties.handlers == null);
+    assert(dev.properties.handlers is null);
 
     handler = XIRegisterPropertyHandler(&dev, null, null, null);
     assert(handler == 7);
@@ -1103,7 +1103,7 @@ private void xi_unregister_handlers()
     assert(handler == 9);
 
     XIDeleteAllDeviceProperties(&dev);
-    assert(dev.properties.handlers == null);
+    assert(dev.properties.handlers is null);
     XIUnregisterPropertyHandler(&dev, 7);       /* NOOP */
 
 }
@@ -1122,35 +1122,35 @@ private void cmp_attr_fields(InputAttributes* attr1, InputAttributes* attr2)
         assert(strcmp(attr1.product, attr2.product) == 0);
     }
     else
-        assert(attr2.product == null);
+        assert(attr2.product is null);
 
     if (attr1.vendor != null) {
         assert(attr1.vendor != attr2.vendor);
         assert(strcmp(attr1.vendor, attr2.vendor) == 0);
     }
     else
-        assert(attr2.vendor == null);
+        assert(attr2.vendor is null);
 
     if (attr1.device != null) {
         assert(attr1.device != attr2.device);
         assert(strcmp(attr1.device, attr2.device) == 0);
     }
     else
-        assert(attr2.device == null);
+        assert(attr2.device is null);
 
     if (attr1.pnp_id != null) {
         assert(attr1.pnp_id != attr2.pnp_id);
         assert(strcmp(attr1.pnp_id, attr2.pnp_id) == 0);
     }
     else
-        assert(attr2.pnp_id == null);
+        assert(attr2.pnp_id is null);
 
     if (attr1.usb_id != null) {
         assert(attr1.usb_id != attr2.usb_id);
         assert(strcmp(attr1.usb_id, attr2.usb_id) == 0);
     }
     else
-        assert(attr2.usb_id == null);
+        assert(attr2.usb_id is null);
 
     tags1 = attr1.tags;
     tags2 = attr2.tags;
@@ -1333,7 +1333,7 @@ private void dix_input_valuator_masks()
 
     valuator_mask_free(&mask);
     valuator_mask_free(&copy);
-    assert(mask == null);
+    assert(mask is null);
 }
 
 private void dix_valuator_mode()
@@ -1524,9 +1524,9 @@ private void dix_get_master()
     assert(GetMaster(&kbd, MASTER_ATTACHED) == &vck);
 
     assert(GetPairedDevice(&floating) == &floating);
-    assert(GetMaster(&floating, MASTER_POINTER) == null);
-    assert(GetMaster(&floating, MASTER_KEYBOARD) == null);
-    assert(GetMaster(&floating, MASTER_ATTACHED) == null);
+    assert(GetMaster(&floating, MASTER_POINTER) is null);
+    assert(GetMaster(&floating, MASTER_KEYBOARD) is null);
+    assert(GetMaster(&floating, MASTER_ATTACHED) is null);
 
     assert(GetMaster(&vcp, POINTER_OR_FLOAT) == &vcp);
     assert(GetMaster(&vck, POINTER_OR_FLOAT) == &vcp);
@@ -1573,21 +1573,21 @@ private void input_option_test()
     assert(strcmp(val, "value") == 0);
     list = input_option_free_element(list, "key");
     opt = input_option_find(list, "key");
-    assert(opt == null);
+    assert(opt is null);
 
     opt = input_option_find(list, "2");
     val = input_option_get_value(opt);
     assert(strcmp(val, "v2") == 0);
     list = input_option_free_element(list, "2");
     opt = input_option_find(list, "2");
-    assert(opt == null);
+    assert(opt is null);
 
     opt = input_option_find(list, "3");
     val = input_option_get_value(opt);
     assert(strcmp(val, "v3") == 0);
     list = input_option_free_element(list, "3");
     opt = input_option_find(list, "3");
-    assert(opt == null);
+    assert(opt is null);
 
     /* list deletion */
     list = input_option_new(list, "1", "v3");
@@ -1595,7 +1595,7 @@ private void input_option_test()
     list = input_option_new(list, "3", "v3");
     input_option_free_list(&list);
 
-    assert(list == null);
+    assert(list is null);
 
     list = input_option_new(list, "1", "v1");
     list = input_option_new(list, "2", "v2");
@@ -1627,7 +1627,7 @@ private void input_option_test()
     assert(strcmp(val, "foobar") == 0);
 
     input_option_free_list(&list);
-    assert(list == null);
+    assert(list is null);
 }
 
 private void _test_double_fp16_values(double orig_d)

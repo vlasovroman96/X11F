@@ -185,7 +185,7 @@ private int __glXDRIbindTexImage(__GLXcontext* baseContext, int buffer, __GLXdra
     const(__DRItexBufferExtension)* texBuffer = drawable.screen.texBuffer;
     __GLXDRIcontext* context = cast(__GLXDRIcontext*) baseContext;
 
-    if (texBuffer == null)
+    if (texBuffer is null)
         return Success;
 
 static if (__DRI_TEX_BUFFER_VERSION >= 2) {
@@ -236,7 +236,7 @@ private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLX
         driShare = null;
 
     context = cast(__GLXDRIcontext*) calloc(1, (*context).sizeof);
-    if (context == null)
+    if (context is null)
         return null;
 
     context.base.config = glxConfig;
@@ -262,7 +262,7 @@ private __GLXdrawable* __glXDRIscreenCreateDrawable(ClientPtr client, __GLXscree
     __GLXDRIdrawable* private_ = void;
 
     private_ = cast(__GLXDRIdrawable*)calloc(1, (*private_).sizeof);
-    if (private_ == null)
+    if (private_ is null)
         return null;
 
     private_.screen = driScreen;
@@ -425,7 +425,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
     __GLXDRIscreen* screen = void;
 
     screen = cast(__GLXDRIscreen*) calloc(1, (*screen).sizeof);
-    if (screen == null)
+    if (screen is null)
         return null;
 
     screen.base.destroy = &__glXDRIscreenDestroy;
@@ -441,7 +441,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
                                     __DRI_CORE, 1,
                                     cast(void**) &screen.swrast,
                                     __DRI_SWRAST, 1);
-    if (screen.driver == null) {
+    if (screen.driver is null) {
         goto handle_error;
     }
 
@@ -451,7 +451,7 @@ private __GLXscreen* __glXDRIscreenProbe(ScreenPtr pScreen)
                                             cast(__DRIextensionRec**)loader_extensions_swrast.ptr,
                                             &screen.driConfigs, screen);
 
-    if (screen.driScreen == null) {
+    if (screen.driScreen is null) {
         LogMessage(X_ERROR, "IGLX error: Calling driver entry point failed\n");
         goto handle_error;
     }

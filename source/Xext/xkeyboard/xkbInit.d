@@ -528,7 +528,7 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
     XkbEventCauseRec cause = { 0 };
     XkbRMLVOSet rmlvo_dflts = { null };
 
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.key != null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.kbdfeed != null", "FALSE"));
     mixin(BUG_RETURN_VAL!("rmlvo && keymap", "FALSE"));

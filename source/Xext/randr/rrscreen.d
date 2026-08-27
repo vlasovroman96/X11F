@@ -69,7 +69,7 @@ private void RREditConnectionInfo(ScreenPtr pScreen)
     int screen = 0;
     int d = void;
 
-    if (ConnectionInfo == null)
+    if (ConnectionInfo is null)
         return;
 
     connSetup = cast(xConnSetup*) ConnectionInfo;

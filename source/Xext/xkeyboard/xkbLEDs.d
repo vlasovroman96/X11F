@@ -261,7 +261,7 @@ private void XkbUpdateLedAutoState(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint 
     XkbIndicatorMapPtr map = void;
     uint oldState = void;
 
-    if ((maps_to_check == 0) || (sli.maps == null) || (sli.mapsPresent == 0))
+    if ((maps_to_check == 0) || (sli.maps is null) || (sli.mapsPresent == 0))
         return;
 
     if (dev.key && dev.key.xkbInfo)
@@ -288,7 +288,7 @@ private void XkbUpdateLedAutoState(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint 
     if (affected == 0)
         return;
 
-    if (ed == null) {
+    if (ed is null) {
         ed = &my_ed;
         memset(cast(char*) ed, 0, xkbExtensionDeviceNotify.sizeof);
     }
@@ -298,7 +298,7 @@ private void XkbUpdateLedAutoState(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint 
     }
 
     if ((kbd == dev) && (sli.flags & XkbSLI_IsDefault)) {
-        if (changes == null) {
+        if (changes is null) {
             changes = &my_changes;
             memset(cast(char*) changes, 0, XkbChangesRec.sizeof);
         }
@@ -332,7 +332,7 @@ void XkbUpdateAllDeviceIndicators(XkbChangesPtr changes, XkbEventCausePtr cause)
             KbdFeedbackPtr kf = void;
 
             for (kf = edev.kbdfeed; kf != null; kf = kf.next) {
-                if ((kf.xkb_sli == null) || (kf.xkb_sli.maps == null))
+                if ((kf.xkb_sli is null) || (kf.xkb_sli.maps is null))
                     continue;
                 sli = kf.xkb_sli;
                 XkbUpdateLedAutoState(edev, sli, cast(uint)sli.mapsPresent, null,
@@ -344,7 +344,7 @@ void XkbUpdateAllDeviceIndicators(XkbChangesPtr changes, XkbEventCausePtr cause)
             LedFeedbackPtr lf = void;
 
             for (lf = edev.leds; lf != null; lf = lf.next) {
-                if ((lf.xkb_sli == null) || (lf.xkb_sli.maps == null))
+                if ((lf.xkb_sli is null) || (lf.xkb_sli.maps is null))
                     continue;
                 sli = lf.xkb_sli;
                 XkbUpdateLedAutoState(edev, sli, cast(uint)sli.mapsPresent, null,
@@ -577,9 +577,9 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
 
     sli = null;
     checkAccel = checkNames = FALSE;
-    if ((kf != null) && (kf.xkb_sli == null)) {
+    if ((kf != null) && (kf.xkb_sli is null)) {
         kf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
-        if (sli == null)
+        if (sli is null)
             return null;        /* ALLOCATION ERROR */
         if (dev.key && dev.key.xkbInfo)
             sli.flags = XkbSLI_HasOwnState;
@@ -624,9 +624,9 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
             sli.maps = xkb.indicators.maps.ptr;
         }
     }
-    else if ((lf != null) && (lf.xkb_sli == null)) {
+    else if ((lf != null) && (lf.xkb_sli is null)) {
         lf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
-        if (sli == null)
+        if (sli is null)
             return null;        /* ALLOCATION ERROR */
         if (dev.key && dev.key.xkbInfo)
             sli.flags = XkbSLI_HasOwnState;
@@ -645,9 +645,9 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
     }
     else
         return null;
-    if ((sli.names == null) && (needed_parts & XkbXI_IndicatorNamesMask))
+    if ((sli.names is null) && (needed_parts & XkbXI_IndicatorNamesMask))
         sli.names = cast(ulong*)calloc(XkbNumIndicators, Atom.sizeof);
-    if ((sli.maps == null) && (needed_parts & XkbXI_IndicatorMapsMask))
+    if ((sli.maps is null) && (needed_parts & XkbXI_IndicatorMapsMask))
         sli.maps = cast(_XkbIndicatorMapRec*)calloc(XkbNumIndicators, XkbIndicatorMapRec.sizeof);
     if (checkNames) {
         uint i = void, bit = void;
@@ -730,7 +730,7 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
 
     /* optimization to check for most common case */
     if (((class_ == XkbDfltXIClass) && (id == XkbDfltXIId)) && (dev.kbdfeed)) {
-        if (dev.kbdfeed.xkb_sli == null) {
+        if (dev.kbdfeed.xkb_sli is null) {
             dev.kbdfeed.xkb_sli =
                 XkbAllocSrvLedInfo(dev, dev.kbdfeed, null, needed_parts);
         }
@@ -751,7 +751,7 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
 
         for (kf = dev.kbdfeed; kf != null; kf = kf.next) {
             if ((id == XkbDfltXIId) || (id == kf.ctrl.id)) {
-                if (kf.xkb_sli == null)
+                if (kf.xkb_sli is null)
                     kf.xkb_sli =
                         XkbAllocSrvLedInfo(dev, kf, null, needed_parts);
                 sli = kf.xkb_sli;
@@ -764,7 +764,7 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
 
         for (lf = dev.leds; lf != null; lf = lf.next) {
             if ((id == XkbDfltXIId) || (id == lf.ctrl.id)) {
-                if (lf.xkb_sli == null)
+                if (lf.xkb_sli is null)
                     lf.xkb_sli =
                         XkbAllocSrvLedInfo(dev, null, lf, needed_parts);
                 sli = lf.xkb_sli;
@@ -773,9 +773,9 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
         }
     }
     if (sli) {
-        if ((sli.names == null) && (needed_parts & XkbXI_IndicatorNamesMask))
+        if ((sli.names is null) && (needed_parts & XkbXI_IndicatorNamesMask))
             sli.names = cast(ulong*)calloc(XkbNumIndicators, Atom.sizeof);
-        if ((sli.maps == null) && (needed_parts & XkbXI_IndicatorMapsMask))
+        if ((sli.maps is null) && (needed_parts & XkbXI_IndicatorMapsMask))
             sli.maps = cast(_XkbIndicatorMapRec*)calloc(XkbNumIndicators, XkbIndicatorMapRec.sizeof);
     }
     return sli;
@@ -826,7 +826,7 @@ void XkbApplyLedNameChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint changed
     else
         kbd = inputInfo.keyboard;
 
-    if (ed == null) {
+    if (ed is null) {
         ed = &my_ed;
         memset(cast(char*) ed, 0, xkbExtensionDeviceNotify.sizeof);
     }
@@ -836,7 +836,7 @@ void XkbApplyLedNameChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint changed
     }
 
     if ((kbd == dev) && (sli.flags & XkbSLI_IsDefault)) {
-        if (changes == null) {
+        if (changes is null) {
             changes = &my_changes;
             memset(cast(char*) changes, 0, XkbChangesRec.sizeof);
         }
@@ -901,7 +901,7 @@ void XkbApplyLedMapChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint changed_
     else
         kbd = inputInfo.keyboard;
 
-    if (ed == null) {
+    if (ed is null) {
         ed = &my_ed;
         memset(cast(char*) ed, 0, xkbExtensionDeviceNotify.sizeof);
     }
@@ -911,7 +911,7 @@ void XkbApplyLedMapChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint changed_
     }
 
     if ((kbd == dev) && (sli.flags & XkbSLI_IsDefault)) {
-        if (changes == null) {
+        if (changes is null) {
             changes = &my_changes;
             memset(cast(char*) changes, 0, XkbChangesRec.sizeof);
         }
@@ -960,7 +960,7 @@ void XkbApplyLedStateChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint change
         kbd = inputInfo.keyboard;
     xkbi = kbd.key.xkbInfo;
 
-    if (changes == null) {
+    if (changes is null) {
         changes = &my_changes;
         memset(cast(char*) changes, 0, XkbChangesRec.sizeof);
     }
@@ -987,7 +987,7 @@ void XkbApplyLedStateChanges(DeviceIntPtr dev, XkbSrvLedInfoPtr sli, uint change
     sli.effectiveState = (sli.autoState | sli.explicitState);
     affected = cast(uint)(sli.effectiveState ^ oldState);
 
-    if (ed == null) {
+    if (ed is null) {
         ed = &my_ed;
         memset(cast(char*) ed, 0, xkbExtensionDeviceNotify.sizeof);
     }

@@ -104,7 +104,7 @@ int ProcXGrabDeviceKey(ClientPtr client)
                               DixUseAccess);
         if (ret != Success)
             return ret;
-        if (mdev.key == null)
+        if (mdev.key is null)
             return BadMatch;
     }
     else {

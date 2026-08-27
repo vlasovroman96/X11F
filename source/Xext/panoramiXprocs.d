@@ -125,7 +125,7 @@ int PanoramiXCreateWindow(ClientPtr client)
         }
     }
 
-    if (((newWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == null))
+    if (((newWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
         return BadAlloc;
 
     newWin.type = XRT_WINDOW;

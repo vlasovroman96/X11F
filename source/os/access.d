@@ -334,7 +334,7 @@ private int GetLocalUserAddr(char** addr)
 
     pw = getpwuid(getuid());
 
-    if (pw == null || pw.pw_name == null)
+    if (pw is null || pw.pw_name is null)
         goto out_;
 
     value = pw.pw_name;
@@ -1486,7 +1486,7 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
 {
     siType* s = void, p = void;
 
-    if ((typeName == null) || (addrMatch == null) || (checkAddr == null))
+    if ((typeName is null) || (addrMatch is null) || (checkAddr is null))
         return BadValue;
 
     for (s = siTypeList, p = null; s != null; p = s, s = s.next) {
@@ -1499,10 +1499,10 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
     }
 
     s = cast(siType*) cast(siType*) calloc(1, siType.sizeof);
-    if (s == null)
+    if (s is null)
         return BadAlloc;
 
-    if (p == null)
+    if (p is null)
         siTypeList = s;
     else
         p.next = s;
@@ -1573,7 +1573,7 @@ version (FAMILY_SI_DEBUG) {
         {
             const(char)* resultMsg = void;
 
-            if (s == null) {
+            if (s is null) {
                 resultMsg = "type not registered";
             }
             else {
@@ -2566,7 +2566,7 @@ version (LOCAL_PEERPID) {
 }
 }
 
-    if (client == null)
+    if (client is null)
         return -1;
     ci = (cast(OsCommPtr) client.osPrivate).trans_conn;
 static if (!(HasVersion!"__sun" && HasVersion!"HAVE_GETPEERUCRED")) {
@@ -2580,7 +2580,7 @@ static if (!(HasVersion!"__sun" && HasVersion!"HAVE_GETPEERUCRED")) {
 }
 
     *lccp = cast(LocalClientCredRec*) calloc(1, LocalClientCredRec.sizeof);
-    if (*lccp == null)
+    if (*lccp is null)
         return -1;
     lcc = *lccp;
 
@@ -2607,7 +2607,7 @@ version (HAVE_GETZONEID) {
     lcc.nSuppGids = ucred_getgroups(peercred, &gids);
     if (lcc.nSuppGids > 0) {
         lcc.pSuppGids = calloc(lcc.nSuppGids, int.sizeof);
-        if (lcc.pSuppGids == null) {
+        if (lcc.pSuppGids is null) {
             lcc.nSuppGids = 0;
         }
         else {
@@ -3030,7 +3030,7 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
 {
     siType* s = void, p = void;
 
-    if ((typeName == null) || (addrMatch == null) || (checkAddr == null))
+    if ((typeName is null) || (addrMatch is null) || (checkAddr is null))
         return BadValue;
 
     for (s = siTypeList, p = null; s != null; p = s, s = s.next) {
@@ -3043,10 +3043,10 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
     }
 
     s = cast(siType*) cast(siType*) calloc(1, siType.sizeof);
-    if (s == null)
+    if (s is null)
         return BadAlloc;
 
-    if (p == null)
+    if (p is null)
         siTypeList = s;
     else
         p.next = s;
@@ -3117,7 +3117,7 @@ version (FAMILY_SI_DEBUG) {
         {
             const(char)* resultMsg = void;
 
-            if (s == null) {
+            if (s is null) {
                 resultMsg = "type not registered";
             }
             else {
@@ -3395,7 +3395,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
     Bool parsedOK = FALSE;
     char* addrbuf = cast(char*) calloc(1, len + 1);
 
-    if (addrbuf == null) {
+    if (addrbuf is null) {
         return FALSE;
     }
 
@@ -3529,7 +3529,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
     Bool parsedOK = FALSE;
     char* addrbuf = cast(char*) calloc(1, len + 1);
 
-    if (addrbuf == null) {
+    if (addrbuf is null) {
         return FALSE;
     }
 
@@ -3678,7 +3678,7 @@ version (LOCAL_PEERPID) {
 }
 }
 
-    if (client == null)
+    if (client is null)
         return -1;
     ci = (cast(OsCommPtr) client.osPrivate).trans_conn;
 static if (!(HasVersion!"__sun" && HasVersion!"HAVE_GETPEERUCRED")) {
@@ -3692,7 +3692,7 @@ static if (!(HasVersion!"__sun" && HasVersion!"HAVE_GETPEERUCRED")) {
 }
 
     *lccp = cast(LocalClientCredRec*) calloc(1, LocalClientCredRec.sizeof);
-    if (*lccp == null)
+    if (*lccp is null)
         return -1;
     lcc = *lccp;
 
@@ -3719,7 +3719,7 @@ version (HAVE_GETZONEID) {
     lcc.nSuppGids = ucred_getgroups(peercred, &gids);
     if (lcc.nSuppGids > 0) {
         lcc.pSuppGids = calloc(lcc.nSuppGids, int.sizeof);
-        if (lcc.pSuppGids == null) {
+        if (lcc.pSuppGids is null) {
             lcc.nSuppGids = 0;
         }
         else {

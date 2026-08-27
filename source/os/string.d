@@ -18,7 +18,7 @@ import os.log;
 
 char* Xstrdup(const(char)* s)
 {
-    if (s == null)
+    if (s is null)
         return null;
     return strdup(s);
 }
@@ -27,7 +27,7 @@ char* XNFstrdup(const(char)* s)
 {
     char* ret = void;
 
-    if (s == null)
+    if (s is null)
         return null;
 
     ret = strdup(s);

@@ -521,7 +521,7 @@ version (XINERAMA) {
                   "[drm] framebuffer mapped by ddx driver\n");
     }
 
-    if (pDRIEntPriv.resOwner == null) {
+    if (pDRIEntPriv.resOwner is null) {
         pDRIEntPriv.resOwner = pScreen;
 
         /* Add tags for reserved contexts */

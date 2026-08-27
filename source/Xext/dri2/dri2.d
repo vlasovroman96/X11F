@@ -198,7 +198,7 @@ private ScreenPtr GetScreenPrime(ScreenPtr primary, int prime_id)
             continue;
 
         DRI2ScreenPtr ds = DRI2GetScreen(secondary);
-        if (ds == null)
+        if (ds is null)
             continue;
 
         if (ds.prime_id == prime_id)
@@ -234,7 +234,7 @@ private DRI2DrawablePtr DRI2AllocateDrawable(DrawablePtr pDraw)
 {
     DRI2DrawablePtr pPriv;
     pPriv = cast(DRI2DrawablePtr)calloc(1, (*pPriv).sizeof);
-    if (pPriv == null)
+    if (pPriv is null)
         return null;
 
     DRI2ScreenPtr ds = DRI2GetScreen(pDraw.pScreen);
@@ -321,7 +321,7 @@ private int DRI2AddDrawableRef(DRI2DrawablePtr pPriv, XID id, XID dri2_id, DRI2I
 {
     DRI2DrawableRefPtr ref_;
     ref_ = cast(DRI2DrawableRefPtr)calloc(1, (*ref_).sizeof);
-    if (ref_ == null)
+    if (ref_ is null)
         return BadAlloc;
 
     if (!AddResource(dri2_id, dri2DrawableRes, pPriv)) {
@@ -352,9 +352,9 @@ int DRI2CreateDrawable2(ClientPtr client, DrawablePtr pDraw, XID id, DRI2Invalid
     DRI2ClientPtr dri2_client = dri2ClientPrivate(client);
 
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         pPriv = DRI2AllocateDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return BadAlloc;
 
     pPriv.prime_id = dri2_client.prime_id;
@@ -458,7 +458,7 @@ private void destroy_buffer(DrawablePtr pDraw, DRI2BufferPtr buffer, int prime_i
 
 private int find_attachment(DRI2DrawablePtr pPriv, uint attachment)
 {
-    if (pPriv.buffers == null) {
+    if (pPriv.buffers is null) {
         return -1;
     }
 
@@ -548,7 +548,7 @@ private DRI2BufferPtr* do_get_buffers(DrawablePtr pDraw, int* width, int* height
                                      format, dimensions_match, &buffers[i]))
             buffers_changed = 1;
 
-        if (buffers[i] == null)
+        if (buffers[i] is null)
             goto err_out;
 
         /* If the drawable is a window and the front-buffer is requested,
@@ -584,7 +584,7 @@ private DRI2BufferPtr* do_get_buffers(DrawablePtr pDraw, int* width, int* height
                                      &buffers[i]))
             buffers_changed = 1;
 
-        if (buffers[i] == null)
+        if (buffers[i] is null)
             goto err_out;
         i++;
     }
@@ -595,7 +595,7 @@ private DRI2BufferPtr* do_get_buffers(DrawablePtr pDraw, int* width, int* height
                                      &buffers[i]))
             buffers_changed = 1;
 
-        if (buffers[i] == null)
+        if (buffers[i] is null)
             goto err_out;
 
         i++;
@@ -686,7 +686,7 @@ private void DRI2InvalidateDrawable(DrawablePtr pDraw)
 Bool DRI2ThrottleClient(ClientPtr client, DrawablePtr pDraw)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return FALSE;
 
     /* Throttle to swap limit */
@@ -704,7 +704,7 @@ Bool DRI2ThrottleClient(ClientPtr client, DrawablePtr pDraw)
 void DRI2BlockClient(ClientPtr client, DrawablePtr pDraw)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return;
 
     dri2Sleep(client, pPriv, WAKE_MSC);
@@ -849,7 +849,7 @@ private void dri2_copy_region(DrawablePtr pDraw, RegionPtr pRegion, DRI2BufferPt
 int DRI2CopyRegion(DrawablePtr pDraw, RegionPtr pRegion, uint dest, uint src)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return BadDrawable;
 
     DRI2BufferPtr pDestBuffer = null;
@@ -860,7 +860,7 @@ int DRI2CopyRegion(DrawablePtr pDraw, RegionPtr pRegion, uint dest, uint src)
         if (pPriv.buffers[i].attachment == src)
             pSrcBuffer = cast(DRI2BufferPtr) pPriv.buffers[i];
     }
-    if (pSrcBuffer == null || pDestBuffer == null)
+    if (pSrcBuffer is null || pDestBuffer is null)
         return BadValue;
 
     dri2_copy_region(pDraw, pRegion, pDestBuffer, pSrcBuffer);
@@ -905,7 +905,7 @@ Bool DRI2CanExchange(DrawablePtr pDraw)
 void DRI2WaitMSCComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return;
 
     ProcDRI2WaitMSCReply(client, (cast(CARD64) tv_sec * 1000000) + tv_usec,
@@ -917,7 +917,7 @@ void DRI2WaitMSCComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv
 private void DRI2WakeClient(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null) {
+    if (pPriv is null) {
         LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return;
     }
@@ -944,7 +944,7 @@ private void DRI2WakeClient(ClientPtr client, DrawablePtr pDraw, int frame, uint
 void DRI2SwapComplete(ClientPtr client, DrawablePtr pDraw, int frame, uint tv_sec, uint tv_usec, int type, DRI2SwapEventPtr swap_complete, void* swap_data)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null) {
+    if (pPriv is null) {
         LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return;
     }
@@ -995,7 +995,7 @@ int DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD
     DRI2ScreenPtr ds = DRI2GetScreen(pDraw.pScreen);
 
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null) {
+    if (pPriv is null) {
         LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return BadDrawable;
     }
@@ -1015,7 +1015,7 @@ int DRI2SwapBuffers(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD
         if (pPriv.buffers[i].attachment == DRI2BufferBackLeft)
             pSrcBuffer = cast(DRI2BufferPtr) pPriv.buffers[i];
     }
-    if (pSrcBuffer == null || pDestBuffer == null) {
+    if (pSrcBuffer is null || pDestBuffer is null) {
         LogMessage(X_ERROR, "[DRI2] %s: drawable has no back or front?\n");
         return BadDrawable;
     }
@@ -1089,7 +1089,7 @@ void DRI2SwapInterval(DrawablePtr pDrawable, int interval)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDrawable);
 
-    if (pPriv == null) {
+    if (pPriv is null) {
         LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return;
     }
@@ -1103,7 +1103,7 @@ int DRI2GetMSC(DrawablePtr pDraw, CARD64* ust, CARD64* msc, CARD64* sbc)
     DRI2ScreenPtr ds = DRI2GetScreen(pDraw.pScreen);
 
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null) {
+    if (pPriv is null) {
         LogMessage(X_ERROR, "[DRI2] %s: bad drawable\n");
         return BadDrawable;
     }
@@ -1132,7 +1132,7 @@ int DRI2WaitMSC(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD64 d
 {
     DRI2ScreenPtr ds = DRI2GetScreen(pDraw.pScreen);
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return BadDrawable;
 
     /* Old DDX just completes immediately */
@@ -1150,7 +1150,7 @@ int DRI2WaitMSC(ClientPtr client, DrawablePtr pDraw, CARD64 target_msc, CARD64 d
 int DRI2WaitSBC(ClientPtr client, DrawablePtr pDraw, CARD64 target_sbc)
 {
     DRI2DrawablePtr pPriv = DRI2GetDrawable(pDraw);
-    if (pPriv == null)
+    if (pPriv is null)
         return BadDrawable;
 
     if (pPriv.target_sbc != -1) /* already in use */
@@ -1195,7 +1195,7 @@ Bool DRI2Connect(ClientPtr client, ScreenPtr pScreen, uint driverType, int* fd, 
         return FALSE;
 
     DRI2ScreenPtr ds = DRI2GetScreenPrime(pScreen, prime_id);
-    if (ds == null)
+    if (ds is null)
         return FALSE;
 
     if (driver_id >= ds.numDrivers ||
@@ -1218,7 +1218,7 @@ Bool DRI2Connect(ClientPtr client, ScreenPtr pScreen, uint driverType, int* fd, 
 private int DRI2AuthMagic(ScreenPtr pScreen, uint magic)
 {
     DRI2ScreenPtr ds = DRI2GetScreen(pScreen);
-    if (ds == null)
+    if (ds is null)
         return -EINVAL;
 
     return (*ds.LegacyAuthMagic) (ds.fd, magic);
@@ -1232,7 +1232,7 @@ Bool DRI2Authenticate(ClientPtr client, ScreenPtr pScreen, uint magic)
     DRI2ClientPtr dri2_client = dri2ClientPrivate(client);
 
     DRI2ScreenPtr ds = DRI2GetScreenPrime(pScreen, dri2_client.prime_id);
-    if (ds == null)
+    if (ds is null)
         return FALSE;
 
     ScreenPtr primescreen = GetScreenPrime(pScreen, dri2_client.prime_id);

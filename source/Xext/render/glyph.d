@@ -125,7 +125,7 @@ private GlyphRefPtr FindGlyphRef(GlyphHashPtr hash, CARD32 signature, Bool match
     GlyphPtr glyph = void;
     GlyphRefPtr table = void, gr = void, del = void;
 
-    if ((hash == null) || (hash.hashSet == null))
+    if ((hash is null) || (hash.hashSet is null))
         return null;
 
     CARD32 tableSize = hash.hashSet.size;
@@ -371,7 +371,7 @@ GlyphPtr AllocateGlyph(xGlyphInfo* gi, int fdepth)
 
 private Bool AllocateGlyphHash(GlyphHashPtr hash, GlyphHashSetPtr hashSet)
 {
-    if (hashSet == null)
+    if (hashSet is null)
         return FALSE;
     hash.table = cast(_GlyphRefRec*)calloc(hashSet.size, GlyphRefRec.sizeof);
     if (!hash.table)

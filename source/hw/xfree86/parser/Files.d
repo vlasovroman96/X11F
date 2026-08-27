@@ -93,9 +93,9 @@ XF86ConfFilesPtr xf86parseFilesSection(XF86ConfFilesPtr ptr)
     char* str = void;
     int token = void;
 
-    if (ptr == null)
+    if (ptr is null)
     {
-        if((ptr=cast(XF86ConfFilesRec*) calloc(1, XF86ConfFilesRec.sizeof)) == null)
+        if((ptr=cast(XF86ConfFilesRec*) calloc(1, XF86ConfFilesRec.sizeof)) is null)
         {
             return null;
         }
@@ -113,7 +113,7 @@ XF86ConfFilesPtr xf86parseFilesSection(XF86ConfFilesPtr ptr)
                 mixin(ErrorP!(`QUOTE_MSG, "FontPath"`));
             j = FALSE;
             str = xf86_lex_val.str;
-            if (ptr.file_fontpath == null) {
+            if (ptr.file_fontpath is null) {
                 ptr.file_fontpath = cast(char*)calloc(1, 1);
                 i = cast(int)(strlen(str) + 1);
             }
@@ -136,7 +136,7 @@ XF86ConfFilesPtr xf86parseFilesSection(XF86ConfFilesPtr ptr)
                 mixin(ErrorP!(`QUOTE_MSG, "ModulePath"`));
             l = FALSE;
             str = xf86_lex_val.str;
-            if (ptr.file_modulepath == null) {
+            if (ptr.file_modulepath is null) {
                 ptr.file_modulepath = cast(char*)calloc(1, 1);
                 assert(ptr.file_modulepath);
                 ptr.file_modulepath[0] = '\0';
@@ -192,7 +192,7 @@ void xf86printFileSection(FILE* cf, XF86ConfFilesPtr ptr)
 {
     char* p = void, s = void;
 
-    if (ptr == null)
+    if (ptr is null)
         return;
 
     if (ptr.file_comment)
@@ -231,7 +231,7 @@ void xf86printFileSection(FILE* cf, XF86ConfFilesPtr ptr)
 
 void xf86freeFiles(XF86ConfFilesPtr p)
 {
-    if (p == null)
+    if (p is null)
         return;
 
     mixin(TestFree!(`p.file_logfile`));

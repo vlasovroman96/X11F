@@ -286,7 +286,7 @@ void xf86ForEachDetailedBlock(xf86MonPtr mon, handle_detailed_fn fn, void* data)
     int i = void;
     ubyte* ext = void;
 
-    if (mon == null)
+    if (mon is null)
         return;
 
     for (i = 0; i < DET_TIMINGS; i++)
@@ -340,7 +340,7 @@ void handle_cea_video_block(ubyte* ext, handle_video_fn fn, void* data)
     cea_data_block* data_collection = void;
 
     data_collection = extract_cea_data_block(ext, CEA_VIDEO_BLK);
-    if (data_collection == null)
+    if (data_collection is null)
         return;
 
     video = &data_collection.u.video;
@@ -357,7 +357,7 @@ void xf86ForEachVideoBlock(xf86MonPtr mon, handle_video_fn fn, void* data)
     int i = void;
     ubyte* ext = void;
 
-    if (mon == null)
+    if (mon is null)
         return;
 
     for (i = 0; i < mon.no_sections; i++) {

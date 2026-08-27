@@ -143,7 +143,7 @@ private int add_master(ClientPtr client, xXIAddMasterInfo* c, int* flags)
     int rc = void;
 
     name = cast(char*) calloc(c.name_len + 1, char.sizeof);
-    if (name == null) {
+    if (name is null) {
         rc = BadAlloc;
         goto unwind;
     }
@@ -252,28 +252,28 @@ private int remove_master(ClientPtr client, xXIRemoveMasterInfo* r, int* flags)
         goto unwind;
     }
 
-    if ((ptr = GetMaster(dev, MASTER_POINTER)) == null)
+    if ((ptr = GetMaster(dev, MASTER_POINTER)) is null)
         ptr = find_disabled_master(MASTER_POINTER);
-    mixin(BUG_RETURN_VAL!("ptr == null", "BadDevice"));
+    mixin(BUG_RETURN_VAL!("ptr is null", "BadDevice"));
     rc = dixLookupDevice(&ptr, ptr.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;
 
-    if ((keybd = GetMaster(dev, MASTER_KEYBOARD)) == null)
+    if ((keybd = GetMaster(dev, MASTER_KEYBOARD)) is null)
         keybd = find_disabled_master(MASTER_KEYBOARD);
-    mixin(BUG_RETURN_VAL!("keybd == null", "BadDevice"));
+    mixin(BUG_RETURN_VAL!("keybd is null", "BadDevice"));
     rc = dixLookupDevice(&keybd, keybd.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;
 
     XTestptr = GetXTestDevice(ptr);
-    mixin(BUG_RETURN_VAL!("XTestptr == null", "BadDevice"));
+    mixin(BUG_RETURN_VAL!("XTestptr is null", "BadDevice"));
     rc = dixLookupDevice(&XTestptr, XTestptr.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;
 
     XTestkeybd = GetXTestDevice(keybd);
-    mixin(BUG_RETURN_VAL!("XTestkeybd == null", "BadDevice"));
+    mixin(BUG_RETURN_VAL!("XTestkeybd is null", "BadDevice"));
     rc = dixLookupDevice(&XTestkeybd, XTestkeybd.id, client, DixDestroyAccess);
     if (rc != Success)
         goto unwind;

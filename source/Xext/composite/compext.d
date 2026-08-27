@@ -271,14 +271,14 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
      * interest in the overlay window
      */
     CompOverlayClientPtr pOc = compCreateOverlayClient(pScreen, client);
-    if (pOc == null)
+    if (pOc is null)
         return BadAlloc;
 
     /*
      * Make sure the overlay window exists
      */
     CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
-    if (cs.pOverlayWin == null)
+    if (cs.pOverlayWin is null)
         if (!compCreateOverlayWindow(pScreen)) {
             FreeResource(pOc.resource, X11_RESTYPE_NONE);
             return BadAlloc;
@@ -315,7 +315,7 @@ private int SingleCompositeReleaseOverlayWindow(ClientPtr client, xCompositeRele
      * on this screen? If not, generate an error.
      */
     CompOverlayClientPtr pOc = compFindOverlayClient(pWin.drawable.pScreen, client);
-    if (pOc == null)
+    if (pOc is null)
         return BadMatch;
 
     /* The delete function will free the client structure */
@@ -399,7 +399,7 @@ void CompositeExtensionInit()
         /* Ensure that Render is initialized, which is required for automatic
          * compositing.
          */
-        if (mixin(GetPictureScreenIfSet!("walkScreen")) == null)
+        if (mixin(GetPictureScreenIfSet!("walkScreen")) is null)
             return;
     });
 
@@ -683,7 +683,7 @@ version (XINERAMA) {
         pScreen = pWin.drawable.pScreen;
 
         pOc = compCreateOverlayClient(pScreen, client);
-        if (pOc == null) {
+        if (pOc is null) {
             free(overlayWin);
             return BadAlloc;
         }
@@ -692,7 +692,7 @@ version (XINERAMA) {
          * Make sure the overlay window exists
          */
         cs = mixin(GetCompScreen!("pScreen"));
-        if (cs.pOverlayWin == null)
+        if (cs.pOverlayWin is null)
             if (!compCreateOverlayWindow(pScreen)) {
                 FreeResource(pOc.resource, X11_RESTYPE_NONE);
                 free(overlayWin);
@@ -761,7 +761,7 @@ version (XINERAMA) {
             return rc;
         }
         pOc = compFindOverlayClient(pWin.drawable.pScreen, client);
-        if (pOc == null)
+        if (pOc is null)
             return BadMatch;
 
         /* The delete function will free the client structure */

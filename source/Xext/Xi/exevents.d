@@ -2273,7 +2273,7 @@ Bool DeliverGestureEventToOwner(DeviceIntPtr dev, GestureInfoPtr gi, InternalEve
 
 int InitProximityClassDeviceStruct(DeviceIntPtr dev)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.proximity != null", "FALSE"));
 
     ProximityClassPtr proxc = cast(ProximityClassRec*) calloc(1, ProximityClassRec.sizeof);
@@ -2298,8 +2298,8 @@ Bool InitValuatorAxisStruct(DeviceIntPtr dev, int axnum, Atom label, int minval,
 {
     AxisInfoPtr ax = void;
 
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.valuator == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.valuator is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("axnum >= dev.valuator.numAxes", "FALSE"));
     mixin(BUG_RETURN_VAL!("minval > maxval && mode == Absolute", "FALSE"));
 
@@ -2329,8 +2329,8 @@ Bool SetScrollValuator(DeviceIntPtr dev, int axnum, ScrollType type, double incr
     InternalEvent dce = void;
     DeviceIntPtr master = void;
 
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.valuator == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.valuator is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("axnum >= dev.valuator.numAxes", "FALSE"));
 
     switch (type) {
@@ -2481,7 +2481,7 @@ int GrabKey(ClientPtr client, DeviceIntPtr dev, DeviceIntPtr modifier_device, in
     rc = CheckGrabValues(client, param);
     if (rc != Success)
         return rc;
-    if ((dev.id != XIAllDevices && dev.id != XIAllMasterDevices) && k == null)
+    if ((dev.id != XIAllDevices && dev.id != XIAllMasterDevices) && k is null)
         return BadMatch;
     if (grabtype == XI) {
         if ((key > k.xkbInfo.desc.max_key_code ||
@@ -2884,7 +2884,7 @@ int SetButtonMapping(ClientPtr client, DeviceIntPtr dev, int nElts, BYTE* map)
     int i = void;
     ButtonClassPtr b = dev.button;
 
-    if (b == null)
+    if (b is null)
         return BadMatch;
 
     if (nElts != b.numButtons) {
@@ -2906,7 +2906,7 @@ int ChangeKeyMapping(ClientPtr client, DeviceIntPtr dev, uint len, int type, Key
     KeySymsRec keysyms = void;
     KeyClassPtr k = dev.key;
 
-    if (k == null)
+    if (k is null)
         return BadMatch;
 
     if (len != (keyCodes * keySymsPerKeyCode))

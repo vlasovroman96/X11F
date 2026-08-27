@@ -86,7 +86,7 @@ FBAreaPtr xf86AllocateOffscreenArea(ScreenPtr pScreen, int w, int h, int gran, M
 {
     FBManagerFuncsPtr funcs = void;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return null;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                        xf86FBManagerKey)) is null))
@@ -100,7 +100,7 @@ FBLinearPtr xf86AllocateOffscreenLinear(ScreenPtr pScreen, int length, int gran,
 {
     FBManagerFuncsPtr funcs = void;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return null;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                        xf86FBManagerKey)) is null))
@@ -117,7 +117,7 @@ void xf86FreeOffscreenArea(FBAreaPtr area)
     if (!area)
         return;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return;
     if (
         ((funcs =
@@ -137,7 +137,7 @@ void xf86FreeOffscreenLinear(FBLinearPtr linear)
     if (!linear)
         return;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return;
     if (
         ((funcs =
@@ -157,7 +157,7 @@ Bool xf86ResizeOffscreenArea(FBAreaPtr resize, int w, int h)
     if (!resize)
         return FALSE;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return FALSE;
     if (
         ((funcs =
@@ -175,7 +175,7 @@ Bool xf86ResizeOffscreenLinear(FBLinearPtr resize, int size)
     if (!resize)
         return FALSE;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return FALSE;
     if (
         ((funcs =
@@ -193,7 +193,7 @@ Bool xf86QueryLargestOffscreenArea(ScreenPtr pScreen, int* w, int* h, int gran, 
     *w = 0;
     *h = 0;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return FALSE;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                        xf86FBManagerKey)) is null))
@@ -209,7 +209,7 @@ Bool xf86QueryLargestOffscreenLinear(ScreenPtr pScreen, int* size, int gran, int
 
     *size = 0;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return FALSE;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                        xf86FBManagerKey)) is null))
@@ -223,7 +223,7 @@ Bool xf86PurgeUnlockedOffscreenAreas(ScreenPtr pScreen)
 {
     FBManagerFuncsPtr funcs = void;
 
-    if (xf86FBManagerKey == null)
+    if (xf86FBManagerKey is null)
         return FALSE;
     if (((funcs = cast(FBManagerFuncsPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                        xf86FBManagerKey)) is null))

@@ -819,7 +819,7 @@ void XkbSendNotification(DeviceIntPtr kbd, XkbChangesPtr pChanges, XkbEventCause
         XkbSendControlsNotify(kbd, &cn);
     }
     if (pChanges.indicators.map_changes) {
-        if (sli == null)
+        if (sli is null)
             sli = XkbFindSrvLedInfo(kbd, XkbDfltXIClass, XkbDfltXIId, 0);
         xkbIndicatorNotify in_ = {
             state: sli.effectiveState,
@@ -828,7 +828,7 @@ void XkbSendNotification(DeviceIntPtr kbd, XkbChangesPtr pChanges, XkbEventCause
         XkbSendIndicatorNotify(kbd, XkbIndicatorMapNotify, &in_);
     }
     if (pChanges.indicators.state_changes) {
-        if (sli == null)
+        if (sli is null)
             sli = XkbFindSrvLedInfo(kbd, XkbDfltXIClass, XkbDfltXIId, 0);
         xkbIndicatorNotify in_ = {
             state: sli.effectiveState,

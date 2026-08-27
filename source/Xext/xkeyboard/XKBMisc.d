@@ -306,7 +306,7 @@ private XkbSymInterpretPtr _XkbFindMatchingInterp(XkbDescPtr xkb, KeySym sym, ui
                 if (interp.sym != NoSymbol) {
                     return interp;
                 }
-                else if (rtrn == null) {
+                else if (rtrn is null) {
                     rtrn = interp;
                 }
             }
@@ -385,7 +385,7 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
     XkbSymInterpretPtr[IBUF_SIZE] ibuf;
     if (nSyms > IBUF_SIZE) {
         interps = cast(XkbSymInterpretPtr*) calloc(nSyms, XkbSymInterpretPtr.sizeof);
-        if (interps == null) {
+        if (interps is null) {
             interps = ibuf.ptr;
             nSyms = IBUF_SIZE;
         }
@@ -461,7 +461,7 @@ Bool XkbApplyCompatMapToKey(XkbDescPtr xkb, KeyCode key, XkbChangesPtr changes)
             }
         }
     }
-    if ((!found) || (interps[0] == null)) {
+    if ((!found) || (interps[0] is null)) {
         if (((explicit & XkbExplicitAutoRepeatMask) == 0) && (xkb.ctrls)) {
             CARD8 old = mixin(BitIsOn!("xkb.ctrls.per_key_repeat", "key"));
 
@@ -575,7 +575,7 @@ Status XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, in
         pSyms = mixin(XkbKeySymsPtr!("xkb", "key"));
         memcpy(oldSyms.ptr, pSyms, mixin(XkbKeyNumSyms!("xkb", "key")) * KeySym.sizeof);
         pSyms = XkbResizeKeySyms(xkb, key, width * nGroups);
-        if (pSyms == null)
+        if (pSyms is null)
             return BadAlloc;
         memset(pSyms, 0, width * nGroups * KeySym.sizeof);
         for (i = 0; (i < nGroups) && (i < nOldGroups); i++) {
@@ -594,7 +594,7 @@ Status XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, in
             pActs = mixin(XkbKeyActionsPtr!("xkb", "key"));
             memcpy(oldActs.ptr, pActs, mixin(XkbKeyNumSyms!("xkb", "key")) * XkbAction.sizeof);
             pActs = XkbResizeKeyActions(xkb, key, width * nGroups);
-            if (pActs == null)
+            if (pActs is null)
                 return BadAlloc;
             memset(pActs, 0, width * nGroups * XkbAction.sizeof);
             for (i = 0; (i < nGroups) && (i < nOldGroups); i++) {
@@ -638,7 +638,7 @@ Status XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, in
 
 Bool XkbVirtualModsToReal(XkbDescPtr xkb, uint virtual_mask, uint* mask_rtrn)
 {
-    if ((xkb == null) || (xkb.server == null)) {
+    if ((xkb is null) || (xkb.server is null)) {
         *mask_rtrn = 0;
         return FALSE;
     }

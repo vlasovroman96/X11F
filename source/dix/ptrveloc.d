@@ -209,7 +209,7 @@ private int AccelSetProfileProperty(DeviceIntPtr dev, Atom atom, XIPropertyValue
         if (rc)
             return rc;
 
-        if (GetAccelerationProfile(vel, profile) == null)
+        if (GetAccelerationProfile(vel, profile) is null)
             return BadValue;
     }
     else
@@ -964,7 +964,7 @@ private int SetAccelerationProfile(DeviceVelocityPtr vel, int profile_num)
 
     profile = GetAccelerationProfile(vel, profile_num);
 
-    if (profile == null && profile_num != PROFILE_UNINITIALIZE)
+    if (profile is null && profile_num != PROFILE_UNINITIALIZE)
         return FALSE;
 
     /* Here one could free old profile-private data */

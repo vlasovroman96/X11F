@@ -65,7 +65,7 @@ private void ephyrPreparePipelinedAccess(PixmapPtr pPix, int index)
     EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
 
-    assert(fakexa.saved_ptrs[index] == null);
+    assert(fakexa.saved_ptrs[index] is null);
     fakexa.saved_ptrs[index] = pPix.devPrivate.ptr;
 
     if (pPix.devPrivate.ptr != null)
@@ -421,11 +421,11 @@ Bool ephyrDrawInit(ScreenPtr pScreen)
     Bool success = void;
 
     fakexa = cast(EphyrFakexaPriv*) calloc(1, typeof(*fakexa).sizeof);
-    if (fakexa == null)
+    if (fakexa is null)
         return FALSE;
 
     fakexa.exa = exaDriverAlloc();
-    if (fakexa.exa == null) {
+    if (fakexa.exa is null) {
         free(fakexa);
         return FALSE;
     }

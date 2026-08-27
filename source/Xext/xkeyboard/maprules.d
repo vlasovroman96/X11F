@@ -109,7 +109,7 @@ private int InputLineAddChar(InputLine* line, int ch)
     if (line.num_line >= line.sz_line) {
         if (line.line is line.buf.ptr) {
             line.line = cast(char*)calloc(line.sz_line, 2);
-            if (line.line == null)
+            if (line.line is null)
                 return -1;
             memcpy(line.line, line.buf.ptr, line.sz_line);
         }
@@ -262,7 +262,7 @@ private char* get_index(char* str, int* ndx)
     }
     str++;
     end = strchr(str, ']');
-    if (end == null) {
+    if (end is null) {
         *ndx = -1;
         return str - 1;
     }
@@ -527,7 +527,7 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
         }
         else {
             char* layout = cast(char*)Xstrdup(defs.layout);
-            if (layout == null)
+            if (layout is null)
                 return FALSE;
             squeeze_spaces(layout);
             mdefs.layout[1] = layout;
@@ -552,7 +552,7 @@ private Bool MakeMultiDefs(XkbRF_MultiDefsPtr mdefs, XkbRF_VarDefsPtr defs)
         }
         else {
             char* variant = cast(char*)Xstrdup(defs.variant);
-            if (variant == null)
+            if (variant is null)
                 return FALSE;
             squeeze_spaces(variant);
             mdefs.variant[1] = variant;
@@ -587,7 +587,7 @@ private void Apply(const(char)* src, char** dst)
             *dst = _Concat(*dst, src);
         }
         else {
-            if (*dst == null)
+            if (*dst is null)
                 *dst = cast(char*)Xstrdup(src);
         }
     }
@@ -630,7 +630,7 @@ private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, X
     Bool pending = FALSE;
 
     if (rule.model != null) {
-        if (mdefs.model == null)
+        if (mdefs.model is null)
             return 0;
         if (strcmp(rule.model, "*") == 0) {
             pending = TRUE;
@@ -647,14 +647,14 @@ private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, X
         }
     }
     if (rule.option != null) {
-        if (mdefs.options == null)
+        if (mdefs.options is null)
             return 0;
         if ((!MatchOneOf(rule.option, mdefs.options)))
             return 0;
     }
 
     if (rule.layout != null) {
-        if (mdefs.layout[rule.layout_num] == null ||
+        if (mdefs.layout[rule.layout_num] is null ||
             *mdefs.layout[rule.layout_num] == '\0')
             return 0;
         if (strcmp(rule.layout, "*") == 0) {
@@ -673,7 +673,7 @@ private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, X
         }
     }
     if (rule.variant != null) {
-        if (mdefs.variant[rule.variant_num] == null ||
+        if (mdefs.variant[rule.variant_num] is null ||
             *mdefs.variant[rule.variant_num] == '\0')
             return 0;
         if (strcmp(rule.variant, "*") == 0) {
@@ -751,7 +751,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
 
     orig = name;
     str = externs.gnu.index(name, '%');
-    if (str == null)
+    if (str is null)
         return name;
     len = cast(int)strlen(name);
     while (str != null) {

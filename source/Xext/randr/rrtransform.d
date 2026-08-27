@@ -46,9 +46,9 @@ Bool RRTransformEqual(RRTransformPtr a, RRTransformPtr b)
         a = null;
     if (b && assumeNoGC(&pixman_transform_is_identity)(&b.transform))
         b = null;
-    if (a == null && b == null)
+    if (a is null && b is null)
         return TRUE;
-    if (a == null || b == null)
+    if (a is null || b is null)
         return FALSE;
     if (memcmp(&a.transform, &b.transform, typeof(a.transform).sizeof) != 0)
         return FALSE;

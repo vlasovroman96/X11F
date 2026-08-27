@@ -200,7 +200,7 @@ nameint[2] kbdmodel = [
 //     close(fd);
 
 //     input_options = input_option_new(input_options, "_source", "server/wscons");
-//     if (input_options == null)
+//     if (input_options is null)
 //         return;
 
 //     LogMessage(X_INFO, "config/wscons: checking input device %s\n",
@@ -275,7 +275,7 @@ nameint[2] kbdmodel = [
 //         return;
 
 //     input_options = input_option_new(input_options, "_source", "server/wscons");
-//     if (input_options == null)
+//     if (input_options is null)
 //         return;
 
 //     input_options = input_option_new(input_options, "name", strdup(path));

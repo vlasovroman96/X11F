@@ -69,7 +69,7 @@ private Bool _glamor_egl_init(ScrnInfoPtr scrn, int fd, int* caps)
     glamor_egl_conf_t glamor_egl_conf = {fd: fd};
 
     glamor_egl = cast(glamor_egl_priv_t*) calloc(1, typeof(*glamor_egl).sizeof);
-    if (glamor_egl == null)
+    if (glamor_egl is null)
         return FALSE;
 
     glamor_egl_conf.glamor_egl_priv = glamor_egl;

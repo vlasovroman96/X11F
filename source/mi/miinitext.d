@@ -217,7 +217,7 @@ void EnableDisableExtensionError(const(char)* name, Bool enable)
 
     for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
         ext = &staticExtensions[i];
-        if ((strcmp(name, ext.name) == 0) && (ext.disablePtr == null)) {
+        if ((strcmp(name, ext.name) == 0) && (ext.disablePtr is null)) {
             ErrorF("[mi] Extension \"%s\" can not be disabled\n", name);
             found = TRUE;
             break;
@@ -257,7 +257,7 @@ void InitExtensions(int argc, char** argv)
     for (i = 0; i < numExtensionModules; i++) {
         ext = &ExtensionModuleList[i];
         if (ext.initFunc != null &&
-            (ext.disablePtr == null || !*ext.disablePtr)) {
+            (ext.disablePtr is null || !*ext.disablePtr)) {
             LogMessageVerb(X_INFO, 3, "Initializing extension %s\n",
                            ext.name);
 
@@ -278,7 +278,7 @@ private ExtensionModule* NewExtensionModuleList(int size)
     n = numExtensionModules + size;
     ExtensionModuleList = cast(ExtensionModule*)reallocarray(ExtensionModuleList, n,
                                        ExtensionModule.sizeof);
-    if (ExtensionModuleList == null) {
+    if (ExtensionModuleList is null) {
         ExtensionModuleList = save;
         return null;
     }

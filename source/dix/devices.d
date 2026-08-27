@@ -392,7 +392,7 @@ Bool EnableDevice(DeviceIntPtr dev, BOOL sendevent)
             }
             else {
                 DeviceIntPtr other = NextFreePointerDevice();
-                mixin(BUG_RETURN_VAL_MSG!("other == null", "FALSE",
+                mixin(BUG_RETURN_VAL_MSG!("other is null", "FALSE",
                                    "[dix] cannot find pointer to pair with.\n"));
                 PairDevices(other, dev);
             }
@@ -1036,7 +1036,7 @@ private void CloseDevice(DeviceIntPtr dev)
  */
 private void CloseDeviceList(DeviceIntPtr* listHead)
 {
-    if (listHead == null)
+    if (listHead is null)
         return;
 
     DeviceIntPtr dev = *listHead;
@@ -1136,7 +1136,7 @@ private int CloseOneDevice(const(DeviceIntPtr) dev, DeviceIntPtr* listHead)
         tmp; (prev = tmp), (tmp = next)) {
         next = tmp.next;
         if (tmp == dev) {
-            if (prev == null)
+            if (prev is null)
                 *listHead = next;
             else
                 prev.next = next;
@@ -1244,7 +1244,7 @@ void QueryMinMaxKeyCodes(KeyCode* minCode, KeyCode* maxCode)
 
 Bool InitButtonClassDeviceStruct(DeviceIntPtr dev, int numButtons, Atom* labels, CARD8* map)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.button != null", "FALSE"));
     mixin(BUG_RETURN_VAL!("numButtons >= MAX_BUTTONS", "FALSE"));
 
@@ -1302,7 +1302,7 @@ ValuatorClassPtr AllocValuatorClass(ValuatorClassPtr src, int numAxes)
 
 Bool InitValuatorClassDeviceStruct(DeviceIntPtr dev, int numAxes, Atom* labels, int numMotionEvents, int mode)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("numAxes == 0", "FALSE"));
 
     if (numAxes > MAX_VALUATORS) {
@@ -1406,7 +1406,7 @@ Bool InitPointerAccelerationScheme(DeviceIntPtr dev, int scheme)
 
 Bool InitFocusClassDeviceStruct(DeviceIntPtr dev)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.focus != null", "FALSE"));
 
     FocusClassPtr focc = cast(FocusClassRec*) calloc(1, FocusClassRec.sizeof);
@@ -1426,7 +1426,7 @@ Bool InitFocusClassDeviceStruct(DeviceIntPtr dev)
 
 Bool InitPtrFeedbackClassDeviceStruct(DeviceIntPtr dev, PtrCtrlProcPtr controlProc)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
 
     PtrFeedbackPtr feedc = cast(PtrFeedbackClassRec*) calloc(1, PtrFeedbackClassRec.sizeof);
     if (!feedc)
@@ -1462,7 +1462,7 @@ private IntegerCtrl defaultIntegerControl = {
 
 Bool InitStringFeedbackClassDeviceStruct(DeviceIntPtr dev, StringCtrlProcPtr controlProc, int max_symbols, int num_symbols_supported, KeySym* symbols)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
 
     StringFeedbackPtr feedc = cast(StringFeedbackClassRec*) calloc(1, StringFeedbackClassRec.sizeof);
     if (!feedc)
@@ -1494,7 +1494,7 @@ Bool InitStringFeedbackClassDeviceStruct(DeviceIntPtr dev, StringCtrlProcPtr con
 
 Bool InitBellFeedbackClassDeviceStruct(DeviceIntPtr dev, BellProcPtr bellProc, BellCtrlProcPtr controlProc)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
 
     BellFeedbackPtr feedc = cast(BellFeedbackClassRec*) calloc(1, BellFeedbackClassRec.sizeof);
     if (!feedc)
@@ -1512,7 +1512,7 @@ Bool InitBellFeedbackClassDeviceStruct(DeviceIntPtr dev, BellProcPtr bellProc, B
 
 Bool InitLedFeedbackClassDeviceStruct(DeviceIntPtr dev, LedCtrlProcPtr controlProc)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
 
     LedFeedbackPtr feedc = cast(LedFeedbackClassRec*) calloc(1, LedFeedbackClassRec.sizeof);
     if (!feedc)
@@ -1530,7 +1530,7 @@ Bool InitLedFeedbackClassDeviceStruct(DeviceIntPtr dev, LedCtrlProcPtr controlPr
 
 Bool InitIntegerFeedbackClassDeviceStruct(DeviceIntPtr dev, IntegerCtrlProcPtr controlProc)
 {
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
 
     IntegerFeedbackPtr feedc = cast(IntegerFeedbackClassRec*) calloc(1, IntegerFeedbackClassRec.sizeof);
     if (!feedc)
@@ -1549,7 +1549,7 @@ Bool InitPointerDeviceStruct(DevicePtr device, CARD8* map, int numButtons, Atom*
 {
     DeviceIntPtr dev = cast(DeviceIntPtr) device;
 
-    mixin(BUG_RETURN_VAL!("dev == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.button != null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.valuator != null", "FALSE"));
     mixin(BUG_RETURN_VAL!("dev.ptrfeed != null", "FALSE"));
@@ -1569,9 +1569,9 @@ Bool InitPointerDeviceStruct(DevicePtr device, CARD8* map, int numButtons, Atom*
  */
 Bool InitTouchClassDeviceStruct(DeviceIntPtr device, uint max_touches, uint mode, uint num_axes)
 {
-    mixin(BUG_RETURN_VAL!("device == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("device is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("device.touch != null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("device.valuator == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("device.valuator is null", "FALSE"));
 
     /* Check the mode is valid, and at least X and Y axes. */
     mixin(BUG_RETURN_VAL!("mode != XIDirectTouch && mode != XIDependentTouch", "FALSE"));
@@ -1629,7 +1629,7 @@ Bool InitTouchClassDeviceStruct(DeviceIntPtr device, uint max_touches, uint mode
  */
 Bool InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches)
 {
-    mixin(BUG_RETURN_VAL!("device == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("device is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("device.gesture != null", "FALSE"));
 
     GestureClassPtr g = cast(GestureClassPtr) calloc(1, _GestureClassRec.sizeof);

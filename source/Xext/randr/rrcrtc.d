@@ -204,7 +204,7 @@ Bool RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotatio
     /*
      * Copy the new list of outputs into the crtc
      */
-    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs is null", "FALSE"));
     memcpy(crtc.outputs, outputs, numOutputs * RROutputPtr.sizeof);
 
     /*
@@ -289,7 +289,7 @@ private Bool cursor_bounds(RRCrtcPtr crtc, int* left, int* right, int* top, int*
     mixin(rrScrPriv!("crtc.pScreen"));
     BoxRec bounds = void;
 
-    if (crtc.mode == null)
+    if (crtc.mode is null)
 	return FALSE;
 
     memset(&bounds, 0, bounds.sizeof);
@@ -442,7 +442,7 @@ private PixmapPtr rrCreateSharedPixmap(RRCrtcPtr crtc, ScreenPtr primary, int wi
         return null;
 
     spix = PixmapShareToSecondary(mpix, crtc.pScreen);
-    if (spix == null) {
+    if (spix is null) {
         dixDestroyPixmap(mpix, 0);
         return null;
     }
@@ -528,7 +528,7 @@ private Bool rrSetupPixmapSharing(RRCrtcPtr crtc, int width, int height, int x, 
     spix_front = rrCreateSharedPixmap(crtc, primary,
                                       width, height, depth,
                                       x, y, rotation);
-    if (spix_front == null) {
+    if (spix_front is null) {
         ErrorF("randr: failed to create shared pixmap\n");
         return FALSE;
     }
@@ -544,7 +544,7 @@ private Bool rrSetupPixmapSharing(RRCrtcPtr crtc, int width, int height, int x, 
         PixmapPtr spix_back = rrCreateSharedPixmap(crtc, primary,
                                                    width, height, depth,
                                                    x, y, rotation);
-        if (spix_back == null)
+        if (spix_back is null)
             goto fail;
 
         if (!pSecondaryScrPriv.rrEnableSharedPixmapFlipping(crtc,
@@ -742,7 +742,7 @@ Bool RRCrtcSet(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotation, 
     Bool crtcChanged = void;
     int o = void;
 
-    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs == null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs is null", "FALSE"));
 
     mixin(rrScrPriv!("pScreen"));
 
@@ -999,10 +999,10 @@ private Bool RRCrtcInScreen(ScreenPtr pScreen, RRCrtcPtr findCrtc)
     rrScrPrivPtr pScrPriv = void;
     int c = void;
 
-    if (pScreen == null)
+    if (pScreen is null)
         return FALSE;
 
-    if (findCrtc == null)
+    if (findCrtc is null)
         return FALSE;
 
     if (!dixPrivateKeyRegistered(rrPrivKey))
@@ -1036,7 +1036,7 @@ Bool RRCrtcExists(ScreenPtr pScreen, RRCrtcPtr findCrtc)
 
 void RRModeGetScanoutSize(RRModePtr mode, PictTransformPtr transform, int* width, int* height)
 {
-    if (mode == null) {
+    if (mode is null) {
         *width = 0;
         *height = 0;
         return;
@@ -1901,7 +1901,7 @@ Bool RRReplaceScanoutPixmap(DrawablePtr pDrawable, PixmapPtr pPixmap, Bool enabl
     int i = void;
 
     saved_scanout_pixmap = cast(PixmapPtr*) calloc(pScrPriv.numCrtcs, PixmapPtr.sizeof);
-    if (saved_scanout_pixmap == null)
+    if (saved_scanout_pixmap is null)
         return FALSE;
 
     for (i = 0; i < pScrPriv.numCrtcs; i++) {

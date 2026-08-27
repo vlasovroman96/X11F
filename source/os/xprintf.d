@@ -88,7 +88,7 @@ int XNFvasprintf(char** ret, const(char)* format, va_list va)
 {
     int size = vasprintf(ret, format, va);
 
-    if ((size == -1) || (*ret == null)) {
+    if ((size == -1) || (*ret is null)) {
         FatalError("XNFvasprintf failed: %s", strerror(errno));
     }
     return size;

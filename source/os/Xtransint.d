@@ -223,23 +223,30 @@ version (__clang__) {
  * Some XTRANSDEBUG stuff
  */
 
-version (XTRANSDEBUG) {
+// version (XTRANSDEBUG) {
 public import core.stdc.stdarg;
 
 public import include.os;
-} /* XTRANSDEBUG */
+// } /* XTRANSDEBUG */
+
+import os.log;
+enum __xtransname = "_XSERVERTRANS:";
+
+enum XTRANSDEBUG = 100; 
 
 pragma(inline, true) void prmsg(int lvl, const(char)* f, ...)
 {
-version (XTRANSDEBUG) {
+// version (XTRANSDEBUG) {
     va_list args = void;
 
     core.stdc.stdarg.va_start(args, f);
     if (lvl <= XTRANSDEBUG) {
 	int saveerrno = errno;
 
-	ErrorF("%s", __xtransname);
-	VErrorF(f, args);
+	ErrorF("%s", __xtransname.ptr);
+	// VErrorF(f, args);
+    // LogVMessageVerb(X_NONE, lvl, f, args);
+    vfprintf(stderr, f, args);
 
 version (XTRANSDEBUGTIMESTAMP) {
 	{
@@ -252,7 +259,7 @@ version (XTRANSDEBUGTIMESTAMP) {
 	errno = saveerrno;
     }
     core.stdc.stdarg.va_end(args);
-} /* XTRANSDEBUG */
+// } /* XTRANSDEBUG */
 }
 
 // } /* XTRANS_TRANSPORT_C */

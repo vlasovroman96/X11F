@@ -322,7 +322,7 @@ int SetPictureFilter(PicturePtr pPicture, char* name, int len, XFixed* params, i
     if (!pFilter)
         return BadName;
 
-    if (pPicture.pDrawable == null) {
+    if (pPicture.pDrawable is null) {
         /* For source pictures, the picture isn't tied to a screen.  So, ensure
          * that all screens can handle a filter we set for the picture.
          */

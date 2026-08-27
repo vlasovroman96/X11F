@@ -221,11 +221,11 @@ private RootlessWindowRec* canAccelBlit(DrawablePtr pDraw, GCPtr pGC)
         return null;
 
     pTop = TopLevelParent(cast(WindowPtr) pDraw);
-    if (pTop == null)
+    if (pTop is null)
         return null;
 
     winRec = WINREC(pTop);
-    if (winRec == null)
+    if (winRec is null)
         return null;
 
     return winRec;

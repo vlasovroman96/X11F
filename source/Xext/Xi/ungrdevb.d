@@ -97,7 +97,7 @@ int ProcXUngrabDeviceButton(ClientPtr client)
     rc = dixLookupDevice(&dev, stuff.grabbed_device, client, DixGrabAccess);
     if (rc != Success)
         return rc;
-    if (dev.button == null)
+    if (dev.button is null)
         return BadMatch;
 
     if (stuff.modifier_device != UseXKeyboard) {
@@ -105,7 +105,7 @@ int ProcXUngrabDeviceButton(ClientPtr client)
                              DixReadAccess);
         if (rc != Success)
             return BadDevice;
-        if (mdev.key == null)
+        if (mdev.key is null)
             return BadMatch;
     }
     else

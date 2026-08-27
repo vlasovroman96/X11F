@@ -422,7 +422,7 @@ ValuatorMask* valuator_mask_new(int num_valuators)
      * not constrained by signals, we can start using num_valuators */
     ValuatorMask* mask = cast(ValuatorMask*) cast(ValuatorMask*) calloc(1, ValuatorMask.sizeof);
 
-    if (mask == null)
+    if (mask is null)
         return null;
 
     mask.last_bit = -1;

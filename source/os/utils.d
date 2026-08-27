@@ -408,9 +408,9 @@ private int VerifyDisplayName(const(char)* d)
     return 1;
 }
 
-private const(char)*[4] defaultNoListenList = [
+const(char)*[4] defaultNoListenList = [
 // #ifndef LISTEN_TCP
-    "tcp",
+    // "tcp",
 // #endif
 // #ifndef LISTEN_UNIX
     "unix",
@@ -832,7 +832,7 @@ enum AUTHORIZATION_NAME = "hp-hostname-1";
     char* result = null;
     char* p = null;
 
-    if (p == null) {
+    if (p is null) {
         uint len;
 
 version (HAVE_GETADDRINFO) {
@@ -860,7 +860,7 @@ version (HAVE_GETADDRINFO) {
         }
 } else {
         host = _XGethostbyname(hn.name.ptr);
-        if (host == null)
+        if (host is null)
             hnameptr = hn.name.ptr;
         else
             hnameptr = host.h_name;
@@ -868,7 +868,7 @@ version (HAVE_GETADDRINFO) {
 
         len = cast(uint)(strlen(hnameptr) + 1);
         result = cast(char*) calloc(1, len + ((AUTHORIZATION_NAME.length) + 4));
-        if (result == null) {
+        if (result is null) {
 version (HAVE_GETADDRINFO) {
             if (ai) {
                 freeaddrinfo(ai);
@@ -1068,13 +1068,13 @@ void* Popen(const(char)* command, const(char)* type)
     FILE* iop = void;
     int[2] pdes = void; int pid_ = void;
 
-    if (command == null || type == null)
+    if (command is null || type is null)
         return null;
 
     if ((*type != 'r' && *type != 'w') || type[1])
         return null;
 
-    if ((cur = cast(pid*) calloc(1, pid.sizeof)) == null)
+    if ((cur = cast(pid*) calloc(1, pid.sizeof)) is null)
         return null;
 
     if (pipe(pdes) < 0) {
@@ -1186,14 +1186,14 @@ int Pclose(void* iop)
     for (last = null, cur = pidlist; cur; last = cur, cur = cur.next)
         if (cur.fp == iop)
             break;
-    if (cur == null)
+    if (cur is null)
         return -1;
 
     do {
         pid = waitpid(cast(int)cur.pid_, &pstat, 0);
     } while (pid == -1 && errno == EINTR);
 
-    if (last == null)
+    if (last is null)
         pidlist = cur.next;
     else
         last.next = cur.next;
@@ -1449,7 +1449,7 @@ version (USE_PAM) {
 
     if (getuid() != geteuid()) {
         pw = getpwuid(getuid());
-        if (pw == null)
+        if (pw is null)
             FatalError("getpwuid() failed for uid %d\n", getuid());
 
         retval = pam_start("xserver", pw.pw_name, &conv, &pamh);

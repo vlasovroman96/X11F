@@ -187,7 +187,7 @@ glamor_pixmap_clipped_regions* glamor_compute_clipped_regions_ext(PixmapPtr pixm
 
     if (glamor_pixmap_priv_is_small(pixmap_priv)) {
         clipped_regions = cast(glamor_pixmap_clipped_regions*) calloc(1, typeof(*clipped_regions).sizeof);
-        if (clipped_regions == null) {
+        if (clipped_regions is null) {
             *n_region = 0;
             return null;
         }
@@ -215,7 +215,7 @@ glamor_pixmap_clipped_regions* glamor_compute_clipped_regions_ext(PixmapPtr pixm
                                                            region, n_region,
                                                            reverse, upsidedown);
 
-        if (clipped_regions == null) {
+        if (clipped_regions is null) {
             *n_region = 0;
             return null;
         }
@@ -279,7 +279,7 @@ private RegionPtr _glamor_convert_pad_region(RegionPtr region, int w, int h)
     nrect = RegionNumRects(region);
     box = RegionRects(region);
     pad_region = RegionCreate(null, 4);
-    if (pad_region == null)
+    if (pad_region is null)
         return null;
     while (nrect--) {
         BoxRec pad_box = void;
@@ -399,7 +399,7 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
             region =
                 _glamor_convert_pad_region(saved_region, pixmap_width,
                                            pixmap_height);
-            if (region == null) {
+            if (region is null) {
                 *n_region = 0;
                 return null;
             }
@@ -468,7 +468,7 @@ private glamor_pixmap_clipped_regions* _glamor_compute_clipped_regions(PixmapPtr
     m = 0;
     clipped_regions = cast(glamor_pixmap_clipped_regions*) calloc(priv.block_wcnt * priv.block_hcnt,
                              typeof(*clipped_regions).sizeof);
-    if (clipped_regions == null) {
+    if (clipped_regions is null) {
         *n_region = 0;
         return null;
     }
@@ -799,7 +799,7 @@ private void glamor_merge_clipped_regions(PixmapPtr pixmap, glamor_pixmap_privat
                              temp_box.y2 - temp_box.y1,
                              pixmap.drawable.depth,
                              GLAMOR_CREATE_PIXMAP_FIXUP);
-    if (temp_pixmap == null) {
+    if (temp_pixmap is null) {
         assert(0);
         return;
     }

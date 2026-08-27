@@ -1275,7 +1275,7 @@ Bool xf86LoadModules(const(char)** list, void** optlist)
         name = xf86NormalizeName(list[i]);
 
         /* Skip empty names */
-        if (name == null || *name == '\0') {
+        if (name is null || *name == '\0') {
             free(name);
             continue;
         }

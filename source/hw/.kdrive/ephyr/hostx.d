@@ -304,7 +304,7 @@ void hostx_get_output_geometry(const(char)* output, int* x, int* y, int* width, 
                                               version_c,
                                               &error);
 
-    if (error != null || version_r == null)
+    if (error != null || version_r is null)
     {
         fprintf(stderr, "\nFailed to get RandR version supported by host X server.\n");
         exit(1);

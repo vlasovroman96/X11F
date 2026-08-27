@@ -1039,7 +1039,7 @@ version (SOCK_NONBLOCK) {
     }
 
     device_type_option = xf86SetStrOption(pInfo.options, "DeviceType", null);
-    if (device_type_option == null) {
+    if (device_type_option is null) {
         xf86IDrvMsg(pInfo, X_ERROR, "DeviceType option must be specified\n");
         goto fail;
     }

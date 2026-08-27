@@ -204,7 +204,7 @@ Bool exaPixmapIsPinned(PixmapPtr pPix)
 {
     mixin(ExaPixmapPriv!("pPix"));
 
-    if (pExaPixmap == null)
+    if (pExaPixmap is null)
         mixin(EXA_FatalErrorDebugWithRet!(("EXA bug: exaPixmapIsPinned was called on a non-exa pixmap.\n"), "TRUE"));
 
     return pExaPixmap.score == EXA_PIXMAP_SCORE_PINNED;
@@ -273,7 +273,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return FALSE;
 
-    if (pExaPixmap == null)
+    if (pExaPixmap is null)
         mixin(EXA_FatalErrorDebugWithRet!(("EXA bug: ExaDoPrepareAccess was called on a non-exa pixmap.\n"), "FALSE"));
 
     /* Handle repeated / nested calls. */
@@ -316,7 +316,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
 
     exaWaitSync(pScreen);
 
-    if (pExaScr.info.PrepareAccess == null)
+    if (pExaScr.info.PrepareAccess is null)
         goto out_;
 
     if (index >= EXA_PREPARE_AUX_DEST &&
@@ -380,7 +380,7 @@ void exaFinishAccess(DrawablePtr pDrawable, int index)
     if (!(pExaScr.info.flags & EXA_OFFSCREEN_PIXMAPS))
         return;
 
-    if (pExaPixmap == null)
+    if (pExaPixmap is null)
         mixin(EXA_FatalErrorDebugWithRet!(("EXA bug: exaFinishAccess was called on a non-exa pixmap.\n"), ""));
 
     /* Handle repeated / nested calls. */

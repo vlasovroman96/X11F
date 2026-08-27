@@ -1237,7 +1237,7 @@ void exaGetImage(DrawablePtr pDrawable, int x, int y, int w, int h, uint format,
 
     pPix = exaGetOffscreenPixmap(pDrawable, &xoff, &yoff);
 
-    if (pPix == null || pExaScr.info.DownloadFromScreen == null)
+    if (pPix is null || pExaScr.info.DownloadFromScreen is null)
         goto fallback;
 
     /* Only cover the ZPixmap, solid copy case. */

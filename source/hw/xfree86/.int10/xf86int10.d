@@ -682,7 +682,7 @@ private int int1A_handler(xf86Int10InfoPtr pInt)
     pci_device* pvp = xf86GetPciInfoForEntity(pInt.entityIndex);
     pci_device* dev = void;
 
-    if (pvp == null)
+    if (pvp is null)
         return 0;               /* oops */
 
 version (PRINT_INT) {

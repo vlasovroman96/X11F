@@ -572,8 +572,8 @@ Bool xf86I2CDevInit(I2CDevPtr d)
 {
     I2CBusPtr b = void;
 
-    if (d == null ||
-        (b = d.pI2CBus) == null ||
+    if (d is null ||
+        (b = d.pI2CBus) is null ||
         (d.SlaveAddr & 1) || xf86I2CFindDev(b, d.SlaveAddr) != null)
         return FALSE;
 
@@ -700,7 +700,7 @@ Bool xf86I2CBusInit(I2CBusPtr b)
      * then the name must be unique throughout the server.
      */
 
-    if (b.BusName == null || xf86I2CFindBus(b.scrnIndex, b.BusName) != null)
+    if (b.BusName is null || xf86I2CFindBus(b.scrnIndex, b.BusName) != null)
         return FALSE;
 
     /* If the high level functions are not
@@ -708,14 +708,14 @@ Bool xf86I2CBusInit(I2CBusPtr b)
      * In this case we need the low-level
      * function.
      */
-    if (b.I2CWriteRead == null) {
+    if (b.I2CWriteRead is null) {
         b.I2CWriteRead = &I2CWriteRead;
 
-        if (b.I2CPutBits == null || b.I2CGetBits == null) {
-            if (b.I2CPutByte == null ||
-                b.I2CGetByte == null ||
-                b.I2CAddress == null ||
-                b.I2CStart == null || b.I2CStop == null)
+        if (b.I2CPutBits is null || b.I2CGetBits is null) {
+            if (b.I2CPutByte is null ||
+                b.I2CGetByte is null ||
+                b.I2CAddress is null ||
+                b.I2CStart is null || b.I2CStop is null)
                 return FALSE;
         }
         else {
@@ -727,7 +727,7 @@ Bool xf86I2CBusInit(I2CBusPtr b)
         }
     }
 
-    if (b.I2CUDelay == null)
+    if (b.I2CUDelay is null)
         b.I2CUDelay = &I2CUDelay;
 
     if (b.HoldTime < 2)

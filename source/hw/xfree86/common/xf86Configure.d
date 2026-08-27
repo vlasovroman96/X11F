@@ -688,7 +688,7 @@ void DoConfigure()
     xf86config.conf_layout_lst = configureLayoutSection();
 
     home = getenv("HOME");
-    if ((home == null) || (home[0] == '\0')) {
+    if ((home is null) || (home[0] == '\0')) {
         home = "/";
     }
     else {

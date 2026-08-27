@@ -99,7 +99,7 @@ int ProcXIQueryPointer(ClientPtr client)
         return rc;
     }
 
-    if (pDev.valuator == null || IsKeyboardDevice(pDev) ||
+    if (pDev.valuator is null || IsKeyboardDevice(pDev) ||
         (!InputDevIsMaster(pDev) && !InputDevIsFloating(pDev))) {   /* no attached devices */
         client.errorValue = stuff.deviceid;
         return BadDevice;

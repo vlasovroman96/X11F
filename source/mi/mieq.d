@@ -133,7 +133,7 @@ private Bool mieqGrowQueue(EventQueuePtr eventQueue, size_t new_nevents)
         return FALSE;
 
     new_events = cast(EventRec*) calloc(new_nevents, EventRec.sizeof);
-    if (new_events == null) {
+    if (new_events is null) {
         ErrorF("[mi] mieqGrowQueue memory allocation error.\n");
         return FALSE;
     }

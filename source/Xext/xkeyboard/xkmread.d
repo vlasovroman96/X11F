@@ -60,7 +60,7 @@ import xkb.XKBGAlloc;
 
 private Atom XkbInternAtom(char* str, Bool only_if_exists)
 {
-    if (str == null)
+    if (str is null)
         return None;
     return MakeAtom(str, cast(uint)strlen(str), !only_if_exists);
 }
@@ -71,7 +71,7 @@ private void* XkmInsureSize(void* oldPtr, int oldCount, int* newCountRtrn, int e
 {
     int newCount = *newCountRtrn;
 
-    if (oldPtr == null) {
+    if (oldPtr is null) {
         if (newCount == 0)
             return null;
         oldPtr = calloc(newCount, elemSize);
@@ -326,7 +326,7 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
         }
         tmp = wire.nMapEntries;
         mixin(XkmInsureTypedSize!(`type.map`, `type.map_count`, `&tmp`, `XkbKTMapEntryRec`)~";");
-        if ((wire.nMapEntries > 0) && (type.map == null)) {
+        if ((wire.nMapEntries > 0) && (type.map is null)) {
             //_XkbLibError(_XkbErrBadValue, "ReadXkmKeyTypes", wire.nMapEntries);
             return -1;
         }
@@ -363,7 +363,7 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
 
             mixin(XkmInsureTypedSize!(`type.preserve`, `type.map_count`, `&tmp`,
                                `XkbModsRec`)~";");
-            if (type.preserve == null) {
+            if (type.preserve is null) {
                 //_XkbLibError(_XkbErrBadMatch, "ReadXkmKeycodes", 0);
                 return -1;
             }
@@ -616,7 +616,7 @@ private int ReadXkmIndicators(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
     uint tmp = void;
     int nRead = 0;
 
-    if ((xkb.indicators == null) && (XkbAllocIndicatorMaps(xkb) != Success)) {
+    if ((xkb.indicators is null) && (XkbAllocIndicatorMaps(xkb) != Success)) {
         //_XkbLibError(_XkbErrBadAlloc, "indicator rec", 0);
         return -1;
     }
@@ -749,7 +749,7 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
         //_XkbLibError(_XkbErrBadAlloc, "controls", 0);
         return -1;
     }
-    if ((xkb.map == null) || (xkb.server == null))
+    if ((xkb.map is null) || (xkb.server is null))
         return -1;
     if (xkb.min_key_code < 8)
         xkb.min_key_code = cast(ubyte)minKC;
@@ -780,7 +780,7 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
                     nRead += tmp;
                 }
                 type[g] = FindTypeForKey(xkb, typeName[g], wireMap.width, null);
-                if (type[g] == null) {
+                if (type[g] is null) {
                     //_XkbLibError(_XkbErrMissingTypes, "ReadXkmSymbols", 0);
                     return -1;
                 }
@@ -823,7 +823,7 @@ private int ReadXkmSymbols(FILE* file, XkbDescPtr xkb)
         }
         for (g = 0; g < mixin(XkbNumGroups!("wireMap.num_groups")); g++) {
             if (((xkb.server.explicit[i] & (1 << g)) == 0) ||
-                (type[g] == null)) {
+                (type[g] is null)) {
                 KeySym* tmpSyms = void;
 
                 tmpSyms = mixin(XkbKeySymsPtr!("xkb", "i")) + (wireMap.width * g);
@@ -1065,7 +1065,7 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
         for (i = 0; i < wireGeom.num_properties; i++) {
             nRead += XkmGetCountedString(file, buf.ptr, 100);
             nRead += XkmGetCountedString(file, val.ptr, 1024);
-            if (XkbAddGeomProperty(geom, buf.ptr, val.ptr) == null) {
+            if (XkbAddGeomProperty(geom, buf.ptr, val.ptr) is null) {
                 //_XkbLibError(_XkbErrBadAlloc, "ReadXkmGeometry", 0);
                 return nRead;
             }
@@ -1074,7 +1074,7 @@ private int ReadXkmGeometry(FILE* file, XkbDescPtr xkb)
     if (wireGeom.num_colors > 0) {
         for (i = 0; i < wireGeom.num_colors; i++) {
             nRead += XkmGetCountedString(file, buf.ptr, 100);
-            if (XkbAddGeomColor(geom, buf.ptr, i) == null) {
+            if (XkbAddGeomColor(geom, buf.ptr, i) is null) {
                 //_XkbLibError(_XkbErrBadAlloc, "ReadXkmGeometry", 0);
                 return nRead;
             }
@@ -1216,7 +1216,7 @@ uint XkmReadFile(FILE* file, uint need, uint want, XkbDescPtr* xkb)
                     //  need & (~fileInfo.present));
         return which;
     }
-    if (*xkb == null)
+    if (*xkb is null)
         *xkb = XkbAllocKeyboard();
     for (i = 0; i < fileInfo.num_toc; i++) {
         fseek(file, toc[i].offset, SEEK_SET);

@@ -197,7 +197,7 @@ private Bool xnestSameInstalledColormapWindows(xcb_window_t* windows, int numWin
     if (xnestOldInstalledColormapWindows == windows)
         return TRUE;
 
-    if (xnestOldInstalledColormapWindows == null || windows == null)
+    if (xnestOldInstalledColormapWindows is null || windows is null)
         return FALSE;
 
     if (memcmp(xnestOldInstalledColormapWindows, windows,

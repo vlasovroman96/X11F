@@ -665,7 +665,7 @@ private int eventToDeviceEvent(DeviceEvent* ev, xEvent** xi)
     len += vallen * 4;          /* valuators mask */
 
     *xi = cast(_xEvent*)calloc(1, len);
-    if (*xi == null)
+    if (*xi is null)
         return BadAlloc;
     xde = cast(xXIDeviceEvent*) * xi;
     xde.type = GenericEvent;
@@ -734,7 +734,7 @@ private int eventToTouchOwnershipEvent(TouchOwnershipEvent* ev, xEvent** xi)
     xXITouchOwnershipEvent* xtoe = void;
 
     *xi = cast(_xEvent*)calloc(1, len);
-    if (*xi == null)
+    if (*xi is null)
         return BadAlloc;
     xtoe = cast(xXITouchOwnershipEvent*) * xi;
     xtoe.type = GenericEvent;
@@ -765,7 +765,7 @@ private int eventToRawEvent(RawDeviceEvent* ev, xEvent** xi)
     len += vallen * 4;          /* valuators mask */
 
     *xi = cast(_xEvent*)calloc(1, len);
-    if (*xi == null)
+    if (*xi is null)
         return BadAlloc;
     raw = cast(xXIRawEvent*) * xi;
     raw.type = GenericEvent;
@@ -801,7 +801,7 @@ private int eventToBarrierEvent(BarrierEvent* ev, xEvent** xi)
     int len = xXIBarrierEvent.sizeof;
 
     *xi = cast(_xEvent*)calloc(1, len);
-    if (*xi == null)
+    if (*xi is null)
         return BadAlloc;
     barrier = cast(xXIBarrierEvent*) *xi;
     barrier.type = GenericEvent;
@@ -831,7 +831,7 @@ int eventToGesturePinchEvent(GestureEvent* ev, xEvent** xi)
     xXIGesturePinchEvent* xpe = void;
 
     *xi = cast(_xEvent*)calloc(1, len);
-    if (*xi == null)
+    if (*xi is null)
         return BadAlloc;
     xpe = cast(xXIGesturePinchEvent*) * xi;
     xpe.type = GenericEvent;
@@ -874,7 +874,7 @@ int eventToGestureSwipeEvent(GestureEvent* ev, xEvent** xi)
     xXIGestureSwipeEvent* xde = void;
 
     *xi = cast(_xEvent*)calloc(1, len);
-    if (*xi == null)
+    if (*xi is null)
         return BadAlloc;
     xde = cast(xXIGestureSwipeEvent*) * xi;
     xde.type = GenericEvent;

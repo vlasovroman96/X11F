@@ -94,7 +94,7 @@ void xf86printExtensionsSection(FILE* cf, XF86ConfExtensionsPtr ptr)
 {
     XF86OptionPtr p = void;
 
-    if (ptr == null || ptr.ext_option_lst == null)
+    if (ptr is null || ptr.ext_option_lst is null)
         return;
 
     p = ptr.ext_option_lst;
@@ -107,7 +107,7 @@ void xf86printExtensionsSection(FILE* cf, XF86ConfExtensionsPtr ptr)
 
 void xf86freeExtensions(XF86ConfExtensionsPtr ptr)
 {
-    if (ptr == null)
+    if (ptr is null)
         return;
 
     xf86optionListFree(ptr.ext_option_lst);

@@ -430,7 +430,7 @@ private Bool PictureInitIndexedFormat(ScreenPtr pScreen, PictFormatPtr format)
     else {
         VisualPtr pVisual = PictureFindVisual(pScreen, format.index.vid);
 
-        if (pVisual == null)
+        if (pVisual is null)
             return FALSE;
 
         if (dixCreateColormap(dixAllocServerXID(), pScreen, pVisual,
@@ -985,7 +985,7 @@ version (XINERAMA) {
                                           client, mode);
         if (err != Success)
             return err;
-        if (screen == null)
+        if (screen is null)
             LogMessage(X_WARNING, "cpAlphaMap() screen == NULL\n");
         else
             id = res.info[screen.myNum].id;
@@ -1059,7 +1059,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
                         client.errorValue = pid;
                         break;
                     }
-                    if (pAlpha.pDrawable == null ||
+                    if (pAlpha.pDrawable is null ||
                         pAlpha.pDrawable.type != DRAWABLE_PIXMAP) {
                         client.errorValue = pid;
                         error = BadMatch;
@@ -1409,9 +1409,9 @@ private CARD8 ReduceCompositeOp(CARD8 op, PicturePtr pSrc, PicturePtr pMask, Pic
           xSrc >= 0 && ySrc >= 0 &&
           xSrc + width <= pSrc.pDrawable.width &&
           ySrc + height <= pSrc.pDrawable.height)) &&
-        pSrc.alphaMap == null && pMask == null;
+        pSrc.alphaMap is null && pMask is null;
     no_dst_alpha = PIXMAN_FORMAT_COLOR(pDst.format) &&
-        PIXMAN_FORMAT_A(pDst.format) == 0 && pDst.alphaMap == null;
+        PIXMAN_FORMAT_A(pDst.format) == 0 && pDst.alphaMap is null;
 
     /* TODO, maybe: Conjoint and Disjoint op reductions? */
 

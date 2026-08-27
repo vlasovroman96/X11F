@@ -243,13 +243,13 @@ private pixman_image_t* glamor_get_converted_image(pixman_format_code_t dst_form
     pixman_image_t* src_image = void;
 
     dst_image = assumeNoGC(&pixman_image_create_bits)(dst_format, w, h, null, 0);
-    if (dst_image == null) {
+    if (dst_image is null) {
         return null;
     }
 
     src_image = assumeNoGC(&pixman_image_create_bits)(src_format, w, h, cast(uint*)src_bits, src_stride);
 
-    if (src_image == null) {
+    if (src_image is null) {
         assumeNoGC(&pixman_image_unref)(dst_image);
         return null;
     }

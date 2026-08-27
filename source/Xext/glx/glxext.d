@@ -509,7 +509,7 @@ static if (PRESENT) {
 
 private void xorgGlxInitGLVNDVendor()
 {
-    if (glvnd_vendor == null) {
+    if (glvnd_vendor is null) {
         GlxServerImports* imports = null;
         imports = glxServer.allocateServerImports();
 
@@ -605,7 +605,7 @@ __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* er
     }
 
     if (!cx.isDirect) {
-        if (cx.drawPriv == null) {
+        if (cx.drawPriv is null) {
             /*
              ** The drawable has vanished.  It must be a window, because only
              ** windows can be destroyed from under us; GLX pixmaps are

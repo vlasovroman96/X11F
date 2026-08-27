@@ -51,21 +51,21 @@ GlxServerVendor* GlxCreateVendor(const(GlxServerImports)* imports)
 {
     GlxServerVendor* vendor = null;
 
-    if (imports == null) {
+    if (imports is null) {
         ErrorF("GLX: Vendor library did not provide an imports table\n");
         return null;
     }
 
-    if (imports.extensionCloseDown == null
-            || imports.handleRequest == null
-            || imports.getDispatchAddress == null
-            || imports.makeCurrent == null) {
+    if (imports.extensionCloseDown is null
+            || imports.handleRequest is null
+            || imports.getDispatchAddress is null
+            || imports.makeCurrent is null) {
         ErrorF("GLX: Vendor library is missing required callback functions.\n");
         return null;
     }
 
     vendor = cast(GlxServerVendor*) cast(GlxServerVendor*) calloc(1, GlxServerVendor.sizeof);
-    if (vendor == null) {
+    if (vendor is null) {
         ErrorF("GLX: Can't allocate vendor library.\n");
         return null;
     }

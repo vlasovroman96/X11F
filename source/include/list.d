@@ -223,7 +223,7 @@ pragma(inline, true) void xorg_list_del(xorg_list* entry)
  */
 pragma(inline, true) int xorg_list_is_empty(xorg_list* head)
 {
-    return ((head.next == null) || (head.next == head));
+    return ((head.next is null) || (head.next == head));
 }
 
 /**
@@ -550,7 +550,7 @@ enum string nt_list_insert(string _entry, string _list, string _type, string _me
  */
 enum string nt_list_del(string _entry, string _list, string _type, string _member) = `					
 		`~_type~`* __e = ` ~ _entry ~ `;				
-		if (__e == null || ` ~ _list ~ ` == null) break;        
+		if (__e is null || ` ~ _list ~ ` is null) break;        
 		if ((` ~ _list ~ `) == __e) {				
 		    ` ~ _list ~ ` = cast(`~_type~`*)__e.` ~ _member ~ `;			
 		} else {					

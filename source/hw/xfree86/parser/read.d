@@ -114,7 +114,7 @@ XF86ConfigPtr xf86readConfigFile()
     int token = void;
     XF86ConfigPtr ptr = null;
 
-    if ((ptr = xf86allocateConfig()) == null) {
+    if ((ptr = xf86allocateConfig()) is null) {
         return null;
     }
 
@@ -295,7 +295,7 @@ XF86ConfigPtr xf86allocateConfig()
 
 void xf86freeConfig(XF86ConfigPtr p)
 {
-    if (p == null)
+    if (p is null)
         return;
 
     xf86freeFiles(p.conf_files);

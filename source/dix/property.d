@@ -126,7 +126,7 @@ private void setVRRMode(WindowPtr pWin, WindowVRRMode mode)
 private void notifyVRRMode(ClientPtr pClient, WindowPtr pWindow, int state, PropertyPtr pProp)
 {
     const(char)* pName = NameForAtom(pProp.propertyName);
-    if (pName == null || strcmp(pName, "_VARIABLE_REFRESH") || pProp.format != 32 || pProp.size != 1)
+    if (pName is null || strcmp(pName, "_VARIABLE_REFRESH") || pProp.format != 32 || pProp.size != 1)
         return;
 
     WindowVRRMode mode = cast(WindowVRRMode)(state == PropertyNewValue ? (*(cast(uint*)pProp.data)) : 0);
