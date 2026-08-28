@@ -24,7 +24,7 @@ enum BUILD_GLX_DRI = 1;
 
 enum COMPILEDDEFAULTFONTPATH = "/usr/share/fonts/misc,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/100dpi,/usr/share/fonts/75dpi";
 
-enum COMPOSITE = 1;
+version = COMPOSITE;
 
 enum CONFIG_MITSHM = 1;
 
