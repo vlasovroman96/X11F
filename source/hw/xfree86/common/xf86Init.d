@@ -341,6 +341,7 @@ void InitOutput(int argc, char** argv)
         /* Tell the loader the default module search path */
         LoaderSetPath(null, xf86ModulePath);
 
+        xf86Info.ignoreABI = 1;
         if (xf86Info.ignoreABI) {
             LoaderSetIgnoreAbi();
         }
@@ -386,17 +387,23 @@ void InitOutput(int argc, char** argv)
                 LogMessageVerb(X_ERROR, 1, "Automatic driver configuration failed\n");
                 return;
             }
+            fprintf(stderr, "CONFIG");
         }
         if ((modulelist = xf86DriverlistFromConfig()) !is null) {
             xf86LoadModules(modulelist, null);
             free(modulelist);
+            fprintf(stderr, "MODULELIST");
+
         }
 
         /* Load all input driver modules specified in the config file. */
         if ((modulelist = xf86InputDriverlistFromConfig())!is null) {
             xf86LoadModules(modulelist, null);
             free(modulelist);
+            fprintf(stderr, "INOUTDRIVERLIST");
+
         }
+
 
         /*
          * It is expected that xf86AddDriver()/xf86AddInputDriver will be

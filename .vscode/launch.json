@@ -11,6 +11,14 @@
 			"program": "${workspaceFolder}/x12",
 			"args": [],
 			"cwd": "${workspaceFolder}"
+		},	
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Launch XOrg",
+			"program": "/home/roman/xserver/build/hw/xfree86/Xorg",
+			"args": [":1"],
+			"cwd": "/home/roman/xserver/build/hw/xfree86"
 		},		
 		
 		{

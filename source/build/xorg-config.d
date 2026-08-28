@@ -39,7 +39,7 @@ enum XF86CONFIGFILE = "xorg.conf";
 enum XCONFIGDIR = "xorg.conf.d";
 
 /* Path to loadable modules. */
-enum DEFAULT_MODULE_PATH = "/usr/local/lib/xorg/modules";
+enum DEFAULT_MODULE_PATH = "/usr/lib/xorg/modules";
 
 /* Path to installed libraries. */
 enum DEFAULT_LIBRARY_PATH = "/usr/local/lib";
