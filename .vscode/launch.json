@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Launch",
 			"program": "${workspaceFolder}/x12",
-			"args": [],
+			"args": [":2"],
 			"cwd": "${workspaceFolder}"
 		},	
 		{

@@ -537,12 +537,12 @@ static if (!HasVersion!"Windows" || !HasVersion!"Windows") {
             else
                 UseMsg();
         }
-version (DPMSExtension) {
-        if(strcmp(argv[i], "dpms") == 0) {}
+// version (DPMSExtension) {
+//         if(strcmp(argv[i], "dpms") == 0) {}
 
-        else if (strcmp(argv[i], "dpms") == 0)
-            DPMSDisabledSwitch = TRUE;
-}
+//         else if (strcmp(argv[i], "dpms") == 0)
+//             DPMSDisabledSwitch = TRUE;
+// }
         else if (strcmp(argv[i], "-deferglyphs") == 0) {
             if (++i >= argc || !assumeNoGC(&xfont2_parse_glyph_caching_mode)(argv[i]))
                 UseMsg();
@@ -583,15 +583,15 @@ version (DPMSExtension) {
             else
                 UseMsg();
         }
-version( LOCK_SERVER) {
-        if (strcmp && __CYGWIN__) {
-            if (getuid != 0)
-                ErrorF
-                    ("Warning: the -nolock option can only be used by root\n");
-            else 
-                DisableServerLock();
-        }
-    }
+// version( LOCK_SERVER) {
+//         if (strcmp && __CYGWIN__) {
+//             if (getuid != 0)
+//                 ErrorF
+//                     ("Warning: the -nolock option can only be used by root\n");
+//             else 
+//                 DisableServerLock();
+//         }
+//     }
 
         else if ( strcmp( argv[i], "-maxclients") == 0)
         {
@@ -726,27 +726,27 @@ version( LOCK_SERVER) {
                 UseMsg();
             }
         }
-version (CONFIG_NAMESPACE) {
-        if (strcmp(argv[i], "-namespace") == 0) {
-            if (++i < argc) {
-                namespaceConfigFile = argv[i];
-                noNamespaceExtension = FALSE;
-            }
-            else
-                UseMsg();
-        }
-}
-version (XINERAMA) {
-        if (strcmp(argv[i], "+xinerama") == 0) {
-            noPanoramiXExtension = FALSE;
-        }
-        else if (strcmp (argv[i], "-xinerama") == 0) {
-            noPanoramiXExtension = TRUE;
-        }
-        else if (strcmp(argv[i], "-disablexineramaextension") == 0) {
-            PanoramiXExtensionDisabledHack = TRUE;
-        }
-// #endif /* XINERAMA */
+// version (CONFIG_NAMESPACE) {
+//         if (strcmp(argv[i], "-namespace") == 0) {
+//             if (++i < argc) {
+//                 namespaceConfigFile = argv[i];
+//                 noNamespaceExtension = FALSE;
+//             }
+//             else
+//                 UseMsg();
+//         }
+// }
+// version (XINERAMA) {
+//         if (strcmp(argv[i], "+xinerama") == 0) {
+//             noPanoramiXExtension = FALSE;
+//         }
+//         else if (strcmp (argv[i], "-xinerama") == 0) {
+//             noPanoramiXExtension = TRUE;
+//         }
+//         else if (strcmp(argv[i], "-disablexineramaextension") == 0) {
+//             PanoramiXExtensionDisabledHack = TRUE;
+//         }
+// }// #endif /* XINERAMA */
         else if (strcmp(argv[i], "-I") == 0) {
             /* ignore all remaining arguments */
             break;
@@ -754,15 +754,16 @@ version (XINERAMA) {
         else if (strncmp(argv[i], "tty", 3) == 0) {
             /* init supplies us with this useless information */
         }
-version(XDMCP)
-        if ((skip = XdmcpOptions(argc, argv, i)) != i) {
-            i = skip - 1;
-        }
-}
+// version(XDMCP) {
+//         if ((skip = XdmcpOptions(argc, argv, i)) != i) {
+//             i = skip - 1;
+//         }
+// }
         else if (strcmp(argv[i], "-dumbSched") == 0) {
             InputThreadEnable = FALSE;
-version(HAVE_SETITIMER)
-            SmartScheduleSignalEnable = FALSE;
+// version(HAVE_SETITIMER) {
+//             SmartScheduleSignalEnable = FALSE;
+// }
 
         }
         else if (strcmp(argv[i], "-schedInterval") == 0) {
@@ -809,12 +810,12 @@ version(HAVE_SETITIMER)
                 UseMsg();
         }
         
-version(CONFIG_SYSLOG) {
-        if (ProcessCmdLineMultiInt(argc, argv, &i, "-syslogverbose", &xorgSyslogVerbosity))
-        {}
-        // else{}
-}
-// #endif
+// version(CONFIG_SYSLOG) {
+//         if (ProcessCmdLineMultiInt(argc, argv, &i, "-syslogverbose", &xorgSyslogVerbosity))
+//         {}
+//         // else{}
+// }
+// // #endif
         else {
             ErrorF("Unrecognized option: %s\n", argv[i]);
             UseMsg();
