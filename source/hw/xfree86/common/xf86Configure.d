@@ -643,6 +643,7 @@ void DoConfigure()
         Bool found_screen = void;
         DriverRec* drv = xf86DriverList[CurrentDriver];
 
+        fprintf(stderr, "LOL");
         found_screen = xf86CallDriverProbe(drv, TRUE);
         if (found_screen && drv.Identify) {
             assumeNoGC(drv.Identify) (0);

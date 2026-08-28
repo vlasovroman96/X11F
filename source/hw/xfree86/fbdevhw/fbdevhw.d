@@ -252,17 +252,29 @@ private void fbdev2xfree_timing(fb_var_screeninfo* var, DisplayModePtr mode)
 /* Wrapper around open() that also get the framebuffer name */
 private int fbdev_open_device(int scrnIndex, const(char)* dev, char** namep)
 {
+    fprintf(stderr, "LOL");
     int fd = dev ? open(dev, O_RDWR) : -1;
+    
 
     if (!namep) {
         return fd;
     }
+
+    fprintf(stderr,
+    "fbdev_open_device(%s): open -> fd=%d errno=%d\n",
+    dev ? dev : "(null)", fd, errno);
 
     if (fd == -1) {
         return -1;
     }
 
     fb_fix_screeninfo fix = void;
+
+    fprintf(stderr,
+    "FBIOGET_FSCREENINFO: fd=%d request=%#lx fix.sizeof=%zu\n",
+    fd,
+    cast(ulong) FBIOGET_FSCREENINFO,
+    fb_fix_screeninfo.sizeof);
 
     if (ioctl(fd, FBIOGET_FSCREENINFO, cast(void*) (&fix)) == -1) {
         *namep = null;
@@ -408,6 +420,9 @@ enum string FBDEV_CHECK_PCI_GLOB(string glob_pattern) = `
 
 private int fbdev_open(int scrnIndex, const(char)* dev, char** namep)
 {
+    fprintf(stderr,
+    "fbdev_open: dev=%s namep=%p\n",
+    dev ? dev : "(null)", namep);
     int fd = void;
 
     fd = fbdev_check_user_devices(scrnIndex, dev, namep);
@@ -439,8 +454,13 @@ private int fbdev_open(int scrnIndex, const(char)* dev, char** namep)
 /* -------------------------------------------------------------------- */
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-Bool fbdevHWProbe(pci_device* pPci, const(char)* device, char** namep)
+export Bool fbdevHWProbe(pci_device* pPci, const(char)* device, char** namep)
 {
+    fprintf(stderr,
+    "fbdevHWProbe: pPci=%p device=%s namep=%p\n",
+    pPci,
+    device ? device : "(null)",
+    namep);
     int fd = void;
 
     if (pPci)

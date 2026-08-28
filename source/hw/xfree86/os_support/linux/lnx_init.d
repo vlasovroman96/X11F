@@ -28,6 +28,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
+import core.sys.posix.sys.stat;
 //import externs.X11.X;
 ////import externs.X11.Xmd;
 
@@ -97,10 +98,17 @@ private void drain_console(int fd, void* closure)
 }
 
 private int switch_to(int vt, const(char)* from)
+
 {
     int ret = void;
+    fprintf(stderr,
+    "switch_to: vt=%d consoleFd=%d euid=%d\n",
+    vt, xf86Info.consoleFd, geteuid());
 
+    fprintf(stderr, "VT_ACTIVATE before\n");
     mixin(SYSCALL!("ret = ioctl(xf86Info.consoleFd, VT_ACTIVATE, vt)"));
+    fprintf(stderr, "VT_ACTIVATE ret=%d errno=%d (%s)\n",
+    ret, errno, strerror(errno));
     if (ret < 0) {
         LogMessageVerb(X_WARNING, 1, "%s: VT_ACTIVATE failed: %s\n", from, strerror(errno));
         return 0;
@@ -138,6 +146,16 @@ int linux_parse_vt_settings(int may_fail)
         from = X_CMDLINE;
     }
     else {
+        for (int i_ = 0; i_ <= 2; i_++)
+    {
+        stat_t st_ = void;
+        auto r = fstat(i_, &st);
+        // fprintf(stderr,
+        //     "fd=%d mode=%#x rdev=%#llx\n",
+        //     i,
+        //     cast(uint) st.st_mode,
+        //     cast(ulong) st.st_rdev);
+    }
         fd = open("/dev/tty0", O_WRONLY, 0);
         if (fd < 0) {
             if (may_fail)
@@ -182,6 +200,13 @@ int linux_parse_vt_settings(int may_fail)
             current_vt = minor(st.st_rdev);
             break;
         }
+        fprintf(stderr,
+        "fd=%d r=%d mode=%#x rdev=%#llx major=%u minor=%u\n",
+        i, ret,
+        st.st_mode,
+        cast(ulong)st.st_rdev,
+        major(st.st_rdev),
+        minor(st.st_rdev));
     }
 
     if (!KeepTty && current_vt == xf86Info.vtno) {
@@ -204,6 +229,12 @@ Bool xf86VTKeepTtyIsSet()
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86OpenConsole()
 {
+        fprintf(stderr,
+    "console: vtno=%d consoleFd=%d seatd=%d KeepTty=%d\n",
+    xf86Info.vtno,
+    xf86Info.consoleFd,
+    seatd_libseat_controls_session(),
+    KeepTty);
     int i = void, ret = void;
     vt_stat vts = void;
     vt_mode VT = void;
@@ -335,6 +366,7 @@ void xf86OpenConsole()
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 void xf86CloseConsole()
 {
+
     vt_mode VT = void;
     vt_stat vts = void;
     int ret = void;

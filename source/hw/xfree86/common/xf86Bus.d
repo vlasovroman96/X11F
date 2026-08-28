@@ -138,25 +138,25 @@ Bool xf86CallDriverProbe(DriverPtr drv, Bool detect_only)
 {
     Bool foundScreen = FALSE;
 
-version (XSERVER_PLATFORM_BUS) {
-    /* xf86platformBus.c does not support Xorg -configure */
-    if (!xf86DoConfigure && drv.platformProbe !is null) {
-        foundScreen = xf86platformProbeDev(drv);
-    }
-}
+// version (XSERVER_PLATFORM_BUS) {
+//     /* xf86platformBus.c does not support Xorg -configure */
+//     if (!xf86DoConfigure && drv.platformProbe !is null) {
+//         foundScreen = xf86platformProbeDev(drv);
+//     }
+// }
 
-version (XSERVER_LIBPCIACCESS) {
-    if (!foundScreen && (drv.PciProbe !is null)) {
-        if (xf86DoConfigure && xf86DoConfigurePass1) {
-            assert(detect_only);
-            foundScreen = xf86PciAddMatchingDev(drv);
-        }
-        else {
-            assert(!detect_only);
-            foundScreen = xf86PciProbeDev(drv);
-        }
-    }
-}
+// version (XSERVER_LIBPCIACCESS) {
+//     if (!foundScreen && (drv.PciProbe !is null)) {
+//         if (xf86DoConfigure && xf86DoConfigurePass1) {
+//             assert(detect_only);
+//             foundScreen = xf86PciAddMatchingDev(drv);
+//         }
+//         else {
+//             assert(!detect_only);
+//             foundScreen = xf86PciProbeDev(drv);
+//         }
+//     }
+// }
     if (!foundScreen && (drv.Probe !is null)) {
         LogMessageVerb(X_WARNING, 1, "Falling back to old probe method for %s\n",
                 drv.driverName);

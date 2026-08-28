@@ -32,9 +32,11 @@ public import externs.X11.Xdefs;
 import externs.X11.Xmd;
 import include.misc;
 
-// version (SEATD_LIBSEAT) {
+version = SEATD_LIBSEAT;
+version (SEATD_LIBSEAT) {
 public import xf86Xinput;
-
+public import hw.xfree.os_support.shrd.seatd_libseat;
+// public import 
 
 
 // /**
@@ -52,7 +54,7 @@ public import xf86Xinput;
 
 
 
-// } else {
+} else {
 
 pragma(inline, true) int seatd_libseat_init(bool KeepTty_state) {cast(void)KeepTty_state; return -1; }
 pragma(inline, true) void seatd_libseat_fini() {}
@@ -62,6 +64,6 @@ pragma(inline, true) void seatd_libseat_close_device(void* p) { cast(void)p;}
 pragma(inline, true) int seatd_libseat_switch_session(int session) { return -1; }
 pragma(inline, true) Bool seatd_libseat_controls_session() { return FALSE; }
 
-// }
+}
 
 

@@ -296,6 +296,7 @@ version (RANDR) {
  */
 void InitOutput(int argc, char** argv)
 {
+
     int i = void, j = void, k = void, scr_index = void;
     const(char)** modulelist = void;
     void** optionlist = void;
@@ -308,9 +309,12 @@ void InitOutput(int argc, char** argv)
 
     config_pre_init();
 
+
     if (serverGeneration == 1) {
         xf86PrintBanner();
+
         LogPrintMarkers();
+
         if (xf86LogFile) {
             time_t t = void;
             const(char)* ct = void;
@@ -320,6 +324,7 @@ void InitOutput(int argc, char** argv)
             LogMessageVerb(xf86LogFileFrom, 0, "Log file: \"%s\", Time: %s",
                         xf86LogFile, ct);
         }
+
 
         /* Read and parse the config file */
         if (!xf86DoConfigure && !xf86DoShowOptions) {
@@ -335,26 +340,43 @@ void InitOutput(int argc, char** argv)
             default: break;}
         }
 
+
         /* Initialise the loader */
         LoaderInit();
+    fprintf(stderr, "\nLOL LOADSER\n");
+
 
         /* Tell the loader the default module search path */
         LoaderSetPath(null, xf86ModulePath);
+    fprintf(stderr, "\nLOLsdfsdfsds\n");
+
 
         xf86Info.ignoreABI = 1;
         if (xf86Info.ignoreABI) {
             LoaderSetIgnoreAbi();
         }
+    fprintf(stderr, "\nLOxcvxvxvL\n");
+
 
         if (xf86DoShowOptions)
             DoShowOptions();
+    fprintf(stderr, "\nLOwerewfdxL\n");
+
 
         dbus_core_init();
+    fprintf(stderr, "\nLOhghjfhL\n");
+
         seatd_libseat_init(cast(bool)xf86VTKeepTtyIsSet());
+    fprintf(stderr, "\nLqewqecxOL\n");
+
         systemd_logind_init();
+    fprintf(stderr, "\nLxczfcxvgcvbOL\n");
+
 
         /* Do a general bus probe.  This will be a PCI probe for x86 platforms */
         xf86BusProbe();
+    fprintf(stderr, "\nLertetOL\n");
+
 
         if (xf86DoConfigure)
             DoConfigure();
@@ -377,6 +399,7 @@ void InitOutput(int argc, char** argv)
             free(optionlist);
         }
 
+
         /* Load all driver modules specified in the config file */
         /* If there aren't any specified in the config file, autoconfig them */
         /* FIXME: Does not handle multiple active screen sections, but I'm not
@@ -389,12 +412,14 @@ void InitOutput(int argc, char** argv)
             }
             fprintf(stderr, "CONFIG");
         }
+
         if ((modulelist = xf86DriverlistFromConfig()) !is null) {
             xf86LoadModules(modulelist, null);
             free(modulelist);
             fprintf(stderr, "MODULELIST");
 
         }
+
 
         /* Load all input driver modules specified in the config file. */
         if ((modulelist = xf86InputDriverlistFromConfig())!is null) {
@@ -450,12 +475,14 @@ void InitOutput(int argc, char** argv)
                 xorgHWOpenConsole = TRUE;
         }
 
+
         if (xorgHWOpenConsole) {
             if (!seatd_libseat_controls_session()) {
                 xf86OpenConsole();
             }
         } else
             xf86Info.dontVTSwitch = TRUE;
+
 
 	/* Enable full I/O access */
 	if (want_hw_access)
@@ -631,9 +658,9 @@ void InitOutput(int argc, char** argv)
         xf86Resetting = TRUE;
         /* All screens are in the same state, so just check the first */
         if (!xf86VTOwner()) {
-version (HAS_USL_VTS) {
+// version (HAS_USL_VTS) {
             ioctl(xf86Info.consoleFd, VT_RELDISP, VT_ACKACQ);
-}
+// }
             input_lock();
             sigio_blocked = TRUE;
         }

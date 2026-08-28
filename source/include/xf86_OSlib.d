@@ -96,13 +96,13 @@ public import core.sys.posix.sys.types;
 
 public import core.stdc.errno;
 
-version (HAVE_SYS_VT_H) {
-version = HAS_USL_VTS;
-}
-version (HAS_USL_VTS) {
+// version (HAVE_SYS_VT_H) {
+// version = HAS_USL_VTS;
+// }
+// version (HAS_USL_VTS) {
 public import sys.kd;
 public import sys.vt;
-}
+// }
 
 version = CLEARDTR_SUPPORT;
 
@@ -125,15 +125,15 @@ public import sys.param;
 
 public import core.stdc.errno;
 
-version (linux) {
-version = HAS_USL_VTS;
+// version (linux) {
+// version = HAS_USL_VTS;
 public import externs.linux.kd;
 public import externs.linux.vt;
 enum LDGMAP = GIO_SCRNMAP;
 enum LDSMAP = PIO_SCRNMAP;
 enum LDNMAP = LDSMAP;
 version = CLEARDTR_SUPPORT;
-}
+// }
 
 }                          /* __linux__ || __GLIBC__ */
 

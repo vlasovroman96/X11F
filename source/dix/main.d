@@ -250,13 +250,13 @@ int dix_main(int argc, char** argv, char** envp)
 
         rootCursor = RefCursor(rootCursor);
 
-version (XINERAMA) {
-        /*
-         * Consolidate window and colourmap information for each screen
-         */
-        if (!noPanoramiXExtension)
-            PanoramiXConsolidate();
-} /* XINERAMA */
+// version (XINERAMA) {
+//         /*
+//          * Consolidate window and colourmap information for each screen
+//          */
+//         if (!noPanoramiXExtension)
+//             PanoramiXConsolidate();
+// } /* XINERAMA */
 
         mixin(DIX_FOR_EACH_SCREEN!("{
             InitRootWindow(walkScreen.root);
