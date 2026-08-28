@@ -138,7 +138,8 @@ enum PROJECTROOT =	"/usr/X11R6";
 
 
 private ModuleDefault[4] ModuleDefaults = [
-    ModuleDefault("glx",TRUE,null)
+    ModuleDefault("glx",TRUE,null),
+    ModuleDefault(null, FALSE, null)
 ];
 // #ifdef GLXEXT
 //     ModuleDefaults[0] = ModuleDefault("glx",toLoad: TRUE,load_opt: null},

@@ -74,7 +74,7 @@ enum GLAMOR_HAS_EGL_QUERY_DRIVER = 1;
 
 enum GLAMOR_HAS_GBM = 1;
 
-enum GLXEXT = 1;
+// version = GLXEXT;
 
 enum HASXDMAUTH = 1;
 

@@ -34,7 +34,7 @@ enum COMPILEDDEFAULTFONTPATH = "/usr/share/fonts/misc,/usr/share/fonts/TTF,/usr/
 //version = DRI3;
 
 /* Build GLX extension */
-enum GLXEXT = 1;
+// version = GLXEXT;
 
 /* Support XDM-AUTH*-1 */
 enum HASXDMAUTH = 1;
