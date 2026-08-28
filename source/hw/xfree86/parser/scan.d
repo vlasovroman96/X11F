@@ -94,7 +94,7 @@ enum CONFIG_MAX_FILES =   64;
 struct _ConfigFiles {
     FILE* file;
     char* path;
-}private _ConfigFiles[CONFIG_MAX_FILES] configFiles;
+}private _ConfigFiles[CONFIG_MAX_FILES] configFilesList;
 // private const(char)** builtinConfig = null;
 private int builtinIndex = 0;
 private int configPos = 0;       /* current readers position */
@@ -110,7 +110,7 @@ LexRec xf86_lex_val;
 /*
  * xf86getNextLine --
  *
- *  read from the configFiles FILE stream until we encounter a new
+ *  read from the configFilesList FILE stream until we encounter a new
  *  line; this is effectively just a big wrapper for fgets(3).
  *
  *  xf86getToken() assumes that we will read up to the next
@@ -169,7 +169,7 @@ private char* xf86getNextLine()
 
     do {
         ret = fgets(configBuf + pos, configBufLen - pos - 1,
-                    configFiles[curFileIndex].file);
+                    configFilesList[curFileIndex].file);
 
         if (!ret) {
             /*
@@ -726,8 +726,8 @@ private char* OpenConfigFile(const(char)* path, const(char)* cmdline, const(char
 
     free(pathcopy);
     if (file) {
-        configFiles[numFiles].file = file;
-        configFiles[numFiles].path = strdup(filepath);
+        configFilesList[numFiles].file = file;
+        configFilesList[numFiles].path = strdup(filepath);
         numFiles++;
     }
     return filepath;
@@ -779,8 +779,8 @@ private Bool AddConfigDirFiles(const(char)* dirpath, dirent** list, int num)
         }
         openedFile = TRUE;
 
-        configFiles[numFiles].file = file;
-        configFiles[numFiles].path = path;
+        configFilesList[numFiles].file = file;
+        configFilesList[numFiles].path = path;
         numFiles++;
     }
 
@@ -933,10 +933,10 @@ void xf86closeConfigFile()
         builtinIndex = 0;
     }
     for (i = 0; i < numFiles; i++) {
-        fclose(configFiles[i].file);
-        configFiles[i].file = null;
-        free(configFiles[i].path);
-        configFiles[i].path = null;
+        fclose(configFilesList[i].file);
+        configFilesList[i].file = null;
+        free(configFilesList[i].path);
+        configFilesList[i].path = null;
     }
     numFiles = 0;
 }
@@ -949,7 +949,7 @@ void xf86setBuiltinConfig(const(char)** config)
 void xf86parseError(const(char)* format, ...)
 {
     va_list ap = void;
-    const(char)* filename = numFiles ? configFiles[curFileIndex].path
+    const(char)* filename = numFiles ? configFilesList[curFileIndex].path
         : "<builtin configuration>";
 
     ErrorF("Parse error on line %d of section %s in file %s\n\t",
@@ -964,7 +964,7 @@ void xf86parseError(const(char)* format, ...)
 void xf86validationError(const(char)* format, ...)
 {
     va_list ap = void;
-    const(char)* filename = numFiles ? configFiles[curFileIndex].path
+    const(char)* filename = numFiles ? configFilesList[curFileIndex].path
         : "<builtin configuration>";
 
     ErrorF("Data incomplete in file %s\n\t", filename);

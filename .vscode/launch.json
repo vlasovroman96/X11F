@@ -11,8 +11,7 @@
 			"program": "${workspaceFolder}/x12",
 			"args": [],
 			"cwd": "${workspaceFolder}"
-		},
-		
+		},		
 		
 		{
 			"type": "code-d",

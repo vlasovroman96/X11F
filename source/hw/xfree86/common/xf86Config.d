@@ -2532,6 +2532,10 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
 //             xf86PciIsolateDevice(scanptr);
 //     }
 // }
+    fprintf(stderr,
+        "BEFORE configFiles: xf86configptr=%p conf_files=%p\n",
+        xf86configptr,
+        xf86configptr ? xf86configptr.conf_files : null);
     /* Now process everything else */
     configFiles(xf86configptr.conf_files);
     configExtensions(xf86configptr.conf_extensions);

@@ -311,7 +311,7 @@ private PatternPtr InitPatterns(const(char)** patternlist)
     if (firstTime) {
         /* precompile stdPatterns */
         firstTime = 0;
-        for (p = stdPatterns.ptr; p.pattern; p++)
+        for (p = stdPatterns.ptr; p.pattern !is null; p++) 
             if ((e = regcomp(&p.rex, p.pattern, REG_EXTENDED)) != 0) {
                 regerror(e, &p.rex, errmsg.ptr, errmsg.sizeof);
                 FatalError("InitPatterns: regcomp error for `%s': %s\n",
