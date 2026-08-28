@@ -25,7 +25,7 @@ static assert(0, "Include xorg-config.h when building the X server");
 enum COMPILEDDEFAULTFONTPATH = "/usr/share/fonts/misc,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/100dpi,/usr/share/fonts/75dpi";
 
 /* Support Composite Extension */
-version = COMPOSITE;
+// version = COMPOSITE;
 
 /* Build DPMS extension */
 enum DPMSExtension = 1;
@@ -60,7 +60,7 @@ enum IPv6 = 1;
 
 /* Support MIT-SHM Extension */
 enum MITSHM = 1;
-enum CONFIG_MITSHM = 1;
+version = CONFIG_MITSHM;
 
 /* Internal define for Xinerama */
 enum PANORAMIX = 1;

@@ -50,7 +50,7 @@ import core.sys.posix.unistd;
 import core.stdc.time;
 import core.stdc.errno;
 
-static if (CONFIG_MITSHM) {
+version(CONFIG_MITSHM) {
 version (Cygwin) {
 import sys.param;
 }
@@ -114,7 +114,7 @@ Bool noXFree86BigfontExtension = FALSE;
 
 
 
-static if (CONFIG_MITSHM) {
+version(CONFIG_MITSHM) {
 
 /* A random signature, transmitted to the clients so they can verify that the
    shared memory segment they are attaching to was really established by the
@@ -307,7 +307,7 @@ private int ProcXF86BigfontQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86BigfontQueryVersionReq);
 
-static if(CONFIG_MITSHM)
+version(CONFIG_MITSHM)
     xXF86BigfontQueryVersionReply reply = {
         majorVersion: SERVER_XF86BIGFONT_MAJOR_VERSION,
         minorVersion: SERVER_XF86BIGFONT_MINOR_VERSION,
