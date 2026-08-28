@@ -46,7 +46,7 @@ enum DGA = 1;
 
 enum DIX_LIMITCLIENTS = 256;
 
-enum DPMSExtension = 1;
+//version = DPMSExtension;
 
 enum DRI2 = 1;
 
