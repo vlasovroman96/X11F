@@ -50,7 +50,7 @@ enum DIX_LIMITCLIENTS = 256;
 
 enum DRI2 = 1;
 
-enum DRI3 = 1;
+//version = DRI3;
 
 enum DRI_DRIVER_PATH = "/usr/lib/dri";
 

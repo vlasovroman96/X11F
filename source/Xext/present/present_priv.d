@@ -43,6 +43,7 @@ public import dri3.dri3;
 import include.dri3;
 import present.present_fence;
 import externs.X11.extensions.presentproto;
+public import present.present_vblank; 
 
 version (none) {
 enum string DebugPresent(string x) = `ErrorF x = void;`;
@@ -97,13 +98,13 @@ struct present_vblank {
     Bool abort_flip;     /* aborting this flip */
     PresentFlipReason reason;         /* reason for which flip is not possible */
     Bool has_suboptimal; /* whether client can support SuboptimalCopy mode */
-// version (DRI3) {
+version (DRI3) {
     dri3_syncobj* acquire_syncobj;
     dri3_syncobj* release_syncobj;
     ulong acquire_point;
     ulong release_point;
     int efd;
-// } /* DRI3 */
+} /* DRI3 */
 }
 
 alias present_screen_priv_rec = present_screen_priv_t;
@@ -122,6 +123,7 @@ alias present_priv_check_flip_window_ptr = void function(WindowPtr window);
 alias present_priv_can_window_flip_ptr = Bool function(WindowPtr window);
 alias present_priv_clear_window_flip_ptr = void function(WindowPtr window);
 
+version(DRI3) {
 alias present_priv_pixmap_ptr = int function(WindowPtr window, 
     PixmapPtr pixmap, 
     CARD32 serial, 
@@ -142,6 +144,26 @@ alias present_priv_pixmap_ptr = int function(WindowPtr window,
     ulong remainder, 
     present_notify_ptr notifies, int 
     num_notifies);
+}
+else {
+    alias present_priv_pixmap_ptr = int function(WindowPtr window, 
+    PixmapPtr pixmap, 
+    CARD32 serial, 
+    RegionPtr valid, 
+    RegionPtr update, 
+    short x_off, 
+    short y_off, 
+    RRCrtcPtr target_crtc, 
+    SyncFence* wait_fence, 
+    SyncFence* idle_fence, 
+    uint options, 
+    ulong window_msc, 
+    ulong divisor, 
+    ulong remainder, 
+    present_notify_ptr notifies, int 
+    num_notifies);
+}
+
 
 alias present_priv_queue_vblank_ptr = int function(ScreenPtr screen, WindowPtr window, RRCrtcPtr crtc, ulong event_id, ulong msc);
 alias present_priv_flush_ptr = void function(WindowPtr window);
@@ -265,6 +287,7 @@ void present_set_tree_pixmap(WindowPtr window, PixmapPtr expected, PixmapPtr pix
 
 ulong present_get_target_msc(ulong target_msc_arg, ulong crtc_msc, ulong divisor, ulong remainder, uint options);
 
+version(DRI3) {
 int present_pixmap(WindowPtr window, 
     PixmapPtr pixmap, 
     CARD32 serial, 
@@ -274,8 +297,30 @@ int present_pixmap(WindowPtr window,
     short y_off, 
     RRCrtcPtr target_crtc, 
     SyncFence* wait_fence, 
-    // SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong target_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies);
-    SyncFence* idle_fence, ulong acquire_point, ulong release_point, uint options, ulong target_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies);
+    SyncFence* idle_fence, 
+        dri3_syncobj* acquire_syncobj, 
+        dri3_syncobj* release_syncobj, 
+        ulong acquire_point, 
+        ulong release_point, 
+    uint options, ulong target_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies);
+
+}
+else {
+int present_pixmap(WindowPtr window, 
+    PixmapPtr pixmap, 
+    CARD32 serial, 
+    RegionPtr valid, 
+    RegionPtr update, 
+    short x_off, 
+    short y_off, 
+    RRCrtcPtr target_crtc, 
+    SyncFence* wait_fence, 
+    SyncFence* idle_fence, 
+    uint options, 
+    ulong target_msc, 
+    ulong divisor, 
+    ulong remainder, present_notify_ptr notifies, int num_notifies);
+}
 
 
 int present_notify_msc(WindowPtr window, CARD32 serial, ulong target_msc, ulong divisor, ulong remainder);
@@ -384,15 +429,15 @@ present_screen_priv_ptr present_screen_priv_init(ScreenPtr screen);
 /*
  * present_vblank.c
  */
-void present_vblank_notify(present_vblank_ptr vblank, CARD8 kind, CARD8 mode, ulong ust, ulong crtc_msc);
+// void present_vblank_notify(present_vblank_ptr vblank, CARD8 kind, CARD8 mode, ulong ust, ulong crtc_msc);
 
-Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc);
+// Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc);
 
-present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc);
+// present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, const(uint) capabilities, present_notify_ptr notifies, int num_notifies, ulong target_msc, ulong crtc_msc);
 
-void present_vblank_scrap(present_vblank_ptr vblank);
+// void present_vblank_scrap(present_vblank_ptr vblank);
 
-void present_vblank_destroy(present_vblank_ptr vblank);
+// void present_vblank_destroy(present_vblank_ptr vblank);
 
 /* only for in-tree modesetting */ void present_check_flips(WindowPtr window);
 

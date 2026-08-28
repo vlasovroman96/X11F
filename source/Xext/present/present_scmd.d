@@ -32,6 +32,7 @@ import include.misync;
 import include.misyncstr;
 import include.dri3;
 import externs.X11.extensions.presentproto;
+import present.present_vblank;
 
 
 /*
@@ -693,7 +694,16 @@ private void present_scmd_update_window_crtc(WindowPtr window, RRCrtcPtr crtc, u
     window_priv.crtc = crtc;
 }
 
-private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 serial, RegionPtr valid, RegionPtr update, short x_off, short y_off, RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, ulong acquire_point, ulong release_point, uint options, ulong target_window_msc, ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies)
+version(DRI3) {
+private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, 
+CARD32 serial, RegionPtr valid, 
+RegionPtr update, short x_off, short y_off, 
+RRCrtcPtr target_crtc, SyncFence* wait_fence, SyncFence* idle_fence, 
+dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj, 
+ulong acquire_point, ulong release_point, uint 
+options, ulong target_window_msc, 
+ulong divisor, ulong remainder, 
+present_notify_ptr notifies, int num_notifies)
 {
     ulong ust = 0;
     ulong target_msc = void;
@@ -704,10 +714,8 @@ private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, CARD32 seria
     present_window_priv_ptr window_priv = present_get_window_priv(window, TRUE);
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
 
-version (DRI3) {
     if (acquire_syncobj || release_syncobj)
         return BadValue;
-} /* DRI3 */
 
     if (!window_priv)
         return BadAlloc;
@@ -770,7 +778,6 @@ version (DRI3) {
     }
 
     uint inf = screen_priv.info ? screen_priv.info.capabilities : 0;
-    // version(DRI3) {
         vblank = present_vblank_create(window,
                                     pixmap,
                                     serial,
@@ -791,25 +798,6 @@ version (DRI3) {
                                     num_notifies,
                                     target_msc,
                                     crtc_msc);
-    // }
-    // else {
-    //     vblank = present_vblank_create(window,
-    //                             pixmap,
-    //                             serial,
-    //                             valid,
-    //                             update,
-    //                             x_off,
-    //                             y_off,
-    //                             target_crtc,
-    //                             wait_fence,
-    //                             idle_fence,
-    //                             options,
-    //                             inf,
-    //                             notifies,
-    //                             num_notifies,
-    //                             target_msc,
-    //                             crtc_msc);
-    // }
 
     if (!vblank)
         return BadAlloc;
@@ -837,6 +825,133 @@ version (DRI3) {
     present_execute(vblank, ust, crtc_msc);
 
     return Success;
+}
+}
+else {
+private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, 
+CARD32 serial, RegionPtr valid, RegionPtr update, 
+short x_off, short y_off, 
+RRCrtcPtr target_crtc, SyncFence* wait_fence, 
+SyncFence* idle_fence, 
+uint options, ulong target_window_msc, 
+ulong divisor, ulong remainder, 
+present_notify_ptr notifies, int num_notifies)
+{
+    ulong ust = 0;
+    ulong target_msc = void;
+    ulong crtc_msc = 0;
+    int ret = void;
+    present_vblank_ptr vblank = void, tmp = void;
+    ScreenPtr screen = window.drawable.pScreen;
+    present_window_priv_ptr window_priv = present_get_window_priv(window, TRUE);
+    present_screen_priv_ptr screen_priv = present_screen_priv(screen);
+
+    if (!window_priv)
+        return BadAlloc;
+
+    if (!screen_priv || !screen_priv.info)
+        target_crtc = null;
+    else if (!target_crtc) {
+        /* Update the CRTC if we have a pixmap or we don't have a CRTC
+         */
+        if (!pixmap)
+            target_crtc = window_priv.crtc;
+
+        if (!target_crtc || target_crtc == PresentCrtcNeverSet)
+            target_crtc = present_get_crtc(window);
+    }
+
+    ret = present_get_ust_msc(screen, target_crtc, &ust, &crtc_msc);
+
+    present_scmd_update_window_crtc(window, target_crtc, crtc_msc);
+
+    if (ret == Success) {
+        /* Stash the current MSC away in case we need it later
+         */
+        window_priv.msc = crtc_msc;
+    }
+
+    target_msc = present_get_target_msc(target_window_msc + window_priv.msc_offset,
+                                        crtc_msc,
+                                        divisor,
+                                        remainder,
+                                        options);
+
+    /*
+     * Look for a matching presentation already on the list and
+     * don't bother doing the previous one if this one will overwrite it
+     * in the same frame
+     */
+
+    if (!update && pixmap) {
+        mixin(xorg_list_for_each_entry_safe!("vblank", "tmp", "&window_priv.vblank", "window_list", q{
+
+            if (!vblank.pixmap)
+                continue;
+
+            if (!vblank.queued)
+                continue;
+
+            if (vblank.crtc != target_crtc || vblank.target_msc != target_msc)
+                continue;
+
+            /* Too late to abort now if TearFree execution already happened */
+            if (vblank.reason >= PRESENT_FLIP_REASON_DRIVER_TEARFREE &&
+                vblank.exec_msc == vblank.target_msc)
+                continue;
+
+            present_vblank_scrap(vblank);
+            if (vblank.flip_ready)
+                present_re_execute(vblank);
+        }));
+    }
+
+    uint inf = screen_priv.info ? screen_priv.info.capabilities : 0;
+
+    vblank = present_vblank_create(window,
+                            pixmap,
+                            serial,
+                            valid,
+                            update,
+                            x_off,
+                            y_off,
+                            target_crtc,
+                            wait_fence,
+                            idle_fence,
+                            options,
+                            inf,
+                            notifies,
+                            num_notifies,
+                            target_msc,
+                            crtc_msc);
+
+    if (!vblank)
+        return BadAlloc;
+
+    vblank.event_id = ++present_scmd_event_id;
+
+    /* The soonest presentation is crtc_msc+2 if TearFree is already flipping */
+    if (vblank.reason == PRESENT_FLIP_REASON_DRIVER_TEARFREE_FLIPPING &&
+        !msc_is_after(vblank.exec_msc, crtc_msc + 1))
+        vblank.exec_msc -= 2;
+    else if (vblank.reason >= PRESENT_FLIP_REASON_DRIVER_TEARFREE ||
+             (vblank.flip && vblank.sync_flip))
+        vblank.exec_msc--;
+
+    xorg_list_append(&vblank.event_queue, &present_exec_queue);
+    vblank.queued = TRUE;
+    if (msc_is_after(vblank.exec_msc, crtc_msc)) {
+        ret = present_queue_vblank(screen, window, target_crtc, vblank.event_id, vblank.exec_msc);
+        if (ret == Success)
+            return Success;
+
+        // DebugPresent(("present_queue_vblank failed\n"));
+    }
+
+    present_execute(vblank, ust, crtc_msc);
+
+    return Success;
+}
 }
 
 private void present_scmd_abort_vblank(ScreenPtr screen, WindowPtr window, RRCrtcPtr crtc, ulong event_id, ulong msc)
