@@ -37,7 +37,7 @@ enum COMPILEDDEFAULTFONTPATH = "/usr/share/fonts/misc,/usr/share/fonts/TTF,/usr/
 // version = GLXEXT;
 
 /* Support XDM-AUTH*-1 */
-enum HASXDMAUTH = 1;
+// version = HASXDMAUTH;
 
 /* Add a padding for legacy nvidia drivers that support old ABI */
 /* Define to 1 if you have the `reallocarray' function. */

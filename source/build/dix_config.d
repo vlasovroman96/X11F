@@ -76,7 +76,7 @@ enum GLAMOR_HAS_GBM = 1;
 
 // version = GLXEXT;
 
-enum HASXDMAUTH = 1;
+version = HASXDMAUTH;
 
 enum HAVE_ACPI = 1;
 
