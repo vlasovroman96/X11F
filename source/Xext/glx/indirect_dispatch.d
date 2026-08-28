@@ -79,7 +79,7 @@ int __glXDisp_NewList(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         glNewList(*cast(GLuint*) (pc + 0), *cast(GLenum*) (pc + 4));
         error = Success;
     }
@@ -94,7 +94,7 @@ int __glXDisp_EndList(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         glEndList();
         error = Success;
     }
@@ -125,7 +125,7 @@ int __glXDisp_DeleteLists(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         glDeleteLists(*cast(GLuint*) (pc + 0), *cast(GLsizei*) (pc + 4));
         error = Success;
     }
@@ -140,7 +140,7 @@ int __glXDisp_GenLists(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLuint retval = void;
 
         retval = glGenLists(*cast(GLsizei*) (pc + 0));
@@ -1280,7 +1280,7 @@ int __glXDisp_PixelStoref(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         glPixelStoref(*cast(GLenum*) (pc + 0), *cast(GLfloat*) (pc + 4));
         error = Success;
     }
@@ -1295,7 +1295,7 @@ int __glXDisp_PixelStorei(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         glPixelStorei(*cast(GLenum*) (pc + 0), *cast(GLint*) (pc + 4));
         error = Success;
     }
@@ -1361,7 +1361,7 @@ int __glXDisp_GetBooleanv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetBooleanv_size(pname);
@@ -1388,7 +1388,7 @@ int __glXDisp_GetClipPlane(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLdouble[4] equation = void;
 
         glGetClipPlane(*cast(GLenum*) (pc + 0), equation.ptr);
@@ -1406,7 +1406,7 @@ int __glXDisp_GetDoublev(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetDoublev_size(pname);
@@ -1433,7 +1433,7 @@ int __glXDisp_GetError(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLenum retval = void;
 
         retval = glGetError();
@@ -1451,7 +1451,7 @@ int __glXDisp_GetFloatv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetFloatv_size(pname);
@@ -1478,7 +1478,7 @@ int __glXDisp_GetIntegerv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetIntegerv_size(pname);
@@ -1505,7 +1505,7 @@ int __glXDisp_GetLightfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetLightfv_size(pname);
@@ -1532,7 +1532,7 @@ int __glXDisp_GetLightiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetLightiv_size(pname);
@@ -1559,7 +1559,7 @@ int __glXDisp_GetMapdv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) target = *cast(GLenum*) (pc + 0);
         const(GLenum) query = *cast(GLenum*) (pc + 4);
 
@@ -1587,7 +1587,7 @@ int __glXDisp_GetMapfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) target = *cast(GLenum*) (pc + 0);
         const(GLenum) query = *cast(GLenum*) (pc + 4);
 
@@ -1615,7 +1615,7 @@ int __glXDisp_GetMapiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) target = *cast(GLenum*) (pc + 0);
         const(GLenum) query = *cast(GLenum*) (pc + 4);
 
@@ -1643,7 +1643,7 @@ int __glXDisp_GetMaterialfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetMaterialfv_size(pname);
@@ -1670,7 +1670,7 @@ int __glXDisp_GetMaterialiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetMaterialiv_size(pname);
@@ -1697,7 +1697,7 @@ int __glXDisp_GetPixelMapfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) map = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetPixelMapfv_size(map);
@@ -1724,7 +1724,7 @@ int __glXDisp_GetPixelMapuiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) map = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetPixelMapuiv_size(map);
@@ -1751,7 +1751,7 @@ int __glXDisp_GetPixelMapusv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) map = *cast(GLenum*) (pc + 0);
 
         const(GLuint) compsize = __glGetPixelMapusv_size(map);
@@ -1778,7 +1778,7 @@ int __glXDisp_GetTexEnvfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexEnvfv_size(pname);
@@ -1805,7 +1805,7 @@ int __glXDisp_GetTexEnviv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexEnviv_size(pname);
@@ -1832,7 +1832,7 @@ int __glXDisp_GetTexGendv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexGendv_size(pname);
@@ -1859,7 +1859,7 @@ int __glXDisp_GetTexGenfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexGenfv_size(pname);
@@ -1886,7 +1886,7 @@ int __glXDisp_GetTexGeniv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexGeniv_size(pname);
@@ -1913,7 +1913,7 @@ int __glXDisp_GetTexParameterfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexParameterfv_size(pname);
@@ -1940,7 +1940,7 @@ int __glXDisp_GetTexParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetTexParameteriv_size(pname);
@@ -1967,7 +1967,7 @@ int __glXDisp_GetTexLevelParameterfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 8);
 
         const(GLuint) compsize = __glGetTexLevelParameterfv_size(pname);
@@ -1995,7 +1995,7 @@ int __glXDisp_GetTexLevelParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 8);
 
         const(GLuint) compsize = __glGetTexLevelParameteriv_size(pname);
@@ -2023,7 +2023,7 @@ int __glXDisp_IsEnabled(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = glIsEnabled(*cast(GLenum*) (pc + 0));
@@ -2041,7 +2041,7 @@ int __glXDisp_IsList(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = glIsList(*cast(GLuint*) (pc + 0));
@@ -2238,7 +2238,7 @@ int __glXDisp_AreTexturesResident(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLboolean retval = void;
@@ -2263,7 +2263,7 @@ int __glXDisp_AreTexturesResidentEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLboolean retval = void;
@@ -2329,7 +2329,7 @@ int __glXDisp_DeleteTextures(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         glDeleteTextures(n, cast(const(GLuint)*) (pc + 4));
@@ -2346,7 +2346,7 @@ int __glXDisp_DeleteTexturesEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         glDeleteTextures(n, cast(const(GLuint)*) (pc + 4));
@@ -2363,7 +2363,7 @@ int __glXDisp_GenTextures(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLuint[200] answerBuffer = void;
@@ -2387,7 +2387,7 @@ int __glXDisp_GenTexturesEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLuint[200] answerBuffer = void;
@@ -2411,7 +2411,7 @@ int __glXDisp_IsTexture(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = glIsTexture(*cast(GLuint*) (pc + 0));
@@ -2429,7 +2429,7 @@ int __glXDisp_IsTextureEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = glIsTexture(*cast(GLuint*) (pc + 0));
@@ -2554,7 +2554,7 @@ int __glXDisp_GetColorTableParameterfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetColorTableParameterfv_size(pname);
@@ -2581,7 +2581,7 @@ int __glXDisp_GetColorTableParameterfvSGI(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetColorTableParameterfv_size(pname);
@@ -2608,7 +2608,7 @@ int __glXDisp_GetColorTableParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetColorTableParameteriv_size(pname);
@@ -2635,7 +2635,7 @@ int __glXDisp_GetColorTableParameterivSGI(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetColorTableParameteriv_size(pname);
@@ -2774,7 +2774,7 @@ int __glXDisp_GetConvolutionParameterfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetConvolutionParameterfv_size(pname);
@@ -2801,7 +2801,7 @@ int __glXDisp_GetConvolutionParameterfvEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetConvolutionParameterfv_size(pname);
@@ -2828,7 +2828,7 @@ int __glXDisp_GetConvolutionParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetConvolutionParameteriv_size(pname);
@@ -2855,7 +2855,7 @@ int __glXDisp_GetConvolutionParameterivEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetConvolutionParameteriv_size(pname);
@@ -2882,7 +2882,7 @@ int __glXDisp_GetHistogramParameterfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetHistogramParameterfv_size(pname);
@@ -2909,7 +2909,7 @@ int __glXDisp_GetHistogramParameterfvEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetHistogramParameterfv_size(pname);
@@ -2936,7 +2936,7 @@ int __glXDisp_GetHistogramParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetHistogramParameteriv_size(pname);
@@ -2963,7 +2963,7 @@ int __glXDisp_GetHistogramParameterivEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetHistogramParameteriv_size(pname);
@@ -2990,7 +2990,7 @@ int __glXDisp_GetMinmaxParameterfv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetMinmaxParameterfv_size(pname);
@@ -3017,7 +3017,7 @@ int __glXDisp_GetMinmaxParameterfvEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetMinmaxParameterfv_size(pname);
@@ -3044,7 +3044,7 @@ int __glXDisp_GetMinmaxParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetMinmaxParameteriv_size(pname);
@@ -3071,7 +3071,7 @@ int __glXDisp_GetMinmaxParameterivEXT(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetMinmaxParameteriv_size(pname);
@@ -3508,7 +3508,7 @@ int __glXDisp_DeleteQueries(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         DeleteQueries(n, cast(const(GLuint)*) (pc + 4));
@@ -3533,7 +3533,7 @@ int __glXDisp_GenQueries(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLuint[200] answerBuffer = void;
@@ -3558,7 +3558,7 @@ int __glXDisp_GetQueryObjectiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetQueryObjectiv_size(pname);
@@ -3586,7 +3586,7 @@ int __glXDisp_GetQueryObjectuiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetQueryObjectuiv_size(pname);
@@ -3614,7 +3614,7 @@ int __glXDisp_GetQueryiv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetQueryiv_size(pname);
@@ -3642,7 +3642,7 @@ int __glXDisp_IsQuery(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = IsQuery(*cast(GLuint*) (pc + 0));
@@ -3830,7 +3830,7 @@ int __glXDisp_DeleteProgramsARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         DeleteProgramsARB(n, cast(const(GLuint)*) (pc + 4));
@@ -3848,7 +3848,7 @@ int __glXDisp_GenProgramsARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLuint[200] answerBuffer = void;
@@ -3873,7 +3873,7 @@ int __glXDisp_GetProgramEnvParameterdvARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLdouble[4] params = void;
 
         GetProgramEnvParameterdvARB(*cast(GLenum*) (pc + 0),
@@ -3893,7 +3893,7 @@ int __glXDisp_GetProgramEnvParameterfvARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLfloat[4] params = void;
 
         GetProgramEnvParameterfvARB(*cast(GLenum*) (pc + 0),
@@ -3913,7 +3913,7 @@ int __glXDisp_GetProgramLocalParameterdvARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLdouble[4] params = void;
 
         GetProgramLocalParameterdvARB(*cast(GLenum*) (pc + 0),
@@ -3933,7 +3933,7 @@ int __glXDisp_GetProgramLocalParameterfvARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLfloat[4] params = void;
 
         GetProgramLocalParameterfvARB(*cast(GLenum*) (pc + 0),
@@ -3953,7 +3953,7 @@ int __glXDisp_GetProgramivARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) pname = *cast(GLenum*) (pc + 4);
 
         const(GLuint) compsize = __glGetProgramivARB_size(pname);
@@ -3981,7 +3981,7 @@ int __glXDisp_IsProgramARB(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = IsProgramARB(*cast(GLuint*) (pc + 0));
@@ -4099,7 +4099,7 @@ int __glXDisp_CheckFramebufferStatus(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLenum retval = void;
 
         retval = CheckFramebufferStatus(*cast(GLenum*) (pc + 0));
@@ -4173,7 +4173,7 @@ int __glXDisp_GenFramebuffers(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLuint[200] answerBuffer = void;
@@ -4199,7 +4199,7 @@ int __glXDisp_GenRenderbuffers(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLsizei) n = *cast(GLsizei*) (pc + 0);
 
         GLuint[200] answerBuffer = void;
@@ -4230,7 +4230,7 @@ int __glXDisp_GetFramebufferAttachmentParameteriv(__GLXclientState* cl, GLbyte* 
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLint[1] params = void;
 
         GetFramebufferAttachmentParameteriv(*cast(GLenum*) (pc + 0),
@@ -4251,7 +4251,7 @@ int __glXDisp_GetRenderbufferParameteriv(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLint[1] params = void;
 
         GetRenderbufferParameteriv(*cast(GLenum*) (pc + 0),
@@ -4271,7 +4271,7 @@ int __glXDisp_IsFramebuffer(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = IsFramebuffer(*cast(GLuint*) (pc + 0));
@@ -4290,7 +4290,7 @@ int __glXDisp_IsRenderbuffer(__GLXclientState* cl, GLbyte* pc)
     __GLXcontext* cx = __glXForceCurrent(cl, req.contextTag, &error);
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLboolean retval = void;
 
         retval = IsRenderbuffer(*cast(GLuint*) (pc + 0));

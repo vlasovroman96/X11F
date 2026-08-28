@@ -47,7 +47,7 @@ present_window_priv_ptr present_get_window_priv(WindowPtr window, Bool create)
 {
     present_window_priv_ptr window_priv = present_window_priv(window);
 
-    if (!create || window_priv != null)
+    if (!create || window_priv !is null)
         return window_priv;
     window_priv = cast(present_window_priv_t*)calloc (1, present_window_priv_rec.sizeof);
     if (!window_priv)

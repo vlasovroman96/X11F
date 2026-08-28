@@ -145,7 +145,7 @@ private int RegionOperate(ClientPtr client, WindowPtr pWin, int kind, RegionPtr*
      * see shape.PS, page 3, ShapeMask.
      */
     if (srcRgn is null) {
-        if (*destRgnp != null) {
+        if (*destRgnp !is null) {
             RegionDestroy(*destRgnp);
             *destRgnp = null;
             /* go on to remove shape and generate ShapeNotify */

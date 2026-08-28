@@ -247,13 +247,13 @@ Bool DPMSSupported()
 {
     /* For each screen, check if DPMS is supported */
     mixin(DIX_FOR_EACH_SCREEN!("{
-        if (walkScreen.DPMS != null) {
+        if (walkScreen.DPMS !is null) {
             return TRUE;
         }
     }"));
 
     mixin(DIX_FOR_EACH_GPU_SCREEN!("{
-        if (walkScreen.DPMS != null) {
+        if (walkScreen.DPMS !is null) {
             return TRUE;
         }
     }"));
@@ -296,13 +296,13 @@ int DPMSSet(ClientPtr client, int level)
     }
 
     mixin(DIX_FOR_EACH_SCREEN!("{
-        if (walkScreen.DPMS != null) {
+        if (walkScreen.DPMS !is null) {
             walkScreen.DPMS(walkScreen, level);
         }
     }"));
 
     mixin(DIX_FOR_EACH_GPU_SCREEN!("{
-        if (walkScreen.DPMS != null) {
+        if (walkScreen.DPMS !is null) {
             walkScreen.DPMS(walkScreen, level);
         }
     }"));

@@ -71,7 +71,7 @@ GlxServerVendor* GlxGetXIDMap(XID id)
         void* ptr = null;
         int rv = dixLookupResourceByClass(&ptr, id, RC_DRAWABLE, null,
                                          DixGetAttrAccess);
-        if (rv == Success && ptr != null) {
+        if (rv == Success && ptr !is null) {
             DrawablePtr draw = cast(DrawablePtr) ptr;
             vendor = GlxGetVendorForScreen(requestClient, draw.pScreen);
         }
@@ -84,7 +84,7 @@ Bool GlxAddXIDMap(XID id, GlxServerVendor* vendor)
     if (id == 0 || vendor is null) {
         return FALSE;
     }
-    if (LookupXIDMapResource(id) != null) {
+    if (LookupXIDMapResource(id) !is null) {
         return FALSE;
     }
     return AddResource(id, idResource, vendor);
@@ -154,7 +154,7 @@ GlxContextTagInfo* GlxLookupContextTag(ClientPtr client, GLXContextTag tag)
     }
 
     if (tag > 0 && (tag - 1) < cl.contextTagCount) {
-        if (cl.contextTags[tag - 1].vendor != null) {
+        if (cl.contextTags[tag - 1].vendor !is null) {
             assert(cl.contextTags[tag - 1].client == client);
             return &cl.contextTags[tag - 1];
         }
@@ -164,7 +164,7 @@ GlxContextTagInfo* GlxLookupContextTag(ClientPtr client, GLXContextTag tag)
 
 void GlxFreeContextTag(GlxContextTagInfo* tagInfo)
 {
-    if (tagInfo != null) {
+    if (tagInfo !is null) {
         tagInfo.vendor = null;
         tagInfo.vendor = null;
         tagInfo.data = null;
@@ -187,7 +187,7 @@ Bool GlxSetScreenVendor(ScreenPtr screen, GlxServerVendor* vendor)
         return FALSE;
     }
 
-    if (priv.vendor != null) {
+    if (priv.vendor !is null) {
         return FALSE;
     }
 
@@ -208,7 +208,7 @@ Bool GlxSetClientScreenVendor(ClientPtr client, ScreenPtr screen, GlxServerVendo
         return FALSE;
     }
 
-    if (vendor != null) {
+    if (vendor !is null) {
         cl.vendors[screen.myNum] = vendor;
     } else {
         cl.vendors[screen.myNum] = GlxGetVendorForScreen(null, screen);
@@ -220,16 +220,16 @@ GlxServerVendor* GlxGetVendorForScreen(ClientPtr client, ScreenPtr screen)
 {
     // Note that the client won't be sending GPU screen numbers, so we don't
     // need per-client mappings for them.
-    if (client != null && !screen.isGPU) {
+    if (client !is null && !screen.isGPU) {
         GlxClientPriv* cl = GlxGetClientData(client);
-        if (cl != null) {
+        if (cl !is null) {
             return cl.vendors[screen.myNum];
         } else {
             return null;
         }
     } else {
         GlxScreenPriv* priv = GlxGetScreen(screen);
-        if (priv != null) {
+        if (priv !is null) {
             return priv.vendor;
         } else {
             return null;

@@ -77,7 +77,7 @@ GlxServerVendor* GlxCreateVendor(const(GlxServerImports)* imports)
 
 void GlxDestroyVendor(GlxServerVendor* vendor)
 {
-    if (vendor != null) {
+    if (vendor !is null) {
         xorg_list_del(&vendor.entry);
         free(vendor);
     }
@@ -90,7 +90,7 @@ void GlxVendorExtensionReset(const(ExtensionEntry)* extEntry)
     // TODO: Do we allow the driver to destroy a vendor library handle from
     // here?
     mixin(xorg_list_for_each_entry_safe!("vendor", "tempVendor", "(&GlxVendorList)", "entry", q{
-        if (vendor.glxvc.extensionCloseDown != null) {
+        if (vendor.glxvc.extensionCloseDown !is null) {
             vendor.glxvc.extensionCloseDown(extEntry);
         }
     }));

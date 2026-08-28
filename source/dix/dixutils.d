@@ -469,7 +469,7 @@ void ClearWorkQueue()
     WorkQueuePtr q = void; WorkQueuePtr* p = void;
 
     p = &workQueue;
-    while ((q = *p) != null) {
+    while ((q = *p) !is null) {
         *p = q.next;
         free(q);
     }
@@ -491,7 +491,7 @@ void ProcessWorkQueue()
      * they will be called again.  This must be reentrant with
      * QueueWorkProc.
      */
-    while ((q = *p) != null) {
+    while ((q = *p) !is null) {
         if (assumeNoGC(q.function_) (q.client, q.closure)) {
             /* remove q from the list */
             *p = q.next;       /* don't fetch until after func called */
@@ -650,11 +650,11 @@ private Bool _DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, vo
     CallbackListPtr cbl = *pcbl;
     CallbackPtr cbr = void, pcbr = void;
 
-    for (pcbr = null, cbr = cbl.list; cbr != null; pcbr = cbr, cbr = cbr.next) {
+    for (pcbr = null, cbr = cbl.list; cbr !is null; pcbr = cbr, cbr = cbr.next) {
         if ((cbr.proc == callback) && (cbr.data == data))
             break;
     }
-    if (cbr != null) {
+    if (cbr !is null) {
         if (cbl.inCallback) {
             ++(cbl.numDeleted);
             cbr.deleted = TRUE;
@@ -677,7 +677,7 @@ void _CallCallbacks(CallbackListPtr* pcbl, void* call_data)
     CallbackPtr cbr = void, pcbr = void;
 
     ++(cbl.inCallback);
-    for (cbr = cbl.list; cbr != null; cbr = cbr.next) {
+    for (cbr = cbl.list; cbr !is null; cbr = cbr.next) {
         (*(cbr.proc)) (pcbl, cbr.data, call_data);
     }
     --(cbl.inCallback);
@@ -697,7 +697,7 @@ void _CallCallbacks(CallbackListPtr* pcbl, void* call_data)
      */
 
     if (cbl.numDeleted) {
-        for (pcbr = null, cbr = cbl.list; (cbr != null) && cbl.numDeleted;) {
+        for (pcbr = null, cbr = cbl.list; (cbr !is null) && cbl.numDeleted;) {
             if (cbr.deleted) {
                 if (pcbr) {
                     cbr = cbr.next;
@@ -739,7 +739,7 @@ void DeleteCallbackList(CallbackListPtr* pcbl)
         }
     }
 
-    for (CallbackPtr cbr = cbl.list, nextcbr = void; cbr != null; cbr = nextcbr) {
+    for (CallbackPtr cbr = cbl.list, nextcbr = void; cbr !is null; cbr = nextcbr) {
         nextcbr = cbr.next;
         free(cbr);
     }

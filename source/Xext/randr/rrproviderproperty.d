@@ -139,7 +139,7 @@ void RRDeleteProviderProperty(RRProviderPtr provider, Atom property)
 
 /* shortcut for cleaning up property when failed to add */
 pragma(inline, true) private void cleanupProperty(RRPropertyPtr prop, Bool added) {
-    if ((prop != null) && added)
+    if ((prop !is null) && added)
         RRDestroyProviderProperty(prop);
 }
 

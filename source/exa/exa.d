@@ -292,7 +292,7 @@ Bool ExaDoPrepareAccess(PixmapPtr pPixmap, int index)
     }
 
     /* Access to this pixmap hasn't been prepared yet, so data pointer should be NULL. */
-    if (pPixmap.devPrivate.ptr != null) {
+    if (pPixmap.devPrivate.ptr !is null) {
         // EXA_FatalErrorDebug("EXA bug: pPixmap->devPrivate.ptr was %p, but should have been NULL.\n", pPixmap.devPrivate.ptr);
     }
 
@@ -976,17 +976,17 @@ version (CONFIG_MITSHM) {
 
     LogMessage(X_INFO, "EXA(%d): Driver registered support for the following"
                ~ " operations:\n", pScreen.myNum);
-    assert(pScreenInfo.PrepareSolid != null);
+    assert(pScreenInfo.PrepareSolid !is null);
     LogMessage(X_INFO, "        Solid\n");
-    assert(pScreenInfo.PrepareCopy != null);
+    assert(pScreenInfo.PrepareCopy !is null);
     LogMessage(X_INFO, "        Copy\n");
-    if (pScreenInfo.PrepareComposite != null) {
+    if (pScreenInfo.PrepareComposite !is null) {
         LogMessage(X_INFO, "        Composite (RENDER acceleration)\n");
     }
-    if (pScreenInfo.UploadToScreen != null) {
+    if (pScreenInfo.UploadToScreen !is null) {
         LogMessage(X_INFO, "        UploadToScreen\n");
     }
-    if (pScreenInfo.DownloadFromScreen != null) {
+    if (pScreenInfo.DownloadFromScreen !is null) {
         LogMessage(X_INFO, "        DownloadFromScreen\n");
     }
 
@@ -1019,7 +1019,7 @@ void exaMarkSync(ScreenPtr pScreen)
     mixin(ExaScreenPriv!("pScreen"));
 
     pExaScr.info.needsSync = TRUE;
-    if (pExaScr.info.MarkSync != null) {
+    if (pExaScr.info.MarkSync !is null) {
         pExaScr.info.lastMarker = (*pExaScr.info.MarkSync) (pScreen);
     }
 }

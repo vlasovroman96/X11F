@@ -427,7 +427,7 @@ void XdmcpRegisterConnection(int type, const(char)* address, int addrlen)
     XdmcpDisposeARRAY16(&ConnectionTypes);
     XdmcpDisposeARRAYofARRAY8(&ConnectionAddresses);
 
-    if (xdm_from != null) {     /* Only register the requested address */
+    if (xdm_from !is null) {     /* Only register the requested address */
         const(void)* regAddr = address;
         const(void)* fromAddr = null;
         int regAddrlen = addrlen;
@@ -932,8 +932,8 @@ version (IPv6) {
         multicastinfo* mcl = void;
         addrinfo* ai = void;
 
-        for (mcl = mcastlist; mcl != null; mcl = mcl.next) {
-            for (ai = mcl.ai; ai != null; ai = ai.ai_next) {
+        for (mcl = mcastlist; mcl !is null; mcl = mcl.next) {
+            for (ai = mcl.ai; ai !is null; ai = ai.ai_next) {
                 if (ai.ai_family == AF_INET) {
                     ubyte hopflag = cast(ubyte) mcl.hops;
 
@@ -1294,13 +1294,13 @@ version (HAVE_GETADDRINFO) {
         FatalError("Xserver: port out of range: %d\n", port);
     }
 
-    if (*aifirstp != null) {
+    if (*aifirstp !is null) {
         freeaddrinfo(*aifirstp);
         *aifirstp = null;
     }
 
     if ((gaierr = getaddrinfo(namestr, pport, &hints, aifirstp)) == 0) {
-        for (ai = *aifirstp; ai != null; ai = ai.ai_next) {
+        for (ai = *aifirstp; ai !is null; ai = ai.ai_next) {
             if (ai.ai_family == AF_INET)
                 break;
 version (IPv6) {
@@ -1372,7 +1372,7 @@ version (HAVE_GETADDRINFO) {
                      , &ai, &aifirst
         );
 version (HAVE_GETADDRINFO) {
-    if (aifirst != null)
+    if (aifirst !is null)
         freeaddrinfo(aifirst);
 }
     xdm_from = argv[i];
@@ -1409,7 +1409,7 @@ private int get_mcast_options(int argc, char** argv, int i)
     hints.ai_socktype = SOCK_DGRAM;
 
     if ((gaierr = getaddrinfo(address, portstr.ptr, &hints, &firstai)) == 0) {
-        for (ai = firstai; ai != null; ai = ai.ai_next) {
+        for (ai = firstai; ai !is null; ai = ai.ai_next) {
             if (((ai.ai_family == AF_INET) &&
                  IN_MULTICAST((cast(sockaddr_in*) ai.ai_addr)
                               .sin_addr.s_addr))
@@ -1436,7 +1436,7 @@ private int get_mcast_options(int argc, char** argv, int i)
                 mcastlist = mcastinfo;
             }
             else {
-                for (mcl = mcastlist; mcl.next != null; mcl = mcl.next) {
+                for (mcl = mcastlist; mcl.next !is null; mcl = mcl.next) {
                     /* Do nothing  - just find end of list */
                 }
                 mcl.next = mcastinfo;

@@ -677,7 +677,7 @@ private Bool ms_pci_probe(DriverPtr driver, int entity_num, pci_device* dev, int
         else
             scrn = null;
     }
-    return scrn != null;
+    return scrn !is null;
 }
 }
 
@@ -705,7 +705,7 @@ private Bool ms_platform_probe(DriverPtr driver, int entity_num, int flags, xf86
         ms_setup_entity(scrn, entity_num);
     }
 
-    return scrn != null;
+    return scrn !is null;
 }
 }
 
@@ -2348,7 +2348,7 @@ static if (HasVersion!"GLAMOR" && HasVersion!"XV") {
         XF86VideoAdaptorPtr glamor_adaptor = void;
 
         glamor_adaptor = ms.glamor.xv_init(pScreen, 16);
-        if (glamor_adaptor != null)
+        if (glamor_adaptor !is null)
             xf86XVScreenInit(pScreen, &glamor_adaptor, 1);
         else
             xf86DrvMsg(pScrn.scrnIndex, X_ERROR,

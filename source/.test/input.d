@@ -1117,35 +1117,35 @@ private void cmp_attr_fields(InputAttributes* attr1, InputAttributes* attr2)
     assert(attr1 != attr2);
     assert(attr1.flags == attr2.flags);
 
-    if (attr1.product != null) {
+    if (attr1.product !is null) {
         assert(attr1.product != attr2.product);
         assert(strcmp(attr1.product, attr2.product) == 0);
     }
     else
         assert(attr2.product is null);
 
-    if (attr1.vendor != null) {
+    if (attr1.vendor !is null) {
         assert(attr1.vendor != attr2.vendor);
         assert(strcmp(attr1.vendor, attr2.vendor) == 0);
     }
     else
         assert(attr2.vendor is null);
 
-    if (attr1.device != null) {
+    if (attr1.device !is null) {
         assert(attr1.device != attr2.device);
         assert(strcmp(attr1.device, attr2.device) == 0);
     }
     else
         assert(attr2.device is null);
 
-    if (attr1.pnp_id != null) {
+    if (attr1.pnp_id !is null) {
         assert(attr1.pnp_id != attr2.pnp_id);
         assert(strcmp(attr1.pnp_id, attr2.pnp_id) == 0);
     }
     else
         assert(attr2.pnp_id is null);
 
-    if (attr1.usb_id != null) {
+    if (attr1.usb_id !is null) {
         assert(attr1.usb_id != attr2.usb_id);
         assert(strcmp(attr1.usb_id, attr2.usb_id) == 0);
     }
@@ -1254,7 +1254,7 @@ private void dix_input_valuator_masks()
     }
 
     mask = valuator_mask_new(MAX_VALUATORS);
-    assert(mask != null);
+    assert(mask !is null);
     assert(valuator_mask_size(mask) == 0);
     assert(valuator_mask_num_valuators(mask) == 0);
 

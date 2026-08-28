@@ -87,7 +87,7 @@ enum string DEBUG_P(string x) = `DebugF(x"\n")`;
 private DisplayModePtr VidModeCreateMode()
 {
     DisplayModePtr mode = cast(DisplayModeRec*) calloc(1, DisplayModeRec.sizeof);
-    if (mode != null) {
+    if (mode !is null) {
         mode.name = "";
         mode.VScan = 1;        /* divides refresh rate. default = 1 */
         mode.Private = null;

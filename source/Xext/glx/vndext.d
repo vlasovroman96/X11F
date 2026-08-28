@@ -83,7 +83,7 @@ private void xglvSetScreenPrivate(ScreenPtr pScreen, void* priv)
 
 GlxScreenPriv* GlxGetScreen(ScreenPtr pScreen)
 {
-    if (pScreen != null) {
+    if (pScreen !is null) {
         GlxScreenPriv* priv = xglvGetScreenPrivate(pScreen);
         if (priv is null) {
             priv = cast(GlxScreenPriv*) cast(GlxScreenPriv*) calloc(1, GlxScreenPriv.sizeof);
@@ -103,7 +103,7 @@ private void GlxMappingReset()
 {
     mixin(DIX_FOR_EACH_SCREEN!q{
         GlxScreenPriv* priv = xglvGetScreenPrivate(walkScreen);
-        if (priv != null) {
+        if (priv !is null) {
             xglvSetScreenPrivate(walkScreen, null);
             free(priv);
         }
@@ -145,7 +145,7 @@ GlxClientPriv* GlxGetClientData(ClientPtr client)
     if (cl is null) {
         cl = cast(GlxClientPriv*) calloc(1, ((GlxClientPriv).sizeof
                 + screenInfo.numScreens * (GlxServerVendor*).sizeof));
-        if (cl != null) {
+        if (cl !is null) {
             cl.vendors = cast(GlxServerVendor**) (cl + 1);
             mixin(DIX_FOR_EACH_SCREEN!q{
                 cl.vendors[walkScreenIdx] = GlxGetVendorForScreen(null, walkScreen);
@@ -159,11 +159,11 @@ GlxClientPriv* GlxGetClientData(ClientPtr client)
 void GlxFreeClientData(ClientPtr client)
 {
     GlxClientPriv* cl = xglvGetClientPrivate(client);
-    if (cl != null) {
+    if (cl !is null) {
         uint i = void;
         for (i = 0; i < cl.contextTagCount; i++) {
             GlxContextTagInfo* tag = &cl.contextTags[i];
-            if (tag.vendor != null) {
+            if (tag.vendor !is null) {
                 tag.vendor.glxvc.makeCurrent(client, tag.tag,
                                                None, None, None, 0);
             }
@@ -197,7 +197,7 @@ private void GLXReset(ExtensionEntry* extEntry)
     GlxMappingReset();
 
     if ((dispatchException & DE_TERMINATE) == DE_TERMINATE) {
-        while (vndInitCallbackList.list != null) {
+        while (vndInitCallbackList.list !is null) {
             CallbackPtr next = vndInitCallbackList.list.next;
             free(vndInitCallbackList.list);
             vndInitCallbackList.list = next;
@@ -257,7 +257,7 @@ private GlxServerVendor* GlxGetContextTag(ClientPtr client, GLXContextTag tag)
 {
     GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)tag);
 
-    if (tagInfo != null) {
+    if (tagInfo !is null) {
         return tagInfo.vendor;
     } else {
         return null;
@@ -267,7 +267,7 @@ private GlxServerVendor* GlxGetContextTag(ClientPtr client, GLXContextTag tag)
 private Bool GlxSetContextTagPrivate(ClientPtr client, GLXContextTag tag, void* data)
 {
     GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)tag);
-    if (tagInfo != null) {
+    if (tagInfo !is null) {
         tagInfo.data = data;
         return TRUE;
     } else {
@@ -278,7 +278,7 @@ private Bool GlxSetContextTagPrivate(ClientPtr client, GLXContextTag tag, void* 
 private void* GlxGetContextTagPrivate(ClientPtr client, GLXContextTag tag)
 {
     GlxContextTagInfo* tagInfo = GlxLookupContextTag(client, cast(uint)tag);
-    if (tagInfo != null) {
+    if (tagInfo !is null) {
         return tagInfo.data;
     } else {
         return null;

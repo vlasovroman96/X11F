@@ -306,7 +306,7 @@ version (CONFIG_UDEV_KMS) {
             if (value && strcmp(value, "0")) {
                 const(pfmap)* m = map.ptr;
 
-                while (m.property != null) {
+                while (m.property !is null) {
                     if (!strcmp(m.property, key)) {
                         mixin(LOG_PROPERTY!(`path`, `key`, `value`));
                         attrs.flags |= m.flag;

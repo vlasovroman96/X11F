@@ -40,7 +40,7 @@ int dispatch_Render(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("glxServer"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, cast(uint)contextTag);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -57,7 +57,7 @@ int dispatch_RenderLarge(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, cast(uint)contextTag);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -77,7 +77,7 @@ int dispatch_CreateContext(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(context, vendor)) {
             return BadAlloc;
@@ -100,7 +100,7 @@ int dispatch_DestroyContext(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     context = GlxCheckSwap(client, stuff.context);
     vendor = glxServer.getXIDMap(context);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         if (ret == Success) {
@@ -120,7 +120,7 @@ int dispatch_WaitGL(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, cast(uint)contextTag);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -137,7 +137,7 @@ int dispatch_WaitX(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, cast(uint)contextTag);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -154,7 +154,7 @@ int dispatch_UseXFont(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     contextTag = GlxCheckSwap(client, stuff.contextTag);
     vendor = glxServer.getContextTag(client, cast(uint)contextTag);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -174,7 +174,7 @@ int dispatch_CreateGLXPixmap(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(glxpixmap, vendor)) {
             return BadAlloc;
@@ -198,7 +198,7 @@ int dispatch_GetVisualConfigs(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -215,7 +215,7 @@ int dispatch_DestroyGLXPixmap(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     vendor = glxServer.getXIDMap(glxpixmap);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -233,7 +233,7 @@ int dispatch_QueryExtensionsString(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -251,7 +251,7 @@ int dispatch_QueryServerString(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -268,7 +268,7 @@ int dispatch_ChangeDrawableAttributes(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     drawable = GlxCheckSwap(client, stuff.drawable);
     vendor = glxServer.getXIDMap(drawable);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -288,7 +288,7 @@ int dispatch_CreateNewContext(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(context, vendor)) {
             return BadAlloc;
@@ -314,7 +314,7 @@ int dispatch_CreatePbuffer(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(pbuffer, vendor)) {
             return BadAlloc;
@@ -340,7 +340,7 @@ int dispatch_CreatePixmap(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(glxpixmap, vendor)) {
             return BadAlloc;
@@ -366,7 +366,7 @@ int dispatch_CreateWindow(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(glxwindow, vendor)) {
             return BadAlloc;
@@ -392,7 +392,7 @@ int dispatch_CreateContextAttribsARB(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         if (!glxServer.addXIDMap(context, vendor)) {
             return BadAlloc;
@@ -415,7 +415,7 @@ int dispatch_DestroyPbuffer(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     pbuffer = GlxCheckSwap(client, stuff.pbuffer);
     vendor = glxServer.getXIDMap(pbuffer);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         if (ret == Success) {
@@ -435,7 +435,7 @@ int dispatch_DestroyPixmap(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     glxpixmap = GlxCheckSwap(client, stuff.glxpixmap);
     vendor = glxServer.getXIDMap(glxpixmap);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         if (ret == Success) {
@@ -455,7 +455,7 @@ int dispatch_DestroyWindow(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     glxwindow = GlxCheckSwap(client, stuff.glxwindow);
     vendor = glxServer.getXIDMap(glxwindow);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         if (ret == Success) {
@@ -475,7 +475,7 @@ int dispatch_GetDrawableAttributes(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     drawable = GlxCheckSwap(client, stuff.drawable);
     vendor = glxServer.getXIDMap(drawable);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -493,7 +493,7 @@ int dispatch_GetFBConfigs(ClientPtr client)
 
     //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
     GlxServerVendor* vendor = vendorForScreen(client, screen);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -510,7 +510,7 @@ int dispatch_QueryContext(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     context = GlxCheckSwap(client, stuff.context);
     vendor = glxServer.getXIDMap(context);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
@@ -527,7 +527,7 @@ int dispatch_IsDirect(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!("*stuff"));
     context = GlxCheckSwap(client, stuff.context);
     vendor = glxServer.getXIDMap(context);
-    if (vendor != null) {
+    if (vendor !is null) {
         int ret = void;
         ret = glxServer.forwardRequest(vendor, client);
         return ret;

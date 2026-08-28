@@ -540,7 +540,7 @@ void xf86DestroyI2CDevRec(I2CDevPtr d, Bool unalloc)
 
         /* Remove this from the list of active I2C devices. */
 
-        for (p = &d.pI2CBus.FirstDev; *p != null; p = &(*p).NextDev)
+        for (p = &d.pI2CBus.FirstDev; *p !is null; p = &(*p).NextDev)
             if (*p == d) {
                 *p = (*p).NextDev;
                 break;
@@ -574,7 +574,7 @@ Bool xf86I2CDevInit(I2CDevPtr d)
 
     if (d is null ||
         (b = d.pI2CBus) is null ||
-        (d.SlaveAddr & 1) || xf86I2CFindDev(b, d.SlaveAddr) != null)
+        (d.SlaveAddr & 1) || xf86I2CFindDev(b, d.SlaveAddr) !is null)
         return FALSE;
 
     if (d.BitTimeout <= 0)
@@ -601,7 +601,7 @@ I2CDevPtr xf86I2CFindDev(I2CBusPtr b, I2CSlaveAddr addr)
     I2CDevPtr d = void;
 
     if (b) {
-        for (d = b.FirstDev; d != null; d = d.NextDev)
+        for (d = b.FirstDev; d !is null; d = d.NextDev)
             if (d.SlaveAddr == addr)
                 return d;
     }
@@ -625,7 +625,7 @@ I2CBusPtr xf86CreateI2CBusRec()
 
     b = cast(I2CBusPtr) cast(I2CBusRec*) calloc(1, I2CBusRec.sizeof);
 
-    if (b != null) {
+    if (b !is null) {
         b.scrnIndex = -1;
         b.pScrn = null;
         b.HoldTime = 5;        /* 100 kHz bus */
@@ -652,17 +652,17 @@ void xf86DestroyI2CBusRec(I2CBusPtr b, Bool unalloc, Bool devs_too)
 
         /* Remove this from the list of active I2C buses */
 
-        for (p = &I2CBusList; *p != null; p = &(*p).NextBus)
+        for (p = &I2CBusList; *p !is null; p = &(*p).NextBus)
             if (*p == b) {
                 *p = (*p).NextBus;
                 break;
             }
 
-        if (b.FirstDev != null) {
+        if (b.FirstDev !is null) {
             if (devs_too) {
                 I2CDevPtr d = void;
 
-                while ((d = b.FirstDev) != null) {
+                while ((d = b.FirstDev) !is null) {
                     b.FirstDev = d.NextDev;
                     xf86DestroyI2CDevRec(d, unalloc);
                 }
@@ -700,7 +700,7 @@ Bool xf86I2CBusInit(I2CBusPtr b)
      * then the name must be unique throughout the server.
      */
 
-    if (b.BusName is null || xf86I2CFindBus(b.scrnIndex, b.BusName) != null)
+    if (b.BusName is null || xf86I2CFindBus(b.scrnIndex, b.BusName) !is null)
         return FALSE;
 
     /* If the high level functions are not
@@ -756,8 +756,8 @@ I2CBusPtr xf86I2CFindBus(int scrnIndex, const(char)* name)
 {
     I2CBusPtr p = void;
 
-    if (name != null)
-        for (p = I2CBusList; p != null; p = p.NextBus)
+    if (name !is null)
+        for (p = I2CBusList; p !is null; p = p.NextBus)
             if (scrnIndex < 0 || p.scrnIndex == scrnIndex)
                 if (!strcmp(p.BusName, name))
                     return p;

@@ -277,7 +277,7 @@ void CreateWellKnownSockets()
     else { /* -displayfd and no explicit display number */
         Bool found = 0;
         import os.utils;
-        for (i = 0; defaultNoListenList[i] != null; i++)
+        for (i = 0; defaultNoListenList[i] !is null; i++)
     fprintf(stderr, "DEFAULT NOLISTEN: %s\n",
             defaultNoListenList[i]);
         for (i = 0; i < 65536 - X_TCP_PORT; i++) {
@@ -339,10 +339,10 @@ void CloseWellKnownConnections()
     int i = void;
 
     for (i = 0; i < ListenTransCount; i++) {
-        if (ListenTransConns[i] != null) {
+        if (ListenTransConns[i] !is null) {
             _XSERVTransClose(ListenTransConns[i]);
             ListenTransConns[i] = null;
-            if (ListenTransFds != null)
+            if (ListenTransFds !is null)
                 RemoveNotifyFd(ListenTransFds[i]);
         }
     }

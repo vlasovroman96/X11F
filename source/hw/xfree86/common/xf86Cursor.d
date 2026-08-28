@@ -173,7 +173,7 @@ private void xf86PointerMoved(ScrnInfoPtr pScr, int x, int y)
         frameChanged = TRUE;
     }
 
-    if (frameChanged && pScr.AdjustFrame != null)
+    if (frameChanged && pScr.AdjustFrame !is null)
         pScr.AdjustFrame(pScr, pScr.frameX0, pScr.frameY0);
 }
 
@@ -578,7 +578,7 @@ void xf86InitOrigins()
 
             screen = &xf86ConfigLayout.screens[i];
 
-            if (screen.refscreen != null &&
+            if (screen.refscreen !is null &&
                 screen.refscreen.screennum >= xf86NumScreens) {
                 screensLeft &= ~(1 << i);
                 LogMessageVerb(X_WARNING, 1,

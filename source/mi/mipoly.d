@@ -641,7 +641,7 @@ private Bool miFillGeneralPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPt
                     width = FirstWidth.ptr;
                     nPts = 0;
                 }
-                if (pAET != null) { // FIXME: somewhow analyzer still complains
+                if (pAET !is null) { // FIXME: somewhow analyzer still complains
                     mixin(EVALUATEEDGEEVENODD!("pAET", "pPrevAET", "y"));
                     mixin(EVALUATEEDGEEVENODD!("pAET", "pPrevAET", "y"));
                 }

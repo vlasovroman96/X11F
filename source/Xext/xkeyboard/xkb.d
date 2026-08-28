@@ -620,7 +620,7 @@ int ProcXkbBell(ClientPtr client)
     }
 
     if (stuff.bellClass == XkbDfltXIClass) {
-        if (dev.kbdfeed != null)
+        if (dev.kbdfeed !is null)
             stuff.bellClass = KbdFeedbackClass;
         else
             stuff.bellClass = BellFeedbackClass;
@@ -1118,7 +1118,7 @@ private void XkbWriteKeyTypes(XkbDescPtr xkb, CARD8 firstType, CARD8 nTypes, x_r
         wire.virtualMods = type.mods.vmods;
         wire.numLevels = type.num_levels;
         wire.nMapEntries = type.map_count;
-        wire.preserve = (type.preserve != null);
+        wire.preserve = (type.preserve !is null);
         if (client.swapped) {
             swaps(&wire.virtualMods);
         }
@@ -1142,7 +1142,7 @@ private void XkbWriteKeyTypes(XkbDescPtr xkb, CARD8 firstType, CARD8 nTypes, x_r
                 }
             }
 
-            if (type.preserve != null) {
+            if (type.preserve !is null) {
                 xkbModsWireDesc* pwire = cast(xkbModsWireDesc*)x_rpcbuf_reserve(
                     rpcbuf, ((xkbModsWireDesc).sizeof * type.map_count));
                 XkbModsPtr preserve = type.preserve;
@@ -3353,7 +3353,7 @@ int ProcXkbGetNamedIndicator(ClientPtr client)
         supported: cast(ubyte)TRUE,
         ndx: XkbNoIndicator,
     };
-    if (map != null) {
+    if (map !is null) {
         reply.found = TRUE;
         reply.on = ((sli.effectiveState & (1 << i)) != 0);
         reply.realIndicator = ((sli.physIndicators & (1 << i)) != 0);
@@ -3608,7 +3608,7 @@ private Status XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep
     rep.maxKeyCode = xkb.max_key_code;
     which = cast(uint)rep.which;
     length = 0;
-    if (xkb.names != null) {
+    if (xkb.names !is null) {
         if (which & XkbKeycodesNameMask)
             length++;
         if (which & XkbGeometryNameMask)
@@ -3625,7 +3625,7 @@ private Status XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep
     else
         which &= ~XkbComponentNamesMask;
 
-    if (xkb.map != null) {
+    if (xkb.map !is null) {
         if (which & XkbKeyTypeNamesMask)
             length += xkb.map.num_types;
         rep.nTypes = xkb.map.num_types;
@@ -3635,7 +3635,7 @@ private Status XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep
 
             length += mixin(XkbPaddedSize!("xkb.map.num_types")) / 4;
             for (i = 0; i < xkb.map.num_types; i++, pType++) {
-                if (pType.level_names != null)
+                if (pType.level_names !is null)
                     nKTLevels += pType.num_levels;
             }
             rep.nKTLevels = cast(ushort)nKTLevels;
@@ -3653,7 +3653,7 @@ private Status XkbComputeGetNamesReplySize(XkbDescPtr xkb, xkbGetNamesReply* rep
     rep.indicators = 0;
     rep.virtualMods = 0;
     rep.groupNames = 0;
-    if (xkb.names != null) {
+    if (xkb.names !is null) {
         if (which & XkbIndicatorNamesMask) {
             int nLeds = void;
 
@@ -4154,7 +4154,7 @@ private int _XkbSetNames(ClientPtr client, DeviceIntPtr dev, xkbSetNamesReq* stu
                    stuff.nKeyAliases * XkbKeyAliasRec.sizeof);
             tmp += stuff.nKeyAliases * 2;
         }
-        else if (names.key_aliases != null) {
+        else if (names.key_aliases !is null) {
             free(names.key_aliases);
             names.key_aliases = null;
             names.num_key_aliases = cast(ubyte)0;
@@ -4691,7 +4691,7 @@ private Status XkbComputeGetGeometryReplySize(XkbGeometryPtr geom, xkbGetGeometr
 {
     int len = void;
 
-    if (geom != null) {
+    if (geom !is null) {
         len = cast(uint)mixin(XkbSizeCountedString!(`geom.label_font`));
         len += XkbSizeGeomProperties(geom);
         len += XkbSizeGeomColors(geom);
@@ -5672,7 +5672,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
     if ((!names.symbols) && (fwant & XkbGBN_SymbolsMask)) {
         names.symbols = cast(char*)Xstrdup("%");
     }
-    geom_changed = ((names.geometry != null) &&
+    geom_changed = ((names.geometry !is null) &&
                     (strcmp(names.geometry, "%") != 0));
     if ((!names.geometry) && (fwant & XkbGBN_GeometryMask)) {
         names.geometry = cast(char*)Xstrdup("%");
@@ -5773,7 +5773,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
             nrep.maxKeyCode = new_.max_key_code;
             if (reported & XkbGBN_OtherNamesMask) {
                 nrep.which = XkbAllNamesMask;
-                if (new_.map != null)
+                if (new_.map !is null)
                     nrep.nTypes = new_.map.num_types;
                 nrep.groupNames = cast(ubyte)XkbAllGroupsMask;
                 nrep.virtualMods = XkbAllVirtualModsMask;
@@ -5985,7 +5985,7 @@ int ProcXkbGetKbdByName(ClientPtr client)
             }
         }
     }
-    if ((new_ != null) && (new_ != xkb)) {
+    if ((new_ !is null) && (new_ != xkb)) {
         XkbFreeKeyboard(new_, XkbAllComponentsMask, TRUE);
         new_ = null;
     }
@@ -6240,7 +6240,7 @@ int ProcXkbGetDeviceInfo(ClientPtr client)
         else {
             reply.firstBtnWanted = stuff.firstBtn;
             reply.nBtnsWanted = stuff.nBtns;
-            if (dev.button.xkb_acts != null) {
+            if (dev.button.xkb_acts !is null) {
                 XkbAction* act = void;
                 int i = void;
 
@@ -6357,7 +6357,7 @@ private char* CheckSetDeviceIndicators(char* wire, DeviceIntPtr dev, int num, in
 
         sli = XkbFindSrvLedInfo(dev, ledWire.ledClass, ledWire.ledID,
                                 XkbXI_IndicatorsMask);
-        if (sli != null) {
+        if (sli !is null) {
             int n = void;
             uint bit = void;
             int nMaps = void, nNames = void;

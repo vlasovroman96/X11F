@@ -784,7 +784,7 @@ void XkbFreeClientMap(XkbDescPtr xkb, uint what, Bool freeMap)
         what = XkbAllClientInfoMask;
     map = xkb.map;
     if (what & XkbKeyTypesMask) {
-        if (map.types != null) {
+        if (map.types !is null) {
             if (map.num_types > 0) {
                 int i = void;
                 XkbKeyTypePtr type = void;
@@ -807,13 +807,13 @@ void XkbFreeClientMap(XkbDescPtr xkb, uint what, Bool freeMap)
     if (what & XkbKeySymsMask) {
         free(map.key_sym_map);
         map.key_sym_map = cast(_XkbSymMapRec*)null;
-        if (map.syms != null) {
+        if (map.syms !is null) {
             free(map.syms);
             map.size_syms = map.num_syms = 0;
             map.syms = cast(ulong*)null;
         }
     }
-    if ((what & XkbModifierMapMask) && (map.modmap != null)) {
+    if ((what & XkbModifierMapMask) && (map.modmap !is null)) {
         free(map.modmap);
         map.modmap = cast(ubyte*)null;
     }
@@ -833,24 +833,24 @@ void XkbFreeServerMap(XkbDescPtr xkb, uint what, Bool freeMap)
     if (freeMap)
         what = XkbAllServerInfoMask;
     map = xkb.server;
-    if ((what & XkbExplicitComponentsMask) && (map.explicit != null)) {
+    if ((what & XkbExplicitComponentsMask) && (map.explicit !is null)) {
         free(map.explicit);
         map.explicit =  cast(ubyte*)null;
     }
     if (what & XkbKeyActionsMask) {
         free(map.key_acts);
         map.key_acts = cast(ushort*)null;
-        if (map.acts != null) {
+        if (map.acts !is null) {
             free(map.acts);
             map.num_acts = map.size_acts = cast(ushort)0;
             map.acts = cast(_XkbAction*)null;
         }
     }
-    if ((what & XkbKeyBehaviorsMask) && (map.behaviors != null)) {
+    if ((what & XkbKeyBehaviorsMask) && (map.behaviors !is null)) {
         free(map.behaviors);
         map.behaviors =  cast(_XkbBehavior*)null;
     }
-    if ((what & XkbVirtualModMapMask) && (map.vmodmap != null)) {
+    if ((what & XkbVirtualModMapMask) && (map.vmodmap !is null)) {
         free(map.vmodmap);
         map.vmodmap =  cast(ushort*)null;
     }

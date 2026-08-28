@@ -174,7 +174,7 @@ private Bool CursorDisplayCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr
 
     CursorVisible = CursorVisible && EnableCursor;
 
-    if (cs.pCursorHideCounts != null || !CursorVisible) {
+    if (cs.pCursorHideCounts !is null || !CursorVisible) {
         ret = (*pScreen.DisplayCursor) (pDev, pScreen, NullCursor);
     }
     else {
@@ -658,7 +658,7 @@ private CursorHideCountPtr findCursorHideCount(ClientPtr pClient, ScreenPtr pScr
     CursorScreenPtr cs = mixin(GetCursorScreen!(`pScreen`));
     CursorHideCountPtr pChc = void;
 
-    for (pChc = cs.pCursorHideCounts; pChc != null; pChc = pChc.pNext) {
+    for (pChc = cs.pCursorHideCounts; pChc !is null; pChc = pChc.pNext) {
         if (pChc.pClient == pClient) {
             return pChc;
         }
@@ -701,7 +701,7 @@ private void deleteCursorHideCount(CursorHideCountPtr pChcToDel, ScreenPtr pScre
     CursorHideCountPtr pChcLast = null;
 
     pChc = cs.pCursorHideCounts;
-    while (pChc != null) {
+    while (pChc !is null) {
         pNext = pChc.pNext;
         if (pChc == pChcToDel) {
             free(pChc);
@@ -727,7 +727,7 @@ private void deleteCursorHideCountsForScreen(ScreenPtr pScreen)
     CursorHideCountPtr pChc = void, pTmp = void;
 
     pChc = cs.pCursorHideCounts;
-    while (pChc != null) {
+    while (pChc !is null) {
         pTmp = pChc.pNext;
         FreeResource(pChc.resource, 0);
         pChc = pTmp;
@@ -757,7 +757,7 @@ int ProcXFixesHideCursor(ClientPtr client)
      */
 
     pChc = findCursorHideCount(client, pWin.drawable.pScreen);
-    if (pChc != null) {
+    if (pChc !is null) {
         pChc.hideCount++;
         return Success;
     }

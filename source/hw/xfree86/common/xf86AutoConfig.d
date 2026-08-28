@@ -183,7 +183,7 @@ Bool xf86AutoConfig()
     ConfigStatus ret = void;
 
     /* Make sure config rec is there */
-    if (xf86allocateConfig() != null) {
+    if (xf86allocateConfig() !is null) {
         ret = _ConfigStatus.CONFIG_OK;    /* OK so far */
     }
     else {

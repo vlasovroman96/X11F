@@ -141,7 +141,7 @@ void* LoaderSymbol(const(char)* name)
     void* p = void;
 
     p = dlsym(RTLD_DEFAULT, name);
-    if (p != null)
+    if (p !is null)
         return p;
 
     if (!global_scope)

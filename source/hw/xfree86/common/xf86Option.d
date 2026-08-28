@@ -361,7 +361,7 @@ const(char)* xf86FindOptionValue(XF86OptionPtr options, const(char)* name)
 
 void xf86MarkOptionUsed(XF86OptionPtr option)
 {
-    if (option != null)
+    if (option !is null)
         option.opt_used = TRUE;
 }
 
@@ -370,7 +370,7 @@ void xf86MarkOptionUsedByName(XF86OptionPtr options, const(char)* name)
     XF86OptionPtr opt = void;
 
     opt = xf86findOption(options, name);
-    if (opt != null)
+    if (opt !is null)
         opt.opt_used = TRUE;
 }
 
@@ -379,7 +379,7 @@ private Bool xf86CheckIfOptionUsedByName(XF86OptionPtr options, const(char)* nam
     XF86OptionPtr opt = void;
 
     opt = xf86findOption(options, name);
-    if (opt != null)
+    if (opt !is null)
         return opt.opt_used;
     else
         return FALSE;
@@ -407,7 +407,7 @@ private Bool ParseOptionValue(int scrnIndex, XF86OptionPtr options, OptionInfoPt
     char* end = void;
     Bool wasUsed = FALSE;
 
-    if ((s = xf86findOptionValue(options, p.name)) != null) {
+    if ((s = xf86findOptionValue(options, p.name)) !is null) {
         if (markUsed) {
             wasUsed = xf86CheckIfOptionUsedByName(options, p.name);
             xf86MarkOptionUsedByName(options, p.name);
@@ -596,7 +596,7 @@ private Bool ParseOptionValue(int scrnIndex, XF86OptionPtr options, OptionInfoPt
             }
             newn = n;
         }
-        if ((s = xf86findOptionValue(options, newn)) != null) {
+        if ((s = xf86findOptionValue(options, newn)) !is null) {
             if (markUsed)
                 xf86MarkOptionUsedByName(options, newn);
             if (GetBoolValue(&opt, s)) {
@@ -631,7 +631,7 @@ void xf86ProcessOptions(int scrnIndex, XF86OptionPtr options, OptionInfoPtr opti
 {
     OptionInfoPtr p = void;
 
-    for (p = optinfo; p.name != null; p++) {
+    for (p = optinfo; p.name !is null; p++) {
         ParseOptionValue(scrnIndex, options, p, TRUE);
     }
 }

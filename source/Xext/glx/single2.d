@@ -295,7 +295,7 @@ private char* __glXcombine_strings(const(char)* cext_string, const(char)* sext_s
 
     /* Get first extension token */
     token = strtok(s1, SEPARATOR);
-    while (token != null) {
+    while (token !is null) {
 
         /*
          ** if token in second string then save it

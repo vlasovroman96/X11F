@@ -271,7 +271,7 @@ DisplayModePtr VBEGetModePool(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBlock* 
         while (vbe.VideoModePtr[i] != 0xffff) {
             int id = vbe.VideoModePtr[i++];
 
-            if ((pMode = CheckMode(pScrn, pVbe, vbe, id, modeTypes)) != null) {
+            if ((pMode = CheckMode(pScrn, pVbe, vbe, id, modeTypes)) !is null) {
                 ModeStatus status = MODE_OK;
 
                 /* Check the mode against a specified virtual size (if any) */
@@ -304,7 +304,7 @@ DisplayModePtr VBEGetModePool(ScrnInfoPtr pScrn, vbeInfoPtr pVbe, VbeInfoBlock* 
     }
     if (modeTypes & V_MODETYPE_VGA) {
         for (i = 0; i < 0x7F; i++) {
-            if ((pMode = CheckMode(pScrn, pVbe, vbe, i, modeTypes)) != null) {
+            if ((pMode = CheckMode(pScrn, pVbe, vbe, i, modeTypes)) !is null) {
                 ModeStatus status = MODE_OK;
 
                 /* Check the mode against a specified virtual size (if any) */
@@ -376,7 +376,7 @@ void VBESetModeParameters(ScrnInfoPtr pScrn, vbeInfoPtr pVbe)
         DisplayModePtr p = void, best = null;
         ModeStatus status = void;
 
-        for (p = pScrn.monitor.Modes; p != null; p = p.next) {
+        for (p = pScrn.monitor.Modes; p !is null; p = p.next) {
             if ((p.HDisplay != pMode.HDisplay) ||
                 (p.VDisplay != pMode.VDisplay) ||
                 (p.Flags & (V_INTERLACE | V_DBLSCAN | V_CLKDIV2)))

@@ -82,22 +82,22 @@ int ProcXQueryDeviceState(ClientPtr client)
         return rc;
 
     v = dev.valuator;
-    if (v != null && v.motionHintWindow != null)
+    if (v !is null && v.motionHintWindow !is null)
         MaybeStopDeviceHint(dev, client);
 
     k = dev.key;
-    if (k != null) {
+    if (k !is null) {
         total_length += xKeyState.sizeof;
         num_classes++;
     }
 
     b = dev.button;
-    if (b != null) {
+    if (b !is null) {
         total_length += xButtonState.sizeof;
         num_classes++;
     }
 
-    if (v != null) {
+    if (v !is null) {
         total_length += cast(int)(((xValuatorState).sizeof + (v.numAxes * int.sizeof)));
         num_classes++;
     }
@@ -107,7 +107,7 @@ int ProcXQueryDeviceState(ClientPtr client)
     if (!buf)
         return BadAlloc;
 
-    if (k != null) {
+    if (k !is null) {
         tk = cast(xKeyState*) buf;
         tk.class_ = KeyClass;
         tk.length = xKeyState.sizeof;
@@ -119,7 +119,7 @@ int ProcXQueryDeviceState(ClientPtr client)
         buf += xKeyState.sizeof;
     }
 
-    if (b != null) {
+    if (b !is null) {
         tb = cast(xButtonState*) buf;
         tb.class_ = ButtonClass;
         tb.length = cast(uint)xButtonState.sizeof;
@@ -129,7 +129,7 @@ int ProcXQueryDeviceState(ClientPtr client)
         buf += xButtonState.sizeof;
     }
 
-    if (v != null) {
+    if (v !is null) {
         tv = cast(xValuatorState*) buf;
         tv.class_ = ValuatorClass;
         tv.length = cast(ubyte)((xValuatorState).sizeof + cast(ubyte)v.numAxes * 4);

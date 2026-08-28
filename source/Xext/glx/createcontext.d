@@ -321,7 +321,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
      *     "* If the reset notification behavior of <share_context> and the
      *        newly created context are different, BadMatch is generated."
      */
-    if (shareCtx != null && shareCtx.resetNotificationStrategy != reset)
+    if (shareCtx !is null && shareCtx.resetNotificationStrategy != reset)
         return BadMatch;
 
     /* There is no GLX protocol for desktop OpenGL versions after 1.4.  There

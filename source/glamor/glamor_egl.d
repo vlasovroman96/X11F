@@ -1021,7 +1021,7 @@ else {
     } else if (write_pos != *num_modifiers) {
         *num_modifiers = write_pos;
         ulong* filtered_modifiers = cast(ulong*) realloc(*modifiers, write_pos * typeof(*modifiers).sizeof);
-        if (filtered_modifiers != null) {
+        if (filtered_modifiers !is null) {
             *modifiers = filtered_modifiers;
         }
     }

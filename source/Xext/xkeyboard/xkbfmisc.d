@@ -214,7 +214,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
     }
 
     wantConfig = want & (~complete);
-    if (xkb != null) {
+    if (xkb !is null) {
         if (wantConfig & XkmTypesMask) {
             if ((!xkb.map) || (xkb.map.num_types < XkbNumRequiredTypes))
                 wantConfig &= ~XkmTypesMask;
@@ -245,7 +245,7 @@ Bool XkbWriteXKBKeymapForNames(FILE* file, XkbComponentNamesPtr names, XkbDescPt
 
     wantDflts = 0;
     wantNames = want & (~complete);
-    if ((xkb != null) && (old_names != null)) {
+    if ((xkb !is null) && (old_names !is null)) {
         if (wantNames & XkmTypesMask) {
             if (old_names.types != None) {
                 tmp = NameForAtom(old_names.types);

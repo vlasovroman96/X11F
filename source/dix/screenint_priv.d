@@ -55,7 +55,7 @@ pragma(inline, true) ScreenPtr dixGetScreenPtr(uint idx) {
  */
 pragma(inline, true) private bool dixScreenExists(uint idx) {
     return ((idx < screenInfo.numScreens) &&
-            (screenInfo.screens[idx] != null));
+            (screenInfo.screens[idx] !is null));
 }
 
 /*

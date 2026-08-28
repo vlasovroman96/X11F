@@ -85,7 +85,7 @@ private GlxServerDispatchProc GetVendorDispatchFunc(CARD8 opcode, CARD32 vendorC
 
     mixin(xorg_list_for_each_entry!("vendor", "&GlxVendorList", "entry", q{
         GlxServerDispatchProc proc = vendor.glxvc.getDispatchAddress(opcode, vendorCode);
-        if (proc != null) {
+        if (proc !is null) {
             return proc;
         }
     }));
@@ -212,7 +212,7 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
     if (oldTag is null && newVendor is null) {
         // Nothing to do here. Just send a successful reply.
         reply.contextTag = 0;
-    } else if (oldTag != null && newVendor != null
+    } else if (oldTag !is null && newVendor !is null
             && oldTag.context == context
             && oldTag.drawable == drawable
             && oldTag.readdrawable == readdrawable)
@@ -233,14 +233,14 @@ private int CommonMakeCurrent(ClientPtr client, GLXContextTag oldContextTag, GLX
         // But, if the recovery LoseCurrent(old) fails, then we're really in a bad state.
 
         // Clear the old context first.
-        if (oldTag != null) {
+        if (oldTag !is null) {
             int ret = CommonLoseCurrent(client, oldTag);
             if (ret != Success) {
                 return ret;
             }
         }
 
-        if (newVendor != null) {
+        if (newVendor !is null) {
             int ret = CommonMakeNewCurrent(client, newVendor, drawable, readdrawable, context, &reply.contextTag);
             if (ret != Success) {
                 return ret;
@@ -352,7 +352,7 @@ private int dispatch_GLXSingle(ClientPtr client)
 
 
     tagInfo = GlxLookupContextTag(client, cast(uint)GlxCheckSwap(client, stuff.contextTag));
-    if (tagInfo != null) {
+    if (tagInfo !is null) {
         return tagInfo.vendor.glxvc.handleRequest(client);
     } else {
         return GlxErrorBase + GLXBadContextTag;

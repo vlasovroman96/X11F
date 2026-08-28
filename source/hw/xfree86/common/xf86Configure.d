@@ -316,7 +316,7 @@ XF86ConfDevicePtr configureDeviceSection(int screennum)
             ~ "        ### [arg]: arg optional\n";
         ptr.dev_comment = cast(char*)XNFstrdup(descrip);
         if (ptr.dev_comment) {
-            for (p = cast(_OptionInfoRec*)DevToConfig[screennum].GDev.options; p.name != null; p++) {
+            for (p = cast(_OptionInfoRec*)DevToConfig[screennum].GDev.options; p.name !is null; p++) {
                 char* p_e = void;
                 const(char)* prefix = "        #Option     ";
                 const(char)* middle = " \t# ";
@@ -601,7 +601,7 @@ const(char)** GenerateDriverList()
     ret = LoaderListDir("drivers", patlist.ptr);
 
     /* fix up the probe order for video drivers */
-    if (ret != null)
+    if (ret !is null)
         fixup_video_driver_list(ret);
 
     return ret;
@@ -788,7 +788,7 @@ void DoConfigure()
 
         ConfiguredMonitor = null;
 
-        if ((xf86Screens[dev2screen[j]].PreInit) != null &&
+        if ((xf86Screens[dev2screen[j]].PreInit) !is null &&
             (xf86Screens[dev2screen[j]].PreInit) (xf86Screens[dev2screen[j]],
                                                     PROBE_DETECT) &&
             ConfiguredMonitor) {
@@ -878,7 +878,7 @@ void DoShowOptions()
 
                 ErrorF("Driver[%d]:%s[%s] {\n",
                        i, xf86DriverList[i].driverName, vers.vendor);
-                for (p = pOption; p.name != null; p++) {
+                for (p = pOption; p.name !is null; p++) {
                     ErrorF("\t%s:%s\n", p.name, optionTypeToString(p.type));
                 }
                 ErrorF("}\n");

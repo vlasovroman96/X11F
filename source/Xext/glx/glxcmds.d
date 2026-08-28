@@ -121,7 +121,7 @@ int validGlxFBConfig(ClientPtr client, __GLXscreen* pGlxScreen, XID id, __GLXcon
 {
     __GLXconfig* m = void;
 
-    for (m = pGlxScreen.fbconfigs; m != null; m = m.next)
+    for (m = pGlxScreen.fbconfigs; m !is null; m = m.next)
         if (m.fbconfigID == id) {
             *config = m;
             return TRUE;
@@ -520,8 +520,8 @@ private __GLXdrawable* __glXGetDrawable(__GLXcontext* glxc, GLXDrawable drawId, 
          * associated with it, so we don't want to create another one. */
         (pGlxDraw.drawId == drawId ||
          pGlxDraw.type == GLX_DRAWABLE_WINDOW)) {
-        if (glxc != null &&
-            glxc.config != null &&
+        if (glxc !is null &&
+            glxc.config !is null &&
             glxc.config != pGlxDraw.config) {
             client.errorValue = drawId;
             *error = BadMatch;
@@ -1018,7 +1018,7 @@ private int DoGetFBConfigs(__GLXclientState* cl, uint screen)
 
     WriteToClient(client, xGLXGetFBConfigsReply.sizeof, &reply);
 
-    for (modes = pGlxScreen.fbconfigs; modes != null; modes = modes.next) {
+    for (modes = pGlxScreen.fbconfigs; modes !is null; modes = modes.next) {
         p = 0;
 
 enum string WRITE_PAIR(string tag,string value) = `
@@ -2218,7 +2218,7 @@ int __glXDisp_VendorPrivate(__GLXclientState* cl, GLbyte* pc)
     proc = cast(__GLXdispatchVendorPrivProcPtr)
         __glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info,
                                        vendorcode, 0);
-    if (proc != null) {
+    if (proc !is null) {
         return (*proc) (cl, cast(GLbyte*) req);
     }
 
@@ -2238,7 +2238,7 @@ int __glXDisp_VendorPrivateWithReply(__GLXclientState* cl, GLbyte* pc)
     proc = cast(__GLXdispatchVendorPrivProcPtr)
         __glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info,
                                        vendorcode, 0);
-    if (proc != null) {
+    if (proc !is null) {
         return (*proc) (cl, cast(GLbyte*) req);
     }
 

@@ -563,7 +563,7 @@ sbusDevicePtr xf86GetSbusInfoForEntity(int entityIndex)
     if (entityIndex >= xf86NumEntities || p.bus.type != BUS_SBUS)
         return null;
 
-    for (psdpp = xf86SbusInfo; *psdpp != null; psdpp++) {
+    for (psdpp = xf86SbusInfo; *psdpp !is null; psdpp++) {
         if (p.bus.id.sbus.fbNum == (*psdpp).fbNum)
             return *psdpp;
     }

@@ -1142,7 +1142,7 @@ private Bool xf86RandR12CrtcSet(ScreenPtr pScreen, RRCrtcPtr randr_crtc, RRModeP
     save_crtcs = cast(xf86CrtcPtr*) calloc(config.num_output, xf86CrtcPtr.sizeof);
     if (!save_crtcs)
         return FALSE;
-    if ((randr_mode != null) != crtc.enabled)
+    if ((randr_mode !is null) != crtc.enabled)
         changed = TRUE;
     else if (randr_mode && !xf86RandRModeMatches(randr_mode, &crtc.mode))
         changed = TRUE;
@@ -1155,7 +1155,7 @@ private Bool xf86RandR12CrtcSet(ScreenPtr pScreen, RRCrtcPtr randr_crtc, RRModeP
         changed = TRUE;
 
     transform = RRCrtcGetTransform(randr_crtc);
-    if ((transform != null) != crtc.transformPresent)
+    if ((transform !is null) != crtc.transformPresent)
         changed = TRUE;
     else if (transform &&
              !RRTransformEqual(transform, &crtc.transform))
@@ -1189,7 +1189,7 @@ private Bool xf86RandR12CrtcSet(ScreenPtr pScreen, RRCrtcPtr randr_crtc, RRModeP
 
     /* XXX need device-independent mode setting code through an API */
     if (changed) {
-        crtc.enabled = randr_mode != null;
+        crtc.enabled = randr_mode !is null;
 
         if (randr_mode) {
             DisplayModeRec mode = void;
@@ -1722,7 +1722,7 @@ private Bool xf86RandR12CreateObjects12(ScreenPtr pScreen)
         output.randr_output = RROutputCreate(pScreen, output.name,
                                               cast(int)strlen(output.name), output);
 
-        if (output.funcs.create_resources != null)
+        if (output.funcs.create_resources !is null)
             output.funcs.create_resources(output);
         RRPostPendingProperties(cast(_rrOutput*)output.randr_output);
     }

@@ -94,11 +94,11 @@ private void SizeDeviceInfo(DeviceIntPtr d, int* namesize, int* size)
     *namesize += 1;
     if (d.name)
         *namesize += strlen(d.name);
-    if (d.key != null)
+    if (d.key !is null)
         *size += xKeyInfo.sizeof;
-    if (d.button != null)
+    if (d.button !is null)
         *size += xButtonInfo.sizeof;
-    if (d.valuator != null) {
+    if (d.valuator !is null) {
         chunks = (cast(int) d.valuator.numAxes + 19) / VPC;
         *size += (chunks * (xValuatorInfo).sizeof +
                   d.valuator.numAxes * xAxisInfo.sizeof);
@@ -260,15 +260,15 @@ private int CopySwapValuatorClass(ClientPtr client, DeviceIntPtr dev, char** buf
 
 private void CopySwapClasses(ClientPtr client, DeviceIntPtr dev, CARD8* num_classes, char** classbuf)
 {
-    if (dev.key != null) {
+    if (dev.key !is null) {
         CopySwapKeyClass(client, dev.key, classbuf);
         (*num_classes)++;
     }
-    if (dev.button != null) {
+    if (dev.button !is null) {
         CopySwapButtonClass(client, dev.button, classbuf);
         (*num_classes)++;
     }
-    if (dev.valuator != null) {
+    if (dev.valuator !is null) {
         (*num_classes) += CopySwapValuatorClass(client, dev, classbuf);
     }
 }

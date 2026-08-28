@@ -1671,7 +1671,7 @@ void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
         Bool debug_modes = config.debug_modes || xf86Initialising;
         det_monrec_source sync_source = sync_default;
 
-        while (output.probed_modes != null)
+        while (output.probed_modes !is null)
             xf86DeleteMode(&output.probed_modes, output.probed_modes);
 
         /*
@@ -1829,7 +1829,7 @@ void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
         /*
          * Check all modes against output
          */
-        for (mode = output.probed_modes; mode != null; mode = mode.next)
+        for (mode = output.probed_modes; mode !is null; mode = mode.next)
             if (mode.status == MODE_OK)
                 mode.status = cast(ModeStatus)(*output.funcs.mode_valid) (output, mode);
 
@@ -1865,7 +1865,7 @@ void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
         output.initial_rotation = xf86OutputInitialRotation(output);
 
         if (debug_modes) {
-            if (output.probed_modes != null) {
+            if (output.probed_modes !is null) {
                 xf86DrvMsg(scrn.scrnIndex, X_INFO,
                            "Printing probed modes for output %s\n",
                            output.name);
@@ -1876,7 +1876,7 @@ void xf86ProbeOutputModes(ScrnInfoPtr scrn, int maxX, int maxY)
                            output.name);
             }
         }
-        for (mode = output.probed_modes; mode != null; mode = mode.next) {
+        for (mode = output.probed_modes; mode !is null; mode = mode.next) {
             /* The code to choose the best mode per pipe later on will require
              * VRefresh to be set.
              */
@@ -2009,7 +2009,7 @@ void xf86SetScrnInfoModes(ScrnInfoPtr scrn)
     crtc = output.crtc;
 
     /* Clear any existing modes from scrn->modes */
-    while (scrn.modes != null)
+    while (scrn.modes !is null)
         xf86DeleteMode(&scrn.modes, scrn.modes);
 
     /* Set scrn->modes to the mode list for the 'compat' output */
@@ -2446,7 +2446,7 @@ private Bool xf86TargetFallback(ScrnInfoPtr scrn, xf86CrtcConfigPtr config, Disp
                                        target_rotation, width, height);
     }
 
-    return target_mode != null;
+    return target_mode !is null;
 }
 
 private Bool xf86TargetUserpref(ScrnInfoPtr scrn, xf86CrtcConfigPtr config, DisplayModePtr* modes, Bool* enabled, int width, int height)
@@ -2863,7 +2863,7 @@ DisplayModePtr xf86OutputFindClosestMode(xf86OutputPtr output, DisplayModePtr de
 {
     DisplayModePtr best = null, scan = null;
 
-    for (scan = output.probed_modes; scan != null; scan = scan.next) {
+    for (scan = output.probed_modes; scan !is null; scan = scan.next) {
         /* If there's an exact match, we're done. */
         if (xf86ModesEqual(scan, desired)) {
             best = desired;
@@ -2997,7 +2997,7 @@ void xf86DPMSSet(ScrnInfoPtr scrn, int mode, int flags)
         for (i = 0; i < config.num_output; i++) {
             xf86OutputPtr output = config.output[i];
 
-            if (!xf86OutputIsLeased(output) && output.crtc != null)
+            if (!xf86OutputIsLeased(output) && output.crtc !is null)
                 (*output.funcs.dpms) (output, mode);
         }
     }
@@ -3013,7 +3013,7 @@ void xf86DPMSSet(ScrnInfoPtr scrn, int mode, int flags)
         for (i = 0; i < config.num_output; i++) {
             xf86OutputPtr output = config.output[i];
 
-            if (!xf86OutputIsLeased(output) && output.crtc != null)
+            if (!xf86OutputIsLeased(output) && output.crtc !is null)
                 (*output.funcs.dpms) (output, mode);
         }
     }
@@ -3444,7 +3444,7 @@ Bool xf86_crtc_supports_gamma(ScrnInfoPtr pScrn)
             return FALSE;
         crtc = xf86_config.crtc[0];
 
-        return crtc.funcs.gamma_set != null;
+        return crtc.funcs.gamma_set !is null;
     }
 
     return FALSE;

@@ -189,15 +189,15 @@ private void logging_format()
     strcpy(&buf[((buf).ptr - 4).sizeof], "end");
 
     fname = cast(char*)LogInit(log_file_path, null);
-    assert(fname != null);
+    assert(fname !is null);
     assert((f = fopen(log_file_path, "r")));
     free(fname);
 
 enum string read_log_msg(string msg) = `do {                                  
         ` ~ msg ~ ` = fgets(read_buf.ptr, read_buf.sizeof, f);             
-        assert(` ~ msg ~ ` != null);                                   
+        assert(` ~ msg ~ ` !is null);                                   
         ` ~ msg ~ ` = strchr(read_buf.ptr, ']');                            
-        assert(` ~ msg ~ ` != null);                                    
+        assert(` ~ msg ~ ` !is null);                                    
         assert(strlen(` ~ msg ~ `) > 2);                                
         ` ~ msg ~ ` = ` ~ msg ~ ` + 2; /* advance past [time.stamp] */          
     } while (0)`;
@@ -235,7 +235,7 @@ enum string read_log_msg(string msg) = `do {
     /* something unsupported % */
     LogMessageVerb(X_ERROR, 1, "test %Q\n");
     mixin(read_log_msg!(`logmsg`));
-    assert(strstr(logmsg, "BUG") != null);
+    assert(strstr(logmsg, "BUG") !is null);
     LogMessageVerb(X_ERROR, 1, "\n");
     fseek(f, 0, SEEK_END);
 
@@ -254,7 +254,7 @@ enum string read_log_msg(string msg) = `do {
     /* %hld is bogus */
     LogMessageVerb(X_ERROR, 1, "%hld\n", 4);
     mixin(read_log_msg!(`logmsg`));
-    assert(strstr(logmsg, "BUG") != null);
+    assert(strstr(logmsg, "BUG") !is null);
     LogMessageVerb(X_ERROR, 1, "\n");
     fseek(f, 0, SEEK_END);
 

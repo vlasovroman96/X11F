@@ -200,7 +200,7 @@ private void xf86OutputClassDriverList(int index, XF86MatchedDrivers* md)
 
             LogMessageVerb(X_INFO, 1, "Applying OutputClass \"%s\" to %s\n",
                            cl.identifier, path);
-            if (cl.driver != null && *(cl.driver)) {
+            if (cl.driver !is null && *(cl.driver)) {
                 LogMessageVerb(X_NONE, 1, "\tloading driver: %s\n", cl.driver);
                 xf86AddMatchedDriver(md, cl.driver);
             } else
@@ -235,7 +235,7 @@ void xf86PlatformMatchDriver(XF86MatchedDrivers* md)
 //                 xf86MatchDriverFromFiles(info.vendor_id, info.device_id, md);
 // }
 
-            if (info != null) {
+            if (info !is null) {
                 xf86VideoPtrToDriverList(info, md);
             }
         }
@@ -726,7 +726,7 @@ int xf86platformAddDevice(const(char)* driver_name, int index)
         return -1;
     i = old_screens;
 
-    for (layout = xf86ConfigLayout.screens; layout.screen != null;
+    for (layout = xf86ConfigLayout.screens; layout.screen !is null;
          layout++) {
         xf86GPUScreens[i].confScreen = layout.screen;
         break;

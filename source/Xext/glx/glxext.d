@@ -340,7 +340,7 @@ private void GetGLXDrawableBytes(void* value, XID id, ResourceSizePtr size)
 
 private void xorgGlxCloseExtension(const(ExtensionEntry)* extEntry)
 {
-    if (glvnd_vendor != null) {
+    if (glvnd_vendor !is null) {
         glxServer.destroyVendor(glvnd_vendor);
         glvnd_vendor = null;
     }
@@ -513,7 +513,7 @@ private void xorgGlxInitGLVNDVendor()
         GlxServerImports* imports = null;
         imports = glxServer.allocateServerImports();
 
-        if (imports != null) {
+        if (imports !is null) {
             imports.extensionCloseDown = &xorgGlxCloseExtension;
             imports.handleRequest = &xorgGlxHandleRequest;
             imports.getDispatchAddress = &xorgGlxGetDispatchAddress;
@@ -540,14 +540,14 @@ private void xorgGlxServerInit(CallbackListPtr* pcbl, void* param, void* ext)
     mixin(DIX_FOR_EACH_SCREEN!q{
         __GLXprovider* p = void;
 
-        if (glxServer.getVendorForScreen(null, walkScreen) != null) {
+        if (glxServer.getVendorForScreen(null, walkScreen) !is null) {
             //LogMessage(X_INFO, "GLX: Another vendor is already registered for screen %d\n", walkScreenIdx);
             continue;
         }
 
-        for (p = __glXProviderStack; p != null; p = p.next) {
+        for (p = __glXProviderStack; p !is null; p = p.next) {
             __GLXscreen* glxScreen = p.screenProbe(walkScreen);
-            if (glxScreen != null) {
+            if (glxScreen !is null) {
                 LogMessage(X_INFO,
                            "GLX: Initialized %s GL provider for screen %d\n",
                            p.name, walkScreenIdx);
@@ -670,7 +670,7 @@ void glxResumeClients()
             AttendClient(clients[i]);
     }
 
-    for (cx = glxPendingDestroyContexts; cx != null; cx = next) {
+    for (cx = glxPendingDestroyContexts; cx !is null; cx = next) {
         next = cx.next;
 
         cx.destroy(cx);
@@ -724,7 +724,7 @@ private int __glXDispatch(ClientPtr client)
      */
     proc = cast(__GLXdispatchSingleProcPtr)__glXGetProtocolDecodeFunction(&Single_dispatch_info, opcode,
                                           client.swapped);
-    if (proc != null)
+    if (proc !is null)
         retval = (*proc) (cl, cast(GLbyte*) stuff);
 
     return retval;

@@ -113,7 +113,7 @@ Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, PixmapPtr 
     vblank.num_notifies = num_notifies;
     vblank.has_suboptimal = (options & PresentOptionSuboptimal);
 
-    if (pixmap != null &&
+    if (pixmap !is null &&
         !(options & PresentOptionCopy) &&
         screen_priv.check_flip) {
 

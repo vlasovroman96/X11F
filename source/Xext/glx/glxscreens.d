@@ -250,7 +250,7 @@ private __GLXconfig* pickFBConfig(__GLXscreen* pGlxScreen, VisualPtr visual)
     __GLXconfig* best = null, config = void;
     int best_score = 0;
 
-    for (config = pGlxScreen.fbconfigs; config != null; config = config.next) {
+    for (config = pGlxScreen.fbconfigs; config !is null; config = config.next) {
         int score = 0;
 
         if (config.redMask != visual.redMask ||
@@ -324,7 +324,7 @@ void __glXScreenInit(__GLXscreen* pGlxScreen, ScreenPtr pScreen)
     dixScreenHookClose(pScreen, &glxCloseScreen);
 
     i = 0;
-    for (m = pGlxScreen.fbconfigs; m != null; m = m.next) {
+    for (m = pGlxScreen.fbconfigs; m !is null; m = m.next) {
         m.fbconfigID = cast(int)dixAllocServerXID();
         m.visualID = 0;
         i++;
@@ -356,7 +356,7 @@ void __glXScreenInit(__GLXscreen* pGlxScreen, ScreenPtr pScreen)
     /* Then, add new visuals corresponding to all FBconfigs that didn't have
      * an existing, appropriate visual.
      */
-    for (config = pGlxScreen.fbconfigs; config != null; config = config.next) {
+    for (config = pGlxScreen.fbconfigs; config !is null; config = config.next) {
         int depth = void;
 
         VisualPtr visual = void;
@@ -428,7 +428,7 @@ void __glXScreenDestroy(__GLXscreen* screen)
     free(screen.GLextensions);
     free(screen.visuals);
 
-    for (config = screen.fbconfigs; config != null; config = next) {
+    for (config = screen.fbconfigs; config !is null; config = next) {
         next = config.next;
         free(config);
     }

@@ -1021,7 +1021,7 @@ void drmmode_set_dpms(ScrnInfoPtr scrn, int dpms, int flags)
         xf86OutputPtr output = xf86_config.output[i];
         drmmode_output_private_ptr drmmode_output = cast(drmmode_output_private_ptr)output.driver_private;
 
-        if (output.crtc != null)
+        if (output.crtc !is null)
             continue;
 
         ret = connector_add_prop(req, drmmode_output,

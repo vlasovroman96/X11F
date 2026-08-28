@@ -97,7 +97,7 @@ int XaceHookIsSet(int hook)
 {
     if (hook < 0 || hook >= XACE_NUM_HOOKS)
         return 0;
-    return XaceHooks[hook] != null;
+    return XaceHooks[hook] !is null;
 }
 
 /* XaceCensorImage

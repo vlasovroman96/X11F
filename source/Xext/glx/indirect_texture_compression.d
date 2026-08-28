@@ -54,7 +54,7 @@ int __glXDisp_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) target = *cast(GLenum*) (pc + 0);
         const(GLint) level = *cast(GLint*) (pc + 4);
         GLint compsize = 0;
@@ -98,7 +98,7 @@ int __glXDispSwap_GetCompressedTexImage(__GLXclientStateRec* cl, GLbyte* pc)
     mixin(REQUEST_FIXED_SIZE!("xGLXSingleReq", "8"));
 
     pc += __GLX_SINGLE_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         const(GLenum) target = cast(GLenum) bswap_32(*cast(int*) (pc + 0));
         const(GLint) level = cast(GLint) bswap_32(*cast(int*) (pc + 4));
         GLint compsize = 0;

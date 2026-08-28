@@ -209,7 +209,7 @@ private XF86OptionPtr addNewOption2(XF86OptionPtr head, char* name, char* _val, 
     XF86OptionPtr new_ = void, old = null;
 
     /* Don't allow duplicates, free old strings */
-    if (head != null && (old = xf86findOption(head, name)) != null) {
+    if (head !is null && (old = xf86findOption(head, name)) !is null) {
         new_ = old;
         free(new_.opt_name);
         free(new_.opt_val);
@@ -466,7 +466,7 @@ XF86OptionPtr xf86parseOption(XF86OptionPtr head)
     old = null;
 
     /* Don't allow duplicates */
-    if (head != null && (old = xf86findOption(head, name)) != null) {
+    if (head !is null && (old = xf86findOption(head, name)) !is null) {
         cnew = old;
         free(option.opt_name);
         mixin(TestFree!(`option.opt_val`));

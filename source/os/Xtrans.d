@@ -1072,7 +1072,7 @@ int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint*
 		"MakeAllCOTSServerListeners: server already running\n");
 
 		for (j = 0; j < *count_ret; j++)
-		    if (temp_ciptrs[j] != null)
+		    if (temp_ciptrs[j] !is null)
 			_XSERVTransClose (temp_ciptrs[j]);
 
 		*count_ret = 0;

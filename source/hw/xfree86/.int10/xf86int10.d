@@ -609,7 +609,7 @@ private pci_device* do_find(const(pci_id_match)* m, char n, const(pci_device)* e
     n++;
 
     iter = pci_id_match_iterator_create(m);
-    while ((dev = pci_device_next(iter)) != null) {
+    while ((dev = pci_device_next(iter)) !is null) {
         if ((dev != exclude) && !(--n)) {
             break;
         }
@@ -750,7 +750,7 @@ version (PRINT_INT) {
 }
         return 1;
     case 0xb108:
-        if ((dev = findPci(pInt, X86_EBX)) != null) {
+        if ((dev = findPci(pInt, X86_EBX)) !is null) {
             pci_device_cfg_read_u8(dev, &X86_CL, X86_DI);
             X86_EAX = X86_AL | (SUCCESSFUL << 8);
             X86_EFLAGS &= ~(cast(c_ulong) 0x01);      /* clear carry flag */
@@ -764,7 +764,7 @@ version (PRINT_INT) {
 }
         return 1;
     case 0xb109:
-        if ((dev = findPci(pInt, X86_EBX)) != null) {
+        if ((dev = findPci(pInt, X86_EBX)) !is null) {
             pci_device_cfg_read_u16(dev, &X86_CX, X86_DI);
             X86_EAX = X86_AL | (SUCCESSFUL << 8);
             X86_EFLAGS &= ~(cast(c_ulong) 0x01);      /* clear carry flag */
@@ -778,7 +778,7 @@ version (PRINT_INT) {
 }
         return 1;
     case 0xb10a:
-        if ((dev = findPci(pInt, X86_EBX)) != null) {
+        if ((dev = findPci(pInt, X86_EBX)) !is null) {
             pci_device_cfg_read_u32(dev, &X86_ECX, X86_DI);
             X86_EAX = X86_AL | (SUCCESSFUL << 8);
             X86_EFLAGS &= ~(cast(c_ulong) 0x01);      /* clear carry flag */
@@ -792,7 +792,7 @@ version (PRINT_INT) {
 }
         return 1;
     case 0xb10b:
-        if ((dev = findPci(pInt, X86_EBX)) != null) {
+        if ((dev = findPci(pInt, X86_EBX)) !is null) {
             pci_device_cfg_write_u8(dev, X86_CL, X86_DI);
             X86_EAX = X86_AL | (SUCCESSFUL << 8);
             X86_EFLAGS &= ~(cast(c_ulong) 0x01);      /* clear carry flag */
@@ -806,7 +806,7 @@ version (PRINT_INT) {
 }
         return 1;
     case 0xb10c:
-        if ((dev = findPci(pInt, X86_EBX)) != null) {
+        if ((dev = findPci(pInt, X86_EBX)) !is null) {
             pci_device_cfg_write_u16(dev, X86_CX, X86_DI);
             X86_EAX = X86_AL | (SUCCESSFUL << 8);
             X86_EFLAGS &= ~(cast(c_ulong) 0x01);      /* clear carry flag */
@@ -820,7 +820,7 @@ version (PRINT_INT) {
 }
         return 1;
     case 0xb10d:
-        if ((dev = findPci(pInt, X86_EBX)) != null) {
+        if ((dev = findPci(pInt, X86_EBX)) !is null) {
             pci_device_cfg_write_u32(dev, X86_ECX, X86_DI);
             X86_EAX = X86_AL | (SUCCESSFUL << 8);
             X86_EFLAGS &= ~(cast(c_ulong) 0x01);      /* clear carry flag */

@@ -102,7 +102,7 @@ void PrintDeviceGrabInfo(DeviceIntPtr dev)
         const(char)* cmdname = GetClientCmdName(client);
         const(char)* cmdargs = GetClientCmdArgs(client);
 
-        if ((clientpid > 0) && (cmdname != null)) {
+        if ((clientpid > 0) && (cmdname !is null)) {
             ErrorF("      client pid %ld %s %s\n",
                    cast(c_long) clientpid, cmdname, cmdargs ? cmdargs : "");
             clientIdPrinted = TRUE;

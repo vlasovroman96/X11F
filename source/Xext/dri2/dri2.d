@@ -416,7 +416,7 @@ private int DRI2DrawableGone(void* p, XID id)
         dixDestroyPixmap(pPriv.prime_secondary_pixmap, 0);
     }
 
-    if (pPriv.buffers != null) {
+    if (pPriv.buffers !is null) {
         for (int i = 0; i < pPriv.bufferCount; i++)
             destroy_buffer(pDraw, pPriv.buffers[i], pPriv.prime_id);
         free(pPriv.buffers);
@@ -463,7 +463,7 @@ private int find_attachment(DRI2DrawablePtr pPriv, uint attachment)
     }
 
     for (int i = 0; i < pPriv.bufferCount; i++) {
-        if ((pPriv.buffers[i] != null)
+        if ((pPriv.buffers[i] !is null)
             && (pPriv.buffers[i].attachment == attachment)) {
             return i;
         }
@@ -496,9 +496,9 @@ private Bool allocate_or_reuse_buffer(DrawablePtr pDraw, DRI2ScreenPtr ds, DRI2D
 
 private void update_dri2_drawable_buffers(DRI2DrawablePtr pPriv, DrawablePtr pDraw, DRI2BufferPtr* buffers, int out_count, int* width, int* height)
 {
-    if (pPriv.buffers != null) {
+    if (pPriv.buffers !is null) {
         for (int i = 0; i < pPriv.bufferCount; i++) {
-            if (pPriv.buffers[i] != null) {
+            if (pPriv.buffers[i] !is null) {
                 destroy_buffer(pDraw, pPriv.buffers[i], pPriv.prime_id);
             }
         }
@@ -635,7 +635,7 @@ private DRI2BufferPtr* do_get_buffers(DrawablePtr pDraw, int* width, int* height
 
     if (buffers) {
         for (i = 0; i < count; i++) {
-            if (buffers[i] != null)
+            if (buffers[i] !is null)
                 destroy_buffer(pDraw, buffers[i], 0);
         }
 
@@ -1533,10 +1533,10 @@ Bool DRI2ModuleSetup()
 
 void DRI2Version(int* major, int* minor)
 {
-    if (major != null)
+    if (major !is null)
         *major = 1;
 
-    if (minor != null)
+    if (minor !is null)
         *minor = 2;
 }
 

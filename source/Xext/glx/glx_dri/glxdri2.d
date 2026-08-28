@@ -320,7 +320,7 @@ private int __glXDRIbindTexImage(__GLXcontext* baseContext, int buffer, __GLXdra
     if (texBuffer is null)
         return Success;
 
-    if (texBuffer.base.version_ >= 2 && texBuffer.setTexBuffer2 != null) {
+    if (texBuffer.base.version_ >= 2 && texBuffer.setTexBuffer2 !is null) {
         assumeNoGC(texBuffer.setTexBuffer2) (context.driContext,
                                      glxPixmap.target,
                                      glxPixmap.format, drawable.driDrawable);
@@ -883,7 +883,7 @@ private void __glXDRIscreenDestroy(__GLXscreen* baseScreen)
     __glXScreenDestroy(baseScreen);
 
     if (screen.driConfigs) {
-        for (i = 0; screen.driConfigs[i] != null; i++)
+        for (i = 0; screen.driConfigs[i] !is null; i++)
             free(cast(__DRIconfig**) screen.driConfigs[i]);
         free(screen.driConfigs);
     }

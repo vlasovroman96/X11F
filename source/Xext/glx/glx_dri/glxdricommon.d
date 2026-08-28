@@ -327,7 +327,7 @@ void* glxProbeDriver(const(char)* driverName, void** coreExt, const(char)* coreN
                  driverName);
 
         driver = dlopen(filename.ptr, RTLD_LAZY | RTLD_LOCAL);
-        if (driver != null)
+        if (driver !is null)
             break;
 
         LogMessage(X_ERROR, "AIGLX error: dlopen of %s failed (%s)\n",

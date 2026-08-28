@@ -238,7 +238,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
     /* Collect pointers to all of the active crtcs */
     c = 0;
     for (sc = 0; sc < pScrPriv.numCrtcs; sc++, c++) {
-        if (pScrPriv.crtcs[sc].mode != null)
+        if (pScrPriv.crtcs[sc].mode !is null)
             mon_list.server_crtc[c] = pScrPriv.crtcs[sc];
     }
 
@@ -250,7 +250,7 @@ private Bool RRMonitorInitList(ScreenPtr screen, RRMonitorListPtr mon_list, Bool
 
         pSecondaryPriv = mixin(rrGetScrPriv!("secondary"));
         for (sc = 0; sc < pSecondaryPriv.numCrtcs; sc++, c++) {
-            if (pSecondaryPriv.crtcs[sc].mode != null)
+            if (pSecondaryPriv.crtcs[sc].mode !is null)
                 mon_list.server_crtc[c] = pSecondaryPriv.crtcs[sc];
         }
     }));

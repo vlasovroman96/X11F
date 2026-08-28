@@ -85,7 +85,7 @@ private void touch_grow_queue()
     }
 
     /* no more space, should've reallocated and succeeded */
-    assert(TouchBeginDDXTouch(&dev, 1234) != null);
+    assert(TouchBeginDDXTouch(&dev, 1234) !is null);
 
     new_size = size + size / 2 + 1;
     assert(dev.last.num_touches == new_size);
@@ -172,7 +172,7 @@ private void touch_find_ddxid()
 
     /* Try to create more, succeed */
     ti = TouchFindByDDXID(&dev, 30, TRUE);
-    assert(ti != null);
+    assert(ti !is null);
     ti2 = TouchFindByDDXID(&dev, 30, TRUE);
     assert(ti == ti2);
     /* make sure we have resized */

@@ -906,7 +906,7 @@ void FreeResource(XID id, RESTYPE skipDeleteFuncType)
         eltptr = &clientTable[cid].elements;
 
         prev = head;
-        while ((res = *prev) != null) {
+        while ((res = *prev) !is null) {
             if (res.id == id) {
                 RESTYPE rtype = res.type;
 
@@ -938,7 +938,7 @@ void FreeResourceByType(XID id, RESTYPE type, Bool skipFree)
         head = &clientTable[cid].resources[HashResourceID(id, clientTable[cid].hashsize)];
 
         prev = head;
-        while ((res = *prev) != null) {
+        while ((res = *prev) !is null) {
             if (res.id == id && res.type == type) {
 version (XSERVER_DTRACE) {
                 XSERVER_RESOURCE_FREE(res.id, res.type,
@@ -1074,7 +1074,7 @@ void FreeClientNeverRetainResources(ClientPtr client)
     eltptr = &clientTable[client.index].elements;
     for (int j = 0; j < clientTable[client.index].buckets; j++) {
         prev = &resources[j];
-        while ((this_ = *prev) != null) {
+        while ((this_ = *prev) !is null) {
             RESTYPE rtype = this_.type;
 
             if (rtype & RC_NEVERRETAIN) {

@@ -1310,7 +1310,7 @@ int SetPictureTransform(PicturePtr pPicture, PictTransform* transform)
     }
     pPicture.serialNumber |= GC_CHANGE_SERIAL_BIT;
 
-    if (pPicture.pDrawable != null) {
+    if (pPicture.pDrawable !is null) {
         int result = void;
         PictureScreenPtr ps = mixin(GetPictureScreen!("pPicture.pDrawable.pScreen"));
 

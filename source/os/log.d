@@ -844,7 +844,7 @@ int auditTrailLevel = 1;
 
 void FreeAuditTimer()
 {
-    if (auditTimer != null) {
+    if (auditTimer !is null) {
         /* Force output of pending messages */
         TimerForce(auditTimer);
         TimerFree(auditTimer);
@@ -887,7 +887,7 @@ private CARD32 AuditFlush(OsTimerPtr timer, CARD32 now, void* arg)
     if (nrepeat > 0) {
         prefix = AuditPrefix();
         ErrorF("%slast message repeated %d times\n",
-               prefix != null ? prefix : "", nrepeat);
+               prefix !is null ? prefix : "", nrepeat);
         nrepeat = 0;
         free(prefix);
         return AUDIT_TIMEOUT;
@@ -915,9 +915,9 @@ void VAuditF(const(char)* f, va_list args)
     }
     else {
         /* new message */
-        if (auditTimer != null)
+        if (auditTimer !is null)
             TimerForce(auditTimer);
-        ErrorF("%s%s", prefix != null ? prefix : "", buf.ptr);
+        ErrorF("%s%s", prefix !is null ? prefix : "", buf.ptr);
         strlcpy(oldbuf.ptr, buf.ptr, oldbuf.sizeof);
         oldlen = len;
         nrepeat = 0;

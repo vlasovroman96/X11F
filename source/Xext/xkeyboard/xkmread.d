@@ -78,7 +78,7 @@ private void* XkmInsureSize(void* oldPtr, int oldCount, int* newCountRtrn, int e
     }
     else if (oldCount < newCount) {
         oldPtr = reallocarray(oldPtr, newCount, elemSize);
-        if (oldPtr != null) {
+        if (oldPtr !is null) {
             char* tmp = cast(char*) oldPtr;
 
             memset(&tmp[oldCount * elemSize], 0,
@@ -387,7 +387,7 @@ private int ReadXkmKeyTypes(FILE* file, XkbDescPtr xkb, XkbChangesPtr changes)
             }
             mixin(XkmInsureTypedSize!(`type.level_names`, `type.num_levels`, `&width`,
                                `Atom`)~";");
-            if (type.level_names != null) {
+            if (type.level_names !is null) {
                 for (n = 0; n < wire.nLevelNames; n++) {
                     if ((tmp = XkmGetCountedString(file, buf.ptr, 100)) < 1)
                         return -1;
@@ -679,9 +679,9 @@ private XkbKeyTypePtr FindTypeForKey(XkbDescPtr xkb, Atom name, uint width, KeyS
             }
         }
     }
-    if ((width < 2) || ((syms != null) && (syms[1] == NoSymbol)))
+    if ((width < 2) || ((syms !is null) && (syms[1] == NoSymbol)))
         return &xkb.map.types[XkbOneLevelIndex];
-    if (syms != null) {
+    if (syms !is null) {
         if (XkbKSIsLower(syms[0]) && XkbKSIsUpper(syms[1]))
             return &xkb.map.types[XkbAlphabeticIndex];
         else if (XkbKSIsKeypad(syms[0]) || XkbKSIsKeypad(syms[1]))

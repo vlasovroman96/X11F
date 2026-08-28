@@ -194,7 +194,7 @@ void mieqFini()
     int i = void;
 
     for (i = 0; i < miEventQueue.nevents; i++) {
-        if (miEventQueue.events[i].events != null) {
+        if (miEventQueue.events[i].events !is null) {
             FreeEventList(miEventQueue.events[i].events, 1);
             miEventQueue.events[i].events = null;
         }

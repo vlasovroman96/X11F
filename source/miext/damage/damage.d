@@ -285,7 +285,7 @@ private void damageRegionProcessPending(DrawablePtr pDrawable)
 {
     mixin(drawableDamage!(`pDrawable`));
 
-    for (; pDamage != null; pDamage = pDamage.pNext) {
+    for (; pDamage !is null; pDamage = pDamage.pNext) {
         if (pDamage.reportAfter) {
             /* It's possible that there is only interest in postRendering reporting. */
             if (pDamage.damageReport)

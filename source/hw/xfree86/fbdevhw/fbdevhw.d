@@ -108,7 +108,7 @@ private Bool fbdevHWGetRec(ScrnInfoPtr pScrn)
     if (fbdevHWPrivateIndex < 0)
         fbdevHWPrivateIndex = xf86AllocateScrnInfoPrivateIndex();
 
-    if (mixin(FBDEVHWPTR!(`pScrn`)) != null)
+    if (mixin(FBDEVHWPTR!(`pScrn`)) !is null)
         return TRUE;
 
     mixin(FBDEVHWPTRLVAL!(`pScrn`)) = XNFcallocarray(1, fbdevHWRec.sizeof);
@@ -601,8 +601,8 @@ void fbdevHWSetVideoModes(ScrnInfoPtr pScrn)
     pScrn.virtualX = pScrn.display.virtualX;
     pScrn.virtualY = pScrn.display.virtualY;
 
-    for (modename = pScrn.display.modes; *modename != null; modename++) {
-        for (mode = pScrn.monitor.Modes; mode != null; mode = mode.next) {
+    for (modename = pScrn.display.modes; *modename !is null; modename++) {
+        for (mode = pScrn.monitor.Modes; mode !is null; mode = mode.next) {
             if (0 == strcmp(mode.name, *modename)) {
                 if (fbdevHWSetMode(pScrn, mode, TRUE))
                     break;

@@ -234,7 +234,7 @@ void xf86OpenConsole()
         }
 
         i = 0;
-        while (vcs[i] != null) {
+        while (vcs[i] !is null) {
             snprintf(vtname.ptr, vtname.sizeof, vcs[i], xf86Info.vtno);    /* /dev/tty1-64 */
             if ((xf86Info.consoleFd = open(vtname.ptr, O_RDWR | O_NDELAY, 0)) >= 0)
                 break;

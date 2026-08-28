@@ -675,7 +675,7 @@ void DamageExtensionInit()
     if ((extEntry = AddExtension(DAMAGE_NAME, XDamageNumberEvents,
                                  XDamageNumberErrors,
                                  &ProcDamageDispatch, &ProcDamageDispatch,
-                                 null, &StandardMinorOpcode)) != null) {
+                                 null, &StandardMinorOpcode)) !is null) {
         DamageReqCode = cast(ubyte) extEntry.base;
         DamageEventBase = extEntry.eventBase;
         EventSwapVector[DamageEventBase + XDamageNotify] =

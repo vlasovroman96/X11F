@@ -156,7 +156,7 @@ private XkbAction XkbGetKeyAction(XkbSrvInfoPtr xkbi, XkbStatePtr xkbState, CARD
         col += (effectiveGroup * mixin(XkbKeyGroupsWidth!("xkb", "key")));
 
     type = mixin(XkbKeyKeyType!("xkb", "key", "effectiveGroup"));
-    if (type.map != null) {
+    if (type.map !is null) {
         uint i = void, mods = void;
         XkbKTMapEntryPtr entry = void;
 

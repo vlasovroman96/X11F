@@ -167,10 +167,10 @@ Bool compCheckRedirect(WindowPtr pWin)
     Bool should = void;
 
     should = pWin.realized && (pWin.drawable.class_ != InputOnly) &&
-        (cw != null) && (pWin.parent != null);
+        (cw !is null) && (pWin.parent !is null);
 
     /* Never redirect the overlay window */
-    if (cs.pOverlayWin != null) {
+    if (cs.pOverlayWin !is null) {
         if (pWin == cs.pOverlayWin) {
             should = FALSE;
         }
@@ -213,7 +213,7 @@ version (XINERAMA) {
 } /* XINERAMA */
 
     cs = mixin(GetCompScreen!("pScreen"));
-    if ((pWin = cs.pOverlayWin) != null) {
+    if ((pWin = cs.pOverlayWin) !is null) {
         if ((pWin.drawable.width == w) && (pWin.drawable.height == h))
             return Success;
 
@@ -238,7 +238,7 @@ void compWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWind
      */
 version (COMPOSITE_DEBUG) {
     if ((pWin.redirectDraw != RedirectDrawNone) !=
-        (pWin.viewable && (mixin(GetCompWindow!("pWin") != null))))
+        (pWin.viewable && (mixin(GetCompWindow!("pWin") !is null))))
         OsAbort();
 }
     if (pWin.redirectDraw != RedirectDrawNone) {
@@ -577,9 +577,9 @@ void compWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin)
     CompWindowPtr cw = void;
     CompSubwindowsPtr csw = void;
 
-    while ((cw = mixin(GetCompWindow!("pWin"))) != null)
+    while ((cw = mixin(GetCompWindow!("pWin"))) !is null)
         FreeResource(cw.clients.id, X11_RESTYPE_NONE);
-    while ((csw = mixin(GetCompSubwindows!("pWin")))!= null)
+    while ((csw = mixin(GetCompSubwindows!("pWin")))!is null)
         FreeResource(csw.clients.id, X11_RESTYPE_NONE);
 
     if (pWin.redirectDraw != RedirectDrawNone) {

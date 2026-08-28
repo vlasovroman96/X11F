@@ -82,7 +82,7 @@ pragma(inline, true) private char* tbGetBufferString(const(char)* str)
     size_t size = strlen(str) + 1;
     char* rtrn = tbGetBuffer(cast(uint) size);
 
-    if (rtrn != null)
+    if (rtrn !is null)
         memcpy(rtrn, str, size);
 
     return rtrn;
@@ -96,7 +96,7 @@ char* XkbAtomText(Atom atm, uint format)
     char* rtrn = void, tmp = void;
 
     atmstr = NameForAtom(atm);
-    if (atmstr != null) {
+    if (atmstr !is null) {
         rtrn = tbGetBufferString(atmstr);
     }
     else {
@@ -215,7 +215,7 @@ char* XkbVModMaskText(XkbDescPtr xkb, uint modMask, uint mask, uint format)
     rtrn = tbGetBuffer(len + 1);
     rtrn[0] = '\0';
 
-    if (mm != null) {
+    if (mm !is null) {
         i = cast(int)strlen(mm);
         if (i > len)
             i = len;
@@ -224,8 +224,8 @@ char* XkbVModMaskText(XkbDescPtr xkb, uint modMask, uint mask, uint format)
     else {
         i = 0;
     }
-    if (str != null) {
-        if (mm != null) {
+    if (str !is null) {
+        if (mm !is null) {
             if (format == XkbCFile)
                 strcat(rtrn, "|");
             else

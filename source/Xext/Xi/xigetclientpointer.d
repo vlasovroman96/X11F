@@ -71,7 +71,7 @@ int ProcXIGetClientPointer(ClientPtr client)
 
     xXIGetClientPointerReply reply = {
         RepType: X_XIGetClientPointer,
-        set: (winclient.clientPtr != null),
+        set: (winclient.clientPtr !is null),
         deviceid: (winclient.clientPtr) ? cast(ushort)winclient.clientPtr.id : 0
     };
 

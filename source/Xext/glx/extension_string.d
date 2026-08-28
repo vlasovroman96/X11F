@@ -187,12 +187,12 @@ int __glXGetExtensionString(const(ubyte)* enable_bits, char* buffer)
     uint i = void;
     int length = 0;
 
-    for (i = 0; known_glx_extensions[i].name != null; i++) {
+    for (i = 0; known_glx_extensions[i].name !is null; i++) {
         const(uint) bit = known_glx_extensions[i].bit;
         const(size_t) len = known_glx_extensions[i].name_len;
 
         if (mixin(EXT_ENABLED!(`bit`, `enable_bits`))) {
-            if (buffer != null) {
+            if (buffer !is null) {
                 cast(void) memcpy(&buffer[length], known_glx_extensions[i].name,
                               len);
 
@@ -212,7 +212,7 @@ void __glXEnableExtension(ubyte* enable_bits, const(char)* ext)
     const(size_t) ext_name_len = strlen(ext);
     uint i = void;
 
-    for (i = 0; known_glx_extensions[i].name != null; i++) {
+    for (i = 0; known_glx_extensions[i].name !is null; i++) {
         if ((ext_name_len == known_glx_extensions[i].name_len)
             && (memcmp(ext, known_glx_extensions[i].name, ext_name_len) == 0)) {
             mixin(SET_BIT!(`enable_bits`, `known_glx_extensions[i].bit`)~";");
@@ -227,7 +227,7 @@ void __glXInitExtensionEnableBits(ubyte* enable_bits)
 
     cast(void) memset(enable_bits, 0, __GLX_EXT_BYTES);
 
-    for (i = 0; known_glx_extensions[i].name != null; i++) {
+    for (i = 0; known_glx_extensions[i].name !is null; i++) {
         if (known_glx_extensions[i].driver_support) {
             mixin(SET_BIT!(`enable_bits`, `known_glx_extensions[i].bit`)~";");
         }

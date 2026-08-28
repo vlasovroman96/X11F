@@ -146,7 +146,7 @@ static if (!HasVersion!"__alpha__") {
     /* trap access to the keyboard controller(s) and timer chip(s) */
     fp = fopen("/proc/ioports", "r");
     while (getline(&buf, &n, fp) != -1) {
-        if ((strstr(buf, "keyboard") != null) || (strstr(buf, "timer") != null)) {
+        if ((strstr(buf, "keyboard") !is null) || (strstr(buf, "timer") !is null)) {
             for (i=0; i<4; i++)
                 target[i] = buf[i+2];
             begin = atoi(target.ptr);

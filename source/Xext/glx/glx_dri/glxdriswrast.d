@@ -189,7 +189,7 @@ private int __glXDRIbindTexImage(__GLXcontext* baseContext, int buffer, __GLXdra
         return Success;
 
 static if (__DRI_TEX_BUFFER_VERSION >= 2) {
-    if (texBuffer.base.version_ >= 2 && texBuffer.setTexBuffer2 != null) {
+    if (texBuffer.base.version_ >= 2 && texBuffer.setTexBuffer2 !is null) {
         assumeNoGC(texBuffer.setTexBuffer2) (context.driContext,
                                      glxPixmap.target,
                                      glxPixmap.format, drawable.driDrawable);
@@ -301,7 +301,7 @@ private void swrastPutImage(__DRIdrawable* draw, int op, int x, int y, int w, in
     GCPtr gc = void;
     __GLXcontext* cx = cast(__GLXcontext*)lastGLContext;
 
-    if ((gc = GetScratchGC(pDraw.depth, pDraw.pScreen)) != null) {
+    if ((gc = GetScratchGC(pDraw.depth, pDraw.pScreen)) !is null) {
         ValidateGC(pDraw, gc);
         gc.ops.PutImage(pDraw, gc, pDraw.depth, x, y, w, h, 0, ZPixmap,
                           data);
@@ -410,7 +410,7 @@ private void __glXDRIscreenDestroy(__GLXscreen* baseScreen)
     __glXScreenDestroy(baseScreen);
 
     if (screen.driConfigs) {
-        for (i = 0; screen.driConfigs[i] != null; i++)
+        for (i = 0; screen.driConfigs[i] !is null; i++)
             free(cast(__DRIconfig**) screen.driConfigs[i]);
         free(screen.driConfigs);
     }

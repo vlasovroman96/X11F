@@ -549,7 +549,7 @@ private void AddSubResourceSizeSpec(void* value, XID id, RESTYPE type, void* cda
         if (!prevCrossRef) {
             Bool ok = TRUE;
             xXResResourceSizeSpec* crossRef = cast(xXResResourceSizeSpec*)AddFragment(&ctx.response, xXResResourceSizeSpec.sizeof);
-            ok = ok && crossRef != null;
+            ok = ok && crossRef !is null;
             if (ok) {
                 xXResResourceSizeSpec** p = void;
                 p = cast(xXResResourceSizeSpec**)ht_add(ctx.visitedSubResources, &value);

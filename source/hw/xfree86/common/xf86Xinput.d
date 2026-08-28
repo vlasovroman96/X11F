@@ -1193,7 +1193,7 @@ void DeleteInputDeviceRequest(DeviceIntPtr pDev)
     input_lock();
     RemoveDevice(pDev, TRUE);
 
-    if (!isMaster && pInfo != null) {
+    if (!isMaster && pInfo !is null) {
         if (drv.UnInit)
             drv.UnInit(drv, pInfo, 0);
         else

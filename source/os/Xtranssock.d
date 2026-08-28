@@ -640,7 +640,7 @@ XtransConnInfo _XSERVTransSocketOpenCOTSServer(Xtransport* thistrans, const(char
 
     while ((i = _XSERVTransSocketSelectFamily (i, thistrans.TransName)) >= 0) {
 	if ((ciptr = _XSERVTransSocketOpen (
-		 i, Sockettrans2devtab[i].devcotsname)) != null)
+		 i, Sockettrans2devtab[i].devcotsname)) !is null)
 	    break;
     }
     if (i < 0) {
@@ -720,7 +720,7 @@ XtransConnInfo _XSERVTransSocketReopenCOTSServer(Xtransport* thistrans, int fd, 
 
     while ((i = _XSERVTransSocketSelectFamily (i, thistrans.TransName)) >= 0) {
 	if ((ciptr = _XSERVTransSocketReopen (
-		 i, Sockettrans2devtab[i].devcotsname, fd, port)) != null)
+		 i, Sockettrans2devtab[i].devcotsname, fd, port)) !is null)
 	    break;
     }
     if (i < 0) {

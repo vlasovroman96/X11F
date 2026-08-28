@@ -271,7 +271,7 @@ void* __glXGetProtocolDecodeFunction(const(__glXDispatchInfo)* dispatch_info, in
 
 int __glXGetProtocolSizeData(const(__glXDispatchInfo)* dispatch_info, int opcode, __GLXrenderSizeData* data)
 {
-    if (dispatch_info.size_table != null) {
+    if (dispatch_info.size_table !is null) {
         const(int) func_index = get_decode_index(dispatch_info, opcode);
 
         if ((func_index >= 0)

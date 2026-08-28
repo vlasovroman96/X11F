@@ -165,7 +165,7 @@ private void RootlessCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, void*
 
     RootlessScreenRec* s = SCREENREC(pScreen);
 
-    if (s.pixmap_data != null) {
+    if (s.pixmap_data !is null) {
         free(s.pixmap_data);
         s.pixmap_data = null;
         s.pixmap_data_size = 0;
@@ -615,7 +615,7 @@ private void expose_1(WindowPtr pWin)
     miSendExposures(pWin, &pWin.borderClip,
                     pWin.drawable.x, pWin.drawable.y);
 
-    for (pChild = pWin.firstChild; pChild != null; pChild = pChild.nextSib)
+    for (pChild = pWin.firstChild; pChild !is null; pChild = pChild.nextSib)
         expose_1(pChild);
 }
 

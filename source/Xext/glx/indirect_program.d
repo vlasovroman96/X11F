@@ -77,7 +77,7 @@ private int DoGetProgramString(__GLXclientStateRec* cl, GLbyte* pc, PFNGLGETPROG
     mixin(REQUEST_FIXED_SIZE!("xGLXVendorPrivateWithReplyReq", "8"));
 
     pc += __GLX_VENDPRIV_HDR_SIZE;
-    if (cx != null) {
+    if (cx !is null) {
         GLenum target = void;
         GLenum pname = void;
         GLint compsize = 0;

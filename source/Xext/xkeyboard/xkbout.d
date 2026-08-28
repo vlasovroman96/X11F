@@ -66,13 +66,13 @@ private Bool WriteXKBVModDecl(FILE* file, XkbDescPtr xkb, int showValue)
 
     if (xkb is null)
         return FALSE;
-    if (xkb.names != null)
+    if (xkb.names !is null)
         vmodNames = xkb.names.vmods.ptr;
     else
         vmodNames = null;
 
     for (i = nMods = 0; i < XkbNumVirtualMods; i++) {
-        if ((vmodNames != null) && (vmodNames[i] != None)) {
+        if ((vmodNames !is null) && (vmodNames[i] != None)) {
             if (nMods == 0)
                 fprintf(file, "    virtual_modifiers ");
             else
@@ -135,7 +135,7 @@ Bool XkbWriteXKBKeycodes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
                     XkbKeyNameText(xkb.names.keys[i].name.ptr, XkbXKBFile), i);
         }
     }
-    if (xkb.indicators != null) {
+    if (xkb.indicators !is null) {
         for (i = 0; i < XkbNumIndicators; i++) {
             const(char)* type = void;
 
@@ -149,7 +149,7 @@ Bool XkbWriteXKBKeycodes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
             }
         }
     }
-    if (xkb.names.key_aliases != null) {
+    if (xkb.names.key_aliases !is null) {
         XkbKeyAliasPtr pAl = void;
 
         pAl = xkb.names.key_aliases;
@@ -211,7 +211,7 @@ Bool XkbWriteXKBKeyTypes(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
                                                        XkbXKBFile));
             }
         }
-        if (type.level_names != null) {
+        if (type.level_names !is null) {
             Atom* name = type.level_names;
 
             for (n = 0; n < type.num_levels; n++, name++) {
@@ -421,14 +421,14 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
                 simple = FALSE;
             }
             if (((srv.explicit[i] & XkbExplicitAutoRepeatMask) != 0) &&
-                (xkb.ctrls != null)) {
+                (xkb.ctrls !is null)) {
                 if (xkb.ctrls.per_key_repeat[i / 8] & (1 << (i % 8)))
                     fprintf(file, "\n        repeat= Yes,");
                 else
                     fprintf(file, "\n        repeat= No,");
                 simple = FALSE;
             }
-            if ((xkb.server != null) && (xkb.server.vmodmap != null) &&
+            if ((xkb.server !is null) && (xkb.server.vmodmap !is null) &&
                 (xkb.server.vmodmap[i] != 0)) {
                 if ((srv.explicit[i] & XkbExplicitVModMapMask) != 0) {
                     fprintf(file, "\n        virtualMods= %s,",
@@ -453,7 +453,7 @@ Bool XkbWriteXKBSymbols(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImpl
                     mixin(XkbOutOfRangeGroupNumber!(XkbKeyGroupInfo!("xkb", "i"))) + 1);
             break;
         default: break;}
-        if (srv.behaviors != null) {
+        if (srv.behaviors !is null) {
             uint type = void;
 
             type = srv.behaviors[i].type & XkbKB_OpMask;
@@ -553,7 +553,7 @@ private Bool WriteXKBOutline(FILE* file, XkbShapePtr shape, XkbOutlinePtr outlin
     if (outline.corner_radius != lastRadius) {
         fprintf(file, "corner= %s,",
                 XkbGeomFPText(outline.corner_radius, XkbMessage));
-        if (shape != null) {
+        if (shape !is null) {
             fprintf(file, "\n%s", iStr);
         }
     }
@@ -770,14 +770,14 @@ private Bool WriteXKBSection(FILE* file, XkbSectionPtr s, XkbGeometryPtr geom)
         }
         fprintf(file, "        };\n");
     }
-    if (s.doodads != null) {
+    if (s.doodads !is null) {
         XkbDoodadPtr doodad = void;
 
         for (i = 0, doodad = s.doodads; i < s.num_doodads; i++, doodad++) {
             WriteXKBDoodad(file, 8, geom, doodad);
         }
     }
-    if (s.overlays != null) {
+    if (s.overlays !is null) {
         XkbOverlayPtr ol = void;
 
         for (i = 0, ol = s.overlays; i < s.num_overlays; i++, ol++) {
@@ -809,7 +809,7 @@ Bool XkbWriteXKBGeometry(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
     fprintf(file, "    height=      %s;\n\n",
             XkbGeomFPText(geom.height_mm, XkbXKBFile));
 
-    if (geom.key_aliases != null) {
+    if (geom.key_aliases !is null) {
         XkbKeyAliasPtr pAl = void;
 
         pAl = geom.key_aliases;
@@ -821,13 +821,13 @@ Bool XkbWriteXKBGeometry(FILE* file, XkbDescPtr xkb, Bool topLevel, Bool showImp
         fprintf(file, "\n");
     }
 
-    if (geom.base_color != null)
+    if (geom.base_color !is null)
         fprintf(file, "    baseColor=   \"%s\";\n",
                 XkbStringText(geom.base_color.spec, XkbXKBFile));
-    if (geom.label_color != null)
+    if (geom.label_color !is null)
         fprintf(file, "    labelColor=  \"%s\";\n",
                 XkbStringText(geom.label_color.spec, XkbXKBFile));
-    if (geom.label_font != null)
+    if (geom.label_font !is null)
         fprintf(file, "    xfont=       \"%s\";\n",
                 XkbStringText(geom.label_font, XkbXKBFile));
     if ((geom.num_colors > 0) && (showImplicit)) {

@@ -175,7 +175,7 @@ void processScreenOrOutputArg(const(char)* screen_size, const(char)* output, cha
             p_id = strtol(parent_id, null, 0);
         }
 
-        use_geometry = (strchr(screen_size, '+') != null);
+        use_geometry = (strchr(screen_size, '+') !is null);
         // EPHYR_DBG("screen number:%d\n", screen.mynum);
         hostx_add_screen(screen, p_id, screen.mynum, use_geometry, output);
     }

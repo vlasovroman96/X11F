@@ -52,7 +52,7 @@ private Bool present_fence_sync_check_trigger(SyncTrigger* trigger, long oldval)
 {
     present_fence* present_fence = mixin(xorg_list_entry!("trigger", "present_fence", "trigger"));
 
-    return present_fence.callback != null;
+    return present_fence.callback !is null;
 }
 
 private void present_fence_sync_trigger_fired(SyncTrigger* trigger)

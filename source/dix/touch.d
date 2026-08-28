@@ -385,7 +385,7 @@ Bool TouchEventHistoryAllocate(TouchPointInfoPtr ti)
     ti.history_elements = 0;
     if (ti.history)
         ti.history_size = TOUCH_HISTORY_SIZE;
-    return ti.history != null;
+    return ti.history !is null;
 }
 
 void TouchEventHistoryFree(TouchPointInfoPtr ti)
@@ -729,7 +729,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
 
     inputMasks = mixin(wOtherInputMasks!("win"));
 
-    if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
+    if ((mask & EVENT_XI2_MASK) && (inputMasks !is null)) {
         mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next", q{
             if (!xi2mask_isset(iclients.xi2mask, dev, evtype))
                 continue;
@@ -743,7 +743,7 @@ private Bool TouchAddRegularListener(DeviceIntPtr dev, TouchPointInfoPtr ti, Win
         }));
     }
 
-    if ((mask & EVENT_XI1_MASK) && (inputMasks != null)) {
+    if ((mask & EVENT_XI1_MASK) && (inputMasks !is null)) {
         int xitype = GetXIType(cast(EventType)TouchGetPointerEventType(ev));
         Mask xi_filter = event_get_filter_from_type(dev, xitype);
 

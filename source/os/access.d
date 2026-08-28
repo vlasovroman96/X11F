@@ -445,7 +445,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
     //     f_xhostname(&hn);
 
     //     hp = _XGethostbyname(hn.name.ptr);
-    //     if (hp != null) {
+    //     if (hp !is null) {
     //         saddr.sa.sa_family = hp.h_addrtype;
     //         switch (hp.h_addrtype) {
     //         case AF_INET:
@@ -766,7 +766,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
         ErrorF("Warning: getifaddrs returns %s\n", strerror(errno));
         return;
     }
-    for (ifr = ifap; ifr != null; ifr = ifr.ifa_next) {
+    for (ifr = ifap; ifr !is null; ifr = ifr.ifa_next) {
         if (!ifr.ifa_addr)
             continue;
         len = typeof(*(ifr.ifa_addr)).sizeof;
@@ -780,12 +780,12 @@ version (IPv6) {
 }
 
         for (host = selfhosts;
-             host != null && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
+             host !is null && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
              host = host.next){}
-        if (host != null)
+        if (host !is null)
             continue;
         mixin(MakeHost!(`host`, `len`));
-        if (host != null) {
+        if (host !is null) {
             host.family = family;
             host.len = len;
             memcpy(host.addr, addr, len);
@@ -999,7 +999,7 @@ version(IPv6) {
                     int f = void;
 
                     if (getaddrinfo(hostname, null, null, &addresses) == 0) {
-                        for (a = addresses; a != null; a = a.ai_next) {
+                        for (a = addresses; a !is null; a = a.ai_next) {
                             len = a.ai_addrlen;
                             f = ConvertAddr(a.ai_addr, &len,
                                             cast(void**) &addr);
@@ -1128,7 +1128,7 @@ static if (!HasVersion!"Windows" || HasVersion!"Cygwin") {
 
 void FreeLocalClientCreds(LocalClientCredRec* lcc)
 {
-    if (lcc != null) {
+    if (lcc !is null) {
         if (lcc.nSuppGids > 0) {
             free(lcc.pSuppGids);
         }
@@ -1489,7 +1489,7 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
     if ((typeName is null) || (addrMatch is null) || (checkAddr is null))
         return BadValue;
 
-    for (s = siTypeList, p = null; s != null; p = s, s = s.next) {
+    for (s = siTypeList, p = null; s !is null; p = s, s = s.next) {
         if (strcmp(typeName, s.typeName) == 0) {
             s.addrMatch = addrMatch;
             s.checkAddr = checkAddr;
@@ -1524,8 +1524,8 @@ private Bool siAddrMatch(int family, void* addr, int len, HOST* host, ClientPtr 
     int addrlen = void;
 
     valueString = cast(const(char)*) memchr(host.addr, '\0', host.len);
-    if (valueString != null) {
-        for (s = siTypeList; s != null; s = s.next) {
+    if (valueString !is null) {
+        for (s = siTypeList; s !is null; s = s.next) {
             if (strcmp(cast(char*) host.addr, s.typeName) == 0) {
                 addrlen = cast(int)(host.len - (strlen(cast(char*) host.addr) + 1));
                 matches = s.addrMatch(family, addr, len,
@@ -1553,14 +1553,14 @@ private int siCheckAddr(const(char)* addrString, int length)
     /* Make sure there is a \0 byte inside the specified length
        to separate the address type from the address value. */
     valueString = cast(const(char)*) memchr(addrString, '\0', length);
-    if (valueString != null) {
+    if (valueString !is null) {
         /* Make sure the first string is a recognized address type,
          * and the second string is a valid address of that type.
          */
         typelen = cast(int)(strlen(addrString) + 1);
         addrlen = length - typelen;
 
-        for (s = siTypeList; s != null; s = s.next) {
+        for (s = siTypeList; s !is null; s = s.next) {
             if (strcmp(addrString, s.typeName) == 0) {
                 len = s.checkAddr(valueString + 1, addrlen, s.typePriv);
                 if (len >= 0) {
@@ -1643,7 +1643,7 @@ static if (HasVersion!"IPv6") {
         strlcpy(hostname.ptr, siAddr, siAddrLen + 1);
 
         if (getaddrinfo(hostname.ptr, null, null, &addresses) == 0) {
-            for (a = addresses; a != null; a = a.ai_next) {
+            for (a = addresses; a !is null; a = a.ai_next) {
                 hostaddrlen = a.ai_addrlen;
                 f = ConvertAddr(a.ai_addr, &hostaddrlen, &hostaddr);
                 if ((f == family) && (len == hostaddrlen) && hostaddr &&
@@ -1672,7 +1672,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
         strlcpy(hostname.ptr, siAddr, siAddrLen + 1);
 
-        if ((hp = trutils._XGethostbyname(hostname.ptr)) != null) {
+        if ((hp = trutils._XGethostbyname(hostname.ptr)) !is null) {
 version (h_addr) {                   /* new 4.3bsd version of gethostent */
             /* iterate over the addresses */
             for (addrlist = hp.h_addr_list; *addrlist; addrlist++)
@@ -1877,7 +1877,7 @@ void DefineSelf(int fd)
             memcpy(&(inet6addr.sin6_addr), hp.h_addr, hp.h_length);
             len = typeof(saddr.in6).sizeof;
             break;";
-    if (hp != null) {
+    if (hp !is null) {
         saddr.sa.sa_family = cast(ushort)hp.h_addrtype;
         switch (hp.h_addrtype) {
         case AF_INET:
@@ -2186,7 +2186,7 @@ static if (HasVersion!"USE_SIOCGLIFCONF" && HasVersion!"SIOCGLIFBRDADDR") {
         ErrorF("Warning: getifaddrs returns %s\n", strerror(errno));
         return;
     }
-    for (ifr = ifap; ifr != null; ifr = ifr.ifa_next) {
+    for (ifr = ifap; ifr !is null; ifr = ifr.ifa_next) {
         if (!ifr.ifa_addr)
             continue;
         len = typeof(*(ifr.ifa_addr)).sizeof;
@@ -2200,12 +2200,12 @@ version (IPv6) {
 }
 
         for (host = selfhosts;
-             host != null && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
+             host !is null && !mixin(addrEqual!(`family`, `addr`, `len`, `host`));
              host = host.next){}
-        if (host != null)
+        if (host !is null)
             continue;
         mixin(MakeHost!(`host`, `len`));
-        if (host != null) {
+        if (host !is null) {
             host.family = family;
             host.len = len;
             memcpy(host.addr, addr, len);
@@ -2411,7 +2411,7 @@ version (HAVE_GETADDRINFO) {
                     int f = void;
 
                     if (getaddrinfo(hostname, null, null, &addresses) == 0) {
-                        for (a = addresses; a != null; a = a.ai_next) {
+                        for (a = addresses; a !is null; a = a.ai_next) {
                             len = a.ai_addrlen;
                             f = ConvertAddr(a.ai_addr, &len,
                                             cast(void**) &addr);
@@ -2672,7 +2672,7 @@ version (LOCAL_PEERPID) {
 
 void FreeLocalClientCreds(LocalClientCredRec* lcc)
 {
-    if (lcc != null) {
+    if (lcc !is null) {
         if (lcc.nSuppGids > 0) {
             free(lcc.pSuppGids);
         }
@@ -3033,7 +3033,7 @@ private int siTypeAdd(const(char)* typeName, siAddrMatchFunc addrMatch, siCheckA
     if ((typeName is null) || (addrMatch is null) || (checkAddr is null))
         return BadValue;
 
-    for (s = siTypeList, p = null; s != null; p = s, s = s.next) {
+    for (s = siTypeList, p = null; s !is null; p = s, s = s.next) {
         if (strcmp(typeName, s.typeName) == 0) {
             s.addrMatch = addrMatch;
             s.checkAddr = checkAddr;
@@ -3068,8 +3068,8 @@ private Bool siAddrMatch(int family, void* addr, int len, HOST* host, ClientPtr 
     int addrlen = void;
 
     valueString = cast(const(char)*) memchr(host.addr, '\0', host.len);
-    if (valueString != null) {
-        for (s = siTypeList; s != null; s = s.next) {
+    if (valueString !is null) {
+        for (s = siTypeList; s !is null; s = s.next) {
             if (strcmp(cast(char*) host.addr, s.typeName) == 0) {
                 addrlen = host.len - (strlen(cast(char*) host.addr) + 1);
                 matches = s.addrMatch(family, addr, len,
@@ -3097,14 +3097,14 @@ private int siCheckAddr(const(char)* addrString, int length)
     /* Make sure there is a \0 byte inside the specified length
        to separate the address type from the address value. */
     valueString = cast(const(char)*) memchr(addrString, '\0', length);
-    if (valueString != null) {
+    if (valueString !is null) {
         /* Make sure the first string is a recognized address type,
          * and the second string is a valid address of that type.
          */
         typelen = strlen(addrString) + 1;
         addrlen = length - typelen;
 
-        for (s = siTypeList; s != null; s = s.next) {
+        for (s = siTypeList; s !is null; s = s.next) {
             if (strcmp(addrString, s.typeName) == 0) {
                 len = s.checkAddr(valueString + 1, addrlen, s.typePriv);
                 if (len >= 0) {
@@ -3187,7 +3187,7 @@ static if (HasVersion!"IPv6") {
         strlcpy(hostname.ptr, siAddr, siAddrLen + 1);
 
         if (getaddrinfo(hostname.ptr, null, null, &addresses) == 0) {
-            for (a = addresses; a != null; a = a.ai_next) {
+            for (a = addresses; a !is null; a = a.ai_next) {
                 hostaddrlen = a.ai_addrlen;
                 f = ConvertAddr(a.ai_addr, &hostaddrlen, &hostaddr);
                 if ((f == family) && (len == hostaddrlen) && hostaddr &&
@@ -3216,7 +3216,7 @@ version (XTHREADS_NEEDS_BYNAMEPARAMS) {
 
         strlcpy(hostname.ptr, siAddr, siAddrLen + 1);
 
-        if ((hp = _XGethostbyname(hostname.ptr)) != null) {
+        if ((hp = _XGethostbyname(hostname.ptr)) !is null) {
 version (h_addr) {                   /* new 4.3bsd version of gethostent */
             /* iterate over the addresses */
             for (addrlist = hp.h_addr_list; *addrlist; addrlist++)
@@ -3415,7 +3415,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
         if (lcPriv.credType == LOCAL_USER) {
             passwd* pw = getpwnam(addrbuf);
 
-            if (pw != null) {
+            if (pw !is null) {
                 *id = cast(int) pw.pw_uid;
                 parsedOK = TRUE;
             }
@@ -3423,7 +3423,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
         else {                  /* group */
             group* gr = getgrnam(addrbuf);
 
-            if (gr != null) {
+            if (gr !is null) {
                 *id = cast(int) gr.gr_gid;
                 parsedOK = TRUE;
             }
@@ -3467,7 +3467,7 @@ version (HAVE_GETZONEID) {           /* Ensure process is in the same zone */
             FreeLocalClientCreds(lcc);
             return TRUE;
         }
-        if (lcc.pSuppGids != null) {
+        if (lcc.pSuppGids !is null) {
             int i = void;
 
             for (i = 0; i < lcc.nSuppGids; i++) {
@@ -3549,7 +3549,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
         if (lcPriv.credType == LOCAL_USER) {
             passwd* pw = getpwnam(addrbuf);
 
-            if (pw != null) {
+            if (pw !is null) {
                 *id = cast(int) pw.pw_uid;
                 parsedOK = TRUE;
             }
@@ -3557,7 +3557,7 @@ private Bool siLocalCredGetId(const(char)* addr, int len, siLocalCredPrivPtr lcP
         else {                  /* group */
             group* gr = getgrnam(addrbuf);
 
-            if (gr != null) {
+            if (gr !is null) {
                 *id = cast(int) gr.gr_gid;
                 parsedOK = TRUE;
             }
@@ -3601,7 +3601,7 @@ version (HAVE_GETZONEID) {           /* Ensure process is in the same zone */
             FreeLocalClientCreds(lcc);
             return TRUE;
         }
-        if (lcc.pSuppGids != null) {
+        if (lcc.pSuppGids !is null) {
             int i = void;
 
             for (i = 0; i < lcc.nSuppGids; i++) {

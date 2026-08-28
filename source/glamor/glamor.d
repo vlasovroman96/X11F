@@ -161,7 +161,7 @@ void glamor_clear_pixmap(PixmapPtr pixmap)
     pixmap_format = glamor_format_for_pixmap(pixmap);
 
     mixin(BUG_RETURN!("!pixmap_priv"));
-    assert(pixmap_priv.fbo != null);
+    assert(pixmap_priv.fbo !is null);
 
     glamor_pixmap_clear_fbo(glamor_priv, pixmap_priv.fbo, pixmap_format);
 }

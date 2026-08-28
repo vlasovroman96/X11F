@@ -147,12 +147,12 @@ version (Windows) {
     cast(void) mktemp(tmpname.ptr);
 }
 
-    if (XkbBaseDirectory != null) {
+    if (XkbBaseDirectory !is null) {
         if (asprintf(&xkbbasedirflag, "\"-R%s\"", XkbBaseDirectory) == -1)
             xkbbasedirflag = null;
     }
 
-    if (XkbBinDirectory != null) {
+    if (XkbBinDirectory !is null) {
         int ld = cast(int)strlen(XkbBinDirectory);
         int lps = cast(int)strlen(PATHSEPARATOR);
 
@@ -188,7 +188,7 @@ version (Windows) {} else {
     out_ = fopen(tmpname.ptr, "w");
 }
 
-    if (out_ != null) {
+    if (out_ !is null) {
         /* Now write to xkbcomp */
         (*callback)(out_, userdata);
 
@@ -315,9 +315,9 @@ private FILE* XkbDDXOpenConfigFile(const(char)* mapName, char* fileNameRtrn, int
 
 
     buf[0] = '\0';
-    if (mapName != null) {
+    if (mapName !is null) {
         OutputDirectory(xkm_output_dir.ptr, xkm_output_dir.sizeof);
-            bool cond = (XkbBaseDirectory != null) && (xkm_output_dir[0] != '/');
+            bool cond = (XkbBaseDirectory !is null) && (xkm_output_dir[0] != '/');
 version(WIN32) {
             cond = cond && (!isalpha(xkm_output_dir[0]) || xkm_output_dir[1] != ':');
 }
@@ -338,7 +338,7 @@ version(WIN32) {
     }
     else
         file = null;
-    if ((fileNameRtrn != null) && (fileNameRtrnLen > 0)) {
+    if ((fileNameRtrn !is null) && (fileNameRtrnLen > 0)) {
         strlcpy(fileNameRtrn, buf.ptr, fileNameRtrnLen);
     }
     return file;

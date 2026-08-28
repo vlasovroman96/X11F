@@ -68,7 +68,7 @@ private void ephyrPreparePipelinedAccess(PixmapPtr pPix, int index)
     assert(fakexa.saved_ptrs[index] is null);
     fakexa.saved_ptrs[index] = pPix.devPrivate.ptr;
 
-    if (pPix.devPrivate.ptr != null)
+    if (pPix.devPrivate.ptr !is null)
         return;
 
     pPix.devPrivate.ptr = fakexa.exa.memoryBase + exaGetPixmapOffset(pPix);
@@ -245,9 +245,9 @@ private Bool ephyrPrepareComposite(int op, PicturePtr pSrcPicture, PicturePtr pM
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
 
     ephyrPreparePipelinedAccess(pDst, EXA_PREPARE_DEST);
-    if (pSrc != null)
+    if (pSrc !is null)
         ephyrPreparePipelinedAccess(pSrc, EXA_PREPARE_SRC);
-    if (pMask != null)
+    if (pMask !is null)
         ephyrPreparePipelinedAccess(pMask, EXA_PREPARE_MASK);
 
     fakexa.op = op;
@@ -285,9 +285,9 @@ private void ephyrDoneComposite(PixmapPtr pDst)
     EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
     EphyrFakexaPriv* fakexa = scrpriv.fakexa;
 
-    if (fakexa.pMask != null)
+    if (fakexa.pMask !is null)
         ephyrFinishPipelinedAccess(fakexa.pMask, EXA_PREPARE_MASK);
-    if (fakexa.pSrc != null)
+    if (fakexa.pSrc !is null)
         ephyrFinishPipelinedAccess(fakexa.pSrc, EXA_PREPARE_SRC);
     ephyrFinishPipelinedAccess(fakexa.pDst, EXA_PREPARE_DEST);
 }
@@ -367,7 +367,7 @@ private Bool ephyrPrepareAccess(PixmapPtr pPix, int index)
     /* Make sure we don't somehow end up with a pointer that is in framebuffer
      * and hasn't been readied for us.
      */
-    assert(pPix.devPrivate.ptr != null);
+    assert(pPix.devPrivate.ptr !is null);
 
     return TRUE;
 }

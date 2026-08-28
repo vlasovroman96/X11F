@@ -390,7 +390,7 @@ void PrintPassiveGrabs()
         clientpid = GetClientPid(clients[i]);
         cmdname = GetClientCmdName(clients[i]);
         cmdargs = GetClientCmdArgs(clients[i]);
-        if ((clientpid > 0) && (cmdname != null)) {
+        if ((clientpid > 0) && (cmdname !is null)) {
             ErrorF("  Printing all registered grabs of client pid %ld %s %s\n",
                    cast(c_long) clientpid, cmdname, cmdargs ? cmdargs : "");
         } else {
@@ -1846,7 +1846,7 @@ void ResizeChildrenWinSize(WindowPtr pWin, int dx, int dy, int dw, int dh)
 
         dixScreenRaiseWindowPosition(pSib, pSib.drawable.x, pSib.drawable.y);
 
-        if ((pChild = pSib.firstChild) != null) {
+        if ((pChild = pSib.firstChild) !is null) {
             while (1) {
                 pChild.drawable.x = cast(short)(pChild.parent.drawable.x +
                     pChild.origin.x);
@@ -1924,7 +1924,7 @@ private BoxPtr WindowExtents(WindowPtr pWin, BoxPtr pBox)
     return pBox;
 }
 
-enum string IS_SHAPED(string pWin) = `(`~wBoundingShape!(pWin) ~ `!= null)`;
+enum string IS_SHAPED(string pWin) = `(`~wBoundingShape!(pWin) ~ `!is null)`;
 
 private RegionPtr MakeBoundingRegion(WindowPtr pWin, BoxPtr pBox)
 {
@@ -2637,7 +2637,7 @@ int MapWindow(WindowPtr pWin, ClientPtr client)
         return Success;
 
     pScreen = pWin.drawable.pScreen;
-    if ((pParent = pWin.parent) != null) {
+    if ((pParent = pWin.parent) !is null) {
         Bool anyMarked = void;
 
         if ((!pWin.overrideRedirect) && (mixin(RedirectSend!(`pParent`))))
@@ -3293,27 +3293,27 @@ void CheckWindowOptionalNeed(WindowPtr w)
         return;
     if (optional.otherEventMasks != 0)
         return;
-    if (optional.otherClients != null)
+    if (optional.otherClients !is null)
         return;
-    if (optional.passiveGrabs != null)
+    if (optional.passiveGrabs !is null)
         return;
     if (optional.backingBitPlanes != cast(CARD32)~0L)
         return;
     if (optional.backingPixel != 0)
         return;
-    if (optional.boundingShape != null)
+    if (optional.boundingShape !is null)
         return;
-    if (optional.clipShape != null)
+    if (optional.clipShape !is null)
         return;
-    if (optional.inputShape != null)
+    if (optional.inputShape !is null)
         return;
-    if (optional.inputMasks != null)
+    if (optional.inputMasks !is null)
         return;
-    if (optional.deviceCursors != null) {
+    if (optional.deviceCursors !is null) {
         DevCursNodePtr pNode = optional.deviceCursors;
 
         while (pNode) {
-            if (pNode.cursor != null)
+            if (pNode.cursor !is null)
                 return;
             pNode = pNode.next;
         }
@@ -3322,7 +3322,7 @@ void CheckWindowOptionalNeed(WindowPtr w)
     parentOptional = FindWindowWithOptional(w).optional;
     if (optional.visual != parentOptional.visual)
         return;
-    if (optional.cursor != null &&
+    if (optional.cursor !is null &&
         (optional.cursor != parentOptional.cursor || w.parent.cursorIsNone))
         return;
     if (optional.colormap != parentOptional.colormap)

@@ -1035,7 +1035,7 @@ Bool KdGetOptions(InputOption** options, char* string)
     free(key);
     free(value);
 
-    return (newopt != null);
+    return (newopt !is null);
 }
 
 static void
@@ -1077,13 +1077,13 @@ static if(HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {
         else if (xkbOptionsCond)
             ki.xkbOptions = strdup(value);
         else if(strcasecmp) {
-            if (ki.path != null)
+            if (ki.path !is null)
                 free(ki.path);
             ki.path = strdup(value);
         }
 static if (HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {
         if(strcasecmp) {
-            if (ki.path != null)
+            if (ki.path !is null)
                 free(ki.path);
             ki.path = strdup(value);
         }
@@ -1100,7 +1100,7 @@ static if (HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {
     }
 
 version (KDRIVE_EVDEV) {
-    if (!ki.driver && ki.path != null &&
+    if (!ki.driver && ki.path !is null &&
         strncasecmp(ki.path,
                     DEV_INPUT_EVENT_PREFIX,
                     DEV_INPUT_EVENT_PREFIX_LEN) == 0) {
@@ -1193,13 +1193,13 @@ void KdParsePointerOptions(KdPointerInfo* pi)
         else if (!strcasecmp(key, "rawcoord"))
             pi.transformCoordinates = FALSE;
         else if (!strcasecmp(key, "device")) {
-            if (pi.path != null)
+            if (pi.path !is null)
                 free(pi.path);
             pi.path = strdup(value);
         }
 static if (HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {
         if(!strcasecmp(key, "path")) {
-            if (pi.path != null)
+            if (pi.path !is null)
                 free(pi.path);
             pi.path = strdup(value);
         }
@@ -1217,7 +1217,7 @@ static if (HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_HAL") {
                    key, value);
 
 version (KDRIVE_EVDEV) {
-    if (!pi.driver && pi.path != null &&
+    if (!pi.driver && pi.path !is null &&
         strncasecmp(pi.path,
                     DEV_INPUT_EVENT_PREFIX,
                     DEV_INPUT_EVENT_PREFIX_LEN) == 0) {

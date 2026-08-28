@@ -435,7 +435,7 @@ void ProcessCommandLine(int argc, char** argv)
 
     PartialNetwork = TRUE;
 
-    for (i = 0; defaultNoListenList[i] != null; i++) {
+    for (i = 0; defaultNoListenList[i] !is null; i++) {
         if (_XSERVTransNoListen(defaultNoListenList[i]))
                     ErrorF("Failed to disable listen for %s transport",
                            defaultNoListenList[i]);
@@ -1237,9 +1237,9 @@ const(char)* Win32TempDir()
                 buffer[len - 1] = 0;
         return buffer;
     }
-    if (getenv("TEMP") != null)
+    if (getenv("TEMP") !is null)
         return getenv("TEMP");
-    else if (getenv("TMP") != null)
+    else if (getenv("TMP") !is null)
         return getenv("TMP");
     else
         return "/tmp";

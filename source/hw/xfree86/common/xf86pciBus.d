@@ -126,7 +126,7 @@ void xf86PciProbe()
     }
 
     iter = pci_slot_match_iterator_create(&xf86IsolateDevice);
-    while ((info = pci_device_next(iter)) != null) {
+    while ((info = pci_device_next(iter)) !is null) {
         if (mixin(PCIINFOCLASSES!(`info.device_class`))) {
             num++;
             xf86PciVideoInfo = cast(pci_device**)XNFreallocarray(xf86PciVideoInfo,
@@ -301,7 +301,7 @@ Bool xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func)
         return FALSE;
     }
     d = strpbrk(p, "@");
-    if (d != null) {
+    if (d !is null) {
         *(d++) = 0;
         for (i = 0; d[i] != 0; i++) {
             if (!isdigit(cast(ubyte)d[i])) {
@@ -317,7 +317,7 @@ Bool xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func)
         }
     }
     *bus = atoi(p);
-    if (d != null && *d != 0)
+    if (d !is null && *d != 0)
         *bus += atoi(d) << 8;
     p = strtok(null, ":");
     if (p is null || *p == 0) {
@@ -443,7 +443,7 @@ Bool xf86PciAddMatchingDev(DriverPtr drvp)
     int numFound = 0;
 
     iter = pci_id_match_iterator_create(null);
-    while ((pPci = pci_device_next(iter)) != null) {
+    while ((pPci = pci_device_next(iter)) !is null) {
         /* Determine if this device is supported by the driver.  If it is,
          * add it to the list of devices to configure.
          */
@@ -455,7 +455,7 @@ Bool xf86PciAddMatchingDev(DriverPtr drvp)
                 if (xf86CheckPciSlot(pPci)) {
                     GDevPtr pGDev = xf86AddBusDeviceToConfigure(drvp.driverName, BUS_PCI,
                                                     pPci, -1);
-                    if (pGDev != null) {
+                    if (pGDev !is null) {
                         /* After configure pass 1, chipID and chipRev are
                          * treated as over-rides, so clobber them here.
                          */
@@ -492,7 +492,7 @@ Bool xf86PciProbeDev(DriverPtr drvp)
         /* Find the pciVideoRec associated with this device section.
          */
         iter = pci_id_match_iterator_create(null);
-        while ((pPci = pci_device_next(iter)) != null) {
+        while ((pPci = pci_device_next(iter)) !is null) {
             if (devList[i].busID && *devList[i].busID) {
                 if (xf86ComparePciBusString(devList[i].busID,
                                             ((pPci.domain << 8)
@@ -669,7 +669,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
         uint max_entries = numDevs;
 
         iter = pci_slot_match_iterator_create(null);
-        while ((pPci = pci_device_next(iter)) != null) {
+        while ((pPci = pci_device_next(iter)) !is null) {
             max_entries++;
         }
 
@@ -678,7 +678,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
     }
 
     iter = pci_slot_match_iterator_create(null);
-    while ((pPci = pci_device_next(iter)) != null) {
+    while ((pPci = pci_device_next(iter)) !is null) {
         uint device_class = pPci.device_class;
         Bool foundVendor = FALSE;
 
@@ -708,7 +708,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
             if ((vendor_id == pPci.vendor_id)
                 || ((vendorID == PCI_VENDOR_GENERIC) &&
                     (match_class == device_class))) {
-                if (!foundVendor && (instances != null)) {
+                if (!foundVendor && (instances !is null)) {
                     ++allocatedInstances;
                     instances[allocatedInstances - 1].pci = pPci;
                     instances[allocatedInstances - 1].dev = null;
@@ -722,7 +722,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
                 if ((device_id == pPci.device_id)
                     || ((vendorID == PCI_VENDOR_GENERIC)
                         && (match_class == device_class))) {
-                    if (instances != null) {
+                    if (instances !is null) {
                         instances[allocatedInstances - 1].foundHW = TRUE;
                         instances[allocatedInstances - 1].chip = cast(short)id.numChipset;
                     }
@@ -1259,7 +1259,7 @@ static if (HasVersion!"linux" || HasVersion!"__NetBSD__") {
     default:
         break;
     }
-    for (i = 0; driverList[i] != null; i++) {
+    for (i = 0; driverList[i] !is null; i++) {
         xf86AddMatchedDriver(md, driverList[i]);
     }
 }
@@ -1326,7 +1326,7 @@ void xf86MatchDriverFromFiles(ushort match_vendor, ushort match_chip, XF86Matche
             bool cond = (read = getline(&line, &len, fp)) != -1;
 
 version (__GLIBC__) {
-            cond = (line = fgetln(fp, &len)) != null;
+            cond = (line = fgetln(fp, &len)) !is null;
 }
             // while ((read = getline(&line, &len, fp)) != -1) {
             while (cond) {
@@ -1397,7 +1397,7 @@ void xf86PciMatchDriver(XF86MatchedDrivers* md)
 
     /* Find the primary device, and get some information about it. */
     iter = pci_slot_match_iterator_create(null);
-    while ((info = pci_device_next(iter)) != null) {
+    while ((info = pci_device_next(iter)) !is null) {
         if (xf86IsPrimaryPci(info)) {
             break;
         }
@@ -1409,7 +1409,7 @@ version (linux) {
         xf86MatchDriverFromFiles(info.vendor_id, info.device_id, md);
 }
 
-    if (info != null) {
+    if (info !is null) {
         xf86VideoPtrToDriverList(info, md);
     }
 }

@@ -439,7 +439,7 @@ version (LED_COMPOSE) {
 }
     }
 
-    if (xkb.geom != null)
+    if (xkb.geom !is null)
         names.geometry = xkb.geom.name;
     else
         names.geometry = unknown;
@@ -529,8 +529,8 @@ private Bool InitKeyboardDeviceStructInternal(DeviceIntPtr dev, XkbRMLVOSet* rml
     XkbRMLVOSet rmlvo_dflts = { null };
 
     mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.key != null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.kbdfeed != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.key !is null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.kbdfeed !is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("rmlvo && keymap", "FALSE"));
 
     if (!rmlvo && !keymap) {

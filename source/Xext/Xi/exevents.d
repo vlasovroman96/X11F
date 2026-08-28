@@ -2274,7 +2274,7 @@ Bool DeliverGestureEventToOwner(DeviceIntPtr dev, GestureInfoPtr gi, InternalEve
 int InitProximityClassDeviceStruct(DeviceIntPtr dev)
 {
     mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.proximity != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.proximity !is null", "FALSE"));
 
     ProximityClassPtr proxc = cast(ProximityClassRec*) calloc(1, ProximityClassRec.sizeof);
     if (!proxc)

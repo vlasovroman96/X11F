@@ -312,7 +312,7 @@ int SetPictureFilter(PicturePtr pPicture, char* name, int len, XFixed* params, i
     PictFilterPtr pFilter = void;
     ScreenPtr pScreen = void;
 
-    if (pPicture.pDrawable != null)
+    if (pPicture.pDrawable !is null)
         pScreen = pPicture.pDrawable.pScreen;
     else
         pScreen = dixGetMasterScreen();

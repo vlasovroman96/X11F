@@ -119,7 +119,7 @@ int dixLookupProperty(PropertyPtr* result, WindowPtr pWin, Atom propertyName, Cl
 private void setVRRMode(WindowPtr pWin, WindowVRRMode mode)
 {
     SetWindowVRRModeProcPtr proc = pWin.drawable.pScreen.SetWindowVRRMode;
-    if (proc != null)
+    if (proc !is null)
         proc(pWin, mode);
 }
 

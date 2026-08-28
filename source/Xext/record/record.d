@@ -1212,7 +1212,7 @@ private XID* RecordCanonicalizeClientSpecifiers(XID* pClientspecs, int* pNumClie
             for (nc = 0, j = 1; j < currentMaxClients; j++) {
                 ClientPtr client = clients[j];
 
-                if (client != null &&
+                if (client !is null &&
                     client.clientState == ClientStateRunning &&
                     client.clientAsMask != excludespec) {
                     pCanon[nc++] = client.clientAsMask;
@@ -2225,7 +2225,7 @@ private int ProcRecordGetContext(ClientPtr client)
 
     // reply
         reply.type = X_Reply,
-        reply.enabled = pContext.pRecordingClient != null,
+        reply.enabled = pContext.pRecordingClient !is null,
         reply.sequenceNumber = cast(ushort)client.sequence,
         reply.length = length,
         reply.elementHeader = pContext.elemHeaders,

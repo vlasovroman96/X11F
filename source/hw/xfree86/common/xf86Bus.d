@@ -140,13 +140,13 @@ Bool xf86CallDriverProbe(DriverPtr drv, Bool detect_only)
 
 version (XSERVER_PLATFORM_BUS) {
     /* xf86platformBus.c does not support Xorg -configure */
-    if (!xf86DoConfigure && drv.platformProbe != null) {
+    if (!xf86DoConfigure && drv.platformProbe !is null) {
         foundScreen = xf86platformProbeDev(drv);
     }
 }
 
 version (XSERVER_LIBPCIACCESS) {
-    if (!foundScreen && (drv.PciProbe != null)) {
+    if (!foundScreen && (drv.PciProbe !is null)) {
         if (xf86DoConfigure && xf86DoConfigurePass1) {
             assert(detect_only);
             foundScreen = xf86PciAddMatchingDev(drv);
@@ -157,7 +157,7 @@ version (XSERVER_LIBPCIACCESS) {
         }
     }
 }
-    if (!foundScreen && (drv.Probe != null)) {
+    if (!foundScreen && (drv.Probe !is null)) {
         LogMessageVerb(X_WARNING, 1, "Falling back to old probe method for %s\n",
                 drv.driverName);
         foundScreen = assumeNoGC(drv.Probe) (drv, (detect_only) ? PROBE_DETECT
@@ -171,7 +171,7 @@ private screenLayoutPtr xf86BusConfigMatch(ScrnInfoPtr scrnInfo, Bool is_gpu) {
     screenLayoutPtr layout = void;
     int i = void, j = void;
 
-    for (layout = xf86ConfigLayout.screens; layout.screen != null;
+    for (layout = xf86ConfigLayout.screens; layout.screen !is null;
          layout++) {
         for (i = 0; i < scrnInfo.numEntities; i++) {
             GDevPtr dev = xf86GetDevFromEntity(scrnInfo.entityList[i],
@@ -776,7 +776,7 @@ version (XSERVER_LIBPCIACCESS) {
             continue;
         }
 
-        if ((fbPath != null) && (*fbPath == '\0')) {
+        if ((fbPath !is null) && (*fbPath == '\0')) {
             /* Autoconfigured fbdev device is incompatible with anything */
             LogMessageVerb(X_INFO, 1,
                 "\"%s\" must be the only device, but \"%s\" is present.\n",
@@ -870,7 +870,7 @@ else {
             }
         }
 
-        if ((msPath != null) && (msOther != null) && !strcmp(msPath, msOther)) {
+        if ((msPath !is null) && (msOther !is null) && !strcmp(msPath, msOther)) {
             /* This DRI device has been claimed already */
                     LogMessageVerb(X_INFO, 1,
                         " DRI device \"%s\" has already been claimed by \"%s\".\n",

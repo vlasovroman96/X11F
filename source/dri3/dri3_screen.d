@@ -46,9 +46,9 @@ int dri3_open(ClientPtr client, ScreenPtr screen, RRProviderPtr provider, int* f
     if (info is null)
         return BadMatch;
 
-    if (info.version_ >= 1 && info.open_client != null)
+    if (info.version_ >= 1 && info.open_client !is null)
         return (*info.open_client) (client, screen, provider, fd);
-    if (info.open != null)
+    if (info.open !is null)
         return (*info.open) (screen, provider, fd);
 
     return BadMatch;
@@ -63,10 +63,10 @@ int dri3_pixmap_from_fds(PixmapPtr* ppixmap, ScreenPtr screen, CARD8 num_fds, co
     if (!info)
         return BadImplementation;
 
-    if (info.version_ >= 2 && info.pixmap_from_fds != null) {
+    if (info.version_ >= 2 && info.pixmap_from_fds !is null) {
         pixmap = (*info.pixmap_from_fds) (screen, num_fds, fds, width, height,
                                            strides, offsets, depth, bpp, modifier);
-    } else if (info.pixmap_from_fd != null && num_fds == 1) {
+    } else if (info.pixmap_from_fd !is null && num_fds == 1) {
         pixmap = (*info.pixmap_from_fd) (screen, fds[0], width, height,
                                           cast(ushort)strides[0], depth, bpp);
     } else {
@@ -89,10 +89,10 @@ int dri3_fds_from_pixmap(PixmapPtr pixmap, int* fds, uint* strides, uint* offset
     if (!info)
         return 0;
 
-    if (info.version_ >= 2 && info.fds_from_pixmap != null) {
+    if (info.version_ >= 2 && info.fds_from_pixmap !is null) {
         return (*info.fds_from_pixmap)(screen, pixmap, fds, strides, offsets,
                                         modifier);
-    } else if (info.fd_from_pixmap != null) {
+    } else if (info.fd_from_pixmap !is null) {
         CARD16 stride = void;
         CARD32 size = void;
 
@@ -126,7 +126,7 @@ int dri3_fd_from_pixmap(PixmapPtr pixmap, CARD16* stride, CARD32* size)
     /* Preferentially use the old interface, allowing the implementation to
      * ensure the buffer is in a single-plane format which doesn't need
      * modifiers. */
-    if (info.fd_from_pixmap != null)
+    if (info.fd_from_pixmap !is null)
         return (*info.fd_from_pixmap)(screen, pixmap, stride, size);
 
     if (info.version_ < 2 || info.fds_from_pixmap is null)

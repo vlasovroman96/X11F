@@ -155,7 +155,7 @@ private Bool xf86VidModeGetNextModeline(ScreenPtr pScreen, DisplayModePtr* mode,
 
     pVidMode = VidModeGetPtr(pScreen);
 
-    for (p = pVidMode.Next; p != null && p != pVidMode.First; p = p.next) {
+    for (p = pVidMode.Next; p !is null && p != pVidMode.First; p = p.next) {
         if (p.status == MODE_OK) {
             pVidMode.Next = p.next;
             *mode = p;
@@ -218,7 +218,7 @@ private Bool xf86VidModeSetViewPort(ScreenPtr pScreen, int x, int y)
     pScrn.frameY0 = min(max(y, 0),
                          pScrn.virtualY - pScrn.currentMode.VDisplay);
     pScrn.frameY1 = pScrn.frameY0 + pScrn.currentMode.VDisplay - 1;
-    if (pScrn.AdjustFrame != null)
+    if (pScrn.AdjustFrame !is null)
         (pScrn.AdjustFrame) (pScrn, pScrn.frameX0, pScrn.frameY0);
 
     return TRUE;
@@ -317,7 +317,7 @@ private Bool xf86VidModeAddModeline(ScreenPtr pScreen, DisplayModePtr mode)
     mode.next = pScrn.modes.next;
     mode.prev = pScrn.modes;
     pScrn.modes.next = mode;
-    if (mode.next != null)
+    if (mode.next !is null)
         mode.next.prev = mode;
 
     return TRUE;

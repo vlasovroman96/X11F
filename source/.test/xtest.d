@@ -137,7 +137,7 @@ private void xtest_properties()
 
     rc = XIGetDeviceProperty(xtestkeyboard, xtest_prop, &prop);
     assert(rc == Success);
-    assert(prop != null);
+    assert(prop !is null);
 
     rc = XIChangeDeviceProperty(xtestpointer, xtest_prop,
                                 XA_INTEGER, 8, PropModeReplace, 1, &value,

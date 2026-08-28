@@ -797,7 +797,7 @@ private void ephyrPrintGrabShortcut(char* out_, const(size_t) out_size, const(Bo
     const(size_t) suffix_len = strlen(suffix);
 
     assert(out_size > 1 + EphyrTitleHostGrabKeyComboHintLen + suffix_len + 1);
-    assert(out_ != null);
+    assert(out_ !is null);
 
     out_[0] = '(';
     memcpy(out_ + 1, EphyrTitleHostGrabKeyComboHint, EphyrTitleHostGrabKeyComboHintLen);
@@ -1481,7 +1481,7 @@ private Status EphyrKeyboardInit(KdKeyboardInfo* ki)
     ki.minScanCode = keySyms.minKeyCode;
     ki.maxScanCode = keySyms.maxKeyCode;
 
-    if (ki.name != null) {
+    if (ki.name !is null) {
         free(ki.name);
     }
 

@@ -327,11 +327,11 @@ void XkbUpdateAllDeviceIndicators(XkbChangesPtr changes, XkbEventCausePtr cause)
     DeviceIntPtr edev = void;
     XkbSrvLedInfoPtr sli = void;
 
-    for (edev = inputInfo.devices; edev != null; edev = edev.next) {
+    for (edev = inputInfo.devices; edev !is null; edev = edev.next) {
         if (edev.kbdfeed) {
             KbdFeedbackPtr kf = void;
 
-            for (kf = edev.kbdfeed; kf != null; kf = kf.next) {
+            for (kf = edev.kbdfeed; kf !is null; kf = kf.next) {
                 if ((kf.xkb_sli is null) || (kf.xkb_sli.maps is null))
                     continue;
                 sli = kf.xkb_sli;
@@ -343,7 +343,7 @@ void XkbUpdateAllDeviceIndicators(XkbChangesPtr changes, XkbEventCausePtr cause)
         if (edev.leds) {
             LedFeedbackPtr lf = void;
 
-            for (lf = edev.leds; lf != null; lf = lf.next) {
+            for (lf = edev.leds; lf !is null; lf = lf.next) {
                 if ((lf.xkb_sli is null) || (lf.xkb_sli.maps is null))
                     continue;
                 sli = lf.xkb_sli;
@@ -577,7 +577,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
 
     sli = null;
     checkAccel = checkNames = FALSE;
-    if ((kf != null) && (kf.xkb_sli is null)) {
+    if ((kf !is null) && (kf.xkb_sli is null)) {
         kf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
         if (sli is null)
             return null;        /* ALLOCATION ERROR */
@@ -609,7 +609,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
             sli.maps = null;
         }
     }
-    else if ((kf != null) && ((kf.xkb_sli.flags & XkbSLI_IsDefault) != 0)) {
+    else if ((kf !is null) && ((kf.xkb_sli.flags & XkbSLI_IsDefault) != 0)) {
         XkbDescPtr xkb = void;
 
         xkb = dev.key.xkbInfo.desc;
@@ -624,7 +624,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
             sli.maps = xkb.indicators.maps.ptr;
         }
     }
-    else if ((lf != null) && (lf.xkb_sli is null)) {
+    else if ((lf !is null) && (lf.xkb_sli is null)) {
         lf.xkb_sli = sli = cast(XkbSrvLedInfoRec*) calloc(1, XkbSrvLedInfoRec.sizeof);
         if (sli is null)
             return null;        /* ALLOCATION ERROR */
@@ -749,7 +749,7 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
     if (class_ == KbdFeedbackClass) {
         KbdFeedbackPtr kf = void;
 
-        for (kf = dev.kbdfeed; kf != null; kf = kf.next) {
+        for (kf = dev.kbdfeed; kf !is null; kf = kf.next) {
             if ((id == XkbDfltXIId) || (id == kf.ctrl.id)) {
                 if (kf.xkb_sli is null)
                     kf.xkb_sli =
@@ -762,7 +762,7 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
     else if (class_ == LedFeedbackClass) {
         LedFeedbackPtr lf = void;
 
-        for (lf = dev.leds; lf != null; lf = lf.next) {
+        for (lf = dev.leds; lf !is null; lf = lf.next) {
             if ((id == XkbDfltXIId) || (id == lf.ctrl.id)) {
                 if (lf.xkb_sli is null)
                     lf.xkb_sli =

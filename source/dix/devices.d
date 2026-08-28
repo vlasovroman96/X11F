@@ -1044,12 +1044,12 @@ private void CloseDeviceList(DeviceIntPtr* listHead)
     /* Used to mark devices that we tried to free */
     bool[MAXDEVICES] freedIds = 0;
 
-    while (dev != null) {
+    while (dev !is null) {
         freedIds[dev.id] = TRUE;
         DeleteInputDeviceRequest(dev);
 
         dev = *listHead;
-        while (dev != null && freedIds[dev.id])
+        while (dev !is null && freedIds[dev.id])
             dev = dev.next;
     }
 }
@@ -1245,7 +1245,7 @@ void QueryMinMaxKeyCodes(KeyCode* minCode, KeyCode* maxCode)
 Bool InitButtonClassDeviceStruct(DeviceIntPtr dev, int numButtons, Atom* labels, CARD8* map)
 {
     mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.button != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.button !is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("numButtons >= MAX_BUTTONS", "FALSE"));
 
     ButtonClassPtr butc = cast(ButtonClassRec*) calloc(1, ButtonClassRec.sizeof);
@@ -1407,7 +1407,7 @@ Bool InitPointerAccelerationScheme(DeviceIntPtr dev, int scheme)
 Bool InitFocusClassDeviceStruct(DeviceIntPtr dev)
 {
     mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.focus != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.focus !is null", "FALSE"));
 
     FocusClassPtr focc = cast(FocusClassRec*) calloc(1, FocusClassRec.sizeof);
     if (!focc)
@@ -1550,9 +1550,9 @@ Bool InitPointerDeviceStruct(DevicePtr device, CARD8* map, int numButtons, Atom*
     DeviceIntPtr dev = cast(DeviceIntPtr) device;
 
     mixin(BUG_RETURN_VAL!("dev is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.button != null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.valuator != null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("dev.ptrfeed != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.button !is null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.valuator !is null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("dev.ptrfeed !is null", "FALSE"));
 
     return (InitButtonClassDeviceStruct(dev, numButtons, btn_labels, map) &&
             InitValuatorClassDeviceStruct(dev, numAxes, axes_labels,
@@ -1570,7 +1570,7 @@ Bool InitPointerDeviceStruct(DevicePtr device, CARD8* map, int numButtons, Atom*
 Bool InitTouchClassDeviceStruct(DeviceIntPtr device, uint max_touches, uint mode, uint num_axes)
 {
     mixin(BUG_RETURN_VAL!("device is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("device.touch != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("device.touch !is null", "FALSE"));
     mixin(BUG_RETURN_VAL!("device.valuator is null", "FALSE"));
 
     /* Check the mode is valid, and at least X and Y axes. */
@@ -1630,7 +1630,7 @@ Bool InitTouchClassDeviceStruct(DeviceIntPtr device, uint max_touches, uint mode
 Bool InitGestureClassDeviceStruct(DeviceIntPtr device, uint max_touches)
 {
     mixin(BUG_RETURN_VAL!("device is null", "FALSE"));
-    mixin(BUG_RETURN_VAL!("device.gesture != null", "FALSE"));
+    mixin(BUG_RETURN_VAL!("device.gesture !is null", "FALSE"));
 
     GestureClassPtr g = cast(GestureClassPtr) calloc(1, _GestureClassRec.sizeof);
     if (!g)

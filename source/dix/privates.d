@@ -196,7 +196,7 @@ private Bool fixupOneScreen(ScreenPtr pScreen, FixupFunc fixup, uint bytes)
              * pointers are scrambled before we patch them.
              */
             for ({DevPrivateKey key = void; DevPrivateKey* keyp = &pScreen.screenSpecificPrivates[type].key;}
-                 (key = *keyp) != null;
+                 (key = *keyp) !is null;
                  keyp = &key.next)
             {
 
@@ -386,7 +386,7 @@ Bool dixRegisterScreenPrivateKey(DevScreenPrivateKeyPtr screenKey, ScreenPtr pSc
     if (!dixRegisterPrivateKey(&screenKey.screenKey, PRIVATE_SCREEN, 0))
         return FALSE;
     key = cast(_DevPrivateKeyRec*)dixGetPrivate(&pScreen.devPrivates, &screenKey.screenKey);
-    if (key != null) {
+    if (key !is null) {
         assert(key.size == size);
         assert(key.type == type);
         return TRUE;

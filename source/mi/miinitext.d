@@ -180,7 +180,7 @@ void ListStaticExtensions()
     // ErrorF(" Only the following extensions can be run-time enabled/disabled:\n");
     // for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")) - 1; i++) {
     //     ext = &staticExtensions[i];
-    //     if (ext.disablePtr != null) {
+    //     if (ext.disablePtr !is null) {
     //         ErrorF("\t%s\n", ext.name);
     //     }
     // }
@@ -194,7 +194,7 @@ Bool EnableDisableExtension(const(char)* name, Bool enable)
     for (i = 0; i < mixin(ARRAY_SIZE!("staticExtensions.ptr")); i++) {
         ext = cast(ExtensionModule*)&staticExtensions[i];
         if (strcasecmp(name, ext.name) == 0) {
-            if (ext.disablePtr != null) {
+            if (ext.disablePtr !is null) {
                 *ext.disablePtr = !enable;
                 return TRUE;
             }
@@ -256,7 +256,7 @@ void InitExtensions(int argc, char** argv)
 
     for (i = 0; i < numExtensionModules; i++) {
         ext = &ExtensionModuleList[i];
-        if (ext.initFunc != null &&
+        if (ext.initFunc !is null &&
             (ext.disablePtr is null || !*ext.disablePtr)) {
             LogMessageVerb(X_INFO, 3, "Initializing extension %s\n",
                            ext.name);

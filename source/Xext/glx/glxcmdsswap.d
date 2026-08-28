@@ -679,7 +679,7 @@ int __glXDispSwap_VendorPrivate(__GLXclientState* cl, GLbyte* pc)
     proc = cast(__GLXdispatchVendorPrivProcPtr)
         __glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info,
                                        vendorcode, 1);
-    if (proc != null) {
+    if (proc !is null) {
         return (*proc) (cl, cast(GLbyte*) req);
     }
 
@@ -705,7 +705,7 @@ int __glXDispSwap_VendorPrivateWithReply(__GLXclientState* cl, GLbyte* pc)
     proc = cast(__GLXdispatchVendorPrivProcPtr)
         __glXGetProtocolDecodeFunction(&VendorPriv_dispatch_info,
                                        vendorcode, 1);
-    if (proc != null) {
+    if (proc !is null) {
         return (*proc) (cl, cast(GLbyte*) req);
     }
 

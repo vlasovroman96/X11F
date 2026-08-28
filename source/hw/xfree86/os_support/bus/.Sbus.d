@@ -174,7 +174,7 @@ version (linux) {
     f = fopen("/proc/cpuinfo", "r");
     if (!f)
         return;
-    while (fgets(buffer.ptr, 1024, f) != null)
+    while (fgets(buffer.ptr, 1024, f) !is null)
         if (!strncmp(buffer.ptr, "type", 4) && strstr(buffer.ptr, "sun4u")) {
             promP1275 = 1;
             break;
@@ -392,7 +392,7 @@ void sparcPromAssignNodes()
             holes = 1;
         devicePtrs[psdp.fbNum] = psdp;
     }
-    if (holes && (f = fopen("/proc/fb", "r")) != null) {
+    if (holes && (f = fopen("/proc/fb", "r")) !is null) {
         /* We could not open one of fb devices, check /proc/fb to see what
          * were the types of the cards missed. */
         char[64] buffer = void;

@@ -163,7 +163,7 @@ private void SELinuxLabelClient(ClientPtr client)
     if (ClientIsLocal(client)) {
         /* Get cached command name if CLIENTIDS is enabled. */
         const(char)* cmdname = GetClientCmdName(client);
-        Bool cached = (cmdname != null);
+        Bool cached = (cmdname !is null);
 
         /* If CLIENTIDS is disabled, figure out the command name from
          * scratch. */

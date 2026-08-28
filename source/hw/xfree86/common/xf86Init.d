@@ -427,7 +427,7 @@ void InitOutput(int argc, char** argv)
         for (i = 0; i < xf86NumDrivers; i++) {
             xorgHWFlags flags = HW_IO;
 
-            if (xf86DriverList[i].Identify != null)
+            if (xf86DriverList[i].Identify !is null)
                 xf86DriverList[i].Identify(0);
 
             if (xf86DriverList[i].driverFunc !is null)
@@ -592,7 +592,7 @@ void InitOutput(int argc, char** argv)
          */
         if (xf86OSPMClose)
             xf86OSPMClose();
-        if ((xf86OSPMClose = xf86OSPMOpen()) != null)
+        if ((xf86OSPMClose = xf86OSPMOpen()) !is null)
             LogMessageVerb(X_INFO, 3, "APM registered successfully\n");
 
         /* Make sure full I/O access is enabled */
@@ -1269,7 +1269,7 @@ Bool xf86LoadModules(const(char)** list, void** optlist)
     if (!list)
         return TRUE;
 
-    for (i = 0; list[i] != null; i++) {
+    for (i = 0; list[i] !is null; i++) {
 
         /* Normalise the module name */
         name = xf86NormalizeName(list[i]);

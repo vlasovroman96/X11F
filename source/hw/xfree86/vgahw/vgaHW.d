@@ -585,7 +585,7 @@ Bool vgaHWSaveScreen(ScreenPtr pScreen, int mode)
     ScrnInfoPtr pScrn = null;
     Bool on = void;
 
-    if (pScreen != null)
+    if (pScreen !is null)
         pScrn = xf86ScreenToScrn(pScreen);
 
     on = xf86IsUnblank(mode);
@@ -595,7 +595,7 @@ version (none) {
         SetTimeSinceLastInputEvent();
 }
 
-    if ((pScrn != null) && pScrn.vtSema) {
+    if ((pScrn !is null) && pScrn.vtSema) {
         vgaHWBlankScreen(pScrn, on);
     }
     return TRUE;
@@ -1602,7 +1602,7 @@ Bool vgaHWMapMem(ScrnInfoPtr scrp)
     DebugF("Mapping VGAMem\n");
     pci_device_map_legacy(hwp.dev, hwp.MapPhys, hwp.MapSize,
                           PCI_DEV_MAP_FLAG_WRITABLE, &hwp.Base);
-    return hwp.Base != null;
+    return hwp.Base !is null;
 }
 
 void vgaHWUnmapMem(ScrnInfoPtr scrp)
@@ -1746,7 +1746,7 @@ void vgaHWddc1SetSpeed(ScrnInfoPtr pScrn, xf86ddcSpeed speed)
     switch (speed) {
     case DDC_FAST:
 
-        if (hwp.ddc != null)
+        if (hwp.ddc !is null)
             break;
         hwp.ddc = XNFcallocarray(1, _vgaDdcSave.sizeof);
         save = cast(_vgaDdcSave*) hwp.ddc;

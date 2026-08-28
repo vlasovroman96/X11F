@@ -382,7 +382,7 @@ XID XdmCheckCookie(ushort cookie_length, const(char)* cookie, ClientPtr xclient,
                     plain, cookie_length);
         if ((client =
              XdmAuthorizationValidate(plain, cookie_length, &auth.rho, xclient,
-                                      reason)) != null) {
+                                      reason)) !is null) {
             client.next = xdmClients;
             xdmClients = client;
             free(plain);

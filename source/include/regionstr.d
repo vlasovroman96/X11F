@@ -134,7 +134,7 @@ pragma(inline, true) size_t RegionSizeof(size_t n)
 
 pragma(inline, true) void RegionInit(RegionPtr _pReg, BoxPtr _rect, size_t _size)
 {
-    if ((_rect) != null) {
+    if ((_rect) !is null) {
         (_pReg).extents = *(_rect);
         (_pReg).data = cast(RegDataPtr) null;
     }
@@ -142,7 +142,7 @@ pragma(inline, true) void RegionInit(RegionPtr _pReg, BoxPtr _rect, size_t _size
         size_t rgnSize = void;
         (_pReg).extents = RegionEmptyBox;
         if (((_size) > 1) && ((rgnSize = RegionSizeof(_size)) > 0) &&
-            (((_pReg).data = cast(RegDataPtr) calloc(1, rgnSize)) != null)) {
+            (((_pReg).data = cast(RegDataPtr) calloc(1, rgnSize)) !is null)) {
             (_pReg).data.size = cast(c_long)(_size);
             (_pReg).data.numRects = 0;
         }

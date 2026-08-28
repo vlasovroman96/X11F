@@ -348,14 +348,14 @@ version (OSX) {
         }
         if (cmdargs) {
             i = 1;
-            while (argv[i] != null) {
+            while (argv[i] !is null) {
                 len += strlen(argv[i]) + 1;
                 i++;
             }
             *cmdargs = calloc(1, len);
             if (*cmdargs) {
                 i = 1;
-                while (argv[i] != null) {
+                while (argv[i] !is null) {
                     strlcat(*cast(char**)cmdargs, argv[i], len);
                     strlcat(*cast(char**)cmdargs, " ", len);
                     i++;

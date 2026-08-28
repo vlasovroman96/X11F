@@ -200,7 +200,7 @@ private char* xf86GetPathElem(char** pnt)
 
     p1 = *pnt;
     *pnt = index(*pnt, ',');
-    if (*pnt != null) {
+    if (*pnt !is null) {
         **pnt = '\0';
         *pnt += 1;
     }
@@ -228,7 +228,7 @@ private char* xf86ValidateFontPath(char* path)
     out_pnt = tmp_path;
     path_elem = null;
     next = path;
-    while (next != null) {
+    while (next !is null) {
         path_elem = xf86GetPathElem(&next);
         if (*path_elem == '/') {
             dir_elem = cast(char*)XNFcallocarray(1, strlen(path_elem) + 1);
@@ -335,7 +335,7 @@ const(char)** xf86ModulelistFromConfig(void*** optlist)
          * sure it's not in the mod_no_load_lst. If it's not disabled,
          * append it to mod_load_lst
          */
-        for (i = 0; ModuleDefaults[i].name != null; i++) {
+        for (i = 0; ModuleDefaults[i].name !is null; i++) {
             if (ModuleDefaults[i].toLoad == FALSE) {
                 LogMessageVerb(X_WARNING, 1,
                                "\"%s\" is not to be loaded by default. Skipping.\n",
@@ -380,7 +380,7 @@ const(char)** xf86ModulelistFromConfig(void*** optlist)
     }
     else {
         xf86configptr.conf_modules = cast(XF86ConfModuleRec*)XNFcallocarray(1, XF86ConfModuleRec.sizeof);
-        for (i = 0; ModuleDefaults[i].name != null; i++) {
+        for (i = 0; ModuleDefaults[i].name !is null; i++) {
             if (ModuleDefaults[i].toLoad == TRUE) {
                 XF86LoadPtr ptr = cast(XF86LoadPtr) xf86configptr.conf_modules;
 
@@ -497,7 +497,7 @@ const(char)** xf86DriverlistFromConfig()
     modulearray[count] = null;
 
     /* Remove duplicates */
-    for (count = 0; modulearray[count] != null; count++) {
+    for (count = 0; modulearray[count] !is null; count++) {
         int i = void;
 
         for (i = 0; i < count; i++)
@@ -554,7 +554,7 @@ const(char)** xf86InputDriverlistFromConfig()
     modulearray[count] = null;
 
     /* Remove duplicates */
-    for (count = 0; modulearray[count] != null; count++) {
+    for (count = 0; modulearray[count] !is null; count++) {
         int i = void;
 
         for (i = 0; i < count; i++)
@@ -607,7 +607,7 @@ private void configFiles(XF86ConfFilesPtr fileconf)
     /* make fontpath more readable in the logfiles */
     countDirs = 1;
     temp_path = cast(char*) defaultFontPath;
-    while ((temp_path = index(temp_path, ',')) != null) {
+    while ((temp_path = index(temp_path, ',')) !is null) {
         countDirs++;
         temp_path++;
     }
@@ -615,7 +615,7 @@ private void configFiles(XF86ConfFilesPtr fileconf)
     log_buf = cast(char*)XNFalloc(strlen(defaultFontPath) + (2 * countDirs) + 1);
     temp_path = log_buf;
     start = cast(char*) defaultFontPath;
-    while ((end = index(start, ',')) != null) {
+    while ((end = index(start, ',')) !is null) {
         size = cast(int)(end - start) + 1;
         *(temp_path++) = '\t';
         strncpy(temp_path, start, size);
@@ -1478,13 +1478,13 @@ private Bool configLayout(serverLayoutPtr servlayoutp, XF86ConfLayoutPtr conf_la
      * pick the first one.
      */
     from = X_DEFAULT;
-    if (xf86LayoutName != null)
+    if (xf86LayoutName !is null)
         from = X_CMDLINE;
     else if (default_layout) {
         xf86LayoutName = default_layout;
         from = X_CONFIG;
     }
-    if (xf86LayoutName != null) {
+    if (xf86LayoutName !is null) {
         if ((l = xf86findLayout(xf86LayoutName, conf_layout)) is null) {
             LogMessageVerb(X_ERROR, 1, "No ServerLayout section called \"%s\"\n",
                            xf86LayoutName);
@@ -1689,7 +1689,7 @@ private Bool configImpliedLayout(serverLayoutPtr servlayoutp, XF86ConfScreenPtr 
      */
 
     from = X_CONFIG;
-    if (xf86ScreenName != null) {
+    if (xf86ScreenName !is null) {
         if ((s = xf86findScreen(xf86ScreenName, conf_screen)) is null) {
             LogMessageVerb(X_ERROR, 1, "No Screen section called \"%s\"\n",
                            xf86ScreenName);
@@ -2305,7 +2305,7 @@ private Bool modeIsPresent(DisplayModePtr mode, MonPtr monitorp)
     DisplayModePtr knownmodes = monitorp.Modes;
 
     /* all I can think of is a linear search... */
-    while (knownmodes != null) {
+    while (knownmodes !is null) {
         if (!strcmp(mode.name, knownmodes.name) &&
             !(knownmodes.type & M_T_DEFAULT))
             return TRUE;
@@ -2397,6 +2397,8 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
         if (!PrivsElevated()) {
             filesearch = ALL_CONFIGPATH;
             dirsearch = ALL_CONFIGDIRPATH;
+
+
         }
         else {
             filesearch = RESTRICTED_CONFIGPATH;
@@ -2408,11 +2410,19 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
         if (xf86ConfigDir)
             dirfrom = X_CMDLINE;
 
+        fprintf(stderr, "%s\n", filesearch);
+        fprintf(stderr, "%s\n", dirsearch);
+
         xf86initConfigFiles();
         sysdirname = cast(char*)xf86openConfigDirFiles(SYS_CONFIGDIRPATH, null,
                                             PROJECTROOT);
+
         dirname = cast(char*)xf86openConfigDirFiles(dirsearch, xf86ConfigDir, PROJECTROOT);
         filename = xf86openConfigFile(filesearch, xf86ConfigFile, PROJECTROOT);
+        fprintf(stderr, "%s\n", sysdirname);
+        fprintf(stderr, "%s\n", dirname);
+        fprintf(stderr, "%s\n", filename);
+
         if (filename) {
             LogMessageVerb(filefrom, 0, "Using config file: \"%s\"\n", filename);
             xf86ConfigFile = cast(const(char*))XNFstrdup(filename);
@@ -2466,7 +2476,7 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
 
     /* Check if a layout section is present, and if it is valid. */
     mixin(FIND_SUITABLE!(`XF86ConfLayoutPtr`, `xf86configptr.conf_layout_lst`, `layout`));
-    if (layout is null || xf86ScreenName != null) {
+    if (layout is null || xf86ScreenName !is null) {
         XF86ConfScreenPtr screen = void;
 
         if (xf86ScreenName is null) {
@@ -2483,7 +2493,7 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
         implicit_layout = TRUE;
     }
     else {
-        if (xf86configptr.conf_flags != null) {
+        if (xf86configptr.conf_flags !is null) {
             char* dfltlayout = null;
             void* optlist = xf86configptr.conf_flags.flg_option_lst;
 

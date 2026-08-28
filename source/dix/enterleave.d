@@ -687,17 +687,17 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
         !(mixin(wOtherInputMasks!("win")).inputEvents[dev.id] & DeviceStateNotifyMask))
         return;
 
-    if ((b = dev.button) != null) {
+    if ((b = dev.button) !is null) {
         nbuttons = b.numButtons;
         if (nbuttons > 32) /* first 32 are encoded in deviceStateNotify */
             evcount++;
     }
-    if ((k = dev.key) != null) {
+    if ((k = dev.key) !is null) {
         nkeys = k.xkbInfo.desc.max_key_code - k.xkbInfo.desc.min_key_code;
         if (nkeys > 32) /* first 32 are encoded in deviceStateNotify */
             evcount++;
     }
-    if ((v = dev.valuator) != null) {
+    if ((v = dev.valuator) !is null) {
         nval = v.numAxes;
         /* first three are encoded in deviceStateNotify, then
          * it's 6 per deviceValuator event */
@@ -708,7 +708,7 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
 
     FixDeviceStateNotify(dev, ev, k, b, v, first);
 
-    if (b != null && nbuttons > 32) {
+    if (b !is null && nbuttons > 32) {
         deviceButtonStateNotify* bev = cast(deviceButtonStateNotify*) ++ev;
         (ev - 1).deviceid |= MORE_EVENTS;
         bev.type = cast(ubyte)DeviceButtonStateNotify;
@@ -717,7 +717,7 @@ private void DeliverStateNotifyEvent(DeviceIntPtr dev, WindowPtr win)
                DOWN_LENGTH - 4);
     }
 
-    if (k != null && nkeys > 32) {
+    if (k !is null && nkeys > 32) {
         deviceKeyStateNotify* kev = cast(deviceKeyStateNotify*) ++ev;
         (ev - 1).deviceid |= MORE_EVENTS;
         kev.type = cast(ubyte)DeviceKeyStateNotify;
@@ -926,7 +926,7 @@ private void CoreFocusOutNotifyPointerEvents(DeviceIntPtr dev, WindowPtr pwin_pa
         if (!(pwin_parent == P && inclusive))
             return;
 
-    if (exclude != null && exclude != PointerRootWin &&
+    if (exclude !is null && exclude != PointerRootWin &&
         (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
         return;
 
@@ -967,7 +967,7 @@ private void CoreFocusInNotifyPointerEvents(DeviceIntPtr dev, WindowPtr pwin_par
     if (!P || P == exclude || (pwin_parent != P && !WindowIsParent(pwin_parent, P)))
         return;
 
-    if (exclude != null && (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
+    if (exclude !is null && (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
         return;
 
     CoreFocusInRecurse(dev, P, pwin_parent, mode, inclusive);

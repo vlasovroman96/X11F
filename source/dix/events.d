@@ -1157,7 +1157,7 @@ void EnqueueEvent(InternalEvent* ev, DeviceIntPtr device)
     NoticeTimeMillis(device, &ev.any.time);
 
     /* Fix for key repeating bug. */
-    if (device.key != null && device.key.xkbInfo != null &&
+    if (device.key !is null && device.key.xkbInfo !is null &&
         event.type == ET_KeyRelease)
         AccessXCancelRepeatKey(device.key.xkbInfo, cast(ubyte)event.detail.key);
 
@@ -3023,7 +3023,7 @@ BOOL ActivateFocusInGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win)
         event.device_event.detail.button = 0;
 
     rc = (CheckPassiveGrabsOnWindow(win, dev, &event, FALSE,
-                                    TRUE) != null);
+                                    TRUE) !is null);
     if (rc)
         DoEnterLeaveEvents(dev, dev.id, old, win, XINotifyPassiveGrab);
     return rc;
@@ -3060,7 +3060,7 @@ private BOOL ActivateEnterGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win)
         event.device_event.detail.button = 0;
 
     rc = (CheckPassiveGrabsOnWindow(win, dev, &event, FALSE,
-                                    TRUE) != null);
+                                    TRUE) !is null);
     if (rc)
         DoEnterLeaveEvents(dev, dev.id, old, win, XINotifyPassiveGrab);
     return rc;
@@ -5841,9 +5841,9 @@ void DeleteWindowFromAnyEvents(WindowPtr pWin, Bool freeResources)
     if (freeResources) {
         if (pWin.dontPropagate)
             DontPropagateRefCnts[pWin.dontPropagate]--;
-        while ((oc = mixin(wOtherClients!("pWin"))) != null)
+        while ((oc = mixin(wOtherClients!("pWin"))) !is null)
             FreeResource(oc.resource, X11_RESTYPE_NONE);
-        while ((passive = mixin(wPassiveGrabs!("pWin"))) != null)
+        while ((passive = mixin(wPassiveGrabs!("pWin"))) !is null)
             FreeResource(passive.resource, X11_RESTYPE_NONE);
     }
 
@@ -5868,7 +5868,7 @@ version (XINERAMA) {
     for (DeviceIntPtr pDev = inputInfo.devices; pDev; pDev = pDev.next) {
         if (DevHasCursor(pDev)) {
             grab = pDev.deviceGrab.grab;
-            if (grab && (confineTo = grab.confineTo) != null) {
+            if (grab && (confineTo = grab.confineTo) !is null) {
                 if (!BorderSizeNotEmpty(pDev, confineTo))
                     (*pDev.deviceGrab.DeactivateGrab) (pDev);
                 else if ((pWin == confineTo) || WindowIsParent(pWin, confineTo))

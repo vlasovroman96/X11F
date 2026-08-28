@@ -91,7 +91,7 @@ CompOverlayClientPtr compFindOverlayClient(ScreenPtr pScreen, ClientPtr pClient)
     CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     for (CompOverlayClientPtr pOc = cs.pOverlayClients;
-                          pOc != null; pOc = pOc.pNext)
+                          pOc !is null; pOc = pOc.pNext)
         if (pOc.pClient == pClient)
             return pOc;
 

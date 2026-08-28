@@ -132,7 +132,7 @@ private int check_timers()
 {
     OsTimerPtr timer = void;
 
-    if ((timer = first_timer()) != null) {
+    if ((timer = first_timer()) !is null) {
         CARD32 now = GetTimeInMillis();
         int timeout = cast(int)(timer.expires - now);
 

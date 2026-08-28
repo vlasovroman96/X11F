@@ -59,7 +59,7 @@ private void sha1_test_repeated_blocks(void* data, size_t length, uint repeat, c
     ubyte[20] raw_result = void;
     ubyte[41] hex_result = void;
 
-    assert((ctx = x_sha1_init()) != null);
+    assert((ctx = x_sha1_init()) !is null);
     for (uint i = 0; i < repeat; i++) {
         assert(x_sha1_update(ctx, data, length) == 1);
     }

@@ -106,7 +106,7 @@ void ExaCheckPutImage(DrawablePtr pDrawable, GCPtr pGC, int depth, int x, int y,
     // mixin(EXA_FALLBACK!(("to %p (%c)\n", pDrawable, exaDrawableLocation(pDrawable))));
     if (!pExaScr.prepare_access_reg || !pExaPixmap.pDamage ||
         exaGCReadsDestination(pDrawable, pGC.planemask, pGC.fillStyle,
-                              pGC.alu, pGC.clientClip != null))
+                              pGC.alu, pGC.clientClip !is null))
         exaPrepareAccess(pDrawable, EXA_PREPARE_DEST);
     else
         pExaScr.prepare_access_reg(pPixmap, EXA_PREPARE_DEST,
@@ -139,7 +139,7 @@ void ExaCheckCopyNtoN(DrawablePtr pSrc, DrawablePtr pDst, GCPtr pGC, BoxPtr pbox
 
     if (pExaScr.prepare_access_reg &&
         !exaGCReadsDestination(pDst, pGC.planemask, pGC.fillStyle,
-                               pGC.alu, pGC.clientClip != null) &&
+                               pGC.alu, pGC.clientClip !is null) &&
         RegionInitBoxes(&reg, pbox, nbox)) {
         PixmapPtr pPixmap = exaGetDrawablePixmap(pDst);
 
@@ -173,7 +173,7 @@ private void ExaFallbackPrepareReg(DrawablePtr pDrawable, GCPtr pGC, int x, int 
     if (pExaScr.prepare_access_reg &&
         !(checkReads && exaGCReadsDestination(pDrawable, pGC.planemask,
                                               pGC.fillStyle, pGC.alu,
-                                              pGC.clientClip != null))) {
+                                              pGC.clientClip !is null))) {
         BoxRec box = void;
         RegionRec reg = void;
         int xoff = void, yoff = void;
@@ -568,9 +568,9 @@ void ExaCheckComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr p
 
         // mixin(EXA_FALLBACK!(("from picts %p/%p to pict %p\n", pSrc), pMask, pDst));
 
-        if (pSrc.pDrawable != null)
+        if (pSrc.pDrawable !is null)
             exaPrepareAccess(pSrc.pDrawable, EXA_PREPARE_SRC);
-        if (pMask && pMask.pDrawable != null)
+        if (pMask && pMask.pDrawable !is null)
             exaPrepareAccess(pMask.pDrawable, EXA_PREPARE_MASK);
     }
 
@@ -580,9 +580,9 @@ void ExaCheckComposite(CARD8 op, PicturePtr pSrc, PicturePtr pMask, PicturePtr p
                   pMask,
                   pDst, xSrc, ySrc, xMask, yMask, xDst, yDst, width, height);
     mixin(swap!("pExaScr", "ps", "Composite"));
-    if (pMask && pMask.pDrawable != null)
+    if (pMask && pMask.pDrawable !is null)
         exaFinishAccess(pMask.pDrawable, EXA_PREPARE_MASK);
-    if (pSrc.pDrawable != null)
+    if (pSrc.pDrawable !is null)
         exaFinishAccess(pSrc.pDrawable, EXA_PREPARE_SRC);
     exaFinishAccess(pDst.pDrawable, EXA_PREPARE_DEST);
     if (pDst.alphaMap && pDst.alphaMap.pDrawable)

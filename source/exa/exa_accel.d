@@ -402,7 +402,7 @@ Bool exaHWCopyNtoN(DrawablePtr pSrcDrawable, DrawablePtr pDstDrawable, GCPtr pGC
 
         if (!pGC || !exaGCReadsDestination(pDstDrawable, pGC.planemask,
                                            pGC.fillStyle, pGC.alu,
-                                           pGC.clientClip != null)) {
+                                           pGC.clientClip !is null)) {
             dstregion = RegionCreate(NullBox, 0);
             RegionCopy(dstregion, srcregion);
             RegionTranslate(dstregion, dst_off_x - dx - src_off_x,
@@ -791,11 +791,11 @@ private void exaPolyFillRect(DrawablePtr pDrawable, GCPtr pGC, int nrect, xRecta
         if (((pGC.fillStyle == FillSolid || pGC.tileIsPixel) &&
              exaFillRegionSolid(pDrawable, pReg, pGC.fillStyle == FillSolid ?
                                 cast(uint)pGC.fgPixel : cast(uint)pGC.tile.pixel, pGC.planemask,
-                                pGC.alu, pGC.clientClip != null)) ||
+                                pGC.alu, pGC.clientClip !is null)) ||
             (pGC.fillStyle == FillTiled && !pGC.tileIsPixel &&
              exaFillRegionTiled(pDrawable, pReg, pGC.tile.pixmap, &pGC.patOrg,
                                 pGC.planemask, pGC.alu,
-                                pGC.clientClip != null))) {
+                                pGC.clientClip !is null))) {
             goto out_;
         }
     }

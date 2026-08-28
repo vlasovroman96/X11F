@@ -156,7 +156,7 @@ InputInfoPtr xf86LookupInput(const(char)* name)
 {
     InputInfoPtr p = void;
 
-    for (p = xf86InputDevs; p != null; p = p.next) {
+    for (p = xf86InputDevs; p !is null; p = p.next) {
         if (strcmp(name, p.name) == 0)
             return p;
     }
@@ -237,7 +237,7 @@ void xf86DeleteScreen(ScrnInfoPtr pScrn)
 
     scrnIndex = pScrn.scrnIndex;
     /* If a FreeScreen function is defined, call it here */
-    if (pScrn.FreeScreen != null)
+    if (pScrn.FreeScreen !is null)
         pScrn.FreeScreen(pScrn);
 
     while (pScrn.modes)
@@ -1209,7 +1209,7 @@ void xf86PrintChipsets(const(char)* drvname, const(char)* drvmsg, SymTabPtr chip
 
     len = cast(int)(6 + strlen(drvname) + 2 + strlen(drvmsg) + 2);
     LogMessageVerb(X_INFO, 1, "%s: %s:", drvname, drvmsg);
-    for (i = 0; chips[i].name != null; i++) {
+    for (i = 0; chips[i].name !is null; i++) {
         if (i != 0) {
             xf86ErrorF(",");
             len++;
@@ -1265,10 +1265,10 @@ int xf86MatchDevice(const(char)* drivername, GDevPtr** sectlist)
      * first we need to loop over all the Screens sections to get to all
      * 'active' device sections
      */
-    for (j = 0; xf86ConfigLayout.screens[j].screen != null; j++) {
+    for (j = 0; xf86ConfigLayout.screens[j].screen !is null; j++) {
         screensecptr = xf86ConfigLayout.screens[j].screen;
-        if ((screensecptr.device != null)
-            && (screensecptr.device.driver != null)
+        if ((screensecptr.device !is null)
+            && (screensecptr.device.driver !is null)
             && (xf86NameCmp(screensecptr.device.driver, drivername) == 0)
             && (!screensecptr.device.claimed)) {
             /*
@@ -1278,7 +1278,7 @@ int xf86MatchDevice(const(char)* drivername, GDevPtr** sectlist)
             pgdp[i++] = screensecptr.device;
         }
         for (k = 0; k < screensecptr.num_gpu_devices; k++) {
-            if ((screensecptr.gpu_devices[k].driver != null)
+            if ((screensecptr.gpu_devices[k].driver !is null)
             && (xf86NameCmp(screensecptr.gpu_devices[k].driver, drivername) == 0)
                 && (!screensecptr.gpu_devices[k].claimed)) {
                 /*
@@ -1415,7 +1415,7 @@ void xf86UnloadSubModule(void* mod)
 
 Bool xf86LoaderCheckSymbol(const(char)* name)
 {
-    return LoaderSymbol(name) != null;
+    return LoaderSymbol(name) !is null;
 }
 
 enum BSOpts {

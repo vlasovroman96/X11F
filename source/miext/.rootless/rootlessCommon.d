@@ -215,7 +215,7 @@ void RootlessStartDrawing(WindowPtr pWindow)
         RL_DEBUG_MSG("curPixmap is %p %p for wid=%lu\n", curPixmap, curPixmap ? curPixmap.devPrivate.ptr : null, RootlessWID(pWindow));
         RL_DEBUG_MSG("oldPixmap is %p %p for wid=%lu\n", oldPixmap, oldPixmap ? oldPixmap.devPrivate.ptr : null, RootlessWID(pWindow));
 
-        if (oldPixmap != null) {
+        if (oldPixmap !is null) {
             if (oldPixmap == curPixmap)
                 RL_DEBUG_MSG
                     ("Window %p's curPixmap %p is the same as its oldPixmap; strange\n",
@@ -454,11 +454,11 @@ void RootlessRepositionWindows(ScreenPtr pScreen)
     WindowPtr root = pScreen.root;
     WindowPtr win = void;
 
-    if (root != null) {
+    if (root !is null) {
         RootlessRepositionWindow(root);
 
         for (win = root.firstChild; win; win = win.nextSib) {
-            if (WINREC(win) != null)
+            if (WINREC(win) !is null)
                 RootlessRepositionWindow(win);
         }
     }
@@ -472,12 +472,12 @@ void RootlessRedisplayScreen(ScreenPtr pScreen)
 {
     WindowPtr root = pScreen.root;
 
-    if (root != null) {
+    if (root !is null) {
         WindowPtr win = void;
 
         RootlessRedisplay(root);
         for (win = root.firstChild; win; win = win.nextSib) {
-            if (WINREC(win) != null) {
+            if (WINREC(win) !is null) {
                 RootlessRedisplay(win);
             }
         }

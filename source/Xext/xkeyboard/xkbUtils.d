@@ -743,7 +743,7 @@ Bool XkbEnableDisableControls(XkbSrvInfoPtr xkbi, c_ulong change, c_ulong newVal
     ctrls.enabled_ctrls |= (change & newValues);
     if (old == ctrls.enabled_ctrls)
         return FALSE;
-    if (cause != null) {
+    if (cause !is null) {
         xkbControlsNotify cn = { 0 };
 
         cn.numGroups = ctrls.num_groups;
@@ -784,11 +784,11 @@ XkbGeometryPtr XkbLookupNamedGeometry(DeviceIntPtr dev, Atom name, Bool* shouldF
 
     *shouldFree = 0;
     if (name == None) {
-        if (xkb.geom != null)
+        if (xkb.geom !is null)
             return xkb.geom;
         name = xkb.names.geometry;
     }
-    if ((xkb.geom != null) && (xkb.geom.name == name))
+    if ((xkb.geom !is null) && (xkb.geom.name == name))
         return xkb.geom;
     *shouldFree = 1;
     return null;

@@ -142,7 +142,7 @@ void exaDDXDriverInit(ScreenPtr pScreen)
 
             heuristicName = xf86GetOptValString(pScreenPriv.options,
                                                 EXAOPT_MIGRATION_HEURISTIC);
-            if (heuristicName != null) {
+            if (heuristicName !is null) {
                 if (strcmp(heuristicName, "greedy") == 0)
                     pExaScr.migration = ExaMigrationGreedy;
                 else if (strcmp(heuristicName, "always") == 0)

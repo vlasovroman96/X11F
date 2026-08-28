@@ -238,7 +238,7 @@ private void GestureAddRegularListener(DeviceIntPtr dev, GestureInfoPtr gi, Wind
 
     inputMasks = mixin(wOtherInputMasks!("win"));
 
-    if ((mask & EVENT_XI2_MASK) && (inputMasks != null)) {
+    if ((mask & EVENT_XI2_MASK) && (inputMasks !is null)) {
         mixin(nt_list_for_each_entry!("iclients", "inputMasks.inputClients", "next", q{
             if (!xi2mask_isset(iclients.xi2mask, dev, evtype))
                 continue;

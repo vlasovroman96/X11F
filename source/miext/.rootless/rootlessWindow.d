@@ -193,7 +193,7 @@ private void RootlessDestroyFrame(WindowPtr pWin, RootlessWindowPtr winRec)
 void RootlessWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin)
 {
     RootlessWindowRec* winRec = WINREC(pWin);
-    if (winRec != null)
+    if (winRec !is null)
         RootlessDestroyFrame(pWin, winRec);
 }
 
@@ -235,7 +235,7 @@ private void RootlessReshapeFrame(WindowPtr pWin)
 
 version (ROOTLESSDEBUG) {
     RL_DEBUG_MSG("reshaping...");
-    if (pShape != null) {
+    if (pShape !is null) {
         RL_DEBUG_MSG("numrects %d, extents %d %d %d %d ",
                      RegionNumRects(&newShape),
                      newShape.extents.x1, newShape.extents.y1,
@@ -248,7 +248,7 @@ version (ROOTLESSDEBUG) {
 
     SCREENREC(pWin.drawable.pScreen).imp.ReshapeFrame(winRec.wid, pShape);
 
-    if (pShape != null)
+    if (pShape !is null)
         RegionUninit(&newShape);
 }
 
@@ -357,7 +357,7 @@ private RootlessWindowRec* RootlessEnsureFrame(WindowPtr pWin)
     RegionRec shape = void;
     RegionPtr pShape = null;
 
-    if (WINREC(pWin) != null)
+    if (WINREC(pWin) !is null)
         return WINREC(pWin);
 
     if (!IsTopLevel(pWin) && !IsRoot(pWin))
@@ -399,7 +399,7 @@ private RootlessWindowRec* RootlessEnsureFrame(WindowPtr pWin)
     if (pWin.drawable.depth == 8)
         RootlessFlushWindowColormap(pWin);
 
-    if (pShape != null)
+    if (pShape !is null)
         RegionUninit(&shape);
 
     return winRec;
@@ -513,7 +513,7 @@ void RootlessReorderWindow(WindowPtr pWin)
 {
     RootlessWindowRec* winRec = WINREC(pWin);
 
-    if (pWin.realized && winRec != null && !winRec.is_reorder_pending &&
+    if (pWin.realized && winRec !is null && !winRec.is_reorder_pending &&
         !windows_hidden) {
         WindowPtr newPrevW = void;
         RootlessWindowRec* newPrev = void;
@@ -544,8 +544,8 @@ void RootlessReorderWindow(WindowPtr pWin)
                 newPrevW.unhittable != pWin.unhittable))
             newPrevW = newPrevW.prevSib;
 
-        newPrev = newPrevW != null ? WINREC(newPrevW) : null;
-        newPrevID = newPrev != null ? newPrev.wid : 0;
+        newPrev = newPrevW !is null ? WINREC(newPrevW) : null;
+        newPrevID = newPrev !is null ? newPrev.wid : 0;
 
         /* If it exists, reorder the frame above us first. */
 
@@ -1023,7 +1023,7 @@ void RootlessReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
 
     DeleteProperty(serverClient, pWin, xa_native_window_id());
 
-    if (WINREC(pTopWin) != null) {
+    if (WINREC(pTopWin) !is null) {
         /* We're screwed. */
         RootlessDestroyFrame(pWin, winRec);
     }
@@ -1145,7 +1145,7 @@ void RootlessOrderAllWindows(Bool include_unhitable)
         if (pWin is null)
             continue;
 
-        for (pWin = pWin.firstChild; pWin != null; pWin = pWin.nextSib) {
+        for (pWin = pWin.firstChild; pWin !is null; pWin = pWin.nextSib) {
             if (!pWin.realized)
                 continue;
             if (RootlessEnsureFrame(pWin) is null)
@@ -1199,14 +1199,14 @@ void RootlessHideAllWindows()
         if (pWin is null)
             continue;
 
-        for (pWin = pWin.firstChild; pWin != null; pWin = pWin.nextSib) {
+        for (pWin = pWin.firstChild; pWin !is null; pWin = pWin.nextSib) {
             if (!pWin.realized)
                 continue;
 
             RootlessStopDrawing(pWin, FALSE);
 
             winRec = WINREC(pWin);
-            if (winRec != null) {
+            if (winRec !is null) {
                 if (SCREENREC(walkScreen).imp.HideWindow)
                     SCREENREC(walkScreen).imp.HideWindow(winRec.wid);
             }
@@ -1228,7 +1228,7 @@ void RootlessShowAllWindows()
         if (pWin is null)
             continue;
 
-        for (pWin = pWin.firstChild; pWin != null; pWin = pWin.nextSib) {
+        for (pWin = pWin.firstChild; pWin !is null; pWin = pWin.nextSib) {
             if (!pWin.realized)
                 continue;
 

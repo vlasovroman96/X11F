@@ -76,7 +76,7 @@ Bool miSyncFdScreenInit(ScreenPtr pScreen, const(SyncFdScreenFuncsRec)* funcs)
     SyncFdScreenPrivatePtr priv = void;
 
     /* Check to see if we've already been initialized */
-    if (sync_fd_screen_priv(pScreen) != null)
+    if (sync_fd_screen_priv(pScreen) !is null)
         return FALSE;
 
     if (!miSyncSetup(pScreen))

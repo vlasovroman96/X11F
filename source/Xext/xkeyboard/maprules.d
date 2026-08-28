@@ -288,7 +288,7 @@ private void SetUpRemap(InputLine* line, RemapSpec* remap)
 
     memset(cast(char*) remap, 0, RemapSpec.sizeof);
     remap.number = len;
-    while ((tok = _XStrtok(str, " ", &strtok_buf)) != null) {
+    while ((tok = _XStrtok(str, " ", &strtok_buf)) !is null) {
         Bool found = FALSE;
         str = null;
         if (strcmp(tok, "=") == 0)
@@ -368,7 +368,7 @@ private Bool MatchOneOf(const(char)* wanted, const(char)* vals_defined)
     int want_len = cast(int)strlen(wanted);
 
     const(char)* str = void, next = null;
-    for (str = vals_defined; str != null; str = next) {
+    for (str = vals_defined; str !is null; str = next) {
         int len = void;
 
         next = strchr(str, ',');
@@ -438,7 +438,7 @@ private Bool CheckLine(InputLine* line, RemapSpec* remap, XkbRF_RulePtr rule, Xk
     char* tok = void;
     Bool append = FALSE;
 
-    for (nread = 0; (tok = _XStrtok(str, " ", &strtok_buf)) != null; nread++) {
+    for (nread = 0; (tok = _XStrtok(str, " ", &strtok_buf)) !is null; nread++) {
         str = null;
         if (strcmp(tok, "=") == 0) {
             nread--;
@@ -629,7 +629,7 @@ private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, X
 {
     Bool pending = FALSE;
 
-    if (rule.model != null) {
+    if (rule.model !is null) {
         if (mdefs.model is null)
             return 0;
         if (strcmp(rule.model, "*") == 0) {
@@ -646,14 +646,14 @@ private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, X
             }
         }
     }
-    if (rule.option != null) {
+    if (rule.option !is null) {
         if (mdefs.options is null)
             return 0;
         if ((!MatchOneOf(rule.option, mdefs.options)))
             return 0;
     }
 
-    if (rule.layout != null) {
+    if (rule.layout !is null) {
         if (mdefs.layout[rule.layout_num] is null ||
             *mdefs.layout[rule.layout_num] == '\0')
             return 0;
@@ -672,7 +672,7 @@ private int XkbRF_CheckApplyRule(XkbRF_RulePtr rule, XkbRF_MultiDefsPtr mdefs, X
             }
         }
     }
-    if (rule.variant != null) {
+    if (rule.variant !is null) {
         if (mdefs.variant[rule.variant_num] is null ||
             *mdefs.variant[rule.variant_num] == '\0')
             return 0;
@@ -754,7 +754,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
     if (str is null)
         return name;
     len = cast(int)strlen(name);
-    while (str != null) {
+    while (str !is null) {
         char pfx = str[1];
         int extra_len = 0;
 
@@ -941,13 +941,13 @@ Bool XkbRF_LoadRules(FILE* file, XkbRF_RulesPtr rules)
     while (GetInputLine(file, &line, TRUE)) {
         if (CheckLine(&line, &remap, &trule, &tgroup)) {
             if (tgroup.number) {
-                if ((group = XkbRF_AddGroup(rules)) != null) {
+                if ((group = XkbRF_AddGroup(rules)) !is null) {
                     *group = tgroup;
                     memset(cast(char*) &tgroup, 0, XkbRF_GroupRec.sizeof);
                 }
             }
             else {
-                if ((rule = XkbRF_AddRule(rules)) != null) {
+                if ((rule = XkbRF_AddRule(rules)) !is null) {
                     *rule = trule;
                     memset(cast(char*) &trule, 0, XkbRF_RuleRec.sizeof);
                 }

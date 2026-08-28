@@ -560,7 +560,7 @@ Status XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, in
 
         if (nOldGroups == 0) {
             pSyms = XkbResizeKeySyms(xkb, key, width * nGroups);
-            if (pSyms != null) {
+            if (pSyms !is null) {
                 i = xkb.map.key_sym_map[key].group_info;
                 i = mixin(XkbSetNumGroups!("i", "nGroups"));
                 xkb.map.key_sym_map[key].group_info = cast(ubyte)i;
@@ -620,7 +620,7 @@ Status XkbChangeTypesOfKey(XkbDescPtr xkb, int key, int nGroups, uint groups, in
             width = xkb.map.types[newTypes[i]].num_levels;
     }
     xkb.map.key_sym_map[key].width = cast(ubyte)width;
-    if (changes != null) {
+    if (changes !is null) {
         if (changes.changed & XkbKeySymsMask) {
             _XkbAddKeyChange(&changes.first_key_sym, &changes.num_key_syms,
                              cast(ubyte)key);
@@ -768,7 +768,7 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
             }
         }
     }
-    if (xkb.indicators != null) {
+    if (xkb.indicators !is null) {
         XkbIndicatorMapPtr map = &xkb.indicators.maps[0];
 
         for (int i = 0; i < XkbNumIndicators; i++, map++) {
@@ -787,7 +787,7 @@ Bool XkbApplyVirtualModChanges(XkbDescPtr xkb, uint changed, XkbChangesPtr chang
             }
         }
     }
-    if (xkb.compat != null) {
+    if (xkb.compat !is null) {
         XkbCompatMapPtr compat = xkb.compat;
 
         for (int i = 0; i < XkbNumKbdGroups; i++) {

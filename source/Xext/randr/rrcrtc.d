@@ -214,7 +214,7 @@ Bool RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotatio
         if (crtc.mode)
             RRModeDestroy(crtc.mode);
         crtc.mode = mode;
-        if (mode != null)
+        if (mode !is null)
             mode.refcnt++;
         RRCrtcChanged(crtc, TRUE);
     }

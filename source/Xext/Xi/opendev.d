@@ -117,23 +117,23 @@ int ProcXOpenDevice(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    if (dev.key != null) {
+    if (dev.key !is null) {
         mixin(WRITE_ICI!(`KeyClass`));
     }
-    if (dev.button != null) {
+    if (dev.button !is null) {
         mixin(WRITE_ICI!(`ButtonClass`));
     }
-    if (dev.valuator != null) {
+    if (dev.valuator !is null) {
         mixin(WRITE_ICI!(`ValuatorClass`));
     }
-    if (dev.kbdfeed != null || dev.ptrfeed != null || dev.leds != null ||
-        dev.intfeed != null || dev.bell != null || dev.stringfeed != null) {
+    if (dev.kbdfeed !is null || dev.ptrfeed !is null || dev.leds !is null ||
+        dev.intfeed !is null || dev.bell !is null || dev.stringfeed !is null) {
         mixin(WRITE_ICI!(`FeedbackClass`));
     }
-    if (dev.focus != null) {
+    if (dev.focus !is null) {
         mixin(WRITE_ICI!(`FocusClass`));
     }
-    if (dev.proximity != null) {
+    if (dev.proximity !is null) {
         mixin(WRITE_ICI!(`ProximityClass`));
     }
     mixin(WRITE_ICI!(`OtherClass`));

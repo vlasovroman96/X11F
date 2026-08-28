@@ -255,7 +255,7 @@ private void xf86RotateBlockHandler(ScreenPtr pScreen, void* pTimeout)
     (*pScreen.BlockHandler) (pScreen, pTimeout);
 
     /* Re-wrap if we still need this hook */
-    if (xf86_config.rotation_damage != null) {
+    if (xf86_config.rotation_damage !is null) {
         xf86_config.BlockHandler = pScreen.BlockHandler;
         pScreen.BlockHandler = &xf86RotateBlockHandler;
     } else

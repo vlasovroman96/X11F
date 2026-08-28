@@ -235,7 +235,7 @@ DisplayModePtr xf86DuplicateModes(ScrnInfoPtr pScrn, DisplayModePtr modeList)
     DisplayModePtr first = null, last = null;
     DisplayModePtr mode = void;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         DisplayModePtr new_ = void;
 
         new_ = xf86DuplicateMode(mode);
@@ -397,7 +397,7 @@ void xf86ValidateModesFlags(ScrnInfoPtr pScrn, DisplayModePtr modeList, int flag
     if (flags == (V_INTERLACE | V_DBLSCAN))
         return;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         if (mode.Flags & V_INTERLACE && !(flags & V_INTERLACE))
             mode.status = MODE_NO_INTERLACE;
         if (mode.Flags & V_DBLSCAN && !(flags & V_DBLSCAN))
@@ -421,7 +421,7 @@ void xf86ValidateModesSize(ScrnInfoPtr pScrn, DisplayModePtr modeList, int maxX,
     if (maxY <= 0)
         maxY = MAXINT;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         if ((xf86ModeWidth(mode, RR_Rotate_0) > maxPitch ||
              xf86ModeWidth(mode, RR_Rotate_0) > maxX ||
              xf86ModeHeight(mode, RR_Rotate_0) > maxY) &&
@@ -456,7 +456,7 @@ void xf86ValidateModesSync(ScrnInfoPtr pScrn, DisplayModePtr modeList, MonPtr mo
 {
     DisplayModePtr mode = void;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         Bool bad = void;
         int i = void;
 
@@ -501,7 +501,7 @@ void xf86ValidateModesClocks(ScrnInfoPtr pScrn, DisplayModePtr modeList, int* mi
     DisplayModePtr mode = void;
     int i = void;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         Bool good = FALSE;
 
         for (i = 0; i < n_ranges; i++) {
@@ -535,11 +535,11 @@ void xf86ValidateModesUserConfig(ScrnInfoPtr pScrn, DisplayModePtr modeList)
     if (pScrn.display.modes[0] is null)
         return;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         int i = void;
         Bool good = FALSE;
 
-        for (i = 0; pScrn.display.modes[i] != null; i++) {
+        for (i = 0; pScrn.display.modes[i] !is null; i++) {
             if (strncmp(pScrn.display.modes[i], mode.name,
                         strlen(pScrn.display.modes[i])) == 0) {
                 good = TRUE;
@@ -562,7 +562,7 @@ void xf86ValidateModesBandwidth(ScrnInfoPtr pScrn, DisplayModePtr modeList, uint
 {
     DisplayModePtr mode = void;
 
-    for (mode = modeList; mode != null; mode = mode.next) {
+    for (mode = modeList; mode !is null; mode = mode.next) {
         if (xf86ModeBandwidth(mode, depth) > bandwidth)
             mode.status = MODE_BANDWIDTH;
     }
@@ -586,7 +586,7 @@ Bool xf86ModeIsReduced(const(DisplayModeRec)* mode)
  */
 void xf86ValidateModesReducedBlanking(ScrnInfoPtr pScrn, DisplayModePtr modeList)
 {
-    for (; modeList != null; modeList = modeList.next)
+    for (; modeList !is null; modeList = modeList.next)
         if (xf86ModeIsReduced(modeList))
             modeList.status = MODE_NO_REDUCED;
 }
@@ -602,7 +602,7 @@ void xf86PruneInvalidModes(ScrnInfoPtr pScrn, DisplayModePtr* modeList, Bool ver
 {
     DisplayModePtr mode = void;
 
-    for (mode = *modeList; mode != null;) {
+    for (mode = *modeList; mode !is null;) {
         DisplayModePtr next = mode.next, first = *modeList;
 
         if (mode.status != MODE_OK) {

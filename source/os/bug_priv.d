@@ -14,7 +14,7 @@ enum string __BUG_WARN_MSG(string cond, string with_msg) = `
     if (`~cond~`) {                                                  
             ErrorF("BUG: 'if (\"`~cond~`\")'\n");                            
             ErrorF("BUG: %s:%u in %s()\n", __FILE__.ptr, __LINE__, __FUNCTION__.ptr); 
-            static if ("`~with_msg~`" != null) 
+            static if ("`~with_msg~`" !is null) 
                 ErrorF("`~with_msg~`");                            
             // xorg_backtrace();                                             
         }

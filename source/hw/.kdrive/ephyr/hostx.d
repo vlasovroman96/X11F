@@ -174,7 +174,7 @@ int hostx_want_screen_geometry(KdScreenInfo* screen, int* width, int* height, in
     EphyrScrPriv* scrpriv = cast(EphyrScrPriv*)screen.driver;
 
     if (scrpriv && (scrpriv.win_pre_existing != None ||
-                    scrpriv.output != null ||
+                    scrpriv.output !is null ||
                     HostX.use_fullscreen == TRUE)) {
         *x = scrpriv.win_x;
         *y = scrpriv.win_y;
@@ -238,7 +238,7 @@ enum BUF_LEN = 256;
         memset(buf.ptr, 0, BUF_LEN + 1);
         snprintf(buf.ptr, BUF_LEN, "Xephyr on %s.%d %s",
                  HostX.server_dpy_name ? HostX.server_dpy_name : ":0",
-                 scrpriv.mynum, (extra_text != null) ? extra_text : "");
+                 scrpriv.mynum, (extra_text !is null) ? extra_text : "");
 
         xcb_icccm_set_wm_name(HostX.conn,
                               scrpriv.win,
@@ -304,7 +304,7 @@ void hostx_get_output_geometry(const(char)* output, int* x, int* y, int* width, 
                                               version_c,
                                               &error);
 
-    if (error != null || version_r is null)
+    if (error !is null || version_r is null)
     {
         fprintf(stderr, "\nFailed to get RandR version supported by host X server.\n");
         exit(1);
@@ -528,7 +528,7 @@ version (MITSHM) {
         }
     }
 
-    return shminfo.shmaddr != null;
+    return shminfo.shmaddr !is null;
 } else {
     return FALSE;
 } /* MITSHM */
@@ -898,7 +898,7 @@ hostx_screen_init(KdScreenInfo* screen,
     EPHYR_DBG("host_screen=%p x=%d, y=%d, wxh=%dx%d, buffer_height=%d",
               screen, x, y, width, height, buffer_height);
 
-    if (scrpriv.ximg != null) {
+    if (scrpriv.ximg !is null) {
         /* Free up the image data if previously used
          * i.ie called by server reset
          */
@@ -1345,7 +1345,7 @@ Bool hostx_has_queued_event()
 {
     if (!HostX.saved_event)
         HostX.saved_event = xcb_poll_for_queued_event(HostX.conn);
-    return HostX.saved_event != null;
+    return HostX.saved_event !is null;
 }
 
 int hostx_get_screen()

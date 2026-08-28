@@ -52,7 +52,7 @@ private void glamor_xf86_egl_free_screen(ScrnInfoPtr scrn)
 
     alias fnType = extern(C) void function(_ScrnInfoRec*) nothrow @nogc;
     glamor_egl = glamor_xf86_egl_get_scrn_private(scrn);
-    if (glamor_egl != null) {
+    if (glamor_egl !is null) {
         scrn.FreeScreen = cast(fnType)glamor_egl.server_private;
         glamor_egl_cleanup(glamor_egl);
         free(glamor_egl);
@@ -98,7 +98,7 @@ private Bool _glamor_egl_init(ScrnInfoPtr scrn, int fd, int* caps)
 
     scrn.privates[xf86GlamorEGLPrivateIndex].ptr = glamor_egl;
 
-    if (xf86Info.debug_ != null) {
+    if (xf86Info.debug_ !is null) {
         glamor_egl_conf.dmabuf_forced = TRUE;
         glamor_egl_conf.dmabuf_capable = !!strstr(xf86Info.debug_,
                                                    "dmabuf_capable");

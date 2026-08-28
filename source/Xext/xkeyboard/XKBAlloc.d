@@ -138,8 +138,8 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
             return BadAlloc;
     }
     names = xkb.names;
-    if ((which & XkbKTLevelNamesMask) && (xkb.map != null) &&
-        (xkb.map.types != null)) {
+    if ((which & XkbKTLevelNamesMask) && (xkb.map !is null) &&
+        (xkb.map.types !is null)) {
         int i = void;
         XkbKeyTypePtr type = void;
 
@@ -171,7 +171,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
             names.key_aliases = cast(_XkbKeyAliasRec*)reallocarray(names.key_aliases,
                                               nTotalAliases,
                                               XkbKeyAliasRec.sizeof);
-            if (names.key_aliases != null) {
+            if (names.key_aliases !is null) {
                 memset(&names.key_aliases[names.num_key_aliases], 0,
                        (nTotalAliases -
                         names.num_key_aliases) * XkbKeyAliasRec.sizeof);
@@ -195,7 +195,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
 
             names.radio_groups = cast(ulong*)reallocarray(names.radio_groups,
                                                nTotalRG, Atom.sizeof);
-            if (names.radio_groups != null) {
+            if (names.radio_groups !is null) {
                 memset(&names.radio_groups[names.num_rg], 0,
                        (nTotalRG - names.num_rg) * Atom.sizeof);
             }
@@ -224,7 +224,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
     if (which & XkbKTLevelNamesMask) {
         XkbClientMapPtr map = xkb.map;
 
-        if ((map != null) && (map.types != null)) {
+        if ((map !is null) && (map.types !is null)) {
             int i = void;
             XkbKeyTypePtr type = void;
 
@@ -235,7 +235,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
             }
         }
     }
-    if ((which & XkbKeyNamesMask) && (names.keys != null)) {
+    if ((which & XkbKeyNamesMask) && (names.keys !is null)) {
         free(names.keys);
         names.keys = null;
         names.num_keys = 0;
@@ -274,7 +274,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
 
  /*ARGSUSED*/ private void XkbFreeControls(XkbDescPtr xkb, uint which, Bool freeMap)
 {
-    if (freeMap && (xkb != null) && (xkb.ctrls != null)) {
+    if (freeMap && (xkb !is null) && (xkb.ctrls !is null)) {
         free(xkb.ctrls);
         xkb.ctrls = null;
     }
@@ -297,7 +297,7 @@ int XkbAllocIndicatorMaps(XkbDescPtr xkb)
 
 private void XkbFreeIndicatorMaps(XkbDescPtr xkb)
 {
-    if ((xkb != null) && (xkb.indicators != null)) {
+    if ((xkb !is null) && (xkb.indicators !is null)) {
         free(xkb.indicators);
         xkb.indicators = null;
     }
@@ -332,7 +332,7 @@ void XkbFreeKeyboard(XkbDescPtr xkb, uint which, Bool freeAll)
         XkbFreeIndicatorMaps(xkb);
     if (which & XkbNamesMask)
         XkbFreeNames(xkb, XkbAllNamesMask, TRUE);
-    if ((which & XkbGeometryMask) && (xkb.geom != null)) {
+    if ((which & XkbGeometryMask) && (xkb.geom !is null)) {
         XkbFreeGeometry(xkb.geom, XkbGeomAllMask, TRUE);
         /* PERHAPS BONGHITS etc */
         xkb.geom = null;

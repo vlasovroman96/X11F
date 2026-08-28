@@ -156,7 +156,7 @@ private void DRIDrvMsg(int scrnIndex, MessageType type, const(char)* format, ...
 
 private void DRIOpenDRMCleanup(DRIEntPrivPtr pDRIEntPriv)
 {
-    if (pDRIEntPriv.pLSAREA != null) {
+    if (pDRIEntPriv.pLSAREA !is null) {
         drmUnmap(pDRIEntPriv.pLSAREA, cast(uint)pDRIEntPriv.sAreaSize);
         pDRIEntPriv.pLSAREA = null;
     }

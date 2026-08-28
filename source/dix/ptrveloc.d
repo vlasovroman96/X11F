@@ -1006,7 +1006,7 @@ DeviceVelocityPtr GetDevicePredictableAccelData(DeviceIntPtr dev)
     if (dev.valuator &&
         dev.valuator.accelScheme.AccelSchemeProc is
         &acceleratePointerPredictable &&
-        dev.valuator.accelScheme.accelData != null) {
+        dev.valuator.accelScheme.accelData !is null) {
 
         return (cast(PredictableAccelSchemePtr)
                 dev.valuator.accelScheme.accelData).vel;

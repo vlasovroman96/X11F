@@ -185,7 +185,7 @@ private void _XkbClearOutline(char* outline_in)
 {
     XkbOutlinePtr outline = cast(XkbOutlinePtr) outline_in;
 
-    if (outline.points != null)
+    if (outline.points !is null)
         XkbFreeGeomPoints(outline, 0, outline.num_points, TRUE);
     return;
 }
@@ -236,7 +236,7 @@ private void _XkbClearRow(char* row_in)
 {
     XkbRowPtr row = cast(XkbRowPtr) row_in;
 
-    if (row.keys != null)
+    if (row.keys !is null)
         XkbFreeGeomKeys(row, 0, row.num_keys, TRUE);
     return;
 }
@@ -255,9 +255,9 @@ private void _XkbClearSection(char* section_in)
 {
     XkbSectionPtr section = cast(XkbSectionPtr) section_in;
 
-    if (section.rows != null)
+    if (section.rows !is null)
         XkbFreeGeomRows(section, 0, section.num_rows, TRUE);
-    if (section.doodads != null) {
+    if (section.doodads !is null) {
         XkbFreeGeomDoodads(section.doodads, section.num_doodads, TRUE);
         section.doodads = null;
     }
@@ -319,20 +319,20 @@ void XkbFreeGeometry(XkbGeometryPtr geom, uint which, Bool freeMap)
         return;
     if (freeMap)
         which = XkbGeomAllMask;
-    if ((which & XkbGeomPropertiesMask) && (geom.properties != null))
+    if ((which & XkbGeomPropertiesMask) && (geom.properties !is null))
         XkbFreeGeomProperties(geom, 0, geom.num_properties, TRUE);
-    if ((which & XkbGeomColorsMask) && (geom.colors != null))
+    if ((which & XkbGeomColorsMask) && (geom.colors !is null))
         XkbFreeGeomColors(geom, 0, geom.num_colors, TRUE);
-    if ((which & XkbGeomShapesMask) && (geom.shapes != null))
+    if ((which & XkbGeomShapesMask) && (geom.shapes !is null))
         XkbFreeGeomShapes(geom, 0, geom.num_shapes, TRUE);
-    if ((which & XkbGeomSectionsMask) && (geom.sections != null))
+    if ((which & XkbGeomSectionsMask) && (geom.sections !is null))
         XkbFreeGeomSections(geom, 0, geom.num_sections, TRUE);
-    if ((which & XkbGeomDoodadsMask) && (geom.doodads != null)) {
+    if ((which & XkbGeomDoodadsMask) && (geom.doodads !is null)) {
         XkbFreeGeomDoodads(geom.doodads, geom.num_doodads, TRUE);
         geom.doodads = null;
         geom.num_doodads = geom.sz_doodads = 0;
     }
-    if ((which & XkbGeomKeyAliasesMask) && (geom.key_aliases != null))
+    if ((which & XkbGeomKeyAliasesMask) && (geom.key_aliases !is null))
         XkbFreeGeomKeyAliases(geom, 0, geom.num_key_aliases, TRUE);
     if (freeMap) {
         free(geom.label_font);
@@ -706,7 +706,7 @@ XkbDoodadPtr XkbAddGeomDoodad(XkbGeometryPtr geom, XkbSectionPtr section, Atom n
 
     if ((!geom) || (name == None))
         return null;
-    if ((section != null) && (section.num_doodads > 0)) {
+    if ((section !is null) && (section.num_doodads > 0)) {
         old = section.doodads;
         nDoodads = section.num_doodads;
     }

@@ -102,9 +102,9 @@ private ExaOffscreenArea* exaFindAreaToEvict(ExaScreenPrivPtr pExaScr, int size,
     cost = 0;
     best = null;
 
-    while (end != null) {
+    while (end !is null) {
  restart:
-        while (begin != null && begin.state == ExaOffscreenLocked)
+        while (begin !is null && begin.state == ExaOffscreenLocked)
             begin = end = begin.next;
 
         if (begin is null)
@@ -113,7 +113,7 @@ private ExaOffscreenArea* exaFindAreaToEvict(ExaScreenPrivPtr pExaScr, int size,
         /* adjust size needed to account for alignment loss for this area */
         real_size = size + (begin.base_offset + begin.size - size) % align_;
 
-        while (avail < real_size && end != null) {
+        while (avail < real_size && end !is null) {
             if (end.state == ExaOffscreenLocked) {
                 /* Can't more room here, restart after this locked area */
                 avail = 0;
@@ -322,7 +322,7 @@ private void ExaOffscreenEjectPixmaps(ScreenPtr pScreen)
     for (;;) {
         ExaOffscreenArea* area = void;
 
-        for (area = pExaScr.info.offScreenAreas; area != null;
+        for (area = pExaScr.info.offScreenAreas; area !is null;
              area = area.next) {
             if (area.state == ExaOffscreenRemovable &&
                 area.save == &exaPixmapSave) {
@@ -658,7 +658,7 @@ void ExaOffscreenFini(ScreenPtr pScreen)
     ExaOffscreenArea* area = void;
 
     /* just free all of the area records */
-    while ((area = pExaScr.info.offScreenAreas) != null) {
+    while ((area = pExaScr.info.offScreenAreas) !is null) {
         pExaScr.info.offScreenAreas = area.next;
         free(area);
     }
