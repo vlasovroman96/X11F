@@ -52,7 +52,7 @@ SOFTWARE.
 
 ******************************************************************/
 
- 
+import build.xlibre_server;
 public import core.stdc.stdarg;
 public import core.stdc.stdint;
 public import core.stdc.stdlib;
@@ -204,13 +204,13 @@ void TimeSinceLastInputEvent();
 
 version (HAVE_REALLOCARRAY) {
 
-enum reallocarray = xreallocarray;
+alias xreallocarray = reallocarray;
 } else {
 void* reallocarray(void* optr, size_t nmemb, size_t size);
 }
 
 version (HAVE_STRCASESTR) {
-enum strcasestr = xstrcasestr;
+enum xstrcasestr = strcasestr;
 
 } else {
 void* xstrcasestr(const(char)* s, const(char)* find);
@@ -226,6 +226,7 @@ version (HAVE_STRNDUP) {} else {
 }
 
 version (HAVE_TIMINGSAFE_MEMCMP) {} else {
+    public import os.timingsafe_memcmp; 
 // void timingsafe_memcmp(const(void)* b1, const(void)* b2, size_t len);
 }
 

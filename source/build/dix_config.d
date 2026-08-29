@@ -126,7 +126,7 @@ enum HAVE_POSIX_FALLOCATE = 1;
 
 enum HAVE_PTHREAD_SETNAME_NP_WITH_TID = 1;
 
-enum HAVE_REALLOCARRAY = 1;
+version = HAVE_REALLOCARRAY;
 
 enum HAVE_SETEUID = 1;
 
@@ -150,15 +150,15 @@ enum HAVE_SIGPROCMASK = 1;
 
 enum HAVE_SOCKLEN_T = 1;
 
-enum HAVE_STRCASESTR = 1;
+version = HAVE_STRCASESTR;
 
 enum HAVE_STRINGS_H = 1;
 
-enum HAVE_STRLCAT = 1;
+version = HAVE_STRLCAT;
 
-enum HAVE_STRLCPY = 1;
+version = HAVE_STRLCPY;
 
-enum HAVE_STRNDUP = 1;
+version = HAVE_STRNDUP;
 
 enum HAVE_STRUCT_SOCKADDR_STORAGE = 1;
 
@@ -176,7 +176,7 @@ enum HAVE_XSHMFENCE = 1;
 
 enum INPUTTHREAD = 1;
 
-enum IPv6 = 1;
+version = IPv6;
 
 version = LIBDRM_HAS_PLANE_SIZE_HINTS;
 

@@ -135,12 +135,12 @@ shared static this()
     import core.stdc.stdio : fprintf, stderr;
     //fprintf(stderr, "!!! XTRANS STATIC CTOR !!!\n");
     size_t maxElements = 2; // TCP + INET
-    // version(IPv6) {
-    //     maxElements += 1;   // INET6
+    version(IPv6) {
+        maxElements += 1;   // INET6
+    }
+    // version(UNIXCONN) {
+        // maxElements += 2;   // LOCAL + UNIX
     // }
-    // // version(UNIXCONN) {
-    //     maxElements += 2;   // LOCAL + UNIX
-    // // }
 
     auto ptr = cast(Xtransport_table*)calloc(
         maxElements,
@@ -155,13 +155,13 @@ shared static this()
         TRANS_SOCKET_TCP_INDEX
     );
 
-    // version (IPv6)
-    // {
-    //     arr[count++] = Xtransport_table(
-    //         &_XSERVTransSocketINET6Funcs,
-    //         TRANS_SOCKET_INET6_INDEX
-    //     );
-    // }
+    version (IPv6)
+    {
+        arr[count++] = Xtransport_table(
+            &_XSERVTransSocketINET6Funcs,
+            TRANS_SOCKET_INET6_INDEX
+        );
+    }
 
     arr[count++] = Xtransport_table(
         &_XSERVTransSocketINETFuncs,
@@ -994,9 +994,9 @@ int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint*
     XtransConnInfo[mixin(NUMTRANS)] temp_ciptrs = null;
     int status = void, j = void;
 
-// version (IPv6) {
-//     int ipv6_succ = 0;
-// }
+version (IPv6) {
+    int ipv6_succ = 0;
+}
     prmsg (2,"MakeAllCOTSServerListeners(%s,%p)\n",
 	   port ? port : "NULL", cast(void*) ciptrs_ret);
 
@@ -1049,11 +1049,11 @@ int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint*
 		  trans.TransName);
 	    continue;
 	}
-// version (IPv6) {
-// 		if ((Xtransports[i].transport_id == TRANS_SOCKET_INET_INDEX
-// 		     && ipv6_succ))
-// 		    flags |= ADDR_IN_USE_ALLOWED;
-// }
+version (IPv6) {
+		if ((Xtransports[i].transport_id == TRANS_SOCKET_INET_INDEX
+		     && ipv6_succ))
+		    flags |= ADDR_IN_USE_ALLOWED;
+}
 
 	if ((status = _XSERVTransCreateListener (ciptr, port, flags)) < 0)
 	{
@@ -1090,14 +1090,14 @@ int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint*
 	    }
 	}
 
-// version (IPv6) {
-// 	if (Xtransports[i].transport_id == TRANS_SOCKET_INET6_INDEX)
-// 	    ipv6_succ = 1;
-// }
+version (IPv6) {
+	if (Xtransports[i].transport_id == TRANS_SOCKET_INET6_INDEX)
+	    ipv6_succ = 1;
+}
 
-	// prmsg (5,
-	//       "MakeAllCOTSServerListeners: opened listener for %s, %d\n",
-	//       trans.TransName, ciptr.fd);
+	prmsg (5,
+	      "MakeAllCOTSServerListeners: opened listener for %s, %d\n",
+	      trans.TransName, ciptr.fd);
 
 	temp_ciptrs[*count_ret] = ciptr;
 	(*count_ret)++;
@@ -1105,9 +1105,9 @@ int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint*
 
     *partial = (*count_ret < complete_network_count());
 
-    // prmsg (5,
-    //  "MakeAllCOTSServerListeners: partial=%d, actual=%d, complete=%d \n",
-	// *partial, *count_ret, complete_network_count());
+    prmsg (5,
+     "MakeAllCOTSServerListeners: partial=%d, actual=%d, complete=%d \n",
+	*partial, *count_ret, complete_network_count());
 
     if (*count_ret > 0)
     {

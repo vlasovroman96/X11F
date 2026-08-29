@@ -116,20 +116,20 @@ alias SCM_RIGHTS = core.sys.posix.sys.socket.SCM_RIGHTS;
 static if (HasVersion!"IPv6" && !HasVersion!"HAVE_INET_NTOP") {
 version = HAVE_INET_NTOP;
 }
-
+public import externs.X11.X;
 /*
  * These values come from X.h and Xauth.h, and MUST match them. Some
  * of these values are also defined by the ChangeHost protocol message.
  */
 
-enum FamilyInternet =		0	/* IPv4 */;
-enum FamilyDECnet =		1;
-enum FamilyChaos =		2;
-enum FamilyInternet6 =		6;
-enum FamilyAmoeba =		33;
+// enum FamilyInternet =		0	/* IPv4 */;
+// enum FamilyDECnet =		1;
+// enum FamilyChaos =		2;
+// enum FamilyInternet6 =		6;
+// enum FamilyAmoeba =		33;
 enum FamilyLocalHost =		252;
-enum FamilyKrb5Principal =	253;
-enum FamilyNetname =		254;
+// enum FamilyKrb5Principal =	253;
+// enum FamilyNetname =		254;
 enum FamilyLocal =		256;
 enum FamilyWild =		65535;
 

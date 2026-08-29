@@ -41,22 +41,22 @@ version = HASXDMAUTH;
 
 /* Add a padding for legacy nvidia drivers that support old ABI */
 /* Define to 1 if you have the `reallocarray' function. */
-enum HAVE_REALLOCARRAY = 1;
+version = HAVE_REALLOCARRAY;
 
 /* Define to 1 if you have the `strcasestr' function. */
-enum HAVE_STRCASESTR = 1;
+version = HAVE_STRCASESTR;
 
 /* Define to 1 if you have the `strlcat' function. */
-enum HAVE_STRLCAT = 1;
+version = HAVE_STRLCAT;
 
 /* Define to 1 if you have the `strlcpy' function. */
-enum HAVE_STRLCPY = 1;
+version = HAVE_STRLCPY;
 
 /* Define to 1 if you have the `strndup' function. */
-enum HAVE_STRNDUP = 1;
+version = HAVE_STRNDUP;
 
 /* Support IPv6 for TCP connections */
-enum IPv6 = 1;
+version = IPv6;
 
 /* Support MIT-SHM Extension */
 enum MITSHM = 1;

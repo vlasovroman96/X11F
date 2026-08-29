@@ -229,20 +229,17 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
     // Вычисляем точный размер внутри лямбды времени компиляции
     enum size_t maxElements = () {
         size_t count = 1; // inet
-        // version(IPv6) {
-        //     count += 3;
-        // } else {
-        //     count += 1;
-        // }
+        version(IPv6) {
+            count += 3;
+        } else {
+            count += 1;
+        }
         // // version(UNIXCONN) {
         //     count += 2;
         // // }
         return count;
     }();
 
-    // Создаем массив фиксированной длины. 
-    // Так как это выполняется в CTFE, GC-аллокации здесь разрешены, 
-    // но в итоговый бинарник попадет чистая статическая таблица.
     Sockettrans2dev[maxElements] arr;
     size_t count = 0;
 
@@ -254,43 +251,43 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
         0
     );
 
-    // version (IPv6)
-    // {
-    //     arr[count++] = Sockettrans2dev(
-    //         "tcp",
-    //         AF_INET6,
-    //         sock.SOCK_STREAM,
-    //         sock.SOCK_DGRAM,
-    //         0
-    //     );
+    version (IPv6)
+    {
+        arr[count++] = Sockettrans2dev(
+            "tcp",
+            AF_INET6,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
+            0
+        );
 
-    //     // IPv4 fallback
-    //     arr[count++] = Sockettrans2dev(
-    //         "tcp",
-    //         AF_INET,
-    //         sock.SOCK_STREAM,
-    //         sock.SOCK_DGRAM,
-    //         0
-    //     );
+        // IPv4 fallback
+        arr[count++] = Sockettrans2dev(
+            "tcp",
+            AF_INET,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
+            0
+        );
 
-    //     arr[count++] = Sockettrans2dev(
-    //         "inet6",
-    //         AF_INET6,
-    //         sock.SOCK_STREAM,
-    //         sock.SOCK_DGRAM,
-    //         0
-    //     );
-    // }
-    // else
-    // {
-    //     arr[count++] = Sockettrans2dev(
-    //         "tcp",
-    //         AF_INET,
-    //         sock.SOCK_STREAM,
-    //         sock.SOCK_DGRAM,
-    //         0
-    //     );
-    // }
+        arr[count++] = Sockettrans2dev(
+            "inet6",
+            AF_INET6,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
+            0
+        );
+    }
+    else
+    {
+        arr[count++] = Sockettrans2dev(
+            "tcp",
+            AF_INET,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
+            0
+        );
+    }
 
     // version (UNIXCONN)
     // {
@@ -311,8 +308,6 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
         // );
     // }
 
-    // Возвращаем динамический срез. 
-    // Компилятор превратит его в immutable(Sockettrans2dev)[] в секции данных.
     return arr.dup; 
 }();
 
@@ -1574,9 +1569,7 @@ int _XSERVTransSocketINETClose(XtransConnInfo ciptr)
 
 enum const(char)*[3] tcp_nolisten = [
 	"inet",
-// #ifdef IPv6
-	"inet6",
-// #endif
+	"inet6", //!! We dont need inet6 if IPv6 version is disabled
 	null
 ];
 

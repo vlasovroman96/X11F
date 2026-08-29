@@ -127,7 +127,7 @@ MakeAtom(const char *string_, uint len, Bool makeit)
             nd.string_ = string_;
         }
         else {
-            nd.string_ = strndup(string_, len);
+            nd.string_ = cast(const(char)*)strndup(string_, len);
             if (!nd.string_) {
                 free(nd);
                 return BAD_RESOURCE;
