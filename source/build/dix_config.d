@@ -188,7 +188,7 @@ enum LOCK_SERVER = 1;
 
 enum MAXCLIENTS = 2048;
 
-enum MITSHM = 1;
+version = MITSHM;
 
 enum MONOTONIC_CLOCK = 1;
 

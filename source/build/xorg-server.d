@@ -59,7 +59,7 @@ version = HAVE_STRNDUP;
 version = IPv6;
 
 /* Support MIT-SHM Extension */
-enum MITSHM = 1;
+version = MITSHM;
 version = CONFIG_MITSHM;
 
 /* Internal define for Xinerama */
