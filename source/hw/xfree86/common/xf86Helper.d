@@ -40,7 +40,7 @@ private template HasVersion(string versionId) {
  * This file includes the helper functions that the server provides for
  * different drivers.
  */
-import build.xorg_config;
+import build.xlibre_server;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.unistd;
@@ -1452,7 +1452,7 @@ void xf86SetBackingStore(ScreenPtr pScreen)
     else {
         if (xf86GetOptValBool(options, OPTION_BACKING_STORE, &useBS))
             from = X_CONFIG;
-version (COMPOSITE) {
+static if(COMPOSITE) {
         if (from != X_CONFIG)
             useBS = xf86ReturnOptValBool(options, OPTION_BACKING_STORE,
                                          !noCompositeExtension);
