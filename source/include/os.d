@@ -202,26 +202,26 @@ void TimeSinceLastInputEvent();
 
 /* Function fallbacks provided by AC_REPLACE_FUNCS in configure.ac */
 
-version (HAVE_REALLOCARRAY) {
+static if (HAVE_REALLOCARRAY){
 
 alias xreallocarray = reallocarray;
 } else {
 void* reallocarray(void* optr, size_t nmemb, size_t size);
 }
 
-version (HAVE_STRCASESTR) {
+static if (HAVE_STRCASESTR){
 enum xstrcasestr = strcasestr;
 
 } else {
 void* xstrcasestr(const(char)* s, const(char)* find);
 }
 
-version (HAVE_STRLCPY) {} else {
+static if (HAVE_STRLCPY){} else {
 ulong strlcpy(char* dst, const(char)* src, size_t siz);
 void strlcat(char* dst, const(char)* src, size_t siz);
 }
 
-version (HAVE_STRNDUP) {} else {
+static if (HAVE_STRNDUP){} else {
 // void* strndup(const(char)* str, size_t n);
 }
 

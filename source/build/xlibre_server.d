@@ -41,19 +41,19 @@ enum DRI3 = 1;
 
 /* Add a padding for legacy nvidia drivers that support old ABI */
 /* Define to 1 if you have the `reallocarray' function. */
-version = HAVE_REALLOCARRAY;
+enum HAVE_REALLOCARRAY = 0;
 
 /* Define to 1 if you have the `strcasestr' function. */
-version = HAVE_STRCASESTR;
+enum HAVE_STRCASESTR = 0;
 
 /* Define to 1 if you have the `strlcat' function. */
-version = HAVE_STRLCAT;
+enum HAVE_STRLCAT = 1;
 
 /* Define to 1 if you have the `strlcpy' function. */
-version = HAVE_STRLCPY;
+enum HAVE_STRLCPY = 0;
 
 /* Define to 1 if you have the `strndup' function. */
-version = HAVE_STRNDUP;
+enum HAVE_STRNDUP = 0;
 
 /* Support IPv6 for TCP connections */
 version = IPv6;

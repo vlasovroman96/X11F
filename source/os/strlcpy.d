@@ -17,13 +17,13 @@ extern(C): __gshared:
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 import core.sys.posix.sys.types;
 import core.stdc.string;
 import include.os;
 
-version (HAVE_STRLCPY) {} else {
+static if (HAVE_STRLCPY){} else {
 /*
  * Copy src to string dst of size siz.  At most siz-1 characters
  * will be copied.  Always NUL terminates (unless siz == 0).

@@ -33,7 +33,7 @@ extern(C): __gshared:
  * SUCH DAMAGE.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 import core.stdc.ctype;
 import core.stdc.string;
@@ -44,7 +44,7 @@ import externs.gnu;
 /*
  * Find the first occurrence of find in s, ignore case.
  */
-version (HAVE_STRCASESTR) {} else {
+static if (HAVE_STRCASESTR){} else {
 char* xstrcasestr(const(char)* s, const(char)* find)
 {
     char c = void, sc = void;
