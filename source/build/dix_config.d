@@ -256,7 +256,7 @@ enum XSERVER_SCREEN_VRR = 1;
 
 enum XSYNC = 1;
 
-enum XTEST = 1;
+// enum XTEST = 1;
 
 enum XTRANS_SEND_FDS = 1;
 

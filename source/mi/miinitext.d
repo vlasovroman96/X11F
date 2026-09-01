@@ -123,6 +123,7 @@ import dri3.dri3;
 import Xext.shm;
 import present.present_screen;
 import randr.randr;
+import Xext.xtest;
 
 private const ExtensionModule[] staticExtensions = () {
     ExtensionModule[] result;
@@ -136,7 +137,7 @@ private const ExtensionModule[] staticExtensions = () {
 
     result ~= ExtensionModule(&XInputExtensionInit, "XInputExtension", null);
 
-    version (XTEST) result ~= ExtensionModule(&XTestExtensionInit, "XTEST", &noTestExtensions);
+    static if (XTEST) result ~= ExtensionModule(&XTestExtensionInit, "XTEST", &noTestExtensions);
 
     result ~= ExtensionModule(&BigReqExtensionInit, "BIG-REQUESTS", null);
     result ~= ExtensionModule(&SyncExtensionInit, "SYNC", null);
