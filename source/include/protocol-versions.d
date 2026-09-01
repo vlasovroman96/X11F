@@ -29,7 +29,7 @@ extern(C): __gshared:
  * This file specifies the server-supported protocol versions.
  */
 
- import build.dix_config;
+ import build.xlibre_server;
  
 /* Apple DRI */
 enum SERVER_APPLEDRI_MAJOR_VERSION =		1;
@@ -71,7 +71,7 @@ enum SERVER_PANORAMIX_MINOR_VERSION =		1;
 
 /* Present */
 enum SERVER_PRESENT_MAJOR_VERSION =            1;
-version (DRI3) {
+static if(DRI3){
 enum SERVER_PRESENT_MINOR_VERSION =            4;
 } else {
 enum SERVER_PRESENT_MINOR_VERSION =            3;

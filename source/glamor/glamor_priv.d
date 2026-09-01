@@ -859,16 +859,16 @@ void glamor_xv_init_port(glamor_port_private* port_priv);
 
 Bool glamor_set_pixmap_texture(PixmapPtr pixmap, uint tex);
 
-void glamor_set_pixmap_type(PixmapPtr pixmap, glamor_pixmap_type_t type);
+// void glamor_set_pixmap_type(PixmapPtr pixmap, glamor_pixmap_type_t type);
 
 /* This function should be called after glamor_init,
  * but before adding a glamor GLX provider */
-void glamor_set_glvnd_vendor(ScreenPtr screen, const(char)* vendor);
+// void glamor_set_glvnd_vendor(ScreenPtr screen, const(char)* vendor);
 
 void glamor_pixmap_exchange_fbos(PixmapPtr front, PixmapPtr back);
 
 /* The DDX is not supposed to call these four functions */
-void glamor_enable_dri3(ScreenPtr screen);
+// void glamor_enable_dri3(ScreenPtr screen);
 int glamor_egl_fds_from_pixmap(ScreenPtr pScreen, PixmapPtr pPixmap, int* fds, uint* strides, uint* offsets, ulong* modifier);
 int glamor_egl_fd_name_from_pixmap(ScreenPtr pScreen, PixmapPtr pPixmap, CARD16* stride, CARD32* size);
 

@@ -22,7 +22,7 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-import build.dix_config;
+import build.xlibre_server;
 
 import dix.screenint_priv;
 import present.present_priv;
@@ -694,7 +694,7 @@ private void present_scmd_update_window_crtc(WindowPtr window, RRCrtcPtr crtc, u
     window_priv.crtc = crtc;
 }
 
-version(DRI3) {
+static if(DRI3) {
 private int present_scmd_pixmap(WindowPtr window, PixmapPtr pixmap, 
 CARD32 serial, RegionPtr valid, 
 RegionPtr update, short x_off, short y_off, 

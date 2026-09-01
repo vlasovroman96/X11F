@@ -25,13 +25,13 @@ static assert(0, "Include xorg-config.h when building the X server");
 enum COMPILEDDEFAULTFONTPATH = "/usr/share/fonts/misc,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/100dpi,/usr/share/fonts/75dpi";
 
 /* Support Composite Extension */
-enum COMPOSITE = 1;
+enum COMPOSITE = 0;
 
 /* Build DPMS extension */
-enum DPMSExtension = 1;
+enum DPMSExtension = 0;
 
 /* Build DRI3 extension */
-//version = DRI3;
+enum DRI3 = 1;
 
 /* Build GLX extension */
 // version = GLXEXT;

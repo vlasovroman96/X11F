@@ -39,12 +39,13 @@ public import include.fb;
 version (GLAMOR_FOR_XORG) {
 public import xf86xv;
 }
+import externs.drm;
 
 import glamor.glamor;
 
 // struct glamor_context;
-struct gbm_bo;
-struct gbm_device;
+// struct gbm_bo;
+// struct gbm_device;
 
 /*
  * glamor_pixmap_type : glamor pixmap's type.
@@ -280,7 +281,7 @@ int glamor_back_pixmap_from_fd(PixmapPtr pixmap, int fd, CARD16 width, CARD16 he
 
 /* for xorgrdp */ Bool glamor_get_modifiers(ScreenPtr screen, uint format, uint* num_modifiers, ulong** modifiers);
 
-/* for xorgrdp */ Bool glamor_get_drawable_modifiers(DrawablePtr draw, uint format, uint* num_modifiers, ulong** modifiers);
+// /* for xorgrdp */ Bool glamor_get_drawable_modifiers(DrawablePtr draw, uint format, uint* num_modifiers, ulong** modifiers);
 
 int glamor_set_drawable_modifiers_func(ScreenPtr screen, GetDrawableModifiersFuncPtr func);
 

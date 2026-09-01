@@ -36,6 +36,7 @@ import include.dri3;
 import xfixes.region;
 import Xext.sync;
 import randr.rrcrtc;
+import build.xlibre_server;
 
 alias XSyncFence = CARD32;
 
@@ -87,7 +88,7 @@ enum string VERIFY_CRTC_OR_NONE(string crtc_ptr, string crtc_id, string client, 
         }                                                               
     }`;
 
-version(DRI3) {
+static if(DRI3) {
 private int proc_present_pixmap_common(ClientPtr client, 
     Window req_window, Pixmap req_pixmap, 
     CARD32 req_serial, CARD32 req_valid, 
@@ -262,7 +263,7 @@ private int proc_present_pixmap(ClientPtr client)
     mixin(REQUEST!xPresentPixmapReq);
     mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapReq);
 
-    version(DRI3) {
+    static if(DRI3) {
         return proc_present_pixmap_common(client, stuff.window, stuff.pixmap, stuff.serial,
                                     stuff.valid, stuff.update, stuff.x_off, stuff.y_off,
                                     stuff.target_crtc,
@@ -367,7 +368,7 @@ private int proc_present_query_capabilities(ClientPtr client)
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
 }
 
-version (DRI3) {
+static if(DRI3){
 private int proc_present_pixmap_synced(ClientPtr client)
 {
     mixin(REQUEST!xPresentPixmapSyncedReq);
@@ -375,8 +376,8 @@ private int proc_present_pixmap_synced(ClientPtr client)
     dri3_syncobj* release_syncobj = void;
 
     mixin(REQUEST_AT_LEAST_SIZE!xPresentPixmapSyncedReq);
-    VERIFY_DRI3_SYNCOBJ(stuff.acquire_syncobj, acquire_syncobj, DixWriteAccess);
-    VERIFY_DRI3_SYNCOBJ(stuff.release_syncobj, release_syncobj, DixWriteAccess);
+    mixin(VERIFY_DRI3_SYNCOBJ!("stuff.acquire_syncobj", "acquire_syncobj", "DixWriteAccess"));
+    mixin(VERIFY_DRI3_SYNCOBJ!("stuff.release_syncobj", "release_syncobj", "DixWriteAccess"));
 
     if (stuff.acquire_point == 0 || stuff.release_point == 0 ||
         (stuff.acquire_syncobj == stuff.release_syncobj &&
@@ -411,7 +412,7 @@ int proc_present_dispatch(ClientPtr client)
             return proc_present_select_input(client);
         case X_PresentQueryCapabilities:
             return proc_present_query_capabilities(client);
-version (DRI3) {
+static if(DRI3){
         case X_PresentPixmapSynced:
             return proc_present_pixmap_synced(client);
 }
@@ -484,7 +485,7 @@ private int sproc_present_query_capabilities(ClientPtr client)
 }
 
 
-version (DRI3) {
+static if(DRI3){
 private int sproc_present_pixmap_synced(ClientPtr client)
 {
     mixin(REQUEST!xPresentPixmapSyncedReq);
@@ -531,7 +532,7 @@ int sproc_present_dispatch(ClientPtr client)
             return sproc_present_select_input(client);
         case X_PresentQueryCapabilities:
             return sproc_present_query_capabilities(client);
-version (DRI3) {
+static if(DRI3){
         case X_PresentPixmapSynced:
             return sproc_present_pixmap_synced(client);
 }

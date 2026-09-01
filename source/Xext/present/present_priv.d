@@ -27,6 +27,7 @@ extern(C): __gshared:
 //public import externs.X11.X;
 //public import externs.X11.Xmd;
 
+import build.xlibre_server;
 public import include.present;
 public import include.syncsdk;
 
@@ -98,7 +99,7 @@ struct present_vblank {
     Bool abort_flip;     /* aborting this flip */
     PresentFlipReason reason;         /* reason for which flip is not possible */
     Bool has_suboptimal; /* whether client can support SuboptimalCopy mode */
-version (DRI3) {
+static if(DRI3){
     dri3_syncobj* acquire_syncobj;
     dri3_syncobj* release_syncobj;
     ulong acquire_point;
@@ -123,7 +124,7 @@ alias present_priv_check_flip_window_ptr = void function(WindowPtr window);
 alias present_priv_can_window_flip_ptr = Bool function(WindowPtr window);
 alias present_priv_clear_window_flip_ptr = void function(WindowPtr window);
 
-version(DRI3) {
+static if(DRI3) {
 alias present_priv_pixmap_ptr = int function(WindowPtr window, 
     PixmapPtr pixmap, 
     CARD32 serial, 
@@ -287,7 +288,7 @@ void present_set_tree_pixmap(WindowPtr window, PixmapPtr expected, PixmapPtr pix
 
 ulong present_get_target_msc(ulong target_msc_arg, ulong crtc_msc, ulong divisor, ulong remainder, uint options);
 
-version(DRI3) {
+static if(DRI3) {
 int present_pixmap(WindowPtr window, 
     PixmapPtr pixmap, 
     CARD32 serial, 

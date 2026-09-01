@@ -117,7 +117,7 @@ import Xext.sync;
 // import Xext.geext;
 import xkb.xkb.xkb;
 import xcmisc;
-
+import dri3.dri3;
 
 private const ExtensionModule[] staticExtensions = () {
     ExtensionModule[] result;
@@ -159,7 +159,7 @@ private const ExtensionModule[] staticExtensions = () {
     static if(DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);
     version (PRESENT) result ~= ExtensionModule(&present_extension_init, "Present", null);
     version (DRI2) result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
-    version (DRI3) result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);
+    static if(DRI3)result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);
     version (RES) result ~= ExtensionModule(&ResExtensionInit, "X-Resource", &noResExtension);
 
     version (XV)

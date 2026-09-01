@@ -28,9 +28,13 @@ import core.sys.posix.unistd;
 
 import present.present_priv;
 import externs.X11.extensions.presenttokens;
-
-version (DRI3) {
-import sys.eventfd;
+import build.xlibre_server;
+// import Xext.randr.rrprovider;
+import include.randrstr;
+import os.connection;
+import dri3.dri3;
+static if(DRI3){
+import core.sys.linux.sys.eventfd;
 } /* DRI3 */
 
 /*
@@ -47,10 +51,10 @@ private void present_wait_fence_triggered(void* param)
     screen_priv.re_execute(vblank);
 }
 
-version (DRI3) {
+static if(DRI3){
 private void present_syncobj_triggered(int fd, int xevents, void* data)
 {
-    present_vblank_ptr vblank = data;
+    present_vblank_ptr vblank = cast(present_vblank_ptr)data;
     ScreenPtr screen = vblank.screen;
     present_screen_priv_ptr screen_priv = present_screen_priv(screen);
 
@@ -83,7 +87,7 @@ Bool present_execute_wait(present_vblank_ptr vblank, ulong crtc_msc)
         }
     }
 
-version (DRI3) {
+static if(DRI3){
     /* Defer execution of explicitly synchronized copies.
      * Flip synchronization is managed by the driver.
      */
@@ -125,7 +129,7 @@ void present_execute_copy(present_vblank_ptr vblank, ulong crtc_msc)
      * which is then freed, freeing the region
      */
     vblank.update = null;
-version (DRI3) {
+static if(DRI3){
     if (vblank.release_syncobj) {
         int fence_fd = screen_priv.flush_fenced(window);
         vblank.release_syncobj.import_fence(vblank.release_syncobj,

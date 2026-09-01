@@ -35,6 +35,7 @@ template HasVersion(string versionId) {
  */
 import build.dix_config;
 
+import externs.drm;
 import core.sys.posix.unistd;
 import core.sys.posix.fcntl;
 import core.sys.posix.sys.ioctl;
@@ -44,12 +45,16 @@ import core.stdc.errno;
 import externs.sys.sysmacros;
 import glx.vndext;
 import dix.dixutils;
-
+import build.xlibre_server;
+import include.randrstr;
+import include.dri3;
+import dri3.dri3;
 version (HAVE_SYS_SYSMACROS_H) {
 import sys.sysmacros; /* for major() & minor() */
 import core.sys.linux.sys.s;
 
 }
+import glamor.glamor;
 
 enum EGL_NO_DISPLAY = cast(EGLDisplay)null;
 version (HAVE_SYS_MKDEV_H) {
@@ -95,6 +100,8 @@ import dix.screen_hooks;
  *
  * See: https://github.com/X11Libre/xserver/pull/2721
  */
+
+alias drm_magic_t = uint;
 
 struct FreeDisplayList {
     EGLDisplay dpy;
@@ -1191,7 +1198,7 @@ version (GLAMOR_HAS_GBM) {
     dixScreenUnhookPostClose(screen, &glamor_egl_post_close_screen);
 }
 
-version (DRI3) {
+static if(DRI3){
 int glamor_dri3_open_client(ClientPtr client, ScreenPtr screen, RRProviderPtr provider, int* fdp)
 {
     glamor_egl_priv_t* glamor_egl = glamor_egl_get_screen_private(screen);
@@ -1238,13 +1245,13 @@ int glamor_dri3_open_client(ClientPtr client, ScreenPtr screen, RRProviderPtr pr
 
 const(dri3_screen_info_rec) glamor_dri3_info = {
     version_: 2,
-    open_client: glamor_dri3_open_client,
-    pixmap_from_fds: glamor_pixmap_from_fds,
-    fd_from_pixmap: glamor_egl_fd_from_pixmap,
-    fds_from_pixmap: glamor_egl_fds_from_pixmap,
-    get_formats: glamor_get_formats,
-    get_modifiers: glamor_get_modifiers,
-    get_drawable_modifiers: glamor_get_drawable_modifiers,
+    open_client: &glamor_dri3_open_client,
+    pixmap_from_fds: &glamor_pixmap_from_fds,
+    fd_from_pixmap: &glamor_egl_fd_from_pixmap,
+    fds_from_pixmap: &glamor_egl_fds_from_pixmap,
+    get_formats: &glamor_get_formats,
+    get_modifiers: &glamor_get_modifiers,
+    get_drawable_modifiers: &glamor_get_drawable_modifiers,
 };
 } /* DRI3 */
 
@@ -1301,7 +1308,7 @@ version (GLAMOR_HAS_GBM) {
 void glamor_egl_screen_init(ScreenPtr screen, glamor_context* glamor_ctx)
 {
     glamor_egl_priv_t* glamor_egl = glamor_egl_get_screen_private(screen);
-version (DRI3) {
+static if(DRI3){
     glamor_screen_private* glamor_priv = glamor_get_screen_private(screen);
 }
 version (GLXEXT) {
@@ -1320,7 +1327,7 @@ version (GLAMOR_HAS_GBM) {
     glamor_ctx.make_current = &glamor_egl_make_current;
 
     glamor_egl_set_glvnd_vendor(screen);
-version (DRI3) {
+static if(DRI3){
     if (glamor_egl.fd >= 0) {
         /* Tell the core that we have the interfaces for import/export
          * of pixmaps.

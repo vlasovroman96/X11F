@@ -22,7 +22,7 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-import build.dix_config;
+import build.xlibre_server;
 
 import core.sys.posix.unistd;
 
@@ -32,7 +32,7 @@ import dix.screen_hooks;
 import dix.extension;
 import externs.X11.extensions.presenttokens;
 import os.log;
-
+import os.connection;
 void present_vblank_notify(present_vblank_ptr vblank, CARD8 kind, CARD8 mode, ulong ust, ulong crtc_msc)
 {
     int n = void;
@@ -66,7 +66,7 @@ private Bool present_want_async_flip(uint options, uint capabilities)
  * If this function returns FALSE, present_vblank_destroy must be called to clean
  * up.
  */
-version(DRI3) {
+static if(DRI3) {
 Bool present_vblank_init(present_vblank_ptr vblank, WindowPtr window, 
 PixmapPtr pixmap, CARD32 serial, 
 RegionPtr valid, RegionPtr update, 
@@ -149,7 +149,7 @@ int num_notifies, ulong target_msc, ulong crtc_msc)
             goto no_mem;
     }
 
-// version (DRI3) {
+static if(DRI3){
     vblank.efd = -1;
 
     if (acquire_syncobj) {
@@ -163,7 +163,7 @@ int num_notifies, ulong target_msc, ulong crtc_msc)
         ++release_syncobj.refcount;
         vblank.release_point = release_point;
     }
-// } /* DRI3 */
+} /* DRI3 */
 
     if (pixmap)
         // DebugPresent(("q %" ~PRIu64 ~ " %p %"~ PRIu64 ~ ": %08" ~PRIx32 ~ " -> %08" ~PRIx32 ~ " (crtc %p) flip %d vsync %d serial %d\n",
@@ -271,7 +271,7 @@ no_mem:
 }
 }
 
-version(DRI3) {
+static if(DRI3) {
 present_vblank_ptr present_vblank_create(WindowPtr window, PixmapPtr pixmap, 
 CARD32 serial, RegionPtr valid, RegionPtr update, 
 short x_off, short y_off, 
@@ -337,7 +337,7 @@ void present_vblank_scrap(present_vblank_ptr vblank)
     //               vblank.pixmap.drawable.id, vblank.window.drawable.id,
     //               vblank.crtc));
 
-version (DRI3) {
+static if(DRI3){
     if (vblank.release_syncobj)
         vblank.release_syncobj.signal(vblank.release_syncobj,
                                         vblank.release_point);
@@ -386,7 +386,7 @@ void present_vblank_destroy(present_vblank_ptr vblank)
     if (vblank.notifies)
         present_destroy_notifies(vblank.notifies, vblank.num_notifies);
 
-version (DRI3) {
+static if(DRI3){
     if (vblank.efd >= 0) {
         SetNotifyFd(vblank.efd, null, 0, null);
         close(vblank.efd);

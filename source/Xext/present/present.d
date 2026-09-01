@@ -22,7 +22,7 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-import build.dix_config;
+import build.xlibre_server;
 
 import present.present_priv;
 import randr.randrstr_priv;
@@ -218,7 +218,7 @@ ulong present_get_target_msc(ulong target_msc_arg, ulong crtc_msc, ulong divisor
     return target_msc;
 }
 
-version(DRI3) {
+static if(DRI3) {
 int present_pixmap(WindowPtr window, 
     PixmapPtr pixmap, CARD32 serial, 
     RegionPtr valid, RegionPtr update, 
@@ -226,7 +226,7 @@ int present_pixmap(WindowPtr window,
     RRCrtcPtr target_crtc, 
     SyncFence* wait_fence, SyncFence* idle_fence, 
     dri3_syncobj* acquire_syncobj, dri3_syncobj* release_syncobj,
-    ulong acquire_point, ulong acquire_point,
+    ulong acquire_point, ulong release_point,
     uint options, ulong window_msc, 
     ulong divisor, ulong remainder, present_notify_ptr notifies, int num_notifies)
 {
@@ -291,7 +291,7 @@ int present_pixmap(WindowPtr window,
 
 int present_notify_msc(WindowPtr window, CARD32 serial, ulong target_msc, ulong divisor, ulong remainder)
 {
-    version(DRI3) {
+    static if(DRI3) {
     return present_pixmap(window,
                           null,
                           serial,
