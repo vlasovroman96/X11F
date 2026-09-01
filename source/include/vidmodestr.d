@@ -3,6 +3,7 @@ module include.vidmodestr;
 extern(C): __gshared:
  
 public import include.displaymode;
+import build.xlibre_server;
 
 enum VidModeSelectMode {
     VIDMODE_H_DISPLAY,

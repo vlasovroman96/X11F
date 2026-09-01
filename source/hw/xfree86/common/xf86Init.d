@@ -43,6 +43,7 @@ import core.stdc.stdlib;
 import core.stdc.errno;
 import core.sys.posix.sys.stat;
 import core.sys.linux.fcntl;
+import xf86pciBus;
 
 static if (!HasVersion!"Windows") {
 enum HAS_UTSNAME = 1;
@@ -1183,7 +1184,7 @@ version (HAVE_ACPI) {
         xf86DoShowOptions = TRUE;
         return 1;
     }
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     if (!strcmp(argv[i], "-isolateDevice")) {
         mixin(CHECK_FOR_REQUIRED_ARGUMENTS!("1"));
         if (strncmp(argv[++i], "PCI:", 4)) {
@@ -1276,7 +1277,7 @@ static if(build.xlibre_server.XF86VIDMODE){
     ErrorF
         ("-allowMouseOpenFail    start server even if the mouse can't be initialized\n");
     ErrorF("-ignoreABI             make module ABI mismatches non-fatal\n");
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     ErrorF
         ("-isolateDevice bus_id  restrict device resets to bus_id (PCI only)\n");
 }

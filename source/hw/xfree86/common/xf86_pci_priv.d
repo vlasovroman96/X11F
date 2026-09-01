@@ -7,6 +7,8 @@ extern(C): __gshared:
  */
  
 import build.dix_config;
+import build.xlibre_server;
+
  
 static if (XSERVER_LIBPCIACCESS) {
 public import externs.pciaccess;

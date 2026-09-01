@@ -24,6 +24,7 @@ extern(C): __gshared:
  * OF THIS SOFTWARE.
  */
 import build.xorg_config;
+import build.xlibre_server;
 
 import core.stdc.stddef;
 import core.stdc.string;

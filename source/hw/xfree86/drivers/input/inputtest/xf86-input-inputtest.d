@@ -25,6 +25,7 @@ extern(C): __gshared:
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 import build.xorg_config;
+import build.xlibre_server;
 
 import core.stdc.errno;
 import core.sys.posix.fcntl;

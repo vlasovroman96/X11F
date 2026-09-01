@@ -57,6 +57,7 @@ import hw.xfree86.loader.loaderProcs;
 import include.xf86Module;
 import hw.xfree86.loader.loader;
 import xf86Module_priv;
+import build.xlibre_server;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.types;

@@ -34,6 +34,7 @@ from Kaleb S. KEITHLEY
 /* THIS IS NOT AN X CONSORTIUM STANDARD OR AN X PROJECT TEAM SPECIFICATION */
 
 import build.dix_config;
+import build.xlibre_server;
 
 static if(XF86VIDMODE){
 

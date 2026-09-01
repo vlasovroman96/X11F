@@ -1002,7 +1002,7 @@ int xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chips
  * assigned to a screen before it will be removed. If p_chip is
  * non-NULL all static resources listed there will be registered.
  */
-private void xf86ConfigPciEntityInactive(EntityInfoPtr pEnt, PciChipsets* p_chip, EntityProc init, EntityProc enter, EntityProc leave, void* private_)
+void xf86ConfigPciEntityInactive(EntityInfoPtr pEnt, PciChipsets* p_chip, EntityProc init, EntityProc enter, EntityProc leave, void* private_)
 {
     ScrnInfoPtr pScrn = void;
 

@@ -21,7 +21,7 @@ public import cFix;
 // enum XORG_VERSION_CURRENT = 12501000;
 
 /* Name of X server. */
-enum __XSERVERNAME__ = "Xorg";
+// enum __XSERVERNAME__ = "Xorg";
 
 /* Built-in output drivers. */
 /* #undef DRIVERS */
@@ -117,7 +117,7 @@ enum PCI_TXT_IDS_PATH = "";
 /* #undef WITH_LIBDRM */
 
 /* Use libpciaccess */
-enum XSERVER_LIBPCIACCESS = 1;
+// enum XSERVER_LIBPCIACCESS = 1;
 
 /* Have setugid */
 /* #undef HAVE_ISSETUGID */

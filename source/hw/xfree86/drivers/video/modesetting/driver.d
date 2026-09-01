@@ -68,13 +68,16 @@ import include.xf86i2c;
 import include.xf86Crtc;
 import include.miscstruct;
 import include.dixstruct;
+import build.xlibre_server;
+import xf86pciBus;
+
 // import xf86xv;
 import externs.libdrm;
 // import build.xorg_config;
 version (XSERVER_PLATFORM_BUS) {
 import xf86platformBus_priv;
 }
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 import externs.pciaccess;
 }
 
@@ -246,10 +249,6 @@ alias ms_drm_handler_proc = void function(uint64_t frame,
 
 alias ms_drm_abort_proc = void function(void *data);
 
-// На случай, если WindowPtr также не определен в текущих импортах:
-// struct WindowRec;
-// alias WindowPtr = WindowRec*;
-
 alias ms_queue_flag = int;
 enum : ms_queue_flag {
     MS_QUEUE_ABSOLUTE = 0,
@@ -292,12 +291,12 @@ private const(OptionInfoRec)* AvailableOptions(int chipid, int busid);
 
 
 
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 
 }
 
 
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 private const(pci_id_match)[3] ms_device_match = [
     {
      PCI_MATCH_ANY, PCI_MATCH_ANY, PCI_MATCH_ANY, PCI_MATCH_ANY,
@@ -551,7 +550,7 @@ version (XF86_PDEV_SERVER_FD) {
     return FALSE;
 }
 
-// version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 char* ms_DRICreatePCIBusID(const(pci_device)* dev)
 {
     char* busID = void;
@@ -562,7 +561,7 @@ char* ms_DRICreatePCIBusID(const(pci_device)* dev)
 
     return busID;
 }
-// }
+}
 
 private Bool probe_hw_pci(const(char)* dev, pci_device* pdev)
 {
@@ -650,7 +649,7 @@ private void ms_setup_entity(ScrnInfoPtr scrn, int entity_num)
         pPriv.ptr = XNFcallocarray(1, modesettingEntRec.sizeof);
 }
 
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 private Bool ms_pci_probe(DriverPtr driver, int entity_num, pci_device* dev, intptr_t match_data)
 {
     ScrnInfoPtr scrn = null;
@@ -662,7 +661,7 @@ private Bool ms_pci_probe(DriverPtr driver, int entity_num, pci_device* dev, int
         GDevPtr devSection = xf86GetDevFromEntity(scrn.entityList[0],
                                                   scrn.entityInstanceList[0]);
 
-        devpath = xf86FindOptionValue(devSection.options, "kmsdev");
+        devpath = xf86FindOptionValue(cast(_InputOption*)devSection.options, "kmsdev");
         if (probe_hw_pci(devpath, dev)) {
             ms_setup_scrn_hooks(scrn);
 

@@ -6,6 +6,7 @@ import build.xorg_config;
 //import externs.X11.X;
 
 import include.xorgVersion;
+import build.xlibre_server;
 
 import include.os;
 import include.servermd;

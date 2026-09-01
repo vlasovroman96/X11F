@@ -28,6 +28,7 @@ extern(C): __gshared:
  *
  */
 import build.xorg_config;
+import build.xlibre_server;
 
 import core.stdc.string;
 

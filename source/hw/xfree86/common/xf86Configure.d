@@ -30,7 +30,8 @@ extern(C): __gshared:
  *
  */
 import build.xorg_config;
-
+import xf86pciBus;
+import build.xlibre_server;;
 import core.stdc.errno;
 
 import os.ddx_priv;
@@ -118,7 +119,7 @@ GDevPtr xf86AddBusDeviceToConfigure(const(char)* driver, BusType bus, void* busD
     /* Check for duplicates */
     for (i = 0; i < nDevToConfig; i++) {
         switch (bus) {
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
         case BUS_PCI:
             ret = xf86PciConfigure(busData, DevToConfig[i].pVideo);
             break;
@@ -152,9 +153,9 @@ static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__Op
     DevToConfig[i].GDev.driver = lower_driver;
 
     switch (bus) {
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     case BUS_PCI:
-	DevToConfig[i].pVideo = busData;
+	DevToConfig[i].pVideo = cast(pci_device*)busData;
         xf86PciConfigureNewDev(busData, DevToConfig[i].pVideo,
                                &DevToConfig[i].GDev, &chipset);
         break;

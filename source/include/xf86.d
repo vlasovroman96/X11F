@@ -35,7 +35,8 @@ extern(C): __gshared:
  * "public" means available to video drivers.
  */
 
- 
+import build.xlibre_server;
+
 public import include.xlibre_ptrtypes;
 public import include.xf86str;
 public import include.xf86Opt;
@@ -66,7 +67,7 @@ enum string XF86SCRNINFO(string p) = `xf86ScreenToScrn(` ~ p ~ `)`;
 pragma(inline, true) private int xf86BlockSIGIO() { input_lock(); return 0; }
 pragma(inline, true) private void xf86UnblockSIGIO(int wasset) { input_unlock(); }
 /* PCI related */
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 public import externs.pciaccess;
 void  xf86CheckPciSlot(const(pci_device)*);
 void  xf86ClaimPciSlot(pci_device*, DriverPtr drvp, int chipset, GDevPtr dev, Bool active);
@@ -74,9 +75,9 @@ void  xf86UnclaimPciSlot(pci_device*, GDevPtr dev);
 void  xf86ParsePciBusString(const(char)* busID, int* bus, int* device, int* func);
 void  xf86IsPrimaryPci(pci_device* pPci);
 void  xf86CheckPciMemBase(pci_device* pPci, memType base);
-pci_device* xf86GetPciInfoForEntity(int entityIndex);
+// pci_device* xf86GetPciInfoForEntity(int entityIndex);
 void  xf86MatchPciInstances(const(char)* driverName, int vendorID, SymTabPtr chipsets, PciChipsets* PCIchipsets, GDevPtr* devList, int numDevs, DriverPtr drvp, int** foundEntities);
-void  xf86ConfigPciEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityIndex, PciChipsets* p_chip, void* dummy, EntityProc init, EntityProc enter, EntityProc leave, void* private_);
+// void  xf86ConfigPciEntity(ScrnInfoPtr pScrn, int scrnFlag, int entityIndex, PciChipsets* p_chip, void* dummy, EntityProc init, EntityProc enter, EntityProc leave, void* private_);
 }
 
 /* xf86Bus.c */

@@ -30,6 +30,7 @@ import build.xorg_config;
 
 import include.xf86Module;
 import include.fb;
+import build.xlibre_server;
 
 private XF86ModuleVersionInfo VersRecFb = {
     vendor: MODULEVENDORSTRING,

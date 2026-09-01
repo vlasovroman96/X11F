@@ -36,6 +36,8 @@ private template HasVersion(string versionId) {
  * This file contains the interfaces to the bus-specific code
  */
 import build.xorg_config;
+import xf86pciBus;
+import build.xlibre_server;
 
 import core.stdc.ctype;
 import core.stdc.stdlib;
@@ -145,18 +147,18 @@ Bool xf86CallDriverProbe(DriverPtr drv, Bool detect_only)
 //     }
 // }
 
-// version (XSERVER_LIBPCIACCESS) {
-//     if (!foundScreen && (drv.PciProbe !is null)) {
-//         if (xf86DoConfigure && xf86DoConfigurePass1) {
-//             assert(detect_only);
-//             foundScreen = xf86PciAddMatchingDev(drv);
-//         }
-//         else {
-//             assert(!detect_only);
-//             foundScreen = xf86PciProbeDev(drv);
-//         }
-//     }
-// }
+static if(XSERVER_LIBPCIACCESS){
+    if (!foundScreen && (drv.PciProbe !is null)) {
+        if (xf86DoConfigure && xf86DoConfigurePass1) {
+            assert(detect_only);
+            foundScreen = xf86PciAddMatchingDev(drv);
+        }
+        else {
+            assert(!detect_only);
+            foundScreen = xf86PciProbeDev(drv);
+        }
+    }
+}
     if (!foundScreen && (drv.Probe !is null)) {
         LogMessageVerb(X_WARNING, 1, "Falling back to old probe method for %s\n",
                 drv.driverName);
@@ -308,7 +310,7 @@ version (XSERVER_PLATFORM_BUS) {
     if (mixin(ServerIsNotSeat0!()) && xf86_num_platform_devices > 0)
         return;
 }
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     xf86PciProbe();
 }
 static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__OpenBSD__") {
@@ -377,10 +379,10 @@ Bool xf86IsEntityPrimary(int entityIndex)
 {
     EntityPtr pEnt = xf86Entities[entityIndex];
 
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     if (primaryBus.type == BUS_PLATFORM && pEnt.bus.type == BUS_PCI)
         if (primaryBus.id.plat.pdev)
-            return MATCH_PCI_DEVICES(pEnt.bus.id.pci, primaryBus.id.plat.pdev);
+            return mixin(MATCH_PCI_DEVICES!("pEnt.bus.id.pci", "primaryBus.id.plat.pdev"));
 }
 
     if (primaryBus.type != pEnt.bus.type)
@@ -700,7 +702,7 @@ Bool xf86CheckSlot(const(void)* ptr, BusType type)
 {
     int i = void;
 
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     const(pci_device)* pci_ptr = (type == BUS_PCI ?
              cast(const(pci_device)*)ptr : null);
 }
@@ -765,7 +767,7 @@ version (XSERVER_PLATFORM_BUS) {
 
     for (i = 0; i < xf86NumEntities; i++) {
         const(EntityPtr) pent = xf86Entities[i];
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
         pci_device* pci_other = void;
 }
         const(char)* msOther = null;
@@ -784,7 +786,7 @@ version (XSERVER_LIBPCIACCESS) {
             return FALSE;
         }
 
-version (XSERVER_LIBPCIACCESS) { 
+static if(XSERVER_LIBPCIACCESS){ 
         pci_other = xf86GetPciInfoForEntity(i);
         /* First compare PCI addresses */
         if (pci_ptr && pci_other) {
@@ -858,7 +860,7 @@ version (XSERVER_PLATFORM_BUS) {
                 /* Examine the first device only */
                 msOther = xf86FindOptionValue(cast(_InputOption*)pent.devices[0].options, "kmsdev".ptr);
                 if (msOther is null) {
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
                     if (pci_other is null)
                     msOther = "/dev/dri/card0";
 }
@@ -891,7 +893,7 @@ version (XSERVER_PLATFORM_BUS) {
                  msPath);
     }
 }
-version (XSERVER_LIBPCIACCESS) { 
+static if(XSERVER_LIBPCIACCESS){ 
     if (type == BUS_PCI) {
         LogMessageVerb(X_INFO, 1,
             " PCI device %u@%u:%u:%u can be claimed.\n",

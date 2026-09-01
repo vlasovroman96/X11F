@@ -946,7 +946,7 @@ private Mask[8] filters = [
     ButtonReleaseMask,          /* ButtonRelease */
     PointerMotionMask,          /* MotionNotify (initial state) */
 ];
-
+alias DGAEvent = _DGAEvent;
 private void DGAProcessKeyboardEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIntPtr keybd)
 {
     KeyClassPtr keyc = keybd.key;

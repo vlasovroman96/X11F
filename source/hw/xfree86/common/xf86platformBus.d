@@ -29,7 +29,7 @@ extern(C): __gshared:
  * This file contains the interfaces to the bus-specific code
  */
 import build.xorg_config;
-
+import build.xlibre_server;
 // version (XSERVER_PLATFORM_BUS) {
 import core.stdc.errno;
 
@@ -138,12 +138,12 @@ private Bool xf86IsPrimaryPlatform(xf86_platform_device* plat)
 
     if (primaryBus.type == BUS_PLATFORM)
         return plat == primaryBus.id.plat;
-// version (XSERVER_LIBPCIACCESS) {
-//     if (primaryBus.type == BUS_PCI)
-//         if (plat.pdev)
-//             if (MATCH_PCI_DEVICES(primaryBus.id.pci, plat.pdev))
-//                 return TRUE;
-// }
+static if(XSERVER_LIBPCIACCESS){
+    if (primaryBus.type == BUS_PCI)
+        if (plat.pdev)
+            if (mixin(MATCH_PCI_DEVICES!("primaryBus.id.pci", "plat.pdev")))
+                return TRUE;
+}
     return FALSE;
 }
 

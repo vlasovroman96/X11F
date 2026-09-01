@@ -50,6 +50,7 @@ private template HasVersion(string versionId) {
  */
 import build.xorg_config;
 import Xext.panoramiXsrv;
+import xf86pciBus;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.types;
@@ -2385,10 +2386,10 @@ private void checkInput(serverLayoutPtr layout, Bool implicit_layout)
  */
 ConfigStatus xf86HandleConfigFile(Bool autoconfig)
 {
-// version (XSERVER_LIBPCIACCESS) {
-//     const(char)* scanptr = void;
-//     Bool singlecard = 0;
-// }
+static if(XSERVER_LIBPCIACCESS){
+    const(char)* scanptr = void;
+    Bool singlecard = 0;
+}
     Bool implicit_layout = FALSE;
     XF86ConfLayoutPtr layout = void;
 
@@ -2518,24 +2519,24 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
     }
 
     xf86ProcessOptions(-1, cast(_InputOption*)xf86ConfigLayout.options, LayoutOptions.ptr);
-// version (XSERVER_LIBPCIACCESS) {
-//     if ((scanptr = xf86GetOptValString(LayoutOptions.ptr, LAYOUT_ISOLATEDEVICE))) {
-//         {}                       /* IsolateDevice specified; overrides SingleCard */
-//     }
-//     else {
-//         xf86GetOptValBool(LayoutOptions.ptr, LAYOUT_SINGLECARD, &singlecard);
-//         if (singlecard)
-//             scanptr = xf86ConfigLayout.screens.screen.device.busID;
-//     }
-//     if (scanptr) {
-//         if (strncmp(scanptr, "PCI:", 4) != 0) {
-//             LogMessageVerb(X_WARNING, 1, "Bus types other than PCI not yet isolable.\n"
-//                            ~ "\tIgnoring IsolateDevice option.\n");
-//         }
-//         else
-//             xf86PciIsolateDevice(scanptr);
-//     }
-// }
+static if(XSERVER_LIBPCIACCESS){
+    if ((scanptr = xf86GetOptValString(LayoutOptions.ptr, LAYOUT_ISOLATEDEVICE)) !is null) {
+        {}                       /* IsolateDevice specified; overrides SingleCard */
+    }
+    else {
+        xf86GetOptValBool(LayoutOptions.ptr, LAYOUT_SINGLECARD, &singlecard);
+        if (singlecard)
+            scanptr = xf86ConfigLayout.screens.screen.device.busID;
+    }
+    if (scanptr) {
+        if (strncmp(scanptr, "PCI:", 4) != 0) {
+            LogMessageVerb(X_WARNING, 1, "Bus types other than PCI not yet isolable.\n"
+                           ~ "\tIgnoring IsolateDevice option.\n");
+        }
+        else
+            xf86PciIsolateDevice(scanptr);
+    }
+}
     fprintf(stderr,
         "BEFORE configFiles: xf86configptr=%p conf_files=%p\n",
         xf86configptr,

@@ -7,10 +7,11 @@ extern(C): __gshared:
  */
  
 //public import externs.X11.Xdefs;
+import build.xlibre_server;
 
 public import include.xf86str;
 
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
 
 
 

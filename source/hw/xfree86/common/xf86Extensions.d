@@ -47,16 +47,19 @@ import xf86DGA;
 import hw.xfree86.dri.xf86dri;
 import externs.X11.extensions.xf86vmproto;
 import externs.X11.extensions.xf86dgaproto;
+import build.xlibre_server;
+import build.xlibre_server;
 
 version (XSELINUX) {
 import xselinux;
 }
+import build.xlibre_server;
 
 static if(XFreeXDGA){
 //import externs.X11.extensions.xf86dgaproto;
 }
 
-static if(XF86VIDMODE){
+static if(build.xlibre_server.XF86VIDMODE){
 //import externs.X11.extensions.xf86vmproto;
 import include.vidmodestr;
 }

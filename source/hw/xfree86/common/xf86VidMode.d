@@ -37,6 +37,7 @@ extern(C): __gshared:
  * maintained.
  */
 import build.xorg_config;
+import build.xlibre_server;
 
 //import externs.X11.X;
 

@@ -51,6 +51,7 @@ import xf86RandR12_priv;
 import include.xf86Crtc;
 import include.privates;
 import dix.screen_hooks;
+import build.xlibre_server;
 
 static if(XFreeXDGA){
 //import externs.X11.extensions.xf86dgaproto;

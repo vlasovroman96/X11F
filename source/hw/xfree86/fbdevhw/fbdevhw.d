@@ -31,6 +31,7 @@ import include.xf86_OSproc;;
 import include.xf86Pci;
 
 import xf86cmap;
+import build.xlibre_server;
 
 import include.fbdevhw;
 import hw.xfree86.fbdevhw.fbpriv;

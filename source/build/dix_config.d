@@ -228,13 +228,13 @@ enum XCONFIGFILE = "xorg.conf";
 
 enum XDMCP = 1;
 
-enum XF86DRI = 1;
+// enum XF86DRI = 1;
 
-enum XF86VIDMODE = 1;
+// enum XF86VIDMODE = 1;
 
 enum XFIXES = 1;
 
-enum XFreeXDGA = 1;
+// enum XFreeXDGA = 1;
 
 // enum XINERAMA = 1;
 
@@ -244,11 +244,11 @@ enum XKB_DFLT_RULES = "evdev";
 
 enum XORGSERVER = 1;
 
-enum XORG_VERSION_CURRENT = 12501000;
+// enum XORG_VERSION_CURRENT = 12501000;
 
 enum XRECORD = 1;
 
-enum XSERVER_LIBPCIACCESS = 1;
+// enum XSERVER_LIBPCIACCESS = 1;
 
 enum XSERVER_PLATFORM_BUS = 1;
 

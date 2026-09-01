@@ -42,6 +42,7 @@ import mi.micmap;
 import include.globals;
 import glx.glxserver;
 import include.glx_extinit;
+import build.xlibre_server;
 
 // private MODULESETUPPROTO glxSetup;
 

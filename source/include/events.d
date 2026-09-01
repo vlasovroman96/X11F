@@ -25,6 +25,7 @@ extern(C): __gshared:
  *
  */
 import include.eventstr;
+import build.xlibre_server;
  
 alias DeviceEvent = _DeviceEvent;
 alias DeviceChangedEvent = _DeviceChangedEvent;

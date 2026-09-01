@@ -36,6 +36,7 @@ import    include.regionstr;
 import    include.globals;
 import    include.gcstruct;
 import include.shadow;
+import build.xlibre_server;
 
 private XF86ModuleVersionInfo VersRecShadow = {
     modname: "shadow",

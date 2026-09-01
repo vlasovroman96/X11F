@@ -36,7 +36,7 @@ private template HasVersion(string versionId) {
  * Author: David Dawes <dawes@XFree86.Org>.
  */
 import build.xorg_config;
-
+import build.xlibre_server;
 import os.osdep;
 
 import include.xf86;
@@ -64,6 +64,7 @@ import xf86Option;
 import externs.gnu;
 import xf86Globals;
 import scan;
+import xf86pciBus;
 
 
 
@@ -299,7 +300,7 @@ version (__sparc__) {
     if (sbusDriver)
         xf86AddMatchedDriver(md, sbusDriver);
 }
-version (XSERVER_LIBPCIACCESS) {
+static if(XSERVER_LIBPCIACCESS){
     xf86PciMatchDriver(md);
 }
 

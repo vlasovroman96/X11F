@@ -35,6 +35,7 @@ import include.xf86;
 version = GLAMOR_FOR_XORG;
 import include.xf86Module;
 import include.glamor;
+import build.xlibre_server;
 
 private XF86ModuleVersionInfo VersRecGlamorEGL = {
     modname: GLAMOR_EGL_MODULE_NAME,

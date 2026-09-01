@@ -115,6 +115,7 @@ import fnmatch;
 version (HAVE_SYS_UTSNAME_H) {
 import core.sys.posix.sys.utsname;
 }
+import build.xlibre_server;
 
 import core.stdc.stdarg;
 import core.stdc.stdint;             /* for int64_t */

@@ -54,6 +54,7 @@ import hw.xfree86.common.xf86Helper;
 import xf86Globals;
 import dix.events;
 import os.log;
+import build.xlibre_server;
 
 static if(XFreeXDGA){
 import include.dgaproc;
