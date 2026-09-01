@@ -85,6 +85,7 @@ version (XTHREADS) {
 
 // import os.ossock;
 
+import build.xlibre_server;
 import core.stdc.string;
 import sock = core.sys.posix.sys.socket;
 import os.Xtransint;
@@ -492,7 +493,7 @@ version (Windows) {
     }
 
 version(TCP_NODELAY) {
-    version (IPv6) {
+    static if (IPv6){
     if (Sockettrans2devtab[i].family == AF_INET
       || Sockettrans2devtab[i].family == AF_INET6)
     {
@@ -663,7 +664,7 @@ XtransConnInfo _XSERVTransSocketOpenCOTSServer(Xtransport* thistrans, const(char
 
 
 version(SO_REUSEADDR) {
-    version (IPv6) {
+    static if (IPv6){
     if (Sockettrans2devtab[i].family == AF_INET
       || Sockettrans2devtab[i].family == AF_INET6)
     {
@@ -946,14 +947,14 @@ version (BSD44SOCKETS) {
 	(cast(sockaddr_in*)&sockname).sin_port = htons(sport);
 	(cast(sockaddr_in*)&sockname).sin_addr.s_addr = htonl(INADDR_ANY);
     } else {
-version (IPv6) {
-	namelen = sockaddr_in6.sizeof;
+static if (IPv6){
+	namelen = core.sys.posix.netinet.in_.sockaddr_in6.sizeof;
 version (SIN6_LEN) {
 	(cast(sockaddr_in6*)&sockname).sin6_len = sockname.sizeof;
 }
-	(cast(sockaddr_in6*)&sockname).sin6_family = AF_INET6;
-	(cast(sockaddr_in6*)&sockname).sin6_port = htons(sport);
-	(cast(sockaddr_in6*)&sockname).sin6_addr = in6addr_any;
+	(cast(core.sys.posix.netinet.in_.sockaddr_in6*)&sockname).sin6_family = AF_INET6;
+	(cast(core.sys.posix.netinet.in_.sockaddr_in6*)&sockname).sin6_port = htons(sport);
+	(cast(core.sys.posix.netinet.in_.sockaddr_in6*)&sockname).sin6_addr = core.sys.posix.netinet.in_.in6addr_any;
 } else {
         prmsg (1,
                "SocketINETCreateListener: unsupported address family %d\n",
@@ -1296,7 +1297,7 @@ XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
 
 // } /* UNIXCONN */
 
-static if (XTRANS_SEND_FDS) {
+static if (build.xlibre_server.XTRANS_SEND_FDS) {
 
 void appendFd(_XtransConnFd** prev, int fd, int do_close)
 {
@@ -1407,7 +1408,7 @@ version (Windows) {
 	return ret;
     }
 } else {
-static if (XTRANS_SEND_FDS) {
+static if (build.xlibre_server.XTRANS_SEND_FDS) {
     {
         iovec iov = {
             iov_base: buf,
@@ -1450,7 +1451,7 @@ ssize_t _XSERVTransSocketWrite(XtransConnInfo ciptr, const(char)* buf, size_t si
 {
     prmsg (2,"SocketWrite(%d,%p,%lu)\n", ciptr.fd, cast(void*) buf, cast(c_ulong)size);
 
-static if (XTRANS_SEND_FDS) {
+static if (build.xlibre_server.XTRANS_SEND_FDS) {
     if (ciptr.send_fds)
     {
         fd_pass cmsgbuf = void;
@@ -1527,7 +1528,7 @@ int _XSERVTransSocketUNIXClose(XtransConnInfo ciptr)
 
     prmsg (2,"SocketUNIXClose(%p,%d)\n", cast(void*) ciptr, ciptr.fd);
 
-static if (XTRANS_SEND_FDS) {
+static if (build.xlibre_server.XTRANS_SEND_FDS) {
     cleanupFds(ciptr);
 }
     ret = ossock_close(ciptr.fd);
@@ -1553,7 +1554,7 @@ int _XSERVTransSocketUNIXCloseForCloning(XtransConnInfo ciptr)
     prmsg (2,"SocketUNIXCloseForCloning(%p,%d)\n",
 	cast(void*) ciptr, ciptr.fd);
 
-static if (XTRANS_SEND_FDS) {
+static if (build.xlibre_server.XTRANS_SEND_FDS) {
     cleanupFds(ciptr);
 }
     return ossock_close(ciptr.fd);
@@ -1573,7 +1574,8 @@ enum const(char)*[3] tcp_nolisten = [
 	null
 ];
 
-Xtransport _XSERVTransSocketTCPFuncs = {
+static if(build.xlibre_server.XTRANS_SEND_FDS) {
+    Xtransport _XSERVTransSocketTCPFuncs = {
 	/* Socket Interface */
 	"tcp",
         TRANS_ALIAS,
@@ -1586,14 +1588,32 @@ Xtransport _XSERVTransSocketTCPFuncs = {
 	&_XSERVTransSocketINETAccept,
 	&_XSERVTransSocketRead,
 	&_XSERVTransSocketWrite,
-// #if XTRANS_SEND_FDS
-	&_XSERVTransSocketSendFdInvalid,
-	&_XSERVTransSocketRecvFdInvalid,
-// #endif
+    &_XSERVTransSocketSendFdInvalid,
+    &_XSERVTransSocketRecvFdInvalid,
 	&_XSERVTransSocketDisconnect,
 	&_XSERVTransSocketINETClose,
 	&_XSERVTransSocketINETClose,
 };
+}
+else {
+    Xtransport _XSERVTransSocketTCPFuncs = {
+	/* Socket Interface */
+	"tcp",
+        TRANS_ALIAS,
+	tcp_nolisten.ptr,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketINETCreateListener,
+	null,		       			/* ResetListener */
+	&_XSERVTransSocketINETAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketINETClose,
+	&_XSERVTransSocketINETClose,
+};
+}
 
 Xtransport _XSERVTransSocketINETFuncs = {
 	/* Socket Interface */
@@ -1617,7 +1637,7 @@ Xtransport _XSERVTransSocketINETFuncs = {
 	&_XSERVTransSocketINETClose,
 };
 
-version (IPv6) {
+static if (IPv6){
 Xtransport _XSERVTransSocketINET6Funcs = {
 	/* Socket Interface */
 	"inet6",

@@ -84,7 +84,7 @@ SOFTWARE.
  * DEALINGS IN THE SOFTWARE.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 version (Windows) {
 //import externs.X11.Xwinsock;
@@ -420,16 +420,16 @@ static if(!HasVersion!"SIOCGIFCONF") {
         union _Saddr {
             sockaddr sa = void;
             sockaddr_in in_ = void;
-            version (IPv6) {
-                    sockaddr_in6 in6 = void;
+            static if (IPv6){
+                    core.sys.posix.netinet.in_.sockaddr_in6 in6 = void;
             }
         }
         _Saddr saddr = void;
 
         sockaddr_in* inetaddr = void;
 
-        version (IPv6) {
-            sockaddr_in6* inet6addr = void;
+        static if (IPv6){
+            core.sys.posix.netinet.in_.sockaddr_in6* inet6addr = void;
         }
         
         sockaddr_in broad_addr = void;
@@ -455,9 +455,9 @@ static if(!HasVersion!"SIOCGIFCONF") {
                 memcpy(&(inetaddr.sin_addr), hp.h_addr, hp.h_length);
                 len = typeof(saddr.sa).sizeof;
                 break;
-            version (IPv6) {
+            static if (IPv6){
             case AF_INET6:
-                inet6addr = cast(sockaddr_in6*) (&(saddr.sa));
+                inet6addr = cast(core.sys.posix.netinet.in_.sockaddr_in6*) (&(saddr.sa));
                 memcpy(&(inet6addr.sin6_addr), hp.h_addr, hp.h_length);
                 len = typeof(saddr.in6).sizeof;
                 break;
@@ -501,7 +501,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
                             XdmcpRegisterBroadcastAddress(cast(sockaddr_in*)
                                                         &broad_addr);
                         }
-                        version (IPv6) {
+                        static if (IPv6){
                             if (family == FamilyInternet6 &&
                                     !(IN6_IS_ADDR_LOOPBACK(cast(in6_addr*) addr))) {
                                 XdmcpRegisterConnection(family, cast(char*) addr, len);
@@ -546,7 +546,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
         enum string ifraddr_size(string a) = `(` ~ a ~ `.sizeof)`;
     }
 
-    version (IPv6) {
+    static if (IPv6){
         private void in6_fillscopeid(sockaddr_in6* sin6)
         {
             version (__KAME__) {
@@ -646,7 +646,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
         if (family == -1 || family == FamilyLocal)
             continue;
 
-        version (IPv6) {
+        static if (IPv6){
             if (family == FamilyInternet6)
                 in6_fillscopeid(cast(sockaddr_in6*) &IFR_IFR_ADDR);          
         }
@@ -712,7 +712,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
 
             XdmcpRegisterConnection(family, cast(char*) addr, len);
 
-            version (IPv6) {
+            static if (IPv6){
                 /* IPv6 doesn't support broadcasting, so we drop out here */
                 if (family == FamilyInternet6)
                     continue;
@@ -776,7 +776,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
                              cast(void**) &addr);
         if (family == -1 || family == FamilyLocal)
             continue;
-version (IPv6) {
+static if (IPv6){
         if (family == FamilyInternet6)
             in6_fillscopeid(cast(sockaddr_in6*) ifr.ifa_addr);
 }
@@ -840,7 +840,7 @@ else {
 }
 
             XdmcpRegisterConnection(family, cast(char*) addr, len);
-version (IPv6) {
+static if (IPv6){
             if (family == FamilyInternet6)
                 /* IPv6 doesn't support broadcasting, so we drop out here */
                 continue;
@@ -968,8 +968,8 @@ static if (HasVersion!"Windows" && HasVersion!"Windows") {
                 family = FamilyInternet;
                 hostname = ohostname.ptr + 5;
             }
-version (IPv6) {
-            if (!strncmp("inet6:", lhostname, 6)) {
+static if (IPv6){
+            if (!strncmp("inet6:".ptr, lhostname.ptr, 6)) {
                 family = FamilyInternet6;
                 hostname = ohostname.ptr + 6;
             }
@@ -1302,7 +1302,7 @@ int AddHost(ClientPtr client, int family, uint length, const(void)* pAddr)
         LocalHostEnabled = TRUE;
         break;
     case FamilyInternet:
-version (IPv6) {
+static if (IPv6){
     case FamilyInternet6:
 }
     case FamilyDECnet:
@@ -1378,7 +1378,7 @@ int RemoveHost(ClientPtr client, int family, uint length, void* pAddr)
         LocalHostEnabled = FALSE;
         break;
     case FamilyInternet:
-version (IPv6) {
+static if (IPv6){
     case FamilyInternet6:
 }
     case FamilyDECnet:
@@ -1461,9 +1461,9 @@ int GetHosts(void** data, int* pnHosts, int* pLen, BOOL* pEnabled)
         else
             len = -1;
         break;
-version (IPv6) {
+static if (IPv6){
     case FamilyInternet6:
-        if (length == in6_addr.sizeof)
+        if (length == core.sys.posix.netinet.in_.sockaddr_in6.sizeof)
             len = length;
         else
             len = -1;
@@ -1542,18 +1542,18 @@ version (Windows) {
         *len = in_addr.sizeof;
         *addr = cast(void*) &((cast(sockaddr_in*) saddr).sin_addr);
         return FamilyInternet;
-version (IPv6) {
+static if (IPv6){
     case AF_INET6:
     {
-        sockaddr_in6* saddr6 = cast(sockaddr_in6*) saddr;
+        core.sys.posix.netinet.in_.sockaddr_in6* saddr6 = cast(core.sys.posix.netinet.in_.sockaddr_in6*) saddr;
 
-        if (IN6_IS_ADDR_V4MAPPED(&(saddr6.sin6_addr))) {
+        if (IN6_IS_ADDR_V4MAPPED!()(&saddr6.sin6_addr)) {
             *len = in_addr.sizeof;
             *addr = cast(void*) &(saddr6.sin6_addr.s6_addr[12]);
             return FamilyInternet;
         }
         else {
-            *len = in6_addr.sizeof;
+            *len = core.sys.posix.netinet.in_.in6_addr.sizeof;
             *addr = cast(void*) &(saddr6.sin6_addr);
             return FamilyInternet6;
         }
@@ -1885,7 +1885,7 @@ private int siHostnameCheckAddr(const(char)* valueString, int length, void* type
     return len;
 }
 
-version (IPv6) {
+static if (IPv6){
 /***
  * "ipv6" server interpreted type
  *
@@ -1898,11 +1898,11 @@ version (IPv6) {
 /* Maximum length of an IPv6 address string - increase when adding support
  * for scoped address qualifiers.  Includes room for trailing NUL byte.
  */
-enum SI_IPv6_MAXLEN = INET6_ADDRSTRLEN;
+enum SI_IPv6_MAXLEN = core.sys.posix.arpa.inet.INET6_ADDRSTRLEN;
 
 private Bool siIPv6AddrMatch(int family, void* addr, int len, const(char)* siAddr, int siAddrlen, ClientPtr client, void* typePriv)
 {
-    in6_addr addr6 = void;
+    core.sys.posix.netinet.in_.in6_addr addr6 = void;
     char[SI_IPv6_MAXLEN] addrbuf = void;
 
     if ((family != FamilyInternet6) || (len != addr6.sizeof))
@@ -1911,7 +1911,7 @@ private Bool siIPv6AddrMatch(int family, void* addr, int len, const(char)* siAdd
     memcpy(addrbuf.ptr, siAddr, siAddrlen);
     addrbuf[siAddrlen] = '\0';
 
-    if (inet_pton(AF_INET6, addrbuf.ptr, &addr6) != 1) {
+    if (core.sys.posix.arpa.inet.inet_pton(AF_INET6, addrbuf.ptr, &addr6) != 1) {
         perror("inet_pton");
         return FALSE;
     }
@@ -1939,13 +1939,13 @@ private int siIPv6CheckAddr(const(char)* addrString, int length, void* typePriv)
     }
     else {
         /* Assume inet_pton is sufficient validation */
-        in6_addr addr6 = void;
+        core.sys.posix.netinet.in_.in6_addr addr6 = void;
         char[SI_IPv6_MAXLEN] addrbuf = void;
 
         memcpy(addrbuf.ptr, addrString, length);
         addrbuf[length] = '\0';
 
-        if (inet_pton(AF_INET6, addrbuf.ptr, &addr6) != 1) {
+        if (core.sys.posix.arpa.inet.inet_pton(AF_INET6, addrbuf.ptr, &addr6) != 1) {
             perror("inet_pton");
             len = -1;
         }
@@ -2086,7 +2086,7 @@ private int siLocalCredCheckAddr(const(char)* addrString, int length, void* type
 void siTypesInitialize()
 {
     siTypeAdd("hostname", &siHostnameAddrMatch, &siHostnameCheckAddr, null);
-version (IPv6) {
+static if (IPv6){
     siTypeAdd("ipv6", &siIPv6AddrMatch, &siIPv6CheckAddr, null);
 }
 static if (!HasVersion!"NO_LOCAL_CLIENT_CRED") {

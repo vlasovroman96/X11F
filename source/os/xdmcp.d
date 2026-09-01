@@ -69,7 +69,7 @@ private const(char)* defaultDisplayClass = "MIT-unspecified";
 private int xdmcpSocket, sessionSocket;
 private xdmcp_states state;
 
-version (IPv6) {
+static if (IPv6){
 private int xdmcpSocket6;
 private sockaddr_storage req_sockaddr;
 } else {
@@ -93,7 +93,7 @@ private addrinfo* mgrAddr;
 private addrinfo* mgrAddrFirst;
 }
 
-version (IPv6) {
+static if (IPv6){
 
 alias SOCKADDR_TYPE = sockaddr_storage;
 enum string SOCKADDR_FAMILY(string s) = `(cast(sockaddr*)&(` ~ s ~ `)).sa_family`;
@@ -129,7 +129,7 @@ enum FromAddressLen =		SOCKLEN_FIELD(FromAddress);
 private SOCKLEN_TYPE ManagerAddressLen, FromAddressLen;
 }
 
-version (IPv6) {
+static if (IPv6){
 struct multicastinfo {
     multicastinfo* next;
     addrinfo* ai;
@@ -171,7 +171,7 @@ struct multicastinfo {
 
 
 
-version (IPv6) {
+static if (IPv6){
 
 }
 
@@ -209,7 +209,7 @@ void XdmcpUseMsg()
 {
     ErrorF("-query host-name       contact named host for XDMCP\n");
     ErrorF("-broadcast             broadcast for XDMCP\n");
-version (IPv6) {
+static if (IPv6){
     ErrorF("-multicast [addr [hops]] IPv6 multicast for XDMCP\n");
 }
     ErrorF("-indirect host-name    contact named host for indirect XDMCP\n");
@@ -245,7 +245,7 @@ int XdmcpOptions(int argc, char** argv, int i)
         XdmcpDefaultListen();
         return i + 1;
     }
-version (IPv6) {
+static if (IPv6){
     if (strcmp(argv[i], "-multicast") == 0) {
         i = get_mcast_options(argc, argv, ++i);
         XDM_INIT_STATE = XDM_MULTICAST;
@@ -446,7 +446,7 @@ static if (HasVersion!"IPv6")
             }
 }
         }
-version (IPv6) {
+static if (IPv6){
         if(addrlen == in6_addr) {
             if (mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET6) {
                 fromAddr = &(cast(sockaddr_in6*) &FromAddress).sin6_addr;
@@ -539,7 +539,7 @@ private void xdmcp_reset()
     timeOutRtx = 0;
     if (xdmcpSocket >= 0)
         SetNotifyFd(xdmcpSocket, XdmcpSocketNotify, X_NOTIFY_READ, null);
-version (IPv6) {
+static if (IPv6){
     if (xdmcpSocket6 >= 0)
         SetNotifyFd(xdmcpSocket6, XdmcpSocketNotify, X_NOTIFY_READ, null);
 }
@@ -652,7 +652,7 @@ private ARRAY8 UnwillingMessage = { cast(CARD8) 14, cast(CARD8*) "Host unwilling
 
 private void receive_packet(int socketfd)
 {
-version (IPv6) {
+static if (IPv6){
     sockaddr_storage from = void;
 } else {
     sockaddr_in from = void;
@@ -710,7 +710,7 @@ private void send_packet()
     case XDM_QUERY:
     case XDM_BROADCAST:
     case XDM_INDIRECT:
-version (IPv6) {
+static if (IPv6){
     case XDM_MULTICAST:
 }
         send_query_msg();
@@ -775,7 +775,7 @@ version (HAVE_GETADDRINFO) {
             }
             if (mgrAddr.ai_family == AF_INET)
                 break;
-version (IPv6) {
+static if (IPv6){
             if (mgrAddr.ai_family == AF_INET6)
                 break;
 }
@@ -794,7 +794,7 @@ version (SIN6_LEN) {} else {
     case XDM_COLLECT_BROADCAST_QUERY:
         state = XDM_BROADCAST;
         break;
-version (IPv6) {
+static if (IPv6){
     case XDM_COLLECT_MULTICAST_QUERY:
         state = XDM_MULTICAST;
         break;
@@ -849,7 +849,7 @@ private void get_xdmcp_sock()
     int soopts = 1;
     int socketfd = -1;
 
-version (IPv6) {
+static if (IPv6){
     if ((xdmcpSocket6 = socket(AF_INET6, SOCK_DGRAM, 0)) < 0)
         XdmcpWarning("INET6 UDP socket creation failed");
 }
@@ -866,7 +866,7 @@ version (SO_BROADCAST) {
 
     if (mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET)
         socketfd = xdmcpSocket;
-version (IPv6) {
+static if (IPv6){
     if(SOCKADDR_FAMILY(FromAddress) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
@@ -884,7 +884,7 @@ private void send_query_msg()
     XdmcpHeader header = void;
     Bool broadcast = FALSE;
 
-version (IPv6) {
+static if (IPv6){
     Bool multicast = FALSE;
 }
     int i = void;
@@ -901,7 +901,7 @@ version (IPv6) {
         state = XDM_COLLECT_BROADCAST_QUERY;
         broadcast = TRUE;
         break;
-version (IPv6) {
+static if (IPv6){
     case XDM_MULTICAST:
         header.opcode = cast(CARD16) BROADCAST_QUERY;
         state = XDM_COLLECT_MULTICAST_QUERY;
@@ -927,7 +927,7 @@ version (IPv6) {
                        (XdmcpNetaddr) &BroadcastAddresses[i],
                        sockaddr_in.sizeof);
     }
-version (IPv6) {
+static if (IPv6){
     if(multicast) {
         multicastinfo* mcl = void;
         addrinfo* ai = void;
@@ -959,7 +959,7 @@ version (IPv6) {
     }
 }
     else {
-version (IPv6) {
+static if (IPv6){
         if (mixin(SOCKADDR_FAMILY!(`ManagerAddress`)) == AF_INET6)
             socketfd = xdmcpSocket6;
 }
@@ -987,7 +987,7 @@ private void recv_willing_msg(sockaddr* from, int fromlen, uint length)
                 XdmcpSelectHost(from, fromlen, &authenticationName);
                 break;
             case XDM_COLLECT_BROADCAST_QUERY:
-version (IPv6) {
+static if (IPv6){
             case XDM_COLLECT_MULTICAST_QUERY:
 }
             case XDM_COLLECT_INDIRECT_QUERY:
@@ -1017,7 +1017,7 @@ private void send_request_msg()
     case AF_INET:
         XdmcpConnectionType = FamilyInternet;
         break;
-version (IPv6) {
+static if (IPv6){
     case AF_INET6:
         XdmcpConnectionType = FamilyInternet6;
         break;
@@ -1081,7 +1081,7 @@ version (IPv6) {
     XdmcpDisposeARRAY8(&authenticationData);
     XdmcpWriteARRAYofARRAY8(&buffer, &AuthorizationNames);
     XdmcpWriteARRAY8(&buffer, &ManufacturerDisplayID);
-version (IPv6) {
+static if (IPv6){
     if (mixin(SOCKADDR_FAMILY!(`req_sockaddr`)) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
@@ -1172,7 +1172,7 @@ private void send_manage_msg()
     XdmcpWriteCARD16(&buffer, DisplayNumber);
     XdmcpWriteARRAY8(&buffer, &DisplayClass);
     state = XDM_AWAIT_MANAGE_RESPONSE;
-version (IPv6) {
+static if (IPv6){
     if (mixin(SOCKADDR_FAMILY!(`req_sockaddr`)) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
@@ -1226,7 +1226,7 @@ private void send_keepalive_msg()
     XdmcpWriteCARD32(&buffer, SessionID);
 
     state = XDM_AWAIT_ALIVE_RESPONSE;
-version (IPv6) {
+static if (IPv6){
     if (mixin(SOCKADDR_FAMILY!(`req_sockaddr`)) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
@@ -1303,7 +1303,7 @@ version (HAVE_GETADDRINFO) {
         for (ai = *aifirstp; ai !is null; ai = ai.ai_next) {
             if (ai.ai_family == AF_INET)
                 break;
-version (IPv6) {
+static if (IPv6){
             if (ai.ai_family == AF_INET6)
                 break;
 }
@@ -1378,7 +1378,7 @@ version (HAVE_GETADDRINFO) {
     xdm_from = argv[i];
 }
 
-version (IPv6) {
+static if (IPv6){
 private int get_mcast_options(int argc, char** argv, int i)
 {
     const(char)* address = XDM_DEFAULT_MCAST_ADDR6;

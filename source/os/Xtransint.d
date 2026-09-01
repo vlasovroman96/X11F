@@ -2,7 +2,9 @@ module os.Xtransint;
 @nogc nothrow:
 extern(C): __gshared:
 
-import build.dix_config;
+import build.xlibre_server;
+
+version = V_XTRANS_SEND_FDS;
 
 private template HasVersion(string versionId) {
 	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
@@ -74,7 +76,6 @@ from The Open Group.
  * Defining XTRANSDEBUGTIMESTAMP will cause printing timestamps with each
  * message.
  */
-
 static if (!HasVersion!"XTRANSDEBUG" && HasVersion!"XTRANS_TRANSPORT_C") {
 enum XTRANSDEBUG = 1;
 }
@@ -109,7 +110,9 @@ alias ssize_t = core.sys.posix.sys.types.ssize_t;
 
 // enum X_TCP_PORT =	6000;
 
-static if (XTRANS_SEND_FDS) {
+
+
+version(V_XTRANS_SEND_FDS) {
 
 struct _XtransConnFd {
     _XtransConnFd* next;
@@ -141,6 +144,10 @@ enum XTRANS_OPEN_COTS_CLIENT =       1;
 enum XTRANS_OPEN_COTS_SERVER =       2;
 enum ADDR_IN_USE_ALLOWED =	1;
 
+// static if(XTRANS_SEND_FDS) {
+//     version = XTRANS_SEND_FDS;
+// }
+
 struct _Xtransport {
     const(char)* TransName;
     int flags;
@@ -163,7 +170,7 @@ struct _Xtransport {
 
     ssize_t function(XtransConnInfo ciptr, const(char)* buf, size_t size) @nogc nothrow Write;
 
-static if (XTRANS_SEND_FDS) {
+version(V_XTRANS_SEND_FDS) {
     int function(XtransConnInfo, int, int) @nogc nothrow SendFd;
 
     int function(XtransConnInfo) @nogc nothrow RecvFd;

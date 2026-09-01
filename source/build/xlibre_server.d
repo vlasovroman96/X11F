@@ -56,7 +56,7 @@ enum HAVE_STRLCPY = 0;
 enum HAVE_STRNDUP = 0;
 
 /* Support IPv6 for TCP connections */
-version = IPv6;
+enum IPv6 = 1;
 
 /* Support MIT-SHM Extension */
 version = MITSHM;

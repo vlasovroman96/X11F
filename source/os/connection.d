@@ -68,7 +68,7 @@ SOFTWARE.
  *
  *****************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 
 version (Windows) {
 //import externs.X11.Xwinsock;
@@ -86,6 +86,7 @@ import os.log;
 import core.sys.posix.unistd;
 import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
+import core.sys.posix.arpa.inet;
 import os.access;
 import externs.attrs;
 import os.io;
@@ -382,11 +383,11 @@ version (HAVE_INET_NTOP) {
             snprintf(addr.ptr, addr.sizeof, "IP %s", ipaddr);
         }
             break;
-version (IPv6) {
+static if (IPv6){
         case AF_INET6:{
-            char[INET6_ADDRSTRLEN] ipaddr = void;
+            char[core.sys.posix.arpa.inet.INET6_ADDRSTRLEN] ipaddr = void;
 
-            inet_ntop(AF_INET6, &(cast(sockaddr_in6*) saddr).sin6_addr,
+            core.sys.posix.arpa.inet.inet_ntop(AF_INET6, &(cast(sockaddr_in6*) saddr).sin6_addr,
                       ipaddr.ptr, ipaddr.sizeof);
             snprintf(addr.ptr, addr.sizeof, "IP %s", ipaddr.ptr);
         }

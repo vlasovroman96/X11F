@@ -53,7 +53,7 @@ from The Open Group.
  * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-import build.dix_config;
+import build.xlibre_server;
 
 import core.stdc.ctype;
 import core.stdc.stdlib;
@@ -69,6 +69,7 @@ import core.sys.posix.fcntl;
 import core.stdc.stdio;
 import os.Xtranssock;
 
+import externs.attrs;
 /*
  * The transport table contains a definition for every transport (protocol)
  * family. All operations that can be made on the transport go through this
@@ -406,15 +407,17 @@ version (HAVE_LAUNCHD) {
     _host_len = cast(int)strlen(_host);
 
     // hn = void;
-    if (_host_len == 0)
+    // if (_host_len == 0)
+    // {
+    //     f_xhostname(&hn);
+    //     _host = hn.name.ptr;
+    // }
+static if (IPv6){
+enum IPv6_STR = `    if (_host_len == 0)
     {
         f_xhostname(&hn);
         _host = hn.name.ptr;
-    }
-
-version (IPv6) {
-    /* hostname in IPv6 [numeric_addr]:0 form? */
-    enum IPv6_STR = `else if ( (_host_len > 3) &&
+    }else if ( (_host_len > 3) &&
       ((strcmp(_protocol, "tcp") == 0) || (strcmp(_protocol, "inet6") == 0))
       && (_host_buf[0] == '[') && (_host_buf[_host_len - 1] == ']') ) {
 	sockaddr_in6 sin6 = void;
@@ -422,7 +425,7 @@ version (IPv6) {
 	_host_buf[_host_len - 1] = '\0';
 
 	/* Verify address is valid IPv6 numeric form */
-	if (inet_pton(AF_INET6, _host + 1, &sin6) == 1) {
+	if (assumeNoGC(&inet_pton)(AF_INET6, _host + 1, &sin6) == 1) {
 	    /* It is. Use it as such. */
 	    _host++;
 	    _protocol = "inet6";
@@ -431,11 +434,16 @@ version (IPv6) {
 	    _host_buf[_host_len - 1] = ']';
 	}
     }`;
-
-    mixin(IPv6_STR);
-
+}
+else {
+    enum IPv6_STR =`    if (_host_len == 0)
+    {
+        f_xhostname(&hn);
+        _host = hn.name.ptr;
+    }`;
 }
 
+    mixin(IPv6_STR);
 
     /* Get the port */
 
@@ -811,7 +819,7 @@ ssize_t _XSERVTransWrite(XtransConnInfo ciptr, const(char)* buf, size_t size)
     return ciptr.transptr.Write (ciptr, buf, size);
 }
 
-static if (XTRANS_SEND_FDS) {
+static if (build.xlibre_server.XTRANS_SEND_FDS) {
 int _XSERVTransSendFd(XtransConnInfo ciptr, int fd, int do_close)
 {
     return ciptr.transptr.SendFd(ciptr, fd, do_close);
@@ -954,7 +962,7 @@ private int receive_listening_fds(const(char)* port, XtransConnInfo* temp_ciptrs
 //             ti = TRANS_SOCKET_INET_INDEX;
 //             tn = "inet";
 //             break;
-// version (IPv6) {
+// static if (IPv6){
 //         case AF_INET6:
 //             ti = TRANS_SOCKET_INET6_INDEX;
 //             tn = "inet6";
@@ -994,7 +1002,7 @@ int _XSERVTransMakeAllCOTSServerListeners(const(char)* port, int* partial, uint*
     XtransConnInfo[mixin(NUMTRANS)] temp_ciptrs = null;
     int status = void, j = void;
 
-version (IPv6) {
+static if (IPv6){
     int ipv6_succ = 0;
 }
     prmsg (2,"MakeAllCOTSServerListeners(%s,%p)\n",
@@ -1049,7 +1057,7 @@ version (IPv6) {
 		  trans.TransName);
 	    continue;
 	}
-version (IPv6) {
+static if (IPv6){
 		if ((Xtransports[i].transport_id == TRANS_SOCKET_INET_INDEX
 		     && ipv6_succ))
 		    flags |= ADDR_IN_USE_ALLOWED;
@@ -1090,7 +1098,7 @@ version (IPv6) {
 	    }
 	}
 
-version (IPv6) {
+static if (IPv6){
 	if (Xtransports[i].transport_id == TRANS_SOCKET_INET6_INDEX)
 	    ipv6_succ = 1;
 }

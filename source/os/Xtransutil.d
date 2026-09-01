@@ -69,6 +69,7 @@ version (Windows) {
 //import externs.X11.Xwinsock;
 }
 
+import build.xlibre_server;
 import os.Xtrans;
 
 import os.xhostname;
@@ -172,18 +173,18 @@ int _XSERVTransConvertAddress(int* familyp, int* addrlenp, Xtransaddr** addrp)
 	break;
     }
 
-version (IPv6) {
+static if (IPv6){
     case AF_INET6:
     {
-	sockaddr_in6 saddr6 = void;
+	core.sys.posix.netinet.in_.sockaddr_in6 saddr6 = void;
 
-	memcpy (&saddr6, *addrp, sockaddr_in6.sizeof);
+	memcpy (&saddr6, *addrp, core.sys.posix.netinet.in_.sockaddr_in6.sizeof);
 
-	if (IN6_IS_ADDR_LOOPBACK(&saddr6.sin6_addr))
+	if (IN6_IS_ADDR_LOOPBACK!()(&saddr6.sin6_addr))
 	{
 	    *familyp=FamilyLocal;
 	}
-	else if (IN6_IS_ADDR_V4MAPPED(&(saddr6.sin6_addr))) {
+	else if (IN6_IS_ADDR_V4MAPPED!()(&saddr6.sin6_addr)) {
 	    char* cp = cast(char*) &saddr6.sin6_addr.s6_addr[12];
 
 	    if ((cp[0] == 127) && (cp[1] == 0) &&
@@ -194,7 +195,7 @@ version (IPv6) {
 	    else
 	    {
 		*familyp=FamilyInternet;
-		*addrlenp = in_addr.sizeof;
+		*addrlenp = core.sys.posix.arpa.inet.in_addr.sizeof;
 		memcpy(*addrp,cp,*addrlenp);
 	    }
 	}
