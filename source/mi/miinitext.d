@@ -119,7 +119,7 @@ import xkb.xkb.xkb;
 import xcmisc;
 import dri3.dri3;
 import Xext.shm;
-
+import present.present_screen;
 
 private const ExtensionModule[] staticExtensions = () {
     ExtensionModule[] result;
@@ -159,7 +159,7 @@ private const ExtensionModule[] staticExtensions = () {
     version (DBE) result ~= ExtensionModule(&DbeExtensionInit, "DOUBLE-BUFFER", &noDbeExtension);
     version (XRECORD) result ~= ExtensionModule(&RecordExtensionInit, "RECORD", &noTestExtensions);
     static if(DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);
-    version (PRESENT) result ~= ExtensionModule(&present_extension_init, "Present", null);
+    static if(build.xlibre_server.PRESENT)result ~= ExtensionModule(&present_extension_init, "Present", null);
     version (DRI2) result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
     static if(DRI3)result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);
     version (RES) result ~= ExtensionModule(&ResExtensionInit, "X-Resource", &noResExtension);
