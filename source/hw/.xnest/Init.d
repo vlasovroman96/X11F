@@ -50,8 +50,9 @@ import Init;
 import Args;
 import Drawable;
 import XNGC;
+import build.xlibre_server;
 import XNFont;
-version (DPMSExtension) {
+static if(DPMSExtension) {
 import Xext.dpmsproc;
 }
 

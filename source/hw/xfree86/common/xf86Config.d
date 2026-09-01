@@ -54,7 +54,8 @@ import core.sys.posix.sys.stat;
 import core.sys.posix.sys.types;
 import core.sys.posix.grp;
 import core.stdc.string;
-
+import externs.X11.extensions.dpmsconst;
+import Xext.dpms;
 import dix.dix_priv;
 import dix.resource_priv;
 import dix.settings_priv;
@@ -96,10 +97,11 @@ import include.optionstr;
 import os.utils;
 import mi.miinitext;
 import render.picture;
+import build.xlibre_server;
 
 
 import include.picture;
-version (DPMSExtension) {
+static if(DPMSExtension) {
 import Xext.dpmsproc;
 }
 
@@ -1007,7 +1009,7 @@ enum MAX_TIME_IN_MIN = (0x7fffffff / MILLI_PER_MIN);
         ErrorF("BlankTime value %d outside legal range of 0 - %d minutes\n",
                i, MAX_TIME_IN_MIN);
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
     i = -1;
     xf86GetOptValInteger(FlagOptions.ptr, FLAG_DPMS_STANDBYTIME, &i);
     if ((i >= 0) && (i < MAX_TIME_IN_MIN))

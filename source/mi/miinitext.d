@@ -75,6 +75,7 @@ SOFTWARE.
  */
 
 import build.dix_config;
+import build.xlibre_server;
 
 version (HAVE_XORG_CONFIG_H) {
 import build.xorg_config;
@@ -108,6 +109,7 @@ import geext;
 import Xi.extinit;
 ;
 
+import Xext.dpms;
 import Xext.bigreq;
 
 import Xext.sync;
@@ -154,7 +156,7 @@ private const ExtensionModule[] staticExtensions = () {
     version (SCREENSAVER) result ~= ExtensionModule(&ScreenSaverExtensionInit, "MIT-SCREEN-SAVER", &noScreenSaverExtension);
     version (DBE) result ~= ExtensionModule(&DbeExtensionInit, "DOUBLE-BUFFER", &noDbeExtension);
     version (XRECORD) result ~= ExtensionModule(&RecordExtensionInit, "RECORD", &noTestExtensions);
-    version (DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);
+    static if(DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);
     version (PRESENT) result ~= ExtensionModule(&present_extension_init, "Present", null);
     version (DRI2) result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
     version (DRI3) result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);

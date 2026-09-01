@@ -10,7 +10,7 @@ public import include.dixstruct;
 // public import Xext.dpms;
 
 
-int DPMSSet(ClientPtr client, int level);
+// int DPMSSet(ClientPtr client, int level);
 Bool DPMSSupported();
 
 // CARD32 DPMSStandbyTime;

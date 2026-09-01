@@ -87,8 +87,11 @@ import xf86Xinput_priv;
 import mi.mipointer;
 import include.xkbsrv;
 import include.xkbsrv;
+import build.xlibre_server;
+import externs.X11.extensions.dpmsconst;
+import Xext.dpms;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
@@ -383,7 +386,7 @@ void xf86VTLeave()
 
     DebugF("xf86VTSwitch: Leaving, xf86Exiting is %s\n",
            (dispatchException & DE_TERMINATE) ? "TRUE".ptr : "FALSE".ptr);
-version (DPMSExtension) {
+static if(DPMSExtension) {
     if (DPMSPowerLevel != DPMSModeOn)
         DPMSSet(serverClient, DPMSModeOn);
 }

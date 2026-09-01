@@ -49,7 +49,8 @@ enum HAS_UTSNAME = 1;
 import core.sys.posix.sys.utsname;
 }
 import os.inputthread;
-
+import externs.X11.extensions.dpmsconst;
+import Xext.dpms;
 //import externs.X11.X;
 ////import externs.X11.Xmd;
 //import externs.X11.Xproto;
@@ -105,9 +106,10 @@ import xf86VGAarbiter;
 import xf86Option;
 import core.sys.posix.unistd;
 import xf86Events;
+import build.xlibre_server;
 
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
@@ -858,7 +860,7 @@ void ddxGiveUp(ExitCode error)
         input_lock();
 
         /* try to restore the original video state */
-version (DPMSExtension) {            /* Turn screens back on */
+static if(DPMSExtension) {            /* Turn screens back on */
         if (DPMSPowerLevel != DPMSModeOn)
             DPMSSet(serverClient, DPMSModeOn);
 }
@@ -1234,13 +1236,13 @@ void ddxUseMsg()
         ErrorF("-modulepath paths      specify the module search path\n");
         ErrorF("-logfile file          specify a log file name\n");
         ErrorF("-configure             probe for devices and write an "~
-               XCONFIGFILE ~ "\n");
+               build.xlibre_server.XCONFIGFILE ~ "\n");
         ErrorF
             ("-showopts              print available options for all installed drivers\n");
     }
     ErrorF
         ("-config file           specify a configuration file, relative to the\n");
-    ErrorF("                       " ~XCONFIGFILE
+    ErrorF("                       " ~build.xlibre_server.XCONFIGFILE
            ~ " search path, only root can use absolute\n");
     ErrorF
         ("-configdir dir         specify a configuration directory, relative to the\n");

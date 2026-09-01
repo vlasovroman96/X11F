@@ -31,6 +31,9 @@ in this Software without prior written authorization from the X Consortium.
  */
 
 import build.dix_config;
+import Xext.dpms;
+import externs.X11.extensions.dpmsconst;
+
 
 // //import stdbool;
 import core.stdc.stdio;
@@ -65,7 +68,9 @@ import include.cursorstr;
 import Xext.xace;
 import include.inputstr;
 import externs.X11.extensions.saverproto;
-version (DPMSExtension) {
+import build.xlibre_server;
+
+static if(DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
@@ -387,7 +392,7 @@ private int ScreenSaverFreeSuspend(void* value, XID id)
     }
         /* The screensaver could be active, since suspending it (by design)
            doesn't prevent it from being forcibly activated */
-version (DPMSExtension) {
+static if(DPMSExtension) {
         if (screenIsSaved != SCREEN_SAVER_ON && DPMSPowerLevel == DPMSModeOn)
             checkSuspend();
 }

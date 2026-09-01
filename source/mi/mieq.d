@@ -67,8 +67,11 @@ import os.utils;
 import dix.inpututils;
 import dix.events;
 import dix.devices;
-
-version (DPMSExtension) {
+import build.xlibre_server;
+import externs.X11.extensions.dpmsconst;
+import Xext.dpms;
+import os.WaitFor;
+static if(DPMSExtension) {
 import Xext.dpmsproc;
 //import externs.X11.extensions.dpmsconst;
 }
@@ -554,7 +557,7 @@ void mieqProcessInputEvents()
 
         master = (dev) ? GetMaster(dev, MASTER_ATTACHED) : null;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
         if (screenIsSaved == SCREEN_SAVER_ON) {
             dixSaveScreens(serverClient, SCREEN_SAVER_OFF, ScreenSaverReset);
         }

@@ -151,6 +151,7 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
 import core.sys.posix.stdio;
+import build.xlibre_server;
 import core.stdc.stdio;
 // import core.sys.posix.stdio;
 import os.connection;
@@ -305,7 +306,7 @@ void UseMsg()
     ErrorF("-core                  generate core dump on fatal error\n");
     ErrorF("-displayfd fd          file descriptor to write display number to when ready to connect\n");
     ErrorF("-dpi int               screen resolution in dots per inch\n");
-version (DPMSExtension) {
+static if(DPMSExtension) {
     ErrorF("-dpms                  disables VESA DPMS monitor control\n");
 }
     ErrorF
@@ -537,7 +538,7 @@ static if (!HasVersion!"Windows" || !HasVersion!"Windows") {
             else
                 UseMsg();
         }
-// version (DPMSExtension) {
+// static if(DPMSExtension) {
 //         if(strcmp(argv[i], "dpms") == 0) {}
 
 //         else if (strcmp(argv[i], "dpms") == 0)
@@ -1491,7 +1492,7 @@ int os_move_fd(int fd)
 version (F_DUPFD_CLOEXEC) {
     newfd = fcntl(fd, F_DUPFD_CLOEXEC, MAXCLIENTS);
 } else {
-    newfd = fcntl(fd, F_DUPFD, MAXCLIENTS);
+    newfd = fcntl(fd, F_DUPFD, build.xlibre_server.MAXCLIENTS);
 }
     if (newfd < 0)
         return fd;

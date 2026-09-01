@@ -29,6 +29,7 @@ import include.misc;
 import include.scrnintstr;
 import include.servermd;
 import include.extinit;
+import build.xlibre_server;
 
 import xnest_xcb;
 
@@ -60,7 +61,7 @@ version (CONFIG_MITSHM) {
 
     noCompositeExtension = TRUE;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
     noDPMSExtension = TRUE;
 }
 

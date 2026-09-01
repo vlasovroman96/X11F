@@ -55,7 +55,9 @@ version (XV) {
 import hw.kdrive.src.kxv; 
 }
 
-version (DPMSExtension) {
+import build.xlibre_server;
+
+static if(DPMSExtension) {
 import Xext.dpmsproc;
 }
 

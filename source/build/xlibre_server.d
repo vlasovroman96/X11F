@@ -28,7 +28,7 @@ enum COMPILEDDEFAULTFONTPATH = "/usr/share/fonts/misc,/usr/share/fonts/TTF,/usr/
 enum COMPOSITE = 1;
 
 /* Build DPMS extension */
-// version = DPMSExtension;
+enum DPMSExtension = 1;
 
 /* Build DRI3 extension */
 //version = DRI3;

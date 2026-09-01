@@ -76,7 +76,7 @@ Equipment Corporation.
 
 ******************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 import config.version_config;
 
 import pixman;
@@ -131,7 +131,7 @@ import externs.attrs;
 import os.connection;
 import os.WaitFor;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }

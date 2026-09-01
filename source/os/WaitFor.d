@@ -81,8 +81,10 @@ import os.utils;
 import os.io;
 import os.log;
 import dix.events;
-
-version (DPMSExtension) {
+import build.xlibre_server;
+import externs.X11.extensions.dpmsconst;
+import Xext.dpms;
+static if(DPMSExtension) {
 import Xext.dpmsproc;
 }
 
@@ -100,7 +102,7 @@ enum GetErrno = WSAGetLastError;
 enum string GetErrno() = `errno`;
 }
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 }
 
@@ -385,7 +387,7 @@ void TimerInit()
     }));
 }
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
 
 enum string DPMS_CHECK_MODE(string mode,string time) = `
     if (` ~ time ~ ` > 0 && DPMSPowerLevel < ` ~ mode ~ ` && timeout >= ` ~ time ~ `)
@@ -403,17 +405,20 @@ private CARD32 NextDPMSTimeout(INT32 timeout)
      */
     switch (DPMSPowerLevel) {
     case DPMSModeOn:
-        DPMS_CHECKTIMEOUT!(`DPMSStandbyTime`);
-
+        mixin(DPMS_CHECK_TIMEOUT!(`DPMSStandbyTime`));
+    goto case;
     case DPMSModeStandby:
         mixin(DPMS_CHECK_TIMEOUT!(`DPMSSuspendTime`));
         /* fallthrough */
+    goto case;
     case DPMSModeSuspend:
-        DPMS_CHECK_TIMEOUT(DPMSOffTime);
+        mixin(DPMS_CHECK_TIMEOUT!("DPMSOffTime"));
         /* fallthrough */
+        goto default;
     default:                   /* DPMSModeOff */
         return 0;
-    default: break;}
+    }
+    // default: break;}
 }
 }                          /* DPMSExtension */
 
@@ -422,7 +427,7 @@ private CARD32 ScreenSaverTimeoutExpire(OsTimerPtr timer, CARD32 now, void* arg)
     INT32 timeout = now - LastEventTime(XIAllDevices).milliseconds;
     CARD32 nextTimeout = 0;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
     /*
      * Check each mode lowest to highest, since a lower mode can
      * have the same timeout as a higher one.
@@ -477,7 +482,7 @@ void SetScreenSaverTimer()
 {
     CARD32 timeout = 0;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
     if (DPMSEnabled) {
         /*
          * A higher DPMS level has a timeout that's either less

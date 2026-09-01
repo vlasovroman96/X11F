@@ -39,13 +39,21 @@ import include.windowstr;
 import include.xf86;
 import include.xf86Priv;
 import xf86Opt_priv;
-version (DPMSExtension) {
+import hw.xfree86.common.xf86Helper;
+import build.xlibre_server;
+import externs.X11.extensions.dpmsconst;
+import Xext.dpms;
+import include.optionstr;
+import xf86Option;
+import xf86VGAarbiter;
+
+static if(DPMSExtension) {
 //import externs.X11.extensions.dpmsconst;
 import Xext.dpmsproc;
 }
 // import xf86VGAarbiter_priv;
 
-version (DPMSExtension) {
+static if(DPMSExtension) {
 private void xf86DPMS(ScreenPtr pScreen, int level)
 {
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
@@ -59,7 +67,7 @@ private void xf86DPMS(ScreenPtr pScreen, int level)
 
 Bool xf86DPMSInit(ScreenPtr pScreen, DPMSSetProcPtr set, int flags)
 {
-version (DPMSExtension) {
+static if(DPMSExtension) {
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
     void* DPMSOpt = void;
     MessageType enabled_from = X_DEFAULT;
@@ -70,15 +78,15 @@ version (DPMSExtension) {
         enabled_from = X_CMDLINE;
         enabled = FALSE;
     }
-    else if (DPMSOpt) {
+    else if (DPMSOpt !is null) {
         enabled_from = X_CONFIG;
-        enabled = xf86CheckBoolOption(pScrn.options, "dpms", FALSE);
-        xf86MarkOptionUsed(DPMSOpt);
+        enabled = xf86CheckBoolOption(cast(_InputOption*)pScrn.options, "dpms", FALSE);
+        xf86MarkOptionUsed(cast(_InputOption*)DPMSOpt);
     }
     if (enabled) {
         xf86DrvMsg(pScreen.myNum, enabled_from, "DPMS enabled\n");
         pScrn.DPMSSet = set;
-        pScreen.DPMS = xf86DPMS;
+        pScreen.DPMS = &xf86DPMS;
     }
     return TRUE;
 } else {
