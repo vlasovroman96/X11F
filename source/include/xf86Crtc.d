@@ -960,7 +960,7 @@ void  xf86OutputGetEDID(xf86OutputPtr output, I2CBusPtr pDDCBus);
  * Initialize dga for this screen
  */
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 void  xf86DiDGAInit(ScreenPtr pScreen, c_ulong dga_address);
 
 /* this is the real function, used only internally */

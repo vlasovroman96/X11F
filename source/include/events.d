@@ -32,9 +32,9 @@ alias TouchOwnershipEvent = _TouchOwnershipEvent;
 alias BarrierEvent = _BarrierEvent;
 alias GestureEvent = _GestureEvent;
 
-// version (XFreeXDGA) {
+static if(XFreeXDGA){
 alias DGAEvent = _DGAEvent;
-// }
+}
 alias RawDeviceEvent = _RawDeviceEvent;
 
 version (XQUARTZ) {

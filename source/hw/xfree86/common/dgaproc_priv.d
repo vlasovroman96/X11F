@@ -10,7 +10,7 @@ public import include.screenint;
 public import include.input;
 
 // Bool DGAScreenAvailable(ScreenPtr pScreen);
-Bool DGAActive(int Index);
+// Bool DGAActive(int Index);
 
 Bool DGAVTSwitch();
 Bool DGAStealButtonEvent(DeviceIntPtr dev, int Index, int button, int is_down);

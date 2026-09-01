@@ -52,7 +52,7 @@ import include.xf86Crtc;
 import include.privates;
 import dix.screen_hooks;
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 //import externs.X11.extensions.xf86dgaproto;
 import include.dgaproc;
 import hw.xfree86.common.dgaproc_priv;
@@ -130,7 +130,7 @@ enum string CMapScreenKeyRegistered = `dixPrivateKeyRegistered(&CMapScreenKeyRec
 
 
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 
 }
 
@@ -213,7 +213,7 @@ Bool xf86HandleColormaps(ScreenPtr pScreen, int maxColors, int sigRGBbits, xf86L
         if ((flags & CMAP_RELOAD_ON_MODE_SWITCH) && pScrn.SwitchMode)
             pScrn.SwitchMode = &CMapSwitchMode;
     }
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     pScrn.SetDGAMode = &CMapSetDGAMode;
 }
     pScrn.ChangeGamma = &CMapChangeGamma;
@@ -476,7 +476,7 @@ private Bool CMapSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode)
     return FALSE;
 }
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 private int CMapSetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr dev)
 {
     ScreenPtr pScreen = xf86ScrnToScreen(pScrn);

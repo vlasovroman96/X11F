@@ -133,7 +133,7 @@ import include.mi;
 import ptrveloc;           /* dix pointer acceleration */
 import include.xserver_properties;
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 import include.dgaproc;
 import hw.xfree86.common.dgaproc_priv;
 }
@@ -1243,7 +1243,7 @@ private int xf86CheckMotionEvent4DGA(DeviceIntPtr device, int is_absolute, const
 {
     int stolen = 0;
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     ScreenPtr scr = null;
     int idx = 0, i = void;
 
@@ -1260,7 +1260,7 @@ version (XFreeXDGA) {
                 if (is_absolute)
                     dx -= device.last.valuators[0];
                 else if (valuator_mask_has_unaccelerated(mask))
-                    dx = valuator_mask_get_unaccelerated(mask, 0);
+                    dx = cast(int)valuator_mask_get_unaccelerated(mask, 0);
             }
 
             if (valuator_mask_isset(mask, 1)) {
@@ -1268,7 +1268,7 @@ version (XFreeXDGA) {
                 if (is_absolute)
                     dy -= device.last.valuators[1];
                 else if (valuator_mask_has_unaccelerated(mask))
-                    dy = valuator_mask_get_unaccelerated(mask, 1);
+                    dy = cast(int)valuator_mask_get_unaccelerated(mask, 1);
             }
 
             if (DGAStealMotionEvent(device, idx, dx, dy))
@@ -1404,7 +1404,7 @@ void xf86PostButtonEventM(DeviceIntPtr device, int is_absolute, int button, int 
             flags = POINTER_RELATIVE | POINTER_ACCELERATE;
     }
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     if (miPointerGetScreen(device)) {
         int index = miPointerGetScreen(device).myNum;
 
@@ -1420,7 +1420,7 @@ version (XFreeXDGA) {
 
 private void xf86PostKeyEvent(DeviceIntPtr device, uint key_code, int is_down)
 {
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     DeviceIntPtr pointer = void;
 
     /* Some pointers send key events, paired device is wrong then. */

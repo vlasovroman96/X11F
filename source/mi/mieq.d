@@ -338,7 +338,7 @@ private void ChangeDeviceID(DeviceIntPtr dev, InternalEvent* event)
     case ET_TouchOwnership:
         event.touch_ownership_event.deviceid = dev.id;
         break;
-version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
     case ET_DGAEvent:
         break;
 }
@@ -407,7 +407,7 @@ private DeviceIntPtr CopyGetMasterEvent(DeviceIntPtr sdev, InternalEvent* origin
     if (!sdev || InputDevIsMaster(sdev) || InputDevIsFloating(sdev))
         return null;
 
-version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
     if (type == ET_DGAEvent)
         type = original.dga_event.subtype;
 }

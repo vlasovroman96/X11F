@@ -77,7 +77,7 @@ import include.xf86_OSlib;
 import xf86Cursor;
 // import xf86platformBus_priv;
 
-version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
 import include.dgaproc;
 import hw.xfree86.common.dgaproc_priv;
 }
@@ -534,7 +534,7 @@ private void xf86VTSwitch()
     if(!(dispatchException & DE_TERMINATE))
         assert(!seatd_libseat_controls_session());
 
-version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
     if (!DGAVTSwitch())
         return;
 }

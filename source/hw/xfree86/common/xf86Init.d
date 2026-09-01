@@ -682,7 +682,7 @@ void InitOutput(int argc, char** argv)
          * don't, will wrap them.
          */
         xf86Screens[i].EnableDisableFBAccess = &xf86EnableDisableFBAccess;
-version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
         xf86Screens[i].SetDGAMode = xf86SetDGAMode;
 }
         scr_index = AddScreen(&xf86ScreenInit, argc, argv);
@@ -729,7 +729,7 @@ version (XFreeXDGA) {
          * don't, will wrap them.
          */
         pScrn.EnableDisableFBAccess = &xf86EnableDisableFBAccess;
-version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
         pScrn.SetDGAMode = xf86SetDGAMode;
 }
         scr_index = AddGPUScreen(&xf86ScreenInit, argc, argv);

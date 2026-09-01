@@ -132,7 +132,7 @@ enum XvMCExtension = 1;
 enum XSYNC = 1;
 
 /* Support XTest extension */
-enum XTEST = 1;
+enum XTEST = 0;
 
 /* Support Xv Extension */
 enum XV = 1;

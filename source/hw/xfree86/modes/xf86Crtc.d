@@ -859,7 +859,7 @@ xf86CrtcScreenInitType xf86CrtcScreenInit(ScreenPtr screen)
     /* This might still be marked wrapped from a previous generation */
     config.BlockHandler = null;
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     _xf86_di_dga_init_internal(screen);
 }
 version (RANDR_13_INTERFACE) {
@@ -2041,7 +2041,7 @@ void xf86SetScrnInfoModes(ScrnInfoPtr scrn)
     }
 
     scrn.currentMode = scrn.modes;
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     if (scrn.pScreen)
         _xf86_di_dga_reinit_internal(scrn.pScreen);
 }

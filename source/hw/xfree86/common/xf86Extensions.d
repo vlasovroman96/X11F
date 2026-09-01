@@ -47,7 +47,7 @@ version (XSELINUX) {
 import xselinux;
 }
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 //import externs.X11.extensions.xf86dgaproto;
 }
 

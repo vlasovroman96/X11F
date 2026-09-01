@@ -117,9 +117,9 @@ void  xf86DPMSInit(ScreenPtr pScreen, DPMSSetProcPtr set, int flags);
 
 /* xf86DGA.c */
 
-version (XFreeXDGA) {
-void  DGAInit(ScreenPtr pScreen, DGAFunctionPtr funcs, DGAModePtr modes, int num);
-void  DGAReInitModes(ScreenPtr pScreen, DGAModePtr modes, int num);
+static if(XFreeXDGA){
+// void  DGAInit(ScreenPtr pScreen, DGAFunctionPtr funcs, DGAModePtr modes, int num);
+// void  DGAReInitModes(ScreenPtr pScreen, DGAModePtr modes, int num);
 xf86SetDGAModeProc xf86SetDGAMode;
 }
 

@@ -29,6 +29,8 @@ import core.stdc.config: c_long, c_ulong;
  * authorization from the copyright holder(s) and author(s).
  */
 import build.xorg_config;
+import xf86DGA;
+
 
 //import externs.X11.X;
 ////import externs.X11.Xmd;
@@ -53,7 +55,7 @@ import xf86Globals;
 import dix.events;
 import os.log;
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
 import include.dgaproc;
 import hw.xfree86.common.dgaproc_priv;
 }
@@ -205,7 +207,7 @@ Bool xf86SwitchMode(ScreenPtr pScreen, DisplayModePtr mode)
     if (!pScr.vtSema || !mode || !pScr.SwitchMode)
         return FALSE;
 
-version (XFreeXDGA) {
+static if(XFreeXDGA){
     if (DGAActive(pScr.scrnIndex))
         return FALSE;
 }

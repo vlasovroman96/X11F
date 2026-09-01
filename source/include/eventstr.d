@@ -28,7 +28,8 @@ extern(C): __gshared:
  
 public import include.inputstr;
 public import include.events;
-/**
+
+import build.xlibre_server;/**
  * @file events.h
  * This file describes the event structures used internally by the X
  * server during event generation and event processing.
@@ -247,7 +248,7 @@ struct _DeviceChangedEvent {
     }_Keys keys;
 }
 
-// version (XFreeXDGA) {
+static if(build.xlibre_server.XFreeXDGA){
 /**
  * DGAEvent, used by DGA to intercept and emulate input events.
  */
@@ -264,7 +265,7 @@ struct _DGAEvent {
     int screen;           /**<  Screen number this event applies to */
     ushort state;       /**<  Core modifier/button state */
 }
-// }
+}
 
 /**
  * Raw event, contains the data as posted by the device.
@@ -366,9 +367,9 @@ union _InternalEvent {
     DeviceChangedEvent changed_event;
     TouchOwnershipEvent touch_ownership_event;
     BarrierEvent barrier_event;
-// version (XFreeXDGA) {
-    DGAEvent dga_event;
-// }
+static if(build.xlibre_server.XFreeXDGA){
+    _DGAEvent dga_event;
+}
     RawDeviceEvent raw_event;
 version (XQUARTZ) {
     XQuartzEvent xquartz_event;
