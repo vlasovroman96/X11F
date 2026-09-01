@@ -55,7 +55,7 @@ xcb_window_t xnestParentWindow = 0;
 int ddxProcessArgument(int argc, char** argv, int i)
 {
     /* disable some extensions we currently don't support yet */
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     noMITShmExtension = TRUE;
 } /* CONFIG_MITSHM */
 

@@ -118,6 +118,8 @@ import Xext.sync;
 import xkb.xkb.xkb;
 import xcmisc;
 import dri3.dri3;
+import Xext.shm;
+
 
 private const ExtensionModule[] staticExtensions = () {
     ExtensionModule[] result;
@@ -125,8 +127,8 @@ private const ExtensionModule[] staticExtensions = () {
     result ~= ExtensionModule(&GEExtensionInit, "Generic Event Extension", null);
     result ~= ExtensionModule(&ShapeExtensionInit, "SHAPE", &noShapeExtension);
 
-    static if (is(typeof({ version (CONFIG_MITSHM) {} }))) {
-        version (CONFIG_MITSHM) result ~= ExtensionModule(&ShmExtensionInit, "MIT-SHM", &noMITShmExtension);
+    static if (is(typeof({ static if(CONFIG_MITSHM){} }))) {
+        static if(CONFIG_MITSHM)result ~= ExtensionModule(&ShmExtensionInit, "MIT-SHM", &noMITShmExtension);
     }
 
     result ~= ExtensionModule(&XInputExtensionInit, "XInputExtension", null);

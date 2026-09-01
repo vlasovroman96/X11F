@@ -39,7 +39,7 @@ import core.stdc.string;             /* for memset */
 import core.stdc.errno;
 import core.stdc.time;
 
-version (MITSHM) {
+static if(MITSHM){
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;
 import core.sys.posix.sys.mman;
@@ -476,7 +476,7 @@ private void hostx_init_shm()
 
 private Bool hostx_create_shm_segment(xcb_shm_segment_info_t* shminfo, size_t size)
 {
-version (MITSHM) {
+static if(MITSHM){
     shminfo.shmaddr = null;
 
     if (HostX.have_shm_fd_passing) {
@@ -536,7 +536,7 @@ version (MITSHM) {
 
 private void hostx_destroy_shm_segment(xcb_shm_segment_info_t* shminfo, size_t size)
 {
-version (MITSHM) {
+static if(MITSHM){
     xcb_shm_detach(HostX.conn, shminfo.shmseg);
 
     if (HostX.have_shm_fd_passing)

@@ -71,7 +71,7 @@ version (Windows) {} else {
 import externs.sys.param;
 }
 import externs.X11.XWDFile;
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
 import core.sys.posix.sys.ipc;
 import core.sys.posix.sys.shm;
 } /* CONFIG-MITSHM */
@@ -130,7 +130,7 @@ version (HAVE_MMAP) {
     char[MAXPATHLEN] mmap_file = 0;
 }
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     int shmid;
 } /* CONFIG_MITSHM */
 version (GLAMOR) {
@@ -248,7 +248,7 @@ version (HAVE_MMAP) {
         break;
 }                          /* HAVE_MMAP */
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     case SHARED_MEMORY_FB:
         if (-1 == shmdt(cast(char*) pvfb.pXWDHeader)) {
             perror("shmdt");
@@ -309,7 +309,7 @@ version (HAVE_MMAP) {
         ("-fbdir directory       put framebuffers in mmap'ed files in directory\n");
 }
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     ErrorF("-shmem                 put framebuffers in shared memory\n");
 } /* CONFIG_MITSHM */
 
@@ -430,7 +430,7 @@ version (HAVE_MMAP) {
     }
 }                          /* HAVE_MMAP */
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     if (strcmp(argv[i], "-shmem") == 0) {       /* -shmem */
         fbmemtype = SHARED_MEMORY_FB;
         return 1;
@@ -634,7 +634,7 @@ enum DUMMY_BUFFER_SIZE = 65536;
 }
 }                          /* HAVE_MMAP */
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
  void vfbAllocateSharedMemoryFramebuffer(vfbScreenInfoPtr pvfb)
 {
     /* create the shared memory segment */
@@ -701,7 +701,7 @@ version (HAVE_MMAP) {
         break;
 }
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     case SHARED_MEMORY_FB:
         vfbAllocateSharedMemoryFramebuffer(pvfb);
         break;

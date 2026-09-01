@@ -30,7 +30,8 @@ from The Open Group.
 
 */
 
-import build.dix_config;
+import build.xlibre_server;
+
 
 //import externs.X11.X;
 // //import externs.X11.extensions.shm;
@@ -239,7 +240,7 @@ Bool miScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix
     pScreen.numVisuals = cast(short)numVisuals;
     pScreen.visuals = visuals;
     if (width) {
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
         ShmRegisterFbFuncs(pScreen);
 } /* CONFIG_MITSHM */
         pScreen.CloseScreen = &miCloseScreen;

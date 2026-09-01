@@ -42,11 +42,16 @@ import core.stdc.config: c_long, c_ulong;
  * XLoadQueryFont).
  */
 
-import build.dix_config;
+import build.xlibre_server;
+
 
 import core.sys.posix.sys.types;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
+import core.sys.posix.sys.shm;
+import core.sys.posix.sys.stat;
+
+
 import core.stdc.time;
 import core.stdc.errno;
 
@@ -64,7 +69,7 @@ import core.sys.posix.sys.stat;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.xf86bigfproto;
 // //import externs.X11.fonts.fontstruct; // libxfont2.h missed to include that
-// //import externs.X11.fonts.libxfont2;
+import externs.X11.fonts.libxfont2;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -88,6 +93,7 @@ import os.log;
 import dix.extension;
 import dix.dixutils;
 import externs.X11.fonts.fontproto;
+import Xext.shm_priv;
 
 enum string FONTCHARSET(string font)	 = font;
 enum string FONTMAXBOUNDS(string font,string field) = `(`~font~`).info.maxbounds.`~field;
@@ -114,15 +120,15 @@ Bool noXFree86BigfontExtension = FALSE;
 
 
 
-version(CONFIG_MITSHM) {
+static if(CONFIG_MITSHM) {
 
 /* A random signature, transmitted to the clients so they can verify that the
    shared memory segment they are attaching to was really established by the
    X server they are talking to. */
-private CARD32 signature;
+CARD32 signature;
 
 /* Index for additional information stored in a FontRec's devPrivates array. */
-private int FontShmdescIndex;
+int FontShmdescIndex;
 
 private uint pagesize;
 
@@ -373,7 +379,7 @@ ProcXF86BigfontQueryFont(ClientPtr client)
     int nCharInfos;
     int shmid;
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     ShmDescPtr pDesc = null;
 } else {
     enum pDesc = 0;
@@ -756,7 +762,7 @@ void XFree86BigfontExtensionInit()
                      &ProcXF86BigfontDispatch,
                      &ProcXF86BigfontDispatch,
                      &XF86BigfontResetProc, &StandardMinorOpcode)) {
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
 version (MUST_CHECK_FOR_SHM_SYSCALL) {
         /*
          * Note: Local-clients will not be optimized without shared memory

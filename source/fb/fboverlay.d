@@ -26,7 +26,8 @@ import core.stdc.config: c_long, c_ulong;
  * Author:  Keith Packard, SuSE, Inc.
  */
 
-import build.dix_config;
+import build.xlibre_server;
+
 
 import core.stdc.assert_;
 import core.stdc.stdlib;
@@ -274,7 +275,7 @@ Bool fbOverlayFinishScreenInit(ScreenPtr pScreen, void* pbits1, void* pbits2, in
         return FALSE;
     }
     /* MI thinks there's no frame buffer */
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     ShmRegisterFbFuncs(pScreen);
 } /* CONFIG_MITSHM */
     pScreen.minInstalledCmaps = 1;

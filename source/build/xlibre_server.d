@@ -59,8 +59,8 @@ enum HAVE_STRNDUP = 0;
 enum IPv6 = 1;
 
 /* Support MIT-SHM Extension */
-version = MITSHM;
-version = CONFIG_MITSHM;
+enum MITSHM = 1;
+enum CONFIG_MITSHM = 1;
 
 /* Internal define for Xinerama */
 enum PANORAMIX = 1;

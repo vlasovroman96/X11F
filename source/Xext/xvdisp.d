@@ -25,7 +25,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 ******************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 
 import core.stdc.string;
 
@@ -33,7 +33,7 @@ import core.stdc.string;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.Xv;
 // //import externs.X11.extensions.Xvproto;
-// //import externs.X11.extensions.shmproto;
+import externs.X11.extensions.shmproto;
 
 import dix.dix_priv;
 import dix.rpcbuf_priv;
@@ -689,7 +689,7 @@ version (XINERAMA) {
     return SingleXvPutImage(client);
 }
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
 
 private int SingleXvShmPutImage(ClientPtr client)
 {
@@ -754,7 +754,7 @@ private int SingleXvShmPutImage(ClientPtr client)
             type: cast(ubyte)ShmCompletionCode,
             drawable: stuff.drawable,
             minorEvent: xv_ShmPutImage,
-            majorEvent: XvReqCode,
+            majorEvent: cast(ubyte)XvReqCode,
             shmseg: stuff.shmseg,
             offset: stuff.offset
         };
@@ -772,7 +772,7 @@ version (XINERAMA) {
 
 private int ProcXvShmPutImage(ClientPtr client)
 {
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     mixin(X_REQUEST_HEAD_STRUCT!xvShmPutImageReq);
     mixin(X_REQUEST_FIELD_CARD32!"port");
     mixin(X_REQUEST_FIELD_CARD32!"drawable");
@@ -1034,7 +1034,7 @@ private int XineramaXvSetPortAttribute(ClientPtr client)
     return result;
 }
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
 private int XineramaXvShmPutImage(ClientPtr client)
 {
     mixin(REQUEST!xvShmPutImageReq);

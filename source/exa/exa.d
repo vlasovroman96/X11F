@@ -32,7 +32,8 @@ import core.stdc.config: c_long, c_ulong;
  * memory management.
  */
 
-import build.dix_config;
+import build.xlibre_server;
+
 
 import core.stdc.stdlib;
 
@@ -53,7 +54,7 @@ import dix.screen_hooks;
 
 // DevPrivateKeyRec exaScreenPrivateKeyRec;
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
 private ShmFuncs exaShmFuncs = { null, null };
 } /* CONFIG_MITSHM */
 
@@ -884,7 +885,7 @@ Bool exaDriverInit(ScreenPtr pScreen, ExaDriverPtr pScreenInfo)
         mixin(exa.exa_priv.wrap!("pExaScr", "ps", "AddTraps", "ExaCheckAddTraps"));
     }
 
-version (CONFIG_MITSHM) {
+static if(CONFIG_MITSHM){
     /*
      * Don't allow shared pixmaps.
      */
