@@ -258,7 +258,7 @@ enum XSYNC = 1;
 
 // enum XTEST = 1;
 
-enum XTRANS_SEND_FDS = 1;
+// enum XTRANS_SEND_FDS = 1;
 
 enum XV = 1;
 

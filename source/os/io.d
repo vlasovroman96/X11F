@@ -59,7 +59,7 @@ SOFTWARE.
  *
  *****************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 
 import dix.dixstruct_priv;
 import os.connection;

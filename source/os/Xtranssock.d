@@ -181,7 +181,10 @@ static if (HasVersion!"SO_DONTLINGER" && HasVersion!"SO_LINGER") {
 //#define SocketInitOnce() /**/
 
 version (linux) {
-version = HAVE_ABSTRACT_SOCKETS;
+enum HAVE_ABSTRACT_SOCKETS = 1;
+}
+else {
+    enum HAVE_ABSTRACT_SOCKETS = 0;
 }
 
 enum MIN_BACKLOG = 128;
@@ -1097,7 +1100,7 @@ int _XSERVTransSocketUNIXResetListener(XtransConnInfo ciptr)
     int status = TRANS_RESET_NOOP;
     uint mode = void;
     int abstract_ = 0;
-version (HAVE_ABSTRACT_SOCKETS) {
+static if (HAVE_ABSTRACT_SOCKETS) {
     abstract_ = ciptr.transptr.flags & TRANS_ABSTRACT;
 }
 
@@ -1615,6 +1618,7 @@ else {
 };
 }
 
+static if(XTRANS_SEND_FDS) {
 Xtransport _XSERVTransSocketINETFuncs = {
 	/* Socket Interface */
 	"inet",
@@ -1628,16 +1632,35 @@ Xtransport _XSERVTransSocketINETFuncs = {
 	&_XSERVTransSocketINETAccept,
 	&_XSERVTransSocketRead,
 	&_XSERVTransSocketWrite,
-// #if XTRANS_SEND_FDS
 	&_XSERVTransSocketSendFdInvalid,
 	&_XSERVTransSocketRecvFdInvalid,
-// #endif
 	&_XSERVTransSocketDisconnect,
 	&_XSERVTransSocketINETClose,
 	&_XSERVTransSocketINETClose,
 };
+}
+else {
+    Xtransport _XSERVTransSocketINETFuncs = {
+	/* Socket Interface */
+	"inet",
+	0,
+	null,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketINETCreateListener,
+	null,		       			/* ResetListener */
+	&_XSERVTransSocketINETAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketINETClose,
+	&_XSERVTransSocketINETClose,
+};
+}
 
 static if (IPv6){
+    static if(XTRANS_SEND_FDS) {
 Xtransport _XSERVTransSocketINET6Funcs = {
 	/* Socket Interface */
 	"inet6",
@@ -1651,25 +1674,60 @@ Xtransport _XSERVTransSocketINET6Funcs = {
 	&_XSERVTransSocketINETAccept,
 	&_XSERVTransSocketRead,
 	&_XSERVTransSocketWrite,
-// #if XTRANS_SEND_FDS
 	&_XSERVTransSocketSendFdInvalid,
 	&_XSERVTransSocketRecvFdInvalid,
-// #endif
 	&_XSERVTransSocketDisconnect,
 	&_XSERVTransSocketINETClose,
 	&_XSERVTransSocketINETClose,
 };
+    }
+    else {
+Xtransport _XSERVTransSocketINET6Funcs = {
+	/* Socket Interface */
+	"inet6",
+	0,
+	null,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketINETCreateListener,
+	null,					/* ResetListener */
+	&_XSERVTransSocketINETAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketINETClose,
+	&_XSERVTransSocketINETClose,
+};
+    }
+
 } /* IPv6 */
 
+
+
 static if(UNIXCONN){
-Xtransport _XSERVTransSocketLocalFuncs = {
-	/* Socket Interface */
-	"local",
+
+    static if(HAVE_ABSTRACT_SOCKETS) {
 // #ifdef HAVE_ABSTRACT_SOCKETS
-	TRANS_ABSTRACT,
-// #else
-	// 0,
-// #endif
+	enum TRANS_LOCAL_FLAG = TRANS_ABSTRACT;
+}
+else {
+    enum TRANS_LOCAL_FLAG  = 0;
+}
+
+static if(!HAVE_ABSTRACT_SOCKETS) {
+// #ifdef HAVE_ABSTRACT_SOCKETS
+	enum TRANS_UNIX_FLAG = TRANS_ALIAS;
+}
+else {
+    enum TRANS_UNIX_FLAG  = 0;
+}
+
+
+static if(XTRANS_SEND_FDS) {
+Xtransport _XSERVTransSocketLocalFuncs = {
+	"local",
+    TRANS_LOCAL_FLAG ,
 	null,
 	&_XSERVTransSocketOpenCOTSServer,
 	&_XSERVTransSocketReopenCOTSServer,
@@ -1679,10 +1737,8 @@ Xtransport _XSERVTransSocketLocalFuncs = {
 	&_XSERVTransSocketUNIXAccept,
 	&_XSERVTransSocketRead,
 	&_XSERVTransSocketWrite,
-// #if XTRANS_SEND_FDS
 	&_XSERVTransSocketSendFd,
 	&_XSERVTransSocketRecvFd,
-// #endif
 	&_XSERVTransSocketDisconnect,
 	&_XSERVTransSocketUNIXClose,
 	&_XSERVTransSocketUNIXCloseForCloning,
@@ -1693,11 +1749,7 @@ enum const(char)*[2] unix_nolisten = [ "local" , null ];
 Xtransport _XSERVTransSocketUNIXFuncs = {
 	/* Socket Interface */
 	"unix",
-// #if !defined(HAVE_ABSTRACT_SOCKETS)
-        TRANS_ALIAS,
-// #else
-	// 0,
-// #endif
+    TRANS_UNIX_FLAG,
 	unix_nolisten.ptr,
 	&_XSERVTransSocketOpenCOTSServer,
 	&_XSERVTransSocketReopenCOTSServer,
@@ -1707,13 +1759,51 @@ Xtransport _XSERVTransSocketUNIXFuncs = {
 	&_XSERVTransSocketUNIXAccept,
 	&_XSERVTransSocketRead,
 	&_XSERVTransSocketWrite,
-// #if XTRANS_SEND_FDS
-	&_XSERVTransSocketSendFd,
+    &_XSERVTransSocketSendFd,
 	&_XSERVTransSocketRecvFd,
-// #endif
 	&_XSERVTransSocketDisconnect,
 	&_XSERVTransSocketUNIXClose,
 	&_XSERVTransSocketUNIXCloseForCloning,
 };
 
+}
+
+else {
+Xtransport _XSERVTransSocketLocalFuncs = {
+	/* Socket Interface */
+	"local",
+    TRANS_LOCAL_FLAG ,
+	null,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketUNIXCreateListener,
+	&_XSERVTransSocketUNIXResetListener,
+	&_XSERVTransSocketUNIXAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketWrite,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketUNIXClose,
+	&_XSERVTransSocketUNIXCloseForCloning,
+};
+
+enum const(char)*[2] unix_nolisten = [ "local" , null ];
+
+Xtransport _XSERVTransSocketUNIXFuncs = {
+	/* Socket Interface */
+	"unix",
+    TRANS_UNIX_FLAG,
+	unix_nolisten.ptr,
+	&_XSERVTransSocketOpenCOTSServer,
+	&_XSERVTransSocketReopenCOTSServer,
+	&_XSERVTransSocketSetOption,
+	&_XSERVTransSocketUNIXCreateListener,
+	&_XSERVTransSocketUNIXResetListener,
+	&_XSERVTransSocketUNIXAccept,
+	&_XSERVTransSocketRead,
+	&_XSERVTransSocketDisconnect,
+	&_XSERVTransSocketUNIXClose,
+	&_XSERVTransSocketUNIXCloseForCloning,
+};
+}
 } /* UNIXCONN */

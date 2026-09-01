@@ -31,7 +31,7 @@ public import include.screenint;
 public import include.pixmap;
 public import include.gc;
 import include.damage;
-import build.dix_config;
+import build.xlibre_server;
 
 
 enum string XSHM_PUT_IMAGE_ARGS = "
