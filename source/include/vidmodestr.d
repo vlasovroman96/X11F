@@ -115,7 +115,7 @@ struct _VidModeRec {
 }alias VidModeRec = _VidModeRec;
 alias VidModePtr = VidModeRec*;
 
-version (XF86VIDMODE) {
+static if(XF86VIDMODE){
 void VidModeAddExtension(Bool allow_non_local);
 VidModePtr VidModeGetPtr(ScreenPtr pScreen);
 VidModePtr VidModeInit(ScreenPtr pScreen);

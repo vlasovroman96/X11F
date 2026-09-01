@@ -992,7 +992,7 @@ int ddxProcessArgument(int argc, char** argv, int i)
         xf86FlipPixels = TRUE;
         return 1;
     }
-version (XF86VIDMODE) {
+static if(build.xlibre_server.XF86VIDMODE){
     if (!strcmp(argv[i], "-disableVidMode")) {
         xf86VidModeDisabled = TRUE;
         return 1;
@@ -1268,7 +1268,7 @@ void ddxUseMsg()
         ("-pointer name          specify the core pointer InputDevice name\n");
     ErrorF("-nosilk                disable Silken Mouse\n");
     ErrorF("-flipPixels            swap default black/white Pixel values\n");
-version (XF86VIDMODE) {
+static if(build.xlibre_server.XF86VIDMODE){
     ErrorF("-disableVidMode        disable mode adjustments with xvidtune\n");
     ErrorF
         ("-allowNonLocalXvidtune allow xvidtune to be run as a non-local client\n");

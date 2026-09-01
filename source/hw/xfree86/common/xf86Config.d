@@ -903,7 +903,7 @@ private void configServerFlags(XF86ConfFlagsPtr flagsconf, XF86OptionPtr layouto
      * settings may be overridden later when the command line options are
      * checked.
      */
-version (XF86VIDMODE) {
+static if(build.xlibre_server.XF86VIDMODE){
     if (xf86GetOptValBool(FlagOptions.ptr, FLAG_DISABLEVIDMODE, &value))
         xf86Info.vidModeEnabled = !value;
     if (xf86GetOptValBool(FlagOptions.ptr, FLAG_ALLOWNONLOCAL, &value))
@@ -2550,7 +2550,7 @@ ConfigStatus xf86HandleConfigFile(Bool autoconfig)
      * Handle some command line options that can override some of the
      * ServerFlags settings.
      */
-version (XF86VIDMODE) {
+static if(build.xlibre_server.XF86VIDMODE){
     if (xf86VidModeDisabled)
         xf86Info.vidModeEnabled = FALSE;
     if (xf86VidModeAllowNonLocal)

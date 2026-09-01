@@ -54,6 +54,7 @@ import include.xf86DDC;
 import mi.mi_priv;
 import os.log_priv;
 import os.osdep;
+import xf86Mode;
 
 import include.os;
 import include.servermd;

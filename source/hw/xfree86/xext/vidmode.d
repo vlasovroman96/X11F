@@ -35,15 +35,17 @@ from Kaleb S. KEITHLEY
 
 import build.dix_config;
 
-version (XF86VIDMODE) {
+static if(XF86VIDMODE){
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.extensions.xf86vmproto;
+import externs.X11.extensions.xf86vmproto;
 
 import dix.dix_priv;
 import dix.request_priv;
 import dix.rpcbuf_priv;
+import dix.swapreq;
+
 import dix.screenint_priv;
 import os.log_priv;
 import os.osdep;
@@ -53,10 +55,10 @@ import include.dixstruct;
 import include.extnsionst;
 import include.scrnintstr;
 import include.servermd;
-import vidmodestr;
+import include.vidmodestr;
 import include.globals;
 import include.protocol_versions;
-
+import dix.extension;
 private int VidModeErrorBase;
 private int VidModeAllowNonLocal;
 
@@ -76,7 +78,7 @@ alias VidModePrivPtr = VidModePrivRec*;
 enum string VM_GETPRIV(string c) = `(cast(VidModePrivPtr) 
     dixLookupPrivate(&(` ~ c ~ `).devPrivates, VidModeClientPrivateKey))`;
 enum string VM_SETPRIV(string c,string p) = `
-    dixSetPrivate(&(` ~ c ~ `).devPrivates, VidModeClientPrivateKey, ` ~ p ~ `)`;
+    dixSetPrivate(&(` ~ c ~ `).devPrivates, VidModeClientPrivateKey, ` ~ p ~ `);`;
 
 version (DEBUG) {
 enum string DEBUG_P(string x) = `DebugF(x"\n")`;
@@ -199,7 +201,7 @@ private int ProcVidModeQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeQueryVersionReq);
 
-    DEBUG_P("XF86VidModeQueryVersion");
+    // DEBUG_P("XF86VidModeQueryVersion");
 
     xXF86VidModeQueryVersionReply reply = {
         majorVersion: SERVER_XF86VIDMODE_MAJOR_VERSION,
@@ -222,7 +224,7 @@ private int ProcVidModeGetModeLine(ClientPtr client)
     int dotClock = void;
     int ver = void;
 
-    DEBUG_P("XF86VidModeGetModeline");
+    // DEBUG_P("XF86VidModeGetModeline");
 
     ver = ClientMajorVersion(client);
 
@@ -239,15 +241,15 @@ private int ProcVidModeGetModeLine(ClientPtr client)
 
     xXF86VidModeGetModeLineReply reply = {
         dotclock: dotClock,
-        hdisplay: VidModeGetModeValue(mode, VIDMODE_H_DISPLAY),
-        hsyncstart: VidModeGetModeValue(mode, VIDMODE_H_SYNCSTART),
-        hsyncend: VidModeGetModeValue(mode, VIDMODE_H_SYNCEND),
-        htotal: VidModeGetModeValue(mode, VIDMODE_H_TOTAL),
-        hskew: VidModeGetModeValue(mode, VIDMODE_H_SKEW),
-        vdisplay: VidModeGetModeValue(mode, VIDMODE_V_DISPLAY),
-        vsyncstart: VidModeGetModeValue(mode, VIDMODE_V_SYNCSTART),
-        vsyncend: VidModeGetModeValue(mode, VIDMODE_V_SYNCEND),
-        vtotal: VidModeGetModeValue(mode, VIDMODE_V_TOTAL),
+        hdisplay: cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_DISPLAY),
+        hsyncstart: cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SYNCSTART),
+        hsyncend: cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SYNCEND),
+        htotal: cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_TOTAL),
+        hskew: cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SKEW),
+        vdisplay: cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_DISPLAY),
+        vsyncstart: cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_SYNCSTART),
+        vsyncend: cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_SYNCEND),
+        vtotal: cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_TOTAL),
         flags: VidModeGetModeValue(mode, VIDMODE_FLAGS),
         /*
          * Older servers sometimes had server privates that the VidMode
@@ -292,7 +294,7 @@ private int ProcVidModeGetModeLine(ClientPtr client)
             flags: reply.flags,
             privsize: reply.privsize
         };
-        return X_SEND_REPLY_SIMPLE(client, oldrep);
+        return mixin(X_SEND_REPLY_SIMPLE!("client", "oldrep"));
     }
 
     return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
@@ -302,15 +304,15 @@ private void fillModeInfoV1(x_rpcbuf_t* rpcbuf, int dotClock, DisplayModePtr mod
 {
     /* 0.x version -- xXF86OldVidModeModeInfo */
     x_rpcbuf_write_CARD32(rpcbuf, dotClock);
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_DISPLAY));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_SYNCSTART));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_SYNCEND));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_TOTAL));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_DISPLAY));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_SYNCSTART));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_SYNCEND));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_TOTAL));
-    x_rpcbuf_write_CARD32(rpcbuf, VidModeGetModeValue(mode, VIDMODE_FLAGS));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_DISPLAY));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SYNCSTART));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SYNCEND));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_TOTAL));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_DISPLAY));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_SYNCSTART));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_SYNCEND));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_TOTAL));
+    x_rpcbuf_write_CARD32(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_FLAGS));
     x_rpcbuf_reserve0(rpcbuf, CARD32.sizeof); /* unused ? */
 }
 
@@ -318,18 +320,18 @@ private void fillModeInfoV2(x_rpcbuf_t* rpcbuf, int dotClock, DisplayModePtr mod
 {
     /* xXF86VidModeModeInfo -- v2 */
     x_rpcbuf_write_CARD32(rpcbuf, dotClock);
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_DISPLAY));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_SYNCSTART));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_SYNCEND));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_TOTAL));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_DISPLAY));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SYNCSTART));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_SYNCEND));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_H_TOTAL));
     x_rpcbuf_write_CARD32(rpcbuf, VidModeGetModeValue(mode, VIDMODE_H_SKEW));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_DISPLAY));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_SYNCSTART));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_SYNCEND));
-    x_rpcbuf_write_CARD16(rpcbuf, VidModeGetModeValue(mode, VIDMODE_V_TOTAL));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_DISPLAY));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_SYNCSTART));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_SYNCEND));
+    x_rpcbuf_write_CARD16(rpcbuf, cast(ushort)VidModeGetModeValue(mode, VIDMODE_V_TOTAL));
     x_rpcbuf_reserve0(rpcbuf, CARD32.sizeof); /* pad1 */
     x_rpcbuf_write_CARD32(rpcbuf, VidModeGetModeValue(mode, VIDMODE_FLAGS));
-    x_rpcbuf_reserve0(rpcbuf, ((CARD32) * 4).sizeof); /* reserved[1,2,3], privsize */
+    x_rpcbuf_reserve0(rpcbuf, ((CARD32).sizeof * 4)); /* reserved[1,2,3], privsize */
 }
 
 private int ProcVidModeGetAllModeLines(ClientPtr client)
@@ -342,7 +344,7 @@ private int ProcVidModeGetAllModeLines(ClientPtr client)
     int modecount = void, dotClock = void;
     int ver = void;
 
-    DEBUG_P("XF86VidModeGetAllModelines");
+    // DEBUG_P("XF86VidModeGetAllModelines");
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
@@ -399,13 +401,13 @@ private int ProcVidModeAddModeLine(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    DEBUG_P("XF86VidModeAddModeline");
+    // DEBUG_P("XF86VidModeAddModeline");
 
     if (ClientMajorVersion(client) < 2) {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86OldVidModeAddModeLineReq);
         len =
-            client.req_len -
-            bytes_to_int32(xXF86OldVidModeAddModeLineReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86OldVidModeAddModeLineReq.sizeof));
 
         mixin(X_REQUEST_FIELD_CARD32!"screen");
         mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
@@ -424,7 +426,7 @@ private int ProcVidModeAddModeLine(ClientPtr client)
             return BadLength;
 
         xXF86VidModeAddModeLineReq newstuff = {
-            length: client.req_len,
+            length: cast(ushort)client.req_len,
             screen: stuff.screen,
             dotclock: stuff.dotclock,
             hdisplay: stuff.hdisplay,
@@ -455,8 +457,8 @@ private int ProcVidModeAddModeLine(ClientPtr client)
     else {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86VidModeAddModeLineReq);
         len =
-            client.req_len -
-            bytes_to_int32(xXF86VidModeAddModeLineReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86VidModeAddModeLineReq.sizeof));
 
         mixin(X_REQUEST_FIELD_CARD32!"screen");
         mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
@@ -531,7 +533,7 @@ private int VidModeAddModeLine(ClientPtr client, xXF86VidModeAddModeLineReq* stu
 
         if (pVidMode.GetFirstModeline(pScreen, &mode, &dotClock)) {
             do {
-                if ((pVidMode.GetDotClock(pScreen, stuff.dotclock)
+                if ((pVidMode.GetDotClock(pScreen, cast(int)stuff.dotclock)
                      == dotClock) && mixin(MODEMATCH!(`mode`, `stuff`))) {
                     found = TRUE;
                     break;
@@ -546,17 +548,17 @@ private int VidModeAddModeLine(ClientPtr client, xXF86VidModeAddModeLineReq* stu
     if (mode is null)
         return BadValue;
 
-    VidModeSetModeValue(mode, VIDMODE_CLOCK, stuff.dotclock);
-    VidModeSetModeValue(mode, VIDMODE_H_DISPLAY, stuff.hdisplay);
-    VidModeSetModeValue(mode, VIDMODE_H_SYNCSTART, stuff.hsyncstart);
-    VidModeSetModeValue(mode, VIDMODE_H_SYNCEND, stuff.hsyncend);
-    VidModeSetModeValue(mode, VIDMODE_H_TOTAL, stuff.htotal);
-    VidModeSetModeValue(mode, VIDMODE_H_SKEW, stuff.hskew);
-    VidModeSetModeValue(mode, VIDMODE_V_DISPLAY, stuff.vdisplay);
-    VidModeSetModeValue(mode, VIDMODE_V_SYNCSTART, stuff.vsyncstart);
-    VidModeSetModeValue(mode, VIDMODE_V_SYNCEND, stuff.vsyncend);
-    VidModeSetModeValue(mode, VIDMODE_V_TOTAL, stuff.vtotal);
-    VidModeSetModeValue(mode, VIDMODE_FLAGS, stuff.flags);
+    VidModeSetModeValue(mode, VIDMODE_CLOCK, cast(int)stuff.dotclock);
+    VidModeSetModeValue(mode, VIDMODE_H_DISPLAY, cast(int)stuff.hdisplay);
+    VidModeSetModeValue(mode, VIDMODE_H_SYNCSTART, cast(int)stuff.hsyncstart);
+    VidModeSetModeValue(mode, VIDMODE_H_SYNCEND, cast(int)stuff.hsyncend);
+    VidModeSetModeValue(mode, VIDMODE_H_TOTAL, cast(int)stuff.htotal);
+    VidModeSetModeValue(mode, VIDMODE_H_SKEW, cast(int)stuff.hskew);
+    VidModeSetModeValue(mode, VIDMODE_V_DISPLAY, cast(int)stuff.vdisplay);
+    VidModeSetModeValue(mode, VIDMODE_V_SYNCSTART, cast(int)stuff.vsyncstart);
+    VidModeSetModeValue(mode, VIDMODE_V_SYNCEND, cast(int)stuff.vsyncend);
+    VidModeSetModeValue(mode, VIDMODE_V_TOTAL, cast(int)stuff.vtotal);
+    VidModeSetModeValue(mode, VIDMODE_FLAGS, cast(int)stuff.flags);
 
     if (stuff.privsize)
         DebugF("AddModeLine - Privates in request have been ignored\n");
@@ -603,7 +605,7 @@ private int ProcVidModeDeleteModeLine(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    DEBUG_P("XF86VidModeDeleteModeline");
+    // DEBUG_P("XF86VidModeDeleteModeline");
 
     if (ClientMajorVersion(client) < 2) {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86OldVidModeDeleteModeLineReq);
@@ -621,8 +623,8 @@ private int ProcVidModeDeleteModeLine(ClientPtr client)
         mixin(X_REQUEST_REST_CARD32!());
 
         len =
-            client.req_len -
-            bytes_to_int32(xXF86OldVidModeDeleteModeLineReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86OldVidModeDeleteModeLineReq.sizeof));
         if (len != stuff.privsize) {
             DebugF("req_len = %ld, sizeof(Req) = %d, privsize = %ld, "
                    ~ "len = %d, length = %d\n",
@@ -634,7 +636,7 @@ private int ProcVidModeDeleteModeLine(ClientPtr client)
 
         /* convert from old format */
         xXF86VidModeDeleteModeLineReq newstuff = {
-            length: client.req_len,
+            length: cast(ushort)client.req_len,
             screen: stuff.screen,
             dotclock: stuff.dotclock,
             hdisplay: stuff.hdisplay,
@@ -668,8 +670,8 @@ private int ProcVidModeDeleteModeLine(ClientPtr client)
         mixin(X_REQUEST_REST_CARD32!());
 
         len =
-            client.req_len -
-            bytes_to_int32(xXF86VidModeDeleteModeLineReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86VidModeDeleteModeLineReq.sizeof));
         if (len != stuff.privsize) {
             DebugF("req_len = %ld, sizeof(Req) = %d, privsize = %ld, "
                    ~ "len = %d, length = %d\n",
@@ -722,7 +724,7 @@ private int VidModeDeleteModeLine(ClientPtr client, xXF86VidModeDeleteModeLineRe
            VidModeGetModeValue(mode, VIDMODE_V_TOTAL),
            VidModeGetModeValue(mode, VIDMODE_FLAGS));
 
-    if ((pVidMode.GetDotClock(pScreen, stuff.dotclock) == dotClock) &&
+    if ((pVidMode.GetDotClock(pScreen, cast(int)stuff.dotclock) == dotClock) &&
         mixin(MODEMATCH!(`mode`, `stuff`)))
         return BadValue;
 
@@ -744,7 +746,7 @@ private int VidModeDeleteModeLine(ClientPtr client, xXF86VidModeDeleteModeLineRe
                VidModeGetModeValue(mode, VIDMODE_V_TOTAL),
                VidModeGetModeValue(mode, VIDMODE_FLAGS));
 
-        if ((pVidMode.GetDotClock(pScreen, stuff.dotclock) == dotClock) &&
+        if ((pVidMode.GetDotClock(pScreen, cast(int)stuff.dotclock) == dotClock) &&
             mixin(MODEMATCH!(`mode`, `stuff`))) {
             pVidMode.DeleteModeline(pScreen, mode);
             DebugF("DeleteModeLine - Succeeded\n");
@@ -763,9 +765,11 @@ private int ProcVidModeModModeLine(ClientPtr client)
     if (!VidModeAllowNonLocal && !client.local)
         return VidModeErrorBase + XF86VidModeClientNotLocal;
 
-    DEBUG_P("XF86VidModeModModeline");
+    // DEBUG_P("XF86VidModeModModeline");
 
     if (ClientMajorVersion(client) < 2) {
+        mixin(X_REQUEST_HEAD_AT_LEAST!(xXF86OldVidModeDeleteModeLineReq));
+
          mixin(X_REQUEST_FIELD_CARD32!"screen");
         mixin(X_REQUEST_FIELD_CARD16!"hdisplay");
         mixin(X_REQUEST_FIELD_CARD16!"hsyncstart");
@@ -779,14 +783,14 @@ private int ProcVidModeModModeLine(ClientPtr client)
         mixin(X_REQUEST_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
-        int len = client.req_len -
-            bytes_to_int32(xXF86OldVidModeModModeLineReq.sizeof);
+        int len = cast(int)(client.req_len -
+            bytes_to_int32(xXF86OldVidModeModModeLineReq.sizeof));
         if (len != stuff.privsize)
             return BadLength;
 
         /* convert from old format */
         xXF86VidModeModModeLineReq newstuff = {
-            length: client.req_len,
+            length: cast(ushort)client.req_len,
             screen: stuff.screen,
             hdisplay: stuff.hdisplay,
             hsyncstart: stuff.hsyncstart,
@@ -818,8 +822,8 @@ private int ProcVidModeModModeLine(ClientPtr client)
         mixin(X_REQUEST_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
-        int len = client.req_len -
-            bytes_to_int32(xXF86VidModeModModeLineReq.sizeof);
+        int len = cast(int)(client.req_len -
+            bytes_to_int32(xXF86VidModeModModeLineReq.sizeof));
         if (len != stuff.privsize)
             return BadLength;
         return VidModeModModeLine(client, stuff);
@@ -863,16 +867,16 @@ private int VidModeModModeLine(ClientPtr client, xXF86VidModeModModeLineReq* stu
 
     VidModeCopyMode(mode, modetmp);
 
-    VidModeSetModeValue(modetmp, VIDMODE_H_DISPLAY, stuff.hdisplay);
-    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCSTART, stuff.hsyncstart);
-    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCEND, stuff.hsyncend);
-    VidModeSetModeValue(modetmp, VIDMODE_H_TOTAL, stuff.htotal);
-    VidModeSetModeValue(modetmp, VIDMODE_H_SKEW, stuff.hskew);
-    VidModeSetModeValue(modetmp, VIDMODE_V_DISPLAY, stuff.vdisplay);
-    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCSTART, stuff.vsyncstart);
-    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCEND, stuff.vsyncend);
-    VidModeSetModeValue(modetmp, VIDMODE_V_TOTAL, stuff.vtotal);
-    VidModeSetModeValue(modetmp, VIDMODE_FLAGS, stuff.flags);
+    VidModeSetModeValue(modetmp, VIDMODE_H_DISPLAY, cast(int)stuff.hdisplay);
+    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCSTART, cast(int)stuff.hsyncstart);
+    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCEND, cast(int)stuff.hsyncend);
+    VidModeSetModeValue(modetmp, VIDMODE_H_TOTAL, cast(int)stuff.htotal);
+    VidModeSetModeValue(modetmp, VIDMODE_H_SKEW, cast(int)stuff.hskew);
+    VidModeSetModeValue(modetmp, VIDMODE_V_DISPLAY, cast(int)stuff.vdisplay);
+    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCSTART, cast(int)stuff.vsyncstart);
+    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCEND, cast(int)stuff.vsyncend);
+    VidModeSetModeValue(modetmp, VIDMODE_V_TOTAL, cast(int)stuff.vtotal);
+    VidModeSetModeValue(modetmp, VIDMODE_FLAGS, cast(int)stuff.flags);
 
     if (stuff.privsize)
         DebugF("ModModeLine - Privates in request have been ignored\n");
@@ -901,16 +905,16 @@ private int VidModeModModeLine(ClientPtr client, xXF86VidModeModModeLineReq* stu
     }
     free(modetmp);
 
-    VidModeSetModeValue(mode, VIDMODE_H_DISPLAY, stuff.hdisplay);
-    VidModeSetModeValue(mode, VIDMODE_H_SYNCSTART, stuff.hsyncstart);
-    VidModeSetModeValue(mode, VIDMODE_H_SYNCEND, stuff.hsyncend);
-    VidModeSetModeValue(mode, VIDMODE_H_TOTAL, stuff.htotal);
-    VidModeSetModeValue(mode, VIDMODE_H_SKEW, stuff.hskew);
-    VidModeSetModeValue(mode, VIDMODE_V_DISPLAY, stuff.vdisplay);
-    VidModeSetModeValue(mode, VIDMODE_V_SYNCSTART, stuff.vsyncstart);
-    VidModeSetModeValue(mode, VIDMODE_V_SYNCEND, stuff.vsyncend);
-    VidModeSetModeValue(mode, VIDMODE_V_TOTAL, stuff.vtotal);
-    VidModeSetModeValue(mode, VIDMODE_FLAGS, stuff.flags);
+    VidModeSetModeValue(mode, VIDMODE_H_DISPLAY, cast(int)stuff.hdisplay);
+    VidModeSetModeValue(mode, VIDMODE_H_SYNCSTART, cast(int)stuff.hsyncstart);
+    VidModeSetModeValue(mode, VIDMODE_H_SYNCEND, cast(int)stuff.hsyncend);
+    VidModeSetModeValue(mode, VIDMODE_H_TOTAL, cast(int)stuff.htotal);
+    VidModeSetModeValue(mode, VIDMODE_H_SKEW, cast(int)stuff.hskew);
+    VidModeSetModeValue(mode, VIDMODE_V_DISPLAY, cast(int)stuff.vdisplay);
+    VidModeSetModeValue(mode, VIDMODE_V_SYNCSTART, cast(int)stuff.vsyncstart);
+    VidModeSetModeValue(mode, VIDMODE_V_SYNCEND, cast(int)stuff.vsyncend);
+    VidModeSetModeValue(mode, VIDMODE_V_TOTAL, cast(int)stuff.vtotal);
+    VidModeSetModeValue(mode, VIDMODE_FLAGS, cast(int)stuff.flags);
 
     pVidMode.SetCrtcForMode(pScreen, mode);
     pVidMode.SwitchMode(pScreen, mode);
@@ -925,7 +929,7 @@ private int ProcVidModeValidateModeLine(ClientPtr client)
 {
     int len = void;
 
-    DEBUG_P("XF86VidModeValidateModeline");
+    // DEBUG_P("XF86VidModeValidateModeline");
 
     if (ClientMajorVersion(client) < 2) {
         mixin(X_REQUEST_HEAD_AT_LEAST!xXF86OldVidModeValidateModeLineReq);
@@ -942,13 +946,13 @@ private int ProcVidModeValidateModeLine(ClientPtr client)
         mixin(X_REQUEST_FIELD_CARD32!"privsize");
         mixin(X_REQUEST_REST_CARD32!());
 
-        len = client.req_len -
-            bytes_to_int32(xXF86OldVidModeValidateModeLineReq.sizeof);
+        len = cast(int)(client.req_len -
+            bytes_to_int32(xXF86OldVidModeValidateModeLineReq.sizeof));
         if (len != stuff.privsize)
             return BadLength;
 
         xXF86VidModeValidateModeLineReq newstuff = {
-            length: client.req_len,
+            length: cast(ushort)client.req_len,
             screen: stuff.screen,
             dotclock: stuff.dotclock,
             hdisplay: stuff.hdisplay,
@@ -982,8 +986,8 @@ private int ProcVidModeValidateModeLine(ClientPtr client)
         mixin(X_REQUEST_REST_CARD32!());
 
         len =
-            client.req_len -
-            bytes_to_int32(xXF86VidModeValidateModeLineReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86VidModeValidateModeLineReq.sizeof));
         if (len != stuff.privsize)
             return BadLength;
         return VidModeValidateModeLine(client, stuff);
@@ -1034,16 +1038,16 @@ private int VidModeValidateModeLine(ClientPtr client, xXF86VidModeValidateModeLi
 
     VidModeCopyMode(mode, modetmp);
 
-    VidModeSetModeValue(modetmp, VIDMODE_H_DISPLAY, stuff.hdisplay);
-    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCSTART, stuff.hsyncstart);
-    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCEND, stuff.hsyncend);
-    VidModeSetModeValue(modetmp, VIDMODE_H_TOTAL, stuff.htotal);
-    VidModeSetModeValue(modetmp, VIDMODE_H_SKEW, stuff.hskew);
-    VidModeSetModeValue(modetmp, VIDMODE_V_DISPLAY, stuff.vdisplay);
-    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCSTART, stuff.vsyncstart);
-    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCEND, stuff.vsyncend);
-    VidModeSetModeValue(modetmp, VIDMODE_V_TOTAL, stuff.vtotal);
-    VidModeSetModeValue(modetmp, VIDMODE_FLAGS, stuff.flags);
+    VidModeSetModeValue(modetmp, VIDMODE_H_DISPLAY, cast(int)stuff.hdisplay);
+    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCSTART, cast(int)stuff.hsyncstart);
+    VidModeSetModeValue(modetmp, VIDMODE_H_SYNCEND, cast(int)stuff.hsyncend);
+    VidModeSetModeValue(modetmp, VIDMODE_H_TOTAL, cast(int)stuff.htotal);
+    VidModeSetModeValue(modetmp, VIDMODE_H_SKEW, cast(int)stuff.hskew);
+    VidModeSetModeValue(modetmp, VIDMODE_V_DISPLAY, cast(int)stuff.vdisplay);
+    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCSTART, cast(int)stuff.vsyncstart);
+    VidModeSetModeValue(modetmp, VIDMODE_V_SYNCEND, cast(int)stuff.vsyncend);
+    VidModeSetModeValue(modetmp, VIDMODE_V_TOTAL, cast(int)stuff.vtotal);
+    VidModeSetModeValue(modetmp, VIDMODE_FLAGS, cast(int)stuff.flags);
     if (stuff.privsize)
         DebugF("ValidateModeLine - Privates in request have been ignored\n");
 
@@ -1077,7 +1081,7 @@ private int ProcVidModeSwitchMode(ClientPtr client)
 
     VidModePtr pVidMode = void;
 
-    DEBUG_P("XF86VidModeSwitchMode");
+    // DEBUG_P("XF86VidModeSwitchMode");
 
     /* limited to local-only connections */
     if (!VidModeAllowNonLocal && !client.local)
@@ -1102,7 +1106,7 @@ private int ProcVidModeSwitchToMode(ClientPtr client)
 {
     int len = void;
 
-    DEBUG_P("XF86VidModeSwitchToMode");
+    // DEBUG_P("XF86VidModeSwitchToMode");
 
     /* limited to local-only connections */
     if (!VidModeAllowNonLocal && !client.local)
@@ -1113,14 +1117,14 @@ private int ProcVidModeSwitchToMode(ClientPtr client)
         mixin(X_REQUEST_FIELD_CARD32!"screen");
 
         len =
-            client.req_len -
-            bytes_to_int32(xXF86OldVidModeSwitchToModeReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86OldVidModeSwitchToModeReq.sizeof));
         if (len != stuff.privsize)
             return BadLength;
 
         /* convert from old format */
         xXF86VidModeSwitchToModeReq newstuff = {
-            length: client.req_len,
+            length: cast(ushort)client.req_len,
             screen: stuff.screen,
             dotclock: stuff.dotclock,
             hdisplay: stuff.hdisplay,
@@ -1141,8 +1145,8 @@ private int ProcVidModeSwitchToMode(ClientPtr client)
         mixin(X_REQUEST_FIELD_CARD32!"screen");
 
         len =
-            client.req_len -
-            bytes_to_int32(xXF86VidModeSwitchToModeReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xXF86VidModeSwitchToModeReq.sizeof));
         if (len != stuff.privsize)
             return BadLength;
         return VidModeSwitchToMode(client, stuff);
@@ -1175,7 +1179,7 @@ private int VidModeSwitchToMode(ClientPtr client, xXF86VidModeSwitchToModeReq* s
     if (!pVidMode.GetCurrentModeline(pScreen, &mode, &dotClock))
         return BadValue;
 
-    if ((pVidMode.GetDotClock(pScreen, stuff.dotclock) == dotClock)
+    if ((pVidMode.GetDotClock(pScreen, cast(int)stuff.dotclock) == dotClock)
         && mixin(MODEMATCH!(`mode`, `stuff`)))
         return Success;
 
@@ -1197,7 +1201,7 @@ private int VidModeSwitchToMode(ClientPtr client, xXF86VidModeSwitchToModeReq* s
                VidModeGetModeValue(mode, VIDMODE_V_TOTAL),
                VidModeGetModeValue(mode, VIDMODE_FLAGS));
 
-        if ((pVidMode.GetDotClock(pScreen, stuff.dotclock) == dotClock) &&
+        if ((pVidMode.GetDotClock(pScreen, cast(int)stuff.dotclock) == dotClock) &&
             mixin(MODEMATCH!(`mode`, `stuff`))) {
 
             if (!pVidMode.SwitchMode(pScreen, mode))
@@ -1219,7 +1223,7 @@ private int ProcVidModeLockModeSwitch(ClientPtr client)
 
     VidModePtr pVidMode = void;
 
-    DEBUG_P("XF86VidModeLockModeSwitch");
+    // DEBUG_P("XF86VidModeLockModeSwitch");
 
     /* limited to local-only connections */
     if (!VidModeAllowNonLocal && !client.local)
@@ -1251,7 +1255,7 @@ private int ProcVidModeGetMonitor(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xXF86VidModeGetMonitorReq);
     mixin(X_REQUEST_FIELD_CARD16!"screen");
 
-    DEBUG_P("XF86VidModeGetMonitor");
+    // DEBUG_P("XF86VidModeGetMonitor");
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
@@ -1287,10 +1291,10 @@ private int ProcVidModeGetMonitor(ClientPtr client)
     x_rpcbuf_write_string_pad(&rpcbuf, modelStr);
 
     xXF86VidModeGetMonitorReply reply = {
-        nhsync: nHsync,
-        nvsync: nVrefresh,
-        vendorLength: x_safe_strlen(vendorStr),
-        modelLength: x_safe_strlen(modelStr),
+        nhsync: cast(ubyte)nHsync,
+        nvsync: cast(ubyte)nVrefresh,
+        vendorLength: cast(ubyte)x_safe_strlen(vendorStr),
+        modelLength: cast(ubyte)x_safe_strlen(modelStr),
     };
 
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -1304,7 +1308,7 @@ private int ProcVidModeGetViewPort(ClientPtr client)
     VidModePtr pVidMode = void;
     int x = void, y = void;
 
-    DEBUG_P("XF86VidModeGetViewPort");
+    // DEBUG_P("XF86VidModeGetViewPort");
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
@@ -1336,7 +1340,7 @@ private int ProcVidModeSetViewPort(ClientPtr client)
 
     VidModePtr pVidMode = void;
 
-    DEBUG_P("XF86VidModeSetViewPort");
+    // DEBUG_P("XF86VidModeSetViewPort");
 
     /* limited to local-only connections */
     if (!VidModeAllowNonLocal && !client.local)
@@ -1350,7 +1354,7 @@ private int ProcVidModeSetViewPort(ClientPtr client)
     if (pVidMode is null)
         return BadImplementation;
 
-    if (!pVidMode.SetViewPort(pScreen, stuff.x, stuff.y))
+    if (!pVidMode.SetViewPort(pScreen, cast(int)stuff.x, cast(int)stuff.y))
         return BadValue;
 
     return Success;
@@ -1365,7 +1369,7 @@ private int ProcVidModeGetDotClocks(ClientPtr client)
     int numClocks = void;
     Bool ClockProg = void;
 
-    DEBUG_P("XF86VidModeGetDotClocks");
+    // DEBUG_P("XF86VidModeGetDotClocks");
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
@@ -1417,7 +1421,7 @@ private int ProcVidModeSetGamma(ClientPtr client)
 
     VidModePtr pVidMode = void;
 
-    DEBUG_P("XF86VidModeSetGamma");
+    // DEBUG_P("XF86VidModeSetGamma");
 
     /* limited to local-only connections */
     if (!VidModeAllowNonLocal && !client.local)
@@ -1447,7 +1451,7 @@ private int ProcVidModeGetGamma(ClientPtr client)
     VidModePtr pVidMode = void;
     float red = void, green = void, blue = void;
 
-    DEBUG_P("XF86VidModeGetGamma");
+    // DEBUG_P("XF86VidModeGetGamma");
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen)
@@ -1479,8 +1483,8 @@ private int ProcVidModeSetGammaRamp(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"size");
     mixin(X_REQUEST_FIELD_CARD16!"screen");
 
-    REQUEST_FIXED_SIZE(xXF86VidModeSetGammaRampReq,
-                       ((stuff.size + 1) & ~1) * 6);
+    mixin(REQUEST_FIXED_SIZE!("xXF86VidModeSetGammaRampReq",
+                       "((stuff.size + 1) & ~1) * 6"));
     mixin(X_REQUEST_REST_CARD16!());
 
     CARD16* r = void, g = void, b = void;
@@ -1538,7 +1542,7 @@ private int ProcVidModeGetGammaRamp(ClientPtr client)
 
     if (stuff.size) {
         size_t ramplen = length * 3 * CARD16.sizeof;
-        CARD16* ramp = x_rpcbuf_reserve(&rpcbuf, ramplen);
+        CARD16* ramp = cast(ushort*)x_rpcbuf_reserve(&rpcbuf, ramplen);
         if (!ramp)
             return BadAlloc;
 
@@ -1577,7 +1581,7 @@ private int ProcVidModeGetGammaRampSize(ClientPtr client)
         return BadImplementation;
 
     xXF86VidModeGetGammaRampSizeReply reply = {
-        size: pVidMode.GetGammaRampSize(pScreen)
+        size: cast(ushort)pVidMode.GetGammaRampSize(pScreen)
     };
 
     mixin(X_REPLY_FIELD_CARD16!"size");
@@ -1612,7 +1616,7 @@ private int ProcVidModeSetClientVersion(ClientPtr client)
 
     VidModePrivPtr pPriv = void;
 
-    DEBUG_P("XF86VidModeSetClientVersion");
+    // DEBUG_P("XF86VidModeSetClientVersion");
 
     if ((pPriv = mixin(VM_GETPRIV!(`client`))) is null) {
         pPriv = cast(VidModePrivRec*) calloc(1, VidModePrivRec.sizeof);
@@ -1682,7 +1686,7 @@ void VidModeAddExtension(Bool allow_non_local)
 {
     ExtensionEntry* extEntry = void;
 
-    DEBUG_P("VidModeAddExtension");
+    // DEBUG_P("VidModeAddExtension");
 
     if (!dixRegisterPrivateKey(VidModeClientPrivateKey, PRIVATE_CLIENT, 0))
         return;
@@ -1692,7 +1696,7 @@ void VidModeAddExtension(Bool allow_non_local)
                                  XF86VidModeNumberErrors,
                                  &ProcVidModeDispatch,
                                  &ProcVidModeDispatch,
-                                 null, StandardMinorOpcode))) {
+                                 null, &StandardMinorOpcode)) !is null) {
         VidModeErrorBase = extEntry.errorBase;
         VidModeAllowNonLocal = allow_non_local;
     }

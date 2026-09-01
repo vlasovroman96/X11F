@@ -30,6 +30,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import externs.libxcvt;
+import xf86Mode;
 
 import xf86_priv;
 import xf86Config;

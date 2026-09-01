@@ -180,11 +180,11 @@ void  xf86GetBppFromDepth(ScrnInfoPtr pScrn, int depth);
 
 /* xf86Mode.c */
 
-void  xf86CheckModeForMonitor(DisplayModePtr mode, MonPtr monitor);
+// void  xf86CheckModeForMonitor(DisplayModePtr mode, MonPtr monitor);
 void  xf86ValidateModes(ScrnInfoPtr scrp, DisplayModePtr availModes, const(char)** modeNames, ClockRangePtr clockRanges, int* linePitches, int minPitch, int maxPitch, int minHeight, int maxHeight, int pitchInc, int virtualX, int virtualY, int apertureSize, LookupModeFlags strategy);
-void  xf86DeleteMode(DisplayModePtr* modeList, DisplayModePtr mode);
+// void  xf86DeleteMode(DisplayModePtr* modeList, DisplayModePtr mode);
 void  xf86PruneDriverModes(ScrnInfoPtr scrp);
-void  xf86SetCrtcForModes(ScrnInfoPtr scrp, int adjustFlags);
+// void  xf86SetCrtcForModes(ScrnInfoPtr scrp, int adjustFlags);
 void  xf86PrintModes(ScrnInfoPtr scrp);
 
 /* xf86Option.c */

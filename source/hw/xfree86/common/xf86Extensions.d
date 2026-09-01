@@ -51,9 +51,9 @@ version (XFreeXDGA) {
 //import externs.X11.extensions.xf86dgaproto;
 }
 
-version (XF86VIDMODE) {
+static if(XF86VIDMODE){
 //import externs.X11.extensions.xf86vmproto;
-import vidmodestr;
+import include.vidmodestr;
 }
 
 Bool noXFree86VidModeExtension = FALSE;

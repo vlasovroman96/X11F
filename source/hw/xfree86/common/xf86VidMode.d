@@ -46,12 +46,18 @@ import os.log_priv;
 import include.os;
 import xf86_priv;
 import include.xf86Priv;
+import xf86Globals;
+import xf86Mode;
 
-version (XF86VIDMODE) {
-import vidmodestr;
+static if(XF86VIDMODE){
+import include.vidmodestr;
+// import vidmodestr;
 import include.xf86Privstr;
 import xf86Extensions;
 import xf86cmap;
+import hw.xfree86.common.xf86Helper;
+import xf86Cursor;
+
 
 private vidMonitorValue xf86VidModeGetMonitorValue(ScreenPtr pScreen, int valtyp, int indx)
 {
@@ -390,29 +396,29 @@ private Bool xf86VidModeInit(ScreenPtr pScreen)
     pVidMode.Flags = 0;
     pVidMode.Next = null;
 
-    pVidMode.GetMonitorValue = xf86VidModeGetMonitorValue;
-    pVidMode.GetCurrentModeline = xf86VidModeGetCurrentModeline;
-    pVidMode.GetFirstModeline = xf86VidModeGetFirstModeline;
-    pVidMode.GetNextModeline = xf86VidModeGetNextModeline;
-    pVidMode.DeleteModeline = xf86VidModeDeleteModeline;
-    pVidMode.ZoomViewport = xf86VidModeZoomViewport;
-    pVidMode.GetViewPort = xf86VidModeGetViewPort;
-    pVidMode.SetViewPort = xf86VidModeSetViewPort;
-    pVidMode.SwitchMode = xf86VidModeSwitchMode;
-    pVidMode.LockZoom = xf86VidModeLockZoom;
-    pVidMode.GetNumOfClocks = xf86VidModeGetNumOfClocks;
-    pVidMode.GetClocks = xf86VidModeGetClocks;
-    pVidMode.CheckModeForMonitor = xf86VidModeCheckModeForMonitor;
-    pVidMode.CheckModeForDriver = xf86VidModeCheckModeForDriver;
-    pVidMode.SetCrtcForMode = xf86VidModeSetCrtcForMode;
-    pVidMode.AddModeline = xf86VidModeAddModeline;
-    pVidMode.GetDotClock = xf86VidModeGetDotClock;
-    pVidMode.GetNumOfModes = xf86VidModeGetNumOfModes;
-    pVidMode.SetGamma = xf86VidModeSetGamma;
-    pVidMode.GetGamma = xf86VidModeGetGamma;
-    pVidMode.SetGammaRamp = xf86VidModeSetGammaRamp;
-    pVidMode.GetGammaRamp = xf86VidModeGetGammaRamp;
-    pVidMode.GetGammaRampSize = xf86GetGammaRampSize; /* use xf86cmap API directly */
+    pVidMode.GetMonitorValue = &xf86VidModeGetMonitorValue;
+    pVidMode.GetCurrentModeline = &xf86VidModeGetCurrentModeline;
+    pVidMode.GetFirstModeline = &xf86VidModeGetFirstModeline;
+    pVidMode.GetNextModeline = &xf86VidModeGetNextModeline;
+    pVidMode.DeleteModeline = &xf86VidModeDeleteModeline;
+    pVidMode.ZoomViewport = &xf86VidModeZoomViewport;
+    pVidMode.GetViewPort = &xf86VidModeGetViewPort;
+    pVidMode.SetViewPort = &xf86VidModeSetViewPort;
+    pVidMode.SwitchMode = &xf86VidModeSwitchMode;
+    pVidMode.LockZoom = &xf86VidModeLockZoom;
+    pVidMode.GetNumOfClocks = &xf86VidModeGetNumOfClocks;
+    pVidMode.GetClocks = &xf86VidModeGetClocks;
+    pVidMode.CheckModeForMonitor = &xf86VidModeCheckModeForMonitor;
+    pVidMode.CheckModeForDriver = &xf86VidModeCheckModeForDriver;
+    pVidMode.SetCrtcForMode = &xf86VidModeSetCrtcForMode;
+    pVidMode.AddModeline = &xf86VidModeAddModeline;
+    pVidMode.GetDotClock = &xf86VidModeGetDotClock;
+    pVidMode.GetNumOfModes = &xf86VidModeGetNumOfModes;
+    pVidMode.SetGamma = &xf86VidModeSetGamma;
+    pVidMode.GetGamma = &xf86VidModeGetGamma;
+    pVidMode.SetGammaRamp = &xf86VidModeSetGammaRamp;
+    pVidMode.GetGammaRamp = &xf86VidModeGetGammaRamp;
+    pVidMode.GetGammaRampSize = &xf86GetGammaRampSize; /* use xf86cmap API directly */
 
     return TRUE;
 }

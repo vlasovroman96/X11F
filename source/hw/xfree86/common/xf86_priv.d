@@ -22,8 +22,8 @@ public import xf86Configure;
 /* globals.c */
 // Bool xf86AllowMouseOpenFail;
 // Bool xf86AutoBindGPUDisabled;
-Bool xf86VidModeDisabled;
-Bool xf86VidModeAllowNonLocal;
+// Bool xf86VidModeDisabled;
+// Bool xf86VidModeAllowNonLocal;
 // Bool xf86fpFlag;
 // Bool xf86bsEnableFlag;
 // Bool xf86bsDisableFlag;
@@ -57,7 +57,7 @@ Bool xf86acpiDisableFlag;
 // const(char)*[1] xf86VisualNames;
 
 /* xf86Cursor.c */
-void xf86LockZoom(ScreenPtr pScreen, int lock);
+// void xf86LockZoom(ScreenPtr pScreen, int lock);
 // void xf86InitViewport(ScrnInfoPtr pScr);
 // void xf86ZoomViewport(ScreenPtr pScreen, int zoom);
 // void xf86InitOrigins();
@@ -85,9 +85,9 @@ Bool xf86LoadModules(const(char)** list, void** optlist);
 // Bool xf86HasTTYs();
 
 /* xf86Mode.c */
-const(void )* xf86ModeStatusToString(ModeStatus status);
+// const(void )* xf86ModeStatusToString(ModeStatus status);
 
-ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int flags);
+// ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int flags);
 
 /* xf86DefaultModes (auto-generated) */
 const(DisplayModeRec)[1] xf86DefaultModes;

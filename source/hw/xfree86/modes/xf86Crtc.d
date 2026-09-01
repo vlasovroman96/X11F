@@ -32,6 +32,7 @@ import core.stdc.stdio;
 import dix.dix_priv;
 import dix.screen_hooks_priv;
 import randr.randrstr_priv;
+import xf86Mode;
 
 import edid_priv;
 import xf86_priv;
