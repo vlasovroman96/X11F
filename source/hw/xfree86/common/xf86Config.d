@@ -1046,7 +1046,7 @@ static if(XINERAMA){
         LogMessageVerb(from, 1, "Xinerama: enabled\n");
 } /* XINERAMA */
 
-version (DRI2) {
+static if(DRI2){
     xf86Info.dri2 = FALSE;
     xf86Info.dri2From = X_DEFAULT;
     if (xf86GetOptValBool(FlagOptions.ptr, FLAG_DRI2, &value)) {

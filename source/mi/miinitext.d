@@ -76,6 +76,8 @@ SOFTWARE.
 
 import build.dix_config;
 import build.xlibre_server;
+import Xext.dri2.dri2ext;
+import externs.X11.extensions.dri2proto;
 
 version (HAVE_XORG_CONFIG_H) {
 import build.xorg_config;
@@ -161,7 +163,7 @@ private const ExtensionModule[] staticExtensions = () {
     version (XRECORD) result ~= ExtensionModule(&RecordExtensionInit, "RECORD", &noTestExtensions);
     static if(DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);
     static if(build.xlibre_server.PRESENT)result ~= ExtensionModule(&present_extension_init, "Present", null);
-    version (DRI2) result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
+    static if(DRI2)result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
     static if(DRI3)result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);
     static if(build.xlibre_server.RES)result ~= ExtensionModule(&ResExtensionInit, "X-Resource", &noResExtension);
 

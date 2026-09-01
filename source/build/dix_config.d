@@ -48,7 +48,7 @@ enum DIX_LIMITCLIENTS = 256;
 
 //version = DPMSExtension;
 
-enum DRI2 = 1;
+// enum DRI2 = 1;
 
 //version = DRI3;
 

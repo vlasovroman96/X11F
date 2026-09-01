@@ -7,12 +7,13 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
+ import build.xlibre_server;
 public import include.extinit;
 
-version (DRI2) {
+static if(DRI2){
 //public import externs.X11.extensions.dri2proto;
-Bool noDRI2Extension;
-void DRI2ExtensionInit();
+// Bool noDRI2Extension;
+// void DRI2ExtensionInit();
 }
 
 /* required by: the 470 and 390 nvidia DDX drivers */

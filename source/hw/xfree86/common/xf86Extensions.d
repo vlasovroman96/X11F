@@ -42,6 +42,11 @@ import externs.gnu;
 import mi.miinitext;
 import dix.inpututils;
 import xf86Option;
+import xf86VidMode;
+import xf86DGA;
+import hw.xfree86.dri.xf86dri;
+import externs.X11.extensions.xf86vmproto;
+import externs.X11.extensions.xf86dgaproto;
 
 version (XSELINUX) {
 import xselinux;
@@ -63,36 +68,32 @@ Bool noXFree86DRIExtension = FALSE;
 /*
  * DDX-specific extensions.
  */
-private const(ExtensionModule)[4] extensionModules = [
-    // ExtensionModule (
-	// XFree86VidModeExtensionInit,
-	// XF86VIDMODENAME,
-	// &noXFree86VidModeExtension
-    // )
-];
-// static this() {
-// version(XF86VIDMODE) {
-//     extensionModules[0] = ExtensionModule (
-// 	XFree86VidModeExtensionInit,
-// 	XF86VIDMODENAME,
-// 	&noXFree86VidModeExtension
-//     );
-// }
-// version(XFreeXDGA) {
-//     extensionModules[1] = ExtensionModule (
-// 	XFree86DGAExtensionInit,
-// 	XF86DGANAME,
-// 	&noXFree86DGAExtension
-//     );
-// }
-// version(XF86DRI) {
-//     extensionModules[2] = ExtensionModule (
-//         XFree86DRIExtensionInit,
-//         "XFree86-DRI",
-//         &noXFree86DRIExtension
-//     );
-// }
-// }
+private const(ExtensionModule)[4] extensionModules;
+extern(D)
+static this() {
+    int i = 0;
+static if(XF86VIDMODE) {
+    extensionModules[i++] = ExtensionModule (
+	&XFree86VidModeExtensionInit,
+	XF86VIDMODENAME,
+	&noXFree86VidModeExtension
+    );
+}
+static if(XFreeXDGA) {
+    extensionModules[i++] = ExtensionModule (
+	&XFree86DGAExtensionInit,
+	XF86DGANAME,
+	&noXFree86DGAExtension
+    );
+}
+static if(XF86DRI) {
+    extensionModules[i++] = ExtensionModule (
+        &XFree86DRIExtensionInit,
+        "XFree86-DRI",
+        &noXFree86DRIExtension
+    );
+}
+}
     
 
 private void load_extension_config()
