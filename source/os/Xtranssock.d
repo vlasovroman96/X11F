@@ -125,17 +125,17 @@ alias cmsghdr = core.sys.posix.sys.socket.cmsghdr;
 alias ssize_t = core.sys.posix.sys.types.ssize_t;
 version (Windows) {} else {
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 import sock_ = core.sys.posix.sys.un;
 import externs.netinet.in_;
 import externs.arpa.inet;
-// }
+}
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_NO_LOCKING;
 import externs.X11.Xos_r;
-// }
+}
 
 version (NO_TCP_H) {} else {
 static if (HasVersion!"linux" || HasVersion!"__GLIBC__") {
@@ -235,9 +235,9 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
         } else {
             count += 1;
         }
-        // // version(UNIXCONN) {
-        //     count += 2;
-        // // }
+        static if(UNIXCONN){
+            count += 2;
+        }
         return count;
     }();
 
@@ -290,24 +290,24 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
         );
     }
 
-    // version (UNIXCONN)
-    // {
-        // arr[count++] = Sockettrans2dev(
-        //     "unix",
-        //     AF_UNIX,
-        //     sock.SOCK_STREAM,
-        //     sock.SOCK_DGRAM,
-        //     0
-        // );
+    version (UNIXCONN)
+    {
+        arr[count++] = Sockettrans2dev(
+            "unix",
+            AF_UNIX,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
+            0
+        );
 
-        // arr[count++] = Sockettrans2dev(
-        //     "local",
-        //     AF_UNIX,
-        //     sock.SOCK_STREAM,
-        //     sock.SOCK_DGRAM,
-        //     0
-        // );
-    // }
+        arr[count++] = Sockettrans2dev(
+            "local",
+            AF_UNIX,
+            sock.SOCK_STREAM,
+            sock.SOCK_DGRAM,
+            0
+        );
+    }
 
     return arr.dup; 
 }();
@@ -326,13 +326,13 @@ int is_numeric(const(char)* str)
     return (1);
 }
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 
 
 enum UNIX_PATH = "/tmp/.X11-unix/X";
 enum UNIX_DIR = "/tmp/.X11-unix";
 
-// } /* UNIXCONN */
+} /* UNIXCONN */
 
 enum PORTBUFSIZE =	32;
 
@@ -742,7 +742,7 @@ int _XSERVTransSocketSetOption(XtransConnInfo ciptr, int option, int arg)
     return -1;
 }
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 int set_sun_path(const(char)* port, const(char)* upath, char* path, int abstract_)
 {
     sock_.sockaddr_un s = void;
@@ -767,7 +767,7 @@ version (HAVE_ABSTRACT_SOCKETS) {
     snprintf(path, typeof(s.sun_path).sizeof, "%s%s%s", at, upath, port);
     return 0;
 }
-// }
+}
 
 int _XSERVTransSocketCreateListener(
     XtransConnInfo ciptr,
@@ -981,7 +981,7 @@ version (SIN6_LEN) {
     return 0;
 }
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 
 int _XSERVTransSocketUNIXCreateListener(XtransConnInfo ciptr, const(char)* port, uint flags)
 {
@@ -1161,7 +1161,7 @@ version (HAS_STICKY_DIR_BIT) {
 
     return status;
 }
-// }
+}
 
 
 /* UNIXCONN */
@@ -1231,7 +1231,7 @@ version (TCP_NODELAY) {
     return newciptr;
 }
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
 {
     XtransConnInfo newciptr = void;
@@ -1295,7 +1295,7 @@ XtransConnInfo _XSERVTransSocketUNIXAccept(XtransConnInfo ciptr)
     return newciptr;
 }
 
-// } /* UNIXCONN */
+} /* UNIXCONN */
 
 static if (build.xlibre_server.XTRANS_SEND_FDS) {
 
@@ -1515,7 +1515,7 @@ version (Windows) {
 }
 }
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 int _XSERVTransSocketUNIXClose(XtransConnInfo ciptr)
 {
     /*
@@ -1560,7 +1560,7 @@ static if (build.xlibre_server.XTRANS_SEND_FDS) {
     return ossock_close(ciptr.fd);
 }
 
-// } /* UNIXCONN */
+} /* UNIXCONN */
 
 int _XSERVTransSocketINETClose(XtransConnInfo ciptr)
 {
@@ -1661,7 +1661,7 @@ Xtransport _XSERVTransSocketINET6Funcs = {
 };
 } /* IPv6 */
 
-// version (UNIXCONN) {
+static if(UNIXCONN){
 Xtransport _XSERVTransSocketLocalFuncs = {
 	/* Socket Interface */
 	"local",
@@ -1716,4 +1716,4 @@ Xtransport _XSERVTransSocketUNIXFuncs = {
 	&_XSERVTransSocketUNIXCloseForCloning,
 };
 
-// } /* UNIXCONN */
+} /* UNIXCONN */

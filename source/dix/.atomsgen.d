@@ -1,4 +1,4 @@
-module dix..atomsgen;
+module dix.atomsgen;
 import std.array;
 import std.conv : to;
 import std.file : readText, write;

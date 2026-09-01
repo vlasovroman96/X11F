@@ -68,7 +68,7 @@ version (Windows) {
 //import externs.X11.Xlibint;
 //import externs.X11.Xwinsock;
 }
-
+import std.conv;
 import build.xlibre_server;
 import os.Xtrans;
 
@@ -210,7 +210,7 @@ static if (IPv6){
 } /* IPv6 */
 
 
-version (UNIXCONN) {
+static if(UNIXCONN){
     case AF_UNIX:
     {
 	*familyp=FamilyLocal;
@@ -281,154 +281,197 @@ enum WARN_NO_ACCESS = 4;
  * it's not save if the directory has non-root ownership or the sticky
  * bit cannot be set and fail.
  */
-version (UNIXCONN) {
+static if (!HasVersion!"S_IFLNK" && !HasVersion!"S_ISLNK") {
+    alias lstat_ = stat;
+} else {
+    alias lstat_ = core.sys.posix.sys.stat.lstat;
+}
+
 private int trans_mkdir(const(char)* path, int mode)
 {
-    stat buf = void;
+    stat_t buf = void;
 
-    if (mixin(lstat!(`path`, `&buf`)) != 0) {
-	if (errno != ENOENT) {
-	    prmsg(1, "mkdir: ERROR: (l)stat failed for %s (%d)\n",
-		  path, errno);
-	    return -1;
-	}
-	/* Dir doesn't exist. Try to create it */
+    if (lstat_(path, &buf) != 0)
+    {
+        if (errno != ENOENT)
+        {
+            prmsg(1,
+                "mkdir: ERROR: (l)stat failed for %s (%d)\n",
+                path, errno);
+            return -1;
+        }
 
-static if (!HasVersion!"Windows" && !HasVersion!"Cygwin") {
-	/*
-	 * 'sticky' bit requested: assume application makes
-	 * certain security implications. If effective user ID
-	 * is != 0: fail as we may not be able to meet them.
-	 */
-	if (geteuid() != 0) {
-	    if (mode & octal!"01000") {
-		prmsg(1, "mkdir: ERROR: euid != 0,"
-		      ~ "directory %s will not be created.\n",
-		      path);
-	    } else {
-		prmsg(1, "mkdir: Cannot create %s with root ownership\n",
-		      path);
-	    }
-	}
-}
+        /* Dir doesn't exist. Try to create it */
 
-version (Windows) {} else {
-	if (mkdir(path, mode) == 0) {
-	    if (chmod(path, mode)) {
-		prmsg(1, "mkdir: ERROR: Mode of %s should be set to %04o\n",
-		      path, mode);
-	    }
-//! #else
-	if (mkdir(path) == 0) {
-// ! #endif
-	} else {
-	    prmsg(1, "mkdir: ERROR: Cannot create %s\n",
-		  path);
-	    return -1;
-	}
+        static if (!HasVersion!"Windows" &&
+                   !HasVersion!"Cygwin")
+        {
+            /*
+             * 'sticky' bit requested: assume application makes
+             * certain security implications. If effective user ID
+             * is != 0: fail.
+             */
+            if (geteuid() != 0)
+            {
+                if (mode & octal!"01000")
+                {
+                    prmsg(1,
+                        "mkdir: ERROR: euid != 0,"
+                        ~ "directory %s will not be created.\n",
+                        path);
+                }
+                else
+                {
+                    prmsg(1,
+                        "mkdir: Cannot create %s with root ownership\n",
+                        path);
+                }
+            }
+        }
 
-	return 0;
+        version (Windows)
+        {
+            if (mkdir(path) != 0)
+            {
+                prmsg(1,
+                    "mkdir: ERROR: Cannot create %s\n",
+                    path);
+                return -1;
+            }
+        }
+        else
+        {
+            if (mkdir(path, mode) != 0)
+            {
+                prmsg(1,
+                    "mkdir: ERROR: Cannot create %s\n",
+                    path);
+                return -1;
+            }
 
-    } else {
-	if (S_ISDIR(buf.st_mode)) {
-	    int updateOwner = 0;
-	    int updateMode = 0;
-	    int updatedOwner = 0;
-	    int updatedMode = 0;
-	    int status = 0;
-	    /* Check if the directory's ownership is OK. */
-	    if (buf.st_uid != 0)
-		updateOwner = 1;
+            if (chmod(path, mode) != 0)
+            {
+                prmsg(1,
+                    "mkdir: ERROR: Mode of %s should be set to %04o\n",
+                    path, mode);
+            }
+        }
 
-	    /*
-	     * Check if the directory's mode is OK.  An exact match isn't
-	     * required, just a mode that isn't more permissive than the
-	     * one requested.
-	     */
-	    if ((~mode) & octal!"0077" & buf.st_mode)
-		updateMode = 1;
-
-	    /*
-	     * If the directory is not writeable not everybody may
-	     * be able to create sockets. Therefore warn if mode
-	     * cannot be fixed.
-	     */
-	    if ((~buf.st_mode) & octal!"0022" & mode) {
-		updateMode = 1;
-		status |= WARN_NO_ACCESS;
-	    }
-
-	    /*
-	     * If 'sticky' bit is requested fail if owner isn't root
-	     * as we assume the caller makes certain security implications
-	     */
-	    if (mode & octal!"01000") {
-		status |= FAIL_IF_NOT_ROOT;
-		if (!(buf.st_mode & octal!"01000")) {
-		    status |= FAIL_IF_NOMODE;
-		    updateMode = 1;
-		}
-	    }
-
-version (HAS_FCHOWN) {
-	    /*
-	     * If fchown(2) and fchmod(2) are available, try to correct the
-	     * directory's owner and mode.  Otherwise it isn't safe to attempt
-	     * to do this.
-	     */
-	    if (updateMode || updateOwner) {
-		int fd = -1;
-		stat fbuf = void;
-		if ((fd = open(path, O_RDONLY)) != -1) {
-		    if (fstat(fd, &fbuf) == -1) {
-			prmsg(1, "mkdir: ERROR: fstat failed for %s (%d)\n",
-			      path, errno);
-			close(fd);
-			return -1;
-		    }
-		    /*
-		     * Verify that we've opened the same directory as was
-		     * checked above.
-		     */
-		    if (!S_ISDIR(fbuf.st_mode) ||
-			buf.st_dev != fbuf.st_dev ||
-			buf.st_ino != fbuf.st_ino) {
-			prmsg(1, "mkdir: ERROR: inode for %s changed\n",
-			      path);
-			close(fd);
-			return -1;
-		    }
-		    if (updateOwner && fchown(fd, 0, 0) == 0)
-			updatedOwner = 1;
-		    if (updateMode && fchmod(fd, mode) == 0)
-			updatedMode = 1;
-		    close(fd);
-		}
-	    }
-}
-
-	    if (updateOwner && !updatedOwner) {
-static if (!HasVersion!"__APPLE_CC__" && !HasVersion!"Cygwin") {
-		prmsg(1, "mkdir: Owner of %s should be set to root\n",
-		      path);
-}
-	    }
-
-	    if (updateMode && !updatedMode) {
-		prmsg(1, "mkdir: Mode of %s should be set to %04o\n",
-		      path, mode);
-		if (status & WARN_NO_ACCESS) {
-		    prmsg(1, "mkdir: this may cause subsequent errors\n");
-		}
-	    }
-	    return 0;
-	}
-	return -1;
+        return 0;
     }
 
-    /* In all other cases, fail */
-    return -1;
-}
-} /* UNIXCONN */
-}
+    if (!S_ISDIR(buf.st_mode))
+        return -1;
+
+    int updateOwner = 0;
+    int updateMode = 0;
+    int updatedOwner = 0;
+    int updatedMode = 0;
+    int status = 0;
+
+    /* Check if the directory's ownership is OK. */
+    if (buf.st_uid != 0)
+        updateOwner = 1;
+
+    /*
+     * Check if the directory's mode is OK. An exact match isn't
+     * required, just a mode that isn't more permissive than the
+     * one requested.
+     */
+    if ((~mode) & octal!"0077" & buf.st_mode)
+        updateMode = 1;
+
+    /*
+     * If the directory is not writable not everybody may
+     * be able to create sockets. Therefore warn if mode
+     * cannot be fixed.
+     */
+    if ((~buf.st_mode) & octal!"0022" & mode)
+    {
+        updateMode = 1;
+        status |= WARN_NO_ACCESS;
+    }
+
+    /*
+     * If 'sticky' bit is requested fail if owner isn't root
+     * as we assume the caller makes certain security implications.
+     */
+    if (mode & octal!"01000")
+    {
+        status |= FAIL_IF_NOT_ROOT;
+
+        if (!(buf.st_mode & octal!"01000"))
+        {
+            status |= FAIL_IF_NOMODE;
+            updateMode = 1;
+        }
+    }
+
+    static if (HasVersion!"HAS_FCHOWN")
+    {
+        if (updateMode || updateOwner)
+        {
+            int fd = -1;
+            stat_t fbuf = void;
+
+            if ((fd = open(path, O_RDONLY)) != -1)
+            {
+                if (fstat(fd, &fbuf) == -1)
+                {
+                    prmsg(1,
+                        "mkdir: ERROR: fstat failed for %s (%d)\n",
+                        path, errno);
+                    close(fd);
+                    return -1;
+                }
+
+                /*
+                 * Verify that we've opened the same directory as
+                 * was checked above.
+                 */
+                if (!S_ISDIR(fbuf.st_mode) ||
+                    buf.st_dev != fbuf.st_dev ||
+                    buf.st_ino != fbuf.st_ino)
+                {
+                    prmsg(1,
+                        "mkdir: ERROR: inode for %s changed\n",
+                        path);
+                    close(fd);
+                    return -1;
+                }
+
+                if (updateOwner && fchown(fd, 0, 0) == 0)
+                    updatedOwner = 1;
+
+                if (updateMode && fchmod(fd, mode) == 0)
+                    updatedMode = 1;
+
+                close(fd);
+            }
+        }
+    }
+
+    if (updateOwner && !updatedOwner)
+    {
+        static if (!HasVersion!"__APPLE_CC__" &&
+                   !HasVersion!"Cygwin")
+        {
+            prmsg(1,
+                "mkdir: Owner of %s should be set to root\n",
+                path);
+        }
+    }
+
+    if (updateMode && !updatedMode)
+    {
+        prmsg(1,
+            "mkdir: Mode of %s should be set to %04o\n",
+            path, mode);
+
+        if (status & WARN_NO_ACCESS)
+            prmsg(1,
+                "mkdir: this may cause subsequent errors\n");
+    }
+
+    return 0;
 }

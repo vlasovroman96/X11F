@@ -1530,7 +1530,7 @@ private int ConvertAddr(sockaddr* saddr, int* len, void** addr)
         return FamilyLocal;
     switch (saddr.sa_family) {
     case AF_UNSPEC:
-version (UNIXCONN) {
+static if(UNIXCONN){
     case AF_UNIX:
 }
         return FamilyLocal;

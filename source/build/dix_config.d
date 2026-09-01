@@ -214,7 +214,7 @@ enum SUID_WRAPPER_DIR = "/usr/local/libexec";
 
 enum SYSCONFDIR = "/usr/local/etc";
 
-enum UNIXCONN = 1;
+// enum UNIXCONN = 1;
 
 enum WITH_LIBDRM = 1;
 

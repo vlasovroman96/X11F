@@ -366,7 +366,7 @@ version (XSERVER_DTRACE) {
     else
         switch (saddr.sa_family) {
         case AF_UNSPEC:
-version (UNIXCONN) {
+static if(UNIXCONN){
         case AF_UNIX:
 }
             strlcpy(addr.ptr, "local host", addr.sizeof);

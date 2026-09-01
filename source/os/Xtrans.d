@@ -139,9 +139,9 @@ shared static this()
     version(IPv6) {
         maxElements += 1;   // INET6
     }
-    // version(UNIXCONN) {
-        // maxElements += 2;   // LOCAL + UNIX
-    // }
+    static if(UNIXCONN){
+        maxElements += 2;   // LOCAL + UNIX
+    }
 
     auto ptr = cast(Xtransport_table*)calloc(
         maxElements,
@@ -169,18 +169,18 @@ shared static this()
         TRANS_SOCKET_INET_INDEX
     );
 
-    // // version (UNIXCONN)
-    // // {
-    //     arr[count++] = Xtransport_table(
-    //         &_XSERVTransSocketLocalFuncs,
-    //         TRANS_SOCKET_LOCAL_INDEX
-    //     );
+    static if(UNIXCONN)
+    {
+        arr[count++] = Xtransport_table(
+            &_XSERVTransSocketLocalFuncs,
+            TRANS_SOCKET_LOCAL_INDEX
+        );
 
-    //     arr[count++] = Xtransport_table(
-    //         &_XSERVTransSocketUNIXFuncs,
-    //         TRANS_SOCKET_UNIX_INDEX
-    //     );
-    // }
+        arr[count++] = Xtransport_table(
+            &_XSERVTransSocketUNIXFuncs,
+            TRANS_SOCKET_UNIX_INDEX
+        );
+    }
 
     Xtransport_tabletab = arr;
     Xtransports = Xtransport_tabletab;

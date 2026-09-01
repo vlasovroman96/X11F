@@ -218,7 +218,7 @@ version (__clang__) {
 // #pragma clang diagnostic ignored "-Wunused-function"
 }
 
-version (UNIXCONN) {
+static if(UNIXCONN){
 private int trans_mkdir(const(char)*, int);
 } /* UNIXCONN */
 
