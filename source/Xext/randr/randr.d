@@ -29,7 +29,8 @@ extern(C): __gshared:
  *	    Keith Packard, Intel Corporation
  */
 
-import build.dix_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 //import stdbool;
 
@@ -415,7 +416,7 @@ void RRExtensionInit()
     RRCrtcInitErrorValue();
     RROutputInitErrorValue();
     RRProviderInitErrorValue();
-version (XINERAMA) {
+static if(XINERAMA){
     RRXineramaExtensionInit();
 } /* XINERAMA */
 }

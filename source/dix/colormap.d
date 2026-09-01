@@ -48,8 +48,8 @@ SOFTWARE.
 
 ******************************************************************/
 
-import build.dix_config;
-
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 // //import stdbool;
@@ -399,7 +399,7 @@ private int TellNoMap(WindowPtr pwin, Colormap* pmid)
             xE.u.colormap.new_ = true;
             xE.u.colormap.state = ColormapUninstalled;
             xE.u.u.type = ColormapNotify;
-version (XINERAMA) {
+static if(XINERAMA){
         if (noPanoramiXExtension || !pwin.drawable.pScreen.myNum)
             DeliverEvents(pwin, &xE, 1, cast(WindowPtr) null);
 
@@ -421,7 +421,7 @@ int TellLostMap(WindowPtr pwin, void* value)
 {
     Colormap* pmid = cast(Colormap*) value;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension && pwin.drawable.pScreen.myNum)
         return WT_STOPWALKING;
 } /* XINERAMA */
@@ -451,7 +451,7 @@ int TellGainedMap(WindowPtr pwin, void* value)
 {
     Colormap* pmid = cast(Colormap*) value;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension && pwin.drawable.pScreen.myNum)
         return WT_STOPWALKING;
 } /* XINERAMA */

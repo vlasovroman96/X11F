@@ -72,6 +72,7 @@ import dix.devices;
 import dix.events;
 import os.osinit;
 import dix.extension;
+import build.xlibre_server;
 
 private RESTYPE RTContext;       /* internal resource type for Record contexts */
 
@@ -715,7 +716,7 @@ private void RecordSendProtocolEvents(RecordClientsAndProtocolPtr pRCAP, RecordC
             xEvent swappedEvent = void;
             xEvent* pEvToRecord = pev;
 
-version (XINERAMA) {
+static if(XINERAMA){
             xEvent shiftedEvent = void;
 
             if (!noPanoramiXExtension &&

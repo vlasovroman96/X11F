@@ -33,6 +33,7 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
+import build.xlibre_server;
 
 //import externs.X11.X;              /* for inputstr.h    */
 //import externs.X11.Xproto;         /* Request macro     */
@@ -169,7 +170,7 @@ int ProcXIQueryPointer(ClientPtr client)
             }
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         ScreenPtr masterScreen = dixGetMasterScreen();
         reply.root_x += double_to_fp1616(masterScreen.x);

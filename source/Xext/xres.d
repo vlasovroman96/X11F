@@ -6,7 +6,7 @@ import core.stdc.config: c_long, c_ulong;
    Copyright (c) 2002  XFree86 Inc
 */
 
-import build.dix_config;
+import build.xlibre_server;
 
 import core.stdc.assert_;
 import core.stdc.stdio;

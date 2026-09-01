@@ -619,7 +619,7 @@ private Bool ScreenSaverHandle(ScreenPtr pScreen, int xstate, Bool force)
     goto default;
 
     default: break;}
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension || !pScreen.myNum)
         SendScreenSaverNotify(pScreen, state, force);
 } /* XINERAMA */
@@ -1119,7 +1119,7 @@ private int ProcScreenSaverSetAttributes(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"mask");
     mixin(X_REQUEST_REST_CARD32!());
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         PanoramiXRes* draw = void;
         PanoramiXRes* backPix = null;
@@ -1136,8 +1136,8 @@ version (XINERAMA) {
         }
 
         len =
-            client.req_len -
-            bytes_to_int32(xScreenSaverSetAttributesReq.sizeof);
+            cast(int)(client.req_len -
+            bytes_to_int32(xScreenSaverSetAttributesReq.sizeof));
         if (Ones(stuff.mask) != len) {
             return BadLength;
         }
@@ -1207,7 +1207,7 @@ private int ProcScreenSaverUnsetAttributes(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xScreenSaverUnsetAttributesReq);
     mixin(X_REQUEST_FIELD_CARD32!"drawable");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         PanoramiXRes* draw = void;
         int i = void;

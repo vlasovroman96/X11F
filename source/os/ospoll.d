@@ -27,6 +27,7 @@ extern(C): __gshared:
  * OF THIS SOFTWARE.
  */
 
+import build.xlibre_server;
 import build.dix_config;
 
 import core.stdc.assert_;

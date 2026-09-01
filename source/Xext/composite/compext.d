@@ -51,6 +51,7 @@ import dix.request_priv;
 import dix.screenint_priv;
 import miext.extinit_priv;
 import Xext.panoramiXsrv;
+import build.xlibre_server;
 
 import composite.compint;
 import Xext.xace;
@@ -66,9 +67,9 @@ public import composite.compint;
 private CARD8 CompositeReqCode;
 private DevPrivateKeyRec CompositeClientPrivateKeyRec;
 
-// version (XINERAMA) {
+static if(XINERAMA){
 private int compositeUseXinerama = 0;
-// }
+}
 
 enum CompositeClientPrivateKey = (&CompositeClientPrivateKeyRec);
 RESTYPE CompositeClientWindowType;
@@ -447,7 +448,7 @@ private int ProcCompositeRedirectWindow(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeRedirectWindowReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleCompositeRedirectWindow(client, stuff);
 
@@ -455,7 +456,7 @@ version (XINERAMA) {
     int rc = 0;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess)) != 0) {
         client.errorValue = stuff.window;
         return rc;
     }
@@ -478,7 +479,7 @@ private int ProcCompositeRedirectSubwindows(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeRedirectSubwindowsReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleRedirectSubwindows(client, stuff);
 
@@ -486,7 +487,7 @@ version (XINERAMA) {
     int rc = 0;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess))!= 0) {
         client.errorValue = stuff.window;
         return rc;
     }
@@ -509,7 +510,7 @@ private int ProcCompositeUnredirectWindow(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeUnredirectWindowReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleCompositeUnredirectWindow(client, stuff);
 
@@ -517,7 +518,7 @@ version (XINERAMA) {
     int rc = 0;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess))!= 0) {
         client.errorValue = stuff.window;
         return rc;
     }
@@ -540,7 +541,7 @@ private int ProcCompositeUnredirectSubwindows(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeUnredirectSubwindowsReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleCompositeUnredirectSubwindows(client, stuff);
 
@@ -548,7 +549,7 @@ version (XINERAMA) {
     int rc = 0;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess))!= 0) {
         client.errorValue = stuff.window;
         return rc;
     }
@@ -572,7 +573,7 @@ private int ProcCompositeNameWindowPixmap(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"window");
     mixin(X_REQUEST_FIELD_CARD32!"pixmap");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleCompositeNameWindowPixmap(client, stuff);
 
@@ -583,14 +584,14 @@ version (XINERAMA) {
     PanoramiXRes* win = void, newPix = void;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess))!= 0) {
         client.errorValue = stuff.window;
         return rc;
     }
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
 
-    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof))) is null)
         return BadAlloc;
 
     newPix.type = XRT_PIXMAP;
@@ -612,7 +613,7 @@ version (XINERAMA) {
             return BadMatch;
         }
 
-        cw = mixin(GetCompWindow!("pWin");
+        cw = mixin(GetCompWindow!("pWin"));
         if (!cw) {
             free(newPix);
             return BadMatch;
@@ -646,7 +647,7 @@ private int ProcCompositeGetOverlayWindow(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeGetOverlayWindowReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleCompositeGetOverlayWindow(client, stuff);
 
@@ -657,14 +658,14 @@ version (XINERAMA) {
     PanoramiXRes* win = void, overlayWin = null;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess))!= 0) {
         client.errorValue = stuff.window;
         return rc;
     }
 
-    CompScreenPtr cs = mixin(GetCompScreen!("dixGetMasterScreen("));
+    CompScreenPtr cs = mixin(GetCompScreen!("dixGetMasterScreen"));
     if (!cs.pOverlayWin) {
-        if (((overlayWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+        if (((overlayWin = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
             return BadAlloc;
 
         overlayWin.type = XRT_WINDOW;
@@ -738,7 +739,7 @@ private int ProcCompositeReleaseOverlayWindow(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xCompositeReleaseOverlayWindowReq);
     mixin(X_REQUEST_FIELD_CARD32!"window");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!compositeUseXinerama)
         return SingleCompositeReleaseOverlayWindow(client, stuff);
 
@@ -748,7 +749,7 @@ version (XINERAMA) {
     int rc = void;
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
-                                      client, DixUnknownAccess))) {
+                                      client, DixUnknownAccess)) != 0) {
         client.errorValue = stuff.window;
         return rc;
     }
@@ -756,7 +757,7 @@ version (XINERAMA) {
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if ((rc = dixLookupResourceByType(cast(void**) &pWin, win.info[walkScreenIdx].id,
                                           XRT_WINDOW, client,
-                                          DixUnknownAccess))) {
+                                          DixUnknownAccess))!= 0) {
             client.errorValue = stuff.window;
             return rc;
         }
@@ -774,7 +775,7 @@ version (XINERAMA) {
 } /* XINERAMA */
 }
 
-// version (XINERAMA) {
+static if(XINERAMA){
 void PanoramiXCompositeInit()
 {
     compositeUseXinerama = 1;
@@ -784,4 +785,4 @@ void PanoramiXCompositeReset()
 {
     compositeUseXinerama = 0;
 }
-// } /* XINERAMA */
+} /* XINERAMA */

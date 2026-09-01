@@ -48,7 +48,7 @@ SOFTWARE.
 
 ********************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 
 //import externs.X11.X;
 //import externs.X11.Xmd;
@@ -112,7 +112,7 @@ version (SCREENSAVER) {
 Bool screenSaverSuspended = FALSE;
 }
 
-const(char)* defaultFontPath = COMPILEDDEFAULTFONTPATH;
+const(char)* defaultFontPath = build.xlibre_server.COMPILEDDEFAULTFONTPATH;
 // FontPtr defaultFont;            /* not declared in dix.h to avoid including font.h in
                                 //    every compilation of dix code */
 CursorPtr rootCursor;

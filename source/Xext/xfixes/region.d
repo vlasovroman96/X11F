@@ -23,7 +23,7 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import build.dix_config;
+import build.xlibre_server;;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -434,7 +434,7 @@ int ProcXFixesFetchRegion(ClientPtr client)
     return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -448,7 +448,7 @@ int ProcXFixesSetGCClipRegion(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"xOrigin");
     mixin(X_REQUEST_FIELD_CARD16!"yOrigin");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (XFixesUseXinerama)
         return PanoramiXFixesSetGCClipRegion(client, stuff);
 }
@@ -555,7 +555,7 @@ private int SingleXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindowS
     return Success;
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -567,7 +567,7 @@ int ProcXFixesSetWindowShapeRegion(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"yOff");
     mixin(X_REQUEST_FIELD_CARD32!"region");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (XFixesUseXinerama)
         return PanoramiXFixesSetWindowShapeRegion(client, stuff);
 }
@@ -576,7 +576,7 @@ version (XINERAMA) {
 
 
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -588,7 +588,7 @@ int ProcXFixesSetPictureClipRegion(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"xOrigin");
     mixin(X_REQUEST_FIELD_CARD16!"yOrigin");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (XFixesUseXinerama)
         return PanoramiXFixesSetPictureClipRegion(client, stuff);
 }
@@ -647,7 +647,7 @@ int ProcXFixesExpandRegion(ClientPtr client)
     return Success;
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 private int PanoramiXFixesSetGCClipRegion(ClientPtr client, xXFixesSetGCClipRegionReq* stuff)
 {
@@ -655,7 +655,7 @@ private int PanoramiXFixesSetGCClipRegion(ClientPtr client, xXFixesSetGCClipRegi
     PanoramiXRes* gc = void;
 
     if ((result = dixLookupResourceByType(cast(void**) &gc, stuff.gc, XRT_GC,
-                                          client, DixWriteAccess))) {
+                                          client, DixWriteAccess)) != 0) {
         client.errorValue = stuff.gc;
         return result;
     }
@@ -678,7 +678,7 @@ private int PanoramiXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindo
 
     if ((result = dixLookupResourceByType(cast(void**) &win, stuff.dest,
                                           XRT_WINDOW, client,
-                                          DixWriteAccess))) {
+                                          DixWriteAccess)) != 0) {
         client.errorValue = stuff.dest;
         return result;
     }
@@ -712,7 +712,7 @@ private int PanoramiXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPictu
 
     if ((result = dixLookupResourceByType(cast(void**) &pict, stuff.picture,
                                           XRT_PICTURE, client,
-                                          DixWriteAccess))) {
+                                          DixWriteAccess)) != 0) {
         client.errorValue = stuff.picture;
         return result;
     }

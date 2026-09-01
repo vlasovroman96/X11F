@@ -74,7 +74,8 @@ Equipment Corporation.
 
 ******************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 //import externs.X11.X;
 //import externs.X11.Xmd;
@@ -322,7 +323,7 @@ void miSendExposures(WindowPtr pWin, RegionPtr pRgn, int dx, int dy)
         pe.u.expose.count = cast(ushort)i;
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         int scrnum = pWin.drawable.pScreen.myNum;
         int x = 0, y = 0;

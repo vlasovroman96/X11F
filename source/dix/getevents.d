@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
  *          Peter Hutterer <peter.hutterer@who-t.net>
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 import core.stdc.math;
 import core.stdc.limits;
@@ -2044,7 +2044,7 @@ void PostSyntheticMotion(DeviceIntPtr pDev, int x, int y, int screen, c_ulong ti
 {
     DeviceEvent ev = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     /* Translate back to the sprite screen since processInputProc
        will translate from sprite screen to screen 0 upon reentry
        to the DIX layer. */

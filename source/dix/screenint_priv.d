@@ -9,6 +9,7 @@ extern(C): __gshared:
  
 // // public //import stdbool;
 //public import externs.X11.Xdefs;
+import build.xlibre_server;
 
 public import include.callback;
 public import include.screenint;
@@ -78,7 +79,7 @@ enum string DIX_FOR_EACH_SCREEN(string __LAMBDA__) = `
  *
  * @param __LAMBDA__ the code to be executed in each iteration step.
  */
-version (XINERAMA) {
+static if(XINERAMA){
 enum string DIX_FOR_EACH_SCREEN_XINERAMA(string __LAMBDA__) = `
         uint __num_screens = screenInfo.numScreens; 
         if (!noPanoramiXExtension) 

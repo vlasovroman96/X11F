@@ -186,7 +186,7 @@ version = LISTEN_UNIX;
 
 enum LOCK_SERVER = 1;
 
-enum MAXCLIENTS = 2048;
+// enum MAXCLIENTS = 2048;
 
 version = MITSHM;
 
@@ -198,7 +198,7 @@ enum PRESENT = 1;
 
 enum PROJECTROOT = "/usr/local";
 
-enum RANDR = 1;
+// enum RANDR = 1;
 
 enum RENDER = 1;
 
@@ -236,7 +236,7 @@ enum XFIXES = 1;
 
 enum XFreeXDGA = 1;
 
-enum XINERAMA = 1;
+// enum XINERAMA = 1;
 
 enum XINPUT = 1;
 

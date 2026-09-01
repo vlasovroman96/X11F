@@ -36,7 +36,8 @@ in this Software without prior written authorization from The Open Group.
 
 version = SHM;
 
-import build.dix_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 import core.sys.posix.sys.types;
 import core.sys.posix.sys.ipc;
@@ -700,7 +701,7 @@ private int ProcShmPutImage(ClientPtr client)
     if (!client.local)
         return BadRequest;
 
-version (XINERAMA) {
+static if(XINERAMA){
     PanoramiXRes* draw = void, gc = void;
     Bool sendEvent = void;
 
@@ -726,12 +727,12 @@ version (XINERAMA) {
 
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
         if (!walkScreenIdx)
-            stuff.sendEvent = sendEvent;
+            stuff.sendEvent = cast(ubyte)sendEvent;
         stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
         stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
         if (isRoot) {
-            stuff.dstX = cast(short)orig_x - walkScreen.x;
-            stuff.dstY = cast(short)orig_y - walkScreen.y;
+            stuff.dstX = cast(short)(orig_x - walkScreen.x);
+            stuff.dstY = cast(short)(orig_y - walkScreen.y);
         }
         result = ShmPutImage(client, stuff);
         if (result != Success)
@@ -759,7 +760,7 @@ private int ProcShmGetImage(ClientPtr client)
     if (!client.local)
         return BadRequest;
 
-version (XINERAMA) {
+static if(XINERAMA){
     PanoramiXRes* draw = void;
     DrawablePtr pDraw = void;
     ShmDescPtr shmdesc = void;
@@ -862,7 +863,7 @@ version (XINERAMA) {
     else if (format == ZPixmap) {
         XineramaGetImageData(drawables, x, y, w, h, format, planemask,
                              shmdesc.addr + stuff.offset,
-                             widthBytesLine, isRoot);
+                             cast(int)widthBytesLine, isRoot);
     }
     else {
         c_long len2 = stuff.offset;
@@ -870,7 +871,7 @@ version (XINERAMA) {
             if (planemask & plane) {
                 XineramaGetImageData(drawables, x, y, w, h,
                                      format, plane, shmdesc.addr + len2,
-                                     widthBytesLine, isRoot);
+                                     cast(int)widthBytesLine, isRoot);
                 len2 += lenPer;
             }
         }
@@ -905,7 +906,7 @@ private int ProcShmCreatePixmap(ClientPtr client)
     if (!client.local)
         return BadRequest;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         return ShmCreatePixmap(client, stuff);
 
@@ -960,7 +961,7 @@ version (XINERAMA) {
 
     mixin(VERIFY_SHMSIZE!(`shmdesc`, `stuff.offset`, `size`, `client`));
 
-    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) == 0))
+    if (((newPix = cast(PanoramiXRes*) cast(PanoramiXRes*) calloc(1, PanoramiXRes.sizeof)) is null))
         return BadAlloc;
 
     newPix.type = XRT_PIXMAP;

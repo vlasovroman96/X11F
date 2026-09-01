@@ -45,7 +45,7 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -267,7 +267,7 @@ void XFixesExtensionInit()
     }
 }
 
-// version (XINERAMA) {
+static if(XINERAMA){
 
 int XFixesUseXinerama = 0;
 
@@ -281,4 +281,4 @@ void PanoramiXFixesReset()
     XFixesUseXinerama = 0;
 }
 
-// } /* XINERAMA */
+} /* XINERAMA */

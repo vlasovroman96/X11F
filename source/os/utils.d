@@ -171,9 +171,9 @@ alias fopen = core.stdc.stdio.fopen;
 
 Bool enableIndirectGLX = FALSE;
 
-// version (XINERAMA) {
+static if(XINERAMA){
 Bool PanoramiXExtensionDisabledHack = FALSE;
-// } /* XINERAMA */
+} /* XINERAMA */
 
 sig_atomic_t inSignalContext = FALSE;
 
@@ -344,7 +344,7 @@ version (CONFIG_NAMESPACE) {
     ErrorF("-verbose [n]           verbose startup messages\n");
     ErrorF("-wr                    create root window with white background\n");
     ErrorF("-maxbigreqsize         set maximal bigrequest size \n");
-version (XINERAMA) {
+static if(XINERAMA){
     ErrorF("+xinerama              Enable XINERAMA extension\n");
     ErrorF("-xinerama              Disable XINERAMA extension\n");
 } /* XINERAMA */
@@ -737,7 +737,7 @@ static if (!HasVersion!"Windows" || !HasVersion!"Windows") {
 //                 UseMsg();
 //         }
 // }
-// version (XINERAMA) {
+// static if(XINERAMA){
 //         if (strcmp(argv[i], "+xinerama") == 0) {
 //             noPanoramiXExtension = FALSE;
 //         }

@@ -2961,7 +2961,7 @@ private void DeleteDeviceFromAnyExtEvents(WindowPtr pWin, DeviceIntPtr dev)
             dev.focus.win = NoneWin;
             dev.focus.traceGood = 0;
             break;
-        case RevertToParent:
+        case externs.X11.X.RevertToParent:
             parent = pWin;
             do {
                 parent = parent.parent;

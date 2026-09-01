@@ -27,7 +27,8 @@ in this Software without prior written authorization from The Open Group.
 
 ********************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 import core.stdc.stdlib;
 //import externs.X11.X;
@@ -313,7 +314,7 @@ private int ProcShapeRectangles(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"yOff");
     mixin(X_REQUEST_REST_CARD16!());
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         return ShapeRectangles(client, stuff);
 
@@ -411,7 +412,7 @@ private int ProcShapeMask(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"yOff");
     mixin(X_REQUEST_FIELD_CARD32!"src");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         return ShapeMask(client, stuff);
 
@@ -540,7 +541,7 @@ private int ProcShapeCombine(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"yOff");
     mixin(X_REQUEST_FIELD_CARD32!"src");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         return ShapeCombine(client, stuff);
 
@@ -609,7 +610,7 @@ private int ProcShapeOffset(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"yOff");
     mixin(X_REQUEST_FIELD_CARD16!"yOff");
 
-version (XINERAMA) {
+static if(XINERAMA){
     PanoramiXRes* win = void;
     int result = void;
 

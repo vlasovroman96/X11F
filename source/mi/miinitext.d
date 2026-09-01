@@ -100,7 +100,7 @@ import Xext.xres;
 import mi.miinitext;
 import os.log;
 import externs.gnu;
-
+import Xext.panoramiX;
 import Xext.shape;
 import xfixes.xfixes;
 import render.render;
@@ -143,7 +143,7 @@ private const ExtensionModule[] staticExtensions = () {
 
     version (XCSECURITY) result ~= ExtensionModule(&SecurityExtensionInit, "SECURITY", &noSecurityExtension);
     version (CONFIG_NAMESPACE) result ~= ExtensionModule(&NamespaceExtensionInit, "NAMESPACE", &noNamespaceExtension);
-    version (XINERAMA) result ~= ExtensionModule(&PanoramiXExtensionInit, "XINERAMA", &noPanoramiXExtension);
+    static if(XINERAMA)result ~= ExtensionModule(&PanoramiXExtensionInit, "XINERAMA", &noPanoramiXExtension);
 
     result ~= ExtensionModule(&XFixesExtensionInit, "XFIXES", &noXFixesExtension);
 

@@ -39,7 +39,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *   Rickard E. (Rik) Faith <faith@valinux.com>
  *
  */
-import build.xorg_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 import core.stdc.errno;
 import core.stdc.stdio;
@@ -407,7 +408,7 @@ Bool DRIScreenInit(ScreenPtr pScreen, DRIInfoPtr pDRIInfo, int* pDRMFD)
         return FALSE;
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     /*
      * If Xinerama is on, don't allow DRI to initialise.  It won't be usable
      * anyway.

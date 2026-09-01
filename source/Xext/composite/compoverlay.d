@@ -60,6 +60,7 @@ import dix.resource;
 import miext.damage.damage_;
 import dix.gc;
 import render.picture;
+import build.xlibre_server;
 
 /*
  * Delete the given overlay client list element from its screen list.
@@ -138,7 +139,7 @@ Bool compCreateOverlayWindow(ScreenPtr pScreen)
     int h = pScreen.height;
     int x = 0, y = 0;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         x = -pScreen.x;
         y = -pScreen.y;

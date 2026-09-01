@@ -70,7 +70,8 @@ extern(C): __gshared:
  *           Mitani Hiroshi <hmitani@drl.mei.co.jp>,
  *           David Thomas <davtom@dream.org.uk>.
  */
-import build.dix_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 //import externs.X11.Xmd;
 import externs.X11.extensions.panoramiXproto;
@@ -80,6 +81,7 @@ import dix.request_priv;
 import dix.screenint_priv;
 import include.extinit;
 import randr.randrstr_priv;
+import build.xlibre_server;
 
 import dix.swaprep;
 import include.protocol_versions;
@@ -318,7 +320,7 @@ private int ProcRRXineramaDispatch(ClientPtr client)
 
 void RRXineramaExtensionInit()
 {
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension)
         return;
 } /* XINERAMA */

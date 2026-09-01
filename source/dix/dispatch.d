@@ -100,9 +100,9 @@ Equipment Corporation.
  * DEALINGS IN THE SOFTWARE.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 import config.version_config;
-
+import Xext.panoramiXsrv;
 import core.stdc.stddef;
 // //import externs.X11.fonts.fontstruct;
 // //import externs.X11.fonts.libxfont2;
@@ -2715,7 +2715,7 @@ int ProcAllocNamedColor(ClientPtr client)
         swaps(&reply.screenBlue);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension || !pcmp.pScreen.myNum)
         return mixin(X_SEND_REPLY_SIMPLE!("client", "reply"));
     return Success;
@@ -2763,12 +2763,12 @@ int ProcAllocColorCells(ClientPtr client)
             x_rpcbuf_clear(&rpcbuf);
             return rc;
         }
-version (XINERAMA) {
+static if(XINERAMA){
         if (noPanoramiXExtension || !pcmp.pScreen.myNum) /* XINERAMA */
         {
             xAllocColorCellsReply reply = {
-                nPixels: npixels,
-                nMasks: nmasks
+                nPixels: cast(ushort)npixels,
+                nMasks: cast(ushort)nmasks
             };
             if (client.swapped) {
                 swaps(&reply.nPixels);
@@ -2852,7 +2852,7 @@ int ProcAllocColorPlanes(ClientPtr client)
             swapl(&reply.blueMask);
         }
 
-version (XINERAMA) {
+static if(XINERAMA){
         if (noPanoramiXExtension || !pcmp.pScreen.myNum) /* XINERAMA */
         {
             return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
@@ -3811,7 +3811,7 @@ version (MATCH_CLIENT_ENDIAN) {
 }
     /* fill in the "currentInputMask" */
     root = cast(xWindowRoot*) (lConnectionInfo + connBlockScreenStart);
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         numScreens = screenInfo.numScreens;
     else

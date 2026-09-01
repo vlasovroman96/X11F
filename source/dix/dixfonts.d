@@ -52,8 +52,8 @@ Equipment Corporation.
 
 ******************************************************************/
 
-import build.dix_config;
-
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 import core.stdc.stddef;
 //import externs.X11.X;
 //import externs.X11.Xmd;
@@ -1397,9 +1397,9 @@ private int doPolyText(ClientPtr client, poly_text_closure* c)
     if (c.err != Success)
         err = c.err;
     if (err != Success && c.client != serverClient) {
-version (XINERAMA) {
+static if(XINERAMA){
         if (noPanoramiXExtension || !c.pGC.pScreen.myNum)
-            SendErrorToClient(c.client, c.reqType, 0, 0, err);
+            SendErrorToClient(c.client, c.reqType, 0, 0, cast(ubyte)err);
 } /* XINERAMA */
 else {
             SendErrorToClient(c.client, c.reqType, 0, 0, cast(ubyte)err);

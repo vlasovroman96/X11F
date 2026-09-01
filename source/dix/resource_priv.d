@@ -12,7 +12,7 @@ public import include.callback;
 public import include.dix;
 public import include.resource;
 import dix.resource;
-import build.dix_config;
+import build.xlibre_server;
 
 enum RESOURCE_AND_CLIENT_COUNT = 29;
 

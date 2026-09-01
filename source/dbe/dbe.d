@@ -33,8 +33,8 @@ extern(C): __gshared:
  *
  *****************************************************************************/
 
-import build.dix_config;
-
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 import core.stdc.string;
 import core.stdc.stdint;
 //import externs.X11.X;
@@ -970,7 +970,7 @@ void DbeExtensionInit()
     int nStubbedScreens = 0;
     Bool ddxInitSuccess = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension)
         return;
 } /* XINERAMA */

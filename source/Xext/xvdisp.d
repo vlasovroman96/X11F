@@ -66,7 +66,7 @@ import Xext.xvmain;
 import dix.screen_hooks;
 
 
-version (XINERAMA) {
+static if(XINERAMA){
 c_ulong XvXRTPort;
 } /* XINERAMA */
 
@@ -211,7 +211,7 @@ private int SingleXvPutVideo(ClientPtr client)
                         stuff.drw_w, stuff.drw_h);
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -230,7 +230,7 @@ private int ProcXvPutVideo(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"drw_w");
     mixin(X_REQUEST_FIELD_CARD16!"drw_h");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (xvUseXinerama)
         return XineramaXvPutVideo(client);
 }
@@ -265,7 +265,7 @@ private int SingleXvPutStill(ClientPtr client)
                         stuff.drw_w, stuff.drw_h);
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -284,7 +284,7 @@ private int ProcXvPutStill(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"drw_w");
     mixin(X_REQUEST_FIELD_CARD16!"drw_h");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (xvUseXinerama)
         return XineramaXvPutStill(client);
 }
@@ -448,7 +448,7 @@ private int SingleXvStopVideo(ClientPtr client)
     return XvdiStopVideo(client, pPort, pDraw);
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -458,7 +458,7 @@ private int ProcXvStopVideo(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"port");
     mixin(X_REQUEST_FIELD_CARD32!"drawable");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (xvUseXinerama)
         return XineramaXvStopVideo(client);
 }
@@ -490,7 +490,7 @@ private int SingleXvSetPortAttribute(ClientPtr client)
     return status;
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -501,7 +501,7 @@ private int ProcXvSetPortAttribute(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!"attribute");
     mixin(X_REQUEST_FIELD_CARD32!"value");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (xvUseXinerama)
         return XineramaXvSetPortAttribute(client);
 }
@@ -660,7 +660,7 @@ private int SingleXvPutImage(ClientPtr client)
                         stuff.width, stuff.height);
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -682,7 +682,7 @@ private int ProcXvPutImage(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!"width");
     mixin(X_REQUEST_FIELD_CARD16!"height");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (xvUseXinerama)
         return XineramaXvPutImage(client);
 }
@@ -764,7 +764,7 @@ private int SingleXvShmPutImage(ClientPtr client)
     return status;
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 
 }
 
@@ -791,7 +791,7 @@ static if(CONFIG_MITSHM){
     mixin(X_REQUEST_FIELD_CARD16!"width");
     mixin(X_REQUEST_FIELD_CARD16!"height");
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (xvUseXinerama)
         return XineramaXvShmPutImage(client);
 }
@@ -984,7 +984,7 @@ int ProcXvDispatch(ClientPtr client)
     }
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 private int XineramaXvStopVideo(ClientPtr client)
 {
     int result = void;
@@ -998,7 +998,7 @@ private int XineramaXvStopVideo(ClientPtr client)
         return (result == BadValue) ? BadDrawable : result;
 
     result = dixLookupResourceByType(cast(void**) &port, stuff.port,
-                                     XvXRTPort, client, DixReadAccess);
+                                     cast(uint)XvXRTPort, client, DixReadAccess);
     if (result != Success)
         return result;
 
@@ -1020,7 +1020,7 @@ private int XineramaXvSetPortAttribute(ClientPtr client)
     int result = void;
 
     result = dixLookupResourceByType(cast(void**) &port, stuff.port,
-                                     XvXRTPort, client, DixReadAccess);
+                                     cast(uint)XvXRTPort, client, DixReadAccess);
     if (result != Success)
         return result;
 
@@ -1056,7 +1056,7 @@ private int XineramaXvShmPutImage(ClientPtr client)
         return result;
 
     result = dixLookupResourceByType(cast(void**) &port, stuff.port,
-                                     XvXRTPort, client, DixReadAccess);
+                                     cast(uint)XvXRTPort, client, DixReadAccess);
     if (result != Success)
         return result;
 
@@ -1070,8 +1070,8 @@ private int XineramaXvShmPutImage(ClientPtr client)
             stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
             stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
-            stuff.drw_x = x;
-            stuff.drw_y = y;
+            stuff.drw_x = cast(short)x;
+            stuff.drw_y = cast(short)y;
             if (isRoot) {
                 stuff.drw_x -= walkScreen.x;
                 stuff.drw_y -= walkScreen.y;
@@ -1106,7 +1106,7 @@ private int XineramaXvPutImage(ClientPtr client)
         return result;
 
     result = dixLookupResourceByType(cast(void**) &port, stuff.port,
-                                     XvXRTPort, client, DixReadAccess);
+                                     cast(uint)XvXRTPort, client, DixReadAccess);
     if (result != Success)
         return result;
 
@@ -1120,8 +1120,8 @@ private int XineramaXvPutImage(ClientPtr client)
             stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
             stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
-            stuff.drw_x = x;
-            stuff.drw_y = y;
+            stuff.drw_x = cast(short)x;
+            stuff.drw_y = cast(short)y;
             if (isRoot) {
                 stuff.drw_x -= walkScreen.x;
                 stuff.drw_y -= walkScreen.y;
@@ -1152,7 +1152,7 @@ private int XineramaXvPutVideo(ClientPtr client)
         return result;
 
     result = dixLookupResourceByType(cast(void**) &port, stuff.port,
-                                     XvXRTPort, client, DixReadAccess);
+                                     cast(uint)XvXRTPort, client, DixReadAccess);
     if (result != Success)
         return result;
 
@@ -1166,8 +1166,8 @@ private int XineramaXvPutVideo(ClientPtr client)
             stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
             stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
-            stuff.drw_x = x;
-            stuff.drw_y = y;
+            stuff.drw_x = cast(short)x;
+            stuff.drw_y = cast(short)y;
             if (isRoot) {
                 stuff.drw_x -= walkScreen.x;
                 stuff.drw_y -= walkScreen.y;
@@ -1198,7 +1198,7 @@ private int XineramaXvPutStill(ClientPtr client)
         return result;
 
     result = dixLookupResourceByType(cast(void**) &port, stuff.port,
-                                     XvXRTPort, client, DixReadAccess);
+                                     cast(uint)XvXRTPort, client, DixReadAccess);
     if (result != Success)
         return result;
 
@@ -1212,13 +1212,13 @@ private int XineramaXvPutStill(ClientPtr client)
             stuff.drawable = cast(uint)draw.info[walkScreenIdx].id;
             stuff.port = port.info[walkScreenIdx].id;
             stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
-            stuff.drw_x = x;
-            stuff.drw_y = y;
+            stuff.drw_x = cast(short)x;
+            stuff.drw_y = cast(short)y;
             if (isRoot) {
                 stuff.drw_x -= walkScreen.x;
                 stuff.drw_y -= walkScreen.y;
             }
-            result = SingleXvPutStill(client);
+            result = cast(short)SingleXvPutStill(client);
         }
     }));
 
@@ -1243,7 +1243,7 @@ private Bool hasOverlay(XvAdaptorPtr pAdapt)
 private XvAdaptorPtr matchAdaptor(ScreenPtr pScreen, XvAdaptorPtr refAdapt, Bool isOverlay)
 {
     int i = void;
-    XvScreenPtr xvsp = dixLookupPrivate(&pScreen.devPrivates, XvGetScreenKey());
+    XvScreenPtr xvsp = cast(_XvScreenRec*)dixLookupPrivate(&pScreen.devPrivates, XvGetScreenKey());
     /* Do not try to go on if xv is not supported on this screen */
     if (xvsp is null)
         return null;
@@ -1280,15 +1280,15 @@ private XvAdaptorPtr matchAdaptor(ScreenPtr pScreen, XvAdaptorPtr refAdapt, Bool
 
 void XineramifyXv()
 {
-    XvScreenPtr xvsp0 = dixLookupPrivate(&(dixGetMasterScreen().devPrivates), XvGetScreenKey());
+    XvScreenPtr xvsp0 = cast(_XvScreenRec*)dixLookupPrivate(&(dixGetMasterScreen().devPrivates), XvGetScreenKey());
     XvAdaptorPtr[MAXSCREENS] MatchingAdaptors = void;
     int i = void;
 
-    XvXRTPort = CreateNewResourceType(XineramaDeleteResource, "XvXRTPort");
+    XvXRTPort = CreateNewResourceType(&XineramaDeleteResource, "XvXRTPort");
 
     if (!xvsp0 || !XvXRTPort)
         return;
-    SetResourceTypeErrorValue(XvXRTPort, _XvBadPort);
+    SetResourceTypeErrorValue(cast(uint)XvXRTPort, _XvBadPort);
 
     for (i = 0; i < xvsp0.nAdaptors; i++) {
         Bool isOverlay = void;
@@ -1318,7 +1318,7 @@ void XineramifyXv()
                     port.info[walkScreenIdx].id = 0;
             }));
 
-            AddResource(port.info[0].id, XvXRTPort, port);
+            AddResource(port.info[0].id, cast(uint)XvXRTPort, port);
         }
     }
 

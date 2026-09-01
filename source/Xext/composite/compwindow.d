@@ -44,7 +44,7 @@ extern(C): __gshared:
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 import dix.dix_priv;
 import dix.resource_priv;
@@ -205,7 +205,7 @@ private int updateOverlayWindow(ScreenPtr pScreen)
     int w = pScreen.width;
     int h = pScreen.height;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         w = PanoramiXPixWidth;
         h = PanoramiXPixHeight;

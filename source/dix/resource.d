@@ -121,7 +121,7 @@ Equipment Corporation.
  *      resource "owned" by the client.
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 //import externs.X11.X;
 
@@ -1153,7 +1153,7 @@ Bool LegalNewID(XID id, ClientPtr client)
     void* val = void;
     int rc = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     XID minid = void, maxid = void;
 
     if (!noPanoramiXExtension) {

@@ -22,7 +22,7 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-import build.dix_config;
+import build.xlibre_server;
 
 import dix.screen_hooks_priv;
 import dix.screenint_priv;
@@ -32,6 +32,7 @@ import dix.screen_hooks;
 import dix.extension;
 import externs.X11.extensions.presenttokens;
 import os.log;
+import Xext.panoramiXsrv;
 
 
 // int present_request;
@@ -237,7 +238,7 @@ void present_extension_init()
 {
     ExtensionEntry* extension = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension)
         return;
 } /* XINERAMA */

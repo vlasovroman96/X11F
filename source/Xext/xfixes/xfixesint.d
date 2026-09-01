@@ -51,6 +51,8 @@ extern(C): __gshared:
 // //public import externs.X11.extensions.xfixesproto;
 
 public import dix.selection_priv;
+import build.xlibre_server;
+
 
 public import include.misc;
 public import include.os;
@@ -162,7 +164,7 @@ Bool XFixesSelectionInit();
 // Bool XFixesShouldDisconnectClient(ClientPtr client);
 
 /* Xinerama */
-version (XINERAMA) {
+static if(XINERAMA){
 // void PanoramiXFixesInit();
 // void PanoramiXFixesReset();
 } /* XINERAMA */

@@ -34,7 +34,7 @@ import dix.resource;
 // RESTYPE XRT_PIXMAP;
 // RESTYPE XRT_GC;
 // RESTYPE XRT_COLORMAP;
-RESTYPE XRT_PICTURE;
+// RESTYPE XRT_PICTURE;
 
 /*
  * Drivers are allowed to wrap this function.  Each wrapper can decide that the

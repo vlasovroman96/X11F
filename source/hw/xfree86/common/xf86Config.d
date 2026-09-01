@@ -49,6 +49,7 @@ private template HasVersion(string versionId) {
  *      ... and others
  */
 import build.xorg_config;
+import Xext.panoramiXsrv;
 
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.types;
@@ -1033,7 +1034,7 @@ static if(DPMSExtension) {
                i, MAX_TIME_IN_MIN);
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
     from = X_DEFAULT;
     if (!noPanoramiXExtension)
         from = X_CMDLINE;

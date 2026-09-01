@@ -39,6 +39,7 @@ import build.dix_config;
 //import externs.X11.Xproto;
 import externs.X11.extensions.dri2proto;
 // //import externs.X11.extensions.xfixeswire;
+import build.xlibre_server;
 
 import dix.dix_priv;
 import dix.request_priv;
@@ -59,6 +60,8 @@ import xfixes.region;
 import dix.extension;
 import dix.dixutils;
 import dix.events;
+import Xext.panoramiXsrv;
+
 /* For the static extension loader */
 Bool noDRI2Extension = FALSE;
 
@@ -566,7 +569,7 @@ void DRI2ExtensionInit()
 {
     ExtensionEntry* dri2Extension = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension)
         return;
 } /* XINERAMA */

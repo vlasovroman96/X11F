@@ -55,13 +55,14 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 public import include.extnsionst;
 public import composite.compinit;
 
+import build.xlibre_server;
 
 /* required by: libglx */
 // export bool noCompositeExtension;
 
 /* required by: several video drivers (eg. vmware, sis and nvidia proprietary) */
-version (XINERAMA) {
-void  noPanoramiXExtension;
+static if(XINERAMA){
+// Bool noPanoramiXExtension;
 } /* XINERAMA */
 
 version (XV) {

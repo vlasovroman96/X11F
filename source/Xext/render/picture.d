@@ -32,7 +32,7 @@ import dix.colormap_priv;
 import dix.screen_hooks_priv;
 import include.extinit;
 import os.osdep;
-
+import os.log;
 import include.misc;
 import include.scrnintstr;
 import include.os;
@@ -54,9 +54,10 @@ import dix.resource;
 import dix.screen_hooks;
 import dix.colormap;
 import region;
+import build.xlibre_server;
 
-version (XINERAMA) {
-import panoramiXsrv;
+static if(XINERAMA){
+import Xext.panoramiXsrv;
 } /* XINERAMA */
 
 DevPrivateKeyRec PictureScreenPrivateKeyRec;
@@ -978,7 +979,7 @@ PicturePtr CreateConicalGradientPicture(Picture pid, xPointFixed* center, XFixed
 
 private int cpAlphaMap(void** result, XID id, ScreenPtr screen, ClientPtr client, Mask mode)
 {
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         PanoramiXRes* res = void;
         int err = dixLookupResourceByType(cast(void**)&res, id, XRT_PICTURE,
@@ -996,7 +997,7 @@ version (XINERAMA) {
 
 private int cpClipMask(void** result, XID id, ScreenPtr screen, ClientPtr client, Mask mode)
 {
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         PanoramiXRes* res = void;
         int err = dixLookupResourceByType(cast(void**)&res, id, XRT_PIXMAP,

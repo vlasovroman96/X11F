@@ -100,7 +100,7 @@ Equipment Corporation.
 
 ******************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 import region;
 
 import dix.colormap_priv;
@@ -2254,7 +2254,7 @@ enum REBORDER_WIN =   3;
         // };
         event.u.u.type = ConfigureRequest;
         event.u.u.detail = (mask & CWStackMode) ? cast(ubyte)smode : cast(ubyte)Above;
-version (XINERAMA) {
+static if(XINERAMA){
         if (!noPanoramiXExtension && (!pParent || !pParent.parent)) {
             ScreenPtr masterScreen = dixGetMasterScreen();
             event.u.configureRequest.x += masterScreen.x;
@@ -2353,7 +2353,7 @@ version (ROOTLESS) {} else {
         // };
         // event.u.u.type = ConfigureRequest;
         event.u.u.type = ConfigureNotify;
-version (XINERAMA) {
+static if(XINERAMA){
         if (!noPanoramiXExtension && (!pParent || !pParent.parent)) {
             ScreenPtr masterScreen = dixGetMasterScreen();
             event.u.configureNotify.x += masterScreen.x;
@@ -2498,7 +2498,7 @@ int ReparentWindow(WindowPtr pWin, WindowPtr pParent, int x, int y, ClientPtr cl
         event.u.reparent.override_ = cast(ubyte)pWin.overrideRedirect;
     // );
     event.u.u.type = ReparentNotify;
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension && !pParent.parent) {
         ScreenPtr masterScreen = dixGetMasterScreen();
         event.u.reparent.x += masterScreen.x;
@@ -2754,7 +2754,7 @@ private void UnrealizeTree(WindowPtr pWin, Bool fromConfigure)
     while (1) {
         if (pChild.realized) {
             pChild.visibility = VisibilityNotViewable;
-version (XINERAMA) {
+static if(XINERAMA){
             if (!noPanoramiXExtension && !pChild.drawable.pScreen.myNum) {
                 PanoramiXRes* win = void;
                 int rc = dixLookupResourceByType(cast(void**) &win,
@@ -2974,7 +2974,7 @@ void SendVisibilityNotify(WindowPtr pWin)
     xEvent event = void;
     uint visibility = pWin.visibility;
 
-version (XINERAMA) {
+static if(XINERAMA){
     /* This is not quite correct yet, but it's close */
     if (!noPanoramiXExtension) {
         PanoramiXRes* win = void;
@@ -3035,7 +3035,7 @@ version (XINERAMA) {
         }
         default: break;}
 
-        win.u.win.visibility = visibility;
+        win.u.win.visibility = cast(char)visibility;
     }
 } /* XINERAMA */
 

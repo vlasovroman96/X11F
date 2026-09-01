@@ -62,6 +62,7 @@ import include.protocol_versions;
 import dix.extension;
 import dix.pixmap;
 import dix.swapreq;
+import build.xlibre_server;
 
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 
@@ -113,7 +114,7 @@ alias RenderClientPtr = _RenderClient*;
 
 enum string GetRenderClient(string pClient) = `(cast(RenderClientPtr)dixLookupPrivate(&(` ~ pClient ~ `).devPrivates, RenderClientPrivateKey))`;
 
-version (XINERAMA) {
+static if(XINERAMA){
 RESTYPE XRT_PICTURE;
 } /* XINERAMA */
 
@@ -135,7 +136,7 @@ void RenderExtensionInit()
     if (!extEntry)
         return;
     RenderErrBase = extEntry.errorBase;
-version (XINERAMA) {
+static if(XINERAMA){
     if (XRT_PICTURE)
         SetResourceTypeErrorValue(XRT_PICTURE, RenderErrBase + BadPicture);
 } /* XINERAMA */
@@ -211,7 +212,7 @@ int ProcRenderQueryPictFormats(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xRenderQueryPictFormatsReq);
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         numScreens = screenInfo.numScreens;
     else
@@ -1858,7 +1859,7 @@ void swapStops(void* stuff, int num)
     }
 }
 
-// version (XINERAMA) {
+static if(XINERAMA){
 enum string VERIFY_XIN_PICTURE(string pPicture, string pid, string client, string mode) = `{
     int rc = dixLookupResourceByType(cast(void**)&(` ~ pPicture ~ `), ` ~ pid ~ `,
                                      XRT_PICTURE, ` ~ client ~ `, ` ~ mode ~ `);
@@ -2485,7 +2486,7 @@ void PanoramiXRenderReset()
     usePanoramiX = FALSE;
 }
 
-// } /* XINERAMA */
+} /* XINERAMA */
 
 int ProcRenderCreatePicture(ClientPtr client)
 {
@@ -2500,7 +2501,7 @@ int ProcRenderCreatePicture(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderCreatePicture(client, stuff)
                          : SingleRenderCreatePicture(client, stuff));
 } else {
@@ -2519,7 +2520,7 @@ int ProcRenderChangePicture(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderChangePicture(client, stuff, stuff.picture)
                          : SingleRenderChangePicture(client, stuff, stuff.picture));
 } else {
@@ -2539,7 +2540,7 @@ int ProcRenderSetPictureClipRectangles(ClientPtr client)
         mixin(SwapRestS!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderSetPictureClipRectangles(client, stuff, stuff.picture)
                          : SingleRenderSetPictureClipRectangles(client, stuff, stuff.picture));
 } else {
@@ -2555,7 +2556,7 @@ int ProcRenderFreePicture(ClientPtr client)
     if (client.swapped)
         swapl(&stuff.picture);
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderFreePicture(client)
                          : SingleRenderFreePicture(client));
 } else {
@@ -2582,7 +2583,7 @@ int ProcRenderComposite(ClientPtr client)
         swaps(&stuff.height);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderComposite(client, stuff)
                          : SingleRenderComposite(client, stuff));
 } else {
@@ -2604,7 +2605,7 @@ int ProcRenderTrapezoids(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderTrapezoids(client, stuff)
                          : SingleRenderTrapezoids(client, stuff));
 } else {
@@ -2626,7 +2627,7 @@ int ProcRenderTriangles(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderTriangles(client, stuff)
                          : SingleRenderTriangles(client, stuff));
 } else {
@@ -2648,7 +2649,7 @@ int ProcRenderTriStrip(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderTriStrip(client, stuff)
                          : SingleRenderTriStrip(client, stuff));
 } else {
@@ -2670,7 +2671,7 @@ int ProcRenderTriFan(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderTriFan(client, stuff)
                          : SingleRenderTriFan(client, stuff));
 } else {
@@ -2753,7 +2754,7 @@ int ProcRenderCompositeGlyphs(ClientPtr client)
         }
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderCompositeGlyphs(client, stuff)
                          : SingleRenderCompositeGlyphs(client, stuff));
 } else {
@@ -2775,7 +2776,7 @@ int ProcRenderFillRectangles(ClientPtr client)
         mixin(SwapRestS!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderFillRectangles(client, stuff)
                          : SingleRenderFillRectangles(client, stuff));
 } else {
@@ -2801,7 +2802,7 @@ int ProcRenderSetPictureTransform(ClientPtr client)
         swapl(&stuff.transform.matrix33);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderSetPictureTransform(client, stuff)
                          : SingleRenderSetPictureTransform(client, stuff));
 } else {
@@ -2819,7 +2820,7 @@ int ProcRenderSetPictureFilter(ClientPtr client)
         swaps(&stuff.nbytes);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderSetPictureFilter(client, stuff)
                          : SingleRenderSetPictureFilter(client, stuff));
 } else {
@@ -2839,7 +2840,7 @@ int ProcRenderAddTraps(ClientPtr client)
         mixin(SwapRestL!("stuff"));
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderAddTraps(client, stuff)
                          : SingleRenderAddTraps(client, stuff));
 } else {
@@ -2860,7 +2861,7 @@ int ProcRenderCreateSolidFill(ClientPtr client)
         swaps(&stuff.color.blue);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderCreateSolidFill(client, stuff)
                          : SingleRenderCreateSolidFill(client, stuff));
 } else {
@@ -2890,7 +2891,7 @@ int ProcRenderCreateLinearGradient(ClientPtr client)
         swapStops(stuff + 1, cast(int)stuff.nStops);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderCreateLinearGradient(client, stuff)
                          : SingleRenderCreateLinearGradient(client, stuff));
 } else {
@@ -2922,7 +2923,7 @@ int ProcRenderCreateRadialGradient(ClientPtr client)
         swapStops(stuff + 1, cast(int)stuff.nStops);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderCreateRadialGradient(client, stuff)
                          : SingleRenderCreateRadialGradient(client, stuff));
 } else {
@@ -2951,7 +2952,7 @@ int ProcRenderCreateConicalGradient(ClientPtr client)
         swapStops(stuff + 1, cast(int)stuff.nStops);
     }
 
-version (XINERAMA) {
+static if(XINERAMA){
     return (usePanoramiX ? PanoramiXRenderCreateConicalGradient(client, stuff)
                          : SingleRenderCreateConicalGradient(client, stuff));
 } else {

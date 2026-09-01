@@ -23,7 +23,8 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
-import build.xorg_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 //import externs.X11.extensions._render;
 
@@ -763,7 +764,7 @@ Bool xf86RandR12CreateScreenResources(ScreenPtr pScreen)
     int width = void, height = void;
     int mmWidth = void, mmHeight = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     /* XXX disable RandR when using Xinerama */
     if (!noPanoramiXExtension)
         return TRUE;
@@ -851,7 +852,7 @@ Bool xf86RandR12Init(ScreenPtr pScreen)
 {
     rrScrPrivPtr rp = void;
 
-version (XINERAMA) {
+static if(XINERAMA){
     /* XXX disable RandR when using Xinerama */
     if (!noPanoramiXExtension) {
         if (xf86NumScreens == 1)

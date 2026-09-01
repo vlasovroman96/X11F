@@ -250,13 +250,13 @@ int dix_main(int argc, char** argv, char** envp)
 
         rootCursor = RefCursor(rootCursor);
 
-// version (XINERAMA) {
+static if(XINERAMA){
 //         /*
 //          * Consolidate window and colourmap information for each screen
 //          */
-//         if (!noPanoramiXExtension)
-//             PanoramiXConsolidate();
-// } /* XINERAMA */
+        if (!noPanoramiXExtension)
+            PanoramiXConsolidate();
+} /* XINERAMA */
 
         mixin(DIX_FOR_EACH_SCREEN!("{
             InitRootWindow(walkScreen.root);
@@ -313,7 +313,7 @@ else {
         FreeScreenSaverTimer();
         CloseDownExtensions();
 
-version (XINERAMA) {
+static if(XINERAMA){
         {
             Bool remember_it = noPanoramiXExtension;
 

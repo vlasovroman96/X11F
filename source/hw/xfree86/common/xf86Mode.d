@@ -83,7 +83,8 @@ import core.stdc.config: c_long, c_ulong;
  *
  * This file includes helper functions for mode related things.
  */
-import build.xorg_config;
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 
 //import externs.X11.X;
 
@@ -1606,7 +1607,7 @@ enum string _VIRTUALX(string x) = `((((` ~ x ~ `) + scrp.xInc - 1) / scrp.xInc) 
     }
 
     /* Lookup each mode */
-version (XINERAMA) {
+static if(XINERAMA){
     if (noPanoramiXExtension)
         validateAllDefaultModes = TRUE;
 } /* XINERAMA */

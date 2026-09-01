@@ -77,8 +77,8 @@ SOFTWARE.
 **
 */
 
-import build.dix_config;
-
+import build.xlibre_server;
+import Xext.panoramiXsrv;
 import core.stdc.string;
 //import externs.X11.X;
 //import externs.X11.Xproto;
@@ -186,8 +186,8 @@ void XvExtensionInit()
             ErrorF("XvExtensionInit: Unable to allocate resource types\n");
             return;
         }
-version (XINERAMA) {
-        XineramaRegisterConnectionBlockCallback(XineramifyXv);
+static if(XINERAMA){
+        XineramaRegisterConnectionBlockCallback(&XineramifyXv);
 } /* XINERAMA */
         XvScreenGeneration = serverGeneration;
     }
@@ -284,8 +284,8 @@ int XvScreenInit(ScreenPtr pScreen)
             ErrorF("XvScreenInit: Unable to allocate resource types\n");
             return BadAlloc;
         }
-version (XINERAMA) {
-        XineramaRegisterConnectionBlockCallback(XineramifyXv);
+static if(XINERAMA){
+        XineramaRegisterConnectionBlockCallback(&XineramifyXv);
 } /* XINERAMA */
         XvScreenGeneration = serverGeneration;
     }

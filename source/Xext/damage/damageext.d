@@ -25,6 +25,7 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
+import build.xlibre_server;
 
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.damageproto;
@@ -82,7 +83,7 @@ enum string VERIFY_DAMAGEEXT(string pDamageExt, string rid, string client, strin
 
 enum string GetDamageClient(string pClient) = `(cast(DamageClientPtr)dixLookupPrivate(&(` ~ pClient ~ `).devPrivates, DamageClientPrivateKey))`;
 
-// version (XINERAMA) {
+static if(XINERAMA){
 
 struct PanoramiXDamageRes {
     DamageExtPtr ext;
@@ -94,7 +95,7 @@ int damageUseXinerama = 0;
 
 
 
-// } /* XINERAMA */
+} /* XINERAMA */
 
 ubyte DamageReqCode;
 int DamageEventBase;
@@ -119,7 +120,7 @@ private void DamageNoteCritical(ClientPtr pClient)
 
 private void damageGetGeometry(DrawablePtr draw, int* x, int* y, int* w, int* h)
 {
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension && draw.type == DRAWABLE_WINDOW) {
         WindowPtr win = cast(WindowPtr)draw;
 
@@ -338,7 +339,7 @@ private int ProcDamageCreate(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD32!("damage"));
     mixin(X_REQUEST_FIELD_CARD32!("drawable"));
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (damageUseXinerama)
         return PanoramiXDamageCreate(client, stuff);
 }
@@ -358,7 +359,7 @@ private int ProcDamageDestroy(ClientPtr client)
     return Success;
 }
 
-version (XINERAMA) {
+static if(XINERAMA){
 private RegionPtr DamageExtSubtractWindowClip(DamageExtPtr pDamageExt)
 {
     WindowPtr win = cast(WindowPtr)pDamageExt.pDrawable;
@@ -412,7 +413,7 @@ private Bool DamageExtSubtract(DamageExtPtr pDamageExt, RegionPtr pRegion)
 {
     DamagePtr pDamage = pDamageExt.pDamage;
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         RegionPtr damage = DamageRegion(pDamage);
         RegionSubtract(damage, damage, pRegion);
@@ -547,7 +548,7 @@ private void SDamageNotifyEvent(xDamageNotifyEvent* from, xDamageNotifyEvent* to
     cpswaps(from.geometry.height, to.geometry.height);
 }
 
-// version (XINERAMA) {
+static if(XINERAMA){
 
 private void PanoramiXDamageReport(DamagePtr pDamage, RegionPtr pRegion, void* closure)
 {
@@ -654,7 +655,7 @@ void PanoramiXDamageReset()
     damageUseXinerama = 0;
 }
 
-// } /* XINERAMA */
+} /* XINERAMA */
 
 void DamageExtensionInit()
 {
@@ -682,7 +683,7 @@ void DamageExtensionInit()
             cast(EventSwapPtr) &SDamageNotifyEvent;
         SetResourceTypeErrorValue(DamageExtType,
                                   extEntry.errorBase + BadDamage);
-version (XINERAMA) {
+static if(XINERAMA){
         if (XRT_DAMAGE)
             SetResourceTypeErrorValue(XRT_DAMAGE,
                                       extEntry.errorBase + BadDamage);

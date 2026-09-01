@@ -48,7 +48,7 @@ SOFTWARE.
 
 ******************************************************************/
 
-import build.dix_config;
+import build.xlibre_server;
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
@@ -131,7 +131,7 @@ private void notifyVRRMode(ClientPtr pClient, WindowPtr pWindow, int state, Prop
 
     WindowVRRMode mode = cast(WindowVRRMode)(state == PropertyNewValue ? (*(cast(uint*)pProp.data)) : 0);
 
-version (XINERAMA) {
+static if(XINERAMA){
     if (!noPanoramiXExtension) {
         PanoramiXRes* win = void;
         int rc = void;
