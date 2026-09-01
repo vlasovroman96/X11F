@@ -96,7 +96,7 @@ import include.extension;
 import mi.micmap;
 import include.os;
 import include.globals;
-
+import Xext.xres;
 import mi.miinitext;
 import os.log;
 import externs.gnu;
@@ -163,7 +163,7 @@ private const ExtensionModule[] staticExtensions = () {
     static if(build.xlibre_server.PRESENT)result ~= ExtensionModule(&present_extension_init, "Present", null);
     version (DRI2) result ~= ExtensionModule(&DRI2ExtensionInit, DRI2_NAME, &noDRI2Extension);
     static if(DRI3)result ~= ExtensionModule(&dri3_extension_init, "DRI3", null);
-    version (RES) result ~= ExtensionModule(&ResExtensionInit, "X-Resource", &noResExtension);
+    static if(build.xlibre_server.RES)result ~= ExtensionModule(&ResExtensionInit, "X-Resource", &noResExtension);
 
     version (XV)
     {
