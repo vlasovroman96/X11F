@@ -193,7 +193,7 @@ import include.dixstruct;
 
 import Xext.xace;
 
-version (XDMCP) {
+static if(build.xlibre_server.XDMCP){
 import os.xdmcp;
 }
 
@@ -407,12 +407,12 @@ void AccessUsingXdmcp()
  * Define this host for access control.  Find all the hosts the OS knows about
  * for this fd and add them to the selfhosts list.
  */
-
+alias caddr_t = char*;
 static if(!HasVersion!"SIOCGIFCONF") {
     void DefineSelf(int fd)
     {
         int len = void;
-        __caddr_t addr = void;
+        caddr_t addr = void;
         int family = void;
         HOST* host = void;
         hostent* hp = void;
@@ -482,7 +482,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
                         host.next = selfhosts;
                         selfhosts = host;
                     }
-                    version (XDMCP) {
+                    static if(build.xlibre_server.XDMCP){
                     /*
                     *  If this is an Internet Address, but not the localhost
                     *  address (127.0.0.1), nor the bogus address (0.0.0.0),
@@ -497,13 +497,13 @@ static if(!HasVersion!"SIOCGIFCONF") {
                             XdmcpRegisterConnection(family, cast(char*) addr, len);
                             broad_addr = *inetaddr;
                             (cast(sockaddr_in*) &broad_addr).sin_addr.s_addr =
-                                htonl(INADDR_BROADCAST);
+                                core.sys.posix.arpa.inet.htonl(core.sys.posix.netinet.in_.INADDR_BROADCAST);
                             XdmcpRegisterBroadcastAddress(cast(sockaddr_in*)
                                                         &broad_addr);
                         }
                         static if (IPv6){
                             if (family == FamilyInternet6 &&
-                                    !(IN6_IS_ADDR_LOOPBACK(cast(in6_addr*) addr))) {
+                                    !(IN6_IS_ADDR_LOOPBACK!()(cast(core.sys.posix.netinet.in_.in6_addr*)addr))) {
                                 XdmcpRegisterConnection(family, cast(char*) addr, len);
                             }
                         }
@@ -663,7 +663,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
             selfhosts = host;
         }
 
-        version (XDMCP) {
+        static if(XDMCP){
             version (USE_SIOCGLIFCONF) {
                 sockaddr_storage broad_addr;
             } else {
@@ -794,7 +794,7 @@ static if (IPv6){
             host.next = selfhosts;
             selfhosts = host;
         }
-version (XDMCP) {
+static if(XDMCP){
             /*
              * If this isn't an Internet Address, don't register it.
              */
@@ -875,14 +875,14 @@ static if (IPv6){
 }
 }                          /* hpux && !HAVE_IFREQ */
 
-version (XDMCP) {
+static if(build.xlibre_server.XDMCP){
 void AugmentSelf(void* from, int len)
 {
     int family = void;
     void* addr = void;
     HOST* host = void;
 
-    family = ConvertAddr(from, &len, cast(void**) &addr);
+    family = ConvertAddr(cast(sockaddr*)from, &len, cast(void**) &addr);
     if (family == -1 || family == FamilyLocal)
         return;
     for (host = selfhosts; host; host = host.next) {
@@ -892,8 +892,8 @@ void AugmentSelf(void* from, int len)
     mixin(MakeHost!(`host`, `len`));
         if (!host)
         return;
-    host.family = family;
-    host.len = len;
+    host.family = cast(short)family;
+    host.len = cast(short)len;
     memcpy(host.addr, addr, len);
     host.next = selfhosts;
     selfhosts = host;

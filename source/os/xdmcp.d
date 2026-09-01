@@ -20,12 +20,18 @@ private template HasVersion(string versionId) {
  *
  */
 
-import build.dix_config;
+import build.xlibre_server;
 
 version (Windows) {
 //import externs.X11.Xwinsock;
 import os.Xtrans;
 }
+import os.log;
+import os.access;
+import os.connection;
+import os.WaitFor;
+import os.Xtransutil;
+
 
 // //import externs.X11.Xos;
 
@@ -53,13 +59,13 @@ import os.xdmauth;
 import include.input;
 import include.dixstruct;
 
+import externs.X11.Xdmcp;
 import os.Xtrans;
 
-version (XDMCP) {
+static if(build.xlibre_server.XDMCP){
 version (XDMCP_NO_IPV6) {
 }
 
-//import externs.X11.Xdmcp;
 
 version = X_INCLUDE_NETDB_H;
 //import externs.X11.Xos_r;
@@ -71,7 +77,7 @@ private xdmcp_states state;
 
 static if (IPv6){
 private int xdmcpSocket6;
-private sockaddr_storage req_sockaddr;
+private core.sys.posix.netinet.in_.sockaddr_in req_sockaddr;
 } else {
 private sockaddr_in req_sockaddr;
 }
@@ -95,11 +101,11 @@ private addrinfo* mgrAddrFirst;
 
 static if (IPv6){
 
-alias SOCKADDR_TYPE = sockaddr_storage;
-enum string SOCKADDR_FAMILY(string s) = `(cast(sockaddr*)&(` ~ s ~ `)).sa_family`;
+alias SOCKADDR_TYPE = core.sys.posix.netinet.in_.sockaddr_in;
+enum string SOCKADDR_FAMILY(string s) = `(cast(os.access.sockaddr*)&(` ~ s ~ `)).sa_family`;
 
 version (BSD44SOCKETS) {
-enum string SOCKLEN_FIELD(string s) = `(cast(sockaddr*)&(` ~ s ~ `)).sa_len`;
+enum string SOCKLEN_FIELD(string s) = `(cast(os.access.sockaddr*)&(` ~ s ~ `)).sa_len`;
 alias SOCKLEN_TYPE = 		ubyte;
 } else {
 alias SOCKLEN_TYPE = 		uint;
@@ -139,7 +145,10 @@ struct multicastinfo {
 
 
 
-
+alias ValidatorFunc =  Bool function(ARRAY8Ptr Auth, ARRAY8Ptr Data, int packet_type);
+alias GeneratorFunc =  Bool function(ARRAY8Ptr Auth, ARRAY8Ptr Data, int packet_type);
+alias AddAuthorFunc =  Bool function(uint name_length, const char *name,
+                               uint data_length, char *data);
 
 
 
@@ -292,7 +301,7 @@ version (HASXDMAUTH) {
         if (++i == argc) {
             FatalError("Xserver: missing displayID in command line\n");
         }
-        XdmcpRegisterManufacturerDisplayID(argv[i], strlen(argv[i]));
+        XdmcpRegisterManufacturerDisplayID(argv[i], cast(int)strlen(argv[i]));
         return i + 1;
     }
     return i;
@@ -312,22 +321,22 @@ version (HASXDMAUTH) {
 enum MAX_BROADCAST =	10;
 
 /* This stays sockaddr_in since IPv6 doesn't support broadcast */
-private sockaddr_in[MAX_BROADCAST] BroadcastAddresses;
+private core.sys.posix.netinet.in_.sockaddr_in[MAX_BROADCAST] BroadcastAddresses;
 private int NumBroadcastAddresses;
 
-void XdmcpRegisterBroadcastAddress(const(sockaddr_in)* addr)
+void XdmcpRegisterBroadcastAddress(const(core.sys.posix.netinet.in_.sockaddr_in)* addr)
 {
-    sockaddr_in* bcast = void;
+    os.access.sockaddr_in* bcast = void;
 
     if (NumBroadcastAddresses >= MAX_BROADCAST)
         return;
     bcast = &BroadcastAddresses[NumBroadcastAddresses++];
-    memset(bcast, 0, sockaddr_in.sizeof);
+    memset(bcast, 0, os.access.sockaddr_in.sizeof);
 version (BSD44SOCKETS) {
     bcast.sin_len = addr.sin_len;
 }
     bcast.sin_family = addr.sin_family;
-    bcast.sin_port = htons(xdm_udp_port);
+    bcast.sin_port = core.sys.posix.arpa.inet.htons(xdm_udp_port);
     bcast.sin_addr = addr.sin_addr;
 }
 
@@ -368,8 +377,8 @@ void XdmcpRegisterAuthentication(const(char)* name, int namelen, const(char)* da
           XdmcpReallocARRAYofARRAY8(&AuthenticationDatas,
                                     AuthenticationDatas.length + 1) &&
           (newFuncs =
-           calloc(1, (AuthenticationNames.length +
-                   1) * AuthenticationFuncsRec.sizeof)))) {
+           cast(_AuthenticationFuncs*)calloc(1, (AuthenticationNames.length +
+                   1) * AuthenticationFuncsRec.sizeof)) !is null)) {
         XdmcpDisposeARRAY8(&AuthenticationName);
         XdmcpDisposeARRAY8(&AuthenticationData);
         return;
@@ -432,40 +441,41 @@ void XdmcpRegisterConnection(int type, const(char)* address, int addrlen)
         const(void)* fromAddr = null;
         int regAddrlen = addrlen;
 
-        if (addrlen == in_addr.sizeof) {
+        if (addrlen == os.access.in_addr.sizeof) {
             if (mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET) {
-                fromAddr = &(cast(sockaddr_in*) &FromAddress).sin_addr;
+                fromAddr = &(cast(os.access.sockaddr_in*) &FromAddress).sin_addr;
             }
-static if (HasVersion!"IPv6")
+static if (HasVersion!"IPv6") {
             if ((SOCKADDR_FAMILY(FromAddress) == AF_INET6) &&
                      IN6_IS_ADDR_V4MAPPED(&
-                                (cast(sockaddr_in6 *)&FromAddress).sin6_addr)) {
+                                (cast(core.sys.posix.netinet.in_.sockaddr_in6 *)&FromAddress).sin6_addr)) {
                 fromAddr =
-                    &(cast(sockaddr_in6*) &FromAddress).sin6_addr.
+                    &(cast(core.sys.posix.netinet.in_.sockaddr_in6*) &FromAddress).sin6_addr.
                     s6_addr[12];
             }
 }
         }
 static if (IPv6){
-        if(addrlen == in6_addr) {
+        if(addrlen == core.sys.posix.netinet.in_.in6_addr.sizeof) {
             if (mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET6) {
-                fromAddr = &(cast(sockaddr_in6*) &FromAddress).sin6_addr;
+                fromAddr = &(cast(core.sys.posix.netinet.in_.sockaddr_in6*) &FromAddress).sin6_addr;
             }
             else if ((mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET) &&
-                     IN6_IS_ADDR_V4MAPPED(cast(const(in6_addr)*) address)) {
-                fromAddr = &(cast(sockaddr_in*) &FromAddress).sin_addr;
+                     IN6_IS_ADDR_V4MAPPED(cast(const(core.sys.posix.netinet.in_.in6_addr)*) address)) {
+                fromAddr = &(cast(core.sys.posix.netinet.in_.sockaddr_in*) &FromAddress).sin_addr;
                 regAddr =
-                    &(cast(sockaddr_in6*) address).sin6_addr.s6_addr[12];
-                regAddrlen = in_addr.sizeof;
+                    &(cast(core.sys.posix.netinet.in_.sockaddr_in6*) address).sin6_addr.s6_addr[12];
+                regAddrlen = core.sys.posix.netinet.in_.in_addr.sizeof;
             }
         }
 }
         if (!fromAddr || memcmp(regAddr, fromAddr, regAddrlen) != 0) {
             return;
         }
+    }
     if (ConnectionAddresses.length + 1 == 256)
         return;
-    newAddress = calloc(addrlen, CARD8.sizeof);
+    newAddress = cast(ubyte*)calloc(addrlen, CARD8.sizeof);
     if (!newAddress)
         return;
     if (!XdmcpReallocARRAY16(&ConnectionTypes, ConnectionTypes.length + 1)) {
@@ -481,7 +491,7 @@ static if (IPv6){
     for (i = 0; i < addrlen; i++)
         newAddress[i] = address[i];
     ConnectionAddresses.data[ConnectionAddresses.length - 1].data = newAddress;
-    ConnectionAddresses.data[ConnectionAddresses.length - 1].length = addrlen;
+    ConnectionAddresses.data[ConnectionAddresses.length - 1].length = cast(ushort)addrlen;
 }
 
 /*
@@ -503,7 +513,7 @@ void XdmcpRegisterAuthorization(const(char)* name)
     int i = void;
 
     size_t namelen = strlen(name);
-    authName.data = calloc(namelen, CARD8.sizeof);
+    authName.data = cast(ubyte*)calloc(namelen, CARD8.sizeof);
     if (!authName.data)
         return;
     if (!XdmcpReallocARRAYofARRAY8
@@ -513,7 +523,7 @@ void XdmcpRegisterAuthorization(const(char)* name)
     }
     for (i = 0; i < namelen; i++)
         authName.data[i] = cast(CARD8) name[i];
-    authName.length = namelen;
+    authName.length = cast(ushort)namelen;
     AuthorizationNames.data[AuthorizationNames.length - 1] = authName;
 }
 
@@ -538,12 +548,12 @@ private void xdmcp_reset()
 {
     timeOutRtx = 0;
     if (xdmcpSocket >= 0)
-        SetNotifyFd(xdmcpSocket, XdmcpSocketNotify, X_NOTIFY_READ, null);
+        SetNotifyFd(xdmcpSocket, &XdmcpSocketNotify, X_NOTIFY_READ, null);
 static if (IPv6){
     if (xdmcpSocket6 >= 0)
-        SetNotifyFd(xdmcpSocket6, XdmcpSocketNotify, X_NOTIFY_READ, null);
+        SetNotifyFd(xdmcpSocket6, &XdmcpSocketNotify, X_NOTIFY_READ, null);
 }
-    xdmcp_timer = TimerSet(null, 0, 0, XdmcpTimerNotify, null);
+    xdmcp_timer = TimerSet(null, 0, 0, &XdmcpTimerNotify, null);
     send_packet();
 }
 
@@ -568,7 +578,7 @@ version (HASXDMAUTH) {
     if (state != XDM_OFF) {
         XdmcpRegisterAuthorizations();
         XdmcpRegisterDisplayClass(defaultDisplayClass,
-                                  strlen(defaultDisplayClass));
+                                  cast(int)strlen(defaultDisplayClass));
         AccessUsingXdmcp();
         DisplayNumber = cast(CARD16) atoi(display);
         xdmcp_start();
@@ -586,7 +596,7 @@ void XdmcpOpenDisplay(int sock)
     if (state != XDM_AWAIT_MANAGE_RESPONSE)
         return;
     state = XDM_RUN_SESSION;
-    TimerSet(xdmcp_timer, 0, XDM_DEF_DORMANCY * 1000, XdmcpTimerNotify, null);
+    TimerSet(xdmcp_timer, 0, XDM_DEF_DORMANCY * 1000, &XdmcpTimerNotify, null);
     sessionSocket = sock;
 }
 
@@ -597,7 +607,7 @@ void XdmcpCloseDisplay(int sock)
         return;
     state = XDM_INIT_STATE;
     dispatchException |= DE_TERMINATE;
-    isItTimeToYield = TRUE;
+    isItTimeToYield = externs.X11.Xdmcp.TRUE;
 }
 
 private void XdmcpSocketNotify(int fd, int ready, void* data)
@@ -623,7 +633,7 @@ private CARD32 XdmcpTimerNotify(OsTimerPtr timer, CARD32 time, void* arg)
  * user's host menu when the user selects a host
  */
 
-private void XdmcpSelectHost(const(sockaddr)* host_sockaddr, int host_len, ARRAY8Ptr auth_name)
+private void XdmcpSelectHost(const(core.sys.posix.sys.socket.sockaddr)* host_sockaddr, int host_len, ARRAY8Ptr auth_name)
 {
     state = XDM_START_CONNECTION;
     memmove(&req_sockaddr, host_sockaddr, host_len);
@@ -638,7 +648,7 @@ private void XdmcpSelectHost(const(sockaddr)* host_sockaddr, int host_len, ARRAY
  * selects the first host to respond with willing message.
  */
 
- /*ARGSUSED*/ private void XdmcpAddHost(const(sockaddr)* from, int fromlen, ARRAY8Ptr auth_name, ARRAY8Ptr hostname, ARRAY8Ptr status)
+ /*ARGSUSED*/ private void XdmcpAddHost(const(core.sys.posix.sys.socket.sockaddr)* from, int fromlen, ARRAY8Ptr auth_name, ARRAY8Ptr hostname, ARRAY8Ptr status)
 {
     XdmcpSelectHost(from, fromlen, auth_name);
 }
@@ -653,7 +663,7 @@ private ARRAY8 UnwillingMessage = { cast(CARD8) 14, cast(CARD8*) "Host unwilling
 private void receive_packet(int socketfd)
 {
 static if (IPv6){
-    sockaddr_storage from = void;
+    core.sys.posix.sys.socket.sockaddr_storage from = void;
 } else {
     sockaddr_in from = void;
 }
@@ -661,7 +671,7 @@ static if (IPv6){
     XdmcpHeader header = void;
 
     /* read message off socket */
-    if (!XdmcpFill(socketfd, &buffer, (XdmcpNetaddr) &from, &fromlen))
+    if (!XdmcpFill(socketfd, &buffer, cast(XdmcpNetaddr) &from, &fromlen))
         return;
 
     /* reset retransmission backoff */
@@ -675,7 +685,7 @@ static if (IPv6){
 
     switch (header.opcode) {
     case WILLING:
-        recv_willing_msg(cast(sockaddr*) &from, fromlen, header.length);
+        recv_willing_msg(cast(os.access.sockaddr*) &from, fromlen, header.length);
         break;
     case UNWILLING:
         XdmcpFatal("Manager unwilling", &UnwillingMessage);
@@ -742,7 +752,7 @@ private void XdmcpDeadSession(const(char)* reason)
 {
     ErrorF("XDM: %s, declaring session dead\n", reason);
     state = XDM_INIT_STATE;
-    isItTimeToYield = TRUE;
+    isItTimeToYield = externs.X11.Xdmcp.TRUE;
     dispatchException |= DE_TERMINATE;
     TimerCancel(xdmcp_timer);
     timeOutRtx = 0;
@@ -850,10 +860,10 @@ private void get_xdmcp_sock()
     int socketfd = -1;
 
 static if (IPv6){
-    if ((xdmcpSocket6 = socket(AF_INET6, SOCK_DGRAM, 0)) < 0)
+    if ((xdmcpSocket6 = core.sys.posix.sys.socket.socket(AF_INET6, core.sys.posix.sys.socket.SOCK_DGRAM, 0)) < 0)
         XdmcpWarning("INET6 UDP socket creation failed");
 }
-    if ((xdmcpSocket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+    if ((xdmcpSocket = core.sys.posix.sys.socket.socket(AF_INET, core.sys.posix.sys.socket.SOCK_DGRAM, 0)) < 0)
         XdmcpWarning("UDP socket creation failed");
 version (SO_BROADCAST) {
     if (setsockopt(xdmcpSocket, SOL_SOCKET, SO_BROADCAST, &soopts,
@@ -867,11 +877,11 @@ version (SO_BROADCAST) {
     if (mixin(SOCKADDR_FAMILY!(`FromAddress`)) == AF_INET)
         socketfd = xdmcpSocket;
 static if (IPv6){
-    if(SOCKADDR_FAMILY(FromAddress) == AF_INET6)
+    if(mixin(SOCKADDR_FAMILY!("FromAddress")) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
     if (socketfd >= 0) {
-        if (bind(socketfd, cast(sockaddr*) &FromAddress,
+        if (bind(socketfd, cast(os.access.sockaddr*) &FromAddress,
                  FromAddressLen) < 0) {
             FatalError("Xserver: failed to bind to -from address: %s\n",
                        xdm_from);
@@ -882,10 +892,10 @@ static if (IPv6){
 private void send_query_msg()
 {
     XdmcpHeader header = void;
-    Bool broadcast = FALSE;
+    Bool broadcast = externs.X11.Xdmcp.FALSE;
 
 static if (IPv6){
-    Bool multicast = FALSE;
+    Bool multicast = externs.X11.Xdmcp.FALSE;
 }
     int i = void;
     int socketfd = xdmcpSocket;
@@ -899,13 +909,13 @@ static if (IPv6){
     case XDM_BROADCAST:
         header.opcode = cast(CARD16) BROADCAST_QUERY;
         state = XDM_COLLECT_BROADCAST_QUERY;
-        broadcast = TRUE;
+        broadcast = externs.X11.Xdmcp.FALSE;
         break;
 static if (IPv6){
     case XDM_MULTICAST:
         header.opcode = cast(CARD16) BROADCAST_QUERY;
         state = XDM_COLLECT_MULTICAST_QUERY;
-        multicast = TRUE;
+        multicast = externs.X11.Xdmcp.FALSE;
         break;
 }
     case XDM_INDIRECT:
@@ -924,8 +934,8 @@ static if (IPv6){
     if (broadcast) {
         for (i = 0; i < NumBroadcastAddresses; i++)
             XdmcpFlush(xdmcpSocket, &buffer,
-                       (XdmcpNetaddr) &BroadcastAddresses[i],
-                       sockaddr_in.sizeof);
+                       cast(XdmcpNetaddr) &BroadcastAddresses[i],
+                       os.access.sockaddr_in.sizeof);
     }
 static if (IPv6){
     if(multicast) {
@@ -938,14 +948,14 @@ static if (IPv6){
                     ubyte hopflag = cast(ubyte) mcl.hops;
 
                     socketfd = xdmcpSocket;
-                    setsockopt(socketfd, IPPROTO_IP, IP_MULTICAST_TTL,
+                    core.sys.posix.sys.socket.setsockopt(socketfd, core.sys.posix.netinet.in_.IPPROTO_IP, IP_MULTICAST_TTL,
                                &hopflag, hopflag.sizeof);
                 }
                 else if (ai.ai_family == AF_INET6) {
                     int hopflag6 = mcl.hops;
 
                     socketfd = xdmcpSocket6;
-                    setsockopt(socketfd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS,
+                    core.sys.posix.sys.socket.setsockopt(socketfd, core.sys.posix.netinet.in_.IPPROTO_IPV6, core.sys.posix.netinet.in_.IPV6_MULTICAST_HOPS,
                                &hopflag6, hopflag6.sizeof);
                 }
                 else {
@@ -968,15 +978,15 @@ static if (IPv6){
     }
 }
 
-private void recv_willing_msg(sockaddr* from, int fromlen, uint length)
+private void recv_willing_msg(core.sys.posix.sys.socket.sockaddr* from, int fromlen, uint length)
 {
     ARRAY8 authenticationName = void;
     ARRAY8 hostname = void;
     ARRAY8 status = void;
 
-    authenticationName.data = 0;
-    hostname.data = 0;
-    status.data = 0;
+    authenticationName.data = null;
+    hostname.data = null;
+    status.data = null;
     if (XdmcpReadARRAY8(&buffer, &authenticationName) &&
         XdmcpReadARRAY8(&buffer, &hostname) &&
         XdmcpReadARRAY8(&buffer, &status)) {
@@ -1028,7 +1038,7 @@ static if (IPv6){
     }
 
     header.version_ = XDM_PROTOCOL_VERSION;
-    header.opcode = cast(CARD16) REQUEST;
+    header.opcode = cast(CARD16) externs.X11.Xdmcp.xdmOpCode.REQUEST;
 
     length = 2;                 /* display number */
     length += 1 + 2 * ConnectionTypes.length;   /* connection types */
@@ -1036,10 +1046,10 @@ static if (IPv6){
     for (i = 0; i < ConnectionAddresses.length; i++)
         length += 2 + ConnectionAddresses.data[i].length;
     authenticationData.length = 0;
-    authenticationData.data = 0;
+    authenticationData.data = null;
     if (AuthenticationFuncs) {
         (*AuthenticationFuncs.Generator) (AuthenticationData,
-                                           &authenticationData, REQUEST);
+                                           &authenticationData, externs.X11.Xdmcp.xdmOpCode.REQUEST);
     }
     length += 2 + AuthenticationName.length;   /* authentication name */
     length += 2 + authenticationData.length;    /* authentication data */
@@ -1047,7 +1057,7 @@ static if (IPv6){
     for (i = 0; i < AuthorizationNames.length; i++)
         length += 2 + AuthorizationNames.data[i].length;
     length += 2 + ManufacturerDisplayID.length; /* display ID */
-    header.length = length;
+    header.length = cast(ushort)length;
 
     if (!XdmcpWriteHeader(&buffer, &header)) {
         XdmcpDisposeARRAY8(&authenticationData);
@@ -1086,7 +1096,7 @@ static if (IPv6){
         socketfd = xdmcpSocket6;
 }
     if (XdmcpFlush(socketfd, &buffer,
-                   (XdmcpNetaddr) &req_sockaddr, req_socklen))
+                   cast(XdmcpNetaddr) &req_sockaddr, req_socklen))
         state = XDM_AWAIT_REQUEST_RESPONSE;
 }
 
@@ -1098,10 +1108,10 @@ private void recv_accept_msg(uint length)
 
     if (state != XDM_AWAIT_REQUEST_RESPONSE)
         return;
-    AcceptAuthenticationName.data = 0;
-    AcceptAuthenticationData.data = 0;
-    AcceptAuthorizationName.data = 0;
-    AcceptAuthorizationData.data = 0;
+    AcceptAuthenticationName.data = null;
+    AcceptAuthenticationData.data = null;
+    AcceptAuthorizationName.data = null;
+    AcceptAuthorizationData.data = null;
     if (XdmcpReadCARD32(&buffer, &AcceptSessionID) &&
         XdmcpReadARRAY8(&buffer, &AcceptAuthenticationName) &&
         XdmcpReadARRAY8(&buffer, &AcceptAuthenticationData) &&
@@ -1138,9 +1148,9 @@ private void recv_decline_msg(uint length)
 {
     ARRAY8 status = void, DeclineAuthenticationName = void, DeclineAuthenticationData = void;
 
-    status.data = 0;
-    DeclineAuthenticationName.data = 0;
-    DeclineAuthenticationData.data = 0;
+    status.data = null;
+    DeclineAuthenticationName.data = null;
+    DeclineAuthenticationData.data = null;
     if (XdmcpReadARRAY8(&buffer, &status) &&
         XdmcpReadARRAY8(&buffer, &DeclineAuthenticationName) &&
         XdmcpReadARRAY8(&buffer, &DeclineAuthenticationData)) {
@@ -1164,11 +1174,11 @@ private void send_manage_msg()
 
     header.version_ = XDM_PROTOCOL_VERSION;
     header.opcode = cast(CARD16) MANAGE;
-    header.length = 8 + DisplayClass.length;
+    header.length = cast(ushort)(8 + DisplayClass.length);
 
     if (!XdmcpWriteHeader(&buffer, &header))
         return;
-    XdmcpWriteCARD32(&buffer, SessionID);
+    XdmcpWriteCARD32(&buffer, cast(uint)SessionID);
     XdmcpWriteCARD16(&buffer, DisplayNumber);
     XdmcpWriteARRAY8(&buffer, &DisplayClass);
     state = XDM_AWAIT_MANAGE_RESPONSE;
@@ -1176,7 +1186,7 @@ static if (IPv6){
     if (mixin(SOCKADDR_FAMILY!(`req_sockaddr`)) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
-    XdmcpFlush(socketfd, &buffer, (XdmcpNetaddr) &req_sockaddr, req_socklen);
+    XdmcpFlush(socketfd, &buffer, cast(XdmcpNetaddr) &req_sockaddr, req_socklen);
 }
 
 private void recv_refuse_msg(uint length)
@@ -1202,7 +1212,7 @@ private void recv_failed_msg(uint length)
 
     if (state != XDM_AWAIT_MANAGE_RESPONSE)
         return;
-    status.data = 0;
+    status.data = null;
     if (XdmcpReadCARD32(&buffer, &FailedSessionID) &&
         XdmcpReadARRAY8(&buffer, &status)) {
         if (length == 6 + status.length && SessionID == FailedSessionID) {
@@ -1223,14 +1233,14 @@ private void send_keepalive_msg()
 
     XdmcpWriteHeader(&buffer, &header);
     XdmcpWriteCARD16(&buffer, DisplayNumber);
-    XdmcpWriteCARD32(&buffer, SessionID);
+    XdmcpWriteCARD32(&buffer, cast(uint)SessionID);
 
     state = XDM_AWAIT_ALIVE_RESPONSE;
 static if (IPv6){
     if (mixin(SOCKADDR_FAMILY!(`req_sockaddr`)) == AF_INET6)
         socketfd = xdmcpSocket6;
 }
-    XdmcpFlush(socketfd, &buffer, (XdmcpNetaddr) &req_sockaddr, req_socklen);
+    XdmcpFlush(socketfd, &buffer, cast(XdmcpNetaddr) &req_sockaddr, req_socklen);
 }
 
 private void recv_alive_msg(uint length)
@@ -1254,10 +1264,11 @@ private void recv_alive_msg(uint length)
     }
 }
 
-private _X_NORETURN XdmcpFatal(const(char)* type, ARRAY8Ptr status)
+private noreturn XdmcpFatal(const(char)* type, ARRAY8Ptr status)
 {
     FatalError("XDMCP fatal error: %s %*.*s\n", type,
                status.length, status.length, status.data);
+    assert(0);
 }
 
 private void XdmcpWarning(const(char)* str)
@@ -1270,9 +1281,9 @@ private void get_addr_by_name(const(char)* argtype,
         int port, 
         int socktype, 
         SOCKADDR_TYPE* addr, 
-        SOCKLEN_TYPE* HAVE_GETADDRINFO, 
+        SOCKLEN_TYPE* addrlen, 
         addrinfo** aip,
-        addrinfo *aifirstp)
+        addrinfo **aifirstp)
 {
 version (HAVE_GETADDRINFO) {
     addrinfo* ai;
@@ -1325,18 +1336,20 @@ static if (IPv6){
 } else { /* HAVE_GETADDRINFO */
     hostent* hep;
 
-version (XTHREADS_NEEDS_BYNAMEPARAMS) {
-    _Xgethostbynameparams hparams;
-}
+// version (XTHREADS_NEEDS_BYNAMEPARAMS) {
+    // _Xgethostbynameparams hparams;
+// }
     ossock_init();
-    if (((hep = _XGethostbyname(namestr, hparams)) == 0)) {
+    // if (((hep = _XGethostbyname(namestr, hparams)) == 0)) {
+    if (((hep = _XGethostbyname(namestr)) is null)) {
+
         FatalError("Xserver: %s unknown host: %s\n", argtype, namestr);
     }
-    if (hep.h_length == in_addr.sizeof) {
+    if (hep.h_length == os.access.in_addr.sizeof) {
         memcpy(&addr.sin_addr, hep.h_addr, hep.h_length);
-        *addrlen = sockaddr_in.sizeof;
+        *addrlen = os.access.sockaddr_in.sizeof;
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(port);
+        addr.sin_port = core.sys.posix.arpa.inet.htons(cast(ushort)port);
     }
     else {
         FatalError("Xserver: %s host on strange network %s\n", argtype,
@@ -1352,16 +1365,24 @@ private void get_manager_by_name(int argc, char** argv, int i)
         FatalError("Xserver: missing %s host name in command line\n", argv[i]);
     }
 
-    get_addr_by_name(argv[i], argv[i + 1], xdm_udp_port, SOCK_DGRAM,
-                     &ManagerAddress, &ManagerAddressLen
+static if(HAVE_GETADDRINFO) {
+    get_addr_by_name(argv[i], argv[i + 1], 
+    xdm_udp_port, core.sys.posix.sys.socket.SOCK_DGRAM,
+                     &ManagerAddress, &ManagerAddressLen, null, null);
 
+}
+else {
+    get_addr_by_name(argv[i], argv[i + 1], xdm_udp_port, core.sys.posix.sys.socket.SOCK_DGRAM,
+                     &ManagerAddress, &ManagerAddressLen
                      , &mgrAddr, &mgrAddrFirst
         );
 }
+}
+
 
 private void get_fromaddr_by_name(int argc, char** argv, int i)
 {
-version (HAVE_GETADDRINFO) {
+static if(HAVE_GETADDRINFO) {
     addrinfo* ai = null;
     addrinfo* aifirst = null;
 }
@@ -1369,9 +1390,9 @@ version (HAVE_GETADDRINFO) {
         FatalError("Xserver: missing -from host name in command line\n");
     }
     get_addr_by_name("-from", argv[i], 0, 0, &FromAddress, &FromAddressLen
-                     , &ai, &aifirst
+                     ,&ai, &aifirst
         );
-version (HAVE_GETADDRINFO) {
+static if(HAVE_GETADDRINFO) {
     if (aifirst !is null)
         freeaddrinfo(aifirst);
 }
@@ -1391,7 +1412,7 @@ private int get_mcast_options(int argc, char** argv, int i)
     if ((i < argc) && (argv[i][0] != '-') && (argv[i][0] != '+')) {
         address = argv[i++];
         if ((i < argc) && (argv[i][0] != '-') && (argv[i][0] != '+')) {
-            hopcount = strtol(argv[i++], null, 10);
+            hopcount = cast(int)strtol(argv[i++], null, 10);
             if ((hopcount < 1) || (hopcount > 255)) {
                 FatalError("Xserver: multicast hop count out of range: %d\n",
                            hopcount);
@@ -1406,15 +1427,15 @@ private int get_mcast_options(int argc, char** argv, int i)
         FatalError("Xserver: port out of range: %d\n", xdm_udp_port);
     }
     memset(&hints, 0, hints.sizeof);
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_socktype = core.sys.posix.sys.socket.SOCK_DGRAM;
 
     if ((gaierr = getaddrinfo(address, portstr.ptr, &hints, &firstai)) == 0) {
         for (ai = firstai; ai !is null; ai = ai.ai_next) {
             if (((ai.ai_family == AF_INET) &&
-                 IN_MULTICAST((cast(sockaddr_in*) ai.ai_addr)
+                 IN_MULTICAST((cast(os.access.sockaddr_in*) ai.ai_addr)
                               .sin_addr.s_addr))
                 || ((ai.ai_family == AF_INET6) &&
-                    IN6_IS_ADDR_MULTICAST(&(cast(sockaddr_in6*) ai.ai_addr)
+                    core.sys.posix.netinet.in_.IN6_IS_ADDR_MULTICAST!()(&(cast(core.sys.posix.netinet.in_.sockaddr_in6*) ai.ai_addr)
                                           .sin6_addr)))
                 break;
         }

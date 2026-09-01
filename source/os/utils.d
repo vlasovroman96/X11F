@@ -97,7 +97,7 @@ import include.dixfont;
 // //import externs.X11.fonts.libxfont2;
 import os.osdep;
 
-version (XDMCP) {
+static if(build.xlibre_server.XDMCP){
 import os.xdmcp;
 }
 
@@ -353,7 +353,7 @@ version (XINERAMA) {
     ErrorF("+extension name        Enable extension\n");
     ErrorF("-extension name        Disable extension\n");
     ListStaticExtensions();
-version (XDMCP) {
+static if(build.dix_config.XDMCP){
     XdmcpUseMsg();
 }
     XkbUseMsg();

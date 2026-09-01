@@ -140,7 +140,7 @@ version (HAVE_SYSTEMD_DAEMON) {
 import systemd.sd_daemon;
 }
 
-version (XDMCP) {
+static if(build.xlibre_server.XDMCP){
 import os.xdmcp;
 }
 
@@ -330,7 +330,7 @@ static if (!HasVersion!"Windows") {
 
     InitParentProcess();
 
-version (XDMCP) {
+static if(build.dix_config.XDMCP){
     XdmcpInit();
 }
 }
@@ -559,7 +559,7 @@ version (XSERVER_DTRACE) {
     priv.auth_id = auth_id;
     priv.conn_time = 0;
 
-version (XDMCP) {
+static if(build.dix_config.XDMCP){
     /* indicate to Xdmcp protocol that we've opened new client */
     XdmcpOpenDisplay(priv.fd);
 }                          /* XDMCP */
@@ -722,7 +722,7 @@ void CloseDownFileDescriptor(OsCommPtr oc)
 {
     if (oc.trans_conn) {
         int connection = oc.fd;
-version (XDMCP) {
+static if(build.dix_config.XDMCP){
         XdmcpCloseDisplay(connection);
 }
         ospoll_remove(server_poll, connection);

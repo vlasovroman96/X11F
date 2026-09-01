@@ -54,7 +54,7 @@ import os.auth;
 import externs.attrs;
 import os.utils;
 
-version (XDMCP) {
+static if(XDMCP){
 import os.xdmcp;
 }
 
@@ -210,7 +210,7 @@ private int LoadAuthorization()
     return count;
 }
 
-version (XDMCP) {
+static if(XDMCP){
 /*
  * XdmcpInit calls this function to discover all authorization
  * schemes supported by the display

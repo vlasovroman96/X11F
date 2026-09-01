@@ -49,7 +49,7 @@ import os.Xtrans;
 import include.os;
 import os.osdep;
 
-version (XDMCP) {
+static if(XDMCP){
 import os.xdmcp;
 }
 
@@ -60,7 +60,7 @@ version (HASXDMAUTH) {
 
 private Bool authFromXDMCP;
 
-version (XDMCP) {
+static if(XDMCP){
 //import externs.X11.Xmd;
 //import externs.X11.Xdmcp;
 
@@ -316,7 +316,7 @@ XID XdmAddCookie(ushort data_length, const(char)* data)
 
     switch (data_length) {
     case 16:                   /* auth from files is 16 bytes long */
-version (XDMCP) {
+static if(XDMCP){
         if (authFromXDMCP) {
             /* R5 xdm sent bogus authorization data in the accept packet,
              * but we can recover */
@@ -335,7 +335,7 @@ else {
     key_bits = cast(ubyte*) (data + 8);
 }
         break;
-version (XDMCP) {
+static if(XDMCP){
     case 8:                    /* auth from XDMCP is 8 bytes long */
         rho_bits = global_rho.data;
         key_bits = cast(ubyte*) data;
@@ -435,7 +435,7 @@ int XdmRemoveCookie(ushort data_length, const(char)* data)
         rho_bits = cast(XdmAuthKeyPtr) data;
         key_bits = cast(XdmAuthKeyPtr) (data + 8);
         break;
-version (XDMCP) {
+static if(XDMCP){
     case 8:
         rho_bits = &global_rho;
         key_bits = cast(XdmAuthKeyPtr) data;
