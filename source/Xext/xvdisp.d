@@ -825,7 +825,7 @@ private int ProcXvQueryImageAttributes(ClientPtr client)
         }
     }
 
-version (XvMCExtension) {
+static if(XvMCExtension) {
     if (!pImage)
         pImage = XvMCFindXvImage(pPort, stuff.id);
 }

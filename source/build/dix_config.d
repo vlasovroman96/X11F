@@ -270,7 +270,7 @@ enum X_REGISTRY_RESOURCE = 1;
 
 enum XvExtension = 1;
 
-enum XvMCExtension = 1;
+// enum XvMCExtension = 1;
 
 enum _DIX_CONFIG_H_ = 1;
 
