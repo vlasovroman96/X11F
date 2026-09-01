@@ -120,6 +120,7 @@ import xcmisc;
 import dri3.dri3;
 import Xext.shm;
 import present.present_screen;
+import randr.randr;
 
 private const ExtensionModule[] staticExtensions = () {
     ExtensionModule[] result;
@@ -150,7 +151,7 @@ private const ExtensionModule[] staticExtensions = () {
 
     result ~= ExtensionModule(&RenderExtensionInit, "RENDER", &noRenderExtension);
 
-    version (RANDR) result ~= ExtensionModule(&RRExtensionInit, "RANDR", &noRRExtension);
+    static if(build.xlibre_server.RANDR)result ~= ExtensionModule(&RRExtensionInit, "RANDR", &noRRExtension);
     version (DISABLE_EXT_COMPOSITE) result ~= ExtensionModule(&CompositeExtensionInit, "COMPOSITE", &noCompositeExtension);
 
     result ~= ExtensionModule(&DamageExtensionInit, "DAMAGE", &noDamageExtension);

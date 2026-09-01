@@ -567,7 +567,7 @@ version (__arm__) {
     return KdShadowSet(pScreen, scrpriv.randr, update, window);
 }
 
-version (RANDR) {
+static if(RANDR){
 private Bool fbdevRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 {
     mixin(KdScreenPriv!("pScreen"));
@@ -765,7 +765,7 @@ Bool fbdevFinishInitScreen(ScreenPtr pScreen)
     if (!shadowSetup(pScreen))
         return FALSE;
 
-version (RANDR) {
+static if(RANDR){
     if (!fbdevRandRInit(pScreen))
         return FALSE;
 }

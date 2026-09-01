@@ -326,7 +326,7 @@ Bool KdTuneMode(KdScreenInfo* screen, Bool function(KdScreenInfo*) usable, Bool 
     return TRUE;
 }
 
-version (RANDR) {
+static if(RANDR){
 Bool KdRandRGetInfo(ScreenPtr pScreen, int randr, Bool function(ScreenPtr pScreen, const(KdMonitorTiming)*) supported)
 {
     mixin(KdScreenPriv!("pScreen"));

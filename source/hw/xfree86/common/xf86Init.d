@@ -283,7 +283,7 @@ private Bool xf86ScreenInit(ScreenPtr pScreen, int argc, char** argv)
 
 private void xf86EnsureRANDR(ScreenPtr pScreen)
 {
-version (RANDR) {
+static if(build.xlibre_server.RANDR){
         if (!dixPrivateKeyRegistered(rrPrivKey) ||
             !mixin(rrGetScrPriv!("pScreen")))
             xf86RandRInit(pScreen);

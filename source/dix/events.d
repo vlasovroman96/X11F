@@ -1388,7 +1388,7 @@ private void ComputeFreezes()
     }
 }
 
-// version (RANDR) {
+static if(RANDR){
 void ScreenRestructured(ScreenPtr pScreen)
 {
     GrabPtr grab = void;
@@ -1412,7 +1412,7 @@ void ScreenRestructured(ScreenPtr pScreen)
                                   root, TRUE, FALSE);
     }
 }
-// }
+}
 
 private void CheckGrabForSyncs(DeviceIntPtr thisDev, Bool thisMode, Bool otherMode)
 {

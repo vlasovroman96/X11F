@@ -465,7 +465,7 @@ void ephyrUnsetInternalDamage(ScreenPtr pScreen)
     scrpriv.pDamage = null;
 }
 
-version (RANDR) {
+static if(RANDR){
 Bool ephyrRandRGetInfo(ScreenPtr pScreen, Rotation* rotations)
 {
     mixin(KdScreenPriv!("pScreen"));
@@ -852,7 +852,7 @@ Bool ephyrFinishInitScreen(ScreenPtr pScreen)
     if (!shadowSetup(pScreen))
         return FALSE;
 
-version (RANDR) {
+static if(RANDR){
     if (!ephyrRandRInit(pScreen))
         return FALSE;
 }
@@ -1258,7 +1258,7 @@ private void ephyrProcessConfigureNotify(xcb_generic_event_t* xev)
         return;
     }
 
-version (RANDR) {
+static if(RANDR){
     ephyrResizeScreen(screen.pScreen, configure.width, configure.height);
 } /* RANDR */
 }

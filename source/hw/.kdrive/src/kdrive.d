@@ -46,7 +46,7 @@ import include.dixstruct;
 import include.privates;
 
 /* workaround for <windows.h> being included somewhere and conflicting with us */
-version (RANDR) {
+static if(RANDR){
 import include.randrstr;
 }
 import include.glx_extinit;
