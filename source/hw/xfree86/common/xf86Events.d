@@ -60,6 +60,7 @@ import core.stdc.errno;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 //import externs.X11.keysym;
+import xf86platformBus;
 
 import dix.dix_priv;
 import dix.input_priv;
@@ -513,7 +514,7 @@ void xf86VTEnter()
         else
             _xf86EnableGeneralHandler(ih);
     }
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     /* check for any new output devices */
     xf86platformVTProbe();
 }

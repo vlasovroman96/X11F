@@ -338,7 +338,7 @@ private const(__DRIswrastLoaderExtension) swrastLoaderExtension = {
 
 private const(__DRIextension)*[2] loader_extensions_swrast;
 
-shared static this() {
+static this() {
     loader_extensions_swrast = [
     &swrastLoaderExtension.base,
     null

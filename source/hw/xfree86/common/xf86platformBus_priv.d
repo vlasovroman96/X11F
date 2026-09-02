@@ -9,9 +9,10 @@ extern(C): __gshared:
 public import xf86platformBus;
 import include.xf86str;
 public import config.hotplug_priv;
+import build.xlibre_server;
+public import xf86platformBus;
 
-
-// version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 
 // int xf86_num_platform_devices;
 // xf86_platform_device* xf86_platform_devices;
@@ -27,29 +28,29 @@ pragma(inline, true) OdevAttributes* xf86_platform_device_odev_attributes(xf86_p
     return device.attribs;
 }
 
-int xf86platformProbe();
-int xf86platformProbeDev(DriverPtr drvp);
+// int xf86platformProbe();
+// int xf86platformProbeDev(DriverPtr drvp);
 
 
-void xf86PlatformScanPciDev();
-const(char)* xf86PlatformFindHotplugDriver(int dev_index);
+// void xf86PlatformScanPciDev();
+// const(char)* xf86PlatformFindHotplugDriver(int dev_index);
 
-int xf86_add_platform_device(OdevAttributes* attribs, Bool unowned);
-int xf86_remove_platform_device(int dev_index);
-Bool xf86_get_platform_device_unowned(int index);
+// int xf86_add_platform_device(OdevAttributes* attribs, Bool unowned);
+// int xf86_remove_platform_device(int dev_index);
+// Bool xf86_get_platform_device_unowned(int index);
 
-int xf86platformAddDevice(const(char)* driver_name, int index);
-void xf86platformRemoveDevice(int index);
+// int xf86platformAddDevice(const(char)* driver_name, int index);
+// void xf86platformRemoveDevice(int index);
 
-void xf86platformVTProbe();
-void xf86platformPrimary();
+// void xf86platformVTProbe();
+// void xf86platformPrimary();
 
 // } else { /* XSERVER_PLATFORM_BUS */
 
 // pragma(inline, true) int xf86platformAddGPUDevices(DriverPtr drvp) { return FALSE; }
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-pragma(inline, true) void xf86MergeOutputClassOptions(int index, void** options) {}
+// pragma(inline, true) void xf86MergeOutputClassOptions(int index, void** options) {}
 
-// } /* XSERVER_PLATFORM_BUS */
+} /* XSERVER_PLATFORM_BUS */
 
  /* _XSERVER_XF86_PLATFORM_BUS_PRIV_H */

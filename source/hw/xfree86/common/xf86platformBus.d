@@ -30,7 +30,7 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 import build.xlibre_server;
-// version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 import core.stdc.errno;
 
 import externs.pciaccess;
@@ -882,4 +882,4 @@ int _xf86_get_platform_device_int_attrib(xf86_platform_device* device, int attri
     }
 }
 
-// } /* XSERVER_PLATFORM_BUS */
+} /* XSERVER_PLATFORM_BUS */

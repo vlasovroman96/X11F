@@ -140,12 +140,12 @@ Bool xf86CallDriverProbe(DriverPtr drv, Bool detect_only)
 {
     Bool foundScreen = FALSE;
 
-// version (XSERVER_PLATFORM_BUS) {
-//     /* xf86platformBus.c does not support Xorg -configure */
-//     if (!xf86DoConfigure && drv.platformProbe !is null) {
-//         foundScreen = xf86platformProbeDev(drv);
-//     }
-// }
+static if(XSERVER_PLATFORM_BUS){
+    /* xf86platformBus.c does not support Xorg -configure */
+    if (!xf86DoConfigure && drv.platformProbe !is null) {
+        foundScreen = xf86platformProbeDev(drv);
+    }
+}
 
 static if(XSERVER_LIBPCIACCESS){
     if (!foundScreen && (drv.PciProbe !is null)) {
@@ -305,7 +305,7 @@ Bool xf86BusConfig(Bool singleDriver)
 
 void xf86BusProbe()
 {
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     xf86platformProbe();
     if (mixin(ServerIsNotSeat0!()) && xf86_num_platform_devices > 0)
         return;
@@ -316,7 +316,7 @@ static if(XSERVER_LIBPCIACCESS){
 static if ((HasVersion!"__sparc__" || HasVersion!"__sparc") && !HasVersion!"__OpenBSD__") {
     xf86SbusProbe();
 }
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     xf86platformPrimary();
 }
 }
@@ -707,7 +707,7 @@ static if(XSERVER_LIBPCIACCESS){
              cast(const(pci_device)*)ptr : null);
 }
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     const(xf86_platform_device)* plat_ptr = (type == BUS_PLATFORM ?
              cast(const(xf86_platform_device)*)ptr : null);
 }
@@ -721,7 +721,7 @@ version (XSERVER_PLATFORM_BUS) {
         return FALSE;
     }
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     /* XSERVER_PLATFORM_BUS assumes XSERVER_LIBPCIACCESS */
     if (plat_ptr) {
         pci_ptr = plat_ptr.pdev;
@@ -850,7 +850,7 @@ static if(XSERVER_LIBPCIACCESS){
             }
         }
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
         if (pent.bus.type == BUS_PLATFORM) {
             msOther = pent.bus.id.plat.attribs.path;
         }
@@ -881,7 +881,7 @@ else {
         }
     }
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     if (type == BUS_PLATFORM) {
         if (pci_ptr)
             LogMessageVerb(X_INFO, 1,

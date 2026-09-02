@@ -74,7 +74,7 @@ import xf86pciBus;
 // import xf86xv;
 import externs.libdrm;
 // import build.xorg_config;
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 import xf86platformBus_priv;
 }
 static if(XSERVER_LIBPCIACCESS){
@@ -306,11 +306,11 @@ private const(pci_id_match)[3] ms_device_match = [
 ];
 }
 
-version (XSERVER_PLATFORM_BUS) {} else {
+static if(XSERVER_PLATFORM_BUS){} else {
 struct xf86_platform_device;
 }
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 
 }
 
@@ -680,7 +680,7 @@ private Bool ms_pci_probe(DriverPtr driver, int entity_num, pci_device* dev, int
 }
 }
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 private Bool ms_platform_probe(DriverPtr driver, int entity_num, int flags, xf86_platform_device* dev, intptr_t match_data)
 {
     ScrnInfoPtr scrn = null;
@@ -1804,7 +1804,7 @@ private Bool msEnableSharedPixmapFlipping(RRCrtcPtr crtc, PixmapPtr front, Pixma
     if (ms.drmmode.reverse_prime_offload_mode)
         return FALSE;
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     if (ms.pEnt.location.type == BUS_PLATFORM) {
         const(char)* syspath = xf86_platform_device_odev_attributes(ms.pEnt.location.id.plat).
             syspath;

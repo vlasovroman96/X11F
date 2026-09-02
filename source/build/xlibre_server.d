@@ -170,6 +170,8 @@ enum XACE = 1;
 
 /* Have X server platform bus support */
 enum XSERVER_PLATFORM_BUS = 1;
+enum PCI_TXT_IDS_PATH = "";
+
 
 version (_LP64) {
 enum _XSERVER64 = 1;

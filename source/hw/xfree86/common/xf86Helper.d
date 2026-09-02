@@ -70,7 +70,7 @@ import mi.micmap;
 import xf86Bus;
 import xf86Xinput_priv;
 // import xf86InPriv;
-import xf86Config;
+// import xf86Config;
 import xf86Module_priv;
 import xf86Globals;
 import xf86Option;

@@ -4,8 +4,8 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import config.hotplug_priv;
-
-version (XSERVER_PLATFORM_BUS) {
+import build.xlibre_server;
+static if(XSERVER_PLATFORM_BUS){
 /* noop platform device support */
 import include.xf86_OSproc;;
 

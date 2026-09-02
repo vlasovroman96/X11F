@@ -68,7 +68,7 @@ import include.globals;
 import include.servermd;
 import mi.micmap;
 import include.xkbsrv;
-import xf86Xinput;
+// import xf86Xinput;
 import include.eventstr;
 import xf86Extensions;
 import include.misc;

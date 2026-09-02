@@ -30,8 +30,8 @@ import build.xorg_config;
 import include.extension;
 import include.globals;
 
-import xf86_priv;
-import xf86Config;
+// import xf86_priv;
+// import xf86Config;
 import include.xf86Module;
 import xf86Extensions;
 import xf86Opt_priv;
@@ -64,38 +64,52 @@ static if(build.xlibre_server.XF86VIDMODE){
 import include.vidmodestr;
 }
 
-Bool noXFree86VidModeExtension = FALSE;
-Bool noXFree86DGAExtension = FALSE;
-Bool noXFree86DRIExtension = FALSE;
+Bool noXFree86VidModeExtension = 0;
+Bool noXFree86DGAExtension = 0;
+Bool noXFree86DRIExtension = 0;
 
 /*
  * DDX-specific extensions.
  */
-private const(ExtensionModule)[4] extensionModules;
-extern(D)
-static this() {
+private ExtensionModule[4] extensionModules;
+
+private bool extensionModulesInitialized;
+
+private void initializeExtensionModules()
+{
+    if (extensionModulesInitialized)
+        return;
+
     int i = 0;
-static if(XF86VIDMODE) {
-    extensionModules[i++] = ExtensionModule (
-	&XFree86VidModeExtensionInit,
-	XF86VIDMODENAME,
-	&noXFree86VidModeExtension
-    );
-}
-static if(XFreeXDGA) {
-    extensionModules[i++] = ExtensionModule (
-	&XFree86DGAExtensionInit,
-	XF86DGANAME,
-	&noXFree86DGAExtension
-    );
-}
-static if(XF86DRI) {
-    extensionModules[i++] = ExtensionModule (
-        &XFree86DRIExtensionInit,
-        "XFree86-DRI",
-        &noXFree86DRIExtension
-    );
-}
+
+    static if (XF86VIDMODE)
+    {
+        extensionModules[i++] = ExtensionModule(
+            &XFree86VidModeExtensionInit,
+            XF86VIDMODENAME,
+            &noXFree86VidModeExtension
+        );
+    }
+
+    static if (XFreeXDGA)
+    {
+        extensionModules[i++] = ExtensionModule(
+            &XFree86DGAExtensionInit,
+            XF86DGANAME,
+            &noXFree86DGAExtension
+        );
+    }
+
+    static if (XF86DRI)
+    {
+        extensionModules[i++] = ExtensionModule(
+            &XFree86DRIExtensionInit,
+            "XFree86-DRI",
+            &noXFree86DRIExtension
+        );
+    }
+
+    extensionModulesInitialized = true;
 }
     
 
@@ -146,6 +160,8 @@ private void load_extension_config()
 void xf86ExtensionInit()
 {
     load_extension_config();
+
+    initializeExtensionModules();
 
     LoadExtensionList(cast(ExtensionModule*)extensionModules.ptr, mixin(ARRAY_SIZE!("extensionModules.ptr")), TRUE);
 }

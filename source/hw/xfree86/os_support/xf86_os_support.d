@@ -13,8 +13,8 @@ extern(C): __gshared:
 
 public import include.os;
 public import dix.dix_priv;
-public import build.dix_config;
-
+public import build.xlibre_server;
+import config.hotplug_priv;
 /*
  * This is to prevent re-entrancy to FatalError() when aborting.
  * Anything that can be called as a result of ddxGiveUp() should use this
@@ -71,12 +71,12 @@ alias VidMemInfoPtr = VidMemInfo*;
 
 void xf86OSInitVidMem(VidMemInfoPtr);
 
-version (XSERVER_PLATFORM_BUS) {
-struct OdevAttributes;
+static if(XSERVER_PLATFORM_BUS){
+// struct OdevAttributes;
 
 // void xf86PlatformDeviceProbe(OdevAttributes* attribs);
 
-void xf86PlatformReprobeDevice(int index, OdevAttributes* attribs);
+// void xf86PlatformReprobeDevice(int index, OdevAttributes* attribs);
 }
 
 version (__sun) {

@@ -26,6 +26,7 @@ extern(C): __gshared:
  */
  import config.hotplug_priv;
 import externs.pciaccess;
+import build.xlibre_server;
 
 struct xf86_platform_device {
     OdevAttributes* attribs;
@@ -39,7 +40,7 @@ enum XF86_PDEV_UNOWNED =       0x01;
 enum XF86_PDEV_SERVER_FD =     0x02;
 enum XF86_PDEV_PAUSED =        0x04;
 
-// version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 
 /*
  * Define the legacy API only for external builds
@@ -87,6 +88,6 @@ enum string xf86_get_platform_device_int_attrib(string device, string attrib, st
 
 // void  xf86PlatformDeviceCheckBusID(xf86_platform_device* device, const(char)* busid);
 
-// }
+}
 
 

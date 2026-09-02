@@ -35,7 +35,7 @@ import core.stdc.config: c_long, c_ulong;
 /*
  * This file contains the interfaces to the bus-specific code
  */
-import build.xorg_config;
+import build.xlibre_server;
 
 import core.stdc.ctype;
 import core.sys.posix.dirent;
@@ -377,10 +377,10 @@ Bool xf86IsPrimaryPci(pci_device* pPci)
 
     if (primaryBus.type == BUS_PCI)
         return pPci == primaryBus.id.pci;
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     if (primaryBus.type == BUS_PLATFORM)
         if (primaryBus.id.plat.pdev)
-            if (MATCH_PCI_DEVICES(primaryBus.id.plat.pdev, pPci))
+            if (mixin(MATCH_PCI_DEVICES!("primaryBus.id.plat.pdev", "pPci")))
                 return TRUE;
 }
     return FALSE;

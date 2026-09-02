@@ -38,7 +38,7 @@ import externs.libseat;
 import include.os;
 import include.xf86;
 import xf86_priv;
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 import xf86platformBus_priv;
 import xf86platformBus;
 }
@@ -154,7 +154,7 @@ private void enable_seat(libseat* seat, void* userdata)
             }
         }
     xf86InputEnableVTProbe(); /* Add any paused input devices */
-    version (XSERVER_PLATFORM_BUS) {
+    static if(XSERVER_PLATFORM_BUS){
     xf86platformVTProbe(); /* Probe for outputs */
     }
 }

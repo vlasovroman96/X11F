@@ -77,7 +77,7 @@ import include.misc;
 import os.osdep;
 import dix.dixstruct_priv;
 import include.globals;
-import os.utils;
+// import os.utils;
 import os.io;
 import os.log;
 import dix.events;

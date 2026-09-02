@@ -239,7 +239,7 @@ private void listPossibleVideoDrivers(XF86MatchedDrivers* md)
 {
     md.nmatches = 0;
 
-version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
     xf86PlatformMatchDriver(md);
 }
 version (__sun) {

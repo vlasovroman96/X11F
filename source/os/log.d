@@ -110,7 +110,7 @@ import os.bug_priv;
 import os.ddx_priv;
 import os.fmt;
 import os.log_priv;
-import os.osdep;
+// import os.osdep;
 
 import include.opaque;
 

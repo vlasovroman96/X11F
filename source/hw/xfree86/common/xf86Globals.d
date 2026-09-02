@@ -33,7 +33,8 @@ extern(C): __gshared:
  */
 import build.xorg_config;
 import build.xlibre_server;
-
+import include.xf86Xinput;
+// import include.xf86;
 import externs.X11.X;
 // import include.os;
 // import include.windowstr;
@@ -45,7 +46,7 @@ import include.xf86Parser;
 // import xf86Xinput;
 // // import xf86InPriv;
 // import xf86Config;
-import include.xf86Xinput;
+// import include.xf86Xinput;
 import include.xf86Privstr;
 // import include.xlibre_ptrtypes;
 // import include.xf86;
@@ -104,8 +105,8 @@ InputInfoPtr xf86InputDevs = null;
 xf86InfoRec xf86Info;
 
 extern(D)
-static this() {
-         import core.stdc.stdio : fprintf, stderr;
+shared static this() {
+    import core.stdc.stdio : fprintf, stderr;
     fprintf(stderr, "!!! GLOBALS STATIC CTOR !!!\n");
     with(xf86Info) {
     consoleFd = -1;

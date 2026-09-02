@@ -126,7 +126,7 @@ enum PCI_TXT_IDS_PATH = "";
 /* #undef HAVE_GETRESUID */
 
 /* Have X server platform bus support */
-enum XSERVER_PLATFORM_BUS = 1;
+// enum XSERVER_PLATFORM_BUS = 1;
 
 /* Define to 1 if you have the `seteuid' function. */
 /* #undef HAVE_SETEUID */

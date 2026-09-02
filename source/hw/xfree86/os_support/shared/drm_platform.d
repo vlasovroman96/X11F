@@ -1,9 +1,9 @@
 module drm_platform;
 @nogc nothrow:
 extern(C): __gshared:
-import build.xorg_config;
+import build.xlibre_server;
 
-// version (XSERVER_PLATFORM_BUS) {
+static if(XSERVER_PLATFORM_BUS){
 
 import externs.libdrm;
 import core.sys.posix.fcntl;
@@ -275,4 +275,4 @@ out_:
     config_odev_free_attributes(attribs);
 }
 
-// }
+}
