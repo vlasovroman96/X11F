@@ -503,17 +503,24 @@ static if(DPMSExtension) {
         timeout = timeout > 0 ? min(ScreenSaverTime, timeout) : ScreenSaverTime;
     }
 
-version (SCREENSAVER) {
+static if(SCREENSAVER){
     if (timeout && !screenSaverSuspended) {
-//! #else
         if (timeout) {
-    //! #endif
             ScreenSaverTimer = TimerSet(ScreenSaverTimer, 0, timeout,
-                                        ScreenSaverTimeoutExpire, null);
+                                        &ScreenSaverTimeoutExpire, null);
         }
         else if (ScreenSaverTimer) {
             FreeScreenSaverTimer();
         }
     }
 }
+else {
+        if (timeout) {
+            ScreenSaverTimer = TimerSet(ScreenSaverTimer, 0, timeout,
+                                        &ScreenSaverTimeoutExpire, null);
+        }
+        else if (ScreenSaverTimer) {
+            FreeScreenSaverTimer();
+        }
+    }
 }

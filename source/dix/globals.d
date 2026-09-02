@@ -108,7 +108,7 @@ CARD32 defaultScreenSaverInterval = (10 * (60 * 1000));
 int defaultScreenSaverBlanking = PreferBlanking;
 int defaultScreenSaverAllowExposures = AllowExposures;
 
-version (SCREENSAVER) {
+static if(SCREENSAVER){
 Bool screenSaverSuspended = FALSE;
 }
 

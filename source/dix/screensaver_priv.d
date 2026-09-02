@@ -20,7 +20,7 @@ public import dix.globals;
 // CARD32 defaultScreenSaverInterval;
 // CARD32 ScreenSaverTime;
 // CARD32 ScreenSaverInterval;
-Bool screenSaverSuspended;
+// Bool screenSaverSuspended;
 
 CallbackListPtr ScreenSaverAccessCallback;
 

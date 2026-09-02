@@ -109,7 +109,7 @@ import render.render;
 import damageext.c;
 import geext;
 import Xi.extinit;
-;
+import Xext.saver;
 
 import Xext.dpms;
 import Xext.bigreq;
@@ -159,7 +159,7 @@ private const ExtensionModule[] staticExtensions = () {
 
     result ~= ExtensionModule(&DamageExtensionInit, "DAMAGE", &noDamageExtension);
 
-    version (SCREENSAVER) result ~= ExtensionModule(&ScreenSaverExtensionInit, "MIT-SCREEN-SAVER", &noScreenSaverExtension);
+    static if(SCREENSAVER)result ~= ExtensionModule(&ScreenSaverExtensionInit, "MIT-SCREEN-SAVER", &noScreenSaverExtension);
     version (DBE) result ~= ExtensionModule(&DbeExtensionInit, "DOUBLE-BUFFER", &noDbeExtension);
     version (XRECORD) result ~= ExtensionModule(&RecordExtensionInit, "RECORD", &noTestExtensions);
     static if(DPMSExtension) result ~= ExtensionModule(&DPMSExtensionInit, "DPMS", &noDPMSExtension);

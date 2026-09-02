@@ -204,7 +204,7 @@ enum RENDER = 1;
 
 enum RES = 1;
 
-enum SCREENSAVER = 1;
+// enum SCREENSAVER = 1;
 
 enum SERVER_MISC_CONFIG_PATH = "/usr/local/lib/xorg";
 
