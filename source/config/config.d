@@ -39,7 +39,7 @@ import config.hotplug_priv;
 import include.os;
 import include.inputstr;
 import config.config_backends;
-
+import config.udev;
 import hw.xfree86.os_support.linux.systemd_logind;
 import os.log;
 import dix.events;
@@ -48,10 +48,8 @@ import os.inputthread;
 
 void config_pre_init()
 {
-version (CONFIG_UDEV) {
     if (!config_udev_pre_init())
         ErrorF("[config] failed to pre-init udev\n");
-}
 }
 
 void config_init()

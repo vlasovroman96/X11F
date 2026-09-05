@@ -230,10 +230,10 @@ void xf86PlatformMatchDriver(XF86MatchedDrivers* md)
             xf86OutputClassDriverList(i, md);
 
             info = xf86_platform_devices[i].pdev;
-// version (linux) {
-//             if (info)
-//                 xf86MatchDriverFromFiles(info.vendor_id, info.device_id, md);
-// }
+version (linux) {
+            if (info)
+                xf86MatchDriverFromFiles(info.vendor_id, info.device_id, md);
+}
 
             if (info !is null) {
                 xf86VideoPtrToDriverList(info, md);

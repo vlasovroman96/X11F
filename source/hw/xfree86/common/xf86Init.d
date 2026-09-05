@@ -346,12 +346,12 @@ void InitOutput(int argc, char** argv)
 
         /* Initialise the loader */
         LoaderInit();
-    fprintf(stderr, "\nLOL LOADSER\n");
+    // fprintf(stderr, "\nLOL LOADSER\n");
 
 
         /* Tell the loader the default module search path */
         LoaderSetPath(null, xf86ModulePath);
-    fprintf(stderr, "\nLOLsdfsdfsds\n");
+    // fprintf(stderr, "\nLOLsdfsdfsds\n");
 
 
         xf86Info.ignoreABI = 1;
@@ -363,22 +363,22 @@ void InitOutput(int argc, char** argv)
 
         if (xf86DoShowOptions)
             DoShowOptions();
-    fprintf(stderr, "\nLOwerewfdxL\n");
+    // fprintf(stderr, "\nLOwerewfdxL\n");
 
 
         dbus_core_init();
-    fprintf(stderr, "\nLOhghjfhL\n");
+    // fprintf(stderr, "\nLOhghjfhL\n");
 
         seatd_libseat_init(cast(bool)xf86VTKeepTtyIsSet());
-    fprintf(stderr, "\nLqewqecxOL\n");
+    // fprintf(stderr, "\nLqewqecxOL\n");
 
         systemd_logind_init();
-    fprintf(stderr, "\nLxczfcxvgcvbOL\n");
+    // fprintf(stderr, "\nLxczfcxvgcvbOL\n");
 
 
         /* Do a general bus probe.  This will be a PCI probe for x86 platforms */
         xf86BusProbe();
-    fprintf(stderr, "\nLertetOL\n");
+    // fprintf(stderr, "\nLertetOL\n");
 
 
         if (xf86DoConfigure)

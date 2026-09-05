@@ -1,33 +1,40 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"type": "lldb",
-			"request": "launch",
-			"name": "Launch",
-			"program": "${workspaceFolder}/x12",
-			"args": [":2"],
-			"cwd": "${workspaceFolder}"
-		},	
-		{
-			"type": "lldb",
-			"request": "launch",
-			"name": "Launch XOrg",
-			"program": "/home/roman/xserver/build/hw/xfree86/Xorg",
-			"args": [":1"],
-			"cwd": "/home/roman/xserver/build/hw/xfree86"
-		},		
-		
-		{
-			"type": "code-d",
-			"request": "launch",
-			"dubBuild": true,
-			"name": "Build & Debug DUB project",
-			"cwd": "${command:dubWorkingDirectory}",
-			"program": "${command:dubTarget}"
-		}
-	]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug x12",
+            "type": "cppdbg",
+            "request": "launch",
+
+            "program": "${workspaceFolder}/x12",
+            "args": [],
+
+            "cwd": "${workspaceFolder}",
+
+            "stopAtEntry": false,
+            "externalConsole": false,
+
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+
+            "setupCommands": [
+                {
+                    "description": "Enable GDB pretty printing",
+                    "text": "set print pretty on",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Do not stop on shared library events",
+                    "text": "set stop-on-solib-events 0",
+                    "ignoreFailures": true
+                }
+            ],
+
+            "logging": {
+                "engineLogging": true,
+                "trace": false,
+                "traceResponse": false
+            }
+        }
+    ]
 }

@@ -245,8 +245,8 @@ void glamor_egl_make_current(glamor_context* glamor_ctx)
      * EGL's no-op context change fast path when switching back to
      * EGL.
      */
-    eglMakeCurrent(glamor_ctx.display, EGL_NO_SURFACE,
-                   EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglMakeCurrent(glamor_ctx.display, externs.epoxydefs.externs.epoxydefs.EGL_NO_SURFACE,
+                   externs.epoxydefs.externs.epoxydefs.EGL_NO_SURFACE, externs.epoxydefs.EGL_NO_CONTEXT);
 
     if (!eglMakeCurrent(glamor_ctx.display,
                         glamor_ctx.surface, glamor_ctx.surface,
@@ -433,7 +433,7 @@ alias NUM_PLANE_ATTRS = PlaneAttrs.NUM_PLANE_ATTRS;
 
     if (glamor_egl.fast_gbm_import) {
         image = eglCreateImageKHR(glamor_egl.display,
-                                  EGL_NO_CONTEXT,
+                                  externs.epoxydefs.EGL_NO_CONTEXT,
                                   EGL_NATIVE_PIXMAP_KHR, bo, null);
     }
 version (GBM_BO_FD_FOR_PLANE) {
@@ -466,7 +466,7 @@ enum string ADD_ATTR(string attrs, string num, string attr) = `
         }
         mixin(ADD_ATTR!(`img_attrs`, `attr_num`, `EGL_NONE`));
         image = eglCreateImageKHR(glamor_egl.display,
-                                  EGL_NO_CONTEXT,
+                                  externs.epoxydefs.EGL_NO_CONTEXT,
                                   EGL_LINUX_DMA_BUF_EXT,
                                   null,
                                   img_attrs);
@@ -1619,13 +1619,13 @@ void glamor_egl_pre_close_screen_cleanup(glamor_egl_priv_t* glamor_egl)
     }
 
     if (glamor_egl.display != EGL_NO_DISPLAY) {
-        if (glamor_egl.context != EGL_NO_CONTEXT) {
+        if (glamor_egl.context != externs.epoxydefs.EGL_NO_CONTEXT) {
             eglDestroyContext(glamor_egl.display, glamor_egl.context);
-            glamor_egl.context = EGL_NO_CONTEXT;
+            glamor_egl.context = externs.epoxydefs.EGL_NO_CONTEXT;
         }
 
         eglMakeCurrent(glamor_egl.display,
-                       EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+                       externs.epoxydefs.EGL_NO_SURFACE, externs.epoxydefs.EGL_NO_SURFACE, externs.epoxydefs.EGL_NO_CONTEXT);
         /*
          * Force the next glamor_make_current call to update the context
          * (on hot unplug another GPU may still be using glamor)
@@ -1690,13 +1690,13 @@ EGLContext glamor_egl_create_context(EGLDisplay display, const(EGLint)* config_a
 {
     EGLConfig* configs = null;
     EGLint num_configs = 0;
-    EGLContext ctx = EGL_NO_CONTEXT;
+    EGLContext ctx = externs.epoxydefs.EGL_NO_CONTEXT;
     /* Try creating a no-config context, maybe we can skip all the config stuff */
     /* if (epoxy_has_egl_extension(display, "EGL_KHR_no_config_context")) */
     for (int j = 0; j < num_attr_lists; j++) {
-        ctx = eglCreateContext(display, EGL_NO_CONFIG_KHR,
-                               EGL_NO_CONTEXT, ctx_attrib_lists[j]);
-        if (ctx != EGL_NO_CONTEXT) {
+        ctx = eglCreateContext(display, externs.epoxydefs.EGL_NO_CONFIG_KHR,
+                               externs.epoxydefs.EGL_NO_CONTEXT, ctx_attrib_lists[j]);
+        if (ctx != externs.epoxydefs.EGL_NO_CONTEXT) {
             return ctx;
         }
     }
@@ -1705,15 +1705,15 @@ EGLContext glamor_egl_create_context(EGLDisplay display, const(EGLint)* config_a
     for (int i = 0; i < num_configs; i++) {
         for (int j = 0; j < num_attr_lists; j++) {
             ctx = eglCreateContext(display, configs[i],
-                                   EGL_NO_CONTEXT, ctx_attrib_lists[j]);
-            if (ctx != EGL_NO_CONTEXT) {
+                                   externs.epoxydefs.EGL_NO_CONTEXT, ctx_attrib_lists[j]);
+            if (ctx != externs.epoxydefs.EGL_NO_CONTEXT) {
                 free(configs);
                 return ctx;
             }
         }
     }
     free(configs);
-    return EGL_NO_CONTEXT;
+    return externs.epoxydefs.EGL_NO_CONTEXT;
 }
 
 Bool glamor_egl_try_big_gl_api(glamor_egl_priv_t* glamor_egl)
@@ -1737,7 +1737,7 @@ Bool glamor_egl_try_big_gl_api(glamor_egl_priv_t* glamor_egl)
     static const(EGLint)[7] config_attrib_list = [
         EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
         EGL_CONFORMANT, EGL_OPENGL_BIT,
-        EGL_SURFACE_TYPE, EGL_DONT_CARE, /* EGL_STREAM_BIT_KHR */
+        EGL_SURFACE_TYPE, externs.epoxydefs.EGL_DONT_CARE, /* EGL_STREAM_BIT_KHR */
         EGL_NONE
     ];
 
@@ -1751,24 +1751,24 @@ Bool glamor_egl_try_big_gl_api(glamor_egl_priv_t* glamor_egl)
                                                     ctx_attrib_lists.ptr,
                                                     mixin(ARRAY_SIZE!("ctx_attrib_lists.ptr")));
 
-    if (glamor_egl.context == EGL_NO_CONTEXT) {
+    if (glamor_egl.context == externs.epoxydefs.EGL_NO_CONTEXT) {
         LogMessage(X_ERROR, "Failed to create GL context\n");
         return FALSE;
     }
 
     if (!eglMakeCurrent(glamor_egl.display,
-                        EGL_NO_SURFACE, EGL_NO_SURFACE, glamor_egl.context)) {
+                        externs.epoxydefs.EGL_NO_SURFACE, externs.epoxydefs.EGL_NO_SURFACE, glamor_egl.context)) {
         LogMessage(X_ERROR, "Failed to make GL context current\n");
 
         eglDestroyContext(glamor_egl.display, glamor_egl.context);
-        glamor_egl.context = EGL_NO_CONTEXT;
+        glamor_egl.context = externs.epoxydefs.EGL_NO_CONTEXT;
         return FALSE;
     }
     if (epoxy_gl_version() < 21) {
         LogMessage(X_INFO, "glamor: Ignoring GL < 2.1, falling back to GLES.\n");
 
         eglDestroyContext(glamor_egl.display, glamor_egl.context);
-        glamor_egl.context = EGL_NO_CONTEXT;
+        glamor_egl.context = externs.epoxydefs.EGL_NO_CONTEXT;
         return FALSE;
     }
 
@@ -1793,7 +1793,7 @@ Bool glamor_egl_try_gles_api(glamor_egl_priv_t* glamor_egl)
     static const(EGLint)[7] config_attrib_list = [
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
         EGL_CONFORMANT, EGL_OPENGL_ES2_BIT,
-        EGL_SURFACE_TYPE, EGL_DONT_CARE, /* EGL_STREAM_BIT_KHR */
+        EGL_SURFACE_TYPE, externs.epoxydefs.EGL_DONT_CARE, /* EGL_STREAM_BIT_KHR */
         EGL_NONE
     ];
 
@@ -1808,14 +1808,14 @@ Bool glamor_egl_try_gles_api(glamor_egl_priv_t* glamor_egl)
                                                     ctx_attrib_lists.ptr,
                                                     mixin(ARRAY_SIZE!("ctx_attrib_lists.ptr")));
 
-    if (glamor_egl.context == EGL_NO_CONTEXT) {
+    if (glamor_egl.context == externs.epoxydefs.EGL_NO_CONTEXT) {
         LogMessage(X_ERROR, "Failed to create GLES context\n");
         return FALSE;
     }
     if (!eglMakeCurrent(glamor_egl.display,
-                        EGL_NO_SURFACE, EGL_NO_SURFACE, glamor_egl.context)) {
+                        externs.epoxydefs.EGL_NO_SURFACE, externs.epoxydefs.EGL_NO_SURFACE, glamor_egl.context)) {
         eglDestroyContext(glamor_egl.display, glamor_egl.context);
-        glamor_egl.display = EGL_NO_CONTEXT;
+        glamor_egl.display = externs.epoxydefs.EGL_NO_CONTEXT;
         LogMessage(X_ERROR, "Failed to make GLES context current\n");
         return FALSE;
     }
@@ -1911,17 +1911,17 @@ enum string GLAMOR_EGL_TRY_PLATFORM_DEVICE(string strict) = `
      * relatively new (2022), which means that it will be missing on a lot of cards.
      */
     if (glamor_egl.fd < 0) {
-        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_SURFACELESS_MESA`, `EGL_DEFAULT_DISPLAY`, `FALSE`));
+        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_SURFACELESS_MESA`, `externs.epoxydefs.EGL_DEFAULT_DISPLAY`, `FALSE`));
 
         /**
          * From https://registry.khronos.org/EGL/extensions/KHR/EGL_KHR_platform_gbm.txt
          *
-         * If <native_display> is EGL_DEFAULT_DISPLAY,
+         * If <native_display> is externs.epoxydefs.EGL_DEFAULT_DISPLAY,
          * then the resultant EGLDisplay will be backed by some
          * implementation-chosen GBM device.
          */
-        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_GBM_KHR`, `EGL_DEFAULT_DISPLAY`, `FALSE`));
-        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_GBM_MESA`, `EGL_DEFAULT_DISPLAY`, `FALSE`));
+        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_GBM_KHR`, `externs.epoxydefs.EGL_DEFAULT_DISPLAY`, `FALSE`));
+        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_GBM_MESA`, `externs.epoxydefs.EGL_DEFAULT_DISPLAY`, `FALSE`));
 
         /**
          * According to https://registry.khronos.org/EGL/extensions/EXT/EGL_EXT_platform_device.txt :
@@ -1931,11 +1931,11 @@ enum string GLAMOR_EGL_TRY_PLATFORM_DEVICE(string strict) = `
          * define other valid values for <platform>.
          *
          * As far as I know, this is the relevant standard, and it has not been superceeded in this regard.
-         * However, some vendors do allow passing EGL_DEFAULT_DISPLAY as the <native_display> argument.
+         * However, some vendors do allow passing externs.epoxydefs.EGL_DEFAULT_DISPLAY as the <native_display> argument.
          * So, while this is incorrect according to the standard, it doesn't hurt, and it actually does
          * something with some vendors (notably intel from my testing).
          */
-        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_DEVICE_EXT`, `EGL_DEFAULT_DISPLAY`, `TRUE`));
+        mixin(GLAMOR_EGL_TRY_PLATFORM!(`EGL_PLATFORM_DEVICE_EXT`, `externs.epoxydefs.EGL_DEFAULT_DISPLAY`, `TRUE`));
     }
 
     free(devices);
@@ -2041,12 +2041,12 @@ enum string GLAMOR_CHECK_EGL_EXTENSION(string EXT) = `
             goto error;
     }
 
-    if (glamor_egl.context == EGL_NO_CONTEXT && !glamor_egl_conf.es_disallowed) {
+    if (glamor_egl.context == externs.epoxydefs.EGL_NO_CONTEXT && !glamor_egl_conf.es_disallowed) {
         if(!glamor_egl_try_gles_api(glamor_egl))
             goto error;
     }
 
-    if (glamor_egl.context == EGL_NO_CONTEXT) {
+    if (glamor_egl.context == externs.epoxydefs.EGL_NO_CONTEXT) {
         LogMessage(X_ERROR,
                    "glamor: Failed to create GL or GLES2 contexts\n");
         goto error;

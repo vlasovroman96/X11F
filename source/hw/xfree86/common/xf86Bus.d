@@ -112,7 +112,7 @@ struct  EntityRec{
     int numInstances;
     GDevPtr *devices;
 }
-alias EntityPtr = EntityRec;
+alias EntityPtr = EntityRec*;
 
 /* Entity data */
 EntityPtr* xf86Entities = null; /* Bus slots claimed by drivers */
@@ -367,9 +367,9 @@ BusType StringToBusType(const(char)* busID, const(char)** retID)
 int xf86AllocateEntity()
 {
     xf86NumEntities++;
-    xf86Entities = cast(EntityRec*)XNFreallocarray(xf86Entities,
+    xf86Entities = cast(EntityRec**)XNFreallocarray(xf86Entities,
                                    xf86NumEntities, EntityPtr.sizeof);
-    xf86Entities[xf86NumEntities - 1] = *(cast(EntityRec*)XNFcallocarray(1, EntityRec.sizeof));
+    xf86Entities[xf86NumEntities - 1] = cast(EntityRec*)XNFcallocarray(1, EntityRec.sizeof);
     xf86Entities[xf86NumEntities - 1].entityPrivates =
         cast(DevUnion*)XNFcallocarray(xf86EntityPrivateCount, DevUnion.sizeof);
     return xf86NumEntities - 1;
