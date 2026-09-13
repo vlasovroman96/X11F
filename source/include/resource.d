@@ -170,9 +170,9 @@ void SetResourceTypeFindSubResFunc(RESTYPE, FindTypeSubResources);
 version (OSX) {
 enum AddResource = Darwin_X_AddResource;
 }
-// int AddResource(XID id, RESTYPE type, void* value);
+// int AddResource(cast(uint)XID id, RESTYPE type, void* value);
 
-// void FreeResource(XID, RESTYPE);
+// void FreeResource(cast(uint)XID, RESTYPE);
 
 // void FreeResourceByType(XID, RESTYPE, Bool);
 
@@ -210,7 +210,7 @@ enum AddResource = Darwin_X_AddResource;
  *
  * This is mostly for resource types that don't have their own API yet
  * The XID is allocated within server's ID space and then can be used
- * for registering a resource with it (@see AddResource())
+ * for registering a resource with it (@see AddResource(cast(uint)))
  *
  * @obsoletes FakeClientID
  * @return XID the newly allocated XID

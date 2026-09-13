@@ -821,7 +821,7 @@ version (XSERVER_DTRACE) {
     client = dixClientIdForXID(id);
     rrec = &clientTable[client];
     if (!rrec.buckets) {
-        ErrorF("[dix] AddResource(%lx, %x, %lx), client=%d \n",
+        ErrorF("[dix] AddResource(cast(uint)%lx, %x, %lx), client=%d \n",
                cast(c_ulong) id, type, cast(c_ulong) value, client);
         FatalError("client not in use\n");
     }
@@ -1189,7 +1189,7 @@ int dixLookupResourceByType(void** result, XID id, RESTYPE rtype, ClientPtr clie
                 break;
     }
     if (client) {
-        client.errorValue = id;
+        client.errorValue = cast(uint)id;
     }
     if (!res)
         return resourceTypes[rtype & TypeMask].errorValue;
@@ -1222,7 +1222,7 @@ int dixLookupResourceByClass(void** result, XID id, RESTYPE rclass, ClientPtr cl
                 break;
     }
     if (client) {
-        client.errorValue = id;
+        client.errorValue = cast(uint)id;
     }
     if (!res)
         return BadValue;

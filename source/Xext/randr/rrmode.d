@@ -110,7 +110,7 @@ private RRModePtr RRModeCreate(xRRModeInfo* modeInfo, const(char)* name, ScreenP
     }
 
     mode.mode.id = cast(uint)dixAllocServerXID();
-    if (!AddResource(mode.mode.id, RRModeType, cast(void*) mode)) {
+    if (!AddResource(cast(uint)mode.mode.id, RRModeType, cast(void*) mode)) {
         free(newModes);
         return null;
     }
@@ -370,7 +370,7 @@ int ProcRRDestroyMode(ClientPtr client)
         return BadMatch;
     if (mode.refcnt > 1)
         return BadAccess;
-    FreeResource(stuff.mode, 0);
+    FreeResource(cast(uint)stuff.mode, 0);
     return Success;
 }
 

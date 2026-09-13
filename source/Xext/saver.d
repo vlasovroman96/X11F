@@ -273,7 +273,7 @@ private Bool setEventMask(ScreenPtr pScreen, ClientPtr client, c_ulong mask)
     }
 
     if (mask == 0) {
-        FreeResource(pEv.resource, SaverEventType);
+        FreeResource(cast(uint)pEv.resource, SaverEventType);
         *pPrev = pEv.next;
         free(pEv);
         CheckScreenPrivate(pScreen);
@@ -289,7 +289,7 @@ private Bool setEventMask(ScreenPtr pScreen, ClientPtr client, c_ulong mask)
             pEv.client = client;
             pEv.pScreen = pScreen;
             pEv.resource = FakeClientID(client.index);
-            if (!AddResource(pEv.resource, SaverEventType, cast(void*) pEv))
+            if (!AddResource(cast(uint)pEv.resource, SaverEventType, cast(void*) pEv))
                 return FALSE;
         }
         pEv.mask = cast(uint)mask;
@@ -487,7 +487,7 @@ private Bool CreateSaverWindow(ScreenPtr pScreen)
     pSaver = &pScreen.screensaver;
     if (pSaver.pWindow) {
         pSaver.pWindow = NullWindow;
-        FreeResource(pSaver.wid, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pSaver.wid, X11_RESTYPE_NONE);
         if (pPriv) {
             UninstallSaverColormap(pScreen);
             pPriv.hasWindow = FALSE;
@@ -508,13 +508,13 @@ private Bool CreateSaverWindow(ScreenPtr pScreen)
     pWin = dixCreateWindow(pSaver.wid, pScreen.root,
                         pAttr.x, pAttr.y, pAttr.width, pAttr.height,
                         pAttr.borderWidth, pAttr.class_,
-                        pAttr.mask, cast(XID*) pAttr.values,
+                        cast(uint)pAttr.mask, cast(XID*) pAttr.values,
                         pAttr.depth, serverClient, pAttr.visual, &result);
     if (!pWin) {
         return FALSE;
     }
 
-    if (!AddResource(pWin.drawable.id, X11_RESTYPE_WINDOW, pWin)) {
+    if (!AddResource(cast(uint)pWin.drawable.id, X11_RESTYPE_WINDOW, pWin)) {
         return FALSE;
     }
 
@@ -533,7 +533,7 @@ private Bool CreateSaverWindow(ScreenPtr pScreen)
     }
     if (pAttr.pCursor) {
         if (!MakeWindowOptional(pWin)) {
-            FreeResource(pWin.drawable.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pWin.drawable.id, X11_RESTYPE_NONE);
             return FALSE;
         }
         CursorPtr cursor = RefCursor(pAttr.pCursor);
@@ -588,7 +588,7 @@ private Bool DestroySaverWindow(ScreenPtr pScreen)
     pSaver = &pScreen.screensaver;
     if (pSaver.pWindow) {
         pSaver.pWindow = NullWindow;
-        FreeResource(pSaver.wid, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pSaver.wid, X11_RESTYPE_NONE);
     }
     pPriv.hasWindow = FALSE;
     CheckScreenPrivate(pScreen);
@@ -758,7 +758,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
         return BadLength;
     }
     if (!stuff.width || !stuff.height) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     switch (class_ = stuff.c_class) {
@@ -767,7 +767,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
     case InputOutput:
         break;
     default:
-        client.errorValue = class_;
+        client.errorValue = cast(uint)class_;
         return BadValue;
     }
     depth = stuff.depth;
@@ -780,7 +780,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
     }
 
     if ((class_ != InputOutput) && (class_ != InputOnly)) {
-        client.errorValue = class_;
+        client.errorValue = cast(uint)class_;
         return BadValue;
     }
 
@@ -867,7 +867,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
     pAttr.borderWidth = stuff.borderWidth;
     pAttr.class_ = stuff.c_class;
     pAttr.depth = cast(ubyte)depth;
-    pAttr.visual = visual;
+    pAttr.visual = cast(uint)visual;
     pAttr.colormap = None;
     pAttr.pCursor = NullCursor;
     pAttr.pBackgroundPixmap = NullPixmap;
@@ -912,7 +912,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
                     pAttr.mask &= ~CWBackPixmap;
                 }
                 else {
-                    client.errorValue = pixID;
+                    client.errorValue = cast(uint)pixID;
                     goto PatchUp;
                 }
             }
@@ -947,7 +947,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
                     pAttr.mask &= ~CWBorderPixmap;
                 }
                 else {
-                    client.errorValue = pixID;
+                    client.errorValue = cast(uint)pixID;
                     goto PatchUp;
                 }
             }
@@ -961,7 +961,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
             c_ulong val = cast(CARD8) *pVlist;
             if (val > StaticGravity) {
                 ret = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)cast(uint)val;
                 goto PatchUp;
             }
             *values++ = val;
@@ -972,7 +972,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
             c_ulong val = cast(CARD8) *pVlist;
             if (val > StaticGravity) {
                 ret = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)cast(uint)val;
                 goto PatchUp;
             }
             *values++ = val;
@@ -983,7 +983,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
             c_ulong val = cast(CARD8) *pVlist;
             if ((val != NotUseful) && (val != WhenMapped) && (val != Always)) {
                 ret = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)cast(uint)val;
                 goto PatchUp;
             }
             *values++ = val;
@@ -1000,7 +1000,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
             c_ulong val = cast(BOOL) *pVlist;
             if ((val != xTrue) && (val != xFalse)) {
                 ret = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)cast(uint)val;
                 goto PatchUp;
             }
             *values++ = val;
@@ -1019,7 +1019,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
                 c_ulong val = cast(BOOL) *pVlist;
                 if ((val != xTrue) && (val != xFalse)) {
                     ret = BadValue;
-                    client.errorValue = val;
+                    client.errorValue = cast(uint)cast(uint)val;
                     goto PatchUp;
                 }
             }
@@ -1032,7 +1032,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
             ret = dixLookupResourceByType(cast(void**) &pCmap, cmap, X11_RESTYPE_COLORMAP,
                                           client, DixUseAccess);
             if (ret != Success) {
-                client.errorValue = cmap;
+                client.errorValue = cast(uint)cmap;
                 goto PatchUp;
             }
             if (pCmap.pVisual.vid != visual || pCmap.pScreen != pScreen) {
@@ -1054,7 +1054,7 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
                 ret = dixLookupResourceByType(cast(void**) &pCursor, cursorID,
                                               X11_RESTYPE_CURSOR, client, DixUseAccess);
                 if (ret != Success) {
-                    client.errorValue = cursorID;
+                    client.errorValue = cast(uint)cursorID;
                     goto PatchUp;
                 }
                 pAttr.pCursor = RefCursor(pCursor);
@@ -1064,17 +1064,17 @@ private int ScreenSaverSetAttributes(ClientPtr client, xScreenSaverSetAttributes
         }
         default:
             ret = BadValue;
-            client.errorValue = stuff.mask;
+            client.errorValue = cast(uint)stuff.mask;
             goto PatchUp;
         }
         pVlist++;
     }
     if (pPriv.attr) {
-        FreeResource(pPriv.attr.resource, AttrType);
+        FreeResource(cast(uint)pPriv.attr.resource, AttrType);
     }
     pPriv.attr = pAttr;
     pAttr.resource = FakeClientID(client.index);
-    if (!AddResource(pAttr.resource, AttrType, cast(void*) pAttr)) {
+    if (!AddResource(cast(uint)pAttr.resource, AttrType, cast(void*) pAttr)) {
         return BadAlloc;
     }
     return Success;
@@ -1098,7 +1098,7 @@ private int ScreenSaverUnsetAttributes(ClientPtr client, Drawable drawable)
 
     ScreenSaverScreenPrivatePtr pPriv = mixin(GetScreenPrivate!(`pDraw.pScreen`));
     if (pPriv && pPriv.attr && pPriv.attr.client == client) {
-        FreeResource(pPriv.attr.resource, AttrType);
+        FreeResource(cast(uint)pPriv.attr.resource, AttrType);
         FreeScreenAttr(pPriv.attr);
         pPriv.attr = null;
         CheckScreenPrivate(pDraw.pScreen);
@@ -1254,7 +1254,7 @@ private int ProcScreenSaverSuspend(ClientPtr client)
         if (suspend == TRUE) {
             this_.count++;
         } else if (--this_.count == 0) {
-            FreeResource(this_.clientResource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)this_.clientResource, X11_RESTYPE_NONE);
         }
         return Success;
     }
@@ -1281,7 +1281,7 @@ private int ProcScreenSaverSuspend(ClientPtr client)
     this_.count = 1;
     this_.clientResource = FakeClientID(client.index);
 
-    if (!AddResource(this_.clientResource, SuspendType, cast(void*) this_)) {
+    if (!AddResource(cast(uint)this_.clientResource, SuspendType, cast(void*) this_)) {
         free(this_);
         return BadAlloc;
     }

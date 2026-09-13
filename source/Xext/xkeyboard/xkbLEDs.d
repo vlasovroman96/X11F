@@ -646,7 +646,7 @@ XkbSrvLedInfoPtr XkbAllocSrvLedInfo(DeviceIntPtr dev, KbdFeedbackPtr kf, LedFeed
     else
         return null;
     if ((sli.names is null) && (needed_parts & XkbXI_IndicatorNamesMask))
-        sli.names = cast(ulong*)calloc(XkbNumIndicators, Atom.sizeof);
+        sli.names = cast(uint*)calloc(XkbNumIndicators, Atom.sizeof);
     if ((sli.maps is null) && (needed_parts & XkbXI_IndicatorMapsMask))
         sli.maps = cast(_XkbIndicatorMapRec*)calloc(XkbNumIndicators, XkbIndicatorMapRec.sizeof);
     if (checkNames) {
@@ -701,7 +701,7 @@ XkbSrvLedInfoPtr XkbCopySrvLedInfo(DeviceIntPtr from, XkbSrvLedInfoPtr src, KbdF
         sli_new.fb.lf = lf;
 
     if (!(sli_new.flags & XkbSLI_IsDefault)) {
-        sli_new.names = cast(ulong*)calloc(XkbNumIndicators, Atom.sizeof);
+        sli_new.names = cast(uint*)calloc(XkbNumIndicators, Atom.sizeof);
         sli_new.maps = cast(_XkbIndicatorMapRec*)calloc(XkbNumIndicators, XkbIndicatorMapRec.sizeof);
     }                           /* else sli_new->names/maps is pointing to
                                    dev->key->xkbInfo->desc->names->indicators;
@@ -774,7 +774,7 @@ XkbSrvLedInfoPtr XkbFindSrvLedInfo(DeviceIntPtr dev, uint class_, uint id, uint 
     }
     if (sli) {
         if ((sli.names is null) && (needed_parts & XkbXI_IndicatorNamesMask))
-            sli.names = cast(ulong*)calloc(XkbNumIndicators, Atom.sizeof);
+            sli.names = cast(uint*)calloc(XkbNumIndicators, Atom.sizeof);
         if ((sli.maps is null) && (needed_parts & XkbXI_IndicatorMapsMask))
             sli.maps = cast(_XkbIndicatorMapRec*)calloc(XkbNumIndicators, XkbIndicatorMapRec.sizeof);
     }

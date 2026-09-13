@@ -66,12 +66,12 @@ int ProcXISetClientPointer(ClientPtr client)
 
     rc = dixLookupDevice(&pDev, stuff.deviceid, client, DixManageAccess);
     if (rc != Success) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return rc;
     }
 
     if (!InputDevIsMaster(pDev)) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return BadDevice;
     }
 
@@ -90,7 +90,7 @@ int ProcXISetClientPointer(ClientPtr client)
 
     rc = SetClientPointer(targetClient, pDev);
     if (rc != Success) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return rc;
     }
 

@@ -102,7 +102,7 @@ struct __GLXDRIdrawable {
 /* white lie */
 glx_func_ptr glXGetProcAddressARB(const(char)*);
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;
@@ -253,6 +253,8 @@ private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLX
 
     return &context.base;
 }
+// alias XID = externs.X11.X.XID;
+alias XID = externs.X11.X.XID;
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXdrawable* __glXDRIscreenCreateDrawable(ClientPtr client, __GLXscreen* screen, DrawablePtr pDraw, XID drawId, int type, XID glxDrawId, __GLXconfig* glxConfig)

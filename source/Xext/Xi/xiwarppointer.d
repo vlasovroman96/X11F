@@ -89,20 +89,20 @@ int ProcXIWarpPointer(ClientPtr client)
     rc = dixLookupDevice(&pDev, stuff.deviceid, client, DixWriteAccess);
 
     if (rc != Success) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return rc;
     }
 
     if ((!InputDevIsMaster(pDev) && !InputDevIsFloating(pDev)) ||
         (InputDevIsMaster(pDev) && !IsPointerDevice(pDev))) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return BadDevice;
     }
 
     if (stuff.dst_win != None) {
         rc = dixLookupWindow(&dest, stuff.dst_win, client, DixGetAttrAccess);
         if (rc != Success) {
-            client.errorValue = stuff.dst_win;
+            client.errorValue = cast(uint)stuff.dst_win;
             return rc;
         }
     }
@@ -122,7 +122,7 @@ int ProcXIWarpPointer(ClientPtr client)
 
         rc = dixLookupWindow(&src, stuff.src_win, client, DixGetAttrAccess);
         if (rc != Success) {
-            client.errorValue = stuff.src_win;
+            client.errorValue = cast(uint)stuff.src_win;
             return rc;
         }
 

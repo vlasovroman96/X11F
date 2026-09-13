@@ -107,7 +107,7 @@ private ms_dri2_resource* ms_get_resource(XID id, RESTYPE type)
     if (resource is null)
         return null;
 
-    if (!AddResource(id, type, resource))
+    if (!AddResource(cast(uint)id, type, resource))
         return null;
 
     resource.id = id;

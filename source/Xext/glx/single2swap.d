@@ -72,7 +72,7 @@ int __glXDispSwap_FeedbackBuffer(__GLXclientState* cl, GLbyte* pc)
         cx.feedbackBuf = cast(float*)reallocarray(cx.feedbackBuf,
                                        cast(size_t) size, __GLX_SIZE_FLOAT32);
         if (!cx.feedbackBuf) {
-            cl.client.errorValue = size;
+            cl.client.errorValue = cast(uint)size;
             return BadAlloc;
         }
         cx.feedbackBufSize = size;
@@ -103,7 +103,7 @@ int __glXDispSwap_SelectBuffer(__GLXclientState* cl, GLbyte* pc)
         cx.selectBuf = cast(uint*)reallocarray(cx.selectBuf,
                                      cast(size_t) size, __GLX_SIZE_CARD32);
         if (!cx.selectBuf) {
-            cl.client.errorValue = size;
+            cl.client.errorValue = cast(uint)size;
             return BadAlloc;
         }
         cx.selectBufSize = size;

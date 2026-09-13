@@ -398,7 +398,7 @@ private Bool KdXVInitAdaptors(ScreenPtr pScreen, KdVideoAdaptorPtr infoPtr, int 
             if (((portPriv = cast(XvPortRecPrivate*) calloc(1, XvPortRecPrivate.sizeof)) is null))
                 continue;
 
-            if (!AddResource(pp.id, PortResource, pp)) {
+            if (!AddResource(cast(uint)pp.id, PortResource, pp)) {
                 free(portPriv);
                 continue;
             }

@@ -423,7 +423,7 @@ static if(GLYPHPADBYTES == 8)
             }
         });
     }
-    if (!AddResource(c.fontid, X11_RESTYPE_FONT, cast(void*) pfont)) {
+    if (!AddResource(cast(uint)c.fontid, X11_RESTYPE_FONT, cast(void*) pfont)) {
         err = AllocError;
         goto bail;
     }
@@ -472,7 +472,7 @@ int OpenFont(ClientPtr client, XID fid, Mask flags, uint lenfname, const(char)* 
 
         cached = assumeNoGC(&xfont2_find_cached_font_pattern)(patternCache, pfontname, lenfname);
         if (cached && cached.info.cachable) {
-            if (!AddResource(fid, X11_RESTYPE_FONT, cast(void*) cached))
+            if (!AddResource(cast(uint)fid, X11_RESTYPE_FONT, cast(void*) cached))
                 return BadAlloc;
             cached.refcnt++;
             return Success;
@@ -1745,7 +1745,7 @@ int SetFontPath(ClientPtr client, int npaths, ubyte* paths)
 
         err = SetFontPathElements(npaths, paths, &bad, FALSE);
         if (err != Success)
-            client.errorValue = bad;
+            client.errorValue = cast(uint)bad;
     }
     return err;
 }
@@ -1918,12 +1918,12 @@ private Font get_new_font_client_id()
 
 private int store_font_Client_font(FontPtr pfont, Font id)
 {
-    return AddResource(id, X11_RESTYPE_NONE, cast(void*) pfont);
+    return AddResource(cast(uint)id, X11_RESTYPE_NONE, cast(void*) pfont);
 }
 
 private void delete_font_client_id(Font id)
 {
-    FreeResource(id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)id, X11_RESTYPE_NONE);
 }
 
 private int _client_auth_generation(ClientPtr client)

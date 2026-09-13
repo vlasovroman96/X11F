@@ -342,7 +342,7 @@ private Mask* DeleteDetailFromMask(Mask* pDetailMask, uint detail)
                 mask[i] = pDetailMask[i];
         else
             for (int i = 0; i < MasksPerDetailMask; i++)
-                mask[i] = ~0L;
+                mask[i] = cast(uint)~0L;
         mixin(BITCLEAR!(`mask`, `detail`));
     }
     return mask;
@@ -544,7 +544,7 @@ int AddPassiveGrabToList(ClientPtr client, GrabPtr pGrab)
 
     pGrab.next = pGrab.window.optional.passiveGrabs;
     pGrab.window.optional.passiveGrabs = pGrab;
-    if (AddResource(pGrab.resource, X11_RESTYPE_PASSIVEGRAB, cast(void*) pGrab))
+    if (AddResource(cast(uint)pGrab.resource, X11_RESTYPE_PASSIVEGRAB, cast(void*) pGrab))
         return Success;
     return BadAlloc;
 }
@@ -575,8 +575,8 @@ enum string UPDATE(string mask,string exact) = `
         return TRUE;
     deletes = cast(_GrabRec**)calloc(i, GrabPtr.sizeof);
     adds = cast(_GrabRec**)calloc(i, GrabPtr.sizeof);
-    updates = cast(ulong***)calloc(i, (Mask**).sizeof);
-    details = cast(ulong**)calloc(i, (Mask*).sizeof);
+    updates = cast(uint***)calloc(i, (Mask**).sizeof);
+    details = cast(uint**)calloc(i, (Mask*).sizeof);
     if (!deletes || !adds || !updates || !details) {
         free(details);
         free(updates);
@@ -638,7 +638,7 @@ enum string UPDATE(string mask,string exact) = `
                 FreeGrab(pNewGrab);
                 ok = FALSE;
             }
-            else if (!AddResource(pNewGrab.resource, X11_RESTYPE_PASSIVEGRAB,
+            else if (!AddResource(cast(uint)pNewGrab.resource, X11_RESTYPE_PASSIVEGRAB,
                                   cast(void*) pNewGrab))
                 ok = FALSE;
             else
@@ -655,13 +655,13 @@ enum string UPDATE(string mask,string exact) = `
 
     if (!ok) {
         for (int j = 0; j < nadds; j++)
-            FreeResource(adds[j].resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)adds[j].resource, X11_RESTYPE_NONE);
         for (int j = 0; j < nups; j++)
             free(details[j]);
     }
     else {
         for (int j = 0; j < ndels; j++)
-            FreeResource(deletes[j].resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)deletes[j].resource, X11_RESTYPE_NONE);
         for (int j = 0; j < nadds; j++) {
             GrabPtr grab = adds[j];
             grab.next = grab.window.optional.passiveGrabs;

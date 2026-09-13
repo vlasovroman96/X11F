@@ -241,7 +241,7 @@ private int remove_master(ClientPtr client, xXIRemoveMasterInfo* r, int* flags)
         goto unwind;
 
     if (!InputDevIsMaster(dev)) {
-        client.errorValue = r.deviceid;
+        client.errorValue = cast(uint)r.deviceid;
         rc = BadDevice;
         goto unwind;
     }
@@ -290,7 +290,7 @@ private int remove_master(ClientPtr client, xXIRemoveMasterInfo* r, int* flags)
             goto unwind;
 
         if (!InputDevIsMaster(newptr) || !IsPointerDevice(newptr)) {
-            client.errorValue = r.return_pointer;
+            client.errorValue = cast(uint)r.return_pointer;
             rc = BadDevice;
             goto unwind;
         }
@@ -301,7 +301,7 @@ private int remove_master(ClientPtr client, xXIRemoveMasterInfo* r, int* flags)
             goto unwind;
 
         if (!InputDevIsMaster(newkeybd) || !IsKeyboardDevice(newkeybd)) {
-            client.errorValue = r.return_keyboard;
+            client.errorValue = cast(uint)r.return_keyboard;
             rc = BadDevice;
             goto unwind;
         }
@@ -358,14 +358,14 @@ private int detach_slave(ClientPtr client, xXIDetachSlaveInfo* c, int* flags)
         goto unwind;
 
     if (InputDevIsMaster(dev)) {
-        client.errorValue = c.deviceid;
+        client.errorValue = cast(uint)c.deviceid;
         rc = BadDevice;
         goto unwind;
     }
 
     /* Don't allow changes to XTest Devices, these are fixed */
     if (IsXTestDevice(dev, null)) {
-        client.errorValue = c.deviceid;
+        client.errorValue = cast(uint)c.deviceid;
         rc = BadDevice;
         goto unwind;
     }
@@ -389,14 +389,14 @@ private int attach_slave(ClientPtr client, xXIAttachSlaveInfo* c, int* flags)
         goto unwind;
 
     if (InputDevIsMaster(dev)) {
-        client.errorValue = c.deviceid;
+        client.errorValue = cast(uint)c.deviceid;
         rc = BadDevice;
         goto unwind;
     }
 
     /* Don't allow changes to XTest Devices, these are fixed */
     if (IsXTestDevice(dev, null)) {
-        client.errorValue = c.deviceid;
+        client.errorValue = cast(uint)c.deviceid;
         rc = BadDevice;
         goto unwind;
     }
@@ -405,7 +405,7 @@ private int attach_slave(ClientPtr client, xXIAttachSlaveInfo* c, int* flags)
     if (rc != Success)
         goto unwind;
     if (!InputDevIsMaster(newmaster)) {
-        client.errorValue = c.new_master;
+        client.errorValue = cast(uint)c.new_master;
         rc = BadDevice;
         goto unwind;
     }

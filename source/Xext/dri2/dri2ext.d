@@ -74,7 +74,7 @@ private Bool validDrawable(ClientPtr client, XID drawable, Mask access_mode, Dra
                                 M_DRAWABLE_WINDOW | M_DRAWABLE_PIXMAP,
                                 access_mode);
     if (*status != Success) {
-        client.errorValue = drawable;
+        client.errorValue = cast(uint)drawable;
         return FALSE;
     }
 

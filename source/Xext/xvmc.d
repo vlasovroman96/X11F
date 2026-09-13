@@ -246,7 +246,7 @@ private int ProcXvMCCreateContext(ClientPtr client)
         free(pContext);
         return result;
     }
-    if (!AddResource(pContext.context_id, XvMCRTContext, pContext)) {
+    if (!AddResource(cast(uint)pContext.context_id, XvMCRTContext, pContext)) {
         free(data);
         return BadAlloc;
     }
@@ -280,7 +280,7 @@ private int ProcXvMCDestroyContext(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.context_id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.context_id, X11_RESTYPE_NONE);
 
     return Success;
 }
@@ -321,7 +321,7 @@ private int ProcXvMCCreateSurface(ClientPtr client)
         free(pSurface);
         return result;
     }
-    if (!AddResource(pSurface.surface_id, XvMCRTSurface, pSurface)) {
+    if (!AddResource(cast(uint)pSurface.surface_id, XvMCRTSurface, pSurface)) {
         free(data);
         return BadAlloc;
     }
@@ -349,7 +349,7 @@ private int ProcXvMCDestroySurface(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.surface_id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.surface_id, X11_RESTYPE_NONE);
 
     return Success;
 }
@@ -435,7 +435,7 @@ private int ProcXvMCCreateSubpicture(ClientPtr client)
         free(pSubpicture);
         return result;
     }
-    if (!AddResource(pSubpicture.subpicture_id, XvMCRTSubpicture, pSubpicture)) {
+    if (!AddResource(cast(uint)pSubpicture.subpicture_id, XvMCRTSubpicture, pSubpicture)) {
         free(data);
         return BadAlloc;
     }
@@ -476,7 +476,7 @@ private int ProcXvMCDestroySubpicture(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.subpicture_id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.subpicture_id, X11_RESTYPE_NONE);
 
     return Success;
 }

@@ -92,7 +92,7 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
     else {
         ret = dixLookupDevice(&dev, stuff.deviceid, client, DixGrabAccess);
         if (ret != Success) {
-            client.errorValue = stuff.deviceid;
+            client.errorValue = cast(uint)stuff.deviceid;
             return ret;
         }
     }
@@ -104,7 +104,7 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
         stuff.grab_type != XIGrabtypeTouchBegin &&
         stuff.grab_type != XIGrabtypeGesturePinchBegin &&
         stuff.grab_type != XIGrabtypeGestureSwipeBegin) {
-        client.errorValue = stuff.grab_type;
+        client.errorValue = cast(uint)stuff.grab_type;
         return BadValue;
     }
 
@@ -113,14 +113,14 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
          stuff.grab_type == XIGrabtypeTouchBegin ||
          stuff.grab_type == XIGrabtypeGesturePinchBegin ||
          stuff.grab_type == XIGrabtypeGestureSwipeBegin) && stuff.detail != 0) {
-        client.errorValue = stuff.detail;
+        client.errorValue = cast(uint)stuff.detail;
         return BadValue;
     }
 
     if (stuff.grab_type == XIGrabtypeTouchBegin &&
         (stuff.grab_mode != XIGrabModeTouch ||
          stuff.paired_device_mode != GrabModeAsync)) {
-        client.errorValue = stuff.grab_mode;
+        client.errorValue = cast(uint)stuff.grab_mode;
         return BadValue;
     }
 
@@ -157,7 +157,7 @@ int ProcXIPassiveGrabDevice(ClientPtr client)
         ret = dixLookupResourceByType(&tmp, stuff.cursor,
                                       X11_RESTYPE_CURSOR, client, DixUseAccess);
         if (ret != Success) {
-            client.errorValue = stuff.cursor;
+            client.errorValue = cast(uint)stuff.cursor;
             goto out_;
         }
     }
@@ -276,20 +276,20 @@ int ProcXIPassiveUngrabDevice(ClientPtr client)
         stuff.grab_type != XIGrabtypeTouchBegin &&
         stuff.grab_type != XIGrabtypeGesturePinchBegin &&
         stuff.grab_type != XIGrabtypeGestureSwipeBegin) {
-        client.errorValue = stuff.grab_type;
+        client.errorValue = cast(uint)stuff.grab_type;
         return BadValue;
     }
 
     if ((stuff.grab_type == XIGrabtypeEnter ||
          stuff.grab_type == XIGrabtypeFocusIn ||
          stuff.grab_type == XIGrabtypeTouchBegin) && stuff.detail != 0) {
-        client.errorValue = stuff.detail;
+        client.errorValue = cast(uint)stuff.detail;
         return BadValue;
     }
 
     /* We don't allow passive grabs for details > 255 anyway */
     if (stuff.detail > 255) {
-        client.errorValue = stuff.detail;
+        client.errorValue = cast(uint)stuff.detail;
         return BadValue;
     }
 

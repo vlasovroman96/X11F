@@ -113,7 +113,7 @@ private Bool RRMonitorSetFromServer(RRCrtcPtr crtc, RRMonitorPtr monitor)
     monitor.name = RRMonitorCrtcName(crtc);
     monitor.pScreen = crtc.pScreen;
     monitor.numOutputs = crtc.numOutputs;
-    monitor.outputs = cast(ulong*)calloc(crtc.numOutputs, RROutput.sizeof);
+    monitor.outputs = cast(uint*)calloc(crtc.numOutputs, RROutput.sizeof);
     if (!monitor.outputs)
         return FALSE;
     for (o = 0; o < crtc.numOutputs; o++)
@@ -188,7 +188,7 @@ private Bool RRMonitorSetFromClient(RRMonitorPtr client_monitor, RRMonitorPtr mo
     monitor.name = client_monitor.name;
     monitor.pScreen = client_monitor.pScreen;
     monitor.numOutputs = client_monitor.numOutputs;
-    monitor.outputs = cast(ulong*)calloc(client_monitor.numOutputs, RROutput.sizeof);
+    monitor.outputs = cast(uint*)calloc(client_monitor.numOutputs, RROutput.sizeof);
     if (!monitor.outputs && client_monitor.numOutputs)
         return FALSE;
     memcpy(monitor.outputs, client_monitor.outputs, client_monitor.numOutputs * RROutput.sizeof);
@@ -435,7 +435,7 @@ private int RRMonitorDelete(ClientPtr client, ScreenPtr screen, Atom name)
     int m = void;
 
     if (!pScrPriv) {
-        client.errorValue = name;
+        client.errorValue = cast(uint)name;
         return BadAtom;
     }
 
@@ -450,7 +450,7 @@ private int RRMonitorDelete(ClientPtr client, ScreenPtr screen, Atom name)
         }
     }
 
-    client.errorValue = name;
+    client.errorValue = cast(uint)name;
     return BadValue;
 }
 
@@ -485,7 +485,7 @@ int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
      */
 
     if (RRMonitorMatchesOutputName(screen, monitor.name)) {
-        client.errorValue = monitor.name;
+        client.errorValue = cast(uint)monitor.name;
         return BadValue;
     }
 
@@ -494,7 +494,7 @@ int RRMonitorAdd(ClientPtr client, ScreenPtr screen, RRMonitorPtr monitor)
             continue;
 
         if (RRMonitorMatchesOutputName(secondary, monitor.name)) {
-            client.errorValue = monitor.name;
+            client.errorValue = cast(uint)monitor.name;
             return BadValue;
         }
     }));
@@ -736,7 +736,7 @@ int ProcRRDeleteMonitor(ClientPtr client)
     screen = window.drawable.pScreen;
 
     if (!ValidAtom(stuff.name)) {
-        client.errorValue = stuff.name;
+        client.errorValue = cast(uint)stuff.name;
         return BadAtom;
     }
 

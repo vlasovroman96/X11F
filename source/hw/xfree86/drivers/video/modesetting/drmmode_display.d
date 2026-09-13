@@ -2083,7 +2083,7 @@ private void drmmode_paint_cursor(gbm_bo* cursor_bo, int cursor_pitch, int curso
     int width_todo = void;
     int height_todo = void;
 
-    CARD32* cursor = cast(ulong*)gbm_bo_get_map(cursor_bo);
+    CARD32* cursor = cast(uint*)gbm_bo_get_map(cursor_bo);
 
     /* Clamp to the source image bounds to avoid pointer UB and OOB reads. */
     src_x = mixin(MAX!(MIN!(`src_x`, `(image_width - 1)`), `0`));
@@ -3552,7 +3552,7 @@ private void drmmode_output_create_resources(xf86OutputPtr output)
             INT32 value = cast(int)p.value;
 
             p.num_atoms = 1;
-            p.atoms = cast(ulong*)calloc(p.num_atoms, Atom.sizeof);
+            p.atoms = cast(uint*)calloc(p.num_atoms, Atom.sizeof);
             if (!p.atoms)
                 continue;
             p.atoms[0] = dixAddAtom(drmmode_prop.name.ptr);
@@ -3577,7 +3577,7 @@ private void drmmode_output_create_resources(xf86OutputPtr output)
         }
         else if (drmmode_prop.flags & DRM_MODE_PROP_ENUM) {
             p.num_atoms = drmmode_prop.count_enums + 1;
-            p.atoms = cast(ulong*)calloc(p.num_atoms, Atom.sizeof);
+            p.atoms = cast(uint*)calloc(p.num_atoms, Atom.sizeof);
             if (!p.atoms)
                 continue;
             p.atoms[0] = dixAddAtom(drmmode_prop.name.ptr);

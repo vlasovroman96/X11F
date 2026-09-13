@@ -210,7 +210,7 @@ int compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
     }
     ccw.next = cw.clients;
     cw.clients = ccw;
-    if (!AddResource(ccw.id, CompositeClientWindowType, pWin))
+    if (!AddResource(cast(uint)ccw.id, CompositeClientWindowType, pWin))
         return BadAlloc;
     if (ccw.update == CompositeRedirectManual) {
         if (!anyMarked)
@@ -228,7 +228,7 @@ int compRedirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
     }
 
     if (!compCheckRedirect(pWin)) {
-        FreeResource(ccw.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)ccw.id, X11_RESTYPE_NONE);
         status = BadAlloc;
     }
 
@@ -338,7 +338,7 @@ int compUnredirectWindow(ClientPtr pClient, WindowPtr pWin, int update)
 
     for (CompClientWindowPtr ccw = cw.clients; ccw; ccw = ccw.next)
         if (ccw.update == update && dixClientIdForXID(ccw.id) == pClient.index) {
-            FreeResource(ccw.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)ccw.id, X11_RESTYPE_NONE);
             return Success;
         }
     return BadValue;
@@ -404,7 +404,7 @@ int compRedirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
      */
     ccw.next = csw.clients;
     csw.clients = ccw;
-    if (!AddResource(ccw.id, CompositeClientSubwindowsType, pWin))
+    if (!AddResource(cast(uint)ccw.id, CompositeClientSubwindowsType, pWin))
         return BadAlloc;
     if (ccw.update == CompositeRedirectManual) {
         csw.update = CompositeRedirectManual;
@@ -480,7 +480,7 @@ int compUnredirectSubwindows(ClientPtr pClient, WindowPtr pWin, int update)
         return BadValue;
     for (CompClientWindowPtr ccw = csw.clients; ccw; ccw = ccw.next)
         if (ccw.update == update && dixClientIdForXID(ccw.id) == pClient.index) {
-            FreeResource(ccw.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)ccw.id, X11_RESTYPE_NONE);
             return Success;
         }
     return BadValue;

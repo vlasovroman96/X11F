@@ -104,7 +104,7 @@ int dixLookupProperty(PropertyPtr* result, WindowPtr pWin, Atom propertyName, Cl
     PropertyPtr pProp = void;
     int rc = BadMatch;
 
-    client.errorValue = propertyName;
+    client.errorValue = cast(uint)propertyName;
 
     for (pProp = pWin.properties; pProp; pProp = pProp.next)
         if (pProp.propertyName == propertyName)
@@ -220,7 +220,7 @@ int ProcRotateProperties(ClientPtr client)
     for (int i = 0; i < p.nAtoms; i++) {
         if (!ValidAtom(p.atoms[i])) {
             rc = BadAtom;
-            client.errorValue = p.atoms[i];
+            client.errorValue = cast(uint)p.atoms[i];
             goto out_;
         }
         for (int j = i + 1; j < p.nAtoms; j++)
@@ -296,11 +296,11 @@ int ProcChangeProperty(ClientPtr client)
     mode = stuff.mode;
     if ((mode != PropModeReplace) && (mode != PropModeAppend) &&
         (mode != PropModePrepend)) {
-        client.errorValue = mode;
+        client.errorValue = cast(uint)mode;
         return BadValue;
     }
     if ((format != 8) && (format != 16) && (format != 32)) {
-        client.errorValue = format;
+        client.errorValue = cast(uint)format;
         return BadValue;
     }
     len = stuff.nUnits;
@@ -311,11 +311,11 @@ int ProcChangeProperty(ClientPtr client)
     mixin(REQUEST_FIXED_SIZE!("xChangePropertyReq", "totalSize"));
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
     if (!ValidAtom(stuff.type)) {
-        client.errorValue = stuff.type;
+        client.errorValue = cast(uint)stuff.type;
         return BadAtom;
     }
 
@@ -537,15 +537,15 @@ int ProcGetProperty(ClientPtr client)
     Mask win_mode = DixGetPropAccess, prop_mode = DixReadAccess;
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
     if ((stuff.delete_ != xTrue) && (stuff.delete_ != xFalse)) {
-        client.errorValue = stuff.delete_;
+        client.errorValue = cast(uint)stuff.delete_;
         return BadValue;
     }
     if ((stuff.type != AnyPropertyType) && !ValidAtom(stuff.type)) {
-        client.errorValue = stuff.type;
+        client.errorValue = cast(uint)stuff.type;
         return BadAtom;
     }
 
@@ -609,7 +609,7 @@ int ProcGetProperty(ClientPtr client)
        be negative, it's a value error. */
 
     if (n < ind) {
-        client.errorValue = p.longOffset;
+        client.errorValue = cast(uint)p.longOffset;
         return BadValue;
     }
 
@@ -723,7 +723,7 @@ int ProcDeleteProperty(ClientPtr client)
 
     UpdateCurrentTime();
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
 

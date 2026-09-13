@@ -170,7 +170,7 @@ int __glXDisp_UseXFont(__GLXclientState* cl, GLbyte* pc)
          ** A display list is currently being made.  It is an error
          ** to try to make a font during another lists construction.
          */
-        client.errorValue = cx.id;
+        client.errorValue = cast(uint)cx.id;
         return __glXError(GLXBadContextState);
     }
 

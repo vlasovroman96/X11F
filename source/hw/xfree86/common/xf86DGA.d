@@ -374,7 +374,7 @@ int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
 
             if (oldPix) {
                 if (oldPix.drawable.id)
-                    FreeResource(oldPix.drawable.id, X11_RESTYPE_NONE);
+                    FreeResource(cast(uint)oldPix.drawable.id, X11_RESTYPE_NONE);
                 else
                     dixDestroyPixmap(oldPix, 0);
             }
@@ -436,7 +436,7 @@ int xf86SetDGAMode(ScrnInfoPtr pScrn, int num, DGADevicePtr devRet)
 
         if (oldPix) {
             if (oldPix.drawable.id)
-                FreeResource(oldPix.drawable.id, X11_RESTYPE_NONE);
+                FreeResource(cast(uint)oldPix.drawable.id, X11_RESTYPE_NONE);
             else
                 dixDestroyPixmap(oldPix, 0);
         }
@@ -1352,7 +1352,7 @@ private int ProcXDGASetMode(ClientPtr client)
     mixin(DGA_SETCLIENT!(`stuff.screen`, `client`));
 
     if (pPix) {
-        if (AddResource(stuff.pid, X11_RESTYPE_PIXMAP, cast(void*) (pPix))) {
+        if (AddResource(cast(uint)stuff.pid, X11_RESTYPE_PIXMAP, cast(void*) (pPix))) {
             pPix.drawable.id = cast(int) stuff.pid;
             reply.flags = DGA_PIXMAP_AVAILABLE;
         }

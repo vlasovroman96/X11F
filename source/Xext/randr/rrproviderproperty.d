@@ -466,11 +466,11 @@ int ProcRRChangeProviderProperty(ClientPtr client)
     mode = stuff.mode;
     if ((mode != PropModeReplace) && (mode != PropModeAppend) &&
         (mode != PropModePrepend)) {
-        client.errorValue = mode;
+        client.errorValue = cast(uint)mode;
         return BadValue;
     }
     if ((format != 8) && (format != 16) && (format != 32)) {
-        client.errorValue = format;
+        client.errorValue = cast(uint)format;
         return BadValue;
     }
     len = stuff.nUnits;
@@ -483,11 +483,11 @@ int ProcRRChangeProviderProperty(ClientPtr client)
     mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
     if (!ValidAtom(stuff.type)) {
-        client.errorValue = stuff.type;
+        client.errorValue = cast(uint)stuff.type;
         return BadAtom;
     }
 
@@ -518,18 +518,18 @@ int ProcRRDeleteProviderProperty(ClientPtr client)
     mixin(VERIFY_RR_PROVIDER!("stuff.provider", "provider", "DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
 
     prop = RRQueryProviderProperty(provider, stuff.property);
     if (!prop) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadName;
     }
 
     if (prop.immutable_) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAccess;
     }
 
@@ -561,15 +561,15 @@ int ProcRRGetProviderProperty(ClientPtr client)
                      "stuff.delete_ ? DixWriteAccess : DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
     if ((stuff.delete_ != xTrue) && (stuff.delete_ != xFalse)) {
-        client.errorValue = stuff.delete_;
+        client.errorValue = cast(uint)stuff.delete_;
         return BadValue;
     }
     if ((stuff.type != AnyPropertyType) && !ValidAtom(stuff.type)) {
-        client.errorValue = stuff.type;
+        client.errorValue = cast(uint)stuff.type;
         return BadAtom;
     }
 
@@ -617,7 +617,7 @@ int ProcRRGetProviderProperty(ClientPtr client)
        be negative, it's a value error. */
 
     if (n < ind) {
-        client.errorValue = stuff.longOffset;
+        client.errorValue = cast(uint)stuff.longOffset;
         return BadValue;
     }
 

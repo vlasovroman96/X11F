@@ -1472,8 +1472,8 @@ Bool InitStringFeedbackClassDeviceStruct(DeviceIntPtr dev, StringCtrlProcPtr con
     feedc.ctrl.num_symbols_displayed = 0;
     feedc.ctrl.max_symbols = max_symbols;
     feedc.ctrl.symbols_supported =
-        cast(ulong*)calloc(num_symbols_supported, KeySym.sizeof);
-    feedc.ctrl.symbols_displayed = cast(ulong*)calloc(max_symbols, KeySym.sizeof);
+        cast(uint*)calloc(num_symbols_supported, KeySym.sizeof);
+    feedc.ctrl.symbols_displayed = cast(uint*)calloc(max_symbols, KeySym.sizeof);
     if (!feedc.ctrl.symbols_supported || !feedc.ctrl.symbols_displayed) {
         free(feedc.ctrl.symbols_supported);
         free(feedc.ctrl.symbols_displayed);
@@ -1721,14 +1721,14 @@ int ProcChangeKeyboardMapping(ClientPtr client)
 
     if ((stuff.firstKeyCode < pDev.key.xkbInfo.desc.min_key_code) ||
         (stuff.firstKeyCode > pDev.key.xkbInfo.desc.max_key_code)) {
-        client.errorValue = stuff.firstKeyCode;
+        client.errorValue = cast(uint)stuff.firstKeyCode;
         return BadValue;
 
     }
     if ((cast(uint) (stuff.firstKeyCode + stuff.keyCodes - 1) >
          pDev.key.xkbInfo.desc.max_key_code) ||
         (stuff.keySymsPerKeyCode == 0)) {
-        client.errorValue = stuff.keySymsPerKeyCode;
+        client.errorValue = cast(uint)stuff.keySymsPerKeyCode;
         return BadValue;
     }
 
@@ -1782,7 +1782,7 @@ int ProcSetPointerMapping(ClientPtr client)
      * and SetPointerMapping
      */
     if (stuff.nElts != ptr.button.numButtons) {
-        client.errorValue = stuff.nElts;
+        client.errorValue = cast(uint)stuff.nElts;
         return BadValue;
     }
 
@@ -1791,7 +1791,7 @@ int ProcSetPointerMapping(ClientPtr client)
     for (int i = 0; i < stuff.nElts; i++) {
         for (int j = i + 1; j < stuff.nElts; j++) {
             if (map[i] && map[i] == map[j]) {
-                client.errorValue = map[i];
+                client.errorValue = cast(uint)map[i];
                 return BadValue;
             }
         }
@@ -1825,11 +1825,11 @@ int ProcGetKeyboardMapping(ClientPtr client)
 
     if ((stuff.firstKeyCode < xkb.min_key_code) ||
         (stuff.firstKeyCode > xkb.max_key_code)) {
-        client.errorValue = stuff.firstKeyCode;
+        client.errorValue = cast(uint)stuff.firstKeyCode;
         return BadValue;
     }
     if (stuff.firstKeyCode + stuff.count > xkb.max_key_code + 1) {
-        client.errorValue = stuff.count;
+        client.errorValue = cast(uint)stuff.count;
         return BadValue;
     }
 
@@ -1909,7 +1909,7 @@ enum DO_ALL =    (-1);
                 t = defaultKeyboardControl.click;
             }
             else if (t < 0 || t > 100) {
-                client.errorValue = t;
+                client.errorValue = cast(uint)t;
                 return BadValue;
             }
             ctrl.click = t;
@@ -1923,7 +1923,7 @@ enum DO_ALL =    (-1);
                 t = defaultKeyboardControl.bell;
             }
             else if (t < 0 || t > 100) {
-                client.errorValue = t;
+                client.errorValue = cast(uint)t;
                 return BadValue;
             }
             ctrl.bell = t;
@@ -1937,7 +1937,7 @@ enum DO_ALL =    (-1);
                 t = defaultKeyboardControl.bell_pitch;
             }
             else if (t < 0) {
-                client.errorValue = t;
+                client.errorValue = cast(uint)t;
                 return BadValue;
             }
             ctrl.bell_pitch = t;
@@ -1950,7 +1950,7 @@ enum DO_ALL =    (-1);
             if (t == -1)
                 t = defaultKeyboardControl.bell_duration;
             else if (t < 0) {
-                client.errorValue = t;
+                client.errorValue = cast(uint)t;
                 return BadValue;
             }
             ctrl.bell_duration = t;
@@ -1961,7 +1961,7 @@ enum DO_ALL =    (-1);
             led = cast(CARD8) *vlist;
             vlist++;
             if (led < 1 || led > 32) {
-                client.errorValue = led;
+                client.errorValue = cast(uint)led;
                 return BadValue;
             }
             if (!(mask & KBLedMode))
@@ -1986,7 +1986,7 @@ enum DO_ALL =    (-1);
                     ctrl.leds |= ((cast(Leds) (1)) << (led - 1));
             }
             else {
-                client.errorValue = t;
+                client.errorValue = cast(uint)t;
                 return BadValue;
             }
 
@@ -2004,7 +2004,7 @@ enum DO_ALL =    (-1);
             vlist++;
             if (cast(KeyCode) key < keybd.key.xkbInfo.desc.min_key_code ||
                 cast(KeyCode) key > keybd.key.xkbInfo.desc.max_key_code) {
-                client.errorValue = key;
+                client.errorValue = cast(uint)key;
                 return BadValue;
             }
             if (!(mask & KBAutoRepeatMode))
@@ -2040,13 +2040,13 @@ enum DO_ALL =    (-1);
                         (defaultKeyboardControl.autoRepeats[i] & mask);
             }
             else {
-                client.errorValue = t;
+                client.errorValue = cast(uint)t;
                 return BadValue;
             }
             break;
         }
         default:
-            client.errorValue = mask;
+            client.errorValue = cast(uint)mask;
             return BadValue;
         }
     }
@@ -2134,7 +2134,7 @@ int ProcBell(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xBellReq);
 
     if (stuff.percent < -100 || stuff.percent > 100) {
-        client.errorValue = stuff.percent;
+        client.errorValue = cast(uint)stuff.percent;
         return BadValue;
     }
 
@@ -2174,11 +2174,11 @@ int ProcChangePointerControl(ClientPtr client)
 
     PtrCtrl ctrl = mouse.ptrfeed.ctrl;
     if ((stuff.doAccel != xTrue) && (stuff.doAccel != xFalse)) {
-        client.errorValue = stuff.doAccel;
+        client.errorValue = cast(uint)stuff.doAccel;
         return BadValue;
     }
     if ((stuff.doThresh != xTrue) && (stuff.doThresh != xFalse)) {
-        client.errorValue = stuff.doThresh;
+        client.errorValue = cast(uint)stuff.doThresh;
         return BadValue;
     }
     if (stuff.doAccel) {
@@ -2186,7 +2186,7 @@ int ProcChangePointerControl(ClientPtr client)
             ctrl.num = defaultPointerControl.num;
         }
         else if (stuff.accelNum < 0) {
-            client.errorValue = stuff.accelNum;
+            client.errorValue = cast(uint)stuff.accelNum;
             return BadValue;
         }
         else {
@@ -2197,7 +2197,7 @@ int ProcChangePointerControl(ClientPtr client)
             ctrl.den = defaultPointerControl.den;
         }
         else if (stuff.accelDenum <= 0) {
-            client.errorValue = stuff.accelDenum;
+            client.errorValue = cast(uint)stuff.accelDenum;
             return BadValue;
         }
         else {
@@ -2209,7 +2209,7 @@ int ProcChangePointerControl(ClientPtr client)
             ctrl.threshold = defaultPointerControl.threshold;
         }
         else if (stuff.threshold < 0) {
-            client.errorValue = stuff.threshold;
+            client.errorValue = cast(uint)stuff.threshold;
             return BadValue;
         }
         else {

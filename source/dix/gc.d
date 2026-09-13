@@ -151,7 +151,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.alu = newalu;
             else {
                 if (client)
-                    client.errorValue = newalu;
+                    client.errorValue = cast(uint)newalu;
                 error = BadValue;
             }
             break;
@@ -188,7 +188,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.lineStyle = newlinestyle;
             else {
                 if (client)
-                    client.errorValue = newlinestyle;
+                    client.errorValue = cast(uint)newlinestyle;
                 error = BadValue;
             }
             break;
@@ -202,7 +202,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.capStyle = newcapstyle;
             else {
                 if (client)
-                    client.errorValue = newcapstyle;
+                    client.errorValue = cast(uint)newcapstyle;
                 error = BadValue;
             }
             break;
@@ -216,7 +216,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.joinStyle = newjoinstyle;
             else {
                 if (client)
-                    client.errorValue = newjoinstyle;
+                    client.errorValue = cast(uint)newjoinstyle;
                 error = BadValue;
             }
             break;
@@ -230,7 +230,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.fillStyle = newfillstyle;
             else {
                 if (client)
-                    client.errorValue = newfillstyle;
+                    client.errorValue = cast(uint)newfillstyle;
                 error = BadValue;
             }
             break;
@@ -244,7 +244,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.fillRule = newfillrule;
             else {
                 if (client)
-                    client.errorValue = newfillrule;
+                    client.errorValue = cast(uint)newfillrule;
                 error = BadValue;
             }
             break;
@@ -308,7 +308,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.subWindowMode = newclipmode;
             else {
                 if (client)
-                    client.errorValue = newclipmode;
+                    client.errorValue = cast(uint)newclipmode;
                 error = BadValue;
             }
             break;
@@ -322,7 +322,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.graphicsExposures = newge;
             else {
                 if (client)
-                    client.errorValue = newge;
+                    client.errorValue = cast(uint)newge;
                 error = BadValue;
             }
             break;
@@ -380,7 +380,7 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
             }
             else {
                 if (client)
-                    client.errorValue = newdash;
+                    client.errorValue = cast(uint)newdash;
                 error = BadValue;
             }
             break;
@@ -394,14 +394,14 @@ int ChangeGC(ClientPtr client, GCPtr pGC, BITS32 mask, ChangeGCValPtr pUnion)
                 pGC.arcMode = newarcmode;
             else {
                 if (client)
-                    client.errorValue = newarcmode;
+                    client.errorValue = cast(uint)newarcmode;
                 error = BadValue;
             }
             break;
         }
         default:
             if (client)
-                client.errorValue = maskQ;
+                client.errorValue = cast(uint)maskQ;
             error = BadValue;
             break;
         }
@@ -433,7 +433,7 @@ int ChangeGCXIDs(ClientPtr client, GCPtr pGC, BITS32 mask, CARD32* pC32)
     ChangeGCVal[GCLastBit + 1] vals = void;
 
     if (mask & ~GCAllBits) {
-        client.errorValue = mask;
+        client.errorValue = cast(uint)mask;
         return BadValue;
     }
     for (int i = Ones(mask); i--;)
@@ -455,7 +455,7 @@ int ChangeGCXIDs(ClientPtr client, GCPtr pGC, BITS32 mask, CARD32* pC32)
                                      xidfields[i].type, client,
                                      xidfields[i].access_mode);
         if (rc != Success) {
-            client.errorValue = id;
+            client.errorValue = cast(uint)id;
             return rc;
         }
     }

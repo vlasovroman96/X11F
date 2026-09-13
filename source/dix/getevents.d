@@ -2056,11 +2056,11 @@ static if(XINERAMA){
 } /* XINERAMA */
 
     memset(&ev, 0, DeviceEvent.sizeof);
-    init_device_event(&ev, pDev, time, EVENT_SOURCE_NORMAL);
+    init_device_event(&ev, pDev, cast(uint)time, EVENT_SOURCE_NORMAL);
     ev.root_x = cast(short)x;
     ev.root_y = cast(short)y;
     ev.type = cast(EventType)ET_Motion;
-    ev.time = time;
+    ev.time = cast(uint)time;
 
     /* FIXME: MD/SD considerations? */
     (*pDev.public_.processInputProc) (cast(InternalEvent*) &ev, pDev);

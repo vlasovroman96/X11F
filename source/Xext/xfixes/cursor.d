@@ -230,7 +230,7 @@ private int XFixesSelectCursorInput(ClientPtr pClient, WindowPtr pWindow, CARD32
     }
     if (!eventMask) {
         if (e) {
-            FreeResource(e.clientResource, 0);
+            FreeResource(cast(uint)e.clientResource, 0);
         }
         return Success;
     }
@@ -251,13 +251,13 @@ private int XFixesSelectCursorInput(ClientPtr pClient, WindowPtr pWindow, CARD32
                                      CursorWindowType, serverClient,
                                      DixGetAttrAccess);
         if (rc != Success)
-            if (!AddResource(pWindow.drawable.id, CursorWindowType,
+            if (!AddResource(cast(uint)pWindow.drawable.id, CursorWindowType,
                              cast(void*) pWindow)) {
                 free(e);
                 return BadAlloc;
             }
 
-        if (!AddResource(e.clientResource, CursorClientType, cast(void*) e))
+        if (!AddResource(cast(uint)e.clientResource, CursorClientType, cast(void*) e))
             return BadAlloc;
 
         *prev = e;
@@ -278,7 +278,7 @@ int ProcXFixesSelectCursorInput(ClientPtr client)
         return rc;
 
     if (stuff.eventMask & ~CursorAllEvents) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
     return XFixesSelectCursorInput(client, pWin, stuff.eventMask);
@@ -462,7 +462,7 @@ int ProcXFixesGetCursorImageAndName(ClientPtr client)
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-    CARD32* image = cast(ulong*)x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
+    CARD32* image = cast(uint*)x_rpcbuf_reserve(&rpcbuf, npixels * CARD32.sizeof);
     if (!image)
         return BadAlloc;
 
@@ -685,7 +685,7 @@ private int createCursorHideCount(ClientPtr pClient, ScreenPtr pScreen)
      * Create a resource for this element so it can be deleted
      * when the client goes away.
      */
-    if (!AddResource(pChc.resource, CursorHideCountType, cast(void*) pChc))
+    if (!AddResource(cast(uint)pChc.resource, CursorHideCountType, cast(void*) pChc))
         return BadAlloc;
 
     return Success;
@@ -729,7 +729,7 @@ private void deleteCursorHideCountsForScreen(ScreenPtr pScreen)
     pChc = cs.pCursorHideCounts;
     while (pChc !is null) {
         pTmp = pChc.pNext;
-        FreeResource(pChc.resource, 0);
+        FreeResource(cast(uint)pChc.resource, 0);
         pChc = pTmp;
     }
     cs.pCursorHideCounts = null;
@@ -747,7 +747,7 @@ int ProcXFixesHideCursor(ClientPtr client)
     ret = dixLookupResourceByType(cast(void**) &pWin, stuff.window, X11_RESTYPE_WINDOW,
                                   client, DixGetAttrAccess);
     if (ret != Success) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return ret;
     }
 
@@ -797,7 +797,7 @@ int ProcXFixesShowCursor(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pWin, stuff.window, X11_RESTYPE_WINDOW,
                                  client, DixGetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -816,7 +816,7 @@ int ProcXFixesShowCursor(ClientPtr client)
 
     pChc.hideCount--;
     if (pChc.hideCount <= 0) {
-        FreeResource(pChc.resource, 0);
+        FreeResource(cast(uint)pChc.resource, 0);
     }
 
     return Success;
@@ -860,7 +860,7 @@ private int CursorFreeWindow(void* data, XID id)
     for (e = cursorEvents; e; e = next) {
         next = e.next;
         if (e.pWindow == pWindow) {
-            FreeResource(e.clientResource, 0);
+            FreeResource(cast(uint)e.clientResource, 0);
         }
     }
     return 1;

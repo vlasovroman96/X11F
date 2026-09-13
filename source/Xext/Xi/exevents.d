@@ -2391,25 +2391,25 @@ int CheckGrabValues(ClientPtr client, GrabParameters* param)
     if ((param.this_device_mode != GrabModeSync) &&
         (param.this_device_mode != GrabModeAsync) &&
         (param.this_device_mode != XIGrabModeTouch)) {
-        client.errorValue = param.this_device_mode;
+        client.errorValue = cast(uint)param.this_device_mode;
         return BadValue;
     }
     if ((param.other_devices_mode != GrabModeSync) &&
         (param.other_devices_mode != GrabModeAsync) &&
         (param.other_devices_mode != XIGrabModeTouch)) {
-        client.errorValue = param.other_devices_mode;
+        client.errorValue = cast(uint)param.other_devices_mode;
         return BadValue;
     }
 
     if (param.modifiers != AnyModifier &&
         param.modifiers != XIAnyModifier &&
         (param.modifiers & ~AllModifiersMask)) {
-        client.errorValue = param.modifiers;
+        client.errorValue = cast(uint)param.modifiers;
         return BadValue;
     }
 
     if ((param.ownerEvents != xFalse) && (param.ownerEvents != xTrue)) {
-        client.errorValue = param.ownerEvents;
+        client.errorValue = cast(uint)param.ownerEvents;
         return BadValue;
     }
     return Success;
@@ -2440,7 +2440,7 @@ int GrabButton(ClientPtr client, DeviceIntPtr dev, DeviceIntPtr modifier_device,
         rc = dixLookupResourceByType(cast(void**) &cursor, param.cursor,
                                      X11_RESTYPE_CURSOR, client, DixUseAccess);
         if (rc != Success) {
-            client.errorValue = param.cursor;
+            client.errorValue = cast(uint)param.cursor;
             return rc;
         }
         access_mode |= DixForceAccess;
@@ -2487,7 +2487,7 @@ int GrabKey(ClientPtr client, DeviceIntPtr dev, DeviceIntPtr modifier_device, in
         if ((key > k.xkbInfo.desc.max_key_code ||
              key < k.xkbInfo.desc.min_key_code)
             && (key != AnyKey)) {
-            client.errorValue = key;
+            client.errorValue = cast(uint)key;
             return BadValue;
         }
         type = DeviceKeyPress;
@@ -2534,7 +2534,7 @@ int GrabWindow(ClientPtr client, DeviceIntPtr dev, int type, GrabParameters* par
         rc = dixLookupResourceByType(cast(void**) &cursor, param.cursor,
                                      X11_RESTYPE_CURSOR, client, DixUseAccess);
         if (rc != Success) {
-            client.errorValue = param.cursor;
+            client.errorValue = cast(uint)param.cursor;
             return rc;
         }
         access_mode |= DixForceAccess;
@@ -2617,7 +2617,7 @@ int SelectForWindow(DeviceIntPtr dev, WindowPtr pWin, ClientPtr client, Mask mas
                     if (i == EMASKSIZE) {
                         RecalculateDeviceDeliverableEvents(pWin);
                         if (ShouldFreeInputMasks(pWin, FALSE))
-                            FreeResource(others.resource, X11_RESTYPE_NONE);
+                            FreeResource(cast(uint)others.resource, X11_RESTYPE_NONE);
                         return Success;
                     }
                 }
@@ -2668,7 +2668,7 @@ int AddExtensionClient(WindowPtr pWin, ClientPtr client, Mask mask, int mskidx)
     others.resource = FakeClientID(client.index);
     others.next = pWin.optional.inputMasks.inputClients;
     pWin.optional.inputMasks.inputClients = others;
-    if (!AddResource(others.resource, RT_INPUTCLIENT, cast(void*) pWin))
+    if (!AddResource(cast(uint)others.resource, RT_INPUTCLIENT, cast(void*) pWin))
         goto bail;
     return Success;
 
@@ -2771,7 +2771,7 @@ int InputClientGone(WindowPtr pWin, XID id)
                 }
                 else {
                     other.resource = dixAllocServerXID();
-                    if (!AddResource(other.resource, RT_INPUTCLIENT,
+                    if (!AddResource(cast(uint)other.resource, RT_INPUTCLIENT,
                                      cast(void*) pWin))
                         return BadAlloc;
                 }
@@ -2858,7 +2858,7 @@ int SendEvent(ClientPtr client, DeviceIntPtr d, Window dest, Bool propagate, xEv
     if (!pWin)
         return BadWindow;
     if ((propagate != xFalse) && (propagate != xTrue)) {
-        client.errorValue = propagate;
+        client.errorValue = cast(uint)propagate;
         return BadValue;
     }
     ev.u.u.type |= 0x80;
@@ -2888,7 +2888,7 @@ int SetButtonMapping(ClientPtr client, DeviceIntPtr dev, int nElts, BYTE* map)
         return BadMatch;
 
     if (nElts != b.numButtons) {
-        client.errorValue = nElts;
+        client.errorValue = cast(uint)nElts;
         return BadValue;
     }
     if (BadDeviceMap(&map[0], nElts, 1, 255, &client.errorValue))
@@ -2914,11 +2914,11 @@ int ChangeKeyMapping(ClientPtr client, DeviceIntPtr dev, uint len, int type, Key
 
     if ((firstKeyCode < k.xkbInfo.desc.min_key_code) ||
         (firstKeyCode + keyCodes - 1 > k.xkbInfo.desc.max_key_code)) {
-        client.errorValue = firstKeyCode;
+        client.errorValue = cast(uint)firstKeyCode;
         return BadValue;
     }
     if (keySymsPerKeyCode == 0) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     keysyms.minKeyCode = firstKeyCode;
@@ -3026,7 +3026,7 @@ void DeleteWindowFromAnyExtEvents(WindowPtr pWin, Bool freeResources)
             ic = inputMasks.inputClients;
             for (i = 0; i < EMASKSIZE; i++)
                 inputMasks.dontPropagateMask[i] = 0;
-            FreeResource(ic.resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)ic.resource, X11_RESTYPE_NONE);
         }
 }
 
@@ -3125,7 +3125,7 @@ int DeviceEventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, in
     _OtherInputMasks* inputMasks = mixin(wOtherInputMasks!("pWin"));
 
     if (mask & ~XIPropagateMask) {
-        client.errorValue = mask;
+        client.errorValue = cast(uint)mask;
         return BadValue;
     }
 
@@ -3148,7 +3148,7 @@ int DeviceEventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, in
     if (ShouldFreeInputMasks(pWin, FALSE)) {
         mixin(BUG_RETURN_VAL!("!inputMasks", "BadImplementation"));
         mixin(BUG_RETURN_VAL!("!inputMasks.inputClients", "BadImplementation"));
-        FreeResource(inputMasks.inputClients.resource, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)inputMasks.inputClients.resource, X11_RESTYPE_NONE);
     }
     return Success;
 }

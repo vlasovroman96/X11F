@@ -96,19 +96,19 @@ int ProcXIQueryPointer(ClientPtr client)
 
     rc = dixLookupDevice(&pDev, stuff.deviceid, client, DixReadAccess);
     if (rc != Success) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return rc;
     }
 
     if (pDev.valuator is null || IsKeyboardDevice(pDev) ||
         (!InputDevIsMaster(pDev) && !InputDevIsFloating(pDev))) {   /* no attached devices */
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return BadDevice;
     }
 
     rc = dixLookupWindow(&pWin, stuff.win, client, DixGetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.win;
+        client.errorValue = cast(uint)stuff.win;
         return rc;
     }
 

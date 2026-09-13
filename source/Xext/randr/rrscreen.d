@@ -286,12 +286,12 @@ int ProcRRSetScreenSize(ClientPtr client)
         return BadMatch;
 
     if (stuff.width < pScrPriv.minWidth || pScrPriv.maxWidth < stuff.width) {
-        client.errorValue = stuff.width;
+        client.errorValue = cast(uint)stuff.width;
         return BadValue;
     }
     if (stuff.height < pScrPriv.minHeight ||
         pScrPriv.maxHeight < stuff.height) {
-        client.errorValue = stuff.height;
+        client.errorValue = cast(uint)stuff.height;
         return BadValue;
     }
     for (i = 0; i < pScrPriv.numCrtcs; i++) {
@@ -311,7 +311,7 @@ int ProcRRSetScreenSize(ClientPtr client)
         }
     }
     if (stuff.widthInMillimeters == 0 || stuff.heightInMillimeters == 0) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     if (!RRScreenSizeSet(pScreen,
@@ -977,7 +977,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
         /*
          * Invalid size ID
          */
-        client.errorValue = stuff.sizeID;
+        client.errorValue = cast(uint)stuff.sizeID;
         free(pData);
         return BadValue;
     }
@@ -999,7 +999,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
         /*
          * Invalid rotation
          */
-        client.errorValue = stuff.rotation;
+        client.errorValue = cast(uint)stuff.rotation;
         free(pData);
         return BadValue;
     }
@@ -1008,7 +1008,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
         /*
          * requested rotation or reflection not supported by screen
          */
-        client.errorValue = stuff.rotation;
+        client.errorValue = cast(uint)stuff.rotation;
         free(pData);
         return BadMatch;
     }
@@ -1022,7 +1022,7 @@ int ProcRRSetScreenConfig(ClientPtr client)
             /*
              * Invalid rate
              */
-            client.errorValue = rate;
+            client.errorValue = cast(uint)rate;
             free(pData);
             return BadValue;
         }
@@ -1047,12 +1047,12 @@ int ProcRRSetScreenConfig(ClientPtr client)
     width = mode.mode.width;
     height = mode.mode.height;
     if (width < pScrPriv.minWidth || pScrPriv.maxWidth < width) {
-        client.errorValue = width;
+        client.errorValue = cast(uint)width;
         free(pData);
         return BadValue;
     }
     if (height < pScrPriv.minHeight || pScrPriv.maxHeight < height) {
-        client.errorValue = height;
+        client.errorValue = cast(uint)height;
         free(pData);
         return BadValue;
     }

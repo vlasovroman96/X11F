@@ -117,6 +117,8 @@ struct __GLXconfig {
 ** and DDX layers of the GLX server extension.  The methods provide an
 ** interface for context management on a screen.
 */
+alias XID = externs.X11.X.XID;
+
 struct __GLXscreen {
     @nogc nothrow void function(__GLXscreen* screen) destroy;
 

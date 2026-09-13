@@ -149,7 +149,7 @@ private int ProcXTestCompareCursor(ClientPtr client)
         rc = dixLookupResourceByType(cast(void**) &pCursor, stuff.cursor,
                                      X11_RESTYPE_CURSOR, client, DixReadAccess);
         if (rc != Success) {
-            client.errorValue = stuff.cursor;
+            client.errorValue = cast(uint)stuff.cursor;
             return rc;
         }
     }
@@ -224,7 +224,7 @@ private int ProcXTestFakeInput(ClientPtr client)
         int rc = dixLookupDevice(&dev, stuff.deviceid & octal!"177", client,
                              DixWriteAccess);
         if (rc != Success) {
-            client.errorValue = stuff.deviceid & octal!"177";
+            client.errorValue = cast(uint)stuff.deviceid & octal!"177";
             return rc;
         }
 
@@ -234,32 +234,32 @@ private int ProcXTestFakeInput(ClientPtr client)
         case XI_DeviceKeyPress:
         case XI_DeviceKeyRelease:
             if (!dev.key) {
-                client.errorValue = ev.u.u.type;
+                client.errorValue = cast(uint)ev.u.u.type;
                 return BadValue;
             }
             break;
         case XI_DeviceButtonPress:
         case XI_DeviceButtonRelease:
             if (!dev.button) {
-                client.errorValue = ev.u.u.type;
+                client.errorValue = cast(uint)ev.u.u.type;
                 return BadValue;
             }
             break;
         case XI_DeviceMotionNotify:
             if (!dev.valuator) {
-                client.errorValue = ev.u.u.type;
+                client.errorValue = cast(uint)ev.u.u.type;
                 return BadValue;
             }
             break;
         case XI_ProximityIn:
         case XI_ProximityOut:
             if (!dev.proximity) {
-                client.errorValue = ev.u.u.type;
+                client.errorValue = cast(uint)ev.u.u.type;
                 return BadValue;
             }
             break;
         default:
-            client.errorValue = ev.u.u.type;
+            client.errorValue = cast(uint)ev.u.u.type;
             return BadValue;
         }
 
@@ -271,7 +271,7 @@ private int ProcXTestFakeInput(ClientPtr client)
         if (type == XI_DeviceMotionNotify) {
             firstValuator = (cast(deviceValuator*) (ev + 1)).first_valuator;
             if (firstValuator > dev.valuator.numAxes) {
-                client.errorValue = ev.u.u.type;
+                client.errorValue = cast(uint)ev.u.u.type;
                 return BadValue;
             }
 
@@ -284,7 +284,7 @@ private int ProcXTestFakeInput(ClientPtr client)
         }
 
         if (nev > 1 && !dev.valuator) {
-            client.errorValue = firstValuator;
+            client.errorValue = cast(uint)firstValuator;
             return BadValue;
         }
 
@@ -293,11 +293,11 @@ private int ProcXTestFakeInput(ClientPtr client)
         for (n = 1; n < nev; n++) {
             deviceValuator* dv = cast(deviceValuator*) (ev + n);
             if (dv.type != DeviceValuator) {
-                client.errorValue = dv.type;
+                client.errorValue = cast(uint)dv.type;
                 return BadValue;
             }
             if (dv.first_valuator != base) {
-                client.errorValue = dv.first_valuator;
+                client.errorValue = cast(uint)dv.first_valuator;
                 return BadValue;
             }
             switch (dv.num_valuators) {
@@ -320,7 +320,7 @@ private int ProcXTestFakeInput(ClientPtr client)
                 valuators[base] = cast(int)dv.valuator0;
                 break;
             default:
-                client.errorValue = dv.num_valuators;
+                client.errorValue = cast(uint)dv.num_valuators;
                 return BadValue;
             }
 
@@ -328,7 +328,7 @@ private int ProcXTestFakeInput(ClientPtr client)
             numValuators += dv.num_valuators;
 
             if (firstValuator + numValuators > dev.valuator.numAxes) {
-                client.errorValue = dv.num_valuators;
+                client.errorValue = cast(uint)dv.num_valuators;
                 return BadValue;
             }
         }
@@ -357,7 +357,7 @@ private int ProcXTestFakeInput(ClientPtr client)
                 flags = POINTER_ABSOLUTE | POINTER_DESKTOP;
             break;
         default:
-            client.errorValue = ev.u.u.type;
+            client.errorValue = cast(uint)ev.u.u.type;
             return BadValue;
         }
 
@@ -413,7 +413,7 @@ private int ProcXTestFakeInput(ClientPtr client)
 
         if (ev.u.u.detail < dev.key.xkbInfo.desc.min_key_code ||
             ev.u.u.detail > dev.key.xkbInfo.desc.max_key_code) {
-            client.errorValue = ev.u.u.detail;
+            client.errorValue = cast(uint)ev.u.u.detail;
             return BadValue;
         }
 
@@ -431,7 +431,7 @@ private int ProcXTestFakeInput(ClientPtr client)
                 return rc;
             }
             if (root.parent) {
-                client.errorValue = ev.u.keyButtonPointer.root;
+                client.errorValue = cast(uint)ev.u.keyButtonPointer.root;
                 return BadValue;
             }
 
@@ -446,7 +446,7 @@ private int ProcXTestFakeInput(ClientPtr client)
             }
         }
         if (ev.u.u.detail != xTrue && ev.u.u.detail != xFalse) {
-            client.errorValue = ev.u.u.detail;
+            client.errorValue = cast(uint)ev.u.u.detail;
             return BadValue;
         }
 
@@ -460,7 +460,7 @@ private int ProcXTestFakeInput(ClientPtr client)
         }
 
         if (!ev.u.u.detail || ev.u.u.detail > dev.button.numButtons) {
-            client.errorValue = ev.u.u.detail;
+            client.errorValue = cast(uint)ev.u.u.detail;
             return BadValue;
         }
         break;
@@ -485,7 +485,7 @@ private int ProcXTestGrabControl(ClientPtr client)
     mixin(X_REQUEST_HEAD_STRUCT!xXTestGrabControlReq);
 
     if ((stuff.impervious != xTrue) && (stuff.impervious != xFalse)) {
-        client.errorValue = stuff.impervious;
+        client.errorValue = cast(uint)stuff.impervious;
         return BadValue;
     }
     if (stuff.impervious) {
@@ -527,7 +527,7 @@ private int XTestSwapFakeInput(ClientPtr client, xReq* req)
         proc = EventSwapVector[evtype];
         /* no swapping proc; invalid event type? */
         if (!proc || proc == &NotImplemented || evtype == GenericEvent) {
-            client.errorValue = ev.u.u.type;
+            client.errorValue = cast(uint)ev.u.u.type;
             return BadValue;
         }
         (*proc) (ev, &sev);

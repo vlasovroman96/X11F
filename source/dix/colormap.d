@@ -308,7 +308,7 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
     }
     pmap.flags |= CM_BeingCreated;
 
-    if (!AddResource(mid, X11_RESTYPE_COLORMAP, cast(void*) pmap))
+    if (!AddResource(cast(uint)mid, X11_RESTYPE_COLORMAP, cast(void*) pmap))
         return BadAlloc;
 
     /*
@@ -318,7 +318,7 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
         int access = XaceHookResourceAccess(pClient, mid, X11_RESTYPE_COLORMAP,
                  pmap, X11_RESTYPE_NONE, null, DixCreateAccess);
         if (access != Success) {
-            FreeResource(mid, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)mid, X11_RESTYPE_NONE);
             return access;
         }
     }
@@ -327,7 +327,7 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
      * this is it.  In specific, if this is a Static colormap, this is the
      * time to fill in the colormap's values */
     if (!(*pScreen.CreateColormap) (pmap)) {
-        FreeResource(mid, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)mid, X11_RESTYPE_NONE);
         return BadAlloc;
     }
     pmap.flags &= ~CM_BeingCreated;
@@ -893,7 +893,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         *pgreen = pmap.red[pixR].co.local.green;
         *pblue = pmap.red[pixR].co.local.blue;
         npix = pmap.numPixelsRed[client];
-        ppix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
@@ -915,21 +915,21 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         *pgreen = pmap.green[pixG].co.local.green;
         *pblue = pmap.blue[pixB].co.local.blue;
         npix = pmap.numPixelsRed[client];
-        ppix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
         ppix[npix] = pixR;
         pmap.clientPixelsRed[client] = ppix;
         npix = pmap.numPixelsGreen[client];
-        ppix = cast(ulong*)reallocarray(pmap.clientPixelsGreen[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsGreen[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
         ppix[npix] = pixG;
         pmap.clientPixelsGreen[client] = ppix;
         npix = pmap.numPixelsBlue[client];
-        ppix = cast(ulong*)reallocarray(pmap.clientPixelsBlue[client],
+        ppix = cast(uint*)reallocarray(pmap.clientPixelsBlue[client],
                             npix + 1, Pixel.sizeof);
         if (!ppix)
             return BadAlloc;
@@ -947,7 +947,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
             ColormapPtr prootmap = void;
 
             dixLookupResourceByType(cast(void**) &prootmap,
-                                    pmap.pScreen.defColormap, X11_RESTYPE_COLORMAP,
+                                    cast(uint)pmap.pScreen.defColormap, X11_RESTYPE_COLORMAP,
                                     clients[client], DixReadAccess);
 
             if (pmap.class_ == prootmap.class_)
@@ -965,7 +965,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
             ColormapPtr prootmap = void;
 
             dixLookupResourceByType(cast(void**) &prootmap,
-                                    pmap.pScreen.defColormap, X11_RESTYPE_COLORMAP,
+                                    cast(uint)pmap.pScreen.defColormap, X11_RESTYPE_COLORMAP,
                                     clients[client], DixReadAccess);
 
             if (pmap.class_ == prootmap.class_) {
@@ -1017,7 +1017,7 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         }
         pcr.mid = pmap.mid;
         pcr.client = client;
-        if (!AddResource(FakeClientID(client), X11_RESTYPE_CMAPENTRY, cast(void*) pcr))
+        if (!AddResource(cast(uint)FakeClientID(client), X11_RESTYPE_CMAPENTRY, cast(void*) pcr))
             return BadAlloc;
     }
     return Success;
@@ -1286,27 +1286,27 @@ int QueryColors(ColormapPtr pmap, int count, Pixel* ppixIn, xrgb* prgbList, Clie
         for (ppix = ppixIn, prgb = prgbList; --count >= 0; ppix++, prgb++) {
             Pixel pixel = *ppix;
             if (pixel & rgbbad) {
-                client.errorValue = pixel;
+                client.errorValue = cast(uint)pixel;
                 errVal = BadValue;
                 continue;
             }
             Pixel i = (pixel & pVisual.redMask) >> pVisual.offsetRed;
             if (i >= numred) {
-                client.errorValue = pixel;
+                client.errorValue = cast(uint)pixel;
                 errVal = BadValue;
                 continue;
             }
             prgb.red = pmap.red[i].co.local.red;
             i = (pixel & pVisual.greenMask) >> pVisual.offsetGreen;
             if (i >= numgreen) {
-                client.errorValue = pixel;
+                client.errorValue = cast(uint)pixel;
                 errVal = BadValue;
                 continue;
             }
             prgb.green = pmap.green[i].co.local.green;
             i = (pixel & pVisual.blueMask) >> pVisual.offsetBlue;
             if (i >= numblue) {
-                client.errorValue = pixel;
+                client.errorValue = cast(uint)pixel;
                 errVal = BadValue;
                 continue;
             }
@@ -1319,7 +1319,7 @@ int QueryColors(ColormapPtr pmap, int count, Pixel* ppixIn, xrgb* prgbList, Clie
         for (ppix = ppixIn, prgb = prgbList; --count >= 0; ppix++, prgb++) {
             Pixel pixel = *ppix;
             if (pixel >= pVisual.ColormapEntries) {
-                client.errorValue = pixel;
+                client.errorValue = cast(uint)pixel;
                 errVal = BadValue;
             }
             else {
@@ -1453,7 +1453,7 @@ int AllocColorCells(ClientPtr pClient, ColormapPtr pmap, int colors, int planes,
     if ((ok == Success) && pcr) {
         pcr.mid = pmap.mid;
         pcr.client = client;
-        if (!AddResource(FakeClientID(client), X11_RESTYPE_CMAPENTRY, cast(void*) pcr))
+        if (!AddResource(cast(uint)FakeClientID(client), X11_RESTYPE_CMAPENTRY, cast(void*) pcr))
             ok = BadAlloc;
     }
     else
@@ -1528,7 +1528,7 @@ int AllocColorPlanes(int client, ColormapPtr pmap, int colors, int r, int g, int
     if ((ok == Success) && pcr) {
         pcr.mid = pmap.mid;
         pcr.client = client;
-        if (!AddResource(FakeClientID(client), X11_RESTYPE_CMAPENTRY, cast(void*) pcr))
+        if (!AddResource(cast(uint)FakeClientID(client), X11_RESTYPE_CMAPENTRY, cast(void*) pcr))
             ok = BadAlloc;
     }
     else
@@ -1570,17 +1570,17 @@ private int AllocDirect(int client, ColormapPtr pmap, int c, int r, int g, int b
     Pixel* rpix = null, gpix = null, bpix = null;
 
     if (okR && okG && okB) {
-        rpix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
+        rpix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             pmap.numPixelsRed[client] + (c << r),
                             Pixel.sizeof);
         if (rpix)
             pmap.clientPixelsRed[client] = rpix;
-        gpix = cast(ulong*)reallocarray(pmap.clientPixelsGreen[client],
+        gpix = cast(uint*)reallocarray(pmap.clientPixelsGreen[client],
                             pmap.numPixelsGreen[client] + (c << g),
                             Pixel.sizeof);
         if (gpix)
             pmap.clientPixelsGreen[client] = gpix;
-        bpix = cast(ulong*)reallocarray(pmap.clientPixelsBlue[client],
+        bpix = cast(uint*)reallocarray(pmap.clientPixelsBlue[client],
                             pmap.numPixelsBlue[client] + (c << b),
                             Pixel.sizeof);
         if (bpix)
@@ -1665,7 +1665,7 @@ private int AllocPseudo(int client, ColormapPtr pmap, int c, int r, Bool contig,
 
         /* all the allocated pixels are added to the client pixel list,
          * but only the unique ones are returned to the client */
-        Pixel* ppix = cast(ulong*)reallocarray(pmap.clientPixelsRed[client],
+        Pixel* ppix = cast(uint*)reallocarray(pmap.clientPixelsRed[client],
                             pmap.numPixelsRed[client] + npix, Pixel.sizeof);
         if (!ppix) {
             for (Pixel* p = ppixTemp; p < ppixTemp + npix; p++)
@@ -2166,7 +2166,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
 
             if (pdef.pixel & rgbbad) {
                 errVal = BadValue;
-                client.errorValue = pdef.pixel;
+                client.errorValue = cast(uint)pdef.pixel;
                 continue;
             }
             Pixel pix = (pdef.pixel & pVisual.redMask) >> pVisual.offsetRed;
@@ -2226,7 +2226,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
                 idef++;
             }
             else
-                client.errorValue = pdef.pixel;
+                client.errorValue = cast(uint)pdef.pixel;
         }
     }
     else {
@@ -2235,7 +2235,7 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
             bool ok = TRUE;
 
             if (pdef.pixel >= pVisual.ColormapEntries) {
-                client.errorValue = pdef.pixel;
+                client.errorValue = cast(uint)pdef.pixel;
                 errVal = BadValue;
                 ok = FALSE;
             }
@@ -2411,7 +2411,7 @@ Bool ResizeVisualArray(ScreenPtr pScreen, int new_visual_count, DepthPtr depth)
     int first_new_vid = depth.numVids;
     int first_new_visual = pScreen.numVisuals;
 
-    XID* vids = cast(ulong*)reallocarray(depth.vids, depth.numVids + new_visual_count,
+    XID* vids = cast(uint*)reallocarray(depth.vids, depth.numVids + new_visual_count,
                         XID.sizeof);
     if (!vids)
         return FALSE;

@@ -1309,13 +1309,13 @@ static if (IPv6){
     case FamilyChaos:
     case FamilyServerInterpreted:
         if ((len = CheckAddr(family, pAddr, length)) < 0) {
-            client.errorValue = length;
+            client.errorValue = cast(uint)length;
             return BadValue;
         }
         break;
     case FamilyLocal:
     default:
-        client.errorValue = family;
+        client.errorValue = cast(uint)family;
         return BadValue;
     }
     if (NewHost(family, pAddr, len, FALSE))
@@ -1386,14 +1386,14 @@ static if (IPv6){
     case FamilyServerInterpreted:
         if ((len = CheckAddr(family, pAddr, length)) < 0) {
             if (client)
-                client.errorValue = length;
+                client.errorValue = cast(uint)length;
             return BadValue;
         }
         break;
     case FamilyLocal:
     default:
         if (client)
-            client.errorValue = family;
+            client.errorValue = cast(uint)family;
         return BadValue;
     }
     for (prev = &validhosts;

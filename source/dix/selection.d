@@ -80,7 +80,7 @@ int dixLookupSelection(Selection** result, Atom selectionName, ClientPtr client,
     Selection* pSel = void;
     int rc = BadMatch;
 
-    client.errorValue = selectionName;
+    client.errorValue = cast(uint)selectionName;
 
     for (pSel = CurrentSelections; pSel; pSel = pSel.next)
         if (pSel.selection == selectionName)
@@ -179,7 +179,7 @@ int ProcSetSelectionOwner(ClientPtr client)
     CallCallbacks(&SelectionFilterCallback, &param);
     if (param.skip) {
         if (param.status != Success)
-            client.errorValue = stuff.selection;
+            client.errorValue = cast(uint)stuff.selection;
         return param.status;
     }
 
@@ -190,7 +190,7 @@ int ProcSetSelectionOwner(ClientPtr client)
     }
 
     if (!ValidAtom(param.selection)) {
-        client.errorValue = stuff.selection;
+        client.errorValue = cast(uint)stuff.selection;
         return BadAtom;
     }
 
@@ -199,7 +199,7 @@ int ProcSetSelectionOwner(ClientPtr client)
      */
     rc = dixLookupSelection(&pSel, param.selection, client, DixSetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.selection;
+        client.errorValue = cast(uint)stuff.selection;
         return rc;
     }
 
@@ -279,7 +279,7 @@ int ProcGetSelectionOwner(ClientPtr client)
 
 out_:
     if (param.status != Success)
-        client.errorValue = stuff.id;
+        client.errorValue = cast(uint)stuff.id;
     return param.status;
 }
 
@@ -307,7 +307,7 @@ int ProcConvertSelection(ClientPtr client)
     CallCallbacks(&SelectionFilterCallback, &param);
     if (param.skip) {
         if (param.status != Success)
-            client.errorValue = stuff.selection;
+            client.errorValue = cast(uint)stuff.selection;
         return param.status;
     }
 
@@ -318,7 +318,7 @@ int ProcConvertSelection(ClientPtr client)
     paramsOkay = ValidAtom(param.selection) && ValidAtom(param.target);
     paramsOkay &= (param.property == None) || ValidAtom(param.property);
     if (!paramsOkay) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
 
@@ -351,7 +351,7 @@ int ProcConvertSelection(ClientPtr client)
         CallCallbacks(&SelectionFilterCallback, &evParam);
         if (evParam.skip) {
             if (evParam.status != Success)
-                client.errorValue = stuff.selection;
+                client.errorValue = cast(uint)stuff.selection;
             return evParam.status;
         }
 
@@ -372,7 +372,7 @@ int ProcConvertSelection(ClientPtr client)
     CallCallbacks(&SelectionFilterCallback, &param);
     if (param.skip) {
         if (param.status != Success)
-            client.errorValue = stuff.selection;
+            client.errorValue = cast(uint)stuff.selection;
         return param.status;
     }
 

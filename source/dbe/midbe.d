@@ -174,10 +174,10 @@ private int miDbeAllocBackBufferName(WindowPtr pWin, XID bufId, int swapAction)
                                     pWin, DixCreateAccess);
 
         /* Make the back pixmap a DBE drawable resource. */
-        if (rc != Success || !AddResource(bufId, dbeDrawableResType,
+        if (rc != Success || !AddResource(cast(uint)bufId, dbeDrawableResType,
                                           pDbeWindowPriv.pBackBuffer)) {
             /* free the buffer and the drawable resource */
-            FreeResource(bufId, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)bufId, X11_RESTYPE_NONE);
             return (rc == Success) ? BadAlloc : rc;
         }
 
@@ -201,7 +201,7 @@ private int miDbeAllocBackBufferName(WindowPtr pWin, XID bufId, int swapAction)
          */
 
         /* Associate the new ID with an existing pixmap. */
-        if (!AddResource(bufId, dbeDrawableResType,
+        if (!AddResource(cast(uint)bufId, dbeDrawableResType,
                          cast(void*) pDbeWindowPriv.pBackBuffer)) {
             return BadAlloc;
         }
@@ -368,24 +368,24 @@ private int miDbeSwapBuffers(ClientPtr client, int* pNumWindows, DbeSwapInfoPtr 
  * Description:
  *
  *     This is the MI function for deleting the dbeWindowPrivResType resource.
- *     This function is invoked indirectly by calling FreeResource() to free
+ *     This function is invoked indirectly by calling FreeResource(cast(uint)) to free
  *     the resources associated with a DBE buffer ID.  There are 5 ways that
- *     miDbeWinPrivDelete() can be called by FreeResource().  They are:
+ *     miDbeWinPrivDelete() can be called by FreeResource(cast(uint)).  They are:
  *
  *     - A DBE window is destroyed, in which case the DbeWindowDestroy()
- *       callback is invoked.  It calls FreeResource() for all DBE buffer IDs.
+ *       callback is invoked.  It calls FreeResource(cast(uint)) for all DBE buffer IDs.
  *
- *     - miDbeAllocBackBufferName() calls FreeResource() to clean up resources
+ *     - miDbeAllocBackBufferName() calls FreeResource(cast(uint)) to clean up resources
  *       after a buffer allocation failure.
  *
  *     - The WindowPosition hook, miDbeWindowPosition(), calls
- *       FreeResource() when it fails to create buffers of the new size.
- *       FreeResource() is called for all DBE buffer IDs.
+ *       FreeResource(cast(uint)) when it fails to create buffers of the new size.
+ *       FreeResource(cast(uint)) is called for all DBE buffer IDs.
  *
- *     - FreeClientResources() calls FreeResource() when a client dies or the
+ *     - FreeClientResources() calls FreeResource(cast(uint)) when a client dies or the
  *       the server resets.
  *
- *     When FreeResource() is called for a DBE buffer ID, the delete function
+ *     When FreeResource(cast(uint)) is called for a DBE buffer ID, the delete function
  *     for the only other type of DBE resource, dbeDrawableResType, is also
  *     invoked.  This delete function (DbeDrawableDelete) is a NOOP to make
  *     resource deletion easier.  It is not guaranteed which delete function is
@@ -547,7 +547,7 @@ void miDbeWindowPosition(CallbackListPtr* pcbl, ScreenPtr pScreen, XorgScreenWin
             /* DbeWindowPrivDelete() will free the window private if there no
              * more buffer IDs associated with this window.
              */
-            FreeResource(pDbeWindowPriv.IDs[0], X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pDbeWindowPriv.IDs[0], X11_RESTYPE_NONE);
             pDbeWindowPriv = mixin(DBE_WINDOW_PRIV!("pWin"));
         }
 

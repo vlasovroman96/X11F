@@ -197,7 +197,7 @@ private int SingleXvPutVideo(ClientPtr client)
 
     if (!(pPort.pAdaptor.type & XvInputMask) ||
         !(pPort.pAdaptor.type & XvVideoMask)) {
-        client.errorValue = stuff.port;
+        client.errorValue = cast(uint)stuff.port;
         return BadMatch;
     }
 
@@ -251,7 +251,7 @@ private int SingleXvPutStill(ClientPtr client)
 
     if (!(pPort.pAdaptor.type & XvInputMask) ||
         !(pPort.pAdaptor.type & XvStillMask)) {
-        client.errorValue = stuff.port;
+        client.errorValue = cast(uint)stuff.port;
         return BadMatch;
     }
 
@@ -316,7 +316,7 @@ private int ProcXvGetVideo(ClientPtr client)
 
     if (!(pPort.pAdaptor.type & XvOutputMask) ||
         !(pPort.pAdaptor.type & XvVideoMask)) {
-        client.errorValue = stuff.port;
+        client.errorValue = cast(uint)stuff.port;
         return BadMatch;
     }
 
@@ -355,7 +355,7 @@ private int ProcXvGetStill(ClientPtr client)
 
     if (!(pPort.pAdaptor.type & XvOutputMask) ||
         !(pPort.pAdaptor.type & XvStillMask)) {
-        client.errorValue = stuff.port;
+        client.errorValue = cast(uint)stuff.port;
         return BadMatch;
     }
 
@@ -475,7 +475,7 @@ private int SingleXvSetPortAttribute(ClientPtr client)
     mixin(VALIDATE_XV_PORT!("stuff.port", "pPort", "DixSetAttrAccess"));
 
     if (!ValidAtom(stuff.attribute)) {
-        client.errorValue = stuff.attribute;
+        client.errorValue = cast(uint)stuff.attribute;
         return BadAtom;
     }
 
@@ -483,9 +483,9 @@ private int SingleXvSetPortAttribute(ClientPtr client)
         XvdiSetPortAttribute(client, pPort, stuff.attribute, stuff.value);
 
     if (status == BadMatch)
-        client.errorValue = stuff.attribute;
+        client.errorValue = cast(uint)stuff.attribute;
     else
-        client.errorValue = stuff.value;
+        client.errorValue = cast(uint)stuff.value;
 
     return status;
 }
@@ -521,13 +521,13 @@ private int ProcXvGetPortAttribute(ClientPtr client)
     mixin(VALIDATE_XV_PORT!("stuff.port", "pPort", "DixGetAttrAccess"));
 
     if (!ValidAtom(stuff.attribute)) {
-        client.errorValue = stuff.attribute;
+        client.errorValue = cast(uint)stuff.attribute;
         return BadAtom;
     }
 
     status = XvdiGetPortAttribute(client, pPort, stuff.attribute, &value);
     if (status != Success) {
-        client.errorValue = stuff.attribute;
+        client.errorValue = cast(uint)stuff.attribute;
         return status;
     }
 
@@ -621,7 +621,7 @@ private int SingleXvPutImage(ClientPtr client)
 
     if (!(pPort.pAdaptor.type & XvImageMask) ||
         !(pPort.pAdaptor.type & XvInputMask)) {
-        client.errorValue = stuff.port;
+        client.errorValue = cast(uint)stuff.port;
         return BadMatch;
     }
 
@@ -708,7 +708,7 @@ private int SingleXvShmPutImage(ClientPtr client)
 
     if (!(pPort.pAdaptor.type & XvImageMask) ||
         !(pPort.pAdaptor.type & XvInputMask)) {
-        client.errorValue = stuff.port;
+        client.errorValue = cast(uint)stuff.port;
         return BadMatch;
     }
 
@@ -1313,12 +1313,12 @@ void XineramifyXv()
 
             mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
                 if (MatchingAdaptors[walkScreenIdx] && (MatchingAdaptors[walkScreenIdx].nPorts > j))
-                    port.info[walkScreenIdx].id = MatchingAdaptors[walkScreenIdx].base_id + j;
+                    port.info[walkScreenIdx].id = cast(int)(MatchingAdaptors[walkScreenIdx].base_id + j);
                 else
                     port.info[walkScreenIdx].id = 0;
             }));
 
-            AddResource(port.info[0].id, cast(uint)XvXRTPort, port);
+            AddResource(cast(uint)port.info[0].id, cast(uint)XvXRTPort, port);
         }
     }
 

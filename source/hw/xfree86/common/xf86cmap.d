@@ -222,7 +222,7 @@ static if(XFreeXDGA){
     ComputeGamma(pScrn, pScreenPriv);
 
     /* get the default map */
-    dixLookupResourceByType(cast(void**) &pDefMap, pScreen.defColormap,
+    dixLookupResourceByType(cast(void**) &pDefMap, cast(uint)pScreen.defColormap,
                             X11_RESTYPE_COLORMAP, serverClient, DixInstallAccess);
 
     if (!CMapAllocateColormapPrivate(pDefMap)) {

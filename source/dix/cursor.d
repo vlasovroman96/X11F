@@ -317,7 +317,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
     int rc = dixLookupResourceByType(cast(void**) &sourcefont, source, X11_RESTYPE_FONT,
                                  client, DixUseAccess);
     if ((rc != Success) || (!sourcefont)) {
-        client.errorValue = source;
+        client.errorValue = cast(uint)source;
         return rc;
     }
 
@@ -325,7 +325,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
     rc = dixLookupResourceByType(cast(void**) &maskfont, mask, X11_RESTYPE_FONT, client,
                                  DixUseAccess);
     if (rc != Success && mask != None) {
-        client.errorValue = mask;
+        client.errorValue = cast(uint)mask;
         return rc;
     }
 
@@ -353,7 +353,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
     else {
         CursorMetricRec cm = void;
         if (!CursorMetricsFromGlyph(sourcefont, sourceChar, &cm)) {
-            client.errorValue = sourceChar;
+            client.errorValue = cast(uint)sourceChar;
             return BadValue;
         }
 
@@ -367,7 +367,7 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
         }
         else {
             if (!CursorMetricsFromGlyph(maskfont, maskChar, &cm)) {
-                client.errorValue = maskChar;
+                client.errorValue = cast(uint)maskChar;
                 return BadValue;
             }
             if ((rc = ServerBitsFromGlyph(maskfont, maskChar, &cm, &mskbits)) != 0)
@@ -494,7 +494,7 @@ CursorPtr CreateRootCursor()
                          &curs, serverClient, cast(XID) 0) != Success)
         return NullCursor;
 
-    if (!AddResource(dixAllocServerXID(), X11_RESTYPE_CURSOR, cast(void*) curs))
+    if (!AddResource(cast(uint)dixAllocServerXID(), X11_RESTYPE_CURSOR, cast(void*) curs))
         return NullCursor;
 
     return curs;

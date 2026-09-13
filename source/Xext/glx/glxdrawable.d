@@ -39,6 +39,7 @@ import externs.X11.Xdefs;
 import include.pixmap;
 import glx.glxscreens_h;
 import Xext.glx.fix;
+alias XID = externs.X11.X.XID;
 
 /* We just need to avoid clashing with DRAWABLE_{WINDOW,PIXMAP} */
 enum {

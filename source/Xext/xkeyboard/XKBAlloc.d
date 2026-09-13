@@ -146,7 +146,7 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
         type = xkb.map.types;
         for (i = 0; i < xkb.map.num_types; i++, type++) {
             if (type.level_names is null) {
-                type.level_names = cast(ulong*)cast(ulong*)calloc(type.num_levels, Atom.sizeof);
+                type.level_names = cast(uint*)cast(ulong*)calloc(type.num_levels, Atom.sizeof);
                 if (type.level_names is null)
                     return BadAlloc;
             }
@@ -188,12 +188,12 @@ int XkbAllocNames(XkbDescPtr xkb, uint which, int nTotalRG, int nTotalAliases)
     }
     if ((which & XkbRGNamesMask) && (nTotalRG > 0)) {
         if (names.radio_groups is null) {
-            names.radio_groups = cast(ulong*)calloc(nTotalRG, Atom.sizeof);
+            names.radio_groups = cast(uint*)calloc(nTotalRG, Atom.sizeof);
         }
         else if (nTotalRG > names.num_rg) {
             Atom* prev_radio_groups = names.radio_groups;
 
-            names.radio_groups = cast(ulong*)reallocarray(names.radio_groups,
+            names.radio_groups = cast(uint*)reallocarray(names.radio_groups,
                                                nTotalRG, Atom.sizeof);
             if (names.radio_groups !is null) {
                 memset(&names.radio_groups[names.num_rg], 0,
@@ -231,7 +231,7 @@ void XkbFreeNames(XkbDescPtr xkb, uint which, Bool freeMap)
             type = map.types;
             for (i = 0; i < map.num_types; i++, type++) {
                 free(type.level_names);
-                type.level_names = cast(ulong*)null;
+                type.level_names = cast(uint*)null;
             }
         }
     }

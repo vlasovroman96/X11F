@@ -135,7 +135,7 @@ int ProcRRSelectInput(ClientPtr client)
              */
             clientResource = FakeClientID(client.index);
             pRREvent.clientResource = clientResource;
-            if (!AddResource(clientResource, RRClientType, cast(void*) pRREvent))
+            if (!AddResource(cast(uint)clientResource, RRClientType, cast(void*) pRREvent))
                 return BadAlloc;
             /*
              * create a resource to contain a pointer to the list
@@ -146,9 +146,9 @@ int ProcRRSelectInput(ClientPtr client)
             if (!pHead) {
                 pHead = cast(RREventPtr*) cast(RREventPtr*) calloc(1, RREventPtr.sizeof);
                 if (!pHead ||
-                    !AddResource(pWin.drawable.id, RREventType,
+                    !AddResource(cast(uint)pWin.drawable.id, RREventType,
                                  cast(void*) pHead)) {
-                    FreeResource(clientResource, X11_RESTYPE_NONE);
+                    FreeResource(cast(uint)clientResource, X11_RESTYPE_NONE);
                     return BadAlloc;
                 }
                 *pHead = null;
@@ -204,7 +204,7 @@ int ProcRRSelectInput(ClientPtr client)
                 pNewRREvent = pRREvent;
             }
             if (pRREvent) {
-                FreeResource(pRREvent.clientResource, RRClientType);
+                FreeResource(cast(uint)pRREvent.clientResource, RRClientType);
                 if (pNewRREvent)
                     pNewRREvent.next = pRREvent.next;
                 else
@@ -214,7 +214,7 @@ int ProcRRSelectInput(ClientPtr client)
         }
     }
     else {
-        client.errorValue = stuff.enable;
+        client.errorValue = cast(uint)stuff.enable;
         return BadValue;
     }
     return Success;

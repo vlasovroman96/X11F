@@ -101,7 +101,7 @@ int XkbAllocClientMap(XkbDescPtr xkb, uint which, uint nTotalTypes)
 
         if (map.syms is null) {
             map.size_syms = cast(ushort)((nKeys * 15) / 10);
-            map.syms = cast(ulong*)calloc(map.size_syms, KeySym.sizeof);
+            map.syms = cast(uint*)calloc(map.size_syms, KeySym.sizeof);
             if (!map.syms) {
                 map.size_syms = 0;
                 return BadAlloc;
@@ -229,7 +229,7 @@ private Status XkbCopyKeyType(XkbKeyTypePtr from, XkbKeyTypePtr into)
     free(into.preserve);
     into.preserve =   cast(_XkbMods*)null;
     free(into.level_names);
-    into.level_names =   cast(ulong*)null;
+    into.level_names =   cast(uint*)null;
     *into = *from;
     if ((from.map) && (into.map_count > 0)) {
         into.map =   cast(_XkbKTMapEntry*)calloc(into.map_count, XkbKTMapEntryRec.sizeof);
@@ -246,7 +246,7 @@ private Status XkbCopyKeyType(XkbKeyTypePtr from, XkbKeyTypePtr into)
                into.map_count * XkbModsRec.sizeof);
     }
     if ((from.level_names) && (into.num_levels > 0)) {
-        into.level_names =   cast(ulong*)calloc(into.num_levels, Atom.sizeof);
+        into.level_names =   cast(uint*)calloc(into.num_levels, Atom.sizeof);
         if (!into.level_names)
             return BadAlloc;
         memcpy(into.level_names, from.level_names,
@@ -328,7 +328,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
     if ((new_num_lvls > type.num_levels) || (type.level_names is null)) {
         Atom* prev_level_names = type.level_names;
 
-        type.level_names = cast(ulong*)reallocarray(type.level_names,
+        type.level_names = cast(uint*)reallocarray(type.level_names,
                                          new_num_lvls, Atom.sizeof);
         if (!type.level_names) {
             free(prev_level_names);
@@ -417,7 +417,7 @@ int XkbResizeKeyType(XkbDescPtr xkb, int type_ndx, int map_count, Bool want_pres
             }
             type.num_levels = cast(ubyte)new_num_lvls;
             free(xkb.map.syms);
-            xkb.map.syms = cast(ulong*)newSyms;
+            xkb.map.syms = cast(uint*)newSyms;
             xkb.map.num_syms = cast(ushort)nSyms;
             return Success;
         }
@@ -520,7 +520,7 @@ KeySym* XkbResizeKeySyms(XkbDescPtr xkb, int key, int needed)
         nSyms += nKeySyms;
     }
     free(xkb.map.syms);
-    xkb.map.syms = cast(ulong*)newSyms;
+    xkb.map.syms = cast(uint*)newSyms;
     xkb.map.num_syms = cast(ushort)nSyms;
     return &xkb.map.syms[xkb.map.key_sym_map[key].offset];
 }
@@ -796,7 +796,7 @@ void XkbFreeClientMap(XkbDescPtr xkb, uint what, Bool freeMap)
                     type.preserve = cast(_XkbMods*)null;
                     type.map_count = cast(ubyte)cast(ubyte*)0;
                     free(type.level_names);
-                    type.level_names = cast(ulong*)null;
+                    type.level_names = cast(uint*)null;
                 }
             }
             free(map.types);
@@ -810,7 +810,7 @@ void XkbFreeClientMap(XkbDescPtr xkb, uint what, Bool freeMap)
         if (map.syms !is null) {
             free(map.syms);
             map.size_syms = map.num_syms = 0;
-            map.syms = cast(ulong*)null;
+            map.syms = cast(uint*)null;
         }
     }
     if ((what & XkbModifierMapMask) && (map.modmap !is null)) {

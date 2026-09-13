@@ -114,7 +114,7 @@ RROutputPtr RROutputCreate(ScreenPtr pScreen, const(char)* name, int nameLength,
     output.subpixelOrder = SubPixelUnknown;
     output.devPrivate = devPrivate;
 
-    if (!AddResource(output.id, RROutputType, cast(void*) output))
+    if (!AddResource(cast(uint)output.id, RROutputType, cast(void*) output))
         return null;
 
     pScrPriv.outputs[pScrPriv.numOutputs++] = output;
@@ -369,7 +369,7 @@ void RRDeliverOutputEvent(ClientPtr client, WindowPtr pWin, RROutputPtr output)
  */
 void RROutputDestroy(RROutputPtr output)
 {
-    FreeResource(output.id, 0);
+    FreeResource(cast(uint)output.id, 0);
 }
 
 private int RROutputDestroyResource(void* value, XID pid)
@@ -581,11 +581,11 @@ int ProcRRSetOutputPrimary(ClientPtr client)
             return BadAccess;
 
         if (!output.pScreen.isGPU && output.pScreen != pWin.drawable.pScreen) {
-            client.errorValue = stuff.window;
+            client.errorValue = cast(uint)stuff.window;
             return BadMatch;
         }
         if (output.pScreen.isGPU && output.pScreen.current_primary != pWin.drawable.pScreen) {
-            client.errorValue = stuff.window;
+            client.errorValue = cast(uint)stuff.window;
             return BadMatch;
         }
     }

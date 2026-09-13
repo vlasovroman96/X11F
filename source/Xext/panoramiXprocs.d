@@ -166,7 +166,7 @@ int PanoramiXCreateWindow(ClientPtr client)
     }));
 
     if (result == Success)
-        AddResource(newWin.info[0].id, XRT_WINDOW, newWin);
+        AddResource(cast(uint)newWin.info[0].id, XRT_WINDOW, newWin);
     else
         free(newWin);
 
@@ -702,7 +702,7 @@ int PanoramiXCreatePixmap(ClientPtr client)
     mixin(REQUEST!xCreatePixmapReq);
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreatePixmapReq);
-    client.errorValue = stuff.pid;
+    client.errorValue = cast(uint)stuff.pid;
 
     result = dixLookupResourceByClass(cast(void**) &refDraw, stuff.drawable,
                                       XRC_DRAWABLE, client, DixReadAccess);
@@ -725,7 +725,7 @@ int PanoramiXCreatePixmap(ClientPtr client)
     }));
 
     if (result == Success)
-        AddResource(newPix.info[0].id, XRT_PIXMAP, newPix);
+        AddResource(cast(uint)newPix.info[0].id, XRT_PIXMAP, newPix);
     else
         free(newPix);
 
@@ -741,7 +741,7 @@ int PanoramiXFreePixmap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
-    client.errorValue = stuff.id;
+    client.errorValue = cast(uint)stuff.id;
 
     result = dixLookupResourceByType(cast(void**) &pix, stuff.id, XRT_PIXMAP,
                                      client, DixDestroyAccess);
@@ -776,7 +776,7 @@ int PanoramiXCreateGC(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreateGCReq);
 
-    client.errorValue = stuff.gc;
+    client.errorValue = cast(uint)stuff.gc;
     len = cast(int)(client.req_len - bytes_to_int32(xCreateGCReq.sizeof));
     if (Ones(stuff.mask) != len)
         return BadLength;
@@ -835,7 +835,7 @@ int PanoramiXCreateGC(ClientPtr client)
     }));
 
     if (result == Success)
-        AddResource(newGC.info[0].id, XRT_GC, newGC);
+        AddResource(cast(uint)newGC.info[0].id, XRT_GC, newGC);
     else
         free(newGC);
 
@@ -1131,7 +1131,7 @@ int PanoramiXCopyArea(ClientPtr client)
             stuff.gc = cast(uint)gc.info[walkScreenIdx].id;
             mixin(VALIDATE_DRAWABLE_AND_GC!("dst.info[walkScreenIdx].id", "pDst", "DixWriteAccess"));
             if (drawables[0].depth != pDst.depth) {
-                client.errorValue = stuff.dstDrawable;
+                client.errorValue = cast(uint)stuff.dstDrawable;
                 free(data);
                 return BadMatch;
             }
@@ -1227,7 +1227,7 @@ int PanoramiXCopyArea(ClientPtr client)
 
                 if ((pDst.pScreen != pSrc.pScreen) ||
                     (pDst.depth != pSrc.depth)) {
-                    client.errorValue = stuff.dstDrawable;
+                    client.errorValue = cast(uint)stuff.dstDrawable;
                     return BadMatch;
                 }
             }
@@ -1335,7 +1335,7 @@ int PanoramiXCopyPlane(ClientPtr client)
                 return rc;
 
             if (pdstDraw.pScreen != psrcDraw.pScreen) {
-                client.errorValue = stuff.dstDrawable;
+                client.errorValue = cast(uint)stuff.dstDrawable;
                 return BadMatch;
             }
         }
@@ -1344,7 +1344,7 @@ int PanoramiXCopyPlane(ClientPtr client)
 
         if (stuff.bitPlane == 0 || (stuff.bitPlane & (stuff.bitPlane - 1)) ||
             (stuff.bitPlane > (1L << (psrcDraw.depth - 1)))) {
-            client.errorValue = stuff.bitPlane;
+            client.errorValue = cast(uint)stuff.bitPlane;
             return BadValue;
         }
 
@@ -1968,7 +1968,7 @@ int PanoramiXGetImage(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xGetImageReq);
 
     if ((stuff.format != XYPixmap) && (stuff.format != ZPixmap)) {
-        client.errorValue = stuff.format;
+        client.errorValue = cast(uint)stuff.format;
         return BadValue;
     }
 
@@ -2324,7 +2324,7 @@ int PanoramiXCreateColormap(ClientPtr client)
     }));
 
     if (result == Success)
-        AddResource(newCmap.info[0].id, XRT_COLORMAP, newCmap);
+        AddResource(cast(uint)newCmap.info[0].id, XRT_COLORMAP, newCmap);
     else
         free(newCmap);
 
@@ -2340,7 +2340,7 @@ int PanoramiXFreeColormap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
-    client.errorValue = stuff.id;
+    client.errorValue = cast(uint)stuff.id;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.id, XRT_COLORMAP,
                                      client, DixDestroyAccess);
@@ -2369,7 +2369,7 @@ int PanoramiXCopyColormapAndFree(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xCopyColormapAndFreeReq);
 
-    client.errorValue = stuff.srcCmap;
+    client.errorValue = cast(uint)stuff.srcCmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.srcCmap,
                                      XRT_COLORMAP, client,
@@ -2392,7 +2392,7 @@ int PanoramiXCopyColormapAndFree(ClientPtr client)
     }));
 
     if (result == Success)
-        AddResource(newCmap.info[0].id, XRT_COLORMAP, newCmap);
+        AddResource(cast(uint)newCmap.info[0].id, XRT_COLORMAP, newCmap);
     else
         free(newCmap);
 
@@ -2407,7 +2407,7 @@ int PanoramiXInstallColormap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
-    client.errorValue = stuff.id;
+    client.errorValue = cast(uint)stuff.id;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.id, XRT_COLORMAP,
                                      client, DixReadAccess);
@@ -2432,7 +2432,7 @@ int PanoramiXUninstallColormap(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xResourceReq);
 
-    client.errorValue = stuff.id;
+    client.errorValue = cast(uint)stuff.id;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.id, XRT_COLORMAP,
                                      client, DixReadAccess);
@@ -2464,7 +2464,7 @@ int PanoramiXAllocColor(ClientPtr client)
         swaps(&stuff.blue);
     }
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);
@@ -2517,7 +2517,7 @@ int PanoramiXAllocNamedColor(ClientPtr client)
 
     mixin(REQUEST_FIXED_SIZE!("xAllocNamedColorReq", "stuff.nbytes"));
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);
@@ -2543,7 +2543,7 @@ int PanoramiXAllocColorCells(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xAllocColorCellsReq);
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);
@@ -2569,7 +2569,7 @@ int PanoramiXAllocColorPlanes(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xAllocColorPlanesReq);
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);
@@ -2595,7 +2595,7 @@ int PanoramiXFreeColors(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xFreeColorsReq);
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);
@@ -2619,7 +2619,7 @@ int PanoramiXStoreColors(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xStoreColorsReq);
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);
@@ -2645,7 +2645,7 @@ int PanoramiXStoreNamedColor(ClientPtr client)
 
     mixin(REQUEST_FIXED_SIZE!("xStoreNamedColorReq", "stuff.nbytes"));
 
-    client.errorValue = stuff.cmap;
+    client.errorValue = cast(uint)stuff.cmap;
 
     result = dixLookupResourceByType(cast(void**) &cmap, stuff.cmap,
                                      XRT_COLORMAP, client, DixWriteAccess);

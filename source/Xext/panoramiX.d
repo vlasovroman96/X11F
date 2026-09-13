@@ -841,7 +841,7 @@ private void PanoramiXMaybeAddVisual(VisualPtr pVisual)
 
     for (k = 0; k < PanoramiXNumDepths; k++) {
         if (PanoramiXDepths[k].depth == pVisual.nplanes) {
-            PanoramiXDepths[k].vids = cast(ulong*)XNFreallocarray(PanoramiXDepths[k].vids,
+            PanoramiXDepths[k].vids = cast(uint*)XNFreallocarray(PanoramiXDepths[k].vids,
                                                       PanoramiXDepths[k].numVids + 1,
                                                       VisualID.sizeof);
             PanoramiXDepths[k].vids[PanoramiXDepths[k].numVids] = pVisual.vid;
@@ -886,18 +886,18 @@ void PanoramiXConsolidate()
     saver.type = XRT_WINDOW;
 
     mixin(XINERAMA_FOR_EACH_SCREEN_BACKWARD!(q{
-        root.info[walkScreenIdx].id = walkScreen.root.drawable.id;
+        root.info[walkScreenIdx].id = cast(uint)walkScreen.root.drawable.id;
         root.u.win.class_ = InputOutput;
         root.u.win.root = TRUE;
         saver.info[walkScreenIdx].id = walkScreen.screensaver.wid;
         saver.u.win.class_ = InputOutput;
         saver.u.win.root = TRUE;
-        defmap.info[walkScreenIdx].id = walkScreen.defColormap;
+        defmap.info[walkScreenIdx].id = cast(uint)walkScreen.defColormap;
     }));
 
-    AddResource(root.info[0].id, XRT_WINDOW, root);
-    AddResource(saver.info[0].id, XRT_WINDOW, saver);
-    AddResource(defmap.info[0].id, XRT_COLORMAP, defmap);
+    AddResource(cast(uint)root.info[0].id, XRT_WINDOW, root);
+    AddResource(cast(uint)saver.info[0].id, XRT_WINDOW, saver);
+    AddResource(cast(uint)defmap.info[0].id, XRT_COLORMAP, defmap);
 }
 
 VisualID PanoramiXTranslateVisualID(int screen, VisualID orig)

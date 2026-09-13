@@ -206,7 +206,7 @@ private int ProcCompositeCreateRegionFromBorderClip(ClientPtr client)
 
     RegionTranslate(pRegion, -pWin.drawable.x, -pWin.drawable.y);
 
-    if (!AddResource(stuff.region, RegionResType, cast(void*) pRegion))
+    if (!AddResource(cast(uint)stuff.region, RegionResType, cast(void*) pRegion))
         return BadAlloc;
 
     return Success;
@@ -246,13 +246,13 @@ private int SingleCompositeNameWindowPixmap(ClientPtr client, xCompositeNameWind
 
     ++pPixmap.refcnt;
 
-    if (!AddResource(stuff.pixmap, X11_RESTYPE_PIXMAP, cast(void*) pPixmap))
+    if (!AddResource(cast(uint)stuff.pixmap, X11_RESTYPE_PIXMAP, cast(void*) pPixmap))
         return BadAlloc;
 
     if (pScreen.NameWindowPixmap) {
         rc = pScreen.NameWindowPixmap(pWin, pPixmap, stuff.pixmap);
         if (rc != Success) {
-            FreeResource(stuff.pixmap, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)stuff.pixmap, X11_RESTYPE_NONE);
             return rc;
         }
     }
@@ -281,7 +281,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
     CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
     if (cs.pOverlayWin is null)
         if (!compCreateOverlayWindow(pScreen)) {
-            FreeResource(pOc.resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pOc.resource, X11_RESTYPE_NONE);
             return BadAlloc;
         }
 
@@ -292,7 +292,7 @@ private int SingleCompositeGetOverlayWindow(ClientPtr client, xCompositeGetOverl
                                     null,
                                     DixGetAttrAccess);
     if (rc != Success) {
-        FreeResource(pOc.resource, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pOc.resource, X11_RESTYPE_NONE);
         return rc;
     }
 
@@ -320,7 +320,7 @@ private int SingleCompositeReleaseOverlayWindow(ClientPtr client, xCompositeRele
         return BadMatch;
 
     /* The delete function will free the client structure */
-    FreeResource(pOc.resource, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)pOc.resource, X11_RESTYPE_NONE);
 
     return Success;
 }
@@ -457,7 +457,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess)) != 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -488,7 +488,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess))!= 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -519,7 +519,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess))!= 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -550,7 +550,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess))!= 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -585,7 +585,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess))!= 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -603,7 +603,7 @@ static if(XINERAMA){
                                      X11_RESTYPE_WINDOW, client,
                                      DixGetAttrAccess);
         if (rc != Success) {
-            client.errorValue = stuff.window;
+            client.errorValue = cast(uint)stuff.window;
             free(newPix);
             return rc;
         }
@@ -625,7 +625,7 @@ static if(XINERAMA){
             return BadMatch;
         }
 
-        if (!AddResource(newPix.info[walkScreenIdx].id, X11_RESTYPE_PIXMAP, cast(void*) pPixmap)) {
+        if (!AddResource(cast(uint)newPix.info[walkScreenIdx].id, X11_RESTYPE_PIXMAP, cast(void*) pPixmap)) {
             free(newPix);
             return BadAlloc;
         }
@@ -633,7 +633,7 @@ static if(XINERAMA){
         ++pPixmap.refcnt;
     }));
 
-    if (!AddResource(stuff.pixmap, XRT_PIXMAP, cast(void*) newPix))
+    if (!AddResource(cast(uint)stuff.pixmap, XRT_PIXMAP, cast(void*) newPix))
         return BadAlloc;
 
     return Success;
@@ -659,7 +659,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess))!= 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -677,7 +677,7 @@ static if(XINERAMA){
                                      X11_RESTYPE_WINDOW, client,
                                      DixGetAttrAccess);
         if (rc != Success) {
-            client.errorValue = stuff.window;
+            client.errorValue = cast(uint)stuff.window;
             free(overlayWin);
             return rc;
         }
@@ -695,7 +695,7 @@ static if(XINERAMA){
         cs = mixin(GetCompScreen!("pScreen"));
         if (cs.pOverlayWin is null)
             if (!compCreateOverlayWindow(pScreen)) {
-                FreeResource(pOc.resource, X11_RESTYPE_NONE);
+                FreeResource(cast(uint)pOc.resource, X11_RESTYPE_NONE);
                 free(overlayWin);
                 return BadAlloc;
             }
@@ -705,7 +705,7 @@ static if(XINERAMA){
                       X11_RESTYPE_WINDOW, cs.pOverlayWin, X11_RESTYPE_NONE, null,
                       DixGetAttrAccess);
         if (rc != Success) {
-            FreeResource(pOc.resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pOc.resource, X11_RESTYPE_NONE);
             free(overlayWin);
             return rc;
         }
@@ -717,7 +717,7 @@ static if(XINERAMA){
             overlayWin.info[walkScreenIdx].id = cs.pOverlayWin.drawable.id;
         }));
 
-        AddResource(overlayWin.info[0].id, XRT_WINDOW, overlayWin);
+        AddResource(cast(uint)overlayWin.info[0].id, XRT_WINDOW, overlayWin);
     }
 
     cs = mixin(GetCompScreen!("dixGetMasterScreen()"));
@@ -750,7 +750,7 @@ static if(XINERAMA){
 
     if ((rc = dixLookupResourceByType(cast(void**) &win, stuff.window, XRT_WINDOW,
                                       client, DixUnknownAccess)) != 0) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
 
@@ -758,7 +758,7 @@ static if(XINERAMA){
         if ((rc = dixLookupResourceByType(cast(void**) &pWin, win.info[walkScreenIdx].id,
                                           XRT_WINDOW, client,
                                           DixUnknownAccess))!= 0) {
-            client.errorValue = stuff.window;
+            client.errorValue = cast(uint)stuff.window;
             return rc;
         }
         pOc = compFindOverlayClient(pWin.drawable.pScreen, client);
@@ -766,7 +766,7 @@ static if(XINERAMA){
             return BadMatch;
 
         /* The delete function will free the client structure */
-        FreeResource(pOc.resource, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pOc.resource, X11_RESTYPE_NONE);
     }));
 
     return Success;

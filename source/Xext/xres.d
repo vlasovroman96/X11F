@@ -236,7 +236,7 @@ private int ProcXResQueryClientResources(ClientPtr client)
     if ((!resClient) ||
         (dixCallClientAccessCallback(client, resClient, DixReadAccess)
                               != Success)) {
-        client.errorValue = stuff.xid;
+        client.errorValue = cast(uint)stuff.xid;
         return BadValue;
     }
 
@@ -292,7 +292,7 @@ private int ProcXResQueryClientPixmapBytes(ClientPtr client)
     if ((!owner) ||
         (dixCallClientAccessCallback(client, owner, DixReadAccess)
                               != Success)) {
-        client.errorValue = stuff.xid;
+        client.errorValue = cast(uint)stuff.xid;
         return BadValue;
     }
 
@@ -302,8 +302,8 @@ private int ProcXResQueryClientPixmapBytes(ClientPtr client)
 
     version(_XSERVER64) {
         xXResQueryClientPixmapBytesReply reply = {
-            bytes: bytes,
-            .bytes_overflow = bytes >> 32
+            bytes: cast(uint)bytes,
+            bytes_overflow: bytes >> 32
         };
     }
     else {

@@ -251,7 +251,7 @@ int __glXDispSwap_CreatePixmap(__GLXclientState* cl, GLbyte* pc)
     swapl(&req.numAttribs);
 
     if (req.numAttribs > (UINT32_MAX >> 3)) {
-        client.errorValue = req.numAttribs;
+        client.errorValue = cast(uint)req.numAttribs;
         return BadValue;
     }
     mixin(REQUEST_FIXED_SIZE!("xGLXCreatePixmapReq", "req.numAttribs << 3"));
@@ -324,7 +324,7 @@ int __glXDispSwap_CreatePbuffer(__GLXclientState* cl, GLbyte* pc)
     swapl(&req.numAttribs);
 
     if (req.numAttribs > (UINT32_MAX >> 3)) {
-        client.errorValue = req.numAttribs;
+        client.errorValue = cast(uint)req.numAttribs;
         return BadValue;
     }
     mixin(REQUEST_FIXED_SIZE!("xGLXCreatePbufferReq", "req.numAttribs << 3"));
@@ -383,7 +383,7 @@ int __glXDispSwap_ChangeDrawableAttributes(__GLXclientState* cl, GLbyte* pc)
     swapl(&req.numAttribs);
 
     if (req.numAttribs > (UINT32_MAX >> 3)) {
-        client.errorValue = req.numAttribs;
+        client.errorValue = cast(uint)req.numAttribs;
         return BadValue;
     }
     if (((((xGLXChangeDrawableAttributesReq).sizeof +
@@ -408,7 +408,7 @@ int __glXDispSwap_ChangeDrawableAttributesSGIX(__GLXclientState* cl, GLbyte* pc)
     swapl(&req.numAttribs);
 
     if (req.numAttribs > (UINT32_MAX >> 3)) {
-        client.errorValue = req.numAttribs;
+        client.errorValue = cast(uint)req.numAttribs;
         return BadValue;
     }
     mixin(REQUEST_FIXED_SIZE!("xGLXChangeDrawableAttributesSGIXReq",
@@ -435,7 +435,7 @@ int __glXDispSwap_CreateWindow(__GLXclientState* cl, GLbyte* pc)
     swapl(&req.numAttribs);
 
     if (req.numAttribs > (UINT32_MAX >> 3)) {
-        client.errorValue = req.numAttribs;
+        client.errorValue = cast(uint)req.numAttribs;
         return BadValue;
     }
     mixin(REQUEST_FIXED_SIZE!("xGLXCreateWindowReq", "req.numAttribs << 3"));
@@ -683,7 +683,7 @@ int __glXDispSwap_VendorPrivate(__GLXclientState* cl, GLbyte* pc)
         return (*proc) (cl, cast(GLbyte*) req);
     }
 
-    cl.client.errorValue = req.vendorCode;
+    cl.client.errorValue = cast(uint)req.vendorCode;
     return __glXError(GLXUnsupportedPrivateRequest);
 }
 
@@ -709,6 +709,6 @@ int __glXDispSwap_VendorPrivateWithReply(__GLXclientState* cl, GLbyte* pc)
         return (*proc) (cl, cast(GLbyte*) req);
     }
 
-    cl.client.errorValue = req.vendorCode;
+    cl.client.errorValue = cast(uint)req.vendorCode;
     return __glXError(GLXUnsupportedPrivateRequest);
 }

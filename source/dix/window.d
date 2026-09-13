@@ -600,8 +600,8 @@ Bool CreateRootWindow(ScreenPtr pScreen)
     pWin.optional.inputShape = null;
     pWin.optional.inputMasks = null;
     pWin.optional.deviceCursors = null;
-    pWin.optional.colormap = pScreen.defColormap;
-    pWin.optional.visual = pScreen.rootVisual;
+    pWin.optional.colormap = cast(uint)pScreen.defColormap;
+    pWin.optional.visual = cast(uint)cast(uint)pScreen.rootVisual;
 
     pWin.nextSib = NullWindow;
 
@@ -622,7 +622,7 @@ Bool CreateRootWindow(ScreenPtr pScreen)
     RegionInit(&pWin.borderClip, &box, 1);
 
     pWin.drawable.class_ = InputOutput;
-    pWin.optional.visual = pScreen.rootVisual;
+    pWin.optional.visual = cast(uint)pScreen.rootVisual;
 
     pWin.backgroundState = BackgroundPixel;
     pWin.background.pixel = pScreen.whitePixel;
@@ -637,7 +637,7 @@ Bool CreateRootWindow(ScreenPtr pScreen)
                  X11_RESTYPE_WINDOW, pWin, X11_RESTYPE_NONE, null, DixCreateAccess))
         return FALSE;
 
-    if (!AddResource(pWin.drawable.id, X11_RESTYPE_WINDOW, cast(void*) pWin))
+    if (!AddResource(cast(uint)pWin.drawable.id, X11_RESTYPE_WINDOW, cast(void*) pWin))
         return FALSE;
 
     if (disableBackingStore)
@@ -755,7 +755,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
 
     if ((class_ != InputOutput) && (class_ != InputOnly)) {
         *error = BadValue;
-        client.errorValue = class_;
+        client.errorValue = cast(uint)class_;
         return NullWindow;
     }
 
@@ -835,7 +835,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
             *error = BadAlloc;
             return NullWindow;
         }
-        pWin.optional.visual = visual;
+        pWin.optional.visual = cast(uint)visual;
         pWin.optional.colormap = None;
     }
 
@@ -1018,7 +1018,7 @@ private void CrushTree(WindowPtr pWin)
                 event.u.destroyNotify.window = cast(uint)pChild.drawable.id;
                 DeliverEvents(pChild, &event, 1, NullWindow);
             }
-            FreeResource(pChild.drawable.id, X11_RESTYPE_WINDOW);
+            FreeResource(cast(uint)pChild.drawable.id, X11_RESTYPE_WINDOW);
             pSib = pChild.nextSib;
             pChild.viewable = FALSE;
             if (pChild.realized) {
@@ -1095,7 +1095,7 @@ int DestroySubwindows(WindowPtr pWin, ClientPtr client)
 
         if (rc != Success)
             return rc;
-        FreeResource(pWin.lastChild.drawable.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pWin.lastChild.drawable.id, X11_RESTYPE_NONE);
     }
     return Success;
 }
@@ -1204,7 +1204,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                 }
                 else {
                     error = rc;
-                    client.errorValue = pixID;
+                    client.errorValue = cast(uint)pixID;
                     goto PatchUp;
                 }
             }
@@ -1258,7 +1258,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             }
             else {
                 error = rc;
-                client.errorValue = pixID;
+                client.errorValue = cast(uint)pixID;
                 goto PatchUp;
             }
             break;
@@ -1277,7 +1277,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             if (val > StaticGravity) {
                 error = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)val;
                 goto PatchUp;
             }
             pWin.bitGravity = val;
@@ -1287,7 +1287,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             if (val > StaticGravity) {
                 error = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)val;
                 goto PatchUp;
             }
             pWin.winGravity = val;
@@ -1297,7 +1297,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             if ((val != NotUseful) && (val != WhenMapped) && (val != Always)) {
                 error = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)val;
                 goto PatchUp;
             }
             /* if we're not actually changing the window's state, hide
@@ -1337,7 +1337,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             if ((val != xTrue) && (val != xFalse)) {
                 error = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)val;
                 goto PatchUp;
             }
             pWin.saveUnder = val;
@@ -1364,7 +1364,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             pVlist++;
             if ((val != xTrue) && (val != xFalse)) {
                 error = BadValue;
-                client.errorValue = val;
+                client.errorValue = cast(uint)val;
                 goto PatchUp;
             }
             if (val == xTrue) {
@@ -1372,7 +1372,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                               X11_RESTYPE_WINDOW, pWin, X11_RESTYPE_NONE, null, DixGrabAccess);
                 if (rc != Success) {
                     error = rc;
-                    client.errorValue = pWin.drawable.id;
+                    client.errorValue = cast(uint)pWin.drawable.id;
                     goto PatchUp;
                 }
             }
@@ -1398,7 +1398,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                                          client, DixUseAccess);
             if (rc != Success) {
                 error = rc;
-                client.errorValue = cmap;
+                client.errorValue = cast(uint)cmap;
                 goto PatchUp;
             }
             if (pCmap.pVisual.vid != mixin(wVisual!("pWin")) ||
@@ -1468,7 +1468,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
                                              X11_RESTYPE_CURSOR, client, DixUseAccess);
                 if (rc != Success) {
                     error = rc;
-                    client.errorValue = cursorID;
+                    client.errorValue = cast(uint)cursorID;
                     goto PatchUp;
                 }
             }
@@ -1533,7 +1533,7 @@ int ChangeWindowAttributes(WindowPtr pWin, Mask vmask, XID* vlist, ClientPtr cli
             break;
         default:
             error = BadValue;
-            client.errorValue = vmask;
+            client.errorValue = cast(uint)vmask;
             goto PatchUp;
         }
         vmaskCopy |= index2;
@@ -2186,7 +2186,7 @@ enum REBORDER_WIN =   3;
         mixin(GET_CARD16!(`CWWidth`, `w`));
         mixin(GET_CARD16!(`CWHeight`, `h`));
         if (!w || !h) {
-            client.errorValue = 0;
+            client.errorValue = cast(uint)0;
             return BadValue;
         }
         action = RESIZE_WIN;
@@ -2204,7 +2204,7 @@ enum REBORDER_WIN =   3;
             pVlist++;
             rc = dixLookupWindow(&pSib, sibwid, client, DixGetAttrAccess);
             if (rc != Success) {
-                client.errorValue = sibwid;
+                client.errorValue = cast(uint)sibwid;
                 return rc;
             }
             if (pSib.parent != pParent)
@@ -2216,12 +2216,12 @@ enum REBORDER_WIN =   3;
             mixin(GET_CARD8!(`CWStackMode`, `smode`));
             if ((smode != TopIf) && (smode != BottomIf) &&
                 (smode != Opposite) && (smode != Above) && (smode != Below)) {
-                client.errorValue = smode;
+                client.errorValue = cast(uint)smode;
                 return BadValue;
             }
             break;
         default:
-            client.errorValue = mask;
+            client.errorValue = cast(uint)mask;
             return BadValue;
         }
     }
@@ -2323,7 +2323,7 @@ version (ROOTLESS) {} else {
             (*pWin.drawable.pScreen.ConfigNotify) (pWin, x, y, w, h, bw,
                                                      pSib);
         if (ret) {
-            client.errorValue = 0;
+            client.errorValue = cast(uint)0;
             return ret;
         }
     }
@@ -3091,7 +3091,7 @@ int dixSaveScreens(ClientPtr client, int on, int mode)
             }
             else if (HasSaverWindow(walkScreen)) {
                 walkScreen.screensaver.pWindow = NullWindow;
-                FreeResource(walkScreen.screensaver.wid, X11_RESTYPE_NONE);
+                FreeResource(cast(uint)walkScreen.screensaver.wid, X11_RESTYPE_NONE);
             }
             break;
         case SCREEN_SAVER_CYCLE:
@@ -3176,11 +3176,11 @@ private Bool TileScreenSaver(ScreenPtr pScreen, int kind)
     case SCREEN_IS_TILED:
         switch (pScreen.root.backgroundState) {
         case BackgroundPixel:
-            attributes[attri++] = pScreen.root.background.pixel;
+            attributes[attri++] = cast(uint)pScreen.root.background.pixel;
             mask |= CWBackPixel;
             break;
         case BackgroundPixmap:
-            attributes[attri++] = None;
+            attributes[attri++] = cast(uint)None;
             mask |= CWBackPixmap;
             break;
         default:
@@ -3188,7 +3188,7 @@ private Bool TileScreenSaver(ScreenPtr pScreen, int kind)
         }
         break;
     case SCREEN_IS_BLACK:
-        attributes[attri++] = pScreen.root.drawable.pScreen.blackPixel;
+        attributes[attri++] = cast(uint)pScreen.root.drawable.pScreen.blackPixel;
         mask |= CWBackPixel;
         break;
     default: break;}
@@ -3217,7 +3217,7 @@ private Bool TileScreenSaver(ScreenPtr pScreen, int kind)
                                  &cursor, serverClient, cast(XID) 0);
         if (cursor) {
             cursorID = dixAllocServerXID();
-            if (AddResource(cursorID, X11_RESTYPE_CURSOR, cast(void*) cursor)) {
+            if (AddResource(cast(uint)cursorID, X11_RESTYPE_CURSOR, cast(void*) cursor)) {
                 attributes[attri] = cursorID;
                 mask |= CWCursor;
             }
@@ -3240,12 +3240,12 @@ private Bool TileScreenSaver(ScreenPtr pScreen, int kind)
                      mixin(wVisual!("pScreen.root")), &result);
 
     if (cursor)
-        FreeResource(cursorID, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)cursorID, X11_RESTYPE_NONE);
 
     if (!pWin)
         return FALSE;
 
-    if (!AddResource(pWin.drawable.id, X11_RESTYPE_WINDOW,
+    if (!AddResource(cast(uint)pWin.drawable.id, X11_RESTYPE_WINDOW,
                      cast(void*) pScreen.screensaver.pWindow))
         return FALSE;
 

@@ -70,7 +70,7 @@ enum string VERIFY_DRI3_SYNCOBJ(string id, string ptr, string a) = `
         int rc = dixLookupResourceByType(cast(void**)&(` ~ ptr ~ `), ` ~ id ~ `,
                                          dri3_syncobj_type, client, ` ~ a ~ `);
         if (rc != Success) {
-            client.errorValue = ` ~ id ~ `;
+            client.errorValue = cast(uint)` ~ id ~ `;
             return rc;
         }
     } while (0);`;

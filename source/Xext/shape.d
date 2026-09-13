@@ -195,7 +195,7 @@ private int RegionOperate(ClientPtr client, WindowPtr pWin, int kind, RegionPtr*
                 RegionSubtract(*destRgnp, srcRgn, *destRgnp);
             break;
         default:
-            client.errorValue = op;
+            client.errorValue = cast(uint)op;
             return BadValue;
         }
     if (srcRgn)
@@ -266,12 +266,12 @@ private int ShapeRectangles(ClientPtr client, xShapeRectanglesReq* stuff)
         createDefault = &CreateBoundingShape;
         break;
     default:
-        client.errorValue = stuff.destKind;
+        client.errorValue = cast(uint)stuff.destKind;
         return BadValue;
     }
     if ((stuff.ordering != Unsorted) && (stuff.ordering != YSorted) &&
         (stuff.ordering != YXSorted) && (stuff.ordering != YXBanded)) {
-        client.errorValue = stuff.ordering;
+        client.errorValue = cast(uint)stuff.ordering;
         return BadValue;
     }
     nrects = cast(int)((client.req_len << 2) - xShapeRectanglesReq.sizeof);
@@ -363,7 +363,7 @@ private int ShapeMask(ClientPtr client, xShapeMaskReq* stuff)
         createDefault = &CreateBoundingShape;
         break;
     default:
-        client.errorValue = stuff.destKind;
+        client.errorValue = cast(uint)stuff.destKind;
         return BadValue;
     }
     pScreen = pWin.drawable.pScreen;
@@ -475,7 +475,7 @@ private int ShapeCombine(ClientPtr client, xShapeCombineReq* stuff)
         createDefault = &CreateBoundingShape;
         break;
     default:
-        client.errorValue = stuff.destKind;
+        client.errorValue = cast(uint)stuff.destKind;
         return BadValue;
     }
 
@@ -496,7 +496,7 @@ private int ShapeCombine(ClientPtr client, xShapeCombineReq* stuff)
         createSrc = &CreateBoundingShape;
         break;
     default:
-        client.errorValue = stuff.srcKind;
+        client.errorValue = cast(uint)stuff.srcKind;
         return BadValue;
     }
     if (pSrcWin.drawable.pScreen != pDestWin.drawable.pScreen) {
@@ -592,7 +592,7 @@ private int ShapeOffset(ClientPtr client, xShapeOffsetReq* stuff)
         srcRgn = mixin(wInputShape!("pWin"));
         break;
     default:
-        client.errorValue = stuff.destKind;
+        client.errorValue = cast(uint)stuff.destKind;
         return BadValue;
     }
     if (srcRgn) {
@@ -739,7 +739,7 @@ private int ProcShapeSelectInput(ClientPtr client)
         ShapeDelClientFromWin(pWin,client);
         break;
     default:
-        client.errorValue = stuff.enable;
+        client.errorValue = cast(uint)stuff.enable;
         return BadValue;
     }
     return Success;
@@ -873,7 +873,7 @@ private int ProcShapeGetRectangles(ClientPtr client)
         region = mixin(wInputShape!("pWin"));
         break;
     default:
-        client.errorValue = stuff.kind;
+        client.errorValue = cast(uint)stuff.kind;
         return BadValue;
     }
 

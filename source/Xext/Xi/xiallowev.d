@@ -144,7 +144,7 @@ int ProcXIAllowEvents(ClientPtr client)
     }
         break;
     default:
-        client.errorValue = mode;
+        client.errorValue = cast(uint)mode;
         ret = BadValue;
     }
 

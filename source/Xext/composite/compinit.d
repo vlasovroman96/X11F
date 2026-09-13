@@ -195,7 +195,7 @@ private Bool compRegisterAlternateVisuals(CompScreenPtr cs, VisualID* vids, int 
 {
     VisualID* p = void;
 
-    p = cast(ulong*)reallocarray(cs.alternateVisuals,
+    p = cast(VisualID*)reallocarray(cs.alternateVisuals,
                      cs.numAlternateVisuals + nVisuals, VisualID.sizeof);
     if (p is null)
         return FALSE;

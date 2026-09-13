@@ -109,7 +109,7 @@ int XICheckInvalidMaskBits(ClientPtr client, ubyte* mask, int len)
 
         for (i = XI2LASTEVENT + 1; i < len * 8; i++) {
             if (mixin(BitIsOn!("mask", "i"))) {
-                client.errorValue = i;
+                client.errorValue = cast(uint)i;
                 return BadValue;
             }
         }
@@ -181,7 +181,7 @@ int ProcXISelectEvents(ClientPtr client)
             ubyte* bits = cast(ubyte*) &evmask[1];
 
             if (mixin(BitIsOn!("bits", "XI_HierarchyChanged"))) {
-                client.errorValue = XI_HierarchyChanged;
+                client.errorValue = cast(uint)XI_HierarchyChanged;
                 return BadValue;
             }
         }
@@ -198,7 +198,7 @@ int ProcXISelectEvents(ClientPtr client)
                 mixin(BitIsOn!("bits", "XI_RawTouchBegin")) ||
                 mixin(BitIsOn!("bits", "XI_RawTouchUpdate")) ||
                 mixin(BitIsOn!("bits", "XI_RawTouchEnd"))) {
-                client.errorValue = XI_RawKeyPress;
+                client.errorValue = cast(uint)XI_RawKeyPress;
                 return BadValue;
             }
         }
@@ -214,7 +214,7 @@ int ProcXISelectEvents(ClientPtr client)
                 (!mixin(BitIsOn!("bits", "XI_TouchBegin")) ||
                  !mixin(BitIsOn!("bits", "XI_TouchUpdate")) ||
                  !mixin(BitIsOn!("bits", "XI_TouchEnd")))) {
-                client.errorValue = XI_TouchBegin;
+                client.errorValue = cast(uint)XI_TouchBegin;
                 return BadValue;
             }
 
@@ -225,7 +225,7 @@ int ProcXISelectEvents(ClientPtr client)
                 (!mixin(BitIsOn!("bits", "XI_GesturePinchBegin")) ||
                  !mixin(BitIsOn!("bits", "XI_GesturePinchUpdate")) ||
                  !mixin(BitIsOn!("bits", "XI_GesturePinchEnd")))) {
-                client.errorValue = XI_GesturePinchBegin;
+                client.errorValue = cast(uint)XI_GesturePinchBegin;
                 return BadValue;
             }
 
@@ -236,7 +236,7 @@ int ProcXISelectEvents(ClientPtr client)
                 (mixin(BitIsOn!("bits", "XI_GestureSwipeBegin")) ||
                  mixin(BitIsOn!("bits", "XI_GestureSwipeUpdate"))))
             {
-                client.errorValue = XI_GestureSwipeBegin;
+                client.errorValue = cast(uint)XI_GestureSwipeBegin;
                 return BadValue;
             }
 
@@ -247,7 +247,7 @@ int ProcXISelectEvents(ClientPtr client)
                 (!mixin(BitIsOn!("bits", "XI_GestureSwipeBegin")) ||
                  !mixin(BitIsOn!("bits", "XI_GestureSwipeUpdate")) ||
                  !mixin(BitIsOn!("bits", "XI_GestureSwipeEnd")))) {
-                client.errorValue = XI_GestureSwipeBegin;
+                client.errorValue = cast(uint)XI_GestureSwipeBegin;
                 return BadValue;
             }
 

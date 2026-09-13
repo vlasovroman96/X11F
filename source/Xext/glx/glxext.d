@@ -90,6 +90,8 @@ enum glxClientPrivateKey = (&glxClientPrivateKeyRec);
  * the dispatch layer will have moved the context struct to a fake resource ID
  * and cx here will be NULL. Otherwise we really free the context.
  */
+alias XID = externs.X11.X.XID;
+
 private int ContextGone(__GLXcontext* cx, XID id)
 {
     if (!cx)
@@ -169,7 +171,7 @@ Bool __glXAddContext(__GLXcontext* cx)
 {
     /* Register this context as a resource.
      */
-    if (!AddResource(cx.id, __glXContextRes, cast(void*)cx)) {
+    if (!AddResource(cast(uint)cx.id, __glXContextRes, cast(void*)cx)) {
 	return FALSE;
     }
 
@@ -592,14 +594,14 @@ __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* er
      */
     cx = __glXLookupContextByTag(cl, tag);
     if (!cx) {
-        cl.client.errorValue = tag;
+        cl.client.errorValue = cast(uint)tag;
         *error = __glXError(GLXBadContextTag);
         return null;
     }
 
     /* If we're expecting a glXRenderLarge request, this better be one. */
     if (cx.largeCmdRequestsSoFar != 0 && stuff.glxCode != X_GLXRenderLarge) {
-        client.errorValue = stuff.glxCode;
+        client.errorValue = cast(uint)stuff.glxCode;
         *error = __glXError(GLXBadLargeRequest);
         return null;
     }
@@ -636,7 +638,7 @@ __GLXcontext* __glXForceCurrent(__GLXclientState* cl, GLXContextTag tag, int* er
         if (!(*cx.makeCurrent) (cx)) {
             /* Bind failed, and set the error code.  Bummer */
             lastGLContext = null;
-            cl.client.errorValue = cx.id;
+            cl.client.errorValue = cast(uint)cx.id;
             *error = __glXError(GLXBadContextState);
             return null;
         }

@@ -194,6 +194,7 @@ XvAttributeRec[6] glamor_xv_attributes = [
     {0, 0, 0, null}
 ];
 int glamor_xv_num_attributes = ARRAY_SIZE!(glamor_xv_attributes) - 1;
+alias Atom = externs.X11.X.Atom;
 
 Atom glamorBrightness, glamorContrast, glamorSaturation, glamorHue, glamorColorspace, glamorGamma;
 

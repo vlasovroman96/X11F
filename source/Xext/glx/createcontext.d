@@ -154,13 +154,13 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
      * should be issued if the screen is nonsense.
      */
     if (!validGlxScreen(client, req.screen, &glxScreen, &err)) {
-        client.errorValue = req.fbconfig;
+        client.errorValue = cast(uint)req.fbconfig;
         return __glXError(GLXBadFBConfig);
     }
 
     if (req.fbconfig) {
         if (!validGlxFBConfig(client, glxScreen, req.fbconfig, &config, &err)) {
-            client.errorValue = req.fbconfig;
+            client.errorValue = cast(uint)req.fbconfig;
             return __glXError(GLXBadFBConfig);
         }
     }
@@ -177,7 +177,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
          * the other is 2 even though both are logically true.
          */
         if (!!req.isDirect != !!shareCtx.isDirect) {
-            client.errorValue = req.shareList;
+            client.errorValue = cast(uint)req.shareList;
             return BadMatch;
         }
 
@@ -188,7 +188,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
          *        <config>...BadMatch is generated."
          */
         if (glxScreen != shareCtx.pGlxScreen) {
-            client.errorValue = shareCtx.pGlxScreen.pScreen.myNum;
+            client.errorValue = cast(uint)shareCtx.pGlxScreen.pScreen.myNum;
             return BadMatch;
         }
     }
@@ -338,7 +338,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
      */
     if (!req.isDirect && (major_version > 1 || minor_version > 4
                            || profile == GLX_CONTEXT_ES2_PROFILE_BIT_EXT)) {
-        client.errorValue = req.fbconfig;
+        client.errorValue = cast(uint)req.fbconfig;
         return __glXError(GLXBadFBConfig);
     }
 
@@ -356,7 +356,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
          * errors.
          */
         if (!enableIndirectGLX) {
-            client.errorValue = req.isDirect;
+            client.errorValue = cast(uint)req.isDirect;
             return BadValue;
         }
 
@@ -383,7 +383,7 @@ int __glXDisp_CreateContextAttribsARB(__GLXclientState* cl, GLbyte* pc)
      */
     if (!__glXAddContext(ctx)) {
         (*ctx.destroy) (ctx);
-        client.errorValue = req.context;
+        client.errorValue = cast(uint)req.context;
         return BadAlloc;
     }
 

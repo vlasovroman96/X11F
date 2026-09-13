@@ -66,9 +66,9 @@ enum XMD_H = 1;
 // }
 
 version (__SIZEOF_LONG__) {
-static if (__SIZEOF_LONG__ == 8) {
+// static if (__SIZEOF_LONG__ == 8) {
 version = LONG64;				/* 32/64-bit architecture */
-}
+// }
 } else static if (HasVersion!"_LP64" || HasVersion!"__LP64__" || 
      HasVersion!"__alpha" || HasVersion!"__alpha__" || 
      HasVersion!"__ia64__" || HasVersion!"ia64" || 

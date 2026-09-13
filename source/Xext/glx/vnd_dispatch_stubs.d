@@ -45,7 +45,7 @@ int dispatch_Render(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = contextTag;
+        client.errorValue = cast(uint)contextTag;
         return GlxErrorBase + GLXBadContextTag;
     }
 }
@@ -62,7 +62,7 @@ int dispatch_RenderLarge(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = contextTag;
+        client.errorValue = cast(uint)contextTag;
         return GlxErrorBase + GLXBadContextTag;
     }
 }
@@ -88,7 +88,7 @@ int dispatch_CreateContext(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -108,7 +108,7 @@ int dispatch_DestroyContext(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = context;
+        client.errorValue = cast(uint)context;
         return GlxErrorBase + GLXBadContext;
     }
 }
@@ -125,7 +125,7 @@ int dispatch_WaitGL(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = contextTag;
+        client.errorValue = cast(uint)contextTag;
         return GlxErrorBase + GLXBadContextTag;
     }
 }
@@ -142,7 +142,7 @@ int dispatch_WaitX(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = contextTag;
+        client.errorValue = cast(uint)contextTag;
         return GlxErrorBase + GLXBadContextTag;
     }
 }
@@ -159,7 +159,7 @@ int dispatch_UseXFont(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = contextTag;
+        client.errorValue = cast(uint)contextTag;
         return GlxErrorBase + GLXBadContextTag;
     }
 }
@@ -185,7 +185,7 @@ int dispatch_CreateGLXPixmap(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -203,7 +203,7 @@ int dispatch_GetVisualConfigs(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -220,7 +220,7 @@ int dispatch_DestroyGLXPixmap(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = glxpixmap;
+        client.errorValue = cast(uint)glxpixmap;
         return GlxErrorBase + GLXBadPixmap;
     }
 }
@@ -238,7 +238,7 @@ int dispatch_QueryExtensionsString(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -256,7 +256,7 @@ int dispatch_QueryServerString(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -273,7 +273,7 @@ int dispatch_ChangeDrawableAttributes(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = drawable;
+        client.errorValue = cast(uint)drawable;
         return BadDrawable;
     }
 }
@@ -299,7 +299,7 @@ int dispatch_CreateNewContext(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -325,7 +325,7 @@ int dispatch_CreatePbuffer(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -351,7 +351,7 @@ int dispatch_CreatePixmap(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -377,7 +377,7 @@ int dispatch_CreateWindow(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -403,7 +403,7 @@ int dispatch_CreateContextAttribsARB(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -423,7 +423,7 @@ int dispatch_DestroyPbuffer(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = pbuffer;
+        client.errorValue = cast(uint)pbuffer;
         return GlxErrorBase + GLXBadPbuffer;
     }
 }
@@ -443,7 +443,7 @@ int dispatch_DestroyPixmap(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = glxpixmap;
+        client.errorValue = cast(uint)glxpixmap;
         return GlxErrorBase + GLXBadPixmap;
     }
 }
@@ -463,7 +463,7 @@ int dispatch_DestroyWindow(ClientPtr client)
         }
         return ret;
     } else {
-        client.errorValue = glxwindow;
+        client.errorValue = cast(uint)glxwindow;
         return GlxErrorBase + GLXBadWindow;
     }
 }
@@ -480,7 +480,7 @@ int dispatch_GetDrawableAttributes(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = drawable;
+        client.errorValue = cast(uint)drawable;
         return BadDrawable;
     }
 }
@@ -498,7 +498,7 @@ int dispatch_GetFBConfigs(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = screen;
+        client.errorValue = cast(uint)screen;
         return BadMatch;
     }
 }
@@ -515,7 +515,7 @@ int dispatch_QueryContext(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = context;
+        client.errorValue = cast(uint)context;
         return GlxErrorBase + GLXBadContext;
     }
 }
@@ -532,7 +532,7 @@ int dispatch_IsDirect(ClientPtr client)
         ret = glxServer.forwardRequest(vendor, client);
         return ret;
     } else {
-        client.errorValue = context;
+        client.errorValue = cast(uint)context;
         return GlxErrorBase + GLXBadContext;
     }
 }

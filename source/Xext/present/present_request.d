@@ -131,7 +131,7 @@ private int proc_present_pixmap_common(ClientPtr client,
     mixin(VERIFY_FENCE_OR_NONE!(`idle_fence`, `req_idle_fence`, `client`, `DixWriteAccess`));
 
     if (req_options & ~(PresentAllOptions)) {
-        client.errorValue = req_options;
+        client.errorValue = cast(uint)req_options;
         return BadValue;
     }
 
@@ -140,12 +140,12 @@ private int proc_present_pixmap_common(ClientPtr client,
      */
     if (req_divisor == 0) {
         if (req_remainder != 0) {
-            client.errorValue = cast(CARD32)req_remainder;
+            client.errorValue = cast(uint)cast(CARD32)req_remainder;
             return BadValue;
         }
     } else {
         if (req_remainder >= req_divisor) {
-            client.errorValue = cast(CARD32)req_remainder;
+            client.errorValue = cast(uint)cast(CARD32)req_remainder;
             return BadValue;
         }
     }
@@ -216,7 +216,7 @@ else {
     mixin(VERIFY_FENCE_OR_NONE!(`idle_fence`, `req_idle_fence`, `client`, `DixWriteAccess`));
 
     if (req_options & ~(PresentAllOptions)) {
-        client.errorValue = req_options;
+        client.errorValue = cast(uint)req_options;
         return BadValue;
     }
 
@@ -225,12 +225,12 @@ else {
      */
     if (req_divisor == 0) {
         if (req_remainder != 0) {
-            client.errorValue = cast(CARD32)req_remainder;
+            client.errorValue = cast(uint)cast(CARD32)req_remainder;
             return BadValue;
         }
     } else {
         if (req_remainder >= req_divisor) {
-            client.errorValue = cast(CARD32)req_remainder;
+            client.errorValue = cast(uint)cast(CARD32)req_remainder;
             return BadValue;
         }
     }
@@ -305,12 +305,12 @@ private int proc_present_notify_msc(ClientPtr client)
      */
     if (stuff.divisor == 0) {
         if (stuff.remainder != 0) {
-            client.errorValue = cast(CARD32) stuff.remainder;
+            client.errorValue = cast(uint)cast(CARD32) stuff.remainder;
             return BadValue;
         }
     } else {
         if (stuff.remainder >= stuff.divisor) {
-            client.errorValue = cast(CARD32) stuff.remainder;
+            client.errorValue = cast(uint)cast(CARD32) stuff.remainder;
             return BadValue;
         }
     }
@@ -332,7 +332,7 @@ private int proc_present_select_input(ClientPtr client)
         return rc;
 
     if (stuff.eventMask & ~PresentAllEvents) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
     return present_select_input(client, stuff.eid, window, stuff.eventMask);

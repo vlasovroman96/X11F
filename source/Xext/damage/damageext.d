@@ -210,7 +210,7 @@ private void DamageExtDestroy(DamagePtr pDamage, void* closure)
 
     pDamageExt.pDamage = null;
     if (pDamageExt.id)
-        FreeResource(pDamageExt.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pDamageExt.id, X11_RESTYPE_NONE);
 }
 
 void DamageExtSetCritical(ClientPtr pClient, bool critical)
@@ -283,7 +283,7 @@ private DamageExtPtr DamageExtCreate(DrawablePtr pDrawable, DamageReportLevel le
         return null;
     }
 
-    if (!AddResource(id, DamageExtType, cast(void*) pDamageExt))
+    if (!AddResource(cast(uint)id, DamageExtType, cast(void*) pDamageExt))
         return null;
 
     DamageExtRegister(pDrawable, pDamageExt.pDamage,
@@ -317,7 +317,7 @@ private int doDamageCreate(ClientPtr client, DamageExtPtr* ext, xDamageCreateReq
         level = DamageReportNonEmpty;
         break;
     default:
-        client.errorValue = stuff.level;
+        client.errorValue = cast(uint)stuff.level;
         return BadValue;
     }
 
@@ -355,7 +355,7 @@ private int ProcDamageDestroy(ClientPtr client)
 
     DamageExtPtr pDamageExt = void;
     mixin(VERIFY_DAMAGEEXT!(`pDamageExt`, `stuff.damage`, `client`, `DixDestroyAccess`));
-    FreeResource(stuff.damage, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.damage, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -592,7 +592,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
     if (((damage = cast(PanoramiXDamageRes*) cast(PanoramiXDamageRes*) calloc(1, PanoramiXDamageRes.sizeof)) is null))
         return BadAlloc;
 
-    if (!AddResource(stuff.damage, XRT_DAMAGE, damage))
+    if (!AddResource(cast(uint)stuff.damage, XRT_DAMAGE, damage))
         return BadAlloc;
 
     rc = doDamageCreate(client, &(damage.ext), stuff);
@@ -621,7 +621,7 @@ private int PanoramiXDamageCreate(ClientPtr client, xDamageCreateReq* stuff)
     }
 
     if (rc != Success)
-        FreeResource(stuff.damage, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.damage, X11_RESTYPE_NONE);
 
     return rc;
 }

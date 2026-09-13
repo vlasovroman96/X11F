@@ -109,6 +109,7 @@ private void egl_drawable_wait_x(__GLXdrawable* draw)
 private void egl_drawable_wait_gl(__GLXdrawable* draw)
 {
 }
+alias XID = externs.X11.X.XID;
 
 private __GLXdrawable* egl_create_glx_drawable(ClientPtr client, __GLXscreen* screen, DrawablePtr draw, XID drawid, int type, XID glxdrawid, __GLXconfig* modes)
 {

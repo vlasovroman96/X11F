@@ -1071,7 +1071,7 @@ private void RecordAddClientToRCAP(RecordClientsAndProtocolPtr pRCAP, XID client
 {
     if (pRCAP.numClients == pRCAP.sizeClients) {
         if (pRCAP.clientIDsSeparatelyAllocated) {
-            XID* pNewIDs = cast(ulong*)reallocarray(pRCAP.pClientIDs,
+            XID* pNewIDs = cast(uint*)reallocarray(pRCAP.pClientIDs,
                              pRCAP.sizeClients + CLIENT_ARRAY_GROWTH_INCREMENT,
                              XID.sizeof);
             if (!pNewIDs)
@@ -1298,7 +1298,7 @@ private int RecordSanityCheckRegisterClients(RecordContextPtr pContext, ClientPt
     if (stuff.elementHeader &
         ~(XRecordFromClientSequence | XRecordFromClientTime |
           XRecordFromServerTime)) {
-        client.errorValue = stuff.elementHeader;
+        client.errorValue = cast(uint)stuff.elementHeader;
         return BadValue;
     }
 
@@ -1312,59 +1312,59 @@ private int RecordSanityCheckRegisterClients(RecordContextPtr pContext, ClientPt
     pRange = cast(xRecordRange*) ((cast(XID*) &stuff[1]) + stuff.nClients);
     for (i = 0; i < stuff.nRanges; i++, pRange++) {
         if (pRange.coreRequestsFirst > pRange.coreRequestsLast) {
-            client.errorValue = pRange.coreRequestsFirst;
+            client.errorValue = cast(uint)pRange.coreRequestsFirst;
             return BadValue;
         }
         if (pRange.coreRepliesFirst > pRange.coreRepliesLast) {
-            client.errorValue = pRange.coreRepliesFirst;
+            client.errorValue = cast(uint)pRange.coreRepliesFirst;
             return BadValue;
         }
         if ((pRange.extRequestsMajorFirst || pRange.extRequestsMajorLast) &&
             (pRange.extRequestsMajorFirst < 128 ||
              pRange.extRequestsMajorLast < 128 ||
              pRange.extRequestsMajorFirst > pRange.extRequestsMajorLast)) {
-            client.errorValue = pRange.extRequestsMajorFirst;
+            client.errorValue = cast(uint)pRange.extRequestsMajorFirst;
             return BadValue;
         }
         if (pRange.extRequestsMinorFirst > pRange.extRequestsMinorLast) {
-            client.errorValue = pRange.extRequestsMinorFirst;
+            client.errorValue = cast(uint)pRange.extRequestsMinorFirst;
             return BadValue;
         }
         if ((pRange.extRepliesMajorFirst || pRange.extRepliesMajorLast) &&
             (pRange.extRepliesMajorFirst < 128 ||
              pRange.extRepliesMajorLast < 128 ||
              pRange.extRepliesMajorFirst > pRange.extRepliesMajorLast)) {
-            client.errorValue = pRange.extRepliesMajorFirst;
+            client.errorValue = cast(uint)pRange.extRepliesMajorFirst;
             return BadValue;
         }
         if (pRange.extRepliesMinorFirst > pRange.extRepliesMinorLast) {
-            client.errorValue = pRange.extRepliesMinorFirst;
+            client.errorValue = cast(uint)pRange.extRepliesMinorFirst;
             return BadValue;
         }
         if ((pRange.deliveredEventsFirst || pRange.deliveredEventsLast) &&
             (pRange.deliveredEventsFirst < 2 ||
              pRange.deliveredEventsLast < 2 ||
              pRange.deliveredEventsFirst > pRange.deliveredEventsLast)) {
-            client.errorValue = pRange.deliveredEventsFirst;
+            client.errorValue = cast(uint)pRange.deliveredEventsFirst;
             return BadValue;
         }
         if ((pRange.deviceEventsFirst || pRange.deviceEventsLast) &&
             (pRange.deviceEventsFirst < 2 ||
              pRange.deviceEventsLast < 2 ||
              pRange.deviceEventsFirst > pRange.deviceEventsLast)) {
-            client.errorValue = pRange.deviceEventsFirst;
+            client.errorValue = cast(uint)pRange.deviceEventsFirst;
             return BadValue;
         }
         if (pRange.errorsFirst > pRange.errorsLast) {
-            client.errorValue = pRange.errorsFirst;
+            client.errorValue = cast(uint)pRange.errorsFirst;
             return BadValue;
         }
         if (pRange.clientStarted != xFalse && pRange.clientStarted != xTrue) {
-            client.errorValue = pRange.clientStarted;
+            client.errorValue = cast(uint)pRange.clientStarted;
             return BadValue;
         }
         if (pRange.clientDied != xFalse && pRange.clientDied != xTrue) {
-            client.errorValue = pRange.clientDied;
+            client.errorValue = cast(uint)pRange.clientDied;
             return BadValue;
         }
     }                           /* end for each range */
@@ -1863,7 +1863,7 @@ private int ProcRecordCreateContext(ClientPtr client)
     if (err != Success)
         goto bailout;
 
-    if (AddResource(pContext.id, RTContext, pContext)) {
+    if (AddResource(cast(uint)pContext.id, RTContext, pContext)) {
         ppAllContexts[numContexts++] = pContext;
         return Success;
     }
@@ -2452,7 +2452,7 @@ private int ProcRecordFreeContext(ClientPtr client)
 
     RecordContextPtr pContext = void;
     mixin(VERIFY_CONTEXT!(`pContext`, `stuff.context`, `client`));
-    FreeResource(stuff.context, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.context, X11_RESTYPE_NONE);
     return Success;
 }                               /* ProcRecordFreeContext */
 

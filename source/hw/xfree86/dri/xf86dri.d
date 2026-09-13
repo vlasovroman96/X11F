@@ -106,7 +106,7 @@ private int ProcXF86DRIQueryDirectRenderingCapable(ClientPtr client)
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
 
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -137,7 +137,7 @@ private int ProcXF86DRIOpenConnection(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -156,7 +156,7 @@ private int ProcXF86DRIOpenConnection(ClientPtr client)
         busIdStringLength: busIdStringLength,
         hSAREALow: cast(CARD32) (hSAREA & 0xffffffff),
     };
-static if(HasVersion!("LONG64") && !HasVersion!("__linux__")) {
+static if(HasVersion!("LONG64") && !HasVersion!("linux")) {
         reply.hSAREAHigh = cast(CARD32) (hSAREA >> 32);
 }
 // #endif
@@ -170,7 +170,7 @@ private int ProcXF86DRIAuthConnection(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -193,7 +193,7 @@ private int ProcXF86DRICloseConnection(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -207,7 +207,7 @@ private int ProcXF86DRIGetClientDriverName(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -236,7 +236,7 @@ private int ProcXF86DRICreateContext(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -258,7 +258,7 @@ private int ProcXF86DRIDestroyContext(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -278,7 +278,7 @@ private int ProcXF86DRICreateDrawable(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -306,7 +306,7 @@ private int ProcXF86DRIDestroyDrawable(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -335,7 +335,7 @@ private int ProcXF86DRIGetDrawableInfo(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 
@@ -414,7 +414,7 @@ private int ProcXF86DRIGetDeviceInfo(ClientPtr client)
 
     ScreenPtr pScreen = dixGetScreenPtr(cast(uint)stuff.screen);
     if (!pScreen) {
-        client.errorValue = stuff.screen;
+        client.errorValue = cast(uint)stuff.screen;
         return BadValue;
     }
 

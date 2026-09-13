@@ -87,7 +87,7 @@ Bool GlxAddXIDMap(XID id, GlxServerVendor* vendor)
     if (LookupXIDMapResource(id) !is null) {
         return FALSE;
     }
-    return AddResource(id, idResource, vendor);
+    return AddResource(cast(uint)id, idResource, vendor);
 }
 
 void GlxRemoveXIDMap(XID id)

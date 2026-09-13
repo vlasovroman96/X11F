@@ -578,9 +578,9 @@ void compWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, WindowPtr pWin)
     CompSubwindowsPtr csw = void;
 
     while ((cw = mixin(GetCompWindow!("pWin"))) !is null)
-        FreeResource(cw.clients.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)cw.clients.id, X11_RESTYPE_NONE);
     while ((csw = mixin(GetCompSubwindows!("pWin")))!is null)
-        FreeResource(csw.clients.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)csw.clients.id, X11_RESTYPE_NONE);
 
     if (pWin.redirectDraw != RedirectDrawNone) {
         PixmapPtr pPixmap = (*pScreen.GetWindowPixmap) (pWin);

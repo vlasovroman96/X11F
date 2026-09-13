@@ -96,7 +96,7 @@ int ProcXChangeDeviceDontPropagateList(ClientPtr client)
         return rc;
 
     if (stuff.mode != AddToList && stuff.mode != DeleteFromList) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return BadMode;
     }
 

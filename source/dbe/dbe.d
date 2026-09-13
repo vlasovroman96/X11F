@@ -271,7 +271,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
 
             /* malloc/realloc a new array and initialize all elements to 0. */
             pDbeWindowPriv.IDs =
-                cast(ulong*)reallocarray(pIDs,
+                cast(uint*)reallocarray(pIDs,
                              pDbeWindowPriv.maxAvailableIDs + DBE_INCR_MAX_IDS,
                              XID.sizeof);
             if (!pDbeWindowPriv.IDs) {
@@ -302,7 +302,7 @@ private int ProcDbeAllocateBackBufferName(ClientPtr client)
 
     if (status == Success) {
         pDbeWindowPriv.IDs[add_index] = stuff.buffer;
-        if (!AddResource(stuff.buffer, dbeWindowPrivResType,
+        if (!AddResource(cast(uint)stuff.buffer, dbeWindowPrivResType,
                          cast(void*) pDbeWindowPriv)) {
             pDbeWindowPriv.IDs[add_index] = DBE_FREE_ID_ELEMENT;
 
@@ -388,11 +388,11 @@ private int ProcDbeDeallocateBackBufferName(ClientPtr client)
 
     if (i == pDbeWindowPriv.nBufferIDs) {
         /* We did not find the ID in the ID list. */
-        client.errorValue = stuff.buffer;
+        client.errorValue = cast(uint)stuff.buffer;
         return dbeErrorBase + DbeBadBuffer;
     }
 
-    FreeResource(stuff.buffer, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.buffer, X11_RESTYPE_NONE);
 
     return Success;
 }
@@ -947,7 +947,7 @@ private void miDbeWindowDestroy(CallbackListPtr* pcbl, ScreenPtr pScreen, Window
              * NULL if there are no more buffer IDs associated with this
              * window.
              */
-            FreeResource(pDbeWindowPriv.IDs[0], X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pDbeWindowPriv.IDs[0], X11_RESTYPE_NONE);
             pDbeWindowPriv = mixin(DBE_WINDOW_PRIV!("pWin"));
     }
 }

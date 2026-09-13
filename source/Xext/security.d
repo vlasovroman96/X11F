@@ -217,7 +217,7 @@ private int SecurityDeleteAuthorization(void* value, XID id)
             authId: cast(uint)pAuth.id
         };
         WriteEventsToClient(dixClientForOtherClients(pEventClient), 1, cast(xEvent*) &are);
-        FreeResource(pEventClient.resource, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pEventClient.resource, X11_RESTYPE_NONE);
     }
 
     /* kill all clients using this auth */
@@ -319,7 +319,7 @@ private CARD32 SecurityAuthorizationExpired(OsTimerPtr timer, CARD32 time, void*
                                                    pAuth.secondsRemaining);
     }
     else {
-        FreeResource(pAuth.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pAuth.id, X11_RESTYPE_NONE);
         return 0;
     }
 }                               /* SecurityAuthorizationExpired */
@@ -374,7 +374,7 @@ private int SecurityEventSelectForAuthorization(SecurityAuthorizationPtr pAuth, 
          pEventClient; pEventClient = pEventClient.next) {
         if (mixin(SameClient!("pEventClient", "client"))) {
             if (mask == 0)
-                FreeResource(pEventClient.resource, X11_RESTYPE_NONE);
+                FreeResource(cast(uint)pEventClient.resource, X11_RESTYPE_NONE);
             else
                 pEventClient.mask = mask;
             return Success;
@@ -387,7 +387,7 @@ private int SecurityEventSelectForAuthorization(SecurityAuthorizationPtr pAuth, 
     pEventClient.mask = mask;
     pEventClient.resource = FakeClientID(client.index);
     pEventClient.next = pAuth.eventClients;
-    if (!AddResource(pEventClient.resource, RTEventClient, cast(void*) pAuth)) {
+    if (!AddResource(cast(uint)pEventClient.resource, RTEventClient, cast(void*) pAuth)) {
         free(pEventClient);
         return BadAlloc;
     }
@@ -434,7 +434,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
 
     /* check valuemask */
     if (stuff.valueMask & ~XSecurityAllAuthorizationAttributes) {
-        client.errorValue = stuff.valueMask;
+        client.errorValue = cast(uint)stuff.valueMask;
         return BadValue;
     }
 
@@ -450,7 +450,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
         trustLevel = cast(uint)*values++;
         if (trustLevel != XSecurityClientTrusted &&
             trustLevel != XSecurityClientUntrusted) {
-            client.errorValue = trustLevel;
+            client.errorValue = cast(uint)trustLevel;
             return BadValue;
         }
     }
@@ -469,7 +469,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
             /* if nobody said they recognized it, it's an error */
 
             if (!vgi.valid) {
-                client.errorValue = group;
+                client.errorValue = cast(uint)group;
                 return BadValue;
             }
         }
@@ -480,7 +480,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
     if (stuff.valueMask & XSecurityEventMask) {
         eventMask = *values++;
         if (eventMask & ~(XSecurityAllEventMasks)) {
-            client.errorValue = eventMask;
+            client.errorValue = cast(uint)eventMask;
             return BadValue;
         }
     }
@@ -533,7 +533,7 @@ private int ProcSecurityGenerateAuthorization(ClientPtr client)
             goto bailout;
     }
 
-    if (!AddResource(authId, SecurityAuthorizationResType, pAuth)) {
+    if (!AddResource(cast(uint)authId, SecurityAuthorizationResType, pAuth)) {
         err = BadAlloc;
         goto bailout;
     }
@@ -581,7 +581,7 @@ private int ProcSecurityRevokeAuthorization(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.authId, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.authId, X11_RESTYPE_NONE);
     return Success;
 }                               /* ProcSecurityRevokeAuthorization */
 

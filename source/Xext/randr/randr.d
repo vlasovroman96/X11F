@@ -373,7 +373,7 @@ Bool RRScreenInit(ScreenPtr pScreen)
     pHead = cast(RREventPtr*) data;
     for (pCur = *pHead; pCur; pCur = pNext) {
         pNext = pCur.next;
-        FreeResource(pCur.clientResource, RRClientType);
+        FreeResource(cast(uint)pCur.clientResource, RRClientType);
         free(cast(void*) pCur);
     }
     free(cast(void*) pHead);

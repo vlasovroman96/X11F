@@ -390,7 +390,7 @@ int ProcRenderQueryPictIndexValues(ClientPtr client)
         return rc;
 
     if (pFormat.type != PictTypeIndexed) {
-        client.errorValue = stuff.format;
+        client.errorValue = cast(uint)stuff.format;
         return BadMatch;
     }
 
@@ -446,7 +446,7 @@ int SingleRenderCreatePicture(ClientPtr client, xRenderCreatePictureReq* stuff)
                              stuff.mask, cast(XID*) (stuff + 1), client, &error);
     if (!pPicture)
         return error;
-    if (!AddResource(stuff.pid, PictureType, cast(void*) pPicture))
+    if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
 }
@@ -492,7 +492,7 @@ int SingleRenderFreePicture(ClientPtr client)
     mixin(REQUEST!xRenderFreePictureReq);
 
     mixin(VERIFY_PICTURE!("pPicture", "stuff.picture", "client", "DixDestroyAccess"));
-    FreeResource(stuff.picture, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.picture, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -514,7 +514,7 @@ int SingleRenderComposite(ClientPtr client, xRenderCompositeReq* stuff)
     PicturePtr pSrc = void, pMask = void, pDst = void;
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
@@ -552,7 +552,7 @@ int SingleRenderTrapezoids(ClientPtr client, xRenderTrapezoidsReq* stuff)
     PictFormatPtr pFormat = void;
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
@@ -587,7 +587,7 @@ int SingleRenderTriangles(ClientPtr client, xRenderTrianglesReq* stuff)
     PictFormatPtr pFormat = void;
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
@@ -622,7 +622,7 @@ int SingleRenderTriStrip(ClientPtr client, xRenderTriStripReq* stuff)
     PictFormatPtr pFormat = void;
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
@@ -657,7 +657,7 @@ int SingleRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
     PictFormatPtr pFormat = void;
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
@@ -734,7 +734,7 @@ int ProcRenderCreateGlyphSet(ClientPtr client)
                   glyphSet, X11_RESTYPE_NONE, null, DixCreateAccess);
     if (rc != Success)
         return rc;
-    if (!AddResource(stuff.gsid, GlyphSetType, cast(void*) glyphSet))
+    if (!AddResource(cast(uint)stuff.gsid, GlyphSetType, cast(void*) glyphSet))
         return BadAlloc;
     return Success;
 }
@@ -757,11 +757,11 @@ int ProcRenderReferenceGlyphSet(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &glyphSet, stuff.existing,
                                  GlyphSetType, client, DixGetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.existing;
+        client.errorValue = cast(uint)stuff.existing;
         return rc;
     }
     glyphSet.refcnt++;
-    if (!AddResource(stuff.gsid, GlyphSetType, cast(void*) glyphSet))
+    if (!AddResource(cast(uint)stuff.gsid, GlyphSetType, cast(void*) glyphSet))
         return BadAlloc;
     return Success;
 }
@@ -783,10 +783,10 @@ int ProcRenderFreeGlyphSet(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &glyphSet, stuff.glyphset,
                                  GlyphSetType, client, DixDestroyAccess);
     if (rc != Success) {
-        client.errorValue = stuff.glyphset;
+        client.errorValue = cast(uint)stuff.glyphset;
         return rc;
     }
-    FreeResource(stuff.glyphset, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.glyphset, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -846,7 +846,7 @@ int ProcRenderAddGlyphs(ClientPtr client)
         dixLookupResourceByType(cast(void**) &glyphSet, stuff.glyphset,
                                 GlyphSetType, client, DixAddAccess);
     if (err != Success) {
-        client.errorValue = stuff.glyphset;
+        client.errorValue = cast(uint)stuff.glyphset;
         return err;
     }
 
@@ -959,7 +959,7 @@ int ProcRenderAddGlyphs(ClientPtr client)
 
                 PicturePtr pDst = CreatePicture(0, &pDstPix.drawable,
                                   glyphSet.format,
-                                  CPComponentAlpha, cast(ulong*)&component_alpha,
+                                  CPComponentAlpha, cast(uint*)&component_alpha,
                                   serverClient, &error);
                 SetGlyphPicture(glyph, walkScreen, pDst);
 
@@ -1040,7 +1040,7 @@ int ProcRenderFreeGlyphs(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &glyphSet, stuff.glyphset,
                                  GlyphSetType, client, DixRemoveAccess);
     if (rc != Success) {
-        client.errorValue = stuff.glyphset;
+        client.errorValue = cast(uint)stuff.glyphset;
         return rc;
     }
     nglyph =
@@ -1049,7 +1049,7 @@ int ProcRenderFreeGlyphs(ClientPtr client)
     while (nglyph-- > 0) {
         glyph = *gids++;
         if (!DeleteGlyph(glyphSet, glyph)) {
-            client.errorValue = glyph;
+            client.errorValue = cast(uint)glyph;
             return RenderErrBase + BadGlyph;
         }
     }
@@ -1088,7 +1088,7 @@ int SingleRenderCompositeGlyphs(ClientPtr client, xRenderCompositeGlyphsReq* stu
     }
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pSrc", "stuff.src", "client", "DixReadAccess"));
@@ -1224,7 +1224,7 @@ int SingleRenderFillRectangles(ClientPtr client, xRenderFillRectanglesReq* stuff
     int things = void;
 
     if (!PictOpValid(stuff.op)) {
-        client.errorValue = stuff.op;
+        client.errorValue = cast(uint)stuff.op;
         return BadValue;
     }
     mixin(VERIFY_PICTURE!("pDst", "stuff.dst", "client", "DixWriteAccess"));
@@ -1458,7 +1458,7 @@ enum string GetColor(string p,string s) = `(` ~ GetByte!(p,s) ~ ` | (` ~ GetByte
                          &pCursor, client, stuff.cid);
     if (rc != Success)
         goto bail;
-    if (!AddResource(stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor)) {
+    if (!AddResource(cast(uint)stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor)) {
         rc = BadAlloc;
         goto bail;
     }
@@ -1642,7 +1642,7 @@ int ProcRenderCreateAnimCursor(ClientPtr client)
     if (ret != Success)
         return ret;
 
-    if (AddResource(stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor))
+    if (AddResource(cast(uint)stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor))
         return Success;
     return BadAlloc;
 }
@@ -1680,7 +1680,7 @@ int SingleRenderCreateSolidFill(ClientPtr client, xRenderCreateSolidFillReq* stu
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
     if (error != Success)
         return error;
-    if (!AddResource(stuff.pid, PictureType, cast(void*) pPicture))
+    if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
 }
@@ -1714,7 +1714,7 @@ int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLinearGradie
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
     if (error != Success)
         return error;
-    if (!AddResource(stuff.pid, PictureType, cast(void*) pPicture))
+    if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
 }
@@ -1749,7 +1749,7 @@ int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadialGradie
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
     if (error != Success)
         return error;
-    if (!AddResource(stuff.pid, PictureType, cast(void*) pPicture))
+    if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
 }
@@ -1783,7 +1783,7 @@ int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateConicalGrad
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
     if (error != Success)
         return error;
-    if (!AddResource(stuff.pid, PictureType, cast(void*) pPicture))
+    if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
 }
@@ -1905,7 +1905,7 @@ int PanoramiXRenderCreatePicture(ClientPtr client, xRenderCreatePictureReq* stuf
     }));
 
     if (result == Success)
-        AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
+        AddResource(cast(uint)newPict.info[0].id, XRT_PICTURE, newPict);
     else
         free(newPict);
 
@@ -1985,7 +1985,7 @@ int PanoramiXRenderFreePicture(ClientPtr client)
 
     mixin(REQUEST!xRenderFreePictureReq);
 
-    client.errorValue = stuff.picture;
+    client.errorValue = cast(uint)stuff.picture;
 
     mixin(VERIFY_XIN_PICTURE!(`pict`, `stuff.picture`, `client`, `DixDestroyAccess`));
 
@@ -2382,7 +2382,7 @@ int PanoramiXRenderCreateSolidFill(ClientPtr client, xRenderCreateSolidFillReq* 
     }));
 
     if (result == Success)
-        AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
+        AddResource(cast(uint)newPict.info[0].id, XRT_PICTURE, newPict);
     else
         free(newPict);
 
@@ -2409,7 +2409,7 @@ int PanoramiXRenderCreateLinearGradient(ClientPtr client, xRenderCreateLinearGra
     }));
 
     if (result == Success)
-        AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
+        AddResource(cast(uint)newPict.info[0].id, XRT_PICTURE, newPict);
     else
         free(newPict);
 
@@ -2436,7 +2436,7 @@ int PanoramiXRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadialGra
     }));
 
     if (result == Success)
-        AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
+        AddResource(cast(uint)newPict.info[0].id, XRT_PICTURE, newPict);
     else
         free(newPict);
 
@@ -2463,7 +2463,7 @@ int PanoramiXRenderCreateConicalGradient(ClientPtr client, xRenderCreateConicalG
     }));
 
     if (result == Success)
-        AddResource(newPict.info[0].id, XRT_PICTURE, newPict);
+        AddResource(cast(uint)newPict.info[0].id, XRT_PICTURE, newPict);
     else
         free(newPict);
 

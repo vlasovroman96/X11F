@@ -86,7 +86,7 @@ int ProcXIQueryDevice(ClientPtr client)
         stuff.deviceid != XIAllMasterDevices) {
         rc = dixLookupDevice(&dev, stuff.deviceid, client, DixGetAttrAccess);
         if (rc != Success) {
-            client.errorValue = stuff.deviceid;
+            client.errorValue = cast(uint)stuff.deviceid;
             return rc;
         }
         len += SizeDeviceInfo(dev);

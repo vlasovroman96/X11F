@@ -107,7 +107,7 @@ int ProcXAllowDeviceEvents(ClientPtr client)
         AllowSome(client, time, thisdev, GRAB_STATE_THAWED_BOTH);
         break;
     default:
-        client.errorValue = stuff.mode;
+        client.errorValue = cast(uint)stuff.mode;
         return BadValue;
     }
     return Success;

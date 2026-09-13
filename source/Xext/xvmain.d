@@ -388,7 +388,7 @@ private int XvdiDestroyVideoNotifyList(void* pn, XID id)
     while (cpn) {
         npn = cpn.next;
         if (cpn.client)
-            FreeResource(cpn.id, XvRTVideoNotify);
+            FreeResource(cast(uint)cpn.id, XvRTVideoNotify);
         free(cpn);
         cpn = npn;
     }
@@ -640,7 +640,7 @@ int XvdiGrabPort(ClientPtr client, XvPortPtr pPort, Time ctime, int* p_result)
 
     id = FakeClientID(client.index);
 
-    if (!AddResource(id, XvRTGrab, &pPort.grab)) {
+    if (!AddResource(cast(uint)id, XvRTGrab, &pPort.grab)) {
         return BadAlloc;
     }
 
@@ -679,7 +679,7 @@ int XvdiUngrabPort(ClientPtr client, XvPortPtr pPort, Time ctime)
 
     /* FREE THE GRAB RESOURCE; AND SET THE GRAB CLIENT TO NULL */
 
-    FreeResource(pPort.grab.id, XvRTGrab);
+    FreeResource(cast(uint)pPort.grab.id, XvRTGrab);
     pPort.grab.client = null;
 
     pPort.time = currentTime;
@@ -712,7 +712,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
             return BadAlloc;
         tpn.next = null;
         tpn.client = null;
-        if (!AddResource(pDraw.id, XvRTVideoNotifyList, tpn))
+        if (!AddResource(cast(uint)pDraw.id, XvRTVideoNotifyList, tpn))
             return BadAlloc;
     }
     else {
@@ -724,7 +724,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
             if (tpn.client == client) {
                 if (!onoff) {
                     tpn.client = null;
-                    FreeResource(tpn.id, XvRTVideoNotify);
+                    FreeResource(cast(uint)tpn.id, XvRTVideoNotify);
                 }
                 return Success;
             }
@@ -756,7 +756,7 @@ int XvdiSelectVideoNotify(ClientPtr client, DrawablePtr pDraw, BOOL onoff)
 
     tpn.client = null;
     tpn.id = FakeClientID(client.index);
-    if (!AddResource(tpn.id, XvRTVideoNotify, tpn))
+    if (!AddResource(cast(uint)tpn.id, XvRTVideoNotify, tpn))
         return BadAlloc;
 
     tpn.client = client;
@@ -787,7 +787,7 @@ int XvdiSelectPortNotify(ClientPtr client, XvPortPtr pPort, BOOL onoff)
 
         if (!onoff) {
             pn.client = null;
-            FreeResource(pn.id, XvRTPortNotify);
+            FreeResource(cast(uint)pn.id, XvRTPortNotify);
         }
 
         return Success;
@@ -805,7 +805,7 @@ int XvdiSelectPortNotify(ClientPtr client, XvPortPtr pPort, BOOL onoff)
 
     tpn.client = client;
     tpn.id = FakeClientID(client.index);
-    if (!AddResource(tpn.id, XvRTPortNotify, tpn))
+    if (!AddResource(cast(uint)tpn.id, XvRTPortNotify, tpn))
         return BadAlloc;
 
     return Success;

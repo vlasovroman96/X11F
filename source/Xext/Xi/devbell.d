@@ -89,12 +89,12 @@ int ProcXDeviceBell(ClientPtr client)
 
     rc = dixLookupDevice(&dev, stuff.deviceid, client, DixBellAccess);
     if (rc != Success) {
-        client.errorValue = stuff.deviceid;
+        client.errorValue = cast(uint)stuff.deviceid;
         return rc;
     }
 
     if (stuff.percent < -100 || stuff.percent > 100) {
-        client.errorValue = stuff.percent;
+        client.errorValue = cast(uint)stuff.percent;
         return BadValue;
     }
     if (stuff.feedbackclass == KbdFeedbackClass) {
@@ -102,7 +102,7 @@ int ProcXDeviceBell(ClientPtr client)
             if (k.ctrl.id == stuff.feedbackid)
                 break;
         if (!k) {
-            client.errorValue = stuff.feedbackid;
+            client.errorValue = cast(uint)stuff.feedbackid;
             return BadValue;
         }
         base = k.ctrl.bell;
@@ -115,7 +115,7 @@ int ProcXDeviceBell(ClientPtr client)
             if (b.ctrl.id == stuff.feedbackid)
                 break;
         if (!b) {
-            client.errorValue = stuff.feedbackid;
+            client.errorValue = cast(uint)stuff.feedbackid;
             return BadValue;
         }
         base = b.ctrl.percent;
@@ -124,7 +124,7 @@ int ProcXDeviceBell(ClientPtr client)
         class_ = BellFeedbackClass;
     }
     else {
-        client.errorValue = stuff.feedbackclass;
+        client.errorValue = cast(uint)stuff.feedbackclass;
         return BadValue;
     }
     newpercent = (base * stuff.percent) / 100;

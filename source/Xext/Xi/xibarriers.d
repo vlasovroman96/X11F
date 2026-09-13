@@ -562,7 +562,7 @@ private int CreatePointerBarrierClient(ClientPtr client, xXFixesCreatePointerBar
     err = dixLookupWindow(&pWin, stuff.window, client, DixReadAccess);
     ScreenPtr pScreen = pWin.drawable.pScreen;
     if (err != Success) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         goto error;
     }
 
@@ -583,12 +583,12 @@ private int CreatePointerBarrierClient(ClientPtr client, xXFixesCreatePointerBar
 
         if ((err = dixLookupDevice (&device, device_id,
                                     client, DixReadAccess)) != 0) {
-            client.errorValue = device_id;
+            client.errorValue = cast(uint)device_id;
             goto error;
         }
 
         if (!InputDevIsMaster (device)) {
-            client.errorValue = device_id;
+            client.errorValue = cast(uint)device_id;
             err = BadDevice;
             goto error;
         }
@@ -807,7 +807,7 @@ int XICreatePointerBarrier(ClientPtr client, xXFixesCreatePointerBarrierReq* stu
     if ((err = CreatePointerBarrierClient(client, stuff, &barrier)) != 0)
         return err;
 
-    if (!AddResource(stuff.barrier, PointerBarrierType, &barrier.barrier))
+    if (!AddResource(cast(uint)stuff.barrier, PointerBarrierType, &barrier.barrier))
         return BadAlloc;
 
     return Success;
@@ -821,14 +821,14 @@ int XIDestroyPointerBarrier(ClientPtr client, xXFixesDestroyPointerBarrierReq* s
     err = dixLookupResourceByType(cast(void**) &barrier, stuff.barrier,
                                   PointerBarrierType, client, DixDestroyAccess);
     if (err != Success) {
-        client.errorValue = stuff.barrier;
+        client.errorValue = cast(uint)stuff.barrier;
         return err;
     }
 
     if (dixClientIdForXID(stuff.barrier) != client.index)
         return BadAccess;
 
-    FreeResource(stuff.barrier, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.barrier, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -868,14 +868,14 @@ int ProcXIBarrierReleasePointer(ClientPtr client)
 
         err = dixLookupDevice(&dev, info.deviceid, client, DixReadAccess);
         if (err != Success) {
-            client.errorValue = BadDevice;
+            client.errorValue = cast(uint)BadDevice;
             return err;
         }
 
         err = dixLookupResourceByType(cast(void**) &b, barrier_id,
                                       PointerBarrierType, client, DixReadAccess);
         if (err != Success) {
-            client.errorValue = barrier_id;
+            client.errorValue = cast(uint)barrier_id;
             return err;
         }
 
@@ -886,7 +886,7 @@ int ProcXIBarrierReleasePointer(ClientPtr client)
 
         pbd = GetBarrierDevice(barrier, dev.id);
         if (!pbd) {
-            client.errorValue = dev.id;
+            client.errorValue = cast(uint)dev.id;
             return BadDevice;
         }
 

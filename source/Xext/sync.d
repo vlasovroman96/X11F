@@ -351,7 +351,7 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
             int rc = dixLookupResourceByType(cast(void**) &pSync, syncObject,
                                               resType, client, DixReadAccess);
             if (rc != Success) {
-                client.errorValue = syncObject;
+                client.errorValue = cast(uint)syncObject;
                 return rc;
             }
         }
@@ -371,7 +371,7 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
     if (changes & XSyncCAValueType) {
         if (pTrigger.value_type != XSyncRelative &&
             pTrigger.value_type != XSyncAbsolute) {
-            client.errorValue = pTrigger.value_type;
+            client.errorValue = cast(uint)pTrigger.value_type;
             return BadValue;
         }
     }
@@ -388,7 +388,7 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
             overflow = checked_int64_add(&pTrigger.test_value,
                                          pCounter.value, pTrigger.wait_value);
             if (overflow) {
-                client.errorValue = pTrigger.wait_value >> 32;
+                client.errorValue = cast(uint)(pTrigger.wait_value >> 32);
                 return BadValue;
             }
         }
@@ -416,7 +416,7 @@ private int SyncInitTrigger(ClientPtr client, SyncTrigger* pTrigger, XID syncObj
                 pTrigger.CheckTrigger = &SyncCheckTriggerNegativeComparison;
                 break;
             default:
-                client.errorValue = pTrigger.test_type;
+                client.errorValue = cast(uint)pTrigger.test_type;
                 return BadValue;
             }
         }
@@ -715,7 +715,7 @@ private void SyncAwaitTriggerFired(SyncTrigger* pTrigger)
     /* unblock the client */
     AttendClient(pAwaitUnion.header.client);
     /* delete the await */
-    FreeResource(pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
 }
 
 private long SyncUpdateCounter(SyncCounter* pCounter, long newval)
@@ -766,7 +766,7 @@ private Bool SyncEventSelectForAlarm(SyncAlarm* pAlarm, ClientPtr client, Bool w
              * nothing, since it's already got them.
              */
             if (!wantevents) {
-                FreeResource(pClients.delete_id, X11_RESTYPE_NONE);
+                FreeResource(cast(uint)pClients.delete_id, X11_RESTYPE_NONE);
             }
             return Success;
         }
@@ -799,7 +799,7 @@ private Bool SyncEventSelectForAlarm(SyncAlarm* pAlarm, ClientPtr client, Bool w
     pAlarm.pEventClients = pClients;
     pClients.client = client;
 
-    if (!AddResource(pClients.delete_id, RTAlarmClient, pAlarm))
+    if (!AddResource(cast(uint)pClients.delete_id, RTAlarmClient, pAlarm))
         return BadAlloc;
 
     return Success;
@@ -860,7 +860,7 @@ private int SyncChangeAlarmAttributes(ClientPtr client, SyncAlarm* pAlarm, Mask 
         case XSyncCAEvents:
             mask &= ~XSyncCAEvents;
             if ((*values != xTrue) && (*values != xFalse)) {
-                client.errorValue = *values;
+                client.errorValue = cast(uint)*values;
                 return BadValue;
             }
             select_events_value = cast(Bool) (*values++);
@@ -868,7 +868,7 @@ private int SyncChangeAlarmAttributes(ClientPtr client, SyncAlarm* pAlarm, Mask 
             break;
 
         default:
-            client.errorValue = mask;
+            client.errorValue = cast(uint)mask;
             return BadValue;
         }
     }
@@ -933,7 +933,7 @@ SyncObject* SyncCreate(ClientPtr client, XID id, ubyte type)
 
     pSync.initialized = FALSE;
 
-    if (!AddResource(id, resType, cast(void*) pSync))
+    if (!AddResource(cast(uint)id, resType, cast(void*) pSync))
         return null;
 
     pSync.client = client;
@@ -957,7 +957,7 @@ version (HAVE_XSHMFENCE) {
 
     status = miSyncInitFenceFromFD(pDraw, pFence, fd, initially_triggered);
     if (status != Success) {
-        FreeResource(pFence.sync.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pFence.sync.id, X11_RESTYPE_NONE);
         return status;
     }
 
@@ -1004,7 +1004,7 @@ SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial, long resol
     if (pCounter) {
         SysCounterInfo* psci = cast(_SysCounterInfo*) cast(SysCounterInfo*) calloc(1, SysCounterInfo.sizeof);
         if (!psci) {
-            FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pCounter.sync.id, X11_RESTYPE_NONE);
             return null;
         }
         pCounter.pSysCounterInfo = psci;
@@ -1012,7 +1012,7 @@ SyncCounter* SyncCreateSystemCounter(const(char)* name, long initial, long resol
         if (((psci.name = strdup(name)) is null)) {
             free(psci);
             pCounter.pSysCounterInfo = null;
-            FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pCounter.sync.id, X11_RESTYPE_NONE);
             return null;
         }
         psci.resolution = resolution;
@@ -1031,7 +1031,7 @@ void SyncDestroySystemCounter(void* pSysCounter)
 {
     SyncCounter* pCounter = cast(SyncCounter*) pSysCounter;
 
-    FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)pCounter.sync.id, X11_RESTYPE_NONE);
 }
 
 private void SyncComputeBracketValues(SyncCounter* pCounter)
@@ -1142,7 +1142,7 @@ private int FreeAlarm(void* addr, XID id)
     /* delete event selections */
 
     while (pAlarm.pEventClients)
-        FreeResource(pAlarm.pEventClients.delete_id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)pAlarm.pEventClients.delete_id, X11_RESTYPE_NONE);
 
     SyncDeleteTriggerFromSyncObject(&pAlarm.trigger);
 
@@ -1396,7 +1396,7 @@ private int ProcSyncSetCounter(ClientPtr client)
         return rc;
 
     if (mixin(IsSystemCounter!(`pCounter`))) {
-        client.errorValue = stuff.cid;
+        client.errorValue = cast(uint)stuff.cid;
         return BadAccess;
     }
 
@@ -1425,7 +1425,7 @@ private int ProcSyncChangeCounter(ClientPtr client)
         return rc;
 
     if (mixin(IsSystemCounter!(`pCounter`))) {
-        client.errorValue = stuff.cid;
+        client.errorValue = cast(uint)stuff.cid;
         return BadAccess;
     }
 
@@ -1433,7 +1433,7 @@ private int ProcSyncChangeCounter(ClientPtr client)
     overflow = checked_int64_add(&newvalue, newvalue, pCounter.value);
     if (overflow) {
         /* XXX 64 bit value can't fit in 32 bits; do the best we can */
-        client.errorValue = stuff.value_hi;
+        client.errorValue = cast(uint)stuff.value_hi;
         return BadValue;
     }
     SyncChangeCounter(pCounter, newvalue);
@@ -1456,10 +1456,10 @@ private int ProcSyncDestroyCounter(ClientPtr client)
         return rc;
 
     if (mixin(IsSystemCounter!(`pCounter`))) {
-        client.errorValue = stuff.counter;
+        client.errorValue = cast(uint)stuff.counter;
         return BadAccess;
     }
-    FreeResource(pCounter.sync.id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)pCounter.sync.id, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -1480,7 +1480,7 @@ private SyncAwaitUnion* SyncAwaitPrologue(ClientPtr client, int items)
     pAwaitUnion.header.client = client;
     pAwaitUnion.header.num_waitconditions = 0;
 
-    if (!AddResource(pAwaitUnion.header.delete_id, RTAwait, pAwaitUnion))
+    if (!AddResource(cast(uint)pAwaitUnion.header.delete_id, RTAwait, pAwaitUnion))
         return null;
 
     return pAwaitUnion;
@@ -1540,7 +1540,7 @@ private int ProcSyncAwait(ClientPtr client)
         return BadLength;
     }
     if (items == 0) {
-        client.errorValue = items;     /* XXX protocol change */
+        client.errorValue = cast(uint)items;     /* XXX protocol change */
         return BadValue;
     }
 
@@ -1557,8 +1557,8 @@ private int ProcSyncAwait(ClientPtr client)
             /*  this should take care of removing any triggers created by
              *  this request that have already been registered on sync objects
              */
-            FreeResource(pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
-            client.errorValue = pProtocolWaitConds.counter;
+            FreeResource(cast(uint)pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
+            client.errorValue = cast(uint)pProtocolWaitConds.counter;
             return SyncErrorBase + XSyncBadCounter;
         }
 
@@ -1577,7 +1577,7 @@ private int ProcSyncAwait(ClientPtr client)
             /*  this should take care of removing any triggers created by
              *  this request that have already been registered on sync objects
              */
-            FreeResource(pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
             return status;
         }
         /* this is not a mistake -- same function works for both cases */
@@ -1677,14 +1677,14 @@ private int ProcSyncCreateAlarm(ClientPtr client)
     pAlarm.events = TRUE;
     pAlarm.state = XSyncAlarmInactive;
     pAlarm.pEventClients = null;
-    status = SyncChangeAlarmAttributes(client, pAlarm, vmask,
+    status = SyncChangeAlarmAttributes(client, pAlarm, cast(uint)vmask,
                                        cast(CARD32*) &stuff[1]);
     if (status != Success) {
         free(pAlarm);
         return status;
     }
 
-    if (!AddResource(stuff.id, RTAlarm, pAlarm))
+    if (!AddResource(cast(uint)stuff.id, RTAlarm, pAlarm))
         return BadAlloc;
 
     /*  see if alarm already triggered.  NULL counter will not trigger
@@ -1699,7 +1699,7 @@ private int ProcSyncCreateAlarm(ClientPtr client)
 
         if (!SyncCheckWarnIsCounter(pTrigger.pSync,
                                     WARN_INVALID_COUNTER_ALARM)) {
-            FreeResource(stuff.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
             return BadAlloc;
         }
 
@@ -1738,7 +1738,7 @@ private int ProcSyncChangeAlarm(ClientPtr client)
     if (len != (Ones(vmask) + Ones(vmask & (XSyncCAValue | XSyncCADelta))))
         return BadLength;
 
-    if ((status = SyncChangeAlarmAttributes(client, pAlarm, vmask,
+    if ((status = SyncChangeAlarmAttributes(client, pAlarm, cast(uint)vmask,
                                             cast(CARD32*) &stuff[1])) != Success)
         return status;
 
@@ -1818,7 +1818,7 @@ private int ProcSyncDestroyAlarm(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.alarm, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.alarm, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -1860,7 +1860,7 @@ int SyncVerifyFence(SyncFence** ppSyncFence, XID fid, ClientPtr client, Mask mod
                                      client, mode);
 
     if (rc != Success)
-        client.errorValue = fid;
+        client.errorValue = cast(uint)fid;
 
     return rc;
 }
@@ -1914,7 +1914,7 @@ private int ProcSyncDestroyFence(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.fid, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.fid, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -1961,7 +1961,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
         return BadLength;
     }
     if (items == 0) {
-        client.errorValue = items;
+        client.errorValue = cast(uint)items;
         return BadValue;
     }
 
@@ -1978,8 +1978,8 @@ private int ProcSyncAwaitFence(ClientPtr client)
             /*  this should take care of removing any triggers created by
              *  this request that have already been registered on sync objects
              */
-            FreeResource(pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
-            client.errorValue = *pProtocolFences;
+            FreeResource(cast(uint)pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
+            client.errorValue = cast(uint)*pProtocolFences;
             return cast(uint)(SyncErrorBase + XSyncBadFence);
         }
 
@@ -1997,7 +1997,7 @@ private int ProcSyncAwaitFence(ClientPtr client)
             /*  this should take care of removing any triggers created by
              *  this request that have already been registered on sync objects
              */
-            FreeResource(pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)pAwaitUnion.header.delete_id, X11_RESTYPE_NONE);
             return status;
         }
         /* this is not a mistake -- same function works for both cases */

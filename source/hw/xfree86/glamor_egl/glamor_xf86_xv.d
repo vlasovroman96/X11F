@@ -62,6 +62,7 @@ private void glamor_xf86_xv_stop_video(ScrnInfoPtr pScrn, void* data, Bool clean
 
     glamor_xv_stop_video(cast(glamor_port_private*)data);
 }
+alias Atom = externs.X11.X.Atom;
 
 private int glamor_xf86_xv_set_port_attribute(ScrnInfoPtr pScrn, Atom attribute, INT32 value, void* data)
 {

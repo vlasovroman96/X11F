@@ -743,7 +743,7 @@ int DoCreateWindowReq(ClientPtr client, xCreateWindowReq* stuff, XID* xids)
     if (rc != Success)
         return rc;
     if (!stuff.width || !stuff.height) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     WindowPtr pWin = dixCreateWindow(stuff.wid, pParent, stuff.x,
@@ -755,7 +755,7 @@ int DoCreateWindowReq(ClientPtr client, xCreateWindowReq* stuff, XID* xids)
         Mask mask = pWin.eventMask;
 
         pWin.eventMask = 0;    /* subterfuge in case AddResource fails */
-        if (!AddResource(stuff.wid, X11_RESTYPE_WINDOW, cast(void*) pWin))
+        if (!AddResource(cast(uint)stuff.wid, X11_RESTYPE_WINDOW, cast(void*) pWin))
             return BadAlloc;
         pWin.eventMask = mask;
     }
@@ -812,7 +812,7 @@ int ProcDestroyWindow(ClientPtr client)
                              DixRemoveAccess);
         if (rc != Success)
             return rc;
-        FreeResource(stuff.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
     }
     return Success;
 }
@@ -855,7 +855,7 @@ int ProcChangeSaveSet(ClientPtr client)
         return BadMatch;
     if ((stuff.mode == SetModeInsert) || (stuff.mode == SetModeDelete))
         return AlterSaveSetForClient(client, pWin, stuff.mode, FALSE, TRUE);
-    client.errorValue = stuff.mode;
+    client.errorValue = cast(uint)stuff.mode;
     return BadValue;
 }
 
@@ -989,7 +989,7 @@ int ProcCirculateWindow(ClientPtr client)
     int rc = void;
 
     if ((stuff.direction != RaiseLowest) && (stuff.direction != LowerHighest)) {
-        client.errorValue = stuff.direction;
+        client.errorValue = cast(uint)stuff.direction;
         return BadValue;
     }
     rc = dixLookupWindow(&pWin, stuff.window, client, DixManageAccess);
@@ -1093,7 +1093,7 @@ int ProcInternAtom(ClientPtr client)
 
     mixin(REQUEST_FIXED_SIZE!("xInternAtomReq", "stuff.nbytes"));
     if ((stuff.onlyIfExists != xTrue) && (stuff.onlyIfExists != xFalse)) {
-        client.errorValue = stuff.onlyIfExists;
+        client.errorValue = cast(uint)stuff.onlyIfExists;
         return BadValue;
     }
     tchar = cast(char*) &stuff[1];
@@ -1123,7 +1123,7 @@ int ProcGetAtomName(ClientPtr client)
         swapl(&stuff.id);
 
     if (((str = NameForAtom(stuff.id)) is null)) {
-        client.errorValue = stuff.id;
+        client.errorValue = cast(uint)stuff.id;
         return BadAtom;
     }
 
@@ -1285,7 +1285,7 @@ int ProcOpenFont(ClientPtr client)
     mixin(REQUEST!xOpenFontReq);
 
     mixin(REQUEST_FIXED_SIZE!("xOpenFontReq", "stuff.nbytes"));
-    client.errorValue = stuff.fid;
+    client.errorValue = cast(uint)stuff.fid;
     mixin(LEGAL_NEW_RESOURCE!("stuff.fid", "client"));
     err = OpenFont(client, stuff.fid, cast(Mask) 0,
                    stuff.nbytes, cast(char*) &stuff[1]);
@@ -1310,11 +1310,11 @@ int ProcCloseFont(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pFont, stuff.id, X11_RESTYPE_FONT,
                                  client, DixDestroyAccess);
     if (rc == Success) {
-        FreeResource(stuff.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
         return Success;
     }
     else {
-        client.errorValue = stuff.id;
+        client.errorValue = cast(uint)stuff.id;
         return rc;
     }
 }
@@ -1466,7 +1466,7 @@ int ProcCreatePixmap(ClientPtr client)
     int rc = void;
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreatePixmapReq);
-    client.errorValue = stuff.pid;
+    client.errorValue = cast(uint)stuff.pid;
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, M_ANY,
@@ -1475,7 +1475,7 @@ int ProcCreatePixmap(ClientPtr client)
         return rc;
 
     if (!stuff.width || !stuff.height) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     if (stuff.width > 32767 || stuff.height > 32767) {
@@ -1499,7 +1499,7 @@ int ProcCreatePixmap(ClientPtr client)
         for (int i = 0; i < pDraw.pScreen.numDepths; i++, pDepth++)
             if (pDepth.depth == stuff.depth)
                 goto CreatePmap;
-        client.errorValue = stuff.depth;
+        client.errorValue = cast(uint)stuff.depth;
         return BadValue;
     }
  CreatePmap:
@@ -1515,7 +1515,7 @@ int ProcCreatePixmap(ClientPtr client)
             dixDestroyPixmap(pMap, 0);
             return rc;
         }
-        if (AddResource(stuff.pid, X11_RESTYPE_PIXMAP, cast(void*) pMap))
+        if (AddResource(cast(uint)stuff.pid, X11_RESTYPE_PIXMAP, cast(void*) pMap))
             return Success;
     }
     return BadAlloc;
@@ -1535,11 +1535,11 @@ int ProcFreePixmap(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pMap, stuff.id, X11_RESTYPE_PIXMAP,
                                  client, DixDestroyAccess);
     if (rc == Success) {
-        FreeResource(stuff.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
         return Success;
     }
     else {
-        client.errorValue = stuff.id;
+        client.errorValue = cast(uint)stuff.id;
         return rc;
     }
 }
@@ -1554,7 +1554,7 @@ int ProcCreateGC(ClientPtr client)
     mixin(REQUEST!xCreateGCReq);
 
     mixin(REQUEST_AT_LEAST_SIZE!xCreateGCReq);
-    client.errorValue = stuff.gc;
+    client.errorValue = cast(uint)stuff.gc;
     mixin(LEGAL_NEW_RESOURCE!("stuff.gc", "client"));
     rc = dixLookupDrawable(&pDraw, stuff.drawable, client, 0,
                            DixGetAttrAccess);
@@ -1568,7 +1568,7 @@ int ProcCreateGC(ClientPtr client)
                           stuff.gc, client);
     if (error != Success)
         return error;
-    if (!AddResource(stuff.gc, X11_RESTYPE_GC, cast(void*) pGC))
+    if (!AddResource(cast(uint)stuff.gc, X11_RESTYPE_GC, cast(void*) pGC))
         return BadAlloc;
     return Success;
 }
@@ -1611,7 +1611,7 @@ int ProcCopyGC(ClientPtr client)
     if ((dstGC.pScreen != pGC.pScreen) || (dstGC.depth != pGC.depth))
         return BadMatch;
     if (stuff.mask & ~GCAllBits) {
-        client.errorValue = stuff.mask;
+        client.errorValue = cast(uint)stuff.mask;
         return BadValue;
     }
     return CopyGC(pGC, dstGC, stuff.mask);
@@ -1626,7 +1626,7 @@ int ProcSetDashes(ClientPtr client)
 
     mixin(REQUEST_FIXED_SIZE!(xSetDashesReq, "stuff.nDashes"));
     if (stuff.nDashes == 0) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
 
@@ -1636,7 +1636,7 @@ int ProcSetDashes(ClientPtr client)
 
     /* If there's an error, either there's no sensible errorValue,
      * or there was a dash segment of 0. */
-    client.errorValue = 0;
+    client.errorValue = cast(uint)0;
     return SetDashes(pGC, stuff.dashOffset, stuff.nDashes,
                      cast(ubyte*) &stuff[1]);
 }
@@ -1651,7 +1651,7 @@ int ProcSetClipRectangles(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xSetClipRectanglesReq);
     if ((stuff.ordering != Unsorted) && (stuff.ordering != YSorted) &&
         (stuff.ordering != YXSorted) && (stuff.ordering != YXBanded)) {
-        client.errorValue = stuff.ordering;
+        client.errorValue = cast(uint)stuff.ordering;
         return BadValue;
     }
     result = dixLookupGC(&pGC, stuff.gc, client, DixSetAttrAccess);
@@ -1681,7 +1681,7 @@ int ProcFreeGC(ClientPtr client)
     if (rc != Success)
         return rc;
 
-    FreeResource(stuff.id, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -1696,11 +1696,11 @@ int ProcClearToBackground(ClientPtr client)
     if (rc != Success)
         return rc;
     if (pWin.drawable.class_ == InputOnly) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return BadMatch;
     }
     if ((stuff.exposures != xTrue) && (stuff.exposures != xFalse)) {
-        client.errorValue = stuff.exposures;
+        client.errorValue = cast(uint)stuff.exposures;
         return BadValue;
     }
     (*pWin.drawable.pScreen.ClearToBackground) (pWin, stuff.x, stuff.y,
@@ -1775,7 +1775,7 @@ int ProcCopyArea(ClientPtr client)
         if (rc != Success)
             return rc;
         if ((pDst.pScreen != pSrc.pScreen) || (pDst.depth != pSrc.depth)) {
-            client.errorValue = stuff.dstDrawable;
+            client.errorValue = cast(uint)stuff.dstDrawable;
             return BadMatch;
         }
     }
@@ -1813,7 +1813,7 @@ int ProcCopyPlane(ClientPtr client)
             return rc;
 
         if (pdstDraw.pScreen != psrcDraw.pScreen) {
-            client.errorValue = stuff.dstDrawable;
+            client.errorValue = cast(uint)stuff.dstDrawable;
             return BadMatch;
         }
     }
@@ -1823,7 +1823,7 @@ int ProcCopyPlane(ClientPtr client)
     /* Check to see if stuff->bitPlane has exactly ONE good bit set */
     if (stuff.bitPlane == 0 || (stuff.bitPlane & (stuff.bitPlane - 1)) ||
         (stuff.bitPlane > (1L << (psrcDraw.depth - 1)))) {
-        client.errorValue = stuff.bitPlane;
+        client.errorValue = cast(uint)stuff.bitPlane;
         return BadValue;
     }
 
@@ -1856,7 +1856,7 @@ int ProcPolyPoint(ClientPtr client)
 
     if ((stuff.coordMode != CoordModeOrigin) &&
         (stuff.coordMode != CoordModePrevious)) {
-        client.errorValue = stuff.coordMode;
+        client.errorValue = cast(uint)stuff.coordMode;
         return BadValue;
     }
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
@@ -1884,7 +1884,7 @@ int ProcPolyLine(ClientPtr client)
 
     if ((stuff.coordMode != CoordModeOrigin) &&
         (stuff.coordMode != CoordModePrevious)) {
-        client.errorValue = stuff.coordMode;
+        client.errorValue = cast(uint)stuff.coordMode;
         return BadValue;
     }
     mixin(VALIDATE_DRAWABLE_AND_GC!("stuff.drawable", "pDraw", "DixWriteAccess"));
@@ -1982,12 +1982,12 @@ int ProcFillPoly(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xFillPolyReq);
     if ((stuff.shape != Complex) && (stuff.shape != Nonconvex) &&
         (stuff.shape != Convex)) {
-        client.errorValue = stuff.shape;
+        client.errorValue = cast(uint)stuff.shape;
         return BadValue;
     }
     if ((stuff.coordMode != CoordModeOrigin) &&
         (stuff.coordMode != CoordModePrevious)) {
-        client.errorValue = stuff.coordMode;
+        client.errorValue = cast(uint)stuff.coordMode;
         return BadValue;
     }
 
@@ -2135,7 +2135,7 @@ int ProcPutImage(ClientPtr client)
         length = PixmapBytePad(stuff.width, stuff.depth);
     }
     else {
-        client.errorValue = stuff.format;
+        client.errorValue = cast(uint)stuff.format;
         return BadValue;
     }
 
@@ -2179,7 +2179,7 @@ private int DoGetImage(ClientPtr client, int format, Drawable drawable, int x, i
     RegionPtr pVisibleRegion = null;
 
     if ((format != XYPixmap) && (format != ZPixmap)) {
-        client.errorValue = format;
+        client.errorValue = cast(uint)format;
         return BadValue;
     }
     rc = dixLookupDrawable(&pDraw, drawable, client, 0, DixReadAccess);
@@ -2451,7 +2451,7 @@ int ProcCreateColormap(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xCreateColormapReq);
 
     if ((stuff.alloc != AllocNone) && (stuff.alloc != AllocAll)) {
-        client.errorValue = stuff.alloc;
+        client.errorValue = cast(uint)stuff.alloc;
         return BadValue;
     }
     mid = stuff.mid;
@@ -2468,7 +2468,7 @@ int ProcCreateColormap(ClientPtr client)
         return dixCreateColormap(mid, pScreen, pVisual, &pmap,
                                  cast(int) stuff.alloc, client);
     }
-    client.errorValue = stuff.visual;
+    client.errorValue = cast(uint)stuff.visual;
     return BadMatch;
 }
 
@@ -2488,11 +2488,11 @@ int ProcFreeColormap(ClientPtr client)
     if (rc == Success) {
         /* Freeing a default colormap is a no-op */
         if (!(pmap.flags & CM_IsDefault))
-            FreeResource(stuff.id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
         return Success;
     }
     else {
-        client.errorValue = stuff.id;
+        client.errorValue = cast(uint)stuff.id;
         return rc;
     }
 }
@@ -2513,7 +2513,7 @@ int ProcCopyColormapAndFree(ClientPtr client)
                                  DixReadAccess | DixRemoveAccess);
     if (rc == Success)
         return CopyColormapAndFree(mid, pSrcMap, client.index);
-    client.errorValue = stuff.srcCmap;
+    client.errorValue = cast(uint)stuff.srcCmap;
     return rc;
 }
 
@@ -2544,7 +2544,7 @@ int ProcInstallColormap(ClientPtr client)
     return Success;
 
  out_:
-    client.errorValue = stuff.id;
+    client.errorValue = cast(uint)stuff.id;
     return rc;
 }
 
@@ -2576,7 +2576,7 @@ int ProcUninstallColormap(ClientPtr client)
     return Success;
 
  out_:
-    client.errorValue = stuff.id;
+    client.errorValue = cast(uint)stuff.id;
     return rc;
 }
 
@@ -2657,7 +2657,7 @@ int ProcAllocColor(ClientPtr client)
     int rc = dixAllocColor(client, stuff.cmap,
                            &reply.red, &reply.green, &reply.blue, &reply.pixel);
     if (rc != Success) {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 
@@ -2682,7 +2682,7 @@ int ProcAllocNamedColor(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixAddAccess);
     if (rc != Success) {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 
@@ -2741,11 +2741,11 @@ int ProcAllocColorCells(ClientPtr client)
 
         npixels = stuff.colors;
         if (!npixels) {
-            client.errorValue = npixels;
+            client.errorValue = cast(uint)npixels;
             return BadValue;
         }
         if (stuff.contiguous != xTrue && stuff.contiguous != xFalse) {
-            client.errorValue = stuff.contiguous;
+            client.errorValue = cast(uint)stuff.contiguous;
             return BadValue;
         }
         nmasks = stuff.planes;
@@ -2753,7 +2753,7 @@ int ProcAllocColorCells(ClientPtr client)
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
 
-        Pixel* ppixels = cast(ulong*)x_rpcbuf_reserve(&rpcbuf, length);
+        Pixel* ppixels = cast(uint*)x_rpcbuf_reserve(&rpcbuf, length);
         if (!ppixels)
             return BadAlloc;
         pmasks = ppixels + npixels;
@@ -2797,7 +2797,7 @@ static if(XINERAMA){
         return Success;
     }
     else {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 }
@@ -2818,11 +2818,11 @@ int ProcAllocColorPlanes(ClientPtr client)
 
         npixels = stuff.colors;
         if (!npixels) {
-            client.errorValue = npixels;
+            client.errorValue = cast(uint)npixels;
             return BadValue;
         }
         if (stuff.contiguous != xTrue && stuff.contiguous != xFalse) {
-            client.errorValue = stuff.contiguous;
+            client.errorValue = cast(uint)stuff.contiguous;
             return BadValue;
         }
 
@@ -2832,7 +2832,7 @@ int ProcAllocColorPlanes(ClientPtr client)
         length = cast(c_long) npixels *Pixel.sizeof;
 
         x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
-        Pixel* ppixels = cast(ulong*)x_rpcbuf_reserve(&rpcbuf, length);
+        Pixel* ppixels = cast(uint*)x_rpcbuf_reserve(&rpcbuf, length);
         if (!ppixels)
             return BadAlloc;
         if ((rc = AllocColorPlanes(client.index, pcmp, npixels,
@@ -2866,7 +2866,7 @@ else {
 
     }
     else {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 }
@@ -2891,7 +2891,7 @@ int ProcFreeColors(ClientPtr client)
                           cast(Pixel*) &stuff[1], cast(Pixel) stuff.planeMask);
     }
     else {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 }
@@ -2916,7 +2916,7 @@ int ProcStoreColors(ClientPtr client)
         return StoreColors(pcmp, count, cast(xColorItem*) &stuff[1], client);
     }
     else {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 }
@@ -2946,7 +2946,7 @@ int ProcStoreNamedColor(ClientPtr client)
         return BadName;
     }
     else {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 }
@@ -2993,7 +2993,7 @@ int ProcQueryColors(ClientPtr client)
         return mixin(X_SEND_REPLY_WITH_RPCBUF!("client", "reply", "rpcbuf"));
     }
     else {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 }
@@ -3014,7 +3014,7 @@ int ProcLookupColor(ClientPtr client)
     int rc = dixLookupResourceByType(cast(void**) &pcmp, stuff.cmap, X11_RESTYPE_COLORMAP,
                                  client, DixReadAccess);
     if (rc != Success) {
-        client.errorValue = stuff.cmap;
+        client.errorValue = cast(uint)stuff.cmap;
         return rc;
     }
 
@@ -3071,7 +3071,7 @@ int ProcCreateCursor(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &src, stuff.source, X11_RESTYPE_PIXMAP,
                                  client, DixReadAccess);
     if (rc != Success) {
-        client.errorValue = stuff.source;
+        client.errorValue = cast(uint)stuff.source;
         return rc;
     }
 
@@ -3083,7 +3083,7 @@ int ProcCreateCursor(ClientPtr client)
         rc = dixLookupResourceByType(cast(void**) &msk, stuff.mask, X11_RESTYPE_PIXMAP,
                                      client, DixReadAccess);
         if (rc != Success) {
-            client.errorValue = stuff.mask;
+            client.errorValue = cast(uint)stuff.mask;
             return rc;
         }
 
@@ -3138,7 +3138,7 @@ int ProcCreateCursor(ClientPtr client)
 
     if (rc != Success)
         goto bail;
-    if (!AddResource(stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor)) {
+    if (!AddResource(cast(uint)stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor)) {
         rc = BadAlloc;
         goto bail;
     }
@@ -3181,7 +3181,7 @@ int ProcCreateGlyphCursor(ClientPtr client)
                            &pCursor, client, stuff.cid);
     if (res != Success)
         return res;
-    if (AddResource(stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor))
+    if (AddResource(cast(uint)stuff.cid, X11_RESTYPE_CURSOR, cast(void*) pCursor))
         return Success;
     return BadAlloc;
 }
@@ -3201,14 +3201,14 @@ int ProcFreeCursor(ClientPtr client)
                                  client, DixDestroyAccess);
     if (rc == Success) {
         if (pCursor == rootCursor) {
-            client.errorValue = stuff.id;
+            client.errorValue = cast(uint)stuff.id;
             return BadCursor;
         }
-        FreeResource(stuff.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.id, X11_RESTYPE_NONE);
         return Success;
     }
     else {
-        client.errorValue = stuff.id;
+        client.errorValue = cast(uint)stuff.id;
         return rc;
     }
 }
@@ -3224,7 +3224,7 @@ int ProcQueryBestSize(ClientPtr client)
 
     if ((stuff.class_ != CursorShape) &&
         (stuff.class_ != TileShape) && (stuff.class_ != StippleShape)) {
-        client.errorValue = stuff.class_;
+        client.errorValue = cast(uint)stuff.class_;
         return BadValue;
     }
 
@@ -3276,22 +3276,22 @@ int ProcSetScreenSaver(ClientPtr client)
     if ((blankingOption != DontPreferBlanking) &&
         (blankingOption != PreferBlanking) &&
         (blankingOption != DefaultBlanking)) {
-        client.errorValue = blankingOption;
+        client.errorValue = cast(uint)blankingOption;
         return BadValue;
     }
     exposureOption = stuff.allowExpose;
     if ((exposureOption != DontAllowExposures) &&
         (exposureOption != AllowExposures) &&
         (exposureOption != DefaultExposures)) {
-        client.errorValue = exposureOption;
+        client.errorValue = cast(uint)exposureOption;
         return BadValue;
     }
     if (stuff.timeout < -1) {
-        client.errorValue = stuff.timeout;
+        client.errorValue = cast(uint)stuff.timeout;
         return BadValue;
     }
     if (stuff.interval < -1) {
-        client.errorValue = stuff.interval;
+        client.errorValue = cast(uint)stuff.interval;
         return BadValue;
     }
 
@@ -3354,7 +3354,7 @@ int ProcChangeHosts(ClientPtr client)
     if (stuff.mode == HostDelete)
         return RemoveHost(client, cast(int) stuff.hostFamily,
                           stuff.hostLength, cast(void*) &stuff[1]);
-    client.errorValue = stuff.mode;
+    client.errorValue = cast(uint)stuff.mode;
     return BadValue;
 }
 
@@ -3410,7 +3410,7 @@ int ProcChangeAccessControl(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xSetAccessControlReq);
     if ((stuff.mode != EnableAccess) && (stuff.mode != DisableAccess)) {
-        client.errorValue = stuff.mode;
+        client.errorValue = cast(uint)stuff.mode;
         return BadValue;
     }
     return ChangeAccessControl(client, stuff.mode == EnableAccess);
@@ -3531,7 +3531,7 @@ int ProcChangeCloseDownMode(ClientPtr client)
         return Success;
     }
     else {
-        client.errorValue = stuff.mode;
+        client.errorValue = cast(uint)stuff.mode;
         return BadValue;
     }
 }
@@ -3545,7 +3545,7 @@ int ProcForceScreenSaver(ClientPtr client)
     mixin(REQUEST_AT_LEAST_SIZE!xForceScreenSaverReq);
 
     if ((stuff.mode != ScreenSaverReset) && (stuff.mode != ScreenSaverActive)) {
-        client.errorValue = stuff.mode;
+        client.errorValue = cast(uint)stuff.mode;
         return BadValue;
     }
     rc = dixSaveScreens(client, SCREEN_SAVER_FORCER, cast(int) stuff.mode);
@@ -4143,7 +4143,7 @@ void RemoveGPUScreen(ScreenPtr pScreen)
     /* this gets freed later in the resource list, but without
      * the screen existing it causes crashes - so remove it here */
     if (pScreen.defColormap)
-        FreeResource(pScreen.defColormap, X11_RESTYPE_COLORMAP);
+        FreeResource(cast(uint)pScreen.defColormap, X11_RESTYPE_COLORMAP);
     free(pScreen);
 
 }

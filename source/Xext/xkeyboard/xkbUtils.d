@@ -420,7 +420,7 @@ KeySymsPtr XkbGetCoreMap(DeviceIntPtr keybd)
     syms.maxKeyCode = xkb.max_key_code;
 
     tmp = syms.mapWidth * (xkb.max_key_code - xkb.min_key_code + 1);
-    syms.map = cast(ulong*)calloc(tmp, typeof(*syms.map).sizeof);
+    syms.map = cast(uint*)calloc(tmp, typeof(*syms.map).sizeof);
     if (!syms.map) {
         free(syms);
         return null;
@@ -916,7 +916,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                                    src.map.size_syms, KeySym.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.map.syms = cast(ulong*)tmp;
+                dst.map.syms = cast(uint*)tmp;
 
             }
             memcpy(dst.map.syms, src.map.syms,
@@ -924,7 +924,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
         }
         else {
             free(dst.map.syms);
-            dst.map.syms = cast(ulong*)null;
+            dst.map.syms = cast(uint*)null;
         }
         dst.map.num_syms = src.map.num_syms;
         dst.map.size_syms = src.map.size_syms;
@@ -975,7 +975,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                 for (i = src.map.num_types, dtype = (dst.map.types + i);
                      i < dst.map.num_types; i++, dtype++) {
                     free(dtype.level_names);
-                    dtype.level_names = cast(ulong*)null;
+                    dtype.level_names = cast(uint*)null;
                     dtype.num_levels = cast(ubyte*)0;
                     if (dtype.map_count) {
                         free(dtype.map);
@@ -995,14 +995,14 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                                            stype.num_levels, Atom.sizeof);
                         if (!tmp)
                             continue;
-                        dtype.level_names = cast(ulong*)tmp;
+                        dtype.level_names = cast(uint*)tmp;
                     }
                     else if (!dtype.num_levels || !dtype.level_names ||
                              i >= dst.map.num_types) {
                         tmp = calloc(stype.num_levels, Atom.sizeof);
                         if (!tmp)
                             continue;
-                        dtype.level_names = cast(ulong*)tmp;
+                        dtype.level_names = cast(uint*)tmp;
                     }
                     dtype.num_levels = cast(ubyte*)stype.num_levels;
                     memcpy(dtype.level_names, stype.level_names,
@@ -1013,7 +1013,7 @@ private Bool _XkbCopyClientMap(XkbDescPtr src, XkbDescPtr dst)
                         i < dst.map.num_types)
                         free(dtype.level_names);
                     dtype.num_levels = cast(ubyte*)stype.num_levels;
-                    dtype.level_names = cast(ulong*)null;
+                    dtype.level_names = cast(uint*)null;
                 }
 
                 dtype.name = stype.name;
@@ -1305,7 +1305,7 @@ private Bool _XkbCopyNames(XkbDescPtr src, XkbDescPtr dst)
                                    src.names.num_rg, Atom.sizeof);
                 if (!tmp)
                     return FALSE;
-                dst.names.radio_groups = cast(ulong*)tmp;
+                dst.names.radio_groups = cast(uint*)tmp;
             }
             memcpy(dst.names.radio_groups, src.names.radio_groups,
                    src.names.num_rg * Atom.sizeof);

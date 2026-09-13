@@ -231,16 +231,16 @@ private int get_property(ClientPtr client, DeviceIntPtr dev, Atom property, Atom
     XIPropertyValuePtr prop_value = void;
 
     if (!ValidAtom(property)) {
-        client.errorValue = property;
+        client.errorValue = cast(uint)property;
         return BadAtom;
     }
     if ((delete_ != xTrue) && (delete_ != xFalse)) {
-        client.errorValue = delete_;
+        client.errorValue = cast(uint)delete_;
         return BadValue;
     }
 
     if ((type != AnyPropertyType) && !ValidAtom(type)) {
-        client.errorValue = type;
+        client.errorValue = cast(uint)type;
         return BadAtom;
     }
 
@@ -259,7 +259,7 @@ private int get_property(ClientPtr client, DeviceIntPtr dev, Atom property, Atom
 
     rc = XIGetDeviceProperty(dev, property, &prop_value);
     if (rc != Success) {
-        client.errorValue = property;
+        client.errorValue = cast(uint)property;
         return rc;
     }
 
@@ -283,7 +283,7 @@ private int get_property(ClientPtr client, DeviceIntPtr dev, Atom property, Atom
        be negative, it's a value error. */
 
     if (n < ind) {
-        client.errorValue = offset;
+        client.errorValue = cast(uint)offset;
         return BadValue;
     }
 
@@ -307,20 +307,20 @@ private int check_change_property(ClientPtr client, Atom property, Atom type, in
 {
     if ((mode != PropModeReplace) && (mode != PropModeAppend) &&
         (mode != PropModePrepend)) {
-        client.errorValue = mode;
+        client.errorValue = cast(uint)mode;
         return BadValue;
     }
     if ((format != 8) && (format != 16) && (format != 32)) {
-        client.errorValue = format;
+        client.errorValue = cast(uint)format;
         return BadValue;
     }
 
     if (!ValidAtom(property)) {
-        client.errorValue = property;
+        client.errorValue = cast(uint)property;
         return BadAtom;
     }
     if (!ValidAtom(type)) {
-        client.errorValue = type;
+        client.errorValue = cast(uint)type;
         return BadAtom;
     }
 
@@ -334,7 +334,7 @@ private int change_property(ClientPtr client, DeviceIntPtr dev, Atom property, A
     rc = XIChangeDeviceProperty(dev, property, type, format, mode, len, data,
                                 TRUE);
     if (rc != Success)
-        client.errorValue = property;
+        client.errorValue = cast(uint)property;
 
     return rc;
 }
@@ -885,7 +885,7 @@ int ProcXDeleteDeviceProperty(ClientPtr client)
         return rc;
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
 
@@ -1044,7 +1044,7 @@ int ProcXIDeleteProperty(ClientPtr client)
         return rc;
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
 

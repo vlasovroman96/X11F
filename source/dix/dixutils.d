@@ -166,7 +166,7 @@ int dixLookupDrawable(DrawablePtr* pDraw, XID id, ClientPtr client, Mask type, M
                                   access);
 
     if (rc != Success)
-        client.errorValue = id;
+        client.errorValue = cast(uint)id;
 
     if (rc == BadValue)
         return BadDrawable;
@@ -205,7 +205,7 @@ int dixLookupFontable(FontPtr* pFont, XID id, ClientPtr client, Mask access)
     int rc = void;
     GCPtr pGC = void;
 
-    client.errorValue = id;    /* EITHER font or gc */
+    client.errorValue = cast(uint)id;    /* EITHER font or gc */
     rc = dixLookupResourceByType(cast(void**) pFont, id, X11_RESTYPE_FONT, client,
                                  access);
     if (rc != BadFont)
@@ -238,7 +238,7 @@ int dixLookupResourceOwner(ClientPtr* result, XID id, ClientPtr client, Mask acc
     return Success;
  bad:
     if (client)
-        client.errorValue = id;
+        client.errorValue = cast(uint)id;
     *result = null;
     return rc;
 }

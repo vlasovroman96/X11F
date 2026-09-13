@@ -343,7 +343,7 @@ private int ProcShmAttach(ClientPtr client)
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.shmseg", "client"));
     if ((stuff.readOnly != xTrue) && (stuff.readOnly != xFalse)) {
-        client.errorValue = stuff.readOnly;
+        client.errorValue = cast(uint)stuff.readOnly;
         return BadValue;
     }
     for (shmdesc = Shmsegs; shmdesc; shmdesc = shmdesc.next) {
@@ -386,7 +386,7 @@ version (SHM_FD_PASSING) {
         shmdesc.next = Shmsegs;
         Shmsegs = shmdesc;
     }
-    if (!AddResource(stuff.shmseg, ShmSegType, cast(void*) shmdesc))
+    if (!AddResource(cast(uint)stuff.shmseg, ShmSegType, cast(void*) shmdesc))
         return BadAlloc;
     return Success;
 }
@@ -430,7 +430,7 @@ private int ProcShmDetach(ClientPtr client)
     ShmDescPtr shmdesc = void;
 
     mixin(VERIFY_SHMSEG!(`stuff.shmseg`, `shmdesc`, `client`));
-    FreeResource(stuff.shmseg, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.shmseg, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -508,7 +508,7 @@ private int ShmPutImage(ClientPtr client, xShmPutImageReq* stuff)
         length = PixmapBytePad(stuff.totalWidth, stuff.depth);
     }
     else {
-        client.errorValue = stuff.format;
+        client.errorValue = cast(uint)stuff.format;
         return BadValue;
     }
 
@@ -520,23 +520,23 @@ private int ShmPutImage(ClientPtr client, xShmPutImageReq* stuff)
      */
     if (stuff.totalHeight != 0 &&
         length > (shmdesc.size - stuff.offset) / stuff.totalHeight) {
-        client.errorValue = stuff.totalWidth;
+        client.errorValue = cast(uint)stuff.totalWidth;
         return BadValue;
     }
     if (stuff.srcX > stuff.totalWidth) {
-        client.errorValue = stuff.srcX;
+        client.errorValue = cast(uint)stuff.srcX;
         return BadValue;
     }
     if (stuff.srcY > stuff.totalHeight) {
-        client.errorValue = stuff.srcY;
+        client.errorValue = cast(uint)stuff.srcY;
         return BadValue;
     }
     if ((stuff.srcX + stuff.srcWidth) > stuff.totalWidth) {
-        client.errorValue = stuff.srcWidth;
+        client.errorValue = cast(uint)stuff.srcWidth;
         return BadValue;
     }
     if ((stuff.srcY + stuff.srcHeight) > stuff.totalHeight) {
-        client.errorValue = stuff.srcHeight;
+        client.errorValue = cast(uint)stuff.srcHeight;
         return BadValue;
     }
 
@@ -585,7 +585,7 @@ private int ShmGetImage(ClientPtr client, xShmGetImageReq* stuff)
     RegionPtr pVisibleRegion = null;
 
     if ((stuff.format != XYPixmap) && (stuff.format != ZPixmap)) {
-        client.errorValue = stuff.format;
+        client.errorValue = cast(uint)stuff.format;
         return BadValue;
     }
 
@@ -773,7 +773,7 @@ static if(XINERAMA){
         return ShmGetImage(client, stuff);
 
     if ((stuff.format != XYPixmap) && (stuff.format != ZPixmap)) {
-        client.errorValue = stuff.format;
+        client.errorValue = cast(uint)stuff.format;
         return BadValue;
     }
 
@@ -881,7 +881,7 @@ static if(XINERAMA){
     xShmGetImageReply reply = {
         visual: mixin(wVisual!("cast(WindowPtr) pDraw")),
         depth: pDraw.depth,
-        size: length
+        size: cast(uint)length
     };
 
     mixin(X_REPLY_FIELD_CARD32!"visual");
@@ -919,7 +919,7 @@ static if(XINERAMA){
     c_ulong size = void;
     PanoramiXRes* newPix = void;
 
-    client.errorValue = stuff.pid;
+    client.errorValue = cast(uint)stuff.pid;
     if (!sharedPixmaps)
         return BadImplementation;
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
@@ -934,7 +934,7 @@ static if(XINERAMA){
     height = stuff.height;
     depth = stuff.depth;
     if (!width || !height || !depth) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     if (width > 32767 || height > 32767)
@@ -945,7 +945,7 @@ static if(XINERAMA){
         for (i = 0; i < pDraw.pScreen.numDepths; i++, pDepth++)
             if (pDepth.depth == stuff.depth)
                 goto CreatePmap;
-        client.errorValue = stuff.depth;
+        client.errorValue = cast(uint)stuff.depth;
         return BadValue;
     }
 
@@ -994,7 +994,7 @@ static if(XINERAMA){
             shmdesc.refcnt++;
             pMap.drawable.serialNumber = NEXT_SERIAL_NUMBER;
             pMap.drawable.id = newPix.info[walkScreenIdx].id;
-            if (!AddResource(newPix.info[walkScreenIdx].id, X11_RESTYPE_PIXMAP, cast(void*) pMap)) {
+            if (!AddResource(cast(uint)newPix.info[walkScreenIdx].id, X11_RESTYPE_PIXMAP, cast(void*) pMap)) {
                 result = BadAlloc;
                 break;
             }
@@ -1007,11 +1007,11 @@ static if(XINERAMA){
 
     if (result != Success) {
         while (lastOne--)
-            FreeResource(newPix.info[lastOne].id, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)newPix.info[lastOne].id, X11_RESTYPE_NONE);
         free(newPix);
     }
     else
-        AddResource(stuff.pid, XRT_PIXMAP, newPix);
+        AddResource(cast(uint)stuff.pid, XRT_PIXMAP, newPix);
 
     return result;
 } else {
@@ -1048,7 +1048,7 @@ private int ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq* stuff)
     uint width = void, height = void, depth = void;
     c_ulong size = void;
 
-    client.errorValue = stuff.pid;
+    client.errorValue = cast(uint)stuff.pid;
     if (!sharedPixmaps)
         return BadImplementation;
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
@@ -1063,7 +1063,7 @@ private int ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq* stuff)
     height = stuff.height;
     depth = stuff.depth;
     if (!width || !height || !depth) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
     if (width > 32767 || height > 32767)
@@ -1074,7 +1074,7 @@ private int ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq* stuff)
         for (i = 0; i < pDraw.pScreen.numDepths; i++, pDepth++)
             if (pDepth.depth == stuff.depth)
                 goto CreatePmap;
-        client.errorValue = stuff.depth;
+        client.errorValue = cast(uint)stuff.depth;
         return BadValue;
     }
 
@@ -1105,7 +1105,7 @@ private int ShmCreatePixmap(ClientPtr client, xShmCreatePixmapReq* stuff)
         shmdesc.refcnt++;
         pMap.drawable.serialNumber = NEXT_SERIAL_NUMBER;
         pMap.drawable.id = stuff.pid;
-        if (AddResource(stuff.pid, X11_RESTYPE_PIXMAP, cast(void*) pMap)) {
+        if (AddResource(cast(uint)stuff.pid, X11_RESTYPE_PIXMAP, cast(void*) pMap)) {
             return Success;
         }
     }
@@ -1140,7 +1140,7 @@ private int ProcShmAttachFd(ClientPtr client)
     SetReqFds(client, 1);
     mixin(LEGAL_NEW_RESOURCE!("stuff.shmseg", "client"));
     if ((stuff.readOnly != xTrue) && (stuff.readOnly != xFalse)) {
-        client.errorValue = stuff.readOnly;
+        client.errorValue = cast(uint)stuff.readOnly;
         return BadValue;
     }
     fd = ReadFdFromClient(client);
@@ -1184,7 +1184,7 @@ private int ProcShmAttachFd(ClientPtr client)
     shmdesc.next = Shmsegs;
     Shmsegs = shmdesc;
 
-    if (!AddResource(stuff.shmseg, ShmSegType, cast(void*) shmdesc))
+    if (!AddResource(cast(uint)stuff.shmseg, ShmSegType, cast(void*) shmdesc))
         return BadAlloc;
     return Success;
 }
@@ -1257,7 +1257,7 @@ private int ProcShmCreateSegment(ClientPtr client)
 
     mixin(LEGAL_NEW_RESOURCE!("stuff.shmseg", "client"));
     if ((stuff.readOnly != xTrue) && (stuff.readOnly != xFalse)) {
-        client.errorValue = stuff.readOnly;
+        client.errorValue = cast(uint)stuff.readOnly;
         return BadValue;
     }
     fd = shm_tmpfile();
@@ -1299,13 +1299,13 @@ private int ProcShmCreateSegment(ClientPtr client)
     shmdesc.next = Shmsegs;
     Shmsegs = shmdesc;
 
-    if (!AddResource(stuff.shmseg, ShmSegType, cast(void*) shmdesc)) {
+    if (!AddResource(cast(uint)stuff.shmseg, ShmSegType, cast(void*) shmdesc)) {
         close(fd);
         return BadAlloc;
     }
 
     if (WriteFdToClient(client, fd, TRUE) < 0) {
-        FreeResource(stuff.shmseg, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.shmseg, X11_RESTYPE_NONE);
         close(fd);
         return BadAlloc;
     }

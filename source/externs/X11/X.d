@@ -100,7 +100,11 @@ alias Cursor = XID;
 alias Colormap = XID;
 alias GContext = XID;
 alias KeySym = XID;
-
+// static assert(XID.sizeof == 4);
+// static assert(Mask.sizeof == 4);
+// static assert(Atom.sizeof == 4);
+// static assert(VisualID.sizeof == 4);
+// static assert(Time.sizeof == 4);
 alias KeyCode = ubyte;
 
 /*****************************************************************

@@ -576,7 +576,7 @@ void miGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskForm
             return;
         component_alpha = mixin(NeedsComponent!(`maskFormat.format`));
         pMask = CreatePicture(0, &pMaskPixmap.drawable,
-                              maskFormat, CPComponentAlpha, cast(ulong*)&component_alpha,
+                              maskFormat, CPComponentAlpha, cast(uint*)&component_alpha,
                               serverClient, &error);
         if (!pMask) {
             dixDestroyPixmap(pMaskPixmap, 0);

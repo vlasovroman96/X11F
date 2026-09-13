@@ -167,7 +167,7 @@ void RRLeaseTerminated(RRLeasePtr lease)
         RRLeaseChangeState(lease, RRLeaseTerminating, RRLeaseTerminating);
 
     if (lease.id != None)
-        FreeResource(lease.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)lease.id, X11_RESTYPE_NONE);
 
     xorg_list_del(&lease.list);
 }
@@ -293,12 +293,12 @@ int ProcRRCreateLease(ClientPtr client)
                                      RRCrtcType, client, DixSetAttrAccess);
 
         if (rc != Success) {
-            client.errorValue = crtcIds[c];
+            client.errorValue = cast(uint)crtcIds[c];
             goto bail_lease;
         }
 
         if (RRCrtcIsLeased(crtc)) {
-            client.errorValue = crtcIds[c];
+            client.errorValue = cast(uint)crtcIds[c];
             rc = BadAccess;
             goto bail_lease;
         }
@@ -314,12 +314,12 @@ int ProcRRCreateLease(ClientPtr client)
 	rc = dixLookupResourceByType(cast(void**)&output, outputIds[o],
                                      RROutputType, client, DixSetAttrAccess);
         if (rc != Success) {
-            client.errorValue = outputIds[o];
+            client.errorValue = cast(uint)outputIds[o];
             goto bail_lease;
         }
 
         if (RROutputIsLeased(output)) {
-            client.errorValue = outputIds[o];
+            client.errorValue = cast(uint)outputIds[o];
             rc = BadAccess;
             goto bail_lease;
         }
@@ -342,7 +342,7 @@ int ProcRRCreateLease(ClientPtr client)
 leaseReturned:
     xorg_list_add(&lease.list, &scr_priv.leases);
 
-    if (!AddResource(stuff.lid, RRLeaseType, lease)) {
+    if (!AddResource(cast(uint)stuff.lid, RRLeaseType, lease)) {
         close(fd);
         return BadAlloc;
     }
@@ -379,7 +379,7 @@ int ProcRRFreeLease(ClientPtr client)
         RRTerminateLease(lease);
     else
         /* Get rid of the resource database entry */
-        FreeResource(stuff.lid, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)stuff.lid, X11_RESTYPE_NONE);
 
     return Success;
 }

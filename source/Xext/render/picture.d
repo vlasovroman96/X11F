@@ -90,7 +90,7 @@ private void picture_window_destructor(CallbackListPtr* pcbl, ScreenPtr pScreen,
     while ((pPicture = mixin(GetPictureWindow!("pWindow"))) !is null) {
         mixin(SetPictureWindow!("pWindow", "pPicture.pNext"));
         if (pPicture.id)
-            FreeResource(pPicture.id, PictureType);
+            FreeResource(cast(uint)pPicture.id, PictureType);
         FreePicture(cast(void*) pPicture, pPicture.id);
     }
 }
@@ -425,7 +425,7 @@ private Bool PictureInitIndexedFormat(ScreenPtr pScreen, PictFormatPtr format)
 
     if (format.index.vid == pScreen.rootVisual) {
         dixLookupResourceByType(cast(void**) &format.index.pColormap,
-                                pScreen.defColormap, X11_RESTYPE_COLORMAP,
+                                cast(uint)pScreen.defColormap, X11_RESTYPE_COLORMAP,
                                 serverClient, DixGetAttrAccess);
     }
     else {
@@ -637,7 +637,7 @@ Bool PictureInit(ScreenPtr pScreen, PictFormatPtr formats, int nformats)
             (formats[n].id, PictFormatType, cast(void*) (formats + n))) {
             int i = void;
             for (i = 0; i < n; i++)
-                FreeResource(formats[i].id, X11_RESTYPE_NONE);
+                FreeResource(cast(uint)formats[i].id, X11_RESTYPE_NONE);
             free(formats);
             return FALSE;
         }
@@ -1039,7 +1039,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
                 pPicture.repeatType = newr;
             }
             else {
-                client.errorValue = newr;
+                client.errorValue = cast(uint)newr;
                 error = BadValue;
             }
         }
@@ -1057,12 +1057,12 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
                     error = cpAlphaMap(cast(void**) &pAlpha, pid, pScreen,
                                        client, DixReadAccess);
                     if (error != Success) {
-                        client.errorValue = pid;
+                        client.errorValue = cast(uint)pid;
                         break;
                     }
                     if (pAlpha.pDrawable is null ||
                         pAlpha.pDrawable.type != DRAWABLE_PIXMAP) {
-                        client.errorValue = pid;
+                        client.errorValue = cast(uint)pid;
                         error = BadMatch;
                         break;
                     }
@@ -1115,7 +1115,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
                     error = cpClipMask(cast(void**) &pPixmap, pid, pScreen,
                                        client, DixReadAccess);
                     if (error != Success) {
-                        client.errorValue = pid;
+                        client.errorValue = cast(uint)pid;
                         break;
                     }
                 }
@@ -1152,7 +1152,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
             if (newe <= xTrue)
                 pPicture.graphicsExposures = newe;
             else {
-                client.errorValue = newe;
+                client.errorValue = cast(uint)newe;
                 error = BadValue;
             }
         }
@@ -1165,7 +1165,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
             if (news == ClipByChildren || news == IncludeInferiors)
                 pPicture.subWindowMode = news;
             else {
-                client.errorValue = news;
+                client.errorValue = cast(uint)news;
                 error = BadValue;
             }
         }
@@ -1178,7 +1178,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
             if (newe == PolyEdgeSharp || newe == PolyEdgeSmooth)
                 pPicture.polyEdge = newe;
             else {
-                client.errorValue = newe;
+                client.errorValue = cast(uint)newe;
                 error = BadValue;
             }
         }
@@ -1191,7 +1191,7 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
             if (newm == PolyModePrecise || newm == PolyModeImprecise)
                 pPicture.polyMode = newm;
             else {
-                client.errorValue = newm;
+                client.errorValue = cast(uint)newm;
                 error = BadValue;
             }
         }
@@ -1209,13 +1209,13 @@ int ChangePicture(PicturePtr pPicture, Mask vmask, XID* vlist, DevUnion* ulist, 
             if (newca <= xTrue)
                 pPicture.componentAlpha = newca;
             else {
-                client.errorValue = newca;
+                client.errorValue = cast(uint)newca;
                 error = BadValue;
             }
         }
             break;
         default:
-            client.errorValue = maskQ;
+            client.errorValue = cast(uint)maskQ;
             error = BadValue;
             break;
         }

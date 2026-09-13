@@ -217,12 +217,12 @@ private int proc_dri3_pixmap_from_buffer(ClientPtr client)
     mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
     rc = dixLookupDrawable(&drawable, stuff.drawable, client, M_ANY, DixGetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.drawable;
+        client.errorValue = cast(uint)stuff.drawable;
         return rc;
     }
 
     if (!stuff.width || !stuff.height) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
 
@@ -236,7 +236,7 @@ private int proc_dri3_pixmap_from_buffer(ClientPtr client)
             if (depth.depth == stuff.depth)
                 break;
         if (i == drawable.pScreen.numDepths) {
-            client.errorValue = stuff.depth;
+            client.errorValue = cast(uint)stuff.depth;
             return BadValue;
         }
     }
@@ -267,7 +267,7 @@ private int proc_dri3_pixmap_from_buffer(ClientPtr client)
         dixDestroyPixmap(pixmap, 0);
         return rc;
     }
-    if (!AddResource(stuff.pixmap, X11_RESTYPE_PIXMAP, cast(void*) pixmap))
+    if (!AddResource(cast(uint)stuff.pixmap, X11_RESTYPE_PIXMAP, cast(void*) pixmap))
         return BadAlloc;
 
     return Success;
@@ -285,7 +285,7 @@ private int proc_dri3_buffer_from_pixmap(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pixmap, stuff.pixmap, X11_RESTYPE_PIXMAP,
                                  client, DixWriteAccess);
     if (rc != Success) {
-        client.errorValue = stuff.pixmap;
+        client.errorValue = cast(uint)stuff.pixmap;
         return rc;
     }
 
@@ -442,13 +442,13 @@ private int proc_dri3_pixmap_from_buffers(ClientPtr client)
     mixin(LEGAL_NEW_RESOURCE!("stuff.pixmap", "client"));
     rc = dixLookupWindow(&window, stuff.window, client, DixGetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
     screen = window.drawable.pScreen;
 
     if (!stuff.width || !stuff.height || !stuff.bpp || !stuff.depth) {
-        client.errorValue = 0;
+        client.errorValue = cast(uint)0;
         return BadValue;
     }
 
@@ -462,13 +462,13 @@ private int proc_dri3_pixmap_from_buffers(ClientPtr client)
             if (depth.depth == stuff.depth)
                 break;
         if (j == screen.numDepths) {
-            client.errorValue = stuff.depth;
+            client.errorValue = cast(uint)stuff.depth;
             return BadValue;
         }
     }
 
     if (!stuff.num_buffers || stuff.num_buffers > 4) {
-        client.errorValue = stuff.num_buffers;
+        client.errorValue = cast(uint)stuff.num_buffers;
         return BadValue;
     }
 
@@ -513,7 +513,7 @@ private int proc_dri3_pixmap_from_buffers(ClientPtr client)
         dixDestroyPixmap(pixmap, 0);
         return rc;
     }
-    if (!AddResource(stuff.pixmap, X11_RESTYPE_PIXMAP, cast(void*) pixmap))
+    if (!AddResource(cast(uint)stuff.pixmap, X11_RESTYPE_PIXMAP, cast(void*) pixmap))
         return BadAlloc;
 
     return Success;
@@ -535,7 +535,7 @@ private int proc_dri3_buffers_from_pixmap(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pixmap, stuff.pixmap, X11_RESTYPE_PIXMAP,
                                  client, DixWriteAccess);
     if (rc != Success) {
-        client.errorValue = stuff.pixmap;
+        client.errorValue = cast(uint)stuff.pixmap;
         return rc;
     }
 
@@ -635,7 +635,7 @@ private int proc_dri3_free_syncobj(ClientPtr client)
     if (status != Success)
         return status;
 
-    FreeResource(stuff.syncobj, RT_NONE);
+    FreeResource(cast(uint)stuff.syncobj, RT_NONE);
     return Success;
 }
 

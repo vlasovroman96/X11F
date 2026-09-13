@@ -98,14 +98,14 @@ int ProcXSendExtensionEvent(ClientPtr client)
         xEvent* eventP = cast(xEvent*) &stuff[1];
         for (int i = 0; i < stuff.num_events; i++, eventP++) {
             if (eventP.u.u.type == GenericEvent) {
-                client.errorValue = eventP.u.u.type;
+                client.errorValue = cast(uint)eventP.u.u.type;
                 return BadValue;
             }
 
             EventSwapPtr proc = EventSwapVector[eventP.u.u.type & octal!"177"];
             /* no swapping proc; invalid event type? */
             if (proc == &NotImplemented) {
-                client.errorValue = eventP.u.u.type;
+                client.errorValue = cast(uint)eventP.u.u.type;
                 return BadValue;
             }
             xEvent eventT;
@@ -136,7 +136,7 @@ int ProcXSendExtensionEvent(ClientPtr client)
     for (i = 0; i < stuff.num_events; i++) {
         if (!((EXTENSION_EVENT_BASE <= first[i].u.u.type) &&
             (first[i].u.u.type < lastEvent))) {
-            client.errorValue = first[i].u.u.type;
+            client.errorValue = cast(uint)first[i].u.u.type;
             return BadValue;
         }
     }

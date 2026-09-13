@@ -201,7 +201,7 @@ private Bool exaRealizeGlyphCaches(ScreenPtr pScreen, uint format)
 
     component_alpha = mixin(NeedsComponent!(`pPictFormat.format`));
     pPicture = CreatePicture(0, &pPixmap.drawable, pPictFormat,
-                             CPComponentAlpha, cast(ulong*)&component_alpha, serverClient,
+                             CPComponentAlpha, cast(uint*)&component_alpha, serverClient,
                              &error);
 
     dixDestroyPixmap(pPixmap, 0); /* picture holds a refcount */
@@ -695,7 +695,7 @@ void exaGlyphs(CARD8 op, PicturePtr pSrc, PicturePtr pDst, PictFormatPtr maskFor
             return;
         component_alpha = mixin(NeedsComponent!(`maskFormat.format`));
         pMask = CreatePicture(0, &pMaskPixmap.drawable,
-                              maskFormat, CPComponentAlpha, cast(ulong*)&component_alpha,
+                              maskFormat, CPComponentAlpha, cast(uint*)&component_alpha,
                               serverClient, &error);
         if (!pMask ||
             (!component_alpha && pExaScr.info.CheckComposite &&

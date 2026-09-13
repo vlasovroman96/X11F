@@ -175,7 +175,7 @@ int SProcSendEvent(ClientPtr client)
     /* Generic events can have variable size, but SendEvent request holds
        exactly 32B of event data. */
     if (stuff.event.u.u.type == GenericEvent) {
-        client.errorValue = stuff.event.u.u.type;
+        client.errorValue = cast(uint)stuff.event.u.u.type;
         return BadValue;
     }
 

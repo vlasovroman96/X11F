@@ -149,7 +149,7 @@ int ProcXSelectExtensionEvent(ClientPtr client)
     for (i = 0; i < EMASKSIZE; i++)
         if (tmp[i].dev !is null) {
             if (tmp[i].mask & ~XIAllMasks) {
-                client.errorValue = tmp[i].mask;
+                client.errorValue = cast(uint)tmp[i].mask;
                 return BadValue;
             }
             if ((ret =

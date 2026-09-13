@@ -61,7 +61,7 @@ void present_free_events(WindowPtr window)
         return;
 
     while ((event = window_priv.events) !is null)
-        FreeResource(event.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)event.id, X11_RESTYPE_NONE);
 }
 
 private void present_event_swap(xGenericEvent* from, xGenericEvent* to)
@@ -226,7 +226,7 @@ int present_select_input(ClientPtr client, XID eid, WindowPtr window, CARD32 mas
         if (mask)
             event.mask = cast(int)mask;
         else
-            FreeResource(eid, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)eid, X11_RESTYPE_NONE);
         return Success;
     }
     if (ret != BadValue)
@@ -253,7 +253,7 @@ int present_select_input(ClientPtr client, XID eid, WindowPtr window, CARD32 mas
     event.next = window_priv.events;
     window_priv.events = event;
 
-    if (!AddResource(event.id, present_event_type, cast(void*) event))
+    if (!AddResource(cast(uint)event.id, present_event_type, cast(void*) event))
         return BadAlloc;
 
     return Success;

@@ -93,7 +93,7 @@ private void DeleteDeviceEvents(DeviceIntPtr dev, WindowPtr pWin, ClientPtr clie
         next = grab.next;
         if ((grab.device == dev) &&
             (client.clientAsMask == CLIENT_BITS(grab.resource)))
-            FreeResource(grab.resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)grab.resource, X11_RESTYPE_NONE);
     }
 }
 

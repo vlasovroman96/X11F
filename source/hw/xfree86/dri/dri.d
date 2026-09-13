@@ -1105,7 +1105,7 @@ Bool DRICreateContext(ScreenPtr pScreen, VisualPtr visual, XID context, drm_cont
     }
 
     /* track this in case the client dies before cleanup */
-    if (!AddResource(context, DRIContextPrivResType, cast(void*) pDRIContextPriv))
+    if (!AddResource(cast(uint)context, DRIContextPrivResType, cast(void*) pDRIContextPriv))
         return FALSE;
 
     return TRUE;
@@ -1342,7 +1342,7 @@ Bool DRICreateDrawable(ScreenPtr pScreen, ClientPtr client, DrawablePtr pDrawabl
         }
 
         /* track this in case the client dies */
-        if (!AddResource(FakeClientID(client.index), DRIDrawablePrivResType,
+        if (!AddResource(cast(uint)FakeClientID(client.index), DRIDrawablePrivResType,
                          cast(void*) cast(intptr_t) pDrawable.id))
             return FALSE;
 

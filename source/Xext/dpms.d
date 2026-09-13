@@ -114,7 +114,7 @@ alias DPMSEventRec = _DPMSEvent;
     pHead = cast(DPMSEventPtr*) data;
     for (pCur = *pHead; pCur; pCur = pNext) {
         pNext = pCur.next;
-        FreeResource(pCur.clientResource, ClientType);
+        FreeResource(cast(uint)pCur.clientResource, ClientType);
         free(cast(void*) pCur);
     }
     free(cast(void*) pHead);
@@ -169,7 +169,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
          */
         clientResource = FakeClientID(client.index);
         pNewEvent.clientResource = clientResource;
-        if (!AddResource(clientResource, ClientType, cast(void*)pNewEvent))
+        if (!AddResource(cast(uint)clientResource, ClientType, cast(void*)pNewEvent))
             return BadAlloc;
         /*
          * create a resource to contain a pointer to the list
@@ -178,8 +178,8 @@ private int ProcDPMSSelectInput(ClientPtr client)
         if (i != Success || !pHead) {
             pHead = cast(DPMSEventPtr*) cast(DPMSEventPtr*) calloc(1, DPMSEventPtr.sizeof);
             if (!pHead ||
-                    !AddResource(eventResource, DPMSEventType, cast(void*)pHead)) {
-                FreeResource(clientResource, X11_RESTYPE_NONE);
+                    !AddResource(cast(uint)eventResource, DPMSEventType, cast(void*)pHead)) {
+                FreeResource(cast(uint)clientResource, X11_RESTYPE_NONE);
                 return BadAlloc;
             }
             *pHead = null;
@@ -198,7 +198,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
                 pNewEvent = pEvent;
             }
             if (pEvent) {
-                FreeResource(pEvent.clientResource, ClientType);
+                FreeResource(cast(uint)pEvent.clientResource, ClientType);
                 if (pNewEvent) {
                     pNewEvent.next = pEvent.next;
                 } else {
@@ -209,7 +209,7 @@ private int ProcDPMSSelectInput(ClientPtr client)
         }
     }
     else {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
     return Success;
@@ -367,11 +367,11 @@ private int ProcDPMSSetTimeouts(ClientPtr client)
     mixin(X_REQUEST_FIELD_CARD16!("off"));
 
     if ((stuff.off != 0) && (stuff.off < stuff.suspend)) {
-        client.errorValue = stuff.off;
+        client.errorValue = cast(uint)stuff.off;
         return BadValue;
     }
     if ((stuff.suspend != 0) && (stuff.suspend < stuff.standby)) {
-        client.errorValue = stuff.suspend;
+        client.errorValue = cast(uint)stuff.suspend;
         return BadValue;
     }
 
@@ -426,7 +426,7 @@ private int ProcDPMSForceLevel(ClientPtr client)
     if (stuff.level != DPMSModeOn &&
         stuff.level != DPMSModeStandby &&
         stuff.level != DPMSModeSuspend && stuff.level != DPMSModeOff) {
-        client.errorValue = stuff.level;
+        client.errorValue = cast(uint)stuff.level;
         return BadValue;
     }
 

@@ -101,6 +101,7 @@ struct __GLXDRIcontext {
 }
 
 enum MAX_DRAWABLE_BUFFERS = 5;
+alias XID = externs.X11.X.XID;
 
 struct __GLXDRIdrawable {
     __GLXdrawable base;
@@ -137,13 +138,13 @@ private void copy_box(__GLXdrawable* drawable, int dst, int src, int x, int y, i
 /* white lie */
 glx_func_ptr glXGetProcAddressARB(const(char)*);
 
-pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
+// pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private void __glXDRIdrawableDestroy(__GLXdrawable* drawable)
 {
     __GLXDRIdrawable* private_ = cast(__GLXDRIdrawable*) drawable;
     const(__DRIcoreExtension)* core = private_.screen.core;
 
-    FreeResource(private_.dri2_id, FALSE);
+    FreeResource(cast(uint)private_.dri2_id, FALSE);
 
     assumeNoGC(core.destroyDrawable) (private_.driDrawable);
 

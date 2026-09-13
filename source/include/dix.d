@@ -151,7 +151,7 @@ alias ServerWakeupHandlerProcPtr = void function(void* blockData, int result);
 
 /* atom.c */
 
-ulong MakeAtom(const(char)*, uint, Bool);
+Atom MakeAtom(const(char)*, uint, Bool);
 
 int ValidAtom(Atom);
 

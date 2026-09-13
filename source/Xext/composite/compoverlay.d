@@ -119,7 +119,7 @@ CompOverlayClientPtr compCreateOverlayClient(ScreenPtr pScreen, ClientPtr pClien
      * Create a resource for this element so it can be deleted
      * when the client goes away.
      */
-    if (!AddResource(pOc.resource, CompositeClientOverlayType, cast(void*) pOc))
+    if (!AddResource(cast(uint)pOc.resource, CompositeClientOverlayType, cast(void*) pOc))
         return null;
 
     return pOc;
@@ -152,11 +152,11 @@ static if(XINERAMA){
         dixCreateWindow(cs.overlayWid, pRoot, x, y, w, h, 0,
                      InputOutput, CWBackPixmap | CWOverrideRedirect, &attrs[0],
                      pRoot.drawable.depth,
-                     serverClient, pScreen.rootVisual, &result);
+                     serverClient, cast(uint)pScreen.rootVisual, &result);
     if (pWin is null)
         return FALSE;
 
-    if (!AddResource(pWin.drawable.id, X11_RESTYPE_WINDOW, cast(void*) pWin))
+    if (!AddResource(cast(uint)pWin.drawable.id, X11_RESTYPE_WINDOW, cast(void*) pWin))
         return FALSE;
 
     MapWindow(pWin, serverClient);
@@ -172,5 +172,5 @@ void compDestroyOverlayWindow(ScreenPtr pScreen)
     CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
     cs.pOverlayWin = NullWindow;
-    FreeResource(cs.overlayWid, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)cs.overlayWid, X11_RESTYPE_NONE);
 }

@@ -53,7 +53,7 @@ enum string VERIFY_RR_OUTPUT(string id, string ptr, string a) = `
 	int rc = dixLookupResourceByType(cast(void**)&(` ~ ptr ~ `), ` ~ id ~ `,
 	                                 RROutputType, client, ` ~ a ~ `);
 	if (rc != Success) {
-	    client.errorValue = ` ~ id ~ `;
+	    client.errorValue = cast(uint)` ~ id ~ `;
 	    return rc;
 	}
     }`;
@@ -63,7 +63,7 @@ enum string VERIFY_RR_CRTC(string id, string ptr, string a) = `
 	int rc = dixLookupResourceByType(cast(void**)&(` ~ ptr ~ `), ` ~ id ~ `,
 	                                 RRCrtcType, client, ` ~ a ~ `);
 	if (rc != Success) {
-	    client.errorValue = ` ~ id ~ `;
+	    client.errorValue = cast(uint)` ~ id ~ `;
 	    return rc;
 	}
     }`;
@@ -73,7 +73,7 @@ enum string VERIFY_RR_MODE(string id, string ptr, string a) = `
 	int rc = dixLookupResourceByType(cast(void**)&(` ~ ptr ~ `), ` ~ id ~ `,
 	                                 RRModeType, client, ` ~ a ~ `);
 	if (rc != Success) {
-	    client.errorValue = ` ~ id ~ `;
+	    client.errorValue = cast(uint)` ~ id ~ `;
 	    return rc;
 	}
     }`;
@@ -83,7 +83,7 @@ enum string VERIFY_RR_PROVIDER(string id, string ptr, string a) = `
         int rc = dixLookupResourceByType(cast(void**)&(` ~ ptr ~ `), ` ~ id ~ `,
                                          RRProviderType, client, ` ~ a ~ `);
         if (rc != Success) {
-            client.errorValue = ` ~ id ~ `;
+            client.errorValue = cast(uint)` ~ id ~ `;
             return rc;
         }
     }`;
@@ -93,7 +93,7 @@ enum string VERIFY_RR_LEASE(string id, string ptr, string a) = `
         int rc = dixLookupResourceByType(cast(void**)&(` ~ ptr ~ `), ` ~ id ~ `,
                                          RRLeaseType, client, ` ~ a ~ `);
         if (rc != Success) {
-            client.errorValue = ` ~ id ~ `;
+            client.errorValue = cast(uint)` ~ id ~ `;
             return rc;
         }
     }`;

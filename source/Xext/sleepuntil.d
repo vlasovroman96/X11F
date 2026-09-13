@@ -92,7 +92,7 @@ int ClientSleepUntil(ClientPtr client, TimeStamp* revive, void function(ClientPt
         BlockHandlerRegistered = TRUE;
     }
     pRequest.notifyFunc = null;
-    if (!AddResource(pRequest.id, SertafiedResType, cast(void*) pRequest))
+    if (!AddResource(cast(uint)pRequest.id, SertafiedResType, cast(void*) pRequest))
         return FALSE;
     if (!notifyFunc)
         notifyFunc = &ClientAwaken;
@@ -155,7 +155,7 @@ private void SertafiedBlockHandler(void* data, void* wt)
         pNext = walk.next;
         if (CompareTimeStamps(walk.revive, now) == LATER)
             break;
-        FreeResource(walk.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)walk.id, X11_RESTYPE_NONE);
 
         /* AttendClient() may have been called via the resource delete
          * function so a client may have input to be processed and so
@@ -184,7 +184,7 @@ private void SertafiedWakeupHandler(void* data, int i)
         pNext = walk.next;
         if (CompareTimeStamps(walk.revive, now) == LATER)
             break;
-        FreeResource(walk.id, X11_RESTYPE_NONE);
+        FreeResource(cast(uint)walk.id, X11_RESTYPE_NONE);
     }
     if (!pending) {
         RemoveBlockAndWakeupHandlers(&SertafiedBlockHandler,

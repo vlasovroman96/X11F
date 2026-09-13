@@ -37,6 +37,7 @@ import core.stdc.config: c_long, c_ulong;
  import glx.glxserver;
  import glx.glxscreens_h;
  import Xext.glx.fix;
+alias XID = externs.X11.X.XID;
 
 
 struct __GLXcontext {

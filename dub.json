@@ -10,6 +10,9 @@
 	},
 	"targetType": "executable",
 	"dflags": [
+		"-version=_XSERVER64",
+		"-version=__SIZEOF_LONG__",
+		"-version=LONG64",
 		"-i",
     "-P-I/usr/include/dbus-1.0",
     "-P-I/usr/include/pixman-1",

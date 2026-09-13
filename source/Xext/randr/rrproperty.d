@@ -527,7 +527,7 @@ int ProcRRChangeOutputProperty(ClientPtr client)
                 mixin(SwapRestL!("stuff"));
                 break;
             default:
-                client.errorValue = stuff.format;
+                client.errorValue = cast(uint)stuff.format;
                 return BadValue;
         }
     }
@@ -544,11 +544,11 @@ int ProcRRChangeOutputProperty(ClientPtr client)
     mode = stuff.mode;
     if ((mode != PropModeReplace) && (mode != PropModeAppend) &&
         (mode != PropModePrepend)) {
-        client.errorValue = mode;
+        client.errorValue = cast(uint)mode;
         return BadValue;
     }
     if ((format != 8) && (format != 16) && (format != 32)) {
-        client.errorValue = format;
+        client.errorValue = cast(uint)format;
         return BadValue;
     }
     len = stuff.nUnits;
@@ -562,11 +562,11 @@ int ProcRRChangeOutputProperty(ClientPtr client)
 ;
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
     if (!ValidAtom(stuff.type)) {
-        client.errorValue = stuff.type;
+        client.errorValue = cast(uint)stuff.type;
         return BadAtom;
     }
 
@@ -601,18 +601,18 @@ int ProcRRDeleteOutputProperty(ClientPtr client)
         return BadAccess;
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
 
     prop = RRQueryOutputProperty(output, stuff.property);
     if (!prop) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadName;
     }
 
     if (prop.immutable_) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAccess;
     }
 
@@ -644,15 +644,15 @@ int ProcRRGetOutputProperty(ClientPtr client)
                      "stuff.delete_ ? DixWriteAccess : DixReadAccess"));
 
     if (!ValidAtom(stuff.property)) {
-        client.errorValue = stuff.property;
+        client.errorValue = cast(uint)stuff.property;
         return BadAtom;
     }
     if ((stuff.delete_ != xTrue) && (stuff.delete_ != xFalse)) {
-        client.errorValue = stuff.delete_;
+        client.errorValue = cast(uint)stuff.delete_;
         return BadValue;
     }
     if ((stuff.type != AnyPropertyType) && !ValidAtom(stuff.type)) {
-        client.errorValue = stuff.type;
+        client.errorValue = cast(uint)stuff.type;
         return BadAtom;
     }
 
@@ -696,7 +696,7 @@ int ProcRRGetOutputProperty(ClientPtr client)
        be negative, it's a value error. */
 
     if (n < ind) {
-        client.errorValue = stuff.longOffset;
+        client.errorValue = cast(uint)stuff.longOffset;
         return BadValue;
     }
     

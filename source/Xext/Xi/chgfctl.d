@@ -97,7 +97,7 @@ private int ChangeKbdFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (t == -1)
             t = defaultKeyboardControl.click;
         else if (t < 0 || t > 100) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         kctrl.click = t;
@@ -108,7 +108,7 @@ private int ChangeKbdFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (t == -1)
             t = defaultKeyboardControl.bell;
         else if (t < 0 || t > 100) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         kctrl.bell = t;
@@ -119,7 +119,7 @@ private int ChangeKbdFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (t == -1)
             t = defaultKeyboardControl.bell_pitch;
         else if (t < 0) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         kctrl.bell_pitch = t;
@@ -130,7 +130,7 @@ private int ChangeKbdFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (t == -1)
             t = defaultKeyboardControl.bell_duration;
         else if (t < 0) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         kctrl.bell_duration = t;
@@ -144,7 +144,7 @@ private int ChangeKbdFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
     if (mask & DvKey) {
         key = cast(KeyCode) f.key;
         if (key < 8 || key > 255) {
-            client.errorValue = key;
+            client.errorValue = cast(uint)key;
             return BadValue;
         }
         if (!(mask & DvAutoRepeatMode))
@@ -178,7 +178,7 @@ private int ChangeKbdFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
                 (defaultKeyboardControl.autoRepeats[inx] & kmask);
         }
         else {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
     }
@@ -213,7 +213,7 @@ private int ChangePtrFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (accelNum == -1)
             pctrl.num = defaultPointerControl.num;
         else if (accelNum < 0) {
-            client.errorValue = accelNum;
+            client.errorValue = cast(uint)accelNum;
             return BadValue;
         }
         else
@@ -227,7 +227,7 @@ private int ChangePtrFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (accelDenom == -1)
             pctrl.den = defaultPointerControl.den;
         else if (accelDenom <= 0) {
-            client.errorValue = accelDenom;
+            client.errorValue = cast(uint)accelDenom;
             return BadValue;
         }
         else
@@ -241,7 +241,7 @@ private int ChangePtrFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask, 
         if (threshold == -1)
             pctrl.threshold = defaultPointerControl.threshold;
         else if (threshold < 0) {
-            client.errorValue = threshold;
+            client.errorValue = cast(uint)threshold;
             return BadValue;
         }
         else
@@ -330,7 +330,7 @@ private int ChangeBellFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask,
         if (t == -1)
             t = defaultKeyboardControl.bell;
         else if (t < 0 || t > 100) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         bctrl.percent = t;
@@ -341,7 +341,7 @@ private int ChangeBellFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask,
         if (t == -1)
             t = defaultKeyboardControl.bell_pitch;
         else if (t < 0) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         bctrl.pitch = t;
@@ -352,7 +352,7 @@ private int ChangeBellFeedback(ClientPtr client, DeviceIntPtr dev, c_ulong mask,
         if (t == -1)
             t = defaultKeyboardControl.bell_duration;
         else if (t < 0) {
-            client.errorValue = t;
+            client.errorValue = cast(uint)t;
             return BadValue;
         }
         bctrl.duration = t;

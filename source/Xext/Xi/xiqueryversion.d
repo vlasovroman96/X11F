@@ -70,7 +70,7 @@ int ProcXIQueryVersion(ClientPtr client)
 
     /* This request only exists after XI2 */
     if (stuff.major_version < 2) {
-        client.errorValue = stuff.major_version;
+        client.errorValue = cast(uint)stuff.major_version;
         return BadValue;
     }
 
@@ -109,7 +109,7 @@ int ProcXIQueryVersion(ClientPtr client)
             if (version_compare(major, minor,
                                 pXIClient.major_version, pXIClient.minor_version) < 0) {
 
-                client.errorValue = stuff.major_version;
+                client.errorValue = cast(uint)stuff.major_version;
                 return BadValue;
             }
             major = pXIClient.major_version;

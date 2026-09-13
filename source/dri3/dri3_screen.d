@@ -283,7 +283,7 @@ int dri3_import_syncobj(ClientPtr client, ScreenPtr screen, XID id, int fd)
     if (!syncobj)
         return BadAlloc;
 
-    if (!AddResource(id, dri3_syncobj_type, syncobj))
+    if (!AddResource(cast(uint)id, dri3_syncobj_type, syncobj))
         return BadAlloc;
 
     return Success;

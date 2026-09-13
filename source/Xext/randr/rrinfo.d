@@ -69,7 +69,7 @@ private RRModePtr RROldModeAdd(RROutputPtr output, RRScreenSizePtr size, int ref
         modes = cast(RRModePtr*) cast(RRModePtr*) calloc(1, RRModePtr.sizeof);
     if (!modes) {
         RRModeDestroy(mode);
-        FreeResource(mode.mode.id, 0);
+        FreeResource(cast(uint)mode.mode.id, 0);
         return null;
     }
     modes[output.numModes++] = mode;

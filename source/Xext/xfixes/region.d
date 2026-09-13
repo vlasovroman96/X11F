@@ -98,7 +98,7 @@ int ProcXFixesCreateRegion(ClientPtr client)
     pRegion = RegionFromRects(things, cast(xRectangle*) (stuff + 1), CT_UNSORTED);
     if (!pRegion)
         return BadAlloc;
-    if (!AddResource(stuff.region, RegionResType, cast(void*) pRegion))
+    if (!AddResource(cast(uint)stuff.region, RegionResType, cast(void*) pRegion))
         return BadAlloc;
 
     return Success;
@@ -119,7 +119,7 @@ int ProcXFixesCreateRegionFromBitmap(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pPixmap, stuff.bitmap, X11_RESTYPE_PIXMAP,
                                  client, DixReadAccess);
     if (rc != Success) {
-        client.errorValue = stuff.bitmap;
+        client.errorValue = cast(uint)stuff.bitmap;
         return rc;
     }
     if (pPixmap.drawable.depth != 1)
@@ -130,7 +130,7 @@ int ProcXFixesCreateRegionFromBitmap(ClientPtr client)
     if (!pRegion)
         return BadAlloc;
 
-    if (!AddResource(stuff.region, RegionResType, cast(void*) pRegion))
+    if (!AddResource(cast(uint)stuff.region, RegionResType, cast(void*) pRegion))
         return BadAlloc;
 
     return Success;
@@ -151,7 +151,7 @@ int ProcXFixesCreateRegionFromWindow(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pWin, stuff.window, X11_RESTYPE_WINDOW,
                                  client, DixGetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.window;
+        client.errorValue = cast(uint)stuff.window;
         return rc;
     }
     switch (stuff.kind) {
@@ -170,14 +170,14 @@ int ProcXFixesCreateRegionFromWindow(ClientPtr client)
         }
         break;
     default:
-        client.errorValue = stuff.kind;
+        client.errorValue = cast(uint)stuff.kind;
         return BadValue;
     }
     if (copy && pRegion)
         pRegion = XFixesRegionCopy(pRegion);
     if (!pRegion)
         return BadAlloc;
-    if (!AddResource(stuff.region, RegionResType, cast(void*) pRegion))
+    if (!AddResource(cast(uint)stuff.region, RegionResType, cast(void*) pRegion))
         return BadAlloc;
 
     return Success;
@@ -208,7 +208,7 @@ int ProcXFixesCreateRegionFromGC(ClientPtr client)
         return BadMatch;
     }
 
-    if (!AddResource(stuff.region, RegionResType, cast(void*) pRegion))
+    if (!AddResource(cast(uint)stuff.region, RegionResType, cast(void*) pRegion))
         return BadAlloc;
 
     return Success;
@@ -238,7 +238,7 @@ int ProcXFixesCreateRegionFromPicture(ClientPtr client)
         return BadMatch;
     }
 
-    if (!AddResource(stuff.region, RegionResType, cast(void*) pRegion))
+    if (!AddResource(cast(uint)stuff.region, RegionResType, cast(void*) pRegion))
         return BadAlloc;
 
     return Success;
@@ -252,7 +252,7 @@ int ProcXFixesDestroyRegion(ClientPtr client)
     RegionPtr pRegion = void;
 
     mixin(VERIFY_REGION!("pRegion", "stuff.region", "client", "DixWriteAccess"));
-    FreeResource(stuff.region, X11_RESTYPE_NONE);
+    FreeResource(cast(uint)stuff.region, X11_RESTYPE_NONE);
     return Success;
 }
 
@@ -490,7 +490,7 @@ private int SingleXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindowS
     int rc = dixLookupResourceByType(cast(void**) &pWin, stuff.dest, X11_RESTYPE_WINDOW,
                                  client, DixSetAttrAccess);
     if (rc != Success) {
-        client.errorValue = stuff.dest;
+        client.errorValue = cast(uint)stuff.dest;
         return rc;
     }
 
@@ -502,7 +502,7 @@ private int SingleXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindowS
     case ShapeInput:
         break;
     default:
-        client.errorValue = stuff.destKind;
+        client.errorValue = cast(uint)stuff.destKind;
         return BadValue;
     }
 
@@ -656,7 +656,7 @@ private int PanoramiXFixesSetGCClipRegion(ClientPtr client, xXFixesSetGCClipRegi
 
     if ((result = dixLookupResourceByType(cast(void**) &gc, stuff.gc, XRT_GC,
                                           client, DixWriteAccess)) != 0) {
-        client.errorValue = stuff.gc;
+        client.errorValue = cast(uint)stuff.gc;
         return result;
     }
 
@@ -679,7 +679,7 @@ private int PanoramiXFixesSetWindowShapeRegion(ClientPtr client, xXFixesSetWindo
     if ((result = dixLookupResourceByType(cast(void**) &win, stuff.dest,
                                           XRT_WINDOW, client,
                                           DixWriteAccess)) != 0) {
-        client.errorValue = stuff.dest;
+        client.errorValue = cast(uint)stuff.dest;
         return result;
     }
 
@@ -713,7 +713,7 @@ private int PanoramiXFixesSetPictureClipRegion(ClientPtr client, xXFixesSetPictu
     if ((result = dixLookupResourceByType(cast(void**) &pict, stuff.picture,
                                           XRT_PICTURE, client,
                                           DixWriteAccess)) != 0) {
-        client.errorValue = stuff.picture;
+        client.errorValue = cast(uint)stuff.picture;
         return result;
     }
 

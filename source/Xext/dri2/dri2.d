@@ -324,12 +324,12 @@ private int DRI2AddDrawableRef(DRI2DrawablePtr pPriv, XID id, XID dri2_id, DRI2I
     if (ref_ is null)
         return BadAlloc;
 
-    if (!AddResource(dri2_id, dri2DrawableRes, pPriv)) {
+    if (!AddResource(cast(uint)dri2_id, dri2DrawableRes, pPriv)) {
         free(ref_);
         return BadAlloc;
     }
     if (!DRI2LookupDrawableRef(pPriv, id))
-        if (!AddResource(id, dri2DrawableRes, pPriv)) {
+        if (!AddResource(cast(uint)id, dri2DrawableRes, pPriv)) {
             FreeResourceByType(dri2_id, dri2DrawableRes, TRUE);
             free(ref_);
             return BadAlloc;

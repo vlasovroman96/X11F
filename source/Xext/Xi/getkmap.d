@@ -95,12 +95,12 @@ int ProcXGetDeviceKeyMapping(ClientPtr client)
 
     if (stuff.firstKeyCode < xkb.min_key_code ||
         stuff.firstKeyCode > xkb.max_key_code) {
-        client.errorValue = stuff.firstKeyCode;
+        client.errorValue = cast(uint)stuff.firstKeyCode;
         return BadValue;
     }
 
     if (stuff.firstKeyCode + stuff.count > xkb.max_key_code + 1) {
-        client.errorValue = stuff.count;
+        client.errorValue = cast(uint)stuff.count;
         return BadValue;
     }
 

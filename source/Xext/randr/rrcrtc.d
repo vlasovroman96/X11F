@@ -113,7 +113,7 @@ RRCrtcPtr RRCrtcCreate(ScreenPtr pScreen, void* devPrivate)
     assumeNoGC(&pixman_f_transform_init_identity)(&crtc.f_transform);
     assumeNoGC(&pixman_f_transform_init_identity)(&crtc.f_inverse);
 
-    if (!AddResource(crtc.id, RRCrtcType, cast(void*) crtc))
+    if (!AddResource(cast(uint)crtc.id, RRCrtcType, cast(void*) crtc))
         return null;
 
     /* attach the screen and crtc together */
@@ -902,7 +902,7 @@ RRTransformPtr RRCrtcGetTransform(RRCrtcPtr crtc)
  */
 void RRCrtcDestroy(RRCrtcPtr crtc)
 {
-    FreeResource(crtc.id, 0);
+    FreeResource(cast(uint)crtc.id, 0);
 }
 
 private int RRCrtcDestroyResource(void* value, XID pid)
@@ -1375,7 +1375,7 @@ int ProcRRSetCrtcConfig(ClientPtr client)
         /*
          * Invalid rotation
          */
-        client.errorValue = stuff.rotation;
+        client.errorValue = cast(uint)stuff.rotation;
         free(outputs);
         return BadValue;
     }
@@ -1385,7 +1385,7 @@ int ProcRRSetCrtcConfig(ClientPtr client)
             /*
              * requested rotation or reflection not supported by screen
              */
-            client.errorValue = stuff.rotation;
+            client.errorValue = cast(uint)stuff.rotation;
             free(outputs);
             return BadMatch;
         }
@@ -1423,13 +1423,13 @@ version (RANDR_12_INTERFACE) {
             RRModeGetScanoutSize(mode, &transform, &source_width,
                                  &source_height);
             if (stuff.x + source_width > width) {
-                client.errorValue = stuff.x;
+                client.errorValue = cast(uint)stuff.x;
                 free(outputs);
                 return BadValue;
             }
 
             if (stuff.y + source_height > height) {
-                client.errorValue = stuff.y;
+                client.errorValue = cast(uint)stuff.y;
                 free(outputs);
                 return BadValue;
             }

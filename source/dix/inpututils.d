@@ -59,13 +59,13 @@ private int check_butmap_change(DeviceIntPtr dev, CARD8* map, int len, CARD32* e
     int ret = void;
 
     if (!dev || !dev.button) {
-        client.errorValue = (dev) ? dev.id : 0;
+        client.errorValue = cast(uint)(dev) ? dev.id : 0;
         return BadDevice;
     }
 
     ret = dixCallDeviceAccessCallback(client, dev, DixManageAccess);
     if (ret != Success) {
-        client.errorValue = dev.id;
+        client.errorValue = cast(uint)dev.id;
         return ret;
     }
 
@@ -156,14 +156,14 @@ private int check_modmap_change(ClientPtr client, DeviceIntPtr dev, KeyCode* mod
         /* Check that all the new modifiers fall within the advertised
          * keycode range. */
         if (i < xkb.min_key_code || i > xkb.max_key_code) {
-            client.errorValue = i;
+            client.errorValue = cast(uint)i;
             return BadValue;
         }
 
         /* None of the new modifiers may be down while we change the
          * map. */
         if (key_is_down(dev, i, KEY_POSTED | KEY_PROCESSED)) {
-            client.errorValue = i;
+            client.errorValue = cast(uint)i;
             return MappingBusy;
         }
     }
@@ -174,7 +174,7 @@ private int check_modmap_change(ClientPtr client, DeviceIntPtr dev, KeyCode* mod
         if (!xkb.map.modmap[i])
             continue;
         if (key_is_down(dev, i, KEY_POSTED | KEY_PROCESSED)) {
-            client.errorValue = i;
+            client.errorValue = cast(uint)i;
             return MappingBusy;
         }
     }

@@ -256,7 +256,7 @@ private Bool fixupDefaultColormaps(FixupFunc fixup, uint bytes)
     mixin(DIX_FOR_EACH_SCREEN!("{
         ColormapPtr cmap = void;
         dixLookupResourceByType(cast(void**) &cmap,
-                                walkScreen.defColormap, X11_RESTYPE_COLORMAP,
+                                cast(uint)walkScreen.defColormap, X11_RESTYPE_COLORMAP,
                                 serverClient, DixCreateAccess);
         if (cmap &&
             !fixup(&cmap.devPrivates, walkScreen.screenSpecificPrivates[PRIVATE_COLORMAP].offset, bytes))

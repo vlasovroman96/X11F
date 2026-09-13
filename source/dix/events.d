@@ -1957,7 +1957,7 @@ int ProcAllowEvents(ClientPtr client)
         AllowSome(client, time, keybd, GRAB_STATE_THAWED_BOTH);
         break;
     default:
-        client.errorValue = stuff.mode;
+        client.errorValue = cast(uint)stuff.mode;
         return BadValue;
     }
     return Success;
@@ -4472,7 +4472,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
     int rc = void;
 
     if (mask & ~AllEventMasks) {
-        client.errorValue = mask;
+        client.errorValue = cast(uint)mask;
         return BadValue;
     }
     check = (mask & ManagerMask);
@@ -4503,7 +4503,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
             if (mixin(SameClient!("others", "client"))) {
                 check = others.mask;
                 if (mask == 0) {
-                    FreeResource(others.resource, X11_RESTYPE_NONE);
+                    FreeResource(cast(uint)others.resource, X11_RESTYPE_NONE);
                     return Success;
                 }
                 else
@@ -4521,7 +4521,7 @@ XRetCode EventSelectForWindow(WindowPtr pWin, ClientPtr client, Mask mask)
         others.resource = FakeClientID(client.index);
         others.next = pWin.optional.otherClients;
         pWin.optional.otherClients = others;
-        if (!AddResource(others.resource, X11_RESTYPE_OTHERCLIENT, cast(void*) pWin))
+        if (!AddResource(cast(uint)others.resource, X11_RESTYPE_OTHERCLIENT, cast(void*) pWin))
             return BadAlloc;
     }
  maskSet:
@@ -4540,7 +4540,7 @@ int EventSuppressForWindow(WindowPtr pWin, ClientPtr client, Mask mask, Bool* ch
     int i = void, freed = void;
 
     if (mask & ~PropagateMask) {
-        client.errorValue = mask;
+        client.errorValue = cast(uint)mask;
         return BadValue;
     }
     if (pWin.dontPropagate)
@@ -4795,7 +4795,7 @@ int SetInputFocus(ClientPtr client, DeviceIntPtr dev, Window focusID, CARD8 reve
         (revertTo != RevertToPointerRoot) &&
         (revertTo != RevertToNone) &&
         ((revertTo != RevertToFollowKeyboard) || !followOK)) {
-        client.errorValue = revertTo;
+        client.errorValue = cast(uint)revertTo;
         return BadValue;
     }
     time = ClientTimeToServerTime(cast(uint)ctime);
@@ -4945,7 +4945,7 @@ int ProcGrabPointer(ClientPtr client)
     UpdateCurrentTime();
 
     if (stuff.eventMask & ~PointerGrabMask) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
 
@@ -4995,7 +4995,7 @@ int ProcChangeActivePointerGrab(ClientPtr client)
 
     mixin(REQUEST_AT_LEAST_SIZE!xChangeActivePointerGrabReq);
     if (stuff.eventMask & ~PointerGrabMask) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
     if (stuff.cursor == None)
@@ -5005,7 +5005,7 @@ int ProcChangeActivePointerGrab(ClientPtr client)
                                          X11_RESTYPE_CURSOR, client, DixUseAccess);
 
         if (rc != Success) {
-            client.errorValue = stuff.cursor;
+            client.errorValue = cast(uint)stuff.cursor;
             return rc;
         }
     }
@@ -5088,15 +5088,15 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
 
     UpdateCurrentTime();
     if ((keyboard_mode != GrabModeSync) && (keyboard_mode != GrabModeAsync)) {
-        client.errorValue = keyboard_mode;
+        client.errorValue = cast(uint)keyboard_mode;
         return BadValue;
     }
     if ((pointer_mode != GrabModeSync) && (pointer_mode != GrabModeAsync)) {
-        client.errorValue = pointer_mode;
+        client.errorValue = cast(uint)pointer_mode;
         return BadValue;
     }
     if ((ownerEvents != xFalse) && (ownerEvents != xTrue)) {
-        client.errorValue = ownerEvents;
+        client.errorValue = cast(uint)ownerEvents;
         return BadValue;
     }
 
@@ -5119,7 +5119,7 @@ int GrabDevice(ClientPtr client, DeviceIntPtr dev, uint pointer_mode, uint keybo
         rc = dixLookupResourceByType(cast(void**) &cursor, curs, X11_RESTYPE_CURSOR,
                                      client, DixUseAccess);
         if (rc != Success) {
-            client.errorValue = curs;
+            client.errorValue = cast(uint)curs;
             return rc;
         }
         access_mode |= DixForceAccess;
@@ -5416,23 +5416,23 @@ int ProcSendEvent(ClientPtr client)
            stuff.event.u.u.type < LASTEvent) ||
           (stuff.event.u.u.type >= EXTENSION_EVENT_BASE &&
            stuff.event.u.u.type < cast(uint) lastEvent))) {
-        client.errorValue = stuff.event.u.u.type;
+        client.errorValue = cast(uint)stuff.event.u.u.type;
         return BadValue;
     }
     /* Generic events can have variable size, but SendEvent request holds
        exactly 32B of event data. */
     if (stuff.event.u.u.type == GenericEvent) {
-        client.errorValue = stuff.event.u.u.type;
+        client.errorValue = cast(uint)stuff.event.u.u.type;
         return BadValue;
     }
     if (stuff.event.u.u.type == ClientMessage &&
         stuff.event.u.u.detail != 8 &&
         stuff.event.u.u.detail != 16 && stuff.event.u.u.detail != 32) {
-        client.errorValue = stuff.event.u.u.detail;
+        client.errorValue = cast(uint)stuff.event.u.u.detail;
         return BadValue;
     }
     if (stuff.eventMask & ~AllEventMasks) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
 
@@ -5462,7 +5462,7 @@ int ProcSendEvent(ClientPtr client)
     if (!pWin)
         return BadWindow;
     if ((stuff.propagate != xFalse) && (stuff.propagate != xTrue)) {
-        client.errorValue = stuff.propagate;
+        client.errorValue = cast(uint)stuff.propagate;
         return BadValue;
     }
     stuff.event.u.u.type |= SEND_EVENT_BIT;
@@ -5509,12 +5509,12 @@ int ProcUngrabKey(ClientPtr client)
     if (((stuff.key > keybd.key.xkbInfo.desc.max_key_code) ||
          (stuff.key < keybd.key.xkbInfo.desc.min_key_code))
         && (stuff.key != AnyKey)) {
-        client.errorValue = stuff.key;
+        client.errorValue = cast(uint)stuff.key;
         return BadValue;
     }
     if ((stuff.modifiers != AnyModifier) &&
         (stuff.modifiers & ~AllModifiersMask)) {
-        client.errorValue = stuff.modifiers;
+        client.errorValue = cast(uint)stuff.modifiers;
         return BadValue;
     }
     tempGrab = AllocGrab(null);
@@ -5574,7 +5574,7 @@ int ProcGrabKey(ClientPtr client)
     if (((stuff.key > keybd.key.xkbInfo.desc.max_key_code) ||
          (stuff.key < keybd.key.xkbInfo.desc.min_key_code))
         && (stuff.key != AnyKey)) {
-        client.errorValue = stuff.key;
+        client.errorValue = cast(uint)stuff.key;
         return BadValue;
     }
     rc = dixLookupWindow(&pWin, stuff.grabWindow, client, DixSetAttrAccess);
@@ -5621,25 +5621,25 @@ int ProcGrabButton(ClientPtr client)
     UpdateCurrentTime();
     if ((stuff.pointerMode != GrabModeSync) &&
         (stuff.pointerMode != GrabModeAsync)) {
-        client.errorValue = stuff.pointerMode;
+        client.errorValue = cast(uint)stuff.pointerMode;
         return BadValue;
     }
     if ((stuff.keyboardMode != GrabModeSync) &&
         (stuff.keyboardMode != GrabModeAsync)) {
-        client.errorValue = stuff.keyboardMode;
+        client.errorValue = cast(uint)stuff.keyboardMode;
         return BadValue;
     }
     if ((stuff.modifiers != AnyModifier) &&
         (stuff.modifiers & ~AllModifiersMask)) {
-        client.errorValue = stuff.modifiers;
+        client.errorValue = cast(uint)stuff.modifiers;
         return BadValue;
     }
     if ((stuff.ownerEvents != xFalse) && (stuff.ownerEvents != xTrue)) {
-        client.errorValue = stuff.ownerEvents;
+        client.errorValue = cast(uint)stuff.ownerEvents;
         return BadValue;
     }
     if (stuff.eventMask & ~PointerGrabMask) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
     rc = dixLookupWindow(&pWin, stuff.grabWindow, client, DixSetAttrAccess);
@@ -5659,7 +5659,7 @@ int ProcGrabButton(ClientPtr client)
         rc = dixLookupResourceByType(cast(void**) &cursor, stuff.cursor,
                                      X11_RESTYPE_CURSOR, client, DixUseAccess);
         if (rc != Success) {
-            client.errorValue = stuff.cursor;
+            client.errorValue = cast(uint)stuff.cursor;
             return rc;
         }
         access_mode |= DixForceAccess;
@@ -5709,7 +5709,7 @@ int ProcUngrabButton(ClientPtr client)
     UpdateCurrentTime();
     if ((stuff.modifiers != AnyModifier) &&
         (stuff.modifiers & ~AllModifiersMask)) {
-        client.errorValue = stuff.modifiers;
+        client.errorValue = cast(uint)stuff.modifiers;
         return BadValue;
     }
     rc = dixLookupWindow(&pWin, stuff.grabWindow, client, DixReadAccess);
@@ -5842,9 +5842,9 @@ void DeleteWindowFromAnyEvents(WindowPtr pWin, Bool freeResources)
         if (pWin.dontPropagate)
             DontPropagateRefCnts[pWin.dontPropagate]--;
         while ((oc = mixin(wOtherClients!("pWin"))) !is null)
-            FreeResource(oc.resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)oc.resource, X11_RESTYPE_NONE);
         while ((passive = mixin(wPassiveGrabs!("pWin"))) !is null)
-            FreeResource(passive.resource, X11_RESTYPE_NONE);
+            FreeResource(cast(uint)passive.resource, X11_RESTYPE_NONE);
     }
 
     DeleteWindowFromAnyExtEvents(pWin, freeResources);
@@ -5905,7 +5905,7 @@ int ProcRecolorCursor(ClientPtr client)
     rc = dixLookupResourceByType(cast(void**) &pCursor, stuff.cursor, X11_RESTYPE_CURSOR,
                                  client, DixWriteAccess);
     if (rc != Success) {
-        client.errorValue = stuff.cursor;
+        client.errorValue = cast(uint)stuff.cursor;
         return rc;
     }
 

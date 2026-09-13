@@ -153,7 +153,7 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
     CallCallbacks(&SelectionFilterCallback, &param);
     if (param.skip) {
         if (param.status != Success)
-            client.errorValue = param.selection;
+            client.errorValue = cast(uint)param.selection;
         return param.status;
     }
 
@@ -162,7 +162,7 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
     if (rc != Success)
         return rc;
     if (stuff.eventMask & ~SelectionAllEvents) {
-        client.errorValue = stuff.eventMask;
+        client.errorValue = cast(uint)stuff.eventMask;
         return BadValue;
     }
 
@@ -182,7 +182,7 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
     }
     if (!stuff.eventMask) {
         if (e) {
-            FreeResource(e.clientResource, 0);
+            FreeResource(cast(uint)e.clientResource, 0);
         }
         return Success;
     }
@@ -205,18 +205,18 @@ int ProcXFixesSelectSelectionInput(ClientPtr client)
                                      SelectionWindowType, serverClient,
                                      DixGetAttrAccess);
         if (rc != Success)
-            if (!AddResource(pWindow.drawable.id, SelectionWindowType,
+            if (!AddResource(cast(uint)pWindow.drawable.id, SelectionWindowType,
                              cast(void*) pWindow)) {
                 free(e);
                 return BadAlloc;
             }
 
-        if (!AddResource(e.clientResource, SelectionClientType, cast(void*) e))
+        if (!AddResource(cast(uint)e.clientResource, SelectionClientType, cast(void*) e))
             return BadAlloc;
 
         *prev = e;
         if (!CheckSelectionCallback()) {
-            FreeResource(e.clientResource, 0);
+            FreeResource(cast(uint)e.clientResource, 0);
             return BadAlloc;
         }
     }
@@ -259,7 +259,7 @@ private int SelectionFreeWindow(void* data, XID id)
     for (e = selectionEvents; e; e = next) {
         next = e.next;
         if (e.pWindow == pWindow) {
-            FreeResource(e.clientResource, 0);
+            FreeResource(cast(uint)e.clientResource, 0);
         }
     }
     return 1;

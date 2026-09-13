@@ -48,15 +48,15 @@ int ProcXFixesChangeSaveSet(ClientPtr client)
     if (client.clientAsMask == (CLIENT_BITS(pWin.drawable.id)))
         return BadMatch;
     if ((stuff.mode != SetModeInsert) && (stuff.mode != SetModeDelete)) {
-        client.errorValue = stuff.mode;
+        client.errorValue = cast(uint)stuff.mode;
         return BadValue;
     }
     if ((stuff.target != SaveSetNearest) && (stuff.target != SaveSetRoot)) {
-        client.errorValue = stuff.target;
+        client.errorValue = cast(uint)stuff.target;
         return BadValue;
     }
     if ((stuff.map != SaveSetMap) && (stuff.map != SaveSetUnmap)) {
-        client.errorValue = stuff.map;
+        client.errorValue = cast(uint)stuff.map;
         return BadValue;
     }
     toRoot = (stuff.target == SaveSetRoot);
