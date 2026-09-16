@@ -815,10 +815,10 @@ private void LogVHdrMessageVerb(MessageType type, int verb, const(char)* msg_for
         return;
 
     if (hdr_format && ((buf).ptr - len).sizeof > 1)
-        len += vpnprintf(&buf[len], ((buf).ptr - len).sizeof, hdr_format, hdr_args);
+        len += vpnprintf(&buf[len], cast(int)((buf).length - len), hdr_format, hdr_args);
 
-    if (msg_format && ((buf).ptr - len).sizeof > 1)
-        len += vpnprintf(&buf[len], ((buf).ptr - len).sizeof, msg_format, msg_args);
+    if (msg_format && ((buf).length - len) > 1)
+        len += vpnprintf(&buf[len], cast(int)((buf).length - len), msg_format, msg_args);
 
     writeLog(verb, buf.ptr, cast(int)len);
 }
