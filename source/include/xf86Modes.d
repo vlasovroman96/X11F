@@ -52,7 +52,6 @@ void  xf86SetModeDefaultName(DisplayModePtr mode);
 void  xf86SetModeCrtc(DisplayModePtr p, int adjustFlags);
 void  xf86ModesEqual(const(DisplayModeRec)* pMode1, const(DisplayModeRec)* pMode2);
 void  xf86PrintModeline(int scrnIndex, DisplayModePtr mode);
-void  xf86ModesAdd(DisplayModePtr modes, DisplayModePtr new_);
 
 void  xf86DDCGetModes(int scrnIndex, xf86MonPtr DDC);
 void  xf86CVTMode(int HDisplay, int VDisplay, float VRefresh, Bool Reduced, Bool Interlaced);

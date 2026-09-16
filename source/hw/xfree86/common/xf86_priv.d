@@ -90,8 +90,42 @@ Bool xf86LoadModules(const(char)** list, void** optlist);
 // ModeStatus xf86CheckModeForDriver(ScrnInfoPtr scrp, DisplayModePtr mode, int flags);
 
 /* xf86DefaultModes (auto-generated) */
-const(DisplayModeRec)[1] xf86DefaultModes;
-const(int) xf86NumDefaultModes;
+// const(DisplayModeRec)[1] xf86DefaultModes;
+// const(int) xf86NumDefaultModes;
+const DisplayModeRec[1] xf86DefaultModes = [
+    DisplayModeRec(
+        null, null, null,
+        MODE_OK, M_T_DEFAULT,
+
+        0,      // Clock
+        1280,   // HDisplay
+        1281,   // HSyncStart
+        1282,   // HSyncEnd
+        1602,   // HTotal
+        0,      // HSkew
+
+        800,    // VDisplay
+        801,    // VSyncStart
+        802,    // VSyncEnd
+        803,    // VTotal
+        0,      // VScan
+        0,      // Flags
+
+        -1,     // ClockIndex
+        0,      // SynthClock
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0,
+        false, false,
+        0,
+        null,
+        0,
+
+        0.0,    // HSync
+        60.0    // VRefresh
+    )
+];
+
+const int xf86NumDefaultModes = xf86DefaultModes.length;
 
 /* xf86RandR.c */
 Bool xf86RandRInit(ScreenPtr pScreen);

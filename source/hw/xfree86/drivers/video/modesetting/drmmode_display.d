@@ -51,7 +51,6 @@ import xf86cmap;
 import xf86DDC_priv;
 // import externs.libdrm;;
 // import externs.libdrm;;
-
 import externs.libdrm;;
 import include.mipointer;
 // import externs.drmMode;
