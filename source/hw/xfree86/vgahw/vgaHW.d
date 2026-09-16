@@ -1474,8 +1474,9 @@ Bool vgaHWGetHWRec(ScrnInfoPtr scrp)
     if (mixin(VGAHWPTR!(`scrp`)))
         return TRUE;
     hwp = cast(_vgaHWRec*)XNFcallocarray(1, vgaHWRec.sizeof);
-    mixin(VGAHWPTRLVAL!(`scrp`)) = cast(_vgaHWRec*)XNFcallocarray(1, vgaHWRec.sizeof);
-    regp = &mixin(VGAHWPTR!(`scrp`)).ModeReg;
+    mixin(VGAHWPTRLVAL!(`scrp`)) = hwp;
+
+    regp = &hwp.ModeReg;
 
     if ((!vgaHWAllocDefaultRegs(&mixin(VGAHWPTR!(`scrp`)).SavedReg)) ||
         (!vgaHWAllocDefaultRegs(&mixin(VGAHWPTR!(`scrp`)).ModeReg))) {
