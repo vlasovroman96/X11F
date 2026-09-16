@@ -44,6 +44,13 @@ import include.xf86;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86Priv;
 import include.xf86_OSlib;
+import os.log;
+import core.stdc.stdio;
+import core.stdc.stdlib;
+import core.stdc.string;
+import core.sys.posix.sys.mman;
+import core.sys.posix.unistd;
+import externs.gnu;
 
 private Bool ExtendedEnabled = FALSE;
 
@@ -113,7 +120,7 @@ private void hwDisableIO()
     ioBase = null;
 }
 
-} else static if (HasVersion!"__i386__" || HasVersion!"__x86_64__" || HasVersion!"__ia64__" || 
+} else static if (HasVersion!"__i386__" || HasVersion!"X86_64" || HasVersion!"__ia64__" || 
       HasVersion!"__alpha__") {
 
 private Bool hwEnableIO()
@@ -178,13 +185,14 @@ enum string hwDisableIO() = ``;
 
 }
 
+
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 Bool xf86EnableIO()
 {
     if (ExtendedEnabled)
         return TRUE;
 
-    ExtendedEnabled = mixin(hwEnableIO!());
+    ExtendedEnabled = hwEnableIO();
 
     return ExtendedEnabled;
 }
@@ -195,7 +203,7 @@ void xf86DisableIO()
     if (!ExtendedEnabled)
         return;
 
-    mixin(hwDisableIO!());
+    hwDisableIO();
 
     ExtendedEnabled = FALSE;
 }
