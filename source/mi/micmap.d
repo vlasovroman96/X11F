@@ -130,9 +130,9 @@ Bool miInitializeColormap(ColormapPtr pmap)
     if (pVisual.class_ == TrueColor) {
         uint limr = void, limg = void, limb = void;
 
-        limr = pVisual.redMask >> pVisual.offsetRed;
-        limg = pVisual.greenMask >> pVisual.offsetGreen;
-        limb = pVisual.blueMask >> pVisual.offsetBlue;
+        limr = cast(uint)(pVisual.redMask >> pVisual.offsetRed);
+        limg = cast(uint)(pVisual.greenMask >> pVisual.offsetGreen);
+        limb = cast(uint)(pVisual.blueMask >> pVisual.offsetBlue);
         for (i = 0; i <= maxent; i++) {
             /* rescale to [0..65535] then rgb bits */
             pmap.red[i].co.local.red =
@@ -146,9 +146,9 @@ Bool miInitializeColormap(ColormapPtr pmap)
     else if (pVisual.class_ == StaticColor) {
         uint limr = void, limg = void, limb = void;
 
-        limr = pVisual.redMask >> pVisual.offsetRed;
-        limg = pVisual.greenMask >> pVisual.offsetGreen;
-        limb = pVisual.blueMask >> pVisual.offsetBlue;
+        limr = cast(uint)(pVisual.redMask >> pVisual.offsetRed);
+        limg = cast(uint)(pVisual.greenMask >> pVisual.offsetGreen);
+        limb = cast(uint)(pVisual.blueMask >> pVisual.offsetBlue);
         for (i = 0; i <= maxent; i++) {
             /* rescale to [0..65535] then rgb bits */
             pmap.red[i].co.local.red = cast(short)
@@ -210,13 +210,13 @@ int miExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorI
     stepred = 1 << pVisual.offsetRed;
     stepgreen = 1 << pVisual.offsetGreen;
     stepblue = 1 << pVisual.offsetBlue;
-    maxred = pVisual.redMask;
-    maxgreen = pVisual.greenMask;
-    maxblue = pVisual.blueMask;
+    maxred = cast(int)pVisual.redMask;
+    maxgreen = cast(int)pVisual.greenMask;
+    maxblue = cast(int)pVisual.blueMask;
     nresult = 0;
     for (; ndef--; indefs++) {
         if (indefs.flags & DoRed) {
-            red = indefs.pixel & pVisual.redMask;
+            red = cast(int)(indefs.pixel & pVisual.redMask);
             for (green = 0; green <= maxgreen; green += stepgreen) {
                 for (blue = 0; blue <= maxblue; blue += stepblue) {
                     mixin(AddElement!("DoRed"));
@@ -224,7 +224,7 @@ int miExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorI
             }
         }
         if (indefs.flags & DoGreen) {
-            green = indefs.pixel & pVisual.greenMask;
+            green = cast(int)(indefs.pixel & pVisual.greenMask);
             for (red = 0; red <= maxred; red += stepred) {
                 for (blue = 0; blue <= maxblue; blue += stepblue) {
                     mixin(AddElement!("DoGreen"));
@@ -232,7 +232,7 @@ int miExpandDirectColors(ColormapPtr pmap, int ndef, xColorItem* indefs, xColorI
             }
         }
         if (indefs.flags & DoBlue) {
-            blue = indefs.pixel & pVisual.blueMask;
+            blue = cast(int)(indefs.pixel & pVisual.blueMask);
             for (red = 0; red <= maxred; red += stepred) {
                 for (green = 0; green <= maxgreen; green += stepgreen) {
                     mixin(AddElement!("DoBlue"));

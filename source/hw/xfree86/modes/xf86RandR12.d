@@ -1921,9 +1921,9 @@ void xf86RandR12LoadPalette(ScrnInfoPtr pScrn, int numColors, int* indices, LOCO
     int c = void, i = void;
 
     if (pVisual.class_ == TrueColor || pVisual.class_ == DirectColor) {
-        reds = (pVisual.redMask >> pVisual.offsetRed) + 1;
-        greens = (pVisual.greenMask >> pVisual.offsetGreen) + 1;
-        blues = (pVisual.blueMask >> pVisual.offsetBlue) + 1;
+        reds = cast(int)((pVisual.redMask >> pVisual.offsetRed)) + 1;
+        greens = cast(int)((pVisual.greenMask >> pVisual.offsetGreen)) + 1;
+        blues = cast(int)((pVisual.blueMask >> pVisual.offsetBlue)) + 1;
     } else {
         reds = greens = blues = pVisual.ColormapEntries;
     }

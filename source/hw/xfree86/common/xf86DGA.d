@@ -674,9 +674,9 @@ private int DGACreateColormap(int index, ClientPtr client, int id, int mode, int
         pVisual.redMask = cast(ubyte)pMode.red_mask;
         pVisual.greenMask = cast(ubyte)pMode.green_mask;
         pVisual.blueMask = cast(ubyte)pMode.blue_mask;
-        pVisual.offsetRed = BitsClear(pVisual.redMask);
-        pVisual.offsetGreen = BitsClear(pVisual.greenMask);
-        pVisual.offsetBlue = BitsClear(pVisual.blueMask);
+        pVisual.offsetRed = BitsClear(cast(uint)pVisual.redMask);
+        pVisual.offsetGreen = BitsClear(cast(uint)pVisual.greenMask);
+        pVisual.offsetBlue = BitsClear(cast(uint)pVisual.blueMask);
         goto default;
     default: break;}
 

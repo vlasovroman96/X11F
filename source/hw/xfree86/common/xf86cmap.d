@@ -371,8 +371,8 @@ private void CMapStoreColors(ColormapPtr pmap, int ndef, xColorItem* pdefs)
             num = 0;
             while (ndef--) {
                 if (pdefs[ndef].flags & DoRed) {
-                    index = (pdefs[ndef].pixel & pVisual.redMask) >>
-                        pVisual.offsetRed;
+                    index = cast(int)((pdefs[ndef].pixel & pVisual.redMask) >>
+                        pVisual.offsetRed);
                     i = num;
                     while (i--)
                         if (indices[i] == index)
@@ -381,8 +381,8 @@ private void CMapStoreColors(ColormapPtr pmap, int ndef, xColorItem* pdefs)
                         indices[num++] = index;
                 }
                 if (pdefs[ndef].flags & DoGreen) {
-                    index = (pdefs[ndef].pixel & pVisual.greenMask) >>
-                        pVisual.offsetGreen;
+                    index = cast(int)((pdefs[ndef].pixel & pVisual.greenMask) >>
+                        pVisual.offsetGreen);
                     i = num;
                     while (i--)
                         if (indices[i] == index)
@@ -391,8 +391,8 @@ private void CMapStoreColors(ColormapPtr pmap, int ndef, xColorItem* pdefs)
                         indices[num++] = index;
                 }
                 if (pdefs[ndef].flags & DoBlue) {
-                    index = (pdefs[ndef].pixel & pVisual.blueMask) >>
-                        pVisual.offsetBlue;
+                    index = cast(int)((pdefs[ndef].pixel & pVisual.blueMask) >>
+                        pVisual.offsetBlue);
                     i = num;
                     while (i--)
                         if (indices[i] == index)
@@ -544,9 +544,9 @@ private void CMapRefreshColors(ColormapPtr pmap, int defs, int* indices)
     gamma = pScreenPriv.gamma;
     colors = pColPriv.colors;
 
-    reds = pVisual.redMask >> pVisual.offsetRed;
-    greens = pVisual.greenMask >> pVisual.offsetGreen;
-    blues = pVisual.blueMask >> pVisual.offsetBlue;
+    reds = cast(int)(pVisual.redMask >> pVisual.offsetRed);
+    greens = cast(int)(pVisual.greenMask >> pVisual.offsetGreen);
+    blues = cast(int)(pVisual.blueMask >> pVisual.offsetBlue);
 
     switch (pVisual.class_) {
     case StaticGray:

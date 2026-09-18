@@ -718,9 +718,9 @@ Bool CreateConnectionBlock()
                 visual.class_ = cast(ubyte)pVisual.class_;
                 visual.bitsPerRGB = cast(ubyte)pVisual.bitsPerRGBValue;
                 visual.colormapEntries = pVisual.ColormapEntries;
-                visual.redMask = pVisual.redMask;
-                visual.greenMask = pVisual.greenMask;
-                visual.blueMask = pVisual.blueMask;
+                visual.redMask = cast(uint)pVisual.redMask;
+                visual.greenMask = cast(uint)pVisual.greenMask;
+                visual.blueMask = cast(uint)pVisual.blueMask;
                 memcpy(pBuf, &visual, xVisualType.sizeof);
                 pBuf += xVisualType.sizeof;
                 sizesofar += xVisualType.sizeof;

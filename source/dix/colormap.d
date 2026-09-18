@@ -224,7 +224,7 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
     pmap.pVisual = pVisual;
     pmap.class_ = class_;
     if ((class_ | DynamicClass) == DirectColor)
-        size = mixin(NUMRED!(`pVisual`));
+        size = cast(int)mixin(NUMRED!(`pVisual`));
     pmap.freeRed = size;
     memset(cast(char*) pmap.red, 0, cast(int) sizebytes);
     memset(cast(char*) pmap.numPixelsRed, 0, LimitClients * int.sizeof);
@@ -249,13 +249,13 @@ int dixCreateColormap(Colormap mid, ScreenPtr pScreen, VisualPtr pVisual, Colorm
     }
 
     if ((class_ | DynamicClass) == DirectColor) {
-        pmap.freeGreen = mixin(NUMGREEN!(`pVisual`));
+        pmap.freeGreen = cast(int)mixin(NUMGREEN!(`pVisual`));
         pmap.green = cast(EntryPtr) (cast(char*) pmap.numPixelsRed +
                                   (LimitClients * int.sizeof));
         pmap.clientPixelsGreen = cast(Pixel**) (cast(char*) pmap.green + sizebytes);
         pmap.numPixelsGreen = cast(int*) (cast(char*) pmap.clientPixelsGreen +
                                         (LimitClients * (Pixel*).sizeof));
-        pmap.freeBlue = mixin(NUMBLUE!(`pVisual`));
+        pmap.freeBlue = cast(int)mixin(NUMBLUE!(`pVisual`));
         pmap.blue = cast(EntryPtr) (cast(char*) pmap.numPixelsGreen +
                                  (LimitClients * int.sizeof));
         pmap.clientPixelsBlue = cast(Pixel**) (cast(char*) pmap.blue + sizebytes);
@@ -904,9 +904,9 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
 
     case TrueColor:
         /* Look up each component in its own map, then OR them together */
-        pixR = FindBestPixel(pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, REDMAP);
-        pixG = FindBestPixel(pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb, GREENMAP);
-        pixB = FindBestPixel(pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP);
+        pixR = FindBestPixel(pmap.red,cast(int) mixin(NUMRED!(`pVisual`)), &rgb, REDMAP);
+        pixG = FindBestPixel(pmap.green, cast(int)mixin(NUMGREEN!(`pVisual`)), &rgb, GREENMAP);
+        pixB = FindBestPixel(pmap.blue, cast(int)mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP);
         *pPix = (pixR << pVisual.offsetRed) |
             (pixG << pVisual.offsetGreen) |
             (pixB << pVisual.offsetBlue) | mixin(ALPHAMASK!(`pVisual`));
@@ -983,17 +983,17 @@ int AllocColor(ColormapPtr pmap, ushort* pred, ushort* pgreen, ushort* pblue, Pi
         }
 
         pixR = (*pPix & pVisual.redMask) >> pVisual.offsetRed;
-        if (FindColor(pmap, pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, &pixR, REDMAP,
+        if (FindColor(pmap, pmap.red, cast(int)mixin(NUMRED!(`pVisual`)), &rgb, &pixR, REDMAP,
                       client, &RedComp) != Success)
             return BadAlloc;
         pixG = (*pPix & pVisual.greenMask) >> pVisual.offsetGreen;
-        if (FindColor(pmap, pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb, &pixG,
+        if (FindColor(pmap, pmap.green, cast(int)mixin(NUMGREEN!(`pVisual`)), &rgb, &pixG,
                       GREENMAP, client, &GreenComp) != Success) {
             cast(void) FreeCo(pmap, client, REDMAP, 1, &pixR, cast(Pixel) 0);
             return BadAlloc;
         }
         pixB = (*pPix & pVisual.blueMask) >> pVisual.offsetBlue;
-        if (FindColor(pmap, pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, &pixB, BLUEMAP,
+        if (FindColor(pmap, pmap.blue, cast(int)mixin(NUMBLUE!(`pVisual`)), &rgb, &pixB, BLUEMAP,
                       client, &BlueComp) != Success) {
             cast(void) FreeCo(pmap, client, GREENMAP, 1, &pixG, cast(Pixel) 0);
             cast(void) FreeCo(pmap, client, REDMAP, 1, &pixR, cast(Pixel) 0);
@@ -1070,17 +1070,17 @@ void FakeAllocColor(ColormapPtr pmap, xColorItem* item)
         Pixel pixR = (item.pixel & pVisual.redMask) >> pVisual.offsetRed;
         Pixel pixG = (item.pixel & pVisual.greenMask) >> pVisual.offsetGreen;
         Pixel pixB = (item.pixel & pVisual.blueMask) >> pVisual.offsetBlue;
-        if (FindColor(pmap, pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, &pixR, REDMAP,
+        if (FindColor(pmap, pmap.red, cast(int)mixin(NUMRED!(`pVisual`)), &rgb, &pixR, REDMAP,
                       -1, &RedComp) != Success)
-            pixR = FindBestPixel(pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, REDMAP)
+            pixR = FindBestPixel(pmap.red, cast(int)mixin(NUMRED!(`pVisual`)), &rgb, REDMAP)
                 << pVisual.offsetRed;
-        if (FindColor(pmap, pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb, &pixG,
+        if (FindColor(pmap, pmap.green, cast(int)mixin(NUMGREEN!(`pVisual`)), &rgb, &pixG,
                       GREENMAP, -1, &GreenComp) != Success)
-            pixG = FindBestPixel(pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb,
+            pixG = FindBestPixel(pmap.green, cast(int)mixin(NUMGREEN!(`pVisual`)), &rgb,
                                  GREENMAP) << pVisual.offsetGreen;
-        if (FindColor(pmap, pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, &pixB, BLUEMAP,
+        if (FindColor(pmap, pmap.blue, cast(int)mixin(NUMBLUE!(`pVisual`)), &rgb, &pixB, BLUEMAP,
                       -1, &BlueComp) != Success)
-            pixB = FindBestPixel(pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP)
+            pixB = FindBestPixel(pmap.blue, cast(int)mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP)
                 << pVisual.offsetBlue;
         item.pixel = pixR | pixG | pixB;
         break;
@@ -1089,9 +1089,9 @@ void FakeAllocColor(ColormapPtr pmap, xColorItem* item)
     case TrueColor:
     {
         /* Look up each component in its own map, then OR them together */
-        Pixel pixR = FindBestPixel(pmap.red, mixin(NUMRED!(`pVisual`)), &rgb, REDMAP);
-        Pixel pixG = FindBestPixel(pmap.green, mixin(NUMGREEN!(`pVisual`)), &rgb, GREENMAP);
-        Pixel pixB = FindBestPixel(pmap.blue, mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP);
+        Pixel pixR = FindBestPixel(pmap.red, cast(int)mixin(NUMRED!(`pVisual`)), &rgb, REDMAP);
+        Pixel pixG = FindBestPixel(pmap.green, cast(int)mixin(NUMGREEN!(`pVisual`)), &rgb, GREENMAP);
+        Pixel pixB = FindBestPixel(pmap.blue, cast(int)mixin(NUMBLUE!(`pVisual`)), &rgb, BLUEMAP);
         item.pixel = (pixR << pVisual.offsetRed) |
             (pixG << pVisual.offsetGreen) | (pixB << pVisual.offsetBlue);
         break;
@@ -1277,10 +1277,10 @@ int QueryColors(ColormapPtr pmap, int count, Pixel* ppixIn, xrgb* prgbList, Clie
 
     VisualPtr pVisual = pmap.pVisual;
     if ((pmap.class_ | DynamicClass) == DirectColor) {
-        int numred = mixin(NUMRED!(`pVisual`));
-        int numgreen = mixin(NUMGREEN!(`pVisual`));
-        int numblue = mixin(NUMBLUE!(`pVisual`));
-        Pixel rgbbad = ~mixin(RGBMASK!(`pVisual`));
+        int numred = cast(int)mixin(NUMRED!(`pVisual`));
+        int numgreen = cast(int)mixin(NUMGREEN!(`pVisual`));
+        int numblue = cast(int)mixin(NUMBLUE!(`pVisual`));
+        Pixel rgbbad = cast(int)~mixin(RGBMASK!(`pVisual`));
         Pixel* ppix = void;
         xrgb* prgb = void;
         for (ppix = ppixIn, prgb = prgbList; --count >= 0; ppix++, prgb++) {
@@ -2027,24 +2027,24 @@ private int FreeCo(ColormapPtr pmap, int client, int color, int npixIn, Pixel* p
 
     switch (color) {
     case REDMAP:
-        cmask = pmap.pVisual.redMask;
-        rgbbad = ~mixin(RGBMASK!(`pmap.pVisual`));
+        cmask = cast(uint)pmap.pVisual.redMask;
+        rgbbad = cast(uint)~mixin(RGBMASK!(`pmap.pVisual`));
         offset = pmap.pVisual.offsetRed;
         numents = cast(int)(cmask >> offset) + 1;
         ppixClient = pmap.clientPixelsRed[client];
         npixClient = pmap.numPixelsRed[client];
         break;
     case GREENMAP:
-        cmask = pmap.pVisual.greenMask;
-        rgbbad = ~mixin(RGBMASK!(`pmap.pVisual`));
+        cmask = cast(uint)pmap.pVisual.greenMask;
+        rgbbad = cast(uint)~mixin(RGBMASK!(`pmap.pVisual`));
         offset = pmap.pVisual.offsetGreen;
         numents = cast(int)(cmask >> offset) + 1;
         ppixClient = pmap.clientPixelsGreen[client];
         npixClient = pmap.numPixelsGreen[client];
         break;
     case BLUEMAP:
-        cmask = pmap.pVisual.blueMask;
-        rgbbad = ~mixin(RGBMASK!(`pmap.pVisual`));
+        cmask = cast(uint)pmap.pVisual.blueMask;
+        rgbbad = cast(uint)~mixin(RGBMASK!(`pmap.pVisual`));
         offset = pmap.pVisual.offsetBlue;
         numents = cast(int)(cmask >> offset) + 1;
         ppixClient = pmap.clientPixelsBlue[client];
@@ -2153,10 +2153,10 @@ int StoreColors(ColormapPtr pmap, int count, xColorItem* defs, ClientPtr client)
 
     int idef = 0;
     if ((class_ | DynamicClass) == DirectColor) {
-        int numred = mixin(NUMRED!(`pVisual`));
-        int numgreen = mixin(NUMGREEN!(`pVisual`));
-        int numblue = mixin(NUMBLUE!(`pVisual`));
-        Pixel rgbbad = ~mixin(RGBMASK!(`pVisual`));
+        int numred = cast(int)mixin(NUMRED!(`pVisual`));
+        int numgreen = cast(int)mixin(NUMGREEN!(`pVisual`));
+        int numblue = cast(int)mixin(NUMBLUE!(`pVisual`));
+        Pixel rgbbad = cast(int)~mixin(RGBMASK!(`pVisual`));
         int n = 0;
         for (xColorItem* pdef = defs; n < count; pdef++, n++) {
             bool ok = TRUE;
