@@ -181,13 +181,13 @@ private screenLayoutPtr xf86BusConfigMatch(ScrnInfoPtr scrnInfo, Bool is_gpu) {
 
             if (is_gpu) {
                 for (j = 0; j < layout.screen.num_gpu_devices; j++) {
-                    if (dev == layout.screen.gpu_devices[j]) {
+                    if (dev is layout.screen.gpu_devices[j]) {
                         /* A match has been found */
                         return layout;
                     }
                 }
             } else {
-                if (dev == layout.screen.device) {
+                if (dev is layout.screen.device) {
                     /* A match has been found */
                     return layout;
                 }
