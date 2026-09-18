@@ -55,7 +55,7 @@ import core.sys.posix.sys.stat;
 import core.stdc.time;
 import core.stdc.errno;
 
-version(CONFIG_MITSHM) {
+static if(CONFIG_MITSHM) {
 version (Cygwin) {
 import sys.param;
 }
@@ -313,7 +313,7 @@ private int ProcXF86BigfontQueryVersion(ClientPtr client)
 {
     mixin(X_REQUEST_HEAD_STRUCT!xXF86BigfontQueryVersionReq);
 
-version(CONFIG_MITSHM)
+static if(CONFIG_MITSHM)
     xXF86BigfontQueryVersionReply reply = {
         majorVersion: SERVER_XF86BIGFONT_MAJOR_VERSION,
         minorVersion: SERVER_XF86BIGFONT_MINOR_VERSION,
@@ -423,15 +423,15 @@ static if(CONFIG_MITSHM){
 
 if (nCharInfos > 0)
 {
-    version(CONFIG_MITSHM)
+    static if(CONFIG_MITSHM)
     {
         if (!badSysCall)
         {
             pDesc = cast(ShmDescPtr)
-                FontGetPrivate(
-                    pFont,
-                    FontShmdescIndex
-                );
+                mixin(FontGetPrivate!(
+                    "pFont",
+                    "FontShmdescIndex"
+                ));
         }
 
         /*
@@ -457,8 +457,8 @@ if (nCharInfos > 0)
             )
             {
                 pDesc = shmalloc(
-                    nCharInfos * xCharInfo.sizeof +
-                    CARD32.sizeof
+                    cast(uint)(nCharInfos * xCharInfo.sizeof +
+                    CARD32.sizeof)
                 );
             }
 
@@ -550,7 +550,7 @@ if (nCharInfos > 0)
         }
     }
 
-    version(CONFIG_MITSHM)
+    static if(CONFIG_MITSHM)
     {
         /*
          * Attach signature to SHM block.

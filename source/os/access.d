@@ -672,7 +672,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
             /*
              * If this isn't an Internet Address, don't register it.
              */
-            version(IPv6) {
+            static if(IPv6) {
                 if (family != FamilyInternet 
                 && family != FamilyInternet6)
                     continue;
@@ -685,7 +685,7 @@ static if(!HasVersion!"SIOCGIFCONF") {
              * ignore 'localhost' entries as they're not useful
              * on the other end of the wire
              */
-            version(IPv6) {
+            static if(IPv6) {
                 if (family == FamilyInternet &&
                     addr[0] == 127 && addr[1] == 0 && addr[2] == 0 && addr[3] == 1)
                     
@@ -798,7 +798,7 @@ static if(XDMCP){
             /*
              * If this isn't an Internet Address, don't register it.
              */
-             version(IPv6) {
+             static if(IPv6) {
                 if (family != FamilyInternet
                     && family != FamilyInternet6
                     )
@@ -988,9 +988,9 @@ static if (IPv6){
             }
             else
             {
-version (HAVE_GETADDRINFO) {
+static if (HAVE_GETADDRINFO) {
     bool ipv6;
-    version(IPv6) {
+    static if(IPv6) {
         ipv6 = true;
     }
                 if ((family == FamilyInternet) ||

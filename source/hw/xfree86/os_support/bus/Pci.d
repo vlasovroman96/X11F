@@ -160,7 +160,11 @@ Bool xf86scanpci()
 {
     Bool success = FALSE;
 
-    success = (pci_system_init() == 0);
+    import core.stdc.stdio: printf;
+printf("[PCI-DEBUG] Вызов pci_system_init()...\n");
+int pci_result = pci_system_init();
+success = (pci_result == 0);
+printf("[PCI-DEBUG] pci_system_init() вернул: %d (success=%d)\n", pci_result, success);
 
     /* choose correct platform/OS specific PCI init routine */
 static if (!HasVersion!"linux") {

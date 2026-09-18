@@ -195,7 +195,7 @@ ExtensionEntry* AddExtension(const(char)* name, int NumEvents, int NumErrors, in
         ext.errorLast = 0;
     }
 
-version (X_REGISTRY_REQUEST) {
+static if (X_REGISTRY_REQUEST) {
     RegisterExtensionNames(ext);
 }
     return ext;

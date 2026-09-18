@@ -13,7 +13,7 @@ import include.xf86Priv;
 import hw.xfree86.os_support.xf86_os_support;
 import include.xf86_OSproc;;
 
-version (HAVE_ACPI) {
+static if (HAVE_ACPI) {
 PMClose lnxACPIOpen();
 }
 
@@ -164,7 +164,7 @@ PMClose xf86OSPMOpen()
 {
     PMClose ret = null;
 
-version (HAVE_ACPI) {
+static if (HAVE_ACPI) {
     /* Favour ACPI over APM, but only when enabled */
 
     if (!xf86acpiDisableFlag) {

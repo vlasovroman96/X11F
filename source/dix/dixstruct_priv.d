@@ -33,8 +33,8 @@ c_long SmartScheduleTime;
 // c_long SmartScheduleInterval;
 // c_long SmartScheduleSlice;
 // c_long SmartScheduleMaxSlice;
-version (HAVE_SETITIMER) {
-Bool SmartScheduleSignalEnable;
+static if (HAVE_SETITIMER) {
+// Bool SmartScheduleSignalEnable;
 } else {
 enum SmartScheduleSignalEnable = FALSE;
 }

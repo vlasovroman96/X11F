@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start x12 VM and gdbserver",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-c",
+                "VBoxManage startvm 'x12-vm' --type headless >/dev/null 2>&1 || true; while ! nc -z 127.0.0.1 2345 2>/dev/null; do sleep 1; done; ssh -o BatchMode=yes -o StrictHostKeyChecking=no vm 'sudo -n gdbserver :2345 /home/roman/X11F/x12'"
+            ],
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "gdbserver",
+                "pattern": {
+                    "regexp": "^(.*)$",
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".+",
+                    "endsPattern": "Listening on port 2345"
+                }
+            }
+        }
+    ]
+}

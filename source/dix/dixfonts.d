@@ -94,9 +94,9 @@ import os.connection;
 import os.WaitFor;
 alias ClientPtr = include.dixstruct.ClientPtr;
 
-version (XF86BIGFONT) {
+// static if (XF86BIGFONT) {
 import Xext.xf86bigfontsrv;
-}
+// }
 
 enum XLFDMAXFONTNAMELEN =      256;
 struct list_font_state {
@@ -540,9 +540,9 @@ int CloseFont(void* value, XID fid)
         });
         if (pfont == defaultFont)
             defaultFont = null;
-version (XF86BIGFONT) {
+// static if (XF86BIGFONT) {
         XF86BigfontFreeFontShm(pfont);
-}
+// }
         fpe = pfont.fpe;
         assumeNoGC(fpe_functions[fpe.type].close_font) (fpe, pfont);
         FreeFPE(fpe);

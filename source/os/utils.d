@@ -584,7 +584,7 @@ static if (!HasVersion!"Windows" || !HasVersion!"Windows") {
             else
                 UseMsg();
         }
-// version( LOCK_SERVER) {
+// static if( LOCK_SERVER) {
 //         if (strcmp && __CYGWIN__) {
 //             if (getuid != 0)
 //                 ErrorF

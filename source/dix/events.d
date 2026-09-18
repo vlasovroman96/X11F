@@ -772,7 +772,7 @@ else
     if (pSprite.hotShape)
         ConfineToShape(pSprite.hotShape, &new_.x, &new_.y);
 
-version(XINERAMA) {
+static if(XINERAMA) {
     if (( noPanoramiXExtension &&
             (pScreen != pSprite.hotPhys.pScreen)) ||
         (new_.x != pSprite.hotPhys.x) || (new_.y != pSprite.hotPhys.y)) {
@@ -5917,7 +5917,7 @@ int ProcRecolorCursor(ClientPtr client)
     pCursor.backGreen = stuff.backGreen;
     pCursor.backBlue = stuff.backBlue;
 
-version(XINERAMA) {
+static if(XINERAMA) {
         mixin(DIX_FOR_EACH_SCREEN!q{
         if (!noPanoramiXExtension)
             displayed = (walkScreen == pSprite.screen);

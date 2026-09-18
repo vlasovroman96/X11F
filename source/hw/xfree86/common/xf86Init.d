@@ -1161,7 +1161,7 @@ static if(build.xlibre_server.XF86VIDMODE){
         xf86silkenMouseDisableFlag = TRUE;
         return 1;
     }
-version (HAVE_ACPI) {
+static if (HAVE_ACPI) {
     if (!strcmp(argv[i], "-noacpi")) {
         xf86acpiDisableFlag = TRUE;
         return 1;

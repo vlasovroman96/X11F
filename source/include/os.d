@@ -66,8 +66,12 @@ public import core.stdc.time;
 public import include.xlibre_ptrtypes;
 public import include.callback;
 public import include.misc;
+public import externs.gnu;
+
 import os.connection;
 import os.WaitFor;
+public import os.string;
+
 
 /*
  * @brief macro for specifying non-null arguments
@@ -182,7 +186,7 @@ void* Xstrdup(const(char)* s);
  * This function strdup(3)s passed string, terminating the server if there is
  * not enough memory. If NULL is passed to this function, NULL is returned.
  */
-void* XNFstrdup(const(char)* s);
+// void* XNFstrdup(const(char)* s);
 
 /* Include new X*asprintf API */
 public import include.Xprintf;

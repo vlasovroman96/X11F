@@ -233,7 +233,7 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
     // Вычисляем точный размер внутри лямбды времени компиляции
     enum size_t maxElements = () {
         size_t count = 1; // inet
-        version(IPv6) {
+        static if(IPv6) {
             count += 3;
         } else {
             count += 1;
@@ -255,7 +255,7 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
         0
     );
 
-    version (IPv6)
+    static if (IPv6)
     {
         arr[count++] = Sockettrans2dev(
             "tcp",
@@ -293,7 +293,7 @@ immutable Sockettrans2dev[] Sockettrans2devtab = () {
         );
     }
 
-    version (UNIXCONN)
+    static if (UNIXCONN)
     {
         arr[count++] = Sockettrans2dev(
             "unix",

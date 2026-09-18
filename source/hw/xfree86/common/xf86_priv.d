@@ -9,6 +9,7 @@ extern(C): __gshared:
 public import os.osdep;
 public import include.xf86;
 public import xf86Configure;
+public import xf86Globals;
 
 
 // Bool xf86DoConfigure;
@@ -29,7 +30,7 @@ public import xf86Configure;
 // Bool xf86bsDisableFlag;
 // Bool xf86silkenMouseDisableFlag;
 // Bool xf86xkbdirFlag;
-Bool xf86acpiDisableFlag;
+// Bool xf86acpiDisableFlag;
 
 // char* xf86LayoutName;
 // char* xf86ScreenName;

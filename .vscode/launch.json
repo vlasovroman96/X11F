@@ -2,39 +2,45 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug x12",
+            "name": "x12 — GDB",
             "type": "cppdbg",
             "request": "launch",
 
-            "program": "${workspaceFolder}/x12",
-            "args": [],
-
-            "cwd": "${workspaceFolder}",
-
-            "stopAtEntry": false,
-            "externalConsole": false,
+            "program": "/home/roman/X11F/x12",
+            "cwd": "/home/roman/X11F",
 
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
 
             "setupCommands": [
                 {
-                    "description": "Enable GDB pretty printing",
-                    "text": "set print pretty on",
+                    "description": "Connect to persistent gdbserver",
+                    "text": "target extended-remote 127.0.0.1:2345",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Set remote executable",
+                    "text": "set remote exec-file /home/roman/X11F/x12",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "Enable pretty printing",
+                    "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Do not stop on shared library events",
-                    "text": "set stop-on-solib-events 0",
+                    "description": "Allow pending breakpoints",
+                    "text": "set breakpoint pending on",
                     "ignoreFailures": true
                 }
             ],
 
-            "logging": {
-                "engineLogging": true,
-                "trace": false,
-                "traceResponse": false
-            }
+            "launchCompleteCommand": "exec-run",
+            "stopAtEntry": false,
+
+                "sourceFileMap": {
+    "/usr/src/debug/xlibre-video-vmware/xf86-video-vmware-xlibre-xf86-video-vmware-25.0.0": "/home/roman/vmware-src/xf86-video-vmware-xlibre-xf86-video-vmware-25.0.0"
+}
         }
     ]
 }

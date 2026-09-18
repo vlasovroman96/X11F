@@ -136,7 +136,7 @@ shared static this()
     import core.stdc.stdio : fprintf, stderr;
     //fprintf(stderr, "!!! XTRANS STATIC CTOR !!!\n");
     size_t maxElements = 2; // TCP + INET
-    version(IPv6) {
+    static if(IPv6) {
         maxElements += 1;   // INET6
     }
     static if(UNIXCONN){
@@ -156,7 +156,7 @@ shared static this()
         TRANS_SOCKET_TCP_INDEX
     );
 
-    version (IPv6)
+    static if (IPv6)
     {
         arr[count++] = Xtransport_table(
             &_XSERVTransSocketINET6Funcs,
@@ -185,6 +185,9 @@ shared static this()
     Xtransport_tabletab = arr;
     Xtransports = Xtransport_tabletab;
 
+    // foreach(tr; Xtransports) {
+    //     cast(int)0;
+    // }
     // fprintf(stderr, "%d, %d", Xtransport_tabletab.length, Xtransports.length);
 }
 
@@ -1027,6 +1030,8 @@ static if (IPv6){
 
     for (uint i = 0; i < Xtransports.length; i++)
     {
+        auto tr = Xtransports[i];
+        // cast(void*)tr;
 	Xtransport* trans = Xtransports[i].transport;
 	uint flags = 0;
 

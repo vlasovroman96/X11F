@@ -300,7 +300,7 @@ private int ProcXResQueryClientPixmapBytes(ClientPtr client)
     FindAllClientResources(owner, &ResFindResourcePixmaps,
                            cast(void*) (&bytes));
 
-    version(_XSERVER64) {
+    static if(_XSERVER64) {
         xXResQueryClientPixmapBytesReply reply = {
             bytes: cast(uint)bytes,
             bytes_overflow: bytes >> 32

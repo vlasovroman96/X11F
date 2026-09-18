@@ -276,7 +276,7 @@ static if(XINERAMA){
 
         dixCloseRegistry();
 
-version(XINERAMA) {
+static if(XINERAMA) {
         if (!noPanoramiXExtension) {
             if (!PanoramiXCreateConnectionBlock()) {
                 FatalError("could not create connection block info");

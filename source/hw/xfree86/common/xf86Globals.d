@@ -140,12 +140,12 @@ else {
     autoEnableDevices = FALSE;
 }
 // #endif
-version(CONFIG_UDEV_KMS) {
-    .autoAddGPU = TRUE;
-}
-else {
-    autoAddGPU = FALSE;
-}
+// static if(CONFIG_UDEV_KMS) {
+    autoAddGPU = TRUE;
+// }
+// else {
+//     autoAddGPU = FALSE;
+// }
     autoBindGPU = TRUE;
     singleDriver = FALSE;
     }
@@ -189,7 +189,7 @@ Bool xf86bsDisableFlag = FALSE;
 Bool xf86silkenMouseDisableFlag = FALSE;
 Bool xf86xkbdirFlag = FALSE;
 
-version (HAVE_ACPI) {
+static if (HAVE_ACPI) {
 Bool xf86acpiDisableFlag = FALSE;
 }
 char* xf86LayoutName = null;

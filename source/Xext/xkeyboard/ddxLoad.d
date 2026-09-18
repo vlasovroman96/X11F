@@ -318,9 +318,9 @@ private FILE* XkbDDXOpenConfigFile(const(char)* mapName, char* fileNameRtrn, int
     if (mapName !is null) {
         OutputDirectory(xkm_output_dir.ptr, xkm_output_dir.sizeof);
             bool cond = (XkbBaseDirectory !is null) && (xkm_output_dir[0] != '/');
-version(WIN32) {
-            cond = cond && (!isalpha(xkm_output_dir[0]) || xkm_output_dir[1] != ':');
-}
+// static if(WIN32) {
+//             cond = cond && (!isalpha(xkm_output_dir[0]) || xkm_output_dir[1] != ':');
+// }
         if (cond) {
             if (snprintf(buf.ptr, PATH_MAX, "%s/%s%s.xkm", XkbBaseDirectory,
                          xkm_output_dir.ptr, mapName) >= PATH_MAX)

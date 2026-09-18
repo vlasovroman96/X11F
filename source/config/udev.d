@@ -49,7 +49,9 @@ import os.string;
 import os.connection;
 import xf86Xinput;
 import os.inputthread;
+import xf86platformBus;
 
+import drm_platform;
 
 
 import hw.xfree86.os_support.linux.systemd_logind;
@@ -104,7 +106,7 @@ enum string LOG_SYSATTR(string path, string attr, string val) = `
 
 private udev_monitor* udev_monitor_;
 
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
 
 }
 
@@ -135,7 +137,7 @@ private void device_added(udev_device* udev_device_)
     const(char)* syspath = void;
     const(char)* tags_prop = void;
     const(char)* key = void, value = void, tmp = void;
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
     const(char)* subsys = null;
 }
     InputOption* input_options = void;
@@ -158,11 +160,11 @@ version (CONFIG_UDEV_KMS) {
 
     devnum = assumeNoGC(&udev_device_get_devnum)(udev_device_);
 
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
     subsys = assumeNoGC(&udev_device_get_subsystem)(udev_device_);
 
     if (subsys && !strcmp(subsys, "drm")) {
-        const(char)* sysname = udev_device_get_sysname(udev_device_);
+        const(char)* sysname = assumeNoGC(&udev_device_get_sysname)(udev_device_);
 
         if (strncmp(sysname, "card", 4) != 0)
             return;
@@ -174,7 +176,7 @@ version (CONFIG_UDEV_KMS) {
         LogMessage(X_INFO, "config/udev: Adding drm device (%s)\n", path);
 
         config_udev_odev_setup_attribs(udev_device_, path, syspath, major(devnum),
-                                       minor(devnum), NewGPUDeviceRequest);
+                                       minor(devnum), &NewGPUDeviceRequest);
         return;
     }
 }
@@ -357,11 +359,11 @@ private void device_removed(udev_device* device)
     char* value = void;
     const(char)* syspath = assumeNoGC(&udev_device_get_syspath)(device);
 
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
     const(char)* subsys = assumeNoGC(&udev_device_get_subsystem)(device);
 
     if (subsys && !strcmp(subsys, "drm")) {
-        const(char)* sysname = udev_device_get_sysname(device);
+        const(char)* sysname = assumeNoGC(&udev_device_get_sysname)(device);
         const(char)* path = assumeNoGC(&udev_device_get_devnode)(device);
         dev_t devnum = assumeNoGC(&udev_device_get_devnum)(device);
 
@@ -371,7 +373,7 @@ version (CONFIG_UDEV_KMS) {
         LogMessage(X_INFO, "config/udev: removing GPU device %s %s\n",
                    syspath, path);
         config_udev_odev_setup_attribs(device, path, syspath, major(devnum),
-                                       minor(devnum), DeleteGPUDeviceRequest);
+                                       minor(devnum), &DeleteGPUDeviceRequest);
         /* Retry vtenter after a drm node removal */
         systemd_logind_vtenter();
         return;
@@ -438,7 +440,7 @@ int config_udev_pre_init()
                                                     null);
     /* For Wacom serial devices */
     assumeNoGC(&udev_monitor_filter_add_match_subsystem_devtype)(udev_monitor_, "tty", null);
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
     /* For output GPU devices */
     assumeNoGC(&udev_monitor_filter_add_match_subsystem_devtype)(udev_monitor_, "drm", null);
 }
@@ -467,7 +469,7 @@ int config_udev_init()
 
     assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "input");
     assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "tty");
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
     assumeNoGC(&udev_enumerate_add_match_subsystem)(enumerate, "drm");
 }
 
@@ -512,7 +514,7 @@ void config_udev_fini()
     assumeNoGC(&udev_unref)(udev);
 }
 
-version (CONFIG_UDEV_KMS) {
+static if (CONFIG_UDEV_KMS) {
 
 /* Find the last occurrence of the needle in haystack */
 private char* strrstr(const(char)* haystack, const(char)* needle)
@@ -557,8 +559,8 @@ private char* config_udev_get_fallback_bus_id(udev_device* udev_device)
     if (strcmp(assumeNoGC(&udev_device_get_subsystem)(udev_device), "pci") != 0)
         return null;
 
-    sysname = udev_device_get_sysname(udev_device);
-    busid = XNFalloc(strlen(sysname) + 5);
+    sysname = assumeNoGC(&udev_device_get_sysname)(udev_device);
+    busid = cast(char*)XNFalloc(strlen(sysname) + 5);
     busid[0] = '\0';
     strcat(busid, "pci:");
     strcat(busid, sysname);
@@ -577,15 +579,15 @@ private void config_udev_odev_setup_attribs(udev_device* udev_device, const(char
     attribs.minor = minor;
 
     value = assumeNoGC(&udev_device_get_property_value)(udev_device, "ID_PATH");
-    if (value && (str = strrstr(value, "pci-"))) {
+    if (value && (str = strrstr(value, "pci-")) !is null) {
         value = str;
 
-        if ((str = strstr(value, "usb-")))
+        if ((str = strstr(value, "usb-")) !is null)
             value = str;
 
         attribs.busid = XNFstrdup(value);
         attribs.busid[3] = ':';
-    } else if (value && (str = strrstr(value, "platform-"))) {
+    } else if (value && (str = strrstr(value, "platform-")) !is null) {
         value = str + 9;
         attribs.busid = XNFstrdup(value);
     }
@@ -603,7 +605,7 @@ void config_udev_odev_probe(config_odev_probe_proc_ptr probe_callback)
     udev_enumerate* enumerate = void;
     udev_list_entry* devices = void, device = void;
 
-    udev = assumeNoGC(&udev_monitor_get_udev)(udev_monitor);
+    udev = assumeNoGC(&udev_monitor_get_udev)(udev_monitor_);
     enumerate = assumeNoGC(&udev_enumerate_new)(udev);
     if (!enumerate)
         return;

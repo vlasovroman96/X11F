@@ -275,7 +275,7 @@ void UpdateCurrentTimeIf()
 enum SMART_SCHEDULE_DEFAULT_INTERVAL =	5;
 enum SMART_SCHEDULE_MAX_SLICE =	15;
 
-version (HAVE_SETITIMER) {
+static if (HAVE_SETITIMER) {
 Bool SmartScheduleSignalEnable = TRUE;
 }
 
