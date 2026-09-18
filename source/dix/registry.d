@@ -57,17 +57,17 @@ char*** requests; char** events, errors;
 uint nmajor; uint* nminor; uint nevent, nerror;
 // }
 
-// version (X_REGISTRY_RESOURCE) {
+static if (X_REGISTRY_RESOURCE) {
 const(char)** resources;
 uint nresource;
-// }
+}
 
-// static if (HasVersion!"X_REGISTRY_RESOURCE" || HasVersion!"X_REGISTRY_REQUEST") {
+static if (X_REGISTRY_RESOURCE || X_REGISTRY_REQUEST) {
 /*
  * File parsing routines
  */
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-int double_size(void* p, uint n, uint size)
+int double_size_(void* p, uint n, uint size)
 {
     char** ptr = cast(char**) p;
     uint s = void, f = void;
@@ -90,23 +90,23 @@ int double_size(void* p, uint n, uint size)
     memset(*ptr + s, 0, f - s);
     return TRUE;
 }
-// }MakePredeclaredAtoms
+}
 
-// version (X_REGISTRY_REQUEST) {
+static if (X_REGISTRY_REQUEST) {
 /*
  * Request/event/error registry functions
  */
 void RegisterRequestName(uint major, uint minor, char* name)
 {
     while (major >= nmajor) {
-        if (!double_size(&requests, nmajor, (char**).sizeof))
+        if (!double_size_(&requests, nmajor, (char**).sizeof))
             return;
-        if (!double_size(&nminor, nmajor, uint.sizeof))
+        if (!double_size_(&nminor, nmajor, uint.sizeof))
             return;
         nmajor = nmajor ? nmajor * 2 : BASE_SIZE;
     }
     while (minor >= nminor[major]) {
-        if (!double_size(requests + major, nminor[major], (char*).sizeof))
+        if (!double_size_(requests + major, nminor[major], (char*).sizeof))
             return;
         nminor[major] = nminor[major] ? nminor[major] * 2 : BASE_SIZE;
     }
@@ -118,7 +118,7 @@ void RegisterRequestName(uint major, uint minor, char* name)
 void RegisterEventName(uint event, char* name)
 {
     while (event >= nevent) {
-        if (!double_size(&events, nevent, (char*).sizeof))
+        if (!double_size_(&events, nevent, (char*).sizeof))
             return;
         nevent = nevent ? nevent * 2 : BASE_SIZE;
     }
@@ -130,7 +130,7 @@ void RegisterEventName(uint event, char* name)
 void RegisterErrorName(uint error, char* name)
 {
     while (error >= nerror) {
-        if (!double_size(&errors, nerror, (char*).sizeof))
+        if (!double_size_(&errors, nerror, (char*).sizeof))
             return;
         nerror = nerror ? nerror * 2 : BASE_SIZE;
     }
@@ -262,7 +262,7 @@ const(char)* LookupErrorName(int error)
 
     return errors[error] ? errors[error] : XREGISTRY_UNKNOWN;
 }
-// } /* X_REGISTRY_REQUEST */
+} /* X_REGISTRY_REQUEST */
 
 pragma(inline, true) void __accbit(Mask val, Mask mask, const(char)* name, char* buf, int sz) {
     if ((val & mask) == mask) {
@@ -306,7 +306,7 @@ void LookupDixAccessName(Mask acc, char* buf, int sz) {
     buf[sz-1] = 0;
 }
 
-// version (X_REGISTRY_RESOURCE) {
+static if (X_REGISTRY_RESOURCE) {
 /*
  * Resource registry functions
  */
@@ -316,7 +316,7 @@ void RegisterResourceName(RESTYPE resource, const(char)* name)
     resource &= TypeMask;
 
     while (resource >= nresource) {
-        if (!double_size(&resources, nresource, (char*).sizeof))
+        if (!.double_size_(&resources, nresource, (char*).sizeof))
             return;
         nresource = nresource ? nresource * 2 : BASE_SIZE;
     }
@@ -332,7 +332,7 @@ const(char)* LookupResourceName(RESTYPE resource)
 
     return resources[resource] ? resources[resource] : XREGISTRY_UNKNOWN;
 }
-// } /* X_REGISTRY_RESOURCE */
+} /* X_REGISTRY_RESOURCE */
 
 void dixFreeRegistry()
 {
@@ -360,7 +360,7 @@ version (X_REGISTRY_REQUEST) {
     nmajor = nevent = nerror = 0;
 }
 
-version (X_REGISTRY_RESOURCE) {
+static if (X_REGISTRY_RESOURCE) {
     free(resources);
 
     resources = null;
@@ -400,7 +400,7 @@ version (X_REGISTRY_REQUEST) {
     RegisterExtensionNames(&extEntry);
 }
 
-version (X_REGISTRY_RESOURCE) {
+static if (X_REGISTRY_RESOURCE) {
     /* Add built-in resources */
     RegisterResourceName(X11_RESTYPE_NONE, "NONE");
     RegisterResourceName(X11_RESTYPE_WINDOW, "WINDOW");
