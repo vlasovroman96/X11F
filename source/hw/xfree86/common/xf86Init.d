@@ -661,7 +661,7 @@ void InitOutput(int argc, char** argv)
         xf86Resetting = TRUE;
         /* All screens are in the same state, so just check the first */
         if (!xf86VTOwner()) {
-// version (HAS_USL_VTS) {
+// static if (HAS_USL_VTS) {
             ioctl(xf86Info.consoleFd, VT_RELDISP, VT_ACKACQ);
 // }
             input_lock();

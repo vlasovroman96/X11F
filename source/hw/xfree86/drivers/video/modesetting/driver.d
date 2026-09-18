@@ -1336,8 +1336,8 @@ private Bool ms_get_drm_master_fd(ScrnInfoPtr pScrn)
     auto ms = mixin(modesettingPTR!("pScrn"));
     auto ms_ent = ms_ent_priv(pScrn);
 
-    static if (HasVersion!"XSERVER_PLATFORM_BUS" ||
-               HasVersion!"XSERVER_LIBPCIACCESS")
+    static if (XSERVER_PLATFORM_BUS ||
+               XSERVER_LIBPCIACCESS)
     {
         auto pEnt = ms.pEnt;
     }
@@ -1360,11 +1360,11 @@ private Bool ms_get_drm_master_fd(ScrnInfoPtr pScrn)
         return TRUE;
     }
 
-    version (XSERVER_PLATFORM_BUS)
+    static if (XSERVER_PLATFORM_BUS)
 {
     if (pEnt.location.type == BUS_PLATFORM) {
 
-        version (XF86_PDEV_SERVER_FD)
+        static if (XF86_PDEV_SERVER_FD)
         {
             if ((pEnt.location.id.plat.flags &
                  XF86_PDEV_SERVER_FD) != 0)
@@ -1393,7 +1393,7 @@ private Bool ms_get_drm_master_fd(ScrnInfoPtr pScrn)
     }
     else
     {
-        version (XSERVER_LIBPCIACCESS)
+        static if (XSERVER_LIBPCIACCESS)
         {
             if (pEnt.location.type == BUS_PCI) {
 
@@ -1416,8 +1416,8 @@ private Bool ms_get_drm_master_fd(ScrnInfoPtr pScrn)
             {
                 const(char)* devicename =
                     xf86FindOptionValue(
-                        ms.pEnt.device.options,
-                        "kmsdev");
+                        cast(_InputOption*)ms.pEnt.device.options,
+                        "kmsdev".ptr);
 
                 ms.fd = open_hw(devicename);
             }
@@ -2250,9 +2250,9 @@ version (GLAMOR) {
                 visual.offsetRed = cast(int)pScrn.offset.red;
                 visual.offsetGreen = cast(int)pScrn.offset.green;
                 visual.offsetBlue = cast(int)pScrn.offset.blue;
-                visual.redMask = cast(ubyte)pScrn.mask.red;
-                visual.greenMask = cast(ubyte)pScrn.mask.green;
-                visual.blueMask = cast(ubyte)pScrn.mask.blue;
+                visual.redMask = pScrn.mask.red;
+                visual.greenMask = pScrn.mask.green;
+                visual.blueMask = pScrn.mask.blue;
             }
         }
     }

@@ -84,7 +84,7 @@ struct _Visual {
     short nplanes;              /* = log2 (ColormapEntries). This does not
                                  * imply that the screen has this many planes.
                                  * it may have more or fewer */
-    ubyte redMask, greenMask, blueMask;
+    ulong redMask, greenMask, blueMask;
     int offsetRed, offsetGreen, offsetBlue;
 } 
 alias VisualRec = _Visual;
