@@ -330,7 +330,7 @@ Bool miSetVisualTypesAndMasks(int depth, int visuals, int bitsPerRGB, int prefer
 {
     miVisualsPtr* prev = void; miVisualsPtr v = void;
 
-    miVisualsPtr new_ = cast(miVisualsPtr) calloc(1, (_miVisuals*).sizeof);
+    miVisualsPtr new_ = cast(miVisualsPtr) calloc(1, (_miVisuals).sizeof);
     if (!new_)
         return FALSE;
     if (!redMask || !greenMask || !blueMask) {
