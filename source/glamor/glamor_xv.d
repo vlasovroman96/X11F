@@ -193,7 +193,7 @@ XvAttributeRec[6] glamor_xv_attributes = [
     {XvSettable | XvGettable, 0, 1, cast(char*)"XV_COLORSPACE"},
     {0, 0, 0, null}
 ];
-int glamor_xv_num_attributes = ARRAY_SIZE!(glamor_xv_attributes) - 1;
+int glamor_xv_num_attributes = mixin(ARRAY_SIZE!("glamor_xv_attributes")) - 1;
 alias Atom = externs.X11.X.Atom;
 
 Atom glamorBrightness, glamorContrast, glamorSaturation, glamorHue, glamorColorspace, glamorGamma;
@@ -206,7 +206,7 @@ XvImageRec[7] glamor_xv_images = [
     XVIMAGE_RGB32,
     XVIMAGE_RGB565,
 ];
-int glamor_xv_num_images = ARRAY_SIZE!(glamor_xv_images);
+int glamor_xv_num_images = mixin(ARRAY_SIZE!("glamor_xv_images"));
 
 private void glamor_init_xv_shader(ScreenPtr screen, glamor_port_private* port_priv, int id)
 {

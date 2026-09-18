@@ -544,7 +544,7 @@ private Bool glamor_set_composite_op(ScreenPtr screen, CARD8 op, blendinfo* op_i
     GLenum source_blend = void, dest_blend = void;
     blendinfo* op_info = void;
 
-    if (op >= mixin(ARRAY_SIZE!("composite_op_info.ptr"))) {
+    if (op >= mixin(ARRAY_SIZE!("composite_op_info"))) {
         // glamor_fallback("unsupported render op %d \n", op);
         return GL_FALSE;
     }
@@ -1477,7 +1477,7 @@ Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mas
     BoxPtr extent = void;
     glamor_composite_rect_t[10] rect = void;
     glamor_composite_rect_t* prect = rect.ptr;
-    int prect_size = mixin(ARRAY_SIZE!("rect.ptr"));
+    int prect_size = mixin(ARRAY_SIZE!("rect"));
     int ok = FALSE;
     int i = void;
     int width = void;
@@ -1615,13 +1615,13 @@ Bool glamor_composite_clipped_region(CARD8 op, PicturePtr source, PicturePtr mas
         y_temp_mask += temp_mask.pDrawable.y;
     }
 
-    if (nbox > mixin(ARRAY_SIZE!("rect.ptr"))) {
+    if (nbox > mixin(ARRAY_SIZE!("rect"))) {
         prect = cast(glamor_composite_rect_t*) calloc(nbox, typeof(*prect).sizeof);
         if (prect)
             prect_size = nbox;
         else {
             prect = rect.ptr;
-            prect_size = mixin(ARRAY_SIZE!("rect.ptr"));
+            prect_size = mixin(ARRAY_SIZE!("rect"));
         }
     }
     while (nbox) {
@@ -1692,7 +1692,7 @@ void glamor_composite(CARD8 op, PicturePtr source, PicturePtr mask, PicturePtr d
     if (!glamor_pixmap_has_fbo(dest_pixmap))
         goto fail;
 
-    if (op >= mixin(ARRAY_SIZE!("composite_op_info.ptr"))) {
+    if (op >= mixin(ARRAY_SIZE!("composite_op_info"))) {
         // glamor_fallback("Unsupported composite op %x\n", op);
         goto fail;
     }

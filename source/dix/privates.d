@@ -564,7 +564,7 @@ int dixLookupPrivateOffset(RESTYPE type)
             return offsets[X11_RESTYPE_PIXMAP & TypeMask];
     }
     type = type & TypeMask;
-    if (type < mixin(ARRAY_SIZE!("offsets.ptr")))
+    if (type < mixin(ARRAY_SIZE!("offsets")))
         return offsets[type];
     return -1;
 }

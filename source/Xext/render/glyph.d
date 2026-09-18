@@ -82,7 +82,7 @@ private GlyphHashSetRec[25] glyphHashSets = [
     {536870912, 590559793, 590559791}
 ];
 
-enum NGLYPHHASHSETS =	ARRAY_SIZE!(glyphHashSets);
+enum NGLYPHHASHSETS =	mixin(ARRAY_SIZE!("glyphHashSets"));
 
 private GlyphHashRec[GlyphFormatNum] globalGlyphs;
 

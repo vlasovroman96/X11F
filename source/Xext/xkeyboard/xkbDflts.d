@@ -135,7 +135,7 @@ XkbKeyTypeRec[9] dflt_types = [
      None, lnames_SHIFT_ALT.ptr}
 ];
 
-enum num_dflt_types = ARRAY_SIZE!(dflt_types);
+enum num_dflt_types = mixin(ARRAY_SIZE!("dflt_types"));
 
 void initTypeNames(DPYTYPE dpy)
 {
@@ -448,7 +448,7 @@ XkbSymInterpretRec[69] dfltSI = [
      {XkbSA_SetMods, [0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]}}
 ];
 
-enum num_dfltSI = ARRAY_SIZE!(dfltSI);
+enum num_dfltSI = mixin(ARRAY_SIZE!("dfltSI"));
 
 XkbCompatMapRec compatMap = {
     sym_interpret: dfltSI.ptr,

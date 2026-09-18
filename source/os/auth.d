@@ -157,7 +157,7 @@ else
     ];
 }
 
-enum NUM_AUTHORIZATION =  ARRAY_SIZE!(protocols);
+enum NUM_AUTHORIZATION =  mixin(ARRAY_SIZE!("protocols"));
 
 /*
  * Initialize all classes of authorization by reading the

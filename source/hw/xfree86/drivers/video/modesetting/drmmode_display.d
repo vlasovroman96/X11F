@@ -3789,7 +3789,7 @@ private void drmmode_create_name(ScrnInfoPtr pScrn, drmModeConnectorPtr koutput,
     return;
 
  fallback:
-    if (koutput.connector_type >= mixin(ARRAY_SIZE!("output_names.ptr")))
+    if (koutput.connector_type >= mixin(ARRAY_SIZE!("output_names")))
         snprintf(name, 32, "Unknown%d-%d", koutput.connector_type, koutput.connector_type_id);
     else if (pScrn.is_gpu)
         snprintf(name, 32, "%s-%d-%d", output_names[koutput.connector_type], pScrn.scrnIndex - GPU_SCREEN_OFFSET + 1, koutput.connector_type_id);

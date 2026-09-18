@@ -1206,6 +1206,7 @@ void XInputExtensionInit()
     extEntry = AddExtension(INAME, IEVENTS, IERRORS, &ProcIDispatch,
                             &ProcIDispatch, &IResetProc, &StandardMinorOpcode);
     if (extEntry) {
+        // pragma(msg, EXTENSION_MAJOR_XINPUT);
         assert(extEntry.base == EXTENSION_MAJOR_XINPUT);
 
         IEventBase = extEntry.eventBase;

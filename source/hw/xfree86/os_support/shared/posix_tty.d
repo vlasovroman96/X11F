@@ -521,7 +521,7 @@ static this() {
     
 }
 
-private int numStates = ARRAY_SIZE!(modemStates);
+private int numStates = mixin(ARRAY_SIZE!("modemStates"));
 
 private int xf2osState(int state)
 {

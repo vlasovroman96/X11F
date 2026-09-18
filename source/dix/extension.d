@@ -80,7 +80,8 @@ int lastEvent = EXTENSION_EVENT_BASE;
 private int lastError = FirstExtensionError;
 private uint NumExtensions = RESERVED_EXTENSIONS;
 
-struct _ReservedExt { const(char)* name; int id; }private _ReservedExt[37] reservedExt = [
+struct _ReservedExt { const(char)* name; int id; }
+private _ReservedExt[35] reservedExt = [
     { "BIG-REQUESTS",               EXTENSION_MAJOR_BIG_REQUESTS },
     { "Apple-WM",                   EXTENSION_MAJOR_APPLE_WM },
     { "Apple-DRI",                  EXTENSION_MAJOR_APPLE_DRI },
@@ -99,13 +100,13 @@ struct _ReservedExt { const(char)* name; int id; }private _ReservedExt[37] reser
     { "RECORD",                     EXTENSION_MAJOR_RECORD },
     { "RENDER",                     EXTENSION_MAJOR_RENDER },
     { "SECURITY",                   EXTENSION_MAJOR_SECURITY },
-    // { "SELinux",                    EXTENSION_MAJOR_SELINUX },
+    { "SELinux",                    EXTENSION_MAJOR_SELINUX },
     { "SHAPE",                      EXTENSION_MAJOR_SHAPE },
     { "MIT-SHM",                    EXTENSION_MAJOR_SHM },
     { "SYNC",                       EXTENSION_MAJOR_SYNC },
     { "Windows-DRI",                EXTENSION_MAJOR_WINDOWS_DRI },
     { "XFIXES",                     EXTENSION_MAJOR_XFIXES },
-    { "XFree86-Bigfont",            EXTENSION_MAJOR_XF86_BIGFONT },
+    // { "XFree86-Bigfont",            EXTENSION_MAJOR_XF86_BIGFONT },
     { "XFree86-DGA",                EXTENSION_MAJOR_XF86_DGA },
     { "XFree86-DRI",                EXTENSION_MAJOR_XF86_DRI },
     { "XFree86-VidModeExtension",   EXTENSION_MAJOR_XF86_VIDMODE },
@@ -116,12 +117,15 @@ struct _ReservedExt { const(char)* name; int id; }private _ReservedExt[37] reser
     { "X-Resource",                 EXTENSION_MAJOR_XRESOURCE },
     { "XTEST",                      EXTENSION_MAJOR_XTEST },
     { "XVideo",                     EXTENSION_MAJOR_XVIDEO },
-    { "XVideo-MotionCompensation",  EXTENSION_MAJOR_XVMC },
+    { "XVideo-MotionCompensation",  EXTENSION_MAJOR_XVMC }
 ];
+
+pragma(msg, ARRAY_SIZE!("reservedExt.ptr"));
+pragma(msg, reservedExt.length);
 
 private int checkReserved(const(char)* name)
 {
-    for (int i = 0; i<mixin(ARRAY_SIZE!("reservedExt.ptr")); i++) {
+    for (int i = 0; i<mixin(ARRAY_SIZE!("reservedExt")); i++) {
         if (strcmp(name, reservedExt[i].name) == 0) {
             if (reservedExt[i].id < (RESERVED_EXTENSIONS + EXTENSION_BASE))
                 return reservedExt[i].id;

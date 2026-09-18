@@ -69,10 +69,7 @@ enum LATER = 1;
 enum string REQUEST(alias type) = 
     type.stringof ~`* stuff = cast(`~type.stringof~`*)client.requestBuffer;`;
 
-size_t ARRAY_SIZE(alias a)()
-{
-    return a.length;
-}
+enum string ARRAY_SIZE(string a) = (a) ~ ".length";
 
 enum string REQUEST_SIZE_MATCH(alias req) = ` 
         if ((`~req.stringof~`.sizeof >> 2) != client.req_len)                      
