@@ -782,7 +782,7 @@ int WriteToClient(ClientPtr who, int count, const(void)* __buf)
 
     // BUG_RETURN_VAL_MSG(in_input_thread(), 0,
     //                    "******** %s called from input thread *********\n", __FUNCTION__.ptr);
-    return 0;
+    // return 0;
 
 version (DEBUG_COMMUNICATION) {
     Bool multicount = FALSE;
@@ -961,12 +961,12 @@ int FlushClient(ClientPtr who, OsCommPtr oc)
             /* return only the amount explicitly requested */
             return 0;
         }
-version (EMSGSIZE) {                 /* check for another brain-damaged OS bug */
-        if(errno == EMSGSIZE) {
-            /* making separate try with half of the size */
-            todo /= 2;
-        }
-}
+// version (EMSGSIZE) {                 /* check for another brain-damaged OS bug */
+//         if(errno == EMSGSIZE) {
+//             /* making separate try with half of the size */
+//             todo /= 2;
+//         }
+// }
         else {
             goto abortClient;
         }
