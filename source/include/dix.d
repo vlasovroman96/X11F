@@ -77,7 +77,7 @@ enum string REQUEST_SIZE_MATCH(alias req) = `
 
 enum string REQUEST_AT_LEAST_SIZE(alias req) = `
     {                                                                
-        if ((`~req.stringof~`.sizeof >> 2) != client.req_len)                      
+        if ((`~req.stringof~`.sizeof >> 2) > client.req_len)                      
             return(BadLength);                                          
     }`;
 
