@@ -1624,7 +1624,7 @@ int ProcSetDashes(ClientPtr client)
 
     mixin(REQUEST!xSetDashesReq);
 
-    mixin(REQUEST_FIXED_SIZE!(xSetDashesReq, "stuff.nDashes"));
+    mixin(REQUEST_FIXED_SIZE!("xSetDashesReq", "stuff.nDashes"));
     if (stuff.nDashes == 0) {
         client.errorValue = cast(uint)0;
         return BadValue;

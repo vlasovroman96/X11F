@@ -946,7 +946,7 @@ int PanoramiXSetDashes(ClientPtr client)
 
     mixin(REQUEST!xSetDashesReq);
 
-    mixin(REQUEST_FIXED_SIZE!(xSetDashesReq, "stuff.nDashes"));
+    mixin(REQUEST_FIXED_SIZE!("xSetDashesReq", "stuff.nDashes"));
 
     result = dixLookupResourceByType(cast(void**) &gc, stuff.gc, XRT_GC,
                                      client, DixWriteAccess);

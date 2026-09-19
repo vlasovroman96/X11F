@@ -456,7 +456,7 @@ private int ProcXResQueryClientIds(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xXResQueryClientIdsReq);
     mixin(X_REQUEST_FIELD_CARD32!"numSpecs");
 
-    mixin(REQUEST_FIXED_SIZE!(xXResQueryClientIdsReq,
+    mixin(REQUEST_FIXED_SIZE!("xXResQueryClientIdsReq",
                        "cast(ulong)stuff.numSpecs * xXResClientIdSpec.sizeof"));
 
     xXResClientIdSpec* specs = cast(xXResClientIdSpec*) (cast(void*) (cast(char*) stuff + xXResQueryClientIdsReq.sizeof));
@@ -798,7 +798,7 @@ private int ProcXResQueryResourceBytes(ClientPtr client)
     mixin(X_REQUEST_HEAD_AT_LEAST!xXResQueryResourceBytesReq);
     mixin(X_REQUEST_FIELD_CARD32!"numSpecs");
 
-    mixin(REQUEST_FIXED_SIZE!(xXResQueryResourceBytesReq,
+    mixin(REQUEST_FIXED_SIZE!("xXResQueryResourceBytesReq",
                        "(cast(ulong)stuff.numSpecs) * xXResResourceIdSpec.sizeof"));
 
     if (client.swapped) {
