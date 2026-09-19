@@ -179,9 +179,9 @@ enum _XSERVER64 = 1;
 
 /* Have support for X shared memory fence library (xshmfence) */
 enum HAVE_XSHMFENCE = 1;
-
+enum SHM_FD_PASSING = 1;
 /* Use XTrans FD passing support */
-enum XTRANS_SEND_FDS = 1;
+enum XTRANS_SEND_FDS = 0;
 
 /* Ask fontsproto to make font path element names const */
 enum FONT_PATH_ELEMENT_NAME_CONST =    1;
