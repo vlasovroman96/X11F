@@ -1445,7 +1445,7 @@ static if (build.xlibre_server.XTRANS_SEND_FDS) {
         return size;
     }
 } else {
-    return read(ciptr.fd, buf.ptr, size);
+    return cast(int)read(ciptr.fd, buf, size);
 } /* XTRANS_SEND_FDS */
 } /* WIN32 */
 }
@@ -1801,6 +1801,7 @@ Xtransport _XSERVTransSocketUNIXFuncs = {
 	&_XSERVTransSocketUNIXResetListener,
 	&_XSERVTransSocketUNIXAccept,
 	&_XSERVTransSocketRead,
+    &_XSERVTransSocketWrite,
 	&_XSERVTransSocketDisconnect,
 	&_XSERVTransSocketUNIXClose,
 	&_XSERVTransSocketUNIXCloseForCloning,
