@@ -145,7 +145,7 @@ enum XTRANS_OPEN_COTS_SERVER =       2;
 enum ADDR_IN_USE_ALLOWED =	1;
 
 // static if(XTRANS_SEND_FDS) {
-//     version = XTRANS_SEND_FDS;
+//     version = V_XTRANS_SEND_FDS;
 // }
 
 struct _Xtransport {
@@ -170,7 +170,7 @@ struct _Xtransport {
 
     ssize_t function(XtransConnInfo ciptr, const(char)* buf, size_t size) @nogc nothrow Write;
 
-version(V_XTRANS_SEND_FDS) {
+static if(XTRANS_SEND_FDS) {
     int function(XtransConnInfo, int, int) @nogc nothrow SendFd;
 
     int function(XtransConnInfo) @nogc nothrow RecvFd;

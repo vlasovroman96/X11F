@@ -24,6 +24,7 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
+import build.xorg_config;
 
 import fb.fb_priv;
 
@@ -64,7 +65,7 @@ void fbPolyArc(DrawablePtr pDrawable, GCPtr pGC, int narcs, xArc* parcs)
             int x2 = void, y2 = void;
             RegionPtr cclip = void;
 
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
             int wrapped = 1;
 }
 
@@ -91,7 +92,7 @@ version (FB_ACCESS_WRAPPER) {
                     box.y2 = cast(short)(y2);
                     if ((x2 <= SHRT_MAX) && (y2 <= SHRT_MAX) &&
                         (RegionContainsRect(cclip, &box) == rgnIN)) {
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
                         if (!wrapped) {
                             fbPrepareAccess(pDrawable);
                             wrapped = 1;
@@ -102,7 +103,7 @@ version (FB_ACCESS_WRAPPER) {
                                 pDrawable.y + dstYoff, pPriv.and, pPriv.xor);
                     }
                     else {
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
                         if (wrapped) {
                             mixin(fbFinishAccess!("pDrawable"));
                             wrapped = 0;
@@ -112,7 +113,7 @@ version (FB_ACCESS_WRAPPER) {
                     }
                 }
                 else {
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
                     if (wrapped) {
                         mixin(fbFinishAccess!("pDrawable"));
                         wrapped = 0;
@@ -122,7 +123,7 @@ version (FB_ACCESS_WRAPPER) {
                 }
                 parcs++;
             }
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
             if (wrapped) {
                 mixin(fbFinishAccess!("pDrawable"));
                 wrapped = 0;

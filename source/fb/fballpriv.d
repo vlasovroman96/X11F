@@ -56,8 +56,9 @@ Bool fbAllocatePrivates(ScreenPtr pScreen)
 
     return TRUE;
 }
+import build.xorg_config;
 
-// version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
 ReadMemoryProcPtr wfbReadMemory;
 WriteMemoryProcPtr wfbWriteMemory;
-// }
+}

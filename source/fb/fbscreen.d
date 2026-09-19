@@ -140,7 +140,7 @@ Bool fbSetupScreen(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpi
 }
 
 
-version(FB_ACCESS_WRAPPER) {
+static if(FB_ACCESS_WRAPPER) {
     Bool wfbFinishScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int bpp, SetupWrapProcPtr setupWrap, FinishWrapProcPtr finishWrap) {
         VisualPtr visuals = void;
         DepthPtr depths = void;
@@ -201,9 +201,10 @@ else {
         return TRUE;
     }
 }
+import build.xorg_config;
 
 /* dts * (inch/dot) * (25.4 mm / inch) = mm */
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
     Bool wfbScreenInit(ScreenPtr pScreen, void* pbits, int xsize, int ysize, int dpix, int dpiy, int width, int bpp, SetupWrapProcPtr setupWrap, FinishWrapProcPtr finishWrap)
     {
         if (!fbSetupScreen(pScreen, pbits, xsize, ysize, dpix, dpiy, width, bpp))

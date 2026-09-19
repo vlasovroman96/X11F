@@ -28,8 +28,9 @@ import build.dix_config;
 import core.stdc.string;
 import include.fb;
 import fb.fbutil;
+import build.xorg_config;
 
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
 
 enum string MEMCPY_WRAPPED(string dst, string src, string size) = `{                       
         size_t _i = void;                                                    

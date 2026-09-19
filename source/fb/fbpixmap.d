@@ -143,7 +143,7 @@ RegionPtr fbPixmapToRegion(PixmapPtr pPix)
     FirstRect = RegionBoxptr(pReg);
     rects = FirstRect;
 
-    mixin(fbPrepareAccess!("(&pPix.drawable)")~";");
+    // mixin(fbPrepareAccess!("(&pPix.drawable)")~";");
 
     pwLine = cast(FbBits*) pPix.devPrivate.ptr;
     nWidth = pPix.devKind >> (FB_SHIFT - 3);

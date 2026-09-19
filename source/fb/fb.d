@@ -1,4 +1,4 @@
-module include.fb;
+module fb.fb;
 @nogc nothrow:
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
@@ -28,7 +28,7 @@ import core.stdc.config: c_long, c_ulong;
  
 //public import externs.X11.X;
 public import pixman;
-import build.xorg_config;
+
 public import include.scrnintstr;
 public import include.pixmap;
 public import include.pixmapstr;
@@ -51,14 +51,14 @@ public import fb.fbcmap_mi;
 public import fb.fbwindow;
 
 
-static if (FB_ACCESS_WRAPPER) {
+// static if (FB_ACCESS_WRAPPER) {
 
-public import wfbrename;
-enum string FBPREFIX(string x) = `wfb##x`;
-enum string WRITE(string ptr, string val) = `((*wfbWriteMemory)((` ~ ptr ~ `), (` ~ val ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
-enum string READ(string ptr) = `((*wfbReadMemory)((` ~ ptr ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
+// public import wfbrename;
+// enum string FBPREFIX(string x) = `wfb##x`;
+// enum string WRITE(string ptr, string val) = `((*wfbWriteMemory)((` ~ ptr ~ `), (` ~ val ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
+// enum string READ(string ptr) = `((*wfbReadMemory)((` ~ ptr ~ `), typeof(*(` ~ ptr ~ `)).sizeof))`;
 
-} else {
+// } else {
 
 enum string FBPREFIX(string x) = `fb##x`;
 enum string WRITE(string ptr, string val) = `
@@ -66,7 +66,7 @@ enum string WRITE(string ptr, string val) = `
 ;
 enum string READ(string ptr) = `(*(` ~ ptr ~ `))`;
 
-}
+// }
 
 /*
  * This single define controls the basic size of data manipulated
@@ -243,7 +243,7 @@ alias WriteMemoryProcPtr = void function(void* dst, FbBits value, int size);
 alias SetupWrapProcPtr = void function(ReadMemoryProcPtr* pRead, WriteMemoryProcPtr* pWrite, DrawablePtr pDraw);
 alias FinishWrapProcPtr = void function(DrawablePtr pDraw);
 
-static if (FB_ACCESS_WRAPPER) {
+// static if (FB_ACCESS_WRAPPER) {
 
 enum string fbPrepareAccess(string pDraw) = 
 	fbGetScreenPrivate!(pDraw~`.pScreen`)~`.setupWrap( 
@@ -253,17 +253,17 @@ enum string fbPrepareAccess(string pDraw) =
 enum string fbFinishAccess(string pDraw) = `
 	mixin(fbGetScreenPrivate!("(` ~ pDraw ~ `).pScreen")).finishWrap(` ~ pDraw ~ `);`;
 
-} else {
+// } else {
 
-enum string fbPrepareAccess(string pDraw) = "";
+// //#define fbPrepareAccess(pPix)
+// //#define fbFinishAccess(pDraw)
 
-enum string fbFinishAccess(string pDraw) = ``;
-
-}
+// }
 
 // DevPrivateKey
 // fbGetScreenPrivateKey();
 
+import build.xorg_config;
 /* private field of a screen */
 struct _FbScreenPrivRec {
 static if (FB_ACCESS_WRAPPER) {

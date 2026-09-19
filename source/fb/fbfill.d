@@ -24,6 +24,7 @@ extern(C): __gshared:
  */
 
 import build.dix_config;
+import build.xorg_config;
 
 import fb.fb_priv;
 import externs.attrs;
@@ -77,12 +78,12 @@ void fbFill(DrawablePtr pDrawable, GCPtr pGC, int x, int y, int width, int heigh
 
     switch (pGC.fillStyle) {
     case FillSolid:
-// version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
                 fbSolid(dst + (y + dstYoff) * dstStride,
                     dstStride,
                     (x + dstXoff) * dstBpp,
                     dstBpp, width * dstBpp, height, pPriv.and, pPriv.xor);
-// } else {
+} else {
         if (pPriv.and || !assumeNoGC(&pixman_fill)(cast(uint*) dst, dstStride, dstBpp,
                                        x + dstXoff, y + dstYoff,
                                        width, height, cast(uint)pPriv.xor))
@@ -90,7 +91,7 @@ void fbFill(DrawablePtr pDrawable, GCPtr pGC, int x, int y, int width, int heigh
                     dstStride,
                     (x + dstXoff) * dstBpp,
                     dstBpp, width * dstBpp, height, pPriv.and, pPriv.xor);
-// }
+}
         break;
     case FillStippled:
     case FillOpaqueStippled:{
@@ -218,7 +219,7 @@ void fbSolidBoxClipped(DrawablePtr pDrawable, RegionPtr pClip, int x1, int y1, i
         if (partY2 <= partY1)
             continue;
 
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
                 fbSolid(dst + (partY1 + dstYoff) * dstStride,
                     dstStride,
                     (partX1 + dstXoff) * dstBpp,

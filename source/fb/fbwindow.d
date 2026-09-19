@@ -25,6 +25,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
 import build.dix_config;
+import build.xorg_config;
 
 import core.stdc.stdlib;
 
@@ -146,7 +147,7 @@ void fbFillRegionSolid(DrawablePtr pDrawable, RegionPtr pRegion, FbBits and, FbB
     int n = RegionNumRects(pRegion);
     BoxPtr pbox = RegionRects(pRegion);
 
-version (FB_ACCESS_WRAPPER) {} else {
+static if (FB_ACCESS_WRAPPER) {} else {
     int try_mmx = 0;
 
     if (!and)
@@ -156,7 +157,7 @@ version (FB_ACCESS_WRAPPER) {} else {
     mixin(fbGetDrawable!("pDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     while (n--) {
-version (FB_ACCESS_WRAPPER) {} else {
+static if (FB_ACCESS_WRAPPER) {} else {
         if (!try_mmx || !assumeNoGC(&pixman_fill)(cast(uint*) dst, dstStride, dstBpp,
                                      pbox.x1 + dstXoff, pbox.y1 + dstYoff,
                                      (pbox.x2 - pbox.x1),
@@ -169,7 +170,7 @@ version (FB_ACCESS_WRAPPER) {} else {
                     (pbox.x2 - pbox.x1) * dstBpp,
                     pbox.y2 - pbox.y1, and, cast(uint)xor);
 
-version (FB_ACCESS_WRAPPER) {} else {}
+static if (FB_ACCESS_WRAPPER) {} else {}
         }
 }
         fbValidateDrawable(pDrawable);

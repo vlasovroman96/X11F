@@ -45,12 +45,12 @@ private XF86ModuleVersionInfo VersRecFb = {
 };
 
 static this() {
-    // static if(FB_ACCESS_WRAPPER) {
-    //     VersRecFb.modname = "wfb";
-    // }
-    // else {
+    static if(FB_ACCESS_WRAPPER) {
+        VersRecFb.modname = "wfb";
+    }
+    else {
         VersRecFb.modname = "fb";
-    // }
+    }
 }
 
 export XF86ModuleData ModuleData = {

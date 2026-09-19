@@ -182,10 +182,12 @@ version (Windows) {
         return null;
     }
 
-version (Windows) {} else {
-    out_ = cast(FILE*)Popen(cast(char*)buf, "w");
-} version (Windows) {
+version (Windows) {
     out_ = fopen(tmpname.ptr, "w");
+}
+else {
+    out_ = cast(FILE*)Popen(cast(char*)buf, "w");
+
 }
 
     if (out_ !is null) {
@@ -195,10 +197,11 @@ version (Windows) {} else {
         int cls;
 
 version (Windows) {
-        cls = Pclose(out_);
 
+    cls = (fclose(out_) == 0 && system(buf) >= 0);
 } else {
-    cls = fclose(out_) == 0 && system(buf) >= 0;
+        cls = Pclose(cast(void*)out_) == 0;
+}
         if (cls)
         {
             if (xkbDebugFlags)
@@ -216,7 +219,7 @@ version (Windows) {
 version (Windows) {
         /* remove the temporary file */
         unlink(tmpname.ptr);
-}}
+}
     }
     else {
 version (Windows) {} else {

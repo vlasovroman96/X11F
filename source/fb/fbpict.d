@@ -32,6 +32,7 @@ import core.stdc.string;
 
 import fb.fbpict_priv;
 import include.mipict;
+import build.xorg_config;
 
 import include.fb;
 import render.glyphstr_priv;
@@ -286,7 +287,7 @@ private pixman_image_t* create_bits_picture(PicturePtr pict, Bool has_clip, int*
     if (!image)
         return null;
 
-version (FB_ACCESS_WRAPPER) {
+static if (FB_ACCESS_WRAPPER) {
     assumeNoGC(&pixman_image_set_accessors)(image,
                                cast(pixman_read_memory_func_t) wfbReadMemory,
                                cast(pixman_write_memory_func_t) wfbWriteMemory);

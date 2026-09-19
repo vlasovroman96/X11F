@@ -31,6 +31,7 @@ import core.stdc.stdlib;
 import fb.fb_priv;
 import externs.pixman;
 import externs.attrs;
+import build.xorg_config;
 
 void
 fbCopyNtoN(DrawablePtr pSrcDrawable,
@@ -56,8 +57,8 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
     mixin(fbGetDrawable!("pDstDrawable", "dst", "dstStride", "dstBpp", "dstXoff", "dstYoff"));
 
     while (nbox--) {
-        // static if( FB_ACCESS_WRAPPER) {} 
-        // else {
+        static if( FB_ACCESS_WRAPPER) {} 
+        else {
 // #ifndef FB_ACCESS_WRAPPER       /* pixman_blt() doesn't support accessors yet */
         if (pm == FB_ALLONES && alu == GXcopy && !reverse && !upsidedown) {
             if (!assumeNoGC(&pixman_blt)
@@ -69,7 +70,7 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
                 goto fallback;
             else
                 goto next;
-        // }
+        }
  fallback:
         }
 // #endif
@@ -81,11 +82,11 @@ fbCopyNtoN(DrawablePtr pSrcDrawable,
               (pbox.x1 + dstXoff) * dstBpp,
               (pbox.x2 - pbox.x1) * dstBpp,
               (pbox.y2 - pbox.y1), alu, pm, dstBpp, reverse, upsidedown);
-// static if(FB_ACCESS_WAPPER) {}
-// else {
+static if(FB_ACCESS_WRAPPER) {}
+else {
 // #ifndef FB_ACCESS_WRAPPER
  next:
-// }
+}
 // #endif
         pbox++;
     }
