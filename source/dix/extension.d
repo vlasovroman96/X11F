@@ -299,7 +299,7 @@ int ProcQueryExtension(ClientPtr client)
 
     if (NumExtensions && extensions) {
         char[PATH_MAX] extname = 0;
-        strncpy(extname.ptr, cast(char*) &stuff[1], min(stuff.nbytes, ((extname).ptr-1).sizeof));
+        strncpy(extname.ptr, cast(char*) &stuff[1], min(stuff.nbytes, extname.length - 1));
         ExtensionEntry* extEntry = CheckExtension(extname.ptr);
 
         if (extEntry && ExtensionAvailable(client, extEntry)) {
