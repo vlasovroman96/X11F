@@ -575,7 +575,7 @@ enum KEYBOARD_OR_FLOAT =       5       /* Keyboard master for this device or thi
 enum POINTER_OR_FLOAT =        6       /* Pointer master for this device or this device if floating */;
 
 struct DeviceIntRec {
-    DeviceRec* public_;
+    DeviceRec public_;
     DeviceIntPtr next;
     Bool startup;               /* true if needs to be turned on at
                                    server initialization time */
@@ -628,7 +628,7 @@ struct DeviceIntRec {
         int num_touches;        /* size of the touches array */
         DDXTouchPointInfoPtr touches;
     }
-    _Last* last;
+    _Last last;
 
     /* Input device property handling. */
     struct _Properties {
