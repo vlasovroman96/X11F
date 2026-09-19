@@ -88,7 +88,7 @@ void NoteLedState(DeviceIntPtr keybd, int led, Bool on);
 
 // void MaybeStopHint(DeviceIntPtr device, ClientPtr client);
 
-void ProcessPointerEvent(InternalEvent* ev, DeviceIntPtr mouse);
+// void ProcessPointerEvent(InternalEvent* ev, DeviceIntPtr mouse);
 
 void ProcessKeyboardEvent(InternalEvent* ev, DeviceIntPtr keybd);
 

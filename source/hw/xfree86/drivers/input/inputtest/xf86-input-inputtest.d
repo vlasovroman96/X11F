@@ -58,7 +58,7 @@ import dix.devices;
 import dix.inpututils;
 import xf86Xinput;
 import std.conv;
-
+import xkb.xkbInit;
 import hw.xfree86.drivers.input.inputtest.xf86_input_inputtest_protocol;
 
 enum MAX_POINTER_NUM_AXES = 5 /* x, y, hscroll, vscroll, [pressure] */;

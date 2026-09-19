@@ -345,7 +345,7 @@ int InitIntegerFeedbackClassDeviceStruct(DeviceIntPtr, IntegerCtrlProcPtr);
 
 // int InitPointerDeviceStruct(DevicePtr, CARD8*, int, Atom*, PtrCtrlProcPtr, int, int, Atom*);
 
-int InitKeyboardDeviceStruct(DeviceIntPtr, XkbRMLVOSet*, BellProcPtr, KbdCtrlProcPtr);
+// int InitKeyboardDeviceStruct(DeviceIntPtr, XkbRMLVOSet*, BellProcPtr, KbdCtrlProcPtr);
 
 int InitKeyboardDeviceStructFromString(DeviceIntPtr dev, const(char)* keymap, int keymap_length, BellProcPtr bell_func, KbdCtrlProcPtr ctrl_func);
 

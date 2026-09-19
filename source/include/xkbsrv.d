@@ -244,9 +244,9 @@ void XkbDDXChangeControls(DeviceIntPtr, XkbControlsPtr, XkbControlsPtr);
  */
 void XkbSetRepeatKeys(DeviceIntPtr, int, int);
 
-void XkbGetRulesDflts(XkbRMLVOSet*);
+// void XkbGetRulesDflts(XkbRMLVOSet*);
 
-void XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
+// void XkbFreeRMLVOSet(XkbRMLVOSet*, Bool);
 
 void XkbCopyDeviceKeymap(DeviceIntPtr, DeviceIntPtr);
 

@@ -115,8 +115,8 @@ enum	PHYS_LEDS =	0x07;
 enum	XKB_DFLT_RULES_PROP =	TRUE;
 
 
-// const(char)* XkbBaseDirectory = XKB_BASE_DIRECTORY;
-// const(char)* XkbBinDirectory = XKB_BIN_DIRECTORY;
+const(char)* XkbBaseDirectory = XKB_BASE_DIRECTORY;
+const(char)* XkbBinDirectory = XKB_BIN_DIRECTORY;
 private int XkbWantAccessX = 0;
 
 private char* XkbRulesDflt = null;

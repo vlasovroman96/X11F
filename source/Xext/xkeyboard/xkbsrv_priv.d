@@ -22,7 +22,7 @@ public import include.xkbsrv;
 import externs.X11.extensions.XKBproto;
 import include.xkbstr;
 public import build.dix_config;
-
+public import xkb.xkbInit;
 
 enum _BEEP_NONE =              0;
 enum _BEEP_FEATURE_ON =        1;
@@ -175,8 +175,8 @@ enum string XKBDEVICEINFO(string dev) = `(cast(xkbDeviceInfoPtr)dixLookupPrivate
 int XkbReqCode;
 int XkbEventBase;
 int XkbKeyboardErrorCode;
-const(char)* XkbBaseDirectory;
-const(char)* XkbBinDirectory;
+// const(char)* XkbBaseDirectory;
+// const(char)* XkbBinDirectory;
 CARD32 xkbDebugFlags;
 
 /* AccessX functions */
