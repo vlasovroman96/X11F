@@ -625,7 +625,7 @@ void FlushAllOutput()
 {
     OsCommPtr oc = void;
     ClientPtr client = void, tmp = void;
-    Bool newoutput = NewOutputPending;
+    Bool newoutput = !!NewOutputPending;
 
     if (!newoutput)
         return;
