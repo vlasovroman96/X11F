@@ -17,6 +17,7 @@ public import cFix;
 /* Building Xorg server. */
 /* #undef XORGSERVER */
 
+enum FB_ACCESS_WRAPPER = 0;
 /* Current X.Org version. */
 // enum XORG_VERSION_CURRENT = 12501000;
 
