@@ -87,16 +87,16 @@ struct _FontInfo {
     ushort firstRow;
     ushort lastRow;
     ushort defaultCh;
-    uint noOverlap;/*:1 !!*/
-    uint terminalFont;/*:1 !!*/
-    uint constantMetrics;/*:1 !!*/
-    uint constantWidth;/*:1 !!*/
-    uint inkInside;/*:1 !!*/
-    uint inkMetrics;/*:1 !!*/
-    uint allExist;/*:1 !!*/
-    uint drawDirection;/*:2 !!*/
-    uint cachable;/*:1 !!*/
-    uint anamorphic;/*:1 !!*/
+    uint noOverlap:1;
+    uint terminalFont:1;
+    uint constantMetrics:1;
+    uint constantWidth:1;
+    uint inkInside:1;
+    uint inkMetrics:1;
+    uint allExist:1;
+    uint drawDirection:2;
+    uint cachable:1;
+    uint anamorphic:1;
     short maxOverlap;
     short pad;
     xCharInfo maxbounds;
