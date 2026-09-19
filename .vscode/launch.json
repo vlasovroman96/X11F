@@ -7,6 +7,7 @@
             "request": "launch",
 
             "program": "/home/roman/X11F/x12",
+            "args": ["-retro", "-ac"],
             "cwd": "/home/roman/X11F",
 
             "MIMode": "gdb",
