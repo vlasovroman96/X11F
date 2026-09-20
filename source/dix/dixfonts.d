@@ -622,9 +622,7 @@ private Bool doListFontsAndAliases(ClientPtr client, list_fonts_closure* c)
     char* name = void, resolved = null;
     int namelen = void, resolvedlen = void;
     int aliascount = 0;
-    xListFontsReply reply = {
-        nFonts: cast(ushort)names.nnames,
-    };
+    xListFontsReply reply;
 
     x_rpcbuf_t rpcbuf = { swapped: client.swapped, err_clear: TRUE };
     if (client.clientGone) {
@@ -800,6 +798,7 @@ private Bool doListFontsAndAliases(ClientPtr client, list_fonts_closure* c)
 
     names = c.names;
     client = c.client;
+    reply.nFonts = cast(ushort)names.nnames;
 
 
     for (int i = 0; i < names.nnames; i++) {
