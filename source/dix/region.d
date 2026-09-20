@@ -187,7 +187,7 @@ if (!(` ~ pReg ~ `).data || (((` ~ pReg ~ `).data.numRects + (` ~ n ~ `)) > (` ~
     if (!RegionRectAlloc(` ~ pReg ~ `, ` ~ n ~ `)) { goto bail; }`;
 
 enum string RECTALLOC(string pReg,string n) = ` {
-if ((` ~ pReg ~ `).data !is null || (((` ~ pReg ~ `).data.numRects + (` ~ n ~ `)) > (` ~ pReg ~ `).data.size)) 
+if ((` ~ pReg ~ `).data is null || (((` ~ pReg ~ `).data.numRects + (` ~ n ~ `)) > (` ~ pReg ~ `).data.size)) 
     if (!RegionRectAlloc(` ~ pReg ~ `, ` ~ n ~ `)) { return FALSE; }
 }`;
 
