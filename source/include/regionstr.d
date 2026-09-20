@@ -91,7 +91,7 @@ pragma(inline, true) Bool RegionNar(RegionPtr reg)
 
 pragma(inline, true) int RegionNumRects(RegionPtr reg)
 {
-    return cast(int)(reg.data ? reg.data.numRects : 1);
+    return cast(int)(reg.data !is null ? reg.data.numRects : 1);
 }
 
 pragma(inline, true) int RegionSize(RegionPtr reg)

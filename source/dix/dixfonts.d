@@ -1022,7 +1022,7 @@ private int doListFontsWithInfo(ClientPtr client, list_fonts_with_info_closure* 
             _reply.type = X_Reply;
             _reply.length =
                 mixin(X_REPLY_HEADER_UNITS!("xListFontsWithInfoReply"))
-                + bytes_to_int32(pFontInfo.nprops*((xFontProp).sizeof+namelen));
+                + bytes_to_int32(pFontInfo.nprops*(xFontProp).sizeof+namelen);
             _reply.sequenceNumber = cast(ushort)client.sequence;
             _reply.nameLength = cast(ubyte)namelen;
             _reply.minBounds = pFontInfo.ink_minbounds;
@@ -1093,7 +1093,7 @@ private int doListFontsWithInfo(ClientPtr client, list_fonts_with_info_closure* 
             --c.current.max_names;
         }
     }
- finish: {}
+ finish: 
     /* finish it the replies series sending an empty _reply */
     mixin(X_SEND_REPLY_SIMPLE!("client", "reply")~`;`);
  bail:
