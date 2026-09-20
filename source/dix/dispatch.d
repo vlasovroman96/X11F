@@ -1349,8 +1349,8 @@ int ProcQueryFont(ClientPtr client)
             0 : mixin(N2dChars!("pFont"));
 
         rlength = cast(uint)((xQueryFontReply).sizeof +
-            mixin(FONTINFONPROPS!("mixin(FONTCHARSET!(`pFont`))")) * ((xFontProp).sizeof +
-            nprotoxcistructs * xCharInfo.sizeof));
+            mixin(FONTINFONPROPS!(FONTCHARSET!(`pFont`))) * (xFontProp).sizeof +
+            (nprotoxcistructs * xCharInfo.sizeof));
         reply = cast(xQueryFontReply*) calloc(1, rlength);
         if (!reply) {
             return BadAlloc;
