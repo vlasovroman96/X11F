@@ -4,7 +4,7 @@ An ongoing effort to port the XLibre X server from C to D.
 xsetroot -mod 18 8 
 
 ## Status
-**14/78 cases passed** (at 09/21/2026)
+**21/78 cases passed** (at 09/21/2026)
 
 - ✅ Passed
   
@@ -22,19 +22,19 @@ xsetroot -mod 18 8
 | 5 | xprop root | `xprop -root` | ✅ |
 | 6 | xmessage | `xmessage "Hello"` | ✅ |
 | 7 | xwininfo tree | `xwininfo -root -tree` | ✅ |
-| 8 | xwininfo window | `xwininfo -id <ID> -all` | ⬜|
-| 9 | xprop window | `xprop -id <ID>` | ⬜ |
-| 10 | xmessage multiline | `xmessage -buttons OK $'A\nB\nC'` | ⬜ |
-| 11 | xlsclients | `xlsclients` | ⬜ |
-| 12 | xkill | `xkill` | ⬜ |
+| 8 | xwininfo window | `xwininfo -id <ID> -all` | ✅|
+| 9 | xprop window | `xprop -id <ID>` | ✅ |
+| 10 | xmessage multiline | `xmessage -buttons OK $'A\nB\nC'` | ✅|
+| 11 | xlsclients | `xlsclients` | ✅ |
+| 12 | xkill | `xkill` | ✅ |
 | 13 | xsetroot solid | `xsetroot -solid red` | ✅ |
 | 14 | xsetroot color | `xsetroot -solid white` | ✅  |
 | 15 | xsetroot pattern | `xsetroot -mod 16 8` | ✅  |
 | 16 | xlogo | `xlogo` | ✅ |
 | 17 | xclock | `xclock` | ✅ |
-| 18 | xrefresh | `xrefresh` | ⬜ |
-| 19 | xmessage colors | `xmessage -fg white -bg black "Test"` | ⬜ |
-| 20 | x11perf rect | `x11perf -rect500` | ⬜ |
+| 18 | xrefresh | `xrefresh` | ✅ |
+| 19 | xmessage colors | `xmessage -fg white -bg black "Test"` | ✅ |
+| 20 | x11perf rect | `x11perf -rect500` | X Error of failed request:  BadMatch (invalid parameter attributes) Major opcode of failed request:  73 (X_GetImage) Serial number of failed request:  26 Current serial number in output stream:  26 |
 | 21 | x11perf line | `x11perf -line500` | ⬜ |
 | 22 | x11perf arc | `x11perf -arc500` | ⬜ |
 | 23 | x11perf fill | `x11perf -fillrect500` | ⬜ |
