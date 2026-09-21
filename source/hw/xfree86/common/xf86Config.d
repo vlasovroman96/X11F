@@ -1379,9 +1379,10 @@ private Bool checkCoreInputDevices(serverLayoutPtr servlayoutp, Bool implicitLay
 static if (HasVersion!"CONFIG_HAL" || HasVersion!"CONFIG_UDEV" || HasVersion!"CONFIG_WSCONS") {
         const(char)* config_backend = void;
 
-version (CONFIG_HAL) {
-        config_backend = "HAL";
-} else version (CONFIG_UDEV) {
+// version (CONFIG_HAL) {
+//         config_backend = "HAL";
+// } else 
+version (CONFIG_UDEV) {
         config_backend = "udev";
 } else {
         config_backend = "wscons";

@@ -769,7 +769,6 @@ private int MergeInputClasses(InputInfoPtr idev, InputAttributes* attrs)
 {
     XF86ConfInputClassPtr cl = void;
     XF86OptionPtr classopts = void;
-
     for (cl = xf86configptr.conf_inputclass_lst; cl; cl = cast(_XF86ConfInputClassRec*)cl.list.next) {
         if (!InputClassMatches(cl, idev, attrs))
             continue;

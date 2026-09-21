@@ -130,7 +130,7 @@ private Bool check_seat(udev_device* udev_device)
 alias dev_t = core.sys.posix.sys.types.dev_t;
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-private void device_added(udev_device* udev_device_)
+private void device_added_udev(udev_device* udev_device_)
 {
     const(char)* path = void, name = null;
     char* config_info = null;
@@ -407,14 +407,14 @@ private void socket_handler(int fd, int ready, void* data)
     if (action) {
         if (!strcmp(action, "add")) {
             device_removed(udev_device);
-            device_added(udev_device);
+            device_added_udev(udev_device);
         } else if (!strcmp(action, "change")) {
             /* ignore change for the drm devices */
             const(char)* subsys = assumeNoGC(&udev_device_get_subsystem)(udev_device);
 
             if (subsys && strcmp(subsys, "drm")) {
                 device_removed(udev_device);
-                device_added(udev_device);
+                device_added_udev(udev_device);
             }
         }
         else if (!strcmp(action, "remove"))
@@ -488,7 +488,7 @@ version (HAVE_UDEV_ENUMERATE_ADD_MATCH_TAG) {
         if (!udev_device)
             continue;
 
-        device_added(udev_device);
+        device_added_udev(udev_device);
         assumeNoGC(&udev_device_unref)(udev_device);
     }));
 

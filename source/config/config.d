@@ -57,13 +57,14 @@ void config_init()
 version (CONFIG_UDEV) {
     if (!config_udev_init())
         ErrorF("[config] failed to initialise udev\n");
-} else version (CONFIG_HAL) {
-    if (!config_hal_init())
-        ErrorF("[config] failed to initialise HAL\n");
-} else version (CONFIG_WSCONS) {
-    if (!config_wscons_init())
-        ErrorF("[config] failed to initialise wscons\n");
 }
+// } else version (CONFIG_HAL) {
+//     if (!config_hal_init())
+//         ErrorF("[config] failed to initialise HAL\n");
+// } else version (CONFIG_WSCONS) {
+//     if (!config_wscons_init())
+//         ErrorF("[config] failed to initialise wscons\n");
+// }
 }
 
 void config_fini()

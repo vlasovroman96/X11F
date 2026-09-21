@@ -34,17 +34,17 @@ import config.hotplug_priv;
 void remove_devices(const(char)* backend, const(char)* config_info);
 BOOL device_is_duplicate(const(char)* config_info);
 
-static if (CONFIG_UDEV) {
-// int config_udev_pre_init();
-int config_udev_init();
-void config_udev_fini();
-void config_udev_odev_probe(config_odev_probe_proc_ptr probe_callback);
-} else static if (CONFIG_HAL) {
-int config_hal_init();
-void config_hal_fini();
-} else static if (CONFIG_WSCONS) {
-int config_wscons_init();
-void config_wscons_fini();
-}
+// static if (CONFIG_UDEV) {
+// // int config_udev_pre_init();
+// // int config_udev_init();
+// // void config_udev_fini();
+// // void config_udev_odev_probe(config_odev_probe_proc_ptr probe_callback);
+// } else static if (CONFIG_HAL) {
+// int config_hal_init();
+// void config_hal_fini();
+// } else static if (CONFIG_WSCONS) {
+// int config_wscons_init();
+// void config_wscons_fini();
+// }
 
  /* XSERVER_CONFIG_BACKENDS_H */

@@ -150,7 +150,7 @@ private char* get_prop_string_array(LibHalContext* hal_ctx, const(char)* udi, co
 }
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-private void device_added(LibHalContext* hal_ctx, const(char)* udi)
+private void device_added_hal(LibHalContext* hal_ctx, const(char)* udi)
 {
     char* path = null, driver = null, name = null, config_info = null;
     char* hal_tags = void, parent = void;
@@ -525,7 +525,7 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
                    error.message ? error.message : "null");
         goto out_ctx;
     }
-    assumeNoGC(&libhal_ctx_set_device_added)(info.hal_ctx, &device_added);
+    assumeNoGC(&libhal_ctx_set_device_added)(info.hal_ctx, &device_added_hal);
     assumeNoGC(&libhal_ctx_set_device_removed)(info.hal_ctx, &device_removed);
 
     devices = assumeNoGC(&libhal_find_device_by_capability)(info.hal_ctx, "input",
@@ -538,7 +538,7 @@ private BOOL connect_and_register(DBusConnection* connection, config_hal_info* i
         goto out_ctx;
     }
     for (i = 0; i < num_devices; i++)
-        device_added(info.hal_ctx, devices[i]);
+        device_added_hal(info.hal_ctx, devices[i]);
     assumeNoGC(&libhal_free_string_array)(devices);
 
     resolve!"dbus_error_free"()(&error);
