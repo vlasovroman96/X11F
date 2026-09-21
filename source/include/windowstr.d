@@ -142,24 +142,24 @@ struct _Window {
     PixUnion background;
     PixUnion border;
     WindowOptPtr optional;
-    uint backgroundState;/*:2 !!*/ /* None, Relative, Pixel, Pixmap */
-    uint borderIsPixel;/*:1 !!*/
-    uint cursorIsNone;/*:1 !!*/    /* else real cursor (might inherit) */
-    uint backingStore;/*:2 !!*/
-    uint saveUnder;/*:1 !!*/
-    uint bitGravity;/*:4 !!*/
-    uint winGravity;/*:4 !!*/
-    uint overrideRedirect;/*:1 !!*/
-    uint visibility;/*:2 !!*/
-    uint mapped;/*:1 !!*/
-    uint realized;/*:1 !!*/        /* ancestors are all mapped */
-    uint viewable;/*:1 !!*/        /* realized && InputOutput */
-    uint dontPropagate;/*:3 !!*/   /* index into DontPropagateMasks */
-    uint redirectDraw;/*:2 !!*/    /* COMPOSITE rendering redirect */
-    uint forcedBG;/*:1 !!*/        /* must have an opaque background */
-    uint unhittable;/*:1 !!*/      /* doesn't hit-test, for rootless */
-    uint damagedDescendants;/*:1 !!*/      /* some descendants are damaged */
-    uint inhibitBGPaint;/*:1 !!*/  /* paint the background? */
+    uint backgroundState:2; /* None, Relative, Pixel, Pixmap */
+    uint borderIsPixel : 1;
+    uint cursorIsNone : 1;    /* else real cursor (might inherit) */
+    uint backingStore : 2;
+    uint saveUnder : 1;
+    uint bitGravity : 4;
+    uint winGravity : 4;
+    uint overrideRedirect : 1;
+    uint visibility : 2;
+    uint mapped : 1;
+    uint realized : 1;        /* ancestors are all mapped */
+    uint viewable : 1;        /* realized && InputOutput */
+    uint dontPropagate : 3;   /* index into DontPropagateMasks */
+    uint redirectDraw : 2;    /* COMPOSITE rendering redirect */
+    uint forcedBG : 1;        /* must have an opaque background */
+    uint unhittable : 1;      /* doesn't hit-test, for rootless */
+    uint damagedDescendants : 1;      /* some descendants are damaged */
+    uint inhibitBGPaint : 1;  /* paint the background? */
 
     PropertyPtr properties;     /* default: NULL */
 }

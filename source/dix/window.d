@@ -851,8 +851,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
         return NullWindow;
     }
 
-    // pWin.backgroundState = mixin(XaceBackgroundNoneState("pWin"));
-    pWin.backgroundState = 0;
+    pWin.backgroundState = XaceBackgroundNoneState!()("pWin");
     pWin.background.pixel = pScreen.whitePixel;
 
     pWin.borderIsPixel = pParent.borderIsPixel;
@@ -860,12 +859,12 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
     if (pWin.borderIsPixel == FALSE)
         pWin.border.pixmap.refcnt++;
 
-    pWin.origin.x = cast(ubyte)(x + cast(int) bw);
-    pWin.origin.y = cast(ubyte)(y + cast(int) bw);
-    pWin.drawable.width = cast(ubyte)w;
-    pWin.drawable.height = cast(ubyte)h;
-    pWin.drawable.x = cast(ubyte)(pParent.drawable.x + x + cast(int) bw);
-    pWin.drawable.y = cast(ubyte)(pParent.drawable.y + y + cast(int) bw);
+    pWin.origin.x = cast(short)(x + cast(int) bw);
+    pWin.origin.y = cast(short)(y + cast(int) bw);
+    pWin.drawable.width = cast(ushort)w;
+    pWin.drawable.height = cast(ushort)h;
+    pWin.drawable.x = cast(short)(pParent.drawable.x + x + cast(int) bw);
+    pWin.drawable.y = cast(short)(pParent.drawable.y + y + cast(int) bw);
 
     // /* set up clip list correctly for unobscured WindowPtr */
     RegionNull(&pWin.clipList);
@@ -2341,17 +2340,15 @@ version (ROOTLESS) {} else {
         // };
 
         xEvent event;
-            event.u.configureRequest.window = cast(uint)pWin.drawable.id,
-            event.u.configureRequest.sibling = pSib ? cast(uint)pSib.drawable.id : cast(uint)None,
-            event.u.configureRequest.x = x,
-            event.u.configureRequest.y = y,
-            event.u.configureRequest.width = w,
-            event.u.configureRequest.height = h,
-            event.u.configureRequest.borderWidth = bw,
-            // event.u.configureRequest.valueMask = mask,
-            event.u.configureRequest.parent = cast(uint)pParent.drawable.id;
-        // };
-        // event.u.u.type = ConfigureRequest;
+            event.u.configureNotify.window = cast(uint)pWin.drawable.id,
+            event.u.configureNotify.aboveSibling = pSib ? cast(uint)pSib.drawable.id : cast(uint)None,
+            event.u.configureNotify.x = x,
+            event.u.configureNotify.y = y,
+            event.u.configureNotify.width = w,
+            event.u.configureNotify.height = h,
+            event.u.configureNotify.borderWidth = bw,
+            event.u.configureNotify.override_ = cast(ubyte)pWin.overrideRedirect;
+
         event.u.u.type = ConfigureNotify;
 static if(XINERAMA){
         if (!noPanoramiXExtension && (!pParent || !pParent.parent)) {
