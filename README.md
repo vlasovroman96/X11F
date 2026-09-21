@@ -1,11 +1,12 @@
 An ongoing effort to port the XLibre X server from C to D.
 
-<img width="1920" height="1080" alt="Снимок экрана_20260921_222641" src="https://github.com/user-attachments/assets/00877e17-561c-4f48-9f4f-383a7fc6cf71" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8ac383c9-076d-4a41-b9dd-b2b7b4736c01" />
 
 X Server on Dlang running under ArchLinux VBox VM.
+(`xeyes +shape` + `xgc` + `xlogo` runned from xterm inside ported X Server on D language)
 
 ## Status
-**32/78 cases passed** (at 09/21/2026)
+**37/78 cases passed** (at 09/23/2026)
 
 - ✅ Passed
   
@@ -60,9 +61,9 @@ X Server on Dlang running under ArchLinux VBox VM.
 | 42 | xfontsel | `xfontsel` | ❔ |
 | 43 | text rendering | `xmessage "The quick brown fox"` | ✅ |
 | 44 | xclock digital | `xclock -digital` | X Error of failed request:  BadLength (poly) request too large or internal Xlib length error) Major opcode of failed request:  144 (RENDER) Minor opcode of failed request:  20 (RenderAddGlyphs) Serial number of failed request:  74 Current serial number in output stream:  104 |
-| 45 | xwd root | `xwd -root -out /tmp/root.xwd` | ❔|
-| 46 | xwd window | `xwd -id <ID> -out /tmp/window.xwd` | ❔ |
-| 47 | xwud | `xwud -in /tmp/window.xwd` | ⬜ |
+| 45 | xwd root | `xwd -root -out /tmp/root.xwd` | ✅ |
+| 46 | xwd window | `xwd -id <ID> -out /tmp/window.xwd` | ✅  |
+| 47 | xwud | `xwud -in /tmp/window.xwd` | ✅ |
 | 48 | xprop write/read | `xprop -id <ID> -set TEST abc` | ❔ |
 | 49 | xclipboard | `xclipboard` | ❔ |
 | 50 | xsel PRIMARY | `xsel --primary --input` / `xsel --primary --output` | ❔ |
@@ -73,20 +74,20 @@ X Server on Dlang running under ArchLinux VBox VM.
 | 55 | xrandr providers | `xrandr --listproviders` | ❔ |
 | 56 | xrandr verbose | `xrandr --verbose` | ❔ |
 | 57 | xeyes core | `xeyes +render +shape` | Two black region with one between them |
-| 58 | xeyes +RENDER | `xeyes -render +shape` | ✅  |
-| 59 | xeyes +SHAPE | `xeyes +render -shape` | Window not shown |
+| 58 | xeyes +RENDER | `xeyes -render +shape` | ❔  |
+| 59 | xeyes +SHAPE | `xeyes +render -shape` | ✅  |
 | 60 | xeyes both | `xeyes -render -shape` | ❔|
 | 61 | xeyes default | `xeyes` | ❔ |
-| 62 | SHAPE client | `<shape-test-client>` | ❔ |
+| 62 | SHAPE client | `<shape-test-client>` | ✅ |
 | 63 | RENDER client | `<render-test-client>` | ❔ |
 | 64 | XFixes client | `<xfixes-test-client>` | ❔ |
 | 65 | Composite client | `<composite-test-client>` | ❔ |
 | 66 | Damage client | `<damage-test-client>` | ❔ |
-| 67 | xterm | `xterm` | Window not showing |
-| 68 | xcalc | `xcalc` | ❔ |
+| 67 | xterm | `xterm` | ✅  |
+| 68 | xcalc | `xcalc` | ✅  |
 | 69 | xedit | `xedit` | ❔ |
 | 70 | multi-client | `xmessage A & xmessage B & xmessage C` | ✅ |
-| 71 | xterm + xclock | `xterm & xclock` | ❔ |
+| 71 | xterm + xclock | `xterm & xclock` | ✅  |
 | 72 | GLX | `glxinfo -B` | ❔|
 | 73 | glxgears | `glxgears` | ❔ |
 | 74 | DRI | `xdriinfo` | ❔ |
