@@ -81,10 +81,10 @@ import dix.devices;
  */
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
-{
-    return BadMatch;
-}
+// int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
+// {
+//     return BadMatch;
+// }
 
 /****************************************************************************
  *
@@ -99,10 +99,10 @@ int SetDeviceMode(ClientPtr client, DeviceIntPtr dev, int mode)
  */
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int first_valuator, int num_valuators)
-{
-    return BadMatch;
-}
+// int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int first_valuator, int num_valuators)
+// {
+//     return BadMatch;
+// }
 
 /****************************************************************************
  *
@@ -113,10 +113,10 @@ int SetDeviceValuators(ClientPtr client, DeviceIntPtr dev, int* valuators, int f
  */
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control)
-{
-    return BadMatch;
-}
+// int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control)
+// {
+//     return BadMatch;
+// }
 
 /****************************************************************************
  *
@@ -126,10 +126,10 @@ int ChangeDeviceControl(ClientPtr client, DeviceIntPtr dev, xDeviceCtl* control)
  *
  */
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* pdev)
-{
-    return BadValue;
-}
+// int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIntPtr* pdev)
+// {
+//     return BadValue;
+// }
 
 /****************************************************************************
  *
@@ -139,10 +139,10 @@ int NewInputDeviceRequest(InputOption* options, InputAttributes* attrs, DeviceIn
  *
  */
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-void DeleteInputDeviceRequest(DeviceIntPtr dev)
-{
-    RemoveDevice(dev, TRUE);
-}
+// void DeleteInputDeviceRequest(DeviceIntPtr dev)
+// {
+//     RemoveDevice(dev, TRUE);
+// }
 
 /****************************************************************************
  *
@@ -154,6 +154,6 @@ void DeleteInputDeviceRequest(DeviceIntPtr dev)
  *
  */
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
-void RemoveInputDeviceTraces(const(char)* config_info)
-{
-}
+// void RemoveInputDeviceTraces(const(char)* config_info)
+// {
+// }
