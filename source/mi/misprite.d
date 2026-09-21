@@ -68,9 +68,9 @@ struct _MiCursorInfoRec {
     int x;                      /* cursor hotspot */
     int y;
     BoxRec saved;               /* saved area from the screen */
-    Bool isUp;                  /* cursor in frame buffer */
-    Bool shouldBeUp;            /* cursor should be displayed */
-    Bool checkPixels;           /* check colormap collision */
+    bool isUp;                  /* cursor in frame buffer */
+    bool shouldBeUp;            /* cursor should be displayed */
+    bool checkPixels;           /* check colormap collision */
     ScreenPtr pScreen;
 }alias miCursorInfoRec = _MiCursorInfoRec;
 alias miCursorInfoPtr = miCursorInfoRec*;
@@ -596,7 +596,7 @@ private Bool miSpriteRealizeCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorP
 
     pCursorInfo = GetSprite(pDev);
 
-    if (pCursor == pCursorInfo.pCursor)
+    if (pCursor is pCursorInfo.pCursor)
         pCursorInfo.checkPixels = TRUE;
 
     return (!!miDCRealizeCursor(pScreen, pCursor));
