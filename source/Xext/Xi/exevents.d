@@ -155,7 +155,7 @@ int XIShouldNotify(ClientPtr client, DeviceIntPtr dev)
     DeviceIntPtr current_ptr = PickPointer(client);
     DeviceIntPtr current_kbd = GetMaster(current_ptr, KEYBOARD_OR_FLOAT);
 
-    if (dev == current_kbd || dev == current_ptr)
+    if (dev is current_kbd || dev is current_ptr)
         return 1;
 
     return 0;
@@ -1839,8 +1839,8 @@ private void ProcessDeviceEvent(InternalEvent* ev, DeviceIntPtr device)
     case ET_ProximityIn:
     case ET_ProximityOut:
         GetSpritePosition(device, &rootX, &rootY);
-        event.root_x = cast(ushort)rootX;
-        event.root_y = cast(ushort)rootY;
+        event.root_x = cast(short)rootX;
+        event.root_y = cast(short)rootY;
         NoticeEventTime(cast(InternalEvent*) event, device);
         event.corestate = corestate;
         key = event.detail.key;

@@ -225,7 +225,7 @@ enum ImplicitGrabMask = (1 << 7);
 
 enum string WID(string w) = `((` ~ w ~ `) ? ((` ~ w ~ `).drawable.id) : 0)`;
 
-auto XE_KBPTR(T)(T xE) { return xE.u.keyButtonPointer; }
+ref auto XE_KBPTR(T)(ref T xE) { return xE.u.keyButtonPointer; }
 
 CallbackListPtr EventCallback;
 CallbackListPtr DeviceEventCallback;
@@ -2676,11 +2676,11 @@ void FixUpEventFromWindow(SpritePtr pSprite, xEvent* xE, WindowPtr pWin, Window 
     else {
         XE_KBPTR(xE).root = cast(uint)mixin(RootWindow!(`pSprite`)).drawable.id;
         XE_KBPTR(xE).event = cast(uint)pWin.drawable.id;
-        if (pSprite.hot.pScreen == pWin.drawable.pScreen) {
+        if (pSprite.hot.pScreen is pWin.drawable.pScreen) {
             XE_KBPTR(xE).sameScreen = xTrue;
             XE_KBPTR(xE).child = cast(uint)child;
-            XE_KBPTR(xE).eventX = cast(ushort)(XE_KBPTR(xE).rootX - pWin.drawable.x);
-            XE_KBPTR(xE).eventY = cast(ushort)(XE_KBPTR(xE).rootY - pWin.drawable.y);
+            XE_KBPTR(xE).eventX = cast(short)(XE_KBPTR(xE).rootX - pWin.drawable.x);
+            XE_KBPTR(xE).eventY = cast(short)(XE_KBPTR(xE).rootY - pWin.drawable.y);
         }
         else {
             XE_KBPTR(xE).sameScreen = xFalse;
