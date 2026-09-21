@@ -13,6 +13,8 @@
 		"-version=_XSERVER64",
 		"-version=__SIZEOF_LONG__",
 		"-version=LONG64",
+		"-version=CONFIG_UDEV",
+		"-version=HAVE_FNMATCH_H",
 		"-i",
     "-P-I/usr/include/dbus-1.0",
     "-P-I/usr/include/pixman-1",

@@ -110,7 +110,7 @@ import os.inputthread;
 
 
 version (HAVE_FNMATCH_H) {
-import fnmatch;
+// import fnmatch;
 }
 version (HAVE_SYS_UTSNAME_H) {
 import core.sys.posix.sys.utsname;
@@ -138,7 +138,8 @@ static if(XFreeXDGA){
 import include.dgaproc;
 import hw.xfree86.common.dgaproc_priv;
 }
-
+extern(C) int fnmatch(const(char)* pattern, const(char)* str, int flags);
+enum FNM_PATHNAME = 1 << 0;
 import include.xkbsrv;
 import include.xf86Parser;
 
