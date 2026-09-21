@@ -636,7 +636,7 @@ private void miSpriteSetCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPtr p
         miSpriteRegisterBlockHandler(pScreen, pScreenPriv);
     if (pPointer.x == x &&
         pPointer.y == y &&
-        pPointer.pCursor == pCursor && !pPointer.checkPixels) {
+        pPointer.pCursor is pCursor && !pPointer.checkPixels) {
         return;
     }
     pPointer.x = x;

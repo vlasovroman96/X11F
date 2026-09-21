@@ -330,12 +330,12 @@ int AllocGlyphCursor(Font source, ushort sourceChar, Font mask, ushort maskChar,
     }
 
     GlyphSharePtr pShare = void;
-    if (sourcefont != maskfont)
+    if (sourcefont !is maskfont)
         pShare = cast(GlyphSharePtr) null;
     else {
         for (pShare = sharedGlyphs;
              pShare &&
-             ((pShare.font != sourcefont) ||
+             ((pShare.font !is sourcefont) ||
               (pShare.sourceChar != sourceChar) ||
               (pShare.maskChar != maskChar)); pShare = pShare.next){}
     }

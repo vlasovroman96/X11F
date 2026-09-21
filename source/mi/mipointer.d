@@ -465,7 +465,7 @@ void miPointerUpdateSprite(DeviceIntPtr pDev)
      * if the cursor has switched screens, disable the sprite
      * on the old screen
      */
-    if (pScreen != pPointer.pSpriteScreen) {
+    if (pScreen !is pPointer.pSpriteScreen) {
         if (pPointer.pSpriteScreen) {
             miPointerScreenPtr pOldPriv = void;
 
@@ -488,7 +488,7 @@ void miPointerUpdateSprite(DeviceIntPtr pDev)
     /*
      * if the cursor has changed, display the new one
      */
-    else if (pPointer.pCursor != pPointer.pSpriteCursor) {
+    else if (pPointer.pCursor !is pPointer.pSpriteCursor) {
         pCursor = pPointer.pCursor;
         if (!pCursor ||
             (pCursor.bits.emptyMask && !pScreenPriv.showTransparent))
