@@ -156,6 +156,7 @@ pragma(inline, true) Bool dixPrivateKeyRegistered(DevPrivateKey key)
  *
  * For keys with pre-defined storage, this gets the base of that storage
  * Otherwise, it returns the place where the private pointer is stored.
+
  */
 pragma(inline, true) void* dixGetPrivateAddr(PrivatePtr* privates, const(DevPrivateKey) key)
 {

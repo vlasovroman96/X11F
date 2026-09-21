@@ -168,6 +168,7 @@ private Bool AnimCurDisplayCursor(DeviceIntPtr pDev, ScreenPtr pScreen, CursorPt
     AnimCurScreenPtr as = mixin(GetAnimCurScreen!(`pScreen`));
     Bool ret = TRUE;
 
+
     if (InputDevIsFloating(pDev))
         return FALSE;
 

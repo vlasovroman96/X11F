@@ -213,7 +213,7 @@ alias EVENT_DELIVERED = EventDeliveryState.EVENT_DELIVERED;
 alias EVENT_NOT_DELIVERED = EventDeliveryState.EVENT_NOT_DELIVERED;
 alias EVENT_SKIP = EventDeliveryState.EVENT_SKIP;
 alias EVENT_REJECTED = EventDeliveryState.EVENT_REJECTED;
-
+public import cursor;
 
 enum VALUATOR_MODE_ALL_AXES = -1;
 // int valuator_get_mode(DeviceIntPtr dev, int axis);
@@ -221,12 +221,12 @@ enum VALUATOR_MODE_ALL_AXES = -1;
 
 /* Set to TRUE by default - os/utils.c sets it to FALSE on user request,
    xfixes/cursor.c uses it to determine if the cursor is enabled */
-Bool EnableCursor;
+// Bool EnableCursor;
 
 /* Set to FALSE by default - ChangeWindowAttributes sets it to TRUE on
  * CWCursor, xfixes/cursor.c uses it to determine if the cursor is enabled
  */
-Bool CursorVisible;
+// Bool CursorVisible;
 
 // void valuator_mask_drop_unaccelerated(ValuatorMask* mask);
 
