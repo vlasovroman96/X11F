@@ -874,7 +874,7 @@ int ProcRenderAddGlyphs(ClientPtr client)
     gids = cast(CARD32*) (stuff + 1);
     gi = cast(xGlyphInfo*) (gids + nglyphs);
     bits = cast(CARD8*) (gi + nglyphs);
-    remain -= (((CARD32) + xGlyphInfo.sizeof).sizeof) * nglyphs;
+    remain -= (((CARD32).sizeof + xGlyphInfo.sizeof)) * nglyphs;
 
     /* protect against bad nglyphs */
     if (gi < (cast(xGlyphInfo*) stuff) ||
@@ -1621,7 +1621,7 @@ int ProcRenderCreateAnimCursor(ClientPtr client)
     if (ncursor <= 0)
         return BadValue;
 
-    CursorPtr* cursors = cast(CursorPtr*) calloc(ncursor, ((CursorPtr) + CARD32.sizeof).sizeof);
+    CursorPtr* cursors = cast(CursorPtr*) calloc(ncursor, ((CursorPtr).sizeof + CARD32.sizeof));
     if (!cursors)
         return BadAlloc;
     deltas = cast(CARD32*) (cursors + ncursor);
@@ -1696,9 +1696,9 @@ int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLinearGradie
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     len = cast(int)((client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof);
-    if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((XFixed).sizeof + xRenderColor.sizeof)))
         return BadLength;
-    if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((XFixed).sizeof + xRenderColor.sizeof)))
         return BadLength;
 
     stops = cast(XFixed*) (stuff + 1);
@@ -1730,9 +1730,9 @@ int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadialGradie
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     len = cast(int)((client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof);
-    if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((XFixed).sizeof + xRenderColor.sizeof)))
         return BadLength;
-    if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((XFixed).sizeof + xRenderColor.sizeof)))
         return BadLength;
 
     stops = cast(XFixed*) (stuff + 1);
@@ -1765,9 +1765,9 @@ int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateConicalGrad
     mixin(LEGAL_NEW_RESOURCE!("stuff.pid", "client"));
 
     len = cast(int)((client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof);
-    if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
+    if (stuff.nStops > UINT32_MAX / (((XFixed).sizeof + xRenderColor.sizeof)))
         return BadLength;
-    if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
+    if (len != stuff.nStops * (((XFixed).sizeof + xRenderColor.sizeof)))
         return BadLength;
 
     stops = cast(XFixed*) (stuff + 1);

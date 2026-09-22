@@ -561,8 +561,8 @@ private int rrGetScreenResources(ClientPtr client, Bool query)
 
         reply.length = pScrPriv.numCrtcs +
                       pScrPriv.numOutputs +
-                      num_modes * bytes_to_int32((xRRModeInfo).sizeof +
-                      bytes_to_int32(reply.nbytesNames));
+                      num_modes * bytes_to_int32((xRRModeInfo).sizeof) +
+                      bytes_to_int32(reply.nbytesNames);
 
         RRCrtc* crtcs;
         RROutput* outputs;

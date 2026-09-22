@@ -898,12 +898,12 @@ private int ProcXvListImageFormats(ClientPtr client)
         x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)cast(ubyte)pImage.num_planes);
         x_rpcbuf_reserve(&rpcbuf, CARD16.sizeof); /* pad2; */
         x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)cast(ubyte)pImage.depth);
-        x_rpcbuf_reserve(&rpcbuf, ((CARD8)+CARD16.sizeof).sizeof); /* pad3, pad4 */
+        x_rpcbuf_reserve(&rpcbuf, ((CARD8).sizeof+CARD16.sizeof)); /* pad3, pad4 */
         x_rpcbuf_write_CARD32(&rpcbuf, pImage.red_mask);
         x_rpcbuf_write_CARD32(&rpcbuf, pImage.green_mask);
         x_rpcbuf_write_CARD32(&rpcbuf, pImage.blue_mask);
         x_rpcbuf_write_CARD8(&rpcbuf, cast(ubyte)cast(ubyte)pImage.format);
-        x_rpcbuf_reserve(&rpcbuf, ((CARD8)+CARD16.sizeof).sizeof); /* pad5, pad6 */
+        x_rpcbuf_reserve(&rpcbuf, ((CARD8).sizeof+CARD16.sizeof)); /* pad5, pad6 */
         x_rpcbuf_write_CARD32(&rpcbuf, pImage.y_sample_bits);
         x_rpcbuf_write_CARD32(&rpcbuf, pImage.u_sample_bits);
         x_rpcbuf_write_CARD32(&rpcbuf, pImage.v_sample_bits);
