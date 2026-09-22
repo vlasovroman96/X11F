@@ -2890,9 +2890,9 @@ int ProcRenderCreateLinearGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = cast(int)((client.req_len << 2) - xRenderCreateLinearGradientReq.sizeof);
-        if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((XFixed).sizeof + xRenderColor.sizeof)))
             return BadLength;
-        if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((XFixed).sizeof + xRenderColor.sizeof)))
             return BadLength;
 
         swapStops(stuff + 1, cast(int)stuff.nStops);
@@ -2922,9 +2922,9 @@ int ProcRenderCreateRadialGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = cast(int)((client.req_len << 2) - xRenderCreateRadialGradientReq.sizeof);
-        if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((XFixed).sizeof + xRenderColor.sizeof)))
             return BadLength;
-        if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((XFixed).sizeof + xRenderColor.sizeof)))
             return BadLength;
 
         swapStops(stuff + 1, cast(int)stuff.nStops);
@@ -2951,9 +2951,9 @@ int ProcRenderCreateConicalGradient(ClientPtr client)
         swapl(&stuff.nStops);
 
         int len = cast(int)((client.req_len << 2) - xRenderCreateConicalGradientReq.sizeof);
-        if (stuff.nStops > UINT32_MAX / (((XFixed) + xRenderColor.sizeof).sizeof))
+        if (stuff.nStops > UINT32_MAX / (((XFixed).sizeof + xRenderColor.sizeof)))
             return BadLength;
-        if (len != stuff.nStops * (((XFixed) + xRenderColor.sizeof).sizeof))
+        if (len != stuff.nStops * (((XFixed).sizeof + xRenderColor.sizeof)))
             return BadLength;
 
         swapStops(stuff + 1, cast(int)stuff.nStops);
