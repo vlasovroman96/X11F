@@ -86,9 +86,9 @@ enum stateKey = (&stateKeyRec);
 
 /* This is what we store as client security state */
 struct SecurityStateRec {
-    uint haveState;/*:1 !!*/
-    uint live;/*:1 !!*/
-    uint trustLevel;/*:2 !!*/
+    uint haveState : 1;
+    uint live : 1;
+    uint trustLevel : 2;
     XID authId;
 }
 

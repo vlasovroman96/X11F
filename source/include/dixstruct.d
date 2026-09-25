@@ -84,12 +84,12 @@ struct _Client {
     Mask clientAsMask;
     ushort index;
     ubyte majorOp, minorOp;
-    uint swapped;/*:1 !!*/
-    uint local;/*:1 !!*/
-    uint big_requests;/*:1 !!*/ /* supports large requests */
-    uint clientGone;/*:1 !!*/
-    uint closeDownMode;/*:2 !!*/
-    uint clientState;/*:2 !!*/
+    uint swapped: 1;
+    uint local: 1;
+    uint big_requests: 1; /* supports large requests */
+    uint clientGone: 1;
+    uint closeDownMode : 2;
+    uint clientState : 2;
     char smart_priority = 0;
     short noClientException;      /* this client died or needs to be killed */
     int priority;

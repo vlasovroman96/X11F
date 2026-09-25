@@ -145,20 +145,20 @@ struct _GC {
     ushort dashOffset;
     ushort numInDashList;
     ubyte* dash;
-    uint lineStyle;/*:2 !!*/
-    uint capStyle;/*:2 !!*/
-    uint joinStyle;/*:2 !!*/
-    uint fillStyle;/*:2 !!*/
-    uint fillRule;/*:1 !!*/
-    uint arcMode;/*:1 !!*/
-    uint subWindowMode;/*:1 !!*/
-    uint graphicsExposures;/*:1 !!*/
-    uint miTranslate;/*:1 !!*/ /* should mi things translate? */
-    uint tileIsPixel;/*:1 !!*/ /* tile is solid pixel */
-    uint fExpose;/*:1 !!*/     /* Call exposure handling */
-    uint freeCompClip;/*:1 !!*/        /* Free composite clip */
-    uint scratch_inuse;/*:1 !!*/       /* is this GC in a pool for reuse? */
-    uint unused;/*:15 !!*/     /* see comment above */
+    uint lineStyle : 2;
+    uint capStyle : 2;
+    uint joinStyle : 2;
+    uint fillStyle : 2;
+    uint fillRule : 1;
+    uint arcMode : 1;
+    uint subWindowMode : 1;
+    uint graphicsExposures : 1;
+    uint miTranslate : 1; /* should mi things translate? */
+    uint tileIsPixel : 1; /* tile is solid pixel */
+    uint fExpose : 1;     /* Call exposure handling */
+    uint freeCompClip : 1;        /* Free composite clip */
+    uint scratch_inuse : 1;       /* is this GC in a pool for reuse? */
+    uint unused : 15;     /* see comment above */
     uint planemask;
     uint fgPixel;
     uint bgPixel;

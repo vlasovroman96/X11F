@@ -204,9 +204,9 @@ struct _GrabRec {
     XID resource;
     DeviceIntPtr device;
     WindowPtr window;
-    uint ownerEvents;/*:1 !!*/
-    uint keyboardMode;/*:1 !!*/
-    uint pointerMode;/*:1 !!*/
+    uint ownerEvents : 1;
+    uint keyboardMode : 1;
+    uint pointerMode : 1;
     InputLevel grabtype;
     CARD8 type;                 /* event type for passive grabs, 0 for active grabs */
     DetailRec modifiersDetail;

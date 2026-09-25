@@ -88,7 +88,7 @@ struct _RecordContextRec {
     ClientPtr pRecordingClient; /* client that has context enabled */
     _RecordClientsAndProtocolRec* pListOfRCAP;   /* all registered info */
     ClientPtr pBufClient;       /* client whose protocol is in replyBuffer */
-    uint continuedReply;/*:1 !!*/      /* recording a reply that is split up? */
+    uint continuedReply : 1;      /* recording a reply that is split up? */
     char elemHeaders = 0;           /* element header flags (time/seq no.) */
     char bufCategory = 0;           /* category of protocol in replyBuffer */
     int numBufBytes;            /* number of bytes in replyBuffer */
@@ -131,9 +131,9 @@ struct _RecordClientsAndProtocolRec {
     XID* pClientIDs;            /* array of clients to record */
     short numClients;           /* number of clients in pClientIDs */
     short sizeClients;          /* size of pClientIDs array */
-    uint clientStarted;/*:1 !!*/       /* record new client connections? */
-    uint clientDied;/*:1 !!*/  /* record client disconnections? */
-    uint clientIDsSeparatelyAllocated;/*:1 !!*/        /* pClientIDs calloced? */
+    uint clientStarted : 1;       /* record new client connections? */
+    uint clientDied : 1;  /* record client disconnections? */
+    uint clientIDsSeparatelyAllocated : 1;        /* pClientIDs calloced? */
 }alias RecordClientsAndProtocolRec = _RecordClientsAndProtocolRec;
 alias RecordClientsAndProtocolPtr = _RecordClientsAndProtocolRec*;
 

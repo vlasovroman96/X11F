@@ -150,17 +150,17 @@ struct _Picture {
     pixman_format_code_t format;     /* PIXMAN_FORMAT */
     int refcnt;
     CARD32 id;
-    uint repeat;/*:1 !!*/
-    uint graphicsExposures;/*:1 !!*/
-    uint subWindowMode;/*:1 !!*/
-    uint polyEdge;/*:1 !!*/
-    uint polyMode;/*:1 !!*/
-    uint freeCompClip;/*:1 !!*/
-    uint componentAlpha;/*:1 !!*/
-    uint repeatType;/*:2 !!*/
-    uint filter;/*:3 !!*/
-    uint stateChanges;/*:CPLastBit !!*/
-    uint unused;/*:18 - CPLastBit !!*/
+    uint repeat : 1;
+    uint graphicsExposures : 1;
+    uint subWindowMode : 1;
+    uint polyEdge : 1;
+    uint polyMode : 1;
+    uint freeCompClip : 1;
+    uint componentAlpha : 1;
+    uint repeatType : 2;
+    uint filter : 3;
+    uint stateChanges : CPLastBit;
+    uint unused : (18 - CPLastBit);
 
     PicturePtr pNext;           /* chain on same drawable */
 
