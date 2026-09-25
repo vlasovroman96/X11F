@@ -1400,7 +1400,7 @@ union fd_pass {
 
 int _XSERVTransSocketRead(XtransConnInfo ciptr, char* buf, int size)
 {
-    prmsg (2,"SocketRead(%d,%p,%d)\n", ciptr.fd, cast(void*) buf, size);
+    // prmsg (2,"SocketRead(%d,%p,%d)\n", ciptr.fd, cast(void*) buf, size);
 
 version (Windows) {
     {
@@ -1452,7 +1452,7 @@ static if (build.xlibre_server.XTRANS_SEND_FDS) {
 
 ssize_t _XSERVTransSocketWrite(XtransConnInfo ciptr, const(char)* buf, size_t size)
 {
-    prmsg (2,"SocketWrite(%d,%p,%lu)\n", ciptr.fd, cast(void*) buf, cast(c_ulong)size);
+    // prmsg (2,"SocketWrite(%d,%p,%lu)\n", ciptr.fd, cast(void*) buf, cast(c_ulong)size);
 
 static if (build.xlibre_server.XTRANS_SEND_FDS) {
     if (ciptr.send_fds)
