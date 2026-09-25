@@ -155,8 +155,8 @@ private void DamageExtNotify(DamageExtPtr pDamageExt, BoxPtr pBoxes, int nBoxes)
         ev.drawable = cast(uint) pDamageExt.drawable,
         ev.damage = cast(uint)pDamageExt.id,
         ev.timestamp = currentTime.milliseconds,
-        ev.geometry.x = cast(ushort)x,
-        ev.geometry.y = cast(ushort)y;
+        ev.geometry.x = cast(short)x,
+        ev.geometry.y = cast(short)y;
 
     ev.geometry.width = cast(ushort)w,
     ev.geometry.height = cast(ushort)h;
