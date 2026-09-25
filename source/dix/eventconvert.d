@@ -144,7 +144,7 @@ int EventToCore(InternalEvent* event, xEvent** core_out, int* count_out)
         count = 1;
         core.u.u.type = cast(ubyte)(e.type - ET_KeyPress + KeyPress);
         core.u.u.detail = e.detail.key & 0xFF;
-        core.u.keyButtonPointer.time = cast(ubyte)e.time;
+        core.u.keyButtonPointer.time = e.time;
         core.u.keyButtonPointer.rootX = e.root_x;
         core.u.keyButtonPointer.rootY = e.root_y;
         core.u.keyButtonPointer.state = cast(ushort)e.corestate;
