@@ -210,12 +210,12 @@ private void miComputeClips(WindowPtr pParent, ScreenPtr pScreen, RegionPtr univ
      */
     borderSize.x1 = cast(short)(pParent.drawable.x - mixin(wBorderWidth!"pParent"));
     borderSize.y1 = cast(short)(pParent.drawable.y - mixin(wBorderWidth!"pParent"));
-    dx = cast(short)(cast(int) pParent.drawable.x + cast(int) pParent.drawable.width +
+    dx = (cast(int) pParent.drawable.x + cast(int) pParent.drawable.width +
         mixin(wBorderWidth!"pParent"));
     if (dx > 32767)
         dx = 32767;
     borderSize.x2 = cast(short)dx;
-    dy = cast(short)(cast(int) pParent.drawable.y + cast(int) pParent.drawable.height +
+    dy = (cast(int) pParent.drawable.y + cast(int) pParent.drawable.height +
         mixin(wBorderWidth!"pParent"));
     if (dy > 32767)
         dy = 32767;
