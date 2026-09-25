@@ -544,8 +544,8 @@ private PixmapPtr compNewPixmap(WindowPtr pWin, int x, int y, int w, int h)
     if (!pPixmap)
         return null;
 
-    pPixmap.screen_x = cast(ushort)x;
-    pPixmap.screen_y = cast(ushort)y;
+    pPixmap.screen_x = cast(short)x;
+    pPixmap.screen_y = cast(short)y;
 
     /*
      * Copy bits from the parent into the new pixmap so that it will
