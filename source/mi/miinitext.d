@@ -110,6 +110,7 @@ import damageext.c;
 import geext;
 import Xi.extinit;
 import Xext.saver;
+import composite.compext;
 
 import Xext.dpms;
 import Xext.bigreq;
@@ -156,6 +157,7 @@ private const ExtensionModule[] staticExtensions = () {
 
     static if(build.xlibre_server.RANDR)result ~= ExtensionModule(&RRExtensionInit, "RANDR", &noRRExtension);
     version (DISABLE_EXT_COMPOSITE) result ~= ExtensionModule(&CompositeExtensionInit, "COMPOSITE", &noCompositeExtension);
+    result ~= ExtensionModule(&CompositeExtensionInit, "COMPOSITE", &noCompositeExtension);
 
     result ~= ExtensionModule(&DamageExtensionInit, "DAMAGE", &noDamageExtension);
 
@@ -175,7 +177,8 @@ private const ExtensionModule[] staticExtensions = () {
     }
 
     // version (XSELINUX) result ~= ExtensionModule(&SELinuxExtensionInit, "SELinux", &noSELinuxExtension);
-    version (GLXEXT) result ~= ExtensionModule(&GlxExtensionInit, "GLX", &noGlxExtension);
+    // version (GLXEXT) result ~= ExtensionModule(&GlxExtensionInit, "GLX", &noGlxExtension);
+    // result ~= ExtensionModule(&GlxExtensionInit, "GLX", &noGlxExtension);
 
     return result;
 }();
