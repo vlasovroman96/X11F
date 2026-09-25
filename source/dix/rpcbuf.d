@@ -183,11 +183,11 @@ Bool x_rpcbuf_write_CARD16s(x_rpcbuf_t* rpcbuf, const(CARD16)* values, size_t co
     if ((!values) || (!count))
         return TRUE;
 
-    INT16* reserved = cast(short*)x_rpcbuf_reserve(rpcbuf, ((CARD16) * count).sizeof);
+    INT16* reserved = cast(short*)x_rpcbuf_reserve(rpcbuf, ((CARD16).sizeof * count));
     if (!reserved)
         return FALSE;
 
-    memcpy(reserved, values, ((CARD16) * count).sizeof);
+    memcpy(reserved, values, ((CARD16).sizeof * count));
 
     if (rpcbuf.swapped)
         SwapShorts(reserved, count);
