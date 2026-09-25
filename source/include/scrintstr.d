@@ -121,8 +121,8 @@ enum WindowVRRMode {
 alias CloseScreenProcPtr = Bool function(ScreenPtr /*pScreen */ )  @nogc nothrow;
 
 alias QueryBestSizeProcPtr = void function(int /*class */ ,
-                                      ubyte * /*pwidth */ ,
-                                      ubyte * /*pheight */ ,
+                                      ushort * /*pwidth */ ,
+                                      ushort * /*pheight */ ,
                                       ScreenPtr /*pScreen */ )  @nogc nothrow;
 
 alias SaveScreenProcPtr = Bool function(ScreenPtr /*pScreen */ ,

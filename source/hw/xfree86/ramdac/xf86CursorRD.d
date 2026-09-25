@@ -160,16 +160,16 @@ private void xf86CursorCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, voi
     dixSetPrivate(&pScreen.devPrivates, &xf86CursorScreenKeyRec, null);
 }
 
-private void xf86CursorQueryBestSize(int class_, ubyte* width, ubyte* height, ScreenPtr pScreen)
+private void xf86CursorQueryBestSize(int class_, ushort* width, ushort* height, ScreenPtr pScreen)
 {
     xf86CursorScreenPtr ScreenPriv = cast(xf86CursorScreenPtr) dixLookupPrivate(&pScreen.devPrivates,
                                                &xf86CursorScreenKeyRec);
 
     if (class_ == CursorShape) {
         if (*width > ScreenPriv.CursorInfoPtr.MaxWidth)
-            *width = cast(ubyte)ScreenPriv.CursorInfoPtr.MaxWidth;
+            *width = cast(ushort)ScreenPriv.CursorInfoPtr.MaxWidth;
         if (*height > ScreenPriv.CursorInfoPtr.MaxHeight)
-            *height = cast(ubyte)ScreenPriv.CursorInfoPtr.MaxHeight;
+            *height = cast(ushort)ScreenPriv.CursorInfoPtr.MaxHeight;
     }
     else
         (*ScreenPriv.QueryBestSize) (class_, width, height, pScreen);

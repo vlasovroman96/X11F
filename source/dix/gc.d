@@ -580,7 +580,7 @@ private Bool CreateDefaultTile(GCPtr pGC)
 
     w = 1;
     h = 1;
-    (*pGC.pScreen.QueryBestSize) (TileShape, cast(ubyte*)&w, cast(ubyte*)&h, pGC.pScreen);
+    (*pGC.pScreen.QueryBestSize) (TileShape, &w, &h, pGC.pScreen);
     pTile = cast(PixmapPtr)
         (*pGC.pScreen.CreatePixmap) (pGC.pScreen, w, h, pGC.depth, 0);
     pgcScratch = GetScratchGC(pGC.depth, pGC.pScreen);
@@ -859,7 +859,7 @@ Bool CreateDefaultStipple(ScreenPtr pScreen)
 
     w = 16;
     h = 16;
-    (*pScreen.QueryBestSize) (StippleShape, cast(ubyte*)&w, cast(ubyte*)&h, pScreen);
+    (*pScreen.QueryBestSize) (StippleShape, &w, &h, pScreen);
     if (((pScreen.defaultStipple = pScreen.CreatePixmap(pScreen, w, h, 1, 0)) is null))
         return FALSE;
     /* fill stipple with 1 */

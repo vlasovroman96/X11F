@@ -60,16 +60,16 @@ Bool fbUnrealizeFont(ScreenPtr pScreen, FontPtr pFont)
     return TRUE;
 }
 
-void fbQueryBestSize(int class_, ubyte* width, ubyte* height, ScreenPtr pScreen)
+void fbQueryBestSize(int class_, ushort* width, ushort* height, ScreenPtr pScreen)
 {
     ushort w = void;
 
     switch (class_) {
     case CursorShape:
         if (*width > pScreen.width)
-            *width = cast(ubyte)pScreen.width;
+            *width = pScreen.width;
         if (*height > pScreen.height)
-            *height = cast(ubyte)pScreen.height;
+            *height = pScreen.height;
         break;
     case TileShape:
     case StippleShape:
