@@ -932,7 +932,7 @@ WindowPtr dixCreateWindow(Window wid, WindowPtr pParent, int x, int y, uint w, u
             event.u.createNotify.override_ = cast(ubyte)pWin.overrideRedirect;
 
         event.u.u.type = CreateNotify;
-        // DeliverEvents(pParent, &event, 1, NullWindow);
+        DeliverEvents(pParent, &event, 1, NullWindow);
     }
     return pWin;
 }
