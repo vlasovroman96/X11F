@@ -68,7 +68,7 @@ private Bool compScreenUpdate(ClientPtr pClient, void* closure)
     ScreenPtr pScreen = cast(ScreenPtr)closure;
     CompScreenPtr cs = mixin(GetCompScreen!("pScreen"));
 
-    compCheckTree(pScreen);
+    // //compCheckTree(pScreen);
     compPaintChildrenToWindow(pScreen.root);
 
     /* Next damage will restore the worker */

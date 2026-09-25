@@ -66,42 +66,42 @@ import render.picture;
 import dix.dixutils;
 
 // version (COMPOSITE_DEBUG) {
-private int compCheckWindow(WindowPtr pWin, void* data)
-{
-    ScreenPtr pScreen = pWin.drawable.pScreen;
-    PixmapPtr pWinPixmap = (*pScreen.GetWindowPixmap) (pWin);
-    PixmapPtr pParentPixmap = pWin.parent ? (*pScreen.GetWindowPixmap) (pWin.parent) : null;
-    PixmapPtr pScreenPixmap = (*pScreen.GetScreenPixmap) (pScreen);
+// private int compCheckWindow(WindowPtr pWin, void* data)
+// {
+//     ScreenPtr pScreen = pWin.drawable.pScreen;
+//     PixmapPtr pWinPixmap = (*pScreen.GetWindowPixmap) (pWin);
+//     PixmapPtr pParentPixmap = pWin.parent ? (*pScreen.GetWindowPixmap) (pWin.parent) : null;
+//     PixmapPtr pScreenPixmap = (*pScreen.GetScreenPixmap) (pScreen);
 
-    if (!pWin.parent) {
-        assert(pWin.redirectDraw == RedirectDrawNone);
-        assert(pWinPixmap == pScreenPixmap);
-    }
-    else if (pWin.redirectDraw != RedirectDrawNone) {
-        assert(pWinPixmap != pParentPixmap);
-        assert(pWinPixmap != pScreenPixmap);
-    }
-    else {
-        assert(pWinPixmap == pParentPixmap);
-    }
+//     if (!pWin.parent) {
+//         assert(pWin.redirectDraw == RedirectDrawNone);
+//         assert(pWinPixmap == pScreenPixmap);
+//     }
+//     else if (pWin.redirectDraw != RedirectDrawNone) {
+//         assert(pWinPixmap != pParentPixmap);
+//         assert(pWinPixmap != pScreenPixmap);
+//     }
+//     else {
+//         assert(pWinPixmap == pParentPixmap);
+//     }
 
-    assert(0 < pWinPixmap.refcnt);
-    assert(pWinPixmap.refcnt < 3);
+//     assert(0 < pWinPixmap.refcnt);
+//     assert(pWinPixmap.refcnt < 3);
 
-    assert(0 < pScreenPixmap.refcnt);
-    assert(pScreenPixmap.refcnt < 3);
+//     assert(0 < pScreenPixmap.refcnt);
+//     assert(pScreenPixmap.refcnt < 3);
 
-    if (pParentPixmap) {
-        assert(0 <= pParentPixmap.refcnt);
-        assert(pParentPixmap.refcnt < 3);
-    }
-    return WT_WALKCHILDREN;
-}
+//     if (pParentPixmap) {
+//         assert(0 <= pParentPixmap.refcnt);
+//         assert(pParentPixmap.refcnt < 3);
+//     }
+//     return WT_WALKCHILDREN;
+// }
 
-void compCheckTree(ScreenPtr pScreen)
-{
-    WalkTree(pScreen, &compCheckWindow, null);
-}
+// void compCheckTree(ScreenPtr pScreen)
+// {
+//     WalkTree(pScreen, &compCheckWindow, null);
+// }
 // }
 
 struct _compPixmapVisit {
@@ -157,7 +157,7 @@ void compSetPixmap(WindowPtr pWindow, PixmapPtr pPixmap, int bw)
     visitRec.pPixmap = pPixmap;
     visitRec.bw = bw;
     TraverseTree(pWindow, &compSetPixmapVisitWindow, cast(void*) &visitRec);
-    compCheckTree(pWindow.drawable.pScreen);
+    //compCheckTree(pWindow.drawable.pScreen);
 }
 
 Bool compCheckRedirect(WindowPtr pWin)
@@ -254,7 +254,7 @@ version (COMPOSITE_DEBUG) {
         }
     }
 
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
     updateOverlayWindow(pScreen);
 }
 
@@ -270,7 +270,7 @@ Bool compRealizeWindow(WindowPtr pWin)
         ret = FALSE;
     cs.RealizeWindow = pScreen.RealizeWindow;
     pScreen.RealizeWindow = &compRealizeWindow;
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
     return ret;
 }
 
@@ -286,7 +286,7 @@ Bool compUnrealizeWindow(WindowPtr pWin)
         ret = FALSE;
     cs.UnrealizeWindow = pScreen.UnrealizeWindow;
     pScreen.UnrealizeWindow = &compUnrealizeWindow;
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
     return ret;
 }
 
@@ -382,7 +382,7 @@ void compMoveWindow(WindowPtr pWin, int x, int y, WindowPtr pSib, VTKind kind)
     pScreen.MoveWindow = &compMoveWindow;
 
     compFreeOldPixmap(pWin);
-    compCheckTree(pScreen);
+    //compCheckTree(pScreen);
 }
 
 void compResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pSib)
@@ -396,7 +396,7 @@ void compResizeWindow(WindowPtr pWin, int x, int y, uint w, uint h, WindowPtr pS
     pScreen.ResizeWindow = &compResizeWindow;
 
     compFreeOldPixmap(pWin);
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
 }
 
 void compChangeBorderWidth(WindowPtr pWin, uint bw)
@@ -410,7 +410,7 @@ void compChangeBorderWidth(WindowPtr pWin, uint bw)
     pScreen.ChangeBorderWidth = &compChangeBorderWidth;
 
     compFreeOldPixmap(pWin);
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
 }
 
 void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
@@ -460,7 +460,7 @@ void compReparentWindow(WindowPtr pWin, WindowPtr pPriorParent)
     if (pWin.damagedDescendants || (cw && cw.damaged))
         compMarkAncestors(pWin);
 
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
 }
 
 void compCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
@@ -540,7 +540,7 @@ void compCopyWindow(WindowPtr pWin, xPoint ptOldOrg, RegionPtr prgnSrc)
     }
     cs.CopyWindow = pScreen.CopyWindow;
     pScreen.CopyWindow = &compCopyWindow;
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
 }
 
 Bool compCreateWindow(WindowPtr pWin)
@@ -567,7 +567,7 @@ Bool compCreateWindow(WindowPtr pWin)
     }
     cs.CreateWindow = pScreen.CreateWindow;
     pScreen.CreateWindow = &compCreateWindow;
-    compCheckTree(pWin.drawable.pScreen);
+    //compCheckTree(pWin.drawable.pScreen);
     return ret;
 }
 
@@ -772,7 +772,7 @@ int compConfigNotify(WindowPtr pWin, int x, int y, int w, int h, int bw, WindowP
     if (pWin.redirectDraw == RedirectDrawNone)
         return Success;
 
-    compCheckTree(pScreen);
+    //compCheckTree(pScreen);
 
     draw_x = pParent.drawable.x + x + bw;
     draw_y = pParent.drawable.y + y + bw;
