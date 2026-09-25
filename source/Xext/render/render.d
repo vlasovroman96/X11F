@@ -63,6 +63,7 @@ import dix.extension;
 import dix.pixmap;
 import dix.swapreq;
 import build.xlibre_server;
+import os.log;
 
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 
@@ -687,12 +688,15 @@ int SingleRenderTriFan(ClientPtr client, xRenderTriFanReq* stuff)
 
 int ProcRenderCreateGlyphSet(ClientPtr client)
 {
+
+    mixin(REQUEST!xRenderCreateGlyphSetReq);
+    // mixin(REQUEST_AT_LEAST_SIZE!xRenderCreateGlyphSetReq);
+    mixin(X_REQUEST_FIELD_CARD32!("gsid"));
+    mixin(X_REQUEST_FIELD_CARD32!("format"));
+
     GlyphSetPtr glyphSet = void;
     PictFormatPtr format = void;
     int rc = void, f = void;
-
-    mixin(REQUEST!xRenderCreateGlyphSetReq);
-    mixin(REQUEST_AT_LEAST_SIZE!xRenderCreateGlyphSetReq);
 
     if (client.swapped) {
         swapl(&stuff.gsid);
@@ -1685,8 +1689,11 @@ int SingleRenderCreateSolidFill(ClientPtr client, xRenderCreateSolidFillReq* stu
     /* security creation/labeling check */
     error = XaceHookResourceAccess(client, stuff.pid, PictureType,
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
-    if (error != Success)
+    if (error != Success){
+        FreePicture(pPicture, cast(XID) 0);
+
         return error;
+    }
     if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
@@ -1719,8 +1726,11 @@ int SingleRenderCreateLinearGradient(ClientPtr client, xRenderCreateLinearGradie
     /* security creation/labeling check */
     error = XaceHookResourceAccess(client, stuff.pid, PictureType,
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
-    if (error != Success)
+    if (error != Success) {
+        FreePicture(pPicture, cast(XID) 0);
+
         return error;
+    }
     if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
@@ -1754,8 +1764,10 @@ int SingleRenderCreateRadialGradient(ClientPtr client, xRenderCreateRadialGradie
     /* security creation/labeling check */
     error = XaceHookResourceAccess(client, stuff.pid, PictureType,
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
-    if (error != Success)
+    if (error != Success) {
+        FreePicture(pPicture, cast(XID) 0);
         return error;
+    }
     if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
@@ -1788,8 +1800,10 @@ int SingleRenderCreateConicalGradient(ClientPtr client, xRenderCreateConicalGrad
     /* security creation/labeling check */
     error = XaceHookResourceAccess(client, stuff.pid, PictureType,
                      pPicture, X11_RESTYPE_NONE, null, DixCreateAccess);
-    if (error != Success)
+    if (error != Success) {
+        FreePicture(pPicture, cast(XID) 0);
         return error;
+    }
     if (!AddResource(cast(uint)stuff.pid, PictureType, cast(void*) pPicture))
         return BadAlloc;
     return Success;
@@ -2820,11 +2834,23 @@ static if(XINERAMA){
 int ProcRenderSetPictureFilter(ClientPtr client)
 {
     mixin(REQUEST!xRenderSetPictureFilterReq);
-    mixin(REQUEST_AT_LEAST_SIZE!xRenderSetPictureFilterReq);
+    mixin(X_REQUEST_FIELD_CARD32!("picture"));
+    mixin(X_REQUEST_FIELD_CARD16!("nbytes"));
+        
+    const size_t namelen = pad_to_int32(stuff.nbytes);
+    mixin(REQUEST_AT_LEAST_EXTRA_SIZE!("xRenderSetPictureFilterReq", "namelen"));
+
+    const size_t packet_len = stuff.length * 4;
+    const size_t remaining =
+        (packet_len - xRenderSetPictureFilterReq.sizeof - namelen);
+    const size_t nparams = remaining / 4;
+    if ((nparams * 4) != remaining) {
+        return BadLength;
+    }
 
     if (client.swapped) {
-        swapl(&stuff.picture);
-        swaps(&stuff.nbytes);
+        CARD32 *params = cast(CARD32*)(cast(char*)(stuff + 1) + namelen);
+        SwapLongs(params, nparams);
     }
 
 static if(XINERAMA){
