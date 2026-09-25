@@ -1024,8 +1024,8 @@ int ProcGetGeometry(ClientPtr client)
     if (mixin(WindowDrawable!("pDraw.type"))) {
         WindowPtr pWin = cast(WindowPtr) pDraw;
 
-        reply.x = cast(ushort)(pWin.origin.x - mixin(wBorderWidth!("pWin")));
-        reply.y = cast(ushort)(pWin.origin.y - mixin(wBorderWidth!("pWin")));
+        reply.x = cast(short)(pWin.origin.x - mixin(wBorderWidth!("pWin")));
+        reply.y = cast(short)(pWin.origin.y - mixin(wBorderWidth!("pWin")));
         reply.borderWidth = pWin.borderWidth;
     }
 
@@ -3238,8 +3238,8 @@ int ProcQueryBestSize(ClientPtr client)
     rc = dixCallScreenAccessCallback(client, pScreen, DixGetAttrAccess);
     if (rc != Success)
         return rc;
-    (*pScreen.QueryBestSize) (stuff.class_, cast(ubyte*)&stuff.width,
-                               cast(ubyte*)&stuff.height, pScreen);
+    (*pScreen.QueryBestSize) (stuff.class_, &stuff.width,
+                               &stuff.height, pScreen);
 
     xQueryBestSizeReply reply = {
         width: stuff.width,
