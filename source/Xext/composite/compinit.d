@@ -221,12 +221,13 @@ struct CompAlternateVisual {
 }
 
 static if(COMP_INCLUDE_RGB24_VISUAL) {
-    private CompAlternateVisual[3] altVisuals = [
+    private CompAlternateVisual[1] altVisuals = [
     {24, PIXMAN_r8g8b8}
 ];
 }
 else {
-    private CompAlternateVisual[3] altVisuals = [
+    private CompAlternateVisual[2] altVisuals = [
+    {24, PIXMAN_r8g8b8},
     {32, PIXMAN_a8r8g8b8}
 ];
 }
@@ -272,11 +273,11 @@ private Bool compAddAlternateVisual(ScreenPtr pScreen, CompScreenPtr cs, CompAlt
         DirectFormatRec* direct = &pPictFormat.direct;
 
         visual.class_ = TrueColor;
-        visual.redMask = cast(ubyte)(cast(c_ulong) direct.redMask << direct.red);
+        visual.redMask = (cast(c_ulong) direct.redMask << direct.red);
         visual.greenMask =
-            cast(ubyte)(cast(c_ulong) direct.greenMask << direct.green);
-        visual.blueMask = cast(ubyte)(cast(c_ulong) direct.blueMask << direct.blue);
-        alphaMask = cast(ubyte)(cast(c_ulong) direct.alphaMask << direct.alpha);
+            (cast(c_ulong) direct.greenMask << direct.green);
+        visual.blueMask = (cast(c_ulong) direct.blueMask << direct.blue);
+        alphaMask = (cast(c_ulong) direct.alphaMask << direct.alpha);
         visual.offsetRed = direct.red;
         visual.offsetGreen = direct.green;
         visual.offsetBlue = direct.blue;
