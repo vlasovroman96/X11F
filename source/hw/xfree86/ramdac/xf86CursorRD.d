@@ -111,7 +111,7 @@ Bool xf86InitCursor(ScreenPtr pScreen, xf86CursorInfoPtr infoPtr)
     ScreenPriv.spriteFuncs = PointPriv.spriteFuncs;
     PointPriv.spriteFuncs = &xf86CursorSpriteFuncs;
 
-    ScreenPriv.EnableDisableFBAccess = &pScrn.EnableDisableFBAccess;
+    ScreenPriv.EnableDisableFBAccess = pScrn.EnableDisableFBAccess;
     ScreenPriv.SwitchMode = pScrn.SwitchMode;
 
     ScreenPriv.ForceHWCursorCount = 0;
@@ -152,7 +152,7 @@ private void xf86CursorCloseScreen(CallbackListPtr* pcbl, ScreenPtr pScreen, voi
     PointPriv.spriteFuncs = ScreenPriv.spriteFuncs;
     PointPriv.showTransparent = ScreenPriv.showTransparent;
 
-    pScrn.EnableDisableFBAccess = *ScreenPriv.EnableDisableFBAccess;
+    pScrn.EnableDisableFBAccess = ScreenPriv.EnableDisableFBAccess;
     pScrn.SwitchMode = ScreenPriv.SwitchMode;
 
     free(ScreenPriv.transparentData);

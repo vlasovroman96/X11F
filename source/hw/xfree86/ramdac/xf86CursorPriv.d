@@ -27,7 +27,7 @@ struct _Xf86CursorScreenRec {
     Bool PalettedCursor;
     ColormapPtr pInstalledMap;
     Bool function(ScrnInfoPtr, DisplayModePtr) @nogc nothrow SwitchMode;
-    xf86EnableDisableFBAccessProc* EnableDisableFBAccess;
+    xf86EnableDisableFBAccessProc EnableDisableFBAccess;
     CursorPtr SavedCursor;
 
     /* Number of requests to force HW cursor */
