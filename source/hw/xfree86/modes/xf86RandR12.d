@@ -1578,7 +1578,7 @@ private Bool xf86RROutputSetModes(RROutputPtr randr_output, DisplayModePtr modes
 
                     modeInfo.nameLength = cast(ushort)strlen(mode.name);
                     modeInfo.width = cast(ushort)mode.HDisplay;
-                    modeInfo.dotClock = cast(ushort)(mode.Clock * 1000);
+                    modeInfo.dotClock = (mode.Clock * 1000);
                     modeInfo.hSyncStart = cast(ushort)mode.HSyncStart;
                     modeInfo.hSyncEnd = cast(ushort)mode.HSyncEnd;
                     modeInfo.hTotal = cast(ushort)mode.HTotal;
