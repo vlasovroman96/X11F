@@ -204,8 +204,9 @@ Bool RRCrtcNotify(RRCrtcPtr crtc, RRModePtr mode, int x, int y, Rotation rotatio
     /*
      * Copy the new list of outputs into the crtc
      */
-    mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs is null", "FALSE"));
-    memcpy(crtc.outputs, outputs, numOutputs * RROutputPtr.sizeof);
+    // mixin(BUG_RETURN_VAL!("numOutputs != 0 && outputs is null", "FALSE"));
+    if (numOutputs > 0)
+        memcpy(crtc.outputs, outputs, numOutputs * RROutputPtr.sizeof);
 
     /*
      * Update remaining crtc fields
