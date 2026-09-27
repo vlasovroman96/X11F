@@ -1,11 +1,12 @@
 {
-	"description": "A minimal D application.",
-	"license": "proprietary",
+	"description": "Xlibre/Xorg X server ported on D programming language",
+	"license": "MIT",
 	"authors": [
-		"Роман"
+		"Roman Vlasov aka Doctor(porting on D)",
+		"stuff previously worked on Xlibre/Xorg projects"
 	],
-	"copyright": "Copyright © 2026, Роман",
-	"name": "x12",
+	"copyright": "Copyright © 2026, Roman Vlasov",
+	"name": "fenix",
 	"dependencies": {
 	},
 	"targetType": "executable",
@@ -28,7 +29,7 @@
     "-P-D__attribute__(x)=",
 	"-P-D__alignof__(x)=8",
 	"-P=-D__kernel_size_t=size_t",
-	"-deps=/tmp/x11f.deps"
+	"-deps=/tmp/fenix.deps"
     ],
 	"excludedSourceFiles": [
 		"source/hw/kdrive/*",

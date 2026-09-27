@@ -3,7 +3,7 @@ module cFix;
 template cFixer(string moduleName, size_t line)
 {
     enum string cFixer =
-        `"__x12_` ~ moduleName ~ `_` ~ line.stringof ~ `"`;
+        `"__fenix_` ~ moduleName ~ `_` ~ line.stringof ~ `"`;
 }
 
 //USING:

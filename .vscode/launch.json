@@ -2,13 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "x12 — GDB",
+            "name": "FeniX — GDB",
             "type": "cppdbg",
             "request": "launch",
 
-            "program": "/home/roman/X11F/x12",
+            "program": "/home/roman/fenix/x12",
             "args": ["-retro", "-ac"],
-            "cwd": "/home/roman/X11F",
+            "cwd": "/home/roman/fenix",
 
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
@@ -21,7 +21,7 @@
                 },
                 {
                     "description": "Set remote executable",
-                    "text": "set remote exec-file /home/roman/X11F/x12",
+                    "text": "set remote exec-file /home/roman/fenix/fenix",
                     "ignoreFailures": false
                 },
                 {
