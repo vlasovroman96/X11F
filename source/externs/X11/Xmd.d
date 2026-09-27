@@ -2,9 +2,6 @@ module x11.Xmd;
 @nogc nothrow:
 extern(C): __gshared:
 
-private template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
 import core.stdc.config: c_long, c_ulong;
 /*
  * Copyright 1987, 1998 The Open Group
@@ -38,8 +35,6 @@ import core.stdc.config: c_long, c_ulong;
  * The extra indirection is to get macro arguments to expand correctly before
  * the concatenation, rather than afterward.
  */
-enum string _SIZEOF(string x) = `sz_##x`;
-enum string SIZEOF(string x) = `_SIZEOF(` ~ x ~ `)`;
 
 alias RESTYPE = uint; 
 
