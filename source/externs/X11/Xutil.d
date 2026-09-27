@@ -60,7 +60,7 @@ SOFTWARE.
 // #include <X11/Xlib.h>
 public import externs.X11.keysym;
 import x11.Xmd;
-import externs.X11.Xdefs;
+import x11.Xdefs;
 import externs.X11.X;
 import externs.X11.Xlib;
 

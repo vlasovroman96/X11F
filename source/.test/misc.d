@@ -39,7 +39,7 @@ import include.dix;
 import include.dixstruct;
 import test.tests_common;
 // import x11.Xmd;
-// import externs.X11.Xdefs;
+// import x11.Xdefs;
 // import externs.X11.X;
 import include.xlibre_ptrtypes;
 import test.tests;

@@ -8,7 +8,7 @@ extern(C): __gshared:
  */
  
 // // public //import stdbool;
-//public import externs.X11.Xdefs;
+//public import x11.Xdefs;
 import build.xlibre_server;
 
 public import include.callback;

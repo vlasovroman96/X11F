@@ -17,7 +17,7 @@ is" without express or implied warranty.
 */
 
  
-//public import externs.X11.Xdefs;
+//public import x11.Xdefs;
 
 public import include.gcstruct;
 public import include.privates;

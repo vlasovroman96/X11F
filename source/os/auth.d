@@ -63,7 +63,7 @@ enum XAUTH_PROTO_XDM = "XDM-AUTHORIZATION-1";
 
 import externs.X11.X;
 import x11.Xmd;
-import externs.X11.Xdefs;
+import x11.Xdefs;
 
 alias FILE = core.stdc.stdio.FILE;
 alias _IO_FILE = externs.X11.Xauth._IO_FILE*;

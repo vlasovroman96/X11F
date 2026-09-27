@@ -34,7 +34,7 @@ extern(C): __gshared:
 // version (_VM86_LINUX) {
 
 public import externs.c_asm.vm86;
-import externs.X11.Xdefs;
+import x11.Xdefs;
 import x11.Xmd;
 
 

@@ -46,7 +46,7 @@ alias KeySym = CARD32;
 
 enum X_ScreenSaverQueryVersion =   0;
 
-public import externs.X11.Xdefs;
+public import x11.Xdefs;
 public import x11.Xmd;
 
 

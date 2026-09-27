@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xdefs;
+public import x11.Xdefs;
 
 alias Glyph = XID;
 alias GlyphSet = XID;

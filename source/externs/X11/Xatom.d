@@ -5,7 +5,7 @@ extern(C): __gshared:
  *
  * Do not change!  Changing this file implies a protocol change!
  */
-public import externs.X11.Xdefs;
+public import x11.Xdefs;
 
 enum XA_PRIMARY = (cast(Atom) 1);
 enum XA_SECONDARY = (cast(Atom) 2);
