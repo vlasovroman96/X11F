@@ -29,7 +29,7 @@ version (__SIZEOF_LONG__) {
 version = LONG64;				/* 32/64-bit architecture */
 // }
 } else static if (HasVersion!"_LP64" || HasVersion!"__LP64__" || 
-     HasVersion!"__alpha" || HasVersion!"__alpha__" || 
+     HasVersion!"Alpha" || 
      HasVersion!"__ia64__" || HasVersion!"ia64" || 
      HasVersion!"__sparc64__" || 
      HasVersion!"__s390x__" || 

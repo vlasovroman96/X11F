@@ -40,7 +40,7 @@ extern(C): __gshared:
 public import externs.libdrm;
 
 /* SAREA area needs to be at least a page */
-version (__alpha__) {
+version (Alpha) {
 enum SAREA_MAX = 			0x2000;
 } else version (__ia64__) {
 enum SAREA_MAX =			0x10000 /* 64kB */;

@@ -121,7 +121,7 @@ private void hwDisableIO()
 }
 
 } else static if (HasVersion!"__i386__" || HasVersion!"X86_64" || HasVersion!"__ia64__" || 
-      HasVersion!"__alpha__") {
+      HasVersion!"Alpha") {
 
 private Bool hwEnableIO()
 {
@@ -147,7 +147,7 @@ private Bool hwEnableIO()
         }
     }
 
-static if (!HasVersion!"__alpha__") {
+static if (!HasVersion!"Alpha") {
     target[4] = '\0';
 
     /* trap access to the keyboard controller(s) and timer chip(s) */

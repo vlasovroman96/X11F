@@ -89,7 +89,7 @@ public import xkb.xkbAccessX;
 
 enum      _XKB_RF_NAMES_PROP_ATOM =         "_XKB_RULES_NAMES";
 
-static if (HasVersion!"__alpha" || HasVersion!"__alpha__") {
+static if (HasVersion!"Alpha" || HasVersion!"Alpha") {
 enum	LED_COMPOSE =	2;
 enum LED_CAPS =	3;
 enum	LED_SCROLL =	4;
