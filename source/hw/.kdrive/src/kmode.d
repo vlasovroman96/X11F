@@ -26,7 +26,7 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 import hw.kdrive.src.kdrive;
-import externs.X11.Xdefs;
+import x11.Xdefs;
 
 
 enum MONITOR_TIMING_DEFAULT = 9;

@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.X11.Xdefs;
+//public import x11.Xdefs;
 import build.xlibre_server;
 
 public import include.xf86str;

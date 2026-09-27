@@ -83,7 +83,7 @@ enum MISC_H = 1;
 public import externs.X11.Xfuncproto;
 public import x11.Xmd;
 public import externs.X11.X;
-// public import externs.X11.Xdefs;
+// public import x11.Xdefs;
 public import externs.X11.Xprotostr;
 import include.dixstruct;
 

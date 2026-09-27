@@ -64,6 +64,13 @@ public import core.stdc.stdint;
  * being the way they currently are. So we're stuck with them this way,
  * which can be really inconvenient. :-(
  */
+ import core.sys.posix.sys.time;
+/* OS independent time value
+   XXX Should probably go in Xos.h */
+alias OSTimePtr = timeval**;
+
+
+alias BlockHandlerProcPtr = void function(void*, OSTimePtr, void*);
 
 public import core.stdc.string;
 static if (HasVersion!"__SCO__" || HasVersion!"__UNIXWARE__" || HasVersion!"__sun" || HasVersion!"Cygwin" || HasVersion!"_AIX" || HasVersion!"OSX" || HasVersion!"__FreeBSD__" || HasVersion!"__OpenBSD__") {

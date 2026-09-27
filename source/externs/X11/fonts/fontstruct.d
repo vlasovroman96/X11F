@@ -29,7 +29,7 @@ SOFTWARE.
 public import externs.X11.Xproto;
 public import externs.X11.fonts.font;
 public import externs.X11.Xfuncproto;
-public import externs.X11.Xdefs;
+public import x11.Xdefs;
 
 /*
  * This version of the server font data structure is only for describing

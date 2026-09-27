@@ -43,7 +43,7 @@ extern(C): __gshared:
 
  
 // //public import externs.X11.Xfuncproto;
-public import externs.X11.Xdefs;
+public import x11.Xdefs;
 public import x11.Xmd;
 
 enum NULL = cast(void *)null;

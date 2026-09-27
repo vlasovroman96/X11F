@@ -26,7 +26,7 @@ extern(C): __gshared:
 
  
 public import include.misync;
-import externs.X11.Xdefs;
+import x11.Xdefs;
 
 // void  SyncVerifyFence(SyncFence** ppFence, XID fid, ClientPtr client, Mask mode);
 

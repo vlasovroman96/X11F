@@ -24,10 +24,10 @@ extern(C): __gshared:
  */
 
  
-//public import externs.X11.Xdefs;
+//public import x11.Xdefs;
 // //public import externs.X11.Xfuncproto;
 import include.screenint;
-import externs.X11.Xdefs;
+import x11.Xdefs;
 import include.misync;
 
 
