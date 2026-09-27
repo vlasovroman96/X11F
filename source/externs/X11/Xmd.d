@@ -31,7 +31,7 @@ version = LONG64;				/* 32/64-bit architecture */
 } else static if (HasVersion!"_LP64" || HasVersion!"__LP64__" || 
      HasVersion!"Alpha" || 
      HasVersion!"IA64" || 
-     HasVersion!"__sparc64__" || 
+     HasVersion!"SPARC64" || 
      HasVersion!"__s390x__" || 
      HasVersion!"__amd64__" || HasVersion!"amd64" || 
      HasVersion!"__powerpc64__") {
