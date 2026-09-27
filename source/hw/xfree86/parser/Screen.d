@@ -67,7 +67,7 @@ import include.optionstr;
 import include.xf86Parser;
 import xf86tokens;
 import Configint;
-import externs.X11.Xmd;
+import x11.Xmd;
 import externs.X11.Xdefs;
 import include.misc;
 import Flags;

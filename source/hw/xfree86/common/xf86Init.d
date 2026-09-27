@@ -53,7 +53,7 @@ import os.inputthread;
 import externs.X11.extensions.dpmsconst;
 import Xext.dpms;
 //import externs.X11.X;
-////import externs.X11.Xmd;
+////import x11.Xmd;
 //import externs.X11.Xproto;
 //import externs.X11.Xatom;
 ////import externs.X11.extensions.XI;

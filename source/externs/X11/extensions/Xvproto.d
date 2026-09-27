@@ -50,7 +50,7 @@ SOFTWARE.
 **
 */
 
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 /* Symbols: These are undefined at the end of this file to restore the
    values they have in Xv.h */

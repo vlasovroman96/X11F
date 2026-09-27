@@ -63,7 +63,7 @@ enum X_DRI2GetParam =			13;
 enum DRI2_BufferSwapComplete =	0;
 enum DRI2_InvalidateBuffers =	1;
 
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 struct xDRI2Buffer {
     CARD32 attachment;

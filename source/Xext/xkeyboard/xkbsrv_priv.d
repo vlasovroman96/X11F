@@ -9,7 +9,7 @@ import core.stdc.config: c_long, c_ulong;
  */
  
 //public import externs.X11.Xdefs;
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 
 public import xkb.xkbrules_priv;
 

@@ -54,7 +54,7 @@ SOFTWARE.
  
 public import externs.X11.Xproto;
 public import externs.X11.X;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 
 /* make sure types have right sizes for protocol structures. */

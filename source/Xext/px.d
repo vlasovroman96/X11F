@@ -34,7 +34,7 @@ Equipment Corporation.
  
 public import build.dix_config;
 
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.extensions.panoramiXproto;
 
 public import include.scrnintstr; /* for screenInfo */

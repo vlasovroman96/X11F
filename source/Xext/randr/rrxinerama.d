@@ -73,7 +73,7 @@ extern(C): __gshared:
 import build.xlibre_server;
 import Xext.panoramiXsrv;
 
-//import externs.X11.Xmd;
+//import x11.Xmd;
 import externs.X11.extensions.panoramiXproto;
 
 import dix.dix_priv;

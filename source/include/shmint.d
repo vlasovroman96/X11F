@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 // //public import externs.X11.extensions.shmproto;
 
 public import include.screenint;

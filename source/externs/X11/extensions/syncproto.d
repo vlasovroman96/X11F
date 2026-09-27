@@ -53,7 +53,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
  
 public import externs.X11.extensions.syncconst;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 enum X_SyncInitialize =		0;
 enum X_SyncListSystemCounters =	1;

@@ -51,7 +51,7 @@ SOFTWARE.
 import build.xlibre_server;
 
 //import externs.X11.X;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 
 import dix.cursor_priv;
 import dix.dix_priv;

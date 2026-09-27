@@ -62,7 +62,7 @@ enum XAUTH_PROTO_MIT = "MIT-MAGIC-COOKIE-1";
 enum XAUTH_PROTO_XDM = "XDM-AUTHORIZATION-1";
 
 import externs.X11.X;
-import externs.X11.Xmd;
+import x11.Xmd;
 import externs.X11.Xdefs;
 
 alias FILE = core.stdc.stdio.FILE;

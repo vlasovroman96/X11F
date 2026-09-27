@@ -46,7 +46,7 @@ import core.stdc.errno;
 import core.stdc.stdio;
 import core.stdc.stdlib;
 //import externs.X11.X;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 
 import dix.dix_priv;
 import os.auth;

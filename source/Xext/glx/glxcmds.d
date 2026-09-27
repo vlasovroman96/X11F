@@ -78,9 +78,9 @@ alias __GLX_VENDPRIV_HDR_SIZE = sz_xGLXVendorPrivateReq;
 
 // //!! EDX: Duuuude...
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
-alias INT32 = externs.X11.Xmd.INT32;
+alias INT32 = x11.Xmd.INT32;
 
-// alias CARD32 = externs.X11.Xmd.CARD32;
+// alias CARD32 = x11.Xmd.CARD32;
 // alias BadLength = externs.X11.X.BadLength;
 // alias BadAlloc = externs.X11.X.BadAlloc;
 // alias BadMatch = externs.X11.X.BadMatch;
@@ -88,7 +88,7 @@ alias INT32 = externs.X11.Xmd.INT32;
 // alias Success = externs.X11.X.Success;
 // alias BadValue = externs.X11.X.BadValue;
 // alias BadRequest = externs.X11.X.BadRequest;
-// alias INT32 = externs.X11.Xmd.INT32;
+// alias INT32 = x11.Xmd.INT32;
 // alias BadImplementation = externs.X11.X.BadImplementation;
 // alias ZPixmap = externs.X11.X.ZPixmap;
 // alias IncludeInferiors = externs.X11.X.IncludeInferiors;

@@ -66,7 +66,7 @@ import externs.X11.Xproto;
 public import externs.X11.X;
 public import externs.X11.extensions.XI2;
 public import core.stdc.stdint;
-import externs.X11.Xmd;
+import x11.Xmd;
 
 /* make sure types have right sizes for protocol structures. */
 // alias Window =  uint;

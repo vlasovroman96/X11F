@@ -39,7 +39,7 @@ import build.dix_config;
 
 import core.stdc.stdio;
 import core.stdc.assert_;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 // //import externs.X11.extensions.recordproto;
 
 import dix.cursor_priv;

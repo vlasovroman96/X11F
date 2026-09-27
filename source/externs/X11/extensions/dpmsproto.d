@@ -32,7 +32,7 @@ Equipment Corporation.
 
  
 public import externs.X11.extensions.dpmsconst;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 import externs.X11.X;
 // alias XID = c_ulong;
 // alias 

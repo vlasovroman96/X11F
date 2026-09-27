@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 enum DRI3_NAME =			"DRI3";
 enum DRI3_MAJOR =			1;

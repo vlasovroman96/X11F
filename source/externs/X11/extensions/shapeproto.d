@@ -30,7 +30,7 @@ in this Software without prior written authorization from The Open Group.
  
 public import externs.X11.extensions.shapeconst;
 public import externs.X11.X;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 /*
  * Protocol requests constants and alignment values

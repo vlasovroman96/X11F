@@ -34,7 +34,7 @@ from Kaleb S. KEITHLEY
 /* THIS IS NOT AN X CONSORTIUM STANDARD OR AN X PROJECT TEAM SPECIFICATION */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 
 enum CLKFLAG_PROGRAMABLE =		1;

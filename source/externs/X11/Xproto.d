@@ -74,7 +74,7 @@ SOFTWARE.
 
 ******************************************************************/
 
-import externs.X11.Xmd;
+import x11.Xmd;
 import externs.X11.Xprotostr;
 
 /*

@@ -41,7 +41,7 @@ enum XCMiscMinorVersion =	1;
 
 enum XCMiscExtensionName =	"XC-MISC";
 
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 struct xXCMiscGetVersionReq {
     CARD8 reqType;	/* always XCMiscCode */

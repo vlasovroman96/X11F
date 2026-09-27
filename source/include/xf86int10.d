@@ -9,7 +9,7 @@ extern(C): __gshared:
  */
 
  
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 //public import externs.X11.Xdefs;
 public import include.xf86Pci;
 

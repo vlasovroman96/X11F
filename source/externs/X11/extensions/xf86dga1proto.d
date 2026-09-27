@@ -9,7 +9,7 @@ Copyright (c) 1995  XFree86 Inc.
 */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.Xdefs;
 // public import externs.X11.extensions.xf86dga1const;
 

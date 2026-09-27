@@ -16,7 +16,7 @@ import core.stdc.config: c_long, c_ulong;
  
 // public //import stdbool;
 public import core.stdc.stdint;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.Xdefs;
 
 enum STD_TIMINGS = 8;

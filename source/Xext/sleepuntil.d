@@ -35,7 +35,7 @@ import build.dix_config;
 
 import Xext.sleepuntil;
 //import externs.X11.X;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 import include.misc;
 import include.windowstr;
 import include.dixstruct;

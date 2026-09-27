@@ -25,7 +25,7 @@ extern(C): __gshared:
 
  
 //public import externs.X11.X;
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 
 import build.xlibre_server;
 public import include.present;

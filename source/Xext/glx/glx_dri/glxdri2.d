@@ -177,7 +177,7 @@ private void __glXDRIdrawableWaitGL(__GLXdrawable* drawable)
 
     copy_box(drawable, DRI2BufferFrontLeft, DRI2BufferFakeFrontLeft,
              0, 0, private_.width, private_.height);
-alias CARD32 = externs.X11.Xmd.CARD32;
+alias CARD32 = x11.Xmd.CARD32;
 }
 
 private void __glXdriSwapEvent(ClientPtr client, void* data, int type, CARD64 ust, CARD64 msc, CARD32 sbc)

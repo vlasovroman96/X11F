@@ -59,7 +59,7 @@ import core.stdc.string;
 import core.stdc.stdio;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 // //import externs.X11.extensions.syncproto;
 
 import dix.dix_priv;

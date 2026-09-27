@@ -1308,7 +1308,7 @@ Bool vgaHWInit(ScrnInfoPtr pScrnInfo, DisplayModePtr mode)
      * --  TSI @ UQV,  1998.08.21
      */
 
-alias CARD32 = externs.X11.Xmd.CARD32;
+alias CARD32 = x11.Xmd.CARD32;
 
 CARD32 vgaHWHBlankKGA(DisplayModePtr mode, vgaRegPtr regp, int nBits, uint Flags)
 {

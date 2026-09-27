@@ -52,7 +52,7 @@ import build.dix_config;
 
 import core.stdc.assert_;
 //import externs.X11.X;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 //import externs.X11.Xproto;
 import dix.dixfonts;
 

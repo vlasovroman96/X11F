@@ -11,7 +11,7 @@ enum XRES_MINOR_VERSION = 2;
 
 enum XRES_NAME = "X-Resource";
 
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 /* v1.0 */
 enum X_XResQueryVersion =            0;

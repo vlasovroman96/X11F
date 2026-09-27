@@ -72,7 +72,7 @@ version (Windows) {
 import core.stdc.stdio;
 import core.stdc.string;
 import os.Xtrans;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 import core.stdc.errno;
 static if (!HasVersion!"Windows") {
 import core.sys.posix.sys.uio;

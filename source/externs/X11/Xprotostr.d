@@ -48,7 +48,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
 ******************************************************************/
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 /* Used by PolySegment */
 

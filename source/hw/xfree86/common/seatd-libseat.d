@@ -29,7 +29,7 @@ extern(C): __gshared:
 
  
 public import externs.X11.Xdefs;
-import externs.X11.Xmd;
+import x11.Xmd;
 import include.misc;
 
 version = SEATD_LIBSEAT;

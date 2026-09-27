@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.extensions.render_;
 
 alias Window = CARD32;

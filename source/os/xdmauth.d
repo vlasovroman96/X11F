@@ -61,7 +61,7 @@ version (HASXDMAUTH) {
 private Bool authFromXDMCP;
 
 static if(XDMCP){
-//import externs.X11.Xmd;
+//import x11.Xmd;
 //import externs.X11.Xdmcp;
 
 /* XDM-AUTHENTICATION-1 */

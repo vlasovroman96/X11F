@@ -32,7 +32,7 @@ extern(C): __gshared:
 
  
 public import os.bug_priv;
-import externs.X11.Xmd;
+import x11.Xmd;
 public import fb.fballpriv;
 
 

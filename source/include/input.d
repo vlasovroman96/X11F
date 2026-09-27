@@ -53,7 +53,7 @@ public import include.xlibre_ptrtypes;
 
 public import include.misc;
 public import include.screenint;
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 //public import externs.X11.Xproto;
 public import core.stdc.stdint;
 public import include.window;             /* for WindowPtr */
