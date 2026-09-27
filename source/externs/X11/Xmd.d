@@ -34,7 +34,7 @@ version = LONG64;				/* 32/64-bit architecture */
      HasVersion!"SPARC64" || 
      HasVersion!"SystemZ" || 
      HasVersion!"X86_64" || 
-     HasVersion!"__powerpc64__") {
+     HasVersion!"PPC64") {
 static if (!HasVersion!"__ILP32__") { /* amd64-x32 is 32bit */
 version = LONG64;				/* 32/64-bit architecture */
 } /* !__ILP32__ */
