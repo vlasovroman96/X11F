@@ -926,7 +926,7 @@ private void CoreFocusOutNotifyPointerEvents(DeviceIntPtr dev, WindowPtr pwin_pa
         if (!(pwin_parent == P && inclusive))
             return;
 
-    if (exclude !is None && exclude != PointerRootWin &&
+    if (exclude !is null && exclude != PointerRootWin &&
         (WindowIsParent(exclude, P) || WindowIsParent(P, exclude)))
         return;
 
