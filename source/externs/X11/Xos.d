@@ -1,4 +1,4 @@
-module externs.X11.Xos;
+module x11.Xos;
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -39,7 +39,7 @@ in this Software without prior written authorization from The Open Group.
  */
 
  
-public import externs.X11.Xosdefs;
+public import x11.Xosdefs;
 
 /*
  * Get major data types (esp. caddr_t)

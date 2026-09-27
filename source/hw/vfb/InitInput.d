@@ -33,7 +33,7 @@ import build.dix_config;
 
 //import externs.X11.X;
 //import externs.X11.Xproto;
-// //import externs.X11.Xos;
+// //import x11.Xos;
 //import externs.X11.keysym;
 
 import dix.dix_priv;

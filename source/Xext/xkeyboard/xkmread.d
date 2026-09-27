@@ -30,7 +30,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import core.stdc.stdio;
-// //import externs.X11.Xos;
+// //import x11.Xos;
 // //import externs.X11.Xfuncs;
 //import externs.X11.X;
 //import externs.X11.Xproto;

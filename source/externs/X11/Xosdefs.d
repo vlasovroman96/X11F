@@ -1,4 +1,4 @@
-module externs.X11.Xosdefs;
+module x11.Xosdefs;
 @nogc nothrow:
 extern(C): __gshared:
 

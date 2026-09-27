@@ -37,7 +37,7 @@ import core.stdc.ctype;
 import core.sys.posix.unistd;
 
 //import externs.X11.X;
-// //import externs.X11.Xos;
+// //import x11.Xos;
 //import externs.X11.Xproto;
 //import externs.X11.keysym;
 //import externs.X11.extensions.XI;

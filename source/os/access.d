@@ -183,7 +183,7 @@ import core.sys.posix.libgen;
 }
 
 version = X_INCLUDE_NETDB_H;
-// import externs.X11.Xos_r;
+// import x11.Xos_r;
 
 import os.auth;
 import os.client_priv;

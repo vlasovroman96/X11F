@@ -16,7 +16,7 @@ version (PRIVATES_H) {} else {
 enum PRIVATES_H = 1;
 
 //public import x11.Xdefs;
-// //public import externs.X11.Xosdefs;
+// //public import x11.Xosdefs;
 // //public import externs.X11.Xfuncproto;
 public import core.stdc.assert_;
 public import include.misc;

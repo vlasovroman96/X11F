@@ -33,7 +33,7 @@ import os.WaitFor;
 import os.Xtransutil;
 
 
-// //import externs.X11.Xos;
+// //import x11.Xos;
 
 static if (!HasVersion!"Windows") {
 import externs.sys.param;
@@ -68,7 +68,7 @@ version (XDMCP_NO_IPV6) {
 
 
 version = X_INCLUDE_NETDB_H;
-//import externs.X11.Xos_r;
+//import x11.Xos_r;
 
 private const(char)* defaultDisplayClass = "MIT-unspecified";
 

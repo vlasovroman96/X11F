@@ -79,7 +79,7 @@ enum MISC_H = 1;
  *
  */
 
-// public import externs.X11.Xosdefs;
+// public import x11.Xosdefs;
 public import externs.X11.Xfuncproto;
 public import x11.Xmd;
 public import externs.X11.X;
