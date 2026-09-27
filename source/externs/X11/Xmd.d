@@ -11,31 +11,9 @@ extern(C): __gshared:
  */
 
 /*
- *  Xmd.h: MACHINE DEPENDENT DECLARATIONS.
+ * The D language explicitly defines primitive type sizes.
+ * No architecture-specific type detection is needed.
  */
-
-/*
- * Special per-machine configuration flags.
- */
-// static if (HasVersion!"__sun" && HasVersion!"__SVR4") {
-// public import sys/isa_defs; /* Solaris: defines _LP64 if necessary */
-// }
-
-/*
- * Definition of macro used to set constants for size of network structures;
- * machines with preprocessors that can't handle all of the sz_ symbols
- * can define this macro to be sizeof(x) if and only if their compiler doesn't
- * pad out structures (esp. the xTextElt structure which contains only two
- * one-byte fields).  Network structures should always define sz_symbols.
- *
- * The sz_ prefix is used instead of something more descriptive so that the
- * symbols are no more than 32 characters long (which causes problems for some
- * compilers and preprocessors).
- *
- * The extra indirection is to get macro arguments to expand correctly before
- * the concatenation, rather than afterward.
- */
-
 alias RESTYPE = uint; 
 
 alias INT64 = long;
