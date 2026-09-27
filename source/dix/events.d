@@ -172,7 +172,7 @@ import os.io;
 import dix.inpututils;
 import include.xkbstr;
 import dix.extension;
-
+import dix.screen_hooks;
 
 enum string _XkbWantsDetectableAutoRepeat(string c) = `
         ((` ~ c ~ `).xkbClientFlags&XkbPCF_DetectableAutoRepeatMask)`;
@@ -978,7 +978,8 @@ else  {
     pScreen = pSprite.hotPhys.pScreen;
 }
 
-        (*pScreen.DisplayCursor) (pDev, pScreen, cursor);
+        // (*pScreen.DisplayCursor) (pDev, pScreen, cursor);
+        dixScreenRaiseDisplayCursor(pScreen, pDev, cursor);
         FreeCursor(pSprite.current, cast(Cursor) 0);
         pSprite.current = RefCursor(cursor);
     }
@@ -2998,7 +2999,7 @@ WindowPtr XYToWindow(SpritePtr pSprite, int x, int y)
 BOOL ActivateFocusInGrab(DeviceIntPtr dev, WindowPtr old, WindowPtr win)
 {
     BOOL rc = FALSE;
-    InternalEvent event = void;
+    InternalEvent event;
 
     if (dev.deviceGrab.grab) {
         if (!dev.deviceGrab.fromPassiveGrab ||
