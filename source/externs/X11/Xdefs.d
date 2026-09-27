@@ -1,6 +1,5 @@
 module x11.Xdefs;
-@nogc nothrow:
-extern(C): __gshared:
+
 /*
  * Copyright 2016, Roman Vlasov
  * Copyright (c) 1999  The XFree86 Project Inc.
@@ -11,7 +10,6 @@ extern(C): __gshared:
 /**
  ** Types definitions shared between server and clients
  **/
-
  
 version (_XSERVER64) 
 {
@@ -32,18 +30,6 @@ else {
 }
 
 alias Bool = int;
- 
 alias Font = XID;
-
 alias AccContext = FSID;
-
-extern struct timeval;
-
-/* OS independent time value
-   XXX Should probably go in Xos.h */
-alias OSTimePtr = timeval**;
-
-
-alias BlockHandlerProcPtr = void function(void*, OSTimePtr, void*);
-
 
