@@ -2,7 +2,6 @@ module x11.Xmd;
 @nogc nothrow:
 extern(C): __gshared:
 
-import core.stdc.config: c_long, c_ulong;
 /*
  * Copyright 1987, 1998 The Open Group
  * Copyright 1987 Digital Equipment Corporation
