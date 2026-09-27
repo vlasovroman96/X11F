@@ -1,7 +1,6 @@
 module x11.Xdefs;
 @nogc nothrow:
 extern(C): __gshared:
-import core.stdc.config: c_long, c_ulong;
 /*
  * Copyright 2016, Roman Vlasov
  * Copyright (c) 1999  The XFree86 Project Inc.
@@ -14,65 +13,37 @@ import core.stdc.config: c_long, c_ulong;
  **/
 
  
-version (_XSERVER64) {
-public import x11.Xmd;
-import std.path;
+version (_XSERVER64) 
+{
+   import x11.Xmd;
+
+   alias Atom = CARD32;
+   alias XID = CARD32;
+   alias Mask = CARD32;
+   alias FSID = CARD32;
+}
+else {
+   import core.stdc.config: c_long, c_ulong;
+
+   alias Atom = c_ulong;
+   alias XID = c_ulong;
+   alias Mask = c_ulong;
+   alias FSID = c_ulong;
 }
 
 import externs.X11.fonts.fontstruct;
-
- 
-version (_XSERVER64) {} else {
-alias Atom = c_ulong;
-} version (_XSERVER64) {
-alias Atom = CARD32;
-}
-
 
 version (Bool) {} else {
  
 alias Bool = int;
 
 }
-
  
 alias pointer = void*;
-
-
-
-
-
-
- 
-version (_XSERVER64) {} else {
-alias XID = c_ulong;
-} version (_XSERVER64) {
-alias XID = CARD32;
-}
-
-
- 
-version (_XSERVER64) {} else {
-alias Mask = c_ulong;
-} version (_XSERVER64) {
-alias Mask = CARD32;
-}
-
  
 alias FontPtr = _Font*; /* also in fonts/include/font.h */
-
-
  
 alias Font = XID;
-
-
-version (_XTYPEDEF_FSID) {} else {
-version (_XSERVER64) {} else {
-alias FSID = c_ulong;
-} version (_XSERVER64) {
-alias FSID = CARD32;
-}
-}
 
 alias AccContext = FSID;
 
