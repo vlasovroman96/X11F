@@ -79,10 +79,11 @@ import os.log;
 import externs.strings;
 import std.conv;
 import externs.gnu;
+import x11.Xosdefs;
 import xf86Init;
 
 /* For xf86GetClocks */
-static if (HasVersion!"CSRG_BASED" || HasVersion!"__GNU__") {
+static if (CSRG_BASED || HasVersion!"__GNU__") {
 version = HAS_SETPRIORITY;
 import core.sys.posix.sys.resource;
 }

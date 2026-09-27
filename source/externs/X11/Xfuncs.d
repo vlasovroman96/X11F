@@ -32,7 +32,7 @@ in this Software without prior written authorization from The Open Group.
  */
 
  
-public import externs.X11.Xosdefs;
+public import x11.Xosdefs;
 
 /* the old Xfuncs.h, for pre-R6 */
 static if (!(HasVersion!"XFree86LOADER" && HasVersion!"IN_MODULE")) {

@@ -37,7 +37,7 @@ import core.stdc.stdio;
 import core.sys.posix.unistd;
 
 version = X_INCLUDE_NETDB_H;
-// //import externs.X11.Xos_r;
+// //import x11.Xos_r;
 
 import core.stdc.errno;
 // import Xext.dpms;

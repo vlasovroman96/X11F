@@ -52,7 +52,7 @@ public import externs.X11.X;
 
 /* applications should not depend on these two headers being included! */
 public import externs.X11.Xfuncproto;
-public import externs.X11.Xosdefs;
+public import x11.Xosdefs;
 
 version (X_WCHAR) {} else {
 public import core.stdc.stddef;

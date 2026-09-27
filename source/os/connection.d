@@ -90,6 +90,7 @@ import core.sys.posix.arpa.inet;
 import os.access;
 import externs.attrs;
 import os.io;
+import x11.Xosdefs;
 
 alias sockaddr_in = os.access.sockaddr_in;
 
@@ -98,7 +99,7 @@ import core.sys.posix.sys.socket;
 
 import externs.netinet.in_;
 static import externs.arpa.inet;
-version (CSRG_BASED) {
+static if (CSRG_BASED) {
 import sys.param;
 }
 import externs.netinet.tcp;

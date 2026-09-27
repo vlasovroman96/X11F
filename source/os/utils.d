@@ -79,7 +79,7 @@ ulong GetTickCount(){}
 static if (HasVersion!"Windows" && !HasVersion!"Cygwin") {
 //import externs.X11.Xwinsock;
 }
-// //import externs.X11.Xos;
+// //import x11.Xos;
 import core.stdc.stdio;
 import core.stdc.time;
 static if (!HasVersion!"Windows" || !HasVersion!"Windows") {
@@ -157,7 +157,7 @@ import core.stdc.stdio;
 import os.connection;
 
 version = X_INCLUDE_NETDB_H;
-// //import externs.X11.Xos_r;
+// //import x11.Xos_r;
 
 import core.stdc.errno;
 import Xext.dpms;

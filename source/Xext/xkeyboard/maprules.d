@@ -35,11 +35,11 @@ import core.stdc.stdlib;
 
 version = X_INCLUDE_STRING_H;
 version = XOS_USE_NO_LOCKING;
-// //import externs.X11.Xos_r;
+// //import x11.Xos_r;
 
 //import externs.X11.Xproto;
 //import externs.X11.X;
-import externs.X11.Xos_r;
+import x11.Xos_r;
 // //import externs.X11.Xfuncs;
 //import externs.X11.Xatom;
 import externs.X11.extensions.XKB;

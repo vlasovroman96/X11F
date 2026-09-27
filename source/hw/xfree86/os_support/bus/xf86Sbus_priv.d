@@ -38,7 +38,7 @@ version (linux) {
 // public import sys/openpromio;
 } else static if (HasVersion!"__OpenBSD__" && HasVersion!"SPARC64") {
 /* XXX */
-} else version (CSRG_BASED) {
+} else static if(CSRG_BASED) {
 version (__FreeBSD__) {
 public import core.sys.posix.sys.types;
 // public import sys/fbio;

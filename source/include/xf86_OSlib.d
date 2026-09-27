@@ -78,8 +78,9 @@ private template HasVersion(string versionId) {
  */
 
  
-// //public import externs.X11.Xos;
+// //public import x11.Xos;
 // //public import externs.X11.Xfuncproto;
+import x11.Xosdefs;
 
 public import core.stdc.stdio;
 public import core.stdc.ctype;
@@ -141,7 +142,7 @@ version = CLEARDTR_SUPPORT;
 /* System is BSD-like                                                     */
 /**************************************************************************/
 
-version (CSRG_BASED) {
+static if (CSRG_BASED) {
 public import core.sys.posix.sys.ioctl;
 public import core.stdc.signal;
 

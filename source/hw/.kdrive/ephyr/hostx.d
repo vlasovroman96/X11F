@@ -60,7 +60,7 @@ import dix.input_priv;
 import hw.kdrive.ephyr.hostx;
 
 version = X_INCLUDE_STRING_H;
-// //import externs.X11.Xos_r;
+// //import x11.Xos_r;
 //import externs.X11.keysym;
 import externs.xcb.xcb;
 import externs.xcb.xproto;

@@ -38,7 +38,7 @@ version (Windows) {
 import core.stdc.stdio;
 //import externs.X11.X;
 //import externs.X11.Xproto;
-// //import externs.X11.Xos;
+// //import x11.Xos;
 
 import dix.colormap_priv;
 import dix.dix_priv;

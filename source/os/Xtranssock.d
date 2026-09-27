@@ -134,7 +134,7 @@ import externs.arpa.inet;
 static if(UNIXCONN){
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_NO_LOCKING;
-import externs.X11.Xos_r;
+import x11.Xos_r;
 }
 
 version (NO_TCP_H) {} else {
@@ -169,7 +169,7 @@ enum EWOULDBLOCK = WSAEWOULDBLOCK;
 enum EINTR = WSAEINTR;
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_MTSAFE_NETDBAPI;
-//import externs.X11.Xos_r;
+//import x11.Xos_r;
 // import core.sys.posix.netinet.tcp;
 } /* WIN32 */
 import build.dix_config;

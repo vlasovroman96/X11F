@@ -66,7 +66,7 @@ version (Posix) {
 version (HAVE_DLFCN_H) {
 
 import core.sys.posix.dlfcn;
-//import externs.X11.Xos;
+//import x11.Xos;
 import include.xf86Module;
 
 } else {

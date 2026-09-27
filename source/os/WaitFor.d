@@ -63,7 +63,7 @@ import core.stdc.stdio;
 version (Windows) {
 //import externs.X11.Xwinsock;
 }
-// //import externs.X11.Xos;            /* for strings, fcntl, time */
+// //import x11.Xos;            /* for strings, fcntl, time */
 //import externs.X11.X;
 
 import dix.dix_priv;

@@ -50,6 +50,7 @@ import include.xf86Parser;
 import include.xf86Privstr;
 // import include.xlibre_ptrtypes;
 // import include.xf86;
+import x11.Xosdefs;
 
 
 /* Globals that video drivers may access */
@@ -122,7 +123,7 @@ version(__sun) {
     dontZap = FALSE;
     dontZoom = FALSE;
     currentScreen = null;
-version(CSRG_BASED) {
+static if(CSRG_BASED) {
     .consType = -1;
 }
     allowMouseOpenFail = FALSE;
