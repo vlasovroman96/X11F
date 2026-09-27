@@ -10,7 +10,7 @@ import std.system;
  */
 
 //#pragma once
-// //import externs.X11.Xarch;
+// //import x11.Xarch;
 // //import externs.X11.Xmd;
 
 import std.system : Endian;

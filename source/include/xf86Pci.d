@@ -105,7 +105,7 @@ extern(C): __gshared:
 
 version (_XF86PCI_H) {} else {
 enum _XF86PCI_H = 1;
-// //public import externs.X11.Xarch;
+// //public import x11.Xarch;
 // //public import externs.X11.Xfuncproto;
 public import include.misc;
 public import externs.pciaccess;
