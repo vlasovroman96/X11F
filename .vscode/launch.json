@@ -2,13 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "FeniX — GDB",
+            "name": "Xenia — GDB",
             "type": "cppdbg",
             "request": "launch",
 
-            "program": "/home/roman/fenix/x12",
+            "program": "/home/roman/Xenia/Xenia",
             "args": ["-retro", "-ac"],
-            "cwd": "/home/roman/fenix",
+            "cwd": "/home/roman/Xenia",
 
             "MIMode": "gdb",
             "miDebuggerPath": "/usr/bin/gdb",
@@ -21,7 +21,7 @@
                 },
                 {
                     "description": "Set remote executable",
-                    "text": "set remote exec-file /home/roman/fenix/fenix",
+                    "text": "set remote exec-file /home/roman/Xenia/Xenia",
                     "ignoreFailures": false
                 },
                 {

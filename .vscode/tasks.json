@@ -2,12 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Start x12 VM and gdbserver",
+            "label": "Start Xenia VM and gdbserver",
             "type": "shell",
             "command": "bash",
             "args": [
                 "-c",
-                "VBoxManage startvm 'x12-vm' --type headless >/dev/null 2>&1 || true; while ! nc -z 127.0.0.1 2345 2>/dev/null; do sleep 1; done; ssh -o BatchMode=yes -o StrictHostKeyChecking=no vm 'sudo -n gdbserver :2345 /home/roman/fenix/x12'"
+                "VBoxManage startvm 'Xenia-vm' --type headless >/dev/null 2>&1 || true; while ! nc -z 127.0.0.1 2345 2>/dev/null; do sleep 1; done; ssh -o BatchMode=yes -o StrictHostKeyChecking=no vm 'sudo -n gdbserver :2345 /home/roman/Xenia/Xenia'"
             ],
             "isBackground": true,
             "problemMatcher": {

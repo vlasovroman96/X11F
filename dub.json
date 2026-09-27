@@ -6,7 +6,7 @@
 		"stuff previously worked on Xlibre/Xorg projects"
 	],
 	"copyright": "Copyright © 2026, Roman Vlasov",
-	"name": "fenix",
+	"name": "Xenia",
 	"dependencies": {
 	},
 	"targetType": "executable",
@@ -29,7 +29,7 @@
     "-P-D__attribute__(x)=",
 	"-P-D__alignof__(x)=8",
 	"-P=-D__kernel_size_t=size_t",
-	"-deps=/tmp/fenix.deps"
+	"-deps=/tmp/Xenia.deps"
     ],
 	"excludedSourceFiles": [
 		"source/hw/kdrive/*",
