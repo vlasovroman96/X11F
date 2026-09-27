@@ -42,13 +42,6 @@ enum string _SIZEOF(string x) = `sz_##x`;
 enum string SIZEOF(string x) = `_SIZEOF(` ~ x ~ `)`;
 
 alias RESTYPE = uint; 
-/*
- * Bitfield suffixes for the protocol structure elements, if you
- * need them.  Note that bitfields are not guaranteed to be signed
- * (or even unsigned) according to ANSI C.
- */
-version = B32; /* bitfield not needed on architectures with native 32-bit type */
-version = B16; /* bitfield not needed on architectures with native 16-bit type */
 
 alias INT64 = long;
 alias INT32 = int;
