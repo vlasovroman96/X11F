@@ -36,7 +36,7 @@ extern(C): __gshared:
  
 public import externs.X11.extensions.dbe;
 public import externs.X11.Xdefs;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 /* Request values used in (S)ProcDbeDispatch() */
 enum X_DbeGetVersion =                 0;

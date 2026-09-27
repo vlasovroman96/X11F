@@ -35,7 +35,7 @@ extern(C): __gshared:
 //public import externs.X11.X;
 //public import externs.X11.Xproto;
 import build.dix_config;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import include.misc;
 public import include.dixstruct;
 public import include.pixmapstr;
@@ -98,7 +98,7 @@ alias glx_func_ptr = void function();
 alias glx_gpa_proc = glx_func_ptr function(const(char)*);
 // void __glXsetGetProcAddress(glx_gpa_proc get_proc_address);
 // void* __glGetProcAddress(const(char)*);
-alias CARD32 = externs.X11.Xmd.CARD32;
+alias CARD32 = x11.Xmd.CARD32;
 
 void __glXsendSwapEvent(__GLXdrawable* drawable, int type, CARD64 ust, CARD64 msc, CARD32 sbc);
 

@@ -25,7 +25,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.extensions.xfixesproto;
 public import externs.X11.extensions.damagewire;
 public import externs.X11.Xprotostr;

@@ -71,7 +71,7 @@ import std.conv;
 public import os.utils;
 
 //public import externs.X11.X;
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 //public import externs.X11.Xdefs;
 
 /*

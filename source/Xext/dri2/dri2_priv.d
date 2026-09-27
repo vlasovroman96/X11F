@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 public import Xext.dri2.dri2;
-import externs.X11.Xmd;
+import x11.Xmd;
 import externs.X11.Xdefs;
 
 

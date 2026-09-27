@@ -34,7 +34,7 @@ extern(C): __gshared:
  *****************************************************************************/
 
  
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 // //public import externs.X11.extensions.dbeproto;
 
 public import include.windowstr;

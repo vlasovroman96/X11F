@@ -28,7 +28,7 @@ from The Open Group.
 */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.extensions.secur;
 
 enum X_SecurityQueryVersion =		0;

@@ -31,7 +31,7 @@ authorization from The XFree86 Project Inc..
 
  
 version (_XSERVER64) {
-public import externs.X11.Xmd;
+public import x11.Xmd;
 import std.path;
 }
 

@@ -76,7 +76,7 @@ alias Atom = c_ulong;		/* Also in Xdefs.h */
 alias VisualID = c_ulong;
 alias Time = c_ulong;
 } version (_XSERVER64) {
-public import externs.X11.Xmd;
+public import x11.Xmd;
  
 alias XID = CARD32;
 

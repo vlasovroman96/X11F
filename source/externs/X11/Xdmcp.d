@@ -18,7 +18,7 @@ extern(C): __gshared:
 
 
 import build.xlibre_server;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 import core.sys.posix.netinet.in_;
 public import externs.X11.Xfuncproto;
 import std.compiler;

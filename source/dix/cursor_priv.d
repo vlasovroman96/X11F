@@ -9,7 +9,7 @@ extern(C): __gshared:
 // //public import externs.X11.fonts.font;
 //public import externs.X11.X;
 //public import externs.X11.Xdefs;
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 
 public import dix.screenint_priv;
 public import include.cursor;

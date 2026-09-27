@@ -87,7 +87,7 @@ Author:  Adobe Systems Incorporated
 import build.dix_config;
 
 //import externs.X11.X;
-//import externs.X11.Xmd;
+//import x11.Xmd;
 
 import dix.callback_priv;
 import dix.client_priv;

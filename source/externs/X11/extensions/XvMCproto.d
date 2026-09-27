@@ -2,7 +2,7 @@ module externs.X11.extensions.XvMCproto;
 @nogc nothrow:
 extern(C): __gshared:
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 enum xvmc_QueryVersion =		0;
 enum xvmc_ListSurfaceTypes =		1;

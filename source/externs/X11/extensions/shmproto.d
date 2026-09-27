@@ -31,7 +31,7 @@ in this Software without prior written authorization from The Open Group.
 
  
 public import externs.X11.extensions.shm;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 alias ShmSeg = CARD32;
 alias Drawable = CARD32;

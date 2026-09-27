@@ -28,7 +28,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ********************************************************/
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.Xfuncproto;
 public import externs.X11.extensions.XKB;
 

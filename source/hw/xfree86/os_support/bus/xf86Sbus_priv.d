@@ -36,7 +36,7 @@ version (linux) {
 } else version (SVR4) {
 // public import sys/fbio;
 // public import sys/openpromio;
-} else static if (HasVersion!"__OpenBSD__" && HasVersion!"__sparc64__") {
+} else static if (HasVersion!"__OpenBSD__" && HasVersion!"SPARC64") {
 /* XXX */
 } else version (CSRG_BASED) {
 version (__FreeBSD__) {

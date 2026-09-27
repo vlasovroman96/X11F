@@ -33,7 +33,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-import externs.X11.Xmd;
+import x11.Xmd;
 // import externs.gl;
 import glx.glxserver;
 import externs.glxproto;

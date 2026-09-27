@@ -35,7 +35,7 @@ extern(C): __gshared:
 
 public import externs.c_asm.vm86;
 import externs.X11.Xdefs;
-import externs.X11.Xmd;
+import x11.Xmd;
 
 
 // enum string CPU_R(string type,string name,string num) = `

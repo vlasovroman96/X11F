@@ -30,7 +30,7 @@ import build.xorg_config;
 import core.stdc.errno;
 import core.sys.posix.sys.stat;
 //import externs.X11.X;
-////import externs.X11.Xmd;
+////import x11.Xmd;
 
 import os.cmdline;
 import os.osdep;

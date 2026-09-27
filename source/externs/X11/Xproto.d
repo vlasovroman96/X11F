@@ -74,8 +74,16 @@ SOFTWARE.
 
 ******************************************************************/
 
-import externs.X11.Xmd;
+import x11.Xmd;
 import externs.X11.Xprotostr;
+
+/*
+ * Definition of template to get constant wire size of network structures;
+ * Network structures should always define sz_symbols.
+ */
+template SIZEOF(alias sym) {
+     alias SIZEOF = mixin("sz_" ~ sym.stringof);    
+}
 
 /*
  * Define constants for the sizes of the network packets.  The sz_ prefix is

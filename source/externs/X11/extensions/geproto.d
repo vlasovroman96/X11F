@@ -30,7 +30,7 @@ extern(C): __gshared:
  
 public import externs.X11.Xproto;
 public import externs.X11.X;
-import externs.X11.Xmd;
+import x11.Xmd;
 public import externs.X11.extensions.ge;
 
 

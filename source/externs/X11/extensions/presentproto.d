@@ -27,7 +27,7 @@ extern(C): __gshared:
 public import externs.X11.extensions.presenttokens;
 public import externs.X11.extensions.dri3proto;
 public import externs.X11.Xdefs;
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 alias Window = CARD32;
 alias Pixmap = CARD32;

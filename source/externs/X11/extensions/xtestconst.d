@@ -27,7 +27,7 @@ in this Software without prior written authorization from The Open Group.
 
 */
 
-import externs.X11.Xmd;
+import x11.Xmd;
 import externs.X11.X;
 
  

@@ -54,7 +54,7 @@ import externs.gnu;
 
 private Bool ExtendedEnabled = FALSE;
 
-version (__ia64__) {
+version (__IA64__) {
 
 import include.compiler;
 import sys.io;
@@ -120,8 +120,8 @@ private void hwDisableIO()
     ioBase = null;
 }
 
-} else static if (HasVersion!"__i386__" || HasVersion!"X86_64" || HasVersion!"__ia64__" || 
-      HasVersion!"__alpha__") {
+} else static if (HasVersion!"__i386__" || HasVersion!"X86_64" || 
+      HasVersion!"Alpha") {
 
 private Bool hwEnableIO()
 {
@@ -147,7 +147,7 @@ private Bool hwEnableIO()
         }
     }
 
-static if (!HasVersion!"__alpha__") {
+static if (!HasVersion!"Alpha") {
     target[4] = '\0';
 
     /* trap access to the keyboard controller(s) and timer chip(s) */

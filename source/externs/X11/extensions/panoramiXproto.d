@@ -29,7 +29,7 @@ Equipment Corporation.
 /* THIS IS NOT AN X PROJECT TEAM SPECIFICATION */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 enum PANORAMIX_MAJOR_VERSION =         1       /* current version number */;
 enum PANORAMIX_MINOR_VERSION =         1;

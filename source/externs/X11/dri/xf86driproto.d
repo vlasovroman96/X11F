@@ -39,7 +39,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
  
 // #include "xf86dri.h"
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 enum XF86DRINAME = "XFree86-DRI";
 

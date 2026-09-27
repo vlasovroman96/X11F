@@ -317,7 +317,7 @@ static if (HasVersion!"__FreeBSD__" || HasVersion!"__DragonFly__") {
 }
 
     /* Fallback to platform default hardware */
-static if (HasVersion!"__i386__" || HasVersion!"__amd64__" || HasVersion!"__GNU__") {
+static if (HasVersion!"__i386__" || HasVersion!"X86_64"|| HasVersion!"__GNU__") {
     xf86AddMatchedDriver(md, "vesa");
 } else static if (HasVersion!"__sparc__" && !HasVersion!"__sun") {
     xf86AddMatchedDriver(md, "sunffb");

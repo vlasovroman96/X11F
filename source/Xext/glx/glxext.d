@@ -110,7 +110,7 @@ private int glxBlockClients;
 import Xext.glx.fix;
 
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
-alias CARD32 = externs.X11.Xmd.CARD32;
+alias CARD32 = x11.Xmd.CARD32;
 alias BadLength = externs.X11.X.BadLength;
 alias BadAlloc = externs.X11.X.BadAlloc;
 alias BadMatch = externs.X11.X.BadMatch;
@@ -118,7 +118,7 @@ alias None = externs.X11.X.None;
 alias Success = externs.X11.X.Success;
 alias BadValue = externs.X11.X.BadValue;
 alias BadRequest = externs.X11.X.BadRequest;
-alias INT32 = externs.X11.Xmd.INT32;
+alias INT32 = x11.Xmd.INT32;
 alias BadImplementation = externs.X11.X.BadImplementation;
 alias TrueColor = externs.X11.X.TrueColor;
 
@@ -462,7 +462,7 @@ private int xorgGlxThunkRequest(ClientPtr client)
 
     return ret;
 }
-// alias CARD32 = externs.X11.Xmd.CARD32;
+// alias CARD32 = x11.Xmd.CARD32;
 
 private GlxServerDispatchProc xorgGlxGetDispatchAddress(CARD8 minorOpcode, CARD32 vendorCode)
 {

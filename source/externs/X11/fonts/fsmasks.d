@@ -58,7 +58,7 @@ in this Software without prior written authorization from The Open Group.
  */
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 
 /* font format macros */
 enum BitmapFormatByteOrderMask =       (1L << 0);

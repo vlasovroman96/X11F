@@ -10,7 +10,7 @@ public import externs.epoxydefs;
 
 
 import externs.X11.X;
-import externs.X11.Xmd;
+import x11.Xmd;
 
 import core.stdc.stdint;
 import glx.glxdrawable;
@@ -19,8 +19,8 @@ public alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 public alias LSBFirst = externs.X11.X.LSBFirst;
 
 
-public alias CARD32 = externs.X11.Xmd.CARD32;
-public alias INT32 = externs.X11.Xmd.INT32;
+public alias CARD32 = x11.Xmd.CARD32;
+public alias INT32 = x11.Xmd.INT32;
 public alias BadLength = externs.X11.X.BadLength;
 public alias BadAlloc = externs.X11.X.BadAlloc;
 public alias BadMatch = externs.X11.X.BadMatch;
@@ -104,7 +104,7 @@ public alias GXset = externs.X11.X.GXset;
 // public alias Success = externs.X11.X.Success;
 public alias BadValue = externs.X11.X.BadValue;
 public alias BadRequest = externs.X11.X.BadRequest;
-// public alias INT32 = externs.X11.Xmd.INT32;
+// public alias INT32 = x11.Xmd.INT32;
 public alias BadImplementation = externs.X11.X.BadImplementation;
 // public alias ZPixmap = externs.X11.X.ZPixmap;
 public alias IncludeInferiors = externs.X11.X.IncludeInferiors;

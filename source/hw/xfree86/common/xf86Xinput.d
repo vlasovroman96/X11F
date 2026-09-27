@@ -53,7 +53,7 @@ import build.xorg_config;
 
 import core.stdc.string;             /* InputClassMatches */
 // ////import externs.X11.Xfuncproto;
-////import externs.X11.Xmd;
+////import x11.Xmd;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
 import externs.X11.Xatom;

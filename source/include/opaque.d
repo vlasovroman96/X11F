@@ -30,7 +30,7 @@ from The Open Group.
 */
 
  
-//public import externs.X11.Xmd;
+//public import x11.Xmd;
 
 public import include.globals;
 

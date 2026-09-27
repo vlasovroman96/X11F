@@ -30,7 +30,7 @@ void xf86SlowBcopy(ubyte* src, ubyte* dst, int len)
         *dst++ = *src++;
 }
 
-version (__alpha__) {
+version (Alpha) {
 
 version (linux) {
 

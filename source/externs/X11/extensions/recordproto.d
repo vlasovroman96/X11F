@@ -22,7 +22,7 @@ extern(C): __gshared:
  **************************************************************************/
 
  
-public import externs.X11.Xmd;
+public import x11.Xmd;
 public import externs.X11.extensions.recordconst;
 
 /* only difference between 1.12 and 1.13 is byte order of device events,

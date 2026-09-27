@@ -1999,7 +1999,7 @@ private void DRISpinLockTimeout(drmLock* lock, int val, c_ulong timeout)
 {
     int count = 10000;
 
-static if (!HasVersion!"__alpha__" && !HasVersion!"__powerpc__") {
+static if (!HasVersion!"Alpha" && !HasVersion!"__powerpc__") {
     char ret = void;
 } else {
     int ret = void;

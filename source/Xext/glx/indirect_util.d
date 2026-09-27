@@ -29,7 +29,7 @@ import build.dix_config;
 
 import core.stdc.inttypes;
 import core.stdc.string;
-//import externs.X11.Xmd; // needs to be before glxproto.h
+//import x11.Xmd; // needs to be before glxproto.h
 // import externs.gl;
 import externs.glxproto;
 
@@ -162,7 +162,7 @@ void __glXSendReply(ClientPtr client, const(void)* data, size_t elements, size_t
  * This function assumes that values stored in \c data will be byte-swapped
  * by the caller if necessary.
  */
-alias CARD32 = externs.X11.Xmd.CARD32;
+alias CARD32 = x11.Xmd.CARD32;
 
 void __glXSendReplySwap(ClientPtr client, const(void)* data, size_t elements, size_t element_size, GLboolean always_array, CARD32 retval)
 {

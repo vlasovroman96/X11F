@@ -116,7 +116,7 @@ import hw.xfree86.loader.loader;
 import randr.randr;
 import xf86Globals;
 
-alias CARD32 = externs.X11.Xmd.CARD32;
+alias CARD32 = x11.Xmd.CARD32;
 
 alias SetupFnPtr = extern(C) Bool function(ScreenPtr) @nogc nothrow;
 alias AddFnPtr = extern(C) Bool function(ScreenPtr, PixmapPtr, ShadowUpdateProc, ShadowWindowProc,
