@@ -24,22 +24,6 @@ import core.stdc.config: c_long, c_ulong;
 // public import sys/isa_defs; /* Solaris: defines _LP64 if necessary */
 // }
 
-version (__SIZEOF_LONG__) {
-// static if (__SIZEOF_LONG__ == 8) {
-version = LONG64;				/* 32/64-bit architecture */
-// }
-} else static if (HasVersion!"_LP64" || HasVersion!"__LP64__" || 
-     HasVersion!"Alpha" || 
-     HasVersion!"IA64" || 
-     HasVersion!"SPARC64" || 
-     HasVersion!"SystemZ" || 
-     HasVersion!"X86_64" || 
-     HasVersion!"PPC64") {
-static if (!HasVersion!"__ILP32__") { /* amd64-x32 is 32bit */
-version = LONG64;				/* 32/64-bit architecture */
-} /* !__ILP32__ */
-}
-
 /*
  * Definition of macro used to set constants for size of network structures;
  * machines with preprocessors that can't handle all of the sz_ symbols
@@ -65,23 +49,14 @@ alias RESTYPE = uint;
  */
 version = B32; /* bitfield not needed on architectures with native 32-bit type */
 version = B16; /* bitfield not needed on architectures with native 16-bit type */
-version (LONG64) {
-alias INT64 = c_long;
-alias INT32 = int;
-} else {
-alias INT32 = c_long;
-}
-alias INT16 = short;
 
+alias INT64 = long;
+alias INT32 = int;
+alias INT16 = short;
 alias INT8 = char;
 
-version (LONG64) {
-alias CARD64 = c_ulong;
-alias CARD32 = uint;
-} else {
 alias CARD64 = ulong;
-alias CARD32 = c_ulong;
-}
+alias CARD32 = uint;
 alias CARD16 = ushort;
 alias CARD8 = ubyte;
 
