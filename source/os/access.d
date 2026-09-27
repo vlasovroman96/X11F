@@ -100,6 +100,7 @@ import os.Xtrans;
 import include.misc;
 import core.stdc.errno;
 import core.sys.posix.sys.types;
+import x11.Xosdefs;
 
 import dix.server_priv;
 import os.io_priv;
@@ -152,7 +153,7 @@ import sys.stropts;
 
 import core.sys.posix.netdb;
 
-version (CSRG_BASED) {
+static if(CSRG_BASED) {
 import sys.param;
 static if ((BSD >= 199103)) {
 version = VARIABLE_IFREQ;

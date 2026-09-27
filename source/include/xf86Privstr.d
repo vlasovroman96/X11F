@@ -40,6 +40,7 @@ private template HasVersion(string versionId) {
 
  
 public import include.xf86str;
+import x11.Xosdefs;
 
 enum XF86_GlxVisuals {
     XF86_GlxVisualsMinimal,
@@ -75,7 +76,7 @@ version (__sun) {
 
     /* graphics part */
     ScreenPtr currentScreen;
-static if (HasVersion!"CSRG_BASED" || HasVersion!"__FreeBSD_kernel__") {
+static if (CSRG_BASED || HasVersion!"__FreeBSD_kernel__") {
     int consType;               /* Which console driver? */
 }
 
@@ -120,7 +121,7 @@ enum XSCR =    cast(ulong) 0x80000000;
 enum XCOMP =	cast(ulong) 0x00008000;
 
 /* BSD console driver types (consType) */
-static if (HasVersion!"CSRG_BASED" || HasVersion!"__FreeBSD_kernel__") {
+static if (CSRG_BASED || HasVersion!"__FreeBSD_kernel__") {
 enum PCCONS =		   0;
 enum CODRV011 =	   1;
 enum CODRV01X =	   2;

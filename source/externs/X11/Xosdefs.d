@@ -104,11 +104,18 @@ enum MAXPATHLEN =	1024;
 
 }
 
-static if (HasVersion!"__OpenBSD__" || HasVersion!"__NetBSD__" || HasVersion!"__FreeBSD__" 
-	|| HasVersion!"OSX" || HasVersion!"__DragonFly__") {
- 
-
-}
+version (OpenBSD)
+    enum CSRG_BASED = true;
+version (NetBSD)
+    enum CSRG_BASED = true;
+version (FreeBSD)
+    enum CSRG_BASED = true;
+version (OSX)
+    enum CSRG_BASED = true;
+version (DragonFlyBSD)
+    enum CSRG_BASED = true;
+else
+	enum CSRG_BASED = false;
 
  /* _XOSDEFS_H_ */
 
