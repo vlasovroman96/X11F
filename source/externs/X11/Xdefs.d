@@ -33,11 +33,7 @@ else {
 
 import externs.X11.fonts.fontstruct;
 
-version (Bool) {} else {
- 
 alias Bool = int;
-
-}
  
 alias pointer = void*;
  
