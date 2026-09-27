@@ -29,7 +29,7 @@ import core.stdc.stddef;
 import core.stdc.string;
 import core.stdc.stdio;
 
-// //import externs.X11.Xarch;
+// //import x11.Xarch;
 //import externs.X11.Xatom;
 //import externs.X11.extensions._render;
 // //import externs.X11.extensions.dpmsconst;

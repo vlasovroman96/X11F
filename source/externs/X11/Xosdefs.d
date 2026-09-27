@@ -6,7 +6,6 @@ private template HasVersion(string versionId) {
 /*
  * Copyright 2016, Roman Vlasov
  * Copyright 1991, 1998  The Open Group
-
  *
  * See COPYING for the full license texts.
  */

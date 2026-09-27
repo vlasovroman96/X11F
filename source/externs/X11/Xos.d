@@ -156,6 +156,6 @@ static if (HasVersion!"X_NOT_POSIX" && HasVersion!"SYSV" && !HasVersion!"SIGCHLD
 enum SIGCHLD = SIGCLD;
 }
 
-public import externs.X11.Xarch;
+public import x11.Xarch;
 
  /* _XOS_H_ */

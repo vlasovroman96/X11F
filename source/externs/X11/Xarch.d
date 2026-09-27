@@ -1,4 +1,4 @@
-module externs.X11.Xarch;
+module x11.Xarch;
 @nogc nothrow:
 extern(C): __gshared:
 
