@@ -12,8 +12,7 @@ import core.stdc.config: c_long, c_ulong;
  *
  * See COPYING for the full license texts.
  */
-version (XMD_H) {} else {
-enum XMD_H = 1;
+
 /*
  *  Xmd.h: MACHINE DEPENDENT DECLARATIONS.
  */
@@ -111,5 +110,3 @@ enum string cvtINT32toLong(string val) = `(` ~ val ~ `)`;
  * used when not in MUSTCOPY
  */
 enum string NEXTPTR(string p,string t) = `((cast(t*)(` ~ p ~ `)) + 1)`;
-
-} /* XMD_H */
