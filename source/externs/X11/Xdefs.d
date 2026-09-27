@@ -35,8 +35,6 @@ import externs.X11.fonts.fontstruct;
 
 alias Bool = int;
  
-alias pointer = void*;
- 
 alias FontPtr = _Font*; /* also in fonts/include/font.h */
  
 alias Font = XID;
