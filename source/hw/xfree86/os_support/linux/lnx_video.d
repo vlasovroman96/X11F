@@ -54,7 +54,7 @@ import externs.gnu;
 
 private Bool ExtendedEnabled = FALSE;
 
-version (__ia64__) {
+version (__IA64__) {
 
 import include.compiler;
 import sys.io;
@@ -120,7 +120,7 @@ private void hwDisableIO()
     ioBase = null;
 }
 
-} else static if (HasVersion!"__i386__" || HasVersion!"X86_64" || HasVersion!"__ia64__" || 
+} else static if (HasVersion!"__i386__" || HasVersion!"X86_64" || 
       HasVersion!"Alpha") {
 
 private Bool hwEnableIO()

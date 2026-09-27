@@ -645,13 +645,13 @@ void LockLegacyVGA(xf86Int10InfoPtr pInt, legacyVGAPtr vga)
 {
     vga.save_msr = pci_io_read8(pInt.io, 0x03CC);
     vga.save_vse = pci_io_read8(pInt.io, 0x03C3);
-version (__ia64__) {} else {
+version (__IA64__) {} else {
     vga.save_46e8 = pci_io_read8(pInt.io, 0x46E8);
 }
     vga.save_pos102 = pci_io_read8(pInt.io, 0x0102);
     pci_io_write8(pInt.io, 0x03C2, ~cast(ubyte) 0x03 & vga.save_msr);
     pci_io_write8(pInt.io, 0x03C3, ~cast(ubyte) 0x01 & vga.save_vse);
-version (__ia64__) {} else {
+version (__IA64__) {} else {
     pci_io_write8(pInt.io, 0x46E8, ~cast(ubyte) 0x08 & vga.save_46e8);
 }
     pci_io_write8(pInt.io, 0x0102, ~cast(ubyte) 0x01 & vga.save_pos102);
@@ -660,7 +660,7 @@ version (__ia64__) {} else {
 void UnlockLegacyVGA(xf86Int10InfoPtr pInt, legacyVGAPtr vga)
 {
     pci_io_write8(pInt.io, 0x0102, vga.save_pos102);
-version (__ia64__) {} else {
+version (__IA64__) {} else {
     pci_io_write8(pInt.io, 0x46E8, vga.save_46e8);
 }
     pci_io_write8(pInt.io, 0x03C3, vga.save_vse);

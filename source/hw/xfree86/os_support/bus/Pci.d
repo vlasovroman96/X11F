@@ -132,7 +132,7 @@ import hw.xfree86.os_support.bus.Pci;
 import hw.xfree86.os_support.xf86_os_support;
 import externs.pciaccess;
 
-// #if (defined(Alpha) || defined(__ia64__)) && defined (__linux__)
+// #if (defined(Alpha) || defined(__IA64__)) && defined (__linux__)
 enum PCI_DOM_MASK =	0x01ff;
 // #else
 // enum PCI_DOM_MASK = 0x0ffu;

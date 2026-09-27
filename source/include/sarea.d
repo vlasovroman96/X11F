@@ -42,7 +42,7 @@ public import externs.libdrm;
 /* SAREA area needs to be at least a page */
 version (Alpha) {
 enum SAREA_MAX = 			0x2000;
-} else version (__ia64__) {
+} else version (__IA64__) {
 enum SAREA_MAX =			0x10000 /* 64kB */;
 } else {
 /* Intel 830M driver needs at least 8k SAREA */
