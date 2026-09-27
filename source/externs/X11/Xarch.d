@@ -1,13 +1,5 @@
 module x11.Xarch;
 
-import build.dix_config;
-@nogc nothrow:
-extern(C): __gshared:
-
-private template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
- 
 /*
  * Copyright 2016, Roman Vlasov
  * Copyright 1997, Metro Link Incorporated
