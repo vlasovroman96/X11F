@@ -30,8 +30,3 @@ alias BITS16 = CARD16;
 alias BYTE = CARD8;
 alias BOOL = CARD8;
 
-/*
- * this version should leave result of type (t *), but that should only be
- * used when not in MUSTCOPY
- */
-enum string NEXTPTR(string p,string t) = `((cast(t*)(` ~ p ~ `)) + 1)`;
