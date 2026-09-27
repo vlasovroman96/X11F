@@ -53,7 +53,7 @@ version = B16; /* bitfield not needed on architectures with native 16-bit type *
 alias INT64 = long;
 alias INT32 = int;
 alias INT16 = short;
-alias INT8 = char;
+alias INT8 = byte;
 
 alias CARD64 = ulong;
 alias CARD32 = uint;
