@@ -31,11 +31,7 @@ else {
    alias FSID = c_ulong;
 }
 
-import externs.X11.fonts.fontstruct;
-
 alias Bool = int;
- 
-alias FontPtr = _Font*; /* also in fonts/include/font.h */
  
 alias Font = XID;
 

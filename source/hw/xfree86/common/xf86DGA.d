@@ -90,6 +90,7 @@ import dix.devices;
 import dix.extension;
 import dix.screen_hooks;
 import include.xkbstr;
+import include.eventstr;
 
 DevPrivateKeyRec DGAScreenKeyRec;
 
@@ -946,8 +947,7 @@ private Mask[8] filters = [
     ButtonReleaseMask,          /* ButtonRelease */
     PointerMotionMask,          /* MotionNotify (initial state) */
 ];
-alias DGAEvent = _DGAEvent;
-private void DGAProcessKeyboardEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIntPtr keybd)
+private void DGAProcessKeyboardEvent(ScreenPtr pScreen, _DGAEvent* event, DeviceIntPtr keybd)
 {
     KeyClassPtr keyc = keybd.key;
     DGAScreenPtr pScreenPriv = mixin(DGA_GET_SCREEN_PRIV!(`pScreen`));
@@ -1001,7 +1001,7 @@ private void DGAProcessKeyboardEvent(ScreenPtr pScreen, DGAEvent* event, DeviceI
     }
 }
 
-private void DGAProcessPointerEvent(ScreenPtr pScreen, DGAEvent* event, DeviceIntPtr mouse)
+private void DGAProcessPointerEvent(ScreenPtr pScreen, _DGAEvent* event, DeviceIntPtr mouse)
 {
     ButtonClassPtr butc = mouse.button;
     DGAScreenPtr pScreenPriv = mixin(DGA_GET_SCREEN_PRIV!(`pScreen`));
