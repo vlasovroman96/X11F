@@ -1,5 +1,4 @@
 module x11.Xdefs;
-
 /*
  * Copyright 2016, Roman Vlasov
  * Copyright (c) 1999  The XFree86 Project Inc.
