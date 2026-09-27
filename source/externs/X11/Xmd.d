@@ -32,7 +32,7 @@ version = LONG64;				/* 32/64-bit architecture */
      HasVersion!"Alpha" || 
      HasVersion!"IA64" || 
      HasVersion!"SPARC64" || 
-     HasVersion!"__s390x__" || 
+     HasVersion!"SystemZ" || 
      HasVersion!"__amd64__" || HasVersion!"amd64" || 
      HasVersion!"__powerpc64__") {
 static if (!HasVersion!"__ILP32__") { /* amd64-x32 is 32bit */
