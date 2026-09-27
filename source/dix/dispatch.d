@@ -613,7 +613,7 @@ Bool CreateConnectionBlock()
     c_ulong vid = void;
     int paddingforint32 = void, lenofblock = void, sizesofar = 0;
     char* pBuf = void;
-    const(char)[7] VendorString = "XLibre";
+    const(char)[7] VendorString = "Xenia";
 
     memset(&setup, 0, xConnSetup.sizeof);
     /* Leave off the ridBase and ridMask, these must be sent with
