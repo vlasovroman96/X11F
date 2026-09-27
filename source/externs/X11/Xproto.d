@@ -77,6 +77,9 @@ SOFTWARE.
 import x11.Xmd;
 import externs.X11.Xprotostr;
 
+template SIZEOF(alias sym) {
+     alias SIZEOF = mixin("sz_" ~ sym.stringof);    
+}
 /*
  * Define constants for the sizes of the network packets.  The sz_ prefix is
  * used instead of something more descriptive so that the symbols are no more
