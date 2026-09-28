@@ -77,21 +77,7 @@ in this Software without prior written authorization from The Open Group.
 public import x11.Xos;
 public import x11.Xfuncs;
 
-version (X_NOT_POSIX) {} else {
-version (_POSIX_SOURCE) {
-public import core.stdc.limits;
-} else {
-// version = _POSIX_SOURCE;
-public import core.stdc.limits;
-//! #   undef _POSIX_SOURCE
-}
-version (LINE_MAX) {} else {
 enum X_LINE_MAX = 2048;
-} version (LINE_MAX) {
-enum X_LINE_MAX = LINE_MAX;
-}
-}
- /* _XOS_R_H */
 
 version (Windows) {} else {
 
@@ -1050,9 +1036,4 @@ enum string _XGetgrnam(string n,string p) = `
  ((getgrnam_r((` ~ n ~ `), &(` ~ p ~ `).grp, (` ~ p ~ `).buf, typeof((` ~ p ~ `).buf).sizeof, &(` ~ p ~ `).result) ? 
    null : (` ~ p ~ `).result))`;
 }
-
-static if (HasVersion!"X_INCLUDE_GRP_H" && !HasVersion!"_XOS_INCLUDED_GRP_H") {
-version = _XOS_INCLUDED_GRP_H;
-}
-
 
