@@ -75,7 +75,7 @@ in this Software without prior written authorization from The Open Group.
 /* This header can be included multiple times with different defines! */
  
 public import x11.Xos;
-public import externs.X11.Xfuncs;
+public import x11.Xfuncs;
 
 version (X_NOT_POSIX) {} else {
 version (_POSIX_SOURCE) {

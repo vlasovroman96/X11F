@@ -33,7 +33,7 @@ import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
 // //import x11.Xos;
-// //import externs.X11.Xfuncs;
+// //import x11.Xfuncs;
 import externs.X11.extensions.XKM;
 //import externs.X11.X;
 import externs.X11.keysymdef;

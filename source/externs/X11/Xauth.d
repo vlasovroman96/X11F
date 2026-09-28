@@ -62,7 +62,7 @@ struct Xauth {
 version (_XAUTH_STRUCT_ONLY) {} else {
 
 public import   externs.X11.Xfuncproto;
-// public import   externs.X11.Xfuncs;
+// public import   x11.Xfuncs;
 
 public import   core.stdc.stdio;
 

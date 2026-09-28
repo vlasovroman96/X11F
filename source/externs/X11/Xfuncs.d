@@ -1,5 +1,4 @@
-module externs.X11.Xfuncs;
-
+module x11.Xfuncs;
 
 /*
  * Copyright 2026, Roman Vlasov

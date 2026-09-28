@@ -40,7 +40,7 @@ version = XOS_USE_NO_LOCKING;
 //import externs.X11.Xproto;
 //import externs.X11.X;
 import x11.Xos_r;
-// //import externs.X11.Xfuncs;
+// //import x11.Xfuncs;
 //import externs.X11.Xatom;
 import externs.X11.extensions.XKB;
 
