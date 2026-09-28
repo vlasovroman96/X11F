@@ -102,7 +102,6 @@ import core.sys.posix.arpa.inet;
 static if (CSRG_BASED) {
 import sys.param;
 }
-import externs.netinet.tcp;
 import core.sys.posix.arpa.inet;
 }
 version (Windows) {} else {
