@@ -1,12 +1,13 @@
 module externs.xdmcp;
-@nogc nothrow:
-extern(C): __gshared:
+
 /*
  * Copyright 2026 Roman Vlasov
  * Copyright 1989 Network Computing Devices, Inc., Mountain View, California.
  *
  * See COPYING for the full license texts.
  */
+@nogc nothrow:
+extern(C): __gshared:
 
 //There must be config for x11 proto maybe?
 import build.xlibre_server;
@@ -61,8 +62,7 @@ alias FAILED = xdmOpCode.FAILED;
 alias KEEPALIVE = xdmOpCode.KEEPALIVE;
 alias ALIVE = xdmOpCode.ALIVE;
 
-// version(IPv6 && AF_INET6)
-version(V_IPv6)
+static if(IPv6)
 {
 
 enum xdmcp_states {
