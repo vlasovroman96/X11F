@@ -31,44 +31,8 @@ in this Software without prior written authorization from The Open Group.
  *
  */
 
- 
-public import x11.Xosdefs;
+import core.stdc.string;
 
-/* the old Xfuncs.h, for pre-R6 */
-static if (!(HasVersion!"XFree86LOADER" && HasVersion!"IN_MODULE")) {
-
-version (X_USEBFUNCS) {
-void bcopy();
-void bzero();
-int bcmp();
-} else {
-static if (HasVersion!"SYSV" && !HasVersion!"__SCO__" && !HasVersion!"__sun" && !HasVersion!"__UNIXWARE__" && !HasVersion!"_AIX") {
-public import memory;
-void bcopy();
-enum string bzero(string b,string len) = `memset(` ~ b ~ `, 0, ` ~ len ~ `)`;
-enum string bcmp(string b1,string b2,string len) = `memcmp(` ~ b1 ~ `, ` ~ b2 ~ `, ` ~ len ~ `)`;
-} else {
-public import core.stdc.string;
-static if (HasVersion!"__SCO__" || HasVersion!"__sun" || HasVersion!"__UNIXWARE__" || HasVersion!"Cygwin" || HasVersion!"_AIX" || HasVersion!"OSX") {
-public import strings;
-}
-// version = _XFUNCS_H_INCLUDED_STRING_H;
-}
-} /* X_USEBFUNCS */
-
-/* the new Xfuncs.h */
-
-/* the ANSI C way */
-version (_XFUNCS_H_INCLUDED_STRING_H) {} else {
-public import core.stdc.string;
-}
-//! #  undef bzero
-enum string bzero(string b,string len) = `memset(` ~ b ~ `,0,` ~ len ~ `)`;
-
-static if (HasVersion!"Windows" && HasVersion!"Windows") {
-enum string bcopy(string b1,string b2,string len) = `memmove(` ~ b2 ~ `, ` ~ b1 ~ `, cast(size_t)(` ~ len ~ `))`;
-}
-
-} /* !(defined(XFree86LOADER) && defined(IN_MODULE)) */
-
- /* _XFUNCS_H_ */
+alias bcopy = memmove;
+auto bzero(void* s, size_t len) => memset(s, 0, len);
+auto bcmp(void* b1, void* b2, size_t len) => memcmp(b1, b2, len);
