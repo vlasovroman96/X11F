@@ -113,47 +113,47 @@ alias CARD8Ptr = CARD8*;
 alias CARD16Ptr = CARD16*;
 alias CARD32Ptr = CARD32*;
 
-struct _ARRAY8 {
+struct ARRAY8 {
     CARD16 length;
     CARD8Ptr data;
-}alias ARRAY8 = _ARRAY8;
-alias ARRAY8Ptr = _ARRAY8*;
+}
+alias ARRAY8Ptr = ARRAY8*;
 
-struct _ARRAY16 {
+struct ARRAY16 {
     CARD8 length;
     CARD16Ptr data;
-}alias ARRAY16 = _ARRAY16;
-alias ARRAY16Ptr = _ARRAY16*;
+}
+alias ARRAY16Ptr = ARRAY16*;
 
-struct _ARRAY32 {
+struct ARRAY32 {
     CARD8 length;
     CARD32Ptr data;
-}alias ARRAY32 = _ARRAY32;
-alias ARRAY32Ptr = _ARRAY32*;
+}
+alias ARRAY32Ptr = ARRAY32*;
 
-struct _ARRAYofARRAY8 {
+struct ARRAYofARRAY8 {
     CARD8 length;
     ARRAY8Ptr data;
-}alias ARRAYofARRAY8 = _ARRAYofARRAY8;
-alias ARRAYofARRAY8Ptr = _ARRAYofARRAY8*;
+}
+alias ARRAYofARRAY8Ptr = ARRAYofARRAY8*;
 
-struct _XdmcpHeader {
+struct XdmcpHeader {
     CARD16 version_, opcode, length;
-}alias XdmcpHeader = _XdmcpHeader;
-alias XdmcpHeaderPtr = _XdmcpHeader*;
+}
+alias XdmcpHeaderPtr = XdmcpHeader*;
 
-struct _XdmcpBuffer {
+struct XdmcpBuffer {
     BYTE* data;
     int size;		/* size of buffer pointed by to data */
     int pointer;		/* current index into data */
     int count;		/* bytes read from network into data */
-}alias XdmcpBuffer = _XdmcpBuffer;
-alias XdmcpBufferPtr = _XdmcpBuffer*;
+}
+alias XdmcpBufferPtr = XdmcpBuffer*;
 
-struct _XdmAuthKey {
+struct XdmAuthKey {
     BYTE[8] data;
-}alias XdmAuthKeyRec = _XdmAuthKey;
-alias XdmAuthKeyPtr = _XdmAuthKey*;
+}
+alias XdmAuthKeyPtr = XdmAuthKey*;
 
 
 /* implementation-independent network address structure.
