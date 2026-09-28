@@ -1,4 +1,4 @@
-module externs.X11.xshmfence;
+module Xext.xshmfence;
 @nogc nothrow:
 extern(C): __gshared:
 /*

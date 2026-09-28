@@ -28,7 +28,7 @@ import build.dix_config;
 import core.sys.posix.fcntl;
 import core.sys.posix.sys.mman;
 import core.sys.posix.unistd;
-import externs.X11.xshmfence;
+import Xext.xshmfence;
 
 import os.osdep;
 
