@@ -11,15 +11,7 @@ extern(C): __gshared:
 
 //There must be config for x11 proto maybe?
 import build.xlibre_server;
-public import x11.Xmd;
-import core.sys.posix.netinet.in_;
-import std.compiler;
-
-    version = V_IPv6;
-// static if(IPv6) {
-// }
-
-// _XFUNCPROTOBEGIN
+import x11.Xmd;
 
 enum XDM_PROTOCOL_VERSION =	1;
 enum XDM_UDP_PORT =		177;
