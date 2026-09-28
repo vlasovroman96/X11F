@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 // //public import externs.X11.fonts.font;
-//public import externs.X11.X;
+//public import x11.X;
 //public import x11.Xdefs;
 //public import x11.Xmd;
 

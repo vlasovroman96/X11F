@@ -20,7 +20,7 @@ import include.misc;
 import include.xf86;
 import include.xf86_OSproc;;
 
-//import externs.X11.X;
+//import x11.X;
 // //import x11.Xos;
 //import x11.Xproto;
 import include.scrnintstr;

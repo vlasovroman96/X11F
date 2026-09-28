@@ -77,7 +77,7 @@ import core.stdc.errno;
 static if (!HasVersion!"Windows") {
 import core.sys.posix.sys.uio;
 }
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 
 import dix.dix_priv;

@@ -51,7 +51,7 @@ SOFTWARE.
 import build.dix_config;
 
 import core.stdc.assert_;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xmd;
 //import x11.Xproto;
 import dix.dixfonts;

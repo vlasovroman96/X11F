@@ -20,7 +20,7 @@ import build.xorg_config;
 import externs.xcb.xcb;
 import externs.xcb.xcb_aux;
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xdefs;
 //import x11.Xproto;
 

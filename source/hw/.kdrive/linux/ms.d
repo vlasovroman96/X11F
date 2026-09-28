@@ -29,7 +29,7 @@ import config.kdrive_config;
 import core.stdc.errno;
 import core.sys.posix.termios;
 import os.xserver_poll;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 import include.inputstr;
 import include.scrnintstr;

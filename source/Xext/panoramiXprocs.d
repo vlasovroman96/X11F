@@ -32,7 +32,7 @@ Equipment Corporation.
 import build.dix_config;
 
 import core.stdc.stdio;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 
 import dix.dix_priv;

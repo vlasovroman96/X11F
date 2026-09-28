@@ -29,7 +29,7 @@ import build.xlibre_server;
 
 //import x11.Xproto;
 // //import externs.X11.extensions.damageproto;
-//import externs.X11.X;
+//import x11.X;
 
 import dix.dix_priv;
 import dix.request_priv;

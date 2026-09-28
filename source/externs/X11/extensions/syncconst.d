@@ -52,7 +52,7 @@ PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************/
 
  
-public import externs.X11.X;
+public import x11.X;
 import x11.Xdefs;
 
 enum SYNC_NAME = "SYNC";

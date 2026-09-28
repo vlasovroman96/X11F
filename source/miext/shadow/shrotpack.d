@@ -30,7 +30,7 @@ extern(C): __gshared:
  */
 public import core.stdc.stdlib;
 
-public import    externs.X11.X;
+public import    x11.X;
 public import    include.scrnintstr;
 public import    include.windowstr;
 public import    externs.X11.fonts.font;

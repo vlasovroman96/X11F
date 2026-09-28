@@ -55,7 +55,7 @@ Equipment Corporation.
 import build.xlibre_server;
 import Xext.panoramiXsrv;
 import core.stdc.stddef;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xmd;
 //import x11.Xproto;
 // //import externs.X11.fonts.font;

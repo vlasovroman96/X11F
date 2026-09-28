@@ -54,7 +54,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 //import externs.X11.Xatom;
 ////import externs.X11.extensions.XI;

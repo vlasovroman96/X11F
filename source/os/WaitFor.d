@@ -64,7 +64,7 @@ version (Windows) {
 //import externs.X11.Xwinsock;
 }
 // //import x11.Xos;            /* for strings, fcntl, time */
-//import externs.X11.X;
+//import x11.X;
 
 import dix.dix_priv;
 import dix.screensaver_priv;

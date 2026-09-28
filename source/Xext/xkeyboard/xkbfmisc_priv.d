@@ -10,7 +10,7 @@ extern(C): __gshared:
 version = XK_MISCELLANY;
 
 public import core.stdc.stdio;
-//public import externs.X11.X;
+//public import x11.X;
 //public import x11.Xdefs;
 public import externs.X11.keysymdef;
 import include.xkbstr;

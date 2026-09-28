@@ -38,7 +38,7 @@ import build.xlibre_server;
 
 static if(XF86VIDMODE){
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 import externs.X11.extensions.xf86vmproto;
 

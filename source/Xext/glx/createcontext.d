@@ -48,14 +48,14 @@ enum GLX_CONTEXT_RELEASE_BEHAVIOR_ARB =   0x2097;
 enum GLX_CONTEXT_RELEASE_BEHAVIOR_FLUSH_ARB = 0x2098;
 enum GLX_CONTEXT_RELEASE_BEHAVIOR_NONE_ARB = 0;
 
-alias BadLength = externs.X11.X.BadLength;
-alias BadAlloc = externs.X11.X.BadAlloc;
-alias BadMatch = externs.X11.X.BadMatch;
-alias None = externs.X11.X.None;
-alias Success = externs.X11.X.Success;
-alias BadValue = externs.X11.X.BadValue;
-alias BadRequest = externs.X11.X.BadRequest;
-// alias BadRequest = externs.X11.X.BadRequest;
+alias BadLength = x11.X.BadLength;
+alias BadAlloc = x11.X.BadAlloc;
+alias BadMatch = x11.X.BadMatch;
+alias None = x11.X.None;
+alias Success = x11.X.Success;
+alias BadValue = x11.X.BadValue;
+alias BadRequest = x11.X.BadRequest;
+// alias BadRequest = x11.X.BadRequest;
 
 
 enum ALL_VALID_FLAGS = 

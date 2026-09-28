@@ -36,7 +36,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xmd;
 
 import dix.cursor_priv;

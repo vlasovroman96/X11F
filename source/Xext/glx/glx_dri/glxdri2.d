@@ -64,13 +64,13 @@ import Xext.glx.fix;
 import dix.dixutils;
 import xf86Option;
 
-alias BadLength = externs.X11.X.BadLength;
-alias BadAlloc = externs.X11.X.BadAlloc;
-alias BadMatch = externs.X11.X.BadMatch;
-alias None = externs.X11.X.None;
-alias Success = externs.X11.X.Success;
-alias BadValue = externs.X11.X.BadValue;
-alias BadImplementation = externs.X11.X.BadImplementation;
+alias BadLength = x11.X.BadLength;
+alias BadAlloc = x11.X.BadAlloc;
+alias BadMatch = x11.X.BadMatch;
+alias None = x11.X.None;
+alias Success = x11.X.Success;
+alias BadValue = x11.X.BadValue;
+alias BadImplementation = x11.X.BadImplementation;
 
 
 enum ALL_DRI_CTX_FLAGS = (__DRI_CTX_FLAG_DEBUG                         
@@ -101,7 +101,7 @@ struct __GLXDRIcontext {
 }
 
 enum MAX_DRAWABLE_BUFFERS = 5;
-alias XID = externs.X11.X.XID;
+alias XID = x11.X.XID;
 
 struct __GLXDRIdrawable {
     __GLXdrawable base;

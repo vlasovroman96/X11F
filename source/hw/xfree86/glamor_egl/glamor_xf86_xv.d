@@ -49,7 +49,7 @@ import externs.X11.extensions.Xv;
 
 enum NUM_FORMATS = 4;
 
-alias TrueColor = externs.X11.X.TrueColor;
+alias TrueColor = x11.X.TrueColor;
 
 private XF86VideoFormatRec[NUM_FORMATS] Formats = [
     {15, TrueColor}, {16, TrueColor}, {24, TrueColor}, {30, TrueColor}
@@ -62,7 +62,7 @@ private void glamor_xf86_xv_stop_video(ScrnInfoPtr pScrn, void* data, Bool clean
 
     glamor_xv_stop_video(cast(glamor_port_private*)data);
 }
-alias Atom = externs.X11.X.Atom;
+alias Atom = x11.X.Atom;
 
 private int glamor_xf86_xv_set_port_attribute(ScrnInfoPtr pScrn, Atom attribute, INT32 value, void* data)
 {

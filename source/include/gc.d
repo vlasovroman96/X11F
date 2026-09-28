@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.X11.X;              /* for GContext, Mask */
+//public import x11.X;              /* for GContext, Mask */
 //public import x11.Xdefs;          /* for Bool */
 //public import x11.Xproto;
 public import include.screenint;          /* for ScreenPtr */

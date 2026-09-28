@@ -6,7 +6,7 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-//public import externs.X11.X;
+//public import x11.X;
 
 public import include.xkbsrv;
 // import externs.X11.extensions.XKBstr;

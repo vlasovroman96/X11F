@@ -44,7 +44,7 @@ import build.xlibre_server;
 import Xext.panoramiXsrv;
 
 import core.stdc.string;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 import externs.X11.extensions.xf86dgaproto;
 

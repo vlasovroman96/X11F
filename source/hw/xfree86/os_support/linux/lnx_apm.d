@@ -3,7 +3,7 @@ module lnx_apm;
 extern(C): __gshared:
 import build.xorg_config;
 
-//import externs.X11.X;
+//import x11.X;
 
 import os.log_priv;
 

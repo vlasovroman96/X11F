@@ -45,7 +45,7 @@ import build.xlibre_server;
 import core.sys.posix.sys.stat;
 import core.sys.posix.unistd;
 
-//import externs.X11.X;
+//import x11.X;
 
 import dix.dix_priv;
 import dix.input_priv;

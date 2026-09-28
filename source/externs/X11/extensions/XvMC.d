@@ -2,7 +2,7 @@ module externs.X11.extensions.XvMC;
 @nogc nothrow:
 extern(C): __gshared:
  
-public import externs.X11.X;
+public import x11.X;
 public import externs.X11.extensions.Xv;
 import x11.Xdefs;
 import x11.Xproto;

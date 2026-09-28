@@ -32,7 +32,7 @@ from The Open Group.
 
 import build.dix_config;
 
-//import externs.X11.X;
+//import x11.X;
 //import externs.X11.extensions._render;
 
 import mi.mi_priv;

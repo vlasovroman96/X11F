@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.X11.X;
+//public import x11.X;
 // //public import externs.X11.fonts.font;
 
 public import include.regionstr;

@@ -32,7 +32,7 @@ Author:  Bob Scheifler, MIT X Consortium
 import build.dix_config;
 
 import core.stdc.math;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xprotostr;
 import include.regionstr;
 import include.gcstruct;

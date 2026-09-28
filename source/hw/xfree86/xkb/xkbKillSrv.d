@@ -32,7 +32,7 @@ import build.dix_config;
 import build.xorg_config;
 
 import core.stdc.stdio;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 //import externs.X11.keysym;
 ////import externs.X11.extensions.XI;

@@ -45,7 +45,7 @@ import core.sys.posix.netdb;
 import core.stdc.errno;
 import core.stdc.stdio;
 import core.stdc.stdlib;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xmd;
 
 import dix.dix_priv;

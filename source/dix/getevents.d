@@ -36,7 +36,7 @@ import build.xlibre_server;
 import core.stdc.math;
 import core.stdc.limits;
 import pixman;
-//import externs.X11.X;
+//import x11.X;
 //import externs.X11.keysym;
 //import x11.Xproto;
 //import externs.X11.extensions.XI;

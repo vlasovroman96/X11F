@@ -54,7 +54,7 @@ alias RegionRec = pixman_region16;
 alias RegionPtr = pixman_region16*;
 
 public import include.miscstruct;
-public import externs.X11.X;
+public import x11.X;
 import externs.attrs;
 public import region;
 

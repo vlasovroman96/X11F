@@ -81,7 +81,7 @@ enum MISC_H = 1;
 
 // public import x11.Xosdefs;
 public import x11.Xmd;
-public import externs.X11.X;
+public import x11.X;
 // public import x11.Xdefs;
 public import x11.Xprotostr;
 import include.dixstruct;
@@ -127,7 +127,7 @@ version (TRUE) {} else {
 }
 
 public import include.os;                 /* for ALLOCATE_LOCAL and DEALLOCATE_LOCAL */
-//public import externs.X11.X;         /* for bcopy, bzero, and bcmp */
+//public import x11.X;         /* for bcopy, bzero, and bcmp */
 
 enum NullBox = cast(BoxPtr)0;
 

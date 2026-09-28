@@ -25,7 +25,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import include.xf86Module;
-//import   externs.X11.X;
+//import   x11.X;
 import    include.scrnintstr;
 import    include.windowstr;
 // //import   externs.X11.fonts.font;

@@ -155,7 +155,7 @@ import dix.events;
 import externs.attrs;
 import dix.screen_hooks;
 import os.io;
-import externs.X11.X;
+import x11.X;
 import dix.inpututils;
 
 /******
@@ -195,7 +195,7 @@ enum string RedirectSend(string pWin) = `
 // enum string SubSend(string pWin) = `
 //     ((` ~ pWin ~ `.eventMask|`~wOtherEventMasks!(pWin)~` & SubstructureNotifyMask))`;
 
-import externs.X11.X;
+import x11.X;
     enum string SubSend(string pWin) = `
     ((`~pWin~`.eventMask| `~wOtherEventMasks!(pWin)~`) & SubstructureNotifyMask)`;
 pragma(msg, typeof(SubstructureRedirectMask).stringof);

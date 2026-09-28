@@ -107,7 +107,7 @@ Equipment Corporation.
 
 import build.xlibre_server;
 
-import externs.X11.X;
+import x11.X;
 // //import externs.X11.extensions.ge;
 import externs.X11.extensions.XKB;
 // //import externs.X11.extensions.XIproto;

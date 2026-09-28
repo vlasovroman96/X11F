@@ -31,7 +31,7 @@ import glamor.glamor_priv;
 import include.dixfontstr;
 import glamor.glamor_transform;
 import include.servermd;
-//import externs.X11.X;
+//import x11.X;
 import glamor.glamor;
 import fb.fbglyph;
 import glamor.glamor_pixmap;
@@ -238,7 +238,7 @@ enum vs_exec_text = "       vec2 pos = primitive.zw * vec2(gl_VertexID&1, (gl_Ve
 
 enum fs_vars_text = "in vec2 glyph_pos;\n";
 
-alias MSBFirst  =externs.X11.X.MSBFirst;
+alias MSBFirst  =x11.X.MSBFirst;
 
 static if(BITMAP_BIT_ORDER == MSBFirst) {
     enum fs_exec_text = "       ivec2 itile_texture = ivec2(glyph_pos);\n"

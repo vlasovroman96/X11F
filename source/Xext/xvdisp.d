@@ -29,7 +29,7 @@ import build.xlibre_server;
 
 import core.stdc.string;
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 // //import externs.X11.extensions.Xv;
 // //import externs.X11.extensions.Xvproto;

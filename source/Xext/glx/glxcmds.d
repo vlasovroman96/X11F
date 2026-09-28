@@ -81,20 +81,20 @@ alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 alias INT32 = x11.Xmd.INT32;
 
 // alias CARD32 = x11.Xmd.CARD32;
-// alias BadLength = externs.X11.X.BadLength;
-// alias BadAlloc = externs.X11.X.BadAlloc;
-// alias BadMatch = externs.X11.X.BadMatch;
-// alias None = externs.X11.X.None;
-// alias Success = externs.X11.X.Success;
-// alias BadValue = externs.X11.X.BadValue;
-// alias BadRequest = externs.X11.X.BadRequest;
+// alias BadLength = x11.X.BadLength;
+// alias BadAlloc = x11.X.BadAlloc;
+// alias BadMatch = x11.X.BadMatch;
+// alias None = x11.X.None;
+// alias Success = x11.X.Success;
+// alias BadValue = x11.X.BadValue;
+// alias BadRequest = x11.X.BadRequest;
 // alias INT32 = x11.Xmd.INT32;
-// alias BadImplementation = externs.X11.X.BadImplementation;
-// alias ZPixmap = externs.X11.X.ZPixmap;
-// alias IncludeInferiors = externs.X11.X.IncludeInferiors;
-// alias BadAccess = externs.X11.X.BadAccess;
-// alias BadPixmap = externs.X11.X.BadPixmap;
-// alias BadPixmap = externs.X11.X.BadPixmap;
+// alias BadImplementation = x11.X.BadImplementation;
+// alias ZPixmap = x11.X.ZPixmap;
+// alias IncludeInferiors = x11.X.IncludeInferiors;
+// alias BadAccess = x11.X.BadAccess;
+// alias BadPixmap = x11.X.BadPixmap;
+// alias BadPixmap = x11.X.BadPixmap;
 
 
 
@@ -116,7 +116,7 @@ int validGlxScreen(ClientPtr client, int screen, __GLXscreen** pGlxScreen, int* 
 
     return TRUE;
 }
-alias XID = externs.X11.X.XID;
+alias XID = x11.X.XID;
 
 int validGlxFBConfig(ClientPtr client, __GLXscreen* pGlxScreen, XID id, __GLXconfig** config, int* err)
 {

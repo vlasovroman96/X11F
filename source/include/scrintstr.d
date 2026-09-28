@@ -65,7 +65,7 @@ import include.input;
 import include.cursor;
 
 
-//import externs.X11.X;
+//import x11.X;
 import externs.X11.extensions.randrproto;
 import include.validate;
 

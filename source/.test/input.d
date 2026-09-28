@@ -32,7 +32,7 @@ private template HasVersion(string versionId) {
 import build.dix_config;
 
 import core.stdc.stdint;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 // //import externs.X11.extensions.XI2proto;
 //import externs.X11.Xatom;

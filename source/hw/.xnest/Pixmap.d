@@ -17,7 +17,7 @@ is" without express or implied warranty.
 */
 import build.xorg_config;
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xdefs;
 //import x11.Xproto;
 

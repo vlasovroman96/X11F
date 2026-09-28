@@ -3,7 +3,7 @@ module include.micmap;
 extern(C): __gshared:
 import core.stdc.config: c_long, c_ulong;
  
-//public import externs.X11.X;
+//public import x11.X;
 //public import x11.Xdefs;
 // //public import x11.Xfuncproto;
 

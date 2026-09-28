@@ -53,7 +53,7 @@ import build.dix_config;
 import core.stdc.math;
 import pixman;
 // //import stdbool;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 import externs.X11.Xatom;
 import externs.X11.extensions.XI;

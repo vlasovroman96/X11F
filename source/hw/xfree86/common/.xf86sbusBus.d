@@ -28,7 +28,7 @@ import build.xorg_config;
 import core.stdc.ctype;
 import core.stdc.stdio;
 import core.sys.posix.unistd;
-//import externs.X11.X;
+//import x11.X;
 import include.os;
 import xf86_priv;
 import include.xf86Priv;

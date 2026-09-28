@@ -29,7 +29,7 @@ extern(C): __gshared:
 
 import build.xlibre_server;
 import Xext.panoramiXsrv;
-//import externs.X11.X;
+//import x11.X;
 //import externs.X11.extensions.XI2;
 // //import externs.X11.extensions.XIproto;
 import externs.X11.extensions.XI2proto;

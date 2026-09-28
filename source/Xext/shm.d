@@ -46,7 +46,7 @@ import core.sys.posix.sys.mman;
 import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 // //import externs.X11.extensions.shmproto;
 // //import x11.Xfuncproto;

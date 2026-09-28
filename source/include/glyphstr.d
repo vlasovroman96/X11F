@@ -26,7 +26,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.X;
+public import x11.X;
 import externs.X11.extensions.renderproto;
 
 

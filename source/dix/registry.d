@@ -28,7 +28,7 @@ import build.dix_config;
 
 import core.stdc.stdlib;
 import core.stdc.string;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 
 import registry;

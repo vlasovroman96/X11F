@@ -57,7 +57,7 @@ import build.dix_config;
 
 import core.stdc.string;
 import core.stdc.stdio;
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 //import x11.Xmd;
 // //import externs.X11.extensions.syncproto;

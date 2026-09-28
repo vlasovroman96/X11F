@@ -32,7 +32,7 @@ import build.xorg_config;
 import xf86DGA;
 
 
-//import externs.X11.X;
+//import x11.X;
 ////import x11.Xmd;
 // //import externs.X11.extensions.XIproto;
 import os.inputthread;

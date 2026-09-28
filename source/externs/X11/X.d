@@ -1,4 +1,4 @@
-module externs.X11.X;
+module x11.X;
 /* Definitions for the X window system likely to be used by applications */
 
 /*

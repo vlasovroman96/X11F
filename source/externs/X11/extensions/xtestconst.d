@@ -28,7 +28,7 @@ in this Software without prior written authorization from The Open Group.
 */
 
 import x11.Xmd;
-import externs.X11.X;
+import x11.X;
 
  
 enum XTestNumberEvents =	0;

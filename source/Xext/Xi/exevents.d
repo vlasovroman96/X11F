@@ -83,7 +83,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xproto;
 // //import externs.X11.extensions.geproto;
 //import externs.X11.extensions.XI;
@@ -125,7 +125,7 @@ import include.xkbstr;
 
 import externs.X11.extensions.XI2proto;
 import externs.X11.extensions.XI;
-import externs.X11.X;
+import x11.X;
 import dix.events;
 import dix.enterleave;
 import dix.inpututils;
@@ -2961,7 +2961,7 @@ private void DeleteDeviceFromAnyExtEvents(WindowPtr pWin, DeviceIntPtr dev)
             dev.focus.win = NoneWin;
             dev.focus.traceGood = 0;
             break;
-        case externs.X11.X.RevertToParent:
+        case x11.X.RevertToParent:
             parent = pWin;
             do {
                 parent = parent.parent;
