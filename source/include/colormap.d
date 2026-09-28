@@ -1,6 +1,4 @@
 module include.colormap;
-@nogc nothrow:
-extern(C): __gshared:
 /*
 
 Copyright 1987, 1998  The Open Group
@@ -47,15 +45,8 @@ SOFTWARE.
 
 */
 
-version (CMAP_H) {} else {
-enum CMAP_H = 1;
-
-//public import x11.Xproto;
-public import include.screenint;
-public import include.window;
+import x11.Xmd;
 
 enum DynamicClass =  1;
 
 alias Pixel = CARD32;
-
-}                          /* CMAP_H */

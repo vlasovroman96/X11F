@@ -69,7 +69,7 @@ public import  composite.compinit;
 public import include.damage;
 public import xfixes.xfixes;
 // //public import externs.X11.extensions.compositeproto;
-public import include.compositeext;
+import composite.compwindow;
 public import core.stdc.assert_;
 
 /*

@@ -1,6 +1,5 @@
 module include.colormapst;
-@nogc nothrow:
-extern(C): __gshared:
+
 /*
 
 Copyright 1987, 1998  The Open Group
@@ -47,16 +46,9 @@ SOFTWARE.
 
 */
 
-version (CMAPSTRUCT_H) {} else {
-enum CMAPSTRUCT_H = 1;
-
-//public import x11.Xdefs;
-
 /* LOCO -- a local color for a PseudoColor cell. DirectColor maps always
  * use the first value (called red) in the structure.  What channel they
  * are really talking about depends on which map they are in. */
 struct LOCO {
     ushort red, green, blue;
 }
-
-}                          /* COLORMAP_H */

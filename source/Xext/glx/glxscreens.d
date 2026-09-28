@@ -49,7 +49,7 @@ import glx.glxserver;
 import glx.glxutil;
 import glx.glxext;
 import include.protocol_versions;
-import include.compositeext;
+import composite.compwindow;;
 import glx.glxscreens_h;
 //  import Xext.glx.fix;
  import dix.resource;

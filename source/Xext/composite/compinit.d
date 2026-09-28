@@ -54,7 +54,7 @@ import include.extinit;
 import os.osdep;
 
 import composite.compint;
-import include.compositeext;
+import composite.compwindow;;
 import composite.compwindow;
 import externs.X11.extensions.composite_;
 import externs.X11.extensions.render_;
