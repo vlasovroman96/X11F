@@ -22,6 +22,7 @@ struct _ClientId {
     const(char)* cmdname;        /* process name, NULL if not available */
     const(char)* cmdargs;        /* process arguments, NULL if not available */
 }
+alias ClientIdPtr = _ClientId*;
 
 // struct _Client;
 
