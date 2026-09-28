@@ -75,7 +75,7 @@ SOFTWARE.
 ******************************************************************/
 
 import x11.Xmd;
-import externs.X11.Xprotostr;
+import x11.Xprotostr;
 
 /*
  * Definition of template to get constant wire size of network structures;

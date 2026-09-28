@@ -1,4 +1,4 @@
-module externs.X11.Xprotostr;
+module x11.Xprotostr;
  
  /*
  * Copyright 2026, Roman Vlasov

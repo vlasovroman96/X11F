@@ -12,7 +12,7 @@ public import externs.xcb.xcb;
 public import include.list;
 import include.gc;
 import include.screenint;
-import externs.X11.Xprotostr;
+import x11.Xprotostr;
 
 struct xnest_event_queue {
     xorg_list entry;

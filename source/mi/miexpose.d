@@ -80,7 +80,7 @@ import Xext.panoramiXsrv;
 //import externs.X11.X;
 //import x11.Xmd;
 //import externs.X11.Xproto;
-//import externs.X11.Xprotostr;
+//import x11.Xprotostr;
 import region;
 
 import dix.dix_priv;

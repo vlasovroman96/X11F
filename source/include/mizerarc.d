@@ -30,7 +30,7 @@ in this Software without prior written authorization from The Open Group.
  
 public import x11.Xdefs;
 // //public import x11.Xfuncproto;
-import externs.X11.Xprotostr;
+import x11.Xprotostr;
 
 struct miZeroArcPtRec {
     int x;

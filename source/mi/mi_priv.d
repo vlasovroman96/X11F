@@ -8,7 +8,7 @@ extern(C): __gshared:
  
 //public import x11.Xdefs;
 //public import externs.X11.Xproto;
-//public import externs.X11.Xprotostr;
+//public import x11.Xprotostr;
 
 public import dix.screenint_priv;
 public import include.callback;
