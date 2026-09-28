@@ -175,7 +175,7 @@ version = USE_SIOCGLIFCONF;
 }
 } /* HAVE_GETIFADDRS */
 
-import externs.arpa.inet;
+import core.sys.posix.arpa.inet;
 
 }                          /* WIN32 */
 

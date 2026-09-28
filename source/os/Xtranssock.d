@@ -128,7 +128,7 @@ version (Windows) {} else {
 static if(UNIXCONN){
 import sock_ = core.sys.posix.sys.un;
 import externs.netinet.in_;
-import externs.arpa.inet;
+import core.sys.posix.arpa.inet;
 }
 
 static if(UNIXCONN){

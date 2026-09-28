@@ -98,12 +98,12 @@ version (Windows) {} else {
 import core.sys.posix.sys.socket;
 
 import externs.netinet.in_;
-static import externs.arpa.inet;
+import core.sys.posix.arpa.inet;
 static if (CSRG_BASED) {
 import sys.param;
 }
 import externs.netinet.tcp;
-import externs.arpa.inet;
+import core.sys.posix.arpa.inet;
 }
 version (Windows) {} else {
 import core.sys.posix.sys.uio;
