@@ -89,7 +89,7 @@ import build.dix_config;
 //import x11.X;
 //import x11.Xmd;
 
-import dix.callback_priv;
+import dix.callback;
 import dix.client_priv;
 import dix.dix_priv;
 import dix.resource_priv;

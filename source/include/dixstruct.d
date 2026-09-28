@@ -29,7 +29,7 @@ public import x11.Xmd;
 
 public import include.xlibre_ptrtypes;
 
-public import include.callback;
+public import dix.callback;
 public import include.dix;
 public import include.resource;
 public import include.cursor;

@@ -12,7 +12,7 @@ public import core.sys.posix.sys.types;
 public import x11.Xdefs;
 // //public import x11.Xfuncproto;
 
-public import include.callback;
+public import dix.callback;
 import include.dixstruct;
 
 /* Client IDs. Use GetClientPid, GetClientCmdName and GetClientCmdArgs

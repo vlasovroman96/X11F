@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import dix.callback_priv;
+import dix.callback;
 import dix.dix_priv;
 import dix.gc_priv;
 import dix.screensaver_priv;

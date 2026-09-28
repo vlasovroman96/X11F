@@ -21,7 +21,7 @@ public import dix.input_priv;
 public import dix.resource_priv;
 public import dix.rpcbuf_priv;
 
-public import include.callback;
+public import dix.callback;
 public import include.cursor;
 public import include.dix;
 public import include.events;

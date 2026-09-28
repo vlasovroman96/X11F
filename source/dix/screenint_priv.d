@@ -11,7 +11,7 @@ extern(C): __gshared:
 //public import x11.Xdefs;
 import build.xlibre_server;
 
-public import include.callback;
+public import dix.callback;
 public import include.screenint;
 public import include.scrnintstr; /* for screenInfo */
 // import dix.scre

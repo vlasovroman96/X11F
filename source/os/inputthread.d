@@ -55,11 +55,11 @@ import core.sys.posix.unistd;
 import core.sys.posix.sys.stat;
 import core.sys.posix.fcntl;
 import sigio;
-
+import x11.Xdefs;
 
 static if (INPUTTHREAD) {
 
-Bool InputThreadEnable = TRUE;
+Bool InputThreadEnable = true;
 
 /**
  * An input device as seen by the threaded input facility

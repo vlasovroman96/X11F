@@ -11,7 +11,7 @@ extern(C): __gshared:
 //public import x11.Xprotostr;
 
 public import dix.screenint_priv;
-public import include.callback;
+public import dix.callback;
 public import include.events;
 public import include.gc;
 public import include.mi;

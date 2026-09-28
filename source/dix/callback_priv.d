@@ -1,4 +1,4 @@
-module dix.callback_priv;
+module dix.callback;
 @nogc nothrow:
 extern(C): __gshared:
 /* SPDX-License-Identifier: MIT OR X11
@@ -6,9 +6,27 @@ extern(C): __gshared:
  * Copyright © 2024 Enrico Weigelt, metux IT consult <info@metux.net>
  */
  
-public import include.callback;
+public import dix.callback;
 import x11.Xdefs;
+import dix.dixutils;
 
+alias CallbackListPtr = CallbackListRec*;
+// enum void  = "";
+
+alias CallbackProcPtr = void function(CallbackListPtr*, void*, void*) @nogc nothrow;
+
+// void AddCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+
+// void DeleteCallback(CallbackListPtr* pcbl, CallbackProcPtr callback, void* data);
+
+// void _CallCallbacks(CallbackListPtr* pcbl, void* call_data);
+
+pragma(inline, true) void CallCallbacks(CallbackListPtr* pcbl, void* call_data)
+{
+    if (!pcbl || !*pcbl)
+        return;
+    _CallCallbacks(pcbl, call_data);
+}
 // void InitCallbackManager();
 // void DeleteCallbackManager();
 

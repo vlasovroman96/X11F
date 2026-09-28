@@ -10,7 +10,7 @@ extern(C): __gshared:
 //public import x11.Xdefs;
 //public import x11.Xmd;
 
-public import include.callback;
+public import dix.callback;
 public import include.dix;
 public import include.screenint;
 public import include.scrnintstr;

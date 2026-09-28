@@ -52,7 +52,7 @@ SOFTWARE.
 
 public import include.xlibre_ptrtypes;
 
-public import include.callback;
+public import dix.callback;
 public import include.gc;
 public import include.window;
 // public import include.input;

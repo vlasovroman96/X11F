@@ -53,7 +53,7 @@ enum RESOURCE_H = 1;
 
 public import include.xlibre_ptrtypes;
 
-public import include.callback;
+public import dix.callback;
 public import include.misc;
 public import include.dixaccess;
 import include.dixstruct;

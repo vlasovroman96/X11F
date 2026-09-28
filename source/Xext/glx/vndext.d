@@ -32,7 +32,7 @@ extern(C): __gshared:
 import build.dix_config;
 
 import x11.X;
-// import include.callback;
+// import dix.callback
 import include.privates;
 import glx.vndserver_priv;
 
@@ -46,7 +46,7 @@ import include.glx_extinit;
 // // import externs.glxproto;
 import glx.vndservervendor;
 // import dix.resource;
-import dix.callback_priv;
+import dix.callback;
 import dix.dix_priv;
 import dix.screenint_priv;
 import miext.extinit_priv;
