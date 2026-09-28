@@ -6,6 +6,7 @@ module externs.xdmcp;
  *
  * See COPYING for the full license texts.
  */
+
 @nogc nothrow:
 extern(C): __gshared:
 
@@ -92,22 +93,12 @@ alias XDM_OFF = xdmcp_states.XDM_OFF;
 alias XDM_AWAIT_USER_INPUT = xdmcp_states.XDM_AWAIT_USER_INPUT;
 alias XDM_KEEPALIVE = xdmcp_states.XDM_KEEPALIVE;
 alias XDM_AWAIT_ALIVE_RESPONSE = xdmcp_states.XDM_AWAIT_ALIVE_RESPONSE;
-alias XDM_MULTICAST = xdmcp_states.XDM_MULTICAST;
-alias XDM_COLLECT_MULTICAST_QUERY = xdmcp_states.XDM_COLLECT_MULTICAST_QUERY;
+static if(IPv6) {
+    alias XDM_MULTICAST = xdmcp_states.XDM_MULTICAST;
+    alias XDM_COLLECT_MULTICAST_QUERY = xdmcp_states.XDM_COLLECT_MULTICAST_QUERY;
+}
 alias XDM_KEEP_ME_LAST = xdmcp_states.XDM_KEEP_ME_LAST;
 
-
-// version (NOTDEF) {
-/* table of hosts */
-
-enum XDM_MAX_STR_LEN = 21;
-enum XDM_MAX_HOSTS = 20;
-struct xdm_host_table {
-  sockaddr_in sockaddr;
-  char[XDM_MAX_STR_LEN] name = 0;
-  char[XDM_MAX_STR_LEN] status = 0;
-}
-// } /* NOTDEF */
 
 alias CARD8Ptr = CARD8*;
 alias CARD16Ptr = CARD16*;
@@ -161,16 +152,6 @@ alias XdmAuthKeyPtr = XdmAuthKey*;
 
 alias XdmcpNetaddr = char*;
 
-version (__has_attribute) {} else {
-enum string __has_attribute(string x) = `0  /* Compatibility with older compilers */`;
-}
-
-// static if mixin((__has_attribute!(`access`)) {)
-// enum string XDM_ACCESS_ATTRIBUTE(string X) = `__attribute__((access ` ~ X ~ `))`;
-// } else {
-// //# define XDM_ACCESS_ATTRIBUTE(X)
-// }
-
 extern int XdmcpWriteARRAY16(XdmcpBufferPtr buffer, const(ARRAY16Ptr) array);
 extern int XdmcpWriteARRAY32(XdmcpBufferPtr buffer, const(ARRAY32Ptr) array);
 extern int XdmcpWriteARRAY8(XdmcpBufferPtr buffer, const(ARRAY8Ptr) array);
@@ -206,9 +187,11 @@ extern int XdmcpARRAY8Equal(const(ARRAY8Ptr) array1, const(ARRAY8Ptr) array2);
 extern void XdmcpGenerateKey(XdmAuthKeyPtr key);
 extern void XdmcpIncrementKey(XdmAuthKeyPtr key);
 extern void XdmcpDecrementKey(XdmAuthKeyPtr key);
-version (HASXDMAUTH) {
-extern void XdmcpWrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
-extern void XdmcpUnwrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
+
+static if (HASXDMAUTH) 
+{
+    extern void XdmcpWrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
+    extern void XdmcpUnwrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
 }
 
 extern int XdmcpCompareKeys(const(XdmAuthKeyPtr) a, const(XdmAuthKeyPtr) b);
@@ -223,5 +206,3 @@ extern int XdmcpReallocARRAY32(ARRAY32Ptr array, int length);
 extern int XdmcpReallocARRAY8(ARRAY8Ptr array, int length);
 extern int XdmcpReallocARRAYofARRAY8(ARRAYofARRAY8Ptr array, int length);
 
-
-//  /* _XDMCP_H_ */

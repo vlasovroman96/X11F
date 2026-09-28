@@ -607,7 +607,7 @@ void XdmcpCloseDisplay(int sock)
         return;
     state = XDM_INIT_STATE;
     dispatchException |= DE_TERMINATE;
-    isItTimeToYield = externs.X11.Xdmcp.TRUE;
+    isItTimeToYield = True;
 }
 
 private void XdmcpSocketNotify(int fd, int ready, void* data)
@@ -752,7 +752,7 @@ private void XdmcpDeadSession(const(char)* reason)
 {
     ErrorF("XDM: %s, declaring session dead\n", reason);
     state = XDM_INIT_STATE;
-    isItTimeToYield = externs.X11.Xdmcp.TRUE;
+    isItTimeToYield = True;
     dispatchException |= DE_TERMINATE;
     TimerCancel(xdmcp_timer);
     timeOutRtx = 0;
@@ -892,10 +892,10 @@ static if (IPv6){
 private void send_query_msg()
 {
     XdmcpHeader header = void;
-    Bool broadcast = externs.X11.Xdmcp.FALSE;
+    Bool broadcast = False;
 
 static if (IPv6){
-    Bool multicast = externs.X11.Xdmcp.FALSE;
+    Bool multicast = False;
 }
     int i = void;
     int socketfd = xdmcpSocket;
@@ -909,13 +909,13 @@ static if (IPv6){
     case XDM_BROADCAST:
         header.opcode = cast(CARD16) BROADCAST_QUERY;
         state = XDM_COLLECT_BROADCAST_QUERY;
-        broadcast = externs.X11.Xdmcp.FALSE;
+        broadcast = False;
         break;
 static if (IPv6){
     case XDM_MULTICAST:
         header.opcode = cast(CARD16) BROADCAST_QUERY;
         state = XDM_COLLECT_MULTICAST_QUERY;
-        multicast = externs.X11.Xdmcp.FALSE;
+        multicast = False;
         break;
 }
     case XDM_INDIRECT:
@@ -1038,7 +1038,7 @@ static if (IPv6){
     }
 
     header.version_ = XDM_PROTOCOL_VERSION;
-    header.opcode = cast(CARD16) externs.X11.Xdmcp.xdmOpCode.REQUEST;
+    header.opcode = cast(CARD16) xdmOpCode.REQUEST;
 
     length = 2;                 /* display number */
     length += 1 + 2 * ConnectionTypes.length;   /* connection types */
@@ -1049,7 +1049,7 @@ static if (IPv6){
     authenticationData.data = null;
     if (AuthenticationFuncs) {
         (*AuthenticationFuncs.Generator) (AuthenticationData,
-                                           &authenticationData, externs.X11.Xdmcp.xdmOpCode.REQUEST);
+                                           &authenticationData, xdmOpCode.REQUEST);
     }
     length += 2 + AuthenticationName.length;   /* authentication name */
     length += 2 + authenticationData.length;    /* authentication data */
