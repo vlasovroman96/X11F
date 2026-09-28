@@ -29,7 +29,6 @@ extern(C): __gshared:
 
 public import core.stdc.assert_;
 public import core.stdc.inttypes;
-public import x11.Xfuncproto;
 import externs.xcb.xproto;
 
 /**

@@ -40,7 +40,6 @@ import build.xlibre_server;
 public import include.xlibre_ptrtypes;
 public import include.xf86str;
 public import include.xf86Opt;
-public import x11.Xfuncproto;
 public import core.stdc.stdarg;
 //public import externs.X11.extensions._randr;
 import include.xf86Xinput;

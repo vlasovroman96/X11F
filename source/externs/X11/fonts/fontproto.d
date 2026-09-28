@@ -24,7 +24,6 @@ authorization from The XFree86 Project Inc..
 
 */
  
-public import x11.Xfuncproto;
 public import externs.X11.fonts.fontstruct;
 /* Externally provided functions required by libXfont */
 import include.dixstruct;

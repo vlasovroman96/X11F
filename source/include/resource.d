@@ -60,7 +60,6 @@ import include.dixstruct;
 public import externs.X11.Xprotostr;
 public import x11.Xmd;
 public import externs.X11.X;
-public import x11.Xfuncproto;
 public import x11.Xmd;
 public import externs.X11.X;
 import x11.Xdefs;

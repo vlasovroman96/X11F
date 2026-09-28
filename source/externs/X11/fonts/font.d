@@ -25,7 +25,6 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import x11.Xfuncproto;
 
 version (BitmapFormatByteOrderMask) {} else {
 public import	externs.X11.fonts.fsmasks;
