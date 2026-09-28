@@ -219,11 +219,6 @@ extern void XdmcpWrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
 extern void XdmcpUnwrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
 }
 
-version (TRUE) {} else {
-enum TRUE =	1;
-enum FALSE =	0;
-}
-
 extern int XdmcpCompareKeys(const(XdmAuthKeyPtr) a, const(XdmAuthKeyPtr) b);
 
 extern int XdmcpAllocARRAY16(ARRAY16Ptr array, int length);
