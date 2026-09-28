@@ -24,7 +24,7 @@ version (Windows) {
 
 //import externs.X11.X;
 //import x11.Xdefs;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 //import externs.X11.keysym;
 // //import externs.X11.extensions.XKB;
 import externs.xcb.xkb;

@@ -78,7 +78,7 @@ static if (!HasVersion!"Windows") {
 import core.sys.posix.sys.uio;
 }
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 
 import dix.dix_priv;
 import os.bug_priv;

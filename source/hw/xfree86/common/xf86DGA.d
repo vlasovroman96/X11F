@@ -45,7 +45,7 @@ import Xext.panoramiXsrv;
 
 import core.stdc.string;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import externs.X11.extensions.xf86dgaproto;
 
 import dix.colormap_priv;

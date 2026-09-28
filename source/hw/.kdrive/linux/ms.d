@@ -30,7 +30,7 @@ import core.stdc.errno;
 import core.sys.posix.termios;
 import os.xserver_poll;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import include.inputstr;
 import include.scrnintstr;
 import hw.kdrive.src.kdrive;

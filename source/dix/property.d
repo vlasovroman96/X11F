@@ -51,7 +51,7 @@ SOFTWARE.
 import build.xlibre_server;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 
 import dix.dix_priv;
 import dix.input_priv;

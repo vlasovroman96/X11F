@@ -44,7 +44,7 @@ import build.xorg_config;
 
 import core.stdc.string;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import externs.X11.dri.xf86driproto;
 import externs.X11.dri.xf86dri_;
 

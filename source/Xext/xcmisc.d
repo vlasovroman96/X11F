@@ -33,7 +33,7 @@ import build.dix_config;
 
 // import core.stdc.stdint;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.extensions.xcmiscproto;
 
 import dix.dix_priv;

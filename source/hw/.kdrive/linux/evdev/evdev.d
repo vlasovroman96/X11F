@@ -28,7 +28,7 @@ import config.kdrive_config;
 import core.stdc.errno;
 import externs.linux.input;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import include.inputstr;
 import include.scrnintstr;
 import hw.kdrive.src.kdrive;

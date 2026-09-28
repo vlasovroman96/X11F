@@ -33,7 +33,7 @@ extern(C): __gshared:
  */
 
 //public import externs.X11.X;
-//public import externs.X11.Xproto;
+//public import x11.Xproto;
 import build.dix_config;
 public import x11.Xmd;
 public import include.misc;

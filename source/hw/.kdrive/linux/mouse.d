@@ -29,7 +29,7 @@ import core.stdc.errno;
 import core.sys.posix.termios;
 import build.dix_config;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import os.xserver_poll;
 import include.inputstr;
 import include.scrnintstr;

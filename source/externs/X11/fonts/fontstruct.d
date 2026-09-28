@@ -26,7 +26,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-public import externs.X11.Xproto;
+public import x11.Xproto;
 public import externs.X11.fonts.font;
 public import x11.Xdefs;
 

@@ -55,46 +55,29 @@ SOFTWARE.
 enum X_PROTOCOL =	11		/* current protocol version */;
 enum X_PROTOCOL_REVISION = 0		/* current minor version */;
 
-alias Bool = int;
-/* Resources */
+import x11.Xdefs;
 
 /*
  * _XSERVER64 must ONLY be defined when compiling X server sources on
  * systems where unsigned long is not 32 bits, must NOT be used in
  * client or library code.
  */
-version (_XSERVER64) {} else {
- 
-alias XID = c_ulong;
+version (_XSERVER64) 
+{
+	import x11.Xmd;
 
- 
-alias Mask = c_ulong;
-
- 
-alias Atom = c_ulong;		/* Also in Xdefs.h */
-
-alias VisualID = c_ulong;
-alias Time = c_ulong;
-} version (_XSERVER64) {
-public import x11.Xmd;
- 
-alias XID = CARD32;
-
- 
-alias Mask = CARD32;
-
- 
-alias Atom = CARD32;
-
-alias VisualID = CARD32;
-alias Time = CARD32;
+	alias VisualID = CARD32;
+	alias Time = CARD32;
 }
+else
+ {
+	alias VisualID = c_ulong;
+	alias Time = c_ulong;
+} 
 
 alias Window = XID;
 alias Drawable = XID;
- 
 alias Font = XID;
-
 alias Pixmap = XID;
 alias Cursor = XID;
 alias Colormap = XID;

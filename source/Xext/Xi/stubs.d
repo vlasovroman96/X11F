@@ -60,7 +60,7 @@ SOFTWARE.
 import build.dix_config;
 
 import x11.Xdefs;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import include.inputstr;
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;

@@ -8,7 +8,7 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xproto;
+public import x11.Xproto;
 // //public import x11.Xfuncproto;
 
 alias XorgGESwapProcPtr = void function(xGenericEvent* from, xGenericEvent* to);

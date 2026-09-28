@@ -51,7 +51,7 @@ SOFTWARE.
 import build.xlibre_server;
 import Xext.panoramiXsrv;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import stdbool;
 import core.stdc.stdio;
 import core.stdc.string;

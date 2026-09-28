@@ -55,7 +55,7 @@ import build.xorg_config;
 
 import core.stdc.errno;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 //import externs.X11.Xatom;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;

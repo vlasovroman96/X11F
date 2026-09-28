@@ -38,7 +38,7 @@ import core.stdc.limits;
 import pixman;
 //import externs.X11.X;
 //import externs.X11.keysym;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 //import externs.X11.extensions.XI;
 //import externs.X11.extensions.XI2;
 // //import externs.X11.extensions.XIproto;

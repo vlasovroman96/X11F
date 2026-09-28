@@ -52,7 +52,7 @@ SOFTWARE.
 ********************************************************/
 
  
-public import externs.X11.Xproto;
+public import x11.Xproto;
 public import externs.X11.X;
 public import x11.Xmd;
 
@@ -69,7 +69,7 @@ alias Cursor = CARD32;
  *
  * number of events, errors, and extension name.
  *
- */
+ *********************************************************/
 
 enum MORE_EVENTS =	0x80;
 enum DEVICE_BITS =	0x7F;

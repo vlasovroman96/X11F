@@ -1,12 +1,14 @@
-module externs.X11.Xproto;
-@nogc nothrow:
-extern(C): __gshared:
+module x11.Xproto;
 
-private template HasVersion(string versionId) {
-	mixin("version("~versionId~") {enum HasVersion = true;} else {enum HasVersion = false;}");
-}
+/*
+ * Copyright 2026, Roman Vlasov
+ * Copyright 1987, 1998  The Open Group
+ * Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts.
+ *
+ * See COPYING for the full license texts.
+ */
+
 /* Definitions for the X window system used by server and c bindings */
-
 /*
  * This packet-construction scheme makes the following assumptions:
  *
@@ -25,54 +27,6 @@ private template HasVersion(string versionId) {
  * 3. All packets are hand-padded to a multiple of 4 bytes, for
  * the same reason.
  */
-
- 
-/***********************************************************
-
-Copyright 1987, 1998  The Open Group
-
-Permission to use, copy, modify, distribute, and sell this software and its
-documentation for any purpose is hereby granted without fee, provided that
-the above copyright notice appear in all copies and that both that
-copyright notice and this permission notice appear in supporting
-documentation.
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of The Open Group shall not be
-used in advertising or otherwise to promote the sale, use or other dealings
-in this Software without prior written authorization from The Open Group.
-
-
-Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts.
-
-                        All Rights Reserved
-
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the name of Digital not be
-used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.
-
-DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
-ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
-DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
-ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-SOFTWARE.
-
-******************************************************************/
 
 import x11.Xmd;
 import x11.Xprotostr;
@@ -249,7 +203,7 @@ enum sz_xChangeKeyboardMappingReq = 8;
 we must redefine the following types in terms of Xmd.h's types, which may
 include bit fields.  All of these are #undef'd at the end of this file,
 restoring the definitions in X.h.  */
-
+alias VisualID = CARD32;
 alias Window = CARD32;
 alias Drawable = CARD32;
 alias Font = CARD32;
@@ -258,7 +212,6 @@ alias Cursor = CARD32;
 alias Colormap = CARD32;
 alias GContext = CARD32;
 alias Atom = CARD32;
-alias VisualID = CARD32;
 alias Time = CARD32;
 alias KeyCode = CARD8;
 alias KeySym = CARD32;
@@ -267,7 +220,6 @@ enum X_TCP_PORT = 6000     /* add display number */;
 
 enum xTrue =        1;
 enum xFalse =       0;
-
 
 alias KeyButMask = CARD16;
 
@@ -305,7 +257,6 @@ struct xConnSetupPrefix {
     CARD16 length;       /* 1/4 additional bytes in setup info */
 }
 
-
 struct xConnSetup {
     CARD32 release;
     CARD32 ridBase, ridMask;
@@ -330,26 +281,21 @@ struct xPixmapFormat {
 }
 
 /* window root */
-
 struct xDepth {
     CARD8 depth;
     CARD8 pad1;
     CARD16 nVisuals;  /* number of xVisualType structures following */
     CARD32 pad2;
-    }
+}
 
 struct xVisualType {
     VisualID visualID;
-static if (HasVersion!"none" || HasVersion!"c_plusplus") {
-    CARD8 c_class;
-} else {
     CARD8 class_;
-}
     CARD8 bitsPerRGB;
     CARD16 colormapEntries;
     CARD32 redMask, greenMask, blueMask;
     CARD32 pad;
-    }
+}
 
 struct xWindowRoot {
     Window windowId;
@@ -365,7 +311,6 @@ struct xWindowRoot {
     CARD8 rootDepth;
     CARD8 nDepths;  /* number of xDepth structures following */
 }
-
 
 /*****************************************************************
  * Structure Defns
@@ -404,7 +349,6 @@ struct xTextElt {           /* followed by string */
     INT8 delta;
 }
 
-
 struct xColorItem {
     CARD32 pixel;
     CARD16 red, green, blue;
@@ -412,13 +356,11 @@ struct xColorItem {
     CARD8 pad;
 }
 
-
 struct xrgb {
     CARD16 red, green, blue, pad;
 }
 
 alias KEYCODE = CARD8;
-
 
 /*****************
  * XRep:
@@ -439,21 +381,16 @@ struct xGenericReply {
     CARD32 data03;
     CARD32 data04;
     CARD32 data05;
-    }
+}
 
 /* Individual reply formats. */
-
 struct xGetWindowAttributesReply {
     BYTE type;  /* X_Reply */
     CARD8 backingStore;
     CARD16 sequenceNumber;
     CARD32 length;	/* NOT 0; this is an extra-large reply */
     VisualID visualID;
-static if (HasVersion!"none" || HasVersion!"c_plusplus") {
-    CARD16 c_class;
-} else {
     CARD16 class_;
-}
     CARD8 bitGravity;
     CARD8 winGravity;
     CARD32 backingBitPlanes;
@@ -467,7 +404,7 @@ static if (HasVersion!"none" || HasVersion!"c_plusplus") {
     CARD32 yourEventMask;
     CARD16 doNotPropagateMask;
     CARD16 pad;
-    }
+}
 
 struct xGetGeometryReply {
     BYTE type;   /* X_Reply */
@@ -481,7 +418,7 @@ struct xGetGeometryReply {
     CARD16 pad1;
     CARD32 pad2;
     CARD32 pad3;
-    }
+}
 
 struct xQueryTreeReply {
     BYTE type;  /* X_Reply */
@@ -494,7 +431,7 @@ struct xQueryTreeReply {
     CARD32 pad3;
     CARD32 pad4;
     CARD32 pad5;
-    }
+}
 
 struct xInternAtomReply {
     BYTE type;  /* X_Reply */
@@ -507,7 +444,7 @@ struct xInternAtomReply {
     CARD32 pad4;
     CARD32 pad5;
     CARD32 pad6;
-    }
+}
 
 struct xGetAtomNameReply {
     BYTE type;  /* X_Reply */
@@ -521,7 +458,7 @@ struct xGetAtomNameReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xGetPropertyReply {
     BYTE type;  /* X_Reply */
@@ -534,7 +471,7 @@ struct xGetPropertyReply {
     CARD32 pad1;
     CARD32 pad2;
     CARD32 pad3;
-    }
+}
 
 struct xListPropertiesReply {
     BYTE type;  /* X_Reply */
@@ -548,7 +485,7 @@ struct xListPropertiesReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xGetSelectionOwnerReply {
     BYTE type;  /* X_Reply */
@@ -561,7 +498,7 @@ struct xGetSelectionOwnerReply {
     CARD32 pad4;
     CARD32 pad5;
     CARD32 pad6;
-    }
+}
 
 struct xGrabPointerReply {
     BYTE type;  /* X_Reply */
@@ -574,7 +511,7 @@ struct xGrabPointerReply {
     CARD32 pad4;
     CARD32 pad5;
     CARD32 pad6;
-    }
+}
 
 alias xGrabKeyboardReply = xGrabPointerReply;
 
@@ -588,7 +525,7 @@ struct xQueryPointerReply {
     CARD16 mask;
     CARD16 pad1;
     CARD32 pad;
-    }
+}
 
 struct xGetMotionEventsReply {
     BYTE type;  /* X_Reply */
@@ -601,7 +538,7 @@ struct xGetMotionEventsReply {
     CARD32 pad4;
     CARD32 pad5;
     CARD32 pad6;
-    }
+}
 
 struct xTranslateCoordsReply {
     BYTE type;  /* X_Reply */
@@ -614,7 +551,7 @@ struct xTranslateCoordsReply {
     CARD32 pad3;
     CARD32 pad4;
     CARD32 pad5;
-    }
+}
 
 struct xGetInputFocusReply {
     BYTE type;  /* X_Reply */
@@ -627,7 +564,7 @@ struct xGetInputFocusReply {
     CARD32 pad3;
     CARD32 pad4;
     CARD32 pad5;
-    }
+}
 
 struct xQueryKeymapReply {
     BYTE type;  /* X_Reply */
@@ -635,7 +572,7 @@ struct xQueryKeymapReply {
     CARD16 sequenceNumber;
     CARD32 length;  /* 2, NOT 0; this is an extra-large reply */
     BYTE[32] map;
-    }
+}
 
 /* Warning: this MUST match (up to component renaming) xListFontsWithInfoReply */
 struct xQueryFontReply {
@@ -666,7 +603,7 @@ struct xQueryTextExtentsReply {
     INT16 overallAscent, overallDescent;
     INT32 overallWidth, overallLeft, overallRight;
     CARD32 pad;
-    }
+}
 
 struct xListFontsReply {
     BYTE type;  /* X_Reply */
@@ -680,7 +617,7 @@ struct xListFontsReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 /* Warning: this MUST match (up to component renaming) xQueryFontReply */
 struct xListFontsWithInfoReply {
@@ -714,7 +651,7 @@ struct xGetFontPathReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xGetImageReply {
     BYTE type;  /* X_Reply */
@@ -727,7 +664,7 @@ struct xGetImageReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xListInstalledColormapsReply {
     BYTE type;  /* X_Reply */
@@ -741,7 +678,7 @@ struct xListInstalledColormapsReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xAllocColorReply {
     BYTE type; /* X_Reply */
@@ -754,7 +691,7 @@ struct xAllocColorReply {
     CARD32 pad3;
     CARD32 pad4;
     CARD32 pad5;
-    }
+}
 
 struct xAllocNamedColorReply {
     BYTE type; /* X_Reply */
@@ -766,7 +703,7 @@ struct xAllocNamedColorReply {
     CARD16 screenRed, screenGreen, screenBlue;
     CARD32 pad2;
     CARD32 pad3;
-    }
+}
 
 struct xAllocColorCellsReply {
     BYTE type;  /* X_Reply */
@@ -779,7 +716,7 @@ struct xAllocColorCellsReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xAllocColorPlanesReply {
     BYTE type; /* X_Reply */
@@ -791,7 +728,7 @@ struct xAllocColorPlanesReply {
     CARD32 redMask, greenMask, blueMask;
     CARD32 pad3;
     CARD32 pad4;
-    }
+}
 
 struct xQueryColorsReply {
     BYTE type; /* X_Reply */
@@ -805,7 +742,7 @@ struct xQueryColorsReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xLookupColorReply {
     BYTE type;  /* X_Reply */
@@ -817,7 +754,7 @@ struct xLookupColorReply {
     CARD32 pad3;
     CARD32 pad4;
     CARD32 pad5;
-    }
+}
 
 struct xQueryBestSizeReply {
     BYTE type;  /* X_Reply */
@@ -830,7 +767,7 @@ struct xQueryBestSizeReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xQueryExtensionReply {
     BYTE type;  /* X_Reply */
@@ -846,7 +783,7 @@ struct xQueryExtensionReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xListExtensionsReply {
     BYTE type;  /* X_Reply */
@@ -859,8 +796,7 @@ struct xListExtensionsReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
-
+}
 
 struct xSetMappingReply {
     BYTE type;  /* X_Reply */
@@ -873,7 +809,7 @@ struct xSetMappingReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 alias xSetPointerMappingReply = xSetMappingReply;
 alias xSetModifierMappingReply = xSetMappingReply;
 
@@ -888,7 +824,7 @@ struct xGetPointerMappingReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
+}
 
 struct xGetKeyboardMappingReply {
     BYTE type;
@@ -926,7 +862,7 @@ struct xGetKeyboardControlReply {
     CARD16 bellPitch, bellDuration;
     CARD16 pad;
     BYTE[32] map;  /* bit masks start here */
-    }
+}
 
 struct xGetPointerControlReply {
     BYTE type;  /* X_Reply */
@@ -940,7 +876,7 @@ struct xGetPointerControlReply {
     CARD32 pad4;
     CARD32 pad5;
     CARD32 pad6;
-    }
+}
 
 struct xGetScreenSaverReply {
     BYTE type;  /* X_Reply */
@@ -955,7 +891,7 @@ struct xGetScreenSaverReply {
     CARD32 pad4;
     CARD32 pad5;
     CARD32 pad6;
-    }
+}
 
 struct xListHostsReply {
     BYTE type;  /* X_Reply */
@@ -969,10 +905,7 @@ struct xListHostsReply {
     CARD32 pad5;
     CARD32 pad6;
     CARD32 pad7;
-    }
-
-
-
+}
 
 /*****************************************************************
  * Xerror
@@ -1007,7 +940,7 @@ struct _xEvent {
 	    BYTE type;
 	    BYTE detail;
 	    CARD16 sequenceNumber;
-	    }_U u;
+	}_U u;
 	struct _KeyButtonPointer {
 	    CARD32 pad00;
 	    Time time;
@@ -1068,7 +1001,7 @@ struct _xEvent {
 	    CARD16 width, height, borderWidth;
 	    BOOL override_;
 	    BYTE bpad;
-        }_CreateNotify createNotify;
+    }_CreateNotify createNotify;
 /*
  * The event fields in the structures for DestroyNotify, UnmapNotify,
  * MapNotify, ReparentNotify, ConfigureNotify, CirculateNotify, GravityNotify,
@@ -1086,17 +1019,17 @@ struct _xEvent {
 	    Window event, window;
 	    BOOL fromConfigure;
 	    BYTE pad1, pad2, pad3;
-        }_UnmapNotify unmapNotify;
+    }_UnmapNotify unmapNotify;
 	struct _MapNotify {
 	    CARD32 pad00;
 	    Window event, window;
 	    BOOL override_;
 	    BYTE pad1, pad2, pad3;
-        }_MapNotify mapNotify;
+    }_MapNotify mapNotify;
 	struct _MapRequest {
 	    CARD32 pad00;
 	    Window parent, window;
-        }_MapRequest mapRequest;
+    }_MapRequest mapRequest;
 	struct _Reparent {
 	    CARD32 pad00;
 	    Window event, window, parent;
@@ -1170,11 +1103,7 @@ struct _xEvent {
 	    CARD32 pad00;
 	    Window window;
 	    Colormap colormap;
-// #if defined(__cplusplus) || defined(c_plusplus)
-	    // BOOL c_new;
-// #else
 	    BOOL new_;
-// #endif
 	    BYTE state;			/* Installed or UnInstalled */
 	    BYTE pad1, pad2;
 	}_Colormap colormap;
@@ -1214,9 +1143,9 @@ struct _xEvent {
 		    Atom type;
 		    INT8[20] bytes;
 		}_B b;
-	    }_U u;
+	}_U u;
 	}_ClientMessage clientMessage;
-    }_Union u;
+}_Union u;
 }
 
 alias xEvent = _xEvent;
@@ -1250,8 +1179,6 @@ struct xGenericEvent {
     CARD32 pad7;
 }
 
-
-
 /* KeymapNotify events are not included in the above union because they
    are different from all other events: they do not have a "detail"
    or "sequenceNumber", so there is room for a 248-bit key mask. */
@@ -1259,7 +1186,7 @@ struct xGenericEvent {
 struct xKeymapEvent {
     BYTE type;
     BYTE[31] map;
-    }
+}
 
 enum XEventSize = (xEvent).sizeof;
 
@@ -1309,8 +1236,6 @@ union xReply {
     xEvent event;
 }
 
-
-
 /*****************************************************************
  * REQUESTS
  *****************************************************************/
@@ -1337,7 +1262,7 @@ struct xResourceReq {
     BYTE pad;
     CARD16 length;
     CARD32 id;  /* a Window, Drawable, Font, GContext, Pixmap, etc. */
-    }
+}
 
 struct xCreateWindowReq {
     CARD8 reqType;
@@ -1346,11 +1271,7 @@ struct xCreateWindowReq {
     Window wid, parent;
     INT16 x, y;
     CARD16 width, height, borderWidth;
-static if (HasVersion!"none" || HasVersion!"c_plusplus") {
-    CARD16 c_class;
-} else {
     CARD16 class_;
-}
     VisualID visual;
     CARD32 mask;
 }
@@ -1423,11 +1344,7 @@ struct xDeletePropertyReq {
 
 struct xGetPropertyReq {
     CARD8 reqType;
-static if (HasVersion!"none" || HasVersion!"c_plusplus") {
-    BOOL c_delete;
-} else {
     BOOL delete_;
-}
     CARD16 length;
     Window window;
     Atom property, type;
@@ -1451,7 +1368,7 @@ struct xConvertSelectionReq {
     Window requestor;
     Atom selection, target, property;
     Time time;
-    }
+}
 
 struct xSendEventReq {
     CARD8 reqType;
@@ -1592,7 +1509,7 @@ struct xQueryTextExtentsReq {
     BOOL oddLength;
     CARD16 length;
     Font fid;
-    }
+}
 
 struct xListFontsReq {
     CARD8 reqType;
@@ -1729,7 +1646,6 @@ struct xFillPolyReq {
     CARD16 pad1;
 }
 
-
 struct xPutImageReq {
     CARD8 reqType;
     CARD8 format;
@@ -1853,7 +1769,7 @@ struct xStoreNamedColorReq {
     CARD32 pixel;
     CARD16 nbytes;  /* number of name string bytes following structure */
     BYTE pad1, pad2;
-    }
+}
 
 struct xQueryColorsReq {
     CARD8 reqType;
@@ -1904,11 +1820,7 @@ struct xRecolorCursorReq {
 
 struct xQueryBestSizeReq {
     CARD8 reqType;
-static if (HasVersion!"none" || HasVersion!"c_plusplus") {
-    CARD8 c_class;
-} else {
     CARD8 class_;
-}
     CARD16 length;
     Drawable drawable;
     CARD16 width, height;
@@ -1996,13 +1908,13 @@ struct xListHostsReq {
     CARD8 reqType;
     BYTE pad;
     CARD16 length;
-    }
+}
 
 struct xChangeModeReq {
     CARD8 reqType;
     BYTE mode;
     CARD16 length;
-    }
+}
 
 alias xSetAccessControlReq = xChangeModeReq;
 alias xSetCloseDownModeReq = xChangeModeReq;
@@ -2015,9 +1927,7 @@ struct xRotatePropertiesReq { /* followed by LIST of ATOM */
     Window window;
     CARD16 nAtoms;
     INT16 nPositions;
-    }
-
-
+}
 
 /* Reply codes */
 
@@ -2075,7 +1985,7 @@ enum X_CloseFont =                    46;
 enum X_QueryFont =                    47;
 enum X_QueryTextExtents =             48;
 enum X_ListFonts =                    49;
-enum X_ListFontsWithInfo =    	       50;
+enum X_ListFontsWithInfo =    	      50;
 enum X_SetFontPath =                  51;
 enum X_GetFontPath =                  52;
 enum X_CreatePixmap =                 53;
@@ -2139,13 +2049,11 @@ enum X_ListHosts =                    110;
 enum X_SetAccessControl =             111;
 enum X_SetCloseDownMode =             112;
 enum X_KillClient =                   113;
-enum X_RotateProperties =	       114;
-enum X_ForceScreenSaver =	       115;
+enum X_RotateProperties =	          114;
+enum X_ForceScreenSaver =	          115;
 enum X_SetPointerMapping =            116;
 enum X_GetPointerMapping =            117;
-enum X_SetModifierMapping =	       118;
-enum X_GetModifierMapping =	       119;
+enum X_SetModifierMapping =	          118;
+enum X_GetModifierMapping =	          119;
 enum X_NoOperation =                  127;
 
-/* restore these definitions back to the typedefs in X.h */
- /* XPROTO_H */

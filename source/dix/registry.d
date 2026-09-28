@@ -29,7 +29,7 @@ import build.dix_config;
 import core.stdc.stdlib;
 import core.stdc.string;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 
 import registry;
 

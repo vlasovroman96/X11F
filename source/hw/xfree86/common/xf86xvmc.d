@@ -34,7 +34,7 @@ import include.xf86;
 import include.xf86_OSproc;;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 
 import dix.screen_hooks_priv;
 import include.extinit;

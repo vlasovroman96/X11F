@@ -34,7 +34,7 @@ import std.conv;
 import build.dix_config;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 //import externs.X11.Xatom;
 // //import externs.X11.extensions.xtestproto;
 import externs.X11.extensions.XI;

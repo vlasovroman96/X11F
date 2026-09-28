@@ -8,7 +8,7 @@ public import build.dix_config;
 public import Xext.panoramiX;
 public import pixman;
 import include.regionstr;
-import externs.X11.Xproto;
+import x11.Xproto;
 import include.screenint;
 import include.pixmap;
 import dix.resource;

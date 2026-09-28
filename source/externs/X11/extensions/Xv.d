@@ -45,7 +45,7 @@ SOFTWARE.
 **
 */
 
-public import externs.X11.X;
+import x11.Xdefs;
 
 enum XvName = "XVideo";
 enum XvVersion = 2;

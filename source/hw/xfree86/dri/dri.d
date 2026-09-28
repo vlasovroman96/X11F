@@ -50,7 +50,7 @@ import core.sys.posix.sys.time;
 import core.sys.posix.unistd;
 //import externs.X11.X;
 ////import x11.Xfuncproto;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.dri.hw.xfree86.dri.xf86driproto;
 
 import dix.dix_priv;

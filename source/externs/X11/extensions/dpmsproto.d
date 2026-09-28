@@ -37,6 +37,7 @@ import externs.X11.X;
 // alias XID = c_ulong;
 // alias 
 alias Time = XID;
+import x11.Xdefs;
 
 enum X_DPMSGetVersion =	0;
 enum X_DPMSCapable =		1;

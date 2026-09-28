@@ -32,7 +32,7 @@ import Xext.panoramiXsrv;
 
 import core.stdc.stdlib;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.extensions.shapeproto;
 import region;
 

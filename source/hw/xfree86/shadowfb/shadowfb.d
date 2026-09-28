@@ -11,7 +11,7 @@ extern(C): __gshared:
 import build.xorg_config;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.fonts.font;
 // //import externs.X11.fonts.fontstruct;
 

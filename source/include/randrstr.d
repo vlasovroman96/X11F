@@ -31,7 +31,7 @@ import core.stdc.config: c_long, c_ulong;
  */
  
 //public import externs.X11.X;
-//public import externs.X11.Xproto;
+//public import x11.Xproto;
 
 public import include.xlibre_ptrtypes;
 public import include.misc;

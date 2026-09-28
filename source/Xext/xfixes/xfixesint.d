@@ -47,7 +47,7 @@ extern(C): __gshared:
 
  
 //public import externs.X11.X;
-//public import externs.X11.Xproto;
+//public import x11.Xproto;
 // //public import externs.X11.extensions.xfixesproto;
 
 public import dix.selection_priv;

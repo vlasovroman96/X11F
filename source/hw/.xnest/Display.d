@@ -20,7 +20,7 @@ import core.stdc.string;
 import core.stdc.errno;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 
 import os.client_priv;
 import os.osdep;

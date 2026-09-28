@@ -52,7 +52,7 @@ SOFTWARE.
 import build.dix_config;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 //import externs.X11.extensions.XI2;
 
 import dix.cursor_priv;

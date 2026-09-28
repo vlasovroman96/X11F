@@ -32,7 +32,7 @@ from The Open Group.
 import build.dix_config;
 
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import externs.X11.extensions.bigreqsproto;
 
 import dix.dix_priv;

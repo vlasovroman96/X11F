@@ -81,7 +81,7 @@ import build.xlibre_server;
 import Xext.panoramiXsrv;
 import core.stdc.string;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.extensions.Xv;
 // //import externs.X11.extensions.Xvproto;
 

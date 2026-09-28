@@ -23,7 +23,7 @@ import externs.xcb.xcb_aux;
 
 //import externs.X11.X;
 //import x11.Xdefs;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 
 import dix.window_priv;
 import include.regionstr;

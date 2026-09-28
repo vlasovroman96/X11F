@@ -29,7 +29,7 @@ import build.dix_config;
 
 import core.stdc.stdint;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 //import externs.X11.extensions._render;
 // //import externs.X11.extensions.renderproto;
 // //import x11.Xfuncproto;

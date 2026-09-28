@@ -22,7 +22,7 @@ import include.xf86_OSproc;;
 
 //import externs.X11.X;
 // //import x11.Xos;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import include.scrnintstr;
 import include.regionstr;
 import include.windowstr;

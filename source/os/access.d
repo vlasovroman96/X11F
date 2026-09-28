@@ -96,7 +96,7 @@ import core.stdc.stdlib;
 import os.Xtrans;
 // import externs.X11.Xauth;
 //import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import include.misc;
 import core.stdc.errno;
 import core.sys.posix.sys.types;
