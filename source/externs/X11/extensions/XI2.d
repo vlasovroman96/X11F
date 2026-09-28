@@ -24,9 +24,7 @@ extern(C): __gshared:
  * DEALINGS IN THE SOFTWARE.
  *
  */
-import x11.Xmd;
-import externs.X11.Xlib;
-
+import x11.Xdefs;
  
 enum XInput_2_0 =                              7;
 /* DO NOT ADD TO THIS LIST. These are libXi-specific defines.
