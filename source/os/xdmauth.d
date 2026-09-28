@@ -62,7 +62,7 @@ private Bool authFromXDMCP;
 
 static if(XDMCP){
 //import x11.Xmd;
-//import externs.X11.Xdmcp;
+//import externs.xdmcp;
 
 /* XDM-AUTHENTICATION-1 */
 

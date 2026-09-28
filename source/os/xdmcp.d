@@ -59,7 +59,7 @@ import os.xdmauth;
 import include.input;
 import include.dixstruct;
 
-import externs.X11.Xdmcp;
+import externs.xdmcp;
 import os.Xtrans;
 
 static if(build.xlibre_server.XDMCP){
