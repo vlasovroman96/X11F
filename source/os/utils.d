@@ -155,6 +155,7 @@ import build.xlibre_server;
 import core.stdc.stdio;
 // import core.sys.posix.stdio;
 import os.connection;
+import x11.Xos;
 
 version = X_INCLUDE_NETDB_H;
 // //import x11.Xos_r;
@@ -261,7 +262,7 @@ version (CLOCK_MONOTONIC_COARSE) {
         return (tp.tv_sec * 1000) + (tp.tv_nsec / 1000000L);
 }
 
-    mixin(X_GETTIMEOFDAY!("&tv"));
+    X_GETTIMEOFDAY(&tv);
     return cast(uint)((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
@@ -282,7 +283,7 @@ version (MONOTONIC_CLOCK) {
         return cast(CARD64) tp.tv_sec * cast(CARD64)1000000 + tp.tv_nsec / 1000;
 }
 
-    mixin(X_GETTIMEOFDAY!("&tv"));
+    X_GETTIMEOFDAY(&tv);
     return cast(CARD64) tv.tv_sec * cast(CARD64)1000000 + cast(CARD64) tv.tv_usec;
 }
 }

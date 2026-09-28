@@ -10,7 +10,7 @@ import core.stdc.config: c_long, c_ulong;
  *      (c) 1998 Gerd Knorr <kraxel@cs.tu-berlin.de>
  */
 import build.xorg_config;
-
+import x11.Xos;
 import core.sys.posix.sys.time;
 import core.stdc.string;
 
@@ -40,7 +40,6 @@ import os.log;
 //#define I2C_TIMEOUT(x)	/*(x)*/ /* Report timeouts */
 //#define I2C_TRACE(x)    /*(x)*/ /* Report progress */
 
-enum string X_GETTIMEOFDAY(string t) = `gettimeofday(`~t~`, null);`;
 
 /* This is the default I2CUDelay function if not supplied by the driver.
  * High level I2C interfaces implementing the bus protocol in hardware
@@ -59,12 +58,12 @@ private void I2CUDelay(I2CBusPtr b, int usec)
     c_long diff = void;
 
     if (usec > 0) {
-        mixin(X_GETTIMEOFDAY!("&begin"));
+        X_GETTIMEOFDAY(&begin);
         do {
             /* It would be nice to use {xf86}usleep,
              * but usleep (1) takes >10000 usec !
              */
-            mixin(X_GETTIMEOFDAY!("&cur"));
+            X_GETTIMEOFDAY(&cur);
             d_secs = (cur.tv_sec - begin.tv_sec);
             d_usecs = (cur.tv_usec - begin.tv_usec);
             diff = d_secs * 1000000 + d_usecs;

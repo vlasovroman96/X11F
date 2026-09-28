@@ -1,7 +1,7 @@
 module x11.Xmd;
 
 /*
- * Copyright 2016, Roman Vlasov
+ * Copyright 2026, Roman Vlasov
  * Copyright 1987, 1998 The Open Group
  * Copyright 1987 Digital Equipment Corporation
  *
