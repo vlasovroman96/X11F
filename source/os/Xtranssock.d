@@ -124,10 +124,10 @@ alias SCM_RIGHTS = core.sys.posix.sys.socket.SCM_RIGHTS;
 alias cmsghdr = core.sys.posix.sys.socket.cmsghdr;
 alias ssize_t = core.sys.posix.sys.types.ssize_t;
 version (Windows) {} else {
-
+    
 static if(UNIXCONN){
 import sock_ = core.sys.posix.sys.un;
-import externs.netinet.in_;
+import core.sys.posix.netinet.in_;
 import core.sys.posix.arpa.inet;
 }
 

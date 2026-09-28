@@ -97,7 +97,7 @@ alias sockaddr_in = os.access.sockaddr_in;
 version (Windows) {} else {
 import core.sys.posix.sys.socket;
 
-import externs.netinet.in_;
+import core.sys.posix.netinet.in_;
 import core.sys.posix.arpa.inet;
 static if (CSRG_BASED) {
 import sys.param;

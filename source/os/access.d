@@ -120,7 +120,7 @@ version (NO_LOCAL_CLIENT_CRED) {} else {
 import core.sys.posix.pwd;
 }
 
-import externs.netinet.in_;
+import core.sys.posix.netinet.in_;
 
 version (HAVE_GETPEERUCRED) {
 import ucred;

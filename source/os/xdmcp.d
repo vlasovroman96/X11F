@@ -38,7 +38,7 @@ import os.Xtransutil;
 static if (!HasVersion!"Windows") {
 import externs.sys.param;
 import core.sys.posix.sys.socket;
-import externs.netinet.in_;
+import core.sys.linux.netinet.in_;
 import core.sys.posix.netdb;
 }
 
@@ -948,14 +948,14 @@ static if (IPv6){
                     ubyte hopflag = cast(ubyte) mcl.hops;
 
                     socketfd = xdmcpSocket;
-                    core.sys.posix.sys.socket.setsockopt(socketfd, core.sys.posix.netinet.in_.IPPROTO_IP, IP_MULTICAST_TTL,
+                    core.sys.posix.sys.socket.setsockopt(socketfd, core.sys.linux.netinet.in_.IPPROTO_IP, core.sys.linux.netinet.in_.IP_MULTICAST_TTL,
                                &hopflag, hopflag.sizeof);
                 }
                 else if (ai.ai_family == AF_INET6) {
                     int hopflag6 = mcl.hops;
 
                     socketfd = xdmcpSocket6;
-                    core.sys.posix.sys.socket.setsockopt(socketfd, core.sys.posix.netinet.in_.IPPROTO_IPV6, core.sys.posix.netinet.in_.IPV6_MULTICAST_HOPS,
+                    core.sys.posix.sys.socket.setsockopt(socketfd, core.sys.linux.netinet.in_.IPPROTO_IPV6, core.sys.linux.netinet.in_.IPV6_MULTICAST_HOPS,
                                &hopflag6, hopflag6.sizeof);
                 }
                 else {
