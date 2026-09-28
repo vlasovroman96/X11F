@@ -91,7 +91,7 @@ enum _Xos_isThreadInitialized =	(_Xglobal_lock);
 
 static if (HasVersion!"XTHREADS_WARN" || HasVersion!"XTHREADS_FILE_LINE") {
 version (XAllocIDs) {} else { /* Xlibint.h does not have multiple include protection */
-public import externs.X11.Xfuncproto;	/* for NeedFunctionPrototypes */
+public import x11.Xfuncproto;	/* for NeedFunctionPrototypes */
 extern void function(NeedFunctionPrototypes LockInfoPtr, char*, int) _XLockMutex_fn;
 extern void function(NeedFunctionPrototypes LockInfoPtr, char*, int) _XUnlockMutex_fn;
 }
@@ -103,7 +103,7 @@ enum _Xos_processUnlock =
 
 } else {
 version (XAllocIDs) {} else { /* Xlibint.h does not have multiple include protection */
-public import externs.X11.Xfuncproto;	/* for NeedFunctionPrototypes */
+public import x11.Xfuncproto;	/* for NeedFunctionPrototypes */
 extern void function(NeedFunctionPrototypes LockInfoPtr) _XLockMutex_fn;
 extern void function(NeedFunctionPrototypes LockInfoPtr) _XUnlockMutex_fn;
 }
@@ -119,7 +119,7 @@ version (_XtThreadsI_h) {} else {
 extern void function() _XtProcessLock;
 }
 version (_XtintrinsicP_h) {} else {
-public import externs.X11.Xfuncproto;	/* for NeedFunctionPrototypes */
+public import x11.Xfuncproto;	/* for NeedFunctionPrototypes */
 extern void XtProcessLock();
 extern void XtProcessUnlock();
 }

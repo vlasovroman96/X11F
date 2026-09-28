@@ -29,7 +29,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  
 public import x11.Xmd;
-public import externs.X11.Xfuncproto;
+public import x11.Xfuncproto;
 public import externs.X11.extensions.XKB;
 
 alias Window = CARD32;

@@ -51,7 +51,7 @@ import include.randrstr;
 public import externs.X11.extensions.randrproto;
 //public import externs.X11.extensions._render;      /* we share subpixel order information */
 public import include.picturestr;
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 
 /* required for ABI compatibility for now */
 enum RANDR_10_INTERFACE = 1;

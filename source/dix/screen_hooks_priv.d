@@ -22,7 +22,7 @@ extern(C): __gshared:
  */
  
 //public import x11.Xdefs;
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 
 public import include.callback; /* CallbackListPtr */
 public import include.pixmap; /* PixmapPtr */

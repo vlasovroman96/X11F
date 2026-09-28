@@ -34,7 +34,7 @@ import core.stdc.stdarg;
 import stdctypes = core.sys.posix.sys.types;
 // import libaudit;
 //import externs.X11.Xatom;
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 
 import dix.client_priv;
 import dix.devices_priv;

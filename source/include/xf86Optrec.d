@@ -65,7 +65,7 @@ public import core.stdc.stdio;
 public import core.stdc.string;
 public import include.xf86Optionstr;
 
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 
 // void  xf86addNewOption(XF86OptionPtr head, char* name, char* val);
 // void  xf86optionListDup(XF86OptionPtr opt);

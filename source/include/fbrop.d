@@ -24,7 +24,7 @@ extern(C): __gshared:
  */
 
  
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 import include.fb;;
 import fb.fbutil;
 

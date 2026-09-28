@@ -29,7 +29,7 @@ import core.stdc.config: c_long, c_ulong;
  *
  */
  
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 
 public import os.bug_priv;
 import build.dix_config;

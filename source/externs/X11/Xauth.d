@@ -61,7 +61,7 @@ struct Xauth {
 
 version (_XAUTH_STRUCT_ONLY) {} else {
 
-public import   externs.X11.Xfuncproto;
+public import   x11.Xfuncproto;
 // public import   x11.Xfuncs;
 
 public import   core.stdc.stdio;
@@ -115,6 +115,9 @@ int XauWriteAuth(FILE*, Xauth*);
 // XAU_ACCESS_ATTRIBUTE((read_only, 3, 2)) /* address */
 // XAU_ACCESS_ATTRIBUTE((read_only, 5, 4)) /* number */
 // XAU_ACCESS_ATTRIBUTE((read_only, 7, 6)) /* name */
+
+//We dont need this const here;
+enum NeedWidePrototypes = 1;
 static if (NeedWidePrototypes)
 {
     extern(C) Xauth* XauGetAuthByAddr(

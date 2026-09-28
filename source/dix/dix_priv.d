@@ -14,7 +14,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
 //public import x11.Xdefs;
-// // //public import externs.X11.Xfuncproto;
+// // //public import x11.Xfuncproto;
 //public import externs.X11.extensions.XI;
 
 public import dix.input_priv;

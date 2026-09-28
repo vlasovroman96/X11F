@@ -6,7 +6,7 @@ import build.dix_config;
 
 import core.stdc.string;
 //import externs.X11.X;
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.XvMC;
 // //import externs.X11.extensions.Xvproto;

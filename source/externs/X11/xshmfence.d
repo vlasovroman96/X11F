@@ -25,7 +25,7 @@ extern(C): __gshared:
 
 //  #pragma attribute(push, nogc, nothrow)
  
-public import externs.X11.Xfuncproto;
+public import x11.Xfuncproto;
 
 enum HAVE_STRUCT_XSHMFENCE =   1;
 

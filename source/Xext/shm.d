@@ -49,7 +49,7 @@ import core.sys.posix.fcntl;
 //import externs.X11.X;
 //import externs.X11.Xproto;
 // //import externs.X11.extensions.shmproto;
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 
 import dix.dix_priv;
 import dix.request_priv;
