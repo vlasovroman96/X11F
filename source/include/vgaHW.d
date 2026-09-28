@@ -14,7 +14,7 @@ import core.stdc.config: c_long, c_ulong;
  */
 
  
-//public import externs.X11.X;
+//public import x11.X;
 public import include.misc;
 public import include.input;
 public import include.scrnintstr;

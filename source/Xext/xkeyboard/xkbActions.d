@@ -36,8 +36,8 @@ import core.stdc.ctype;
 import os.inputthread;
 
 // import 
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 import externs.X11.extensions.XKB;
 import externs.X11.extensions.XKBproto;
 

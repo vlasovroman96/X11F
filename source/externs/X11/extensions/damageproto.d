@@ -28,7 +28,7 @@ extern(C): __gshared:
 public import x11.Xmd;
 public import externs.X11.extensions.xfixesproto;
 public import externs.X11.extensions.damagewire;
-public import externs.X11.Xprotostr;
+public import x11.Xprotostr;
 
 alias Window = CARD32;
 alias Drawable = CARD32;

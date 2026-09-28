@@ -57,15 +57,14 @@ public import include.callback;
 public import include.misc;
 public import include.dixaccess;
 import include.dixstruct;
-public import externs.X11.Xprotostr;
+public import x11.Xprotostr;
 public import x11.Xmd;
-public import externs.X11.X;
-public import x11.Xfuncproto;
+public import x11.X;
 public import x11.Xmd;
-public import externs.X11.X;
+public import x11.X;
 import x11.Xdefs;
 // public import x11.Xdefs;
-public import externs.X11.Xprotostr;
+public import x11.Xprotostr;
 import include.dixstruct;
 // import 
 

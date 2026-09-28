@@ -1,53 +1,12 @@
-module externs.X11.keysymdef;
-@nogc nothrow:
-extern(C): __gshared:
-/***********************************************************
-Copyright 1987, 1994, 1998  The Open Group
+module x11.keysymdef;
 
-Permission to use, copy, modify, distribute, and sell this software and its
-documentation for any purpose is hereby granted without fee, provided that
-the above copyright notice appear in all copies and that both that
-copyright notice and this permission notice appear in supporting
-documentation.
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of The Open Group shall
-not be used in advertising or otherwise to promote the sale, use or
-other dealings in this Software without prior written authorization
-from The Open Group.
-
-
-Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts
-
-                        All Rights Reserved
-
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the name of Digital not be
-used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.
-
-DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
-ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
-DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
-ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-SOFTWARE.
-
-******************************************************************/
+/*
+ * Copyright 2026, Roman Vlasov
+ * Copyright 1987, 1994, 1998  The Open Group
+ * Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts
+ *
+ * See COPYING for the full license texts.
+ */
 
 /*
  * The "X11 Window System Protocol" standard defines in Appendix A the
@@ -190,13 +149,11 @@ SOFTWARE.
  * period of transition. Once this period is over, the deprecated name
  * should be moved after the new canonical name.
  */
+import x11.keysym;
 
 enum XK_VoidSymbol =                  0xffffff  /* Void symbol */;
 
-// #define XK_MISCELLANY  /* Void symbol */
-
-
-// #ifdef XK_MISCELLANY
+static if( XK_MISCELLANY) {
 /*
  * TTY function keys, cleverly chosen to map to ASCII, for convenience of
  * programming, but could have been arbitrary (at the cost of lookup
@@ -409,7 +366,7 @@ enum XK_Super_L =                       0xffeb  /* Left super */;
 enum XK_Super_R =                       0xffec  /* Right super */;
 enum XK_Hyper_L =                       0xffed  /* Left hyper */;
 enum XK_Hyper_R =                       0xffee  /* Right hyper */;
-// #endif /* XK_MISCELLANY */
+} /* XK_MISCELLANY */
 
 /*
  * Keyboard (XKB) Extension function and modifier keys
@@ -417,9 +374,9 @@ enum XK_Hyper_R =                       0xffee  /* Right hyper */;
  * Byte 3 = 0xfe
  */
 
-version = XK_XKB_KEYS;
+enum XK_XKB_KEYS = true;
 
-version (XK_XKB_KEYS) {
+static if(XK_XKB_KEYS) {
 enum XK_ISO_Lock =                      0xfe01;
 enum XK_ISO_Level2_Latch =              0xfe02;
 enum XK_ISO_Level3_Shift =              0xfe03;
@@ -627,7 +584,7 @@ enum XK_3270_Enter =                    0xfd1e;
  * (ISO/IEC 8859-1 = Unicode U+0020..U+00FF)
  * Byte 3 = 0
  */
-// #ifdef XK_LATIN1
+static if( XK_LATIN1) {
 enum XK_space =                         0x0020  /* U+0020 SPACE */;
 enum XK_exclam =                        0x0021  /* U+0021 EXCLAMATION MARK */;
 enum XK_quotedbl =                      0x0022  /* U+0022 QUOTATION MARK */;
@@ -829,14 +786,14 @@ enum XK_udiaeresis =                    0x00fc  /* U+00FC LATIN SMALL LETTER U W
 enum XK_yacute =                        0x00fd  /* U+00FD LATIN SMALL LETTER Y WITH ACUTE */;
 enum XK_thorn =                         0x00fe  /* U+00FE LATIN SMALL LETTER THORN */;
 enum XK_ydiaeresis =                    0x00ff  /* U+00FF LATIN SMALL LETTER Y WITH DIAERESIS */;
-// #endif /* XK_LATIN1 */
+} /* XK_LATIN1 */
 
 /*
  * Latin 2
  * Byte 3 = 1
  */
 
-// #ifdef XK_LATIN2
+static if( XK_LATIN2) {
 enum XK_Aogonek =                       0x01a1  /* U+0104 LATIN CAPITAL LETTER A WITH OGONEK */;
 enum XK_breve =                         0x01a2  /* U+02D8 BREVE */;
 enum XK_Lstroke =                       0x01a3  /* U+0141 LATIN CAPITAL LETTER L WITH STROKE */;
@@ -894,14 +851,14 @@ enum XK_uring =                         0x01f9  /* U+016F LATIN SMALL LETTER U W
 enum XK_udoubleacute =                  0x01fb  /* U+0171 LATIN SMALL LETTER U WITH DOUBLE ACUTE */;
 enum XK_tcedilla =                      0x01fe  /* U+0163 LATIN SMALL LETTER T WITH CEDILLA */;
 enum XK_abovedot =                      0x01ff  /* U+02D9 DOT ABOVE */;
-// #endif /* XK_LATIN2 */
+} /* XK_LATIN2 */
 
 /*
  * Latin 3
  * Byte 3 = 2
  */
 
-// #ifdef XK_LATIN3
+static if( XK_LATIN3) {
 enum XK_Hstroke =                       0x02a1  /* U+0126 LATIN CAPITAL LETTER H WITH STROKE */;
 enum XK_Hcircumflex =                   0x02a6  /* U+0124 LATIN CAPITAL LETTER H WITH CIRCUMFLEX */;
 enum XK_Iabovedot =                     0x02a9  /* U+0130 LATIN CAPITAL LETTER I WITH DOT ABOVE */;
@@ -924,7 +881,7 @@ enum XK_gabovedot =                     0x02f5  /* U+0121 LATIN SMALL LETTER G W
 enum XK_gcircumflex =                   0x02f8  /* U+011D LATIN SMALL LETTER G WITH CIRCUMFLEX */;
 enum XK_ubreve =                        0x02fd  /* U+016D LATIN SMALL LETTER U WITH BREVE */;
 enum XK_scircumflex =                   0x02fe  /* U+015D LATIN SMALL LETTER S WITH CIRCUMFLEX */;
-// #endif /* XK_LATIN3 */
+} /* XK_LATIN3 */
 
 
 /*
@@ -932,7 +889,7 @@ enum XK_scircumflex =                   0x02fe  /* U+015D LATIN SMALL LETTER S W
  * Byte 3 = 3
  */
 
-// #ifdef XK_LATIN4
+static if( XK_LATIN4) {
 enum XK_kra =                           0x03a2  /* U+0138 LATIN SMALL LETTER KRA */;
 enum XK_kappa =                         0x03a2  /* deprecated */;
 enum XK_Rcedilla =                      0x03a3  /* U+0156 LATIN CAPITAL LETTER R WITH CEDILLA */;
@@ -969,12 +926,12 @@ enum XK_kcedilla =                      0x03f3  /* U+0137 LATIN SMALL LETTER K W
 enum XK_uogonek =                       0x03f9  /* U+0173 LATIN SMALL LETTER U WITH OGONEK */;
 enum XK_utilde =                        0x03fd  /* U+0169 LATIN SMALL LETTER U WITH TILDE */;
 enum XK_umacron =                       0x03fe  /* U+016B LATIN SMALL LETTER U WITH MACRON */;
-// #endif /* XK_LATIN4 */
+} /* XK_LATIN4 */
 
 /*
  * Latin 8
  */
-// #ifdef XK_LATIN8
+static if( XK_LATIN8) {
 enum XK_Wcircumflex =                0x1000174  /* U+0174 LATIN CAPITAL LETTER W WITH CIRCUMFLEX */;
 enum XK_wcircumflex =                0x1000175  /* U+0175 LATIN SMALL LETTER W WITH CIRCUMFLEX */;
 enum XK_Ycircumflex =                0x1000176  /* U+0176 LATIN CAPITAL LETTER Y WITH CIRCUMFLEX */;
@@ -1001,18 +958,18 @@ enum XK_Wdiaeresis =                 0x1001e84  /* U+1E84 LATIN CAPITAL LETTER W
 enum XK_wdiaeresis =                 0x1001e85  /* U+1E85 LATIN SMALL LETTER W WITH DIAERESIS */;
 enum XK_Ygrave =                     0x1001ef2  /* U+1EF2 LATIN CAPITAL LETTER Y WITH GRAVE */;
 enum XK_ygrave =                     0x1001ef3  /* U+1EF3 LATIN SMALL LETTER Y WITH GRAVE */;
-// #endif /* XK_LATIN8 */
+} /* XK_LATIN8 */
 
 /*
  * Latin 9
  * Byte 3 = 0x13
  */
 
-// #ifdef XK_LATIN9
+static if( XK_LATIN9) {
 enum XK_OE =                            0x13bc  /* U+0152 LATIN CAPITAL LIGATURE OE */;
 enum XK_oe =                            0x13bd  /* U+0153 LATIN SMALL LIGATURE OE */;
 enum XK_Ydiaeresis =                    0x13be  /* U+0178 LATIN CAPITAL LETTER Y WITH DIAERESIS */;
-// #endif /* XK_LATIN9 */
+} /* XK_LATIN9 */
 
 /*
  * Katakana
@@ -1195,7 +1152,7 @@ enum XK_Arabic_switch =                 0xff7e  /* non-deprecated alias for Mode
  * Cyrillic
  * Byte 3 = 6
  */
-// #ifdef XK_CYRILLIC
+static if( XK_CYRILLIC) {
 enum XK_Cyrillic_GHE_bar =           0x1000492  /* U+0492 CYRILLIC CAPITAL LETTER GHE WITH STROKE */;
 enum XK_Cyrillic_ghe_bar =           0x1000493  /* U+0493 CYRILLIC SMALL LETTER GHE WITH STROKE */;
 enum XK_Cyrillic_ZHE_descender =     0x1000496  /* U+0496 CYRILLIC CAPITAL LETTER ZHE WITH DESCENDER */;
@@ -1337,7 +1294,7 @@ enum XK_Cyrillic_E =                    0x06fc  /* U+042D CYRILLIC CAPITAL LETTE
 enum XK_Cyrillic_SHCHA =                0x06fd  /* U+0429 CYRILLIC CAPITAL LETTER SHCHA */;
 enum XK_Cyrillic_CHE =                  0x06fe  /* U+0427 CYRILLIC CAPITAL LETTER CHE */;
 enum XK_Cyrillic_HARDSIGN =             0x06ff  /* U+042A CYRILLIC CAPITAL LETTER HARD SIGN */;
-// #endif /* XK_CYRILLIC */
+} /* XK_CYRILLIC */
 
 /*
  * Greek
@@ -1345,7 +1302,7 @@ enum XK_Cyrillic_HARDSIGN =             0x06ff  /* U+042A CYRILLIC CAPITAL LETTE
  * Byte 3 = 7
  */
 
-// #ifdef XK_GREEK
+static if( XK_GREEK) {
 enum XK_Greek_ALPHAaccent =             0x07a1  /* U+0386 GREEK CAPITAL LETTER ALPHA WITH TONOS */;
 enum XK_Greek_EPSILONaccent =           0x07a2  /* U+0388 GREEK CAPITAL LETTER EPSILON WITH TONOS */;
 enum XK_Greek_ETAaccent =               0x07a3  /* U+0389 GREEK CAPITAL LETTER ETA WITH TONOS */;
@@ -1421,7 +1378,7 @@ enum XK_Greek_chi =                     0x07f7  /* U+03C7 GREEK SMALL LETTER CHI
 enum XK_Greek_psi =                     0x07f8  /* U+03C8 GREEK SMALL LETTER PSI */;
 enum XK_Greek_omega =                   0x07f9  /* U+03C9 GREEK SMALL LETTER OMEGA */;
 enum XK_Greek_switch =                  0xff7e  /* non-deprecated alias for Mode_switch */;
-// #endif /* XK_GREEK */
+} /* XK_GREEK */
 
 /*
  * Technical

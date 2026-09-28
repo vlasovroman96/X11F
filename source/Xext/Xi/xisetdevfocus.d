@@ -62,7 +62,7 @@ int ProcXISetFocus(ClientPtr client)
     if (!dev.focus)
         return BadDevice;
 
-    return SetInputFocus(client, dev, stuff.focus, externs.X11.X.RevertToParent,
+    return SetInputFocus(client, dev, stuff.focus, x11.X.RevertToParent,
                          stuff.time, TRUE);
 }
 

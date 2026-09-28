@@ -32,7 +32,7 @@ import dix.screen_hooks_priv;
 import include.mipict;
 import os.osdep;
 
-import    externs.X11.X;
+import    x11.X;
 import    include.scrnintstr;
 import    include.windowstr;
 import    externs.X11.fonts.font;

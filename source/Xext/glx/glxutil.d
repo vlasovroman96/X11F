@@ -40,7 +40,7 @@ import glx.glxcontext;
 import glx.glxserver;
 import Xext.glx.fix;
 
-alias XID = externs.X11.X.XID;
+alias XID = x11.X.XID;
 
 GLboolean __glXDrawableInit(__GLXdrawable* drawable, __GLXscreen* screen, DrawablePtr pDraw, int type, XID drawID, __GLXconfig* config);
 void __glXDrawableRelease(__GLXdrawable* drawable);

@@ -32,8 +32,8 @@ Author:  Bob Scheifler, MIT X Consortium
 import build.dix_config;
 
 import core.stdc.math;
-//import externs.X11.X;
-//import externs.X11.Xprotostr;
+//import x11.X;
+//import x11.Xprotostr;
 import include.regionstr;
 import include.gcstruct;
 import include.pixmapstr;
@@ -759,7 +759,7 @@ void miPolyFillArc(DrawablePtr pDraw, GCPtr pGC, int narcs_all, xArc* parcs)
                 nspans += (arc.height + 1) >> 1;
         }
 
-        pts = points = cast(_xPoint*)calloc(1, ((xPoint).sizeof * nspans +
+        pts = points = cast(xPoint*)calloc(1, ((xPoint).sizeof * nspans +
                                int.sizeof * nspans));
         if (points) {
             wids = widths = cast(int*) (points + nspans);

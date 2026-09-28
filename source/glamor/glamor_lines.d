@@ -75,7 +75,7 @@ private Bool glamor_poly_lines_solid_gl(DrawablePtr drawable, GCPtr gc, int mode
 
     /* Set up the vertex buffers for the points */
 
-    v = cast(_xPoint*)glamor_get_vbo_space(drawable.pScreen,
+    v = cast(xPoint*)glamor_get_vbo_space(drawable.pScreen,
                              cast(uint)((n + add_last) * xPoint.sizeof),
                              &vbo_offset);
 

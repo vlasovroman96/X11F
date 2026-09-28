@@ -87,7 +87,7 @@ import core.sys.posix.sys.time;
 import core.sys.posix.sys.resource;
 }
 import include.misc;
-//import externs.X11.X;
+//import x11.X;
 import os.Xtrans;
 
 import core.sys.posix.libgen;

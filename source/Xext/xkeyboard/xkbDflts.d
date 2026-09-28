@@ -7,7 +7,7 @@ enum DEFAULT_H = 1;
 public import dix.dix_priv;
 import externs.X11.extensions.XKB;
 
-import externs.X11.keysymdef;
+import x11.keysymdef;
 import include.xkbstr;
 import include.xkbstr;
 

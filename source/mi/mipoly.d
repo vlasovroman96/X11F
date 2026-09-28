@@ -53,7 +53,7 @@ SOFTWARE.
  */
 import build.dix_config;
 
-//import externs.X11.X;
+//import x11.X;
 import include.windowstr;
 import include.gcstruct;
 import include.pixmapstr;
@@ -465,7 +465,7 @@ private Bool miFillConvexPoly(DrawablePtr dst, GCPtr pgc, int count, DDXPointPtr
     dy = ymax - ymin + 1;
     if ((count < 3) || (dy < 0))
         return TRUE;
-    ptsOut = FirstPoint = cast(_xPoint*)calloc(dy, xPoint.sizeof);
+    ptsOut = FirstPoint = cast(xPoint*)calloc(dy, xPoint.sizeof);
     width = FirstWidth = cast(int*) calloc(dy, int.sizeof);
     if (!FirstPoint || !FirstWidth) {
         free(FirstWidth);

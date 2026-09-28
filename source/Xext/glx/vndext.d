@@ -31,7 +31,7 @@ extern(C): __gshared:
  */
 import build.dix_config;
 
-import externs.X11.X;
+import x11.X;
 // import include.callback;
 import include.privates;
 import glx.vndserver_priv;

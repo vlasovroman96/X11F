@@ -49,7 +49,7 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.X11.keysym;
+//import x11.keysym;
 
 import dix.dix_priv;
 import include.dix;

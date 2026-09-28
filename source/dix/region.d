@@ -81,7 +81,7 @@ Equipment Corporation.
 import build.dix_config;
 
 import include.regionstr;
-// //import externs.X11.Xprotostr;
+// //import x11.Xprotostr;
 // //import x11.Xfuncproto;
 import include.gc;
 import pixman;

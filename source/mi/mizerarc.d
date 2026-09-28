@@ -38,8 +38,8 @@ Author:  Bob Scheifler, MIT X Consortium
 import build.dix_config;
 
 import core.stdc.math;
-//import externs.X11.X;
-//import externs.X11.Xprotostr;
+//import x11.X;
+//import x11.Xprotostr;
 
 import mi.mi_priv;
 
@@ -674,7 +674,7 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
                    cast(ubyte*) pGC.dash, cast(int) pGC.numInDashList,
                    &dinfo.dashOffsetInit);
     }
-    points = cast(_xPoint*)calloc(numPts, xPoint.sizeof);
+    points = cast(xPoint*)calloc(numPts, xPoint.sizeof);
     if (!points) {
         if (dospans) {
             free(widths);

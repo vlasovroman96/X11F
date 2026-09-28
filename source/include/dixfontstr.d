@@ -30,7 +30,7 @@ public import include.dixfont;
 import Xext.xf86bigfont;
 // import ;
 // //public import externs.X11.fonts.fontstruct;
-//public import externs.X11.Xproto;         /* for xQueryFontReply */
+//public import x11.Xproto;         /* for xQueryFontReply */
 import fb.fbglyph;
 
 // enum string FONTCHARSET(string font) = `(` ~ font ~ `)`;

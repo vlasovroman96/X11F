@@ -49,7 +49,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-//public import externs.X11.Xprotostr;
+//public import x11.Xprotostr;
 
 public import include.gc;
 public import include.pixmap;
@@ -60,9 +60,9 @@ public import include.privates;
 import legacyXf = externs.X11.fonts.font;
 import legacyXfs = externs.X11.fonts.fontstruct;
 
-// alias xSegment = externs.X11.Xprotostr.xSegment;
-// alias xRectangle = externs.X11.Xprotostr.xRectangle;
-// alias xArc = externs.X11.Xprotostr.xArc;
+// alias xSegment = x11.Xprotostr.xSegment;
+// alias xRectangle = x11.Xprotostr.xRectangle;
+// alias xArc = x11.Xprotostr.xArc;
 
 version (_XTYPEDEF_CHARINFOPTR) {} else {
 alias CharInfoPtr = legacyXfs._CharInfo*;  /* also in fonts/include/font.h */

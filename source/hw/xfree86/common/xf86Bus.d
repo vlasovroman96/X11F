@@ -42,7 +42,7 @@ import build.xlibre_server;
 import core.stdc.ctype;
 import core.stdc.stdlib;
 import core.sys.posix.unistd;
-//import externs.X11.X;
+//import x11.X;
 
 import config.hotplug_priv;
 import os.osdep;

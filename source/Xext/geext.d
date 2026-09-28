@@ -30,7 +30,7 @@ import build.dix_config;
 
 import externs.X11.extensions.geproto;
 // // //import externs.X11.extensions.geproto;
-//import externs.X11.X;
+//import x11.X;
 
 import dix.dix_priv;
 import dix.request_priv;

@@ -27,7 +27,7 @@ import core.stdc.config: c_long, c_ulong;
 import build.dix_config;
 
 import core.stdc.stdlib;
-import externs.X11.X;
+import x11.X;
 
 import dix.screen_hooks_priv;
 

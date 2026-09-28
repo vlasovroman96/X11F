@@ -121,7 +121,7 @@ struct xPointFixed {
     Fixed y;
 }
 
-enum sz_xPointFixed =	8;
+enum szxPointFixed =	8;
 
 struct xLineFixed {
     xPointFixed p1;

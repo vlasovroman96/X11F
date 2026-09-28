@@ -33,7 +33,7 @@ import externs.linux.kd;
 import core.sys.linux.fcntl;
 import core.sys.posix.sys.stat;
 import core.sys.posix.sys.ioctl;
-//import externs.X11.keysym;
+//import x11.keysym;
 import externs.linux.apm_bios;
 import core.sys.posix.unistd;
 

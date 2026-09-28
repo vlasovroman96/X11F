@@ -13,7 +13,7 @@ extern(C): __gshared:
  
 public import externs.X11.extensions.xf86bigfont;
 public import x11.Xmd;
-public import externs.X11.Xproto;
+public import x11.Xproto;
 
 enum XF86BIGFONTNAME =			"XFree86-Bigfont";
 

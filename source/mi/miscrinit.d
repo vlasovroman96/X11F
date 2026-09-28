@@ -33,7 +33,7 @@ from The Open Group.
 import build.xlibre_server;
 
 
-//import externs.X11.X;
+//import x11.X;
 // //import externs.X11.extensions.shm;
 
 import include.shmint;

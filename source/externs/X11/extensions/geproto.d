@@ -28,8 +28,8 @@ extern(C): __gshared:
  */
 
  
-public import externs.X11.Xproto;
-public import externs.X11.X;
+public import x11.Xproto;
+public import x11.X;
 import x11.Xmd;
 public import externs.X11.extensions.ge;
 

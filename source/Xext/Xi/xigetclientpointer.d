@@ -28,8 +28,8 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-//import externs.X11.X;              /* for inputstr.h    */
-//import externs.X11.Xproto;         /* Request macro     */
+//import x11.X;              /* for inputstr.h    */
+//import x11.Xproto;         /* Request macro     */
 //import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XI2proto;
 

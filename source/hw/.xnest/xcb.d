@@ -12,9 +12,9 @@ import externs.xcb.xcb;
 import externs.xcb.xcb_aux;
 import externs.xcb.xcb_icccm;
 
-//import externs.X11.X;
+//import x11.X;
 //import x11.Xdefs;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 import externs.xcb.xkb;
 
 import include.gc;

@@ -37,8 +37,8 @@ import externs.X11.extensions.dpmsconst;
 
 // //import stdbool;
 import core.stdc.stdio;
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 // //import externs.X11.extensions.saverproto;
 
 import dix.colormap_priv;

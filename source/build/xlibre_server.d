@@ -37,7 +37,7 @@ enum DRI3 = 1;
 // version = GLXEXT;
 
 /* Support XDM-AUTH*-1 */
-// version = HASXDMAUTH;
+enum HASXDMAUTH = 1;
 
 /* Add a padding for legacy nvidia drivers that support old ABI */
 /* Define to 1 if you have the `reallocarray' function. */

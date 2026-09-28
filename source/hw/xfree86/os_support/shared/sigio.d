@@ -63,7 +63,7 @@ import build.xorg_config;
 import core.stdc.errno;
 import core.sys.posix.sys.stat;
 import core.sys.posix.poll;
-//import externs.X11.X;
+//import x11.X;
 
 import os.osdep;
 import os.xserver_poll;

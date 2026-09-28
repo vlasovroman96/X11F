@@ -34,7 +34,7 @@ THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  
 public import x11.Xdefs;
-//import externs.X11.X;
+//import x11.X;
 import externs.X11.extensions.XKB;
 // import externs.X11.extensions.XKBgeom;
 import include.input;

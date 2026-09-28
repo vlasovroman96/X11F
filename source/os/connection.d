@@ -73,8 +73,8 @@ import build.xlibre_server;
 version (Windows) {
 //import externs.X11.Xwinsock;
 }
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 import os.Xtrans;
 import os.Xtransint;
 import core.stdc.errno;

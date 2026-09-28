@@ -80,9 +80,9 @@ import build.xlibre_server;
 import config.version_config;
 
 import pixman;
-//import externs.X11.X;
+//import x11.X;
 // //import x11.Xos;            /* for unistd.h  */
-// //import externs.X11.Xproto;
+// //import x11.Xproto;
 // //import externs.X11.fonts.font;
 // //import externs.X11.fonts.fontstruct;
 import externs.X11.fonts.libxfont2;

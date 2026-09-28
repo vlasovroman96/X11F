@@ -26,7 +26,7 @@ extern(C): __gshared:
 import build.xlibre_server;
 import Xext.panoramiXsrv;
 
-//import externs.X11.X;
+//import x11.X;
 
 import dix.input_priv;
 import dix.screen_hooks_priv;

@@ -57,7 +57,7 @@ import core.stdc.errno;
 import core.stdc.stdio;
 import core.stdc.signal;
 import core.sys.posix.string;
-//import externs.X11.X;
+//import x11.X;
 // //import x11.Xos;
 version (HAVE_DLFCN_H) {
 import core.sys.posix.dlfcn;

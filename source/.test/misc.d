@@ -40,7 +40,7 @@ import include.dixstruct;
 import test.tests_common;
 // import x11.Xmd;
 // import x11.Xdefs;
-// import externs.X11.X;
+// import x11.X;
 import include.xlibre_ptrtypes;
 import test.tests;
 

@@ -36,7 +36,7 @@ from The Open Group.
 
 import build.dix_config;
 
-//import   externs.X11.X;
+//import   x11.X;
 static import   externs.X11.Xauth;
 import   include.misc;
 import os.osdep;
@@ -61,7 +61,7 @@ import os.xdmcp;
 enum XAUTH_PROTO_MIT = "MIT-MAGIC-COOKIE-1";
 enum XAUTH_PROTO_XDM = "XDM-AUTHORIZATION-1";
 
-import externs.X11.X;
+import x11.X;
 import x11.Xmd;
 import x11.Xdefs;
 

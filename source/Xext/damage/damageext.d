@@ -27,9 +27,9 @@ extern(C): __gshared:
 import build.dix_config;
 import build.xlibre_server;
 
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.extensions.damageproto;
-//import externs.X11.X;
+//import x11.X;
 
 import dix.dix_priv;
 import dix.request_priv;

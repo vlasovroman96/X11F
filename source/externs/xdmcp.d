@@ -1,33 +1,18 @@
-module externs.X11.Xdmcp;
-@nogc nothrow:
-extern(C): __gshared:
+module externs.xdmcp;
+
 /*
+ * Copyright 2026 Roman Vlasov
  * Copyright 1989 Network Computing Devices, Inc., Mountain View, California.
  *
- * Permission to use, copy, modify, and distribute this software and its
- * documentation for any purpose and without fee is hereby granted, provided
- * that the above copyright notice appear in all copies and that both that
- * copyright notice and this permission notice appear in supporting
- * documentation, and that the name of N.C.D. not be used in advertising or
- * publicity pertaining to distribution of the software without specific,
- * written prior permission.  N.C.D. makes no representations about the
- * suitability of this software for any purpose.  It is provided "as is"
- * without express or implied warranty.
- *
+ * See COPYING for the full license texts.
  */
 
+@nogc nothrow:
+extern(C): __gshared:
 
+//There must be config for x11 proto maybe?
 import build.xlibre_server;
-public import x11.Xmd;
-import core.sys.posix.netinet.in_;
-public import x11.Xfuncproto;
-import std.compiler;
-
-    version = V_IPv6;
-// static if(IPv6) {
-// }
-
-// _XFUNCPROTOBEGIN
+import x11.Xmd;
 
 enum XDM_PROTOCOL_VERSION =	1;
 enum XDM_UDP_PORT =		177;
@@ -70,8 +55,7 @@ alias FAILED = xdmOpCode.FAILED;
 alias KEEPALIVE = xdmOpCode.KEEPALIVE;
 alias ALIVE = xdmOpCode.ALIVE;
 
-// version(IPv6 && AF_INET6)
-version(V_IPv6)
+static if(IPv6)
 {
 
 enum xdmcp_states {
@@ -109,84 +93,64 @@ alias XDM_OFF = xdmcp_states.XDM_OFF;
 alias XDM_AWAIT_USER_INPUT = xdmcp_states.XDM_AWAIT_USER_INPUT;
 alias XDM_KEEPALIVE = xdmcp_states.XDM_KEEPALIVE;
 alias XDM_AWAIT_ALIVE_RESPONSE = xdmcp_states.XDM_AWAIT_ALIVE_RESPONSE;
-alias XDM_MULTICAST = xdmcp_states.XDM_MULTICAST;
-alias XDM_COLLECT_MULTICAST_QUERY = xdmcp_states.XDM_COLLECT_MULTICAST_QUERY;
+static if(IPv6) {
+    alias XDM_MULTICAST = xdmcp_states.XDM_MULTICAST;
+    alias XDM_COLLECT_MULTICAST_QUERY = xdmcp_states.XDM_COLLECT_MULTICAST_QUERY;
+}
 alias XDM_KEEP_ME_LAST = xdmcp_states.XDM_KEEP_ME_LAST;
 
-
-// version (NOTDEF) {
-/* table of hosts */
-
-enum XDM_MAX_STR_LEN = 21;
-enum XDM_MAX_HOSTS = 20;
-struct xdm_host_table {
-  sockaddr_in sockaddr;
-  char[XDM_MAX_STR_LEN] name = 0;
-  char[XDM_MAX_STR_LEN] status = 0;
-}
-// } /* NOTDEF */
 
 alias CARD8Ptr = CARD8*;
 alias CARD16Ptr = CARD16*;
 alias CARD32Ptr = CARD32*;
 
-struct _ARRAY8 {
+struct ARRAY8 {
     CARD16 length;
     CARD8Ptr data;
-}alias ARRAY8 = _ARRAY8;
-alias ARRAY8Ptr = _ARRAY8*;
+}
+alias ARRAY8Ptr = ARRAY8*;
 
-struct _ARRAY16 {
+struct ARRAY16 {
     CARD8 length;
     CARD16Ptr data;
-}alias ARRAY16 = _ARRAY16;
-alias ARRAY16Ptr = _ARRAY16*;
+}
+alias ARRAY16Ptr = ARRAY16*;
 
-struct _ARRAY32 {
+struct ARRAY32 {
     CARD8 length;
     CARD32Ptr data;
-}alias ARRAY32 = _ARRAY32;
-alias ARRAY32Ptr = _ARRAY32*;
+}
+alias ARRAY32Ptr = ARRAY32*;
 
-struct _ARRAYofARRAY8 {
+struct ARRAYofARRAY8 {
     CARD8 length;
     ARRAY8Ptr data;
-}alias ARRAYofARRAY8 = _ARRAYofARRAY8;
-alias ARRAYofARRAY8Ptr = _ARRAYofARRAY8*;
+}
+alias ARRAYofARRAY8Ptr = ARRAYofARRAY8*;
 
-struct _XdmcpHeader {
+struct XdmcpHeader {
     CARD16 version_, opcode, length;
-}alias XdmcpHeader = _XdmcpHeader;
-alias XdmcpHeaderPtr = _XdmcpHeader*;
+}
+alias XdmcpHeaderPtr = XdmcpHeader*;
 
-struct _XdmcpBuffer {
+struct XdmcpBuffer {
     BYTE* data;
     int size;		/* size of buffer pointed by to data */
     int pointer;		/* current index into data */
     int count;		/* bytes read from network into data */
-}alias XdmcpBuffer = _XdmcpBuffer;
-alias XdmcpBufferPtr = _XdmcpBuffer*;
+}
+alias XdmcpBufferPtr = XdmcpBuffer*;
 
-struct _XdmAuthKey {
+struct XdmAuthKey {
     BYTE[8] data;
-}alias XdmAuthKeyRec = _XdmAuthKey;
-alias XdmAuthKeyPtr = _XdmAuthKey*;
+}
+alias XdmAuthKeyPtr = XdmAuthKey*;
 
 
 /* implementation-independent network address structure.
    Equiv to sockaddr* for sockets. */
 
 alias XdmcpNetaddr = char*;
-
-version (__has_attribute) {} else {
-enum string __has_attribute(string x) = `0  /* Compatibility with older compilers */`;
-}
-
-// static if mixin((__has_attribute!(`access`)) {)
-// enum string XDM_ACCESS_ATTRIBUTE(string X) = `__attribute__((access ` ~ X ~ `))`;
-// } else {
-// //# define XDM_ACCESS_ATTRIBUTE(X)
-// }
 
 extern int XdmcpWriteARRAY16(XdmcpBufferPtr buffer, const(ARRAY16Ptr) array);
 extern int XdmcpWriteARRAY32(XdmcpBufferPtr buffer, const(ARRAY32Ptr) array);
@@ -223,14 +187,11 @@ extern int XdmcpARRAY8Equal(const(ARRAY8Ptr) array1, const(ARRAY8Ptr) array2);
 extern void XdmcpGenerateKey(XdmAuthKeyPtr key);
 extern void XdmcpIncrementKey(XdmAuthKeyPtr key);
 extern void XdmcpDecrementKey(XdmAuthKeyPtr key);
-version (HASXDMAUTH) {
-extern void XdmcpWrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
-extern void XdmcpUnwrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
-}
 
-version (TRUE) {} else {
-enum TRUE =	1;
-enum FALSE =	0;
+static if (HASXDMAUTH) 
+{
+    extern void XdmcpWrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
+    extern void XdmcpUnwrap(ubyte* input, ubyte* wrapper, ubyte* output, int bytes);
 }
 
 extern int XdmcpCompareKeys(const(XdmAuthKeyPtr) a, const(XdmAuthKeyPtr) b);
@@ -245,5 +206,3 @@ extern int XdmcpReallocARRAY32(ARRAY32Ptr array, int length);
 extern int XdmcpReallocARRAY8(ARRAY8Ptr array, int length);
 extern int XdmcpReallocARRAYofARRAY8(ARRAYofARRAY8Ptr array, int length);
 
-
- /* _XDMCP_H_ */

@@ -33,8 +33,8 @@ import core.stdc.config: c_long, c_ulong;
  */
 import build.xorg_config;
 
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 // //import externs.X11.extensions.Xv;
 // //import externs.X11.extensions.Xvproto;
 import region;

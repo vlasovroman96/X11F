@@ -65,8 +65,8 @@ import core.sys.posix.sys.shm;
 import core.sys.posix.sys.stat;
 } /* CONFIG_MITSHM */
 
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 // //import externs.X11.extensions.xf86bigfproto;
 // //import externs.X11.fonts.fontstruct; // libxfont2.h missed to include that
 import externs.X11.fonts.libxfont2;

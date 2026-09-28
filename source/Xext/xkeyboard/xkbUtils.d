@@ -57,10 +57,10 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.math;
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 version =	XK_CYRILLIC;
-import externs.X11.keysymdef;
+import x11.keysymdef;
 
 import dix.input_priv;
 import os.log_priv;

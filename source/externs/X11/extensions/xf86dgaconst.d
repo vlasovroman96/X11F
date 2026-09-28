@@ -8,7 +8,7 @@ import core.stdc.config: c_long, c_ulong;
 
  
 public import externs.X11.extensions.xf86dga1const;
-import externs.X11.X;
+import x11.X;
 
 enum X_XDGAQueryVersion =		0;
 

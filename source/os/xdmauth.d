@@ -40,7 +40,7 @@ from The Open Group.
 import build.dix_config;
 
 import core.stdc.stdio;
-//import externs.X11.X;
+//import x11.X;
 
 import os.auth;
 import os.io_priv;
@@ -62,7 +62,7 @@ private Bool authFromXDMCP;
 
 static if(XDMCP){
 //import x11.Xmd;
-//import externs.X11.Xdmcp;
+//import externs.xdmcp;
 
 /* XDM-AUTHENTICATION-1 */
 

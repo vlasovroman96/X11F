@@ -17,10 +17,10 @@ is" without express or implied warranty.
 import build.xorg_config;
 
 import core.stdc.stddef;
-//import externs.X11.X;
+//import x11.X;
 //import externs.X11.Xatom;
 //import x11.Xdefs;
-//import externs.X11.Xproto;
+//import x11.Xproto;
 // //import externs.X11.fonts.font;
 // //import externs.X11.fonts.fontstruct;
 // //import externs.X11.fonts.libxfont2;

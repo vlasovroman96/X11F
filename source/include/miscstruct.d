@@ -52,7 +52,7 @@ version (MISCSTRUCT_H) {} else {
 enum MISCSTRUCT_H = 1;
 
 public import include.misc;
-public import externs.X11.Xprotostr;
+public import x11.Xprotostr;
 public import externs.pixman;
 
 alias DDXPointRec = xPoint;

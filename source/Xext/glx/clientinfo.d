@@ -33,9 +33,9 @@ import glx.unpack;
  import glx.indirect_util;
 
 
-alias BadLength = externs.X11.X.BadLength;
-alias BadAlloc = externs.X11.X.BadAlloc;
-alias BadMatch = externs.X11.X.BadMatch;
+alias BadLength = x11.X.BadLength;
+alias BadAlloc = x11.X.BadAlloc;
+alias BadMatch = x11.X.BadMatch;
 
 
 

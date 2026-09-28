@@ -36,7 +36,7 @@ import include.inputstr;
 
 
 version = XK_PUBLISHING;
-//import externs.X11.keysym;
+//import x11.keysym;
 // static if (HAVE_X11_XF86KEYSYM_H) {
 // //import externs.X11.XF86keysym;
 // }

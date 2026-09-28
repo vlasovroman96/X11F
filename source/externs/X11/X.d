@@ -1,110 +1,45 @@
-module externs.X11.X;
-@nogc nothrow:
-extern(C): __gshared:
-import core.stdc.config: c_long, c_ulong;
+module x11.X;
 /* Definitions for the X window system likely to be used by applications */
 
+/*
+ * Copyright 2026, Roman Vlasov
+ * Copyright 1987, 1998  The Open Group
+ * Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts.
+ *
+ * See COPYING for the full license texts.
+ */
  
-/***********************************************************
-
-Copyright 1987, 1998  The Open Group
-
-Permission to use, copy, modify, distribute, and sell this software and its
-documentation for any purpose is hereby granted without fee, provided that
-the above copyright notice appear in all copies and that both that
-copyright notice and this permission notice appear in supporting
-documentation.
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of The Open Group shall not be
-used in advertising or otherwise to promote the sale, use or other dealings
-in this Software without prior written authorization from The Open Group.
-
-
-Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts.
-
-                        All Rights Reserved
-
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the name of Digital not be
-used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.
-
-DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
-ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
-DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
-ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-SOFTWARE.
-
-******************************************************************/
+import x11.Xdefs;
 
 enum X_PROTOCOL =	11		/* current protocol version */;
 enum X_PROTOCOL_REVISION = 0		/* current minor version */;
-
-alias Bool = int;
-/* Resources */
 
 /*
  * _XSERVER64 must ONLY be defined when compiling X server sources on
  * systems where unsigned long is not 32 bits, must NOT be used in
  * client or library code.
  */
-version (_XSERVER64) {} else {
- 
-alias XID = c_ulong;
+version (_XSERVER64) 
+{
+	import x11.Xmd;
 
- 
-alias Mask = c_ulong;
-
- 
-alias Atom = c_ulong;		/* Also in Xdefs.h */
-
-alias VisualID = c_ulong;
-alias Time = c_ulong;
-} version (_XSERVER64) {
-public import x11.Xmd;
- 
-alias XID = CARD32;
-
- 
-alias Mask = CARD32;
-
- 
-alias Atom = CARD32;
-
-alias VisualID = CARD32;
-alias Time = CARD32;
+	alias VisualID = CARD32;
+	alias Time = CARD32;
 }
+else
+ {
+	alias VisualID = c_ulong;
+	alias Time = c_ulong;
+} 
 
 alias Window = XID;
 alias Drawable = XID;
- 
 alias Font = XID;
-
 alias Pixmap = XID;
 alias Cursor = XID;
 alias Colormap = XID;
 alias GContext = XID;
 alias KeySym = XID;
-// static assert(XID.sizeof == 4);
-// static assert(Mask.sizeof == 4);
-// static assert(Atom.sizeof == 4);
-// static assert(VisualID.sizeof == 4);
-// static assert(Time.sizeof == 4);
 alias KeyCode = ubyte;
 
 /*****************************************************************
@@ -237,7 +172,6 @@ enum Mod3MapIndex =		5;
 enum Mod4MapIndex =		6;
 enum Mod5MapIndex =		7;
 
-
 /* button masks.  Used in same manner as Key masks above. Not to be confused
    with button names below. */
 
@@ -248,7 +182,6 @@ enum Button4Mask =		(1<<11);
 enum Button5Mask =		(1<<12);
 
 enum AnyModifier =		(1<<15)  /* used in GrabButton, GrabKey */;
-
 
 /* button names. Used as arguments to GrabButton and as detail in ButtonPress
    and ButtonRelease events.  Not to be confused with button masks above.
@@ -413,7 +346,6 @@ enum CWBorderWidth =		(1<<4);
 enum CWSibling =		(1<<5);
 enum CWStackMode =		(1<<6);
 
-
 /* Bit Gravity */
 
 enum ForgetGravity =		0;
@@ -480,12 +412,12 @@ enum PropModeAppend =          2;
 
 /* graphics functions, as in GC.alu */
 
-enum	GXclear =			0x0		/* 0 */;
+enum GXclear =			0x0		/* 0 */;
 enum GXand =			0x1		/* src AND dst */;
 enum GXandReverse =		0x2		/* src AND NOT dst */;
 enum GXcopy =			0x3		/* src */;
 enum GXandInverted =		0x4		/* NOT src AND dst */;
-enum	GXnoop =			0x5		/* dst */;
+enum GXnoop =			0x5		/* dst */;
 enum GXxor =			0x6		/* src XOR dst */;
 enum GXor =			0x7		/* src OR dst */;
 enum GXnor =			0x8		/* NOT src AND NOT dst */;
@@ -614,7 +546,6 @@ enum ZPixmap =			2	/* depth == drawable depth */;
 enum AllocNone =		0	/* create map with no entries */;
 enum AllocAll =		1	/* allocate entire map writeable */;
 
-
 /* Flags used in StoreNamedColor, StoreColors */
 
 enum DoRed =			(1<<0);
@@ -706,10 +637,7 @@ enum PseudoColor =		3;
 enum TrueColor =		4;
 enum DirectColor =		5;
 
-
 /* Byte order  used in imageByteOrder and bitmapBitOrder */
 
 enum LSBFirst =		0;
 enum MSBFirst =		1;
-
- /* X_H */

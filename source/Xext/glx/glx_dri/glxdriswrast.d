@@ -64,15 +64,15 @@ import glx.glxext;
 import dix.dixutils;
 
 //!! EDX: Duuuude...
-alias BadLength = externs.X11.X.BadLength;
-alias BadAlloc = externs.X11.X.BadAlloc;
-alias BadMatch = externs.X11.X.BadMatch;
-alias None = externs.X11.X.None;
-alias Success = externs.X11.X.Success;
-alias BadValue = externs.X11.X.BadValue;
-alias BadImplementation = externs.X11.X.BadImplementation;
-alias ZPixmap = externs.X11.X.ZPixmap;
-alias IncludeInferiors = externs.X11.X.IncludeInferiors;
+alias BadLength = x11.X.BadLength;
+alias BadAlloc = x11.X.BadAlloc;
+alias BadMatch = x11.X.BadMatch;
+alias None = x11.X.None;
+alias Success = x11.X.Success;
+alias BadValue = x11.X.BadValue;
+alias BadImplementation = x11.X.BadImplementation;
+alias ZPixmap = x11.X.ZPixmap;
+alias IncludeInferiors = x11.X.IncludeInferiors;
 
 
 
@@ -253,8 +253,8 @@ private __GLXcontext* __glXDRIscreenCreateContext(__GLXscreen* baseScreen, __GLX
 
     return &context.base;
 }
-// alias XID = externs.X11.X.XID;
-alias XID = externs.X11.X.XID;
+// alias XID = x11.X.XID;
+alias XID = x11.X.XID;
 
 //pragma(mangle, mixin(cFixer!(__MODULE__, __LINE__)))
 private __GLXdrawable* __glXDRIscreenCreateDrawable(ClientPtr client, __GLXscreen* screen, DrawablePtr pDraw, XID drawId, int type, XID glxDrawId, __GLXconfig* glxConfig)

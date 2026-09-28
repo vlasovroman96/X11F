@@ -54,12 +54,12 @@ extern(C): __gshared:
 import build.xorg_config;
 
 import core.stdc.errno;
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 //import externs.X11.Xatom;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-//import externs.X11.keysym;
+//import x11.keysym;
 import xf86platformBus;
 
 import dix.dix_priv;

@@ -7,7 +7,7 @@ extern(C): __gshared:
  */
  
 //public import x11.Xdefs;
-//public import externs.X11.Xproto;
+//public import x11.Xproto;
 
 public import dix.screenint_priv;
 public import include.colormap;

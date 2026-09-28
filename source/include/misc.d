@@ -80,11 +80,10 @@ enum MISC_H = 1;
  */
 
 // public import x11.Xosdefs;
-public import x11.Xfuncproto;
 public import x11.Xmd;
-public import externs.X11.X;
+public import x11.X;
 // public import x11.Xdefs;
-public import externs.X11.Xprotostr;
+public import x11.Xprotostr;
 import include.dixstruct;
 
 public import core.stdc.stddef;
@@ -128,7 +127,7 @@ version (TRUE) {} else {
 }
 
 public import include.os;                 /* for ALLOCATE_LOCAL and DEALLOCATE_LOCAL */
-//public import externs.X11.X;         /* for bcopy, bzero, and bcmp */
+//public import x11.X;         /* for bcopy, bzero, and bcmp */
 
 enum NullBox = cast(BoxPtr)0;
 
@@ -320,7 +319,7 @@ void cpswaps(T, U)(ref T src, ref U dst) {
 
 // void SwapShorts(short* list, c_ulong count);
 
-alias DDXPointPtr = _xPoint*;
+alias DDXPointPtr = xPoint*;
 alias BoxPtr = pixman_box16*;
 alias xEventPtr = _xEvent*;
 alias xRectanglePtr = xRectangle*;

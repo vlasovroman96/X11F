@@ -90,7 +90,7 @@ enum glxClientPrivateKey = (&glxClientPrivateKeyRec);
  * the dispatch layer will have moved the context struct to a fake resource ID
  * and cx here will be NULL. Otherwise we really free the context.
  */
-alias XID = externs.X11.X.XID;
+alias XID = x11.X.XID;
 
 private int ContextGone(__GLXcontext* cx, XID id)
 {
@@ -111,16 +111,16 @@ import Xext.glx.fix;
 
 alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
 alias CARD32 = x11.Xmd.CARD32;
-alias BadLength = externs.X11.X.BadLength;
-alias BadAlloc = externs.X11.X.BadAlloc;
-alias BadMatch = externs.X11.X.BadMatch;
-alias None = externs.X11.X.None;
-alias Success = externs.X11.X.Success;
-alias BadValue = externs.X11.X.BadValue;
-alias BadRequest = externs.X11.X.BadRequest;
+alias BadLength = x11.X.BadLength;
+alias BadAlloc = x11.X.BadAlloc;
+alias BadMatch = x11.X.BadMatch;
+alias None = x11.X.None;
+alias Success = x11.X.Success;
+alias BadValue = x11.X.BadValue;
+alias BadRequest = x11.X.BadRequest;
 alias INT32 = x11.Xmd.INT32;
-alias BadImplementation = externs.X11.X.BadImplementation;
-alias TrueColor = externs.X11.X.TrueColor;
+alias BadImplementation = x11.X.BadImplementation;
+alias TrueColor = x11.X.TrueColor;
 
 
 /*

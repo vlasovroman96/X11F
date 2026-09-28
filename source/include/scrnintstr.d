@@ -55,7 +55,7 @@ public import include.regionstr;
 public import include.colormap;
 public import include.cursor;
 public import include.validate;
-//public import externs.X11.Xproto;
+//public import x11.Xproto;
 public import include.dix;
 public import include.privates;
 public import externs.X11.extensions.randr;

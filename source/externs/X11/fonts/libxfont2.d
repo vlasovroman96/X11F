@@ -28,7 +28,6 @@ import core.stdc.config: c_long, c_ulong;
 public import	core.stdc.stddef;
 public import	core.stdc.stdarg;
 public import	core.stdc.stdint;
-public import	x11.Xfuncproto;
 public import	externs.X11.fonts.font;
 public import	externs.X11.fonts.fontproto;
 

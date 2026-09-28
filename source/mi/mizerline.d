@@ -50,7 +50,7 @@ SOFTWARE.
 ******************************************************************/
 import build.dix_config;
 
-//import externs.X11.X;
+//import x11.X;
 
 import include.misc;
 import include.scrnintstr;
@@ -151,7 +151,7 @@ void miZeroLine(DrawablePtr pDraw, GCPtr pGC, int mode, int npt, DDXPointPtr ppt
     width = xright - xleft + 1;
     height = ybottom - ytop + 1;
     list_len = (height >= width) ? height : width;
-    pspanInit = cast(_xPoint*)calloc(list_len, xPoint.sizeof);
+    pspanInit = cast(xPoint*)calloc(list_len, xPoint.sizeof);
     pwidthInit = cast(int*) calloc(list_len, int.sizeof);
     if (!pspanInit || !pwidthInit) {
         free(pspanInit);

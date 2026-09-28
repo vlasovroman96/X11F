@@ -117,7 +117,7 @@ alias SCM_RIGHTS = core.sys.posix.sys.socket.SCM_RIGHTS;
 static if (HasVersion!"IPv6" && !HasVersion!"HAVE_INET_NTOP") {
 version = HAVE_INET_NTOP;
 }
-public import externs.X11.X;
+public import x11.X;
 /*
  * These values come from X.h and Xauth.h, and MUST match them. Some
  * of these values are also defined by the ChangeHost protocol message.

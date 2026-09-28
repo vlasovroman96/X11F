@@ -86,7 +86,7 @@ import core.stdc.config: c_long, c_ulong;
 import build.xlibre_server;
 import Xext.panoramiXsrv;
 
-//import externs.X11.X;
+//import x11.X;
 
 import include.edid;
 import include.extinit;

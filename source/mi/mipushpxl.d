@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 import build.dix_config;
 
-//import externs.X11.X;
+//import x11.X;
 import include.gcstruct;
 import include.scrnintstr;
 import include.pixmapstr;

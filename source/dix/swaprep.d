@@ -50,8 +50,8 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.X11.X;
-//import externs.X11.Xproto;
+//import x11.X;
+//import x11.Xproto;
 // //import externs.X11.fonts.fontstruct;
 
 import dix.dix_priv;

@@ -33,10 +33,11 @@ Equipment Corporation.
  
 public import externs.X11.extensions.dpmsconst;
 public import x11.Xmd;
-import externs.X11.X;
+import x11.X;
 // alias XID = c_ulong;
 // alias 
 alias Time = XID;
+import x11.Xdefs;
 
 enum X_DPMSGetVersion =	0;
 enum X_DPMSCapable =		1;

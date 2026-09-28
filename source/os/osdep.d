@@ -70,7 +70,7 @@ import os.timingsafe_memcmp;
 import std.conv;
 public import os.utils;
 
-//public import externs.X11.X;
+//public import x11.X;
 //public import x11.Xmd;
 //public import x11.Xdefs;
 

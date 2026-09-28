@@ -62,8 +62,8 @@ private template HasVersion(string versionId) {
  *
  */
  
-import externs.X11.Xproto;
-public import externs.X11.X;
+import x11.Xproto;
+public import x11.X;
 public import externs.X11.extensions.XI2;
 public import core.stdc.stdint;
 import x11.Xmd;

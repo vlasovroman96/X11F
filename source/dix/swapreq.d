@@ -50,9 +50,9 @@ SOFTWARE.
 
 import build.dix_config;
 
-//import externs.X11.X;
-//import externs.X11.Xproto;
-//import externs.X11.Xprotostr;
+//import x11.X;
+//import x11.Xproto;
+//import x11.Xprotostr;
 
 import dix.dix_priv;
 import dix.reqhandlers_priv;

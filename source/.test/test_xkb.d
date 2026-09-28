@@ -34,9 +34,9 @@ import core.stdc.stdlib;
 import core.stdc.ctype;
 import core.sys.posix.unistd;
 import core.stdc.math;
-//import externs.X11.X;
-//import externs.X11.Xproto;
-//import externs.X11.keysym;
+//import x11.X;
+//import x11.Xproto;
+//import x11.keysym;
 //import externs.X11.Xatom;
 
 import xkb.xkbsrv_priv;

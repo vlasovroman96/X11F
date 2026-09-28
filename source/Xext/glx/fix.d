@@ -9,107 +9,107 @@ public import externs.epoxydefs;
 // public import externs.glxtokens;
 
 
-import externs.X11.X;
+import x11.X;
 import x11.Xmd;
 
 import core.stdc.stdint;
 import glx.glxdrawable;
 
 public alias UINT32_MAX = core.stdc.stdint.UINT32_MAX;
-public alias LSBFirst = externs.X11.X.LSBFirst;
+public alias LSBFirst = x11.X.LSBFirst;
 
 
 public alias CARD32 = x11.Xmd.CARD32;
 public alias INT32 = x11.Xmd.INT32;
-public alias BadLength = externs.X11.X.BadLength;
-public alias BadAlloc = externs.X11.X.BadAlloc;
-public alias BadMatch = externs.X11.X.BadMatch;
-public alias BadWindow = externs.X11.X.BadWindow;
-public alias Success = externs.X11.X.Success;
+public alias BadLength = x11.X.BadLength;
+public alias BadAlloc = x11.X.BadAlloc;
+public alias BadMatch = x11.X.BadMatch;
+public alias BadWindow = x11.X.BadWindow;
+public alias Success = x11.X.Success;
 
-public alias CWBackPixmap = externs.X11.X.CWBackPixmap ;
-public alias CWBackPixel = externs.X11.X.CWBackPixel ;
-public alias CWBorderPixmap = externs.X11.X.CWBorderPixmap ;
-public alias CWBorderPixel = externs.X11.X.CWBorderPixel ;
-public alias CWBitGravity = externs.X11.X.CWBitGravity ;
-public alias CWWinGravity = externs.X11.X.CWWinGravity ;
-public alias CWBackingStore = externs.X11.X.CWBackingStore ;
-public alias CWBackingPlanes = externs.X11.X.CWBackingPlanes ;
-public alias CWBackingPixel = externs.X11.X.CWBackingPixel ;
-public alias CWOverrideRedirect = externs.X11.X.CWOverrideRedirect ;
-public alias CWSaveUnder = externs.X11.X.CWSaveUnder ;
-public alias CWEventMask = externs.X11.X.CWEventMask ;
-public alias CWDontPropagate = externs.X11.X.CWDontPropagate ;
-public alias CWColormap = externs.X11.X.CWColormap ;
-public alias CWCursor = externs.X11.X.CWCursor ;
+public alias CWBackPixmap = x11.X.CWBackPixmap ;
+public alias CWBackPixel = x11.X.CWBackPixel ;
+public alias CWBorderPixmap = x11.X.CWBorderPixmap ;
+public alias CWBorderPixel = x11.X.CWBorderPixel ;
+public alias CWBitGravity = x11.X.CWBitGravity ;
+public alias CWWinGravity = x11.X.CWWinGravity ;
+public alias CWBackingStore = x11.X.CWBackingStore ;
+public alias CWBackingPlanes = x11.X.CWBackingPlanes ;
+public alias CWBackingPixel = x11.X.CWBackingPixel ;
+public alias CWOverrideRedirect = x11.X.CWOverrideRedirect ;
+public alias CWSaveUnder = x11.X.CWSaveUnder ;
+public alias CWEventMask = x11.X.CWEventMask ;
+public alias CWDontPropagate = x11.X.CWDontPropagate ;
+public alias CWColormap = x11.X.CWColormap ;
+public alias CWCursor = x11.X.CWCursor ;
 
-public alias None = externs.X11.X.None;
-public alias DirectColor = externs.X11.X.DirectColor;
-public alias BadIDChoice = externs.X11.X.BadIDChoice;
-public alias TrueColor = externs.X11.X.TrueColor;
-public alias PseudoColor = externs.X11.X.PseudoColor;
-public alias StaticColor = externs.X11.X.StaticColor;
-public alias GrayScale = externs.X11.X.GrayScale;
-public alias StaticGray = externs.X11.X.StaticGray;
-public alias GCForeground = externs.X11.X.GCForeground;
-public alias GCBackground = externs.X11.X.GCBackground;
-public alias GXcopy = externs.X11.X.GXcopy;
-public alias GCTile = externs.X11.X.GCTile;
-public alias GCStipple = externs.X11.X.GCStipple;
-public alias GCDashList = externs.X11.X.GCDashList;
+public alias None = x11.X.None;
+public alias DirectColor = x11.X.DirectColor;
+public alias BadIDChoice = x11.X.BadIDChoice;
+public alias TrueColor = x11.X.TrueColor;
+public alias PseudoColor = x11.X.PseudoColor;
+public alias StaticColor = x11.X.StaticColor;
+public alias GrayScale = x11.X.GrayScale;
+public alias StaticGray = x11.X.StaticGray;
+public alias GCForeground = x11.X.GCForeground;
+public alias GCBackground = x11.X.GCBackground;
+public alias GXcopy = x11.X.GXcopy;
+public alias GCTile = x11.X.GCTile;
+public alias GCStipple = x11.X.GCStipple;
+public alias GCDashList = x11.X.GCDashList;
 
-public alias LineSolid = externs.X11.X.LineSolid;
-public alias LineOnOffDash = externs.X11.X.LineOnOffDash;
-public alias LineDoubleDash = externs.X11.X.LineDoubleDash;
+public alias LineSolid = x11.X.LineSolid;
+public alias LineOnOffDash = x11.X.LineOnOffDash;
+public alias LineDoubleDash = x11.X.LineDoubleDash;
 
-public alias CapNotLast = externs.X11.X.CapNotLast;
-public alias CapButt = externs.X11.X.CapButt;
-public alias CapRound = externs.X11.X.CapRound;
-public alias CapProjecting = externs.X11.X.CapProjecting;
+public alias CapNotLast = x11.X.CapNotLast;
+public alias CapButt = x11.X.CapButt;
+public alias CapRound = x11.X.CapRound;
+public alias CapProjecting = x11.X.CapProjecting;
 
-public alias CoordModeOrigin = externs.X11.X.CoordModeOrigin;
-public alias CoordModePrevious = externs.X11.X.CoordModePrevious;
+public alias CoordModeOrigin = x11.X.CoordModeOrigin;
+public alias CoordModePrevious = x11.X.CoordModePrevious;
 
-// public alias LSBFirst = externs.X11.X.LSBFirst;
-public alias MSBFirst = externs.X11.X.MSBFirst;
+// public alias LSBFirst = x11.X.LSBFirst;
+public alias MSBFirst = x11.X.MSBFirst;
 
-public alias XYBitmap = externs.X11.X.XYBitmap;
-public alias XYPixmap = externs.X11.X.XYPixmap;
-public alias ZPixmap = externs.X11.X.ZPixmap;
+public alias XYBitmap = x11.X.XYBitmap;
+public alias XYPixmap = x11.X.XYPixmap;
+public alias ZPixmap = x11.X.ZPixmap;
 
-public alias FillSolid = externs.X11.X.FillSolid;
-public alias FillTiled = externs.X11.X.FillTiled;
-public alias FillStippled = externs.X11.X.FillStippled;
-public alias FillOpaqueStippled = externs.X11.X.FillOpaqueStippled;
+public alias FillSolid = x11.X.FillSolid;
+public alias FillTiled = x11.X.FillTiled;
+public alias FillStippled = x11.X.FillStippled;
+public alias FillOpaqueStippled = x11.X.FillOpaqueStippled;
 
-public alias GXclear = externs.X11.X.GXclear;
-public alias GXand = externs.X11.X.GXand;
-public alias GXandReverse = externs.X11.X.GXandReverse;
-// public alias GXcopy = externs.X11.X.GXcopy;
-public alias GXandInverted = externs.X11.X.GXandInverted;
-public alias GXnoop = externs.X11.X.GXnoop;
-public alias GXxor = externs.X11.X.GXxor;
-public alias GXor = externs.X11.X.GXor;
-public alias GXnor = externs.X11.X.GXnor;
-public alias GXequiv = externs.X11.X.GXequiv;
-public alias GXinvert = externs.X11.X.GXinvert;
-public alias GXorReverse = externs.X11.X.GXorReverse;
-public alias GXcopyInverted = externs.X11.X.GXcopyInverted;
-public alias GXorInverted = externs.X11.X.GXorInverted;
-public alias GXnand = externs.X11.X.GXnand;
-public alias GXset = externs.X11.X.GXset;
+public alias GXclear = x11.X.GXclear;
+public alias GXand = x11.X.GXand;
+public alias GXandReverse = x11.X.GXandReverse;
+// public alias GXcopy = x11.X.GXcopy;
+public alias GXandInverted = x11.X.GXandInverted;
+public alias GXnoop = x11.X.GXnoop;
+public alias GXxor = x11.X.GXxor;
+public alias GXor = x11.X.GXor;
+public alias GXnor = x11.X.GXnor;
+public alias GXequiv = x11.X.GXequiv;
+public alias GXinvert = x11.X.GXinvert;
+public alias GXorReverse = x11.X.GXorReverse;
+public alias GXcopyInverted = x11.X.GXcopyInverted;
+public alias GXorInverted = x11.X.GXorInverted;
+public alias GXnand = x11.X.GXnand;
+public alias GXset = x11.X.GXset;
 
 
 
-// public alias Success = externs.X11.X.Success;
-public alias BadValue = externs.X11.X.BadValue;
-public alias BadRequest = externs.X11.X.BadRequest;
+// public alias Success = x11.X.Success;
+public alias BadValue = x11.X.BadValue;
+public alias BadRequest = x11.X.BadRequest;
 // public alias INT32 = x11.Xmd.INT32;
-public alias BadImplementation = externs.X11.X.BadImplementation;
-// public alias ZPixmap = externs.X11.X.ZPixmap;
-public alias IncludeInferiors = externs.X11.X.IncludeInferiors;
-public alias BadAccess = externs.X11.X.BadAccess;
-public alias BadPixmap = externs.X11.X.BadPixmap;
+public alias BadImplementation = x11.X.BadImplementation;
+// public alias ZPixmap = x11.X.ZPixmap;
+public alias IncludeInferiors = x11.X.IncludeInferiors;
+public alias BadAccess = x11.X.BadAccess;
+public alias BadPixmap = x11.X.BadPixmap;
 
 public alias GLX_VERSION_1_0 = externs.epoxy.GLX_VERSION_1_0;
 public alias GLX_VERSION_1_1 = externs.epoxy.GLX_VERSION_1_1;
@@ -482,4 +482,4 @@ public alias GLX_BLIT_COMPLETE_INTEL = externs.epoxy.GLX_BLIT_COMPLETE_INTEL ;
 
 
 
-// public alias BadAccess = externs.X11.X.BadAccess;
+// public alias BadAccess = x11.X.BadAccess;
