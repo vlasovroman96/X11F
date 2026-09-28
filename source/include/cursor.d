@@ -1,6 +1,5 @@
 module include.cursor;
-@nogc nothrow:
-extern(C): __gshared:
+
 /***********************************************************
 
 Copyright 1987, 1998  The Open Group
@@ -47,17 +46,9 @@ SOFTWARE.
 
 ******************************************************************/
 
- 
-public import include.misc;
-public import include.screenint;
-public import include.window;
-public import include.privates;
 import include.cursorstr;
 
 enum NullCursor = cast(CursorPtr)null;
-
-/* Provide support for alpha composited cursors */
-version = ARGB_CURSOR;
 
 alias CursorPtr = _Cursor*;
 // FUN FACT: If you typedef a pointer type, like the `CursorPtr` above
@@ -66,7 +57,3 @@ alias CursorPtr = _Cursor*;
 // Maybe better just keep the `*` around, or you have to typedef a separate constPtr type.
 alias ConstCursorPtr = _Cursor*;
 alias CursorMetricPtr = _CursorMetric*;
-
-// int  FreeCursor(void* pCurs, XID cid);
-
-                          /* CURSOR_H */
