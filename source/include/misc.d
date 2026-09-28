@@ -319,7 +319,7 @@ void cpswaps(T, U)(ref T src, ref U dst) {
 
 // void SwapShorts(short* list, c_ulong count);
 
-alias DDXPointPtr = _xPoint*;
+alias DDXPointPtr = xPoint*;
 alias BoxPtr = pixman_box16*;
 alias xEventPtr = _xEvent*;
 alias xRectanglePtr = xRectangle*;

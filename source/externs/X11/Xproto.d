@@ -91,7 +91,7 @@ template SIZEOF(alias sym) {
  * than 32 characters in length (which causes problems for some compilers).
  */
 enum sz_xSegment = 8;
-enum sz_xPoint = 4;
+enum szxPoint = 4;
 enum sz_xRectangle = 8;
 enum sz_xArc = 12;
 enum sz_xConnClientPrefix = 12;

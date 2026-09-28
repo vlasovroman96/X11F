@@ -1219,7 +1219,7 @@ private void miFillSppPoly(DrawablePtr dst, GCPtr pgc, int count, SppPointPtr pt
     y = ymax - ymin + 1;
     if ((count < 3) || (y <= 0))
         return;
-    ptsOut = FirstPoint = cast(_xPoint*)calloc(y, xPoint.sizeof);
+    ptsOut = FirstPoint = cast(xPoint*)calloc(y, xPoint.sizeof);
     width = FirstWidth = cast(int*) calloc(y, int.sizeof);
     Marked = cast(int*) calloc(count, int.sizeof);
 
@@ -3034,7 +3034,7 @@ private void fillSpans(DrawablePtr pDrawable, GCPtr pGC)
 
     if (nspans == 0)
         return;
-    xSpan = xSpans = cast(_xPoint*)calloc(nspans, xPoint.sizeof);
+    xSpan = xSpans = cast(xPoint*)calloc(nspans, xPoint.sizeof);
     xWidth = xWidths = cast(int*) calloc(nspans, int.sizeof);
     if (xSpans && xWidths) {
         i = 0;

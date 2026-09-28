@@ -759,7 +759,7 @@ void miPolyFillArc(DrawablePtr pDraw, GCPtr pGC, int narcs_all, xArc* parcs)
                 nspans += (arc.height + 1) >> 1;
         }
 
-        pts = points = cast(_xPoint*)calloc(1, ((xPoint).sizeof * nspans +
+        pts = points = cast(xPoint*)calloc(1, ((xPoint).sizeof * nspans +
                                int.sizeof * nspans));
         if (points) {
             wids = widths = cast(int*) (points + nspans);

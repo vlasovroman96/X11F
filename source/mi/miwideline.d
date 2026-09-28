@@ -249,7 +249,7 @@ private void miSubtractSpans(SpanGroup* spanGroup, Spans* sub)
                                 int* newwid = void;
 
 enum EXTRA = 8;
-                                newPt = cast(_xPoint*)reallocarray(spans.points,
+                                newPt = cast(xPoint*)reallocarray(spans.points,
                                                      spans.count + EXTRA,
                                                      xPoint.sizeof);
                                 if (!newPt)
@@ -542,7 +542,7 @@ private void miFillUniqueSpanGroup(DrawablePtr pDraw, GCPtr pGC, SpanGroup* span
                         int* newwidths = void;
 
                         ysizes[index] = (ysizes[index] + 8) * 2;
-                        newpoints = cast(_xPoint*)reallocarray(newspans.points,
+                        newpoints = cast(xPoint*)reallocarray(newspans.points,
                                                  ysizes[index],
                                                  xPoint.sizeof);
                         newwidths = cast(int*)reallocarray(newspans.widths,
@@ -575,7 +575,7 @@ private void miFillUniqueSpanGroup(DrawablePtr pDraw, GCPtr pGC, SpanGroup* span
         }                       /* for i thorough Spans */
 
         /* Now sort by x and uniquify each bucket into the final array */
-        points = cast(_xPoint*)calloc(count, xPoint.sizeof);
+        points = cast(xPoint*)calloc(count, xPoint.sizeof);
         widths = cast(int*) calloc(count, int.sizeof);
         if (!points || !widths) {
             for (i = 0; i < ylength; i++) {
@@ -622,7 +622,7 @@ private void miFillUniqueSpanGroup(DrawablePtr pDraw, GCPtr pGC, SpanGroup* span
 
 private Bool InitSpans(Spans* spans, size_t nspans)
 {
-    spans.points = cast(_xPoint*)calloc(nspans, typeof(*spans.points).sizeof);
+    spans.points = cast(xPoint*)calloc(nspans, typeof(*spans.points).sizeof);
     if (!spans.points)
         return FALSE;
     spans.widths = cast(int*)calloc(nspans, typeof(*spans.widths).sizeof);

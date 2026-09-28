@@ -674,7 +674,7 @@ void miZeroPolyArc(DrawablePtr pDraw, GCPtr pGC, int narcs, xArc* parcs)
                    cast(ubyte*) pGC.dash, cast(int) pGC.numInDashList,
                    &dinfo.dashOffsetInit);
     }
-    points = cast(_xPoint*)calloc(numPts, xPoint.sizeof);
+    points = cast(xPoint*)calloc(numPts, xPoint.sizeof);
     if (!points) {
         if (dospans) {
             free(widths);
