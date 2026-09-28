@@ -84,7 +84,7 @@ version (XTHREADS) {
 // import core.sys.posix.sys.stat;
 
 // import os.ossock;
-
+import x11.Xos;
 import build.xlibre_server;
 import core.stdc.string;
 import sock = core.sys.posix.sys.socket;
@@ -134,7 +134,6 @@ import externs.arpa.inet;
 static if(UNIXCONN){
 version = X_INCLUDE_NETDB_H;
 version = XOS_USE_NO_LOCKING;
-import x11.Xos_r;
 }
 
 version (NO_TCP_H) {} else {
