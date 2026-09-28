@@ -22,16 +22,46 @@ extern(C): __gshared:
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+alias DamagePtr = _damage*;
  
-//public import x11.Xdefs;
+public import include.gcstruct;
+public import include.privates;
+public import include.picturestr;
+
+struct _damage {
+    DamagePtr pNext;
+    DamagePtr pNextWin;
+    RegionRec damage;
+
+    DamageReportLevel damageLevel;
+    Bool isInternal;
+    void* closure;
+    Bool isWindow;
+    DrawablePtr pDrawable;
+
+    DamageReportFunc damageReport;
+    DamageDestroyFunc damageDestroy;
+
+    Bool reportAfter;
+    RegionRec pendingDamage;    /* will be flushed post submission at the latest */
+    ScreenPtr pScreen;
+}
+
+struct _damageScreenFuncs {
+    DamageScreenCreateFunc Create;
+    DamageScreenRegisterFunc Register;
+    DamageScreenUnregisterFunc Unregister;
+    DamageScreenDestroyFunc Destroy;
+}alias DamageScreenFuncsRec = _damageScreenFuncs;
+alias DamageScreenFuncsPtr = _damageScreenFuncs*;
+
 import include.regionstr;
 import include.screenint;
 import include.privates;
 public import miext.damage.damage_;
-import include.damagestr;
+import include.damage;
 
 // struct _Damage;
-alias DamagePtr = _damage*;
 
 enum DamageReportLevel : ubyte {
     DamageReportRawRegion,
@@ -58,70 +88,64 @@ alias DamageScreenRegisterFunc = void function(DrawablePtr, DamagePtr);
 alias DamageScreenUnregisterFunc = void function(DrawablePtr, DamagePtr);
 alias DamageScreenDestroyFunc = void function(DamagePtr);
 
-/* @public
- *
- * @brief Driver callbacks for getting notified on several damage calls
- *
- * The pointer to this struct can be obtained via DamageGetScreenFuncs().
- * Drivers can inject themselves here, in order to get notified on
- * DamageCreate(), DamageRegister(), DamageUnregister(), DamageDestroy().
- *
- * The fields may be assigned to NULL, if no action at all is wanted.
- * (by default assigned to default implementations)
- *
- * This should ONLY be touched by video drivers, nobody else.
- *
- * So far the only one using it is the proprietary NVidia driver.
- */
-struct _damageScreenFuncs {
-    DamageScreenCreateFunc Create;
-    DamageScreenRegisterFunc Register;
-    DamageScreenUnregisterFunc Unregister;
-    DamageScreenDestroyFunc Destroy;
-}alias DamageScreenFuncsRec = _damageScreenFuncs;
-alias DamageScreenFuncsPtr = _damageScreenFuncs*;
+alias DamageRec = _damage;
 
-int miDamageCreate(DamagePtr);
-int miDamageRegister(DrawablePtr, DamagePtr);
-int miDamageUnregister(DrawablePtr, DamagePtr);
-int miDamageDestroy(DamagePtr);
+struct _damageScrPriv {
+    int internalLevel;
 
-// struct _Screen;
-// alias ScreenPtr = _Screen*;
-// int DamageSetup(ScreenPtr pScreen);
+    /*
+     * For DDXen which don't provide GetScreenPixmap, this provides
+     * a place to hook damage for windows on the screen
+     */
+    DamagePtr pScreenDamage;
 
-// int DamageCreate(DamageReportFunc damageReport, DamageDestroyFunc damageDestroy, DamageReportLevel damageLevel, Bool isInternal, ScreenPtr pScreen, void* closure);
+    CopyWindowProcPtr CopyWindow;
+    void* _dummy1; // required in place of a removed field for ABI compatibility
+    CreateGCProcPtr CreateGC;
+    void* _dummy2; // required in place of a removed field for ABI compatibility
+    SetWindowPixmapProcPtr SetWindowPixmap;
+    void* _dummy3; // required in place of a removed field for ABI compatibility
+    CompositeProcPtr Composite;
+    GlyphsProcPtr Glyphs;
+    AddTrapsProcPtr AddTraps;
 
-int DamageDrawInternal(ScreenPtr pScreen, Bool enable);
+    /* Table of wrappable function pointers */
+    DamageScreenFuncsRec funcs;
+}alias DamageScrPrivRec = _damageScrPriv;
+alias DamageScrPrivPtr = _damageScrPriv*;
 
-// int DamageRegister(DrawablePtr pDrawable, DamagePtr pDamage);
+struct _damageGCPriv {
+    const(_GCOps)* ops;
+    const(GCFuncs)* funcs;
+}alias DamageGCPrivRec = _damageGCPriv;
+alias DamageGCPrivPtr = _damageGCPriv*;
 
-// int DamageUnregister(DamagePtr pDamage);
+/* XXX should move these into damage.c, damageScrPrivateIndex is static */
+enum string damageGetScrPriv(string pScr) = `(cast(DamageScrPrivPtr) 
+    dixLookupPrivate(&(` ~ pScr ~ `).devPrivates, damageScrPrivateKey))`;
 
-// int DamageDestroy(DamagePtr pDamage);
+enum string damageScrPriv(string pScr) = `
+    DamageScrPrivPtr pScrPriv = ` ~ damageGetScrPriv!(pScr) ~ `;`;
 
-// int DamageSubtract(DamagePtr pDamage, const(RegionPtr) pRegion);
+enum string damageGetPixPriv(string pPix) = `
+    dixLookupPrivate(&(` ~ pPix ~ `).devPrivates, damagePixPrivateKey)`;
 
-// int DamageEmpty(DamagePtr pDamage);
+enum string damgeSetPixPriv(string pPix,string v) = `
+    dixSetPrivate(&(` ~ pPix ~ `).devPrivates, damagePixPrivateKey, ` ~ v ~ `)`;
 
-// int DamageRegion(DamagePtr pDamage);
+enum string damagePixPriv(string pPix) = `
+    DamagePtr pDamage = ` ~ damageGetPixPriv!(pPix) ~ `;`;
 
-// int DamagePendingRegion(DamagePtr pDamage);
+enum string damageGetGCPriv(string pGC) = `
+    cast(_damageGCPriv*)dixLookupPrivate(&(` ~ pGC ~ `).devPrivates, damageGCPrivateKey)`;
 
-/* In case of rendering, call this before the submitting the commands. */
-int DamageRegionAppend(DrawablePtr pDrawable, RegionPtr pRegion);
+enum string damageGCPriv(string pGC) = `
+    DamageGCPrivPtr pGCPriv = ` ~ damageGetGCPriv!(pGC) ~ `;`;
 
-/* Call this directly after the rendering operation has been submitted. */
-int DamageRegionProcessPending(DrawablePtr pDrawable);
+enum string damageGetWinPriv(string pWin) = `
+    (cast(DamagePtr)dixLookupPrivate(&(` ~ pWin ~ `).devPrivates, damageWinPrivateKey))`;
 
-/* Call this when you create a new Damage and you wish to send an initial damage message (to it). */
-// int DamageReportDamage(DamagePtr pDamage, RegionPtr pDamageRegion);
+enum string damageSetWinPriv(string pWin,string d) = `
+    dixSetPrivate(&(` ~ pWin ~ `).devPrivates, damageWinPrivateKey, ` ~ d ~ `)`;
 
-/* Avoid using this call, it only exists for API compatibility. */
-// int DamageDamageRegion(DrawablePtr pDrawable, const(RegionPtr) pRegion);
-
-// int DamageSetReportAfterOp(DamagePtr pDamage, Bool reportAfter);
-
-DamageScreenFuncsPtr DamageGetScreenFuncs(ScreenPtr);
-
-                          /* _DAMAGE_H_ */
+                          /* _DAMAGESTR_H_ */

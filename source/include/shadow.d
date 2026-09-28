@@ -30,7 +30,7 @@ public import include.scrnintstr;
 public import include.picturestr;
 
 public import include.damage;
-public import include.damagestr;
+public import include.damage;
 import include.shadow;
 alias shadowBufPtr = _shadowBuf*;
 

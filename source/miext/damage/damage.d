@@ -44,7 +44,7 @@ import    include.regionstr;
 import    dix.globals;
 import    include.gcstruct;
 import    include.damage;
-import    include.damagestr;
+import    include.damage;
 import    render.glyphstr_priv;
 import render.mipict;
 import externs.attrs;
