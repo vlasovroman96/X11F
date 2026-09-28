@@ -29,6 +29,9 @@ else {
 }
 
 alias Bool = int;
+enum True = 1;
+enum False = 0;
+
 alias Font = XID;
 alias AccContext = FSID;
 
