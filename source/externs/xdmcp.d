@@ -8,8 +8,8 @@ extern(C): __gshared:
  * See COPYING for the full license texts.
  */
 
-
-// import build.xlibre_server;
+//There must be config for x11 proto maybe?
+import build.xlibre_server;
 public import x11.Xmd;
 import core.sys.posix.netinet.in_;
 import std.compiler;
