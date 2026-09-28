@@ -13,7 +13,7 @@ extern(C): __gshared:
 
 public import dix.screenint_priv;
 public import include.cursor;
-public import include.cursorstr;
+public import include.cursor;
 
 public import include.dix;
 public import include.input;

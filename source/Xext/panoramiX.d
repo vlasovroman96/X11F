@@ -50,7 +50,7 @@ import Xext.panoramiXsrv;
 
 import include.misc;
 import include.cursor;
-import include.cursorstr;
+import include.cursor;
 import include.extnsionst;
 import include.dixstruct;
 import include.gc;

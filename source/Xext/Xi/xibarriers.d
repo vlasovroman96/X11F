@@ -57,7 +57,7 @@ import Xi.handlers;
 
 import Xi.xibarriers;
 import include.scrnintstr;
-import include.cursorstr;
+import include.cursor;
 import include.servermd;
 import mi.mipointer;
 import include.inputstr;

@@ -38,7 +38,7 @@ import include.validate;
 import include.windowstr;
 import include.input;
 import include.resource;
-import include.cursorstr;
+import include.cursor;
 import include.dixstruct;
 import include.gcstruct;
 import include.servermd;

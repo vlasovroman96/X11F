@@ -16,7 +16,7 @@ import include.scrnintstr;
 import include.pixmapstr;
 import include.windowstr;
 import include.xf86str;
-import include.cursorstr;
+import include.cursor;
 import include.mi;
 import mi.mipointer;
 import hw.xfree86.ramdac.xf86CursorPriv;

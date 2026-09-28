@@ -1,5 +1,6 @@
 module include.cursor;
-
+@nogc nothrow:
+extern(C): __gshared:
 /***********************************************************
 
 Copyright 1987, 1998  The Open Group
@@ -45,15 +46,53 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
 ******************************************************************/
+ 
+public import include.privates;
+/*
+ * device-independent cursor storage
+ */
 
-import include.cursorstr;
+/*
+ * source and mask point directly to the bits, which are in the server-defined
+ * bitmap format.
+ */
+struct CursorBits {
+    ubyte* source;      /* points to bits */
+    ubyte* mask;        /* points to bits */
+    Bool emptyMask;             /* all zeros mask */
+    ushort width, height, xhot, yhot;   /* metrics */
+    int refcnt;                 /* can be shared */
+    PrivateRec* devPrivates;    /* set by pScr->RealizeCursor */
+    CARD32* argb;               /* full-color alpha blended */
+};
+alias CursorBitsPtr = CursorBits*;
+
+struct CursorRec {
+    CursorBitsPtr bits;
+    ushort foreRed, foreGreen, foreBlue;        /* device-independent color */
+    ushort backRed, backGreen, backBlue;        /* device-independent color */
+    int refcnt;
+    PrivateRec* devPrivates;    /* set by pScr->RealizeCursor */
+    XID id;
+    CARD32 serialNumber;
+    Atom name;
+}
+
+struct CursorMetricRec {
+    ushort width, height, xhot, yhot;
+}
+
+struct HotSpot {
+    int x, y;
+    ScreenPtr pScreen;
+}
 
 enum NullCursor = cast(CursorPtr)null;
 
-alias CursorPtr = _Cursor*;
+alias CursorPtr = CursorRec*;
 // FUN FACT: If you typedef a pointer type, like the `CursorPtr` above
-// then `const CursorPtr` or `CursorPtr const` actually means `struct _Cursor *const`, a constant pointer
+// then `const CursorPtr` or `CursorPtr const` actually means `struct CursoRec *const`, a constant pointer
 // which is probably not what you want(a pointer to constant).
 // Maybe better just keep the `*` around, or you have to typedef a separate constPtr type.
-alias ConstCursorPtr = _Cursor*;
-alias CursorMetricPtr = _CursorMetric*;
+alias ConstCursorPtr = CursorRec*;
+alias CursorMetricPtr = CursorMetricRec*;

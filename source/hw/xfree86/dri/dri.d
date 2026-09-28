@@ -65,7 +65,7 @@ import externs.libdrm;
 import include.misc;
 import include.dixstruct;
 import include.extnsionst;
-import include.cursorstr;
+import include.cursor;
 import include.scrnintstr;
 import include.windowstr;
 import include.servermd;

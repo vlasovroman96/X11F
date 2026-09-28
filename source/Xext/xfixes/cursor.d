@@ -57,7 +57,7 @@ import dix.screenint_priv;
 
 import xfixes.xfixesint;
 import include.scrnintstr;
-import include.cursorstr;
+import include.cursor;
 import include.servermd;
 import mi.mipointer;
 import include.inputstr;

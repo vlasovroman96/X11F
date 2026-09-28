@@ -58,7 +58,7 @@ import include.misc;
 import include.resource;
 import include.inputstr;
 import include.scrnintstr;
-import include.cursorstr;
+import include.cursor;
 import include.dixstruct;
 import include.globals;
 import mi.mipointer;

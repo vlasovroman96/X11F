@@ -59,7 +59,7 @@ import   os.screensaver;
 import   include.misc;
 import include.windowstr;
 import   include.pixmapstr;
-import   include.cursorstr;
+import   include.cursor;
 import   mi.mipointer;
 import   include.scrnintstr;
 import   include.eventstr;

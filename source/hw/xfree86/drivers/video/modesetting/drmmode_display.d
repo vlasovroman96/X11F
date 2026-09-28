@@ -59,7 +59,7 @@ import externs.libdrm;
 import include.xf86Crtc;
 import hw.xfree86.drivers.video.modesetting.drmmode_bo;
 
-import include.cursorstr;
+import include.cursor;
 import hw.xfree86.drivers.video.modesetting.drmmode_display;
 import include.randrstr; 
 import include.xf86Crtc;

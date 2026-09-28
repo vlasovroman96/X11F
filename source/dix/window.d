@@ -136,7 +136,7 @@ import include.windowstr;
 import include.propertyst;
 import include.inputstr;
 import include.resource;
-import include.cursorstr;
+import include.cursor;
 import include.dixstruct;
 import include.gcstruct;
 import include.servermd;

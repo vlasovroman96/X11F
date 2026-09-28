@@ -61,7 +61,7 @@ import os.bug_priv;
 import include.servermd;
 import include.scrnintstr;
 import include.dixstruct;
-import include.cursorstr;
+import include.cursor;
 import include.dixfontstr;
 import include.opaque;
 import include.inputstr;
