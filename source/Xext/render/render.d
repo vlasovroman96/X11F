@@ -32,7 +32,7 @@ import core.stdc.stdint;
 //import externs.X11.Xproto;
 //import externs.X11.extensions._render;
 // //import externs.X11.extensions.renderproto;
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 
 import dix.colormap_priv;
 import dix.cursor_priv;

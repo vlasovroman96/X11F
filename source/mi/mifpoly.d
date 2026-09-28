@@ -48,7 +48,7 @@ SOFTWARE.
 ******************************************************************/
 
  
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 
 auto ICEIL(double x)
 {

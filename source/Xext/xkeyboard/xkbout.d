@@ -32,7 +32,7 @@ import build.dix_config;
 import core.stdc.stdio;
 import core.stdc.ctype;
 import core.stdc.stdlib;
-// //import externs.X11.Xfuncs;
+// //import x11.Xfuncs;
 //import externs.X11.X;
 //import externs.X11.keysym;
 //import externs.X11.Xproto;

@@ -8,7 +8,7 @@ extern(C): __gshared:
 
 import config.kdrive_config;
 
-////import externs.X11.Xfuncproto;
+////import x11.Xfuncproto;
 
 import include.scrnintstr;
 

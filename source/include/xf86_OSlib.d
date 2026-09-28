@@ -79,7 +79,7 @@ private template HasVersion(string versionId) {
 
  
 // //public import x11.Xos;
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 import x11.Xosdefs;
 
 public import core.stdc.stdio;

@@ -75,23 +75,9 @@ in this Software without prior written authorization from The Open Group.
 /* This header can be included multiple times with different defines! */
  
 public import x11.Xos;
-public import externs.X11.Xfuncs;
+public import x11.Xfuncs;
 
-version (X_NOT_POSIX) {} else {
-version (_POSIX_SOURCE) {
-public import core.stdc.limits;
-} else {
-// version = _POSIX_SOURCE;
-public import core.stdc.limits;
-//! #   undef _POSIX_SOURCE
-}
-version (LINE_MAX) {} else {
 enum X_LINE_MAX = 2048;
-} version (LINE_MAX) {
-enum X_LINE_MAX = LINE_MAX;
-}
-}
- /* _XOS_R_H */
 
 version (Windows) {} else {
 
@@ -105,7 +91,7 @@ enum _Xos_isThreadInitialized =	(_Xglobal_lock);
 
 static if (HasVersion!"XTHREADS_WARN" || HasVersion!"XTHREADS_FILE_LINE") {
 version (XAllocIDs) {} else { /* Xlibint.h does not have multiple include protection */
-public import externs.X11.Xfuncproto;	/* for NeedFunctionPrototypes */
+public import x11.Xfuncproto;	/* for NeedFunctionPrototypes */
 extern void function(NeedFunctionPrototypes LockInfoPtr, char*, int) _XLockMutex_fn;
 extern void function(NeedFunctionPrototypes LockInfoPtr, char*, int) _XUnlockMutex_fn;
 }
@@ -117,7 +103,7 @@ enum _Xos_processUnlock =
 
 } else {
 version (XAllocIDs) {} else { /* Xlibint.h does not have multiple include protection */
-public import externs.X11.Xfuncproto;	/* for NeedFunctionPrototypes */
+public import x11.Xfuncproto;	/* for NeedFunctionPrototypes */
 extern void function(NeedFunctionPrototypes LockInfoPtr) _XLockMutex_fn;
 extern void function(NeedFunctionPrototypes LockInfoPtr) _XUnlockMutex_fn;
 }
@@ -133,7 +119,7 @@ version (_XtThreadsI_h) {} else {
 extern void function() _XtProcessLock;
 }
 version (_XtintrinsicP_h) {} else {
-public import externs.X11.Xfuncproto;	/* for NeedFunctionPrototypes */
+public import x11.Xfuncproto;	/* for NeedFunctionPrototypes */
 extern void XtProcessLock();
 extern void XtProcessUnlock();
 }
@@ -1050,9 +1036,4 @@ enum string _XGetgrnam(string n,string p) = `
  ((getgrnam_r((` ~ n ~ `), &(` ~ p ~ `).grp, (` ~ p ~ `).buf, typeof((` ~ p ~ `).buf).sizeof, &(` ~ p ~ `).result) ? 
    null : (` ~ p ~ `).result))`;
 }
-
-static if (HasVersion!"X_INCLUDE_GRP_H" && !HasVersion!"_XOS_INCLUDED_GRP_H") {
-version = _XOS_INCLUDED_GRP_H;
-}
-
 

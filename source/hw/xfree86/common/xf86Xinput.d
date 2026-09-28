@@ -52,7 +52,7 @@ import core.stdc.config: c_long, c_ulong;
 import build.xorg_config;
 
 import core.stdc.string;             /* InputClassMatches */
-// ////import externs.X11.Xfuncproto;
+// ////import x11.Xfuncproto;
 ////import x11.Xmd;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;

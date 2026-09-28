@@ -48,6 +48,7 @@ private template HasVersion(string versionId) {
  *      Egbert Eich <eich@XFree86.Org>
  *      ... and others
  */
+import x11.Xos;
 import build.xorg_config;
 import Xext.panoramiXsrv;
 import xf86pciBus;
@@ -197,7 +198,6 @@ alias ModuleDefault = _ModuleDefault;
  *	updated to point to the start of the next element, or set to
  *	NULL if there are no more.
  */
-alias index = strchr;
 
 private char* xf86GetPathElem(char** pnt)
 {

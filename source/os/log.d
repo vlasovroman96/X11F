@@ -90,7 +90,7 @@ import core.stdc.stdlib;             /* for calloc() */
 import core.stdc.string;             /* for strerror*() */
 import core.sys.posix.sys.stat;
 import core.stdc.time;
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 // //import x11.Xos;
 import externs.gnu;
 import core.sys.posix.unistd;

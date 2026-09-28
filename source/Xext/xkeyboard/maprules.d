@@ -40,7 +40,7 @@ version = XOS_USE_NO_LOCKING;
 //import externs.X11.Xproto;
 //import externs.X11.X;
 import x11.Xos_r;
-// //import externs.X11.Xfuncs;
+// //import x11.Xfuncs;
 //import externs.X11.Xatom;
 import externs.X11.extensions.XKB;
 
@@ -750,7 +750,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
     int len = void, ndx = void;
 
     orig = name;
-    str = externs.gnu.index(name, '%');
+    str = index(name, '%');
     if (str is null)
         return name;
     len = cast(int)strlen(name);
@@ -769,7 +769,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
         var = str + 1;
         str = get_index(var + 1, &ndx);
         if (ndx == -1) {
-            str = externs.gnu.index(str, '%');
+            str = index(str, '%');
             continue;
         }
         if ((*var == 'l') && mdefs.layout[ndx] && *mdefs.layout[ndx])
@@ -781,7 +781,7 @@ private char* XkbRF_SubstituteVars(char* name, XkbRF_MultiDefsPtr mdefs)
         if ((pfx == '(') && (*str == ')')) {
             str++;
         }
-        str = externs.gnu.index(&str[0], '%');
+        str = index(&str[0], '%');
     }
     name = cast(char*)calloc(1, len + 1);
     str = orig;

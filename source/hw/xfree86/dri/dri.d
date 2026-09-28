@@ -49,7 +49,7 @@ import core.sys.posix.sys.ioctl;
 import core.sys.posix.sys.time;
 import core.sys.posix.unistd;
 //import externs.X11.X;
-////import externs.X11.Xfuncproto;
+////import x11.Xfuncproto;
 //import externs.X11.Xproto;
 // //import externs.X11.dri.hw.xfree86.dri.xf86driproto;
 

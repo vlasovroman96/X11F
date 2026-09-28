@@ -26,7 +26,7 @@ extern(C): __gshared:
 
 import build.dix_config;
 
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 
 import core.stdc.errno;
 import core.stdc.signal;

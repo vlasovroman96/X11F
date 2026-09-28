@@ -28,7 +28,7 @@ extern(C): __gshared:
  */
 
 public import core.stdc.inttypes;
-public import externs.X11.Xfuncproto;
+public import x11.Xfuncproto;
 version (BUILD) {} else {
 public import externs.xcb.xcb_bitops;
 public import externs.xcb.xcb_image;

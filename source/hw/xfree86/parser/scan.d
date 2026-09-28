@@ -65,7 +65,7 @@ import core.sys.posix.unistd;
 import core.stdc.stdarg;
 import core.sys.posix.dirent;
 //import x11.Xdefs;
-////import externs.X11.Xfuncproto;
+////import x11.Xfuncproto;
 import core.stdc.limits;
 import xf86AutoConfig_;
 

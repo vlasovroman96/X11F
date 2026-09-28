@@ -51,7 +51,7 @@ public import core.stdc.stdint;
 public import externs.X11.X;
 
 /* applications should not depend on these two headers being included! */
-public import externs.X11.Xfuncproto;
+public import x11.Xfuncproto;
 public import x11.Xosdefs;
 
 version (X_WCHAR) {} else {

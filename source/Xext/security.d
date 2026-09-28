@@ -32,7 +32,7 @@ import build.dix_config;
 
 //import x11.Xmd;
 // //import externs.X11.extensions.securproto;
-// //import externs.X11.Xfuncproto;
+// //import x11.Xfuncproto;
 
 import dix.client_priv;
 import dix.devices_priv;

@@ -61,7 +61,7 @@ version (MONOTONIC_CLOCK) {
 public import core.stdc.time;
 }
 
-// //public import externs.X11.Xfuncproto;
+// //public import x11.Xfuncproto;
 
 public import include.xlibre_ptrtypes;
 public import include.callback;
