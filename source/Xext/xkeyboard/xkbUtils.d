@@ -60,7 +60,7 @@ import core.stdc.math;
 //import x11.X;
 //import x11.Xproto;
 version =	XK_CYRILLIC;
-import externs.X11.keysymdef;
+import x11.keysymdef;
 
 import dix.input_priv;
 import os.log_priv;

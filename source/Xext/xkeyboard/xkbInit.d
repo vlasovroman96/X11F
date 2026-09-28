@@ -43,7 +43,7 @@ import core.sys.posix.unistd;
 import core.stdc.math;
 //import x11.X;
 //import x11.Xproto;
-//import externs.X11.keysym;
+//import x11.keysym;
 import externs.X11.Xatom;
 // //import externs.X11.extensions.XKMformat;
 import externs.X11.extensions.XKB;

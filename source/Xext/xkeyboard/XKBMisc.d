@@ -32,7 +32,7 @@ import build.dix_config;
 import core.stdc.stdio;
 //import x11.X;
 //import x11.Xproto;
-//import externs.X11.keysym;
+//import x11.keysym;
 
 import xkb.xkbfmisc_priv;
 import xkb.xkbsrv_priv;

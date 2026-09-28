@@ -36,7 +36,7 @@ import core.stdc.stdlib;
 // //import x11.Xfuncs;
 import externs.X11.extensions.XKM;
 //import x11.X;
-import externs.X11.keysymdef;
+import x11.keysymdef;
 //import x11.Xproto;
 
 import xkb.xkbfmisc_priv;

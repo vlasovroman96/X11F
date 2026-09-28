@@ -59,7 +59,7 @@ import core.stdc.errno;
 //import externs.X11.Xatom;
 ////import externs.X11.extensions.XI;
 // //import externs.X11.extensions.XIproto;
-//import externs.X11.keysym;
+//import x11.keysym;
 import xf86platformBus;
 
 import dix.dix_priv;

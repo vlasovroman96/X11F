@@ -34,7 +34,7 @@ import core.stdc.ctype;
 import core.stdc.stdlib;
 // //import x11.Xfuncs;
 //import x11.X;
-//import externs.X11.keysym;
+//import x11.keysym;
 //import x11.Xproto;
 import externs.X11.extensions.XKM;
 

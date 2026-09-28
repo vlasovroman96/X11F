@@ -34,7 +34,7 @@ import core.stdc.stdio;
 // //import x11.Xfuncs;
 //import x11.X;
 //import x11.Xproto;
-//import externs.X11.keysym;
+//import x11.keysym;
 // //import externs.X11.extensions.XKMformat;
 // import externs.X11.extensions.XKBgeom;
 

@@ -34,7 +34,7 @@ import build.xorg_config;
 import core.stdc.stdio;
 //import x11.X;
 //import x11.Xproto;
-//import externs.X11.keysym;
+//import x11.keysym;
 ////import externs.X11.extensions.XI;
 
 import hw.xfree86.common.action_priv;
